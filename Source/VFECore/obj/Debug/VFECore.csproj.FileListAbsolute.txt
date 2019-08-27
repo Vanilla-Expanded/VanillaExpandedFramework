@@ -1,0 +1,4 @@
+E:\Documents\GitHub\VanillaFactionsExpanded-Core\1.0\Assemblies\VFECore.dll
+E:\Documents\GitHub\VanillaFactionsExpanded-Core\Source\VFECore\obj\Debug\VFECore.csprojAssemblyReference.cache
+E:\Documents\GitHub\VanillaFactionsExpanded-Core\Source\VFECore\obj\Debug\VFECore.csproj.CoreCompileInputs.cache
+E:\Documents\GitHub\VanillaFactionsExpanded-Core\Source\VFECore\obj\Debug\VFECore.dll

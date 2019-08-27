@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+    <!-- Shield -->
+    <VanillaFactionsExpanded.EquipShield>Equip {0} as shield</VanillaFactionsExpanded.EquipShield>
+    <VanillaFactionsExpanded.EquipWarningShieldUnusable>(unusable with {0})</VanillaFactionsExpanded.EquipWarningShieldUnusable>
+    <VanillaFactionsExpanded.EquipWarningShieldUnusableWithWeapon>({0} will be unusable)</VanillaFactionsExpanded.EquipWarningShieldUnusableWithWeapon>
+
+    <VanillaFactionsExpanded.Protects>Protects</VanillaFactionsExpanded.Protects>
+    
+    <!-- Scenario parts -->
+    <VanillaFactionsExpanded.ScenPart_ForcedFactionRelations>Faction relation modifiers</VanillaFactionsExpanded.ScenPart_ForcedFactionRelations>
+    <VanillaFactionsExpanded.NumberRange>{0} to {1}</VanillaFactionsExpanded.NumberRange>
+    <VanillaFactionsExpanded.AllFactions>All factions</VanillaFactionsExpanded.AllFactions>
+    <VanillaFactionsExpanded.AllFactionsIncludingHidden>All factions including hidden</VanillaFactionsExpanded.AllFactionsIncludingHidden>
+    <VanillaFactionsExpanded.AlwaysHostile>Always hostile</VanillaFactionsExpanded.AlwaysHostile>
+    <VanillaFactionsExpanded.AffectHiddenFactions>Affect hidden</VanillaFactionsExpanded.AffectHiddenFactions>
+    <VanillaFactionsExpanded.StartingGoodwill>Starting</VanillaFactionsExpanded.StartingGoodwill>
+    <VanillaFactionsExpanded.NaturalGoodwill>Natural</VanillaFactionsExpanded.NaturalGoodwill>
+
+</LanguageData>
