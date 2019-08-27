@@ -51,15 +51,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="AI\Lords\LordJob_SiegeCustom.cs" />
-    <None Include="AI\Lords\LordToil_SiegeCustom.cs" />
+    <Compile Include="AI\Lords\LordJob_SiegeCustom.cs" />
+    <Compile Include="AI\Lords\LordToilData_SiegeCustom.cs" />
+    <Compile Include="AI\Lords\LordToil_SiegeCustom.cs" />
     <Compile Include="Comps\WorldComponents\FactionGoodwillModifier.cs" />
     <Compile Include="Comps\ThingComps\CompProperties_Shield.cs" />
     <Compile Include="Comps\ThingComps\CompShield.cs" />
+    <Compile Include="Defs\SiegeParameterSetDef.cs" />
     <Compile Include="DefModExtensions\StorytellerDefExtension.cs" />
-    <Compile Include="Defs\ApparelLayerDefOf.cs" />
-    <Compile Include="Defs\JobDefOf.cs" />
-    <Compile Include="Defs\ScenPartDefOf.cs" />
+    <Compile Include="DefOf\ApparelLayerDefOf.cs" />
+    <Compile Include="DefOf\JobDefOf.cs" />
+    <Compile Include="DefOf\ScenPartDefOf.cs" />
     <Compile Include="AI\JobDrivers\JobDriver_EquipShield.cs" />
     <Compile Include="HarmonyPatches\HarmonyPatches.cs" />
     <Compile Include="HarmonyPatches\Patch_ArmorUtility.cs" />
@@ -70,13 +72,15 @@
     <Compile Include="HarmonyPatches\Patch_Game.cs" />
     <Compile Include="HarmonyPatches\Patch_GenStep_Settlement.cs" />
     <Compile Include="HarmonyPatches\Patch_ITab_Pawn_Gear.cs" />
+    <Compile Include="HarmonyPatches\Patch_FactionGenerator.cs" />
     <Compile Include="HarmonyPatches\Patch_PawnApparelGenerator.cs" />
     <Compile Include="HarmonyPatches\Patch_PawnGenerator.cs" />
     <Compile Include="HarmonyPatches\Patch_PawnGraphicSet.cs" />
     <Compile Include="HarmonyPatches\Patch_PawnRenderer.cs" />
     <Compile Include="HarmonyPatches\Patch_Pawn_EquipmentTracker.cs" />
     <Compile Include="HarmonyPatches\Patch_Pawn_HealthTracker.cs" />
-    <None Include="HarmonyPatches\Patch_RaidStrategyWorker_Siege.cs" />
+    <Compile Include="HarmonyPatches\Patch_RaidStrategyWorker_Siege.cs" />
+    <Compile Include="HarmonyPatches\Patch_MainTabWindow_Research.cs" />
     <Compile Include="HarmonyPatches\Patch_ResearchProjectDef.cs" />
     <Compile Include="HarmonyPatches\RPGStyleInventory\Patch_Sandy_Detailed_RPG_GearTab_Sandy_Detailed_RPG_Inventory.cs" />
     <Compile Include="HarmonyPatches\Patch_StatWorker.cs" />

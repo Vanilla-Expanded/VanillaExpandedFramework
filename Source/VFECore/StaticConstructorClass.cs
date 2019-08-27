@@ -17,7 +17,6 @@ namespace VFECore
         {
             // Cache setters
             PawnShieldGenerator.Reset();
-            CustomSiegeUtility.SetCache();
             ScenPartUtility.SetCache();
         }
 

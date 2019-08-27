@@ -25,31 +25,24 @@ namespace VFECore
 
         public override StateGraph CreateGraph()
         {
-            var stateGraph = new StateGraph();
-
-            // Travel to siege point
-            var travelToil = stateGraph.AttachSubgraph(new LordJob_Travel(siegeSpot).CreateGraph()).StartingToil;
-            var lordToil_Siege = new LordToil_SiegeCustom(siegeSpot, blueprintPoints);
+            StateGraph stateGraph = new StateGraph();
+            LordToil startingToil = stateGraph.AttachSubgraph(new LordJob_Travel(this.siegeSpot).CreateGraph()).StartingToil;
+            var lordToil_Siege = new LordToil_SiegeCustom(this.siegeSpot, this.blueprintPoints);
             stateGraph.AddToil(lordToil_Siege);
-
-            // Besiege colony
-            var travelToSiegeTransition = new Transition(travelToil, lordToil_Siege, false, true);
-            travelToSiegeTransition.AddTrigger(new Trigger_Memo("TravelArrived"));
-            travelToSiegeTransition.AddTrigger(new Trigger_TicksPassed(5000));
-            stateGraph.AddTransition(travelToSiegeTransition, false);
-
-            // Assault colony
-            var assaultToil = stateGraph.AttachSubgraph(new LordJob_AssaultColony(faction).CreateGraph()).StartingToil;
-            var siegeToAssaultTransition = new Transition(lordToil_Siege, assaultToil, false, true);
-            siegeToAssaultTransition.AddTrigger(new Trigger_Memo("NoBuilders"));
-            siegeToAssaultTransition.AddTrigger(new Trigger_Memo("NoArtillery"));
-            siegeToAssaultTransition.AddTrigger(new Trigger_PawnHarmed(0.08f, false, null));
-            siegeToAssaultTransition.AddTrigger(new Trigger_FractionPawnsLost(0.3f));
-            siegeToAssaultTransition.AddTrigger(new Trigger_TicksPassed((int)(60000f * Rand.Range(1.5f, 3f))));
-            siegeToAssaultTransition.AddPreAction(new TransitionAction_Message("MessageSiegersAssaulting".Translate(faction.def.pawnsPlural, faction), MessageTypeDefOf.ThreatBig, null, 1f));
-            siegeToAssaultTransition.AddPostAction(new TransitionAction_WakeAll());
-            stateGraph.AddTransition(siegeToAssaultTransition, false);
-
+            LordToil startingToil2 = stateGraph.AttachSubgraph(new LordJob_AssaultColony(this.faction, true, true, false, false, true).CreateGraph()).StartingToil;
+            Transition transition = new Transition(startingToil, lordToil_Siege, false, true);
+            transition.AddTrigger(new Trigger_Memo("TravelArrived"));
+            transition.AddTrigger(new Trigger_TicksPassed(5000));
+            stateGraph.AddTransition(transition, false);
+            Transition transition2 = new Transition(lordToil_Siege, startingToil2, false, true);
+            transition2.AddTrigger(new Trigger_Memo("NoBuilders"));
+            transition2.AddTrigger(new Trigger_Memo("NoArtillery"));
+            transition2.AddTrigger(new Trigger_PawnHarmed(0.08f, false, null));
+            transition2.AddTrigger(new Trigger_FractionPawnsLost(0.3f));
+            transition2.AddTrigger(new Trigger_TicksPassed((int)(60000f * Rand.Range(1.5f, 3f))));
+            transition2.AddPreAction(new TransitionAction_Message("MessageSiegersAssaulting".Translate(this.faction.def.pawnsPlural, this.faction), MessageTypeDefOf.ThreatBig, null, 1f));
+            transition2.AddPostAction(new TransitionAction_WakeAll());
+            stateGraph.AddTransition(transition2, false);
             return stateGraph;
         }
 

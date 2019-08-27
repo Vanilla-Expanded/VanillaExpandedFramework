@@ -22,7 +22,7 @@ namespace VFECore
         public List<PawnKindDef> useFactionColourForPawnKinds;
 
         // For artillery
-        public float siegeBlueprintPoints;
+        public float siegeBlueprintPoints = SiegeBlueprintPlacer.ArtyCost;
 
     }
 

@@ -22,7 +22,7 @@ namespace VFECore
             {
                 return StorytellerDefExtension.Get(storyteller.def).allowedTechLevels.Includes(level);
             }
-            return false;
+            return true;
         }
 
     }

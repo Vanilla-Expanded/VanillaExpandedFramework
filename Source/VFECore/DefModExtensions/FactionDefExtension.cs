@@ -18,18 +18,18 @@ namespace VFECore
         public override IEnumerable<string> ConfigErrors()
         {
             // The closest we have to ResolveReferences :/
-            siegeMealDef = ThingDefOf.MealSurvivalPack;
+            if (!siegeParameterSet.NullOrEmpty())
+                siegeParameterSetDef = DefDatabase<SiegeParameterSetDef>.GetNamed(siegeParameterSet);
 
             yield break;
         }
 
         public string settlementGenerationSymbol;
-
         public string packAnimalTexNameSuffix;
+        private string siegeParameterSet;
+        public SiegeParameterSetDef siegeParameterSetDef;
+        
 
-        public bool customSieges;
-        public List<string> artilleryBuildingTags = new List<string>() { "Artillery_BaseDestroyer" };
-        public ThingDef siegeMealDef;
     }
 
 }

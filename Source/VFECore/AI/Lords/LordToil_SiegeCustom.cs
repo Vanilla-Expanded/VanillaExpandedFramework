@@ -30,22 +30,22 @@ namespace VFECore
 
         public LordToil_SiegeCustom(IntVec3 siegeCenter, float blueprintPoints)
         {
-            data = new LordToilData_Siege();
+            data = new LordToilData_SiegeCustom();
             Data.siegeCenter = siegeCenter;
             Data.blueprintPoints = blueprintPoints;
         }
 
         public override IntVec3 FlagLoc => Data.siegeCenter;
 
-        private LordToilData_Siege Data => (LordToilData_Siege)data;
+        private LordToilData_SiegeCustom Data => (LordToilData_SiegeCustom)data;
 
-        private FactionDefExtension FactionDefExtension => FactionDefExtension.Get(lord.faction.def);
+        private SiegeParameterSetDef CustomParams => FactionDefExtension.Get(lord.faction.def).siegeParameterSetDef;
 
         private IEnumerable<Frame> Frames
         {
             get
             {
-                LordToilData_Siege data = Data;
+                var data = Data;
                 float radSquared = (data.baseRadius + 10f) * (data.baseRadius + 10f);
                 List<Thing> framesList = base.Map.listerThings.ThingsInGroup(ThingRequestGroup.BuildingFrame);
                 if (framesList.Count == 0)
@@ -64,18 +64,21 @@ namespace VFECore
             }
         }
 
+        private IEnumerable<Building_TurretGun> Artillery => Map.listerThings.ThingsInGroup(ThingRequestGroup.BuildingArtificial)
+            .Where(b => b.Faction == lord.faction && b.Position.InHorDistOf(FlagLoc, Data.baseRadius) && b.def.building.IsMortar).Cast<Building_TurretGun>();
+
         public override bool ForceHighStoryDanger => true;
 
         public override void Init()
         {
             base.Init();
 
-            var factionDefExtension = FactionDefExtension;
+            var customParams = CustomParams;
 
             Data.baseRadius = Mathf.InverseLerp(BaseRadiusMin, BaseRadiusMax, (float)lord.ownedPawns.Count / 50);
             Data.baseRadius = Mathf.Clamp(Data.baseRadius, BaseRadiusMin, BaseRadiusMax);
             List<Thing> list = new List<Thing>();
-            foreach (Blueprint_Build blueprint_Build in SiegeBlueprintPlacer.PlaceBlueprints(Data.siegeCenter, base.Map, lord.faction, Data.blueprintPoints))
+            foreach (Blueprint_Build blueprint_Build in CustomSiegeUtility.PlaceBlueprints(Data, base.Map, lord.faction))
             {
                 Data.blueprints.Add(blueprint_Build);
                 using (List<ThingDefCountClass>.Enumerator enumerator2 = blueprint_Build.MaterialsNeeded().GetEnumerator())
@@ -106,7 +109,7 @@ namespace VFECore
                     if (thingDef2 != null)
                     {
                         Thing thing3 = ThingMaker.MakeThing(thingDef2, null);
-                        thing3.stackCount = 5;
+                        thing3.stackCount = InitalShellsPerCannon;
                         list.Add(thing3);
                     }
                 }
@@ -138,21 +141,36 @@ namespace VFECore
                 }
             }
             List<Thing> list4 = new List<Thing>();
-            int num2 = Mathf.RoundToInt(NutritionRangePerRaider.RandomInRange / factionDefExtension.siegeMealDef.GetStatValueAbstract(StatDefOf.Nutrition) * lord.ownedPawns.Count);
+            int num2 = Mathf.RoundToInt(NutritionRangePerRaider.RandomInRange / customParams.mealDef.GetStatValueAbstract(StatDefOf.Nutrition) * lord.ownedPawns.Count);
             for (int l = 0; l < num2; l++)
             {
-                Thing item = ThingMaker.MakeThing(factionDefExtension.siegeMealDef, null);
+                Thing item = ThingMaker.MakeThing(customParams.mealDef, null);
                 list4.Add(item);
             }
             list2.Add(list4);
-            DropPodUtility.DropThingGroupsNear(Data.siegeCenter, Map, list2, 110);
+            if (lord.faction.def.techLevel >= TechLevel.Industrial)
+                DropPodUtility.DropThingGroupsNear(Data.siegeCenter, Map, list2, 110);
+            else
+            {
+                foreach (var group in list2)
+                {
+                    if (DropCellFinder.TryFindDropSpotNear(Data.siegeCenter, Map, out IntVec3 pos, false, false))
+                    {
+                        foreach (var thing in group)
+                        {
+                            thing.SetForbidden(true, false);
+                            GenPlace.TryPlaceThing(thing, pos, Map, ThingPlaceMode.Near);
+                        }
+                    }
+                }
+            }
             Data.desiredBuilderFraction = BuilderCountFraction.RandomInRange;
         }
 
         public override void UpdateAllDuties()
         {
-            LordToilData_Siege data = Data;
-            if (lord.ticksInToil < 450)
+            var data = Data;
+            if (lord.ticksInToil < StartBuildingDelay)
             {
                 for (int i = 0; i < lord.ownedPawns.Count; i++)
                 {
@@ -237,11 +255,11 @@ namespace VFECore
 
         private void SetAsBuilder(Pawn p)
         {
-            LordToilData_Siege data = Data;
-            var factionDefExtension = FactionDefExtension;
+            var data = Data;
+            var customParams = CustomParams;
             p.mindState.duty = new PawnDuty(DutyDefOf.Build, data.siegeCenter, -1f);
             p.mindState.duty.radius = data.baseRadius;
-            int minLevel = Mathf.Max(RimWorld.ThingDefOf.Sandbags.constructionSkillPrerequisite, ThingDefOf.Turret_Mortar.constructionSkillPrerequisite);
+            int minLevel = Mathf.Max(customParams.coverDef.constructionSkillPrerequisite, customParams.maxArtilleryConstructionSkill);
             p.skills.GetSkill(SkillDefOf.Construction).EnsureMinLevelWithMargin(minLevel);
             p.workSettings.EnableAndInitialize();
             List<WorkTypeDef> allDefsListForReading = DefDatabase<WorkTypeDef>.AllDefsListForReading;
@@ -261,7 +279,7 @@ namespace VFECore
 
         private void SetAsDefender(Pawn p)
         {
-            LordToilData_Siege data = Data;
+            var data = Data;
             p.mindState.duty = new PawnDuty(DutyDefOf.Defend, data.siegeCenter, -1f);
             p.mindState.duty.radius = data.baseRadius;
         }
@@ -269,13 +287,13 @@ namespace VFECore
         public override void LordToilTick()
         {
             base.LordToilTick();
-            var factionDefExtension = FactionDefExtension;
-            LordToilData_Siege data = Data;
-            if (lord.ticksInToil == 450)
+            var customParams = CustomParams;
+            var data = Data;
+            if (lord.ticksInToil == StartBuildingDelay)
             {
                 lord.CurLordToil.UpdateAllDuties();
             }
-            if (lord.ticksInToil > 450 && lord.ticksInToil % 500 == 0)
+            if (lord.ticksInToil > StartBuildingDelay && lord.ticksInToil % 500 == 0)
             {
                 UpdateAllDuties();
             }
@@ -293,6 +311,7 @@ namespace VFECore
                         return;
                     }
                 }
+                var arties = Artillery;
                 int shellCount = 0;
                 int foodCount = 0;
                 for (int i = 0; i < GenRadial.NumCellsInRadius(20); i++)
@@ -303,31 +322,43 @@ namespace VFECore
                         List<Thing> thingList = c.GetThingList(Map);
                         for (int j = 0; j < thingList.Count; j++)
                         {
-                            if (thingList[j].def.IsShell)
+                            var curThing = thingList[j];
+                            if (curThing.def.IsShell && arties.Any(a => CustomSiegeUtility.AcceptsShell(a, curThing.def)))
                             {
-                                shellCount += thingList[j].stackCount;
+                                shellCount += curThing.stackCount;
                             }
-                            if (thingList[j].def == ThingDefOf.MealSurvivalPack)
+                            if (curThing.def == customParams.mealDef)
                             {
-                                num3 += thingList[j].stackCount;
+                                foodCount += curThing.stackCount;
                             }
                         }
                     }
                 }
-                if (shellCount < 4)
+                // Prevent the shellpocalypse today!
+                if (arties.Any() && shellCount < ReplenishAtShells)
                 {
-                    ThingDef turret_Mortar = ThingDefOf.Turret_Mortar;
                     bool allowEMP = false;
-                    TechLevel techLevel = lord.faction.def.techLevel;
-                    ThingDef thingDef = TurretGunUtility.TryFindRandomShellDef(turret_Mortar, allowEMP, true, techLevel, false, 250f);
-                    if (thingDef != null)
+                    var techLevel = lord.faction.def.techLevel;
+                    var distinctArtillery = data.artilleryCounts.Keys.ToList();
+                    var shellCountsToGive = new Dictionary<ThingDef, int>();
+                    for (int i = 0; i < ShellReplenishCount; i++)
                     {
-                        DropSupplies(thingDef, 10);
+                        var artillery = distinctArtillery.RandomElementByWeight(a => data.artilleryCounts[a]);
+                        ThingDef shellDef = TurretGunUtility.TryFindRandomShellDef(artillery, allowEMP, true, techLevel, false, 250f);
+                        if (shellDef != null)
+                        {
+                            if (shellCountsToGive.ContainsKey(shellDef))
+                                shellCountsToGive[shellDef]++;
+                            else
+                                shellCountsToGive.Add(shellDef, 1);
+                        }
                     }
+                    foreach (var shell in shellCountsToGive)
+                        DropSupplies(shell.Key, shell.Value);
                 }
-                if (num3 < 5)
+                if (foodCount < FoodUtility.StackCountForNutrition(ReplenishAtMeals, customParams.mealDef.GetStatValueAbstract(StatDefOf.Nutrition)))
                 {
-                    DropSupplies(ThingDefOf.MealSurvivalPack, 12);
+                    DropSupplies(customParams.mealDef, FoodUtility.StackCountForNutrition(MealReplenishCount, customParams.mealDef.GetStatValueAbstract(StatDefOf.Nutrition)));
                 }
             }
         }
@@ -338,12 +369,20 @@ namespace VFECore
             Thing thing = ThingMaker.MakeThing(thingDef, null);
             thing.stackCount = count;
             list.Add(thing);
-            DropPodUtility.DropThingsNear(Data.siegeCenter, base.Map, list, 110, false, false, true);
+            if (lord.faction.def.techLevel >= TechLevel.Industrial)
+                DropPodUtility.DropThingsNear(Data.siegeCenter, base.Map, list, 110, false, false, true);
+            else
+            {
+                foreach (var t in list)
+                {
+                    GenPlace.TryPlaceThing(t, Data.siegeCenter, Map, ThingPlaceMode.Near);
+                }
+            }
         }
 
         public override void Cleanup()
         {
-            LordToilData_Siege data = Data;
+            var data = Data;
             data.blueprints.RemoveAll((Blueprint blue) => blue.Destroyed);
             for (int i = 0; i < data.blueprints.Count; i++)
             {
