@@ -25,6 +25,16 @@ namespace VFECore
             return true;
         }
 
+        public static IEnumerable<ResearchProjectDef> AllowedResearchProjectDefs()
+        {
+            return DefDatabase<ResearchProjectDef>.AllDefsListForReading.Where(r => TechLevelAllowed(r.techLevel));
+        }
+
+        public static bool TryGetRandomUnfinishedResearchProject(out ResearchProjectDef research)
+        {
+            return DefDatabase<ResearchProjectDef>.AllDefsListForReading.Where(r => !r.IsFinished).TryRandomElementByWeight(r => Mathf.Pow(1f / ((int)r.techLevel + 1), 2), out research);
+        }
+
     }
 
 }

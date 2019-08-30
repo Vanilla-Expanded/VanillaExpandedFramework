@@ -19,6 +19,9 @@ namespace VFECore
         public static ApplyArmourDelegate<float, float, float, Thing, DamageDef, Pawn, bool> ArmorUtility_ApplyArmor = (ApplyArmourDelegate<float, float, float, Thing, DamageDef, Pawn, bool>)
             Delegate.CreateDelegate(typeof(ApplyArmourDelegate<float, float, float, Thing, DamageDef, Pawn, bool>), AccessTools.Method(typeof(ArmorUtility), "ApplyArmor"));
 
+        public static Action<CompUseEffect_FinishRandomResearchProject, ResearchProjectDef, Pawn> CompUseEffect_FinishRandomResearchProject_FinishInstantly = (Action<CompUseEffect_FinishRandomResearchProject, ResearchProjectDef, Pawn>)
+            Delegate.CreateDelegate(typeof(Action<CompUseEffect_FinishRandomResearchProject, ResearchProjectDef, Pawn>), null, AccessTools.Method(typeof(CompUseEffect_FinishRandomResearchProject), "FinishInstantly"));
+
         public static Func<IntVec3, Rot4, ThingDef, Map, bool> SiegeBlueprintPlacer_CanPlaceBlueprintAt = (Func<IntVec3, Rot4, ThingDef, Map, bool>)
             Delegate.CreateDelegate(typeof(Func<IntVec3, Rot4, ThingDef, Map, bool>), AccessTools.Method(typeof(SiegeBlueprintPlacer), "CanPlaceBlueprintAt"));
         public static Func<ThingDef, Rot4, Map, IntVec3> SiegeBlueprintPlacer_FindArtySpot = (Func<ThingDef, Rot4, Map, IntVec3>)

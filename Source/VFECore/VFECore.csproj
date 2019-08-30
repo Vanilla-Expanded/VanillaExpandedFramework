@@ -69,6 +69,7 @@
     <Compile Include="HarmonyPatches\DualWield\Patch_DualWield_Ext_Pawn_EquipmentTracker.cs" />
     <Compile Include="HarmonyPatches\DualWield\Patch_DualWield_Harmony_FloatMenuMakerMap_AddHumanlikeOrders.cs" />
     <Compile Include="HarmonyPatches\Patch_FloatMenuMakerMap.cs" />
+    <Compile Include="HarmonyPatches\Patch_CompUseEffect_FinishRandomResearchProject.cs" />
     <Compile Include="HarmonyPatches\Patch_Game.cs" />
     <Compile Include="HarmonyPatches\Patch_GenStep_Settlement.cs" />
     <Compile Include="HarmonyPatches\Patch_ITab_Pawn_Gear.cs" />
