@@ -83,6 +83,7 @@
     <Compile Include="HarmonyPatches\Patch_RaidStrategyWorker_Siege.cs" />
     <Compile Include="HarmonyPatches\Patch_MainTabWindow_Research.cs" />
     <Compile Include="HarmonyPatches\Patch_ResearchProjectDef.cs" />
+    <Compile Include="HarmonyPatches\ResearchTree\Patch_FluffyResearchTree_ResearchNode.cs" />
     <Compile Include="HarmonyPatches\RPGStyleInventory\Patch_Sandy_Detailed_RPG_GearTab_Sandy_Detailed_RPG_Inventory.cs" />
     <Compile Include="HarmonyPatches\Patch_StatWorker.cs" />
     <Compile Include="HarmonyPatches\Patch_Verb.cs" />
