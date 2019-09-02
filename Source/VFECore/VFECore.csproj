@@ -36,7 +36,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -46,7 +46,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -90,6 +90,7 @@
     <Compile Include="IncidentWorkers\IncidentWorker_RaidEnemySpecial.cs" />
     <Compile Include="ModCompatibilityCheck.cs" />
     <Compile Include="Structs\TechLevelRange.cs" />
+    <Compile Include="Utilities\ExtendedFactionUtility.cs" />
     <Compile Include="Utilities\CustomStorytellerUtility.cs" />
     <Compile Include="VFECore.cs" />
     <Compile Include="StaticConstructorClass.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="Utilities\ScenPartUtility.cs" />
     <Compile Include="ScenParts\ScenPart_ForcedFactionGoodwill.cs" />
     <Compile Include="Utilities\ShieldUtility.cs" />
+    <Compile Include="BaseGen\VFEResolveParams.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
