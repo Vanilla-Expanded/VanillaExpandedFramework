@@ -14,31 +14,65 @@ namespace VFECore
     public static class Patch_FactionGenerator
     {
 
-        [HarmonyPatch(typeof(FactionGenerator), nameof(FactionGenerator.NewGeneratedFaction), new Type[] { typeof(FactionDef) })]
-        public static class NewGeneratedFaction
+        [HarmonyPatch(typeof(FactionGenerator), nameof(FactionGenerator.GenerateFactionsIntoWorld))]
+        public static class GenerateFactionsIntoWorld
         {
 
-            [HarmonyBefore("net.rainbeau.rimworld.mod.realisticplanets")]
-            public static void Prefix(ref FactionDef facDef)
+            public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
-                if (!facDef.isPlayer && !facDef.hidden && !CustomStorytellerUtility.TechLevelAllowed(facDef.techLevel))
+                var instructionList = instructions.ToList();
+
+                var allDefsInfo = AccessTools.Property(typeof(DefDatabase<FactionDef>), nameof(DefDatabase<FactionDef>.AllDefs)).GetGetMethod();
+
+                var allowedFactionDefsInfo = AccessTools.Method(typeof(GenerateFactionsIntoWorld), nameof(AllowedFactionDefs));
+
+                for (int i = 0; i < instructionList.Count; i++)
                 {
-                    //while (facDef.isPlayer || facDef.hidden || !CustomStorytellerUtility.TechLevelAllowed(facDef.techLevel))
-                    //    facDef = DefDatabase<FactionDef>.GetRandom();
-                    facDef = DefDatabase<FactionDef>.AllDefsListForReading.RandomElementByWeight(f => FactionGenerationWeight(f));
+                    var instruction = instructionList[i];
+
+                    // Filter the calls to DefDatabase<FactionDef>.AllDefs to just include those allowed by the storyteller
+                    if (instruction.opcode == OpCodes.Call && instruction.operand == allDefsInfo)
+                    {
+                        yield return instruction; // DefDatabase<FactionDef>.AllDefs
+                        instruction = new CodeInstruction(OpCodes.Call, allowedFactionDefsInfo); // AllowedFactionDefs(DefDatabase<FactionDef>.AllDefs)
+                    }
+
+                    yield return instruction;
                 }
             }
 
-            private static float FactionGenerationWeight(FactionDef facDef)
+            private static IEnumerable<FactionDef> AllowedFactionDefs(IEnumerable<FactionDef> original)
             {
-                if (facDef.isPlayer || facDef.hidden || !CustomStorytellerUtility.TechLevelAllowed(facDef.techLevel))
-                    return 0;
-
-                var factionCount = Find.FactionManager.AllFactionsVisible.Count(f => f.def == facDef);
-                return 1f / factionCount;
+                return original.Where(f => CustomStorytellerUtility.FactionAllowed(f));
             }
 
         }
+
+        //[HarmonyPatch(typeof(FactionGenerator), nameof(FactionGenerator.NewGeneratedFaction), new Type[] { typeof(FactionDef) })]
+        //public static class NewGeneratedFaction
+        //{
+
+        //    [HarmonyBefore("net.rainbeau.rimworld.mod.realisticplanets")]
+        //    public static void Prefix(ref FactionDef facDef)
+        //    {
+        //        if (!facDef.isPlayer && !facDef.hidden && !CustomStorytellerUtility.TechLevelAllowed(facDef.techLevel))
+        //        {
+        //            //while (facDef.isPlayer || facDef.hidden || !CustomStorytellerUtility.TechLevelAllowed(facDef.techLevel))
+        //            //    facDef = DefDatabase<FactionDef>.GetRandom();
+        //            facDef = DefDatabase<FactionDef>.AllDefsListForReading.RandomElementByWeight(f => FactionGenerationWeight(f));
+        //        }
+        //    }
+
+        //    private static float FactionGenerationWeight(FactionDef facDef)
+        //    {
+        //        if (facDef.isPlayer || facDef.hidden || !CustomStorytellerUtility.TechLevelAllowed(facDef.techLevel))
+        //            return 0;
+
+        //        var factionCount = Find.FactionManager.AllFactionsVisible.Count(f => f.def == facDef);
+        //        return 1f / factionCount;
+        //    }
+
+        //}
 
     }
 

@@ -14,6 +14,11 @@ namespace VFECore
     public static class CustomStorytellerUtility
     {
 
+        public static bool FactionAllowed(FactionDef def)
+        {
+            return def.isPlayer || def.hidden || TechLevelAllowed(def.techLevel);
+        }
+
         public static bool TechLevelAllowed(TechLevel level)
         {
             // Paranoid nullcheck

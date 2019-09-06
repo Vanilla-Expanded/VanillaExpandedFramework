@@ -57,7 +57,7 @@
     <Compile Include="Comps\WorldComponents\FactionGoodwillModifier.cs" />
     <Compile Include="Comps\ThingComps\CompProperties_Shield.cs" />
     <Compile Include="Comps\ThingComps\CompShield.cs" />
-    <Compile Include="DefOf\ScenPartDefOf - Copy.cs" />
+    <Compile Include="DefOf\IncidentDefOf.cs" />
     <Compile Include="Defs\SiegeParameterSetDef.cs" />
     <Compile Include="DefModExtensions\StorytellerDefExtension.cs" />
     <Compile Include="DefOf\ApparelLayerDefOf.cs" />
@@ -76,6 +76,7 @@
     <Compile Include="HarmonyPatches\Patch_ITab_Pawn_Gear.cs" />
     <Compile Include="HarmonyPatches\Patch_FactionGenerator.cs" />
     <Compile Include="HarmonyPatches\Patch_IncidentWorker_WandererJoin.cs" />
+    <Compile Include="HarmonyPatches\Patch_ThingDef.cs" />
     <Compile Include="HarmonyPatches\Patch_PawnApparelGenerator.cs" />
     <Compile Include="HarmonyPatches\Patch_TraderCaravanUtility.cs" />
     <Compile Include="HarmonyPatches\Patch_PawnGenerator.cs" />

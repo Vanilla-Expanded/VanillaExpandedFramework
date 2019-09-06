@@ -18,4 +18,7 @@
     <VanillaFactionsExpanded.StartingGoodwill>Starting</VanillaFactionsExpanded.StartingGoodwill>
     <VanillaFactionsExpanded.NaturalGoodwill>Natural</VanillaFactionsExpanded.NaturalGoodwill>
 
+    <!-- Stat Draw Entries -->
+    <VanillaFactionsExpanded.UsableWithShield>Usable with shields</VanillaFactionsExpanded.UsableWithShield>
+
 </LanguageData>
