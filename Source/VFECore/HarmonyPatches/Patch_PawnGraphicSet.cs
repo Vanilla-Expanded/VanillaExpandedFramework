@@ -34,7 +34,7 @@ namespace VFECore
             {
                 var faction = __instance.pawn.Faction;
                 // If the pawn's a pack animal and is part of a medieval faction, use medieval pack texture if applicable
-                if (faction != null && __instance.pawn.Faction.def.techLevel == TechLevel.Medieval && __instance.pawn.RaceProps.packAnimal)
+                if (faction != null && __instance.pawn.RaceProps.packAnimal)
                 {
                     var factionDefExtension = FactionDefExtension.Get(faction.def);
                     if (!factionDefExtension.packAnimalTexNameSuffix.NullOrEmpty())

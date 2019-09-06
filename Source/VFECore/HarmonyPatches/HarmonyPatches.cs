@@ -80,6 +80,23 @@ namespace VFECore
                     Log.Error("Could not find type ResearchPal.ResearchNode in ResearchPal");
             }
 
+            // RimCities
+            if (ModCompatibilityCheck.RimCities)
+            {
+                var genCity = GenTypes.GetTypeInAnyAssemblyNew("Cities.GenCity", "Cities");
+                if (genCity != null)
+                    VFECore.harmonyInstance.Patch(genCity.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Instance).
+                        First(t => t.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).Any(m => m.Name.Contains("RandomCityFaction") && m.ReturnType == typeof(bool))).
+                        GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).First(m => m.Name.Contains("RandomCityFaction")),
+                        postfix: new HarmonyMethod(typeof(Patch_Cities_GenCity.manual_RandomCityFaction_predicate), "Postfix"));
+                else
+                    Log.Error("Could not find type Cities.GenCity in RimCities");
+
+                var worldGenStepCities = GenTypes.GetTypeInAnyAssemblyNew("Cities.WorldGenStep_Cities", "Cities");
+                if (worldGenStepCities != null)
+                    VFECore.harmonyInstance.Patch(AccessTools.Method(worldGenStepCities, "GenerateFresh"), new HarmonyMethod(typeof(Patch_Cities_WorldGenStep_Cities.manual_GenerateFresh), "Prefix"));
+            }
+
             // RPG Style Inventory
             if (ModCompatibilityCheck.RPGStyleInventory)
             {

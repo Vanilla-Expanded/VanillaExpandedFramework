@@ -18,6 +18,7 @@ namespace VFECore
         public static class NewGeneratedFaction
         {
 
+            [HarmonyBefore("net.rainbeau.rimworld.mod.realisticplanets")]
             public static void Prefix(ref FactionDef facDef)
             {
                 if (!facDef.isPlayer && !facDef.hidden && !CustomStorytellerUtility.TechLevelAllowed(facDef.techLevel))

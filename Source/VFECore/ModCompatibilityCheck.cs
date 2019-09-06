@@ -23,6 +23,8 @@ namespace VFECore
 
         public static bool ResearchPal = ModsConfig.ActiveModsInLoadOrder.Any(m => m.Name == "ResearchPal");
 
+        public static bool RimCities = ModsConfig.ActiveModsInLoadOrder.Any(m => m.Name == "RimCities");
+
         public static bool RPGStyleInventory = ModsConfig.ActiveModsInLoadOrder.Any(m => m.Name == "[1.0] RPG Style Inventory");
 
     }

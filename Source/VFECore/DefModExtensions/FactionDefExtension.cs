@@ -24,8 +24,10 @@ namespace VFECore
             yield break;
         }
 
+        public bool hasCities = true;
         public string settlementGenerationSymbol;
         public string packAnimalTexNameSuffix;
+        public PawnKindDef strangerInBlackReplacement;
         private string siegeParameterSet;
         public SiegeParameterSetDef siegeParameterSetDef;
         

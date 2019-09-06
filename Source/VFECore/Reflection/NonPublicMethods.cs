@@ -60,6 +60,23 @@ namespace VFECore
             public static FuncOut<Pawn_EquipmentTracker, ThingWithComps, bool> Ext_Pawn_EquipmentTracker_TryGetOffHandEquipment;
         }
 
+        [StaticConstructorOnStartup]
+        public static class RimCities
+        {
+            static RimCities()
+            {
+                if (ModCompatibilityCheck.RimCities)
+                {
+                    var genCity = GenTypes.GetTypeInAnyAssemblyNew("Cities.GenCity", "Cities");
+
+                    GenCity_RandomCityFaction = (Func<Predicate<Faction>, Faction>)
+                        Delegate.CreateDelegate(typeof(Func<Predicate<Faction>, Faction>), AccessTools.Method(genCity, "RandomCityFaction"));
+                }
+            }
+
+            public static Func<Predicate<Faction>, Faction> GenCity_RandomCityFaction;
+        }
+
     }
 
 }

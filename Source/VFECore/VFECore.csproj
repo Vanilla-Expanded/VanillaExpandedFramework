@@ -57,6 +57,7 @@
     <Compile Include="Comps\WorldComponents\FactionGoodwillModifier.cs" />
     <Compile Include="Comps\ThingComps\CompProperties_Shield.cs" />
     <Compile Include="Comps\ThingComps\CompShield.cs" />
+    <Compile Include="DefOf\ScenPartDefOf - Copy.cs" />
     <Compile Include="Defs\SiegeParameterSetDef.cs" />
     <Compile Include="DefModExtensions\StorytellerDefExtension.cs" />
     <Compile Include="DefOf\ApparelLayerDefOf.cs" />
@@ -74,8 +75,11 @@
     <Compile Include="HarmonyPatches\Patch_GenStep_Settlement.cs" />
     <Compile Include="HarmonyPatches\Patch_ITab_Pawn_Gear.cs" />
     <Compile Include="HarmonyPatches\Patch_FactionGenerator.cs" />
+    <Compile Include="HarmonyPatches\Patch_IncidentWorker_WandererJoin.cs" />
     <Compile Include="HarmonyPatches\Patch_PawnApparelGenerator.cs" />
+    <Compile Include="HarmonyPatches\Patch_TraderCaravanUtility.cs" />
     <Compile Include="HarmonyPatches\Patch_PawnGenerator.cs" />
+    <Compile Include="HarmonyPatches\Patch_Pawn.cs" />
     <Compile Include="HarmonyPatches\Patch_PawnGraphicSet.cs" />
     <Compile Include="HarmonyPatches\Patch_PawnRenderer.cs" />
     <Compile Include="HarmonyPatches\Patch_Pawn_EquipmentTracker.cs" />
@@ -84,6 +88,8 @@
     <Compile Include="HarmonyPatches\Patch_MainTabWindow_Research.cs" />
     <Compile Include="HarmonyPatches\Patch_ResearchProjectDef.cs" />
     <Compile Include="HarmonyPatches\ResearchTree\Patch_FluffyResearchTree_ResearchNode.cs" />
+    <Compile Include="HarmonyPatches\RimCities\Patch_Cities_WorldGenStep_Cities.cs" />
+    <Compile Include="HarmonyPatches\RimCities\Patch_Cities_GenCity.cs" />
     <Compile Include="HarmonyPatches\RPGStyleInventory\Patch_Sandy_Detailed_RPG_GearTab_Sandy_Detailed_RPG_Inventory.cs" />
     <Compile Include="HarmonyPatches\Patch_StatWorker.cs" />
     <Compile Include="HarmonyPatches\Patch_Verb.cs" />
