@@ -77,13 +77,9 @@ namespace VFECore
             private static string EquipWarningShieldUnusableWithWeapon(string equipString, Pawn pawn, Thing equipment)
             {
                 // Append '([shield] will be unusable)' to float menu if appropriate
-                if (pawn.equipment != null && pawn.equipment.OffHandShield() is ThingWithComps shield)
+                if (pawn.equipment != null && !equipment.def.UsableWithShields() && pawn.equipment.OffHandShield() is ThingWithComps shield)
                 {
-                    var thingDefExtension = ThingDefExtension.Get(equipment.def);
-                    if (!thingDefExtension.usableWithShields)
-                    {
-                        return $"{equipString} {"VanillaFactionsExpanded.EquipWarningShieldUnusableWithWeapon".Translate(shield.def.label)}";
-                    }
+                    return $"{equipString} {"VanillaFactionsExpanded.EquipWarningShieldUnusableWithWeapon".Translate(shield.def.label)}";
                 }
                 return equipString;
             }
@@ -122,11 +118,9 @@ namespace VFECore
                             optionLabel = optionLabel + " " + "EquipWarningBrawler".Translate();
 
                         // Primary cannot be used with shields
-                        if (pawn.equipment.Primary is ThingWithComps weapon)
+                        if (pawn.equipment.Primary is ThingWithComps weapon && !weapon.def.UsableWithShields())
                         {
-                            var thingDefExtension = ThingDefExtension.Get(weapon.def);
-                            if (!thingDefExtension.usableWithShields)
-                                optionLabel += $" {"VanillaFactionsExpanded.EquipWarningShieldUnusable".Translate(weapon.def.label)}";
+                            optionLabel += $" {"VanillaFactionsExpanded.EquipWarningShieldUnusable".Translate(weapon.def.label)}";
                         }
 
                         shieldOption = FloatMenuUtility.DecoratePrioritizedTask(new FloatMenuOption(optionLabel, delegate ()

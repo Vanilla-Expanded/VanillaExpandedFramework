@@ -24,7 +24,7 @@ namespace VFECore
                 // Weapons get a readout for if they are usable with shields
                 if (__instance.IsWeapon)
                 {
-                    __result = __result.Add(new StatDrawEntry(StatCategoryDefOf.Weapon, "VanillaFactionsExpanded.UsableWithShield".Translate(), ThingDefExtension.Get(__instance).usableWithShields.ToStringYesNo()));
+                    __result = __result.Add(new StatDrawEntry(StatCategoryDefOf.Weapon, "VanillaFactionsExpanded.UsableWithShield".Translate(), __instance.UsableWithShields().ToStringYesNo()));
                 }
             }
 

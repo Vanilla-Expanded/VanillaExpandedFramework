@@ -46,6 +46,7 @@ namespace VFECore
             {
                 if (ModCompatibilityCheck.DualWield)
                 {
+                    #region Ext_Pawn_EquipmentTracker
                     var extPawnEquipmentTracker = GenTypes.GetTypeInAnyAssemblyNew("DualWield.Ext_Pawn_EquipmentTracker", "DualWield");
 
                     Ext_Pawn_EquipmentTracker_MakeRoomForOffHand = (Action<Pawn_EquipmentTracker, ThingWithComps>)
@@ -53,11 +54,21 @@ namespace VFECore
 
                     Ext_Pawn_EquipmentTracker_TryGetOffHandEquipment = (FuncOut<Pawn_EquipmentTracker, ThingWithComps, bool>)
                         Delegate.CreateDelegate(typeof(FuncOut<Pawn_EquipmentTracker, ThingWithComps, bool>), AccessTools.Method(extPawnEquipmentTracker, "TryGetOffHandEquipment"));
+                    #endregion
+                    #region Ext_ThingDef
+                    var extThingDef = GenTypes.GetTypeInAnyAssemblyNew("DualWield.Ext_ThingDef", "DualWield");
+
+                    Ext_ThingDef_CanBeOffHand = (Func<ThingDef, bool>)
+                        Delegate.CreateDelegate(typeof(Func<ThingDef, bool>), AccessTools.Method(extThingDef, "CanBeOffHand"));
+                    #endregion
                 }
             }
 
             public static Action<Pawn_EquipmentTracker, ThingWithComps> Ext_Pawn_EquipmentTracker_MakeRoomForOffHand;
             public static FuncOut<Pawn_EquipmentTracker, ThingWithComps, bool> Ext_Pawn_EquipmentTracker_TryGetOffHandEquipment;
+
+            public static Func<ThingDef, bool> Ext_ThingDef_CanBeOffHand;
+
         }
 
         [StaticConstructorOnStartup]
