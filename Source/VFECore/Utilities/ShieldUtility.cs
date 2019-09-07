@@ -39,9 +39,9 @@ namespace VFECore
 
         public static bool UsableWithShields(this ThingDef def)
         {
-            // If Dual Wield is active, return whether or not the weapon can be equipped off hand
+            // If Dual Wield is active, return whether or not the weapon isn't two-handed and can be equipped off hand
             if (ModCompatibilityCheck.DualWield)
-                return NonPublicMethods.DualWield.Ext_ThingDef_CanBeOffHand(def);
+                return !NonPublicMethods.DualWield.Ext_ThingDef_IsTwoHand(def) && NonPublicMethods.DualWield.Ext_ThingDef_CanBeOffHand(def);
 
             // Otherwise return based on DefModExtension
             return ThingDefExtension.Get(def).usableWithShields;

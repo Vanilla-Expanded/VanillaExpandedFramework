@@ -32,22 +32,24 @@ namespace VFECore
             {
                 if (EquippingPawn != null)
                 {
-                    // Pawn's primary is this shield
-                    var primary = EquippingPawn.equipment.Primary;
-                    if (primary == parent)
-                        return true;
+                    var equipment = EquippingPawn.equipment;
 
                     // Too few hands
                     if (!EquippingPawn.CanUseShields())
                         return false;
 
-                    // Dual wielding - has offhand
-                    if (ModCompatibilityCheck.DualWield && EquippingPawn.equipment.Primary != null && NonPublicMethods.DualWield.Ext_Pawn_EquipmentTracker_TryGetOffHandEquipment(EquippingPawn.equipment, out ThingWithComps offHand))
+                    // Pawn's primary is this shield or is usable with shields
+                    var primary = equipment.Primary;
+                    if (primary == parent || primary.def.UsableWithShields())
+                        return true;
+
+                    // Primary not usable with shields
+                    if (!primary.def.UsableWithShields())
                         return false;
 
-                    // Get pawn's primary weapon and check if it is flagged to be usable with shields, as well as the pawn having at least 1 hand
-                    if (primary != null)
-                        return primary == parent || primary.def.UsableWithShields();
+                    // Dual wielding - has offhand
+                    if (ModCompatibilityCheck.DualWield && primary != null && NonPublicMethods.DualWield.Ext_Pawn_EquipmentTracker_TryGetOffHandEquipment(EquippingPawn.equipment, out ThingWithComps offHand))
+                        return false;
                 }
 
                 // No pawn or primary, therefore can be used

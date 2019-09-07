@@ -56,7 +56,11 @@ namespace VFECore
                 return;
 
             // Primary unusable with shields
-            if (pawn.equipment != null && pawn.equipment.Primary != null && !pawn.equipment.Primary.def.UsableWithShields())
+            if (pawn.equipment.Primary is ThingWithComps primary && !primary.def.UsableWithShields())
+                return;
+
+            // Has multiple weapons
+            if (pawn.equipment.AllEquipmentListForReading.Count(t => t.def.equipmentType == EquipmentType.Primary) > 1)
                 return;
 
             // Not enough manipulation
@@ -103,6 +107,7 @@ namespace VFECore
                 }
 
                 pawn.equipment.AddShield(shield);
+                shield.GetComp<CompShield>().equippedOffHand = true;
             }
             workingShields.Clear();
         }

@@ -58,8 +58,8 @@ namespace VFECore
                     #region Ext_ThingDef
                     var extThingDef = GenTypes.GetTypeInAnyAssemblyNew("DualWield.Ext_ThingDef", "DualWield");
 
-                    Ext_ThingDef_CanBeOffHand = (Func<ThingDef, bool>)
-                        Delegate.CreateDelegate(typeof(Func<ThingDef, bool>), AccessTools.Method(extThingDef, "CanBeOffHand"));
+                    Ext_ThingDef_CanBeOffHand = (Func<ThingDef, bool>) Delegate.CreateDelegate(typeof(Func<ThingDef, bool>), AccessTools.Method(extThingDef, "CanBeOffHand"));
+                    Ext_ThingDef_IsTwoHand = (Func<ThingDef, bool>)Delegate.CreateDelegate(typeof(Func<ThingDef, bool>), AccessTools.Method(extThingDef, "IsTwoHand"));
                     #endregion
                 }
             }
@@ -68,6 +68,7 @@ namespace VFECore
             public static FuncOut<Pawn_EquipmentTracker, ThingWithComps, bool> Ext_Pawn_EquipmentTracker_TryGetOffHandEquipment;
 
             public static Func<ThingDef, bool> Ext_ThingDef_CanBeOffHand;
+            public static Func<ThingDef, bool> Ext_ThingDef_IsTwoHand;
 
         }
 

@@ -18,4 +18,7 @@
   <VanillaFactionsExpanded.StartingGoodwill>ゲーム開始時</VanillaFactionsExpanded.StartingGoodwill>
   <VanillaFactionsExpanded.NaturalGoodwill>中立</VanillaFactionsExpanded.NaturalGoodwill>
 
+  <!-- Stat Draw Entries -->
+  <VanillaFactionsExpanded.UsableWithShield>シールドと一緒に使用可能</VanillaFactionsExpanded.UsableWithShield>
+
 </LanguageData>
