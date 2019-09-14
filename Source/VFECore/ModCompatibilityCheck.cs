@@ -27,6 +27,8 @@ namespace VFECore
 
         public static bool RPGStyleInventory = ModsConfig.ActiveModsInLoadOrder.Any(m => m.Name == "[1.0] RPG Style Inventory");
 
+        public static bool RunAndGun = ModsConfig.ActiveModsInLoadOrder.Any(m => m.Name == "RunAndGun");
+
     }
 
 }

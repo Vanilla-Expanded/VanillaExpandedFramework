@@ -113,6 +113,16 @@ namespace VFECore
                 else
                     Log.Error("Could not find type Sandy_Detailed_RPG_Inventory.Sandy_Detailed_RPG_GearTab in RPG Style Inventory");
             }
+
+            // Compatibility with Run and Gun
+            if (ModCompatibilityCheck.RunAndGun)
+            {
+                var patchVerbTryCastNextBurstShot = GenTypes.GetTypeInAnyAssemblyNew("RunAndGun.Harmony.Verb_TryCastNextBurstShot", "RunAndGun.Harmony");
+                if (patchVerbTryCastNextBurstShot != null)
+                    VFECore.harmonyInstance.Patch(AccessTools.Method(patchVerbTryCastNextBurstShot, "SetStanceRunAndGun"), transpiler: new HarmonyMethod(typeof(Patch_RunAndGun_Harmony_Verb_TryCastNextBurstShot.manual_SetStanceRunAndGun), "Transpiler"));
+                else
+                    Log.Error("Could not find type RunAndGun.Harmony.Verb_TryCastNextBurstShot in RunAndGun");
+            }
         }
 
     }

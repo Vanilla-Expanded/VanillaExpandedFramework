@@ -94,6 +94,7 @@
     <Compile Include="HarmonyPatches\RPGStyleInventory\Patch_Sandy_Detailed_RPG_GearTab_Sandy_Detailed_RPG_Inventory.cs" />
     <Compile Include="HarmonyPatches\Patch_StatWorker.cs" />
     <Compile Include="HarmonyPatches\Patch_Verb.cs" />
+    <Compile Include="HarmonyPatches\RunAndGun\Patch_RunAndGun_Harmony_Verb_TryCastNextBurstShot.cs" />
     <Compile Include="IncidentWorkers\IncidentWorker_RaidEnemySpecial.cs" />
     <Compile Include="ModCompatibilityCheck.cs" />
     <Compile Include="Structs\TechLevelRange.cs" />
