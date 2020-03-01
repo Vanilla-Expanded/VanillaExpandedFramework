@@ -40,7 +40,7 @@ namespace VFECore
                         if (instruction.opcode == OpCodes.Beq_S)
                         {
                             var prevInstruction = instructionList[i - 1];
-                            if (prevInstruction.opcode == OpCodes.Ldsfld && instruction.OperandIs(apparelLayerDefOfShellInfo))
+                            if (prevInstruction.opcode == OpCodes.Ldsfld && prevInstruction.OperandIs(apparelLayerDefOfShellInfo))
                             {
                                 #if DEBUG
                                     Log.Message("PawnApparelGenerator.PossibleApparelSet.manual_CoatButNoShirt match 1 of 1");
@@ -68,8 +68,11 @@ namespace VFECore
                     if (pawn.apparel != null && pawn.Faction != null && pawn.kindDef.apparelColor == Color.white)
                     {
                         var pawnKindDefExtension = PawnKindDefExtension.Get(pawn.kindDef);
-                        foreach (var apparel in pawn.apparel.WornApparel)
+                        var wornApparel = pawn.apparel.WornApparel;
+                        for (int i = 0; i < wornApparel.Count; i++)
                         {
+                            var apparel = wornApparel[i];
+
                             // Check from ThingDefExtension
                             var thingDefExtension = ThingDefExtension.Get(apparel.def);
                             if (!thingDefExtension.useFactionColourForPawnKinds.NullOrEmpty() && thingDefExtension.useFactionColourForPawnKinds.Contains(pawn.kindDef))
@@ -80,8 +83,10 @@ namespace VFECore
 
                             // Check from PawnKindDefExtension
                             var apparelProps = apparel.def.apparel;
-                            foreach (var partGroupAndLayerPair in pawnKindDefExtension.FactionColourApparelWithPartAndLayersList)
+                            var partGroupAndLayerPairs = pawnKindDefExtension.FactionColourApparelWithPartAndLayersList;
+                            for (int j = 0; j < partGroupAndLayerPairs.Count; j++)
                             {
+                                var partGroupAndLayerPair = partGroupAndLayerPairs[j];
                                 if (apparelProps.bodyPartGroups.Contains(partGroupAndLayerPair.First) && apparelProps.layers.Contains(partGroupAndLayerPair.Second))
                                 {
                                     apparel.SetColor(pawn.Faction.Color);

@@ -63,8 +63,12 @@ namespace VFECore
             {
                 var floatMenuOptions = new List<FloatMenuOption>();
                 floatMenuOptions.Add(new FloatMenuOption("VanillaFactionsExpanded.AllFactions".Translate(), () => factionDef = null));
-                foreach (var faction in EligibleFactionDefs)
-                    floatMenuOptions.Add(new FloatMenuOption(faction.LabelCap, () =>  factionDef = faction ));
+                var eligibleFactions = EligibleFactionDefs.ToList();
+                for (int i = 0; i < eligibleFactions.Count; i++)
+                {
+                    var faction = eligibleFactions[i];
+                    floatMenuOptions.Add(new FloatMenuOption(faction.LabelCap, () => factionDef = faction));
+                }
                 Find.WindowStack.Add(new FloatMenu(floatMenuOptions));
             }
 
@@ -159,13 +163,14 @@ namespace VFECore
 
         public override void PostWorldGenerate()
         {
-            // Modify starting goodwills
+            // Modify starting goodwills of NPC factions
             if (affectStartingGoodwill)
             {
-                var nonPlayerFactions = Find.FactionManager.AllFactions.Where(f => !f.IsPlayer);
-                foreach (var faction in nonPlayerFactions)
+                var factionList = Find.FactionManager.AllFactions.ToList();
+                for (int i = 0; i < factionList.Count; i++)
                 {
-                    if (AffectsFaction(faction))
+                    var faction = factionList[i];
+                    if (!faction.IsPlayer && AffectsFaction(faction))
                         faction.TryAffectGoodwillWith(Faction.OfPlayer, startingGoodwillRange.RandomInRange - faction.PlayerGoodwill, false, false);
                 }
             }

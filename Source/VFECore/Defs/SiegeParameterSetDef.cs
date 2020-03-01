@@ -14,18 +14,21 @@ namespace VFECore
 
         public override void ResolveReferences()
         {
-            artilleryDefs = DefDatabase<ThingDef>.AllDefsListForReading.Where(d => d.building != null && !d.building.buildingTags.NullOrEmpty() && d.building.buildingTags.Any(t => artilleryBuildingTags.Contains(t))).ToList();
-            
-            foreach (var artillery in artilleryDefs)
+            var thingDefs = DefDatabase<ThingDef>.AllDefsListForReading;
+            for (int i = 0; i < thingDefs.Count; i++)
             {
-                // Min blueprint points
-                var thingDefExtension = ThingDefExtension.Get(artillery);
-                if (thingDefExtension.siegeBlueprintPoints < lowestArtilleryBlueprintPoints)
-                    lowestArtilleryBlueprintPoints = thingDefExtension.siegeBlueprintPoints;
+                var thingDef = thingDefs[i];
+                if (thingDef.building != null && !thingDef.building.buildingTags.NullOrEmpty() && thingDef.building.buildingTags.Any(t => artilleryBuildingTags.Contains(t)))
+                {
+                    // Min blueprint points
+                    var thingDefExtension = ThingDefExtension.Get(thingDef);
+                    if (thingDefExtension.siegeBlueprintPoints < lowestArtilleryBlueprintPoints)
+                        lowestArtilleryBlueprintPoints = thingDefExtension.siegeBlueprintPoints;
 
-                // Skill prerequisite
-                if (artillery.constructionSkillPrerequisite > maxArtilleryConstructionSkill)
-                    maxArtilleryConstructionSkill = artillery.constructionSkillPrerequisite;
+                    // Skill prerequisite
+                    if (thingDef.constructionSkillPrerequisite > maxArtilleryConstructionSkill)
+                        maxArtilleryConstructionSkill = thingDef.constructionSkillPrerequisite;
+                }
             }
         }
 

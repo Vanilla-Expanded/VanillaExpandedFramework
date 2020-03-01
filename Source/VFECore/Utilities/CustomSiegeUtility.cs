@@ -33,13 +33,19 @@ namespace VFECore
 
             // Cover
             if (customParams.coverDef != null)
-                foreach (Blueprint_Build blue in PlaceCoverBlueprints(map))
-                    yield return blue;
+            {
+                var coverBlueprints = PlaceCoverBlueprints(map).ToList();
+                for (int i = 0; i < coverBlueprints.Count; i++)
+                    yield return coverBlueprints[i];
+            }
 
             // Artillery
             if (!customParams.artilleryBuildingTags.NullOrEmpty())
-                foreach (Blueprint_Build blue2 in PlaceArtilleryBlueprints(data, map))
-                    yield return blue2;
+            {
+                var artilleryBlueprints = PlaceArtilleryBlueprints(data, map).ToList();
+                for (int i = 0; i < artilleryBlueprints.Count; i++)
+                    yield return artilleryBlueprints[i];
+            }
         }
 
         private static IEnumerable<Blueprint_Build> PlaceCoverBlueprints(Map map)
@@ -77,15 +83,14 @@ namespace VFECore
                 {
                     growDirB = Rot4.North;
                 }
-                foreach (Blueprint_Build bag in MakeCoverLine(bagRoot, map, growDirA, lengthRange.RandomInRange, customParams.coverDef, coverStuff))
-                {
-                    yield return bag;
-                }
+                var coverLine = MakeCoverLine(bagRoot, map, growDirA, lengthRange.RandomInRange, customParams.coverDef, coverStuff).ToList();
+                for (int j = 0; j < coverLine.Count; j++)
+                    yield return coverLine[j];
+
                 bagRoot += growDirB.FacingCell;
-                foreach (Blueprint_Build bag2 in MakeCoverLine(bagRoot, map, growDirB, lengthRange.RandomInRange, customParams.coverDef, coverStuff))
-                {
-                    yield return bag2;
-                }
+                coverLine = MakeCoverLine(bagRoot, map, growDirB, lengthRange.RandomInRange, customParams.coverDef, coverStuff).ToList();
+                for (int j = 0; j < coverLine.Count; j++)
+                    yield return coverLine[j];
             }
             yield break;
         }

@@ -78,8 +78,10 @@ namespace VFECore
             Data.baseRadius = Mathf.InverseLerp(BaseRadiusMin, BaseRadiusMax, (float)lord.ownedPawns.Count / 50);
             Data.baseRadius = Mathf.Clamp(Data.baseRadius, BaseRadiusMin, BaseRadiusMax);
             List<Thing> list = new List<Thing>();
-            foreach (Blueprint_Build blueprint_Build in CustomSiegeUtility.PlaceBlueprints(Data, base.Map, lord.faction))
+            var placedBlueprints = CustomSiegeUtility.PlaceBlueprints(Data, base.Map, lord.faction).ToList();
+            for (int i = 0; i < placedBlueprints.Count; i++)
             {
+                var blueprint_Build = placedBlueprints[i];
                 Data.blueprints.Add(blueprint_Build);
                 using (List<ThingDefCountClass>.Enumerator enumerator2 = blueprint_Build.MaterialsNeeded().GetEnumerator())
                 {
@@ -152,12 +154,14 @@ namespace VFECore
                 DropPodUtility.DropThingGroupsNear(Data.siegeCenter, Map, list2, 110);
             else
             {
-                foreach (var group in list2)
+                for (int i = 0; i < list2.Count; i++)
                 {
+                    var group = list2[i];
                     if (DropCellFinder.TryFindDropSpotNear(Data.siegeCenter, Map, out IntVec3 pos, false, false))
                     {
-                        foreach (var thing in group)
+                        for (int j = 0; j < group.Count; j++)
                         {
+                            var thing = group[j];
                             thing.SetForbidden(true, false);
                             GenPlace.TryPlaceThing(thing, pos, Map, ThingPlaceMode.Near);
                         }
@@ -373,8 +377,9 @@ namespace VFECore
                 DropPodUtility.DropThingsNear(Data.siegeCenter, base.Map, list, 110, false, false, true);
             else
             {
-                foreach (var t in list)
+                for (int i = 0; i < list.Count; i++)
                 {
+                    var t = list[i];
                     GenPlace.TryPlaceThing(t, Data.siegeCenter, Map, ThingPlaceMode.Near);
                 }
             }
@@ -388,8 +393,10 @@ namespace VFECore
             {
                 data.blueprints[i].Destroy(DestroyMode.Cancel);
             }
-            foreach (Frame frame in Frames.ToList<Frame>())
+            var frameList = Frames.ToList();
+            for (int i = 0; i < frameList.Count; i++)
             {
+                var frame = frameList[i];
                 frame.Destroy(DestroyMode.Cancel);
             }
         }

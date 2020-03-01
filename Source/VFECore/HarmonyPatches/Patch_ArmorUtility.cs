@@ -38,14 +38,6 @@ namespace VFECore
                             if (curEq.IsShield(out CompShield sC) && sC.UsableNow && sC.CoversBodyPart(part))
                             {
                                 float prevAmount = amount;
-
-                                Log.Message(amount.ToStringSafe());
-                                Log.Message(armorPenetration.ToStringSafe());
-                                Log.Message(curEq.GetStatValue(armourRating).ToStringSafe());
-                                Log.Message(curEq.ToStringSafe());
-                                Log.Message(damageDef.ToStringSafe());
-                                Log.Message(pawn.ToStringSafe());
-
                                 NonPublicMethods.ArmorUtility_ApplyArmor(ref amount, armorPenetration, curEq.GetStatValue(armourRating), curEq, ref damageDef, pawn, out bool metalArmour);
 
                                 // Deflected
@@ -82,40 +74,39 @@ namespace VFECore
 
                 var instructionList = instructions.ToList();
 
-                // Create a label for the start of the original method
+                // Create a label and add to the first instruction in the original method
                 var firstLabel = ilGen.DefineLabel();
                 instructionList[0].labels.Add(firstLabel);
 
-                Log.Message("foo");
-                yield return new CodeInstruction(OpCodes.Ldarg_S, 4); // armorThing
-
-                Log.Message("foo");
+                yield return new CodeInstruction(OpCodes.Ldarg_S, 3); // armorThing
                 yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ApplyArmor), nameof(IsShield))); // IsShield(armorThing)
-
                 yield return new CodeInstruction(OpCodes.Brfalse, firstLabel); // if (IsShield(armorThing))
-                Log.Message("foo");
-
-                yield return new CodeInstruction(OpCodes.Ldarg_S, 7); // metalArmor
-
-                Log.Message("foo");
-                yield return new CodeInstruction(OpCodes.Ldarg_S, 4); // armourThing
-
-                Log.Message("foo");
+                yield return new CodeInstruction(OpCodes.Ldarg_S, 6); // metalArmor
+                yield return new CodeInstruction(OpCodes.Ldarg_S, 3); // armourThing
                 yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ApplyArmor), nameof(ShieldUseDeflectMetalEffect))); // ShieldUseDeflectMetalEffect(armorThing)
-                //yield return new CodeInstruction(OpCodes.Stind_I1); - this line makes the game explode. Keeping it here for historical purposes because of how spectacular it is
+                yield return instructionList.First(i => i.opcode == OpCodes.Br_S).Clone();
 
-                Log.Message("foo");
-                yield return instructionList.First(i => i.opcode == OpCodes.Br_S).Clone(); // metalArmor = ShieldUseDeflectMetalEffect(armorThing) - effectively
+                /* 
 
-                Log.Message("foo");
+                Code block:
+
+                if (IsShield(armorThing))
+                    metalArmor = ShieldUseDeflectMetalEffect(armorThing)
+                else if (armorThing != null)
+                    metalArmor = (armorThing.def.apparel.useDeflectMetalEffect || (armorThing.Stuff != null && armorThing.Stuff.IsMetal));
+                else
+                    metalArmor = pawn.RaceProps.IsMechanoid;
+
+                etc...
+
+                 */
+
                 // Original method - leaving like this in case future changes need to be made
                 for (int i = 0; i < instructionList.Count; i++)
                 {
-                    Log.Message(i.ToString());
                     var instruction = instructionList[i];
                     yield return instruction;
                 }
-                Log.Message("done");
             }
 
             private static bool IsShield(Thing armourThing)

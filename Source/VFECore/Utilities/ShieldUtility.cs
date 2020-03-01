@@ -18,8 +18,12 @@ namespace VFECore
             var hediffSet = pawn.health.hediffSet;
 
             // Go through each manipulation limb and count any outside segments (i.e. anything that isn't a bone) that aren't missing
-            foreach (var manipCore in pawn.RaceProps.body.GetPartsWithTag(BodyPartTagDefOf.ManipulationLimbCore))
+            var manipCoreLimbs = pawn.RaceProps.body.GetPartsWithTag(BodyPartTagDefOf.ManipulationLimbCore).ToList();
+            for (int i = 0; i < manipCoreLimbs.Count; i++)
+            {
+                var manipCore = manipCoreLimbs[i];
                 count += manipCore.GetChildParts(BodyPartTagDefOf.ManipulationLimbSegment).Count(p => p.depth == BodyPartDepth.Outside && !hediffSet.PartIsMissing(p) || hediffSet.PartOrAnyAncestorHasDirectlyAddedParts(p));
+            }
 
             return count;
         }

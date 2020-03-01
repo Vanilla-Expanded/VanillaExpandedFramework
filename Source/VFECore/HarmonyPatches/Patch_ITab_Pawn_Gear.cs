@@ -75,11 +75,13 @@ namespace VFECore
                     float naturalArmour = Mathf.Clamp01(pawn.GetStatValue(stat) / 2);
                     var bodyParts = pawn.RaceProps.body.AllParts;
                     var equipmentList = equipment.AllEquipmentListForReading;
-                    foreach (var part in bodyParts)
+                    for (int i = 0; i < bodyParts.Count; i++)
                     {
+                        var part = bodyParts[i];
                         float armourImportance = 1 - naturalArmour;
-                        foreach (var eq in equipmentList)
+                        for (int j = 0; j < equipmentList.Count; j++)
                         {
+                            var eq = equipmentList[j];
                             if (eq.IsShield(out CompShield shieldComp) && shieldComp.UsableNow && shieldComp.CoversBodyPart(part))
                             {
                                 float shieldRating = Mathf.Clamp01(eq.GetStatValue(stat) / 2);

@@ -22,8 +22,10 @@ namespace VFECore
         {
             cachedFactionPermanentEnemyFlags = new Dictionary<FactionDef, bool>();
             cachedFactionNaturalGoodwillRanges = new Dictionary<FactionDef, IntRange>();
-            foreach (var faction in DefDatabase<FactionDef>.AllDefsListForReading)
+            var factions = DefDatabase<FactionDef>.AllDefsListForReading;
+            for (int i = 0; i < factions.Count; i++)
             {
+                var faction = factions[i];
                 cachedFactionPermanentEnemyFlags.Add(faction, faction.permanentEnemy);
                 cachedFactionNaturalGoodwillRanges.Add(faction, faction.naturalColonyGoodwill);
             }
