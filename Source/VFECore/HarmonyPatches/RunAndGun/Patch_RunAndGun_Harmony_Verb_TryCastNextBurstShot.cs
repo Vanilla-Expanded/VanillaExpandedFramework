@@ -6,7 +6,7 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using RimWorld;
-using Harmony;
+using HarmonyLib;
 
 namespace VFECore
 {
@@ -19,6 +19,11 @@ namespace VFECore
 
             public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
+                #if DEBUG
+                    Log.Message("RunAndGun.Harmony.Verb_TryCastNextBurstShot.manual_SetStanceRunAndGun transpiler start (1 match todo)");
+                #endif
+
+
                 var instructionList = instructions.ToList();
 
                 var shouldSetStanceInfo = AccessTools.Method(typeof(manual_SetStanceRunAndGun), nameof(ShouldSetStance));
@@ -30,6 +35,11 @@ namespace VFECore
                     // Fix infinite shield bashing
                     if (instruction.opcode == OpCodes.Stloc_1)
                     {
+                        #if DEBUG
+                            Log.Message("RunAndGun.Harmony.Verb_TryCastNextBurstShot.manual_SetStanceRunAndGun match 1 of 1");
+                        #endif
+
+
                         yield return instruction; // bool flag2 = stanceTracker.pawn.equipment.Primary == stance.verb.EquipmentSource || stance.verb.EquipmentSource == null;
                         yield return new CodeInstruction(OpCodes.Ldloc_1); // flag2
                         yield return new CodeInstruction(OpCodes.Ldarg_0); // stanceTracker

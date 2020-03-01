@@ -6,7 +6,7 @@ using UnityEngine;
 using Verse;
 using Verse.AI.Group;
 using RimWorld;
-using Harmony;
+using HarmonyLib;
 
 namespace VFECore
 {

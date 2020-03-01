@@ -7,6 +7,7 @@
     <VanillaFactionsExpanded.EquipWarningShieldUnusableWithWeapon>({0} will be unusable)</VanillaFactionsExpanded.EquipWarningShieldUnusableWithWeapon>
 
     <VanillaFactionsExpanded.Protects>Protects</VanillaFactionsExpanded.Protects>
+    <VanillaFactionsExpanded.Protects_Desc>What body parts the shield protects.</VanillaFactionsExpanded.Protects_Desc>
     
     <!-- Scenario parts -->
     <VanillaFactionsExpanded.ScenPart_ForcedFactionRelations>Faction relation modifiers</VanillaFactionsExpanded.ScenPart_ForcedFactionRelations>
@@ -20,5 +21,6 @@
 
     <!-- Stat Draw Entries -->
     <VanillaFactionsExpanded.UsableWithShield>Usable with shields</VanillaFactionsExpanded.UsableWithShield>
+    <VanillaFactionsExpanded.UsableWithShield_Desc>Whether or not this weapon can be used if the character also has a shield equipped.</VanillaFactionsExpanded.UsableWithShield_Desc>
 
 </LanguageData>

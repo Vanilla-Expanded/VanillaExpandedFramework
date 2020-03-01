@@ -7,7 +7,7 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using RimWorld;
-using Harmony;
+using HarmonyLib;
 
 namespace VFECore
 {
@@ -21,6 +21,11 @@ namespace VFECore
 
             public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
+                #if DEBUG
+                    Log.Message("StatWorker.GetExplanationUnfinalized transpiler start (1 match todo)");
+                #endif
+
+
                 var instructionList = instructions.ToList();
 
                 var statInfo = AccessTools.Field(typeof(StatWorker), "stat");
@@ -37,7 +42,7 @@ namespace VFECore
                     if (!done)
                     {
                         // Look for references to pawn.equipment
-                        if (instruction.opcode == OpCodes.Ldfld && instruction.operand == equipmentInfo)
+                        if (instruction.opcode == OpCodes.Ldfld && instruction.OperandIs(equipmentInfo))
                             equipmentReferenced = true;
 
                         // Once that has been found, look for the next instruction that references stringBuilder that immediately succeeds a 'pop' instruction; this is where we modify stringBuilder
@@ -46,6 +51,10 @@ namespace VFECore
                             var prevInstruction = instructionList[i - 1];
                             if (prevInstruction.opcode == OpCodes.Pop)
                             {
+                                #if DEBUG
+                                    Log.Message("StatWorker.GetExplanationUnfinalized match 1 of 1");
+                                #endif
+
                                 yield return instruction; // stringBuilder
                                 yield return new CodeInstruction(OpCodes.Ldloc_2); // pawn
                                 yield return new CodeInstruction(OpCodes.Ldarg_0); // this
@@ -79,6 +88,11 @@ namespace VFECore
 
             public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
+                #if DEBUG
+                    Log.Message("StatWorker.GetValueUnfinalized transpiler start (1 match todo)");
+                #endif
+
+
                 var instructionList = instructions.ToList();
 
                 var statInfo = AccessTools.Field(typeof(StatWorker), "stat");
@@ -96,15 +110,19 @@ namespace VFECore
                     if (!done)
                     {
                         // Look for references to pawn.equipment
-                        if (instruction.opcode == OpCodes.Ldfld && instruction.operand == equipmentInfo)
+                        if (instruction.opcode == OpCodes.Ldfld && instruction.OperandIs(equipmentInfo))
                             equipmentReferenced = true;
 
                         // Once that has been found, look for the next instruction that loads 'pawn' and tries to reference pawn.story; this is where we modify num
                         if (equipmentReferenced && instruction.opcode == OpCodes.Ldloc_1)
                         {
                             var nextInstruction = instructionList[i + 1];
-                            if (nextInstruction.opcode == OpCodes.Ldfld && nextInstruction.operand == storyInfo)
+                            if (nextInstruction.opcode == OpCodes.Ldfld && nextInstruction.OperandIs(storyInfo))
                             {
+                                #if DEBUG
+                                    Log.Message("StatWorker.GetValueUnfinalized match 1 of 1");
+                                #endif
+
                                 yield return instruction; // pawn
                                 yield return new CodeInstruction(OpCodes.Ldarg_0); // this
                                 yield return new CodeInstruction(OpCodes.Ldfld, statInfo); // this.stat

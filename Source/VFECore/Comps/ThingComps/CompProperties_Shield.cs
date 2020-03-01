@@ -32,7 +32,7 @@ namespace VFECore
         public override IEnumerable<StatDrawEntry> SpecialDisplayStats(StatRequest req)
         {
             string valueString = coveredBodyPartGroups.Select(p => p.label).ToCommaList(true).CapitalizeFirst();
-            yield return new StatDrawEntry(StatCategoryDefOf.Apparel, "VanillaFactionsExpanded.Protects".Translate(), valueString, 100);
+            yield return new StatDrawEntry(StatCategoryDefOf.Apparel, "VanillaFactionsExpanded.Protects".Translate(), valueString, String.Empty, 100);
         }
 
     }

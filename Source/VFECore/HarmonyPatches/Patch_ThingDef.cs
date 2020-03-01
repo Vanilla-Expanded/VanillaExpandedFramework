@@ -7,7 +7,7 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using RimWorld;
-using Harmony;
+using HarmonyLib;
 
 namespace VFECore
 {
@@ -24,7 +24,8 @@ namespace VFECore
                 // Weapons get a readout for if they are usable with shields
                 if (__instance.IsWeapon)
                 {
-                    __result = __result.Add(new StatDrawEntry(StatCategoryDefOf.Weapon, "VanillaFactionsExpanded.UsableWithShield".Translate(), __instance.UsableWithShields().ToStringYesNo()));
+                    __result = __result.AddItem(new StatDrawEntry(StatCategoryDefOf.Weapon, "VanillaFactionsExpanded.UsableWithShield".Translate(), __instance.UsableWithShields().ToStringYesNo(),
+                        "VanillaFactionsExpanded.UsableWithShield_Desc".Translate(), 0));
                 }
             }
 

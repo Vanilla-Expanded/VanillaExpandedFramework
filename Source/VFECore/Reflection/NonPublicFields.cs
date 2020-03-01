@@ -7,7 +7,7 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using RimWorld;
-using Harmony;
+using HarmonyLib;
 
 namespace VFECore
 {
@@ -24,9 +24,9 @@ namespace VFECore
 
         public static FieldInfo SiegeBlueprintPlacer_center = AccessTools.Field(typeof(SiegeBlueprintPlacer), "center");
         public static FieldInfo SiegeBlueprintPlacer_faction = AccessTools.Field(typeof(SiegeBlueprintPlacer), "faction");
-        public static FieldInfo SiegeBlueprintPlacer_NumSandbagRange = AccessTools.Field(typeof(SiegeBlueprintPlacer), "NumSandbagRange");
-        public static FieldInfo SiegeBlueprintPlacer_placedSandbagLocs = AccessTools.Field(typeof(SiegeBlueprintPlacer), "placedSandbagLocs");
-        public static FieldInfo SiegeBlueprintPlacer_SandbagLengthRange = AccessTools.Field(typeof(SiegeBlueprintPlacer), "SandbagLengthRange");
+        public static FieldInfo SiegeBlueprintPlacer_NumCoverRange = AccessTools.Field(typeof(SiegeBlueprintPlacer), "NumCoverRange");
+        public static FieldInfo SiegeBlueprintPlacer_placedCoverLocs = AccessTools.Field(typeof(SiegeBlueprintPlacer), "placedCoverLocs");
+        public static FieldInfo SiegeBlueprintPlacer_CoverLengthRange = AccessTools.Field(typeof(SiegeBlueprintPlacer), "CoverLengthRange");
 
     }
 

@@ -7,7 +7,7 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using RimWorld;
-using Harmony;
+using HarmonyLib;
 
 namespace VFECore
 {
@@ -21,6 +21,11 @@ namespace VFECore
 
             public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
+                #if DEBUG
+                    Log.Message("IncidentWorker_WandererJoin.TryExecuteWorker transpiler start (1 match todo)");
+                #endif
+
+
                 var instructionList = instructions.ToList();
 
                 var defInfo = AccessTools.Field(typeof(IncidentWorker), nameof(IncidentWorker.def));
@@ -33,8 +38,11 @@ namespace VFECore
                     var instruction = instructionList[i];
 
                     // Finalise the pawnKindDef to use
-                    if (instruction.opcode == OpCodes.Ldfld && instruction.operand == pawnKindInfo)
+                    if (instruction.opcode == OpCodes.Ldfld && instruction.OperandIs(pawnKindInfo))
                     {
+                        #if DEBUG
+                            Log.Message("IncidentWorker_WandererJoin.TryExecuteWorker match 1 of 1");
+                        #endif
                         yield return instruction; // this.def.pawnKind
                         yield return new CodeInstruction(OpCodes.Ldarg_0); // this
                         yield return new CodeInstruction(OpCodes.Ldfld, defInfo); // this.def

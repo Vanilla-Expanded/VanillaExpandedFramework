@@ -250,7 +250,7 @@ namespace VFECore
 
         private bool CanBeBuilder(Pawn p)
         {
-            return !p.story.WorkTypeIsDisabled(WorkTypeDefOf.Construction) && !p.story.WorkTypeIsDisabled(WorkTypeDefOf.Firefighter);
+            return !p.WorkTypeIsDisabled(WorkTypeDefOf.Construction) && !p.WorkTypeIsDisabled(WorkTypeDefOf.Firefighter);
         }
 
         private void SetAsBuilder(Pawn p)

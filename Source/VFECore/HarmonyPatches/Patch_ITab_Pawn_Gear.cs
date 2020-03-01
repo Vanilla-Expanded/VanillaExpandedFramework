@@ -6,7 +6,7 @@ using System.Reflection.Emit;
 using UnityEngine;
 using Verse;
 using RimWorld;
-using Harmony;
+using HarmonyLib;
 
 namespace VFECore
 {
@@ -20,6 +20,11 @@ namespace VFECore
 
             public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
+                #if DEBUG
+                    Log.Message("ITab_Pawn_Gear.TryDrawOverallArmor transpiler start (1 match todo)");
+                #endif
+
+
                 var instructionList = instructions.ToList();
 
                 bool foundCoverageAbs = false;
@@ -36,12 +41,15 @@ namespace VFECore
                     if (!done)
                     {
                         // Look for the first instruction in the method that references BodyPartRecord.coverageAbs
-                        if (instruction.opcode == OpCodes.Ldfld && instruction.operand == coverageAbsInfo)
+                        if (instruction.opcode == OpCodes.Ldfld && instruction.OperandIs(coverageAbsInfo))
                             foundCoverageAbs = true;
 
                         // Look for the next reference to 'num' when coverageAbs is found; this is where we patch
                         if (foundCoverageAbs && instruction.opcode == OpCodes.Ldloc_0)
                         {
+                            #if DEBUG
+                                Log.Message("ITab_Pawn_Gear.TryDrawOverallArmor match 1 of 1");
+                            #endif
                             yield return instruction; // num
                             yield return new CodeInstruction(OpCodes.Ldarg_0); // this
                             yield return new CodeInstruction(OpCodes.Call, getSelPawnForGearInfo); // this.SelPawnForGear

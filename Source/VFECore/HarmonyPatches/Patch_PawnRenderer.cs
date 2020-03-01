@@ -7,7 +7,7 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using RimWorld;
-using Harmony;
+using HarmonyLib;
 
 namespace VFECore
 {
@@ -21,6 +21,10 @@ namespace VFECore
 
             public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
+                #if DEBUG
+                    Log.Message("PawnRenderer.DrawEquipment transpiler start (1 match todo)");
+                #endif
+
                 var instructionList = instructions.ToList();
 
                 var drawEquipmentAimingInfo = AccessTools.Method(typeof(PawnRenderer), nameof(PawnRenderer.DrawEquipmentAiming));
@@ -31,8 +35,12 @@ namespace VFECore
                     var instruction = instructionList[i];
 
                     // For every call that draws equipment, also add a call to draw shield
-                    if (instruction.opcode == OpCodes.Call && instruction.operand == drawEquipmentAimingInfo)
+                    if (instruction.opcode == OpCodes.Call && instruction.OperandIs(drawEquipmentAimingInfo))
                     {
+                        #if DEBUG
+                            Log.Message("PawnRenderer.DrawEquipment match 1 of 1");
+                        #endif
+
                         yield return instruction;
                         yield return new CodeInstruction(OpCodes.Ldarg_0); // this
                         yield return instructionList[i - 2]; // drawLoc
@@ -61,12 +69,17 @@ namespace VFECore
 
         }
 
-        [HarmonyPatch(typeof(PawnRenderer), "RenderPawnInternal", new Type[] { typeof(Vector3), typeof(float), typeof(bool), typeof(Rot4), typeof(Rot4), typeof(RotDrawMode), typeof(bool), typeof(bool) })]
+        [HarmonyPatch(typeof(PawnRenderer), "RenderPawnInternal", new Type[] { typeof(Vector3), typeof(float), typeof(bool), typeof(Rot4), typeof(Rot4), typeof(RotDrawMode), typeof(bool), typeof(bool), typeof(bool) })]
         public static class RenderPawnInternal
         {
 
             public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
+                #if DEBUG
+                    Log.Message("PawnRenderer.RenderPawnInternal transpiler start (1 match todo)");
+                #endif
+
+
                 var instructionList = instructions.ToList();
 
                 var apparelLayerDefOfShellInfo = AccessTools.Field(typeof(RimWorld.ApparelLayerDefOf), nameof(RimWorld.ApparelLayerDefOf.Shell));
@@ -77,8 +90,12 @@ namespace VFECore
                     var instruction = instructionList[i];
 
                     // Replace references to Shell layer with references to our OuterShell layer
-                    if (instruction.opcode == OpCodes.Ldsfld && instruction.operand == apparelLayerDefOfShellInfo)
+                    if (instruction.opcode == OpCodes.Ldsfld && instruction.OperandIs(apparelLayerDefOfShellInfo))
                     {
+                        #if DEBUG
+                            Log.Message("PawnRenderer.RenderPawnInternal match 1 of 1");
+                        #endif
+
                         yield return instruction; // ApparelLayerDefOf.Shell
                         instruction = new CodeInstruction(OpCodes.Call, topApparelLayerDefInfo); // TopApparelLayerDef(ApparelLayerDefOf.Shell)
                     }

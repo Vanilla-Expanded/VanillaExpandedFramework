@@ -68,7 +68,7 @@ namespace VFECore
                 return;
 
             // Pacifist
-            if (pawn.story != null && pawn.story.WorkTagIsDisabled(WorkTags.Violent))
+            if (pawn.story != null && pawn.WorkTagIsDisabled(WorkTags.Violent))
                 return;
 
             float randomInRange = kindDefExtension.shieldMoney.RandomInRange;

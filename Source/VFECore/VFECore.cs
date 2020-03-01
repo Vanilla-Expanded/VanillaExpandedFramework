@@ -5,7 +5,7 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using RimWorld;
-using Harmony;
+using HarmonyLib;
 
 namespace VFECore
 {
@@ -14,13 +14,13 @@ namespace VFECore
     {
         public VFECore(ModContentPack content) : base(content)
         {
-            harmonyInstance = HarmonyInstance.Create("OskarPotocki.VFECore");
+            harmonyInstance = new Harmony("OskarPotocki.VFECore");
 
             // Parsing
             ParseHelper.Parsers<TechLevelRange>.Register(s => TechLevelRange.FromString(s));
         }
 
-        public static HarmonyInstance harmonyInstance;
+        public static Harmony harmonyInstance;
 
     }
 

@@ -6,7 +6,7 @@ using System.Reflection.Emit;
 using UnityEngine;
 using Verse;
 using RimWorld;
-using Harmony;
+using HarmonyLib;
 
 namespace VFECore
 {
@@ -21,6 +21,11 @@ namespace VFECore
 
             public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
+                #if DEBUG
+                    Log.Message("Sandy_Detailed_RPG_GearTab.Sandy_Detailed_RPG_Inventory.manual_TryDrawOverallArmor transpiler start (1 match todo)");
+                #endif
+
+
                 // This is pretty much identical to the ITab_Pawn_Gear patch
                 var instructionList = instructions.ToList();
 
@@ -38,12 +43,16 @@ namespace VFECore
                     if (!done)
                     {
                         // Look for the first instruction in the method that references BodyPartRecord.coverageAbs
-                        if (instruction.opcode == OpCodes.Ldfld && instruction.operand == coverageAbsInfo)
+                        if (instruction.opcode == OpCodes.Ldfld && instruction.OperandIs(coverageAbsInfo))
                             foundCoverageAbs = true;
 
                         // Look for the next reference to 'num' when coverageAbs is found; this is where we patch
                         if (foundCoverageAbs && instruction.opcode == OpCodes.Ldloc_0)
                         {
+                            #if DEBUG
+                                Log.Message("Sandy_Detailed_RPG_GearTab.Sandy_Detailed_RPG_Inventory.manual_TryDrawOverallArmor match 1 of 1");
+                            #endif
+
                             yield return instruction; // num
                             yield return new CodeInstruction(OpCodes.Ldarg_0); // this
                             yield return new CodeInstruction(OpCodes.Call, getSelPawnForGearInfo); // this.SelPawnForGear
@@ -66,6 +75,11 @@ namespace VFECore
 
             public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
+                #if DEBUG
+                    Log.Message("Sandy_Detailed_RPG_GearTab.Sandy_Detailed_RPG_Inventory.manual_TryDrawOverallArmor1 transpiler start (1 match todo)");
+                #endif
+
+
                 // This is pretty much identical to the other TryDrawOverallArmor patch. Only difference is that stat is the 2nd parameter instead of the 3rd
                 var instructionList = instructions.ToList();
 
@@ -83,12 +97,16 @@ namespace VFECore
                     if (!done)
                     {
                         // Look for the first instruction in the method that references BodyPartRecord.coverageAbs
-                        if (instruction.opcode == OpCodes.Ldfld && instruction.operand == coverageAbsInfo)
+                        if (instruction.opcode == OpCodes.Ldfld && instruction.OperandIs(coverageAbsInfo))
                             foundCoverageAbs = true;
 
                         // Look for the next reference to 'num' when coverageAbs is found; this is where we patch
                         if (foundCoverageAbs && instruction.opcode == OpCodes.Ldloc_0)
                         {
+                            #if DEBUG
+                                Log.Message("Sandy_Detailed_RPG_GearTab.Sandy_Detailed_RPG_Inventory.manual_TryDrawOverallArmor match 1 of 1");
+                            #endif
+
                             yield return instruction; // num
                             yield return new CodeInstruction(OpCodes.Ldarg_0); // this
                             yield return new CodeInstruction(OpCodes.Call, getSelPawnForGearInfo); // this.SelPawnForGear

@@ -34,7 +34,7 @@ namespace VFECore
                 parms.points = IncidentDefExtension.forcedPointsRange.RandomInRange * Find.Storyteller.difficulty.threatScale;
         }
 
-        protected override void ResolveRaidStrategy(IncidentParms parms, PawnGroupKindDef groupKind)
+        public override void ResolveRaidStrategy(IncidentParms parms, PawnGroupKindDef groupKind)
         {
             if (IncidentDefExtension.forcedStrategy == null)
                 base.ResolveRaidStrategy(parms, groupKind);

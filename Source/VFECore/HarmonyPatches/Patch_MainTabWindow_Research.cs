@@ -6,7 +6,7 @@ using System.Reflection.Emit;
 using UnityEngine;
 using Verse;
 using RimWorld;
-using Harmony;
+using HarmonyLib;
 
 namespace VFECore
 {
@@ -20,6 +20,10 @@ namespace VFECore
 
             public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
+                #if DEBUG
+                    Log.Message("MainTabWindow_Research.DrawRightRect transpiler start (1 match todo)");
+                #endif
+
                 var instructionList = instructions.ToList();
 
                 var getAllDefsListForReadingInfo = AccessTools.Property(typeof(DefDatabase<ResearchProjectDef>), nameof(DefDatabase<ResearchProjectDef>.AllDefsListForReading)).GetGetMethod();
@@ -30,8 +34,11 @@ namespace VFECore
                 {
                     var instruction = instructionList[i];
 
-                    if (instruction.opcode == OpCodes.Call && instruction.operand == getAllDefsListForReadingInfo)
+                    if (instruction.opcode == OpCodes.Call && instruction.OperandIs(getAllDefsListForReadingInfo))
                     {
+                        #if DEBUG
+                            Log.Message("MainTabWindow_Research.DrawRightRect match 1 of 1");
+                        #endif
                         yield return instruction; // DefDatabase<ResearchProjectDef>.AllDefsListForReading
                         instruction = new CodeInstruction(OpCodes.Call, allowedResearchProjectsInfo); // AllowedResearchProjects(DefDatabase<ResearchProjectDef>.AllDefsListForReading)
                     }

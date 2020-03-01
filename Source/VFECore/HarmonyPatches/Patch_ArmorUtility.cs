@@ -7,7 +7,7 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using RimWorld;
-using Harmony;
+using HarmonyLib;
 
 namespace VFECore
 {
@@ -31,14 +31,22 @@ namespace VFECore
                     if (pawn.equipment != null)
                     {
                         // Multiple shields? Why not I guess
-                        var shields = pawn.equipment.AllEquipmentListForReading.Where(t => t.IsShield(out CompShield sC) && sC.UsableNow);
-                        foreach (var shield in shields)
+                        var equipmentList = pawn.equipment.AllEquipmentListForReading;
+                        for (int i = 0; i < equipmentList.Count; i++)
                         {
-                            var shieldComp = shield.TryGetComp<CompShield>();
-                            if (shieldComp.CoversBodyPart(part))
+                            var curEq = equipmentList[i];
+                            if (curEq.IsShield(out CompShield sC) && sC.UsableNow && sC.CoversBodyPart(part))
                             {
                                 float prevAmount = amount;
-                                NonPublicMethods.ArmorUtility_ApplyArmor(ref amount, armorPenetration, shield.GetStatValue(armourRating), shield, ref damageDef, pawn, out bool metalArmour);
+
+                                Log.Message(amount.ToStringSafe());
+                                Log.Message(armorPenetration.ToStringSafe());
+                                Log.Message(curEq.GetStatValue(armourRating).ToStringSafe());
+                                Log.Message(curEq.ToStringSafe());
+                                Log.Message(damageDef.ToStringSafe());
+                                Log.Message(pawn.ToStringSafe());
+
+                                NonPublicMethods.ArmorUtility_ApplyArmor(ref amount, armorPenetration, curEq.GetStatValue(armourRating), curEq, ref damageDef, pawn, out bool metalArmour);
 
                                 // Deflected
                                 if (amount < 0.001f)
@@ -68,27 +76,46 @@ namespace VFECore
 
             public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator ilGen)
             {
+                #if DEBUG
+                    Log.Message("ArmorUtility.ApplyArmor transpiler start (no matches todo)");
+                #endif
+
                 var instructionList = instructions.ToList();
 
                 // Create a label for the start of the original method
                 var firstLabel = ilGen.DefineLabel();
                 instructionList[0].labels.Add(firstLabel);
 
-                yield return new CodeInstruction(OpCodes.Ldarg_3); // armorThing
+                Log.Message("foo");
+                yield return new CodeInstruction(OpCodes.Ldarg_S, 4); // armorThing
+
+                Log.Message("foo");
                 yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ApplyArmor), nameof(IsShield))); // IsShield(armorThing)
+
                 yield return new CodeInstruction(OpCodes.Brfalse, firstLabel); // if (IsShield(armorThing))
-                yield return new CodeInstruction(OpCodes.Ldarg_S, 6); // metalArmor
-                yield return new CodeInstruction(OpCodes.Ldarg_3); // armourThing
+                Log.Message("foo");
+
+                yield return new CodeInstruction(OpCodes.Ldarg_S, 7); // metalArmor
+
+                Log.Message("foo");
+                yield return new CodeInstruction(OpCodes.Ldarg_S, 4); // armourThing
+
+                Log.Message("foo");
                 yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ApplyArmor), nameof(ShieldUseDeflectMetalEffect))); // ShieldUseDeflectMetalEffect(armorThing)
                 //yield return new CodeInstruction(OpCodes.Stind_I1); - this line makes the game explode. Keeping it here for historical purposes because of how spectacular it is
-                yield return instructionList.First(i => i.opcode == OpCodes.Br).Clone(); // metalArmor = ShieldUseDeflectMetalEffect(armorThing) - effectively
 
+                Log.Message("foo");
+                yield return instructionList.First(i => i.opcode == OpCodes.Br_S).Clone(); // metalArmor = ShieldUseDeflectMetalEffect(armorThing) - effectively
+
+                Log.Message("foo");
                 // Original method - leaving like this in case future changes need to be made
                 for (int i = 0; i < instructionList.Count; i++)
                 {
+                    Log.Message(i.ToString());
                     var instruction = instructionList[i];
                     yield return instruction;
                 }
+                Log.Message("done");
             }
 
             private static bool IsShield(Thing armourThing)

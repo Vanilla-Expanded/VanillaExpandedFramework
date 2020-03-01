@@ -7,7 +7,7 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using RimWorld;
-using Harmony;
+using HarmonyLib;
 
 namespace VFECore
 {
@@ -23,6 +23,10 @@ namespace VFECore
 
                 public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
                 {
+                    #if DEBUG
+                        Log.Message("PawnApparelGenerator.PossibleApparelSet.manual_CoatButNoShirt transpiler start (1 match todo)");
+                    #endif
+
                     var instructionList = instructions.ToList();
 
                     var apparelLayerDefOfShellInfo = AccessTools.Field(typeof(RimWorld.ApparelLayerDefOf), nameof(RimWorld.ApparelLayerDefOf.Shell));
@@ -33,11 +37,14 @@ namespace VFECore
                         var instruction = instructionList[i];
 
                         // Also have the generator consider OuterShell as an appropriate clothing layer
-                        if (instruction.opcode == OpCodes.Beq)
+                        if (instruction.opcode == OpCodes.Beq_S)
                         {
                             var prevInstruction = instructionList[i - 1];
-                            if (prevInstruction.opcode == OpCodes.Ldsfld && instruction.operand == apparelLayerDefOfShellInfo)
+                            if (prevInstruction.opcode == OpCodes.Ldsfld && instruction.OperandIs(apparelLayerDefOfShellInfo))
                             {
+                                #if DEBUG
+                                    Log.Message("PawnApparelGenerator.PossibleApparelSet.manual_CoatButNoShirt match 1 of 1");
+                                #endif
                                 yield return instruction;
                                 yield return instructionList[i - 2]; // apparelLayerDef
                                 yield return new CodeInstruction(OpCodes.Ldsfld, apparelLayerDefOfOuterShellInfo); // ApparelLayerDefOf.OuterShell

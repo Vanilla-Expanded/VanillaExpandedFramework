@@ -6,7 +6,7 @@ using System.Reflection.Emit;
 using UnityEngine;
 using Verse;
 using RimWorld;
-using Harmony;
+using HarmonyLib;
 
 namespace VFECore
 {
@@ -20,6 +20,11 @@ namespace VFECore
 
             public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
+                #if DEBUG
+                    Log.Message("ArmorUtility.ApplyArmor transpiler start (1 match todo)");
+                #endif
+
+
                 var instructionList = instructions.ToList();
 
                 var allDefsInfo = AccessTools.Property(typeof(DefDatabase<FactionDef>), nameof(DefDatabase<FactionDef>.AllDefs)).GetGetMethod();
@@ -31,8 +36,11 @@ namespace VFECore
                     var instruction = instructionList[i];
 
                     // Filter the calls to DefDatabase<FactionDef>.AllDefs to just include those allowed by the storyteller
-                    if (instruction.opcode == OpCodes.Call && instruction.operand == allDefsInfo)
+                    if (instruction.opcode == OpCodes.Call && instruction.OperandIs(allDefsInfo))
                     {
+                        #if DEBUG
+                            Log.Message("FactionGenerator.GenerateFactionsIntoWorld match 1 of 1");
+                        #endif
                         yield return instruction; // DefDatabase<FactionDef>.AllDefs
                         instruction = new CodeInstruction(OpCodes.Call, allowedFactionDefsInfo); // AllowedFactionDefs(DefDatabase<FactionDef>.AllDefs)
                     }

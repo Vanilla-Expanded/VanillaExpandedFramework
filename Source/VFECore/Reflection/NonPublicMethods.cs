@@ -7,7 +7,7 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using RimWorld;
-using Harmony;
+using HarmonyLib;
 
 namespace VFECore
 {
@@ -22,14 +22,14 @@ namespace VFECore
         public static Action<CompUseEffect_FinishRandomResearchProject, ResearchProjectDef, Pawn> CompUseEffect_FinishRandomResearchProject_FinishInstantly = (Action<CompUseEffect_FinishRandomResearchProject, ResearchProjectDef, Pawn>)
             Delegate.CreateDelegate(typeof(Action<CompUseEffect_FinishRandomResearchProject, ResearchProjectDef, Pawn>), null, AccessTools.Method(typeof(CompUseEffect_FinishRandomResearchProject), "FinishInstantly"));
 
-        public static Func<IntVec3, Rot4, ThingDef, Map, bool> SiegeBlueprintPlacer_CanPlaceBlueprintAt = (Func<IntVec3, Rot4, ThingDef, Map, bool>)
-            Delegate.CreateDelegate(typeof(Func<IntVec3, Rot4, ThingDef, Map, bool>), AccessTools.Method(typeof(SiegeBlueprintPlacer), "CanPlaceBlueprintAt"));
+        public static Func<IntVec3, Rot4, ThingDef, Map, ThingDef, bool> SiegeBlueprintPlacer_CanPlaceBlueprintAt = (Func<IntVec3, Rot4, ThingDef, Map, ThingDef, bool>)
+            Delegate.CreateDelegate(typeof(Func<IntVec3, Rot4, ThingDef, Map, ThingDef, bool>), AccessTools.Method(typeof(SiegeBlueprintPlacer), "CanPlaceBlueprintAt"));
         public static Func<ThingDef, Rot4, Map, IntVec3> SiegeBlueprintPlacer_FindArtySpot = (Func<ThingDef, Rot4, Map, IntVec3>)
             Delegate.CreateDelegate(typeof(Func<ThingDef, Rot4, Map, IntVec3>), AccessTools.Method(typeof(SiegeBlueprintPlacer), "FindArtySpot"));
         public static Func<float, Map, IEnumerable<Blueprint_Build>> SiegeBlueprintPlacer_PlaceArtilleryBlueprints = (Func<float, Map, IEnumerable<Blueprint_Build>>)
             Delegate.CreateDelegate(typeof(Func<float, Map, IEnumerable<Blueprint_Build>>), AccessTools.Method(typeof(SiegeBlueprintPlacer), "PlaceArtilleryBlueprints"));
-        public static Func<Map, IEnumerable<Blueprint_Build>> SiegeBlueprintPlacer_PlaceSandbagBlueprints = (Func<Map, IEnumerable<Blueprint_Build>>)
-            Delegate.CreateDelegate(typeof(Func<Map, IEnumerable<Blueprint_Build>>), AccessTools.Method(typeof(SiegeBlueprintPlacer), "PlaceSandbagBlueprints"));
+        public static Func<Map, IEnumerable<Blueprint_Build>> SiegeBlueprintPlacer_PlaceCoverBlueprints = (Func<Map, IEnumerable<Blueprint_Build>>)
+            Delegate.CreateDelegate(typeof(Func<Map, IEnumerable<Blueprint_Build>>), AccessTools.Method(typeof(SiegeBlueprintPlacer), "PlaceCoverBlueprints"));
 
         public static Func<Thing, StatDef, string> StatWorker_InfoTextLineFromGear = (Func<Thing, StatDef, string>)
             Delegate.CreateDelegate(typeof(Func<Thing, StatDef, string>), null, AccessTools.Method(typeof(StatWorker), "InfoTextLineFromGear"));
@@ -47,7 +47,7 @@ namespace VFECore
                 if (ModCompatibilityCheck.DualWield)
                 {
                     #region Ext_Pawn_EquipmentTracker
-                    var extPawnEquipmentTracker = GenTypes.GetTypeInAnyAssemblyNew("DualWield.Ext_Pawn_EquipmentTracker", "DualWield");
+                    var extPawnEquipmentTracker = GenTypes.GetTypeInAnyAssembly("DualWield.Ext_Pawn_EquipmentTracker", "DualWield");
 
                     Ext_Pawn_EquipmentTracker_MakeRoomForOffHand = (Action<Pawn_EquipmentTracker, ThingWithComps>)
                         Delegate.CreateDelegate(typeof(Action<Pawn_EquipmentTracker, ThingWithComps>), AccessTools.Method(extPawnEquipmentTracker, "MakeRoomForOffHand"));
@@ -56,7 +56,7 @@ namespace VFECore
                         Delegate.CreateDelegate(typeof(FuncOut<Pawn_EquipmentTracker, ThingWithComps, bool>), AccessTools.Method(extPawnEquipmentTracker, "TryGetOffHandEquipment"));
                     #endregion
                     #region Ext_ThingDef
-                    var extThingDef = GenTypes.GetTypeInAnyAssemblyNew("DualWield.Ext_ThingDef", "DualWield");
+                    var extThingDef = GenTypes.GetTypeInAnyAssembly("DualWield.Ext_ThingDef", "DualWield");
 
                     Ext_ThingDef_CanBeOffHand = (Func<ThingDef, bool>) Delegate.CreateDelegate(typeof(Func<ThingDef, bool>), AccessTools.Method(extThingDef, "CanBeOffHand"));
                     Ext_ThingDef_IsTwoHand = (Func<ThingDef, bool>)Delegate.CreateDelegate(typeof(Func<ThingDef, bool>), AccessTools.Method(extThingDef, "IsTwoHand"));
@@ -79,7 +79,7 @@ namespace VFECore
             {
                 if (ModCompatibilityCheck.RimCities)
                 {
-                    var genCity = GenTypes.GetTypeInAnyAssemblyNew("Cities.GenCity", "Cities");
+                    var genCity = GenTypes.GetTypeInAnyAssembly("Cities.GenCity", "Cities");
 
                     GenCity_RandomCityFaction = (Func<Predicate<Faction>, Faction>)
                         Delegate.CreateDelegate(typeof(Func<Predicate<Faction>, Faction>), AccessTools.Method(genCity, "RandomCityFaction"));

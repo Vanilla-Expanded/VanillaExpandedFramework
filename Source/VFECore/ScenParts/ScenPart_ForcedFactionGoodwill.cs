@@ -118,7 +118,7 @@ namespace VFECore
 
         private string GoodwillModifierString(string translationKey, IntRange range)
         {
-            string entrySection = $"{translationKey.Translate().UncapitalizeFirst()}: ";
+            string entrySection = $"{translationKey.Translate()}: ";
 
             // If range's min and max are the same, just add a single number
             if (range.min == range.max)
@@ -137,7 +137,7 @@ namespace VFECore
             {
                 // Always hostile
                 if (alwaysHostile)
-                    yield return $"{LabelText} ({"VanillaFactionsExpanded.AlwaysHostile".Translate().UncapitalizeFirst()})";
+                    yield return $"{LabelText} ({"VanillaFactionsExpanded.AlwaysHostile".Translate().RawText.UncapitalizeFirst()})";
 
                 // Affects goodwill in some way
                 else if (affectStartingGoodwill || affectNaturalGoodwill)

@@ -6,7 +6,7 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using RimWorld;
-using Harmony;
+using HarmonyLib;
 
 namespace VFECore
 {
@@ -34,6 +34,11 @@ namespace VFECore
 
             public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
+                #if DEBUG
+                    Log.Message("FluffyResearchTree.ResearchNode.manual_Draw transpiler start (1 match todo)");
+                #endif
+
+
                 var instructionList = instructions.ToList();
 
                 var buildingPresentInfo = AccessTools.Method(instanceType, "BuildingPresent");
@@ -41,7 +46,7 @@ namespace VFECore
 
                 var canQueueResearchesInfo = AccessTools.Method(typeof(manual_Draw), nameof(CanQueueResearches));
 
-                var buildingPresentCallCount = instructionList.Count(i => i.opcode == OpCodes.Call && i.operand == buildingPresentInfo);
+                var buildingPresentCallCount = instructionList.Count(i => i.opcode == OpCodes.Call && i.OperandIs(buildingPresentInfo));
                 int buildingPresentCalls = 0;
 
                 for (int i = 0; i < instructionList.Count; i++)
@@ -49,11 +54,20 @@ namespace VFECore
                     var instruction = instructionList[i];
 
                     // Also make sure that the storyteller's tech level range allows for the research project to be carried out - this is done after the last call for BuildingPresent
-                    if (instruction.opcode == OpCodes.Call && instruction.operand == buildingPresentInfo)
+                    if (instruction.opcode == OpCodes.Call && instruction.OperandIs(buildingPresentInfo))
                     {
+                        #if DEBUG
+                            Log.Message("FluffyResearchTree.ResearchNode.manual_Draw match 1 of 1");
+                        #endif
+
+
                         buildingPresentCalls++;
                         if (buildingPresentCalls == buildingPresentCallCount)
                         {
+                            #if DEBUG
+                                Log.Message("FluffyResearchTree.ResearchNode.manual_Draw finalise");
+                            #endif
+
                             yield return instruction; // this.BuildingPresent()
                             yield return new CodeInstruction(OpCodes.Ldarg_0); // this
                             yield return new CodeInstruction(OpCodes.Ldfld, ResearchInfo); // this.Research

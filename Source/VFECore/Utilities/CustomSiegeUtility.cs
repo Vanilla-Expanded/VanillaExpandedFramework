@@ -7,7 +7,7 @@ using UnityEngine;
 using Verse;
 using Verse.AI;
 using RimWorld;
-using Harmony;
+using HarmonyLib;
 
 namespace VFECore
 {
@@ -33,7 +33,7 @@ namespace VFECore
 
             // Cover
             if (customParams.coverDef != null)
-                foreach (Blueprint_Build blue in PlaceSandbagBlueprints(map))
+                foreach (Blueprint_Build blue in PlaceCoverBlueprints(map))
                     yield return blue;
 
             // Artillery
@@ -42,60 +42,19 @@ namespace VFECore
                     yield return blue2;
         }
 
-        private static IntVec3 FindSandbagRoot(Map map)
+        private static IEnumerable<Blueprint_Build> PlaceCoverBlueprints(Map map)
         {
             var centre = (IntVec3)NonPublicFields.SiegeBlueprintPlacer_center.GetValue(null);
-            var placedSandbagLocs = (List<IntVec3>)NonPublicFields.SiegeBlueprintPlacer_placedSandbagLocs.GetValue(null);
-            CellRect cellRect = CellRect.CenteredOn(centre, 13);
-            cellRect.ClipInsideMap(map);
-            CellRect cellRect2 = CellRect.CenteredOn(centre, 8);
-            cellRect2.ClipInsideMap(map);
-            int num = 0;
-            for (; ; )
-            {
-                num++;
-                if (num > 200)
-                {
-                    break;
-                }
-                IntVec3 randomCell = cellRect.RandomCell;
-                if (!cellRect2.Contains(randomCell))
-                {
-                    if (map.reachability.CanReach(randomCell, centre, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly))
-                    {
-                        if (NonPublicMethods.SiegeBlueprintPlacer_CanPlaceBlueprintAt(randomCell, Rot4.North, customParams.coverDef, map))
-                        {
-                            bool flag = false;
-                            for (int i = 0; i < placedSandbagLocs.Count; i++)
-                            {
-                                float num2 = (float)(placedSandbagLocs[i] - randomCell).LengthHorizontalSquared;
-                                if (num2 < 36f)
-                                {
-                                    flag = true;
-                                }
-                            }
-                            if (!flag)
-                            {
-                                return randomCell;
-                            }
-                        }
-                    }
-                }
-            }
-            return IntVec3.Invalid;
-        }
-
-        private static IEnumerable<Blueprint_Build> PlaceSandbagBlueprints(Map map)
-        {
-            var centre = (IntVec3)NonPublicFields.SiegeBlueprintPlacer_center.GetValue(null);
-            var lengthRange = (IntRange)NonPublicFields.SiegeBlueprintPlacer_SandbagLengthRange.GetValue(null);
-            var countRange = (IntRange)NonPublicFields.SiegeBlueprintPlacer_NumSandbagRange.GetValue(null);
-            var placedSandbagLocs = (List<IntVec3>)NonPublicFields.SiegeBlueprintPlacer_placedSandbagLocs.GetValue(null);
+            var lengthRange = (IntRange)NonPublicFields.SiegeBlueprintPlacer_CoverLengthRange.GetValue(null);
+            var countRange = (IntRange)NonPublicFields.SiegeBlueprintPlacer_NumCoverRange.GetValue(null);
+            var placedSandbagLocs = (List<IntVec3>)NonPublicFields.SiegeBlueprintPlacer_placedCoverLocs.GetValue(null);
             placedSandbagLocs.Clear();
             int numSandbags = countRange.RandomInRange;
+            var coverStuff = customParams.coverDef.MadeFromStuff ?
+                GenStuff.RandomStuffInexpensiveFor(customParams.coverDef, (Faction)NonPublicFields.SiegeBlueprintPlacer_faction.GetValue(null)) : null;
             for (int i = 0; i < numSandbags; i++)
             {
-                IntVec3 bagRoot = FindSandbagRoot(map);
+                IntVec3 bagRoot = FindCoverRoot(map, customParams.coverDef, coverStuff);
                 if (!bagRoot.IsValid)
                 {
                     yield break;
@@ -118,12 +77,12 @@ namespace VFECore
                 {
                     growDirB = Rot4.North;
                 }
-                foreach (Blueprint_Build bag in MakeSandbagLine(bagRoot, map, growDirA, lengthRange.RandomInRange))
+                foreach (Blueprint_Build bag in MakeCoverLine(bagRoot, map, growDirA, lengthRange.RandomInRange, customParams.coverDef, coverStuff))
                 {
                     yield return bag;
                 }
                 bagRoot += growDirB.FacingCell;
-                foreach (Blueprint_Build bag2 in MakeSandbagLine(bagRoot, map, growDirB, lengthRange.RandomInRange))
+                foreach (Blueprint_Build bag2 in MakeCoverLine(bagRoot, map, growDirB, lengthRange.RandomInRange, customParams.coverDef, coverStuff))
                 {
                     yield return bag2;
                 }
@@ -131,18 +90,60 @@ namespace VFECore
             yield break;
         }
 
-        private static IEnumerable<Blueprint_Build> MakeSandbagLine(IntVec3 root, Map map, Rot4 growDir, int maxLength)
+        private static IntVec3 FindCoverRoot(Map map, ThingDef coverDef, ThingDef coverStuff)
         {
-            var placedSandbagLocs = (List<IntVec3>)NonPublicFields.SiegeBlueprintPlacer_placedSandbagLocs.GetValue(null);
-            var stuff = customParams.coverDef.MadeFromStuff ? GenStuff.RandomStuffInexpensiveFor(customParams.coverDef, (Faction)NonPublicFields.SiegeBlueprintPlacer_faction.GetValue(null)) : null;
-            IntVec3 cur = root;
-            for (int i = 0; i < maxLength; i++)
+            var centre = (IntVec3)NonPublicFields.SiegeBlueprintPlacer_center.GetValue(null);
+            var placedCoverLocs = (List<IntVec3>)NonPublicFields.SiegeBlueprintPlacer_placedCoverLocs.GetValue(null);
+            CellRect cellRect = CellRect.CenteredOn(centre, 13);
+            cellRect.ClipInsideMap(map);
+            CellRect cellRect2 = CellRect.CenteredOn(centre, 8);
+            cellRect2.ClipInsideMap(map);
+            int num = 0;
+            for (; ; )
             {
-                if (!NonPublicMethods.SiegeBlueprintPlacer_CanPlaceBlueprintAt(cur, Rot4.North, customParams.coverDef, map))
+                num++;
+                if (num > 200)
                 {
                     break;
                 }
-                yield return GenConstruct.PlaceBlueprintForBuild(customParams.coverDef, cur, map, Rot4.North, (Faction)NonPublicFields.SiegeBlueprintPlacer_faction.GetValue(null), stuff);
+                IntVec3 randomCell = cellRect.RandomCell;
+                if (!cellRect2.Contains(randomCell))
+                {
+                    if (map.reachability.CanReach(randomCell, centre, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly))
+                    {
+                        if (NonPublicMethods.SiegeBlueprintPlacer_CanPlaceBlueprintAt(randomCell, Rot4.North, coverDef, map, coverStuff))
+                        {
+                            bool flag = false;
+                            for (int i = 0; i < placedCoverLocs.Count; i++)
+                            {
+                                float num2 = (float)(placedCoverLocs[i] - randomCell).LengthHorizontalSquared;
+                                if (num2 < 36f)
+                                {
+                                    flag = true;
+                                }
+                            }
+                            if (!flag)
+                            {
+                                return randomCell;
+                            }
+                        }
+                    }
+                }
+            }
+            return IntVec3.Invalid;
+        }
+
+        private static IEnumerable<Blueprint_Build> MakeCoverLine(IntVec3 root, Map map, Rot4 growDir, int maxLength, ThingDef coverThing, ThingDef coverStuff)
+        {
+            var placedSandbagLocs = (List<IntVec3>)NonPublicFields.SiegeBlueprintPlacer_placedCoverLocs.GetValue(null);
+            IntVec3 cur = root;
+            for (int i = 0; i < maxLength; i++)
+            {
+                if (!NonPublicMethods.SiegeBlueprintPlacer_CanPlaceBlueprintAt(cur, Rot4.North, coverThing, map, coverStuff))
+                {
+                    break;
+                }
+                yield return GenConstruct.PlaceBlueprintForBuild(coverThing, cur, map, Rot4.North, (Faction)NonPublicFields.SiegeBlueprintPlacer_faction.GetValue(null), coverStuff);
                 placedSandbagLocs.Add(cur);
                 cur += growDir.FacingCell;
             }

@@ -15,19 +15,43 @@ namespace VFECore
     public static class ModCompatibilityCheck
     {
 
-        public static bool DualWield = ModsConfig.ActiveModsInLoadOrder.Any(m => m.Name == "Dual Wield");
+        static ModCompatibilityCheck()
+        {
+            var allMods = ModsConfig.ActiveModsInLoadOrder.ToList();
+            for (int i = 0; i < allMods.Count; i++)
+            {
+                var curMod = allMods[i];
 
-        public static bool FacialStuff = ModsConfig.ActiveModsInLoadOrder.Any(m => m.Name == "Facial Stuff 1.0");
+                if (curMod.Name == "Dual Wield")
+                    DualWield = true;
+                else if (curMod.Name == "Facial Stuff 1.1")
+                    FacialStuff = true;
+                else if (curMod.Name == "Research Tree")
+                    ResearchTree = true;
+                else if (curMod.Name == "ResearchPal")
+                    ResearchPal = true;
+                else if (curMod.Name == "RimCities")
+                    RimCities = true;
+                else if (curMod.Name == "[1.1] RPG Style Inventory")
+                    RPGStyleInventory = true;
+                else if (curMod.Name == "RunAndGun")
+                    RunAndGun = true;
+            }
+        }
 
-        public static bool ResearchTree = ModsConfig.ActiveModsInLoadOrder.Any(m => m.Name == "Research Tree");
+        public static bool DualWield;
 
-        public static bool ResearchPal = ModsConfig.ActiveModsInLoadOrder.Any(m => m.Name == "ResearchPal");
+        public static bool FacialStuff;
 
-        public static bool RimCities = ModsConfig.ActiveModsInLoadOrder.Any(m => m.Name == "RimCities");
+        public static bool ResearchTree;
 
-        public static bool RPGStyleInventory = ModsConfig.ActiveModsInLoadOrder.Any(m => m.Name == "[1.0] RPG Style Inventory");
+        public static bool ResearchPal;
 
-        public static bool RunAndGun = ModsConfig.ActiveModsInLoadOrder.Any(m => m.Name == "RunAndGun");
+        public static bool RimCities;
+
+        public static bool RPGStyleInventory;
+
+        public static bool RunAndGun;
 
     }
 

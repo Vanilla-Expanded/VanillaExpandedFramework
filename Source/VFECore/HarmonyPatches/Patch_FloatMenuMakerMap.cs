@@ -8,7 +8,7 @@ using UnityEngine;
 using Verse;
 using Verse.AI;
 using RimWorld;
-using Harmony;
+using HarmonyLib;
 
 namespace VFECore
 {
@@ -22,12 +22,18 @@ namespace VFECore
 
             public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
+                #if DEBUG
+                    Log.Message("FloatMenuMakerMap.AddHumanlikeOrders transpiler start (2 matches todo)");
+                #endif
+
+
                 var instructionList = instructions.ToList();
 
                 // It's amazing what it takes just to get a local reference
                 var equipmentInfo = typeof(FloatMenuMakerMap).GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Instance).
-                    First(t => t.Name.Contains("AddHumanlikeOrders") && t.GetFields(BindingFlags.NonPublic | BindingFlags.Instance).Any(f => f.FieldType == typeof(ThingWithComps) && f.Name == "equipment")).
-                    GetField("equipment", BindingFlags.NonPublic | BindingFlags.Instance);
+                    First(t => t.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).Any(m => m.Name.Contains("AddHumanlikeOrders") && 
+                    t.GetFields(BindingFlags.Public | BindingFlags.Instance).Any(f => f.FieldType == typeof(ThingWithComps) && f.Name == "equipment"))).
+                    GetField("equipment", BindingFlags.Public | BindingFlags.Instance);
 
                 bool foundBrawlerWarningInstruction = false;
 
@@ -39,28 +45,34 @@ namespace VFECore
                 {
                     var instruction = instructionList[i];
 
-                    // Look for the 'EquipWarningBrawler' instruction so we know when to try and hook into modifying 'text5'
+                    // Look for the 'EquipWarningBrawler' instruction so we know when to try and hook into modifying 'text3'
                     if (instruction.opcode == OpCodes.Ldstr && (string)instruction.operand == "EquipWarningBrawler")
                         foundBrawlerWarningInstruction = true;
 
-                    // Once we've found 'EquipWarningBrawler', look for the next instruction that loads 'text5'; add our call to potentially further modify it
-                    if (foundBrawlerWarningInstruction && instruction.opcode == OpCodes.Ldloc_S && instruction.operand is LocalBuilder lb && lb.LocalIndex == 44)
+                    // Once we've found 'EquipWarningBrawler', look for the next instruction that loads 'text3'; add our call to potentially further modify it
+                    if (foundBrawlerWarningInstruction && instruction.opcode == OpCodes.Ldloc_S && instruction.operand is LocalBuilder lb && lb.LocalIndex == 45)
                     {
+                        #if DEBUG
+                            Log.Message("FloatMenuMakerMap.AddHumanlikeOrders match 1 of 2");
+                        #endif
                         yield return instruction;
                         yield return new CodeInstruction(OpCodes.Ldarg_1); // pawn
                         yield return new CodeInstruction(OpCodes.Ldloc_S, 39); // equipment
                         yield return new CodeInstruction(OpCodes.Ldfld, equipmentInfo); // Necessary since the 'equipment' variable is a reference to this
                         yield return new CodeInstruction(OpCodes.Call, equipWarningShieldUnusableWithWeaponInfo); // EquipWarningShieldUnusableWithWeapon(text5, pawn, equipment)
-                        yield return new CodeInstruction(OpCodes.Stloc_S, 44); // text5 = EquipWarningShieldUnusableWithWeapon(text5, pawn, equipment)
+                        yield return new CodeInstruction(OpCodes.Stloc_S, 45); // text3 = EquipWarningShieldUnusableWithWeapon(text5, pawn, equipment)
                         instruction = instruction.Clone(); 
                     }
 
                     // Look for the section that gives the 'Equip x' float menu instruction; add our 'Equip x as shield' float menu method after
-                    if (instruction.opcode == OpCodes.Callvirt && instruction.operand == addInfo)
+                    if (instruction.opcode == OpCodes.Callvirt && instruction.OperandIs(addInfo))
                     {
                         var prevInstruction = instructionList[i - 1];
-                        if (prevInstruction.opcode == OpCodes.Ldloc_S && prevInstruction.operand is LocalBuilder lb2 && lb2.LocalIndex == 42)
+                        if (prevInstruction.opcode == OpCodes.Ldloc_S && prevInstruction.operand is LocalBuilder lb2 && lb2.LocalIndex == 43)
                         {
+                            #if DEBUG
+                                Log.Message("FloatMenuMakerMap.AddHumanlikeOrders match 2 of 2");
+                            #endif
                             yield return instruction;
                             yield return new CodeInstruction(OpCodes.Ldarg_1); // pawn
                             yield return new CodeInstruction(OpCodes.Ldloc_S, 39); // equipment
@@ -93,7 +105,7 @@ namespace VFECore
                     FloatMenuOption shieldOption;
 
                     // Pawn is pacifist
-                    if (equipment.def.IsWeapon && pawn.story.WorkTagIsDisabled(WorkTags.Violent))
+                    if (equipment.def.IsWeapon && pawn.WorkTagIsDisabled(WorkTags.Violent))
                         shieldOption = new FloatMenuOption("CannotEquip".Translate(labelShort) + " (" + "IsIncapableOfViolenceLower".Translate(pawn.LabelShort, pawn) + ")", null, MenuOptionPriority.Default, null, null, 0f, null, null);
 
                     // Pawn cannot path to shield

@@ -6,5 +6,6 @@
     <description>Vanilla Factions Expanded - Core incorporates several key functionalities that may be shared across all Vanilla Factions Expanded modules. Examples of shared functionality include custom base generation, customisable sieges, faction-based pack animal textures, scenario-dependent faction relations, and shields.</description>
     <supportedVersions>
         <li>1.0</li>
+        <li>1.1</li>
     </supportedVersions>
 </ModMetaData>

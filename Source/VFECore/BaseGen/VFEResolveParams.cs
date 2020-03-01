@@ -8,7 +8,7 @@ using Verse.AI;
 using Verse.AI.Group;
 using RimWorld;
 using RimWorld.BaseGen;
-using Harmony;
+using HarmonyLib;
 
 namespace VFECore
 {
