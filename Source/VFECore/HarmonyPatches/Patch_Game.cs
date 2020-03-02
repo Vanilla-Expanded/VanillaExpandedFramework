@@ -40,7 +40,7 @@ namespace VFECore
                             Log.Message("Game.InitNewGame match 1 of 1");
                         #endif
                         yield return instruction; // researchProjectDef.HasTag(tag)
-                        yield return new CodeInstruction(OpCodes.Ldloc_S, 8); // researchProjectDef
+                        yield return new CodeInstruction(OpCodes.Ldloc_S, 9); // researchProjectDef
                         instruction = new CodeInstruction(OpCodes.Call, autoCompleteResearchInfo); // AutoCompleteResearch(researchProjectDef.HasTag(tag), researchProjectDef)
                     }
 
