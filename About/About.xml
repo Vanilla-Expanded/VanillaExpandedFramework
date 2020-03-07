@@ -4,8 +4,22 @@
     <author>Oskar Potocki, XeoNovaDan</author>
     <url></url>
     <description>Vanilla Factions Expanded - Core incorporates several key functionalities that may be shared across all Vanilla Factions Expanded modules. Examples of shared functionality include custom base generation, customisable sieges, faction-based pack animal textures, scenario-dependent faction relations, and shields.</description>
+    <packageId>OskarPotocki.VanillaFactionsExpanded.Core</packageId>
     <supportedVersions>
         <li>1.0</li>
         <li>1.1</li>
     </supportedVersions>
+    <modDependencies>
+		<li>
+			<packageId>brrainz.harmony</packageId>
+			<displayName>Harmony</displayName>
+			<downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
+			<steamWorkshopUrl>https://steamcommunity.com/workshop/filedetails/?id=2009463077</steamWorkshopUrl>
+		</li>
+	</modDependencies>
+	<loadAfter>
+		<li>Ludeon.RimWorld</li>
+		<li>Ludeon.RimWorld.Royalty</li>
+		<li>brrainz.harmony</li>
+	</loadAfter>
 </ModMetaData>
