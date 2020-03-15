@@ -28,6 +28,9 @@ namespace VFECore
                     // Skill prerequisite
                     if (thingDef.constructionSkillPrerequisite > maxArtilleryConstructionSkill)
                         maxArtilleryConstructionSkill = thingDef.constructionSkillPrerequisite;
+
+                    if (!artilleryDefs.Contains(thingDef))
+                        artilleryDefs.Add(thingDef);
                 }
             }
         }
@@ -44,7 +47,7 @@ namespace VFECore
         public ThingDef mealDef;
 
         [Unsaved]
-        public List<ThingDef> artilleryDefs;
+        public List<ThingDef> artilleryDefs = new List<ThingDef>();
         [Unsaved]
         public float lowestArtilleryBlueprintPoints = Int32.MaxValue;
         [Unsaved]
