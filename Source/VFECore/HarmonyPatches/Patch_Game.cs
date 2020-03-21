@@ -50,7 +50,7 @@ namespace VFECore
 
             private static bool AutoCompleteResearch(bool original, ResearchProjectDef research)
             {
-                if (original)
+                if (original && research != null)
                 {
                     // Check the faction def starting tags and research DefModExtension greylist tags; return false if there are any matches
                     var researchProjectDefExtension = ResearchProjectDefExtension.Get(research);
