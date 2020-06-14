@@ -5,3 +5,7 @@ E:\Documents\GitHub\VanillaFactionsExpanded-Core\Source\VFECore\obj\Debug\VFECor
 D:\Documents\GitHub\VanillaFactionsExpanded-Core\Source\VFECore\obj\Debug\VFECore.csprojAssemblyReference.cache
 D:\Documents\GitHub\VanillaFactionsExpanded-Core\Source\VFECore\obj\Debug\VFECore.dll
 D:\Documents\GitHub\VanillaFactionsExpanded-Core\1.1\Assemblies\VFECore.dll
+E:\Users\Daniel\Documents\GitHub\VanillaFactionsExpanded-Core\1.1\Assemblies\VFECore.dll
+E:\Users\Daniel\Documents\GitHub\VanillaFactionsExpanded-Core\Source\VFECore\obj\Debug\VFECore.csprojAssemblyReference.cache
+E:\Users\Daniel\Documents\GitHub\VanillaFactionsExpanded-Core\Source\VFECore\obj\Debug\VFECore.csproj.CoreCompileInputs.cache
+E:\Users\Daniel\Documents\GitHub\VanillaFactionsExpanded-Core\Source\VFECore\obj\Debug\VFECore.dll

@@ -55,34 +55,6 @@ namespace VFECore
                     Log.Error("Could not find type FacialStuff.HumanBipedDrawer in Facial Stuff");
             }
 
-            // Research Tree
-            if (ModCompatibilityCheck.ResearchTree)
-            {
-                var researchNode = GenTypes.GetTypeInAnyAssembly("FluffyResearchTree.ResearchNode", "FluffyResearchTree");
-                if (researchNode != null)
-                {
-                    Patch_FluffyResearchTree_ResearchNode.instanceType = researchNode;
-                    VFECore.harmonyInstance.Patch(AccessTools.Property(researchNode, "Available").GetGetMethod(), postfix: new HarmonyMethod(typeof(Patch_FluffyResearchTree_ResearchNode.manual_get_Available), "Postfix"));
-                    VFECore.harmonyInstance.Patch(AccessTools.Method(researchNode, "Draw"), transpiler: new HarmonyMethod(typeof(Patch_FluffyResearchTree_ResearchNode.manual_Draw), "Transpiler"));
-                }
-                else
-                    Log.Error("Could not find type FluffyResearchTree.ResearchNode in Research Tree");
-            }
-
-            // ResearchPal (pretty much identical code-wise to research tree as far as we are concerned, other than namespace)
-            if (ModCompatibilityCheck.ResearchPal)
-            {
-                var researchNode = GenTypes.GetTypeInAnyAssembly("ResearchPal.ResearchNode", "ResearchPal");
-                if (researchNode != null)
-                {
-                    Patch_FluffyResearchTree_ResearchNode.instanceType = researchNode;
-                    VFECore.harmonyInstance.Patch(AccessTools.Property(researchNode, "Available").GetGetMethod(), postfix: new HarmonyMethod(typeof(Patch_FluffyResearchTree_ResearchNode.manual_get_Available), "Postfix"));
-                    VFECore.harmonyInstance.Patch(AccessTools.Method(researchNode, "Draw"), transpiler: new HarmonyMethod(typeof(Patch_FluffyResearchTree_ResearchNode.manual_Draw), "Transpiler"));
-                }
-                else
-                    Log.Error("Could not find type ResearchPal.ResearchNode in ResearchPal");
-            }
-
             // RimCities
             if (ModCompatibilityCheck.RimCities)
             {
@@ -94,10 +66,6 @@ namespace VFECore
                         postfix: new HarmonyMethod(typeof(Patch_Cities_GenCity.manual_RandomCityFaction_predicate), "Postfix"));
                 else
                     Log.Error("Could not find type Cities.GenCity in RimCities");
-
-                var worldGenStepCities = GenTypes.GetTypeInAnyAssembly("Cities.WorldGenStep_Cities", "Cities");
-                if (worldGenStepCities != null)
-                    VFECore.harmonyInstance.Patch(AccessTools.Method(worldGenStepCities, "GenerateFresh"), new HarmonyMethod(typeof(Patch_Cities_WorldGenStep_Cities.manual_GenerateFresh), "Prefix"));
             }
 
             // RPG Style Inventory

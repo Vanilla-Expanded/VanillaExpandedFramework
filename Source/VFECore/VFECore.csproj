@@ -35,11 +35,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\workshop\content\294100\2009463077\v1.1\Assemblies\0Harmony.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\workshop\content\294100\2009463077\v1.1\Assemblies\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -48,12 +48,8 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -66,7 +62,6 @@
     <Compile Include="Comps\ThingComps\CompShield.cs" />
     <Compile Include="DefOf\IncidentDefOf.cs" />
     <Compile Include="Defs\SiegeParameterSetDef.cs" />
-    <Compile Include="DefModExtensions\StorytellerDefExtension.cs" />
     <Compile Include="DefOf\ApparelLayerDefOf.cs" />
     <Compile Include="DefOf\JobDefOf.cs" />
     <Compile Include="DefOf\ScenPartDefOf.cs" />
@@ -77,11 +72,9 @@
     <Compile Include="HarmonyPatches\DualWield\Patch_DualWield_Ext_Pawn_EquipmentTracker.cs" />
     <Compile Include="HarmonyPatches\DualWield\Patch_DualWield_Harmony_FloatMenuMakerMap_AddHumanlikeOrders.cs" />
     <Compile Include="HarmonyPatches\Patch_FloatMenuMakerMap.cs" />
-    <Compile Include="HarmonyPatches\Patch_CompUseEffect_FinishRandomResearchProject.cs" />
     <Compile Include="HarmonyPatches\Patch_Game.cs" />
     <Compile Include="HarmonyPatches\Patch_GenStep_Settlement.cs" />
     <Compile Include="HarmonyPatches\Patch_ITab_Pawn_Gear.cs" />
-    <Compile Include="HarmonyPatches\Patch_FactionGenerator.cs" />
     <Compile Include="HarmonyPatches\Patch_IncidentWorker_WandererJoin.cs" />
     <Compile Include="HarmonyPatches\Patch_ThingDef.cs" />
     <Compile Include="HarmonyPatches\Patch_PawnApparelGenerator.cs" />
@@ -93,10 +86,7 @@
     <Compile Include="HarmonyPatches\Patch_Pawn_EquipmentTracker.cs" />
     <Compile Include="HarmonyPatches\Patch_Pawn_HealthTracker.cs" />
     <Compile Include="HarmonyPatches\Patch_RaidStrategyWorker_Siege.cs" />
-    <Compile Include="HarmonyPatches\Patch_MainTabWindow_Research.cs" />
     <Compile Include="HarmonyPatches\Patch_ResearchProjectDef.cs" />
-    <Compile Include="HarmonyPatches\ResearchTree\Patch_FluffyResearchTree_ResearchNode.cs" />
-    <Compile Include="HarmonyPatches\RimCities\Patch_Cities_WorldGenStep_Cities.cs" />
     <Compile Include="HarmonyPatches\RimCities\Patch_Cities_GenCity.cs" />
     <Compile Include="HarmonyPatches\RPGStyleInventory\Patch_Sandy_Detailed_RPG_GearTab_Sandy_Detailed_RPG_Inventory.cs" />
     <Compile Include="HarmonyPatches\Patch_StatWorker.cs" />
@@ -104,9 +94,7 @@
     <Compile Include="HarmonyPatches\RunAndGun\Patch_RunAndGun_Harmony_Verb_TryCastNextBurstShot.cs" />
     <Compile Include="IncidentWorkers\IncidentWorker_RaidEnemySpecial.cs" />
     <Compile Include="ModCompatibilityCheck.cs" />
-    <Compile Include="Structs\TechLevelRange.cs" />
     <Compile Include="Utilities\ExtendedFactionUtility.cs" />
-    <Compile Include="Utilities\CustomStorytellerUtility.cs" />
     <Compile Include="VFECore.cs" />
     <Compile Include="StaticConstructorClass.cs" />
     <Compile Include="PawnShieldGenerator.cs" />
