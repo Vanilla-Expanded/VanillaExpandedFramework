@@ -68,6 +68,7 @@
     <Compile Include="Comps\WorldComponents\FactionGoodwillModifier.cs" />
     <Compile Include="Comps\ThingComps\CompProperties_Shield.cs" />
     <Compile Include="Comps\ThingComps\CompShield.cs" />
+    <Compile Include="Comps\WorldComponents\NewFactionLoadingState.cs" />
     <Compile Include="DefOf\IncidentDefOf.cs" />
     <Compile Include="Defs\SiegeParameterSetDef.cs" />
     <Compile Include="DefOf\ApparelLayerDefOf.cs" />

@@ -58,8 +58,9 @@ namespace VFECore
 			if (listing_Standard.ButtonText("Add only the faction")) SpawnWithoutBases();
 			if (listing_Standard.ButtonText("Do nothing")) Skip();
 			GUI.color = new Color(1f, 0.3f, 0.35f);
-			if (listing_Standard.ButtonText("Don't ask for this faction again")) DontAskAgain();
+			if (listing_Standard.ButtonText("Don't ask for this faction again")) Ignore();
 			GUI.color = Color.white;
+
 			listing_Standard.End();
 		}
 
@@ -72,7 +73,11 @@ namespace VFECore
 			Close();
 		}
 
-		private void DontAskAgain() { }
+		private void Ignore()
+		{
+			Find.World.GetComponent<NewFactionLoadingState>().Ignore(factionDef);
+			Close();
+		}
 
 		public override void PostClose()
 		{

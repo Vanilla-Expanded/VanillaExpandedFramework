@@ -28,9 +28,11 @@ namespace VFECore
 
             private static bool Validator(FactionDef faction)
             {
+                if (faction == null) return false;
                 if (faction.isPlayer) return false;
                 var count = Find.FactionManager.AllFactions.Count(f => f.def == faction);
                 //if (count > 0) return false;
+                if (Find.World?.GetComponent<NewFactionLoadingState>()?.IsIgnored(faction) == true) return false;
                 return true;
             }
         }
