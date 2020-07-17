@@ -66,6 +66,7 @@
     <Compile Include="DefOf\JobDefOf.cs" />
     <Compile Include="DefOf\ScenPartDefOf.cs" />
     <Compile Include="AI\JobDrivers\JobDriver_EquipShield.cs" />
+    <Compile Include="HarmonyPatches\FactionLoading\Patch_GameComponentUtility.cs" />
     <Compile Include="HarmonyPatches\HarmonyPatches.cs" />
     <Compile Include="HarmonyPatches\Patch_ArmorUtility.cs" />
     <Compile Include="HarmonyPatches\Patch_CompEquippable.cs" />
