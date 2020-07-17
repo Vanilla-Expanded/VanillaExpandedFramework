@@ -76,6 +76,7 @@
     <Compile Include="DefOf\ScenPartDefOf.cs" />
     <Compile Include="AI\JobDrivers\JobDriver_EquipShield.cs" />
     <Compile Include="Dialogs\Dialog_NewFactionLoading.cs" />
+    <Compile Include="Dialogs\Dialog_NewFactionLoadingSettlements.cs" />
     <Compile Include="HarmonyPatches\FactionLoading\Patch_GameComponentUtility.cs" />
     <Compile Include="HarmonyPatches\HarmonyPatches.cs" />
     <Compile Include="HarmonyPatches\Patch_ArmorUtility.cs" />

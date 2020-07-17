@@ -89,6 +89,7 @@ namespace VFECore
 					try
 					{
 						var spawned = amount;
+						// TODO: Spawn settlements
 						Messages.Message($"Added {factionDef.label} with {spawned} settlements.", MessageTypeDefOf.TaskCompletion);
 						Close();
 					}
@@ -104,6 +105,7 @@ namespace VFECore
 		{
 			try
 			{
+				NewFactionLoadingUtility.SpawnWithoutBases(factionDef);
 				Messages.Message($"Added {factionDef.label}.", MessageTypeDefOf.TaskCompletion);
 				Close();
 			}
