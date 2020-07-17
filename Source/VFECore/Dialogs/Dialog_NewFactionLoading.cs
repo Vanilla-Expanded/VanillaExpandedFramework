@@ -105,7 +105,7 @@ namespace VFECore
 		{
 			try
 			{
-				NewFactionLoadingUtility.SpawnWithoutBases(factionDef);
+				NewFactionLoadingUtility.SpawnWithoutSettlements(factionDef);
 				Messages.Message($"Added {factionDef.label}.", MessageTypeDefOf.TaskCompletion);
 				Close();
 			}
