@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
+using HarmonyLib;
 using RimWorld.Planet;
 using UnityEngine;
 using Verse;
@@ -32,6 +34,38 @@ namespace VFECore
 
             settlementsToSpawn = settlementsRecommended = GetSettlementsRecommendation();
             distanceToSpawn = distanceRecommended = SettlementProximityGoodwillUtility.MaxDist;
+
+            if (AccessTools.TypeByName("FactionControl.Controller") != null) FactionControlFix();
+        }
+
+        // TODO: Remove this once FactionControl has fixed this bug on their end
+        // https://github.com/KiameV/rimworld-factioncontrol/issues/17
+        private static void FactionControlFix()
+        {
+            try
+            {
+                var controller = AccessTools.TypeByName("FactionControl.Controller");
+
+                var fieldSeparation = controller.GetField("minFactionSeparation", BindingFlags.Static | BindingFlags.Public);
+                var fieldFactionSprawl = controller.GetField("maxFactionSprawl", BindingFlags.Static | BindingFlags.Public);
+                var fieldPirateSprawl = controller.GetField("pirateSprawl", BindingFlags.Static | BindingFlags.Public);
+
+                // Check if not initialized
+                if (((double)fieldSeparation.GetValue(null)).Equals(0))
+                {
+                    Log.Message($"Found Faction Control mod. Fixing its values to avoid problems.");
+                    double tiles = Math.Sqrt(Find.WorldGrid.TilesCount);
+                    double factions = Math.Sqrt(Find.FactionManager.AllFactionsVisible.Count() - 1);
+                    fieldSeparation.SetValue(null, tiles / (factions * 2));
+                    var defaultFactionGrouping = 0.5; // use default; good enough for not breaking everything
+                    fieldFactionSprawl.SetValue(null, tiles / (factions * defaultFactionGrouping));
+                    fieldPirateSprawl.SetValue(null, tiles / (factions * defaultFactionGrouping));
+                }
+            }
+            catch(Exception e)
+            {
+                Log.Warning($"Something went wrong when trying to initialize FactionControl.Controller:\n{e.Message}\n{e.StackTrace}");
+            }
         }
 
         private static int GetSettlementsRecommendation()
@@ -58,6 +92,8 @@ namespace VFECore
 
             if (listing_Standard.ButtonText("Spawn")) Spawn();
             if (listing_Standard.ButtonText("Cancel")) Close();
+
+            listing_Standard.End();
         }
 
         private void Spawn()

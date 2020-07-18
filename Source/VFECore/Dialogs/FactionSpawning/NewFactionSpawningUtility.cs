@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using RimWorld;
 using RimWorld.Planet;
-using UnityEngine;
 using Verse;
 
 namespace VFECore
@@ -10,7 +9,12 @@ namespace VFECore
     {
         public static Faction SpawnWithoutSettlements(FactionDef factionDef)
         {
+            // Temporarily set to hidden, so FactionGenerator doesn't spawn a base
+            var hidden = factionDef.hidden;
+            factionDef.hidden = true;
             var faction = FactionGenerator.NewGeneratedFaction(factionDef);
+            factionDef.hidden = hidden;
+
             var relationKind = GetFactionKind(faction, true);
             InitializeFaction(faction, relationKind);
             return faction;
@@ -73,7 +77,6 @@ namespace VFECore
 
         public static void SpawnWithSettlements(FactionDef factionDef, int amount, int minDistance, out int spawned)
         {
-            spawned = 0;
             var faction = SpawnWithoutSettlements(factionDef);
             CreateSettlements(faction, amount, minDistance, out spawned);
         }

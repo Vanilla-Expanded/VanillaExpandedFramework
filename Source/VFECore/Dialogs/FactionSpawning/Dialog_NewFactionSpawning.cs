@@ -65,13 +65,17 @@ namespace VFECore
 
 			listing_Standard.Label("\n\nPlease select how to proceed:");
 			listing_Standard.Gap(60);
-
+			
 			// Options
-			if (!factionDef.hidden)
+			if (factionDef.hidden)
+			{
+				if (listing_Standard.ButtonText("Add the faction")) SpawnWithoutBases();
+			}
+			else
 			{
 				if (listing_Standard.ButtonText("Add the faction with settlements")) SpawnWithBases();
 			}
-			if (listing_Standard.ButtonText("Add only the faction")) SpawnWithoutBases();
+
 			if (listing_Standard.ButtonText("Do nothing")) Skip();
 			GUI.color = new Color(1f, 0.3f, 0.35f);
 			if (listing_Standard.ButtonText("Don't ask for this faction again")) Ignore();
