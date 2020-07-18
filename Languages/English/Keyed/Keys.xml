@@ -22,5 +22,26 @@
     <!-- Stat Draw Entries -->
     <VanillaFactionsExpanded.UsableWithShield>Usable with shields</VanillaFactionsExpanded.UsableWithShield>
     <VanillaFactionsExpanded.UsableWithShield_Desc>Whether or not this weapon can be used if the character also has a shield equipped.</VanillaFactionsExpanded.UsableWithShield_Desc>
+	
+	<!-- New Faction Spawning -->
+	<VanillaFactionsExpanded.FactionTitle>New faction: {FactionName}</VanillaFactionsExpanded.FactionTitle>
+	<VanillaFactionsExpanded.ModInfo>This faction is added by {ModName} and not currently present in your game.</VanillaFactionsExpanded.ModInfo>
+	<VanillaFactionsExpanded.AnUnknownMod>an unknown mod</VanillaFactionsExpanded.AnUnknownMod>
+	<VanillaFactionsExpanded.HiddenFactionInfo>This is a hidden faction and won't show up in your faction list.</VanillaFactionsExpanded.HiddenFactionInfo>
+	<VanillaFactionsExpanded.RequiredFactionInfo>It is marked as required by {ModName}.</VanillaFactionsExpanded.RequiredFactionInfo>
+	<VanillaFactionsExpanded.FactionSelectOption>Please select how to proceed:</VanillaFactionsExpanded.FactionSelectOption>
+	<VanillaFactionsExpanded.FactionButtonAdd>Add the faction</VanillaFactionsExpanded.FactionButtonAdd>
+	<VanillaFactionsExpanded.FactionButtonAddFull>Add the faction with settlements</VanillaFactionsExpanded.FactionButtonAddFull>
+	<VanillaFactionsExpanded.FactionButtonSkip>Do nothing</VanillaFactionsExpanded.FactionButtonSkip>
+	<VanillaFactionsExpanded.FactionButtonIgnore>Don't ask for this faction again</VanillaFactionsExpanded.FactionButtonIgnore>
+	<VanillaFactionsExpanded.FactionMessageFailed>Failed to add the faction.</VanillaFactionsExpanded.FactionMessageFailed>
+	<VanillaFactionsExpanded.FactionMessageFailedFull>Failed to create a faction with settlements.</VanillaFactionsExpanded.FactionMessageFailedFull>
+	<VanillaFactionsExpanded.FactionMessageSuccessFull>Added {FactionName} with {Amount} settlements.</VanillaFactionsExpanded.FactionMessageSuccessFull>
+	<VanillaFactionsExpanded.FactionMessageSuccess>Added {FactionName}.</VanillaFactionsExpanded.FactionMessageSuccess>
+	
+	<VanillaFactionsExpanded.FactionSettlementsToSpawn>Settlements to spawn (recommended are {0}): {1}</VanillaFactionsExpanded.FactionSettlementsToSpawn>
+	<VanillaFactionsExpanded.FactionMinDistance>The minimum distance from player bases (recommended are {0}): {1}</VanillaFactionsExpanded.FactionMinDistance>
+	<VanillaFactionsExpanded.FactionButtonSpawn>Spawn</VanillaFactionsExpanded.FactionButtonSpawn>
+	<VanillaFactionsExpanded.FactionButtonCancel>Cancel</VanillaFactionsExpanded.FactionButtonCancel>
 
 </LanguageData>

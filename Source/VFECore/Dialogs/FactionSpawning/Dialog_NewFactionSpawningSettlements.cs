@@ -83,15 +83,16 @@ namespace VFECore
             Text.Anchor = TextAnchor.UpperLeft;
 
             // Amount
-            listing_Standard.Label($"Settlements to spawn (recommended are {settlementsRecommended}): {settlementsToSpawn}");
-            settlementsToSpawn = Mathf.CeilToInt(listing_Standard.Slider(settlementsToSpawn, 1, settlementsRecommended * 2));
+            listing_Standard.Label("VanillaFactionsExpanded.FactionSettlementsToSpawn".Translate(settlementsRecommended, settlementsToSpawn));
+
+            settlementsToSpawn = Mathf.CeilToInt(listing_Standard.Slider(settlementsToSpawn, 1, Mathf.Max(settlementsRecommended * 4, 1)));
 
             // Distance from player
-            listing_Standard.Label($"The minimum distance from player bases (recommended are {distanceRecommended}): {distanceToSpawn}");
+            listing_Standard.Label("VanillaFactionsExpanded.FactionMinDistance".Translate(distanceRecommended, distanceToSpawn));
             distanceToSpawn = Mathf.CeilToInt(listing_Standard.Slider(distanceToSpawn, 1, distanceRecommended * 2));
 
-            if (listing_Standard.ButtonText("Spawn")) Spawn();
-            if (listing_Standard.ButtonText("Cancel")) Close();
+            if (listing_Standard.ButtonText("VanillaFactionsExpanded.FactionButtonSpawn".Translate())) Spawn();
+            if (listing_Standard.ButtonText("VanillaFactionsExpanded.FactionButtonCancel".Translate())) Close();
 
             listing_Standard.End();
         }

@@ -45,40 +45,43 @@ namespace VFECore
 			// Title
 			Text.Font = GameFont.Medium;
 			Text.Anchor = TextAnchor.MiddleCenter;
-			listing_Standard.Label($"New faction: {factionDef.LabelCap}");
+			listing_Standard.Label("VanillaFactionsExpanded.FactionTitle".Translate(new NamedArgument(factionDef.LabelCap, "FactionName")));
 			listing_Standard.GapLine();
 
 			// Description
 			Text.Font = GameFont.Small;
 			Text.Anchor = TextAnchor.UpperLeft;
 			var modName = GetModName();
-			listing_Standard.Label($"This faction is added by {modName} and not currently present in your game.");
+			listing_Standard.Label("VanillaFactionsExpanded.ModInfo".Translate(new NamedArgument(modName, "ModName")));
 			if (factionDef.hidden)
 			{
-				listing_Standard.Label("This is a hidden faction and won't show up in your faction list.".Colorize(colorCoreMod));
+				GUI.color = colorCoreMod;
+				listing_Standard.Label("VanillaFactionsExpanded.HiddenFactionInfo".Translate());
 				
 				if (factionDef.requiredCountAtGameStart > 0)
 				{
-					listing_Standard.Label($"It is marked as required by {modName}.".Colorize(colorCoreMod));
+					listing_Standard.Label("VanillaFactionsExpanded.RequiredFactionInfo".Translate(new NamedArgument(modName, "ModName")));
 				}
+				GUI.color = Color.white;
 			}
 
-			listing_Standard.Label("\n\nPlease select how to proceed:");
+			listing_Standard.Gap(40);
+			listing_Standard.Label("VanillaFactionsExpanded.FactionSelectOption".Translate());
 			listing_Standard.Gap(60);
 			
 			// Options
 			if (factionDef.hidden)
 			{
-				if (listing_Standard.ButtonText("Add the faction")) SpawnWithoutBases();
+				if (listing_Standard.ButtonText("VanillaFactionsExpanded.FactionButtonAdd".Translate())) SpawnWithoutBases();
 			}
 			else
 			{
-				if (listing_Standard.ButtonText("Add the faction with settlements")) SpawnWithBases();
+				if (listing_Standard.ButtonText("VanillaFactionsExpanded.FactionButtonAddFull".Translate())) SpawnWithBases();
 			}
 
-			if (listing_Standard.ButtonText("Do nothing")) Skip();
+			if (listing_Standard.ButtonText("VanillaFactionsExpanded.FactionButtonSkip".Translate())) Skip();
 			GUI.color = new Color(1f, 0.3f, 0.35f);
-			if (listing_Standard.ButtonText("Don't ask for this faction again")) Ignore();
+			if (listing_Standard.ButtonText("VanillaFactionsExpanded.FactionButtonIgnore".Translate())) Ignore();
 			GUI.color = Color.white;
 
 			listing_Standard.End();
@@ -94,17 +97,17 @@ namespace VFECore
 					{
 						var faction = NewFactionSpawningUtility.SpawnWithSettlements(factionDef, amount, minDistance, out var spawned);
 						if(faction == null || spawned == 0)
-							Messages.Message($"Failed to create a faction with settlements.", MessageTypeDefOf.RejectInput, false);
+							Messages.Message("VanillaFactionsExpanded.FactionMessageFailedFull".Translate(), MessageTypeDefOf.RejectInput, false);
 						else
 						{
-							Messages.Message($"Added {faction.GetCallLabel()} with {spawned} settlements.", MessageTypeDefOf.TaskCompletion);
+							Messages.Message("VanillaFactionsExpanded.FactionMessageSuccessFull".Translate(new NamedArgument(faction.GetCallLabel(), "FactionName"), new NamedArgument(spawned, "Amount")), MessageTypeDefOf.TaskCompletion);
 							Close();
 						}
 					}
 					catch (Exception e)
 					{
 						Log.Error($"An error occurred when trying to spawn faction {factionDef?.defName}:\n{e.Message}\n{e.StackTrace}");
-						Messages.Message("Failed to add the faction.", MessageTypeDefOf.RejectInput, false);
+						Messages.Message("VanillaFactionsExpanded.FactionMessageFailedFull".Translate(), MessageTypeDefOf.RejectInput, false);
 					}
 				}
 		}
@@ -114,13 +117,13 @@ namespace VFECore
 			try
 			{
 				var faction = NewFactionSpawningUtility.SpawnWithoutSettlements(factionDef);
-				Messages.Message($"Added {faction.GetCallLabel()}.", MessageTypeDefOf.TaskCompletion);
+				Messages.Message("VanillaFactionsExpanded.FactionMessageSuccess".Translate(new NamedArgument(faction.GetCallLabel(), "FactionName")), MessageTypeDefOf.TaskCompletion);
 				Close();
 			}
 			catch (Exception e)
 			{
 				Log.Error($"An error occurred when trying to spawn faction {factionDef?.defName}:\n{e.Message}\n{e.StackTrace}");
-				Messages.Message("Failed to add the faction.", MessageTypeDefOf.RejectInput, false);
+				Messages.Message("VanillaFactionsExpanded.FactionMessageFailed".Translate(), MessageTypeDefOf.RejectInput, false);
 			}
 		}
 
@@ -145,7 +148,7 @@ namespace VFECore
 
 		private string GetModName()
 		{
-			if (factionDef?.modContentPack == null) return "an unknown mod";
+			if (factionDef?.modContentPack == null) return "VanillaFactionsExpanded.AnUnknownMod".Translate();
 			if (factionDef.modContentPack.IsCoreMod) return factionDef.modContentPack.Name.Colorize(colorCoreMod);
 			return factionDef.modContentPack.Name.Colorize(colorMod);
 		}
