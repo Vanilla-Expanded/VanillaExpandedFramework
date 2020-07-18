@@ -53,8 +53,8 @@ namespace VFECore
             settlementsToSpawn = Mathf.CeilToInt(listing_Standard.Slider(settlementsToSpawn, 0, settlementsRecommended * 2));
 
             // Distance from player
-            listing_Standard.Label($"The minimum distance from player bases (recommended are {distanceRecommended}: {distanceToSpawn}");
-            distanceToSpawn = Mathf.CeilToInt(listing_Standard.Slider(distanceToSpawn, 1, distanceToSpawn * 2f));
+            listing_Standard.Label($"The minimum distance from player bases (recommended are {distanceRecommended}): {distanceToSpawn}");
+            distanceToSpawn = Mathf.CeilToInt(listing_Standard.Slider(distanceToSpawn, 1, distanceRecommended * 2));
 
             if (listing_Standard.ButtonText("Spawn")) Spawn();
             if (listing_Standard.ButtonText("Cancel")) Close();

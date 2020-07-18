@@ -88,8 +88,7 @@ namespace VFECore
 				{
 					try
 					{
-						var spawned = amount;
-						// TODO: Spawn settlements
+						NewFactionSpawningUtility.SpawnWithSettlements(factionDef, amount, minDistance, out var spawned);
 						Messages.Message($"Added {factionDef.label} with {spawned} settlements.", MessageTypeDefOf.TaskCompletion);
 						Close();
 					}
