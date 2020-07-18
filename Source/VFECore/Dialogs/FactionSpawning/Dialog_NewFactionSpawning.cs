@@ -92,9 +92,14 @@ namespace VFECore
 				{
 					try
 					{
-						NewFactionSpawningUtility.SpawnWithSettlements(factionDef, amount, minDistance, out var spawned);
-						Messages.Message($"Added {factionDef.label} with {spawned} settlements.", MessageTypeDefOf.TaskCompletion);
-						Close();
+						var faction = NewFactionSpawningUtility.SpawnWithSettlements(factionDef, amount, minDistance, out var spawned);
+						if(faction == null || spawned == 0)
+							Messages.Message($"Failed to create a faction with settlements.", MessageTypeDefOf.RejectInput, false);
+						else
+						{
+							Messages.Message($"Added {faction.GetCallLabel()} with {spawned} settlements.", MessageTypeDefOf.TaskCompletion);
+							Close();
+						}
 					}
 					catch (Exception e)
 					{
@@ -108,8 +113,8 @@ namespace VFECore
 		{
 			try
 			{
-				NewFactionSpawningUtility.SpawnWithoutSettlements(factionDef);
-				Messages.Message($"Added {factionDef.label}.", MessageTypeDefOf.TaskCompletion);
+				var faction = NewFactionSpawningUtility.SpawnWithoutSettlements(factionDef);
+				Messages.Message($"Added {faction.GetCallLabel()}.", MessageTypeDefOf.TaskCompletion);
 				Close();
 			}
 			catch (Exception e)

@@ -84,7 +84,7 @@ namespace VFECore
 
             // Amount
             listing_Standard.Label($"Settlements to spawn (recommended are {settlementsRecommended}): {settlementsToSpawn}");
-            settlementsToSpawn = Mathf.CeilToInt(listing_Standard.Slider(settlementsToSpawn, 0, settlementsRecommended * 2));
+            settlementsToSpawn = Mathf.CeilToInt(listing_Standard.Slider(settlementsToSpawn, 1, settlementsRecommended * 2));
 
             // Distance from player
             listing_Standard.Label($"The minimum distance from player bases (recommended are {distanceRecommended}): {distanceToSpawn}");

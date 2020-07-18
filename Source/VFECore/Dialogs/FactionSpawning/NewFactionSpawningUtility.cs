@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
@@ -75,10 +77,27 @@ namespace VFECore
             }
         }
 
-        public static void SpawnWithSettlements(FactionDef factionDef, int amount, int minDistance, out int spawned)
+        public static Faction SpawnWithSettlements(FactionDef factionDef, int amount, int minDistance, out int spawned)
         {
             var faction = SpawnWithoutSettlements(factionDef);
             CreateSettlements(faction, amount, minDistance, out spawned);
+
+            if (amount > 0 && spawned <= 0)
+            {
+                RemoveFaction(faction);
+            }
+
+            return faction;
+        }
+
+        private static void RemoveFaction(Faction faction)
+        {
+            foreach (var f in Find.FactionManager.AllFactionsListForReading)
+            {
+                var relations = AccessTools.FieldRefAccess<Faction, List<FactionRelation>>(f, "relations");
+                relations.RemoveAll(r => r?.other == null || r.other == faction);
+            }
+            Find.FactionManager.Remove(faction);
         }
     }
 }
