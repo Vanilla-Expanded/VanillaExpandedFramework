@@ -5,21 +5,15 @@ using Verse;
 
 namespace VFECore
 {
-    public class NewFactionLoadingState : WorldComponent
+    public class NewFactionSpawningState : WorldComponent
     {
         private List<FactionDef> ignoredFactions = new List<FactionDef>();
 
-        public NewFactionLoadingState(World world) : base(world) { }
+        public NewFactionSpawningState(World world) : base(world) { }
 
         public override void ExposeData()
         {
             Scribe_Collections.Look(ref ignoredFactions, "ignoredFactions", LookMode.Def);
-        }
-
-        public override void FinalizeInit()
-        {
-            Log.Message($"Hello from FactionLoadingState! {ignoredFactions.Count} factions are ignored.");
-            base.FinalizeInit();
         }
 
         public void Ignore(FactionDef faction)

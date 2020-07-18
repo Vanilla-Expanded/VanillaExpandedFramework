@@ -6,7 +6,7 @@ using Verse;
 
 namespace VFECore
 {
-	public class Dialog_NewFactionLoading : Window
+	public class Dialog_NewFactionSpawning : Window
 	{
 		private FactionDef factionDef;
 		private IEnumerator<FactionDef> factionEnumerator;
@@ -15,10 +15,10 @@ namespace VFECore
 
 		public static void OpenDialog(IEnumerator<FactionDef> enumerator)
 		{
-			Find.WindowStack.Add(new Dialog_NewFactionLoading(enumerator));
+			Find.WindowStack.Add(new Dialog_NewFactionSpawning(enumerator));
 		}
 
-		private Dialog_NewFactionLoading(IEnumerator<FactionDef> enumerator)
+		private Dialog_NewFactionSpawning(IEnumerator<FactionDef> enumerator)
 		{
 			doCloseButton = false;
 			forcePause = true;
@@ -82,7 +82,7 @@ namespace VFECore
 
 		private void SpawnWithBases()
 		{
-				Dialog_NewFactionLoadingSettlements.OpenDialog(SpawnCallback);
+				Dialog_NewFactionSpawningSettlements.OpenDialog(SpawnCallback);
 
 				void SpawnCallback(int amount, int minDistance)
 				{
@@ -105,7 +105,7 @@ namespace VFECore
 		{
 			try
 			{
-				NewFactionLoadingUtility.SpawnWithoutSettlements(factionDef);
+				NewFactionSpawningUtility.SpawnWithoutSettlements(factionDef);
 				Messages.Message($"Added {factionDef.label}.", MessageTypeDefOf.TaskCompletion);
 				Close();
 			}
@@ -123,7 +123,7 @@ namespace VFECore
 
 		private void Ignore()
 		{
-			Find.World.GetComponent<NewFactionLoadingState>().Ignore(factionDef);
+			Find.World.GetComponent<NewFactionSpawningState>().Ignore(factionDef);
 			Close();
 		}
 

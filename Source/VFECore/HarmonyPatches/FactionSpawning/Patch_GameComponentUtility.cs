@@ -22,7 +22,8 @@ namespace VFECore
                 if (factionEnumerator.MoveNext())
                 {
                     // Only one dialog can be stacked at a time, so give it the list of all factions
-                    Dialog_NewFactionLoading.OpenDialog(factionEnumerator);
+                    Dialog_NewFactionSpawning.OpenDialog(factionEnumerator);
+                }
                 }
             }
 
@@ -32,7 +33,7 @@ namespace VFECore
                 if (faction.isPlayer) return false;
                 var count = Find.FactionManager.AllFactions.Count(f => f.def == faction);
                 //if (count > 0) return false;
-                if (Find.World?.GetComponent<NewFactionLoadingState>()?.IsIgnored(faction) == true) return false;
+                if (Find.World?.GetComponent<NewFactionSpawningState>()?.IsIgnored(faction) == true) return false;
                 return true;
             }
         }

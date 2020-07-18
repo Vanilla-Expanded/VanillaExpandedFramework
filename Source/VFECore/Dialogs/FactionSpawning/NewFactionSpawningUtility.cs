@@ -6,7 +6,7 @@ using Verse;
 
 namespace VFECore
 {
-    public static class NewFactionLoadingUtility
+    public static class NewFactionSpawningUtility
     {
         public static void SpawnWithoutSettlements(FactionDef factionDef)
         {
@@ -52,7 +52,5 @@ namespace VFECore
             }
             Log.Message("Created " + count + " settlements for " + faction.def.LabelCap);
         }
-
-
     }
 }
