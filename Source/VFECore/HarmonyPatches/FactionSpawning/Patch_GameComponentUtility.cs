@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using HarmonyLib;
 using RimWorld;
-using UnityEngine;
 using Verse;
 
 namespace VFECore
@@ -18,12 +17,13 @@ namespace VFECore
 
             private static void OnGameLoaded()
             {
+                if (Current.Game == null) return;
+
                 var factionEnumerator = DefDatabase<FactionDef>.AllDefs.Where(Validator).GetEnumerator();
                 if (factionEnumerator.MoveNext())
                 {
                     // Only one dialog can be stacked at a time, so give it the list of all factions
                     Dialog_NewFactionSpawning.OpenDialog(factionEnumerator);
-                }
                 }
             }
 
@@ -32,7 +32,7 @@ namespace VFECore
                 if (faction == null) return false;
                 if (faction.isPlayer) return false;
                 var count = Find.FactionManager.AllFactions.Count(f => f.def == faction);
-                //if (count > 0) return false;
+                if (count > 0) return false;
                 if (Find.World?.GetComponent<NewFactionSpawningState>()?.IsIgnored(faction) == true) return false;
                 return true;
             }
