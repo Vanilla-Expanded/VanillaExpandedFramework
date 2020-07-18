@@ -35,16 +35,17 @@ namespace VFECore
             settlementsToSpawn = settlementsRecommended = GetSettlementsRecommendation();
             distanceToSpawn = distanceRecommended = SettlementProximityGoodwillUtility.MaxDist;
 
-            if (AccessTools.TypeByName("FactionControl.Controller") != null) FactionControlFix();
+            // You can enable this again, in case the issue arises that factions always spawn with a single settlement
+            //if  (GenTypes.GetTypeInAnyAssembly("FactionControl.Controller", "FactionControl") != null) FactionControlFix();
         }
 
-        // TODO: Remove this once FactionControl has fixed this bug on their end
-        // https://github.com/KiameV/rimworld-factioncontrol/issues/17
+        [Obsolete("This issue has been fixed for Faction Control. " 
+                  + "Users with an old Faction Control version will experience that factions always spawn with a single settlement.")]
         private static void FactionControlFix()
         {
             try
             {
-                var controller = AccessTools.TypeByName("FactionControl.Controller");
+                var controller = GenTypes.GetTypeInAnyAssembly("FactionControl.Controller", "FactionControl");
 
                 var fieldSeparation = controller.GetField("minFactionSeparation", BindingFlags.Static | BindingFlags.Public);
                 var fieldFactionSprawl = controller.GetField("maxFactionSprawl", BindingFlags.Static | BindingFlags.Public);
