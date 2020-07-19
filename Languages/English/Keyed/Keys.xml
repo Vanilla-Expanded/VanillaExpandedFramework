@@ -29,6 +29,7 @@
 	<VanillaFactionsExpanded.AnUnknownMod>an unknown mod</VanillaFactionsExpanded.AnUnknownMod>
 	<VanillaFactionsExpanded.HiddenFactionInfo>This is a hidden faction and won't show up in your faction list.</VanillaFactionsExpanded.HiddenFactionInfo>
 	<VanillaFactionsExpanded.RequiredFactionInfo>It is marked as required by {ModName}.</VanillaFactionsExpanded.RequiredFactionInfo>
+	<VanillaFactionsExpanded.NonSpawningFactionInfo>This faction is marked as non-spawning and you should probably just ignore it.</VanillaFactionsExpanded.NonSpawningFactionInfo>
 	<VanillaFactionsExpanded.FactionSelectOption>Please select how to proceed:</VanillaFactionsExpanded.FactionSelectOption>
 	<VanillaFactionsExpanded.FactionButtonAdd>Add the faction</VanillaFactionsExpanded.FactionButtonAdd>
 	<VanillaFactionsExpanded.FactionButtonAddFull>Add the faction with settlements</VanillaFactionsExpanded.FactionButtonAddFull>

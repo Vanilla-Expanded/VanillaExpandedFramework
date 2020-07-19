@@ -62,8 +62,13 @@ namespace VFECore
 				{
 					listing_Standard.Label("VanillaFactionsExpanded.RequiredFactionInfo".Translate(new NamedArgument(modName, "ModName")));
 				}
-				GUI.color = Color.white;
 			}
+			GUI.color = new Color(1f, 0.3f, 0.35f);
+			if (!factionDef.canMakeRandomly && factionDef.requiredCountAtGameStart <= 0)
+			{
+				listing_Standard.Label("VanillaFactionsExpanded.NonSpawningFactionInfo".Translate());
+			}
+			GUI.color = Color.white;
 
 			listing_Standard.Gap(40);
 			listing_Standard.Label("VanillaFactionsExpanded.FactionSelectOption".Translate());
