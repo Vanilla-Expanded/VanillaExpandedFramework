@@ -34,6 +34,7 @@ namespace VFECore
                 var count = Find.FactionManager.AllFactions.Count(f => f.def == faction);
                 if (count > 0) return false;
                 if (Find.World?.GetComponent<NewFactionSpawningState>()?.IsIgnored(faction) == true) return false;
+                if (NewFactionSpawningUtility.NeverSpawn(faction)) return false;
                 return true;
             }
         }

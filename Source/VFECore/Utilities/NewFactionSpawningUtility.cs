@@ -99,5 +99,14 @@ namespace VFECore
             }
             Find.FactionManager.Remove(faction);
         }
+
+        public static bool NeverSpawn(FactionDef faction)
+        {
+            switch (faction.defName)
+            {
+                case "PColony": return true; // Empire mod's player faction
+                default: return false;
+            }
+        }
     }
 }
