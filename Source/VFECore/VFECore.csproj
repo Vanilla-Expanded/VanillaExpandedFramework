@@ -77,7 +77,7 @@
     <Compile Include="AI\JobDrivers\JobDriver_EquipShield.cs" />
     <Compile Include="Dialogs\FactionSpawning\Dialog_NewFactionSpawning.cs" />
     <Compile Include="Dialogs\FactionSpawning\Dialog_NewFactionSpawningSettlements.cs" />
-    <Compile Include="Dialogs\FactionSpawning\NewFactionSpawningUtility.cs" />
+    <Compile Include="Utilities\NewFactionSpawningUtility.cs" />
     <Compile Include="HarmonyPatches\FactionSpawning\Patch_FactionDiscovery_ModBase.cs" />
     <Compile Include="HarmonyPatches\FactionSpawning\Patch_GameComponentUtility.cs" />
     <Compile Include="HarmonyPatches\HarmonyPatches.cs" />
