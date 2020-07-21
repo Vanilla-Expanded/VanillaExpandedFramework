@@ -15,8 +15,8 @@ namespace VFECore
 
     public static class Patch_FloatMenuMakerMap
     {
-
-        [HarmonyPatch(typeof(FloatMenuMakerMap), "AddHumanlikeOrders")]
+        // Disabled to prevent error when right clicking on downed pawn
+        //[HarmonyPatch(typeof(FloatMenuMakerMap), "AddHumanlikeOrders")]
         public static class AddHumanlikeOrders
         {
 
