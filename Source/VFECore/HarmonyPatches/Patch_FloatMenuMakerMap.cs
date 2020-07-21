@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -11,7 +10,6 @@ using HarmonyLib;
 
 namespace VFECore
 {
-
     public static class Patch_FloatMenuMakerMap
     {
         // This fix replaces the transpiler code below
