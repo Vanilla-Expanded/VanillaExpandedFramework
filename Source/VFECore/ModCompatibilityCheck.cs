@@ -36,6 +36,8 @@ namespace VFECore
                     RPGStyleInventory = true;
                 else if (curMod.Name == "RunAndGun")
                     RunAndGun = true;
+                else if (curMod.Name == "Faction Discovery")
+                    FactionDiscovery = true;
             }
         }
 
@@ -52,6 +54,8 @@ namespace VFECore
         public static bool RPGStyleInventory;
 
         public static bool RunAndGun;
+
+        public static bool FactionDiscovery;
 
     }
 

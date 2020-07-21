@@ -15,9 +15,6 @@ namespace VFECore
         public VFECore(ModContentPack content) : base(content)
         {
             harmonyInstance = new Harmony("OskarPotocki.VFECore");
-
-            // Parsing
-            ParseHelper.Parsers<TechLevelRange>.Register(s => TechLevelRange.FromString(s));
         }
 
         public static Harmony harmonyInstance;
