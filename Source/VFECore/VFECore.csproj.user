@@ -3,4 +3,7 @@
   <PropertyGroup>
     <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
+  <PropertyGroup>
+    <ReferencePath>..\..\..\..\..\RimWorld\RimWorldWin64_Data\Managed\;..\..\..\..\..\..\workshop\content\294100\2009463077\v1.1\Assemblies\</ReferencePath>
+  </PropertyGroup>
 </Project>
