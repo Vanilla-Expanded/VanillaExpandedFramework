@@ -94,6 +94,16 @@ namespace VFECore
                 else
                     Log.Error("Could not find type RunAndGun.Harmony.Verb_TryCastNextBurstShot in RunAndGun");
             }
+
+            // Disable Faction Discovery
+            if (ModCompatibilityCheck.FactionDiscovery)
+            {
+                var patchModBase = GenTypes.GetTypeInAnyAssembly("FactionDiscovery.ModBase", "FactionDiscovery");
+                if (patchModBase != null)
+                    VFECore.harmonyInstance.Patch(AccessTools.Method(patchModBase, "RunCheck"), prefix: new HarmonyMethod(typeof(Patch_FactionDiscovery_ModBase.manual_RunCheck), "Prefix"));
+                else
+                    Log.Error("Could not find type RunAndGun.Harmony.Verb_TryCastNextBurstShot in RunAndGun");
+            }
         }
 
     }

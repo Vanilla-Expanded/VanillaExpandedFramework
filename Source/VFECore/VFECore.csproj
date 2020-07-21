@@ -52,6 +52,14 @@
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AI\Lords\LordJob_SiegeCustom.cs" />
@@ -60,12 +68,18 @@
     <Compile Include="Comps\WorldComponents\FactionGoodwillModifier.cs" />
     <Compile Include="Comps\ThingComps\CompProperties_Shield.cs" />
     <Compile Include="Comps\ThingComps\CompShield.cs" />
+    <Compile Include="Comps\WorldComponents\NewFactionSpawningState.cs" />
     <Compile Include="DefOf\IncidentDefOf.cs" />
     <Compile Include="Defs\SiegeParameterSetDef.cs" />
     <Compile Include="DefOf\ApparelLayerDefOf.cs" />
     <Compile Include="DefOf\JobDefOf.cs" />
     <Compile Include="DefOf\ScenPartDefOf.cs" />
     <Compile Include="AI\JobDrivers\JobDriver_EquipShield.cs" />
+    <Compile Include="Dialogs\FactionSpawning\Dialog_NewFactionSpawning.cs" />
+    <Compile Include="Dialogs\FactionSpawning\Dialog_NewFactionSpawningSettlements.cs" />
+    <Compile Include="Utilities\NewFactionSpawningUtility.cs" />
+    <Compile Include="HarmonyPatches\FactionSpawning\Patch_FactionDiscovery_ModBase.cs" />
+    <Compile Include="HarmonyPatches\FactionSpawning\Patch_GameComponentUtility.cs" />
     <Compile Include="HarmonyPatches\HarmonyPatches.cs" />
     <Compile Include="HarmonyPatches\Patch_ArmorUtility.cs" />
     <Compile Include="HarmonyPatches\Patch_CompEquippable.cs" />
