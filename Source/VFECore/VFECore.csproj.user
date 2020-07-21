@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectView>ProjectFiles</ProjectView>
+  </PropertyGroup>
+  <PropertyGroup>
+    <!-- <ReferencePath>E:\Spiele\Steam\SteamApps\common\RimWorld\RimWorldWin64_Data\Managed\;E:\Spiele\Steam\SteamApps\workshop\content\294100\2009463077\v1.1\Assemblies\</ReferencePath> -->
+    <ReferencePath>..\..\..\..\..\RimWorld\RimWorldWin64_Data\Managed\;..\..\..\..\..\..\workshop\content\294100\2009463077\v1.1\Assemblies\</ReferencePath>
+  </PropertyGroup>
+</Project>
