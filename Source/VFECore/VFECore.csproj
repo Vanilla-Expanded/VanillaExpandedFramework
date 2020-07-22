@@ -35,11 +35,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\workshop\content\294100\2009463077\v1.1\Assemblies\0Harmony.dll</HintPath>
+      <HintPath>E:\Files\devmods\SourceDLLs\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+    <Reference Include="Assembly-CSharp, Version=1.1.7459.20020, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -77,6 +78,7 @@
     <Compile Include="AI\JobDrivers\JobDriver_EquipShield.cs" />
     <Compile Include="Dialogs\FactionSpawning\Dialog_NewFactionSpawning.cs" />
     <Compile Include="Dialogs\FactionSpawning\Dialog_NewFactionSpawningSettlements.cs" />
+    <Compile Include="HarmonyPatches\Patch_RandomSettlementTileFor.cs" />
     <Compile Include="Utilities\NewFactionSpawningUtility.cs" />
     <Compile Include="HarmonyPatches\FactionSpawning\Patch_FactionDiscovery_ModBase.cs" />
     <Compile Include="HarmonyPatches\FactionSpawning\Patch_GameComponentUtility.cs" />
