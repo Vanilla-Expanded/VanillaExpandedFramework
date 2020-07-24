@@ -86,7 +86,7 @@ namespace VFECore
             // Amount
             listing_Standard.Label("VanillaFactionsExpanded.FactionSettlementsToSpawn".Translate(settlementsRecommended, settlementsToSpawn));
 
-            settlementsToSpawn = Mathf.CeilToInt(listing_Standard.Slider(settlementsToSpawn, 1, Mathf.Max(settlementsRecommended * 4, 1)));
+            settlementsToSpawn = Mathf.CeilToInt(listing_Standard.Slider(settlementsToSpawn, 1, Mathf.Max(settlementsRecommended * 4, 10)));
 
             // Distance from player
             listing_Standard.Label("VanillaFactionsExpanded.FactionMinDistance".Translate(distanceRecommended, distanceToSpawn));
