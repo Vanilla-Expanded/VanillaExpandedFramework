@@ -20,12 +20,12 @@ namespace VFECore
                 if (faction?.def != null && faction.def.HasModExtension<FactionDefExtension>())
                 {
                     var options = faction.def.GetModExtension<FactionDefExtension>();
-                    if (options.allowedBiomes != null)
+                    if (options.allowedBiomes != null && options.allowedBiomes.Count > 0)
                     {
                         __result = RandomSettlementTileFor(options, faction, mustBeAutoChoosable, extraValidator);
                         return false;
                     }
-                    if (options.disallowedBiomes != null)
+                    if (options.disallowedBiomes != null && options.disallowedBiomes.Count > 0)
                     {
                         __result = RandomSettlementTileFor(options, faction, mustBeAutoChoosable, extraValidator);
                         return false;
