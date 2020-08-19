@@ -30,7 +30,9 @@ namespace VFECore
         public PawnKindDef strangerInBlackReplacement;
         private string siegeParameterSet;
         public SiegeParameterSetDef siegeParameterSetDef;
-        
+
+        public List<BiomeDef> allowedBiomes = new List<BiomeDef>();
+        public List<BiomeDef> disallowedBiomes = new List<BiomeDef>();
 
     }
 

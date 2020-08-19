@@ -100,7 +100,7 @@ namespace VFECore
 
             Log.Message($"Marking faction {faction.Name} as hidden.");
             faction.defeated = true;
-            faction.hidden = true;
+            //faction.hidden = true;
         }
 
         public static bool NeverSpawn(FactionDef faction)

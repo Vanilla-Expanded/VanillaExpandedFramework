@@ -17,10 +17,6 @@ namespace VFECore
 
         static HarmonyPatches()
         {
-            #if DEBUG
-                Harmony.DEBUG = true;
-            #endif
-
             VFECore.harmonyInstance.PatchAll();
 
             // PawnApparelGenerator.PossibleApparelSet.CoatButNoShirt
