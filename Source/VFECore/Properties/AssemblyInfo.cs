@@ -35,4 +35,4 @@ using System.Runtime.InteropServices;
 
 // Leaving AssemblyVersion as is to prevent requiring recompiles of other mods
 [assembly: AssemblyVersion("1.1.7.0")]
-[assembly: AssemblyFileVersion("1.1.8.0")]
+[assembly: AssemblyFileVersion("1.1.9.0")]
