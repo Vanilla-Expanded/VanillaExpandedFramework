@@ -31,6 +31,7 @@ namespace VFECore
             {
                 if (faction == null) return false;
                 if (faction.isPlayer) return false;
+                if (!faction.canMakeRandomly && faction.hidden && faction.maxCountAtGameStart <= 0) return false;
                 var count = Find.FactionManager.AllFactions.Count(f => f.def == faction);
                 if (count > 0) return false;
                 if (Find.World?.GetComponent<NewFactionSpawningState>()?.IsIgnored(faction) == true) return false;
