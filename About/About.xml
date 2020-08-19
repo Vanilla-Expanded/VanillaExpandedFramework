@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-    <name>Vanilla Factions Expanded - Core</name>
-    <author>Oskar Potocki, XeoNovaDan</author>
+    <name>Vanilla Factions Expanded - Core - Now with Faction Discovery!</name>
+    <author>Oskar Potocki, XeoNovaDan, Orion</author>
     <url></url>
-    <description>Vanilla Factions Expanded - Core incorporates several key functionalities that may be shared across all Vanilla Factions Expanded modules. Examples of shared functionality include custom base generation, customisable sieges, faction-based pack animal textures, scenario-dependent faction relations, and shields.</description>
+    <description>Vanilla Factions Expanded - Core incorporates several key functionalities that may be shared across all Vanilla Factions Expanded modules. Examples of shared functionality include custom base generation, customisable sieges, faction-based pack animal textures, scenario-dependent faction relations, and shields.
+	
+	Now features a built-in Faction Discovery mod by Orion, fully compatible with Faction Control and Empire mods.</description>
     <packageId>OskarPotocki.VanillaFactionsExpanded.Core</packageId>
     <supportedVersions>
         <li>1.0</li>
         <li>1.1</li>
+        <li>1.2</li>
     </supportedVersions>
     <modDependencies>
 		<li>
