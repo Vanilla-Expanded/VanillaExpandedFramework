@@ -34,7 +34,7 @@ namespace VanillaStorytellersExpanded
 			// Token: 0x0600002A RID: 42 RVA: 0x00002156 File Offset: 0x00000356
 			public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 			{
-				Log.Message("FluffyResearchTree.ResearchNode.manual_Draw transpiler start (1 match todo)", false);
+				//Log.Message("FluffyResearchTree.ResearchNode.manual_Draw transpiler start (1 match todo)", false);
 				List<CodeInstruction> instructionList = instructions.ToList<CodeInstruction>();
 				MethodInfo buildingPresentInfo = AccessTools.Method(Patch_FluffyResearchTree_ResearchNode.instanceType, "BuildingPresent", null, null);
 				FieldInfo ResearchInfo = AccessTools.Field(Patch_FluffyResearchTree_ResearchNode.instanceType, "Research");
@@ -48,13 +48,13 @@ namespace VanillaStorytellersExpanded
 					bool flag = instruction.opcode == OpCodes.Call && instruction.OperandIs(buildingPresentInfo);
 					if (flag)
 					{
-						Log.Message("FluffyResearchTree.ResearchNode.manual_Draw match 1 of 1", false);
+						//Log.Message("FluffyResearchTree.ResearchNode.manual_Draw match 1 of 1", false);
 						num = buildingPresentCalls;
 						buildingPresentCalls = num + 1;
 						bool flag2 = buildingPresentCalls == buildingPresentCallCount;
 						if (flag2)
 						{
-							Log.Message("FluffyResearchTree.ResearchNode.manual_Draw finalise", false);
+							//Log.Message("FluffyResearchTree.ResearchNode.manual_Draw finalise", false);
 							yield return instruction;
 							yield return new CodeInstruction(OpCodes.Ldarg_0, null);
 							yield return new CodeInstruction(OpCodes.Ldfld, ResearchInfo);

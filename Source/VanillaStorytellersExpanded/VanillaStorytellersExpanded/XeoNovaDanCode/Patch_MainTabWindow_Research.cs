@@ -19,7 +19,7 @@ namespace VanillaStorytellersExpanded
 			// Token: 0x0600001B RID: 27 RVA: 0x00002102 File Offset: 0x00000302
 			public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 			{
-				Log.Message("MainTabWindow_Research.DrawRightRect transpiler start (1 match todo)", false);
+				//Log.Message("MainTabWindow_Research.DrawRightRect transpiler start (1 match todo)", false);
 				List<CodeInstruction> instructionList = instructions.ToList<CodeInstruction>();
 				MethodInfo getAllDefsListForReadingInfo = AccessTools.Property(typeof(DefDatabase<ResearchProjectDef>), "AllDefsListForReading").GetGetMethod();
 				MethodInfo allowedResearchProjectsInfo = AccessTools.Method(typeof(Patch_MainTabWindow_Research.DrawRightRect), "AllowedResearchProjects", null, null);
@@ -30,7 +30,7 @@ namespace VanillaStorytellersExpanded
 					bool flag = instruction.opcode == OpCodes.Call && instruction.OperandIs(getAllDefsListForReadingInfo);
 					if (flag)
 					{
-						Log.Message("MainTabWindow_Research.DrawRightRect match 1 of 1", false);
+						//Log.Message("MainTabWindow_Research.DrawRightRect match 1 of 1", false);
 						yield return instruction;
 						instruction = new CodeInstruction(OpCodes.Call, allowedResearchProjectsInfo);
 					}
