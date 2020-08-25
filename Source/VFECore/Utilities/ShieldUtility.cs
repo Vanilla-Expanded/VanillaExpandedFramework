@@ -32,8 +32,13 @@ namespace VFECore
 
         public static bool IsShield(this Thing thing, out CompShield shieldComp)
         {
-            shieldComp = thing.TryGetComp<CompShield>();
-            return shieldComp != null;
+            if (thing is Apparel_Shield shield)
+            {
+                shieldComp = shield.CompShield;
+                return shieldComp != null;
+            }
+            shieldComp = null;
+            return false;
         }
 
         public static bool IsShield(this ThingDef tDef)
