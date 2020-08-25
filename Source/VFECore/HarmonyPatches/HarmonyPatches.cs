@@ -33,22 +33,13 @@ namespace VFECore
                 else
                     Log.Error("Could not find type DualWield.Harmony.FloatMenuMakerMap_AddHumanlikeOrders in Dual Wield");
 
-                var extEquipmentTracker = GenTypes.GetTypeInAnyAssembly("DualWield.Ext_Pawn_EquipmentTracker", "DualWield");
-                if (extEquipmentTracker != null)
-                    VFECore.harmonyInstance.Patch(AccessTools.Method(extEquipmentTracker, "MakeRoomForOffHand"),
-                        postfix: new HarmonyMethod(typeof(Patch_DualWield_Ext_Pawn_EquipmentTracker.manual_MakeRoomForOffHand), "Postfix"));
-                else
-                    Log.Error("Could not find type DualWield.Ext_Pawn_EquipmentTracker in Dual Wield");
-            }
-
-            // Facial Stuff
-            if (ModCompatibilityCheck.FacialStuff)
-            {
-                var humanBipedDrawer = GenTypes.GetTypeInAnyAssembly("FacialStuff.HumanBipedDrawer", "FacialStuff");
-                if (humanBipedDrawer != null)
-                    VFECore.harmonyInstance.Patch(AccessTools.Method(humanBipedDrawer, "DrawApparel"), transpiler: new HarmonyMethod(typeof(Patch_PawnRenderer.RenderPawnInternal), "Transpiler"));
-                else
-                    Log.Error("Could not find type FacialStuff.HumanBipedDrawer in Facial Stuff");
+                // Taranchuk: no idea how to handle this
+                //var extEquipmentTracker = GenTypes.GetTypeInAnyAssembly("DualWield.Ext_Pawn_EquipmentTracker", "DualWield");
+                //if (extEquipmentTracker != null)
+                //    VFECore.harmonyInstance.Patch(AccessTools.Method(extEquipmentTracker, "MakeRoomForOffHand"),
+                //        postfix: new HarmonyMethod(typeof(Patch_DualWield_Ext_Pawn_EquipmentTracker.manual_MakeRoomForOffHand), "Postfix"));
+                //else
+                //    Log.Error("Could not find type DualWield.Ext_Pawn_EquipmentTracker in Dual Wield");
             }
 
             // RimCities

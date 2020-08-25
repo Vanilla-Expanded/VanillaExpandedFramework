@@ -55,7 +55,7 @@ namespace VFECore
             private static bool ShouldSetStance(bool original, Pawn_StanceTracker stanceTracker, Stance_Cooldown stance)
             {
                 // Also factor in off-hand shield
-                return original || stanceTracker.pawn.equipment.OffHandShield() == stance.verb.EquipmentSource;
+                return original || stanceTracker.pawn.OffHandShield() == stance.verb.EquipmentSource;
             }
 
         }

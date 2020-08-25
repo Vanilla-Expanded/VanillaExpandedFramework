@@ -17,7 +17,7 @@ namespace VFECore
 
         public static void Reset()
         {
-            Predicate<ThingDef> isShield = (ThingDef td) => td.equipmentType == EquipmentType.Primary && td.GetCompProperties<CompProperties_Shield>() is CompProperties_Shield shieldProps && !shieldProps.shieldTags.NullOrEmpty();
+            Predicate<ThingDef> isShield = (ThingDef td) => td.GetCompProperties<CompProperties_Shield>() is CompProperties_Shield shieldProps && !shieldProps.shieldTags.NullOrEmpty();
             allShieldPairs = ThingStuffPair.AllWith(isShield);
             using (IEnumerator<ThingDef> enumerator = (from td in DefDatabase<ThingDef>.AllDefs where isShield(td) select td).GetEnumerator())
             {
@@ -95,7 +95,7 @@ namespace VFECore
             ThingStuffPair thingStuffPair;
             if (workingShields.TryRandomElementByWeight((ThingStuffPair w) => w.Commonality * w.Price, out thingStuffPair))
             {
-                var shield = (ThingWithComps)ThingMaker.MakeThing(thingStuffPair.thing, thingStuffPair.stuff);
+                var shield = (Apparel)ThingMaker.MakeThing(thingStuffPair.thing, thingStuffPair.stuff);
                 PawnGenerator.PostProcessGeneratedGear(shield, pawn);
 
                 // Colour the shield
@@ -105,8 +105,7 @@ namespace VFECore
                     if (!thingDefExtension.useFactionColourForPawnKinds.NullOrEmpty() && thingDefExtension.useFactionColourForPawnKinds.Contains(pawn.kindDef))
                         shield.SetColor(pawn.Faction.Color);
                 }
-
-                pawn.equipment.AddShield(shield);
+                pawn.AddShield(shield);
                 shield.GetComp<CompShield>().equippedOffHand = true;
             }
             workingShields.Clear();

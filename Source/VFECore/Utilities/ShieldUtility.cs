@@ -32,8 +32,13 @@ namespace VFECore
 
         public static bool IsShield(this Thing thing, out CompShield shieldComp)
         {
-            shieldComp = thing.TryGetComp<CompShield>();
-            return shieldComp != null;
+            if (thing is Apparel_Shield shield)
+            {
+                shieldComp = shield.CompShield;
+                return shieldComp != null;
+            }
+            shieldComp = null;
+            return false;
         }
 
         public static bool IsShield(this ThingDef tDef)
@@ -51,19 +56,16 @@ namespace VFECore
             return ThingDefExtension.Get(def).usableWithShields;
         }
 
-        public static ThingWithComps OffHandShield(this Pawn_EquipmentTracker equipment)
+        public static ThingWithComps OffHandShield(this Pawn pawn)
         {
-            // Get the first shield that the pawn has equipped which isn't in the primary slot
-            return equipment.AllEquipmentListForReading.FirstOrDefault(t => t.IsShield(out CompShield shieldComp) && shieldComp.equippedOffHand);
+            return pawn.apparel?.WornApparel?.FirstOrDefault(t => t.IsShield(out CompShield shieldComp) && shieldComp.equippedOffHand);
         }
 
-        public static void MakeRoomForShield(this Pawn_EquipmentTracker equipment, ThingWithComps eq)
+        public static void MakeRoomForShield(this Pawn pawn, ThingWithComps eq)
         {
-            if (eq.def.equipmentType == EquipmentType.Primary)
-            {
-                if (equipment.OffHandShield() != null)
+                if (pawn.OffHandShield() != null)
                 {
-                    if (equipment.TryDropEquipment(equipment.OffHandShield(), out ThingWithComps thingWithComps, equipment.pawn.Position, true))
+                    if (pawn.apparel.TryDrop((Apparel)pawn.OffHandShield(), out Apparel thingWithComps, pawn.Position, true))
                     {
                         if (thingWithComps != null)
                         {
@@ -72,36 +74,34 @@ namespace VFECore
                     }
                     else
                     {
-                        Log.Error(equipment.pawn + " couldn't make room for shield " + eq, false);
+                        Log.Error(pawn + " couldn't make room for shield " + eq, false);
                     }
                 }
 
-                // Prevent infinite looping :P
-                else if (ModCompatibilityCheck.DualWield && NonPublicMethods.DualWield.Ext_Pawn_EquipmentTracker_TryGetOffHandEquipment(equipment, out ThingWithComps eq2))
-                    NonPublicMethods.DualWield.Ext_Pawn_EquipmentTracker_MakeRoomForOffHand(equipment, eq2);
-            }
-            
+                // Taranchuk: no idea how to handle this
+                //// Prevent infinite looping :P
+                //else if (ModCompatibilityCheck.DualWield && NonPublicMethods.DualWield.Ext_Pawn_EquipmentTracker_TryGetOffHandEquipment(equipment, out ThingWithComps eq2))
+                //    NonPublicMethods.DualWield.Ext_Pawn_EquipmentTracker_MakeRoomForOffHand(equipment, eq2);
+
         }
 
-        public static void AddShield(this Pawn_EquipmentTracker equipment, ThingWithComps newEq)
+        public static void AddShield(this Pawn pawn, Apparel newShield)
         {
-            if (newEq.def.equipmentType == EquipmentType.Primary && equipment.OffHandShield() != null)
+            if (pawn.OffHandShield() != null)
             {
                 Log.Error(string.Concat(new object[]
                 {
                     "Pawn ",
-                    equipment.pawn.LabelCap,
+                    pawn.LabelCap,
                     " got shield ",
-                    newEq,
-                    " while already having shield ",
-                    equipment.Primary
+                    newShield,
+                    " while already having shield "
                 }), false);
                 return;
             }
-            if (((ThingOwner<ThingWithComps>)NonPublicFields.Pawn_EquipmentTracker_equipment.GetValue(equipment)).TryAdd(newEq, true))
-                newEq.GetComp<CompShield>().equippedOffHand = true;
+            pawn.apparel.Wear(newShield);
+            newShield.GetComp<CompShield>().equippedOffHand = true;
         }
-
     }
 
 }

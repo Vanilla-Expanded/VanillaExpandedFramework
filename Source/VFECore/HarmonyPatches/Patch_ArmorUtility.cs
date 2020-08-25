@@ -28,10 +28,10 @@ namespace VFECore
                 if (damageDef.armorCategory != null)
                 {
                     var armourRating = damageDef.armorCategory.armorRatingStat;
-                    if (pawn.equipment != null)
+                    if (pawn.apparel != null)
                     {
                         // Multiple shields? Why not I guess
-                        var equipmentList = pawn.equipment.AllEquipmentListForReading;
+                        var equipmentList = pawn.apparel.WornApparel;
                         for (int i = 0; i < equipmentList.Count; i++)
                         {
                             var curEq = equipmentList[i];
