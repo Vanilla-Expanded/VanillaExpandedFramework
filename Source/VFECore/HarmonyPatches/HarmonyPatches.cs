@@ -42,16 +42,6 @@ namespace VFECore
                 //    Log.Error("Could not find type DualWield.Ext_Pawn_EquipmentTracker in Dual Wield");
             }
 
-            // Facial Stuff
-            if (ModCompatibilityCheck.FacialStuff)
-            {
-                //var humanBipedDrawer = GenTypes.GetTypeInAnyAssembly("FacialStuff.HumanBipedDrawer", "FacialStuff");
-                //if (humanBipedDrawer != null)
-                //    VFECore.harmonyInstance.Patch(AccessTools.Method(humanBipedDrawer, "DrawApparel"), transpiler: new HarmonyMethod(typeof(Patch_PawnRenderer.RenderPawnInternal), "Transpiler"));
-                //else
-                //    Log.Error("Could not find type FacialStuff.HumanBipedDrawer in Facial Stuff");
-            }
-
             // RimCities
             if (ModCompatibilityCheck.RimCities)
             {
