@@ -14,18 +14,6 @@ namespace VFECore
 
     public static class Patch_PawnGraphicSet
     {
-
-        [HarmonyPatch(typeof(PawnGraphicSet), nameof(PawnGraphicSet.MatsBodyBaseAt))]
-        public static class MatsBodyBaseAt
-        {
-
-            public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-            {
-                return Patch_PawnRenderer.RenderPawnInternal.Transpiler(instructions);
-            }
-
-        }
-
         [HarmonyPatch(typeof(PawnGraphicSet), nameof(PawnGraphicSet.ResolveAllGraphics))]
         public static class ResolveAllGraphics
         {

@@ -1,0 +1,99 @@
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using UnityEngine;
+using Verse;
+using Verse.Sound;
+using RimWorld;
+using Verse.AI.Group;
+
+namespace VFECore
+{
+    public class Apparel_Shield : Apparel
+    {
+        private bool CarryWeaponOpenly()
+        {
+            if (this.Wearer.carryTracker != null && this.Wearer.carryTracker.CarriedThing != null)
+            {
+                return false;
+            }
+            if (this.Wearer.Drafted)
+            {
+                return true;
+            }
+            if (this.Wearer.CurJob != null && this.Wearer.CurJob.def.alwaysShowWeapon)
+            {
+                return true;
+            }
+            if (this.Wearer.mindState.duty != null && this.Wearer.mindState.duty.def.alwaysShowWeapon)
+            {
+                return true;
+            }
+            Lord lord = this.Wearer.GetLord();
+            if (lord != null && lord.LordJob != null && lord.LordJob.AlwaysShowWeapon)
+            {
+                return true;
+            }
+            return false;
+        }
+        private Vector3 GetAimingVector(Vector3 rootLoc)
+        {
+            Stance_Busy stance_Busy = this.Wearer.stances.curStance as Stance_Busy;
+            if (stance_Busy != null && !stance_Busy.neverAimWeapon && stance_Busy.focusTarg.IsValid)
+            {
+                Vector3 a = (!stance_Busy.focusTarg.HasThing) ? stance_Busy.focusTarg.Cell.ToVector3Shifted() : stance_Busy.focusTarg.Thing.DrawPos;
+                float num = 0f;
+                if ((a - this.Wearer.DrawPos).MagnitudeHorizontalSquared() > 0.001f)
+                {
+                    num = (a - this.Wearer.DrawPos).AngleFlat();
+                }
+                Vector3 drawLoc = rootLoc + new Vector3(0f, 0f, 0.4f).RotatedBy(num);
+                drawLoc.y += 9f / 245f;
+                return drawLoc;
+            }
+            else if (CarryWeaponOpenly())
+            {
+                if (this.Wearer.Rotation == Rot4.South)
+                {
+                    Vector3 drawLoc2 = rootLoc + new Vector3(0f, 0f, -0.22f);
+                    drawLoc2.y += 9f / 245f;
+                    return drawLoc2;
+                }
+                else if (this.Wearer.Rotation == Rot4.North)
+                {
+                    Vector3 drawLoc3 = rootLoc + new Vector3(0f, 0f, -0.11f);
+                    drawLoc3.y += 0f;
+                    return drawLoc3;
+                }
+                else if (this.Wearer.Rotation == Rot4.East)
+                {
+                    Vector3 drawLoc4 = rootLoc + new Vector3(0.2f, 0f, -0.22f);
+                    drawLoc4.y += 9f / 245f;
+                    return drawLoc4;
+                }
+                else if (this.Wearer.Rotation == Rot4.West)
+                {
+                    Vector3 drawLoc5 = rootLoc + new Vector3(-0.2f, 0f, -0.22f);
+                    drawLoc5.y += 9f / 245f;
+                    return drawLoc5;
+                }
+            }
+
+            return default(Vector3);
+        }
+
+        public override void DrawWornExtras()
+        {
+            if (this.Wearer.Dead || !this.Wearer.Spawned || (this.Wearer.CurJob != null && this.Wearer.CurJob.def.neverShowWeapon))
+            {
+                return;
+            }
+            var shieldComp = this.GetComp<CompShield>();
+            if (shieldComp.UsableNow)
+            {
+                var curHoldOffset = shieldComp.Props.offHandHoldOffset.Pick(Wearer.Rotation);
+                var finalDrawLoc = this.GetAimingVector(this.Wearer.DrawPos) + curHoldOffset.offset + new Vector3(0, (curHoldOffset.behind ? -0.0390625f : 0.0390625f), 0);
+                shieldComp.Props.offHandGraphicData.GraphicColoredFor(this).Draw(finalDrawLoc, (curHoldOffset.flip ? Wearer.Rotation.Opposite : Wearer.Rotation), Wearer);
+            }
+        }
+    }   
+}

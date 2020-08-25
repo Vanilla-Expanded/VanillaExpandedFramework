@@ -35,7 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\..\..\workshop\content\294100\2009463077\Current\Assemblies\0Harmony.dll</HintPath>
+      <HintPath>..\..\..\Harmony\Current\Assemblies\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp, Version=1.1.7459.20020, Culture=neutral, processorArchitecture=MSIL">
@@ -63,70 +63,69 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AI\JobDrivers\JobDriver_EquipShield.cs" />
     <Compile Include="AI\Lords\LordJob_SiegeCustom.cs" />
     <Compile Include="AI\Lords\LordToilData_SiegeCustom.cs" />
     <Compile Include="AI\Lords\LordToil_SiegeCustom.cs" />
-    <Compile Include="Comps\WorldComponents\FactionGoodwillModifier.cs" />
+    <Compile Include="Apparels\Apparel_Shield.cs" />
+    <Compile Include="BaseGen\VFEResolveParams.cs" />
     <Compile Include="Comps\ThingComps\CompProperties_Shield.cs" />
     <Compile Include="Comps\ThingComps\CompShield.cs" />
+    <Compile Include="Comps\WorldComponents\FactionGoodwillModifier.cs" />
     <Compile Include="Comps\WorldComponents\NewFactionSpawningState.cs" />
-    <Compile Include="DefOf\IncidentDefOf.cs" />
-    <Compile Include="Defs\SiegeParameterSetDef.cs" />
+    <Compile Include="DefModExtensions\FactionDefExtension.cs" />
+    <Compile Include="DefModExtensions\IncidentDefExtension.cs" />
+    <Compile Include="DefModExtensions\PawnKindDefExtension.cs" />
+    <Compile Include="DefModExtensions\ResearchProjectDefExtension.cs" />
+    <Compile Include="DefModExtensions\ThingDefExtension.cs" />
     <Compile Include="DefOf\ApparelLayerDefOf.cs" />
+    <Compile Include="DefOf\IncidentDefOf.cs" />
     <Compile Include="DefOf\JobDefOf.cs" />
     <Compile Include="DefOf\ScenPartDefOf.cs" />
-    <Compile Include="AI\JobDrivers\JobDriver_EquipShield.cs" />
+    <Compile Include="Defs\SiegeParameterSetDef.cs" />
     <Compile Include="Dialogs\FactionSpawning\Dialog_NewFactionSpawning.cs" />
     <Compile Include="Dialogs\FactionSpawning\Dialog_NewFactionSpawningSettlements.cs" />
-    <Compile Include="HarmonyPatches\Patch_RandomSettlementTileFor.cs" />
-    <Compile Include="Utilities\NewFactionSpawningUtility.cs" />
+    <Compile Include="HarmonyPatches\DualWield\Patch_DualWield_Ext_Pawn_EquipmentTracker.cs" />
+    <Compile Include="HarmonyPatches\DualWield\Patch_DualWield_Harmony_FloatMenuMakerMap_AddHumanlikeOrders.cs" />
     <Compile Include="HarmonyPatches\FactionSpawning\Patch_FactionDiscovery_ModBase.cs" />
     <Compile Include="HarmonyPatches\FactionSpawning\Patch_GameComponentUtility.cs" />
     <Compile Include="HarmonyPatches\HarmonyPatches.cs" />
     <Compile Include="HarmonyPatches\Patch_ArmorUtility.cs" />
     <Compile Include="HarmonyPatches\Patch_CompEquippable.cs" />
-    <Compile Include="HarmonyPatches\DualWield\Patch_DualWield_Ext_Pawn_EquipmentTracker.cs" />
-    <Compile Include="HarmonyPatches\DualWield\Patch_DualWield_Harmony_FloatMenuMakerMap_AddHumanlikeOrders.cs" />
     <Compile Include="HarmonyPatches\Patch_FloatMenuMakerMap.cs" />
     <Compile Include="HarmonyPatches\Patch_Game.cs" />
     <Compile Include="HarmonyPatches\Patch_GenStep_Settlement.cs" />
-    <Compile Include="HarmonyPatches\Patch_ITab_Pawn_Gear.cs" />
     <Compile Include="HarmonyPatches\Patch_IncidentWorker_WandererJoin.cs" />
-    <Compile Include="HarmonyPatches\Patch_ThingDef.cs" />
-    <Compile Include="HarmonyPatches\Patch_PawnApparelGenerator.cs" />
-    <Compile Include="HarmonyPatches\Patch_TraderCaravanUtility.cs" />
-    <Compile Include="HarmonyPatches\Patch_PawnGenerator.cs" />
+    <Compile Include="HarmonyPatches\Patch_ITab_Pawn_Gear.cs" />
     <Compile Include="HarmonyPatches\Patch_Pawn.cs" />
+    <Compile Include="HarmonyPatches\Patch_PawnApparelGenerator.cs" />
+    <Compile Include="HarmonyPatches\Patch_PawnGenerator.cs" />
     <Compile Include="HarmonyPatches\Patch_PawnGraphicSet.cs" />
-    <Compile Include="HarmonyPatches\Patch_PawnRenderer.cs" />
     <Compile Include="HarmonyPatches\Patch_Pawn_EquipmentTracker.cs" />
     <Compile Include="HarmonyPatches\Patch_Pawn_HealthTracker.cs" />
     <Compile Include="HarmonyPatches\Patch_RaidStrategyWorker_Siege.cs" />
+    <Compile Include="HarmonyPatches\Patch_RandomSettlementTileFor.cs" />
     <Compile Include="HarmonyPatches\Patch_ResearchProjectDef.cs" />
+    <Compile Include="HarmonyPatches\Patch_ThingDef.cs" />
+    <Compile Include="HarmonyPatches\Patch_TraderCaravanUtility.cs" />
+    <Compile Include="HarmonyPatches\Patch_Verb.cs" />
     <Compile Include="HarmonyPatches\RimCities\Patch_Cities_GenCity.cs" />
     <Compile Include="HarmonyPatches\RPGStyleInventory\Patch_Sandy_Detailed_RPG_GearTab_Sandy_Detailed_RPG_Inventory.cs" />
-    <Compile Include="HarmonyPatches\Patch_StatWorker.cs" />
-    <Compile Include="HarmonyPatches\Patch_Verb.cs" />
     <Compile Include="HarmonyPatches\RunAndGun\Patch_RunAndGun_Harmony_Verb_TryCastNextBurstShot.cs" />
     <Compile Include="IncidentWorkers\IncidentWorker_RaidEnemySpecial.cs" />
     <Compile Include="ModCompatibilityCheck.cs" />
-    <Compile Include="Utilities\ExtendedFactionUtility.cs" />
-    <Compile Include="VFECore.cs" />
-    <Compile Include="StaticConstructorClass.cs" />
     <Compile Include="PawnShieldGenerator.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\NonPublicFields.cs" />
     <Compile Include="Reflection\NonPublicMethods.cs" />
-    <Compile Include="Utilities\CustomSiegeUtility.cs" />
-    <Compile Include="DefModExtensions\FactionDefExtension.cs" />
-    <Compile Include="DefModExtensions\IncidentDefExtension.cs" />
-    <Compile Include="DefModExtensions\PawnKindDefExtension.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DefModExtensions\ResearchProjectDefExtension.cs" />
-    <Compile Include="DefModExtensions\ThingDefExtension.cs" />
-    <Compile Include="Utilities\ScenPartUtility.cs" />
     <Compile Include="ScenParts\ScenPart_ForcedFactionGoodwill.cs" />
+    <Compile Include="StaticConstructorClass.cs" />
+    <Compile Include="Utilities\CustomSiegeUtility.cs" />
+    <Compile Include="Utilities\ExtendedFactionUtility.cs" />
+    <Compile Include="Utilities\NewFactionSpawningUtility.cs" />
+    <Compile Include="Utilities\ScenPartUtility.cs" />
     <Compile Include="Utilities\ShieldUtility.cs" />
-    <Compile Include="BaseGen\VFEResolveParams.cs" />
+    <Compile Include="VFECore.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

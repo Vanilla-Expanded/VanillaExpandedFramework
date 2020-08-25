@@ -44,11 +44,11 @@ namespace VFECore
             // Facial Stuff
             if (ModCompatibilityCheck.FacialStuff)
             {
-                var humanBipedDrawer = GenTypes.GetTypeInAnyAssembly("FacialStuff.HumanBipedDrawer", "FacialStuff");
-                if (humanBipedDrawer != null)
-                    VFECore.harmonyInstance.Patch(AccessTools.Method(humanBipedDrawer, "DrawApparel"), transpiler: new HarmonyMethod(typeof(Patch_PawnRenderer.RenderPawnInternal), "Transpiler"));
-                else
-                    Log.Error("Could not find type FacialStuff.HumanBipedDrawer in Facial Stuff");
+                //var humanBipedDrawer = GenTypes.GetTypeInAnyAssembly("FacialStuff.HumanBipedDrawer", "FacialStuff");
+                //if (humanBipedDrawer != null)
+                //    VFECore.harmonyInstance.Patch(AccessTools.Method(humanBipedDrawer, "DrawApparel"), transpiler: new HarmonyMethod(typeof(Patch_PawnRenderer.RenderPawnInternal), "Transpiler"));
+                //else
+                //    Log.Error("Could not find type FacialStuff.HumanBipedDrawer in Facial Stuff");
             }
 
             // RimCities

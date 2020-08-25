@@ -65,7 +65,6 @@ namespace VFECore
             // Go through each covered body part group in Props and each body part group within partRec; return if there are any matches
             return Props.coveredBodyPartGroups.Any(p => partRec.groups.Any(p2 => p == p2));
         }
-
         public override void PostExposeData()
         {
             Scribe_Values.Look(ref equippedOffHand, "equippedOffHand");

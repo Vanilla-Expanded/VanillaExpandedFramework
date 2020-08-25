@@ -105,8 +105,7 @@ namespace VFECore
                     if (!thingDefExtension.useFactionColourForPawnKinds.NullOrEmpty() && thingDefExtension.useFactionColourForPawnKinds.Contains(pawn.kindDef))
                         shield.SetColor(pawn.Faction.Color);
                 }
-
-                pawn.equipment.AddShield(shield);
+                pawn.equipment.AddShield(shield, pawn);
                 shield.GetComp<CompShield>().equippedOffHand = true;
             }
             workingShields.Clear();

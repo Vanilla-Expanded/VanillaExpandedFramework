@@ -83,7 +83,7 @@ namespace VFECore
             
         }
 
-        public static void AddShield(this Pawn_EquipmentTracker equipment, ThingWithComps newEq)
+        public static void AddShield(this Pawn_EquipmentTracker equipment, ThingWithComps newEq, Pawn wearer)
         {
             if (newEq.def.equipmentType == EquipmentType.Primary && equipment.OffHandShield() != null)
             {
@@ -98,10 +98,10 @@ namespace VFECore
                 }), false);
                 return;
             }
-            if (((ThingOwner<ThingWithComps>)NonPublicFields.Pawn_EquipmentTracker_equipment.GetValue(equipment)).TryAdd(newEq, true))
-                newEq.GetComp<CompShield>().equippedOffHand = true;
-        }
 
+            wearer.apparel.Wear((Apparel)newEq);
+            newEq.GetComp<CompShield>().equippedOffHand = true;
+        }
     }
 
 }

@@ -16,7 +16,6 @@ namespace VFECore
         [HarmonyPatch(typeof(Pawn_EquipmentTracker), nameof(Pawn_EquipmentTracker.AddEquipment))]
         public static class AddEquipment
         {
-
             public static bool Prefix(Pawn_EquipmentTracker __instance, ThingWithComps newEq, ThingOwner<ThingWithComps> ___equipment)
             {
                 // If the pawn's primary is a shield that was designated to be equipped off-hand, proceed with equipping normally
