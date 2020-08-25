@@ -53,7 +53,7 @@ namespace VFECore
 
         public static ThingWithComps OffHandShield(this Pawn pawn)
         {
-            return pawn.apparel.WornApparel.FirstOrDefault(t => t.IsShield(out CompShield shieldComp) && shieldComp.equippedOffHand);
+            return pawn.apparel?.WornApparel?.FirstOrDefault(t => t.IsShield(out CompShield shieldComp) && shieldComp.equippedOffHand);
         }
 
         public static void MakeRoomForShield(this Pawn pawn, ThingWithComps eq)

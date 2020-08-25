@@ -38,7 +38,6 @@ namespace VFECore
         private Vector3 GetAimingVector(Vector3 rootLoc)
         {
             // copied from vanilla DrawEquipment method
-
             Stance_Busy stance_Busy = this.Wearer.stances.curStance as Stance_Busy;
             if (stance_Busy != null && !stance_Busy.neverAimWeapon && stance_Busy.focusTarg.IsValid)
             {
@@ -79,22 +78,44 @@ namespace VFECore
                     return drawLoc5;
                 }
             }
-
             return default(Vector3);
         }
+
+        public CompShield comp = null;
+        public CompShield CompShield
+        {
+            get
+            {
+                if (comp == null)
+                {
+                    comp = this.GetComp<CompShield>();
+                }
+                return comp;
+            } 
+        }
+
+        public Graphic shieldGraphic = null;
+        public Graphic ShieldGraphic
+        {
+            get
+            {
+                if (shieldGraphic == null)
+                {
+                    shieldGraphic = CompShield.Props.offHandGraphicData.GraphicColoredFor(this);
+                }
+                return shieldGraphic;
+            }
+        }
+
         public override void DrawWornExtras()
         {
             if (this.Wearer.Dead || !this.Wearer.Spawned || (this.Wearer.CurJob != null && this.Wearer.CurJob.def.neverShowWeapon))
             {
                 return;
             }
-            var shieldComp = this.GetComp<CompShield>();
-            if (shieldComp.UsableNow)
-            {
-                var curHoldOffset = shieldComp.Props.offHandHoldOffset.Pick(Wearer.Rotation);
-                var finalDrawLoc = this.GetAimingVector(this.Wearer.DrawPos) + curHoldOffset.offset + new Vector3(0, (curHoldOffset.behind ? -0.0390625f : 0.0390625f), 0);
-                shieldComp.Props.offHandGraphicData.GraphicColoredFor(this).Draw(finalDrawLoc, (curHoldOffset.flip ? Wearer.Rotation.Opposite : Wearer.Rotation), Wearer);
-            }
+            var curHoldOffset = CompShield.Props.offHandHoldOffset.Pick(Wearer.Rotation);
+            var finalDrawLoc = this.GetAimingVector(this.Wearer.DrawPos) + curHoldOffset.offset + new Vector3(0, (curHoldOffset.behind ? -0.0390625f : 0.0390625f), 0);
+            ShieldGraphic.Draw(finalDrawLoc, (curHoldOffset.flip ? Wearer.Rotation.Opposite : Wearer.Rotation), Wearer);
         }
     }   
 }
