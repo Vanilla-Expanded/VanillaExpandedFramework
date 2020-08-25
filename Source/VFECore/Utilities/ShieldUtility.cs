@@ -101,6 +101,11 @@ namespace VFECore
             }
             pawn.apparel.Wear(newShield);
             newShield.GetComp<CompShield>().equippedOffHand = true;
+            foreach (var verb in newShield.GetComp<CompEquippable>().AllVerbs)
+            {
+                verb.caster = newShield.Wearer;
+                verb.Reset();
+            }
         }
     }
 

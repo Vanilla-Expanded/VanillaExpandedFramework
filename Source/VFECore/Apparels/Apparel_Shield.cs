@@ -10,6 +10,18 @@ namespace VFECore
 {
     public class Apparel_Shield : Apparel
     {
+
+        public override void SpawnSetup(Map map, bool respawningAfterLoad)
+        {
+            base.SpawnSetup(map, respawningAfterLoad);
+            Log.Message(this + " - SpawnSetup", true);
+        }
+
+        public override void PostMapInit()
+        {
+            base.PostMapInit();
+            Log.Message(this + " - PostMapInit", true);
+        }
         private bool CarryWeaponOpenly()
         {
             if (this.Wearer.carryTracker != null && this.Wearer.carryTracker.CarriedThing != null)
@@ -35,6 +47,7 @@ namespace VFECore
             }
             return false;
         }
+
         private Vector3 GetAimingVector(Vector3 rootLoc)
         {
             // copied from vanilla DrawEquipment method
