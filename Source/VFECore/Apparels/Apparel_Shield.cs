@@ -133,5 +133,11 @@ namespace VFECore
                 ShieldGraphic.Draw(finalDrawLoc, (curHoldOffset.flip ? Wearer.Rotation.Opposite : Wearer.Rotation), Wearer);
             }
         }
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Values.Look(ref cachedUsableNow, "cachedUsableNow", false);
+        }
     }   
 }
