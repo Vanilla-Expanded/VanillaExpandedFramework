@@ -63,7 +63,6 @@ namespace VFECore
             // Go through each covered body part group in Props and each body part group within partRec; return if there are any matches
             return Props.coveredBodyPartGroups.Any(p => partRec.groups.Any(p2 => p == p2));
         }
-
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
@@ -73,7 +72,6 @@ namespace VFECore
                 if (respawningAfterLoad && this.parent.GetType() == typeof(ThingWithComps) && this.parent.def.thingClass != typeof(ThingWithComps))
                 {
                     var newShield = ThingMaker.MakeThing(ThingDef.Named(this.parent.def.defName), this.parent.Stuff) as Apparel_Shield;
-                    newShield.comp.equippedOffHand = this.equippedOffHand;
                     newShield.HitPoints = this.parent.HitPoints;
                     if (this.parent.TryGetQuality(out QualityCategory quality))
                     {
@@ -85,6 +83,7 @@ namespace VFECore
             }
             catch { }
         }
+
         public override void PostExposeData()
         {
             Scribe_Values.Look(ref equippedOffHand, "equippedOffHand");
@@ -97,31 +96,29 @@ namespace VFECore
                     if (this.ParentHolder is Pawn_EquipmentTracker eq)
                     {
                         var newShield = ThingMaker.MakeThing(ThingDef.Named(this.parent.def.defName), this.parent.Stuff) as Apparel_Shield;
-                        newShield.comp.equippedOffHand = this.equippedOffHand;
                         newShield.HitPoints = this.parent.HitPoints;
                         if (this.parent.TryGetQuality(out QualityCategory quality))
                         {
                             newShield.TryGetComp<CompQuality>()?.SetQuality(quality, ArtGenerationContext.Colony);
                         }
                         eq.Remove(this.parent);
-                        eq.pawn.AddShield(newShield as Apparel);
+                        eq.pawn.AddShield(newShield);
                         this.parent.Destroy(DestroyMode.Vanish);
                     }
                     else if (this.ParentHolder is Pawn_ApparelTracker ap)
                     {
                         var newShield = ThingMaker.MakeThing(ThingDef.Named(this.parent.def.defName), this.parent.Stuff) as Apparel_Shield;
-                        newShield.comp.equippedOffHand = this.equippedOffHand;
                         newShield.HitPoints = this.parent.HitPoints;
                         if (this.parent.TryGetQuality(out QualityCategory quality))
                         {
                             newShield.TryGetComp<CompQuality>()?.SetQuality(quality, ArtGenerationContext.Colony);
                         }
                         ap.Remove(this.parent as Apparel);
-                        ap.pawn.AddShield(newShield as Apparel);
+                        ap.pawn.AddShield(newShield);
                         this.parent.Destroy(DestroyMode.Vanish);
                     }
                 }
-                catch { };
+                catch { }
             }
         }
     }
