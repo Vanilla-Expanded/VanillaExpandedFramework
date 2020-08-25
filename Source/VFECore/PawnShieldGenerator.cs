@@ -95,7 +95,7 @@ namespace VFECore
             ThingStuffPair thingStuffPair;
             if (workingShields.TryRandomElementByWeight((ThingStuffPair w) => w.Commonality * w.Price, out thingStuffPair))
             {
-                var shield = (ThingWithComps)ThingMaker.MakeThing(thingStuffPair.thing, thingStuffPair.stuff);
+                var shield = (Apparel)ThingMaker.MakeThing(thingStuffPair.thing, thingStuffPair.stuff);
                 PawnGenerator.PostProcessGeneratedGear(shield, pawn);
 
                 // Colour the shield

@@ -8,12 +8,9 @@ using RimWorld;
 
 namespace VFECore
 {
-
     public class CompShield : ThingComp
     {
-
         public bool equippedOffHand;
-
         public CompProperties_Shield Props => (CompProperties_Shield)props;
 
         public Pawn EquippingPawn
@@ -36,19 +33,21 @@ namespace VFECore
                     // Too few hands
                     if (!EquippingPawn.CanUseShields())
                         return false;
-
-                    // Pawn's primary is this shield or is usable with shields
+                    
                     var primary = equipment.Primary;
-                    if (primary == parent || primary.def.UsableWithShields())
-                        return true;
-
-                    // Primary not usable with shields
-                    if (!primary.def.UsableWithShields())
-                        return false;
-
-                    // Dual wielding - has offhand
-                    if (ModCompatibilityCheck.DualWield && primary != null && NonPublicMethods.DualWield.Ext_Pawn_EquipmentTracker_TryGetOffHandEquipment(EquippingPawn.equipment, out ThingWithComps offHand))
-                        return false;
+                    if (primary != null)
+                    {
+                        // Dual wielding - has offhand
+                        if (ModCompatibilityCheck.DualWield && NonPublicMethods.DualWield.Ext_Pawn_EquipmentTracker_TryGetOffHandEquipment(EquippingPawn.equipment, 
+                            out ThingWithComps offHand))
+                            return false;
+                        
+                        // Pawn's primary is usable with shields or not usable with shields
+                        if (primary.def.UsableWithShields())
+                            return true;
+                        else 
+                            return false;
+                    }
                 }
 
                 // No pawn or primary, therefore can be used
@@ -68,8 +67,24 @@ namespace VFECore
         {
             Scribe_Values.Look(ref equippedOffHand, "equippedOffHand");
             base.PostExposeData();
+            
+            // Conversion from old shields to new ones (thing class is changed)
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && this.parent.GetType() == typeof(ThingWithComps) && this.ParentHolder is Pawn_EquipmentTracker eq)
+            {
+                try
+                {
+                    var newShield = ThingMaker.MakeThing(ThingDef.Named(this.parent.def.defName), this.parent.Stuff);
+                    newShield.HitPoints = this.parent.HitPoints;
+                    if (this.parent.TryGetQuality(out QualityCategory quality))
+                    {
+                        newShield.TryGetComp<CompQuality>()?.SetQuality(quality, ArtGenerationContext.Colony);
+                    }
+                    eq.Remove(this.parent);
+                    eq.pawn.AddShield(newShield as Apparel);
+                }
+                catch { };
+            }
         }
-
     }
 
 }

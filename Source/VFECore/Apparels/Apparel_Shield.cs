@@ -37,6 +37,8 @@ namespace VFECore
         }
         private Vector3 GetAimingVector(Vector3 rootLoc)
         {
+            // copied from vanilla DrawEquipment method
+
             Stance_Busy stance_Busy = this.Wearer.stances.curStance as Stance_Busy;
             if (stance_Busy != null && !stance_Busy.neverAimWeapon && stance_Busy.focusTarg.IsValid)
             {
@@ -80,13 +82,6 @@ namespace VFECore
 
             return default(Vector3);
         }
-
-        public override void Draw()
-        {
-            base.Draw();
-            Log.Message("DRAW", true);
-        }
-
         public override void DrawWornExtras()
         {
             if (this.Wearer.Dead || !this.Wearer.Spawned || (this.Wearer.CurJob != null && this.Wearer.CurJob.def.neverShowWeapon))

@@ -80,7 +80,7 @@ namespace VFECore
 
         }
 
-        public static void AddShield(this Pawn pawn, ThingWithComps newEq)
+        public static void AddShield(this Pawn pawn, Apparel newShield)
         {
             if (pawn.OffHandShield() != null)
             {
@@ -89,13 +89,13 @@ namespace VFECore
                     "Pawn ",
                     pawn.LabelCap,
                     " got shield ",
-                    newEq,
+                    newShield,
                     " while already having shield "
                 }), false);
                 return;
             }
-            pawn.apparel.Wear((Apparel)newEq);
-            newEq.GetComp<CompShield>().equippedOffHand = true;
+            pawn.apparel.Wear(newShield);
+            newShield.GetComp<CompShield>().equippedOffHand = true;
         }
     }
 
