@@ -107,15 +107,31 @@ namespace VFECore
             }
         }
 
+        public bool cachedUsableNow = false;
+        public bool CachedUsableNow
+        {
+            get
+            {
+                if (Find.TickManager.TicksGame % 60 == 0)
+                {
+                    cachedUsableNow = this.CompShield.UsableNow;
+                }
+                return cachedUsableNow;
+            }
+        }
+
         public override void DrawWornExtras()
         {
             if (this.Wearer.Dead || !this.Wearer.Spawned || (this.Wearer.CurJob != null && this.Wearer.CurJob.def.neverShowWeapon))
             {
                 return;
             }
-            var curHoldOffset = CompShield.Props.offHandHoldOffset.Pick(Wearer.Rotation);
-            var finalDrawLoc = this.GetAimingVector(this.Wearer.DrawPos) + curHoldOffset.offset + new Vector3(0, (curHoldOffset.behind ? -0.0390625f : 0.0390625f), 0);
-            ShieldGraphic.Draw(finalDrawLoc, (curHoldOffset.flip ? Wearer.Rotation.Opposite : Wearer.Rotation), Wearer);
+            if (CachedUsableNow)
+            {
+                var curHoldOffset = CompShield.Props.offHandHoldOffset.Pick(Wearer.Rotation);
+                var finalDrawLoc = this.GetAimingVector(this.Wearer.DrawPos) + curHoldOffset.offset + new Vector3(0, (curHoldOffset.behind ? -0.0390625f : 0.0390625f), 0);
+                ShieldGraphic.Draw(finalDrawLoc, (curHoldOffset.flip ? Wearer.Rotation.Opposite : Wearer.Rotation), Wearer);
+            }
         }
     }   
 }

@@ -17,8 +17,20 @@ namespace VFECore
         [HarmonyPatch(typeof(FloatMenuMakerMap), "AddHumanlikeOrders")]
         public static class AddHumanlikeOrders_Fix
         {
-            public static void Postfix(Vector3 clickPos, Pawn pawn, List<FloatMenuOption> opts)
+            public static void Postfix(Vector3 clickPos, Pawn pawn, ref List<FloatMenuOption> opts)
             {
+                var shield = GridsUtility.GetThingList(IntVec3.FromVector3(clickPos), pawn.Map).FirstOrDefault((Thing x) => x is Apparel_Shield) as Apparel_Shield;
+                if (shield != null)
+                {
+                    TaggedString toCheck = "ForceWear".Translate(shield.LabelCap, shield);
+                    FloatMenuOption floatMenuOption = opts.FirstOrDefault((FloatMenuOption x) => x.Label.Contains
+                    (toCheck));
+                    if (floatMenuOption != null)
+                    {
+                        opts.Remove(floatMenuOption);
+                    }
+                }
+
                 IntVec3 c = IntVec3.FromVector3(clickPos);
                 if (pawn.equipment != null)
                 {
