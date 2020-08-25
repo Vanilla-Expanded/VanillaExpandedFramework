@@ -106,7 +106,6 @@ namespace VFECore
                         shield.SetColor(pawn.Faction.Color);
                 }
                 pawn.AddShield(shield);
-                shield.GetComp<CompShield>().equippedOffHand = true;
             }
             workingShields.Clear();
         }

@@ -10,6 +10,18 @@ namespace VFECore
 {
     public class Apparel_Shield : Apparel
     {
+
+        public override void SpawnSetup(Map map, bool respawningAfterLoad)
+        {
+            base.SpawnSetup(map, respawningAfterLoad);
+            Log.Message(this + " - SpawnSetup", true);
+        }
+
+        public override void PostMapInit()
+        {
+            base.PostMapInit();
+            Log.Message(this + " - PostMapInit", true);
+        }
         private bool CarryWeaponOpenly()
         {
             if (this.Wearer.carryTracker != null && this.Wearer.carryTracker.CarriedThing != null)
@@ -35,6 +47,7 @@ namespace VFECore
             }
             return false;
         }
+
         private Vector3 GetAimingVector(Vector3 rootLoc)
         {
             // copied from vanilla DrawEquipment method
@@ -107,15 +120,37 @@ namespace VFECore
             }
         }
 
+        public bool cachedUsableNow = false;
+        public bool CachedUsableNow
+        {
+            get
+            {
+                if (Find.TickManager.TicksGame % 60 == 0)
+                {
+                    cachedUsableNow = this.CompShield.UsableNow;
+                }
+                return cachedUsableNow;
+            }
+        }
+
         public override void DrawWornExtras()
         {
             if (this.Wearer.Dead || !this.Wearer.Spawned || (this.Wearer.CurJob != null && this.Wearer.CurJob.def.neverShowWeapon))
             {
                 return;
             }
-            var curHoldOffset = CompShield.Props.offHandHoldOffset.Pick(Wearer.Rotation);
-            var finalDrawLoc = this.GetAimingVector(this.Wearer.DrawPos) + curHoldOffset.offset + new Vector3(0, (curHoldOffset.behind ? -0.0390625f : 0.0390625f), 0);
-            ShieldGraphic.Draw(finalDrawLoc, (curHoldOffset.flip ? Wearer.Rotation.Opposite : Wearer.Rotation), Wearer);
+            if (CachedUsableNow)
+            {
+                var curHoldOffset = CompShield.Props.offHandHoldOffset.Pick(Wearer.Rotation);
+                var finalDrawLoc = this.GetAimingVector(this.Wearer.DrawPos) + curHoldOffset.offset + new Vector3(0, (curHoldOffset.behind ? -0.0390625f : 0.0390625f), 0);
+                ShieldGraphic.Draw(finalDrawLoc, (curHoldOffset.flip ? Wearer.Rotation.Opposite : Wearer.Rotation), Wearer);
+            }
+        }
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Values.Look(ref cachedUsableNow, "cachedUsableNow", false);
         }
     }   
 }
