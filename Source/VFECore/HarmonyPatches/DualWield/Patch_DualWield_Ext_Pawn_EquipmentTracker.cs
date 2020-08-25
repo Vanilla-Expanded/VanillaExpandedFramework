@@ -13,20 +13,19 @@ using HarmonyLib;
 namespace VFECore
 {
 
-    public static class Patch_DualWield_Ext_Pawn_EquipmentTracker
-    {
-
-        public static class manual_MakeRoomForOffHand
-        {
-
-            public static void Postfix(Pawn_EquipmentTracker instance, ThingWithComps eq)
-            {
-                if (instance.OffHandShield() != null)
-                    ShieldUtility.MakeRoomForShield(instance, eq);
-            }
-
-        }
-
-    }
-
+    //public static class Patch_DualWield_Ext_Pawn_EquipmentTracker
+    //{
+    //
+    //    public static class manual_MakeRoomForOffHand
+    //    {
+    //
+    //        public static void Postfix(Pawn_EquipmentTracker instance, ThingWithComps eq)
+    //        {
+    //            if (instance.OffHandShield() != null)
+    //                ShieldUtility.MakeRoomForShield(instance, eq);
+    //        }
+    //
+    //    }
+    //
+    //}
 }

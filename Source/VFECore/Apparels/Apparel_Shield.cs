@@ -81,6 +81,12 @@ namespace VFECore
             return default(Vector3);
         }
 
+        public override void Draw()
+        {
+            base.Draw();
+            Log.Message("DRAW", true);
+        }
+
         public override void DrawWornExtras()
         {
             if (this.Wearer.Dead || !this.Wearer.Spawned || (this.Wearer.CurJob != null && this.Wearer.CurJob.def.neverShowWeapon))

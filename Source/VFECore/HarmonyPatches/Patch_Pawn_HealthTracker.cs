@@ -19,26 +19,27 @@ namespace VFECore
 
             public static void Postfix(Pawn_HealthTracker __instance, Pawn ___pawn)
             {
-                if (!__instance.Downed && ___pawn.equipment != null && ___pawn.equipment.OffHandShield() is ThingWithComps shield)
+                if (!__instance.Downed && ___pawn.OffHandShield() is Apparel shield)
                 {
                     // Not enough hands to use shields
                     if (!___pawn.CanUseShields())
-                        ___pawn.equipment.TryDropEquipment(shield, out ThingWithComps s, ___pawn.PositionHeld);
+                        ___pawn.apparel.TryDrop(shield, out Apparel s, ___pawn.PositionHeld);
 
                     // Cannot manipulate
                     else if (!__instance.capacities.CapableOf(PawnCapacityDefOf.Manipulation))
                     {
                         if (___pawn.kindDef.destroyGearOnDrop)
-                            ___pawn.equipment.DestroyEquipment(shield);
+                            shield.Destroy(DestroyMode.Vanish);
 
-                        else if (___pawn.InContainerEnclosed)
-                            ___pawn.equipment.TryTransferEquipmentToContainer(shield, ___pawn.holdingOwner);
+                        // Taranchuk: no idea how to handle this
+                        //else if (___pawn.InContainerEnclosed)
+                        //    ___pawn.equipment.TryTransferEquipmentToContainer(shield, ___pawn.holdingOwner);
 
                         else if (___pawn.SpawnedOrAnyParentSpawned)
-                            ___pawn.equipment.TryDropEquipment(shield, out ThingWithComps s, ___pawn.PositionHeld, true);
+                            ___pawn.apparel.TryDrop(shield, out Apparel s, ___pawn.PositionHeld, true);
 
                         else
-                            ___pawn.equipment.DestroyEquipment(shield);
+                            shield.Destroy(DestroyMode.Vanish);
                     }
                 }
             }

@@ -40,8 +40,8 @@ namespace VFECore
                         equippedThing.DeSpawn(DestroyMode.Vanish);
                     }
 
-                    ShieldUtility.MakeRoomForShield(pawn.equipment, equippedThing);
-                    ShieldUtility.AddShield(pawn.equipment, equippedThing, pawn);
+                    ShieldUtility.MakeRoomForShield(pawn, equippedThing);
+                    ShieldUtility.AddShield(pawn, equippedThing);
                     if (equipmentStack.def.soundInteract != null)
                     {
                         equipmentStack.def.soundInteract.PlayOneShot(new TargetInfo(pawn.Position, pawn.Map, false));

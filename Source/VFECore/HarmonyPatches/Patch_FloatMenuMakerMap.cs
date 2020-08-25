@@ -110,7 +110,7 @@ namespace VFECore
             private static string EquipWarningShieldUnusableWithWeapon(string equipString, Pawn pawn, Thing equipment)
             {
                 // Append '([shield] will be unusable)' to float menu if appropriate
-                if (pawn.equipment != null && !equipment.def.UsableWithShields() && pawn.equipment.OffHandShield() is ThingWithComps shield)
+                if (pawn.equipment != null && !equipment.def.UsableWithShields() && pawn.OffHandShield() is ThingWithComps shield)
                 {
                     return $"{equipString} {"VanillaFactionsExpanded.EquipWarningShieldUnusableWithWeapon".Translate(shield.def.label)}";
                 }

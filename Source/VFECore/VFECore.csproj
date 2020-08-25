@@ -101,7 +101,6 @@
     <Compile Include="HarmonyPatches\Patch_PawnApparelGenerator.cs" />
     <Compile Include="HarmonyPatches\Patch_PawnGenerator.cs" />
     <Compile Include="HarmonyPatches\Patch_PawnGraphicSet.cs" />
-    <Compile Include="HarmonyPatches\Patch_Pawn_EquipmentTracker.cs" />
     <Compile Include="HarmonyPatches\Patch_Pawn_HealthTracker.cs" />
     <Compile Include="HarmonyPatches\Patch_RaidStrategyWorker_Siege.cs" />
     <Compile Include="HarmonyPatches\Patch_RandomSettlementTileFor.cs" />

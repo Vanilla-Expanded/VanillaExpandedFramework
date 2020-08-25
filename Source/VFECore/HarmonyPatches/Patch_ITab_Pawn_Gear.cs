@@ -67,14 +67,14 @@ namespace VFECore
 
             public static float OverallArmourFromShield(float overallArmour, Pawn pawn, StatDef stat)
             {
-                var equipment = pawn.equipment;
+                var equipment = pawn.apparel;
 
                 // Go through each body part and each piece of equipment to get overall defence bonuses of usable shields
                 if (equipment != null)
                 {
                     float naturalArmour = Mathf.Clamp01(pawn.GetStatValue(stat) / 2);
                     var bodyParts = pawn.RaceProps.body.AllParts;
-                    var equipmentList = equipment.AllEquipmentListForReading;
+                    var equipmentList = equipment.WornApparel;
                     for (int i = 0; i < bodyParts.Count; i++)
                     {
                         var part = bodyParts[i];

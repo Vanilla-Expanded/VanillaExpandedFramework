@@ -20,12 +20,11 @@ namespace VFECore
         {
             get
             {
-                if (ParentHolder is Pawn_EquipmentTracker equipment)
-                    return equipment.pawn;
+                if (this.parent is Apparel equipment)
+                    return equipment.Wearer;
                 return null;
             }
         }
-
         public bool UsableNow
         {
             get

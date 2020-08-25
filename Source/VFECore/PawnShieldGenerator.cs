@@ -17,7 +17,7 @@ namespace VFECore
 
         public static void Reset()
         {
-            Predicate<ThingDef> isShield = (ThingDef td) => td.equipmentType == EquipmentType.Primary && td.GetCompProperties<CompProperties_Shield>() is CompProperties_Shield shieldProps && !shieldProps.shieldTags.NullOrEmpty();
+            Predicate<ThingDef> isShield = (ThingDef td) => td.GetCompProperties<CompProperties_Shield>() is CompProperties_Shield shieldProps && !shieldProps.shieldTags.NullOrEmpty();
             allShieldPairs = ThingStuffPair.AllWith(isShield);
             using (IEnumerator<ThingDef> enumerator = (from td in DefDatabase<ThingDef>.AllDefs where isShield(td) select td).GetEnumerator())
             {
@@ -105,7 +105,7 @@ namespace VFECore
                     if (!thingDefExtension.useFactionColourForPawnKinds.NullOrEmpty() && thingDefExtension.useFactionColourForPawnKinds.Contains(pawn.kindDef))
                         shield.SetColor(pawn.Faction.Color);
                 }
-                pawn.equipment.AddShield(shield, pawn);
+                pawn.AddShield(shield);
                 shield.GetComp<CompShield>().equippedOffHand = true;
             }
             workingShields.Clear();
