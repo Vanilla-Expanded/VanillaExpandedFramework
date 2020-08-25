@@ -40,93 +40,19 @@ namespace VFECore
                         if (thingList[i].TryGetComp<CompEquippable>() != null)
                         {
                             var equipment = (ThingWithComps) thingList[i];
+                            TaggedString toCheck = "Equip".Translate(equipment.LabelShort);
+                            FloatMenuOption floatMenuOption = opts.FirstOrDefault((FloatMenuOption x) => x.Label.Contains
+                            (toCheck));
+                            if (floatMenuOption != null && pawn.equipment != null && !equipment.def.UsableWithShields() && pawn.OffHandShield() is Apparel_Shield oldShield)
+                            {
+                                floatMenuOption.Label += $" {"VanillaFactionsExpanded.EquipWarningShieldUnusableWithWeapon".Translate(oldShield.def.label)}";
+                            }
+
                             AddShieldFloatMenuOption(pawn, equipment, ref opts);
                             break;
                         }
                     }
                 }
-            }
-        }
-
-        // Disabled to prevent error when right clicking on downed pawn
-        //[HarmonyPatch(typeof(FloatMenuMakerMap), "AddHumanlikeOrders")]
-        public static class AddHumanlikeOrders
-        {
-
-            public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-            {
-                #if DEBUG
-                    Log.Message("FloatMenuMakerMap.AddHumanlikeOrders transpiler start (2 matches todo)");
-                #endif
-
-
-                var instructionList = instructions.ToList();
-
-                // It's amazing what it takes just to get a local reference
-                var equipmentInfo = typeof(FloatMenuMakerMap).GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Instance).
-                    First(t => t.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).Any(m => m.Name.Contains("AddHumanlikeOrders") && 
-                    t.GetFields(BindingFlags.Public | BindingFlags.Instance).Any(f => f.FieldType == typeof(ThingWithComps) && f.Name == "equipment"))).
-                    GetField("equipment", BindingFlags.Public | BindingFlags.Instance);
-
-                bool foundBrawlerWarningInstruction = false;
-
-                var addInfo = AccessTools.Method(typeof(List<FloatMenuOption>), "Add");
-                var equipWarningShieldUnusableWithWeaponInfo = AccessTools.Method(typeof(AddHumanlikeOrders), nameof(EquipWarningShieldUnusableWithWeapon));
-                var addShieldFloatMenuOptionInfo = AccessTools.Method(typeof(AddHumanlikeOrders), nameof(AddShieldFloatMenuOption));
-
-                for (int i = 0; i < instructionList.Count; i++)
-                {
-                    var instruction = instructionList[i];
-
-                    // Look for the 'EquipWarningBrawler' instruction so we know when to try and hook into modifying 'text3'
-                    if (instruction.opcode == OpCodes.Ldstr && (string)instruction.operand == "EquipWarningBrawler")
-                        foundBrawlerWarningInstruction = true;
-
-                    // Once we've found 'EquipWarningBrawler', look for the next instruction that loads 'text3'; add our call to potentially further modify it
-                    if (foundBrawlerWarningInstruction && instruction.opcode == OpCodes.Ldloc_S && instruction.operand is LocalBuilder lb && lb.LocalIndex == 45)
-                    {
-                        #if DEBUG
-                            Log.Message("FloatMenuMakerMap.AddHumanlikeOrders match 1 of 2");
-                        #endif
-                        yield return instruction;
-                        yield return new CodeInstruction(OpCodes.Ldarg_1); // pawn
-                        yield return new CodeInstruction(OpCodes.Ldloc_S, 39); // equipment
-                        yield return new CodeInstruction(OpCodes.Ldfld, equipmentInfo); // Necessary since the 'equipment' variable is a reference to this
-                        yield return new CodeInstruction(OpCodes.Call, equipWarningShieldUnusableWithWeaponInfo); // EquipWarningShieldUnusableWithWeapon(text5, pawn, equipment)
-                        yield return new CodeInstruction(OpCodes.Stloc_S, 45); // text3 = EquipWarningShieldUnusableWithWeapon(text5, pawn, equipment)
-                        instruction = instruction.Clone(); 
-                    }
-
-                    // Look for the section that gives the 'Equip x' float menu instruction; add our 'Equip x as shield' float menu method after
-                    if (instruction.opcode == OpCodes.Callvirt && instruction.OperandIs(addInfo))
-                    {
-                        var prevInstruction = instructionList[i - 1];
-                        if (prevInstruction.opcode == OpCodes.Ldloc_S && prevInstruction.operand is LocalBuilder lb2 && lb2.LocalIndex == 43)
-                        {
-                            #if DEBUG
-                                Log.Message("FloatMenuMakerMap.AddHumanlikeOrders match 2 of 2");
-                            #endif
-                            yield return instruction;
-                            yield return new CodeInstruction(OpCodes.Ldarg_1); // pawn
-                            yield return new CodeInstruction(OpCodes.Ldloc_S, 39); // equipment
-                            yield return new CodeInstruction(OpCodes.Ldfld, equipmentInfo); // Necessary since the 'equipment' variable is a reference to this
-                            yield return new CodeInstruction(OpCodes.Ldarga_S, 2); // ref opts
-                            instruction = new CodeInstruction(OpCodes.Call, addShieldFloatMenuOptionInfo); // AddShieldFloatMenuOption(pawn, equipment, ref opts)
-                        }
-                    }
-
-                    yield return instruction;
-                }
-            }
-
-            private static string EquipWarningShieldUnusableWithWeapon(string equipString, Pawn pawn, Thing equipment)
-            {
-                // Append '([shield] will be unusable)' to float menu if appropriate
-                if (pawn.equipment != null && !equipment.def.UsableWithShields() && pawn.OffHandShield() is ThingWithComps shield)
-                {
-                    return $"{equipString} {"VanillaFactionsExpanded.EquipWarningShieldUnusableWithWeapon".Translate(shield.def.label)}";
-                }
-                return equipString;
             }
         }
 
@@ -176,7 +102,6 @@ namespace VFECore
                         PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.EquippingWeapons, KnowledgeAmount.Total);
                     }, MenuOptionPriority.High, null, null, 0f, null, null), pawn, equipment, "ReservedBy");
                 }
-
                 opts.Add(shieldOption);
             }
         }

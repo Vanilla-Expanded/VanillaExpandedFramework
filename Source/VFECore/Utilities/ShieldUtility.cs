@@ -85,7 +85,7 @@ namespace VFECore
 
         }
 
-        public static void AddShield(this Pawn pawn, Apparel newShield)
+        public static void AddShield(this Pawn pawn, Apparel newShield, bool dropReplacedApparel = false)
         {
             if (pawn.OffHandShield() != null)
             {
@@ -99,13 +99,7 @@ namespace VFECore
                 }), false);
                 return;
             }
-            pawn.apparel.Wear(newShield);
-            newShield.GetComp<CompShield>().equippedOffHand = true;
-            foreach (var verb in newShield.GetComp<CompEquippable>().AllVerbs)
-            {
-                verb.caster = newShield.Wearer;
-                verb.Reset();
-            }
+            pawn.apparel.Wear(newShield, dropReplacedApparel);
         }
     }
 

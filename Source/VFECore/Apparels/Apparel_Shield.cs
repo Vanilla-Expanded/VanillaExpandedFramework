@@ -10,18 +10,6 @@ namespace VFECore
 {
     public class Apparel_Shield : Apparel
     {
-
-        public override void SpawnSetup(Map map, bool respawningAfterLoad)
-        {
-            base.SpawnSetup(map, respawningAfterLoad);
-            Log.Message(this + " - SpawnSetup", true);
-        }
-
-        public override void PostMapInit()
-        {
-            base.PostMapInit();
-            Log.Message(this + " - PostMapInit", true);
-        }
         private bool CarryWeaponOpenly()
         {
             if (this.Wearer.carryTracker != null && this.Wearer.carryTracker.CarriedThing != null)
@@ -94,7 +82,7 @@ namespace VFECore
             return default(Vector3);
         }
 
-        public CompShield comp = null;
+        private CompShield comp = null;
         public CompShield CompShield
         {
             get
@@ -107,7 +95,7 @@ namespace VFECore
             } 
         }
 
-        public Graphic shieldGraphic = null;
+        private Graphic shieldGraphic = null;
         public Graphic ShieldGraphic
         {
             get
@@ -120,7 +108,7 @@ namespace VFECore
             }
         }
 
-        public bool cachedUsableNow = false;
+        private bool cachedUsableNow = false;
         public bool CachedUsableNow
         {
             get
@@ -151,6 +139,18 @@ namespace VFECore
         {
             base.ExposeData();
             Scribe_Values.Look(ref cachedUsableNow, "cachedUsableNow", false);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && this.Wearer != null)
+            {
+                var comp = this.GetComp<CompEquippable>();
+                if (comp != null)
+                {
+                    foreach (var verb in comp.AllVerbs)
+                    {
+                        verb.caster = this.Wearer;
+                        verb.Reset();
+                    }
+                }
+            }
         }
     }   
 }

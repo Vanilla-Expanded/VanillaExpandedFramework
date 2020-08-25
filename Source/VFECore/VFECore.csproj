@@ -98,6 +98,7 @@
     <Compile Include="HarmonyPatches\Patch_IncidentWorker_WandererJoin.cs" />
     <Compile Include="HarmonyPatches\Patch_ITab_Pawn_Gear.cs" />
     <Compile Include="HarmonyPatches\Patch_Pawn.cs" />
+    <Compile Include="HarmonyPatches\Patch_Pawn_ApparelTracker.cs" />
     <Compile Include="HarmonyPatches\Patch_PawnApparelGenerator.cs" />
     <Compile Include="HarmonyPatches\Patch_PawnGenerator.cs" />
     <Compile Include="HarmonyPatches\Patch_PawnGraphicSet.cs" />
