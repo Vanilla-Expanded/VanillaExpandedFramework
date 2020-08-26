@@ -64,28 +64,28 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AI\JobDrivers\ItemProcessor\JobDriver_InsertProcessorFirst.cs" />
-    <Compile Include="AI\JobDrivers\ItemProcessor\JobDriver_InsertProcessorSecond.cs" />
-    <Compile Include="AI\JobDrivers\ItemProcessor\JobDriver_InsertProcessorThird.cs" />
-    <Compile Include="AI\JobDrivers\ItemProcessor\JobDriver_RemoveProduct.cs" />
+    <Compile Include="ItemProcessor\AI\JobDrivers\JobDriver_InsertProcessorFirst.cs" />
+    <Compile Include="ItemProcessor\AI\JobDrivers\JobDriver_InsertProcessorSecond.cs" />
+    <Compile Include="ItemProcessor\AI\JobDrivers\JobDriver_InsertProcessorThird.cs" />
+    <Compile Include="ItemProcessor\AI\JobDrivers\JobDriver_RemoveProduct.cs" />
     <Compile Include="AI\JobDrivers\JobDriver_EquipShield.cs" />
     <Compile Include="AI\Lords\LordJob_SiegeCustom.cs" />
     <Compile Include="AI\Lords\LordToilData_SiegeCustom.cs" />
     <Compile Include="AI\Lords\LordToil_SiegeCustom.cs" />
-    <Compile Include="AI\WorkGivers\ItemProcessor\WorkGiver_InsertProcessorFirst.cs" />
-    <Compile Include="AI\WorkGivers\ItemProcessor\WorkGiver_InsertProcessorSecond.cs" />
-    <Compile Include="AI\WorkGivers\ItemProcessor\WorkGiver_InsertProcessorThird.cs" />
-    <Compile Include="AI\WorkGivers\ItemProcessor\WorkGiver_RemoveProduct.cs" />
+    <Compile Include="ItemProcessor\AI\WorkGivers\WorkGiver_InsertProcessorFirst.cs" />
+    <Compile Include="ItemProcessor\AI\WorkGivers\WorkGiver_InsertProcessorSecond.cs" />
+    <Compile Include="ItemProcessor\AI\WorkGivers\WorkGiver_InsertProcessorThird.cs" />
+    <Compile Include="ItemProcessor\AI\WorkGivers\WorkGiver_RemoveProduct.cs" />
     <Compile Include="Apparels\Apparel_Shield.cs" />
     <Compile Include="BaseGen\VFEResolveParams.cs" />
-    <Compile Include="Building\ItemProcessor\Building_ItemProcessor.cs" />
-    <Compile Include="Commands\ItemProcessor\Command_ItemLists.cs" />
-    <Compile Include="Commands\ItemProcessor\ItemListSetupUtility.cs" />
-    <Compile Include="Comps\MapComponents\ItemProcessor\ItemProcessor_MapComponent.cs" />
+    <Compile Include="ItemProcessor\Building\Building_ItemProcessor.cs" />
+    <Compile Include="ItemProcessor\Commands\Command_ItemLists.cs" />
+    <Compile Include="ItemProcessor\Commands\ItemListSetupUtility.cs" />
+    <Compile Include="ItemProcessor\Comps\MapComponents\ItemProcessor_MapComponent.cs" />
     <Compile Include="Comps\ThingComps\CompProperties_Shield.cs" />
     <Compile Include="Comps\ThingComps\CompShield.cs" />
-    <Compile Include="Comps\ThingComps\ItemProcessor\CompItemProcessor.cs" />
-    <Compile Include="Comps\ThingComps\ItemProcessor\CompProperties_ItemProcessor.cs" />
+    <Compile Include="ItemProcessor\Comps\ThingComps\CompItemProcessor.cs" />
+    <Compile Include="ItemProcessor\Comps\ThingComps\CompProperties_ItemProcessor.cs" />
     <Compile Include="Comps\WorldComponents\FactionGoodwillModifier.cs" />
     <Compile Include="Comps\WorldComponents\NewFactionSpawningState.cs" />
     <Compile Include="DefModExtensions\FactionDefExtension.cs" />
@@ -97,13 +97,13 @@
     <Compile Include="DefOf\IncidentDefOf.cs" />
     <Compile Include="DefOf\JobDefOf.cs" />
     <Compile Include="DefOf\ScenPartDefOf.cs" />
-    <Compile Include="Defs\ItemProcessor\CombinationDef.cs" />
-    <Compile Include="Defs\ItemProcessor\ItemAcceptedDef.cs" />
+    <Compile Include="ItemProcessor\Defs\CombinationDef.cs" />
+    <Compile Include="ItemProcessor\Defs\ItemAcceptedDef.cs" />
     <Compile Include="Defs\SiegeParameterSetDef.cs" />
     <Compile Include="Dialogs\FactionSpawning\Dialog_NewFactionSpawning.cs" />
     <Compile Include="Dialogs\FactionSpawning\Dialog_NewFactionSpawningSettlements.cs" />
-    <Compile Include="Enums\ItemProcessor\ProcessorStage.cs" />
-    <Compile Include="GraphicsCache\ItemProcessor\GraphicsCache.cs" />
+    <Compile Include="ItemProcessor\Enums\ProcessorStage.cs" />
+    <Compile Include="ItemProcessor\GraphicsCache\GraphicsCache.cs" />
     <Compile Include="HarmonyPatches\DualWield\Patch_DualWield_Ext_Pawn_EquipmentTracker.cs" />
     <Compile Include="HarmonyPatches\DualWield\Patch_DualWield_Harmony_FloatMenuMakerMap_AddHumanlikeOrders.cs" />
     <Compile Include="HarmonyPatches\FactionSpawning\Patch_FactionDiscovery_ModBase.cs" />
@@ -149,5 +149,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
