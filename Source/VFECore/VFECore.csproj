@@ -64,6 +64,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cuisine\Comps\CompMaturingAlcohol.cs" />
+    <Compile Include="Cuisine\Comps\CompProperties_MaturingAlcohol.cs" />
+    <Compile Include="Cuisine\Comps\CompProperties_StackByIngredients.cs" />
+    <Compile Include="Cuisine\Comps\CompProperties_StackByQuality.cs" />
+    <Compile Include="Cuisine\Comps\CompProperties_TempTransforms.cs" />
+    <Compile Include="Cuisine\Comps\CompStackByIngredients.cs" />
+    <Compile Include="Cuisine\Comps\CompStackByQuality.cs" />
+    <Compile Include="Cuisine\Comps\CompTempTransforms.cs" />
+    <Compile Include="Cuisine\DefModExtensions\Thought_Hediff_Extension.cs" />
+    <Compile Include="Cuisine\HediffComps\HediffCompProperties_WhileHavingThoughts.cs" />
+    <Compile Include="Cuisine\HediffComps\HediffComp_WhileHavingThoughts.cs" />
+    <Compile Include="Cuisine\Thoughts\Thought_Hediff.cs" />
     <Compile Include="ItemProcessor\AI\JobDrivers\JobDriver_InsertProcessorFirst.cs" />
     <Compile Include="ItemProcessor\AI\JobDrivers\JobDriver_InsertProcessorSecond.cs" />
     <Compile Include="ItemProcessor\AI\JobDrivers\JobDriver_InsertProcessorThird.cs" />
