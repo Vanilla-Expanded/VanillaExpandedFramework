@@ -29,11 +29,10 @@ namespace ItemProcessor
         public int yield = 1;
         //Amount of the ingredients
         public List<int> amount;
-        //Does the product's quality increase with time?
-        public bool useQualityIncreasing = false;
-
         //This defines the recipe as a category instead of single item one
         public bool isCategoryRecipe = false;
+        //Does the product's quality increase with time?
+        public bool useQualityIncreasing = false;
 
         //If not, what is the single time period to process the product?
         public int singleTimeIfNotQualityIncreasing = 3;

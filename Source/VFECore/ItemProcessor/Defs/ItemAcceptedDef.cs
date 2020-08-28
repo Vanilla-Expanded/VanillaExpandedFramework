@@ -13,8 +13,7 @@ namespace ItemProcessor
 
 
         //ItemAcceptedDef is a simple custom def that assigns products to buildings, and slots.
-
-        //Ingredient insertion code reads from these defs, so if an ingredient isn't there, it won't mather if it has the Ingredient_Exception
+        //Ingredient insertion code reads from these defs, so if an ingredient isn't there, it won't appear on any item processor
 
 
         //defName of the building accepting these ingredients

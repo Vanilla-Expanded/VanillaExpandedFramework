@@ -6,6 +6,15 @@ namespace VanillaCookingExpanded
 {
     public class CompTempTransforms : ThingComp
     {
+
+        //A comp class to make an item transform into a different one if a certain temperature is reached
+
+        //It is used for example in Vanilla Cooking Expanded's grills, that turn into "ruined" versions of
+        //themselves if frozen, or in vanilla Brewing Expanded's Hot coffee, that turns into Iced coffee
+        //when frozen
+
+        //The code here is mostly a copy of vanilla's CompTemperatureRuinable
+
         public CompProperties_TempTransforms Props
         {
             get
@@ -70,11 +79,15 @@ namespace VanillaCookingExpanded
             {
                 if (this.parent.Map != null)
                 {
-                    Thing newGrill = ThingMaker.MakeThing(ThingDef.Named(Props.thingToTransformInto));
-                    newGrill.stackCount = this.parent.stackCount;
-                    newGrill.TryGetComp<CompIngredients>().ingredients = this.parent.TryGetComp<CompIngredients>().ingredients;
+                    //Here is the main change: when the temperature is reached the item is "Ruined", and
+                    //this code will spawn a new item with the same stackCount, the same ingredients list
+                    //(if any) and destroy the original item
 
-                    GenSpawn.Spawn(newGrill, this.parent.Position, this.parent.Map);
+                    Thing newItem = ThingMaker.MakeThing(ThingDef.Named(Props.thingToTransformInto));
+                    newItem.stackCount = this.parent.stackCount;
+                    newItem.TryGetComp<CompIngredients>().ingredients = this.parent.TryGetComp<CompIngredients>().ingredients;
+
+                    GenSpawn.Spawn(newItem, this.parent.Position, this.parent.Map);
                     this.parent.Destroy();
                 }
 

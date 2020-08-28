@@ -6,6 +6,11 @@ using RimWorld;
 
 namespace VanillaCookingExpanded
 {
+
+    //This code is mostly copied from CompProperties_Rotable, with a few tweaks. Instead of destroying an item when
+    //it rots, this code will swap the item for a different one. For example, it is used with Vanilla Brewing Expanded Ambrosia mush 
+    //to turn it into Ambrandy must
+
     public class CompProperties_MaturingAlcohol : CompProperties
     {
         public int TicksToRotStart

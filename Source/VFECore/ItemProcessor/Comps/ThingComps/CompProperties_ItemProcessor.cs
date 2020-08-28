@@ -6,8 +6,7 @@ namespace ItemProcessor
     public class CompProperties_ItemProcessor : CompProperties
     {
         //Buildings can be set to a number between 1 and 3. The code ignores values outside this.
-        //For 1 input, ingredients only need to have the Ingredient_Extension mod extension
-        //For 2 or 3, the process also needs a CombinationDef in XML
+        //The process also needs a CombinationDef in XML
         //In both cases, there is a ItemAcceptedDef to define what ingredients are accepted by what building
         public int numberOfInputs = 1;
 
