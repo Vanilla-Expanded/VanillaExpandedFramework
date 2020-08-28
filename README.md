@@ -4,7 +4,7 @@ Welcome to the Vanilla Expanded Framework!
 
 The Vanilla Expanded Framework is a code library that adds some shared behaviours for several of the Vanilla Expanded series of mods. We have tried to document everything and to make it as modular as possible, so you can use it as a dependency in your own mods and access all these extra behaviours.
 
-# How do I use the framework itself?
+# How do I use the framework?
 
 First of all, you'll need to add the framework as a dependency. You do this by adding this to your mod's about.xml file:
 
@@ -23,4 +23,4 @@ Then, you'll need to link the classes you want to use from your mod's XML code. 
 
 # Then what?
 
-It is recommended that you read [our Wiki](https://github.com/AndroidQuazar/VanillaExpandedFramework/wiki) to know how to use all these libraries.
+It is recommended that you read [our Wiki](https://github.com/AndroidQuazar/VanillaExpandedFramework/wiki) to know how to use all these libraries. Or you can YOLO it.
