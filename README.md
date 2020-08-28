@@ -1,4 +1,4 @@
-Welcome to the Vanilla Expanded Framework wiki!
+Welcome to the Vanilla Expanded Framework!
 
 ![](https://i.imgur.com/bVf30tE.jpg)
 
@@ -19,8 +19,8 @@ First of all, you'll need to add the framework as a dependency. You do this by a
 
 It is also recommended that you add in Steam this framework mod to your list of Required Items.
 
-Then, you'll need to link the classes you want to use from your mod's XML code. Each class has a different way to use them, so we have divided this wiki into different pages explaining how to use most of them.
+Then, you'll need to link the classes you want to use from your mod's XML code. Each class has a different way to use them, so we have divided the wiki into different pages explaining how to use most of them.
 
 # Then what?
 
-It is recommended that you read our Wiki to know how to use all these libraries.
+It is recommended that you read [our Wiki](https://github.com/AndroidQuazar/VanillaExpandedFramework/wiki) to know how to use all these libraries.
