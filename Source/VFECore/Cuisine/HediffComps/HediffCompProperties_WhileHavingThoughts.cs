@@ -10,6 +10,10 @@ namespace VanillaCookingExpanded
     class HediffCompProperties_WhileHavingThoughts : HediffCompProperties
     {
 
+        //A comp class that keeps a hediff active while a thought (or thoughts) is active on the pawn
+
+        //It also checks if other given thoughts are active on the pawn, and removes them as needed
+
         public List<ThoughtDef> thoughtDefs = new List<ThoughtDef>();
         public List<ThoughtDef> removeThoughtDefs = new List<ThoughtDef>();
         public bool resurrectionEffect = false;

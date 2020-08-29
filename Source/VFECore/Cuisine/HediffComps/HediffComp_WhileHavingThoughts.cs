@@ -11,8 +11,14 @@ namespace VanillaCookingExpanded
 {
     class HediffComp_WhileHavingThoughts : HediffComp
     {
+
+        //A comp class that keeps a hediff active while a thought (or thoughts) is active on the pawn
+
+        //It also checks if other given thoughts are active on the pawn, and removes them as needed
+
         public bool flagAmIThinking = false;
 
+        //And for god's sake it only does this every 10 seconds, because if not it would be a true lag fest
 
         public int checkingInterval = 600;
 
@@ -42,16 +48,21 @@ namespace VanillaCookingExpanded
             {
                 if (Props.thoughtDefs.Count > 0)
                 {
+                    //For each thought defined in the thoughtDefs list
                     foreach (ThoughtDef thoughtDef in this.Props.thoughtDefs)
                     {
+                        //Check if the thought is active
                         flagAmIThinking = false;
                         if (this.Pawn.needs.mood.thoughts.memories.GetFirstMemoryOfDef(thoughtDef) != null)
                         {
+                            //If it is, the flag goes to true, avoiding deletion of this hediff
                             flagAmIThinking = true;
                             break;
                         }
                     }
                 }
+                //If I find any of the thoughts in the removeThoughtDefs list, get rid of them! Actually iy¡t just sets them to 0, which
+                //makes them hidden
                 if (Props.removeThoughtDefs.Count > 0)
                 {
                     foreach (ThoughtDef thoughtDefToRemove in this.Props.removeThoughtDefs)
@@ -64,6 +75,7 @@ namespace VanillaCookingExpanded
 
                 }
 
+                //If no active thoughts were found, the flag will be false, so the hediff is deleted and the code doesn't run anymore
 
                 if (!flagAmIThinking)
                 {
@@ -77,7 +89,8 @@ namespace VanillaCookingExpanded
 
         public override void Notify_PawnDied()
         {
-
+            //This is just pure laziness, I hooked this code here so Vanilla Cooking Expanded's mechanite resurrector condiment 
+            //resurrects the pawn if it dies. But properly this should be a separate class.
             if (Props.resurrectionEffect)
             {
                 Map map = this.parent.pawn.Corpse.Map;

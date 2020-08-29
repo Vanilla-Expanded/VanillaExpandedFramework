@@ -6,6 +6,12 @@ using RimWorld;
 
 namespace VanillaCookingExpanded
 {
+
+
+    //This code is mostly copied from CompProperties_Rotable, with a few tweaks. Instead of destroying an item when
+    //it rots, this code will swap the item for a different one. For example, it is used with Vanilla Brewing Expanded Ambrosia mush 
+    //to turn it into Ambrandy must
+
     public class CompMaturingAlcohol : ThingComp
     {
         public CompProperties_MaturingAlcohol PropsRot
@@ -115,6 +121,11 @@ namespace VanillaCookingExpanded
             this.RotProgress += num * (float)interval;
             if (this.Stage == RotStage.Rotting && this.PropsRot.rotDestroys)
             {
+                //The first main change from the rotting code is here
+                //If the item reaches it's rotting time, a new item with the same stackCount is spawned on its location, and this item is destroyed
+
+                //The map check is done... just in case
+
                 if (this.parent.Map != null)
                 {
                     int stackCount = this.parent.stackCount;
@@ -172,6 +183,9 @@ namespace VanillaCookingExpanded
 
         public override string CompInspectStringExtra()
         {
+            //The other changes are made here, to display custom strings regarding how well the item is "rotting" into the new one. No default, so they NEED
+            //to be defined via XML
+
             if (!this.Active)
             {
                 return null;
