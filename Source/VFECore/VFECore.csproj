@@ -64,6 +64,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Comps\ThingComps\CompApparelHediffs.cs" />
+    <Compile Include="Comps\ThingComps\CompProperties_ApparelHediffs.cs" />
     <Compile Include="Cuisine\Comps\CompMaturingAlcohol.cs" />
     <Compile Include="Cuisine\Comps\CompProperties_MaturingAlcohol.cs" />
     <Compile Include="Cuisine\Comps\CompProperties_StackByIngredients.cs" />
