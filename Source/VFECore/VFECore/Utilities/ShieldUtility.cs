@@ -22,9 +22,9 @@ namespace VFECore
             for (int i = 0; i < manipCoreLimbs.Count; i++)
             {
                 var manipCore = manipCoreLimbs[i];
-                count += manipCore.GetChildParts(BodyPartTagDefOf.ManipulationLimbSegment).Count(p => p.depth == BodyPartDepth.Outside && !hediffSet.PartIsMissing(p) || hediffSet.PartOrAnyAncestorHasDirectlyAddedParts(p));
+                count += manipCore.GetChildParts(BodyPartTagDefOf.ManipulationLimbSegment).Count(p => p.depth == BodyPartDepth.Outside && !hediffSet.PartIsMissing(p) 
+                || hediffSet.PartOrAnyAncestorHasDirectlyAddedParts(p));
             }
-
             return count;
         }
 

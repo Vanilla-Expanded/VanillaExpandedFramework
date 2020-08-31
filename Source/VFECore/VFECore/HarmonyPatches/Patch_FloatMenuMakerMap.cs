@@ -59,7 +59,7 @@ namespace VFECore
         public static void AddShieldFloatMenuOption(Pawn pawn, Thing equipment, ref List<FloatMenuOption> opts)
         {
             // Add an extra option to the float menu if the thing is a shield
-            if (equipment.IsShield(out CompShield shieldComp))
+            if (equipment.IsShield(out CompShield shieldComp) && ApparelUtility.HasPartsToWear(pawn, equipment.def))
             {
                 string labelShort = equipment.LabelShort;
                 FloatMenuOption shieldOption;
@@ -95,7 +95,7 @@ namespace VFECore
                         optionLabel += $" {"VanillaFactionsExpanded.EquipWarningShieldUnusable".Translate(weapon.def.label)}";
                     }
 
-                    shieldOption = FloatMenuUtility.DecoratePrioritizedTask(new FloatMenuOption(optionLabel, delegate() {
+                    shieldOption = FloatMenuUtility.DecoratePrioritizedTask(new FloatMenuOption(optionLabel, delegate () {
                         equipment.SetForbidden(false, true);
                         pawn.jobs.TryTakeOrderedJob(new Job(JobDefOf.VFEC_EquipShield, equipment), JobTag.Misc);
                         MoteMaker.MakeStaticMote(equipment.DrawPos, equipment.Map, RimWorld.ThingDefOf.Mote_FeedbackEquip, 1f);
