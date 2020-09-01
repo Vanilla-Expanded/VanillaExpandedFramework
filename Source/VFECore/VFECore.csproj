@@ -64,6 +64,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnimalBehaviours\Comps\CompProperties_Untameable.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompUntameable.cs" />
     <Compile Include="Furniture\Comps\CompProperties_SelectBuildingBehind.cs" />
     <Compile Include="Furniture\Comps\CompProperties_SpawnOtherBuildingWhenPowered.cs" />
     <Compile Include="Furniture\Comps\CompSelectBuildingBehind.cs" />
