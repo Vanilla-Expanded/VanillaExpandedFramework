@@ -157,6 +157,7 @@
     <Compile Include="VFECore\ModCompatibilityCheck.cs" />
     <Compile Include="VFECore\PawnShieldGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VFECore\Quests\QuestNode_GetFaction.cs" />
     <Compile Include="VFECore\Reflection\NonPublicFields.cs" />
     <Compile Include="VFECore\Reflection\NonPublicMethods.cs" />
     <Compile Include="VFECore\ScenParts\ScenPart_ForcedFactionGoodwill.cs" />
