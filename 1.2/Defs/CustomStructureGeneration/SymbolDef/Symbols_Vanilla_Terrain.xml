@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+	<KCSG.SymbolDef>
+		<defName>Slate_Rough</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>Slate_Rough</terrain>
+		<symbol>Slate_Rough</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>WaterDeep</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>WaterDeep</terrain>
+		<symbol>WaterDeep</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Sand</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>Sand</terrain>
+		<symbol>Sand</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Soil</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>Soil</terrain>
+		<symbol>Soil</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>PavedTile</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>PavedTile</terrain>
+		<symbol>PavedTile</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Concrete</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>Concrete</terrain>
+		<symbol>Concrete</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>GoldTile</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>GoldTile</terrain>
+		<symbol>GoldTile</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>SilverTile</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>SilverTile</terrain>
+		<symbol>SilverTile</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>MetalTile</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>MetalTile</terrain>
+		<symbol>MetalTile</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Marble_Rough</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>Marble_Rough</terrain>
+		<symbol>Marble_Rough</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>WaterShallow</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>WaterShallow</terrain>
+		<symbol>WaterShallow</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>SoftSand</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>SoftSand</terrain>
+		<symbol>SoftSand</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>SoilRich</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>SoilRich</terrain>
+		<symbol>SoilRich</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>CarpetDark</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>CarpetDark</terrain>
+		<symbol>CarpetDark</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>CarpetCream</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>CarpetCream</terrain>
+		<symbol>CarpetCream</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>CarpetBlue</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>CarpetBlue</terrain>
+		<symbol>CarpetBlue</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>CarpetGreen</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>CarpetGreen</terrain>
+		<symbol>CarpetGreen</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>CarpetRed</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>CarpetRed</terrain>
+		<symbol>CarpetRed</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Marsh</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>Marsh</terrain>
+		<symbol>Marsh</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Mud</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>Mud</terrain>
+		<symbol>Mud</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>MossyTerrain</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>MossyTerrain</terrain>
+		<symbol>MossyTerrain</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TileMarble</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>TileMarble</terrain>
+		<symbol>TileMarble</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TileSlate</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>TileSlate</terrain>
+		<symbol>TileSlate</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TileLimestone</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>TileLimestone</terrain>
+		<symbol>TileLimestone</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TileGranite</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>TileGranite</terrain>
+		<symbol>TileGranite</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TileSandstone</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>TileSandstone</terrain>
+		<symbol>TileSandstone</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Sandstone_Rough</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>Sandstone_Rough</terrain>
+		<symbol>Sandstone_Rough</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Ice</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>Ice</terrain>
+		<symbol>Ice</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Gravel</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>Gravel</terrain>
+		<symbol>Gravel</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FlagstoneMarble</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>FlagstoneMarble</terrain>
+		<symbol>FlagstoneMarble</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FlagstoneSlate</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>FlagstoneSlate</terrain>
+		<symbol>FlagstoneSlate</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FlagstoneLimestone</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>FlagstoneLimestone</terrain>
+		<symbol>FlagstoneLimestone</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FlagstoneGranite</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>FlagstoneGranite</terrain>
+		<symbol>FlagstoneGranite</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FlagstoneSandstone</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>FlagstoneSandstone</terrain>
+		<symbol>FlagstoneSandstone</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Granite_Rough</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>Granite_Rough</terrain>
+		<symbol>Granite_Rough</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>BrokenAsphalt</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>BrokenAsphalt</terrain>
+		<symbol>BrokenAsphalt</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>MarshyTerrain</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>MarshyTerrain</terrain>
+		<symbol>MarshyTerrain</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>SterileTile</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>SterileTile</terrain>
+		<symbol>SterileTile</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>WoodPlankFloor</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>WoodPlankFloor</terrain>
+		<symbol>WoodPlankFloor</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>CarpetFineWhite</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>CarpetFineWhite</terrain>
+		<symbol>CarpetFineWhite</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>CarpetFineIndigo</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>CarpetFineIndigo</terrain>
+		<symbol>CarpetFineIndigo</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>CarpetFineBurgundy</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>CarpetFineBurgundy</terrain>
+		<symbol>CarpetFineBurgundy</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Limestone_Rough</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>Limestone_Rough</terrain>
+		<symbol>Limestone_Rough</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>PackedDirt</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>PackedDirt</terrain>
+		<symbol>PackedDirt</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FineTileMarble</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>FineTileMarble</terrain>
+		<symbol>FineTileMarble</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FineTileSlate</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>FineTileSlate</terrain>
+		<symbol>FineTileSlate</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FineTileLimestone</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>FineTileLimestone</terrain>
+		<symbol>FineTileLimestone</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FineTileGranite</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>FineTileGranite</terrain>
+		<symbol>FineTileGranite</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FineTileSandstone</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>FineTileSandstone</terrain>
+		<symbol>FineTileSandstone</symbol>
+	</KCSG.SymbolDef>
+</Defs>

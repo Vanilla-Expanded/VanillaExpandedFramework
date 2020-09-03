@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+	<KCSG.SymbolDef>
+		<defName>GeothermalGenerator</defName>
+		<thing>GeothermalGenerator</thing>
+		<symbol>GeothermalGenerator</symbol>
+	</KCSG.SymbolDef>
+	
+	<KCSG.SymbolDef>
+		<defName>WindTurbine_West</defName>
+		<thing>WindTurbine</thing>
+		<rotation>West</rotation>
+		<symbol>WindTurbine_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>PowerSwitch</defName>
+		<thing>PowerSwitch</thing>
+		<symbol>PowerSwitch</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>WindTurbine_East</defName>
+		<thing>WindTurbine</thing>
+		<rotation>East</rotation>
+		<symbol>WindTurbine_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>WoodFiredGenerator</defName>
+		<thing>WoodFiredGenerator</thing>
+		<symbol>WoodFiredGenerator</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>WindTurbine_North</defName>
+		<thing>WindTurbine</thing>
+		<rotation>North</rotation>
+		<symbol>WindTurbine_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ChemfuelPoweredGenerator</defName>
+		<thing>ChemfuelPoweredGenerator</thing>
+		<symbol>ChemfuelPoweredGenerator</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Battery_North</defName>
+		<thing>Battery</thing>
+		<rotation>North</rotation>
+		<symbol>Battery_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Battery_West</defName>
+		<thing>Battery</thing>
+		<rotation>West</rotation>
+		<symbol>Battery_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>WindTurbine_South</defName>
+		<thing>WindTurbine</thing>
+		<rotation>South</rotation>
+		<symbol>WindTurbine_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Battery_South</defName>
+		<thing>Battery</thing>
+		<rotation>South</rotation>
+		<symbol>Battery_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Battery_East</defName>
+		<thing>Battery</thing>
+		<rotation>East</rotation>
+		<symbol>Battery_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>WatermillGenerator_South</defName>
+		<thing>WatermillGenerator</thing>
+		<rotation>South</rotation>
+		<symbol>WatermillGenerator_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>SolarGenerator</defName>
+		<thing>SolarGenerator</thing>
+		<symbol>SolarGenerator</symbol>
+	</KCSG.SymbolDef>
+</Defs>

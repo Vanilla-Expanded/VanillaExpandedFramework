@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+	<KCSG.SymbolDef>
+		<defName>Campfire_West</defName>
+		<thing>Campfire</thing>
+		<rotation>West</rotation>
+		<symbol>Campfire_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Campfire_East</defName>
+		<thing>Campfire</thing>
+		<rotation>East</rotation>
+		<symbol>Campfire_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Campfire_South</defName>
+		<thing>Campfire</thing>
+		<rotation>South</rotation>
+		<symbol>Campfire_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Campfire_North</defName>
+		<thing>Campfire</thing>
+		<rotation>North</rotation>
+		<symbol>Campfire_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>PassiveCooler</defName>
+		<thing>PassiveCooler</thing>
+		<symbol>PassiveCooler</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Heater</defName>
+		<thing>Heater</thing>
+		<symbol>Heater</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Cooler_West</defName>
+		<thing>Cooler</thing>
+		<rotation>West</rotation>
+		<symbol>Cooler_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Cooler_East</defName>
+		<thing>Cooler</thing>
+		<rotation>East</rotation>
+		<symbol>Cooler_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Cooler_South</defName>
+		<thing>Cooler</thing>
+		<rotation>South</rotation>
+		<symbol>Cooler_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Cooler_North</defName>
+		<thing>Cooler</thing>
+		<rotation>North</rotation>
+		<symbol>Cooler_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Vent_West</defName>
+		<thing>Vent</thing>
+		<rotation>West</rotation>
+		<symbol>Vent_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Vent_East</defName>
+		<thing>Vent</thing>
+		<rotation>East</rotation>
+		<symbol>Vent_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Vent_South</defName>
+		<thing>Vent</thing>
+		<rotation>South</rotation>
+		<symbol>Vent_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Vent_North</defName>
+		<thing>Vent</thing>
+		<rotation>North</rotation>
+		<symbol>Vent_North</symbol>
+	</KCSG.SymbolDef>
+</Defs>
