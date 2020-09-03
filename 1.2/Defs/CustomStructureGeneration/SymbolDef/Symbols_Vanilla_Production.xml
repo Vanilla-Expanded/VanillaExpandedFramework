@@ -1,0 +1,773 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+	<KCSG.SymbolDef>
+		<defName>ElectricSmithy_South</defName>
+		<thing>ElectricSmithy</thing>
+		<rotation>South</rotation>
+		<symbol>ElectricSmithy_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TableMachining_North</defName>
+		<thing>TableMachining</thing>
+		<rotation>North</rotation>
+		<symbol>TableMachining_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TableMachining_South</defName>
+		<thing>TableMachining</thing>
+		<rotation>South</rotation>
+		<symbol>TableMachining_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>HandTailoringBench_WoodLog_West</defName>
+		<thing>HandTailoringBench</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>West</rotation>
+		<symbol>HandTailoringBench_WoodLog_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>HandTailoringBench_WoodLog_North</defName>
+		<thing>HandTailoringBench</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>North</rotation>
+		<symbol>HandTailoringBench_WoodLog_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FueledSmithy_South</defName>
+		<thing>FueledSmithy</thing>
+		<rotation>South</rotation>
+		<symbol>FueledSmithy_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FueledSmithy_West</defName>
+		<thing>FueledSmithy</thing>
+		<rotation>West</rotation>
+		<symbol>FueledSmithy_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FueledSmithy_North</defName>
+		<thing>FueledSmithy</thing>
+		<rotation>North</rotation>
+		<symbol>FueledSmithy_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ElectricSmithy_North</defName>
+		<thing>ElectricSmithy</thing>
+		<rotation>North</rotation>
+		<symbol>ElectricSmithy_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ElectricSmithy_East</defName>
+		<thing>ElectricSmithy</thing>
+		<rotation>East</rotation>
+		<symbol>ElectricSmithy_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TableMachining_East</defName>
+		<thing>TableMachining</thing>
+		<rotation>East</rotation>
+		<symbol>TableMachining_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>HandTailoringBench_WoodLog_East</defName>
+		<thing>HandTailoringBench</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>East</rotation>
+		<symbol>HandTailoringBench_WoodLog_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>HandTailoringBench_WoodLog_South</defName>
+		<thing>HandTailoringBench</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>South</rotation>
+		<symbol>HandTailoringBench_WoodLog_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ElectricSmithy_West</defName>
+		<thing>ElectricSmithy</thing>
+		<rotation>West</rotation>
+		<symbol>ElectricSmithy_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TableMachining_West</defName>
+		<thing>TableMachining</thing>
+		<rotation>West</rotation>
+		<symbol>TableMachining_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ElectricStove_North</defName>
+		<thing>ElectricStove</thing>
+		<rotation>North</rotation>
+		<symbol>ElectricStove_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ElectricStove_West</defName>
+		<thing>ElectricStove</thing>
+		<rotation>West</rotation>
+		<symbol>ElectricStove_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ElectricStove_South</defName>
+		<thing>ElectricStove</thing>
+		<rotation>South</rotation>
+		<symbol>ElectricStove_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FabricationBench_South</defName>
+		<thing>FabricationBench</thing>
+		<rotation>South</rotation>
+		<symbol>FabricationBench_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FueledSmithy_East</defName>
+		<thing>FueledSmithy</thing>
+		<rotation>East</rotation>
+		<symbol>FueledSmithy_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>BiofuelRefinery_East</defName>
+		<thing>BiofuelRefinery</thing>
+		<rotation>East</rotation>
+		<symbol>BiofuelRefinery_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ElectricTailoringBench_WoodLog_East</defName>
+		<thing>ElectricTailoringBench</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>East</rotation>
+		<symbol>ElectricTailoringBench_WoodLog_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>BiofuelRefinery_West</defName>
+		<thing>BiofuelRefinery</thing>
+		<rotation>West</rotation>
+		<symbol>BiofuelRefinery_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ElectricTailoringBench_WoodLog_West</defName>
+		<thing>ElectricTailoringBench</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>West</rotation>
+		<symbol>ElectricTailoringBench_WoodLog_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ElectricTailoringBench_WoodLog_North</defName>
+		<thing>ElectricTailoringBench</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>North</rotation>
+		<symbol>ElectricTailoringBench_WoodLog_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FabricationBench_North</defName>
+		<thing>FabricationBench</thing>
+		<rotation>North</rotation>
+		<symbol>FabricationBench_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>BiofuelRefinery_North</defName>
+		<thing>BiofuelRefinery</thing>
+		<rotation>North</rotation>
+		<symbol>BiofuelRefinery_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Brewery_East</defName>
+		<thing>Brewery</thing>
+		<rotation>East</rotation>
+		<symbol>Brewery_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Brewery_North</defName>
+		<thing>Brewery</thing>
+		<rotation>North</rotation>
+		<symbol>Brewery_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Brewery_South</defName>
+		<thing>Brewery</thing>
+		<rotation>South</rotation>
+		<symbol>Brewery_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ElectricStove_East</defName>
+		<thing>ElectricStove</thing>
+		<rotation>East</rotation>
+		<symbol>ElectricStove_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ElectricTailoringBench_WoodLog_South</defName>
+		<thing>ElectricTailoringBench</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>South</rotation>
+		<symbol>ElectricTailoringBench_WoodLog_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FueledStove_West</defName>
+		<thing>FueledStove</thing>
+		<rotation>West</rotation>
+		<symbol>FueledStove_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FueledStove_North</defName>
+		<thing>FueledStove</thing>
+		<rotation>North</rotation>
+		<symbol>FueledStove_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>BiofuelRefinery_South</defName>
+		<thing>BiofuelRefinery</thing>
+		<rotation>South</rotation>
+		<symbol>BiofuelRefinery_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Brewery_West</defName>
+		<thing>Brewery</thing>
+		<rotation>West</rotation>
+		<symbol>Brewery_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FabricationBench_West</defName>
+		<thing>FabricationBench</thing>
+		<rotation>West</rotation>
+		<symbol>FabricationBench_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FueledStove_East</defName>
+		<thing>FueledStove</thing>
+		<rotation>East</rotation>
+		<symbol>FueledStove_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FueledStove_South</defName>
+		<thing>FueledStove</thing>
+		<rotation>South</rotation>
+		<symbol>FueledStove_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TableButcher_WoodLog_East</defName>
+		<thing>TableButcher</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>East</rotation>
+		<symbol>TableButcher_WoodLog_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ElectricSmelter_West</defName>
+		<thing>ElectricSmelter</thing>
+		<rotation>West</rotation>
+		<symbol>ElectricSmelter_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ElectricSmelter_North</defName>
+		<thing>ElectricSmelter</thing>
+		<rotation>North</rotation>
+		<symbol>ElectricSmelter_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>DrugLab_WoodLog_East</defName>
+		<thing>DrugLab</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>East</rotation>
+		<symbol>DrugLab_WoodLog_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>DrugLab_WoodLog_North</defName>
+		<thing>DrugLab</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>North</rotation>
+		<symbol>DrugLab_WoodLog_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>DrugLab_WoodLog_South</defName>
+		<thing>DrugLab</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>South</rotation>
+		<symbol>DrugLab_WoodLog_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TableButcher_WoodLog_West</defName>
+		<thing>TableButcher</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>West</rotation>
+		<symbol>TableButcher_WoodLog_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TableButcher_WoodLog_North</defName>
+		<thing>TableButcher</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>North</rotation>
+		<symbol>TableButcher_WoodLog_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TableStonecutter_WoodLog_East</defName>
+		<thing>TableStonecutter</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>East</rotation>
+		<symbol>TableStonecutter_WoodLog_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FabricationBench_East</defName>
+		<thing>FabricationBench</thing>
+		<rotation>East</rotation>
+		<symbol>FabricationBench_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ElectricSmelter_East</defName>
+		<thing>ElectricSmelter</thing>
+		<rotation>East</rotation>
+		<symbol>ElectricSmelter_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ElectricSmelter_South</defName>
+		<thing>ElectricSmelter</thing>
+		<rotation>South</rotation>
+		<symbol>ElectricSmelter_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>DrugLab_WoodLog_West</defName>
+		<thing>DrugLab</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>West</rotation>
+		<symbol>DrugLab_WoodLog_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TableStonecutter_WoodLog_North</defName>
+		<thing>TableStonecutter</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>North</rotation>
+		<symbol>TableStonecutter_WoodLog_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TableStonecutter_WoodLog_South</defName>
+		<thing>TableStonecutter</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>South</rotation>
+		<symbol>TableStonecutter_WoodLog_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TableButcher_WoodLog_South</defName>
+		<thing>TableButcher</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>South</rotation>
+		<symbol>TableButcher_WoodLog_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TableSculpting_WoodLog_South</defName>
+		<thing>TableSculpting</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>South</rotation>
+		<symbol>TableSculpting_WoodLog_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>SimpleResearchBench_WoodLog_North</defName>
+		<thing>SimpleResearchBench</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>North</rotation>
+		<symbol>SimpleResearchBench_WoodLog_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ElectricCrematorium_BlocksGranite_South</defName>
+		<thing>ElectricCrematorium</thing>
+		<stuff>BlocksGranite</stuff>
+		<rotation>South</rotation>
+		<symbol>ElectricCrematorium_BlocksGranite_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ElectricCrematorium_BlocksGranite_North</defName>
+		<thing>ElectricCrematorium</thing>
+		<stuff>BlocksGranite</stuff>
+		<rotation>North</rotation>
+		<symbol>ElectricCrematorium_BlocksGranite_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TableSculpting_WoodLog_North</defName>
+		<thing>TableSculpting</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>North</rotation>
+		<symbol>TableSculpting_WoodLog_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>SimpleResearchBench_WoodLog_South</defName>
+		<thing>SimpleResearchBench</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>South</rotation>
+		<symbol>SimpleResearchBench_WoodLog_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>SimpleResearchBench_WoodLog_West</defName>
+		<thing>SimpleResearchBench</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>West</rotation>
+		<symbol>SimpleResearchBench_WoodLog_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ElectricCrematorium_BlocksGranite_West</defName>
+		<thing>ElectricCrematorium</thing>
+		<stuff>BlocksGranite</stuff>
+		<rotation>West</rotation>
+		<symbol>ElectricCrematorium_BlocksGranite_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TableStonecutter_WoodLog_West</defName>
+		<thing>TableStonecutter</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>West</rotation>
+		<symbol>TableStonecutter_WoodLog_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TableSculpting_WoodLog_East</defName>
+		<thing>TableSculpting</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>East</rotation>
+		<symbol>TableSculpting_WoodLog_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TableSculpting_WoodLog_West</defName>
+		<thing>TableSculpting</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>West</rotation>
+		<symbol>TableSculpting_WoodLog_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>HiTechResearchBench_Steel_North</defName>
+		<thing>HiTechResearchBench</thing>
+		<stuff>Steel</stuff>
+		<rotation>North</rotation>
+		<symbol>HiTechResearchBench_Steel_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>HiTechResearchBench_Steel_West</defName>
+		<thing>HiTechResearchBench</thing>
+		<stuff>Steel</stuff>
+		<rotation>West</rotation>
+		<symbol>HiTechResearchBench_Steel_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ElectricCrematorium_BlocksGranite_East</defName>
+		<thing>ElectricCrematorium</thing>
+		<stuff>BlocksGranite</stuff>
+		<rotation>East</rotation>
+		<symbol>ElectricCrematorium_BlocksGranite_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>SimpleResearchBench_WoodLog_East</defName>
+		<thing>SimpleResearchBench</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>East</rotation>
+		<symbol>SimpleResearchBench_WoodLog_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>HiTechResearchBench_Steel_South</defName>
+		<thing>HiTechResearchBench</thing>
+		<stuff>Steel</stuff>
+		<rotation>South</rotation>
+		<symbol>HiTechResearchBench_Steel_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>HiTechResearchBench_Steel_East</defName>
+		<thing>HiTechResearchBench</thing>
+		<stuff>Steel</stuff>
+		<rotation>East</rotation>
+		<symbol>HiTechResearchBench_Steel_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>NutrientPasteDispenser_East</defName>
+		<thing>NutrientPasteDispenser</thing>
+		<rotation>East</rotation>
+		<symbol>NutrientPasteDispenser_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>NutrientPasteDispenser_North</defName>
+		<thing>NutrientPasteDispenser</thing>
+		<rotation>North</rotation>
+		<symbol>NutrientPasteDispenser_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FermentingBarrel_North</defName>
+		<thing>FermentingBarrel</thing>
+		<rotation>North</rotation>
+		<symbol>FermentingBarrel_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FermentingBarrel_West</defName>
+		<thing>FermentingBarrel</thing>
+		<rotation>West</rotation>
+		<symbol>FermentingBarrel_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FermentingBarrel_South</defName>
+		<thing>FermentingBarrel</thing>
+		<rotation>South</rotation>
+		<symbol>FermentingBarrel_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FermentingBarrel_East</defName>
+		<thing>FermentingBarrel</thing>
+		<rotation>East</rotation>
+		<symbol>FermentingBarrel_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>NutrientPasteDispenser_West</defName>
+		<thing>NutrientPasteDispenser</thing>
+		<rotation>West</rotation>
+		<symbol>NutrientPasteDispenser_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>HydroponicsBasin_North</defName>
+		<thing>HydroponicsBasin</thing>
+		<rotation>North</rotation>
+		<symbol>HydroponicsBasin_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>HydroponicsBasin_East</defName>
+		<thing>HydroponicsBasin</thing>
+		<rotation>East</rotation>
+		<symbol>HydroponicsBasin_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>NutrientPasteDispenser_South</defName>
+		<thing>NutrientPasteDispenser</thing>
+		<rotation>South</rotation>
+		<symbol>NutrientPasteDispenser_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>HydroponicsBasin_South</defName>
+		<thing>HydroponicsBasin</thing>
+		<rotation>South</rotation>
+		<symbol>HydroponicsBasin_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>HydroponicsBasin_West</defName>
+		<thing>HydroponicsBasin</thing>
+		<rotation>West</rotation>
+		<symbol>HydroponicsBasin_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>DeepDrill_East</defName>
+		<thing>DeepDrill</thing>
+		<rotation>East</rotation>
+		<symbol>DeepDrill_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>DeepDrill_North</defName>
+		<thing>DeepDrill</thing>
+		<rotation>North</rotation>
+		<symbol>DeepDrill_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>DeepDrill_South</defName>
+		<thing>DeepDrill</thing>
+		<rotation>South</rotation>
+		<symbol>DeepDrill_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>DeepDrill_West</defName>
+		<thing>DeepDrill</thing>
+		<rotation>West</rotation>
+		<symbol>DeepDrill_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Hopper_North</defName>
+		<thing>Hopper</thing>
+		<rotation>North</rotation>
+		<symbol>Hopper_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Hopper_West</defName>
+		<thing>Hopper</thing>
+		<rotation>West</rotation>
+		<symbol>Hopper_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Hopper_South</defName>
+		<thing>Hopper</thing>
+		<rotation>South</rotation>
+		<symbol>Hopper_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Hopper_East</defName>
+		<thing>Hopper</thing>
+		<rotation>East</rotation>
+		<symbol>Hopper_East</symbol>
+	</KCSG.SymbolDef>
+</Defs>

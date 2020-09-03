@@ -66,6 +66,20 @@
   <ItemGroup>
     <Compile Include="AnimalBehaviours\Comps\CompProperties_Untameable.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompUntameable.cs" />
+    <Compile Include="CustomStructureGeneration\DefModExtensions\FactionSettlement.cs" />
+    <Compile Include="CustomStructureGeneration\Defs\SettlementLayoutDef.cs" />
+    <Compile Include="CustomStructureGeneration\Defs\StructureLayoutDef.cs" />
+    <Compile Include="CustomStructureGeneration\Defs\SymbolDef.cs" />
+    <Compile Include="CustomStructureGeneration\Designators\Designator_ExportToXml.cs" />
+    <Compile Include="CustomStructureGeneration\Designators\Designator_ExportToXmlFromArea.cs" />
+    <Compile Include="CustomStructureGeneration\GenStep\GenStep_CustomStructureGen.cs" />
+    <Compile Include="CustomStructureGeneration\Harmony\GenStepPatches.cs" />
+    <Compile Include="CustomStructureGeneration\Harmony\HarmonyInit.cs" />
+    <Compile Include="CustomStructureGeneration\MapComponents\MapComponent_KSG.cs" />
+    <Compile Include="CustomStructureGeneration\SymbolResolvers\SymbolResolver_KCSG_RoomGen.cs" />
+    <Compile Include="CustomStructureGeneration\SymbolResolvers\SymbolResolver_KCSG_Settlement.cs" />
+    <Compile Include="CustomStructureGeneration\Utils\CenteredMessageBox.cs" />
+    <Compile Include="CustomStructureGeneration\Utils\KCSG_Utilities.cs" />
     <Compile Include="Furniture\Comps\CompProperties_SelectBuildingBehind.cs" />
     <Compile Include="Furniture\Comps\CompProperties_SpawnOtherBuildingWhenPowered.cs" />
     <Compile Include="Furniture\Comps\CompSelectBuildingBehind.cs" />
@@ -172,5 +186,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

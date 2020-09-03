@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+    <KCSG.SymbolDef>
+        <defName>Chicken</defName>
+        <isPawn>true</isPawn>
+        <pawnKindDef>Chicken</pawnKindDef>
+        <symbol>Chicken</symbol>
+    </KCSG.SymbolDef>
+
+    <KCSG.SymbolDef>
+        <defName>Cow</defName>
+        <isPawn>true</isPawn>
+        <pawnKindDef>Cow</pawnKindDef>
+        <symbol>Cow</symbol>
+    </KCSG.SymbolDef>
+
+    <KCSG.SymbolDef>
+        <defName>Slave</defName>
+        <isPawn>true</isPawn>
+        <pawnKindDef>Slave</pawnKindDef>
+        <isSlave>True</isSlave>
+        <symbol>Slave</symbol>
+    </KCSG.SymbolDef>
+
+    <KCSG.SymbolDef>
+        <defName>Horse</defName>
+        <isPawn>true</isPawn>
+        <pawnKindDef>Horse</pawnKindDef>
+        <symbol>Horse</symbol>
+    </KCSG.SymbolDef>
+</Defs>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+	<KCSG.SymbolDef>
+		<defName>TubeTelevision_West</defName>
+		<thing>TubeTelevision</thing>
+		<rotation>West</rotation>
+		<symbol>TubeTelevision_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TubeTelevision_South</defName>
+		<thing>TubeTelevision</thing>
+		<rotation>South</rotation>
+		<symbol>TubeTelevision_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TubeTelevision_East</defName>
+		<thing>TubeTelevision</thing>
+		<rotation>East</rotation>
+		<symbol>TubeTelevision_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TubeTelevision_North</defName>
+		<thing>TubeTelevision</thing>
+		<rotation>North</rotation>
+		<symbol>TubeTelevision_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FlatscreenTelevision_South</defName>
+		<thing>FlatscreenTelevision</thing>
+		<rotation>South</rotation>
+		<symbol>FlatscreenTelevision_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FlatscreenTelevision_West</defName>
+		<thing>FlatscreenTelevision</thing>
+		<rotation>West</rotation>
+		<symbol>FlatscreenTelevision_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FlatscreenTelevision_North</defName>
+		<thing>FlatscreenTelevision</thing>
+		<rotation>North</rotation>
+		<symbol>FlatscreenTelevision_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FlatscreenTelevision_East</defName>
+		<thing>FlatscreenTelevision</thing>
+		<rotation>East</rotation>
+		<symbol>FlatscreenTelevision_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>PokerTable_WoodLog</defName>
+		<thing>PokerTable</thing>
+		<stuff>WoodLog</stuff>
+		<symbol>PokerTable_WoodLog</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>BilliardsTable_WoodLog_South</defName>
+		<thing>BilliardsTable</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>South</rotation>
+		<symbol>BilliardsTable_WoodLog_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ChessTable_WoodLog</defName>
+		<thing>ChessTable</thing>
+		<stuff>WoodLog</stuff>
+		<symbol>ChessTable_WoodLog</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>BilliardsTable_WoodLog_East</defName>
+		<thing>BilliardsTable</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>East</rotation>
+		<symbol>BilliardsTable_WoodLog_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>GameOfUrBoard_WoodLog_North</defName>
+		<thing>GameOfUrBoard</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>North</rotation>
+		<symbol>GameOfUrBoard_WoodLog_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>HorseshoesPin_WoodLog</defName>
+		<thing>HorseshoesPin</thing>
+		<stuff>WoodLog</stuff>
+		<symbol>HorseshoesPin_WoodLog</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>HoopstoneRing_WoodLog</defName>
+		<thing>HoopstoneRing</thing>
+		<stuff>WoodLog</stuff>
+		<symbol>HoopstoneRing_WoodLog</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>BilliardsTable_WoodLog_North</defName>
+		<thing>BilliardsTable</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>North</rotation>
+		<symbol>BilliardsTable_WoodLog_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>BilliardsTable_WoodLog_West</defName>
+		<thing>BilliardsTable</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>West</rotation>
+		<symbol>BilliardsTable_WoodLog_West</symbol>
+	</KCSG.SymbolDef>
+</Defs>

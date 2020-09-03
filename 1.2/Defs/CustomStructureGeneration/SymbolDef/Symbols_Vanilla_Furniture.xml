@@ -1,0 +1,773 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+	<KCSG.SymbolDef>
+		<defName>Dresser_WoodLog_North</defName>
+		<thing>Dresser</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>North</rotation>
+		<symbol>Dresser_WoodLog_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Dresser_WoodLog_West</defName>
+		<thing>Dresser</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>West</rotation>
+		<symbol>Dresser_WoodLog_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Dresser_WoodLog_South</defName>
+		<thing>Dresser</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>South</rotation>
+		<symbol>Dresser_WoodLog_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Dresser_WoodLog_East</defName>
+		<thing>Dresser</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>East</rotation>
+		<symbol>Dresser_WoodLog_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Drape_Cloth_West</defName>
+		<thing>Drape</thing>
+		<stuff>Cloth</stuff>
+		<rotation>West</rotation>
+		<symbol>Drape_Cloth_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Drape_Cloth_South</defName>
+		<thing>Drape</thing>
+		<stuff>Cloth</stuff>
+		<rotation>South</rotation>
+		<symbol>Drape_Cloth_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Drape_Cloth_North</defName>
+		<thing>Drape</thing>
+		<stuff>Cloth</stuff>
+		<rotation>North</rotation>
+		<symbol>Drape_Cloth_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Drape_Cloth_East</defName>
+		<thing>Drape</thing>
+		<stuff>Cloth</stuff>
+		<rotation>East</rotation>
+		<symbol>Drape_Cloth_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Brazier_Steel</defName>
+		<thing>Brazier</thing>
+		<stuff>Steel</stuff>
+		<symbol>Brazier_Steel</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Throne_WoodLog_East</defName>
+		<thing>Throne</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>East</rotation>
+		<symbol>Throne_WoodLog_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Throne_WoodLog_West</defName>
+		<thing>Throne</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>West</rotation>
+		<symbol>Throne_WoodLog_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Throne_WoodLog_North</defName>
+		<thing>Throne</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>North</rotation>
+		<symbol>Throne_WoodLog_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Throne_WoodLog_South</defName>
+		<thing>Throne</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>South</rotation>
+		<symbol>Throne_WoodLog_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>GrandThrone_Steel_West</defName>
+		<thing>GrandThrone</thing>
+		<stuff>Steel</stuff>
+		<rotation>West</rotation>
+		<symbol>GrandThrone_Steel_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>GrandThrone_Steel_North</defName>
+		<thing>GrandThrone</thing>
+		<stuff>Steel</stuff>
+		<rotation>North</rotation>
+		<symbol>GrandThrone_Steel_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>GrandThrone_Steel_South</defName>
+		<thing>GrandThrone</thing>
+		<stuff>Steel</stuff>
+		<rotation>South</rotation>
+		<symbol>GrandThrone_Steel_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>GrandThrone_Steel_East</defName>
+		<thing>GrandThrone</thing>
+		<stuff>Steel</stuff>
+		<rotation>East</rotation>
+		<symbol>GrandThrone_Steel_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>AnimalBed_Cloth</defName>
+		<thing>AnimalBed</thing>
+		<stuff>Cloth</stuff>
+		<symbol>AnimalBed_Cloth</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Table2x2c_WoodLog</defName>
+		<thing>Table2x2c</thing>
+		<stuff>WoodLog</stuff>
+		<symbol>Table2x2c_WoodLog</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Stool_WoodLog_East</defName>
+		<thing>Stool</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>East</rotation>
+		<symbol>Stool_WoodLog_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Stool_WoodLog_South</defName>
+		<thing>Stool</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>South</rotation>
+		<symbol>Stool_WoodLog_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Stool_WoodLog_West</defName>
+		<thing>Stool</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>West</rotation>
+		<symbol>Stool_WoodLog_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Stool_WoodLog_North</defName>
+		<thing>Stool</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>North</rotation>
+		<symbol>Stool_WoodLog_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>DiningChair_WoodLog_West</defName>
+		<thing>DiningChair</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>West</rotation>
+		<symbol>DiningChair_WoodLog_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>DiningChair_WoodLog_North</defName>
+		<thing>DiningChair</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>North</rotation>
+		<symbol>DiningChair_WoodLog_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>DiningChair_WoodLog_East</defName>
+		<thing>DiningChair</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>East</rotation>
+		<symbol>DiningChair_WoodLog_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>DiningChair_WoodLog_South</defName>
+		<thing>DiningChair</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>South</rotation>
+		<symbol>DiningChair_WoodLog_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Table2x4c_WoodLog_North</defName>
+		<thing>Table2x4c</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>North</rotation>
+		<symbol>Table2x4c_WoodLog_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Armchair_Cloth_West</defName>
+		<thing>Armchair</thing>
+		<stuff>Cloth</stuff>
+		<rotation>West</rotation>
+		<symbol>Armchair_Cloth_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Armchair_Cloth_North</defName>
+		<thing>Armchair</thing>
+		<stuff>Cloth</stuff>
+		<rotation>North</rotation>
+		<symbol>Armchair_Cloth_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Armchair_Cloth_East</defName>
+		<thing>Armchair</thing>
+		<stuff>Cloth</stuff>
+		<rotation>East</rotation>
+		<symbol>Armchair_Cloth_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Armchair_Cloth_South</defName>
+		<thing>Armchair</thing>
+		<stuff>Cloth</stuff>
+		<rotation>South</rotation>
+		<symbol>Armchair_Cloth_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>EndTable_WoodLog_West</defName>
+		<thing>EndTable</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>West</rotation>
+		<symbol>EndTable_WoodLog_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>EndTable_WoodLog_North</defName>
+		<thing>EndTable</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>North</rotation>
+		<symbol>EndTable_WoodLog_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>EndTable_WoodLog_East</defName>
+		<thing>EndTable</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>East</rotation>
+		<symbol>EndTable_WoodLog_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>EndTable_WoodLog_South</defName>
+		<thing>EndTable</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>South</rotation>
+		<symbol>EndTable_WoodLog_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Table2x4c_WoodLog_South</defName>
+		<thing>Table2x4c</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>South</rotation>
+		<symbol>Table2x4c_WoodLog_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Table2x4c_WoodLog_West</defName>
+		<thing>Table2x4c</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>West</rotation>
+		<symbol>Table2x4c_WoodLog_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>SunLamp</defName>
+		<thing>SunLamp</thing>
+		<symbol>SunLamp</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Table1x2c_WoodLog_North</defName>
+		<thing>Table1x2c</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>North</rotation>
+		<symbol>Table1x2c_WoodLog_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Table1x2c_WoodLog_South</defName>
+		<thing>Table1x2c</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>South</rotation>
+		<symbol>Table1x2c_WoodLog_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Table1x2c_WoodLog_West</defName>
+		<thing>Table1x2c</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>West</rotation>
+		<symbol>Table1x2c_WoodLog_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Table2x4c_WoodLog_East</defName>
+		<thing>Table2x4c</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>East</rotation>
+		<symbol>Table2x4c_WoodLog_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>PlantPot_BlocksMarble</defName>
+		<thing>PlantPot</thing>
+		<stuff>BlocksMarble</stuff>
+		<symbol>PlantPot_BlocksMarble</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Table1x2c_WoodLog_East</defName>
+		<thing>Table1x2c</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>East</rotation>
+		<symbol>Table1x2c_WoodLog_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>PlantPot_WoodLog</defName>
+		<thing>PlantPot</thing>
+		<stuff>WoodLog</stuff>
+		<symbol>PlantPot_WoodLog</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TorchLamp</defName>
+		<thing>TorchLamp</thing>
+		<symbol>TorchLamp</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Table3x3c_WoodLog</defName>
+		<thing>Table3x3c</thing>
+		<stuff>WoodLog</stuff>
+		<symbol>Table3x3c_WoodLog</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>StandingLamp_Blue</defName>
+		<thing>StandingLamp_Blue</thing>
+		<symbol>StandingLamp_Blue</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Shelf_WoodLog_North</defName>
+		<thing>Shelf</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>North</rotation>
+		<symbol>Shelf_WoodLog_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>StandingLamp</defName>
+		<thing>StandingLamp</thing>
+		<symbol>StandingLamp</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>StandingLamp_Green</defName>
+		<thing>StandingLamp_Green</thing>
+		<symbol>StandingLamp_Green</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Shelf_WoodLog_South</defName>
+		<thing>Shelf</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>South</rotation>
+		<symbol>Shelf_WoodLog_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>StandingLamp_Red</defName>
+		<thing>StandingLamp_Red</thing>
+		<symbol>StandingLamp_Red</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Shelf_WoodLog_East</defName>
+		<thing>Shelf</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>East</rotation>
+		<symbol>Shelf_WoodLog_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>DoubleBed_WoodLog_South</defName>
+		<thing>DoubleBed</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>South</rotation>
+		<symbol>DoubleBed_WoodLog_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>AnimalSleepingBox_WoodLog</defName>
+		<thing>AnimalSleepingBox</thing>
+		<stuff>WoodLog</stuff>
+		<symbol>AnimalSleepingBox_WoodLog</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Bed_WoodLog_South</defName>
+		<thing>Bed</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>South</rotation>
+		<symbol>Bed_WoodLog_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Shelf_WoodLog_West</defName>
+		<thing>Shelf</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>West</rotation>
+		<symbol>Shelf_WoodLog_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Bed_WoodLog_North</defName>
+		<thing>Bed</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>North</rotation>
+		<symbol>Bed_WoodLog_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Bed_WoodLog_East</defName>
+		<thing>Bed</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>East</rotation>
+		<symbol>Bed_WoodLog_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>DoubleBed_WoodLog_North</defName>
+		<thing>DoubleBed</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>North</rotation>
+		<symbol>DoubleBed_WoodLog_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>DoubleBed_WoodLog_East</defName>
+		<thing>DoubleBed</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>East</rotation>
+		<symbol>DoubleBed_WoodLog_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Bed_WoodLog_West</defName>
+		<thing>Bed</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>West</rotation>
+		<symbol>Bed_WoodLog_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>DoubleBed_WoodLog_West</defName>
+		<thing>DoubleBed</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>West</rotation>
+		<symbol>DoubleBed_WoodLog_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Bedroll_Cloth_West</defName>
+		<thing>Bedroll</thing>
+		<stuff>Cloth</stuff>
+		<rotation>West</rotation>
+		<symbol>Bedroll_Cloth_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>HospitalBed_Steel_South</defName>
+		<thing>HospitalBed</thing>
+		<stuff>Steel</stuff>
+		<rotation>South</rotation>
+		<symbol>HospitalBed_Steel_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>HospitalBed_Steel_North</defName>
+		<thing>HospitalBed</thing>
+		<stuff>Steel</stuff>
+		<rotation>North</rotation>
+		<symbol>HospitalBed_Steel_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>HospitalBed_Steel_East</defName>
+		<thing>HospitalBed</thing>
+		<stuff>Steel</stuff>
+		<rotation>East</rotation>
+		<symbol>HospitalBed_Steel_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Bedroll_Cloth_South</defName>
+		<thing>Bedroll</thing>
+		<stuff>Cloth</stuff>
+		<rotation>South</rotation>
+		<symbol>Bedroll_Cloth_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Bedroll_Cloth_North</defName>
+		<thing>Bedroll</thing>
+		<stuff>Cloth</stuff>
+		<rotation>North</rotation>
+		<symbol>Bedroll_Cloth_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>HospitalBed_Steel_West</defName>
+		<thing>HospitalBed</thing>
+		<stuff>Steel</stuff>
+		<rotation>West</rotation>
+		<symbol>HospitalBed_Steel_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>RoyalBed_WoodLog_South</defName>
+		<thing>RoyalBed</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>South</rotation>
+		<symbol>RoyalBed_WoodLog_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Bedroll_Cloth_East</defName>
+		<thing>Bedroll</thing>
+		<stuff>Cloth</stuff>
+		<rotation>East</rotation>
+		<symbol>Bedroll_Cloth_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>BedrollDouble_Cloth_South</defName>
+		<thing>BedrollDouble</thing>
+		<stuff>Cloth</stuff>
+		<rotation>South</rotation>
+		<symbol>BedrollDouble_Cloth_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>BedrollDouble_Cloth_West</defName>
+		<thing>BedrollDouble</thing>
+		<stuff>Cloth</stuff>
+		<rotation>West</rotation>
+		<symbol>BedrollDouble_Cloth_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>RoyalBed_WoodLog_North</defName>
+		<thing>RoyalBed</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>North</rotation>
+		<symbol>RoyalBed_WoodLog_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>RoyalBed_WoodLog_East</defName>
+		<thing>RoyalBed</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>East</rotation>
+		<symbol>RoyalBed_WoodLog_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>BedrollDouble_Cloth_East</defName>
+		<thing>BedrollDouble</thing>
+		<stuff>Cloth</stuff>
+		<rotation>East</rotation>
+		<symbol>BedrollDouble_Cloth_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>BedrollDouble_Cloth_North</defName>
+		<thing>BedrollDouble</thing>
+		<stuff>Cloth</stuff>
+		<rotation>North</rotation>
+		<symbol>BedrollDouble_Cloth_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>RoyalBed_WoodLog_West</defName>
+		<thing>RoyalBed</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>West</rotation>
+		<symbol>RoyalBed_WoodLog_West</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>PlantPot_BlocksLimestone</defName>
+		<thing>PlantPot</thing>
+		<stuff>BlocksLimestone</stuff>
+		<symbol>PlantPot_BlocksLimestone</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>Armchair_WoolSheep_South</defName>
+		<thing>Armchair</thing>
+		<stuff>WoolSheep</stuff>
+		<rotation>South</rotation>
+		<symbol>Armchair_WoolSheep_South</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>Armchair_WoolSheep_East</defName>
+		<thing>Armchair</thing>
+		<stuff>WoolSheep</stuff>
+		<rotation>East</rotation>
+		<symbol>Armchair_WoolSheep_East</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>Armchair_WoolSheep_West</defName>
+		<thing>Armchair</thing>
+		<stuff>WoolSheep</stuff>
+		<rotation>West</rotation>
+		<symbol>Armchair_WoolSheep_West</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>GameOfUrBoard_WoodLog_West</defName>
+		<thing>GameOfUrBoard</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>West</rotation>
+		<symbol>GameOfUrBoard_WoodLog_West</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>GameOfUrBoard_WoodLog_East</defName>
+		<thing>GameOfUrBoard</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>East</rotation>
+		<symbol>GameOfUrBoard_WoodLog_East</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>Armchair_WoolSheep_North</defName>
+		<thing>Armchair</thing>
+		<stuff>WoolSheep</stuff>
+		<rotation>North</rotation>
+		<symbol>Armchair_WoolSheep_North</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>AnimalBed_WoolSheep</defName>
+		<thing>AnimalBed</thing>
+		<stuff>WoolSheep</stuff>
+		<symbol>AnimalBed_WoolSheep</symbol>
+	</KCSG.SymbolDef>
+</Defs>

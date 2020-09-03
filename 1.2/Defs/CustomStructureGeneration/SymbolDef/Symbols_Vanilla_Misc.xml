@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+	<KCSG.SymbolDef>
+		<defName>Sarcophagus_WoodLog_North</defName>
+		<thing>Sarcophagus</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>North</rotation>
+		<symbol>Sarcophagus_WoodLog_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>CryptosleepCasket_North</defName>
+		<thing>CryptosleepCasket</thing>
+		<rotation>North</rotation>
+		<symbol>CryptosleepCasket_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>CryptosleepCasket_South</defName>
+		<thing>CryptosleepCasket</thing>
+		<rotation>South</rotation>
+		<symbol>CryptosleepCasket_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Sarcophagus_WoodLog_West</defName>
+		<thing>Sarcophagus</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>West</rotation>
+		<symbol>Sarcophagus_WoodLog_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Sarcophagus_WoodLog_South</defName>
+		<thing>Sarcophagus</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>South</rotation>
+		<symbol>Sarcophagus_WoodLog_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Grave_South</defName>
+		<thing>Grave</thing>
+		<rotation>South</rotation>
+		<symbol>Grave_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ToolCabinet_West</defName>
+		<thing>ToolCabinet</thing>
+		<rotation>West</rotation>
+		<symbol>ToolCabinet_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ToolCabinet_North</defName>
+		<thing>ToolCabinet</thing>
+		<rotation>North</rotation>
+		<symbol>ToolCabinet_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>CryptosleepCasket_West</defName>
+		<thing>CryptosleepCasket</thing>
+		<rotation>West</rotation>
+		<symbol>CryptosleepCasket_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>CryptosleepCasket_East</defName>
+		<thing>CryptosleepCasket</thing>
+		<rotation>East</rotation>
+		<symbol>CryptosleepCasket_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ShipLandingBeacon</defName>
+		<thing>ShipLandingBeacon</thing>
+		<symbol>ShipLandingBeacon</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Sarcophagus_WoodLog_East</defName>
+		<thing>Sarcophagus</thing>
+		<stuff>WoodLog</stuff>
+		<rotation>East</rotation>
+		<symbol>Sarcophagus_WoodLog_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>SteleLarge_BlocksGranite</defName>
+		<thing>SteleLarge</thing>
+		<stuff>BlocksGranite</stuff>
+		<symbol>SteleLarge_BlocksGranite</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Grave_North</defName>
+		<thing>Grave</thing>
+		<rotation>North</rotation>
+		<symbol>Grave_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Grave_East</defName>
+		<thing>Grave</thing>
+		<rotation>East</rotation>
+		<symbol>Grave_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ToolCabinet_East</defName>
+		<thing>ToolCabinet</thing>
+		<rotation>East</rotation>
+		<symbol>ToolCabinet_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>ToolCabinet_South</defName>
+		<thing>ToolCabinet</thing>
+		<rotation>South</rotation>
+		<symbol>ToolCabinet_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>OrbitalTradeBeacon</defName>
+		<thing>OrbitalTradeBeacon</thing>
+		<symbol>OrbitalTradeBeacon</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Grave_West</defName>
+		<thing>Grave</thing>
+		<rotation>West</rotation>
+		<symbol>Grave_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>MoisturePump</defName>
+		<thing>MoisturePump</thing>
+		<symbol>MoisturePump</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>SteleGrand_BlocksGranite</defName>
+		<thing>SteleGrand</thing>
+		<stuff>BlocksGranite</stuff>
+		<symbol>SteleGrand_BlocksGranite</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>FirefoamPopper</defName>
+		<thing>FirefoamPopper</thing>
+		<symbol>FirefoamPopper</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>VitalsMonitor_South</defName>
+		<thing>VitalsMonitor</thing>
+		<rotation>South</rotation>
+		<symbol>VitalsMonitor_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>VitalsMonitor_East</defName>
+		<thing>VitalsMonitor</thing>
+		<rotation>East</rotation>
+		<symbol>VitalsMonitor_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>CommsConsole_North</defName>
+		<thing>CommsConsole</thing>
+		<rotation>North</rotation>
+		<symbol>CommsConsole_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>CommsConsole_East</defName>
+		<thing>CommsConsole</thing>
+		<rotation>East</rotation>
+		<symbol>CommsConsole_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>CommsConsole_South</defName>
+		<thing>CommsConsole</thing>
+		<rotation>South</rotation>
+		<symbol>CommsConsole_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>VitalsMonitor_North</defName>
+		<thing>VitalsMonitor</thing>
+		<rotation>North</rotation>
+		<symbol>VitalsMonitor_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>VitalsMonitor_West</defName>
+		<thing>VitalsMonitor</thing>
+		<rotation>West</rotation>
+		<symbol>VitalsMonitor_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>CommsConsole_West</defName>
+		<thing>CommsConsole</thing>
+		<rotation>West</rotation>
+		<symbol>CommsConsole_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>MultiAnalyzer</defName>
+		<thing>MultiAnalyzer</thing>
+		<symbol>MultiAnalyzer</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>GroundPenetratingScanner_South</defName>
+		<thing>GroundPenetratingScanner</thing>
+		<rotation>South</rotation>
+		<symbol>GroundPenetratingScanner_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>GroundPenetratingScanner_North</defName>
+		<thing>GroundPenetratingScanner</thing>
+		<rotation>North</rotation>
+		<symbol>GroundPenetratingScanner_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>GroundPenetratingScanner_East</defName>
+		<thing>GroundPenetratingScanner</thing>
+		<rotation>East</rotation>
+		<symbol>GroundPenetratingScanner_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>GroundPenetratingScanner_West</defName>
+		<thing>GroundPenetratingScanner</thing>
+		<rotation>West</rotation>
+		<symbol>GroundPenetratingScanner_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>LongRangeMineralScanner_East</defName>
+		<thing>LongRangeMineralScanner</thing>
+		<rotation>East</rotation>
+		<symbol>LongRangeMineralScanner_East</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>LongRangeMineralScanner_North</defName>
+		<thing>LongRangeMineralScanner</thing>
+		<rotation>North</rotation>
+		<symbol>LongRangeMineralScanner_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>PodLauncher_North</defName>
+		<thing>PodLauncher</thing>
+		<rotation>North</rotation>
+		<symbol>PodLauncher_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>LongRangeMineralScanner_South</defName>
+		<thing>LongRangeMineralScanner</thing>
+		<rotation>South</rotation>
+		<symbol>LongRangeMineralScanner_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>LongRangeMineralScanner_West</defName>
+		<thing>LongRangeMineralScanner</thing>
+		<rotation>West</rotation>
+		<symbol>LongRangeMineralScanner_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>PodLauncher_West</defName>
+		<thing>PodLauncher</thing>
+		<rotation>West</rotation>
+		<symbol>PodLauncher_West</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>PodLauncher_South</defName>
+		<thing>PodLauncher</thing>
+		<rotation>South</rotation>
+		<symbol>PodLauncher_South</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TransportPod</defName>
+		<thing>TransportPod</thing>
+		<symbol>TransportPod</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>PodLauncher_East</defName>
+		<thing>PodLauncher</thing>
+		<rotation>East</rotation>
+		<symbol>PodLauncher_East</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>Sarcophagus_BlocksGranite_East</defName>
+		<thing>Sarcophagus</thing>
+		<stuff>BlocksGranite</stuff>
+		<rotation>East</rotation>
+		<symbol>Sarcophagus_BlocksGranite_East</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>Sarcophagus_Jade_West</defName>
+		<thing>Sarcophagus</thing>
+		<stuff>Jade</stuff>
+		<rotation>West</rotation>
+		<symbol>Sarcophagus_Jade_West</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>Sarcophagus_BlocksGranite_North</defName>
+		<thing>Sarcophagus</thing>
+		<stuff>BlocksGranite</stuff>
+		<rotation>North</rotation>
+		<symbol>Sarcophagus_BlocksGranite_North</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>SteleGrand_BlocksLimestone</defName>
+		<thing>SteleGrand</thing>
+		<stuff>BlocksLimestone</stuff>
+		<symbol>SteleGrand_BlocksLimestone</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>Sarcophagus_BlocksGranite_South</defName>
+		<thing>Sarcophagus</thing>
+		<stuff>BlocksGranite</stuff>
+		<rotation>South</rotation>
+		<symbol>Sarcophagus_BlocksGranite_South</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>Sarcophagus_Jade_North</defName>
+		<thing>Sarcophagus</thing>
+		<stuff>Jade</stuff>
+		<rotation>North</rotation>
+		<symbol>Sarcophagus_Jade_North</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>Sarcophagus_Jade_East</defName>
+		<thing>Sarcophagus</thing>
+		<stuff>Jade</stuff>
+		<rotation>East</rotation>
+		<symbol>Sarcophagus_Jade_East</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>Sarcophagus_Silver_North</defName>
+		<thing>Sarcophagus</thing>
+		<stuff>Silver</stuff>
+		<rotation>North</rotation>
+		<symbol>Sarcophagus_Silver_North</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>Sarcophagus_BlocksGranite_West</defName>
+		<thing>Sarcophagus</thing>
+		<stuff>BlocksGranite</stuff>
+		<rotation>West</rotation>
+		<symbol>Sarcophagus_BlocksGranite_West</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>VFEV_FurBed_Cloth_North</defName>
+		<thing>VFEV_FurBed</thing>
+		<stuff>Cloth</stuff>
+		<rotation>North</rotation>
+		<symbol>VFEV_FurBed_Cloth_North</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>Sarcophagus_BlocksMarble_West</defName>
+		<thing>Sarcophagus</thing>
+		<stuff>BlocksMarble</stuff>
+		<rotation>West</rotation>
+		<symbol>Sarcophagus_BlocksMarble_West</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>Sarcophagus_BlocksMarble_North</defName>
+		<thing>Sarcophagus</thing>
+		<stuff>BlocksMarble</stuff>
+		<rotation>North</rotation>
+		<symbol>Sarcophagus_BlocksMarble_North</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>Sarcophagus_BlocksMarble_East</defName>
+		<thing>Sarcophagus</thing>
+		<stuff>BlocksMarble</stuff>
+		<rotation>East</rotation>
+		<symbol>Sarcophagus_BlocksMarble_East</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>SteleLarge_BlocksMarble</defName>
+		<thing>SteleLarge</thing>
+		<stuff>BlocksMarble</stuff>
+		<symbol>SteleLarge_BlocksMarble</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>Sarcophagus_BlocksMarble_South</defName>
+		<thing>Sarcophagus</thing>
+		<stuff>BlocksMarble</stuff>
+		<rotation>South</rotation>
+		<symbol>Sarcophagus_BlocksMarble_South</symbol>
+	</KCSG.SymbolDef>
+
+</Defs>
