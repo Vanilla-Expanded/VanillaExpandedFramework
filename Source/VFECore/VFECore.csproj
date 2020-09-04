@@ -174,6 +174,7 @@
     <Compile Include="VFECore\Quests\QuestNode_GetFaction.cs" />
     <Compile Include="VFECore\Reflection\NonPublicFields.cs" />
     <Compile Include="VFECore\Reflection\NonPublicMethods.cs" />
+    <Compile Include="VFECore\ScenParts\ScenPart_ArriveAtEdge.cs" />
     <Compile Include="VFECore\ScenParts\ScenPart_ForcedFactionGoodwill.cs" />
     <Compile Include="VFECore\StaticConstructorClass.cs" />
     <Compile Include="VFECore\Utilities\CustomSiegeUtility.cs" />

@@ -10,4 +10,12 @@
         <summaryPriority>340</summaryPriority>
     </ScenPartDef>
 
+    <ScenPartDef>
+		<defName>VFEC_PlayerPawnsArriveMethodEdge</defName>
+		<label>pawn arrive method</label>
+		<category>Fixed</category>
+		<scenPartClass>VFECore.ScenPart_ArriveAtEdge</scenPartClass>
+		<maxUses>1</maxUses>
+	</ScenPartDef>
+
 </Defs>
