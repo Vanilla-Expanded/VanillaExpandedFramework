@@ -266,7 +266,7 @@ namespace KCSG
 						if (temp != null)
 						{
 							if (map.terrainGrid.TerrainAt(first).affordances.Contains(TerrainAffordanceDefOf.Bridgeable)) map.terrainGrid.SetTerrain(first, TerrainDefOf.Bridge);
-							else map.terrainGrid.SetTerrain(first, temp.terrainDef);
+							else if (temp.terrainDef != null) map.terrainGrid.SetTerrain(first, temp.terrainDef);
 
 							first.GetThingList(map).ToList().FindAll(t1 => (t1.def.category == ThingCategory.Building && (!t1.def.BuildableByPlayer || t1.Faction == null)) || t1.def.mineable).ForEach((t) => t.DeSpawn());
 						}
