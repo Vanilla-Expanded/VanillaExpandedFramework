@@ -12,7 +12,16 @@ namespace KCSG
 {
     class Designator_ExportToXmlFromArea : Designator_Area
 	{
-		public override int DraggableDimensions
+        public override bool Visible
+        {
+			get
+            {
+				if (Prefs.DevMode) return true;
+				else return false;
+            }
+        }
+
+        public override int DraggableDimensions
 		{
 			get
 			{

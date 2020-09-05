@@ -10,6 +10,15 @@ namespace KCSG
 {
     class Designator_ExportToXml : Designator
     {
+		public override bool Visible
+		{
+			get
+			{
+				if (Prefs.DevMode) return true;
+				else return false;
+			}
+		}
+
 		public override int DraggableDimensions
 		{
 			get
