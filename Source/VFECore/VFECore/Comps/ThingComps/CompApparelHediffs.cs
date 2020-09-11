@@ -27,7 +27,7 @@ namespace VFECore
             base.CompTick();
             if (this.parent is Apparel apparel && apparel.Wearer != wearer)
             {
-                Log.Message("wearer: " + wearer + " - apparel.Wearer: " + apparel.Wearer, true);
+                //Log.Message("wearer: " + wearer + " - apparel.Wearer: " + apparel.Wearer, true);
                 var hediffStrings = this.Props.hediffDefnames;
                 if (hediffStrings != null && hediffStrings.Count > 0)
                 {
@@ -35,7 +35,7 @@ namespace VFECore
                     {
                         foreach (var hediff in wearerHediffs)
                         {
-                            Log.Message("Remove it " + hediff);
+                            //Log.Message("Remove it " + hediff);
                             wearer.health.hediffSet.hediffs.Remove(hediff);
                         }
                     }
@@ -47,7 +47,7 @@ namespace VFECore
                             var hediff = HediffMaker.MakeHediff(HediffDef.Named(hediffDefName), apparel.Wearer);
                             if (hediff != null)
                             {
-                                Log.Message("Add it " + hediff);
+                                //Log.Message("Add it " + hediff);
                                 apparel.Wearer.health.AddHediff(hediff);
                                 wearerHediffs.Add(hediff);
                             }
