@@ -167,6 +167,7 @@
     <Compile Include="VFECore\HarmonyPatches\RimCities\Patch_Cities_GenCity.cs" />
     <Compile Include="VFECore\HarmonyPatches\RPGStyleInventory\Patch_Sandy_Detailed_RPG_GearTab_Sandy_Detailed_RPG_Inventory.cs" />
     <Compile Include="VFECore\HarmonyPatches\RunAndGun\Patch_RunAndGun_Harmony_Verb_TryCastNextBurstShot.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_DrugPolicy.cs" />
     <Compile Include="VFECore\IncidentWorkers\IncidentWorker_RaidEnemySpecial.cs" />
     <Compile Include="VFECore\ModCompatibilityCheck.cs" />
     <Compile Include="VFECore\PawnShieldGenerator.cs" />
