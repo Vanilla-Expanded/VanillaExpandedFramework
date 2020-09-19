@@ -161,7 +161,7 @@ namespace KCSG
 							if (temp.thingDef.stackLimit > 1) thing.stackCount = temp.stackCount.RandomInRange;
 							if (thing.TryGetComp<CompQuality>() != null) thing.TryGetComp<CompQuality>().SetQuality(QualityUtility.GenerateQualityRandomEqualChance(), ArtGenerationContext.Outsider);
 
-							GenSpawn.Spawn(thing, cell, map);
+							if (cell.Walkable(map)) GenSpawn.Spawn(thing, cell, map);
 							if (thing.TryGetComp<CompForbiddable>() != null) thing.SetForbidden(true);
 						}
 						else if (temp.thingDef != null)
@@ -187,10 +187,20 @@ namespace KCSG
 							}
 							else if (thing.def.category == ThingCategory.Plant && cell.GetThingList(map).FindAll(th => th.def.passability == Traversability.Impassable).Count == 0) // && cell.GetFirstThing<Thing>(map).def.passability != Traversability.Impassable) // If it's a plant
 							{
-								if (cell.GetTerrain(map).fertility <= 0) map.terrainGrid.SetTerrain(cell, TerrainDefOf.Soil);
-								Plant plant = thing as Plant;
-								plant.Growth = temp.plantGrowth; // apply the growth
-								GenSpawn.Spawn(plant, cell, map, WipeMode.Vanish);
+								if (rld.roofGrid != null && l < roofGrid.Count && (roofGrid[l] == "0"|| roofGrid[l] == "."))
+                                {
+									if (cell.GetTerrain(map).fertility <= 0) map.terrainGrid.SetTerrain(cell, TerrainDefOf.Soil);
+									Plant plant = thing as Plant;
+									plant.Growth = temp.plantGrowth; // apply the growth
+									GenSpawn.Spawn(plant, cell, map, WipeMode.Vanish);
+								}
+								else if (rld.roofGrid == null)
+                                {
+									if (cell.GetTerrain(map).fertility <= 0) map.terrainGrid.SetTerrain(cell, TerrainDefOf.Soil);
+									Plant plant = thing as Plant;
+									plant.Growth = temp.plantGrowth; // apply the growth
+									GenSpawn.Spawn(plant, cell, map, WipeMode.Vanish);
+								}
 							}
 							else if (thing.def.category == ThingCategory.Building) 
 							{

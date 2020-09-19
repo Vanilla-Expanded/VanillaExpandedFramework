@@ -57,6 +57,14 @@
     </KCSG.SymbolDef>
 
     <KCSG.SymbolDef>
+        <defName>Item_ChunkSlate</defName>
+        <thing>ChunkSlate</thing>
+        <isItem>true</isItem>
+        <stackCount>1~1</stackCount>
+        <symbol>Item_ChunkSlate</symbol>
+    </KCSG.SymbolDef>
+
+    <KCSG.SymbolDef>
         <defName>Item_Beer</defName>
         <thing>Beer</thing>
         <isItem>true</isItem>
@@ -134,6 +142,22 @@
         <isItem>true</isItem>
         <stackCount>1~500</stackCount>
         <symbol>Item_Silver</symbol>
+    </KCSG.SymbolDef>
+
+    <KCSG.SymbolDef>
+        <defName>Item_Plasteel</defName>
+        <thing>Plasteel</thing>
+        <isItem>true</isItem>
+        <stackCount>1~75</stackCount>
+        <symbol>Item_Plasteel</symbol>
+    </KCSG.SymbolDef>
+
+    <KCSG.SymbolDef>
+        <defName>Item_Uranium</defName>
+        <thing>Uranium</thing>
+        <isItem>true</isItem>
+        <stackCount>1~75</stackCount>
+        <symbol>Item_Uranium</symbol>
     </KCSG.SymbolDef>
 
     <KCSG.SymbolDef>
