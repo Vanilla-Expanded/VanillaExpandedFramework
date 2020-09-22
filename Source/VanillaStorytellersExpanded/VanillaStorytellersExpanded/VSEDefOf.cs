@@ -11,7 +11,7 @@ namespace VanillaStorytellersExpanded
 	[DefOf]
 	public static class VSEDefOf
 	{
-		public static IncidentDef VSE_Reinforcements;
+
 	}
 }
 

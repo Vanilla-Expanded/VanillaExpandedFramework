@@ -46,7 +46,8 @@ namespace VanillaStorytellersExpanded
                         raidStrategy = RaidStrategyDefOf.ImmediateAttack,
                         points = StorytellerUtility.DefaultThreatPointsNow(__instance.Map) / 4f
                     };
-                    VSEDefOf.VSE_Reinforcements.Worker.TryExecute(parms);
+                    var incidentDef = DefDatabase<IncidentDef>.GetNamed("VSE_Reinforcements");
+                    incidentDef.Worker.TryExecute(parms);
                 }
             }
         }
@@ -98,7 +99,7 @@ namespace VanillaStorytellersExpanded
         public static void Prefix(Transition __instance, Lord lord)
         {
             var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
-            if (options != null && options.storytellerThreat != null && lord.LordJob is LordJob_AssaultColony lordJob_AssaultColony)
+            if (options != null && options.storytellerThreat != null)
             {
                 if (__instance.canMoveToSameState || __instance.target != lord.CurLordToil)
                 {
