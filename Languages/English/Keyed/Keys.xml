@@ -44,5 +44,8 @@
 	<VanillaFactionsExpanded.FactionMinDistance>The minimum distance from player bases (recommended are {0}): {1}</VanillaFactionsExpanded.FactionMinDistance>
 	<VanillaFactionsExpanded.FactionButtonSpawn>Spawn</VanillaFactionsExpanded.FactionButtonSpawn>
 	<VanillaFactionsExpanded.FactionButtonCancel>Cancel</VanillaFactionsExpanded.FactionButtonCancel>
+	
+	<VSE.Reinforcements>Reinforcements</VSE.Reinforcements>
+	<VSE.ReinforcementsDesc>Seeing that your forces suffered losses, {FACTION_name} has decided to reinforce their raiding force</VSE.ReinforcementsDesc>
 
 </LanguageData>

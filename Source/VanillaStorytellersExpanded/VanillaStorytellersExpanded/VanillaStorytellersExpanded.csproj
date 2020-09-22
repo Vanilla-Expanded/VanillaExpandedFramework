@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\1.1\Assemblies\</OutputPath>
+    <OutputPath>..\..\..\1.2\Assemblies\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -45,6 +45,7 @@
       <HintPath>..\..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.dll</HintPath>
@@ -295,9 +296,14 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RaidWatcher.cs" />
+    <Compile Include="StorytellerThreat.cs" />
     <Compile Include="RaidRestlessness.cs" />
+    <Compile Include="StorytellerComp_IncidentSpawner.cs" />
     <Compile Include="StorytellerWatcher.cs" />
     <Compile Include="QuestWatcher.cs" />
+    <Compile Include="IncidentWorker_Reinforcements.cs" />
+    <Compile Include="VSEDefOf.cs" />
     <Compile Include="ThoughtWorker_RaidRestlessness.cs" />
     <Compile Include="XeoNovaDanCode\CustomStorytellerUtility.cs" />
     <Compile Include="XeoNovaDanCode\HarmonyPatches.cs" />
