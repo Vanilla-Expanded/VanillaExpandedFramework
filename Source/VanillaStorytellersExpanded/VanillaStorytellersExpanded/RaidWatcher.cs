@@ -2,6 +2,7 @@
 using RimWorld;
 using RimWorld.Planet;
 using RimWorld.QuestGen;
+using System;
 using System.Linq;
 using Verse;
 using Verse.AI.Group;
@@ -10,21 +11,28 @@ using static Verse.DamageWorker;
 namespace VanillaStorytellersExpanded
 {
 
-    [HarmonyPatch(typeof(DamageInfo), "Amount", MethodType.Getter)]
-    public static class Patch_Amount
+    [HarmonyPatch(typeof(DamageWorker_AddInjury), "ApplyDamageToPart")]
+    public static class Patch_ApplyDamageToPart
     {
-        public static void Postfix(DamageInfo __instance, float ___amountInt, ref float __result)
+        public static void Prefix(ref DamageInfo dinfo, Pawn pawn, DamageResult result)
         {
-            if (__instance.Weapon != null)
+            if (dinfo.Weapon != null)
             {
                 var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
                 if (options != null && options.storytellerThreat != null)
                 {
-                    __result *= options.storytellerThreat.allDamagesMultiplier;
+                    Log.Message("Before: " + dinfo + " - " + result, true);
+                    dinfo.SetAmount(dinfo.Amount * options.storytellerThreat.allDamagesMultiplier);
                 }
             }
         }
+
+        public static void Postfix(DamageInfo dinfo, Pawn pawn, DamageResult result)
+        {
+            Log.Message("After: " + dinfo + " - " + result, true);
+        }
     }
+
 
     [HarmonyPatch(typeof(Pawn))]
     [HarmonyPatch("Kill")]
@@ -63,7 +71,8 @@ namespace VanillaStorytellersExpanded
             {
                 var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
                 if (options != null && options.storytellerThreat != null 
-                    && options.storytellerThreat.disableThreatsAtPopulationCount >= Find.ColonistBar.Entries.Where(x => x.pawn.Faction == Faction.OfPlayer).Count())
+                    && options.storytellerThreat.disableThreatsAtPopulationCount >= Find.ColonistBar.Entries.Where(x => x.pawn != null 
+                    && !x.pawn.Dead && x.pawn.Faction == Faction.OfPlayer).Count())
                 {
                     Log.Message("TryExecute is disabled");
                     return false;

@@ -78,7 +78,7 @@ namespace VanillaStorytellersExpanded
             if (originalNaturalGoodwillValues == null) originalNaturalGoodwillValues = new Dictionary<FactionDef, IntRange>();
             foreach (var factionDef in DefDatabase<FactionDef>.AllDefs)
             {
-                if (factionDef != Faction.OfPlayer.def)
+                if (factionDef != Faction.OfPlayer.def && !factionDef.permanentEnemy)
                 {
                     originalNaturalGoodwillValues[factionDef] = factionDef.naturalColonyGoodwill;
                     factionDef.naturalColonyGoodwill = storytellerThreat.naturallGoodwillForAllFactions;
@@ -94,7 +94,7 @@ namespace VanillaStorytellersExpanded
                 Log.Message("Restoring NaturalGoodwill");
                 foreach (var factionDef in DefDatabase<FactionDef>.AllDefs)
                 {
-                    if (factionDef != Faction.OfPlayer.def)
+                    if (factionDef != Faction.OfPlayer.def && !factionDef.permanentEnemy)
                     {
                         factionDef.naturalColonyGoodwill = originalNaturalGoodwillValues[factionDef];
                         Log.Message("Old " + factionDef + " - factionDef.naturalColonyGoodwill: " + factionDef.naturalColonyGoodwill, true);
