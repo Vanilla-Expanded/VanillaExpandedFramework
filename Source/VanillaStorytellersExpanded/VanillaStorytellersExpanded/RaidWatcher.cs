@@ -21,16 +21,16 @@ namespace VanillaStorytellersExpanded
                 var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
                 if (options != null && options.storytellerThreat != null)
                 {
-                    Log.Message("Before: " + dinfo + " - " + result, true);
+                    //Log.Message("Before: " + dinfo + " - " + result, true);
                     dinfo.SetAmount(dinfo.Amount * options.storytellerThreat.allDamagesMultiplier);
                 }
             }
         }
 
-        public static void Postfix(DamageInfo dinfo, Pawn pawn, DamageResult result)
-        {
-            Log.Message("After: " + dinfo + " - " + result, true);
-        }
+        //public static void Postfix(DamageInfo dinfo, Pawn pawn, DamageResult result)
+        //{
+        //    Log.Message("After: " + dinfo + " - " + result, true);
+        //}
     }
 
 
@@ -55,7 +55,7 @@ namespace VanillaStorytellersExpanded
                         points = StorytellerUtility.DefaultThreatPointsNow(__instance.Map) / 4f
                     };
                     var incidentDef = DefDatabase<IncidentDef>.GetNamed("VSE_Reinforcements");
-                    incidentDef.Worker.TryExecute(parms);
+                    Find.Storyteller.incidentQueue.Add(incidentDef, Find.TickManager.TicksGame + new IntRange(300, 600).RandomInRange, parms);
                 }
             }
         }
@@ -96,6 +96,56 @@ namespace VanillaStorytellersExpanded
                 if (comp != null)
                 {
                     comp.currentRaidingFaction = parms.faction;
+                }
+            }
+        }
+    }
+
+
+    [HarmonyPatch(typeof(Lord))]
+    [HarmonyPatch("Notify_PawnLost")]
+    public static class Patch_Notify_PawnLost
+    {
+        public static void Prefix(Lord __instance, Pawn pawn, PawnLostCondition cond, DamageInfo? dinfo = null)
+        {
+            var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
+            if (options != null && options.storytellerThreat != null)
+            {
+                if (__instance.faction.HostileTo(Faction.OfPlayer) && cond == PawnLostCondition.ExitedMap)
+                {
+                    Patch_Cleanup.allEnemiesAreKilled = false;
+                }
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(Lord))]
+    [HarmonyPatch("Cleanup")]
+    public static class Patch_Cleanup
+    {
+        public static bool allEnemiesAreKilled = true;
+        public static void Prefix(Lord __instance)
+        {
+            var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
+            if (options != null && options.storytellerThreat != null)
+            {
+                if (allEnemiesAreKilled)
+                {
+                    IncidentParms parms = new IncidentParms
+                    {
+                        target = __instance.Map,
+                        forced = true,
+                        points = StorytellerUtility.DefaultThreatPointsNow(__instance.Map)
+                    };
+                    var incidentDef = DefDatabase<IncidentDef>.GetNamed(options.storytellerThreat.goodIncidents.RandomElement());
+                    if (incidentDef != null)
+                    {
+                        Find.Storyteller.incidentQueue.Add(incidentDef, Find.TickManager.TicksGame + new IntRange(6000, 12000).RandomInRange, parms);
+                    }
+                }
+                else
+                {
+                    allEnemiesAreKilled = true;
                 }
             }
         }
