@@ -1,6 +1,7 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
 using Verse;
+using Verse.AI.Group;
 
 namespace VanillaStorytellersExpanded
 {
@@ -13,6 +14,9 @@ namespace VanillaStorytellersExpanded
         public Faction currentRaidingFaction;
 
         public Dictionary<FactionDef, IntRange> originalNaturalGoodwillValues;
+
+        public Dictionary<Lord, bool> enemiesAreOutOfTheMap;
+
         public StorytellerWatcher()
         {
         }
@@ -109,6 +113,10 @@ namespace VanillaStorytellersExpanded
             Scribe_Values.Look(ref lastRaidExpansionTicks, "lastRaidExpansionTicks", 0);
             Scribe_Defs.Look(ref currentStoryteller, "currentStoryteller");
             Scribe_References.Look<Faction>(ref currentRaidingFaction, "currentRaidingFaction");
+            Scribe_Collections.Look<Lord, bool>(ref enemiesAreOutOfTheMap, "enemiesAreOutOfTheMap", LookMode.Reference, LookMode.Value, ref lordKeys, ref lordValues);
         }
+
+        private List<Lord> lordKeys;
+        private List<bool> lordValues;
     }
 }

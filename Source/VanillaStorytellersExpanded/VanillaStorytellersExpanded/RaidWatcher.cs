@@ -3,6 +3,7 @@ using RimWorld;
 using RimWorld.Planet;
 using RimWorld.QuestGen;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using Verse.AI.Group;
@@ -111,10 +112,19 @@ namespace VanillaStorytellersExpanded
             var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
             if (options != null && options.storytellerThreat != null)
             {
-                if (__instance.faction.HostileTo(Faction.OfPlayer) && cond == PawnLostCondition.ExitedMap)
+                Log.Message("cond: " + cond, true);
+                if (__instance.faction.HostileTo(Faction.OfPlayer))
                 {
-                    Patch_Cleanup.allEnemiesAreKilled = false;
+                    var gameComp = Current.Game.GetComponent<StorytellerWatcher>();
+
+                    if (gameComp.enemiesAreOutOfTheMap == null)
+                        gameComp.enemiesAreOutOfTheMap = new Dictionary<Lord, bool>();
+                    if (cond == PawnLostCondition.ExitedMap)
+                    {
+                        gameComp.enemiesAreOutOfTheMap[__instance] = true;
+                    }
                 }
+
             }
         }
     }
@@ -123,14 +133,16 @@ namespace VanillaStorytellersExpanded
     [HarmonyPatch("Cleanup")]
     public static class Patch_Cleanup
     {
-        public static bool allEnemiesAreKilled = true;
         public static void Prefix(Lord __instance)
         {
             var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
             if (options != null && options.storytellerThreat != null)
             {
-                if (allEnemiesAreKilled)
+                var gameComp = Current.Game.GetComponent<StorytellerWatcher>();
+                if (__instance.faction.HostileTo(Faction.OfPlayer) && (gameComp.enemiesAreOutOfTheMap != null && gameComp.enemiesAreOutOfTheMap.ContainsKey(__instance) 
+                    && !gameComp.enemiesAreOutOfTheMap[__instance] || gameComp.enemiesAreOutOfTheMap == null || !gameComp.enemiesAreOutOfTheMap.ContainsKey(__instance)))
                 {
+                    Log.Message("Success");
                     IncidentParms parms = new IncidentParms
                     {
                         target = __instance.Map,
@@ -143,9 +155,9 @@ namespace VanillaStorytellersExpanded
                         Find.Storyteller.incidentQueue.Add(incidentDef, Find.TickManager.TicksGame + new IntRange(6000, 12000).RandomInRange, parms);
                     }
                 }
-                else
+                if (gameComp.enemiesAreOutOfTheMap != null && gameComp.enemiesAreOutOfTheMap.ContainsKey(__instance))
                 {
-                    allEnemiesAreKilled = true;
+                    gameComp.enemiesAreOutOfTheMap.Remove(__instance);
                 }
             }
         }
