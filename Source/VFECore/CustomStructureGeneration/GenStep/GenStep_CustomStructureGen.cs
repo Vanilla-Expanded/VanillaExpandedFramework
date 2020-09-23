@@ -28,10 +28,20 @@ namespace KCSG
 			KCSG_Utilities.HeightWidthFromLayout(structureLayoutDef, out h, out w);
 			CellRect cellRect = CellRect.CenteredOn(map.Center, w, h);
 
-			if (structureLayoutDef.terrainGrid != null) KCSG_Utilities.GenerateTerrainFromLayout(cellRect, map, structureLayoutDef);
+			if (structureLayoutDef.terrainGrid != null)
+			{
+				KCSG_Utilities.GenerateTerrainFromLayout(cellRect, map, structureLayoutDef);
+
+				if (KCSG_Mod.settings.enableLog) Log.Message("Terrain generation - PASS");
+
+			}
+			int count = 0;
 			foreach (List<String> item in structureLayoutDef.layouts)
 			{
 				KCSG_Utilities.GenerateRoomFromLayout(item, cellRect, map, structureLayoutDef);
+				count++;
+				if (KCSG_Mod.settings.enableLog) Log.Message("Layout " + count.ToString() + " generation - PASS");
+
 			}
 		}
 

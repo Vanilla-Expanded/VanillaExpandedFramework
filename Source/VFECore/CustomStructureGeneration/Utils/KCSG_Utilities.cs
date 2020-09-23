@@ -107,7 +107,9 @@ namespace KCSG
 					List<string> tempSplitFromLine = str.Split(',').ToList();
 					tempSplitFromLine.ForEach((s) => roofGrid.Add(s));
 				}
-			}			
+			}
+
+			if (KCSG_Mod.settings.enableLog) Log.Message("-- Layout list creation - PASS");
 
 			int l = 0;
 			foreach (IntVec3 cell in roomRect)
@@ -124,7 +126,7 @@ namespace KCSG
 							map.terrainGrid.SetTerrain(cell, temp.terrainDef);
 							cell.GetThingList(map).ToList().FindAll(t1 => t1.def.category == ThingCategory.Building && !t1.def.BuildableByPlayer).ForEach((t) => t.DeSpawn());
 						}
-						else if (temp.isPawn && temp.pawnKindDefNS != null)
+						else if (temp.isPawn && temp.pawnKindDefNS != null && temp.numberToSpawn != null)
                         {
 							if (temp.lordJob != null)
                             {
@@ -216,10 +218,14 @@ namespace KCSG
 								else GenSpawn.Spawn(ThingDefOf.PowerConduit, cell, map, WipeMode.Vanish);
 							}
 						}
+						else
+                        {
+							if (KCSG_Mod.settings.enableLog) Log.Message("--- Cell " + l.ToString() + " provoked NULL symbolDef");
+						}
 					}
 					else
                     {
-						Log.Error("No symbolDef found for symbol " + allSymbList[l]);
+						if (KCSG_Mod.settings.enableLog) Log.Error("No symbolDef found for symbol " + allSymbList[l]);
                     }					
 				}
 
@@ -234,6 +240,7 @@ namespace KCSG
 				}
 				l++;
 			}
+			if (KCSG_Mod.settings.enableLog) Log.Message("-- Cells passage done - PASS");
 		}
 
 		public static void GenerateRoofFromLayout(CellRect roomRect, Map map, StructureLayoutDef rld)

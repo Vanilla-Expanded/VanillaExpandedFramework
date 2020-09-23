@@ -64,11 +64,11 @@ namespace KCSG
             if (this.containPawnKind != null) this.containPawnKindDef = DefDatabase<PawnKindDef>.AllDefsListForReading.Find(t => t.defName == this.containPawnKind);
             if (this.pawnKindDef != null) this.pawnKindDefNS = DefDatabase<PawnKindDef>.AllDefsListForReading.Find(t => t.defName == this.pawnKindDef);
 
-            if (this.terrain != null && terrainDef == null) Log.Warning("Tried to load SymbolDef with non-existant terrain: " + this.terrain);
-            if (this.thing != null && thingDef == null) Log.Warning("Tried to load SymbolDef with non-existant thing: " + this.thing);
-            if (this.stuff != null && stuffDef == null) Log.Warning("Tried to load SymbolDef with non-existant stuff: " + this.stuff);
-            if (this.containPawnKind != null && containPawnKindDef == null) Log.Warning("Tried to load SymbolDef with non-existant pawnKind " + this.thing + " for containPawnKind");
-            if (this.pawnKindDef != null && pawnKindDefNS == null) Log.Warning("Tried to load SymbolDef with non-existant pawnKindDef: " + this.pawnKindDef);
+            if (KCSG_Mod.settings.enableLog) if (this.terrain != null && terrainDef == null) Log.Warning("Tried to load SymbolDef with non-existant terrain: " + this.terrain);
+            if (KCSG_Mod.settings.enableLog) if (this.thing != null && thingDef == null) Log.Warning("Tried to load SymbolDef with non-existant thing: " + this.thing);
+            if (KCSG_Mod.settings.enableLog) if (this.stuff != null && stuffDef == null) Log.Warning("Tried to load SymbolDef with non-existant stuff: " + this.stuff);
+            if (KCSG_Mod.settings.enableLog) if (this.containPawnKind != null && containPawnKindDef == null) Log.Warning("Tried to load SymbolDef with non-existant pawnKind " + this.thing + " for containPawnKind");
+            if (KCSG_Mod.settings.enableLog) if (this.pawnKindDef != null && pawnKindDefNS == null) Log.Warning("Tried to load SymbolDef with non-existant pawnKindDef: " + this.pawnKindDef);
         }
     }
 }

@@ -23,6 +23,8 @@ namespace KCSG
 			List<CellRect> gridRects = KCSG_Utilities.GetRects(rp.rect, lDef, map, out rp.rect);
 			map.ParentFaction.def.GetModExtension<FactionSettlement>().tempRectList = gridRects;
 
+			if (KCSG_Mod.settings.enableLog) Log.Message("Hostile pawns generation - PASS");
+			
 			// Add pawn to the base
 			Lord singlePawnLord = rp.singlePawnLord ?? LordMaker.MakeNewLord(faction, new LordJob_DefendBase(faction, rp.rect.CenterCell), map, null);
 			TraverseParms traverseParms = TraverseParms.For(TraverseMode.PassDoors, Danger.Deadly, false);
@@ -55,12 +57,17 @@ namespace KCSG
 				BaseGen.symbolStack.Push("edgeDefense", rp3, null);
 			}
 
+			if (KCSG_Mod.settings.enableLog) Log.Message("Structures generation - PASS");
+
 			// Create the rooms
 			ResolveParams rp2 = rp;
 			rp2.faction = faction;
 			BaseGen.symbolStack.Push("kcsg_roomsgen", rp2, null);
 
 			// Add path
+
+			if (KCSG_Mod.settings.enableLog) Log.Message("Adding paths - PASS");
+
 			if (lDef.path)
             {
 				ResolveParams rp1 = rp;
@@ -70,6 +77,9 @@ namespace KCSG
 			}
 
 			// Destroy all things before spawning the base
+			
+			if (KCSG_Mod.settings.enableLog) Log.Message("Clearing ground - PASS");
+
 			if (lDef.clearEverything)
             {
 				foreach (IntVec3 c in rp.rect)
@@ -86,52 +96,6 @@ namespace KCSG
 					c.GetThingList(map).ToList().FindAll(t1 => t1.def.category == ThingCategory.Filth || t1.def.category == ThingCategory.Item).ForEach((t) => t.DeSpawn());
 				}
 			}
-            
-			/* int num = 0;
-			if (rp.edgeDefenseWidth != null)
-			{
-				num = rp.edgeDefenseWidth.Value;
-			}
-			else if (rp.rect.Width >= 20 && rp.rect.Height >= 20 && (faction.def.techLevel >= TechLevel.Industrial || Rand.Bool))
-			{
-				num = (Rand.Bool ? 2 : 4);
-			}
-			float num2 = (float)rp.rect.Area / 144f * 0.17f;
-			BaseGen.globalSettings.minEmptyNodes = ((num2 < 1f) ? 0 : GenMath.RoundRandom(num2));
-			BaseGen.symbolStack.Push("outdoorLighting", rp, null);
-			if (faction.def.techLevel >= TechLevel.Industrial)
-			{
-				int num3 = Rand.Chance(0.75f) ? GenMath.RoundRandom((float)rp.rect.Area / 400f) : 0;
-				for (int i = 0; i < num3; i++)
-				{
-					ResolveParams resolveParams2 = rp;
-					resolveParams2.faction = faction;
-					BaseGen.symbolStack.Push("firefoamPopper", resolveParams2, null);
-				}
-			}
-			if (num > 0)
-			{
-				ResolveParams rp3 = rp;
-				rp3.faction = faction;
-				rp3.edgeDefenseWidth = new int?(num);
-				rp3.edgeThingMustReachMapEdge = new bool?(rp.edgeThingMustReachMapEdge ?? true);
-				BaseGen.symbolStack.Push("edgeDefense", rp3, null);
-			}
-			ResolveParams resolveParams4 = rp;
-			resolveParams4.rect = rp.rect.ContractedBy(num);
-			resolveParams4.faction = faction;
-			BaseGen.symbolStack.Push("ensureCanReachMapEdge", resolveParams4, null);
-			ResolveParams resolveParams5 = rp;
-			resolveParams5.rect = rp.rect.ContractedBy(num);
-			resolveParams5.faction = faction;
-			resolveParams5.floorOnlyIfTerrainSupports = new bool?(rp.floorOnlyIfTerrainSupports ?? true);
-			BaseGen.symbolStack.Push("basePart_outdoors", resolveParams5, null);
-			ResolveParams rp2 = rp;
-			rp2.floorDef = TerrainDefOf.Bridge;
-			rp2.floorOnlyIfTerrainSupports = new bool?(rp.floorOnlyIfTerrainSupports ?? true);
-			rp2.allowBridgeOnAnyImpassableTerrain = new bool?(rp.allowBridgeOnAnyImpassableTerrain ?? true);
-			BaseGen.symbolStack.Push("floor", rp2, null);
-		}*/
 		}
 	}
 }
