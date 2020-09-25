@@ -139,7 +139,7 @@ namespace VanillaStorytellersExpanded
             if (options != null && options.storytellerThreat != null)
             {
                 var gameComp = Current.Game.GetComponent<StorytellerWatcher>();
-                if (__instance.faction.HostileTo(Faction.OfPlayer) && (gameComp.enemiesAreOutOfTheMap != null && gameComp.enemiesAreOutOfTheMap.ContainsKey(__instance) 
+                if (__instance.Map.IsPlayerHome && __instance.faction.HostileTo(Faction.OfPlayer) && (gameComp.enemiesAreOutOfTheMap != null && gameComp.enemiesAreOutOfTheMap.ContainsKey(__instance) 
                     && !gameComp.enemiesAreOutOfTheMap[__instance] || gameComp.enemiesAreOutOfTheMap == null || !gameComp.enemiesAreOutOfTheMap.ContainsKey(__instance)))
                 {
                     Log.Message("Success");
@@ -192,6 +192,10 @@ namespace VanillaStorytellersExpanded
                                 {
                                     Find.Storyteller.incidentQueue.Add(incidentDef, Find.TickManager.TicksGame + new IntRange(6000, 12000).RandomInRange, parms);
                                 }
+                                var gameComp = Current.Game.GetComponent<StorytellerWatcher>();
+                                if (gameComp.enemiesAreOutOfTheMap == null)
+                                    gameComp.enemiesAreOutOfTheMap = new Dictionary<Lord, bool>();
+                                gameComp.enemiesAreOutOfTheMap[lord] = true;
                             }
                         }
                     }
