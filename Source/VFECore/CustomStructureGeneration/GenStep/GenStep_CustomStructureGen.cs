@@ -20,28 +20,29 @@ namespace KCSG
 			}
 		}
 
+		private Dictionary<IntVec3, List<Thing>> pairsCellThingList = new Dictionary<IntVec3, List<Thing>>();
+
 		public override void Generate(Map map, GenStepParams parms)
 		{
 			StructureLayoutDef structureLayoutDef = structureLayoutDefs.RandomElement();
 
-			int w, h;
-			KCSG_Utilities.HeightWidthFromLayout(structureLayoutDef, out h, out w);
-			CellRect cellRect = CellRect.CenteredOn(map.Center, w, h);
+            KCSG_Utilities.HeightWidthFromLayout(structureLayoutDef, out int h, out int w);
+            CellRect cellRect = CellRect.CenteredOn(map.Center, w, h);
+
+			KCSG_Utilities.FillCellThingsList(cellRect.Cells.ToList(), map, pairsCellThingList);
 
 			if (structureLayoutDef.terrainGrid != null)
 			{
-				KCSG_Utilities.GenerateTerrainFromLayout(cellRect, map, structureLayoutDef);
-
+				KCSG_Utilities.GenerateTerrainFromLayout(cellRect, map, structureLayoutDef, pairsCellThingList);
 				if (KCSG_Mod.settings.enableLog) Log.Message("Terrain generation - PASS");
 
 			}
-			int count = 0;
+			int count = 1;
 			foreach (List<String> item in structureLayoutDef.layouts)
 			{
-				KCSG_Utilities.GenerateRoomFromLayout(item, cellRect, map, structureLayoutDef);
-				count++;
+				KCSG_Utilities.GenerateRoomFromLayout(item, cellRect, map, structureLayoutDef, pairsCellThingList);
 				if (KCSG_Mod.settings.enableLog) Log.Message("Layout " + count.ToString() + " generation - PASS");
-
+				count++;
 			}
 		}
 

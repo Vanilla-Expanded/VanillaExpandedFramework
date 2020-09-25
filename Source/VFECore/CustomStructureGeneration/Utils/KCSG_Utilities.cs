@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Verse;
 using Verse.AI.Group;
 
@@ -85,11 +86,83 @@ namespace KCSG
 			width = structureLayoutDef.layouts[0][0].Split(',').ToList().Count;
 		}
 
-        #endregion
+		public static void EdgeFromList(List<IntVec3> cellExport, out int height, out int width)
+		{
+			height = 0;
+			width = 0;
+			IntVec3 first = cellExport.First();
+			foreach (IntVec3 c in cellExport)
+			{
+				if (first.z == c.z) width++;
+			}
+			foreach (IntVec3 c in cellExport)
+			{
+				if (first.x == c.x) height++;
+			}
+#if DEBUG
+            Log.Message("Export height: " + height.ToString() + " width: " + width.ToString());
+#endif
+		}
 
-        #region Gen Utils
+		public static void EdgeFromArea(List<IntVec3> cellExport, out int height, out int width)
+		{
+			height = 0;
+			width = 0;
+			IntVec3 first = cellExport.First();
+			foreach (IntVec3 f in cellExport)
+			{
+				int tempW = 0, tempH = 0;
+				foreach (IntVec3 c in cellExport)
+				{
+					if (f.z == c.z) tempW++;
+				}
+				foreach (IntVec3 c in cellExport)
+				{
+					if (f.x == c.x) tempH++;
+				}
+				if (tempW > width) width = tempW;
+				if (tempH > height) height = tempH;
+			}
+#if DEBUG
+            Log.Message("Export area height: " + height.ToString() + " width: " + width.ToString());
+#endif
+		}
 
-        public static void GenerateRoomFromLayout(List<string> layoutList, CellRect roomRect, Map map, StructureLayoutDef rld)
+		public static List<IntVec3> AreaToSquare(Area a, int height, int widht)
+		{
+			List<IntVec3> list = a.ActiveCells.ToList();
+			int zMin, zMax, xMin, xMax;
+			KCSG_Utilities.MinMaxXZ(list, out zMin, out zMax, out xMin, out xMax);
+
+			List<IntVec3> listOut = new List<IntVec3>();
+
+			for (int zI = zMin; zI <= zMax; zI++)
+			{
+				for (int xI = xMin; xI <= xMax; xI++)
+				{
+					listOut.Add(new IntVec3(xI, 0, zI));
+				}
+			}
+			listOut.Sort((x, y) => x.z.CompareTo(y.z));
+			return listOut;
+		}
+
+		public static int GetMaxThingOnOneCell(List<IntVec3> cellExport, Map map, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
+		{
+			int max = 1;
+			foreach (var item in cellExport)
+			{
+				List<Thing> things = pairsCellThingList.TryGetValue(item);
+				things.RemoveAll(t => t is Pawn || t.def.building == null || t.def.defName == "PowerConduit");
+				if (things.Count > max) max = things.Count;
+			}
+			return max;
+		}
+		#endregion
+
+		#region Gen Utils
+
+		public static void GenerateRoomFromLayout(List<string> layoutList, CellRect roomRect, Map map, StructureLayoutDef rld, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
 		{
 			List<string> allSymbList = new List<string>();
 
@@ -111,22 +184,24 @@ namespace KCSG
 
 			if (KCSG_Mod.settings.enableLog) Log.Message("-- Layout list creation - PASS");
 
+			Dictionary<string, SymbolDef> pairsSymbolLabel = KCSG_Utilities.FillpairsSymbolLabel();
+
 			int l = 0;
 			foreach (IntVec3 cell in roomRect)
 			{
 				if (l < allSymbList.Count && allSymbList[l] != ".")
 				{
 					SymbolDef temp;
-					MapComponent_KSG.pairsSymbolLabel.TryGetValue(allSymbList[l], out temp);
+					pairsSymbolLabel.TryGetValue(allSymbList[l], out temp);
 					Thing thing;
 					if (temp != null)
 					{
 						if (temp.isTerrain && temp.terrainDef != null)
 						{
 							map.terrainGrid.SetTerrain(cell, temp.terrainDef);
-							cell.GetThingList(map).ToList().FindAll(t1 => t1.def.category == ThingCategory.Building && !t1.def.BuildableByPlayer).ForEach((t) => t.DeSpawn());
+							pairsCellThingList.TryGetValue(cell).FindAll(t1 => t1.def.category == ThingCategory.Building && !t1.def.BuildableByPlayer).ForEach((t) => t.DeSpawn());
 						}
-						else if (temp.isPawn && temp.pawnKindDefNS != null && temp.numberToSpawn != null)
+						else if (temp.isPawn && temp.pawnKindDefNS != null)
                         {
 							if (temp.lordJob != null)
                             {
@@ -187,7 +262,7 @@ namespace KCSG
 								GenSpawn.Spawn(thing, cell, map, new Rot4(temp.rotation.AsInt));
 								thing.SetFactionDirect(map.ParentFaction);
 							}
-							else if (thing.def.category == ThingCategory.Plant && cell.GetThingList(map).FindAll(th => th.def.passability == Traversability.Impassable).Count == 0) // && cell.GetFirstThing<Thing>(map).def.passability != Traversability.Impassable) // If it's a plant
+							else if (thing.def.category == ThingCategory.Plant && pairsCellThingList.TryGetValue(cell).FindAll(th => th.def.passability == Traversability.Impassable).Count == 0) // If it's a plant
 							{
 								if (rld.roofGrid != null && l < roofGrid.Count && (roofGrid[l] == "0"|| roofGrid[l] == "."))
                                 {
@@ -206,7 +281,6 @@ namespace KCSG
 							}
 							else if (thing.def.category == ThingCategory.Building) 
 							{
-								// cell.GetThingList(map).ToList().ForEach(
 								if (cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Bridgeable)) map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
 								GenSpawn.Spawn(thing, cell, map, WipeMode.Vanish);
 								thing.SetFactionDirect(map.ParentFaction);
@@ -243,33 +317,13 @@ namespace KCSG
 			if (KCSG_Mod.settings.enableLog) Log.Message("-- Cells passage done - PASS");
 		}
 
-		public static void GenerateRoofFromLayout(CellRect roomRect, Map map, StructureLayoutDef rld)
+		public static void GenerateTerrainFromLayout(CellRect roomRect, Map map, StructureLayoutDef rld, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
 		{
 			List<IntVec3> cellExort = roomRect.Cells.ToList();
 			cellExort.Sort((x, y) => x.z.CompareTo(y.z));
 			IntVec3 first = roomRect.First();
 
-			for (int i = 0; i < roomRect.Height; i++)
-			{
-				List<string> tempList = rld.terrainGrid[i].Split(',').ToList();
-				for (int i2 = 0; i2 < roomRect.Width; i2++)
-				{
-					if (tempList[i2] == "1")
-                    {
-						map.roofGrid.SetRoof(first, RoofDefOf.RoofConstructed);
-					}
-					first.x++;
-				}
-				first.x -= roomRect.Width;
-				first.z++;
-			}
-		}
-
-		public static void GenerateTerrainFromLayout(CellRect roomRect, Map map, StructureLayoutDef rld)
-		{
-			List<IntVec3> cellExort = roomRect.Cells.ToList();
-			cellExort.Sort((x, y) => x.z.CompareTo(y.z));
-			IntVec3 first = roomRect.First();
+			Dictionary<string, SymbolDef> pairsSymbolLabel = KCSG_Utilities.FillpairsSymbolLabel();
 
 			for (int i = 0; i < roomRect.Height; i++)
             {
@@ -279,13 +333,13 @@ namespace KCSG
 					if (i2 < tempList.Count)
                     {
 						SymbolDef temp;
-						MapComponent_KSG.pairsSymbolLabel.TryGetValue(tempList[i2], out temp);
+						pairsSymbolLabel.TryGetValue(tempList[i2], out temp);
 						if (temp != null)
 						{
 							if (map.terrainGrid.TerrainAt(first).affordances.Contains(TerrainAffordanceDefOf.Bridgeable)) map.terrainGrid.SetTerrain(first, TerrainDefOf.Bridge);
 							else if (temp.terrainDef != null) map.terrainGrid.SetTerrain(first, temp.terrainDef);
 
-							first.GetThingList(map).ToList().FindAll(t1 => (t1.def.category == ThingCategory.Building && (!t1.def.BuildableByPlayer || t1.Faction == null)) || t1.def.mineable).ForEach((t) => t.DeSpawn());
+							pairsCellThingList.TryGetValue(first).FindAll(t1 => (t1.def.category == ThingCategory.Building && (!t1.def.BuildableByPlayer || t1.Faction == null)) || t1.def.mineable).ForEach((t) => t.DeSpawn());
 						}
 					}
 					first.x++;
@@ -295,12 +349,12 @@ namespace KCSG
 			}
 		}
 
-		public static void FillStockpileRoom(StructureLayoutDef rld, CellRect roomRect, Map map)
+		public static void FillStockpileRoom(StructureLayoutDef rld, CellRect roomRect, Map map, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
         {
             foreach (IntVec3 i in roomRect.CenterCell.GetRoom(map).Cells)
             {
 				int x = (Rand.Bool ? 1 : 2);
-				if (x == 1 && i.GetThingList(map).Count == 0)
+				if (x == 1 && pairsCellThingList.TryGetValue(i).Count == 0)
                 {
 					ThingDef randTD = rld.allowedThingsInStockpile.RandomElement();
 					ThingDef randStuff = null;
@@ -328,6 +382,7 @@ namespace KCSG
 			}) as LordJob, map, null);
 		}
 
+		#region Power Function
 		// Vanilla function, remade to be able to use subsurface conduit when mod loaded
 		public static void EnsureBatteriesConnectedAndMakeSense(Map map, List<Thing> tmpThings, Dictionary<PowerNet, bool> tmpPowerNetPredicateResults, List<IntVec3> tmpCells, ThingDef conduit)
 		{
@@ -527,6 +582,528 @@ namespace KCSG
 			return false;
 		}
 
-        #endregion
-    }
+		#endregion Power Function
+
+		#endregion Gen Utils
+
+		#region Symbol Creation
+
+		public static void CreateSymbolFromThing(Thing thingT, List<String> alreadyCreated)
+		{
+			XElement symbolDef = new XElement("KCSG.SymbolDef", null);
+			// Generate defName
+			string defNameString = thingT.def.defName;
+			if (thingT.Stuff != null) defNameString += "_" + thingT.Stuff.defName;
+			if (thingT.def.rotatable && thingT.def.category != ThingCategory.Plant) defNameString += "_" + thingT.Rotation.ToStringHuman();
+
+			XElement defName = new XElement("defName", defNameString);
+			symbolDef.Add(defName);
+			// Add thing
+			XElement thing = new XElement("thing", thingT.def.defName);
+			symbolDef.Add(thing);
+			// Add stuff
+			if (thingT.Stuff != null)
+			{
+				XElement stuff = new XElement("stuff", thingT.Stuff.defName);
+				symbolDef.Add(stuff);
+			}
+			// Add rotation
+			if (thingT.def.rotatable && thingT.def.category != ThingCategory.Plant)
+			{
+				XElement rotation = new XElement("rotation", thingT.Rotation.ToStringHuman());
+				symbolDef.Add(rotation);
+			}
+			// Plant growth
+			if (thingT is Plant plant)
+			{
+				XElement plantGrowth = new XElement("plantGrowth", plant.Growth.ToString());
+				symbolDef.Add(plantGrowth);
+			}
+
+			string symbolString = thingT.def.defName;
+			if (thingT.Stuff != null) symbolString += "_" + thingT.Stuff.defName;
+			if (thingT.def.rotatable && thingT.def.category != ThingCategory.Plant) symbolString += "_" + thingT.Rotation.ToStringHuman();
+			XElement symbol = new XElement("symbol", symbolString);
+			symbolDef.Add(symbol);
+
+			if (!alreadyCreated.Contains(symbolDef.Value)) Log.Message(symbolDef.Value); alreadyCreated.Add(symbolDef.Value);
+		}
+
+		public static void CreateSymbolFromTerrain(TerrainDef terrainD, List<String> alreadyCreated)
+		{
+			XElement symbolDef = new XElement("KCSG.SymbolDef", null);
+			// Generate defName
+			XElement defName = new XElement("defName", terrainD.defName);
+			symbolDef.Add(defName);
+			// Add isTerrain
+			XElement isTerrain = new XElement("isTerrain", "true");
+			symbolDef.Add(isTerrain);
+			// Add terrain
+			XElement terrain = new XElement("terrain", terrainD.defName);
+			symbolDef.Add(terrain);
+			// Add symbol
+			XElement symbol = new XElement("symbol", terrainD.defName);
+			symbolDef.Add(symbol);
+
+			if (!alreadyCreated.Contains(symbol.Value)) Log.Message(symbolDef.ToString()); alreadyCreated.Add(symbol.Value);
+		}
+
+		public static void CreateSymbolFromPawn(Pawn pawn, List<String> alreadyCreated)
+		{
+			XElement symbolDef = new XElement("KCSG.SymbolDef", null);
+			// Generate defName
+			string defNameString = pawn.kindDef.defName;
+
+			XElement defName = new XElement("defName", defNameString);
+			symbolDef.Add(defName);
+			// Add isPawn
+			XElement isPawn = new XElement("isPawn", "true");
+			symbolDef.Add(isPawn);
+			// Add pawnKindDef
+			XElement pawnKindDef = new XElement("pawnKindDef", pawn.kindDef.defName);
+			symbolDef.Add(pawnKindDef);
+
+			string symbolString = pawn.kindDef.defName;
+			XElement symbol = new XElement("symbol", symbolString);
+			symbolDef.Add(symbol);
+
+			if (!alreadyCreated.Contains(symbol.Value)) Log.Message(symbolDef.ToString()); alreadyCreated.Add(symbol.Value);
+		}
+
+		public static void CreateItemSymbolFromThing(Thing thingT, List<String> alreadyCreated)
+		{
+			XElement symbolDef = new XElement("KCSG.SymbolDef", null);
+			// Generate defName
+			string defNameString = "Item_" + thingT.def.defName;
+			XElement defName = new XElement("defName", defNameString);
+			symbolDef.Add(defName);
+			// Add thing
+			XElement thing = new XElement("thing", thingT.def.defName);
+			symbolDef.Add(thing);
+			// Add identifier
+			XElement isItem = new XElement("isItem", "true");
+			symbolDef.Add(isItem);
+			// Add stackSize
+			IntRange intRange = new IntRange(1, thingT.def.stackLimit);
+			XElement stackCount = new XElement("stackCount", intRange.ToString());
+			symbolDef.Add(stackCount);
+			// Add symbol
+			string symbolString = "Item_" + thingT.def.defName;
+			XElement symbol = new XElement("symbol", symbolString);
+			symbolDef.Add(symbol);
+
+			if (!alreadyCreated.Contains(symbol.Value)) alreadyCreated.Add(symbol.Value);
+		}
+
+		public static void CreateSymbolIfNeeded(List<IntVec3> cellExport, Map map, List<string> justCreated, Dictionary<IntVec3, List<Thing>> pairsCellThingList, Area area = null)
+		{
+			justCreated.Clear();
+			foreach (IntVec3 c in cellExport)
+			{
+				if (area != null && !area.ActiveCells.Contains(c)) { }
+				else
+				{
+					TerrainDef terrainDef = c.GetTerrain(map);
+					if (!KCSG_Utilities.AlreadyExist(null, terrainDef) && terrainDef.BuildableByPlayer) KCSG_Utilities.CreateSymbolFromTerrain(terrainDef, justCreated);
+
+					List<Thing> things = pairsCellThingList.TryGetValue(c);
+					foreach (Thing t in things)
+					{
+						if (!KCSG_Utilities.AlreadyExist(t, null))
+						{
+							if (t.def.category == ThingCategory.Item) KCSG_Utilities.CreateItemSymbolFromThing(t, justCreated);
+							if (t.def.category == ThingCategory.Pawn) KCSG_Utilities.CreateSymbolFromPawn(t as Pawn, justCreated);
+							if (t.def.category == ThingCategory.Building || t.def.category == ThingCategory.Plant) KCSG_Utilities.CreateSymbolFromThing(t, justCreated);
+						}
+					}
+				}
+			}
+		}
+		#endregion
+
+		#region Symbol Utilities
+
+		public static bool AlreadyExist(Thing thing, TerrainDef terrain)
+		{
+			foreach (SymbolDef s in DefDatabase<SymbolDef>.AllDefsListForReading)
+			{
+				if (thing?.def.altitudeLayer == AltitudeLayer.Filth) return true;
+				else if (s.isItem && s.thingDef.defName == thing?.def.defName) return true;
+				else if (thing is Pawn p && s.pawnKindDefNS == p.kindDef) return true;
+				else if (thing is Plant && s.thingDef == thing.def) return true;
+				else if (thing != null)
+				{
+					if (s.thingDef == thing.def && s.stuffDef == thing.Stuff)
+					{
+						if (!thing.def.rotatable) return true;
+						else if (thing.def.rotatable && s.rotation == thing.Rotation) return true;
+					}
+				}
+				else if (s.isTerrain && s.terrainDef == terrain) return true;
+			}
+			return false;
+		}
+
+		#endregion
+
+		#region Layout Creation
+
+		public static void CreateStructureDef(List<IntVec3> cellExport, Map map, Dictionary<string, SymbolDef> pairsSymbolLabel, Dictionary<IntVec3, List<Thing>> pairsCellThingList, Area area = null)
+		{
+			cellExport.Sort((x, y) => x.z.CompareTo(y.z));
+			XElement StructureLayoutDef = new XElement("KCSG.StructureLayoutDef", null);
+			// Generate defName
+			Room room = cellExport[cellExport.Count / 2].GetRoom(map);
+			string defNameString = "PlaceHolder"; Log.Warning("Please remember to change the defName of the following room");
+			XElement defName = new XElement("defName", defNameString);
+			StructureLayoutDef.Add(defName);
+			// Roof?
+			bool roofOverBool = false;
+			if (map.roofGrid.Roofed(cellExport.FindAll(c => c.Walkable(map)).First())) roofOverBool = true;
+			XElement roofOver = new XElement("roofOver", roofOverBool.ToString());
+			StructureLayoutDef.Add(roofOver);
+			// Stockpile?
+			bool isStockpileBool = false;
+			if (map.zoneManager.ZoneAt(cellExport.FindAll(c => c.Walkable(map)).First()) is Zone_Stockpile) isStockpileBool = true;
+			XElement isStockpile = new XElement("isStockpile", isStockpileBool.ToString());
+			StructureLayoutDef.Add(isStockpile);
+			// allowedThingsInStockpile
+			XElement allowedThingsInStockpile = new XElement("allowedThingsInStockpile", null);
+			if (isStockpileBool)
+			{
+				foreach (Thing item in map.zoneManager.ZoneAt(cellExport.FindAll(c => c.Walkable(map)).First()).AllContainedThings)
+				{
+					XElement li = new XElement("li", item.def.defName);
+					if (item is Pawn || item is Filth || item.def.building != null) { }
+					else if (allowedThingsInStockpile.Elements().ToList().FindAll(x => x.Value == li.Value).Count() == 0) allowedThingsInStockpile.Add(li);
+				}
+			}
+			StructureLayoutDef.Add(allowedThingsInStockpile);
+			XElement layouts = new XElement("layouts", null);
+			// Add pawns layout
+			bool add = false;
+			XElement pawnsL = KCSG_Utilities.Createpawnlayout(cellExport, area, out add, map, pairsSymbolLabel, pairsCellThingList);
+			if (add) layouts.Add(pawnsL);
+			// Add items layout
+			bool add2 = false;
+			XElement itemsL = KCSG_Utilities.CreateItemlayout(cellExport, area, out add2, map, pairsSymbolLabel, pairsCellThingList);
+			if (add2) layouts.Add(itemsL);
+			// Add terrain layout
+			StructureLayoutDef.Add(KCSG_Utilities.CreateTerrainlayout(cellExport, area, map, pairsSymbolLabel));
+			// Add things layouts
+			int numOfLayout = KCSG_Utilities.GetMaxThingOnOneCell(cellExport, map, pairsCellThingList);
+			for (int i = 0; i < numOfLayout; i++)
+			{
+				layouts.Add(KCSG_Utilities.CreateThinglayout(cellExport, i, area, map, pairsSymbolLabel, pairsCellThingList));
+			}
+
+			StructureLayoutDef.Add(layouts);
+
+			// Add roofGrid
+			if (area != null) StructureLayoutDef.Add(KCSG_Utilities.CreateRoofGrid(cellExport, area));
+			Log.Message(StructureLayoutDef.ToString());
+		}
+
+		public static XElement CreateThinglayout(List<IntVec3> cellExport, int index, Area area, Map map, Dictionary<string, SymbolDef> pairsSymbolLabel, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
+		{
+			XElement liMain = new XElement("li", null);
+			int height, width;
+			KCSG_Utilities.EdgeFromList(cellExport, out height, out width);
+			List<Thing> aAdded = new List<Thing>();
+
+			IntVec3 first = cellExport.First();
+			for (int i = 0; i < height; i++)
+			{
+				XElement li = new XElement("li", null);
+				string temp = "";
+				for (int i2 = 0; i2 < width; i2++)
+				{
+					List<Thing> things = pairsCellThingList.TryGetValue(first);
+					things.RemoveAll(t => t.def.category == ThingCategory.Pawn || t.def.category == ThingCategory.Item || t.def.category == ThingCategory.Filth || t.def.defName == "PowerConduit");
+					Thing thing;
+					if (things.Count < index + 1)
+					{
+						if (i2 + 1 == width) temp += ".";
+						else temp += ".,";
+					}
+					else if (area != null && !area.ActiveCells.Contains(first))
+					{
+						if (i2 + 1 == width) temp += ".";
+						else temp += ".,";
+					}
+					else
+					{
+						thing = things[index];
+						if (!aAdded.Contains(thing) && thing.Position == first)
+						{
+							SymbolDef symbolDef;
+							if (thing.Stuff != null && thing.def.rotatable) symbolDef = pairsSymbolLabel.Values.ToList().Find(s => s.thingDef == thing.def && s.stuffDef == thing.Stuff && s.rotation == thing.Rotation);
+							else if (thing.Stuff != null && !thing.def.rotatable) symbolDef = pairsSymbolLabel.Values.ToList().Find(s => s.thingDef == thing.def && s.stuffDef == thing.Stuff);
+							else symbolDef = pairsSymbolLabel.Values.ToList().Find(s => s.thingDef == thing.def && s.rotation == thing.Rotation);
+
+							if (symbolDef == null)
+							{
+								string symbolString = thing.def.defName;
+								if (thing.Stuff != null) symbolString += "_" + thing.Stuff.defName;
+								if (thing.def.rotatable && thing.def.category != ThingCategory.Plant) symbolString += "_" + thing.Rotation.ToStringHuman();
+
+								if (i2 + 1 == width) temp += symbolString;
+								else temp += symbolString + ",";
+							}
+							else
+							{
+								if (i2 + 1 == width) temp += symbolDef.symbol;
+								else temp += symbolDef.symbol + ",";
+							}
+							aAdded.Add(thing);
+						}
+						else
+						{
+							if (i2 + 1 == width) temp += ".";
+							else temp += ".,";
+						}
+
+					}
+					first.x++;
+				}
+				first.x -= width;
+				li.Add(temp);
+				liMain.Add(li);
+				first.z++;
+			}
+			return liMain;
+		}
+
+		public static XElement CreateTerrainlayout(List<IntVec3> cellExport, Area area, Map map, Dictionary<string, SymbolDef> pairsSymbolLabel)
+		{
+			XElement liMain = new XElement("terrainGrid", null);
+			int height, width;
+			KCSG_Utilities.EdgeFromList(cellExport, out height, out width);
+
+			IntVec3 first = cellExport.First();
+			for (int i = 0; i < height; i++)
+			{
+				XElement li = new XElement("li", null);
+				string temp = "";
+				for (int i2 = 0; i2 < width; i2++)
+				{
+					if (area != null && !area.ActiveCells.Contains(first))
+					{
+						if (i2 + 1 == width) temp += ".";
+						else temp += ".,";
+					}
+					else if (!map.terrainGrid.TerrainAt(first).BuildableByPlayer)
+					{
+						if (i2 + 1 == width) temp += ".";
+						else temp += ".,";
+					}
+					else
+					{
+						// Find corresponding symbol
+						TerrainDef terrainD = map.terrainGrid.TerrainAt(first);
+						SymbolDef symbolDef = pairsSymbolLabel.Values.ToList().Find(s => s.isTerrain && s.terrainDef.defName == terrainD.defName);
+						if (symbolDef == null)
+						{
+							if (i2 + 1 == width) temp += terrainD.defName;
+							else temp += terrainD.defName + ",";
+						}
+						else
+						{
+							if (i2 + 1 == width) temp += symbolDef.symbol;
+							else temp += symbolDef.symbol + ",";
+						}
+					}
+					first.x++;
+				}
+				first.x -= width;
+				li.Add(temp);
+				liMain.Add(li);
+				first.z++;
+			}
+			return liMain;
+		}
+
+		public static XElement CreateRoofGrid(List<IntVec3> cellExport, Area area)
+		{
+			XElement roofGrid = new XElement("roofGrid", null);
+			int height, width;
+			KCSG_Utilities.EdgeFromList(cellExport, out height, out width);
+
+			IntVec3 first = cellExport.First();
+			for (int i = 0; i < height; i++)
+			{
+				XElement li = new XElement("li", null);
+				string temp = "";
+				for (int i2 = 0; i2 < width; i2++)
+				{
+					if (area != null && !area.ActiveCells.Contains(first))
+					{
+						if (i2 + 1 == width) temp += ".";
+						else temp += ".,";
+					}
+					else
+					{
+						if (first.Roofed(area.Map))
+						{
+							if (i2 + 1 == width) temp += "1";
+							else temp += "1,";
+						}
+						else
+						{
+							if (i2 + 1 == width) temp += ".";
+							else temp += ".,";
+						}
+					}
+					first.x++;
+				}
+				first.x -= width;
+				li.Add(temp);
+				roofGrid.Add(li);
+				first.z++;
+			}
+			return roofGrid;
+		}
+
+		public static XElement Createpawnlayout(List<IntVec3> cellExport, Area area, out bool add, Map map, Dictionary<string, SymbolDef> pairsSymbolLabel, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
+		{
+			XElement liMain = new XElement("li", null);
+			int height, width;
+			add = false;
+			KCSG_Utilities.EdgeFromList(cellExport, out height, out width);
+
+			IntVec3 first = cellExport.First();
+			for (int i = 0; i < height; i++)
+			{
+				XElement li = new XElement("li", null);
+				string temp = "";
+				for (int i2 = 0; i2 < width; i2++)
+				{
+					if (area != null && !area.ActiveCells.Contains(first))
+					{
+						if (i2 + 1 == width) temp += ".";
+						else temp += ".,";
+					}
+					else
+					{
+						List<Thing> things = pairsCellThingList.TryGetValue(first).FindAll(t => t is Pawn);
+						if (things.Count == 0)
+						{
+							if (i2 + 1 == width) temp += ".";
+							else temp += ".,";
+						}
+						else
+						{
+							add = true;
+							foreach (Pawn pawn in things)
+							{
+								SymbolDef symbolDef;
+								symbolDef = pairsSymbolLabel.Values.ToList().Find(s => s.pawnKindDefNS == pawn.kindDef);
+								if (symbolDef == null)
+								{
+									string symbolString = pawn.kindDef.defName;
+
+									if (i2 + 1 == width) temp += symbolString;
+									else temp += symbolString + ",";
+								}
+								else
+								{
+									if (i2 + 1 == width) temp += symbolDef.symbol;
+									else temp += symbolDef.symbol + ",";
+								}
+							}
+						}
+					}
+					first.x++;
+				}
+				first.x -= width;
+				li.Add(temp);
+				liMain.Add(li);
+				first.z++;
+			}
+			return liMain;
+		}
+
+		public static XElement CreateItemlayout(List<IntVec3> cellExport, Area area, out bool add, Map map, Dictionary<string, SymbolDef> pairsSymbolLabel, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
+		{
+			XElement liMain = new XElement("li", null);
+			int height, width;
+			add = false;
+			KCSG_Utilities.EdgeFromList(cellExport, out height, out width);
+
+			IntVec3 first = cellExport.First();
+			for (int i = 0; i < height; i++)
+			{
+				XElement li = new XElement("li", null);
+				string temp = "";
+				for (int i2 = 0; i2 < width; i2++)
+				{
+					if (area != null && !area.ActiveCells.Contains(first))
+					{
+						if (i2 + 1 == width) temp += ".";
+						else temp += ".,";
+					}
+					else
+					{
+						List<Thing> things = pairsCellThingList.TryGetValue(first).FindAll(t => t.def.category == ThingCategory.Item && t.def.category != ThingCategory.Filth);
+						if (things.Count == 0)
+						{
+							if (i2 + 1 == width) temp += ".";
+							else temp += ".,";
+						}
+						else
+						{
+							add = true;
+							foreach (Thing item in things)
+							{
+								SymbolDef symbolDef;
+								symbolDef = pairsSymbolLabel.Values.ToList().Find(s => s.thingDef == item.def && s.isItem);
+								if (symbolDef == null)
+								{
+									string symbolString = "Item_" + item.def.defName;
+
+									if (i2 + 1 == width) temp += symbolString;
+									else temp += symbolString + ",";
+								}
+								else
+								{
+									if (i2 + 1 == width) temp += symbolDef.symbol;
+									else temp += symbolDef.symbol + ",";
+								}
+							}
+						}
+					}
+					first.x++;
+				}
+				first.x -= width;
+				li.Add(temp);
+				liMain.Add(li);
+				first.z++;
+			}
+			return liMain;
+		}
+		#endregion
+
+		#region Other Utils
+		public static void FillCellThingsList(List<IntVec3> cellExport, Map map, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
+		{
+			pairsCellThingList.Clear();
+			foreach (IntVec3 intVec in cellExport)
+			{
+				pairsCellThingList.Add(intVec, intVec.GetThingList(map).ToList());
+			}
+		}
+
+		public static Dictionary<string, SymbolDef> FillpairsSymbolLabel()
+        {
+			Dictionary<string, SymbolDef> pairsSymbolLabel = new Dictionary<string, SymbolDef>();
+			List<SymbolDef> symbolDefs = DefDatabase<SymbolDef>.AllDefsListForReading;
+			foreach (SymbolDef s in symbolDefs)
+			{
+				pairsSymbolLabel.Add(s.symbol, s);
+			}
+			return pairsSymbolLabel;
+		}
+
+		#endregion
+	}
 }

@@ -75,7 +75,6 @@
     <Compile Include="CustomStructureGeneration\GenStep\GenStep_CustomStructureGen.cs" />
     <Compile Include="CustomStructureGeneration\Harmony\GenStepPatches.cs" />
     <Compile Include="CustomStructureGeneration\Harmony\HarmonyInit.cs" />
-    <Compile Include="CustomStructureGeneration\MapComponents\MapComponent_KSG.cs" />
     <Compile Include="CustomStructureGeneration\Settings.cs" />
     <Compile Include="CustomStructureGeneration\SymbolResolvers\SymbolResolver_KCSG_RoomGen.cs" />
     <Compile Include="CustomStructureGeneration\SymbolResolvers\SymbolResolver_KCSG_Settlement.cs" />

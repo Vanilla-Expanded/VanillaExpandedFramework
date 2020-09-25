@@ -65,18 +65,23 @@ namespace KCSG
 				base.ProcessInput(ev);
 			}
 
-			// Add the entire map
-			//Area_Allowed wholeMap;
-			//base.Map.areaManager.TryMakeNewAllowed(out wholeMap);
-			//base.Map.AllCells.ToList().ForEach(c => wholeMap[c] = true);
-			//wholeMap.SetLabel("Entire Map");
-
 			Designator_ExportToXmlFromArea.MakeAllowedAreaListFloatMenu(delegate (Area a)
 			{
-				base.Map.GetComponent<MapComponent_KSG>().ProcessExportFromArea(a);
-			}, false, true, base.Map);
+				Log.Clear();
 
-			//wholeMap.Delete();
+				KCSG_Utilities.EdgeFromArea(a.ActiveCells.ToList(), out int height, out int width);
+				List<IntVec3> cellExport = KCSG_Utilities.AreaToSquare(a, height, width);
+
+				List<string> justCreated = new List<string>();
+				Dictionary<IntVec3, List<Thing>> pairsCellThingList = new Dictionary<IntVec3, List<Thing>>();
+
+				KCSG_Utilities.CreateSymbolIfNeeded(cellExport, base.Map, justCreated, pairsCellThingList, a);
+				KCSG_Utilities.FillCellThingsList(cellExport, base.Map, pairsCellThingList);
+
+				KCSG_Utilities.CreateStructureDef(cellExport, base.Map, KCSG_Utilities.FillpairsSymbolLabel(), pairsCellThingList, a);
+
+				Log.TryOpenLogWindow();
+			}, false, true, base.Map);
 		}
 
 		public static void MakeAllowedAreaListFloatMenu(Action<Area> selAction, bool addNullAreaOption, bool addManageOption, Map map)
