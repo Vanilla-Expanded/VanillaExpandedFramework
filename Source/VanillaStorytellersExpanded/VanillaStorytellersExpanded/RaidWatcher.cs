@@ -48,6 +48,7 @@ namespace VanillaStorytellersExpanded
                 Log.Message("dinfo.HasValue: " + dinfo.HasValue, true);
                 if (dinfo.HasValue)
                 {
+                    Log.Message("dinfo.Value.Instigator: " + dinfo.Value.Instigator, true);
                     Log.Message("dinfo.Value.Instigator?.Faction: " + dinfo.Value.Instigator?.Faction, true);
                 }
                 else
