@@ -14,6 +14,8 @@ namespace KCSG
 {
     class SymbolResolver_KCSG_RoomGen : SymbolResolver
     {
+		private Dictionary<IntVec3, List<Thing>> pairsCellThingList = new Dictionary<IntVec3, List<Thing>>();
+
 		public override void Resolve(ResolveParams rp)
         {
 			Map map = BaseGen.globalSettings.map;
@@ -26,12 +28,13 @@ namespace KCSG
 				if (str != ".")
                 {
 					StructureLayoutDef rld = DefDatabase<StructureLayoutDef>.GetNamed(str);
-					if (rld.terrainGrid != null) KCSG_Utilities.GenerateTerrainFromLayout(gridRects[count], map, rld);
+					KCSG_Utilities.FillCellThingsList(gridRects[count].Cells.ToList(), map, pairsCellThingList);
+					if (rld.terrainGrid != null) KCSG_Utilities.GenerateTerrainFromLayout(gridRects[count], map, rld, pairsCellThingList);
 					foreach (List<String> item in rld.layouts)
 					{
-						KCSG_Utilities.GenerateRoomFromLayout(item, gridRects[count], map, rld);
+						KCSG_Utilities.GenerateRoomFromLayout(item, gridRects[count], map, rld, pairsCellThingList);
 					}
-					if (rld.isStockpile) KCSG_Utilities.FillStockpileRoom(rld, gridRects[count], map);
+					if (rld.isStockpile) KCSG_Utilities.FillStockpileRoom(rld, gridRects[count], map, pairsCellThingList);
 				}
 				count++;
 			}

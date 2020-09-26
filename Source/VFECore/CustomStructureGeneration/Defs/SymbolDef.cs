@@ -26,7 +26,6 @@ namespace KCSG
         // Items info
         public bool isItem = false;
         public IntRange stackCount = new IntRange(1, 1);
-        //public QualityCategory quality = QualityCategory.Normal;
         
         // Plant
         public float plantGrowth = 0.5f;
