@@ -41,12 +41,21 @@ namespace VanillaStorytellersExpanded
     {
         public static void Prefix(Pawn __instance, DamageInfo? dinfo, Hediff exactCulprit = null)
         {
+            if (__instance.IsColonist)
+            {
+                Log.Message("__instance: " + __instance, true);
+                Log.Message("__instance.IsColonist: " + __instance.IsColonist, true);
+                Log.Message("dinfo.HasValue: " + dinfo.HasValue, true);
+                Log.Message("dinfo.Value.Instigator?.Faction: " + dinfo.Value.Instigator?.Faction, true);
+                Log.Message("Current.Game.GetComponent<StorytellerWatcher>()?.currentRaidingFaction: " + Current.Game.GetComponent<StorytellerWatcher>()?.currentRaidingFaction, true);
+            }
             if (__instance.IsColonist && dinfo.HasValue && dinfo.Value.Instigator?.Faction != null 
                 && dinfo.Value.Instigator.Faction == Current.Game.GetComponent<StorytellerWatcher>()?.currentRaidingFaction)
             {
                 var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
                 if (options != null && options.storytellerThreat != null)
                 {
+                    Log.Message("Success!");
                     IncidentParms parms = new IncidentParms
                     {
                         target = __instance.Map,
@@ -82,6 +91,25 @@ namespace VanillaStorytellersExpanded
             Log.Message("TryExecute is enabled");
             return true;
         }
+
+        public static void Postfix(IncidentWorker __instance, bool __result, IncidentParms parms)
+        {
+            if (__instance is IncidentWorker_RaidEnemy && __result && parms.faction.HostileTo(Faction.OfPlayer))
+            {
+                Log.Message("0 parms.faction: " + parms.faction, true);
+                var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
+                if (options != null && options.storytellerThreat != null && __result)
+                {
+                    Log.Message("1 parms.faction: " + parms.faction, true);
+                    var comp = Current.Game.GetComponent<StorytellerWatcher>();
+                    if (comp != null)
+                    {
+                        Log.Message("2 parms.faction: " + parms.faction, true);
+                        comp.currentRaidingFaction = parms.faction;
+                    }
+                }
+            }
+        }
     }
 
     [HarmonyPatch(typeof(IncidentWorker_RaidEnemy))]
@@ -90,12 +118,15 @@ namespace VanillaStorytellersExpanded
     {
         public static void Postfix(bool __result, IncidentParms parms)
         {
+            Log.Message("0 parms.faction: " + parms.faction, true);
             var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
             if (options != null && options.storytellerThreat != null && __result)
             {
+                Log.Message("1 parms.faction: " + parms.faction, true);
                 var comp = Current.Game.GetComponent<StorytellerWatcher>();
                 if (comp != null)
                 {
+                    Log.Message("2 parms.faction: " + parms.faction, true);
                     comp.currentRaidingFaction = parms.faction;
                 }
             }
