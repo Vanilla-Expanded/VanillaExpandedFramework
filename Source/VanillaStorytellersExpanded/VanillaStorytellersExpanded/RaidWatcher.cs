@@ -46,7 +46,14 @@ namespace VanillaStorytellersExpanded
                 Log.Message("__instance: " + __instance, true);
                 Log.Message("__instance.IsColonist: " + __instance.IsColonist, true);
                 Log.Message("dinfo.HasValue: " + dinfo.HasValue, true);
-                Log.Message("dinfo.Value.Instigator?.Faction: " + dinfo.Value.Instigator?.Faction, true);
+                if (dinfo.HasValue)
+                {
+                    Log.Message("dinfo.Value.Instigator?.Faction: " + dinfo.Value.Instigator?.Faction, true);
+                }
+                else
+                {
+                    Log.Message("dinfo is null: " + dinfo, true);
+                }
                 Log.Message("Current.Game.GetComponent<StorytellerWatcher>()?.currentRaidingFaction: " + Current.Game.GetComponent<StorytellerWatcher>()?.currentRaidingFaction, true);
             }
             if (__instance.IsColonist && dinfo.HasValue && dinfo.Value.Instigator?.Faction != null 
