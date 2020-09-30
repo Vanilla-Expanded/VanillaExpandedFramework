@@ -18,10 +18,10 @@ namespace KCSG
 		{
 			Map map = BaseGen.globalSettings.map;
 			Faction faction = rp.faction ?? Find.FactionManager.RandomEnemyFaction(false, false, true, TechLevel.Undefined);
-			SettlementLayoutDef lDef = map.ParentFaction.def.GetModExtension<FactionSettlement>().temp;
+			SettlementLayoutDef lDef = FactionSettlement.temp;
 
 			List<CellRect> gridRects = KCSG_Utilities.GetRects(rp.rect, lDef, map, out rp.rect);
-			map.ParentFaction.def.GetModExtension<FactionSettlement>().tempRectList = gridRects;
+			FactionSettlement.tempRectList = gridRects;
 
 			if (KCSG_Mod.settings.enableLog) Log.Message("Hostile pawns generation - PASS");
 			

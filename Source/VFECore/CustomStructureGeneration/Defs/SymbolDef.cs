@@ -56,12 +56,15 @@ namespace KCSG
             {
                 yield return "Tried to load multiple symbolDef with the same symbol: " + this.symbol;
             }
+        }
 
-            if (this.terrain != null) this.terrainDef = DefDatabase<TerrainDef>.AllDefsListForReading.Find(t => t.defName == this.terrain);
-            if (this.thing != null) this.thingDef = DefDatabase<ThingDef>.AllDefsListForReading.Find(t => t.defName == this.thing);
-            if (this.stuff != null) this.stuffDef = DefDatabase<ThingDef>.AllDefsListForReading.Find(t => t.defName == this.stuff);
-            if (this.containPawnKind != null) this.containPawnKindDef = DefDatabase<PawnKindDef>.AllDefsListForReading.Find(t => t.defName == this.containPawnKind);
-            if (this.pawnKindDef != null) this.pawnKindDefNS = DefDatabase<PawnKindDef>.AllDefsListForReading.Find(t => t.defName == this.pawnKindDef);
+        public override void ResolveReferences()
+        {
+            if (this.terrain != null) this.terrainDef = DefDatabase<TerrainDef>.GetNamed(this.terrain, false);
+            if (this.thing != null) this.thingDef = DefDatabase<ThingDef>.GetNamed(this.thing, false);
+            if (this.stuff != null) this.stuffDef = DefDatabase<ThingDef>.GetNamed(this.stuff, false);
+            if (this.containPawnKind != null) this.containPawnKindDef = DefDatabase<PawnKindDef>.GetNamed(this.containPawnKind, false);
+            if (this.pawnKindDef != null) this.pawnKindDefNS = DefDatabase<PawnKindDef>.GetNamed(this.pawnKindDef, false);
 
             if (KCSG_Mod.settings.enableLog) if (this.terrain != null && terrainDef == null) Log.Warning("Tried to load SymbolDef with non-existant terrain: " + this.terrain);
             if (KCSG_Mod.settings.enableLog) if (this.thing != null && thingDef == null) Log.Warning("Tried to load SymbolDef with non-existant thing: " + this.thing);

@@ -14,7 +14,7 @@ namespace KCSG
     {
         public List<KCSG.SettlementLayoutDef> chooseFrom = new List<KCSG.SettlementLayoutDef>();
 
-        public SettlementLayoutDef temp = null;
-        public List<CellRect> tempRectList = null;
+        public static SettlementLayoutDef temp = null;
+        public static List<CellRect> tempRectList = null;
     }
 }

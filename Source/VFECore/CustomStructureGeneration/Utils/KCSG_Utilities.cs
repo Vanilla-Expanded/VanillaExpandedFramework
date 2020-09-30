@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -162,7 +163,7 @@ namespace KCSG
 
 		#region Gen Utils
 
-		public static void GenerateRoomFromLayout(List<string> layoutList, CellRect roomRect, Map map, StructureLayoutDef rld, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
+		public static void GenerateRoomFromLayout(List<string> layoutList, CellRect roomRect, Map map, StructureLayoutDef rld)
 		{
 			List<string> allSymbList = new List<string>();
 
@@ -199,7 +200,7 @@ namespace KCSG
 						if (temp.isTerrain && temp.terrainDef != null)
 						{
 							map.terrainGrid.SetTerrain(cell, temp.terrainDef);
-							pairsCellThingList.TryGetValue(cell).FindAll(t1 => t1.def.category == ThingCategory.Building && !t1.def.BuildableByPlayer).ForEach((t) => t.DeSpawn());
+							cell.GetThingList(map).FindAll(t1 => t1.def.category == ThingCategory.Building && !t1.def.BuildableByPlayer).ForEach((t) => t.DeSpawn());
 						}
 						else if (temp.isPawn && temp.pawnKindDefNS != null)
                         {
@@ -262,7 +263,7 @@ namespace KCSG
 								GenSpawn.Spawn(thing, cell, map, new Rot4(temp.rotation.AsInt));
 								thing.SetFactionDirect(map.ParentFaction);
 							}
-							else if (thing.def.category == ThingCategory.Plant && pairsCellThingList.TryGetValue(cell).FindAll(th => th.def.passability == Traversability.Impassable).Count == 0) // If it's a plant
+							else if (thing.def.category == ThingCategory.Plant && cell.GetThingList(map).FindAll(th => th.def.passability == Traversability.Impassable).Count == 0) // If it's a plant
 							{
 								if (rld.roofGrid != null && l < roofGrid.Count && (roofGrid[l] == "0"|| roofGrid[l] == "."))
                                 {
@@ -294,13 +295,9 @@ namespace KCSG
 						}
 						else
                         {
-							if (KCSG_Mod.settings.enableLog) Log.Message("--- Cell " + l.ToString() + " provoked NULL symbolDef");
+							if (KCSG_Mod.settings.enableLog) Log.Message("--- Cell " + l.ToString() + " with SymbolDef "+allSymbList[l]+"(resolved to "+temp.defName+") has nothing to place");
 						}
-					}
-					else
-                    {
-						if (KCSG_Mod.settings.enableLog) Log.Error("No symbolDef found for symbol " + allSymbList[l]);
-                    }					
+					}				
 				}
 
 				if (rld.roofGrid != null && l < roofGrid.Count && roofGrid[l] == "1")
@@ -317,7 +314,7 @@ namespace KCSG
 			if (KCSG_Mod.settings.enableLog) Log.Message("-- Cells passage done - PASS");
 		}
 
-		public static void GenerateTerrainFromLayout(CellRect roomRect, Map map, StructureLayoutDef rld, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
+		public static void GenerateTerrainFromLayout(CellRect roomRect, Map map, StructureLayoutDef rld)
 		{
 			List<IntVec3> cellExort = roomRect.Cells.ToList();
 			cellExort.Sort((x, y) => x.z.CompareTo(y.z));
@@ -339,7 +336,7 @@ namespace KCSG
 							if (map.terrainGrid.TerrainAt(first).affordances.Contains(TerrainAffordanceDefOf.Bridgeable)) map.terrainGrid.SetTerrain(first, TerrainDefOf.Bridge);
 							else if (temp.terrainDef != null) map.terrainGrid.SetTerrain(first, temp.terrainDef);
 
-							pairsCellThingList.TryGetValue(first).FindAll(t1 => (t1.def.category == ThingCategory.Building && (!t1.def.BuildableByPlayer || t1.Faction == null)) || t1.def.mineable).ForEach((t) => t.DeSpawn());
+							first.GetThingList(map).FindAll(t1 => (t1.def.category == ThingCategory.Building && (!t1.def.BuildableByPlayer || t1.Faction == null)) || t1.def.mineable).ForEach((t) => t.DeSpawn());
 						}
 					}
 					first.x++;
@@ -349,12 +346,12 @@ namespace KCSG
 			}
 		}
 
-		public static void FillStockpileRoom(StructureLayoutDef rld, CellRect roomRect, Map map, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
+		public static void FillStockpileRoom(StructureLayoutDef rld, CellRect roomRect, Map map)
         {
             foreach (IntVec3 i in roomRect.CenterCell.GetRoom(map).Cells)
             {
 				int x = (Rand.Bool ? 1 : 2);
-				if (x == 1 && pairsCellThingList.TryGetValue(i).Count == 0)
+				if (x == 1 && i.GetThingList(map).Count == 0)
                 {
 					ThingDef randTD = rld.allowedThingsInStockpile.RandomElement();
 					ThingDef randStuff = null;
@@ -1089,7 +1086,7 @@ namespace KCSG
 			pairsCellThingList.Clear();
 			foreach (IntVec3 intVec in cellExport)
 			{
-				pairsCellThingList.Add(intVec, intVec.GetThingList(map).ToList());
+				pairsCellThingList.Add(intVec, intVec.GetThingList(map).FindAll(t => t.def.defName != "").ToList());
 			}
 		}
 

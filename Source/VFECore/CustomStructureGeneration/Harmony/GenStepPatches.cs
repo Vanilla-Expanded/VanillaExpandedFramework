@@ -13,16 +13,33 @@ using RimWorld.BaseGen;
 namespace KCSG
 {
     [StaticConstructorOnStartup]
+    [HarmonyPatch(typeof(GenStep_Settlement))]
+    [HarmonyPatch("ScatterAt", MethodType.Normal)]
     public class GenStepPatches
     {
-        //[HarmonyPatch(typeof(GenStep_Settlement), "ScatterAt")]
+        [HarmonyPrefix]
         public static bool Prefix(IntVec3 c, Map map, GenStepParams parms, int stackCount = 1)
         {
+            //KENT TEMP CODE
+            if (KCSG_Mod.settings.enableLog)
+            {
+                Log.Message("Testing defs");
+                foreach (SymbolDef def in DefDatabase<SymbolDef>.AllDefs)
+                {
+                    if (def.isTerrain && def.terrainDef == null)
+                        Log.Error("Found invalid terrain def: " + def.defName);
+                    else if (def.isPawn && def.pawnKindDefNS == null)
+                        Log.Error("Found invalid pawn def: " + def.defName);
+                    else if (!def.isTerrain && !def.isPawn && def.thingDef == null)
+                        Log.Error("Found invalid thing def: " + def.defName);
+                }
+            }
+
             if (map.ParentFaction != null && map.ParentFaction.def.HasModExtension<FactionSettlement>())
             {
                 FactionSettlement sf = map.ParentFaction.def.GetModExtension<FactionSettlement>();
                 SettlementLayoutDef sld = sf.chooseFrom.RandomElement();
-                sf.temp = sld;
+                FactionSettlement.temp = sld;
 
                 // Get faction
                 Faction faction;

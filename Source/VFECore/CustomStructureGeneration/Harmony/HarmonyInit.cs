@@ -17,7 +17,10 @@ namespace KCSG
         static HarmonyInit()
         {
             Harmony.DEBUG = false;
-            new Harmony("CSG.Mod").Patch(AccessTools.Method(typeof(GenStep_Settlement), "ScatterAt"), new HarmonyMethod(typeof(GenStepPatches), "Prefix"), null, null, null); //.PatchAll();
+            Harmony harmony = new Harmony("CSG.Mod");
+            harmony.PatchAll();
+
+            //harmony.Patch(AccessTools.Method(typeof(GenStep_Settlement), "ScatterAt"), new HarmonyMethod(typeof(GenStepPatches), "Prefix"), null, null, null); //.PatchAll();
         }
     }
 }
