@@ -18,7 +18,6 @@ namespace VFECore
         static HarmonyPatches()
         {
             VFECore.harmonyInstance.PatchAll();
-
             // PawnApparelGenerator.PossibleApparelSet.CoatButNoShirt
             VFECore.harmonyInstance.Patch(typeof(PawnApparelGenerator).GetNestedType("PossibleApparelSet", BindingFlags.NonPublic | BindingFlags.Instance).GetMethod("CoatButNoShirt", BindingFlags.Public | BindingFlags.Instance),
                 transpiler: new HarmonyMethod(typeof(Patch_PawnApparelGenerator.PossibleApparelSet.manual_CoatButNoShirt), "Transpiler"));

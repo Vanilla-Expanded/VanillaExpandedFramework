@@ -69,7 +69,6 @@
     <Compile Include="AnimalBehaviours\Comps\CompUntameable.cs" />
     <Compile Include="AnimalBehaviours\DefModExtension\ExtendedRaceProperties.cs" />
     <Compile Include="AnimalBehaviours\Enums\BodyClock.cs" />
-    <Compile Include="AnimalBehaviours\Harmony\HarmonyPatches.cs" />
     <Compile Include="AnimalBehaviours\Harmony\JobGiver_GetRest_GetPriority.cs" />
     <Compile Include="AnimalBehaviours\Harmony\ThingDef_SpecialDisplayStats.cs" />
     <Compile Include="CustomStructureGeneration\DefModExtensions\FactionSettlement.cs" />
@@ -80,7 +79,6 @@
     <Compile Include="CustomStructureGeneration\Designators\Designator_ExportToXmlFromArea.cs" />
     <Compile Include="CustomStructureGeneration\GenStep\GenStep_CustomStructureGen.cs" />
     <Compile Include="CustomStructureGeneration\Harmony\GenStepPatches.cs" />
-    <Compile Include="CustomStructureGeneration\Harmony\HarmonyInit.cs" />
     <Compile Include="CustomStructureGeneration\Harmony\FixCaravanThreadingPatch.cs" />
     <Compile Include="CustomStructureGeneration\Settings.cs" />
     <Compile Include="CustomStructureGeneration\SymbolResolvers\SymbolResolver_KCSG_RoomGen.cs" />
