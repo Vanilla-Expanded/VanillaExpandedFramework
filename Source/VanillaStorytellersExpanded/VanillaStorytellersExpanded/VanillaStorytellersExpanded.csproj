@@ -296,6 +296,7 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RaidGroup.cs" />
     <Compile Include="RaidWatcher.cs" />
     <Compile Include="StorytellerThreat.cs" />
     <Compile Include="RaidRestlessness.cs" />

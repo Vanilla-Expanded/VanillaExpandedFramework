@@ -17,6 +17,7 @@ namespace VanillaStorytellersExpanded
 
         public Dictionary<Lord, bool> enemiesAreOutOfTheMap;
 
+        public List<RaidGroup> raidGroups;
         public StorytellerWatcher()
         {
         }
@@ -35,14 +36,22 @@ namespace VanillaStorytellersExpanded
             }
         }
 
+        public void PreInit()
+        {
+            if (this.raidGroups == null) this.raidGroups = new List<RaidGroup>();
+            if (this.enemiesAreOutOfTheMap == null) this.enemiesAreOutOfTheMap = new Dictionary<Lord, bool>();
+            if (this.originalNaturalGoodwillValues == null) this.originalNaturalGoodwillValues = new Dictionary<FactionDef, IntRange>();
+        }
         public override void LoadedGame()
         {
             base.LoadedGame();
+            this.PreInit();
             ChangeOrRestoreNaturalGoodwill();
         }
         public override void StartedNewGame()
         {
             base.StartedNewGame();
+            this.PreInit();
             ChangeOrRestoreNaturalGoodwill();
         }
 
@@ -79,7 +88,6 @@ namespace VanillaStorytellersExpanded
         {
             Log.Message("Changing NaturalGoodwill");
             RestoreNaturalGoodwillForAllFactions();
-            if (originalNaturalGoodwillValues == null) originalNaturalGoodwillValues = new Dictionary<FactionDef, IntRange>();
             foreach (var factionDef in DefDatabase<FactionDef>.AllDefs)
             {
                 if (factionDef != Faction.OfPlayer.def && !factionDef.permanentEnemy)
@@ -98,7 +106,7 @@ namespace VanillaStorytellersExpanded
                 Log.Message("Restoring NaturalGoodwill");
                 foreach (var factionDef in DefDatabase<FactionDef>.AllDefs)
                 {
-                    if (factionDef != Faction.OfPlayer.def && !factionDef.permanentEnemy)
+                    if (originalNaturalGoodwillValues.ContainsKey(factionDef) && factionDef != Faction.OfPlayer.def && !factionDef.permanentEnemy)
                     {
                         factionDef.naturalColonyGoodwill = originalNaturalGoodwillValues[factionDef];
                         Log.Message("Old " + factionDef + " - factionDef.naturalColonyGoodwill: " + factionDef.naturalColonyGoodwill, true);
@@ -114,6 +122,7 @@ namespace VanillaStorytellersExpanded
             Scribe_Defs.Look(ref currentStoryteller, "currentStoryteller");
             Scribe_References.Look<Faction>(ref currentRaidingFaction, "currentRaidingFaction");
             Scribe_Collections.Look<Lord, bool>(ref enemiesAreOutOfTheMap, "enemiesAreOutOfTheMap", LookMode.Reference, LookMode.Value, ref lordKeys, ref lordValues);
+            Scribe_Collections.Look<RaidGroup>(ref raidGroups, "raidGroups", LookMode.Deep);
         }
 
         private List<Lord> lordKeys;
