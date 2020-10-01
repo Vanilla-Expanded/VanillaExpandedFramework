@@ -53,14 +53,17 @@ namespace VanillaStorytellersExpanded
     {
         public static void Postfix(Lord __instance, Pawn p)
         {
-            var gameComp = Current.Game.GetComponent<StorytellerWatcher>();
-            foreach (var rg in gameComp.raidGroups)
-            {
-                if (rg.pawns.Contains(p))
+                var gameComp = Current.Game.GetComponent<StorytellerWatcher>();
+                if (gameComp.raidGroups != null)
                 {
-                    rg.lords.Add(__instance);
+                    foreach (var rg in gameComp.raidGroups)
+                    {
+                        if (rg.pawns.Contains(p))
+                        {
+                            rg.lords.Add(__instance);
+                        }
+                    }
                 }
-            }
         }
     }
 
