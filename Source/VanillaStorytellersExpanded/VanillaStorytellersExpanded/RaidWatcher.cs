@@ -99,7 +99,7 @@ namespace VanillaStorytellersExpanded
         public static bool ShouldTriggerReinforcements(Pawn victim, DamageInfo? dinfo, out Faction enemyFaction)
         {
             if (dinfo.HasValue && dinfo.Value.Instigator?.Faction != null 
-                && Current.Game.GetComponent<StorytellerWatcher>().FactionPresentInCurrentRaidGroups(dinfo.Value.Instigator.Faction.def))
+                && Current.Game.GetComponent<StorytellerWatcher>().FactionPresentInCurrentRaidGroups(dinfo.Value.Instigator.Faction))
             {
                 enemyFaction = dinfo.Value.Instigator.Faction;
                 return true;
@@ -114,7 +114,7 @@ namespace VanillaStorytellersExpanded
                         {
                             foreach (var p in entry.GetConcerns())
                             {
-                                if (p != victim && p?.Faction != null && Current.Game.GetComponent<StorytellerWatcher>().FactionPresentInCurrentRaidGroups(p.Faction.def))
+                                if (p != victim && p?.Faction != null && Current.Game.GetComponent<StorytellerWatcher>().FactionPresentInCurrentRaidGroups(p.Faction))
                                 {
                                     enemyFaction = p.Faction;
                                     return true;

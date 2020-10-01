@@ -110,11 +110,11 @@ namespace VanillaStorytellersExpanded
             }
         }
 
-        public bool FactionPresentInCurrentRaidGroups(FactionDef factionDef)
+        public bool FactionPresentInCurrentRaidGroups(Faction faction)
         {
             foreach (var rg in this.raidGroups)
             {
-                if (rg.faction.def == factionDef)
+                if (rg.faction == faction)
                 {
                     return true;
                 }
