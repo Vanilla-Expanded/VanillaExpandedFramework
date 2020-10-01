@@ -39,10 +39,18 @@ namespace VanillaStorytellersExpanded
         {
             if (includeRaidToTheList && pawns != null)
             {
-                Log.Message("Creating raid group of : " + pawns?.Count + " pawns");
                 var gameComp = Current.Game.GetComponent<StorytellerWatcher>();
                 var raidGroup = new RaidGroup();
                 raidGroup.pawns = pawns.ToHashSet();
+                if (parms.faction != null)
+                {
+                    raidGroup.faction = parms.faction;
+                }
+                else
+                {
+                    raidGroup.faction = pawns.First().Faction;
+                }
+                Log.Message("Creating raid group of " + pawns?.Count + " pawns, faction - " + raidGroup.faction.def, true);
                 gameComp.raidGroups.Add(raidGroup);
             }
         }
@@ -53,17 +61,17 @@ namespace VanillaStorytellersExpanded
     {
         public static void Postfix(Lord __instance, Pawn p)
         {
-                var gameComp = Current.Game.GetComponent<StorytellerWatcher>();
-                if (gameComp.raidGroups != null)
+            var gameComp = Current.Game.GetComponent<StorytellerWatcher>();
+            if (gameComp.raidGroups != null)
+            {
+                foreach (var rg in gameComp.raidGroups)
                 {
-                    foreach (var rg in gameComp.raidGroups)
+                    if (rg.pawns.Contains(p))
                     {
-                        if (rg.pawns.Contains(p))
-                        {
-                            rg.lords.Add(__instance);
-                        }
+                        rg.lords.Add(__instance);
                     }
                 }
+            }
         }
     }
 
@@ -88,11 +96,12 @@ namespace VanillaStorytellersExpanded
     [HarmonyPatch("Kill")]
     public static class Patch_Kill
     {
-        public static bool ShouldTriggerReinforcements(Pawn victim, DamageInfo? dinfo)
+        public static bool ShouldTriggerReinforcements(Pawn victim, DamageInfo? dinfo, out Faction enemyFaction)
         {
-            if (dinfo.HasValue && dinfo.Value.Instigator?.Faction != null
-                    && dinfo.Value.Instigator.Faction == Current.Game.GetComponent<StorytellerWatcher>()?.currentRaidingFaction)
+            if (dinfo.HasValue && dinfo.Value.Instigator?.Faction != null 
+                && Current.Game.GetComponent<StorytellerWatcher>().FactionPresentInCurrentRaidGroups(dinfo.Value.Instigator.Faction.def))
             {
+                enemyFaction = dinfo.Value.Instigator.Faction;
                 return true;
             }
             else if (!dinfo.HasValue)
@@ -105,8 +114,9 @@ namespace VanillaStorytellersExpanded
                         {
                             foreach (var p in entry.GetConcerns())
                             {
-                                if (p != victim && p?.Faction != null && p.Faction == Current.Game.GetComponent<StorytellerWatcher>()?.currentRaidingFaction)
+                                if (p != victim && p?.Faction != null && Current.Game.GetComponent<StorytellerWatcher>().FactionPresentInCurrentRaidGroups(p.Faction.def))
                                 {
+                                    enemyFaction = p.Faction;
                                     return true;
                                 }
                             }
@@ -114,13 +124,14 @@ namespace VanillaStorytellersExpanded
                     }
                 }
             }
+            enemyFaction = null;
             return false;
         }
         public static void Prefix(Pawn __instance, DamageInfo? dinfo, Hediff exactCulprit = null)
         {
             if (__instance.IsColonist && __instance.FactionOrExtraMiniOrHomeFaction == Faction.OfPlayer)
             {
-                if (ShouldTriggerReinforcements(__instance, dinfo))
+                if (ShouldTriggerReinforcements(__instance, dinfo, out Faction enemyFaction))
                 {
                     var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
                     if (options != null && options.storytellerThreat != null)
@@ -128,7 +139,7 @@ namespace VanillaStorytellersExpanded
                         IncidentParms parms = new IncidentParms
                         {
                             target = __instance.Map,
-                            faction = Current.Game.GetComponent<StorytellerWatcher>().currentRaidingFaction,
+                            faction = enemyFaction,
                             forced = true,
                             raidStrategy = RaidStrategyDefOf.ImmediateAttack,
                             points = StorytellerUtility.DefaultThreatPointsNow(__instance.Map) / 4f
@@ -179,8 +190,10 @@ namespace VanillaStorytellersExpanded
                             }
                         }
                     }
-                    Log.Message("Current.Game.GetComponent<StorytellerWatcher>()?.currentRaidingFaction: "
-                        + Current.Game.GetComponent<StorytellerWatcher>()?.currentRaidingFaction, true);
+                    foreach (var rg in Current.Game.GetComponent<StorytellerWatcher>().raidGroups)
+                    {
+                        Log.Message("Raid faction: " + rg.faction, true); 
+                    }
                 }
             }
         }
@@ -218,27 +231,7 @@ namespace VanillaStorytellersExpanded
                     if (comp != null)
                     {
                         Log.Message(__instance.def + " fires, parms.faction: " + parms.faction, true);
-                        comp.currentRaidingFaction = parms.faction;
                     }
-                }
-            }
-        }
-    }
-
-    [HarmonyPatch(typeof(IncidentWorker_RaidEnemy))]
-    [HarmonyPatch("TryExecuteWorker")]
-    public static class Patch_TryExecuteWorker
-    {
-        public static void Postfix(IncidentWorker_RaidEnemy __instance, bool __result, IncidentParms parms)
-        {
-            var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
-            if (options != null && options.storytellerThreat != null && __result)
-            {
-                var comp = Current.Game.GetComponent<StorytellerWatcher>();
-                if (comp != null)
-                {
-                    Log.Message(__instance.def + " fires, parms.faction: " + parms.faction, true);
-                    comp.currentRaidingFaction = parms.faction;
                 }
             }
         }

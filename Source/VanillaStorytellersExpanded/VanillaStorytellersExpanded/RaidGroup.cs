@@ -10,6 +10,7 @@ namespace VanillaStorytellersExpanded
 	{
         public HashSet<Pawn> pawns;
         public HashSet<Lord> lords;
+        public Faction faction;
 
         public RaidGroup()
         {
@@ -21,6 +22,7 @@ namespace VanillaStorytellersExpanded
         {
             Scribe_Collections.Look(ref pawns, "pawns", LookMode.Reference);
             Scribe_Collections.Look(ref lords, "lords", LookMode.Reference);
+            Scribe_References.Look(ref faction, "faction");
         }
     }
 }

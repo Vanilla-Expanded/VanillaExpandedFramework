@@ -11,8 +11,6 @@ namespace VanillaStorytellersExpanded
 
         public StorytellerDef currentStoryteller;
 
-        public Faction currentRaidingFaction;
-
         public Dictionary<FactionDef, IntRange> originalNaturalGoodwillValues;
 
         public List<RaidGroup> raidGroups;
@@ -112,12 +110,23 @@ namespace VanillaStorytellersExpanded
             }
         }
 
+        public bool FactionPresentInCurrentRaidGroups(FactionDef factionDef)
+        {
+            foreach (var rg in this.raidGroups)
+            {
+                if (rg.faction.def == factionDef)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public override void ExposeData()
         {
             base.ExposeData();
             Scribe_Values.Look(ref lastRaidExpansionTicks, "lastRaidExpansionTicks", 0);
             Scribe_Defs.Look(ref currentStoryteller, "currentStoryteller");
-            Scribe_References.Look<Faction>(ref currentRaidingFaction, "currentRaidingFaction");
             Scribe_Collections.Look<RaidGroup>(ref raidGroups, "raidGroups", LookMode.Deep);
         }
     }
