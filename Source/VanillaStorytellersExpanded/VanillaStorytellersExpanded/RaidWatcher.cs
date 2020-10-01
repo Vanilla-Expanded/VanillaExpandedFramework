@@ -39,7 +39,7 @@ namespace VanillaStorytellersExpanded
         {
             if (includeRaidToTheList && pawns != null)
             {
-                Log.Message("pawns: " + pawns?.Count);
+                Log.Message("Creating raid group of : " + pawns?.Count + " pawns");
                 var gameComp = Current.Game.GetComponent<StorytellerWatcher>();
                 var raidGroup = new RaidGroup();
                 raidGroup.pawns = pawns.ToHashSet();
@@ -59,7 +59,6 @@ namespace VanillaStorytellersExpanded
                 if (rg.pawns.Contains(p))
                 {
                     rg.lords.Add(__instance);
-                    Log.Message("rg.raidGroups[__instance]: " + rg.lords.Count, true);
                 }
             }
         }
@@ -118,8 +117,25 @@ namespace VanillaStorytellersExpanded
         {
             if (__instance.IsColonist && __instance.FactionOrExtraMiniOrHomeFaction == Faction.OfPlayer)
             {
-                // just logging, will be removed soon
-                if (__instance.IsColonist)
+                if (ShouldTriggerReinforcements(__instance, dinfo))
+                {
+                    var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
+                    if (options != null && options.storytellerThreat != null)
+                    {
+                        IncidentParms parms = new IncidentParms
+                        {
+                            target = __instance.Map,
+                            faction = Current.Game.GetComponent<StorytellerWatcher>().currentRaidingFaction,
+                            forced = true,
+                            raidStrategy = RaidStrategyDefOf.ImmediateAttack,
+                            points = StorytellerUtility.DefaultThreatPointsNow(__instance.Map) / 4f
+                        };
+                        Log.Message("Colonist died! Reinforcements will arrive");
+                        var incidentDef = DefDatabase<IncidentDef>.GetNamed("VSE_Reinforcements");
+                        Find.Storyteller.incidentQueue.Add(incidentDef, Find.TickManager.TicksGame + new IntRange(300, 600).RandomInRange, parms);
+                    }
+                }
+                else
                 {
                     Log.Message("__instance: " + __instance, true);
                     Log.Message("__instance.IsColonist: " + __instance.IsColonist, true);
@@ -163,25 +179,6 @@ namespace VanillaStorytellersExpanded
                     Log.Message("Current.Game.GetComponent<StorytellerWatcher>()?.currentRaidingFaction: "
                         + Current.Game.GetComponent<StorytellerWatcher>()?.currentRaidingFaction, true);
                 }
-
-                if (ShouldTriggerReinforcements(__instance, dinfo))
-                {
-                    var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
-                    if (options != null && options.storytellerThreat != null)
-                    {
-                        Log.Message("Success!");
-                        IncidentParms parms = new IncidentParms
-                        {
-                            target = __instance.Map,
-                            faction = Current.Game.GetComponent<StorytellerWatcher>().currentRaidingFaction,
-                            forced = true,
-                            raidStrategy = RaidStrategyDefOf.ImmediateAttack,
-                            points = StorytellerUtility.DefaultThreatPointsNow(__instance.Map) / 4f
-                        };
-                        var incidentDef = DefDatabase<IncidentDef>.GetNamed("VSE_Reinforcements");
-                        Find.Storyteller.incidentQueue.Add(incidentDef, Find.TickManager.TicksGame + new IntRange(300, 600).RandomInRange, parms);
-                    }
-                }
             }
         }
     }
@@ -214,11 +211,10 @@ namespace VanillaStorytellersExpanded
                 var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
                 if (options != null && options.storytellerThreat != null && __result)
                 {
-                    Log.Message("1 parms.faction: " + parms.faction, true);
                     var comp = Current.Game.GetComponent<StorytellerWatcher>();
                     if (comp != null)
                     {
-                        Log.Message("2 parms.faction: " + parms.faction, true);
+                        Log.Message(__instance.def + " fires, parms.faction: " + parms.faction, true);
                         comp.currentRaidingFaction = parms.faction;
                     }
                 }
@@ -230,51 +226,20 @@ namespace VanillaStorytellersExpanded
     [HarmonyPatch("TryExecuteWorker")]
     public static class Patch_TryExecuteWorker
     {
-        public static void Postfix(bool __result, IncidentParms parms)
+        public static void Postfix(IncidentWorker_RaidEnemy __instance, bool __result, IncidentParms parms)
         {
             var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
             if (options != null && options.storytellerThreat != null && __result)
             {
-                Log.Message("1 parms.faction: " + parms.faction, true);
                 var comp = Current.Game.GetComponent<StorytellerWatcher>();
                 if (comp != null)
                 {
-                    Log.Message("2 parms.faction: " + parms.faction, true);
+                    Log.Message(__instance.def + " fires, parms.faction: " + parms.faction, true);
                     comp.currentRaidingFaction = parms.faction;
                 }
             }
         }
     }
-
-
-    //[HarmonyPatch(typeof(Lord))]
-    //[HarmonyPatch("Notify_PawnLost")]
-    //public static class Patch_Notify_PawnLost
-    //{
-    //    public static void Prefix(Lord __instance, Pawn pawn, PawnLostCondition cond, DamageInfo? dinfo = null)
-    //    {
-    //        var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
-    //        if (options != null && options.storytellerThreat != null)
-    //        {
-    //            Log.Message("cond: " + cond, true);
-    //            if (__instance.faction.HostileTo(Faction.OfPlayer))
-    //            {
-    //                var gameComp = Current.Game.GetComponent<StorytellerWatcher>();
-    //                if (cond == PawnLostCondition.ExitedMap)
-    //                {
-    //                    foreach (var rg in gameComp.raidGroups)
-    //                    {
-    //                        if (rg.lords.Contains(__instance))
-    //                        {
-    //                            rg.enemiesAreOutOfTheMap = true;
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //
-    //        }
-    //    }
-    //}
 
     [HarmonyPatch(typeof(Lord))]
     [HarmonyPatch("Cleanup")]
@@ -296,22 +261,25 @@ namespace VanillaStorytellersExpanded
                     }
                 }
                 var raidGroup = gameComp.raidGroups.Where(x => x.lords.Contains(__instance)).FirstOrDefault();
-                if (raidGroup != null && __instance.Map.IsPlayerHome && __instance.faction.HostileTo(Faction.OfPlayer))
+                if (raidGroup != null)
                 {
-                    IncidentParms parms = new IncidentParms
+                    if (__instance.Map.IsPlayerHome && __instance.faction.HostileTo(Faction.OfPlayer))
                     {
-                        target = __instance.Map,
-                        forced = true,
-                        points = StorytellerUtility.DefaultThreatPointsNow(__instance.Map)
-                    };
-                    var incidentDef = DefDatabase<IncidentDef>.GetNamed(options.storytellerThreat.goodIncidents.RandomElement());
-                    if (incidentDef != null)
-                    {
-                        Log.Message("Success: " + incidentDef, true); ;
-                        Find.Storyteller.incidentQueue.Add(incidentDef, Find.TickManager.TicksGame + new IntRange(6000, 12000).RandomInRange, parms);
+                        IncidentParms parms = new IncidentParms
+                        {
+                            target = __instance.Map,
+                            forced = true,
+                            points = StorytellerUtility.DefaultThreatPointsNow(__instance.Map)
+                        };
+                        var incidentDef = DefDatabase<IncidentDef>.GetNamed(options.storytellerThreat.goodIncidents.RandomElement());
+                        if (incidentDef != null)
+                        {
+                            Log.Message("Success: " + incidentDef, true); ;
+                            Find.Storyteller.incidentQueue.Add(incidentDef, Find.TickManager.TicksGame + new IntRange(6000, 12000).RandomInRange, parms);
+                        }
                     }
+                    gameComp.raidGroups.Remove(raidGroup);
                 }
-                gameComp.raidGroups.Remove(raidGroup);
             }
         }
     }
@@ -346,19 +314,25 @@ namespace VanillaStorytellersExpanded
                                 }
 
                                 var raidGroup = gameComp.raidGroups.Where(x => x.lords.Contains(lord)).FirstOrDefault();
-                                IncidentParms parms = new IncidentParms
+                                if (raidGroup != null)
                                 {
-                                    target = lord.Map,
-                                    forced = true,
-                                    points = StorytellerUtility.DefaultThreatPointsNow(lord.Map)
-                                };
-                                var incidentDef = DefDatabase<IncidentDef>.GetNamed(options.storytellerThreat.goodIncidents.RandomElement());
-                                if (incidentDef != null)
-                                {
-                                    Log.Message("Success: " + incidentDef, true); ;
-                                    Find.Storyteller.incidentQueue.Add(incidentDef, Find.TickManager.TicksGame + new IntRange(6000, 12000).RandomInRange, parms);
+                                    if (__instance.Map.IsPlayerHome && lord.faction.HostileTo(Faction.OfPlayer))
+                                    {
+                                        IncidentParms parms = new IncidentParms
+                                        {
+                                            target = lord.Map,
+                                            forced = true,
+                                            points = StorytellerUtility.DefaultThreatPointsNow(lord.Map)
+                                        };
+                                        var incidentDef = DefDatabase<IncidentDef>.GetNamed(options.storytellerThreat.goodIncidents.RandomElement());
+                                        if (incidentDef != null)
+                                        {
+                                            Log.Message("Success: " + incidentDef, true); ;
+                                            Find.Storyteller.incidentQueue.Add(incidentDef, Find.TickManager.TicksGame + new IntRange(6000, 12000).RandomInRange, parms);
+                                        }
+                                    }
+                                    gameComp.raidGroups.Remove(raidGroup);
                                 }
-                                gameComp.raidGroups.Remove(raidGroup);
                             }
                         }
                     }
