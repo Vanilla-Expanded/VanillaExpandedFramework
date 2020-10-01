@@ -15,8 +15,6 @@ namespace VanillaStorytellersExpanded
 
         public Dictionary<FactionDef, IntRange> originalNaturalGoodwillValues;
 
-        public Dictionary<Lord, bool> enemiesAreOutOfTheMap;
-
         public List<RaidGroup> raidGroups;
         public StorytellerWatcher()
         {
@@ -39,7 +37,6 @@ namespace VanillaStorytellersExpanded
         public void PreInit()
         {
             if (this.raidGroups == null) this.raidGroups = new List<RaidGroup>();
-            if (this.enemiesAreOutOfTheMap == null) this.enemiesAreOutOfTheMap = new Dictionary<Lord, bool>();
             if (this.originalNaturalGoodwillValues == null) this.originalNaturalGoodwillValues = new Dictionary<FactionDef, IntRange>();
         }
         public override void LoadedGame()
@@ -121,11 +118,7 @@ namespace VanillaStorytellersExpanded
             Scribe_Values.Look(ref lastRaidExpansionTicks, "lastRaidExpansionTicks", 0);
             Scribe_Defs.Look(ref currentStoryteller, "currentStoryteller");
             Scribe_References.Look<Faction>(ref currentRaidingFaction, "currentRaidingFaction");
-            Scribe_Collections.Look<Lord, bool>(ref enemiesAreOutOfTheMap, "enemiesAreOutOfTheMap", LookMode.Reference, LookMode.Value, ref lordKeys, ref lordValues);
             Scribe_Collections.Look<RaidGroup>(ref raidGroups, "raidGroups", LookMode.Deep);
         }
-
-        private List<Lord> lordKeys;
-        private List<bool> lordValues;
     }
 }

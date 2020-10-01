@@ -58,8 +58,8 @@ namespace VanillaStorytellersExpanded
             {
                 if (rg.pawns.Contains(p))
                 {
-                    rg.raidGroups.Add(__instance);
-                    Log.Message("rg.raidGroups[__instance]: " + rg.raidGroups.Count, true);
+                    rg.lords.Add(__instance);
+                    Log.Message("rg.raidGroups[__instance]: " + rg.lords.Count, true);
                 }
             }
         }
@@ -247,28 +247,34 @@ namespace VanillaStorytellersExpanded
     }
 
 
-    [HarmonyPatch(typeof(Lord))]
-    [HarmonyPatch("Notify_PawnLost")]
-    public static class Patch_Notify_PawnLost
-    {
-        public static void Prefix(Lord __instance, Pawn pawn, PawnLostCondition cond, DamageInfo? dinfo = null)
-        {
-            var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
-            if (options != null && options.storytellerThreat != null)
-            {
-                Log.Message("cond: " + cond, true);
-                if (__instance.faction.HostileTo(Faction.OfPlayer))
-                {
-                    var gameComp = Current.Game.GetComponent<StorytellerWatcher>();
-                    if (cond == PawnLostCondition.ExitedMap)
-                    {
-                        gameComp.enemiesAreOutOfTheMap[__instance] = true;
-                    }
-                }
-
-            }
-        }
-    }
+    //[HarmonyPatch(typeof(Lord))]
+    //[HarmonyPatch("Notify_PawnLost")]
+    //public static class Patch_Notify_PawnLost
+    //{
+    //    public static void Prefix(Lord __instance, Pawn pawn, PawnLostCondition cond, DamageInfo? dinfo = null)
+    //    {
+    //        var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
+    //        if (options != null && options.storytellerThreat != null)
+    //        {
+    //            Log.Message("cond: " + cond, true);
+    //            if (__instance.faction.HostileTo(Faction.OfPlayer))
+    //            {
+    //                var gameComp = Current.Game.GetComponent<StorytellerWatcher>();
+    //                if (cond == PawnLostCondition.ExitedMap)
+    //                {
+    //                    foreach (var rg in gameComp.raidGroups)
+    //                    {
+    //                        if (rg.lords.Contains(__instance))
+    //                        {
+    //                            rg.enemiesAreOutOfTheMap = true;
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //
+    //        }
+    //    }
+    //}
 
     [HarmonyPatch(typeof(Lord))]
     [HarmonyPatch("Cleanup")]
@@ -281,23 +287,17 @@ namespace VanillaStorytellersExpanded
             {
                 var gameComp = Current.Game.GetComponent<StorytellerWatcher>();
                 Log.Message("gameComp.raidGroups: " + gameComp.raidGroups.Count);
-                if (gameComp.enemiesAreOutOfTheMap != null && gameComp.enemiesAreOutOfTheMap.ContainsKey(__instance))
-                {
-                    gameComp.enemiesAreOutOfTheMap.Remove(__instance);
-                }
                 for (int i = gameComp.raidGroups.Count - 1; i >= 0; i--)
                 {
-                    if (gameComp.raidGroups[i].raidGroups.Contains(__instance) && gameComp.raidGroups[i].raidGroups.Count > 1)
+                    if (gameComp.raidGroups[i].lords.Contains(__instance) && gameComp.raidGroups[i].lords.Count > 1)
                     {
-                        gameComp.raidGroups[i].raidGroups.Remove(__instance);
+                        gameComp.raidGroups[i].lords.Remove(__instance);
                         return;
                     }
                 }
-                if (gameComp.raidGroups.Where(x => x.raidGroups.Contains(__instance)).Count() > 0 && __instance.Map.IsPlayerHome 
-                    && __instance.faction.HostileTo(Faction.OfPlayer) && (gameComp.enemiesAreOutOfTheMap != null && gameComp.enemiesAreOutOfTheMap.ContainsKey(__instance) 
-                    && !gameComp.enemiesAreOutOfTheMap[__instance] || gameComp.enemiesAreOutOfTheMap == null || !gameComp.enemiesAreOutOfTheMap.ContainsKey(__instance)))
+                var raidGroup = gameComp.raidGroups.Where(x => x.lords.Contains(__instance)).FirstOrDefault();
+                if (raidGroup != null && __instance.Map.IsPlayerHome && __instance.faction.HostileTo(Faction.OfPlayer))
                 {
-                    Log.Message("Success");
                     IncidentParms parms = new IncidentParms
                     {
                         target = __instance.Map,
@@ -307,9 +307,11 @@ namespace VanillaStorytellersExpanded
                     var incidentDef = DefDatabase<IncidentDef>.GetNamed(options.storytellerThreat.goodIncidents.RandomElement());
                     if (incidentDef != null)
                     {
+                        Log.Message("Success: " + incidentDef, true); ;
                         Find.Storyteller.incidentQueue.Add(incidentDef, Find.TickManager.TicksGame + new IntRange(6000, 12000).RandomInRange, parms);
                     }
                 }
+                gameComp.raidGroups.Remove(raidGroup);
             }
         }
     }
@@ -332,6 +334,18 @@ namespace VanillaStorytellersExpanded
                             if (transitionAction.message == "MessageRaidersGivenUpLeaving".Translate(lord.faction.def.pawnsPlural.CapitalizeFirst(), lord.faction.Name) 
                                 || transitionAction.message == "MessageFightersFleeing".Translate(lord.faction.def.pawnsPlural.CapitalizeFirst(), lord.faction.Name))
                             {
+                                var gameComp = Current.Game.GetComponent<StorytellerWatcher>();
+                                Log.Message("gameComp.raidGroups: " + gameComp.raidGroups.Count);
+                                for (int j = gameComp.raidGroups.Count - 1; j >= 0; j--)
+                                {
+                                    if (gameComp.raidGroups[j].lords.Contains(lord) && gameComp.raidGroups[j].lords.Count > 1)
+                                    {
+                                        gameComp.raidGroups[j].lords.Remove(lord);
+                                        return;
+                                    }
+                                }
+
+                                var raidGroup = gameComp.raidGroups.Where(x => x.lords.Contains(lord)).FirstOrDefault();
                                 IncidentParms parms = new IncidentParms
                                 {
                                     target = lord.Map,
@@ -341,12 +355,10 @@ namespace VanillaStorytellersExpanded
                                 var incidentDef = DefDatabase<IncidentDef>.GetNamed(options.storytellerThreat.goodIncidents.RandomElement());
                                 if (incidentDef != null)
                                 {
+                                    Log.Message("Success: " + incidentDef, true); ;
                                     Find.Storyteller.incidentQueue.Add(incidentDef, Find.TickManager.TicksGame + new IntRange(6000, 12000).RandomInRange, parms);
                                 }
-                                var gameComp = Current.Game.GetComponent<StorytellerWatcher>();
-                                if (gameComp.enemiesAreOutOfTheMap == null)
-                                    gameComp.enemiesAreOutOfTheMap = new Dictionary<Lord, bool>();
-                                gameComp.enemiesAreOutOfTheMap[lord] = true;
+                                gameComp.raidGroups.Remove(raidGroup);
                             }
                         }
                     }
