@@ -63,7 +63,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnimalBehaviours\Comps\CompProperties_Untameable.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompBuildPeriodically.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_BuildPeriodically.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Untameable.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompUntameable.cs" />
     <Compile Include="CustomStructureGeneration\DefModExtensions\FactionSettlement.cs" />
     <Compile Include="CustomStructureGeneration\Defs\SettlementLayoutDef.cs" />
@@ -80,8 +82,8 @@
     <Compile Include="CustomStructureGeneration\SymbolResolvers\SymbolResolver_KCSG_Settlement.cs" />
     <Compile Include="CustomStructureGeneration\Utils\CenteredMessageBox.cs" />
     <Compile Include="CustomStructureGeneration\Utils\KCSG_Utilities.cs" />
-    <Compile Include="Furniture\Comps\CompProperties_SelectBuildingBehind.cs" />
-    <Compile Include="Furniture\Comps\CompProperties_SpawnOtherBuildingWhenPowered.cs" />
+    <Compile Include="Furniture\Comps\CompProperties\CompProperties_SelectBuildingBehind.cs" />
+    <Compile Include="Furniture\Comps\CompProperties\CompProperties_SpawnOtherBuildingWhenPowered.cs" />
     <Compile Include="Furniture\Comps\CompSelectBuildingBehind.cs" />
     <Compile Include="Furniture\Comps\CompSpawnOtherBuildingWhenPowered.cs" />
     <Compile Include="Furniture\Thoughts\ThoughtGiverByProximityDefExtension.cs" />
@@ -89,10 +91,10 @@
     <Compile Include="VFECore\Comps\ThingComps\CompApparelHediffs.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompProperties_ApparelHediffs.cs" />
     <Compile Include="Cuisine\Comps\CompMaturingAlcohol.cs" />
-    <Compile Include="Cuisine\Comps\CompProperties_MaturingAlcohol.cs" />
-    <Compile Include="Cuisine\Comps\CompProperties_StackByIngredients.cs" />
-    <Compile Include="Cuisine\Comps\CompProperties_StackByQuality.cs" />
-    <Compile Include="Cuisine\Comps\CompProperties_TempTransforms.cs" />
+    <Compile Include="Cuisine\Comps\CompProperties\CompProperties_MaturingAlcohol.cs" />
+    <Compile Include="Cuisine\Comps\CompProperties\CompProperties_StackByIngredients.cs" />
+    <Compile Include="Cuisine\Comps\CompProperties\CompProperties_StackByQuality.cs" />
+    <Compile Include="Cuisine\Comps\CompProperties\CompProperties_TempTransforms.cs" />
     <Compile Include="Cuisine\Comps\CompStackByIngredients.cs" />
     <Compile Include="Cuisine\Comps\CompStackByQuality.cs" />
     <Compile Include="Cuisine\Comps\CompTempTransforms.cs" />
