@@ -20,7 +20,7 @@ namespace VanillaStorytellersExpanded
 
         public void ExposeData()
         {
-            Scribe_Collections.Look(ref pawns, "pawns", LookMode.Reference);
+            Scribe_Collections.Look(ref pawns, saveDestroyedThings: true, "pawns", LookMode.Reference);
             Scribe_Collections.Look(ref lords, "lords", LookMode.Reference);
             Scribe_References.Look(ref faction, "faction");
         }

@@ -14,6 +14,7 @@ namespace VanillaStorytellersExpanded
         public Dictionary<FactionDef, IntRange> originalNaturalGoodwillValues;
 
         public List<RaidGroup> raidGroups;
+        public List<RaidGroup> reinforcementGroups;
         public StorytellerWatcher()
         {
         }
@@ -35,6 +36,7 @@ namespace VanillaStorytellersExpanded
         public void PreInit()
         {
             if (this.raidGroups == null) this.raidGroups = new List<RaidGroup>();
+            if (this.reinforcementGroups == null) this.reinforcementGroups = new List<RaidGroup>();
             if (this.originalNaturalGoodwillValues == null) this.originalNaturalGoodwillValues = new Dictionary<FactionDef, IntRange>();
         }
         public override void LoadedGame()
@@ -81,7 +83,6 @@ namespace VanillaStorytellersExpanded
 
         public void ChangeNaturalGoodwill(StorytellerThreat storytellerThreat)
         {
-            Log.Message("Changing NaturalGoodwill");
             RestoreNaturalGoodwillForAllFactions();
             foreach (var factionDef in DefDatabase<FactionDef>.AllDefs)
             {
@@ -89,7 +90,7 @@ namespace VanillaStorytellersExpanded
                 {
                     originalNaturalGoodwillValues[factionDef] = factionDef.naturalColonyGoodwill;
                     factionDef.naturalColonyGoodwill = storytellerThreat.naturallGoodwillForAllFactions;
-                    Log.Message("New " + factionDef + " - naturalColonyGoodwill: " + factionDef.naturalColonyGoodwill, true);
+                    //Log.Message("New " + factionDef + " - naturalColonyGoodwill: " + factionDef.naturalColonyGoodwill, true);
                 }
             }
         }
@@ -98,25 +99,60 @@ namespace VanillaStorytellersExpanded
         {
             if (originalNaturalGoodwillValues != null)
             {
-                Log.Message("Restoring NaturalGoodwill");
+                //Log.Message("Restoring NaturalGoodwill");
                 foreach (var factionDef in DefDatabase<FactionDef>.AllDefs)
                 {
                     if (originalNaturalGoodwillValues.ContainsKey(factionDef) && factionDef != Faction.OfPlayer.def && !factionDef.permanentEnemy)
                     {
                         factionDef.naturalColonyGoodwill = originalNaturalGoodwillValues[factionDef];
-                        Log.Message("Old " + factionDef + " - factionDef.naturalColonyGoodwill: " + factionDef.naturalColonyGoodwill, true);
+                        //Log.Message("Old " + factionDef + " - factionDef.naturalColonyGoodwill: " + factionDef.naturalColonyGoodwill, true);
                     }
                 }
             }
         }
 
-        public bool FactionPresentInCurrentRaidGroups(Faction faction)
+        public bool GroupHasLivingPawns(HashSet<Pawn> group)
         {
-            foreach (var rg in this.raidGroups)
+            foreach (var pawn in group)
             {
-                if (rg.faction == faction)
+                if (pawn != null && pawn.Map != null && !pawn.Dead && !pawn.Downed && !pawn.Destroyed)
                 {
                     return true;
+                }
+            }
+            return false;
+        }
+        public bool FactionPresentInCurrentRaidGroups(Faction faction)
+        {
+            for (int num = this.raidGroups.Count - 1; num >= 0; num--)
+            {
+                if (this.raidGroups[num].faction == faction)
+                {
+                    if (GroupHasLivingPawns(this.raidGroups[num].pawns))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        //Log.Message(faction + " has no living pawns, removing it");
+                        this.raidGroups.RemoveAt(num);
+                    }
+                }
+            }
+
+            for (int num = this.reinforcementGroups.Count - 1; num >= 0; num--)
+            {
+                if (this.reinforcementGroups[num].faction == faction)
+                {
+                    if (GroupHasLivingPawns(this.reinforcementGroups[num].pawns))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        //Log.Message(faction + " has no living pawns, removing it");
+                        this.reinforcementGroups.RemoveAt(num);
+                    }
                 }
             }
             return false;
@@ -128,6 +164,7 @@ namespace VanillaStorytellersExpanded
             Scribe_Values.Look(ref lastRaidExpansionTicks, "lastRaidExpansionTicks", 0);
             Scribe_Defs.Look(ref currentStoryteller, "currentStoryteller");
             Scribe_Collections.Look<RaidGroup>(ref raidGroups, "raidGroups", LookMode.Deep);
+            Scribe_Collections.Look<RaidGroup>(ref reinforcementGroups, "reinforcementGroups", LookMode.Deep);
         }
     }
 }
