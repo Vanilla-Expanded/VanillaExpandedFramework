@@ -129,73 +129,77 @@ namespace VanillaStorytellersExpanded
         }
         public static void Prefix(Pawn __instance, DamageInfo? dinfo, Hediff exactCulprit = null)
         {
-            if (__instance.IsColonist && __instance.FactionOrExtraMiniOrHomeFaction == Faction.OfPlayer)
+            try
             {
-                if (ShouldTriggerReinforcements(__instance, dinfo, out Faction enemyFaction))
+                if (__instance.IsColonist && __instance.FactionOrExtraMiniOrHomeFaction == Faction.OfPlayer)
                 {
-                    var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
-                    if (options != null && options.storytellerThreat != null)
+                    if (ShouldTriggerReinforcements(__instance, dinfo, out Faction enemyFaction))
                     {
-                        IncidentParms parms = new IncidentParms
+                        var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
+                        if (options != null && options.storytellerThreat != null)
                         {
-                            target = __instance.Map,
-                            faction = enemyFaction,
-                            forced = true,
-                            raidStrategy = RaidStrategyDefOf.ImmediateAttack,
-                            points = StorytellerUtility.DefaultThreatPointsNow(__instance.Map) / 4f
-                        };
-                        Log.Message("Colonist died! Reinforcements will arrive");
-                        var incidentDef = DefDatabase<IncidentDef>.GetNamed("VSE_Reinforcements");
-                        Find.Storyteller.incidentQueue.Add(incidentDef, Find.TickManager.TicksGame + new IntRange(300, 600).RandomInRange, parms);
-                    }
-                }
-                else
-                {
-                    Log.Message("__instance: " + __instance, true);
-                    Log.Message("__instance.IsColonist: " + __instance.IsColonist, true);
-                    Log.Message("dinfo.HasValue: " + dinfo.HasValue, true);
-                    if (dinfo.HasValue)
-                    {
-                        Log.Message("dinfo.Value.Instigator: " + dinfo.Value.Instigator, true);
-                        Log.Message("dinfo.Value.Instigator?.Faction: " + dinfo.Value.Instigator?.Faction, true);
+                            IncidentParms parms = new IncidentParms
+                            {
+                                target = __instance.Map,
+                                faction = enemyFaction,
+                                forced = true,
+                                raidStrategy = RaidStrategyDefOf.ImmediateAttack,
+                                points = StorytellerUtility.DefaultThreatPointsNow(__instance.Map) / 4f
+                            };
+                            Log.Message("Colonist died! Reinforcements will arrive");
+                            var incidentDef = DefDatabase<IncidentDef>.GetNamed("VSE_Reinforcements");
+                            Find.Storyteller.incidentQueue.Add(incidentDef, Find.TickManager.TicksGame + new IntRange(300, 600).RandomInRange, parms);
+                        }
                     }
                     else
                     {
-                        Log.Message("dinfo is null: " + dinfo, true);
-                        if (exactCulprit != null)
+                        Log.Message("__instance: " + __instance, true);
+                        Log.Message("__instance.IsColonist: " + __instance.IsColonist, true);
+                        Log.Message("dinfo.HasValue: " + dinfo.HasValue, true);
+                        if (dinfo.HasValue)
                         {
-                            Log.Message("exactCulprit: " + exactCulprit, true);
-                            Log.Message("Log: " + exactCulprit.combatLogEntry, true);
-                            Log.Message("exactCulprit.combatLogEntry.Target: " + exactCulprit.combatLogEntry?.Target, true);
+                            Log.Message("dinfo.Value.Instigator: " + dinfo.Value.Instigator, true);
+                            Log.Message("dinfo.Value.Instigator?.Faction: " + dinfo.Value.Instigator?.Faction, true);
                         }
-                        foreach (var log in Find.BattleLog.Battles)
+                        else
                         {
-                            foreach (var entry in log.Entries)
+                            Log.Message("dinfo is null: " + dinfo, true);
+                            if (exactCulprit != null)
                             {
-                                if (entry.Timestamp == Find.TickManager.TicksAbs && entry.GetConcerns().Contains(__instance))
+                                Log.Message("exactCulprit: " + exactCulprit, true);
+                                Log.Message("Log: " + exactCulprit.combatLogEntry, true);
+                                Log.Message("exactCulprit.combatLogEntry.Target: " + exactCulprit.combatLogEntry?.Target, true);
+                            }
+                            foreach (var log in Find.BattleLog.Battles)
+                            {
+                                foreach (var entry in log.Entries)
                                 {
-                                    Log.Message("Find.TickManager.TicksGame: " + Find.TickManager.TicksGame, true);
-                                    Log.Message("Find.TickManager.TicksAbs: " + Find.TickManager.TicksAbs, true);
-                                    Log.Message("entry.Timestamp: " + entry.Timestamp, true);
-                                    Log.Message("entry: " + entry, true);
-                                    if (entry is BattleLogEntry_RangedImpact logEntry)
+                                    if (entry.Timestamp == Find.TickManager.TicksAbs && entry.GetConcerns().Contains(__instance))
                                     {
-                                        Log.Message("logEntry: " + logEntry, true);
-                                    }
-                                    foreach (var p in entry.GetConcerns())
-                                    {
-                                        Log.Message("Pawn: " + p, true);
+                                        Log.Message("Find.TickManager.TicksGame: " + Find.TickManager.TicksGame, true);
+                                        Log.Message("Find.TickManager.TicksAbs: " + Find.TickManager.TicksAbs, true);
+                                        Log.Message("entry.Timestamp: " + entry.Timestamp, true);
+                                        Log.Message("entry: " + entry, true);
+                                        if (entry is BattleLogEntry_RangedImpact logEntry)
+                                        {
+                                            Log.Message("logEntry: " + logEntry, true);
+                                        }
+                                        foreach (var p in entry.GetConcerns())
+                                        {
+                                            Log.Message("Pawn: " + p, true);
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                    foreach (var rg in Current.Game.GetComponent<StorytellerWatcher>().raidGroups)
-                    {
-                        Log.Message("Raid faction: " + rg.faction, true); 
+                        foreach (var rg in Current.Game.GetComponent<StorytellerWatcher>().raidGroups)
+                        {
+                            Log.Message("Raid faction: " + rg.faction, true);
+                        }
                     }
                 }
             }
+            catch { };
         }
     }
 
