@@ -232,7 +232,7 @@ namespace VanillaStorytellersExpanded
             }
             catch (Exception ex) 
             {
-                Log.Error("Error: " + ex, true);
+                //Log.Error("Error: " + ex, true);
             };
         }
     }
