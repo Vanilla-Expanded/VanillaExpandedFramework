@@ -67,10 +67,6 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_BuildPeriodically.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Untameable.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompUntameable.cs" />
-    <Compile Include="AnimalBehaviours\DefModExtension\ExtendedRaceProperties.cs" />
-    <Compile Include="AnimalBehaviours\Enums\BodyClock.cs" />
-    <Compile Include="AnimalBehaviours\Harmony\JobGiver_GetRest_GetPriority.cs" />
-    <Compile Include="AnimalBehaviours\Harmony\ThingDef_SpecialDisplayStats.cs" />
     <Compile Include="CustomStructureGeneration\DefModExtensions\FactionSettlement.cs" />
     <Compile Include="CustomStructureGeneration\Defs\SettlementLayoutDef.cs" />
     <Compile Include="CustomStructureGeneration\Defs\StructureLayoutDef.cs" />
