@@ -28,6 +28,8 @@ namespace VFECore
 						//Log.Message($"Added {t.label} to drug policy {__instance.label}.");
 					}
 				}
+
+				___entriesInt.RemoveAll(e => e?.drug?.GetCompProperties<CompProperties_Drug>() == null);
 				___entriesInt.SortBy(e => e.drug.GetCompProperties<CompProperties_Drug>().listOrder);
 			}
 		}
