@@ -29,7 +29,7 @@ namespace AnimalBehaviours
 
         public void TryCreateBuilding()
         {
-            if (this.parent.Map.listerThings.ThingsOfDef(ThingDef.Named(Props.defOfBuilding)).Count < Props.maxBuildingsPerMap)
+            if (this.parent.Map!=null&&this.parent.Map.listerThings.ThingsOfDef(ThingDef.Named(Props.defOfBuilding)).Count < Props.maxBuildingsPerMap)
             {
                 Pawn pawn = this.parent as Pawn;
 
