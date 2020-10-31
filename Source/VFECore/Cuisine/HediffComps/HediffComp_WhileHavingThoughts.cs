@@ -38,6 +38,22 @@ namespace VanillaCookingExpanded
             }
         }
 
+        public override void CompPostMake()
+        {
+            base.CompPostMake();
+            if (Props.hediffReduction != "")
+            {
+                if (DefDatabase<HediffDef>.GetNamed(Props.hediffReduction, false) != null)
+                {
+                    Hediff hediff = this.Pawn.health.hediffSet.GetFirstHediffOfDef(HediffDef.Named(Props.hediffReduction), false);
+                    if (hediff != null)
+                    {
+                        hediff.Severity -= Props.reductionAmount;
+                    }
+                }
+            }
+        }
+
         public override void CompPostTick(ref float severityAdjustment)
         {
             base.CompPostTick(ref severityAdjustment);
@@ -61,7 +77,7 @@ namespace VanillaCookingExpanded
                         }
                     }
                 }
-                //If I find any of the thoughts in the removeThoughtDefs list, get rid of them! Actually iy¡t just sets them to 0, which
+                //If I find any of the thoughts in the removeThoughtDefs list, get rid of them! Actually it just sets them to 0, which
                 //makes them hidden
                 if (Props.removeThoughtDefs.Count > 0)
                 {

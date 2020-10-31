@@ -16,6 +16,8 @@ namespace VanillaCookingExpanded
 
         public List<ThoughtDef> thoughtDefs = new List<ThoughtDef>();
         public List<ThoughtDef> removeThoughtDefs = new List<ThoughtDef>();
+        public string hediffReduction = "";
+        public float reductionAmount = 0f;
         public bool resurrectionEffect = false;
 
         public HediffCompProperties_WhileHavingThoughts()
