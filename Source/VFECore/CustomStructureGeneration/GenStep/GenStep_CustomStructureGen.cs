@@ -30,14 +30,14 @@ namespace KCSG
 			if (structureLayoutDef.terrainGrid != null)
 			{
 				KCSG_Utilities.GenerateTerrainFromLayout(cellRect, map, structureLayoutDef);
-				if (KCSG_Mod.settings.enableLog) Log.Message("Terrain generation - PASS");
+				if (VFECore.VFEGlobal.settings.enableLog) Log.Message("Terrain generation - PASS");
 
 			}
 			int count = 1;
 			foreach (List<String> item in structureLayoutDef.layouts)
 			{
 				KCSG_Utilities.GenerateRoomFromLayout(item, cellRect, map, structureLayoutDef);
-				if (KCSG_Mod.settings.enableLog) Log.Message("Layout " + count.ToString() + " generation - PASS");
+				if (VFECore.VFEGlobal.settings.enableLog) Log.Message("Layout " + count.ToString() + " generation - PASS");
 				count++;
 			}
 		}

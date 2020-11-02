@@ -66,11 +66,11 @@ namespace KCSG
             if (this.containPawnKind != null) this.containPawnKindDef = DefDatabase<PawnKindDef>.GetNamed(this.containPawnKind, false);
             if (this.pawnKindDef != null) this.pawnKindDefNS = DefDatabase<PawnKindDef>.GetNamed(this.pawnKindDef, false);
 
-            if (KCSG_Mod.settings.enableLog) if (this.terrain != null && terrainDef == null) Log.Warning("Tried to load SymbolDef with non-existant terrain: " + this.terrain);
-            if (KCSG_Mod.settings.enableLog) if (this.thing != null && thingDef == null) Log.Warning("Tried to load SymbolDef with non-existant thing: " + this.thing);
-            if (KCSG_Mod.settings.enableLog) if (this.stuff != null && stuffDef == null) Log.Warning("Tried to load SymbolDef with non-existant stuff: " + this.stuff);
-            if (KCSG_Mod.settings.enableLog) if (this.containPawnKind != null && containPawnKindDef == null) Log.Warning("Tried to load SymbolDef with non-existant pawnKind " + this.thing + " for containPawnKind");
-            if (KCSG_Mod.settings.enableLog) if (this.pawnKindDef != null && pawnKindDefNS == null) Log.Warning("Tried to load SymbolDef with non-existant pawnKindDef: " + this.pawnKindDef);
+            if (VFECore.VFEGlobal.settings.enableLog) if (this.terrain != null && terrainDef == null) Log.Warning("Tried to load SymbolDef with non-existant terrain: " + this.terrain);
+            if (VFECore.VFEGlobal.settings.enableLog) if (this.thing != null && thingDef == null) Log.Warning("Tried to load SymbolDef with non-existant thing: " + this.thing);
+            if (VFECore.VFEGlobal.settings.enableLog) if (this.stuff != null && stuffDef == null) Log.Warning("Tried to load SymbolDef with non-existant stuff: " + this.stuff);
+            if (VFECore.VFEGlobal.settings.enableLog) if (this.containPawnKind != null && containPawnKindDef == null) Log.Warning("Tried to load SymbolDef with non-existant pawnKind " + this.thing + " for containPawnKind");
+            if (VFECore.VFEGlobal.settings.enableLog) if (this.pawnKindDef != null && pawnKindDefNS == null) Log.Warning("Tried to load SymbolDef with non-existant pawnKindDef: " + this.pawnKindDef);
         }
     }
 }

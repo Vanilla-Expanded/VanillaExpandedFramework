@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+    <!-- CSG -->
+    <CSGTitle>Custom structure generation:</CSGTitle>
+    <CSGLog>Enable structure generation debugging log: </CSGLog>
+
+    <!-- Toggable patches -->
+    <TPTitle>Toggable patches:</TPTitle>
+    <NeedRestart>&lt;b&gt;&lt;color=red&gt;All settings need a restart to be applied&lt;/color&gt;&lt;/b&gt;</NeedRestart>
+</LanguageData>

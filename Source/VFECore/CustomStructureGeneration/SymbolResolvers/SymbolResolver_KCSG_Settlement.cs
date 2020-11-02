@@ -23,7 +23,7 @@ namespace KCSG
 			List<CellRect> gridRects = KCSG_Utilities.GetRects(rp.rect, lDef, map, out rp.rect);
 			FactionSettlement.tempRectList = gridRects;
 
-			if (KCSG_Mod.settings.enableLog) Log.Message("Hostile pawns generation - PASS");
+			if (VFECore.VFEGlobal.settings.enableLog) Log.Message("Hostile pawns generation - PASS");
 			
 			// Add pawn to the base
 			Lord singlePawnLord = rp.singlePawnLord ?? LordMaker.MakeNewLord(faction, new LordJob_DefendBase(faction, rp.rect.CenterCell), map, null);
@@ -57,7 +57,7 @@ namespace KCSG
 				BaseGen.symbolStack.Push("edgeDefense", rp3, null);
 			}
 
-			if (KCSG_Mod.settings.enableLog) Log.Message("Structures generation - PASS");
+			if (VFECore.VFEGlobal.settings.enableLog) Log.Message("Structures generation - PASS");
 
 			// Create the rooms
 			ResolveParams rp2 = rp;
@@ -66,7 +66,7 @@ namespace KCSG
 
 			// Add path
 
-			if (KCSG_Mod.settings.enableLog) Log.Message("Adding paths - PASS");
+			if (VFECore.VFEGlobal.settings.enableLog) Log.Message("Adding paths - PASS");
 
 			if (lDef.path)
             {
@@ -78,7 +78,7 @@ namespace KCSG
 
 			// Destroy all things before spawning the base
 			
-			if (KCSG_Mod.settings.enableLog) Log.Message("Clearing ground - PASS");
+			if (VFECore.VFEGlobal.settings.enableLog) Log.Message("Clearing ground - PASS");
 
 			if (lDef.clearEverything)
             {

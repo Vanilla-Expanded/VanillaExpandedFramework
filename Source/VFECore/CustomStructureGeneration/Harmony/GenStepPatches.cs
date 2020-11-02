@@ -21,7 +21,7 @@ namespace KCSG
         public static bool Prefix(IntVec3 c, Map map, GenStepParams parms, int stackCount = 1)
         {
             //KENT TEMP CODE
-            if (KCSG_Mod.settings.enableLog)
+            if (VFECore.VFEGlobal.settings.enableLog)
             {
                 Log.Message("Testing defs");
                 foreach (SymbolDef def in DefDatabase<SymbolDef>.AllDefs)

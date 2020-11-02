@@ -76,7 +76,6 @@
     <Compile Include="CustomStructureGeneration\GenStep\GenStep_CustomStructureGen.cs" />
     <Compile Include="CustomStructureGeneration\Harmony\GenStepPatches.cs" />
     <Compile Include="CustomStructureGeneration\Harmony\FixCaravanThreadingPatch.cs" />
-    <Compile Include="CustomStructureGeneration\Settings.cs" />
     <Compile Include="CustomStructureGeneration\SymbolResolvers\SymbolResolver_KCSG_RoomGen.cs" />
     <Compile Include="CustomStructureGeneration\SymbolResolvers\SymbolResolver_KCSG_Settlement.cs" />
     <Compile Include="CustomStructureGeneration\Utils\CenteredMessageBox.cs" />
@@ -87,6 +86,8 @@
     <Compile Include="Furniture\Comps\CompSpawnOtherBuildingWhenPowered.cs" />
     <Compile Include="Furniture\Thoughts\ThoughtGiverByProximityDefExtension.cs" />
     <Compile Include="Furniture\Thoughts\ThoughtWorker_ThoughtFromNearbyThingDef.cs" />
+    <Compile Include="GlobalSettings.cs" />
+    <Compile Include="GlobalSettingsUtilities.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompApparelHediffs.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompProperties_ApparelHediffs.cs" />
     <Compile Include="Cuisine\Comps\CompMaturingAlcohol.cs" />
@@ -171,6 +172,7 @@
     <Compile Include="VFECore\HarmonyPatches\Patch_DrugPolicy.cs" />
     <Compile Include="VFECore\IncidentWorkers\IncidentWorker_RaidEnemySpecial.cs" />
     <Compile Include="VFECore\ModCompatibilityCheck.cs" />
+    <Compile Include="VFECore\PatchOperation\PatchOperationToggable.cs" />
     <Compile Include="VFECore\PawnShieldGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VFECore\Quests\QuestNode_GetFaction.cs" />

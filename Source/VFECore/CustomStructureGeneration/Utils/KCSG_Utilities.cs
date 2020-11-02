@@ -183,7 +183,7 @@ namespace KCSG
 				}
 			}
 
-			if (KCSG_Mod.settings.enableLog) Log.Message("-- Layout list creation - PASS");
+			if (VFECore.VFEGlobal.settings.enableLog) Log.Message("-- Layout list creation - PASS");
 
 			Dictionary<string, SymbolDef> pairsSymbolLabel = KCSG_Utilities.FillpairsSymbolLabel();
 
@@ -295,7 +295,7 @@ namespace KCSG
 						}
 						else
                         {
-							if (KCSG_Mod.settings.enableLog) Log.Message("--- Cell " + l.ToString() + " with SymbolDef "+allSymbList[l]+"(resolved to "+temp.defName+") has nothing to place");
+							if (VFECore.VFEGlobal.settings.enableLog) Log.Message("--- Cell " + l.ToString() + " with SymbolDef "+allSymbList[l]+"(resolved to "+temp.defName+") has nothing to place");
 						}
 					}				
 				}
@@ -311,7 +311,7 @@ namespace KCSG
 				}
 				l++;
 			}
-			if (KCSG_Mod.settings.enableLog) Log.Message("-- Cells passage done - PASS");
+			if (VFECore.VFEGlobal.settings.enableLog) Log.Message("-- Cells passage done - PASS");
 		}
 
 		public static void GenerateTerrainFromLayout(CellRect roomRect, Map map, StructureLayoutDef rld)
