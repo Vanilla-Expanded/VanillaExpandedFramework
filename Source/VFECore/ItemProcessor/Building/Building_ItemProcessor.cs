@@ -1012,7 +1012,7 @@ namespace ItemProcessor
                         {
                             Thing thing = null;
                             Thing thing2 = null;
-                            List<Thing> thingList = compItemProcessor.Props.inputSlots[i].GetThingList(base.Map);
+                            List<Thing> thingList = (this.Position+compItemProcessor.Props.inputSlots[i].RotatedBy(this.Rotation)).GetThingList(base.Map);
                             for (int j = 0; j < thingList.Count; j++)
                             {
                                 Thing thing3 = thingList[j];
@@ -1088,7 +1088,7 @@ namespace ItemProcessor
                         {
                             Thing thing = null;
                             Thing thing2 = null;
-                            List<Thing> thingList = compItemProcessor.Props.inputSlots[i].GetThingList(base.Map);
+                            List<Thing> thingList = (this.Position + compItemProcessor.Props.inputSlots[i].RotatedBy(this.Rotation)).GetThingList(base.Map);
                             for (int j = 0; j < thingList.Count; j++)
                             {
                                 Thing thing3 = thingList[j];
@@ -1154,7 +1154,7 @@ namespace ItemProcessor
                         {
                             Thing thing = null;
                             Thing thing2 = null;
-                            List<Thing> thingList = compItemProcessor.Props.inputSlots[i].GetThingList(base.Map);
+                            List<Thing> thingList = (this.Position + compItemProcessor.Props.inputSlots[i].RotatedBy(this.Rotation)).GetThingList(base.Map);
                             for (int j = 0; j < thingList.Count; j++)
                             {
                                 Thing thing3 = thingList[j];
