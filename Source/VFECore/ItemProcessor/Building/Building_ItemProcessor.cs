@@ -742,7 +742,7 @@ namespace ItemProcessor
             CombinationDef thisElement;
             if (compItemProcessor.Props.numberOfInputs <= 1)
             {
-                thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && element.items[0] == firstItem && element.singleIngredientRecipe)).First();
+                thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && element.items.Contains(firstItem) && element.singleIngredientRecipe)).First();
                 ExpectedAmountFirstIngredient = thisElement.amount[0];
                 thisRecipe = thisElement.defName;
             }
@@ -750,7 +750,7 @@ namespace ItemProcessor
 
             if (compItemProcessor.Props.numberOfInputs >= 2)
             {
-                thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && (element.items[0] == firstItem && element.items[1] == secondItem))).First();
+                thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && (element.items.Contains(firstItem) && element.secondItems.Contains(secondItem)))).First();
                 ExpectedAmountFirstIngredient = thisElement.amount[0];
                 ExpectedAmountSecondIngredient = thisElement.amount[1];
                 thisRecipe = thisElement.defName;
@@ -866,11 +866,12 @@ namespace ItemProcessor
                             this.ingredients.Add(ThingDef.Named(firstItem));
                             this.ingredients.Add(ThingDef.Named(secondItem));
                         }
+                        this.processorStage = ProcessorStage.Working;
                         if (compItemProcessor.Props.destroyIngredientsAtStartOfProcess)
                         {
                             DestroyIngredients();
                         }
-                        this.processorStage = ProcessorStage.Working;
+                        
                         base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
                     }
 
@@ -919,13 +920,8 @@ namespace ItemProcessor
             {
                 if (thirdItem != "")
                 {
-                    if ((firstItem == element.items[0] && secondItem == element.items[1] && thirdItem == element.items[2]) ||
-                    (firstItem == element.items[0] && secondItem == element.items[2] && thirdItem == element.items[1]) ||
-                    (firstItem == element.items[1] && secondItem == element.items[0] && thirdItem == element.items[2]) ||
-                    (firstItem == element.items[1] && secondItem == element.items[2] && thirdItem == element.items[0]) ||
-                    (firstItem == element.items[2] && secondItem == element.items[0] && thirdItem == element.items[1]) ||
-                    (firstItem == element.items[2] && secondItem == element.items[1] && thirdItem == element.items[0])
-                    )
+                    if (element.items.Contains(firstItem) && element.secondItems.Contains(secondItem) && element.thirdItems.Contains(thirdItem))
+                    
                     {
                         if (element.useQualityIncreasing)
                         {
@@ -948,8 +944,7 @@ namespace ItemProcessor
                 }
                 else
                 {
-                    if ((firstItem == element.items[0] && secondItem == element.items[1]) ||
-                    (firstItem == element.items[1] && secondItem == element.items[0]))
+                    if (element.items.Contains(firstItem) && element.secondItems.Contains(secondItem))
                     {
                         if (element.useQualityIncreasing)
                         {
@@ -982,9 +977,10 @@ namespace ItemProcessor
             base.Tick();
             if (this.def.tickerType == TickerType.Normal)
             {
-                //I used this shit after all
+                //Trigger a rare tick
                 if (Find.TickManager.TicksGame % 250 == 0)
                 {
+                   
                     this.TickRare();
                 }
             }
@@ -1544,11 +1540,11 @@ namespace ItemProcessor
                     productOrCategoryName = ThingDef.Named(firstItem).LabelCap;
                     if (compItemProcessor.Props.numberOfInputs >= 2)
                     {
-                        secondProductOrCategoryName = ThingCategoryDef.Named(secondItem).LabelCap;
+                        secondProductOrCategoryName = ThingDef.Named(secondItem).LabelCap;
                     }
                     if (compItemProcessor.Props.numberOfInputs >= 3)
                     {
-                        thirdProductOrCategoryName = ThingCategoryDef.Named(thirdItem).LabelCap;
+                        thirdProductOrCategoryName = ThingDef.Named(thirdItem).LabelCap;
                     }
                 }
 

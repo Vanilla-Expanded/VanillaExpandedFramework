@@ -23,6 +23,9 @@ namespace ItemProcessor
         public string building;
         //A list of combination's ingredient defNames
         public List<string> items;
+        public List<string> secondItems = null;
+        public List<string> thirdItems = null;
+        public List<string> fourthItems = null;
         //defName of the resulting product
         public string result = "";
         //yield of the resulting product
