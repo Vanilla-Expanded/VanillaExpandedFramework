@@ -22,6 +22,7 @@ namespace VFECore
 		public int tickDamageRate = 60;
 		public float minDistanceToAffect;
 		public bool disableVanillaDamageMethod;
+		public bool dealsDamageOnce;
 		protected override void ResolveIcon()
 		{
 			base.ResolveIcon();

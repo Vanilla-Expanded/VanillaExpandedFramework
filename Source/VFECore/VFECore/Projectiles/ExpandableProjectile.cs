@@ -242,6 +242,8 @@ namespace VFECore
 		}
 
 		protected bool customImpact;
+
+		public HashSet<Thing> hitThings;
 		protected override void Impact(Thing hitThing)
 		{
 			if (!stopped && !customImpact)
@@ -249,6 +251,12 @@ namespace VFECore
 				stopped = true;
 				curPosition = this.DrawPos;
 			}
+			if (hitThings == null) hitThings = new HashSet<Thing>();
+			if (this.def.dealsDamageOnce && hitThings.Contains(hitThing))
+            {
+				return;
+            }
+			hitThings.Add(hitThing);
 			//if (!customImpact)
 			//{
 			//	GenSpawn.Spawn(ThingDefOf.MineableComponentsIndustrial, base.Position, this.Map);
