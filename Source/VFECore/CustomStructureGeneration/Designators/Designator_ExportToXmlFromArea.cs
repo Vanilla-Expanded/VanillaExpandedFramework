@@ -75,8 +75,9 @@ namespace KCSG
 				List<string> justCreated = new List<string>();
 				Dictionary<IntVec3, List<Thing>> pairsCellThingList = new Dictionary<IntVec3, List<Thing>>();
 
-				KCSG_Utilities.CreateSymbolIfNeeded(cellExport, base.Map, justCreated, pairsCellThingList, a);
 				KCSG_Utilities.FillCellThingsList(cellExport, base.Map, pairsCellThingList);
+
+				KCSG_Utilities.CreateSymbolIfNeeded(cellExport, base.Map, justCreated, pairsCellThingList, a);
 
 				KCSG_Utilities.CreateStructureDef(cellExport, base.Map, KCSG_Utilities.FillpairsSymbolLabel(), pairsCellThingList, a);
 

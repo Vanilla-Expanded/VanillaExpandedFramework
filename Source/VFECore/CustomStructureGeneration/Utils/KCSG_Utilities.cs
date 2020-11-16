@@ -701,12 +701,12 @@ namespace KCSG
 				else
 				{
 					TerrainDef terrainDef = c.GetTerrain(map);
-					if (!KCSG_Utilities.AlreadyExist(null, terrainDef) && terrainDef.BuildableByPlayer) KCSG_Utilities.CreateSymbolFromTerrain(terrainDef, justCreated);
+					if (terrainDef != null && !KCSG_Utilities.AlreadyExist(null, terrainDef) && terrainDef.BuildableByPlayer) KCSG_Utilities.CreateSymbolFromTerrain(terrainDef, justCreated);
 
 					List<Thing> things = pairsCellThingList.TryGetValue(c);
 					foreach (Thing t in things)
 					{
-						if (!KCSG_Utilities.AlreadyExist(t, null))
+						if (t != null && !KCSG_Utilities.AlreadyExist(t, null))
 						{
 							if (t.def.category == ThingCategory.Item) KCSG_Utilities.CreateItemSymbolFromThing(t, justCreated);
 							if (t.def.category == ThingCategory.Pawn) KCSG_Utilities.CreateSymbolFromPawn(t as Pawn, justCreated);
