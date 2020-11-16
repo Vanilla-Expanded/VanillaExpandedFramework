@@ -73,6 +73,10 @@ namespace VFECore
 					cachedMaterials[i] = MaterialPool.MatFrom(mainTextures[i], shader, color);
 				}
 			}
+			else
+            {
+				Log.Error("Error loading materials by this path: " + texPath);
+            }
 		}
 		public void InitFadeOutTextures()
 		{
@@ -96,7 +100,8 @@ namespace VFECore
 				foreach (var f in ModContentPack.GetAllFilesForModPreserveOrder(mod, "Textures/"))
 				{
 					var fullPath = f.Item2.Directory.FullName;
-					if (fullPath.EndsWith("Textures\\" + folderPath))
+					fullPath = fullPath.Replace("\\", "/");
+					if (fullPath.EndsWith("Textures/" + folderPath))
 					{
 						var path = f.Item2.FullName;
 						if (path.EndsWith(".png"))
