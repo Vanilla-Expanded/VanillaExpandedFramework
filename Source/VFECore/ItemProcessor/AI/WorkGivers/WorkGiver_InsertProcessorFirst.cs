@@ -36,7 +36,8 @@ namespace ItemProcessor
         public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
             Building_ItemProcessor building_processor = t as Building_ItemProcessor;
-            if (building_processor == null || building_processor.processorStage != ProcessorStage.ExpectingIngredients || building_processor.firstIngredientComplete || building_processor.firstItem == "")
+           // Log.Message(building_processor.GetComp<CompItemProcessor>().Props.isCompletelyAutoMachine.ToString());
+            if (building_processor == null || building_processor.GetComp<CompItemProcessor>().Props.isCompletelyAutoMachine || building_processor.processorStage != ProcessorStage.ExpectingIngredients || building_processor.firstIngredientComplete || building_processor.firstItem == "")
             {
                 return false;
             }

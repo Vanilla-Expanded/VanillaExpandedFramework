@@ -35,7 +35,7 @@ namespace ItemProcessor
         public bool useQualityIncreasing = false;
 
         //If not, what is the single time period to process the product?
-        public int singleTimeIfNotQualityIncreasing = 3;
+        public float singleTimeIfNotQualityIncreasing = 3;
 
         //If so, what are the periods to advance to the next quality level (these are not cumulative, they are all from 0 to each number)?
         public float awfulQualityAgeDaysThreshold = 1f;

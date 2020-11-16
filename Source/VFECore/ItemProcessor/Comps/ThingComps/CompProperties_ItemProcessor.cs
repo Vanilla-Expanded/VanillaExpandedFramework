@@ -1,5 +1,6 @@
 ﻿
 using Verse;
+using System.Collections.Generic;
 
 namespace ItemProcessor
 {
@@ -18,6 +19,9 @@ namespace ItemProcessor
 
         //Can this building automatically grab ingredients from nearby hoppers (aka auto mode)?
         public bool isAutoMachine = false;
+
+        //Is this building 100% automated, and pawns can't even bring things to it?
+        public bool isCompletelyAutoMachine = false;
 
         //Semi automatic machines don't auto grab ingredients, but ingredient only needs to be set once, and pawns will instantly bring them in without
         //a "bring ingredients" order. The machine also won't "forget" the set ingredient. WARNING: only for 1 slot machines
@@ -108,6 +112,9 @@ namespace ItemProcessor
 
         //This defines whether the building shows a progress bar
         public bool showProgressBar = false;
+
+        //Full auto machines specify input slots for their hoppers
+        public List<IntVec3> inputSlots = null;
 
 
         public CompProperties_ItemProcessor()
