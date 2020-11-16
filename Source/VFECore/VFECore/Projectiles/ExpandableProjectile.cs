@@ -155,15 +155,14 @@ namespace VFECore
 		public HashSet<IntVec3> MakeProjectileLine(Vector3 start, Vector3 end, Map map)
 		{
 			var resultingLine = new ShootLine(start.ToIntVec3(), end.ToIntVec3());
-			var points = resultingLine.Points().ToList();
+			var points = resultingLine.Points();
 			HashSet<IntVec3> positions = new HashSet<IntVec3>();
 
 			var currentPos = CurPosition;
 			currentPos.y = 0;
 			var startingPosition = StartingPosition;
 			startingPosition.y = 0;
-			var destination = new Vector3(this.CurPosition.x, this.CurPosition.y, this.CurPosition.z);
-			destination.y = 0;
+			var destination = new Vector3(currentPos.x, currentPos.y, currentPos.z);
 
 			Vector3 pos = (startingPosition + currentPos) / 2f;
 			pos.y = 10;
@@ -192,12 +191,12 @@ namespace VFECore
 			foreach (var cell in points)
 			{
 				var startCellDistance = startPosition.DistanceTo(cell);
-				if (startCellDistance > def.minDistanceToAffect && startCellDistance <= startPosition.DistanceTo(CurPosition.ToIntVec3()))
+				if (startCellDistance > def.minDistanceToAffect && startCellDistance <= startPosition.DistanceTo(endPosition))
 				{
 					positions.Add(cell);
 				}
 			}
-			return positions.ToHashSet();
+			return positions;
 		}
 		public override void Tick()
 		{
@@ -235,10 +234,10 @@ namespace VFECore
 		}
 		public virtual void DoDamage(IntVec3 pos)
 		{
-			if (pos != this.launcher.Position)
-			{
-				//GenSpawn.Spawn(ThingDefOf.MineableGold, pos, this.Map);
-			}
+			//if (pos != this.launcher.Position)
+			//{
+			//	GenSpawn.Spawn(ThingDefOf.MineableGold, pos, this.Map);
+			//}
 		}
 
 		protected bool customImpact;
