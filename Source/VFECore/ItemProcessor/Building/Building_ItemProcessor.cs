@@ -67,7 +67,7 @@ namespace ItemProcessor
         //Variables extracted from the recipe
         public string productToTurnInto = "";
         public int amount = 0;
-        public int days = 0;
+        public float days = 0;
         //If the recipe has differentProductsByQuality, the productsToTurnInto need to be stored in an array
         public List<string> productsToTurnInto = new List<string>();
 
@@ -173,7 +173,7 @@ namespace ItemProcessor
             Scribe_Values.Look<string>(ref this.productToTurnInto, "productToTurnInto", "", false);
             Scribe_Collections.Look<string>(ref this.productsToTurnInto, true, "productsToTurnInto");
             Scribe_Values.Look<int>(ref this.amount, "amount", 0, false);
-            Scribe_Values.Look<int>(ref this.days, "days", 0, false);
+            Scribe_Values.Look<float>(ref this.days, "days", 0, false);
             Scribe_Values.Look<int>(ref this.CurrentAmountFirstIngredient, "CurrentAmountFirstIngredient", 0, false);
             Scribe_Values.Look<int>(ref this.ExpectedAmountFirstIngredient, "ExpectedAmountFirstIngredient", 0, false);
             Scribe_Values.Look<int>(ref this.CurrentAmountSecondIngredient, "CurrentAmountSecondIngredient", 0, false);
@@ -253,7 +253,7 @@ namespace ItemProcessor
             secondIngredientComplete = false;
             thirdIngredientComplete = false;
             progressCounter = 0;
-            thisRecipe = "";
+
             noPowerDestructionCounter = 0;
             noGoodLightDestructionCounter = 0;
             noGoodWeatherDestructionCounter = 0;
@@ -268,6 +268,8 @@ namespace ItemProcessor
 
             //If the machine is automatic, it will continue grabbing ingredients from Hoppers
             //Unless the player toggles the auto gizmo
+
+
             if (compItemProcessor.Props.isAutoMachine && isAutoEnabled)
             {
                 processorStage = ProcessorStage.AutoIngredients;
@@ -278,7 +280,7 @@ namespace ItemProcessor
             }
             else
             {
-
+                thisRecipe = "";
                 processorStage = ProcessorStage.Inactive;
                 ExpectedAmountFirstIngredient = 0;
                 ExpectedAmountSecondIngredient = 0;
@@ -374,7 +376,7 @@ namespace ItemProcessor
             }
             if (compItemProcessor.Props.isCategoryBuilding)
             {
-                firstItem = thing.def.defName;
+                firstItem = thing.def.thingCategories.FirstOrDefault().ToString();
             }
             if (flag)
             {
@@ -427,7 +429,7 @@ namespace ItemProcessor
             }
             if (compItemProcessor.Props.isCategoryBuilding)
             {
-                secondItem = thing.def.defName;
+                secondItem = thing.def.thingCategories.FirstOrDefault().ToString();
             }
             if (flag)
             {
@@ -481,7 +483,7 @@ namespace ItemProcessor
             }
             if (compItemProcessor.Props.isCategoryBuilding)
             {
-                thirdItem = thing.def.defName;
+                thirdItem = thing.def.thingCategories.FirstOrDefault().ToString();
             }
             if (flag)
             {
@@ -522,7 +524,7 @@ namespace ItemProcessor
 
                 //Ingredient selection gizmos only appear when the building is in Inactive or IngredientsChosen, the first because
                 //it is the baseline of the building, the second because player might change his mind and want to change one of the ingredients
-                if (processorStage <= ProcessorStage.ExpectingIngredients)
+                if (processorStage <= ProcessorStage.ExpectingIngredients && processorStage != ProcessorStage.AutoIngredients)
                 {
                     //Different number of ingredients gizmos depending on the number of building slots. Note the <=1 and >=3, just in case someone inputs 78 
                     if (compItemProcessor.Props.numberOfInputs <= 1)
@@ -572,7 +574,7 @@ namespace ItemProcessor
                     yield return IP_Gizmo_ToggleSemiAuto;
                 }
                 //This gizmo cancels either ingredient bringing or automatic grabbing from Hoppers
-                if (processorStage == ProcessorStage.ExpectingIngredients || processorStage == ProcessorStage.AutoIngredients)
+                if ((processorStage == ProcessorStage.ExpectingIngredients || processorStage == ProcessorStage.AutoIngredients) && !compItemProcessor.Props.isCompletelyAutoMachine)
                 {
                     Command_Action IP_Gizmo_CancelJobs = new Command_Action();
                     IP_Gizmo_CancelJobs.action = delegate
@@ -588,6 +590,9 @@ namespace ItemProcessor
                     IP_Gizmo_CancelJobs.icon = ContentFinder<Texture2D>.Get(compItemProcessor.Props.cancelIngredientsIcon, true);
                     yield return IP_Gizmo_CancelJobs;
                 }
+
+
+
                 //This gizmo appears when the machines is working, using quality increasing, and the removeAfterAwful flag has been set
                 //The flag is set only after awful quality has been reached
                 if (processorStage == ProcessorStage.Working && usingQualityIncreasing && removeAfterAwful)
@@ -620,7 +625,7 @@ namespace ItemProcessor
                     yield return ItemListSetupUtility.SetQualityListCommand(this, this.Map);
                 }
                 //If building accepts auto mode, show the auto mode toggle. This toggles isAutoEnabled variable
-                if (compItemProcessor.Props.isAutoMachine)
+                if (compItemProcessor.Props.isAutoMachine && !compItemProcessor.Props.isCompletelyAutoMachine)
                 {
                     Command_Toggle IP_Gizmo_ToggleAuto = new Command_Toggle();
                     IP_Gizmo_ToggleAuto.defaultLabel = "IP_ToggleAuto".Translate();
@@ -642,8 +647,11 @@ namespace ItemProcessor
                     yield return new Command_Action
                     {
                         defaultLabel = "DEBUG: Reset",
+                        icon = ContentFinder<Texture2D>.Get("UI/Designators/Cancel", true),
                         action = delegate ()
                         {
+                            isAutoEnabled = false;
+                            isSemiAutoEnabled = true;
                             ResetEverything();
 
                         }
@@ -813,7 +821,7 @@ namespace ItemProcessor
                         //Reset ingredient counter (this is probably not necessary cause ResetEverything does it, but oh well
                         CurrentAmountFirstIngredient = 0;
                         //Add the ingredient to the ingredients list, but only if transfersIngredientLists = false. If true, the insertion jobs do it
-                        if (!compItemProcessor.Props.transfersIngredientLists)
+                        if (!compItemProcessor.Props.transfersIngredientLists && !DefDatabase<CombinationDef>.GetNamed(thisRecipe).isCategoryRecipe)
                         {
                             this.ingredients.Add(ThingDef.Named(firstItem));
                         }
@@ -853,7 +861,7 @@ namespace ItemProcessor
                     {
                         CurrentAmountFirstIngredient = 0;
                         CurrentAmountSecondIngredient = 0;
-                        if (!compItemProcessor.Props.transfersIngredientLists)
+                        if (!compItemProcessor.Props.transfersIngredientLists && !DefDatabase<CombinationDef>.GetNamed(thisRecipe).isCategoryRecipe)
                         {
                             this.ingredients.Add(ThingDef.Named(firstItem));
                             this.ingredients.Add(ThingDef.Named(secondItem));
@@ -886,7 +894,7 @@ namespace ItemProcessor
                         CurrentAmountFirstIngredient = 0;
                         CurrentAmountSecondIngredient = 0;
                         CurrentAmountThirdIngredient = 0;
-                        if (!compItemProcessor.Props.transfersIngredientLists)
+                        if (!compItemProcessor.Props.transfersIngredientLists && !DefDatabase<CombinationDef>.GetNamed(thisRecipe).isCategoryRecipe)
                         {
                             this.ingredients.Add(ThingDef.Named(firstItem));
                             this.ingredients.Add(ThingDef.Named(secondItem));
@@ -996,24 +1004,35 @@ namespace ItemProcessor
                 {
                     //And only do one Hopper per tick
                     bool OncePerTick = false;
-                    for (int i = 0; i < this.AdjCellsCardinalInBounds.Count; i++)
+                    
+                    for (int i = 0; i < compItemProcessor.Props.inputSlots.Count; i++)
                     {
                         //Search all adjacent tiles 
                         if (!OncePerTick)
                         {
                             Thing thing = null;
                             Thing thing2 = null;
-                            List<Thing> thingList = this.AdjCellsCardinalInBounds[i].GetThingList(base.Map);
+                            List<Thing> thingList = compItemProcessor.Props.inputSlots[i].GetThingList(base.Map);
                             for (int j = 0; j < thingList.Count; j++)
                             {
                                 Thing thing3 = thingList[j];
-                                if (thing3.def.defName == firstItem)
+                                //Log.Message(DefDatabase<CombinationDef>.GetNamed(thisRecipe).isCategoryRecipe.ToString());
+                                if (DefDatabase<CombinationDef>.GetNamed(thisRecipe).isCategoryRecipe)
+                                {
+
+                                    if (thing3.def.IsWithinCategory(ThingCategoryDef.Named(firstItem)))
+                                    {
+                                        thing = thing3;
+                                    }
+                                }
+                                else if (thing3.def.defName == firstItem)
                                 {
                                     thing = thing3;
                                 }
-                                if (thing3.def == ThingDefOf.Hopper)
+                                if (thing3.def == ThingDefOf.Hopper || thing3.def == DefDatabase<ThingDef>.GetNamedSilentFail("VFEM_HeavyHopper"))
                                 {
                                     thing2 = thing3;
+
                                 }
                             }
                             //If you find ingredient 1 AND a Hopper...
@@ -1063,21 +1082,29 @@ namespace ItemProcessor
                 {
                     bool OncePerTick = false;
 
-                    for (int i = 0; i < this.AdjCellsCardinalInBounds.Count; i++)
+                    for (int i = 0; i < compItemProcessor.Props.inputSlots.Count; i++)
                     {
                         if (!OncePerTick)
                         {
                             Thing thing = null;
                             Thing thing2 = null;
-                            List<Thing> thingList = this.AdjCellsCardinalInBounds[i].GetThingList(base.Map);
+                            List<Thing> thingList = compItemProcessor.Props.inputSlots[i].GetThingList(base.Map);
                             for (int j = 0; j < thingList.Count; j++)
                             {
                                 Thing thing3 = thingList[j];
-                                if (thing3.def.defName == secondItem)
+                                if (DefDatabase<CombinationDef>.GetNamed(thisRecipe).isCategoryRecipe)
+                                {
+                                    if (thing3.def.IsWithinCategory(ThingCategoryDef.Named(secondItem)))
+                                    {
+                                        thing = thing3;
+                                    }
+                                }
+                                else if (thing3.def.defName == secondItem)
                                 {
                                     thing = thing3;
                                 }
-                                if (thing3.def == ThingDefOf.Hopper)
+                                if (thing3.def == ThingDefOf.Hopper || thing3.def == DefDatabase<ThingDef>.GetNamedSilentFail("VFEM_HeavyHopper"))
+
                                 {
                                     thing2 = thing3;
                                 }
@@ -1121,22 +1148,29 @@ namespace ItemProcessor
                 if (!thirdIngredientComplete && thirdItem != "")
                 {
                     bool OncePerTick = false;
-
-                    for (int i = 0; i < this.AdjCellsCardinalInBounds.Count; i++)
+                    for (int i = 0; i < compItemProcessor.Props.inputSlots.Count; i++)
                     {
                         if (!OncePerTick)
                         {
                             Thing thing = null;
                             Thing thing2 = null;
-                            List<Thing> thingList = this.AdjCellsCardinalInBounds[i].GetThingList(base.Map);
+                            List<Thing> thingList = compItemProcessor.Props.inputSlots[i].GetThingList(base.Map);
                             for (int j = 0; j < thingList.Count; j++)
                             {
                                 Thing thing3 = thingList[j];
-                                if (thing3.def.defName == thirdItem)
+                                if (DefDatabase<CombinationDef>.GetNamed(thisRecipe).isCategoryRecipe)
+                                {
+                                    if (thing3.def.IsWithinCategory(ThingCategoryDef.Named(thirdItem)))
+                                    {
+                                        thing = thing3;
+                                    }
+                                }
+                                else if (thing3.def.defName == thirdItem)
                                 {
                                     thing = thing3;
                                 }
-                                if (thing3.def == ThingDefOf.Hopper)
+                                if (thing3.def == ThingDefOf.Hopper || thing3.def == DefDatabase<ThingDef>.GetNamedSilentFail("VFEM_HeavyHopper"))
+
                                 {
                                     thing2 = thing3;
                                 }
@@ -1433,11 +1467,31 @@ namespace ItemProcessor
                 {
                     qualityComp.SetQuality(qualityNow, ArtGenerationContext.Colony);
                 }
+
                 //Spawn this Thing in the buildings interaction cell, which can have a stockpile, a Hopper, or nothing
-                GenSpawn.Spawn(newProduct, this.InteractionCell, this.Map);
+
+                bool AlreadyPresent = false;
+
+                List<Thing> presentProductsList = this.InteractionCell.GetThingList(base.Map);
+                for (int j = 0; j < presentProductsList.Count; j++)
+                {
+                    Thing thing3 = presentProductsList[j];
+                    if (presentProductsList[j].def.defName == newProduct.def.defName)
+                    {
+                        presentProductsList[j].stackCount += amount;
+                        AlreadyPresent = true;
+                        break;
+                    }
+                }
+                if (!AlreadyPresent)
+                {
+                    GenPlace.TryPlaceThing(newProduct, this.InteractionCell, this.Map, ThingPlaceMode.Direct, null, null, default(Rot4));
+                }
+
                 //Reset building (if it is also an auto machine (isAutoMachine) it will begin grabbing ingredients again)
-                ResetEverything();
                 DestroyIngredients();
+                ResetEverything();
+
             }
             else
             {
