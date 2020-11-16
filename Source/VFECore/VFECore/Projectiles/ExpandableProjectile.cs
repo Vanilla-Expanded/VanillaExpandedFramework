@@ -46,10 +46,11 @@ namespace VFECore
 		{
 			get
 			{
+
 				if (!doFinalAnimations || this.def.lifeTimeDuration - curDuration > this.def.graphicData.MaterialsFadeOut.Length - 1)
 				{
 					var material = this.def.graphicData.Materials[curProjectileIndex];
-					if (Find.TickManager.TicksAbs % this.TickFrameRate == 0 && prevTick != Find.TickManager.TicksAbs)
+					if (prevTick != Find.TickManager.TicksAbs && Find.TickManager.TicksAbs - this.TickFrameRate >= prevTick)
 					{
 						if (curProjectileIndex == this.def.graphicData.Materials.Length - 1)
 							curProjectileIndex = 0;
@@ -61,7 +62,7 @@ namespace VFECore
 				else
 				{
 					var material = this.def.graphicData.MaterialsFadeOut[curProjectileFadeOutIndex];
-					if (Find.TickManager.TicksAbs % this.TickFrameRate == 0 && prevTick != Find.TickManager.TicksAbs)
+					if (prevTick != Find.TickManager.TicksAbs && Find.TickManager.TicksAbs - this.TickFrameRate >= prevTick)
 					{
 						if (this.def.graphicData.MaterialsFadeOut.Length - 1 != curProjectileFadeOutIndex)
 						{
@@ -177,7 +178,7 @@ namespace VFECore
 			var centerOfLine = pos.ToIntVec3();
 			var startPosition = StartingPosition.ToIntVec3();
 			var endPosition = this.CurPosition.ToIntVec3();
-			foreach (var cell in GenRadial.RadialCellsAround(start.ToIntVec3(), height - 2, true))
+			foreach (var cell in GenRadial.RadialCellsAround(start.ToIntVec3(), height, true))
 			{
 				if (centerOfLine.DistanceToSquared(endPosition) >= cell.DistanceToSquared(endPosition) && startPosition.DistanceTo(cell) > def.minDistanceToAffect)
 				{
@@ -256,8 +257,8 @@ namespace VFECore
 			IntVec3 position = base.Position;
 			BattleLogEntry_RangedImpact battleLogEntry_RangedImpact = new BattleLogEntry_RangedImpact(launcher, hitThing, intendedTarget.Thing, equipmentDef, def, targetCoverDef);
 			Find.BattleLog.Add(battleLogEntry_RangedImpact);
-			NotifyImpact(hitThing, map, position);
-			if (hitThing != null)
+			this.NotifyImpact(hitThing, map, position);
+			if (hitThing != null && (!def.disableVanillaDamageMethod || customImpact && def.disableVanillaDamageMethod))
 			{
 				DamageInfo dinfo = new DamageInfo(def.projectile.damageDef, base.DamageAmount, base.ArmorPenetration, ExactRotation.eulerAngles.y, launcher, null, equipmentDef, DamageInfo.SourceCategory.ThingOrUnknown, intendedTarget.Thing);
 				hitThing.TakeDamage(dinfo).AssociateWithLog(battleLogEntry_RangedImpact);

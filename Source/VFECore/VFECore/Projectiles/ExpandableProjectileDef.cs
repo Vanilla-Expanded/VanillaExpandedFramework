@@ -21,7 +21,7 @@ namespace VFECore
 		public int finalTickFrameRate = 0;
 		public int tickDamageRate = 60;
 		public float minDistanceToAffect;
-
+		public bool disableVanillaDamageMethod;
 		protected override void ResolveIcon()
 		{
 			base.ResolveIcon();
