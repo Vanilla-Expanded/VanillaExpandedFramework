@@ -345,6 +345,7 @@ namespace ItemProcessor
             //These are copied from vanilla classes, with one exception. Count is used on auto mode, and the method uses
             //count to split the necessary amounts from item stacks in nearby Hoppers. If splitOff isn't used the
             //game complains about trying to insert items directly from the map
+            //Log.Message(thing.def.defName);
             bool result;
             bool flag;
             if (thing.holdingOwner != null)
@@ -398,7 +399,7 @@ namespace ItemProcessor
         {
             //Inserts and item in innerContainerSecond
             bool result;
-
+            //Log.Message(thing.def.defName);
             bool flag;
             if (thing.holdingOwner != null)
             {
@@ -849,9 +850,15 @@ namespace ItemProcessor
                 if ((firstIngredientComplete || ExpectedAmountFirstIngredient == 0) &&
                     (secondIngredientComplete || ExpectedAmountSecondIngredient == 0))
                 {
+
+
+
+
+
                     processorStage = ProcessorStage.AllIngredientReceived;
                     //But with most recipe finding logic extracted to a method
                     this.productToTurnInto = CalculateProductToTurnInto(firstItem, secondItem, "");
+                   
                     if (productToTurnInto == "")
                     {
                         Messages.Message("IP_NoCombination".Translate(), this, MessageTypeDefOf.NegativeEvent, true);
@@ -867,6 +874,7 @@ namespace ItemProcessor
                             this.ingredients.Add(ThingDef.Named(secondItem));
                         }
                         this.processorStage = ProcessorStage.Working;
+                        
                         if (compItemProcessor.Props.destroyIngredientsAtStartOfProcess)
                         {
                             DestroyIngredients();
@@ -874,6 +882,7 @@ namespace ItemProcessor
                         
                         base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
                     }
+                   
 
                 }
             }
@@ -1012,7 +1021,6 @@ namespace ItemProcessor
                             for (int j = 0; j < thingList.Count; j++)
                             {
                                 Thing thing3 = thingList[j];
-                                //Log.Message(DefDatabase<CombinationDef>.GetNamed(thisRecipe).isCategoryRecipe.ToString());
                                 if (DefDatabase<CombinationDef>.GetNamed(thisRecipe).isCategoryRecipe)
                                 {
 
@@ -1050,14 +1058,19 @@ namespace ItemProcessor
                                         }
                                         Notify_StartProcessing();
                                         //Insert the remaining amount
-                                        TryAcceptFirst(thing, amountRemaining);
+                                        
+                                        thing.stackCount -= amountRemaining;
+                                        if (thing.stackCount <= 0)
+                                        {
+                                            thing.Destroy();
+                                        }
                                     }
                                     else if ((thing.stackCount - amountRemaining <= 0) && !firstIngredientComplete)
                                     {
                                         //If not, insert the whole stack
                                         CurrentAmountFirstIngredient += thing.stackCount;
                                         Notify_StartProcessing();
-                                        TryAcceptFirst(thing, thing.stackCount);
+                                        thing.Destroy();
                                     }
 
 
@@ -1065,7 +1078,7 @@ namespace ItemProcessor
                                 else
                                 {
                                     Notify_StartProcessing();
-                                    TryAcceptFirst(thing, 1);
+                                    thing.Destroy();
 
                                 }
                             }
@@ -1119,13 +1132,17 @@ namespace ItemProcessor
                                             secondIngredientComplete = true;
                                         }
                                         Notify_StartProcessing();
-                                        TryAcceptSecond(thing, amountRemaining);
+                                        thing.stackCount -= amountRemaining;
+                                        if (thing.stackCount <= 0)
+                                        {
+                                            thing.Destroy();
+                                        }
                                     }
                                     else if ((thing.stackCount - amountRemaining <= 0) && !secondIngredientComplete)
                                     {
                                         CurrentAmountSecondIngredient += thing.stackCount;
                                         Notify_StartProcessing();
-                                        TryAcceptSecond(thing, thing.stackCount);
+                                        thing.Destroy();
                                     }
 
 
@@ -1133,7 +1150,7 @@ namespace ItemProcessor
                                 else
                                 {
                                     Notify_StartProcessing();
-                                    TryAcceptSecond(thing, 1);
+                                    thing.Destroy();
 
                                 }
                             }
@@ -1185,13 +1202,17 @@ namespace ItemProcessor
                                             thirdIngredientComplete = true;
                                         }
                                         Notify_StartProcessing();
-                                        TryAcceptThird(thing, amountRemaining);
+                                        thing.stackCount -= amountRemaining;
+                                        if (thing.stackCount <= 0)
+                                        {
+                                            thing.Destroy();
+                                        }
                                     }
                                     else if ((thing.stackCount - amountRemaining <= 0) && !thirdIngredientComplete)
                                     {
                                         CurrentAmountThirdIngredient += thing.stackCount;
                                         Notify_StartProcessing();
-                                        TryAcceptThird(thing, thing.stackCount);
+                                        thing.Destroy();
                                     }
 
 
@@ -1199,7 +1220,7 @@ namespace ItemProcessor
                                 else
                                 {
                                     Notify_StartProcessing();
-                                    TryAcceptThird(thing, 1);
+                                    thing.Destroy();
 
                                 }
                             }
@@ -1217,6 +1238,7 @@ namespace ItemProcessor
             {
                 progressCounter++;
 
+               
 
 
                 //If noPowerDestroysProgress has been set in CompProperties_ItemProcessor, a new counter starts. This is shared for fueled
@@ -1404,13 +1426,16 @@ namespace ItemProcessor
                 else
                 //If the recipe doesn't use quality advancing, it will only have a single processing time
                 {
+                    
                     //Progress is only used on showProgressBar buildings, so only update it in that case
                     if (compItemProcessor.Props.showProgressBar)
                     {
                         this.Progress = (float)progressCounter / (rareTicksPerDay * days);
                     }
+                    
                     if (progressCounter > rareTicksPerDay * this.days)
                     {
+                       
                         removeProductOperation(QualityCategory.Awful);
                     }
                 }
@@ -1483,7 +1508,7 @@ namespace ItemProcessor
                 {
                     GenPlace.TryPlaceThing(newProduct, this.InteractionCell, this.Map, ThingPlaceMode.Direct, null, null, default(Rot4));
                 }
-
+                
                 //Reset building (if it is also an auto machine (isAutoMachine) it will begin grabbing ingredients again)
                 DestroyIngredients();
                 ResetEverything();
