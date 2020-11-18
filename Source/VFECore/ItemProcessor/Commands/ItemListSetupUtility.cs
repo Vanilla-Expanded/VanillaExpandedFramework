@@ -44,6 +44,18 @@ namespace ItemProcessor
             };
         }
 
+        public static Command_SetFourthItemList SetFourthItemListCommand(Building_ItemProcessor passingbuilding, Map passingMap, string desc)
+        {
+            return new Command_SetFourthItemList()
+            {
+                defaultDesc = desc.Translate(),
+                hotKey = KeyBindingDefOf.Misc1,
+                map = passingMap,
+                building = passingbuilding
+
+            };
+        }
+
         public static Command_SetQualityList SetQualityListCommand(Building_ItemProcessor passingbuilding, Map passingMap)
         {
             return new Command_SetQualityList()

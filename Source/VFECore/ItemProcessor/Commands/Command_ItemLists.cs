@@ -50,7 +50,11 @@ namespace ItemProcessor
                                 {
                                     if (ThingDef.Named(item).graphicData.graphicClass == typeof(Graphic_StackCount))
                                     {
-                                        icon = ContentFinder<Texture2D>.Get(ThingDef.Named(item).graphic.path + "/" + ThingDef.Named(item).defName + "_b", true);
+                                        icon = ContentFinder<Texture2D>.Get(ThingDef.Named(item).graphic.path + "/" + ThingDef.Named(item).defName + "_b", false);
+                                        if (icon == null)
+                                        {
+                                            icon = ContentFinder<Texture2D>.Get(ThingDef.Named(item).graphic.path + "/" + ThingDef.Named(item).defName, false);
+                                        }
 
                                     }
                                     else
@@ -198,9 +202,14 @@ namespace ItemProcessor
                                 }
                                 else
                                 {
+
                                     if (ThingDef.Named(item).graphicData.graphicClass == typeof(Graphic_StackCount))
                                     {
-                                        icon = ContentFinder<Texture2D>.Get(ThingDef.Named(item).graphic.path + "/" + ThingDef.Named(item).defName + "_b", true);
+                                        icon = ContentFinder<Texture2D>.Get(ThingDef.Named(item).graphic.path + "/" + ThingDef.Named(item).defName + "_b", false);
+                                        if (icon == null)
+                                        {
+                                            icon = ContentFinder<Texture2D>.Get(ThingDef.Named(item).graphic.path + "/" + ThingDef.Named(item).defName, false);
+                                        }
 
                                     }
                                     else
@@ -322,7 +331,11 @@ namespace ItemProcessor
                                 {
                                     if (ThingDef.Named(item).graphicData.graphicClass == typeof(Graphic_StackCount))
                                     {
-                                        icon = ContentFinder<Texture2D>.Get(ThingDef.Named(item).graphic.path + "/" + ThingDef.Named(item).defName + "_b", true);
+                                        icon = ContentFinder<Texture2D>.Get(ThingDef.Named(item).graphic.path + "/" + ThingDef.Named(item).defName + "_b", false);
+                                        if (icon == null)
+                                        {
+                                            icon = ContentFinder<Texture2D>.Get(ThingDef.Named(item).graphic.path + "/" + ThingDef.Named(item).defName, false);
+                                        }
 
                                     }
                                     else
@@ -396,6 +409,131 @@ namespace ItemProcessor
             else
             {
                 building.thirdItem = things.RandomElement().def.defName;
+            }
+
+
+        }
+
+
+
+
+    }
+
+    [StaticConstructorOnStartup]
+    public class Command_SetFourthItemList : Command
+    {
+
+        public Map map;
+        public Building_ItemProcessor building;
+        public List<Thing> things;
+
+
+
+        public Command_SetFourthItemList()
+        {
+            foreach (object obj in Find.Selector.SelectedObjects)
+            {
+                building = obj as Building_ItemProcessor;
+                if (building != null)
+                {
+                    if (building.fourthItem == "")
+                    {
+                        icon = ContentFinder<Texture2D>.Get(building.compItemProcessor.Props.chooseIngredientsIcon, true);
+                        defaultLabel = "IP_ChooseIngredientFourth".Translate();
+                    }
+                    foreach (ItemAcceptedDef element in DefDatabase<ItemAcceptedDef>.AllDefs.Where(element => (element.building == building.def.defName) && (element.slot == 4)))
+                    {
+                        foreach (string item in element.items)
+                        {
+                            if (building.fourthItem == item)
+                            {
+                                if (building.compItemProcessor.Props.isCategoryBuilding)
+                                {
+                                    icon = ContentFinder<Texture2D>.Get(ThingCategoryDef.Named(item).iconPath, true);
+                                    defaultLabel = "IP_InsertVariable".Translate(ThingCategoryDef.Named(item).LabelCap);
+                                }
+                                else
+                                {
+                                    if (ThingDef.Named(item).graphicData.graphicClass == typeof(Graphic_StackCount))
+                                    {
+                                        icon = ContentFinder<Texture2D>.Get(ThingDef.Named(item).graphic.path + "/" + ThingDef.Named(item).defName + "_b", false);
+                                        if (icon == null)
+                                        {
+                                            icon = ContentFinder<Texture2D>.Get(ThingDef.Named(item).graphic.path + "/" + ThingDef.Named(item).defName, false);
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        icon = ContentFinder<Texture2D>.Get(ThingDef.Named(item).graphic.path, true);
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public override void ProcessInput(Event ev)
+        {
+            base.ProcessInput(ev);
+            List<FloatMenuOption> list = new List<FloatMenuOption>();
+
+            if (building.GetComp<CompItemProcessor>().Props.acceptsNoneAsInput)
+            {
+                list.Add(new FloatMenuOption("IP_None".Translate(), delegate
+                {
+                    building.fourthItem = "None";
+                }, MenuOptionPriority.Default, null, null, 29f, null, null));
+            }
+
+            foreach (ItemAcceptedDef element in DefDatabase<ItemAcceptedDef>.AllDefs.Where(element => (element.building == building.def.defName) && (element.slot == 4)))
+            {
+                foreach (string item in element.items.Where(item => item != "None"))
+                {
+                    if (building.compItemProcessor.Props.isCategoryBuilding)
+                    {
+                        list.Add(new FloatMenuOption("IP_InsertVariable".Translate(ThingCategoryDef.Named(item).LabelCap), delegate
+                        {
+                            if (building.processorStage <= ProcessorStage.ExpectingIngredients) { this.TryInsertFourthThing(item); }
+                        }, MenuOptionPriority.Default, null, null, 29f, null, null));
+
+                    }
+                    else
+                    {
+                        list.Add(new FloatMenuOption("IP_InsertVariable".Translate(ThingDef.Named(item).LabelCap), delegate
+                        {
+                            things = map.listerThings.ThingsOfDef(DefDatabase<ThingDef>.GetNamed(item, true));
+                            if (things.Count > 0)
+                            {
+
+                                if (building.processorStage <= ProcessorStage.ExpectingIngredients) { this.TryInsertFourthThing(); }
+                            }
+                            else
+                            {
+                                Messages.Message("IP_CantFindThing".Translate(ThingDef.Named(item).LabelCap), null, MessageTypeDefOf.NegativeEvent, true);
+                            }
+
+                        }, MenuOptionPriority.Default, null, null, 29f, null, null));
+                    }
+                }
+            }
+            Find.WindowStack.Add(new FloatMenu(list));
+        }
+
+        private void TryInsertFourthThing(string item = "")
+        {
+            building.processorStage = ProcessorStage.IngredientsChosen;
+            if (item != "")
+            {
+                building.fourthCategory = ThingCategoryDef.Named(item).defName;
+                building.fourthItem = building.fourthCategory;
+            }
+            else
+            {
+                building.fourthItem = things.RandomElement().def.defName;
             }
 
 

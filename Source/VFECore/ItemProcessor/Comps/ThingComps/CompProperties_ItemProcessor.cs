@@ -6,7 +6,7 @@ namespace ItemProcessor
 {
     public class CompProperties_ItemProcessor : CompProperties
     {
-        //Buildings can be set to a number between 1 and 3. The code ignores values outside this.
+        //Buildings can be set to a number between 1 and 4. The code ignores values outside this.
         //The process also needs a CombinationDef in XML
         //In both cases, there is a ItemAcceptedDef to define what ingredients are accepted by what building
         public int numberOfInputs = 1;
@@ -45,6 +45,7 @@ namespace ItemProcessor
         public string InsertFirstItemDesc = "IP_InsertFirstItemDesc";
         public string InsertSecondItemDesc = "IP_InsertSecondItemDesc";
         public string InsertThirdItemDesc = "IP_InsertThirdItemDesc";
+        public string InsertFourthItemDesc = "IP_InsertFourthItemDesc";
 
         //Custom image for choosing a new ingredient
         public string chooseIngredientsIcon = "UI/IP_NoIngredient";

@@ -21,6 +21,10 @@ namespace ItemProcessor
 
         public static readonly Material BarUnfilledMat = SolidColorMaterials.SimpleSolidColorMaterial(new Color(0.3f, 0.3f, 0.3f), false);
 
+        //Pretty interaction cells for automatic machines
+        public static readonly Material InputCellMaterial = MaterialPool.MatFrom("UI/Overlays/IP_InputSlotOverlay", ShaderDatabase.Cutout);
+        public static readonly Material OutputCellMaterial = MaterialPool.MatFrom("UI/Overlays/IP_OutputSlotOverlay", ShaderDatabase.Cutout);
+
     }
 }
 

@@ -34,16 +34,19 @@ namespace ItemProcessor
         public ThingOwner innerContainerFirst = null;
         public ThingOwner innerContainerSecond = null;
         public ThingOwner innerContainerThird = null;
+        public ThingOwner innerContainerFourth = null;
 
         //Variables to store the defNames of the ingredients
         public string firstItem = "";
         public string secondItem = "";
         public string thirdItem = "";
+        public string fourthItem = "";
 
         //Variables to store the defNames of the ingredients' categories in case of isCategoryBuilding 
         public string firstCategory = "";
         public string secondCategory = "";
         public string thirdCategory = "";
+        public string fourthCategory = "";
 
         //A List to store the ingredients as... well, ingredients for the product
         //If the product doesn't allow ingredients (eg. Steel) this is ignored
@@ -80,9 +83,12 @@ namespace ItemProcessor
         public int ExpectedAmountSecondIngredient = 0;
         public int CurrentAmountThirdIngredient = 0;
         public int ExpectedAmountThirdIngredient = 0;
+        public int CurrentAmountFourthIngredient = 0;
+        public int ExpectedAmountFourthIngredient = 0;
         public bool firstIngredientComplete = false;
         public bool secondIngredientComplete = false;
         public bool thirdIngredientComplete = false;
+        public bool fourthIngredientComplete = false;
 
         //If the product uses quality increasing, these are the variables storing the number of days for each quality
         //The two last variables are used for auto-quality
@@ -128,6 +134,8 @@ namespace ItemProcessor
         //used to interpolate the colour of the progress bar
         private float progressInt;
 
+        
+        
 
 
 
@@ -138,6 +146,8 @@ namespace ItemProcessor
             this.innerContainerFirst = new ThingOwner<Thing>(this, false, LookMode.Deep);
             this.innerContainerSecond = new ThingOwner<Thing>(this, false, LookMode.Deep);
             this.innerContainerThird = new ThingOwner<Thing>(this, false, LookMode.Deep);
+            this.innerContainerFourth = new ThingOwner<Thing>(this, false, LookMode.Deep);
+
         }
 
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
@@ -157,13 +167,20 @@ namespace ItemProcessor
             Scribe_Deep.Look<ThingOwner>(ref this.innerContainerFirst, "innerContainerFirst", new object[] { this });
             Scribe_Deep.Look<ThingOwner>(ref this.innerContainerSecond, "innerContainerSecond", new object[] { this });
             Scribe_Deep.Look<ThingOwner>(ref this.innerContainerThird, "innerContainerThird", new object[] { this });
+            Scribe_Deep.Look<ThingOwner>(ref this.innerContainerFourth, "innerContainerFourth", new object[] { this });
+
             Scribe_Values.Look<ProcessorStage>(ref this.processorStage, "processorStage", ProcessorStage.Inactive, false);
+
             Scribe_Values.Look<string>(ref this.firstItem, "firstItem", "", false);
             Scribe_Values.Look<string>(ref this.secondItem, "secondItem", "", false);
             Scribe_Values.Look<string>(ref this.thirdItem, "thirdItem", "", false);
+            Scribe_Values.Look<string>(ref this.fourthItem, "fourthItem", "", false);
+
             Scribe_Values.Look<string>(ref this.firstCategory, "firstCategory", "", false);
             Scribe_Values.Look<string>(ref this.secondCategory, "secondCategory", "", false);
             Scribe_Values.Look<string>(ref this.thirdCategory, "thirdCategory", "", false);
+            Scribe_Values.Look<string>(ref this.fourthCategory, "fourthCategory", "", false);
+
             Scribe_Collections.Look<ThingDef>(ref this.ingredients, true, "ingredients");
             Scribe_Values.Look<int>(ref this.progressCounter, "progressCounter", 0, false);
             Scribe_Values.Look<int>(ref this.noPowerDestructionCounter, "noPowerDestructionCounter", 0, false);
@@ -180,6 +197,8 @@ namespace ItemProcessor
             Scribe_Values.Look<int>(ref this.ExpectedAmountSecondIngredient, "ExpectedAmountSecondIngredient", 0, false);
             Scribe_Values.Look<int>(ref this.CurrentAmountThirdIngredient, "CurrentAmountThirdIngredient", 0, false);
             Scribe_Values.Look<int>(ref this.ExpectedAmountThirdIngredient, "ExpectedAmountThirdIngredient", 0, false);
+            Scribe_Values.Look<int>(ref this.CurrentAmountFourthIngredient, "CurrentAmountFourthIngredient", 0, false);
+            Scribe_Values.Look<int>(ref this.ExpectedAmountFourthIngredient, "ExpectedAmountFourthIngredient", 0, false);
             Scribe_Values.Look<bool>(ref this.usingQualityIncreasing, "usingQualityIncreasing", true, false);
             Scribe_Values.Look<float>(ref this.awfulQualityAgeDaysThreshold, "awfulQualityAgeDaysThreshold", 0f, false);
             Scribe_Values.Look<float>(ref this.poorQualityAgeDaysThreshold, "poorQualityAgeDaysThreshold", 0f, false);
@@ -191,10 +210,12 @@ namespace ItemProcessor
             Scribe_Values.Look(ref qualityNow, "qualityNow", QualityCategory.Awful);
             Scribe_Values.Look(ref qualityRequested, "qualityRequested", QualityCategory.Awful);
             Scribe_Values.Look<bool>(ref this.qualityEstablished, "qualityEstablished", false, false);
-            Scribe_Values.Look<bool>(ref this.firstIngredientComplete, "firstIngredientComplete", false, false);
             Scribe_Values.Look<bool>(ref this.removeAfterAwful, "removeAfterAwful", false, false);
+
+            Scribe_Values.Look<bool>(ref this.firstIngredientComplete, "firstIngredientComplete", false, false);
             Scribe_Values.Look<bool>(ref this.secondIngredientComplete, "secondIngredientComplete", false, false);
             Scribe_Values.Look<bool>(ref this.thirdIngredientComplete, "thirdIngredientComplete", false, false);
+            Scribe_Values.Look<bool>(ref this.fourthIngredientComplete, "fourthIngredientComplete", false, false);
             Scribe_Values.Look<bool>(ref this.isAutoEnabled, "isAutoEnabled", true, false);
             Scribe_Values.Look<bool>(ref this.isSemiAutoEnabled, "isSemiAutoEnabled", false, false);
             Scribe_Values.Look<string>(ref this.thisRecipe, "thisRecipe", "", false);
@@ -219,21 +240,30 @@ namespace ItemProcessor
         public virtual void EjectContentsFirst()
         {
             //Remove ingredients from the first ingredient container. Call MapMeshDirty so the building graphic changes (if needed)
-            this.innerContainerFirst.TryDropAll(this.InteractionCell, base.Map, ThingPlaceMode.Near, null, null);
+            this.innerContainerFirst?.TryDropAll(this.InteractionCell, base.Map, ThingPlaceMode.Near, null, null);
             base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
 
         }
         public virtual void EjectContentsSecond()
         {
             //Remove ingredients from the second ingredient container. Call MapMeshDirty so the building graphic changes (if needed)
-            this.innerContainerSecond.TryDropAll(this.InteractionCell, base.Map, ThingPlaceMode.Near, null, null);
+            this.innerContainerSecond?.TryDropAll(this.InteractionCell, base.Map, ThingPlaceMode.Near, null, null);
             base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
 
         }
         public virtual void EjectContentsThird()
         {
             //Remove ingredients from the third ingredient container. Call MapMeshDirty so the building graphic changes (if needed)
-            this.innerContainerThird.TryDropAll(this.InteractionCell, base.Map, ThingPlaceMode.Near, null, null);
+            this.innerContainerThird?.TryDropAll(this.InteractionCell, base.Map, ThingPlaceMode.Near, null, null);
+            base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+
+        }
+
+        public virtual void EjectContentsFourth()
+        {
+            //Remove ingredients from the third ingredient container. Call MapMeshDirty so the building graphic changes (if needed)
+            
+            this.innerContainerFourth?.TryDropAll(this.InteractionCell, base.Map, ThingPlaceMode.Near, null, null);
             base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
 
         }
@@ -245,13 +275,16 @@ namespace ItemProcessor
             EjectContentsFirst();
             EjectContentsSecond();
             EjectContentsThird();
+            EjectContentsFourth();
             CurrentAmountFirstIngredient = 0;
             CurrentAmountSecondIngredient = 0;
             CurrentAmountThirdIngredient = 0;
+            CurrentAmountFourthIngredient = 0;
             usingQualityIncreasing = true;
             firstIngredientComplete = false;
             secondIngredientComplete = false;
             thirdIngredientComplete = false;
+            fourthIngredientComplete = false;
             progressCounter = 0;
 
             noPowerDestructionCounter = 0;
@@ -285,6 +318,7 @@ namespace ItemProcessor
                 ExpectedAmountFirstIngredient = 0;
                 ExpectedAmountSecondIngredient = 0;
                 ExpectedAmountThirdIngredient = 0;
+                ExpectedAmountFourthIngredient = 0;
                 productToTurnInto = "";
                 productsToTurnInto = new List<string>();
                 isSemiAutoEnabled = false;
@@ -298,9 +332,12 @@ namespace ItemProcessor
                 firstItem = "";
                 secondItem = "";
                 thirdItem = "";
+                fourthItem = "";
                 firstCategory = "";
                 secondCategory = "";
                 thirdCategory = "";
+                fourthCategory = "";
+
 
 
 
@@ -314,17 +351,21 @@ namespace ItemProcessor
         {
             //Empties all ingredient containers and destroys ingredients
             //When exactly they get destroyed is configurable through CompItemProcessor
-            if (this.innerContainerFirst.Any)
+            if (this.innerContainerFirst!=null&&this.innerContainerFirst.Any)
             {
                 this.innerContainerFirst.ClearAndDestroyContents();
             }
-            if (this.innerContainerSecond.Any)
+            if (this.innerContainerSecond != null && this.innerContainerSecond.Any)
             {
                 this.innerContainerSecond.ClearAndDestroyContents();
             }
-            if (this.innerContainerThird.Any)
+            if (this.innerContainerThird != null && this.innerContainerThird.Any)
             {
                 this.innerContainerThird.ClearAndDestroyContents();
+            }
+            if (this.innerContainerFourth != null && this.innerContainerFourth.Any)
+            {
+                this.innerContainerFourth.ClearAndDestroyContents();
             }
 
         }
@@ -336,6 +377,8 @@ namespace ItemProcessor
             EjectContentsFirst();
             EjectContentsSecond();
             EjectContentsThird();
+            EjectContentsFourth();
+
             base.Destroy(mode);
         }
 
@@ -502,6 +545,60 @@ namespace ItemProcessor
             return result;
         }
 
+        public bool TryAcceptFourth(Thing thing, int Count = 0, bool allowSpecialEffects = true)
+        {
+            //Inserts an item in innerContainerFourth
+
+            bool result;
+
+            bool flag;
+            if (thing.holdingOwner != null)
+            {
+                if (Count == 0)
+                {
+                    thing.holdingOwner.TryTransferToContainer(thing, this.innerContainerFourth, thing.stackCount, true);
+                }
+                else
+                {
+                    Thing newThing = thing.SplitOff(Count);
+                    this.innerContainerFourth.TryAdd(newThing, true);
+                }
+                base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+                flag = true;
+            }
+            else
+            {
+                if (Count == 0)
+                {
+                    flag = this.innerContainerFourth.TryAdd(thing, true);
+                }
+                else
+                {
+                    Thing newThing = thing.SplitOff(Count);
+                    flag = this.innerContainerFourth.TryAdd(newThing, true);
+                }
+                base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+            }
+            if (compItemProcessor.Props.isCategoryBuilding)
+            {
+                fourthItem = thing.def.thingCategories.FirstOrDefault().ToString();
+            }
+            if (flag)
+            {
+                if (thing.Faction != null && thing.Faction.IsPlayer)
+                {
+                    base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+                }
+                result = true;
+            }
+            else
+            {
+                result = false;
+            }
+            this.TickRare();
+            return result;
+        }
+
         //The core of this class. Gizmos control the flow of the process. Ceratin gizmos will only be active on certain stages
         //while others are activated or not depending on configured options on CompProperties_ItemProcessor
 
@@ -528,21 +625,33 @@ namespace ItemProcessor
                 if (processorStage <= ProcessorStage.ExpectingIngredients && processorStage != ProcessorStage.AutoIngredients)
                 {
                     //Different number of ingredients gizmos depending on the number of building slots. Note the <=1 and >=3, just in case someone inputs 78 
-                    if (compItemProcessor.Props.numberOfInputs <= 1)
+                    switch (compItemProcessor.Props.numberOfInputs)
                     {
-                        yield return ItemListSetupUtility.SetFirstItemListCommand(this, this.Map, compItemProcessor.Props.InsertFirstItemDesc);
+                        case 1:
+                            yield return ItemListSetupUtility.SetFirstItemListCommand(this, this.Map, compItemProcessor.Props.InsertFirstItemDesc);
+                            break;
+                        case 2:
+                            yield return ItemListSetupUtility.SetFirstItemListCommand(this, this.Map, compItemProcessor.Props.InsertFirstItemDesc);
+                            yield return ItemListSetupUtility.SetSecondItemListCommand(this, this.Map, compItemProcessor.Props.InsertSecondItemDesc);
+                            break;
+                        case 3:
+                            yield return ItemListSetupUtility.SetFirstItemListCommand(this, this.Map, compItemProcessor.Props.InsertFirstItemDesc);
+                            yield return ItemListSetupUtility.SetSecondItemListCommand(this, this.Map, compItemProcessor.Props.InsertSecondItemDesc);
+                            yield return ItemListSetupUtility.SetThirdItemListCommand(this, this.Map, compItemProcessor.Props.InsertThirdItemDesc);
+                            break;
+                        case 4:
+                            yield return ItemListSetupUtility.SetFirstItemListCommand(this, this.Map, compItemProcessor.Props.InsertFirstItemDesc);
+                            yield return ItemListSetupUtility.SetSecondItemListCommand(this, this.Map, compItemProcessor.Props.InsertSecondItemDesc);
+                            yield return ItemListSetupUtility.SetThirdItemListCommand(this, this.Map, compItemProcessor.Props.InsertThirdItemDesc);
+                            yield return ItemListSetupUtility.SetFourthItemListCommand(this, this.Map, compItemProcessor.Props.InsertFourthItemDesc);
+
+                            break;
+                        default:
+                            yield return ItemListSetupUtility.SetFirstItemListCommand(this, this.Map, compItemProcessor.Props.InsertFirstItemDesc);
+                            break;
                     }
-                    else if (compItemProcessor.Props.numberOfInputs == 2)
-                    {
-                        yield return ItemListSetupUtility.SetFirstItemListCommand(this, this.Map, compItemProcessor.Props.InsertFirstItemDesc);
-                        yield return ItemListSetupUtility.SetSecondItemListCommand(this, this.Map, compItemProcessor.Props.InsertSecondItemDesc);
-                    }
-                    else if (compItemProcessor.Props.numberOfInputs >= 3)
-                    {
-                        yield return ItemListSetupUtility.SetFirstItemListCommand(this, this.Map, compItemProcessor.Props.InsertFirstItemDesc);
-                        yield return ItemListSetupUtility.SetSecondItemListCommand(this, this.Map, compItemProcessor.Props.InsertSecondItemDesc);
-                        yield return ItemListSetupUtility.SetThirdItemListCommand(this, this.Map, compItemProcessor.Props.InsertThirdItemDesc);
-                    }
+
+
                 }
 
                 if (processorStage == ProcessorStage.IngredientsChosen) //This stage is set in the classes in Command_ItemLists
@@ -657,6 +766,23 @@ namespace ItemProcessor
 
                         }
                     };
+                } else
+
+                //Full auto machines with no pawn interaction also include a similar Reset button. will only appear if
+                //Dev mode is not active, to avoid duplicating it
+                if (compItemProcessor.Props.isCompletelyAutoMachine)
+                {
+                    Command_Action IP_Gizmo_ResetForAutoMachines = new Command_Action();
+                    IP_Gizmo_ResetForAutoMachines.defaultLabel = "IP_ResetFullAuto".Translate();
+                    IP_Gizmo_ResetForAutoMachines.defaultDesc = "IP_ResetFullAutoDesc".Translate();
+                    IP_Gizmo_ResetForAutoMachines.icon = ContentFinder<Texture2D>.Get("UI/Designators/Cancel", true);
+                    IP_Gizmo_ResetForAutoMachines.action = delegate
+                    {
+                        isAutoEnabled = false;
+                        isSemiAutoEnabled = true;
+                        ResetEverything();
+                    };
+                    yield return IP_Gizmo_ResetForAutoMachines;
                 }
 
 
@@ -741,30 +867,49 @@ namespace ItemProcessor
 
             //This finds the recipe in CombinationDefs, and stores its defName in the thisRecipe variable for easy access
             CombinationDef thisElement;
-            if (compItemProcessor.Props.numberOfInputs <= 1)
+            
+            switch (compItemProcessor.Props.numberOfInputs)
             {
-                thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && element.items.Contains(firstItem) && element.singleIngredientRecipe)).First();
-                ExpectedAmountFirstIngredient = thisElement.amount[0];
-                thisRecipe = thisElement.defName;
+                case 1:
+                    thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && element.items.Contains(firstItem))).First();
+                    ExpectedAmountFirstIngredient = thisElement.amount[0];
+                    thisRecipe = thisElement.defName;
+                    break;
+                case 2:
+                    thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && (element.items.Contains(firstItem) && element.secondItems.Contains(secondItem)))).First();
+                    ExpectedAmountFirstIngredient = thisElement.amount[0];
+                    ExpectedAmountSecondIngredient = thisElement.amount[1];
+                    thisRecipe = thisElement.defName;
+                    break;
+                case 3:
+                    thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && (element.items.Contains(firstItem) && element.secondItems.Contains(secondItem) && element.thirdItems.Contains(thirdItem)))).First();
+                    ExpectedAmountFirstIngredient = thisElement.amount[0];
+                    ExpectedAmountSecondIngredient = thisElement.amount[1];
+                    ExpectedAmountThirdIngredient = thisElement.amount[2];
+                    thisRecipe = thisElement.defName;
+                    break;
+                case 4:
+                    thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && (element.items.Contains(firstItem) && element.secondItems.Contains(secondItem) && element.thirdItems.Contains(thirdItem) && element.fourthItems.Contains(fourthItem)))).First();
+                    ExpectedAmountFirstIngredient = thisElement.amount[0];
+                    ExpectedAmountSecondIngredient = thisElement.amount[1];
+                    ExpectedAmountThirdIngredient = thisElement.amount[2];
+                    ExpectedAmountFourthIngredient = thisElement.amount[3];
+                    thisRecipe = thisElement.defName;
+                    break;
+                default:
+                    thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && element.items.Contains(firstItem))).First();
+                    ExpectedAmountFirstIngredient = thisElement.amount[0];
+                    thisRecipe = thisElement.defName;
+                    break;
             }
-            else
 
-            if (compItemProcessor.Props.numberOfInputs >= 2)
+            //This little change allows isCompletelyAutoMachines to use the same reset button as semiautomatic
+            if (compItemProcessor.Props.isCompletelyAutoMachine)
             {
-                thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && (element.items.Contains(firstItem) && element.secondItems.Contains(secondItem)))).First();
-                ExpectedAmountFirstIngredient = thisElement.amount[0];
-                ExpectedAmountSecondIngredient = thisElement.amount[1];
-                thisRecipe = thisElement.defName;
+                isAutoEnabled = true;
             }
-            else
-            if (compItemProcessor.Props.numberOfInputs >= 3)
-            {
-                thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && (element.items[0] == firstItem && element.items[1] == secondItem && element.items[2] == thirdItem))).First();
-                ExpectedAmountFirstIngredient = thisElement.amount[0];
-                ExpectedAmountSecondIngredient = thisElement.amount[1];
-                ExpectedAmountThirdIngredient = thisElement.amount[2];
-                thisRecipe = thisElement.defName;
-            }
+          
+
             //Two different "next stages", one for auto mode machines, and one for regular ones 
             if (compItemProcessor.Props.isAutoMachine && isAutoEnabled)
             {
@@ -772,211 +917,150 @@ namespace ItemProcessor
             }
             else processorStage = ProcessorStage.ExpectingIngredients;
 
+            
         }
 
         //This method is called either by Jobs when they insert an item, or by this class when the building extracts and inserts and item from adjacent Hoppers
 
         public void Notify_StartProcessing()
         {
-            //If its a single slot machine
-            if (compItemProcessor.Props.numberOfInputs <= 1)
+            //This switch controls progress depending on the number of slots in the processor
+            bool StartProcessingByInputSlots = false;
+            switch (compItemProcessor.Props.numberOfInputs)
             {
-                //And we have finished inserting the demanded number of items (or expected = 0, which means just one item)
-                if ((CurrentAmountFirstIngredient >= ExpectedAmountFirstIngredient) || ExpectedAmountFirstIngredient == 0)
-                {
-                    //And no one fucked up writing the recipes in CombinationDefs...
-                    if (thisRecipe != "")
+                //Check that we have finished inserting the demanded number of items (or expected = 0, which means just one item)
+                case 1:
+                    if ((CurrentAmountFirstIngredient >= ExpectedAmountFirstIngredient) || ExpectedAmountFirstIngredient == 0)
                     {
-                        //Change the stage so it doesn't keep waiting for arriving ingredients
-                        processorStage = ProcessorStage.AllIngredientReceived;
-
-                        //Get recipe details from the stored recipe defName
-                        CombinationDef thisCombinationRecipe = DefDatabase<CombinationDef>.GetNamed(thisRecipe);
-                        if (thisCombinationRecipe.differentProductsByQuality)
-                        {
-                            this.productsToTurnInto = thisCombinationRecipe.productsByQuality;
-                            //this.productToTurnInto = thisCombinationRecipe.productsByQuality[0];
-                        }
-                        else
-                        {
-                            this.productToTurnInto = thisCombinationRecipe.result;
-                        }
-
-                        this.amount = thisCombinationRecipe.yield;
-                        this.usingQualityIncreasing = thisCombinationRecipe.useQualityIncreasing;
-                        //If it is a quality increasing product, use the day intervals, if not, just the single one
-                        if (usingQualityIncreasing)
-                        {
-                            this.awfulQualityAgeDaysThreshold = thisCombinationRecipe.awfulQualityAgeDaysThreshold;
-                            this.poorQualityAgeDaysThreshold = thisCombinationRecipe.poorQualityAgeDaysThreshold;
-                            this.normalQualityAgeDaysThreshold = thisCombinationRecipe.normalQualityAgeDaysThreshold;
-                            this.goodQualityAgeDaysThreshold = thisCombinationRecipe.goodQualityAgeDaysThreshold;
-                            this.excellentQualityAgeDaysThreshold = thisCombinationRecipe.excellentQualityAgeDaysThreshold;
-                            this.masterworkQualityAgeDaysThreshold = thisCombinationRecipe.masterworkQualityAgeDaysThreshold;
-                            this.legendaryQualityAgeDaysThreshold = thisCombinationRecipe.legendaryQualityAgeDaysThreshold;
-                        }
-                        else
-                        {
-                            this.days = thisCombinationRecipe.singleTimeIfNotQualityIncreasing;
-                        }
-                        //Reset ingredient counter (this is probably not necessary cause ResetEverything does it, but oh well
-                        CurrentAmountFirstIngredient = 0;
-                        //Add the ingredient to the ingredients list, but only if transfersIngredientLists = false. If true, the insertion jobs do it
-                        if (!compItemProcessor.Props.transfersIngredientLists && !DefDatabase<CombinationDef>.GetNamed(thisRecipe).isCategoryRecipe)
-                        {
-                            this.ingredients.Add(ThingDef.Named(firstItem));
-                        }
-                        //Change process stage to Working. Counters will start here
-                        this.processorStage = ProcessorStage.Working;
-                        //If the building is configured to destroy ingredients now, it will do so
-                        if (compItemProcessor.Props.destroyIngredientsAtStartOfProcess)
-                        {
-                            DestroyIngredients();
-                        }
-                        //Call MapMeshDirty so the building graphic changes(if needed)
-                        base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+                        StartProcessingByInputSlots = true;
                     }
-                    else
+                    break;
+                case 2:
+                    if (((CurrentAmountFirstIngredient >= ExpectedAmountFirstIngredient) || ExpectedAmountFirstIngredient == 0) &&
+                            ((CurrentAmountSecondIngredient >= ExpectedAmountSecondIngredient) || ExpectedAmountSecondIngredient == 0))
                     {
-                        //Someone fucked up
-                        Messages.Message("IP_IngredientImproperlyDefined".Translate(), null, MessageTypeDefOf.NegativeEvent, true);
+                        StartProcessingByInputSlots = true;
                     }
-                }
+                    break;
+                case 3:
+                    if (((CurrentAmountFirstIngredient >= ExpectedAmountFirstIngredient) || ExpectedAmountFirstIngredient == 0) &&
+                            ((CurrentAmountSecondIngredient >= ExpectedAmountSecondIngredient) || ExpectedAmountSecondIngredient == 0) &&
+                            ((CurrentAmountThirdIngredient >= ExpectedAmountThirdIngredient) || ExpectedAmountThirdIngredient == 0))
+                    {
+                        StartProcessingByInputSlots = true;
+                    }
+                    break;
+                case 4:
+                    if (((CurrentAmountFirstIngredient >= ExpectedAmountFirstIngredient) || ExpectedAmountFirstIngredient == 0) &&
+                            ((CurrentAmountSecondIngredient >= ExpectedAmountSecondIngredient) || ExpectedAmountSecondIngredient == 0) &&
+                            ((CurrentAmountThirdIngredient >= ExpectedAmountThirdIngredient) || ExpectedAmountThirdIngredient == 0) &&
+                            ((CurrentAmountFourthIngredient >= ExpectedAmountFourthIngredient) || ExpectedAmountFourthIngredient == 0))
+                    {
+                        StartProcessingByInputSlots = true;
+                    }
+                    break;
+                default:
+                    if ((CurrentAmountFirstIngredient >= ExpectedAmountFirstIngredient) || ExpectedAmountFirstIngredient == 0)
+                    {
+                        StartProcessingByInputSlots = true;
+                    }
+                    break;
             }
-            //If its a double slot machine
-            else if (compItemProcessor.Props.numberOfInputs == 2)
+
+
+            //Only proceed if we have finished inserting the demanded number of items (or expected = 0, which means just one item)
+            if (StartProcessingByInputSlots)
             {
-                //Mostly same logic as before
-                if ((firstIngredientComplete || ExpectedAmountFirstIngredient == 0) &&
-                    (secondIngredientComplete || ExpectedAmountSecondIngredient == 0))
+                //And only if no one fucked up writing the recipes in CombinationDefs...
+                if (thisRecipe != "")
                 {
-
-
-
-
-
+                    //Change the stage so it doesn't keep waiting for arriving ingredients
                     processorStage = ProcessorStage.AllIngredientReceived;
-                    //But with most recipe finding logic extracted to a method
-                    this.productToTurnInto = CalculateProductToTurnInto(firstItem, secondItem, "");
-                   
-                    if (productToTurnInto == "")
+
+                    //Get recipe details from the stored recipe defName
+                    CombinationDef thisCombinationRecipe = DefDatabase<CombinationDef>.GetNamed(thisRecipe);
+                    if (thisCombinationRecipe.differentProductsByQuality)
                     {
-                        Messages.Message("IP_NoCombination".Translate(), this, MessageTypeDefOf.NegativeEvent, true);
-                        ResetEverything();
+                        this.productsToTurnInto = thisCombinationRecipe.productsByQuality;
+
                     }
                     else
                     {
-                        CurrentAmountFirstIngredient = 0;
-                        CurrentAmountSecondIngredient = 0;
-                        if (!compItemProcessor.Props.transfersIngredientLists && !DefDatabase<CombinationDef>.GetNamed(thisRecipe).isCategoryRecipe)
-                        {
-                            this.ingredients.Add(ThingDef.Named(firstItem));
-                            this.ingredients.Add(ThingDef.Named(secondItem));
-                        }
-                        this.processorStage = ProcessorStage.Working;
-                        
-                        if (compItemProcessor.Props.destroyIngredientsAtStartOfProcess)
-                        {
-                            DestroyIngredients();
-                        }
-                        
-                        base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+                        this.productToTurnInto = thisCombinationRecipe.result;
                     }
-                   
 
-                }
-            }
-            else if (compItemProcessor.Props.numberOfInputs >= 3)
-            {
-                if ((firstIngredientComplete || ExpectedAmountFirstIngredient == 0) &&
-                    (secondIngredientComplete || ExpectedAmountSecondIngredient == 0) &&
-                    (thirdIngredientComplete || ExpectedAmountThirdIngredient == 0))
-                {
-                    processorStage = ProcessorStage.AllIngredientReceived;
-                    this.productToTurnInto = CalculateProductToTurnInto(firstItem, secondItem, thirdItem);
-                    if (productToTurnInto == "")
+                    this.amount = thisCombinationRecipe.yield;
+                    this.usingQualityIncreasing = thisCombinationRecipe.useQualityIncreasing;
+                    //If it is a quality increasing product, use the day intervals, if not, just the single one
+                    if (usingQualityIncreasing)
                     {
-                        Messages.Message("IP_NoCombination".Translate(), this, MessageTypeDefOf.NegativeEvent, true);
-                        ResetEverything();
+                        this.awfulQualityAgeDaysThreshold = thisCombinationRecipe.awfulQualityAgeDaysThreshold;
+                        this.poorQualityAgeDaysThreshold = thisCombinationRecipe.poorQualityAgeDaysThreshold;
+                        this.normalQualityAgeDaysThreshold = thisCombinationRecipe.normalQualityAgeDaysThreshold;
+                        this.goodQualityAgeDaysThreshold = thisCombinationRecipe.goodQualityAgeDaysThreshold;
+                        this.excellentQualityAgeDaysThreshold = thisCombinationRecipe.excellentQualityAgeDaysThreshold;
+                        this.masterworkQualityAgeDaysThreshold = thisCombinationRecipe.masterworkQualityAgeDaysThreshold;
+                        this.legendaryQualityAgeDaysThreshold = thisCombinationRecipe.legendaryQualityAgeDaysThreshold;
                     }
                     else
                     {
-                        CurrentAmountFirstIngredient = 0;
-                        CurrentAmountSecondIngredient = 0;
-                        CurrentAmountThirdIngredient = 0;
-                        if (!compItemProcessor.Props.transfersIngredientLists && !DefDatabase<CombinationDef>.GetNamed(thisRecipe).isCategoryRecipe)
-                        {
-                            this.ingredients.Add(ThingDef.Named(firstItem));
-                            this.ingredients.Add(ThingDef.Named(secondItem));
-                            this.ingredients.Add(ThingDef.Named(thirdItem));
-                        }
-                        if (compItemProcessor.Props.destroyIngredientsAtStartOfProcess)
-                        {
-                            DestroyIngredients();
-                        }
-                        this.processorStage = ProcessorStage.Working;
-                        base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+                        this.days = thisCombinationRecipe.singleTimeIfNotQualityIncreasing;
                     }
-
-                }
-            }
-        }
-
-        public string CalculateProductToTurnInto(string firstItem, string secondItem, string thirdItem)
-        {
-            //This mnethod just implements recipe finding logic
-            foreach (CombinationDef element in DefDatabase<CombinationDef>.AllDefs.Where(element => (element.building == this.def.defName)))
-            {
-                if (thirdItem != "")
-                {
-                    if (element.items.Contains(firstItem) && element.secondItems.Contains(secondItem) && element.thirdItems.Contains(thirdItem))
-                    
+                    //Reset ingredient counter (this is probably not necessary cause ResetEverything does it, but oh well
+                    CurrentAmountFirstIngredient = 0;
+                    CurrentAmountSecondIngredient = 0;
+                    CurrentAmountThirdIngredient = 0;
+                    CurrentAmountFourthIngredient = 0;
+                    //Add the ingredient to the ingredients list, but only if transfersIngredientLists = false. If true, the insertion jobs do it
+                    if (!compItemProcessor.Props.transfersIngredientLists && !DefDatabase<CombinationDef>.GetNamed(thisRecipe).isCategoryRecipe)
                     {
-                        if (element.useQualityIncreasing)
+                        switch (compItemProcessor.Props.numberOfInputs)
                         {
-                            this.usingQualityIncreasing = true;
-                            this.awfulQualityAgeDaysThreshold = element.awfulQualityAgeDaysThreshold;
-                            this.poorQualityAgeDaysThreshold = element.poorQualityAgeDaysThreshold;
-                            this.normalQualityAgeDaysThreshold = element.normalQualityAgeDaysThreshold;
-                            this.goodQualityAgeDaysThreshold = element.goodQualityAgeDaysThreshold;
-                            this.excellentQualityAgeDaysThreshold = element.excellentQualityAgeDaysThreshold;
-                            this.masterworkQualityAgeDaysThreshold = element.masterworkQualityAgeDaysThreshold;
-                            this.legendaryQualityAgeDaysThreshold = element.legendaryQualityAgeDaysThreshold;
+                            case 1:
+                                this.ingredients.Add(ThingDef.Named(firstItem));
+                                break;
+                            case 2:
+                                this.ingredients.Add(ThingDef.Named(firstItem));
+                                this.ingredients.Add(ThingDef.Named(secondItem));
+                                break;
+                            case 3:
+                                this.ingredients.Add(ThingDef.Named(firstItem));
+                                this.ingredients.Add(ThingDef.Named(secondItem));
+                                this.ingredients.Add(ThingDef.Named(thirdItem));
+                                break;
+                            case 4:
+                                this.ingredients.Add(ThingDef.Named(firstItem));
+                                this.ingredients.Add(ThingDef.Named(secondItem));
+                                this.ingredients.Add(ThingDef.Named(thirdItem));
+                                this.ingredients.Add(ThingDef.Named(fourthItem));
+                                break;
+                            default:
+                                this.ingredients.Add(ThingDef.Named(firstItem));
+                                break;
                         }
-                        else
-                        {
-                            this.days = element.singleTimeIfNotQualityIncreasing;
-                        }
-                        this.amount = element.yield;
-                        return element.result;
+
                     }
+                    //Change process stage to Working. Counters will start here
+                    this.processorStage = ProcessorStage.Working;
+                    //If the building is configured to destroy ingredients now, it will do so
+                    if (compItemProcessor.Props.destroyIngredientsAtStartOfProcess)
+                    {
+                        DestroyIngredients();
+                    }
+                    //Call MapMeshDirty so the building graphic changes(if needed)
+                    base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
                 }
                 else
                 {
-                    if (element.items.Contains(firstItem) && element.secondItems.Contains(secondItem))
-                    {
-                        if (element.useQualityIncreasing)
-                        {
-                            this.usingQualityIncreasing = true;
-                            this.awfulQualityAgeDaysThreshold = element.awfulQualityAgeDaysThreshold;
-                            this.poorQualityAgeDaysThreshold = element.poorQualityAgeDaysThreshold;
-                            this.normalQualityAgeDaysThreshold = element.normalQualityAgeDaysThreshold;
-                            this.goodQualityAgeDaysThreshold = element.goodQualityAgeDaysThreshold;
-                            this.excellentQualityAgeDaysThreshold = element.excellentQualityAgeDaysThreshold;
-                            this.masterworkQualityAgeDaysThreshold = element.masterworkQualityAgeDaysThreshold;
-                            this.legendaryQualityAgeDaysThreshold = element.legendaryQualityAgeDaysThreshold;
-                        }
-                        else
-                        {
-                            this.days = element.singleTimeIfNotQualityIncreasing;
-                        }
-                        this.amount = element.yield;
-                        return element.result;
-                    }
+                    //Someone fucked up
+                    Messages.Message("IP_IngredientImproperlyDefined".Translate(), null, MessageTypeDefOf.NegativeEvent, true);
                 }
             }
-            return "";
+
         }
+
+
+
 
 
         //Tick should do nothing. I want item processors to be tickerType Rare, but some comps need them to be Normal.
@@ -989,10 +1073,95 @@ namespace ItemProcessor
                 //Trigger a rare tick
                 if (Find.TickManager.TicksGame % 250 == 0)
                 {
-                   
+
                     this.TickRare();
                 }
             }
+        }
+
+        public void CheckTheHoppers(string itemToCheckFor, ref int ExpectedAmountXIngredient, ref int CurrentAmountXIngredient, 
+            ref bool XIngredientComplete) {
+            //Log.Message("Checking hoppers for "+ itemToCheckFor);
+            bool OncePerTick = false;
+            for (int i = 0; i < compItemProcessor.Props.inputSlots.Count; i++)
+            {
+                //OncePerTick avoids having the processor gobble all resources in case more than one hopper is present
+                if (!OncePerTick)
+                {
+                    //Search only tiles that are part of inputSlots 
+
+                    Thing thing = null;
+                    Thing thing2 = null;
+                    List<Thing> thingList = (this.Position + compItemProcessor.Props.inputSlots[i].RotatedBy(this.Rotation)).GetThingList(base.Map);
+                    for (int j = 0; j < thingList.Count; j++)
+                    {
+                        Thing thing3 = thingList[j];
+                        if (DefDatabase<CombinationDef>.GetNamed(thisRecipe).isCategoryRecipe)
+                        {
+
+                            if (thing3.def.IsWithinCategory(ThingCategoryDef.Named(itemToCheckFor)))
+                            {
+                                thing = thing3;
+                            }
+                        }
+                        else if (thing3.def.defName == itemToCheckFor)
+                        {
+                            thing = thing3;
+                        }
+                        if (thing3.def == ThingDefOf.Hopper || thing3.def == DefDatabase<ThingDef>.GetNamedSilentFail("VFEM_HeavyHopper"))
+                        {
+                            thing2 = thing3;
+
+                        }
+                    }
+                    //If you find ingredient 1 AND a Hopper...
+                    if (thing != null && thing2 != null)
+                    {
+                        //Don't search again this Tick
+                        OncePerTick = true;
+                        if (ExpectedAmountXIngredient != 0)
+                        {
+                            //Calculate remaining amount for this ingredient
+                            int amountRemaining = ExpectedAmountXIngredient - CurrentAmountXIngredient;
+                            //If the stack is greater than the remaining amount 
+                            if (thing.stackCount - amountRemaining > 0)
+                            {
+                                CurrentAmountXIngredient += amountRemaining;
+                                if (CurrentAmountXIngredient >= ExpectedAmountXIngredient)
+                                {
+                                    XIngredientComplete = true;
+                                }
+                                Notify_StartProcessing();
+                                //Insert the remaining amount
+
+                                thing.stackCount -= amountRemaining;
+                                if (thing.stackCount <= 0)
+                                {
+                                    thing.Destroy();
+                                }
+                            }
+                            else if ((thing.stackCount - amountRemaining <= 0) && !XIngredientComplete)
+                            {
+                                //If not, insert the whole stack
+                                CurrentAmountXIngredient += thing.stackCount;
+                                Notify_StartProcessing();
+                                thing.Destroy();
+                            }
+
+
+                        }
+                        else
+                        {
+                            Notify_StartProcessing();
+                            thing.Destroy();
+
+                        }
+                    }
+                }
+
+
+            }
+
         }
 
 
@@ -1001,232 +1170,26 @@ namespace ItemProcessor
             base.TickRare();
             //TickRare does all the processing work when stage is ProcessorStage.AutoIngredients and ProcessorStage.Working
 
-            //First are three ugly functions checking Hoppers in auto machines. These could probably be joined into one with arguments
+            //First are fourth calls checking Hoppers in auto machines.
             if (processorStage == ProcessorStage.AutoIngredients)
             {
+                
                 //Only keep searching if the first ingredient isn't above ExpectedAmountFirstIngredient
                 if (!firstIngredientComplete)
                 {
-                    //And only do one Hopper per tick
-                    bool OncePerTick = false;
-                    
-                    for (int i = 0; i < compItemProcessor.Props.inputSlots.Count; i++)
-                    {
-                        //Search all adjacent tiles 
-                        if (!OncePerTick)
-                        {
-                            Thing thing = null;
-                            Thing thing2 = null;
-                            List<Thing> thingList = (this.Position+compItemProcessor.Props.inputSlots[i].RotatedBy(this.Rotation)).GetThingList(base.Map);
-                            for (int j = 0; j < thingList.Count; j++)
-                            {
-                                Thing thing3 = thingList[j];
-                                if (DefDatabase<CombinationDef>.GetNamed(thisRecipe).isCategoryRecipe)
-                                {
-
-                                    if (thing3.def.IsWithinCategory(ThingCategoryDef.Named(firstItem)))
-                                    {
-                                        thing = thing3;
-                                    }
-                                }
-                                else if (thing3.def.defName == firstItem)
-                                {
-                                    thing = thing3;
-                                }
-                                if (thing3.def == ThingDefOf.Hopper || thing3.def == DefDatabase<ThingDef>.GetNamedSilentFail("VFEM_HeavyHopper"))
-                                {
-                                    thing2 = thing3;
-
-                                }
-                            }
-                            //If you find ingredient 1 AND a Hopper...
-                            if (thing != null && thing2 != null)
-                            {
-                                //Don't search again this Tick
-                                OncePerTick = true;
-                                if (ExpectedAmountFirstIngredient != 0)
-                                {
-                                    //Calculate remaining amount for this ingredient
-                                    int amountRemaining = ExpectedAmountFirstIngredient - CurrentAmountFirstIngredient;
-                                    //If the stack is greater than the remaining amount 
-                                    if (thing.stackCount - amountRemaining > 0)
-                                    {
-                                        CurrentAmountFirstIngredient += amountRemaining;
-                                        if (CurrentAmountFirstIngredient >= ExpectedAmountFirstIngredient)
-                                        {
-                                            firstIngredientComplete = true;
-                                        }
-                                        Notify_StartProcessing();
-                                        //Insert the remaining amount
-                                        
-                                        thing.stackCount -= amountRemaining;
-                                        if (thing.stackCount <= 0)
-                                        {
-                                            thing.Destroy();
-                                        }
-                                    }
-                                    else if ((thing.stackCount - amountRemaining <= 0) && !firstIngredientComplete)
-                                    {
-                                        //If not, insert the whole stack
-                                        CurrentAmountFirstIngredient += thing.stackCount;
-                                        Notify_StartProcessing();
-                                        thing.Destroy();
-                                    }
-
-
-                                }
-                                else
-                                {
-                                    Notify_StartProcessing();
-                                    thing.Destroy();
-
-                                }
-                            }
-
-                        }
-
-                    }
+                    CheckTheHoppers(firstItem, ref ExpectedAmountFirstIngredient, ref CurrentAmountFirstIngredient, ref firstIngredientComplete);
                 }
                 if (!secondIngredientComplete && secondItem != "")
                 {
-                    bool OncePerTick = false;
-
-                    for (int i = 0; i < compItemProcessor.Props.inputSlots.Count; i++)
-                    {
-                        if (!OncePerTick)
-                        {
-                            Thing thing = null;
-                            Thing thing2 = null;
-                            List<Thing> thingList = (this.Position + compItemProcessor.Props.inputSlots[i].RotatedBy(this.Rotation)).GetThingList(base.Map);
-                            for (int j = 0; j < thingList.Count; j++)
-                            {
-                                Thing thing3 = thingList[j];
-                                if (DefDatabase<CombinationDef>.GetNamed(thisRecipe).isCategoryRecipe)
-                                {
-                                    if (thing3.def.IsWithinCategory(ThingCategoryDef.Named(secondItem)))
-                                    {
-                                        thing = thing3;
-                                    }
-                                }
-                                else if (thing3.def.defName == secondItem)
-                                {
-                                    thing = thing3;
-                                }
-                                if (thing3.def == ThingDefOf.Hopper || thing3.def == DefDatabase<ThingDef>.GetNamedSilentFail("VFEM_HeavyHopper"))
-
-                                {
-                                    thing2 = thing3;
-                                }
-                            }
-                            if (thing != null && thing2 != null)
-                            {
-                                OncePerTick = true;
-                                if (ExpectedAmountSecondIngredient != 0)
-                                {
-                                    int amountRemaining = ExpectedAmountSecondIngredient - CurrentAmountSecondIngredient;
-                                    if (thing.stackCount - amountRemaining > 0)
-                                    {
-                                        CurrentAmountSecondIngredient += amountRemaining;
-                                        if (CurrentAmountSecondIngredient >= ExpectedAmountSecondIngredient)
-                                        {
-                                            secondIngredientComplete = true;
-                                        }
-                                        Notify_StartProcessing();
-                                        thing.stackCount -= amountRemaining;
-                                        if (thing.stackCount <= 0)
-                                        {
-                                            thing.Destroy();
-                                        }
-                                    }
-                                    else if ((thing.stackCount - amountRemaining <= 0) && !secondIngredientComplete)
-                                    {
-                                        CurrentAmountSecondIngredient += thing.stackCount;
-                                        Notify_StartProcessing();
-                                        thing.Destroy();
-                                    }
-
-
-                                }
-                                else
-                                {
-                                    Notify_StartProcessing();
-                                    thing.Destroy();
-
-                                }
-                            }
-                        }
-
-                    }
+                    CheckTheHoppers(secondItem, ref ExpectedAmountSecondIngredient, ref CurrentAmountSecondIngredient, ref secondIngredientComplete);
                 }
                 if (!thirdIngredientComplete && thirdItem != "")
                 {
-                    bool OncePerTick = false;
-                    for (int i = 0; i < compItemProcessor.Props.inputSlots.Count; i++)
-                    {
-                        if (!OncePerTick)
-                        {
-                            Thing thing = null;
-                            Thing thing2 = null;
-                            List<Thing> thingList = (this.Position + compItemProcessor.Props.inputSlots[i].RotatedBy(this.Rotation)).GetThingList(base.Map);
-                            for (int j = 0; j < thingList.Count; j++)
-                            {
-                                Thing thing3 = thingList[j];
-                                if (DefDatabase<CombinationDef>.GetNamed(thisRecipe).isCategoryRecipe)
-                                {
-                                    if (thing3.def.IsWithinCategory(ThingCategoryDef.Named(thirdItem)))
-                                    {
-                                        thing = thing3;
-                                    }
-                                }
-                                else if (thing3.def.defName == thirdItem)
-                                {
-                                    thing = thing3;
-                                }
-                                if (thing3.def == ThingDefOf.Hopper || thing3.def == DefDatabase<ThingDef>.GetNamedSilentFail("VFEM_HeavyHopper"))
-
-                                {
-                                    thing2 = thing3;
-                                }
-                            }
-                            if (thing != null && thing2 != null)
-                            {
-                                OncePerTick = true;
-                                if (ExpectedAmountThirdIngredient != 0)
-                                {
-                                    int amountRemaining = ExpectedAmountThirdIngredient - CurrentAmountThirdIngredient;
-                                    if (thing.stackCount - amountRemaining > 0)
-                                    {
-                                        CurrentAmountThirdIngredient += amountRemaining;
-                                        if (CurrentAmountThirdIngredient >= ExpectedAmountThirdIngredient)
-                                        {
-                                            thirdIngredientComplete = true;
-                                        }
-                                        Notify_StartProcessing();
-                                        thing.stackCount -= amountRemaining;
-                                        if (thing.stackCount <= 0)
-                                        {
-                                            thing.Destroy();
-                                        }
-                                    }
-                                    else if ((thing.stackCount - amountRemaining <= 0) && !thirdIngredientComplete)
-                                    {
-                                        CurrentAmountThirdIngredient += thing.stackCount;
-                                        Notify_StartProcessing();
-                                        thing.Destroy();
-                                    }
-
-
-                                }
-                                else
-                                {
-                                    Notify_StartProcessing();
-                                    thing.Destroy();
-
-                                }
-                            }
-                        }
-
-                    }
+                    CheckTheHoppers(thirdItem, ref ExpectedAmountThirdIngredient, ref CurrentAmountThirdIngredient, ref thirdIngredientComplete);
+                }
+                if (!fourthIngredientComplete && fourthItem != "")
+                {
+                    CheckTheHoppers(fourthItem, ref ExpectedAmountFourthIngredient, ref CurrentAmountFourthIngredient, ref fourthIngredientComplete);
                 }
 
 
@@ -1238,7 +1201,7 @@ namespace ItemProcessor
             {
                 progressCounter++;
 
-               
+
 
 
                 //If noPowerDestroysProgress has been set in CompProperties_ItemProcessor, a new counter starts. This is shared for fueled
@@ -1426,16 +1389,16 @@ namespace ItemProcessor
                 else
                 //If the recipe doesn't use quality advancing, it will only have a single processing time
                 {
-                    
+
                     //Progress is only used on showProgressBar buildings, so only update it in that case
                     if (compItemProcessor.Props.showProgressBar)
                     {
                         this.Progress = (float)progressCounter / (rareTicksPerDay * days);
                     }
-                    
+
                     if (progressCounter > rareTicksPerDay * this.days)
                     {
-                       
+
                         removeProductOperation(QualityCategory.Awful);
                     }
                 }
@@ -1508,7 +1471,7 @@ namespace ItemProcessor
                 {
                     GenPlace.TryPlaceThing(newProduct, this.InteractionCell, this.Map, ThingPlaceMode.Direct, null, null, default(Rot4));
                 }
-                
+
                 //Reset building (if it is also an auto machine (isAutoMachine) it will begin grabbing ingredients again)
                 DestroyIngredients();
                 ResetEverything();
@@ -1548,6 +1511,8 @@ namespace ItemProcessor
                 string productOrCategoryName = "";
                 string secondProductOrCategoryName = "";
                 string thirdProductOrCategoryName = "";
+                string fourthProductOrCategoryName = "";
+
                 if (compItemProcessor.Props.isCategoryBuilding)
                 {
                     productOrCategoryName = ThingCategoryDef.Named(firstCategory).LabelCap;
@@ -1558,6 +1523,10 @@ namespace ItemProcessor
                     if (compItemProcessor.Props.numberOfInputs >= 3)
                     {
                         thirdProductOrCategoryName = ThingCategoryDef.Named(thirdCategory).LabelCap;
+                    }
+                    if (compItemProcessor.Props.numberOfInputs >= 3)
+                    {
+                        fourthProductOrCategoryName = ThingCategoryDef.Named(fourthCategory).LabelCap;
                     }
                 }
                 else
@@ -1571,6 +1540,10 @@ namespace ItemProcessor
                     {
                         thirdProductOrCategoryName = ThingDef.Named(thirdItem).LabelCap;
                     }
+                    if (compItemProcessor.Props.numberOfInputs >= 4)
+                    {
+                        fourthProductOrCategoryName = ThingDef.Named(fourthItem).LabelCap;
+                    }
                 }
 
                 incubationTxt += "IP_FilledWith".Translate(this.def.LabelCap, productOrCategoryName) + "IP_IngredientPercentage".Translate(CurrentAmountFirstIngredient.ToString(), ExpectedAmountFirstIngredient.ToString());
@@ -1583,6 +1556,11 @@ namespace ItemProcessor
                 if (compItemProcessor.Props.numberOfInputs >= 3)
                 {
                     incubationTxt += "\n" + "IP_FilledWithThird".Translate(this.def.LabelCap, thirdProductOrCategoryName) + "IP_IngredientPercentage".Translate(CurrentAmountThirdIngredient.ToString(), ExpectedAmountThirdIngredient.ToString());
+
+                }
+                if (compItemProcessor.Props.numberOfInputs >= 4)
+                {
+                    incubationTxt += "\n" + "IP_FilledWithFourth".Translate(this.def.LabelCap, fourthProductOrCategoryName) + "IP_IngredientPercentage".Translate(CurrentAmountFourthIngredient.ToString(), ExpectedAmountFourthIngredient.ToString());
 
                 }
             }
@@ -1757,6 +1735,22 @@ namespace ItemProcessor
 
 
         }
+
+        public override void DrawExtraSelectionOverlays()
+        {
+           base.DrawExtraSelectionOverlays();
+           if (compItemProcessor.Props.inputSlots != null)
+            {
+                foreach (IntVec3 cell in compItemProcessor.Props.inputSlots)
+                {
+                    Vector3 vector = (this.Position + cell.RotatedBy(this.Rotation)).ToVector3ShiftedWithAltitude(AltitudeLayer.MetaOverlays);
+                    Graphics.DrawMesh(MeshPool.plane10, vector, Quaternion.identity, GraphicsCache.InputCellMaterial, 0);
+                }
+                Vector3 vectorInteractionSpot = this.InteractionCell.ToVector3ShiftedWithAltitude(AltitudeLayer.MetaOverlays);
+                Graphics.DrawMesh(MeshPool.plane10, vectorInteractionSpot, Quaternion.identity, GraphicsCache.OutputCellMaterial, 0);
+            }
+        }
+
 
         //A draw method for the progress bar
 

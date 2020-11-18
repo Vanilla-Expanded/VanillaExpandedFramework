@@ -6,6 +6,7 @@
 	<IP_InsertFirstItemDesc>Insert</IP_InsertFirstItemDesc>
 	<IP_InsertSecondItemDesc>Insert</IP_InsertSecondItemDesc>
 	<IP_InsertThirdItemDesc>Insert</IP_InsertThirdItemDesc>
+	<IP_InsertFourthItemDesc>Insert</IP_InsertFourthItemDesc>
 	<IP_InsertVariable>Insert {0}</IP_InsertVariable>
 	<IP_InsertVariableSecond>Insert {0} in 2nd slot</IP_InsertVariableSecond>
 	<IP_InsertVariableThird>Insert {0} in 3rd slot</IP_InsertVariableThird>
@@ -18,6 +19,7 @@
 	<IP_ChooseIngredient>Choose Ingredient</IP_ChooseIngredient>
 	<IP_ChooseIngredientSecond>Choose Second Ingredient</IP_ChooseIngredientSecond>
 	<IP_ChooseIngredientThird>Choose Third Ingredient</IP_ChooseIngredientThird>
+	<IP_ChooseIngredientFourth>Choose Fourth Ingredient</IP_ChooseIngredientFourth>
 	<IP_IngredientImproperlyDefined>One of the ingredients has been improperly defined to work with the item processor, contact the mod's author</IP_IngredientImproperlyDefined>
 	<IP_NoPowerDestroysWarning>{0} needs to be powered to start working</IP_NoPowerDestroysWarning>
 	<IP_NoFuelDestroysWarning>{0} needs to be fueled to start working</IP_NoFuelDestroysWarning>
@@ -31,6 +33,7 @@
 	<IP_FilledWith>{0} is filled with {1}</IP_FilledWith>
 	<IP_FilledWithSecond>{0}'s 2nd slot is filled with {1}</IP_FilledWithSecond>
 	<IP_FilledWithThird>{0}'s 3rd slot is filled with {1}</IP_FilledWithThird>
+	<IP_FilledWithFourth>{0}'s 4th slot is filled with {1}</IP_FilledWithFourth>
 	<IP_IngredientPercentage> (filled at {0} of {1})</IP_IngredientPercentage>
 	<IP_ProcessorWorking>{0} is working: </IP_ProcessorWorking>
 	<IP_ProcessingInProgress>{0} is processing {1}. {2} will be ready with {3} quality in {4}</IP_ProcessingInProgress>
@@ -47,6 +50,8 @@
 	<IP_QualityAutoEstablished>Auto Quality, product will be extracted at quality level: {0}</IP_QualityAutoEstablished>
 	<IP_ToggleAuto>Auto Ingredient Acquiring</IP_ToggleAuto>
 	<IP_ToggleAutoDesc>If set to active, this building will automatically grab ingredients from adjacent hoppers, and automatically start working again once the product is removed. If not, colonists will haul the ingredients to the building, and it will need to be activated manually once refilled</IP_ToggleAutoDesc>
+	<IP_ResetFullAuto>Reset Machine</IP_ResetFullAuto>
+	<IP_ResetFullAutoDesc>Fully resets the machine and makes it stop. Warning, it will destroy the process and the input items</IP_ResetFullAutoDesc>
 	<IP_ProductWaiting>Waiting for pickup</IP_ProductWaiting>
 	<IP_OutsideLightRange>The process in this machine is being interrupted due to an inadequate level of light and will be spoiled soon</IP_OutsideLightRange>
 	<IP_SpoiledDueToLight>The product in this machine has spoiled due to an inadequate level of light</IP_SpoiledDueToLight>

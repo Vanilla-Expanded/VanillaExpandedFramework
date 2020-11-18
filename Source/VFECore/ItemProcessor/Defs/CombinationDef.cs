@@ -17,7 +17,7 @@ namespace ItemProcessor
 
         //Product quality increasing attributes are assigned here.
 
-        //This is to signal this is a single ingredient (slot) recipe. It's the default
+        //This is to signal this is a single ingredient (slot) recipe. Unused. Kept here for compatibility with previous versions.
         public bool singleIngredientRecipe = true;
         //defName of the building accepting this combination of ingredients
         public string building;
