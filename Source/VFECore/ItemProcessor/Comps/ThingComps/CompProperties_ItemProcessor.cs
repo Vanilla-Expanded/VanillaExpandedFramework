@@ -36,6 +36,12 @@ namespace ItemProcessor
         //Does this building accept category recipes?
         public bool isCategoryBuilding = false;
 
+        //Does this building have the player specify output instead of input?
+        public bool isMachineSpecifiesOutput = false;
+
+        //Can this processor be "paused"
+        public bool isMachinePausable = false;
+
         //Transfer ingredients: instead of adding the inputs as ingredients, it adds the inputs' ingredients as ingredients. Yeah, confusing...
         //Example, if false, and input = Milk and output = Cheese, Cheese will have Milk as an ingredient
         //If true, and input = Uncooked Soup and output = Cooked Soup, Cooked Soup will have the same ingredients list as Uncooked Soup (for example human meat and corn)

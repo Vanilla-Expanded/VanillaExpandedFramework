@@ -8,6 +8,19 @@ namespace ItemProcessor
 {
     public static class ItemListSetupUtility
     {
+
+        public static Command_SetOutputList SetOutputListCommand(Building_ItemProcessor passingbuilding, Map passingMap, string desc)
+        {
+            return new Command_SetOutputList()
+            {
+                //defaultDesc = desc.Translate(),
+                hotKey = KeyBindingDefOf.Misc1,
+                map = passingMap,
+                building = passingbuilding
+
+            };
+        }
+
         public static Command_SetFirstItemList SetFirstItemListCommand(Building_ItemProcessor passingbuilding, Map passingMap, string desc)
         {
             return new Command_SetFirstItemList()

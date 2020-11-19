@@ -9,6 +9,315 @@ using System.Linq;
 namespace ItemProcessor
 {
     [StaticConstructorOnStartup]
+    public class Command_SetOutputList : Command
+    {
+
+        public Map map;
+        public Building_ItemProcessor building;
+        public List<Thing> things;
+
+
+
+        public Command_SetOutputList()
+        {
+            //Loops through all things selected right now to see if it finds an item processor building
+            //Just in case, item processors disable its Gizmos (buttons) if there are more things selected
+            foreach (object obj in Find.Selector.SelectedObjects)
+            {
+                building = obj as Building_ItemProcessor;
+                if (building != null)
+                {
+                    if (building.firstItem == "")
+                    {
+                        //If a first ingredient hasn't been chosen yet, show an empty "choose ingredient" button. This is configurable in each building
+                        icon = ContentFinder<Texture2D>.Get(building.compItemProcessor.Props.chooseIngredientsIcon, true);
+                        defaultLabel = "IP_ChooseOutput".Translate();
+
+                    }
+                    foreach (CombinationDef element in DefDatabase<CombinationDef>.AllDefs.Where(element => (element.building == building.def.defName && building.firstItem == element.items[0])))
+                    {
+                        //If an output has been chosen, then show the graphic of that ingredient 
+
+                        if (building.productToTurnInto == element.result)
+                        {
+                            if (ThingDef.Named(element.result).graphicData.graphicClass == typeof(Graphic_StackCount))
+                            {
+                                icon = ContentFinder<Texture2D>.Get(ThingDef.Named(element.result).graphic.path + "/" + ThingDef.Named(element.result).defName + "_b", false);
+                                if (icon == null)
+                                {
+                                    icon = ContentFinder<Texture2D>.Get(ThingDef.Named(element.result).graphic.path + "/" + ThingDef.Named(element.result).defName, false);
+                                }
+                                if (icon == null)
+                                {
+                                    icon = ContentFinder<Texture2D>.Get(ThingDef.Named(element.result).graphic.path, false);
+                                }
+                            }
+                            else
+                            {
+                               if (ThingDef.Named(element.result).graphic.path != null)
+                                {
+                                    icon = ContentFinder<Texture2D>.Get(ThingDef.Named(element.result).graphic.path, false);
+                                } else icon = ContentFinder<Texture2D>.Get(ThingDef.Named(element.result).graphicData.texPath, false);
+
+
+                            }
+
+                            defaultLabel = "IP_Output".Translate(ThingDef.Named(element.result).LabelCap);
+                            if (element.isCategoryRecipe)
+                            {
+                                string categorytwoLabel = "";
+                                string categorythreeLabel = "";
+                                string categoryfourLabel = "";
+                                if (element.secondItems != null)
+                                {
+                                    ThingCategoryDef categorytwo = DefDatabase<ThingCategoryDef>.GetNamedSilentFail(element.secondItems[0]);
+                                    if (categorytwo != null)
+                                    {
+                                        categorytwoLabel = ", "+categorytwo.LabelCap;
+                                    }
+                                }
+                                if (element.thirdItems != null)
+                                {
+                                    ThingCategoryDef categorythree = DefDatabase<ThingCategoryDef>.GetNamedSilentFail(element.thirdItems[0]);
+                                    if (categorythree != null)
+                                    {
+                                        categorythreeLabel = ", " + categorythree.LabelCap;
+                                    }
+                                }
+                                if (element.fourthItems != null)
+                                {
+                                    ThingCategoryDef categoryfour = DefDatabase<ThingCategoryDef>.GetNamedSilentFail(element.fourthItems[0]);
+                                    if (categoryfour != null)
+                                    {
+                                        categoryfourLabel = ", " + categoryfour.LabelCap;
+                                    }
+                                }
+                                defaultDesc = "IP_OutputDesc".Translate(ThingDef.Named(element.result).LabelCap, DefDatabase<ThingCategoryDef>.GetNamedSilentFail(building.firstItem).LabelCap
+                                    +  categorytwoLabel + categorythreeLabel +  categoryfourLabel);
+                            }
+                            else
+                            {
+                                string itemtwoLabel = "";
+                                string itemthreeLabel = "";
+                                string itemfourLabel = "";
+                                if (element.secondItems != null)
+                                {
+                                    ThingDef itemtwo = DefDatabase<ThingDef>.GetNamedSilentFail(element.secondItems[0]);
+                                    if (itemtwo != null)
+                                    {
+                                        itemtwoLabel = ", " + itemtwo.LabelCap;
+                                    }
+                                }
+                                if (element.thirdItems != null)
+                                {
+                                    ThingDef itemthree = DefDatabase<ThingDef>.GetNamedSilentFail(element.thirdItems[0]);
+                                    if (itemthree != null)
+                                    {
+                                        itemthreeLabel = ", " + itemthree.LabelCap;
+                                    }
+                                }
+                                if (element.fourthItems != null)
+                                {
+                                    ThingDef itemfour = DefDatabase<ThingDef>.GetNamedSilentFail(element.fourthItems[0]);
+                                    if (itemfour != null)
+                                    {
+                                        itemfourLabel = ", " + itemfour.LabelCap;
+                                    }
+                                }
+                                defaultDesc = "IP_OutputDesc".Translate(ThingDef.Named(element.result).LabelCap, DefDatabase<ThingDef>.GetNamedSilentFail(building.firstItem).LabelCap
+                                    +  itemtwoLabel + itemthreeLabel + itemfourLabel);
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
+        public override void ProcessInput(Event ev)
+        {
+            base.ProcessInput(ev);
+            List<FloatMenuOption> list = new List<FloatMenuOption>();
+
+
+            //For the rest, 
+            foreach (CombinationDef element in DefDatabase<CombinationDef>.AllDefs.Where(element => (element.building == building.def.defName)))
+            {
+
+
+
+                if (element.isCategoryRecipe)
+                {
+                    string categorytwoLabel = "";
+                    string categorythreeLabel = "";
+                    string categoryfourLabel = "";
+                    if (element.secondItems != null)
+                    {
+                        ThingCategoryDef categorytwo = DefDatabase<ThingCategoryDef>.GetNamedSilentFail(element.secondItems[0]);
+                        if (categorytwo != null)
+                        {
+                            categorytwoLabel = ", " + categorytwo.LabelCap;
+                        }
+                    }
+                    if (element.thirdItems != null)
+                    {
+                        ThingCategoryDef categorythree = DefDatabase<ThingCategoryDef>.GetNamedSilentFail(element.thirdItems[0]);
+                        if (categorythree != null)
+                        {
+                            categorythreeLabel = ", " + categorythree.LabelCap;
+                        }
+                    }
+                    if (element.fourthItems != null)
+                    {
+                        ThingCategoryDef categoryfour = DefDatabase<ThingCategoryDef>.GetNamedSilentFail(element.fourthItems[0]);
+                        if (categoryfour != null)
+                        {
+                            categoryfourLabel = ", " + categoryfour.LabelCap;
+                        }
+                    }
+                    list.Add(new FloatMenuOption("IP_OutputVariable".Translate(ThingDef.Named(element.result).LabelCap, DefDatabase<ThingCategoryDef>.GetNamedSilentFail(element.items[0]).LabelCap +
+                             categorytwoLabel  + categorythreeLabel + categoryfourLabel), delegate
+                            {
+                                if (building.processorStage <= ProcessorStage.ExpectingIngredients) { this.TryConfigureIngredientsByOutput(element); }
+                            }, MenuOptionPriority.Default, null, null, 29f, null, null));
+                }
+                else
+                {
+                    string itemtwoLabel = "";
+                    string itemthreeLabel = "";
+                    string itemfourLabel = "";
+                    if (element.secondItems != null)
+                    {
+                        ThingDef itemtwo = DefDatabase<ThingDef>.GetNamedSilentFail(element.secondItems[0]);
+                        if (itemtwo != null)
+                        {
+                            itemtwoLabel = ", " + itemtwo.LabelCap;
+                        }
+                    }
+                    if (element.thirdItems != null)
+                    {
+                        ThingDef itemthree = DefDatabase<ThingDef>.GetNamedSilentFail(element.thirdItems[0]);
+                        if (itemthree != null)
+                        {
+                            itemthreeLabel = ", " + itemthree.LabelCap;
+                        }
+                    }
+                    if (element.fourthItems != null)
+                    {
+                        ThingDef itemfour = DefDatabase<ThingDef>.GetNamedSilentFail(element.fourthItems[0]);
+                        if (itemfour != null)
+                        {
+                            itemfourLabel = ", " + itemfour.LabelCap;
+                        }
+                    }
+                    list.Add(new FloatMenuOption("IP_OutputVariable".Translate(ThingDef.Named(element.result).LabelCap, DefDatabase<ThingDef>.GetNamedSilentFail(element.items[0]).LabelCap +
+                          itemtwoLabel + itemthreeLabel + itemfourLabel), delegate
+                         {
+                             if (building.processorStage <= ProcessorStage.ExpectingIngredients) { this.TryConfigureIngredientsByOutput(element); }
+                         }, MenuOptionPriority.Default, null, null, 29f, null, null));
+                }
+
+            }
+            Find.WindowStack.Add(new FloatMenu(list));
+        }
+
+        private void TryConfigureIngredientsByOutput(CombinationDef element)
+        {
+            building.productToTurnInto = element.result;
+            building.thisRecipe = element.defName;
+            if (element.isCategoryRecipe)
+            {
+                switch (building.compItemProcessor.Props.numberOfInputs)
+                {
+                    case 1:
+                        building.firstCategory = ThingCategoryDef.Named(element.items[0]).defName;
+                        building.firstItem = building.firstCategory;
+                        break;
+                    case 2:
+                        building.firstCategory = ThingCategoryDef.Named(element.items[0]).defName;
+                        building.firstItem = building.firstCategory;
+                        building.secondCategory = ThingCategoryDef.Named(element.secondItems[0]).defName;
+                        building.secondItem = building.secondCategory;
+                        break;
+                    case 3:
+                        building.firstCategory = ThingCategoryDef.Named(element.items[0]).defName;
+                        building.firstItem = building.firstCategory;
+                        building.secondCategory = ThingCategoryDef.Named(element.secondItems[0]).defName;
+                        building.secondItem = building.secondCategory;
+                        building.thirdCategory = ThingCategoryDef.Named(element.thirdItems[0]).defName;
+                        building.thirdItem = building.thirdCategory;
+                        break;
+                    case 4:
+                        building.firstCategory = ThingCategoryDef.Named(element.items[0]).defName;
+                        building.firstItem = building.firstCategory;
+                        building.secondCategory = ThingCategoryDef.Named(element.secondItems[0]).defName;
+                        building.secondItem = building.secondCategory;
+                        building.thirdCategory = ThingCategoryDef.Named(element.thirdItems[0]).defName;
+                        building.thirdItem = building.thirdCategory;
+                        building.fourthCategory = ThingCategoryDef.Named(element.fourthItems[0]).defName;
+                        building.fourthItem = building.fourthCategory;
+                        break;
+                    default:
+                        building.firstCategory = ThingCategoryDef.Named(element.items[0]).defName;
+                        building.firstItem = building.firstCategory;
+                        break;
+                }
+
+            }
+            else
+            {
+                switch (building.compItemProcessor.Props.numberOfInputs)
+                {
+                    case 1:
+                        building.firstItem = ThingDef.Named(element.items[0]).defName;
+                        break;
+                    case 2:
+                        building.firstItem = ThingDef.Named(element.items[0]).defName;
+                        building.secondItem = ThingDef.Named(element.secondItems[0]).defName;
+                        break;
+                    case 3:
+                        building.firstItem = ThingDef.Named(element.items[0]).defName;
+                        building.secondItem = ThingDef.Named(element.secondItems[0]).defName;
+                        building.thirdItem = ThingDef.Named(element.thirdItems[0]).defName;
+                        break;
+                    case 4:
+                        building.firstItem = ThingDef.Named(element.items[0]).defName;
+                        building.secondItem = ThingDef.Named(element.secondItems[0]).defName;
+                        building.thirdItem = ThingDef.Named(element.thirdItems[0]).defName;
+                        building.fourthItem = ThingDef.Named(element.fourthItems[0]).defName;
+                        break;
+                    default:
+                        building.firstItem = ThingDef.Named(element.items[0]).defName;
+
+                        break;
+                }
+            }
+
+            if (building.compItemProcessor.Props.isSemiAutomaticMachine)
+            {
+                if (building.compPowerTrader != null && !building.compPowerTrader.PowerOn && building.compItemProcessor.Props.noPowerDestroysProgress)
+                {
+                    Messages.Message("IP_NoPowerDestroysWarning".Translate(building.def.LabelCap), building, MessageTypeDefOf.NegativeEvent, true);
+                }
+                else if (building.compFuelable != null && !building.compFuelable.HasFuel && building.compItemProcessor.Props.noPowerDestroysProgress)
+                {
+                    Messages.Message("IP_NoFuelDestroysWarning".Translate(building.def.LabelCap), building, MessageTypeDefOf.NegativeEvent, true);
+                }
+                else
+                {
+                    building.IngredientsChosenBringThemIn();
+                }
+
+            }
+            else
+            {
+                building.processorStage = ProcessorStage.IngredientsChosen;
+            }
+        }
+    }
+
+
+    [StaticConstructorOnStartup]
     public class Command_SetFirstItemList : Command
     {
 
@@ -59,7 +368,7 @@ namespace ItemProcessor
                                     }
                                     else
                                     {
-                                        icon = ContentFinder<Texture2D>.Get(ThingDef.Named(item).graphic.path, true);
+                                        icon = ContentFinder<Texture2D>.Get(ThingDef.Named(item).graphic.path, false);
                                     }
 
                                     defaultLabel = "IP_InsertVariable".Translate(ThingDef.Named(item).LabelCap);
@@ -214,7 +523,7 @@ namespace ItemProcessor
                                     }
                                     else
                                     {
-                                        icon = ContentFinder<Texture2D>.Get(ThingDef.Named(item).graphic.path, true);
+                                        icon = ContentFinder<Texture2D>.Get(ThingDef.Named(item).graphic.path, false);
                                     }
                                 }
 
@@ -340,7 +649,7 @@ namespace ItemProcessor
                                     }
                                     else
                                     {
-                                        icon = ContentFinder<Texture2D>.Get(ThingDef.Named(item).graphic.path, true);
+                                        icon = ContentFinder<Texture2D>.Get(ThingDef.Named(item).graphic.path, false);
                                     }
                                 }
 
@@ -465,7 +774,7 @@ namespace ItemProcessor
                                     }
                                     else
                                     {
-                                        icon = ContentFinder<Texture2D>.Get(ThingDef.Named(item).graphic.path, true);
+                                        icon = ContentFinder<Texture2D>.Get(ThingDef.Named(item).graphic.path, false);
                                     }
                                 }
 

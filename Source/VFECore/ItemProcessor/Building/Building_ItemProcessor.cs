@@ -134,8 +134,9 @@ namespace ItemProcessor
         //used to interpolate the colour of the progress bar
         private float progressInt;
 
-        
-        
+        //Pause control for isMachinePausable processors
+        public bool isPaused = false;
+
 
 
 
@@ -223,6 +224,9 @@ namespace ItemProcessor
             Scribe_Values.Look<bool>(ref this.onlySendLightWarningMessageOnce, "onlySendLightWarningMessageOnce", false, false);
             Scribe_Values.Look<bool>(ref this.onlySendRainWarningMessageOnce, "onlySendRainWarningMessageOnce", false, false);
             Scribe_Values.Look<bool>(ref this.onlySendTempWarningMessageOnce, "onlySendTempWarningMessageOnce", false, false);
+
+            Scribe_Values.Look<bool>(ref this.isPaused, "isPaused", false, false);
+
         }
 
         public ThingOwner GetDirectlyHeldThings()
@@ -272,6 +276,7 @@ namespace ItemProcessor
         {
             //Resets everything that needs resetting
             Progress = 0;
+            isPaused = false;
             EjectContentsFirst();
             EjectContentsSecond();
             EjectContentsThird();
@@ -418,7 +423,7 @@ namespace ItemProcessor
                 }
                 base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
             }
-            if (compItemProcessor.Props.isCategoryBuilding)
+            if (compItemProcessor.Props.isCategoryBuilding || DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe)
             {
                 firstItem = thing.def.thingCategories.FirstOrDefault().ToString();
             }
@@ -471,7 +476,7 @@ namespace ItemProcessor
                 }
                 base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
             }
-            if (compItemProcessor.Props.isCategoryBuilding)
+            if (compItemProcessor.Props.isCategoryBuilding || DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe)
             {
                 secondItem = thing.def.thingCategories.FirstOrDefault().ToString();
             }
@@ -525,7 +530,7 @@ namespace ItemProcessor
                 }
                 base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
             }
-            if (compItemProcessor.Props.isCategoryBuilding)
+            if (compItemProcessor.Props.isCategoryBuilding || DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe)
             {
                 thirdItem = thing.def.thingCategories.FirstOrDefault().ToString();
             }
@@ -579,7 +584,7 @@ namespace ItemProcessor
                 }
                 base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
             }
-            if (compItemProcessor.Props.isCategoryBuilding)
+            if (compItemProcessor.Props.isCategoryBuilding || DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe)
             {
                 fourthItem = thing.def.thingCategories.FirstOrDefault().ToString();
             }
@@ -622,7 +627,7 @@ namespace ItemProcessor
 
                 //Ingredient selection gizmos only appear when the building is in Inactive or IngredientsChosen, the first because
                 //it is the baseline of the building, the second because player might change his mind and want to change one of the ingredients
-                if (processorStage <= ProcessorStage.ExpectingIngredients && processorStage != ProcessorStage.AutoIngredients)
+                if (processorStage <= ProcessorStage.ExpectingIngredients && processorStage != ProcessorStage.AutoIngredients && !compItemProcessor.Props.isMachineSpecifiesOutput)
                 {
                     //Different number of ingredients gizmos depending on the number of building slots. Note the <=1 and >=3, just in case someone inputs 78 
                     switch (compItemProcessor.Props.numberOfInputs)
@@ -650,6 +655,13 @@ namespace ItemProcessor
                             yield return ItemListSetupUtility.SetFirstItemListCommand(this, this.Map, compItemProcessor.Props.InsertFirstItemDesc);
                             break;
                     }
+
+
+                }
+
+                if (processorStage <= ProcessorStage.ExpectingIngredients && processorStage != ProcessorStage.AutoIngredients && compItemProcessor.Props.isMachineSpecifiesOutput)
+                {
+                    yield return ItemListSetupUtility.SetOutputListCommand(this, this.Map, compItemProcessor.Props.InsertFirstItemDesc);
 
 
                 }
@@ -748,6 +760,29 @@ namespace ItemProcessor
                         this.isAutoEnabled = !this.isAutoEnabled;
                     }));
                     yield return IP_Gizmo_ToggleAuto;
+                }
+
+                //If building is pausable, show the paused toggle. This allows the player to pause and unpause the machine
+                if (processorStage == ProcessorStage.Working)
+                {
+                    Command_Toggle IP_Gizmo_TogglePause = new Command_Toggle();
+                    IP_Gizmo_TogglePause.defaultLabel = "IP_TogglePause".Translate();
+                    IP_Gizmo_TogglePause.defaultDesc = "IP_TogglePauseDesc".Translate();
+                    if (this.isPaused)
+                    {
+                        IP_Gizmo_TogglePause.icon = ContentFinder<Texture2D>.Get("UI/IP_MachineOn", true);
+                    }
+                    else
+                    {
+                        IP_Gizmo_TogglePause.icon = ContentFinder<Texture2D>.Get("UI/IP_MachineOff", true);
+                    }
+                    IP_Gizmo_TogglePause.isActive = (() => !this.isPaused);
+                    Command_Toggle IP_Gizmo_TogglePause2 = IP_Gizmo_TogglePause;
+                    IP_Gizmo_TogglePause2.toggleAction = (Action)Delegate.Combine(IP_Gizmo_TogglePause2.toggleAction, new Action(delegate ()
+                    {
+                        this.isPaused = !this.isPaused;
+                    }));
+                    yield return IP_Gizmo_TogglePause;
                 }
 
                 //This gizmo only appears in dev mode, for testing purposes. It resets all variables
@@ -1197,7 +1232,7 @@ namespace ItemProcessor
 
             //This part of the method deals with the checks (light level, power, quality) when the machine is actually working
 
-            if (processorStage == ProcessorStage.Working)
+            if (processorStage == ProcessorStage.Working && !this.isPaused)
             {
                 progressCounter++;
 
@@ -1513,7 +1548,7 @@ namespace ItemProcessor
                 string thirdProductOrCategoryName = "";
                 string fourthProductOrCategoryName = "";
 
-                if (compItemProcessor.Props.isCategoryBuilding)
+                if (compItemProcessor.Props.isCategoryBuilding || DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe)
                 {
                     productOrCategoryName = ThingCategoryDef.Named(firstCategory).LabelCap;
                     if (compItemProcessor.Props.numberOfInputs >= 2)
@@ -1568,7 +1603,7 @@ namespace ItemProcessor
             if (processorStage == ProcessorStage.Working && usingQualityIncreasing)
             {
                 string productOrCategoryName;
-                if (compItemProcessor.Props.isCategoryBuilding)
+                if (compItemProcessor.Props.isCategoryBuilding || DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe)
                 {
                     productOrCategoryName = ThingCategoryDef.Named(firstCategory).LabelCap;
                 }
@@ -1656,7 +1691,7 @@ namespace ItemProcessor
             else if (processorStage == ProcessorStage.Working && !usingQualityIncreasing)
             {
                 string productOrCategoryName;
-                if (compItemProcessor.Props.isCategoryBuilding)
+                if (compItemProcessor.Props.isCategoryBuilding || DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe)
                 {
                     productOrCategoryName = ThingCategoryDef.Named(firstCategory).LabelCap;
                 }

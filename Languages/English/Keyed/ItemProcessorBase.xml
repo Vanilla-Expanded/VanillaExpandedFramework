@@ -8,6 +8,9 @@
 	<IP_InsertThirdItemDesc>Insert</IP_InsertThirdItemDesc>
 	<IP_InsertFourthItemDesc>Insert</IP_InsertFourthItemDesc>
 	<IP_InsertVariable>Insert {0}</IP_InsertVariable>
+	<IP_Output>Output {0}</IP_Output>
+	<IP_OutputVariable>Output {0} from {1}</IP_OutputVariable>
+	<IP_OutputDesc>Processor will output {0}. It needs to be fed {1}</IP_OutputDesc>
 	<IP_InsertVariableSecond>Insert {0} in 2nd slot</IP_InsertVariableSecond>
 	<IP_InsertVariableThird>Insert {0} in 3rd slot</IP_InsertVariableThird>
 	<IP_CantFindThing>No items of that kind ({0}) found in this map</IP_CantFindThing>
@@ -17,6 +20,7 @@
 	<IP_CancelIngredientsDesc>Cancel Bringing Ingredients to this building</IP_CancelIngredientsDesc>	
 	<IP_NoIngredientFound>No ingredient found on map</IP_NoIngredientFound>
 	<IP_ChooseIngredient>Choose Ingredient</IP_ChooseIngredient>
+	<IP_ChooseOutput>Choose Output</IP_ChooseOutput>
 	<IP_ChooseIngredientSecond>Choose Second Ingredient</IP_ChooseIngredientSecond>
 	<IP_ChooseIngredientThird>Choose Third Ingredient</IP_ChooseIngredientThird>
 	<IP_ChooseIngredientFourth>Choose Fourth Ingredient</IP_ChooseIngredientFourth>
@@ -60,7 +64,8 @@
 	<IP_WrongTemp>The process in this machine is being interrupted due to an unsuitable temperature and will be spoiled soon</IP_WrongTemp>
 	<IP_SpoiledDueToWrongTemp>The product in this machine has spoiled due to an unsuitable temperature</IP_SpoiledDueToWrongTemp>
 	<IP_TempRangeInThisMachine>. This fermenter needs a temperature between {0} and {1} ºC</IP_TempRangeInThisMachine>
-
+	<IP_TogglePause>Pause / Restart</IP_TogglePause>
+	<IP_TogglePauseDesc>Pause / Restart this machine's processing</IP_TogglePauseDesc>
 	
 
 </LanguageData>
