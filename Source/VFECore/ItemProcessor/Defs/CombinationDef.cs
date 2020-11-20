@@ -28,6 +28,12 @@ namespace ItemProcessor
         public List<string> fourthItems = null;
         //defName of the resulting product
         public string result = "";
+        //This is used in cases where you can't easily get an items graphic because there are no unified rules
+        public bool resultUsesSpecialIcon = false;
+        public string resultSpecialIcon = "";
+        //This is used in cases where you want the result to be stuffed
+        public bool resultUsesStuffed = false;
+        public string resultStuff = "";
         //yield of the resulting product
         public int yield = 1;
         //Amount of the ingredients

@@ -40,7 +40,11 @@ namespace ItemProcessor
 
                         if (building.productToTurnInto == element.result)
                         {
-                            if (ThingDef.Named(element.result).graphicData.graphicClass == typeof(Graphic_StackCount))
+                            if (element.resultUsesSpecialIcon)
+                            {
+                                icon = ContentFinder<Texture2D>.Get(element.resultSpecialIcon, false);
+                            }
+                            else if (ThingDef.Named(element.result).graphicData.graphicClass == typeof(Graphic_StackCount))
                             {
                                 icon = ContentFinder<Texture2D>.Get(ThingDef.Named(element.result).graphic.path + "/" + ThingDef.Named(element.result).defName + "_b", false);
                                 if (icon == null)
@@ -144,8 +148,6 @@ namespace ItemProcessor
             foreach (CombinationDef element in DefDatabase<CombinationDef>.AllDefs.Where(element => (element.building == building.def.defName)))
             {
 
-
-
                 if (element.isCategoryRecipe)
                 {
                     string categorytwoLabel = "";
@@ -225,6 +227,7 @@ namespace ItemProcessor
         {
             building.productToTurnInto = element.result;
             building.thisRecipe = element.defName;
+            
             if (element.isCategoryRecipe)
             {
                 switch (building.compItemProcessor.Props.numberOfInputs)
@@ -232,12 +235,15 @@ namespace ItemProcessor
                     case 1:
                         building.firstCategory = ThingCategoryDef.Named(element.items[0]).defName;
                         building.firstItem = building.firstCategory;
+                        building.ExpectedAmountFirstIngredient = element.amount[0];
                         break;
                     case 2:
                         building.firstCategory = ThingCategoryDef.Named(element.items[0]).defName;
                         building.firstItem = building.firstCategory;
                         building.secondCategory = ThingCategoryDef.Named(element.secondItems[0]).defName;
                         building.secondItem = building.secondCategory;
+                        building.ExpectedAmountFirstIngredient = element.amount[0];
+                        building.ExpectedAmountSecondIngredient = element.amount[1];
                         break;
                     case 3:
                         building.firstCategory = ThingCategoryDef.Named(element.items[0]).defName;
@@ -246,6 +252,9 @@ namespace ItemProcessor
                         building.secondItem = building.secondCategory;
                         building.thirdCategory = ThingCategoryDef.Named(element.thirdItems[0]).defName;
                         building.thirdItem = building.thirdCategory;
+                        building.ExpectedAmountFirstIngredient = element.amount[0];
+                        building.ExpectedAmountSecondIngredient = element.amount[1];
+                        building.ExpectedAmountThirdIngredient = element.amount[2];
                         break;
                     case 4:
                         building.firstCategory = ThingCategoryDef.Named(element.items[0]).defName;
@@ -256,10 +265,15 @@ namespace ItemProcessor
                         building.thirdItem = building.thirdCategory;
                         building.fourthCategory = ThingCategoryDef.Named(element.fourthItems[0]).defName;
                         building.fourthItem = building.fourthCategory;
+                        building.ExpectedAmountFirstIngredient = element.amount[0];
+                        building.ExpectedAmountSecondIngredient = element.amount[1];
+                        building.ExpectedAmountThirdIngredient = element.amount[2];
+                        building.ExpectedAmountFourthIngredient = element.amount[3];
                         break;
                     default:
                         building.firstCategory = ThingCategoryDef.Named(element.items[0]).defName;
                         building.firstItem = building.firstCategory;
+                        building.ExpectedAmountFirstIngredient = element.amount[0];
                         break;
                 }
 
@@ -270,24 +284,35 @@ namespace ItemProcessor
                 {
                     case 1:
                         building.firstItem = ThingDef.Named(element.items[0]).defName;
+                        building.ExpectedAmountFirstIngredient = element.amount[0];
                         break;
                     case 2:
                         building.firstItem = ThingDef.Named(element.items[0]).defName;
                         building.secondItem = ThingDef.Named(element.secondItems[0]).defName;
+                        building.ExpectedAmountFirstIngredient = element.amount[0];
+                        building.ExpectedAmountSecondIngredient = element.amount[1];
                         break;
                     case 3:
                         building.firstItem = ThingDef.Named(element.items[0]).defName;
                         building.secondItem = ThingDef.Named(element.secondItems[0]).defName;
                         building.thirdItem = ThingDef.Named(element.thirdItems[0]).defName;
+                        building.ExpectedAmountFirstIngredient = element.amount[0];
+                        building.ExpectedAmountSecondIngredient = element.amount[1];
+                        building.ExpectedAmountThirdIngredient = element.amount[2];                        
                         break;
                     case 4:
                         building.firstItem = ThingDef.Named(element.items[0]).defName;
                         building.secondItem = ThingDef.Named(element.secondItems[0]).defName;
                         building.thirdItem = ThingDef.Named(element.thirdItems[0]).defName;
                         building.fourthItem = ThingDef.Named(element.fourthItems[0]).defName;
+                        building.ExpectedAmountFirstIngredient = element.amount[0];
+                        building.ExpectedAmountSecondIngredient = element.amount[1];
+                        building.ExpectedAmountThirdIngredient = element.amount[2];
+                        building.ExpectedAmountFourthIngredient = element.amount[3];
                         break;
                     default:
                         building.firstItem = ThingDef.Named(element.items[0]).defName;
+                        building.ExpectedAmountFirstIngredient = element.amount[0];
 
                         break;
                 }

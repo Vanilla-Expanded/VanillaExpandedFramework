@@ -907,34 +907,48 @@ namespace ItemProcessor
             {
                 case 1:
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && element.items.Contains(firstItem))).First();
-                    ExpectedAmountFirstIngredient = thisElement.amount[0];
-                    thisRecipe = thisElement.defName;
+                    if (thisRecipe == "") {
+                        ExpectedAmountFirstIngredient = thisElement.amount[0];
+                        thisRecipe = thisElement.defName;
+                    }                    
                     break;
                 case 2:
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && (element.items.Contains(firstItem) && element.secondItems.Contains(secondItem)))).First();
-                    ExpectedAmountFirstIngredient = thisElement.amount[0];
-                    ExpectedAmountSecondIngredient = thisElement.amount[1];
-                    thisRecipe = thisElement.defName;
+                    if (thisRecipe == "")
+                    {
+                        ExpectedAmountFirstIngredient = thisElement.amount[0];
+                        ExpectedAmountSecondIngredient = thisElement.amount[1];
+                        thisRecipe = thisElement.defName;
+                    }
                     break;
                 case 3:
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && (element.items.Contains(firstItem) && element.secondItems.Contains(secondItem) && element.thirdItems.Contains(thirdItem)))).First();
-                    ExpectedAmountFirstIngredient = thisElement.amount[0];
-                    ExpectedAmountSecondIngredient = thisElement.amount[1];
-                    ExpectedAmountThirdIngredient = thisElement.amount[2];
-                    thisRecipe = thisElement.defName;
+                    if (thisRecipe == "")
+                    {
+                        ExpectedAmountFirstIngredient = thisElement.amount[0];
+                        ExpectedAmountSecondIngredient = thisElement.amount[1];
+                        ExpectedAmountThirdIngredient = thisElement.amount[2];
+                        thisRecipe = thisElement.defName;
+                    }
                     break;
                 case 4:
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && (element.items.Contains(firstItem) && element.secondItems.Contains(secondItem) && element.thirdItems.Contains(thirdItem) && element.fourthItems.Contains(fourthItem)))).First();
-                    ExpectedAmountFirstIngredient = thisElement.amount[0];
-                    ExpectedAmountSecondIngredient = thisElement.amount[1];
-                    ExpectedAmountThirdIngredient = thisElement.amount[2];
-                    ExpectedAmountFourthIngredient = thisElement.amount[3];
-                    thisRecipe = thisElement.defName;
+                    if (thisRecipe == "")
+                    {
+                        ExpectedAmountFirstIngredient = thisElement.amount[0];
+                        ExpectedAmountSecondIngredient = thisElement.amount[1];
+                        ExpectedAmountThirdIngredient = thisElement.amount[2];
+                        ExpectedAmountFourthIngredient = thisElement.amount[3];
+                        thisRecipe = thisElement.defName;
+                    }
                     break;
                 default:
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && element.items.Contains(firstItem))).First();
-                    ExpectedAmountFirstIngredient = thisElement.amount[0];
-                    thisRecipe = thisElement.defName;
+                    if (thisRecipe == "")
+                    {
+                        ExpectedAmountFirstIngredient = thisElement.amount[0];
+                        thisRecipe = thisElement.defName;
+                    }
                     break;
             }
 
@@ -1464,14 +1478,32 @@ namespace ItemProcessor
             {
                 //Create product Thing 
                 Thing newProduct;
+                bool usesStuffedRecipe = DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).resultUsesStuffed;
                 if (this.productsToTurnInto != null && this.productsToTurnInto.Count > 0)
                 {
-                    newProduct = ThingMaker.MakeThing(ThingDef.Named(productsToTurnInto[(int)quality]));
+                    if (usesStuffedRecipe)
+                    {
+                        newProduct = ThingMaker.MakeThing(ThingDef.Named(productsToTurnInto[(int)quality]),
+                            ThingDef.Named(DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).resultStuff));
+                    }
+                    else
+                    {
+                        newProduct = ThingMaker.MakeThing(ThingDef.Named(productsToTurnInto[(int)quality]));
+
+                    }
 
                 }
                 else
                 {
-                    newProduct = ThingMaker.MakeThing(ThingDef.Named(productToTurnInto));
+                    if (usesStuffedRecipe)
+                    {
+                        newProduct = ThingMaker.MakeThing(ThingDef.Named(productToTurnInto),
+                            ThingDef.Named(DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).resultStuff));                      
+                    }
+                    else
+                    {
+                        newProduct = ThingMaker.MakeThing(ThingDef.Named(productToTurnInto));
+                    }
                 }
                 //Set its amount (yield)
                 newProduct.stackCount = amount;
@@ -1487,6 +1519,9 @@ namespace ItemProcessor
                     qualityComp.SetQuality(qualityNow, ArtGenerationContext.Colony);
                 }
 
+                
+
+
                 //Spawn this Thing in the buildings interaction cell, which can have a stockpile, a Hopper, or nothing
 
                 bool AlreadyPresent = false;
@@ -1494,10 +1529,11 @@ namespace ItemProcessor
                 List<Thing> presentProductsList = this.InteractionCell.GetThingList(base.Map);
                 for (int j = 0; j < presentProductsList.Count; j++)
                 {
-                    Thing thing3 = presentProductsList[j];
-                    if (presentProductsList[j].def.defName == newProduct.def.defName)
+                    Thing thingPresent = presentProductsList[j];
+                    if (thingPresent.def.defName == newProduct.def.defName && !usesStuffedRecipe)
                     {
-                        presentProductsList[j].stackCount += amount;
+                        //Log.Message("getting here because "+ thingPresent.def.defName+" is "+ newProduct.def.defName);
+                        thingPresent.stackCount += amount;
                         AlreadyPresent = true;
                         break;
                     }
@@ -1611,7 +1647,12 @@ namespace ItemProcessor
                 {
                     productOrCategoryName = ThingDef.Named(firstItem).LabelCap;
                 }
-                incubationTxt += "IP_ProcessorWorking".Translate(this.def.LabelCap);
+                if (this.isPaused) { 
+                    incubationTxt += "IP_ProcessorPaused".Translate(this.def.LabelCap); 
+                } else { 
+                    incubationTxt += "IP_ProcessorWorking".Translate(this.def.LabelCap); 
+                }
+                
                 if (!removeAfterAwful)
                 {
                     if (productsToTurnInto != null && productsToTurnInto.Count > 0)
@@ -1699,7 +1740,14 @@ namespace ItemProcessor
                 {
                     productOrCategoryName = ThingDef.Named(firstItem).LabelCap;
                 }
-                incubationTxt += "IP_ProcessorWorking".Translate(this.def.LabelCap);
+                if (this.isPaused)
+                {
+                    incubationTxt += "IP_ProcessorPaused".Translate(this.def.LabelCap);
+                }
+                else
+                {
+                    incubationTxt += "IP_ProcessorWorking".Translate(this.def.LabelCap);
+                }
                 incubationTxt += "\n" + "IP_ProcessingInProgressNoQuality".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productToTurnInto).LabelCap, ((int)(ticksPerDay * this.days) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
             }
             if (processorStage == ProcessorStage.Finished)

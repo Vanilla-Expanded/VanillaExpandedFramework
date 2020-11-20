@@ -40,6 +40,7 @@
 	<IP_FilledWithFourth>{0}'s 4th slot is filled with {1}</IP_FilledWithFourth>
 	<IP_IngredientPercentage> (filled at {0} of {1})</IP_IngredientPercentage>
 	<IP_ProcessorWorking>{0} is working: </IP_ProcessorWorking>
+	<IP_ProcessorPaused>{0} is paused: </IP_ProcessorPaused>
 	<IP_ProcessingInProgress>{0} is processing {1}. {2} will be ready with {3} quality in {4}</IP_ProcessingInProgress>
 	<IP_ProcessingInProgressNoQuality>{0} is processing {1}. {2} will be ready in {3}</IP_ProcessingInProgressNoQuality>
 	<IP_RemoveProduct>Remove {0} ({1})</IP_RemoveProduct>
