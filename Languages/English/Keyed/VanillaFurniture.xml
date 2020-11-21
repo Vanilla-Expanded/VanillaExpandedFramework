@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+<!-- Auto Drill -->
+
+<VFE_ChunkToMine>Drill for {0}</VFE_ChunkToMine>
+<VFE_ChunkRandomMine>Drill for Random Chunks</VFE_ChunkRandomMine>
+<VFE_ChooseMine>Choose chunk type to drill</VFE_ChooseMine>
+<VFE_ChooseMineDesc>Choose chunk type to drill. You can choose any of the map's rock types, or random</VFE_ChooseMineDesc>
+<VFE_RandomRock>Random chunk</VFE_RandomRock>
+
+
+
+</LanguageData>

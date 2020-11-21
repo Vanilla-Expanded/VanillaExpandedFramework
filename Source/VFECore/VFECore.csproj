@@ -80,12 +80,16 @@
     <Compile Include="CustomStructureGeneration\SymbolResolvers\SymbolResolver_KCSG_Settlement.cs" />
     <Compile Include="CustomStructureGeneration\Utils\CenteredMessageBox.cs" />
     <Compile Include="CustomStructureGeneration\Utils\KCSG_Utilities.cs" />
+    <Compile Include="Furniture\Comps\CompProperties\CompProperties_RockSpawner.cs" />
     <Compile Include="Furniture\Comps\CompProperties\CompProperties_SelectBuildingBehind.cs" />
     <Compile Include="Furniture\Comps\CompProperties\CompProperties_SpawnOtherBuildingWhenPowered.cs" />
+    <Compile Include="Furniture\Comps\CompRockSpawner.cs" />
     <Compile Include="Furniture\Comps\CompSelectBuildingBehind.cs" />
     <Compile Include="Furniture\Comps\CompSpawnOtherBuildingWhenPowered.cs" />
     <Compile Include="Furniture\Thoughts\ThoughtGiverByProximityDefExtension.cs" />
     <Compile Include="Furniture\Thoughts\ThoughtWorker_ThoughtFromNearbyThingDef.cs" />
+    <Compile Include="Furniture\Utility\Command_SetStoneType.cs" />
+    <Compile Include="Furniture\Utility\StoneTypeSettableUtility.cs" />
     <Compile Include="GlobalSettings.cs" />
     <Compile Include="GlobalSettingsUtilities.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompApparelHediffs.cs" />
