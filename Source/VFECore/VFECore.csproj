@@ -124,6 +124,7 @@
     <Compile Include="CustomStructureGeneration\SymbolResolvers\SymbolResolver_KCSG_RoomGen.cs" />
     <Compile Include="CustomStructureGeneration\SymbolResolvers\SymbolResolver_KCSG_Settlement.cs" />
     <Compile Include="CustomStructureGeneration\Utils\CenteredMessageBox.cs" />
+    <Compile Include="CustomStructureGeneration\Utils\DebugOption.cs" />
     <Compile Include="CustomStructureGeneration\Utils\KCSG_Utilities.cs" />
     <Compile Include="Furniture\Comps\CompProperties\CompProperties_RockSpawner.cs" />
     <Compile Include="Furniture\Comps\CompProperties\CompProperties_SelectBuildingBehind.cs" />

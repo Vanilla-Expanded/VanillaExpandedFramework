@@ -38,7 +38,10 @@ namespace KCSG
             if (map.ParentFaction != null && map.ParentFaction.def.HasModExtension<FactionSettlement>())
             {
                 FactionSettlement sf = map.ParentFaction.def.GetModExtension<FactionSettlement>();
-                SettlementLayoutDef sld = sf.chooseFrom.RandomElement();
+                SettlementLayoutDef sld;
+                if (ModLister.RoyaltyInstalled) sld = sf.chooseFrom.RandomElement();
+                else sld = sf.chooseFrom.ToList().FindAll(sfl => !sfl.requireRoyalty).RandomElement();
+
                 FactionSettlement.temp = sld;
 
                 // Get faction
