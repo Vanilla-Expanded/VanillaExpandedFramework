@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+	<VEF_AsexualHatched>{0} has reproduced asexually.</VEF_AsexualHatched>
+	<VEF_AsexualCloning>{0} has cloned itself.</VEF_AsexualCloning>
+	<VEF_AsexualHatchedEgg>{0} has sporulated.</VEF_AsexualHatchedEgg>
+	<VEF_NotTameable>This creature is untameable</VEF_NotTameable>
+	<VEF_TimeToMetamorphosis>Time to metamorphosis: {0}</VEF_TimeToMetamorphosis>
+
+
+</LanguageData>
