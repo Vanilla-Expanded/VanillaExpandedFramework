@@ -9,6 +9,7 @@ using Verse;
 using RimWorld;
 using HarmonyLib;
 using RimWorld.BaseGen;
+using RimWorld.Planet;
 
 namespace KCSG
 {
@@ -65,6 +66,41 @@ namespace KCSG
 
                 BaseGen.globalSettings.map = map;
                 BaseGen.symbolStack.Push("kcsg_settlement", rp, null);
+                BaseGen.Generate();
+                return false;
+            }
+            else if (Find.World.worldObjects.AllWorldObjects.Find(o=>o.Tile == map.Tile && o.def.HasModExtension<KCSG.FactionSettlement>()) is WorldObject worldObject)
+            {
+                FactionSettlement sf = worldObject.def.GetModExtension<FactionSettlement>();
+                SettlementLayoutDef sld;
+                if (ModLister.RoyaltyInstalled) sld = sf.chooseFrom.RandomElement();
+                else sld = sf.chooseFrom.ToList().FindAll(sfl => !sfl.requireRoyalty).RandomElement();
+
+                FactionSettlement.temp = sld;
+
+                // Get faction
+                Faction faction;
+                if (map.ParentFaction == null || map.ParentFaction == Faction.OfPlayer)
+                {
+                    Log.Error("Faction was null or player.... throwing random ennemy faction");
+                    faction = Find.FactionManager.RandomEnemyFaction(false, false, true, TechLevel.Undefined);
+                }
+                else faction = map.ParentFaction;
+
+                // Get settlement size
+                int width = sld.settlementSize.x;
+                int height = sld.settlementSize.z;
+                CellRect rect = new CellRect(c.x - width / 2, c.z - height / 2, width, height);
+                rect.ClipInsideMap(map);
+
+                ResolveParams rp = default(ResolveParams);
+                rp.faction = faction;
+                rp.rect = rect;
+
+
+                BaseGen.globalSettings.map = map;
+                if (sf.symbolResolver == null) BaseGen.symbolStack.Push("kcsg_settlement", rp, null);
+                else BaseGen.symbolStack.Push(sf.symbolResolver, rp, null);
                 BaseGen.Generate();
                 return false;
             }

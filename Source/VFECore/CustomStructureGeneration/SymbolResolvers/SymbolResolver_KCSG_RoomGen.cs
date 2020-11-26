@@ -16,6 +16,7 @@ namespace KCSG
             Map map = BaseGen.globalSettings.map;
             SettlementLayoutDef lDef = FactionSettlement.temp;
             List<CellRect> gridRects = FactionSettlement.tempRectList;
+            if (VFECore.VFEGlobal.settings.enableLog) Log.Message("KCSG_RoomGen generating " + lDef.defName.ToString());
 
             int count = 0;
             foreach (string str in lDef.roomLayout)
@@ -23,12 +24,16 @@ namespace KCSG
                 if (str != ".")
                 {
                     StructureLayoutDef rld = DefDatabase<StructureLayoutDef>.GetNamed(str);
+
                     KCSG_Utilities.FillCellThingsList(gridRects[count].Cells.ToList(), map, pairsCellThingList);
-                    if (rld.terrainGrid != null) KCSG_Utilities.GenerateTerrainFromLayout(gridRects[count], map, rld);
+
+                    if (rld.terrainGrid != null && rld.terrainGrid.Count > 0) KCSG_Utilities.GenerateTerrainFromLayout(gridRects[count], map, rld);
+
                     foreach (List<String> item in rld.layouts)
                     {
                         KCSG_Utilities.GenerateRoomFromLayout(item, gridRects[count], map, rld);
                     }
+
                     if (rld.isStockpile) KCSG_Utilities.FillStockpileRoom(rld, gridRects[count], map);
                 }
                 count++;

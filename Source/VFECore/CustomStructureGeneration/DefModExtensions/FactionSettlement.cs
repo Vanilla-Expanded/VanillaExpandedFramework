@@ -13,6 +13,7 @@ namespace KCSG
     public class FactionSettlement : DefModExtension
     {
         public List<KCSG.SettlementLayoutDef> chooseFrom = new List<KCSG.SettlementLayoutDef>();
+        public string symbolResolver = null;
 
         public static SettlementLayoutDef temp = null;
         public static List<CellRect> tempRectList = null;

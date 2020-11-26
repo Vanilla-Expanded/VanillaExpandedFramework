@@ -29,7 +29,7 @@ namespace KCSG
             resolveParams.singlePawnLord = singlePawnLord;
             resolveParams.pawnGroupKindDef = (rp.pawnGroupKindDef ?? PawnGroupKindDefOf.Settlement);
             resolveParams.singlePawnSpawnCellExtraPredicate = (rp.singlePawnSpawnCellExtraPredicate ?? ((IntVec3 x) => map.reachability.CanReachMapEdge(x, traverseParms)));
-            if (resolveParams.pawnGroupMakerParams == null)
+            if (resolveParams.pawnGroupMakerParams == null && faction.def.pawnGroupMakers.Any(pgm => pgm.kindDef == PawnGroupKindDefOf.Settlement))
             {
                 resolveParams.pawnGroupMakerParams = new PawnGroupMakerParms();
                 resolveParams.pawnGroupMakerParams.tile = map.Tile;
@@ -38,7 +38,7 @@ namespace KCSG
                 resolveParams.pawnGroupMakerParams.inhabitants = true;
                 resolveParams.pawnGroupMakerParams.seed = rp.settlementPawnGroupSeed;
             }
-            BaseGen.symbolStack.Push("pawnGroup", resolveParams, null);
+            if (faction.def.pawnGroupMakers.Any(pgm => pgm.kindDef == PawnGroupKindDefOf.Settlement)) BaseGen.symbolStack.Push("pawnGroup", resolveParams, null);
 
             // Add defense
             if (lDef.vanillaLikeDefense)
