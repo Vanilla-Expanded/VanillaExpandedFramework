@@ -747,7 +747,8 @@ namespace KCSG
             XElement itemsL = KCSG_Utilities.CreateItemlayout(cellExport, area, out add2, map, pairsSymbolLabel, pairsCellThingList);
             if (add2) layouts.Add(itemsL);
             // Add terrain layout
-            StructureLayoutDef.Add(KCSG_Utilities.CreateTerrainlayout(cellExport, area, map, pairsSymbolLabel));
+            if (area != null) layouts.Add(KCSG_Utilities.CreateTerrainlayout(cellExport, area, map, pairsSymbolLabel));
+            else layouts.Add(KCSG_Utilities.CreateTerrainlayout(cellExport, null, map, pairsSymbolLabel));
             // Add things layouts
             int numOfLayout = KCSG_Utilities.GetMaxThingOnOneCell(cellExport, map, pairsCellThingList);
             for (int i = 0; i < numOfLayout; i++)
@@ -834,7 +835,7 @@ namespace KCSG
 
         public static XElement CreateTerrainlayout(List<IntVec3> cellExport, Area area, Map map, Dictionary<string, SymbolDef> pairsSymbolLabel)
         {
-            XElement liMain = new XElement("terrainGrid", null);
+            XElement liMain = new XElement("li", null);
             int height, width;
             KCSG_Utilities.EdgeFromList(cellExport, out height, out width);
 
