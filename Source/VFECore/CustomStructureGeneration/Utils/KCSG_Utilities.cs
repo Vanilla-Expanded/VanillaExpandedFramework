@@ -235,7 +235,7 @@ namespace KCSG
                             if (temp.thingDef.stuffCategories != null) thing = ThingMaker.MakeThing(temp.thingDef, GenStuff.RandomStuffFor(temp.thingDef));
                             else thing = ThingMaker.MakeThing(temp.thingDef);
 
-                            if (temp.thingDef.stackLimit > 1) thing.stackCount = temp.stackCount.RandomInRange;
+                            thing.stackCount = temp.stackCount.RandomInRange;
                             if (thing.TryGetComp<CompQuality>() != null) thing.TryGetComp<CompQuality>().SetQuality(QualityUtility.GenerateQualityRandomEqualChance(), ArtGenerationContext.Outsider);
 
                             if (cell.Walkable(map)) GenSpawn.Spawn(thing, cell, map);
@@ -303,46 +303,9 @@ namespace KCSG
                 {
                     map.roofGrid.SetRoof(cell, RoofDefOf.RoofConstructed);
                 }
-                else if (rld.roofOver)
-                {
-                    map.roofGrid.SetRoof(cell, RoofDefOf.RoofConstructed);
-                    if (cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Bridgeable)) map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
-                }
                 l++;
             }
             if (VFECore.VFEGlobal.settings.enableLog) Log.Message("-- Cells passage done - PASS");
-        }
-
-        public static void GenerateTerrainFromLayout(CellRect roomRect, Map map, StructureLayoutDef rld)
-        {
-            List<IntVec3> cellExort = roomRect.Cells.ToList();
-            cellExort.Sort((x, y) => x.z.CompareTo(y.z));
-            IntVec3 first = roomRect.First();
-
-            Dictionary<string, SymbolDef> pairsSymbolLabel = KCSG_Utilities.FillpairsSymbolLabel();
-
-            for (int i = 0; i < roomRect.Height; i++)
-            {
-                List<string> tempList = rld.terrainGrid[i].Split(',').ToList();
-                for (int i2 = 0; i2 < roomRect.Width; i2++)
-                {
-                    if (i2 < tempList.Count)
-                    {
-                        SymbolDef temp;
-                        pairsSymbolLabel.TryGetValue(tempList[i2], out temp);
-                        if (temp != null)
-                        {
-                            if (map.terrainGrid.TerrainAt(first).affordances.Contains(TerrainAffordanceDefOf.Bridgeable)) map.terrainGrid.SetTerrain(first, TerrainDefOf.Bridge);
-                            else if (temp.terrainDef != null) map.terrainGrid.SetTerrain(first, temp.terrainDef);
-
-                            first.GetThingList(map).FindAll(t1 => (t1.def.category == ThingCategory.Building && (!t1.def.BuildableByPlayer || t1.Faction == null)) || t1.def.mineable).ForEach((t) => t.DeSpawn());
-                        }
-                    }
-                    first.x++;
-                }
-                first.x -= roomRect.Width;
-                first.z++;
-            }
         }
 
         public static void FillStockpileRoom(StructureLayoutDef rld, CellRect roomRect, Map map)
@@ -688,7 +651,7 @@ namespace KCSG
             XElement symbol = new XElement("symbol", symbolString);
             symbolDef.Add(symbol);
 
-            if (!alreadyCreated.Contains(symbol.Value)) Log.Message(symbolDef.Value); alreadyCreated.Add(symbol.Value);
+            if (!alreadyCreated.Contains(symbol.Value)) Log.Message(symbolDef.ToString()); alreadyCreated.Add(symbol.Value);
         }
 
         public static void CreateSymbolIfNeeded(List<IntVec3> cellExport, Map map, List<string> justCreated, Dictionary<IntVec3, List<Thing>> pairsCellThingList, Area area = null)
@@ -754,11 +717,6 @@ namespace KCSG
             string defNameString = "PlaceHolder"; Log.Warning("Please remember to change the defName of the following room");
             XElement defName = new XElement("defName", defNameString);
             StructureLayoutDef.Add(defName);
-            // Roof?
-            bool roofOverBool = false;
-            if (map.roofGrid.Roofed(cellExport.FindAll(c => c.Walkable(map)).First())) roofOverBool = true;
-            XElement roofOver = new XElement("roofOver", roofOverBool.ToString());
-            StructureLayoutDef.Add(roofOver);
             // Stockpile?
             bool isStockpileBool = false;
             if (map.zoneManager.ZoneAt(cellExport.FindAll(c => c.Walkable(map)).First()) is Zone_Stockpile)
@@ -800,7 +758,8 @@ namespace KCSG
             StructureLayoutDef.Add(layouts);
 
             // Add roofGrid
-            if (area != null) StructureLayoutDef.Add(KCSG_Utilities.CreateRoofGrid(cellExport, area));
+            if (area != null) StructureLayoutDef.Add(KCSG_Utilities.CreateRoofGrid(cellExport, map, area));
+            else StructureLayoutDef.Add(KCSG_Utilities.CreateRoofGrid(cellExport, map));
             Log.Message(StructureLayoutDef.ToString());
         }
 
@@ -922,7 +881,7 @@ namespace KCSG
             return liMain;
         }
 
-        public static XElement CreateRoofGrid(List<IntVec3> cellExport, Area area)
+        public static XElement CreateRoofGrid(List<IntVec3> cellExport, Map map, Area area = null)
         {
             XElement roofGrid = new XElement("roofGrid", null);
             int height, width;
@@ -942,7 +901,7 @@ namespace KCSG
                     }
                     else
                     {
-                        if (first.Roofed(area.Map))
+                        if (first.Roofed(map))
                         {
                             if (i2 + 1 == width) temp += "1";
                             else temp += "1,";

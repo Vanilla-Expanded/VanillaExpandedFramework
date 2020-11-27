@@ -27,8 +27,6 @@ namespace KCSG
 
                     KCSG_Utilities.FillCellThingsList(gridRects[count].Cells.ToList(), map, pairsCellThingList);
 
-                    if (rld.terrainGrid != null && rld.terrainGrid.Count > 0) KCSG_Utilities.GenerateTerrainFromLayout(gridRects[count], map, rld);
-
                     foreach (List<String> item in rld.layouts)
                     {
                         KCSG_Utilities.GenerateRoomFromLayout(item, gridRects[count], map, rld);
