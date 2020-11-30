@@ -34,8 +34,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Lib.Harmony.2.0.2\lib\net472\0Harmony.dll</HintPath>
+    <Reference Include="0Harmony, Version=2.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Lib.Harmony.2.0.4\lib\net472\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
@@ -112,6 +112,8 @@
     <Compile Include="AnimalBehaviours\Comps\CompThoughtEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompUntameable.cs" />
     <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraInfecter.cs" />
+    <Compile Include="Cuisine\Options\VanillaCookingExpanded_Settings.cs" />
+    <Compile Include="Cuisine\Options\VanillaCookingExpanded_SettingsController.cs" />
     <Compile Include="CustomStructureGeneration\DefModExtensions\FactionSettlement.cs" />
     <Compile Include="CustomStructureGeneration\Defs\SettlementLayoutDef.cs" />
     <Compile Include="CustomStructureGeneration\Defs\StructureLayoutDef.cs" />
@@ -247,6 +249,5 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
