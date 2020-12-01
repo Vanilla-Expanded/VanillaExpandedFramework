@@ -15,7 +15,6 @@ namespace KCSG
 #pragma warning restore 0649
         public List<StructureLayoutDef> chooseFrom = new List<StructureLayoutDef>();
 
-        public bool unfogBuilding = true;
         public bool allowFoggedPosition = false;
         public bool spawnPartOfEnnemyFaction = false;
 
@@ -50,7 +49,7 @@ namespace KCSG
                 if (VFECore.VFEGlobal.settings.enableLog) Log.Message("ScenPart_AddStartingStructure - Layout " + count++.ToString() + " generation - PASS");
             }
 
-            if (this.unfogBuilding) this.UnfogBuildingsInRect(map, cellRect);
+            FloodFillerFog.DebugRefogMap(map);
         }
 
         private CellRect CreateCellRect(Map map, int height, int widht)

@@ -28,6 +28,8 @@ namespace KCSG
                 if (VFECore.VFEGlobal.settings.enableLog) Log.Message("Layout " + count.ToString() + " generation - PASS");
                 count++;
             }
+
+            FloodFillerFog.DebugRefogMap(map);
         }
 
         public List<StructureLayoutDef> structureLayoutDefs = new List<StructureLayoutDef>();
