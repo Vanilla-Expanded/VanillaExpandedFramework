@@ -423,7 +423,7 @@ namespace ItemProcessor
                 }
                 base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
             }
-            if (compItemProcessor.Props.isCategoryBuilding || DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe)
+            if (compItemProcessor.Props.isCategoryBuilding || (thisRecipe != null&&DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe))
             {
                 firstItem = thing.def.thingCategories.FirstOrDefault().ToString();
             }
@@ -476,7 +476,7 @@ namespace ItemProcessor
                 }
                 base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
             }
-            if (compItemProcessor.Props.isCategoryBuilding || DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe)
+            if (compItemProcessor.Props.isCategoryBuilding || (thisRecipe != null && DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe))
             {
                 secondItem = thing.def.thingCategories.FirstOrDefault().ToString();
             }
@@ -530,7 +530,7 @@ namespace ItemProcessor
                 }
                 base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
             }
-            if (compItemProcessor.Props.isCategoryBuilding || DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe)
+            if (compItemProcessor.Props.isCategoryBuilding || (thisRecipe != null && DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe))
             {
                 thirdItem = thing.def.thingCategories.FirstOrDefault().ToString();
             }
@@ -584,7 +584,7 @@ namespace ItemProcessor
                 }
                 base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
             }
-            if (compItemProcessor.Props.isCategoryBuilding || DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe)
+            if (compItemProcessor.Props.isCategoryBuilding || (thisRecipe != null && DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe))
             {
                 fourthItem = thing.def.thingCategories.FirstOrDefault().ToString();
             }
@@ -907,14 +907,15 @@ namespace ItemProcessor
             {
                 case 1:
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && element.items.Contains(firstItem))).First();
-                    if (thisRecipe == "") {
+                    if (thisRecipe == null) {
+
                         ExpectedAmountFirstIngredient = thisElement.amount[0];
                         thisRecipe = thisElement.defName;
                     }                    
                     break;
                 case 2:
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && (element.items.Contains(firstItem) && element.secondItems.Contains(secondItem)))).First();
-                    if (thisRecipe == "")
+                    if (thisRecipe == null)
                     {
                         ExpectedAmountFirstIngredient = thisElement.amount[0];
                         ExpectedAmountSecondIngredient = thisElement.amount[1];
@@ -923,7 +924,7 @@ namespace ItemProcessor
                     break;
                 case 3:
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && (element.items.Contains(firstItem) && element.secondItems.Contains(secondItem) && element.thirdItems.Contains(thirdItem)))).First();
-                    if (thisRecipe == "")
+                    if (thisRecipe == null)
                     {
                         ExpectedAmountFirstIngredient = thisElement.amount[0];
                         ExpectedAmountSecondIngredient = thisElement.amount[1];
@@ -933,7 +934,7 @@ namespace ItemProcessor
                     break;
                 case 4:
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && (element.items.Contains(firstItem) && element.secondItems.Contains(secondItem) && element.thirdItems.Contains(thirdItem) && element.fourthItems.Contains(fourthItem)))).First();
-                    if (thisRecipe == "")
+                    if (thisRecipe == null)
                     {
                         ExpectedAmountFirstIngredient = thisElement.amount[0];
                         ExpectedAmountSecondIngredient = thisElement.amount[1];
@@ -944,7 +945,7 @@ namespace ItemProcessor
                     break;
                 default:
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && element.items.Contains(firstItem))).First();
-                    if (thisRecipe == "")
+                    if (thisRecipe == null)
                     {
                         ExpectedAmountFirstIngredient = thisElement.amount[0];
                         thisRecipe = thisElement.defName;
@@ -1584,7 +1585,7 @@ namespace ItemProcessor
                 string thirdProductOrCategoryName = "";
                 string fourthProductOrCategoryName = "";
 
-                if (compItemProcessor.Props.isCategoryBuilding || DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe)
+                if (compItemProcessor.Props.isCategoryBuilding || (this.thisRecipe != null && DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe))
                 {
                     productOrCategoryName = ThingCategoryDef.Named(firstCategory).LabelCap;
                     if (compItemProcessor.Props.numberOfInputs >= 2)
@@ -1639,7 +1640,7 @@ namespace ItemProcessor
             if (processorStage == ProcessorStage.Working && usingQualityIncreasing)
             {
                 string productOrCategoryName;
-                if (compItemProcessor.Props.isCategoryBuilding || DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe)
+                if (compItemProcessor.Props.isCategoryBuilding || (this.thisRecipe != null  && DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe))
                 {
                     productOrCategoryName = ThingCategoryDef.Named(firstCategory).LabelCap;
                 }
@@ -1732,7 +1733,7 @@ namespace ItemProcessor
             else if (processorStage == ProcessorStage.Working && !usingQualityIncreasing)
             {
                 string productOrCategoryName;
-                if (compItemProcessor.Props.isCategoryBuilding || DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe)
+                if (compItemProcessor.Props.isCategoryBuilding || (this.thisRecipe != null && DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe))
                 {
                     productOrCategoryName = ThingCategoryDef.Named(firstCategory).LabelCap;
                 }
