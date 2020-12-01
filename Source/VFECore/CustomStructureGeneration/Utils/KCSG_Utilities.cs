@@ -81,6 +81,13 @@ namespace KCSG
 
         public static void HeightWidthFromLayout(StructureLayoutDef structureLayoutDef, out int height, out int width)
         {
+            if (structureLayoutDef == null || structureLayoutDef.layouts.Count == 0)
+            {
+                Log.Warning("structureLayoutDef was null. Throwing 10 10 size");
+                height = 10;
+                width = 10;
+                return;
+            }
             height = structureLayoutDef.layouts[0].Count;
             width = structureLayoutDef.layouts[0][0].Split(',').ToList().Count;
         }

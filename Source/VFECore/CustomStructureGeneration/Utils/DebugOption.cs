@@ -10,7 +10,7 @@ namespace KCSG
 {
     public static class DebugOption
     {
-        [DebugAction("Vanilla Framework Expanded", "Destroy all hostile pawns on map", actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        [DebugAction("Custom Structure Generation", "Destroy all hostile pawns on map", actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void RemoveAllHostilePawns()
         {
             foreach (Pawn pawn in Find.CurrentMap.mapPawns.AllPawnsSpawned.ToList())
@@ -19,7 +19,7 @@ namespace KCSG
             }
         }
 
-        [DebugAction("Vanilla Framework Expanded", "Quickspawn structure", actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        [DebugAction("Custom Structure Generation", "Quickspawn structure", actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void QuickspawnStructure()
         {
             List<DebugMenuOption> list = new List<DebugMenuOption>();
@@ -42,6 +42,17 @@ namespace KCSG
                 }));
             }
             Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
+        }
+
+        [DebugAction("Custom Structure Generation", "Quick test structure size", actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        private static void QuickTestStructureSize()
+        {
+            foreach (StructureLayoutDef sld in DefDatabase<StructureLayoutDef>.AllDefsListForReading)
+            {
+                int h, w;
+                KCSG_Utilities.HeightWidthFromLayout(sld, out h, out w);
+                Log.Message("Layout " + sld.defName + " Height: " + h + " Width: " + w);
+            }
         }
     }
 }
