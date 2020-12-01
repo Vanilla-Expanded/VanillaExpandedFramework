@@ -22,5 +22,5 @@ It is also recommended that you add in Steam this framework mod to your list of 
 Then, you'll need to link the classes you want to use from your mod's XML code. Each class has a different way to use them, so we have divided the wiki into different pages explaining how to use most of them.
 
 # Then what?
-
+ 
 It is recommended that you read [our Wiki](https://github.com/AndroidQuazar/VanillaExpandedFramework/wiki) to know how to use all these libraries. Or you can YOLO it.
