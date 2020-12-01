@@ -47,6 +47,7 @@ namespace ItemProcessor
         public string secondCategory = "";
         public string thirdCategory = "";
         public string fourthCategory = "";
+        public string firstItemSwallowedForButchery = "";
 
         //A List to store the ingredients as... well, ingredients for the product
         //If the product doesn't allow ingredients (eg. Steel) this is ignored
@@ -181,6 +182,7 @@ namespace ItemProcessor
             Scribe_Values.Look<string>(ref this.secondCategory, "secondCategory", "", false);
             Scribe_Values.Look<string>(ref this.thirdCategory, "thirdCategory", "", false);
             Scribe_Values.Look<string>(ref this.fourthCategory, "fourthCategory", "", false);
+            Scribe_Values.Look<string>(ref this.firstItemSwallowedForButchery, "firstItemSwallowedForButchery", "", false);
 
             Scribe_Collections.Look<ThingDef>(ref this.ingredients, true, "ingredients");
             Scribe_Values.Look<int>(ref this.progressCounter, "progressCounter", 0, false);
@@ -266,7 +268,7 @@ namespace ItemProcessor
         public virtual void EjectContentsFourth()
         {
             //Remove ingredients from the third ingredient container. Call MapMeshDirty so the building graphic changes (if needed)
-            
+
             this.innerContainerFourth?.TryDropAll(this.InteractionCell, base.Map, ThingPlaceMode.Near, null, null);
             base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
 
@@ -290,6 +292,7 @@ namespace ItemProcessor
             secondIngredientComplete = false;
             thirdIngredientComplete = false;
             fourthIngredientComplete = false;
+            firstItemSwallowedForButchery = "";
             progressCounter = 0;
 
             noPowerDestructionCounter = 0;
@@ -356,7 +359,7 @@ namespace ItemProcessor
         {
             //Empties all ingredient containers and destroys ingredients
             //When exactly they get destroyed is configurable through CompItemProcessor
-            if (this.innerContainerFirst!=null&&this.innerContainerFirst.Any)
+            if (this.innerContainerFirst != null && this.innerContainerFirst.Any)
             {
                 this.innerContainerFirst.ClearAndDestroyContents();
             }
@@ -423,7 +426,7 @@ namespace ItemProcessor
                 }
                 base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
             }
-            if (compItemProcessor.Props.isCategoryBuilding || (thisRecipe != null&&DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe))
+            if (compItemProcessor.Props.isCategoryBuilding || (thisRecipe != null && DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe))
             {
                 firstItem = thing.def.thingCategories.FirstOrDefault().ToString();
             }
@@ -801,7 +804,8 @@ namespace ItemProcessor
 
                         }
                     };
-                } else
+                }
+                else
 
                 //Full auto machines with no pawn interaction also include a similar Reset button. will only appear if
                 //Dev mode is not active, to avoid duplicating it
@@ -902,16 +906,17 @@ namespace ItemProcessor
 
             //This finds the recipe in CombinationDefs, and stores its defName in the thisRecipe variable for easy access
             CombinationDef thisElement;
-            
+
             switch (compItemProcessor.Props.numberOfInputs)
             {
                 case 1:
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && element.items.Contains(firstItem))).First();
-                    if (thisRecipe == null) {
+                    if (thisRecipe == null)
+                    {
 
                         ExpectedAmountFirstIngredient = thisElement.amount[0];
                         thisRecipe = thisElement.defName;
-                    }                    
+                    }
                     break;
                 case 2:
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && (element.items.Contains(firstItem) && element.secondItems.Contains(secondItem)))).First();
@@ -958,7 +963,7 @@ namespace ItemProcessor
             {
                 isAutoEnabled = true;
             }
-          
+
 
             //Two different "next stages", one for auto mode machines, and one for regular ones 
             if (compItemProcessor.Props.isAutoMachine && isAutoEnabled)
@@ -967,7 +972,7 @@ namespace ItemProcessor
             }
             else processorStage = ProcessorStage.ExpectingIngredients;
 
-            
+
         }
 
         //This method is called either by Jobs when they insert an item, or by this class when the building extracts and inserts and item from adjacent Hoppers
@@ -1129,8 +1134,9 @@ namespace ItemProcessor
             }
         }
 
-        public void CheckTheHoppers(string itemToCheckFor, ref int ExpectedAmountXIngredient, ref int CurrentAmountXIngredient, 
-            ref bool XIngredientComplete) {
+        public void CheckTheHoppers(string itemToCheckFor, ref int ExpectedAmountXIngredient, ref int CurrentAmountXIngredient,
+            ref bool XIngredientComplete)
+        {
             //Log.Message("Checking hoppers for "+ itemToCheckFor);
             bool OncePerTick = false;
             for (int i = 0; i < compItemProcessor.Props.inputSlots.Count; i++)
@@ -1181,6 +1187,7 @@ namespace ItemProcessor
                                 {
                                     XIngredientComplete = true;
                                 }
+                                firstItemSwallowedForButchery = thing.def.defName;
                                 Notify_StartProcessing();
                                 //Insert the remaining amount
 
@@ -1194,6 +1201,7 @@ namespace ItemProcessor
                             {
                                 //If not, insert the whole stack
                                 CurrentAmountXIngredient += thing.stackCount;
+                                firstItemSwallowedForButchery = thing.def.defName;
                                 Notify_StartProcessing();
                                 thing.Destroy();
                             }
@@ -1223,7 +1231,7 @@ namespace ItemProcessor
             //First are fourth calls checking Hoppers in auto machines.
             if (processorStage == ProcessorStage.AutoIngredients)
             {
-                
+
                 //Only keep searching if the first ingredient isn't above ExpectedAmountFirstIngredient
                 if (!firstIngredientComplete)
                 {
@@ -1484,8 +1492,11 @@ namespace ItemProcessor
                 {
                     if (usesStuffedRecipe)
                     {
+
                         newProduct = ThingMaker.MakeThing(ThingDef.Named(productsToTurnInto[(int)quality]),
-                            ThingDef.Named(DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).resultStuff));
+                        ThingDef.Named(DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).resultStuff));
+
+
                     }
                     else
                     {
@@ -1499,7 +1510,7 @@ namespace ItemProcessor
                     if (usesStuffedRecipe)
                     {
                         newProduct = ThingMaker.MakeThing(ThingDef.Named(productToTurnInto),
-                            ThingDef.Named(DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).resultStuff));                      
+                        ThingDef.Named(DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).resultStuff));
                     }
                     else
                     {
@@ -1507,7 +1518,13 @@ namespace ItemProcessor
                     }
                 }
                 //Set its amount (yield)
-                newProduct.stackCount = amount;
+                if (DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isButcheryRecipe)
+                {
+                    newProduct.stackCount = Mathf.RoundToInt(ThingDef.Named(firstItemSwallowedForButchery).GetStatValueAbstract(StatDefOf.MeatAmount) * DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).efficiency);
+                    amount = newProduct.stackCount;
+                }
+                else newProduct.stackCount = amount;
+
                 //If it's a CompIngredients item, transfer ingredients list to it, but only if ignoresIngredientLists=false or transfersIngredientLists=true
                 if ((newProduct.TryGetComp<CompIngredients>() is CompIngredients ingredientComp) && (!compItemProcessor.Props.ignoresIngredientLists || compItemProcessor.Props.transfersIngredientLists))
                 {
@@ -1520,7 +1537,7 @@ namespace ItemProcessor
                     qualityComp.SetQuality(qualityNow, ArtGenerationContext.Colony);
                 }
 
-                
+
 
 
                 //Spawn this Thing in the buildings interaction cell, which can have a stockpile, a Hopper, or nothing
@@ -1541,7 +1558,21 @@ namespace ItemProcessor
                 }
                 if (!AlreadyPresent)
                 {
-                    GenPlace.TryPlaceThing(newProduct, this.InteractionCell, this.Map, ThingPlaceMode.Direct, null, null, default(Rot4));
+
+                    if (newProduct.stackCount > newProduct.def.stackLimit)
+                    {
+                        GenPlace.TryPlaceThing(newProduct, this.InteractionCell, this.Map, ThingPlaceMode.Direct, null, null, default(Rot4));
+                        List<Thing> presentProductsListAfterFirstStack = this.InteractionCell.GetThingList(base.Map);
+                        for (int j = 0; j < presentProductsListAfterFirstStack.Count; j++)
+                        {
+                            Thing thingPresent = presentProductsList[j];
+                            if (thingPresent.def.defName == newProduct.def.defName ) {
+                                thingPresent.stackCount += newProduct.stackCount;
+                            }
+                        }
+                    }
+                    else
+                        GenPlace.TryPlaceThing(newProduct, this.InteractionCell, this.Map, ThingPlaceMode.Direct, null, null, default(Rot4));
                 }
 
                 //Reset building (if it is also an auto machine (isAutoMachine) it will begin grabbing ingredients again)
@@ -1640,7 +1671,7 @@ namespace ItemProcessor
             if (processorStage == ProcessorStage.Working && usingQualityIncreasing)
             {
                 string productOrCategoryName;
-                if (compItemProcessor.Props.isCategoryBuilding || (this.thisRecipe != null  && DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe))
+                if (compItemProcessor.Props.isCategoryBuilding || (this.thisRecipe != null && DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe))
                 {
                     productOrCategoryName = ThingCategoryDef.Named(firstCategory).LabelCap;
                 }
@@ -1648,12 +1679,15 @@ namespace ItemProcessor
                 {
                     productOrCategoryName = ThingDef.Named(firstItem).LabelCap;
                 }
-                if (this.isPaused) { 
-                    incubationTxt += "IP_ProcessorPaused".Translate(this.def.LabelCap); 
-                } else { 
-                    incubationTxt += "IP_ProcessorWorking".Translate(this.def.LabelCap); 
+                if (this.isPaused)
+                {
+                    incubationTxt += "IP_ProcessorPaused".Translate(this.def.LabelCap);
                 }
-                
+                else
+                {
+                    incubationTxt += "IP_ProcessorWorking".Translate(this.def.LabelCap);
+                }
+
                 if (!removeAfterAwful)
                 {
                     if (productsToTurnInto != null && productsToTurnInto.Count > 0)
@@ -1822,8 +1856,8 @@ namespace ItemProcessor
 
         public override void DrawExtraSelectionOverlays()
         {
-           base.DrawExtraSelectionOverlays();
-           if (compItemProcessor.Props.inputSlots != null)
+            base.DrawExtraSelectionOverlays();
+            if (compItemProcessor.Props.inputSlots != null)
             {
                 foreach (IntVec3 cell in compItemProcessor.Props.inputSlots)
                 {
