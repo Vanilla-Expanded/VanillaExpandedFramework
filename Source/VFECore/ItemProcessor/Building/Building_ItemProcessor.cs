@@ -1449,7 +1449,7 @@ namespace ItemProcessor
                 {
 
                     //Progress is only used on showProgressBar buildings, so only update it in that case
-                    if (compItemProcessor.Props.showProgressBar)
+                    if (compItemProcessor.Props.showProgressBar || compItemProcessor.Props.showFactoryProgressBar)
                     {
                         this.Progress = (float)progressCounter / (rareTicksPerDay * days);
                     }
@@ -1832,6 +1832,20 @@ namespace ItemProcessor
             }
         }
 
+        private Material FactoryBarFilledMat
+        {
+            get
+            {
+
+                if (this.barFilledCachedMat == null)
+                {
+                    //Bar colour interpolation depending on progress
+                    this.barFilledCachedMat = SolidColorMaterials.SimpleSolidColorMaterial(Color.Lerp(GraphicsCache.FactoryBarZeroProgressColor, GraphicsCache.FactoryBarFinishedColor, this.Progress), false);
+                }
+                return this.barFilledCachedMat;
+            }
+        }
+
         //This progress counter is only used by the progress bar
 
         public float Progress
@@ -1906,6 +1920,30 @@ namespace ItemProcessor
                     size = BarSize,
                     fillPercent = CalculatedFillPercent,
                     filledMat = this.BarFilledMat,
+                    unfilledMat = GraphicsCache.BarUnfilledMat,
+                    margin = 0.1f,
+                    rotation = Rot4.North
+                });
+
+
+            }
+            if (compItemProcessor.Props.showFactoryProgressBar)
+            {
+                Vector3 drawPos = this.DrawPos;
+                drawPos.y += 0.0454545468f;
+                drawPos.z += 0.25f;
+                float CalculatedFillPercent = 0;
+
+                if (processorStage == ProcessorStage.Working)
+                {
+                    CalculatedFillPercent = this.Progress;
+                } else CalculatedFillPercent = 0;
+                GenDraw.DrawFillableBar(new GenDraw.FillableBarRequest
+                {
+                    center = drawPos,
+                    size = BarSize,
+                    fillPercent = CalculatedFillPercent,
+                    filledMat = this.FactoryBarFilledMat,
                     unfilledMat = GraphicsCache.BarUnfilledMat,
                     margin = 0.1f,
                     rotation = Rot4.North
