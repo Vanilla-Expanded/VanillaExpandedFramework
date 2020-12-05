@@ -67,6 +67,7 @@
 	<IP_TempRangeInThisMachine>. This fermenter needs a temperature between {0} and {1} ºC</IP_TempRangeInThisMachine>
 	<IP_TogglePause>Pause / Restart</IP_TogglePause>
 	<IP_TogglePauseDesc>Pause / Restart this machine's processing</IP_TogglePauseDesc>
+	<IP_OverThreshold> Waiting for output to clear. Output limit is {0}</IP_OverThreshold>
 	
 
 </LanguageData>

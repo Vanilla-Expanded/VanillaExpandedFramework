@@ -34,8 +34,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Lib.Harmony.2.0.2\lib\net472\0Harmony.dll</HintPath>
+    <Reference Include="0Harmony, Version=2.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Lib.Harmony.2.0.4\lib\net472\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
@@ -63,10 +63,57 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnimalBehaviours\AI\JobDrivers\JobDriver_AnimalResource.cs" />
+    <Compile Include="AnimalBehaviours\AI\WorkGivers\WorkGiver_AnimalResource.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompAnimalProduct.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompAsexualReproduction.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompBuildPeriodically.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompChangeWeather.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompCorpseDecayer.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompDigPeriodically.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompDigWhenHungry.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompElectrified.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompFixedGender.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompGasProducer.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompHediffEffecter.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompHighlyFlammable.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompInfecter.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompInitialHediff.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompMetamorphosis.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompMindEffecter.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompNearbyEffecter.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AnimalProduct.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AsexualReproduction.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_BuildPeriodically.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ChangeWeather.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_CorpseDecayer.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DigPeriodically.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DigWhenHungry.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Electrified.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Fertilizer.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_FixedGender.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_GasProducer.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_HediffEffecter.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_HighlyFlammable.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Infecter.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_InitialHediff.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Metamorphosis.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_MindEffecter.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_NearbyEffecter.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Regeneration.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_StateAfterHealthLoss.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_SummonOnSpawn.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ThoughtEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Untameable.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompRegeneration.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompStateAfterHealthLoss.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompSummonOnSpawn.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompTerrainChanger.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompThoughtEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompUntameable.cs" />
+    <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraInfecter.cs" />
+    <Compile Include="Cuisine\Options\VanillaCookingExpanded_Settings.cs" />
+    <Compile Include="Cuisine\Options\VanillaCookingExpanded_SettingsController.cs" />
     <Compile Include="CustomStructureGeneration\DefModExtensions\FactionSettlement.cs" />
     <Compile Include="CustomStructureGeneration\Defs\SettlementLayoutDef.cs" />
     <Compile Include="CustomStructureGeneration\Defs\StructureLayoutDef.cs" />
@@ -76,9 +123,11 @@
     <Compile Include="CustomStructureGeneration\GenStep\GenStep_CustomStructureGen.cs" />
     <Compile Include="CustomStructureGeneration\Harmony\GenStepPatches.cs" />
     <Compile Include="CustomStructureGeneration\Harmony\FixCaravanThreadingPatch.cs" />
+    <Compile Include="CustomStructureGeneration\ScenPart_AddStartingStructure.cs" />
     <Compile Include="CustomStructureGeneration\SymbolResolvers\SymbolResolver_KCSG_RoomGen.cs" />
     <Compile Include="CustomStructureGeneration\SymbolResolvers\SymbolResolver_KCSG_Settlement.cs" />
     <Compile Include="CustomStructureGeneration\Utils\CenteredMessageBox.cs" />
+    <Compile Include="CustomStructureGeneration\Utils\DebugOption.cs" />
     <Compile Include="CustomStructureGeneration\Utils\KCSG_Utilities.cs" />
     <Compile Include="Furniture\Comps\CompProperties\CompProperties_RockSpawner.cs" />
     <Compile Include="Furniture\Comps\CompProperties\CompProperties_SelectBuildingBehind.cs" />
@@ -204,6 +253,5 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -36,6 +36,12 @@ namespace ItemProcessor
         public string resultStuff = "";
         //yield of the resulting product
         public int yield = 1;
+        //If it's a butchery recipe, calculate yield accordingly
+        public bool isButcheryRecipe = false;
+        public float efficiency = 1;
+        //Does this recipe accept output stack limit control?
+        public bool outputLimitControlled = false;
+        public int maxTotalOutput = 1;
         //Amount of the ingredients
         public List<int> amount;
         //This defines the recipe as a category instead of single item one
