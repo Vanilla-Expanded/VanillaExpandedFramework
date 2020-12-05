@@ -138,6 +138,8 @@ namespace ItemProcessor
         //Pause control for isMachinePausable processors
         public bool isPaused = false;
 
+        //This is used for recipes that have their output measured so they don't output 45657564 Steel, for example
+        bool OverThreshold = false;
 
 
 
@@ -228,6 +230,8 @@ namespace ItemProcessor
             Scribe_Values.Look<bool>(ref this.onlySendTempWarningMessageOnce, "onlySendTempWarningMessageOnce", false, false);
 
             Scribe_Values.Look<bool>(ref this.isPaused, "isPaused", false, false);
+            Scribe_Values.Look<bool>(ref this.OverThreshold, "OverThreshold", false, false);
+
 
         }
 
@@ -765,7 +769,7 @@ namespace ItemProcessor
                 }
 
                 //If building is pausable, show the paused toggle. This allows the player to pause and unpause the machine
-                if (processorStage == ProcessorStage.Working)
+                if (processorStage == ProcessorStage.Working && compItemProcessor.Props.isMachinePausable)
                 {
                     Command_Toggle IP_Gizmo_TogglePause = new Command_Toggle();
                     IP_Gizmo_TogglePause.defaultLabel = "IP_TogglePause".Translate();
@@ -1136,6 +1140,12 @@ namespace ItemProcessor
         public void CheckTheHoppers(string itemToCheckFor, ref int ExpectedAmountXIngredient, ref int CurrentAmountXIngredient,
             ref bool XIngredientComplete)
         {
+
+            if((compItemProcessor.Props.noPowerDestroysProgress && compPowerTrader != null && !compPowerTrader.PowerOn) ||
+                    (compItemProcessor.Props.noPowerDestroysProgress && compFuelable != null && !compFuelable.HasFuel))
+            {
+                return;
+            }
             //Log.Message("Checking hoppers for "+ itemToCheckFor);
             bool OncePerTick = false;
             for (int i = 0; i < compItemProcessor.Props.inputSlots.Count; i++)
@@ -1455,8 +1465,30 @@ namespace ItemProcessor
 
                     if (progressCounter > rareTicksPerDay * this.days)
                     {
-
-                        removeProductOperation(QualityCategory.Awful);
+                        if (DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).outputLimitControlled) {
+                            OverThreshold = false;
+                            List<Thing> presentProductsList = this.InteractionCell.GetThingList(base.Map);
+                            for (int j = 0; j < presentProductsList.Count; j++)
+                            {
+                                Thing thingPresent = presentProductsList[j];
+                                if (thingPresent.def.defName == productToTurnInto &&
+                                    thingPresent.stackCount>= DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).maxTotalOutput)
+                                {
+                                    progressCounter = (int)(rareTicksPerDay * this.days);
+                                    OverThreshold = true;
+                                    break;
+                                }
+                            }
+                            if (!OverThreshold)
+                            {
+                                removeProductOperation(QualityCategory.Awful);
+                            }
+                        }
+                        else
+                        {
+                            removeProductOperation(QualityCategory.Awful);
+                        }
+                        
                     }
                 }
             }
@@ -1792,6 +1824,13 @@ namespace ItemProcessor
             if (compItemProcessor.Props.isTemperatureDependingMachine)
             {
                 incubationTxt += "IP_TempRangeInThisMachine".Translate(compItemProcessor.Props.minTemp.ToStringTemperature(), compItemProcessor.Props.maxTemp.ToStringTemperature(), Prefs.TemperatureMode.ToString());
+            }
+            if (this.OverThreshold)
+            {
+                if (this.thisRecipe != null)
+                {
+                    incubationTxt += "IP_OverThreshold".Translate(DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).maxTotalOutput);
+                }
             }
 
 
