@@ -221,7 +221,7 @@ namespace ItemProcessor
             Scribe_Values.Look<bool>(ref this.fourthIngredientComplete, "fourthIngredientComplete", false, false);
             Scribe_Values.Look<bool>(ref this.isAutoEnabled, "isAutoEnabled", true, false);
             Scribe_Values.Look<bool>(ref this.isSemiAutoEnabled, "isSemiAutoEnabled", false, false);
-            Scribe_Values.Look<string>(ref this.thisRecipe, "thisRecipe", "", false);
+            Scribe_Values.Look<string>(ref this.thisRecipe, "thisRecipe", null, false);
             Scribe_Values.Look<bool>(ref this.onlySendWarningMessageOnce, "onlySendWarningMessageOnce", false, false);
             Scribe_Values.Look<bool>(ref this.onlySendLightWarningMessageOnce, "onlySendLightWarningMessageOnce", false, false);
             Scribe_Values.Look<bool>(ref this.onlySendRainWarningMessageOnce, "onlySendRainWarningMessageOnce", false, false);
@@ -294,7 +294,6 @@ namespace ItemProcessor
             fourthIngredientComplete = false;
             firstItemSwallowedForButchery = "";
             progressCounter = 0;
-
             noPowerDestructionCounter = 0;
             noGoodLightDestructionCounter = 0;
             noGoodWeatherDestructionCounter = 0;
@@ -321,7 +320,7 @@ namespace ItemProcessor
             }
             else
             {
-                thisRecipe = "";
+                thisRecipe = null;
                 processorStage = ProcessorStage.Inactive;
                 ExpectedAmountFirstIngredient = 0;
                 ExpectedAmountSecondIngredient = 0;
