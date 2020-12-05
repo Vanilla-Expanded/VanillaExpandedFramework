@@ -138,6 +138,8 @@
     <Compile Include="GlobalSettings.cs" />
     <Compile Include="GlobalSettingsUtilities.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompApparelHediffs.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompDependsOnBuilding.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompPawnDependsOn.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompProperties_ApparelHediffs.cs" />
     <Compile Include="Cuisine\Comps\CompMaturingAlcohol.cs" />
     <Compile Include="Cuisine\Comps\CompProperties\CompProperties_MaturingAlcohol.cs" />
@@ -169,6 +171,8 @@
     <Compile Include="ItemProcessor\Commands\Command_ItemLists.cs" />
     <Compile Include="ItemProcessor\Commands\ItemListSetupUtility.cs" />
     <Compile Include="ItemProcessor\Comps\MapComponents\ItemProcessor_MapComponent.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompProperties_DependsOnBuilding.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompProperties_PawnDependsOn.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompProperties_Shield.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompShield.cs" />
     <Compile Include="ItemProcessor\Comps\ThingComps\CompItemProcessor.cs" />
