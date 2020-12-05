@@ -18,9 +18,11 @@ namespace KCSG
         public TerrainDef pathType = null;
         public int pathWidth = 2; // Space between room
 
-        public bool vanillaLikeDefense = true; // Use vanilla generation for defense
+        public bool vanillaLikeDefense = false; // Use vanilla generation for defense
         public bool customDefense = false;
         // public ExternalStruct externalStruct = null;
+
+        public bool requireRoyalty = false;
 
         public List<string> roomLayout = new List<string>();
     }

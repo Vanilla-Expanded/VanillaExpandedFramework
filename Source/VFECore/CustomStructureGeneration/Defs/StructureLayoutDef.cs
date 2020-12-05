@@ -9,11 +9,14 @@ namespace KCSG
     public class StructureLayoutDef : Def
     {
         public List<List<string>> layouts = new List<List<string>>();
-        public bool roofOver = true;
+        public List<string> roofGrid = new List<string>();
+
         public bool isStockpile = false;
         public List<ThingDef> allowedThingsInStockpile = new List<ThingDef>();
 
-        public List<string> roofGrid = new List<string>();
+        [Obsolete("Not used anymore, only here for compatibility with mod that used the old CSG")]
+        public bool roofOver = true;
+        [Obsolete("Not used anymore, only here for compatibility with mod that used the old CSG")]
         public List<string> terrainGrid = new List<string>();
     }
 }
