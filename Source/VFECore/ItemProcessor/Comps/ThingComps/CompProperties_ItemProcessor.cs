@@ -117,10 +117,8 @@ namespace ItemProcessor
         public string messageIfWrongTemp = "IP_SpoiledDueToWrongTemp";
         public int rareTicksToDestroyDueToWrongTemp = 30;
 
-        //This defines whether the building shows a fermenting progress bar like base game's
+        //This defines whether the building shows a progress bar
         public bool showProgressBar = false;
-        //This defines whether the building shows a simple progress bar that goes from red to green
-        public bool showFactoryProgressBar = false;
 
         //Full auto machines specify input slots for their hoppers
         public List<IntVec3> inputSlots = null;

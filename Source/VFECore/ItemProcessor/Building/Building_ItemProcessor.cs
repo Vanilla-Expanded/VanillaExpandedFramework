@@ -47,7 +47,6 @@ namespace ItemProcessor
         public string secondCategory = "";
         public string thirdCategory = "";
         public string fourthCategory = "";
-        public string firstItemSwallowedForButchery = "";
 
         //A List to store the ingredients as... well, ingredients for the product
         //If the product doesn't allow ingredients (eg. Steel) this is ignored
@@ -138,8 +137,6 @@ namespace ItemProcessor
         //Pause control for isMachinePausable processors
         public bool isPaused = false;
 
-        //This is used for recipes that have their output measured so they don't output 45657564 Steel, for example
-        bool OverThreshold = false;
 
 
 
@@ -184,7 +181,6 @@ namespace ItemProcessor
             Scribe_Values.Look<string>(ref this.secondCategory, "secondCategory", "", false);
             Scribe_Values.Look<string>(ref this.thirdCategory, "thirdCategory", "", false);
             Scribe_Values.Look<string>(ref this.fourthCategory, "fourthCategory", "", false);
-            Scribe_Values.Look<string>(ref this.firstItemSwallowedForButchery, "firstItemSwallowedForButchery", "", false);
 
             Scribe_Collections.Look<ThingDef>(ref this.ingredients, true, "ingredients");
             Scribe_Values.Look<int>(ref this.progressCounter, "progressCounter", 0, false);
@@ -223,15 +219,13 @@ namespace ItemProcessor
             Scribe_Values.Look<bool>(ref this.fourthIngredientComplete, "fourthIngredientComplete", false, false);
             Scribe_Values.Look<bool>(ref this.isAutoEnabled, "isAutoEnabled", true, false);
             Scribe_Values.Look<bool>(ref this.isSemiAutoEnabled, "isSemiAutoEnabled", false, false);
-            Scribe_Values.Look<string>(ref this.thisRecipe, "thisRecipe", null, false);
+            Scribe_Values.Look<string>(ref this.thisRecipe, "thisRecipe", "", false);
             Scribe_Values.Look<bool>(ref this.onlySendWarningMessageOnce, "onlySendWarningMessageOnce", false, false);
             Scribe_Values.Look<bool>(ref this.onlySendLightWarningMessageOnce, "onlySendLightWarningMessageOnce", false, false);
             Scribe_Values.Look<bool>(ref this.onlySendRainWarningMessageOnce, "onlySendRainWarningMessageOnce", false, false);
             Scribe_Values.Look<bool>(ref this.onlySendTempWarningMessageOnce, "onlySendTempWarningMessageOnce", false, false);
 
             Scribe_Values.Look<bool>(ref this.isPaused, "isPaused", false, false);
-            Scribe_Values.Look<bool>(ref this.OverThreshold, "OverThreshold", false, false);
-
 
         }
 
@@ -272,7 +266,7 @@ namespace ItemProcessor
         public virtual void EjectContentsFourth()
         {
             //Remove ingredients from the third ingredient container. Call MapMeshDirty so the building graphic changes (if needed)
-
+            
             this.innerContainerFourth?.TryDropAll(this.InteractionCell, base.Map, ThingPlaceMode.Near, null, null);
             base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
 
@@ -296,8 +290,8 @@ namespace ItemProcessor
             secondIngredientComplete = false;
             thirdIngredientComplete = false;
             fourthIngredientComplete = false;
-            firstItemSwallowedForButchery = "";
             progressCounter = 0;
+
             noPowerDestructionCounter = 0;
             noGoodLightDestructionCounter = 0;
             noGoodWeatherDestructionCounter = 0;
@@ -324,7 +318,7 @@ namespace ItemProcessor
             }
             else
             {
-                thisRecipe = null;
+                thisRecipe = "";
                 processorStage = ProcessorStage.Inactive;
                 ExpectedAmountFirstIngredient = 0;
                 ExpectedAmountSecondIngredient = 0;
@@ -362,7 +356,7 @@ namespace ItemProcessor
         {
             //Empties all ingredient containers and destroys ingredients
             //When exactly they get destroyed is configurable through CompItemProcessor
-            if (this.innerContainerFirst != null && this.innerContainerFirst.Any)
+            if (this.innerContainerFirst!=null&&this.innerContainerFirst.Any)
             {
                 this.innerContainerFirst.ClearAndDestroyContents();
             }
@@ -429,7 +423,7 @@ namespace ItemProcessor
                 }
                 base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
             }
-            if (compItemProcessor.Props.isCategoryBuilding || (thisRecipe != null && DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe))
+            if (compItemProcessor.Props.isCategoryBuilding || DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe)
             {
                 firstItem = thing.def.thingCategories.FirstOrDefault().ToString();
             }
@@ -482,7 +476,7 @@ namespace ItemProcessor
                 }
                 base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
             }
-            if (compItemProcessor.Props.isCategoryBuilding || (thisRecipe != null && DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe))
+            if (compItemProcessor.Props.isCategoryBuilding || DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe)
             {
                 secondItem = thing.def.thingCategories.FirstOrDefault().ToString();
             }
@@ -536,7 +530,7 @@ namespace ItemProcessor
                 }
                 base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
             }
-            if (compItemProcessor.Props.isCategoryBuilding || (thisRecipe != null && DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe))
+            if (compItemProcessor.Props.isCategoryBuilding || DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe)
             {
                 thirdItem = thing.def.thingCategories.FirstOrDefault().ToString();
             }
@@ -590,7 +584,7 @@ namespace ItemProcessor
                 }
                 base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
             }
-            if (compItemProcessor.Props.isCategoryBuilding || (thisRecipe != null && DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe))
+            if (compItemProcessor.Props.isCategoryBuilding || DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe)
             {
                 fourthItem = thing.def.thingCategories.FirstOrDefault().ToString();
             }
@@ -769,7 +763,7 @@ namespace ItemProcessor
                 }
 
                 //If building is pausable, show the paused toggle. This allows the player to pause and unpause the machine
-                if (processorStage == ProcessorStage.Working && compItemProcessor.Props.isMachinePausable)
+                if (processorStage == ProcessorStage.Working)
                 {
                     Command_Toggle IP_Gizmo_TogglePause = new Command_Toggle();
                     IP_Gizmo_TogglePause.defaultLabel = "IP_TogglePause".Translate();
@@ -807,8 +801,7 @@ namespace ItemProcessor
 
                         }
                     };
-                }
-                else
+                } else
 
                 //Full auto machines with no pawn interaction also include a similar Reset button. will only appear if
                 //Dev mode is not active, to avoid duplicating it
@@ -909,21 +902,19 @@ namespace ItemProcessor
 
             //This finds the recipe in CombinationDefs, and stores its defName in the thisRecipe variable for easy access
             CombinationDef thisElement;
-
+            
             switch (compItemProcessor.Props.numberOfInputs)
             {
                 case 1:
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && element.items.Contains(firstItem))).First();
-                    if (thisRecipe == null)
-                    {
-
+                    if (thisRecipe == "") {
                         ExpectedAmountFirstIngredient = thisElement.amount[0];
                         thisRecipe = thisElement.defName;
-                    }
+                    }                    
                     break;
                 case 2:
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && (element.items.Contains(firstItem) && element.secondItems.Contains(secondItem)))).First();
-                    if (thisRecipe == null)
+                    if (thisRecipe == "")
                     {
                         ExpectedAmountFirstIngredient = thisElement.amount[0];
                         ExpectedAmountSecondIngredient = thisElement.amount[1];
@@ -932,7 +923,7 @@ namespace ItemProcessor
                     break;
                 case 3:
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && (element.items.Contains(firstItem) && element.secondItems.Contains(secondItem) && element.thirdItems.Contains(thirdItem)))).First();
-                    if (thisRecipe == null)
+                    if (thisRecipe == "")
                     {
                         ExpectedAmountFirstIngredient = thisElement.amount[0];
                         ExpectedAmountSecondIngredient = thisElement.amount[1];
@@ -942,7 +933,7 @@ namespace ItemProcessor
                     break;
                 case 4:
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && (element.items.Contains(firstItem) && element.secondItems.Contains(secondItem) && element.thirdItems.Contains(thirdItem) && element.fourthItems.Contains(fourthItem)))).First();
-                    if (thisRecipe == null)
+                    if (thisRecipe == "")
                     {
                         ExpectedAmountFirstIngredient = thisElement.amount[0];
                         ExpectedAmountSecondIngredient = thisElement.amount[1];
@@ -953,7 +944,7 @@ namespace ItemProcessor
                     break;
                 default:
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && element.items.Contains(firstItem))).First();
-                    if (thisRecipe == null)
+                    if (thisRecipe == "")
                     {
                         ExpectedAmountFirstIngredient = thisElement.amount[0];
                         thisRecipe = thisElement.defName;
@@ -966,7 +957,7 @@ namespace ItemProcessor
             {
                 isAutoEnabled = true;
             }
-
+          
 
             //Two different "next stages", one for auto mode machines, and one for regular ones 
             if (compItemProcessor.Props.isAutoMachine && isAutoEnabled)
@@ -975,7 +966,7 @@ namespace ItemProcessor
             }
             else processorStage = ProcessorStage.ExpectingIngredients;
 
-
+            
         }
 
         //This method is called either by Jobs when they insert an item, or by this class when the building extracts and inserts and item from adjacent Hoppers
@@ -1137,15 +1128,8 @@ namespace ItemProcessor
             }
         }
 
-        public void CheckTheHoppers(string itemToCheckFor, ref int ExpectedAmountXIngredient, ref int CurrentAmountXIngredient,
-            ref bool XIngredientComplete)
-        {
-
-            if((compItemProcessor.Props.noPowerDestroysProgress && compPowerTrader != null && !compPowerTrader.PowerOn) ||
-                    (compItemProcessor.Props.noPowerDestroysProgress && compFuelable != null && !compFuelable.HasFuel))
-            {
-                return;
-            }
+        public void CheckTheHoppers(string itemToCheckFor, ref int ExpectedAmountXIngredient, ref int CurrentAmountXIngredient, 
+            ref bool XIngredientComplete) {
             //Log.Message("Checking hoppers for "+ itemToCheckFor);
             bool OncePerTick = false;
             for (int i = 0; i < compItemProcessor.Props.inputSlots.Count; i++)
@@ -1196,7 +1180,6 @@ namespace ItemProcessor
                                 {
                                     XIngredientComplete = true;
                                 }
-                                firstItemSwallowedForButchery = thing.def.defName;
                                 Notify_StartProcessing();
                                 //Insert the remaining amount
 
@@ -1210,7 +1193,6 @@ namespace ItemProcessor
                             {
                                 //If not, insert the whole stack
                                 CurrentAmountXIngredient += thing.stackCount;
-                                firstItemSwallowedForButchery = thing.def.defName;
                                 Notify_StartProcessing();
                                 thing.Destroy();
                             }
@@ -1240,7 +1222,7 @@ namespace ItemProcessor
             //First are fourth calls checking Hoppers in auto machines.
             if (processorStage == ProcessorStage.AutoIngredients)
             {
-
+                
                 //Only keep searching if the first ingredient isn't above ExpectedAmountFirstIngredient
                 if (!firstIngredientComplete)
                 {
@@ -1458,37 +1440,15 @@ namespace ItemProcessor
                 {
 
                     //Progress is only used on showProgressBar buildings, so only update it in that case
-                    if (compItemProcessor.Props.showProgressBar || compItemProcessor.Props.showFactoryProgressBar)
+                    if (compItemProcessor.Props.showProgressBar)
                     {
                         this.Progress = (float)progressCounter / (rareTicksPerDay * days);
                     }
 
                     if (progressCounter > rareTicksPerDay * this.days)
                     {
-                        if (DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).outputLimitControlled) {
-                            OverThreshold = false;
-                            List<Thing> presentProductsList = this.InteractionCell.GetThingList(base.Map);
-                            for (int j = 0; j < presentProductsList.Count; j++)
-                            {
-                                Thing thingPresent = presentProductsList[j];
-                                if (thingPresent.def.defName == productToTurnInto &&
-                                    thingPresent.stackCount>= DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).maxTotalOutput)
-                                {
-                                    progressCounter = (int)(rareTicksPerDay * this.days);
-                                    OverThreshold = true;
-                                    break;
-                                }
-                            }
-                            if (!OverThreshold)
-                            {
-                                removeProductOperation(QualityCategory.Awful);
-                            }
-                        }
-                        else
-                        {
-                            removeProductOperation(QualityCategory.Awful);
-                        }
-                        
+
+                        removeProductOperation(QualityCategory.Awful);
                     }
                 }
             }
@@ -1523,11 +1483,8 @@ namespace ItemProcessor
                 {
                     if (usesStuffedRecipe)
                     {
-
                         newProduct = ThingMaker.MakeThing(ThingDef.Named(productsToTurnInto[(int)quality]),
-                        ThingDef.Named(DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).resultStuff));
-
-
+                            ThingDef.Named(DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).resultStuff));
                     }
                     else
                     {
@@ -1541,7 +1498,7 @@ namespace ItemProcessor
                     if (usesStuffedRecipe)
                     {
                         newProduct = ThingMaker.MakeThing(ThingDef.Named(productToTurnInto),
-                        ThingDef.Named(DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).resultStuff));
+                            ThingDef.Named(DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).resultStuff));                      
                     }
                     else
                     {
@@ -1549,13 +1506,7 @@ namespace ItemProcessor
                     }
                 }
                 //Set its amount (yield)
-                if (DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isButcheryRecipe)
-                {
-                    newProduct.stackCount = Mathf.RoundToInt(ThingDef.Named(firstItemSwallowedForButchery).GetStatValueAbstract(StatDefOf.MeatAmount) * DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).efficiency);
-                    amount = newProduct.stackCount;
-                }
-                else newProduct.stackCount = amount;
-
+                newProduct.stackCount = amount;
                 //If it's a CompIngredients item, transfer ingredients list to it, but only if ignoresIngredientLists=false or transfersIngredientLists=true
                 if ((newProduct.TryGetComp<CompIngredients>() is CompIngredients ingredientComp) && (!compItemProcessor.Props.ignoresIngredientLists || compItemProcessor.Props.transfersIngredientLists))
                 {
@@ -1568,7 +1519,7 @@ namespace ItemProcessor
                     qualityComp.SetQuality(qualityNow, ArtGenerationContext.Colony);
                 }
 
-
+                
 
 
                 //Spawn this Thing in the buildings interaction cell, which can have a stockpile, a Hopper, or nothing
@@ -1589,21 +1540,7 @@ namespace ItemProcessor
                 }
                 if (!AlreadyPresent)
                 {
-
-                    if (newProduct.stackCount > newProduct.def.stackLimit)
-                    {
-                        GenPlace.TryPlaceThing(newProduct, this.InteractionCell, this.Map, ThingPlaceMode.Direct, null, null, default(Rot4));
-                        List<Thing> presentProductsListAfterFirstStack = this.InteractionCell.GetThingList(base.Map);
-                        for (int j = 0; j < presentProductsListAfterFirstStack.Count; j++)
-                        {
-                            Thing thingPresent = presentProductsList[j];
-                            if (thingPresent.def.defName == newProduct.def.defName ) {
-                                thingPresent.stackCount += newProduct.stackCount;
-                            }
-                        }
-                    }
-                    else
-                        GenPlace.TryPlaceThing(newProduct, this.InteractionCell, this.Map, ThingPlaceMode.Direct, null, null, default(Rot4));
+                    GenPlace.TryPlaceThing(newProduct, this.InteractionCell, this.Map, ThingPlaceMode.Direct, null, null, default(Rot4));
                 }
 
                 //Reset building (if it is also an auto machine (isAutoMachine) it will begin grabbing ingredients again)
@@ -1647,7 +1584,7 @@ namespace ItemProcessor
                 string thirdProductOrCategoryName = "";
                 string fourthProductOrCategoryName = "";
 
-                if (compItemProcessor.Props.isCategoryBuilding || (this.thisRecipe != null && DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe))
+                if (compItemProcessor.Props.isCategoryBuilding || DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe)
                 {
                     productOrCategoryName = ThingCategoryDef.Named(firstCategory).LabelCap;
                     if (compItemProcessor.Props.numberOfInputs >= 2)
@@ -1702,7 +1639,7 @@ namespace ItemProcessor
             if (processorStage == ProcessorStage.Working && usingQualityIncreasing)
             {
                 string productOrCategoryName;
-                if (compItemProcessor.Props.isCategoryBuilding || (this.thisRecipe != null && DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe))
+                if (compItemProcessor.Props.isCategoryBuilding || DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe)
                 {
                     productOrCategoryName = ThingCategoryDef.Named(firstCategory).LabelCap;
                 }
@@ -1710,15 +1647,12 @@ namespace ItemProcessor
                 {
                     productOrCategoryName = ThingDef.Named(firstItem).LabelCap;
                 }
-                if (this.isPaused)
-                {
-                    incubationTxt += "IP_ProcessorPaused".Translate(this.def.LabelCap);
+                if (this.isPaused) { 
+                    incubationTxt += "IP_ProcessorPaused".Translate(this.def.LabelCap); 
+                } else { 
+                    incubationTxt += "IP_ProcessorWorking".Translate(this.def.LabelCap); 
                 }
-                else
-                {
-                    incubationTxt += "IP_ProcessorWorking".Translate(this.def.LabelCap);
-                }
-
+                
                 if (!removeAfterAwful)
                 {
                     if (productsToTurnInto != null && productsToTurnInto.Count > 0)
@@ -1798,7 +1732,7 @@ namespace ItemProcessor
             else if (processorStage == ProcessorStage.Working && !usingQualityIncreasing)
             {
                 string productOrCategoryName;
-                if (compItemProcessor.Props.isCategoryBuilding || (this.thisRecipe != null && DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe))
+                if (compItemProcessor.Props.isCategoryBuilding || DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe)
                 {
                     productOrCategoryName = ThingCategoryDef.Named(firstCategory).LabelCap;
                 }
@@ -1824,13 +1758,6 @@ namespace ItemProcessor
             if (compItemProcessor.Props.isTemperatureDependingMachine)
             {
                 incubationTxt += "IP_TempRangeInThisMachine".Translate(compItemProcessor.Props.minTemp.ToStringTemperature(), compItemProcessor.Props.maxTemp.ToStringTemperature(), Prefs.TemperatureMode.ToString());
-            }
-            if (this.OverThreshold)
-            {
-                if (this.thisRecipe != null)
-                {
-                    incubationTxt += "IP_OverThreshold".Translate(DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).maxTotalOutput);
-                }
             }
 
 
@@ -1870,20 +1797,6 @@ namespace ItemProcessor
             }
         }
 
-        private Material FactoryBarFilledMat
-        {
-            get
-            {
-
-                if (this.barFilledCachedMat == null)
-                {
-                    //Bar colour interpolation depending on progress
-                    this.barFilledCachedMat = SolidColorMaterials.SimpleSolidColorMaterial(Color.Lerp(GraphicsCache.FactoryBarZeroProgressColor, GraphicsCache.FactoryBarFinishedColor, this.Progress), false);
-                }
-                return this.barFilledCachedMat;
-            }
-        }
-
         //This progress counter is only used by the progress bar
 
         public float Progress
@@ -1908,8 +1821,8 @@ namespace ItemProcessor
 
         public override void DrawExtraSelectionOverlays()
         {
-            base.DrawExtraSelectionOverlays();
-            if (compItemProcessor.Props.inputSlots != null)
+           base.DrawExtraSelectionOverlays();
+           if (compItemProcessor.Props.inputSlots != null)
             {
                 foreach (IntVec3 cell in compItemProcessor.Props.inputSlots)
                 {
@@ -1958,30 +1871,6 @@ namespace ItemProcessor
                     size = BarSize,
                     fillPercent = CalculatedFillPercent,
                     filledMat = this.BarFilledMat,
-                    unfilledMat = GraphicsCache.BarUnfilledMat,
-                    margin = 0.1f,
-                    rotation = Rot4.North
-                });
-
-
-            }
-            if (compItemProcessor.Props.showFactoryProgressBar)
-            {
-                Vector3 drawPos = this.DrawPos;
-                drawPos.y += 0.0454545468f;
-                drawPos.z += 0.25f;
-                float CalculatedFillPercent = 0;
-
-                if (processorStage == ProcessorStage.Working)
-                {
-                    CalculatedFillPercent = this.Progress;
-                } else CalculatedFillPercent = 0;
-                GenDraw.DrawFillableBar(new GenDraw.FillableBarRequest
-                {
-                    center = drawPos,
-                    size = BarSize,
-                    fillPercent = CalculatedFillPercent,
-                    filledMat = this.FactoryBarFilledMat,
                     unfilledMat = GraphicsCache.BarUnfilledMat,
                     margin = 0.1f,
                     rotation = Rot4.North
