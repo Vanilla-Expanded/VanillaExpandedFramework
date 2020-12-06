@@ -120,6 +120,7 @@
     <Compile Include="CustomStructureGeneration\Defs\SymbolDef.cs" />
     <Compile Include="CustomStructureGeneration\Designators\Designator_ExportToXml.cs" />
     <Compile Include="CustomStructureGeneration\Designators\Designator_ExportToXmlFromArea.cs" />
+    <Compile Include="CustomStructureGeneration\GenStep\GenStep_EnnemiesPresence.cs" />
     <Compile Include="CustomStructureGeneration\GenStep\GenStep_CustomStructureGen.cs" />
     <Compile Include="CustomStructureGeneration\Harmony\GenStepPatches.cs" />
     <Compile Include="CustomStructureGeneration\Harmony\FixCaravanThreadingPatch.cs" />
