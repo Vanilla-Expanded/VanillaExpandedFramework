@@ -31,7 +31,6 @@ namespace KCSG
 
 			int h = 10, w = 10;
 			
-			IntVec3 center = this.FindRect(map, h, w);
 			List<Pawn> list = new List<Pawn>();
 			foreach (Pawn pawn in this.GeneratePawns(map, parms))
 			{
@@ -44,7 +43,7 @@ namespace KCSG
 						break;
 					}
 				}
-				else if (!SiteGenStepUtility.TryFindSpawnCellAroundOrNear(CellRect.CenteredOn(center, w, h), center, map, out loc))
+				else if (!SiteGenStepUtility.TryFindSpawnCellAroundOrNear(CellRect.CenteredOn(map.Center, w, h), map.Center, map, out loc))
 				{
 					Find.WorldPawns.PassToWorld(pawn, PawnDiscardDecideMode.Decide);
 					break;
@@ -64,7 +63,7 @@ namespace KCSG
 				return;
 			}
 			Faction faction = list[0].Faction;
-			LordMaker.MakeNewLord(faction, new LordJob_DefendBase(faction, center), map, list);
+			LordMaker.MakeNewLord(faction, new LordJob_DefendBase(faction, map.Center), map, list);
 			if (!this.spawnOnEdge)
 			{
 				for (int k = 0; k < list.Count; k++)
