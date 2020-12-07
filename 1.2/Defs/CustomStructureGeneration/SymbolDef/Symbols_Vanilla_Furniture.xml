@@ -818,4 +818,36 @@
     <rotation>North</rotation>
     <symbol>Table1x2c_Steel_North</symbol>
   </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Stool_Steel_South</defName>
+    <thing>Stool</thing>
+    <stuff>Steel</stuff>
+    <rotation>South</rotation>
+    <symbol>Stool_Steel_South</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Shelf_Steel_East</defName>
+    <thing>Shelf</thing>
+    <stuff>Steel</stuff>
+    <rotation>East</rotation>
+    <symbol>Shelf_Steel_East</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Shelf_Steel_West</defName>
+    <thing>Shelf</thing>
+    <stuff>Steel</stuff>
+    <rotation>West</rotation>
+    <symbol>Shelf_Steel_West</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Stool_Steel_West</defName>
+    <thing>Stool</thing>
+    <stuff>Steel</stuff>
+    <rotation>West</rotation>
+    <symbol>Stool_Steel_West</symbol>
+  </KCSG.SymbolDef>
 </Defs>
