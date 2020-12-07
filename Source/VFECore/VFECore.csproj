@@ -124,6 +124,7 @@
     <Compile Include="CustomStructureGeneration\GenStep\GenStep_CustomStructureGen.cs" />
     <Compile Include="CustomStructureGeneration\Harmony\GenStepPatches.cs" />
     <Compile Include="CustomStructureGeneration\Harmony\FixCaravanThreadingPatch.cs" />
+    <Compile Include="CustomStructureGeneration\PrepareCarefully_Fix.cs" />
     <Compile Include="CustomStructureGeneration\ScenPart_AddStartingStructure.cs" />
     <Compile Include="CustomStructureGeneration\SymbolResolvers\SymbolResolver_KCSG_RoomGen.cs" />
     <Compile Include="CustomStructureGeneration\SymbolResolvers\SymbolResolver_KCSG_Settlement.cs" />
