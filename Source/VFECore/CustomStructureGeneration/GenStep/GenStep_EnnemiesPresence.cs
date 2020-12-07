@@ -27,6 +27,8 @@ namespace KCSG
 
 		public override void Generate(Map map, GenStepParams parms)
 		{
+			if (this.forcedfaction != null) parms.sitePart.site.SetFaction(forcedfaction); 
+
 			int h = 10, w = 10;
 			
 			IntVec3 center = this.FindRect(map, h, w);
