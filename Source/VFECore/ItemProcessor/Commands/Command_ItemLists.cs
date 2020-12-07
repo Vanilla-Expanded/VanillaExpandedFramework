@@ -220,6 +220,13 @@ namespace ItemProcessor
                 }
 
             }
+            if (list.Count <= 0)
+            {
+                list.Add(new FloatMenuOption("IP_NoRecipesHere".Translate(), delegate
+                          {
+                              
+                          }, MenuOptionPriority.Default, null, null, 29f, null, null));
+            }
             Find.WindowStack.Add(new FloatMenu(list));
         }
 
