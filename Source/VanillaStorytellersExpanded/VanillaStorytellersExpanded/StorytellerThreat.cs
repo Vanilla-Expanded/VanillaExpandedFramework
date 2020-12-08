@@ -11,9 +11,11 @@ namespace VanillaStorytellersExpanded
         public int disableThreatsAtPopulationCount;
         public float allDamagesMultiplier;
         public List<string> goodIncidents = new List<string>();
+        public IntRange? raidWarningRange;
         public void ExposeData()
         {
             Scribe_Values.Look<IntRange>(ref naturallGoodwillForAllFactions, "naturallGoodwillForAllFactions");
+            Scribe_Values.Look<IntRange?>(ref raidWarningRange, "raidWarningRange");
             Scribe_Values.Look<int>(ref disableThreatsAtPopulationCount, "disableThreatsAtPopulationCount");
             Scribe_Values.Look<float>(ref allDamagesMultiplier, "allDamagesMultiplier");
             Scribe_Collections.Look<string>(ref goodIncidents, "goodIncidents", LookMode.Value);

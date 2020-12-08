@@ -5,6 +5,7 @@ using RimWorld.QuestGen;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Verse;
 using Verse.AI.Group;
 using static Verse.DamageWorker;
@@ -246,33 +247,46 @@ namespace VanillaStorytellersExpanded
             if (__instance.def.category == IncidentCategoryDefOf.ThreatBig)
             {
                 var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
-                if (options != null && options.storytellerThreat != null 
-                    && options.storytellerThreat.disableThreatsAtPopulationCount >= Find.ColonistBar.Entries.Where(x => x.pawn != null 
+                if (options != null && options.storytellerThreat != null
+                    && options.storytellerThreat.disableThreatsAtPopulationCount >= Find.ColonistBar.Entries.Where(x => x.pawn != null
                     && !x.pawn.Dead && x.pawn.Faction == Faction.OfPlayer).Count())
                 {
                     //Log.Message("TryExecute is disabled");
                     return false;
                 }
             }
-            //Log.Message("TryExecute is enabled");
             return true;
         }
+    }
 
-        //public static void Postfix(IncidentWorker __instance, bool __result, IncidentParms parms)
-        //{
-        //    if (__instance is IncidentWorker_RaidEnemy && __result && parms.faction.HostileTo(Faction.OfPlayer))
-        //    {
-        //        var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
-        //        if (options != null && options.storytellerThreat != null && __result)
-        //        {
-        //            var comp = Current.Game.GetComponent<StorytellerWatcher>();
-        //            if (comp != null)
-        //            {
-        //                Log.Message(__instance.def + " fires, parms.faction: " + parms.faction, true);
-        //            }
-        //        }
-        //    }
-        //}
+    [HarmonyPatch(typeof(IncidentWorker_Raid))]
+    [HarmonyPatch("TryExecuteWorker")]
+    public static class Patch_TryExecuteWorker
+    {
+        public static bool Prefix(IncidentWorker_RaidEnemy __instance, IncidentParms parms)
+        {
+            var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
+            if (options != null && options.storytellerThreat != null && options.storytellerThreat.raidWarningRange.HasValue)
+            {
+                var comp = Current.Game.GetComponent<StorytellerWatcher>();
+                if (comp != null && !comp.raidQueues.Where(x => x.parms == parms).Any() && parms.target is Map mapTarget)
+                {
+                    var tickToFire = Find.TickManager.TicksAbs + options.storytellerThreat.raidWarningRange.Value.RandomInRange;
+                    if (__instance.TryResolveRaidFaction(parms))
+                    {
+                        __instance.ResolveRaidStrategy(parms, PawnGroupKindDefOf.Combat);
+                        __instance.ResolveRaidArriveMode(parms);
+                        var raidQueue = new RaidQueue(__instance.def, parms, tickToFire);
+                        comp.raidQueues.Add(raidQueue);
+                        TaggedString letterLabel = "VFEMech.RaidWarningTitle".Translate(parms.faction.Named("FACTION"));
+                        TaggedString letterText = "VFEMech.RaidWarningText".Translate(parms.faction.Named("FACTION"), parms.raidStrategy.arrivalTextEnemy);
+                        Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.ThreatBig);
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
     }
 
     [HarmonyPatch(typeof(Lord))]

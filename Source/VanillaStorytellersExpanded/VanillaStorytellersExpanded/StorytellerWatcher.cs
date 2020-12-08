@@ -5,6 +5,29 @@ using Verse.AI.Group;
 
 namespace VanillaStorytellersExpanded
 {
+    public class RaidQueue : IExposable
+    {
+        public IncidentDef incidentDef;
+        public IncidentParms parms;
+        public int tickToFire;
+        public RaidQueue()
+        {
+
+        }
+
+        public RaidQueue(IncidentDef incidentDef, IncidentParms parms, int tickToFire)
+        {
+            this.incidentDef = incidentDef;
+            this.parms = parms;
+            this.tickToFire = tickToFire;
+        }
+        public void ExposeData()
+        {
+            Scribe_Defs.Look(ref incidentDef, "incidentDef");
+            Scribe_Deep.Look(ref parms, "parms");
+            Scribe_Values.Look(ref tickToFire, "tickToFire");
+        }
+    }
 	public class StorytellerWatcher : GameComponent
 	{
         public int lastRaidExpansionTicks;
@@ -15,6 +38,7 @@ namespace VanillaStorytellersExpanded
 
         public List<RaidGroup> raidGroups;
         public List<RaidGroup> reinforcementGroups;
+        public List<RaidQueue> raidQueues;
         public StorytellerWatcher()
         {
         }
@@ -31,6 +55,17 @@ namespace VanillaStorytellersExpanded
             {
                 CheckStorytellerChanges();
             }
+            if (this.raidQueues?.Count > 0)
+            {
+                for (int num = raidQueues.Count - 1; num >= 0; num--)
+                {
+                    if (Find.TickManager.TicksAbs >= raidQueues[num].tickToFire)
+                    {
+                        raidQueues[num].incidentDef.Worker.TryExecute(raidQueues[num].parms);
+                        raidQueues.RemoveAt(num);
+                    }
+                }
+            }
         }
 
         public void PreInit()
@@ -38,6 +73,7 @@ namespace VanillaStorytellersExpanded
             if (this.raidGroups == null) this.raidGroups = new List<RaidGroup>();
             if (this.reinforcementGroups == null) this.reinforcementGroups = new List<RaidGroup>();
             if (this.originalNaturalGoodwillValues == null) this.originalNaturalGoodwillValues = new Dictionary<FactionDef, IntRange>();
+            if (this.raidQueues == null) this.raidQueues = new List<RaidQueue>();
         }
         public override void LoadedGame()
         {

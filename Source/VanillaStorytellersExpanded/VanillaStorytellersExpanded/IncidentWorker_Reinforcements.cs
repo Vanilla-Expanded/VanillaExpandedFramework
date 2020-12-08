@@ -7,12 +7,12 @@ namespace VanillaStorytellersExpanded
 {
 	public class IncidentWorker_Reinforcements : IncidentWorker_RaidEnemy
 	{
-		protected override string GetLetterLabel(IncidentParms parms)
+		public override string GetLetterLabel(IncidentParms parms)
 		{
 			return "VSE.Reinforcements".Translate() + ": " + parms.faction.Name;
 		}
 
-		protected override string GetLetterText(IncidentParms parms, List<Pawn> pawns)
+		public override string GetLetterText(IncidentParms parms, List<Pawn> pawns)
 		{
 			string str = "VSE.ReinforcementsDesc".Translate(parms.faction.Named("FACTION"));
 			str += "\n\n";
@@ -26,7 +26,7 @@ namespace VanillaStorytellersExpanded
 			return str;
 		}
 
-		protected override bool TryExecuteWorker(IncidentParms parms)
+		public override bool TryExecuteWorker(IncidentParms parms)
 		{
 			ResolveRaidPoints(parms);
 			if (!TryResolveRaidFaction(parms))

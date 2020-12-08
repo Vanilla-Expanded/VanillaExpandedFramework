@@ -23,5 +23,7 @@ namespace VanillaStorytellersExpanded
 
 		public StorytellerThreat storytellerThreat;
 
+
+
 	}
 }

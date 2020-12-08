@@ -5,7 +5,7 @@ namespace VanillaStorytellersExpanded
 {
 	public class ThoughtWorker_RaidRestlessness : ThoughtWorker
 	{
-		protected override ThoughtState CurrentStateInternal(Pawn p)
+		public override ThoughtState CurrentStateInternal(Pawn p)
 		{
 			if (p.FactionOrExtraMiniOrHomeFaction == Faction.OfPlayer)
             {
