@@ -36,20 +36,27 @@ namespace KCSG
         {
             if (Find.TickManager.TicksGame > 5f) return;
 
-            StructureLayoutDef structureLayoutDef = chooseFrom.RandomElement();
-            if (VFECore.VFEGlobal.settings.enableLog) Log.Message("ScenPart_AddStartingStructure - Structure choosen: " + structureLayoutDef.defName);
+            StructureLayoutDef structureLayoutDef;
+            if (ModLister.GetActiveModWithIdentifier("EdB.PrepareCarefully") != null)
+            {
+                structureLayoutDef = PrepareCarefully_Util.pcScenariosSave.First().Key;
+                nearMapCenter = PrepareCarefully_Util.pcScenariosSave.First().Value;
+            }
+            else structureLayoutDef = chooseFrom.RandomElement();
 
             KCSG_Utilities.HeightWidthFromLayout(structureLayoutDef, out int h, out int w);
             CellRect cellRect = this.CreateCellRect(map, h, w);
 
-            int count = 0;
             foreach (List<string> item in structureLayoutDef.layouts)
             {
                 KCSG_Utilities.GenerateRoomFromLayout(item, cellRect, map, structureLayoutDef);
-                if (VFECore.VFEGlobal.settings.enableLog) Log.Message("ScenPart_AddStartingStructure - Layout " + count++.ToString() + " generation - PASS");
             }
 
             FloodFillerFog.DebugRefogMap(map);
+            if (ModLister.GetActiveModWithIdentifier("EdB.PrepareCarefully") != null)
+            {
+                PrepareCarefully_Util.pcScenariosSave.Remove(structureLayoutDef);
+            }
         }
 
         private CellRect CreateCellRect(Map map, int height, int widht)
@@ -63,7 +70,7 @@ namespace KCSG
 
         private bool CanScatterAt(IntVec3 c, Map map, int height, int widht)
         {
-            if (c.CloseToEdge(map, 10)) return false;
+            if (c.CloseToEdge(map, height)) return false;
             if (!this.allowFoggedPosition && c.Fogged(map)) return false;
             if (!c.SupportsStructureType(map, TerrainAffordanceDefOf.Heavy)) return false;
             CellRect rect = new CellRect(c.x, c.z, widht, height).ClipInsideMap(map);
@@ -88,14 +95,6 @@ namespace KCSG
                 }
             }
             return true;
-        }
-
-        private void UnfogBuildingsInRect(Map map, CellRect rect)
-        {
-            foreach (IntVec3 i in rect.ExpandedBy(5))
-            {
-                if (i.Fogged(map) && (i.GetThingList(map).Any((t) => !t.def.mineable))) map.fogGrid.Unfog(i);
-            }
         }
     }
 }

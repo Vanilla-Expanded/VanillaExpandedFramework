@@ -1,41 +1,29 @@
-﻿using System;
+﻿using HarmonyLib;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using UnityEngine;
 using Verse;
-using RimWorld;
-using HarmonyLib;
-using RimWorld.BaseGen;
-using RimWorld.Planet;
-using EdB;
-using System.Reflection;
 
 namespace KCSG
 {
-    /*[StaticConstructorOnStartup]
-    [HarmonyPatch]
-    static class PrepareCarefully_Fix
+    [StaticConstructorOnStartup]
+    internal static class PrepareCarefully_Util
     {
-        [HarmonyTargetMethod]
-        public static MethodBase TargetMethod() =>
-            AccessTools.TypeByName("EdB.PrepareCarefully.HarmonyPatches").GetMethods(AccessTools.all).First(mi => mi.Name.Contains("InitNewGamePostfix"));
+        public static Dictionary<StructureLayoutDef, bool> pcScenariosSave = new Dictionary<StructureLayoutDef, bool>();
+    }
 
-
-        [HarmonyPrefix]
-        static void Prefix(out KCSG.ScenPart_AddStartingStructure __state)
-        {
-            __state = Current.Game.Scenario.AllParts.ToList().Find(s => s.def.defName == "VFEC_AddStartingStructure") as KCSG.ScenPart_AddStartingStructure;
-            Log.Message("IN PC Prefix: " + __state.chooseFrom.RandomElement().defName);
-        }
-
+    [StaticConstructorOnStartup]
+    [HarmonyPatch(typeof(RimWorld.Page_ConfigureStartingPawns))]
+    [HarmonyPatch("PreOpen", MethodType.Normal)]
+    public class PrepareCarefully_Fix
+    {
         [HarmonyPostfix]
-        static void Postfix(KCSG.ScenPart_AddStartingStructure __state)
+        private static void Postfix()
         {
-            Current.Game.Scenario.AllParts.AddItem(__state);
-            Log.Message("IN PC PostFix: " + __state.chooseFrom.RandomElement().defName);
+            if (Current.Game.Scenario.AllParts.ToList().Any(s => s.def.defName == "VFEC_AddStartingStructure"))
+            {
+                ScenPart_AddStartingStructure spart = (ScenPart_AddStartingStructure)Current.Game.Scenario.AllParts.ToList().Find(s => s.def.defName == "VFEC_AddStartingStructure");
+                PrepareCarefully_Util.pcScenariosSave.Add(spart.chooseFrom.RandomElement(), spart.nearMapCenter);
+            }
         }
-    }*/
+    }
 }
