@@ -550,6 +550,24 @@ namespace KCSG
 
         #endregion Power Function
 
+        public static IntVec3 FindRect(Map map, int h, int w, bool nearCenter = false)
+        {
+            CellRect rect;
+            int fromCenter = 1;
+            while (true)
+            {
+                if (nearCenter)
+                {
+                    rect = CellRect.CenteredOn(CellFinder.RandomClosewalkCellNear(map.Center, map, fromCenter), w, h);
+                    rect.ClipInsideMap(map);
+                }
+                else rect = CellRect.CenteredOn(CellFinder.RandomNotEdgeCell(h, map), w, h);
+
+                if (rect.Cells.ToList().Any(i => !i.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Medium))) fromCenter += 2;
+                else return rect.CenterCell;
+            }
+        }
+
         #endregion Gen Utils
 
         #region Symbol Creation
