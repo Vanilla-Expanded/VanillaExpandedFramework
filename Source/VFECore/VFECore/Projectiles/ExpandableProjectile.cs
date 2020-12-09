@@ -101,7 +101,7 @@ namespace VFECore
 		{
 			get
 			{
-				if (!pawnMoved && this.launcher is Pawn pawn)
+				if (!pawnMoved && this.launcher is Pawn pawn && !pawn.Dead)
 				{
 					if (pawn.pather.MovingNow)
 					{
@@ -262,7 +262,16 @@ namespace VFECore
 			//}
 			Map map = base.Map;
 			IntVec3 position = base.Position;
-			BattleLogEntry_RangedImpact battleLogEntry_RangedImpact = new BattleLogEntry_RangedImpact(launcher, hitThing, intendedTarget.Thing, equipmentDef, def, targetCoverDef);
+			BattleLogEntry_RangedImpact battleLogEntry_RangedImpact;
+			if (equipmentDef == null)
+			{
+				battleLogEntry_RangedImpact = new BattleLogEntry_RangedImpact(launcher, hitThing, intendedTarget.Thing, ThingDef.Named("Gun_Autopistol"), def, targetCoverDef);
+
+			}
+			else
+			{
+				battleLogEntry_RangedImpact = new BattleLogEntry_RangedImpact(launcher, hitThing, intendedTarget.Thing, equipmentDef, def, targetCoverDef);
+			}
 			Find.BattleLog.Add(battleLogEntry_RangedImpact);
 			this.NotifyImpact(hitThing, map, position);
 			if (hitThing != null && (!def.disableVanillaDamageMethod || customImpact && def.disableVanillaDamageMethod))
