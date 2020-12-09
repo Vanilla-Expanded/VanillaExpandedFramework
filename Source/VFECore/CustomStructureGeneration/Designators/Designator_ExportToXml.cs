@@ -1,6 +1,7 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using UnityEngine;
 using Verse;
 
@@ -58,11 +59,13 @@ namespace KCSG
 
             KCSG_Utilities.FillCellThingsList(cells.ToList(), base.Map, pairsCellThingList);
 
-            KCSG_Utilities.CreateSymbolIfNeeded(cells.ToList(), base.Map, justCreated, pairsCellThingList);
+            List<XElement> symbols = KCSG_Utilities.CreateSymbolIfNeeded(cells.ToList(), base.Map, justCreated, pairsCellThingList);
 
-            KCSG_Utilities.CreateStructureDef(cells.ToList(), base.Map, KCSG_Utilities.FillpairsSymbolLabel(), pairsCellThingList);
+            XElement structureL = KCSG_Utilities.CreateStructureDef(cells.ToList(), base.Map, KCSG_Utilities.FillpairsSymbolLabel(), pairsCellThingList);
 
-            Log.TryOpenLogWindow();
+            Dialog_ExportWindow exportWindow = new Dialog_ExportWindow(base.Map, structureL, symbols);
+            Find.WindowStack.Add(exportWindow);
+            /*Log.TryOpenLogWindow();*/
         }
     }
 }

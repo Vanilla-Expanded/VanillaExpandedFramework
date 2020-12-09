@@ -572,7 +572,7 @@ namespace KCSG
 
         #region Symbol Creation
 
-        public static void CreateSymbolFromThing(Thing thingT, List<String> alreadyCreated)
+        public static XElement CreateSymbolFromThing(Thing thingT, List<String> alreadyCreated)
         {
             XElement symbolDef = new XElement("KCSG.SymbolDef", null);
             // Generate defName
@@ -610,10 +610,12 @@ namespace KCSG
             XElement symbol = new XElement("symbol", symbolString);
             symbolDef.Add(symbol);
 
-            if (!alreadyCreated.Contains(symbolDef.Value)) Log.Message(symbolDef.ToString()); alreadyCreated.Add(symbolDef.Value);
+            if (!alreadyCreated.Contains(symbolDef.Value)) /*Log.Message(symbolDef.ToString());*/ alreadyCreated.Add(symbolDef.Value);
+
+            return symbolDef;
         }
 
-        public static void CreateSymbolFromTerrain(TerrainDef terrainD, List<String> alreadyCreated)
+        public static XElement CreateSymbolFromTerrain(TerrainDef terrainD, List<String> alreadyCreated)
         {
             XElement symbolDef = new XElement("KCSG.SymbolDef", null);
             // Generate defName
@@ -629,10 +631,12 @@ namespace KCSG
             XElement symbol = new XElement("symbol", terrainD.defName);
             symbolDef.Add(symbol);
 
-            if (!alreadyCreated.Contains(symbol.Value)) Log.Message(symbolDef.ToString()); alreadyCreated.Add(symbol.Value);
+            if (!alreadyCreated.Contains(symbol.Value)) /*Log.Message(symbolDef.ToString());*/ alreadyCreated.Add(symbol.Value);
+
+            return symbolDef;
         }
 
-        public static void CreateSymbolFromPawn(Pawn pawn, List<String> alreadyCreated)
+        public static XElement CreateSymbolFromPawn(Pawn pawn, List<String> alreadyCreated)
         {
             XElement symbolDef = new XElement("KCSG.SymbolDef", null);
             // Generate defName
@@ -651,10 +655,12 @@ namespace KCSG
             XElement symbol = new XElement("symbol", symbolString);
             symbolDef.Add(symbol);
 
-            if (!alreadyCreated.Contains(symbol.Value)) Log.Message(symbolDef.ToString()); alreadyCreated.Add(symbol.Value);
+            if (!alreadyCreated.Contains(symbol.Value)) /*Log.Message(symbolDef.ToString());*/ alreadyCreated.Add(symbol.Value);
+
+            return symbolDef;
         }
 
-        public static void CreateItemSymbolFromThing(Thing thingT, List<String> alreadyCreated)
+        public static XElement CreateItemSymbolFromThing(Thing thingT, List<String> alreadyCreated)
         {
             XElement symbolDef = new XElement("KCSG.SymbolDef", null);
             // Generate defName
@@ -676,12 +682,16 @@ namespace KCSG
             XElement symbol = new XElement("symbol", symbolString);
             symbolDef.Add(symbol);
 
-            if (!alreadyCreated.Contains(symbol.Value)) Log.Message(symbolDef.ToString()); alreadyCreated.Add(symbol.Value);
+            if (!alreadyCreated.Contains(symbol.Value)) /*Log.Message(symbolDef.ToString());*/ alreadyCreated.Add(symbol.Value);
+
+            return symbolDef;
         }
 
-        public static void CreateSymbolIfNeeded(List<IntVec3> cellExport, Map map, List<string> justCreated, Dictionary<IntVec3, List<Thing>> pairsCellThingList, Area area = null)
+        public static List<XElement> CreateSymbolIfNeeded(List<IntVec3> cellExport, Map map, List<string> justCreated, Dictionary<IntVec3, List<Thing>> pairsCellThingList, Area area = null)
         {
             justCreated.Clear();
+            List<XElement> symbols = new List<XElement>();
+
             foreach (IntVec3 c in cellExport)
             {
                 if (area != null && !area.ActiveCells.Contains(c)) { }
@@ -695,13 +705,15 @@ namespace KCSG
                     {
                         if (t != null && !KCSG_Utilities.AlreadyExist(t, null))
                         {
-                            if (t.def.category == ThingCategory.Item) KCSG_Utilities.CreateItemSymbolFromThing(t, justCreated);
-                            if (t.def.category == ThingCategory.Pawn) KCSG_Utilities.CreateSymbolFromPawn(t as Pawn, justCreated);
-                            if (t.def.category == ThingCategory.Building || t.def.category == ThingCategory.Plant) KCSG_Utilities.CreateSymbolFromThing(t, justCreated);
+                            if (t.def.category == ThingCategory.Item) symbols.Add(KCSG_Utilities.CreateItemSymbolFromThing(t, justCreated));
+                            if (t.def.category == ThingCategory.Pawn) symbols.Add(KCSG_Utilities.CreateSymbolFromPawn(t as Pawn, justCreated));
+                            if (t.def.category == ThingCategory.Building || t.def.category == ThingCategory.Plant) symbols.Add(KCSG_Utilities.CreateSymbolFromThing(t, justCreated));
                         }
                     }
                 }
             }
+
+            return symbols;
         }
 
         #endregion Symbol Creation
@@ -733,7 +745,7 @@ namespace KCSG
 
         #region Layout Creation
 
-        public static void CreateStructureDef(List<IntVec3> cellExport, Map map, Dictionary<string, SymbolDef> pairsSymbolLabel, Dictionary<IntVec3, List<Thing>> pairsCellThingList, Area area = null)
+        public static XElement CreateStructureDef(List<IntVec3> cellExport, Map map, Dictionary<string, SymbolDef> pairsSymbolLabel, Dictionary<IntVec3, List<Thing>> pairsCellThingList, Area area = null)
         {
             cellExport.Sort((x, y) => x.z.CompareTo(y.z));
             XElement StructureLayoutDef = new XElement("KCSG.StructureLayoutDef", null);
@@ -786,7 +798,9 @@ namespace KCSG
             // Add roofGrid
             if (area != null) StructureLayoutDef.Add(KCSG_Utilities.CreateRoofGrid(cellExport, map, area));
             else StructureLayoutDef.Add(KCSG_Utilities.CreateRoofGrid(cellExport, map));
-            Log.Message(StructureLayoutDef.ToString());
+
+            return StructureLayoutDef;
+            /*Log.Message(StructureLayoutDef.ToString());*/
         }
 
         public static XElement CreateThinglayout(List<IntVec3> cellExport, int index, Area area, Map map, Dictionary<string, SymbolDef> pairsSymbolLabel, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
