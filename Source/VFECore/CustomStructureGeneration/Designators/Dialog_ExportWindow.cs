@@ -25,7 +25,7 @@ namespace KCSG
 		{
 			get
 			{
-				return new Vector2(1000f, 600f);
+				return new Vector2(800f, 250f);
 			}
 		}
 
@@ -34,6 +34,8 @@ namespace KCSG
 			this.map = map;
 			this.structureL = structureL;
 			this.symbols = symbols;
+
+			this.defname = "Placeholder";
 
 			this.forcePause = true;
 			this.doCloseX = false;
@@ -47,11 +49,11 @@ namespace KCSG
 			Text.Font = GameFont.Medium;
 			Text.Anchor = TextAnchor.MiddleCenter;
 
-			Widgets.DrawBoxSolid(new Rect(0, 0, 890, 50), boxColor);
-			Widgets.Label(new Rect(0, 0, 890, 50), "Custom Structure Generation - Export Menu");
+			Widgets.DrawBoxSolid(new Rect(0, 0, 700, 50), boxColor);
+			Widgets.Label(new Rect(0, 0, 700, 50), "Custom Structure Generation - Export Menu");
 
-			Widgets.DrawBoxSolid(new Rect(900, 0, 60, 50), boxColor);
-			if (Widgets.ButtonImage(new Rect(910, 5, 40, 40), TextureLoader.helpIcon))
+			Widgets.DrawBoxSolid(new Rect(710, 0, 50, 50), boxColor);
+			if (Widgets.ButtonImage(new Rect(715, 5, 40, 40), TextureLoader.helpIcon))
             {
 				System.Diagnostics.Process.Start("https://github.com/AndroidQuazar/VanillaExpandedFramework/wiki");
             }
@@ -63,12 +65,12 @@ namespace KCSG
         {
 			int bHeight = 35;
 
-			if (Widgets.ButtonText(new Rect(0, inRect.height - bHeight, 440, bHeight), "Copy structure def"))
+			if (Widgets.ButtonText(new Rect(0, inRect.height - bHeight, 340, bHeight), "Copy structure def"))
 			{
 				GUIUtility.systemCopyBuffer = structureL.ToString();
 				Messages.Message("Copied to clipboard.", MessageTypeDefOf.TaskCompletion);
 			}
-			if (Widgets.ButtonText(new Rect(450, inRect.height - bHeight, 440, bHeight), "Copy symbol(s) def(s)"))
+			if (Widgets.ButtonText(new Rect(350, inRect.height - bHeight, 340, bHeight), "Copy symbol(s) def(s)"))
 			{
                 string toCopy = "";
                 foreach (XElement item in this.symbols)
@@ -78,7 +80,7 @@ namespace KCSG
 				GUIUtility.systemCopyBuffer = toCopy;
 				Messages.Message("Copied to clipboard.", MessageTypeDefOf.TaskCompletion);
 			}
-			if (Widgets.ButtonText(new Rect(900, inRect.height - bHeight, 60, bHeight), "Close"))
+			if (Widgets.ButtonText(new Rect(700, inRect.height - bHeight, 60, bHeight), "Close"))
 			{
 				this.Close();
 			}
@@ -89,11 +91,10 @@ namespace KCSG
         {
 			Text.Anchor = TextAnchor.MiddleCenter;
 			Widgets.Label(new Rect(10, 100, 200, 35), "Structure defName:");
-			defname = Widgets.TextField(new Rect(210, 100, 200, 35), defname);
+			defname = Widgets.TextField(new Rect(220, 100, 480, 35), defname);
 			structureL.SetElementValue("defName", defname);
 			Text.Anchor = TextAnchor.UpperLeft;
 		}
-
 
 		public override void DoWindowContents(Rect inRect)
 		{
