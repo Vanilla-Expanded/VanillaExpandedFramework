@@ -72,13 +72,17 @@ namespace KCSG
 			}
 			if (Widgets.ButtonText(new Rect(350, inRect.height - bHeight, 340, bHeight), "Copy symbol(s) def(s)"))
 			{
-                string toCopy = "";
-                foreach (XElement item in this.symbols)
+                if (this.symbols.Count > 0)
                 {
-                    toCopy += item.ToString() + "\n";
-                }
-				GUIUtility.systemCopyBuffer = toCopy;
-				Messages.Message("Copied to clipboard.", MessageTypeDefOf.TaskCompletion);
+					string toCopy = "";
+					foreach (XElement item in this.symbols)
+					{
+						toCopy += item.ToString() + "\n";
+					}
+					GUIUtility.systemCopyBuffer = toCopy;
+					Messages.Message("Copied to clipboard.", MessageTypeDefOf.TaskCompletion);
+				}
+				else Messages.Message("No new symbols needed.", MessageTypeDefOf.TaskCompletion);
 			}
 			if (Widgets.ButtonText(new Rect(700, inRect.height - bHeight, 60, bHeight), "Close"))
 			{

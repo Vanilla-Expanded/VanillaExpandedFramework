@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using UnityEngine;
 using Verse;
 
@@ -66,8 +67,6 @@ namespace KCSG
 
             Designator_ExportToXmlFromArea.MakeAllowedAreaListFloatMenu(delegate (Area a)
             {
-                Log.Clear();
-
                 KCSG_Utilities.EdgeFromArea(a.ActiveCells.ToList(), out int height, out int width);
                 List<IntVec3> cellExport = KCSG_Utilities.AreaToSquare(a, height, width);
 
@@ -76,11 +75,12 @@ namespace KCSG
 
                 KCSG_Utilities.FillCellThingsList(cellExport, base.Map, pairsCellThingList);
 
-                KCSG_Utilities.CreateSymbolIfNeeded(cellExport, base.Map, justCreated, pairsCellThingList, a);
+                List<XElement> symbols = KCSG_Utilities.CreateSymbolIfNeeded(cellExport, base.Map, justCreated, pairsCellThingList, a);
 
-                KCSG_Utilities.CreateStructureDef(cellExport, base.Map, KCSG_Utilities.FillpairsSymbolLabel(), pairsCellThingList, a);
+                XElement structureL = KCSG_Utilities.CreateStructureDef(cellExport, base.Map, KCSG_Utilities.FillpairsSymbolLabel(), pairsCellThingList, a);
 
-                Log.TryOpenLogWindow();
+                Dialog_ExportWindow exportWindow = new Dialog_ExportWindow(base.Map, structureL, symbols);
+                Find.WindowStack.Add(exportWindow);
             }, false, true, base.Map);
         }
 

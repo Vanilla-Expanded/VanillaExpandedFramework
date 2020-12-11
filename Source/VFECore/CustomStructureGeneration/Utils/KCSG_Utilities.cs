@@ -572,7 +572,7 @@ namespace KCSG
 
         #region Symbol Creation
 
-        public static XElement CreateSymbolFromThing(Thing thingT, List<String> alreadyCreated)
+        public static void CreateSymbolFromThing(Thing thingT, List<String> alreadyCreated, List<XElement> symbols)
         {
             XElement symbolDef = new XElement("KCSG.SymbolDef", null);
             // Generate defName
@@ -610,12 +610,10 @@ namespace KCSG
             XElement symbol = new XElement("symbol", symbolString);
             symbolDef.Add(symbol);
 
-            if (!alreadyCreated.Contains(symbolDef.Value)) /*Log.Message(symbolDef.ToString());*/ alreadyCreated.Add(symbolDef.Value);
-
-            return symbolDef;
+            if (!alreadyCreated.Contains(symbolDef.Value)) symbols.Add(symbolDef); alreadyCreated.Add(symbolDef.Value);
         }
 
-        public static XElement CreateSymbolFromTerrain(TerrainDef terrainD, List<String> alreadyCreated)
+        public static void CreateSymbolFromTerrain(TerrainDef terrainD, List<String> alreadyCreated, List<XElement> symbols)
         {
             XElement symbolDef = new XElement("KCSG.SymbolDef", null);
             // Generate defName
@@ -631,12 +629,10 @@ namespace KCSG
             XElement symbol = new XElement("symbol", terrainD.defName);
             symbolDef.Add(symbol);
 
-            if (!alreadyCreated.Contains(symbol.Value)) /*Log.Message(symbolDef.ToString());*/ alreadyCreated.Add(symbol.Value);
-
-            return symbolDef;
+            if (!alreadyCreated.Contains(symbol.Value)) symbols.Add(symbolDef); alreadyCreated.Add(symbol.Value);
         }
 
-        public static XElement CreateSymbolFromPawn(Pawn pawn, List<String> alreadyCreated)
+        public static void CreateSymbolFromPawn(Pawn pawn, List<String> alreadyCreated, List<XElement> symbols)
         {
             XElement symbolDef = new XElement("KCSG.SymbolDef", null);
             // Generate defName
@@ -655,12 +651,10 @@ namespace KCSG
             XElement symbol = new XElement("symbol", symbolString);
             symbolDef.Add(symbol);
 
-            if (!alreadyCreated.Contains(symbol.Value)) /*Log.Message(symbolDef.ToString());*/ alreadyCreated.Add(symbol.Value);
-
-            return symbolDef;
+            if (!alreadyCreated.Contains(symbol.Value)) symbols.Add(symbolDef); alreadyCreated.Add(symbol.Value);
         }
 
-        public static XElement CreateItemSymbolFromThing(Thing thingT, List<String> alreadyCreated)
+        public static void CreateItemSymbolFromThing(Thing thingT, List<String> alreadyCreated, List<XElement> symbols)
         {
             XElement symbolDef = new XElement("KCSG.SymbolDef", null);
             // Generate defName
@@ -682,9 +676,7 @@ namespace KCSG
             XElement symbol = new XElement("symbol", symbolString);
             symbolDef.Add(symbol);
 
-            if (!alreadyCreated.Contains(symbol.Value)) /*Log.Message(symbolDef.ToString());*/ alreadyCreated.Add(symbol.Value);
-
-            return symbolDef;
+            if (!alreadyCreated.Contains(symbol.Value)) symbols.Add(symbolDef); alreadyCreated.Add(symbol.Value);
         }
 
         public static List<XElement> CreateSymbolIfNeeded(List<IntVec3> cellExport, Map map, List<string> justCreated, Dictionary<IntVec3, List<Thing>> pairsCellThingList, Area area = null)
@@ -698,16 +690,16 @@ namespace KCSG
                 else
                 {
                     TerrainDef terrainDef = c.GetTerrain(map);
-                    if (terrainDef != null && !KCSG_Utilities.AlreadyExist(null, terrainDef) && terrainDef.BuildableByPlayer) KCSG_Utilities.CreateSymbolFromTerrain(terrainDef, justCreated);
+                    if (terrainDef != null && !KCSG_Utilities.AlreadyExist(null, terrainDef) && terrainDef.BuildableByPlayer) KCSG_Utilities.CreateSymbolFromTerrain(terrainDef, justCreated, symbols);
 
                     List<Thing> things = pairsCellThingList.TryGetValue(c);
                     foreach (Thing t in things)
                     {
                         if (t != null && !KCSG_Utilities.AlreadyExist(t, null))
                         {
-                            if (t.def.category == ThingCategory.Item) symbols.Add(KCSG_Utilities.CreateItemSymbolFromThing(t, justCreated));
-                            if (t.def.category == ThingCategory.Pawn) symbols.Add(KCSG_Utilities.CreateSymbolFromPawn(t as Pawn, justCreated));
-                            if (t.def.category == ThingCategory.Building || t.def.category == ThingCategory.Plant) symbols.Add(KCSG_Utilities.CreateSymbolFromThing(t, justCreated));
+                            if (t.def.category == ThingCategory.Item) KCSG_Utilities.CreateItemSymbolFromThing(t, justCreated, symbols);
+                            if (t.def.category == ThingCategory.Pawn) KCSG_Utilities.CreateSymbolFromPawn(t as Pawn, justCreated, symbols);
+                            if (t.def.category == ThingCategory.Building || t.def.category == ThingCategory.Plant) KCSG_Utilities.CreateSymbolFromThing(t, justCreated, symbols);
                         }
                     }
                 }

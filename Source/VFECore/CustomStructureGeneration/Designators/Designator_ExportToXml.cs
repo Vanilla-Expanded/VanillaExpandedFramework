@@ -52,8 +52,6 @@ namespace KCSG
 
         public override void DesignateMultiCell(IEnumerable<IntVec3> cells)
         {
-            Log.Clear();
-
             List<string> justCreated = new List<string>();
             Dictionary<IntVec3, List<Thing>> pairsCellThingList = new Dictionary<IntVec3, List<Thing>>();
 
@@ -65,7 +63,6 @@ namespace KCSG
 
             Dialog_ExportWindow exportWindow = new Dialog_ExportWindow(base.Map, structureL, symbols);
             Find.WindowStack.Add(exportWindow);
-            /*Log.TryOpenLogWindow();*/
         }
     }
 }
