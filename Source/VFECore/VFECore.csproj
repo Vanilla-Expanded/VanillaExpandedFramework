@@ -134,6 +134,8 @@
     <Compile Include="CustomStructureGeneration\Utils\CenteredMessageBox.cs" />
     <Compile Include="CustomStructureGeneration\Utils\DebugOption.cs" />
     <Compile Include="CustomStructureGeneration\Utils\KCSG_Utilities.cs" />
+    <Compile Include="Furniture\Comps\CompConfigurableSpawner.cs" />
+    <Compile Include="Furniture\Comps\CompProperties\CompProperties_ConfigurableSpawner.cs" />
     <Compile Include="Furniture\Comps\CompProperties\CompProperties_RockSpawner.cs" />
     <Compile Include="Furniture\Comps\CompProperties\CompProperties_SelectBuildingBehind.cs" />
     <Compile Include="Furniture\Comps\CompProperties\CompProperties_SpawnOtherBuildingWhenPowered.cs" />
@@ -141,10 +143,13 @@
     <Compile Include="Furniture\Comps\CompSelectBuildingBehind.cs" />
     <Compile Include="Furniture\Comps\CompSpawnOtherBuildingWhenPowered.cs" />
     <Compile Include="Furniture\DefModExtensions\ShowBlueprintExtension.cs" />
+    <Compile Include="Furniture\Defs\ConfigurableSpawnerDef.cs" />
     <Compile Include="Furniture\Harmony\VanillaExpandedFramework_GhostUtility_Patch.cs" />
     <Compile Include="Furniture\Thoughts\ThoughtGiverByProximityDefExtension.cs" />
     <Compile Include="Furniture\Thoughts\ThoughtWorker_ThoughtFromNearbyThingDef.cs" />
+    <Compile Include="Furniture\Utility\Command_SetItemsToSpawn.cs" />
     <Compile Include="Furniture\Utility\Command_SetStoneType.cs" />
+    <Compile Include="Furniture\Utility\ConfigurableSpawnerSettableUtility.cs" />
     <Compile Include="Furniture\Utility\StoneTypeSettableUtility.cs" />
     <Compile Include="GlobalSettings.cs" />
     <Compile Include="GlobalSettingsUtilities.cs" />
