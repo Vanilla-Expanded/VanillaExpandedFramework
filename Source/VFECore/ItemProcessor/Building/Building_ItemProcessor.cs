@@ -633,7 +633,8 @@ namespace ItemProcessor
 
                 //Ingredient selection gizmos only appear when the building is in Inactive or IngredientsChosen, the first because
                 //it is the baseline of the building, the second because player might change his mind and want to change one of the ingredients
-                if (processorStage <= ProcessorStage.ExpectingIngredients && processorStage != ProcessorStage.AutoIngredients && !compItemProcessor.Props.isMachineSpecifiesOutput)
+                if ((!compItemProcessor.Props.isSemiAutomaticMachine && processorStage <= ProcessorStage.ExpectingIngredients && processorStage != ProcessorStage.AutoIngredients && !compItemProcessor.Props.isMachineSpecifiesOutput)||
+                    compItemProcessor.Props.isSemiAutomaticMachine && processorStage == ProcessorStage.Inactive)
                 {
                     //Different number of ingredients gizmos depending on the number of building slots. Note the <=1 and >=3, just in case someone inputs 78 
                     switch (compItemProcessor.Props.numberOfInputs)

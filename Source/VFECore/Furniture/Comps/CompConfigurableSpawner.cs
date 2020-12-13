@@ -193,7 +193,11 @@ namespace VanillaFurnitureExpanded
 
         private void ResetCountdown()
         {
-            this.ticksUntilSpawn = currentThingList.timeInTicks;
+            if (currentThingList != null)
+            {
+                this.ticksUntilSpawn = currentThingList.timeInTicks;
+            } else
+            this.ticksUntilSpawn = 0;
         }
 
         public override void PostExposeData()
@@ -229,7 +233,7 @@ namespace VanillaFurnitureExpanded
             {
                 if (this.currentThingList == null)
                 {
-                    return "NextSpawnedItemIn".Translate() + ": " + this.ticksUntilSpawn.ToStringTicksToPeriod(true, false, true, true);
+                    return "VFE_PleaseSelectOutput".Translate();
                 }
                 else
                 {

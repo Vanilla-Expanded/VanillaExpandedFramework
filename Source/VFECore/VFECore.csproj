@@ -145,6 +145,7 @@
     <Compile Include="Furniture\DefModExtensions\ShowBlueprintExtension.cs" />
     <Compile Include="Furniture\Defs\ConfigurableSpawnerDef.cs" />
     <Compile Include="Furniture\Harmony\VanillaExpandedFramework_GhostUtility_Patch.cs" />
+    <Compile Include="Furniture\Placeworkers\PlaceWorker_OnWater.cs" />
     <Compile Include="Furniture\Thoughts\ThoughtGiverByProximityDefExtension.cs" />
     <Compile Include="Furniture\Thoughts\ThoughtWorker_ThoughtFromNearbyThingDef.cs" />
     <Compile Include="Furniture\Utility\Command_SetItemsToSpawn.cs" />

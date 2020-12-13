@@ -8,6 +8,8 @@
 <VFE_ChooseMine>Choose chunk type to drill</VFE_ChooseMine>
 <VFE_ChooseMineDesc>Choose chunk type to drill. You can choose any of the map's rock types, or random</VFE_ChooseMineDesc>
 <VFE_RandomRock>Random chunk</VFE_RandomRock>
+<VFE_PleaseSelectOutput>Select machine output</VFE_PleaseSelectOutput>
+<VFE_NeedsWater>This building must be placed on water</VFE_NeedsWater>
 
 
 

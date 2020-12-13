@@ -20,11 +20,18 @@ namespace VanillaFurnitureExpanded
 
         public Command_SetItemsToSpawn()
         {
-            if (building.currentThingList == null)
+            if (building!=null && building.currentThingList == null)
+            {
+                icon = ContentFinder<Texture2D>.Get(building.currentThingList.GizmoIcon, true);
+                defaultLabel = building.currentThingList.GizmoLabel.Translate();
+                defaultDesc = building.currentThingList.GizmoDescription.Translate();
+
+            }
+            else
             {
                 icon = ContentFinder<Texture2D>.Get("UI/IP_SetOutput", true);
                 defaultLabel = "IP_ChooseOutput".Translate();
-              
+                defaultDesc = "IP_ChooseOutput".Translate();
             }
 
         }
