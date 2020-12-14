@@ -53,11 +53,6 @@ namespace VFECore
 		public int ticksSinceLastEmitted;
         public ThingDef customizedMoteDef;
 
-        private CompPowerTrader compPower;
-        private CompSendSignalOnCountdown compSendSignal;
-        private CompInitiatable compInitiatable;
-        private CompRefuelable compRefuelable;
-
         public override void PostPostMake()
         {
             base.PostPostMake();
@@ -78,18 +73,21 @@ namespace VFECore
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-            compPower = this.parent.GetComp<CompPowerTrader>();
-            compSendSignal = this.parent.GetComp<CompSendSignalOnCountdown>();
-            compInitiatable = this.parent.GetComp<CompInitiatable>();
-            compRefuelable = this.parent.GetComp<CompRefuelable>();
         }
 
         public override void CompTick()
 		{
-			if (compPower != null && !compPower.PowerOn && compSendSignal != null && compSendSignal.ticksLeft <= 0 && compInitiatable != null && !compInitiatable.Initiated && compRefuelable != null && !compRefuelable.HasFuel)
+            CompRefuelable compRefuelable = this.parent.GetComp<CompRefuelable>();
+            CompFlickable compFlickable = this.parent.GetComp<CompFlickable>();
+
+            if (compRefuelable != null && !compRefuelable.HasFuel)
 			{
-				return;
-			}
+                return;
+            }
+            if (compFlickable != null && !compFlickable.SwitchIsOn)
+            {
+                return;
+            }
 
             if (this.ticksSinceLastEmitted >= this.Props.emissionInterval)
             {
