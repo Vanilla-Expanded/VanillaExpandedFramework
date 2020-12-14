@@ -4,26 +4,30 @@ using Verse;
 
 namespace VFECore
 {
-    [HarmonyPatch(typeof(SkyManager))]
-    internal class Patch_SkyManager
+    
+    internal static class Patch_SkyManager
     {
-        [HarmonyPostfix]
-        [HarmonyPatch("CurrentSkyTarget")]
-        private static void PostFix(ref Map ___map, ref SkyTarget __result)
+        [HarmonyPatch(typeof(SkyManager), "CurrentSkyTarget")]
+        public class CurrentSkyTarget
         {
-            List<Thing> list = ___map.listerThings.AllThings.FindAll(t => t.TryGetComp<CompAffectSkyWithToggle>() != null);
-            for (int k = 0; k < list.Count; k++)
+            [HarmonyPostfix]
+            private static void PostFix(ref Map ___map, ref SkyTarget __result)
             {
-                CompAffectSkyWithToggle affectSkyWithToggle = list[k].TryGetComp<CompAffectSkyWithToggle>();
-                if (affectSkyWithToggle.LerpFactor > 0f)
+                List<Thing> list = ___map.listerThings.AllThings.FindAll(t => t.TryGetComp<CompAffectSkyWithToggle>() != null);
+                for (int k = 0; k < list.Count; k++)
                 {
-                    if (affectSkyWithToggle.Props.lerpDarken)
+                    CompAffectSkyWithToggle affectSkyWithToggle = list[k].TryGetComp<CompAffectSkyWithToggle>();
+                    if (affectSkyWithToggle.shouldAffectSky)
                     {
-                        __result = SkyTarget.LerpDarken(__result, affectSkyWithToggle.SkyTarget, affectSkyWithToggle.LerpFactor);
-                    }
-                    else
-                    {
-                        __result = SkyTarget.Lerp(__result, affectSkyWithToggle.SkyTarget, affectSkyWithToggle.LerpFactor);
+                        Log.Message("affecting sky");
+                        if (affectSkyWithToggle.Props.lerpDarken)
+                        {
+                            __result = SkyTarget.LerpDarken(__result, affectSkyWithToggle.SkyTarget, affectSkyWithToggle.LerpFactor);
+                        }
+                        else
+                        {
+                            __result = SkyTarget.Lerp(__result, affectSkyWithToggle.SkyTarget, affectSkyWithToggle.LerpFactor);
+                        }
                     }
                 }
             }
