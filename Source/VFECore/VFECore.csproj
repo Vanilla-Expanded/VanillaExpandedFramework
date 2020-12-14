@@ -192,7 +192,6 @@
     <Compile Include="VFECore\Comps\ThingComps\CompProperties_PawnDependsOn.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompProperties_Shield.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompProperties_ThrowMote.cs" />
-    <Compile Include="VFECore\Comps\ThingComps\ComProperties_AffectSkyWithToggle.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompShield.cs" />
     <Compile Include="ItemProcessor\Comps\ThingComps\CompItemProcessor.cs" />
     <Compile Include="ItemProcessor\Comps\ThingComps\CompProperties_ItemProcessor.cs" />
@@ -235,7 +234,6 @@
     <Compile Include="VFECore\HarmonyPatches\Patch_RaidStrategyWorker_Siege.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_RandomSettlementTileFor.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_ResearchProjectDef.cs" />
-    <Compile Include="VFECore\HarmonyPatches\Patch_SkyManager.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_ThingDef.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_TraderCaravanUtility.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_Verb.cs" />

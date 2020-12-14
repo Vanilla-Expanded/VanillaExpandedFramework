@@ -1,5 +1,10 @@
 ﻿using RimWorld;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using UnityEngine;
 using Verse;
 
 namespace VFECore
@@ -45,7 +50,7 @@ namespace VFECore
             }
         }
 
-        public int ticksSinceLastEmitted;
+		public int ticksSinceLastEmitted;
         public ThingDef customizedMoteDef;
 
         public override void PostPostMake()
@@ -71,12 +76,12 @@ namespace VFECore
         }
 
         public override void CompTick()
-        {
+		{
             CompRefuelable compRefuelable = this.parent.GetComp<CompRefuelable>();
             CompFlickable compFlickable = this.parent.GetComp<CompFlickable>();
 
             if (compRefuelable != null && !compRefuelable.HasFuel)
-            {
+			{
                 return;
             }
             if (compFlickable != null && !compFlickable.SwitchIsOn)
