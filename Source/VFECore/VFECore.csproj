@@ -191,6 +191,7 @@
     <Compile Include="VFECore\Comps\ThingComps\CompProperties_DependsOnBuilding.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompProperties_PawnDependsOn.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompProperties_Shield.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompProperties_ThrowMote.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompShield.cs" />
     <Compile Include="ItemProcessor\Comps\ThingComps\CompItemProcessor.cs" />
     <Compile Include="ItemProcessor\Comps\ThingComps\CompProperties_ItemProcessor.cs" />
