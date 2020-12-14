@@ -20,19 +20,29 @@ namespace VanillaFurnitureExpanded
 
         public Command_SetItemsToSpawn()
         {
-            if (building!=null && building.currentThingList == null)
+            foreach (object obj in Find.Selector.SelectedObjects)
             {
-                icon = ContentFinder<Texture2D>.Get(building.currentThingList.GizmoIcon, true);
-                defaultLabel = building.currentThingList.GizmoLabel.Translate();
-                defaultDesc = building.currentThingList.GizmoDescription.Translate();
+                Building currentbuilding = obj as Building;
+                building = currentbuilding.TryGetComp<CompConfigurableSpawner>();
+                if (building != null)
+                {
+                    if (building.currentThingList != null)
+                    {
+                        icon = ContentFinder<Texture2D>.Get(building.currentThingList.GizmoIcon, true);
+                        defaultLabel = building.currentThingList.GizmoLabel.Translate();
+                        defaultDesc = building.currentThingList.GizmoDescription.Translate();
 
+                    }
+                    else
+                    {
+                        icon = ContentFinder<Texture2D>.Get("UI/IP_SetOutput", true);
+                        defaultLabel = "IP_ChooseOutput".Translate();
+                        defaultDesc = "IP_ChooseOutput".Translate();
+                    }
+
+                }
             }
-            else
-            {
-                icon = ContentFinder<Texture2D>.Get("UI/IP_SetOutput", true);
-                defaultLabel = "IP_ChooseOutput".Translate();
-                defaultDesc = "IP_ChooseOutput".Translate();
-            }
+            
 
         }
 
@@ -48,6 +58,7 @@ namespace VanillaFurnitureExpanded
                 list.Add(new FloatMenuOption(thingList.listName.Translate(), delegate
                 {
                     building.currentThingList = thingList;
+                    building.ResetCountdown();
 
                 }, MenuOptionPriority.Default, null, null, 29f, null, null));
             }

@@ -191,13 +191,13 @@ namespace VanillaFurnitureExpanded
             return false;
         }
 
-        private void ResetCountdown()
+        public  void ResetCountdown()
         {
             if (currentThingList != null)
             {
                 this.ticksUntilSpawn = currentThingList.timeInTicks;
             } else
-            this.ticksUntilSpawn = 0;
+            this.ticksUntilSpawn = 6000;
         }
 
         public override void PostExposeData()
@@ -213,7 +213,7 @@ namespace VanillaFurnitureExpanded
             {
                 yield return new Command_Action
                 {
-                    defaultLabel = "DEBUG: Spawn rock",
+                    defaultLabel = "DEBUG: Spawn product",
                     icon = TexCommand.DesirePower,
                     action = delegate ()
                     {
@@ -237,7 +237,7 @@ namespace VanillaFurnitureExpanded
                 }
                 else
                 {
-                    return "NextSpawnedItemIn".Translate(currentThingList.listName) + ": " + this.ticksUntilSpawn.ToStringTicksToPeriod(true, false, true, true);
+                    return "NextSpawnedItemIn".Translate(currentThingList.listName.Translate()) + ": " + this.ticksUntilSpawn.ToStringTicksToPeriod(true, false, true, true);
                 }
 
             }
