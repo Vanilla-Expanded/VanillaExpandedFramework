@@ -1,0 +1,61 @@
+{
+  "format": 1,
+  "restore": {
+    "c:\\GAMES\\Rimworld\\Mods\\VanillaWeaponsExpanded-Heavy\\1.2\\Source\\HeavyWeapons\\HeavyWeapons.csproj": {}
+  },
+  "projects": {
+    "c:\\GAMES\\Rimworld\\Mods\\VanillaWeaponsExpanded-Heavy\\1.2\\Source\\HeavyWeapons\\HeavyWeapons.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "c:\\GAMES\\Rimworld\\Mods\\VanillaWeaponsExpanded-Heavy\\1.2\\Source\\HeavyWeapons\\HeavyWeapons.csproj",
+        "projectName": "HeavyWeapons",
+        "projectPath": "c:\\GAMES\\Rimworld\\Mods\\VanillaWeaponsExpanded-Heavy\\1.2\\Source\\HeavyWeapons\\HeavyWeapons.csproj",
+        "packagesPath": "C:\\Users\\Vova\\.nuget\\packages\\",
+        "outputPath": "c:\\GAMES\\Rimworld\\Mods\\VanillaWeaponsExpanded-Heavy\\1.2\\Source\\HeavyWeapons\\obj\\",
+        "projectStyle": "PackageReference",
+        "skipContentFileWrite": true,
+        "configFilePaths": [
+          "C:\\Users\\Vova\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net472"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net472": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net472": {
+          "dependencies": {
+            "Krafs.Rimworld.Ref": {
+              "target": "Package",
+              "version": "[1.2.2753, )"
+            },
+            "Lib.Harmony": {
+              "target": "Package",
+              "version": "[2.0.4, )"
+            }
+          }
+        }
+      },
+      "runtimes": {
+        "win": {
+          "#import": []
+        },
+        "win-x64": {
+          "#import": []
+        },
+        "win-x86": {
+          "#import": []
+        }
+      }
+    }
+  }
+}

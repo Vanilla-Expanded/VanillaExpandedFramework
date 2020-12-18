@@ -1,0 +1,7 @@
+c:\GAMES\Rimworld\Mods\VanillaWeaponsExpanded-Heavy\1.2\Assemblies\HeavyWeapons.dll
+c:\GAMES\Rimworld\Mods\VanillaWeaponsExpanded-Heavy\1.2\Assemblies\HeavyWeapons.pdb
+c:\GAMES\Rimworld\Mods\VanillaWeaponsExpanded-Heavy\1.2\Source\HeavyWeapons\obj\Debug\HeavyWeapons.csprojAssemblyReference.cache
+c:\GAMES\Rimworld\Mods\VanillaWeaponsExpanded-Heavy\1.2\Source\HeavyWeapons\obj\Debug\HeavyWeapons.csproj.CoreCompileInputs.cache
+c:\GAMES\Rimworld\Mods\VanillaWeaponsExpanded-Heavy\1.2\Source\HeavyWeapons\obj\Debug\HeavyWeapons.csproj.CopyComplete
+c:\GAMES\Rimworld\Mods\VanillaWeaponsExpanded-Heavy\1.2\Source\HeavyWeapons\obj\Debug\HeavyWeapons.dll
+c:\GAMES\Rimworld\Mods\VanillaWeaponsExpanded-Heavy\1.2\Source\HeavyWeapons\obj\Debug\HeavyWeapons.pdb
