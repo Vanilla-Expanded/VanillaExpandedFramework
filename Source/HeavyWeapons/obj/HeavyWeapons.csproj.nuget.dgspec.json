@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\GAMES\\Rimworld\\Mods\\VanillaWeaponsExpanded-Heavy\\1.2\\Source\\HeavyWeapons\\HeavyWeapons.csproj": {}
+    "c:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\HeavyWeapons\\HeavyWeapons.csproj": {}
   },
   "projects": {
-    "c:\\GAMES\\Rimworld\\Mods\\VanillaWeaponsExpanded-Heavy\\1.2\\Source\\HeavyWeapons\\HeavyWeapons.csproj": {
+    "c:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\HeavyWeapons\\HeavyWeapons.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\GAMES\\Rimworld\\Mods\\VanillaWeaponsExpanded-Heavy\\1.2\\Source\\HeavyWeapons\\HeavyWeapons.csproj",
+        "projectUniqueName": "c:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\HeavyWeapons\\HeavyWeapons.csproj",
         "projectName": "HeavyWeapons",
-        "projectPath": "c:\\GAMES\\Rimworld\\Mods\\VanillaWeaponsExpanded-Heavy\\1.2\\Source\\HeavyWeapons\\HeavyWeapons.csproj",
+        "projectPath": "c:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\HeavyWeapons\\HeavyWeapons.csproj",
         "packagesPath": "C:\\Users\\Vova\\.nuget\\packages\\",
-        "outputPath": "c:\\GAMES\\Rimworld\\Mods\\VanillaWeaponsExpanded-Heavy\\1.2\\Source\\HeavyWeapons\\obj\\",
+        "outputPath": "c:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\HeavyWeapons\\obj\\",
         "projectStyle": "PackageReference",
         "skipContentFileWrite": true,
         "configFilePaths": [
