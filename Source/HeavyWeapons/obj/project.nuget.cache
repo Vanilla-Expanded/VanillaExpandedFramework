@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "3mxxNIvhSsQ3S1TCmRJXZ0x9rwXbpenJ4/QwLyU+5CnfcLege5bR06hygONlnKyyteNxTLcnV3mvVt093z3uvA==",
+  "dgSpecHash": "7ObFmEAzPbEEtZS6eTM8KsnLPVogHnz2Qxlj+pU4KGm3c4wnqqikRDRmv03Wu5KcY/gtqAk6h6DEeyOf44Ev9w==",
   "success": true,
-  "projectFilePath": "c:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\HeavyWeapons\\HeavyWeapons.csproj",
+  "projectFilePath": "C:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\HeavyWeapons\\HeavyWeapons.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Vova\\.nuget\\packages\\krafs.rimworld.ref\\1.2.2753\\krafs.rimworld.ref.1.2.2753.nupkg.sha512",
     "C:\\Users\\Vova\\.nuget\\packages\\lib.harmony\\2.0.4\\lib.harmony.2.0.4.nupkg.sha512"

@@ -32,20 +32,21 @@ namespace HeavyWeapons
         {
             var keys = weaponStates.Keys.ToList().OrderByDescending(x => x).ToList();
             Rect rect = new Rect(inRect.x, inRect.y, inRect.width, inRect.height);
-            Rect rect2 = new Rect(0f, 0f, inRect.width - 30f, keys.Count * 54);
+            Rect rect2 = new Rect(0f, 0f, inRect.width - 30f, keys.Count * 74);
             Widgets.BeginScrollView(rect, ref scrollPosition, rect2, true);
             Listing_Standard listingStandard = new Listing_Standard();
             listingStandard.Begin(rect2);
             for (int num = keys.Count - 1; num >= 0; num--)
             {
                 var test = weaponStates[keys[num]];
-                listingStandard.CheckboxLabeled("Enable HP deduction per shot for: " + keys[num], ref test);
+                var def = DefDatabase<ThingDef>.GetNamed(keys[num]);
+                listingStandard.CheckboxLabeled("Enable HP deduction per shot for " + def.label + ":", ref test);
                 weaponStates[keys[num]] = test;
                 if (!test)
                 {
                     weaponHPStates[keys[num]] = 0;
                 }
-                listingStandard.Label("Adjust HP deduction per shot for: " + keys[num] + " - " + weaponHPStates[keys[num]]);
+                listingStandard.Label("Adjust HP deduction per shot for " + def.label + ": " + weaponHPStates[keys[num]]);
                 var value = listingStandard.Slider(weaponHPStates[keys[num]], 0, 100);
                 weaponHPStates[keys[num]] = (int)value;
             }
