@@ -45,6 +45,8 @@
     <Compile Include="HeavyWeapon.cs" />
     <Compile Include="CompGuidedProjectile.cs" />
     <Compile Include="GuidedProjectiles.cs" />
+    <Compile Include="HeavyWeaponsMod.cs" />
+    <Compile Include="HeavyWeaponsSettings.cs" />
     <Compile Include="Verb_Shoot.cs" />
     <Compile Include="HarmonyPatches\Patch_FloatMenuMakerMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
