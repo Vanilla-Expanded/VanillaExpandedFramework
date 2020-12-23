@@ -12,10 +12,15 @@ namespace KCSG
 {
     public class FactionSettlement : DefModExtension
     {
-        public List<KCSG.SettlementLayoutDef> chooseFrom = new List<KCSG.SettlementLayoutDef>();
+        public bool useStructureLayout;
+
+        public List<KCSG.StructureLayoutDef> chooseFromlayouts = new List<KCSG.StructureLayoutDef>();
+        public List<KCSG.SettlementLayoutDef> chooseFromSettlements = new List<KCSG.SettlementLayoutDef>();
+        
         public string symbolResolver = null;
 
-        public static SettlementLayoutDef temp = null;
-        public static List<CellRect> tempRectList = null;
+        // Not for users use
+        public static string temp = null;
+        public static bool tempUseStructureLayout;
     }
 }

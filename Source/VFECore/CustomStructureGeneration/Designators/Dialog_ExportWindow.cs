@@ -20,12 +20,13 @@ namespace KCSG
 		private Color boxColor = new Color(0.13f, 0.14f, 0.16f);
 
 		private string defname;
+		private bool needRoyalty = false;
 
 		public override Vector2 InitialSize
 		{
 			get
 			{
-				return new Vector2(800f, 250f);
+				return new Vector2(800f, 300f);
 			}
 		}
 
@@ -55,7 +56,7 @@ namespace KCSG
 			Widgets.DrawBoxSolid(new Rect(710, 0, 50, 50), boxColor);
 			if (Widgets.ButtonImage(new Rect(715, 5, 40, 40), TextureLoader.helpIcon))
             {
-				System.Diagnostics.Process.Start("https://github.com/AndroidQuazar/VanillaExpandedFramework/wiki");
+				System.Diagnostics.Process.Start("https://github.com/AndroidQuazar/VanillaExpandedFramework/wiki/Exporting-your-own-structures");
             }
 
 			Text.Anchor = TextAnchor.UpperLeft;
@@ -99,6 +100,28 @@ namespace KCSG
 			structureL.SetElementValue("defName", defname);
 			Text.Anchor = TextAnchor.UpperLeft;
 		}
+		
+		private void DrawRoyaltyChanger()
+        {
+			Text.Anchor = TextAnchor.MiddleCenter;
+			Widgets.Label(new Rect(10, 140, 200, 35), "Structure need royalty dlc:");
+			Widgets.Checkbox(220, 140, ref this.needRoyalty);
+			if (this.needRoyalty)
+            {
+				if (structureL.Element("requireRoyalty") == null)
+				{
+					structureL.Add(new XElement("requireRoyalty", true));
+				}
+			}
+			else
+            {
+				if (structureL.Element("requireRoyalty") != null)
+				{
+					structureL.Element("requireRoyalty").Remove();
+				}
+			}
+			Text.Anchor = TextAnchor.UpperLeft;
+		}
 
 		public override void DoWindowContents(Rect inRect)
 		{
@@ -106,6 +129,8 @@ namespace KCSG
 			Text.Font = GameFont.Small;
 
 			this.DrawDefNameChanger();
+
+			this.DrawRoyaltyChanger();
 
 			this.DrawFooter(inRect);
 		}

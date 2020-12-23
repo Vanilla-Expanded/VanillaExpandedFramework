@@ -8,22 +8,18 @@ namespace KCSG
 {
     public class SettlementLayoutDef : Def
     {
-        // With default size grid, allow for 3 rooms with 2 tiles path between them
         public IntVec2 settlementSize = new IntVec2(42, 42);
-        public IntVec2 gridSize = new IntVec2(12, 12);
+
         public bool clearEverything = true;
-        public bool placeNaturalTerrain = false;
 
-        public bool path = false; // Add path between room
+        public bool vanillaLikeDefense = false;
+
+        // Path settings
+        public bool path = false;
         public TerrainDef pathType = null;
-        public int pathWidth = 2; // Space between room
+        public int pathWidth = 2;
 
-        public bool vanillaLikeDefense = false; // Use vanilla generation for defense
-        public bool customDefense = false;
-        // public ExternalStruct externalStruct = null;
 
         public bool requireRoyalty = false;
-
-        public List<string> roomLayout = new List<string>();
     }
 }

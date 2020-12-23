@@ -21,7 +21,6 @@ namespace KCSG
         [HarmonyPrefix]
         public static bool Prefix(IntVec3 c, Map map, GenStepParams parms, int stackCount = 1)
         {
-            //KENT TEMP CODE
             if (VFECore.VFEGlobal.settings.enableLog)
             {
                 Log.Message("Testing defs");
@@ -38,76 +37,79 @@ namespace KCSG
 
             if (map.ParentFaction != null && map.ParentFaction.def.HasModExtension<FactionSettlement>())
             {
-                FactionSettlement sf = map.ParentFaction.def.GetModExtension<FactionSettlement>();
-                SettlementLayoutDef sld;
-                if (ModLister.RoyaltyInstalled) sld = sf.chooseFrom.RandomElement();
-                else sld = sf.chooseFrom.ToList().FindAll(sfl => !sfl.requireRoyalty).RandomElement();
+                FactionSettlement factionSettlement = map.ParentFaction.def.GetModExtension<FactionSettlement>();
 
-                FactionSettlement.temp = sld;
+                if (factionSettlement.symbolResolver == null) GenStepPatchesUtils.Generate(map, c, factionSettlement);
+                else GenStepPatchesUtils.Generate(map, c, factionSettlement, factionSettlement.symbolResolver);
 
-                // Get faction
-                Faction faction;
-                if (map.ParentFaction == null || map.ParentFaction == Faction.OfPlayer)
-                {
-                    faction = Find.FactionManager.RandomEnemyFaction(false, false, true, TechLevel.Undefined);
-                }
-                else faction = map.ParentFaction;
-
-                // Get settlement size
-                int width = sld.settlementSize.x;
-                int height = sld.settlementSize.z;
-                CellRect rect = new CellRect(c.x - width / 2, c.z - height / 2, width, height);
-                rect.ClipInsideMap(map);
-
-                ResolveParams rp = default(ResolveParams);
-                rp.faction = faction;
-                rp.rect = rect;
-
-
-                BaseGen.globalSettings.map = map;
-                BaseGen.symbolStack.Push("kcsg_settlement", rp, null);
-                BaseGen.Generate();
                 return false;
             }
             else if (Find.World.worldObjects.AllWorldObjects.Find(o=>o.Tile == map.Tile && o.def.HasModExtension<KCSG.FactionSettlement>()) is WorldObject worldObject)
             {
-                FactionSettlement sf = worldObject.def.GetModExtension<FactionSettlement>();
-                SettlementLayoutDef sld;
-                if (ModLister.RoyaltyInstalled) sld = sf.chooseFrom.RandomElement();
-                else sld = sf.chooseFrom.ToList().FindAll(sfl => !sfl.requireRoyalty).RandomElement();
+                FactionSettlement factionSettlement = worldObject.def.GetModExtension<FactionSettlement>();
 
-                FactionSettlement.temp = sld;
+                if (factionSettlement.symbolResolver == null) GenStepPatchesUtils.Generate(map, c, factionSettlement);
+                else GenStepPatchesUtils.Generate(map, c, factionSettlement, factionSettlement.symbolResolver);
 
-                // Get faction
-                Faction faction;
-                if (map.ParentFaction == null || map.ParentFaction == Faction.OfPlayer)
-                {
-                    Log.Error("Faction was null or player.... throwing random ennemy faction");
-                    faction = Find.FactionManager.RandomEnemyFaction(false, false, true, TechLevel.Undefined);
-                }
-                else faction = map.ParentFaction;
-
-                // Get settlement size
-                int width = sld.settlementSize.x;
-                int height = sld.settlementSize.z;
-                CellRect rect = new CellRect(c.x - width / 2, c.z - height / 2, width, height);
-                rect.ClipInsideMap(map);
-
-                ResolveParams rp = default(ResolveParams);
-                rp.faction = faction;
-                rp.rect = rect;
-
-
-                BaseGen.globalSettings.map = map;
-                if (sf.symbolResolver == null) BaseGen.symbolStack.Push("kcsg_settlement", rp, null);
-                else BaseGen.symbolStack.Push(sf.symbolResolver, rp, null);
-                BaseGen.Generate();
                 return false;
+            }
+            else return true;
+        }
+    }
+
+    public class GenStepPatchesUtils
+    {
+        public static void Generate(Map map, IntVec3 c, FactionSettlement sf, string symbolResolver = "kcsg_settlement")
+        {
+            FactionSettlement.tempUseStructureLayout = sf.useStructureLayout;
+
+            string sld;
+
+            if (!sf.useStructureLayout)
+            {
+                if (ModLister.RoyaltyInstalled) sld = sf.chooseFromSettlements.RandomElement().defName;
+                else sld = sf.chooseFromSettlements.ToList().FindAll(sfl => !sfl.requireRoyalty).RandomElement().defName;
             }
             else
             {
-                return true;
+                if (ModLister.RoyaltyInstalled) sld = sf.chooseFromlayouts.RandomElement().defName;
+                else sld = sf.chooseFromlayouts.ToList().FindAll(sfl => !sfl.requireRoyalty).RandomElement().defName;
             }
+
+            FactionSettlement.temp = sld;
+
+            // Get faction
+            Faction faction;
+            if (map.ParentFaction == null || map.ParentFaction == Faction.OfPlayer)
+            {
+                faction = Find.FactionManager.RandomEnemyFaction(false, false, true, TechLevel.Undefined);
+            }
+            else faction = map.ParentFaction;
+
+            // Get settlement size
+            int width;
+            int height;
+            if (sf.useStructureLayout)
+            {
+                KCSG_Utilities.HeightWidthFromLayout(DefDatabase<StructureLayoutDef>.GetNamed(sld), out height, out width);
+            }
+            else
+            {
+                SettlementLayoutDef temp = DefDatabase<SettlementLayoutDef>.GetNamed(sld);
+                height = temp.settlementSize.x;
+                width = temp.settlementSize.z;
+            }
+
+            CellRect rect = new CellRect(c.x - width / 2, c.z - height / 2, width, height);
+            rect.ClipInsideMap(map);
+
+            ResolveParams rp = default(ResolveParams);
+            rp.faction = faction;
+            rp.rect = rect;
+
+            BaseGen.globalSettings.map = map;
+            BaseGen.symbolStack.Push(symbolResolver, rp, null);
+            BaseGen.Generate();
         }
     }
 }

@@ -33,7 +33,6 @@ namespace KCSG
                         KCSG_Utilities.HeightWidthFromLayout(localDef, out int h, out int w);
                         CellRect cellRect = CellRect.CenteredOn(UI.MouseCell(), w, h);
 
-                        int count = 0;
                         foreach (List<string> item in localDef.layouts)
                         {
                             KCSG_Utilities.GenerateRoomFromLayout(item, cellRect, Find.CurrentMap, localDef);

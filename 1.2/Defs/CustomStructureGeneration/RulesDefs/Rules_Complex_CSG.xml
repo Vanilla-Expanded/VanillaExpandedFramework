@@ -10,10 +10,10 @@
   </RuleDef>
 
   <RuleDef>
-    <defName>KCSG_RoomsGen</defName>
-    <symbol>kcsg_roomsgen</symbol>
+    <defName>KCSG_RoomGenFromStructure</defName>
+    <symbol>kcsg_roomsgenfromstructure</symbol>
     <resolvers>
-      <li Class="KCSG.SymbolResolver_KCSG_RoomGen" />
+      <li Class="KCSG.SymbolResolver_KCSG_RoomGenFromStructure" />
     </resolvers>
   </RuleDef>
 </Defs>

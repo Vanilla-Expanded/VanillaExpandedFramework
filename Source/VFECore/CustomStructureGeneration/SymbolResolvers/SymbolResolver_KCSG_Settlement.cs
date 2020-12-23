@@ -1,6 +1,5 @@
 ﻿using RimWorld;
 using RimWorld.BaseGen;
-using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using Verse.AI.Group;
@@ -9,18 +8,28 @@ namespace KCSG
 {
     internal class SymbolResolver_KCSG_Settlement : SymbolResolver
     {
-        public override void Resolve(ResolveParams rp)
+        private void PreClean(Map map, bool clearEverything, ResolveParams rp)
         {
-            Map map = BaseGen.globalSettings.map;
-            Faction faction = rp.faction ?? Find.FactionManager.RandomEnemyFaction(false, false, true, TechLevel.Undefined);
-            SettlementLayoutDef lDef = FactionSettlement.temp;
+            if (clearEverything)
+            {
+                foreach (IntVec3 c in rp.rect)
+                {
+                    c.GetThingList(map).ToList().ForEach((t) => t.DeSpawn());
+                    map.roofGrid.SetRoof(c, null);
+                }
+                map.roofGrid.RoofGridUpdate();
+            }
+            else
+            {
+                foreach (IntVec3 c in rp.rect)
+                {
+                    c.GetThingList(map).ToList().FindAll(t1 => t1.def.category == ThingCategory.Filth).ForEach((t) => t.DeSpawn());
+                }
+            }
+        }
 
-            List<CellRect> gridRects = KCSG_Utilities.GetRects(rp.rect, lDef, map, out rp.rect);
-            FactionSettlement.tempRectList = gridRects;
-
-            if (VFECore.VFEGlobal.settings.enableLog) Log.Message("Hostile pawns generation - PASS");
-
-            // Add pawn to the base
+        private void AddHostilePawnGroup(Faction faction, Map map, ResolveParams rp)
+        {
             Lord singlePawnLord = rp.singlePawnLord ?? LordMaker.MakeNewLord(faction, new LordJob_DefendBase(faction, rp.rect.CenterCell), map, null);
             TraverseParms traverseParms = TraverseParms.For(TraverseMode.PassDoors, Danger.Deadly, false);
             ResolveParams resolveParams = rp;
@@ -39,57 +48,55 @@ namespace KCSG
                 resolveParams.pawnGroupMakerParams.seed = rp.settlementPawnGroupSeed;
             }
             if (faction.def.pawnGroupMakers.Any(pgm => pgm.kindDef == PawnGroupKindDefOf.Settlement)) BaseGen.symbolStack.Push("pawnGroup", resolveParams, null);
+        }
+        
+        public override void Resolve(ResolveParams rp)
+        {
+            Map map = BaseGen.globalSettings.map;
+            Faction faction = rp.faction ?? Find.FactionManager.RandomEnemyFaction(false, false, true, TechLevel.Undefined);
 
-            // Add defense
-            if (lDef.vanillaLikeDefense)
+            if (FactionSettlement.tempUseStructureLayout)
             {
-                int dWidth = (Rand.Bool ? 2 : 4);
-                ResolveParams rp3 = rp;
-                rp3.rect = new CellRect(rp.rect.minX - dWidth, rp.rect.minZ - dWidth, rp.rect.Width + (dWidth * 2), rp.rect.Height + (dWidth * 2));
-                rp3.faction = faction;
-                rp3.edgeDefenseWidth = dWidth;
-                rp3.edgeThingMustReachMapEdge = new bool?(rp.edgeThingMustReachMapEdge ?? true);
-                BaseGen.symbolStack.Push("edgeDefense", rp3, null);
-            }
+                this.AddHostilePawnGroup(faction, map, rp);
 
-            if (VFECore.VFEGlobal.settings.enableLog) Log.Message("Structures generation - PASS");
+                ResolveParams usl_rp = rp;
+                usl_rp.faction = faction;
+                BaseGen.symbolStack.Push("kcsg_roomsgenfromstructure", usl_rp, null);
 
-            // Create the rooms
-            ResolveParams rp2 = rp;
-            rp2.faction = faction;
-            BaseGen.symbolStack.Push("kcsg_roomsgen", rp2, null);
-
-            // Add path
-
-            if (VFECore.VFEGlobal.settings.enableLog) Log.Message("Adding paths - PASS");
-
-            if (lDef.path)
-            {
-                ResolveParams rp1 = rp;
-                rp1.floorDef = lDef.pathType ?? TerrainDefOf.Gravel;
-                rp1.allowBridgeOnAnyImpassableTerrain = true;
-                BaseGen.symbolStack.Push("floor", rp1, null);
-            }
-
-            // Destroy all things before spawning the base
-
-            if (VFECore.VFEGlobal.settings.enableLog) Log.Message("Clearing ground - PASS");
-
-            if (lDef.clearEverything)
-            {
-                foreach (IntVec3 c in rp.rect)
-                {
-                    c.GetThingList(map).ToList().ForEach((t) => t.DeSpawn()); // Remove all things
-                    map.roofGrid.SetRoof(c, null); // Remove roof
-                }
-                map.roofGrid.RoofGridUpdate(); // Update roof grid
+                this.PreClean(map, false, rp);
             }
             else
             {
-                foreach (IntVec3 c in rp.rect)
+                SettlementLayoutDef sld = DefDatabase<SettlementLayoutDef>.GetNamed(FactionSettlement.temp);
+
+                if (sld.vanillaLikeDefense)
                 {
-                    c.GetThingList(map).ToList().FindAll(t1 => t1.def.category == ThingCategory.Filth || t1.def.category == ThingCategory.Item).ForEach((t) => t.DeSpawn());
+                    int dWidth = (Rand.Bool ? 2 : 4);
+                    ResolveParams rp3 = rp;
+                    rp3.rect = new CellRect(rp.rect.minX - dWidth, rp.rect.minZ - dWidth, rp.rect.Width + (dWidth * 2), rp.rect.Height + (dWidth * 2));
+                    rp3.faction = faction;
+                    rp3.edgeDefenseWidth = dWidth;
+                    rp3.edgeThingMustReachMapEdge = new bool?(rp.edgeThingMustReachMapEdge ?? true);
+                    BaseGen.symbolStack.Push("edgeDefense", rp3, null);
                 }
+
+
+                Log.Warning("SettlementLayoutDef not yet implemented");
+                // TODO: custom symbolResolver wich automatically build a settelement from the structure layouts loaded.
+                // Each structure layout should have techlevel and tags. Then filter by tag if tag is present on the settlement layout def, or by techlevel
+                /*ResolveParams sld_rp_2 = rp;
+                sld_rp_2.faction = faction;
+                BaseGen.symbolStack.Push("kcsg_roomsgen", sld_rp_2, null);*/
+
+                if (sld.path)
+                {
+                    ResolveParams sld_rp_1 = rp;
+                    sld_rp_1.floorDef = sld.pathType ?? TerrainDefOf.Gravel;
+                    sld_rp_1.allowBridgeOnAnyImpassableTerrain = true;
+                    BaseGen.symbolStack.Push("floor", sld_rp_1, null);
+                }
+
+                this.PreClean(map, false, rp);
             }
         }
     }

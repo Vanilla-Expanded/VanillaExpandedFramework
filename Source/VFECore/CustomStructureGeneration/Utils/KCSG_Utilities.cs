@@ -12,52 +12,6 @@ namespace KCSG
     {
         #region Rect Utils
 
-        public static List<CellRect> GetRects(CellRect fullSize, SettlementLayoutDef lDef, Map map, out CellRect afterpath)
-        {
-            List<CellRect> rects = new List<CellRect>();
-            int nWidth = fullSize.Width / lDef.gridSize.x;
-            int nHeight = fullSize.Height / lDef.gridSize.z;
-#if DEBUG
-			Log.Message("Number of grid/building: widht: " + nWidth.ToString() + " , height: " + nHeight.ToString());
-#endif
-            // Calculate new fullSize depending on path
-            if (!lDef.path) afterpath = fullSize; // No path return normal size
-            else
-            {
-                int newWidth = fullSize.Width + ((nWidth - 1) * lDef.pathWidth);
-                int newHeight = fullSize.Height + ((nHeight - 1) * lDef.pathWidth);
-#if DEBUG
-				Log.Message("New dimension: widht: " + newWidth.ToString() + " , height: " + newHeight.ToString());
-				Log.Message("Old dimension: widht: " + fullSize.Width.ToString() + " , height: " + fullSize.Height.ToString());
-#endif
-                afterpath = new CellRect(fullSize.CenterCell.x - newWidth / 2, fullSize.CenterCell.z - newHeight / 2, newWidth, newHeight);
-            }
-
-            // Grid rects creation
-            IntVec3 firstCenter = new IntVec3(afterpath.First().x + (lDef.gridSize.x / 2), afterpath.First().y, afterpath.First().z + (lDef.gridSize.z / 2));
-            CellRect rect1 = new CellRect(firstCenter.x - lDef.gridSize.x / 2, firstCenter.z - lDef.gridSize.z / 2, lDef.gridSize.x, lDef.gridSize.z);
-            rects.Add(rect1);
-
-            IntVec3 temp = firstCenter;
-            for (int i = 0; i < nHeight; i++)
-            {
-                for (int i2 = 0; i2 < nWidth; i2++)
-                {
-                    temp.x += lDef.gridSize.x;
-                    if (lDef.path) temp.x += lDef.pathWidth;
-                    if (afterpath.Contains(temp))
-                    {
-                        CellRect rect = new CellRect(temp.x - lDef.gridSize.x / 2, temp.z - lDef.gridSize.z / 2, lDef.gridSize.x, lDef.gridSize.z);
-                        rects.Add(rect);
-                    }
-                }
-                temp.x = firstCenter.x - lDef.gridSize.x - lDef.pathWidth;
-                if (lDef.path) temp.z += lDef.pathWidth;
-                temp.z += lDef.gridSize.z;
-            }
-            return rects;
-        }
-
         public static void MinMaxXZ(List<IntVec3> list, out int zMin, out int zMax, out int xMin, out int xMax)
         {
             zMin = list[0].z;
@@ -313,27 +267,6 @@ namespace KCSG
                 l++;
             }
             if (VFECore.VFEGlobal.settings.enableLog) Log.Message("-- Cells passage done - PASS");
-        }
-
-        public static void FillStockpileRoom(StructureLayoutDef rld, CellRect roomRect, Map map)
-        {
-            foreach (IntVec3 i in roomRect.CenterCell.GetRoom(map).Cells)
-            {
-                int x = (Rand.Bool ? 1 : 2);
-                if (x == 1 && i.GetThingList(map).Count == 0)
-                {
-                    ThingDef randTD = rld.allowedThingsInStockpile.RandomElement();
-                    ThingDef randStuff = null;
-                    if (randTD.stuffCategories != null)
-                    {
-                        randStuff = DefDatabase<ThingDef>.AllDefsListForReading.FindAll((t) => t.IsStuff).RandomElement();
-                    }
-                    Thing thing = ThingMaker.MakeThing(randTD, randStuff);
-                    if (thing.def.stackLimit > 1) thing.stackCount = Rand.RangeInclusive(5, thing.def.stackLimit);
-                    thing.SetForbidden(true);
-                    GenSpawn.Spawn(thing, i, map);
-                }
-            }
         }
 
         public static Lord CreateNewLord(Type lordJobType, Map map, IntVec3 cell)
@@ -743,7 +676,7 @@ namespace KCSG
             XElement StructureLayoutDef = new XElement("KCSG.StructureLayoutDef", null);
             // Generate defName
             Room room = cellExport[cellExport.Count / 2].GetRoom(map);
-            string defNameString = "PlaceHolder"; Log.Warning("Please remember to change the defName of the following room");
+            string defNameString = "PlaceHolder";
             XElement defName = new XElement("defName", defNameString);
             StructureLayoutDef.Add(defName);
             // Stockpile?

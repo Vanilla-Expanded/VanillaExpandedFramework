@@ -128,7 +128,7 @@
     <Compile Include="CustomStructureGeneration\Harmony\FixCaravanThreadingPatch.cs" />
     <Compile Include="CustomStructureGeneration\Harmony\PrepareCarefully_Fix.cs" />
     <Compile Include="CustomStructureGeneration\ScenPart_AddStartingStructure.cs" />
-    <Compile Include="CustomStructureGeneration\SymbolResolvers\SymbolResolver_KCSG_RoomGen.cs" />
+    <Compile Include="CustomStructureGeneration\SymbolResolvers\SymbolResolver_KCSG_RoomGenFromStructure.cs" />
     <Compile Include="CustomStructureGeneration\SymbolResolvers\SymbolResolver_KCSG_Settlement.cs" />
     <Compile Include="CustomStructureGeneration\TextureLoader.cs" />
     <Compile Include="CustomStructureGeneration\Utils\CenteredMessageBox.cs" />
