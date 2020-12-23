@@ -39,16 +39,20 @@ namespace HeavyWeapons
             for (int num = keys.Count - 1; num >= 0; num--)
             {
                 var test = weaponStates[keys[num]];
-                var def = DefDatabase<ThingDef>.GetNamed(keys[num]);
-                listingStandard.CheckboxLabeled("Enable HP deduction per shot for " + def.label + ":", ref test);
-                weaponStates[keys[num]] = test;
-                if (!test)
+                var def = DefDatabase<ThingDef>.GetNamed(keys[num], false);
+                if (def != null)
                 {
-                    weaponHPStates[keys[num]] = 0;
+                    listingStandard.CheckboxLabeled("Enable HP deduction per shot for " + def.label + ":", ref test);
+                    weaponStates[keys[num]] = test;
+                    if (!test)
+                    {
+                        weaponHPStates[keys[num]] = 0;
+                    }
+                    listingStandard.Label("Adjust HP deduction per shot for " + def.label + ": " + weaponHPStates[keys[num]]);
+                    var value = listingStandard.Slider(weaponHPStates[keys[num]], 0, 100);
+                    weaponHPStates[keys[num]] = (int)value;
                 }
-                listingStandard.Label("Adjust HP deduction per shot for " + def.label + ": " + weaponHPStates[keys[num]]);
-                var value = listingStandard.Slider(weaponHPStates[keys[num]], 0, 100);
-                weaponHPStates[keys[num]] = (int)value;
+
             }
             listingStandard.End();
             Widgets.EndScrollView();
