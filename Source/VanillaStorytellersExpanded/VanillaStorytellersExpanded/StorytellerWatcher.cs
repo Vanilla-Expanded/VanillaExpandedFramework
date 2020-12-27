@@ -61,7 +61,16 @@ namespace VanillaStorytellersExpanded
                 {
                     if (Find.TickManager.TicksAbs >= raidQueues[num].tickToFire)
                     {
-                        raidQueues[num].incidentDef.Worker.TryExecute(raidQueues[num].parms);
+                        try
+                        {
+                            raidQueues[num].incidentDef.Worker.TryExecute(raidQueues[num].parms);
+                        }
+                        catch
+                        {
+                            var parms = StorytellerUtility.DefaultParmsNow(raidQueues[num].incidentDef.category, raidQueues[num].parms.target);
+                            parms.faction = raidQueues[num].parms.faction;
+                            raidQueues[num].incidentDef.Worker.TryExecute(parms);
+                        }
                         raidQueues.RemoveAt(num);
                     }
                 }

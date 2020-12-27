@@ -16,3 +16,4 @@ c:\GAMES\Rimworld\Mods\VanillaExpandedFramework\Source\VanillaStorytellersExpand
 c:\GAMES\Rimworld\Mods\VanillaExpandedFramework\Source\VanillaStorytellersExpanded\VanillaStorytellersExpanded\obj\Debug\VanillaStorytellersExpanded.csproj.CoreCompileInputs.cache
 c:\GAMES\Rimworld\Mods\VanillaExpandedFramework\Source\VanillaStorytellersExpanded\VanillaStorytellersExpanded\obj\Debug\VanillaStorytellersExpanded.dll
 c:\GAMES\Rimworld\Mods\VanillaExpandedFramework\Source\VanillaStorytellersExpanded\VanillaStorytellersExpanded\obj\Debug\VanillaStorytellersExpanded.pdb
+C:\GAMES\Rimworld\Mods\VanillaExpandedFramework\Source\VanillaStorytellersExpanded\VanillaStorytellersExpanded\obj\Debug\VanillaStorytellersExpanded.csproj.CopyComplete

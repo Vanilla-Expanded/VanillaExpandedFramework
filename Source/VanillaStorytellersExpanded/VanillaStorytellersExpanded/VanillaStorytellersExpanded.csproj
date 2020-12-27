@@ -33,9 +33,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\..\GAMES\Rimworld\Mods\Harmony\Current\Assemblies\0Harmony.dll</HintPath>
-    </Reference>
-    <Reference Include="0Harmony">
       <HintPath>..\..\..\..\Harmony\Current\Assemblies\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
@@ -319,6 +316,11 @@
     <Compile Include="StorytellerDefExtension.cs" />
     <Compile Include="XeoNovaDanCode\TechLevelRange.cs" />
     <Compile Include="XeoNovaDanCode\VanillaStorytellersExpanded.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Lib.Harmony">
+      <Version>2.0.4</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
