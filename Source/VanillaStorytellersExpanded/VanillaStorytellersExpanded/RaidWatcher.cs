@@ -259,6 +259,19 @@ namespace VanillaStorytellersExpanded
         }
     }
 
+    [HarmonyPatch(typeof(Storyteller), "TryFire")]
+    public static class Patch_MakeIncidentsForInterval
+    {
+        public static bool Prefix(FiringIncident fi)
+        {
+            if (fi.def == null)
+            {
+                return false;
+            }
+            return true;
+        }
+    }
+
     [HarmonyPatch(typeof(IncidentWorker_Raid))]
     [HarmonyPatch("TryExecuteWorker")]
     public static class Patch_TryExecuteWorker
