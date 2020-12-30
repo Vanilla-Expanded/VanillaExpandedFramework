@@ -1065,14 +1065,19 @@ namespace ItemProcessor
                     }
                     else
                     {
-                        if (ModLister.HasActiveModWithName("Vanilla Factions Expanded - Mechanoids") && this.def.defName.Contains("VFEM_")) {
+                        if (this.def.defName.Contains("VFEM_")&&ModLister.HasActiveModWithName("Vanilla Factions Expanded - Mechanoids") ) {
+                            try
+                            {
+                                ((Action)(() =>
+                                {
+                                    VFEM.MechShipsSettings settings = VFEM.MechShipsMod.settings;
+                                    float multiplier = settings.VFEM_factorySpeedMultiplier;
+                                    this.days = thisCombinationRecipe.singleTimeIfNotQualityIncreasing * multiplier;
+                                }))();
+                            }
+                            catch (TypeLoadException) { }
                            
-                            //Type mechanoidsSettings = GenTypes.GetTypeInAnyAssembly("mechShipsSettings", "VFEM");
-                            //object multiplier = mechanoidsSettings.GetField("VFEM_factorySpeedMultiplier", BindingFlags.GetField).GetValue(null);
-                            //this.days = thisCombinationRecipe.singleTimeIfNotQualityIncreasing * multiplier;
-                            // Log.Message("Multiplier is "+multiplier);
-                            this.days = thisCombinationRecipe.singleTimeIfNotQualityIncreasing;
-
+                         
 
                         }
                         else
