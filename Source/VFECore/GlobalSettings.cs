@@ -31,14 +31,12 @@ namespace VFECore
         #region Pages
         private enum Pages // Add pages here
         {
-            CustomStructureGeneration = 1,
-            PatchOperationToggable
+            PatchOperationToggable = 1
         }
 
         private enum PagesHeadTitle // Add language data here, in the right order
         {
-            CSGTitle = 1,
-            TPTitle
+            TPTitle = 1
         }
 
         private int MaxIndex = Enum.GetNames(typeof(Pages)).Length;
@@ -55,14 +53,6 @@ namespace VFECore
             Text.Font = GameFont.Small;
             list.Gap();
             // list.GapLine();
-        }
-        #endregion
-
-        #region Custom Structure Generation
-        private void AddCSGSettings(Listing_Standard list)
-        {
-            list.Gap();
-            list.CheckboxLabeled("CSGLog".Translate(), ref settings.enableLog);
         }
         #endregion
 
@@ -147,8 +137,7 @@ namespace VFECore
 
             this.MakePageHead(list);
             #region settings
-            if (PageIndex == (int)Pages.CustomStructureGeneration) this.AddCSGSettings(list);
-            else if (PageIndex == (int)Pages.PatchOperationToggable) this.AddToggablePatchesSettings(list);
+            if (PageIndex == (int)Pages.PatchOperationToggable) this.AddToggablePatchesSettings(list);
             #endregion
 
             list.End();
@@ -159,14 +148,9 @@ namespace VFECore
 
     public class VFEGlobalSettings : ModSettings
     {
-        // Custom structure generation
-        public bool enableLog = false;
-
         public override void ExposeData()
         {
             base.ExposeData();
-            // Custom structure generation
-            Scribe_Values.Look(ref this.enableLog, "enableLog", false);
         }
     }
 }
