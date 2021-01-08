@@ -9,6 +9,8 @@ using System;
 using System.Diagnostics;
 using Verse.Sound;
 
+using System.Reflection;
+
 namespace ItemProcessor
 {
 
@@ -1063,7 +1065,26 @@ namespace ItemProcessor
                     }
                     else
                     {
-                        this.days = thisCombinationRecipe.singleTimeIfNotQualityIncreasing;
+                        if (this.def.defName.Contains("VFEM_")&&ModLister.HasActiveModWithName("Vanilla Factions Expanded - Mechanoids") ) {
+                            try
+                            {
+                                ((Action)(() =>
+                                {
+                                    VFEM.MechShipsSettings settings = VFEM.MechShipsMod.settings;
+                                    float multiplier = settings.VFEM_factorySpeedMultiplier;
+                                    this.days = thisCombinationRecipe.singleTimeIfNotQualityIncreasing * multiplier;
+                                }))();
+                            }
+                            catch (TypeLoadException) { }
+                           
+                         
+
+                        }
+                        else
+                        {
+                            this.days = thisCombinationRecipe.singleTimeIfNotQualityIncreasing;
+                        }
+
                     }
                     //Reset ingredient counter (this is probably not necessary cause ResetEverything does it, but oh well
                     CurrentAmountFirstIngredient = 0;

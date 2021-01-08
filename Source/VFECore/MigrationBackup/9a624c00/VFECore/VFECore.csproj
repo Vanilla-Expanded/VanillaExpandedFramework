@@ -1,0 +1,271 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{94B465FB-4483-415B-8602-A0FC80B79E70}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VFECore</RootNamespace>
+    <AssemblyName>VFECore</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\1.2\Assemblies\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\1.2\Assemblies\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony, Version=2.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Lib.Harmony.2.0.4\lib\net472\0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\..\..\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\..\..\..\..\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>..\..\..\..\..\..\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>..\..\..\..\..\..\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AnimalBehaviours\AI\JobDrivers\JobDriver_AnimalResource.cs" />
+    <Compile Include="AnimalBehaviours\AI\WorkGivers\WorkGiver_AnimalResource.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompAnimalProduct.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompAsexualReproduction.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompBuildPeriodically.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompChangeWeather.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompCorpseDecayer.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompDigPeriodically.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompDigWhenHungry.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompElectrified.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompFixedGender.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompGasProducer.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompHediffEffecter.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompHighlyFlammable.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompInfecter.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompInitialHediff.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompMetamorphosis.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompMindEffecter.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompNearbyEffecter.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AnimalProduct.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AsexualReproduction.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_BuildPeriodically.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ChangeWeather.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_CorpseDecayer.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DigPeriodically.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DigWhenHungry.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Electrified.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Fertilizer.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_FixedGender.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_GasProducer.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_HediffEffecter.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_HighlyFlammable.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Infecter.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_InitialHediff.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Metamorphosis.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_MindEffecter.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_NearbyEffecter.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Regeneration.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_StateAfterHealthLoss.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_SummonOnSpawn.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ThoughtEffecter.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Untameable.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompRegeneration.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompStateAfterHealthLoss.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompSummonOnSpawn.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompTerrainChanger.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompThoughtEffecter.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompUntameable.cs" />
+    <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraInfecter.cs" />
+    <Compile Include="Cuisine\Options\VanillaCookingExpanded_Settings.cs" />
+    <Compile Include="Cuisine\Options\VanillaCookingExpanded_SettingsController.cs" />
+    <Compile Include="CustomStructureGeneration\DefModExtensions\FactionSettlement.cs" />
+    <Compile Include="CustomStructureGeneration\Defs\SettlementLayoutDef.cs" />
+    <Compile Include="CustomStructureGeneration\Defs\StructureLayoutDef.cs" />
+    <Compile Include="CustomStructureGeneration\Defs\SymbolDef.cs" />
+    <Compile Include="CustomStructureGeneration\Designators\Designator_ExportToXml.cs" />
+    <Compile Include="CustomStructureGeneration\Designators\Designator_ExportToXmlFromArea.cs" />
+    <Compile Include="CustomStructureGeneration\Designators\Dialog_ExportWindow.cs" />
+    <Compile Include="CustomStructureGeneration\GenStep\GenStep_EnnemiesPresence.cs" />
+    <Compile Include="CustomStructureGeneration\GenStep\GenStep_CustomStructureGen.cs" />
+    <Compile Include="CustomStructureGeneration\Harmony\GenStepPatches.cs" />
+    <Compile Include="CustomStructureGeneration\Harmony\FixCaravanThreadingPatch.cs" />
+    <Compile Include="CustomStructureGeneration\Harmony\PrepareCarefully_Fix.cs" />
+    <Compile Include="CustomStructureGeneration\ScenPart_AddStartingStructure.cs" />
+    <Compile Include="CustomStructureGeneration\SymbolResolvers\SymbolResolver_KCSG_RoomGenFromStructure.cs" />
+    <Compile Include="CustomStructureGeneration\SymbolResolvers\SymbolResolver_KCSG_Settlement.cs" />
+    <Compile Include="CustomStructureGeneration\TextureLoader.cs" />
+    <Compile Include="CustomStructureGeneration\Utils\CenteredMessageBox.cs" />
+    <Compile Include="CustomStructureGeneration\Utils\DebugOption.cs" />
+    <Compile Include="CustomStructureGeneration\Utils\KCSG_Utilities.cs" />
+    <Compile Include="Furniture\Comps\CompConfigurableSpawner.cs" />
+    <Compile Include="Furniture\Comps\CompProperties\CompProperties_ConfigurableSpawner.cs" />
+    <Compile Include="Furniture\Comps\CompProperties\CompProperties_RockSpawner.cs" />
+    <Compile Include="Furniture\Comps\CompProperties\CompProperties_SelectBuildingBehind.cs" />
+    <Compile Include="Furniture\Comps\CompProperties\CompProperties_SpawnOtherBuildingWhenPowered.cs" />
+    <Compile Include="Furniture\Comps\CompRockSpawner.cs" />
+    <Compile Include="Furniture\Comps\CompSelectBuildingBehind.cs" />
+    <Compile Include="Furniture\Comps\CompSpawnOtherBuildingWhenPowered.cs" />
+    <Compile Include="Furniture\DefModExtensions\ShowBlueprintExtension.cs" />
+    <Compile Include="Furniture\Defs\ConfigurableSpawnerDef.cs" />
+    <Compile Include="Furniture\Harmony\VanillaExpandedFramework_GhostUtility_Patch.cs" />
+    <Compile Include="Furniture\Placeworkers\PlaceWorker_OnWater.cs" />
+    <Compile Include="Furniture\Thoughts\ThoughtGiverByProximityDefExtension.cs" />
+    <Compile Include="Furniture\Thoughts\ThoughtWorker_ThoughtFromNearbyThingDef.cs" />
+    <Compile Include="Furniture\Utility\Command_SetItemsToSpawn.cs" />
+    <Compile Include="Furniture\Utility\Command_SetStoneType.cs" />
+    <Compile Include="Furniture\Utility\ConfigurableSpawnerSettableUtility.cs" />
+    <Compile Include="Furniture\Utility\StoneTypeSettableUtility.cs" />
+    <Compile Include="GlobalSettings.cs" />
+    <Compile Include="GlobalSettingsUtilities.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompApparelHediffs.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompDependsOnBuilding.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompPawnDependsOn.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompProperties_ApparelHediffs.cs" />
+    <Compile Include="Cuisine\Comps\CompMaturingAlcohol.cs" />
+    <Compile Include="Cuisine\Comps\CompProperties\CompProperties_MaturingAlcohol.cs" />
+    <Compile Include="Cuisine\Comps\CompProperties\CompProperties_StackByIngredients.cs" />
+    <Compile Include="Cuisine\Comps\CompProperties\CompProperties_StackByQuality.cs" />
+    <Compile Include="Cuisine\Comps\CompProperties\CompProperties_TempTransforms.cs" />
+    <Compile Include="Cuisine\Comps\CompStackByIngredients.cs" />
+    <Compile Include="Cuisine\Comps\CompStackByQuality.cs" />
+    <Compile Include="Cuisine\Comps\CompTempTransforms.cs" />
+    <Compile Include="Cuisine\DefModExtensions\Thought_Hediff_Extension.cs" />
+    <Compile Include="Cuisine\HediffComps\HediffCompProperties_WhileHavingThoughts.cs" />
+    <Compile Include="Cuisine\HediffComps\HediffComp_WhileHavingThoughts.cs" />
+    <Compile Include="Cuisine\Thoughts\Thought_Hediff.cs" />
+    <Compile Include="ItemProcessor\AI\JobDrivers\JobDriver_InsertProcessorFirst.cs" />
+    <Compile Include="ItemProcessor\AI\JobDrivers\JobDriver_InsertProcessorSecond.cs" />
+    <Compile Include="ItemProcessor\AI\JobDrivers\JobDriver_InsertProcessorThird.cs" />
+    <Compile Include="ItemProcessor\AI\JobDrivers\JobDriver_RemoveProduct.cs" />
+    <Compile Include="VFECore\AI\JobDrivers\JobDriver_EquipShield.cs" />
+    <Compile Include="VFECore\AI\Lords\LordJob_SiegeCustom.cs" />
+    <Compile Include="VFECore\AI\Lords\LordToilData_SiegeCustom.cs" />
+    <Compile Include="VFECore\AI\Lords\LordToil_SiegeCustom.cs" />
+    <Compile Include="ItemProcessor\AI\WorkGivers\WorkGiver_InsertProcessorFirst.cs" />
+    <Compile Include="ItemProcessor\AI\WorkGivers\WorkGiver_InsertProcessorSecond.cs" />
+    <Compile Include="ItemProcessor\AI\WorkGivers\WorkGiver_InsertProcessorThird.cs" />
+    <Compile Include="ItemProcessor\AI\WorkGivers\WorkGiver_RemoveProduct.cs" />
+    <Compile Include="VFECore\Apparels\Apparel_Shield.cs" />
+    <Compile Include="VFECore\BaseGen\VFEResolveParams.cs" />
+    <Compile Include="ItemProcessor\Building\Building_ItemProcessor.cs" />
+    <Compile Include="ItemProcessor\Commands\Command_ItemLists.cs" />
+    <Compile Include="ItemProcessor\Commands\ItemListSetupUtility.cs" />
+    <Compile Include="ItemProcessor\Comps\MapComponents\ItemProcessor_MapComponent.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompProperties_DependsOnBuilding.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompProperties_PawnDependsOn.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompProperties_Shield.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompProperties_ThrowMote.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompShield.cs" />
+    <Compile Include="ItemProcessor\Comps\ThingComps\CompItemProcessor.cs" />
+    <Compile Include="ItemProcessor\Comps\ThingComps\CompProperties_ItemProcessor.cs" />
+    <Compile Include="VFECore\Comps\WorldComponents\FactionGoodwillModifier.cs" />
+    <Compile Include="VFECore\Comps\WorldComponents\NewFactionSpawningState.cs" />
+    <Compile Include="VFECore\DefModExtensions\FactionDefExtension.cs" />
+    <Compile Include="VFECore\DefModExtensions\IncidentDefExtension.cs" />
+    <Compile Include="VFECore\DefModExtensions\PawnKindDefExtension.cs" />
+    <Compile Include="VFECore\DefModExtensions\ResearchProjectDefExtension.cs" />
+    <Compile Include="VFECore\DefModExtensions\ThingDefExtension.cs" />
+    <Compile Include="VFECore\DefOf\ApparelLayerDefOf.cs" />
+    <Compile Include="VFECore\DefOf\IncidentDefOf.cs" />
+    <Compile Include="VFECore\DefOf\JobDefOf.cs" />
+    <Compile Include="VFECore\DefOf\ScenPartDefOf.cs" />
+    <Compile Include="ItemProcessor\Defs\CombinationDef.cs" />
+    <Compile Include="ItemProcessor\Defs\ItemAcceptedDef.cs" />
+    <Compile Include="VFECore\Defs\SiegeParameterSetDef.cs" />
+    <Compile Include="VFECore\Dialogs\FactionSpawning\Dialog_NewFactionSpawning.cs" />
+    <Compile Include="VFECore\Dialogs\FactionSpawning\Dialog_NewFactionSpawningSettlements.cs" />
+    <Compile Include="ItemProcessor\Enums\ProcessorStage.cs" />
+    <Compile Include="ItemProcessor\GraphicsCache\GraphicsCache.cs" />
+    <Compile Include="VFECore\HarmonyPatches\DualWield\Patch_DualWield_Ext_Pawn_EquipmentTracker.cs" />
+    <Compile Include="VFECore\HarmonyPatches\DualWield\Patch_DualWield_Harmony_FloatMenuMakerMap_AddHumanlikeOrders.cs" />
+    <Compile Include="VFECore\HarmonyPatches\FactionSpawning\Patch_FactionDiscovery_ModBase.cs" />
+    <Compile Include="VFECore\HarmonyPatches\FactionSpawning\Patch_GameComponentUtility.cs" />
+    <Compile Include="VFECore\HarmonyPatches\HarmonyPatches.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_ArmorUtility.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_CompEquippable.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_FloatMenuMakerMap.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_Game.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_GenStep_Settlement.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_IncidentWorker_WandererJoin.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_ITab_Pawn_Gear.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_Pawn.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_Pawn_ApparelTracker.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_PawnApparelGenerator.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_PawnGenerator.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_PawnGraphicSet.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_Pawn_HealthTracker.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_RaidStrategyWorker_Siege.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_RandomSettlementTileFor.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_ResearchProjectDef.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_ThingDef.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_TraderCaravanUtility.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_Verb.cs" />
+    <Compile Include="VFECore\HarmonyPatches\RimCities\Patch_Cities_GenCity.cs" />
+    <Compile Include="VFECore\HarmonyPatches\RPGStyleInventory\Patch_Sandy_Detailed_RPG_GearTab_Sandy_Detailed_RPG_Inventory.cs" />
+    <Compile Include="VFECore\HarmonyPatches\RunAndGun\Patch_RunAndGun_Harmony_Verb_TryCastNextBurstShot.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_DrugPolicy.cs" />
+    <Compile Include="VFECore\IncidentWorkers\IncidentWorker_RaidEnemySpecial.cs" />
+    <Compile Include="VFECore\ModCompatibilityCheck.cs" />
+    <Compile Include="VFECore\PatchOperation\PatchOperationToggable.cs" />
+    <Compile Include="VFECore\PawnShieldGenerator.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VFECore\Projectiles\ExpandableGraphicData.cs" />
+    <Compile Include="VFECore\Projectiles\FlamethrowProjectile.cs" />
+    <Compile Include="VFECore\Projectiles\ExpandableProjectileDef.cs" />
+    <Compile Include="VFECore\Projectiles\ExpandableProjectile.cs" />
+    <Compile Include="VFECore\Quests\QuestNode_GetFaction.cs" />
+    <Compile Include="VFECore\Reflection\NonPublicFields.cs" />
+    <Compile Include="VFECore\Reflection\NonPublicMethods.cs" />
+    <Compile Include="VFECore\ScenParts\ScenPart_ArriveAtEdge.cs" />
+    <Compile Include="VFECore\ScenParts\ScenPart_ForcedFactionGoodwill.cs" />
+    <Compile Include="VFECore\StaticConstructorClass.cs" />
+    <Compile Include="VFECore\Traders\StockGenerator_ThingSetMakerTags.cs" />
+    <Compile Include="VFECore\Utilities\CustomSiegeUtility.cs" />
+    <Compile Include="VFECore\Utilities\ExtendedFactionUtility.cs" />
+    <Compile Include="VFECore\Utilities\NewFactionSpawningUtility.cs" />
+    <Compile Include="VFECore\Utilities\ScenPartUtility.cs" />
+    <Compile Include="VFECore\Utilities\ShieldUtility.cs" />
+    <Compile Include="VFECore\VFECore.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
