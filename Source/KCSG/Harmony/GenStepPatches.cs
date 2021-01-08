@@ -33,7 +33,7 @@ namespace KCSG
                     else if (!def.isTerrain && !def.isPawn && def.thingDef == null)
                         Log.Error("Found invalid thing def: " + def.defName);
                 }
-            } */ 
+            } */
 
             if (map.ParentFaction != null && map.ParentFaction.def.HasModExtension<FactionSettlement>())
             {
