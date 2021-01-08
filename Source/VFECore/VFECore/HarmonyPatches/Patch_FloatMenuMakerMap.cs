@@ -97,7 +97,7 @@ namespace VFECore
 
                     shieldOption = FloatMenuUtility.DecoratePrioritizedTask(new FloatMenuOption(optionLabel, delegate () {
                         equipment.SetForbidden(false, true);
-                        pawn.jobs.TryTakeOrderedJob(new Job(JobDefOf.VFEC_EquipShield, equipment), JobTag.Misc);
+                        pawn.jobs.TryTakeOrderedJob(new Job(VFEDefOf.VFEC_EquipShield, equipment), JobTag.Misc);
                         MoteMaker.MakeStaticMote(equipment.DrawPos, equipment.Map, RimWorld.ThingDefOf.Mote_FeedbackEquip, 1f);
                         PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.EquippingWeapons, KnowledgeAmount.Total);
                     }, MenuOptionPriority.High, null, null, 0f, null, null), pawn, equipment, "ReservedBy");

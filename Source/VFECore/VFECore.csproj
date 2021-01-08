@@ -154,10 +154,8 @@
     <Compile Include="Furniture\Utility\StoneTypeSettableUtility.cs" />
     <Compile Include="GlobalSettings.cs" />
     <Compile Include="GlobalSettingsUtilities.cs" />
-    <Compile Include="VFECore\Comps\ThingComps\CompApparelHediffs.cs" />
-    <Compile Include="VFECore\Comps\ThingComps\CompDependsOnBuilding.cs" />
-    <Compile Include="VFECore\Comps\ThingComps\CompPawnDependsOn.cs" />
-    <Compile Include="VFECore\Comps\ThingComps\CompProperties_ApparelHediffs.cs" />
+    <Compile Include="VFECore\Buildings\Building_BedMachine.cs" />
+    <Compile Include="VFECore\Buildings\Building_MechTurretGun.cs" />
     <Compile Include="Cuisine\Comps\CompMaturingAlcohol.cs" />
     <Compile Include="Cuisine\Comps\CompProperties\CompProperties_MaturingAlcohol.cs" />
     <Compile Include="Cuisine\Comps\CompProperties\CompProperties_StackByIngredients.cs" />
@@ -174,10 +172,6 @@
     <Compile Include="ItemProcessor\AI\JobDrivers\JobDriver_InsertProcessorSecond.cs" />
     <Compile Include="ItemProcessor\AI\JobDrivers\JobDriver_InsertProcessorThird.cs" />
     <Compile Include="ItemProcessor\AI\JobDrivers\JobDriver_RemoveProduct.cs" />
-    <Compile Include="VFECore\AI\JobDrivers\JobDriver_EquipShield.cs" />
-    <Compile Include="VFECore\AI\Lords\LordJob_SiegeCustom.cs" />
-    <Compile Include="VFECore\AI\Lords\LordToilData_SiegeCustom.cs" />
-    <Compile Include="VFECore\AI\Lords\LordToil_SiegeCustom.cs" />
     <Compile Include="ItemProcessor\AI\WorkGivers\WorkGiver_InsertProcessorFirst.cs" />
     <Compile Include="ItemProcessor\AI\WorkGivers\WorkGiver_InsertProcessorSecond.cs" />
     <Compile Include="ItemProcessor\AI\WorkGivers\WorkGiver_InsertProcessorThird.cs" />
@@ -188,13 +182,21 @@
     <Compile Include="ItemProcessor\Commands\Command_ItemLists.cs" />
     <Compile Include="ItemProcessor\Commands\ItemListSetupUtility.cs" />
     <Compile Include="ItemProcessor\Comps\MapComponents\ItemProcessor_MapComponent.cs" />
+    <Compile Include="ItemProcessor\Comps\ThingComps\CompItemProcessor.cs" />
+    <Compile Include="ItemProcessor\Comps\ThingComps\CompProperties_ItemProcessor.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompApparelHediffs.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompDependsOnBuilding.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompMachine.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompMachineChargingStation.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompPawnDependsOn.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompProperties_ApparelHediffs.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompProperties_DependsOnBuilding.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompProperties_Machine.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompProperties_MachineChargingStation.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompProperties_PawnDependsOn.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompProperties_Shield.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompProperties_ThrowMote.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompShield.cs" />
-    <Compile Include="ItemProcessor\Comps\ThingComps\CompItemProcessor.cs" />
-    <Compile Include="ItemProcessor\Comps\ThingComps\CompProperties_ItemProcessor.cs" />
     <Compile Include="VFECore\Comps\WorldComponents\FactionGoodwillModifier.cs" />
     <Compile Include="VFECore\Comps\WorldComponents\NewFactionSpawningState.cs" />
     <Compile Include="VFECore\DefModExtensions\FactionDefExtension.cs" />
@@ -204,7 +206,7 @@
     <Compile Include="VFECore\DefModExtensions\ThingDefExtension.cs" />
     <Compile Include="VFECore\DefOf\ApparelLayerDefOf.cs" />
     <Compile Include="VFECore\DefOf\IncidentDefOf.cs" />
-    <Compile Include="VFECore\DefOf\JobDefOf.cs" />
+    <Compile Include="VFECore\DefOf\VFEDefOf.cs" />
     <Compile Include="VFECore\DefOf\ScenPartDefOf.cs" />
     <Compile Include="ItemProcessor\Defs\CombinationDef.cs" />
     <Compile Include="ItemProcessor\Defs\ItemAcceptedDef.cs" />
@@ -218,6 +220,15 @@
     <Compile Include="VFECore\HarmonyPatches\FactionSpawning\Patch_FactionDiscovery_ModBase.cs" />
     <Compile Include="VFECore\HarmonyPatches\FactionSpawning\Patch_GameComponentUtility.cs" />
     <Compile Include="VFECore\HarmonyPatches\HarmonyPatches.cs" />
+    <Compile Include="VFECore\HarmonyPatches\MachinesCannotJoinCaravans.cs" />
+    <Compile Include="VFECore\HarmonyPatches\MachinesDie.cs" />
+    <Compile Include="VFECore\HarmonyPatches\MechanoidsAreCapable.cs" />
+    <Compile Include="VFECore\HarmonyPatches\MechanoidsCanBeDrafted.cs" />
+    <Compile Include="VFECore\HarmonyPatches\MechanoidsDoNotReserveBeds.cs" />
+    <Compile Include="VFECore\HarmonyPatches\MechanoidsObeyOrders.cs" />
+    <Compile Include="VFECore\HarmonyPatches\MobileTurretsShowTurrets.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Need_Patches.cs" />
+    <Compile Include="VFECore\HarmonyPatches\NoBioForMachines.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_ArmorUtility.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_CompEquippable.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_FloatMenuMakerMap.cs" />
@@ -237,15 +248,30 @@
     <Compile Include="VFECore\HarmonyPatches\Patch_ThingDef.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_TraderCaravanUtility.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_Verb.cs" />
+    <Compile Include="VFECore\HarmonyPatches\PickUpAndHaul_Patch.cs" />
+    <Compile Include="VFECore\HarmonyPatches\RenderTurretCentered.cs" />
     <Compile Include="VFECore\HarmonyPatches\RimCities\Patch_Cities_GenCity.cs" />
     <Compile Include="VFECore\HarmonyPatches\RPGStyleInventory\Patch_Sandy_Detailed_RPG_GearTab_Sandy_Detailed_RPG_Inventory.cs" />
     <Compile Include="VFECore\HarmonyPatches\RunAndGun\Patch_RunAndGun_Harmony_Verb_TryCastNextBurstShot.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_DrugPolicy.cs" />
     <Compile Include="VFECore\IncidentWorkers\IncidentWorker_RaidEnemySpecial.cs" />
+    <Compile Include="VFECore\JobDrivers\JobDriver_AttachTurret.cs" />
+    <Compile Include="VFECore\JobDrivers\JobDriver_EquipShield.cs" />
+    <Compile Include="VFECore\JobDrivers\JobDriver_Recharge.cs" />
+    <Compile Include="VFECore\JobDrivers\JobDriver_RepairMachine.cs" />
+    <Compile Include="VFECore\JobGivers\JobGiver_Recharge.cs" />
+    <Compile Include="VFECore\JobGivers\JobGiver_ReturnToStation.cs" />
+    <Compile Include="VFECore\JobGivers\JobGiver_ReturnToStationIdle.cs" />
+    <Compile Include="VFECore\JobGivers\ThinkNode_ConditionalHasPower.cs" />
+    <Compile Include="VFECore\Lords\LordJob_SiegeCustom.cs" />
+    <Compile Include="VFECore\Lords\LordToilData_SiegeCustom.cs" />
+    <Compile Include="VFECore\Lords\LordToil_SiegeCustom.cs" />
     <Compile Include="VFECore\ModCompatibilityCheck.cs" />
+    <Compile Include="VFECore\Needs\Need_Power.cs" />
     <Compile Include="VFECore\PatchOperation\PatchOperationToggable.cs" />
     <Compile Include="VFECore\PawnShieldGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VFECore\Pawns\Machine.cs" />
     <Compile Include="VFECore\Projectiles\ExpandableGraphicData.cs" />
     <Compile Include="VFECore\Projectiles\FlamethrowProjectile.cs" />
     <Compile Include="VFECore\Projectiles\ExpandableProjectileDef.cs" />
@@ -263,9 +289,14 @@
     <Compile Include="VFECore\Utilities\ScenPartUtility.cs" />
     <Compile Include="VFECore\Utilities\ShieldUtility.cs" />
     <Compile Include="VFECore\VFECore.cs" />
+    <Compile Include="VFECore\WorkGivers\WorkGiver_AttachTurret.cs" />
+    <Compile Include="VFECore\WorkGivers\WorkGiver_RepairMachine.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="VFECore\Verbs\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
