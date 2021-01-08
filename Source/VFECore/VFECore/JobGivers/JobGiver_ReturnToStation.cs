@@ -39,7 +39,6 @@ namespace VFE.Mechanoids.AI.JobGivers
                 }
                 pawnsWithLastJobScanTick[pawn] = Find.TickManager.TicksGame;
             }
-            Log.Message(pawn + " checking jobs - " + pawn.mindState.lastJobTag);
             return null;
         }
     }
