@@ -26,6 +26,7 @@ namespace VFE.Mechanoids.AI.JobGivers
             var compMachineChargingStation = compMachine.myBuilding.TryGetComp<CompMachineChargingStation>();
             if (compMachineChargingStation.wantsRest && compMachine.myBuilding.TryGetComp<CompPowerTrader>().PowerOn)
                 return JobMaker.MakeJob(VFEDefOf.VFE_Mechanoids_Recharge, compMachine.myBuilding);
+
             if (pawn.mindState.lastJobTag == JobTag.Idle)
             {
                 if (pawnsWithLastJobScanTick.ContainsKey(pawn))
@@ -38,6 +39,7 @@ namespace VFE.Mechanoids.AI.JobGivers
                 }
                 pawnsWithLastJobScanTick[pawn] = Find.TickManager.TicksGame;
             }
+            Log.Message(pawn + " checking jobs - " + pawn.mindState.lastJobTag);
             return null;
         }
     }

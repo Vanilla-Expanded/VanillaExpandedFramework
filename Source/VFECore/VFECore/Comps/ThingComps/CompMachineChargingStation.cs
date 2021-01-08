@@ -10,7 +10,6 @@ using Verse.AI;
 using VFE.Mechanoids.Buildings;
 using VFE.Mechanoids.Needs;
 using VFECore;
-using VFEMech;
 
 namespace VFE.Mechanoids
 {
