@@ -178,6 +178,7 @@
     <Compile Include="VFECore\Comps\ThingComps\CompProperties_Shield.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompProperties_ThrowMote.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompShield.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\ShieldMechBubble.cs" />
     <Compile Include="VFECore\Comps\WorldComponents\FactionGoodwillModifier.cs" />
     <Compile Include="VFECore\Comps\WorldComponents\NewFactionSpawningState.cs" />
     <Compile Include="VFECore\DefModExtensions\FactionDefExtension.cs" />
