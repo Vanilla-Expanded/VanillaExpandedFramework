@@ -83,7 +83,7 @@ namespace MVCF
                 foreach (var apparel in pawn.apparel.WornApparel)
                 {
                     var comp = apparel.TryGetComp<Comp_VerbGiver>();
-                    if (comp == null) return;
+                    if (comp == null) continue;
                     foreach (var verb in comp.VerbTracker.AllVerbs)
                         AddVerb(verb, VerbSource.Apparel, comp.PropsFor(verb));
                 }
@@ -95,7 +95,7 @@ namespace MVCF
                     if (comp == null)
                     {
                         var extComp = eq.TryGetComp<Comp_VerbGiver>();
-                        if (extComp == null) return;
+                        if (extComp == null) continue;
                         foreach (var verb in extComp.VerbTracker.AllVerbs)
                             AddVerb(verb, VerbSource.Equipment, extComp.PropsFor(verb));
                     }
