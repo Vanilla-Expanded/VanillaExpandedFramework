@@ -12,10 +12,9 @@ namespace MVCF
         {
             var harm = new HarmonyLib.Harmony("legodude17.mvcf");
             harm.PatchAll(Assembly.GetExecutingAssembly());
-            Log.Message("Applied patches for " + harm.Id);
             SearchLabel = harm.Id + Rand.Value;
             Prepatcher = ModLister.HasActiveModWithName("Prepatcher");
-            Log.Message("[MVCF] Prepatcher installed: " + Prepatcher);
+            if (Prepatcher) Log.Message("[MVCF] Prepatcher installed, switching");
         }
     }
 }

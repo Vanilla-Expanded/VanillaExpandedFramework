@@ -58,16 +58,12 @@ namespace MVCF.Harmony
         public static IEnumerable<CodeInstruction> Transpile_CreateVerbTargetCommand(
             IEnumerable<CodeInstruction> instructions)
         {
-            Log.Message("CreateVerbTargetCommandTranspiler");
             foreach (var instruction in instructions)
             {
                 if (instruction.opcode == OpCodes.Newobj)
-                {
-                    Log.Message("operand: " + instruction.operand);
                     if (instruction.operand is Type type)
                         if (type == typeof(Command_VerbTarget))
                             instruction.operand = typeof(Command_VerbTargetFixed);
-                }
 
 
                 yield return instruction;
