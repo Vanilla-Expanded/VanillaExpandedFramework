@@ -1,0 +1,12 @@
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\MVCF\Assemblies\MVCF.dll
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\MVCF\Assemblies\MVCF.pdb
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\MVCF\Source\MCVF\obj\Debug\MVCF.csprojAssemblyReference.cache
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\MVCF\Source\MCVF\obj\Debug\MVCF.csproj.CoreCompileInputs.cache
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\MVCF\Source\MCVF\obj\Debug\MVCF.dll
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\MVCF\Source\MCVF\obj\Debug\MVCF.pdb
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework\Assemblies\MVCF.dll
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework\Assemblies\MVCF.pdb
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework\Source\MCVF\obj\Debug\MVCF.csprojAssemblyReference.cache
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework\Source\MCVF\obj\Debug\MVCF.csproj.CoreCompileInputs.cache
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework\Source\MCVF\obj\Debug\MVCF.dll
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework\1.2\Assemblies\MVCF.dll
