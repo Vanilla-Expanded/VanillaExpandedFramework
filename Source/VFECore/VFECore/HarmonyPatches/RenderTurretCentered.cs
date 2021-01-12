@@ -30,6 +30,7 @@ namespace VFE.Mechanoids.HarmonyPatches
             {
                 if (compMachine != null)
                 {
+                    machine = compMachine;
                     pawn = CompMachine.cachedPawns[compMachine];
                     if (compMachine.turretAttached != null)
                         replaced = true;
