@@ -8,7 +8,7 @@ using Verse;
 
 namespace MVCF.Harmony
 {
-    [HarmonyPatch]
+    // [HarmonyPatch]
     public class DebugBool
     {
         public static IEnumerable<MethodBase> TargetMethods()
@@ -39,7 +39,7 @@ namespace MVCF.Harmony
         }
     }
 
-    [HarmonyPatch]
+    // [HarmonyPatch]
     public class DebugVoid
     {
         public static IEnumerable<MethodBase> TargetMethods()

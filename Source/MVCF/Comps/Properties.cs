@@ -14,6 +14,15 @@ namespace MVCF.Comps
         {
             compClass = typeof(HediffComp_ExtendedVerbGiver);
         }
+
+        public override void PostLoad()
+        {
+            base.PostLoad();
+            LongEventHandler.ExecuteWhenFinished(delegate
+            {
+                foreach (var props in verbProps) props.Initialize();
+            });
+        }
     }
 
     public class CompProperties_VerbGiver : CompProperties
@@ -23,6 +32,15 @@ namespace MVCF.Comps
         public CompProperties_VerbGiver()
         {
             compClass = typeof(Comp_VerbGiver);
+        }
+
+        public override void PostLoadSpecial(ThingDef parent)
+        {
+            base.PostLoadSpecial(parent);
+            LongEventHandler.ExecuteWhenFinished(delegate
+            {
+                foreach (var props in verbProps) props.Initialize();
+            });
         }
     }
 
@@ -55,7 +73,9 @@ namespace MVCF.Comps
         {
             if (!string.IsNullOrWhiteSpace(toggleIconPath))
                 ToggleIcon = ContentFinder<Texture2D>.Get(toggleIconPath);
-            if (graphic != null) Graphic = graphic.Graphic;
+            if (graphic != null)
+                Graphic = graphic.Graphic;
+
             if (positions == null)
             {
                 positions = new Dictionary<string, DrawPosition>();

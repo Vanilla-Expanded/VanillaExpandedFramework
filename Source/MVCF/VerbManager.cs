@@ -18,6 +18,7 @@ namespace MVCF
         public Verb CurrentVerb;
         public bool HasVerbs;
         public Verb SearchVerb = new Verb_LaunchProjectileStatic();
+        public bool NeedsTicking { get; private set; }
 
         public IEnumerable<Verb> AllVerbs => verbs.Select(mv => mv.Verb);
         public IEnumerable<Verb> AllRangedVerbs => verbs.Select(mv => mv.Verb).Where(verb => !verb.IsMeleeAttack);
@@ -65,6 +66,7 @@ namespace MVCF
             Pawn = pawn;
             VerbTracker = new VerbTracker(this);
             SearchVerb = VerbTracker.PrimaryVerb;
+            NeedsTicking = false;
             foreach (var verb in pawn.VerbTracker.AllVerbs)
                 AddVerb(verb, VerbSource.RaceDef, pawn.TryGetComp<Comp_VerbGiver>()?.PropsFor(verb));
             if (pawn?.health?.hediffSet?.hediffs != null)
@@ -115,6 +117,12 @@ namespace MVCF
             if (props != null && props.canFireIndependently)
             {
                 var tv = new TurretVerb(verb, source, props, this);
+                if (tickVerbs.Count == 0)
+                {
+                    NeedsTicking = true;
+                    WorldComponent_MVCF.GetComp().TickManagers.Add(new System.WeakReference<VerbManager>(this));
+                }
+
                 tickVerbs.Add(tv);
                 mv = tv;
             }
@@ -122,6 +130,8 @@ namespace MVCF
             {
                 mv = new ManagedVerb(verb, source, props, this);
             }
+
+            if (props != null && props.draw) drawVerbs.Add(mv);
 
             verbs.Add(mv);
             RecalcSearchVerb();
@@ -134,7 +144,20 @@ namespace MVCF
             verbs.Remove(mv);
             if (drawVerbs.Contains(mv)) drawVerbs.Remove(mv);
             var idx = tickVerbs.FindIndex(tv => tv.Verb == verb);
-            if (idx >= 0) tickVerbs.RemoveAt(idx);
+            if (idx >= 0)
+            {
+                tickVerbs.RemoveAt(idx);
+                if (tickVerbs.Count == 0)
+                {
+                    NeedsTicking = false;
+                    WorldComponent_MVCF.GetComp().TickManagers.RemoveAll(wr =>
+                    {
+                        if (!wr.TryGetTarget(out var man)) return true;
+                        return man == this;
+                    });
+                }
+            }
+
             RecalcSearchVerb();
         }
 
@@ -192,7 +215,6 @@ namespace MVCF
             Source = source;
             Props = props;
             this.man = man;
-            props?.Initialize();
         }
 
         public void Toggle()
@@ -332,7 +354,8 @@ namespace MVCF
         private void TryCast()
         {
             warmUpTicksLeft = -1;
-            Verb.TryStartCastOn(currentTarget);
+            var success = Verb.TryStartCastOn(currentTarget);
+            Log.Message(pawn + (success ? " successfully " : " failed to ") + "fire at " + currentTarget);
         }
 
         public override LocalTargetInfo PointingTarget(Pawn p)
@@ -348,7 +371,11 @@ namespace MVCF
         public DummyCaster(Pawn pawn)
         {
             this.pawn = pawn;
-            def = new ThingDef();
+            def = ThingDef.Named("MVCF_Dummy");
+        }
+
+        public DummyCaster()
+        {
         }
 
         public override Vector3 DrawPos => pawn.DrawPos;
@@ -365,6 +392,12 @@ namespace MVCF
 
         public override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
+        }
+
+        public override void SpawnSetup(Map map, bool respawningAfterLoad)
+        {
+            base.SpawnSetup(map, respawningAfterLoad);
+            if (respawningAfterLoad) Destroy();
         }
     }
 }

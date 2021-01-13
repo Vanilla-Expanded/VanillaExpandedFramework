@@ -6,14 +6,16 @@ namespace MVCF.Utilities
 {
     public static class PawnVerbUtility
     {
-        public static VerbManager Manager(this Pawn p)
+        public static VerbManager Manager(this Pawn p, bool createIfMissing = true)
         {
-            return Base.Prepatcher ? PrepatchedVerbManager(p) : WorldComponent_MVCF.GetStorage().GetManagerFor(p);
+            return Base.Prepatcher
+                ? PrepatchedVerbManager(p, createIfMissing)
+                : WorldComponent_MVCF.GetComp().GetManagerFor(p, createIfMissing);
         }
 
-        public static VerbManager PrepatchedVerbManager(Pawn p)
+        public static VerbManager PrepatchedVerbManager(Pawn p, bool createIfMissing = true)
         {
-            if (p.MVCF_VerbManager == null)
+            if (p.MVCF_VerbManager == null && createIfMissing)
             {
                 p.MVCF_VerbManager = new VerbManager();
                 p.MVCF_VerbManager.Initialize(p);
