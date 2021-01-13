@@ -11,7 +11,7 @@ namespace MVCF.Utilities
 
         public static IEnumerable<Gizmo> GetGizmosForVerb(this Verb verb, ManagedVerb man = null)
         {
-            var gizmo = new Command_VerbTargetFixed {icon = verb.UIIcon, defaultLabel = VerbLabel(verb)};
+            var gizmo = new Command_VerbTarget {icon = verb.UIIcon, defaultLabel = VerbLabel(verb)};
             AdditionalVerbProps props = null;
 
             Thing ownerThing = null;

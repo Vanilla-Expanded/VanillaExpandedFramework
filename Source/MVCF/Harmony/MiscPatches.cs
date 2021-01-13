@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Reflection.Emit;
 using HarmonyLib;
 using MVCF.Utilities;
 using RimWorld;
@@ -50,24 +47,6 @@ namespace MVCF.Harmony
         public static void Postfix_Pawn_Tick(Pawn __instance)
         {
             __instance.Manager().Tick();
-        }
-
-        [HarmonyPatch(typeof(VerbTracker), "CreateVerbTargetCommand")]
-        [HarmonyTranspiler]
-        // ReSharper disable once IdentifierTypo
-        public static IEnumerable<CodeInstruction> Transpile_CreateVerbTargetCommand(
-            IEnumerable<CodeInstruction> instructions)
-        {
-            foreach (var instruction in instructions)
-            {
-                if (instruction.opcode == OpCodes.Newobj)
-                    if (instruction.operand is Type type)
-                        if (type == typeof(Command_VerbTarget))
-                            instruction.operand = typeof(Command_VerbTargetFixed);
-
-
-                yield return instruction;
-            }
         }
 
         [HarmonyPatch(typeof(BattleLogEntry_RangedFire), MethodType.Constructor, typeof(Thing), typeof(Thing),

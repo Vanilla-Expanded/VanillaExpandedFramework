@@ -8,7 +8,7 @@ using Verse;
 
 namespace MVCF.Harmony
 {
-//    [HarmonyPatch]
+    [HarmonyPatch]
     public class DebugBool
     {
         public static IEnumerable<MethodBase> TargetMethods()
@@ -16,8 +16,8 @@ namespace MVCF.Harmony
             yield return AccessTools.Method(typeof(Verb), "TryStartCastOn",
                 new[] {typeof(LocalTargetInfo), typeof(LocalTargetInfo), typeof(bool), typeof(bool)});
             yield return AccessTools.Method(typeof(Verb_Shoot), "TryCastShot");
-            yield return AccessTools.Method(typeof(Verb), "CanHitTarget");
-            yield return AccessTools.Method(typeof(Verb), "TryFindShootLineFromTo");
+            // yield return AccessTools.Method(typeof(Verb), "CanHitTarget");
+            // yield return AccessTools.Method(typeof(Verb), "TryFindShootLineFromTo");
         }
 
         public static void Prefix(MethodBase __originalMethod, object __instance, int ___ticksToNextBurstShot)
@@ -39,12 +39,12 @@ namespace MVCF.Harmony
         }
     }
 
-//    [HarmonyPatch]
+    [HarmonyPatch]
     public class DebugVoid
     {
         public static IEnumerable<MethodBase> TargetMethods()
         {
-            yield return AccessTools.Method(typeof(Pawn), "TryStartAttack");
+            // yield return AccessTools.Method(typeof(Pawn), "TryStartAttack");
             yield return AccessTools.Method(typeof(Verb_LaunchProjectile), "WarmupComplete");
         }
 
@@ -65,15 +65,6 @@ namespace MVCF.Harmony
         public static void Postfix(MethodBase __originalMethod, object __instance)
         {
             Log.Message(__instance + "." + __originalMethod.Name + "() -> void");
-        }
-    }
-
-    // [HarmonyPatch(typeof(Verb_LaunchProjectile), "get_Projectile")]
-    public class Debug
-    {
-        public static void Prefix(Verb __instance)
-        {
-            Log.Message("get_Projectile: " + __instance?.Label());
         }
     }
 }

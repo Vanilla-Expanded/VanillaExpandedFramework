@@ -1,5 +1,7 @@
-﻿using HarmonyLib;
+﻿using System.Linq;
+using HarmonyLib;
 using MVCF.Comps;
+using MVCF.Utilities;
 using Verse;
 
 namespace MVCF.Harmony
@@ -9,18 +11,16 @@ namespace MVCF.Harmony
     {
         // ReSharper disable once InconsistentNaming
 
-//    [HarmonyPatch("OrderForceTarget")]
-// [HarmonyPrefix]
-        public static bool Prefix_OrderForceTarget(LocalTargetInfo target, Verb __instance)
+        [HarmonyPatch("OrderForceTarget")]
+        [HarmonyPrefix]
+        public static void Prefix_OrderForceTarget(LocalTargetInfo target, Verb __instance)
         {
-            var num = __instance.verbProps.EffectiveMinRange(target, __instance.CasterPawn);
-            if (__instance.verbProps.IsMeleeAttack ||
-                __instance.CasterPawn.Position.DistanceToSquared(target.Cell) < num * (double) num &&
-                __instance.CasterPawn.Position.AdjacentTo8WayOrInside(target.Cell))
-                return true;
-
-            __instance.TryStartCastOn(target);
-            return false;
+            if (__instance.verbProps.IsMeleeAttack || !__instance.CasterIsPawn)
+                return;
+            var man = __instance.CasterPawn.Manager();
+            if (man == null) return;
+            man.CurrentVerb = __instance;
+            man.ManagedVerbs.First(v => v.Verb == __instance).Enabled = true;
         }
 
         [HarmonyPatch("get_EquipmentSource")]

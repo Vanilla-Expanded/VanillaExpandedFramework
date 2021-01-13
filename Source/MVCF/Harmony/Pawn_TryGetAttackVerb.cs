@@ -15,10 +15,15 @@ namespace MVCF.Harmony
             var manager = __instance.Manager();
             // Log.Message("Getting attack verb for " + __instance + " with currentVerb " + manager.CurrentVerb?.Label() +
             //             " and target " + target + " and searchVerb " + manager.SearchVerb?.Label());
+            // Log.Message("Pawn's current job is " + __instance.CurJobDef.label);
 
-            if (target == null) manager.CurrentVerb = null;
+            var job = __instance.CurJob;
+            if (target == null && !job.targetA.HasThing && job.targetA.Cell == __instance.Position)
+                manager.CurrentVerb = null;
 
-            if (manager.CurrentVerb != null && manager.CurrentVerb.CanHitTarget(target))
+            if (manager.CurrentVerb != null && (target == null || manager.CurrentVerb.CanHitTarget(target)) &&
+                (!job.targetA.HasThing || job.targetA.Cell == __instance.Position ||
+                 manager.CurrentVerb.CanHitTarget(job.targetA)))
             {
                 __result = manager.CurrentVerb;
                 return false;
