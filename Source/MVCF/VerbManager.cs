@@ -17,7 +17,7 @@ namespace MVCF
         private readonly List<ManagedVerb> verbs = new List<ManagedVerb>();
         public Verb CurrentVerb;
         public bool HasVerbs;
-        public Verb SearchVerb = new Verb_LaunchProjectileStatic();
+        public Verb SearchVerb = new Verb_LaunchProjectile();
         public bool NeedsTicking { get; private set; }
 
         public IEnumerable<Verb> AllVerbs => verbs.Select(mv => mv.Verb);
@@ -53,7 +53,8 @@ namespace MVCF
                 minRange = 9999,
                 targetParams = new TargetingParameters(),
                 verbClass = typeof(Verb_Shoot),
-                label = Base.SearchLabel
+                label = Base.SearchLabel,
+                defaultProjectile = ThingDef.Named("Bullet_Revolver")
             }
         };
 

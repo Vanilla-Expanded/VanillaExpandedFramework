@@ -33,7 +33,7 @@ namespace MVCF.Harmony
             if (target == null)
             {
                 __result = manager.HasVerbs ? manager.SearchVerb : null;
-                return false;
+                return __result == null || !__result.Available();
             }
 
             var verbs = manager.ManagedVerbs.Where(v =>
