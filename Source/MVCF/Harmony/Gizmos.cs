@@ -16,7 +16,9 @@ namespace MVCF.Harmony
         {
             foreach (var gizmo in __result) yield return gizmo;
 
-            if (!__instance.Drafted || !__instance.pawn.AllRangedVerbsPawnNoEquipment().Any()) yield break;
+            if (!__instance.Drafted || !__instance.pawn.AllRangedVerbsPawnNoEquipment().Any() ||
+                __instance.pawn.equipment.Primary != null && __instance.pawn.equipment.Primary.def.IsRangedWeapon)
+                yield break;
             yield return new Command_Toggle
             {
                 hotKey = KeyBindingDefOf.Misc6,
