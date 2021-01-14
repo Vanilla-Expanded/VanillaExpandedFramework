@@ -21,7 +21,8 @@ namespace MVCF.Harmony
             if (target == null && (job == null || !job.targetA.HasThing && job.targetA.Cell == __instance.Position))
                 manager.CurrentVerb = null;
 
-            if (manager.CurrentVerb != null && (target == null || manager.CurrentVerb.CanHitTarget(target)) &&
+            if (manager.CurrentVerb != null && manager.CurrentVerb.Available() &&
+                (target == null || manager.CurrentVerb.CanHitTarget(target)) &&
                 (job == null || !job.targetA.HasThing || job.targetA.Cell == __instance.Position ||
                  manager.CurrentVerb.CanHitTarget(job.targetA)))
             {
@@ -36,7 +37,8 @@ namespace MVCF.Harmony
             }
 
             var verbs = manager.ManagedVerbs.Where(v =>
-                !v.Verb.IsMeleeAttack && (v.Props == null || !v.Props.canFireIndependently) && v.Enabled);
+                !v.Verb.IsMeleeAttack && (v.Props == null || !v.Props.canFireIndependently) && v.Enabled &&
+                v.Verb.Available());
             if (!allowManualCastWeapons) verbs = verbs.Where(v => !v.Verb.verbProps.onlyManualCast);
 
             var verbsToUse = verbs.ToList();
