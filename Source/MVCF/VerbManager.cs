@@ -17,7 +17,7 @@ namespace MVCF
         private readonly List<ManagedVerb> verbs = new List<ManagedVerb>();
         public Verb CurrentVerb;
         public bool HasVerbs;
-        public Verb SearchVerb = new Verb_LaunchProjectile();
+        public Verb SearchVerb = new Verb_Search();
         public bool NeedsTicking { get; private set; }
 
         public IEnumerable<Verb> AllVerbs => verbs.Select(mv => mv.Verb);
@@ -54,7 +54,8 @@ namespace MVCF
                 targetParams = new TargetingParameters(),
                 verbClass = typeof(Verb_Shoot),
                 label = Base.SearchLabel,
-                defaultProjectile = ThingDef.Named("Bullet_Revolver")
+                defaultProjectile = ThingDef.Named("Bullet_Revolver"),
+                onlyManualCast = true
             }
         };
 
@@ -399,6 +400,21 @@ namespace MVCF
         {
             base.SpawnSetup(map, respawningAfterLoad);
             if (respawningAfterLoad) Destroy();
+        }
+    }
+
+    public class Verb_Search : Verb_LaunchProjectile
+    {
+        public override bool TryStartCastOn(LocalTargetInfo castTarg, LocalTargetInfo destTarg,
+            bool surpriseAttack = false,
+            bool canHitNonTargetPawns = true)
+        {
+            return false;
+        }
+
+        protected override bool TryCastShot()
+        {
+            return false;
         }
     }
 }
