@@ -40,7 +40,8 @@ namespace MVCF.Harmony
         {
             foreach (var gizmo in __result) yield return gizmo;
 
-            if (pawn.AllRangedVerbsPawn().Count() >= 2) yield return pawn.GetMainAttackGizmoForPawn();
+            if (pawn.Manager().ManagedVerbs.Count(mv => mv.Enabled && !mv.Verb.IsMeleeAttack) >= 2)
+                yield return pawn.GetMainAttackGizmoForPawn();
 
             foreach (var gizmo in from verb in pawn.Manager().ManagedVerbs
                 where (verb.Source == VerbSource.Hediff || verb.Source == VerbSource.RaceDef) &&
