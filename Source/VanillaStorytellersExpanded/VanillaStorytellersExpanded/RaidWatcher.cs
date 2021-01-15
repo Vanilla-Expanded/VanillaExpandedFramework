@@ -181,54 +181,6 @@ namespace VanillaStorytellersExpanded
                         var incidentDef = DefDatabase<IncidentDef>.GetNamed("VSE_Reinforcements");
                         Find.Storyteller.incidentQueue.Add(incidentDef, Find.TickManager.TicksGame + new IntRange(300, 600).RandomInRange, parms);
                     }
-
-                    //else
-                    //{
-                    //    Log.Message("__instance: " + __instance, true);
-                    //    Log.Message("__instance.IsColonist: " + __instance.IsColonist, true);
-                    //    Log.Message("dinfo.HasValue: " + dinfo.HasValue, true);
-                    //    if (dinfo.HasValue)
-                    //    {
-                    //        Log.Message("dinfo.Value.Instigator: " + dinfo.Value.Instigator, true);
-                    //        Log.Message("dinfo.Value.Instigator?.Faction: " + dinfo.Value.Instigator?.Faction, true);
-                    //    }
-                    //    else
-                    //    {
-                    //        Log.Message("dinfo is null: " + dinfo, true);
-                    //        if (exactCulprit != null)
-                    //        {
-                    //            Log.Message("exactCulprit: " + exactCulprit, true);
-                    //            Log.Message("Log: " + exactCulprit.combatLogEntry, true);
-                    //            Log.Message("exactCulprit.combatLogEntry.Target: " + exactCulprit.combatLogEntry?.Target, true);
-                    //        }
-                    //        foreach (var log in Find.BattleLog.Battles)
-                    //        {
-                    //            foreach (var entry in log.Entries)
-                    //            {
-                    //                if (entry.GetConcerns().Where(x => x.Faction != Faction.OfPlayer 
-                    //                && Current.Game.GetComponent<StorytellerWatcher>().FactionPresentInCurrentRaidGroups(x.Faction)).Count() > 0 
-                    //                    && entry.GetConcerns().Contains(__instance))
-                    //                {
-                    //                    Log.Message("Find.TickManager.TicksAbs: " + Find.TickManager.TicksAbs, true);
-                    //                    Log.Message("entry.Timestamp: " + entry.Timestamp, true);
-                    //                    Log.Message("entry: " + entry, true);
-                    //                    if (entry is BattleLogEntry_RangedImpact logEntry)
-                    //                    {
-                    //                        Log.Message("logEntry: " + logEntry, true);
-                    //                    }
-                    //                    foreach (var p in entry.GetConcerns())
-                    //                    {
-                    //                        Log.Message("Pawn: " + p, true);
-                    //                    }
-                    //                }
-                    //            }
-                    //        }
-                    //    }
-                    //    foreach (var rg in Current.Game.GetComponent<StorytellerWatcher>().raidGroups)
-                    //    {
-                    //        Log.Message("Raid faction: " + rg.faction, true);
-                    //    }
-                    //}
                 }
             }
             catch (Exception ex) 

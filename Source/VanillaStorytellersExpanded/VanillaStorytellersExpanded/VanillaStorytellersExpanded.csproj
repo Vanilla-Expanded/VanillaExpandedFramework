@@ -292,7 +292,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="RaidGroup.cs" />
+    <Compile Include="IncidentWatcher.cs" />
     <Compile Include="RaidWatcher.cs" />
+    <Compile Include="IncidentSpawnOptions.cs" />
     <Compile Include="StorytellerThreat.cs" />
     <Compile Include="RaidRestlessness.cs" />
     <Compile Include="StorytellerComp_IncidentSpawner.cs" />

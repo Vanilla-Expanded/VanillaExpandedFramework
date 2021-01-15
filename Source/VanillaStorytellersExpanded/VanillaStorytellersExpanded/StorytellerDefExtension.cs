@@ -22,8 +22,7 @@ namespace VanillaStorytellersExpanded
 		public RaidRestlessness raidRestlessness;
 
 		public StorytellerThreat storytellerThreat;
-
-
+		public IncidentSpawnOptions incidentSpawnOptions;
 
 	}
 }
