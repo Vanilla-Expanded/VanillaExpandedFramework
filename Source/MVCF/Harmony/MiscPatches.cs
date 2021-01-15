@@ -91,7 +91,7 @@ namespace MVCF.Harmony
             string prefix, ThingDef weaponDef, ThingDef projectileDef)
         {
             foreach (var rule in __result) yield return rule;
-            if (weaponDef != null) yield break;
+            if (weaponDef != null || projectileDef == null) yield break;
 
             // Log.Message("weaponDef null with projectileDef " + projectileDef);
             foreach (var rule in GrammarUtility.RulesForDef(prefix + "_projectile", projectileDef))
