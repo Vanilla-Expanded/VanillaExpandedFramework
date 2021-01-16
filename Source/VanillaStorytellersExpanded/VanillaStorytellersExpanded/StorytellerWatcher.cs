@@ -51,14 +51,14 @@ namespace VanillaStorytellersExpanded
         public override void GameComponentTick()
         {
             base.GameComponentTick();
-            if (Find.TickManager.TicksGame % 600 == 0)
+            if (Find.TickManager.TicksGame % 60 == 0)
             {
-                for (int i = 0; i < 60000; i++)
-                {
-                    Find.StoryWatcher.StoryWatcherTick();
-                    Find.Storyteller.StorytellerTick();
-                    Find.TickManager.DebugSetTicksGame(Find.TickManager.TicksGame + 1);
-                }
+                //for (int i = 0; i < 60000; i++)
+                //{
+                //    Find.StoryWatcher.StoryWatcherTick();
+                //    Find.Storyteller.StorytellerTick();
+                //    Find.TickManager.DebugSetTicksGame(Find.TickManager.TicksGame + 1);
+                //}
                 CheckStorytellerChanges();
             }
             if (this.raidQueues?.Count > 0)
