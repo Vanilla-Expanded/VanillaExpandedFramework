@@ -35,27 +35,44 @@ namespace VanillaStorytellersExpanded
                     if (alliesCount == 0f) alliesCount = 0.1f;
                     if (enemiesCount == 0f) enemiesCount = 0.1f;
 
-                    if (incidentOptions.alliesIncreaseGoodIncidents && incidentOptions.goodIncidents.Contains(def.defName))
+                    if (incidentOptions.alliesIncreaseGoodIncidents && IsGoodIncident(def, incidentOptions))
                     {
                         __result *= alliesCount;
                     }
-                    else if (incidentOptions.alliesReduceThreats && (def.category == IncidentCategoryDefOf.ThreatBig || def.category == IncidentCategoryDefOf.ThreatSmall
-                        || incidentOptions.negativeIncidents.Contains(def.defName)))
+                    else if (incidentOptions.alliesReduceThreats && IsBadIncident(def, incidentOptions))
                     {
                         __result /= alliesCount;
                     }
-                    if (incidentOptions.enemiesIncreaseGoodIncidents && incidentOptions.goodIncidents.Contains(def.defName))
+                    if (incidentOptions.enemiesIncreaseGoodIncidents && IsGoodIncident(def, incidentOptions))
                     {
                         __result *= enemiesCount;
                     }
-                    else if (incidentOptions.enemiesReduceThreats && (def.category == IncidentCategoryDefOf.ThreatBig || def.category == IncidentCategoryDefOf.ThreatSmall
-                        || incidentOptions.negativeIncidents.Contains(def.defName)))
+                    else if (incidentOptions.enemiesReduceThreats && IsBadIncident(def, incidentOptions))
                     {
                         __result /= enemiesCount;
                     }
-                    Log.Message(Find.Storyteller.def.defName + " - New Incident spawn: " + def.defName + " - new incident spawn chance: " + __result + " - Allies count: " + alliesCount + " - enemiesCount: " + enemiesCount);
+                    Log.Message(Find.Storyteller.def.defName + " - Incident spawn: " + def.defName +  " - new incident spawn chance: " + __result);
+                    if (!IsGoodIncident(def, incidentOptions) && !IsBadIncident(def, incidentOptions))
+                    {
+                        Log.Message("Unprocessed incident def: " + def);
+                    }
                 }
             }
+        }
+
+        private static bool IsGoodIncident(IncidentDef def, IncidentSpawnOptions incidentOptions)
+        {
+            return def.letterDef == LetterDefOf.PositiveEvent
+                || incidentOptions.goodIncidents.Contains(def.defName);
+        }
+
+        private static bool IsBadIncident(IncidentDef def, IncidentSpawnOptions incidentOptions)
+        {
+            return def.category == IncidentCategoryDefOf.ThreatBig
+                || def.category == IncidentCategoryDefOf.ThreatSmall
+                || def.letterDef == LetterDefOf.ThreatBig
+                || def.letterDef == LetterDefOf.ThreatSmall
+                || incidentOptions.negativeIncidents.Contains(def.defName);
         }
     }
 }
