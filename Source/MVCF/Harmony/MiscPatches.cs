@@ -75,14 +75,6 @@ namespace MVCF.Harmony
             ref ThingDef weaponDef, ThingDef projectileDef)
         {
             if (initiator is IFakeCaster fc) initiator = fc.RealCaster();
-            // if (weaponDef == null)
-            // {
-            //     weaponDef = ThingDef.Named("MVCF_PlaceholderForHediffs");
-            //     weaponDef.Verbs[0].defaultProjectile = projectileDef;
-            // }
-            //
-            // Log.Message("RangedFire with weaponDef " + weaponDef + " projectile def " + projectileDef + " and target " +
-            //             target);
         }
 
         [HarmonyPatch(typeof(PlayLogEntryUtility), "RulesForOptionalWeapon")]
@@ -93,7 +85,6 @@ namespace MVCF.Harmony
             foreach (var rule in __result) yield return rule;
             if (weaponDef != null || projectileDef == null) yield break;
 
-            // Log.Message("weaponDef null with projectileDef " + projectileDef);
             foreach (var rule in GrammarUtility.RulesForDef(prefix + "_projectile", projectileDef))
                 yield return rule;
         }

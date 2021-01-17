@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using HarmonyLib;
+﻿using HarmonyLib;
 using MVCF.Comps;
 using MVCF.Utilities;
 using Verse;
@@ -20,7 +19,8 @@ namespace MVCF.Harmony
             var man = __instance.CasterPawn.Manager();
             if (man == null) return;
             man.CurrentVerb = __instance;
-            man.ManagedVerbs.First(v => v.Verb == __instance).Enabled = true;
+            var mv = man.GetManagedVerbForVerb(__instance);
+            if (mv != null) mv.Enabled = true;
         }
 
         [HarmonyPatch("get_EquipmentSource")]

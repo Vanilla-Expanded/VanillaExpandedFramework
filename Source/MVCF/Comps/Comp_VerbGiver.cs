@@ -80,7 +80,7 @@ namespace MVCF.Comps
             var man = (parent as Apparel)?.Wearer?.Manager();
             if (man == null) yield break;
             foreach (var gizmo in from verb in verbTracker.AllVerbs
-                from gizmo in verb.GetGizmosForVerb(man.ManagedVerbs.FirstOrFallback(managed => managed.Verb == verb))
+                from gizmo in verb.GetGizmosForVerb(man.GetManagedVerbForVerb(verb))
                 select gizmo) yield return gizmo;
         }
 
