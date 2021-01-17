@@ -64,7 +64,8 @@ namespace MVCF.Utilities
 
             yield return gizmo;
 
-            if (props != null && props.canBeToggled && man != null) yield return new Command_ToggleVerbUsage(man);
+            if (props != null && props.canBeToggled && man != null && verb.caster.Faction == Faction.OfPlayer)
+                yield return new Command_ToggleVerbUsage(man);
         }
 
         public static Gizmo GetMainAttackGizmoForPawn(this Pawn pawn)
