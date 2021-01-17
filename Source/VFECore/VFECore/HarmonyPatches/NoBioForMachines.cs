@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 using System.Reflection;
+using VFECore;
+using VFEMech;
 
 namespace VFE.Mechanoids.HarmonyPatches
 {
@@ -17,8 +19,8 @@ namespace VFE.Mechanoids.HarmonyPatches
         static PropertyInfo propertyInfo = typeof(ITab_Pawn_Character).GetProperty("PawnToShowInfoAbout", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
         public static void Postfix(ITab_Pawn_Character __instance, ref bool __result)
         {
-            Pawn pawn= (Pawn)propertyInfo.GetValue(__instance);
-            if (pawn.RaceProps.IsMechanoid)
+            Pawn pawn = (Pawn)propertyInfo.GetValue(__instance);
+            if (pawn is Machine)
                 __result = false;
         }
     }
