@@ -291,18 +291,22 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RaidGroup.cs" />
-    <Compile Include="IncidentWatcher.cs" />
-    <Compile Include="RaidWatcher.cs" />
-    <Compile Include="IncidentSpawnOptions.cs" />
-    <Compile Include="StorytellerThreat.cs" />
-    <Compile Include="RaidRestlessness.cs" />
-    <Compile Include="StorytellerComp_IncidentSpawner.cs" />
+    <Compile Include="Comps\CompQuestGiver.cs" />
+    <Compile Include="Jobs\JobDriver_UseQuestGiver.cs" />
+    <Compile Include="Misc\QuestGiverManager.cs" />
+    <Compile Include="Misc\CurrencyInfo.cs" />
+    <Compile Include="Misc\QuestInfo.cs" />
+    <Compile Include="Misc\RaidQueue.cs" />
+    <Compile Include="Misc\RaidGroup.cs" />
+    <Compile Include="HarmonyPatches\IncidentWatcher.cs" />
+    <Compile Include="HarmonyPatches\RaidWatcher.cs" />
+    <Compile Include="Misc\StorytellerComp_IncidentSpawner.cs" />
+    <Compile Include="Misc\QuestGiverDef.cs" />
     <Compile Include="StorytellerWatcher.cs" />
-    <Compile Include="QuestWatcher.cs" />
-    <Compile Include="IncidentWorker_Reinforcements.cs" />
+    <Compile Include="HarmonyPatches\QuestWatcher.cs" />
+    <Compile Include="Incidents\IncidentWorker_Reinforcements.cs" />
     <Compile Include="VSEDefOf.cs" />
-    <Compile Include="ThoughtWorker_RaidRestlessness.cs" />
+    <Compile Include="Misc\ThoughtWorker_RaidRestlessness.cs" />
     <Compile Include="XeoNovaDanCode\CustomStorytellerUtility.cs" />
     <Compile Include="XeoNovaDanCode\HarmonyPatches.cs" />
     <Compile Include="XeoNovaDanCode\ModCompatibilityCheck.cs" />
@@ -315,7 +319,7 @@
     <Compile Include="XeoNovaDanCode\Patch_MainTabWindow_Research.cs" />
     <Compile Include="XeoNovaDanCode\Patch_ResearchProjectDef.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StorytellerDefExtension.cs" />
+    <Compile Include="Misc\StorytellerDefExtension.cs" />
     <Compile Include="XeoNovaDanCode\TechLevelRange.cs" />
     <Compile Include="XeoNovaDanCode\VanillaStorytellersExpanded.cs" />
   </ItemGroup>
@@ -324,5 +328,6 @@
       <Version>2.0.4</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

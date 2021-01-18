@@ -82,4 +82,15 @@ namespace VanillaStorytellersExpanded
             return false;
         }
     }
+
+    [HarmonyPatch(typeof(QuestGen))]
+    [HarmonyPatch("AddSlateQuestTags")]
+    public static class Patch_AddSlateQuestTags
+    {
+        public static Slate slate;
+        public static void Postfix()
+        {
+            slate = QuestGen.slate.DeepCopy();
+        }
+    }
 }

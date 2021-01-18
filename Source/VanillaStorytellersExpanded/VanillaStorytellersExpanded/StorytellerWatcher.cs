@@ -1,44 +1,20 @@
 ﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using Verse;
 using Verse.AI.Group;
 
 namespace VanillaStorytellersExpanded
 {
-    public class RaidQueue : IExposable
-    {
-        public IncidentDef incidentDef;
-        public IncidentParms parms;
-        public int tickToFire;
-        public RaidQueue()
-        {
-
-        }
-
-        public RaidQueue(IncidentDef incidentDef, IncidentParms parms, int tickToFire)
-        {
-            this.incidentDef = incidentDef;
-            this.parms = parms;
-            this.tickToFire = tickToFire;
-        }
-        public void ExposeData()
-        {
-            Scribe_Defs.Look(ref incidentDef, "incidentDef");
-            Scribe_Deep.Look(ref parms, "parms");
-            Scribe_Values.Look(ref tickToFire, "tickToFire");
-        }
-    }
-	public class StorytellerWatcher : GameComponent
+    public class StorytellerWatcher : GameComponent
 	{
         public int lastRaidExpansionTicks;
-
         public StorytellerDef currentStoryteller;
-
         public Dictionary<FactionDef, IntRange> originalNaturalGoodwillValues;
-
         public List<RaidGroup> raidGroups;
         public List<RaidGroup> reinforcementGroups;
         public List<RaidQueue> raidQueues;
+        public Dictionary<int, QuestGiverManager> questGiverManagers;
         public StorytellerWatcher()
         {
         }
@@ -48,6 +24,16 @@ namespace VanillaStorytellersExpanded
 
         }
 
+        public QuestGiverManager AddQuestGiverManager(int questManagerID, QuestGiverDef def)
+        {
+            var questGiverManager = new QuestGiverManager(def);
+            questGiverManagers[questManagerID] = questGiverManager;
+            if (def.generateOnce)
+            {
+                questGiverManager.GenerateQuests();
+            }
+            return questGiverManager;
+        }
         public override void GameComponentTick()
         {
             base.GameComponentTick();
@@ -60,6 +46,10 @@ namespace VanillaStorytellersExpanded
                 //    Find.TickManager.DebugSetTicksGame(Find.TickManager.TicksGame + 1);
                 //}
                 CheckStorytellerChanges();
+                foreach (var questGiverManager in questGiverManagers.Values)
+                {
+                    questGiverManager.Tick();
+                }
             }
             if (this.raidQueues?.Count > 0)
             {
@@ -89,6 +79,7 @@ namespace VanillaStorytellersExpanded
             if (this.reinforcementGroups == null) this.reinforcementGroups = new List<RaidGroup>();
             if (this.originalNaturalGoodwillValues == null) this.originalNaturalGoodwillValues = new Dictionary<FactionDef, IntRange>();
             if (this.raidQueues == null) this.raidQueues = new List<RaidQueue>();
+            if (this.questGiverManagers == null) this.questGiverManagers = new Dictionary<int, QuestGiverManager>();
         }
         public override void LoadedGame()
         {
@@ -216,6 +207,10 @@ namespace VanillaStorytellersExpanded
             Scribe_Defs.Look(ref currentStoryteller, "currentStoryteller");
             Scribe_Collections.Look<RaidGroup>(ref raidGroups, "raidGroups", LookMode.Deep);
             Scribe_Collections.Look<RaidGroup>(ref reinforcementGroups, "reinforcementGroups", LookMode.Deep);
+            Scribe_Collections.Look(ref questGiverManagers, "questGiverManagers", LookMode.Value, LookMode.Deep, ref intKeys, ref questGiverValues);
         }
+
+        private List<int> intKeys = new List<int>();
+        private List<QuestGiverManager> questGiverValues = new List<QuestGiverManager>();
     }
 }

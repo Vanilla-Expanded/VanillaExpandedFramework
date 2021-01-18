@@ -47,6 +47,8 @@
 	
 	<VSE.Reinforcements>Reinforcements</VSE.Reinforcements>
 	<VSE.ReinforcementsDesc>Seeing that your forces suffered losses, {FACTION_name} has decided to reinforce their raiding force</VSE.ReinforcementsDesc>
+	
+	<VSE.CostGoodwill>cost: {0} goodwill</VSE.CostGoodwill>
 
 	
 </LanguageData>
