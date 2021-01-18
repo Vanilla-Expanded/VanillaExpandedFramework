@@ -215,7 +215,27 @@ namespace VanillaFurnitureExpanded
 
         private void ResetCountdown()
         {
-            this.ticksUntilSpawn = this.PropsSpawner.spawnIntervalRange.RandomInRange;
+            if (ModLister.HasActiveModWithName("Vanilla Factions Expanded - Mechanoids"))
+            {
+                try
+                {
+                    ((Action)(() =>
+                    {
+                        VFEM.MechShipsSettings settings = VFEM.MechShipsMod.settings;
+                        float multiplier = settings.VFEM_factorySpeedMultiplier;
+                        this.ticksUntilSpawn = (int)(this.PropsSpawner.spawnIntervalRange.RandomInRange * multiplier);
+                    }))();
+                }
+                catch (TypeLoadException) { }
+
+
+
+            }
+            else
+            {
+                this.ticksUntilSpawn = this.PropsSpawner.spawnIntervalRange.RandomInRange;
+            }
+
         }
 
         public override void PostExposeData()
