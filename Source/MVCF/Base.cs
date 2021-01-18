@@ -1,4 +1,5 @@
 using System.Reflection;
+using MVCF.Harmony;
 using Verse;
 
 namespace MVCF
@@ -15,6 +16,7 @@ namespace MVCF
             SearchLabel = harm.Id + Rand.Value;
             Prepatcher = ModLister.HasActiveModWithName("Prepatcher");
             if (Prepatcher) Log.Message("[MVCF] Prepatcher installed, switching");
+            Compat.ApplyCompat(harm);
         }
     }
 }

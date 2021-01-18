@@ -14,9 +14,6 @@ namespace MVCF.Harmony
             out bool __state, bool allowManualCastWeapons = false)
         {
             var manager = __instance.Manager();
-            // Log.Message("Getting attack verb for " + __instance + " with currentVerb " + manager.CurrentVerb?.Label() +
-            //             " and target " + target + " and searchVerb " + manager.SearchVerb?.Label());
-            // Log.Message("Pawn's current job is " + __instance.CurJobDef.label);
 
             var job = __instance.CurJob;
             if (target == null && (job == null || !job.targetA.HasThing && job.targetA.Cell == __instance.Position))
@@ -59,6 +56,7 @@ namespace MVCF.Harmony
 
         public static void Postfix(ref Verb __result, bool __state)
         {
+            if (__result == null) return;
             if (__result.verbProps.label == Base.SearchLabel && __state) __result = null;
         }
     }

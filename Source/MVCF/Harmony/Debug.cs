@@ -67,4 +67,26 @@ namespace MVCF.Harmony
             Log.Message(__instance + "." + __originalMethod.Name + "() -> void");
         }
     }
+
+    // [HarmonyPatch]
+    public class Debug_AdjustedCooldown
+    {
+        public static IEnumerable<MethodBase> TargetMethods()
+        {
+            // yield return AccessTools.Method(typeof(Pawn), "TryStartAttack");
+            yield return AccessTools.Method(typeof(Tool), "AdjustedCooldown");
+            yield return AccessTools.Method(typeof(Tool), "AdjustedCooldown_NewTmp");
+            yield return AccessTools.Method(typeof(VerbProperties), "AdjustedCooldown_NewTmp");
+            yield return AccessTools.Method(typeof(VerbProperties), "AdjustedCooldown",
+                new[] {typeof(Verb), typeof(Pawn)});
+            yield return AccessTools.Method(typeof(VerbProperties), "AdjustedCooldown",
+                new[] {typeof(Tool), typeof(Pawn), typeof(Thing)});
+        }
+
+        public static void Postfix(float __result, MethodBase __originalMethod)
+        {
+            Log.Message("Cooldown time of " + __result + " from method " + __originalMethod);
+            if (__result == 0) Log.Warning("0 cooldown!");
+        }
+    }
 }
