@@ -38,6 +38,8 @@ namespace VFECore
                     RunAndGun = true;
                 else if (curMod.Name == "Faction Discovery")
                     FactionDiscovery = true;
+                else if (curMod.Name == "What the hack?!")
+                    WhatTheHack = true;
             }
         }
 
@@ -56,6 +58,8 @@ namespace VFECore
         public static bool RunAndGun;
 
         public static bool FactionDiscovery;
+
+        public static bool WhatTheHack;
 
     }
 
