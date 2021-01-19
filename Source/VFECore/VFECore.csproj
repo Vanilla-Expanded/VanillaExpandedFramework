@@ -74,6 +74,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompDigPeriodically.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDigWhenHungry.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompElectrified.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompExplodingHatcher.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompFixedGender.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompGasProducer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompHediffEffecter.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DigPeriodically.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DigWhenHungry.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Electrified.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ExplodingHatcher.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Fertilizer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_FixedGender.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_GasProducer.cs" />
