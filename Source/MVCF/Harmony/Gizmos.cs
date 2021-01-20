@@ -90,7 +90,6 @@ namespace MVCF.Harmony
             };
             list2[0].labels = list[idx - 2].labels.ListFullCopy();
             list[idx - 2].labels.Clear();
-            list2.ForEach(ins => Log.Message(ins.ToString()));
             list.InsertRange(idx - 2, list2);
             return list;
         }

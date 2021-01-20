@@ -80,7 +80,6 @@
     <Compile Include="Utilities\PawnVerbGizmoUtility.cs" />
     <Compile Include="Utilities\PawnVerbUtility.cs" />
     <Compile Include="Comps\Comp_VerbGiver.cs" />
-    <Compile Include="Harmony\Debug.cs" />
     <Compile Include="Harmony\Pawn_TryGetAttackVerb.cs" />
     <Compile Include="Harmony\MiscPatches.cs" />
   </ItemGroup>

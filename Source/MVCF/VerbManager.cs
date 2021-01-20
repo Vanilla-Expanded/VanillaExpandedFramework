@@ -128,7 +128,6 @@ namespace MVCF
 
         public void AddVerb(Verb verb, VerbSource source, AdditionalVerbProps props)
         {
-            // Log.Message("AddVerb " + verb + ", " + source + ", " + props);
             ManagedVerb mv;
             if (props != null && props.canFireIndependently)
             {
@@ -319,11 +318,6 @@ namespace MVCF
 
         public void Tick()
         {
-            // Log.Message("TurretVerb Tick:");
-            // Log.Message("  Bursting: " + Verb.Bursting);
-            // Log.Message("  cooldown: " + cooldownTicksLeft);
-            // Log.Message("  warmup: " + warmUpTicksLeft);
-            // Log.Message("  currentTarget: " + currentTarget);
             Verb.VerbTick();
             if (Verb.Bursting) return;
             if (cooldownTicksLeft > 0) cooldownTicksLeft--;
@@ -331,7 +325,6 @@ namespace MVCF
             if (cooldownTicksLeft > 0) return;
             if (!currentTarget.IsValid || currentTarget.HasThing && currentTarget.ThingDestroyed)
             {
-                // Log.Message("Attempting to find a target");
                 var man = pawn.Manager();
                 var sv = man.SearchVerb;
                 man.SearchVerb = Verb;
@@ -343,17 +336,14 @@ namespace MVCF
             }
             else if (warmUpTicksLeft == 0)
             {
-                // Log.Message("Starting cast!");
                 TryCast();
             }
             else if (warmUpTicksLeft > 0)
             {
-                // Log.Message("Still warming up");
                 warmUpTicksLeft--;
             }
             else
             {
-                // Log.Message("Firing again");
                 TryStartCast();
             }
         }
@@ -371,7 +361,6 @@ namespace MVCF
         {
             warmUpTicksLeft = -1;
             var success = Verb.TryStartCastOn(currentTarget);
-            Log.Message(pawn + (success ? " successfully " : " failed to ") + "fire at " + currentTarget);
         }
 
         public override LocalTargetInfo PointingTarget(Pawn p)

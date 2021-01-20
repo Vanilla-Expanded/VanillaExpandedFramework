@@ -41,20 +41,16 @@ namespace MVCF.Utilities
 
         public static Verb BestVerbForTarget(this Pawn p, LocalTargetInfo target, IEnumerable<ManagedVerb> verbs)
         {
-//            Log.Message("BestVerbForTarget: " + p + ", " + target);
             Verb bestVerb = null;
             float bestScore = 0;
             foreach (var verb in verbs)
             {
                 if (!(verb.Verb.CanHitTarget(target) && verb.Enabled)) continue;
                 var score = VerbScore(p, verb.Verb, target);
-//                Log.Message("    Verb " + verb.Label() + " has score " + score);
                 if (score <= bestScore) continue;
                 bestScore = score;
                 bestVerb = verb.Verb;
             }
-
-//            Log.Message("    Best verb is " + bestVerb?.Label());
 
             return bestVerb;
         }
