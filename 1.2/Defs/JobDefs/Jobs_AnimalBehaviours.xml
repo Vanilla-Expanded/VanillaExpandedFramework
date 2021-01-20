@@ -6,6 +6,12 @@
 		<driverClass>AnimalBehaviours.JobDriver_AnimalResource</driverClass>
 		<reportString>gathering animal resource from TargetA.</reportString>
 	</JobDef>
+	
+	<JobDef>
+		<defName>VEF_DestroyItem</defName>
+		<driverClass>AnimalBehaviours.JobDriver_DestroyItem</driverClass>
+		<reportString>destroying an item.</reportString>
+	</JobDef>
 
 
 
