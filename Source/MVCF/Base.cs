@@ -11,6 +11,7 @@ namespace MVCF
 
         public Base(ModContentPack content) : base(content)
         {
+            HarmonyLib.Harmony.DEBUG = true;
             var harm = new HarmonyLib.Harmony("legodude17.mvcf");
             harm.PatchAll(Assembly.GetExecutingAssembly());
             SearchLabel = harm.Id + Rand.Value;

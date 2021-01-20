@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
 using HarmonyLib;
 using MVCF.Utilities;
 using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace MVCF.Harmony
@@ -63,6 +66,64 @@ namespace MVCF.Harmony
             if (!__instance.RaceProps.Animal || __instance.Faction != Faction.OfPlayer) yield break;
             foreach (var mv in __instance.Manager().ManagedVerbs.Where(mv => !mv.Verb.IsMeleeAttack))
                 yield return new Command_ToggleVerbUsage(mv);
+        }
+    }
+
+    [HarmonyPatch(typeof(Command), "GizmoOnGUIInt")]
+    public class Command_GizmoOnGUI
+    {
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions,
+            ILGenerator generator)
+        {
+            var list = instructions.ToList();
+            var method = AccessTools.Method(typeof(Widgets), "ButtonInvisible");
+            var idx = list.FindIndex(ins =>
+                ins.opcode == OpCodes.Call && ((MethodInfo) ins.operand).FullDescription() == method.FullDescription());
+            Log.Message("Found Call at " + idx);
+            var label = list[idx + 1].operand;
+            var list2 = new List<CodeInstruction>
+            {
+                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Ldarg_1),
+                new CodeInstruction(OpCodes.Ldarg_2),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Command_GizmoOnGUI), "DrawToggle")),
+                new CodeInstruction(OpCodes.Brtrue_S, label)
+            };
+            list2[0].labels = list[idx - 2].labels.ListFullCopy();
+            list[idx - 2].labels.Clear();
+            list2.ForEach(ins => Log.Message(ins.ToString()));
+            list.InsertRange(idx - 2, list2);
+            return list;
+        }
+
+        public static void Postfix(GizmoResult __result)
+        {
+            Log.Message("GizmoOnGUIInt returning " + __result.State);
+        }
+
+        public static bool DrawToggle(Command command, Rect butRect, bool shrunk)
+        {
+            if (shrunk) return false;
+            if (!(command is Command_VerbTarget gizmo)) return false;
+            var verb = gizmo.verb;
+            var man = gizmo.verb?.CasterPawn?.Manager()?.GetManagedVerbForVerb(verb);
+            if (man?.Props == null || man.Props.separateToggle) return false;
+            var topRight = butRect.RightPart(0.35f).TopPart(0.35f);
+            if (Mouse.IsOver(topRight))
+            {
+                TipSignal sig = "Toggle automatic usage";
+                TooltipHandler.TipRegion(topRight, sig);
+            }
+
+            if (Widgets.ButtonImage(topRight,
+                man.Enabled ? Widgets.CheckboxOnTex : Widgets.CheckboxOffTex))
+            {
+                Event.current.Use();
+                man.Enabled = !man.Enabled;
+                return true;
+            }
+
+            return false;
         }
     }
 }

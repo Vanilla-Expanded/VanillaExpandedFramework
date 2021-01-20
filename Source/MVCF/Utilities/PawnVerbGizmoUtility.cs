@@ -11,12 +11,15 @@ namespace MVCF.Utilities
 
         public static IEnumerable<Gizmo> GetGizmosForVerb(this Verb verb, ManagedVerb man = null)
         {
-            var gizmo = new Command_VerbTarget {icon = verb.UIIcon, defaultLabel = VerbLabel(verb)};
             AdditionalVerbProps props = null;
 
             Thing ownerThing = null;
             switch (verb.DirectOwner)
             {
+                case ThingWithComps twc when twc.TryGetComp<Comp_VerbGiver>() is Comp_VerbGiver giver:
+                    ownerThing = twc;
+                    props = giver.PropsFor(verb);
+                    break;
                 case Thing thing:
                     ownerThing = thing;
                     break;
@@ -27,26 +30,34 @@ namespace MVCF.Utilities
                 case CompEquippable eq:
                     ownerThing = eq.parent;
                     break;
-                case HediffComp_VerbGiver hediffGiver:
-                    if (hediffGiver is HediffComp_ExtendedVerbGiver ext) props = ext.PropsFor(verb);
-                    var hediff = hediffGiver.parent;
-                    gizmo.defaultDesc = hediff.def.LabelCap + ": " +
-                                        hediff.def.description.Truncate(500, __truncateCache).CapitalizeFirst();
-                    gizmo.icon = gizmo.icon ?? TexCommand.Attack;
+                case HediffComp_ExtendedVerbGiver hediffGiver:
+                    props = hediffGiver.PropsFor(verb);
                     break;
             }
 
+            var gizmo = new Command_VerbTarget();
+
             if (ownerThing != null)
             {
-                if (ownerThing is ThingWithComps twc && twc.TryGetComp<Comp_VerbGiver>() is Comp_VerbGiver giver)
-                    props = giver.PropsFor(verb);
-                gizmo.defaultDesc = ownerThing.def.LabelCap + ": " +
-                                    ownerThing.def.description.Truncate(500, __truncateCache).CapitalizeFirst();
-                gizmo.icon = gizmo.icon ?? ownerThing.def.uiIcon;
+                gizmo.defaultDesc = FirstNonEmptyString(props?.description, ownerThing.def.LabelCap + ": " + ownerThing
+                    .def.description
+                    .Truncate(500, __truncateCache)
+                    .CapitalizeFirst());
+                gizmo.icon = verb.UIIcon ?? ownerThing.def.uiIcon;
+            }
+            else if (verb.DirectOwner is HediffComp_VerbGiver hediffGiver)
+            {
+                var hediff = hediffGiver.parent;
+                gizmo.defaultDesc = FirstNonEmptyString(props?.description, hediff.def.LabelCap + ": " +
+                                                                            hediff.def.description
+                                                                                .Truncate(500, __truncateCache)
+                                                                                .CapitalizeFirst());
+                gizmo.icon = verb.UIIcon ?? TexCommand.Attack;
             }
 
             gizmo.tutorTag = "VerbTarget";
             gizmo.verb = verb;
+            gizmo.defaultLabel = verb.Label(props);
 
             if (verb.caster.Faction != Faction.OfPlayer)
             {
@@ -55,16 +66,17 @@ namespace MVCF.Utilities
             else if (verb.CasterIsPawn)
             {
                 if (verb.CasterPawn.WorkTagIsDisabled(WorkTags.Violent))
-                    gizmo.Disable("IsIncapableOfViolence".Translate((NamedArgument) verb.CasterPawn.LabelShort,
-                        (NamedArgument) verb.CasterPawn));
+                    gizmo.Disable("IsIncapableOfViolence".Translate(verb.CasterPawn.LabelShort,
+                        verb.CasterPawn));
                 else if (!verb.CasterPawn.drafter.Drafted)
-                    gizmo.Disable("IsNotDrafted".Translate((NamedArgument) verb.CasterPawn.LabelShort,
-                        (NamedArgument) verb.CasterPawn));
+                    gizmo.Disable("IsNotDrafted".Translate(verb.CasterPawn.LabelShort,
+                        verb.CasterPawn));
             }
 
             yield return gizmo;
 
-            if (props != null && props.canBeToggled && man != null && verb.caster.Faction == Faction.OfPlayer)
+            if (props != null && props.canBeToggled && man != null && verb.caster.Faction == Faction.OfPlayer &&
+                props.separateToggle)
                 yield return new Command_ToggleVerbUsage(man);
         }
 
@@ -98,21 +110,23 @@ namespace MVCF.Utilities
             return gizmo;
         }
 
-        private static string VerbLabel(Verb verb)
+        private static string VerbLabel(Verb verb, AdditionalVerbProps props = null)
         {
-            if (!string.IsNullOrEmpty(verb.verbProps.label)) return verb.verbProps.label;
-            switch (verb)
-            {
-                case Verb_LaunchProjectile proj:
-                    return proj.Projectile.LabelCap;
-                default:
-                    return verb.verbProps.label;
-            }
+            return FirstNonEmptyString(props?.visualLabel, verb.verbProps.label,
+                (verb as Verb_LaunchProjectile)?.Projectile.LabelCap, verb.caster?.def?.label);
         }
 
-        public static string Label(this Verb verb)
+        public static string FirstNonEmptyString(params string[] strings)
         {
-            return VerbLabel(verb);
+            foreach (var s in strings)
+                if (!s.NullOrEmpty())
+                    return s;
+            return "";
+        }
+
+        public static string Label(this Verb verb, AdditionalVerbProps props = null)
+        {
+            return VerbLabel(verb, props).CapitalizeFirst();
         }
     }
 }

@@ -49,13 +49,17 @@ namespace MVCF.Comps
         public bool canBeToggled;
         public bool canFireIndependently;
         public DrawPosition defaultPosition;
+        public string description;
         public bool draw;
         public GraphicData graphic;
         public string label;
         private Dictionary<string, DrawPosition> positions;
+        public bool separateToggle;
         public List<DrawPosition> specificPositions;
+        public string toggleDescription;
         public string toggleIconPath;
         public string toggleLabel;
+        public string visualLabel;
 
         public Texture2D ToggleIcon { get; private set; }
         public Graphic Graphic { get; private set; }

@@ -1,3 +1,4 @@
+using MVCF.Utilities;
 using Verse;
 
 namespace MVCF
@@ -9,7 +10,10 @@ namespace MVCF
             icon = verb.Props?.ToggleIcon ?? verb.Verb.UIIcon;
             isActive = () => verb.Enabled;
             toggleAction = verb.Toggle;
-            defaultLabel = verb.Props?.toggleLabel ?? "Toggle " + verb.Verb.verbProps.label;
+            defaultLabel = PawnVerbGizmoUtility.FirstNonEmptyString(verb.Props?.toggleLabel,
+                "Toggle " + verb.Verb.Label(verb.Props));
+            defaultDesc = PawnVerbGizmoUtility.FirstNonEmptyString(verb.Props?.toggleDescription,
+                "Forbid from using " + verb.Verb.Label(verb.Props) + " automatically");
         }
     }
 }
