@@ -232,7 +232,7 @@
                 <li Class="ThinkNode_Tagger">
                       <tagToGive>TrainedAnimalBehavior</tagToGive>
                       <subNodes>
-                        <li Class="VEF.JobGiver_Harvest" />
+                        <li Class="AnimalBehaviours.JobGiver_Harvest" />
                       </subNodes>
                  </li>
               </subNodes>
