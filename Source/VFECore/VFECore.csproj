@@ -119,6 +119,9 @@
     <Compile Include="AnimalBehaviours\Comps\CompTerrainChanger.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompThoughtEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompUntameable.cs" />
+    <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraDamageInsectoids.cs" />
+    <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraDamageMechanoids.cs" />
+    <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraDamagePirates.cs" />
     <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraInfecter.cs" />
     <Compile Include="AnimalBehaviours\MapComponents\DestroyableObjects_MapComponent.cs" />
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_Settings.cs" />

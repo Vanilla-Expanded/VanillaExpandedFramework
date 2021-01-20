@@ -15,7 +15,7 @@ namespace AnimalBehaviours
             JobGiver_Harvest jobGiver_Work = (JobGiver_Harvest)base.DeepCopy(resolve);
             return jobGiver_Work;
         }
-
+        
         public override float GetPriority(Pawn pawn)
         {
             return 9f;
