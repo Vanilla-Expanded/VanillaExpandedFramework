@@ -17,7 +17,7 @@ namespace AnimalBehaviours
             base.ApplySpecialEffectsToPart(pawn, totalDamage, dinfo, result);
             if (pawn.Faction != null && pawn.Faction.def.defName == "Pirate")
             {
-                pawn.TakeDamage(new DamageInfo(DamageDefOf.Scratch, 20, 0f, -1f, null, null, null, DamageInfo.SourceCategory.ThingOrUnknown));
+                pawn.TakeDamage(new DamageInfo(DamageDefOf.Scratch, 50, 0f, -1f, null, null, null, DamageInfo.SourceCategory.ThingOrUnknown));
                 if (dinfo.HitPart.def.bleedRate > 0)
                 {
                     HediffSet hediffSet = pawn.health.hediffSet;
