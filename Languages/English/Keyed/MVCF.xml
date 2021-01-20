@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+    <MVCF.Toggle>Toggle {0}</MVCF.Toggle>
+    <MVCF.ToggleUsing>Toggle using {0} automatically</MVCF.ToggleUsing>
+    <MVCF.ToggleAuto>Toggle automatic usage</MVCF.ToggleAuto>
+</LanguageData>

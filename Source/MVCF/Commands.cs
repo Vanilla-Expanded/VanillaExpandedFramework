@@ -11,9 +11,9 @@ namespace MVCF
             isActive = () => verb.Enabled;
             toggleAction = verb.Toggle;
             defaultLabel = PawnVerbGizmoUtility.FirstNonEmptyString(verb.Props?.toggleLabel,
-                "Toggle " + verb.Verb.Label(verb.Props));
+                "MVCF.Toggle".Translate(verb.Verb.Label(verb.Props)));
             defaultDesc = PawnVerbGizmoUtility.FirstNonEmptyString(verb.Props?.toggleDescription,
-                "Toggle using " + verb.Verb.Label(verb.Props) + " automatically");
+                "MVCF.ToggleUsing".Translate(verb.Verb.Label(verb.Props)));
         }
     }
 }

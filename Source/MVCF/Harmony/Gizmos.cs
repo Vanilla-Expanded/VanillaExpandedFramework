@@ -108,7 +108,7 @@ namespace MVCF.Harmony
                     .LeftPart(0.35f).TopPart(0.35f);
             if (Mouse.IsOver(rect))
             {
-                TipSignal sig = "Toggle automatic usage";
+                TipSignal sig = "MVCF.ToggleAuto".Translate();
                 TooltipHandler.TipRegion(rect, sig);
             }
 
