@@ -13,7 +13,7 @@ namespace MVCF
             defaultLabel = PawnVerbGizmoUtility.FirstNonEmptyString(verb.Props?.toggleLabel,
                 "Toggle " + verb.Verb.Label(verb.Props));
             defaultDesc = PawnVerbGizmoUtility.FirstNonEmptyString(verb.Props?.toggleDescription,
-                "Forbid from using " + verb.Verb.Label(verb.Props) + " automatically");
+                "Toggle using " + verb.Verb.Label(verb.Props) + " automatically");
         }
     }
 }

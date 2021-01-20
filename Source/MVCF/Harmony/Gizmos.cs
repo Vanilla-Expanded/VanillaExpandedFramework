@@ -79,7 +79,6 @@ namespace MVCF.Harmony
             var method = AccessTools.Method(typeof(Widgets), "ButtonInvisible");
             var idx = list.FindIndex(ins =>
                 ins.opcode == OpCodes.Call && ((MethodInfo) ins.operand).FullDescription() == method.FullDescription());
-            Log.Message("Found Call at " + idx);
             var label = list[idx + 1].operand;
             var list2 = new List<CodeInstruction>
             {
@@ -96,11 +95,6 @@ namespace MVCF.Harmony
             return list;
         }
 
-        public static void Postfix(GizmoResult __result)
-        {
-            Log.Message("GizmoOnGUIInt returning " + __result.State);
-        }
-
         public static bool DrawToggle(Command command, Rect butRect, bool shrunk)
         {
             if (shrunk) return false;
@@ -108,14 +102,17 @@ namespace MVCF.Harmony
             var verb = gizmo.verb;
             var man = gizmo.verb?.CasterPawn?.Manager()?.GetManagedVerbForVerb(verb);
             if (man?.Props == null || man.Props.separateToggle) return false;
-            var topRight = butRect.RightPart(0.35f).TopPart(0.35f);
-            if (Mouse.IsOver(topRight))
+            var rect = command.TopRightLabel.NullOrEmpty()
+                ? butRect.RightPart(0.35f).TopPart(0.35f)
+                : butRect
+                    .LeftPart(0.35f).TopPart(0.35f);
+            if (Mouse.IsOver(rect))
             {
                 TipSignal sig = "Toggle automatic usage";
-                TooltipHandler.TipRegion(topRight, sig);
+                TooltipHandler.TipRegion(rect, sig);
             }
 
-            if (Widgets.ButtonImage(topRight,
+            if (Widgets.ButtonImage(rect,
                 man.Enabled ? Widgets.CheckboxOnTex : Widgets.CheckboxOffTex))
             {
                 Event.current.Use();
