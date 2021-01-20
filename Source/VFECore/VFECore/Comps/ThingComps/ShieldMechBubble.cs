@@ -158,7 +158,6 @@ namespace VFEMech
 		public override void PostDraw()
 		{
 			base.PostDraw();
-			Log.Message("PostDraw");
 			DrawWornExtras();
 		}
 
@@ -174,7 +173,6 @@ namespace VFEMech
 
 		private bool InCombat(Pawn pawn)
         {
-			Log.Message("InCombat: " + pawn.CurJobDef);
 			if (combatJobs.Contains(pawn.CurJobDef))
             {
 				return true;
