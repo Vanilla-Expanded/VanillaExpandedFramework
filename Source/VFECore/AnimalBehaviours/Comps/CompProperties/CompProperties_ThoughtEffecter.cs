@@ -12,6 +12,7 @@ namespace AnimalBehaviours
         public int tickInterval = 1000;
         public string thoughtDef = "AteWithoutTable";
         public bool showEffect = false;
+        public bool needsToBeTamed = false;
 
         public CompProperties_ThoughtEffecter()
         {

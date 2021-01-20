@@ -32,7 +32,7 @@ namespace AnimalBehaviours
             {
                 thisPawn = this.parent as Pawn;
                 //Null map check. Also will only work if pawn is not dead or downed
-                if (thisPawn != null && thisPawn.Map != null && !thisPawn.Dead && !thisPawn.Downed)
+                if (thisPawn != null && thisPawn.Map != null && !thisPawn.Dead && !thisPawn.Downed && (!Props.needsToBeTamed || (Props.needsToBeTamed && thisPawn.Faction.IsPlayer)))
                 {
                     foreach (Thing thing in GenRadial.RadialDistinctThingsAround(thisPawn.Position, thisPawn.Map, Props.radius, true))
                     {
