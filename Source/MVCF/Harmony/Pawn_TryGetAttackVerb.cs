@@ -1,6 +1,7 @@
 using System.Linq;
 using HarmonyLib;
 using MVCF.Utilities;
+using RimWorld;
 using Verse;
 
 // ReSharper disable InconsistentNaming
@@ -29,7 +30,7 @@ namespace MVCF.Harmony
                 return false;
             }
 
-            if (target == null)
+            if (target == null && (job == null || !job.targetA.HasThing && job.targetA.Cell == __instance.Position))
             {
                 __result = manager.HasVerbs ? manager.SearchVerb : null;
                 __state = __result == null || !__result.Available();
@@ -39,9 +40,11 @@ namespace MVCF.Harmony
             var verbs = manager.ManagedVerbs.Where(v =>
                 !v.Verb.IsMeleeAttack && (v.Props == null || !v.Props.canFireIndependently) && v.Enabled &&
                 v.Verb.Available() && v.Verb.CanHitTarget(target));
-            if (!allowManualCastWeapons) verbs = verbs.Where(v => !v.Verb.verbProps.onlyManualCast);
+            if (!allowManualCastWeapons && job.def != JobDefOf.Wait_Combat)
+                verbs = verbs.Where(v => !v.Verb.verbProps.onlyManualCast);
 
             var verbsToUse = verbs.ToList();
+
             if (verbsToUse.Count == 0) return __state = true;
 
             var verbToUse = __instance.BestVerbForTarget(target, verbsToUse);
