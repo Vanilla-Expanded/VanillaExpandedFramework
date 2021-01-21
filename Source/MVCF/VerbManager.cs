@@ -178,7 +178,8 @@ namespace MVCF
         public void RecalcSearchVerb()
         {
             var verbsToUse = verbs
-                .Where(v => v.Enabled && (v.Props == null || !v.Props.canFireIndependently)).ToList();
+                .Where(v => v.Enabled && (v.Props == null || !v.Props.canFireIndependently) && !v.Verb.IsMeleeAttack)
+                .ToList();
             if (verbsToUse.Count == 0)
             {
                 HasVerbs = false;
