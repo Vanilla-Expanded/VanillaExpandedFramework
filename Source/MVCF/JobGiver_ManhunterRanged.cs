@@ -54,6 +54,7 @@ namespace MVCF
                 {
                     canUseRangedWeapon = true
                 };
+
             if (!CastPositionFinder.TryFindCastPosition(new CastPositionRequest
             {
                 caster = pawn,
