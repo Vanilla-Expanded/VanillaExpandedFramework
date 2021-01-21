@@ -30,7 +30,6 @@ namespace MVCF.Harmony
             if (currentEffectiveVerb.IsIncendiary())
                 flags |= TargetScanFlags.NeedNonBurning;
             var thing = (Thing) AttackTargetFinder.BestShootTargetFromCurrentPosition(__instance.pawn, flags);
-//            Log.Message("Found target for auto attack: " + thing?.Label);
             if (thing == null)
                 return;
             __instance.pawn.TryStartAttack((LocalTargetInfo) thing);

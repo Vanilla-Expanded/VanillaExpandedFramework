@@ -17,7 +17,7 @@ namespace MVCF
         private readonly List<ManagedVerb> verbs = new List<ManagedVerb>();
         public Verb CurrentVerb;
         public bool HasVerbs;
-        public Verb SearchVerb = new Verb_Search();
+        public Verb SearchVerb;
         public bool NeedsTicking { get; private set; }
 
         public IEnumerable<Verb> AllVerbs => verbs.Select(mv => mv.Verb);
@@ -52,7 +52,7 @@ namespace MVCF
                 range = 0,
                 minRange = 9999,
                 targetParams = new TargetingParameters(),
-                verbClass = typeof(Verb_Shoot),
+                verbClass = typeof(Verb_Search),
                 label = Base.SearchLabel,
                 defaultProjectile = ThingDef.Named("Bullet_Revolver"),
                 onlyManualCast = true
@@ -69,8 +69,7 @@ namespace MVCF
             if (mv == null)
             {
                 Log.Warning("[MVCF] Attempted to get ManagedVerb for verb " + verb.Label() +
-                            " which does not have one. This may cause issues.");
-                Log.Warning("All ManagedVerbs:");
+                            " which does not have one. This may cause issues. All ManagedVerbs:");
                 foreach (var v in verbs) Log.Warning("  " + v.Verb.Label());
             }
 
@@ -81,7 +80,7 @@ namespace MVCF
         {
             Pawn = pawn;
             VerbTracker = new VerbTracker(this);
-            SearchVerb = VerbTracker.PrimaryVerb;
+            SearchVerb = (Verb_Search) VerbTracker.PrimaryVerb;
             NeedsTicking = false;
             foreach (var verb in pawn.VerbTracker.AllVerbs)
                 AddVerb(verb, VerbSource.RaceDef, pawn.TryGetComp<Comp_VerbGiver>()?.PropsFor(verb));

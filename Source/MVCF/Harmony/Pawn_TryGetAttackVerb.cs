@@ -38,7 +38,7 @@ namespace MVCF.Harmony
 
             var verbs = manager.ManagedVerbs.Where(v =>
                 !v.Verb.IsMeleeAttack && (v.Props == null || !v.Props.canFireIndependently) && v.Enabled &&
-                v.Verb.Available());
+                v.Verb.Available() && v.Verb.CanHitTarget(target));
             if (!allowManualCastWeapons) verbs = verbs.Where(v => !v.Verb.verbProps.onlyManualCast);
 
             var verbsToUse = verbs.ToList();

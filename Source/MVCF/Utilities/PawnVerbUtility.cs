@@ -45,7 +45,6 @@ namespace MVCF.Utilities
             float bestScore = 0;
             foreach (var verb in verbs)
             {
-                if (!(verb.Verb.CanHitTarget(target) && verb.Enabled)) continue;
                 var score = VerbScore(p, verb.Verb, target);
                 if (score <= bestScore) continue;
                 bestScore = score;
