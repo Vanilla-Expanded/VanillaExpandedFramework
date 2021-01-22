@@ -7,7 +7,7 @@ namespace MVCF
     {
         public Command_ToggleVerbUsage(ManagedVerb verb)
         {
-            icon = verb.Props?.ToggleIcon ?? verb.Verb.UIIcon;
+            icon = verb.Verb.Icon(verb.Props, verb.Verb.EquipmentSource);
             isActive = () => verb.Enabled;
             toggleAction = verb.Toggle;
             defaultLabel = PawnVerbGizmoUtility.FirstNonEmptyString(verb.Props?.toggleLabel,

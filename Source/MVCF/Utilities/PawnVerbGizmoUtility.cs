@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using MVCF.Comps;
 using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace MVCF.Utilities
@@ -43,7 +44,7 @@ namespace MVCF.Utilities
                     .def.description
                     .Truncate(500, __truncateCache)
                     .CapitalizeFirst());
-                gizmo.icon = verb.UIIcon ?? ownerThing.def.uiIcon;
+                gizmo.icon = verb.Icon(null, ownerThing);
             }
             else if (verb.DirectOwner is HediffComp_VerbGiver hediffGiver)
             {
@@ -52,7 +53,7 @@ namespace MVCF.Utilities
                                                                             hediff.def.description
                                                                                 .Truncate(500, __truncateCache)
                                                                                 .CapitalizeFirst());
-                gizmo.icon = verb.UIIcon ?? TexCommand.Attack;
+                gizmo.icon = verb.Icon(null, null);
             }
 
             gizmo.tutorTag = "VerbTarget";
@@ -127,6 +128,16 @@ namespace MVCF.Utilities
         public static string Label(this Verb verb, AdditionalVerbProps props = null)
         {
             return VerbLabel(verb, props).CapitalizeFirst();
+        }
+
+        public static Texture2D Icon(this Verb verb, AdditionalVerbProps props, Thing ownerThing)
+        {
+            if (props?.ToggleIcon != null && props.ToggleIcon != BaseContent.BadTex) return props.ToggleIcon;
+            if (verb.UIIcon != null && verb.verbProps.commandIcon != null && verb.UIIcon != BaseContent.BadTex)
+                return verb.UIIcon;
+            if (verb is Verb_LaunchProjectile proj) return proj.Projectile.uiIcon;
+            if (ownerThing != null) return ownerThing.def.uiIcon;
+            return TexCommand.Attack;
         }
     }
 }
