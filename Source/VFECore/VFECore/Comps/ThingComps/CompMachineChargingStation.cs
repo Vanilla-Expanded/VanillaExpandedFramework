@@ -69,17 +69,17 @@ namespace VFE.Mechanoids
         public override void SpawnMyPawn()
         {
             base.SpawnMyPawn();
-            if(myPawn.story==null)
+            if (myPawn.story == null)
                 myPawn.story = new Pawn_StoryTracker(myPawn);
-            if(myPawn.skills==null)
+            if (myPawn.skills == null)
                 myPawn.skills = new Pawn_SkillTracker(myPawn);
-            if(myPawn.workSettings==null)
+            if (myPawn.workSettings == null)
                 myPawn.workSettings = new Pawn_WorkSettings(myPawn);
-            if(myPawn.relations==null)
+            if (myPawn.relations == null)
                 myPawn.relations = new Pawn_RelationsTracker(myPawn);
-            DefMap<WorkTypeDef,int> priorities = new DefMap<WorkTypeDef, int>();
+            DefMap<WorkTypeDef, int> priorities = new DefMap<WorkTypeDef, int>();
             priorities.SetAll(0);
-            typeof(Pawn_WorkSettings).GetField("priorities", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(myPawn.workSettings,priorities);
+            typeof(Pawn_WorkSettings).GetField("priorities", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(myPawn.workSettings, priorities);
             foreach (WorkTypeDef workType in Props.allowedWorkTypes)
             {
                 foreach (SkillDef skill in workType.relevantSkills)
@@ -89,21 +89,25 @@ namespace VFE.Mechanoids
                 }
                 myPawn.workSettings.SetPriority(workType, 1);
             }
-            if(myPawn.TryGetComp<CompMachine>().Props.violent)
+            if (myPawn.TryGetComp<CompMachine>().Props.violent)
             {
-                if(myPawn.drafter==null)
+                if (myPawn.drafter == null)
                     myPawn.drafter = new Pawn_DraftController(myPawn);
-                if(Props.spawnWithWeapon!=null)
+                if (Props.spawnWithWeapon != null)
                 {
                     ThingWithComps thing = (ThingWithComps)ThingMaker.MakeThing(Props.spawnWithWeapon);
                     myPawn.equipment.AddEquipment(thing);
                 }
             }
-            if(myPawn.needs.TryGetNeed<Need_Power>()==null)
+            if (myPawn.needs.TryGetNeed<Need_Power>() == null)
                 typeof(Pawn_NeedsTracker).GetMethod("AddNeed", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Invoke(myPawn.needs, new object[] { DefDatabase<NeedDef>.GetNamed("VFE_Mechanoids_Power") });
-            myPawn.playerSettings.AreaRestriction = allowedArea;
+            if (myPawn.playerSettings != null)
+            {
+                myPawn.playerSettings.AreaRestriction = allowedArea;
+            }
             wantsRespawn = false;
         }
+
 
 
         public override void CompTickRare()
