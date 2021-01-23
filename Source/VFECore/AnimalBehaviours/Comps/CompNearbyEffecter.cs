@@ -41,20 +41,19 @@ namespace AnimalBehaviours
                                 Thing current2 = hashSet.FirstOrFallback();
                                 if (current2 != null)
                                 {
-                                    if (current2.def.defName == Props.thingToAffect)
+                                    if (Props.thingsToAffect.Contains(current2.def.defName))
                                     {
-                                        Thing thing = GenSpawn.Spawn(ThingDef.Named(Props.thingToTurnTo), current, pawn.Map, WipeMode.Vanish);
-                                        thing.SetForbidden(true, false);
+                                        
+                                        Thing thing = GenSpawn.Spawn(ThingDef.Named(Props.thingsToConvertTo[Props.thingsToAffect.IndexOf(current2.def.defName)]), current, pawn.Map, WipeMode.Vanish);
+                                        if (Props.feedCauser)
+                                        {
+                                            pawn.needs.food.CurLevel += Props.nutritionGained;
+
+                                        }
                                         current2.Destroy();
                                         break;
                                     }
-                                    else if (current2.def.defName == Props.secondaryThingToAffect)
-                                    {
-                                        Thing thing = GenSpawn.Spawn(ThingDef.Named(Props.thingToTurnTo), current, pawn.Map, WipeMode.Vanish);
-                                        thing.SetForbidden(true, false);
-                                        current2.Destroy();
-                                        break;
-                                    }
+                                   
                                 }
                             }
 
