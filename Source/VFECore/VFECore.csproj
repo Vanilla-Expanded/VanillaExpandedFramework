@@ -124,7 +124,7 @@
     <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraDamagePirates.cs" />
     <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraInfecter.cs" />
     <Compile Include="AnimalBehaviours\DefExtensions\AnimalStatExtension.cs" />
-    <Compile Include="AnimalBehaviours\Harmony\ThingDef_SpecialDisplayStats.cs" />
+    <Compile Include="AnimalBehaviours\Harmony\ThingDef_SpecialDisplayStats_Patch.cs" />
     <Compile Include="AnimalBehaviours\MapComponents\DestroyableObjects_MapComponent.cs" />
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_Settings.cs" />
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_SettingsController.cs" />

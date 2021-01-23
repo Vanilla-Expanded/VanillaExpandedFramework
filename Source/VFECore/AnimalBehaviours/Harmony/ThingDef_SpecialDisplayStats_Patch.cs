@@ -30,7 +30,7 @@ namespace AnimalBehaviours
                     AnimalStatExtension extension = __instance.GetModExtension<AnimalStatExtension>();
                     foreach (string stat in extension.statToAdd)
                     {
-                        __result = __result.AddItem(new StatDrawEntry(StatCategoryDefOf.BasicsPawn, stat, extension.statValues[extension.statToAdd.IndexOf(stat)], extension.statDescriptions[extension.statToAdd.IndexOf(stat)]
+                        __result = __result.AddItem(new StatDrawEntry(StatCategoryDefOf.BasicsPawn, stat.Translate(), extension.statValues[extension.statToAdd.IndexOf(stat)].Translate(), extension.statDescriptions[extension.statToAdd.IndexOf(stat)].Translate()
                         , 1));
                     }
                 }
