@@ -63,10 +63,10 @@ namespace MVCF
         public ImplementOwnerTypeDef ImplementOwnerTypeDef => ImplementOwnerTypeDefOf.NativeVerb;
         public Thing ConstantCaster => Pawn;
 
-        public ManagedVerb GetManagedVerbForVerb(Verb verb)
+        public ManagedVerb GetManagedVerbForVerb(Verb verb, bool warnOnFailed = true)
         {
             var mv = verbs.FirstOrFallback(v => v.Verb == verb);
-            if (mv == null)
+            if (mv == null && warnOnFailed)
                 Log.ErrorOnce("[MVCF] Attempted to get ManagedVerb for verb " + verb.Label() +
                               " which does not have one. This may cause issues.", verb.Label().GetHashCode());
 

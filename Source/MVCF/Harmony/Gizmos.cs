@@ -43,10 +43,12 @@ namespace MVCF.Harmony
         {
             foreach (var gizmo in __result) yield return gizmo;
 
-            if (pawn.Manager().ManagedVerbs.Count(mv => mv.Enabled && !mv.Verb.IsMeleeAttack) >= 2)
+            var man = pawn.Manager();
+
+            if (man.ManagedVerbs.Count(mv => mv.Enabled && !mv.Verb.IsMeleeAttack) >= 2)
                 yield return pawn.GetMainAttackGizmoForPawn();
 
-            foreach (var gizmo in from verb in pawn.Manager().ManagedVerbs
+            foreach (var gizmo in from verb in man.ManagedVerbs
                 where (verb.Source == VerbSource.Hediff || verb.Source == VerbSource.RaceDef) &&
                       verb.Verb.verbProps.hasStandardCommand
                 from gizmo in verb.Verb
@@ -99,7 +101,7 @@ namespace MVCF.Harmony
             if (shrunk) return false;
             if (!(command is Command_VerbTarget gizmo)) return false;
             var verb = gizmo.verb;
-            var man = gizmo.verb?.CasterPawn?.Manager()?.GetManagedVerbForVerb(verb);
+            var man = gizmo.verb?.CasterPawn?.Manager()?.GetManagedVerbForVerb(verb, false);
             if (man?.Props == null || man.Props.separateToggle) return false;
             var rect = command.TopRightLabel.NullOrEmpty()
                 ? butRect.RightPart(0.35f).TopPart(0.35f)
