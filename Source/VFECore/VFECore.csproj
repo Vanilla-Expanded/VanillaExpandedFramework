@@ -123,6 +123,8 @@
     <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraDamageMechanoids.cs" />
     <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraDamagePirates.cs" />
     <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraInfecter.cs" />
+    <Compile Include="AnimalBehaviours\DefExtensions\AnimalStatExtension.cs" />
+    <Compile Include="AnimalBehaviours\Harmony\ThingDef_SpecialDisplayStats.cs" />
     <Compile Include="AnimalBehaviours\MapComponents\DestroyableObjects_MapComponent.cs" />
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_Settings.cs" />
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_SettingsController.cs" />
@@ -136,7 +138,7 @@
     <Compile Include="Furniture\Comps\CompSpawnOtherBuildingWhenPowered.cs" />
     <Compile Include="Furniture\DefModExtensions\ShowBlueprintExtension.cs" />
     <Compile Include="Furniture\Defs\ConfigurableSpawnerDef.cs" />
-    <Compile Include="Furniture\Harmony\VanillaExpandedFramework_GhostUtility_Patch.cs" />
+    <Compile Include="Furniture\Harmony\GhostUtility_GhostGraphicFor_Patch.cs" />
     <Compile Include="Furniture\Placeworkers\PlaceWorker_OnWater.cs" />
     <Compile Include="Furniture\Thoughts\ThoughtGiverByProximityDefExtension.cs" />
     <Compile Include="Furniture\Thoughts\ThoughtWorker_ThoughtFromNearbyThingDef.cs" />

@@ -14,7 +14,7 @@ namespace VanillaFurnitureExpanded
    
     [HarmonyPatch(typeof(GhostUtility))]
     [HarmonyPatch("GhostGraphicFor")]
-    public static class GhostUtility_GhostGraphicFor_Patch
+    public static class VanillaExpandedFramework_GhostUtility_GhostGraphicFor_Patch
     {
         [HarmonyPostfix]
         static void DisplayBlueprintGraphic(Graphic baseGraphic, ThingDef thingDef, Color ghostCol, ref Graphic __result)
