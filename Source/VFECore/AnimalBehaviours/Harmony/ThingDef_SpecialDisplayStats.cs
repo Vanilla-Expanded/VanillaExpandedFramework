@@ -24,19 +24,17 @@ namespace AnimalBehaviours
 
             public static void Postfix(ThingDef __instance, ref IEnumerable<StatDrawEntry> __result)
             {
-                //Log.Message(__instance.defName);
-                /*if (((__instance.defName.Contains("WMH_")) || (__instance.defName.Contains("WMAux_"))) && !__instance.IsCorpse)
+
+                if(__instance.GetModExtension<AnimalStatExtension>() != null && !__instance.IsCorpse)
                 {
-
-                    // Log.Message(__instance.defName + " Detected");
-                    MonsterClassEnum monsterClass = MonsterClassEnum.CursedOne;
-                    var extendedRaceProps = __instance.GetModExtension<MonsterClass>();
-                    if (extendedRaceProps != null)
-                        monsterClass = extendedRaceProps.monsterClass;
-                    __result = __result.AddItem(new StatDrawEntry(StatCategoryDefOf.BasicsPawn, "WMH_MonsterClass".Translate(), $"WMH_MonsterClass_{monsterClass}".Translate(),
-                        $"WMH_MonsterClass_{monsterClass}_Description".Translate(), 1));
-
-                }*/
+                    AnimalStatExtension extension = __instance.GetModExtension<AnimalStatExtension>();
+                    foreach (string stat in extension.statToAdd)
+                    {
+                        __result = __result.AddItem(new StatDrawEntry(StatCategoryDefOf.BasicsPawn, stat, extension.statValues[extension.statToAdd.IndexOf(stat)], extension.statDescriptions[extension.statToAdd.IndexOf(stat)]
+                        , 1));
+                    }
+                }
+                
             }
 
         }
