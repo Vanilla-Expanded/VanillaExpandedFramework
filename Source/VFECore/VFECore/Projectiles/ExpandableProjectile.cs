@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using HarmonyLib;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,22 @@ using Verse.Sound;
 
 namespace VFECore
 {
+
+	[HarmonyPatch(typeof(Projectile), "Launch", new Type[] 
+	{
+		typeof(Thing), typeof(Vector3), typeof(LocalTargetInfo), typeof(LocalTargetInfo), typeof(ProjectileHitFlags), typeof(Thing), typeof(ThingDef)
+	})]
+	public static class Projectile_Launch_Patch
+	{
+		public static void Postfix(Projectile __instance, Thing launcher, Vector3 origin, LocalTargetInfo usedTarget, LocalTargetInfo intendedTarget, ProjectileHitFlags hitFlags, Thing equipment = null, ThingDef targetCoverDef = null)
+		{
+			if (__instance is ExpandableProjectile expandableProjectile && expandableProjectile.def.reachMaxRangeAlways)
+			{
+				expandableProjectile.SetDestinationToMax(equipment);
+			}
+		}
+	}
+
 	public class ExpandableProjectile : Bullet
 	{
 		private int curDuration;
@@ -17,6 +34,24 @@ namespace VFECore
 		private int curProjectileIndex;
 		private int curProjectileFadeOutIndex;
 		private bool stopped;
+		private float maxRange;
+		public void SetDestinationToMax(Thing equipment)
+        {
+			maxRange = equipment.TryGetComp<CompEquippable>().PrimaryVerb.verbProps.range;
+			var origin2 = new Vector3(this.launcher.TrueCenter().x, 0, this.launcher.TrueCenter().z);
+			var destination2 = new Vector3(destination.x, 0, destination.z);
+			var distance = Vector3.Distance(origin2, destination2);
+			var distanceDiff = maxRange - distance;
+			var normalized = (destination2 - origin2).normalized;
+			this.destination += normalized * distanceDiff;
+		}
+		public new virtual int DamageAmount
+		{
+			get
+			{
+				return def.projectile.GetDamageAmount(weaponDamageMultiplier);
+			}
+		}
 		public bool IsMoving
 		{
 			get
@@ -46,7 +81,6 @@ namespace VFECore
 		{
 			get
 			{
-
 				if (!doFinalAnimations || this.def.lifeTimeDuration - curDuration > this.def.graphicData.MaterialsFadeOut.Length - 1)
 				{
 					var material = this.def.graphicData.Materials[curProjectileIndex];
@@ -121,6 +155,25 @@ namespace VFECore
 		{
 			get
 			{
+				if (this.def.reachMaxRangeAlways)
+                {
+					var origin2 = new Vector3(this.launcher.TrueCenter().x, 0, this.launcher.TrueCenter().z);
+					var curPos = this.DrawPos;
+					var distance = Vector3.Distance(origin2, curPos);
+					var distanceDiff = maxRange - distance;
+					if (distanceDiff < 0)
+                    {
+						if (!stopped)
+                        {
+							StopMotion();
+                        }
+						return curPosition;
+					}
+					else
+                    {
+						return this.DrawPos;
+					}
+				}
 				if (!stopped)
 				{
 					return this.DrawPos;
@@ -198,6 +251,13 @@ namespace VFECore
 			}
 			return positions;
 		}
+
+		private void StopMotion()
+        {
+			Log.Message("Stopped");
+			stopped = true;
+			curPosition = this.DrawPos;
+		}
 		public override void Tick()
 		{
 			base.Tick();
@@ -217,10 +277,9 @@ namespace VFECore
 				{
 					curDuration = finalAnimationDuration;
 				}
-				if (pawnMoved)
+				if (!this.def.reachMaxRangeAlways && pawnMoved)
 				{
-					stopped = true;
-					curPosition = this.DrawPos;
+					StopMotion();
 				}
 			}
 			if (Find.TickManager.TicksGame % this.TickFrameRate == 0 && def.lifeTimeDuration > 0)
@@ -245,10 +304,9 @@ namespace VFECore
 		public HashSet<Thing> hitThings;
 		protected override void Impact(Thing hitThing)
 		{
-			if (!stopped && !customImpact)
+			if (def.stopWhenHit && !stopped && !customImpact)
 			{
-				stopped = true;
-				curPosition = this.DrawPos;
+				StopMotion();
 			}
 			if (hitThings == null) hitThings = new HashSet<Thing>();
 			if (this.def.dealsDamageOnce && hitThings.Contains(hitThing))
@@ -256,17 +314,12 @@ namespace VFECore
 				return;
             }
 			hitThings.Add(hitThing);
-			//if (!customImpact)
-			//{
-			//	GenSpawn.Spawn(ThingDefOf.MineableComponentsIndustrial, base.Position, this.Map);
-			//}
 			Map map = base.Map;
 			IntVec3 position = base.Position;
 			BattleLogEntry_RangedImpact battleLogEntry_RangedImpact;
 			if (equipmentDef == null)
 			{
 				battleLogEntry_RangedImpact = new BattleLogEntry_RangedImpact(launcher, hitThing, intendedTarget.Thing, ThingDef.Named("Gun_Autopistol"), def, targetCoverDef);
-
 			}
 			else
 			{
@@ -276,7 +329,7 @@ namespace VFECore
 			this.NotifyImpact(hitThing, map, position);
 			if (hitThing != null && (!def.disableVanillaDamageMethod || customImpact && def.disableVanillaDamageMethod))
 			{
-				DamageInfo dinfo = new DamageInfo(def.projectile.damageDef, base.DamageAmount, base.ArmorPenetration, ExactRotation.eulerAngles.y, launcher, null, equipmentDef, DamageInfo.SourceCategory.ThingOrUnknown, intendedTarget.Thing);
+				DamageInfo dinfo = new DamageInfo(def.projectile.damageDef, this.DamageAmount, base.ArmorPenetration, ExactRotation.eulerAngles.y, launcher, null, equipmentDef, DamageInfo.SourceCategory.ThingOrUnknown, intendedTarget.Thing);
 				hitThing.TakeDamage(dinfo).AssociateWithLog(battleLogEntry_RangedImpact);
 				Pawn pawn = hitThing as Pawn;
 				if (pawn != null && pawn.stances != null && pawn.BodySize <= def.projectile.StoppingPower + 0.001f)
@@ -337,6 +390,7 @@ namespace VFECore
 			Scribe_Values.Look(ref prevPosition, "prevPosition");
 			Scribe_Values.Look(ref stopped, "stopped");
 			Scribe_Values.Look(ref curPosition, "curPosition");
+			Scribe_Values.Look(ref maxRange, "maxRange");
 		}
 	}
 }
