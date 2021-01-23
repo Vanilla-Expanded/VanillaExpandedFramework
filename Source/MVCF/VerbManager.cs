@@ -67,11 +67,8 @@ namespace MVCF
         {
             var mv = verbs.FirstOrFallback(v => v.Verb == verb);
             if (mv == null)
-            {
-                Log.Warning("[MVCF] Attempted to get ManagedVerb for verb " + verb.Label() +
-                            " which does not have one. This may cause issues. All ManagedVerbs:");
-                foreach (var v in verbs) Log.Warning("  " + v.Verb.Label());
-            }
+                Log.ErrorOnce("[MVCF] Attempted to get ManagedVerb for verb " + verb.Label() +
+                              " which does not have one. This may cause issues.", verb.Label().GetHashCode());
 
             return mv;
         }
