@@ -17,8 +17,13 @@ namespace MVCF.Harmony
             var manager = __instance.Manager();
             var job = __instance.CurJob;
 
+            if (manager.debugOpts.VerbLogging)
+                Log.Message("TryGetAttackVerb of " + __instance + " on target " + target + " with job " + job +
+                            " that has target " + job?.targetA + " and CurrentVerb " + manager.CurrentVerb);
+
             if (target == null && (job == null || !job.targetA.IsValid ||
-                                   !job.targetA.HasThing && job.targetA.Cell == __instance.Position))
+                                   !job.targetA.HasThing && (job.targetA.Cell == __instance.Position ||
+                                                             job.targetA.Cell.InBounds(__instance.Map))))
             {
                 manager.CurrentVerb = null;
                 __result = manager.HasVerbs ? manager.SearchVerb : null;
@@ -46,7 +51,7 @@ namespace MVCF.Harmony
 
             if (verbsToUse.Count == 0) return __state = true;
 
-            var verbToUse = __instance.BestVerbForTarget(target, verbsToUse);
+            var verbToUse = __instance.BestVerbForTarget(target, verbsToUse, manager);
 
             if (verbToUse == null) return __state = true;
 

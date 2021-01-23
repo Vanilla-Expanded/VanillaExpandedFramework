@@ -39,13 +39,14 @@ namespace MVCF.Utilities
             return p.Manager().AllRangedVerbsNoEquipmentNoApparel;
         }
 
-        public static Verb BestVerbForTarget(this Pawn p, LocalTargetInfo target, IEnumerable<ManagedVerb> verbs)
+        public static Verb BestVerbForTarget(this Pawn p, LocalTargetInfo target, IEnumerable<ManagedVerb> verbs,
+            VerbManager man = null)
         {
             Verb bestVerb = null;
             float bestScore = 0;
             foreach (var verb in verbs)
             {
-                var score = VerbScore(p, verb.Verb, target);
+                var score = VerbScore(p, verb.Verb, target, man != null && man.debugOpts.ScoreLogging);
                 if (score <= bestScore) continue;
                 bestScore = score;
                 bestVerb = verb.Verb;
@@ -54,8 +55,9 @@ namespace MVCF.Utilities
             return bestVerb;
         }
 
-        private static float VerbScore(Pawn p, Verb verb, LocalTargetInfo target)
+        private static float VerbScore(Pawn p, Verb verb, LocalTargetInfo target, bool debug = false)
         {
+            if (debug) Log.Message("Getting score of " + verb + " with target " + target);
             var report = ShotReport.HitReportFor(p, verb, target);
             var damage = report.TotalEstimatedHitChance * verb.verbProps.burstShotCount * GetDamage(verb);
             var timeSpent = verb.verbProps.AdjustedCooldownTicks(verb, p) + verb.verbProps.warmupTime.SecondsToTicks();

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using MVCF.Comps;
 using RimWorld;
 using UnityEngine;
@@ -95,7 +96,8 @@ namespace MVCF.Utilities
                     {
                         var manager = pawn.Manager();
                         manager.CurrentVerb = null;
-                        var verb = pawn.BestVerbForTarget(target, verbs);
+                        var verb = pawn.BestVerbForTarget(target, verbs.Where(v => v.Enabled && !v.Verb.IsMeleeAttack),
+                            manager);
                         verb.OrderForceTarget(target);
                     }, pawn, null, TexCommand.Attack);
                 }

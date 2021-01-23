@@ -16,6 +16,7 @@ namespace MVCF
         private readonly List<TurretVerb> tickVerbs = new List<TurretVerb>();
         private readonly List<ManagedVerb> verbs = new List<ManagedVerb>();
         public Verb CurrentVerb;
+        public DebugOptions debugOpts;
         public bool HasVerbs;
         public Verb SearchVerb;
         public bool NeedsTicking { get; private set; }
@@ -79,6 +80,8 @@ namespace MVCF
             VerbTracker = new VerbTracker(this);
             SearchVerb = (Verb_Search) VerbTracker.PrimaryVerb;
             NeedsTicking = false;
+            debugOpts.ScoreLogging = false;
+            debugOpts.VerbLogging = false;
             foreach (var verb in pawn.VerbTracker.AllVerbs)
                 AddVerb(verb, VerbSource.RaceDef, pawn.TryGetComp<Comp_VerbGiver>()?.PropsFor(verb));
             if (pawn?.health?.hediffSet?.hediffs != null)
