@@ -17,8 +17,14 @@ namespace MVCF.Harmony
             var manager = __instance.Manager();
             var job = __instance.CurJob;
 
-            if (target == null && (job == null || !job.targetA.HasThing && job.targetA.Cell == __instance.Position))
+            if (target == null && (job == null || !job.targetA.IsValid ||
+                                   !job.targetA.HasThing && job.targetA.Cell == __instance.Position))
+            {
                 manager.CurrentVerb = null;
+                __result = manager.HasVerbs ? manager.SearchVerb : null;
+                __state = __result == null || !__result.Available();
+                return __state;
+            }
 
             if (manager.CurrentVerb != null && manager.CurrentVerb.Available() &&
                 (target == null || manager.CurrentVerb.CanHitTarget(target)) &&
@@ -28,13 +34,6 @@ namespace MVCF.Harmony
                 __result = manager.CurrentVerb;
                 __state = false;
                 return false;
-            }
-
-            if (target == null && (job == null || !job.targetA.HasThing && job.targetA.Cell == __instance.Position))
-            {
-                __result = manager.HasVerbs ? manager.SearchVerb : null;
-                __state = __result == null || !__result.Available();
-                return __state;
             }
 
             var verbs = manager.ManagedVerbs.Where(v =>
