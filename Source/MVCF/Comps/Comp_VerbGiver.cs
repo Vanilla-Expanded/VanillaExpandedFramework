@@ -87,7 +87,7 @@ namespace MVCF.Comps
         public AdditionalVerbProps PropsFor(Verb verb)
         {
             var label = verb.verbProps.label;
-            return string.IsNullOrEmpty(label) ? null : Props.verbProps.FirstOrDefault(prop => prop.label == label);
+            return string.IsNullOrEmpty(label) ? null : Props.verbProps?.FirstOrDefault(prop => prop.label == label);
         }
     }
 }

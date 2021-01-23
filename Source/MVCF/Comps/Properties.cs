@@ -37,10 +37,11 @@ namespace MVCF.Comps
         public override void PostLoadSpecial(ThingDef parent)
         {
             base.PostLoadSpecial(parent);
-            LongEventHandler.ExecuteWhenFinished(delegate
-            {
-                foreach (var props in verbProps) props.Initialize();
-            });
+            if (verbProps != null)
+                LongEventHandler.ExecuteWhenFinished(delegate
+                {
+                    foreach (var props in verbProps) props.Initialize();
+                });
         }
     }
 
