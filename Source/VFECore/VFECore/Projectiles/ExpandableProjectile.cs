@@ -56,7 +56,7 @@ namespace VFECore
 		{
 			get
 			{
-				if (this.DrawPos != prevPosition)
+				if (!stopped && this.DrawPos != prevPosition)
 				{
 					prevPosition = this.DrawPos;
 					return true;
@@ -155,6 +155,11 @@ namespace VFECore
 		{
 			get
 			{
+				if (stopped)
+                {
+					Log.Message("stopped: " + curPosition);
+					return curPosition;
+                }
 				if (this.def.reachMaxRangeAlways)
                 {
 					var origin2 = new Vector3(this.launcher.TrueCenter().x, 0, this.launcher.TrueCenter().z);
@@ -167,18 +172,25 @@ namespace VFECore
                         {
 							StopMotion();
                         }
+						Log.Message("2 stopped: " + curPosition);
 						return curPosition;
 					}
 					else
                     {
+						Log.Message("this.DrawPos: " + this.DrawPos);
 						return this.DrawPos;
 					}
 				}
-				if (!stopped)
+				else
 				{
+					if (stopped)
+					{
+						Log.Message("3 stopped: " + curPosition);
+						return curPosition;
+					}
+					Log.Message("2 this.DrawPos: " + this.DrawPos);
 					return this.DrawPos;
 				}
-				return curPosition;
 			}
 		}
 		public void DrawProjectileBackground()
@@ -230,23 +242,27 @@ namespace VFECore
 			var centerOfLine = pos.ToIntVec3();
 			var startPosition = StartingPosition.ToIntVec3();
 			var endPosition = this.CurPosition.ToIntVec3();
-			foreach (var cell in GenRadial.RadialCellsAround(start.ToIntVec3(), height, true))
+			if (points.Any())
 			{
-				if (centerOfLine.DistanceToSquared(endPosition) >= cell.DistanceToSquared(endPosition) && startPosition.DistanceTo(cell) > def.minDistanceToAffect)
+				foreach (var cell in GenRadial.RadialCellsAround(start.ToIntVec3(), height, true))
 				{
-					var nearestCell = points.MinBy(x => x.DistanceToSquared(cell));
-					if ((width / height) * 2.5f > nearestCell.DistanceToSquared(cell))
+					if (centerOfLine.DistanceToSquared(endPosition) >= cell.DistanceToSquared(endPosition) && startPosition.DistanceTo(cell) > def.minDistanceToAffect)
+					{
+
+						var nearestCell = points.MinBy(x => x.DistanceToSquared(cell));
+						if ((width / height) * 2.5f > nearestCell.DistanceToSquared(cell))
+						{
+							positions.Add(cell);
+						}
+					}
+				}
+				foreach (var cell in points)
+				{
+					var startCellDistance = startPosition.DistanceTo(cell);
+					if (startCellDistance > def.minDistanceToAffect && startCellDistance <= startPosition.DistanceTo(endPosition))
 					{
 						positions.Add(cell);
 					}
-				}
-			}
-			foreach (var cell in points)
-			{
-				var startCellDistance = startPosition.DistanceTo(cell);
-				if (startCellDistance > def.minDistanceToAffect && startCellDistance <= startPosition.DistanceTo(endPosition))
-				{
-					positions.Add(cell);
 				}
 			}
 			return positions;
@@ -254,9 +270,12 @@ namespace VFECore
 
 		private void StopMotion()
         {
-			Log.Message("Stopped");
-			stopped = true;
-			curPosition = this.DrawPos;
+			if (!stopped)
+            {
+				stopped = true;
+				curPosition = this.DrawPos;
+				this.destination = this.curPosition;
+			}
 		}
 		public override void Tick()
 		{
@@ -293,10 +312,7 @@ namespace VFECore
 		}
 		public virtual void DoDamage(IntVec3 pos)
 		{
-			//if (pos != this.launcher.Position)
-			//{
-			//	GenSpawn.Spawn(ThingDefOf.MineableGold, pos, this.Map);
-			//}
+
 		}
 
 		protected bool customImpact;
@@ -350,7 +366,11 @@ namespace VFECore
 
 				if (this.def.stopWhenHitAt.Contains(hitThing.def.defName))
                 {
-					StopMotion();
+					if (!stopped)
+                    {
+						Log.Message("should stop");
+						StopMotion();
+					}
                 }
 			}
 		}
