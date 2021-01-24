@@ -11,6 +11,15 @@ namespace VFECore
 {
 	public class GaussProjectile : ExpandableProjectile
 	{
+
+		public HashSet<AltitudeLayer> altitudeLayersBlackList = new HashSet<AltitudeLayer> 
+		{
+			AltitudeLayer.Item,
+			AltitudeLayer.ItemImportant,
+			AltitudeLayer.Conduits,
+			AltitudeLayer.Floor,
+			AltitudeLayer.FloorEmplacement
+		};
 		public override int DamageAmount
         {
 			get
@@ -33,7 +42,9 @@ namespace VFECore
 					var list = this.launcher.Map.thingGrid.ThingsListAt(pos);
 					for (int num = list.Count - 1; num >= 0; num--)
 					{
-						if (list[num].def != this.def && list[num] != this.launcher && list[num].def != ThingDefOf.Fire && (!(list[num] is Mote) && (!(list[num] is Filth))))
+
+						if (list[num].def != this.def && list[num] != this.launcher && list[num].def != ThingDefOf.Fire 
+							&& (!(list[num] is Mote)) && (!(list[num] is Filth)) && !altitudeLayersBlackList.Contains(list[num].def.altitudeLayer))
 						{
 							this.customImpact = true;
 							base.Impact(list[num]);

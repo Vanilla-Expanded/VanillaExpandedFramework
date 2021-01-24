@@ -347,6 +347,11 @@ namespace VFECore
 						}
 					}
 				}
+
+				if (this.def.stopWhenHitAt.Contains(hitThing.def.defName))
+                {
+					StopMotion();
+                }
 			}
 		}
 
@@ -357,7 +362,11 @@ namespace VFECore
 			bulletImpactData.hitThing = hitThing;
 			bulletImpactData.impactPosition = position;
 			BulletImpactData impactData = bulletImpactData;
-			hitThing?.Notify_BulletImpactNearby(impactData);
+			try
+			{
+				hitThing?.Notify_BulletImpactNearby(impactData);
+			}
+			catch { };
 			int num = 9;
 			for (int i = 0; i < num; i++)
 			{
@@ -371,7 +380,11 @@ namespace VFECore
 				{
 					if (thingList[j] != hitThing)
 					{
-						thingList[j].Notify_BulletImpactNearby(impactData);
+						try
+                        {
+							thingList[j].Notify_BulletImpactNearby(impactData);
+                        }
+						catch { };
 					}
 				}
 			}
