@@ -273,6 +273,7 @@
     <Compile Include="VFECore\Projectiles\FlamethrowProjectile.cs" />
     <Compile Include="VFECore\Projectiles\ExpandableProjectileDef.cs" />
     <Compile Include="VFECore\Projectiles\ExpandableProjectile.cs" />
+    <Compile Include="VFECore\Projectiles\GaussProjectile.cs" />
     <Compile Include="VFECore\Quests\QuestNode_GetFaction.cs" />
     <Compile Include="VFECore\Reflection\NonPublicFields.cs" />
     <Compile Include="VFECore\Reflection\NonPublicMethods.cs" />
