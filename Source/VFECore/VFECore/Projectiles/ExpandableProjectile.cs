@@ -157,7 +157,6 @@ namespace VFECore
 			{
 				if (stopped)
                 {
-					Log.Message("stopped: " + curPosition);
 					return curPosition;
                 }
 				if (this.def.reachMaxRangeAlways)
@@ -172,12 +171,10 @@ namespace VFECore
                         {
 							StopMotion();
                         }
-						Log.Message("2 stopped: " + curPosition);
 						return curPosition;
 					}
 					else
                     {
-						Log.Message("this.DrawPos: " + this.DrawPos);
 						return this.DrawPos;
 					}
 				}
@@ -185,10 +182,8 @@ namespace VFECore
 				{
 					if (stopped)
 					{
-						Log.Message("3 stopped: " + curPosition);
 						return curPosition;
 					}
-					Log.Message("2 this.DrawPos: " + this.DrawPos);
 					return this.DrawPos;
 				}
 			}
@@ -368,7 +363,6 @@ namespace VFECore
                 {
 					if (!stopped)
                     {
-						Log.Message("should stop");
 						StopMotion();
 					}
                 }
