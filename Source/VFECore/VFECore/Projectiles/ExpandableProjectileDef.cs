@@ -23,6 +23,8 @@ namespace VFECore
 		public float minDistanceToAffect;
 		public bool disableVanillaDamageMethod;
 		public bool dealsDamageOnce;
+		public bool reachMaxRangeAlways;
+		public bool stopWhenHit = true;
 		protected override void ResolveIcon()
 		{
 			base.ResolveIcon();
