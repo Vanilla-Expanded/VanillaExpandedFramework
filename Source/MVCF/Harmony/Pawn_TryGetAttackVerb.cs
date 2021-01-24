@@ -23,7 +23,7 @@ namespace MVCF.Harmony
 
             if (target == null && (job == null || !job.targetA.IsValid ||
                                    !job.targetA.HasThing && (job.targetA.Cell == __instance.Position ||
-                                                             job.targetA.Cell.InBounds(__instance.Map))))
+                                                             !job.targetA.Cell.InBounds(__instance.Map))))
             {
                 manager.CurrentVerb = null;
                 __result = manager.HasVerbs ? manager.SearchVerb : null;
@@ -33,7 +33,8 @@ namespace MVCF.Harmony
 
             if (manager.CurrentVerb != null && manager.CurrentVerb.Available() &&
                 (target == null || manager.CurrentVerb.CanHitTarget(target)) &&
-                (job == null || !job.targetA.HasThing || job.targetA.Cell == __instance.Position ||
+                (job == null || !job.targetA.IsValid || !job.targetA.HasThing ||
+                 job.targetA.Cell == __instance.Position || !job.targetA.Cell.InBounds(__instance.Map) ||
                  manager.CurrentVerb.CanHitTarget(job.targetA)))
             {
                 __result = manager.CurrentVerb;
@@ -61,10 +62,15 @@ namespace MVCF.Harmony
             return false;
         }
 
-        public static void Postfix(ref Verb __result, bool __state)
+        public static void Postfix(ref Verb __result, bool __state, Pawn __instance)
         {
             if (__result == null) return;
-            if (__result.verbProps.label == Base.SearchLabel && __state) __result = null;
+            if (__result.verbProps.label == Base.SearchLabel && __state)
+            {
+                if (__instance.Manager().debugOpts.VerbLogging)
+                    Log.Message("Overwriting SearchVerb with null");
+                __result = null;
+            }
         }
     }
 }

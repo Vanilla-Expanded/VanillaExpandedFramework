@@ -56,7 +56,7 @@ namespace MVCF
                 verbClass = typeof(Verb_Search),
                 label = Base.SearchLabel,
                 defaultProjectile = ThingDef.Named("Bullet_Revolver"),
-                onlyManualCast = true
+                onlyManualCast = false
             }
         };
 
@@ -177,19 +177,30 @@ namespace MVCF
 
         public void RecalcSearchVerb()
         {
+            if (debugOpts.VerbLogging) Log.Message("RecalcSearchVerb");
             var verbsToUse = verbs
                 .Where(v => v.Enabled && (v.Props == null || !v.Props.canFireIndependently) && !v.Verb.IsMeleeAttack)
                 .ToList();
+            if (debugOpts.VerbLogging) verbsToUse.ForEach(v => Log.Message("Verb: " + v.Verb));
             if (verbsToUse.Count == 0)
             {
                 HasVerbs = false;
+                if (debugOpts.VerbLogging) Log.Message("No Verbs");
                 return;
             }
 
             HasVerbs = true;
 
             SearchVerb.verbProps.range = verbsToUse.Select(v => v.Verb.verbProps.range).Max();
+            if (debugOpts.VerbLogging) Log.Message("Resulting range: " + SearchVerb.verbProps.range);
             SearchVerb.verbProps.minRange = verbsToUse.Select(v => v.Verb.verbProps.minRange).Min();
+            if (debugOpts.VerbLogging) Log.Message("Resulting minRange: " + SearchVerb.verbProps.minRange);
+            SearchVerb.verbProps.requireLineOfSight = verbsToUse.All(v => v.Verb.verbProps.requireLineOfSight);
+            if (debugOpts.VerbLogging)
+                Log.Message("Resulting requireLineOfSight: " + SearchVerb.verbProps.requireLineOfSight);
+            SearchVerb.verbProps.mustCastOnOpenGround = verbsToUse.All(v => v.Verb.verbProps.mustCastOnOpenGround);
+            if (debugOpts.VerbLogging)
+                Log.Message("Resulting mustCastOnOpenGround: " + SearchVerb.verbProps.mustCastOnOpenGround);
             var targetParams = verbsToUse.Select(mv => mv.Verb.targetParams).ToList();
             SearchVerb.verbProps.targetParams = new TargetingParameters
             {
