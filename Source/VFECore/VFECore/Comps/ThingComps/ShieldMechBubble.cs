@@ -279,7 +279,7 @@ namespace VFEMech
 
 		protected virtual void Break()
 		{
-			if (this.Pawn.Position.InBounds(this.Pawn.Map))
+			if (this.Pawn?.Map != null && this.Pawn.Position.InBounds(this.Pawn.Map))
 			{
 				SoundDefOf.EnergyShield_Broken.PlayOneShot(new TargetInfo(this.Pawn.Position, this.Pawn.Map));
 				MoteMaker.MakeStaticMote(this.Pawn.TrueCenter(), this.Pawn.Map, ThingDefOf.Mote_ExplosionFlash, 12f);
