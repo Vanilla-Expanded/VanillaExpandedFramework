@@ -88,6 +88,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompMetamorphosis.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompMindEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompNearbyEffecter.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompPassiveRegenerator.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AnimalProduct.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AsexualReproduction.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_BuildPeriodically.cs" />
@@ -108,6 +109,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Metamorphosis.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_MindEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_NearbyEffecter.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_PassiveRegenerator.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Regeneration.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_StateAfterHealthLoss.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_SummonOnSpawn.cs" />
