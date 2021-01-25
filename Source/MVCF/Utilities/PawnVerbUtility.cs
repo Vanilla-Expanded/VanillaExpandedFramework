@@ -48,7 +48,7 @@ namespace MVCF.Utilities
                 if (man?.debugOpts != null && man.debugOpts.ScoreLogging)
                     Log.Error("(Current job is " + p.CurJob + " with verb " + p.CurJob?.verbToUse + " and target " +
                               p.CurJob?.targetA + ")");
-                // return null;
+                return null;
             }
 
             Verb bestVerb = null;
