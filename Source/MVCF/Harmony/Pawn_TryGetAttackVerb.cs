@@ -21,7 +21,7 @@ namespace MVCF.Harmony
                 Log.Message("TryGetAttackVerb of " + __instance + " on target " + target + " with job " + job +
                             " that has target " + job?.targetA + " and CurrentVerb " + manager.CurrentVerb);
 
-            if (target == null && (job == null || !job.targetA.IsValid ||
+            if (target == null && (job == null || !job.targetA.IsValid || job.def != JobDefOf.AttackStatic ||
                                    !job.targetA.HasThing && (job.targetA.Cell == __instance.Position ||
                                                              !job.targetA.Cell.InBounds(__instance.Map))))
             {
