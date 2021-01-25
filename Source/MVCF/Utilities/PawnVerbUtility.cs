@@ -42,6 +42,7 @@ namespace MVCF.Utilities
         public static Verb BestVerbForTarget(this Pawn p, LocalTargetInfo target, IEnumerable<ManagedVerb> verbs,
             VerbManager man = null)
         {
+            if (!target.IsValid || !target.Cell.InBounds(p.Map)) return null;
             Verb bestVerb = null;
             float bestScore = 0;
             foreach (var verb in verbs)
