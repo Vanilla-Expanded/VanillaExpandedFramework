@@ -67,6 +67,7 @@
     <Compile Include="AnimalBehaviours\AI\JobDrivers\JobDriver_AnimalResource.cs" />
     <Compile Include="AnimalBehaviours\AI\JobDrivers\JobDriver_DestroyItem.cs" />
     <Compile Include="AnimalBehaviours\AI\JobGivers\JobGiver_Harvest.cs" />
+    <Compile Include="AnimalBehaviours\AI\JobGivers\JobGiver_XenophobicRage.cs" />
     <Compile Include="AnimalBehaviours\AI\WorkGivers\WorkGiver_AnimalResource.cs" />
     <Compile Include="AnimalBehaviours\AI\WorkGivers\WorkGiver_DestroyItem.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompAnimalProduct.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompDigWhenHungry.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompElectrified.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompExplodingHatcher.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompExtremeXenophobia.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompFixedGender.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompGasProducer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompHediffEffecter.cs" />
@@ -99,6 +101,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DigWhenHungry.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Electrified.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ExplodingHatcher.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ExtremeXenophobia.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Fertilizer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_FixedGender.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_GasProducer.cs" />
@@ -128,6 +131,9 @@
     <Compile Include="AnimalBehaviours\DefExtensions\AnimalStatExtension.cs" />
     <Compile Include="AnimalBehaviours\Harmony\ThingDef_SpecialDisplayStats_Patch.cs" />
     <Compile Include="AnimalBehaviours\MapComponents\DestroyableObjects_MapComponent.cs" />
+    <Compile Include="AnimalBehaviours\MentalStates\MentalStateWorker_XenophobicRage.cs" />
+    <Compile Include="AnimalBehaviours\MentalStates\MentalState_XenophobicRage.cs" />
+    <Compile Include="AnimalBehaviours\MentalStates\XenophobicRageMentalStateUtility.cs" />
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_Settings.cs" />
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_SettingsController.cs" />
     <Compile Include="Furniture\Comps\CompConfigurableSpawner.cs" />

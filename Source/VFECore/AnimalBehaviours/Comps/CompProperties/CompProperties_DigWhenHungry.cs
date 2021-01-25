@@ -1,5 +1,6 @@
 ﻿
 using Verse;
+using System.Collections.Generic;
 
 namespace AnimalBehaviours
 {
@@ -11,6 +12,7 @@ namespace AnimalBehaviours
         public string customThingToDig = "";
         public int customAmountToDig = 1;
         public int timeToDig = 40000;
+        public List<string> acceptedTerrains = null;
 
         public CompProperties_DigWhenHungry()
         {

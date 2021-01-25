@@ -29,14 +29,35 @@ namespace AnimalBehaviours
                 {
                     if (stopdiggingcounter <= 0)
                     {
-                        ThingDef newThing = ThingDef.Named(this.Props.customThingToDig);
-                        Thing newcorpse = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
-                        newcorpse.stackCount = this.Props.customAmountToDig;
-                        if (this.effecter == null)
+                        if (Props.acceptedTerrains != null)
                         {
-                            this.effecter = EffecterDefOf.Mine.Spawn();
+                            if (Props.acceptedTerrains.Contains(pawn.Position.GetTerrain(pawn.Map).defName))
+                            {
+                                ThingDef newThing = ThingDef.Named(this.Props.customThingToDig);
+                                Thing newcorpse = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
+                                newcorpse.stackCount = this.Props.customAmountToDig;
+                                if (this.effecter == null)
+                                {
+                                    this.effecter = EffecterDefOf.Mine.Spawn();
+                                }
+                                this.effecter.Trigger(pawn, newcorpse);
+
+                            }
+                        } else
+                        {
+                            ThingDef newThing = ThingDef.Named(this.Props.customThingToDig);
+                            Thing newcorpse = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
+                            newcorpse.stackCount = this.Props.customAmountToDig;
+                            if (this.effecter == null)
+                            {
+                                this.effecter = EffecterDefOf.Mine.Spawn();
+                            }
+                            this.effecter.Trigger(pawn, newcorpse);
                         }
-                        this.effecter.Trigger(pawn, newcorpse);
+                                
+
+
+                         
 
                         stopdiggingcounter = Props.timeToDig;
                     }
