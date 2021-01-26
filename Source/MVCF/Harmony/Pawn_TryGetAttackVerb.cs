@@ -52,6 +52,9 @@ namespace MVCF.Harmony
 
             if (verbsToUse.Count == 0) return __state = true;
 
+            if (manager.debugOpts.ScoreLogging)
+                Log.Message("Getting best verb for target " + target + " or " + job.targetA + " which is " +
+                            (target ?? job.targetA));
             var verbToUse = __instance.BestVerbForTarget(target ?? job.targetA, verbsToUse, manager);
 
             if (verbToUse == null) return __state = true;
