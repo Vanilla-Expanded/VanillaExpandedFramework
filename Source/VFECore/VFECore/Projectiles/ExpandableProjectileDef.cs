@@ -31,5 +31,19 @@ namespace VFECore
 			base.ResolveIcon();
 			this.uiIcon = this.graphicData.Materials[0].mainTexture as Texture2D;
 		}
-	}
+
+        public override void PostLoad()
+        {
+            base.PostLoad();
+			LongEventHandler.ExecuteWhenFinished(delegate
+			{
+				this.graphicData.InitMainTextures();
+				this.graphicData.InitFadeOutTextures();
+			});
+		}
+        public override IEnumerable<string> ConfigErrors()
+        {
+			return base.ConfigErrors();
+        }
+    }
 }
