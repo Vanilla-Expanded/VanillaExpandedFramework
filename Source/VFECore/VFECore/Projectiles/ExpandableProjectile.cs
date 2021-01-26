@@ -46,10 +46,11 @@ namespace VFECore
 			this.destination += normalized * distanceDiff;
 			var cell = this.destination.ToIntVec3();
 			if (!cell.InBounds(this.Map))
-            {
+			{
 				var nearestCell = CellRect.WholeMap(this.Map).EdgeCells.OrderBy(x => x.DistanceTo(cell)).First();
 				this.destination = nearestCell.ToVector3();
 			}
+			this.ticksToImpact = Mathf.CeilToInt(StartingTicksToImpact);
 		}
 		public new virtual int DamageAmount
 		{
@@ -117,7 +118,7 @@ namespace VFECore
 
 		public override void Draw()
 		{
-			DrawProjectileBackground();
+			DrawProjectile();
 		}
 
 		public int TickFrameRate
@@ -165,7 +166,7 @@ namespace VFECore
                 {
 					return curPosition;
                 }
-				if (this.def.reachMaxRangeAlways)
+				else if (this.def.reachMaxRangeAlways)
                 {
 					var origin2 = new Vector3(this.launcher.TrueCenter().x, 0, this.launcher.TrueCenter().z);
 					var curPos = this.DrawPos;
@@ -186,15 +187,11 @@ namespace VFECore
 				}
 				else
 				{
-					if (stopped)
-					{
-						return curPosition;
-					}
 					return this.DrawPos;
 				}
 			}
 		}
-		public void DrawProjectileBackground()
+		public void DrawProjectile()
 		{
 			var currentPos = CurPosition;
 			currentPos.y = 0;
@@ -249,7 +246,6 @@ namespace VFECore
 				{
 					if (centerOfLine.DistanceToSquared(endPosition) >= cell.DistanceToSquared(endPosition) && startPosition.DistanceTo(cell) > def.minDistanceToAffect)
 					{
-
 						var nearestCell = points.MinBy(x => x.DistanceToSquared(cell));
 						if ((width / height) * 2.5f > nearestCell.DistanceToSquared(cell))
 						{
