@@ -36,7 +36,7 @@ namespace AnimalBehaviours
                     Pawn thisPawn = this.parent as Pawn;
                     foreach (Pawn pawn in this.parent.Map.mapPawns.FreeColonists)
                     {
-                        if (pawn != null && !Props.AcceptedDefnames.Contains(pawn.def.defName))
+                        if (pawn != null && pawn.IsColonist && !Props.AcceptedDefnames.Contains(pawn.def.defName))
                         {
                             
                             thisPawn.mindState.mentalStateHandler.TryStartMentalState(DefDatabase<MentalStateDef>.GetNamed("VEF_XenophobicRage", true), null, true, false, null, false);
