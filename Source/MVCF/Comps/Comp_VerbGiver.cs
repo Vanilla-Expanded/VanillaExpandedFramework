@@ -9,6 +9,7 @@ namespace MVCF.Comps
     public class Comp_VerbGiver : ThingComp, IVerbOwner
     {
         private VerbTracker verbTracker;
+        private bool worn;
 
         public Comp_VerbGiver()
         {
@@ -41,6 +42,7 @@ namespace MVCF.Comps
         {
             base.PostExposeData();
             Scribe_Deep.Look(ref verbTracker, "verbTracker", (object) this);
+            Scribe_Values.Look(ref worn, "worn");
             if (Scribe.mode != LoadSaveMode.PostLoadInit)
                 return;
             if (verbTracker == null)
@@ -52,11 +54,13 @@ namespace MVCF.Comps
         public override void CompTick()
         {
             base.CompTick();
-            verbTracker.VerbsTick();
+            if (worn)
+                verbTracker.VerbsTick();
         }
 
         public void Notify_Worn(Pawn pawn)
         {
+            worn = true;
             foreach (var verb in verbTracker.AllVerbs)
             {
                 verb.caster = pawn;
@@ -66,6 +70,7 @@ namespace MVCF.Comps
 
         public void Notify_Unworn()
         {
+            worn = false;
             foreach (var verb in verbTracker.AllVerbs)
             {
                 verb.Notify_EquipmentLost();
