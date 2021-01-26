@@ -52,7 +52,7 @@ namespace MVCF.Harmony
 
             if (verbsToUse.Count == 0) return __state = true;
 
-            var verbToUse = __instance.BestVerbForTarget(target, verbsToUse, manager);
+            var verbToUse = __instance.BestVerbForTarget(target ?? job.targetA, verbsToUse, manager);
 
             if (verbToUse == null) return __state = true;
 

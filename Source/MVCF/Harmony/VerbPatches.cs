@@ -18,6 +18,8 @@ namespace MVCF.Harmony
                 return;
             var man = __instance.CasterPawn.Manager();
             if (man == null) return;
+            if (man.debugOpts.VerbLogging)
+                Log.Message("Changing CurrentVerb of " + __instance.CasterPawn + " to " + __instance);
             man.CurrentVerb = __instance;
             var mv = man.GetManagedVerbForVerb(__instance);
             if (mv != null) mv.Enabled = true;
