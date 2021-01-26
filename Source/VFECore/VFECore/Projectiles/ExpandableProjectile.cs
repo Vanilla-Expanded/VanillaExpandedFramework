@@ -44,6 +44,12 @@ namespace VFECore
 			var distanceDiff = maxRange - distance;
 			var normalized = (destination2 - origin2).normalized;
 			this.destination += normalized * distanceDiff;
+			var cell = this.destination.ToIntVec3();
+			if (!cell.InBounds(this.Map))
+            {
+				var nearestCell = CellRect.WholeMap(this.Map).EdgeCells.OrderBy(x => x.DistanceTo(cell)).First();
+				this.destination = nearestCell.ToVector3();
+			}
 		}
 		public new virtual int DamageAmount
 		{
