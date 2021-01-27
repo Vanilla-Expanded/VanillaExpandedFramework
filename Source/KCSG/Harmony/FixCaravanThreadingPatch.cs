@@ -9,7 +9,7 @@ using UnityEngine;
 using RimWorld;
 using HarmonyLib;
 
-namespace VFECore.CustomStructureGeneration.Harmony
+namespace KCSG
 {
     [HarmonyPatch(typeof(MapPawns))]
     [HarmonyPatch("AllPawns", MethodType.Getter)]
