@@ -29,6 +29,7 @@ namespace VFEMech
 		public float  maxShieldSize = 2f;
 		public Color  shieldColor = Color.white;
 		public float  EnergyLossPerDamage = 0.033f;
+		public bool disableRotation;
 	}
 
 	[StaticConstructorOnStartup]
@@ -212,7 +213,7 @@ namespace VFEMech
 						num     -= num3;
 					}
 
-					float     angle  = Rand.Range(0, 360);
+					float     angle  = Props.disableRotation ? 0 : Rand.Range(0, 360);
 					Vector3   s      = new Vector3(num, 1f, num);
 					Matrix4x4 matrix = default(Matrix4x4);
 					matrix.SetTRS(drawPos, Quaternion.AngleAxis(angle, Vector3.up), s);
