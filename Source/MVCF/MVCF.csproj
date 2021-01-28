@@ -65,6 +65,7 @@
     <Compile Include="Harmony\Brawlers.cs" />
     <Compile Include="Harmony\Compat.cs" />
     <Compile Include="Harmony\Gizmos.cs" />
+    <Compile Include="Harmony\Hunting.cs" />
     <Compile Include="Harmony\Trackers.cs">
       <DependentUpon>
       </DependentUpon>
