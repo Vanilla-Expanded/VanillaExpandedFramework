@@ -55,7 +55,7 @@ namespace MVCF.Harmony
             return false;
         }
 
-        [HarmonyPatch(typeof(RimWorld.JobDriver_Hunt), "MakeNewToils")]
+        [HarmonyPatch(typeof(JobDriver_Hunt), "MakeNewToils")]
         [HarmonyPostfix]
         public static IEnumerable<Toil> MakeNewToils(IEnumerable<Toil> __result, JobDriver_Hunt __instance)
         {
