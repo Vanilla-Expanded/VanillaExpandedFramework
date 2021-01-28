@@ -76,10 +76,10 @@ namespace VFEMech
 			}
 		}
 
-		private Material bubbleMat;
+		protected Material bubbleMat;
 
 
-		private Material BubbleMat
+		protected virtual Material BubbleMat
 		{
 			get
 			{
