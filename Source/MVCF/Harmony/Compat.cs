@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using DualWield;
 using HarmonyLib;
 using MVCF.Utilities;
 using Verse;
@@ -14,6 +15,8 @@ namespace MVCF.Harmony
     {
         public static void ApplyCompat(HarmonyLib.Harmony harm)
         {
+            if (ModLister.HasActiveModWithName("A RimWorld of Magic")) LimitedMode(harm);
+
             if (ModLister.HasActiveModWithName("RunAndGun"))
             {
                 Log.Message("[MVCF] Applying RunAndGun compatibility patch");
@@ -25,8 +28,31 @@ namespace MVCF.Harmony
                     postfix: new HarmonyMethod(typeof(Compat), "RunAndGunHasRangedWeapon"));
             }
 
-            if (ModLister.HasActiveModWithName("A RimWorld of Magic")) LimitedMode(harm);
+            if (ModLister.HasActiveModWithName("Dual Wield"))
+            {
+                HarmonyLib.Harmony.DEBUG = true;
+                Log.Message("[MVCF] Applying Dual Wield compatibility patch");
+                harm.Patch(
+                    Type.GetType("DualWield.Harmony.Pawn_RotationTracker_UpdateRotation, DualWield")
+                        ?.GetMethod("Postfix", BindingFlags.NonPublic | BindingFlags.Static),
+                    new HarmonyMethod(typeof(Compat), "UpdateRotation"));
+                harm.Patch(
+                    Type.GetType("DualWield.Harmony.PawnRenderer_RenderPawnAt, DualWield")
+                        ?.GetMethod("Postfix", BindingFlags.NonPublic | BindingFlags.Static),
+                    new HarmonyMethod(typeof(Compat), "RenderPawnAt"));
+            }
         }
+
+        public static bool UpdateRotation(Pawn_RotationTracker __0)
+        {
+            return Traverse.Create(__0).Field("pawn").GetValue<Pawn>()?.GetStancesOffHand() != null;
+        }
+
+        public static bool RenderPawnAt(PawnRenderer __0)
+        {
+            return Traverse.Create(__0).Field("pawn").GetValue<Pawn>()?.GetStancesOffHand() != null;
+        }
+
 
         public static IEnumerable<CodeInstruction> RunAndGunSetStance(IEnumerable<CodeInstruction> instructions)
         {
@@ -35,12 +61,6 @@ namespace MVCF.Harmony
             var idx2 = list.FindIndex(ins => ins.opcode == OpCodes.Ldfld && (FieldInfo) ins.operand ==
                 AccessTools.Field(typeof(Pawn_StanceTracker), "curStance"));
             list.RemoveRange(idx1, idx2 - idx1 - 2);
-            // var idx3 = list.FindIndex(ins => ins.IsLdarg(0));
-            // var idx4 = list.FindIndex(idx3 + 1, ins => ins.IsLdarg(0));
-            // var idx5 = list.FindIndex(ins => ins.opcode == OpCodes.Brfalse_S);
-            // var list2 = list.Skip(idx4).Take(idx5 - idx4 + 1).Select(ins => ins.Clone()).ToList();
-            // list2.Find(ins => ins.opcode == OpCodes.Isinst).operand = typeof(Stance_Mobile);
-            // list.InsertRange(idx5 + 1, list2);
             return list;
         }
 
