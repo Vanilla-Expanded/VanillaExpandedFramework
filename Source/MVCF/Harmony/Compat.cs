@@ -30,7 +30,6 @@ namespace MVCF.Harmony
 
             if (ModLister.HasActiveModWithName("Dual Wield"))
             {
-                HarmonyLib.Harmony.DEBUG = true;
                 Log.Message("[MVCF] Applying Dual Wield compatibility patch");
                 harm.Patch(
                     Type.GetType("DualWield.Harmony.Pawn_RotationTracker_UpdateRotation, DualWield")
@@ -73,7 +72,6 @@ namespace MVCF.Harmony
         public static void LimitedMode(HarmonyLib.Harmony harm)
         {
             Log.Warning("[MVCF] Mod conflict detected, deactivating most MVCF features...");
-            harm.UnpatchAll(harm.Id);
             Base.LimitedMode = true;
             harm.Patch(AccessTools.Method(typeof(Pawn), "TryGetAttackVerb"),
                 new HarmonyMethod(typeof(Pawn_TryGetAttackVerb), "Prefix"));
