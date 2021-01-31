@@ -37,6 +37,40 @@ namespace MVCF.Harmony
         }
     }
 
+    public class TrackerPatches
+    {
+        public static void Apparel(HarmonyLib.Harmony harm)
+        {
+            var type = typeof(Pawn_ApparelTracker);
+            harm.Patch(AccessTools.Method(type, "Notify_ApparelAdded"),
+                postfix: new HarmonyMethod(typeof(Pawn_ApparelTracker_Notify_ApparelAdded), "Postfix"));
+            harm.Patch(AccessTools.Method(type, "Notify_ApparelRemoved"),
+                postfix: new HarmonyMethod(typeof(Pawn_ApparelTracker_Notify_ApparelRemoved), "Postfix"));
+        }
+
+        public static void Hediffs(HarmonyLib.Harmony harm)
+        {
+            var type = typeof(Pawn_HealthTracker);
+            harm.Patch(AccessTools.Method(type, "AddHediff", new[]
+                {
+                    typeof(Hediff), typeof(BodyPartRecord), typeof(DamageInfo),
+                    typeof(DamageWorker.DamageResult)
+                }),
+                postfix: new HarmonyMethod(typeof(Pawn_HealthTracker_AddHediff), "Postfix"));
+            harm.Patch(AccessTools.Method(type, "RemoveHediff"),
+                postfix: new HarmonyMethod(typeof(Pawn_HealthTracker_RemoveHediff), "Postfix"));
+        }
+
+        public static void Equipment(HarmonyLib.Harmony harm)
+        {
+            var type = typeof(Pawn_EquipmentTracker);
+            harm.Patch(AccessTools.Method(type, "Notify_EquipmentAdded"),
+                postfix: new HarmonyMethod(typeof(Pawn_EquipmentTracker_Notify_EquipmentAdded), "Postfix"));
+            harm.Patch(AccessTools.Method(type, "Notify_EquipmentRemoved"),
+                postfix: new HarmonyMethod(typeof(Pawn_EquipmentTracker_Notify_EquipmentRemoved), "Postfix"));
+        }
+    }
+
     [HarmonyPatch(typeof(Pawn_HealthTracker), "AddHediff", typeof(Hediff), typeof(BodyPartRecord), typeof(DamageInfo),
         typeof(DamageWorker.DamageResult))]
     public class Pawn_HealthTracker_AddHediff

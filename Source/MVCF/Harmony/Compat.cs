@@ -6,6 +6,7 @@ using System.Reflection.Emit;
 using DualWield;
 using HarmonyLib;
 using MVCF.Utilities;
+using RimWorld;
 using Verse;
 using Verse.AI;
 
@@ -15,8 +16,6 @@ namespace MVCF.Harmony
     {
         public static void ApplyCompat(HarmonyLib.Harmony harm)
         {
-            if (ModLister.HasActiveModWithName("A RimWorld of Magic")) LimitedMode(harm);
-
             if (ModLister.HasActiveModWithName("RunAndGun"))
             {
                 Log.Message("[MVCF] Applying RunAndGun compatibility patch");
@@ -77,6 +76,16 @@ namespace MVCF.Harmony
                 new HarmonyMethod(typeof(Pawn_TryGetAttackVerb), "Prefix"));
             harm.Patch(AccessTools.Method(typeof(JobDriver_Wait), "CheckForAutoAttack"),
                 new HarmonyMethod(typeof(MiscPatches), "Postfix_JobDriver_Wait_CheckForAutoAttack"));
+            TrackerPatches.Apparel(harm);
+            TrackerPatches.Hediffs(harm);
+            harm.Patch(AccessTools.Method(typeof(Verb), "OrderForceTarget"),
+                new HarmonyMethod(typeof(VerbPatches), "Prefix_OrderForceTarget"));
+            harm.Patch(AccessTools.Method(typeof(Pawn), "GetGizmos"),
+                postfix: new HarmonyMethod(typeof(Pawn_GetGizmos), "Postfix"));
+            harm.Patch(AccessTools.Method(typeof(JobDriver_Hunt), "MakeNewToils"),
+                postfix: new HarmonyMethod(typeof(Hunting), "MakeNewToils"));
+            harm.Patch(AccessTools.Method(typeof(Pawn_DraftController), "GetGizmos"),
+                postfix: new HarmonyMethod(typeof(Pawn_DraftController_GetGizmos), "Postfix"));
         }
     }
 }

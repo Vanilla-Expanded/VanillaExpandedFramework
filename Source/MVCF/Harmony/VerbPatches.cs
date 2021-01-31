@@ -26,25 +26,34 @@ namespace MVCF.Harmony
         }
 
         [HarmonyPatch("get_EquipmentSource")]
-        [HarmonyPostfix]
+        [HarmonyPrefix]
         // ReSharper disable InconsistentNaming
-        public static void Postfix_EquipmentSource(ref ThingWithComps __result, Verb __instance)
+        public static bool Prefix_EquipmentSource(ref ThingWithComps __result, Verb __instance)
         {
+            if (__instance == null) // Needed to work with A Rimworld of Magic, for some reason
+            {
+                Log.Warning("[MVCF] Instance in patch is null. This is not supported.");
+                __result = null;
+                return false;
+            }
+
             switch (__instance.DirectOwner)
             {
                 case Comp_VerbGiver giver:
                     __result = giver.parent;
-                    break;
+                    return false;
                 case HediffComp_VerbGiver _:
                     __result = null;
-                    break;
+                    return false;
                 case Pawn pawn:
                     __result = pawn;
-                    break;
+                    return false;
                 case VerbManager vm:
                     __result = vm.Pawn;
-                    break;
+                    return false;
             }
+
+            return true;
         }
     }
 }
