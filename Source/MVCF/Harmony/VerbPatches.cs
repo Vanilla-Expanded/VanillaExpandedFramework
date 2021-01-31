@@ -35,7 +35,7 @@ namespace MVCF.Harmony
                 case Comp_VerbGiver giver:
                     __result = giver.parent;
                     break;
-                case HediffComp_VerbGiver giver2:
+                case HediffComp_VerbGiver _:
                     __result = null;
                     break;
                 case Pawn pawn:

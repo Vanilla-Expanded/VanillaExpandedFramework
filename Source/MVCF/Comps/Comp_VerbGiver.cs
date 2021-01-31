@@ -79,6 +79,7 @@ namespace MVCF.Comps
         {
             foreach (var gizmo in base.CompGetWornGizmosExtra())
                 yield return gizmo;
+            if (Base.LimitedMode) yield break;
             var man = (parent as Apparel)?.Wearer?.Manager();
             if (man == null) yield break;
             foreach (var gizmo in from verb in verbTracker.AllVerbs

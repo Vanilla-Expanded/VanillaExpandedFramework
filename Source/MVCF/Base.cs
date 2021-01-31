@@ -8,6 +8,7 @@ namespace MVCF
     {
         public static string SearchLabel;
         public static bool Prepatcher;
+        public static bool LimitedMode;
 
         public Base(ModContentPack content) : base(content)
         {

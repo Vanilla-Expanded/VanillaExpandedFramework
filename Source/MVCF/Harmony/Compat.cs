@@ -6,6 +6,7 @@ using System.Reflection.Emit;
 using HarmonyLib;
 using MVCF.Utilities;
 using Verse;
+using Verse.AI;
 
 namespace MVCF.Harmony
 {
@@ -23,6 +24,8 @@ namespace MVCF.Harmony
                         ?.GetMethod("HasRangedWeapon"),
                     postfix: new HarmonyMethod(typeof(Compat), "RunAndGunHasRangedWeapon"));
             }
+
+            if (ModLister.HasActiveModWithName("A RimWorld of Magic")) LimitedMode(harm);
         }
 
         public static IEnumerable<CodeInstruction> RunAndGunSetStance(IEnumerable<CodeInstruction> instructions)
@@ -45,6 +48,17 @@ namespace MVCF.Harmony
         public static void RunAndGunHasRangedWeapon(Pawn instance, ref bool __result)
         {
             if (!__result) __result = instance.Manager().ManagedVerbs.Any(mv => mv.Enabled && mv.Verb.IsMeleeAttack);
+        }
+
+        public static void LimitedMode(HarmonyLib.Harmony harm)
+        {
+            Log.Warning("[MVCF] Mod conflict detected, deactivating most MVCF features...");
+            harm.UnpatchAll(harm.Id);
+            Base.LimitedMode = true;
+            harm.Patch(AccessTools.Method(typeof(Pawn), "TryGetAttackVerb"),
+                new HarmonyMethod(typeof(Pawn_TryGetAttackVerb), "Prefix"));
+            harm.Patch(AccessTools.Method(typeof(JobDriver_Wait), "CheckForAutoAttack"),
+                new HarmonyMethod(typeof(MiscPatches), "Postfix_JobDriver_Wait_CheckForAutoAttack"));
         }
     }
 }
