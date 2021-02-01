@@ -45,7 +45,7 @@ namespace MVCF.Utilities
                     .def?.description?
                     .Truncate(500, __truncateCache)?
                     .CapitalizeFirst());
-                gizmo.icon = verb.Icon(null, ownerThing);
+                gizmo.icon = verb.Icon(props, ownerThing, false);
             }
             else if (verb.DirectOwner is HediffComp_VerbGiver hediffGiver)
             {
@@ -54,7 +54,7 @@ namespace MVCF.Utilities
                                                                             hediff.def.description
                                                                                 .Truncate(500, __truncateCache)
                                                                                 .CapitalizeFirst());
-                gizmo.icon = verb.Icon(null, null);
+                gizmo.icon = verb.Icon(props, null, false);
             }
 
             gizmo.tutorTag = "VerbTarget";
@@ -132,9 +132,10 @@ namespace MVCF.Utilities
             return VerbLabel(verb, props).CapitalizeFirst();
         }
 
-        public static Texture2D Icon(this Verb verb, AdditionalVerbProps props, Thing ownerThing)
+        public static Texture2D Icon(this Verb verb, AdditionalVerbProps props, Thing ownerThing, bool toggle)
         {
-            if (props?.ToggleIcon != null && props.ToggleIcon != BaseContent.BadTex) return props.ToggleIcon;
+            if (toggle && props?.ToggleIcon != null && props.ToggleIcon != BaseContent.BadTex) return props.ToggleIcon;
+            if (props?.Graphic != null && props.Icon != null && props.Icon != BaseContent.BadTex) return props.Icon;
             if (verb.UIIcon != null && verb.verbProps.commandIcon != null && verb.UIIcon != BaseContent.BadTex)
                 return verb.UIIcon;
             if (verb is Verb_LaunchProjectile proj) return proj.Projectile.uiIcon;

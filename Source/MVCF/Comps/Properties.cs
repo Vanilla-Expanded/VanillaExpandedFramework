@@ -73,6 +73,7 @@ namespace MVCF.Comps
         public string visualLabel;
 
         public Texture2D ToggleIcon { get; private set; }
+        public Texture2D Icon { get; private set; }
         public Graphic Graphic { get; private set; }
 
         public Vector3 DrawPos(string name, Vector3 drawPos, Rot4 rot)
@@ -89,7 +90,10 @@ namespace MVCF.Comps
             if (!string.IsNullOrWhiteSpace(toggleIconPath))
                 ToggleIcon = ContentFinder<Texture2D>.Get(toggleIconPath);
             if (graphic != null)
+            {
                 Graphic = graphic.Graphic;
+                Icon = (Texture2D) Graphic.ExtractInnerGraphicFor(null).MatNorth.mainTexture;
+            }
 
             if (positions == null)
             {

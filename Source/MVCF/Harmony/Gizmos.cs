@@ -124,7 +124,8 @@ namespace MVCF.Harmony
             if (!(command is Command_VerbTarget gizmo)) return false;
             var verb = gizmo.verb;
             var man = gizmo.verb?.CasterPawn?.Manager()?.GetManagedVerbForVerb(verb, false);
-            if (man?.Props == null || man.Props.separateToggle) return false;
+            if (man == null) return false;
+            if (man.Props != null && man.Props.separateToggle) return false;
             var rect = command.TopRightLabel.NullOrEmpty()
                 ? butRect.RightPart(0.35f).TopPart(0.35f)
                 : butRect
@@ -143,6 +144,21 @@ namespace MVCF.Harmony
                 return true;
             }
 
+            return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(CompEquippable), "GetVerbsCommands")]
+    public class CompEquippable_GetVerbsCommands
+    {
+        public static bool Prefix(ref IEnumerable<Command> __result, CompEquippable __instance)
+        {
+            var rangedVerbs = __instance.AllVerbs.Where(v => !v.IsMeleeAttack).ToList();
+            if (rangedVerbs.Count <= 1) return true;
+            var man = __instance.PrimaryVerb?.CasterPawn?.Manager(false);
+            __result = rangedVerbs
+                .SelectMany(v => v.GetGizmosForVerb(man?.GetManagedVerbForVerb(v)))
+                .OfType<Command>();
             return false;
         }
     }
