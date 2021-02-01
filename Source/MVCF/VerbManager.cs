@@ -7,6 +7,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.AI;
+using Verse.AI.Group;
 
 namespace MVCF
 {
@@ -18,6 +19,7 @@ namespace MVCF
         public Verb CurrentVerb;
         public DebugOptions debugOpts;
         public bool HasVerbs;
+        public Verb OverrideVerb;
         public Verb SearchVerb;
         public bool NeedsTicking { get; private set; }
 
@@ -109,24 +111,16 @@ namespace MVCF
                 foreach (var eq in pawn.equipment.AllEquipmentListForReading)
                 {
                     var comp = eq.TryGetComp<CompEquippable>();
-                    if (comp == null)
-                    {
-                        var extComp = eq.TryGetComp<Comp_VerbGiver>();
-                        if (extComp == null) continue;
-                        foreach (var verb in extComp.VerbTracker.AllVerbs)
-                            AddVerb(verb, VerbSource.Equipment, extComp.PropsFor(verb));
-                    }
-                    else
-                    {
-                        foreach (var verb in comp.VerbTracker.AllVerbs)
-                            AddVerb(verb, VerbSource.Equipment, null);
-                    }
+                    if (comp == null) continue;
+                    foreach (var verb in comp.VerbTracker.AllVerbs)
+                        AddVerb(verb, VerbSource.Equipment, (comp.props as CompProperties_VerbProps)?.PropsFor(verb));
                 }
         }
 
 
         public void AddVerb(Verb verb, VerbSource source, AdditionalVerbProps props)
         {
+            if (debugOpts.VerbLogging) Log.Message("Adding " + verb + " from " + source + " with props " + props);
             ManagedVerb mv;
             if (props != null && props.canFireIndependently)
             {
@@ -229,7 +223,13 @@ namespace MVCF
 
     public class ManagedVerb
     {
-        private readonly VerbManager man;
+        private static readonly Vector3 WestEquipOffset = new Vector3(-0.2f, 0.0367346928f, -0.22f);
+        private static readonly Vector3 EastEquipOffset = new Vector3(0.2f, 0.0367346928f, -0.22f);
+        private static readonly Vector3 NorthEquipOffset = new Vector3(0f, 0f, -0.11f);
+        private static readonly Vector3 SouthEquipOffset = new Vector3(0f, 0.0367346928f, -0.22f);
+
+        private static readonly Vector3 EquipPointOffset = new Vector3(0f, 0f, 0.4f);
+        protected readonly VerbManager man;
         public bool Enabled = true;
         public AdditionalVerbProps Props;
         public VerbSource Source;
@@ -254,19 +254,52 @@ namespace MVCF
             if (Props == null) return;
             if (!Props.draw) return;
             if (p.Dead || !p.Spawned) return;
-            drawPos += Vector3.up;
+            drawPos.y += 0.0367346928f;
             var target = PointingTarget(p);
+            DrawPointingAt(DrawPos(target, p, drawPos),
+                DrawAngle(target, p, drawPos), p.BodySize);
+        }
+
+        public virtual float DrawAngle(LocalTargetInfo target, Pawn p, Vector3 drawPos)
+        {
             if (target != null && target.IsValid)
             {
                 var a = target.HasThing ? target.Thing.DrawPos : target.Cell.ToVector3Shifted();
 
-                DrawPointingAt(Props.DrawPos(p.def.defName, drawPos, p.Rotation),
-                    (a - drawPos).MagnitudeHorizontalSquared() > 0.001f ? (a - drawPos).AngleFlat() : 0f, p.BodySize);
+                return (a - drawPos).MagnitudeHorizontalSquared() > 0.001f ? (a - drawPos).AngleFlat() : 0f;
             }
-            else
+
+            if (Source == VerbSource.Equipment)
             {
-                DrawPointingAt(Props.DrawPos(p.def.defName, drawPos, p.Rotation), p.Rotation.AsAngle, p.BodySize);
+                if (p.Rotation == Rot4.South) return 143f;
+
+                if (p.Rotation == Rot4.North) return 143f;
+
+                if (p.Rotation == Rot4.East) return 143f;
+
+                if (p.Rotation == Rot4.West) return 217f;
             }
+
+            return p.Rotation.AsAngle;
+        }
+
+        public virtual Vector3 DrawPos(LocalTargetInfo target, Pawn p, Vector3 drawPos)
+        {
+            if (Source == VerbSource.Equipment)
+            {
+                if (target != null && target.IsValid)
+                    return drawPos + EquipPointOffset.RotatedBy(DrawAngle(target, p, drawPos));
+
+                if (p.Rotation == Rot4.South) return drawPos + SouthEquipOffset;
+
+                if (p.Rotation == Rot4.North) return drawPos + NorthEquipOffset;
+
+                if (p.Rotation == Rot4.East) return drawPos + EastEquipOffset;
+
+                if (p.Rotation == Rot4.West) return drawPos + WestEquipOffset;
+            }
+
+            return Props.DrawPos(p.def.defName, drawPos, p.Rotation);
         }
 
         public virtual LocalTargetInfo PointingTarget(Pawn p)
@@ -297,6 +330,20 @@ namespace MVCF
 
             Graphics.DrawMesh(mesh, matrix4X4, Props.Graphic.MatSingle, 0);
         }
+
+        private static bool CarryWeaponOpenly(Pawn pawn)
+        {
+            if (pawn.carryTracker != null && pawn.carryTracker.CarriedThing != null) return false;
+
+            if (pawn.Drafted) return true;
+
+            if (pawn.CurJob != null && pawn.CurJob.def.alwaysShowWeapon) return true;
+
+            if (pawn.mindState.duty != null && pawn.mindState.duty.def.alwaysShowWeapon) return true;
+
+            var lord = pawn.GetLord();
+            return lord?.LordJob != null && lord.LordJob.AlwaysShowWeapon;
+        }
     }
 
     public enum VerbSource
@@ -310,7 +357,6 @@ namespace MVCF
     public class TurretVerb : ManagedVerb
     {
         private readonly DummyCaster dummyCaster;
-        private readonly Pawn pawn;
         private int cooldownTicksLeft;
         private LocalTargetInfo currentTarget = LocalTargetInfo.Invalid;
         private int warmUpTicksLeft;
@@ -319,30 +365,28 @@ namespace MVCF
         public TurretVerb(Verb verb, VerbSource source, AdditionalVerbProps props, VerbManager man) : base(verb, source,
             props, man)
         {
-            pawn = verb.CasterPawn;
-            dummyCaster = new DummyCaster(pawn);
+            dummyCaster = new DummyCaster(man.Pawn);
             dummyCaster.Tick();
-            dummyCaster.SpawnSetup(pawn.Map, false);
+            dummyCaster.SpawnSetup(man.Pawn.Map, false);
             verb.caster = dummyCaster;
-            verb.castCompleteCallback = () => cooldownTicksLeft = Verb.verbProps.AdjustedCooldownTicks(Verb, pawn);
+            verb.castCompleteCallback = () => cooldownTicksLeft = Verb.verbProps.AdjustedCooldownTicks(Verb, man.Pawn);
         }
 
         public void Tick()
         {
-            Verb.VerbTick();
             if (Verb.Bursting) return;
             if (cooldownTicksLeft > 0) cooldownTicksLeft--;
 
             if (cooldownTicksLeft > 0) return;
-            if (!currentTarget.IsValid || currentTarget.HasThing && currentTarget.ThingDestroyed)
+            if (!currentTarget.IsValid || currentTarget.HasThing && currentTarget.ThingDestroyed ||
+                currentTarget.HasThing && currentTarget.Thing is Pawn p && (p.Downed || p.Dead))
             {
-                var man = pawn.Manager();
-                var sv = man.SearchVerb;
-                man.SearchVerb = Verb;
-                currentTarget = (LocalTargetInfo) (Thing) AttackTargetFinder.BestShootTargetFromCurrentPosition(pawn,
+                man.OverrideVerb = Verb;
+                currentTarget = (Thing) AttackTargetFinder.BestShootTargetFromCurrentPosition(
+                    man.Pawn,
                     TargetScanFlags.NeedActiveThreat | TargetScanFlags.NeedLOSToAll |
                     TargetScanFlags.NeedAutoTargetable);
-                man.SearchVerb = sv;
+                man.OverrideVerb = null;
                 TryStartCast();
             }
             else if (warmUpTicksLeft == 0)
@@ -362,7 +406,7 @@ namespace MVCF
         private void TryStartCast()
         {
             if (Verb.verbProps.warmupTime > 0)
-                warmUpTicksLeft = (Verb.verbProps.warmupTime * pawn.GetStatValue(StatDefOf.AimingDelayFactor))
+                warmUpTicksLeft = (Verb.verbProps.warmupTime * man.Pawn.GetStatValue(StatDefOf.AimingDelayFactor))
                     .SecondsToTicks();
             else
                 TryCast();
@@ -403,6 +447,8 @@ namespace MVCF
 
         public override void Tick()
         {
+            if (pawn == null) return;
+
             Position = pawn.Position;
         }
 

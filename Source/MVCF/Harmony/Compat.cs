@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using DualWield;
 using HarmonyLib;
 using MVCF.Utilities;
 using RimWorld;
@@ -14,6 +13,8 @@ namespace MVCF.Harmony
 {
     internal class Compat
     {
+        private static Delegate GetStancesOffHand;
+
         public static void ApplyCompat(HarmonyLib.Harmony harm)
         {
             if (ModLister.HasActiveModWithName("RunAndGun"))
@@ -30,6 +31,9 @@ namespace MVCF.Harmony
             if (ModLister.HasActiveModWithName("Dual Wield"))
             {
                 Log.Message("[MVCF] Applying Dual Wield compatibility patch");
+                GetStancesOffHand = AccessTools.Method(Type.GetType(
+                        "DualWield.Ext_Pawn, DualWield"), "GetStancesOffHand")
+                    .CreateDelegate(typeof(Func<Pawn, Pawn_StanceTracker>));
                 harm.Patch(
                     Type.GetType("DualWield.Harmony.Pawn_RotationTracker_UpdateRotation, DualWield")
                         ?.GetMethod("Postfix", BindingFlags.NonPublic | BindingFlags.Static),
@@ -43,12 +47,12 @@ namespace MVCF.Harmony
 
         public static bool UpdateRotation(Pawn_RotationTracker __0)
         {
-            return Traverse.Create(__0).Field("pawn").GetValue<Pawn>()?.GetStancesOffHand() != null;
+            return GetStancesOffHand.DynamicInvoke(Traverse.Create(__0).Field("pawn").GetValue<Pawn>()) != null;
         }
 
         public static bool RenderPawnAt(PawnRenderer __0)
         {
-            return Traverse.Create(__0).Field("pawn").GetValue<Pawn>()?.GetStancesOffHand() != null;
+            return GetStancesOffHand.DynamicInvoke(Traverse.Create(__0).Field("pawn").GetValue<Pawn>()) != null;
         }
 
 
@@ -65,7 +69,7 @@ namespace MVCF.Harmony
         // ReSharper disable once InconsistentNaming
         public static void RunAndGunHasRangedWeapon(Pawn instance, ref bool __result)
         {
-            if (!__result) __result = instance.Manager().ManagedVerbs.Any(mv => mv.Enabled && mv.Verb.IsMeleeAttack);
+            if (!__result) __result = instance.Manager().ManagedVerbs.Any(mv => mv.Enabled && !mv.Verb.IsMeleeAttack);
         }
 
         public static void LimitedMode(HarmonyLib.Harmony harm)

@@ -110,22 +110,12 @@ namespace MVCF.Harmony
         // ReSharper disable once InconsistentNaming
         public static void Postfix(ThingWithComps eq, Pawn_EquipmentTracker __instance)
         {
+            var manager = __instance.pawn?.Manager();
+            if (manager == null) return;
             var comp = eq.TryGetComp<CompEquippable>();
-            if (comp == null)
-            {
-                var extComp = eq.TryGetComp<Comp_VerbGiver>();
-                if (extComp == null) return;
-                var manager = __instance.pawn?.Manager();
-                if (manager == null) return;
-                foreach (var verb in extComp.VerbTracker.AllVerbs)
-                    manager.AddVerb(verb, VerbSource.Equipment, extComp.PropsFor(verb));
-            }
-            else
-            {
-                var manager = __instance.pawn?.Manager();
-                if (manager == null) return;
-                foreach (var verb in comp.VerbTracker.AllVerbs) manager.AddVerb(verb, VerbSource.Equipment, null);
-            }
+            if (comp == null) return;
+            foreach (var verb in comp.VerbTracker.AllVerbs)
+                manager.AddVerb(verb, VerbSource.Equipment, (comp.props as CompProperties_VerbProps)?.PropsFor(verb));
         }
     }
 

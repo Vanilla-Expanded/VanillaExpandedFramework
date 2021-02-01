@@ -19,7 +19,15 @@ namespace MVCF.Harmony
 
             if (manager.debugOpts.VerbLogging)
                 Log.Message("TryGetAttackVerb of " + __instance + " on target " + target + " with job " + job +
-                            " that has target " + job?.targetA + " and CurrentVerb " + manager.CurrentVerb);
+                            " that has target " + job?.targetA + " and CurrentVerb " + manager.CurrentVerb +
+                            " and OverrideVerb " + manager.OverrideVerb);
+
+            if (manager.OverrideVerb != null)
+            {
+                __result = manager.OverrideVerb;
+                __state = false;
+                return false;
+            }
 
             if (target == null && (job == null || !job.targetA.IsValid || job.def != JobDefOf.AttackStatic ||
                                    !job.targetA.HasThing && (job.targetA.Cell == __instance.Position ||

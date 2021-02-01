@@ -17,8 +17,12 @@ namespace MVCF.Utilities
         {
             if (p.MVCF_VerbManager == null && createIfMissing)
             {
+                var comp = WorldComponent_MVCF.GetComp();
                 p.MVCF_VerbManager = new VerbManager();
                 p.MVCF_VerbManager.Initialize(p);
+                comp.allManagers.Add(new System.WeakReference<VerbManager>(p.MVCF_VerbManager));
+                if (comp.currentVerbSaved != null && comp.currentVerbSaved.TryGetValue(p, out var currentVerb))
+                    p.MVCF_VerbManager.CurrentVerb = currentVerb;
             }
 
             return p.MVCF_VerbManager;
@@ -63,7 +67,7 @@ namespace MVCF.Utilities
                 bestVerb = verb.Verb;
             }
 
-            Log.Message("BestVerbForTarget returning " + bestVerb);
+            if (debug) Log.Message("BestVerbForTarget returning " + bestVerb);
             return bestVerb;
         }
 

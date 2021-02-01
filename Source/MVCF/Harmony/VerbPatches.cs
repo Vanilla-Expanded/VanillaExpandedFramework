@@ -55,5 +55,12 @@ namespace MVCF.Harmony
 
             return true;
         }
+
+        [HarmonyPatch("get_Caster")]
+        [HarmonyPostfix]
+        public static void Postfix_get_Caster(ref Thing __result)
+        {
+            if (__result is IFakeCaster caster) __result = caster.RealCaster();
+        }
     }
 }

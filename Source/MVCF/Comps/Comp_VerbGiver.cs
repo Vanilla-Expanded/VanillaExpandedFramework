@@ -25,7 +25,7 @@ namespace MVCF.Comps
 
         Thing IVerbOwner.ConstantCaster => null;
 
-        ImplementOwnerTypeDef IVerbOwner.ImplementOwnerTypeDef => ImplementOwnerTypeDefOf.NativeVerb;
+        ImplementOwnerTypeDef IVerbOwner.ImplementOwnerTypeDef => ImplementOwnerTypeDefOf.Weapon;
 
         string IVerbOwner.UniqueVerbOwnerID()
         {
@@ -46,7 +46,8 @@ namespace MVCF.Comps
             if (verbTracker == null)
                 verbTracker = new VerbTracker(this);
             if (!(parent?.holdingOwner?.Owner is Pawn_ApparelTracker tracker)) return;
-            foreach (var verb in verbTracker.AllVerbs) verb.caster = tracker.pawn;
+            foreach (var verb in verbTracker.AllVerbs)
+                verb.caster = tracker.pawn;
         }
 
         public override void CompTick()
@@ -89,8 +90,7 @@ namespace MVCF.Comps
 
         public AdditionalVerbProps PropsFor(Verb verb)
         {
-            var label = verb.verbProps.label;
-            return string.IsNullOrEmpty(label) ? null : Props.verbProps?.FirstOrDefault(prop => prop.label == label);
+            return Props.PropsFor(verb);
         }
     }
 }

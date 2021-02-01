@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -25,14 +26,17 @@ namespace MVCF.Comps
         }
     }
 
-    public class CompProperties_VerbGiver : CompProperties
+    public class CompProperties_VerbGiver : CompProperties_VerbProps
     {
-        public List<AdditionalVerbProps> verbProps;
-
         public CompProperties_VerbGiver()
         {
             compClass = typeof(Comp_VerbGiver);
         }
+    }
+
+    public class CompProperties_VerbProps : CompProperties
+    {
+        public List<AdditionalVerbProps> verbProps;
 
         public override void PostLoadSpecial(ThingDef parent)
         {
@@ -42,6 +46,12 @@ namespace MVCF.Comps
                 {
                     foreach (var props in verbProps) props.Initialize();
                 });
+        }
+
+        public AdditionalVerbProps PropsFor(Verb verb)
+        {
+            var label = verb.verbProps.label;
+            return string.IsNullOrEmpty(label) ? null : verbProps?.FirstOrDefault(prop => prop.label == label);
         }
     }
 

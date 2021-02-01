@@ -13,7 +13,7 @@ namespace MVCF.Utilities
 
         public static IEnumerable<Gizmo> GetGizmosForVerb(this Verb verb, ManagedVerb man = null)
         {
-            AdditionalVerbProps props = null;
+            var props = man?.Props;
 
             Thing ownerThing = null;
             switch (verb.DirectOwner)
@@ -42,8 +42,8 @@ namespace MVCF.Utilities
             if (ownerThing != null)
             {
                 gizmo.defaultDesc = FirstNonEmptyString(props?.description, ownerThing.def.LabelCap + ": " + ownerThing
-                    .def.description
-                    .Truncate(500, __truncateCache)
+                    .def?.description?
+                    .Truncate(500, __truncateCache)?
                     .CapitalizeFirst());
                 gizmo.icon = verb.Icon(null, ownerThing);
             }
@@ -70,7 +70,7 @@ namespace MVCF.Utilities
                 if (verb.CasterPawn.WorkTagIsDisabled(WorkTags.Violent))
                     gizmo.Disable("IsIncapableOfViolence".Translate(verb.CasterPawn.LabelShort,
                         verb.CasterPawn));
-                else if (!verb.CasterPawn.drafter.Drafted)
+                else if (!(verb.CasterPawn.drafter == null || verb.CasterPawn.drafter.Drafted))
                     gizmo.Disable("IsNotDrafted".Translate(verb.CasterPawn.LabelShort,
                         verb.CasterPawn));
             }
@@ -78,7 +78,7 @@ namespace MVCF.Utilities
             yield return gizmo;
 
             if (props != null && props.canBeToggled && man != null && verb.caster.Faction == Faction.OfPlayer &&
-                props.separateToggle)
+                props.separateToggle || verb.CasterIsPawn && verb.CasterPawn.RaceProps.Animal)
                 yield return new Command_ToggleVerbUsage(man);
         }
 

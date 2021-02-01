@@ -6,5 +6,6 @@
 		<description>no</description>
 		<selectable>false</selectable>
 		<thingClass>MVCF.DummyCaster</thingClass>
+		<tickerType>Normal</tickerType>
   	</ThingDef>
 </Defs>

@@ -8,6 +8,10 @@ namespace MVCF
     public class WorldComponent_MVCF : WorldComponent
     {
         private static WorldComponent_MVCF localCache;
+
+        public readonly List<System.WeakReference<VerbManager>> allManagers =
+            new List<System.WeakReference<VerbManager>>();
+
         private readonly int key;
 
         private readonly ConditionalWeakTable<Pawn, VerbManager> managers =
@@ -15,6 +19,8 @@ namespace MVCF
 
         public readonly List<System.WeakReference<VerbManager>> TickManagers =
             new List<System.WeakReference<VerbManager>>();
+
+        public Dictionary<Pawn, Verb> currentVerbSaved = new Dictionary<Pawn, Verb>();
 
         public WorldComponent_MVCF(World world) : base(world)
         {
@@ -37,7 +43,10 @@ namespace MVCF
             if (!createIfMissing) return null;
             manager = new VerbManager();
             manager.Initialize(pawn);
+            if (currentVerbSaved != null && currentVerbSaved.TryGetValue(pawn, out var currentVerb))
+                manager.CurrentVerb = currentVerb;
             managers.Add(pawn, manager);
+            allManagers.Add(new System.WeakReference<VerbManager>(manager));
             return manager;
         }
 
@@ -47,6 +56,16 @@ namespace MVCF
             foreach (var wr in TickManagers)
                 if (wr.TryGetTarget(out var man))
                     man.Tick();
+        }
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            allManagers.ForEach(vm =>
+            {
+                if (vm.TryGetTarget(out var man)) currentVerbSaved.SetOrAdd(man.Pawn, man.CurrentVerb);
+            });
+            Scribe_Collections.Look(ref currentVerbSaved, "currentVerbs", LookMode.Reference, LookMode.Reference);
         }
     }
 }

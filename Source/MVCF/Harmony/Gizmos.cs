@@ -7,6 +7,8 @@ using MVCF.Utilities;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using Verse.AI;
+using Verse.Sound;
 
 namespace MVCF.Harmony
 {
@@ -65,9 +67,29 @@ namespace MVCF.Harmony
         {
             foreach (var gizmo in __result) yield return gizmo;
 
-            if (!__instance.RaceProps.Animal || __instance.Faction != Faction.OfPlayer) yield break;
-            foreach (var mv in __instance.Manager().ManagedVerbs.Where(mv => !mv.Verb.IsMeleeAttack))
-                yield return new Command_ToggleVerbUsage(mv);
+            if (__instance.Faction != Faction.OfPlayer) yield break;
+            var man = __instance.Manager();
+            if (__instance.CurJobDef == JobDefOf.AttackStatic && man.CurrentVerb != null)
+                yield return new Command_Action
+                {
+                    defaultLabel = "CommandStopForceAttack".Translate(),
+                    defaultDesc = "CommandStopForceAttackDesc".Translate(),
+                    icon = ContentFinder<Texture2D>.Get("UI/Commands/Halt"),
+                    action = delegate
+                    {
+                        __instance.jobs.EndCurrentJob(JobCondition.InterruptForced);
+                        man.CurrentVerb = null;
+                        SoundDefOf.Tick_Low.PlayOneShotOnCamera();
+                    },
+                    hotKey = KeyBindingDefOf.Misc5
+                };
+            if (!__instance.RaceProps.Animal) yield break;
+            foreach (var mv in man.ManagedVerbs.Where(mv => !mv.Verb.IsMeleeAttack))
+                if (mv.Verb.verbProps.hasStandardCommand)
+                    foreach (var gizmo in mv.Verb.GetGizmosForVerb(mv))
+                        yield return gizmo;
+                else
+                    yield return new Command_ToggleVerbUsage(mv);
         }
     }
 
