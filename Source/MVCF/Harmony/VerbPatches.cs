@@ -12,17 +12,24 @@ namespace MVCF.Harmony
 
         [HarmonyPatch("OrderForceTarget")]
         [HarmonyPrefix]
-        public static void Prefix_OrderForceTarget(LocalTargetInfo target, Verb __instance)
+        public static bool Prefix_OrderForceTarget(LocalTargetInfo target, Verb __instance)
         {
             if (__instance.verbProps.IsMeleeAttack || !__instance.CasterIsPawn)
-                return;
+                return true;
             var man = __instance.CasterPawn.Manager();
-            if (man == null) return;
+            if (man == null) return true;
             if (man.debugOpts.VerbLogging)
                 Log.Message("Changing CurrentVerb of " + __instance.CasterPawn + " to " + __instance);
             man.CurrentVerb = __instance;
             var mv = man.GetManagedVerbForVerb(__instance);
             if (mv != null) mv.Enabled = true;
+            if (mv is TurretVerb tv)
+            {
+                tv.SetTarget(target);
+                return false;
+            }
+
+            return true;
         }
 
         [HarmonyPatch("get_EquipmentSource")]
@@ -61,6 +68,20 @@ namespace MVCF.Harmony
         public static void Postfix_get_Caster(ref Thing __result)
         {
             if (__result is IFakeCaster caster) __result = caster.RealCaster();
+        }
+
+        [HarmonyPatch("get_CasterPawn")]
+        [HarmonyPostfix]
+        public static void Postfix_get_CasterPawn(ref Pawn __result, Verb __instance)
+        {
+            if (__instance.caster is IFakeCaster caster) __result = caster.RealCaster() as Pawn;
+        }
+
+        [HarmonyPatch("get_CasterIsPawn")]
+        [HarmonyPostfix]
+        public static void Postfix_get_CasterIsPawn(ref bool __result, Verb __instance)
+        {
+            if (__instance.caster is IFakeCaster caster) __result = caster.RealCaster() is Pawn;
         }
     }
 }

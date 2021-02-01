@@ -95,6 +95,13 @@ namespace MVCF.Harmony
         {
             if (initiator is IFakeCaster fc) initiator = fc.RealCaster();
         }
+
+        [HarmonyPatch(typeof(Pawn_StanceTracker), "SetStance")]
+        [HarmonyPrefix]
+        public static bool Pawn_StanceTracker_SetStance(Stance newStance)
+        {
+            return !(newStance is Stance_Busy busy && busy.verb.caster is IFakeCaster);
+        }
     }
 
     public interface IFakeCaster

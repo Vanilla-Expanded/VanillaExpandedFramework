@@ -14,7 +14,7 @@ namespace MVCF
     public class VerbManager : IVerbOwner
     {
         private readonly List<ManagedVerb> drawVerbs = new List<ManagedVerb>();
-        private readonly List<TurretVerb> tickVerbs = new List<TurretVerb>();
+        public readonly List<TurretVerb> tickVerbs = new List<TurretVerb>();
         private readonly List<ManagedVerb> verbs = new List<ManagedVerb>();
         public Verb CurrentVerb;
         public DebugOptions debugOpts;
@@ -365,12 +365,14 @@ namespace MVCF
         public TurretVerb(Verb verb, VerbSource source, AdditionalVerbProps props, VerbManager man) : base(verb, source,
             props, man)
         {
-            dummyCaster = new DummyCaster(man.Pawn);
+            dummyCaster = new DummyCaster(man.Pawn, this);
             dummyCaster.Tick();
             dummyCaster.SpawnSetup(man.Pawn.Map, false);
             verb.caster = dummyCaster;
             verb.castCompleteCallback = () => cooldownTicksLeft = Verb.verbProps.AdjustedCooldownTicks(Verb, man.Pawn);
         }
+
+        public LocalTargetInfo Target => currentTarget;
 
         public void Tick()
         {
@@ -378,6 +380,13 @@ namespace MVCF
             if (cooldownTicksLeft > 0) cooldownTicksLeft--;
 
             if (cooldownTicksLeft > 0) return;
+            if (!Enabled)
+            {
+                if (currentTarget.IsValid) currentTarget = LocalTargetInfo.Invalid;
+                if (warmUpTicksLeft > 0) warmUpTicksLeft = 0;
+                return;
+            }
+
             if (!currentTarget.IsValid || currentTarget.HasThing && currentTarget.ThingDestroyed ||
                 currentTarget.HasThing && currentTarget.Thing is Pawn p && (p.Downed || p.Dead))
             {
@@ -416,21 +425,30 @@ namespace MVCF
         {
             warmUpTicksLeft = -1;
             var success = Verb.TryStartCastOn(currentTarget);
+            if (success) Verb.WarmupComplete();
         }
 
         public override LocalTargetInfo PointingTarget(Pawn p)
         {
             return currentTarget;
         }
+
+        public void SetTarget(LocalTargetInfo target)
+        {
+            currentTarget = target;
+            TryStartCast();
+        }
     }
 
     public class DummyCaster : Thing, IFakeCaster
     {
         private readonly Pawn pawn;
+        private readonly TurretVerb verb;
 
-        public DummyCaster(Pawn pawn)
+        public DummyCaster(Pawn pawn, TurretVerb verb)
         {
             this.pawn = pawn;
+            this.verb = verb;
             def = ThingDef.Named("MVCF_Dummy");
         }
 
@@ -438,7 +456,7 @@ namespace MVCF
         {
         }
 
-        public override Vector3 DrawPos => pawn.DrawPos;
+        public override Vector3 DrawPos => verb.DrawPos(verb.Target, pawn, pawn.DrawPos);
 
         public Thing RealCaster()
         {

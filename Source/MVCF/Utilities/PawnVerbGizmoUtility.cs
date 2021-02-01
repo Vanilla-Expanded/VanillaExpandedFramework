@@ -37,14 +37,18 @@ namespace MVCF.Utilities
                     break;
             }
 
-            var gizmo = new Command_VerbTarget();
+            Command gizmo;
+            var command = new Command_VerbTarget {verb = verb};
+            gizmo = command;
+
 
             if (ownerThing != null)
             {
-                gizmo.defaultDesc = FirstNonEmptyString(props?.description, ownerThing.def.LabelCap + ": " + ownerThing
-                    .def?.description?
-                    .Truncate(500, __truncateCache)?
-                    .CapitalizeFirst());
+                gizmo.defaultDesc = FirstNonEmptyString(props?.description, ownerThing.def.LabelCap + ": " +
+                                                                            ownerThing
+                                                                                .def?.description?
+                                                                                .Truncate(500, __truncateCache)?
+                                                                                .CapitalizeFirst());
                 gizmo.icon = verb.Icon(props, ownerThing, false);
             }
             else if (verb.DirectOwner is HediffComp_VerbGiver hediffGiver)
@@ -58,10 +62,9 @@ namespace MVCF.Utilities
             }
 
             gizmo.tutorTag = "VerbTarget";
-            gizmo.verb = verb;
             gizmo.defaultLabel = verb.Label(props);
 
-            if (verb.caster.Faction != Faction.OfPlayer)
+            if (verb.Caster.Faction != Faction.OfPlayer)
             {
                 gizmo.Disable("CannotOrderNonControlled".Translate());
             }
@@ -76,6 +79,7 @@ namespace MVCF.Utilities
             }
 
             yield return gizmo;
+
 
             if (props != null && props.canBeToggled && man != null && verb.caster.Faction == Faction.OfPlayer &&
                 props.separateToggle || verb.CasterIsPawn && verb.CasterPawn.RaceProps.Animal)

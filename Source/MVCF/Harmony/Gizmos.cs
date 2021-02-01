@@ -21,9 +21,10 @@ namespace MVCF.Harmony
         {
             foreach (var gizmo in __result) yield return gizmo;
 
-            if (!__instance.Drafted || !__instance.pawn.AllRangedVerbsPawnNoEquipment().Any() ||
-                __instance.pawn.equipment.Primary != null && __instance.pawn.equipment.Primary.def.IsRangedWeapon)
+            if (!__instance.Drafted || __instance.pawn.equipment.Primary != null && __instance.pawn.equipment
+                .Primary.def.IsRangedWeapon || !__instance.pawn.AllRangedVerbsPawnNoEquipment().Any())
                 yield break;
+
             yield return new Command_Toggle
             {
                 hotKey = KeyBindingDefOf.Misc6,
@@ -47,7 +48,8 @@ namespace MVCF.Harmony
 
             var man = pawn.Manager();
 
-            if (man.ManagedVerbs.Count(mv => mv.Enabled && !mv.Verb.IsMeleeAttack) >= 2)
+            if (man.ManagedVerbs.Count(mv =>
+                mv.Enabled && !mv.Verb.IsMeleeAttack && (mv.Props == null || !mv.Props.canFireIndependently)) >= 2)
                 yield return pawn.GetMainAttackGizmoForPawn();
 
             foreach (var gizmo in from verb in man.ManagedVerbs
@@ -123,7 +125,9 @@ namespace MVCF.Harmony
             if (shrunk) return false;
             if (!(command is Command_VerbTarget gizmo)) return false;
             var verb = gizmo.verb;
-            var man = gizmo.verb?.CasterPawn?.Manager()?.GetManagedVerbForVerb(verb, false);
+            var man = gizmo.verb?.caster is IFakeCaster caster
+                ? (caster.RealCaster() as Pawn)?.Manager()?.GetManagedVerbForVerb(verb, false)
+                : gizmo.verb?.CasterPawn?.Manager(false)?.GetManagedVerbForVerb(verb, false);
             if (man == null) return false;
             if (man.Props != null && man.Props.separateToggle) return false;
             var rect = command.TopRightLabel.NullOrEmpty()
