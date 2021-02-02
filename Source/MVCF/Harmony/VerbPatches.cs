@@ -15,6 +15,10 @@ namespace MVCF.Harmony
                 new HarmonyMethod(typeof(VerbPatches), "Prefix_OrderForceTarget"));
             harm.Patch(AccessTools.Method(typeof(Verb), "get_EquipmentSource"),
                 new HarmonyMethod(typeof(VerbPatches), "Prefix_EquipmentSource"));
+        }
+
+        public static void DoIndependentPatches(HarmonyLib.Harmony harm)
+        {
             harm.Patch(AccessTools.Method(typeof(Verb), "get_Caster"),
                 postfix: new HarmonyMethod(typeof(VerbPatches), "Postfix_get_Caster"));
             harm.Patch(AccessTools.Method(typeof(Verb), "get_CasterPawn"),

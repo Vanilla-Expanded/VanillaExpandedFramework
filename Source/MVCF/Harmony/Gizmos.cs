@@ -14,12 +14,28 @@ namespace MVCF.Harmony
 { // ReSharper disable InconsistentNaming
     public class Gizmos
     {
-        public static void DoPatches(HarmonyLib.Harmony harm)
+        public static void DoHumanoidPatches(HarmonyLib.Harmony harm)
         {
             harm.Patch(AccessTools.Method(typeof(Pawn_DraftController), "GetGizmos"),
                 postfix: new HarmonyMethod(typeof(Gizmos), "GetGizmos_Postfix"));
             harm.Patch(AccessTools.Method(typeof(PawnAttackGizmoUtility), "GetAttackGizmos"),
                 postfix: new HarmonyMethod(typeof(Gizmos), "GetAttackGizmos_Postfix"));
+        }
+
+        public static void DoAnimalPatches(HarmonyLib.Harmony harm)
+        {
+            harm.Patch(AccessTools.Method(typeof(Pawn), "GetGizmos"),
+                postfix: new HarmonyMethod(typeof(Gizmos), "Pawn_GetGizmos_Postfix"));
+        }
+
+        public static void DoSeparateTogglePatches(HarmonyLib.Harmony harm)
+        {
+            harm.Patch(AccessTools.Method(typeof(Command), "GizmoOnGUIInt"),
+                transpiler: new HarmonyMethod(typeof(Gizmos), "GizmoOnGUI_Transpile"));
+        }
+
+        public static void DoExtraEquipmentPatches(HarmonyLib.Harmony harm)
+        {
             harm.Patch(AccessTools.Method(typeof(Pawn), "GetGizmos"),
                 postfix: new HarmonyMethod(typeof(Gizmos), "Pawn_GetGizmos_Postfix"));
             harm.Patch(AccessTools.Method(typeof(Command), "GizmoOnGUIInt"),
@@ -65,6 +81,21 @@ namespace MVCF.Harmony
                     .GetGizmosForVerb(verb)
                 select gizmo)
                 yield return gizmo;
+
+            if (pawn.CurJobDef == JobDefOf.AttackStatic && man.CurrentVerb != null)
+                yield return new Command_Action
+                {
+                    defaultLabel = "CommandStopForceAttack".Translate(),
+                    defaultDesc = "CommandStopForceAttackDesc".Translate(),
+                    icon = ContentFinder<Texture2D>.Get("UI/Commands/Halt"),
+                    action = delegate
+                    {
+                        pawn.jobs.EndCurrentJob(JobCondition.InterruptForced);
+                        man.CurrentVerb = null;
+                        SoundDefOf.Tick_Low.PlayOneShotOnCamera();
+                    },
+                    hotKey = KeyBindingDefOf.Misc5
+                };
         }
 
         public static IEnumerable<Gizmo> Pawn_GetGizmos_Postfix(IEnumerable<Gizmo> __result, Pawn __instance)
@@ -72,7 +103,9 @@ namespace MVCF.Harmony
             foreach (var gizmo in __result) yield return gizmo;
 
             if (__instance.Faction != Faction.OfPlayer) yield break;
+            if (!__instance.RaceProps.Animal) yield break;
             var man = __instance.Manager();
+            if (man == null) yield break;
             if (__instance.CurJobDef == JobDefOf.AttackStatic && man.CurrentVerb != null)
                 yield return new Command_Action
                 {
@@ -87,7 +120,6 @@ namespace MVCF.Harmony
                     },
                     hotKey = KeyBindingDefOf.Misc5
                 };
-            if (!__instance.RaceProps.Animal) yield break;
             foreach (var mv in man.ManagedVerbs.Where(mv => !mv.Verb.IsMeleeAttack))
                 if (mv.Verb.verbProps.hasStandardCommand)
                     foreach (var gizmo in mv.Verb.GetGizmosForVerb(mv))

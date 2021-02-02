@@ -13,6 +13,7 @@ namespace MVCF
 
         protected override Job TryGiveJob(Pawn pawn)
         {
+            if (!Base.Features.RangedAnimals) return null;
             var enemyTarget = pawn.mindState.enemyTarget;
             if (enemyTarget != null && (enemyTarget.Destroyed ||
                                         Find.TickManager.TicksGame - pawn.mindState.lastEngageTargetTick > 400 ||

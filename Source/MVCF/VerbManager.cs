@@ -84,6 +84,15 @@ namespace MVCF
             NeedsTicking = false;
             debugOpts.ScoreLogging = false;
             debugOpts.VerbLogging = false;
+            if (!Base.Features.RangedAnimals && pawn.VerbTracker.AllVerbs.Any(v => !v.IsMeleeAttack))
+            {
+                Log.Error(
+                    "[MVCF] Found pawn with native ranged verbs while that feature is not enabled. Enabling now. This is not recommended. Contact the author of " +
+                    pawn.def.modContentPack.Name + " and ask them to add a MVCF.ModDef.");
+                Base.Features.RangedAnimals = true;
+                Base.ApplyPatches();
+            }
+
             foreach (var verb in pawn.VerbTracker.AllVerbs)
                 AddVerb(verb, VerbSource.RaceDef, pawn.TryGetComp<Comp_VerbGiver>()?.PropsFor(verb));
             if (pawn?.health?.hediffSet?.hediffs != null)
@@ -241,6 +250,29 @@ namespace MVCF
             Source = source;
             Props = props;
             this.man = man;
+            if (Props != null && Props.draw && !Base.Features.Drawing)
+            {
+                Log.Error(
+                    "[MVCF] Found a verb marked to draw while that feature is not enabled. Enabling now. This is not recommend.");
+                Base.Features.Drawing = true;
+                Base.ApplyPatches();
+            }
+
+            if (Props != null && Props.canFireIndependently && !Base.Features.IndependentFire)
+            {
+                Log.Error(
+                    "[MVCF] Found a verb marked to fire independently while that feature is not enabled. Enabling now. This is not recommend.");
+                Base.Features.IndependentFire = true;
+                Base.ApplyPatches();
+            }
+
+            if (Props != null && !Props.separateToggle && !Base.Features.IntegratedToggle)
+            {
+                Log.Error(
+                    "[MVCF] Found a verb marked for an integrated toggle while that feature is not enabled. Enabling now. This is not recommend.");
+                Base.Features.IntegratedToggle = true;
+                Base.ApplyPatches();
+            }
         }
 
         public void Toggle()

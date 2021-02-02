@@ -14,22 +14,8 @@ namespace MVCF.Harmony
     [HarmonyPatch]
     public class MiscPatches
     {
-        public static void DoPatches(HarmonyLib.Harmony harm)
+        public static void DoLogPatches(HarmonyLib.Harmony harm)
         {
-            harm.Patch(AccessTools.Method(typeof(JobDriver_Wait), "CheckForAutoAttack"),
-                postfix: new HarmonyMethod(typeof(MiscPatches), "Postfix_JobDriver_Wait_CheckForAutoAttack"));
-            harm.Patch(AccessTools.Method(typeof(Pawn), "DrawAt"),
-                postfix: new HarmonyMethod(typeof(MiscPatches), "Postfix_Pawn_DrawAt"));
-            harm.Patch(AccessTools.Method(typeof(Pawn), "SpawnSetup"),
-                postfix: new HarmonyMethod(typeof(MiscPatches), "Postfix_Pawn_SpawnSetup"));
-            harm.Patch(AccessTools.Method(typeof(Pawn), "DeSpawn"),
-                postfix: new HarmonyMethod(typeof(MiscPatches), "Postfix_Pawn_DeSpawn"));
-            harm.Patch(AccessTools.Constructor(typeof(BattleLogEntry_RangedFire), new[]
-            {
-                typeof(Thing),
-                typeof(Thing),
-                typeof(ThingDef), typeof(ThingDef), typeof(bool)
-            }), new HarmonyMethod(typeof(MiscPatches), "FixFakeCaster"));
             harm.Patch(AccessTools.Constructor(typeof(BattleLogEntry_RangedImpact), new[]
             {
                 typeof(Thing), typeof(Thing),
@@ -37,8 +23,28 @@ namespace MVCF.Harmony
             }), new HarmonyMethod(typeof(MiscPatches), "FixFakeCaster"));
             harm.Patch(AccessTools.Method(typeof(PlayLogEntryUtility), "RulesForOptionalWeapon"),
                 postfix: new HarmonyMethod(typeof(MiscPatches), "PlayLogEntryUtility_RulesForOptionalWeapon_Postfix"));
+        }
+
+        public static void DoAnimalPatches(HarmonyLib.Harmony harm)
+        {
+            harm.Patch(AccessTools.Method(typeof(JobDriver_Wait), "CheckForAutoAttack"),
+                postfix: new HarmonyMethod(typeof(MiscPatches), "Postfix_JobDriver_Wait_CheckForAutoAttack"));
+        }
+
+        public static void DoIndependentPatches(HarmonyLib.Harmony harm)
+        {
+            harm.Patch(AccessTools.Method(typeof(Pawn), "SpawnSetup"),
+                postfix: new HarmonyMethod(typeof(MiscPatches), "Postfix_Pawn_SpawnSetup"));
+            harm.Patch(AccessTools.Method(typeof(Pawn), "DeSpawn"),
+                postfix: new HarmonyMethod(typeof(MiscPatches), "Postfix_Pawn_DeSpawn"));
             harm.Patch(AccessTools.Method(typeof(Pawn_StanceTracker), "SetStance"),
                 new HarmonyMethod(typeof(MiscPatches), "Pawn_StanceTracker_SetStance"));
+        }
+
+        public static void DoDrawPatches(HarmonyLib.Harmony harm)
+        {
+            harm.Patch(AccessTools.Method(typeof(Pawn), "DrawAt"),
+                postfix: new HarmonyMethod(typeof(MiscPatches), "Postfix_Pawn_DrawAt"));
         }
 
         public static void Postfix_JobDriver_Wait_CheckForAutoAttack(JobDriver_Wait __instance)
@@ -104,7 +110,7 @@ namespace MVCF.Harmony
 
         public static bool Pawn_StanceTracker_SetStance(Stance newStance)
         {
-            return !(newStance is Stance_Busy busy && busy.verb.caster is IFakeCaster);
+            return !(newStance is Stance_Busy busy && busy.verb?.caster is IFakeCaster);
         }
     }
 

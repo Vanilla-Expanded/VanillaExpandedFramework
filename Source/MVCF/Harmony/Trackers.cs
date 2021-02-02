@@ -1,3 +1,4 @@
+using System.Linq;
 using HarmonyLib;
 using MVCF.Comps;
 using MVCF.Utilities;
@@ -21,6 +22,15 @@ namespace MVCF.Harmony
         {
             var comp = apparel.TryGetComp<Comp_VerbGiver>();
             if (comp == null) return;
+            if (!Base.Features.ApparelVerbs)
+            {
+                Log.Error(
+                    "[MVCF] Found apparel with a verb while that feature is not enabled. Enabling now. This is not recommend. Contact the author of " +
+                    apparel.def.modContentPack.Name + " and ask them to add a MVCF.ModDef.");
+                Base.Features.ApparelVerbs = true;
+                Base.ApplyPatches();
+            }
+
             comp.Notify_Worn(__instance.pawn);
             var manager = __instance.pawn?.Manager();
             if (manager == null) return;
@@ -55,6 +65,15 @@ namespace MVCF.Harmony
         {
             var comp = hediff.TryGetComp<HediffComp_VerbGiver>();
             if (comp == null) return;
+            if (!Base.Features.HediffVerbs && comp.VerbTracker.AllVerbs.Any(v => !v.IsMeleeAttack))
+            {
+                Log.Error(
+                    "[MVCF] Found a hediff with a ranged verb while that feature is not enabled. Enabling now. This is not recommend. Contant the author of " +
+                    hediff.def.modContentPack.Name + " and ask them to add a MVCF.ModDef.");
+                Base.Features.HediffVerbs = true;
+                Base.ApplyPatches();
+            }
+
             var pawn = __instance.hediffSet.pawn;
             var manager = pawn?.Manager();
             if (manager == null) return;
@@ -84,10 +103,20 @@ namespace MVCF.Harmony
 
         public static void EquipmentAdded_Postfix(ThingWithComps eq, Pawn_EquipmentTracker __instance)
         {
-            var manager = __instance.pawn?.Manager();
-            if (manager == null) return;
             var comp = eq.TryGetComp<CompEquippable>();
             if (comp == null) return;
+            var manager = __instance.pawn?.Manager();
+            if (manager == null) return;
+            if (!Base.Features.ExtraEquipmentVerbs &&
+                comp.VerbTracker.AllVerbs.Count(v => !v.IsMeleeAttack) > 1)
+            {
+                Log.Error(
+                    "[MVCF] Found equipment with more than one ranged attack while that feature is not enabled. Enabling now. This is not recommend. Contact the author of " +
+                    eq.def.modContentPack.Name + " and ask them to add a MVCF.ModDef.");
+                Base.Features.ExtraEquipmentVerbs = true;
+                Base.ApplyPatches();
+            }
+
             foreach (var verb in comp.VerbTracker.AllVerbs)
                 manager.AddVerb(verb, VerbSource.Equipment, (comp.props as CompProperties_VerbProps)?.PropsFor(verb));
         }

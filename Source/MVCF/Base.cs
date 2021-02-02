@@ -3,39 +3,95 @@ using Verse;
 
 namespace MVCF
 {
+    [StaticConstructorOnStartup]
     public class Base : Mod
     {
         public static string SearchLabel;
         public static bool Prepatcher;
-        public FeatureOpts Features;
+        public static FeatureOpts Features = new FeatureOpts();
+        public static HarmonyLib.Harmony Harm;
 
         public Base(ModContentPack content) : base(content)
         {
-            var harm = new HarmonyLib.Harmony("legodude17.mvcf");
-            SearchLabel = harm.Id + Rand.Value;
+            Harm = new HarmonyLib.Harmony("legodude17.mvcf");
+            SearchLabel = Harm.Id + Rand.Value;
             Prepatcher = ModLister.HasActiveModWithName("Prepatcher");
             if (Prepatcher) Log.Message("[MVCF] Prepatcher installed, switching");
-            Compat.ApplyCompat(harm);
-            Brawlers.DoPatches(harm);
-            Hunting.DoPatches(harm);
-            Gizmos.DoPatches(harm);
-            MiscPatches.DoPatches(harm);
-            VerbPatches.DoPatches(harm);
-            Pawn_TryGetAttackVerb.DoPatches(harm);
-            Trackers.Apparel(harm);
-            Trackers.Equipment(harm);
-            Trackers.Hediffs(harm);
-            VerbUtilityPatches.DoPatches(harm);
+            Trackers.Apparel(Harm);
+            Trackers.Equipment(Harm);
+            Trackers.Hediffs(Harm);
+            LongEventHandler.ExecuteWhenFinished(CollectFeatureData);
+        }
+
+        public static void CollectFeatureData()
+        {
+            foreach (var def in DefDatabase<ModDef>.AllDefs)
+            {
+                if (def.Features.ApparelVerbs) Features.ApparelVerbs = true;
+                if (def.Features.IndependentFire) Features.IndependentFire = true;
+                if (def.Features.Drawing) Features.Drawing = true;
+                if (def.Features.ExtraEquipmentVerbs) Features.ExtraEquipmentVerbs = true;
+                if (def.Features.HediffVerbs) Features.HediffVerbs = true;
+                if (def.Features.RangedAnimals) Features.RangedAnimals = true;
+                if (def.Features.IntegratedToggle) Features.IntegratedToggle = true;
+            }
+
+            ApplyPatches();
+        }
+
+        public static void ApplyPatches()
+        {
+            if (Features.EnabledAtAll)
+            {
+                Compat.ApplyCompat(Harm);
+                Pawn_TryGetAttackVerb.DoPatches(Harm);
+                VerbUtilityPatches.DoPatches(Harm);
+                MiscPatches.DoLogPatches(Harm);
+                VerbPatches.DoPatches(Harm);
+            }
+
+            if (Features.HumanoidVerbs)
+            {
+                Brawlers.DoPatches(Harm);
+                Hunting.DoPatches(Harm);
+                Gizmos.DoHumanoidPatches(Harm);
+            }
+
+            if (Features.ExtraEquipmentVerbs) Gizmos.DoExtraEquipmentPatches(Harm);
+
+            if (Features.RangedAnimals)
+            {
+                Gizmos.DoAnimalPatches(Harm);
+                MiscPatches.DoAnimalPatches(Harm);
+            }
+
+            if (Features.IntegratedToggle) Gizmos.DoSeparateTogglePatches(Harm);
+
+            if (Features.IndependentFire)
+            {
+                VerbPatches.DoIndependentPatches(Harm);
+                MiscPatches.DoIndependentPatches(Harm);
+            }
+
+            if (Features.Drawing) MiscPatches.DoDrawPatches(Harm);
         }
     }
 
-    public struct FeatureOpts
+    public class ModDef : Def
     {
-        public bool IndependentFire;
-        public bool Drawing;
-        public bool HediffVerbs;
-        public bool ExtraEquipmentVerbs;
+        public FeatureOpts Features;
+    }
+
+    public class FeatureOpts
+    {
         public bool ApparelVerbs;
+        public bool Drawing;
+        public bool ExtraEquipmentVerbs;
+        public bool HediffVerbs;
+        public bool IndependentFire;
+        public bool IntegratedToggle;
         public bool RangedAnimals;
+        public bool EnabledAtAll => HediffVerbs || ExtraEquipmentVerbs || ApparelVerbs || RangedAnimals;
+        public bool HumanoidVerbs => HediffVerbs || ExtraEquipmentVerbs || ApparelVerbs;
     }
 }
