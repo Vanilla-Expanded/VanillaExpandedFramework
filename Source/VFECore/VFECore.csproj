@@ -70,6 +70,7 @@
     <Compile Include="AnimalBehaviours\AI\JobGivers\JobGiver_XenophobicRage.cs" />
     <Compile Include="AnimalBehaviours\AI\WorkGivers\WorkGiver_AnimalResource.cs" />
     <Compile Include="AnimalBehaviours\AI\WorkGivers\WorkGiver_DestroyItem.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompAcidImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompAnimalProduct.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompAsexualReproduction.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompBuildPeriodically.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompMindEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompNearbyEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompPassiveRegenerator.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AcidImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AnimalProduct.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AsexualReproduction.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_BuildPeriodically.cs" />
@@ -130,6 +132,7 @@
     <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraInfecter.cs" />
     <Compile Include="AnimalBehaviours\DefExtensions\AnimalStatExtension.cs" />
     <Compile Include="AnimalBehaviours\Harmony\ThingDef_SpecialDisplayStats_Patch.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\Hediff_AcidBuildup.cs" />
     <Compile Include="AnimalBehaviours\MapComponents\DestroyableObjects_MapComponent.cs" />
     <Compile Include="AnimalBehaviours\MentalStates\MentalStateWorker_XenophobicRage.cs" />
     <Compile Include="AnimalBehaviours\MentalStates\MentalState_XenophobicRage.cs" />
