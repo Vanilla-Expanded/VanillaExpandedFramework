@@ -11,13 +11,24 @@ using Verse.AI;
 using Verse.Sound;
 
 namespace MVCF.Harmony
-{
-    [HarmonyPatch(typeof(Pawn_DraftController), "GetGizmos")]
-    public class Pawn_DraftController_GetGizmos
+{ // ReSharper disable InconsistentNaming
+    public class Gizmos
     {
-        // ReSharper disable InconsistentNaming
-        public static IEnumerable<Gizmo> Postfix(IEnumerable<Gizmo> __result, Pawn_DraftController __instance)
-            // ReSharper enable InconsistentNaming
+        public static void DoPatches(HarmonyLib.Harmony harm)
+        {
+            harm.Patch(AccessTools.Method(typeof(Pawn_DraftController), "GetGizmos"),
+                postfix: new HarmonyMethod(typeof(Gizmos), "GetGizmos_Postfix"));
+            harm.Patch(AccessTools.Method(typeof(PawnAttackGizmoUtility), "GetAttackGizmos"),
+                postfix: new HarmonyMethod(typeof(Gizmos), "GetAttackGizmos_Postfix"));
+            harm.Patch(AccessTools.Method(typeof(Pawn), "GetGizmos"),
+                postfix: new HarmonyMethod(typeof(Gizmos), "Pawn_GetGizmos_Postfix"));
+            harm.Patch(AccessTools.Method(typeof(Command), "GizmoOnGUIInt"),
+                transpiler: new HarmonyMethod(typeof(Gizmos), "GizmoOnGUI_Transpile"));
+            harm.Patch(AccessTools.Method(typeof(CompEquippable), "GetVerbsCommands"),
+                new HarmonyMethod(typeof(Gizmos), "GetVerbsCommands_Prefix"));
+        }
+
+        public static IEnumerable<Gizmo> GetGizmos_Postfix(IEnumerable<Gizmo> __result, Pawn_DraftController __instance)
         {
             foreach (var gizmo in __result) yield return gizmo;
 
@@ -36,13 +47,8 @@ namespace MVCF.Harmony
                 tutorTag = "FireAtWillToggle"
             };
         }
-    }
 
-    [HarmonyPatch(typeof(PawnAttackGizmoUtility), "GetAttackGizmos")]
-    public class PawnAttackGizmoUtility_GetAttackGizmos
-    {
-        // ReSharper disable once InconsistentNaming
-        public static IEnumerable<Gizmo> Postfix(IEnumerable<Gizmo> __result, Pawn pawn)
+        public static IEnumerable<Gizmo> GetAttackGizmos_Postfix(IEnumerable<Gizmo> __result, Pawn pawn)
         {
             foreach (var gizmo in __result) yield return gizmo;
 
@@ -60,12 +66,8 @@ namespace MVCF.Harmony
                 select gizmo)
                 yield return gizmo;
         }
-    }
 
-    [HarmonyPatch(typeof(Pawn), "GetGizmos")]
-    public class Pawn_GetGizmos
-    {
-        public static IEnumerable<Gizmo> Postfix(IEnumerable<Gizmo> __result, Pawn __instance)
+        public static IEnumerable<Gizmo> Pawn_GetGizmos_Postfix(IEnumerable<Gizmo> __result, Pawn __instance)
         {
             foreach (var gizmo in __result) yield return gizmo;
 
@@ -93,12 +95,19 @@ namespace MVCF.Harmony
                 else
                     yield return new Command_ToggleVerbUsage(mv);
         }
-    }
 
-    [HarmonyPatch(typeof(Command), "GizmoOnGUIInt")]
-    public class Command_GizmoOnGUI
-    {
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions,
+        public static bool GetVerbsCommands_Prefix(ref IEnumerable<Command> __result, CompEquippable __instance)
+        {
+            var rangedVerbs = __instance.AllVerbs.Where(v => !v.IsMeleeAttack).ToList();
+            if (rangedVerbs.Count <= 1) return true;
+            var man = __instance.PrimaryVerb?.CasterPawn?.Manager(false);
+            __result = rangedVerbs
+                .SelectMany(v => v.GetGizmosForVerb(man?.GetManagedVerbForVerb(v)))
+                .OfType<Command>();
+            return false;
+        }
+
+        public static IEnumerable<CodeInstruction> GizmoOnGUI_Transpile(IEnumerable<CodeInstruction> instructions,
             ILGenerator generator)
         {
             var list = instructions.ToList();
@@ -111,7 +120,7 @@ namespace MVCF.Harmony
                 new CodeInstruction(OpCodes.Ldarg_0),
                 new CodeInstruction(OpCodes.Ldarg_1),
                 new CodeInstruction(OpCodes.Ldarg_2),
-                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Command_GizmoOnGUI), "DrawToggle")),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Gizmos), "DrawToggle")),
                 new CodeInstruction(OpCodes.Brtrue_S, label)
             };
             list2[0].labels = list[idx - 2].labels.ListFullCopy();
@@ -148,21 +157,6 @@ namespace MVCF.Harmony
                 return true;
             }
 
-            return false;
-        }
-    }
-
-    [HarmonyPatch(typeof(CompEquippable), "GetVerbsCommands")]
-    public class CompEquippable_GetVerbsCommands
-    {
-        public static bool Prefix(ref IEnumerable<Command> __result, CompEquippable __instance)
-        {
-            var rangedVerbs = __instance.AllVerbs.Where(v => !v.IsMeleeAttack).ToList();
-            if (rangedVerbs.Count <= 1) return true;
-            var man = __instance.PrimaryVerb?.CasterPawn?.Manager(false);
-            __result = rangedVerbs
-                .SelectMany(v => v.GetGizmosForVerb(man?.GetManagedVerbForVerb(v)))
-                .OfType<Command>();
             return false;
         }
     }

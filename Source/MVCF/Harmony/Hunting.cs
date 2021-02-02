@@ -11,8 +11,16 @@ namespace MVCF.Harmony
     [HarmonyPatch]
     public class Hunting
     {
-        [HarmonyPatch(typeof(WorkGiver_HunterHunt), "HasHuntingWeapon")]
-        [HarmonyPostfix]
+        public static void DoPatches(HarmonyLib.Harmony harm)
+        {
+            harm.Patch(AccessTools.Method(typeof(WorkGiver_HunterHunt), "HasHuntingWeapon"),
+                postfix: new HarmonyMethod(typeof(Hunting), "HasHuntingWeapon"));
+            harm.Patch(AccessTools.Method(typeof(Toils_Combat), "TrySetJobToUseAttackVerb"),
+                new HarmonyMethod(typeof(Hunting), "TrySetJobToUseAttackVerb"));
+            harm.Patch(AccessTools.Method(typeof(JobDriver_Hunt), "MakeNewToils"),
+                postfix: new HarmonyMethod(typeof(Hunting), "MakeNewToils"));
+        }
+
         public static void HasHuntingWeapon(Pawn p, ref bool __result)
         {
             if (__result) return;
@@ -23,8 +31,6 @@ namespace MVCF.Harmony
                 __result = true;
         }
 
-        [HarmonyPatch(typeof(Toils_Combat), "TrySetJobToUseAttackVerb")]
-        [HarmonyPrefix]
         public static bool TrySetJobToUseAttackVerb(ref Toil __result, TargetIndex targetInd)
         {
             var toil = new Toil();
@@ -55,8 +61,6 @@ namespace MVCF.Harmony
             return false;
         }
 
-        [HarmonyPatch(typeof(JobDriver_Hunt), "MakeNewToils")]
-        [HarmonyPostfix]
         public static IEnumerable<Toil> MakeNewToils(IEnumerable<Toil> __result, JobDriver_Hunt __instance)
         {
             var list = __result.ToList();

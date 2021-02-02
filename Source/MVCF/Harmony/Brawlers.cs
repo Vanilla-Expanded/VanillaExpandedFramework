@@ -9,12 +9,21 @@ using Verse;
 
 namespace MVCF.Harmony
 {
-    [HarmonyPatch(typeof(Alert_BrawlerHasRangedWeapon), "GetReport")]
-    public class Alert_BrawlerHasRangedWeapon_GetReport
+    public class Brawlers
     {
-        // ReSharper disable once RedundantAssignment
-        // ReSharper disable once InconsistentNaming
-        public static bool Prefix(ref AlertReport __result)
+        public static void DoPatches(HarmonyLib.Harmony harm)
+        {
+            harm.Patch(AccessTools.Method(typeof(Alert_BrawlerHasRangedWeapon), "GetReport"),
+                new HarmonyMethod(typeof(Brawlers), "GetReport_Prefix"));
+            harm.Patch(AccessTools.Method(typeof(ThoughtWorker_IsCarryingRangedWeapon), "CurrentStateInternal"),
+                new HarmonyMethod(typeof(Brawlers), "CurrentStateInternal_Prefix"));
+            harm.Patch(AccessTools.Method(typeof(HealthCardUtility), "GenerateSurgeryOption"),
+                postfix: new HarmonyMethod(typeof(Brawlers), "GenerateSurgeryOption_Postfix"));
+            harm.Patch(AccessTools.Method(typeof(FloatMenuMakerMap), "AddHumanlikeOrders"),
+                postfix: new HarmonyMethod(typeof(Brawlers), "AddHumanlikeOrders_Postfix"));
+        }
+
+        public static bool GetReport_Prefix(ref AlertReport __result)
         {
             var brawlersWithNonEquipmentRanged = new List<Pawn>();
             foreach (var pawn in PawnsFinder.AllMaps_FreeColonistsSpawned)
@@ -25,25 +34,15 @@ namespace MVCF.Harmony
 
             return false;
         }
-    }
 
-    [HarmonyPatch(typeof(ThoughtWorker_IsCarryingRangedWeapon), "CurrentStateInternal")]
-    public class ThoughtWorker_IsCarryingRangedWeapon_CurrentStateInternal
-    {
-        // ReSharper disable once InconsistentNaming
-        // ReSharper disable once RedundantAssignment
-        public static bool Prefix(ref ThoughtState __result, Pawn p)
+        public static bool CurrentStateInternal_Prefix(ref ThoughtState __result, Pawn p)
         {
             __result = p.AllRangedVerbsPawn().Any();
             return false;
         }
-    }
 
-    [HarmonyPatch(typeof(HealthCardUtility), "GenerateSurgeryOption")]
-    public class HealthCardUtility_GenerateSurgeryOption
-    {
-        // ReSharper disable once InconsistentNaming
-        public static void Postfix(ref FloatMenuOption __result, Thing thingForMedBills, RecipeDef recipe)
+        public static void GenerateSurgeryOption_Postfix(ref FloatMenuOption __result, Thing thingForMedBills,
+            RecipeDef recipe)
         {
             var pawn = thingForMedBills as Pawn;
             if (!(pawn?.story?.traits?.HasTrait(TraitDefOf.Brawler) ?? false)) return;
@@ -56,13 +55,8 @@ namespace MVCF.Harmony
             if (!verbs.Any(verb => !verb.IsMeleeAttack)) return;
             __result.Label = __result.Label + " " + "EquipWarningBrawler".Translate();
         }
-    }
 
-    [HarmonyPatch(typeof(FloatMenuMakerMap), "AddHumanlikeOrders")]
-    public class FloatMenuMakerMap_AddHumanlikeOrders
-    {
-        // ReSharper disable once ParameterTypeCanBeEnumerable.Global
-        public static void Postfix(List<FloatMenuOption> opts, Vector3 clickPos, Pawn pawn)
+        public static void AddHumanlikeOrders_Postfix(List<FloatMenuOption> opts, Vector3 clickPos, Pawn pawn)
         {
             if (pawn?.apparel == null) return;
             var apparel = pawn.Map.thingGrid.ThingAt<Apparel>(IntVec3.FromVector3(clickPos));

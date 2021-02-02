@@ -6,11 +6,18 @@ using Verse;
 
 namespace MVCF.Harmony
 {
-    [HarmonyPatch(typeof(Pawn_ApparelTracker), "Notify_ApparelAdded")]
-    public class Pawn_ApparelTracker_Notify_ApparelAdded
+    public class Trackers
     {
-        // ReSharper disable once InconsistentNaming
-        public static void Postfix(Pawn_ApparelTracker __instance, Apparel apparel)
+        public static void Apparel(HarmonyLib.Harmony harm)
+        {
+            var type = typeof(Pawn_ApparelTracker);
+            harm.Patch(AccessTools.Method(type, "Notify_ApparelAdded"),
+                postfix: new HarmonyMethod(typeof(Trackers), "ApparelAdded_Postfix"));
+            harm.Patch(AccessTools.Method(type, "Notify_ApparelRemoved"),
+                postfix: new HarmonyMethod(typeof(Trackers), "ApparelRemoved_Postfix"));
+        }
+
+        public static void ApparelAdded_Postfix(Pawn_ApparelTracker __instance, Apparel apparel)
         {
             var comp = apparel.TryGetComp<Comp_VerbGiver>();
             if (comp == null) return;
@@ -20,13 +27,8 @@ namespace MVCF.Harmony
             foreach (var verb in comp.VerbTracker.AllVerbs)
                 manager.AddVerb(verb, VerbSource.Apparel, comp.PropsFor(verb));
         }
-    }
 
-    [HarmonyPatch(typeof(Pawn_ApparelTracker), "Notify_ApparelRemoved")]
-    public class Pawn_ApparelTracker_Notify_ApparelRemoved
-    {
-        // ReSharper disable once InconsistentNaming
-        public static void Postfix(Apparel apparel, Pawn_ApparelTracker __instance)
+        public static void ApparelRemoved_Postfix(Apparel apparel, Pawn_ApparelTracker __instance)
         {
             var comp = apparel.TryGetComp<Comp_VerbGiver>();
             if (comp == null) return;
@@ -34,18 +36,6 @@ namespace MVCF.Harmony
             var manager = __instance.pawn?.Manager();
             if (manager == null) return;
             foreach (var verb in comp.VerbTracker.AllVerbs) manager.RemoveVerb(verb);
-        }
-    }
-
-    public class TrackerPatches
-    {
-        public static void Apparel(HarmonyLib.Harmony harm)
-        {
-            var type = typeof(Pawn_ApparelTracker);
-            harm.Patch(AccessTools.Method(type, "Notify_ApparelAdded"),
-                postfix: new HarmonyMethod(typeof(Pawn_ApparelTracker_Notify_ApparelAdded), "Postfix"));
-            harm.Patch(AccessTools.Method(type, "Notify_ApparelRemoved"),
-                postfix: new HarmonyMethod(typeof(Pawn_ApparelTracker_Notify_ApparelRemoved), "Postfix"));
         }
 
         public static void Hediffs(HarmonyLib.Harmony harm)
@@ -56,27 +46,12 @@ namespace MVCF.Harmony
                     typeof(Hediff), typeof(BodyPartRecord), typeof(DamageInfo),
                     typeof(DamageWorker.DamageResult)
                 }),
-                postfix: new HarmonyMethod(typeof(Pawn_HealthTracker_AddHediff), "Postfix"));
+                postfix: new HarmonyMethod(typeof(Trackers), "AddHediff_Postfix"));
             harm.Patch(AccessTools.Method(type, "RemoveHediff"),
-                postfix: new HarmonyMethod(typeof(Pawn_HealthTracker_RemoveHediff), "Postfix"));
+                postfix: new HarmonyMethod(typeof(Trackers), "RemoveHediff_Postfix"));
         }
 
-        public static void Equipment(HarmonyLib.Harmony harm)
-        {
-            var type = typeof(Pawn_EquipmentTracker);
-            harm.Patch(AccessTools.Method(type, "Notify_EquipmentAdded"),
-                postfix: new HarmonyMethod(typeof(Pawn_EquipmentTracker_Notify_EquipmentAdded), "Postfix"));
-            harm.Patch(AccessTools.Method(type, "Notify_EquipmentRemoved"),
-                postfix: new HarmonyMethod(typeof(Pawn_EquipmentTracker_Notify_EquipmentRemoved), "Postfix"));
-        }
-    }
-
-    [HarmonyPatch(typeof(Pawn_HealthTracker), "AddHediff", typeof(Hediff), typeof(BodyPartRecord), typeof(DamageInfo),
-        typeof(DamageWorker.DamageResult))]
-    public class Pawn_HealthTracker_AddHediff
-    {
-        // ReSharper disable once InconsistentNaming
-        public static void Postfix(Hediff hediff, Pawn_HealthTracker __instance)
+        public static void AddHediff_Postfix(Hediff hediff, Pawn_HealthTracker __instance)
         {
             var comp = hediff.TryGetComp<HediffComp_VerbGiver>();
             if (comp == null) return;
@@ -87,13 +62,8 @@ namespace MVCF.Harmony
             foreach (var verb in comp.VerbTracker.AllVerbs)
                 manager.AddVerb(verb, VerbSource.Hediff, extComp?.PropsFor(verb));
         }
-    }
 
-    [HarmonyPatch(typeof(Pawn_HealthTracker), "RemoveHediff")]
-    public class Pawn_HealthTracker_RemoveHediff
-    {
-        // ReSharper disable once InconsistentNaming
-        public static void Postfix(Hediff hediff, Pawn_HealthTracker __instance)
+        public static void RemoveHediff_Postfix(Hediff hediff, Pawn_HealthTracker __instance)
         {
             var comp = hediff.TryGetComp<HediffComp_VerbGiver>();
             if (comp == null) return;
@@ -102,13 +72,17 @@ namespace MVCF.Harmony
             if (manager == null) return;
             foreach (var verb in comp.VerbTracker.AllVerbs) manager.RemoveVerb(verb);
         }
-    }
 
-    [HarmonyPatch(typeof(Pawn_EquipmentTracker), "Notify_EquipmentAdded")]
-    public class Pawn_EquipmentTracker_Notify_EquipmentAdded
-    {
-        // ReSharper disable once InconsistentNaming
-        public static void Postfix(ThingWithComps eq, Pawn_EquipmentTracker __instance)
+        public static void Equipment(HarmonyLib.Harmony harm)
+        {
+            var type = typeof(Pawn_EquipmentTracker);
+            harm.Patch(AccessTools.Method(type, "Notify_EquipmentAdded"),
+                postfix: new HarmonyMethod(typeof(Trackers), "EquipmentAdded_Postfix"));
+            harm.Patch(AccessTools.Method(type, "Notify_EquipmentRemoved"),
+                postfix: new HarmonyMethod(typeof(Trackers), "EquipmentRemoved_Postfix"));
+        }
+
+        public static void EquipmentAdded_Postfix(ThingWithComps eq, Pawn_EquipmentTracker __instance)
         {
             var manager = __instance.pawn?.Manager();
             if (manager == null) return;
@@ -117,13 +91,8 @@ namespace MVCF.Harmony
             foreach (var verb in comp.VerbTracker.AllVerbs)
                 manager.AddVerb(verb, VerbSource.Equipment, (comp.props as CompProperties_VerbProps)?.PropsFor(verb));
         }
-    }
 
-    [HarmonyPatch(typeof(Pawn_EquipmentTracker), "Notify_EquipmentRemoved")]
-    public class Pawn_EquipmentTracker_Notify_EquipmentRemoved
-    {
-        // ReSharper disable once InconsistentNaming
-        public static void Postfix(ThingWithComps eq, Pawn_EquipmentTracker __instance)
+        public static void EquipmentRemoved_Postfix(ThingWithComps eq, Pawn_EquipmentTracker __instance)
         {
             var comp = eq.TryGetComp<CompEquippable>();
             if (comp == null) return;

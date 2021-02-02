@@ -1,4 +1,3 @@
-using System.Reflection;
 using MVCF.Harmony;
 using Verse;
 
@@ -8,7 +7,7 @@ namespace MVCF
     {
         public static string SearchLabel;
         public static bool Prepatcher;
-        public static bool LimitedMode;
+        public FeatureOpts Features;
 
         public Base(ModContentPack content) : base(content)
         {
@@ -17,7 +16,26 @@ namespace MVCF
             Prepatcher = ModLister.HasActiveModWithName("Prepatcher");
             if (Prepatcher) Log.Message("[MVCF] Prepatcher installed, switching");
             Compat.ApplyCompat(harm);
-            if (!LimitedMode) harm.PatchAll(Assembly.GetExecutingAssembly());
+            Brawlers.DoPatches(harm);
+            Hunting.DoPatches(harm);
+            Gizmos.DoPatches(harm);
+            MiscPatches.DoPatches(harm);
+            VerbPatches.DoPatches(harm);
+            Pawn_TryGetAttackVerb.DoPatches(harm);
+            Trackers.Apparel(harm);
+            Trackers.Equipment(harm);
+            Trackers.Hediffs(harm);
+            VerbUtilityPatches.DoPatches(harm);
         }
+    }
+
+    public struct FeatureOpts
+    {
+        public bool IndependentFire;
+        public bool Drawing;
+        public bool HediffVerbs;
+        public bool ExtraEquipmentVerbs;
+        public bool ApparelVerbs;
+        public bool RangedAnimals;
     }
 }

@@ -5,9 +5,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
 using MVCF.Utilities;
-using RimWorld;
 using Verse;
-using Verse.AI;
 
 namespace MVCF.Harmony
 {
@@ -70,26 +68,6 @@ namespace MVCF.Harmony
         public static void RunAndGunHasRangedWeapon(Pawn instance, ref bool __result)
         {
             if (!__result) __result = instance.Manager().ManagedVerbs.Any(mv => mv.Enabled && !mv.Verb.IsMeleeAttack);
-        }
-
-        public static void LimitedMode(HarmonyLib.Harmony harm)
-        {
-            Log.Warning("[MVCF] Mod conflict detected, deactivating most MVCF features...");
-            Base.LimitedMode = true;
-            harm.Patch(AccessTools.Method(typeof(Pawn), "TryGetAttackVerb"),
-                new HarmonyMethod(typeof(Pawn_TryGetAttackVerb), "Prefix"));
-            harm.Patch(AccessTools.Method(typeof(JobDriver_Wait), "CheckForAutoAttack"),
-                new HarmonyMethod(typeof(MiscPatches), "Postfix_JobDriver_Wait_CheckForAutoAttack"));
-            TrackerPatches.Apparel(harm);
-            TrackerPatches.Hediffs(harm);
-            harm.Patch(AccessTools.Method(typeof(Verb), "OrderForceTarget"),
-                new HarmonyMethod(typeof(VerbPatches), "Prefix_OrderForceTarget"));
-            harm.Patch(AccessTools.Method(typeof(Pawn), "GetGizmos"),
-                postfix: new HarmonyMethod(typeof(Pawn_GetGizmos), "Postfix"));
-            harm.Patch(AccessTools.Method(typeof(JobDriver_Hunt), "MakeNewToils"),
-                postfix: new HarmonyMethod(typeof(Hunting), "MakeNewToils"));
-            harm.Patch(AccessTools.Method(typeof(Pawn_DraftController), "GetGizmos"),
-                postfix: new HarmonyMethod(typeof(Pawn_DraftController_GetGizmos), "Postfix"));
         }
     }
 }
