@@ -37,7 +37,7 @@ namespace MVCF
             if (cooldownTicksLeft > 0) cooldownTicksLeft--;
 
             if (cooldownTicksLeft > 0) return;
-            if (!Enabled)
+            if (!Enabled || !CanFire())
             {
                 if (currentTarget.IsValid) currentTarget = LocalTargetInfo.Invalid;
                 if (warmUpTicksLeft > 0) warmUpTicksLeft = 0;
