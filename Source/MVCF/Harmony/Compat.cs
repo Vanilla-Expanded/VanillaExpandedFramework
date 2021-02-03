@@ -18,9 +18,12 @@ namespace MVCF.Harmony
             if (ModLister.HasActiveModWithName("RunAndGun"))
             {
                 Log.Message("[MVCF] Applying RunAndGun compatibility patch");
-                harm.Patch(Type.GetType("RunAndGun.Harmony.Verb_TryCastNextBurstShot, RunAndGun")
-                        ?.GetMethod("SetStanceRunAndGun"),
+                harm.Patch(AccessTools.Method(Type.GetType("RunAndGun.Harmony.Verb_TryCastNextBurstShot, RunAndGun"),
+                        "SetStanceRunAndGun"),
                     transpiler: new HarmonyMethod(typeof(Compat), "RunAndGunSetStance"));
+                harm.Patch(AccessTools.Method(Type.GetType("RunAndGun.Harmony.Verb_TryStartCastOn, RunAndGun"),
+                        "Prefix"),
+                    new HarmonyMethod(typeof(Compat), "RunAndGunVerbCast"));
                 harm.Patch(Type.GetType("RunAndGun.Extensions, RunAndGun")
                         ?.GetMethod("HasRangedWeapon"),
                     postfix: new HarmonyMethod(typeof(Compat), "RunAndGunHasRangedWeapon"));
@@ -68,6 +71,13 @@ namespace MVCF.Harmony
         public static void RunAndGunHasRangedWeapon(Pawn instance, ref bool __result)
         {
             if (!__result) __result = instance.Manager().ManagedVerbs.Any(mv => mv.Enabled && !mv.Verb.IsMeleeAttack);
+        }
+
+        public static bool RunAndGunVerbCast(ref bool __result, Verb __0)
+        {
+            if (!(__0.caster is IFakeCaster)) return true;
+            __result = true;
+            return false;
         }
     }
 }

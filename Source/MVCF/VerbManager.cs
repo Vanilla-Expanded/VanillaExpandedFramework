@@ -281,7 +281,7 @@ namespace MVCF
             man.RecalcSearchVerb();
         }
 
-        public void DrawOn(Pawn p, Vector3 drawPos)
+        public virtual void DrawOn(Pawn p, Vector3 drawPos)
         {
             if (Props == null) return;
             if (!Props.draw) return;
@@ -406,7 +406,7 @@ namespace MVCF
 
         public LocalTargetInfo Target => currentTarget;
 
-        public void Tick()
+        public virtual void Tick()
         {
             if (Verb.Bursting) return;
             if (cooldownTicksLeft > 0) cooldownTicksLeft--;
@@ -423,10 +423,7 @@ namespace MVCF
                 currentTarget.HasThing && currentTarget.Thing is Pawn p && (p.Downed || p.Dead))
             {
                 man.OverrideVerb = Verb;
-                currentTarget = (Thing) AttackTargetFinder.BestShootTargetFromCurrentPosition(
-                    man.Pawn,
-                    TargetScanFlags.NeedActiveThreat | TargetScanFlags.NeedLOSToAll |
-                    TargetScanFlags.NeedAutoTargetable);
+                currentTarget = TryFindNewTarget();
                 man.OverrideVerb = null;
                 TryStartCast();
             }
@@ -444,7 +441,7 @@ namespace MVCF
             }
         }
 
-        private void TryStartCast()
+        protected virtual void TryStartCast()
         {
             if (Verb.verbProps.warmupTime > 0)
                 warmUpTicksLeft = (Verb.verbProps.warmupTime * man.Pawn.GetStatValue(StatDefOf.AimingDelayFactor))
@@ -453,7 +450,7 @@ namespace MVCF
                 TryCast();
         }
 
-        private void TryCast()
+        protected virtual void TryCast()
         {
             warmUpTicksLeft = -1;
             var success = Verb.TryStartCastOn(currentTarget);
@@ -465,10 +462,33 @@ namespace MVCF
             return currentTarget;
         }
 
+        public virtual bool CanFire()
+        {
+            return true;
+        }
+
+        public override void DrawOn(Pawn p, Vector3 drawPos)
+        {
+            base.DrawOn(p, drawPos);
+            if (Find.Selector.IsSelected(p) && Target.IsValid)
+            {
+                GenDraw.DrawAimPie(p, Target, warmUpTicksLeft, 0.2f);
+                GenDraw.DrawLineBetween(drawPos, Target.HasThing ? Target.Thing.DrawPos : Target.Cell.ToVector3());
+            }
+        }
+
         public void SetTarget(LocalTargetInfo target)
         {
             currentTarget = target;
             TryStartCast();
+        }
+
+        protected virtual LocalTargetInfo TryFindNewTarget()
+        {
+            return AttackTargetFinder.BestShootTargetFromCurrentPosition(
+                man.Pawn,
+                TargetScanFlags.NeedActiveThreat | TargetScanFlags.NeedLOSToAll |
+                TargetScanFlags.NeedAutoTargetable)?.Thing ?? LocalTargetInfo.Invalid;
         }
     }
 
