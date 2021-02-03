@@ -93,10 +93,10 @@ namespace MVCF.Comps
                                     !toggleIconPath.NullOrEmpty()))
                 yield return "don't provide toggle details without a separate toggle";
 
-            if (!managedClass.IsSubclassOf(typeof(ManagedVerb)))
+            if (managedClass != null && !managedClass.IsSubclassOf(typeof(ManagedVerb)))
                 yield return "managedClass must be subclass of ManagedVerb";
 
-            if (canFireIndependently && !managedClass.IsSubclassOf(typeof(TurretVerb)))
+            if (managedClass != null && canFireIndependently && !managedClass.IsSubclassOf(typeof(TurretVerb)))
                 yield return "managedClass of independent verb must be a subclass of TurretVerb";
         }
 
