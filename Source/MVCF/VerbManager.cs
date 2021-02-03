@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MVCF.Comps;
@@ -133,7 +134,10 @@ namespace MVCF
             ManagedVerb mv;
             if (props != null && props.canFireIndependently)
             {
-                var tv = new TurretVerb(verb, source, props, this);
+                TurretVerb tv;
+                if (props.managedClass != null)
+                    tv = (TurretVerb) Activator.CreateInstance(props.managedClass, verb, source, props, this);
+                else tv = new TurretVerb(verb, source, props, this);
                 if (tickVerbs.Count == 0)
                 {
                     NeedsTicking = true;
@@ -145,7 +149,10 @@ namespace MVCF
             }
             else
             {
-                mv = new ManagedVerb(verb, source, props, this);
+                if (props?.managedClass != null)
+                    mv = (ManagedVerb) Activator.CreateInstance(props.managedClass, verb, source, props, this);
+                else
+                    mv = new ManagedVerb(verb, source, props, this);
             }
 
             if (props != null && props.draw) drawVerbs.Add(mv);

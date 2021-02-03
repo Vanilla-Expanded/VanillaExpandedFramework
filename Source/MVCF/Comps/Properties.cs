@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Verse;
@@ -48,6 +49,14 @@ namespace MVCF.Comps
                 });
         }
 
+        public override IEnumerable<string> ConfigErrors(ThingDef parentDef)
+        {
+            foreach (var error in base.ConfigErrors(parentDef)) yield return error;
+
+            foreach (var error in verbProps.SelectMany(prop => prop.ConfigErrors()))
+                yield return error;
+        }
+
         public AdditionalVerbProps PropsFor(Verb verb)
         {
             var label = verb.verbProps.label;
@@ -64,6 +73,7 @@ namespace MVCF.Comps
         public bool draw;
         public GraphicData graphic;
         public string label;
+        public Type managedClass;
         private Dictionary<string, DrawPosition> positions;
         public bool separateToggle;
         public List<DrawPosition> specificPositions;
@@ -71,10 +81,24 @@ namespace MVCF.Comps
         public string toggleIconPath;
         public string toggleLabel;
         public string visualLabel;
-
         public Texture2D ToggleIcon { get; private set; }
         public Texture2D Icon { get; private set; }
         public Graphic Graphic { get; private set; }
+
+        public IEnumerable<string> ConfigErrors()
+        {
+            if (label.NullOrEmpty()) yield return "label cannot be null or empty";
+
+            if (!separateToggle && (!toggleLabel.NullOrEmpty() || !toggleDescription.NullOrEmpty() ||
+                                    !toggleIconPath.NullOrEmpty()))
+                yield return "don't provide toggle details without a separate toggle";
+
+            if (!managedClass.IsSubclassOf(typeof(ManagedVerb)))
+                yield return "managedClass must be subclass of ManagedVerb";
+
+            if (canFireIndependently && !managedClass.IsSubclassOf(typeof(TurretVerb)))
+                yield return "managedClass of independent verb must be a subclass of TurretVerb";
+        }
 
         public Vector3 DrawPos(string name, Vector3 drawPos, Rot4 rot)
         {
