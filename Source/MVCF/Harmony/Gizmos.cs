@@ -166,9 +166,12 @@ namespace MVCF.Harmony
             if (shrunk) return false;
             if (!(command is Command_VerbTarget gizmo)) return false;
             var verb = gizmo.verb;
-            var man = gizmo.verb?.caster is IFakeCaster caster
-                ? (caster.RealCaster() as Pawn)?.Manager()?.GetManagedVerbForVerb(verb, false)
-                : gizmo.verb?.CasterPawn?.Manager(false)?.GetManagedVerbForVerb(verb, false);
+            var manager = gizmo.verb?.caster is IFakeCaster caster
+                ? (caster.RealCaster() as Pawn)?.Manager(false)
+                : gizmo.verb?.CasterPawn?.Manager(false);
+            if (manager == null) return false;
+            if (manager.AllVerbs.Count(v => !v.IsMeleeAttack) <= 1) return false;
+            var man = manager.GetManagedVerbForVerb(verb, false);
             if (man == null) return false;
             if (man.Props != null && man.Props.separateToggle) return false;
             var rect = command.TopRightLabel.NullOrEmpty()
