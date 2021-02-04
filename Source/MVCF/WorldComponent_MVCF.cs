@@ -61,9 +61,11 @@ namespace MVCF
         public override void ExposeData()
         {
             base.ExposeData();
+            currentVerbSaved.Clear();
             allManagers.ForEach(vm =>
             {
-                if (vm.TryGetTarget(out var man)) currentVerbSaved.SetOrAdd(man.Pawn, man.CurrentVerb);
+                if (vm.TryGetTarget(out var man) && man.Pawn != null && man.Pawn.Spawned && !man.Pawn.Dead)
+                    currentVerbSaved.SetOrAdd(man.Pawn, man.CurrentVerb);
             });
             Scribe_Collections.Look(ref currentVerbSaved, "currentVerbs", LookMode.Reference, LookMode.Reference);
         }

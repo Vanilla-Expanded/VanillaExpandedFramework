@@ -15,7 +15,7 @@ namespace MVCF.Harmony
 
         public static void ApplyCompat(HarmonyLib.Harmony harm)
         {
-            if (ModLister.HasActiveModWithName("RunAndGun"))
+            if (ModLister.HasActiveModWithName("RunAndGun") && Base.Features.EnabledAtAll)
             {
                 Log.Message("[MVCF] Applying RunAndGun compatibility patch");
                 harm.Patch(AccessTools.Method(Type.GetType("RunAndGun.Harmony.Verb_TryCastNextBurstShot, RunAndGun"),
@@ -29,7 +29,7 @@ namespace MVCF.Harmony
                     postfix: new HarmonyMethod(typeof(Compat), "RunAndGunHasRangedWeapon"));
             }
 
-            if (ModLister.HasActiveModWithName("Dual Wield"))
+            if (ModLister.HasActiveModWithName("Dual Wield") && Base.Features.HumanoidVerbs)
             {
                 Log.Message("[MVCF] Applying Dual Wield compatibility patch");
                 GetStancesOffHand = AccessTools.Method(Type.GetType(
@@ -48,12 +48,20 @@ namespace MVCF.Harmony
 
         public static bool UpdateRotation(Pawn_RotationTracker __0)
         {
-            return GetStancesOffHand.DynamicInvoke(Traverse.Create(__0).Field("pawn").GetValue<Pawn>()) != null;
+            var stances = GetStancesOffHand.DynamicInvoke(Traverse.Create(__0).Field("pawn").GetValue<Pawn>());
+            if (stances == null) Log.Warning("[MVCF] StanceTracker in Dual Wield is null, this may cause issues.");
+            if (stances is Pawn_StanceTracker tracker && tracker.curStance is Stance_Cooldown cool && cool.ticksLeft < 0
+            ) Log.ErrorOnce("[MVCF] Negative cooldown in Dual Wield!", cool.verb.GetHashCode());
+            return stances != null;
         }
 
         public static bool RenderPawnAt(PawnRenderer __0)
         {
-            return GetStancesOffHand.DynamicInvoke(Traverse.Create(__0).Field("pawn").GetValue<Pawn>()) != null;
+            var stances = GetStancesOffHand.DynamicInvoke(Traverse.Create(__0).Field("pawn").GetValue<Pawn>());
+            if (stances == null) Log.Warning("[MVCF] StanceTracker in Dual Wield is null, this may cause issues.");
+            if (stances is Pawn_StanceTracker tracker && tracker.curStance is Stance_Cooldown cool && cool.ticksLeft < 0
+            ) Log.ErrorOnce("[MVCF] Negative cooldown in Dual Wield!", cool.verb.GetHashCode());
+            return stances != null;
         }
 
 
