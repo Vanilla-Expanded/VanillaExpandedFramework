@@ -82,11 +82,14 @@ namespace MVCF
             NeedsTicking = false;
             debugOpts.ScoreLogging = false;
             debugOpts.VerbLogging = false;
-            if (!Base.Features.RangedAnimals && pawn.VerbTracker.AllVerbs.Any(v => !v.IsMeleeAttack))
+            if (!Base.Features.RangedAnimals && !Base.IgnoredFeatures.RangedAnimals &&
+                pawn.VerbTracker.AllVerbs.Any(v => !v.IsMeleeAttack) &&
+                !Base.IgnoredMods.Contains(pawn.def.modContentPack.Name))
             {
-                Log.Error(
+                Log.ErrorOnce(
                     "[MVCF] Found pawn with native ranged verbs while that feature is not enabled. Enabling now. This is not recommended. Contact the author of " +
-                    pawn.def.modContentPack.Name + " and ask them to add a MVCF.ModDef.");
+                    pawn.def.modContentPack.Name + " and ask them to add a MVCF.ModDef.",
+                    pawn.def.modContentPack.Name.GetHashCode());
                 Base.Features.RangedAnimals = true;
                 Base.ApplyPatches();
             }

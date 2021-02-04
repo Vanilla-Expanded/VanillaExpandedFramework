@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using MVCF.Harmony;
 using Verse;
 
@@ -10,6 +11,20 @@ namespace MVCF
         public static bool Prepatcher;
         public static FeatureOpts Features = new FeatureOpts();
         public static HarmonyLib.Harmony Harm;
+        public static FeatureOpts IgnoredFeatures = new FeatureOpts();
+
+        public static readonly List<string> IgnoredMods = new List<string>
+        {
+            "Adeptus Mechanicus: Armoury",
+            "Dragon's Descent",
+            "[RWY]Dragon's Descent: Void Dwellers",
+            "Alpha Animals",
+            "Genetic Rim",
+            "GeneticRim Alpha Animals Patch",
+            "GeneticRim Dinosauria Patch",
+            "GeneticRim Megafauna Patch",
+            "Cybernetic Warfare and Special Weapons (Continued)"
+        };
 
         public Base(ModContentPack content) : base(content)
         {
@@ -21,6 +36,7 @@ namespace MVCF
             Trackers.Equipment(Harm);
             Trackers.Hediffs(Harm);
             LongEventHandler.ExecuteWhenFinished(CollectFeatureData);
+            if (ModLister.HasActiveModWithName("Prosthetic Combat Framework")) IgnoredFeatures.HediffVerbs = true;
         }
 
         public static void CollectFeatureData()

@@ -22,11 +22,13 @@ namespace MVCF.Harmony
         {
             var comp = apparel.TryGetComp<Comp_VerbGiver>();
             if (comp == null) return;
-            if (!Base.Features.ApparelVerbs)
+            if (!Base.Features.ApparelVerbs && !Base.IgnoredFeatures.ApparelVerbs &&
+                !Base.IgnoredMods.Contains(apparel.def.modContentPack.Name))
             {
-                Log.Error(
+                Log.ErrorOnce(
                     "[MVCF] Found apparel with a verb while that feature is not enabled. Enabling now. This is not recommend. Contact the author of " +
-                    apparel.def.modContentPack.Name + " and ask them to add a MVCF.ModDef.");
+                    apparel.def.modContentPack.Name + " and ask them to add a MVCF.ModDef.",
+                    apparel.def.modContentPack.Name.GetHashCode());
                 Base.Features.ApparelVerbs = true;
                 Base.ApplyPatches();
             }
@@ -65,11 +67,14 @@ namespace MVCF.Harmony
         {
             var comp = hediff.TryGetComp<HediffComp_VerbGiver>();
             if (comp == null) return;
-            if (!Base.Features.HediffVerbs && comp.VerbTracker.AllVerbs.Any(v => !v.IsMeleeAttack))
+            if (!Base.Features.HediffVerbs && !Base.IgnoredFeatures.HediffVerbs &&
+                comp.VerbTracker.AllVerbs.Any(v => !v.IsMeleeAttack) &&
+                !Base.IgnoredMods.Contains(hediff.def.modContentPack.Name))
             {
-                Log.Error(
+                Log.ErrorOnce(
                     "[MVCF] Found a hediff with a ranged verb while that feature is not enabled. Enabling now. This is not recommend. Contant the author of " +
-                    hediff.def.modContentPack.Name + " and ask them to add a MVCF.ModDef.");
+                    hediff.def.modContentPack.Name + " and ask them to add a MVCF.ModDef.",
+                    hediff.def.modContentPack.Name.GetHashCode());
                 Base.Features.HediffVerbs = true;
                 Base.ApplyPatches();
             }
@@ -107,12 +112,14 @@ namespace MVCF.Harmony
             if (comp == null) return;
             var manager = __instance.pawn?.Manager();
             if (manager == null) return;
-            if (!Base.Features.ExtraEquipmentVerbs &&
-                comp.VerbTracker.AllVerbs.Count(v => !v.IsMeleeAttack) > 1)
+            if (!Base.Features.ExtraEquipmentVerbs && !Base.IgnoredFeatures.ExtraEquipmentVerbs &&
+                comp.VerbTracker.AllVerbs.Count(v => !v.IsMeleeAttack) > 1 &&
+                !Base.IgnoredMods.Contains(eq.def.modContentPack.Name))
             {
-                Log.Error(
+                Log.ErrorOnce(
                     "[MVCF] Found equipment with more than one ranged attack while that feature is not enabled. Enabling now. This is not recommend. Contact the author of " +
-                    eq.def.modContentPack.Name + " and ask them to add a MVCF.ModDef.");
+                    eq.def.modContentPack.Name + " and ask them to add a MVCF.ModDef.",
+                    eq.def.modContentPack.Name.GetHashCode());
                 Base.Features.ExtraEquipmentVerbs = true;
                 Base.ApplyPatches();
             }
