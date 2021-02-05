@@ -39,6 +39,7 @@ namespace MVCF
             if (ModLister.HasActiveModWithName("Prosthetic Combat Framework")) IgnoredFeatures.HediffVerbs = true;
         }
 
+
         public static void CollectFeatureData()
         {
             foreach (var def in DefDatabase<ModDef>.AllDefs)
@@ -81,7 +82,7 @@ namespace MVCF
                 MiscPatches.DoAnimalPatches(Harm);
             }
 
-            if (Features.IntegratedToggle) Gizmos.DoSeparateTogglePatches(Harm);
+            if (Features.IntegratedToggle) Gizmos.DoIntegratedTogglePatches(Harm);
 
             if (Features.IndependentFire)
             {

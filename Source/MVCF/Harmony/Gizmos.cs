@@ -28,7 +28,7 @@ namespace MVCF.Harmony
                 postfix: new HarmonyMethod(typeof(Gizmos), "Pawn_GetGizmos_Postfix"));
         }
 
-        public static void DoSeparateTogglePatches(HarmonyLib.Harmony harm)
+        public static void DoIntegratedTogglePatches(HarmonyLib.Harmony harm)
         {
             harm.Patch(AccessTools.Method(typeof(Command), "GizmoOnGUIInt"),
                 transpiler: new HarmonyMethod(typeof(Gizmos), "GizmoOnGUI_Transpile"));

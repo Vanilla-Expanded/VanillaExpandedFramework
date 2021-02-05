@@ -11,7 +11,8 @@ namespace MVCF.Harmony
 {
     internal class Compat
     {
-        private static Delegate GetStancesOffHand;
+        public static Delegate GetStancesOffHand;
+        public static Delegate IsOffHand;
 
         public static void ApplyCompat(HarmonyLib.Harmony harm)
         {
@@ -35,6 +36,9 @@ namespace MVCF.Harmony
                 GetStancesOffHand = AccessTools.Method(Type.GetType(
                         "DualWield.Ext_Pawn, DualWield"), "GetStancesOffHand")
                     .CreateDelegate(typeof(Func<Pawn, Pawn_StanceTracker>));
+                IsOffHand = AccessTools.Method(Type.GetType(
+                        "DualWield.Ext_ThingWithComps, DualWield"), "IsOffHand")
+                    .CreateDelegate(typeof(Func<ThingWithComps, bool>));
                 harm.Patch(
                     Type.GetType("DualWield.Harmony.Pawn_RotationTracker_UpdateRotation, DualWield")
                         ?.GetMethod("Postfix", BindingFlags.NonPublic | BindingFlags.Static),
@@ -49,18 +53,14 @@ namespace MVCF.Harmony
         public static bool UpdateRotation(Pawn_RotationTracker __0)
         {
             var stances = GetStancesOffHand.DynamicInvoke(Traverse.Create(__0).Field("pawn").GetValue<Pawn>());
-            if (stances == null) Log.Warning("[MVCF] StanceTracker in Dual Wield is null, this may cause issues.");
-            if (stances is Pawn_StanceTracker tracker && tracker.curStance is Stance_Cooldown cool && cool.ticksLeft < 0
-            ) Log.ErrorOnce("[MVCF] Negative cooldown in Dual Wield!", cool.verb.GetHashCode());
+            if (stances == null) Log.Warning("[MVCF] Dual Wield StanceTracker is null, this may cause issues.");
             return stances != null;
         }
 
         public static bool RenderPawnAt(PawnRenderer __0)
         {
             var stances = GetStancesOffHand.DynamicInvoke(Traverse.Create(__0).Field("pawn").GetValue<Pawn>());
-            if (stances == null) Log.Warning("[MVCF] StanceTracker in Dual Wield is null, this may cause issues.");
-            if (stances is Pawn_StanceTracker tracker && tracker.curStance is Stance_Cooldown cool && cool.ticksLeft < 0
-            ) Log.ErrorOnce("[MVCF] Negative cooldown in Dual Wield!", cool.verb.GetHashCode());
+            if (stances == null) Log.Warning("[MVCF] Dual Wield StanceTracker is null, this may cause issues.");
             return stances != null;
         }
 
@@ -71,8 +71,27 @@ namespace MVCF.Harmony
             var idx1 = list.FindIndex(ins => ins.IsLdarg(0));
             var idx2 = list.FindIndex(ins => ins.opcode == OpCodes.Ldfld && (FieldInfo) ins.operand ==
                 AccessTools.Field(typeof(Pawn_StanceTracker), "curStance"));
+            var label = list.Find(ins => ins.opcode == OpCodes.Br).operand;
             list.RemoveRange(idx1, idx2 - idx1 - 2);
+            var idx3 = list.FindIndex(ins => ins.IsLdarg(0));
+            var list2 = new List<CodeInstruction>
+            {
+                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(Pawn_StanceTracker), "pawn")),
+                new CodeInstruction(OpCodes.Ldarg_1),
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(Stance_Busy), "verb")),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Compat), "CanRunAndGun")),
+                new CodeInstruction(OpCodes.Brfalse_S, label)
+            };
+            list.InsertRange(idx3 - 1, list2);
             return list;
+        }
+
+        public static bool CanRunAndGun(Pawn pawn, Verb verb)
+        {
+            if (verb.EquipmentSource == null) return true;
+            if (IsOffHand == null) return true;
+            return !(bool) IsOffHand.DynamicInvoke(verb.EquipmentSource);
         }
 
         // ReSharper disable once InconsistentNaming
