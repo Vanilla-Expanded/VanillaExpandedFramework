@@ -18,9 +18,7 @@ namespace MVCF
             "Adeptus Mechanicus: Armoury",
             "Dragon's Descent",
             "[RWY]Dragon's Descent: Void Dwellers",
-            "Alpha Animals",
             "Genetic Rim",
-            "GeneticRim Alpha Animals Patch",
             "GeneticRim Dinosauria Patch",
             "GeneticRim Megafauna Patch",
             "Cybernetic Warfare and Special Weapons (Continued)"
