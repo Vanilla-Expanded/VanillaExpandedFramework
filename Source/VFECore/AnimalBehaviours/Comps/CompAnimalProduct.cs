@@ -122,12 +122,31 @@ namespace AnimalBehaviours
 
                 if (this.Props.hasAditional)
                 {
-
                     if (rand.NextDouble() <= ((float)Props.additionalItemsProb / 100))
                     {
-                        Thing thingExtra = ThingMaker.MakeThing(ThingDef.Named(Props.additionalItems.RandomElement()), null);
-                        thingExtra.stackCount = Props.additionalItemsNumber;
-                        GenPlace.TryPlaceThing(thingExtra, doer.Position, doer.Map, ThingPlaceMode.Near, null, null, default(Rot4));
+                        if (Props.goInOrder)
+                        {
+
+                            ThingDef thingDef;
+                            foreach (string customThingToProduce in Props.additionalItems.InRandomOrder())
+                            {
+                                thingDef = DefDatabase<ThingDef>.GetNamedSilentFail(customThingToProduce);
+                                if (thingDef != null)
+                                {
+                                    Thing thingExtra = ThingMaker.MakeThing(ThingDef.Named(Props.additionalItems.RandomElement()), null);
+                                    thingExtra.stackCount = Props.additionalItemsNumber;
+                                    GenPlace.TryPlaceThing(thingExtra, doer.Position, doer.Map, ThingPlaceMode.Near, null, null, default(Rot4));
+                                }
+                            }
+                        }
+                        else
+                        {
+
+                            Thing thingExtra = ThingMaker.MakeThing(ThingDef.Named(Props.additionalItems.RandomElement()), null);
+                            thingExtra.stackCount = Props.additionalItemsNumber;
+                            GenPlace.TryPlaceThing(thingExtra, doer.Position, doer.Map, ThingPlaceMode.Near, null, null, default(Rot4));
+
+                        }
                     }
 
                 }
