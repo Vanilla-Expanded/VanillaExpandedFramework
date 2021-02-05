@@ -73,9 +73,11 @@ namespace MVCF.Utilities
                 if (verb.CasterPawn.WorkTagIsDisabled(WorkTags.Violent))
                     gizmo.Disable("IsIncapableOfViolence".Translate(verb.CasterPawn.LabelShort,
                         verb.CasterPawn));
-                else if (!(verb.CasterPawn.drafter == null || verb.CasterPawn.drafter.Drafted))
+                else if (verb.CasterPawn.drafter != null && !verb.CasterPawn.drafter.Drafted)
                     gizmo.Disable("IsNotDrafted".Translate(verb.CasterPawn.LabelShort,
                         verb.CasterPawn));
+                else if (verb.CasterPawn.InMentalState)
+                    gizmo.Disable("CannotOrderNonControlled".Translate());
             }
 
             yield return gizmo;
