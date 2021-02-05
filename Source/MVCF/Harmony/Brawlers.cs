@@ -69,9 +69,9 @@ namespace MVCF.Harmony
             var traits = pawn.story?.traits;
             if (traits == null) return;
             if (!traits.HasTrait(TraitDefOf.Brawler)) return;
-            foreach (var opt in opts)
-                if (opt.Label.Contains(str.Translate((NamedArgument) apparel.LabelShort, (NamedArgument) apparel)))
-                    opt.Label += " " + "EquipWarningBrawler".Translate();
+            foreach (var opt in opts.Where(opt =>
+                opt.Label.Contains(str.Translate((NamedArgument) apparel.LabelShort, (NamedArgument) apparel))))
+                opt.Label += " " + "EquipWarningBrawler".Translate();
         }
     }
 }
