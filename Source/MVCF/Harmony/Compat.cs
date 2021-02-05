@@ -9,7 +9,7 @@ using Verse;
 
 namespace MVCF.Harmony
 {
-    internal class Compat
+    public class Compat
     {
         public static Delegate GetStancesOffHand;
         public static Delegate IsOffHand;

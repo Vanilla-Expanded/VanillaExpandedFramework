@@ -23,13 +23,13 @@ namespace MVCF.Harmony
             var job = pawn.CurJob;
 
             if (manager.debugOpts.VerbLogging)
-                Log.Message("TryGetAttackVerb of " + pawn + " on target " + target + " with job " + job +
+                Log.Message("AttackVerb of " + pawn + " on target " + target + " with job " + job +
                             " that has target " + job?.targetA + " and CurrentVerb " + manager.CurrentVerb +
                             " and OverrideVerb " + manager.OverrideVerb);
 
             if (manager.OverrideVerb != null) return manager.OverrideVerb;
 
-            if (target == null && (job == null || !job.targetA.IsValid || job.def != JobDefOf.AttackStatic ||
+            if (target == null && (job == null || !job.targetA.IsValid || job.def == JobDefOf.Wait_Combat ||
                                    !job.targetA.HasThing && (job.targetA.Cell == pawn.Position ||
                                                              !job.targetA.Cell.InBounds(pawn.Map))))
             {
