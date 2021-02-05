@@ -53,14 +53,12 @@ namespace MVCF.Harmony
         public static bool UpdateRotation(Pawn_RotationTracker __0)
         {
             var stances = GetStancesOffHand.DynamicInvoke(Traverse.Create(__0).Field("pawn").GetValue<Pawn>());
-            if (stances == null) Log.Warning("[MVCF] Dual Wield StanceTracker is null, this may cause issues.");
             return stances != null;
         }
 
         public static bool RenderPawnAt(PawnRenderer __0)
         {
             var stances = GetStancesOffHand.DynamicInvoke(Traverse.Create(__0).Field("pawn").GetValue<Pawn>());
-            if (stances == null) Log.Warning("[MVCF] Dual Wield StanceTracker is null, this may cause issues.");
             return stances != null;
         }
 
