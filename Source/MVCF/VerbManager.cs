@@ -131,6 +131,12 @@ namespace MVCF
         public void AddVerb(Verb verb, VerbSource source, AdditionalVerbProps props)
         {
             if (debugOpts.VerbLogging) Log.Message("Adding " + verb + " from " + source + " with props " + props);
+            if (AllVerbs.Contains(verb))
+            {
+                if (debugOpts.VerbLogging) Log.Warning("Added duplicate verb " + verb);
+                return;
+            }
+
             ManagedVerb mv;
             if (props != null && props.canFireIndependently)
             {
@@ -163,9 +169,12 @@ namespace MVCF
 
         public void RemoveVerb(Verb verb)
         {
+            if (debugOpts.VerbLogging) Log.Message("Removing " + verb);
             var mv = verbs.Find(m => m.Verb == verb);
+            if (debugOpts.VerbLogging) Log.Message("Found ManagedVerb: " + mv);
 
-            verbs.Remove(mv);
+            var success = verbs.Remove(mv);
+            if (debugOpts.VerbLogging) Log.Message("Succeeded at removing: " + success);
             if (drawVerbs.Contains(mv)) drawVerbs.Remove(mv);
             var idx = tickVerbs.FindIndex(tv => tv.Verb == verb);
             if (idx >= 0)
