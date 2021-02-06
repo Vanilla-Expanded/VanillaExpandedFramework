@@ -31,7 +31,7 @@ namespace AnimalBehaviours
             if (tickCounter > Props.tickInterval)
             {
                 thisPawn = this.parent as Pawn;
-                //Null map check. Also will only work if pawn is not dead or downed
+                //Null map check. Also will only work if pawn is not dead or downed, and if needsToBeTamed is true, that the animal is tamed
                 if (thisPawn != null && thisPawn.Map != null && !thisPawn.Dead && !thisPawn.Downed && (!Props.needsToBeTamed || (Props.needsToBeTamed && thisPawn.Faction!=null && thisPawn.Faction.IsPlayer)))
                 {
                     foreach (Thing thing in GenRadial.RadialDistinctThingsAround(thisPawn.Position, thisPawn.Map, Props.radius, true))

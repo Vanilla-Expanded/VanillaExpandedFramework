@@ -29,8 +29,8 @@ namespace AnimalBehaviours
             {
                 Pawn pawn = this.parent as Pawn;
 
-                //Null map check. Also check that the animal isn't sleeping, downed or dead
-                if ((pawn.Map != null) && pawn.Awake() && !pawn.Downed && !pawn.Dead)
+                //Null map check. Also check that the animal isn't sleeping, downed or dead, and if onlyWhenTamed is true, that the animal is tamed
+                if ((pawn.Map != null) && pawn.Awake() && !pawn.Downed && !pawn.Dead && (!Props.onlyWhenTamed || (Props.onlyWhenTamed && pawn.Faction != null && pawn.Faction.IsPlayer)))
                 {
                     if (pawn.Position.GetTerrain(pawn.Map).affordances.Contains(TerrainAffordanceDefOf.Diggable))
                     {
