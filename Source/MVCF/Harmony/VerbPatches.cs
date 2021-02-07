@@ -31,7 +31,10 @@ namespace MVCF.Harmony
         {
             if (__instance.verbProps.IsMeleeAttack || !__instance.CasterIsPawn)
                 return true;
-            if (Base.IgnoredMods.Contains(__instance.EquipmentSource.def.modContentPack.Name)) return true;
+            var modName = __instance.EquipmentSource == null
+                ? __instance.HediffCompSource?.parent?.def?.modContentPack?.Name
+                : __instance.EquipmentSource.def?.modContentPack?.Name;
+            if (modName != null && Base.IgnoredMods.Contains(modName)) return true;
             var man = __instance.CasterPawn.Manager();
             if (man == null) return true;
             if (man.debugOpts.VerbLogging)
