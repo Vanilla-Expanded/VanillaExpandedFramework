@@ -39,16 +39,16 @@ namespace MVCF
             var verb = pawn.TryGetAttackVerb(enemyTarget, !pawn.IsColonist);
             if (verb == null) return null;
             if (verb.IsMeleeAttack) return null;
-            if (enemyTarget is Pawn && enemyTarget.Faction == Faction.OfPlayer &&
-                pawn.Position.InHorDistOf(enemyTarget.Position, 40f))
-                Find.TickManager.slower.SignalForceNormalSpeed();
 
             if ((pawn.Position.Standable(pawn.Map) ||
                  (pawn.Position - enemyTarget.Position).LengthHorizontalSquared < 25) && verb.CanHitTarget(enemyTarget))
+            {
+                TryCauseTimeSlowdown(pawn, enemyTarget);
                 return new Job(JobDefOf.Wait_Combat, ExpiryIntervalShooterSucceeded.RandomInRange, true)
                 {
                     canUseRangedWeapon = true
                 };
+            }
 
             if (!CastPositionFinder.TryFindCastPosition(new CastPositionRequest
             {
@@ -59,6 +59,8 @@ namespace MVCF
                 target = enemyTarget
             }, out var position))
                 return null;
+
+            TryCauseTimeSlowdown(pawn, enemyTarget);
 
             if (position == pawn.Position)
                 return new Job(JobDefOf.Wait_Combat, ExpiryIntervalShooterSucceeded.RandomInRange, true)
@@ -71,6 +73,13 @@ namespace MVCF
                 expiryInterval = ExpiryIntervalShooterSucceeded.RandomInRange,
                 checkOverrideOnExpire = true
             };
+        }
+
+        private static void TryCauseTimeSlowdown(Pawn pawn, Thing enemyTarget)
+        {
+            if (enemyTarget is Pawn && enemyTarget.Faction == Faction.OfPlayer &&
+                pawn.Position.InHorDistOf(enemyTarget.Position, 40f))
+                Find.TickManager.slower.SignalForceNormalSpeed();
         }
     }
 }
