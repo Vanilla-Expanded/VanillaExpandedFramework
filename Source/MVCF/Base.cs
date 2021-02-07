@@ -52,6 +52,11 @@ namespace MVCF
             ApplyPatches();
         }
 
+        public static bool IsIgnoredMod(string name)
+        {
+            return name != null && IgnoredMods.Contains(name);
+        }
+
         public static void ApplyPatches()
         {
             if (Features.EnabledAtAll)
