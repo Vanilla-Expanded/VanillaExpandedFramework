@@ -20,6 +20,7 @@ namespace MVCF.Harmony
 
         public static void ApparelAdded_Postfix(Pawn_ApparelTracker __instance, Apparel apparel)
         {
+            if (Base.IgnoredMods.Contains(apparel.def.modContentPack.Name)) return;
             var comp = apparel.TryGetComp<Comp_VerbGiver>();
             if (comp == null) return;
             if (!Base.Features.ApparelVerbs && !Base.IgnoredFeatures.ApparelVerbs &&
@@ -42,6 +43,7 @@ namespace MVCF.Harmony
 
         public static void ApparelRemoved_Postfix(Apparel apparel, Pawn_ApparelTracker __instance)
         {
+            if (Base.IgnoredMods.Contains(apparel.def.modContentPack.Name)) return;
             var comp = apparel.TryGetComp<Comp_VerbGiver>();
             if (comp == null) return;
             comp.Notify_Unworn();
@@ -65,6 +67,7 @@ namespace MVCF.Harmony
 
         public static void AddHediff_Postfix(Hediff hediff, Pawn_HealthTracker __instance)
         {
+            if (Base.IgnoredMods.Contains(hediff.def.modContentPack.Name)) return;
             var comp = hediff.TryGetComp<HediffComp_VerbGiver>();
             if (comp == null) return;
             if (!Base.Features.HediffVerbs && !Base.IgnoredFeatures.HediffVerbs &&
@@ -89,6 +92,7 @@ namespace MVCF.Harmony
 
         public static void RemoveHediff_Postfix(Hediff hediff, Pawn_HealthTracker __instance)
         {
+            if (Base.IgnoredMods.Contains(hediff.def.modContentPack.Name)) return;
             var comp = hediff.TryGetComp<HediffComp_VerbGiver>();
             if (comp == null) return;
             var pawn = __instance.hediffSet.pawn;
@@ -108,6 +112,7 @@ namespace MVCF.Harmony
 
         public static void EquipmentAdded_Postfix(ThingWithComps eq, Pawn_EquipmentTracker __instance)
         {
+            if (Base.IgnoredMods.Contains(eq.def.modContentPack.Name)) return;
             var comp = eq.TryGetComp<CompEquippable>();
             if (comp == null) return;
             var manager = __instance.pawn?.Manager();
@@ -130,6 +135,7 @@ namespace MVCF.Harmony
 
         public static void EquipmentRemoved_Postfix(ThingWithComps eq, Pawn_EquipmentTracker __instance)
         {
+            if (Base.IgnoredMods.Contains(eq.def.modContentPack.Name)) return;
             var comp = eq.TryGetComp<CompEquippable>();
             if (comp == null) return;
             var manager = __instance.pawn?.Manager();

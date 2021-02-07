@@ -19,8 +19,6 @@ namespace MVCF
             "Dragon's Descent",
             "[RWY]Dragon's Descent: Void Dwellers",
             "Genetic Rim",
-            "GeneticRim Dinosauria Patch",
-            "GeneticRim Megafauna Patch",
             "Cybernetic Warfare and Special Weapons (Continued)"
         };
 

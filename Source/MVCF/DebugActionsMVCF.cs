@@ -25,6 +25,18 @@ namespace MVCF
             DebugActionsUtility.DustPuffFrom(p);
             MoteMaker.ThrowText(p.DrawPos, p.Map, p.LabelShort + "\n" + (man.debugOpts.ScoreLogging ? "ON" : "OFF"));
         }
+
+        [DebugAction("Pawns", "Log MVCF ManagedVerbs", actionType = DebugActionType.ToolMapForPawns,
+            allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        public static void LogManagedVerbs(Pawn p)
+        {
+            var man = p.Manager();
+            if (man == null) return;
+            DebugActionsUtility.DustPuffFrom(p);
+            Log.Message("All ManagedVerbs for " + p.LabelCap);
+            foreach (var verb in man.ManagedVerbs)
+                Log.Message("  " + verb.Verb + ": " + (verb.Enabled ? "Enabled" : "Disabled"));
+        }
     }
 
     public struct DebugOptions
