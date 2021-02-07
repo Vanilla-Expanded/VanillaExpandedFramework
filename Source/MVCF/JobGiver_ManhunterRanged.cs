@@ -22,11 +22,8 @@ namespace MVCF
                                         TargetKeepRadius * TargetKeepRadius ||
                                         ((IAttackTarget) enemyTarget).ThreatDisabled(pawn))) enemyTarget = null;
             if (pawn.TryGetAttackVerb(null, !pawn.IsColonist) == null)
-            {
                 enemyTarget = null;
-            }
-            else
-            {
+            else if (enemyTarget == null)
                 enemyTarget = (Thing) AttackTargetFinder.BestAttackTarget(pawn, TargetScanFlags.NeedThreat,
                                   x => x is Pawn && x.def.race.intelligence >= Intelligence.ToolUser, 0f, 9999f,
                                   default, float.MaxValue, true) ??
@@ -35,11 +32,6 @@ namespace MVCF
                                   TargetScanFlags.NeedReachable | TargetScanFlags.NeedThreat, t => t is Building, 0f,
                                   70f);
 
-                if (enemyTarget is Pawn && enemyTarget.Faction == Faction.OfPlayer &&
-                    pawn.Position.InHorDistOf(enemyTarget.Position, 40f))
-                    Find.TickManager.slower.SignalForceNormalSpeed();
-            }
-
             pawn.mindState.enemyTarget = enemyTarget;
 
             if (enemyTarget == null) return null;
@@ -47,10 +39,12 @@ namespace MVCF
             var verb = pawn.TryGetAttackVerb(enemyTarget, !pawn.IsColonist);
             if (verb == null) return null;
             if (verb.IsMeleeAttack) return null;
-            var positionIsStandable = pawn.Position.Standable(pawn.Map);
-            var canHitEnemy = verb.CanHitTarget(enemyTarget);
-            var enemyNear = (pawn.Position - enemyTarget.Position).LengthHorizontalSquared < 25;
-            if ((positionIsStandable || enemyNear) && canHitEnemy)
+            if (enemyTarget is Pawn && enemyTarget.Faction == Faction.OfPlayer &&
+                pawn.Position.InHorDistOf(enemyTarget.Position, 40f))
+                Find.TickManager.slower.SignalForceNormalSpeed();
+
+            if ((pawn.Position.Standable(pawn.Map) ||
+                 (pawn.Position - enemyTarget.Position).LengthHorizontalSquared < 25) && verb.CanHitTarget(enemyTarget))
                 return new Job(JobDefOf.Wait_Combat, ExpiryIntervalShooterSucceeded.RandomInRange, true)
                 {
                     canUseRangedWeapon = true
