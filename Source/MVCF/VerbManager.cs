@@ -95,9 +95,8 @@ namespace MVCF
                 Base.ApplyPatches();
             }
 
-
             if (!Base.IsIgnoredMod(pawn?.def?.modContentPack?.Name) && pawn?.VerbTracker?.AllVerbs != null &&
-                !Base.Features.RangedAnimals && !Base.IgnoredFeatures.RangedAnimals)
+                Base.Features.RangedAnimals && !Base.IgnoredFeatures.RangedAnimals)
                 foreach (var verb in pawn.VerbTracker.AllVerbs)
                     AddVerb(verb, VerbSource.RaceDef, pawn.TryGetComp<Comp_VerbGiver>()?.PropsFor(verb));
 
