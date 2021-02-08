@@ -52,13 +52,13 @@ namespace MVCF.Harmony
 
         public static bool UpdateRotation(Pawn_RotationTracker __0)
         {
-            var stances = GetStancesOffHand.DynamicInvoke(Traverse.Create(__0).Field("pawn").GetValue<Pawn>());
+            var stances = GetStancesOffHand.DynamicInvoke(__0.pawn);
             return stances != null;
         }
 
         public static bool RenderPawnAt(PawnRenderer __0)
         {
-            var stances = GetStancesOffHand.DynamicInvoke(Traverse.Create(__0).Field("pawn").GetValue<Pawn>());
+            var stances = GetStancesOffHand.DynamicInvoke(__0.pawn);
             return stances != null;
         }
 

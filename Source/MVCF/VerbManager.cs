@@ -300,7 +300,7 @@ namespace MVCF
             return false;
         }
 
-        protected override bool TryCastShot()
+        public override bool TryCastShot()
         {
             return false;
         }

@@ -5,7 +5,7 @@ namespace MVCF.Verbs
 {
     public class Verb_SmokePop : RimWorld.Verb_SmokePop
     {
-        protected override bool TryCastShot()
+        public override bool TryCastShot()
         {
             GenExplosion.DoExplosion(caster.Position, caster.Map,
                 EffectiveRange, DamageDefOf.Smoke, null, -1, -1f, null, null,
