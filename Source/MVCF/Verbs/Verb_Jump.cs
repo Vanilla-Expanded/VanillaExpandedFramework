@@ -5,9 +5,9 @@ namespace MVCF.Verbs
 {
     public class Verb_Jump : RimWorld.Verb_Jump
     {
-        public override float EffectiveRange => verbProps.range;
+        protected override float EffectiveRange => verbProps.range;
 
-        public override bool TryCastShot()
+        protected override bool TryCastShot()
         {
             if (!ModLister.RoyaltyInstalled)
             {

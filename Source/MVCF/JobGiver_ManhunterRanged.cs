@@ -11,7 +11,7 @@ namespace MVCF
         private const float TargetKeepRadius = 65f;
         private static readonly IntRange ExpiryIntervalShooterSucceeded = new IntRange(450, 550);
 
-        public override Job TryGiveJob(Pawn pawn)
+        protected override Job TryGiveJob(Pawn pawn)
         {
             if (!Base.Features.RangedAnimals) return null;
             var enemyTarget = pawn.mindState.enemyTarget;

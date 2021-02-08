@@ -13,6 +13,8 @@ namespace MVCF.Harmony
     {
         public static Delegate GetStancesOffHand;
         public static Delegate IsOffHand;
+        public static AccessTools.FieldRef<Pawn_RotationTracker, Pawn> RotationTrackerPawn;
+        public static AccessTools.FieldRef<PawnRenderer, Pawn> RendererPawn;
 
         public static void ApplyCompat(HarmonyLib.Harmony harm)
         {
@@ -33,6 +35,9 @@ namespace MVCF.Harmony
             if (ModLister.HasActiveModWithName("Dual Wield") && Base.Features.HumanoidVerbs)
             {
                 Log.Message("[MVCF] Applying Dual Wield compatibility patch");
+                RotationTrackerPawn = AccessTools
+                    .FieldRefAccess<Pawn_RotationTracker, Pawn>("pawn");
+                RendererPawn = AccessTools.FieldRefAccess<PawnRenderer, Pawn>("pawn");
                 GetStancesOffHand = AccessTools.Method(Type.GetType(
                         "DualWield.Ext_Pawn, DualWield"), "GetStancesOffHand")
                     .CreateDelegate(typeof(Func<Pawn, Pawn_StanceTracker>));
@@ -52,13 +57,13 @@ namespace MVCF.Harmony
 
         public static bool UpdateRotation(Pawn_RotationTracker __0)
         {
-            var stances = GetStancesOffHand.DynamicInvoke(__0.pawn);
+            var stances = GetStancesOffHand.DynamicInvoke(RotationTrackerPawn.Invoke(__0));
             return stances != null;
         }
 
         public static bool RenderPawnAt(PawnRenderer __0)
         {
-            var stances = GetStancesOffHand.DynamicInvoke(__0.pawn);
+            var stances = GetStancesOffHand.DynamicInvoke(RendererPawn.Invoke(__0));
             return stances != null;
         }
 
