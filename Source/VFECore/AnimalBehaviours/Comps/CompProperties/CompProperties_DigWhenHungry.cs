@@ -13,6 +13,7 @@ namespace AnimalBehaviours
         public int customAmountToDig = 1;
         public int timeToDig = 40000;
         public List<string> acceptedTerrains = null;
+        public bool spawnForbidden = false;
 
         public CompProperties_DigWhenHungry()
         {
