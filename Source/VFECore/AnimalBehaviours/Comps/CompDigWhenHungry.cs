@@ -36,6 +36,10 @@ namespace AnimalBehaviours
                                 ThingDef newThing = ThingDef.Named(this.Props.customThingToDig);
                                 Thing newcorpse = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
                                 newcorpse.stackCount = this.Props.customAmountToDig;
+                                if (Props.spawnForbidden)
+                                {
+                                    newcorpse.SetForbidden(true);
+                                }
                                 if (this.effecter == null)
                                 {
                                     this.effecter = EffecterDefOf.Mine.Spawn();
@@ -48,6 +52,10 @@ namespace AnimalBehaviours
                             ThingDef newThing = ThingDef.Named(this.Props.customThingToDig);
                             Thing newcorpse = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
                             newcorpse.stackCount = this.Props.customAmountToDig;
+                            if (Props.spawnForbidden)
+                            {
+                                newcorpse.SetForbidden(true);
+                            }
                             if (this.effecter == null)
                             {
                                 this.effecter = EffecterDefOf.Mine.Spawn();
