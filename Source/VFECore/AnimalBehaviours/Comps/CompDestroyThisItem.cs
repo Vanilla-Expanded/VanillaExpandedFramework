@@ -23,30 +23,40 @@ namespace AnimalBehaviours
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
-            DestroyableObjects_MapComponent mapComp = this.parent.Map.GetComponent<DestroyableObjects_MapComponent>();
-            if (mapComp != null)
+            if (this.parent.Map != null)
             {
-                mapComp.AddObjectToMap(this.parent);
+                DestroyableObjects_MapComponent mapComp = this.parent.Map.GetComponent<DestroyableObjects_MapComponent>();
+                if (mapComp != null)
+                {
+                    mapComp.AddObjectToMap(this.parent);
+                }
             }
+
         }
 
         public override void PostDeSpawn(Map map)
         {
-            DestroyableObjects_MapComponent mapComp = map.GetComponent<DestroyableObjects_MapComponent>();
-            if (mapComp != null)
+            if (map != null)
             {
-                mapComp.RemoveObjectFromMap(this.parent);
+                DestroyableObjects_MapComponent mapComp = map.GetComponent<DestroyableObjects_MapComponent>();
+                if (mapComp != null)
+                {
+                    mapComp.RemoveObjectFromMap(this.parent);
+                }
             }
         }
 
         public override void PostDestroy(DestroyMode mode, Map previousMap)
         {
-
-            DestroyableObjects_MapComponent mapComp = previousMap.GetComponent<DestroyableObjects_MapComponent>();
-            if (mapComp != null)
+            if (previousMap != null)
             {
-                mapComp.RemoveObjectFromMap(this.parent);
+                DestroyableObjects_MapComponent mapComp = previousMap.GetComponent<DestroyableObjects_MapComponent>();
+                if (mapComp != null)
+                {
+                    mapComp.RemoveObjectFromMap(this.parent);
+                }
             }
+
         }
 
         public override void PostExposeData()
