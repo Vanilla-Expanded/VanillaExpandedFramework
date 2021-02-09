@@ -48,14 +48,12 @@ namespace MVCF.Harmony
                     !mv.Verb.IsMeleeAttack && mv.Enabled &&
                     (!actor.IsColonist || !mv.Verb.verbProps.onlyManualCast) &&
                     (mv.Props == null || !mv.Props.canFireIndependently) && mv.Verb.Available());
-                var verb = actor.BestVerbForTarget(actor.jobs.curJob.GetTarget(targetInd), verbs, man);
+                var verb = actor.BestVerbForTarget(actor.jobs.curJob.GetTarget(targetInd), verbs, man) ??
+                           actor.TryGetAttackVerb(actor.jobs.curJob.GetTarget(targetInd).Thing, !actor.IsColonist);
                 if (verb == null)
-                {
                     actor.jobs.EndCurrentJob(JobCondition.Incompletable);
-                    return;
-                }
-
-                actor.jobs.curJob.verbToUse = verb;
+                else
+                    actor.jobs.curJob.verbToUse = verb;
             };
             __result = toil;
             return false;
