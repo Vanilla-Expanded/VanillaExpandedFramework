@@ -12,6 +12,8 @@ namespace AnimalBehaviours
         public List<int> customAmountToDig = null;
         public int ticksToDig = 60000;
         public bool onlyWhenTamed = false;
+        //Should items be spawned forbidden?
+        public bool spawnForbidden = false;
 
         public CompProperties_DigPeriodically()
         {
