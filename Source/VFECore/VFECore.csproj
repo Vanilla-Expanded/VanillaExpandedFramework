@@ -119,11 +119,13 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_MindEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_NearbyEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_PassiveRegenerator.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Refueling.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Regeneration.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_StateAfterHealthLoss.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_SummonOnSpawn.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ThoughtEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Untameable.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompRefueling.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompRegeneration.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompStateAfterHealthLoss.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompSummonOnSpawn.cs" />
