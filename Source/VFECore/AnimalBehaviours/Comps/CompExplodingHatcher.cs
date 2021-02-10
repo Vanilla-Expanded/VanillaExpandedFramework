@@ -68,6 +68,7 @@ namespace AnimalBehaviours
                     {
                         if (pawn != null)
                         {
+                          
                             if (this.hatcheeParent != null)
                             {
                                 if (pawn.playerSettings != null && this.hatcheeParent.playerSettings != null && this.hatcheeParent.Faction == this.hatcheeFaction)
@@ -160,7 +161,7 @@ namespace AnimalBehaviours
         {
             if (!this.TemperatureDamaged)
             {
-                return "EggProgress".Translate() + ": " + this.gestateProgress.ToStringPercent();
+                return "EggProgress".Translate() + ": " + this.gestateProgress.ToStringPercent() + "\n" + "VEF_WarningEggExplodes".Translate();
             }
             return null;
         }

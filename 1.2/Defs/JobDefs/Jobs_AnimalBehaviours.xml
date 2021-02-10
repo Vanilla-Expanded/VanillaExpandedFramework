@@ -12,6 +12,14 @@
 		<driverClass>AnimalBehaviours.JobDriver_DestroyItem</driverClass>
 		<reportString>destroying an item.</reportString>
 	</JobDef>
+	
+	<JobDef>
+    <defName>VEF_LayExplodingEgg</defName>
+    <driverClass>AnimalBehaviours.JobDriver_LayExplodingEgg</driverClass>
+    <reportString>laying egg.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
 
 
 

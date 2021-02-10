@@ -6,6 +6,8 @@
 	<VEF_AsexualHatchedEgg>{0} has sporulated.</VEF_AsexualHatchedEgg>
 	<VEF_NotTameable>This creature is untameable</VEF_NotTameable>
 	<VEF_TimeToMetamorphosis>Time to metamorphosis: {0}</VEF_TimeToMetamorphosis>
+	
+	<VEF_WarningEggExplodes>Warning, this egg explodes when hatching!</VEF_WarningEggExplodes>
 
 
 </LanguageData>
