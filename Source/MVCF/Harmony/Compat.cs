@@ -11,7 +11,7 @@ namespace MVCF.Harmony
 {
     public class Compat
     {
-        public static Delegate GetStancesOffHand;
+        public static MethodInfo GetStancesOffHandInfo;
         public static Delegate IsOffHand;
         public static AccessTools.FieldRef<Pawn_RotationTracker, Pawn> RotationTrackerPawn;
         public static AccessTools.FieldRef<PawnRenderer, Pawn> RendererPawn;
@@ -38,35 +38,60 @@ namespace MVCF.Harmony
                 RotationTrackerPawn = AccessTools
                     .FieldRefAccess<Pawn_RotationTracker, Pawn>("pawn");
                 RendererPawn = AccessTools.FieldRefAccess<PawnRenderer, Pawn>("pawn");
-                GetStancesOffHand = AccessTools.Method(Type.GetType(
-                        "DualWield.Ext_Pawn, DualWield"), "GetStancesOffHand")
-                    .CreateDelegate(typeof(Func<Pawn, Pawn_StanceTracker>));
+                GetStancesOffHandInfo = AccessTools.Method(Type.GetType(
+                    "DualWield.Ext_Pawn, DualWield"), "GetStancesOffHand");
                 IsOffHand = AccessTools.Method(Type.GetType(
                         "DualWield.Ext_ThingWithComps, DualWield"), "IsOffHand")
                     .CreateDelegate(typeof(Func<ThingWithComps, bool>));
+
                 harm.Patch(
                     Type.GetType("DualWield.Harmony.Pawn_RotationTracker_UpdateRotation, DualWield")
                         ?.GetMethod("Postfix", BindingFlags.NonPublic | BindingFlags.Static),
-                    new HarmonyMethod(typeof(Compat), "UpdateRotation"));
+                    transpiler: new HarmonyMethod(typeof(Compat), "UpdateRotationTranspile"));
                 harm.Patch(
                     Type.GetType("DualWield.Harmony.PawnRenderer_RenderPawnAt, DualWield")
                         ?.GetMethod("Postfix", BindingFlags.NonPublic | BindingFlags.Static),
-                    new HarmonyMethod(typeof(Compat), "RenderPawnAt"));
+                    transpiler: new HarmonyMethod(typeof(Compat), "RenderPawnAtTranspile"));
             }
         }
 
-        public static bool UpdateRotation(Pawn_RotationTracker __0)
+        public static IEnumerable<CodeInstruction> UpdateRotationTranspile(IEnumerable<CodeInstruction> instructions,
+            ILGenerator generator)
         {
-            var stances = GetStancesOffHand.DynamicInvoke(RotationTrackerPawn.Invoke(__0));
-            return stances != null;
+            var builder = generator.DeclareLocal(typeof(Pawn_StanceTracker));
+            var list = instructions.ToList();
+            var idx = list.FindIndex(ins =>
+                ins.opcode == OpCodes.Call && (MethodInfo) ins.operand == GetStancesOffHandInfo);
+            var label = list.FindLast(ins => ins.opcode == OpCodes.Br_S).operand;
+            var list2 = new List<CodeInstruction>
+            {
+                new CodeInstruction(OpCodes.Stloc, builder),
+                new CodeInstruction(OpCodes.Ldloc, builder),
+                new CodeInstruction(OpCodes.Brfalse_S, label),
+                new CodeInstruction(OpCodes.Ldloc, builder)
+            };
+            list.InsertRange(idx + 1, list2);
+            return list;
         }
 
-        public static bool RenderPawnAt(PawnRenderer __0)
+        public static IEnumerable<CodeInstruction> RenderPawnAtTranspile(IEnumerable<CodeInstruction> instructions,
+            ILGenerator generator)
         {
-            var stances = GetStancesOffHand.DynamicInvoke(RendererPawn.Invoke(__0));
-            return stances != null;
+            var builder = generator.DeclareLocal(typeof(Pawn_StanceTracker));
+            var list = instructions.ToList();
+            var idx = list.FindLastIndex(ins =>
+                ins.opcode == OpCodes.Callvirt);
+            var label = list.FindLast(ins => ins.opcode == OpCodes.Brfalse_S).operand;
+            var list2 = new List<CodeInstruction>
+            {
+                new CodeInstruction(OpCodes.Stloc, builder),
+                new CodeInstruction(OpCodes.Ldloc, builder),
+                new CodeInstruction(OpCodes.Brfalse_S, label),
+                new CodeInstruction(OpCodes.Ldloc, builder)
+            };
+            list.InsertRange(idx, list2);
+            return list;
         }
-
 
         public static IEnumerable<CodeInstruction> RunAndGunSetStance(IEnumerable<CodeInstruction> instructions)
         {
