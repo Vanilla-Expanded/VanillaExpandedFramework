@@ -40,6 +40,9 @@ namespace MVCF
             if (verb == null) return null;
             if (verb.IsMeleeAttack) return null;
 
+            if (verb.GetDamageDef() == DamageDefOf.Stun && enemyTarget is Pawn p && p.stances.stunner.Stunned)
+                return null;
+
             if ((pawn.Position.Standable(pawn.Map) ||
                  (pawn.Position - enemyTarget.Position).LengthHorizontalSquared < 25) && verb.CanHitTarget(enemyTarget))
             {
