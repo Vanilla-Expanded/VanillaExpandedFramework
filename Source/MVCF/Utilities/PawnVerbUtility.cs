@@ -47,7 +47,7 @@ namespace MVCF.Utilities
             VerbManager man = null)
         {
             var debug = man?.debugOpts != null && man.debugOpts.ScoreLogging;
-            if (!target.IsValid || !target.Cell.InBounds(p.Map))
+            if (!target.IsValid || p.Map != null && !target.Cell.InBounds(p.Map))
             {
                 Log.Error("[MVCF] BestVerbForTarget given invalid target with pawn " + p + " and target " + target);
                 if (debug)
@@ -74,12 +74,19 @@ namespace MVCF.Utilities
         private static float VerbScore(Pawn p, Verb verb, LocalTargetInfo target, bool debug = false)
         {
             if (debug) Log.Message("Getting score of " + verb + " with target " + target);
-            var report = ShotReport.HitReportFor(p, verb, target);
-            var damage = report.TotalEstimatedHitChance * verb.verbProps.burstShotCount * GetDamage(verb);
+
+            var accuracy = 0f;
+            if (p.Map != null)
+                accuracy = ShotReport.HitReportFor(p, verb, target).TotalEstimatedHitChance;
+            else if (verb.TryFindShootLineFromTo(p.Position, target, out var line))
+                accuracy = verb.verbProps.GetHitChanceFactor(verb.EquipmentSource,
+                    p.Position.DistanceTo(target.Cell));
+
+            var damage = accuracy * verb.verbProps.burstShotCount * GetDamage(verb);
             var timeSpent = verb.verbProps.AdjustedCooldownTicks(verb, p) + verb.verbProps.warmupTime.SecondsToTicks();
             if (debug)
             {
-                Log.Message("HitChance: " + report.TotalEstimatedHitChance);
+                Log.Message("Accuracy: " + accuracy);
                 Log.Message("Damage: " + damage);
                 Log.Message("timeSpent: " + timeSpent);
                 Log.Message("Score of " + verb + " on target " + target + " is " + damage / timeSpent);
