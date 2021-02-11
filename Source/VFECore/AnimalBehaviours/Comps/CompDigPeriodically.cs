@@ -42,6 +42,10 @@ namespace AnimalBehaviours
                         ThingDef newThing = ThingDef.Named(thingToDig);
                         Thing newDugThing = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
                         newDugThing.stackCount = amount;
+                        if (Props.spawnForbidden)
+                        {
+                            newDugThing.SetForbidden(true);
+                        }
                         if (this.effecter == null)
                         {
                             this.effecter = EffecterDefOf.Mine.Spawn();
