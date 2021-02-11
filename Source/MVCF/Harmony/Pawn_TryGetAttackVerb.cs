@@ -32,7 +32,11 @@ namespace MVCF.Harmony
                 DefDatabase<JobDef>.GetNamedSilentFail("UseMartialArtsTarget"),
                 DefDatabase<JobDef>.GetNamedSilentFail("UseMartialArtsTarget_NonJoy"),
                 // Combat Training and Forked Version:
-                DefDatabase<JobDef>.GetNamedSilentFail("TrainOnCombatDummy")
+                DefDatabase<JobDef>.GetNamedSilentFail("TrainOnCombatDummy"),
+                // Human Resources:
+                DefDatabase<JobDef>.GetNamedSilentFail("TrainWeapon"),
+                DefDatabase<JobDef>.GetNamedSilentFail("PlayAtDummy"),
+                DefDatabase<JobDef>.GetNamedSilentFail("PlayAtTarget")
             }.Where(def => def != null).ToList();
         }
 

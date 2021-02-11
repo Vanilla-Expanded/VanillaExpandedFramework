@@ -83,9 +83,23 @@ namespace MVCF.Utilities
             yield return gizmo;
 
 
-            if (props != null && props.canBeToggled && man != null && verb.caster.Faction == Faction.OfPlayer &&
-                props.separateToggle || verb.CasterIsPawn && verb.CasterPawn.RaceProps.Animal)
-                yield return new Command_ToggleVerbUsage(man);
+            if (props != null && props.canBeToggled && man != null && verb.caster.Faction == Faction.OfPlayer ||
+                verb.CasterIsPawn && verb.CasterPawn.RaceProps.Animal)
+            {
+                if (props != null && props.separateToggle ||
+                    verb.CasterIsPawn && verb.CasterPawn.RaceProps.Animal)
+                {
+                    yield return new Command_ToggleVerbUsage(man);
+                }
+                else if (!Base.Features.IntegratedToggle)
+                {
+                    Log.ErrorOnce(
+                        "[MVCF] " + (verb.EquipmentSource.LabelShortCap ?? "Hediff verb of " + verb.caster) +
+                        " wants an integrated toggle but that feature is not enabled. Using seperate toggle.",
+                        verb.GetHashCode());
+                    yield return new Command_ToggleVerbUsage(man);
+                }
+            }
         }
 
         public static Gizmo GetMainAttackGizmoForPawn(this Pawn pawn)
