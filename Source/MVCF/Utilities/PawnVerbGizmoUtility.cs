@@ -70,7 +70,7 @@ namespace MVCF.Utilities
             }
             else if (verb.CasterIsPawn)
             {
-                if (verb.CasterPawn.WorkTagIsDisabled(WorkTags.Violent))
+                if (verb.verbProps.violent && verb.CasterPawn.WorkTagIsDisabled(WorkTags.Violent))
                     gizmo.Disable("IsIncapableOfViolence".Translate(verb.CasterPawn.LabelShort,
                         verb.CasterPawn));
                 else if (verb.CasterPawn.drafter != null && !verb.CasterPawn.drafter.Drafted)
