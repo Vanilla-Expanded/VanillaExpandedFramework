@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
 using HarmonyLib;
 using MVCF.Utilities;
-using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.AI;
@@ -28,7 +30,7 @@ namespace MVCF.Harmony
         public static void DoAnimalPatches(HarmonyLib.Harmony harm)
         {
             harm.Patch(AccessTools.Method(typeof(JobDriver_Wait), "CheckForAutoAttack"),
-                postfix: new HarmonyMethod(typeof(MiscPatches), "Postfix_JobDriver_Wait_CheckForAutoAttack"));
+                transpiler: new HarmonyMethod(typeof(MiscPatches), "Transpiler_JobDriver_Wait_CheckForAutoAttack"));
         }
 
         public static void DoIndependentPatches(HarmonyLib.Harmony harm)
@@ -47,25 +49,14 @@ namespace MVCF.Harmony
                 postfix: new HarmonyMethod(typeof(MiscPatches), "Postfix_Pawn_DrawAt"));
         }
 
-        public static void Postfix_JobDriver_Wait_CheckForAutoAttack(JobDriver_Wait __instance)
+        public static IEnumerable<CodeInstruction> Transpiler_JobDriver_Wait_CheckForAutoAttack(
+            IEnumerable<CodeInstruction> instructions)
         {
-            if (__instance.pawn.Downed ||
-                __instance.pawn.stances.FullBodyBusy ||
-                !__instance.pawn.RaceProps.Animal ||
-                !__instance.job.canUseRangedWeapon ||
-                __instance.job.def != JobDefOf.Wait_Combat)
-                return;
-            var currentEffectiveVerb = __instance.pawn.CurrentEffectiveVerb;
-            if (currentEffectiveVerb == null || currentEffectiveVerb.verbProps.IsMeleeAttack)
-                return;
-            var flags = TargetScanFlags.NeedLOSToAll | TargetScanFlags.NeedThreat | TargetScanFlags.NeedAutoTargetable;
-            if (currentEffectiveVerb.IsIncendiary())
-                flags |= TargetScanFlags.NeedNonBurning;
-            var thing = (Thing) AttackTargetFinder.BestShootTargetFromCurrentPosition(__instance.pawn, flags);
-            if (thing == null)
-                return;
-            __instance.pawn.TryStartAttack((LocalTargetInfo) thing);
-            __instance.collideWithPawns = true;
+            var list = instructions.ToList();
+            var method = AccessTools.Method(typeof(Thing), "get_Faction");
+            var idx = list.FindLastIndex(ins => ins.opcode == OpCodes.Callvirt && (MethodInfo) ins.operand == method);
+            list.RemoveRange(idx - 2, 4);
+            return list;
         }
 
         public static void Postfix_Pawn_DrawAt(Pawn __instance, Vector3 drawLoc, bool flip = false)
