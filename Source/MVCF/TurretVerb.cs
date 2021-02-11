@@ -45,7 +45,8 @@ namespace MVCF
             }
 
             if (!currentTarget.IsValid || currentTarget.HasThing && currentTarget.ThingDestroyed ||
-                currentTarget.HasThing && currentTarget.Thing is Pawn p && (p.Downed || p.Dead))
+                currentTarget.HasThing && currentTarget.Thing is Pawn p && (p.Downed || p.Dead) ||
+                !Verb.CanHitTarget(currentTarget))
             {
                 man.OverrideVerb = Verb;
                 currentTarget = TryFindNewTarget();
