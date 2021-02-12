@@ -208,6 +208,7 @@ namespace VanillaStorytellersExpanded
             Scribe_Collections.Look<RaidGroup>(ref raidGroups, "raidGroups", LookMode.Deep);
             Scribe_Collections.Look<RaidGroup>(ref reinforcementGroups, "reinforcementGroups", LookMode.Deep);
             Scribe_Collections.Look(ref questGiverManagers, "questGiverManagers", LookMode.Value, LookMode.Deep, ref intKeys, ref questGiverValues);
+            Scribe_Collections.Look(ref raidQueues, "raidQueues", LookMode.Deep);
         }
 
         private List<int> intKeys = new List<int>();
