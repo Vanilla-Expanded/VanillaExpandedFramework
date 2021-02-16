@@ -20,7 +20,8 @@ namespace MVCF
             "[RWY]Dragon's Descent: Void Dwellers",
             "Genetic Rim",
             "Cybernetic Warfare and Special Weapons (Continued)",
-            "Cybernetic Warfare and Special Weapons"
+            "Cybernetic Warfare and Special Weapons",
+            "Project Itzal - Underbarreled weapons"
         };
 
         public Base(ModContentPack content) : base(content)
