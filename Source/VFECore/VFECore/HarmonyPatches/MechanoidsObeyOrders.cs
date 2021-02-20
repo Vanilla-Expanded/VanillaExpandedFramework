@@ -40,11 +40,15 @@ namespace VFE.Mechanoids.HarmonyPatches
     {
         public static void Postfix(ref IntVec3 __result, Pawn pawn)
         {
-            if (pawn.RaceProps.IsMechanoid && pawn.Faction == Faction.OfPlayer && __result.IsForbidden(pawn) && pawn.playerSettings.AreaRestriction.ActiveCells.Count() > 0)
+            try
             {
-                __result = pawn.playerSettings.AreaRestriction.ActiveCells.OrderBy(x => x.DistanceTo(pawn.Position))
-                    .Where(x => x.Walkable(pawn.Map) && pawn.CanReserveAndReach(x, PathEndMode.OnCell, Danger.Deadly)).Take(10).RandomElement();
+                if (pawn.Map != null && pawn.RaceProps.IsMechanoid && pawn.Faction == Faction.OfPlayer && __result.IsForbidden(pawn) && pawn.playerSettings?.EffectiveAreaRestrictionInPawnCurrentMap.ActiveCells.Count() > 0)
+                {
+                    __result = pawn.playerSettings.EffectiveAreaRestrictionInPawnCurrentMap.ActiveCells.OrderBy(x => x.DistanceTo(pawn.Position))
+                        .Where(x => x.Walkable(pawn.Map) && pawn.CanReserveAndReach(x, PathEndMode.OnCell, Danger.Deadly)).Take(10).RandomElement();
+                }
             }
+            catch { }
         }
     }
 }
