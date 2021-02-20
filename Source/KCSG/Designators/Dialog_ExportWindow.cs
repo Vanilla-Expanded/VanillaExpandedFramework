@@ -15,7 +15,7 @@ namespace KCSG
     {
 		// Export
 		private XElement structureL;
-		private List<XElement> symbols;
+		private List<XElement> symbols = new List<XElement>();
 		private Map map;
 		private List<IntVec3> cells = new List<IntVec3>();
 		private Dictionary<IntVec3, List<Thing>> pairsCellThingList = new Dictionary<IntVec3, List<Thing>>();
