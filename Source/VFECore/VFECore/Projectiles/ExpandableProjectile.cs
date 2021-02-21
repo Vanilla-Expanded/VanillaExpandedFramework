@@ -142,7 +142,11 @@ namespace VFECore
 		{
 			get
 			{
-				if (!pawnMoved && this.launcher is Pawn pawn && !pawn.Dead)
+				if (!(this.launcher is Pawn))
+                {
+					this.startingPosition = this.launcher.OccupiedRect().CenterVector3;
+				}
+				else if (!pawnMoved && this.launcher is Pawn pawn && !pawn.Dead)
 				{
 					if (pawn.pather.MovingNow)
 					{
@@ -150,7 +154,7 @@ namespace VFECore
 					}
 					else
 					{
-						this.startingPosition = pawn.Position.ToVector3Shifted();
+						this.startingPosition = pawn.OccupiedRect().CenterVector3;
 					}
 				}
 				return this.startingPosition;
