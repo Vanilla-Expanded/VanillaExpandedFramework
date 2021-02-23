@@ -87,7 +87,7 @@ namespace MVCF.Utilities
                 verb.CasterIsPawn && verb.CasterPawn.RaceProps.Animal)
             {
                 if (props != null && props.separateToggle ||
-                    verb.CasterIsPawn && verb.CasterPawn.RaceProps.Animal)
+                    verb.CasterIsPawn && !verb.CasterPawn.RaceProps.Animal)
                 {
                     yield return new Command_ToggleVerbUsage(man);
                 }
