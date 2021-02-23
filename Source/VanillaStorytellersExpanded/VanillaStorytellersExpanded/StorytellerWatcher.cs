@@ -63,9 +63,24 @@ namespace VanillaStorytellersExpanded
                         }
                         catch
                         {
-                            var parms = StorytellerUtility.DefaultParmsNow(raidQueues[num].incidentDef.category, raidQueues[num].parms.target);
-                            parms.faction = raidQueues[num].parms.faction;
-                            raidQueues[num].incidentDef.Worker.TryExecute(parms);
+                            try
+                            {
+                                if (raidQueues[num].parms.target != null)
+                                {
+                                    var parms = StorytellerUtility.DefaultParmsNow(raidQueues[num].incidentDef.category, raidQueues[num].parms.target);
+                                    parms.faction = raidQueues[num].parms.faction;
+                                    raidQueues[num].incidentDef.Worker.TryExecute(parms);
+                                }
+                                else
+                                {
+                                    Log.Error("Raid queue has no target. This shouldn't happen. Removing raid queue.");
+                                    raidQueues.RemoveAt(num);
+                                }
+                            }
+                            catch
+                            {
+                                raidQueues.RemoveAt(num);
+                            }
                         }
                         raidQueues.RemoveAt(num);
                     }
