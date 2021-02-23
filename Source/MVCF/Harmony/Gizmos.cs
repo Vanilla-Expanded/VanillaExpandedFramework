@@ -171,7 +171,7 @@ namespace MVCF.Harmony
             if (pawn.Faction != Faction.OfPlayer) return false;
             var manager = pawn.Manager(false);
             if (manager == null) return false;
-            if (pawn.RaceProps.Animal || manager.AllVerbs.Count(v => !v.IsMeleeAttack) <= 1) return false;
+            if (!pawn.RaceProps.Animal && manager.AllVerbs.Count(v => !v.IsMeleeAttack) <= 1) return false;
             var man = manager.GetManagedVerbForVerb(verb, false);
             if (man == null) return false;
             if (man.Props != null && man.Props.separateToggle) return false;
@@ -179,17 +179,13 @@ namespace MVCF.Harmony
                 ? butRect.RightPart(0.35f).TopPart(0.35f)
                 : butRect
                     .LeftPart(0.35f).TopPart(0.35f);
-            if (Mouse.IsOver(rect))
-            {
-                TipSignal sig = "MVCF.ToggleAuto".Translate();
-                TooltipHandler.TipRegion(rect, sig);
-            }
+            if (Mouse.IsOver(rect)) TooltipHandler.TipRegion(rect, "MVCF.ToggleAuto".Translate());
 
             if (Widgets.ButtonImage(rect,
                 man.Enabled ? Widgets.CheckboxOnTex : Widgets.CheckboxOffTex))
             {
                 Event.current.Use();
-                man.Enabled = !man.Enabled;
+                man.Toggle();
                 return true;
             }
 
