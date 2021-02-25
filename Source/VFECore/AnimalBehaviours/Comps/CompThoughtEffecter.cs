@@ -50,8 +50,25 @@ namespace AnimalBehaviours
                                     SoundDefOf.PsychicPulseGlobal.PlayOneShot(new TargetInfo(this.parent.Position, this.parent.Map, false));
                                     MoteMaker.MakeAttachedOverlay(this.parent, ThingDef.Named("Mote_PsycastPsychicEffect"), Vector3.zero, 1f, -1f);
                                 }
-                                //Apply thought
-                                pawn.needs.mood.thoughts.memories.TryGainMemory(ThoughtDef.Named(Props.thoughtDef), null);
+                                if (!Props.conditionalOnWellBeing)
+                                {
+                                    //Apply thought
+                                    pawn.needs.mood.thoughts.memories.TryGainMemory(ThoughtDef.Named(Props.thoughtDef), null);
+                                }
+                                else
+                                {
+                                    bool wellbeingAffectedFlag = thisPawn.needs.food.Starving || (thisPawn.health.hediffSet.PainTotal > 0);
+                                    if (wellbeingAffectedFlag)
+                                    {
+                                        pawn.needs.mood.thoughts.memories.RemoveMemoriesOfDef(ThoughtDef.Named(Props.thoughtDef));
+                                        pawn.needs.mood.thoughts.memories.TryGainMemory(ThoughtDef.Named(Props.thoughtDefWhenSuffering), null);
+                                    }
+                                    else
+                                    {
+
+                                        pawn.needs.mood.thoughts.memories.TryGainMemory(ThoughtDef.Named(Props.thoughtDef), null);
+                                    }
+                                }
                             }
                         }
                     }
