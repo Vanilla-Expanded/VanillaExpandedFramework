@@ -81,7 +81,7 @@ namespace MVCF
         {
             warmUpTicksLeft = -1;
             var success = Verb.TryStartCastOn(currentTarget);
-            if (success) Verb.WarmupComplete();
+            if (success && Verb.verbProps.warmupTime > 0) Verb.WarmupComplete();
         }
 
         public override LocalTargetInfo PointingTarget(Pawn p)
@@ -110,7 +110,7 @@ namespace MVCF
         public void SetTarget(LocalTargetInfo target)
         {
             currentTarget = target;
-            TryStartCast();
+            if (cooldownTicksLeft <= 0) TryStartCast();
         }
 
         protected virtual LocalTargetInfo TryFindNewTarget()
