@@ -71,6 +71,7 @@ namespace MVCF.Comps
         public DrawPosition defaultPosition;
         public string description;
         public bool draw;
+        public float drawScale = 1f;
         public GraphicData graphic;
         public string label;
         public Type managedClass;

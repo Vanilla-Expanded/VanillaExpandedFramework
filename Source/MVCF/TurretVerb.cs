@@ -34,9 +34,10 @@ namespace MVCF
         public virtual void Tick()
         {
             if (Verb.Bursting) return;
-            if (cooldownTicksLeft > 0) cooldownTicksLeft--;
 
+            if (cooldownTicksLeft > 0) cooldownTicksLeft--;
             if (cooldownTicksLeft > 0) return;
+
             if (!Enabled || !CanFire())
             {
                 if (currentTarget.IsValid) currentTarget = LocalTargetInfo.Invalid;
@@ -98,7 +99,10 @@ namespace MVCF
             base.DrawOn(p, drawPos);
             if (Find.Selector.IsSelected(p) && Target.IsValid)
             {
-                GenDraw.DrawAimPie(p, Target, warmUpTicksLeft, 0.2f);
+                if (warmUpTicksLeft > 0)
+                    GenDraw.DrawAimPie(p, Target, warmUpTicksLeft, 0.2f);
+                if (cooldownTicksLeft > 0)
+                    GenDraw.DrawCooldownCircle(p.DrawPos, cooldownTicksLeft * 0.002f);
                 GenDraw.DrawLineBetween(drawPos, Target.HasThing ? Target.Thing.DrawPos : Target.Cell.ToVector3());
             }
         }

@@ -64,7 +64,7 @@ namespace MVCF
             drawPos.y += 0.0367346928f;
             var target = PointingTarget(p);
             DrawPointingAt(DrawPos(target, p, drawPos),
-                DrawAngle(target, p, drawPos), p.BodySize);
+                DrawAngle(target, p, drawPos), (Props?.drawScale ?? 1f) * p.BodySize);
         }
 
         public virtual float DrawAngle(LocalTargetInfo target, Pawn p, Vector3 drawPos)
