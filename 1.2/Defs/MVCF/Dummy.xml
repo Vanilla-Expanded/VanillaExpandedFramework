@@ -7,5 +7,6 @@
 		<selectable>false</selectable>
 		<thingClass>MVCF.DummyCaster</thingClass>
 		<tickerType>Normal</tickerType>
+		<isSaveable>false</isSaveable>
   	</ThingDef>
 </Defs>
