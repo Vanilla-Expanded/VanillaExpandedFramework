@@ -91,7 +91,8 @@ namespace MVCF
 
         public virtual bool CanFire()
         {
-            return true;
+            return !man.Pawn.Dead && !man.Pawn.Downed && !(!Verb.verbProps.violent ||
+                                                           man.Pawn.WorkTagIsDisabled(WorkTags.Violent));
         }
 
         public override void DrawOn(Pawn p, Vector3 drawPos)
