@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -66,6 +67,7 @@ namespace MVCF.Comps
 
     public class AdditionalVerbProps
     {
+        public static BodyTypeDef NA = new BodyTypeDef();
         public bool canBeToggled;
         public bool canFireIndependently;
         public DrawPosition defaultPosition;
@@ -73,20 +75,23 @@ namespace MVCF.Comps
         public bool draw;
         public float drawScale = 1f;
         public GraphicData graphic;
+        public bool humanAsDefault;
         public string label;
         public Type managedClass;
-        private Dictionary<string, DrawPosition> positions;
+        private Dictionary<string, Dictionary<BodyTypeDef, DrawPosition>> positions;
+        private Dictionary<string, Dictionary<BodyTypeDef, Scaling>> scale;
+        public List<Scaling> scalings;
         public bool separateToggle;
         public List<DrawPosition> specificPositions;
         public string toggleDescription;
         public string toggleIconPath;
         public string toggleLabel;
         public string visualLabel;
-        public Texture2D ToggleIcon { get; private set; }
-        public Texture2D Icon { get; private set; }
-        public Graphic Graphic { get; private set; }
+        public Texture2D ToggleIcon { get; protected set; }
+        public Texture2D Icon { get; protected set; }
+        public Graphic Graphic { get; protected set; }
 
-        public IEnumerable<string> ConfigErrors()
+        public virtual IEnumerable<string> ConfigErrors()
         {
             if (label.NullOrEmpty()) yield return "label cannot be null or empty";
 
@@ -101,16 +106,30 @@ namespace MVCF.Comps
                 yield return "managedClass of independent verb must be a subclass of TurretVerb";
         }
 
-        public Vector3 DrawPos(string name, Vector3 drawPos, Rot4 rot)
+        public virtual Vector3 DrawPos(Pawn pawn, Vector3 drawPos, Rot4 rot)
         {
-            if (positions.TryGetValue(name, out var pos)) return drawPos + pos.ForRot(rot);
+            DrawPosition pos = null;
+            if (positions.TryGetValue(pawn.def.defName, out var dic) ||
+                humanAsDefault && positions.TryGetValue(ThingDefOf.Human.defName, out dic))
+                if (!(pawn.story?.bodyType != null && dic.TryGetValue(pawn.story.bodyType, out pos)))
+                    dic.TryGetValue(NA, out pos);
 
-            pos = defaultPosition ?? DrawPosition.Zero;
-            positions.Add(name, pos);
+            pos = pos ?? defaultPosition ?? DrawPosition.Zero;
             return drawPos + pos.ForRot(rot);
         }
 
-        public void Initialize()
+        public virtual float Scale(Pawn pawn)
+        {
+            Scaling s = null;
+            if (scale.TryGetValue(pawn.def.defName, out var dic) ||
+                humanAsDefault && scale.TryGetValue(ThingDefOf.Human.defName, out dic))
+                if (!(pawn.story?.bodyType != null && dic.TryGetValue(pawn.story.bodyType, out s)))
+                    dic.TryGetValue(NA, out s);
+
+            return s?.scaling ?? (drawScale == 0 ? 1f : drawScale);
+        }
+
+        public virtual void Initialize()
         {
             if (!string.IsNullOrWhiteSpace(toggleIconPath))
                 ToggleIcon = ContentFinder<Texture2D>.Get(toggleIconPath);
@@ -122,10 +141,25 @@ namespace MVCF.Comps
 
             if (positions == null)
             {
-                positions = new Dictionary<string, DrawPosition>();
+                positions = new Dictionary<string, Dictionary<BodyTypeDef, DrawPosition>>();
                 if (specificPositions != null)
                     foreach (var pos in specificPositions)
-                        positions.Add(pos.defName, pos);
+                        if (!positions.ContainsKey(pos.defName))
+                            positions.Add(pos.defName, new Dictionary<BodyTypeDef, DrawPosition> {{pos.BodyType, pos}});
+                        else
+                            positions[pos.defName].Add(pos.BodyType, pos);
+            }
+
+            if (scale == null)
+            {
+                scale = new Dictionary<string, Dictionary<BodyTypeDef, Scaling>>();
+                if (scalings != null)
+                    foreach (var scaling in scalings)
+                        if (scale.ContainsKey(scaling.defName))
+                            scale[scaling.defName].Add(scaling.BodyType, scaling);
+                        else
+                            scale.Add(scaling.defName,
+                                new Dictionary<BodyTypeDef, Scaling> {{scaling.BodyType, scaling}});
             }
         }
     }
@@ -133,6 +167,7 @@ namespace MVCF.Comps
     public class DrawPosition
     {
         private static readonly Vector2 PLACEHOLDER = Vector2.positiveInfinity;
+        public BodyTypeDef BodyType = AdditionalVerbProps.NA;
         public Vector2 Default = PLACEHOLDER;
         public string defName;
         public Vector2 Down = PLACEHOLDER;
@@ -172,5 +207,12 @@ namespace MVCF.Comps
             if (double.IsPositiveInfinity(vec.x)) vec = Vector2.zero;
             return new Vector3(vec.x, 0, vec.y);
         }
+    }
+
+    public class Scaling
+    {
+        public BodyTypeDef BodyType;
+        public string defName;
+        public float scaling;
     }
 }

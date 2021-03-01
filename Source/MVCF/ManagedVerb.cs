@@ -64,7 +64,7 @@ namespace MVCF
             drawPos.y += 0.0367346928f;
             var target = PointingTarget(p);
             DrawPointingAt(DrawPos(target, p, drawPos),
-                DrawAngle(target, p, drawPos), (Props?.drawScale ?? 1f) * p.BodySize);
+                DrawAngle(target, p, drawPos), Props.Scale(p) * p.BodySize);
         }
 
         public virtual float DrawAngle(LocalTargetInfo target, Pawn p, Vector3 drawPos)
@@ -106,7 +106,7 @@ namespace MVCF
                 if (p.Rotation == Rot4.West) return drawPos + WestEquipOffset;
             }
 
-            return Props.DrawPos(p.def.defName, drawPos, p.Rotation);
+            return Props.DrawPos(p, drawPos, p.Rotation);
         }
 
         public virtual LocalTargetInfo PointingTarget(Pawn p)
