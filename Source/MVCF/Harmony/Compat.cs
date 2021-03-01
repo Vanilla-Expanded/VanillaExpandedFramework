@@ -15,6 +15,7 @@ namespace MVCF.Harmony
         public static Delegate IsOffHand;
         public static AccessTools.FieldRef<Pawn_RotationTracker, Pawn> RotationTrackerPawn;
         public static AccessTools.FieldRef<PawnRenderer, Pawn> RendererPawn;
+        public static MethodInfo GetToggleComp;
 
         public static void ApplyCompat(HarmonyLib.Harmony harm)
         {
@@ -53,6 +54,17 @@ namespace MVCF.Harmony
                         ?.GetMethod("Postfix", BindingFlags.NonPublic | BindingFlags.Static),
                     transpiler: new HarmonyMethod(typeof(Compat), "RenderPawnAtTranspile"));
             }
+
+            var type = AccessTools.TypeByName("CompToggleFireMode.CompToggleFireMode");
+            if (type != null)
+                GetToggleComp = AccessTools.Method(typeof(ThingCompUtility), "TryGetComp")
+                    .MakeGenericMethod(type);
+        }
+
+        public static bool ShouldIgnore(Thing thing)
+        {
+            if (GetToggleComp == null) return false;
+            return GetToggleComp.Invoke(null, new object[] {thing}) != null;
         }
 
         public static IEnumerable<CodeInstruction> UpdateRotationTranspile(IEnumerable<CodeInstruction> instructions,

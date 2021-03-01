@@ -15,13 +15,11 @@ namespace MVCF
 
         public static readonly List<string> IgnoredMods = new List<string>
         {
-            "Adeptus Mechanicus: Armoury",
             "Dragon's Descent",
             "[RWY]Dragon's Descent: Void Dwellers",
             "Genetic Rim",
             "Cybernetic Warfare and Special Weapons (Continued)",
-            "Cybernetic Warfare and Special Weapons",
-            "Project Itzal - Underbarreled weapons"
+            "Cybernetic Warfare and Special Weapons"
         };
 
         public Base(ModContentPack content) : base(content)
@@ -42,13 +40,29 @@ namespace MVCF
         {
             foreach (var def in DefDatabase<ModDef>.AllDefs)
             {
-                if (def.Features.ApparelVerbs) Features.ApparelVerbs = true;
-                if (def.Features.IndependentFire) Features.IndependentFire = true;
-                if (def.Features.Drawing) Features.Drawing = true;
-                if (def.Features.ExtraEquipmentVerbs) Features.ExtraEquipmentVerbs = true;
-                if (def.Features.HediffVerbs) Features.HediffVerbs = true;
-                if (def.Features.RangedAnimals) Features.RangedAnimals = true;
-                if (def.Features.IntegratedToggle) Features.IntegratedToggle = true;
+                if (def.Features != null)
+                {
+                    if (def.Features.ApparelVerbs) Features.ApparelVerbs = true;
+                    if (def.Features.IndependentFire) Features.IndependentFire = true;
+                    if (def.Features.Drawing) Features.Drawing = true;
+                    if (def.Features.ExtraEquipmentVerbs) Features.ExtraEquipmentVerbs = true;
+                    if (def.Features.HediffVerbs) Features.HediffVerbs = true;
+                    if (def.Features.RangedAnimals) Features.RangedAnimals = true;
+                    if (def.Features.IntegratedToggle) Features.IntegratedToggle = true;
+                }
+
+                if (def.IgnoredFeatures != null)
+                {
+                    if (def.IgnoredFeatures.ApparelVerbs) IgnoredFeatures.ApparelVerbs = true;
+                    if (def.IgnoredFeatures.IndependentFire) IgnoredFeatures.IndependentFire = true;
+                    if (def.IgnoredFeatures.Drawing) IgnoredFeatures.Drawing = true;
+                    if (def.IgnoredFeatures.ExtraEquipmentVerbs) IgnoredFeatures.ExtraEquipmentVerbs = true;
+                    if (def.IgnoredFeatures.HediffVerbs) IgnoredFeatures.HediffVerbs = true;
+                    if (def.IgnoredFeatures.RangedAnimals) IgnoredFeatures.RangedAnimals = true;
+                    if (def.IgnoredFeatures.IntegratedToggle) IgnoredFeatures.IntegratedToggle = true;
+                }
+
+                if (def.IgnoreThisMod) IgnoredMods.Add(def.modContentPack.Name);
             }
 
             ApplyPatches();
@@ -100,6 +114,8 @@ namespace MVCF
     public class ModDef : Def
     {
         public FeatureOpts Features;
+        public FeatureOpts IgnoredFeatures;
+        public bool IgnoreThisMod;
     }
 
     public class FeatureOpts

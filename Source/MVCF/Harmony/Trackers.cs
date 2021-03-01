@@ -21,6 +21,7 @@ namespace MVCF.Harmony
         public static void ApparelAdded_Postfix(Pawn_ApparelTracker __instance, Apparel apparel)
         {
             if (Base.IsIgnoredMod(apparel?.def?.modContentPack?.Name)) return;
+            if (Compat.ShouldIgnore(apparel)) return;
             var comp = apparel.TryGetComp<Comp_VerbGiver>();
             if (comp?.VerbTracker?.AllVerbs == null) return;
             if (!Base.Features.ApparelVerbs && !Base.IgnoredFeatures.ApparelVerbs)
@@ -109,6 +110,7 @@ namespace MVCF.Harmony
         public static void EquipmentAdded_Postfix(ThingWithComps eq, Pawn_EquipmentTracker __instance)
         {
             if (Base.IsIgnoredMod(eq?.def?.modContentPack?.Name)) return;
+            if (Compat.ShouldIgnore(eq)) return;
             var comp = eq.TryGetComp<CompEquippable>();
             if (comp?.VerbTracker?.AllVerbs == null) return;
             var manager = __instance.pawn?.Manager();
