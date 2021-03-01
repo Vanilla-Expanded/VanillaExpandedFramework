@@ -35,7 +35,6 @@ namespace MVCF
             if (ModLister.HasActiveModWithName("Prosthetic Combat Framework")) IgnoredFeatures.HediffVerbs = true;
         }
 
-
         public static void CollectFeatureData()
         {
             foreach (var def in DefDatabase<ModDef>.AllDefs)

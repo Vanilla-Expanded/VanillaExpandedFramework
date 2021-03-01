@@ -1,4 +1,3 @@
-using System.Linq;
 using HarmonyLib;
 using MVCF.Comps;
 using MVCF.Utilities;
@@ -20,25 +19,7 @@ namespace MVCF.Harmony
 
         public static void ApparelAdded_Postfix(Pawn_ApparelTracker __instance, Apparel apparel)
         {
-            if (Base.IsIgnoredMod(apparel?.def?.modContentPack?.Name)) return;
-            if (Compat.ShouldIgnore(apparel)) return;
-            var comp = apparel.TryGetComp<Comp_VerbGiver>();
-            if (comp?.VerbTracker?.AllVerbs == null) return;
-            if (!Base.Features.ApparelVerbs && !Base.IgnoredFeatures.ApparelVerbs)
-            {
-                Log.ErrorOnce(
-                    "[MVCF] Found apparel with a verb while that feature is not enabled. Enabling now. This is not recommend. Contact the author of " +
-                    apparel?.def?.modContentPack?.Name + " and ask them to add a MVCF.ModDef.",
-                    apparel?.def?.modContentPack?.Name?.GetHashCode() ?? -1);
-                Base.Features.ApparelVerbs = true;
-                Base.ApplyPatches();
-            }
-
-            comp.Notify_Worn(__instance.pawn);
-            var manager = __instance.pawn?.Manager();
-            if (manager == null) return;
-            foreach (var verb in comp.VerbTracker.AllVerbs)
-                manager.AddVerb(verb, VerbSource.Apparel, comp.PropsFor(verb));
+            __instance.pawn.Manager().AddVerbs(apparel);
         }
 
         public static void ApparelRemoved_Postfix(Apparel apparel, Pawn_ApparelTracker __instance)
@@ -67,25 +48,7 @@ namespace MVCF.Harmony
 
         public static void AddHediff_Postfix(Hediff hediff, Pawn_HealthTracker __instance)
         {
-            if (Base.IsIgnoredMod(hediff?.def?.modContentPack?.Name)) return;
-            var comp = hediff.TryGetComp<HediffComp_VerbGiver>();
-            if (comp?.VerbTracker?.AllVerbs == null) return;
-            if (!Base.Features.HediffVerbs && !Base.IgnoredFeatures.HediffVerbs &&
-                comp.VerbTracker.AllVerbs.Any(v => !v.IsMeleeAttack))
-            {
-                Log.ErrorOnce(
-                    "[MVCF] Found a hediff with a ranged verb while that feature is not enabled. Enabling now. This is not recommend. Contant the author of " +
-                    hediff?.def?.modContentPack?.Name + " and ask them to add a MVCF.ModDef.",
-                    hediff?.def?.modContentPack?.Name?.GetHashCode() ?? -1);
-                Base.Features.HediffVerbs = true;
-                Base.ApplyPatches();
-            }
-
-            var manager = __instance?.hediffSet?.pawn?.Manager();
-            if (manager == null) return;
-            var extComp = comp as HediffComp_ExtendedVerbGiver;
-            foreach (var verb in comp.VerbTracker.AllVerbs)
-                manager.AddVerb(verb, VerbSource.Hediff, extComp?.PropsFor(verb));
+            __instance.hediffSet.pawn.Manager().AddVerbs(hediff);
         }
 
         public static void RemoveHediff_Postfix(Hediff hediff, Pawn_HealthTracker __instance)
@@ -109,25 +72,7 @@ namespace MVCF.Harmony
 
         public static void EquipmentAdded_Postfix(ThingWithComps eq, Pawn_EquipmentTracker __instance)
         {
-            if (Base.IsIgnoredMod(eq?.def?.modContentPack?.Name)) return;
-            if (Compat.ShouldIgnore(eq)) return;
-            var comp = eq.TryGetComp<CompEquippable>();
-            if (comp?.VerbTracker?.AllVerbs == null) return;
-            var manager = __instance.pawn?.Manager();
-            if (manager == null) return;
-            if (!Base.Features.ExtraEquipmentVerbs && !Base.IgnoredFeatures.ExtraEquipmentVerbs &&
-                comp.VerbTracker.AllVerbs.Count(v => !v.IsMeleeAttack) > 1)
-            {
-                Log.ErrorOnce(
-                    "[MVCF] Found equipment with more than one ranged attack while that feature is not enabled. Enabling now. This is not recommend. Contact the author of " +
-                    eq?.def?.modContentPack?.Name + " and ask them to add a MVCF.ModDef.",
-                    eq?.def?.modContentPack?.Name?.GetHashCode() ?? -1);
-                Base.Features.ExtraEquipmentVerbs = true;
-                Base.ApplyPatches();
-            }
-
-            foreach (var verb in comp.VerbTracker.AllVerbs)
-                manager.AddVerb(verb, VerbSource.Equipment, (comp.props as CompProperties_VerbProps)?.PropsFor(verb));
+            __instance.pawn.Manager()?.AddVerbs(eq);
         }
 
         public static void EquipmentRemoved_Postfix(ThingWithComps eq, Pawn_EquipmentTracker __instance)

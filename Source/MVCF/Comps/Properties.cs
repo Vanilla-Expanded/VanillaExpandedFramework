@@ -36,6 +36,11 @@ namespace MVCF.Comps
         }
     }
 
+    public class Comp_VerbProps : ThingComp
+    {
+        public CompProperties_VerbProps Props => props as CompProperties_VerbProps;
+    }
+
     public class CompProperties_VerbProps : CompProperties
     {
         public List<AdditionalVerbProps> verbProps;
@@ -70,6 +75,7 @@ namespace MVCF.Comps
         public static BodyTypeDef NA = new BodyTypeDef();
         public bool canBeToggled;
         public bool canFireIndependently;
+        public bool colonistOnly;
         public DrawPosition defaultPosition;
         public string description;
         public bool draw;
@@ -86,6 +92,7 @@ namespace MVCF.Comps
         public string toggleDescription;
         public string toggleIconPath;
         public string toggleLabel;
+        public bool uniqueTargets;
         public string visualLabel;
         public Texture2D ToggleIcon { get; protected set; }
         public Texture2D Icon { get; protected set; }

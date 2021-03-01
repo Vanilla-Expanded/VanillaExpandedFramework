@@ -21,6 +21,10 @@ namespace MVCF
         public Verb SearchVerb;
         public bool NeedsTicking { get; private set; }
 
+        public IEnumerable<ManagedVerb> CurrentlyUseableRangedVerbs => verbs.Where(v =>
+            !v.Verb.IsMeleeAttack && (v.Props == null || !v.Props.canFireIndependently) && v.Enabled &&
+            v.Verb.Available() && !(!Pawn.IsColonist && v.Props != null && !v.Props.colonistOnly));
+
         public IEnumerable<Verb> AllVerbs => verbs.Select(mv => mv.Verb);
         public IEnumerable<Verb> AllRangedVerbs => verbs.Select(mv => mv.Verb).Where(verb => !verb.IsMeleeAttack);
 
@@ -102,68 +106,16 @@ namespace MVCF
 
             if (pawn?.health?.hediffSet?.hediffs != null && !Base.IgnoredFeatures.HediffVerbs)
                 foreach (var hediff in pawn.health.hediffSet.hediffs)
-                {
-                    if (Base.IsIgnoredMod(hediff?.def?.modContentPack?.Name)) return;
-                    var comp = hediff.TryGetComp<HediffComp_VerbGiver>();
-                    if (comp?.VerbTracker?.AllVerbs == null) continue;
-                    if (!Base.Features.HediffVerbs &&
-                        comp.VerbTracker.AllVerbs.Any(v => !v.IsMeleeAttack))
-                    {
-                        Log.ErrorOnce(
-                            "[MVCF] Found a hediff with a ranged verb while that feature is not enabled. Enabling now. This is not recommend. Contant the author of " +
-                            hediff?.def?.modContentPack?.Name + " and ask them to add a MVCF.ModDef.",
-                            hediff?.def?.modContentPack?.Name?.GetHashCode() ?? -1);
-                        Base.Features.HediffVerbs = true;
-                        Base.ApplyPatches();
-                    }
-
-                    var extComp = comp as HediffComp_ExtendedVerbGiver;
-                    foreach (var verb in comp.VerbTracker.AllVerbs)
-                        AddVerb(verb, VerbSource.Hediff, extComp?.PropsFor(verb));
-                }
+                    this.AddVerbs(hediff);
 
             if (pawn?.apparel?.WornApparel != null && !Base.IgnoredFeatures.ApparelVerbs)
                 foreach (var apparel in pawn.apparel.WornApparel)
-                {
-                    if (Base.IsIgnoredMod(apparel?.def?.modContentPack?.Name)) return;
-                    var comp = apparel.TryGetComp<Comp_VerbGiver>();
-                    if (comp?.VerbTracker?.AllVerbs == null) continue;
-                    if (!Base.Features.ApparelVerbs)
-                    {
-                        Log.ErrorOnce(
-                            "[MVCF] Found apparel with a verb while that feature is not enabled. Enabling now. This is not recommend. Contact the author of " +
-                            apparel?.def?.modContentPack?.Name + " and ask them to add a MVCF.ModDef.",
-                            apparel?.def?.modContentPack?.Name?.GetHashCode() ?? -1);
-                        Base.Features.ApparelVerbs = true;
-                        Base.ApplyPatches();
-                    }
-
-                    foreach (var verb in comp.VerbTracker.AllVerbs)
-                        AddVerb(verb, VerbSource.Apparel, comp.PropsFor(verb));
-                }
+                    this.AddVerbs(apparel);
 
             if (pawn?.equipment?.AllEquipmentListForReading != null && !Base.IgnoredFeatures.ExtraEquipmentVerbs)
                 foreach (var eq in pawn.equipment.AllEquipmentListForReading)
-                {
-                    if (Base.IsIgnoredMod(eq?.def?.modContentPack?.Name)) return;
-                    var comp = eq.TryGetComp<CompEquippable>();
-                    if (comp?.VerbTracker?.AllVerbs == null) continue;
-                    if (!Base.Features.ExtraEquipmentVerbs &&
-                        comp.VerbTracker.AllVerbs.Count(v => !v.IsMeleeAttack) > 1)
-                    {
-                        Log.ErrorOnce(
-                            "[MVCF] Found equipment with more than one ranged attack while that feature is not enabled. Enabling now. This is not recommend. Contact the author of " +
-                            eq?.def?.modContentPack?.Name + " and ask them to add a MVCF.ModDef.",
-                            eq?.def?.modContentPack?.Name?.GetHashCode() ?? -1);
-                        Base.Features.ExtraEquipmentVerbs = true;
-                        Base.ApplyPatches();
-                    }
-
-                    foreach (var verb in comp.VerbTracker.AllVerbs)
-                        AddVerb(verb, VerbSource.Equipment, (comp.props as CompProperties_VerbProps)?.PropsFor(verb));
-                }
+                    this.AddVerbs(eq);
         }
-
 
         public void AddVerb(Verb verb, VerbSource source, AdditionalVerbProps props)
         {

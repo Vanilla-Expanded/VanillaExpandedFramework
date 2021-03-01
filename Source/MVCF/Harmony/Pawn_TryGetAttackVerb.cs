@@ -69,9 +69,7 @@ namespace MVCF.Harmony
                  manager.CurrentVerb.CanHitTarget(job.targetA)))
                 return manager.CurrentVerb;
 
-            var verbs = manager.ManagedVerbs.Where(v =>
-                !v.Verb.IsMeleeAttack && (v.Props == null || !v.Props.canFireIndependently) && v.Enabled &&
-                v.Verb.Available());
+            var verbs = manager.CurrentlyUseableRangedVerbs;
             if (!allowManualCastWeapons && job != null && job.def == JobDefOf.Wait_Combat)
                 verbs = verbs.Where(v => !v.Verb.verbProps.onlyManualCast);
 

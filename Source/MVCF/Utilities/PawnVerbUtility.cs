@@ -8,6 +8,7 @@ namespace MVCF.Utilities
     {
         public static VerbManager Manager(this Pawn p, bool createIfMissing = true)
         {
+            if (p == null) return null;
             return Base.Prepatcher
                 ? PrepatchedVerbManager(p, createIfMissing)
                 : WorldComponent_MVCF.GetComp().GetManagerFor(p, createIfMissing);

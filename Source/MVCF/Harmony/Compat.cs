@@ -137,7 +137,7 @@ namespace MVCF.Harmony
         // ReSharper disable once InconsistentNaming
         public static void RunAndGunHasRangedWeapon(Pawn instance, ref bool __result)
         {
-            if (!__result) __result = instance.Manager().ManagedVerbs.Any(mv => mv.Enabled && !mv.Verb.IsMeleeAttack);
+            if (!__result) __result = instance.Manager().CurrentlyUseableRangedVerbs.Any();
         }
 
         public static bool RunAndGunVerbCast(ref bool __result, Verb __0)

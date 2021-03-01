@@ -2,6 +2,8 @@
 // 
 // Created 2021-02-02
 
+using System;
+using System.Linq;
 using MVCF.Comps;
 using MVCF.Harmony;
 using RimWorld;
@@ -119,7 +121,14 @@ namespace MVCF
             return AttackTargetFinder.BestShootTargetFromCurrentPosition(
                 man.Pawn,
                 TargetScanFlags.NeedActiveThreat | TargetScanFlags.NeedLOSToAll |
-                TargetScanFlags.NeedAutoTargetable)?.Thing ?? LocalTargetInfo.Invalid;
+                TargetScanFlags.NeedAutoTargetable,
+                Props.uniqueTargets
+                    ? new Predicate<Thing>(thing =>
+                        man.Pawn.mindState.enemyTarget != thing &&
+                        man.ManagedVerbs.All(verb =>
+                            verb.Verb.CurrentTarget.Thing != thing &&
+                            (verb as TurretVerb)?.currentTarget.Thing != thing))
+                    : null)?.Thing ?? LocalTargetInfo.Invalid;
         }
     }
 

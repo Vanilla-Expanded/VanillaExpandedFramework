@@ -44,11 +44,8 @@ namespace MVCF.Harmony
                 }
 
                 var man = actor.Manager();
-                var verbs = man.ManagedVerbs.Where(mv =>
-                    !mv.Verb.IsMeleeAttack && mv.Enabled &&
-                    (!actor.IsColonist || !mv.Verb.verbProps.onlyManualCast) &&
-                    (mv.Props == null || !mv.Props.canFireIndependently) && mv.Verb.Available());
-                var verb = actor.BestVerbForTarget(actor.jobs.curJob.GetTarget(targetInd), verbs, man) ??
+                var verb = actor.BestVerbForTarget(actor.jobs.curJob.GetTarget(targetInd),
+                               man.CurrentlyUseableRangedVerbs, man) ??
                            actor.TryGetAttackVerb(actor.jobs.curJob.GetTarget(targetInd).Thing, !actor.IsColonist);
                 if (verb == null)
                     actor.jobs.EndCurrentJob(JobCondition.Incompletable);

@@ -80,6 +80,7 @@
     <Compile Include="ManagedVerb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TurretVerb.cs" />
+    <Compile Include="Utilities\VerbManagerUtility.cs" />
     <Compile Include="VerbManager.cs" />
     <Compile Include="Verbs\Verb_Jump.cs" />
     <Compile Include="Verbs\Verb_SmokePop.cs" />
