@@ -11,6 +11,9 @@ namespace MVCF
 {
     public class VerbManager : IVerbOwner
     {
+        private static readonly Dictionary<ThingWithComps, bool> preferMeleeCache =
+            new Dictionary<ThingWithComps, bool>();
+
         private readonly List<ManagedVerb> drawVerbs = new List<ManagedVerb>();
         public readonly List<TurretVerb> tickVerbs = new List<TurretVerb>();
         private readonly List<ManagedVerb> verbs = new List<ManagedVerb>();
@@ -31,9 +34,9 @@ namespace MVCF
             {
                 var prim = Pawn.equipment.Primary;
                 var eq = Pawn.equipment.PrimaryEq;
-                var melee = (eq?.props as CompProperties_VerbProps ??
-                             prim.TryGetComp<Comp_VerbProps>()?.Props)?.ConsiderMelee ?? false;
-                var exclude = melee ? eq?.AllVerbs.Where(v => !v.IsMeleeAttack) ?? new List<Verb>() : new List<Verb>();
+                var exclude = PreferMelee(prim)
+                    ? eq?.AllVerbs.Where(v => !v.IsMeleeAttack) ?? new List<Verb>()
+                    : new List<Verb>();
                 return AllRangedVerbs.Except(exclude).Any();
             }
         }
@@ -80,6 +83,16 @@ namespace MVCF
         public List<Tool> Tools => new List<Tool>();
         public ImplementOwnerTypeDef ImplementOwnerTypeDef => ImplementOwnerTypeDefOf.NativeVerb;
         public Thing ConstantCaster => Pawn;
+
+        public static bool PreferMelee(ThingWithComps eq)
+        {
+            if (preferMeleeCache.TryGetValue(eq, out var res)) return res;
+
+            res = (eq.TryGetComp<CompEquippable>()?.props as CompProperties_VerbProps ??
+                   eq.TryGetComp<Comp_VerbProps>()?.Props)?.ConsiderMelee ?? false;
+            preferMeleeCache.Add(eq, res);
+            return res;
+        }
 
         public ManagedVerb GetManagedVerbForVerb(Verb verb, bool warnOnFailed = true)
         {

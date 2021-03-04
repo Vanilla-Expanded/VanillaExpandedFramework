@@ -5,6 +5,7 @@ using System.Reflection.Emit;
 using HarmonyLib;
 using MVCF.Comps;
 using MVCF.Utilities;
+using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.AI;
@@ -54,6 +55,24 @@ namespace MVCF.Harmony
         {
             harm.Patch(AccessTools.Method(typeof(ThingDef), "get_IsRangedWeapon"),
                 new HarmonyMethod(typeof(MiscPatches), "Prefix_IsRangedWeapon"));
+            harm.Patch(AccessTools.Method(typeof(FloatMenuMakerMap), "AddDraftedOrders"),
+                transpiler: new HarmonyMethod(typeof(MiscPatches), "CheckForMelee"));
+        }
+
+        public static IEnumerable<CodeInstruction> CheckForMelee(IEnumerable<CodeInstruction> instructions)
+        {
+            var list = instructions.ToList();
+            var idx = list.FindIndex(ins => ins.opcode == OpCodes.Brtrue);
+            var label = list[idx].operand;
+            list.InsertRange(idx + 1, new[]
+            {
+                new CodeInstruction(OpCodes.Ldarg_1),
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(Pawn), "equipment")),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(Pawn_EquipmentTracker), "get_Primary")),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(VerbManager), "PreferMelee")),
+                new CodeInstruction(OpCodes.Brtrue, label)
+            });
+            return list;
         }
 
         public static bool Prefix_IsRangedWeapon(ref bool __result, ThingDef __instance)

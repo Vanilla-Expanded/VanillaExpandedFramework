@@ -3,7 +3,6 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
-using MVCF.Comps;
 using MVCF.Utilities;
 using RimWorld;
 using UnityEngine;
@@ -133,8 +132,7 @@ namespace MVCF.Harmony
         public static bool GetVerbsCommands_Prefix(ref IEnumerable<Command> __result, CompEquippable __instance)
         {
             var rangedVerbs = __instance.AllVerbs.Where(v => !v.IsMeleeAttack).ToList();
-            var melee = (__instance.props as CompProperties_VerbProps ??
-                         __instance.parent.TryGetComp<Comp_VerbProps>()?.Props)?.ConsiderMelee ?? false;
+            var melee = VerbManager.PreferMelee(__instance.parent);
             if (rangedVerbs.Count <= 1 && !melee) return true;
             var man = __instance.PrimaryVerb?.CasterPawn?.Manager(false);
             __result = rangedVerbs
