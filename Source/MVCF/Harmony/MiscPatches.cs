@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
+using MVCF.Comps;
 using MVCF.Utilities;
 using UnityEngine;
 using Verse;
@@ -47,6 +48,25 @@ namespace MVCF.Harmony
         {
             harm.Patch(AccessTools.Method(typeof(Pawn), "DrawAt"),
                 postfix: new HarmonyMethod(typeof(MiscPatches), "Postfix_Pawn_DrawAt"));
+        }
+
+        public static void DoExtraEquipmentPatches(HarmonyLib.Harmony harm)
+        {
+            harm.Patch(AccessTools.Method(typeof(ThingDef), "get_IsRangedWeapon"),
+                new HarmonyMethod(typeof(MiscPatches), "Prefix_IsRangedWeapon"));
+        }
+
+        public static bool Prefix_IsRangedWeapon(ref bool __result, ThingDef __instance)
+        {
+            if (__instance.IsWeapon &&
+                __instance.GetCompProperties<CompProperties_VerbProps>() is CompProperties_VerbProps props &&
+                props.ConsiderMelee)
+            {
+                __result = false;
+                return false;
+            }
+
+            return true;
         }
 
         public static IEnumerable<CodeInstruction> Transpiler_JobDriver_Wait_CheckForAutoAttack(

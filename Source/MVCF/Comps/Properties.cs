@@ -43,6 +43,7 @@ namespace MVCF.Comps
 
     public class CompProperties_VerbProps : CompProperties
     {
+        public bool ConsiderMelee;
         public List<AdditionalVerbProps> verbProps;
 
         public override void PostLoadSpecial(ThingDef parent)

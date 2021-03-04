@@ -25,6 +25,19 @@ namespace MVCF
             !v.Verb.IsMeleeAttack && (v.Props == null || !v.Props.canFireIndependently) && v.Enabled &&
             v.Verb.Available() && !(!Pawn.IsColonist && v.Props != null && !v.Props.colonistOnly));
 
+        public bool ShouldBrawlerUpset
+        {
+            get
+            {
+                var prim = Pawn.equipment.Primary;
+                var eq = Pawn.equipment.PrimaryEq;
+                var melee = (eq?.props as CompProperties_VerbProps ??
+                             prim.TryGetComp<Comp_VerbProps>()?.Props)?.ConsiderMelee ?? false;
+                var exclude = melee ? eq?.AllVerbs.Where(v => !v.IsMeleeAttack) ?? new List<Verb>() : new List<Verb>();
+                return AllRangedVerbs.Except(exclude).Any();
+            }
+        }
+
         public IEnumerable<Verb> AllVerbs => verbs.Select(mv => mv.Verb);
         public IEnumerable<Verb> AllRangedVerbs => verbs.Select(mv => mv.Verb).Where(verb => !verb.IsMeleeAttack);
 

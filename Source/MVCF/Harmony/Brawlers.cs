@@ -25,10 +25,8 @@ namespace MVCF.Harmony
 
         public static bool GetReport_Prefix(ref AlertReport __result)
         {
-            var brawlersWithNonEquipmentRanged = new List<Pawn>();
-            foreach (var pawn in PawnsFinder.AllMaps_FreeColonistsSpawned)
-                if (pawn.story.traits.HasTrait(TraitDefOf.Brawler) && pawn.AllRangedVerbsPawn().Any())
-                    brawlersWithNonEquipmentRanged.Add(pawn);
+            var brawlersWithNonEquipmentRanged = PawnsFinder.AllMaps_FreeColonistsSpawned.Where(pawn =>
+                pawn.story.traits.HasTrait(TraitDefOf.Brawler) && pawn.Manager().ShouldBrawlerUpset).ToList();
 
             __result = AlertReport.CulpritsAre(brawlersWithNonEquipmentRanged);
 
@@ -37,7 +35,7 @@ namespace MVCF.Harmony
 
         public static bool CurrentStateInternal_Prefix(ref ThoughtState __result, Pawn p)
         {
-            __result = p.AllRangedVerbsPawn().Any();
+            __result = p.Manager().ShouldBrawlerUpset;
             return false;
         }
 

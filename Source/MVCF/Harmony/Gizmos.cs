@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
+using MVCF.Comps;
 using MVCF.Utilities;
 using RimWorld;
 using UnityEngine;
@@ -14,6 +15,8 @@ namespace MVCF.Harmony
 { // ReSharper disable InconsistentNaming
     public class Gizmos
     {
+        private static MethodInfo CreateVerbTargetCommand;
+
         public static void DoHumanoidPatches(HarmonyLib.Harmony harm)
         {
             harm.Patch(AccessTools.Method(typeof(Pawn_DraftController), "GetGizmos"),
@@ -38,10 +41,9 @@ namespace MVCF.Harmony
         {
             harm.Patch(AccessTools.Method(typeof(Pawn), "GetGizmos"),
                 postfix: new HarmonyMethod(typeof(Gizmos), "Pawn_GetGizmos_Postfix"));
-            harm.Patch(AccessTools.Method(typeof(Command), "GizmoOnGUIInt"),
-                transpiler: new HarmonyMethod(typeof(Gizmos), "GizmoOnGUI_Transpile"));
             harm.Patch(AccessTools.Method(typeof(CompEquippable), "GetVerbsCommands"),
                 new HarmonyMethod(typeof(Gizmos), "GetVerbsCommands_Prefix"));
+            CreateVerbTargetCommand = AccessTools.Method(typeof(VerbTracker), "CreateVerbTargetCommand");
         }
 
         public static IEnumerable<Gizmo> GetGizmos_Postfix(IEnumerable<Gizmo> __result, Pawn_DraftController __instance)
@@ -131,11 +133,16 @@ namespace MVCF.Harmony
         public static bool GetVerbsCommands_Prefix(ref IEnumerable<Command> __result, CompEquippable __instance)
         {
             var rangedVerbs = __instance.AllVerbs.Where(v => !v.IsMeleeAttack).ToList();
-            if (rangedVerbs.Count <= 1) return true;
+            var melee = (__instance.props as CompProperties_VerbProps ??
+                         __instance.parent.TryGetComp<Comp_VerbProps>()?.Props)?.ConsiderMelee ?? false;
+            if (rangedVerbs.Count <= 1 && !melee) return true;
             var man = __instance.PrimaryVerb?.CasterPawn?.Manager(false);
             __result = rangedVerbs
                 .SelectMany(v => v.GetGizmosForVerb(man?.GetManagedVerbForVerb(v)))
                 .OfType<Command>();
+            if (melee)
+                __result = __result.Prepend((Command) CreateVerbTargetCommand.Invoke(__instance.verbTracker,
+                    new object[] {__instance.parent, __instance.AllVerbs.First(v => v.verbProps.IsMeleeAttack)}));
             return false;
         }
 

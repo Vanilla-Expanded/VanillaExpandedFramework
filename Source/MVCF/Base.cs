@@ -90,7 +90,11 @@ namespace MVCF
                 Gizmos.DoHumanoidPatches(Harm);
             }
 
-            if (Features.ExtraEquipmentVerbs) Gizmos.DoExtraEquipmentPatches(Harm);
+            if (Features.ExtraEquipmentVerbs)
+            {
+                Gizmos.DoExtraEquipmentPatches(Harm);
+                MiscPatches.DoExtraEquipmentPatches(Harm);
+            }
 
             if (Features.RangedAnimals)
             {
