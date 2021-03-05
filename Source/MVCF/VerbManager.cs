@@ -86,6 +86,7 @@ namespace MVCF
 
         public static bool PreferMelee(ThingWithComps eq)
         {
+            if (eq == null) return false;
             if (preferMeleeCache.TryGetValue(eq, out var res)) return res;
 
             res = (eq.TryGetComp<CompEquippable>()?.props as CompProperties_VerbProps ??
