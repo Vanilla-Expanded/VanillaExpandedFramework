@@ -35,15 +35,14 @@ namespace MVCF.Harmony
 
         public static void Hediffs(HarmonyLib.Harmony harm)
         {
-            var type = typeof(Pawn_HealthTracker);
-            harm.Patch(AccessTools.Method(type, "AddHediff", new[]
+            harm.Patch(AccessTools.Method(typeof(Pawn_HealthTracker), "AddHediff", new[]
                 {
                     typeof(Hediff), typeof(BodyPartRecord), typeof(DamageInfo),
                     typeof(DamageWorker.DamageResult)
                 }),
                 postfix: new HarmonyMethod(typeof(Trackers), "AddHediff_Postfix"));
-            harm.Patch(AccessTools.Method(type, "RemoveHediff"),
-                postfix: new HarmonyMethod(typeof(Trackers), "RemoveHediff_Postfix"));
+            harm.Patch(AccessTools.Method(typeof(Hediff), "PostRemoved"),
+                postfix: new HarmonyMethod(typeof(Trackers), "PostRemoved_Postfix"));
         }
 
         public static void AddHediff_Postfix(Hediff hediff, Pawn_HealthTracker __instance)
@@ -51,12 +50,12 @@ namespace MVCF.Harmony
             __instance.hediffSet.pawn.Manager().AddVerbs(hediff);
         }
 
-        public static void RemoveHediff_Postfix(Hediff hediff, Pawn_HealthTracker __instance)
+        public static void PostRemoved_Postfix(Hediff __instance)
         {
-            if (Base.IsIgnoredMod(hediff?.def?.modContentPack?.Name)) return;
-            var comp = hediff.TryGetComp<HediffComp_VerbGiver>();
+            if (Base.IsIgnoredMod(__instance.def?.modContentPack?.Name)) return;
+            var comp = __instance.TryGetComp<HediffComp_VerbGiver>();
             if (comp?.VerbTracker?.AllVerbs == null) return;
-            var manager = __instance.hediffSet.pawn?.Manager();
+            var manager = __instance.pawn.Manager();
             if (manager == null) return;
             foreach (var verb in comp.VerbTracker.AllVerbs) manager.RemoveVerb(verb);
         }
