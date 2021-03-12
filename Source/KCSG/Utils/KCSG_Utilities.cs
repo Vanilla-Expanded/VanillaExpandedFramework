@@ -207,6 +207,7 @@ namespace KCSG
                             thing = ThingMaker.MakeThing(temp.thingDef, temp.stuffDef);
                             // If the thing is refulable, fill it
                             if (thing.TryGetComp<CompRefuelable>() != null) thing.TryGetComp<CompRefuelable>().Refuel((int)thing.TryGetComp<CompRefuelable>().Props.fuelCapacity / 2);
+                            if (thing.TryGetComp<CompPowerBattery>() != null) thing.TryGetComp<CompPowerBattery>().AddEnergy(thing.TryGetComp<CompPowerBattery>().Props.storedEnergyMax);
                             // If it's a grave, fill it
                             if (thing is Building_Casket inheritFromCasket)
                             {
