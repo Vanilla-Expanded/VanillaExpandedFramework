@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using Verse;
 
@@ -21,41 +22,38 @@ namespace KCSG
             KCSG_Utilities.HeightWidthFromLayout(structureLayoutDef, out int h, out int w);
             CellRect cellRect = CellRect.CenteredOn(map.Center, w, h);
 
-            // Log.Message("GenStep_CustomStructureGen - " + structureLayoutDef.defName + " " + map.ParentFaction.GetCallLabel());
-
-            int count = 1;
             foreach (List<String> item in structureLayoutDef.layouts)
             {
                 KCSG_Utilities.GenerateRoomFromLayout(item, cellRect, map, structureLayoutDef);
-                // Log.Message("Layout " + count.ToString() + " generation - PASS");
-                count++;
             }
 
+            // Flood refog
             this.SetAllFogged(map);
             foreach (IntVec3 loc in map.AllCells)
             {
                 map.mapDrawer.MapMeshDirty(loc, MapMeshFlag.FogOfWar);
             }
+
+            // Remove power cable not connected to a powered grid
+            map.listerBuildings.allBuildingsNonColonist.RemoveAll(b => b.TryGetComp<CompPowerTransmitter>() is CompPowerTransmitter cp && cp != null && cp.Props.transmitsPower == true && !cp.PowerNet.HasActivePowerSource);
         }
 
         internal void SetAllFogged(Map map)
         {
             CellIndices cellIndices = map.cellIndices;
-            if (this.fogGrid == null)
+            if (map.fogGrid?.fogGrid != null)
             {
-                this.fogGrid = new bool[cellIndices.NumGridCells];
-            }
-            foreach (IntVec3 c in map.AllCells)
-            {
-                this.fogGrid[cellIndices.CellToIndex(c)] = true;
-            }
-            if (Current.ProgramState == ProgramState.Playing)
-            {
-                map.roofGrid.Drawer.SetDirty();
+                foreach (IntVec3 c in map.AllCells)
+                {
+                    map.fogGrid.fogGrid[cellIndices.CellToIndex(c)] = true;
+                }
+                if (Current.ProgramState == ProgramState.Playing)
+                {
+                    map.roofGrid.Drawer.SetDirty();
+                }
             }
         }
 
-        public bool[] fogGrid;
         public List<StructureLayoutDef> structureLayoutDefs = new List<StructureLayoutDef>();
     }
 }
