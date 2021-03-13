@@ -38,11 +38,6 @@ namespace VanillaStorytellersExpanded
         {
             availableQuests.Clear();
             GenerateQuests();
-            Log.Message("RESET: Quest count: " + availableQuests.Count);
-            foreach (var quest in availableQuests)
-            {
-                Log.Message("Quest: " + quest);
-            }
             lastResetTick = Find.TickManager.TicksAbs;
         }
 
@@ -51,12 +46,15 @@ namespace VanillaStorytellersExpanded
             availableQuests.AddRange(def.Worker.GenerateQuests(this));
         }
 
-        public void ActivateQuest(QuestInfo questInfo)
+        public void ActivateQuest(Pawn accepter, QuestInfo questInfo)
         {
+            Log.Message("1 questInfo.quest: " + questInfo.quest.State + " - " + questInfo.quest.initiallyAccepted);
             Find.QuestManager.Add(questInfo.quest);
+            questInfo.quest.Accept(accepter);
             QuestUtility.SendLetterQuestAvailable(questInfo.quest);
             questInfo.currencyInfo?.Buy(questInfo);
             availableQuests.Remove(questInfo);
+            Log.Message("2 questInfo.quest: " + questInfo.quest.State + " - " + questInfo.quest.initiallyAccepted);
         }
 
         public void CallWindow()

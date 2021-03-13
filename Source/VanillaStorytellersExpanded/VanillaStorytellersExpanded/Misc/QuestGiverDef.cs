@@ -77,7 +77,10 @@ namespace VanillaStorytellersExpanded
                         }
                     }
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Log.Message("Exception: " + ex);
+                }
 
             }
             return generatedQuests;

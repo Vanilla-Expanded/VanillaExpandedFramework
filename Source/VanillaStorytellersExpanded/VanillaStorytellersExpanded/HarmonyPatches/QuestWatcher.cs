@@ -93,4 +93,18 @@ namespace VanillaStorytellersExpanded
             slate = QuestGen.slate.DeepCopy();
         }
     }
+
+    [HarmonyPatch(typeof(QuestManager))]
+    [HarmonyPatch("Add")]
+    public static class Add_Patch
+    {
+        public static void Prefix(Quest quest)
+        {
+            Log.Message(quest + " - " + quest.State + " - " + quest.initiallyAccepted);
+        }
+        public static void Postfix(Quest quest)
+        {
+            Log.Message(quest + " - " + quest.State + " - " + quest.initiallyAccepted);
+        }
+    }
 }

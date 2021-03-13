@@ -73,7 +73,7 @@ namespace VanillaStorytellersExpanded
         public override void Buy(QuestInfo questInfo)
         {
             base.Buy(questInfo);
-            questInfo.askerFaction.TryAffectGoodwillWith(Faction.OfPlayer, (int)amount);
+            questInfo.askerFaction.TryAffectGoodwillWith(Faction.OfPlayer, -(int)amount);
         }
     }
 }
