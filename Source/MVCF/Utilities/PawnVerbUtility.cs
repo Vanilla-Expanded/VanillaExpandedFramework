@@ -61,6 +61,7 @@ namespace MVCF.Utilities
             float bestScore = 0;
             foreach (var verb in verbs)
             {
+                if (verb.Verb is IVerbScore verbScore && verbScore.ForceUse(p, target)) return verb.Verb;
                 var score = VerbScore(p, verb.Verb, target, debug);
                 if (debug) Log.Message("Score is " + score + " compared to " + bestScore);
                 if (score <= bestScore) continue;
@@ -75,7 +76,7 @@ namespace MVCF.Utilities
         private static float VerbScore(Pawn p, Verb verb, LocalTargetInfo target, bool debug = false)
         {
             if (debug) Log.Message("Getting score of " + verb + " with target " + target);
-
+            if (verb is IVerbScore score) return score.GetScore(p, target);
             var accuracy = 0f;
             if (p.Map != null)
                 accuracy = ShotReport.HitReportFor(p, verb, target).TotalEstimatedHitChance;
@@ -112,5 +113,11 @@ namespace MVCF.Utilities
                     return 1;
             }
         }
+    }
+
+    public interface IVerbScore
+    {
+        float GetScore(Pawn pawn, LocalTargetInfo target);
+        bool ForceUse(Pawn pawn, LocalTargetInfo target);
     }
 }

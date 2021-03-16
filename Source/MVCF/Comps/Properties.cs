@@ -39,6 +39,11 @@ namespace MVCF.Comps
     public class Comp_VerbProps : ThingComp
     {
         public CompProperties_VerbProps Props => props as CompProperties_VerbProps;
+
+        public AdditionalVerbProps PropsFor(Verb verb)
+        {
+            return Props.PropsFor(verb);
+        }
     }
 
     public class CompProperties_VerbProps : CompProperties

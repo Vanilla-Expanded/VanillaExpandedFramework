@@ -129,7 +129,7 @@ namespace MVCF
             if (!Base.IsIgnoredMod(pawn?.def?.modContentPack?.Name) && pawn?.VerbTracker?.AllVerbs != null &&
                 Base.Features.RangedAnimals && !Base.IgnoredFeatures.RangedAnimals)
                 foreach (var verb in pawn.VerbTracker.AllVerbs)
-                    AddVerb(verb, VerbSource.RaceDef, pawn.TryGetComp<Comp_VerbGiver>()?.PropsFor(verb));
+                    AddVerb(verb, VerbSource.RaceDef, pawn.TryGetComp<Comp_VerbProps>()?.PropsFor(verb));
 
             if (pawn?.health?.hediffSet?.hediffs != null && !Base.IgnoredFeatures.HediffVerbs)
                 foreach (var hediff in pawn.health.hediffSet.hediffs)
