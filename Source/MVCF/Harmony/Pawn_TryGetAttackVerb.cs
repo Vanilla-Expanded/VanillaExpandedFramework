@@ -93,7 +93,7 @@ namespace MVCF.Harmony
 
         public static void Postfix(ref Verb __result, bool __state, Pawn __instance)
         {
-            if (__result == null) return;
+            if (__result?.verbProps?.label.NullOrEmpty() ?? true) return;
             if (__result.verbProps.label == Base.SearchLabel && __state)
             {
                 if (__instance.Manager().debugOpts.VerbLogging)
