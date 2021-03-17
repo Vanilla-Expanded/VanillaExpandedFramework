@@ -13,7 +13,7 @@ namespace VFECore
 
     public class LordJob_SiegeCustom : LordJob
     {
-
+        public LordJob_SiegeCustom() { }
         public LordJob_SiegeCustom(Faction faction, IntVec3 siegeSpot, float blueprintPoints)
         {
             this.faction = faction;
