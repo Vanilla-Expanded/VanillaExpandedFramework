@@ -79,12 +79,14 @@
     <Compile Include="AnimalBehaviours\Comps\CompChangeWeather.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompCorpseDecayer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDestroyThisItem.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompDieAfterPeriod.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDigPeriodically.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDigWhenHungry.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompElectrified.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompExplodingEggLayer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompExplodingHatcher.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompExtremeXenophobia.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompFilthProducer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompFixedGender.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompGasProducer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompHediffEffecter.cs" />
@@ -102,6 +104,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ChangeWeather.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_CorpseDecayer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DestroyThisItem.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DieAfterPeriod.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DigPeriodically.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DigWhenHungry.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Electrified.cs" />
@@ -109,6 +112,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ExplodingHatcher.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ExtremeXenophobia.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Fertilizer.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_FilthProducer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_FixedGender.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_GasProducer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_HediffEffecter.cs" />

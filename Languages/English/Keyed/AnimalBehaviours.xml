@@ -8,6 +8,9 @@
 	<VEF_TimeToMetamorphosis>Time to metamorphosis: {0}</VEF_TimeToMetamorphosis>
 	
 	<VEF_WarningEggExplodes>Warning, this egg explodes when hatching!</VEF_WarningEggExplodes>
+	
+	<VEF_TimeToDie>Animal expires in: {0}</VEF_TimeToDie>
+
 
 
 </LanguageData>
