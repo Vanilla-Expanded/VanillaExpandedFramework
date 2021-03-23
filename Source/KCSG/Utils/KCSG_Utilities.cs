@@ -544,7 +544,7 @@ namespace KCSG
             XElement symbol = new XElement("symbol", symbolString);
             symbolDef.Add(symbol);
 
-            Log.Message("CreateSymbolFromThing: " + symbol.Value + "in symbols: " + alreadyCreated.Contains(symbolDef.Value));
+            // Log.Message("CreateSymbolFromThing: " + symbol.Value + "in symbols: " + alreadyCreated.Contains(symbolDef.Value));
 
             if (!alreadyCreated.Contains(symbolDef.Value)) symbols.Add(symbolDef); alreadyCreated.Add(symbolDef.Value);
         }
@@ -638,7 +638,7 @@ namespace KCSG
                             if (t.def.category == ThingCategory.Building || t.def.category == ThingCategory.Plant)
                             {
                                 KCSG_Utilities.CreateSymbolFromThing(t, defnamePrefix, justCreated, symbols);
-                                Log.Message("CreateSymbolIfNeeded: " + t.def.defName + " symbols count: " + symbols.Count);
+                                // Log.Message("CreateSymbolIfNeeded: " + t.def.defName + " symbols count: " + symbols.Count);
                             }
                         }
                     }
