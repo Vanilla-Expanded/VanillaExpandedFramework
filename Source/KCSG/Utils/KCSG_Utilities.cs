@@ -25,12 +25,12 @@ namespace KCSG
                 if (c.x < xMin) xMin = c.x;
                 if (c.x > xMax) xMax = c.x;
             }
-#if DEBUG
+/*#if DEBUG
 			Log.Message("xMin" + xMin.ToString());
 			Log.Message("xMax" + xMax.ToString());
 			Log.Message("zMin" + zMin.ToString());
 			Log.Message("zMax" + zMax.ToString());
-#endif
+#endif*/
         }
 
         public static void HeightWidthFromLayout(StructureLayoutDef structureLayoutDef, out int height, out int width)
@@ -59,9 +59,9 @@ namespace KCSG
             {
                 if (first.x == c.x) height++;
             }
-#if DEBUG
+/*#if DEBUG
             Log.Message("Export height: " + height.ToString() + " width: " + width.ToString());
-#endif
+#endif*/
         }
 
         public static void EdgeFromArea(List<IntVec3> cellExport, out int height, out int width)
