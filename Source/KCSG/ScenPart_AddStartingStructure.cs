@@ -9,14 +9,62 @@ namespace KCSG
 {
     internal class ScenPart_AddStartingStructure : ScenPart
     {
-#pragma warning disable 0649
+        /* Generation option */
         public string structureLabel;
-        public bool nearMapCenter;
-#pragma warning restore 0649
         public List<StructureLayoutDef> chooseFrom = new List<StructureLayoutDef>();
-
+        public bool nearMapCenter;
         public bool allowFoggedPosition = false;
         public bool spawnPartOfEnnemyFaction = false;
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Values.Look<string>(ref structureLabel, "structureLabel");
+            Scribe_Values.Look<bool>(ref nearMapCenter, "nearMapCenter");
+            Scribe_Values.Look<bool>(ref allowFoggedPosition, "allowFoggedPosition");
+            Scribe_Values.Look<bool>(ref spawnPartOfEnnemyFaction, "spawnPartOfEnnemyFaction");
+            Scribe_Collections.Look<StructureLayoutDef>(ref chooseFrom, "chooseFrom", LookMode.Def);
+        }
+
+        public override void DoEditInterface(Listing_ScenEdit listing)
+        {
+            var scenPartRect = listing.GetScenPartRect(this, RowHeight * 6);
+
+            var labelRect = new Rect(scenPartRect.x, scenPartRect.y, scenPartRect.width, RowHeight);
+            structureLabel = Widgets.TextField(labelRect, structureLabel);
+
+            var addRect = new Rect(scenPartRect.x, scenPartRect.y + RowHeight, scenPartRect.width, RowHeight);
+            if (Widgets.ButtonText(addRect, "KCSG.Add".Translate()))
+            {
+                var floatMenuOptions = new List<FloatMenuOption>();
+                foreach (var item in DefDatabase<StructureLayoutDef>.AllDefs)
+                {
+                    floatMenuOptions.Add(new FloatMenuOption(item.defName, () => chooseFrom.Add(item)));
+                }
+                Find.WindowStack.Add(new FloatMenu(floatMenuOptions));
+            }
+
+            var removeRect = new Rect(scenPartRect.x, scenPartRect.y + RowHeight * 2, scenPartRect.width, RowHeight);
+            if (Widgets.ButtonText(removeRect, "KCSG.Remove".Translate()))
+            {
+                var floatMenuOptions = new List<FloatMenuOption>();
+                foreach (var item in chooseFrom)
+                {
+                    floatMenuOptions.Add(new FloatMenuOption(item.defName, () => chooseFrom.Remove(item)));
+                }
+                Find.WindowStack.Add(new FloatMenu(floatMenuOptions));
+            }
+
+            // Generation options
+            var nearCenterRect = new Rect(scenPartRect.x, scenPartRect.y + RowHeight * 3, scenPartRect.width, RowHeight);
+            Widgets.CheckboxLabeled(nearCenterRect, "KCSG.SpawnNearCenter".Translate(), ref nearMapCenter);
+
+            var foogedRect = new Rect(scenPartRect.x, scenPartRect.y + RowHeight * 4, scenPartRect.width, RowHeight);
+            Widgets.CheckboxLabeled(foogedRect, "KCSG.AllowFoggedPosition".Translate(), ref allowFoggedPosition);
+
+            // var ennemyRect = new Rect(scenPartRect.x, scenPartRect.y + RowHeight * 5, scenPartRect.width, RowHeight);
+            // Widgets.CheckboxLabeled(ennemyRect, "KCSG.SpawnPartOfEnnemyFaction".Translate(), ref spawnPartOfEnnemyFaction);
+        }
 
         public override string Summary(Scenario scen)
         {
@@ -53,10 +101,6 @@ namespace KCSG
             }
 
             FloodFillerFog.DebugRefogMap(map);
-            if (ModLister.GetActiveModWithIdentifier("EdB.PrepareCarefully") != null)
-            {
-                PrepareCarefully_Util.pcScenariosSave.Remove(structureLayoutDef);
-            }
         }
 
         private CellRect CreateCellRect(Map map, int height, int widht)
@@ -84,11 +128,11 @@ namespace KCSG
                 if (c.InBounds(map))
                 {
                     TerrainDef terrainDef = map.terrainGrid.TerrainAt(c);
-                    if (terrainDef.HasTag("River") || terrainDef.HasTag("Road"))
+                    if (terrainDef.HasTag("River"))
                     {
                         return false;
                     }
-                    if (!GenConstruct.CanBuildOnTerrain(ThingDefOf.Wall, c, map, Rot4.North, null, null))
+                    if (!GenConstruct.CanBuildOnTerrain(ThingDefOf.Wall, c, map, Rot4.North, null, ThingDefOf.Granite))
                     {
                         return false;
                     }
