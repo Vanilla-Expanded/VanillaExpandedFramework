@@ -21,6 +21,7 @@ namespace KCSG
         {
             if (Current.Game.Scenario.AllParts.ToList().Any(s => s.def.defName == "VFEC_AddStartingStructure"))
             {
+                PrepareCarefully_Util.pcScenariosSave.Clear();
                 ScenPart_AddStartingStructure spart = (ScenPart_AddStartingStructure)Current.Game.Scenario.AllParts.ToList().Find(s => s.def.defName == "VFEC_AddStartingStructure");
                 PrepareCarefully_Util.pcScenariosSave.Add(spart.chooseFrom.RandomElement(), spart.nearMapCenter);
             }
