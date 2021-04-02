@@ -151,6 +151,9 @@
     <Compile Include="AnimalBehaviours\MentalStates\MentalStateWorker_XenophobicRage.cs" />
     <Compile Include="AnimalBehaviours\MentalStates\MentalState_XenophobicRage.cs" />
     <Compile Include="AnimalBehaviours\MentalStates\XenophobicRageMentalStateUtility.cs" />
+    <Compile Include="Apparel\Comps\CompProperties\CompProperties_SwitchApparel.cs" />
+    <Compile Include="Apparel\Comps\CompSwitchApparel.cs" />
+    <Compile Include="Cuisine\GraphicClasses\Graphic_RandomStackCount.cs" />
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_Settings.cs" />
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_SettingsController.cs" />
     <Compile Include="Furniture\Comps\CompConfigurableSpawner.cs" />
