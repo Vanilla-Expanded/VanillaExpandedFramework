@@ -9,7 +9,6 @@ using UnityEngine;
 
 namespace VanillaFurnitureExpanded
 {
-    [StaticConstructorOnStartup]
 
     //A simple comp class that changes a building's graphic by using reflection
 
@@ -19,6 +18,7 @@ namespace VanillaFurnitureExpanded
         public Vector2 sizeVector;
         public Graphic_Multi newGraphic;
         public Graphic_Single newGraphicSingle;
+        public Color objectColour;
         public string newGraphicPath = "";
         public string newGraphicSinglePath = "";
 
@@ -29,52 +29,65 @@ namespace VanillaFurnitureExpanded
                 return (CompProperties_RandomBuildingGraphic)this.props;
             }
         }
-       
+
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
-            thingToGrab = (Thing)this.parent;
-            sizeVector = this.parent.Graphic.drawSize;
+            thingToGrab = (Thing)this.parent;            
             //Using LongEventHandler to avoid having to create a GraphicCache
-            LongEventHandler.ExecuteWhenFinished(ChangeGraphic);                       
+            LongEventHandler.ExecuteWhenFinished(ChangeGraphic);
+
         }
 
         public void ChangeGraphic()
         {
-            if (this.parent.def.graphicData.graphicClass == typeof(Graphic_Multi)) {
-                if (newGraphicPath == "")
+            sizeVector = this.parent.Graphic.drawSize;
+            objectColour = this.parent.Graphic.color;
+            if (this.parent.Faction != null && this.parent.Faction.IsPlayer)
+            {
+                if (this.parent.def.graphicData.graphicClass == typeof(Graphic_Multi))
                 {
-                    newGraphicPath = Props.randomGraphics.RandomElement();
-                    newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, ShaderDatabase.Cutout, sizeVector, Color.white);
-                    Type typ = typeof(Thing);
-                    FieldInfo type = typ.GetField("graphicInt", BindingFlags.Instance | BindingFlags.NonPublic);
-                    type.SetValue(thingToGrab, newGraphic);
+                    if (newGraphicPath == "")
+                    {
+                        newGraphicPath = Props.randomGraphics.RandomElement();
+                        newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, ShaderDatabase.Cutout, sizeVector, objectColour);
+                        Type typ = typeof(Thing);
+                        FieldInfo type = typ.GetField("graphicInt", BindingFlags.Instance | BindingFlags.NonPublic);
+                        type.SetValue(thingToGrab, newGraphic);
+                    }
+                    else
+                    {
+                        newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, ShaderDatabase.Cutout, sizeVector, objectColour);
+                        Type typ = typeof(Thing);
+                        FieldInfo type = typ.GetField("graphicInt", BindingFlags.Instance | BindingFlags.NonPublic);
+                        type.SetValue(thingToGrab, newGraphic);
+                    }
+
                 }
-                else
+                else if (this.parent.def.graphicData.graphicClass == typeof(Graphic_Single))
                 {
-                    newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, ShaderDatabase.Cutout, sizeVector, Color.white);
-                    Type typ = typeof(Thing);
-                    FieldInfo type = typ.GetField("graphicInt", BindingFlags.Instance | BindingFlags.NonPublic);
-                    type.SetValue(thingToGrab, newGraphic);
+                    if (newGraphicSinglePath == "")
+                    {
+                        newGraphicSinglePath = Props.randomGraphics.RandomElement();
+                        newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, ShaderDatabase.Cutout, sizeVector, objectColour);
+                        Type typ = typeof(Thing);
+                        FieldInfo type = typ.GetField("graphicInt", BindingFlags.Instance | BindingFlags.NonPublic);
+                        type.SetValue(thingToGrab, newGraphicSingle);
+                    }
+                    else
+                    {
+                        newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, ShaderDatabase.Cutout, sizeVector, objectColour);
+                        Type typ = typeof(Thing);
+                        FieldInfo type = typ.GetField("graphicInt", BindingFlags.Instance | BindingFlags.NonPublic);
+                        type.SetValue(thingToGrab, newGraphicSingle);
+                    }
                 }
 
-            } else if (this.parent.def.graphicData.graphicClass == typeof(Graphic_Single))
-            {
-                if (newGraphicSinglePath == "")
-                {
-                    newGraphicSinglePath = Props.randomGraphics.RandomElement();
-                    newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, ShaderDatabase.Cutout, sizeVector, Color.white);
-                    Type typ = typeof(Thing);
-                    FieldInfo type = typ.GetField("graphicInt", BindingFlags.Instance | BindingFlags.NonPublic);
-                    type.SetValue(thingToGrab, newGraphicSingle);
-                }
-                else
-                {
-                    newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, ShaderDatabase.Cutout, sizeVector, Color.white);
-                    Type typ = typeof(Thing);
-                    FieldInfo type = typ.GetField("graphicInt", BindingFlags.Instance | BindingFlags.NonPublic);
-                    type.SetValue(thingToGrab, newGraphicSingle);
-                }
             }
+
+
+
+
+
         }
 
         public override void PostExposeData()
