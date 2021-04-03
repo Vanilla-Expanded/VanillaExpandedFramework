@@ -42,6 +42,8 @@ namespace VanillaFurnitureExpanded
         {
             sizeVector = this.parent.Graphic.drawSize;
             objectColour = this.parent.Graphic.color;
+            ShaderTypeDef shaderUsed = this.parent.def.graphicData.shaderType;
+            
             if (this.parent.Faction != null && this.parent.Faction.IsPlayer)
             {
                 if (this.parent.def.graphicData.graphicClass == typeof(Graphic_Multi))
@@ -49,14 +51,14 @@ namespace VanillaFurnitureExpanded
                     if (newGraphicPath == "")
                     {
                         newGraphicPath = Props.randomGraphics.RandomElement();
-                        newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, ShaderDatabase.Cutout, sizeVector, objectColour);
+                        newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
                         Type typ = typeof(Thing);
                         FieldInfo type = typ.GetField("graphicInt", BindingFlags.Instance | BindingFlags.NonPublic);
                         type.SetValue(thingToGrab, newGraphic);
                     }
                     else
                     {
-                        newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, ShaderDatabase.Cutout, sizeVector, objectColour);
+                        newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
                         Type typ = typeof(Thing);
                         FieldInfo type = typ.GetField("graphicInt", BindingFlags.Instance | BindingFlags.NonPublic);
                         type.SetValue(thingToGrab, newGraphic);
@@ -68,14 +70,14 @@ namespace VanillaFurnitureExpanded
                     if (newGraphicSinglePath == "")
                     {
                         newGraphicSinglePath = Props.randomGraphics.RandomElement();
-                        newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, ShaderDatabase.Cutout, sizeVector, objectColour);
+                        newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
                         Type typ = typeof(Thing);
                         FieldInfo type = typ.GetField("graphicInt", BindingFlags.Instance | BindingFlags.NonPublic);
                         type.SetValue(thingToGrab, newGraphicSingle);
                     }
                     else
                     {
-                        newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, ShaderDatabase.Cutout, sizeVector, objectColour);
+                        newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
                         Type typ = typeof(Thing);
                         FieldInfo type = typ.GetField("graphicInt", BindingFlags.Instance | BindingFlags.NonPublic);
                         type.SetValue(thingToGrab, newGraphicSingle);
