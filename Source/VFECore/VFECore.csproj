@@ -158,9 +158,11 @@
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_SettingsController.cs" />
     <Compile Include="Furniture\Comps\CompConfigurableSpawner.cs" />
     <Compile Include="Furniture\Comps\CompProperties\CompProperties_ConfigurableSpawner.cs" />
+    <Compile Include="Furniture\Comps\CompProperties\CompProperties_RandomBuildingGraphic.cs" />
     <Compile Include="Furniture\Comps\CompProperties\CompProperties_RockSpawner.cs" />
     <Compile Include="Furniture\Comps\CompProperties\CompProperties_SelectBuildingBehind.cs" />
     <Compile Include="Furniture\Comps\CompProperties\CompProperties_SpawnOtherBuildingWhenPowered.cs" />
+    <Compile Include="Furniture\Comps\CompRandomBuildingGraphic.cs" />
     <Compile Include="Furniture\Comps\CompRockSpawner.cs" />
     <Compile Include="Furniture\Comps\CompSelectBuildingBehind.cs" />
     <Compile Include="Furniture\Comps\CompSpawnOtherBuildingWhenPowered.cs" />
