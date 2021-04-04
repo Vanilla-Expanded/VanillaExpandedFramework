@@ -15,10 +15,8 @@ namespace VanillaFurnitureExpanded
     public class CompRandomBuildingGraphic : ThingComp
     {
         public Thing thingToGrab;
-        public Vector2 sizeVector;
         public Graphic_Multi newGraphic;
         public Graphic_Single newGraphicSingle;
-        public Color objectColour;
         public string newGraphicPath = "";
         public string newGraphicSinglePath = "";
 
@@ -32,7 +30,7 @@ namespace VanillaFurnitureExpanded
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
-            thingToGrab = (Thing)this.parent;            
+            thingToGrab = (Thing)this.parent;
             //Using LongEventHandler to avoid having to create a GraphicCache
             LongEventHandler.ExecuteWhenFinished(ChangeGraphic);
 
@@ -40,10 +38,10 @@ namespace VanillaFurnitureExpanded
 
         public void ChangeGraphic()
         {
-            sizeVector = this.parent.Graphic.drawSize;
-            objectColour = this.parent.Graphic.color;
+            Vector2 sizeVector = this.parent.Graphic.drawSize;
+            Color objectColour = this.parent.Graphic.color;
             ShaderTypeDef shaderUsed = this.parent.def.graphicData.shaderType;
-            
+
             if (this.parent.Faction != null && this.parent.Faction.IsPlayer)
             {
                 if (this.parent.def.graphicData.graphicClass == typeof(Graphic_Multi))
@@ -52,17 +50,14 @@ namespace VanillaFurnitureExpanded
                     {
                         newGraphicPath = Props.randomGraphics.RandomElement();
                         newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
-                        Type typ = typeof(Thing);
-                        FieldInfo type = typ.GetField("graphicInt", BindingFlags.Instance | BindingFlags.NonPublic);
-                        type.SetValue(thingToGrab, newGraphic);
                     }
                     else
                     {
                         newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
-                        Type typ = typeof(Thing);
-                        FieldInfo type = typ.GetField("graphicInt", BindingFlags.Instance | BindingFlags.NonPublic);
-                        type.SetValue(thingToGrab, newGraphic);
                     }
+                    Type typ = typeof(Thing);
+                    FieldInfo type = typ.GetField("graphicInt", BindingFlags.Instance | BindingFlags.NonPublic);
+                    type.SetValue(thingToGrab, newGraphic);
 
                 }
                 else if (this.parent.def.graphicData.graphicClass == typeof(Graphic_Single))
@@ -71,17 +66,14 @@ namespace VanillaFurnitureExpanded
                     {
                         newGraphicSinglePath = Props.randomGraphics.RandomElement();
                         newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
-                        Type typ = typeof(Thing);
-                        FieldInfo type = typ.GetField("graphicInt", BindingFlags.Instance | BindingFlags.NonPublic);
-                        type.SetValue(thingToGrab, newGraphicSingle);
                     }
                     else
                     {
                         newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
-                        Type typ = typeof(Thing);
-                        FieldInfo type = typ.GetField("graphicInt", BindingFlags.Instance | BindingFlags.NonPublic);
-                        type.SetValue(thingToGrab, newGraphicSingle);
                     }
+                    Type typ = typeof(Thing);
+                    FieldInfo type = typ.GetField("graphicInt", BindingFlags.Instance | BindingFlags.NonPublic);
+                    type.SetValue(thingToGrab, newGraphicSingle);
                 }
 
             }
@@ -96,6 +88,31 @@ namespace VanillaFurnitureExpanded
         {
             Scribe_Values.Look<string>(ref this.newGraphicPath, "newGraphicPath");
             Scribe_Values.Look<string>(ref this.newGraphicSinglePath, "newGraphicSinglePath");
+        }
+
+        public override IEnumerable<Gizmo> CompGetGizmosExtra()
+        {
+            if (this.parent.Faction != null && this.parent.Faction.IsPlayer)
+            {
+                yield return new Command_Action
+                {
+                    defaultLabel = "VFE_ChangeGraphic".Translate(),
+                    defaultDesc = "VFE_ChangeGraphicDesc".Translate(),
+                    icon = ContentFinder<Texture2D>.Get("UI/VEF_ChangeGraphic", true),
+                    action = delegate ()
+                    {
+                        newGraphicPath = "";
+                        newGraphicSinglePath = "";
+                        LongEventHandler.ExecuteWhenFinished(ChangeGraphic);
+                        this.parent.Map.mapDrawer.MapMeshDirty(this.parent.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+                    }
+                };
+
+            }
+            
+
+
+            yield break;
         }
     }
 }
