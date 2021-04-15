@@ -112,6 +112,7 @@ namespace VFEMech
 
 		public float Energy => energy;
 
+		private bool firstTime = true;
 		public ShieldState ShieldState
 		{
 			get
@@ -128,19 +129,25 @@ namespace VFEMech
 		public override void PostExposeData()
 		{
 			base.PostExposeData();
-			Scribe_Values.Look(ref energy,              "energy",              0f);
+			firstTime = false;
+			Scribe_Values.Look(ref firstTime, "firstTime", false);
+			Scribe_Values.Look(ref energy, "energy", 0f);
 			Scribe_Values.Look(ref ticksToReset,        "ticksToReset",        -1);
 			Scribe_Values.Look(ref lastKeepDisplayTick, "lastKeepDisplayTick", 0);
 		}
 
-		public override void CompTick()
+        public override void CompTick()
 		{
 			base.CompTick();
 			if (this.Pawn == null)
 			{
 				energy = 0f;
 			}
-			else if (ShieldState == ShieldState.Resetting)
+			else if (firstTime && this.Pawn.Faction != Faction.OfPlayer)
+            {
+				energy = EnergyMax; // in order to refill shields on NPCs
+			}
+			if (ShieldState == ShieldState.Resetting)
 			{
 				ticksToReset--;
 				if (ticksToReset <= 0)
@@ -156,8 +163,9 @@ namespace VFEMech
 					energy = EnergyMax;
 				}
 			}
-		}
 
+			firstTime = false;
+		}
 		public override void PostDraw()
 		{
 			base.PostDraw();
@@ -180,7 +188,7 @@ namespace VFEMech
 			{
 				return true;
 			}
-			else if (pawn.mindState.duty?.def.alwaysShowWeapon ?? false)
+			else if (pawn.mindState?.duty?.def.alwaysShowWeapon ?? false)
 			{
 				return true;
 			}
@@ -194,10 +202,11 @@ namespace VFEMech
 
 		public void DrawWornExtras()
 		{
+			Log.Message(ShieldState + " - " + this.Pawn + " - " + ticksToReset);
 			if (ShieldState == ShieldState.Active)
 			{
 				float num  = Mathf.Lerp(Props.minShieldSize, Props.maxShieldSize, energy);
-				var   pawn = this.Pawn;
+				var pawn = this.Pawn;
 				if (pawn != null &&
 					(Props.showWhenDrafted && pawn.Drafted
 				|| (Props.showOnHostiles        && pawn.Faction != Faction.OfPlayer && pawn.HostileTo(Faction.OfPlayer))
@@ -225,6 +234,11 @@ namespace VFEMech
 		public override void PostPreApplyDamage(DamageInfo dinfo, out bool absorbed)
 		{
 			base.PostPreApplyDamage(dinfo, out absorbed);
+			AbsorbingDamage(dinfo, out absorbed);
+		}
+		public bool AbsorbingDamage(DamageInfo dinfo, out bool absorbed)
+		{
+			Log.Message(Pawn + " - " + energy);
 			if (ShieldState != ShieldState.Active)
 			{
 				absorbed = false;
@@ -237,7 +251,7 @@ namespace VFEMech
 			}
 			else if (Props.blockRangedAttack && dinfo.Def.isRanged || dinfo.Def.isExplosive || Props.blockMeleeAttack
 				&& (dinfo.Weapon == null && dinfo.Instigator is Pawn || dinfo.Weapon.IsMeleeWeapon))
-			{ 
+			{
 				energy -= dinfo.Amount * EnergyLossPerDamage;
 				if (energy < 0f)
 				{
@@ -247,20 +261,20 @@ namespace VFEMech
 				{
 					AbsorbedDamage(dinfo);
 				}
-
 				absorbed = true;
 			}
 			else
 			{
 				absorbed = false;
 			}
+			Log.Message(Pawn + " - " + energy);
+			return absorbed;
 		}
 
 		public void KeepDisplaying()
 		{
 			lastKeepDisplayTick = Find.TickManager.TicksGame;
 		}
-
 		private void AbsorbedDamage(DamageInfo dinfo)
 		{
 			SoundDefOf.EnergyShield_AbsorbDamage.PlayOneShot(new TargetInfo(this.Pawn.Position, this.Pawn.Map));
