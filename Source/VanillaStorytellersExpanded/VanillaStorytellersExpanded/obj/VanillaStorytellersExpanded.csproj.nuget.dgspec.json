@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj": {}
+    "c:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj": {}
   },
   "projects": {
-    "C:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj": {
+    "c:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj",
+        "projectUniqueName": "c:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj",
         "projectName": "VanillaStorytellersExpanded",
-        "projectPath": "C:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj",
+        "projectPath": "c:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj",
         "packagesPath": "C:\\Users\\Vova\\.nuget\\packages\\",
-        "outputPath": "C:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\obj\\",
+        "outputPath": "c:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\obj\\",
         "projectStyle": "PackageReference",
         "skipContentFileWrite": true,
         "configFilePaths": [

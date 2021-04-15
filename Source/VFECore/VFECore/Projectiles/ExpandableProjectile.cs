@@ -318,14 +318,14 @@ namespace VFECore
 
 		protected bool customImpact;
 
-		public HashSet<Thing> hitThings;
+		public List<Thing> hitThings;
 		protected override void Impact(Thing hitThing)
 		{
 			if (def.stopWhenHit && !stopped && !customImpact)
 			{
 				StopMotion();
 			}
-			if (hitThings == null) hitThings = new HashSet<Thing>();
+			if (hitThings == null) hitThings = new List<Thing>();
 			if (this.def.dealsDamageOnce && hitThings.Contains(hitThing))
             {
 				return;

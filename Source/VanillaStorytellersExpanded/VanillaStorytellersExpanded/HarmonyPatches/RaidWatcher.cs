@@ -38,28 +38,39 @@ namespace VanillaStorytellersExpanded
 
         public static void RaidGroupChecker(List<Pawn> pawns, IncidentParms parms)
         {
-            if (pawns != null)
+            if (pawns != null && parms != null)
             {
-                var gameComp = Current.Game.GetComponent<StorytellerWatcher>();
-                var raidGroup = new RaidGroup();
-                if (parms.faction != null)
+                var gameComp = Current.Game?.GetComponent<StorytellerWatcher>();
+                if (gameComp != null)
                 {
-                    raidGroup.faction = parms.faction;
-                }
-                else
-                {
-                    raidGroup.faction = pawns.First().Faction;
-                }
-                raidGroup.pawns = pawns.ToHashSet();
-                if (includeRaidToTheList)
-                {
-                    //Log.Message("Creating raid group of " + pawns?.Count + " pawns, faction - " + raidGroup.faction.def, true);
-                    gameComp.raidGroups.Add(raidGroup);
-                }
-                else
-                {
-                    //Log.Message("Creating reinforcement group of " + pawns?.Count + " pawns, faction - " + raidGroup.faction.def, true);
-                    gameComp.reinforcementGroups.Add(raidGroup);
+                    var raidGroup = new RaidGroup();
+                    if (parms.faction != null)
+                    {
+                        raidGroup.faction = parms.faction;
+                    }
+                    else
+                    {
+                        raidGroup.faction = pawns.First().Faction;
+                    }
+                    raidGroup.pawns = pawns.ToHashSet();
+                    if (includeRaidToTheList)
+                    {
+                        if (gameComp.raidGroups is null)
+                        {
+                            gameComp.raidGroups = new List<RaidGroup>();
+                        }
+                        //Log.Message("Creating raid group of " + pawns?.Count + " pawns, faction - " + raidGroup.faction.def, true);
+                        gameComp.raidGroups.Add(raidGroup);
+                    }
+                    else
+                    {
+                        if (gameComp.reinforcementGroups is null)
+                        {
+                            gameComp.reinforcementGroups = new List<RaidGroup>();
+                        }
+                        //Log.Message("Creating reinforcement group of " + pawns?.Count + " pawns, faction - " + raidGroup.faction.def, true);
+                        gameComp.reinforcementGroups.Add(raidGroup);
+                    }
                 }
             }
 
