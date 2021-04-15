@@ -137,6 +137,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompThoughtEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompUntameable.cs" />
     <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_Berserk.cs" />
+    <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraDamageAnimals.cs" />
     <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraDamageInsectoids.cs" />
     <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraDamageMechanoids.cs" />
     <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraDamagePirates.cs" />
