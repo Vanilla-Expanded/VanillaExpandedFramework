@@ -11,6 +11,10 @@
 <VFE_PleaseSelectOutput>Select machine output</VFE_PleaseSelectOutput>
 <VFE_NeedsWater>This building must be placed on water</VFE_NeedsWater>
 
+<!-- Random Building Graphics -->
+
+<VFE_ChangeGraphic>Change Graphic</VFE_ChangeGraphic>
+<VFE_ChangeGraphicDesc>Change Graphic of this building randomly between those available</VFE_ChangeGraphicDesc>
 
 
 </LanguageData>

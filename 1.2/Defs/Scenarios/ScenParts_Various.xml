@@ -21,8 +21,9 @@
   <ScenPartDef>
     <defName>VFEC_AddStartingStructure</defName>
     <label>add custom structure to starting map</label>
-    <category>Fixed</category>
+    <category>Misc</category>
     <scenPartClass>KCSG.ScenPart_AddStartingStructure</scenPartClass>
+    <maxUses>1</maxUses>
   </ScenPartDef>
 
 </Defs>
