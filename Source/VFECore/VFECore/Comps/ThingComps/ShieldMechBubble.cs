@@ -202,7 +202,6 @@ namespace VFEMech
 
 		public void DrawWornExtras()
 		{
-			Log.Message(ShieldState + " - " + this.Pawn + " - " + ticksToReset);
 			if (ShieldState == ShieldState.Active)
 			{
 				float num  = Mathf.Lerp(Props.minShieldSize, Props.maxShieldSize, energy);
