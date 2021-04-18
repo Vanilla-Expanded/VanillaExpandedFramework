@@ -147,7 +147,9 @@
     <Compile Include="AnimalBehaviours\DefExtensions\AnimalStatExtension.cs" />
     <Compile Include="AnimalBehaviours\Harmony\PawnUtility_Mated_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\ThingDef_SpecialDisplayStats_Patch.cs" />
-    <Compile Include="AnimalBehaviours\Hediffs\HediffCompProperties_TurnsWhenDead.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Resurrect.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Resurrect.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_TurnsWhenDead.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_TurnWhenDead.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Hediff_AcidBuildup.cs" />
     <Compile Include="AnimalBehaviours\MapComponents\DestroyableObjects_MapComponent.cs" />
