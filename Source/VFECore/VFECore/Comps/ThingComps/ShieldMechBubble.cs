@@ -237,7 +237,6 @@ namespace VFEMech
 		}
 		public bool AbsorbingDamage(DamageInfo dinfo, out bool absorbed)
 		{
-			Log.Message(Pawn + " - " + energy);
 			if (ShieldState != ShieldState.Active)
 			{
 				absorbed = false;
@@ -266,7 +265,6 @@ namespace VFEMech
 			{
 				absorbed = false;
 			}
-			Log.Message(Pawn + " - " + energy);
 			return absorbed;
 		}
 
