@@ -49,6 +49,9 @@
 	<VSE.ReinforcementsDesc>Seeing that your forces suffered losses, {FACTION_name} has decided to reinforce their raiding force</VSE.ReinforcementsDesc>
 	
 	<VSE.CostGoodwill>cost: {0} goodwill</VSE.CostGoodwill>
+	
+  <VWEL_ToggleHotshotLabel>Weapon warm-up</VWEL_ToggleHotshotLabel>
+  <VWEL_ToggleHotshotDesc>Shots fired when standing still warm-up the weapon allowing for increased firing speed. Overheating can lead to detonation.</VWEL_ToggleHotshotDesc>
 
 	
 </LanguageData>
