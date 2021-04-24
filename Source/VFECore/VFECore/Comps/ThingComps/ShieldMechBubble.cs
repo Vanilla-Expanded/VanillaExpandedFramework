@@ -29,7 +29,7 @@ namespace VFEMech
 		public float  minShieldSize = 1.5f;
 		public float  maxShieldSize = 2f;
 		public Color  shieldColor = Color.white;
-		public float  EnergyLossPerDamage = 0.033f;
+		public float  EnergyLossPerDamage = 1f;
 		public bool disableRotation;
 	}
 
