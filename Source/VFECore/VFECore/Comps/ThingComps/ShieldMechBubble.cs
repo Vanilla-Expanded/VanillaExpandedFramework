@@ -140,7 +140,7 @@ namespace VFEMech
         public override string CompInspectStringExtra()
         {
 			StringBuilder sb = new StringBuilder(base.CompInspectStringExtra());
-			if (this.Pawn?.Faction != Faction.OfPlayer)
+			if (Prefs.DevMode)
             {
 				sb.AppendLine("EnergyMax: " + EnergyMax);
 				sb.AppendLine("EnergyGainPerTick: " + EnergyGainPerTick);
