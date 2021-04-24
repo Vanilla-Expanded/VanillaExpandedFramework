@@ -1,5 +1,6 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
@@ -136,6 +137,17 @@ namespace VFEMech
 			Scribe_Values.Look(ref lastKeepDisplayTick, "lastKeepDisplayTick", 0);
 		}
 
+        public override string CompInspectStringExtra()
+        {
+			StringBuilder sb = new StringBuilder(base.CompInspectStringExtra());
+			if (this.Pawn?.Faction != Faction.OfPlayer)
+            {
+				sb.AppendLine("EnergyMax: " + EnergyMax);
+				sb.AppendLine("EnergyGainPerTick: " + EnergyGainPerTick);
+				sb.AppendLine("Energy: " + Energy);
+			}
+			return sb.ToString().TrimEndNewlines();
+		}
         public override void CompTick()
 		{
 			base.CompTick();
