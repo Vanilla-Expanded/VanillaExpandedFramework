@@ -119,7 +119,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ExplodingEggLayer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ExplodingHatcher.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ExtremeXenophobia.cs" />
-    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Fertilizer.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_TerrainChanger.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_FilthProducer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_FixedGender.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Floating.cs" />
