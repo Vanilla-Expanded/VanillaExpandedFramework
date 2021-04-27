@@ -10,7 +10,7 @@ namespace AnimalBehaviours
 {
 
 	[HarmonyPatch(typeof(Dialog_InfoCard), "FillCard")]
-	public static class Dialog_InfoCard_FillCard_Patch
+	public static class VanillaExpandedFramework_Dialog_InfoCard_FillCard_Patch
 	{
 		public static AnimalStatExtension extension;
 		public static Rect rect;

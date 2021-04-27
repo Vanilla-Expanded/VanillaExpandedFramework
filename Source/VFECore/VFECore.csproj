@@ -72,6 +72,7 @@
     <Compile Include="AnimalBehaviours\AI\JobGivers\JobGiver_XenophobicRage.cs" />
     <Compile Include="AnimalBehaviours\AI\WorkGivers\WorkGiver_AnimalResource.cs" />
     <Compile Include="AnimalBehaviours\AI\WorkGivers\WorkGiver_DestroyItem.cs" />
+    <Compile Include="AnimalBehaviours\AnimalCollectionClass\AnimalCollectionClass.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompAcidImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompAnimalProduct.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompAsexualReproduction.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompExtremeXenophobia.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompFilthProducer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompFixedGender.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompFloating.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompGasProducer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompHediffEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompHighlyFlammable.cs" />
@@ -116,6 +118,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Fertilizer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_FilthProducer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_FixedGender.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Floating.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_GasProducer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_HediffEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_HighlyFlammable.cs" />
@@ -147,6 +150,7 @@
     <Compile Include="AnimalBehaviours\DefExtensions\AnimalStatExtension.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Dialog_InfoCard_FillCard_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\PawnUtility_Mated_Patch.cs" />
+    <Compile Include="AnimalBehaviours\Harmony\Pawn_PathFollower_CostToMoveIntoCell_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\ThingDef_SpecialDisplayStats_Patch.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Resurrect.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Resurrect.cs" />
