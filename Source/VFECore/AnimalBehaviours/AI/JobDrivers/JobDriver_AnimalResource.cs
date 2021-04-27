@@ -49,7 +49,11 @@ namespace AnimalBehaviours
                 if (this.gatherProgress >= this.WorkTotal)
                 {
                     this.GetSpecificComp((Pawn)((Thing)this.job.GetTarget(TargetIndex.A))).InformGathered(this.pawn);
-                    actor.jobs.EndCurrentJob(JobCondition.Succeeded, true, true);                   
+                    actor.jobs.EndCurrentJob(JobCondition.Succeeded, true, true);
+                    if (ModLister.HasActiveModWithName("Alpha Animals"))
+                    {
+                        actor.health.AddHediff(HediffDef.Named("AA_GatheredResource"));
+                    }
                 }
             };
             wait.AddFinishAction(delegate

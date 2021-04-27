@@ -99,7 +99,15 @@ namespace AnimalBehaviours
                             //Add 1 energy. The rate it fills is thus defined by electroRate
                             current2.AddEnergy((float)1);
                             break;
-                        }                      
+                        }
+
+                        //This is for achievements
+                        if (ModLister.HasActiveModWithName("Alpha Animals")&&pawn.Faction == Faction.OfPlayer)
+                        {
+                            pawn.health.AddHediff(HediffDef.Named("AA_RechargingBatteries"));
+                        }
+
+                        
                     }
                     tickCounter = 0;
                 }

@@ -20,6 +20,9 @@ namespace AnimalBehaviours
         public string asexualHatchedMessage = "VEF_AsexualHatched";
         public string asexualCloningMessage = "VEF_AsexualCloning";
         public string asexualEggMessage = "VEF_AsexualHatchedEgg";
+        //Some creatures need to spawn a different def
+        public bool convertsIntoAnotherDef = false;
+        public string newDef = "";
 
 
         public CompProperties_AsexualReproduction()

@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+
+
+  <!--============= Satisfy basic needs, weird eater ============-->
+  
+  <ThinkTreeDef>
+    <defName>VEF_SatisfyBasicNeedsWeirdEater</defName>
+    <thinkRoot Class="ThinkNode_Tagger">
+      <tagToGive>SatisfyingNeeds</tagToGive>
+      <subNodes>
+        <li Class="ThinkNode_PrioritySorter">
+          <subNodes>
+            <li Class="AnimalBehaviours.JobGiver_GetWeirdFood"/>
+            <li Class="JobGiver_GetRest"/>
+            
+          </subNodes>
+        </li>
+      </subNodes>
+    </thinkRoot>
+  </ThinkTreeDef> 
+  
+ 
+
+</Defs>

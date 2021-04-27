@@ -11,6 +11,7 @@ namespace AnimalBehaviours
 
         //CompAnimalProduct builds upon both CompMilkable and CompShearable, with many more configuration options
 
+        public int seasonalItemIndex = 0;
 
         System.Random rand = new System.Random();
 
@@ -36,9 +37,14 @@ namespace AnimalBehaviours
         {
             get
             {
-               
+
+                //This is only used by the Chameleon Yak
+                if (Props.seasonalItems != null)
+                {
+                    return ThingDef.Named(Props.seasonalItems[seasonalItemIndex]);
+                }
                 //This selects a random output item
-                if (Props.isRandom)
+                else if(Props.isRandom)
                 {
 
                     return ThingDef.Named(Props.randomItems.RandomElement());

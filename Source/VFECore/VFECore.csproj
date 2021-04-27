@@ -66,7 +66,9 @@
   <ItemGroup>
     <Compile Include="AnimalBehaviours\AI\JobDrivers\JobDriver_AnimalResource.cs" />
     <Compile Include="AnimalBehaviours\AI\JobDrivers\JobDriver_DestroyItem.cs" />
+    <Compile Include="AnimalBehaviours\AI\JobDrivers\JobDriver_IngestWeird.cs" />
     <Compile Include="AnimalBehaviours\AI\JobDrivers\JobDriver_LayExplodingEgg.cs" />
+    <Compile Include="AnimalBehaviours\AI\JobGivers\JobGiver_GetWeirdFood.cs" />
     <Compile Include="AnimalBehaviours\AI\JobGivers\JobGiver_Harvest.cs" />
     <Compile Include="AnimalBehaviours\AI\JobGivers\JobGiver_LayExplodingEgg.cs" />
     <Compile Include="AnimalBehaviours\AI\JobGivers\JobGiver_XenophobicRage.cs" />
@@ -84,6 +86,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompDieAfterPeriod.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDigPeriodically.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDigWhenHungry.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompEatWeirdFood.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompElectrified.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompExplodingEggLayer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompExplodingHatcher.cs" />
@@ -111,6 +114,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DieAfterPeriod.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DigPeriodically.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DigWhenHungry.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_EatWeirdFood.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Electrified.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ExplodingEggLayer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ExplodingHatcher.cs" />
@@ -149,6 +153,7 @@
     <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraInfecter.cs" />
     <Compile Include="AnimalBehaviours\DefExtensions\AnimalStatExtension.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Dialog_InfoCard_FillCard_Patch.cs" />
+    <Compile Include="AnimalBehaviours\Harmony\JobGiver_GetFood_TryGiveJob_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\PawnUtility_Mated_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Pawn_PathFollower_CostToMoveIntoCell_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\ThingDef_SpecialDisplayStats_Patch.cs" />

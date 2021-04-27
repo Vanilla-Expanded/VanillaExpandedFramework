@@ -16,7 +16,15 @@ namespace VanillaCookingExpanded
         {
             GetSettings<VanillaCookingExpanded_Settings>();
         }
-        public override string SettingsCategory() => "Vanilla Cooking Expanded";
+        public override string SettingsCategory() {
+            if (ModLister.HasActiveModWithName("Vanilla Cooking Expanded")){
+                return "Vanilla Cooking Expanded";
+            } else return "";
+
+
+        }
+        
+       
 
         public override void DoSettingsWindowContents(Rect inRect)
         {
