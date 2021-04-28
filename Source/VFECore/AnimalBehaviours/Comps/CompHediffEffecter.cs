@@ -37,7 +37,7 @@ namespace AnimalBehaviours
                     foreach (Thing thing in GenRadial.RadialDistinctThingsAround(thisPawn.Position, thisPawn.Map, Props.radius, true))
                     {
                         Pawn pawn = thing as Pawn;
-                        //Only work on colonists
+                        //Only work on colonists, unless notOnlyAffectColonists
                         if (pawn != null && (pawn.IsColonist || Props.notOnlyAffectColonists))
                         {
                             //Only work on not dead, not downed, not psychically immune colonists

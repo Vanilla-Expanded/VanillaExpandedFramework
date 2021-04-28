@@ -23,7 +23,7 @@ namespace AnimalBehaviours
         {
             base.CompTick();
             Pawn pawn = this.parent as Pawn;
-            if ((pawn.Map != null) && (pawn.Awake()) && 
+            if (AnimalBehaviours_Settings.flagDigWhenHungry&&(pawn.Map != null) && (pawn.Awake()) && 
                 ((pawn.needs.food.CurLevelPercentage < pawn.needs.food.PercentageThreshHungry) ||
                 (Props.digAnywayEveryXTicks && this.parent.IsHashIntervalTick(Props.timeToDigForced))))
             {
@@ -35,13 +35,26 @@ namespace AnimalBehaviours
                         {
                             if (Props.acceptedTerrains.Contains(pawn.Position.GetTerrain(pawn.Map).defName))
                             {
-                                ThingDef newThing = ThingDef.Named(this.Props.customThingToDig);
-                                Thing newcorpse = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
-                                newcorpse.stackCount = this.Props.customAmountToDig;
+                                Thing newcorpse;
+                                if (Props.isFrostmite)
+                                {
+                                    PawnKindDef wildman = PawnKindDef.Named("WildMan");
+                                    Faction faction = FactionUtility.DefaultFactionFrom(wildman.defaultFactionType);
+                                    Pawn newPawn = PawnGenerator.GeneratePawn(wildman, faction);
+                                    newcorpse = GenSpawn.Spawn(newPawn, pawn.Position, pawn.Map, WipeMode.Vanish);
+                                    newcorpse.Kill(null, null);
+                                   
+                                }
+                                else { 
+                                    ThingDef newThing = ThingDef.Named(this.Props.customThingToDig);
+                                    newcorpse = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
+                                    newcorpse.stackCount = this.Props.customAmountToDig;
+                                }
                                 if (Props.spawnForbidden)
                                 {
                                     newcorpse.SetForbidden(true);
                                 }
+                                
                                 if (this.effecter == null)
                                 {
                                     this.effecter = EffecterDefOf.Mine.Spawn();
@@ -51,9 +64,22 @@ namespace AnimalBehaviours
                             }
                         } else
                         {
-                            ThingDef newThing = ThingDef.Named(this.Props.customThingToDig);
-                            Thing newcorpse = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
-                            newcorpse.stackCount = this.Props.customAmountToDig;
+                            Thing newcorpse;
+                            if (Props.isFrostmite)
+                            {
+                                PawnKindDef wildman = PawnKindDef.Named("WildMan");
+                                Faction faction = FactionUtility.DefaultFactionFrom(wildman.defaultFactionType);
+                                Pawn newPawn = PawnGenerator.GeneratePawn(wildman, faction);
+                                newcorpse = GenSpawn.Spawn(newPawn, pawn.Position, pawn.Map, WipeMode.Vanish);
+                                newcorpse.Kill(null, null);
+
+                            }
+                            else
+                            {
+                                ThingDef newThing = ThingDef.Named(this.Props.customThingToDig);
+                                newcorpse = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
+                                newcorpse.stackCount = this.Props.customAmountToDig;
+                            }
                             if (Props.spawnForbidden)
                             {
                                 newcorpse.SetForbidden(true);

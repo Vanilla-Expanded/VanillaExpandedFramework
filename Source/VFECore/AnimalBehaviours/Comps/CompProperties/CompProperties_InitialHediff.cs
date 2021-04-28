@@ -15,6 +15,11 @@ namespace AnimalBehaviours
         public bool applyToAGivenBodypart = false;
         public BodyPartDef part = null;
 
+        //Possibility to add random hediffs
+
+        public bool addRandomHediffs = false;
+        public int numberOfHediffs = 1;
+
         public CompProperties_InitialHediff()
         {
             this.compClass = typeof(CompInitialHediff);

@@ -10,6 +10,14 @@
 	<VEF_WarningEggExplodes>Warning, this egg explodes when hatching!</VEF_WarningEggExplodes>
 	
 	<VEF_TimeToDie>Animal expires in: {0}</VEF_TimeToDie>
+	
+	<!-- Mod options -->
+	
+	<VCE_AffectsAllAnimalMods>These animal behaviours options will affect all animal mods that share code from the Vanilla Expanded Framework</VCE_AffectsAllAnimalMods>
+	<VCE_CorpseDecayingEffectOption>Allow corpse decaying mechanics (for example, Helixien slug's effect)</VCE_CorpseDecayingEffectOption>
+	<VCE_DigWhenHungryOption>Allow digging when hungry mechanics (for example, Frostmites digging corpses)</VCE_DigWhenHungryOption>
+	<VCE_AnimalParticlesOption>Allow animal particles</VCE_AnimalParticlesOption>
+
 
 
 

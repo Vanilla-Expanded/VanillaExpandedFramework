@@ -59,7 +59,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="VFEM">
-      <HintPath>References\VFEM.dll</HintPath>
+      <HintPath>..\..\..\VanillaFactionsExpanded-Mechanoid\1.2\Assemblies\VFEM.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -95,10 +95,12 @@
     <Compile Include="AnimalBehaviours\Comps\CompFixedGender.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompFloating.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompGasProducer.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompGraphicByTerrain.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompHediffEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompHighlyFlammable.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompInfecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompInitialHediff.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompLightSustenance.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompMetamorphosis.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompMindEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompNearbyEffecter.cs" />
@@ -119,6 +121,8 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ExplodingEggLayer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ExplodingHatcher.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ExtremeXenophobia.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_GraphicByTerrain.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_LightSustenance.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_TerrainChanger.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_FilthProducer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_FixedGender.cs" />
@@ -154,6 +158,7 @@
     <Compile Include="AnimalBehaviours\DefExtensions\AnimalStatExtension.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Dialog_InfoCard_FillCard_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\JobGiver_GetFood_TryGiveJob_Patch.cs" />
+    <Compile Include="AnimalBehaviours\Harmony\MassUtility_Capacity_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\PawnUtility_Mated_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Pawn_PathFollower_CostToMoveIntoCell_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\ThingDef_SpecialDisplayStats_Patch.cs" />
@@ -166,6 +171,8 @@
     <Compile Include="AnimalBehaviours\MentalStates\MentalStateWorker_XenophobicRage.cs" />
     <Compile Include="AnimalBehaviours\MentalStates\MentalState_XenophobicRage.cs" />
     <Compile Include="AnimalBehaviours\MentalStates\XenophobicRageMentalStateUtility.cs" />
+    <Compile Include="AnimalBehaviours\Options\AnimalBehaviours_Settings.cs" />
+    <Compile Include="AnimalBehaviours\Options\AnimalBehaviours_SettingsController.cs" />
     <Compile Include="Apparel\Comps\CompProperties\CompProperties_SwitchApparel.cs" />
     <Compile Include="Apparel\Comps\CompSwitchApparel.cs" />
     <Compile Include="Cuisine\GraphicClasses\Graphic_RandomStackCount.cs" />

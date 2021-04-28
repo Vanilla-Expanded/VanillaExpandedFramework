@@ -22,6 +22,8 @@ namespace AnimalBehaviours
         //Should the animal dig for items even if it's not hungry, every timeToDigForced ticks?
         public bool digAnywayEveryXTicks = true;
         public int timeToDigForced = 120000;
+        //Frostmites dig for dead wildmen
+        public bool isFrostmite = false;
 
         public CompProperties_DigWhenHungry()
         {
