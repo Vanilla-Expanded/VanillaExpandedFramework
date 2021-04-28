@@ -59,7 +59,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="VFEM">
-      <HintPath>..\..\..\VanillaFactionsExpanded-Mechanoid\1.2\Assemblies\VFEM.dll</HintPath>
+      <HintPath>References\VFEM.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -239,6 +239,7 @@
     <Compile Include="VFECore\Comps\ThingComps\ShieldMechBubble.cs" />
     <Compile Include="VFECore\Comps\WorldComponents\FactionGoodwillModifier.cs" />
     <Compile Include="VFECore\Comps\WorldComponents\NewFactionSpawningState.cs" />
+    <Compile Include="VFECore\DefModExtensions\ExcludeFromQuestsExtension.cs" />
     <Compile Include="VFECore\DefModExtensions\FactionDefExtension.cs" />
     <Compile Include="VFECore\DefModExtensions\IncidentDefExtension.cs" />
     <Compile Include="VFECore\DefModExtensions\PawnKindDefExtension.cs" />
@@ -282,6 +283,7 @@
     <Compile Include="VFECore\HarmonyPatches\Patch_PawnGenerator.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_PawnGraphicSet.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_Pawn_HealthTracker.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_QuestGen_Generate.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_RaidStrategyWorker_Siege.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_RandomSettlementTileFor.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_ResearchProjectDef.cs" />
