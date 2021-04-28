@@ -10,7 +10,7 @@ namespace VFECore
     [HarmonyPatch(typeof(QuestGen), "Generate")]
     public static class Patch_QuestGen_Generate
     {
-        // static int iterationNumber = 0;
+        static int iterationNumber = 0;
 
         public static void Postfix(QuestScriptDef root, Slate initialVars, ref Quest __result)
         {
@@ -22,16 +22,16 @@ namespace VFECore
                 while (newResult == null || RealInvolvedFactions(newResult).Any(f => f.def.HasModExtension<ExcludeFromQuestsExtension>()))
                 {
                     newResult = QuestGen.Generate(root, initialVars);
-                    // iterationNumber++;
+                    iterationNumber++;
                 }
 
                 __result = newResult;
             }
-            /*if (iterationNumber > 0)
+            if (iterationNumber > 0)
             {
                 Log.Message($"QuestGen Generate - Regenerated quest {iterationNumber} time - Regeneration ended...");
                 iterationNumber = 0;
-            }*/
+            }
         }
 
         private static List<Faction> RealInvolvedFactions(Quest quest)
