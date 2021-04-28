@@ -8,7 +8,12 @@ namespace AnimalBehaviours
         //A comp class that makes animals always spawn with an initial Hediff
 
         public string hediffname = "";
-        public float hediffseverity = 0f;      
+        public float hediffseverity = 0f;
+
+        //This can be set to apply the hediff to a given body part
+
+        public bool applyToAGivenBodypart = false;
+        public BodyPartDef part = null;
 
         public CompProperties_InitialHediff()
         {

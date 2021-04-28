@@ -1,4 +1,5 @@
 ﻿using Verse;
+using System.Linq;
 
 namespace AnimalBehaviours
 {
@@ -29,7 +30,18 @@ namespace AnimalBehaviours
             if (addHediffOnce)
             {
                 Pawn pawn = this.parent as Pawn;
-                pawn.health.AddHediff(HediffDef.Named(Props.hediffname));               
+                //The hediff can be applied to a body part. If not, it will be applied to Whole Body
+                if (Props.applyToAGivenBodypart) {
+                    BodyPartRecord part = pawn.RaceProps.body.GetPartsWithDef(Props.part).FirstOrDefault();
+                    pawn.health.AddHediff(HediffDef.Named(Props.hediffname),part);
+                    pawn.health.hediffSet.GetFirstHediffOfDef(HediffDef.Named(Props.hediffname), false).Severity += Props.hediffseverity;
+
+                } else {
+                    pawn.health.AddHediff(HediffDef.Named(Props.hediffname));
+                    pawn.health.hediffSet.GetFirstHediffOfDef(HediffDef.Named(Props.hediffname), false).Severity += Props.hediffseverity;
+
+                }
+
                 addHediffOnce = false;
             }
         }
