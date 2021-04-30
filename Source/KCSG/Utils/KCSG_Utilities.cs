@@ -830,16 +830,20 @@ namespace KCSG
                     {
                         // Find corresponding symbol
                         TerrainDef terrainD = map.terrainGrid.TerrainAt(first);
-                        SymbolDef symbolDef = pairsSymbolLabel.Values.ToList().Find(s => s.isTerrain && s.terrainDef.defName == terrainD.defName);
-                        if (symbolDef == null)
+                        if (pairsSymbolLabel != null && pairsSymbolLabel.Values.ToList().Find(s => s.isTerrain && s.terrainDef.defName == terrainD.defName) is SymbolDef symbolDef && symbolDef != null)
+                        {
+                            if (i2 + 1 == width) temp += symbolDef.symbol;
+                            else temp += symbolDef.symbol + ",";
+                        }
+                        else if (terrainD != null)
                         {
                             if (i2 + 1 == width) temp += defNamePrefix + "_" + terrainD.defName;
                             else temp += terrainD.defName + ",";
                         }
                         else
                         {
-                            if (i2 + 1 == width) temp += symbolDef.symbol;
-                            else temp += symbolDef.symbol + ",";
+                            if (i2 + 1 == width) temp += ".";
+                            else temp += ".,";
                         }
                     }
                     first.x++;
