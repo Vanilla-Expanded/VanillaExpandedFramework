@@ -38,20 +38,26 @@ namespace VFECore
         {
             List<Faction> factions = new List<Faction>();
 
-            foreach (QuestPart part in quest.PartsListForReading)
+            if (quest != null && quest.PartsListForReading != null)
             {
-                foreach (Faction faction in part.InvolvedFactions)
+                foreach (QuestPart part in quest.PartsListForReading)
                 {
-                    if (!factions.Contains(faction))
+                    if (part != null && part.InvolvedFactions != null)
                     {
-                        factions.Add(faction);
+                        foreach (Faction faction in part.InvolvedFactions)
+                        {
+                            if (!factions.Contains(faction))
+                            {
+                                factions.Add(faction);
+                            }
+                        }
                     }
-                }
-                if (part is QuestPart_SpawnWorldObject qpswo)
-                {
-                    if (!factions.Contains(qpswo.worldObject.Faction))
+                    if (part is QuestPart_SpawnWorldObject qpswo && qpswo != null && qpswo.worldObject?.Faction != null)
                     {
-                        factions.Add(qpswo.worldObject.Faction);
+                        if (!factions.Contains(qpswo.worldObject.Faction))
+                        {
+                            factions.Add(qpswo.worldObject.Faction);
+                        }
                     }
                 }
             }

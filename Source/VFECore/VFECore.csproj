@@ -59,7 +59,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="VFEM">
-      <HintPath>..\..\..\VanillaFactionsExpanded-Mechanoid\1.2\Assemblies\VFEM.dll</HintPath>
+      <HintPath>References\VFEM.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
