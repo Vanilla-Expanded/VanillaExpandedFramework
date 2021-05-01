@@ -23,7 +23,8 @@ namespace VFEMech
 		public bool   blockRangedAttack = true;
 		public bool   blockMeleeAttack  = false;
 		public string shieldTexPath;
-		public bool   showWhenDrafted;
+		public bool	showWhenDrafted;
+		public bool	showAlways;
 		public bool   showOnHostiles = true;
 		public bool   showOnNeutralInCombat;
 		public float  minShieldSize = 1.5f;
@@ -216,12 +217,13 @@ namespace VFEMech
 		{
 			if (ShieldState == ShieldState.Active)
 			{
-				float num  = Mathf.Lerp(Props.minShieldSize, Props.maxShieldSize, energy);
 				var pawn = this.Pawn;
-				if (pawn != null &&
-					(Props.showWhenDrafted && pawn.Drafted
-				|| (Props.showOnHostiles        && pawn.Faction != Faction.OfPlayer && pawn.HostileTo(Faction.OfPlayer))
-				|| (Props.showOnNeutralInCombat && pawn.Faction != Faction.OfPlayer && !pawn.HostileTo(Faction.OfPlayer) && InCombat(pawn))))
+				float num = Mathf.Lerp(Props.minShieldSize, Props.maxShieldSize, energy);
+				var props = Props;
+				if (pawn != null && (props.showAlways 
+						|| props.showWhenDrafted && pawn.Drafted
+						|| (props.showOnHostiles && pawn.Faction != Faction.OfPlayer && pawn.HostileTo(Faction.OfPlayer))
+						|| (props.showOnNeutralInCombat && pawn.Faction != Faction.OfPlayer && !pawn.HostileTo(Faction.OfPlayer) && InCombat(pawn))))
 				{
 					Vector3 drawPos = pawn.Drawer.DrawPos;
 					drawPos.y = AltitudeLayer.MoteOverhead.AltitudeFor();
@@ -233,7 +235,7 @@ namespace VFEMech
 						num     -= num3;
 					}
 
-					float     angle  = Props.disableRotation ? 0 : Rand.Range(0, 360);
+					float     angle  = props.disableRotation ? 0 : Rand.Range(0, 360);
 					Vector3   s      = new Vector3(num, 1f, num);
 					Matrix4x4 matrix = default(Matrix4x4);
 					matrix.SetTRS(drawPos, Quaternion.AngleAxis(angle, Vector3.up), s);
