@@ -147,7 +147,6 @@ namespace VanillaStorytellersExpanded
                 {
                     originalNaturalGoodwillValues[factionDef] = factionDef.naturalColonyGoodwill;
                     factionDef.naturalColonyGoodwill = storytellerThreat.naturallGoodwillForAllFactions;
-                    //Log.Message("New " + factionDef + " - naturalColonyGoodwill: " + factionDef.naturalColonyGoodwill, true);
                 }
             }
         }
@@ -156,13 +155,11 @@ namespace VanillaStorytellersExpanded
         {
             if (originalNaturalGoodwillValues != null)
             {
-                //Log.Message("Restoring NaturalGoodwill");
                 foreach (var factionDef in DefDatabase<FactionDef>.AllDefs)
                 {
                     if (originalNaturalGoodwillValues.ContainsKey(factionDef) && factionDef != Faction.OfPlayer.def && !factionDef.permanentEnemy)
                     {
                         factionDef.naturalColonyGoodwill = originalNaturalGoodwillValues[factionDef];
-                        //Log.Message("Old " + factionDef + " - factionDef.naturalColonyGoodwill: " + factionDef.naturalColonyGoodwill, true);
                     }
                 }
             }
@@ -191,7 +188,6 @@ namespace VanillaStorytellersExpanded
                     }
                     else
                     {
-                        //Log.Message(faction + " has no living pawns, removing it");
                         this.raidGroups.RemoveAt(num);
                     }
                 }
@@ -207,7 +203,6 @@ namespace VanillaStorytellersExpanded
                     }
                     else
                     {
-                        //Log.Message(faction + " has no living pawns, removing it");
                         this.reinforcementGroups.RemoveAt(num);
                     }
                 }

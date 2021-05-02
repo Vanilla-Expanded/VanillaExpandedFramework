@@ -24,7 +24,6 @@ namespace VanillaStorytellersExpanded
             foreach (Type cur in types)
             {
                 var method = cur.GetMethod("Arrive");
-                //Log.Message("Patching " + cur + " - " + method);
                 try
                 {
                     VanillaStorytellersExpanded.harmonyInstance.Patch(method, null, new HarmonyMethod(postfix));
@@ -59,7 +58,6 @@ namespace VanillaStorytellersExpanded
                         {
                             gameComp.raidGroups = new List<RaidGroup>();
                         }
-                        //Log.Message("Creating raid group of " + pawns?.Count + " pawns, faction - " + raidGroup.faction.def, true);
                         gameComp.raidGroups.Add(raidGroup);
                     }
                     else
@@ -68,7 +66,6 @@ namespace VanillaStorytellersExpanded
                         {
                             gameComp.reinforcementGroups = new List<RaidGroup>();
                         }
-                        //Log.Message("Creating reinforcement group of " + pawns?.Count + " pawns, faction - " + raidGroup.faction.def, true);
                         gameComp.reinforcementGroups.Add(raidGroup);
                     }
                 }
@@ -124,7 +121,6 @@ namespace VanillaStorytellersExpanded
                 && gameComp.FactionPresentInCurrentRaidGroups(dinfo.Value.Instigator.Faction))
             {
                 enemyFaction = dinfo.Value.Instigator.Faction;
-                //Log.Message("0 " + victim + " died! Should trigger reinforcements", true);
                 return true;
             }
             else if (!dinfo.HasValue)
@@ -140,7 +136,6 @@ namespace VanillaStorytellersExpanded
                                 if (p != victim && p?.Faction != null && gameComp.FactionPresentInCurrentRaidGroups(p.Faction))
                                 {
                                     enemyFaction = p.Faction;
-                                    //Log.Message("1 " + victim + " died! Should trigger reinforcements", true);
                                     return true;
                                 }
                             }
@@ -158,7 +153,6 @@ namespace VanillaStorytellersExpanded
                             {
                                 if (p != victim && p?.Faction != null && gameComp.FactionPresentInCurrentRaidGroups(p.Faction))
                                 {
-                                    //Log.Message("2 " + victim + " died! Should trigger reinforcements", true);
                                     enemyFaction = p.Faction;
                                     return true;
                                 }
@@ -167,7 +161,6 @@ namespace VanillaStorytellersExpanded
                     }
                 }
             }
-            //Log.Message("3 " + victim + " died! It shouldn't trigger reinforcements!!!", true);
             enemyFaction = null;
             return false;
         }
@@ -188,7 +181,6 @@ namespace VanillaStorytellersExpanded
                             raidStrategy = RaidStrategyDefOf.ImmediateAttack,
                             points = StorytellerUtility.DefaultThreatPointsNow(__instance.Map) / 4f
                         };
-                        //Log.Message("Colonist died! Reinforcements will arrive");
                         var incidentDef = DefDatabase<IncidentDef>.GetNamed("VSE_Reinforcements");
                         Find.Storyteller.incidentQueue.Add(incidentDef, Find.TickManager.TicksGame + new IntRange(300, 600).RandomInRange, parms);
                     }
@@ -196,7 +188,6 @@ namespace VanillaStorytellersExpanded
             }
             catch (Exception ex) 
             {
-                //Log.Error("Error: " + ex, true);
             };
         }
     }
@@ -214,7 +205,6 @@ namespace VanillaStorytellersExpanded
                     && options.storytellerThreat.disableThreatsAtPopulationCount >= Find.ColonistBar.Entries.Where(x => x.pawn != null
                     && !x.pawn.Dead && x.pawn.Faction == Faction.OfPlayer).Count())
                 {
-                    //Log.Message("TryExecute is disabled");
                     return false;
                 }
             }
@@ -275,8 +265,6 @@ namespace VanillaStorytellersExpanded
             if (options != null && options.storytellerThreat != null)
             {
                 var gameComp = Current.Game.GetComponent<StorytellerWatcher>();
-                //Log.Message("gameComp.raidGroups: " + gameComp.raidGroups.Count);
-                //Log.Message("gameComp.reinforcementGroups: " + gameComp.reinforcementGroups.Count);
                 for (int i = gameComp.raidGroups.Count - 1; i >= 0; i--)
                 {
                     if (gameComp.raidGroups[i].lords.Contains(__instance) && gameComp.raidGroups[i].lords.Count > 1)
@@ -299,7 +287,6 @@ namespace VanillaStorytellersExpanded
                         var incidentDef = DefDatabase<IncidentDef>.GetNamed(options.storytellerThreat.goodIncidents.RandomElement());
                         if (incidentDef != null)
                         {
-                            //Log.Message("Success: " + incidentDef, true); ;
                             Find.Storyteller.incidentQueue.Add(incidentDef, Find.TickManager.TicksGame + new IntRange(6000, 12000).RandomInRange, parms);
                         }
                     }
@@ -334,8 +321,6 @@ namespace VanillaStorytellersExpanded
                                 || transitionAction.message == "MessageFightersFleeing".Translate(lord.faction.def.pawnsPlural.CapitalizeFirst(), lord.faction.Name))
                             {
                                 var gameComp = Current.Game.GetComponent<StorytellerWatcher>();
-                                //Log.Message("gameComp.raidGroups: " + gameComp.raidGroups.Count);
-                                //Log.Message("gameComp.reinforcementGroups: " + gameComp.reinforcementGroups.Count);
                                 for (int j = gameComp.raidGroups.Count - 1; j >= 0; j--)
                                 {
                                     if (gameComp.raidGroups[j].lords.Contains(lord) && gameComp.raidGroups[j].lords.Count > 1)
@@ -359,7 +344,6 @@ namespace VanillaStorytellersExpanded
                                         var incidentDef = DefDatabase<IncidentDef>.GetNamed(options.storytellerThreat.goodIncidents.RandomElement());
                                         if (incidentDef != null)
                                         {
-                                            //Log.Message("Success: " + incidentDef, true); ;
                                             Find.Storyteller.incidentQueue.Add(incidentDef, Find.TickManager.TicksGame + new IntRange(6000, 12000).RandomInRange, parms);
                                         }
                                     }

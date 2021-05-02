@@ -19,7 +19,6 @@ namespace VanillaStorytellersExpanded
 			// Token: 0x0600000E RID: 14 RVA: 0x000020AA File Offset: 0x000002AA
 			public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 			{
-				//Log.Message("ArmorUtility.ApplyArmor transpiler start (1 match todo)", false);
 				List<CodeInstruction> instructionList = instructions.ToList<CodeInstruction>();
 				MethodInfo allDefsInfo = AccessTools.Property(typeof(DefDatabase<FactionDef>), "AllDefs").GetGetMethod();
 				MethodInfo allowedFactionDefsInfo = AccessTools.Method(typeof(Patch_FactionGenerator.GenerateFactionsIntoWorld), "AllowedFactionDefs", null, null);
@@ -30,7 +29,6 @@ namespace VanillaStorytellersExpanded
 					bool flag = instruction.opcode == OpCodes.Call && instruction.OperandIs(allDefsInfo);
 					if (flag)
 					{
-						//Log.Message("FactionGenerator.GenerateFactionsIntoWorld match 1 of 1", false);
 						yield return instruction;
 						instruction = new CodeInstruction(OpCodes.Call, allowedFactionDefsInfo);
 					}

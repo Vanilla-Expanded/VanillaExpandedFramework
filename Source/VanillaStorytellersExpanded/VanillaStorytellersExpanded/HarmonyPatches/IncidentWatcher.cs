@@ -26,7 +26,6 @@ namespace VanillaStorytellersExpanded
                     var incidentOptions = options.incidentSpawnOptions;
                     float alliesCount = Find.FactionManager.GetFactions_NewTemp().Where(x => x.PlayerRelationKind == FactionRelationKind.Ally).Count();
                     float enemiesCount = Find.FactionManager.GetFactions_NewTemp().Where(x => x.PlayerRelationKind == FactionRelationKind.Hostile).Count();
-                    //Log.Message(Find.Storyteller.def.defName + " - Incident spawn: " + def.defName + " - vanilla spawn chance: " + __result + " - Allies count: " + alliesCount + " - enemiesCount: " + enemiesCount);
 
                     // we put a 90% cap here...
                     if (alliesCount > 9f) alliesCount = 9f;
@@ -51,11 +50,6 @@ namespace VanillaStorytellersExpanded
                     {
                         __result /= enemiesCount;
                     }
-                    //Log.Message(Find.Storyteller.def.defName + " - Incident spawn: " + def.defName +  " - new incident spawn chance: " + __result);
-                    //if (!IsGoodIncident(def, incidentOptions) && !IsBadIncident(def, incidentOptions))
-                    //{
-                    //    Log.Message("Unprocessed incident def: " + def);
-                    //}
                 }
             }
         }

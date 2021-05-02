@@ -47,7 +47,6 @@ namespace VanillaStorytellersExpanded
             var questCountToGenerate = def.maximumAvailableQuestCount != -1 ? (def.maximumAvailableQuestCount - questGiverManager.AvailableQuests.Count) : 100;
             var points = StorytellerUtility.DefaultThreatPointsNow(Find.World);
             var questDefsToProcess = DefDatabase<QuestScriptDef>.AllDefs.Where(x => !x.isRootSpecial && x.IsRootAny).ToList();
-            Log.Message($"quest count to generate: {questCountToGenerate} - points: {points}");
 
             while (generatedQuests.Count < questCountToGenerate)
             {
@@ -57,7 +56,6 @@ namespace VanillaStorytellersExpanded
                 }
                 var newQuestCandidate = questDefsToProcess.RandomElement();
                 questDefsToProcess.Remove(newQuestCandidate);
-                Log.Message($"newQuestCandidate is choosen: {newQuestCandidate}");
                 try
                 {
                     Slate slate = new Slate();
@@ -73,13 +71,11 @@ namespace VanillaStorytellersExpanded
                         if (def.currency.Allows(questGiverManager, quest, Patch_AddSlateQuestTags.slate, out QuestInfo questInfo))
                         {
                             generatedQuests.Add(questInfo);
-                            Log.Message($"Added new quest {quest.name}");
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Log.Message("Exception: " + ex);
                 }
 
             }

@@ -29,7 +29,6 @@ namespace VanillaStorytellersExpanded
 				IncidentParms parms = GenerateParms(Props.incident.category, target);
 				if (Props.incident.Worker.CanFireNow(parms))
 				{
-					//Log.Message("New incident fires: " + Props.incident, true);
 					yield return new FiringIncident(Props.incident, this, parms);
 				}
 			}

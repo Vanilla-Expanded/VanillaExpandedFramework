@@ -34,7 +34,6 @@ namespace VanillaStorytellersExpanded
         public override bool Allows(QuestGiverManager questGiverManager, Quest quest, Slate slate, out QuestInfo questInfo)
         {
             var asker = slate.Get<Pawn>("asker");
-            Log.Message($"Asker: {asker} - faction: {asker?.Faction} - slate: {slate}");
             if (asker?.Faction != null && asker.Faction.GoodwillWith(Faction.OfPlayer) >= minimunGoodwillRequirement)
             {
                 var currencyInfo = new GoodwillCurrencyInfo();
