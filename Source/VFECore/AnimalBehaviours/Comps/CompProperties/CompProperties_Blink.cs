@@ -18,6 +18,8 @@ namespace AnimalBehaviours
         public int blinkInterval = 500;
         public IntRange distance = new IntRange(5, 10);
         public bool warpEffect = false;
+        public bool effectOnlyWhenManhunter = false;
+        public bool blinkWhenManhunter = false;
 
     }
 }
