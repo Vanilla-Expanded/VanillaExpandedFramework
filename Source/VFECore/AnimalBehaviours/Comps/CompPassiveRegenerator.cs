@@ -28,46 +28,51 @@ namespace AnimalBehaviours
         public override void CompTick()
         {
             base.CompTick();
-            tickCounter++;
-            //Only do anything every tickInterval
-            if (tickCounter > Props.tickInterval)
+            if (AnimalBehaviours_Settings.flagRegeneration)
             {
-                thisPawn = this.parent as Pawn;
-                //Null map check. Also will only work if pawn is not dead or downed
-                if (thisPawn != null && thisPawn.Map != null && !thisPawn.Dead && !thisPawn.Downed && (!Props.needsToBeTamed || (Props.needsToBeTamed && thisPawn.Faction != null && thisPawn.Faction.IsPlayer)))
+
+                tickCounter++;
+                //Only do anything every tickInterval
+                if (tickCounter > Props.tickInterval)
                 {
-                    foreach (Thing thing in GenRadial.RadialDistinctThingsAround(thisPawn.Position, thisPawn.Map, Props.radius, true))
+                    thisPawn = this.parent as Pawn;
+                    //Null map check. Also will only work if pawn is not dead or downed
+                    if (thisPawn != null && thisPawn.Map != null && !thisPawn.Dead && !thisPawn.Downed && (!Props.needsToBeTamed || (Props.needsToBeTamed && thisPawn.Faction != null && thisPawn.Faction.IsPlayer)))
                     {
-                        Pawn pawn = thing as Pawn;
-                        //It won't affect mechanoids, dead people or itself
-                        if (pawn != null && !pawn.Dead && pawn.RaceProps.IsFlesh && pawn != this.parent)
+                        foreach (Thing thing in GenRadial.RadialDistinctThingsAround(thisPawn.Position, thisPawn.Map, Props.radius, true))
                         {
-
-                            //Only show an effect if the user wants it to, or it gets obnoxious
-                            if (Props.showEffect)
+                            Pawn pawn = thing as Pawn;
+                            //It won't affect mechanoids, dead people or itself
+                            if (pawn != null && !pawn.Dead && pawn.RaceProps.IsFlesh && pawn != this.parent)
                             {
 
-                                SoundDefOf.PsychicPulseGlobal.PlayOneShot(new TargetInfo(this.parent.Position, this.parent.Map, false));
-                                MoteMaker.MakeAttachedOverlay(this.parent, ThingDef.Named("Mote_PsycastPsychicEffect"), Vector3.zero, 1f, -1f);
-                            }
-                            //Regenerate wounds
-                            if (pawn.health != null)
-                            {
-                                if (pawn.health.hediffSet.GetInjuriesTendable() != null && pawn.health.hediffSet.GetInjuriesTendable().Count<Hediff_Injury>() > 0)
+                                //Only show an effect if the user wants it to, or it gets obnoxious
+                                if (Props.showEffect)
                                 {
-                                    foreach (Hediff_Injury injury in pawn.health.hediffSet.GetInjuriesTendable())
+
+                                    SoundDefOf.PsychicPulseGlobal.PlayOneShot(new TargetInfo(this.parent.Position, this.parent.Map, false));
+                                    MoteMaker.MakeAttachedOverlay(this.parent, ThingDef.Named("Mote_PsycastPsychicEffect"), Vector3.zero, 1f, -1f);
+                                }
+                                //Regenerate wounds
+                                if (pawn.health != null)
+                                {
+                                    if (pawn.health.hediffSet.GetInjuriesTendable() != null && pawn.health.hediffSet.GetInjuriesTendable().Count<Hediff_Injury>() > 0)
                                     {
-                                        injury.Severity = injury.Severity - 0.1f;
-                                        break;
+                                        foreach (Hediff_Injury injury in pawn.health.hediffSet.GetInjuriesTendable())
+                                        {
+                                            injury.Severity = injury.Severity - 0.1f;
+                                            break;
+                                        }
                                     }
                                 }
-                            }
 
+                            }
                         }
                     }
+                    tickCounter = 0;
                 }
-                tickCounter = 0;
             }
+            
         }
     }
 }

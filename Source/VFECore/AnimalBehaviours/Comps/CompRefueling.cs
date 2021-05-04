@@ -23,7 +23,7 @@ namespace AnimalBehaviours
         public override void CompTick()
         {
             //null map check
-            if (this.parent.Map != null && (!Props.mustBeTamed || (this.parent.Faction!=null &&this.parent.Faction.IsPlayer)))
+            if (this.parent.Map != null && AnimalBehaviours_Settings.flagChargeBatteries && (!Props.mustBeTamed || (this.parent.Faction!=null &&this.parent.Faction.IsPlayer)))
             {
                 tickCounter++;
                 //Only do every fuelingRate ticks

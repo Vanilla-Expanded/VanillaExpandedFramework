@@ -29,7 +29,7 @@ namespace AnimalBehaviours
 
         {
 
-            if ((pawn.Map != null) && (AnimalCollectionClass.floating_animals.Contains(pawn)))
+            if ((pawn.Map != null) && AnimalBehaviours_Settings.flagHovering && (AnimalCollectionClass.floating_animals.Contains(pawn)))
             {
                 
                     int num;

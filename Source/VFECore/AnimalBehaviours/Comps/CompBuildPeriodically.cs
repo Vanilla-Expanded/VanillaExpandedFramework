@@ -21,7 +21,7 @@ namespace AnimalBehaviours
         public override void CompTick()
         {
             base.CompTick();
-            if (this.parent.IsHashIntervalTick(Props.ticksToBuild))
+            if (this.parent.IsHashIntervalTick(Props.ticksToBuild) && AnimalBehaviours_Settings.flagBuildPeriodically)
             {
                 this.TryCreateBuilding();
             }

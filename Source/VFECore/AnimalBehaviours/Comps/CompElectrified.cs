@@ -38,7 +38,7 @@ namespace AnimalBehaviours
         public override void CompTick()
         {
             //null map check
-            if (this.parent.Map != null)
+            if (this.parent.Map != null && AnimalBehaviours_Settings.flagChargeBatteries)
             {
                 tickCounter++;
                 //Only do every electroRate ticks

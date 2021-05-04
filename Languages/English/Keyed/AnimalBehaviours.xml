@@ -16,7 +16,20 @@
 	<VCE_AffectsAllAnimalMods>These animal behaviours options will affect all animal mods that share code from the Vanilla Expanded Framework</VCE_AffectsAllAnimalMods>
 	<VCE_CorpseDecayingEffectOption>Allow corpse decaying mechanics (for example, Helixien slug's effect)</VCE_CorpseDecayingEffectOption>
 	<VCE_DigWhenHungryOption>Allow digging when hungry mechanics (for example, Frostmites digging corpses)</VCE_DigWhenHungryOption>
-	<VCE_AnimalParticlesOption>Allow animal particles</VCE_AnimalParticlesOption>
+	<VCE_DigPeriodicallyOption>Allows animals digging for things periodically</VCE_DigPeriodicallyOption>
+	<VCE_AnimalParticlesOption>Allow animal particles (gas and filth)</VCE_AnimalParticlesOption>
+	<VCE_AsexualReproductionOption>Allow asexual reproduction</VCE_AsexualReproductionOption>
+	<VFE_AsexualReproductionDisabled>Asexual reproduction disabled via mod options</VFE_AsexualReproductionDisabled>
+	<VCE_BlinkMechanicsOption>Allow "blink" mechanics (for example, Skiphounds)</VCE_BlinkMechanicsOption>
+	<VCE_BuildPeriodicallyOption>Allow animals building things (for example, beavers building dams)</VCE_BuildPeriodicallyOption>	
+	<VCE_ChargeBatteriesOption>Allow animals recharging nearby batteries or refueling</VCE_ChargeBatteriesOption>
+	<VCE_ExplodingEggsOption>Allow animals' eggs that explode (such as dragons')</VCE_ExplodingEggsOption>
+	<VCE_HoveringOption>Allow animals "hovering", ignoring terrain movement costs</VCE_HoveringOption>
+	<VCE_GraphicChangingOption>Allow animals changing graphics (for example, Chameleon Yak)</VCE_GraphicChangingOption>
+	<VCE_EffecterOption>Allows animals causing hediffs, mental states or thoughts</VCE_EffecterOption>
+	<VCE_RegenerationOption>Allow health regeneration (active and passive)</VCE_RegenerationOption>
+	<VCE_ResurrectionOption>Allow animals to auto-resurrect (for example Phoenix Owlcat)</VCE_ResurrectionOption>
+	<VCE_UntameableOption>Allow some animals to be untameable</VCE_UntameableOption>
 
 
 

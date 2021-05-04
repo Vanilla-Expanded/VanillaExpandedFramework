@@ -98,8 +98,10 @@ namespace AnimalBehaviours
                                 }
                                 Thing pawnThing = pawn as Thing;
                                 ignoredThings.Add(pawnThing);
-                                // Log.Message(DefDatabase<DamageDef>.GetNamed(Props.damageDef).defName);
-                                GenExplosion.DoExplosion(parent.Position, parent.Map, Props.range, DefDatabase<DamageDef>.GetNamed(Props.damageDef), parent, Props.damage, -1, SoundDef.Named(Props.soundDef), null, null, null, null, 0f, 1, false, null, 0f, 1, 0, false, null, ignoredThings);
+                             
+                                if (AnimalBehaviours_Settings.flagExplodingAnimalEggs) {
+                                    GenExplosion.DoExplosion(parent.Position, parent.Map, Props.range, DefDatabase<DamageDef>.GetNamed(Props.damageDef), parent, Props.damage, -1, SoundDef.Named(Props.soundDef), null, null, null, null, 0f, 1, false, null, 0f, 1, 0, false, null, ignoredThings);
+                                }
 
                             }
                         }
@@ -161,7 +163,14 @@ namespace AnimalBehaviours
         {
             if (!this.TemperatureDamaged)
             {
-                return "EggProgress".Translate() + ": " + this.gestateProgress.ToStringPercent() + "\n" + "VEF_WarningEggExplodes".Translate();
+                if (AnimalBehaviours_Settings.flagExplodingAnimalEggs)
+                {
+                    return "EggProgress".Translate() + ": " + this.gestateProgress.ToStringPercent() + "\n" + "VEF_WarningEggExplodes".Translate();
+                }
+                else
+                {
+                    return "EggProgress".Translate() + ": " + this.gestateProgress.ToStringPercent();
+                }
             }
             return null;
         }

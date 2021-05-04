@@ -67,7 +67,7 @@ namespace AnimalBehaviours
             base.CompTick();
             Pawn pawn = this.parent as Pawn;
             //Important, without a null map check creatures will reproduce while on caravans, producing errors
-            if (pawn.Map != null)
+            if (pawn.Map != null && AnimalBehaviours_Settings.flagAsexualReproduction)
             {
                 if (this.Props.isGreenGoo)
                 {
@@ -139,19 +139,22 @@ namespace AnimalBehaviours
         {
 
             //Custom strings to show
-            Pawn pawn = this.parent as Pawn;
-            if (this.Props.isGreenGoo)
-            {
-                float totalProgress = ((float)asexualFissionCounter / (float)(ticksInday * reproductionIntervalDays));
-                return customString + totalProgress.ToStringPercent() + " (" + reproductionIntervalDays.ToString() + " days)";
-            }
+            if (AnimalBehaviours_Settings.flagAsexualReproduction) {
+                Pawn pawn = this.parent as Pawn;
+                if (this.Props.isGreenGoo)
+                {
+                    float totalProgress = ((float)asexualFissionCounter / (float)(ticksInday * reproductionIntervalDays));
+                    return customString + totalProgress.ToStringPercent() + " (" + reproductionIntervalDays.ToString() + " days)";
+                }
 
-            else if ((pawn.Faction == Faction.OfPlayer) && (pawn.ageTracker.CurLifeStage.reproductive))
-            {
-                float totalProgress = ((float)asexualFissionCounter / (float)(ticksInday * reproductionIntervalDays));
-                return customString + totalProgress.ToStringPercent() + " (" + reproductionIntervalDays.ToString() + " days)";
-            }
-            else return "";
+                else if ((pawn.Faction == Faction.OfPlayer) && (pawn.ageTracker.CurLifeStage.reproductive))
+                {
+                    float totalProgress = ((float)asexualFissionCounter / (float)(ticksInday * reproductionIntervalDays));
+                    return customString + totalProgress.ToStringPercent() + " (" + reproductionIntervalDays.ToString() + " days)";
+                }
+                else return "";
+            } else return "VFE_AsexualReproductionDisabled".Translate();
+
 
         }
     }
