@@ -14,4 +14,3 @@ c:\GAMES\Rimworld\Mods\VanillaExpandedFramework\1.2\Assemblies\VanillaStorytelle
 c:\GAMES\Rimworld\Mods\VanillaExpandedFramework\Source\VanillaStorytellersExpanded\VanillaStorytellersExpanded\obj\Debug\VanillaStorytellersExpanded.csprojAssemblyReference.cache
 c:\GAMES\Rimworld\Mods\VanillaExpandedFramework\Source\VanillaStorytellersExpanded\VanillaStorytellersExpanded\obj\Debug\VanillaStorytellersExpanded.csproj.CoreCompileInputs.cache
 c:\GAMES\Rimworld\Mods\VanillaExpandedFramework\Source\VanillaStorytellersExpanded\VanillaStorytellersExpanded\obj\Debug\VanillaStorytellersExpanded.dll
-C:\GAMES\Rimworld\Mods\VanillaExpandedFramework\Source\VanillaStorytellersExpanded\VanillaStorytellersExpanded\obj\Debug\VanillaStorytellersExpanded.csproj.CopyComplete
