@@ -1,5 +1,6 @@
 ﻿using RimWorld;
 using RimWorld.BaseGen;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
@@ -56,7 +57,11 @@ namespace KCSG
             List<StructureLayoutDef> authorizedLayouts = DefDatabase<StructureLayoutDef>.AllDefsListForReading.FindAll(s => s.tags.Any(t => sld.allowedTags.Contains(t)));
             Log.Message(authorizedLayouts.Count + " auhtorized layouts.");
 
-            map.terrainGrid.SetTerrain(rp.rect.Last(), TerrainDefOf.Bridge);
+            DateTime startTime = DateTime.Now;
+            Log.Message($"Starting generation - {startTime.ToShortTimeString()}");
+            
+
+            Log.Message($"Generation stopped - {DateTime.Now.ToShortTimeString()} - Time taken {(DateTime.Now - startTime).TotalMilliseconds} ms");
         }
 
         public override void Resolve(ResolveParams rp)
@@ -78,16 +83,7 @@ namespace KCSG
             {
                 SettlementLayoutDef sld = DefDatabase<SettlementLayoutDef>.GetNamed(FactionSettlement.temp);
 
-                this.PreClean(map, true, rp);
-                if (sld.pathThing != null)
-                {
-                    ResolveParams sld_rp_1 = rp;
-                    sld_rp_1.floorDef = sld.pathThing;
-                    sld_rp_1.allowBridgeOnAnyImpassableTerrain = true;
-                    BaseGen.symbolStack.Push("floor", sld_rp_1, null);
-                }
-
-                this.GenerateRooms(sld, map, rp);
+                this.AddHostilePawnGroup(faction, map, rp);
 
                 if (sld.vanillaLikeDefense)
                 {
@@ -100,7 +96,17 @@ namespace KCSG
                     BaseGen.symbolStack.Push("edgeDefense", rp3, null);
                 }
 
-                this.AddHostilePawnGroup(faction, map, rp);
+                this.GenerateRooms(sld, map, rp);
+
+                if (sld.pathDef != null)
+                {
+                    ResolveParams sld_rp_1 = rp;
+                    sld_rp_1.floorDef = sld.pathDef;
+                    sld_rp_1.allowBridgeOnAnyImpassableTerrain = true;
+                    BaseGen.symbolStack.Push("floor", sld_rp_1, null);
+                }
+
+                this.PreClean(map, true, rp);
             }
         }
     }
