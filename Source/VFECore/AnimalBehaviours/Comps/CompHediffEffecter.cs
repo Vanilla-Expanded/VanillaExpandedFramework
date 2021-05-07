@@ -25,32 +25,36 @@ namespace AnimalBehaviours
         public override void CompTick()
         {
             base.CompTick();
-            tickCounter++;
-            //Only do anything every tickInterval
-            if (tickCounter > Props.tickInterval)
+            if (AnimalBehaviours_Settings.flagEffecters)
             {
-
-                thisPawn = this.parent as Pawn;
-                //Null map check. Also will only work if pawn is not dead or downed
-                if (thisPawn != null && thisPawn.Map != null && !thisPawn.Dead && !thisPawn.Downed)
+                tickCounter++;
+                //Only do anything every tickInterval
+                if (tickCounter > Props.tickInterval)
                 {
-                    foreach (Thing thing in GenRadial.RadialDistinctThingsAround(thisPawn.Position, thisPawn.Map, Props.radius, true))
+
+                    thisPawn = this.parent as Pawn;
+                    //Null map check. Also will only work if pawn is not dead or downed
+                    if (thisPawn != null && thisPawn.Map != null && !thisPawn.Dead && !thisPawn.Downed)
                     {
-                        Pawn pawn = thing as Pawn;
-                        //Only work on colonists, unless notOnlyAffectColonists
-                        if (pawn != null && (pawn.IsColonist || Props.notOnlyAffectColonists))
+                        foreach (Thing thing in GenRadial.RadialDistinctThingsAround(thisPawn.Position, thisPawn.Map, Props.radius, true))
                         {
-                            //Only work on not dead, not downed, not psychically immune colonists
-                            if (!pawn.Dead && !pawn.Downed && pawn.GetStatValue(StatDefOf.PsychicSensitivity, true) > 0f)
+                            Pawn pawn = thing as Pawn;
+                            //Only work on colonists, unless notOnlyAffectColonists
+                            if (pawn != null && (pawn.IsColonist || Props.notOnlyAffectColonists))
                             {
-                                MoteMaker.MakeAttachedOverlay(this.parent, ThingDef.Named("Mote_PsycastPsychicEffect"), Vector3.zero, 1f, -1f);
-                                pawn.health.AddHediff(HediffDef.Named(Props.hediff));
+                                //Only work on not dead, not downed, not psychically immune colonists
+                                if (!pawn.Dead && !pawn.Downed && pawn.GetStatValue(StatDefOf.PsychicSensitivity, true) > 0f)
+                                {
+                                    MoteMaker.MakeAttachedOverlay(this.parent, ThingDef.Named("Mote_PsycastPsychicEffect"), Vector3.zero, 1f, -1f);
+                                    pawn.health.AddHediff(HediffDef.Named(Props.hediff));
+                                }
                             }
                         }
                     }
+                    tickCounter = 0;
                 }
-                tickCounter = 0;
             }
+           
         }
     }
 }

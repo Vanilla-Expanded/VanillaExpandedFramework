@@ -23,7 +23,6 @@ namespace VanillaStorytellersExpanded
                     if (comp != null)
                     {
                         comp.lastRaidExpansionTicks = Find.TickManager.TicksGame;
-                        //Log.Message("IsDefeated patch, story watcher is updated, the player defeated enemy base", true);
                     }
                 }
             }
@@ -39,8 +38,6 @@ namespace VanillaStorytellersExpanded
             var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
             if (options != null && options.raidRestlessness != null && HasMapNode(__instance.root.root))
             {
-                //Log.Message("__instance.State: " + __instance.State, true);
-                //Log.Message("outcome: " + outcome, true);
                 var comp = Current.Game.GetComponent<StorytellerWatcher>();
                 if (comp != null)
                 {

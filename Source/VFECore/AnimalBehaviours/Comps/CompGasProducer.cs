@@ -25,7 +25,7 @@ namespace AnimalBehaviours
             if (AnimalBehaviours_Settings.flagAnimalParticles)
             {
 
-                this.gasProgress += 1;
+                this.gasProgress++;
                 //Increasing gasTickMax reduces lag, but it will also look like ass
                 if (this.gasProgress > gasTickMax)
                 {

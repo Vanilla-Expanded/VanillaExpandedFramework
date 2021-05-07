@@ -37,7 +37,6 @@ namespace VanillaStorytellersExpanded
                     quest_Part_choice = choices.RandomElement();
                     quest_Part_choiceInd = choices.IndexOf(quest_Part_choice);
                     choice = quest_Part_choice.choices.RandomElement();
-                    Log.Message("Choice: " + choice);
                 }
             }
         }

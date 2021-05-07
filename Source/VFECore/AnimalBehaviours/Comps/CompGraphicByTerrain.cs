@@ -107,7 +107,7 @@ namespace AnimalBehaviours
         public void ChangeTheGraphics()
         {
             string currentName = "";
-            if (this.parent.Map != null)
+            if (this.parent.Map != null && AnimalBehaviours_Settings.flagGraphicChanging)
             {
                 Pawn pawn = this.parent as Pawn;
                 if (this.pawn_renderer == null)

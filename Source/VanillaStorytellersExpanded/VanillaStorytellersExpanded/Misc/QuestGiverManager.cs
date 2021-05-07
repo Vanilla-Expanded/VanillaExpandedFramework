@@ -48,13 +48,11 @@ namespace VanillaStorytellersExpanded
 
         public void ActivateQuest(Pawn accepter, QuestInfo questInfo)
         {
-            Log.Message("1 questInfo.quest: " + questInfo.quest.State + " - " + questInfo.quest.initiallyAccepted);
             Find.QuestManager.Add(questInfo.quest);
             questInfo.quest.Accept(accepter);
             QuestUtility.SendLetterQuestAvailable(questInfo.quest);
             questInfo.currencyInfo?.Buy(questInfo);
             availableQuests.Remove(questInfo);
-            Log.Message("2 questInfo.quest: " + questInfo.quest.State + " - " + questInfo.quest.initiallyAccepted);
         }
 
         public void CallWindow()

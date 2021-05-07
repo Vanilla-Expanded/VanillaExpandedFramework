@@ -13,8 +13,6 @@ namespace VanillaStorytellersExpanded
 				if (options != null && options.raidRestlessness != null)
 				{
 					var stageIndex = options.raidRestlessness.GetThoughtState();
-					//Log.Message("this.def.stages.Count: " + this.def.stages.Count, true);
-					//Log.Message("stageIndex: " + stageIndex, true);
 					if (stageIndex == -1)
 					{
 						return ThoughtState.Inactive;

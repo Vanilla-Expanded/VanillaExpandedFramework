@@ -39,7 +39,7 @@ namespace AnimalBehaviours
 
 
             Map map = this.parent.pawn.Corpse.Map;
-            if (map != null)
+            if (map != null && AnimalBehaviours_Settings.flagResurrection)
             {
 
                 if (resurrectionsLeft > 1)
@@ -59,7 +59,13 @@ namespace AnimalBehaviours
         {
             get
             {
-                return base.CompLabelInBracketsExtra + (resurrectionsLeft.ToString()) + " lives";
+                if (AnimalBehaviours_Settings.flagResurrection)
+                {
+                    return base.CompLabelInBracketsExtra + (resurrectionsLeft.ToString()) + " lives";
+
+                }
+                else return base.CompLabelInBracketsExtra;
+
             }
         }
 

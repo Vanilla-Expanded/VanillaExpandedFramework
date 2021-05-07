@@ -32,25 +32,29 @@ namespace AnimalBehaviours
 
         public override void CompTick()
         {
-            tickCounter++;
-
-            if (tickCounter >= rateInTicks)
+            if (AnimalBehaviours_Settings.flagRegeneration)
             {
-                Pawn pawn = this.parent as Pawn;
+                tickCounter++;
 
-                if (pawn.health != null)
+                if (tickCounter >= rateInTicks)
                 {
-                    if (pawn.health.hediffSet.GetInjuriesTendable() != null && pawn.health.hediffSet.GetInjuriesTendable().Count<Hediff_Injury>() > 0)
+                    Pawn pawn = this.parent as Pawn;
+
+                    if (pawn.health != null)
                     {
-                        foreach (Hediff_Injury injury in pawn.health.hediffSet.GetInjuriesTendable())
+                        if (pawn.health.hediffSet.GetInjuriesTendable() != null && pawn.health.hediffSet.GetInjuriesTendable().Count<Hediff_Injury>() > 0)
                         {
-                            injury.Severity = injury.Severity - 0.1f;
-                            break;
+                            foreach (Hediff_Injury injury in pawn.health.hediffSet.GetInjuriesTendable())
+                            {
+                                injury.Severity = injury.Severity - 0.1f;
+                                break;
+                            }
                         }
                     }
+                    tickCounter = 0;
                 }
-                tickCounter = 0;
             }
+            
         }
 
 

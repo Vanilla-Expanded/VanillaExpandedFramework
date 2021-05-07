@@ -28,7 +28,7 @@ namespace AnimalBehaviours
         public void CheckFaction()
         {
             //If I detect the creature is part of the player's faction (has been tamed)
-            if (this.parent.Faction == Faction.OfPlayer)
+            if (AnimalBehaviours_Settings.flagUntameable &&  this.parent.Faction == Faction.OfPlayer)
             {
 
                 Pawn pawn = parent as Pawn;

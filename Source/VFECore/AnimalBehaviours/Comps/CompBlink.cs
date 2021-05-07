@@ -27,33 +27,62 @@ namespace AnimalBehaviours
         public override void CompTick()
         {
             base.CompTick();
-            tickCounter++;
-            if (tickCounter > Props.blinkInterval)
-            {
-
-                IntVec3 loc = IntVec3.Invalid;
-                if (CellFinderLoose.TryFindRandomNotEdgeCellWith(10, (IntVec3 x) => x.DistanceTo(this.parent.Position) < Props.distance.RandomInRange,
-                    this.parent.Map, out loc))
+            if (AnimalBehaviours_Settings.flagBlinkMechanics) {
+                tickCounter++;
+                if (tickCounter > Props.blinkInterval)
                 {
 
+                    IntVec3 loc = IntVec3.Invalid;
                     Pawn pawn = this.parent as Pawn;
-                    if (pawn.CurJob.def == JobDefOf.GotoWander)
+                    if (pawn.Map != null)
                     {
-                        if (Props.warpEffect)
+                        if (pawn.CurJob.def == JobDefOf.GotoWander)
                         {
-                            MoteMaker.MakeStaticMote(this.parent.Position, this.parent.Map, ThingDefOf.Mote_PsycastAreaEffect, 10f);
+                            if (CellFinderLoose.TryFindRandomNotEdgeCellWith(10, (IntVec3 x) => x.DistanceTo(this.parent.Position) < Props.distance.RandomInRange,
+                            this.parent.Map, out loc))
+                            {
+                                if (Props.warpEffect && !Props.effectOnlyWhenManhunter)
+                                {
+                                    MoteMaker.MakeStaticMote(this.parent.Position, this.parent.Map, ThingDefOf.Mote_PsycastAreaEffect, 10f);
+                                }
+                                pawn.pather.StopDead();
+                                pawn.Position = loc;
+                                pawn.pather.ResetToCurrentPosition();
+                                IntVec3 loc2 = IntVec3.Invalid;
+                                CellFinder.TryFindRandomCellNear(pawn.Position, pawn.Map, 10, null, out loc2);
+                                pawn.pather.StartPath(loc2, PathEndMode.ClosestTouch);
+                            }
                         }
-                        pawn.pather.StopDead();
-                        pawn.Position = loc;
-                        pawn.pather.ResetToCurrentPosition();
-                        IntVec3 loc2 = IntVec3.Invalid;
-                        CellFinder.TryFindRandomCellNear(pawn.Position, pawn.Map, 10, null, out loc2);
-                        pawn.pather.StartPath(loc2, PathEndMode.ClosestTouch);
+                        else if ((pawn.CurJob.def == JobDefOf.AttackMelee || pawn.mindState.mentalStateHandler.InMentalState) && Props.blinkWhenManhunter)
+                        {
+                            if (this.parent.Position.DistanceTo(pawn.CurJob.targetA.Cell) > 2)
+                            {
+                                if (CellFinderLoose.TryFindRandomNotEdgeCellWith(10, (IntVec3 x) => x.DistanceTo(pawn.CurJob.targetA.Cell) < Props.distance.RandomInRange,
+                            this.parent.Map, out loc))
+                                {
+                                    if (Props.warpEffect)
+                                    {
+                                        MoteMaker.MakeStaticMote(this.parent.Position, this.parent.Map, ThingDefOf.Mote_PsycastAreaEffect, 10f);
+                                    }
+                                    pawn.pather.StopDead();
+                                    pawn.Position = loc;
+                                    pawn.pather.ResetToCurrentPosition();
+                                    pawn.pather.StartPath(pawn.CurJob.targetA.Cell, PathEndMode.ClosestTouch);
+                                }
+
+                            }
+
+
+                        }
+
                     }
 
+
+                    tickCounter = 0;
                 }
-                tickCounter = 0;
+
             }
+           
         }
 
 
