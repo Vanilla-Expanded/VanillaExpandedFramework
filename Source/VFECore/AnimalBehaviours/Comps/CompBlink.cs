@@ -36,7 +36,7 @@ namespace AnimalBehaviours
                     Pawn pawn = this.parent as Pawn;
                     if (pawn.Map != null)
                     {
-                        if (pawn.CurJob.def == JobDefOf.GotoWander)
+                        if (pawn.CurJob.def == JobDefOf.GotoWander || pawn.CurJob.def == JobDefOf.Wait_Wander || pawn.CurJob.def == JobDefOf.Wait_MaintainPosture)
                         {
                             if (CellFinderLoose.TryFindRandomNotEdgeCellWith(10, (IntVec3 x) => x.DistanceTo(this.parent.Position) < Props.distance.RandomInRange,
                             this.parent.Map, out loc))
