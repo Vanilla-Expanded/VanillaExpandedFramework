@@ -45,6 +45,7 @@ namespace AnimalBehaviours
                                     {
                                         
                                         Thing thing = GenSpawn.Spawn(ThingDef.Named(Props.thingsToConvertTo[Props.thingsToAffect.IndexOf(current2.def.defName)]), current, pawn.Map, WipeMode.Vanish);
+                                        thing.stackCount = current2.stackCount;
                                         if (Props.feedCauser)
                                         {
                                             pawn.needs.food.CurLevel += Props.nutritionGained;
