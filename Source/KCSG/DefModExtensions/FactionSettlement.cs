@@ -12,6 +12,7 @@ namespace KCSG
 {
     public class FactionSettlement : DefModExtension
     {
+        public bool canSpawnSettlements = true;
         public bool useStructureLayout;
 
         public List<KCSG.StructureLayoutDef> chooseFromlayouts = new List<KCSG.StructureLayoutDef>();
