@@ -19,14 +19,17 @@ namespace VFECore
             var currentFactionDefExtension = FactionDefExtension.Get(__instance.def);
             var otherFactionDefExtension = FactionDefExtension.Get(other.def);
 
+            var currentToOtherFactionGoodwill = currentFactionDefExtension?.startingGoodwillByFactionDefs?.Find(x => x.factionDef == other.def);
+            var otherToCurrentFactionGoodwill = otherFactionDefExtension?.startingGoodwillByFactionDefs?.Find(x => x.factionDef == __instance.def);
+
             // If at least one of the factions references the other via custom values in the FactionDefExtension
-            if ((currentFactionDefExtension?.startingGoodwillByFactionDefs.Exists(x => x.factionDef == other.def) ?? false) || (otherFactionDefExtension?.startingGoodwillByFactionDefs.Exists(x => x.factionDef == __instance.def) ?? false))
+            if (currentToOtherFactionGoodwill != null || otherToCurrentFactionGoodwill != null)
             {
                 // Get the lowest range of goodwill possible between factions
-                int? currentToOtherFactionGoodwillMin = currentFactionDefExtension?.startingGoodwillByFactionDefs?.Find(x => x.factionDef == other.def)?.Min ?? null;
-                int? currentToOtherFactionGoodwillMax = currentFactionDefExtension?.startingGoodwillByFactionDefs?.Find(x => x.factionDef == other.def)?.Max ?? null;
-                int? otherToCurrentFactionGoodwillMin = otherFactionDefExtension?.startingGoodwillByFactionDefs?.Find(x => x.factionDef == __instance.def)?.Min ?? null;
-                int? otherToCurrentFactionGoodwillMax = otherFactionDefExtension?.startingGoodwillByFactionDefs?.Find(x => x.factionDef == __instance.def)?.Max ?? null;
+                int? currentToOtherFactionGoodwillMin = currentToOtherFactionGoodwill?.Min;
+                int? currentToOtherFactionGoodwillMax = currentToOtherFactionGoodwill?.Max;
+                int? otherToCurrentFactionGoodwillMin = otherToCurrentFactionGoodwill?.Min;
+                int? otherToCurrentFactionGoodwillMax = otherToCurrentFactionGoodwill?.Max;
 
                 int mutualGoodwillMin = MinOfNullableInts(currentToOtherFactionGoodwillMin, otherToCurrentFactionGoodwillMin);
 
