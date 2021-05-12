@@ -14,7 +14,7 @@ namespace VFECore
     {
         // Custom initial relations between NPC factions should be patched last, including after HAR's own faction relation code
         [HarmonyAfter(new string[] { "rimworld.erdelf.alien_race.main" })]
-        static void Postfix(Faction __instance, Faction other)
+        public static void Postfix(Faction __instance, Faction other)
         {           
             var currentFactionDefExtension = FactionDefExtension.Get(__instance.def);
             var otherFactionDefExtension = FactionDefExtension.Get(other.def);
