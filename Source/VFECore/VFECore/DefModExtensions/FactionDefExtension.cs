@@ -38,8 +38,8 @@ namespace VFECore
 
     }
 
-    // IExposable class that pairs a given factionDef to a range of allowed starting goodwill
-    public class StartingGoodwillByFaction : IExposable
+    // Pairs a given factionDef to a range of allowed starting goodwill
+    public class StartingGoodwillByFaction
     {
         public FactionDef factionDef;
 
@@ -62,12 +62,6 @@ namespace VFECore
         {
             this.factionDef = factionDef;
             this.startingGoodwill = startingGoodwill;
-        }
-
-        public void ExposeData()
-        {
-            Scribe_Defs.Look(ref factionDef, "factionDef");
-            Scribe_Values.Look(ref startingGoodwill, "startingGoodwill");
         }
 
         public void LoadDataFromXmlCustom(XmlNode xmlRoot)
