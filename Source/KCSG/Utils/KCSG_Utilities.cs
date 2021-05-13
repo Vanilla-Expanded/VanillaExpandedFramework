@@ -25,12 +25,6 @@ namespace KCSG
                 if (c.x < xMin) xMin = c.x;
                 if (c.x > xMax) xMax = c.x;
             }
-/*#if DEBUG
-			Log.Message("xMin" + xMin.ToString());
-			Log.Message("xMax" + xMax.ToString());
-			Log.Message("zMin" + zMin.ToString());
-			Log.Message("zMax" + zMax.ToString());
-#endif*/
         }
 
         public static void HeightWidthFromLayout(StructureLayoutDef structureLayoutDef, out int height, out int width)
@@ -59,16 +53,12 @@ namespace KCSG
             {
                 if (first.x == c.x) height++;
             }
-/*#if DEBUG
-            Log.Message("Export height: " + height.ToString() + " width: " + width.ToString());
-#endif*/
         }
 
         public static void EdgeFromArea(List<IntVec3> cellExport, out int height, out int width)
         {
             height = 0;
             width = 0;
-            IntVec3 first = cellExport.First();
             foreach (IntVec3 f in cellExport)
             {
                 int tempW = 0, tempH = 0;
@@ -83,16 +73,12 @@ namespace KCSG
                 if (tempW > width) width = tempW;
                 if (tempH > height) height = tempH;
             }
-#if DEBUG
-            Log.Message("Export area height: " + height.ToString() + " width: " + width.ToString());
-#endif
         }
 
         public static List<IntVec3> AreaToSquare(Area a, int height, int widht)
         {
             List<IntVec3> list = a.ActiveCells.ToList();
-            int zMin, zMax, xMin, xMax;
-            KCSG_Utilities.MinMaxXZ(list, out zMin, out zMax, out xMin, out xMax);
+            KCSG_Utilities.MinMaxXZ(list, out int zMin, out int zMax, out int xMin, out int xMax);
 
             List<IntVec3> listOut = new List<IntVec3>();
 
@@ -143,8 +129,6 @@ namespace KCSG
                 }
             }
 
-            // Log.Message("-- Layout list creation - PASS");
-
             Dictionary<string, SymbolDef> pairsSymbolLabel = KCSG_Utilities.FillpairsSymbolLabel();
 
             int l = 0;
@@ -174,7 +158,7 @@ namespace KCSG
                                     else pawn = PawnGenerator.GeneratePawn(temp.pawnKindDefNS);
                                     if (temp.isSlave) pawn.guest.SetGuestStatus(map.ParentFaction, true);
 
-                                    GenSpawn.Spawn(pawn, cell, map);
+                                    GenSpawn.Spawn(pawn, cell, map, WipeMode.FullRefund);
                                     lord.AddPawn(pawn);
                                 }
                             }
@@ -187,7 +171,7 @@ namespace KCSG
                                     else pawn = PawnGenerator.GeneratePawn(temp.pawnKindDefNS);
 
                                     if (temp.isSlave) pawn.guest.SetGuestStatus(map.ParentFaction, true);
-                                    GenSpawn.Spawn(pawn, cell, map);
+                                    GenSpawn.Spawn(pawn, cell, map, WipeMode.FullRefund);
                                 }
                             }
                         }
@@ -199,7 +183,7 @@ namespace KCSG
                             thing.stackCount = temp.stackCount.RandomInRange;
                             if (thing.TryGetComp<CompQuality>() != null) thing.TryGetComp<CompQuality>().SetQuality(QualityUtility.GenerateQualityRandomEqualChance(), ArtGenerationContext.Outsider);
 
-                            if (cell.Walkable(map)) GenSpawn.Spawn(thing, cell, map);
+                            if (cell.Walkable(map)) GenSpawn.Spawn(thing, cell, map, WipeMode.FullRefund);
                             if (thing.TryGetComp<CompForbiddable>() != null) thing.SetForbidden(true);
                         }
                         else if (temp.thingDef != null)
@@ -221,7 +205,7 @@ namespace KCSG
                             else if (thing.def.rotatable && thing.def.category == ThingCategory.Building)
                             {
                                 if (cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Bridgeable)) map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
-                                GenSpawn.Spawn(thing, cell, map, new Rot4(temp.rotation.AsInt));
+                                GenSpawn.Spawn(thing, cell, map, new Rot4(temp.rotation.AsInt), WipeMode.FullRefund);
                                 thing.SetFactionDirect(map.ParentFaction);
                             }
                             else if (thing.def.category == ThingCategory.Plant && cell.GetThingList(map).FindAll(th => th.def.passability == Traversability.Impassable).Count == 0) // If it's a plant
@@ -231,32 +215,28 @@ namespace KCSG
                                     if (cell.GetTerrain(map).fertility <= 0) map.terrainGrid.SetTerrain(cell, TerrainDefOf.Soil);
                                     Plant plant = thing as Plant;
                                     plant.Growth = temp.plantGrowth; // apply the growth
-                                    GenSpawn.Spawn(plant, cell, map, WipeMode.Vanish);
+                                    GenSpawn.Spawn(plant, cell, map, WipeMode.FullRefund);
                                 }
                                 else if (rld.roofGrid == null)
                                 {
                                     if (cell.GetTerrain(map).fertility <= 0) map.terrainGrid.SetTerrain(cell, TerrainDefOf.Soil);
                                     Plant plant = thing as Plant;
                                     plant.Growth = temp.plantGrowth; // apply the growth
-                                    GenSpawn.Spawn(plant, cell, map, WipeMode.Vanish);
+                                    GenSpawn.Spawn(plant, cell, map, WipeMode.FullRefund);
                                 }
                             }
                             else if (thing.def.category == ThingCategory.Building)
                             {
                                 if (cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Bridgeable)) map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
-                                GenSpawn.Spawn(thing, cell, map, WipeMode.Vanish);
+                                GenSpawn.Spawn(thing, cell, map, WipeMode.FullRefund);
                                 thing.SetFactionDirect(map.ParentFaction);
                             }
 
                             if ((thing.def.passability == Traversability.Impassable || thing.def.altitudeLayer == AltitudeLayer.DoorMoveable) && map.ParentFaction != null && map.ParentFaction.def.techLevel >= TechLevel.Industrial) // Add power cable under all impassable
                             {
-                                if (LoadedModManager.RunningMods.ToList().FindAll(m => m.Name == "Subsurface Conduit").Count > 0) GenSpawn.Spawn(DefDatabase<ThingDef>.AllDefsListForReading.FindAll(d => d.defName == "MUR_SubsurfaceConduit").First(), cell, map, WipeMode.Vanish);
-                                else GenSpawn.Spawn(ThingDefOf.PowerConduit, cell, map, WipeMode.Vanish);
+                                if (LoadedModManager.RunningMods.ToList().FindAll(m => m.Name == "Subsurface Conduit").Count > 0) GenSpawn.Spawn(DefDatabase<ThingDef>.AllDefsListForReading.FindAll(d => d.defName == "MUR_SubsurfaceConduit").First(), cell, map, WipeMode.FullRefund);
+                                else GenSpawn.Spawn(ThingDefOf.PowerConduit, cell, map, WipeMode.FullRefund);
                             }
-                        }
-                        else
-                        {
-                            // Log.Message("--- Cell " + l.ToString() + " with SymbolDef " + allSymbList[l] + "(resolved to " + temp.defName + ") has nothing to place");
                         }
                     }
                 }
@@ -267,7 +247,6 @@ namespace KCSG
                 }
                 l++;
             }
-            // Log.Message("-- Cells passage done - PASS");
         }
 
         public static Lord CreateNewLord(Type lordJobType, Map map, IntVec3 cell)
@@ -297,9 +276,7 @@ namespace KCSG
                     if (powerNet == null)
                     {
                         map.powerNetManager.UpdatePowerNetsAndConnections_First();
-                        PowerNet powerNet2;
-                        IntVec3 dest;
-                        if (KCSG_Utilities.TryFindClosestReachableNet(compPowerBattery.parent.Position, (PowerNet x) => KCSG_Utilities.HasAnyPowerGenerator(x), map, out powerNet2, out dest, tmpPowerNetPredicateResults))
+                        if (KCSG_Utilities.TryFindClosestReachableNet(compPowerBattery.parent.Position, (PowerNet x) => KCSG_Utilities.HasAnyPowerGenerator(x), map, out PowerNet powerNet2, out IntVec3 dest, tmpPowerNetPredicateResults))
                         {
                             map.floodFiller.ReconstructLastFloodFillPath(dest, tmpCells);
                             if (powerNet2 != null)
@@ -330,9 +307,7 @@ namespace KCSG
                     else
                     {
                         map.powerNetManager.UpdatePowerNetsAndConnections_First();
-                        PowerNet powerNet2;
-                        IntVec3 dest;
-                        if (KCSG_Utilities.TryFindClosestReachableNet(powerComp.parent.Position, (PowerNet x) => x.CurrentEnergyGainRate() - powerComp.Props.basePowerConsumption * CompPower.WattsToWattDaysPerTick > 1E-07f, map, out powerNet2, out dest, tmpPowerNetPredicateResults))
+                        if (KCSG_Utilities.TryFindClosestReachableNet(powerComp.parent.Position, (PowerNet x) => x.CurrentEnergyGainRate() - powerComp.Props.basePowerConsumption * CompPower.WattsToWattDaysPerTick > 1E-07f, map, out PowerNet powerNet2, out IntVec3 dest, tmpPowerNetPredicateResults))
                         {
                             map.floodFiller.ReconstructLastFloodFillPath(dest, tmpCells);
                             KCSG_Utilities.SpawnTransmitters(tmpCells, map, tmpThings[i].Faction, conduit);
@@ -360,9 +335,7 @@ namespace KCSG
                     if (powerNet == null || !KCSG_Utilities.HasAnyPowerUser(powerNet))
                     {
                         map.powerNetManager.UpdatePowerNetsAndConnections_First();
-                        PowerNet powerNet2;
-                        IntVec3 dest;
-                        if (KCSG_Utilities.TryFindClosestReachableNet(tmpThings[i].Position, (PowerNet x) => KCSG_Utilities.HasAnyPowerUser(x), map, out powerNet2, out dest, tmpPowerNetPredicateResults))
+                        if (KCSG_Utilities.TryFindClosestReachableNet(tmpThings[i].Position, (PowerNet x) => KCSG_Utilities.HasAnyPowerUser(x), map, out PowerNet powerNet2, out IntVec3 dest, tmpPowerNetPredicateResults))
                         {
                             map.floodFiller.ReconstructLastFloodFillPath(dest, tmpCells);
                             KCSG_Utilities.SpawnTransmitters(tmpCells, map, tmpThings[i].Faction, conduit);
@@ -410,7 +383,7 @@ namespace KCSG
             {
                 if (cells[i].GetTransmitter(map) == null)
                 {
-                    GenSpawn.Spawn(conduit, cells[i], map, WipeMode.Vanish).SetFaction(faction, null);
+                    GenSpawn.Spawn(conduit, cells[i], map, WipeMode.FullRefund).SetFaction(faction, null);
                 }
             }
         }
@@ -451,13 +424,12 @@ namespace KCSG
             map.floodFiller.FloodFill(root, (IntVec3 x) => KCSG_Utilities.EverPossibleToTransmitPowerAt(x, map), delegate (IntVec3 x)
             {
                 Building transmitter = x.GetTransmitter(map);
-                PowerNet powerNet = (transmitter != null) ? transmitter.GetComp<CompPower>().PowerNet : null;
+                PowerNet powerNet = transmitter?.GetComp<CompPower>().PowerNet;
                 if (powerNet == null)
                 {
                     return false;
                 }
-                bool flag;
-                if (!tmpPowerNetPredicateResults.TryGetValue(powerNet, out flag))
+                if (!tmpPowerNetPredicateResults.TryGetValue(powerNet, out bool flag))
                 {
                     flag = predicate(powerNet);
                     tmpPowerNetPredicateResults.Add(powerNet, flag);
@@ -638,7 +610,6 @@ namespace KCSG
                             if (t.def.category == ThingCategory.Building || t.def.category == ThingCategory.Plant)
                             {
                                 KCSG_Utilities.CreateSymbolFromThing(t, defnamePrefix, justCreated, symbols);
-                                // Log.Message("CreateSymbolIfNeeded: " + t.def.defName + " symbols count: " + symbols.Count);
                             }
                         }
                     }
