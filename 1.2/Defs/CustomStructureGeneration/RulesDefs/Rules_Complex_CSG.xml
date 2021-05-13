@@ -16,4 +16,12 @@
       <li Class="KCSG.SymbolResolver_KCSG_RoomGenFromStructure" />
     </resolvers>
   </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_RoomGenFromList</defName>
+    <symbol>kcsg_roomgenfromlist</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_KCSG_RoomGenFromList" />
+    </resolvers>
+  </RuleDef>
 </Defs>

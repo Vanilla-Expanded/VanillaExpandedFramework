@@ -68,7 +68,10 @@
     <Compile Include="Harmony\HideSettlementsForNomadicFactionsPatch.cs" />
     <Compile Include="Harmony\Init.cs" />
     <Compile Include="ScenPart_AddStartingStructure.cs" />
+    <Compile Include="SymbolResolvers\SymbolResolver_KCSG_RoomGenFromList.cs" />
     <Compile Include="TextureLoader.cs" />
+    <Compile Include="Utils\AStar.cs" />
+    <Compile Include="Utils\BuildingPlacement.cs" />
     <Compile Include="Utils\CenteredMessageBox.cs" />
     <Compile Include="Utils\DebugOption.cs" />
     <Compile Include="DefModExtensions\FactionSettlement.cs" />
@@ -83,10 +86,14 @@
     <Compile Include="GenStep\GenStep_CustomStructureGen.cs" />
     <Compile Include="GenStep\GenStep_EnnemiesPresence.cs" />
     <Compile Include="Harmony\PrepareCarefully_Fix.cs" />
+    <Compile Include="Utils\Delaunay.cs" />
+    <Compile Include="Utils\CurrentGenerationOption.cs" />
     <Compile Include="Utils\KCSG_Utilities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_KCSG_RoomGenFromStructure.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_KCSG_Settlement.cs" />
+    <Compile Include="Utils\KVector.cs" />
+    <Compile Include="Utils\PoissonDiskSampling.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

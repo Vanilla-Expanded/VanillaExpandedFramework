@@ -13,7 +13,7 @@ namespace KCSG
         {
             Map map = BaseGen.globalSettings.map;
 
-            StructureLayoutDef rld = DefDatabase<StructureLayoutDef>.GetNamed(FactionSettlement.temp);
+            StructureLayoutDef rld = CurrentGenerationOption.structureLayoutDef;
 
             foreach (List<String> item in rld.layouts)
             {
@@ -27,10 +27,12 @@ namespace KCSG
             KCSG_Utilities.EnsureBatteriesConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, conduit);
             KCSG_Utilities.EnsurePowerUsersConnected(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, conduit);
             KCSG_Utilities.EnsureGeneratorsConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, conduit);
+
+            CurrentGenerationOption.ClearAll();
         }
 
-        private List<Thing> tmpThings = new List<Thing>();
-        private Dictionary<PowerNet, bool> tmpPowerNetPredicateResults = new Dictionary<PowerNet, bool>();
-        private List<IntVec3> tmpCells = new List<IntVec3>();
+        private readonly List<Thing> tmpThings = new List<Thing>();
+        private readonly Dictionary<PowerNet, bool> tmpPowerNetPredicateResults = new Dictionary<PowerNet, bool>();
+        private readonly List<IntVec3> tmpCells = new List<IntVec3>();
     }
 }

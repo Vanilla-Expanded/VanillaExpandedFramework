@@ -19,9 +19,5 @@ namespace KCSG
         public List<KCSG.SettlementLayoutDef> chooseFromSettlements = new List<KCSG.SettlementLayoutDef>();
         
         public string symbolResolver = null;
-
-        // Not for users use
-        public static string temp = null;
-        public static bool tempUseStructureLayout;
     }
 }

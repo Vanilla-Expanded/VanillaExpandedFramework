@@ -61,9 +61,6 @@ namespace KCSG
 
             var foogedRect = new Rect(scenPartRect.x, scenPartRect.y + RowHeight * 4, scenPartRect.width, RowHeight);
             Widgets.CheckboxLabeled(foogedRect, "KCSG.AllowFoggedPosition".Translate(), ref allowFoggedPosition);
-
-            // var ennemyRect = new Rect(scenPartRect.x, scenPartRect.y + RowHeight * 5, scenPartRect.width, RowHeight);
-            // Widgets.CheckboxLabeled(ennemyRect, "KCSG.SpawnPartOfEnnemyFaction".Translate(), ref spawnPartOfEnnemyFaction);
         }
 
         public override string Summary(Scenario scen)

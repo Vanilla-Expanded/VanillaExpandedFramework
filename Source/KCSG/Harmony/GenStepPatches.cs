@@ -21,20 +21,6 @@ namespace KCSG
         [HarmonyPrefix]
         public static bool Prefix(IntVec3 c, Map map, GenStepParams parms, int stackCount = 1)
         {
-            /* if (VFECore.VFEGlobal.settings.enableLog)
-            {
-                Log.Message("Testing defs");
-                foreach (SymbolDef def in DefDatabase<SymbolDef>.AllDefs)
-                {
-                    if (def.isTerrain && def.terrainDef == null)
-                        Log.Error("Found invalid terrain def: " + def.defName);
-                    else if (def.isPawn && def.pawnKindDefNS == null)
-                        Log.Error("Found invalid pawn def: " + def.defName);
-                    else if (!def.isTerrain && !def.isPawn && def.thingDef == null)
-                        Log.Error("Found invalid thing def: " + def.defName);
-                }
-            } */
-
             if (map.ParentFaction != null && map.ParentFaction.def.HasModExtension<FactionSettlement>())
             {
                 FactionSettlement factionSettlement = map.ParentFaction.def.GetModExtension<FactionSettlement>();
@@ -61,21 +47,17 @@ namespace KCSG
     {
         public static void Generate(Map map, IntVec3 c, FactionSettlement sf, string symbolResolver = "kcsg_settlement")
         {
-            FactionSettlement.tempUseStructureLayout = sf.useStructureLayout;
+            CurrentGenerationOption.useStructureLayout = sf.useStructureLayout;
 
-            string sld;
-
-            if (!sf.useStructureLayout)
+            if (sf.useStructureLayout)
             {
-                sld = sf.chooseFromSettlements.RandomElement().defName;
+                if (ModLister.RoyaltyInstalled) CurrentGenerationOption.structureLayoutDef = sf.chooseFromlayouts.RandomElement();
+                else CurrentGenerationOption.structureLayoutDef = sf.chooseFromlayouts.ToList().FindAll(sfl => !sfl.requireRoyalty).RandomElement();
             }
             else
             {
-                if (ModLister.RoyaltyInstalled) sld = sf.chooseFromlayouts.RandomElement().defName;
-                else sld = sf.chooseFromlayouts.ToList().FindAll(sfl => !sfl.requireRoyalty).RandomElement().defName;
+                CurrentGenerationOption.settlementLayoutDef = sf.chooseFromSettlements.RandomElement();
             }
-
-            FactionSettlement.temp = sld;
 
             // Get faction
             Faction faction;
@@ -90,11 +72,11 @@ namespace KCSG
             int height;
             if (sf.useStructureLayout)
             {
-                KCSG_Utilities.HeightWidthFromLayout(DefDatabase<StructureLayoutDef>.GetNamed(sld), out height, out width);
+                KCSG_Utilities.HeightWidthFromLayout(CurrentGenerationOption.structureLayoutDef, out height, out width);
             }
             else
             {
-                SettlementLayoutDef temp = DefDatabase<SettlementLayoutDef>.GetNamed(sld);
+                SettlementLayoutDef temp = CurrentGenerationOption.settlementLayoutDef;
                 height = temp.settlementSize.x;
                 width = temp.settlementSize.z;
             }
@@ -102,7 +84,7 @@ namespace KCSG
             CellRect rect = new CellRect(c.x - width / 2, c.z - height / 2, width, height);
             rect.ClipInsideMap(map);
 
-            ResolveParams rp = default(ResolveParams);
+            ResolveParams rp = default;
             rp.faction = faction;
             rp.rect = rect;
 
