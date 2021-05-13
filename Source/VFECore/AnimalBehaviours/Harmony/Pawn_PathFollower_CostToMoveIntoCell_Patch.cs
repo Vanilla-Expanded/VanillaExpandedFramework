@@ -50,10 +50,6 @@ namespace AnimalBehaviours
                     {
                         num = 10000;
                     }
-                    else if (terrainDef.IsWater && !pawn.TryGetComp<CompFloating>().Props.canCrossWater)
-                    {
-                        num = 10000;
-                    }
                     List<Thing> list = pawn.Map.thingGrid.ThingsListAt(c);
                     for (int i = 0; i < list.Count; i++)
                     {

@@ -10,7 +10,19 @@ namespace VanillaStorytellersExpanded
     {
         public QuestGiverDef def;
         private List<QuestInfo> availableQuests = new List<QuestInfo>();
-        public List<QuestInfo> AvailableQuests => availableQuests;
+        public List<QuestInfo> AvailableQuests
+        {
+            get
+            {
+                if (availableQuests is null)
+                {
+                    availableQuests = new List<QuestInfo>();
+                }
+                availableQuests.RemoveAll(x => x is null || x.askerFaction is null || x.quest_Part_choice is null || x.choice is null);
+                return availableQuests;
+            }
+        }
+            
         private int lastResetTick;
         public QuestGiverManager()
         {

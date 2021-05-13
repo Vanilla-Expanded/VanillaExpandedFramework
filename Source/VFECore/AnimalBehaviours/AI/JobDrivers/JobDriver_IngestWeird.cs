@@ -99,24 +99,14 @@ namespace AnimalBehaviours
             {
                 initAction = delegate ()
                 {
-                    if (this.pawn.Faction == null)
-                    {
-                        return;
-                    }
-                    Thing thing = this.job.GetTarget(TargetIndex.A).Thing;
-                    if (this.pawn.carryTracker.CarriedThing == thing)
-                    {
-                        return;
-                    }
-                    int maxAmountToPickup = 1;// FoodUtility.GetMaxAmountToPickup(thing, this.pawn, this.job.count);
-                    if (maxAmountToPickup == 0)
-                    {
-                        return;
-                    }
-                    if (!this.pawn.Reserve(thing, this.job, 10, maxAmountToPickup, null, true))
-                    {
-                        Log.Error(string.Concat(new object[]
+                    
+                        
+                        Thing thing = this.job.GetTarget(TargetIndex.A).Thing;
+                                               
+                        if (!this.pawn.Reserve(thing, this.job, 10, 1, null, true))
                         {
+                            Log.Error(string.Concat(new object[]
+                            {
                             "Pawn food reservation for ",
                             this.pawn,
                             " on job ",
@@ -124,11 +114,13 @@ namespace AnimalBehaviours
                             " failed, because it could not register food from ",
                             thing,
                             " - amount: ",
-                            maxAmountToPickup
-                        }), false);
-                        this.pawn.jobs.EndCurrentJob(JobCondition.Errored, true, true);
-                    }
-                    this.job.count = maxAmountToPickup;
+                            1
+                            }), false);
+                            this.pawn.jobs.EndCurrentJob(JobCondition.Errored, true, true);
+                        }
+                        this.job.count = 1;
+                    
+                    
                 },
                 defaultCompleteMode = ToilCompleteMode.Instant,
                 atomicWithPrevious = true
@@ -142,11 +134,7 @@ namespace AnimalBehaviours
             {
                 Pawn actor = toil.actor;
                 Thing thing = actor.CurJob.GetTarget(ingestibleInd).Thing;
-                /* if (!thing.IngestibleNow)
-                 {
-                     chewer.jobs.EndCurrentJob(JobCondition.Incompletable, true, true);
-                     return;
-                 }*/
+               
                 actor.jobs.curDriver.ticksLeftThisToil = 500;
                 if (thing.Spawned)
                 {
@@ -226,7 +214,7 @@ namespace AnimalBehaviours
                 {
                     num = Mathf.Max(num, 0.75f);
                 }
-                float num2 = comp.Props.nutrition;// thing.Ingested(ingester, num);
+                float num2 = comp.Props.nutrition;
                 if (comp.Props.fullyDestroyThing)
                 {
                     if (comp.Props.drainBattery)
@@ -280,12 +268,13 @@ namespace AnimalBehaviours
 
                 if (comp.Props.advanceLifeStage && actor.Map != null)
                 {
+                   
                     comp.currentFeedings++;
                     if (comp.currentFeedings >= comp.Props.advanceAfterXFeedings)
                     {
                         if (comp.Props.fissionAfterXFeedings)
                         {
-                            if (!comp.Props.fissionOnlyIfTamed || actor.Faction.IsPlayer)
+                            if (!comp.Props.fissionOnlyIfTamed || (actor.Faction!=null && actor.Faction.IsPlayer))
                             {
                                 for (int i = 0; i < comp.Props.numberOfOffspring; i++)
                                 {
@@ -306,14 +295,27 @@ namespace AnimalBehaviours
                         {
                             PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDef.Named(comp.Props.defToAdvanceTo), actor.Faction, PawnGenerationContext.NonPlayer, -1, true, true, false, false, true, false, 1f, false, true, true, false, false);
                             Pawn newPawn = PawnGenerator.GeneratePawn(request);
-                            if (!actor.Name.ToString().UncapitalizeFirst().Contains(actor.def.label))
+                            if (actor.Name!=null && !actor.Name.ToString().UncapitalizeFirst().Contains(actor.def.label))
                             {
                                 newPawn.Name = actor.Name;
                             }
-                            newPawn.training = actor.training;
-                            newPawn.health = actor.health;
-                            newPawn.foodRestriction = actor.foodRestriction;
-                            newPawn.playerSettings.AreaRestriction = actor.playerSettings.AreaRestriction;
+                            if (actor.training != null) {
+                                newPawn.training = actor.training;
+                            }
+                            if (actor.health != null)
+                            {
+                                newPawn.health = actor.health;
+                            }
+                            if (actor.foodRestriction != null)
+                            {
+                                newPawn.foodRestriction = actor.foodRestriction;
+                            }
+                            if (actor.playerSettings!=null && actor.playerSettings.AreaRestriction != null)
+                            {
+                                newPawn.playerSettings.AreaRestriction = actor.playerSettings.AreaRestriction;
+                            }
+
+                           
                             GenSpawn.Spawn(newPawn, actor.Position, actor.Map, WipeMode.Vanish);
                             actor.Destroy();
                         }
