@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace KCSG.Utils
+namespace KCSG
 {
     public static class Delaunay
     {
         private static IEnumerable<Triangle> border;
+
         public static IEnumerable<Triangle> Run(IEnumerable<KVector> points, double maxX, double maxY)
         {
             KVector point0 = new KVector(0, 0);
@@ -76,6 +75,7 @@ namespace KCSG.Utils
 
         public KVector Point1 { get; }
         public KVector Point2 { get; }
+
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
@@ -97,6 +97,7 @@ namespace KCSG.Utils
     public class Triangle
     {
         public double RadiusSquared;
+
         public Triangle(KVector point1, KVector point2, KVector point3)
         {
             Vertices[0] = point1;
@@ -119,6 +120,7 @@ namespace KCSG.Utils
 
         public KVector Circumcenter { get; private set; }
         public KVector[] Vertices { get; } = new KVector[3];
+
         public bool IsPointInsideCircumcircle(KVector point)
         {
             double d_squared = (point.X - Circumcenter.X) * (point.X - Circumcenter.X) + (point.Y - Circumcenter.Y) * (point.Y - Circumcenter.Y);

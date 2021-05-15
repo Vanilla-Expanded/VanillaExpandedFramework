@@ -35,7 +35,7 @@ namespace KCSG
 
                         foreach (List<string> item in localDef.layouts)
                         {
-                            KCSG_Utilities.GenerateRoomFromLayout(item, cellRect, Find.CurrentMap, localDef);
+                            GenUtils.GenerateRoomFromLayout(item, cellRect, Find.CurrentMap, localDef);
                         }
                     }
                 }));
@@ -48,8 +48,7 @@ namespace KCSG
         {
             foreach (StructureLayoutDef sld in DefDatabase<StructureLayoutDef>.AllDefsListForReading)
             {
-                int h, w;
-                KCSG_Utilities.HeightWidthFromLayout(sld, out h, out w);
+                KCSG_Utilities.HeightWidthFromLayout(sld, out int h, out int w);
                 Log.Message("Layout " + sld.defName + " Height: " + h + " Width: " + w);
             }
         }

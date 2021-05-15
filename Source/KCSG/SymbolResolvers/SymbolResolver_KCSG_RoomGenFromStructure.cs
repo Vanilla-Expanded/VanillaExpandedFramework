@@ -17,16 +17,16 @@ namespace KCSG
 
             foreach (List<String> item in rld.layouts)
             {
-                KCSG_Utilities.GenerateRoomFromLayout(item, rp.rect, map, rld);
+                GenUtils.GenerateRoomFromLayout(item, rp.rect, map, rld);
             }
 
             ThingDef conduit;
             if (LoadedModManager.RunningMods.ToList().FindAll(m => m.Name == "Subsurface Conduit").Count > 0) conduit = DefDatabase<ThingDef>.AllDefsListForReading.FindAll(d => d.defName == "MUR_SubsurfaceConduit").First();
             else conduit = ThingDefOf.PowerConduit;
 
-            KCSG_Utilities.EnsureBatteriesConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, conduit);
-            KCSG_Utilities.EnsurePowerUsersConnected(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, conduit);
-            KCSG_Utilities.EnsureGeneratorsConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, conduit);
+            GenUtils.EnsureBatteriesConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, conduit);
+            GenUtils.EnsurePowerUsersConnected(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, conduit);
+            GenUtils.EnsureGeneratorsConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, conduit);
 
             CurrentGenerationOption.ClearAll();
         }

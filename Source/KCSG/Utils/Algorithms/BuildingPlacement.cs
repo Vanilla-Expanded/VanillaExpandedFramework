@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Verse;
 
-namespace KCSG.Utils
+namespace KCSG
 {
     public static class BuildingPlacement
     {
@@ -17,7 +17,7 @@ namespace KCSG.Utils
                 {
                     if (IsInBound(i, j, grid.Length, grid[0].Length))
                     {
-                        if (grid[i][j] != null && grid[i][j].type != Type.NONE)
+                        if (grid[i][j] != null && grid[i][j].Type != CellType.NONE)
                             return false;
                     }
                 }
@@ -39,15 +39,15 @@ namespace KCSG.Utils
             {
                 for (int j = (int)point.Y; j < height + point.Y; j++)
                 {
-                    Type type = i == door.X + point.X && j == door.Y + point.Y ? Type.DOOR : Type.BUILDING;
-                    if (type == Type.DOOR)
+                    CellType type = i == door.X + point.X && j == door.Y + point.Y ? CellType.DOOR : CellType.BUILDING;
+                    if (type == CellType.DOOR)
                     {
                         result.X = i;
                         result.Y = j;
                     }
 
                     if (grid[i][j] != null)
-                        grid[i][j].type = type;
+                        grid[i][j].Type = type;
                     else
                         grid[i][j] = new KVector(i, j, type: type);
                 }

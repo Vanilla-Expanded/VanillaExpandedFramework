@@ -19,7 +19,7 @@ namespace KCSG
                 CellRect rect = CellRect.CenteredOn(new IntVec3(CurrentGenerationOption.gridStartPoint.x + width / 2, 0, CurrentGenerationOption.gridStartPoint.z - height / 2), width, height);
                 foreach (List<string> item in keyValue.Value.layouts)
                 {
-                    KCSG_Utilities.GenerateRoomFromLayout(item, rect, BaseGen.globalSettings.map, keyValue.Value);
+                    GenUtils.GenerateRoomFromLayout(item, rect, BaseGen.globalSettings.map, keyValue.Value);
                 }
             }
         }

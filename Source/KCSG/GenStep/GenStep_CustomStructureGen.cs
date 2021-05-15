@@ -24,7 +24,7 @@ namespace KCSG
 
             foreach (List<String> item in structureLayoutDef.layouts)
             {
-                KCSG_Utilities.GenerateRoomFromLayout(item, cellRect, map, structureLayoutDef);
+                GenUtils.GenerateRoomFromLayout(item, cellRect, map, structureLayoutDef);
             }
 
             // Flood refog

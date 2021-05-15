@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Verse;
 
-namespace KCSG.Utils
+namespace KCSG
 {
     public static class AStar
     {
@@ -34,7 +32,7 @@ namespace KCSG.Utils
 
                 foreach (KVector n in adjacencies)
                 {
-                    if (!ClosedList.Contains(n) && (n.type == Type.NONE || n.type == Type.ROAD || n.type == Type.DOOR || n.type == Type.MAINROAD))
+                    if (!ClosedList.Contains(n) && (n.Type == CellType.NONE || n.Type == CellType.ROAD || n.Type == CellType.DOOR || n.Type == CellType.MAINROAD))
                     {
                         if (!OpenList.Contains(n))
                         {

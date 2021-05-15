@@ -1,12 +1,10 @@
-﻿using KCSG.Utils;
-using RimWorld;
+﻿using RimWorld;
 using RimWorld.BaseGen;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using Verse.AI.Group;
-using Type = KCSG.Utils.Type;
 
 namespace KCSG
 {
@@ -84,23 +82,23 @@ namespace KCSG
             {
                 KVector v = all[i];
                 y = i + 1 < all.Count ? all[i + 1].Y : v.Y;
-                grid[(int)v.X][(int)v.Y].type = Type.MAINROAD;
+                grid[(int)v.X][(int)v.Y].Type = CellType.MAINROAD;
                 if (v.Y == y)
                 {
-                    grid[(int)v.X][(int)v.Y - 1].type = Type.MAINROAD;
-                    grid[(int)v.X][(int)v.Y + 1].type = Type.MAINROAD;
+                    grid[(int)v.X][(int)v.Y - 1].Type = CellType.MAINROAD;
+                    grid[(int)v.X][(int)v.Y + 1].Type = CellType.MAINROAD;
                 }
                 else if (v.Y < y)
                 {
-                    grid[(int)v.X][(int)v.Y - 1].type = Type.MAINROAD;
-                    grid[(int)v.X][(int)v.Y + 1].type = Type.MAINROAD;
-                    grid[(int)v.X][(int)v.Y + 2].type = Type.MAINROAD;
+                    grid[(int)v.X][(int)v.Y - 1].Type = CellType.MAINROAD;
+                    grid[(int)v.X][(int)v.Y + 1].Type = CellType.MAINROAD;
+                    grid[(int)v.X][(int)v.Y + 2].Type = CellType.MAINROAD;
                 }
                 else if (v.Y > y)
                 {
-                    grid[(int)v.X][(int)v.Y - 2].type = Type.MAINROAD;
-                    grid[(int)v.X][(int)v.Y - 1].type = Type.MAINROAD;
-                    grid[(int)v.X][(int)v.Y + 1].type = Type.MAINROAD;
+                    grid[(int)v.X][(int)v.Y - 2].Type = CellType.MAINROAD;
+                    grid[(int)v.X][(int)v.Y - 1].Type = CellType.MAINROAD;
+                    grid[(int)v.X][(int)v.Y + 1].Type = CellType.MAINROAD;
                 }
             }
         }
@@ -117,23 +115,23 @@ namespace KCSG
             {
                 KVector v = all[i];
                 x = i + 1 < all.Count ? all[i + 1].X : v.X;
-                grid[(int)v.X][(int)v.Y].type = Type.MAINROAD;
+                grid[(int)v.X][(int)v.Y].Type = CellType.MAINROAD;
                 if (v.X == x)
                 {
-                    grid[(int)v.X - 1][(int)v.Y].type = Type.MAINROAD;
-                    grid[(int)v.X + 1][(int)v.Y].type = Type.MAINROAD;
+                    grid[(int)v.X - 1][(int)v.Y].Type = CellType.MAINROAD;
+                    grid[(int)v.X + 1][(int)v.Y].Type = CellType.MAINROAD;
                 }
                 else if (v.X < x)
                 {
-                    grid[(int)v.X - 1][(int)v.Y].type = Type.MAINROAD;
-                    grid[(int)v.X + 1][(int)v.Y].type = Type.MAINROAD;
-                    grid[(int)v.X + 2][(int)v.Y].type = Type.MAINROAD;
+                    grid[(int)v.X - 1][(int)v.Y].Type = CellType.MAINROAD;
+                    grid[(int)v.X + 1][(int)v.Y].Type = CellType.MAINROAD;
+                    grid[(int)v.X + 2][(int)v.Y].Type = CellType.MAINROAD;
                 }
                 else if (v.X > x)
                 {
-                    grid[(int)v.X - 2][(int)v.Y].type = Type.MAINROAD;
-                    grid[(int)v.X - 1][(int)v.Y].type = Type.MAINROAD;
-                    grid[(int)v.X + 1][(int)v.Y].type = Type.MAINROAD;
+                    grid[(int)v.X - 2][(int)v.Y].Type = CellType.MAINROAD;
+                    grid[(int)v.X - 1][(int)v.Y].Type = CellType.MAINROAD;
+                    grid[(int)v.X + 1][(int)v.Y].Type = CellType.MAINROAD;
                 }
             }
         }
@@ -193,7 +191,7 @@ namespace KCSG
                 Log.Message($"Edge: {ed.Point1} {ed.Point2}");
                 foreach (KVector v in AStar.Run(ed.Point1, ed.Point2, grid, false))
                 {
-                    v.type = v.type == Type.NONE ? Type.ROAD : v.type;
+                    v.Type = v.Type == CellType.NONE ? CellType.ROAD : v.Type;
                 }
             }
 
@@ -218,13 +216,13 @@ namespace KCSG
             {
                 for (int j = 0; j < grid[i].Length; j++)
                 {
-                    switch (grid[i][j].type)
+                    switch (grid[i][j].Type)
                     {
-                        case Type.ROAD:
+                        case CellType.ROAD:
                             map.terrainGrid.SetTerrain(new IntVec3(x + i, 0, y - j), TerrainDefOf.WoodPlankFloor);
                             break;
 
-                        case Type.MAINROAD:
+                        case CellType.MAINROAD:
                             map.terrainGrid.SetTerrain(new IntVec3(x + i, 0, y - j), TerrainDefOf.TileSandstone);
                             break;
 

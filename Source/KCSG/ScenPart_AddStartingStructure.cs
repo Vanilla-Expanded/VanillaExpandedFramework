@@ -94,7 +94,7 @@ namespace KCSG
 
             foreach (List<string> item in structureLayoutDef.layouts)
             {
-                KCSG_Utilities.GenerateRoomFromLayout(item, cellRect, map, structureLayoutDef);
+                GenUtils.GenerateRoomFromLayout(item, cellRect, map, structureLayoutDef);
             }
 
             FloodFillerFog.DebugRefogMap(map);

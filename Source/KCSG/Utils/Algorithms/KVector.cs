@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace KCSG.Utils
+namespace KCSG
 {
-    public enum Type
+    public enum CellType
     {
         NONE,
         BUILDING,
@@ -29,11 +25,11 @@ namespace KCSG.Utils
 
         public bool useCost;
 
-        public KVector(double x, double y, bool useCost = true, Type type = Type.NONE, float weight = 1f)
+        public KVector(double x, double y, bool useCost = true, CellType type = CellType.NONE, float weight = 1f)
         {
             X = x;
             Y = y;
-            this.type = type;
+            this.Type = type;
 
             Parent = null;
             DistanceToTarget = -1f;
@@ -49,13 +45,13 @@ namespace KCSG.Utils
             get
             {
                 if (DistanceToTarget != -1 && Cost != -1)
-                    return DistanceToTarget + (useCost ? (type == Type.MAINROAD ? Cost * 0.1f : type == Type.ROAD ? Cost * 0.4f : Cost) : Cost);
+                    return DistanceToTarget + (useCost ? (Type == CellType.MAINROAD ? Cost * 0.1f : Type == CellType.ROAD ? Cost * 0.4f : Cost) : Cost);
                 else
                     return -1;
             }
         }
 
-        public Type type { get; set; }
+        public CellType Type { get; set; }
         public double X { get; set; }
         public double Y { get; set; }
 
