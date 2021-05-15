@@ -36,7 +36,7 @@ namespace KCSG
                         if (temp.isTerrain && temp.terrainDef != null)
                         {
                             cell.GetFirstMineable(map)?.DeSpawn();
-                            if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Light))
+                            if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
                             {
                                 map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
                             }
@@ -105,7 +105,7 @@ namespace KCSG
                             }
                             else if (thing.def.category == ThingCategory.Building)
                             {
-                                if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Light) && !thing.def.building.isNaturalRock) 
+                                if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy) && !thing.def.building.isNaturalRock) 
                                     map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
 
                                 if (thing.def.rotatable)
@@ -140,7 +140,7 @@ namespace KCSG
                 if (rg[i] == "1")
                 {
                     map.roofGrid.SetRoof(roomRect.Cells.ElementAt(i), RoofDefOf.RoofConstructed);
-                    if (!roomRect.Cells.ElementAt(i).GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Light))
+                    if (!roomRect.Cells.ElementAt(i).GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
                     {
                         map.terrainGrid.SetTerrain(roomRect.Cells.ElementAt(i), TerrainDefOf.Bridge);
                     }

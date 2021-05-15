@@ -20,7 +20,8 @@ namespace KCSG
                 Log.Message($"Rect - Height: {rect.Height} - Width {rect.Width}");
                 foreach (List<string> item in keyValue.Value.layouts)
                 {
-                    GenUtils.GenerateRoomFromLayout(item, rect, BaseGen.globalSettings.map, keyValue.Value);
+                    Log.Message($"{item.ToArray()}");
+                    //GenUtils.GenerateRoomFromLayout(item, rect, BaseGen.globalSettings.map, keyValue.Value);
                 }
             }
         }
