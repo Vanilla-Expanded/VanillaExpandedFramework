@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using UnityEngine;
 using Verse;
 using Verse.AI.Group;
 
@@ -136,15 +137,14 @@ namespace KCSG
             {
                 if (l < allSymbList.Count && allSymbList[l] != ".")
                 {
-                    SymbolDef temp;
-                    pairsSymbolLabel.TryGetValue(allSymbList[l], out temp);
+                    pairsSymbolLabel.TryGetValue(allSymbList[l], out SymbolDef temp);
                     Thing thing;
                     if (temp != null)
                     {
                         if (temp.isTerrain && temp.terrainDef != null)
                         {
                             map.terrainGrid.SetTerrain(cell, temp.terrainDef);
-                            cell.GetThingList(map).FindAll(t1 => t1.def.category == ThingCategory.Building && !t1.def.BuildableByPlayer).ForEach((t) => t.DeSpawn());
+                            cell.GetThingList(map).FindAll(t1 => t1.def.building.isNaturalRock).ForEach((t) => t.DeSpawn());
                         }
                         else if (temp.isPawn && temp.pawnKindDefNS != null)
                         {
@@ -153,9 +153,7 @@ namespace KCSG
                                 Lord lord = KCSG_Utilities.CreateNewLord(temp.lordJob, map, cell);
                                 for (int i = 0; i < temp.numberToSpawn; i++)
                                 {
-                                    Pawn pawn;
-                                    if (temp.spawnPartOfFaction) pawn = PawnGenerator.GeneratePawn(temp.pawnKindDefNS, map.ParentFaction);
-                                    else pawn = PawnGenerator.GeneratePawn(temp.pawnKindDefNS);
+                                    Pawn pawn = temp.spawnPartOfFaction ? PawnGenerator.GeneratePawn(temp.pawnKindDefNS, map.ParentFaction) : PawnGenerator.GeneratePawn(temp.pawnKindDefNS);
                                     if (temp.isSlave) pawn.guest.SetGuestStatus(map.ParentFaction, true);
 
                                     GenSpawn.Spawn(pawn, cell, map, WipeMode.FullRefund);
@@ -166,9 +164,7 @@ namespace KCSG
                             {
                                 for (int i = 0; i < temp.numberToSpawn; i++)
                                 {
-                                    Pawn pawn;
-                                    if (temp.spawnPartOfFaction) pawn = PawnGenerator.GeneratePawn(temp.pawnKindDefNS, map.ParentFaction);
-                                    else pawn = PawnGenerator.GeneratePawn(temp.pawnKindDefNS);
+                                    Pawn pawn = temp.spawnPartOfFaction ? PawnGenerator.GeneratePawn(temp.pawnKindDefNS, map.ParentFaction) : PawnGenerator.GeneratePawn(temp.pawnKindDefNS);
 
                                     if (temp.isSlave) pawn.guest.SetGuestStatus(map.ParentFaction, true);
                                     GenSpawn.Spawn(pawn, cell, map, WipeMode.FullRefund);
@@ -177,53 +173,38 @@ namespace KCSG
                         }
                         else if (temp.isItem && temp.thingDef != null)
                         {
-                            if (temp.thingDef.stuffCategories != null) thing = ThingMaker.MakeThing(temp.thingDef, GenStuff.RandomStuffFor(temp.thingDef));
-                            else thing = ThingMaker.MakeThing(temp.thingDef);
+                            thing = temp.thingDef.stuffCategories != null ? ThingMaker.MakeThing(temp.thingDef, GenStuff.RandomStuffFor(temp.thingDef)) : ThingMaker.MakeThing(temp.thingDef);
 
-                            thing.stackCount = temp.stackCount.RandomInRange;
+                            thing.stackCount = Mathf.Clamp(temp.stackCount.RandomInRange, 1, 75);
                             if (thing.TryGetComp<CompQuality>() != null) thing.TryGetComp<CompQuality>().SetQuality(QualityUtility.GenerateQualityRandomEqualChance(), ArtGenerationContext.Outsider);
 
-                            if (cell.Walkable(map)) GenSpawn.Spawn(thing, cell, map, WipeMode.FullRefund);
+                            GenSpawn.Spawn(thing, cell, map, WipeMode.FullRefund);
                             if (thing.TryGetComp<CompForbiddable>() != null) thing.SetForbidden(true);
                         }
                         else if (temp.thingDef != null)
                         {
                             thing = ThingMaker.MakeThing(temp.thingDef, temp.stuffDef);
-                            // If the thing is refulable, fill it
+
                             if (thing.TryGetComp<CompRefuelable>() != null) thing.TryGetComp<CompRefuelable>().Refuel((int)thing.TryGetComp<CompRefuelable>().Props.fuelCapacity / 2);
                             if (thing.TryGetComp<CompPowerBattery>() != null) thing.TryGetComp<CompPowerBattery>().AddEnergy(thing.TryGetComp<CompPowerBattery>().Props.storedEnergyMax);
-                            // If it's a grave, fill it
                             if (thing is Building_Casket inheritFromCasket)
                             {
-                                Pawn pawn;
-                                if (temp.containPawnKind != null) pawn = PawnGenerator.GeneratePawn(temp.containPawnKindDef, map.ParentFaction);
-                                else pawn = PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, map.ParentFaction);
+                                Pawn pawn = temp.containPawnKind != null ? PawnGenerator.GeneratePawn(temp.containPawnKindDef, map.ParentFaction) : PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, map.ParentFaction);
                                 inheritFromCasket.TryAcceptThing(pawn);
                             }
 
-                            if (cell.GetFirstMineable(map) != null && (thing.def.defName == "Barricade" || thing.def.defName == "Sandbags")) { }
+                            if (cell.GetFirstMineable(map) != null && thing.def.designationCategory == DesignationCategoryDefOf.Security) continue;
                             else if (thing.def.rotatable && thing.def.category == ThingCategory.Building)
                             {
                                 if (cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Bridgeable)) map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
                                 GenSpawn.Spawn(thing, cell, map, new Rot4(temp.rotation.AsInt), WipeMode.FullRefund);
                                 thing.SetFactionDirect(map.ParentFaction);
                             }
-                            else if (thing.def.category == ThingCategory.Plant && cell.GetThingList(map).FindAll(th => th.def.passability == Traversability.Impassable).Count == 0) // If it's a plant
+                            else if (thing.def.category == ThingCategory.Plant && cell.GetTerrain(map).fertility > 50 && cell.Walkable(map)) // If it's a plant
                             {
-                                if (rld.roofGrid != null && l < roofGrid.Count && (roofGrid[l] == "0" || roofGrid[l] == "."))
-                                {
-                                    if (cell.GetTerrain(map).fertility <= 0) map.terrainGrid.SetTerrain(cell, TerrainDefOf.Soil);
-                                    Plant plant = thing as Plant;
-                                    plant.Growth = temp.plantGrowth; // apply the growth
-                                    GenSpawn.Spawn(plant, cell, map, WipeMode.FullRefund);
-                                }
-                                else if (rld.roofGrid == null)
-                                {
-                                    if (cell.GetTerrain(map).fertility <= 0) map.terrainGrid.SetTerrain(cell, TerrainDefOf.Soil);
-                                    Plant plant = thing as Plant;
-                                    plant.Growth = temp.plantGrowth; // apply the growth
-                                    GenSpawn.Spawn(plant, cell, map, WipeMode.FullRefund);
-                                }
+                                Plant plant = thing as Plant;
+                                plant.Growth = temp.plantGrowth; // apply the growth
+                                GenSpawn.Spawn(plant, cell, map, WipeMode.FullRefund);
                             }
                             else if (thing.def.category == ThingCategory.Building)
                             {
@@ -232,10 +213,9 @@ namespace KCSG
                                 thing.SetFactionDirect(map.ParentFaction);
                             }
 
-                            if ((thing.def.passability == Traversability.Impassable || thing.def.altitudeLayer == AltitudeLayer.DoorMoveable) && map.ParentFaction != null && map.ParentFaction.def.techLevel >= TechLevel.Industrial) // Add power cable under all impassable
+                            if (thing.def.passability == Traversability.Impassable && map.ParentFaction?.def.techLevel >= TechLevel.Industrial) // Add power cable under all impassable
                             {
-                                if (LoadedModManager.RunningMods.ToList().FindAll(m => m.Name == "Subsurface Conduit").Count > 0) GenSpawn.Spawn(DefDatabase<ThingDef>.AllDefsListForReading.FindAll(d => d.defName == "MUR_SubsurfaceConduit").First(), cell, map, WipeMode.FullRefund);
-                                else GenSpawn.Spawn(ThingDefOf.PowerConduit, cell, map, WipeMode.FullRefund);
+                                GenSpawn.Spawn(ThingDefOf.PowerConduit, cell, map, WipeMode.FullRefund);
                             }
                         }
                     }
@@ -830,8 +810,7 @@ namespace KCSG
         public static XElement CreateRoofGrid(List<IntVec3> cellExport, Map map, Area area = null)
         {
             XElement roofGrid = new XElement("roofGrid", null);
-            int height, width;
-            KCSG_Utilities.EdgeFromList(cellExport, out height, out width);
+            KCSG_Utilities.EdgeFromList(cellExport, out int height, out int width);
 
             IntVec3 first = cellExport.First();
             for (int i = 0; i < height; i++)

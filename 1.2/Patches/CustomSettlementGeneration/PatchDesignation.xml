@@ -3,8 +3,24 @@
   <Operation Class="PatchOperationAdd">
     <xpath>/Defs/DesignationCategoryDef[defName="Orders"]/specialDesignatorClasses</xpath>
     <value>
-        <li>KCSG.Designator_ExportToXml</li>
-        <li>KCSG.Designator_ExportToXmlFromArea</li>
+      <li>KCSG.Designator_ExportToXml</li>
+      <li>KCSG.Designator_ExportToXmlFromArea</li>
     </value>
   </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/FactionDef[defName="OutlanderCivil" or defName="OutlanderRough"]</xpath>
+    <value>
+      <modExtensions>
+        <li Class="KCSG.FactionSettlement">
+          <useStructureLayout>False</useStructureLayout>
+          <chooseFromSettlements>
+            <li>KCSG_TestSettlement</li>
+          </chooseFromSettlements>
+        </li>
+      </modExtensions>
+    </value>
+  </Operation>
+
+
 </Patch>

@@ -1,4 +1,0 @@
-C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework\Source\KCSG\obj\Debug\KCSG.csproj.CoreCompileInputs.cache
-C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\1.2\Assemblies\KCSG.dll
-C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework\Source\KCSG\obj\Debug\KCSG.dll
-C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework\1.2\Assemblies\KCSG.dll
