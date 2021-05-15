@@ -14,9 +14,10 @@ namespace KCSG
         {
             foreach (var keyValue in CurrentGenerationOption.vectStruct)
             {
-                Log.Message($"Generating {keyValue.Value.defName}");
                 KCSG_Utilities.HeightWidthFromLayout(keyValue.Value, out int height, out int width);
+                Log.Message($"Generating {keyValue.Value.defName} - Height: {height} - Width {width}");
                 CellRect rect = CellRect.CenteredOn(new IntVec3(CurrentGenerationOption.gridStartPoint.x + width / 2, 0, CurrentGenerationOption.gridStartPoint.z - height / 2), width, height);
+                Log.Message($"Rect - Height: {rect.Height} - Width {rect.Width}");
                 foreach (List<string> item in keyValue.Value.layouts)
                 {
                     GenUtils.GenerateRoomFromLayout(item, rect, BaseGen.globalSettings.map, keyValue.Value);

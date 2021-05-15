@@ -36,7 +36,7 @@ namespace KCSG
                         if (temp.isTerrain && temp.terrainDef != null)
                         {
                             cell.GetFirstMineable(map)?.DeSpawn();
-                            if (cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Bridgeable))
+                            if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Light))
                             {
                                 map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
                             }
@@ -70,7 +70,7 @@ namespace KCSG
                                 }
                             }
                         }
-                        else if (temp.isItem && temp.thingDef != null)
+                        else if (temp.isItem && temp.thingDef != null && cell.Walkable(map))
                         {
                             thing = temp.thingDef.stuffCategories != null ? ThingMaker.MakeThing(temp.thingDef, GenStuff.RandomStuffFor(temp.thingDef)) : ThingMaker.MakeThing(temp.thingDef);
 
@@ -92,14 +92,12 @@ namespace KCSG
                                 inheritFromCasket.TryAcceptThing(pawn);
                             }
 
-                            if (cell.GetFirstMineable(map) != null && thing.def.designationCategory == DesignationCategoryDefOf.Security) continue;
-                            else if (thing.def.rotatable && thing.def.category == ThingCategory.Building)
+                            if (cell.GetFirstMineable(map) != null && thing.def.designationCategory == DesignationCategoryDefOf.Security)
                             {
-                                if (cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Bridgeable)) map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
-                                GenSpawn.Spawn(thing, cell, map, new Rot4(temp.rotation.AsInt), WipeMode.FullRefund);
-                                thing.SetFactionDirect(map.ParentFaction);
+                                l++;
+                                continue;
                             }
-                            else if (thing.def.category == ThingCategory.Plant && cell.GetTerrain(map).fertility > 50 && cell.Walkable(map)) // If it's a plant
+                            else if (thing.def.category == ThingCategory.Plant && cell.GetTerrain(map).fertility > 0.5 && cell.Walkable(map)) // If it's a plant
                             {
                                 Plant plant = thing as Plant;
                                 plant.Growth = temp.plantGrowth; // apply the growth
@@ -107,8 +105,14 @@ namespace KCSG
                             }
                             else if (thing.def.category == ThingCategory.Building)
                             {
-                                if (cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Bridgeable)) map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
-                                GenSpawn.Spawn(thing, cell, map, WipeMode.FullRefund);
+                                if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Light) && !thing.def.building.isNaturalRock) 
+                                    map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
+
+                                if (thing.def.rotatable)
+                                    GenSpawn.Spawn(thing, cell, map, new Rot4(temp.rotation.AsInt), WipeMode.FullRefund);
+                                else
+                                    GenSpawn.Spawn(thing, cell, map, WipeMode.FullRefund);
+                                
                                 thing.SetFactionDirect(map.ParentFaction);
                             }
 
@@ -136,6 +140,10 @@ namespace KCSG
                 if (rg[i] == "1")
                 {
                     map.roofGrid.SetRoof(roomRect.Cells.ElementAt(i), RoofDefOf.RoofConstructed);
+                    if (!roomRect.Cells.ElementAt(i).GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Light))
+                    {
+                        map.terrainGrid.SetTerrain(roomRect.Cells.ElementAt(i), TerrainDefOf.Bridge);
+                    }
                 }
             }
         }
