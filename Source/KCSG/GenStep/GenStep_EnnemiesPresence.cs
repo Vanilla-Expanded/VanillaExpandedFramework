@@ -87,7 +87,7 @@ namespace KCSG
 				groupKind = PawnGroupKindDefOf.Combat,
 				tile = map.Tile,
 				faction = faction,
-				points = Mathf.Max(parms.sitePart.parms.threatPoints, faction.def.MinPointsToGeneratePawnGroup(PawnGroupKindDefOf.Combat))
+				points = StorytellerUtility.DefaultSiteThreatPointsNow()// Mathf.Max(parms.sitePart.parms.threatPoints, faction.def.MinPointsToGeneratePawnGroup(PawnGroupKindDefOf.Combat))
 			}, true);
 		}
 
