@@ -31,16 +31,15 @@ namespace KCSG
 
         public static CustomVector PlaceAt(CustomVector point, StructureLayoutDef building, CustomVector[][] grid)
         {
-            Log.Message($"Point was {point}");
             CustomVector result = new CustomVector(0, 0);
             RectUtils.HeightWidthFromLayout(building, out int height, out int width);
             CustomVector door = GetDoorInLayout(building);
 
-            for (int i = (int)point.Y; i < width + point.Y; i++)
+            for (int i = (int)point.X; i < width + point.X; i++)
             {
-                for (int j = (int)point.X; j < height + point.X; j++)
+                for (int j = (int)point.Y; j < height + point.Y; j++)
                 {
-                    CellType type = i == door.Y + point.Y && j == door.X + point.X ? CellType.DOOR : CellType.BUILDING;
+                    CellType type = i == door.X + point.X && j == door.Y + point.Y ? CellType.DOOR : CellType.BUILDING;
                     if (type == CellType.DOOR)
                     {
                         result.X = i;
@@ -48,18 +47,19 @@ namespace KCSG
                     }
 
                     if (grid[i][j] != null)
-                        grid[i][j].Type = CellType.BUILDING;
+                        grid[i][j].Type = type;
                     else
-                        grid[i][j] = new CustomVector(i, j, type: CellType.BUILDING);
+                        grid[i][j] = new CustomVector(i, j, type: type);
                 }
             }
+
             return result;
         }
 
         public static List<CustomVector> Run(List<StructureLayoutDef> buildingsToChooseFrom, CustomVector[][] grid, List<CustomVector> points, int maxTries, Random r, out Dictionary<CustomVector, StructureLayoutDef> vectStruct)
         {
-            List<CustomVector> doors = new List<CustomVector>();
             vectStruct = new Dictionary<CustomVector, StructureLayoutDef>();
+            List<CustomVector> doors = new List<CustomVector>();
             foreach (CustomVector vector in points)
             {
                 for (int i = 0; i < maxTries; i++)
