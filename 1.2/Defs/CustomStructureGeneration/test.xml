@@ -38,7 +38,7 @@
 
   <KCSG.SettlementLayoutDef>
     <defName>KCSG_TestSettlement</defName>
-    <settlementSize>70,70</settlementSize>
+    <settlementSize>200,200</settlementSize>
     <allowedTags>
       <li>Test</li>
     </allowedTags>

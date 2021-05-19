@@ -64,8 +64,6 @@ namespace KCSG
                 Path.Add(temp);
                 temp = temp.Parent;
             }
-
-            Log.Message($"Path lenght: {Path.Count}");
             return Path;
         }
 

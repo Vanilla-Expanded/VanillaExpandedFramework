@@ -95,7 +95,7 @@ namespace KCSG
                             SymbolDef tempS = DefDatabase<SymbolDef>.GetNamed(array[i]);
                             if (tempS.thingDef != null && tempS.thingDef.altitudeLayer == AltitudeLayer.DoorMoveable)
                             {
-                                return new CustomVector(lineN, i);
+                                return new CustomVector(i, lineN);
                             }
                         }
                     }

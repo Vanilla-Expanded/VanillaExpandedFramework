@@ -130,7 +130,6 @@ namespace KCSG
                     List<CustomVector> astar = AStar.Run(ed.Point1, ed.Point2, grid, false);
                     if (astar != null)
                     {
-                        Console.WriteLine($"Astar non-null: {astar.Count}");
                         foreach (CustomVector v in astar)
                         {
                             if (v != null)
