@@ -1,5 +1,4 @@
 ﻿using RimWorld;
-using RimWorld.BaseGen;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,22 +9,11 @@ namespace KCSG
     internal class ScenPart_AddStartingStructure : ScenPart
     {
         /* Generation option */
-        public string structureLabel;
+        public bool allowFoggedPosition = false;
         public List<StructureLayoutDef> chooseFrom = new List<StructureLayoutDef>();
         public bool nearMapCenter;
-        public bool allowFoggedPosition = false;
         public bool spawnPartOfEnnemyFaction = false;
-
-        public override void ExposeData()
-        {
-            base.ExposeData();
-            Scribe_Values.Look<string>(ref structureLabel, "structureLabel");
-            Scribe_Values.Look<bool>(ref nearMapCenter, "nearMapCenter");
-            Scribe_Values.Look<bool>(ref allowFoggedPosition, "allowFoggedPosition");
-            Scribe_Values.Look<bool>(ref spawnPartOfEnnemyFaction, "spawnPartOfEnnemyFaction");
-            Scribe_Collections.Look<StructureLayoutDef>(ref chooseFrom, "chooseFrom", LookMode.Def);
-        }
-
+        public string structureLabel;
         public override void DoEditInterface(Listing_ScenEdit listing)
         {
             var scenPartRect = listing.GetScenPartRect(this, RowHeight * 6);
@@ -63,11 +51,15 @@ namespace KCSG
             Widgets.CheckboxLabeled(foogedRect, "KCSG.AllowFoggedPosition".Translate(), ref allowFoggedPosition);
         }
 
-        public override string Summary(Scenario scen)
+        public override void ExposeData()
         {
-            return ScenSummaryList.SummaryWithList(scen, "MapContain", "Map contains");
+            base.ExposeData();
+            Scribe_Values.Look<string>(ref structureLabel, "structureLabel");
+            Scribe_Values.Look<bool>(ref nearMapCenter, "nearMapCenter");
+            Scribe_Values.Look<bool>(ref allowFoggedPosition, "allowFoggedPosition");
+            Scribe_Values.Look<bool>(ref spawnPartOfEnnemyFaction, "spawnPartOfEnnemyFaction");
+            Scribe_Collections.Look<StructureLayoutDef>(ref chooseFrom, "chooseFrom", LookMode.Def);
         }
-
         public override IEnumerable<string> GetSummaryListEntries(string tag)
         {
             if (tag == "MapContain")
@@ -89,7 +81,7 @@ namespace KCSG
             }
             else structureLayoutDef = chooseFrom.RandomElement();
 
-            KCSG_Utilities.HeightWidthFromLayout(structureLayoutDef, out int h, out int w);
+            RectUtils.HeightWidthFromLayout(structureLayoutDef, out int h, out int w);
             CellRect cellRect = this.CreateCellRect(map, h, w);
 
             foreach (List<string> item in structureLayoutDef.layouts)
@@ -100,24 +92,10 @@ namespace KCSG
             FloodFillerFog.DebugRefogMap(map);
         }
 
-        private CellRect CreateCellRect(Map map, int height, int widht)
+        public override string Summary(Scenario scen)
         {
-            IntVec3 rectCenter;
-            if (nearMapCenter) rectCenter = map.Center;
-            else rectCenter = map.AllCells.ToList().FindAll(c => this.CanScatterAt(c, map, height, widht)).InRandomOrder().RandomElement();
-
-            return CellRect.CenteredOn(rectCenter, widht, height);
+            return ScenSummaryList.SummaryWithList(scen, "MapContain", "Map contains");
         }
-
-        private bool CanScatterAt(IntVec3 c, Map map, int height, int widht)
-        {
-            if (c.CloseToEdge(map, height)) return false;
-            if (!this.allowFoggedPosition && c.Fogged(map)) return false;
-            if (!c.SupportsStructureType(map, TerrainAffordanceDefOf.Heavy)) return false;
-            CellRect rect = new CellRect(c.x, c.z, widht, height).ClipInsideMap(map);
-            return this.CanPlaceInRange(rect, map);
-        }
-
         private bool CanPlaceInRange(CellRect rect, Map map)
         {
             foreach (IntVec3 c in rect.Cells)
@@ -136,6 +114,24 @@ namespace KCSG
                 }
             }
             return true;
+        }
+
+        private bool CanScatterAt(IntVec3 c, Map map, int height, int widht)
+        {
+            if (c.CloseToEdge(map, height)) return false;
+            if (!this.allowFoggedPosition && c.Fogged(map)) return false;
+            if (!c.SupportsStructureType(map, TerrainAffordanceDefOf.Heavy)) return false;
+            CellRect rect = new CellRect(c.x, c.z, widht, height).ClipInsideMap(map);
+            return this.CanPlaceInRange(rect, map);
+        }
+
+        private CellRect CreateCellRect(Map map, int height, int widht)
+        {
+            IntVec3 rectCenter;
+            if (nearMapCenter) rectCenter = map.Center;
+            else rectCenter = map.AllCells.ToList().FindAll(c => this.CanScatterAt(c, map, height, widht)).InRandomOrder().RandomElement();
+
+            return CellRect.CenteredOn(rectCenter, widht, height);
         }
     }
 }

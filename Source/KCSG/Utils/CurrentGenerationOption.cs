@@ -13,7 +13,9 @@ namespace KCSG
 
         public static bool useStructureLayout;
 
-        public static Dictionary<KVector, StructureLayoutDef> vectStruct;
+        public static Dictionary<CustomVector, StructureLayoutDef> vectStruct;
+
+        public static IntVec3 offset;
 
         public static void ClearAll()
         {
@@ -22,6 +24,7 @@ namespace KCSG
             useStructureLayout = false;
             vectStruct = null;
             gridStartPoint = IntVec2.Invalid;
+            offset = IntVec3.Invalid;
         }
     }
 }

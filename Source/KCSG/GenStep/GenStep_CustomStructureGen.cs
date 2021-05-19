@@ -7,6 +7,8 @@ namespace KCSG
 {
     internal class GenStep_CustomStructureGen : GenStep
     {
+        public List<StructureLayoutDef> structureLayoutDefs = new List<StructureLayoutDef>();
+
         public override int SeedPart
         {
             get
@@ -19,7 +21,7 @@ namespace KCSG
         {
             StructureLayoutDef structureLayoutDef = structureLayoutDefs.RandomElement();
 
-            KCSG_Utilities.HeightWidthFromLayout(structureLayoutDef, out int h, out int w);
+            RectUtils.HeightWidthFromLayout(structureLayoutDef, out int h, out int w);
             CellRect cellRect = CellRect.CenteredOn(map.Center, w, h);
 
             foreach (List<String> item in structureLayoutDef.layouts)
@@ -53,7 +55,5 @@ namespace KCSG
                 }
             }
         }
-
-        public List<StructureLayoutDef> structureLayoutDefs = new List<StructureLayoutDef>();
     }
 }

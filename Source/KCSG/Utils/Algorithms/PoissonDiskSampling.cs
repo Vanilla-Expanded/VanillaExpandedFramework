@@ -7,13 +7,13 @@ namespace KCSG
     public static class PoissonDiskSampling
     {
         /// https://bl.ocks.org/mbostock/raw/dbb02448b0f93e4c82c3/?raw=true
-        public static List<KVector> Run(int radius, int maxTries, int Width, int Height, Random r, KVector[][] grid)
+        public static List<CustomVector> Run(int radius, int maxTries, int Width, int Height, Random r, CustomVector[][] grid)
         {
-            List<KVector> points = new List<KVector>();
-            List<KVector> active = new List<KVector>();
+            List<CustomVector> points = new List<CustomVector>();
+            List<CustomVector> active = new List<CustomVector>();
 
             /* Initial random point */
-            KVector p0 = new KVector(0, 0);
+            CustomVector p0 = new CustomVector(0, 0);
             grid[(int)p0.X][(int)p0.Y] = p0;
             points.Add(p0);
             active.Add(p0);
@@ -21,7 +21,7 @@ namespace KCSG
             while (active.Count > 0)
             {
                 int random_index = r.Next(active.Count);
-                KVector p = active.ElementAt(random_index);
+                CustomVector p = active.ElementAt(random_index);
 
                 for (int tries = 1; tries <= maxTries; tries++)
                 {
@@ -32,7 +32,7 @@ namespace KCSG
                     /* Find X & Y coordinates relative to point p */
                     int pnewx = (int)(p.X + new_radius * Math.Cos(ConvertToRadians(theta)));
                     int pnewy = (int)(p.Y + new_radius * Math.Sin(ConvertToRadians(theta)));
-                    KVector pnew = new KVector(pnewx, pnewy);
+                    CustomVector pnew = new CustomVector(pnewx, pnewy);
 
                     if (IsInBound(pnew, Width, Height, radius) && InsideCircles(pnew, radius, points))
                     {
@@ -54,7 +54,7 @@ namespace KCSG
             return (Math.PI / 180) * angle;
         }
 
-        private static bool InsideCircle(KVector center, KVector tile, float radius)
+        private static bool InsideCircle(CustomVector center, CustomVector tile, float radius)
         {
             float dx = (float)(center.X - tile.X),
                   dy = (float)(center.Y - tile.Y);
@@ -62,9 +62,9 @@ namespace KCSG
             return distance_squared <= radius * radius;
         }
 
-        private static bool InsideCircles(KVector tile, float radius, List<KVector> allPoints)
+        private static bool InsideCircles(CustomVector tile, float radius, List<CustomVector> allPoints)
         {
-            foreach (KVector item in allPoints)
+            foreach (CustomVector item in allPoints)
             {
                 if (InsideCircle(item, tile, radius))
                     return false;
@@ -72,7 +72,7 @@ namespace KCSG
             return true;
         }
 
-        private static bool IsInBound(KVector p, int gridWidth, int gridHeight, int radius)
+        private static bool IsInBound(CustomVector p, int gridWidth, int gridHeight, int radius)
         {
             if (p.X < 0)
                 return false;

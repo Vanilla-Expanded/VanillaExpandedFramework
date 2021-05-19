@@ -51,8 +51,7 @@ namespace KCSG
             return true;
         }
 
-#pragma warning disable 0649
-        private static Area selectedArea;
+        private static readonly Area selectedArea;
 
         public override void ProcessInput(Event ev)
         {
@@ -60,15 +59,15 @@ namespace KCSG
             {
                 return;
             }
-            if (Designator_ExportToXmlFromArea.selectedArea != null)
+            if (selectedArea != null)
             {
                 base.ProcessInput(ev);
             }
 
-            Designator_ExportToXmlFromArea.MakeAllowedAreaListFloatMenu(delegate (Area a)
+            MakeAllowedAreaListFloatMenu(delegate (Area a)
             {
-                KCSG_Utilities.EdgeFromArea(a.ActiveCells.ToList(), out int height, out int width);
-                List<IntVec3> cellExport = KCSG_Utilities.AreaToSquare(a, height, width);
+                RectUtils.EdgeFromArea(a.ActiveCells.ToList(), out int height, out int width);
+                List<IntVec3> cellExport = RectUtils.AreaToSquare(a, height, width);
 
                 Dialog_ExportWindow exportWindow = new Dialog_ExportWindow(base.Map, cellExport);
                 Find.WindowStack.Add(exportWindow);

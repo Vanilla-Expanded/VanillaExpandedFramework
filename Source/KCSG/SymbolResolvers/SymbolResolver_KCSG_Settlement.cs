@@ -23,7 +23,7 @@ namespace KCSG
                 usl_rp.faction = faction;
                 BaseGen.symbolStack.Push("kcsg_roomsgenfromstructure", usl_rp, null);
 
-                this.PreClean(map, false, rp);
+                GenUtils.PreClean(map, rp.rect);
             }
             else
             {
@@ -44,7 +44,7 @@ namespace KCSG
 
                 this.GenerateRooms(sld, map, rp);
 
-                this.PreClean(map, false, rp);
+                GenUtils.PreClean(map, rp.rect);
             }
         }
 
@@ -70,17 +70,17 @@ namespace KCSG
             if (faction.def.pawnGroupMakers.Any(pgm => pgm.kindDef == PawnGroupKindDefOf.Settlement)) BaseGen.symbolStack.Push("pawnGroup", resolveParams, null);
         }
 
-        private void DrawXMainRoad(KVector[][] grid, int mapWidth, int mapHeight, int borderDist, Random r)
+        private void DrawXMainRoad(CustomVector[][] grid, int mapWidth, int mapHeight, int borderDist, Random r)
         {
-            KVector v1 = new KVector(0, r.Next(borderDist, mapHeight - borderDist));
-            KVector v2 = new KVector(mapWidth - 1, r.Next(borderDist, mapHeight - borderDist));
-            List<KVector> all = AStar.Run(v1, v2, grid, true);
+            CustomVector v1 = new CustomVector(0, r.Next(borderDist, mapHeight - borderDist));
+            CustomVector v2 = new CustomVector(mapWidth - 1, r.Next(borderDist, mapHeight - borderDist));
+            List<CustomVector> all = AStar.Run(v1, v2, grid, true);
             all.Add(v1);
 
             double y;
             for (int i = 0; i < all.Count; i++)
             {
-                KVector v = all[i];
+                CustomVector v = all[i];
                 y = i + 1 < all.Count ? all[i + 1].Y : v.Y;
                 grid[(int)v.X][(int)v.Y].Type = CellType.MAINROAD;
                 if (v.Y == y)
@@ -103,17 +103,17 @@ namespace KCSG
             }
         }
 
-        private void DrawYMainRoad(KVector[][] grid, int mapWidth, int mapHeight, int borderDist, Random r)
+        private void DrawYMainRoad(CustomVector[][] grid, int mapWidth, int mapHeight, int borderDist, Random r)
         {
-            KVector v1 = new KVector(r.Next(borderDist, mapWidth - borderDist), 0);
-            KVector v2 = new KVector(r.Next(borderDist, mapWidth - borderDist), mapHeight - 1);
-            List<KVector> all = AStar.Run(v1, v2, grid, true);
+            CustomVector v1 = new CustomVector(r.Next(borderDist, mapWidth - borderDist), 0);
+            CustomVector v2 = new CustomVector(r.Next(borderDist, mapWidth - borderDist), mapHeight - 1);
+            List<CustomVector> all = AStar.Run(v1, v2, grid, true);
             all.Add(v1);
 
             double x;
             for (int i = 0; i < all.Count; i++)
             {
-                KVector v = all[i];
+                CustomVector v = all[i];
                 x = i + 1 < all.Count ? all[i + 1].X : v.X;
                 grid[(int)v.X][(int)v.Y].Type = CellType.MAINROAD;
                 if (v.X == x)
@@ -136,7 +136,7 @@ namespace KCSG
             }
         }
 
-        private KVector[][] GenerateGrid(int seed, SettlementLayoutDef sld, out Dictionary<KVector, StructureLayoutDef> vectStruct)
+        private CustomVector[][] GenerateGrid(int seed, SettlementLayoutDef sld, out Dictionary<CustomVector, StructureLayoutDef> vectStruct)
         {
             int mapWidth = sld.settlementSize.x,
                 mapHeight = sld.settlementSize.z,
@@ -146,7 +146,7 @@ namespace KCSG
             List<StructureLayoutDef> allowed = DefDatabase<StructureLayoutDef>.AllDefsListForReading.FindAll(s => s.tags.Any(t => sld.allowedTags.Contains(t)));
             for (int i = 0; i < allowed.Count; i++)
             {
-                KCSG_Utilities.HeightWidthFromLayout(allowed[i], out int height, out int width);
+                RectUtils.HeightWidthFromLayout(allowed[i], out int height, out int width);
                 if (height < radius)
                     radius = height;
                 if (width < radius)
@@ -154,13 +154,13 @@ namespace KCSG
             }
             // Init
             Random r = new Random(seed);
-            KVector[][] grid = new KVector[mapWidth][];
+            CustomVector[][] grid = new CustomVector[mapWidth][];
             for (int i = 0; i < mapWidth; i++)
             {
-                grid[i] = new KVector[mapHeight];
+                grid[i] = new CustomVector[mapHeight];
                 for (int j = 0; j < mapHeight; j++)
                 {
-                    grid[i][j] = new KVector(i, j);
+                    grid[i][j] = new CustomVector(i, j);
                 }
             }
             // Main road
@@ -172,11 +172,12 @@ namespace KCSG
                 DrawYMainRoad(grid, mapWidth, mapHeight, 15, r);
             }
             // Buildings
-            List<KVector> vectors = PoissonDiskSampling.Run(radius + 1, maxTries, mapWidth, mapHeight, r, grid);
-            List<KVector> doors = BuildingPlacement.Run(allowed, grid, vectors, maxTries, r, out vectStruct);
+            List<CustomVector> vectors = PoissonDiskSampling.Run(radius + 1, maxTries, mapWidth, mapHeight, r, grid);
+            List<CustomVector> doors = BuildingPlacement.Run(allowed, grid, vectors, maxTries, r, out vectStruct);
             Log.Message($"Door number: {doors.Count}");
+            doors.ForEach(d => Log.Message($"{d}"));
             // Delaunay
-            List<Triangle> triangulation = Delaunay.Run(doors, mapWidth, mapHeight).ToList();
+            List<Triangle> triangulation = /*new List<Triangle>(); */Delaunay.Run(doors, mapWidth, mapHeight).ToList();
             Log.Message($"Triangle number: {triangulation.Count}");
             List<Edge> edges = new List<Edge>();
             foreach (Triangle triangle in triangulation)
@@ -188,10 +189,16 @@ namespace KCSG
             // A*
             foreach (Edge ed in edges)
             {
-                Log.Message($"Edge: {ed.Point1} {ed.Point2}");
-                foreach (KVector v in AStar.Run(ed.Point1, ed.Point2, grid, false))
+                if (ed != null && ed.Point1 != null && ed.Point2 != null)
                 {
-                    v.Type = v.Type == CellType.NONE ? CellType.ROAD : v.Type;
+                    Log.Message($"Edge: {ed.Point1} {ed.Point2}");
+                    foreach (CustomVector v in AStar.Run(ed.Point1, ed.Point2, grid, false))
+                    {
+                        if (v != null)
+                        {
+                            v.Type = v.Type == CellType.NONE ? CellType.ROAD : v.Type;
+                        }
+                    }
                 }
             }
 
@@ -202,11 +209,12 @@ namespace KCSG
         {
             DateTime startTime = DateTime.Now;
             Log.Message($"Starting generation - {startTime.ToShortTimeString()}");
-            int seed = new Random().Next(0, 100000), 
-                x = rp.rect.Corners.ElementAt(2).x, 
+            int seed = new Random().Next(0, 100000),
+                x = rp.rect.Corners.ElementAt(2).x,
                 y = rp.rect.Corners.ElementAt(2).z;
+            CurrentGenerationOption.offset = rp.rect.Corners.ElementAt(2);
 
-            KVector[][] grid = GenerateGrid(seed, sld, out CurrentGenerationOption.vectStruct);
+            CustomVector[][] grid = GenerateGrid(seed, sld, out CurrentGenerationOption.vectStruct);
 
             ResolveParams usl_rp = rp;
             usl_rp.faction = rp.faction;
@@ -216,14 +224,20 @@ namespace KCSG
             {
                 for (int j = 0; j < grid[i].Length; j++)
                 {
+                    IntVec3 cell = new IntVec3(x + i, 0, y - j);
                     switch (grid[i][j].Type)
                     {
                         case CellType.ROAD:
-                            map.terrainGrid.SetTerrain(new IntVec3(x + i, 0, y - j), TerrainDefOf.WoodPlankFloor);
+                            GenUtils.GenerateTerrainAt(map, cell, TerrainDefOf.Concrete);
                             break;
 
                         case CellType.MAINROAD:
-                            map.terrainGrid.SetTerrain(new IntVec3(x + i, 0, y - j), TerrainDefOf.TileSandstone);
+                            GenUtils.GenerateTerrainAt(map, cell, TerrainDefOf.MetalTile);
+                            break;
+
+                        case CellType.DOOR:
+                            cell.GetFirstBuilding(map)?.DeSpawn();
+                            GenUtils.GenerateTerrainAt(map, cell, TerrainDefOf.PavedTile);
                             break;
 
                         default:
@@ -233,26 +247,6 @@ namespace KCSG
             }
 
             Log.Message($"Generation stopped - {DateTime.Now.ToShortTimeString()} - Time taken {(DateTime.Now - startTime).TotalMilliseconds} ms - Seed was {seed}.");
-        }
-
-        private void PreClean(Map map, bool clearEverything, ResolveParams rp)
-        {
-            if (clearEverything)
-            {
-                foreach (IntVec3 c in rp.rect)
-                {
-                    c.GetThingList(map).ToList().ForEach((t) => t.DeSpawn());
-                    map.roofGrid.SetRoof(c, null);
-                }
-                map.roofGrid.RoofGridUpdate();
-            }
-            else
-            {
-                foreach (IntVec3 c in rp.rect)
-                {
-                    c.GetThingList(map).ToList().FindAll(t1 => t1.def.category == ThingCategory.Filth || t1.def.category == ThingCategory.Item || (t1.def.category == ThingCategory.Building && !t1.def.building.isNaturalRock)).ForEach((t) => t.DeSpawn());
-                }
-            }
         }
     }
 }

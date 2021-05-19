@@ -17,7 +17,7 @@ namespace KCSG
                 GenerateRoofGrid(rld.roofGrid, roomRect, map);
             }
 
-            Dictionary<string, SymbolDef> pairsSymbolLabel = KCSG_Utilities.FillpairsSymbolLabel();
+            Dictionary<string, SymbolDef> pairsSymbolLabel = LayoutUtils.FillpairsSymbolLabel();
             List<string> allSymbList = new List<string>();
             foreach (string str in layoutList)
             {
@@ -35,15 +35,7 @@ namespace KCSG
                     {
                         if (temp.isTerrain && temp.terrainDef != null)
                         {
-                            cell.GetFirstMineable(map)?.DeSpawn();
-                            if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
-                            {
-                                map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
-                            }
-                            else
-                            {
-                                map.terrainGrid.SetTerrain(cell, temp.terrainDef);
-                            }
+                            GenerateTerrainAt(map, cell, temp.terrainDef);
                         }
                         else if (temp.isPawn && temp.pawnKindDefNS != null)
                         {
@@ -105,14 +97,14 @@ namespace KCSG
                             }
                             else if (thing.def.category == ThingCategory.Building)
                             {
-                                if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy) && !thing.def.building.isNaturalRock) 
+                                if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy) && !thing.def.building.isNaturalRock)
                                     map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
 
                                 if (thing.def.rotatable)
                                     GenSpawn.Spawn(thing, cell, map, new Rot4(temp.rotation.AsInt), WipeMode.FullRefund);
                                 else
                                     GenSpawn.Spawn(thing, cell, map, WipeMode.FullRefund);
-                                
+
                                 thing.SetFactionDirect(map.ParentFaction);
                             }
 
@@ -174,6 +166,27 @@ namespace KCSG
 
                 if (rect.Cells.ToList().Any(i => !i.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Medium))) fromCenter += 2;
                 else return rect.CenterCell;
+            }
+        }
+
+        public static void PreClean(Map map, CellRect rect)
+        {
+            foreach (IntVec3 c in rect)
+            {
+                c.GetThingList(map).ToList().FindAll(t1 => t1.def.category == ThingCategory.Filth || t1.def.category == ThingCategory.Item || (t1.def.category == ThingCategory.Building && !t1.def.building.isNaturalRock)).ForEach((t) => t.DeSpawn());
+            }
+        }
+
+        public static void GenerateTerrainAt(Map map, IntVec3 cell, TerrainDef terrainDef)
+        {
+            if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
+            {
+                map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
+            }
+            else
+            {
+                cell.GetFirstMineable(map)?.DeSpawn();
+                map.terrainGrid.SetTerrain(cell, terrainDef);
             }
         }
 

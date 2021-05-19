@@ -88,12 +88,14 @@
     <Compile Include="Utils\Algorithms\Delaunay.cs" />
     <Compile Include="Utils\CurrentGenerationOption.cs" />
     <Compile Include="Utils\GenUtils.cs" />
-    <Compile Include="Utils\KCSG_Utilities.cs" />
+    <Compile Include="Utils\LayoutUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_KCSG_RoomGenFromStructure.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_KCSG_Settlement.cs" />
-    <Compile Include="Utils\Algorithms\KVector.cs" />
+    <Compile Include="Utils\Algorithms\CustomVector.cs" />
     <Compile Include="Utils\Algorithms\PoissonDiskSampling.cs" />
+    <Compile Include="Utils\RectUtils.cs" />
+    <Compile Include="Utils\SymbolUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

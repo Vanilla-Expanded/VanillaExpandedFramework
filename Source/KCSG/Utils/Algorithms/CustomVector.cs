@@ -2,30 +2,19 @@
 
 namespace KCSG
 {
-    public enum CellType
-    {
-        NONE,
-        BUILDING,
-        DOOR,
-        GROWING,
-        ROAD,
-        MAINROAD,
-        DEBUG
-    }
-
-    public class KVector
+    public class CustomVector
     {
         public float Cost;
 
         public float DistanceToTarget;
 
-        public KVector Parent;
+        public CustomVector Parent;
 
         public float Weight;
 
         public bool useCost;
 
-        public KVector(double x, double y, bool useCost = true, CellType type = CellType.NONE, float weight = 1f)
+        public CustomVector(double x, double y, bool useCost = true, CellType type = CellType.NONE, float weight = 1f)
         {
             X = x;
             Y = y;
@@ -55,6 +44,17 @@ namespace KCSG
         public double X { get; set; }
         public double Y { get; set; }
 
-        public override string ToString() => $"{nameof(KVector)} {X:0.##}@{Y:0.##}";
+        public override string ToString() => $"{nameof(CustomVector)} {X:0.##}@{Y:0.##}";
+    }
+
+    public enum CellType
+    {
+        NONE,
+        BUILDING,
+        DOOR,
+        GROWING,
+        ROAD,
+        MAINROAD,
+        DEBUG
     }
 }

@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using UnityEngine;
-using Verse;
+﻿using HarmonyLib;
 using RimWorld;
-using HarmonyLib;
 using RimWorld.BaseGen;
 using RimWorld.Planet;
+using System.Linq;
+using Verse;
 
 namespace KCSG
 {
@@ -30,7 +24,7 @@ namespace KCSG
 
                 return false;
             }
-            else if (Find.World.worldObjects.AllWorldObjects.Find(o=>o.Tile == map.Tile && o.def.HasModExtension<KCSG.FactionSettlement>()) is WorldObject worldObject)
+            else if (Find.World.worldObjects.AllWorldObjects.Find(o => o.Tile == map.Tile && o.def.HasModExtension<KCSG.FactionSettlement>()) is WorldObject worldObject)
             {
                 FactionSettlement factionSettlement = worldObject.def.GetModExtension<FactionSettlement>();
 
@@ -72,7 +66,7 @@ namespace KCSG
             int height;
             if (sf.useStructureLayout)
             {
-                KCSG_Utilities.HeightWidthFromLayout(CurrentGenerationOption.structureLayoutDef, out height, out width);
+                RectUtils.HeightWidthFromLayout(CurrentGenerationOption.structureLayoutDef, out height, out width);
             }
             else
             {

@@ -10,16 +10,16 @@ namespace KCSG
         public static int gridCols;
         public static int gridRows;
 
-        public static List<KVector> Run(KVector start, KVector end, KVector[][] grid, bool neig8)
+        public static List<CustomVector> Run(CustomVector start, CustomVector end, CustomVector[][] grid, bool neig8)
         {
             gridCols = grid.Count();
             gridRows = grid[0].Count();
 
-            List<KVector> Path = new List<KVector>();
-            List<KVector> OpenList = new List<KVector>();
-            List<KVector> ClosedList = new List<KVector>();
-            List<KVector> adjacencies;
-            KVector current = start;
+            List<CustomVector> Path = new List<CustomVector>();
+            List<CustomVector> OpenList = new List<CustomVector>();
+            List<CustomVector> ClosedList = new List<CustomVector>();
+            List<CustomVector> adjacencies;
+            CustomVector current = start;
 
             OpenList.Add(start);
 
@@ -30,7 +30,7 @@ namespace KCSG
                 ClosedList.Add(current);
                 adjacencies = GetAdjacentNodes(current, grid, neig8);
 
-                foreach (KVector n in adjacencies)
+                foreach (CustomVector n in adjacencies)
                 {
                     if (!ClosedList.Contains(n) && (n.Type == CellType.NONE || n.Type == CellType.ROAD || n.Type == CellType.DOOR || n.Type == CellType.MAINROAD))
                     {
@@ -52,7 +52,7 @@ namespace KCSG
                 return null;
             }
 
-            KVector temp = ClosedList[ClosedList.IndexOf(current)];
+            CustomVector temp = ClosedList[ClosedList.IndexOf(current)];
             if (temp == null)
             {
                 Console.WriteLine("AStar error: temp is null.");
@@ -69,9 +69,9 @@ namespace KCSG
             return Path;
         }
 
-        private static List<KVector> GetAdjacentNodes(KVector n, KVector[][] grid, bool neig8)
+        private static List<CustomVector> GetAdjacentNodes(CustomVector n, CustomVector[][] grid, bool neig8)
         {
-            List<KVector> temp = new List<KVector>();
+            List<CustomVector> temp = new List<CustomVector>();
 
             int row = (int)n.Y;
             int col = (int)n.X;

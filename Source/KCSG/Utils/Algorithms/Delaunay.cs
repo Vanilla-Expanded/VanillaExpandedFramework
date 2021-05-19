@@ -8,26 +8,26 @@ namespace KCSG
     {
         private static IEnumerable<Triangle> border;
 
-        public static IEnumerable<Triangle> Run(IEnumerable<KVector> points, double maxX, double maxY)
+        public static IEnumerable<Triangle> Run(IEnumerable<CustomVector> points, double maxX, double maxY)
         {
-            KVector point0 = new KVector(0, 0);
-            KVector point1 = new KVector(0, maxY);
-            KVector point2 = new KVector(maxX, maxY);
-            KVector point3 = new KVector(maxX, 0);
+            CustomVector point0 = new CustomVector(0, 0);
+            CustomVector point1 = new CustomVector(0, maxY);
+            CustomVector point2 = new CustomVector(maxX, maxY);
+            CustomVector point3 = new CustomVector(maxX, 0);
             Triangle triangle1 = new Triangle(point0, point1, point2);
             Triangle triangle2 = new Triangle(point0, point2, point3);
             border = new List<Triangle>() { triangle1, triangle2 };
 
             HashSet<Triangle> triangulation = new HashSet<Triangle>(border);
 
-            foreach (KVector point in points)
+            foreach (CustomVector point in points)
             {
                 ISet<Triangle> badTriangles = FindBadTriangles(point, triangulation);
                 List<Edge> polygon = FindHoleBoundaries(badTriangles);
 
                 foreach (Triangle triangle in badTriangles)
                 {
-                    foreach (KVector vertex in triangle.Vertices)
+                    foreach (CustomVector vertex in triangle.Vertices)
                     {
                         vertex.AdjacentTriangles.Remove(triangle);
                     }
@@ -44,7 +44,7 @@ namespace KCSG
             return triangulation;
         }
 
-        private static ISet<Triangle> FindBadTriangles(KVector point, HashSet<Triangle> triangles)
+        private static ISet<Triangle> FindBadTriangles(CustomVector point, HashSet<Triangle> triangles)
         {
             IEnumerable<Triangle> badTriangles = triangles.Where(o => o.IsPointInsideCircumcircle(point));
             return new HashSet<Triangle>(badTriangles);
@@ -67,14 +67,14 @@ namespace KCSG
 
     public class Edge
     {
-        public Edge(KVector point1, KVector point2)
+        public Edge(CustomVector point1, CustomVector point2)
         {
             Point1 = point1;
             Point2 = point2;
         }
 
-        public KVector Point1 { get; }
-        public KVector Point2 { get; }
+        public CustomVector Point1 { get; }
+        public CustomVector Point2 { get; }
 
         public override bool Equals(object obj)
         {
@@ -98,7 +98,7 @@ namespace KCSG
     {
         public double RadiusSquared;
 
-        public Triangle(KVector point1, KVector point2, KVector point3)
+        public Triangle(CustomVector point1, CustomVector point2, CustomVector point3)
         {
             Vertices[0] = point1;
             if (!IsCounterClockwise(point1, point2, point3))
@@ -118,16 +118,16 @@ namespace KCSG
             UpdateCircumcircle();
         }
 
-        public KVector Circumcenter { get; private set; }
-        public KVector[] Vertices { get; } = new KVector[3];
+        public CustomVector Circumcenter { get; private set; }
+        public CustomVector[] Vertices { get; } = new CustomVector[3];
 
-        public bool IsPointInsideCircumcircle(KVector point)
+        public bool IsPointInsideCircumcircle(CustomVector point)
         {
             double d_squared = (point.X - Circumcenter.X) * (point.X - Circumcenter.X) + (point.Y - Circumcenter.Y) * (point.Y - Circumcenter.Y);
             return d_squared < RadiusSquared;
         }
 
-        private bool IsCounterClockwise(KVector point1, KVector point2, KVector point3)
+        private bool IsCounterClockwise(CustomVector point1, CustomVector point2, CustomVector point3)
         {
             double result = (point2.X - point1.X) * (point3.Y - point1.Y) - (point3.X - point1.X) * (point2.Y - point1.Y);
             return result > 0;
@@ -136,9 +136,9 @@ namespace KCSG
         private void UpdateCircumcircle()
         {
             // https://codefound.wordpress.com/2013/02/21/how-to-compute-a-circumcircle/#more-58
-            KVector p0 = Vertices[0];
-            KVector p1 = Vertices[1];
-            KVector p2 = Vertices[2];
+            CustomVector p0 = Vertices[0];
+            CustomVector p1 = Vertices[1];
+            CustomVector p2 = Vertices[2];
             double dA = p0.X * p0.X + p0.Y * p0.Y;
             double dB = p1.X * p1.X + p1.Y * p1.Y;
             double dC = p2.X * p2.X + p2.Y * p2.Y;
@@ -152,7 +152,7 @@ namespace KCSG
                 throw new DivideByZeroException();
             }
 
-            KVector center = new KVector(aux1 / div, aux2 / div);
+            CustomVector center = new CustomVector(aux1 / div, aux2 / div);
             Circumcenter = center;
             RadiusSquared = (center.X - p0.X) * (center.X - p0.X) + (center.Y - p0.Y) * (center.Y - p0.Y);
         }
