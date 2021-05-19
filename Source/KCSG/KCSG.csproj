@@ -88,6 +88,7 @@
     <Compile Include="Utils\Algorithms\Delaunay.cs" />
     <Compile Include="Utils\CurrentGenerationOption.cs" />
     <Compile Include="Utils\GenUtils.cs" />
+    <Compile Include="Utils\GridUtils.cs" />
     <Compile Include="Utils\LayoutUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_KCSG_RoomGenFromStructure.cs" />
