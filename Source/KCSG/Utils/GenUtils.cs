@@ -84,7 +84,7 @@ namespace KCSG
                                 inheritFromCasket.TryAcceptThing(pawn);
                             }
 
-                            if (cell.GetFirstMineable(map) != null && thing.def.designationCategory == DesignationCategoryDefOf.Security)
+                            if (cell.GetFirstMineable(map) != null && (thing.def.designationCategory == DesignationCategoryDefOf.Security || thing.def.passability == Traversability.Impassable))
                             {
                                 l++;
                                 continue;
@@ -93,7 +93,7 @@ namespace KCSG
                             {
                                 Plant plant = thing as Plant;
                                 plant.Growth = temp.plantGrowth; // apply the growth
-                                GenSpawn.Spawn(plant, cell, map, WipeMode.FullRefund);
+                                GenSpawn.Spawn(plant, cell, map, WipeMode.Vanish);
                             }
                             else if (thing.def.category == ThingCategory.Building)
                             {

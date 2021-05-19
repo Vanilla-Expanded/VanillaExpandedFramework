@@ -187,7 +187,7 @@ namespace KCSG
                 edges.Add(new Edge(triangle.Vertices[2], triangle.Vertices[0]));
             }
             // A*
-            foreach (Edge ed in edges)
+            /*foreach (Edge ed in edges)
             {
                 if (ed != null && ed.Point1 != null && ed.Point2 != null)
                 {
@@ -200,7 +200,7 @@ namespace KCSG
                         }
                     }
                 }
-            }
+            }*/
 
             return grid;
         }
@@ -218,7 +218,7 @@ namespace KCSG
 
             ResolveParams usl_rp = rp;
             usl_rp.faction = rp.faction;
-            BaseGen.symbolStack.Push("kcsg_roomgenfromlist", usl_rp, null);
+            // BaseGen.symbolStack.Push("kcsg_roomgenfromlist", usl_rp, null);
 
             for (int i = 0; i < grid.Length; i++)
             {
@@ -228,7 +228,7 @@ namespace KCSG
                     switch (grid[i][j].Type)
                     {
                         case CellType.ROAD:
-                            GenUtils.GenerateTerrainAt(map, cell, TerrainDefOf.Concrete);
+                            GenUtils.GenerateTerrainAt(map, cell, TerrainDefOf.WoodPlankFloor);
                             break;
 
                         case CellType.MAINROAD:
@@ -236,8 +236,11 @@ namespace KCSG
                             break;
 
                         case CellType.DOOR:
-                            cell.GetFirstBuilding(map)?.DeSpawn();
                             GenUtils.GenerateTerrainAt(map, cell, TerrainDefOf.PavedTile);
+                            break;
+
+                        case CellType.BUILDING:
+                            GenUtils.GenerateTerrainAt(map, cell, TerrainDefOf.Concrete);
                             break;
 
                         default:
