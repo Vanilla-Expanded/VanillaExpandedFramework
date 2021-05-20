@@ -20,12 +20,9 @@ namespace KCSG
                         if (grid[i][j] != null && grid[i][j].Type != CellType.NONE)
                             return false;
                     }
+                    else return false;
                 }
             }
-
-            if (!IsInBound((int)(width + point.X), (int)(height + point.Y), grid.Length, grid[0].Length))
-                return false;
-
             return result;
         }
 

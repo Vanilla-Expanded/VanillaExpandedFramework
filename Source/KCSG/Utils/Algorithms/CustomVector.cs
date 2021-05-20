@@ -14,7 +14,7 @@ namespace KCSG
 
         public bool useCost;
 
-        public CustomVector(double x, double y, bool useCost = true, CellType type = CellType.NONE, float weight = 1f)
+        public CustomVector(double x, double y, CellType type = CellType.NONE, float weight = 1f)
         {
             X = x;
             Y = y;
@@ -24,7 +24,6 @@ namespace KCSG
             DistanceToTarget = -1f;
             Cost = 1f;
             Weight = weight;
-            this.useCost = useCost;
         }
 
         public HashSet<Triangle> AdjacentTriangles { get; } = new HashSet<Triangle>();
@@ -34,7 +33,24 @@ namespace KCSG
             get
             {
                 if (DistanceToTarget != -1 && Cost != -1)
-                    return DistanceToTarget + (useCost ? (Type == CellType.MAINROAD ? Cost * 0.1f : Type == CellType.ROAD ? Cost * 0.4f : Cost) : Cost);
+                {
+                    if (Type == CellType.MAINROAD && CurrentGenerationOption.usePathCostReduction)
+                    {
+                        return DistanceToTarget + (Cost * 0.1f);
+                    }
+                    else if (Type == CellType.ROAD && CurrentGenerationOption.usePathCostReduction)
+                    {
+                        return DistanceToTarget + (Cost * 0.4f);
+                    }
+                    else if (Type == CellType.WATER)
+                    {
+                        return DistanceToTarget + (Cost * 3f);
+                    }
+                    else
+                    {
+                        return DistanceToTarget + Cost;
+                    }
+                }
                 else
                     return -1;
             }
@@ -55,6 +71,6 @@ namespace KCSG
         GROWING,
         ROAD,
         MAINROAD,
-        DEBUG
+        WATER
     }
 }

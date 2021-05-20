@@ -42,6 +42,7 @@
     <allowedTags>
       <li>Test</li>
     </allowedTags>
-    <pathDef>Concrete</pathDef>
+    <roadDef>Concrete</roadDef>
+    <mainRoadDef>Concrete</mainRoadDef>
   </KCSG.SettlementLayoutDef>
 </Defs>

@@ -79,7 +79,7 @@ namespace KCSG
                 y = rp.rect.Corners.ElementAt(2).z;
             CurrentGenerationOption.offset = rp.rect.Corners.ElementAt(2);
 
-            CustomVector[][] grid = GridUtils.GenerateGrid(seed, sld, out CurrentGenerationOption.vectStruct);
+            CustomVector[][] grid = GridUtils.GenerateGrid(seed, sld, map, out CurrentGenerationOption.vectStruct);
 
             ResolveParams usl_rp = rp;
             usl_rp.faction = rp.faction;
@@ -93,11 +93,11 @@ namespace KCSG
                     switch (grid[i][j].Type)
                     {
                         case CellType.ROAD:
-                            GenUtils.GenerateTerrainAt(map, cell, TerrainDefOf.Concrete);
+                            GenUtils.GenerateTerrainAt(map, cell, sld.roadDef);
                             break;
 
                         case CellType.MAINROAD:
-                            GenUtils.GenerateTerrainAt(map, cell, TerrainDefOf.MetalTile);
+                            GenUtils.GenerateTerrainAt(map, cell, sld.mainRoadDef);
                             break;
 
                         default:

@@ -84,8 +84,9 @@ namespace KCSG
                                 inheritFromCasket.TryAcceptThing(pawn);
                             }
 
-                            if (cell.GetFirstMineable(map) != null && (thing.def.designationCategory == DesignationCategoryDefOf.Security || thing.def.passability == Traversability.Impassable))
+                            if (cell.GetFirstMineable(map) is Mineable m && m != null && m.def.building.smoothedThing != null && (thing.def.designationCategory == DesignationCategoryDefOf.Security || thing.def.passability == Traversability.Impassable))
                             {
+                                GenSpawn.Spawn(ThingMaker.MakeThing(m.def.building.smoothedThing), cell, map, WipeMode.Vanish);
                                 l++;
                                 continue;
                             }

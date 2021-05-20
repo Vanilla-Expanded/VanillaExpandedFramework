@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -75,12 +76,14 @@ namespace KCSG
             }
         }
 
-        public static CustomVector[][] GenerateGrid(int seed, SettlementLayoutDef sld, out Dictionary<CustomVector, StructureLayoutDef> vectStruct)
+        public static CustomVector[][] GenerateGrid(int seed, SettlementLayoutDef sld, Map map, out Dictionary<CustomVector, StructureLayoutDef> vectStruct)
         {
+            CurrentGenerationOption.usePathCostReduction = false;
             int mapWidth = sld.settlementSize.x,
                 mapHeight = sld.settlementSize.z,
                 maxTries = 50,
                 radius = 9999;
+
             // layout choice and radius
             List<StructureLayoutDef> allowed = DefDatabase<StructureLayoutDef>.AllDefsListForReading.FindAll(s => s.tags.Any(t => sld.allowedTags.Contains(t)));
             for (int i = 0; i < allowed.Count; i++)
@@ -102,14 +105,37 @@ namespace KCSG
                     grid[i][j] = new CustomVector(i, j);
                 }
             }
+            // Exclude non bridgeable
+            for (int i = 0; i < mapWidth; i++)
+            {
+                for (int j = 0; j < mapHeight; j++)
+                {
+                    TerrainDef t = map.terrainGrid.TerrainAt(new IntVec3(CurrentGenerationOption.offset.x + i, 0, CurrentGenerationOption.offset.y + j));
+                    if (t.HasTag("Water") && (t.affordances == null || !t.affordances.Contains(TerrainAffordanceDefOf.Bridgeable)))
+                    {
+                        Log.Message(t.defName);
+                        grid[i][j].Type = CellType.WATER;
+                    }
+                        
+                }
+            }
             // Main road
             DrawXMainRoad(grid, mapWidth, mapHeight, 15, r);
             DrawYMainRoad(grid, mapWidth, mapHeight, 15, r);
             for (int i = 0; i < mapWidth / 100; i++)
             {
-                DrawXMainRoad(grid, mapWidth, mapHeight, 15, r);
-                DrawYMainRoad(grid, mapWidth, mapHeight, 15, r);
+                if (i == 0)
+                {
+                    DrawXMainRoad(grid, mapWidth, mapHeight, mapWidth / 2, r);
+                    DrawYMainRoad(grid, mapWidth, mapHeight, mapHeight / 2, r);
+                }
+                else
+                {
+                    DrawXMainRoad(grid, mapWidth, mapHeight, 50, r);
+                    DrawYMainRoad(grid, mapWidth, mapHeight, 50, r);
+                }
             }
+            CurrentGenerationOption.usePathCostReduction = true;
             // Buildings
             List<CustomVector> vectors = PoissonDiskSampling.Run(radius + 1, maxTries, mapWidth, mapHeight, r, grid);
             List<CustomVector> doors = BuildingPlacement.Run(allowed, grid, vectors, maxTries, r, out vectStruct);

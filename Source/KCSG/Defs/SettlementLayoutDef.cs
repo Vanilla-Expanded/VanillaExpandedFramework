@@ -13,8 +13,8 @@ namespace KCSG
         public List<string> atLeastOneOfTags = new List<string>();
         public List<string> allowedTags = new List<string>();
 
-        public TerrainDef pathDef = null;
-        public int pathSize = 2;
+        public TerrainDef roadDef = null;
+        public TerrainDef mainRoadDef = null;
 
         public bool vanillaLikeDefense = false;
     }

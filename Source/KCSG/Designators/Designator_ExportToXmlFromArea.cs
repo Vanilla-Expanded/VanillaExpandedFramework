@@ -51,17 +51,11 @@ namespace KCSG
             return true;
         }
 
-        private static readonly Area selectedArea;
-
         public override void ProcessInput(Event ev)
         {
             if (!base.CheckCanInteract())
             {
                 return;
-            }
-            if (selectedArea != null)
-            {
-                base.ProcessInput(ev);
             }
 
             MakeAllowedAreaListFloatMenu(delegate (Area a)
