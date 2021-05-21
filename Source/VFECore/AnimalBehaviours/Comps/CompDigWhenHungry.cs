@@ -45,10 +45,31 @@ namespace AnimalBehaviours
                                     newcorpse.Kill(null, null);
                                    
                                 }
-                                else { 
-                                    ThingDef newThing = ThingDef.Named(this.Props.customThingToDig);
-                                    newcorpse = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
-                                    newcorpse.stackCount = this.Props.customAmountToDig;
+                                else {
+                                    if (Props.customThingsToDig != null)
+                                    {
+                                        string thingToDig = this.Props.customThingsToDig.RandomElement();
+                                        int index = Props.customThingsToDig.IndexOf(thingToDig);
+                                        int amount;
+                                        if (Props.customAmountsToDig != null)
+                                        {
+                                            amount = Props.customAmountsToDig[index];
+
+                                        }
+                                        else
+                                        {
+                                            amount = Props.customAmountToDig;
+                                        }
+                                        ThingDef newThing = ThingDef.Named(thingToDig);
+                                        newcorpse = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
+                                        newcorpse.stackCount = amount;
+                                    }
+                                    else
+                                    {
+                                        ThingDef newThing = ThingDef.Named(this.Props.customThingToDig);
+                                        newcorpse = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
+                                        newcorpse.stackCount = this.Props.customAmountToDig;
+                                    }
                                 }
                                 if (Props.spawnForbidden)
                                 {
@@ -76,9 +97,30 @@ namespace AnimalBehaviours
                             }
                             else
                             {
-                                ThingDef newThing = ThingDef.Named(this.Props.customThingToDig);
-                                newcorpse = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
-                                newcorpse.stackCount = this.Props.customAmountToDig;
+                                if (Props.customThingsToDig != null)
+                                {
+                                    string thingToDig = this.Props.customThingsToDig.RandomElement();
+                                    int index = Props.customThingsToDig.IndexOf(thingToDig);
+                                    int amount;
+                                    if (Props.customAmountsToDig != null)
+                                    {
+                                        amount = Props.customAmountsToDig[index];
+
+                                    }
+                                    else
+                                    {
+                                        amount = Props.customAmountToDig;
+                                    }
+                                    ThingDef newThing = ThingDef.Named(thingToDig);
+                                    newcorpse = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
+                                    newcorpse.stackCount = amount;
+                                }
+                                else
+                                {
+                                    ThingDef newThing = ThingDef.Named(this.Props.customThingToDig);
+                                    newcorpse = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
+                                    newcorpse.stackCount = this.Props.customAmountToDig;
+                                }
                             }
                             if (Props.spawnForbidden)
                             {
@@ -97,7 +139,7 @@ namespace AnimalBehaviours
 
                         stopdiggingcounter = Props.timeToDig;
                     }
-                    stopdiggingcounter--;
+                    stopdiggingcounter--; 
                 }
             }
         }

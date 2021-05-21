@@ -12,6 +12,11 @@ namespace AnimalBehaviours
         public string customThingToDig = "";
         public int customAmountToDig = 1;
 
+        //A list of extra things that can be dug up
+        public List<string> customThingsToDig = null;
+        //A corresponding list of amounts of extra things that can be dug up, will default to customAmountToDig if not set.
+        public List<int> customAmountsToDig = null;
+
         //timeToDig has a misleading name. It is a minimum counter. The user will not dig if less than timeToDig ticks have passed.
         //This is done to avoid an animal digging again if it's still hungry.
         public int timeToDig = 40000;
