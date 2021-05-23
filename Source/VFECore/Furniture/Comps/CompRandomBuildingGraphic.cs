@@ -19,6 +19,7 @@ namespace VanillaFurnitureExpanded
         public Graphic_Single newGraphicSingle;
         public string newGraphicPath = "";
         public string newGraphicSinglePath = "";
+        public bool reloading = false;
 
         public CompProperties_RandomBuildingGraphic Props
         {
@@ -31,8 +32,10 @@ namespace VanillaFurnitureExpanded
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             thingToGrab = (Thing)this.parent;
+            reloading = true;
             //Using LongEventHandler to avoid having to create a GraphicCache
             LongEventHandler.ExecuteWhenFinished(ChangeGraphic);
+            
 
         }
 
@@ -46,15 +49,32 @@ namespace VanillaFurnitureExpanded
             {
                 if (this.parent.def.graphicData.graphicClass == typeof(Graphic_Multi))
                 {
-                    if (!VanillaFurnitureExpanded_Settings.isRandomGraphic) { 
-                        int newGraphicPathIndex = Props.randomGraphics.IndexOf(newGraphicPath);
-                        if (newGraphicPathIndex+1 > Props.randomGraphics.Count - 1)
-                        {
-                            newGraphicPathIndex = 0;
+                    if (!VanillaFurnitureExpanded_Settings.isRandomGraphic) {
+                        if (!reloading) {
+                            int newGraphicPathIndex = Props.randomGraphics.IndexOf(newGraphicPath);
+                            if (newGraphicPathIndex + 1 > Props.randomGraphics.Count - 1)
+                            {
+                                newGraphicPathIndex = 0;
+                            }
+                            else newGraphicPathIndex++;
+                            newGraphicPath = Props.randomGraphics[newGraphicPathIndex];
+                            newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
                         }
-                        else newGraphicPathIndex++;
-                        newGraphicPath = Props.randomGraphics[newGraphicPathIndex];
-                        newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
+                        else
+                        {
+                            if (newGraphicPath == "")
+                            {
+                                newGraphicPath = Props.randomGraphics[0];
+                                newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
+                            }
+                            else
+                            {
+                                newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
+                            }
+                            reloading = false;
+
+                        }
+                        
 
 
                     }
@@ -76,14 +96,30 @@ namespace VanillaFurnitureExpanded
                 {
                     if (!VanillaFurnitureExpanded_Settings.isRandomGraphic)
                     {
-                        int newGraphicPathIndex = Props.randomGraphics.IndexOf(newGraphicSinglePath);
-                        if (newGraphicPathIndex+1 > Props.randomGraphics.Count - 1)
+                        if (!reloading)
                         {
-                            newGraphicPathIndex = 0;
+                            int newGraphicPathIndex = Props.randomGraphics.IndexOf(newGraphicSinglePath);
+                            if (newGraphicPathIndex + 1 > Props.randomGraphics.Count - 1)
+                            {
+                                newGraphicPathIndex = 0;
+                            }
+                            else newGraphicPathIndex++;
+                            newGraphicSinglePath = Props.randomGraphics[newGraphicPathIndex];
+                            newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Multi>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
                         }
-                        else newGraphicPathIndex++;
-                        newGraphicSinglePath = Props.randomGraphics[newGraphicPathIndex];
-                        newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Multi>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
+                        else {
+                            if (newGraphicSinglePath == "")
+                            {
+                                newGraphicSinglePath = Props.randomGraphics[0];
+                                newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
+                            }
+                            else
+                            {
+                                newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
+                            }
+                            reloading = false;
+                        }
+                        
 
 
                     }
@@ -114,6 +150,8 @@ namespace VanillaFurnitureExpanded
         {
             Scribe_Values.Look<string>(ref this.newGraphicPath, "newGraphicPath");
             Scribe_Values.Look<string>(ref this.newGraphicSinglePath, "newGraphicSinglePath");
+            Scribe_Values.Look<bool>(ref this.reloading, "reloading", false);
+
         }
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
