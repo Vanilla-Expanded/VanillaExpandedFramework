@@ -191,6 +191,8 @@
     <Compile Include="Furniture\DefModExtensions\ShowBlueprintExtension.cs" />
     <Compile Include="Furniture\Defs\ConfigurableSpawnerDef.cs" />
     <Compile Include="Furniture\Harmony\GhostUtility_GhostGraphicFor_Patch.cs" />
+    <Compile Include="Furniture\Options\VanillaFurnitureExpanded_SetingsController.cs" />
+    <Compile Include="Furniture\Options\VanillaFurnitureExpanded_Settings.cs" />
     <Compile Include="Furniture\Placeworkers\PlaceWorker_OnWater.cs" />
     <Compile Include="Furniture\Thoughts\ThoughtGiverByProximityDefExtension.cs" />
     <Compile Include="Furniture\Thoughts\ThoughtWorker_ThoughtFromNearbyThingDef.cs" />
@@ -349,7 +351,7 @@
   <ItemGroup>
     <PackageReference Include="Lib.Harmony">
       <Version>2.0.4</Version>
-	  <ExcludeAssets>runtime</ExcludeAssets>
+      <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
