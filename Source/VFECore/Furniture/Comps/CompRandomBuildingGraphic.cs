@@ -105,7 +105,7 @@ namespace VanillaFurnitureExpanded
                             }
                             else newGraphicPathIndex++;
                             newGraphicSinglePath = Props.randomGraphics[newGraphicPathIndex];
-                            newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Multi>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
+                            newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
                         }
                         else {
                             if (newGraphicSinglePath == "")
