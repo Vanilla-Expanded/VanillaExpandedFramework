@@ -85,14 +85,16 @@ namespace KCSG
                 radius = 9999;
 
             // layout choice and radius
-            List<StructureLayoutDef> allowed = DefDatabase<StructureLayoutDef>.AllDefsListForReading.FindAll(s => s.tags.Any(t => sld.allowedTags.Contains(t)));
-            for (int i = 0; i < allowed.Count; i++)
+            for (int i = 0; i < sld.allowedStructures.Count; i++)
             {
-                RectUtils.HeightWidthFromLayout(allowed[i], out int height, out int width);
-                if (height < radius)
-                    radius = height;
-                if (width < radius)
-                    radius = width;
+                foreach (StructureLayoutDef item in DefDatabase<StructureLayoutDef>.AllDefsListForReading.FindAll(s => s.tags.Contains(sld.allowedStructuresConverted[i].structureLayoutTag)))
+                {
+                    RectUtils.HeightWidthFromLayout(item, out int height, out int width);
+                    if (height < radius)
+                        radius = height;
+                    if (width < radius)
+                        radius = width;
+                }
             }
             // Init
             Random r = new Random(seed);
@@ -138,7 +140,7 @@ namespace KCSG
             CurrentGenerationOption.usePathCostReduction = true;
             // Buildings
             List<CustomVector> vectors = PoissonDiskSampling.Run(radius + 1, maxTries, mapWidth, mapHeight, r, grid);
-            List<CustomVector> doors = BuildingPlacement.Run(allowed, grid, vectors, maxTries, r, out vectStruct);
+            List<CustomVector> doors = BuildingPlacement.Run(sld, grid, vectors, maxTries, r, out vectStruct);
             // Delaunay
             List<Triangle> triangulation = Delaunay.Run(doors, mapWidth, mapHeight).ToList();
             List<Edge> edges = new List<Edge>();

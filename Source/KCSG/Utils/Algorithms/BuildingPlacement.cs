@@ -53,24 +53,61 @@ namespace KCSG
             return result;
         }
 
-        public static List<CustomVector> Run(List<StructureLayoutDef> buildingsToChooseFrom, CustomVector[][] grid, List<CustomVector> points, int maxTries, Random r, out Dictionary<CustomVector, StructureLayoutDef> vectStruct)
+        public static List<CustomVector> Run(SettlementLayoutDef sld, CustomVector[][] grid, List<CustomVector> points, int maxTries, Random r, out Dictionary<CustomVector, StructureLayoutDef> vectStruct)
         {
             vectStruct = new Dictionary<CustomVector, StructureLayoutDef>();
+
+            Dictionary<string, int> structCount = new Dictionary<string, int>();
+            
             List<CustomVector> doors = new List<CustomVector>();
             foreach (CustomVector vector in points)
             {
                 for (int i = 0; i < maxTries; i++)
                 {
-                    StructureLayoutDef b = buildingsToChooseFrom[r.Next(buildingsToChooseFrom.Count)];
+                    sld.allowedStructuresConverted.TryRandomElementByWeight(p => GetWeight(p, structCount), out StructOption option);
+                    StructureLayoutDef b = DefDatabase<StructureLayoutDef>.AllDefsListForReading.FindAll(s => s.tags.Contains(option.structureLayoutTag)).RandomElement();
                     if (CanPlaceAt(vector, b, grid))
                     {
                         vectStruct.Add(vector, b);
                         doors.Add(PlaceAt(vector, b, grid));
+                        if (structCount.ContainsKey(option.structureLayoutTag))
+                        {
+                            structCount[option.structureLayoutTag]++;
+                        }
+                        else
+                        {
+                            structCount.Add(option.structureLayoutTag, 1);
+                        }
                         break;
                     }
                 }
             }
             return doors;
+        }
+
+        public static float GetWeight(StructOption structOption, Dictionary<string, int> structCount)
+        {
+            bool containKey = structCount.ContainsKey(structOption.structureLayoutTag);
+            if (containKey)
+            {
+                int count = structCount.TryGetValue(structOption.structureLayoutTag);
+                if (count < structOption.minCount)
+                {
+                    return 2f;
+                }
+                else if (structOption.maxCount != -1 && count == structOption.maxCount)
+                {
+                    return 0f;
+                }
+                else
+                {
+                    return 1f;
+                }
+            }
+            else
+            {
+                return 3f;
+            }
         }
 
         private static CustomVector GetDoorInLayout(StructureLayoutDef building)

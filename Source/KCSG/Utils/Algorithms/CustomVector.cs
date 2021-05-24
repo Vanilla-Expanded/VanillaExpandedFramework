@@ -44,7 +44,7 @@ namespace KCSG
                     }
                     else if (Type == CellType.WATER)
                     {
-                        return DistanceToTarget + (Cost * 3f);
+                        return DistanceToTarget + (Cost * 1.6f);
                     }
                     else
                     {
