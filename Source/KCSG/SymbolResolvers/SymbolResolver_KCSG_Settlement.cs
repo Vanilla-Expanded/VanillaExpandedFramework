@@ -27,11 +27,9 @@ namespace KCSG
             }
             else
             {
-                SettlementLayoutDef sld = CurrentGenerationOption.settlementLayoutDef;
-
                 this.AddHostilePawnGroup(faction, map, rp);
 
-                if (sld.vanillaLikeDefense)
+                if (CurrentGenerationOption.settlementLayoutDef.vanillaLikeDefense)
                 {
                     int dWidth = (Rand.Bool ? 2 : 4);
                     ResolveParams rp3 = rp;
@@ -42,7 +40,7 @@ namespace KCSG
                     BaseGen.symbolStack.Push("edgeDefense", rp3, null);
                 }
 
-                this.GenerateRooms(sld, map, rp);
+                this.GenerateRooms(CurrentGenerationOption.settlementLayoutDef, map, rp);
 
                 GenUtils.PreClean(map, rp.rect);
             }
@@ -74,39 +72,31 @@ namespace KCSG
         {
             DateTime startTime = DateTime.Now;
             Log.Message($"Starting generation - {startTime.ToShortTimeString()}");
-            int seed = new Random().Next(0, 100000),
-                x = rp.rect.Corners.ElementAt(2).x,
-                y = rp.rect.Corners.ElementAt(2).z;
+            int seed = new Random().Next(0, 100000);
             CurrentGenerationOption.offset = rp.rect.Corners.ElementAt(2);
 
-            CustomVector[][] grid = GridUtils.GenerateGrid(seed, sld, map, out CurrentGenerationOption.vectStruct);
+            CurrentGenerationOption.grid = GridUtils.GenerateGrid(seed, sld, map, out CurrentGenerationOption.vectStruct);
 
             ResolveParams usl_rp = rp;
             usl_rp.faction = rp.faction;
+
             BaseGen.symbolStack.Push("kcsg_roomgenfromlist", usl_rp, null);
 
-            for (int i = 0; i < grid.Length; i++)
-            {
-                for (int j = 0; j < grid[i].Length; j++)
-                {
-                    IntVec3 cell = new IntVec3(x + i, 0, y - j);
-                    switch (grid[i][j].Type)
-                    {
-                        case CellType.ROAD:
-                            GenUtils.GenerateTerrainAt(map, cell, sld.roadDef);
-                            break;
+            BaseGen.symbolStack.Push("kcsg_generateroad", usl_rp, null);
 
-                        case CellType.MAINROAD:
-                            GenUtils.GenerateTerrainAt(map, cell, sld.mainRoadDef);
-                            break;
+            ThingDef conduit;
+            if (LoadedModManager.RunningMods.ToList().FindAll(m => m.Name == "Subsurface Conduit").Count > 0) conduit = DefDatabase<ThingDef>.AllDefsListForReading.FindAll(d => d.defName == "MUR_SubsurfaceConduit").First();
+            else conduit = ThingDefOf.PowerConduit;
 
-                        default:
-                            break;
-                    }
-                }
-            }
+            GenUtils.EnsureBatteriesConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, conduit);
+            GenUtils.EnsurePowerUsersConnected(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, conduit);
+            GenUtils.EnsureGeneratorsConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, conduit);
 
             Log.Message($"Generation stopped - {DateTime.Now.ToShortTimeString()} - Time taken {(DateTime.Now - startTime).TotalMilliseconds} ms - Seed was {seed}.");
         }
+
+        private readonly List<Thing> tmpThings = new List<Thing>();
+        private readonly Dictionary<PowerNet, bool> tmpPowerNetPredicateResults = new Dictionary<PowerNet, bool>();
+        private readonly List<IntVec3> tmpCells = new List<IntVec3>();
     }
 }

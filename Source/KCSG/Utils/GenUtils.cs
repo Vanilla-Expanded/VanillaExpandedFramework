@@ -116,7 +116,9 @@ namespace KCSG
 
                             if (thing.def.passability == Traversability.Impassable && map.ParentFaction?.def.techLevel >= TechLevel.Industrial) // Add power cable under all impassable
                             {
-                                GenSpawn.Spawn(ThingDefOf.PowerConduit, cell, map, WipeMode.FullRefund);
+                                Thing c = ThingMaker.MakeThing(ThingDefOf.PowerConduit);
+                                c.SetFactionDirect(map.ParentFaction);
+                                GenSpawn.Spawn(c, cell, map, WipeMode.FullRefund);
                             }
                         }
                     }

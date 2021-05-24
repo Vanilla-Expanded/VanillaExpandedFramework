@@ -76,6 +76,39 @@ namespace KCSG
             }
         }
 
+        public static void AddRoadToGrid(CustomVector[][] grid, List<CustomVector> doors)
+        {
+            int mapWidth = CurrentGenerationOption.settlementLayoutDef.settlementSize.x,
+                mapHeight = CurrentGenerationOption.settlementLayoutDef.settlementSize.z;
+            // Delaunay
+            List<Triangle> triangulation = Delaunay.Run(doors, mapWidth, mapHeight).ToList();
+            List<Edge> edges = new List<Edge>();
+            foreach (Triangle triangle in triangulation)
+            {
+                edges.Add(new Edge(triangle.Vertices[0], triangle.Vertices[1]));
+                edges.Add(new Edge(triangle.Vertices[1], triangle.Vertices[2]));
+                edges.Add(new Edge(triangle.Vertices[2], triangle.Vertices[0]));
+            }
+            // A*
+            foreach (Edge ed in edges)
+            {
+                if (ed != null && ed.Point1 != null && ed.Point2 != null)
+                {
+                    List<CustomVector> astar = AStar.Run(ed.Point1, ed.Point2, grid, false);
+                    if (astar != null)
+                    {
+                        foreach (CustomVector v in astar)
+                        {
+                            if (v != null)
+                            {
+                                v.Type = v.Type == CellType.NONE ? CellType.ROAD : v.Type;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
         public static CustomVector[][] GenerateGrid(int seed, SettlementLayoutDef sld, Map map, out Dictionary<CustomVector, StructureLayoutDef> vectStruct)
         {
             CurrentGenerationOption.usePathCostReduction = false;
@@ -140,35 +173,7 @@ namespace KCSG
             CurrentGenerationOption.usePathCostReduction = true;
             // Buildings
             List<CustomVector> vectors = PoissonDiskSampling.Run(radius + 1, maxTries, mapWidth, mapHeight, r, grid);
-            List<CustomVector> doors = BuildingPlacement.Run(sld, grid, vectors, maxTries, r, out vectStruct);
-            // Delaunay
-            List<Triangle> triangulation = Delaunay.Run(doors, mapWidth, mapHeight).ToList();
-            List<Edge> edges = new List<Edge>();
-            foreach (Triangle triangle in triangulation)
-            {
-                edges.Add(new Edge(triangle.Vertices[0], triangle.Vertices[1]));
-                edges.Add(new Edge(triangle.Vertices[1], triangle.Vertices[2]));
-                edges.Add(new Edge(triangle.Vertices[2], triangle.Vertices[0]));
-            }
-            // A*
-            foreach (Edge ed in edges)
-            {
-                if (ed != null && ed.Point1 != null && ed.Point2 != null)
-                {
-                    List<CustomVector> astar = AStar.Run(ed.Point1, ed.Point2, grid, false);
-                    if (astar != null)
-                    {
-                        foreach (CustomVector v in astar)
-                        {
-                            if (v != null)
-                            {
-                                v.Type = v.Type == CellType.NONE ? CellType.ROAD : v.Type;
-                            }
-                        }
-                    }
-                }
-            }
-
+            CurrentGenerationOption.doors = BuildingPlacement.Run(sld, grid, vectors, maxTries, r, out vectStruct);
             return grid;
         }
     }

@@ -68,6 +68,7 @@
     <Compile Include="Harmony\HideSettlementsForNomadicFactionsPatch.cs" />
     <Compile Include="Harmony\Init.cs" />
     <Compile Include="ScenPart_AddStartingStructure.cs" />
+    <Compile Include="SymbolResolvers\SymbolResolver_KCSG_GenerateRoad.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_KCSG_RoomGenFromList.cs" />
     <Compile Include="TextureLoader.cs" />
     <Compile Include="Utils\Algorithms\AStar.cs" />

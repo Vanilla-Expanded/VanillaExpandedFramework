@@ -24,4 +24,12 @@
       <li Class="KCSG.SymbolResolver_KCSG_RoomGenFromList" />
     </resolvers>
   </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_GenerateRoad</defName>
+    <symbol>kcsg_generateroad</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_KCSG_GenerateRoad" />
+    </resolvers>
+  </RuleDef>
 </Defs>
