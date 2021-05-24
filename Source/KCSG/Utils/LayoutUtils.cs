@@ -68,8 +68,7 @@ namespace KCSG
         public static XElement CreateThinglayout(List<IntVec3> cellExport, string defNamePrefix, int index, Area area, Map map, Dictionary<string, SymbolDef> pairsSymbolLabel, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
         {
             XElement liMain = new XElement("li", null);
-            int height, width;
-            RectUtils.EdgeFromList(cellExport, out height, out width);
+            RectUtils.EdgeFromList(cellExport, out int height, out int width);
             List<Thing> aAdded = new List<Thing>();
 
             IntVec3 first = cellExport.First();
@@ -100,7 +99,7 @@ namespace KCSG
                             SymbolDef symbolDef;
                             if (thing.Stuff != null && thing.def.rotatable) symbolDef = pairsSymbolLabel.Values.ToList().Find(s => s.thingDef == thing.def && s.stuffDef == thing.Stuff && s.rotation == thing.Rotation);
                             else if (thing.Stuff != null && !thing.def.rotatable) symbolDef = pairsSymbolLabel.Values.ToList().Find(s => s.thingDef == thing.def && s.stuffDef == thing.Stuff);
-                            else symbolDef = pairsSymbolLabel.Values.ToList().Find(s => s.thingDef == thing.def && s.rotation == thing.Rotation);
+                            else symbolDef = pairsSymbolLabel.Values.ToList().Find(s => s.thingDef == thing.def);
 
                             if (symbolDef == null)
                             {

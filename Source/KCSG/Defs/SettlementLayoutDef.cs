@@ -1,8 +1,5 @@
-﻿using RimWorld;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using UnityEngine;
 using Verse;
 
 namespace KCSG
@@ -10,7 +7,7 @@ namespace KCSG
     public struct StructOption
     {
         public string structureLayoutTag;
-        
+
         public int minCount;
 
         public int maxCount;
