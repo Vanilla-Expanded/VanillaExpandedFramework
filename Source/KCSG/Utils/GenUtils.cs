@@ -45,10 +45,13 @@ namespace KCSG
                                 for (int i = 0; i < temp.numberToSpawn; i++)
                                 {
                                     Pawn pawn = temp.spawnPartOfFaction ? PawnGenerator.GeneratePawn(temp.pawnKindDefNS, map.ParentFaction) : PawnGenerator.GeneratePawn(temp.pawnKindDefNS);
-                                    if (temp.isSlave) pawn.guest.SetGuestStatus(map.ParentFaction, true);
+                                    if (pawn != null)
+                                    {
+                                        if (temp.isSlave) pawn.guest.SetGuestStatus(map.ParentFaction, true);
 
-                                    GenSpawn.Spawn(pawn, cell, map, WipeMode.FullRefund);
-                                    lord.AddPawn(pawn);
+                                        GenSpawn.Spawn(pawn, cell, map, WipeMode.FullRefund);
+                                        lord.AddPawn(pawn);
+                                    }
                                 }
                             }
                             else
@@ -56,9 +59,11 @@ namespace KCSG
                                 for (int i = 0; i < temp.numberToSpawn; i++)
                                 {
                                     Pawn pawn = temp.spawnPartOfFaction ? PawnGenerator.GeneratePawn(temp.pawnKindDefNS, map.ParentFaction) : PawnGenerator.GeneratePawn(temp.pawnKindDefNS);
-
-                                    if (temp.isSlave) pawn.guest.SetGuestStatus(map.ParentFaction, true);
-                                    GenSpawn.Spawn(pawn, cell, map, WipeMode.FullRefund);
+                                    if (pawn != null)
+                                    {
+                                        if (temp.isSlave) pawn.guest.SetGuestStatus(map.ParentFaction, true);
+                                        GenSpawn.Spawn(pawn, cell, map, WipeMode.FullRefund);
+                                    }
                                 }
                             }
                         }
