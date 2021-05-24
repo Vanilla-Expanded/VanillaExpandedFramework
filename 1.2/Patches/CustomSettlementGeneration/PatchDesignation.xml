@@ -7,20 +7,4 @@
       <li>KCSG.Designator_ExportToXmlFromArea</li>
     </value>
   </Operation>
-
-  <Operation Class="PatchOperationAdd">
-    <xpath>/Defs/FactionDef[defName="OutlanderCivil" or defName="OutlanderRough"]</xpath>
-    <value>
-      <modExtensions>
-        <li Class="KCSG.FactionSettlement">
-          <useStructureLayout>False</useStructureLayout>
-          <chooseFromSettlements>
-            <li>KCSG_TestSettlement</li>
-          </chooseFromSettlements>
-        </li>
-      </modExtensions>
-    </value>
-  </Operation>
-
-
 </Patch>
