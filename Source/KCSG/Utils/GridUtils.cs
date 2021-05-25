@@ -171,8 +171,8 @@ namespace KCSG
             }
             CurrentGenerationOption.usePathCostReduction = true;
             // Buildings
-            List<CustomVector> vectors = PoissonDiskSampling.Run(radius + 1, maxTries, mapWidth, mapHeight, r, grid);
-            CurrentGenerationOption.doors = BuildingPlacement.Run(sld, grid, vectors, maxTries, r, out vectStruct);
+            CurrentGenerationOption.vectors = PoissonDiskSampling.Run(radius + 1, maxTries, mapWidth, mapHeight, r, grid);
+            CurrentGenerationOption.doors = BuildingPlacement.Run(sld, grid, CurrentGenerationOption.vectors.ListFullCopy(), maxTries, r, out vectStruct);
             return grid;
         }
     }

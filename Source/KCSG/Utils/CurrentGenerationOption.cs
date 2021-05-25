@@ -19,6 +19,8 @@ namespace KCSG
 
         public static List<CustomVector> doors;
 
+        public static List<CustomVector> vectors;
+
         public static bool useStructureLayout;
 
         public static bool usePathCostReduction;
@@ -34,6 +36,7 @@ namespace KCSG
             structureLayoutDef = null;
             vectStruct = null;
             doors = null;
+            vectors = null;
             
             useStructureLayout = false;
             usePathCostReduction = false;

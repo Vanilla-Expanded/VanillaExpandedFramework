@@ -1,16 +1,19 @@
 ﻿using RimWorld;
 using RimWorld.BaseGen;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Verse;
 
 namespace KCSG
 {
-    class SymbolResolver_KCSG_GenerateRoad : SymbolResolver
+    internal class SymbolResolver_KCSG_GenerateRoad : SymbolResolver
     {
+        private readonly List<IntVec3> tmpCells = new List<IntVec3>();
+
+        private readonly Dictionary<PowerNet, bool> tmpPowerNetPredicateResults = new Dictionary<PowerNet, bool>();
+
+        private readonly List<Thing> tmpThings = new List<Thing>();
+
         public override void Resolve(ResolveParams rp)
         {
             int x = rp.rect.Corners.ElementAt(2).x,
@@ -44,6 +47,10 @@ namespace KCSG
             }
 
             rp.rect.EdgeCells.ToList().ForEach(cell => SpawnConduit(cell, map));
+
+            GenUtils.EnsureBatteriesConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, KDefOf.KCSG_PowerConduit);
+            GenUtils.EnsurePowerUsersConnected(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, KDefOf.KCSG_PowerConduit);
+            GenUtils.EnsureGeneratorsConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, KDefOf.KCSG_PowerConduit);
         }
 
         private bool AnyEmptyCellAround(CustomVector c, CustomVector[][] grid)
@@ -62,7 +69,7 @@ namespace KCSG
 
         private bool IsInBound<T>(double X, double Y, T[][] grid)
         {
-            int gridWidth = grid.Length, 
+            int gridWidth = grid.Length,
                 gridHeight = grid[0].Length;
 
             if (X < 0)
@@ -80,8 +87,10 @@ namespace KCSG
         {
             if (cell.Walkable(map))
             {
-                map.terrainGrid.TerrainAt(cell).affordances.Contains(TerrainAffordanceDefOf.Bridgeable);
-                Thing c = ThingMaker.MakeThing(ThingDefOf.PowerConduit);
+                if (map.terrainGrid.TerrainAt(cell).affordances.Contains(TerrainAffordanceDefOf.Bridgeable))
+                    map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
+
+                Thing c = ThingMaker.MakeThing(KDefOf.KCSG_PowerConduit);
                 c.SetFactionDirect(map.ParentFaction);
                 GenSpawn.Spawn(c, cell, map, WipeMode.VanishOrMoveAside);
             }

@@ -78,6 +78,7 @@ namespace KCSG
                         {
                             structCount.Add(option.structureLayoutTag, 1);
                         }
+                        CurrentGenerationOption.vectors.Remove(vector);
                         break;
                     }
                 }

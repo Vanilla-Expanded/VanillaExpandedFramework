@@ -13,6 +13,8 @@ namespace KCSG
     {
         public static ThingDef WaterproofConduit;
 
+        public static ThingDef KCSG_PowerConduit;
+
         public static TerrainAffordanceDef ShallowWater;
     }
 }
