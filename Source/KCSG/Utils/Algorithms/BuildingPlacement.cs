@@ -30,13 +30,13 @@ namespace KCSG
         {
             CustomVector result = new CustomVector(0, 0);
             RectUtils.HeightWidthFromLayout(building, out int height, out int width);
-            CustomVector door = GetDoorInLayout(building);
+            List<CustomVector> doors = GetDoorsInLayout(building);
 
             for (int i = (int)point.X; i < width + point.X; i++)
             {
                 for (int j = (int)point.Y; j < height + point.Y; j++)
                 {
-                    CellType type = i == door.X + point.X && j == door.Y + point.Y ? CellType.DOOR : CellType.BUILDING;
+                    CellType type = doors.FindAll(d => i == d.X + point.X && j == d.Y + point.Y).Any() ? CellType.DOOR : CellType.BUILDING;
                     if (type == CellType.DOOR)
                     {
                         result.X = i;
@@ -110,8 +110,9 @@ namespace KCSG
             }
         }
 
-        private static CustomVector GetDoorInLayout(StructureLayoutDef building)
+        private static List<CustomVector> GetDoorsInLayout(StructureLayoutDef building)
         {
+            List<CustomVector> doors = new List<CustomVector>();
             foreach (List<string> layout in building.layouts)
             {
                 int lineN = 0;
@@ -129,7 +130,7 @@ namespace KCSG
                             SymbolDef tempS = DefDatabase<SymbolDef>.GetNamed(array[i]);
                             if (tempS.thingDef != null && tempS.thingDef.altitudeLayer == AltitudeLayer.DoorMoveable)
                             {
-                                return new CustomVector(i, lineN);
+                                doors.Add(new CustomVector(i, lineN));
                             }
                         }
                     }
@@ -137,7 +138,7 @@ namespace KCSG
                 }
             }
 
-            return new CustomVector(-1, -1);
+            return doors;
         }
 
         private static bool IsInBound(int X, int Y, int gridWidth, int gridHeight)

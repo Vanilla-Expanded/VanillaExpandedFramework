@@ -148,7 +148,6 @@ namespace KCSG
                     TerrainDef t = map.terrainGrid.TerrainAt(new IntVec3(CurrentGenerationOption.offset.x + i, 0, CurrentGenerationOption.offset.y + j));
                     if (t.HasTag("Water") && (t.affordances == null || !t.affordances.Contains(TerrainAffordanceDefOf.Bridgeable)))
                     {
-                        Log.Message(t.defName);
                         grid[i][j].Type = CellType.WATER;
                     }
                         

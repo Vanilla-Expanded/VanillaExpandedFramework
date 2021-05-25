@@ -71,6 +71,7 @@
     <Compile Include="SymbolResolvers\SymbolResolver_KCSG_GenerateRoad.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_KCSG_RoomGenFromList.cs" />
     <Compile Include="TextureLoader.cs" />
+    <Compile Include="KDefOf.cs" />
     <Compile Include="Utils\Algorithms\AStar.cs" />
     <Compile Include="Utils\Algorithms\BuildingPlacement.cs" />
     <Compile Include="Utils\DebugOption.cs" />

@@ -61,6 +61,11 @@ namespace KCSG
         public double Y { get; set; }
 
         public override string ToString() => $"{nameof(CustomVector)} {X:0.##}@{Y:0.##}";
+
+        public bool IsNoneOrRoad()
+        {
+            return Type == CellType.ROAD || Type == CellType.MAINROAD || Type == CellType.NONE;
+        }
     }
 
     public enum CellType
