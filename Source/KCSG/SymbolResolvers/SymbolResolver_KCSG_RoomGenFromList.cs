@@ -17,11 +17,18 @@ namespace KCSG
                     z = CurrentGenerationOption.offset.z - (int)keyValue.Key.Y - (height / 2)
                 };
                 CellRect rect = CellRect.CenteredOn(center, width, height);
-                // Log.Message($"Rect - {keyValue.Key} - Center {center} - Height: {rect.Height} - Width {rect.Width} - Cell count {rect.Count()} - InBound {rect.InBounds(BaseGen.globalSettings.map)}");
 
                 foreach (List<string> item in keyValue.Value.layouts)
                 {
                     GenUtils.GenerateRoomFromLayout(item, rect, BaseGen.globalSettings.map, keyValue.Value);
+                }
+
+                if (keyValue.Value.isStorage)
+                {
+                    ResolveParams rstock = rp;
+                    //rect.TryFindRandomInnerRect(minRectSize, out rstock.rect);
+                    rstock.rect = CellRect.CenteredOn(center, width-2, height-2);
+                    BaseGen.symbolStack.Push("stockpile", rstock, null);
                 }
             }
         }
