@@ -129,6 +129,7 @@ namespace KCSG
                         radius = width;
                 }
             }
+            CurrentGenerationOption.radius = radius;
             // Init
             Random r = new Random(seed);
             CustomVector[][] grid = new CustomVector[mapWidth][];

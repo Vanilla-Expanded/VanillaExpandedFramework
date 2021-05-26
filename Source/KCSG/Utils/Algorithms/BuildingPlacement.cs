@@ -26,6 +26,31 @@ namespace KCSG
             return result;
         }
 
+        public static float GetWeight(StructOption structOption, Dictionary<string, int> structCount)
+        {
+            bool containKey = structCount.ContainsKey(structOption.structureLayoutTag);
+            if (containKey)
+            {
+                int count = structCount.TryGetValue(structOption.structureLayoutTag);
+                if (count < structOption.minCount)
+                {
+                    return 2f;
+                }
+                else if (structOption.maxCount != -1 && count == structOption.maxCount)
+                {
+                    return 0f;
+                }
+                else
+                {
+                    return 1f;
+                }
+            }
+            else
+            {
+                return 3f;
+            }
+        }
+
         public static CustomVector PlaceAt(CustomVector point, StructureLayoutDef building, CustomVector[][] grid)
         {
             CustomVector result = new CustomVector(0, 0);
@@ -58,7 +83,7 @@ namespace KCSG
             vectStruct = new Dictionary<CustomVector, StructureLayoutDef>();
 
             Dictionary<string, int> structCount = new Dictionary<string, int>();
-            
+
             List<CustomVector> doors = new List<CustomVector>();
             foreach (CustomVector vector in points)
             {
@@ -85,32 +110,7 @@ namespace KCSG
             }
             return doors;
         }
-
-        public static float GetWeight(StructOption structOption, Dictionary<string, int> structCount)
-        {
-            bool containKey = structCount.ContainsKey(structOption.structureLayoutTag);
-            if (containKey)
-            {
-                int count = structCount.TryGetValue(structOption.structureLayoutTag);
-                if (count < structOption.minCount)
-                {
-                    return 2f;
-                }
-                else if (structOption.maxCount != -1 && count == structOption.maxCount)
-                {
-                    return 0f;
-                }
-                else
-                {
-                    return 1f;
-                }
-            }
-            else
-            {
-                return 3f;
-            }
-        }
-
+        
         private static List<CustomVector> GetDoorsInLayout(StructureLayoutDef building)
         {
             List<CustomVector> doors = new List<CustomVector>();

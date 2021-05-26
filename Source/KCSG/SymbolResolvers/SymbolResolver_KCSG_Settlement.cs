@@ -1,7 +1,6 @@
 ﻿using RimWorld;
 using RimWorld.BaseGen;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using Verse.AI.Group;
@@ -74,6 +73,7 @@ namespace KCSG
             Log.Message($"Starting generation - {startTime.ToShortTimeString()}");
             int seed = new Random().Next(0, 100000);
             CurrentGenerationOption.offset = rp.rect.Corners.ElementAt(2);
+            CurrentGenerationOption.fullRect = rp.rect;
 
             CurrentGenerationOption.grid = GridUtils.GenerateGrid(seed, sld, map, out CurrentGenerationOption.vectStruct);
 
@@ -83,6 +83,24 @@ namespace KCSG
             BaseGen.symbolStack.Push("kcsg_roomgenfromlist", usl_rp, null);
 
             BaseGen.symbolStack.Push("kcsg_generateroad", usl_rp, null);
+
+            CurrentGenerationOption.vectors.RemoveAt(0);
+            int n = 0;
+            foreach (CustomVector c in CurrentGenerationOption.vectors)
+            {
+                if (n % 3 == 0)
+                {
+                    ResolveParams gzp = rp;
+                    int x = rp.rect.Corners.ElementAt(2).x,
+                        y = rp.rect.Corners.ElementAt(2).z;
+                    IntVec3 cell = new IntVec3(x + (int)c.X + CurrentGenerationOption.radius / 2, 0, y - (int)c.Y - CurrentGenerationOption.radius / 2);
+                    gzp.rect = CellRect.CenteredOn(cell, CurrentGenerationOption.radius).ClipInsideRect(rp.rect);
+                    gzp.cultivatedPlantDef = DefDatabase<ThingDef>.AllDefsListForReading.FindAll(t => t.plant != null && !t.plant.cavePlant && t.plant.Harvestable && !t.plant.IsTree).RandomElement();
+
+                    BaseGen.symbolStack.Push("cultivatedPlants", gzp, null);
+                }
+                n++;
+            }
 
             Log.Message($"Generation stopped - {DateTime.Now.ToShortTimeString()} - Time taken {(DateTime.Now - startTime).TotalMilliseconds} ms - Seed was {seed}.");
         }

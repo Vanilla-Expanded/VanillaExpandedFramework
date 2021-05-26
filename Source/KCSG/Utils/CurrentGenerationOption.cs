@@ -11,6 +11,10 @@ namespace KCSG
 
         public static IntVec3 offset;
 
+        public static int radius;
+
+        public static CellRect fullRect;
+
         public static SettlementLayoutDef settlementLayoutDef;
 
         public static StructureLayoutDef structureLayoutDef;
@@ -31,6 +35,7 @@ namespace KCSG
 
             gridStartPoint = IntVec2.Invalid;
             offset = IntVec3.Invalid;
+            fullRect = CellRect.Empty;
 
             settlementLayoutDef = null;
             structureLayoutDef = null;

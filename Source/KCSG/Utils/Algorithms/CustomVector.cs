@@ -1,7 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Verse;
 
 namespace KCSG
 {
+    public enum CellType
+    {
+        NONE,
+        BUILDING,
+        DOOR,
+        GROWING,
+        ROAD,
+        MAINROAD,
+        PLANT,
+        WATER
+    }
+
     public class CustomVector
     {
         public float Cost;
@@ -10,11 +24,11 @@ namespace KCSG
 
         public CustomVector Parent;
 
-        public float Weight;
-
         public bool useCost;
 
-        public CustomVector(double x, double y, CellType type = CellType.NONE, float weight = 1f)
+        public float Weight;
+
+        public CustomVector(double x, double y, CellType type = CellType.NONE, float weight = 1f, ThingDef plant = null)
         {
             X = x;
             Y = y;
@@ -24,6 +38,7 @@ namespace KCSG
             DistanceToTarget = -1f;
             Cost = 1f;
             Weight = weight;
+            PlantType = plant;
         }
 
         public HashSet<Triangle> AdjacentTriangles { get; } = new HashSet<Triangle>();
@@ -60,22 +75,18 @@ namespace KCSG
         public double X { get; set; }
         public double Y { get; set; }
 
-        public override string ToString() => $"{nameof(CustomVector)} {X:0.##}@{Y:0.##}";
+        public ThingDef PlantType { get; set; }
 
         public bool IsNoneOrRoad()
         {
             return Type == CellType.ROAD || Type == CellType.MAINROAD || Type == CellType.NONE;
         }
-    }
 
-    public enum CellType
-    {
-        NONE,
-        BUILDING,
-        DOOR,
-        GROWING,
-        ROAD,
-        MAINROAD,
-        WATER
+        public double DistanceTo(CustomVector otherVector)
+        {
+            return Math.Sqrt(Math.Pow(X - otherVector.X, 2) + Math.Pow(Y - otherVector.Y, 2));
+        }
+
+        public override string ToString() => $"{nameof(CustomVector)} {X:0.##}@{Y:0.##}";
     }
 }

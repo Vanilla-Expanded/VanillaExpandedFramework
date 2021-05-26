@@ -181,7 +181,16 @@ namespace KCSG
         {
             foreach (IntVec3 c in rect)
             {
-                c.GetThingList(map).ToList().FindAll(t1 => t1.def.category == ThingCategory.Filth || t1.def.category == ThingCategory.Item || (t1.def.category == ThingCategory.Building && !t1.def.building.isNaturalRock)).ForEach((t) => t.DeSpawn());
+                c.GetThingList(map).ToList()
+                                   .FindAll(t1 => (t1.def.category == ThingCategory.Filth) || 
+                                                  (t1.def.thingCategories != null && t1.def.thingCategories.Contains(ThingCategoryDefOf.StoneChunks)) || 
+                                                  (t1.def.category == ThingCategory.Building && !t1.def.building.isNaturalRock))
+                                   .ForEach((t) => t.DeSpawn());
+
+                if (map.terrainGrid.UnderTerrainAt(c) != null)
+                {
+                    map.terrainGrid.SetTerrain(c, map.terrainGrid.UnderTerrainAt(c));
+                }
             }
         }
 

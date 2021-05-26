@@ -32,4 +32,12 @@
       <li Class="KCSG.SymbolResolver_KCSG_GenerateRoad" />
     </resolvers>
   </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_GrowingZone</defName>
+    <symbol>kcsg_growingzone</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_KCSG_GrowingZone" />
+    </resolvers>
+  </RuleDef>
 </Defs>
