@@ -16,5 +16,11 @@
 <VFE_ChangeGraphic>Change Graphic</VFE_ChangeGraphic>
 <VFE_ChangeGraphicDesc>Change Graphic of this building randomly between those available</VFE_ChangeGraphicDesc>
 
+<!-- Random Building Graphics, Options -->
+
+<VFE_RandomOrSequentially>"Change Graphic" button changes graphic randomly (deselect for sequentially)</VFE_RandomOrSequentially>
+<VFE_HideRandomizeButton>Hide the "Change Graphic" button</VFE_HideRandomizeButton>
+
+
 
 </LanguageData>

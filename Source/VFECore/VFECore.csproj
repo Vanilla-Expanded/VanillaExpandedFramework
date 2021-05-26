@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnimalBehaviours\AI\JobDrivers\JobDriver_AnimalResource.cs" />
+    <Compile Include="AnimalBehaviours\AI\JobDrivers\JobDriver_AutoNutrition.cs" />
     <Compile Include="AnimalBehaviours\AI\JobDrivers\JobDriver_DestroyItem.cs" />
     <Compile Include="AnimalBehaviours\AI\JobDrivers\JobDriver_IngestWeird.cs" />
     <Compile Include="AnimalBehaviours\AI\JobDrivers\JobDriver_LayExplodingEgg.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompAcidImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompAnimalProduct.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompAsexualReproduction.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompAutoNutrition.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompBlink.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompBuildPeriodically.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompChangeWeather.cs" />
@@ -108,6 +110,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AcidImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AnimalProduct.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AsexualReproduction.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AutoNutrition.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Blink.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_BuildPeriodically.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ChangeWeather.cs" />
@@ -191,6 +194,8 @@
     <Compile Include="Furniture\DefModExtensions\ShowBlueprintExtension.cs" />
     <Compile Include="Furniture\Defs\ConfigurableSpawnerDef.cs" />
     <Compile Include="Furniture\Harmony\GhostUtility_GhostGraphicFor_Patch.cs" />
+    <Compile Include="Furniture\Options\VanillaFurnitureExpanded_SetingsController.cs" />
+    <Compile Include="Furniture\Options\VanillaFurnitureExpanded_Settings.cs" />
     <Compile Include="Furniture\Placeworkers\PlaceWorker_OnWater.cs" />
     <Compile Include="Furniture\Thoughts\ThoughtGiverByProximityDefExtension.cs" />
     <Compile Include="Furniture\Thoughts\ThoughtWorker_ThoughtFromNearbyThingDef.cs" />
@@ -349,6 +354,7 @@
   <ItemGroup>
     <PackageReference Include="Lib.Harmony">
       <Version>2.0.4</Version>
+      <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

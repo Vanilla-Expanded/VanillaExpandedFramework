@@ -23,4 +23,10 @@
 		<reportString>consuming TargetA.</reportString>
 		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
 	</JobDef>
+	<JobDef>
+		<defName>VEF_AutoNutrition</defName>
+		<driverClass>AnimalBehaviours.JobDriver_AutoNutrition</driverClass>
+		<reportString>eating.</reportString>
+		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+	</JobDef>
 </Defs>

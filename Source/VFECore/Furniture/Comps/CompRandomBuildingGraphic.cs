@@ -19,6 +19,7 @@ namespace VanillaFurnitureExpanded
         public Graphic_Single newGraphicSingle;
         public string newGraphicPath = "";
         public string newGraphicSinglePath = "";
+        public bool reloading = false;
 
         public CompProperties_RandomBuildingGraphic Props
         {
@@ -31,8 +32,10 @@ namespace VanillaFurnitureExpanded
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             thingToGrab = (Thing)this.parent;
+            reloading = true;
             //Using LongEventHandler to avoid having to create a GraphicCache
             LongEventHandler.ExecuteWhenFinished(ChangeGraphic);
+            
 
         }
 
@@ -46,7 +49,36 @@ namespace VanillaFurnitureExpanded
             {
                 if (this.parent.def.graphicData.graphicClass == typeof(Graphic_Multi))
                 {
-                    if (newGraphicPath == "")
+                    if (!VanillaFurnitureExpanded_Settings.isRandomGraphic) {
+                        if (!reloading) {
+                            int newGraphicPathIndex = Props.randomGraphics.IndexOf(newGraphicPath);
+                            if (newGraphicPathIndex + 1 > Props.randomGraphics.Count - 1)
+                            {
+                                newGraphicPathIndex = 0;
+                            }
+                            else newGraphicPathIndex++;
+                            newGraphicPath = Props.randomGraphics[newGraphicPathIndex];
+                            newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
+                        }
+                        else
+                        {
+                            if (newGraphicPath == "")
+                            {
+                                newGraphicPath = Props.randomGraphics[0];
+                                newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
+                            }
+                            else
+                            {
+                                newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
+                            }
+                            reloading = false;
+
+                        }
+                        
+
+
+                    }
+                    else if (newGraphicPath == "")
                     {
                         newGraphicPath = Props.randomGraphics.RandomElement();
                         newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
@@ -62,6 +94,36 @@ namespace VanillaFurnitureExpanded
                 }
                 else if (this.parent.def.graphicData.graphicClass == typeof(Graphic_Single))
                 {
+                    if (!VanillaFurnitureExpanded_Settings.isRandomGraphic)
+                    {
+                        if (!reloading)
+                        {
+                            int newGraphicPathIndex = Props.randomGraphics.IndexOf(newGraphicSinglePath);
+                            if (newGraphicPathIndex + 1 > Props.randomGraphics.Count - 1)
+                            {
+                                newGraphicPathIndex = 0;
+                            }
+                            else newGraphicPathIndex++;
+                            newGraphicSinglePath = Props.randomGraphics[newGraphicPathIndex];
+                            newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
+                        }
+                        else {
+                            if (newGraphicSinglePath == "")
+                            {
+                                newGraphicSinglePath = Props.randomGraphics[0];
+                                newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
+                            }
+                            else
+                            {
+                                newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
+                            }
+                            reloading = false;
+                        }
+                        
+
+
+                    }
+                    else
                     if (newGraphicSinglePath == "")
                     {
                         newGraphicSinglePath = Props.randomGraphics.RandomElement();
@@ -88,21 +150,26 @@ namespace VanillaFurnitureExpanded
         {
             Scribe_Values.Look<string>(ref this.newGraphicPath, "newGraphicPath");
             Scribe_Values.Look<string>(ref this.newGraphicSinglePath, "newGraphicSinglePath");
+            Scribe_Values.Look<bool>(ref this.reloading, "reloading", false);
+
         }
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
-            if (this.parent.Faction != null && this.parent.Faction.IsPlayer)
+            if (this.parent.Faction != null && this.parent.Faction.IsPlayer && !VanillaFurnitureExpanded_Settings.hideRandomizeButton)
             {
                 yield return new Command_Action
                 {
                     defaultLabel = "VFE_ChangeGraphic".Translate(),
                     defaultDesc = "VFE_ChangeGraphicDesc".Translate(),
+                    hotKey = KeyBindingDefOf.Misc3,
                     icon = ContentFinder<Texture2D>.Get("UI/VEF_ChangeGraphic", true),
                     action = delegate ()
                     {
-                        newGraphicPath = "";
-                        newGraphicSinglePath = "";
+                        if (VanillaFurnitureExpanded_Settings.isRandomGraphic) {
+                            newGraphicPath = "";
+                            newGraphicSinglePath = "";
+                        }                     
                         LongEventHandler.ExecuteWhenFinished(ChangeGraphic);
                         this.parent.Map.mapDrawer.MapMeshDirty(this.parent.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
                     }
