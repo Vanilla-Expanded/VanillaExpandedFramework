@@ -86,6 +86,7 @@ namespace KCSG
 
             CurrentGenerationOption.vectors.RemoveAt(0);
             int n = 0;
+            Random r = new Random(seed);
             foreach (CustomVector c in CurrentGenerationOption.vectors)
             {
                 if (n % 3 == 0)
@@ -94,12 +95,24 @@ namespace KCSG
                     int x = rp.rect.Corners.ElementAt(2).x,
                         y = rp.rect.Corners.ElementAt(2).z;
                     IntVec3 cell = new IntVec3(x + (int)c.X + CurrentGenerationOption.radius / 2, 0, y - (int)c.Y - CurrentGenerationOption.radius / 2);
-                    gzp.rect = CellRect.CenteredOn(cell, CurrentGenerationOption.radius).ClipInsideRect(rp.rect);
+                    gzp.rect = CellRect.CenteredOn(cell, r.Next(4, CurrentGenerationOption.radius + 1), r.Next(4, CurrentGenerationOption.radius + 4)).ClipInsideRect(rp.rect);
                     gzp.cultivatedPlantDef = DefDatabase<ThingDef>.AllDefsListForReading.FindAll(t => t.plant != null && !t.plant.cavePlant && t.plant.Harvestable && !t.plant.IsTree).RandomElement();
 
                     BaseGen.symbolStack.Push("cultivatedPlants", gzp, null);
                 }
                 n++;
+            }
+
+            if (rp.faction.def == FactionDefOf.Empire || (sld.addLandingPad && ModLister.RoyaltyInstalled))
+            {
+                if (!rp.rect.TryFindRandomInnerRect(new IntVec2(9, 9), out CellRect rect, null))
+                {
+                    return;
+                }
+                ResolveParams resolveParams = rp;
+                resolveParams.rect = rect;
+                BaseGen.symbolStack.Push("landingPad", resolveParams, null);
+                BaseGen.globalSettings.basePart_landingPadsResolved++;
             }
 
             Log.Message($"Generation stopped - {DateTime.Now.ToShortTimeString()} - Time taken {(DateTime.Now - startTime).TotalMilliseconds} ms - Seed was {seed}.");

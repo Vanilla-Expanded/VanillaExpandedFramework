@@ -53,6 +53,7 @@ namespace KCSG
         public TerrainDef mainRoadDef = null;
 
         public bool vanillaLikeDefense = false;
+        public bool addLandingPad = false;
 
         public override IEnumerable<string> ConfigErrors()
         {
