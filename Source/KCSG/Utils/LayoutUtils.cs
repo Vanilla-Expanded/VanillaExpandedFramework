@@ -17,38 +17,17 @@ namespace KCSG
             string defNameString = "PlaceHolder";
             XElement defName = new XElement("defName", defNameString);
             StructureLayoutDef.Add(defName);
-            // Stockpile?
-            bool isStockpileBool = false;
-            if (map.zoneManager.ZoneAt(cellExport.FindAll(c => c.Walkable(map)).First()) is Zone_Stockpile)
-            {
-                isStockpileBool = true;
-                XElement isStockpile = new XElement("isStockpile", isStockpileBool.ToString());
-                StructureLayoutDef.Add(isStockpile);
-            }
-            // allowedThingsInStockpile
-            if (isStockpileBool)
-            {
-                XElement allowedThingsInStockpile = new XElement("allowedThingsInStockpile", null);
-                foreach (Thing item in map.zoneManager.ZoneAt(cellExport.FindAll(c => c.Walkable(map)).First()).AllContainedThings)
-                {
-                    XElement li = new XElement("li", item.def.defName);
-                    if (item is Pawn || item is Filth || item.def.building != null) { }
-                    else if (allowedThingsInStockpile.Elements().ToList().FindAll(x => x.Value == li.Value).Count() == 0) allowedThingsInStockpile.Add(li);
-                }
-                StructureLayoutDef.Add(allowedThingsInStockpile);
-            }
+
             XElement layouts = new XElement("layouts", null);
             // Add pawns layout
-            bool add = false;
-            XElement pawnsL = Createpawnlayout(cellExport, defNamePrefix, area, out add, map, pairsSymbolLabel, pairsCellThingList);
+            XElement pawnsL = Createpawnlayout(cellExport, defNamePrefix, area, out bool add, map, pairsSymbolLabel, pairsCellThingList);
             if (add) layouts.Add(pawnsL);
             // Add items layout
-            bool add2 = false;
-            XElement itemsL = CreateItemlayout(cellExport, defNamePrefix, area, out add2, map, pairsSymbolLabel, pairsCellThingList);
+            XElement itemsL = CreateItemlayout(cellExport, defNamePrefix, area, out bool add2, map, pairsSymbolLabel, pairsCellThingList);
             if (add2) layouts.Add(itemsL);
             // Add terrain layout
-            if (area != null) layouts.Add(CreateTerrainlayout(cellExport, defNamePrefix, area, map, pairsSymbolLabel));
-            else layouts.Add(CreateTerrainlayout(cellExport, defNamePrefix, null, map, pairsSymbolLabel));
+            XElement terrainL = CreateTerrainlayout(cellExport, defNamePrefix, area, map, pairsSymbolLabel, out bool add3);
+            if (add3) layouts.Add(terrainL);
             // Add things layouts
             int numOfLayout = RectUtils.GetMaxThingOnOneCell(cellExport, map, pairsCellThingList);
             for (int i = 0; i < numOfLayout; i++)
@@ -59,8 +38,8 @@ namespace KCSG
             StructureLayoutDef.Add(layouts);
 
             // Add roofGrid
-            if (area != null) StructureLayoutDef.Add(CreateRoofGrid(cellExport, map, area));
-            else StructureLayoutDef.Add(CreateRoofGrid(cellExport, map));
+            XElement roofGrid = CreateRoofGrid(cellExport, map, out bool add4, area);
+            if (add3) layouts.Add(roofGrid);
 
             return StructureLayoutDef;
         }
@@ -133,11 +112,11 @@ namespace KCSG
             return liMain;
         }
 
-        public static XElement CreateTerrainlayout(List<IntVec3> cellExport, string defNamePrefix, Area area, Map map, Dictionary<string, SymbolDef> pairsSymbolLabel)
+        public static XElement CreateTerrainlayout(List<IntVec3> cellExport, string defNamePrefix, Area area, Map map, Dictionary<string, SymbolDef> pairsSymbolLabel, out bool add)
         {
             XElement liMain = new XElement("li", null);
-            int height, width;
-            RectUtils.EdgeFromList(cellExport, out height, out width);
+            RectUtils.EdgeFromList(cellExport, out int height, out int width);
+            add = false;
 
             IntVec3 first = cellExport.First();
             for (int i = 0; i < height; i++)
@@ -162,11 +141,13 @@ namespace KCSG
                         TerrainDef terrainD = map.terrainGrid.TerrainAt(first);
                         if (pairsSymbolLabel != null && pairsSymbolLabel.Values.ToList().Find(s => s.isTerrain && s.terrainDef.defName == terrainD.defName) is SymbolDef symbolDef && symbolDef != null)
                         {
+                            add = true;
                             if (i2 + 1 == width) temp += symbolDef.symbol;
                             else temp += symbolDef.symbol + ",";
                         }
                         else if (terrainD != null)
                         {
+                            add = true;
                             if (i2 + 1 == width) temp += defNamePrefix + "_" + terrainD.defName;
                             else temp += terrainD.defName + ",";
                         }
@@ -186,10 +167,11 @@ namespace KCSG
             return liMain;
         }
 
-        public static XElement CreateRoofGrid(List<IntVec3> cellExport, Map map, Area area = null)
+        public static XElement CreateRoofGrid(List<IntVec3> cellExport, Map map, out bool add, Area area = null)
         {
             XElement roofGrid = new XElement("roofGrid", null);
             RectUtils.EdgeFromList(cellExport, out int height, out int width);
+            add = false;
 
             IntVec3 first = cellExport.First();
             for (int i = 0; i < height; i++)
@@ -207,6 +189,7 @@ namespace KCSG
                     {
                         if (first.Roofed(map))
                         {
+                            add = true;
                             if (i2 + 1 == width) temp += "1";
                             else temp += "1,";
                         }
