@@ -60,6 +60,7 @@ namespace KCSG
 
             MakeAllowedAreaListFloatMenu(delegate (Area a)
             {
+                Log.Message($"{a}");
                 RectUtils.EdgeFromArea(a.ActiveCells.ToList(), out int height, out int width);
                 List<IntVec3> cellExport = RectUtils.AreaToSquare(a, height, width);
 

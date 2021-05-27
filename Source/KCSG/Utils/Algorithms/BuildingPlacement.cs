@@ -90,7 +90,9 @@ namespace KCSG
                 for (int i = 0; i < maxTries; i++)
                 {
                     sld.allowedStructuresConverted.TryRandomElementByWeight(p => GetWeight(p, structCount), out StructOption option);
-                    StructureLayoutDef b = DefDatabase<StructureLayoutDef>.AllDefsListForReading.FindAll(s => s.tags.Contains(option.structureLayoutTag)).RandomElement();
+                    List<StructureLayoutDef> all = DefDatabase<StructureLayoutDef>.AllDefsListForReading.FindAll(s => s.tags.Contains(option.structureLayoutTag));
+                    if (!ModLister.RoyaltyInstalled) all.RemoveAll(s => s.requireRoyalty);
+                    StructureLayoutDef b = all.RandomElement();
                     if (CanPlaceAt(vector, b, grid))
                     {
                         vectStruct.Add(vector, b);
