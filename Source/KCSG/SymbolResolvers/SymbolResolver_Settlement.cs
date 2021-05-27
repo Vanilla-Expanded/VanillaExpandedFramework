@@ -7,7 +7,7 @@ using Verse.AI.Group;
 
 namespace KCSG
 {
-    internal class SymbolResolver_KCSG_Settlement : SymbolResolver
+    internal class SymbolResolver_Settlement : SymbolResolver
     {
         public override void Resolve(ResolveParams rp)
         {
@@ -57,12 +57,14 @@ namespace KCSG
             resolveParams.singlePawnSpawnCellExtraPredicate = (rp.singlePawnSpawnCellExtraPredicate ?? ((IntVec3 x) => map.reachability.CanReachMapEdge(x, traverseParms)));
             if (resolveParams.pawnGroupMakerParams == null && faction.def.pawnGroupMakers.Any(pgm => pgm.kindDef == PawnGroupKindDefOf.Settlement))
             {
-                resolveParams.pawnGroupMakerParams = new PawnGroupMakerParms();
-                resolveParams.pawnGroupMakerParams.tile = map.Tile;
-                resolveParams.pawnGroupMakerParams.faction = faction;
-                resolveParams.pawnGroupMakerParams.points = (rp.settlementPawnGroupPoints ?? SymbolResolver_Settlement.DefaultPawnsPoints.RandomInRange);
-                resolveParams.pawnGroupMakerParams.inhabitants = true;
-                resolveParams.pawnGroupMakerParams.seed = rp.settlementPawnGroupSeed;
+                resolveParams.pawnGroupMakerParams = new PawnGroupMakerParms
+                {
+                    tile = map.Tile,
+                    faction = faction,
+                    points = rp.settlementPawnGroupPoints ?? RimWorld.BaseGen.SymbolResolver_Settlement.DefaultPawnsPoints.RandomInRange,
+                    inhabitants = true,
+                    seed = rp.settlementPawnGroupSeed
+                };
             }
             if (faction.def.pawnGroupMakers.Any(pgm => pgm.kindDef == PawnGroupKindDefOf.Settlement)) BaseGen.symbolStack.Push("pawnGroup", resolveParams, null);
         }
@@ -105,14 +107,13 @@ namespace KCSG
 
             if (rp.faction.def == FactionDefOf.Empire || (sld.addLandingPad && ModLister.RoyaltyInstalled))
             {
-                if (!rp.rect.TryFindRandomInnerRect(new IntVec2(9, 9), out CellRect rect, null))
+                if (rp.rect.TryFindRandomInnerRect(new IntVec2(9, 9), out CellRect rect, null))
                 {
-                    return;
+                    ResolveParams resolveParams = rp;
+                    resolveParams.rect = rect;
+                    BaseGen.symbolStack.Push("landingPad", resolveParams, null);
+                    BaseGen.globalSettings.basePart_landingPadsResolved++;
                 }
-                ResolveParams resolveParams = rp;
-                resolveParams.rect = rect;
-                BaseGen.symbolStack.Push("landingPad", resolveParams, null);
-                BaseGen.globalSettings.basePart_landingPadsResolved++;
             }
 
             Log.Message($"Generation stopped - {DateTime.Now.ToShortTimeString()} - Time taken {(DateTime.Now - startTime).TotalMilliseconds} ms - Seed was {seed}.");

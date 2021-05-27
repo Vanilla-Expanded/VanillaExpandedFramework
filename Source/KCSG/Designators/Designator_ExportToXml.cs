@@ -52,7 +52,7 @@ namespace KCSG
 
         public override void DesignateMultiCell(IEnumerable<IntVec3> cells)
         {
-            Dialog_ExportWindow exportWindow = new Dialog_ExportWindow(base.Map, cells.ToList());
+            Dialog_ExportWindow exportWindow = new Dialog_ExportWindow(base.Map, cells.ToList(), null);
             Find.WindowStack.Add(exportWindow);
         }
     }

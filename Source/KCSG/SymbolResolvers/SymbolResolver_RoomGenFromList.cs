@@ -4,7 +4,7 @@ using Verse;
 
 namespace KCSG
 {
-    internal class SymbolResolver_KCSG_RoomGenFromList : SymbolResolver
+    internal class SymbolResolver_RoomGenFromList : SymbolResolver
     {
         public override void Resolve(ResolveParams rp)
         {
@@ -26,9 +26,8 @@ namespace KCSG
                 if (keyValue.Value.isStorage)
                 {
                     ResolveParams rstock = rp;
-                    //rect.TryFindRandomInnerRect(minRectSize, out rstock.rect);
-                    rstock.rect = CellRect.CenteredOn(center, width-2, height-2);
-                    BaseGen.symbolStack.Push("stockpile", rstock, null);
+                    rstock.rect = CellRect.CenteredOn(center, width - 2, height - 2);
+                    BaseGen.symbolStack.Push("kcsg_storagezone", rstock, null);
                 }
             }
         }

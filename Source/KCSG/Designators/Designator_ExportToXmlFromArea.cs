@@ -64,7 +64,7 @@ namespace KCSG
                 RectUtils.EdgeFromArea(a.ActiveCells.ToList(), out int height, out int width);
                 List<IntVec3> cellExport = RectUtils.AreaToSquare(a, height, width);
 
-                Dialog_ExportWindow exportWindow = new Dialog_ExportWindow(base.Map, cellExport);
+                Dialog_ExportWindow exportWindow = new Dialog_ExportWindow(base.Map, cellExport, a);
                 Find.WindowStack.Add(exportWindow);
             }, false, true, base.Map);
         }

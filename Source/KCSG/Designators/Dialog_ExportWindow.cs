@@ -8,6 +8,7 @@ namespace KCSG
 {
     internal class Dialog_ExportWindow : Window
     {
+        private readonly Area area;
         private readonly List<IntVec3> cells = new List<IntVec3>();
         private readonly Map map;
         private readonly Dictionary<IntVec3, List<Thing>> pairsCellThingList = new Dictionary<IntVec3, List<Thing>>();
@@ -17,17 +18,16 @@ namespace KCSG
         private string defname = "Placeholder";
         private bool isStorage = false;
         private bool needRoyalty = false;
-        private XElement structureL;
 
         private string symbolPrefix = "Required";
         private List<XElement> symbols = new List<XElement>();
         private string tempTagToAdd = "Optional, see tutorial";
 
-        public Dialog_ExportWindow(Map map, List<IntVec3> cells)
+        public Dialog_ExportWindow(Map map, List<IntVec3> cells, Area area)
         {
             this.map = map;
             this.cells = cells;
-            LayoutUtils.FillCellThingsList(cells, this.map, this.pairsCellThingList);
+            this.area = area;
             // Window settings
             this.forcePause = true;
             this.doCloseX = false;
@@ -43,6 +43,7 @@ namespace KCSG
                 return new Vector2(800f, 800f);
             }
         }
+
         public override void DoWindowContents(Rect inRect)
         {
             this.DrawHeader();
@@ -57,14 +58,12 @@ namespace KCSG
             this.DrawFooter(inRect);
         }
 
-        private void CreateLayoutSymbols()
+        private XElement CreateLayout()
         {
-            this.symbols.Clear();
-            // Base
-            this.symbols = SymbolUtils.CreateSymbolIfNeeded(this.cells, this.map, symbolPrefix, pairsCellThingList);
-            this.structureL = LayoutUtils.CreateStructureDef(this.cells, this.map, symbolPrefix, LayoutUtils.FillpairsSymbolLabel(), pairsCellThingList);
+            XElement structureL = LayoutUtils.CreateStructureDef(this.cells, this.map, symbolPrefix, LayoutUtils.FillpairsSymbolLabel(), pairsCellThingList, area);
             // Defname change
-            structureL.SetElementValue("defName", defname);
+            XElement defName = new XElement("defName", defname);
+            structureL.AddFirst(defName);
             // Royalty change
             if (this.needRoyalty)
             {
@@ -105,6 +104,7 @@ namespace KCSG
                 }
                 structureL.Add(temp1);
             }
+            return structureL;
         }
 
         private void DrawDefNameChanger(float y)
@@ -127,8 +127,8 @@ namespace KCSG
                 }
                 else
                 {
-                    this.CreateLayoutSymbols();
-                    GUIUtility.systemCopyBuffer = structureL.ToString();
+                    LayoutUtils.FillCellThingsList(cells, this.map, this.pairsCellThingList);
+                    GUIUtility.systemCopyBuffer = this.CreateLayout().ToString();
                     Messages.Message("Copied to clipboard.", MessageTypeDefOf.TaskCompletion);
                 }
             }
@@ -140,8 +140,8 @@ namespace KCSG
                 }
                 else
                 {
-                    this.CreateLayoutSymbols();
-
+                    LayoutUtils.FillCellThingsList(cells, this.map, this.pairsCellThingList);
+                    this.symbols = SymbolUtils.CreateSymbolIfNeeded(this.cells, this.map, symbolPrefix, pairsCellThingList, area);
                     if (this.symbols.Count > 0)
                     {
                         string toCopy = "";
@@ -177,6 +177,7 @@ namespace KCSG
 
             Text.Anchor = TextAnchor.UpperLeft;
         }
+
         private void DrawRoyaltyChanger(float y)
         {
             Widgets.Label(new Rect(10, y, 200, 35), "Structure need royalty dlc:");
@@ -198,6 +199,7 @@ namespace KCSG
             Widgets.Label(new Rect(10, inRect.height - 90, 200, 35), "Symbols defName/symbol prefix:");
             symbolPrefix = Widgets.TextField(new Rect(220, inRect.height - 90, 480, 35), symbolPrefix);
         }
+
         private void DrawTagsEditing(float y)
         {
             Widgets.Label(new Rect(10, y, 200, 35), "Structure tags:");

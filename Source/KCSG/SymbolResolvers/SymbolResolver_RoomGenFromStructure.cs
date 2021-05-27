@@ -2,12 +2,11 @@
 using RimWorld.BaseGen;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Verse;
 
 namespace KCSG
 {
-    internal class SymbolResolver_KCSG_RoomGenFromStructure : SymbolResolver
+    internal class SymbolResolver_RoomGenFromStructure : SymbolResolver
     {
         private readonly List<IntVec3> tmpCells = new List<IntVec3>();
 

@@ -59,10 +59,10 @@ namespace KCSG
             }
         }
 
-        public static int GetMaxThingOnOneCell(List<IntVec3> cellExport, Map map, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
+        public static int GetMaxThingOnOneCell(List<IntVec3> cellExport, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
         {
             int max = 1;
-            foreach (var item in cellExport)
+            foreach (IntVec3 item in cellExport)
             {
                 List<Thing> things = pairsCellThingList.TryGetValue(item);
                 things.RemoveAll(t => t is Pawn || t.def.building == null || t.def.defName == "PowerConduit");

@@ -6,7 +6,7 @@ using Verse;
 
 namespace KCSG
 {
-    internal class SymbolResolver_KCSG_GenerateRoad : SymbolResolver
+    internal class SymbolResolver_GenerateRoad : SymbolResolver
     {
         private readonly List<IntVec3> tmpCells = new List<IntVec3>();
 

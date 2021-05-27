@@ -5,7 +5,7 @@
     <defName>KCSG_Settlement</defName>
     <symbol>kcsg_settlement</symbol>
     <resolvers>
-      <li Class="KCSG.SymbolResolver_KCSG_Settlement" />
+      <li Class="KCSG.SymbolResolver_Settlement" />
     </resolvers>
   </RuleDef>
 
@@ -13,7 +13,7 @@
     <defName>KCSG_RoomGenFromStructure</defName>
     <symbol>kcsg_roomsgenfromstructure</symbol>
     <resolvers>
-      <li Class="KCSG.SymbolResolver_KCSG_RoomGenFromStructure" />
+      <li Class="KCSG.SymbolResolver_RoomGenFromStructure" />
     </resolvers>
   </RuleDef>
 
@@ -21,7 +21,7 @@
     <defName>KCSG_RoomGenFromList</defName>
     <symbol>kcsg_roomgenfromlist</symbol>
     <resolvers>
-      <li Class="KCSG.SymbolResolver_KCSG_RoomGenFromList" />
+      <li Class="KCSG.SymbolResolver_RoomGenFromList" />
     </resolvers>
   </RuleDef>
 
@@ -29,15 +29,23 @@
     <defName>KCSG_GenerateRoad</defName>
     <symbol>kcsg_generateroad</symbol>
     <resolvers>
-      <li Class="KCSG.SymbolResolver_KCSG_GenerateRoad" />
+      <li Class="KCSG.SymbolResolver_GenerateRoad" />
     </resolvers>
   </RuleDef>
 
   <RuleDef>
-    <defName>KCSG_GrowingZone</defName>
-    <symbol>kcsg_growingzone</symbol>
+    <defName>KCSG_StorageZone</defName>
+    <symbol>kcsg_storagezone</symbol>
     <resolvers>
-      <li Class="KCSG.SymbolResolver_KCSG_GrowingZone" />
+      <li Class="KCSG.SymbolResolver_StorageZone" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_ThingSetOnlyRoofed</defName>
+    <symbol>kcsg_thingsetonlyroofed</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_ThingSetOnlyRoofed" />
     </resolvers>
   </RuleDef>
 </Defs>

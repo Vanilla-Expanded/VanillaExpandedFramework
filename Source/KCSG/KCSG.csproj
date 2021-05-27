@@ -68,9 +68,10 @@
     <Compile Include="Harmony\HideSettlementsForNomadicFactionsPatch.cs" />
     <Compile Include="Harmony\Init.cs" />
     <Compile Include="ScenPart_AddStartingStructure.cs" />
-    <Compile Include="SymbolResolvers\SymbolResolver_KCSG_GenerateRoad.cs" />
-    <Compile Include="SymbolResolvers\SymbolResolver_KCSG_GrowingZone.cs" />
-    <Compile Include="SymbolResolvers\SymbolResolver_KCSG_RoomGenFromList.cs" />
+    <Compile Include="SymbolResolvers\SymbolResolver_GenerateRoad.cs" />
+    <Compile Include="SymbolResolvers\SymbolResolver_RoomGenFromList.cs" />
+    <Compile Include="SymbolResolvers\SymbolResolver_StorageZone.cs" />
+    <Compile Include="SymbolResolvers\SymbolResolver_ThingSetOnlyRoofed.cs" />
     <Compile Include="TextureLoader.cs" />
     <Compile Include="KDefOf.cs" />
     <Compile Include="Utils\Algorithms\AStar.cs" />
@@ -94,8 +95,8 @@
     <Compile Include="Utils\GridUtils.cs" />
     <Compile Include="Utils\LayoutUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SymbolResolvers\SymbolResolver_KCSG_RoomGenFromStructure.cs" />
-    <Compile Include="SymbolResolvers\SymbolResolver_KCSG_Settlement.cs" />
+    <Compile Include="SymbolResolvers\SymbolResolver_RoomGenFromStructure.cs" />
+    <Compile Include="SymbolResolvers\SymbolResolver_Settlement.cs" />
     <Compile Include="Utils\Algorithms\CustomVector.cs" />
     <Compile Include="Utils\Algorithms\PoissonDiskSampling.cs" />
     <Compile Include="Utils\RectUtils.cs" />
