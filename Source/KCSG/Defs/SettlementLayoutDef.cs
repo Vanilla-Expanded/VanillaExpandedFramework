@@ -35,7 +35,7 @@ namespace KCSG
             });
             int minCount = Convert.ToInt32(array[1]);
             if (array.Length == 3)
-                return new StructOption(array[0], Convert.ToInt32(array[2]));
+                return new StructOption(array[0], minCount, Convert.ToInt32(array[2]));
             else
                 return new StructOption(array[0], minCount);
         }
@@ -57,9 +57,16 @@ namespace KCSG
 
         public override IEnumerable<string> ConfigErrors()
         {
-            if (settlementSize.x > 200) settlementSize.x = 200;
-            if (settlementSize.z > 200) settlementSize.z = 200;
-            Log.Warning($"SettlementLayoutDef {defName} has inccorect size of {settlementSize}, max is 200. Changing to 200...");
+            if (settlementSize.x > 200)
+            {
+                settlementSize.x = 200;
+                Log.Warning($"SettlementLayoutDef {defName} has inccorect x size of {settlementSize}, max is 200. Changing to 200...");
+            }
+            if (settlementSize.z > 200)
+            {
+                settlementSize.z = 200;
+                Log.Warning($"SettlementLayoutDef {defName} has inccorect y size of {settlementSize}, max is 200. Changing to 200...");
+            }
 
             foreach (string str in allowedStructures)
             {

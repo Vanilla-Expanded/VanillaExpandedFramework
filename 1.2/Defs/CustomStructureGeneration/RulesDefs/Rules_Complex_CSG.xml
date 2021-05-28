@@ -48,4 +48,12 @@
       <li Class="KCSG.SymbolResolver_ThingSetOnlyRoofed" />
     </resolvers>
   </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_SingleThingRoofed</defName>
+    <symbol>kcsg_thingroofed</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_SingleThingRoofed" />
+    </resolvers>
+  </RuleDef>
 </Defs>

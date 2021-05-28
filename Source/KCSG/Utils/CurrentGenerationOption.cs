@@ -25,6 +25,8 @@ namespace KCSG
 
         public static List<CustomVector> vectors;
 
+        public static List<TerrainDef> preRoadTypes;
+
         public static bool useStructureLayout;
 
         public static bool usePathCostReduction;
@@ -42,6 +44,7 @@ namespace KCSG
             vectStruct = null;
             doors = null;
             vectors = null;
+            preRoadTypes = null;
             
             useStructureLayout = false;
             usePathCostReduction = false;

@@ -70,6 +70,7 @@
     <Compile Include="ScenPart_AddStartingStructure.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_GenerateRoad.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_RoomGenFromList.cs" />
+    <Compile Include="SymbolResolvers\SymbolResolver_SingleThingRoofed.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_StorageZone.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_ThingSetOnlyRoofed.cs" />
     <Compile Include="TextureLoader.cs" />

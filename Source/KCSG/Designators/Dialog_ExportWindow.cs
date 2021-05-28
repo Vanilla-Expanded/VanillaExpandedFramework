@@ -62,7 +62,7 @@ namespace KCSG
         {
             XElement structureL = LayoutUtils.CreateStructureDef(this.cells, this.map, symbolPrefix, LayoutUtils.FillpairsSymbolLabel(), pairsCellThingList, area);
             // Defname change
-            XElement defName = new XElement("defName", defname);
+            XElement defName = new XElement("defName", symbolPrefix + defname);
             structureL.AddFirst(defName);
             // Royalty change
             if (this.needRoyalty)

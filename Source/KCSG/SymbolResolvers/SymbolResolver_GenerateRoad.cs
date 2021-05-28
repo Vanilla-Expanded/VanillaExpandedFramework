@@ -20,7 +20,7 @@ namespace KCSG
                 y = rp.rect.Corners.ElementAt(2).z;
             Map map = BaseGen.globalSettings.map;
 
-            CurrentGenerationOption.doors.RemoveAll(d => !AnyEmptyCellAround(d, CurrentGenerationOption.grid));
+            // CurrentGenerationOption.doors.RemoveAll(d => !AnyEmptyCellAround(d, CurrentGenerationOption.grid));
             GridUtils.AddRoadToGrid(CurrentGenerationOption.grid, CurrentGenerationOption.doors);
 
             for (int i = 0; i < CurrentGenerationOption.grid.Length; i++)
@@ -37,7 +37,7 @@ namespace KCSG
 
                         case CellType.MAINROAD:
                             SpawnConduit(cell, BaseGen.globalSettings.map);
-                            GenUtils.GenerateTerrainAt(map, cell, CurrentGenerationOption.settlementLayoutDef.mainRoadDef);
+                            GenUtils.GenerateTerrainAt(map, cell, CurrentGenerationOption.preRoadTypes.Count > 0 ? CurrentGenerationOption.preRoadTypes.RandomElement() : CurrentGenerationOption.settlementLayoutDef.mainRoadDef);
                             break;
 
                         default:

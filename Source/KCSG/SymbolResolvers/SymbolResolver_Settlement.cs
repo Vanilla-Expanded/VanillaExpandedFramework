@@ -1,6 +1,7 @@
 ﻿using RimWorld;
 using RimWorld.BaseGen;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using Verse.AI.Group;
@@ -74,9 +75,9 @@ namespace KCSG
             DateTime startTime = DateTime.Now;
             Log.Message($"Starting generation - {startTime.ToShortTimeString()}");
             int seed = new Random().Next(0, 100000);
+            
             CurrentGenerationOption.offset = rp.rect.Corners.ElementAt(2);
             CurrentGenerationOption.fullRect = rp.rect;
-
             CurrentGenerationOption.grid = GridUtils.GenerateGrid(seed, sld, map, out CurrentGenerationOption.vectStruct);
 
             ResolveParams usl_rp = rp;
@@ -105,7 +106,7 @@ namespace KCSG
                 n++;
             }
 
-            if (rp.faction.def == FactionDefOf.Empire || (sld.addLandingPad && ModLister.RoyaltyInstalled))
+            if (sld.addLandingPad && ModLister.RoyaltyInstalled)
             {
                 if (rp.rect.TryFindRandomInnerRect(new IntVec2(9, 9), out CellRect rect, null))
                 {

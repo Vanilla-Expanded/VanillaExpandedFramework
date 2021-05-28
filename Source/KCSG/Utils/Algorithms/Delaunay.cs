@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Verse;
 
 namespace KCSG
 {
@@ -149,7 +150,7 @@ namespace KCSG
 
             if (div == 0)
             {
-                throw new DivideByZeroException();
+                Log.Error(new DivideByZeroException().ToString());
             }
 
             CustomVector center = new CustomVector(aux1 / div, aux2 / div);

@@ -179,6 +179,21 @@ namespace KCSG
 
         public static void PreClean(Map map, CellRect rect)
         {
+            if (map.TileInfo.Roads.Count > 0)
+            {
+                CurrentGenerationOption.preRoadTypes = new List<TerrainDef>();
+                foreach (RimWorld.Planet.Tile.RoadLink roadLink in map.TileInfo.Roads)
+                {
+                    foreach (RoadDefGenStep rgs in roadLink.road.roadGenSteps)
+                    {
+                        if (rgs is RoadDefGenStep_Place rgsp && rgsp != null && rgsp.place is TerrainDef t && t != null && t != TerrainDefOf.Bridge)
+                        {
+                            CurrentGenerationOption.preRoadTypes.Add(t);
+                        }
+                    }
+                }
+            }
+
             foreach (IntVec3 c in rect)
             {
                 c.GetThingList(map).ToList()

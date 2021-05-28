@@ -114,7 +114,7 @@ namespace KCSG
             CurrentGenerationOption.usePathCostReduction = false;
             int mapWidth = sld.settlementSize.x,
                 mapHeight = sld.settlementSize.z,
-                maxTries = 50,
+                maxTries = 60,
                 radius = 9999;
 
             // layout choice and radius
@@ -151,7 +151,7 @@ namespace KCSG
                     {
                         grid[i][j].Type = CellType.WATER;
                     }
-                        
+                       
                 }
             }
             // Main road
@@ -170,6 +170,23 @@ namespace KCSG
                     DrawYMainRoad(grid, mapWidth, mapHeight, 50, r);
                 }
             }
+
+            if (CurrentGenerationOption.preRoadTypes?.Count > 0)
+            {
+                for (int i = 0; i < mapWidth; i++)
+                {
+                    for (int j = 0; j < mapHeight; j++)
+                    {
+                        TerrainDef t = map.terrainGrid.TerrainAt(new IntVec3(CurrentGenerationOption.offset.x + i, 0, CurrentGenerationOption.offset.y + j));
+                        if (CurrentGenerationOption.preRoadTypes.Contains(t))
+                        {
+                            grid[i][j].Type = CellType.MAINROAD;
+                        }
+
+                    }
+                }
+            }
+
             CurrentGenerationOption.usePathCostReduction = true;
             // Buildings
             CurrentGenerationOption.vectors = PoissonDiskSampling.Run(radius + 1, maxTries, mapWidth, mapHeight, r, grid);

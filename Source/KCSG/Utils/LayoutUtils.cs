@@ -64,9 +64,16 @@ namespace KCSG
                         if (!aAdded.Contains(thing) && thing.Position == first)
                         {
                             SymbolDef symbolDef;
-                            if (thing.Stuff != null && thing.def.rotatable) symbolDef = pairsSymbolLabel.Values.ToList().Find(s => s.thingDef == thing.def && s.stuffDef == thing.Stuff && s.rotation == thing.Rotation);
-                            else if (thing.Stuff != null && !thing.def.rotatable) symbolDef = pairsSymbolLabel.Values.ToList().Find(s => s.thingDef == thing.def && s.stuffDef == thing.Stuff);
-                            else symbolDef = pairsSymbolLabel.Values.ToList().Find(s => s.thingDef == thing.def);
+                            if (thing.Stuff != null)
+                            {
+                                if (thing.def.rotatable) symbolDef = pairsSymbolLabel.Values.ToList().Find(s => s.thingDef == thing.def && s.stuffDef == thing.Stuff && s.rotation == thing.Rotation);
+                                else symbolDef = pairsSymbolLabel.Values.ToList().Find(s => s.thingDef == thing.def && s.stuffDef == thing.Stuff);
+                            }
+                            else
+                            {
+                                if (thing.def.rotatable) symbolDef = pairsSymbolLabel.Values.ToList().Find(s => s.thingDef == thing.def && s.rotation == thing.Rotation);
+                                else symbolDef = pairsSymbolLabel.Values.ToList().Find(s => s.thingDef == thing.def);
+                            }
 
                             if (symbolDef == null)
                             {
@@ -79,6 +86,7 @@ namespace KCSG
                             }
                             else
                             {
+                                Log.Message($"{symbolDef}");
                                 if (i2 + 1 == width) temp += symbolDef.symbol;
                                 else temp += symbolDef.symbol + ",";
                             }

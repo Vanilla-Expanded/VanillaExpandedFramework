@@ -30,7 +30,7 @@ namespace KCSG
             {
                 ResolveParams resolveParams = rp;
                 resolveParams.singleThingToSpawn = list[i];
-                BaseGen.symbolStack.Push("thing", resolveParams, null);
+                BaseGen.symbolStack.Push("kcsg_thingroofed", resolveParams, null);
             }
         }
     }

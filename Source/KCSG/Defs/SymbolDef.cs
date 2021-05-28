@@ -72,5 +72,10 @@ namespace KCSG
             // if (this.containPawnKind != null && containPawnKindDef == null) Log.Warning("Tried to load SymbolDef with non-existant pawnKind " + this.thing + " for containPawnKind");
             // if (this.pawnKindDef != null && pawnKindDefNS == null) Log.Warning("Tried to load SymbolDef with non-existant pawnKindDef: " + this.pawnKindDef);
         }
+
+        public override string ToString()
+        {
+            return symbol + " " + thing + " " + rotation.ToStringHuman();
+        }
     }
 }
