@@ -1,7 +1,6 @@
 ﻿using RimWorld;
 using RimWorld.BaseGen;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using Verse.AI.Group;
@@ -75,7 +74,7 @@ namespace KCSG
             DateTime startTime = DateTime.Now;
             Log.Message($"Starting generation - {startTime.ToShortTimeString()}");
             int seed = new Random().Next(0, 100000);
-            
+
             CurrentGenerationOption.offset = rp.rect.Corners.ElementAt(2);
             CurrentGenerationOption.fullRect = rp.rect;
             CurrentGenerationOption.grid = GridUtils.GenerateGrid(seed, sld, map, out CurrentGenerationOption.vectStruct);

@@ -51,11 +51,11 @@ namespace KCSG
             }
         }
 
-        public static CustomVector PlaceAt(CustomVector point, StructureLayoutDef building, CustomVector[][] grid)
+        public static List<CustomVector> PlaceAt(CustomVector point, StructureLayoutDef building, CustomVector[][] grid)
         {
-            CustomVector result = new CustomVector(0, 0);
             RectUtils.HeightWidthFromLayout(building, out int height, out int width);
             List<CustomVector> doors = GetDoorsInLayout(building);
+            List<CustomVector> doorsAdjusted = new List<CustomVector>();
 
             for (int i = (int)point.X; i < width + point.X; i++)
             {
@@ -64,8 +64,7 @@ namespace KCSG
                     CellType type = doors.FindAll(d => i == d.X + point.X && j == d.Y + point.Y).Any() ? CellType.DOOR : CellType.BUILDING;
                     if (type == CellType.DOOR)
                     {
-                        result.X = i;
-                        result.Y = j;
+                        doorsAdjusted.Add(new CustomVector(i, j));
                     }
 
                     if (grid[i][j] != null)
@@ -75,7 +74,7 @@ namespace KCSG
                 }
             }
 
-            return result;
+            return doorsAdjusted;
         }
 
         public static List<CustomVector> Run(SettlementLayoutDef sld, CustomVector[][] grid, List<CustomVector> points, int maxTries, Random r, out Dictionary<CustomVector, StructureLayoutDef> vectStruct)
@@ -96,7 +95,7 @@ namespace KCSG
                     if (CanPlaceAt(vector, b, grid))
                     {
                         vectStruct.Add(vector, b);
-                        doors.Add(PlaceAt(vector, b, grid));
+                        doors.AddRange(PlaceAt(vector, b, grid));
                         if (structCount.ContainsKey(option.structureLayoutTag))
                         {
                             structCount[option.structureLayoutTag]++;

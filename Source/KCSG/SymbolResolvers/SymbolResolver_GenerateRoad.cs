@@ -20,7 +20,6 @@ namespace KCSG
                 y = rp.rect.Corners.ElementAt(2).z;
             Map map = BaseGen.globalSettings.map;
 
-            // CurrentGenerationOption.doors.RemoveAll(d => !AnyEmptyCellAround(d, CurrentGenerationOption.grid));
             GridUtils.AddRoadToGrid(CurrentGenerationOption.grid, CurrentGenerationOption.doors);
 
             for (int i = 0; i < CurrentGenerationOption.grid.Length; i++)
