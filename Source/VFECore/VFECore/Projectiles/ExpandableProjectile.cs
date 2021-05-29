@@ -207,7 +207,17 @@ namespace VFECore
 			Quaternion quat = Quaternion.LookRotation(currentPos - startingPosition);
 			Vector3 pos = (startingPosition + currentPos) / 2f;
 			pos.y = 10;
-			pos += Quaternion.Euler(0, (startingPosition - currentPos).AngleFlat(), 0) * def.startingPositionOffset;
+			if (this.launcher.Rotation == Rot4.West)
+			{
+				Vector3 startingPositionOffsetMirrored = this.def.startingPositionOffset;
+				startingPositionOffsetMirrored.x = -startingPositionOffsetMirrored.x;
+				pos += Quaternion.Euler(0, (startingPosition - currentPos).AngleFlat(), 0) * startingPositionOffsetMirrored;
+			}
+		
+			else {
+				pos += Quaternion.Euler(0, (startingPosition - currentPos).AngleFlat(), 0) * def.startingPositionOffset;
+
+			}
 
 			var distance = Vector3.Distance(startingPosition, currentPos) * def.totalSizeScale;
 			var distanceToTarget = Vector3.Distance(startingPosition, destination);
@@ -233,7 +243,18 @@ namespace VFECore
 
 			Vector3 pos = (startingPosition + currentPos) / 2f;
 			pos.y = 10;
-			pos += Quaternion.Euler(0, (startingPosition - currentPos).AngleFlat(), 0) * this.def.startingPositionOffset;
+			if (this.launcher.Rotation == Rot4.West)
+            {
+				Vector3 startingPositionOffsetMirrored = this.def.startingPositionOffset;
+				startingPositionOffsetMirrored.x = -startingPositionOffsetMirrored.x;
+				pos += Quaternion.Euler(0, (startingPosition - currentPos).AngleFlat(), 0) * startingPositionOffsetMirrored;
+
+
+			}
+			else {
+				pos += Quaternion.Euler(0, (startingPosition - currentPos).AngleFlat(), 0) * this.def.startingPositionOffset;
+
+			}
 
 			var distance = Vector3.Distance(startingPosition, currentPos) * this.def.totalSizeScale;
 			var distanceToTarget = Vector3.Distance(startingPosition, currentPos);
