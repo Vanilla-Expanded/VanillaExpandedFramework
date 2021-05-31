@@ -15,6 +15,7 @@ namespace MVCF
 
         public static readonly List<string> IgnoredMods = new List<string>
         {
+            "Misc. Robots++",
             "Dragon's Descent",
             "[RWY]Dragon's Descent: Void Dwellers",
             "Genetic Rim",

@@ -21,10 +21,22 @@ namespace MVCF.Comps
         public override void PostLoad()
         {
             base.PostLoad();
-            LongEventHandler.ExecuteWhenFinished(delegate
-            {
-                foreach (var props in verbProps) props.Initialize();
-            });
+            if (verbProps != null)
+                LongEventHandler.ExecuteWhenFinished(delegate
+                {
+                    foreach (var props in verbProps) props?.Initialize();
+                });
+        }
+
+        public override IEnumerable<string> ConfigErrors(HediffDef parentDef)
+        {
+            foreach (var error in base.ConfigErrors(parentDef)) yield return error;
+
+            if (verbProps == null)
+                yield return "No verbProps provided!";
+            else
+                foreach (var error in verbProps.SelectMany(prop => prop.ConfigErrors(parentDef)))
+                    yield return error;
         }
     }
 
@@ -57,7 +69,7 @@ namespace MVCF.Comps
             if (verbProps != null)
                 LongEventHandler.ExecuteWhenFinished(delegate
                 {
-                    foreach (var props in verbProps) props.Initialize();
+                    foreach (var props in verbProps) props?.Initialize();
                 });
         }
 
@@ -65,8 +77,11 @@ namespace MVCF.Comps
         {
             foreach (var error in base.ConfigErrors(parentDef)) yield return error;
 
-            foreach (var error in verbProps.SelectMany(prop => prop.ConfigErrors()))
-                yield return error;
+            if (verbProps == null)
+                yield return "No verbProps provided!";
+            else
+                foreach (var error in verbProps.SelectMany(prop => prop.ConfigErrors(parentDef)))
+                    yield return error;
         }
 
         public AdditionalVerbProps PropsFor(Verb verb)
@@ -103,6 +118,34 @@ namespace MVCF.Comps
         public Texture2D ToggleIcon { get; protected set; }
         public Texture2D Icon { get; protected set; }
         public Graphic Graphic { get; protected set; }
+
+        public virtual IEnumerable<string> ConfigErrors(ThingDef parentDef)
+        {
+            foreach (var error in ConfigErrors()) yield return error;
+
+            var matches = parentDef.Verbs.Count(vb => vb.label == label);
+            if (matches == 0) yield return $"Could not find verb on parent with label \"{label}\"";
+            if (matches > 1)
+                yield return $"Found too many verbs on parent with label \"{label}\". Expected 1, found {matches}";
+        }
+
+        public virtual IEnumerable<string> ConfigErrors(HediffDef parentDef)
+        {
+            foreach (var error in ConfigErrors()) yield return error;
+            if (!(parentDef.comps.FirstOrDefault(comp =>
+                    typeof(HediffCompProperties_VerbGiver).IsAssignableFrom(comp.compClass)) is
+                HediffCompProperties_VerbGiver verbGiver))
+            {
+                yield return "Could not find HediffCompProperties_VerbGiver, meaning this has VerbProps and no verbs.";
+            }
+            else
+            {
+                var matches = verbGiver.verbs.Count(vb => vb.label == label);
+                if (matches == 0) yield return $"Could not find verb on parent with label \"{label}\"";
+                if (matches > 1)
+                    yield return $"Found too many verbs on parent with label \"{label}\". Expected 1, found {matches}";
+            }
+        }
 
         public virtual IEnumerable<string> ConfigErrors()
         {

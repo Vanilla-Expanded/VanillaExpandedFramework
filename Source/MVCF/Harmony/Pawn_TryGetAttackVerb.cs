@@ -36,7 +36,9 @@ namespace MVCF.Harmony
                 // Human Resources:
                 DefDatabase<JobDef>.GetNamedSilentFail("TrainWeapon"),
                 DefDatabase<JobDef>.GetNamedSilentFail("PlayAtDummy"),
-                DefDatabase<JobDef>.GetNamedSilentFail("PlayAtTarget")
+                DefDatabase<JobDef>.GetNamedSilentFail("PlayAtTarget"),
+                // Hardcore SK:
+                DefDatabase<JobDef>.GetNamedSilentFail("AnimalRangeAttack")
             }.Where(def => def != null).ToList();
         }
 
