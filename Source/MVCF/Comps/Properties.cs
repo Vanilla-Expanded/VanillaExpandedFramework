@@ -132,18 +132,17 @@ namespace MVCF.Comps
         public virtual IEnumerable<string> ConfigErrors(HediffDef parentDef)
         {
             foreach (var error in ConfigErrors()) yield return error;
-            if (!(parentDef.comps.FirstOrDefault(comp =>
-                    typeof(HediffCompProperties_VerbGiver).IsAssignableFrom(comp.compClass)) is
-                HediffCompProperties_VerbGiver verbGiver))
-            {
-                yield return "Could not find HediffCompProperties_VerbGiver, meaning this has VerbProps and no verbs.";
-            }
-            else
+            if (parentDef.comps.OfType<HediffCompProperties_VerbGiver>().FirstOrDefault() is
+                HediffCompProperties_VerbGiver verbGiver)
             {
                 var matches = verbGiver.verbs.Count(vb => vb.label == label);
                 if (matches == 0) yield return $"Could not find verb on parent with label \"{label}\"";
                 if (matches > 1)
                     yield return $"Found too many verbs on parent with label \"{label}\". Expected 1, found {matches}";
+            }
+            else
+            {
+                yield return "Could not find HediffCompProperties_VerbGiver, meaning this has VerbProps and no verbs.";
             }
         }
 
