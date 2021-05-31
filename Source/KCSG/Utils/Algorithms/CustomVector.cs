@@ -12,7 +12,6 @@ namespace KCSG
         GROWING,
         ROAD,
         MAINROAD,
-        PLANT,
         WATER
     }
 
@@ -56,10 +55,6 @@ namespace KCSG
                     else if (Type == CellType.ROAD && CurrentGenerationOption.usePathCostReduction)
                     {
                         return DistanceToTarget + (Cost * 0.4f);
-                    }
-                    else if (Type == CellType.WATER)
-                    {
-                        return DistanceToTarget + (Cost * 1.6f);
                     }
                     else
                     {

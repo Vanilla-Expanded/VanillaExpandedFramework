@@ -32,7 +32,7 @@ namespace KCSG
 
                 foreach (CustomVector n in adjacencies)
                 {
-                    if (!ClosedList.Contains(n) && (n.Type == CellType.NONE || n.Type == CellType.ROAD || n.Type == CellType.DOOR || n.Type == CellType.MAINROAD))
+                    if (!ClosedList.Contains(n) && n.Type != CellType.WATER && n.Type != CellType.BUILDING)
                     {
                         if (!OpenList.Contains(n))
                         {

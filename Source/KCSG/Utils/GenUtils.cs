@@ -179,7 +179,7 @@ namespace KCSG
 
         public static void PreClean(Map map, CellRect rect)
         {
-            if (map.TileInfo.Roads.Count > 0)
+            if (map.TileInfo?.Roads?.Count > 0)
             {
                 CurrentGenerationOption.preRoadTypes = new List<TerrainDef>();
                 foreach (RimWorld.Planet.Tile.RoadLink roadLink in map.TileInfo.Roads)
