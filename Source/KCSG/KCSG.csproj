@@ -94,6 +94,7 @@
     <Compile Include="Harmony\PrepareCarefully_Fix.cs" />
     <Compile Include="Utils\Algorithms\Delaunay.cs" />
     <Compile Include="Utils\CurrentGenerationOption.cs" />
+    <Compile Include="Utils\Dialog_GeneratingWindow.cs" />
     <Compile Include="Utils\GenUtils.cs" />
     <Compile Include="Utils\GridUtils.cs" />
     <Compile Include="Utils\LayoutUtils.cs" />

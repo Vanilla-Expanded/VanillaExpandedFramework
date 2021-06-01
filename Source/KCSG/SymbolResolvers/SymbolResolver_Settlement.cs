@@ -11,6 +11,8 @@ namespace KCSG
     {
         public override void Resolve(ResolveParams rp)
         {
+            
+
             Map map = BaseGen.globalSettings.map;
             rp.faction = rp.faction ?? Find.FactionManager.RandomEnemyFaction(false, false, true, TechLevel.Undefined);
 
@@ -72,7 +74,6 @@ namespace KCSG
             int seed = new Random().Next(0, 100000);
 
             CurrentGenerationOption.offset = rp.rect.Corners.ElementAt(2);
-            CurrentGenerationOption.fullRect = rp.rect;
             CurrentGenerationOption.grid = GridUtils.GenerateGrid(seed, sld, map);
 
             BaseGen.symbolStack.Push("kcsg_roomgenfromlist", rp, null);

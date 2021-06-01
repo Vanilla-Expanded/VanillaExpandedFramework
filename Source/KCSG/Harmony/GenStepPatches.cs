@@ -3,6 +3,8 @@ using RimWorld;
 using RimWorld.BaseGen;
 using RimWorld.Planet;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Verse;
 
 namespace KCSG
@@ -24,7 +26,7 @@ namespace KCSG
 
                 return false;
             }
-            else if (Find.World.worldObjects.AllWorldObjects.Find(o => o.Tile == map.Tile && o.def.HasModExtension<KCSG.FactionSettlement>()) is WorldObject worldObject)
+            else if (Find.World.worldObjects.AllWorldObjects.Find(o => o.Tile == map.Tile && o.def.HasModExtension<FactionSettlement>()) is WorldObject worldObject)
             {
                 FactionSettlement factionSettlement = worldObject.def.GetModExtension<FactionSettlement>();
 

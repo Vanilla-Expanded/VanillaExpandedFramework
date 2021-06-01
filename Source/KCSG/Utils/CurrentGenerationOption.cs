@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using Verse;
 
 namespace KCSG
@@ -7,15 +9,9 @@ namespace KCSG
     {
         public static CustomVector[][] grid;
 
-        public static int seed;
-
-        public static IntVec2 gridStartPoint;
-
         public static IntVec3 offset;
 
         public static int radius;
-
-        public static CellRect fullRect;
 
         public static SettlementLayoutDef settlementLayoutDef;
 
@@ -37,11 +33,7 @@ namespace KCSG
         {
             grid = null;
 
-            seed = default;
-
-            gridStartPoint = IntVec2.Invalid;
             offset = IntVec3.Invalid;
-            fullRect = CellRect.Empty;
 
             settlementLayoutDef = null;
             structureLayoutDef = null;

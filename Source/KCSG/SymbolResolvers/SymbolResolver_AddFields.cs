@@ -12,7 +12,7 @@ namespace KCSG
     {
         public override void Resolve(ResolveParams rp)
         {
-            Random r = new Random(CurrentGenerationOption.seed);
+            Random r = new Random();
             List<CustomVector> allFields = new List<CustomVector>();
 
             foreach (CustomVector c in CurrentGenerationOption.vectors)
