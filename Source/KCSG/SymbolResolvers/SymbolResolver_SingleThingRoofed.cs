@@ -7,6 +7,8 @@ namespace KCSG
 {
     internal class SymbolResolver_SingleThingRoofed : SymbolResolver
     {
+        private IntVec3 spawnPosition;
+
         public override bool CanResolve(ResolveParams rp)
         {
             if (!base.CanResolve(rp))
@@ -14,45 +16,22 @@ namespace KCSG
                 return false;
             }
 
-            return this.TryFindSpawnCellForItem(rp.rect, out _);
+            return this.TryFindSpawnCellForItem(rp.rect, out spawnPosition);
         }
 
         public override void Resolve(ResolveParams rp)
         {
-            
-            ThingDef thingDef = rp.singleThingDef;
-            if (thingDef == null)
+            if (rp.singleThingToSpawn != null && !rp.singleThingToSpawn.Spawned)
             {
-                thingDef = (from x in ThingSetMakerUtility.allGeneratableItems where x.IsWeapon || x.IsMedicine || x.IsDrug select x).RandomElement<ThingDef>();
-            }
-
-            if (thingDef.category == ThingCategory.Item)
-            {
-                if (!this.TryFindSpawnCellForItem(rp.rect, out IntVec3 intVec))
+                if (spawnPosition.IsValid)
                 {
-                    if (rp.singleThingToSpawn != null)
-                    {
-                        rp.singleThingToSpawn.Destroy(DestroyMode.Vanish);
-                    }
-                    return;
+                    Thing thing = rp.singleThingToSpawn;
+                    GenSpawn.Spawn(thing, spawnPosition, BaseGen.globalSettings.map, Rot4.North, WipeMode.Vanish, false)?.SetForbidden(true, false);
                 }
-
-                ThingDef stuff = GenStuff.RandomStuffInexpensiveFor(thingDef, rp.faction, null);
-                Thing thing = ThingMaker.MakeThing(thingDef, stuff);
-                thing.stackCount = 1;
-                
-                if (thing.def.CanHaveFaction && thing.Faction != rp.faction)
+                else
                 {
-                    thing.SetFaction(rp.faction, null);
+                    rp.singleThingToSpawn.Destroy(DestroyMode.Vanish);
                 }
-
-                CompQuality compQuality = thing.TryGetComp<CompQuality>();
-                if (compQuality != null)
-                {
-                    compQuality.SetQuality(QualityUtility.GenerateQualityBaseGen(), ArtGenerationContext.Outsider);
-                }
-                
-                GenSpawn.Spawn(thing, intVec, BaseGen.globalSettings.map, Rot4.North, WipeMode.Vanish, false)?.SetForbidden(true, false);
             }
         }
 

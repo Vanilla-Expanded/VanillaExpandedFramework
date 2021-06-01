@@ -68,7 +68,9 @@
     <Compile Include="Harmony\HideSettlementsForNomadicFactionsPatch.cs" />
     <Compile Include="Harmony\Init.cs" />
     <Compile Include="ScenPart_AddStartingStructure.cs" />
-    <Compile Include="SymbolResolvers\SymbolResolver_GenerateRoad.cs" />
+    <Compile Include="SymbolResolvers\SymbolResolver_AddFields.cs" />
+    <Compile Include="SymbolResolvers\SymbolResolver_GenerateRoadPower.cs" />
+    <Compile Include="SymbolResolvers\SymbolResolver_GridSecondPass.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_RoomGenFromList.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_SingleThingRoofed.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_StorageZone.cs" />

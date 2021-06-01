@@ -77,14 +77,14 @@ namespace KCSG
             return doorsAdjusted;
         }
 
-        public static List<CustomVector> Run(SettlementLayoutDef sld, CustomVector[][] grid, List<CustomVector> points, int maxTries, Random r, out Dictionary<CustomVector, StructureLayoutDef> vectStruct)
+        public static List<CustomVector> Run(SettlementLayoutDef sld, CustomVector[][] grid, int maxTries)
         {
-            vectStruct = new Dictionary<CustomVector, StructureLayoutDef>();
+            CurrentGenerationOption.vectStruct = new Dictionary<CustomVector, StructureLayoutDef>();
 
             Dictionary<string, int> structCount = new Dictionary<string, int>();
 
             List<CustomVector> doors = new List<CustomVector>();
-            foreach (CustomVector vector in points)
+            foreach (CustomVector vector in CurrentGenerationOption.vectors.ListFullCopy())
             {
                 for (int i = 0; i < maxTries; i++)
                 {
@@ -92,9 +92,10 @@ namespace KCSG
                     List<StructureLayoutDef> all = DefDatabase<StructureLayoutDef>.AllDefsListForReading.FindAll(s => s.tags.Contains(option.structureLayoutTag));
                     if (!ModLister.RoyaltyInstalled) all.RemoveAll(s => s.requireRoyalty);
                     StructureLayoutDef b = all.RandomElement();
+                    
                     if (CanPlaceAt(vector, b, grid))
                     {
-                        vectStruct.Add(vector, b);
+                        CurrentGenerationOption.vectStruct.Add(vector, b);
                         doors.AddRange(PlaceAt(vector, b, grid));
                         if (structCount.ContainsKey(option.structureLayoutTag))
                         {
@@ -117,29 +118,29 @@ namespace KCSG
             List<CustomVector> doors = new List<CustomVector>();
             foreach (List<string> layout in building.layouts)
             {
-                int lineN = 0;
-
                 List<string> rLayout = layout.ListFullCopy();
                 rLayout.Reverse();
 
-                foreach (string str in rLayout)
+                for (int row = 0; row < rLayout.Count; row++)
                 {
-                    string[] array = str.Split(',');
-                    for (int i = 0; i < array.Length; i++)
+                    string[] array = rLayout[row].Split(',');
+                    for (int col = 0; col < array.Length; col++)
                     {
-                        if (array[i] != ".")
+                        if (array[col] != ".")
                         {
-                            SymbolDef tempS = DefDatabase<SymbolDef>.GetNamed(array[i]);
+                            SymbolDef tempS = DefDatabase<SymbolDef>.GetNamed(array[col]);
                             if (tempS.thingDef != null && tempS.thingDef.altitudeLayer == AltitudeLayer.DoorMoveable)
                             {
-                                doors.Add(new CustomVector(i, lineN));
+                                doors.Add(new CustomVector(col, row));
                             }
                         }
                     }
-                    lineN++;
                 }
             }
-
+            if (doors.Count == 0)
+            {
+                doors.Add(new CustomVector(0, 0));
+            }
             return doors;
         }
 

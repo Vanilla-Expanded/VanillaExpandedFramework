@@ -8,10 +8,10 @@ namespace KCSG
     {
         NONE,
         BUILDING,
-        DOOR,
-        GROWING,
-        ROAD,
+        BUILDINGPASSABLE,
         MAINROAD,
+        ROAD,
+        DOOR,
         WATER
     }
 
@@ -55,6 +55,10 @@ namespace KCSG
                     else if (Type == CellType.ROAD && CurrentGenerationOption.usePathCostReduction)
                     {
                         return DistanceToTarget + (Cost * 0.4f);
+                    }
+                    else if (Type == CellType.BUILDINGPASSABLE && CurrentGenerationOption.usePathCostReduction)
+                    {
+                        return DistanceToTarget + (Cost * 2f);
                     }
                     else
                     {

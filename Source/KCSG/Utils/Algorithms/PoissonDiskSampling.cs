@@ -7,7 +7,7 @@ namespace KCSG
     public static class PoissonDiskSampling
     {
         /// https://bl.ocks.org/mbostock/raw/dbb02448b0f93e4c82c3/?raw=true
-        public static List<CustomVector> Run(int radius, int maxTries, int Width, int Height, Random r, CustomVector[][] grid)
+        public static List<CustomVector> Run(int maxTries, int Width, int Height, Random r, CustomVector[][] grid)
         {
             List<CustomVector> points = new List<CustomVector>();
             List<CustomVector> active = new List<CustomVector>();
@@ -28,13 +28,13 @@ namespace KCSG
                     /* Pick a random angle */
                     int theta = r.Next(361);
                     /* Pick a random radius between r and 1.5r */
-                    int new_radius = r.Next(radius, (int)(1.5f * radius));
+                    int new_radius = r.Next(CurrentGenerationOption.radius, (int)(1.5f * CurrentGenerationOption.radius));
                     /* Find X & Y coordinates relative to point p */
                     int pnewx = (int)(p.X + new_radius * Math.Cos(ConvertToRadians(theta)));
                     int pnewy = (int)(p.Y + new_radius * Math.Sin(ConvertToRadians(theta)));
                     CustomVector pnew = new CustomVector(pnewx, pnewy);
 
-                    if (IsInBound(pnew, Width, Height, radius) && InsideCircles(pnew, radius, points))
+                    if (IsInBound(pnew, Width, Height, CurrentGenerationOption.radius) && InsideCircles(pnew, CurrentGenerationOption.radius, points))
                     {
                         points.Add(pnew);
                         active.Add(pnew);

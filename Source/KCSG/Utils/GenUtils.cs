@@ -225,7 +225,7 @@ namespace KCSG
         #region Power Function
 
         // Vanilla function, remade to be able to use subsurface conduit when mod loaded
-        public static void EnsureBatteriesConnectedAndMakeSense(Map map, List<Thing> tmpThings, Dictionary<PowerNet, bool> tmpPowerNetPredicateResults, List<IntVec3> tmpCells, ThingDef conduit)
+        public static void EnsureBatteriesConnectedAndMakeSense(Map map, List<Thing> tmpThings, Dictionary<PowerNet, bool> tmpPowerNetPredicateResults, List<IntVec3> tmpCells, ThingDef conduit, bool spawnTransmitters = true)
         {
             tmpThings.Clear();
             tmpThings.AddRange(map.listerThings.ThingsInGroup(ThingRequestGroup.BuildingArtificial));
@@ -241,7 +241,7 @@ namespace KCSG
                         if (TryFindClosestReachableNet(compPowerBattery.parent.Position, (PowerNet x) => HasAnyPowerGenerator(x), map, out PowerNet powerNet2, out IntVec3 dest, tmpPowerNetPredicateResults))
                         {
                             map.floodFiller.ReconstructLastFloodFillPath(dest, tmpCells);
-                            if (powerNet2 != null)
+                            if (powerNet2 != null && spawnTransmitters)
                             {
                                 SpawnTransmitters(tmpCells, map, compPowerBattery.parent.Faction, conduit);
                             }
@@ -251,7 +251,7 @@ namespace KCSG
             }
         }
 
-        public static void EnsurePowerUsersConnected(Map map, List<Thing> tmpThings, Dictionary<PowerNet, bool> tmpPowerNetPredicateResults, List<IntVec3> tmpCells, ThingDef conduit)
+        public static void EnsurePowerUsersConnected(Map map, List<Thing> tmpThings, Dictionary<PowerNet, bool> tmpPowerNetPredicateResults, List<IntVec3> tmpCells, ThingDef conduit, bool spawnTransmitters = true)
         {
             tmpThings.Clear();
             tmpThings.AddRange(map.listerThings.ThingsInGroup(ThingRequestGroup.BuildingArtificial));
@@ -269,13 +269,13 @@ namespace KCSG
                     else
                     {
                         map.powerNetManager.UpdatePowerNetsAndConnections_First();
-                        if (TryFindClosestReachableNet(powerComp.parent.Position, (PowerNet x) => x.CurrentEnergyGainRate() - powerComp.Props.basePowerConsumption * CompPower.WattsToWattDaysPerTick > 1E-07f, map, out PowerNet powerNet2, out IntVec3 dest, tmpPowerNetPredicateResults))
+                        if (TryFindClosestReachableNet(powerComp.parent.Position, (PowerNet x) => x.CurrentEnergyGainRate() - powerComp.Props.basePowerConsumption * CompPower.WattsToWattDaysPerTick > 1E-07f, map, out PowerNet powerNet2, out IntVec3 dest, tmpPowerNetPredicateResults) && spawnTransmitters)
                         {
                             map.floodFiller.ReconstructLastFloodFillPath(dest, tmpCells);
                             SpawnTransmitters(tmpCells, map, tmpThings[i].Faction, conduit);
                             TryTurnOnImmediately(powerComp, map);
                         }
-                        else if (TryFindClosestReachableNet(powerComp.parent.Position, (PowerNet x) => x.CurrentStoredEnergy() > 1E-07f, map, out powerNet2, out dest, tmpPowerNetPredicateResults))
+                        else if (TryFindClosestReachableNet(powerComp.parent.Position, (PowerNet x) => x.CurrentStoredEnergy() > 1E-07f, map, out powerNet2, out dest, tmpPowerNetPredicateResults) && spawnTransmitters)
                         {
                             map.floodFiller.ReconstructLastFloodFillPath(dest, tmpCells);
                             SpawnTransmitters(tmpCells, map, tmpThings[i].Faction, conduit);
@@ -285,7 +285,7 @@ namespace KCSG
             }
         }
 
-        public static void EnsureGeneratorsConnectedAndMakeSense(Map map, List<Thing> tmpThings, Dictionary<PowerNet, bool> tmpPowerNetPredicateResults, List<IntVec3> tmpCells, ThingDef conduit)
+        public static void EnsureGeneratorsConnectedAndMakeSense(Map map, List<Thing> tmpThings, Dictionary<PowerNet, bool> tmpPowerNetPredicateResults, List<IntVec3> tmpCells, ThingDef conduit, bool spawnTransmitters = true)
         {
             tmpThings.Clear();
             tmpThings.AddRange(map.listerThings.ThingsInGroup(ThingRequestGroup.BuildingArtificial));
@@ -297,7 +297,7 @@ namespace KCSG
                     if (powerNet == null || !HasAnyPowerUser(powerNet))
                     {
                         map.powerNetManager.UpdatePowerNetsAndConnections_First();
-                        if (TryFindClosestReachableNet(tmpThings[i].Position, (PowerNet x) => HasAnyPowerUser(x), map, out PowerNet powerNet2, out IntVec3 dest, tmpPowerNetPredicateResults))
+                        if (TryFindClosestReachableNet(tmpThings[i].Position, (PowerNet x) => HasAnyPowerUser(x), map, out PowerNet powerNet2, out IntVec3 dest, tmpPowerNetPredicateResults) && spawnTransmitters)
                         {
                             map.floodFiller.ReconstructLastFloodFillPath(dest, tmpCells);
                             SpawnTransmitters(tmpCells, map, tmpThings[i].Faction, conduit);

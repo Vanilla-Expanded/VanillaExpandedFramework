@@ -17,6 +17,7 @@
     </resolvers>
   </RuleDef>
 
+  <!-- Procedural settlement (in order)-->
   <RuleDef>
     <defName>KCSG_RoomGenFromList</defName>
     <symbol>kcsg_roomgenfromlist</symbol>
@@ -24,15 +25,7 @@
       <li Class="KCSG.SymbolResolver_RoomGenFromList" />
     </resolvers>
   </RuleDef>
-
-  <RuleDef>
-    <defName>KCSG_GenerateRoad</defName>
-    <symbol>kcsg_generateroad</symbol>
-    <resolvers>
-      <li Class="KCSG.SymbolResolver_GenerateRoad" />
-    </resolvers>
-  </RuleDef>
-
+  <!-- If storage -->
   <RuleDef>
     <defName>KCSG_StorageZone</defName>
     <symbol>kcsg_storagezone</symbol>
@@ -54,6 +47,31 @@
     <symbol>kcsg_thingroofed</symbol>
     <resolvers>
       <li Class="KCSG.SymbolResolver_SingleThingRoofed" />
+    </resolvers>
+  </RuleDef>
+
+  <!-- Continue -->
+  <RuleDef>
+    <defName>SymbolResolver_GridSecondPass</defName>
+    <symbol>kcsg_gridsecondpass</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_GridSecondPass" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_GenerateRoad</defName>
+    <symbol>kcsg_generateroad</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_GenerateRoadPower" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_AddFields</defName>
+    <symbol>kcsg_addfields</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_AddFields" />
     </resolvers>
   </RuleDef>
 </Defs>

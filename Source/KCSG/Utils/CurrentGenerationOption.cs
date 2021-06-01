@@ -7,6 +7,8 @@ namespace KCSG
     {
         public static CustomVector[][] grid;
 
+        public static int seed;
+
         public static IntVec2 gridStartPoint;
 
         public static IntVec3 offset;
@@ -34,6 +36,8 @@ namespace KCSG
         public static void ClearAll()
         {
             grid = null;
+
+            seed = default;
 
             gridStartPoint = IntVec2.Invalid;
             offset = IntVec3.Invalid;
