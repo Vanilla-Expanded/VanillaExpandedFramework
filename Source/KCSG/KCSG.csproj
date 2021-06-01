@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="Harmony\HideSettlementsForNomadicFactionsPatch.cs" />
     <Compile Include="Harmony\Init.cs" />
+    <Compile Include="Harmony\SettlementUtility_Patch.cs" />
     <Compile Include="ScenPart_AddStartingStructure.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_AddFields.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_GenerateRoadPower.cs" />

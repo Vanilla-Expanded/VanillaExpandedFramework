@@ -2,9 +2,8 @@
 using RimWorld;
 using RimWorld.BaseGen;
 using RimWorld.Planet;
+using System;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Verse;
 
 namespace KCSG
