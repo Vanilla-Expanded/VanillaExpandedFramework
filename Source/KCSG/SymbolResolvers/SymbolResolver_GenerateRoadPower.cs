@@ -30,20 +30,23 @@ namespace KCSG
                 for (int j = 0; j < CurrentGenerationOption.grid[i].Length; j++)
                 {
                     IntVec3 cell = new IntVec3(x + i, 0, y - j);
-                    switch (CurrentGenerationOption.grid[i][j].Type)
+                    if (cell.InBounds(map))
                     {
-                        case CellType.ROAD:
-                            SpawnConduit(cell, BaseGen.globalSettings.map);
-                            GenUtils.GenerateTerrainAt(map, cell, CurrentGenerationOption.settlementLayoutDef.roadDef);
-                            break;
+                        switch (CurrentGenerationOption.grid[i][j].Type)
+                        {
+                            case CellType.ROAD:
+                                SpawnConduit(cell, BaseGen.globalSettings.map);
+                                GenUtils.GenerateTerrainAt(map, cell, CurrentGenerationOption.settlementLayoutDef.roadDef);
+                                break;
 
-                        case CellType.MAINROAD:
-                            SpawnConduit(cell, BaseGen.globalSettings.map);
-                            GenUtils.GenerateTerrainAt(map, cell, CurrentGenerationOption.preRoadTypes.Count > 0 ? CurrentGenerationOption.preRoadTypes.RandomElement() : CurrentGenerationOption.settlementLayoutDef.mainRoadDef);
-                            break;
+                            case CellType.MAINROAD:
+                                SpawnConduit(cell, BaseGen.globalSettings.map);
+                                GenUtils.GenerateTerrainAt(map, cell, CurrentGenerationOption.preRoadTypes.Count > 0 ? CurrentGenerationOption.preRoadTypes.RandomElement() : CurrentGenerationOption.settlementLayoutDef.mainRoadDef);
+                                break;
 
-                        default:
-                            break;
+                            default:
+                                break;
+                        }
                     }
                 }
             }

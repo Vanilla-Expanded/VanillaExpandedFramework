@@ -127,8 +127,8 @@ namespace KCSG
         /// <returns></returns>
         public static CustomVector[][] GenerateGrid(int seed, SettlementLayoutDef sld, Map map)
         {
-            int mapWidth = sld.settlementSize.x,
-                mapHeight = sld.settlementSize.z;
+            int mapWidth = Math.Min(map.Size.x, sld.settlementSize.x),
+                mapHeight = Math.Min(map.Size.z, sld.settlementSize.z);
 
             // Search for the smallest sized allowed structure. It will be the radius between potential building spawn points
             CurrentGenerationOption.radius = 9999;
