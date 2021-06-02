@@ -16,5 +16,7 @@ namespace KCSG
         public static ThingDef KCSG_PowerConduit;
 
         public static TerrainAffordanceDef ShallowWater;
+
+        public static MapGeneratorDef KCSG_Base_Faction;
     }
 }

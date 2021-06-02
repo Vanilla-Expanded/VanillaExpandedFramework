@@ -66,6 +66,7 @@ namespace KCSG
                     seed = rp.settlementPawnGroupSeed
                 };
             }
+            if (CurrentGenerationOption.settlementLayoutDef != null) resolveParams.pawnGroupMakerParams.points *= CurrentGenerationOption.settlementLayoutDef.pawnGroupMultiplier;
             if (faction.def.pawnGroupMakers.Any(pgm => pgm.kindDef == PawnGroupKindDefOf.Settlement)) BaseGen.symbolStack.Push("pawnGroup", resolveParams, null);
         }
 

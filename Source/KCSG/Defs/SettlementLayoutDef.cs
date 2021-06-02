@@ -55,6 +55,8 @@ namespace KCSG
         public bool vanillaLikeDefense = false;
         public bool addLandingPad = false;
 
+        public float pawnGroupMultiplier = 1f;
+
         public override IEnumerable<string> ConfigErrors()
         {
             if (settlementSize.x > 200)

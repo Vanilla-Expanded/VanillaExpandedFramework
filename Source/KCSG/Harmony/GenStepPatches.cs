@@ -8,7 +8,7 @@ using Verse;
 
 namespace KCSG
 {
-    [StaticConstructorOnStartup]
+    /*[StaticConstructorOnStartup]
     [HarmonyPatch(typeof(GenStep_Settlement))]
     [HarmonyPatch("ScatterAt", MethodType.Normal)]
     public class GenStep_Settlement_Patch
@@ -36,7 +36,7 @@ namespace KCSG
             }
             else return true;
         }
-    }
+    }*/
 
     [StaticConstructorOnStartup]
     [HarmonyPatch(typeof(GenStep_Power))]

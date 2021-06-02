@@ -65,9 +65,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GenStep\GenStep_KCSGSettlement.cs" />
     <Compile Include="Harmony\HideSettlementsForNomadicFactionsPatch.cs" />
     <Compile Include="Harmony\Init.cs" />
-    <Compile Include="Harmony\SettlementUtility_Patch.cs" />
+    <Compile Include="Harmony\MapGeneratorDef_Patches.cs" />
     <Compile Include="ScenPart_AddStartingStructure.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_AddFields.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_GenerateRoadPower.cs" />
@@ -95,7 +96,6 @@
     <Compile Include="Harmony\PrepareCarefully_Fix.cs" />
     <Compile Include="Utils\Algorithms\Delaunay.cs" />
     <Compile Include="Utils\CurrentGenerationOption.cs" />
-    <Compile Include="Utils\Dialog_GeneratingWindow.cs" />
     <Compile Include="Utils\GenUtils.cs" />
     <Compile Include="Utils\GridUtils.cs" />
     <Compile Include="Utils\LayoutUtils.cs" />
