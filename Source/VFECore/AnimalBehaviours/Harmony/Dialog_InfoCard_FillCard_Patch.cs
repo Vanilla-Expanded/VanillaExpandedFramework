@@ -15,7 +15,7 @@ namespace AnimalBehaviours
 		public static AnimalStatExtension extension;
 		public static Rect rect;
 
-		public static bool Prefix(Rect cardRect, Dialog_InfoCard __instance, Thing ___thing)
+		public static bool Prefix(Rect cardRect, Dialog_InfoCard __instance, Thing ___thing, Dialog_InfoCard.InfoCardTab ___tab)
 		{
 			Pawn pawn = ___thing as Pawn;
 			rect = cardRect;
@@ -35,10 +35,8 @@ namespace AnimalBehaviours
 					extension = pawn.def.GetModExtension<AnimalStatExtension>();
 					if (extension.showImageInInfoCard)
 					{
-						Type typ = typeof(Dialog_InfoCard);
-						FieldInfo type = typ.GetField("tab", BindingFlags.Instance | BindingFlags.NonPublic);
-						Dialog_InfoCard.InfoCardTab tab = (Dialog_InfoCard.InfoCardTab)type.GetValue(__instance);
-						if (tab == Dialog_InfoCard.InfoCardTab.Stats) {
+						
+						if (___tab == Dialog_InfoCard.InfoCardTab.Stats) {
 							Texture2D texture = ContentFinder<Texture2D>.Get(extension.ImageToShowInInfoCard, false);
 							Rect position = rect.AtZero();
 							position.width = 384f;
