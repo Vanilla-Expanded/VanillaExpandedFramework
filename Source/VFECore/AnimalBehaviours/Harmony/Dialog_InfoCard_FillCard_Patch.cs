@@ -17,11 +17,11 @@ namespace AnimalBehaviours
 
 		public static bool Prefix(Rect cardRect, Dialog_InfoCard __instance, Thing ___thing, Dialog_InfoCard.InfoCardTab ___tab)
 		{
-			Pawn pawn = ___thing as Pawn;
+			Thing thing = ___thing as Thing;
 			rect = cardRect;
 			bool result;
 			
-			if (pawn == null)
+			if (thing == null)
 			{
 				
 				result = true;
@@ -29,10 +29,10 @@ namespace AnimalBehaviours
 			else
 			{
 				
-				if (pawn.def.GetModExtension<AnimalStatExtension>() != null)
+				if (thing.def.GetModExtension<AnimalStatExtension>() != null)
 				{
 					
-					extension = pawn.def.GetModExtension<AnimalStatExtension>();
+					extension = thing.def.GetModExtension<AnimalStatExtension>();
 					if (extension.showImageInInfoCard)
 					{
 						
