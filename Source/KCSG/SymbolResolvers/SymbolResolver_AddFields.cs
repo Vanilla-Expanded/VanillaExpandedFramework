@@ -41,22 +41,9 @@ namespace KCSG
         {
             foreach (CustomVector customVector in allFields)
             {
-                if (customVector.DistanceTo(point) < distance)
+                if (customVector.DistanceToPow(point) < Math.Pow(distance, 2))
                     return false;
             }
-            return true;
-        }
-
-        private static bool IsInBound(int X, int Y, int gridWidth, int gridHeight)
-        {
-            if (X < 0)
-                return false;
-            if (X >= gridWidth)
-                return false;
-            if (Y < 0)
-                return false;
-            if (Y >= gridHeight)
-                return false;
             return true;
         }
     }

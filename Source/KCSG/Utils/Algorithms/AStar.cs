@@ -24,7 +24,7 @@ namespace KCSG
             OpenList.Add(start);
 
             while (OpenList.Count > 0 && !ClosedList.Exists(v => v.X == end.X && v.Y == end.Y))
-            {
+            {               
                 current = OpenList[0];
                 OpenList.Remove(current);
                 ClosedList.Add(current);

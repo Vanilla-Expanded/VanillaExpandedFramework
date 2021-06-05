@@ -87,6 +87,11 @@ namespace KCSG
             return Math.Sqrt(Math.Pow(X - otherVector.X, 2) + Math.Pow(Y - otherVector.Y, 2));
         }
 
+        public double DistanceToPow(CustomVector otherVector)
+        {
+            return Math.Pow(X - otherVector.X, 2) + Math.Pow(Y - otherVector.Y, 2);
+        }
+
         public override string ToString() => $"{nameof(CustomVector)} {X:0.##}@{Y:0.##}";
     }
 }
