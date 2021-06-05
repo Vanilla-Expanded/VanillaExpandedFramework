@@ -88,6 +88,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompDieAfterPeriod.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDigPeriodically.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDigWhenHungry.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompDiseaseImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompEatWeirdFood.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompElectrified.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompExplodingEggLayer.cs" />
@@ -119,6 +120,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DieAfterPeriod.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DigPeriodically.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DigWhenHungry.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DiseaseImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_EatWeirdFood.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Electrified.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ExplodingEggLayer.cs" />
