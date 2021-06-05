@@ -16,8 +16,9 @@ namespace KCSG
 
         public override void Resolve(ResolveParams rp)
         {
-            Map map = BaseGen.globalSettings.map;
+            CurrentGenerationOption.currentGenStep = "Generating single structure";
 
+            Map map = BaseGen.globalSettings.map;
             StructureLayoutDef rld = CurrentGenerationOption.structureLayoutDef;
 
             foreach (List<String> item in rld.layouts)
@@ -28,8 +29,6 @@ namespace KCSG
             GenUtils.EnsureBatteriesConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, KDefOf.KCSG_PowerConduit);
             GenUtils.EnsurePowerUsersConnected(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, KDefOf.KCSG_PowerConduit);
             GenUtils.EnsureGeneratorsConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, KDefOf.KCSG_PowerConduit);
-
-            CurrentGenerationOption.ClearAll();
         }
     }
 }

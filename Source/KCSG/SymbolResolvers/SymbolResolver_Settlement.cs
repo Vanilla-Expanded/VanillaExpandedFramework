@@ -11,7 +11,7 @@ namespace KCSG
     {
         public override void Resolve(ResolveParams rp)
         {
-            
+            CurrentGenerationOption.currentGenStep = "Generating settlement";
 
             Map map = BaseGen.globalSettings.map;
             rp.faction = rp.faction ?? Find.FactionManager.RandomEnemyFaction(false, false, true, TechLevel.Undefined);
@@ -53,7 +53,7 @@ namespace KCSG
             resolveParams.rect = rp.rect;
             resolveParams.faction = faction;
             resolveParams.singlePawnLord = singlePawnLord;
-            resolveParams.pawnGroupKindDef = (rp.pawnGroupKindDef ?? PawnGroupKindDefOf.Settlement);
+            resolveParams.pawnGroupKindDef = CurrentGenerationOption.settlementLayoutDef?.groupKindDef ?? rp.pawnGroupKindDef ?? PawnGroupKindDefOf.Settlement;
             resolveParams.singlePawnSpawnCellExtraPredicate = (rp.singlePawnSpawnCellExtraPredicate ?? ((IntVec3 x) => map.reachability.CanReachMapEdge(x, traverseParms)));
             if (resolveParams.pawnGroupMakerParams == null && faction.def.pawnGroupMakers.Any(pgm => pgm.kindDef == PawnGroupKindDefOf.Settlement))
             {
@@ -71,7 +71,7 @@ namespace KCSG
         }
 
         private void GenerateRooms(SettlementLayoutDef sld, Map map, ResolveParams rp)
-        {           
+        {
             int seed = new Random().Next(0, 100000);
 
             CurrentGenerationOption.offset = rp.rect.Corners.ElementAt(2);

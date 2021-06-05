@@ -12,7 +12,8 @@ namespace KCSG
         MAINROAD,
         ROAD,
         DOOR,
-        WATER
+        WATER,
+        FIELD
     }
 
     public class CustomVector

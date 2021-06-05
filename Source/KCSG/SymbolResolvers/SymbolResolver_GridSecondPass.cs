@@ -15,6 +15,8 @@ namespace KCSG
 
         private void CleanGrid(ResolveParams rp, Map map)
         {
+            CurrentGenerationOption.currentGenStep = "Preparing road generation";
+
             int x = rp.rect.Corners.ElementAt(2).x,
                 y = rp.rect.Corners.ElementAt(2).z;
 
@@ -27,6 +29,7 @@ namespace KCSG
                     {
                         if (!cell.Roofed(map))
                         {
+                            CurrentGenerationOption.currentGenStepMoreInfo = $"Changing {cell} value";
                             if (cell.GetFirstBuilding(map) is Building b && b != null)
                             {
                                 if (b.def.passability != Traversability.Impassable)

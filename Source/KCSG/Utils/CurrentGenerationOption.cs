@@ -7,6 +7,20 @@ namespace KCSG
 {
     public struct CurrentGenerationOption
     {
+        /*-------- Loading screen --------*/
+        public static bool useCustomWindowContent;
+
+        public static DateTime dateTime;
+
+        public static string currentGenStep;
+
+        public static string currentGenStepMoreInfo;
+
+        public static List<string> allTip;
+
+        public static bool tipAvailable;
+
+        /*------ Generation options ------*/
         public static CustomVector[][] grid;
 
         public static IntVec3 offset;
@@ -29,19 +43,22 @@ namespace KCSG
 
         public static bool usePathCostReduction;
 
+        public static void ClearUI()
+        {
+            useCustomWindowContent = false;
+            dateTime = default;
+            currentGenStep = "";
+            currentGenStepMoreInfo = "";
+            UIMenuBackgroundManager.background = null;
+        }
+
         public static void ClearAll()
         {
             grid = null;
-
-            offset = IntVec3.Invalid;
-
-            settlementLayoutDef = null;
-            structureLayoutDef = null;
-            vectStruct = null;
-            doors = null;
-            vectors = null;
-            preRoadTypes = null;
-            
+            if (vectStruct != null) vectStruct.Clear();
+            if (doors != null) doors.Clear();
+            if (vectors != null) vectors.Clear();
+            if (preRoadTypes != null) preRoadTypes.Clear();
             useStructureLayout = false;
             usePathCostReduction = false;
         }

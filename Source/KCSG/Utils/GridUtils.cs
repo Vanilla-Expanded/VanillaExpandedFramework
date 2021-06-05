@@ -90,6 +90,7 @@ namespace KCSG
             int mapWidth = CurrentGenerationOption.settlementLayoutDef.settlementSize.x,
                 mapHeight = CurrentGenerationOption.settlementLayoutDef.settlementSize.z;
             // Delaunay to find neigbours doors to path to, and ensure each doors will have a road
+            CurrentGenerationOption.currentGenStepMoreInfo = "Running Delaunay algorithm";
             List<Triangle> triangulation = Delaunay.Run(doors, mapWidth, mapHeight).ToList();
             List<Edge> edges = new List<Edge>();
             foreach (Triangle triangle in triangulation)
@@ -99,6 +100,7 @@ namespace KCSG
                 edges.Add(new Edge(triangle.Vertices[2], triangle.Vertices[0]));
             }
             // A* to find the path in the grid
+            CurrentGenerationOption.currentGenStepMoreInfo = "Running A* algorithm";
             foreach (Edge ed in edges)
             {
                 if (ed != null && ed.Point1 != null && ed.Point2 != null)
@@ -127,6 +129,7 @@ namespace KCSG
         /// <returns></returns>
         public static CustomVector[][] GenerateGrid(int seed, SettlementLayoutDef sld, Map map)
         {
+            CurrentGenerationOption.currentGenStepMoreInfo = "Generating grid and main road";
             int mapWidth = Math.Min(map.Size.x, sld.settlementSize.x),
                 mapHeight = Math.Min(map.Size.z, sld.settlementSize.z);
 

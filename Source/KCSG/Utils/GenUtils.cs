@@ -67,9 +67,12 @@ namespace KCSG
                                 }
                             }
                         }
-                        else if (temp.isItem && temp.thingDef != null && cell.Walkable(map))
+                        else if (temp.isItem && temp.thingDef != null)
                         {
-                            thing = temp.thingDef.stuffCategories != null ? ThingMaker.MakeThing(temp.thingDef, GenStuff.RandomStuffFor(temp.thingDef)) : ThingMaker.MakeThing(temp.thingDef);
+                            if (temp.thingDef.stuffCategories?.Count > 0)
+                                thing = ThingMaker.MakeThing(temp.thingDef, GenStuff.RandomStuffFor(temp.thingDef));
+                            else
+                                thing = ThingMaker.MakeThing(temp.thingDef);
 
                             thing.stackCount = Mathf.Clamp(temp.stackCount.RandomInRange, 1, 75);
                             if (thing.TryGetComp<CompQuality>() != null) thing.TryGetComp<CompQuality>().SetQuality(QualityUtility.GenerateQualityRandomEqualChance(), ArtGenerationContext.Outsider);

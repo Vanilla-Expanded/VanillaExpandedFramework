@@ -68,7 +68,9 @@
     <Compile Include="GenStep\GenStep_KCSGSettlement.cs" />
     <Compile Include="Harmony\HideSettlementsForNomadicFactionsPatch.cs" />
     <Compile Include="Harmony\Init.cs" />
+    <Compile Include="Harmony\LongEventHandler_Patches.cs" />
     <Compile Include="Harmony\MapGeneratorDef_Patches.cs" />
+    <Compile Include="Harmony\SettlementUtility_Attack_Patch.cs" />
     <Compile Include="ScenPart_AddStartingStructure.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_AddFields.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_GenerateRoadPower.cs" />

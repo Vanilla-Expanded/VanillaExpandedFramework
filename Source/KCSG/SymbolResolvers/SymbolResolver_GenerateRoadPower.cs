@@ -10,18 +10,18 @@ namespace KCSG
     {
         public override void Resolve(ResolveParams rp)
         {
+            CurrentGenerationOption.currentGenStep = "Generating roads";
             Map map = BaseGen.globalSettings.map;
 
+            rp.rect.EdgeCells.ToList().ForEach(cell => SpawnConduit(cell, map));
+            CurrentGenerationOption.currentGenStepMoreInfo = "Connecting all buildings";
             GridUtils.AddRoadToGrid(CurrentGenerationOption.grid, CurrentGenerationOption.doors);
             GenerateRoad(rp, map);
-
-            rp.rect.EdgeCells.ToList().ForEach(cell => SpawnConduit(cell, map));
-            
-            BaseGen.symbolStack.Push("kcsg_addfields", rp, null);
         }
 
         private void GenerateRoad(ResolveParams rp, Map map)
         {
+            CurrentGenerationOption.currentGenStepMoreInfo = "Placing terrain";
             int x = rp.rect.Corners.ElementAt(2).x,
                 y = rp.rect.Corners.ElementAt(2).z;
 
@@ -41,7 +41,7 @@ namespace KCSG
 
                             case CellType.MAINROAD:
                                 SpawnConduit(cell, BaseGen.globalSettings.map);
-                                GenUtils.GenerateTerrainAt(map, cell, CurrentGenerationOption.preRoadTypes.Count > 0 ? CurrentGenerationOption.preRoadTypes.RandomElement() : CurrentGenerationOption.settlementLayoutDef.mainRoadDef);
+                                GenUtils.GenerateTerrainAt(map, cell, CurrentGenerationOption.preRoadTypes?.Count > 0 ? CurrentGenerationOption.preRoadTypes.RandomElement() : CurrentGenerationOption.settlementLayoutDef.mainRoadDef);
                                 break;
 
                             default:
@@ -50,6 +50,8 @@ namespace KCSG
                     }
                 }
             }
+
+            BaseGen.symbolStack.Push("kcsg_addfields", rp, null);
         }
 
         private void SpawnConduit(IntVec3 cell, Map map)
@@ -61,7 +63,7 @@ namespace KCSG
 
                 Thing c = ThingMaker.MakeThing(KDefOf.KCSG_PowerConduit);
                 c.SetFactionDirect(map.ParentFaction);
-                GenSpawn.Spawn(c, cell, map);
+                GenSpawn.Spawn(c, cell, map, WipeMode.VanishOrMoveAside);
             }
         }
     }

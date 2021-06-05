@@ -48,14 +48,14 @@ namespace KCSG
 
             if (!ClosedList.Exists(v => v.X == end.X && v.Y == end.Y))
             {
-                Console.WriteLine("AStar error: end point not found in ClosedList.");
+                Log.Message("AStar error: end point not found in ClosedList.");
                 return null;
             }
 
             CustomVector temp = ClosedList[ClosedList.IndexOf(current)];
             if (temp == null)
             {
-                Console.WriteLine("AStar error: temp is null.");
+                Log.Message("AStar error: temp is null.");
                 return null;
             }
 

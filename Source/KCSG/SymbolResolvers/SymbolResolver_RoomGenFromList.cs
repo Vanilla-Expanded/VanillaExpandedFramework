@@ -9,8 +9,12 @@ namespace KCSG
     {
         public override void Resolve(ResolveParams rp)
         {
+            CurrentGenerationOption.currentGenStep = "Generating structures";
+
             foreach (KeyValuePair<CustomVector, StructureLayoutDef> keyValue in CurrentGenerationOption.vectStruct)
             {
+                CurrentGenerationOption.currentGenStepMoreInfo = "Generating " + keyValue.Value.defName;
+
                 RectUtils.HeightWidthFromLayout(keyValue.Value, out int height, out int width);
                 IntVec3 limitMin = new IntVec3
                 {
@@ -36,6 +40,7 @@ namespace KCSG
             {
                 if (rp.rect.TryFindRandomInnerRect(new IntVec2(9, 9), out CellRect rect, null))
                 {
+                    CurrentGenerationOption.currentGenStepMoreInfo = "Generating landing pad";
                     ResolveParams resolveParams = rp;
                     resolveParams.rect = rect;
                     BaseGen.symbolStack.Push("landingPad", resolveParams, null);
