@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using Verse;
 
@@ -52,10 +53,13 @@ namespace KCSG
         public TerrainDef roadDef = null;
         public TerrainDef mainRoadDef = null;
 
+        public PawnGroupKindDef groupKindDef = null;
+
         public bool vanillaLikeDefense = false;
         public bool addLandingPad = false;
 
         public float pawnGroupMultiplier = 1f;
+        public float stockpileValueMultiplier = 1f;
 
         public override IEnumerable<string> ConfigErrors()
         {
