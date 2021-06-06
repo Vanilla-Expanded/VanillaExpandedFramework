@@ -24,11 +24,11 @@ namespace KCSG
             OpenList.Add(start);
 
             while (OpenList.Count > 0 && !ClosedList.Exists(v => v.X == end.X && v.Y == end.Y))
-            {               
+            {
                 current = OpenList[0];
                 OpenList.Remove(current);
                 ClosedList.Add(current);
-                adjacencies = GetAdjacentNodes(current, grid, neig8);
+                adjacencies = GetAdjacent(current, grid, neig8);
 
                 foreach (CustomVector n in adjacencies)
                 {
@@ -48,7 +48,7 @@ namespace KCSG
 
             if (!ClosedList.Exists(v => v.X == end.X && v.Y == end.Y))
             {
-                Log.Message("AStar error: end point not found in ClosedList.");
+                Log.Message($"AStar error: end point not found in ClosedList. Closed list count {ClosedList.Count}. Path wanted from {start} to {end}.");
                 return null;
             }
 
@@ -67,7 +67,7 @@ namespace KCSG
             return Path;
         }
 
-        private static List<CustomVector> GetAdjacentNodes(CustomVector n, CustomVector[][] grid, bool neig8)
+        public static List<CustomVector> GetAdjacent(CustomVector n, CustomVector[][] grid, bool neig8)
         {
             List<CustomVector> temp = new List<CustomVector>();
 

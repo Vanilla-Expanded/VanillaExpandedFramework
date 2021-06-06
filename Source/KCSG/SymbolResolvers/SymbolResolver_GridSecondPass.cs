@@ -10,7 +10,6 @@ namespace KCSG
         public override void Resolve(ResolveParams rp)
         {
             CleanGrid(rp, BaseGen.globalSettings.map);
-            BaseGen.symbolStack.Push("kcsg_generateroad", rp, null);
         }
 
         private void CleanGrid(ResolveParams rp, Map map)
@@ -45,6 +44,17 @@ namespace KCSG
                     }
                 }
             }
+
+            foreach (CustomVector item in CurrentGenerationOption.doors)
+            {
+                if (!AStar.GetAdjacent(item, CurrentGenerationOption.grid, false).FindAll(c => c.Type == CellType.NONE).Any())
+                {
+                    item.Type = CellType.BUILDING;
+                    CurrentGenerationOption.grid[(int)item.X][(int)item.Y].Type = CellType.BUILDING;
+                }
+            }
+
+            BaseGen.symbolStack.Push("kcsg_generateroad", rp, null);
         }
     }
 }

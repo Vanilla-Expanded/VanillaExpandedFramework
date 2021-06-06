@@ -133,11 +133,12 @@ namespace KCSG
                             {
                                 Rect rect = new Rect(gridRect.x + x + (i * rSize), gridRect.y + y + (j * rSize), rSize, rSize);
                                 CellType type = CurrentGenerationOption.grid[i][j].Type;
-                                GUI.color = type == CellType.BUILDING || type == CellType.BUILDINGPASSABLE || type == CellType.DOOR ? Color.black : 
+                                GUI.color = type == CellType.BUILDING || type == CellType.BUILDINGPASSABLE ? Color.black : 
+                                    (type == CellType.DOOR ? Color.red :
                                     (type == CellType.MAINROAD || type == CellType.ROAD ? Color.grey : 
                                     (type == CellType.WATER ? Color.blue :
                                     (type == CellType.FIELD ? Color.green : 
-                                    Color.clear)));
+                                    Color.clear))));
                                 GUI.DrawTexture(rect, BaseContent.WhiteTex);
                                 GUI.color = Color.white;
                             }

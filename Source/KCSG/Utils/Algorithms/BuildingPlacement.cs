@@ -137,10 +137,6 @@ namespace KCSG
                     }
                 }
             }
-            if (doors.Count == 0)
-            {
-                doors.Add(new CustomVector(0, 0));
-            }
             return doors;
         }
 

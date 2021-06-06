@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using RimWorld.BaseGen;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -122,6 +123,33 @@ namespace KCSG
                                 Thing c = ThingMaker.MakeThing(KDefOf.KCSG_PowerConduit);
                                 c.SetFactionDirect(map.ParentFaction);
                                 GenSpawn.Spawn(c, cell, map, WipeMode.FullRefund);
+                            }
+
+                            if (thing.def.building.IsMortar && thing.def.category == ThingCategory.Building && thing.def.building.buildingTags.Contains("Artillery_MannedMortar") && thing.def.HasComp(typeof(CompMannable)))
+                            {
+                                // Spawn pawn
+                                Lord singlePawnLord = LordMaker.MakeNewLord(map.ParentFaction, new LordJob_ManTurrets(), map, null);
+                                PawnGenerationRequest value = new PawnGenerationRequest(map.ParentFaction.RandomPawnKind(), map.ParentFaction, PawnGenerationContext.NonPlayer, map.Tile, mustBeCapableOfViolence: true, inhabitant: true);
+                                ResolveParams rpPawn = new ResolveParams
+                                {
+                                    faction = map.ParentFaction,
+                                    singlePawnGenerationRequest = new PawnGenerationRequest?(value),
+                                    rect = CellRect.SingleCell(thing.InteractionCell),
+                                    singlePawnLord = singlePawnLord
+                                };
+                                BaseGen.symbolStack.Push("pawn", rpPawn);
+                                // Spawn shells
+                                ThingDef shellDef = TurretGunUtility.TryFindRandomShellDef(thing.def, false, true, map.ParentFaction.def.techLevel, false, 250f);
+                                if (shellDef != null)
+                                {
+                                    ResolveParams rpShell = new ResolveParams
+                                    {
+                                        faction = map.ParentFaction,
+                                        singleThingDef = shellDef,
+                                        singleThingStackCount = Rand.RangeInclusive(8, Math.Min(12, shellDef.stackLimit))
+                                    };
+                                    BaseGen.symbolStack.Push("thing", rpShell);
+                                }
                             }
                         }
                     }
