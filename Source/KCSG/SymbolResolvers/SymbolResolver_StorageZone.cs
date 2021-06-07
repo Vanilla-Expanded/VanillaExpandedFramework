@@ -23,7 +23,7 @@ namespace KCSG
             float marketValue = rp.stockpileMarketValue ?? Mathf.Min((float)this.cells.Count * 130f, 1800f);
             marketValue *= CurrentGenerationOption.settlementLayoutDef.stockpileValueMultiplier;
             value.totalMarketValueRange = new FloatRange?(new FloatRange(marketValue, marketValue));
-            
+
             if (value.countRange == null)
             {
                 value.countRange = new IntRange?(new IntRange(this.cells.Count, this.cells.Count));

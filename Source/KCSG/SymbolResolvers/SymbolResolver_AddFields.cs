@@ -2,13 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Verse;
 
 namespace KCSG
 {
-    class SymbolResolver_AddFields : SymbolResolver
+    internal class SymbolResolver_AddFields : SymbolResolver
     {
         public override void Resolve(ResolveParams rp)
         {
@@ -30,7 +28,7 @@ namespace KCSG
                     int x = rp.rect.Corners.ElementAt(2).x,
                         y = rp.rect.Corners.ElementAt(2).z;
                     IntVec3 cell = new IntVec3(x + (int)c.X + CurrentGenerationOption.radius / 2, 0, y - (int)c.Y - CurrentGenerationOption.radius / 2);
-                    
+
                     gzp.rect = CellRect.CenteredOn(cell, 10, 10).ClipInsideRect(rp.rect);
                     BaseGen.symbolStack.Push("cultivatedPlants", gzp, null);
                 }

@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using UnityEngine;
+﻿using System.Collections.Generic;
 using Verse;
-using RimWorld;
 
 namespace KCSG
 {
@@ -17,7 +10,7 @@ namespace KCSG
 
         public List<StructureLayoutDef> chooseFromlayouts = new List<StructureLayoutDef>();
         public List<SettlementLayoutDef> chooseFromSettlements = new List<SettlementLayoutDef>();
-        
+
         public string symbolResolver = null;
 
         /* More option */

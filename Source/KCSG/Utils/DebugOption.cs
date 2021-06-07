@@ -31,16 +31,6 @@ namespace KCSG
             Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
         }
 
-        [DebugAction("Custom Structure Generation", "Quick test structure size", actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
-        private static void QuickTestStructureSize()
-        {
-            foreach (StructureLayoutDef sld in DefDatabase<StructureLayoutDef>.AllDefsListForReading)
-            {
-                RectUtils.HeightWidthFromLayout(sld, out int h, out int w);
-                Log.Message("Layout " + sld.defName + " Height: " + h + " Width: " + w);
-            }
-        }
-
         [DebugAction("Custom Structure Generation", "Destroy all hostile pawns on map", actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void RemoveAllHostilePawns()
         {

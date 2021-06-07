@@ -234,8 +234,8 @@ namespace KCSG
                     c.GetThingList(map).ToList().ForEach((t) => t.DeSpawn());
                 else
                     c.GetThingList(map).ToList()
-                                   .FindAll(t1 => (t1.def.category == ThingCategory.Filth) || 
-                                                  (t1.def.thingCategories != null && t1.def.thingCategories.Contains(ThingCategoryDefOf.StoneChunks)) || 
+                                   .FindAll(t1 => (t1.def.category == ThingCategory.Filth) ||
+                                                  (t1.def.thingCategories != null && t1.def.thingCategories.Contains(ThingCategoryDefOf.StoneChunks)) ||
                                                   (t1.def.category == ThingCategory.Building && !t1.def.building.isNaturalRock))
                                    .ForEach((t) => t.DeSpawn());
 

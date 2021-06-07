@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Verse;
 
 namespace KCSG
@@ -92,7 +91,7 @@ namespace KCSG
                     List<StructureLayoutDef> all = DefDatabase<StructureLayoutDef>.AllDefsListForReading.FindAll(s => s.tags.Contains(option.structureLayoutTag));
                     if (!ModLister.RoyaltyInstalled) all.RemoveAll(s => s.requireRoyalty);
                     StructureLayoutDef b = all.RandomElement();
-                    
+
                     if (CanPlaceAt(vector, b, grid))
                     {
                         CurrentGenerationOption.vectStruct.Add(vector, b);
@@ -112,7 +111,7 @@ namespace KCSG
             }
             return doors;
         }
-        
+
         private static List<CustomVector> GetDoorsInLayout(StructureLayoutDef building)
         {
             List<CustomVector> doors = new List<CustomVector>();

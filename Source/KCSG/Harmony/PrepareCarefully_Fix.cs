@@ -6,12 +6,6 @@ using Verse;
 namespace KCSG
 {
     [StaticConstructorOnStartup]
-    internal static class PrepareCarefully_Util
-    {
-        public static Dictionary<StructureLayoutDef, bool> pcScenariosSave = new Dictionary<StructureLayoutDef, bool>();
-    }
-
-    [StaticConstructorOnStartup]
     [HarmonyPatch(typeof(RimWorld.Page_ConfigureStartingPawns))]
     [HarmonyPatch("PreOpen", MethodType.Normal)]
     public class PrepareCarefully_Fix
@@ -26,5 +20,11 @@ namespace KCSG
                 PrepareCarefully_Util.pcScenariosSave.Add(spart.chooseFrom.RandomElement(), spart.nearMapCenter);
             }
         }
+    }
+
+    [StaticConstructorOnStartup]
+    internal static class PrepareCarefully_Util
+    {
+        public static Dictionary<StructureLayoutDef, bool> pcScenariosSave = new Dictionary<StructureLayoutDef, bool>();
     }
 }

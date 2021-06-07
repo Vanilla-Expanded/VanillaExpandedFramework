@@ -7,12 +7,9 @@ namespace KCSG
 {
     public struct StructOption
     {
-        public string structureLayoutTag;
-
-        public int minCount;
-
         public int maxCount;
-
+        public int minCount;
+        public string structureLayoutTag;
         public StructOption(string structureLayoutTag, int minCount, int maxCount = -1)
         {
             this.structureLayoutTag = structureLayoutTag;
@@ -44,23 +41,17 @@ namespace KCSG
 
     public class SettlementLayoutDef : Def
     {
-        public IntVec2 settlementSize = new IntVec2(42, 42);
-
-        public List<string> atLeastOneOfTags = new List<string>();
+        public bool addLandingPad = false;
         public List<string> allowedStructures = new List<string>();
         public List<StructOption> allowedStructuresConverted = new List<StructOption>();
-
-        public TerrainDef roadDef = null;
-        public TerrainDef mainRoadDef = null;
-
+        public List<string> atLeastOneOfTags = new List<string>();
         public PawnGroupKindDef groupKindDef = null;
-
-        public bool vanillaLikeDefense = false;
-        public bool addLandingPad = false;
-
+        public TerrainDef mainRoadDef = null;
         public float pawnGroupMultiplier = 1f;
+        public TerrainDef roadDef = null;
+        public IntVec2 settlementSize = new IntVec2(42, 42);
         public float stockpileValueMultiplier = 1f;
-
+        public bool vanillaLikeDefense = false;
         public override IEnumerable<string> ConfigErrors()
         {
             foreach (string str in allowedStructures)

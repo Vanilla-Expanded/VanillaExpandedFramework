@@ -1,10 +1,6 @@
 ﻿using HarmonyLib;
 using RimWorld;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 
@@ -19,6 +15,7 @@ namespace KCSG
         {
             // Rect
             public static float windowWidth = Math.Min(600f, UI.screenWidth);
+
             public static float WidthOffest => windowWidth / 2;
             public static float innerBorderSize = 35f;
             public static float outerBorderSize = 100f;
@@ -26,9 +23,12 @@ namespace KCSG
             public static float loadingRectYStart = 0;
             public static float gridRectYStart = (UI.screenHeight / 4);
             public static float tipsRectYStart = 3 * (UI.screenHeight / 4);
+
             // Tip util
             public static string currentTip;
+
             public static long lastTipShownTick;
+
             // Grid
             public static int[][] structure;
 
@@ -134,11 +134,11 @@ namespace KCSG
                             {
                                 Rect rect = new Rect(gridRect.x + x + (i * rSize), gridRect.y + y + (j * rSize), rSize, rSize);
                                 CellType type = CurrentGenerationOption.grid[i][j].Type;
-                                GUI.color = type == CellType.BUILDING || type == CellType.BUILDINGPASSABLE ? Color.black : 
+                                GUI.color = type == CellType.BUILDING || type == CellType.BUILDINGPASSABLE ? Color.black :
                                     (type == CellType.DOOR ? Color.black :
-                                    (type == CellType.MAINROAD || type == CellType.ROAD ? Color.grey : 
+                                    (type == CellType.MAINROAD || type == CellType.ROAD ? Color.grey :
                                     (type == CellType.WATER ? Color.blue :
-                                    (type == CellType.FIELD ? Color.green : 
+                                    (type == CellType.FIELD ? Color.green :
                                     Color.clear))));
                                 GUI.DrawTexture(rect, BaseContent.WhiteTex);
                                 GUI.color = Color.white;
@@ -154,7 +154,7 @@ namespace KCSG
                     if (CurrentGenerationOption.tipAvailable && (currentTip == null || DateTime.Now.Ticks - lastTipShownTick >= 60000000))
                     {
                         currentTip = CurrentGenerationOption.allTip.RandomElement();
-                        lastTipShownTick = DateTime.Now.Ticks;                        
+                        lastTipShownTick = DateTime.Now.Ticks;
                     }
                     Text.Anchor = TextAnchor.MiddleCenter;
                     Widgets.Label(tipRect, string.Format("<size=16>{0}</size>", currentTip));
@@ -164,7 +164,5 @@ namespace KCSG
                 return true;
             }
         }
-
-
     }
 }

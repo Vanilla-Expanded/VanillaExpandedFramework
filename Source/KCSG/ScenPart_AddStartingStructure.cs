@@ -14,6 +14,7 @@ namespace KCSG
         public bool nearMapCenter;
         public bool spawnPartOfEnnemyFaction = false;
         public string structureLabel;
+
         public override void DoEditInterface(Listing_ScenEdit listing)
         {
             var scenPartRect = listing.GetScenPartRect(this, RowHeight * 6);
@@ -60,6 +61,7 @@ namespace KCSG
             Scribe_Values.Look<bool>(ref spawnPartOfEnnemyFaction, "spawnPartOfEnnemyFaction");
             Scribe_Collections.Look<StructureLayoutDef>(ref chooseFrom, "chooseFrom", LookMode.Def);
         }
+
         public override IEnumerable<string> GetSummaryListEntries(string tag)
         {
             if (tag == "MapContain")
@@ -96,6 +98,7 @@ namespace KCSG
         {
             return ScenSummaryList.SummaryWithList(scen, "MapContain", "Map contains");
         }
+
         private bool CanPlaceInRange(CellRect rect, Map map)
         {
             foreach (IntVec3 c in rect.Cells)

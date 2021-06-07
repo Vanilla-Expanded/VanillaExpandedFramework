@@ -65,17 +65,6 @@ namespace KCSG
             if (this.stuff != null) this.stuffDef = DefDatabase<ThingDef>.GetNamed(this.stuff, false);
             if (this.containPawnKind != null) this.containPawnKindDef = DefDatabase<PawnKindDef>.GetNamed(this.containPawnKind, false);
             if (this.pawnKindDef != null) this.pawnKindDefNS = DefDatabase<PawnKindDef>.GetNamed(this.pawnKindDef, false);
-
-            // if (this.terrain != null && terrainDef == null) Log.Warning("Tried to load SymbolDef with non-existant terrain: " + this.terrain);
-            // if (this.thing != null && thingDef == null) Log.Warning("Tried to load SymbolDef with non-existant thing: " + this.thing);
-            // if (this.stuff != null && stuffDef == null) Log.Warning("Tried to load SymbolDef with non-existant stuff: " + this.stuff);
-            // if (this.containPawnKind != null && containPawnKindDef == null) Log.Warning("Tried to load SymbolDef with non-existant pawnKind " + this.thing + " for containPawnKind");
-            // if (this.pawnKindDef != null && pawnKindDefNS == null) Log.Warning("Tried to load SymbolDef with non-existant pawnKindDef: " + this.pawnKindDef);
-        }
-
-        public override string ToString()
-        {
-            return symbol + " " + thing + " " + rotation.ToStringHuman();
         }
     }
 }

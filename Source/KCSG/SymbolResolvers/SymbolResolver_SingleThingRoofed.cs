@@ -1,6 +1,5 @@
 ﻿using RimWorld;
 using RimWorld.BaseGen;
-using System.Linq;
 using Verse;
 
 namespace KCSG
