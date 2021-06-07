@@ -39,6 +39,7 @@ namespace KCSG
                             Log.Message($"Generation done in {(DateTime.Now - CurrentGenerationOption.dateTime).Duration().TotalSeconds}");
                             CurrentGenerationOption.ClearUI();
                             CurrentGenerationOption.ClearAll();
+                            LongEventHandler_Patches.LongEventsOnGUI_Prefix.structure = null;
                         });
                     }, "GeneratingMapForNewEncounter", true, null, true);
                 }

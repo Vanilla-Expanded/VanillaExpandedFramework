@@ -30,7 +30,7 @@ namespace KCSG
             public static string currentTip;
             public static long lastTipShownTick;
             // Grid
-            public static string[][] structure;
+            public static int[][] structure;
 
             [HarmonyPrefix]
             public static bool Prefix()
@@ -70,36 +70,37 @@ namespace KCSG
                     {
                         if (structure == null && CurrentGenerationOption.structureLayoutDef != null)
                         {
-                            structure = new string[CurrentGenerationOption.structureLayoutDef.layouts[0].Count][];
-                            int x = CurrentGenerationOption.structureLayoutDef.layouts[0][0].Split(',').Length;
-                            for (int i = 0; i < structure.Length; i++)
+                            int[][] tempStructure = new int[CurrentGenerationOption.structureLayoutDef.layouts[0][0].Split(',').Length][];
+                            int x = CurrentGenerationOption.structureLayoutDef.layouts[0].Count;
+                            for (int i = 0; i < tempStructure.Length; i++)
                             {
-                                structure[i] = new string[x];
+                                tempStructure[i] = new int[x];
                             }
 
                             for (int layoutN = 0; layoutN < CurrentGenerationOption.structureLayoutDef.layouts.Count; layoutN++)
                             {
-                                for (int layoutLine = 0; layoutLine < CurrentGenerationOption.structureLayoutDef.layouts[layoutN].Count; layoutLine++)
+                                for (int layoutLine = CurrentGenerationOption.structureLayoutDef.layouts[layoutN].Count - 1; layoutLine >= 0; layoutLine--)
                                 {
                                     string[] splitLine = CurrentGenerationOption.structureLayoutDef.layouts[layoutN][layoutLine].Split(',');
                                     for (int splitN = 0; splitN < splitLine.Length; splitN++)
                                     {
                                         if (splitLine[splitN] != ".")
                                         {
-                                            structure[layoutLine][splitN] = "1";
+                                            tempStructure[splitN][layoutLine] = 1;
                                         }
                                         else
                                         {
-                                            structure[layoutLine][splitN] = "0";
+                                            tempStructure[splitN][layoutLine] = 0;
                                         }
                                     }
                                 }
                             }
+                            structure = tempStructure;
                         }
                         else
                         {
-                            float smallRectWidth = gridRect.width / structure[0].Length;
-                            float smallRectHeight = gridRect.height / structure.Length;
+                            float smallRectWidth = gridRect.width / structure.Length;
+                            float smallRectHeight = gridRect.height / structure[0].Length;
 
                             float rSize = Math.Min(smallRectWidth, smallRectHeight);
                             float x = (gridRect.width - (structure.Length * rSize)) / 2;
@@ -109,7 +110,7 @@ namespace KCSG
                             {
                                 for (int j = 0; j < structure[0].Length; j++)
                                 {
-                                    if (structure[i][j] == "1")
+                                    if (structure[i][j] == 1)
                                     {
                                         Rect rect = new Rect(gridRect.x + x + (i * rSize), gridRect.y + y + (j * rSize), rSize, rSize);
                                         GUI.DrawTexture(rect, BaseContent.WhiteTex);
@@ -163,5 +164,7 @@ namespace KCSG
                 return true;
             }
         }
-	}
+
+
+    }
 }

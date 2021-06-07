@@ -21,7 +21,7 @@ namespace KCSG
             Map map = BaseGen.globalSettings.map;
             StructureLayoutDef rld = CurrentGenerationOption.structureLayoutDef;
 
-            foreach (List<String> item in rld.layouts)
+            foreach (List<string> item in rld.layouts)
             {
                 GenUtils.GenerateRoomFromLayout(item, rp.rect, map, rld);
             }
