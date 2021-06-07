@@ -1,6 +1,5 @@
 ﻿using RimWorld;
 using RimWorld.BaseGen;
-using RimWorld.Planet;
 using System.Linq;
 using Verse;
 
@@ -44,7 +43,11 @@ namespace KCSG
                 width = temp.settlementSize.z;
             }
 
-            CellRect rect = new CellRect(c.x - width / 2, c.z - height / 2, width, height);
+            IntVec3 intVec3 = c;
+            if (CurrentGenerationOption.factionSettlement.tryFindFreeArea)
+                CellFinder.TryFindRandomCellNear(c, map, 4, cell => !new CellRect(cell.x - width / 2, cell.z - height / 2, width, height).Cells.Any(cell1 => cell1.GetFirstBuilding(map) != null), out intVec3, 20);
+
+            CellRect rect = new CellRect(intVec3.x - width / 2, intVec3.z - height / 2, width, height);
             rect.ClipInsideMap(map);
 
             ResolveParams rp = default;
@@ -68,20 +71,10 @@ namespace KCSG
 
         protected override void ScatterAt(IntVec3 loc, Map map, GenStepParams parms, int count = 1)
         {
-            if (map.ParentFaction != null && map.ParentFaction.def.HasModExtension<FactionSettlement>())
-            {
-                FactionSettlement factionSettlement = map.ParentFaction.def.GetModExtension<FactionSettlement>();
+            CurrentGenerationOption.factionSettlement = map.ParentFaction.def.GetModExtension<FactionSettlement>();
 
-                if (factionSettlement.symbolResolver == null) GenStepPatchesUtils.Generate(map, loc, factionSettlement);
-                else GenStepPatchesUtils.Generate(map, loc, factionSettlement, factionSettlement.symbolResolver);
-            }
-            else if (Find.World.worldObjects.AllWorldObjects.Find(o => o.Tile == map.Tile && o.def.HasModExtension<FactionSettlement>()) is WorldObject worldObject)
-            {
-                FactionSettlement factionSettlement = worldObject.def.GetModExtension<FactionSettlement>();
-
-                if (factionSettlement.symbolResolver == null) GenStepPatchesUtils.Generate(map, loc, factionSettlement);
-                else GenStepPatchesUtils.Generate(map, loc, factionSettlement, factionSettlement.symbolResolver);
-            }
+            if (CurrentGenerationOption.factionSettlement.symbolResolver == null) GenStepPatchesUtils.Generate(map, loc, CurrentGenerationOption.factionSettlement);
+            else GenStepPatchesUtils.Generate(map, loc, CurrentGenerationOption.factionSettlement, CurrentGenerationOption.factionSettlement.symbolResolver);
         }
     }
 }

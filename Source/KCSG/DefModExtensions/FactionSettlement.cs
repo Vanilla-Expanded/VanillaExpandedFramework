@@ -15,9 +15,15 @@ namespace KCSG
         public bool canSpawnSettlements = true;
         public bool useStructureLayout;
 
-        public List<KCSG.StructureLayoutDef> chooseFromlayouts = new List<KCSG.StructureLayoutDef>();
-        public List<KCSG.SettlementLayoutDef> chooseFromSettlements = new List<KCSG.SettlementLayoutDef>();
+        public List<StructureLayoutDef> chooseFromlayouts = new List<StructureLayoutDef>();
+        public List<SettlementLayoutDef> chooseFromSettlements = new List<SettlementLayoutDef>();
         
         public string symbolResolver = null;
+
+        /* More option */
+        public bool preGenClear = true;
+        public bool fullClear = false;
+
+        public bool tryFindFreeArea = false;
     }
 }

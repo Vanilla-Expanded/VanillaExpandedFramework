@@ -11,9 +11,9 @@ namespace KCSG
         {
             public static void Postfix(MapParent __instance, ref MapGeneratorDef __result)
             {
-                if (__instance.Faction != null && __instance.Faction.def.HasModExtension<FactionSettlement>())
+                if (Find.World.worldObjects.AllWorldObjects.Find(o => o.Tile == __instance.Tile && o.def.HasModExtension<FactionSettlement>()) is WorldObject worldObject)
                 {
-                    __result = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_Base_Faction");
+                    __result = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_Gen");
                 }
             }
         }
@@ -25,7 +25,13 @@ namespace KCSG
             {
                 if (__instance.Faction != null && __instance.Faction.def.HasModExtension<FactionSettlement>())
                 {
+                    Log.Message($"Faction: {__instance.Faction.NameColored} - Faction have FactionSettlement extension.");
                     __result = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_Base_Faction");
+                }
+                else if (Find.World.worldObjects.AllWorldObjects.Find(o => o.Tile == __instance.Tile && o.def.HasModExtension<FactionSettlement>()) is WorldObject worldObject)
+                {
+                    Log.Message($"Faction: {__instance.Faction.NameColored} - Faction do not have FactionSettlement extension.");
+                    __result = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_Gen");
                 }
             }
         }

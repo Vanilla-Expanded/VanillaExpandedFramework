@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GenStep\GenStep_KCSGSettlement.cs" />
+    <Compile Include="GenStep\GenStep_WorldObjectKCSG.cs" />
     <Compile Include="Harmony\HideSettlementsForNomadicFactionsPatch.cs" />
     <Compile Include="Harmony\Init.cs" />
     <Compile Include="Harmony\LongEventHandler_Patches.cs" />

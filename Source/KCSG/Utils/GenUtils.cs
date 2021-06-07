@@ -93,7 +93,7 @@ namespace KCSG
                                 inheritFromCasket.TryAcceptThing(pawn);
                             }
 
-                            if (cell.GetFirstMineable(map) is Mineable m && m != null && m.def.building.smoothedThing != null && (thing.def.designationCategory == DesignationCategoryDefOf.Security || thing.def.passability == Traversability.Impassable))
+                            if (cell.GetFirstMineable(map) is Mineable m && m != null && m.def.building.smoothedThing != null && (thing.def.designationCategory == DesignationCategoryDefOf.Security || thing.def.graphicData.linkFlags.HasFlag(LinkFlags.Wall)))
                             {
                                 GenSpawn.Spawn(ThingMaker.MakeThing(m.def.building.smoothedThing), cell, map, WipeMode.Vanish);
                                 l++;
@@ -103,7 +103,7 @@ namespace KCSG
                             {
                                 Plant plant = thing as Plant;
                                 plant.Growth = temp.plantGrowth; // apply the growth
-                                GenSpawn.Spawn(plant, cell, map, WipeMode.Vanish);
+                                GenSpawn.Spawn(plant, cell, map, WipeMode.VanishOrMoveAside);
                             }
                             else if (thing.def.category == ThingCategory.Building)
                             {
@@ -125,30 +125,33 @@ namespace KCSG
                                 GenSpawn.Spawn(c, cell, map, WipeMode.FullRefund);
                             }
 
-                            if (thing.def.building.IsMortar && thing.def.category == ThingCategory.Building && thing.def.building.buildingTags.Contains("Artillery_MannedMortar") && thing.def.HasComp(typeof(CompMannable)))
+                            if (thing?.def?.building?.buildingTags?.Count > 0)
                             {
-                                // Spawn pawn
-                                Lord singlePawnLord = LordMaker.MakeNewLord(map.ParentFaction, new LordJob_ManTurrets(), map, null);
-                                PawnGenerationRequest value = new PawnGenerationRequest(map.ParentFaction.RandomPawnKind(), map.ParentFaction, PawnGenerationContext.NonPlayer, map.Tile, mustBeCapableOfViolence: true, inhabitant: true);
-                                ResolveParams rpPawn = new ResolveParams
+                                if (thing.def.building.IsMortar && thing.def.category == ThingCategory.Building && thing.def.building.buildingTags.Contains("Artillery_MannedMortar") && thing.def.HasComp(typeof(CompMannable)))
                                 {
-                                    faction = map.ParentFaction,
-                                    singlePawnGenerationRequest = new PawnGenerationRequest?(value),
-                                    rect = CellRect.SingleCell(thing.InteractionCell),
-                                    singlePawnLord = singlePawnLord
-                                };
-                                BaseGen.symbolStack.Push("pawn", rpPawn);
-                                // Spawn shells
-                                ThingDef shellDef = TurretGunUtility.TryFindRandomShellDef(thing.def, false, true, map.ParentFaction.def.techLevel, false, 250f);
-                                if (shellDef != null)
-                                {
-                                    ResolveParams rpShell = new ResolveParams
+                                    // Spawn pawn
+                                    Lord singlePawnLord = LordMaker.MakeNewLord(map.ParentFaction, new LordJob_ManTurrets(), map, null);
+                                    PawnGenerationRequest value = new PawnGenerationRequest(map.ParentFaction.RandomPawnKind(), map.ParentFaction, PawnGenerationContext.NonPlayer, map.Tile, mustBeCapableOfViolence: true, inhabitant: true);
+                                    ResolveParams rpPawn = new ResolveParams
                                     {
                                         faction = map.ParentFaction,
-                                        singleThingDef = shellDef,
-                                        singleThingStackCount = Rand.RangeInclusive(8, Math.Min(12, shellDef.stackLimit))
+                                        singlePawnGenerationRequest = new PawnGenerationRequest?(value),
+                                        rect = CellRect.SingleCell(thing.InteractionCell),
+                                        singlePawnLord = singlePawnLord
                                     };
-                                    BaseGen.symbolStack.Push("thing", rpShell);
+                                    BaseGen.symbolStack.Push("pawn", rpPawn);
+                                    // Spawn shells
+                                    ThingDef shellDef = TurretGunUtility.TryFindRandomShellDef(thing.def, false, true, map.ParentFaction.def.techLevel, false, 250f);
+                                    if (shellDef != null)
+                                    {
+                                        ResolveParams rpShell = new ResolveParams
+                                        {
+                                            faction = map.ParentFaction,
+                                            singleThingDef = shellDef,
+                                            singleThingStackCount = Rand.RangeInclusive(8, Math.Min(12, shellDef.stackLimit))
+                                        };
+                                        BaseGen.symbolStack.Push("thing", rpShell);
+                                    }
                                 }
                             }
                         }
@@ -208,7 +211,7 @@ namespace KCSG
             }
         }
 
-        public static void PreClean(Map map, CellRect rect)
+        public static void PreClean(Map map, CellRect rect, bool fullClean)
         {
             if (map.TileInfo?.Roads?.Count > 0)
             {
@@ -227,7 +230,10 @@ namespace KCSG
 
             foreach (IntVec3 c in rect)
             {
-                c.GetThingList(map).ToList()
+                if (fullClean)
+                    c.GetThingList(map).ToList().ForEach((t) => t.DeSpawn());
+                else
+                    c.GetThingList(map).ToList()
                                    .FindAll(t1 => (t1.def.category == ThingCategory.Filth) || 
                                                   (t1.def.thingCategories != null && t1.def.thingCategories.Contains(ThingCategoryDefOf.StoneChunks)) || 
                                                   (t1.def.category == ThingCategory.Building && !t1.def.building.isNaturalRock))

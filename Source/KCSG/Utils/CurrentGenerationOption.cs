@@ -43,6 +43,8 @@ namespace KCSG
 
         public static bool usePathCostReduction;
 
+        public static FactionSettlement factionSettlement;
+
         public static void ClearUI()
         {
             useCustomWindowContent = false;
@@ -55,6 +57,7 @@ namespace KCSG
         public static void ClearAll()
         {
             grid = null;
+            factionSettlement = null;
             if (vectStruct != null) vectStruct.Clear();
             if (doors != null) doors.Clear();
             if (vectors != null) vectors.Clear();

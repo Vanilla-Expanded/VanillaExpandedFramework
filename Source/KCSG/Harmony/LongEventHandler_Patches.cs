@@ -19,7 +19,7 @@ namespace KCSG
         {
             // Rect
             public static float windowWidth = Math.Min(600f, UI.screenWidth);
-            public static float widthOffest => windowWidth / 2;
+            public static float WidthOffest => windowWidth / 2;
             public static float innerBorderSize = 35f;
             public static float outerBorderSize = 100f;
 
@@ -45,7 +45,7 @@ namespace KCSG
                     Vector2 screenCenter = fullRect.center;
 
                     // Loading infos
-                    Rect loadingRect = new Rect(screenCenter.x - widthOffest, loadingRectYStart + outerBorderSize, windowWidth, (UI.screenHeight / 4) - outerBorderSize);
+                    Rect loadingRect = new Rect(screenCenter.x - WidthOffest, loadingRectYStart + outerBorderSize, windowWidth, (UI.screenHeight / 4) - outerBorderSize);
                     Widgets.DrawShadowAround(loadingRect);
                     Widgets.DrawWindowBackground(loadingRect);
 
@@ -62,7 +62,7 @@ namespace KCSG
                     Text.Anchor = TextAnchor.UpperLeft;
 
                     // grid
-                    Rect gridRect = new Rect(screenCenter.x - widthOffest, gridRectYStart + innerBorderSize, windowWidth, (UI.screenHeight / 2) - innerBorderSize * 2);
+                    Rect gridRect = new Rect(screenCenter.x - WidthOffest, gridRectYStart + innerBorderSize, windowWidth, (UI.screenHeight / 2) - innerBorderSize * 2);
                     Widgets.DrawShadowAround(gridRect);
                     Widgets.DrawWindowBackground(gridRect);
 
@@ -134,7 +134,7 @@ namespace KCSG
                                 Rect rect = new Rect(gridRect.x + x + (i * rSize), gridRect.y + y + (j * rSize), rSize, rSize);
                                 CellType type = CurrentGenerationOption.grid[i][j].Type;
                                 GUI.color = type == CellType.BUILDING || type == CellType.BUILDINGPASSABLE ? Color.black : 
-                                    (type == CellType.DOOR ? Color.red :
+                                    (type == CellType.DOOR ? Color.black :
                                     (type == CellType.MAINROAD || type == CellType.ROAD ? Color.grey : 
                                     (type == CellType.WATER ? Color.blue :
                                     (type == CellType.FIELD ? Color.green : 
@@ -146,7 +146,7 @@ namespace KCSG
                     }
 
                     // tip
-                    Rect tipRect = new Rect(screenCenter.x - widthOffest, tipsRectYStart, windowWidth, (UI.screenHeight / 4) - outerBorderSize);
+                    Rect tipRect = new Rect(screenCenter.x - WidthOffest, tipsRectYStart, windowWidth, (UI.screenHeight / 4) - outerBorderSize);
                     Widgets.DrawShadowAround(tipRect);
                     Widgets.DrawWindowBackground(tipRect);
 
