@@ -162,6 +162,7 @@
     <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraDamageMechanoids.cs" />
     <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraDamagePirates.cs" />
     <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraInfecter.cs" />
+    <Compile Include="AnimalBehaviours\DeathActionWorkers\DeathActionWorker_DropOnDeath.cs" />
     <Compile Include="AnimalBehaviours\DefExtensions\AnimalStatExtension.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Dialog_InfoCard_FillCard_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\JobGiver_GetFood_TryGiveJob_Patch.cs" />
