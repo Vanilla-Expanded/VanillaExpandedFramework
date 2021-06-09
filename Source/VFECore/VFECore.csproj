@@ -89,6 +89,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompDigPeriodically.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDigWhenHungry.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDiseaseImmunity.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompDropOnDeath.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompEatWeirdFood.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompElectrified.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompExplodingEggLayer.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompNearbyEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompPassiveRegenerator.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AcidImmunity.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DropOnDeath.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AnimalProduct.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AsexualReproduction.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AutoNutrition.cs" />
