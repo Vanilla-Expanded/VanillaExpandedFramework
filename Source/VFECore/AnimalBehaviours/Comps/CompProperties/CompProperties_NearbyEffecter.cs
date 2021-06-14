@@ -19,6 +19,8 @@ namespace AnimalBehaviours
         public bool feedCauser = false;
         public float nutritionGained = 0;
 
+        public bool isForbidden = false;
+
         public CompProperties_NearbyEffecter()
         {
             this.compClass = typeof(CompNearbyEffecter);
