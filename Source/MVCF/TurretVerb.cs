@@ -72,6 +72,7 @@ namespace MVCF
 
         protected virtual void TryStartCast()
         {
+            if (currentTarget == null || !currentTarget.IsValid) return;
             if (Verb.verbProps.warmupTime > 0)
                 warmUpTicksLeft = (Verb.verbProps.warmupTime * man.Pawn.GetStatValue(StatDefOf.AimingDelayFactor))
                     .SecondsToTicks();

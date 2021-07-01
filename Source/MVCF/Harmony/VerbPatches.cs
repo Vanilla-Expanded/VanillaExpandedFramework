@@ -38,7 +38,6 @@ namespace MVCF.Harmony
             if (man == null) return true;
             if (man.debugOpts.VerbLogging)
                 Log.Message("Changing CurrentVerb of " + __instance.CasterPawn + " to " + __instance);
-            man.CurrentVerb = __instance;
             var mv = man.GetManagedVerbForVerb(__instance);
             if (mv != null) mv.Enabled = true;
             if (mv is TurretVerb tv)
@@ -46,6 +45,8 @@ namespace MVCF.Harmony
                 tv.SetTarget(target);
                 return false;
             }
+
+            man.CurrentVerb = __instance;
 
             return true;
         }
