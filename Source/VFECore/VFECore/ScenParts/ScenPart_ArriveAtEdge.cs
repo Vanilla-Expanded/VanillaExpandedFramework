@@ -83,7 +83,7 @@ namespace VFECore
 					num = 0;
 				}
 			}
-			DropPodUtility.DropThingGroupsNear_NewTmp(this.location, map, list, 110, Find.GameInitData.QuickStarted || this.method != PlayerPawnsArriveMethod.DropPods, true, true, true, false);
+			DropPodUtility.DropThingGroupsNear(this.location, map, list, 110, Find.GameInitData.QuickStarted || this.method != PlayerPawnsArriveMethod.DropPods, true, true, true, false);
 		}
 
 		public override void PostMapGenerate(Map map)

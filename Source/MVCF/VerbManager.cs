@@ -274,7 +274,7 @@ namespace MVCF
     {
         public override bool TryStartCastOn(LocalTargetInfo castTarg, LocalTargetInfo destTarg,
             bool surpriseAttack = false,
-            bool canHitNonTargetPawns = true)
+            bool canHitNonTargetPawns = true, bool preventFriendlyFire = false)
         {
             return false;
         }

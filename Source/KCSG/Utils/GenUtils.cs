@@ -48,7 +48,7 @@ namespace KCSG
                                     Pawn pawn = temp.spawnPartOfFaction ? PawnGenerator.GeneratePawn(temp.pawnKindDefNS, map.ParentFaction) : PawnGenerator.GeneratePawn(temp.pawnKindDefNS);
                                     if (pawn != null)
                                     {
-                                        if (temp.isSlave) pawn.guest.SetGuestStatus(map.ParentFaction, true);
+                                        if (temp.isSlave) pawn.guest.SetGuestStatus(map.ParentFaction, GuestStatus.Prisoner);
 
                                         GenSpawn.Spawn(pawn, cell, map, WipeMode.FullRefund);
                                         lord.AddPawn(pawn);
@@ -62,7 +62,7 @@ namespace KCSG
                                     Pawn pawn = temp.spawnPartOfFaction ? PawnGenerator.GeneratePawn(temp.pawnKindDefNS, map.ParentFaction) : PawnGenerator.GeneratePawn(temp.pawnKindDefNS);
                                     if (pawn != null)
                                     {
-                                        if (temp.isSlave) pawn.guest.SetGuestStatus(map.ParentFaction, true);
+                                        if (temp.isSlave) pawn.guest.SetGuestStatus(map.ParentFaction, GuestStatus.Prisoner);
                                         GenSpawn.Spawn(pawn, cell, map, WipeMode.FullRefund);
                                     }
                                 }
@@ -120,7 +120,7 @@ namespace KCSG
 
                             if (thing.def.passability == Traversability.Impassable && map.ParentFaction?.def.techLevel >= TechLevel.Industrial) // Add power cable under all impassable
                             {
-                                Thing c = ThingMaker.MakeThing(KDefOf.KCSG_PowerConduit);
+                                Thing c = ThingMaker.MakeThing(KThingDefOf.KCSG_PowerConduit);
                                 c.SetFactionDirect(map.ParentFaction);
                                 GenSpawn.Spawn(c, cell, map, WipeMode.FullRefund);
                             }

@@ -20,7 +20,7 @@ namespace HeavyWeapons
     }
     public static class Patch_FloatMenuMakerMap
     {
-
+    
         [HarmonyPatch(typeof(FloatMenuMakerMap), "AddHumanlikeOrders")]
         public static class AddHumanlikeOrders_Fix
         {
@@ -41,15 +41,14 @@ namespace HeavyWeapons
                             if (floatMenuOption != null && !CanEquip(pawn, options))
                             {
                                 opts.Remove(floatMenuOption);
-                                opts.Add(new FloatMenuOption("CannotEquip".Translate(equipment.LabelShort) + " (" + "VWE.CannotEquipHeavy".Translate(pawn.LabelShort) + ")",
-                                    null, MenuOptionPriority.Default, null, null, 0f, null, null));
+                                opts.Add(new FloatMenuOption("CannotEquip".Translate(equipment.LabelShort) + " (" + "VWE.CannotEquipHeavy".Translate(pawn.LabelShort) + ")", null));
                             }
                             break;
                         }
                     }
                 }
             }
-
+    
             public static bool CanEquip(Pawn pawn, HeavyWeapon options)
             {
                 if (pawn.story?.traits?.HasTrait(TraitDefOf.Tough) ?? false)
@@ -71,7 +70,7 @@ namespace HeavyWeapons
                                 return true;
                             }
                         }
-
+    
                     }
                 }
                 return false;

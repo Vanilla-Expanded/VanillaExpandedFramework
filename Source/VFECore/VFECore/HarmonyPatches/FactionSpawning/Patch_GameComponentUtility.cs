@@ -1,7 +1,8 @@
-﻿using System.Linq;
-using HarmonyLib;
+﻿using HarmonyLib;
 using RimWorld;
+using System.Linq;
 using Verse;
+using System.Reflection;
 
 namespace VFECore
 {
@@ -27,13 +28,12 @@ namespace VFECore
                 }
             }
 
-            private static bool Validator(FactionDef faction)
+            internal static bool Validator(FactionDef faction)
             {
                 if (faction == null) return false;
                 if (faction.isPlayer) return false;
                 if (!faction.canMakeRandomly && faction.hidden && faction.maxCountAtGameStart <= 0) return false;
-                var count = Find.FactionManager.AllFactions.Count(f => f.def == faction);
-                if (count > 0) return false;
+                if (Find.FactionManager.AllFactions.Count(f => f.def == faction) > 0) return false;
                 if (Find.World?.GetComponent<NewFactionSpawningState>()?.IsIgnored(faction) == true) return false;
                 if (NewFactionSpawningUtility.NeverSpawn(faction)) return false;
                 return true;

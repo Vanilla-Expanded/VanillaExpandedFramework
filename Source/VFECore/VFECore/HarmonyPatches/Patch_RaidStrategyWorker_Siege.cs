@@ -26,7 +26,7 @@ namespace VFECore
                 if (factionDefExtension.siegeParameterSetDef != null)
                 {
                     var entrySpot = (!parms.spawnCenter.IsValid) ? pawns[0].PositionHeld : parms.spawnCenter;
-                    var siegeSpot = RCellFinder.FindSiegePositionFrom_NewTemp(entrySpot, map);
+                    var siegeSpot = RCellFinder.FindSiegePositionFrom(entrySpot, map);
                     float blueprintPoints = Mathf.Max(parms.points * Rand.Range(0.2f, 0.3f), factionDefExtension.siegeParameterSetDef.lowestArtilleryBlueprintPoints);
                     __result = new LordJob_SiegeCustom(faction, siegeSpot, blueprintPoints);
                     return false;

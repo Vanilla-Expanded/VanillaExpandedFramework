@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using HarmonyLib;
+﻿using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
+using System.Collections.Generic;
+using System.Linq;
 using Verse;
 
 namespace VFECore
@@ -14,7 +14,8 @@ namespace VFECore
             // Temporarily set to hidden, so FactionGenerator doesn't spawn a base
             var hidden = factionDef.hidden;
             factionDef.hidden = true;
-            var faction = FactionGenerator.NewGeneratedFaction(factionDef);
+            FactionGeneratorParms factionGeneratorParms = new FactionGeneratorParms(factionDef);
+            var faction = FactionGenerator.NewGeneratedFaction(factionGeneratorParms);
             factionDef.hidden = hidden;
 
             var relationKind = GetFactionKind(faction, true);
@@ -29,7 +30,7 @@ namespace VFECore
             {
                 if (!firstOfKind || !faction.def.mustStartOneEnemy)
                 {
-                    if (faction.def.startingGoodwill.RandomInRange > 0) result = FactionRelationKind.Neutral;
+                    if (faction.NaturalGoodwill > 0) result = FactionRelationKind.Neutral;
                 }
             }
 
@@ -38,7 +39,12 @@ namespace VFECore
 
         private static void InitializeFaction(Faction faction, FactionRelationKind kind)
         {
-            faction.TrySetRelationKind(Faction.OfPlayer, kind, false);
+            if (ScenPartUtility.cachedFactionDefAffectedByForcedFactionGoodwill.ContainsKey(faction.def))
+            {
+                IntRange range = ScenPartUtility.cachedFactionDefAffectedByForcedFactionGoodwill.TryGetValue(faction.def);
+                faction.TryAffectGoodwillWith(Faction.OfPlayer, range.RandomInRange - faction.PlayerGoodwill, false, false);
+            }
+
             Find.FactionManager.Add(faction);
         }
 
@@ -58,7 +64,7 @@ namespace VFECore
                     if (playerSettlement.Faction != Faction.OfPlayer) continue;
                     int distance = Find.WorldGrid.TraversalDistanceBetween(tileId, playerSettlement.Tile, false, minDistance);
                     var objects = Find.WorldObjects.ObjectsAt(tileId).ToArray();
-                    if(objects.Length > 0)
+                    if (objects.Length > 0)
                         Log.Message($"Tile: {tileId} has {objects.Select(o => o.Label).ToCommaList(true)}.");
                     if (distance < minDistance) return false;
                 }
@@ -68,7 +74,7 @@ namespace VFECore
             foreach (var tile in tilesInDistance)
             {
                 // Spawn base
-                var factionBase = (Settlement) WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
+                var factionBase = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
                 factionBase.SetFaction(faction);
                 factionBase.Tile = tile;
                 factionBase.Name = SettlementNameGenerator.GenerateSettlementName(factionBase);

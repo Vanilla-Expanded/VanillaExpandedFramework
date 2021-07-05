@@ -54,6 +54,11 @@ namespace MVCF.Harmony
                         ?.GetMethod("Postfix", BindingFlags.NonPublic | BindingFlags.Static),
                     transpiler: new HarmonyMethod(typeof(Compat), "RenderPawnAtTranspile"));
             }
+
+            var type = AccessTools.TypeByName("CompToggleFireMode.CompToggleFireMode");
+            if (type != null)
+                GetToggleComp = AccessTools.Method(typeof(ThingCompUtility), "TryGetComp")
+                    .MakeGenericMethod(type);
         }
 
         public static bool ShouldIgnore(Thing thing)

@@ -15,8 +15,8 @@ namespace VFE.Mechanoids.AI.JobDrivers
 	public class JobDriver_Recharge : JobDriver
 	{
 		public const TargetIndex BedOrRestSpotIndex = TargetIndex.A;
-		public static ThingDef MoteRecharge = ThingDef.Named("VFE_Mechanoids_Mote_Recharge");
-		public static ThingDef MoteRepair = ThingDef.Named("VFE_Mechanoids_Mote_Repair");
+		public static FleckDef MoteRecharge = DefDatabase<FleckDef>.GetNamed("VFE_Mechanoids_Mote_Recharge");
+		public static FleckDef MoteRepair = DefDatabase<FleckDef>.GetNamed("VFE_Mechanoids_Mote_Repair");
 
 		private Building_BedMachine bed;
 		public Building_BedMachine Bed
@@ -141,11 +141,13 @@ namespace VFE.Mechanoids.AI.JobDrivers
 					{
 						if (actor2.health.hediffSet.GetNaturallyHealingInjuredParts().Any())
 						{
-							MoteMaker.ThrowMetaIcon(actor2.Position, actor2.Map, MoteRepair);
+							FleckMaker.ThrowMetaIcon(actor2.Position, actor2.Map, MoteRepair);
+							
 						}
 						else
                         {
-							MoteMaker.ThrowMetaIcon(actor2.Position, actor2.Map, MoteRecharge);
+							FleckMaker.ThrowMetaIcon(actor2.Position, actor2.Map, MoteRecharge);
+							
                         }
 					}
 				}

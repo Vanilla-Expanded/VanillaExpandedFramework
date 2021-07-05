@@ -29,7 +29,7 @@ namespace VFECore
         public string settlementGenerationSymbol;
         public string packAnimalTexNameSuffix;
         public PawnKindDef strangerInBlackReplacement;
-        private string siegeParameterSet;
+        private string siegeParameterSet ="";
         public SiegeParameterSetDef siegeParameterSetDef;
         public List<StartingGoodwillByFaction> startingGoodwillByFactionDefs = new List<StartingGoodwillByFaction>();
 

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\HeavyWeapons\\HeavyWeapons.csproj": {}
+    "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\VanillaExpandedFramework-Dev\\Source\\HeavyWeapons\\HeavyWeapons.csproj": {}
   },
   "projects": {
-    "c:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\HeavyWeapons\\HeavyWeapons.csproj": {
+    "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\VanillaExpandedFramework-Dev\\Source\\HeavyWeapons\\HeavyWeapons.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\HeavyWeapons\\HeavyWeapons.csproj",
+        "projectUniqueName": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\VanillaExpandedFramework-Dev\\Source\\HeavyWeapons\\HeavyWeapons.csproj",
         "projectName": "HeavyWeapons",
-        "projectPath": "c:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\HeavyWeapons\\HeavyWeapons.csproj",
+        "projectPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\VanillaExpandedFramework-Dev\\Source\\HeavyWeapons\\HeavyWeapons.csproj",
         "packagesPath": "C:\\Users\\Vova\\.nuget\\packages\\",
-        "outputPath": "c:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\HeavyWeapons\\obj\\",
+        "outputPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\VanillaExpandedFramework-Dev\\Source\\HeavyWeapons\\obj\\",
         "projectStyle": "PackageReference",
         "skipContentFileWrite": true,
         "configFilePaths": [
@@ -34,10 +34,6 @@
       "frameworks": {
         "net472": {
           "dependencies": {
-            "Krafs.Rimworld.Ref": {
-              "target": "Package",
-              "version": "[1.2.2753, )"
-            },
             "Lib.Harmony": {
               "target": "Package",
               "version": "[2.0.4, )"

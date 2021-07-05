@@ -1,0 +1,21 @@
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\AdMechArmoury\Source\VanillaWeaponsExpandedLaser\bin\Debug\VanillaWeaponsExpandedLaser.dll
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\AdMechArmoury\Source\VanillaWeaponsExpandedLaser\bin\Debug\VanillaWeaponsExpandedLaser.pdb
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\AdMechArmoury\Source\VanillaWeaponsExpandedLaser\bin\Debug\0Harmony.dll
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\AdMechArmoury\Source\VanillaWeaponsExpandedLaser\obj\Debug\VanillaWeaponsExpandedLaser.csprojResolveAssemblyReference.cache
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\AdMechArmoury\Source\VanillaWeaponsExpandedLaser\obj\Debug\VanillaWeaponsExpandedLaser.csproj.CoreCompileInputs.cache
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\AdMechArmoury\Source\VanillaWeaponsExpandedLaser\obj\Debug\VanillaWeaponsExpandedLaser.dll
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\AdMechArmoury\Source\VanillaWeaponsExpandedLaser\obj\Debug\VanillaWeaponsExpandedLaser.pdb
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\Vanilla Weapons Expanded-Laser\Assemblies\VanillaWeaponsExpandedLaser.dll
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\Vanilla Weapons Expanded-Laser\Assemblies\VanillaWeaponsExpandedLaser.pdb
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\Vanilla Weapons Expanded-Laser\Source\VanillaWeaponsExpandedLaser\obj\Debug\VanillaWeaponsExpandedLaser.csprojResolveAssemblyReference.cache
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\Vanilla Weapons Expanded-Laser\Source\VanillaWeaponsExpandedLaser\obj\Debug\VanillaWeaponsExpandedLaser.csproj.CoreCompileInputs.cache
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\Vanilla Weapons Expanded-Laser\Source\VanillaWeaponsExpandedLaser\obj\Debug\VanillaWeaponsExpandedLaser.dll
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\Vanilla Weapons Expanded-Laser\Source\VanillaWeaponsExpandedLaser\obj\Debug\VanillaWeaponsExpandedLaser.pdb
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\Vanilla Weapons Expanded-Laser\1.1\Assemblies\VanillaWeaponsExpandedLaser.dll
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\Vanilla Weapons Expanded-Laser\1.1\Assemblies\VanillaWeaponsExpandedLaser.pdb
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\Vanilla Weapons Expanded-Laser\1.1\1.1\Assemblies\VanillaWeaponsExpandedLaser.dll
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\Vanilla Weapons Expanded-Laser\1.1\1.1\Assemblies\VanillaWeaponsExpandedLaser.pdb
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\Vanilla Weapons Expanded-Laser\1.1\Source\VanillaWeaponsExpandedLaser\obj\Debug\VanillaWeaponsExpandedLaser.csprojResolveAssemblyReference.cache
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\Vanilla Weapons Expanded-Laser\1.1\Source\VanillaWeaponsExpandedLaser\obj\Debug\VanillaWeaponsExpandedLaser.csproj.CoreCompileInputs.cache
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\Vanilla Weapons Expanded-Laser\1.1\Source\VanillaWeaponsExpandedLaser\obj\Debug\VanillaWeaponsExpandedLaser.dll
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\Vanilla Weapons Expanded-Laser\1.1\Source\VanillaWeaponsExpandedLaser\obj\Debug\VanillaWeaponsExpandedLaser.pdb

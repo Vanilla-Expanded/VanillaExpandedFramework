@@ -6,5 +6,13 @@
 
     <!-- Toggable patches -->
     <TPTitle>Toggable patches:</TPTitle>
-    <NeedRestart>&lt;b&gt;&lt;color=red&gt;All settings need a restart to be applied&lt;/color&gt;&lt;/b&gt;</NeedRestart>
+    <NeedRestart>All settings need a restart to be applied</NeedRestart>
+    <XPatchFound>{0} patches found</XPatchFound>
+
+    <!-- Faction Discovery -->
+    <FDTitle>Faction Discovery</FDTitle>
+    <NeedToBeInGame>You first need to load a save</NeedToBeInGame>
+    <AskForPopUp>Add faction(s)</AskForPopUp>
+    <AskForPopUpExplained>Click this to be asked for each faction if you want it to be added to your game</AskForPopUpExplained>
+    <CanAddXFaction>{0} faction(s) can be added to your current save</CanAddXFaction>
 </LanguageData>

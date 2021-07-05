@@ -134,7 +134,7 @@ namespace VanillaFurnitureExpanded
                 thing.stackCount = this.PropsSpawner.spawnCount;
                 if (thing == null)
                 {
-                    Log.Error("Could not spawn anything for " + this.parent, false);
+                    Log.Error("Could not spawn anything for " + this.parent);
                 }
                 if (this.PropsSpawner.inheritFaction && thing.Faction != this.parent.Faction)
                 {

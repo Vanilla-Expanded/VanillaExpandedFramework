@@ -15,6 +15,8 @@ namespace HeavyWeapons
     class HeavyWeaponsMod : Mod
     {
         public static HeavyWeaponsSettings settings;
+
+        public static bool heavyWeaponsExist;
         public HeavyWeaponsMod(ModContentPack pack) : base(pack)
         {
             settings = GetSettings<HeavyWeaponsSettings>();
@@ -22,34 +24,16 @@ namespace HeavyWeapons
         public override void DoSettingsWindowContents(Rect inRect)
         {
             base.DoSettingsWindowContents(inRect);
-            var things = DefDatabase<ThingDef>.AllDefsListForReading;
-            foreach (var thing in things)
-            {
-                if (thing.HasModExtension<HeavyWeapon>())
-                {
-                    if (settings.weaponStates == null) 
-                        settings.weaponStates = new Dictionary<string, bool>();
-                    if (settings.weaponHPStates == null)
-                        settings.weaponHPStates = new Dictionary<string, int>();
-
-                    if (!settings.weaponStates.ContainsKey(thing.defName))
-                    {
-                        settings.weaponStates[thing.defName] = true;
-                    }
-                    if (!settings.weaponHPStates.ContainsKey(thing.defName))
-                    {
-                        var options = thing.GetModExtension<HeavyWeapon>();
-                        settings.weaponHPStates[thing.defName] = options.weaponHitPointsDeductionOnShot;
-                        Log.Message("options.weaponHitPointsDeductionOnShot: " + thing + " - " + options.weaponHitPointsDeductionOnShot);
-                    }
-                }
-            }
             settings.DoSettingsWindowContents(inRect);
         }
 
         public override string SettingsCategory()
         {
-            return "Vanilla Weapons Expanded: Heavy";
+            if (heavyWeaponsExist)
+            {
+                return "Vanilla Weapons Expanded: Heavy";
+            }
+            return "";
         }
 
         public override void WriteSettings()
@@ -63,9 +47,36 @@ namespace HeavyWeapons
     {
         static DefsAlterer()
         {
+            Setup();
             DoDefsAlter();
         }
 
+        public static void Setup()
+        {
+            var things = DefDatabase<ThingDef>.AllDefsListForReading;
+            foreach (var thing in things)
+            {
+                if (thing.HasModExtension<HeavyWeapon>())
+                {
+                    HeavyWeaponsMod.heavyWeaponsExist = true;
+                    if (HeavyWeaponsMod.settings.weaponStates == null)
+                        HeavyWeaponsMod.settings.weaponStates = new Dictionary<string, bool>();
+                    if (HeavyWeaponsMod.settings.weaponHPStates == null)
+                        HeavyWeaponsMod.settings.weaponHPStates = new Dictionary<string, int>();
+
+                    if (!HeavyWeaponsMod.settings.weaponStates.ContainsKey(thing.defName))
+                    {
+                        HeavyWeaponsMod.settings.weaponStates[thing.defName] = true;
+                    }
+                    if (!HeavyWeaponsMod.settings.weaponHPStates.ContainsKey(thing.defName))
+                    {
+                        var options = thing.GetModExtension<HeavyWeapon>();
+                        HeavyWeaponsMod.settings.weaponHPStates[thing.defName] = options.weaponHitPointsDeductionOnShot;
+                        Log.Message("options.weaponHitPointsDeductionOnShot: " + thing + " - " + options.weaponHitPointsDeductionOnShot);
+                    }
+                }
+            }
+        }
         public static void DoDefsAlter()
         {
             foreach (var weaponState in HeavyWeaponsMod.settings.weaponStates)

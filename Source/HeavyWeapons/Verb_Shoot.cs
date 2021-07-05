@@ -10,7 +10,7 @@ namespace HeavyWeapons
 {
 	public class Verb_Shoot : Verb_LaunchProjectile
 	{
-		public override int ShotsPerBurst => verbProps.burstShotCount;
+		protected override int ShotsPerBurst => verbProps.burstShotCount;
 		public override void WarmupComplete()
 		{
 			base.WarmupComplete();
@@ -23,7 +23,7 @@ namespace HeavyWeapons
 			}
 		}
 
-		public override bool TryCastShot()
+		protected override bool TryCastShot()
 		{
 			bool num = base.TryCastShot();
 			if (num && CasterIsPawn)

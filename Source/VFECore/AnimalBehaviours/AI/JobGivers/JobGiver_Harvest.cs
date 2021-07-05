@@ -123,7 +123,7 @@ namespace AnimalBehaviours
                                     {
                                         if (!current.IsForbidden(pawn) && scanner.HasJobOnCell(pawn, current, false))
                                         {
-                                            if (!allowUnreachable && !pawn.CanReach(current, scanner.PathEndMode, maxDanger, false, TraverseMode.ByPawn))
+                                            if (!allowUnreachable && !pawn.CanReach(current, scanner.PathEndMode, maxDanger, false, false,TraverseMode.ByPawn))
                                             {
                                                 continue;
                                             }
@@ -136,7 +136,7 @@ namespace AnimalBehaviours
                                     }
                                     else if (num4 < num2 && !current.IsForbidden(pawn) && scanner.HasJobOnCell(pawn, current, false))
                                     {
-                                        if (!allowUnreachable && !pawn.CanReach(current, scanner.PathEndMode, maxDanger, false, TraverseMode.ByPawn))
+                                        if (!allowUnreachable && !pawn.CanReach(current, scanner.PathEndMode, maxDanger, false, false, TraverseMode.ByPawn))
                                         {
                                             continue;
                                         }
@@ -162,7 +162,7 @@ namespace AnimalBehaviours
                             workGiver.def.defName,
                             ": ",
                             ex.ToString()
-                        }), false);
+                        }));
                     }
                     finally
                     {
@@ -191,7 +191,7 @@ namespace AnimalBehaviours
                             " but yielded no actual job for pawn ",
                             pawn,
                             ". The CanGiveJob and JobOnX methods may not be synchronized."
-                        }), 6112651, false);
+                        }), 6112651);
                     }
                     num = workGiver.def.priorityInType;
                 }
@@ -254,7 +254,7 @@ namespace AnimalBehaviours
                     giver.def.defName,
                     ": ",
                     ex.ToString()
-                }), false);
+                }));
             }
             return null;
         }

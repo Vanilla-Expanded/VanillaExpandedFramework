@@ -86,7 +86,7 @@ namespace VFECore
 
 		private bool TryFindFaction(out Faction faction, Slate slate)
 		{
-			return (from x in Find.FactionManager.GetFactions_NewTemp(allowHidden: true)
+			return (from x in Find.FactionManager.GetFactions(allowHidden: true)
 					where IsGoodFaction(x, slate)
 					select x).TryRandomElement(out faction);
 		}

@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using HarmonyLib;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +37,7 @@ namespace HeavyWeapons
             if (this.Props.selectDifferentTargets)
             {
                 if (guidedProjectilesComp.launcherTargets == null) guidedProjectilesComp.launcherTargets = new Dictionary<Thing, Targets>();
-                if (guidedProjectilesComp.launcherTargets.TryGetValue(projectile.launcher, out Targets targets) && projectile.launcher is Pawn pawn)
+                if (guidedProjectilesComp.launcherTargets.TryGetValue(projectile.Launcher, out Targets targets) && projectile.Launcher is Pawn pawn)
                 {
                     if (targets.targetInfos == null)
                     {
@@ -92,12 +93,16 @@ namespace HeavyWeapons
                 {
                     var targets2 = new Targets();
                     targets2.targetInfos = new Dictionary<Projectile, LocalTargetInfo> { { projectile, projectile.intendedTarget } };
-                    guidedProjectilesComp.launcherTargets[projectile.launcher] = targets2;
+                    guidedProjectilesComp.launcherTargets[projectile.Launcher] = targets2;
                 }
             }
-            if (projectile.intendedTarget.IsValid && projectile.DestinationCell != projectile.intendedTarget.Cell)
+            if (projectile.intendedTarget.IsValid)
             {
-                projectile.destination = projectile.intendedTarget.CenterVector3;
+                var destinationCell = (IntVec3)AccessTools.PropertyGetter(typeof(Projectile), "DestinationCell").Invoke(projectile, new object[0]);
+                if (destinationCell != projectile.intendedTarget.Cell)
+                {
+                    Traverse.Create(projectile).Field("destination").SetValue(projectile.intendedTarget.CenterVector3);
+                }
                 Log.Message(projectile + " changing destination");
             }
         }

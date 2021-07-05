@@ -106,7 +106,7 @@ namespace AnimalBehaviours
             //Mostly a copy from CompShearable
             if (!this.Active)
             {
-                Log.Error(doer + " gathered body resources while not Active: " + this.parent, false);
+                Log.Error(doer + " gathered body resources while not Active: " + this.parent);
             }
             if (!Rand.Chance(doer.GetStatValue(StatDefOf.AnimalGatherYield, true)))
             {

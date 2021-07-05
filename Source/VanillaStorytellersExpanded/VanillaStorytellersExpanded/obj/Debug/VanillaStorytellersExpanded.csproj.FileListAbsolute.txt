@@ -14,3 +14,9 @@ c:\GAMES\Rimworld\Mods\VanillaExpandedFramework\1.2\Assemblies\VanillaStorytelle
 c:\GAMES\Rimworld\Mods\VanillaExpandedFramework\Source\VanillaStorytellersExpanded\VanillaStorytellersExpanded\obj\Debug\VanillaStorytellersExpanded.csprojAssemblyReference.cache
 c:\GAMES\Rimworld\Mods\VanillaExpandedFramework\Source\VanillaStorytellersExpanded\VanillaStorytellersExpanded\obj\Debug\VanillaStorytellersExpanded.csproj.CoreCompileInputs.cache
 c:\GAMES\Rimworld\Mods\VanillaExpandedFramework\Source\VanillaStorytellersExpanded\VanillaStorytellersExpanded\obj\Debug\VanillaStorytellersExpanded.dll
+C:\GAMES\Rimworld\Mods\VanillaExpandedFramework-Dev\Source\VanillaStorytellersExpanded\VanillaStorytellersExpanded\obj\Debug\VanillaStorytellersExpanded.csprojAssemblyReference.cache
+C:\GAMES\Rimworld\Mods\VanillaExpandedFramework-Dev\Source\VanillaStorytellersExpanded\VanillaStorytellersExpanded\obj\Debug\VanillaStorytellersExpanded.csproj.CoreCompileInputs.cache
+C:\GAMES\Rimworld\Mods\VanillaExpandedFramework-Dev\Source\VanillaStorytellersExpanded\VanillaStorytellersExpanded\obj\Debug\VanillaStorytellersExpanded.dll
+C:\GAMES\Rimworld\Mods\VanillaExpandedFramework-Dev\1.2\Assemblies\VanillaStorytellersExpanded.dll
+C:\GAMES\Rimworld\Mods\VanillaExpandedFramework-Dev\1.3\VanillaStorytellersExpanded.dll
+C:\GAMES\Rimworld\Mods\VanillaExpandedFramework-Dev\1.3\Assemblies\VanillaStorytellersExpanded.dll

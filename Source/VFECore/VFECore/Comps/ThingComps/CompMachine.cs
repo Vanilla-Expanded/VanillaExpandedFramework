@@ -92,5 +92,13 @@ namespace VFE.Mechanoids
             cachedPawns.Remove(this);
             cachedMachinesPawns.Remove((Pawn)parent);
         }
+
+        public override void PostDestroy(DestroyMode mode, Map previousMap)
+        {
+            base.PostDestroy(mode, previousMap);
+            cachedMachines.Remove(((Pawn)parent).Drawer.renderer);
+            cachedPawns.Remove(this);
+            cachedMachinesPawns.Remove((Pawn)parent);
+        }
     }
 }

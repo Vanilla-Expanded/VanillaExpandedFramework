@@ -36,8 +36,6 @@ namespace MVCF.Harmony
                 : __instance.EquipmentSource.def?.modContentPack?.Name)) return true;
             var man = __instance.CasterPawn.Manager();
             if (man == null) return true;
-            if (man.debugOpts.VerbLogging)
-                Log.Message("Changing CurrentVerb of " + __instance.CasterPawn + " to " + __instance);
             var mv = man.GetManagedVerbForVerb(__instance);
             if (mv != null) mv.Enabled = true;
             if (mv is TurretVerb tv)
@@ -46,6 +44,8 @@ namespace MVCF.Harmony
                 return false;
             }
 
+            if (man.debugOpts.VerbLogging)
+                Log.Message("Changing CurrentVerb of " + __instance.CasterPawn + " to " + __instance);
             man.CurrentVerb = __instance;
 
             return true;

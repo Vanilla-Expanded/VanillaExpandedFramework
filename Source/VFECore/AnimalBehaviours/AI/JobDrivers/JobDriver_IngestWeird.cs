@@ -115,7 +115,7 @@ namespace AnimalBehaviours
                             thing,
                             " - amount: ",
                             1
-                            }), false);
+                            }));
                             this.pawn.jobs.EndCurrentJob(JobCondition.Errored, true, true);
                         }
                         this.job.count = 1;

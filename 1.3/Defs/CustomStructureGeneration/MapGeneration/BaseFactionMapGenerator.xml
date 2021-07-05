@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <MapGeneratorDef ParentName="MapCommonBase">
+    <defName>KCSG_Base_Faction</defName>
+    <genSteps>
+      <li>RocksFromGrid</li>
+      <li>KCSG_Settlement</li>
+      <li>SettlementPower</li>
+    </genSteps>
+  </MapGeneratorDef>
+
+  <!-- Generate faction base -->
+  <GenStepDef>
+    <defName>KCSG_Settlement</defName>
+    <order>400</order>
+    <genStep Class="KCSG.GenStep_KCSGSettlement">
+      <count>1</count>
+      <nearMapCenter>true</nearMapCenter>
+    </genStep>
+  </GenStepDef>
+
+
+  <MapGeneratorDef ParentName="MapCommonBase">
+    <defName>KCSG_WorldObject_Gen</defName>
+    <genSteps>
+      <li>RocksFromGrid</li>
+      <li>KCSG_WorldObject</li>
+      <li>SettlementPower</li>
+    </genSteps>
+  </MapGeneratorDef>
+
+  <!-- Generate faction base -->
+  <GenStepDef>
+    <defName>KCSG_WorldObject</defName>
+    <order>400</order>
+    <genStep Class="KCSG.GenStep_WorldObjectKCSG">
+      <count>1</count>
+      <nearMapCenter>true</nearMapCenter>
+    </genStep>
+  </GenStepDef>
+</Defs>

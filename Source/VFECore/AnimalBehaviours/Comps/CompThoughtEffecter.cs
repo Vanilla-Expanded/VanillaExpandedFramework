@@ -71,6 +71,7 @@ namespace AnimalBehaviours
                                             pawn.needs.mood.thoughts.memories.TryGainMemory(ThoughtDef.Named(Props.thoughtDef), null);
                                         }
                                     }
+                                    //Find.HistoryEventsManager.RecordEvent(new HistoryEvent(DefDatabase<HistoryEventDef>.GetNamed("AA_DisgustEvent"), pawn.Named(HistoryEventArgsNames.Doer)), true);
                                 }
                             }
                         }

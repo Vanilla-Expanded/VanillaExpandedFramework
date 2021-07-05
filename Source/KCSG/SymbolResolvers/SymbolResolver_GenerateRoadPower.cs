@@ -60,7 +60,7 @@ namespace KCSG
                 if (map.terrainGrid.TerrainAt(cell).affordances.Contains(TerrainAffordanceDefOf.Bridgeable))
                     map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
 
-                Thing c = ThingMaker.MakeThing(KDefOf.KCSG_PowerConduit);
+                Thing c = ThingMaker.MakeThing(KThingDefOf.KCSG_PowerConduit);
                 c.SetFactionDirect(map.ParentFaction);
                 GenSpawn.Spawn(c, cell, map, WipeMode.VanishOrMoveAside);
             }

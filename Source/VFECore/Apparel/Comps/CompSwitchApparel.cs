@@ -95,15 +95,9 @@ namespace VanillaApparelExpanded
 
                             }
                         }
-                        else
-                        {
-                            Log.Error($"{Props.SwitchTo.label} and {this.parent.def.label} don't have the same bodypartgroup.");
-                        }
+                        
                     }
-                    else
-                    {
-                        Log.Error($"{Props.SwitchTo.label} and {this.parent.def.label} don't have the same layers.");
-                    }
+                    
                 }
             });
         }

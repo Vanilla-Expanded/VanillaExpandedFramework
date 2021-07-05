@@ -16,7 +16,9 @@ namespace AnimalBehaviours
 			}
 			Thing spawnedParentOrMe = mentalState_MurderousRage.target.SpawnedParentOrMe;
 			Job job = JobMaker.MakeJob(JobDefOf.AttackMelee, spawnedParentOrMe);
-			job.canBash = true;
+			job.canBashDoors = true;
+			job.canBashFences = true;
+
 			job.killIncappedTarget = true;
 			if (spawnedParentOrMe != mentalState_MurderousRage.target)
 			{

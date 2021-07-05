@@ -12,15 +12,16 @@ namespace AnimalBehaviours
     public static class AnimalCollectionClass
     {
 
-        //This static class stores lists of animals for different things.
+        //This static class stores lists of animals and pawns for different things.
 
-        //Currently, a list of draft-capable animals for Genetic Rim, an integer with the current number of animal control hubs built
-        //and a list of hovering animals for CompProperties_Floating
-
+    
+        // A list of draft-capable animals for Genetic Rim
         public static IDictionary<Thing, bool[]> draftable_animals = new Dictionary<Thing, bool[]>();
 
+        // A list of hovering animals for CompProperties_Floating
         public static HashSet<Thing> floating_animals = new HashSet<Thing>();
 
+        // An integer with the current number of animal control hubs built
         public static int numberOfAnimalControlHubsBuilt = 0;
 
 
@@ -59,6 +60,8 @@ namespace AnimalBehaviours
             }
 
         }
+
+        
 
         public static void AddControlHubBuilt()
         {

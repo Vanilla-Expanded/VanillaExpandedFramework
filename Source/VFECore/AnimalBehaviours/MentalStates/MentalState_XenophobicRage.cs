@@ -44,11 +44,11 @@ namespace AnimalBehaviours
 			}
 		}
 
-		public override string GetBeginLetterText()
+		public override TaggedString GetBeginLetterText()
 		{
 			if (this.target == null)
 			{
-				Log.Error("No target. This should have been checked in this mental state's worker.", false);
+				Log.Error("No target. This should have been checked in this mental state's worker.");
 				return "";
 			}
 			return this.def.beginLetter.Formatted(this.pawn.NameShortColored, this.target.NameShortColored, this.pawn.Named("PAWN"), this.target.Named("TARGET")).AdjustedFor(this.pawn, "PAWN", true).Resolve().CapitalizeFirst();
@@ -62,7 +62,7 @@ namespace AnimalBehaviours
 
 		public bool IsTargetStillValidAndReachable()
 		{
-			return this.target != null && this.target.SpawnedParentOrMe != null && (!(this.target.SpawnedParentOrMe is Pawn) || this.target.SpawnedParentOrMe == this.target) && this.pawn.CanReach(this.target.SpawnedParentOrMe, PathEndMode.Touch, Danger.Deadly, true, TraverseMode.ByPawn);
+			return this.target != null && this.target.SpawnedParentOrMe != null && (!(this.target.SpawnedParentOrMe is Pawn) || this.target.SpawnedParentOrMe == this.target) && this.pawn.CanReach(this.target.SpawnedParentOrMe, PathEndMode.Touch, Danger.Deadly, true, true,TraverseMode.ByPawn);
 		}
 
 		public Pawn target;

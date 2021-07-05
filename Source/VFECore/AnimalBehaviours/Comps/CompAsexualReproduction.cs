@@ -113,7 +113,7 @@ namespace AnimalBehaviours
                         {
                             if (Props.convertsIntoAnotherDef)
                             {
-                                PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDef.Named(Props.newDef), pawn.Faction, PawnGenerationContext.NonPlayer, -1, false, true, false, false, true, false, 1f, false, true, true, true, false, false, false, false, 0f, null, 1f, null, null, null, null, null, null, null, null, null, null, null, null);
+                                PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDef.Named(Props.newDef), pawn.Faction, PawnGenerationContext.NonPlayer, -1, false, true, false, false, true, false, 1f, false, true, true, true, false, false, false, false, 0f, 0f,null, 1f, null, null, null, null, null, null, null, null, null, null, null, null);
                                 Pawn pawnToGenerate = PawnGenerator.GeneratePawn(request);
                                 PawnUtility.TrySpawnHatchedOrBornPawn(pawnToGenerate, pawn);
                                 Messages.Message(Props.asexualEggMessage.Translate(pawn.LabelIndefinite().CapitalizeFirst()), pawn, MessageTypeDefOf.PositiveEvent, true);

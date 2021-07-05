@@ -169,7 +169,7 @@ namespace VanillaStorytellersExpanded
             try
             {
                 var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
-                if (options != null && options.storytellerThreat != null && __instance.IsColonist && __instance.FactionOrExtraMiniOrHomeFaction == Faction.OfPlayer)
+                if (options != null && options.storytellerThreat != null && __instance.IsColonist && __instance.Faction == Faction.OfPlayer)
                 {
                     if (ShouldTriggerReinforcements(__instance, dinfo, out Faction enemyFaction))
                     {
@@ -238,7 +238,11 @@ namespace VanillaStorytellersExpanded
                 if (comp != null && !comp.raidQueues.Where(x => x.parms == parms).Any() && parms.target is Map mapTarget)
                 {
                     var tickToFire = Find.TickManager.TicksAbs + options.storytellerThreat.raidWarningRange.Value.RandomInRange;
-                    if (__instance.TryResolveRaidFaction(parms))
+                    var result = (bool)AccessTools.Method(typeof(IncidentWorker_RaidEnemy), "TryResolveRaidFaction", null, null).Invoke(null, new object[]
+                    {
+                        parms
+                    });
+                    if (result)
                     {
                         __instance.ResolveRaidStrategy(parms, PawnGroupKindDefOf.Combat);
                         __instance.ResolveRaidArriveMode(parms);

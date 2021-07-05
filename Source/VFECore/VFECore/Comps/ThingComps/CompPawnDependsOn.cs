@@ -19,10 +19,11 @@ namespace VFECore
                 return (CompProperties_PawnDependsOn)this.props;
             }
         }
+        public bool MyPawnIsAlive => this.myPawn != null && !this.myPawn.Destroyed && !this.myPawn.Dead;
 
         public virtual void SpawnMyPawn()
         {
-            if (myPawn == null || !myPawn.Spawned || myPawn.Dead)
+            if (!MyPawnIsAlive)
             {
                 myPawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(Props.pawnToSpawn, parent.Faction, newborn: true, canGeneratePawnRelations: false));
                 myPawn.Position = parent.Position;
@@ -32,6 +33,7 @@ namespace VFECore
                 else
                     pawnComp.myBuilding = (Building)this.parent;
                 myPawn.SpawnSetup(parent.Map, false);
+                Log.Message("Spawning: " + myPawn);
             }
         }
 

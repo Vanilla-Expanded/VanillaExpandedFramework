@@ -10,25 +10,28 @@ namespace KCSG
         [DebugAction("Custom Structure Generation", "Quickspawn structure", actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void QuickspawnStructure()
         {
-            List<DebugMenuOption> list = new List<DebugMenuOption>();
-            foreach (StructureLayoutDef localDef2 in DefDatabase<StructureLayoutDef>.AllDefs)
+            if (DefDatabase<StructureLayoutDef>.AllDefs.Count() > 0)
             {
-                StructureLayoutDef localDef = localDef2;
-                list.Add(new DebugMenuOption(localDef.defName, DebugMenuOptionMode.Tool, delegate ()
+                List<DebugMenuOption> list = new List<DebugMenuOption>();
+                foreach (StructureLayoutDef localDef2 in DefDatabase<StructureLayoutDef>.AllDefs)
                 {
-                    if (UI.MouseCell().InBounds(Find.CurrentMap))
+                    StructureLayoutDef localDef = localDef2;
+                    list.Add(new DebugMenuOption(localDef.defName, DebugMenuOptionMode.Tool, delegate ()
                     {
-                        RectUtils.HeightWidthFromLayout(localDef, out int h, out int w);
-                        CellRect cellRect = CellRect.CenteredOn(UI.MouseCell(), w, h);
-
-                        foreach (List<string> item in localDef.layouts)
+                        if (UI.MouseCell().InBounds(Find.CurrentMap))
                         {
-                            GenUtils.GenerateRoomFromLayout(item, cellRect, Find.CurrentMap, localDef);
+                            RectUtils.HeightWidthFromLayout(localDef, out int h, out int w);
+                            CellRect cellRect = CellRect.CenteredOn(UI.MouseCell(), w, h);
+
+                            foreach (List<string> item in localDef.layouts)
+                            {
+                                GenUtils.GenerateRoomFromLayout(item, cellRect, Find.CurrentMap, localDef);
+                            }
                         }
-                    }
-                }));
+                    }));
+                }
+                Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
             }
-            Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
         }
 
         [DebugAction("Custom Structure Generation", "Destroy all hostile pawns on map", actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]

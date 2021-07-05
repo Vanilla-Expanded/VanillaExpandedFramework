@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "jdSrmhyukMNzJqIVe8ZDJU6wtwpzBHxBp/HV20S/IBfH5fD6DZ0K6E9sxy7mxviGLTzWAwOOpOMTOSQDwPbCkw==",
+  "dgSpecHash": "rG6fRJ4Gs7fRQCLRWbN2zeGpbOwRb33PYeqi1n9PxVNnZq3F32cQAlBwKJotLz1Pr1hxky2Qx6wLi7NvunKkFQ==",
   "success": true,
-  "projectFilePath": "c:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj",
+  "projectFilePath": "C:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework-Dev\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Vova\\.nuget\\packages\\lib.harmony\\2.0.4\\lib.harmony.2.0.4.nupkg.sha512"
   ],

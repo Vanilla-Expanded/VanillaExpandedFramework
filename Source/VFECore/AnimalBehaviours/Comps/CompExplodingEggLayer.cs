@@ -88,7 +88,7 @@ namespace AnimalBehaviours
 		{
 			if (!this.Active)
 			{
-				Log.Error("LayEgg while not Active: " + this.parent, false);
+				Log.Error("LayEgg while not Active: " + this.parent);
 			}
 			this.eggProgress = 0f;
 			int randomInRange = this.Props.eggCountRange.RandomInRange;

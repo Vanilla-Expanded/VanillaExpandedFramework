@@ -24,8 +24,8 @@ namespace VanillaStorytellersExpanded
                 if (options != null && options.incidentSpawnOptions != null)
                 {
                     var incidentOptions = options.incidentSpawnOptions;
-                    float alliesCount = Find.FactionManager.GetFactions_NewTemp().Where(x => x.PlayerRelationKind == FactionRelationKind.Ally).Count();
-                    float enemiesCount = Find.FactionManager.GetFactions_NewTemp().Where(x => x.PlayerRelationKind == FactionRelationKind.Hostile).Count();
+                    float alliesCount = Find.FactionManager.GetFactions().Where(x => x.PlayerRelationKind == FactionRelationKind.Ally).Count();
+                    float enemiesCount = Find.FactionManager.GetFactions().Where(x => x.PlayerRelationKind == FactionRelationKind.Hostile).Count();
 
                     // we put a 90% cap here...
                     if (alliesCount > 9f) alliesCount = 9f;

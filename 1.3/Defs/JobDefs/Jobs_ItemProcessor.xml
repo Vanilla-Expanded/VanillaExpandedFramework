@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+
+
+  <JobDef>
+    <defName>IP_InsertFirstIngredient</defName>
+    <driverClass>ItemProcessor.JobDriver_InsertProcessorFirst</driverClass>
+    <reportString>inserting ingredient.</reportString>
+  </JobDef>
+  
+   <JobDef>
+    <defName>IP_InsertSecondIngredient</defName>
+    <driverClass>ItemProcessor.JobDriver_InsertProcessorSecond</driverClass>
+    <reportString>inserting ingredient.</reportString>
+  </JobDef>
+  <JobDef>
+    <defName>IP_InsertThirdIngredient</defName>
+    <driverClass>ItemProcessor.JobDriver_InsertProcessorThird</driverClass>
+    <reportString>inserting ingredient.</reportString>
+  </JobDef>  
+  
+  <JobDef>
+    <defName>IP_RemoveProduct</defName>
+    <driverClass>ItemProcessor.JobDriver_RemoveProduct</driverClass>
+    <reportString>removing finished product.</reportString>
+  </JobDef>
+  
+
+ 
+  
+ 
+
+</Defs>

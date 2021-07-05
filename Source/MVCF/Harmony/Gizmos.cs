@@ -32,6 +32,7 @@ namespace MVCF.Harmony
 
         public static void DoIntegratedTogglePatches(HarmonyLib.Harmony harm)
         {
+            HarmonyLib.Harmony.DEBUG = true;
             harm.Patch(AccessTools.Method(typeof(Command), "GizmoOnGUIInt"),
                 transpiler: new HarmonyMethod(typeof(Gizmos), "GizmoOnGUI_Transpile"));
         }
@@ -148,35 +149,34 @@ namespace MVCF.Harmony
             ILGenerator generator)
         {
             var list = instructions.ToList();
+            var field = AccessTools.Field(typeof(GizmoGridDrawer), "customActivator");
+            var idx = list.FindIndex(ins => ins.LoadsField(field));
             var method = AccessTools.Method(typeof(Widgets), "ButtonInvisible");
-            var idx = list.FindIndex(ins =>
-                ins.opcode == OpCodes.Call && ((MethodInfo) ins.operand).FullDescription() == method.FullDescription());
-            var label = list[idx + 1].operand;
+            var label = list[list.FindIndex(ins => ins.Calls(method)) + 1].operand;
             var list2 = new List<CodeInstruction>
             {
                 new CodeInstruction(OpCodes.Ldarg_0),
                 new CodeInstruction(OpCodes.Ldarg_1),
                 new CodeInstruction(OpCodes.Ldarg_2),
-                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Gizmos), "DrawToggle")),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Gizmos), nameof(DrawToggle))),
                 new CodeInstruction(OpCodes.Brtrue_S, label)
             };
-            list2[0].labels = list[idx - 2].labels.ListFullCopy();
-            list[idx - 2].labels.Clear();
-            list.InsertRange(idx - 2, list2);
+            list2[0].labels = list[idx].labels.ListFullCopy();
+            list[idx].labels.Clear();
+            list.InsertRange(idx, list2);
             return list;
         }
 
-        public static bool DrawToggle(Command command, Rect butRect, bool shrunk)
+        public static bool DrawToggle(Command command, Rect butRect, GizmoRenderParms parms)
         {
-            if (shrunk) return false;
+            if (parms.shrunk) return false;
             if (!(command is Command_VerbTarget gizmo)) return false;
             var verb = gizmo.verb;
             if (!verb.CasterIsPawn) return false;
             var pawn = verb.CasterPawn;
             if (pawn.Faction != Faction.OfPlayer) return false;
             var manager = pawn.Manager(false);
-            if (manager == null) return false;
-            var man = manager.GetManagedVerbForVerb(verb, false);
+            var man = manager?.GetManagedVerbForVerb(verb, false);
             if (man == null) return false;
             if (!pawn.RaceProps.Animal && manager.AllVerbs.Count(v => !v.IsMeleeAttack) <= 1 && !(man.Props != null &&
                 man.Props.canFireIndependently)) return false;

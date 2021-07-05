@@ -10,7 +10,6 @@ namespace VanillaStorytellersExpanded
 	{
         public int lastRaidExpansionTicks;
         public StorytellerDef currentStoryteller;
-        public Dictionary<FactionDef, IntRange> originalNaturalGoodwillValues;
         public List<RaidGroup> raidGroups;
         public List<RaidGroup> reinforcementGroups;
         public List<RaidQueue> raidQueues;
@@ -92,7 +91,6 @@ namespace VanillaStorytellersExpanded
         {
             if (this.raidGroups == null) this.raidGroups = new List<RaidGroup>();
             if (this.reinforcementGroups == null) this.reinforcementGroups = new List<RaidGroup>();
-            if (this.originalNaturalGoodwillValues == null) this.originalNaturalGoodwillValues = new Dictionary<FactionDef, IntRange>();
             if (this.raidQueues == null) this.raidQueues = new List<RaidQueue>();
             if (this.questGiverManagers == null) this.questGiverManagers = new Dictionary<int, QuestGiverManager>();
         }
@@ -100,13 +98,11 @@ namespace VanillaStorytellersExpanded
         {
             base.LoadedGame();
             this.PreInit();
-            ChangeOrRestoreNaturalGoodwill();
         }
         public override void StartedNewGame()
         {
             base.StartedNewGame();
             this.PreInit();
-            ChangeOrRestoreNaturalGoodwill();
         }
 
         public void CheckStorytellerChanges()
@@ -114,54 +110,6 @@ namespace VanillaStorytellersExpanded
             if (currentStoryteller != Find.Storyteller.def)
             {
                 currentStoryteller = Find.Storyteller.def;
-                ChangeOrRestoreNaturalGoodwill();
-            }
-        }
-
-        public void ChangeOrRestoreNaturalGoodwill()
-        {
-            if (Find.Storyteller.def.HasModExtension<StorytellerDefExtension>())
-            {
-                var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
-                if (options.storytellerThreat != null)
-                {
-                    ChangeNaturalGoodwill(options.storytellerThreat);
-                }
-                else
-                {
-                    RestoreNaturalGoodwillForAllFactions();
-                }
-            }
-            else
-            {
-                RestoreNaturalGoodwillForAllFactions();
-            }
-        }
-
-        public void ChangeNaturalGoodwill(StorytellerThreat storytellerThreat)
-        {
-            RestoreNaturalGoodwillForAllFactions();
-            foreach (var factionDef in DefDatabase<FactionDef>.AllDefs)
-            {
-                if (factionDef != Faction.OfPlayer.def && !factionDef.permanentEnemy)
-                {
-                    originalNaturalGoodwillValues[factionDef] = factionDef.naturalColonyGoodwill;
-                    factionDef.naturalColonyGoodwill = storytellerThreat.naturallGoodwillForAllFactions;
-                }
-            }
-        }
-
-        public void RestoreNaturalGoodwillForAllFactions()
-        {
-            if (originalNaturalGoodwillValues != null)
-            {
-                foreach (var factionDef in DefDatabase<FactionDef>.AllDefs)
-                {
-                    if (originalNaturalGoodwillValues.ContainsKey(factionDef) && factionDef != Faction.OfPlayer.def && !factionDef.permanentEnemy)
-                    {
-                        factionDef.naturalColonyGoodwill = originalNaturalGoodwillValues[factionDef];
-                    }
-                }
             }
         }
 

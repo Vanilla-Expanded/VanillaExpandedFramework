@@ -42,10 +42,10 @@ namespace VFECore
                 FactionRelationKind kind = (finalMutualGoodWill > -10) ? ((finalMutualGoodWill < 75) ? FactionRelationKind.Neutral : FactionRelationKind.Ally) : FactionRelationKind.Hostile;
 
                 FactionRelation factionRelation = __instance.RelationWith(other, false);
-                factionRelation.goodwill = finalMutualGoodWill;
+                factionRelation.baseGoodwill = finalMutualGoodWill;
                 factionRelation.kind = kind;
                 FactionRelation factionRelation2 = other.RelationWith(__instance, false);
-                factionRelation2.goodwill = finalMutualGoodWill;
+                factionRelation2.baseGoodwill = finalMutualGoodWill;
                 factionRelation2.kind = kind;
             }
         }

@@ -80,6 +80,7 @@ namespace VFE.Mechanoids
             DefMap<WorkTypeDef, int> priorities = new DefMap<WorkTypeDef, int>();
             priorities.SetAll(0);
             typeof(Pawn_WorkSettings).GetField("priorities", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(myPawn.workSettings, priorities);
+            
             foreach (WorkTypeDef workType in Props.allowedWorkTypes)
             {
                 foreach (SkillDef skill in workType.relevantSkills)
@@ -137,7 +138,7 @@ namespace VFE.Mechanoids
 
         void CheckWantsRespawn()
         {
-            if (myPawn == null || !myPawn.Spawned || myPawn.Dead)
+            if (!MyPawnIsAlive)
                 wantsRespawn = true;
             else
                 wantsRespawn = false;
@@ -198,7 +199,6 @@ namespace VFE.Mechanoids
                                 comp.turretToInstall = null;
                                 Job job = JobMaker.MakeJob(VFEDefOf.VFE_Mechanoids_Recharge, comp.parent);
                                 comp.myPawn.jobs.StopAll();
-                                Log.Message(comp.myPawn + " taking " + job + " - " + comp.parent);
                                 comp.myPawn.jobs.TryTakeOrderedJob(job);
                             }
                         }
@@ -253,7 +253,7 @@ namespace VFE.Mechanoids
                             if (t is ThingWithComps thing && thing.TryGetComp<CompMachineChargingStation>() is CompMachineChargingStation comp)
                             {
                                 comp.allowedArea = area;
-                                if (comp.myPawn != null && comp.myPawn.Spawned && !comp.myPawn.Dead)
+                                if (comp.myPawn != null && !comp.myPawn.Dead)
                                 {
                                     comp.myPawn.playerSettings.AreaRestriction = area;
                                 }
@@ -272,7 +272,7 @@ namespace VFE.Mechanoids
         public override string CompInspectStringExtra()
         {
             StringBuilder builder = new StringBuilder(base.CompInspectStringExtra());
-            if(myPawn==null || myPawn.Dead || !myPawn.Spawned)
+            if(myPawn==null || myPawn.Dead)
             {
                 bool comma = false;
                 string resources = "VFEMechReconstruct".Translate()+" ";

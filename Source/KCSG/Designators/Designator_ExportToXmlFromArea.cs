@@ -59,7 +59,6 @@ namespace KCSG
 
             MakeAllowedAreaListFloatMenu(delegate (Area a)
             {
-                Log.Message($"{a}");
                 RectUtils.EdgeFromArea(a.ActiveCells.ToList(), out int height, out int width);
                 List<IntVec3> cellExport = RectUtils.AreaToSquare(a, height, width);
 
@@ -86,7 +85,7 @@ namespace KCSG
                 FloatMenuOption item = new FloatMenuOption(localArea.Label, delegate ()
                 {
                     selAction(localArea);
-                }, MenuOptionPriority.Default, delegate ()
+                }, MenuOptionPriority.Default, delegate (Rect rect)
                 {
                     localArea.MarkForDraw();
                 }, null, 0f, null, null);

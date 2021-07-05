@@ -30,7 +30,7 @@ namespace VFECore
                         opts.Remove(floatMenuOption);
                     }
                 }
-
+    
                 IntVec3 c = IntVec3.FromVector3(clickPos);
                 if (pawn.equipment != null)
                 {
@@ -47,7 +47,7 @@ namespace VFECore
                             {
                                 floatMenuOption.Label += $" {"VanillaFactionsExpanded.EquipWarningShieldUnusableWithWeapon".Translate(oldShield.def.label)}";
                             }
-
+    
                             AddShieldFloatMenuOption(pawn, equipment, ref opts);
                             break;
                         }
@@ -55,7 +55,7 @@ namespace VFECore
                 }
             }
         }
-
+    
         public static void AddShieldFloatMenuOption(Pawn pawn, Thing equipment, ref List<FloatMenuOption> opts)
         {
             // Add an extra option to the float menu if the thing is a shield
@@ -63,42 +63,42 @@ namespace VFECore
             {
                 string labelShort = equipment.LabelShort;
                 FloatMenuOption shieldOption;
-
+    
                 // Pawn is pacifist
                 if (equipment.def.IsWeapon && pawn.WorkTagIsDisabled(WorkTags.Violent))
-                    shieldOption = new FloatMenuOption("CannotEquip".Translate(labelShort) + " (" + "IsIncapableOfViolenceLower".Translate(pawn.LabelShort, pawn) + ")", null, MenuOptionPriority.Default, null, null, 0f, null, null);
-
+                    shieldOption = new FloatMenuOption("CannotEquip".Translate(labelShort) + " (" + "IsIncapableOfViolenceLower".Translate(pawn.LabelShort, pawn) + ")", null);
+    
                 // Pawn cannot path to shield
-                else if (!pawn.CanReach(equipment, PathEndMode.ClosestTouch, Danger.Deadly, false, TraverseMode.ByPawn))
-                    shieldOption = new FloatMenuOption("CannotEquip".Translate(labelShort) + " (" + "NoPath".Translate() + ")", null, MenuOptionPriority.Default, null, null, 0f, null, null);
-
+                else if (!pawn.CanReach(equipment, PathEndMode.ClosestTouch, Danger.Deadly, false, false,TraverseMode.ByPawn))
+                    shieldOption = new FloatMenuOption("CannotEquip".Translate(labelShort) + " (" + "NoPath".Translate() + ")", null);
+    
                 // Pawn cannot manipulate
                 else if (!pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation) || !pawn.CanUseShields())
-                    shieldOption = new FloatMenuOption("CannotEquip".Translate(labelShort) + " (" + "Incapable".Translate() + ")", null, MenuOptionPriority.Default, null, null, 0f, null, null);
-
+                    shieldOption = new FloatMenuOption("CannotEquip".Translate(labelShort) + " (" + "Incapable".Translate() + ")", null);
+    
                 // Shield is burning
                 else if (equipment.IsBurning())
-                    shieldOption = new FloatMenuOption("CannotEquip".Translate(labelShort) + " (" + "BurningLower".Translate() + ")", null, MenuOptionPriority.Default, null, null, 0f, null, null);
-
+                    shieldOption = new FloatMenuOption("CannotEquip".Translate(labelShort) + " (" + "BurningLower".Translate() + ")", null);
+    
                 // Able to equip shield
                 else
                 {
                     string optionLabel = "VanillaFactionsExpanded.EquipShield".Translate(labelShort);
-
+    
                     // I seriously doubt this'll ever return true but hey, why not
                     if (equipment.def.IsRangedWeapon && pawn.story != null && pawn.story.traits.HasTrait(TraitDefOf.Brawler))
                         optionLabel = optionLabel + " " + "EquipWarningBrawler".Translate();
-
+    
                     // Primary cannot be used with shields
                     if (pawn.equipment.Primary is ThingWithComps weapon && !weapon.def.UsableWithShields())
                     {
                         optionLabel += $" {"VanillaFactionsExpanded.EquipWarningShieldUnusable".Translate(weapon.def.label)}";
                     }
-
+    
                     shieldOption = FloatMenuUtility.DecoratePrioritizedTask(new FloatMenuOption(optionLabel, delegate () {
                         equipment.SetForbidden(false, true);
                         pawn.jobs.TryTakeOrderedJob(new Job(VFEDefOf.VFEC_EquipShield, equipment), JobTag.Misc);
-                        MoteMaker.MakeStaticMote(equipment.DrawPos, equipment.Map, RimWorld.ThingDefOf.Mote_FeedbackEquip, 1f);
+                        FleckMaker.Static(equipment.DrawPos, equipment.Map, FleckDefOf.FeedbackEquip, 1f);
                         PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.EquippingWeapons, KnowledgeAmount.Total);
                     }, MenuOptionPriority.High, null, null, 0f, null, null), pawn, equipment, "ReservedBy");
                 }

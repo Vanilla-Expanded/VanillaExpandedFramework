@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <NeedDef>
+    <defName>VFE_Mechanoids_Power</defName>
+    <needClass>VFE.Mechanoids.Needs.Need_Power</needClass>
+    <label>power</label>
+    <description>Power represents the state of a machine's internal battery. If it gets too low, the machine will stop performing tasks and return to its station to recharge.</description>
+    <listPriority>700</listPriority>
+    <major>true</major>
+  </NeedDef>
+
+</Defs>

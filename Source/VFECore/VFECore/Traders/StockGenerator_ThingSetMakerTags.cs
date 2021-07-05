@@ -24,7 +24,7 @@ namespace VFECore
 				{
 					break;
 				}
-				foreach (Thing item in StockGeneratorUtility.TryMakeForStock(chosenThingDef, RandomCountOf(chosenThingDef)))
+				foreach (Thing item in StockGeneratorUtility.TryMakeForStock(chosenThingDef, RandomCountOf(chosenThingDef),null))
 				{
 					yield return item;
 				}

@@ -1,0 +1,8 @@
+C:\SteamLibrary\steamapps\common\RimWorld\Mods\VanillaExpandedFramework\Source\CompOversizedWeapon\CompOversizedWeapon\obj\Debug\CompOversizedWeapon.csprojAssemblyReference.cache
+C:\SteamLibrary\steamapps\common\RimWorld\Mods\VanillaExpandedFramework\Source\CompOversizedWeapon\CompOversizedWeapon\obj\Debug\CompOversizedWeapon.csproj.CoreCompileInputs.cache
+C:\SteamLibrary\steamapps\common\RimWorld\Mods\VanillaExpandedFramework\1.2\Assemblies\CompOversizedWeapon.dll
+C:\SteamLibrary\steamapps\common\RimWorld\Mods\VanillaExpandedFramework\Source\CompOversizedWeapon\CompOversizedWeapon\obj\Debug\CompOversizedWeapon.dll
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework-Dev\1.3\Assemblies\CompOversizedWeapon.dll
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework-Dev\Source\CompOversizedWeapon\CompOversizedWeapon\obj\Debug\CompOversizedWeapon.csprojAssemblyReference.cache
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework-Dev\Source\CompOversizedWeapon\CompOversizedWeapon\obj\Debug\CompOversizedWeapon.csproj.CoreCompileInputs.cache
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework-Dev\Source\CompOversizedWeapon\CompOversizedWeapon\obj\Debug\CompOversizedWeapon.dll

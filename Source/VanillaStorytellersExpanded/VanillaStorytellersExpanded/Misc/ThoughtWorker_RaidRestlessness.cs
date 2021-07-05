@@ -5,9 +5,9 @@ namespace VanillaStorytellersExpanded
 {
 	public class ThoughtWorker_RaidRestlessness : ThoughtWorker
 	{
-		public override ThoughtState CurrentStateInternal(Pawn p)
+		protected override ThoughtState CurrentStateInternal(Pawn p)
 		{
-			if (p.FactionOrExtraMiniOrHomeFaction == Faction.OfPlayer)
+			if (p.Faction == Faction.OfPlayer)
             {
 				var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
 				if (options != null && options.raidRestlessness != null)

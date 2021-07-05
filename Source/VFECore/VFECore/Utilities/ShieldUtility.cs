@@ -74,7 +74,7 @@ namespace VFECore
                     }
                     else
                     {
-                        Log.Error(pawn + " couldn't make room for shield " + eq, false);
+                        Log.Error(pawn + " couldn't make room for shield " + eq);
                     }
                 }
 
@@ -96,7 +96,7 @@ namespace VFECore
                     " got shield ",
                     newShield,
                     " while already having shield "
-                }), false);
+                }));
                 return;
             }
             pawn.apparel.Wear(newShield, dropReplacedApparel);

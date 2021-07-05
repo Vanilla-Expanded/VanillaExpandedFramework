@@ -49,13 +49,6 @@ namespace KCSG
 					break;
 				}
 				GenSpawn.Spawn(pawn, loc, map, WipeMode.Vanish);
-				if (!this.spawnOnEdge)
-				{
-					for (int i = 0; i < 10; i++)
-					{
-						MoteMaker.ThrowAirPuffUp(pawn.DrawPos, map);
-					}
-				}
 				list.Add(pawn);
 			}
 			if (!list.Any<Pawn>())

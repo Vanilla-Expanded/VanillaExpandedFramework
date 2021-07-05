@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using RimWorld;
 using RimWorld.Planet;
 using System;
 using System.Linq;
@@ -28,21 +29,44 @@ namespace KCSG
                         {
                             CurrentGenerationOption.tipAvailable = true;
                         }
-                        AccessTools.Method(typeof(SettlementUtility), "AttackNow").Invoke(null, new object[] { caravan, settlement });
+                        CustomAttackNowNoLetter(caravan, settlement);
                         LongEventHandler.ExecuteWhenFinished(() =>
                         {
                             Log.Message($"Generation done in {(DateTime.Now - CurrentGenerationOption.dateTime).Duration().TotalSeconds}");
+                            // Send letter
+                            TaggedString letterLabel = "LetterLabelCaravanEnteredEnemyBase".Translate();
+                            TaggedString letterText = "LetterCaravanEnteredEnemyBase".Translate(caravan.Label, settlement.Label.ApplyTag(TagType.Settlement, settlement.Faction.GetUniqueLoadID())).CapitalizeFirst();
+                            SettlementUtility.AffectRelationsOnAttacked(settlement, ref letterText);
+                            PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter(settlement.Map.mapPawns.AllPawns, ref letterLabel, ref letterText, "LetterRelatedPawnsSettlement".Translate(Faction.OfPlayer.def.pawnsPlural), true, true);
+                            Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.NeutralEvent, caravan.PawnsListForReading, settlement.Faction, null, null, null);
+                            // Clear
                             CurrentGenerationOption.ClearUI();
                             CurrentGenerationOption.ClearAll();
                             LongEventHandler_Patches.LongEventsOnGUI_Prefix.structure = null;
                         });
-                    }, "GeneratingMapForNewEncounter", true, null, true);
+                    }, "GeneratingMapForNewEncounter", true, delegate(Exception e) 
+                    {
+                        Log.Error($"{e}");
+                        CurrentGenerationOption.ClearUI();
+                        CurrentGenerationOption.ClearAll();
+                    }, true);
                 }
                 else
                     AccessTools.Method(typeof(SettlementUtility), "AttackNow").Invoke(null, new object[] { caravan, settlement });
                 return false;
             }
             return true;
+        }
+
+        private static void CustomAttackNowNoLetter(Caravan caravan, Settlement settlement)
+        {
+            Map map = GetOrGenerateMapUtility.GetOrGenerateMap(settlement.Tile, null);
+            if (!settlement.HasMap)
+            {
+                Find.TickManager.Notify_GeneratedPotentiallyHostileMap();
+            }
+            CaravanEnterMapUtility.Enter(caravan, map, CaravanEnterMode.Edge, CaravanDropInventoryMode.DoNotDrop, true, null);
+            Find.GoodwillSituationManager.RecalculateAll(true);
         }
     }
 }

@@ -25,9 +25,9 @@ namespace KCSG
                 GenUtils.GenerateRoomFromLayout(item, rp.rect, map, rld);
             }
 
-            GenUtils.EnsureBatteriesConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, KDefOf.KCSG_PowerConduit);
-            GenUtils.EnsurePowerUsersConnected(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, KDefOf.KCSG_PowerConduit);
-            GenUtils.EnsureGeneratorsConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, KDefOf.KCSG_PowerConduit);
+            GenUtils.EnsureBatteriesConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, KThingDefOf.KCSG_PowerConduit);
+            GenUtils.EnsurePowerUsersConnected(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, KThingDefOf.KCSG_PowerConduit);
+            GenUtils.EnsureGeneratorsConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, KThingDefOf.KCSG_PowerConduit);
         }
     }
 }

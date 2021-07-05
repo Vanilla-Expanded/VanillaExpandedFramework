@@ -21,8 +21,7 @@ namespace VFE.Mechanoids.AI.WorkGivers
                 if (comp == null || comp.turretToInstall == null)
                     return false;
 
-                Pawn myPawn = comp.myPawn;
-                if (myPawn == null || myPawn.Dead || !myPawn.Spawned)
+                if (!comp.MyPawnIsAlive)
                 {
                     JobFailReason.Is("VFEMechNoTurret".Translate());
                     return false;

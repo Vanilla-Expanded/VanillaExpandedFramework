@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
 
+
+	<NocturnalAnimals.BodyClock>Body clock</NocturnalAnimals.BodyClock>
+	<NocturnalAnimals.BodyClock_Description>Determines when the animal sleeps and when it is awake.\n\nDiurnal animals sleep during the night and are awake during the day, while nocturnal animals sleep during the day and are awake during the night. Crepuscular animals are mainly active during dusk.</NocturnalAnimals.BodyClock_Description>
+
+	<NocturnalAnimals.BodyClock_Diurnal>Diurnal</NocturnalAnimals.BodyClock_Diurnal>
+	<NocturnalAnimals.BodyClock_Nocturnal>Nocturnal</NocturnalAnimals.BodyClock_Nocturnal>
+	<NocturnalAnimals.BodyClock_Crepuscular>Crepuscular</NocturnalAnimals.BodyClock_Crepuscular>
+
+
 	<VEF_AsexualHatched>{0} has reproduced asexually.</VEF_AsexualHatched>
 	<VEF_AsexualCloning>{0} has cloned itself.</VEF_AsexualCloning>
 	<VEF_AsexualHatchedEgg>{0} has sporulated.</VEF_AsexualHatchedEgg>

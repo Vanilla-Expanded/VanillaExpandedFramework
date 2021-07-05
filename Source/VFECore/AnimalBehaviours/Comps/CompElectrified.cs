@@ -93,7 +93,7 @@ namespace AnimalBehaviours
                     {
                         //Affect a random one if more than one was found
                         Building batteryToAffect = batteriesInRange.RandomElement();
-                        MoteMaker.ThrowMicroSparks(batteryToAffect.Position.ToVector3(), batteryToAffect.Map);
+                        FleckMaker.ThrowMicroSparks(batteryToAffect.Position.ToVector3(), batteryToAffect.Map);
                         foreach (CompPowerBattery current2 in batteryToAffect.GetComps<CompPowerBattery>())
                         {
                             //Add 1 energy. The rate it fills is thus defined by electroRate

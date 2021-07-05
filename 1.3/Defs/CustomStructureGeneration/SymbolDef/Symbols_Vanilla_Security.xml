@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+	<KCSG.SymbolDef>
+		<defName>Turret_Sniper</defName>
+		<thing>Turret_Sniper</thing>
+		<symbol>Turret_Sniper</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Turret_Autocannon</defName>
+		<thing>Turret_Autocannon</thing>
+		<symbol>Turret_Autocannon</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TrapIED_HighExplosive</defName>
+		<thing>TrapIED_HighExplosive</thing>
+		<symbol>TrapIED_HighExplosive</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Sandbags_Cloth</defName>
+		<thing>Sandbags</thing>
+		<stuff>Cloth</stuff>
+		<symbol>Sandbags_Cloth</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TrapIED_Incendiary</defName>
+		<thing>TrapIED_Incendiary</thing>
+		<symbol>TrapIED_Incendiary</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TrapSpike_BlocksSandstone</defName>
+		<thing>TrapSpike</thing>
+		<stuff>BlocksSandstone</stuff>
+		<symbol>TrapSpike_BlocksSandstone</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Barricade_Steel</defName>
+		<thing>Barricade</thing>
+		<stuff>Steel</stuff>
+		<symbol>Barricade_Steel</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Sandbags_DevilstrandCloth</defName>
+		<thing>Sandbags</thing>
+		<stuff>DevilstrandCloth</stuff>
+		<symbol>Sandbags_DevilstrandCloth</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Barricade_Plasteel</defName>
+		<thing>Barricade</thing>
+		<stuff>Plasteel</stuff>
+		<symbol>Barricade_Plasteel</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Turret_MiniTurret_Steel</defName>
+		<thing>Turret_MiniTurret</thing>
+		<stuff>Steel</stuff>
+		<symbol>Turret_MiniTurret_Steel</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TrapIED_EMP</defName>
+		<thing>TrapIED_EMP</thing>
+		<symbol>TrapIED_EMP</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TrapSpike_BlocksGranite</defName>
+		<thing>TrapSpike</thing>
+		<stuff>BlocksGranite</stuff>
+		<symbol>TrapSpike_BlocksGranite</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TrapSpike_Steel</defName>
+		<thing>TrapSpike</thing>
+		<stuff>Steel</stuff>
+		<symbol>TrapSpike_Steel</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Barricade_WoodLog</defName>
+		<thing>Barricade</thing>
+		<stuff>WoodLog</stuff>
+		<symbol>Barricade_WoodLog</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Turret_Mortar_Steel_North</defName>
+		<thing>Turret_Mortar</thing>
+		<stuff>Steel</stuff>
+		<rotation>North</rotation>
+		<symbol>Turret_Mortar_Steel_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Barricade_Uranium</defName>
+		<thing>Barricade</thing>
+		<stuff>Uranium</stuff>
+		<symbol>Barricade_Uranium</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TrapIED_Smoke</defName>
+		<thing>TrapIED_Smoke</thing>
+		<symbol>TrapIED_Smoke</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TrapSpike_BlocksLimestone</defName>
+		<thing>TrapSpike</thing>
+		<stuff>BlocksLimestone</stuff>
+		<symbol>TrapSpike_BlocksLimestone</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TrapSpike_Plasteel</defName>
+		<thing>TrapSpike</thing>
+		<stuff>Plasteel</stuff>
+		<symbol>TrapSpike_Plasteel</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Turret_Mortar_Plasteel_North</defName>
+		<thing>Turret_Mortar</thing>
+		<stuff>Plasteel</stuff>
+		<rotation>North</rotation>
+		<symbol>Turret_Mortar_Plasteel_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Barricade_BlocksSandstone</defName>
+		<thing>Barricade</thing>
+		<stuff>BlocksSandstone</stuff>
+		<symbol>Barricade_BlocksSandstone</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Turret_MiniTurret_Plasteel</defName>
+		<thing>Turret_MiniTurret</thing>
+		<stuff>Plasteel</stuff>
+		<symbol>Turret_MiniTurret_Plasteel</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TrapIED_Firefoam</defName>
+		<thing>TrapIED_Firefoam</thing>
+		<symbol>TrapIED_Firefoam</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TrapSpike_BlocksSlate</defName>
+		<thing>TrapSpike</thing>
+		<stuff>BlocksSlate</stuff>
+		<symbol>TrapSpike_BlocksSlate</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TrapSpike_WoodLog</defName>
+		<thing>TrapSpike</thing>
+		<stuff>WoodLog</stuff>
+		<symbol>TrapSpike_WoodLog</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Barricade_BlocksGranite</defName>
+		<thing>Barricade</thing>
+		<stuff>BlocksGranite</stuff>
+		<symbol>Barricade_BlocksGranite</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Turret_Mortar_Uranium_North</defName>
+		<thing>Turret_Mortar</thing>
+		<stuff>Uranium</stuff>
+		<rotation>North</rotation>
+		<symbol>Turret_Mortar_Uranium_North</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Barricade_BlocksLimestone</defName>
+		<thing>Barricade</thing>
+		<stuff>BlocksLimestone</stuff>
+		<symbol>Barricade_BlocksLimestone</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Turret_MiniTurret_Uranium</defName>
+		<thing>Turret_MiniTurret</thing>
+		<stuff>Uranium</stuff>
+		<symbol>Turret_MiniTurret_Uranium</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TrapIED_AntigrainWarhead</defName>
+		<thing>TrapIED_AntigrainWarhead</thing>
+		<symbol>TrapIED_AntigrainWarhead</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TrapSpike_BlocksMarble</defName>
+		<thing>TrapSpike</thing>
+		<stuff>BlocksMarble</stuff>
+		<symbol>TrapSpike_BlocksMarble</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>TrapSpike_Uranium</defName>
+		<thing>TrapSpike</thing>
+		<stuff>Uranium</stuff>
+		<symbol>TrapSpike_Uranium</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Barricade_BlocksSlate</defName>
+		<thing>Barricade</thing>
+		<stuff>BlocksSlate</stuff>
+		<symbol>Barricade_BlocksSlate</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Barricade_BlocksMarble</defName>
+		<thing>Barricade</thing>
+		<stuff>BlocksMarble</stuff>
+		<symbol>Barricade_BlocksMarble</symbol>
+	</KCSG.SymbolDef>
+</Defs>

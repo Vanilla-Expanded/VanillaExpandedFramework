@@ -44,6 +44,17 @@ namespace KCSG
 
         public static FactionSettlement factionSettlement;
 
+        /*------ Falling structure ------*/
+        public static FallingStructure fallingStructure;
+
+        public static StructureLayoutDef fallingStructureChoosen;
+
+        public static void ClearFalling()
+        {
+            fallingStructure = null;
+            fallingStructureChoosen = null;
+        }
+
         public static void ClearUI()
         {
             useCustomWindowContent = false;

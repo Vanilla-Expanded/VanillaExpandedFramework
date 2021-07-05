@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5FCAC459-E927-41FB-9B1C-44EF0ED3F188}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VanillaWeaponsExpandedLaser</RootNamespace>
+    <AssemblyName>VanillaWeaponsExpandedLaser</AssemblyName>
+    <TargetFramework>net472</TargetFramework>
+    <FileAlignment>512</FileAlignment>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\1.3\Assemblies\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\1.3\Assemblies\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Lasers\VWEL_VerbProperties_AdjustedCooldown_RapidFire_Patch.cs" />
+    <Compile Include="Lasers\VWEL_Verb_Shoot_TryStartCastOn_RapidFire_Patch.cs" />
+    <Compile Include="Lasers\MoteLaserDectoration.cs" />
+    <Compile Include="Lasers\Patches.cs" />
+    <Compile Include="Lasers\SpinningLaserGun.cs" />
+    <Compile Include="Lasers\SpinningLaserGunBase.cs" />
+    <Compile Include="Lasers\SpinningLaserGunDef.cs" />
+    <Compile Include="Lasers\VWEL_PawnRenderer_Draw_EquipmentAiming_GunDrawing_Patch.cs" />
+    <Compile Include="Lasers\VWEL_TuretTop_DrawTurret_LaserTurret_Patch.cs" />
+    <Compile Include="Lasers\Building_LaserGun.cs" />
+    <Compile Include="Lasers\Building_LaserGunDef.cs" />
+    <Compile Include="Lasers\CompLaserCapacitor.cs" />
+    <Compile Include="Lasers\IBeamColorThing.cs" />
+    <Compile Include="Lasers\IDrawnWeaponWithRotation.cs" />
+    <Compile Include="Lasers\JobDriver_ChangeLaserColor.cs" />
+    <Compile Include="Lasers\LaserBeam.cs" />
+    <Compile Include="Lasers\LaserBeamColoring.cs" />
+    <Compile Include="Lasers\LaserBeamDef.cs" />
+    <Compile Include="Lasers\LaserBeamGraphic.cs" />
+    <Compile Include="Lasers\LaserGun.cs" />
+    <Compile Include="Lasers\LaserGunDef.cs" />
+    <Compile Include="Lasers\MeshMakerLaser.cs" />
+    <Compile Include="Lasers\SpinningLaserGunTurret.cs" />
+    <Compile Include="Lasers\ThingExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Krafs.Rimworld.Ref" Version="1.3.0" GeneratePathProperty="true" />
+    <PackageReference Include="Lib.Harmony">
+      <Version>2.0.4</Version>
+    </PackageReference>
+    <PackageReference Include="TaskPubliciser">
+      <Version>1.0.3</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="UnlimitedHugs.Rimworld.HugsLib">
+      <Version>8.0.0</Version>
+      <ExcludeAssets>runtime</ExcludeAssets>
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Target Name="MyCode" BeforeTargets="UpdateReferences">
+    <PropertyGroup>
+      <AssemblyCSharp>$(PkgKrafs_Rimworld_Ref)\ref\net472\Assembly-CSharp.dll</AssemblyCSharp>
+      <PubliciseOutputPath>$(PkgKrafs_Rimworld_Ref)\ref\net472\</PubliciseOutputPath>
+      <AssemblyCSharp_Publicised>$(PubliciseOutputPath)Assembly-CSharp_publicised.dll</AssemblyCSharp_Publicised>
+    </PropertyGroup>
+    <Publicise TargetAssemblyPath="$(AssemblyCSharp)" OutputPath="$(PubliciseOutputPath)" Condition="Exists('$(AssemblyCSharp)')" />
+    <ItemGroup>
+      <Reference Include="$(AssemblyCSharp_Publicised)">
+        <SpecificVersion>false</SpecificVersion>
+        <HintPath>$(AssemblyCSharp_Publicised)</HintPath>
+        <Implicit>true</Implicit>
+        <Private>false</Private>
+      </Reference>
+    </ItemGroup>
+  </Target>
+  <Target Name="UpdateReferences" AfterTargets="ResolveLockFileReferences">
+    <ItemGroup>
+      <Reference Remove="$(PkgKrafs_Rimworld_Ref)\ref\net472\Assembly-CSharp.dll" />
+    </ItemGroup>
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

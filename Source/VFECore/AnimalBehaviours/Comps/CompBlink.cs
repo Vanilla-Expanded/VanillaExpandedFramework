@@ -43,7 +43,7 @@ namespace AnimalBehaviours
                             {
                                 if (Props.warpEffect && !Props.effectOnlyWhenManhunter)
                                 {
-                                    MoteMaker.MakeStaticMote(this.parent.Position, this.parent.Map, ThingDefOf.Mote_PsycastAreaEffect, 10f);
+                                    FleckMaker.Static(this.parent.Position, pawn.Map, FleckDefOf.PsycastAreaEffect, 10f);
                                 }
                                 pawn.pather.StopDead();
                                 pawn.Position = loc;
@@ -62,7 +62,7 @@ namespace AnimalBehaviours
                                 {
                                     if (Props.warpEffect)
                                     {
-                                        MoteMaker.MakeStaticMote(this.parent.Position, this.parent.Map, ThingDefOf.Mote_PsycastAreaEffect, 10f);
+                                        FleckMaker.Static(this.parent.Position, pawn.Map, FleckDefOf.PsycastAreaEffect, 10f);
                                     }
                                     pawn.pather.StopDead();
                                     pawn.Position = loc;

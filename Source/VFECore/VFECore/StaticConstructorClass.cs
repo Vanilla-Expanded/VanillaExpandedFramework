@@ -17,7 +17,7 @@ namespace VFECore
         {
             // Cache setters
             PawnShieldGenerator.Reset();
-            ScenPartUtility.SetCache();
+           // ScenPartUtility.SetCache();
         }
         public static Mesh plane20Flip = MeshMakerPlanes.NewPlaneMesh(2f, flipped: true);
     }

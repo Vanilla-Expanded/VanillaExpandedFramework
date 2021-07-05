@@ -84,11 +84,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj",
+      "projectUniqueName": "C:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework-Dev\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj",
       "projectName": "VanillaStorytellersExpanded",
-      "projectPath": "C:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj",
+      "projectPath": "C:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework-Dev\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj",
       "packagesPath": "C:\\Users\\Vova\\.nuget\\packages\\",
-      "outputPath": "C:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\obj\\",
+      "outputPath": "C:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework-Dev\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\obj\\",
       "projectStyle": "PackageReference",
       "skipContentFileWrite": true,
       "configFilePaths": [

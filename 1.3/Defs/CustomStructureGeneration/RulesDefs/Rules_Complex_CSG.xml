@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <RuleDef>
+    <defName>KCSG_Settlement</defName>
+    <symbol>kcsg_settlement</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_Settlement" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_RoomGenFromStructure</defName>
+    <symbol>kcsg_roomsgenfromstructure</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_RoomGenFromStructure" />
+    </resolvers>
+  </RuleDef>
+
+  <!-- Procedural settlement (in order)-->
+  <RuleDef>
+    <defName>KCSG_RoomGenFromList</defName>
+    <symbol>kcsg_roomgenfromlist</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_RoomGenFromList" />
+    </resolvers>
+  </RuleDef>
+  <!-- If storage -->
+  <RuleDef>
+    <defName>KCSG_StorageZone</defName>
+    <symbol>kcsg_storagezone</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_StorageZone" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_ThingSetOnlyRoofed</defName>
+    <symbol>kcsg_thingsetonlyroofed</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_ThingSetOnlyRoofed" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_SingleThingRoofed</defName>
+    <symbol>kcsg_thingroofed</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_SingleThingRoofed" />
+    </resolvers>
+  </RuleDef>
+
+  <!-- Continue -->
+  <RuleDef>
+    <defName>SymbolResolver_GridSecondPass</defName>
+    <symbol>kcsg_gridsecondpass</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_GridSecondPass" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_GenerateRoad</defName>
+    <symbol>kcsg_generateroad</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_GenerateRoadPower" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_AddFields</defName>
+    <symbol>kcsg_addfields</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_AddFields" />
+    </resolvers>
+  </RuleDef>
+</Defs>
