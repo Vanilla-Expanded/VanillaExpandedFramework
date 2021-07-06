@@ -20,6 +20,8 @@
 	
 	<VEF_TimeToDie>Animal expires in: {0}</VEF_TimeToDie>
 	
+	<VEF_DisableAnimal>Disable {0}</VEF_DisableAnimal>
+	
 	<!-- Mod options -->
 	
 	<VCE_AffectsAllAnimalMods>These animal behaviours options will affect all animal mods that share code from the Vanilla Expanded Framework</VCE_AffectsAllAnimalMods>

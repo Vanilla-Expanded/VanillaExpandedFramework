@@ -458,12 +458,14 @@
     <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraInfecter.cs" />
     <Compile Include="AnimalBehaviours\DeathActionWorkers\DeathActionWorker_DropOnDeath.cs" />
     <Compile Include="AnimalBehaviours\DefExtensions\AnimalStatExtension.cs" />
+    <Compile Include="AnimalBehaviours\Defs\GenericToggleableAnimalDef.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Dialog_InfoCard_FillCard_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\JobGiver_GetFood_TryGiveJob_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\MassUtility_Capacity_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\PawnUtility_Mated_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Pawn_PathFollower_CostToMoveIntoCell_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\ThingDef_SpecialDisplayStats_Patch.cs" />
+    <Compile Include="AnimalBehaviours\Harmony\WildAnimalSpawner_SpawnRandomWildAnimalAt.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_ThoughtEffecter.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Resurrect.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Resurrect.cs" />
@@ -477,6 +479,8 @@
     <Compile Include="AnimalBehaviours\MentalStates\XenophobicRageMentalStateUtility.cs" />
     <Compile Include="AnimalBehaviours\Options\AnimalBehaviours_Settings.cs" />
     <Compile Include="AnimalBehaviours\Options\AnimalBehaviours_SettingsController.cs" />
+    <Compile Include="AnimalBehaviours\Options\VanillaAnimalsExpanded_Settings.cs" />
+    <Compile Include="AnimalBehaviours\Options\VanillaAnimalsExpanded_SettingsController.cs" />
     <Compile Include="Apparel\ApparelCollectionClass\ApparelCollectionClass.cs" />
     <Compile Include="Apparel\Comps\CompCamouflage.cs" />
     <Compile Include="Apparel\Comps\CompProperties\CompProperties_Camouflage.cs" />
