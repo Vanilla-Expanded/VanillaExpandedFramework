@@ -45,7 +45,11 @@ namespace KCSG
 
             IntVec3 intVec3 = c;
             if (CurrentGenerationOption.factionSettlement.tryFindFreeArea)
-                CellFinder.TryFindRandomCellNear(c, map, 4, cell => !new CellRect(cell.x - width / 2, cell.z - height / 2, width, height).Cells.Any(cell1 => cell1.GetFirstBuilding(map) != null), out intVec3, 20);
+            {
+                bool success = RCellFinder.TryFindRandomCellNearTheCenterOfTheMapWith(cell => new CellRect(cell.x - width / 2, cell.z - height / 2, width, height).Cells.All(pC => pC.Walkable(map) && !pC.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Bridgeable)), map, out intVec3);
+                if (VFECore.VFEGlobal.settings.enableVerboseLogging)
+                    Log.Message($"Trying to find free spawn area success: {success}");
+            }
 
             CellRect rect = new CellRect(intVec3.x - width / 2, intVec3.z - height / 2, width, height);
             rect.ClipInsideMap(map);
