@@ -156,7 +156,7 @@ namespace VanillaFurnitureExpanded
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
-            if (this.parent.Faction != null && this.parent.Faction.IsPlayer && !VanillaFurnitureExpanded_Settings.hideRandomizeButton)
+            if (this.parent.Faction != null && this.parent.Faction.IsPlayer && this.parent.StyleDef==null && !VanillaFurnitureExpanded_Settings.hideRandomizeButton)
             {
                 yield return new Command_Action
                 {
