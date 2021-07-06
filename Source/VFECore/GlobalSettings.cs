@@ -120,11 +120,11 @@ namespace VFECore
 
         #endregion Toggable Patches
 
-        #region Faction Discovery
+        #region Faction Discovery / KCSG
 
         private int FactionCanBeAddedCount;
 
-        private void AddFactionDiscoverySettings(Listing_Standard list)
+        private void AddFSKCSGSettings(Listing_Standard list)
         {
             this.MakePageHead(list);
 
@@ -149,6 +149,13 @@ namespace VFECore
                 list.Label("NeedToBeInGame".Translate());
                 Text.Anchor = TextAnchor.UpperLeft;
             }
+            // KCSG
+            list.Gap(20);
+            Text.Font = GameFont.Medium;
+            list.Label("Custom Structure Generation");
+            Text.Font = GameFont.Small;
+            list.Gap();
+            list.CheckboxLabeled("Verbose logging", ref settings.enableVerboseLogging);
         }
 
         private bool ValidatorAnyFactionLeft(FactionDef faction)
@@ -190,7 +197,7 @@ namespace VFECore
 
             #region settings
 
-            if (PageIndex == (int)Pages.FactionDiscovery) this.AddFactionDiscoverySettings(list);
+            if (PageIndex == (int)Pages.FactionDiscovery) this.AddFSKCSGSettings(list);
             else if (PageIndex == (int)Pages.PatchOperationToggable) this.AddToggablePatchesSettings(list);
 
             #endregion settings
@@ -203,9 +210,12 @@ namespace VFECore
 
     public class VFEGlobalSettings : ModSettings
     {
+        public bool enableVerboseLogging;
+
         public override void ExposeData()
         {
             base.ExposeData();
+            Scribe_Values.Look(ref enableVerboseLogging, "enableVerboseLogging", false);
         }
     }
 }

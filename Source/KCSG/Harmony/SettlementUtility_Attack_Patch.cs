@@ -32,13 +32,9 @@ namespace KCSG
                         CustomAttackNowNoLetter(caravan, settlement);
                         LongEventHandler.ExecuteWhenFinished(() =>
                         {
-                            Log.Message($"Generation done in {(DateTime.Now - CurrentGenerationOption.dateTime).Duration().TotalSeconds}");
+                            if (VFECore.VFEGlobal.settings.enableVerboseLogging) Log.Message($"Generation done in {(DateTime.Now - CurrentGenerationOption.dateTime).Duration().TotalSeconds}");
                             // Send letter
-                            TaggedString letterLabel = "LetterLabelCaravanEnteredEnemyBase".Translate();
-                            TaggedString letterText = "LetterCaravanEnteredEnemyBase".Translate(caravan.Label, settlement.Label.ApplyTag(TagType.Settlement, settlement.Faction.GetUniqueLoadID())).CapitalizeFirst();
-                            SettlementUtility.AffectRelationsOnAttacked(settlement, ref letterText);
-                            PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter(settlement.Map.mapPawns.AllPawns, ref letterLabel, ref letterText, "LetterRelatedPawnsSettlement".Translate(Faction.OfPlayer.def.pawnsPlural), true, true);
-                            Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.NeutralEvent, caravan.PawnsListForReading, settlement.Faction, null, null, null);
+                            SendAttackLetter(caravan, settlement);
                             // Clear
                             CurrentGenerationOption.ClearUI();
                             CurrentGenerationOption.ClearAll();
@@ -67,6 +63,15 @@ namespace KCSG
             }
             CaravanEnterMapUtility.Enter(caravan, map, CaravanEnterMode.Edge, CaravanDropInventoryMode.DoNotDrop, true, null);
             Find.GoodwillSituationManager.RecalculateAll(true);
+        }
+
+        private static void SendAttackLetter(Caravan caravan, Settlement settlement)
+        {
+            TaggedString letterLabel = "LetterLabelCaravanEnteredEnemyBase".Translate();
+            TaggedString letterText = "LetterCaravanEnteredEnemyBase".Translate(caravan.Label, settlement.Label.ApplyTag(TagType.Settlement, settlement.Faction.GetUniqueLoadID())).CapitalizeFirst();
+            SettlementUtility.AffectRelationsOnAttacked(settlement, ref letterText);
+            if (settlement.HasMap) PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter(settlement.Map.mapPawns.AllPawns, ref letterLabel, ref letterText, "LetterRelatedPawnsSettlement".Translate(Faction.OfPlayer.def.pawnsPlural), true);
+            Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.NeutralEvent, caravan.PawnsListForReading, settlement.Faction, null, null, null);
         }
     }
 }

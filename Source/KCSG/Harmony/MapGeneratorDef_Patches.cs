@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using RimWorld;
 using RimWorld.Planet;
 using Verse;
 
@@ -13,6 +14,7 @@ namespace KCSG
             {
                 if (Find.World.worldObjects.AllWorldObjects.Find(o => o.Tile == __instance.Tile && o.def.HasModExtension<FactionSettlement>()) is WorldObject worldObject)
                 {
+                    if (VFECore.VFEGlobal.settings.enableVerboseLogging) Log.Message($"Generating worldObject {worldObject.LabelCap}");
                     __result = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_Gen");
                 }
             }
@@ -23,15 +25,19 @@ namespace KCSG
         {
             public static void Postfix(Settlement __instance, ref MapGeneratorDef __result)
             {
-                if (__instance.Faction != null && __instance.Faction.def.HasModExtension<FactionSettlement>())
+                if (__instance != null && __instance.Faction != null && __instance.Faction != Faction.OfPlayer)
                 {
-                    Log.Message($"Faction: {__instance.Faction.NameColored} - Faction have FactionSettlement extension.");
-                    __result = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_Base_Faction");
-                }
-                else if (Find.World.worldObjects.AllWorldObjects.Find(o => o.Tile == __instance.Tile && o.def.HasModExtension<FactionSettlement>()) is WorldObject worldObject)
-                {
-                    Log.Message($"Faction: {__instance.Faction.NameColored} - Faction do not have FactionSettlement extension.");
-                    __result = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_Gen");
+                    if (VFECore.VFEGlobal.settings.enableVerboseLogging) Log.Message($"Faction: {__instance.Faction.NameColored} - Generating");
+                    if (__instance.Faction.def.HasModExtension<FactionSettlement>())
+                    {
+                        if (VFECore.VFEGlobal.settings.enableVerboseLogging) Log.Message($"Faction: {__instance.Faction.NameColored} - Faction have FactionSettlement extension");
+                        __result = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_Base_Faction");
+                    }
+                    else if (Find.World.worldObjects.AllWorldObjects.FindAll(o => o.Tile == __instance.Tile && o.def.HasModExtension<FactionSettlement>()).Any())
+                    {
+                        if (VFECore.VFEGlobal.settings.enableVerboseLogging) Log.Message($"Faction: {__instance.Faction.NameColored} - Faction do not have FactionSettlement extension");
+                        __result = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_Gen");
+                    }
                 }
             }
         }

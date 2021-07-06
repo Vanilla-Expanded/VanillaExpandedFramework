@@ -60,11 +60,11 @@ namespace KCSG
 
         public override void ResolveReferences()
         {
-            if (this.terrain != null) this.terrainDef = DefDatabase<TerrainDef>.GetNamed(this.terrain, false);
-            if (this.thing != null) this.thingDef = DefDatabase<ThingDef>.GetNamed(this.thing, false);
-            if (this.stuff != null) this.stuffDef = DefDatabase<ThingDef>.GetNamed(this.stuff, false);
-            if (this.containPawnKind != null) this.containPawnKindDef = DefDatabase<PawnKindDef>.GetNamed(this.containPawnKind, false);
-            if (this.pawnKindDef != null) this.pawnKindDefNS = DefDatabase<PawnKindDef>.GetNamed(this.pawnKindDef, false);
+            if (this.terrain != null) this.terrainDef = DefDatabase<TerrainDef>.GetNamed(this.terrain, VFECore.VFEGlobal.settings.enableVerboseLogging);
+            if (this.thing != null) this.thingDef = DefDatabase<ThingDef>.GetNamed(this.thing, VFECore.VFEGlobal.settings.enableVerboseLogging);
+            if (this.stuff != null) this.stuffDef = DefDatabase<ThingDef>.GetNamed(this.stuff, VFECore.VFEGlobal.settings.enableVerboseLogging);
+            if (this.containPawnKind != null) this.containPawnKindDef = DefDatabase<PawnKindDef>.GetNamed(this.containPawnKind, VFECore.VFEGlobal.settings.enableVerboseLogging);
+            if (this.pawnKindDef != null) this.pawnKindDefNS = DefDatabase<PawnKindDef>.GetNamed(this.pawnKindDef, VFECore.VFEGlobal.settings.enableVerboseLogging);
         }
     }
 }

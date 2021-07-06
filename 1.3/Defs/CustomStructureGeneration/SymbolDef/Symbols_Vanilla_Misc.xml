@@ -421,14 +421,6 @@
 	</KCSG.SymbolDef>
 
 	<KCSG.SymbolDef>
-		<defName>VFEV_FurBed_Cloth_North</defName>
-		<thing>VFEV_FurBed</thing>
-		<stuff>Cloth</stuff>
-		<rotation>North</rotation>
-		<symbol>VFEV_FurBed_Cloth_North</symbol>
-	</KCSG.SymbolDef>
-
-	<KCSG.SymbolDef>
 		<defName>Sarcophagus_BlocksMarble_West</defName>
 		<thing>Sarcophagus</thing>
 		<stuff>BlocksMarble</stuff>

@@ -48,14 +48,16 @@ namespace KCSG
 
             if (!ClosedList.Exists(v => v.X == end.X && v.Y == end.Y))
             {
-                Log.Message($"AStar error: end point not found in ClosedList. Closed list count {ClosedList.Count}. Path wanted from {start} to {end}.");
+                if (VFECore.VFEGlobal.settings.enableVerboseLogging)
+                    Log.Message($"AStar error: end point not found in ClosedList. Closed list count {ClosedList.Count}. Path wanted from {start} to {end}.");
                 return null;
             }
 
             CustomVector temp = ClosedList[ClosedList.IndexOf(current)];
             if (temp == null)
             {
-                Log.Message("AStar error: temp is null.");
+                if (VFECore.VFEGlobal.settings.enableVerboseLogging)
+                    Log.Message("AStar error: temp is null.");
                 return null;
             }
 
