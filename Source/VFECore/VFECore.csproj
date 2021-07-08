@@ -34,10 +34,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\..\..\workshop\content\294100\2009463077\Current\Assemblies\0Harmony.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\..\..\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
@@ -489,6 +485,7 @@
     <Compile Include="Apparel\Harmony\PawnUIOverlay_DrawPawnGUIOverlay_Patch.cs" />
     <Compile Include="Apparel\Harmony\ThingSelectionUtility_SelectableByMapClick_Patch.cs" />
     <Compile Include="Cuisine\GraphicClasses\Graphic_RandomStackCount.cs" />
+    <Compile Include="Cuisine\Harmony\FoodUtility_GetMeatSourceCategory_Patch.cs" />
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_Settings.cs" />
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_SettingsController.cs" />
     <Compile Include="Furniture\Comps\CompConfigurableSpawner.cs" />
@@ -665,8 +662,9 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Lib.Harmony">
-      <Version>2.0.4</Version>
+      <Version>2.1.0</Version>
       <ExcludeAssets>runtime</ExcludeAssets>
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
