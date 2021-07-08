@@ -229,16 +229,17 @@ namespace VanillaStorytellersExpanded
     [HarmonyPatch("TryExecuteWorker")]
     public static class Patch_TryExecuteWorker
     {
-        public static bool Prefix(IncidentWorker_RaidEnemy __instance, IncidentParms parms)
+        public static bool Prefix(IncidentWorker_Raid __instance, IncidentParms parms)
         {
             var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
-            if (options != null && options.storytellerThreat != null && options.storytellerThreat.raidWarningRange.HasValue)
+            if (options != null && options.storytellerThreat != null && options.storytellerThreat.raidWarningRange.HasValue && 
+                __instance is IncidentWorker_Raid && parms.target is Map mapTarget && parms.faction != null && parms.faction.HostileTo(Faction.OfPlayer))
             {
                 var comp = Current.Game.GetComponent<StorytellerWatcher>();
-                if (comp != null && !comp.raidQueues.Where(x => x.parms == parms).Any() && parms.target is Map mapTarget)
+                if (comp != null && !comp.raidQueues.Any(x => x.parms == parms))
                 {
                     var tickToFire = Find.TickManager.TicksAbs + options.storytellerThreat.raidWarningRange.Value.RandomInRange;
-                    var result = (bool)AccessTools.Method(typeof(IncidentWorker_RaidEnemy), "TryResolveRaidFaction", null, null).Invoke(null, new object[]
+                    var result = (bool)AccessTools.Method(typeof(IncidentWorker_RaidEnemy), "TryResolveRaidFaction", null, null).Invoke(__instance, new object[]
                     {
                         parms
                     });

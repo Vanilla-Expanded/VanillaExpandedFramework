@@ -20,3 +20,7 @@ C:\GAMES\Rimworld\Mods\VanillaExpandedFramework-Dev\Source\VanillaStorytellersEx
 C:\GAMES\Rimworld\Mods\VanillaExpandedFramework-Dev\1.2\Assemblies\VanillaStorytellersExpanded.dll
 C:\GAMES\Rimworld\Mods\VanillaExpandedFramework-Dev\1.3\VanillaStorytellersExpanded.dll
 C:\GAMES\Rimworld\Mods\VanillaExpandedFramework-Dev\1.3\Assemblies\VanillaStorytellersExpanded.dll
+c:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework\1.3\Assemblies\VanillaStorytellersExpanded.dll
+c:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework\Source\VanillaStorytellersExpanded\VanillaStorytellersExpanded\obj\Debug\VanillaStorytellersExpanded.csproj.AssemblyReference.cache
+c:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework\Source\VanillaStorytellersExpanded\VanillaStorytellersExpanded\obj\Debug\VanillaStorytellersExpanded.csproj.CoreCompileInputs.cache
+c:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework\Source\VanillaStorytellersExpanded\VanillaStorytellersExpanded\obj\Debug\VanillaStorytellersExpanded.dll

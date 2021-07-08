@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework-Dev\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj": {}
+    "c:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj": {}
   },
   "projects": {
-    "C:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework-Dev\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj": {
+    "c:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework-Dev\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj",
+        "projectUniqueName": "c:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj",
         "projectName": "VanillaStorytellersExpanded",
-        "projectPath": "C:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework-Dev\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj",
+        "projectPath": "c:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj",
         "packagesPath": "C:\\Users\\Vova\\.nuget\\packages\\",
-        "outputPath": "C:\\GAMES\\Rimworld\\Mods\\VanillaExpandedFramework-Dev\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\obj\\",
+        "outputPath": "c:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\obj\\",
         "projectStyle": "PackageReference",
         "skipContentFileWrite": true,
         "configFilePaths": [
@@ -34,6 +34,10 @@
       "frameworks": {
         "net472": {
           "dependencies": {
+            "Krafs.Rimworld.Ref": {
+              "target": "Package",
+              "version": "[1.3.3052-beta, )"
+            },
             "Lib.Harmony": {
               "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "target": "Package",
