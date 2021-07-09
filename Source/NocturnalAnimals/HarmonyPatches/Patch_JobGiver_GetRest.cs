@@ -19,66 +19,61 @@ namespace NocturnalAnimals
         public static class Patch_GetPriority
         {
 
-            public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator ilg)
             {
                 List<CodeInstruction> instructionList = instructions.ToList();
-
-                MethodInfo hourOfDayInfo = AccessTools.Method(typeof(GenLocalDate), nameof(GenLocalDate.HourOfDay), new []{typeof(Thing)});
-
+                
                 for (int i = 0; i < instructionList.Count; i++)
                 {
-                    var instruction = instructionList[i];
-
-                    // Effectively turn 'if (num < 7 || num > 21)' into 'if (SleepHourFor(num, pawn))'
-                    if (instruction.opcode == OpCodes.Stloc_S && instructionList[i-1].Calls(hourOfDayInfo))
+                    CodeInstruction instruction = instructionList[i];
+                    LocalBuilder locVar = ilg.DeclareLocal(typeof(ValueTuple<int, int>));
+                    if (instruction.Calls(AccessTools.Method(typeof(GenLocalDate), nameof(GenLocalDate.HourOfDay), new Type[] { typeof(Thing) })))
                     {
-                        yield return instruction;                                                                                            // int num = GenLocalDate.HourOfDay(pawn)
-                        yield return new CodeInstruction(OpCodes.Ldloc_S, instruction.operand);                                              // num
-                        yield return new CodeInstruction(OpCodes.Ldarg_1);                                                                   // pawn
-                        yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Patch_GetPriority), nameof(SleepHourFor))); // SleepHourFor(num, pawn)
-
-                        int j = 1;
-                        while (true)
+                        //Skip 3 instructions down to avoid mismatching local var with future builds
+                        ///call | HourOfDay
+                        ///stloc.s | V_4
+                        ///ldloc.s | V_4
+                        for (int j = 0; j < 3; j++)
                         {
-                            if (instructionList[i + j].opcode == OpCodes.Blt_S)
-                            {
-                                instruction            = new CodeInstruction(OpCodes.Brfalse, instructionList[i + j].operand);
-                                instructionList[i + j] = new CodeInstruction(OpCodes.Nop);
-                                break;
-                            }
-
-                            instructionList[i + j] = new CodeInstruction(OpCodes.Nop);
-                            j++;
+                            yield return instruction;
+                            instruction = instructionList[++i];
                         }
+                        yield return new CodeInstruction(OpCodes.Ldarg_1);
+                        yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Patch_GetPriority), nameof(Patch_GetPriority.SleepHourFor)));
+                        yield return new CodeInstruction(OpCodes.Stloc_S, locVar);
                     }
 
+					if (instruction.opcode == OpCodes.Ldc_I4_7)
+					{
+                        yield return new CodeInstruction(OpCodes.Ldloc_S, locVar);
+						yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ValueTuple<int, int>), nameof(ValueTuple<int, int>.Item1)));
+                        instruction = instructionList[++i];
+					}
+					else if (instruction.opcode == OpCodes.Ldc_I4_S)
+					{
+                        yield return new CodeInstruction(OpCodes.Ldloc_S, locVar);
+                        yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ValueTuple<int, int>), nameof(ValueTuple<int,int>.Item2)));
+                        instruction = instructionList[++i];
+                    }
                     yield return instruction;
-
                 }
-
-
             }
 
-            public static bool SleepHourFor(int hour, Pawn pawn)
+            public static (int, int) SleepHourFor(Pawn pawn)
             {
-
-                var extendedRaceProps = pawn.def.GetModExtension<ExtendedRaceProperties>();
-
+                ExtendedRaceProperties extendedRaceProps = pawn.def.GetModExtension<ExtendedRaceProperties>();
 
                 if (extendedRaceProps != null && extendedRaceProps.bodyClock == BodyClock.Crepuscular)
                 {
-                    return hour > 3 && hour < 16;
+                    return (3, 16);
                 }
                 else if (extendedRaceProps != null && extendedRaceProps.bodyClock == BodyClock.Nocturnal)
                 {
-                    return hour > 9 && hour < 19;
+                    return (9, 19);
                 }
-                else
-                    return hour < 7 || hour > 21;
+                return (7, 21);
             }
-
         }
-
     }
 
 }
