@@ -59,13 +59,18 @@ namespace KCSG
             }
         }
 
-        public static int GetMaxThingOnOneCell(List<IntVec3> cellExport, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
+        public static int GetMaxThingOnOneCell(List<IntVec3> cellExport, Dictionary<IntVec3, List<Thing>> pairsCellThingList, bool exportFilth)
         {
             int max = 1;
             foreach (IntVec3 item in cellExport)
             {
                 List<Thing> things = pairsCellThingList.TryGetValue(item);
-                things.RemoveAll(t => t is Pawn || t.def.building == null || t.def.defName == "PowerConduit");
+                things.RemoveAll(t => t is Pawn || t.def.defName == "PowerConduit");
+                if (!exportFilth)
+                {
+                    things.RemoveAll(t => t.def.category == ThingCategory.Filth);
+                }
+
                 if (things.Count > max) max = things.Count;
             }
             return max;

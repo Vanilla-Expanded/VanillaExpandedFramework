@@ -18,8 +18,9 @@ namespace KCSG
         private string defname = "Placeholder";
         private bool isStorage = false;
         private bool needRoyalty = false;
+        private bool exportFilth = false;
 
-        private string symbolPrefix = "Required";
+        private string structurePrefix = "Required";
         private List<XElement> symbols = new List<XElement>();
         private string tempTagToAdd = "Optional, see tutorial";
 
@@ -52,17 +53,18 @@ namespace KCSG
             this.DrawDefNameChanger(90);
             this.DrawRoyaltyChanger(130);
             this.DrawStorageChanger(170);
-            this.DrawTagsEditing(210);
+            this.DrawExportFilth(210);
+            this.DrawTagsEditing(250);
 
-            this.DrawSymbolPrefix(inRect);
+            this.DrawStructurePrefix(inRect);
             this.DrawFooter(inRect);
         }
 
         private XElement CreateLayout()
         {
-            XElement structureL = LayoutUtils.CreateStructureDef(this.cells, this.map, symbolPrefix, LayoutUtils.FillpairsSymbolLabel(), pairsCellThingList, area);
+            XElement structureL = LayoutUtils.CreateStructureDef(this.cells, this.map, pairsCellThingList, area, exportFilth);
             // Defname change
-            XElement defName = new XElement("defName", symbolPrefix + defname);
+            XElement defName = new XElement("defName", structurePrefix + defname);
             structureL.AddFirst(defName);
             // Royalty change
             if (this.needRoyalty)
@@ -121,9 +123,9 @@ namespace KCSG
 
             if (Widgets.ButtonText(new Rect(0, inRect.height - bHeight, 340, bHeight), "Copy structure def"))
             {
-                if (this.symbolPrefix.Length == 0 || this.symbolPrefix == "Required")
+                if (this.structurePrefix.Length == 0 || this.structurePrefix == "Required")
                 {
-                    Messages.Message("Custom symbols prefix is required.", MessageTypeDefOf.NegativeEvent);
+                    Messages.Message("Structure prefix required.", MessageTypeDefOf.NegativeEvent);
                 }
                 else
                 {
@@ -134,26 +136,19 @@ namespace KCSG
             }
             if (Widgets.ButtonText(new Rect(350, inRect.height - bHeight, 340, bHeight), "Copy symbol(s) def(s)"))
             {
-                if (this.symbolPrefix.Length == 0 || this.symbolPrefix == "Required")
+                LayoutUtils.FillCellThingsList(cells, this.map, this.pairsCellThingList);
+                this.symbols = SymbolUtils.CreateSymbolIfNeeded(this.cells, this.map, pairsCellThingList, area);
+                if (this.symbols.Count > 0)
                 {
-                    Messages.Message("Custom symbols prefix is required.", MessageTypeDefOf.NegativeEvent);
-                }
-                else
-                {
-                    LayoutUtils.FillCellThingsList(cells, this.map, this.pairsCellThingList);
-                    this.symbols = SymbolUtils.CreateSymbolIfNeeded(this.cells, this.map, symbolPrefix, pairsCellThingList, area);
-                    if (this.symbols.Count > 0)
+                    string toCopy = "";
+                    foreach (XElement item in this.symbols)
                     {
-                        string toCopy = "";
-                        foreach (XElement item in this.symbols)
-                        {
-                            toCopy += item.ToString() + "\n";
-                        }
-                        GUIUtility.systemCopyBuffer = toCopy;
-                        Messages.Message("Copied to clipboard.", MessageTypeDefOf.TaskCompletion);
+                        toCopy += item.ToString() + "\n\n";
                     }
-                    else Messages.Message("No new symbols needed.", MessageTypeDefOf.TaskCompletion);
+                    GUIUtility.systemCopyBuffer = toCopy;
+                    Messages.Message("Copied to clipboard.", MessageTypeDefOf.TaskCompletion);
                 }
+                else Messages.Message("No new symbols needed.", MessageTypeDefOf.TaskCompletion);
             }
             if (Widgets.ButtonText(new Rect(700, inRect.height - bHeight, 60, bHeight), "Close"))
             {
@@ -194,10 +189,18 @@ namespace KCSG
             Text.Anchor = TextAnchor.UpperLeft;
         }
 
-        private void DrawSymbolPrefix(Rect inRect)
+        private void DrawExportFilth(float y)
         {
-            Widgets.Label(new Rect(10, inRect.height - 90, 200, 35), "Symbols defName/symbol prefix:");
-            symbolPrefix = Widgets.TextField(new Rect(220, inRect.height - 90, 480, 35), symbolPrefix);
+            Widgets.Label(new Rect(10, y, 200, 35), "Export filth:");
+            Text.Anchor = TextAnchor.MiddleCenter;
+            Widgets.Checkbox(220, y, ref this.exportFilth);
+            Text.Anchor = TextAnchor.UpperLeft;
+        }
+
+        private void DrawStructurePrefix(Rect inRect)
+        {
+            Widgets.Label(new Rect(10, inRect.height - 90, 200, 35), "Structure defName prefix:");
+            structurePrefix = Widgets.TextField(new Rect(220, inRect.height - 90, 480, 35), structurePrefix);
         }
 
         private void DrawTagsEditing(float y)

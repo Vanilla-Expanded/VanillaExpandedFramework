@@ -71,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DefModExtensions\FallingStructure.cs" />
+    <Compile Include="Defs\SymbolAutoCreation.cs" />
     <Compile Include="GenStep\GenStep_KCSGSettlement.cs" />
     <Compile Include="GenStep\GenStep_WorldObjectKCSG.cs" />
     <Compile Include="Harmony\HideSettlementsForNomadicFactionsPatch.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="SymbolResolvers\SymbolResolver_SingleThingRoofed.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_StorageZone.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_ThingSetOnlyRoofed.cs" />
+    <Compile Include="SymbolDefsCreator.cs" />
     <Compile Include="Thing\KCSG_Skyfaller.cs" />
     <Compile Include="Utils\TextureLoader.cs" />
     <Compile Include="DefOfs\KThingDefOf.cs" />

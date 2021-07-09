@@ -35,9 +35,6 @@ namespace KCSG
             {
                 map.mapDrawer.MapMeshDirty(loc, MapMeshFlag.FogOfWar);
             }
-
-            // Remove power cable not connected to a powered grid
-            map.listerBuildings?.allBuildingsNonColonist?.RemoveAll(b => b.TryGetComp<CompPowerTransmitter>() is CompPowerTransmitter cp && cp != null && cp.Props.transmitsPower == true && !cp.PowerNet.HasActivePowerSource);
         }
 
         internal void SetAllFogged(Map map)
