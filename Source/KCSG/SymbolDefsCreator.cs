@@ -1,68 +1,35 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Verse;
-using RimWorld;
 
 namespace KCSG
 {
     [StaticConstructorOnStartup]
-    class SymbolDefsCreator
+    internal class SymbolDefsCreator
     {
-        static List<ThingDef> stuffs = new List<ThingDef>();
-        static int sCreated;
-        static int modCount;
+        private static int modCount;
+        private static int sCreated;
+        private static List<ThingDef> stuffs = new List<ThingDef>();
 
         static SymbolDefsCreator()
         {
-            stuffs = DefDatabase<ThingDef>.AllDefsListForReading.FindAll(t => t.IsStuff);
-            sCreated = 0;
-            DateTime before = DateTime.Now;
-
-            Log.Message($"<color=orange>[CSG]</color> Symbols Creator Started.");
-
-            CreateSymbolsFor("ludeon.rimworld");
-            CreateSymbolsFor("ludeon.rimworld.royalty");
-            CreateSymbolsFor("ludeon.rimworld.ideology");
-
-            foreach (var item in ModsConfig.ActiveModsInLoadOrder)
+            if (DefDatabase<SettlementLayoutDef>.DefCount > 0
+                || DefDatabase<StructureLayoutDef>.DefCount > 0
+                || DefDatabase<SymbolAutoCreation>.DefCount > 0
+                || DefDatabase<SymbolDef>.DefCount > 0)
             {
-                if (DefDatabase<SymbolAutoCreation>.AllDefsListForReading.Find(d => d.modContentPack?.PackageId == item.PackageId && d.autoSymbolsCreation) != null)
-                {
-                    CreateSymbolsFor(item.PackageId.ToLower());
-                }
+                Run();
             }
-
-            Log.Message($"<color=orange>[CSG]</color> Created {sCreated} symbolDefs for {modCount} mods. Took {(DateTime.Now - before).TotalSeconds.ToString("00.00")}s.");
         }
 
-        static void CreateSymbolsFor(string modId)
+        private static void AddDef(SymbolDef def)
         {
-            if (VFECore.VFEGlobal.settings.enableVerboseLogging) Log.Message($"Creating symbols for {modId}...");
-            
-            List<ThingDef> thingDefs = DefDatabase<ThingDef>.AllDefsListForReading.FindAll(t => t.modContentPack?.PackageId == modId);
-            foreach (ThingDef thingDef in thingDefs)
-            {
-                CreateAllSymbolsForDef(thingDef);
-            }
-
-            List<TerrainDef> terrainDefs = DefDatabase<TerrainDef>.AllDefsListForReading.FindAll(t => t.modContentPack?.PackageId == modId);
-            foreach (TerrainDef terrainDef in terrainDefs)
-            {
-                AddDef(CreateSymbolDef(terrainDef));
-            }
-
-            List<PawnKindDef> pawnKindDefs = DefDatabase<PawnKindDef>.AllDefsListForReading.FindAll(t => t.modContentPack?.PackageId == modId);
-            foreach (PawnKindDef pawnKindDef in pawnKindDefs)
-            {
-                AddDef(CreateSymbolDef(pawnKindDef));
-            }
-            modCount++;
+            if (DefDatabase<SymbolDef>.GetNamedSilentFail(def.defName) == null)
+                DefDatabase<SymbolDef>.Add(def);
         }
-                
-        static void CreateAllSymbolsForDef(ThingDef thing)
+
+        private static void CreateAllSymbolsForDef(ThingDef thing)
         {
             if (thing.category == ThingCategory.Item || thing.IsFilth)
             {
@@ -105,7 +72,7 @@ namespace KCSG
             }
         }
 
-        static SymbolDef CreatePlantSymbolDef(ThingDef thing)
+        private static SymbolDef CreatePlantSymbolDef(ThingDef thing)
         {
             SymbolDef symbolDef = new SymbolDef
             {
@@ -117,7 +84,7 @@ namespace KCSG
             return symbolDef;
         }
 
-        static SymbolDef CreateSymbolDef(TerrainDef terrain)
+        private static SymbolDef CreateSymbolDef(TerrainDef terrain)
         {
             SymbolDef symbolDef = new SymbolDef
             {
@@ -129,7 +96,7 @@ namespace KCSG
             return symbolDef;
         }
 
-        static SymbolDef CreateSymbolDef(PawnKindDef pawnKindDef)
+        private static SymbolDef CreateSymbolDef(PawnKindDef pawnKindDef)
         {
             SymbolDef symbolDef = new SymbolDef
             {
@@ -140,7 +107,7 @@ namespace KCSG
             return symbolDef;
         }
 
-        static SymbolDef CreateSymbolDef(ThingDef thing, ThingDef stuff, Rot4 rot)
+        private static SymbolDef CreateSymbolDef(ThingDef thing, ThingDef stuff, Rot4 rot)
         {
             SymbolDef symbolDef = new SymbolDef
             {
@@ -153,7 +120,7 @@ namespace KCSG
             return symbolDef;
         }
 
-        static SymbolDef CreateSymbolDef(ThingDef thing, ThingDef stuff)
+        private static SymbolDef CreateSymbolDef(ThingDef thing, ThingDef stuff)
         {
             SymbolDef symbolDef = new SymbolDef
             {
@@ -165,7 +132,7 @@ namespace KCSG
             return symbolDef;
         }
 
-        static SymbolDef CreateSymbolDef(ThingDef thing, Rot4 rot)
+        private static SymbolDef CreateSymbolDef(ThingDef thing, Rot4 rot)
         {
             SymbolDef symbolDef = new SymbolDef
             {
@@ -177,7 +144,7 @@ namespace KCSG
             return symbolDef;
         }
 
-        static SymbolDef CreateSymbolDef(ThingDef thing)
+        private static SymbolDef CreateSymbolDef(ThingDef thing)
         {
             SymbolDef symbolDef = new SymbolDef
             {
@@ -189,10 +156,51 @@ namespace KCSG
             return symbolDef;
         }
 
-        static void AddDef(SymbolDef def)
+        private static void CreateSymbolsFor(string modId)
         {
-            if (DefDatabase<SymbolDef>.GetNamedSilentFail(def.defName) == null)
-                DefDatabase<SymbolDef>.Add(def);
+            if (VFECore.VFEGlobal.settings.enableVerboseLogging) Log.Message($"Creating symbols for {modId}...");
+
+            List<ThingDef> thingDefs = DefDatabase<ThingDef>.AllDefsListForReading.FindAll(t => t.modContentPack?.PackageId == modId);
+            foreach (ThingDef thingDef in thingDefs)
+            {
+                CreateAllSymbolsForDef(thingDef);
+            }
+
+            List<TerrainDef> terrainDefs = DefDatabase<TerrainDef>.AllDefsListForReading.FindAll(t => t.modContentPack?.PackageId == modId);
+            foreach (TerrainDef terrainDef in terrainDefs)
+            {
+                AddDef(CreateSymbolDef(terrainDef));
+            }
+
+            List<PawnKindDef> pawnKindDefs = DefDatabase<PawnKindDef>.AllDefsListForReading.FindAll(t => t.modContentPack?.PackageId == modId);
+            foreach (PawnKindDef pawnKindDef in pawnKindDefs)
+            {
+                AddDef(CreateSymbolDef(pawnKindDef));
+            }
+            modCount++;
+        }
+
+        private static void Run()
+        {
+            stuffs = DefDatabase<ThingDef>.AllDefsListForReading.FindAll(t => t.IsStuff);
+            sCreated = 0;
+            DateTime before = DateTime.Now;
+
+            Log.Message($"<color=orange>[CSG]</color> Symbols Creator Started.");
+
+            CreateSymbolsFor("ludeon.rimworld");
+            CreateSymbolsFor("ludeon.rimworld.royalty");
+            CreateSymbolsFor("ludeon.rimworld.ideology");
+
+            foreach (var item in ModsConfig.ActiveModsInLoadOrder)
+            {
+                if (DefDatabase<SymbolAutoCreation>.AllDefsListForReading.Find(d => d.modContentPack?.PackageId == item.PackageId && d.autoSymbolsCreation) != null)
+                {
+                    CreateSymbolsFor(item.PackageId.ToLower());
+                }
+            }
+
+            Log.Message($"<color=orange>[CSG]</color> Created {sCreated} symbolDefs for {modCount} mods. Took {(DateTime.Now - before).TotalSeconds.ToString("00.00")}s.");
         }
     }
 }
