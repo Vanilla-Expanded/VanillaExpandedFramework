@@ -7,7 +7,7 @@ namespace KCSG
 {
     public static class DebugOption
     {
-        [DebugAction("Custom Structure Generation", "Quickspawn structure", actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        [DebugAction("Custom Structure Generation", "Quickspawn structure", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void QuickspawnStructure()
         {
             if (DefDatabase<StructureLayoutDef>.AllDefs.Count() > 0)
@@ -34,7 +34,7 @@ namespace KCSG
             }
         }
 
-        [DebugAction("Custom Structure Generation", "Destroy all hostile pawns on map", actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        [DebugAction("Custom Structure Generation", "Destroy all hostile pawns on map", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void RemoveAllHostilePawns()
         {
             foreach (Pawn pawn in Find.CurrentMap.mapPawns.AllPawnsSpawned.ToList())
