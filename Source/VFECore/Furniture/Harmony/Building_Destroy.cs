@@ -11,25 +11,24 @@ using HarmonyLib;
 
 namespace VanillaFurnitureExpanded
 {
-   
-    [HarmonyPatch(typeof(GhostUtility))]
-    [HarmonyPatch("GhostGraphicFor")]
-    public static class VanillaExpandedFramework_GhostUtility_GhostGraphicFor_Patch
-    {
-        [HarmonyPostfix]
-        static void DisplayBlueprintGraphic(Graphic baseGraphic, ThingDef thingDef, Color ghostCol, ref Graphic __result)
-        {
 
-            if (thingDef.GetModExtension<ShowBlueprintExtension>() != null && thingDef.GetModExtension<ShowBlueprintExtension>().showBlueprintInGhostMode)
-            {
-                Graphic graphic = GraphicDatabase.Get(typeof(Graphic_Multi), thingDef.building.blueprintGraphicData.texPath, ShaderTypeDefOf.Cutout.Shader, baseGraphic.drawSize, Color.white, Color.white, thingDef.building.blueprintGraphicData, null);
-                __result = graphic;
-            }
-
-
-
-        }
-    }
-
+	[HarmonyPatch(typeof(Building), "Destroy")]
+	public static class Patch_BuildingDestroy
+	{
+		public static void Prefix(Building __instance)
+		{
+			if (__instance != null && __instance.def != null && __instance.def.passability == Traversability.Impassable && __instance.Map != null)
+			{
+				foreach (var t in __instance.Position.GetThingList(__instance.Map).Where(b => b != __instance))
+				{
+					var mountableComp = t.TryGetComp<CompMountableOnWall>();
+					if (mountableComp != null)
+                    {
+						t.Destroy(DestroyMode.Refund);
+                    }
+				}
+			}
+		}
+	}
 }
 

@@ -227,9 +227,6 @@ namespace VanillaFurnitureExpanded
                     }))();
                 }
                 catch (TypeLoadException) { }
-
-
-
             }
             else
             {
