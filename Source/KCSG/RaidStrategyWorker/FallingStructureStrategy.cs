@@ -13,6 +13,9 @@ namespace KCSG
         {
             CurrentGenerationOption.fallingStructure = this.def.GetModExtension<FallingStructure>();
 
+            if (CurrentGenerationOption.fallingStructure.needToHaveSettlements && !Find.World.worldObjects.Settlements.FindAll(s => s.Faction == parms.faction).Any())
+                return false;
+
             if (CurrentGenerationOption.fallingStructure.canBeUsedBy.Contains(parms.faction.def))
             {
                 if (!ModLister.RoyaltyInstalled)
@@ -60,7 +63,6 @@ namespace KCSG
                 symbSplitFromLine.ForEach((s) => allSymbList.Add(s));
             }
 
-            Dictionary<string, SymbolDef> pairsSymbolLabel = LayoutUtils.FillpairsSymbolLabel();
             List<TTIR> fallers = new List<TTIR>();
             Dictionary<ActiveDropPodInfo, IntVec3> pods = new Dictionary<ActiveDropPodInfo, IntVec3>();
 
@@ -69,11 +71,10 @@ namespace KCSG
             {
                 if (l < allSymbList.Count && allSymbList[l] != ".")
                 {
-                    SymbolDef temp;
-                    pairsSymbolLabel.TryGetValue(allSymbList[l], out temp);
+                    SymbolDef temp = DefDatabase<SymbolDef>.GetNamed(allSymbList[l], false);
                     Thing thing;
 
-                    if (temp.thingDef != null && temp.defName.Contains("VFE"))
+                    if (temp.thingDef != null && !CurrentGenerationOption.fallingStructure.thingsToSpawnInDropPod.Contains(temp.thingDef))
                     {
                         TTIR ttir = new TTIR();
 

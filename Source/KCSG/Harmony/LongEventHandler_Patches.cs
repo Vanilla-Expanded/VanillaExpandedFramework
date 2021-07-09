@@ -151,7 +151,7 @@ namespace KCSG
                     Widgets.DrawShadowAround(tipRect);
                     Widgets.DrawWindowBackground(tipRect);
 
-                    if (CurrentGenerationOption.tipAvailable && (currentTip == null || DateTime.Now.Ticks - lastTipShownTick >= 60000000))
+                    if (CurrentGenerationOption.tipAvailable && (currentTip == null || DateTime.Now.Ticks - lastTipShownTick >= 60000000) && CurrentGenerationOption.allTip.Count > 1)
                     {
                         currentTip = CurrentGenerationOption.allTip.RandomElement();
                         lastTipShownTick = DateTime.Now.Ticks;

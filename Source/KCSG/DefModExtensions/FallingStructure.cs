@@ -1,5 +1,4 @@
 ﻿using RimWorld;
-using System;
 using System.Collections.Generic;
 using Verse;
 
@@ -7,8 +6,8 @@ namespace KCSG
 {
     public struct WeightedStruct
     {
-        public float weight;
         public StructureLayoutDef structureLayoutDef;
+        public float weight;
 
         public WeightedStruct(StructureLayoutDef structureLayoutDef, float weight)
         {
@@ -42,11 +41,11 @@ namespace KCSG
     public class FallingStructure : DefModExtension
     {
         public List<string> weightedStruct = new List<string>();
-        public bool spawnDormantWhenPossible = true;
-
+        public List<ThingDef> thingsToSpawnInDropPod = new List<ThingDef>();
         public List<FactionDef> canBeUsedBy = new List<FactionDef>();
-
-        public List<WeightedStruct> WeightedStructs = new List<WeightedStruct>();
+        public bool spawnDormantWhenPossible = true;
+        public bool needToHaveSettlements = true;
+        internal List<WeightedStruct> WeightedStructs = new List<WeightedStruct>();
 
         public override IEnumerable<string> ConfigErrors()
         {

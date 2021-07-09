@@ -127,8 +127,8 @@ namespace KCSG
                     {
                         if (array[col] != ".")
                         {
-                            SymbolDef tempS = DefDatabase<SymbolDef>.GetNamed(array[col]);
-                            if (tempS.thingDef != null && tempS.thingDef.altitudeLayer == AltitudeLayer.DoorMoveable)
+                            SymbolDef tempS = DefDatabase<SymbolDef>.GetNamedSilentFail(array[col]);
+                            if (tempS != null && tempS.thingDef != null && tempS.thingDef.altitudeLayer == AltitudeLayer.DoorMoveable)
                             {
                                 doors.Add(new CustomVector(col, row));
                             }

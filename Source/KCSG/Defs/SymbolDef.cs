@@ -8,7 +8,6 @@ namespace KCSG
 {
     public class SymbolDef : Def
     {
-        public string symbol;
         // Terrain
         public bool isTerrain = false;
         public TerrainDef terrainDef = null;
@@ -22,10 +21,6 @@ namespace KCSG
 
         // Building info
         public Rot4 rotation = Rot4.Invalid;
-
-        // Items info
-        public bool isItem = false;
-        public IntRange stackCount = new IntRange(1, 1);
         
         // Plant
         public float plantGrowth = 0.5f;
@@ -33,30 +28,14 @@ namespace KCSG
         // Content holder info
         public PawnKindDef containPawnKindDef;
         public string containPawnKind;
-        public bool isSlave = false;
 
         // Pawn
-        public bool isPawn = false;
         public string pawnKindDef = null;
         public PawnKindDef pawnKindDefNS = null;
         public Type lordJob = null;
+        public bool isSlave = false;
         public bool spawnPartOfFaction = true;
         public int numberToSpawn = 1;
-
-        public override IEnumerable<string> ConfigErrors()
-        {
-            base.ConfigErrors();
-            List<SymbolDef> symbolDefs = DefDatabase<SymbolDef>.AllDefsListForReading;
-
-            if (this.symbol == null)
-            {
-                yield return "Tried to load symbolDef " + this.defName + " from " + this.modContentPack.Name + " but " + this.defName + " have empty symbol";
-            }
-            else if (symbolDefs.FindAll(s => s.symbol == this.symbol && s.defName != this.defName).Count > 0)
-            {
-                yield return "Tried to load multiple symbolDef with the same symbol: " + this.symbol;
-            }
-        }
 
         public override void ResolveReferences()
         {

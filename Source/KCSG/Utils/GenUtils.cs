@@ -18,7 +18,6 @@ namespace KCSG
                 GenerateRoofGrid(rld.roofGrid, roomRect, map);
             }
 
-            Dictionary<string, SymbolDef> pairsSymbolLabel = LayoutUtils.FillpairsSymbolLabel();
             List<string> allSymbList = new List<string>();
             foreach (string str in layoutList)
             {
@@ -30,7 +29,7 @@ namespace KCSG
             {
                 if (l < allSymbList.Count && allSymbList[l] != ".")
                 {
-                    pairsSymbolLabel.TryGetValue(allSymbList[l], out SymbolDef temp);
+                    SymbolDef temp = DefDatabase<SymbolDef>.GetNamedSilentFail(allSymbList[l]);
                     Thing thing;
                     if (temp != null)
                     {
@@ -38,7 +37,7 @@ namespace KCSG
                         {
                             GenerateTerrainAt(map, cell, temp.terrainDef);
                         }
-                        else if (temp.isPawn && temp.pawnKindDefNS != null)
+                        else if (temp.pawnKindDefNS != null)
                         {
                             if (temp.lordJob != null)
                             {
@@ -68,25 +67,27 @@ namespace KCSG
                                 }
                             }
                         }
-                        else if (temp.isItem && temp.thingDef != null)
+                        else if (temp.thingDef?.category == ThingCategory.Item)
                         {
-                            if (temp.thingDef.stuffCategories?.Count > 0)
-                                thing = ThingMaker.MakeThing(temp.thingDef, GenStuff.RandomStuffFor(temp.thingDef));
-                            else
-                                thing = ThingMaker.MakeThing(temp.thingDef);
+                            thing = ThingMaker.MakeThing(temp.thingDef, temp.thingDef.stuffCategories?.Count > 0 ? GenStuff.RandomStuffFor(temp.thingDef) : null);
+                            thing.stackCount = Mathf.Clamp(Rand.RangeInclusive(1, temp.thingDef.stackLimit), 1, 75);
 
-                            thing.stackCount = Mathf.Clamp(temp.stackCount.RandomInRange, 1, 75);
-                            if (thing.TryGetComp<CompQuality>() != null) thing.TryGetComp<CompQuality>().SetQuality(QualityUtility.GenerateQualityRandomEqualChance(), ArtGenerationContext.Outsider);
+                            CompQuality quality = thing.TryGetComp<CompQuality>();
+                            quality?.SetQuality(QualityUtility.GenerateQualityRandomEqualChance(), ArtGenerationContext.Outsider);
 
                             GenSpawn.Spawn(thing, cell, map, WipeMode.FullRefund);
-                            if (thing.TryGetComp<CompForbiddable>() != null) thing.SetForbidden(true);
+                            thing.SetForbidden(true, false);
                         }
                         else if (temp.thingDef != null)
                         {
                             thing = ThingMaker.MakeThing(temp.thingDef, temp.stuffDef);
 
-                            if (thing.TryGetComp<CompRefuelable>() != null) thing.TryGetComp<CompRefuelable>().Refuel((int)thing.TryGetComp<CompRefuelable>().Props.fuelCapacity / 2);
-                            if (thing.TryGetComp<CompPowerBattery>() != null) thing.TryGetComp<CompPowerBattery>().AddEnergy(thing.TryGetComp<CompPowerBattery>().Props.storedEnergyMax);
+                            CompRefuelable refuelable = thing.TryGetComp<CompRefuelable>();
+                            refuelable?.Refuel(refuelable.Props.fuelCapacity);
+
+                            CompPowerBattery battery = thing.TryGetComp<CompPowerBattery>();
+                            battery?.AddEnergy(battery.Props.storedEnergyMax);
+
                             if (thing is Building_Casket inheritFromCasket)
                             {
                                 Pawn pawn = temp.containPawnKind != null ? PawnGenerator.GeneratePawn(temp.containPawnKindDef, map.ParentFaction) : PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, map.ParentFaction);
@@ -124,7 +125,7 @@ namespace KCSG
                                 c.SetFactionDirect(map.ParentFaction);
                                 GenSpawn.Spawn(c, cell, map, WipeMode.FullRefund);
                             }
-
+                            // Handle mortar and mortar pawns
                             if (thing?.def?.building?.buildingTags?.Count > 0)
                             {
                                 if (thing.def.building.IsMortar && thing.def.category == ThingCategory.Building && thing.def.building.buildingTags.Contains("Artillery_MannedMortar") && thing.def.HasComp(typeof(CompMannable)))
@@ -155,6 +156,14 @@ namespace KCSG
                                 }
                             }
                         }
+                        else if (VFECore.VFEGlobal.settings.enableVerboseLogging)
+                        {
+                            Log.Message($"SymbolDef for {allSymbList[l]} wasn't able to be used.");
+                        }
+                    }
+                    else if (VFECore.VFEGlobal.settings.enableVerboseLogging)
+                    {
+                        Log.Message($"Null symbolDef for {allSymbList[l]}, ignoring.");
                     }
                 }
                 l++;

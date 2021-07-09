@@ -7,26 +7,26 @@ namespace KCSG
 {
     public class LayoutUtils
     {
-        public static XElement CreateStructureDef(List<IntVec3> cellExport, Map map, string defNamePrefix, Dictionary<string, SymbolDef> pairsSymbolLabel, Dictionary<IntVec3, List<Thing>> pairsCellThingList, Area area)
+        public static XElement CreateStructureDef(List<IntVec3> cellExport, Map map, Dictionary<IntVec3, List<Thing>> pairsCellThingList, Area area, bool exportFilth)
         {
             cellExport.Sort((x, y) => x.z.CompareTo(y.z));
             XElement StructureLayoutDef = new XElement("KCSG.StructureLayoutDef", null);
 
             XElement layouts = new XElement("layouts", null);
             // Add pawns layout
-            XElement pawnsL = Createpawnlayout(cellExport, defNamePrefix, area, out bool add, pairsSymbolLabel, pairsCellThingList);
+            XElement pawnsL = CreatePawnlayout(cellExport, area, out bool add, pairsCellThingList);
             if (add) layouts.Add(pawnsL);
             // Add items layout
-            XElement itemsL = CreateItemlayout(cellExport, defNamePrefix, area, out bool add2, pairsSymbolLabel, pairsCellThingList);
+            XElement itemsL = CreateItemlayout(cellExport, area, out bool add2, pairsCellThingList);
             if (add2) layouts.Add(itemsL);
             // Add terrain layout
-            XElement terrainL = CreateTerrainlayout(cellExport, defNamePrefix, area, map, pairsSymbolLabel, out bool add3);
+            XElement terrainL = CreateTerrainlayout(cellExport, area, map, out bool add3);
             if (add3) layouts.Add(terrainL);
             // Add things layouts
-            int numOfLayout = RectUtils.GetMaxThingOnOneCell(cellExport, pairsCellThingList);
+            int numOfLayout = RectUtils.GetMaxThingOnOneCell(cellExport, pairsCellThingList, exportFilth);
             for (int i = 0; i < numOfLayout; i++)
             {
-                layouts.Add(CreateThinglayout(cellExport, defNamePrefix, i, area, pairsSymbolLabel, pairsCellThingList));
+                layouts.Add(CreateThinglayout(cellExport, i, area, pairsCellThingList, exportFilth));
             }
 
             StructureLayoutDef.Add(layouts);
@@ -38,7 +38,7 @@ namespace KCSG
             return StructureLayoutDef;
         }
 
-        public static XElement CreateThinglayout(List<IntVec3> cellExport, string defNamePrefix, int index, Area area, Dictionary<string, SymbolDef> pairsSymbolLabel, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
+        public static XElement CreateThinglayout(List<IntVec3> cellExport, int index, Area area, Dictionary<IntVec3, List<Thing>> pairsCellThingList, bool exportFilth)
         {
             XElement liMain = new XElement("li", null);
             RectUtils.EdgeFromList(cellExport, out int height, out int width);
@@ -51,7 +51,12 @@ namespace KCSG
                 string temp = "";
                 for (int i2 = 0; i2 < width; i2++)
                 {
-                    List<Thing> things = pairsCellThingList.TryGetValue(first).FindAll(t => t.def.category != ThingCategory.Pawn || t.def.category != ThingCategory.Item || t.def.category != ThingCategory.Filth || t.def.defName != "PowerConduit");
+                    List<Thing> things = pairsCellThingList.TryGetValue(first).FindAll(t => t.def.category != ThingCategory.Pawn || t.def.category != ThingCategory.Item || t.def.defName != "PowerConduit");
+                    if (!exportFilth)
+                    {
+                        things.RemoveAll(t => t.def.category == ThingCategory.Filth);
+                    }
+
                     Thing thing;
                     if (things.Count < index + 1 || (area != null && !area.ActiveCells.Contains(first)))
                     {
@@ -66,18 +71,18 @@ namespace KCSG
                             SymbolDef symbolDef;
                             if (thing.Stuff != null)
                             {
-                                if (thing.def.rotatable) symbolDef = pairsSymbolLabel.Values.ToList().Find(s => s.thingDef == thing.def && s.stuffDef == thing.Stuff && s.rotation == thing.Rotation);
-                                else symbolDef = pairsSymbolLabel.Values.ToList().Find(s => s.thingDef == thing.def && s.stuffDef == thing.Stuff);
+                                if (thing.def.rotatable) symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.thingDef == thing.def && s.stuffDef == thing.Stuff && s.rotation == thing.Rotation);
+                                else symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.thingDef == thing.def && s.stuffDef == thing.Stuff);
                             }
                             else
                             {
-                                if (thing.def.rotatable) symbolDef = pairsSymbolLabel.Values.ToList().Find(s => s.thingDef == thing.def && s.rotation == thing.Rotation);
-                                else symbolDef = pairsSymbolLabel.Values.ToList().Find(s => s.thingDef == thing.def);
+                                if (thing.def.rotatable) symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.thingDef == thing.def && s.rotation == thing.Rotation);
+                                else symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.thingDef == thing.def);
                             }
 
                             if (symbolDef == null)
                             {
-                                string symbolString = defNamePrefix + "_" + thing.def.defName;
+                                string symbolString = thing.def.defName;
                                 if (thing.Stuff != null) symbolString += "_" + thing.Stuff.defName;
                                 if (thing.def.rotatable && thing.def.category != ThingCategory.Plant) symbolString += "_" + thing.Rotation.ToStringHuman();
 
@@ -86,9 +91,8 @@ namespace KCSG
                             }
                             else
                             {
-                                Log.Message($"{symbolDef}");
-                                if (i2 + 1 == width) temp += symbolDef.symbol;
-                                else temp += symbolDef.symbol + ",";
+                                if (i2 + 1 == width) temp += symbolDef.defName;
+                                else temp += symbolDef.defName + ",";
                             }
                             aAdded.Add(thing);
                         }
@@ -108,7 +112,7 @@ namespace KCSG
             return liMain;
         }
 
-        public static XElement CreateTerrainlayout(List<IntVec3> cellExport, string defNamePrefix, Area area, Map map, Dictionary<string, SymbolDef> pairsSymbolLabel, out bool add)
+        public static XElement CreateTerrainlayout(List<IntVec3> cellExport, Area area, Map map, out bool add)
         {
             XElement liMain = new XElement("li", null);
             RectUtils.EdgeFromList(cellExport, out int height, out int width);
@@ -135,16 +139,16 @@ namespace KCSG
                     {
                         // Find corresponding symbol
                         TerrainDef terrainD = map.terrainGrid.TerrainAt(first);
-                        if (pairsSymbolLabel != null && pairsSymbolLabel.Values.ToList().Find(s => s.isTerrain && s.terrainDef.defName == terrainD.defName) is SymbolDef symbolDef && symbolDef != null)
+                        if (DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.isTerrain && s.terrainDef.defName == terrainD.defName) is SymbolDef symbolDef && symbolDef != null)
                         {
                             add = true;
-                            if (i2 + 1 == width) temp += symbolDef.symbol;
-                            else temp += symbolDef.symbol + ",";
+                            if (i2 + 1 == width) temp += symbolDef.defName;
+                            else temp += symbolDef.defName + ",";
                         }
                         else if (terrainD != null)
                         {
                             add = true;
-                            if (i2 + 1 == width) temp += defNamePrefix + "_" + terrainD.defName;
+                            if (i2 + 1 == width) temp += terrainD.defName;
                             else temp += terrainD.defName + ",";
                         }
                         else
@@ -202,7 +206,7 @@ namespace KCSG
             return roofGrid;
         }
 
-        public static XElement Createpawnlayout(List<IntVec3> cellExport, string defNamePrefix, Area area, out bool add, Dictionary<string, SymbolDef> pairsSymbolLabel, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
+        public static XElement CreatePawnlayout(List<IntVec3> cellExport, Area area, out bool add, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
         {
             XElement liMain = new XElement("li", null);
             RectUtils.EdgeFromList(cellExport, out int height, out int width);
@@ -225,18 +229,18 @@ namespace KCSG
                         if (pawns.First() is Pawn pawn && pawn != null)
                         {
                             if (!add) add = true;
-                            SymbolDef symbolDef = pairsSymbolLabel.Values.ToList().Find(s => s.pawnKindDefNS == pawn.kindDef);
+                            SymbolDef symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.pawnKindDefNS == pawn.kindDef);
                             if (symbolDef == null)
                             {
-                                string symbolString = defNamePrefix + "_" + pawn.kindDef.defName;
+                                string symbolString = pawn.kindDef.defName;
 
                                 if (i2 + 1 == width) temp += symbolString;
                                 else temp += symbolString + ",";
                             }
                             else
                             {
-                                if (i2 + 1 == width) temp += symbolDef.symbol;
-                                else temp += symbolDef.symbol + ",";
+                                if (i2 + 1 == width) temp += symbolDef.defName;
+                                else temp += symbolDef.defName + ",";
                             }
                         }
                     }
@@ -249,7 +253,7 @@ namespace KCSG
             return liMain;
         }
 
-        public static XElement CreateItemlayout(List<IntVec3> cellExport, string defNamePrefix, Area area, out bool add, Dictionary<string, SymbolDef> pairsSymbolLabel, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
+        public static XElement CreateItemlayout(List<IntVec3> cellExport, Area area, out bool add, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
         {
             add = false;
             XElement liMain = new XElement("li", null);
@@ -270,18 +274,18 @@ namespace KCSG
                     else
                     {
                         if (!add) add = true;
-                        SymbolDef symbolDef = pairsSymbolLabel.Values.ToList().Find(s => s.thingDef == things.First().def && s.isItem);
+                        SymbolDef symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.thingDef == things.First().def && s.thingDef.category == ThingCategory.Item);
                         if (symbolDef == null)
                         {
-                            string symbolString = defNamePrefix + "_Item_" + things.First().def.defName;
+                            string symbolString = things.First().def.defName;
 
                             if (i2 + 1 == width) temp += symbolString;
                             else temp += symbolString + ",";
                         }
                         else
                         {
-                            if (i2 + 1 == width) temp += symbolDef.symbol;
-                            else temp += symbolDef.symbol + ",";
+                            if (i2 + 1 == width) temp += symbolDef.defName;
+                            else temp += symbolDef.defName + ",";
                         }
                     }
                     first.x++;
@@ -300,17 +304,6 @@ namespace KCSG
             {
                 pairsCellThingList.Add(intVec, intVec.GetThingList(map).ToList());
             }
-        }
-
-        public static Dictionary<string, SymbolDef> FillpairsSymbolLabel()
-        {
-            Dictionary<string, SymbolDef> pairsSymbolLabel = new Dictionary<string, SymbolDef>();
-            List<SymbolDef> symbolDefs = DefDatabase<SymbolDef>.AllDefsListForReading;
-            foreach (SymbolDef s in symbolDefs)
-            {
-                pairsSymbolLabel.Add(s.symbol, s);
-            }
-            return pairsSymbolLabel;
         }
     }
 }
