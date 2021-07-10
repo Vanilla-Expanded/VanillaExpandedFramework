@@ -93,6 +93,10 @@ namespace VFECore
 
 		private bool IsGoodFaction(Faction faction, Slate slate)
 		{
+			if (faction is null)
+            {
+				return false;
+            }
 			if (faction.Hidden && (allowedHiddenFactions.GetValue(slate) == null || !allowedHiddenFactions.GetValue(slate).Contains(faction)))
 			{
 				return false;
