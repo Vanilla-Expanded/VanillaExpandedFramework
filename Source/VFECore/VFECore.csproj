@@ -466,8 +466,10 @@
     <Compile Include="AnimalBehaviours\Harmony\Pawn_PathFollower_CostToMoveIntoCell_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\ThingDef_SpecialDisplayStats_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\WildAnimalSpawner_SpawnRandomWildAnimalAt.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\HediffComp_AutoPermanentInjury.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_ThoughtEffecter.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Resurrect.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_AutoPermanentInjury.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Resurrect.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_ThoughtEffecter.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_TurnsWhenDead.cs" />
