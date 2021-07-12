@@ -77,8 +77,10 @@
     <Compile Include="ScenPart\ScenPart_AddStartingStructure.cs" />
     <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_RandomDamage.cs" />
     <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_RandomFilth.cs" />
+    <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_RandomItemRemoval.cs" />
     <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_RandomRoofRemoval.cs" />
     <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_RandomTerrainRemoval.cs" />
+    <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_RemovePerishable.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_AddFields.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_GenerateRoadPower.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_GridSecondPass.cs" />

@@ -107,4 +107,20 @@
       <li Class="KCSG.SymbolResolver_RandomRoofRemoval" />
     </resolvers>
   </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_RandomItemRemoval</defName>
+    <symbol>kcsg_randomitemremoval</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_RandomItemRemoval" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_RemovePerishable</defName>
+    <symbol>kcsg_removeperishable</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_RemovePerishable" />
+    </resolvers>
+  </RuleDef>
 </Defs>

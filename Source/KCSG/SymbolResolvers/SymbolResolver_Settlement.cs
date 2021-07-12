@@ -76,6 +76,8 @@ namespace KCSG
 
         private void HandleRuin(ResolveParams rp)
         {
+            CGO.currentGenStep = "";
+            CGO.currentGenStepMoreInfo = "";
             if (CGO.factionSettlement.shouldRuin)
             {
                 foreach (string resolver in CGO.factionSettlement.ruinSymbolResolvers)

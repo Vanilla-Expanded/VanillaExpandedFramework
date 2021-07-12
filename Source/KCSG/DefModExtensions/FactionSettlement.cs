@@ -25,6 +25,7 @@ namespace KCSG
 
         /* Ruin */
         public bool shouldRuin = false;
+        public bool spawnCropsField = true;
         public List<ThingDef> filthTypes = new List<ThingDef>();
         public List<string> ruinSymbolResolvers = new List<string>();
 
