@@ -74,4 +74,37 @@
       <li Class="KCSG.SymbolResolver_AddFields" />
     </resolvers>
   </RuleDef>
+
+  <!-- Ruin -->
+  <RuleDef>
+    <defName>KCSG_RandomDamage</defName>
+    <symbol>kcsg_randomdamage</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_RandomDamage" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_RandomFilth</defName>
+    <symbol>kcsg_randomfilth</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_RandomFilth" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_RandomTerrainRemoval</defName>
+    <symbol>kcsg_randomterrainremoval</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_RandomTerrainRemoval" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_RandomRoofRemoval</defName>
+    <symbol>kcsg_randomroofremoval</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_RandomRoofRemoval" />
+    </resolvers>
+  </RuleDef>
 </Defs>

@@ -49,15 +49,15 @@ namespace KCSG
             {
                 if (DistanceToTarget != -1 && Cost != -1)
                 {
-                    if (Type == CellType.MAINROAD && CurrentGenerationOption.usePathCostReduction)
+                    if (Type == CellType.MAINROAD && CGO.usePathCostReduction)
                     {
                         return DistanceToTarget + (Cost * 0.1f);
                     }
-                    else if (Type == CellType.ROAD && CurrentGenerationOption.usePathCostReduction)
+                    else if (Type == CellType.ROAD && CGO.usePathCostReduction)
                     {
                         return DistanceToTarget + (Cost * 0.4f);
                     }
-                    else if (Type == CellType.BUILDINGPASSABLE && CurrentGenerationOption.usePathCostReduction)
+                    else if (Type == CellType.BUILDINGPASSABLE && CGO.usePathCostReduction)
                     {
                         return DistanceToTarget + (Cost * 2f);
                     }

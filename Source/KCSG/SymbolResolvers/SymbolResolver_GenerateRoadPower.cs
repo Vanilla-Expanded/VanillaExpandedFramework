@@ -9,38 +9,38 @@ namespace KCSG
     {
         public override void Resolve(ResolveParams rp)
         {
-            CurrentGenerationOption.currentGenStep = "Generating roads";
+            CGO.currentGenStep = "Generating roads";
             Map map = BaseGen.globalSettings.map;
 
             rp.rect.EdgeCells.ToList().ForEach(cell => SpawnConduit(cell, map));
-            CurrentGenerationOption.currentGenStepMoreInfo = "Connecting all buildings";
-            GridUtils.AddRoadToGrid(CurrentGenerationOption.grid, CurrentGenerationOption.doors);
+            CGO.currentGenStepMoreInfo = "Connecting all buildings";
+            GridUtils.AddRoadToGrid(CGO.grid, CGO.doors);
             GenerateRoad(rp, map);
         }
 
         private void GenerateRoad(ResolveParams rp, Map map)
         {
-            CurrentGenerationOption.currentGenStepMoreInfo = "Placing terrain";
+            CGO.currentGenStepMoreInfo = "Placing terrain";
             int x = rp.rect.Corners.ElementAt(2).x,
                 y = rp.rect.Corners.ElementAt(2).z;
 
-            for (int i = 0; i < CurrentGenerationOption.grid.Length; i++)
+            for (int i = 0; i < CGO.grid.Length; i++)
             {
-                for (int j = 0; j < CurrentGenerationOption.grid[i].Length; j++)
+                for (int j = 0; j < CGO.grid[i].Length; j++)
                 {
                     IntVec3 cell = new IntVec3(x + i, 0, y - j);
                     if (cell.InBounds(map))
                     {
-                        switch (CurrentGenerationOption.grid[i][j].Type)
+                        switch (CGO.grid[i][j].Type)
                         {
                             case CellType.ROAD:
                                 SpawnConduit(cell, BaseGen.globalSettings.map);
-                                GenUtils.GenerateTerrainAt(map, cell, CurrentGenerationOption.settlementLayoutDef.roadDef);
+                                GenUtils.GenerateTerrainAt(map, cell, CGO.settlementLayoutDef.roadDef);
                                 break;
 
                             case CellType.MAINROAD:
                                 SpawnConduit(cell, BaseGen.globalSettings.map);
-                                GenUtils.GenerateTerrainAt(map, cell, CurrentGenerationOption.preRoadTypes?.Count > 0 ? CurrentGenerationOption.preRoadTypes.RandomElement() : CurrentGenerationOption.settlementLayoutDef.mainRoadDef);
+                                GenUtils.GenerateTerrainAt(map, cell, CGO.preRoadTypes?.Count > 0 ? CGO.preRoadTypes.RandomElement() : CGO.settlementLayoutDef.mainRoadDef);
                                 break;
 
                             default:

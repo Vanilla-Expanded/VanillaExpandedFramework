@@ -25,7 +25,7 @@ namespace KCSG
 
         public override bool TryResolveRaidSpawnCenter(IncidentParms parms)
         {
-            RectUtils.HeightWidthFromLayout(CurrentGenerationOption.fallingStructureChoosen, out int h, out int w);
+            RectUtils.HeightWidthFromLayout(CGO.fallingStructureChoosen, out int h, out int w);
 
             Map map = (Map)parms.target;
             parms.spawnCenter = this.FindRect(map, h, w);

@@ -8,17 +8,17 @@ namespace KCSG
     {
         public override void Resolve(ResolveParams rp)
         {
-            CurrentGenerationOption.currentGenStep = "Generating structures";
+            CGO.currentGenStep = "Generating structures";
 
-            foreach (KeyValuePair<CustomVector, StructureLayoutDef> keyValue in CurrentGenerationOption.vectStruct)
+            foreach (KeyValuePair<CustomVector, StructureLayoutDef> keyValue in CGO.vectStruct)
             {
-                CurrentGenerationOption.currentGenStepMoreInfo = "Generating " + keyValue.Value.defName;
+                CGO.currentGenStepMoreInfo = "Generating " + keyValue.Value.defName;
 
                 RectUtils.HeightWidthFromLayout(keyValue.Value, out int height, out int width);
                 IntVec3 limitMin = new IntVec3
                 {
-                    x = CurrentGenerationOption.offset.x + (int)keyValue.Key.X,
-                    z = CurrentGenerationOption.offset.z - (int)keyValue.Key.Y - height + 1
+                    x = CGO.offset.x + (int)keyValue.Key.X,
+                    z = CGO.offset.z - (int)keyValue.Key.Y - height + 1
                 };
                 CellRect rect = new CellRect(limitMin.x, limitMin.z, width, height);
 
@@ -35,11 +35,11 @@ namespace KCSG
                 }
             }
 
-            if (CurrentGenerationOption.settlementLayoutDef.addLandingPad && ModLister.RoyaltyInstalled)
+            if (CGO.settlementLayoutDef.addLandingPad && ModLister.RoyaltyInstalled)
             {
                 if (rp.rect.TryFindRandomInnerRect(new IntVec2(9, 9), out CellRect rect, null))
                 {
-                    CurrentGenerationOption.currentGenStepMoreInfo = "Generating landing pad";
+                    CGO.currentGenStepMoreInfo = "Generating landing pad";
                     ResolveParams resolveParams = rp;
                     resolveParams.rect = rect;
                     BaseGen.symbolStack.Push("landingPad", resolveParams, null);

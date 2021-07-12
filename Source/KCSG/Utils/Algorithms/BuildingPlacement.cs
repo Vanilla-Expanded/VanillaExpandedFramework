@@ -78,12 +78,12 @@ namespace KCSG
 
         public static List<CustomVector> Run(SettlementLayoutDef sld, CustomVector[][] grid, int maxTries)
         {
-            CurrentGenerationOption.vectStruct = new Dictionary<CustomVector, StructureLayoutDef>();
+            CGO.vectStruct = new Dictionary<CustomVector, StructureLayoutDef>();
 
             Dictionary<string, int> structCount = new Dictionary<string, int>();
 
             List<CustomVector> doors = new List<CustomVector>();
-            foreach (CustomVector vector in CurrentGenerationOption.vectors.ListFullCopy())
+            foreach (CustomVector vector in CGO.vectors.ListFullCopy())
             {
                 for (int i = 0; i < maxTries; i++)
                 {
@@ -94,7 +94,7 @@ namespace KCSG
 
                     if (CanPlaceAt(vector, b, grid))
                     {
-                        CurrentGenerationOption.vectStruct.Add(vector, b);
+                        CGO.vectStruct.Add(vector, b);
                         doors.AddRange(PlaceAt(vector, b, grid));
                         if (structCount.ContainsKey(option.structureLayoutTag))
                         {
@@ -104,7 +104,7 @@ namespace KCSG
                         {
                             structCount.Add(option.structureLayoutTag, 1);
                         }
-                        CurrentGenerationOption.vectors.Remove(vector);
+                        CGO.vectors.Remove(vector);
                         break;
                     }
                 }

@@ -11,25 +11,27 @@ namespace KCSG
     {
         public override void Resolve(ResolveParams rp)
         {
-            CurrentGenerationOption.currentGenStep = "Generating settlement";
+            CGO.currentGenStep = "Generating settlement";
 
             Map map = BaseGen.globalSettings.map;
             rp.faction = rp.faction ?? Find.FactionManager.RandomEnemyFaction(false, false, true, TechLevel.Undefined);
 
-            if (CurrentGenerationOption.useStructureLayout)
+            if (CGO.useStructureLayout)
             {
+                this.HandleRuin(rp);
                 this.AddHostilePawnGroup(rp.faction, map, rp);
 
                 BaseGen.symbolStack.Push("kcsg_roomsgenfromstructure", rp, null);
 
-                if (CurrentGenerationOption.factionSettlement.preGenClear)
-                    GenUtils.PreClean(map, rp.rect, CurrentGenerationOption.factionSettlement.fullClear);
+                if (CGO.factionSettlement.preGenClear)
+                    GenUtils.PreClean(map, rp.rect, CGO.factionSettlement.fullClear);
             }
             else
             {
+                this.HandleRuin(rp);
                 this.AddHostilePawnGroup(rp.faction, map, rp);
 
-                if (CurrentGenerationOption.settlementLayoutDef.vanillaLikeDefense)
+                if (CGO.settlementLayoutDef.vanillaLikeDefense)
                 {
                     int dWidth = (Rand.Bool ? 2 : 4);
                     ResolveParams rp3 = rp;
@@ -40,10 +42,10 @@ namespace KCSG
                     BaseGen.symbolStack.Push("edgeDefense", rp3, null);
                 }
 
-                this.GenerateRooms(CurrentGenerationOption.settlementLayoutDef, map, rp);
+                this.GenerateRooms(CGO.settlementLayoutDef, map, rp);
 
-                if (CurrentGenerationOption.factionSettlement.preGenClear)
-                    GenUtils.PreClean(map, rp.rect, CurrentGenerationOption.factionSettlement.fullClear);
+                if (CGO.factionSettlement.preGenClear)
+                    GenUtils.PreClean(map, rp.rect, CGO.factionSettlement.fullClear);
             }
         }
 
@@ -55,7 +57,7 @@ namespace KCSG
             resolveParams.rect = rp.rect;
             resolveParams.faction = faction;
             resolveParams.singlePawnLord = singlePawnLord;
-            resolveParams.pawnGroupKindDef = CurrentGenerationOption.settlementLayoutDef?.groupKindDef ?? rp.pawnGroupKindDef ?? PawnGroupKindDefOf.Settlement;
+            resolveParams.pawnGroupKindDef = CGO.settlementLayoutDef?.groupKindDef ?? rp.pawnGroupKindDef ?? PawnGroupKindDefOf.Settlement;
             resolveParams.singlePawnSpawnCellExtraPredicate = (rp.singlePawnSpawnCellExtraPredicate ?? ((IntVec3 x) => map.reachability.CanReachMapEdge(x, traverseParms)));
             if (resolveParams.pawnGroupMakerParams == null && faction.def.pawnGroupMakers.Any(pgm => pgm.kindDef == PawnGroupKindDefOf.Settlement))
             {
@@ -68,16 +70,27 @@ namespace KCSG
                     seed = rp.settlementPawnGroupSeed
                 };
             }
-            if (CurrentGenerationOption.settlementLayoutDef != null) resolveParams.pawnGroupMakerParams.points *= CurrentGenerationOption.settlementLayoutDef.pawnGroupMultiplier;
+            if (CGO.settlementLayoutDef != null) resolveParams.pawnGroupMakerParams.points *= CGO.settlementLayoutDef.pawnGroupMultiplier;
             if (faction.def.pawnGroupMakers.Any(pgm => pgm.kindDef == PawnGroupKindDefOf.Settlement)) BaseGen.symbolStack.Push("pawnGroup", resolveParams, null);
+        }
+
+        private void HandleRuin(ResolveParams rp)
+        {
+            if (CGO.factionSettlement.shouldRuin)
+            {
+                foreach (string resolver in CGO.factionSettlement.ruinSymbolResolvers)
+                {
+                    BaseGen.symbolStack.Push(resolver, rp, null);
+                }
+            }
         }
 
         private void GenerateRooms(SettlementLayoutDef sld, Map map, ResolveParams rp)
         {
             int seed = new Random().Next(0, 100000);
 
-            CurrentGenerationOption.offset = rp.rect.Corners.ElementAt(2);
-            CurrentGenerationOption.grid = GridUtils.GenerateGrid(seed, sld, map);
+            CGO.offset = rp.rect.Corners.ElementAt(2);
+            CGO.grid = GridUtils.GenerateGrid(seed, sld, map);
 
             BaseGen.symbolStack.Push("kcsg_roomgenfromlist", rp, null);
         }

@@ -224,14 +224,14 @@ namespace KCSG
         {
             if (map.TileInfo?.Roads?.Count > 0)
             {
-                CurrentGenerationOption.preRoadTypes = new List<TerrainDef>();
+                CGO.preRoadTypes = new List<TerrainDef>();
                 foreach (RimWorld.Planet.Tile.RoadLink roadLink in map.TileInfo.Roads)
                 {
                     foreach (RoadDefGenStep rgs in roadLink.road.roadGenSteps)
                     {
                         if (rgs is RoadDefGenStep_Place rgsp && rgsp != null && rgsp.place is TerrainDef t && t != null && t != TerrainDefOf.Bridge)
                         {
-                            CurrentGenerationOption.preRoadTypes.Add(t);
+                            CGO.preRoadTypes.Add(t);
                         }
                     }
                 }
@@ -248,9 +248,9 @@ namespace KCSG
                                                   (t1.def.category == ThingCategory.Building && !t1.def.building.isNaturalRock))
                                    .ForEach((t) => t.DeSpawn());
 
-                if (map.terrainGrid.UnderTerrainAt(c) != null)
+                if (map.terrainGrid.UnderTerrainAt(c) is TerrainDef terrain && terrain != null)
                 {
-                    map.terrainGrid.SetTerrain(c, map.terrainGrid.UnderTerrainAt(c));
+                    map.terrainGrid.SetTerrain(c, terrain);
                 }
             }
         }

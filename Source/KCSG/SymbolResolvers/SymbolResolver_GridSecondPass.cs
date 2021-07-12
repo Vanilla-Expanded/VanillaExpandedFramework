@@ -13,43 +13,43 @@ namespace KCSG
 
         private void CleanGrid(ResolveParams rp, Map map)
         {
-            CurrentGenerationOption.currentGenStep = "Preparing road generation";
+            CGO.currentGenStep = "Preparing road generation";
 
             int x = rp.rect.Corners.ElementAt(2).x,
                 y = rp.rect.Corners.ElementAt(2).z;
 
-            for (int i = 0; i < CurrentGenerationOption.grid.Length; i++)
+            for (int i = 0; i < CGO.grid.Length; i++)
             {
-                for (int j = 0; j < CurrentGenerationOption.grid[i].Length; j++)
+                for (int j = 0; j < CGO.grid[i].Length; j++)
                 {
                     IntVec3 cell = new IntVec3(x + i, 0, y - j);
-                    if (CurrentGenerationOption.grid[i][j].Type == CellType.BUILDING)
+                    if (CGO.grid[i][j].Type == CellType.BUILDING)
                     {
                         if (!cell.Roofed(map))
                         {
-                            CurrentGenerationOption.currentGenStepMoreInfo = $"Changing {cell} value";
+                            CGO.currentGenStepMoreInfo = $"Changing {cell} value";
                             if (cell.GetFirstBuilding(map) is Building b && b != null)
                             {
                                 if (b.def.passability != Traversability.Impassable)
                                 {
-                                    CurrentGenerationOption.grid[i][j].Type = CellType.BUILDINGPASSABLE;
+                                    CGO.grid[i][j].Type = CellType.BUILDINGPASSABLE;
                                 }
                             }
                             else
                             {
-                                CurrentGenerationOption.grid[i][j].Type = CellType.NONE;
+                                CGO.grid[i][j].Type = CellType.NONE;
                             }
                         }
                     }
                 }
             }
 
-            foreach (CustomVector item in CurrentGenerationOption.doors)
+            foreach (CustomVector item in CGO.doors)
             {
-                if (!AStar.GetAdjacent(item, CurrentGenerationOption.grid, false).FindAll(c => c.Type == CellType.NONE).Any())
+                if (!AStar.GetAdjacent(item, CGO.grid, false).FindAll(c => c.Type == CellType.NONE).Any())
                 {
                     item.Type = CellType.BUILDING;
-                    CurrentGenerationOption.grid[(int)item.X][(int)item.Y].Type = CellType.BUILDING;
+                    CGO.grid[(int)item.X][(int)item.Y].Type = CellType.BUILDING;
                 }
             }
 

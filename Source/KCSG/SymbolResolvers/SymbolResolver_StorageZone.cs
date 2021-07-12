@@ -21,7 +21,7 @@ namespace KCSG
             value.makingFaction = rp.faction;
             value.validator = (ThingDef x) => rp.faction == null || x.techLevel >= rp.faction.def.techLevel || !x.IsWeapon || x.GetStatValueAbstract(StatDefOf.MarketValue, GenStuff.DefaultStuffFor(x)) >= 100f;
             float marketValue = rp.stockpileMarketValue ?? Mathf.Min((float)this.cells.Count * 130f, 1800f);
-            marketValue *= CurrentGenerationOption.settlementLayoutDef.stockpileValueMultiplier;
+            marketValue *= CGO.settlementLayoutDef.stockpileValueMultiplier;
             value.totalMarketValueRange = new FloatRange?(new FloatRange(marketValue, marketValue));
 
             if (value.countRange == null)

@@ -28,13 +28,13 @@ namespace KCSG
                     /* Pick a random angle */
                     int theta = r.Next(361);
                     /* Pick a random radius between r and 1.5r */
-                    int new_radius = r.Next(CurrentGenerationOption.radius, (int)(1.5f * CurrentGenerationOption.radius));
+                    int new_radius = r.Next(CGO.radius, (int)(1.5f * CGO.radius));
                     /* Find X & Y coordinates relative to point p */
                     int pnewx = (int)(p.X + new_radius * Math.Cos(ConvertToRadians(theta)));
                     int pnewy = (int)(p.Y + new_radius * Math.Sin(ConvertToRadians(theta)));
                     CustomVector pnew = new CustomVector(pnewx, pnewy);
 
-                    if (IsInBound(pnew, Width, Height, CurrentGenerationOption.radius) && InsideCircles(pnew, CurrentGenerationOption.radius, points))
+                    if (IsInBound(pnew, Width, Height, CGO.radius) && InsideCircles(pnew, CGO.radius, points))
                     {
                         points.Add(pnew);
                         active.Add(pnew);

@@ -15,10 +15,10 @@ namespace KCSG
 
         public override void Resolve(ResolveParams rp)
         {
-            CurrentGenerationOption.currentGenStep = "Generating single structure";
+            CGO.currentGenStep = "Generating single structure";
 
             Map map = BaseGen.globalSettings.map;
-            StructureLayoutDef rld = CurrentGenerationOption.structureLayoutDef;
+            StructureLayoutDef rld = CGO.structureLayoutDef;
 
             foreach (List<string> item in rld.layouts)
             {

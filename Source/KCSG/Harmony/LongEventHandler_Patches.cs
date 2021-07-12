@@ -35,7 +35,7 @@ namespace KCSG
             [HarmonyPrefix]
             public static bool Prefix()
             {
-                if (CurrentGenerationOption.useCustomWindowContent)
+                if (CGO.useCustomWindowContent)
                 {
                     UIMenuBackgroundManager.background = new UI_BackgroundMain();
                     UIMenuBackgroundManager.background.BackgroundOnGUI();
@@ -49,16 +49,16 @@ namespace KCSG
                     Widgets.DrawShadowAround(loadingRect);
                     Widgets.DrawWindowBackground(loadingRect);
 
-                    if (CurrentGenerationOption.currentGenStep == null || CurrentGenerationOption.currentGenStep == "")
-                        CurrentGenerationOption.currentGenStep = "Generating";
-                    if (CurrentGenerationOption.currentGenStepMoreInfo == null || CurrentGenerationOption.currentGenStepMoreInfo == "")
-                        CurrentGenerationOption.currentGenStepMoreInfo = "...";
+                    if (CGO.currentGenStep == null || CGO.currentGenStep == "")
+                        CGO.currentGenStep = "Generating";
+                    if (CGO.currentGenStepMoreInfo == null || CGO.currentGenStepMoreInfo == "")
+                        CGO.currentGenStepMoreInfo = "...";
 
                     Text.Anchor = TextAnchor.LowerCenter;
-                    Widgets.Label(loadingRect.TopHalf().TopHalf(), CurrentGenerationOption.currentGenStep + GenText.MarchingEllipsis(0f));
-                    Widgets.Label(loadingRect.TopHalf().BottomHalf(), string.Format("<i>{0}</i>", CurrentGenerationOption.currentGenStepMoreInfo));
+                    Widgets.Label(loadingRect.TopHalf().TopHalf(), CGO.currentGenStep + GenText.MarchingEllipsis(0f));
+                    Widgets.Label(loadingRect.TopHalf().BottomHalf(), string.Format("<i>{0}</i>", CGO.currentGenStepMoreInfo));
                     Text.Anchor = TextAnchor.MiddleCenter;
-                    Widgets.Label(loadingRect.BottomHalf(), (DateTime.Now - CurrentGenerationOption.dateTime).Duration().TotalSeconds.ToString("00.00") + "s");
+                    Widgets.Label(loadingRect.BottomHalf(), (DateTime.Now - CGO.dateTime).Duration().TotalSeconds.ToString("00.00") + "s");
                     Text.Anchor = TextAnchor.UpperLeft;
 
                     // grid
@@ -66,22 +66,22 @@ namespace KCSG
                     Widgets.DrawShadowAround(gridRect);
                     Widgets.DrawWindowBackground(gridRect);
 
-                    if (CurrentGenerationOption.useStructureLayout)
+                    if (CGO.useStructureLayout)
                     {
-                        if (structure == null && CurrentGenerationOption.structureLayoutDef != null)
+                        if (structure == null && CGO.structureLayoutDef != null)
                         {
-                            int[][] tempStructure = new int[CurrentGenerationOption.structureLayoutDef.layouts[0][0].Split(',').Length][];
-                            int x = CurrentGenerationOption.structureLayoutDef.layouts[0].Count;
+                            int[][] tempStructure = new int[CGO.structureLayoutDef.layouts[0][0].Split(',').Length][];
+                            int x = CGO.structureLayoutDef.layouts[0].Count;
                             for (int i = 0; i < tempStructure.Length; i++)
                             {
                                 tempStructure[i] = new int[x];
                             }
 
-                            for (int layoutN = 0; layoutN < CurrentGenerationOption.structureLayoutDef.layouts.Count; layoutN++)
+                            for (int layoutN = 0; layoutN < CGO.structureLayoutDef.layouts.Count; layoutN++)
                             {
-                                for (int layoutLine = CurrentGenerationOption.structureLayoutDef.layouts[layoutN].Count - 1; layoutLine >= 0; layoutLine--)
+                                for (int layoutLine = CGO.structureLayoutDef.layouts[layoutN].Count - 1; layoutLine >= 0; layoutLine--)
                                 {
-                                    string[] splitLine = CurrentGenerationOption.structureLayoutDef.layouts[layoutN][layoutLine].Split(',');
+                                    string[] splitLine = CGO.structureLayoutDef.layouts[layoutN][layoutLine].Split(',');
                                     for (int splitN = 0; splitN < splitLine.Length; splitN++)
                                     {
                                         if (splitLine[splitN] != ".")
@@ -119,21 +119,21 @@ namespace KCSG
                             }
                         }
                     }
-                    else if (CurrentGenerationOption.grid != null)
+                    else if (CGO.grid != null)
                     {
-                        float smallRectWidth = gridRect.width / CurrentGenerationOption.grid[0].Length;
-                        float smallRectHeight = gridRect.height / CurrentGenerationOption.grid.Length;
+                        float smallRectWidth = gridRect.width / CGO.grid[0].Length;
+                        float smallRectHeight = gridRect.height / CGO.grid.Length;
 
                         float rSize = Math.Min(smallRectWidth, smallRectHeight);
-                        float x = (gridRect.width - (CurrentGenerationOption.grid.Length * rSize)) / 2;
-                        float y = (gridRect.height - (CurrentGenerationOption.grid[0].Length * rSize)) / 2;
+                        float x = (gridRect.width - (CGO.grid.Length * rSize)) / 2;
+                        float y = (gridRect.height - (CGO.grid[0].Length * rSize)) / 2;
 
-                        for (int i = 0; i < CurrentGenerationOption.grid.Length; i++)
+                        for (int i = 0; i < CGO.grid.Length; i++)
                         {
-                            for (int j = 0; j < CurrentGenerationOption.grid[0].Length; j++)
+                            for (int j = 0; j < CGO.grid[0].Length; j++)
                             {
                                 Rect rect = new Rect(gridRect.x + x + (i * rSize), gridRect.y + y + (j * rSize), rSize, rSize);
-                                CellType type = CurrentGenerationOption.grid[i][j].Type;
+                                CellType type = CGO.grid[i][j].Type;
                                 GUI.color = type == CellType.BUILDING || type == CellType.BUILDINGPASSABLE ? Color.black :
                                     (type == CellType.DOOR ? Color.black :
                                     (type == CellType.MAINROAD || type == CellType.ROAD ? Color.grey :
@@ -151,9 +151,9 @@ namespace KCSG
                     Widgets.DrawShadowAround(tipRect);
                     Widgets.DrawWindowBackground(tipRect);
 
-                    if (CurrentGenerationOption.tipAvailable && (currentTip == null || DateTime.Now.Ticks - lastTipShownTick >= 60000000) && CurrentGenerationOption.allTip.Count > 1)
+                    if (CGO.tipAvailable && (currentTip == null || DateTime.Now.Ticks - lastTipShownTick >= 60000000) && CGO.allTip.Count > 1)
                     {
-                        currentTip = CurrentGenerationOption.allTip.RandomElement();
+                        currentTip = CGO.allTip.RandomElement();
                         lastTipShownTick = DateTime.Now.Ticks;
                     }
                     Text.Anchor = TextAnchor.MiddleCenter;

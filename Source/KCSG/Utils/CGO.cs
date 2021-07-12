@@ -4,7 +4,7 @@ using Verse;
 
 namespace KCSG
 {
-    public struct CurrentGenerationOption
+    public struct CGO
     {
         /*-------- Loading screen --------*/
         public static bool useCustomWindowContent;

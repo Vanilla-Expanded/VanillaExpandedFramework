@@ -16,10 +16,10 @@ namespace KCSG
         protected override void ScatterAt(IntVec3 loc, Map map, GenStepParams parms, int count = 1)
         {
             WorldObject worldO = Find.World.worldObjects.AllWorldObjects.Find(o => o.Tile == map.Tile && o.def.HasModExtension<FactionSettlement>());
-            CurrentGenerationOption.factionSettlement = worldO.def.GetModExtension<FactionSettlement>();
+            CGO.factionSettlement = worldO.def.GetModExtension<FactionSettlement>();
 
-            if (CurrentGenerationOption.factionSettlement.symbolResolver == null) GenStepPatchesUtils.Generate(map, loc, CurrentGenerationOption.factionSettlement);
-            else GenStepPatchesUtils.Generate(map, loc, CurrentGenerationOption.factionSettlement, CurrentGenerationOption.factionSettlement.symbolResolver);
+            if (CGO.factionSettlement.symbolResolver == null) GenStepUtils.Generate(map, loc, CGO.factionSettlement);
+            else GenStepUtils.Generate(map, loc, CGO.factionSettlement, CGO.factionSettlement.symbolResolver);
         }
     }
 }

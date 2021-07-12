@@ -20,31 +20,31 @@ namespace KCSG
             {
                 if (!settlement.HasMap)
                 {
-                    CurrentGenerationOption.useCustomWindowContent = true;
-                    CurrentGenerationOption.dateTime = DateTime.Now;
+                    CGO.useCustomWindowContent = true;
+                    CGO.dateTime = DateTime.Now;
                     LongEventHandler.QueueLongEvent(delegate ()
                     {
-                        CurrentGenerationOption.allTip = DefDatabase<TipSetDef>.AllDefsListForReading.SelectMany((TipSetDef set) => set.tips).InRandomOrder().ToList();
-                        if (CurrentGenerationOption.allTip.Count > 0)
+                        CGO.allTip = DefDatabase<TipSetDef>.AllDefsListForReading.SelectMany((TipSetDef set) => set.tips).InRandomOrder().ToList();
+                        if (CGO.allTip.Count > 0)
                         {
-                            CurrentGenerationOption.tipAvailable = true;
+                            CGO.tipAvailable = true;
                         }
                         CustomAttackNowNoLetter(caravan, settlement);
                         LongEventHandler.ExecuteWhenFinished(() =>
                         {
-                            if (VFECore.VFEGlobal.settings.enableVerboseLogging) Log.Message($"Generation done in {(DateTime.Now - CurrentGenerationOption.dateTime).Duration().TotalSeconds}");
+                            if (VFECore.VFEGlobal.settings.enableVerboseLogging) Log.Message($"Generation done in {(DateTime.Now - CGO.dateTime).Duration().TotalSeconds}");
                             // Send letter
                             SendAttackLetter(caravan, settlement);
                             // Clear
-                            CurrentGenerationOption.ClearUI();
-                            CurrentGenerationOption.ClearAll();
+                            CGO.ClearUI();
+                            CGO.ClearAll();
                             LongEventHandler_Patches.LongEventsOnGUI_Prefix.structure = null;
                         });
                     }, "GeneratingMapForNewEncounter", true, delegate(Exception e) 
                     {
                         Log.Error($"{e}");
-                        CurrentGenerationOption.ClearUI();
-                        CurrentGenerationOption.ClearAll();
+                        CGO.ClearUI();
+                        CGO.ClearAll();
                     }, true);
                 }
                 else
