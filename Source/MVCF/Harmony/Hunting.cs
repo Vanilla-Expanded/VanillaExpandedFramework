@@ -14,21 +14,21 @@ namespace MVCF.Harmony
         public static void DoPatches(HarmonyLib.Harmony harm)
         {
             harm.Patch(AccessTools.Method(typeof(WorkGiver_HunterHunt), "HasHuntingWeapon"),
-                postfix: new HarmonyMethod(typeof(Hunting), "HasHuntingWeapon"));
+                new HarmonyMethod(typeof(Hunting), "HasHuntingWeapon") {priority = Priority.Last});
             harm.Patch(AccessTools.Method(typeof(Toils_Combat), "TrySetJobToUseAttackVerb"),
                 new HarmonyMethod(typeof(Hunting), "TrySetJobToUseAttackVerb"));
             harm.Patch(AccessTools.Method(typeof(JobDriver_Hunt), "MakeNewToils"),
                 postfix: new HarmonyMethod(typeof(Hunting), "MakeNewToils"));
         }
 
-        public static void HasHuntingWeapon(Pawn p, ref bool __result)
+        public static bool HasHuntingWeapon(Pawn p, ref bool __result)
         {
-            if (__result) return;
             var man = p.Manager();
-            if (man.ManagedVerbs.Any(mv =>
+            __result = man.ManagedVerbs.Any(mv =>
                 !mv.Verb.IsMeleeAttack && mv.Verb.HarmsHealth() && !mv.Verb.UsesExplosiveProjectiles() &&
-                mv.Enabled && mv.Verb.Available()))
-                __result = true;
+                mv.Enabled && mv.Verb.Available());
+            if (man.debugOpts.VerbLogging) Log.Message($"[MVCF] {p} HasHuntingWeapon: {__result}");
+            return false;
         }
 
         public static bool TrySetJobToUseAttackVerb(ref Toil __result, TargetIndex targetInd)
