@@ -26,7 +26,7 @@ namespace MVCF
 
         public IEnumerable<ManagedVerb> CurrentlyUseableRangedVerbs => verbs.Where(v =>
             !v.Verb.IsMeleeAttack && (v.Props == null || !v.Props.canFireIndependently) && v.Enabled &&
-            v.Verb.Available() && !(!Pawn.IsColonist && v.Props != null && !v.Props.colonistOnly));
+            v.Verb.Available() && (Pawn.IsColonist || v.Props == null || !v.Props.colonistOnly));
 
         public bool ShouldBrawlerUpset
         {
