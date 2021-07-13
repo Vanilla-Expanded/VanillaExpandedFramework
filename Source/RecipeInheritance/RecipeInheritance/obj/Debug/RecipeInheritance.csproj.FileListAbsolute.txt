@@ -1,0 +1,5 @@
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework\Source\Assemblies\RecipeInheritance.dll
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework\Source\RecipeInheritance\RecipeInheritance\obj\Debug\RecipeInheritance.csprojAssemblyReference.cache
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework\Source\RecipeInheritance\RecipeInheritance\obj\Debug\RecipeInheritance.csproj.CoreCompileInputs.cache
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework\Source\RecipeInheritance\RecipeInheritance\obj\Debug\RecipeInheritance.dll
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework\1.3\Assemblies\RecipeInheritance.dll

@@ -34,7 +34,7 @@ namespace KCSG
                         {
                             if (VFECore.VFEGlobal.settings.enableVerboseLogging) Log.Message($"Generation done in {(DateTime.Now - CGO.dateTime).Duration().TotalSeconds}");
                             // Send letter
-                            SendAttackLetter(caravan, settlement);
+                            if (settlement.Faction != null) SendAttackLetter(caravan, settlement);
                             // Clear
                             CGO.ClearUI();
                             CGO.ClearAll();

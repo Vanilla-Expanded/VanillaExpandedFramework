@@ -13,6 +13,8 @@ namespace KCSG
     {
         public static void GenerateRoomFromLayout(List<string> layoutList, CellRect roomRect, Map map, StructureLayoutDef rld)
         {
+            bool parentFaction = map.ParentFaction != null;
+
             if (rld.roofGrid != null)
             {
                 GenerateRoofGrid(rld.roofGrid, roomRect, map);
@@ -47,7 +49,7 @@ namespace KCSG
                                     Pawn pawn = temp.spawnPartOfFaction ? PawnGenerator.GeneratePawn(temp.pawnKindDefNS, map.ParentFaction) : PawnGenerator.GeneratePawn(temp.pawnKindDefNS);
                                     if (pawn != null)
                                     {
-                                        if (temp.isSlave) pawn.guest.SetGuestStatus(map.ParentFaction, GuestStatus.Prisoner);
+                                        if (temp.isSlave && parentFaction) pawn.guest.SetGuestStatus(map.ParentFaction, GuestStatus.Prisoner);
 
                                         GenSpawn.Spawn(pawn, cell, map, WipeMode.FullRefund);
                                         lord.AddPawn(pawn);
@@ -61,7 +63,7 @@ namespace KCSG
                                     Pawn pawn = temp.spawnPartOfFaction ? PawnGenerator.GeneratePawn(temp.pawnKindDefNS, map.ParentFaction) : PawnGenerator.GeneratePawn(temp.pawnKindDefNS);
                                     if (pawn != null)
                                     {
-                                        if (temp.isSlave) pawn.guest.SetGuestStatus(map.ParentFaction, GuestStatus.Prisoner);
+                                        if (temp.isSlave && parentFaction) pawn.guest.SetGuestStatus(map.ParentFaction, GuestStatus.Prisoner);
                                         GenSpawn.Spawn(pawn, cell, map, WipeMode.FullRefund);
                                     }
                                 }
@@ -116,19 +118,19 @@ namespace KCSG
                                 else
                                     GenSpawn.Spawn(thing, cell, map, WipeMode.FullRefund);
 
-                                thing.SetFactionDirect(map.ParentFaction);
+                                if (parentFaction) thing.SetFactionDirect(map.ParentFaction);
                             }
 
                             if (thing.def.passability == Traversability.Impassable && map.ParentFaction?.def.techLevel >= TechLevel.Industrial) // Add power cable under all impassable
                             {
                                 Thing c = ThingMaker.MakeThing(KThingDefOf.KCSG_PowerConduit);
-                                c.SetFactionDirect(map.ParentFaction);
+                                if (parentFaction) c.SetFactionDirect(map.ParentFaction);
                                 GenSpawn.Spawn(c, cell, map, WipeMode.FullRefund);
                             }
                             // Handle mortar and mortar pawns
                             if (thing?.def?.building?.buildingTags?.Count > 0)
                             {
-                                if (thing.def.building.IsMortar && thing.def.category == ThingCategory.Building && thing.def.building.buildingTags.Contains("Artillery_MannedMortar") && thing.def.HasComp(typeof(CompMannable)))
+                                if (thing.def.building.IsMortar && thing.def.category == ThingCategory.Building && thing.def.building.buildingTags.Contains("Artillery_MannedMortar") && thing.def.HasComp(typeof(CompMannable)) && parentFaction)
                                 {
                                     // Spawn pawn
                                     Lord singlePawnLord = LordMaker.MakeNewLord(map.ParentFaction, new LordJob_ManTurrets(), map, null);
