@@ -623,7 +623,7 @@
     <Compile Include="VFECore\HarmonyPatches\PickUpAndHaul_Patch.cs" />
     <Compile Include="VFECore\HarmonyPatches\RenderTurretCentered.cs" />
     <Compile Include="VFECore\HarmonyPatches\RimCities\Patch_Cities_GenCity.cs" />
-    <Compile Include="VFECore\HarmonyPatches\RPGStyleInventory\Patch_Sandy_Detailed_RPG_GearTab_Sandy_Detailed_RPG_Inventory.cs" />
+    <Compile Include="VFECore\HarmonyPatches\RPGStyleInventory\Patch_RPG_GearTab.cs" />
     <Compile Include="VFECore\HarmonyPatches\RunAndGun\Patch_RunAndGun_Harmony_Verb_TryCastNextBurstShot.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_DrugPolicy.cs" />
     <Compile Include="VFECore\HarmonyPatches\SetInitialRelationsBetweenNpcFactions.cs" />

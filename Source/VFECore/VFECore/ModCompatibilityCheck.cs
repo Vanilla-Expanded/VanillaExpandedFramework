@@ -1,24 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Text;
-using UnityEngine;
+﻿using System.Linq;
 using Verse;
-using RimWorld;
 
 namespace VFECore
 {
-
     [StaticConstructorOnStartup]
     public static class ModCompatibilityCheck
     {
+        public static bool DualWield;
+
+        public static bool FacialStuff;
+
+        public static bool ResearchTree;
+
+        public static bool ResearchPal;
+
+        public static bool RimCities;
+
+        public static bool RPGStyleInventory;
+        public static bool RPGStyleInventoryRevamped;
+
+        public static bool RunAndGun;
+
+        public static bool FactionDiscovery;
+
+        public static bool WhatTheHack;
 
         static ModCompatibilityCheck()
         {
             var allMods = ModsConfig.ActiveModsInLoadOrder.ToList();
-            for (int i = 0; i < allMods.Count; i++)
+            for (var i = 0; i < allMods.Count; i++)
             {
                 var curMod = allMods[i];
 
@@ -32,8 +42,11 @@ namespace VFECore
                     ResearchPal = true;
                 else if (curMod.Name == "RimCities")
                     RimCities = true;
-                else if (curMod.Name == "[1.1] RPG Style Inventory")
-                    RPGStyleInventory = true;
+                else if (curMod.Name == "RPG Style Inventory Revamped")
+                    RPGStyleInventoryRevamped = true;
+                // Uncomment this once RPG Style Inventory updates to 1.3:
+                // else if (curMod.Name == "RPG Style Inventory")
+                //     RPGStyleInventory = true;
                 else if (curMod.Name == "RunAndGun")
                     RunAndGun = true;
                 else if (curMod.Name == "Faction Discovery")
@@ -42,25 +55,5 @@ namespace VFECore
                     WhatTheHack = true;
             }
         }
-
-        public static bool DualWield;
-
-        public static bool FacialStuff;
-
-        public static bool ResearchTree;
-
-        public static bool ResearchPal;
-
-        public static bool RimCities;
-
-        public static bool RPGStyleInventory;
-
-        public static bool RunAndGun;
-
-        public static bool FactionDiscovery;
-
-        public static bool WhatTheHack;
-
     }
-
 }

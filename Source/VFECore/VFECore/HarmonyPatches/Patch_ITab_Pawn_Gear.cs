@@ -1,102 +1,84 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Reflection.Emit;
+using HarmonyLib;
+using RimWorld;
 using UnityEngine;
 using Verse;
-using RimWorld;
-using HarmonyLib;
 
 namespace VFECore
 {
-
     public static class Patch_ITab_Pawn_Gear
     {
-
         [HarmonyPatch(typeof(ITab_Pawn_Gear), "TryDrawOverallArmor")]
         public static class TryDrawOverallArmor
         {
-
             public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
-                #if DEBUG
-                    Log.Message("ITab_Pawn_Gear.TryDrawOverallArmor transpiler start (1 match todo)");
-                #endif
+                var list = instructions.ToList();
 
+                var getApparel = AccessTools.Method(typeof(List<Apparel>), "get_Item", new[] {typeof(int)});
+                var getBodyPart = AccessTools.Method(typeof(List<BodyPartRecord>), "get_Item", new[] {typeof(int)});
+                var fromApparel = AccessTools.Method(typeof(TryDrawOverallArmor), nameof(ShieldFromApparel));
+                var fromEquipment = AccessTools.Method(typeof(TryDrawOverallArmor), nameof(ShieldFromEquipment));
+                var getPawn = AccessTools.PropertyGetter(typeof(ITab_Pawn_Gear), "SelPawnForGear");
 
-                var instructionList = instructions.ToList();
+                var idx0 = list.FindIndex(ins => ins.opcode == OpCodes.Stloc_S && ins.operand is LocalBuilder lb && lb.LocalIndex == 6);
+                var idx1 = list.FindIndex(idx0 + 1, ins => ins.opcode == OpCodes.Stloc_S && ins.operand is LocalBuilder lb && lb.LocalIndex == 6);
+                var labels1 = list[idx1 + 1].ExtractLabels();
 
-                bool foundCoverageAbs = false;
-                bool done = false;
-
-                var coverageAbsInfo = AccessTools.Field(typeof(BodyPartRecord), nameof(BodyPartRecord.coverageAbs));
-                var getSelPawnForGearInfo = AccessTools.Property(typeof(ITab_Pawn_Gear), "SelPawnForGear").GetGetMethod(true);
-                var overallArmourFromShieldInfo = AccessTools.Method(typeof(TryDrawOverallArmor), nameof(OverallArmourFromShield));
-
-                for (int i = 0; i < instructionList.Count; i++)
+                list.InsertRange(idx1 + 1, new[]
                 {
-                    var instruction = instructionList[i];
+                    new CodeInstruction(OpCodes.Ldloca_S, 6).WithLabels(labels1),
+                    new CodeInstruction(OpCodes.Ldarg_3),
+                    new CodeInstruction(OpCodes.Ldloc_3),
+                    new CodeInstruction(OpCodes.Ldloc_S, 7),
+                    new CodeInstruction(OpCodes.Callvirt, getApparel),
+                    new CodeInstruction(OpCodes.Ldloc_2),
+                    new CodeInstruction(OpCodes.Ldloc_S, 5),
+                    new CodeInstruction(OpCodes.Callvirt, getBodyPart),
+                    new CodeInstruction(OpCodes.Call, fromApparel)
+                });
 
-                    if (!done)
-                    {
-                        // Look for the first instruction in the method that references BodyPartRecord.coverageAbs
-                        if (instruction.opcode == OpCodes.Ldfld && instruction.OperandIs(coverageAbsInfo))
-                            foundCoverageAbs = true;
+                var idx2 = list.FindIndex(ins => ins.opcode == OpCodes.Ldloc_0);
+                var labels2 = list[idx2].ExtractLabels();
 
-                        // Look for the next reference to 'num' when coverageAbs is found; this is where we patch
-                        if (foundCoverageAbs && instruction.opcode == OpCodes.Ldloc_0)
-                        {
-                            #if DEBUG
-                                Log.Message("ITab_Pawn_Gear.TryDrawOverallArmor match 1 of 1");
-                            #endif
-                            yield return instruction; // num
-                            yield return new CodeInstruction(OpCodes.Ldarg_0); // this
-                            yield return new CodeInstruction(OpCodes.Call, getSelPawnForGearInfo); // this.SelPawnForGear
-                            yield return new CodeInstruction(OpCodes.Ldarg_3); // stat
-                            yield return new CodeInstruction(OpCodes.Call, overallArmourFromShieldInfo); // OverallArmourFromShield(num, this.pawn, stat)
-                            yield return new CodeInstruction(OpCodes.Stloc_0); // num = OverallArmourFromShield(num, this.pawn, stat)
-                            instruction = instruction.Clone(); // num
-                            done = true;
-                        }
-                    }
+                list.InsertRange(idx2, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldloca_S, 6).WithLabels(labels2),
+                    new CodeInstruction(OpCodes.Ldarg_3),
+                    new CodeInstruction(OpCodes.Ldloc_2),
+                    new CodeInstruction(OpCodes.Ldloc_S, 5),
+                    new CodeInstruction(OpCodes.Callvirt, getBodyPart),
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Call, getPawn),
+                    new CodeInstruction(OpCodes.Call, fromEquipment)
+                });
 
-                    yield return instruction;
-                }
+                return list;
             }
 
-            public static float OverallArmourFromShield(float overallArmour, Pawn pawn, StatDef stat)
+            public static void ShieldFromApparel(ref float armourImportance, StatDef stat, Apparel apparel, BodyPartRecord part)
             {
-                var equipment = pawn.apparel;
-
-                // Go through each body part and each piece of equipment to get overall defence bonuses of usable shields
-                if (equipment != null)
+                if (apparel.IsShield(out var shieldComp) && shieldComp.UsableNow &&
+                    shieldComp.CoversBodyPart(part))
                 {
-                    float naturalArmour = Mathf.Clamp01(pawn.GetStatValue(stat) / 2);
-                    var bodyParts = pawn.RaceProps.body.AllParts;
-                    var equipmentList = equipment.WornApparel;
-                    for (int i = 0; i < bodyParts.Count; i++)
-                    {
-                        var part = bodyParts[i];
-                        float armourImportance = 1 - naturalArmour;
-                        for (int j = 0; j < equipmentList.Count; j++)
-                        {
-                            var eq = equipmentList[j];
-                            if (eq.IsShield(out CompShield shieldComp) && shieldComp.UsableNow && shieldComp.CoversBodyPart(part))
-                            {
-                                float shieldRating = Mathf.Clamp01(eq.GetStatValue(stat) / 2);
-                                armourImportance *= 1 - shieldRating;
-                            }
-                        }
-                        overallArmour += part.coverageAbs * (1 - armourImportance);
-                    }
+                    var shieldRating = Mathf.Clamp01(apparel.GetStatValue(stat) / 2);
+                    armourImportance *= 1 - shieldRating;
                 }
-
-                return overallArmour;
             }
 
+            public static void ShieldFromEquipment(ref float armourImportance, StatDef stat, BodyPartRecord part, Pawn pawn)
+            {
+                if (pawn.equipment == null) return;
+                foreach (var eq in pawn.equipment.AllEquipmentListForReading)
+                    if (eq.IsShield(out var shieldComp) && shieldComp.UsableNow &&
+                        shieldComp.CoversBodyPart(part))
+                    {
+                        var shieldRating = Mathf.Clamp01(eq.GetStatValue(stat) / 2);
+                        armourImportance *= 1 - shieldRating;
+                    }
+            }
         }
-
     }
-
 }
