@@ -19,51 +19,46 @@ namespace NocturnalAnimals
         public static class Patch_GetPriority
         {
 
-            public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator ilg)
             {
                 List<CodeInstruction> instructionList = instructions.ToList();
-
-                MethodInfo hourOfDayInfo = AccessTools.Method(typeof(GenLocalDate), nameof(GenLocalDate.HourOfDay), new []{typeof(Thing)});
-
+                
                 for (int i = 0; i < instructionList.Count; i++)
                 {
-                    var instruction = instructionList[i];
-
-                    // Effectively turn 'if (num < 7 || num > 21)' into 'if (SleepHourFor(num, pawn))'
-                    if (instruction.opcode == OpCodes.Stloc_S && instructionList[i-1].Calls(hourOfDayInfo))
+                    CodeInstruction instruction = instructionList[i];
+                    LocalBuilder locVar = ilg.DeclareLocal(typeof(bool));
+                    if (instruction.Calls(AccessTools.Method(typeof(GenLocalDate), nameof(GenLocalDate.HourOfDay), new Type[] { typeof(Thing) })))
                     {
-                        yield return instruction;                                                                                            // int num = GenLocalDate.HourOfDay(pawn)
-                        yield return new CodeInstruction(OpCodes.Ldloc_S, instruction.operand);                                              // num
-                        yield return new CodeInstruction(OpCodes.Ldarg_1);                                                                   // pawn
-                        yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Patch_GetPriority), nameof(SleepHourFor))); // SleepHourFor(num, pawn)
+                        while (instruction.opcode != OpCodes.Ldloc_S)
+						{
+                            yield return instruction;
+                            instruction = instructionList[++i];
+						}
+                        yield return new CodeInstruction(OpCodes.Ldloc_S, 4);
+                        yield return new CodeInstruction(OpCodes.Ldarg_1);
+                        yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Patch_GetPriority), nameof(SleepHourFor)));
+						int j = 1;
+						while (true)
+						{
+							if (instructionList[i + j].opcode == OpCodes.Blt_S)
+							{
+								instruction = new CodeInstruction(OpCodes.Brfalse, instructionList[i + j].operand);
+								instructionList[i + j] = new CodeInstruction(OpCodes.Nop);
+								break;
+							}
 
-                        int j = 1;
-                        while (true)
-                        {
-                            if (instructionList[i + j].opcode == OpCodes.Blt_S)
-                            {
-                                instruction            = new CodeInstruction(OpCodes.Brfalse, instructionList[i + j].operand);
-                                instructionList[i + j] = new CodeInstruction(OpCodes.Nop);
-                                break;
-                            }
-
-                            instructionList[i + j] = new CodeInstruction(OpCodes.Nop);
-                            j++;
-                        }
-                    }
+							instructionList[i + j] = new CodeInstruction(OpCodes.Nop);
+							j++;
+						}
+					}
 
                     yield return instruction;
-
                 }
-
-
             }
 
             public static bool SleepHourFor(int hour, Pawn pawn)
             {
-
-                var extendedRaceProps = pawn.def.GetModExtension<ExtendedRaceProperties>();
-
+                ExtendedRaceProperties extendedRaceProps = pawn.def.GetModExtension<ExtendedRaceProperties>();
 
                 if (extendedRaceProps != null && extendedRaceProps.bodyClock == BodyClock.Crepuscular)
                 {
@@ -73,12 +68,9 @@ namespace NocturnalAnimals
                 {
                     return hour > 9 && hour < 19;
                 }
-                else
-                    return hour < 7 || hour > 21;
+                return hour < 7 && hour > 21;
             }
-
         }
-
     }
 
 }
