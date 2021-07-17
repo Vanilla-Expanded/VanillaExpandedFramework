@@ -32,7 +32,6 @@ namespace MVCF.Harmony
 
         public static void DoIntegratedTogglePatches(HarmonyLib.Harmony harm)
         {
-            HarmonyLib.Harmony.DEBUG = true;
             harm.Patch(AccessTools.Method(typeof(Command), "GizmoOnGUIInt"),
                 transpiler: new HarmonyMethod(typeof(Gizmos), "GizmoOnGUI_Transpile"));
         }
