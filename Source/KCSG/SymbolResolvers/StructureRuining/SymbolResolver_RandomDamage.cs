@@ -10,7 +10,10 @@ namespace KCSG
         {
             Map map = BaseGen.globalSettings.map;
 
-            List<Thing> things = map.listerThings.AllThings.FindAll(t => rp.rect.Contains(t.Position) && t is Building && t.Faction == map.ParentFaction);
+            List<Thing> things = map.listerThings.AllThings.FindAll(t => rp.rect.Contains(t.Position) && t is Building);
+            if (map.ParentFaction != null)
+                things.RemoveAll(t => t.Faction != map.ParentFaction);
+
             things.RemoveAll(t => t.def?.graphicData?.linkFlags != null && t.def?.graphicData?.linkFlags == LinkFlags.PowerConduit);
             
             for (int i = 0; i < things.Count; i++)
