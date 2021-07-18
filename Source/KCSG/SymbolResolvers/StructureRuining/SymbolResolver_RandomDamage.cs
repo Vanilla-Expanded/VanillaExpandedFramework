@@ -21,14 +21,14 @@ namespace KCSG
                 Thing t = things[i];
                 int hitPointLoss = t.HitPoints / Rand.RangeInclusive(1, 8);
 
-                if (hitPointLoss == t.HitPoints)
+                if (hitPointLoss == t.HitPoints && t.def.destroyable)
                 {
                     IntVec3 pos = t.Position;
                     t.Destroy(DestroyMode.KillFinalize);
                     if (t.def.filthLeaving != null)
                         GenSpawn.Spawn(t.def.filthLeaving, pos, map, WipeMode.VanishOrMoveAside);
                 }
-                else
+                else if (t.def.destroyable)
                 {
                     t.HitPoints -= hitPointLoss;
                 }                    
