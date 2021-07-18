@@ -13,6 +13,8 @@ namespace KCSG
         /* Ruin */
         public bool shouldRuin = false;
         public List<ThingDef> filthTypes = new List<ThingDef>();
+        public List<ThingDef> scatterThings = new List<ThingDef>();
+        public float scatterChance = 0.4f;
         public List<string> ruinSymbolResolvers = new List<string>();
 
         public override int SeedPart
@@ -39,7 +41,9 @@ namespace KCSG
             {
                 CGO.factionSettlement = new FactionSettlement
                 {
-                    filthTypes = filthTypes
+                    filthTypes = filthTypes,
+                    scatterThings = scatterThings,
+                    scatterChance = scatterChance
                 };
 
                 ResolveParams rp = new ResolveParams
@@ -49,7 +53,8 @@ namespace KCSG
                 };
                 foreach (string resolver in ruinSymbolResolvers)
                 {
-                    BaseGen.symbolStack.Push(resolver, rp, null);
+                    if (!(ruinSymbolResolvers.Contains("kcsg_randomroofremoval") && resolver == "kcsg_scatterstuffaround"))
+                        BaseGen.symbolStack.Push(resolver, rp, null);
                 }
             }
 

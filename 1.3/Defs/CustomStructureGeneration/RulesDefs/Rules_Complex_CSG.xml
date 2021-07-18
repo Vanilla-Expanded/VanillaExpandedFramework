@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <Defs>
-
   <RuleDef>
     <defName>KCSG_Settlement</defName>
     <symbol>kcsg_settlement</symbol>
@@ -121,6 +120,22 @@
     <symbol>kcsg_removeperishable</symbol>
     <resolvers>
       <li Class="KCSG.SymbolResolver_RemovePerishable" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_DestroyRefuelableLightSource</defName>
+    <symbol>kcsg_destroyrefuelablelightsource</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_DestroyRefuelableLightSource" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_ScatterStuffAround</defName>
+    <symbol>kcsg_scatterstuffaround</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_ScatterStuffAround" />
     </resolvers>
   </RuleDef>
 </Defs>

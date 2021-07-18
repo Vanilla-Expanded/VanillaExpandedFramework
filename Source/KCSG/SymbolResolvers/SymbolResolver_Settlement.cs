@@ -82,7 +82,8 @@ namespace KCSG
             {
                 foreach (string resolver in CGO.factionSettlement.ruinSymbolResolvers)
                 {
-                    BaseGen.symbolStack.Push(resolver, rp, null);
+                    if (!(CGO.factionSettlement.ruinSymbolResolvers.Contains("kcsg_randomroofremoval") && resolver == "kcsg_scatterstuffaround"))
+                        BaseGen.symbolStack.Push(resolver, rp, null);
                 }
             }
         }
