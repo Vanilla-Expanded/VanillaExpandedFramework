@@ -1,6 +1,0 @@
-D:\Steam\steamapps\common\RimWorld\Mods\VFE Makeshift\Assemblies\GunsGoPewPew.dll
-D:\Steam\steamapps\common\RimWorld\Mods\VFE Makeshift\Assemblies\GunsGoPewPew.pdb
-C:\Users\Phillip\Desktop\GunsGoPewPew\GunsGoPewPew\GunsGoPewPew\obj\Debug\VWEMakeshift.csproj.CoreCompileInputs.cache
-C:\Users\Phillip\Desktop\GunsGoPewPew\GunsGoPewPew\GunsGoPewPew\obj\Debug\VWEMakeshift.csproj.CopyComplete
-C:\Users\Phillip\Desktop\GunsGoPewPew\GunsGoPewPew\GunsGoPewPew\obj\Debug\GunsGoPewPew.dll
-C:\Users\Phillip\Desktop\GunsGoPewPew\GunsGoPewPew\GunsGoPewPew\obj\Debug\GunsGoPewPew.pdb

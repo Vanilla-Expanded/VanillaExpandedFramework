@@ -1,8 +1,0 @@
-C:\Users\Phillip\Desktop\GunsGoPewPew\GunsGoPewPew\GunsGoPewPew\bin\Release\GunsGoPewPew.dll
-C:\Users\Phillip\Desktop\GunsGoPewPew\GunsGoPewPew\GunsGoPewPew\bin\Release\GunsGoPewPew.pdb
-C:\Users\Phillip\Desktop\GunsGoPewPew\GunsGoPewPew\GunsGoPewPew\obj\Release\VWEMakeshift.csproj.CoreCompileInputs.cache
-D:\Steam\steamapps\common\RimWorld\Mods\VFE Makeshift\Assemblies\VWEMakeshift.dll
-D:\Steam\steamapps\common\RimWorld\Mods\VFE Makeshift\Assemblies\VWEMakeshift.pdb
-C:\Users\Phillip\Desktop\GunsGoPewPew\GunsGoPewPew\GunsGoPewPew\obj\Release\VWEMakeshift.dll
-C:\Users\Phillip\Desktop\GunsGoPewPew\GunsGoPewPew\GunsGoPewPew\obj\Release\VWEMakeshift.pdb
-C:\Users\Phillip\Desktop\GunsGoPewPew\GunsGoPewPew\GunsGoPewPew\obj\Release\VWEMakeshift.csprojAssemblyReference.cache
