@@ -17,6 +17,9 @@ namespace KCSG
                     map.roofGrid.SetRoof(c, null);
                 }
             }
+
+            if (CGO.factionSettlement.scatterThings?.Count > 0)
+                BaseGen.symbolStack.Push("kcsg_scatterstuffaround", rp, null);
         }
     }
 }
