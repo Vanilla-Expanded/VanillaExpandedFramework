@@ -45,7 +45,7 @@ namespace AnimalBehaviours
                                 //Only work on not dead, not downed, not psychically immune colonists
                                 if (!pawn.Dead && !pawn.Downed && pawn.GetStatValue(StatDefOf.PsychicSensitivity, true) > 0f)
                                 {
-                                    MoteMaker.MakeAttachedOverlay(this.parent, ThingDef.Named("Mote_PsycastPsychicEffect"), Vector3.zero, 1f, -1f);
+                                    FleckMaker.AttachedOverlay(this.parent, DefDatabase<FleckDef>.GetNamed("PsycastPsychicEffect"), Vector3.zero, 1f, -1f);
                                     pawn.health.AddHediff(HediffDef.Named(Props.hediff));
                                 }
                             }

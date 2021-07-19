@@ -52,7 +52,7 @@ namespace AnimalBehaviours
                                     {
                                         Find.TickManager.slower.SignalForceNormalSpeedShort();
                                         SoundDefOf.PsychicPulseGlobal.PlayOneShot(new TargetInfo(this.parent.pawn.Position, this.parent.pawn.Map, false));
-                                        MoteMaker.MakeAttachedOverlay(this.parent.pawn, ThingDef.Named("Mote_PsycastPsychicEffect"), Vector3.zero, 1f, -1f);
+                                        FleckMaker.AttachedOverlay(this.parent.pawn, DefDatabase<FleckDef>.GetNamed("PsycastPsychicEffect"), Vector3.zero, 1f, -1f);
                                     }
                                     if (!Props.conditionalOnWellBeing)
                                     {
