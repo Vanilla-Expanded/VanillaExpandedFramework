@@ -558,6 +558,7 @@
     <Compile Include="ItemProcessor\Comps\MapComponents\ItemProcessor_MapComponent.cs" />
     <Compile Include="ItemProcessor\Comps\ThingComps\CompItemProcessor.cs" />
     <Compile Include="ItemProcessor\Comps\ThingComps\CompProperties_ItemProcessor.cs" />
+    <Compile Include="VFECore\Comps\HediffComps\HediffComp_Spreadable.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompApparelHediffs.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompDependsOnBuilding.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompMachine.cs" />
@@ -669,6 +670,7 @@
     <Compile Include="VFECore\Utilities\NewFactionSpawningUtility.cs" />
     <Compile Include="VFECore\Utilities\ScenPartUtility.cs" />
     <Compile Include="VFECore\Utilities\ShieldUtility.cs" />
+    <Compile Include="VFECore\Utilities\ApparelUtility.cs" />
     <Compile Include="VFECore\VFECore.cs" />
     <Compile Include="VFECore\WorkGivers\WorkGiver_AttachTurret.cs" />
     <Compile Include="VFECore\WorkGivers\WorkGiver_RepairMachine.cs" />
