@@ -6,6 +6,8 @@ using Verse;
 
 namespace VFECore
 {
+    using System.Reflection.Emit;
+
     [StaticConstructorOnStartup]
     public static class UIUtilityData
     {
@@ -21,6 +23,25 @@ namespace VFECore
             foreach (var item in factionCounts)
             {
                 UIUtilityData.factionCounts.SetOrAdd(item.Key, item.Value);
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(WorldFactionsUIUtility), nameof(WorldFactionsUIUtility.DoRow))]
+    public static class Patch_WorldFactionsUIUtility_DoRow
+    {
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            foreach (CodeInstruction instruction in instructions)
+            {
+                if (instruction.opcode == OpCodes.Stloc_2)
+                {
+                    yield return new CodeInstruction(OpCodes.Pop);
+                    yield return new CodeInstruction(OpCodes.Ldc_I4_0);
+                }
+                
+                yield return instruction;
             }
         }
     }
