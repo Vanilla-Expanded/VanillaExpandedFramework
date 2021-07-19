@@ -13,7 +13,7 @@ namespace NocturnalAnimals
 
     public static class Patch_JobGiver_GetRest
     {
-
+        /*
         [HarmonyPatch(typeof(JobGiver_GetRest))]
         [HarmonyPatch(nameof(JobGiver_GetRest.GetPriority))]
         public static class Patch_GetPriority
@@ -70,7 +70,7 @@ namespace NocturnalAnimals
                 }
                 return hour < 7 && hour > 21;
             }
-        }
+        }*/
     }
 
 }
