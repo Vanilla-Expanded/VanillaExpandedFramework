@@ -32,6 +32,8 @@ namespace VFECore
 
 		public List<ThingDef> apparelsPreventingSpreading;
 
+		public List<StatModifier> statsPreventingSpreading;
+
 		public FleckDef fleckDefOnPawn;
 
 		public IntRange fleckSpawnInterval;
@@ -111,7 +113,8 @@ namespace VFECore
 		private bool CanCatchDisease(Pawn pawn)
         {
 			return (Props.speciesCanCatch is null || RaceCanCatchDisease(pawn)) && pawn.health.immunity.DiseaseContractChanceFactor(this.Def) > 0.001f
-				&& (Props.apparelsPreventingSpreading is null || !Props.apparelsPreventingSpreading.Any(x => pawn.WearsApparel(x)));
+				&& (Props.apparelsPreventingSpreading is null || !Props.apparelsPreventingSpreading.Any(x => pawn.WearsApparel(x)))
+				&& (Props.statsPreventingSpreading is null || !Props.statsPreventingSpreading.Any(x => pawn.GetStatValue(x.stat) <= x.value));
 		}
 
 		private bool RaceCanCatchDisease(Pawn pawn)
