@@ -20,15 +20,15 @@ namespace VFECore
 
 		public float severityToInfect;
 
-		public float diseaseContractChance;
+		public float baseDiseaseContractChance;
 
 		public IntRange spreadingTickInterval;
 
-		public float socialInteractionsContractChance;
+		public float socialInteractionTransmissionChance;
 
 		public bool requiresLineOfSightToSpread;
 
-		public List<RaceCategory> raceCategories;
+		public List<RaceCategory> speciesCanCatch;
 
 		public List<ThingDef> apparelsPreventingSpreading;
 
@@ -37,6 +37,11 @@ namespace VFECore
 		public IntRange fleckSpawnInterval;
 
 		public Color fleckColor;
+
+		public float fleckScale = 1f;
+
+		public string spreadingMessageWarningKey;
+
 		public HediffCompProperties_Spreadable()
 		{
 			compClass = typeof(HediffComp_Spreadable);
@@ -60,7 +65,7 @@ namespace VFECore
 		public override void CompPostTick(ref float severityAdjustment)
 		{
 			base.CompPostTick(ref severityAdjustment);
-			if (nextSpreadingTick >= Find.TickManager.TicksGame)
+			if (Find.TickManager.TicksGame >= nextSpreadingTick)
 			{
 				if (this.Pawn.Map != null)
 				{
@@ -83,7 +88,7 @@ namespace VFECore
 				nextSpreadingTick = Find.TickManager.TicksGame + Props.spreadingTickInterval.RandomInRange;
 			}
 
-			if (Props.fleckDefOnPawn != null && nextFleckSpawnTick >= Find.TickManager.TicksGame && this.Pawn.Map != null)
+			if (Props.fleckDefOnPawn != null && Find.TickManager.TicksGame >= nextFleckSpawnTick && this.Pawn.Map != null)
 			{
 				var pawn = Pawn;
 				ThrowFleck(pawn.Drawer.DrawPos + pawn.Drawer.renderer.BaseHeadOffsetAt(pawn.Rotation) + pawn.Rotation.FacingCell.ToVector3() * 0.21f + BreathOffset
@@ -93,47 +98,32 @@ namespace VFECore
 		}
 		public void TrySpreadDiseaseOn(Pawn pawn)
         {
-			if (CanCatchDisease(pawn) && Rand.Chance(Props.diseaseContractChance))
+			if (CanCatchDisease(pawn) && Rand.Chance(Props.baseDiseaseContractChance))
             {
+				if (pawn.health.hediffSet.GetFirstHediffOfDef(this.Def) is null && !Props.spreadingMessageWarningKey.NullOrEmpty())
+				{
+					Messages.Message(Props.spreadingMessageWarningKey.Translate(pawn.Named("PAWN")), pawn, MessageTypeDefOf.NegativeHealthEvent);
+				}
 				HealthUtility.AdjustSeverity(pawn, this.Def, Props.severityToInfect);
+
 			}
 		}
 		private bool CanCatchDisease(Pawn pawn)
         {
-			return (Props.raceCategories is null || RaceCanCatchDisease(pawn)) && pawn.health.immunity.DiseaseContractChanceFactor(this.Def) > 0.001f
+			return (Props.speciesCanCatch is null || RaceCanCatchDisease(pawn)) && pawn.health.immunity.DiseaseContractChanceFactor(this.Def) > 0.001f
 				&& (Props.apparelsPreventingSpreading is null || !Props.apparelsPreventingSpreading.Any(x => pawn.WearsApparel(x)));
 		}
 
 		private bool RaceCanCatchDisease(Pawn pawn)
         {
-			foreach (var category in Props.raceCategories)
+			foreach (var category in Props.speciesCanCatch)
             {
 				switch (category)
                 {
-					case RaceCategory.Humanlike:
-						if (pawn.RaceProps.Humanlike)
-						{
-							return true;
-						}
-						break;
-					case RaceCategory.Animal:
-						if (pawn.RaceProps.Animal)
-						{
-							return true;
-						}
-						break;
-					case RaceCategory.Mechanoid:
-						if (pawn.RaceProps.IsMechanoid)
-						{
-							return true;
-						};
-						break;
-					case RaceCategory.Insect:
-						if (pawn.RaceProps.Insect)
-						{
-							return true;
-						};
-						break;
+					case RaceCategory.Humanlike: if (pawn.RaceProps.Humanlike) return true; break;
+					case RaceCategory.Animal: if (pawn.RaceProps.Animal) return true; break;
+					case RaceCategory.Mechanoid: if (pawn.RaceProps.IsMechanoid) return true; break;
+					case RaceCategory.Insect: if (pawn.RaceProps.Insect) return true; break;
 				}
             }
 			return false;
@@ -148,6 +138,7 @@ namespace VFECore
 				dataStatic.velocitySpeed = Rand.Range(0.1f, 0.8f);
 				dataStatic.velocity = inheritVelocity * 0.5f;
 				dataStatic.instanceColor = Props.fleckColor;
+				dataStatic.scale = Props.fleckScale;
 				map.flecks.CreateFleck(dataStatic);
 			}
 		}
