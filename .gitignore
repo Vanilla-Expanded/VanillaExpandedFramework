@@ -10,3 +10,7 @@ Source/VWEMakeshift/.idea
 Source/VWEMakeshift/GunsGoPewPew/obj
 Source/VWEMakeshift/GunsGoPewPew/bin
 Source/VWEMakeshift/VWEMakeshift.sln.DotSettings.user
+Source/Outposts/.vs
+Source/Outposts/bin
+Source/Outposts/obj
+Source/Outposts/*.user
