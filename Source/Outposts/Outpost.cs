@@ -12,8 +12,8 @@ namespace Outposts
     public abstract class Outpost : MapParent
     {
         public static readonly Texture2D PackTex = ContentFinder<Texture2D>.Get("UI/Gizmo/AbandonOutpost");
-
         public static readonly Texture2D AddTex = ContentFinder<Texture2D>.Get("UI/Gizmo/AddToOutpost");
+        public static readonly Texture2D RemoveTex = ContentFinder<Texture2D>.Get("UI/Gizmo/RemovePawnFromOutpost");
         private Material cachedMat;
         public string Name;
         private List<Pawn> occupants = new List<Pawn>();
@@ -43,6 +43,11 @@ namespace Outposts
 
         public override MapGeneratorDef MapGeneratorDef => MapGeneratorDefOf.Base_Faction;
 
+        public int TotalSkil(SkillDef skill)
+        {
+            return occupants.Sum(p => p.skills.GetSkill(skill).Level);
+        }
+
         public override void DrawExtraSelectionOverlays()
         {
             base.DrawExtraSelectionOverlays();
@@ -61,15 +66,14 @@ namespace Outposts
         {
             if (!Map.mapPawns.FreeColonists.Any())
             {
-                Find.LetterStack.ReceiveLetter("Outpost Lost", $"Regretfully, due to the deaths of all inhabitants, the outpost of {Name} has been lost to us.",
-                    LetterDefOf.NegativeEvent);
+                Find.LetterStack.ReceiveLetter("Outposts.Letters.Lost.Label".Translate(), "Outposts.Letters.Lost.Text".Translate(Name), LetterDefOf.NegativeEvent);
                 alsoRemoveWorldObject = true;
                 return true;
             }
 
             if (Map.mapPawns.AllPawns.All(p => p.Faction.IsPlayer))
             {
-                Find.LetterStack.ReceiveLetter("Outpost Battle Won", $"We have successfully won the battle for {Name}.", LetterDefOf.PositiveEvent,
+                Find.LetterStack.ReceiveLetter("Outposts.Letters.BattleWon.Label".Translate(), "Outposts.Letters.BattleWon.Text".Translate(Name), LetterDefOf.PositiveEvent,
                     new LookTargets(Gen.YieldSingle(this)));
                 alsoRemoveWorldObject = false;
                 return true;
@@ -79,8 +83,14 @@ namespace Outposts
             return false;
         }
 
+        public static string CheckSkill(IEnumerable<Pawn> pawns, SkillDef skill, int minLevel)
+        {
+            return pawns.Sum(p => p.skills.GetSkill(skill).Level) < minLevel ? "Outposts.NotSkilledEnough".Translate(skill.skillLabel, minLevel) : null;
+        }
+
         public IEnumerable<Thing> MakeThings(ThingDef thingDef, int count, ThingDef stuff = null)
         {
+            count = Mathf.RoundToInt(count * OutpostsMod.Settings.Multiplier);
             while (count > thingDef.stackLimit)
             {
                 var temp = ThingMaker.MakeThing(thingDef, stuff);
@@ -103,7 +113,7 @@ namespace Outposts
                 dir, CellFinder.EdgeRoadChance_Always, out var cell))
                 cell = CellFinder.RandomEdgeCell(dir, map);
 
-            var text = $"You have received the follow items from the outpost {Name}:\n";
+            var text = "Outposts.Letters.Items.Text".Translate(Name) + "\n";
 
             var things = new List<Thing>();
 
@@ -113,7 +123,7 @@ namespace Outposts
                 text += "  - " + item.LabelCap + "\n";
             }
 
-            Find.LetterStack.ReceiveLetter($"Items From {Name}", text, LetterDefOf.PositiveEvent, new LookTargets(things));
+            Find.LetterStack.ReceiveLetter("Outposts.Letters.Items.Label".Translate(Name), text, LetterDefOf.PositiveEvent, new LookTargets(things));
         }
 
         public override void ExposeData()
@@ -175,8 +185,7 @@ namespace Outposts
 
         public void ConvertToCaravan()
         {
-            var caravan = CaravanMaker.MakeCaravan(occupants, Faction, Tile, true);
-            Find.WorldObjects.Add(caravan);
+            CaravanMaker.MakeCaravan(occupants, Faction, Tile, true);
             Destroy();
         }
 
@@ -186,27 +195,45 @@ namespace Outposts
             {
                 action = () => Find.WindowStack.Add(new FloatMenu(caravan.PawnsListForReading.Select(p =>
                     new FloatMenuOption(p.NameFullColored.CapitalizeFirst().Resolve(), () => AddPawn(p))).ToList())),
-                defaultLabel = "Add Pawn",
-                defaultDesc = "Transfer a pawn from this caravan to the outpost",
+                defaultLabel = "Outposts.Commands.AddPawn.Label".Translate(),
+                defaultDesc = "Outposts.Commands.AddPawn.Desc".Translate(),
                 icon = AddTex
             });
         }
 
         public override IEnumerable<Gizmo> GetGizmos()
         {
-            return base.GetGizmos().Append(new Command_Action
+            return base.GetGizmos().Concat(new[]
             {
-                action = () => ticksTillPacked = TicksToPack,
-                defaultLabel = "Pack",
-                defaultDesc = "Begin packing this outpost back into a caravan",
-                icon = PackTex
+                new Command_Action
+                {
+                    action = () => ticksTillPacked = TicksToPack,
+                    defaultLabel = "Outposts.Commands.Pack.Label".Translate(),
+                    defaultDesc = "Outposts.Commands.Pack.Desc".Translate(),
+                    icon = PackTex
+                },
+                new Command_Action
+                {
+                    action = () => Find.WindowStack.Add(new FloatMenu(occupants.Select(p =>
+                        new FloatMenuOption(p.NameFullColored.CapitalizeFirst().Resolve(), () =>
+                        {
+                            occupants.Remove(p);
+                            RecachePawnTraits();
+                            CaravanMaker.MakeCaravan(Gen.YieldSingle(p), p.Faction, Tile, true);
+                        })).ToList())),
+                    defaultLabel = "Outposts.Commands.Remove.Label".Translate(),
+                    defaultDesc = "Outposts.Commands.Remove.Desc".Translate(),
+                    icon = RemoveTex,
+                    disabled = occupants.Count == 1,
+                    disabledReason = "Outposts.Command.Remove.Only1".Translate()
+                }
             });
         }
 
         public override string GetInspectString()
         {
-            return base.GetInspectString() + "\n" + def.LabelCap + $"\nContains {AllPawns.Count()} pawns." +
-                   (Packing ? $"\nPacking into caravan. Done in {ticksTillPacked.ToStringTicksToPeriodVerbose()}" : "");
+            return base.GetInspectString() + "\n" + def.LabelCap + "\n" + "Outposts.Contains".Translate(occupants.Count) +
+                   (Packing ? "\n" + "Outposts.Packing".Translate(ticksTillPacked.ToStringTicksToPeriodVerbose()).RawText : "");
         }
     }
 }

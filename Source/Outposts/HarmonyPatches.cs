@@ -17,8 +17,8 @@ namespace Outposts
             yield return new Command_Action
             {
                 action = () => Find.WindowStack.Add(new Dialog_CreateCamp(__instance)),
-                defaultLabel = "Create Outpost",
-                defaultDesc = "Create a new outpost using this caravan",
+                defaultLabel = "Outposts.Commands.Create.Label".Translate(),
+                defaultDesc = "Outposts.Commands.Create.Desc".Translate(),
                 icon = CreateTex
             };
         }

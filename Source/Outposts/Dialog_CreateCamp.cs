@@ -68,7 +68,7 @@ namespace Outposts
             var button = text.BottomPartPixels(30f).LeftPartPixels(100f);
             Text.Font = GameFont.Tiny;
             Widgets.TextArea(new Rect(text.x, text.y + 30f, text.width, text.height - 60f), outpost.description, true);
-            if (Widgets.ButtonText(button, "Create"))
+            if (Widgets.ButtonText(button, "Outposts.Dialog.Create".Translate()))
             {
                 if (validity[outpost].NullOrEmpty())
                 {

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+    <Outposts.Settings.Title>Vanilla Expanded Framework - Outposts</Outposts.Settings.Title>
+    <Outposts.Settings.Multiplier>Outpost Production Multiplier:</Outposts.Settings.Multiplier>
+    <Outposts.Dialog.Create>Create</Outposts.Dialog.Create>
+    <Outposts.Commands.Create.Label>Create Outpost</Outposts.Commands.Create.Label>
+    <Outposts.Commands.Create.Desc>Create a new outpost using this caravan</Outposts.Commands.Create.Desc>
+    <Outposts.Letters.Lost.Label>Outpost Lost</Outposts.Letters.Lost.Label>
+    <Outposts.Letters.Lost.Text>Regretfully, due to the deaths of all inhabitants, the outpost of {0} has been lost to us.</Outposts.Letters.Lost.Text>
+    <Outposts.Letters.BattleWon.Label>Outpost Battle Won</Outposts.Letters.BattleWon.Label>
+    <Outposts.Letters.BattleWon.Text>We have successfully won the battle for {0}.</Outposts.Letters.BattleWon.Text>
+    <Outposts.Letters.Items.Label>Items From {0}</Outposts.Letters.Items.Label>
+    <Outposts.Letters.Items.Text>You have received the follow items from the outpost {0}:</Outposts.Letters.Items.Text>
+    <Outposts.Commands.AddPawn.Label>Add Pawn</Outposts.Commands.AddPawn.Label>
+    <Outposts.Commands.AddPawn.Desc>Transfer a pawn from this caravan to the outpost</Outposts.Commands.AddPawn.Desc>
+    <Outposts.Commands.Pack.Label>Pack</Outposts.Commands.Pack.Label>
+    <Outposts.Commands.Pack.Desc>Begin packing this outpost back into a caravan</Outposts.Commands.Pack.Desc>
+    <Outposts.Commands.Remove.Label>Remove Pawn</Outposts.Commands.Remove.Label>
+    <Outposts.Commands.Remove.Desc>Remove a pawn from this outpost into a new caravan</Outposts.Commands.Remove.Desc>
+    <Outposts.Command.Remove.Only1>Cannot remove pawns: Only 1 inhabitant. If you want to remove this outpost, select "Pack".</Outposts.Command.Remove.Only1>
+    <Outposts.Contains>Contains {0} pawns</Outposts.Contains>
+    <Outposts.Packing>Packing into caravan. Done in {0}</Outposts.Packing>
+    <Outposts.NotSkilledEnough>Pawns are not skilled enough, need a cumulative {0} skill of at least {1}</Outposts.NotSkilledEnough>
+</LanguageData>

@@ -29,7 +29,7 @@ namespace Outposts
 
         public override string SettingsCategory()
         {
-            return Outposts.Any() ? "Vanilla Expanded Framework - Outposts" : null;
+            return Outposts.Any() ? "Outposts.Settings.Title".Translate() : null;
         }
 
         public override void DoSettingsWindowContents(Rect inRect)
@@ -37,7 +37,7 @@ namespace Outposts
             base.DoSettingsWindowContents(inRect);
             var listing = new Listing_Standard();
             listing.Begin(inRect);
-            listing.Label("Outpost Production Multiplier:");
+            listing.Label("Outposts.Settings.Multiplier".Translate());
             Settings.Multiplier = listing.Slider(Settings.Multiplier, 0f, 10f);
         }
     }
