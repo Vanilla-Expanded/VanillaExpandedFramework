@@ -489,7 +489,11 @@
     <Compile Include="Apparel\Comps\CompProperties\CompProperties_SwitchApparel.cs" />
     <Compile Include="Apparel\Comps\CompSwitchApparel.cs" />
     <Compile Include="Apparel\Harmony\PawnUIOverlay_DrawPawnGUIOverlay_Patch.cs" />
+    <Compile Include="Apparel\Harmony\Pawn_ApparelTracker_Patches.cs" />
+    <Compile Include="Apparel\Harmony\Pawn_GetDisabledWorkTypes_Patch.cs" />
+    <Compile Include="Apparel\Harmony\SkillRecord_Learn_Patch.cs" />
     <Compile Include="Apparel\Harmony\ThingSelectionUtility_SelectableByMapClick_Patch.cs" />
+    <Compile Include="Apparel\ModExtensions\ApparelExtension.cs" />
     <Compile Include="Cuisine\GraphicClasses\Graphic_RandomStackCount.cs" />
     <Compile Include="Cuisine\Harmony\FoodUtility_GetMeatSourceCategory_Patch.cs" />
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_Settings.cs" />
