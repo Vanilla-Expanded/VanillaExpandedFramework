@@ -27,6 +27,7 @@ namespace Outposts
         public override string Label => Name;
         public virtual int TicksToPack => 7 * 60000 / occupants.Count;
         public bool Packing => ticksTillPacked > 0;
+        public virtual int Range => -1;
 
         public override Material Material
         {
@@ -41,6 +42,12 @@ namespace Outposts
         }
 
         public override MapGeneratorDef MapGeneratorDef => MapGeneratorDefOf.Base_Faction;
+
+        public override void DrawExtraSelectionOverlays()
+        {
+            base.DrawExtraSelectionOverlays();
+            if (Range > 0) GenDraw.DrawWorldRadiusRing(Tile, Range);
+        }
 
         public override void PostMapGenerate()
         {
@@ -72,17 +79,17 @@ namespace Outposts
             return false;
         }
 
-        public IEnumerable<Thing> MakeThings(ThingDef def, int count)
+        public IEnumerable<Thing> MakeThings(ThingDef thingDef, int count, ThingDef stuff = null)
         {
-            while (count > def.stackLimit)
+            while (count > thingDef.stackLimit)
             {
-                var temp = ThingMaker.MakeThing(def);
-                temp.stackCount = def.stackLimit;
+                var temp = ThingMaker.MakeThing(thingDef, stuff);
+                temp.stackCount = thingDef.stackLimit;
                 yield return temp;
-                count -= def.stackLimit;
+                count -= thingDef.stackLimit;
             }
 
-            var temp2 = ThingMaker.MakeThing(def);
+            var temp2 = ThingMaker.MakeThing(thingDef, stuff);
             temp2.stackCount = count;
             yield return temp2;
         }
@@ -136,8 +143,19 @@ namespace Outposts
             }
         }
 
-        public abstract void Produce();
-        public abstract void RecachePawnTraits();
+        public virtual IEnumerable<Thing> ProducedThings()
+        {
+            yield break;
+        }
+
+        public virtual void Produce()
+        {
+            Deliver(ProducedThings());
+        }
+
+        public virtual void RecachePawnTraits()
+        {
+        }
 
         public void AddPawn(Pawn pawn)
         {
