@@ -19,6 +19,7 @@ namespace Outposts
         private List<Pawn> occupants = new List<Pawn>();
         private int ticksTillPacked = -1;
         protected int ticksTillProduction;
+        public virtual float RestPerTickResting => 0.005714286f * 2.5f;
         public IEnumerable<Pawn> AllPawns => occupants;
         public override Color ExpandingIconColor => Faction.Color;
 
@@ -42,6 +43,8 @@ namespace Outposts
         }
 
         public override MapGeneratorDef MapGeneratorDef => MapGeneratorDefOf.Base_Faction;
+
+        public virtual ThingDef ProvidedFood => ThingDefOf.MealSimple;
 
         public int TotalSkil(SkillDef skill)
         {
@@ -151,6 +154,22 @@ namespace Outposts
                     Produce();
                 }
             }
+
+            if (Find.WorldObjects.PlayerControlledCaravanAt(Tile) is Caravan caravan && !caravan.pather.MovingNow)
+                foreach (var pawn in caravan.PawnsListForReading)
+                {
+                    pawn.needs.rest.CurLevel += RestPerTickResting;
+                    if (pawn.IsHashIntervalTick(300))
+                    {
+                        var food = pawn.needs.food;
+                        if (food.CurLevelPercentage <= pawn.RaceProps.FoodLevelPercentageWantEat && ProvidedFood != null && ProvidedFood.IsNutritionGivingIngestible &&
+                            ProvidedFood.ingestible.HumanEdible)
+                        {
+                            var thing = ThingMaker.MakeThing(ProvidedFood);
+                            if (thing.IngestibleNow && pawn.RaceProps.CanEverEat(thing)) food.CurLevel += thing.Ingested(pawn, food.NutritionWanted);
+                        }
+                    }
+                }
         }
 
         public virtual IEnumerable<Thing> ProducedThings()

@@ -2,7 +2,6 @@
 using System.Linq;
 using HarmonyLib;
 using RimWorld;
-using RimWorld.Planet;
 using UnityEngine;
 using Verse;
 
@@ -24,7 +23,7 @@ namespace Outposts
         {
             Outposts = DefDatabase<WorldObjectDef>.AllDefs.Where(def => typeof(Outpost).IsAssignableFrom(def.worldObjectClass)).ToList();
             Harm = new Harmony("vanillaexpanded.outposts");
-            if (Outposts.Any()) Harm.Patch(AccessTools.Method(typeof(Caravan), "GetGizmos"), postfix: new HarmonyMethod(typeof(HarmonyPatches), "AddCaravanGizmos"));
+            if (Outposts.Any()) HarmonyPatches.DoPatches();
         }
 
         public override string SettingsCategory()

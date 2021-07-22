@@ -21,4 +21,5 @@
     <Outposts.Contains>Contains {0} pawns</Outposts.Contains>
     <Outposts.Packing>Packing into caravan. Done in {0}</Outposts.Packing>
     <Outposts.NotSkilledEnough>Pawns are not skilled enough, need a cumulative {0} skill of at least {1}</Outposts.NotSkilledEnough>
+    <Outposts.RestingAt>Resting at outpost {0}</Outposts.RestingAt>
 </LanguageData>
