@@ -15,7 +15,7 @@ namespace KCSG
                 symbolDef.Add(new XElement("defName", thingT.def.defName));
                 symbolDef.Add(new XElement("thing", thingT.def.defName));
 
-                if (!symbols.Contains(symbolDef))
+                if (!symbols.Any(s => s.Value == symbolDef.Value))
                 {
                     symbols.Add(symbolDef);
                 }
@@ -30,7 +30,7 @@ namespace KCSG
                 symbolDef.Add(new XElement("defName", pawn.kindDef.defName));
                 symbolDef.Add(new XElement("pawnKindDef", pawn.kindDef.defName));
 
-                if (!symbols.Contains(symbolDef))
+                if (!symbols.Any(s => s.Value == symbolDef.Value))
                 {
                     symbols.Add(symbolDef);
                 }
@@ -46,7 +46,7 @@ namespace KCSG
                 symbolDef.Add(new XElement("isTerrain", "true"));
                 symbolDef.Add(new XElement("terrain", terrainD.defName));
 
-                if (!symbols.Contains(symbolDef))
+                if (!symbols.Any(s => s.Value == symbolDef.Value))
                 {
                     symbols.Add(symbolDef);
                 }
@@ -70,7 +70,7 @@ namespace KCSG
                 if (thingT.def.rotatable && thingT.def.category != ThingCategory.Plant)
                     symbolDef.Add(new XElement("rotation", thingT.Rotation.ToStringHuman())); // Add rotation
 
-                if (!symbols.Contains(symbolDef))
+                if (!symbols.Any(s => s.Value == symbolDef.Value))
                 {
                     symbols.Add(symbolDef);
                 }

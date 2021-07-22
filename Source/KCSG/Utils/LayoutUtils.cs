@@ -51,7 +51,7 @@ namespace KCSG
                 string temp = "";
                 for (int i2 = 0; i2 < width; i2++)
                 {
-                    List<Thing> things = pairsCellThingList.TryGetValue(first).FindAll(t => t.def.category != ThingCategory.Pawn || t.def.category != ThingCategory.Item || t.def.defName != "PowerConduit");
+                    List<Thing> things = pairsCellThingList.TryGetValue(first).FindAll(t => t.def.category != ThingCategory.Pawn && t.def.category != ThingCategory.Item && t.def.defName != "PowerConduit");
                     if (!exportFilth)
                     {
                         things.RemoveAll(t => t.def.category == ThingCategory.Filth);
