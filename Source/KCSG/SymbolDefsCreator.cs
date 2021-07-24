@@ -8,6 +8,8 @@ namespace KCSG
     [StaticConstructorOnStartup]
     internal class SymbolDefsCreator
     {
+        public static bool defCreated = false;
+
         private static int modCount;
         private static int sCreated;
         private static List<ThingDef> stuffs = new List<ThingDef>();
@@ -180,7 +182,7 @@ namespace KCSG
             modCount++;
         }
 
-        private static void Run()
+        public static void Run()
         {
             stuffs = DefDatabase<ThingDef>.AllDefsListForReading.FindAll(t => t.IsStuff);
             sCreated = 0;
@@ -201,6 +203,7 @@ namespace KCSG
             }
 
             Log.Message($"<color=orange>[CSG]</color> Created {sCreated} symbolDefs for {modCount} mods. Took {(DateTime.Now - before).TotalSeconds.ToString("00.00")}s.");
+            defCreated = true;
         }
     }
 }

@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DefModExtensions\FallingStructure.cs" />
+    <Compile Include="DefModExtensions\SpawnAtWorldGen.cs" />
     <Compile Include="Defs\SymbolAutoCreation.cs" />
     <Compile Include="GenStep\GenStep_KCSGSettlement.cs" />
     <Compile Include="GenStep\GenStep_WorldObjectKCSG.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="Utils\Algorithms\PoissonDiskSampling.cs" />
     <Compile Include="Utils\RectUtils.cs" />
     <Compile Include="Utils\SymbolUtils.cs" />
+    <Compile Include="WorldGenSteps\WorldGenStep_SpawnWorldObjects.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Lib.Harmony" ExcludeAssets="runtime">

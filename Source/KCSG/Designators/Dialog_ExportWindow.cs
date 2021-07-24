@@ -35,6 +35,8 @@ namespace KCSG
             this.doCloseButton = false;
             this.closeOnClickedOutside = false;
             this.absorbInputAroundWindow = true;
+
+            if (!SymbolDefsCreator.defCreated) SymbolDefsCreator.Run();
         }
 
         public override Vector2 InitialSize

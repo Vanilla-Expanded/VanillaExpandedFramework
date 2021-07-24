@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <WorldGenStepDef>
+    <defName>KCSG_SpawnWorldObjects</defName>
+    <order>900</order>
+    <worldGenStep Class="KCSG.WorldGenStep_SpawnWorldObjects" />
+  </WorldGenStepDef>
+
+  <!-- Exemple
+  <WorldObjectDef>
+    <defName>AncientEscapeShip</defName>
+    <worldObjectClass>Site</worldObjectClass>
+    <texture>World/WorldObjects/JourneyDestination</texture>
+    <expandingIcon>true</expandingIcon>
+    <expandingIconPriority>70</expandingIconPriority>
+    <canBePlayerHome>true</canBePlayerHome>
+    <comps>
+      <li Class="WorldObjectCompProperties_Abandon" />
+      <li Class="WorldObjectCompProperties_TradeRequest" />
+      <li Class="WorldObjectCompProperties_FormCaravan" />
+      <li Class="WorldObjectCompProperties_EnterCooldown" />
+    </comps>
+    <modExtensions>
+      <li Class="KCSG.SpawnAtWorldGen">
+        <spawnCount>5</spawnCount>
+        <parts>
+          <li>AncientEscapeShip</li>
+        </parts>
+      </li>
+    </modExtensions>
+    <IncidentTargetTags>
+      <li>Map_Misc</li>
+    </IncidentTargetTags>
+  </WorldObjectDef>
+
+  <SitePartDef>
+    <defName>AncientEscapeShip</defName>
+    <label>ancient abandonned ship</label>
+    <description>A really ancient ship. Some part may be missing, taken by salvagers or deteriored to dust.</description>
+    <siteTexture>World/WorldObjects/Sites/GenericSite</siteTexture>
+    <expandingIconTexture>World/WorldObjects/Expanding/JourneyDestination</expandingIconTexture>
+    <disallowsAutomaticDetectionTimerStart>true</disallowsAutomaticDetectionTimerStart>
+    <tags>
+      <li>AncientEscapeShip</li>
+    </tags>
+  </SitePartDef>
+
+  <GenStepDef>
+    <defName>AncientEscapeShip</defName>
+    <linkWithSite>AncientEscapeShip</linkWithSite>
+    <order>450</order>
+    <genStep Class="KCSG.GenStep_CustomStructureGen">
+      <structureLayoutDefs>
+        <li>KAncientShip</li>
+      </structureLayoutDefs>
+      <shouldRuin>true</shouldRuin>
+      <filthTypes>
+        <li>Filth_Dirt</li>
+        <li>Filth_Trash</li>
+        <li>Filth_RubbleBuilding</li>
+      </filthTypes>
+      <ruinSymbolResolvers>
+        <li>kcsg_randomdamage</li>
+        <li>kcsg_randomfilth</li>
+      </ruinSymbolResolvers>
+    </genStep>
+  </GenStepDef>
+
+  <KCSG.StructureLayoutDef>
+    <defName>KAncientShip</defName>
+    <layouts>
+      <li>
+        <li>Plant_Grass,.,.,Plant_Grass,.,.,.,Plant_Grass,Plant_SaguaroCactus,.,.,.,Plant_Grass,.,.,.</li>
+        <li>.,.,.,.,.,Ship_Engine_North,.,Plant_Grass,Plant_Grass,.,Ship_Engine_North,.,.,.,.,.</li>
+        <li>.,.,Plant_Grass,.,.,.,.,.,.,.,.,.,.,.,Plant_Grass,.</li>
+        <li>Plant_Grass,.,Plant_Grass,.,.,.,.,.,.,.,.,.,.,.,.,.</li>
+        <li>Plant_Grass,.,.,.,Plant_Bush,.,Ship_CryptosleepCasket_West,.,.,.,.,.,.,.,Plant_PincushionCactus,.</li>
+        <li>.,.,Plant_Grass,.,Plant_Grass,.,.,Ship_Beam_North,.,Ship_ComputerCore,.,.,.,.,.,Plant_Grass</li>
+        <li>.,Plant_Bush,.,.,Plant_Grass,.,Ship_CryptosleepCasket_West,.,.,.,.,.,.,Plant_Grass,Plant_Grass,.</li>
+        <li>.,.,.,.,.,.,.,.,.,.,.,.,.,.,Plant_Grass,Plant_Grass</li>
+        <li>.,.,.,.,.,Plant_Grass,.,.,.,Plant_Grass,.,.,.,.,.,.</li>
+        <li>.,Ship_Engine_North,.,.,.,.,.,.,.,.,.,.,.,.,Ship_Engine_North,.</li>
+        <li>.,.,.,Ship_Beam_North,.,.,.,.,.,.,.,Ship_Beam_North,.,.,.,.</li>
+        <li>.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.</li>
+        <li>.,Plant_Dandelion,Plant_Grass,.,.,.,.,Ship_Reactor_North,.,.,.,.,.,.,.,.</li>
+        <li>.,.,Ship_CryptosleepCasket_West,.,.,.,.,.,.,.,.,.,.,Ship_CryptosleepCasket_East,.,.</li>
+        <li>Plant_Grass,.,.,Ship_CryptosleepCasket_North,.,.,.,.,.,.,.,.,Ship_CryptosleepCasket_North,Plant_Grass,.,.</li>
+        <li>.,.,.,.,.,.,.,.,.,.,.,.,.,Plant_Grass,Plant_Grass,.</li>
+        <li>.,Plant_Grass,.,.,.,Plant_Grass,.,.,.,.,.,.,.,.,Plant_Grass,.</li>
+        <li>Plant_SaguaroCactus,.,.,Plant_Grass,.,.,Ship_CryptosleepCasket_West,.,.,Ship_CryptosleepCasket_East,.,.,.,.,.,.</li>
+        <li>.,.,Plant_Bush,.,Plant_PincushionCactus,.,.,Ship_Beam_North,.,Plant_Grass,Plant_Grass,.,.,.,.,.</li>
+        <li>.,.,.,.,.,.,Ship_CryptosleepCasket_West,.,.,Ship_CryptosleepCasket_East,.,.,.,.,.,.</li>
+        <li>Plant_Grass,.,.,.,.,Plant_Grass,.,.,.,.,.,.,.,.,.,.</li>
+        <li>.,.,.,Plant_Grass,.,.,Ship_CryptosleepCasket_West,.,.,Ship_CryptosleepCasket_East,.,.,.,.,.,.</li>
+        <li>.,Plant_SaguaroCactus,Plant_Grass,.,.,.,.,.,.,.,.,.,.,.,.,.</li>
+        <li>.,.,.,Plant_Grass,.,.,Ship_CryptosleepCasket_West,.,.,Ship_CryptosleepCasket_East,.,.,.,Plant_Grass,.,.</li>
+        <li>.,.,.,.,.,.,Plant_Bush,Ship_Beam_North,.,.,.,.,.,Plant_Grass,.,.</li>
+        <li>Plant_Grass,.,Plant_Grass,.,.,.,Ship_CryptosleepCasket_West,.,.,Ship_CryptosleepCasket_East,.,.,.,.,.,.</li>
+        <li>.,.,.,.,.,.,.,.,.,Plant_Dandelion,.,Plant_Grass,Plant_Bush,.,.,.</li>
+        <li>.,.,.,.,Plant_Grass,.,Ship_CryptosleepCasket_West,.,.,Ship_CryptosleepCasket_East,.,.,.,.,.,.</li>
+        <li>.,.,.,.,.,Plant_Grass,.,Ship_SensorCluster,.,.,Plant_Dandelion,.,Plant_Dandelion,Plant_Bush,.,.</li>
+        <li>Plant_Bush,.,.,.,.,.,.,.,.,.,Plant_Dandelion,.,.,.,.,.</li>
+      </li>
+    </layouts>
+  </KCSG.StructureLayoutDef> -->
+</Defs>

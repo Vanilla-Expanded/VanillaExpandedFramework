@@ -8,7 +8,7 @@ namespace KCSG
         /* Nomadic faction */
         public bool canSpawnSettlements = true;
 
-        /* Settlement generation */
+        /* Structure generation */
         public bool useStructureLayout; // Settlement def or single structure
 
         public List<StructureLayoutDef> chooseFromlayouts = new List<StructureLayoutDef>();
