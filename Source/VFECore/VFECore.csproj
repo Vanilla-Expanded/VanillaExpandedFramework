@@ -500,6 +500,7 @@
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_SettingsController.cs" />
     <Compile Include="Furniture\Comps\CompConfigurableSpawner.cs" />
     <Compile Include="Furniture\Comps\CompFireOverlayRotatable.cs" />
+    <Compile Include="Furniture\Comps\CompGlowerExtended.cs" />
     <Compile Include="Furniture\Comps\CompProperties\CompProperties_ConfigurableSpawner.cs" />
     <Compile Include="Furniture\Comps\CompProperties\CompProperties_RandomBuildingGraphic.cs" />
     <Compile Include="Furniture\Comps\CompProperties\CompProperties_RockSpawner.cs" />

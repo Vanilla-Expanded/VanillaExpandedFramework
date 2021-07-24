@@ -21,6 +21,9 @@
 <VFE_RandomOrSequentially>"Change Graphic" button changes graphic randomly (deselect for sequentially)</VFE_RandomOrSequentially>
 <VFE_HideRandomizeButton>Hide the "Change Graphic" button</VFE_HideRandomizeButton>
 
-
-
+	<VFE.SwitchLightColor>Switch light color</VFE.SwitchLightColor>
+	<VFE.SwitchLightColorDesc>Change current light colour.</VFE.SwitchLightColorDesc>
+	<VFE.ChangeColorTo>Change color to {0}</VFE.ChangeColorTo>
+	<VFE.ColorSwitchPowerOff>Power is off. Impossible to switch color.</VFE.ColorSwitchPowerOff>
+	
 </LanguageData>
