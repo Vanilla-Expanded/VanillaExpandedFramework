@@ -75,7 +75,7 @@ namespace KCSG
                             thing.stackCount = Mathf.Clamp(Rand.RangeInclusive(1, temp.thingDef.stackLimit), 1, 75);
 
                             CompQuality quality = thing.TryGetComp<CompQuality>();
-                            quality?.SetQuality(QualityUtility.GenerateQualityRandomEqualChance(), ArtGenerationContext.Outsider);
+                            quality?.SetQuality(QualityUtility.GenerateQualityBaseGen(), ArtGenerationContext.Outsider);
 
                             GenSpawn.Spawn(thing, cell, map, WipeMode.FullRefund);
                             thing.SetForbidden(true, false);
