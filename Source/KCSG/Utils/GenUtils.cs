@@ -39,7 +39,7 @@ namespace KCSG
                         {
                             GenerateTerrainAt(map, cell, temp.terrainDef);
                         }
-                        else if (temp.pawnKindDefNS != null)
+                        else if (temp.pawnKindDefNS != null && CGO.factionSettlement?.shouldRuin == false)
                         {
                             if (temp.lordJob != null)
                             {
@@ -96,7 +96,12 @@ namespace KCSG
                                 inheritFromCasket.TryAcceptThing(pawn);
                             }
 
-                            if (cell.GetFirstMineable(map) is Mineable m && m != null && m.def.building.smoothedThing != null && (thing.def.designationCategory == DesignationCategoryDefOf.Security || thing.def.graphicData.linkFlags.HasFlag(LinkFlags.Wall)))
+                            if (thing.def.category == ThingCategory.Pawn && CGO.factionSettlement?.shouldRuin == true)
+                            {
+                                l++;
+                                continue;
+                            }
+                            else if (cell.GetFirstMineable(map) is Mineable m && m != null && m.def.building.smoothedThing != null && (thing.def.designationCategory == DesignationCategoryDefOf.Security || thing.def.graphicData.linkFlags.HasFlag(LinkFlags.Wall)))
                             {
                                 GenSpawn.Spawn(ThingMaker.MakeThing(m.def.building.smoothedThing), cell, map, WipeMode.Vanish);
                                 l++;
