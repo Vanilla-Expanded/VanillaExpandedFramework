@@ -358,6 +358,26 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abilities\Abilities\Ability_Barrier.cs" />
+    <Compile Include="Abilities\Abilities\Ability_ShootProjectile.cs" />
+    <Compile Include="Abilities\Abilities\Ability_SpawnBuilding.cs" />
+    <Compile Include="Abilities\Ability.cs" />
+    <Compile Include="Abilities\AbilityDef.cs" />
+    <Compile Include="Abilities\AbilityPawnFlyer.cs" />
+    <Compile Include="Abilities\AbilityProjectile.cs" />
+    <Compile Include="Abilities\Command_Ability.cs" />
+    <Compile Include="Abilities\CompAbilities.cs" />
+    <Compile Include="Abilities\CompAbilitiesApparel.cs" />
+    <Compile Include="Abilities\CompUseEffect_GiveAbility.cs" />
+    <Compile Include="Abilities\HediffComp_Ability.cs" />
+    <Compile Include="Abilities\Hediff_Abilities.cs" />
+    <Compile Include="Abilities\InitializeAbilityComp.cs" />
+    <Compile Include="Abilities\JobDriver_CastAbilityOnce.cs" />
+    <Compile Include="Abilities\PawnGen_Patch.cs" />
+    <Compile Include="Abilities\PawnKindAbilityExtension.cs" />
+    <Compile Include="Abilities\TryGetAttackVerb_Patch.cs" />
+    <Compile Include="Abilities\Verb_CastAbility.cs" />
+    <Compile Include="Abilities\VFE_DefOf_Abilities.cs" />
     <Compile Include="AnimalBehaviours\AI\JobDrivers\JobDriver_AnimalResource.cs" />
     <Compile Include="AnimalBehaviours\AI\JobDrivers\JobDriver_AutoNutrition.cs" />
     <Compile Include="AnimalBehaviours\AI\JobDrivers\JobDriver_DestroyItem.cs" />
