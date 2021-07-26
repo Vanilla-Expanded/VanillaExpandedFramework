@@ -21,6 +21,9 @@ namespace AnimalBehaviours
         // A list of hovering animals for CompProperties_Floating
         public static HashSet<Thing> floating_animals = new HashSet<Thing>();
 
+        // A list of animal graphic paths
+        public static List<string> salamander_graphics = new List<string>();
+
         // An integer with the current number of animal control hubs built
         public static int numberOfAnimalControlHubsBuilt = 0;
 
@@ -40,6 +43,23 @@ namespace AnimalBehaviours
             {
                 draftable_animals.Remove(thing);
             }
+
+        }
+
+        public static void AddGraphicPathToList(string graphicPath)
+        {
+           
+            salamander_graphics.Add(graphicPath);           
+            
+        }
+
+        public static void RemoveGraphicPathFromList(string graphicPath)
+        {
+            if (salamander_graphics.Contains(graphicPath))
+            {
+                salamander_graphics.Remove(graphicPath);
+            }
+
 
         }
 

@@ -444,6 +444,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ExtremeXenophobia.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_GraphicByTerrain.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_LightSustenance.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_RegisterAlternateGraphic.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_TerrainChanger.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_FilthProducer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_FixedGender.cs" />
@@ -465,6 +466,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Untameable.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompRefueling.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompRegeneration.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompRegisterAlternateGraphic.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompStateAfterHealthLoss.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompSummonOnSpawn.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompTerrainChanger.cs" />
