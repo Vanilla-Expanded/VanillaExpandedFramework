@@ -12,7 +12,7 @@ namespace AnimalBehaviours
 {
     public class CompRegisterAlternateGraphic : ThingComp
     {
-        public PawnRenderer pawn_renderer;
+      
         public Faction faction;
         public Faction oldFaction;
 
@@ -48,29 +48,21 @@ namespace AnimalBehaviours
                 Faction faction = this.parent.Faction;
                 if (faction != oldFaction)
                 {
+                    Pawn pawn = this.parent as Pawn;
+                    string graphicPath = pawn.Drawer.renderer.graphics.nakedGraphic.path;
                     if (faction == Faction.OfPlayer)
-                    {
-                        Pawn pawn = this.parent as Pawn;
-                        Pawn_DrawTracker drawtracker = ((Pawn_DrawTracker)typeof(Pawn).GetField("drawer", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(pawn));
-                        if (drawtracker != null)
-                        {
-                            this.pawn_renderer = drawtracker.renderer;
-                        }
-
-                        string graphicPath = pawn_renderer.graphics.nakedGraphic.path;
-
-                        AnimalCollectionClass.AddGraphicPathToList(graphicPath);
+                    {                   
+                        AnimalCollectionClass.AddGraphicPathToList(pawn,graphicPath);
                     }
                     else {
-                        string graphicPath = pawn_renderer.graphics.nakedGraphic.path;
-                        AnimalCollectionClass.RemoveGraphicPathFromList(graphicPath);
+                     
+                        AnimalCollectionClass.RemoveGraphicPathFromList(pawn,graphicPath);
                     }
                     oldFaction = faction;
 
                 }
 
-                Log.Message(AnimalCollectionClass.salamander_graphics.ToStringSafeEnumerable());
-
+                
 
             }
         }
@@ -79,18 +71,20 @@ namespace AnimalBehaviours
         public override void PostDeSpawn(Map map)
         {
 
-            Log.Message("Despawning");
-            string graphicPath = pawn_renderer.graphics.nakedGraphic.path;
-            AnimalCollectionClass.RemoveGraphicPathFromList(graphicPath);
+          
+            Pawn pawn = this.parent as Pawn;
+            string graphicPath = pawn.Drawer.renderer.graphics.nakedGraphic.path;
+            AnimalCollectionClass.RemoveGraphicPathFromList(pawn,graphicPath);
         }
 
-       /* public override void PostDestroy(DestroyMode mode, Map previousMap)
-        {
+         public override void PostDestroy(DestroyMode mode, Map previousMap)
+         {
 
-            Log.Message("Destroying");
-            string graphicPath = pawn_renderer.graphics.nakedGraphic.path;
-            AnimalCollectionClass.RemoveGraphicPathFromList(graphicPath);
-        }*/
+           
+             Pawn pawn = this.parent as Pawn;
+             string graphicPath = pawn.Drawer.renderer.graphics.nakedGraphic.path;
+             AnimalCollectionClass.RemoveGraphicPathFromList(pawn,graphicPath);
+         }
     }
 }
 

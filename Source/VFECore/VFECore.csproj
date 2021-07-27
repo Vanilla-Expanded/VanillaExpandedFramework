@@ -497,6 +497,7 @@
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_TurnsWhenDead.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_TurnWhenDead.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Hediff_AcidBuildup.cs" />
+    <Compile Include="AnimalBehaviours\MapComponents\BlindSalamander_MapComponent.cs" />
     <Compile Include="AnimalBehaviours\MapComponents\DestroyableObjects_MapComponent.cs" />
     <Compile Include="AnimalBehaviours\MentalStates\MentalStateWorker_XenophobicRage.cs" />
     <Compile Include="AnimalBehaviours\MentalStates\MentalState_XenophobicRage.cs" />

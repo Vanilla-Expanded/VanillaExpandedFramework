@@ -30,6 +30,9 @@ namespace AnimalBehaviours
         //Frostmites dig for dead wildmen
         public bool isFrostmite = false;
 
+        //Dig only if during growing season
+        public bool digOnlyOnGrowingSeason = false;
+
         public CompProperties_DigWhenHungry()
         {
             this.compClass = typeof(CompDigWhenHungry);
