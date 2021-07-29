@@ -26,6 +26,8 @@ namespace ItemProcessor
         public List<string> secondItems = null;
         public List<string> thirdItems = null;
         public List<string> fourthItems = null;
+        //A list of disallowed things (for category buildings)
+        public List<string> disallowedThingDefs = null;
         //defName of the resulting product
         public string result = "";
         //This is used in cases where you can't easily get an items graphic because there are no unified rules

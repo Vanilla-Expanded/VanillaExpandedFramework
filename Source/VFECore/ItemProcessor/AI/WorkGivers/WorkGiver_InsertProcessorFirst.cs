@@ -80,8 +80,12 @@ namespace ItemProcessor
                 List<Thing> searchSet = new List<Thing>();
                 foreach (ThingDef thingDef in ThingCategoryDef.Named(firstItem).childThingDefs)
                 {
-
-                    searchSet.AddRange(pawn.Map.listerThings.ThingsOfDef(thingDef));
+                    if (!(DefDatabase<CombinationDef>.GetNamed(building_processor.thisRecipe).disallowedThingDefs != null &&
+                        DefDatabase<CombinationDef>.GetNamed(building_processor.thisRecipe).disallowedThingDefs.Contains(thingDef.defName)))
+                    {
+                        searchSet.AddRange(pawn.Map.listerThings.ThingsOfDef(thingDef));
+                    }
+                    
                 }
 
                 TraverseParms traverseParams = TraverseParms.For(pawn, Danger.Deadly, TraverseMode.ByPawn, false);
