@@ -392,6 +392,7 @@
     <Compile Include="AnimalBehaviours\AnimalCollectionClass\AnimalCollectionClass.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompAcidImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompAnimalProduct.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompApplyHediffWhenBound.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompAsexualReproduction.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompAutoNutrition.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompBlink.cs" />
@@ -423,6 +424,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompMindEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompNearbyEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompPassiveRegenerator.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ApplyHediffWhenBound.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AcidImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DropOnDeath.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AnimalProduct.cs" />
