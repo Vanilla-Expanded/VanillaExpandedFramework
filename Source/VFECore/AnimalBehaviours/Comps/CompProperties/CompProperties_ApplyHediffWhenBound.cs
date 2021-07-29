@@ -8,6 +8,8 @@ namespace AnimalBehaviours
 
         public int checkingInterval = 1000;
         public HediffDef hediffToApply;
+        public bool doJobIfBondedDies = false;
+        public JobDef jobToDoIfBondedDies;
 
         public CompProperties_ApplyHediffWhenBound()
         {
