@@ -552,6 +552,8 @@
     <Compile Include="Memes\GameComponent\GameComponent_IdeologicalGoodies.cs" />
     <Compile Include="Memes\Harmony\Dialog_ChooseMemes_GetFirstIncompatibleMemePair_Patch.cs" />
     <Compile Include="Memes\MapComponent\MapComponent_IdeologicalGoodies.cs" />
+    <Compile Include="OptionalFeatures\Dialog_FloatMenuOptions.cs" />
+    <Compile Include="OptionalFeatures\OptionalFeatures.cs" />
     <Compile Include="VFECore\Apparels\Apparel_ShieldBubble.cs" />
     <Compile Include="VFECore\Buildings\Building_BedMachine.cs" />
     <Compile Include="VFECore\Buildings\Building_MechTurretGun.cs" />
