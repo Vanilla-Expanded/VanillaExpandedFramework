@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj": {}
+    "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj": {}
   },
   "projects": {
-    "c:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj": {
+    "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj",
+        "projectUniqueName": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj",
         "projectName": "VanillaStorytellersExpanded",
-        "projectPath": "c:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj",
+        "projectPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj",
         "packagesPath": "C:\\Users\\Vova\\.nuget\\packages\\",
-        "outputPath": "c:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\obj\\",
+        "outputPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\obj\\",
         "projectStyle": "PackageReference",
         "skipContentFileWrite": true,
         "configFilePaths": [
@@ -36,7 +36,7 @@
           "dependencies": {
             "Krafs.Rimworld.Ref": {
               "target": "Package",
-              "version": "[1.3.3052-beta, )"
+              "version": "[1.3.3075-beta, )"
             },
             "Lib.Harmony": {
               "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",
