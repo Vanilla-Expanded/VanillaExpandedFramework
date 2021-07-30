@@ -70,14 +70,42 @@ namespace ItemProcessor
 
         private Thing FindIngredient(Pawn pawn, string thirdItem, Building_ItemProcessor building_processor)
         {
-            Predicate<Thing> predicate = (Thing x) => !x.IsForbidden(pawn) && pawn.CanReserve(x, 1, 1, null, false);
-            IntVec3 position = pawn.Position;
-            Map map = pawn.Map;
-            ThingRequest thingReq = ThingRequest.ForDef(ThingDef.Named(thirdItem));
-            PathEndMode peMode = PathEndMode.ClosestTouch;
-            TraverseParms traverseParams = TraverseParms.For(pawn, Danger.Deadly, TraverseMode.ByPawn, false);
-            Predicate<Thing> validator = predicate;
-            return GenClosest.ClosestThingReachable(position, map, thingReq, peMode, traverseParams, 9999f, validator, null, 0, -1, false, RegionType.Set_Passable, false);
+            if (building_processor.compItemProcessor.Props.isCategoryBuilding)
+            {
+
+                Predicate<Thing> predicate = (Thing x) => !x.IsForbidden(pawn) && pawn.CanReserve(x, 1, 1, null, false);
+                IntVec3 position = pawn.Position;
+                Map map = pawn.Map;
+                List<Thing> searchSet = new List<Thing>();
+                foreach (ThingDef thingDef in ThingCategoryDef.Named(thirdItem).childThingDefs)
+                {
+                    if (!(DefDatabase<CombinationDef>.GetNamed(building_processor.thisRecipe).disallowedThingDefs != null &&
+                        DefDatabase<CombinationDef>.GetNamed(building_processor.thisRecipe).disallowedThingDefs.Contains(thingDef.defName)))
+                    {
+                        searchSet.AddRange(pawn.Map.listerThings.ThingsOfDef(thingDef));
+                    }
+
+                }
+
+                TraverseParms traverseParams = TraverseParms.For(pawn, Danger.Deadly, TraverseMode.ByPawn, false);
+                Predicate<Thing> validator = predicate;
+                PathEndMode peMode = PathEndMode.ClosestTouch;
+                return GenClosest.ClosestThing_Global_Reachable(pawn.Position, pawn.Map, searchSet, peMode, traverseParams, 9999f, validator, null);
+
+            }
+            else
+            {
+                Predicate<Thing> predicate = (Thing x) => !x.IsForbidden(pawn) && pawn.CanReserve(x, 1, 1, null, false);
+                IntVec3 position = pawn.Position;
+                Map map = pawn.Map;
+                ThingRequest thingReq = ThingRequest.ForDef(ThingDef.Named(thirdItem));
+                PathEndMode peMode = PathEndMode.ClosestTouch;
+                TraverseParms traverseParams = TraverseParms.For(pawn, Danger.Deadly, TraverseMode.ByPawn, false);
+                Predicate<Thing> validator = predicate;
+                return GenClosest.ClosestThingReachable(position, map, thingReq, peMode, traverseParams, 9999f, validator, null, 0, -1, false, RegionType.Set_Passable, false);
+            }
+
+
         }
     }
 }

@@ -392,6 +392,7 @@
     <Compile Include="AnimalBehaviours\AnimalCollectionClass\AnimalCollectionClass.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompAcidImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompAnimalProduct.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompApplyHediffWhenBound.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompAsexualReproduction.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompAutoNutrition.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompBlink.cs" />
@@ -423,6 +424,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompMindEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompNearbyEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompPassiveRegenerator.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ApplyHediffWhenBound.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AcidImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DropOnDeath.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AnimalProduct.cs" />
@@ -444,6 +446,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ExtremeXenophobia.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_GraphicByTerrain.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_LightSustenance.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_RegisterAlternateGraphic.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_TerrainChanger.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_FilthProducer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_FixedGender.cs" />
@@ -465,6 +468,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Untameable.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompRefueling.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompRegeneration.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompRegisterAlternateGraphic.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompStateAfterHealthLoss.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompSummonOnSpawn.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompTerrainChanger.cs" />
@@ -495,6 +499,7 @@
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_TurnsWhenDead.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_TurnWhenDead.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Hediff_AcidBuildup.cs" />
+    <Compile Include="AnimalBehaviours\MapComponents\BlindSalamander_MapComponent.cs" />
     <Compile Include="AnimalBehaviours\MapComponents\DestroyableObjects_MapComponent.cs" />
     <Compile Include="AnimalBehaviours\MentalStates\MentalStateWorker_XenophobicRage.cs" />
     <Compile Include="AnimalBehaviours\MentalStates\MentalState_XenophobicRage.cs" />

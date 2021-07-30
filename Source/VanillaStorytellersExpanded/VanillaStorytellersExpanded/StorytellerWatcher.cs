@@ -50,35 +50,32 @@ namespace VanillaStorytellersExpanded
                     questGiverManager.Tick();
                 }
             }
-            if (this.raidQueues?.Count > 0)
+            if (this.raidQueues?.Any() ?? false)
             {
                 for (int num = raidQueues.Count - 1; num >= 0; num--)
                 {
-                    if (Find.TickManager.TicksAbs >= raidQueues[num].tickToFire)
+                    var raidQueue = raidQueues[num];
+                    if (Find.TickManager.TicksAbs >= raidQueue.tickToFire)
                     {
                         try
                         {
-                            raidQueues[num].incidentDef.Worker.TryExecute(raidQueues[num].parms);
+                            raidQueue.incidentDef.Worker.TryExecute(raidQueue.parms);
                         }
                         catch
                         {
                             try
                             {
-                                if (raidQueues[num].parms.target != null)
+                                if (raidQueue.parms.target is null)
                                 {
-                                    var parms = StorytellerUtility.DefaultParmsNow(raidQueues[num].incidentDef.category, raidQueues[num].parms.target);
-                                    parms.faction = raidQueues[num].parms.faction;
-                                    raidQueues[num].incidentDef.Worker.TryExecute(parms);
+                                    raidQueue.parms.target = Find.RandomPlayerHomeMap;
                                 }
-                                else
-                                {
-                                    Log.Error("Raid queue has no target. This shouldn't happen. Removing raid queue.");
-                                    raidQueues.RemoveAt(num);
-                                }
+                                var parms = StorytellerUtility.DefaultParmsNow(raidQueue.incidentDef.category, raidQueue.parms.target);
+                                parms.faction = raidQueue.parms.faction;
+                                raidQueue.incidentDef.Worker.TryExecute(parms);
                             }
                             catch
                             {
-                                raidQueues.RemoveAt(num);
+
                             }
                         }
                         raidQueues.RemoveAt(num);
