@@ -65,7 +65,7 @@ namespace VFECore.OptionalFeatures
             searchText = Widgets.TextField(outRect.TopPartPixels(35f), searchText);
             outRect.yMin += 40f;
             var shownOptions = options.Where(opt => opt.Label.ToLower().Contains(searchText.ToLower())).ToList();
-            var viewRect = new Rect(0f, 0f, outRect.width - 16f, shownOptions.Sum(opt => opt.RequiredHeight + 10f));
+            var viewRect = new Rect(0f, 0f, outRect.width - 16f, shownOptions.Sum(opt => opt.RequiredHeight + 17f));
             Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
             try
             {
