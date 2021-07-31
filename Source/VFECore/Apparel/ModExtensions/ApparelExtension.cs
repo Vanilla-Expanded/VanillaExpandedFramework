@@ -10,5 +10,6 @@ namespace VanillaApparelExpanded
     {
         public float? skillGainModifier;
         public List<WorkTags> workDisables;
+        public List<SkillDef> skillDisables;
     }
 }

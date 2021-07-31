@@ -18,6 +18,7 @@ namespace VanillaApparelExpanded
                 {
                     __instance.pawn.Notify_DisabledWorkTypesChanged();
                 }
+
             }
         }
     }

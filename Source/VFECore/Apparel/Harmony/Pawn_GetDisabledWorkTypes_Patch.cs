@@ -16,18 +16,35 @@ namespace VanillaApparelExpanded
 				foreach (var apparel in __instance.apparel.WornApparel)
 				{
 					var extension = apparel.def.GetModExtension<ApparelExtension>();
-					if (extension != null && extension.workDisables != null)
+					if (extension != null)
 					{
-						foreach (var workTag in extension.workDisables)
+						if (extension.workDisables != null)
                         {
-							foreach (WorkTypeDef allDef in DefDatabase<WorkTypeDef>.AllDefs)
+							foreach (var workTag in extension.workDisables)
 							{
-								if (!list.Contains(allDef) && (allDef.workTags & workTag) != 0)
+								foreach (WorkTypeDef allDef in DefDatabase<WorkTypeDef>.AllDefs)
 								{
-									list.Add(allDef);
+									if (!list.Contains(allDef) && (allDef.workTags & workTag) != 0)
+									{
+										list.Add(allDef);
+									}
 								}
 							}
 						}
+
+						if (extension.skillDisables != null)
+                        {
+							foreach (var skill in extension.skillDisables)
+                            {
+								foreach (WorkTypeDef allDef in DefDatabase<WorkTypeDef>.AllDefs)
+								{
+									if (!list.Contains(allDef) && allDef.relevantSkills != null && allDef.relevantSkills.Contains(skill))
+									{
+										list.Add(allDef);
+									}
+								}
+							}
+                        }
 					}
 				}
 			}
