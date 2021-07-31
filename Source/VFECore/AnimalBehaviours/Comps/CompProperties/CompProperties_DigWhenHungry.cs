@@ -32,6 +32,8 @@ namespace AnimalBehaviours
 
         //Dig only if during growing season
         public bool digOnlyOnGrowingSeason = false;
+        public int minTemperature = 0;
+        public int maxTemperature = 58;
 
         public CompProperties_DigWhenHungry()
         {

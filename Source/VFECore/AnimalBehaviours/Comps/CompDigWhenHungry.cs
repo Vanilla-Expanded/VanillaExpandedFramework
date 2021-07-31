@@ -24,7 +24,7 @@ namespace AnimalBehaviours
             base.CompTick();
             Pawn pawn = this.parent as Pawn;
             if (AnimalBehaviours_Settings.flagDigWhenHungry && (pawn.Map != null) && (pawn.Awake()) && (!Props.digOnlyOnGrowingSeason || 
-                (Props.digOnlyOnGrowingSeason && (pawn.Map.mapTemperature.OutdoorTemp > 0f && pawn.Map.mapTemperature.OutdoorTemp < 58f))) && 
+                (Props.digOnlyOnGrowingSeason && (pawn.Map.mapTemperature.OutdoorTemp > Props.minTemperature && pawn.Map.mapTemperature.OutdoorTemp < Props.maxTemperature))) && 
                 ((pawn.needs.food.CurLevelPercentage < pawn.needs.food.PercentageThreshHungry) ||
                 (Props.digAnywayEveryXTicks && this.parent.IsHashIntervalTick(Props.timeToDigForced))))
             {
