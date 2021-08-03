@@ -42,12 +42,12 @@ namespace AnimalBehaviours
                         resultingList.Add(pawn);
                     }
                 }
-                Log.Message(resultingList.ToStringSafeEnumerable());
+               
                 return resultingList;
 
             }
             else {
-                Log.Message(values.ToString());
+               
                 return values; }
             
 
