@@ -397,6 +397,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompAutoNutrition.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompBlink.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompBuildPeriodically.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompChangeDefIfNotUnique.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompChangeWeather.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompCorpseDecayer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDestroyThisItem.cs" />
@@ -407,6 +408,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompDropOnDeath.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompEatWeirdFood.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompElectrified.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompEnrageOtherPawns.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompExplodingEggLayer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompExplodingHatcher.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompExtremeXenophobia.cs" />
@@ -441,6 +443,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DiseaseImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_EatWeirdFood.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Electrified.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_EnrageOtherPawns.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ExplodingEggLayer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ExplodingHatcher.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ExtremeXenophobia.cs" />
@@ -466,6 +469,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_SummonOnSpawn.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ThoughtEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Untameable.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ChangeDefIfNotUnique.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompRefueling.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompRegeneration.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompRegisterAlternateGraphic.cs" />
