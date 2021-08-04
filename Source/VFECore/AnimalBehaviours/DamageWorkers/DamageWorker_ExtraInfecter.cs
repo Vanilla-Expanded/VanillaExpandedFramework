@@ -18,8 +18,15 @@ namespace AnimalBehaviours
         {
             base.ApplySpecialEffectsToPart(pawn, totalDamage, dinfo, result);
             Random random = new Random();
+            CompInfecter comp = dinfo.Instigator.TryGetComp<CompInfecter>();
+            Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.WoundInfection);
 
-            if (pawn.GetStatValue(StatDefOf.ToxicSensitivity, true) > 0f&&random.NextDouble() > ((float)(100 - dinfo.Instigator.TryGetComp<CompInfecter>().GetChance) / 100))
+            if (hediff != null && comp.Props.worsenExistingInfection)
+            {
+                pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.WoundInfection, false).Severity += comp.Props.severityToAdd;
+            } else
+
+            if (pawn.GetStatValue(StatDefOf.ToxicSensitivity, true) > 0f && random.NextDouble() > ((float)(100 - comp.GetChance) / 100))
             {
                 pawn.health.AddHediff(HediffDefOf.WoundInfection, dinfo.HitPart, null, null);
             }

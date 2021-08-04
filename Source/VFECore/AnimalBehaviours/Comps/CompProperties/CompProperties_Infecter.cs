@@ -12,6 +12,8 @@ namespace AnimalBehaviours
         //damage class DamageWorker_ExtraInfecter
 
         public int infectionChance = 10;
+        public bool worsenExistingInfection = false;
+        public float severityToAdd = 0.15f;
 
         public CompProperties_Infecter()
         {
