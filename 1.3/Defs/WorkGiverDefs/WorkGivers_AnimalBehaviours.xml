@@ -17,6 +17,19 @@
 		</requiredCapacities>
     </WorkGiverDef>
 	
+	<WorkGiverDef>
+		<defName>VEF_DestroyItems</defName>
+		<label>destroy items</label>
+		<giverClass>AnimalBehaviours.WorkGiver_DestroyItem</giverClass>
+		<workType>Hauling</workType>
+		<verb>destroy items</verb>
+		<gerund>destroying items</gerund>
+		<priorityInType>85</priorityInType>
+		<requiredCapacities>
+		  <li>Manipulation</li>
+		</requiredCapacities>
+    </WorkGiverDef>
+	
 
 
 
