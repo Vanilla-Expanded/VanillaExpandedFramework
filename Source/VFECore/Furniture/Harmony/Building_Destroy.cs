@@ -17,7 +17,6 @@ namespace VanillaFurnitureExpanded
 	{
 		public static void Prefix(Building __instance)
 		{
-			Log.Message("Destroy: " + __instance);
 			if (__instance != null && __instance.def != null && __instance.def.passability == Traversability.Impassable && __instance.Map != null)
 			{
 				foreach (var t in __instance.Position.GetThingList(__instance.Map).Where(b => b != __instance).ToList())
@@ -26,7 +25,6 @@ namespace VanillaFurnitureExpanded
 					if (mountableComp != null)
                     {
 						t.Destroy(DestroyMode.Refund);
-						Log.Message("2 Destroy: " + __instance + " - " + t);
 					}
 				}
 			}
