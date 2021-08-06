@@ -156,6 +156,16 @@ namespace VFECore
             Text.Font = GameFont.Small;
             list.Gap();
             list.CheckboxLabeled("Verbose logging", ref settings.enableVerboseLogging);
+
+            // General
+            list.Gap(20);
+            Text.Font = GameFont.Medium;
+            list.Label("General Settings");
+            Text.Font = GameFont.Small;
+            list.Gap();
+            list.CheckboxLabeled("Disable Texture Caching", ref settings.disableCaching, "Warning: Enabling this might cause performance issues.");
+            
+            
         }
 
         private bool ValidatorAnyFactionLeft(FactionDef faction)
@@ -211,11 +221,13 @@ namespace VFECore
     public class VFEGlobalSettings : ModSettings
     {
         public bool enableVerboseLogging;
+        public bool disableCaching;
 
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look(ref enableVerboseLogging, "enableVerboseLogging", false);
+            Scribe_Values.Look(ref enableVerboseLogging,  "enableVerboseLogging", false);
+            Scribe_Values.Look(ref this.disableCaching, "disableCaching", true);
         }
     }
 }

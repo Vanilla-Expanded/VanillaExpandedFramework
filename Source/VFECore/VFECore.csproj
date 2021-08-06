@@ -648,6 +648,7 @@
     <Compile Include="VFECore\HarmonyPatches\NoBioForMachines.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_ArmorUtility.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_CompEquippable.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_DisableAtlasCaching.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_FloatMenuMakerMap.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_Game.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_GenStep_Settlement.cs" />
