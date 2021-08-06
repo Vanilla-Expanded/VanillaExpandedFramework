@@ -20,12 +20,12 @@ namespace AnimalBehaviours
    
     public static class VanillaExpandedFramework_QuestNode_GetPawnKind_SetVars_CanHandle_Patch
     {
-        static List<PawnKindDef> animalListResult = new List<PawnKindDef>();
+        static HashSet<PawnKindDef> animalListResult = new HashSet<PawnKindDef>();
 
         static VanillaExpandedFramework_QuestNode_GetPawnKind_SetVars_CanHandle_Patch()
         {
-            
-            List<AnimalsDisabledFromQuestsDef> allUnaffectedLists = DefDatabase<AnimalsDisabledFromQuestsDef>.AllDefsListForReading;
+
+            HashSet<AnimalsDisabledFromQuestsDef> allUnaffectedLists = DefDatabase<AnimalsDisabledFromQuestsDef>.AllDefsListForReading.ToHashSet();
             foreach (AnimalsDisabledFromQuestsDef individualList in allUnaffectedLists)
             {
                 animalListResult.AddRange(individualList.disabledFromQuestsPawns);
