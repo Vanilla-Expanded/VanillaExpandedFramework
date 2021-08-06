@@ -486,9 +486,11 @@
     <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraInfecter.cs" />
     <Compile Include="AnimalBehaviours\DeathActionWorkers\DeathActionWorker_DropOnDeath.cs" />
     <Compile Include="AnimalBehaviours\DefExtensions\AnimalStatExtension.cs" />
+    <Compile Include="AnimalBehaviours\Defs\AnimalsDisabledFromQuestsDef.cs" />
     <Compile Include="AnimalBehaviours\Defs\AnimalsUnaffectedBySelfTameDef.cs" />
     <Compile Include="AnimalBehaviours\Defs\GenericToggleableAnimalDef.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Dialog_InfoCard_FillCard_Patch.cs" />
+    <Compile Include="AnimalBehaviours\Harmony\QuestNode_GetPawnKind_SetVars_CanHandle_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\JobGiver_GetFood_TryGiveJob_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\MassUtility_Capacity_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\PawnUtility_Mated_Patch.cs" />
