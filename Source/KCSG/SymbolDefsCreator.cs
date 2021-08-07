@@ -16,7 +16,8 @@ namespace KCSG
 
         static SymbolDefsCreator()
         {
-            if (DefDatabase<SettlementLayoutDef>.DefCount > 0
+            if (VFECore.VFEGlobal.settings.enableVerboseLogging
+                || DefDatabase<SettlementLayoutDef>.DefCount > 0
                 || DefDatabase<StructureLayoutDef>.DefCount > 0
                 || DefDatabase<SymbolAutoCreation>.DefCount > 0
                 || DefDatabase<SymbolDef>.DefCount > 0)
