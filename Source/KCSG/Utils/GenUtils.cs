@@ -69,7 +69,7 @@ namespace KCSG
                                 }
                             }
                         }
-                        else if (temp.thingDef?.category == ThingCategory.Item)
+                        else if (temp.thingDef?.category == ThingCategory.Item && cell.Walkable(map))
                         {
                             thing = ThingMaker.MakeThing(temp.thingDef, temp.thingDef.stuffCategories?.Count > 0 ? GenStuff.RandomStuffFor(temp.thingDef) : null);
                             thing.stackCount = Mathf.Clamp(Rand.RangeInclusive(1, temp.thingDef.stackLimit), 1, 75);
