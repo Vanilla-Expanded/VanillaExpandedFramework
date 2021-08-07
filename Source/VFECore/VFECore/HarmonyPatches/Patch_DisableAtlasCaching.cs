@@ -22,18 +22,19 @@ namespace VFECore
 
             foreach (CodeInstruction instruction in instructions)
             {
+                yield return instruction;
                 if (instruction.Calls(humanlikeInfo))
                 {
-                    yield return new CodeInstruction(OpCodes.Pop);
                     yield return new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(VFEGlobal),         nameof(VFEGlobal.settings)));
                     yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(VFEGlobalSettings), nameof(VFEGlobalSettings.disableCaching)));
                     yield return new CodeInstruction(OpCodes.Ldc_I4_0);
                     yield return new CodeInstruction(OpCodes.Ceq);
+                    yield return new CodeInstruction(OpCodes.And);
+
                     yield return new CodeInstruction(OpCodes.Ldloc_1);
                     yield return CodeInstruction.Call(typeof(RenderPawnAt), nameof(ChangeFlags));
                     yield return new CodeInstruction(OpCodes.Stloc_1);
-                } else
-                    yield return instruction;
+                }
             }
         }
 
