@@ -42,6 +42,9 @@ namespace AnimalBehaviours
         public bool drainBattery = false;
         public float percentageDrain = 0.1f;
 
+        //If food is a plant, receive nutrition according to growth
+        public bool areFoodSourcesPlants = false;       
+
         //This is just for No Water No Life compatibility
         public bool needsWater = true;
 
