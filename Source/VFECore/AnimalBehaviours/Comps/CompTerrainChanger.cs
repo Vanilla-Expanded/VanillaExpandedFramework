@@ -8,7 +8,7 @@ namespace AnimalBehaviours
     public class CompTerrainChanger : ThingComp
     {
 
-        public int extraFertCounter = 500;
+        public int extraFertCounter = 5;
 
         public CompProperties_TerrainChanger Props
         {
@@ -20,42 +20,61 @@ namespace AnimalBehaviours
 
         public override void CompTick()
         {
-            Pawn pawn = this.parent as Pawn;
+            if (this.parent.IsHashIntervalTick(Props.checkingRate)) {
+                Pawn pawn = this.parent as Pawn;
 
-            if (pawn.Spawned)
-            {
-                if (pawn.Faction != null)
+                if (pawn.Spawned)
                 {
-
-                    if (pawn.Faction.IsPlayer && (pawn.Position.GetTerrain(pawn.Map) == TerrainDef.Named(Props.FirstStageTerrain)))
+                    if (pawn.Faction != null && pawn.Faction.IsPlayer)
                     {
-                        pawn.Map.terrainGrid.SetTerrain(pawn.Position, TerrainDef.Named(Props.SecondStageTerrain));
-                        //This is for achievements
-                        
-                        if (ModLister.HasActiveModWithName("Alpha Animals"))
+                        IntVec3 cell;
+                        if (Props.inRadius)
                         {
-                            pawn.health.AddHediff(HediffDef.Named("AA_FertilizedTerrain"));
+                            cell = CellFinder.RandomClosewalkCellNear(pawn.Position, pawn.Map, Props.radius, null);
                         }
-                    }
-                    if (Props.doThirdStage) {
-                        extraFertCounter--;
-                        if (extraFertCounter <= 0)
+                        else
                         {
-                            if (pawn.Faction.IsPlayer && pawn.training.HasLearned(TrainableDefOf.Obedience) && ((pawn.Position.GetTerrain(pawn.Map) == TerrainDef.Named(Props.SecondStageTerrain))))
-                            {
-                                pawn.Map.terrainGrid.SetTerrain(pawn.Position, TerrainDef.Named(Props.ThirdStageTerrain));
-                                //This is for achievements
+                            cell = pawn.Position;
+                        }
 
-                                if (ModLister.HasActiveModWithName("Alpha Animals"))
-                                {
-                                    pawn.health.AddHediff(HediffDef.Named("AA_FertilizedTerrain"));
-                                }
+                        if ((cell.GetTerrain(pawn.Map) == TerrainDef.Named(Props.FirstStageTerrain)))
+                        {
+                            pawn.Map.terrainGrid.SetTerrain(cell, TerrainDef.Named(Props.SecondStageTerrain));
+
+                            //This is for achievements
+
+                            if (ModLister.HasActiveModWithName("Alpha Animals"))
+                            {
+                                pawn.health.AddHediff(HediffDef.Named("AA_FertilizedTerrain"));
                             }
-                            extraFertCounter = 500;
                         }
-                    }                   
+                        if (Props.doThirdStage)
+                        {
+                            extraFertCounter--;
+                            if (extraFertCounter <= 0)
+                            {
+                                if (pawn.training.HasLearned(TrainableDefOf.Obedience) && ((cell.GetTerrain(pawn.Map) == TerrainDef.Named(Props.SecondStageTerrain))))
+                                {
+                                    pawn.Map.terrainGrid.SetTerrain(cell, TerrainDef.Named(Props.ThirdStageTerrain));
+                                    //This is for achievements
+
+                                    if (ModLister.HasActiveModWithName("Alpha Animals"))
+                                    {
+                                        pawn.health.AddHediff(HediffDef.Named("AA_FertilizedTerrain"));
+                                    }
+                                }
+                                extraFertCounter = 5;
+                            }
+                        }
+
+
+
+                    }
                 }
+
             }
+            
+            
         }
     }
 }

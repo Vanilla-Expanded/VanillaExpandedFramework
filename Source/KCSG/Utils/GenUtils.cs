@@ -69,7 +69,7 @@ namespace KCSG
                                 }
                             }
                         }
-                        else if (temp.thingDef?.category == ThingCategory.Item)
+                        else if (temp.thingDef?.category == ThingCategory.Item && cell.Walkable(map))
                         {
                             thing = ThingMaker.MakeThing(temp.thingDef, temp.thingDef.stuffCategories?.Count > 0 ? GenStuff.RandomStuffFor(temp.thingDef) : null);
                             thing.stackCount = Mathf.Clamp(Rand.RangeInclusive(1, temp.thingDef.stackLimit), 1, 75);
@@ -92,7 +92,27 @@ namespace KCSG
 
                             if (thing is Building_Casket inheritFromCasket)
                             {
-                                Pawn pawn = temp.containPawnKind != null ? PawnGenerator.GeneratePawn(temp.containPawnKindDef, map.ParentFaction) : PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, map.ParentFaction);
+                                Pawn pawn;
+                                if (temp.spawnPartOfFaction)
+                                {
+                                    if (temp.faction != null)
+                                    {
+                                        Faction faction = Find.FactionManager.FirstFactionOfDef(temp.faction);
+                                        if (faction != null)
+                                            pawn = temp.containPawnKind != null ? PawnGenerator.GeneratePawn(temp.containPawnKindDef, faction) : PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, faction);
+                                        else
+                                            pawn = temp.containPawnKind != null ? PawnGenerator.GeneratePawn(temp.containPawnKindDef, null) : PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, null);
+                                    }
+                                    else
+                                    {
+                                        pawn = temp.containPawnKind != null ? PawnGenerator.GeneratePawn(temp.containPawnKindDef, map.ParentFaction) : PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, map.ParentFaction);
+                                    }
+                                }
+                                else
+                                {
+                                    pawn = temp.containPawnKind != null ? PawnGenerator.GeneratePawn(temp.containPawnKindDef, null) : PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, null);
+                                }
+                                
                                 inheritFromCasket.TryAcceptThing(pawn);
                             }
 

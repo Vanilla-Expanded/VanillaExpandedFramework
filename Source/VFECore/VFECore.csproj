@@ -397,6 +397,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompAutoNutrition.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompBlink.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompBuildPeriodically.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompCauseIncident.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompChangeDefIfNotUnique.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompChangeWeather.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompCorpseDecayer.cs" />
@@ -428,6 +429,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompPassiveRegenerator.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ApplyHediffWhenBound.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AcidImmunity.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_CauseIncident.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DropOnDeath.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AnimalProduct.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AsexualReproduction.cs" />
@@ -486,9 +488,11 @@
     <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraInfecter.cs" />
     <Compile Include="AnimalBehaviours\DeathActionWorkers\DeathActionWorker_DropOnDeath.cs" />
     <Compile Include="AnimalBehaviours\DefExtensions\AnimalStatExtension.cs" />
+    <Compile Include="AnimalBehaviours\Defs\AnimalsDisabledFromQuestsDef.cs" />
     <Compile Include="AnimalBehaviours\Defs\AnimalsUnaffectedBySelfTameDef.cs" />
     <Compile Include="AnimalBehaviours\Defs\GenericToggleableAnimalDef.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Dialog_InfoCard_FillCard_Patch.cs" />
+    <Compile Include="AnimalBehaviours\Harmony\QuestNode_GetPawnKind_SetVars_CanHandle_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\JobGiver_GetFood_TryGiveJob_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\MassUtility_Capacity_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\PawnUtility_Mated_Patch.cs" />
@@ -648,6 +652,7 @@
     <Compile Include="VFECore\HarmonyPatches\NoBioForMachines.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_ArmorUtility.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_CompEquippable.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_DisableAtlasCaching.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_FloatMenuMakerMap.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_Game.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_GenStep_Settlement.cs" />

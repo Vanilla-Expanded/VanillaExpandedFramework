@@ -215,6 +215,14 @@ namespace AnimalBehaviours
                     num = Mathf.Max(num, 0.75f);
                 }
                 float num2 = comp.Props.nutrition;
+
+                if (comp.Props.areFoodSourcesPlants)
+                {
+                    Plant plant = thing as Plant;
+                    float numGrowth = plant.Growth;
+                    num2 = num2 * numGrowth;
+                }
+
                 if (comp.Props.fullyDestroyThing)
                 {
                     if (comp.Props.drainBattery)

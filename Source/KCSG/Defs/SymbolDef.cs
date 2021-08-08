@@ -35,6 +35,7 @@ namespace KCSG
         public Type lordJob = null;
         public bool isSlave = false;
         public bool spawnPartOfFaction = true;
+        public FactionDef faction;
         public int numberToSpawn = 1;
 
         public override void ResolveReferences()

@@ -14,6 +14,10 @@ namespace KCSG
         public bool nearMapCenter;
         public bool spawnPartOfEnnemyFaction = false;
         public string structureLabel;
+        /* Clear filth, buildings, chunks, remove non-natural terrain */
+        public bool preGenClear = true;
+        /* Clear everything */
+        public bool fullClear = false;
 
         public override void DoEditInterface(Listing_ScenEdit listing)
         {
@@ -99,6 +103,9 @@ namespace KCSG
 
             RectUtils.HeightWidthFromLayout(structureLayoutDef, out int h, out int w);
             CellRect cellRect = this.CreateCellRect(map, h, w);
+
+            if (preGenClear)
+                GenUtils.PreClean(map, cellRect, fullClear);
 
             foreach (List<string> item in structureLayoutDef.layouts)
             {
