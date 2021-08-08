@@ -397,6 +397,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompAutoNutrition.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompBlink.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompBuildPeriodically.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompCauseIncident.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompChangeDefIfNotUnique.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompChangeWeather.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompCorpseDecayer.cs" />
@@ -428,6 +429,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompPassiveRegenerator.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ApplyHediffWhenBound.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AcidImmunity.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_CauseIncident.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DropOnDeath.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AnimalProduct.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AsexualReproduction.cs" />
