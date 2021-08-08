@@ -109,6 +109,7 @@ namespace MVCF.Harmony
             if (man == null) return;
             if (man.NeedsTicking)
                 WorldComponent_MVCF.GetComp().TickManagers.Add(new System.WeakReference<VerbManager>(man));
+            man.Notify_Spawned();
         }
 
         public static void Postfix_Pawn_DeSpawn(Pawn __instance)
@@ -121,6 +122,7 @@ namespace MVCF.Harmony
                     if (!wr.TryGetTarget(out var vm)) return true;
                     return vm == man;
                 });
+            man.Notify_Despawned();
         }
 
         public static void FixFakeCaster(ref Thing initiator)

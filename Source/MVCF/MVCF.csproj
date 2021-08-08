@@ -37,8 +37,7 @@
       <HintPath>..\..\..\..\..\..\workshop\content\294100\2009463077\Current\Assemblies\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Assembly-CSharp_prepatched, Version=1.3.7860.17987, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Assembly-CSharp_prepatched">
       <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp_prepatched.dll</HintPath>
       <Private>False</Private>
     </Reference>

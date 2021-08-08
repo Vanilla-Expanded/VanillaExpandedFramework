@@ -84,6 +84,16 @@ namespace MVCF
         public ImplementOwnerTypeDef ImplementOwnerTypeDef => ImplementOwnerTypeDefOf.NativeVerb;
         public Thing ConstantCaster => Pawn;
 
+        public void Notify_Spawned()
+        {
+            foreach (var tv in tickVerbs) tv.CreateCaster();
+        }
+
+        public void Notify_Despawned()
+        {
+            foreach (var tv in tickVerbs) tv.DestroyCaster();
+        }
+
         public static bool PreferMelee(ThingWithComps eq)
         {
             if (eq == null) return false;

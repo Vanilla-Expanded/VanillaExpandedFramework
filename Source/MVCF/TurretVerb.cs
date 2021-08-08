@@ -15,23 +15,34 @@ namespace MVCF
 {
     public class TurretVerb : ManagedVerb
     {
-        private readonly DummyCaster dummyCaster;
         private int cooldownTicksLeft;
         private LocalTargetInfo currentTarget = LocalTargetInfo.Invalid;
+        private DummyCaster dummyCaster;
         private int warmUpTicksLeft;
 
 
         public TurretVerb(Verb verb, VerbSource source, AdditionalVerbProps props, VerbManager man) : base(verb, source,
             props, man)
         {
-            dummyCaster = new DummyCaster(man.Pawn, this);
-            dummyCaster.Tick();
-            dummyCaster.SpawnSetup(man.Pawn.Map, false);
-            verb.caster = dummyCaster;
             verb.castCompleteCallback = () => cooldownTicksLeft = Verb.verbProps.AdjustedCooldownTicks(Verb, man.Pawn);
         }
 
         public LocalTargetInfo Target => currentTarget;
+
+        public void CreateCaster()
+        {
+            dummyCaster = new DummyCaster(man.Pawn, this);
+            dummyCaster.Tick();
+            dummyCaster.SpawnSetup(man.Pawn.Map, false);
+            Verb.caster = dummyCaster;
+        }
+
+        public void DestroyCaster()
+        {
+            dummyCaster.Destroy();
+            dummyCaster = null;
+            Verb.caster = man.Pawn;
+        }
 
         public virtual void Tick()
         {
@@ -162,6 +173,11 @@ namespace MVCF
             if (pawn == null) return;
 
             Position = pawn.Position;
+            if (pawn.Spawned && Spawned && Map.Index != pawn.Map.Index)
+            {
+                DeSpawn();
+                SpawnSetup(pawn.Map, false);
+            }
         }
 
         public override void DrawAt(Vector3 drawLoc, bool flip = false)
