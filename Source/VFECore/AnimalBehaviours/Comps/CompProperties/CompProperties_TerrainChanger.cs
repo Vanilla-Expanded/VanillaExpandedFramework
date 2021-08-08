@@ -7,6 +7,8 @@ namespace AnimalBehaviours
 
         //Makes the animal change a given terrain to a second one, and then (optionally) that second one to a third one
 
+        public int checkingRate = 100;
+
         public string FirstStageTerrain = "";
         public string SecondStageTerrain = "";
 
