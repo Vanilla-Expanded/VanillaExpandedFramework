@@ -53,7 +53,6 @@
   <ItemGroup>
     <Compile Include="DefModExtensions\ExtendedRaceProperties.cs" />
     <Compile Include="Enums\BodyClock.cs" />
-    <Compile Include="HarmonyPatches\JobGiver_GetRest.cs" />
     <Compile Include="HarmonyPatches\Patch_ThingDef.cs" />
     <Compile Include="HarmonyPatches\Patch_JobGiver_GetRest.cs" />
     <Compile Include="HarmonyPatches\HarmonyPatches.cs" />
