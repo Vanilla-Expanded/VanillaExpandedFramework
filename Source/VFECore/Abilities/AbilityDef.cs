@@ -103,6 +103,9 @@
         public override void ResolveReferences()
         {
             base.ResolveReferences();
+            if (this.modExtensions == null)
+                this.modExtensions = new List<DefModExtension>();
+
             if (this.verbProperties == null)
                 this.verbProperties = new VerbProperties
                                       {
