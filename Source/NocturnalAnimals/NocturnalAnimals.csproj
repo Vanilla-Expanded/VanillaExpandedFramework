@@ -25,9 +25,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\1.3\Assemblies\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="DefModExtensions\ExtendedRaceProperties.cs" />
     <Compile Include="Enums\BodyClock.cs" />
+    <Compile Include="HarmonyPatches\JobGiver_GetRest.cs" />
     <Compile Include="HarmonyPatches\Patch_ThingDef.cs" />
     <Compile Include="HarmonyPatches\Patch_JobGiver_GetRest.cs" />
     <Compile Include="HarmonyPatches\HarmonyPatches.cs" />

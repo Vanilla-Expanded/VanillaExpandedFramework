@@ -7,70 +7,61 @@ using RimWorld;
 using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
+using Verse.AI.Group;
 
 namespace NocturnalAnimals
 {
-
     public static class Patch_JobGiver_GetRest
     {
-        /*
+        
         [HarmonyPatch(typeof(JobGiver_GetRest))]
         [HarmonyPatch(nameof(JobGiver_GetRest.GetPriority))]
         public static class Patch_GetPriority
         {
-
             public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator ilg)
             {
                 List<CodeInstruction> instructionList = instructions.ToList();
-                
+                bool found = false;
+                var label = ilg.DefineLabel();
+                var curLevelGetter = AccessTools.PropertyGetter(typeof(Need), "CurLevel");
+                var shouldOverride = AccessTools.Method(typeof(Patch_GetPriority), "ShouldOverride");
+                var sleepHourFor = AccessTools.Method(typeof(Patch_GetPriority), "TimeAssignmentFor");
                 for (int i = 0; i < instructionList.Count; i++)
                 {
                     CodeInstruction instruction = instructionList[i];
-                    LocalBuilder locVar = ilg.DeclareLocal(typeof(bool));
-                    if (instruction.Calls(AccessTools.Method(typeof(GenLocalDate), nameof(GenLocalDate.HourOfDay), new Type[] { typeof(Thing) })))
+                    if (!found && instruction.Calls(curLevelGetter))
                     {
-                        while (instruction.opcode != OpCodes.Ldloc_S)
-						{
-                            yield return instruction;
-                            instruction = instructionList[++i];
-						}
-                        yield return new CodeInstruction(OpCodes.Ldloc_S, 4);
+                        found = true;
+                        instructionList[i].labels.Add(label);
                         yield return new CodeInstruction(OpCodes.Ldarg_1);
-                        yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Patch_GetPriority), nameof(SleepHourFor)));
-						int j = 1;
-						while (true)
-						{
-							if (instructionList[i + j].opcode == OpCodes.Blt_S)
-							{
-								instruction = new CodeInstruction(OpCodes.Brfalse, instructionList[i + j].operand);
-								instructionList[i + j] = new CodeInstruction(OpCodes.Nop);
-								break;
-							}
-
-							instructionList[i + j] = new CodeInstruction(OpCodes.Nop);
-							j++;
-						}
-					}
-
+                        yield return new CodeInstruction(OpCodes.Call, shouldOverride);
+                        yield return new CodeInstruction(OpCodes.Brfalse, label);
+                        yield return new CodeInstruction(OpCodes.Ldarg_1);
+                        yield return new CodeInstruction(OpCodes.Call, sleepHourFor);
+                        yield return new CodeInstruction(OpCodes.Stloc_2);
+                    }
                     yield return instruction;
                 }
             }
 
-            public static bool SleepHourFor(int hour, Pawn pawn)
+            public static TimeAssignmentDef TimeAssignmentFor(Pawn pawn)
             {
+                int hour = GenLocalDate.HourOfDay(pawn);
                 ExtendedRaceProperties extendedRaceProps = pawn.def.GetModExtension<ExtendedRaceProperties>();
-
                 if (extendedRaceProps != null && extendedRaceProps.bodyClock == BodyClock.Crepuscular)
                 {
-                    return hour > 3 && hour < 16;
+                    return hour > 3 && hour < 16 ? TimeAssignmentDefOf.Sleep : TimeAssignmentDefOf.Anything;
                 }
                 else if (extendedRaceProps != null && extendedRaceProps.bodyClock == BodyClock.Nocturnal)
                 {
-                    return hour > 9 && hour < 19;
+                    return  hour > 9 && hour < 19 ? TimeAssignmentDefOf.Sleep : TimeAssignmentDefOf.Anything;
                 }
-                return hour < 7 && hour > 21;
+                return ((hour >= 7 && hour <= 21) ? TimeAssignmentDefOf.Anything : TimeAssignmentDefOf.Sleep);
             }
-        }*/
+            public static bool ShouldOverride(Pawn pawn)
+            {
+                return pawn.def.GetModExtension<ExtendedRaceProperties>() != null;
+            }
+        }
     }
-
 }
