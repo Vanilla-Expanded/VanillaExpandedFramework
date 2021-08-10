@@ -4,8 +4,12 @@
     using UnityEngine;
     using Verse;
 
+    [StaticConstructorOnStartup]
     public class Command_Ability : Command_Action
     {
+        public static readonly Texture2D CooldownTex =
+            SolidColorMaterials.NewSolidColorTexture(new Color(1f, 1f, 1f, 0.1f));
+
         public Pawn    pawn;
         public Ability ability;
 
@@ -59,6 +63,8 @@
                 GUI.DrawTexture(position, texture);
             }
 
+            if(this.disabled && this.ability.cooldown > Find.TickManager.TicksGame)
+                GUI.DrawTexture(butRect.RightPartPixels(butRect.width * ((float) (this.ability.cooldown - Find.TickManager.TicksGame) / this.ability.GetCooldownForPawn())), CooldownTex);
             return result;
         }
     }
