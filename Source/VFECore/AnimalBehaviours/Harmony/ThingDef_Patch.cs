@@ -11,12 +11,12 @@ using HarmonyLib;
 namespace NocturnalAnimals
 {
 
-    public static class Patch_ThingDef
+    public static class ThingDef_Patch
     {
-        
+
         [HarmonyPatch(typeof(ThingDef))]
         [HarmonyPatch(nameof(ThingDef.SpecialDisplayStats))]
-        public static class Patch_SpecialDisplayStats
+        public static class AnimalBehaviours_ThingDef_SpecialDisplayStats_Patch
         {
 
             public static void Postfix(ThingDef __instance, ref IEnumerable<StatDrawEntry> __result)
@@ -29,7 +29,7 @@ namespace NocturnalAnimals
                     if (extendedRaceProps != null)
                         bodyClock = extendedRaceProps.bodyClock;
                     __result = __result.AddItem(new StatDrawEntry(StatCategoryDefOf.BasicsPawn, "NocturnalAnimals.BodyClock".Translate(), $"NocturnalAnimals.BodyClock_{bodyClock}".Translate(),
-                        "NocturnalAnimals.BodyClock_Description".Translate(),1));
+                        "NocturnalAnimals.BodyClock_Description".Translate(), 1));
                 }
             }
 

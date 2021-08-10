@@ -11,12 +11,12 @@ using Verse.AI.Group;
 
 namespace NocturnalAnimals
 {
-    public static class Patch_JobGiver_GetRest
+    public static class JobGiver_GetRest_Patch
     {
-        
+
         [HarmonyPatch(typeof(JobGiver_GetRest))]
         [HarmonyPatch(nameof(JobGiver_GetRest.GetPriority))]
-        public static class Patch_GetPriority
+        public static class AnimalBehaviours_JobGiver_GetRest_GetPriority_Patch
         {
             public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator ilg)
             {
@@ -24,8 +24,8 @@ namespace NocturnalAnimals
                 bool found = false;
                 var label = ilg.DefineLabel();
                 var curLevelGetter = AccessTools.PropertyGetter(typeof(Need), "CurLevel");
-                var shouldOverride = AccessTools.Method(typeof(Patch_GetPriority), "ShouldOverride");
-                var sleepHourFor = AccessTools.Method(typeof(Patch_GetPriority), "TimeAssignmentFor");
+                var shouldOverride = AccessTools.Method(typeof(AnimalBehaviours_JobGiver_GetRest_GetPriority_Patch), "ShouldOverride");
+                var sleepHourFor = AccessTools.Method(typeof(AnimalBehaviours_JobGiver_GetRest_GetPriority_Patch), "TimeAssignmentFor");
                 for (int i = 0; i < instructionList.Count; i++)
                 {
                     CodeInstruction instruction = instructionList[i];
@@ -54,7 +54,7 @@ namespace NocturnalAnimals
                 }
                 else if (extendedRaceProps != null && extendedRaceProps.bodyClock == BodyClock.Nocturnal)
                 {
-                    return  hour > 9 && hour < 19 ? TimeAssignmentDefOf.Sleep : TimeAssignmentDefOf.Anything;
+                    return hour > 9 && hour < 19 ? TimeAssignmentDefOf.Sleep : TimeAssignmentDefOf.Anything;
                 }
                 return ((hour >= 7 && hour <= 21) ? TimeAssignmentDefOf.Anything : TimeAssignmentDefOf.Sleep);
             }
