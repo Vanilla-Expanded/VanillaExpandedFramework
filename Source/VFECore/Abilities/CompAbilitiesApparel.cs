@@ -35,10 +35,7 @@
 
             if (this.Pawn == null)
                 yield break;
-
-            if (!this.Pawn.IsColonistPlayerControlled || !this.Pawn.Drafted)
-                yield break;
-
+            
             if (this.Pawn != this.pawn)
             {
                 this.pawn = this.Pawn;
@@ -50,7 +47,8 @@
             }
 
             foreach (Abilities.Ability ability in this.givenAbilities) 
-                yield return ability.GetGizmo();
+                if(ability.ShowGizmoOnPawn())
+                    yield return ability.GetGizmo();
         }
 
         public override void PostExposeData()

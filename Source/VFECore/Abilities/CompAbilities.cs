@@ -76,12 +76,10 @@
         {
             foreach (Gizmo gizmo in base.CompGetGizmosExtra()) 
                 yield return gizmo;
-
-            if (!this.Pawn.IsColonistPlayerControlled || !this.Pawn.Drafted)
-                yield break;
             
             foreach (Abilities.Ability ability in this.learnedAbilities) 
-                yield return ability.GetGizmo();
+                if(ability.ShowGizmoOnPawn())
+                    yield return ability.GetGizmo();
 
             foreach (Hediff_Abilities hediff in this.Pawn.health.hediffSet.GetHediffs<Hediff_Abilities>())
             {

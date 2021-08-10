@@ -44,6 +44,9 @@
             this.autoCast         = this.def.autocastPlayerDefault;
         }
 
+        public virtual bool ShowGizmoOnPawn() => 
+            this.pawn != null && this.pawn.IsColonistPlayerControlled && this.pawn.Drafted;
+
         public virtual bool IsEnabledForPawn(out string reason)
         {
             if (this.cooldown > Find.TickManager.TicksGame)
