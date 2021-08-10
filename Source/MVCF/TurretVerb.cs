@@ -39,8 +39,12 @@ namespace MVCF
 
         public void DestroyCaster()
         {
-            dummyCaster.Destroy();
-            dummyCaster = null;
+            if (dummyCaster != null)
+            {
+                dummyCaster.Destroy();
+                dummyCaster = null;
+            }
+
             Verb.caster = man.Pawn;
         }
 
