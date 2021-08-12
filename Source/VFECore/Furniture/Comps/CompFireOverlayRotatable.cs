@@ -34,7 +34,6 @@ namespace VanillaFurnitureExpanded
 			if (refuelableComp == null || refuelableComp.HasFuel)
 			{
 				Vector3 drawPos = parent.DrawPos;
-				drawPos.y += 3f / 74f;
                 switch (parent.Rotation.AsByte)
                 {
 					case 0: drawPos += Quaternion.Euler(0, parent.Rotation.AsAngle, 0) * Props.northOffset; break;
@@ -42,6 +41,7 @@ namespace VanillaFurnitureExpanded
 					case 2: drawPos += Quaternion.Euler(0, parent.Rotation.AsAngle, 0) * Props.southOffset; break;
 					case 3: drawPos += Quaternion.Euler(0, parent.Rotation.AsAngle, 0) * Props.westOffset; break;
 				}
+				drawPos.y += 0.05f;
 				FireGraphic.Draw(drawPos, parent.Rotation, parent);
 			}
 		}

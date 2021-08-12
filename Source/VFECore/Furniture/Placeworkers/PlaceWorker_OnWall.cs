@@ -14,7 +14,7 @@ namespace VanillaFurnitureExpanded
 			if (adjacementCell.InBounds(map))
 			{
 				var adjacementEdifice = adjacementCell.GetEdifice(map);
-				if (adjacementEdifice != null)
+				if (adjacementEdifice != null && ((adjacementEdifice?.def.defName.ToLower().Contains("wall") ?? false) || adjacementEdifice.def.IsSmoothed))
 				{
 					return false;
 				}
