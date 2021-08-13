@@ -33,7 +33,7 @@ namespace AnimalBehaviours
         public void DoWindowContents(Rect inRect)
         {
 
-            List<string> keys = pawnSpawnStates.Keys.ToList().OrderByDescending(x => x).ToList();
+            List<string> keys = pawnSpawnStates.Keys.ToList().OrderByDescending(x => DefDatabase<ThingDef>.GetNamed(x).label).ToList();
             Listing_Standard ls = new Listing_Standard();
             Rect rect = new Rect(inRect.x, inRect.y, inRect.width, inRect.height);
             Rect rect2 = new Rect(0f, 0f, inRect.width - 30f, keys.Count  * 24);
