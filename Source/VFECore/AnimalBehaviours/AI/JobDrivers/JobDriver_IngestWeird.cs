@@ -241,7 +241,7 @@ namespace AnimalBehaviours
                 }
                 else
                 {
-                    if (thing.def.useHitPoints)
+                    if (thing.def.useHitPoints && !comp.Props.ignoreUseHitPoints)
                     {
                         thing.HitPoints -= (int)(thing.MaxHitPoints * comp.Props.percentageOfDestruction);
                         if (thing.HitPoints <= 0)

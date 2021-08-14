@@ -21,6 +21,9 @@ namespace AnimalBehaviours
         public bool fullyDestroyThing = false;
         public float percentageOfDestruction = 0.1f;
 
+        //If set to true, it will automatically deduct from a stack
+        public bool ignoreUseHitPoints = false;
+
         //If no items are present, the animal can dig for them
         public bool digThingIfMapEmpty = false;
         public string thingToDigIfMapEmpty = "";
