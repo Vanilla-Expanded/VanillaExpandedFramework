@@ -72,6 +72,7 @@
     <Compile Include="Harmony\MapGeneratorDef_Patches.cs" />
     <Compile Include="Harmony\Map_ExposeData_Patch.cs" />
     <Compile Include="Harmony\SettlementUtility_Attack_Patch.cs" />
+    <Compile Include="LordJob\LordJob_DefendBaseNoEat.cs" />
     <Compile Include="PawnArrivalMethod\FallingStructureArrival.cs" />
     <Compile Include="RaidStrategyWorker\FallingStructureStrategy.cs" />
     <Compile Include="RaidStrategyWorker\TTIR.cs" />
