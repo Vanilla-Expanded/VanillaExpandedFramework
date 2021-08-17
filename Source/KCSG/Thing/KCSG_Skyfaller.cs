@@ -5,7 +5,7 @@ using Verse;
 
 namespace KCSG
 {
-    internal class KCSG_Skyfaller : Skyfaller
+    public class KCSG_Skyfaller : Skyfaller
     {
         public Rot4 rot = Rot4.Invalid;
 

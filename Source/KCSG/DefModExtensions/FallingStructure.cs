@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using Verse;
 
@@ -45,6 +46,7 @@ namespace KCSG
         public List<FactionDef> canBeUsedBy = new List<FactionDef>();
         public bool spawnDormantWhenPossible = true;
         public bool needToHaveSettlements = true;
+        public Type skyfaller = typeof(KCSG_Skyfaller);
         internal List<WeightedStruct> WeightedStructs = new List<WeightedStruct>();
 
         public override IEnumerable<string> ConfigErrors()

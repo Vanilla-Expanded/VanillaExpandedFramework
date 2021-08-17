@@ -92,7 +92,7 @@ namespace KCSG
 
                         ThingDef faller = new ThingDef
                         {
-                            thingClass = typeof(KCSG_Skyfaller),
+                            thingClass = CGO.fallingStructure.skyfaller,
                             category = ThingCategory.Ethereal,
                             useHitPoints = false,
 
