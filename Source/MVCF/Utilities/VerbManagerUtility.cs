@@ -3,6 +3,7 @@ using MVCF.Comps;
 using MVCF.Harmony;
 using RimWorld;
 using Verse;
+using Log = Verse.Log;
 
 namespace MVCF.Utilities
 {

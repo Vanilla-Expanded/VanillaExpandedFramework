@@ -27,7 +27,7 @@ namespace MVCF.Harmony
             __result = man.ManagedVerbs.Any(mv =>
                 !mv.Verb.IsMeleeAttack && mv.Verb.HarmsHealth() && !mv.Verb.UsesExplosiveProjectiles() &&
                 mv.Enabled && mv.Verb.Available());
-            if (man.debugOpts.VerbLogging) Log.Message($"[MVCF] {p} HasHuntingWeapon: {__result}");
+            if (man.debugOpts.VerbLogging) Verse.Log.Message($"[MVCF] {p} HasHuntingWeapon: {__result}");
             return false;
         }
 

@@ -64,8 +64,11 @@
     <Compile Include="DebugActionsMVCF.cs" />
     <Compile Include="Harmony\Brawlers.cs" />
     <Compile Include="Harmony\Compat.cs" />
+    <Compile Include="Harmony\ExtraEquipment.cs" />
     <Compile Include="Harmony\Gizmos.cs" />
     <Compile Include="Harmony\Hunting.cs" />
+    <Compile Include="Harmony\BatteLog.cs" />
+    <Compile Include="Harmony\IndependentVerbs.cs" />
     <Compile Include="Harmony\Trackers.cs">
       <DependentUpon>
       </DependentUpon>

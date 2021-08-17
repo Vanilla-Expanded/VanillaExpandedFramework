@@ -94,6 +94,7 @@ namespace MVCF.Comps
     public class AdditionalVerbProps
     {
         public static BodyTypeDef NA = new BodyTypeDef();
+        public bool brawlerCaresAbout = true;
         public bool canBeToggled;
         public bool canFireIndependently;
         public bool colonistOnly;

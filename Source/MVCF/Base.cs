@@ -33,7 +33,7 @@ namespace MVCF
             Trackers.Equipment(Harm);
             Trackers.Hediffs(Harm);
             LongEventHandler.ExecuteWhenFinished(CollectFeatureData);
-            if (ModLister.HasActiveModWithName("Prosthetic Combat Framework")) IgnoredFeatures.HediffVerbs = true;
+            if (ModLister.HasActiveModWithName("Prosthetic Combat Framework")) IgnoredFeatures.HediffVerbs = true; // Maybe consider not doing?
         }
 
         public static void CollectFeatureData()
@@ -80,8 +80,9 @@ namespace MVCF
                 Compat.ApplyCompat(Harm);
                 Pawn_TryGetAttackVerb.DoPatches(Harm);
                 VerbUtilityPatches.DoPatches(Harm);
-                MiscPatches.DoLogPatches(Harm);
+                BatteLog.DoPatches(Harm);
                 VerbPatches.DoPatches(Harm);
+                MiscPatches.DoBasePatches(Harm);
             }
 
             if (Features.HumanoidVerbs)
@@ -94,7 +95,7 @@ namespace MVCF
             if (Features.ExtraEquipmentVerbs)
             {
                 Gizmos.DoExtraEquipmentPatches(Harm);
-                MiscPatches.DoExtraEquipmentPatches(Harm);
+                ExtraEquipment.DoPatches(Harm);
             }
 
             if (Features.RangedAnimals)
@@ -108,7 +109,7 @@ namespace MVCF
             if (Features.IndependentFire)
             {
                 VerbPatches.DoIndependentPatches(Harm);
-                MiscPatches.DoIndependentPatches(Harm);
+                IndependentVerbs.DoPatches(Harm);
             }
 
             if (Features.Drawing) MiscPatches.DoDrawPatches(Harm);

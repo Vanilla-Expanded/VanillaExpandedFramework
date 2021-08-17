@@ -45,7 +45,7 @@ namespace MVCF.Harmony
             }
 
             if (man.debugOpts.VerbLogging)
-                Log.Message("Changing CurrentVerb of " + __instance.CasterPawn + " to " + __instance);
+                Verse.Log.Message("Changing CurrentVerb of " + __instance.CasterPawn + " to " + __instance);
             man.CurrentVerb = __instance;
 
             return true;
@@ -55,7 +55,7 @@ namespace MVCF.Harmony
         {
             if (__instance == null) // Needed to work with A Rimworld of Magic, for some reason
             {
-                Log.Warning("[MVCF] Instance in patch is null. This is not supported.");
+                Verse.Log.Warning("[MVCF] Instance in patch is null. This is not supported.");
                 __result = null;
                 return false;
             }

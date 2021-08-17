@@ -41,7 +41,7 @@ namespace MVCF
         {
             if (dummyCaster != null)
             {
-                dummyCaster.Destroy();
+                if (!dummyCaster.Destroyed) dummyCaster.Destroy();
                 dummyCaster = null;
             }
 

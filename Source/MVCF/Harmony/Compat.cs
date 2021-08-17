@@ -21,7 +21,7 @@ namespace MVCF.Harmony
         {
             if (ModLister.HasActiveModWithName("RunAndGun") && Base.Features.EnabledAtAll)
             {
-                Log.Message("[MVCF] Applying RunAndGun compatibility patch");
+                Verse.Log.Message("[MVCF] Applying RunAndGun compatibility patch");
                 harm.Patch(AccessTools.Method(Type.GetType("RunAndGun.Harmony.Verb_TryCastNextBurstShot, RunAndGun"),
                         "SetStanceRunAndGun"),
                     transpiler: new HarmonyMethod(typeof(Compat), "RunAndGunSetStance"));
@@ -35,7 +35,7 @@ namespace MVCF.Harmony
 
             if (ModLister.HasActiveModWithName("Dual Wield") && Base.Features.HumanoidVerbs)
             {
-                Log.Message("[MVCF] Applying Dual Wield compatibility patch");
+                Verse.Log.Message("[MVCF] Applying Dual Wield compatibility patch");
                 RotationTrackerPawn = AccessTools
                     .FieldRefAccess<Pawn_RotationTracker, Pawn>("pawn");
                 RendererPawn = AccessTools.FieldRefAccess<PawnRenderer, Pawn>("pawn");

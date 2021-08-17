@@ -28,18 +28,14 @@ namespace MVCF
             !v.Verb.IsMeleeAttack && (v.Props == null || !v.Props.canFireIndependently) && v.Enabled &&
             v.Verb.Available() && (Pawn.IsColonist || v.Props == null || !v.Props.colonistOnly));
 
-        public bool ShouldBrawlerUpset
-        {
-            get
-            {
-                var prim = Pawn.equipment.Primary;
-                var eq = Pawn.equipment.PrimaryEq;
-                var exclude = PreferMelee(prim)
-                    ? eq?.AllVerbs.Where(v => !v.IsMeleeAttack) ?? new List<Verb>()
-                    : new List<Verb>();
-                return AllRangedVerbs.Except(exclude).Any();
-            }
-        }
+        public bool ShouldBrawlerUpset => BrawlerHated.Any();
+
+        public IEnumerable<Verb> BrawlerTolerates => ManagedVerbs.Where(mv => mv.Props != null && !mv.Props.brawlerCaresAbout).Select(mv => mv.Verb).Concat(
+            PreferMelee(Pawn.equipment.Primary)
+                ? Pawn.equipment.PrimaryEq?.AllVerbs.Where(v => !v.IsMeleeAttack) ?? new List<Verb>()
+                : new List<Verb>());
+
+        public IEnumerable<Verb> BrawlerHated => AllRangedVerbs.Except(BrawlerTolerates);
 
         public IEnumerable<Verb> AllVerbs => verbs.Select(mv => mv.Verb);
         public IEnumerable<Verb> AllRangedVerbs => verbs.Select(mv => mv.Verb).Where(verb => !verb.IsMeleeAttack);
@@ -176,6 +172,7 @@ namespace MVCF
                     WorldComponent_MVCF.GetComp().TickManagers.Add(new System.WeakReference<VerbManager>(this));
                 }
 
+                if (Pawn.Spawned) tv.CreateCaster();
                 tickVerbs.Add(tv);
                 mv = tv;
             }
