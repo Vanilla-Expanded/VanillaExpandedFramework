@@ -19,8 +19,8 @@ namespace VFECore
 
         public VFEGlobal(ModContentPack content) : base(content)
         {
-            settings = GetSettings<VFEGlobalSettings>();
-            ToggablePatchCount = LoadedModManager.RunningMods.ToList().FindAll(mcp => mcp.Patches.ToList().FindAll(p => p is PatchOperationToggable pCasted && pCasted != null).Any()).Count;
+            settings           = GetSettings<VFEGlobalSettings>();
+            ToggablePatchCount = LoadedModManager.RunningMods.Count(mcp => mcp.Patches?.Any(p => p is PatchOperationToggable) ?? false);
         }
 
         public override string SettingsCategory() => "Vanilla Framework Expanded";
@@ -80,11 +80,11 @@ namespace VFECore
 
         private void AddButton(Listing_Standard list, ModContentPack modContentPack)
         {
-            if (modContentPack != null)
+            if (modContentPack?.Patches != null)
             {
                 foreach (PatchOperation patchOperation in modContentPack.Patches)
                 {
-                    if (patchOperation != null && patchOperation is PatchOperationToggable p && p != null)
+                    if (patchOperation is PatchOperationToggable p)
                     {
                         bool flag = false;
                         for (int i = 0; i < p.mods.Count; i++)
