@@ -59,10 +59,9 @@ namespace KCSG
             }
 
             // Flood refog
-            this.SetAllFogged(map);
-            foreach (IntVec3 loc in map.AllCells)
+            if (map.mapPawns.FreeColonistsSpawned.Count > 0)
             {
-                map.mapDrawer.MapMeshDirty(loc, MapMeshFlag.FogOfWar);
+                FloodFillerFog.DebugRefogMap(map);
             }
         }
 

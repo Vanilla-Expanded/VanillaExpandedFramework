@@ -112,7 +112,10 @@ namespace KCSG
                 GenUtils.GenerateRoomFromLayout(item, cellRect, map, structureLayoutDef);
             }
 
-            FloodFillerFog.DebugRefogMap(map);
+            if (map.mapPawns.FreeColonistsSpawned.Count > 0)
+            {
+                FloodFillerFog.DebugRefogMap(map);
+            }
         }
 
         public override string Summary(Scenario scen)
