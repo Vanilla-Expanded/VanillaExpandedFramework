@@ -6,9 +6,19 @@ using Verse;
 
 namespace VanillaApparelExpanded
 {
-	[HarmonyPatch(typeof(Pawn), "<GetDisabledWorkTypes>g__FillList|258_0")]
+	using System.Linq;
+	using System.Reflection;
+	using System.Runtime.CompilerServices;
+
+	[HarmonyPatch]
 	public static class Pawn_GetDisabledWorkTypes_Patch
 	{
+		[HarmonyTargetMethod]
+		public static MethodBase TargetMethod() => 
+			AccessTools.GetDeclaredMethods(typeof(Pawn)).First(mi => mi.HasAttribute<CompilerGeneratedAttribute>() && mi.Name.Contains("GetDisabledWorkTypes"));
+
+
+		[HarmonyPrefix]
 		public static void Prefix(Pawn __instance, List<WorkTypeDef> list)
 		{
 			if (__instance.apparel?.WornApparel != null)
@@ -19,7 +29,7 @@ namespace VanillaApparelExpanded
 					if (extension != null)
 					{
 						if (extension.workDisables != null)
-                        {
+						{
 							foreach (var workTag in extension.workDisables)
 							{
 								foreach (WorkTypeDef allDef in DefDatabase<WorkTypeDef>.AllDefs)
@@ -33,9 +43,9 @@ namespace VanillaApparelExpanded
 						}
 
 						if (extension.skillDisables != null)
-                        {
+						{
 							foreach (var skill in extension.skillDisables)
-                            {
+							{
 								foreach (WorkTypeDef allDef in DefDatabase<WorkTypeDef>.AllDefs)
 								{
 									if (!list.Contains(allDef) && allDef.relevantSkills != null && allDef.relevantSkills.Contains(skill))
@@ -44,7 +54,7 @@ namespace VanillaApparelExpanded
 									}
 								}
 							}
-                        }
+						}
 					}
 				}
 			}
