@@ -139,9 +139,9 @@ namespace KCSG
                                     map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
 
                                 if (thing.def.rotatable)
-                                    GenSpawn.Spawn(thing, cell, map, new Rot4(temp.rotation.AsInt), WipeMode.FullRefund);
+                                    GenSpawn.Spawn(thing, cell, map, new Rot4(temp.rotation.AsInt), WipeMode.VanishOrMoveAside);
                                 else
-                                    GenSpawn.Spawn(thing, cell, map, WipeMode.FullRefund);
+                                    GenSpawn.Spawn(thing, cell, map, WipeMode.VanishOrMoveAside);
 
                                 if (parentFaction) thing.SetFactionDirect(map.ParentFaction);
                             }
