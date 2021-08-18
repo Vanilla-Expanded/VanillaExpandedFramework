@@ -120,7 +120,7 @@ namespace KCSG
 
         public override string Summary(Scenario scen)
         {
-            return ScenSummaryList.SummaryWithList(scen, "MapContain", "Map contains");
+            return ScenSummaryList.SummaryWithList(scen, "MapContain", "KCSG.Mapcontains".Translate());
         }
 
         private bool CanPlaceInRange(CellRect rect, Map map)
