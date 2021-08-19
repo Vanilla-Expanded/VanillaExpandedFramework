@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.30709.132
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCF", "MVCF.csproj", "{FE04C8B0-931E-4548-B198-E9EA34A757F2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reloading", "SubMods\Reloading\Reloading.csproj", "{B761C01F-F4F4-4F83-964C-1839A5B74803}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{FE04C8B0-931E-4548-B198-E9EA34A757F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE04C8B0-931E-4548-B198-E9EA34A757F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE04C8B0-931E-4548-B198-E9EA34A757F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B761C01F-F4F4-4F83-964C-1839A5B74803}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B761C01F-F4F4-4F83-964C-1839A5B74803}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B761C01F-F4F4-4F83-964C-1839A5B74803}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B761C01F-F4F4-4F83-964C-1839A5B74803}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,8 +1,9 @@
 Source/VFECore/obj/
 Source/VFECore/bin/
 Source/VFECore/.vs/
-Source/MVCF/.vs/
-Source/MVCF/obj/
+Source/MVCF/**/.vs/
+Source/MVCF/**/obj/
+Source/MVCF/**/bin/
 Source/KCSG/obj/
 Source/KCSG/.vs/
 Source/VWEMakeshift/.vs

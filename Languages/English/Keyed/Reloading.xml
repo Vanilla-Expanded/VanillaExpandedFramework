@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+    <Reloading.Unload>Unload {GEAR_labelShort}</Reloading.Unload>
+    <Reloading.NoAmmo>No Ammo</Reloading.NoAmmo>
+    <Reloading.Ammo>Ammo: {0} / {1}</Reloading.Ammo>
+    <Reloading.Reload>Reload {GEAR_label} with {AMMO_label}</Reloading.Reload>
+</LanguageData>
