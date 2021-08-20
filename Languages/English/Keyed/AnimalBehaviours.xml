@@ -22,6 +22,9 @@
 	
 	<VEF_DisableAnimal>Disable {0}</VEF_DisableAnimal>
 	
+	<VEF_StomachContents>{0} creatures swallowed whole. </VEF_StomachContents>
+	<VEF_DigestionTime>Will be consumed in {0}</VEF_DigestionTime>
+	
 	<!-- Mod options -->
 	
 	<VCE_AffectsAllAnimalMods>These animal behaviours options will affect all animal mods that share code from the Vanilla Expanded Framework</VCE_AffectsAllAnimalMods>

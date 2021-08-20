@@ -452,6 +452,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_GraphicByTerrain.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_LightSustenance.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_RegisterAlternateGraphic.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_SwallowWhole.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_TerrainChanger.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_FilthProducer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_FixedGender.cs" />
@@ -477,6 +478,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompRegisterAlternateGraphic.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompStateAfterHealthLoss.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompSummonOnSpawn.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompSwallowWhole.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompTerrainChanger.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompThoughtEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompUntameable.cs" />
@@ -486,6 +488,7 @@
     <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraDamageMechanoids.cs" />
     <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraDamagePirates.cs" />
     <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_ExtraInfecter.cs" />
+    <Compile Include="AnimalBehaviours\DamageWorkers\DamageWorker_SwallowWhole.cs" />
     <Compile Include="AnimalBehaviours\DeathActionWorkers\DeathActionWorker_DropOnDeath.cs" />
     <Compile Include="AnimalBehaviours\DefExtensions\AnimalStatExtension.cs" />
     <Compile Include="AnimalBehaviours\DefExtensions\ExtendedRaceProperties.cs" />
@@ -522,6 +525,7 @@
     <Compile Include="AnimalBehaviours\Options\AnimalBehaviours_SettingsController.cs" />
     <Compile Include="AnimalBehaviours\Options\VanillaAnimalsExpanded_Settings.cs" />
     <Compile Include="AnimalBehaviours\Options\VanillaAnimalsExpanded_SettingsController.cs" />
+    <Compile Include="AnimalBehaviours\Pawn classes\Pawn_SwallowWhole.cs" />
     <Compile Include="Apparel\ApparelCollectionClass\ApparelCollectionClass.cs" />
     <Compile Include="Apparel\Comps\CompCamouflage.cs" />
     <Compile Include="Apparel\Comps\CompProperties\CompProperties_Camouflage.cs" />

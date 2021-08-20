@@ -638,7 +638,7 @@ namespace ItemProcessor
                 if ((!compItemProcessor.Props.isSemiAutomaticMachine && processorStage <= ProcessorStage.ExpectingIngredients && processorStage != ProcessorStage.AutoIngredients && !compItemProcessor.Props.isMachineSpecifiesOutput)||
                     compItemProcessor.Props.isSemiAutomaticMachine && processorStage == ProcessorStage.Inactive)
                 {
-                    //Different number of ingredients gizmos depending on the number of building slots. Note the <=1 and >=3, just in case someone inputs 78 
+                    //Different number of ingredients gizmos depending on the number of building slots
                     switch (compItemProcessor.Props.numberOfInputs)
                     {
                         case 1:
@@ -838,6 +838,30 @@ namespace ItemProcessor
 
         public void IngredientsChosenBringThemIn()
         {
+
+            if (compItemProcessor.Props.isSemiAutomaticMachine)
+            {
+                switch (compItemProcessor.Props.numberOfInputs)
+                {
+                    case 1:
+                        if (this.firstItem == "") { return; }
+                        break;
+                    case 2:
+                        if (this.firstItem == "" || this.secondItem == "") { return; }
+                        break;
+                    case 3:
+                        if (this.firstItem == "" || this.secondItem == "" || this.thirdItem == "") { return; }
+                        break;
+                    case 4:
+                        if (this.firstItem == "" || this.secondItem == "" || this.thirdItem == "" || this.fourthItem == "") { return; }
+                        break;
+                    default:
+                        if (this.firstItem == "") { return; }
+                        break;
+
+                }
+            }
+
             //If the building is powered or fueled and there is no power or fuel, don't start bringing ingredients
             if (compPowerTrader != null && !compPowerTrader.PowerOn && compItemProcessor.Props.noPowerDestroysProgress && ((!compItemProcessor.Props.isSemiAutomaticMachine) || (compItemProcessor.Props.isSemiAutomaticMachine && !isSemiAutoEnabled)))
             {
@@ -1864,9 +1888,33 @@ namespace ItemProcessor
             //This changes the graphic of the building. Runs very seldom unless called by  base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
             get
             {
-                if (processorStage == ProcessorStage.Working || processorStage == ProcessorStage.Finished)
+                if (processorStage == ProcessorStage.Working && compItemProcessor.Props.buildingOnGraphic != "")
                 {
-                    Graphic newgraphic = GraphicDatabase.Get(typeof(Graphic_Multi), compItemProcessor.Props.buildingOnGraphic, this.def.graphicData.shaderType.Shader, this.def.graphicData.drawSize, this.DrawColor, this.DrawColorTwo);
+                    Shader shader;
+                    if (compItemProcessor.Props.shaderForBuildingOnGraphic != null)
+                    {
+                        shader = compItemProcessor.Props.shaderForBuildingOnGraphic.Shader;
+                    }
+                    else
+                    {
+                        shader = this.def.graphicData.shaderType.Shader;
+                    }
+
+                    Graphic newgraphic = GraphicDatabase.Get(typeof(Graphic_Multi), compItemProcessor.Props.buildingOnGraphic, shader, this.def.graphicData.drawSize, this.DrawColor, this.DrawColorTwo);
+                    return newgraphic;
+                }
+                else if (processorStage == ProcessorStage.Finished && compItemProcessor.Props.buildingFinishedGraphic!="")
+                {
+                    Shader shader;
+                    if (compItemProcessor.Props.shaderForBuildingFinishedGraphic != null)
+                    {
+                        shader = compItemProcessor.Props.shaderForBuildingFinishedGraphic.Shader;
+                    }
+                    else
+                    {
+                        shader = this.def.graphicData.shaderType.Shader;
+                    }
+                    Graphic newgraphic = GraphicDatabase.Get(typeof(Graphic_Multi), compItemProcessor.Props.buildingFinishedGraphic, shader, this.def.graphicData.drawSize, this.DrawColor, this.DrawColorTwo);
                     return newgraphic;
                 }
                 else

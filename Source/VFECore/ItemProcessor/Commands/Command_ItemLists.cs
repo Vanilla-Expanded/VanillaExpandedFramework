@@ -615,9 +615,9 @@ namespace ItemProcessor
             Find.WindowStack.Add(new FloatMenu(list));
         }
 
+       
         private void TryInsertSecondThing(string item = "")
         {
-            building.processorStage = ProcessorStage.IngredientsChosen;
             if (item != "")
             {
                 building.secondCategory = ThingCategoryDef.Named(item).defName;
@@ -627,7 +627,25 @@ namespace ItemProcessor
             {
                 building.secondItem = things.RandomElement().def.defName;
             }
-
+            if (building.compItemProcessor.Props.isSemiAutomaticMachine)
+            {
+                if (building.compPowerTrader != null && !building.compPowerTrader.PowerOn && building.compItemProcessor.Props.noPowerDestroysProgress)
+                {
+                    Messages.Message("IP_NoPowerDestroysWarning".Translate(building.def.LabelCap), building, MessageTypeDefOf.NegativeEvent, true);
+                }
+                else if (building.compFuelable != null && !building.compFuelable.HasFuel && building.compItemProcessor.Props.noPowerDestroysProgress)
+                {
+                    Messages.Message("IP_NoFuelDestroysWarning".Translate(building.def.LabelCap), building, MessageTypeDefOf.NegativeEvent, true);
+                }
+                else
+                {
+                    building.IngredientsChosenBringThemIn();
+                }
+            }
+            else
+            {
+                building.processorStage = ProcessorStage.IngredientsChosen;
+            }
         }
 
 
@@ -739,9 +757,9 @@ namespace ItemProcessor
             Find.WindowStack.Add(new FloatMenu(list));
         }
 
+       
         private void TryInsertThirdThing(string item = "")
         {
-            building.processorStage = ProcessorStage.IngredientsChosen;
             if (item != "")
             {
                 building.thirdCategory = ThingCategoryDef.Named(item).defName;
@@ -751,8 +769,25 @@ namespace ItemProcessor
             {
                 building.thirdItem = things.RandomElement().def.defName;
             }
-
-
+            if (building.compItemProcessor.Props.isSemiAutomaticMachine)
+            {
+                if (building.compPowerTrader != null && !building.compPowerTrader.PowerOn && building.compItemProcessor.Props.noPowerDestroysProgress)
+                {
+                    Messages.Message("IP_NoPowerDestroysWarning".Translate(building.def.LabelCap), building, MessageTypeDefOf.NegativeEvent, true);
+                }
+                else if (building.compFuelable != null && !building.compFuelable.HasFuel && building.compItemProcessor.Props.noPowerDestroysProgress)
+                {
+                    Messages.Message("IP_NoFuelDestroysWarning".Translate(building.def.LabelCap), building, MessageTypeDefOf.NegativeEvent, true);
+                }
+                else
+                {
+                    building.IngredientsChosenBringThemIn();
+                }
+            }
+            else
+            {
+                building.processorStage = ProcessorStage.IngredientsChosen;
+            }
         }
 
 
@@ -864,9 +899,9 @@ namespace ItemProcessor
             Find.WindowStack.Add(new FloatMenu(list));
         }
 
+        
         private void TryInsertFourthThing(string item = "")
         {
-            building.processorStage = ProcessorStage.IngredientsChosen;
             if (item != "")
             {
                 building.fourthCategory = ThingCategoryDef.Named(item).defName;
@@ -876,8 +911,25 @@ namespace ItemProcessor
             {
                 building.fourthItem = things.RandomElement().def.defName;
             }
-
-
+            if (building.compItemProcessor.Props.isSemiAutomaticMachine)
+            {
+                if (building.compPowerTrader != null && !building.compPowerTrader.PowerOn && building.compItemProcessor.Props.noPowerDestroysProgress)
+                {
+                    Messages.Message("IP_NoPowerDestroysWarning".Translate(building.def.LabelCap), building, MessageTypeDefOf.NegativeEvent, true);
+                }
+                else if (building.compFuelable != null && !building.compFuelable.HasFuel && building.compItemProcessor.Props.noPowerDestroysProgress)
+                {
+                    Messages.Message("IP_NoFuelDestroysWarning".Translate(building.def.LabelCap), building, MessageTypeDefOf.NegativeEvent, true);
+                }
+                else
+                {
+                    building.IngredientsChosenBringThemIn();
+                }
+            }
+            else
+            {
+                building.processorStage = ProcessorStage.IngredientsChosen;
+            }
         }
 
 

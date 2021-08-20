@@ -18,12 +18,7 @@ namespace VanillaFurnitureExpanded
         }
         public override string SettingsCategory()
         {
-            if (ModLister.HasActiveModWithName("Vanilla Textures Expanded - Variations"))
-            {
-                return "Vanilla Textures Expanded - Variations";
-            }
-            else return "";
-
+            return "";
 
         }
 

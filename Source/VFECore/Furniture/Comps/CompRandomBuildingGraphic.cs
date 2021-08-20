@@ -49,7 +49,7 @@ namespace VanillaFurnitureExpanded
             {
                 if (this.parent.def.graphicData.graphicClass == typeof(Graphic_Multi))
                 {
-                    if (!VanillaFurnitureExpanded_Settings.isRandomGraphic) {
+                    if (!VFECore.VFEGlobal.settings.isRandomGraphic) {
                         if (!reloading) {
                             int newGraphicPathIndex = Props.randomGraphics.IndexOf(newGraphicPath);
                             if (newGraphicPathIndex + 1 > Props.randomGraphics.Count - 1)
@@ -94,7 +94,7 @@ namespace VanillaFurnitureExpanded
                 }
                 else if (this.parent.def.graphicData.graphicClass == typeof(Graphic_Single))
                 {
-                    if (!VanillaFurnitureExpanded_Settings.isRandomGraphic)
+                    if (!VFECore.VFEGlobal.settings.isRandomGraphic)
                     {
                         if (!reloading)
                         {
@@ -156,7 +156,7 @@ namespace VanillaFurnitureExpanded
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
-            if (this.parent.Faction != null && this.parent.Faction.IsPlayer && this.parent.StyleDef==null && !VanillaFurnitureExpanded_Settings.hideRandomizeButton)
+            if (this.parent.Faction != null && this.parent.Faction.IsPlayer && this.parent.StyleDef==null && !VFECore.VFEGlobal.settings.hideRandomizeButton)
             {
                 yield return new Command_Action
                 {
@@ -166,7 +166,7 @@ namespace VanillaFurnitureExpanded
                     icon = ContentFinder<Texture2D>.Get("UI/VEF_ChangeGraphic", true),
                     action = delegate ()
                     {
-                        if (VanillaFurnitureExpanded_Settings.isRandomGraphic) {
+                        if (VFECore.VFEGlobal.settings.isRandomGraphic) {
                             newGraphicPath = "";
                             newGraphicSinglePath = "";
                         }                     

@@ -180,6 +180,34 @@ namespace VFECore
 
         #endregion Faction Discovery
 
+
+        #region Texture Variations
+
+       
+        private void AddTextureVariations(Listing_Standard list)
+        {
+           
+            // Texture Variations
+           
+            list.Gap(20);
+            Text.Font = GameFont.Medium;
+            list.Label("Texture Variations");
+            Text.Font = GameFont.Small;
+            list.Gap();
+            list.CheckboxLabeled("VFE_RandomOrSequentially".Translate(), ref settings.isRandomGraphic, null);
+            list.Gap(12f);
+            list.CheckboxLabeled("VFE_HideRandomizeButton".Translate(), ref settings.hideRandomizeButton, null);
+            list.Gap(12f);
+
+
+
+        }
+
+
+
+        #endregion Texture Variations
+
+
         private void AddPageButtons(Rect rect)
         {
             Rect leftButtonRect = new Rect(rect.width / 2f - this.ButtonSize.x / 2f - this.ButtonSize.x - buttonOffset, rect.height + this.ButtonSize.y + 2, this.ButtonSize.x, this.ButtonSize.y);
@@ -207,7 +235,10 @@ namespace VFECore
 
             #region settings
 
-            if (PageIndex == (int)Pages.FactionDiscovery) this.AddFSKCSGSettings(list);
+            if (PageIndex == (int)Pages.FactionDiscovery) { 
+                this.AddFSKCSGSettings(list);
+                this.AddTextureVariations(list);
+            }
             else if (PageIndex == (int)Pages.PatchOperationToggable) this.AddToggablePatchesSettings(list);
 
             #endregion settings
@@ -222,12 +253,16 @@ namespace VFECore
     {
         public bool enableVerboseLogging;
         public bool disableCaching;
+        public  bool isRandomGraphic = true;
+        public  bool hideRandomizeButton = false;
 
         public override void ExposeData()
         {
             base.ExposeData();
             Scribe_Values.Look(ref enableVerboseLogging,  "enableVerboseLogging", false);
             Scribe_Values.Look(ref this.disableCaching, "disableCaching", true);
+            Scribe_Values.Look(ref isRandomGraphic, "isRandomGraphic", true, true);
+            Scribe_Values.Look(ref hideRandomizeButton, "hideRandomizeButton", false, true);
         }
     }
 }

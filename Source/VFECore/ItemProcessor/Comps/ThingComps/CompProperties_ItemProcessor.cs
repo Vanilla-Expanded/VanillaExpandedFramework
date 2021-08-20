@@ -11,7 +11,7 @@ namespace ItemProcessor
         //In both cases, there is a ItemAcceptedDef to define what ingredients are accepted by what building
         public int numberOfInputs = 1;
 
-        //This makes sense for 2 or 3 inputs, so one or two of them can be empty in CombinationDefs
+        //This makes sense for 2 to 4 inputs, so some of them can be empty in CombinationDefs
         public bool acceptsNoneAsInput = false;
 
         //Does the resulting product use quality levels?
@@ -24,7 +24,7 @@ namespace ItemProcessor
         public bool isCompletelyAutoMachine = false;
 
         //Semi automatic machines don't auto grab ingredients, but ingredient only needs to be set once, and pawns will instantly bring them in without
-        //a "bring ingredients" order. The machine also won't "forget" the set ingredient. WARNING: only for 1 slot machines
+        //a "bring ingredients" order. The machine also won't "forget" the set ingredient.
         public bool isSemiAutomaticMachine = false;
 
         //Can this building automatically drop products on its interaction spot?
@@ -92,8 +92,14 @@ namespace ItemProcessor
         public bool destroyIngredientsAtStartOfProcess = false;
         public bool destroyIngredientsAtAwfulQuality = false;
 
-        //Graphic of the building when it is working. This can be the same as the usual one if no change is wanted
-        public string buildingOnGraphic;
+        //Graphic of the building when it is working.
+        public string buildingOnGraphic ="";
+        //Graphic of the building when it is finished.
+        public string buildingFinishedGraphic ="";
+        //Shader to be used for working image
+        public ShaderTypeDef shaderForBuildingOnGraphic = null;
+        //Shader to be used for finished image
+        public ShaderTypeDef shaderForBuildingFinishedGraphic = null;
 
         //This defines whether the building is affected by bright light or lack of light
         public bool isLightDependingMachine = false;
