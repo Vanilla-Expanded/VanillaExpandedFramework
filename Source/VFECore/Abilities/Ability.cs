@@ -205,6 +205,17 @@
             if (!this.def.targetFlecks.NullOrEmpty())
                 foreach (FleckDef fleck in this.def.targetFlecks)
                     FleckMaker.Static(targetInfo.Cell, this.pawn.Map, fleck);
+
+            if (targetInfo.Pawn?.health.hediffSet.hediffs != null)
+                foreach (Hediff hediff in targetInfo.Pawn.health.hediffSet.hediffs)
+                {
+                    if(hediff is HediffWithComps hediffWithComps)
+                        foreach (HediffComp comp in hediffWithComps.comps)
+                        {
+                            if(comp is HediffComp_AbilityTargetReact compReact)
+                                compReact.ReactTo(this);
+                        }
+                }
         }
 
         public virtual void ApplyHediffs(LocalTargetInfo targetInfo)
