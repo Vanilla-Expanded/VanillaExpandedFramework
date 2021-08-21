@@ -168,11 +168,7 @@ namespace Reloading
                         var weapon = (ThingWithComps) ThingMaker.MakeThing(weaponPair.thing, weaponPair.stuff);
                         PawnGenerator.PostProcessGeneratedGear(weapon, p);
                         var num = request.BiocodeWeaponChance > 0f ? request.BiocodeWeaponChance : p.kindDef.biocodeWeaponChance;
-                        if (Rand.Chance(num))
-                        {
-                            var compBiocodableWeapon = weapon.TryGetComp<CompBiocodable>();
-                            if (compBiocodableWeapon != null) compBiocodableWeapon.CodeFor(p);
-                        }
+                        if (Rand.Chance(num)) weapon.TryGetComp<CompBiocodable>()?.CodeFor(p);
 
                         var compEquippable = weapon.TryGetComp<CompEquippable>();
                         if (compEquippable != null)
