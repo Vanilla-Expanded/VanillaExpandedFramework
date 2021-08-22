@@ -14,7 +14,9 @@ namespace VFECore
             //Harmony.DEBUG = true;
             VFECore.harmonyInstance.PatchAll();
             // PawnApparelGenerator.PossibleApparelSet.CoatButNoShirt
-            VFECore.harmonyInstance.Patch(typeof(PawnApparelGenerator).GetNestedType("PossibleApparelSet", BindingFlags.NonPublic | BindingFlags.Instance).GetMethod("CoatButNoShirt", BindingFlags.Public | BindingFlags.Instance),
+            VFECore.harmonyInstance.Patch(
+                typeof(PawnApparelGenerator).GetNestedType("PossibleApparelSet", BindingFlags.NonPublic | BindingFlags.Instance)
+                    .GetMethod("CoatButNoShirt", BindingFlags.Public | BindingFlags.Instance),
                 transpiler: new HarmonyMethod(typeof(Patch_PawnApparelGenerator.PossibleApparelSet.manual_CoatButNoShirt), "Transpiler"));
 
             // Dual Wield
@@ -42,7 +44,9 @@ namespace VFECore
                 var genCity = GenTypes.GetTypeInAnyAssembly("Cities.GenCity", "Cities");
                 if (genCity != null)
                     VFECore.harmonyInstance.Patch(
-                        genCity.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Instance).First(t => t.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).Any(m => m.Name.Contains("RandomCityFaction") && m.ReturnType == typeof(bool))).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).First(m => m.Name.Contains("RandomCityFaction")),
+                        genCity.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Instance)
+                            .First(t => t.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).Any(m => m.Name.Contains("RandomCityFaction") && m.ReturnType == typeof(bool)))
+                            .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).First(m => m.Name.Contains("RandomCityFaction")),
                         postfix: new HarmonyMethod(typeof(Patch_Cities_GenCity.manual_RandomCityFaction_predicate), "Postfix"));
                 else
                     Log.Error("Could not find type Cities.GenCity in RimCities");
@@ -89,7 +93,8 @@ namespace VFECore
             {
                 var patchVerbTryCastNextBurstShot = GenTypes.GetTypeInAnyAssembly("RunAndGun.Harmony.Verb_TryCastNextBurstShot", "RunAndGun.Harmony");
                 if (patchVerbTryCastNextBurstShot != null)
-                    VFECore.harmonyInstance.Patch(AccessTools.Method(patchVerbTryCastNextBurstShot, "SetStanceRunAndGun"), transpiler: new HarmonyMethod(typeof(Patch_RunAndGun_Harmony_Verb_TryCastNextBurstShot.manual_SetStanceRunAndGun), "Transpiler"));
+                    VFECore.harmonyInstance.Patch(AccessTools.Method(patchVerbTryCastNextBurstShot, "SetStanceRunAndGun"),
+                        transpiler: new HarmonyMethod(typeof(Patch_RunAndGun_Harmony_Verb_TryCastNextBurstShot.manual_SetStanceRunAndGun), "Transpiler"));
                 else
                     Log.Error("Could not find type RunAndGun.Harmony.Verb_TryCastNextBurstShot in RunAndGun");
             }
@@ -99,9 +104,19 @@ namespace VFECore
             {
                 var patchModBase = GenTypes.GetTypeInAnyAssembly("FactionDiscovery.ModBase", "FactionDiscovery");
                 if (patchModBase != null)
-                    VFECore.harmonyInstance.Patch(AccessTools.Method(patchModBase, "RunCheck"), new HarmonyMethod(typeof(Patch_FactionDiscovery_ModBase.manual_RunCheck), "Prefix"));
+                    VFECore.harmonyInstance.Patch(AccessTools.Method(patchModBase, "RunCheck"),
+                        new HarmonyMethod(typeof(Patch_FactionDiscovery_ModBase.manual_RunCheck), "Prefix"));
                 else
                     Log.Error("Could not find type RunAndGun.Harmony.Verb_TryCastNextBurstShot in RunAndGun");
+            }
+
+            // Combat Extended rendering
+            if (ModCompatibilityCheck.CombatExtended)
+            {
+                var outerType = AccessTools.TypeByName("CombatExtended.HarmonyCE.Harmony_PawnRenderer");
+                var innerType = AccessTools.Inner(outerType, "Harmony_PawnRenderer_DrawBodyApparel");
+                var method = AccessTools.Method(innerType, "IsVisibleLayer");
+                Patch_PawnRenderer.CE_IsVisibleLayer = MethodInvoker.GetHandler(method);
             }
         }
     }

@@ -10,6 +10,8 @@ namespace VFECore
 {
     public static class Patch_PawnRenderer
     {
+        public static FastInvokeHandler CE_IsVisibleLayer;
+
         public static bool IsShell(ApparelLayerDef def)
         {
             return def == RimWorld.ApparelLayerDefOf.Shell || IsOuterShell(def);
@@ -17,7 +19,7 @@ namespace VFECore
 
         public static bool IsOuterShell(ApparelLayerDef def)
         {
-            return def == ApparelLayerDefOf.VFEC_OuterShell;
+            return def == ApparelLayerDefOf.VFEC_OuterShell || CE_IsVisibleLayer != null && (bool) CE_IsVisibleLayer.Invoke(null, def);
         }
 
         [HarmonyPatch(typeof(PawnRenderer), "DrawBodyApparel")]
@@ -30,6 +32,12 @@ namespace VFECore
                 var list = instructions.ToList();
                 var info1 = AccessTools.Field(typeof(RimWorld.ApparelLayerDefOf), nameof(RimWorld.ApparelLayerDefOf.Shell));
                 var idx1 = list.FindIndex(ins => ins.LoadsField(info1));
+                if (idx1 < 0)
+                {
+                    Log.Warning("[VFECore] Another mod is overwriting PawnRenderer.DrawBodyApparel before we can, this will cause OuterShell items to render wrong");
+                    return list;
+                }
+
                 list[idx1] = new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Patch_PawnRenderer), nameof(IsShell)));
                 list[idx1 + 1].opcode = OpCodes.Brfalse;
                 var idx2 = list.FindIndex(ins => ins.opcode == OpCodes.Stloc_S && ins.operand is LocalBuilder lb && lb.LocalIndex == 5);

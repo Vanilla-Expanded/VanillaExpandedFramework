@@ -25,6 +25,8 @@ namespace VFECore
 
         public static bool WhatTheHack;
 
+        public static bool CombatExtended;
+
         static ModCompatibilityCheck()
         {
             var allMods = ModsConfig.ActiveModsInLoadOrder.ToList();
@@ -53,6 +55,8 @@ namespace VFECore
                     FactionDiscovery = true;
                 else if (curMod.Name == "What the hack?!")
                     WhatTheHack = true;
+                else if (curMod.Name == "Combat Extended")
+                    CombatExtended = true;
             }
         }
     }
