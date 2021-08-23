@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Xml;
 using UnityEngine;
 using Verse;
@@ -20,7 +21,7 @@ namespace VFECore
         public VFEGlobal(ModContentPack content) : base(content)
         {
             settings           = GetSettings<VFEGlobalSettings>();
-            ToggablePatchCount = LoadedModManager.RunningMods.Count(mcp => mcp.Patches?.Any(p => p is PatchOperationToggable) ?? false);
+            ToggablePatchCount = LoadedModManager.RunningMods.Count(mcp => mcp.Patches?.Any(p => p is PatchOperationToggableSequence pt && pt.ModsFound()) ?? false);
         }
 
         public override string SettingsCategory() => "Vanilla Framework Expanded";
@@ -84,33 +85,20 @@ namespace VFECore
             {
                 foreach (PatchOperation patchOperation in modContentPack.Patches)
                 {
-                    if (patchOperation is PatchOperationToggable p)
+                    if (patchOperation is PatchOperationToggableSequence p && p.ModsFound())
                     {
-                        bool flag = false;
-                        for (int i = 0; i < p.mods.Count; i++)
+                        string pLabelSmall = p.label.Replace(" ", "");
+                        string bLabel = !settings.toggablePatch.NullOrEmpty() && settings.toggablePatch.ContainsKey(pLabelSmall) ? settings.toggablePatch[pLabelSmall].ToString() : p.enabled.ToString();
+                        if (list.ButtonTextLabeled(p.label, bLabel))
                         {
-                            if (ModLister.HasActiveModWithName(p.mods[i]))
+                            if (!settings.toggablePatch.NullOrEmpty() && settings.toggablePatch.ContainsKey(pLabelSmall)) // Already in, we remove it
                             {
-                                flag = true;
+                                settings.toggablePatch.Remove(pLabelSmall);
                             }
-                            else
+                            else // Add to toggablePatch with the inverse value
                             {
-                                flag = false;
-                                break;
-                            }
-                        }
-                        if (flag)
-                        {
-                            if (list.ButtonTextLabeled(p.label, p.enabled.ToString()))
-                            {
-                                XmlDocument xmlDocument = new XmlDocument();
-                                xmlDocument.Load(p.sourceFile);
-
-                                string xpath = "Patch/Operation[@Class=\"VFECore.PatchOperationToggable\" and label=\"" + p.label + "\"]/enabled/text()";
-                                if (p.enabled) { xmlDocument.SelectSingleNode(xpath).Value = "False"; p.enabled = false; }
-                                else { xmlDocument.SelectSingleNode(xpath).Value = "True"; p.enabled = true; }
-
-                                File.WriteAllText(p.sourceFile, GlobalSettingsUtilities.PrettyXml(xmlDocument.OuterXml));
+                                if (settings.toggablePatch.NullOrEmpty()) settings.toggablePatch = new Dictionary<string, bool>();
+                                settings.toggablePatch.Add(pLabelSmall, !p.enabled);
                             }
                         }
                     }
@@ -180,7 +168,6 @@ namespace VFECore
 
         #endregion Faction Discovery
 
-
         #region Texture Variations
 
        
@@ -206,7 +193,6 @@ namespace VFECore
 
 
         #endregion Texture Variations
-
 
         private void AddPageButtons(Rect rect)
         {
@@ -251,6 +237,7 @@ namespace VFECore
 
     public class VFEGlobalSettings : ModSettings
     {
+        public Dictionary<string, bool> toggablePatch = new Dictionary<string, bool>();
         public bool enableVerboseLogging;
         public bool disableCaching;
         public  bool isRandomGraphic = true;
@@ -259,6 +246,7 @@ namespace VFECore
         public override void ExposeData()
         {
             base.ExposeData();
+            Scribe_Collections.Look(ref toggablePatch, "toggablePatch", LookMode.Value);
             Scribe_Values.Look(ref enableVerboseLogging,  "enableVerboseLogging", false);
             Scribe_Values.Look(ref this.disableCaching, "disableCaching", true);
             Scribe_Values.Look(ref isRandomGraphic, "isRandomGraphic", true, true);

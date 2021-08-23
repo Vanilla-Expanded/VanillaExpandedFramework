@@ -703,7 +703,7 @@
     <Compile Include="VFECore\Lords\LordToil_SiegeCustom.cs" />
     <Compile Include="VFECore\ModCompatibilityCheck.cs" />
     <Compile Include="VFECore\Needs\Need_Power.cs" />
-    <Compile Include="VFECore\PatchOperation\PatchOperationToggable.cs" />
+    <Compile Include="VFECore\PatchOperation\PatchOperationToggableSequence.cs" />
     <Compile Include="VFECore\PawnShieldGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VFECore\Pawns\Machine.cs" />
