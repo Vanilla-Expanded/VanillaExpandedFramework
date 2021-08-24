@@ -28,15 +28,23 @@ namespace KCSG
 
         private static void AddDef(SymbolDef def)
         {
-            if (DefDatabase<SymbolDef>.GetNamedSilentFail(def.defName) == null)
-                DefDatabase<SymbolDef>.Add(def);
+            if (DefDatabase<SymbolDef>.DefCount < 65535)
+            {
+                if (DefDatabase<SymbolDef>.GetNamedSilentFail(def.defName) == null)
+                    DefDatabase<SymbolDef>.Add(def);
+            }
+            else if (VFECore.VFEGlobal.settings.enableVerboseLogging)
+            {
+                Log.Error($"[CSG] Error creating symbol: {def.defName} from {def.thingDef.modContentPack?.PackageId}. Suppressing further errors");
+                defCreated = true;
+            }
         }
 
         private static void CreateAllSymbolsForDef(ThingDef thing)
         {
             if (thing.category == ThingCategory.Item || thing.IsFilth)
             {
-                AddDef(CreateSymbolDef(thing));
+                if (!defCreated) AddDef(CreateSymbolDef(thing));
             }
             else if (thing.stuffCategories != null)
             {
@@ -46,32 +54,32 @@ namespace KCSG
                     {
                         if (thing.rotatable)
                         {
-                            AddDef(CreateSymbolDef(thing, stuffDef, Rot4.North));
-                            AddDef(CreateSymbolDef(thing, stuffDef, Rot4.South));
-                            AddDef(CreateSymbolDef(thing, stuffDef, Rot4.East));
-                            AddDef(CreateSymbolDef(thing, stuffDef, Rot4.West));
+                            if (!defCreated) AddDef(CreateSymbolDef(thing, stuffDef, Rot4.North));
+                            if (!defCreated) AddDef(CreateSymbolDef(thing, stuffDef, Rot4.South));
+                            if (!defCreated) AddDef(CreateSymbolDef(thing, stuffDef, Rot4.East));
+                            if (!defCreated) AddDef(CreateSymbolDef(thing, stuffDef, Rot4.West));
                         }
                         else
                         {
-                            AddDef(CreateSymbolDef(thing, stuffDef));
+                            if (!defCreated) AddDef(CreateSymbolDef(thing, stuffDef));
                         }
                     }
                 }
             }
             else if (thing.plant != null)
             {
-                AddDef(CreatePlantSymbolDef(thing));
+                if (!defCreated) AddDef(CreatePlantSymbolDef(thing));
             }
             else if (thing.rotatable)
             {
-                AddDef(CreateSymbolDef(thing, Rot4.North));
-                AddDef(CreateSymbolDef(thing, Rot4.South));
-                AddDef(CreateSymbolDef(thing, Rot4.East));
-                AddDef(CreateSymbolDef(thing, Rot4.West));
+                if (!defCreated) AddDef(CreateSymbolDef(thing, Rot4.North));
+                if (!defCreated) AddDef(CreateSymbolDef(thing, Rot4.South));
+                if (!defCreated) AddDef(CreateSymbolDef(thing, Rot4.East));
+                if (!defCreated) AddDef(CreateSymbolDef(thing, Rot4.West));
             }
             else
             {
-                AddDef(CreateSymbolDef(thing));
+                if (!defCreated) AddDef(CreateSymbolDef(thing));
             }
         }
 
@@ -166,19 +174,19 @@ namespace KCSG
             List<ThingDef> thingDefs = DefDatabase<ThingDef>.AllDefsListForReading.FindAll(t => t.modContentPack?.PackageId == modId);
             foreach (ThingDef thingDef in thingDefs)
             {
-                CreateAllSymbolsForDef(thingDef);
+                if (!defCreated) CreateAllSymbolsForDef(thingDef);
             }
 
             List<TerrainDef> terrainDefs = DefDatabase<TerrainDef>.AllDefsListForReading.FindAll(t => t.modContentPack?.PackageId == modId);
             foreach (TerrainDef terrainDef in terrainDefs)
             {
-                AddDef(CreateSymbolDef(terrainDef));
+                if (!defCreated) AddDef(CreateSymbolDef(terrainDef));
             }
 
             List<PawnKindDef> pawnKindDefs = DefDatabase<PawnKindDef>.AllDefsListForReading.FindAll(t => t.modContentPack?.PackageId == modId);
             foreach (PawnKindDef pawnKindDef in pawnKindDefs)
             {
-                AddDef(CreateSymbolDef(pawnKindDef));
+                if (!defCreated) AddDef(CreateSymbolDef(pawnKindDef));
             }
             modCount++;
         }
