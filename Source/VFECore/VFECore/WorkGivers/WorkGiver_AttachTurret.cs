@@ -75,13 +75,19 @@ namespace VFE.Mechanoids.AI.WorkGivers
 
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
+            List<Thing> workSet = new List<Thing>();
             foreach (CompMachineChargingStation compMachineChargingStation in CompMachineChargingStation.cachedChargingStations)
             {
-                if (compMachineChargingStation.parent.Map == pawn.Map)
+                try
                 {
-                    yield return compMachineChargingStation.parent;
+                    if (compMachineChargingStation.parent.Map == pawn.Map)
+                    {
+                        workSet.Add(compMachineChargingStation.parent);
+                    }
                 }
+                catch { }
             }
+            return workSet.AsEnumerable();
         }
     }
 }
