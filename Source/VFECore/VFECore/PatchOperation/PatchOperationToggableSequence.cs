@@ -11,8 +11,8 @@ namespace VFECore
 		public bool enabled;
 		public string label;
 
-		private readonly List<string> mods;
-		private readonly List<PatchOperation> operations;
+		private readonly List<string> mods = new List<string>();
+		private readonly List<PatchOperation> operations = new List<PatchOperation>();
 		private PatchOperation lastFailedOperation;
 
 		protected override bool ApplyWorker(XmlDocument xml)
@@ -64,17 +64,20 @@ namespace VFECore
 
 		public bool ModsFound()
         {
-			bool modFound = false;
-			for (int index = 0; index < this.mods.Count; ++index)
+			bool modsFound = false;
+			for (int index = 0; index < this.mods.Count; index++)
 			{
 				if (ModLister.HasActiveModWithName(this.mods[index]))
 				{
-					modFound = true;
-					break;
+					modsFound = true;
+				}
+				else
+                {
+					modsFound = false;
 				}
 			}
 
-			return modFound;
+			return modsFound;
 		}
 	}
 }
