@@ -8,14 +8,16 @@ The Vanilla Expanded Framework is a code library that adds some shared behaviour
 
 First of all, you'll need to add the framework as a dependency. You do this by adding this to your mod's about.xml file:
 
-	<modDependencies>
-		<li>
-			<packageId>OskarPotocki.VanillaFactionsExpanded.Core</packageId>
-			<displayName>Vanilla Expanded Framework</displayName>
-			<steamWorkshopUrl>https://steamcommunity.com/workshop/filedetails/?id=2023507013</steamWorkshopUrl>
-			<downloadUrl>https://github.com/AndroidQuazar/VanillaExpandedFramework</downloadUrl>
-		</li>
-	</modDependencies>
+```xml
+<modDependencies>
+  <li>
+    <packageId>OskarPotocki.VanillaFactionsExpanded.Core</packageId>
+    <displayName>Vanilla Expanded Framework</displayName>
+    <steamWorkshopUrl>https://steamcommunity.com/workshop/filedetails/?id=2023507013</steamWorkshopUrl>
+    <downloadUrl>https://github.com/AndroidQuazar/VanillaExpandedFramework</downloadUrl>
+  </li>
+</modDependencies>
+```
 
 It is also recommended that you add in Steam this framework mod to your list of Required Items.
 
