@@ -130,7 +130,7 @@ namespace KCSG
                         if (i2 + 1 == width) temp += ".";
                         else temp += ".,";
                     }
-                    else if (!map.terrainGrid.TerrainAt(first).BuildableByPlayer)
+                    else if (map.terrainGrid.TerrainAt(first) is TerrainDef d && !d.BuildableByPlayer && !d.HasTag("Road"))
                     {
                         if (i2 + 1 == width) temp += ".";
                         else temp += ".,";

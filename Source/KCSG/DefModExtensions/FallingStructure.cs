@@ -56,13 +56,13 @@ namespace KCSG
                 WeightedStructs.Add(WeightedStruct.FromString(str));
             }
 
-            if (WeightedStructs.Count == 0)
+            if (weightedStruct.NullOrEmpty())
             {
-                Log.Error($"FallingStructure defModExtension can't have an empty or null WeightedStructs");
+                Log.Error($"FallingStructure defModExtension can't have an empty weightedStruct");
             }
-            if (canBeUsedBy.Count == 0)
+            if (canBeUsedBy.NullOrEmpty())
             {
-                Log.Error($"FallingStructure defModExtension can't have an empty or null canBeUsedBy");
+                Log.Error($"FallingStructure defModExtension can't have an empty canBeUsedBy");
             }
             return base.ConfigErrors();
         }
