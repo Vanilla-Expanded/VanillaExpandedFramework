@@ -95,14 +95,16 @@ namespace KCSG
                                 Faction faction = temp.spawnPartOfFaction ? (temp.faction != null ? Find.FactionManager.FirstFactionOfDef(temp.faction) : map.ParentFaction) : null;
                                 Pawn pawn = temp.containPawnKind != null ? PawnGenerator.GeneratePawn(temp.containPawnKindDef, faction) : PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, faction);
 
-                                cryptosleepCasket.TryAcceptThing(pawn);
+                                if (!cryptosleepCasket.TryAcceptThing(pawn))
+                                    pawn.Destroy();
                             }
                             else if (thing is Building_CorpseCasket corpseCasket)
                             {
                                 Faction faction = temp.spawnPartOfFaction ? (temp.faction != null ? Find.FactionManager.FirstFactionOfDef(temp.faction) : map.ParentFaction) : null;
                                 Pawn pawn = temp.containPawnKind != null ? PawnGenerator.GeneratePawn(temp.containPawnKindDef, faction) : PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, faction);
 
-                                corpseCasket.TryAcceptThing(pawn);
+                                if (!corpseCasket.TryAcceptThing(pawn))
+                                    pawn.Destroy();
                             }
                             else if (thing is Building_Crate crate && temp.thingSetMakerDef != null)
                             {
@@ -119,9 +121,8 @@ namespace KCSG
                                 l++;
                                 continue;
                             }
-                            else if (cell.GetFirstMineable(map) is Mineable m && m != null && m.def.building.smoothedThing != null && (thing.def.designationCategory == DesignationCategoryDefOf.Security || thing.def.graphicData.linkFlags.HasFlag(LinkFlags.Wall)))
+                            else if (cell.GetFirstMineable(map) is Mineable m && thing.def.designationCategory == DesignationCategoryDefOf.Security)
                             {
-                                GenSpawn.Spawn(ThingMaker.MakeThing(m.def.building.smoothedThing), cell, map, WipeMode.Vanish);
                                 l++;
                                 continue;
                             }

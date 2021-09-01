@@ -25,6 +25,9 @@ namespace KCSG
         // Plant
         public float plantGrowth = 0.5f;
 
+
+        public bool spawnPartOfFaction = true;
+
         // CryptosleepCasket and CorpseCasket
         public PawnKindDef containPawnKindDef;
         public string containPawnKind;
@@ -37,7 +40,6 @@ namespace KCSG
         public PawnKindDef pawnKindDefNS = null;
         public Type lordJob = null;
         public bool isSlave = false;
-        public bool spawnPartOfFaction = true;
         public FactionDef faction;
         public int numberToSpawn = 1;
 
