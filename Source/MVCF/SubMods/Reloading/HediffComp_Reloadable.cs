@@ -31,15 +31,9 @@ namespace Reloading
             return ammo.SplitOff(shotsToFill * ItemsPerShot);
         }
 
-        public virtual int ReloadTicks(Thing ammo)
-        {
-            return ammo == null ? 0 : (Props.ReloadTimePerShot * ShotsToReload(ammo)).SecondsToTicks();
-        }
+        public virtual int ReloadTicks(Thing ammo) => ammo == null ? 0 : (Props.ReloadTimePerShot * ShotsToReload(ammo)).SecondsToTicks();
 
-        public virtual bool NeedsReload()
-        {
-            return ShotsRemaining < MaxShots;
-        }
+        public virtual bool NeedsReload() => ShotsRemaining < MaxShots;
 
         public virtual bool CanReloadFrom(Thing ammo)
         {
@@ -70,10 +64,7 @@ namespace Reloading
 
         public bool GenerateBackupWeapon => Props.GenerateBackupWeapon;
 
-        private int ShotsToReload(Thing ammo)
-        {
-            return Math.Min(ammo.stackCount / Props.ItemsPerShot, Props.MaxShots - ShotsRemaining);
-        }
+        private int ShotsToReload(Thing ammo) => Math.Min(ammo.stackCount / Props.ItemsPerShot, Props.MaxShots - ShotsRemaining);
 
         public override void CompExposeData()
         {
@@ -105,20 +96,20 @@ namespace Reloading
 
         public override IEnumerable<string> ConfigErrors(HediffDef parentDef)
         {
-            AmmoFilter.ResolveReferences();
-            HarmonyPatches.DoPatches();
-            if (TargetVerb(parentDef) == null)
-            {
-                yield return "Cannot find verb to be reloaded.";
-            }
-            else
-            {
-                var verb = TargetVerb(parentDef);
-                if (NewVerbClass != null) verb.verbClass = NewVerbClass;
-                ReloadingMod.RegisterVerb(verb.verbClass, PatchFirstFound);
-            }
+            if (TargetVerb(parentDef) == null) yield return "Cannot find verb to be reloaded.";
 
             foreach (var e in base.ConfigErrors(parentDef)) yield return e;
+        }
+
+        public override void ResolveReferences(HediffDef parent)
+        {
+            base.ResolveReferences(parent);
+            AmmoFilter.ResolveReferences();
+            HarmonyPatches.DoPatches();
+            var verb = TargetVerb(parent);
+            if (verb == null) return;
+            if (NewVerbClass != null) verb.verbClass = NewVerbClass;
+            ReloadingMod.RegisterVerb(verb.verbClass, PatchFirstFound);
         }
 
         private VerbProperties TargetVerb(HediffDef parent)

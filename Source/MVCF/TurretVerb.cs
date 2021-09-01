@@ -50,6 +50,7 @@ namespace MVCF
 
         public virtual void Tick()
         {
+            if (!man.Pawn.Spawned) return;
             if (Verb.Bursting) return;
 
             if (cooldownTicksLeft > 0) cooldownTicksLeft--;
@@ -72,17 +73,11 @@ namespace MVCF
                 TryStartCast();
             }
             else if (warmUpTicksLeft == 0)
-            {
                 TryCast();
-            }
             else if (warmUpTicksLeft > 0)
-            {
                 warmUpTicksLeft--;
-            }
             else
-            {
                 TryStartCast();
-            }
         }
 
         protected virtual void TryStartCast()
@@ -102,16 +97,11 @@ namespace MVCF
             if (success && Verb.verbProps.warmupTime > 0) Verb.WarmupComplete();
         }
 
-        public override LocalTargetInfo PointingTarget(Pawn p)
-        {
-            return currentTarget;
-        }
+        public override LocalTargetInfo PointingTarget(Pawn p) => currentTarget;
 
-        public virtual bool CanFire()
-        {
-            return !man.Pawn.Dead && !man.Pawn.Downed && !(!Verb.verbProps.violent ||
-                                                           man.Pawn.WorkTagIsDisabled(WorkTags.Violent));
-        }
+        public virtual bool CanFire() =>
+            !man.Pawn.Dead && !man.Pawn.Downed && !(!Verb.verbProps.violent ||
+                                                    man.Pawn.WorkTagIsDisabled(WorkTags.Violent));
 
         public override void DrawOn(Pawn p, Vector3 drawPos)
         {
@@ -167,10 +157,7 @@ namespace MVCF
 
         public override Vector3 DrawPos => verb.DrawPos(verb.Target, pawn, pawn.DrawPos);
 
-        public Thing RealCaster()
-        {
-            return pawn;
-        }
+        public Thing RealCaster() => pawn;
 
         public override void Tick()
         {

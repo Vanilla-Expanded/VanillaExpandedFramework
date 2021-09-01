@@ -49,6 +49,7 @@ namespace MVCF
                     if (def.Features.HediffVerbs) Features.HediffVerbs = true;
                     if (def.Features.RangedAnimals) Features.RangedAnimals = true;
                     if (def.Features.IntegratedToggle) Features.IntegratedToggle = true;
+                    if (def.Features.TickVerbs) Features.TickVerbs = true;
                 }
 
                 if (def.IgnoredFeatures != null)
@@ -60,6 +61,7 @@ namespace MVCF
                     if (def.IgnoredFeatures.HediffVerbs) IgnoredFeatures.HediffVerbs = true;
                     if (def.IgnoredFeatures.RangedAnimals) IgnoredFeatures.RangedAnimals = true;
                     if (def.IgnoredFeatures.IntegratedToggle) IgnoredFeatures.IntegratedToggle = true;
+                    if (def.IgnoredFeatures.TickVerbs) IgnoredFeatures.TickVerbs = true;
                 }
 
                 if (def.IgnoreThisMod) IgnoredMods.Add(def.modContentPack.Name);
@@ -113,6 +115,8 @@ namespace MVCF
             }
 
             if (Features.Drawing) MiscPatches.DoDrawPatches(Harm);
+
+            if (Features.TickVerbs) VerbPatches.DoTickPatches(Harm);
         }
     }
 
@@ -132,6 +136,7 @@ namespace MVCF
         public bool IndependentFire;
         public bool IntegratedToggle;
         public bool RangedAnimals;
+        public bool TickVerbs;
         public bool EnabledAtAll => HediffVerbs || ExtraEquipmentVerbs || ApparelVerbs || RangedAnimals;
         public bool HumanoidVerbs => HediffVerbs || ExtraEquipmentVerbs || ApparelVerbs;
     }

@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using MVCF.Comps;
 using MVCF.Utilities;
+using MVCF.Verbs;
 using Verse;
 
 // ReSharper disable InconsistentNaming
@@ -27,6 +28,16 @@ namespace MVCF.Harmony
                 postfix: new HarmonyMethod(typeof(VerbPatches), "Postfix_get_CasterIsPawn"));
         }
 
+        public static void DoTickPatches(HarmonyLib.Harmony harm)
+        {
+            harm.Patch(AccessTools.Method(typeof(Verb), nameof(Verb.VerbTick)), postfix: new HarmonyMethod(typeof(VerbPatches), nameof(TickVerb)));
+        }
+
+        public static void TickVerb(Verb __instance)
+        {
+            if (__instance is IVerbTick tick) tick.Tick();
+        }
+
         public static bool Prefix_OrderForceTarget(LocalTargetInfo target, Verb __instance)
         {
             if (__instance.verbProps.IsMeleeAttack || !__instance.CasterIsPawn)
@@ -45,7 +56,7 @@ namespace MVCF.Harmony
             }
 
             if (man.debugOpts.VerbLogging)
-                Verse.Log.Message("Changing CurrentVerb of " + __instance.CasterPawn + " to " + __instance);
+                Log.Message("Changing CurrentVerb of " + __instance.CasterPawn + " to " + __instance);
             man.CurrentVerb = __instance;
 
             return true;
@@ -55,7 +66,7 @@ namespace MVCF.Harmony
         {
             if (__instance == null) // Needed to work with A Rimworld of Magic, for some reason
             {
-                Verse.Log.Warning("[MVCF] Instance in patch is null. This is not supported.");
+                Log.Warning("[MVCF] Instance in patch is null. This is not supported.");
                 __result = null;
                 return false;
             }

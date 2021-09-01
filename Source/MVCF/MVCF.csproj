@@ -81,6 +81,7 @@
     <Compile Include="TurretVerb.cs" />
     <Compile Include="Utilities\VerbManagerUtility.cs" />
     <Compile Include="VerbManager.cs" />
+    <Compile Include="Verbs\Interfaces.cs" />
     <Compile Include="Verbs\Verb_Jump.cs" />
     <Compile Include="Verbs\Verb_SmokePop.cs" />
     <Compile Include="WorldComponent_MVCF.cs" />
