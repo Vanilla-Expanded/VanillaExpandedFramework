@@ -25,9 +25,12 @@ namespace KCSG
         // Plant
         public float plantGrowth = 0.5f;
 
-        // Content holder info
+        // CryptosleepCasket and CorpseCasket
         public PawnKindDef containPawnKindDef;
         public string containPawnKind;
+
+        // Crate
+        public ThingSetMakerDef thingSetMakerDef = ThingSetMakerDefOf.MapGen_AncientComplexRoomLoot_Default;
 
         // Pawn
         public string pawnKindDef = null;

@@ -90,30 +90,28 @@ namespace KCSG
                             CompPowerBattery battery = thing.TryGetComp<CompPowerBattery>();
                             battery?.AddEnergy(battery.Props.storedEnergyMax);
 
-                            if (thing is Building_Casket inheritFromCasket)
+                            if (thing is Building_CryptosleepCasket cryptosleepCasket)
                             {
-                                Pawn pawn;
-                                if (temp.spawnPartOfFaction)
+                                Faction faction = temp.spawnPartOfFaction ? (temp.faction != null ? Find.FactionManager.FirstFactionOfDef(temp.faction) : map.ParentFaction) : null;
+                                Pawn pawn = temp.containPawnKind != null ? PawnGenerator.GeneratePawn(temp.containPawnKindDef, faction) : PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, faction);
+
+                                cryptosleepCasket.TryAcceptThing(pawn);
+                            }
+                            else if (thing is Building_CorpseCasket corpseCasket)
+                            {
+                                Faction faction = temp.spawnPartOfFaction ? (temp.faction != null ? Find.FactionManager.FirstFactionOfDef(temp.faction) : map.ParentFaction) : null;
+                                Pawn pawn = temp.containPawnKind != null ? PawnGenerator.GeneratePawn(temp.containPawnKindDef, faction) : PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, faction);
+
+                                corpseCasket.TryAcceptThing(pawn);
+                            }
+                            else if (thing is Building_Crate crate && temp.thingSetMakerDef != null)
+                            {
+                                List<Thing> thingList = temp.thingSetMakerDef.root.Generate(new ThingSetMakerParams());
+                                thingList.ForEach(t =>
                                 {
-                                    if (temp.faction != null)
-                                    {
-                                        Faction faction = Find.FactionManager.FirstFactionOfDef(temp.faction);
-                                        if (faction != null)
-                                            pawn = temp.containPawnKind != null ? PawnGenerator.GeneratePawn(temp.containPawnKindDef, faction) : PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, faction);
-                                        else
-                                            pawn = temp.containPawnKind != null ? PawnGenerator.GeneratePawn(temp.containPawnKindDef, null) : PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, null);
-                                    }
-                                    else
-                                    {
-                                        pawn = temp.containPawnKind != null ? PawnGenerator.GeneratePawn(temp.containPawnKindDef, map.ParentFaction) : PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, map.ParentFaction);
-                                    }
-                                }
-                                else
-                                {
-                                    pawn = temp.containPawnKind != null ? PawnGenerator.GeneratePawn(temp.containPawnKindDef, null) : PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, null);
-                                }
-                                
-                                inheritFromCasket.TryAcceptThing(pawn);
+                                    if (!crate.TryAcceptThing(t, false))
+                                        t.Destroy();
+                                });
                             }
 
                             if (thing.def.category == ThingCategory.Pawn && CGO.factionSettlement?.shouldRuin == true)
