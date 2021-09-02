@@ -33,7 +33,7 @@ namespace KCSG
         public string containPawnKind;
 
         // Crate
-        public ThingSetMakerDef thingSetMakerDef = ThingSetMakerDefOf.MapGen_AncientComplexRoomLoot_Default;
+        public ThingSetMakerDef thingSetMakerDef;
 
         // Pawn
         public string pawnKindDef = null;
@@ -50,6 +50,7 @@ namespace KCSG
             if (this.stuff != null) this.stuffDef = DefDatabase<ThingDef>.GetNamed(this.stuff, VFECore.VFEGlobal.settings.enableVerboseLogging);
             if (this.containPawnKind != null) this.containPawnKindDef = DefDatabase<PawnKindDef>.GetNamed(this.containPawnKind, VFECore.VFEGlobal.settings.enableVerboseLogging);
             if (this.pawnKindDef != null) this.pawnKindDefNS = DefDatabase<PawnKindDef>.GetNamed(this.pawnKindDef, VFECore.VFEGlobal.settings.enableVerboseLogging);
+            if (this.thingSetMakerDef == null) this.thingSetMakerDef = ThingSetMakerDefOf.MapGen_AncientComplexRoomLoot_Default;
         }
     }
 }
