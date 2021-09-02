@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MVCF.Comps;
+using MVCF.Verbs;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -36,6 +37,14 @@ namespace MVCF.Utilities
                     props = hediffGiver.PropsFor(verb);
                     break;
             }
+
+            var skipDefault = false;
+
+            if (verb is IVerbGizmos gizmos)
+                foreach (var gizmo1 in gizmos.GetGizmos(out skipDefault))
+                    yield return gizmo1;
+
+            if (skipDefault) yield break;
 
             Command gizmo;
             var command = new Command_VerbTarget {verb = verb};
