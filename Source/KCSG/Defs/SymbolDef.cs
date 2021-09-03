@@ -29,11 +29,14 @@ namespace KCSG
         public bool spawnPartOfFaction = true;
 
         // CryptosleepCasket and CorpseCasket
-        public PawnKindDef containPawnKindDef;
         public string containPawnKind;
+        public string containPawnKindForPlayer;
+        public PawnKindDef containPawnKindDef = null;
+        public PawnKindDef containPawnKindDefForPlayer = null;
 
         // Crate
         public ThingSetMakerDef thingSetMakerDef;
+        public ThingSetMakerDef thingSetMakerDefForPlayer = null;
 
         // Pawn
         public string pawnKindDef = null;
@@ -50,6 +53,7 @@ namespace KCSG
             if (this.stuff != null) this.stuffDef = DefDatabase<ThingDef>.GetNamed(this.stuff, VFECore.VFEGlobal.settings.enableVerboseLogging);
             if (this.containPawnKind != null) this.containPawnKindDef = DefDatabase<PawnKindDef>.GetNamed(this.containPawnKind, VFECore.VFEGlobal.settings.enableVerboseLogging);
             if (this.pawnKindDef != null) this.pawnKindDefNS = DefDatabase<PawnKindDef>.GetNamed(this.pawnKindDef, VFECore.VFEGlobal.settings.enableVerboseLogging);
+            if (this.containPawnKindForPlayer != null) this.containPawnKindDefForPlayer = DefDatabase<PawnKindDef>.GetNamed(this.containPawnKindForPlayer, VFECore.VFEGlobal.settings.enableVerboseLogging);
             if (this.thingSetMakerDef == null) this.thingSetMakerDef = ThingSetMakerDefOf.MapGen_AncientComplexRoomLoot_Default;
         }
     }

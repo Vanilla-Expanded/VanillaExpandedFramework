@@ -92,23 +92,28 @@ namespace KCSG
 
                             if (thing is Building_CryptosleepCasket cryptosleepCasket)
                             {
-                                Faction faction = temp.spawnPartOfFaction ? (temp.faction != null ? Find.FactionManager.FirstFactionOfDef(temp.faction) : map.ParentFaction) : null;
-                                Pawn pawn = temp.containPawnKind != null ? PawnGenerator.GeneratePawn(temp.containPawnKindDef, faction) : PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, faction);
-
+                                Pawn pawn = GeneratePawnForContainer(temp, map);
                                 if (!cryptosleepCasket.TryAcceptThing(pawn))
                                     pawn.Destroy();
                             }
                             else if (thing is Building_CorpseCasket corpseCasket)
                             {
-                                Faction faction = temp.spawnPartOfFaction ? (temp.faction != null ? Find.FactionManager.FirstFactionOfDef(temp.faction) : map.ParentFaction) : null;
-                                Pawn pawn = temp.containPawnKind != null ? PawnGenerator.GeneratePawn(temp.containPawnKindDef, faction) : PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, faction);
-
+                                Pawn pawn = GeneratePawnForContainer(temp, map);
                                 if (!corpseCasket.TryAcceptThing(pawn))
                                     pawn.Destroy();
                             }
-                            else if (thing is Building_Crate crate && temp.thingSetMakerDef != null)
+                            else if (thing is Building_Crate crate)
                             {
-                                List<Thing> thingList = temp.thingSetMakerDef.root.Generate(new ThingSetMakerParams());
+                                List<Thing> thingList = new List<Thing>();
+                                if (map.ParentFaction == Faction.OfPlayer && temp.thingSetMakerDefForPlayer != null)
+                                {
+                                    thingList = temp.thingSetMakerDefForPlayer.root.Generate(new ThingSetMakerParams());
+                                }
+                                else
+                                {
+                                    thingList = temp.thingSetMakerDef.root.Generate(new ThingSetMakerParams());
+                                }
+
                                 thingList.ForEach(t =>
                                 {
                                     if (!crate.TryAcceptThing(t, false))
@@ -193,6 +198,19 @@ namespace KCSG
                     }
                 }
                 l++;
+            }
+        }
+
+        private static Pawn GeneratePawnForContainer(SymbolDef temp, Map map)
+        {
+            Faction faction = temp.spawnPartOfFaction ? (temp.faction != null ? Find.FactionManager.FirstFactionOfDef(temp.faction) : map.ParentFaction) : null;
+            if (temp.containPawnKindDefForPlayer != null && map.ParentFaction == Faction.OfPlayer)
+            {
+                return PawnGenerator.GeneratePawn(temp.containPawnKindDefForPlayer, faction);
+            }
+            else
+            {
+                return temp.containPawnKindDef != null ? PawnGenerator.GeneratePawn(temp.containPawnKindDef, faction) : PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, faction);
             }
         }
 
