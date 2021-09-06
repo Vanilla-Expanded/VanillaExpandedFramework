@@ -633,6 +633,7 @@
     <Compile Include="VFECore\DefModExtensions\IncidentDefExtension.cs" />
     <Compile Include="VFECore\DefModExtensions\PawnKindDefExtension.cs" />
     <Compile Include="VFECore\DefModExtensions\ResearchProjectDefExtension.cs" />
+    <Compile Include="VFECore\DefModExtensions\StuffExtension.cs" />
     <Compile Include="VFECore\DefModExtensions\ThingDefExtension.cs" />
     <Compile Include="VFECore\DefOf\ApparelLayerDefOf.cs" />
     <Compile Include="VFECore\DefOf\IncidentDefOf.cs" />
@@ -657,6 +658,7 @@
     <Compile Include="VFECore\HarmonyPatches\MechanoidsDoNotReserveBeds.cs" />
     <Compile Include="VFECore\HarmonyPatches\MechanoidsObeyOrders.cs" />
     <Compile Include="VFECore\HarmonyPatches\MobileTurretsShowTurrets.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Stuff_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\Need_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\NoBioForMachines.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_ArmorUtility.cs" />
