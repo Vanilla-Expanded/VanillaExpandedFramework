@@ -149,17 +149,4 @@ namespace VFECore
         //    }
         //}
     }
-
-    [HarmonyPatch(typeof(Sketch), nameof(Sketch.AddThing))]
-    public class AddThing_Patch
-    {
-        [HarmonyPriority(Priority.First)]
-        public static void Postfix(ThingDef def, IntVec3 pos, Rot4 rot, ThingDef stuff = null, int stackCount = 1, QualityCategory? quality = null, int? hitPoints = null, bool wipeIfCollides = true)
-        {
-            if (stuff?.defName.Contains("VFEI_Chitin") ?? false)
-            {
-                Log.Message("AddThing: " + def + " spawned with chitin");
-            }
-        }
-    }
 }
