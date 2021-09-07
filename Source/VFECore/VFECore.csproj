@@ -571,6 +571,7 @@
     <Compile Include="Furniture\Utility\StoneTypeSettableUtility.cs" />
     <Compile Include="GlobalSettings.cs" />
     <Compile Include="GlobalSettingsUtilities.cs" />
+    <Compile Include="ItemProcessor\FactoryMultiplierClass\FactoryMultiplierClass.cs" />
     <Compile Include="Memes\DefModExtensions\ExtendedMemeProperties.cs" />
     <Compile Include="Memes\Defs\StartingItemsByIdeologyDef.cs" />
     <Compile Include="Memes\GameComponent\GameComponent_IdeologicalGoodies.cs" />

@@ -1096,7 +1096,7 @@ namespace ItemProcessor
                                 {
                                     VFEM.MechShipsSettings settings = VFEM.MechShipsMod.settings;
                                     float multiplier = settings.VFEM_factorySpeedMultiplier;
-                                    this.days = thisCombinationRecipe.singleTimeIfNotQualityIncreasing * multiplier;
+                                    this.days = thisCombinationRecipe.singleTimeIfNotQualityIncreasing * multiplier * FactoryMultiplierClass.FactoryPreceptMultiplier;
                                 }))();
                             }
                             catch (TypeLoadException) { }
