@@ -71,7 +71,6 @@ namespace HeavyWeapons
 
                         if (changeTarget)
                         {
-                            Log.Message("Changing target");
                             float maxDist = 8f;
                             maxDist = Mathf.Clamp(pawn.CurrentEffectiveVerb.verbProps.range * 0.66f, 2f, 20f);
                             Thing thing = (Thing)AttackTargetFinder.BestAttackTarget(pawn, TargetScanFlags.NeedLOSToAll, (Thing x) =>
@@ -80,10 +79,6 @@ namespace HeavyWeapons
                             if (thing != null)
                             {
                                 projectile.intendedTarget = thing;
-                            }
-                            else
-                            {
-                                Log.Message(projectile + " tried to change targets, failed - " + maxDist);
                             }
                         }
                         targets.targetInfos[projectile] = projectile.intendedTarget;
@@ -103,7 +98,6 @@ namespace HeavyWeapons
                 {
                     Traverse.Create(projectile).Field("destination").SetValue(projectile.intendedTarget.CenterVector3);
                 }
-                Log.Message(projectile + " changing destination");
             }
         }
         public override void PostExposeData()

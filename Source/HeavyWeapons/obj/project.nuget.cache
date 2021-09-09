@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "RL8mWWuuYXgu5E4SHfAJ1EBADlQULxTjvLKERjfDhngtHVJo4TTrj89YFji4jukOzt0ZEEvKSwmDV91fDFIYFw==",
+  "dgSpecHash": "U8N9elK2zyt+wUlG0TDhGqKLoqwhMiJEDU3EbuB40DSEYL5eLeKZMVNXqsvLoEhJLb1Mj551NqJCYZ+gaut1sA==",
   "success": true,
-  "projectFilePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\VanillaExpandedFramework-Dev\\Source\\HeavyWeapons\\HeavyWeapons.csproj",
+  "projectFilePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\VanillaExpandedFramework\\Source\\HeavyWeapons\\HeavyWeapons.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Vova\\.nuget\\packages\\lib.harmony\\2.0.4\\lib.harmony.2.0.4.nupkg.sha512"
   ],

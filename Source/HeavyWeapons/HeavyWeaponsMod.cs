@@ -72,7 +72,6 @@ namespace HeavyWeapons
                     {
                         var options = thing.GetModExtension<HeavyWeapon>();
                         HeavyWeaponsMod.settings.weaponHPStates[thing.defName] = options.weaponHitPointsDeductionOnShot;
-                        Log.Message("options.weaponHitPointsDeductionOnShot: " + thing + " - " + options.weaponHitPointsDeductionOnShot);
                     }
                 }
             }
