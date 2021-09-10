@@ -620,6 +620,7 @@
     <Compile Include="VFECore\Comps\ThingComps\CompPawnDependsOn.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompProperties_ApparelHediffs.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompProperties_DependsOnBuilding.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompProperties_IngestedThoughtFromQuality.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompProperties_Machine.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompProperties_MachineChargingStation.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompProperties_PawnDependsOn.cs" />
