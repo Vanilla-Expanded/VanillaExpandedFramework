@@ -162,7 +162,7 @@ namespace VanillaFurnitureExpanded
                 {
                     defaultLabel = "VFE_ChangeGraphic".Translate(),
                     defaultDesc = "VFE_ChangeGraphicDesc".Translate(),
-                    hotKey = KeyBindingDefOf.Misc3,
+                   
                     icon = ContentFinder<Texture2D>.Get("UI/VEF_ChangeGraphic", true),
                     action = delegate ()
                     {
