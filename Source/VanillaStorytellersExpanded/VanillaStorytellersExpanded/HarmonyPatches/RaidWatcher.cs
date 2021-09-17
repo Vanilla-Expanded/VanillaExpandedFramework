@@ -232,30 +232,34 @@ namespace VanillaStorytellersExpanded
         public static bool Prefix(IncidentWorker_Raid __instance, IncidentParms parms)
         {
             var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
-            if (options != null && options.storytellerThreat != null && options.storytellerThreat.raidWarningRange.HasValue && 
-                __instance is IncidentWorker_Raid && parms.target is Map mapTarget && parms.faction != null && parms.faction.HostileTo(Faction.OfPlayer))
+            if (options != null && options.storytellerThreat != null && options.storytellerThreat.raidWarningRange.HasValue &&
+                __instance is IncidentWorker_RaidEnemy && parms.target is Map mapTarget)
             {
-                var comp = Current.Game.GetComponent<StorytellerWatcher>();
-                if (comp != null && !comp.raidQueues.Any(x => x.parms == parms))
+                var result = (bool) AccessTools.Method(typeof(IncidentWorker_RaidEnemy), "TryResolveRaidFaction", null, null).Invoke(__instance, new object[]
                 {
-                    var tickToFire = Find.TickManager.TicksAbs + options.storytellerThreat.raidWarningRange.Value.RandomInRange;
-                    var result = (bool)AccessTools.Method(typeof(IncidentWorker_RaidEnemy), "TryResolveRaidFaction", null, null).Invoke(__instance, new object[]
+                    parms
+                });
+                if (result)
+                {
+                    if (parms.faction != null && parms.faction.HostileTo(Faction.OfPlayer))
                     {
-                        parms
-                    });
-                    if (result)
-                    {
-                        __instance.ResolveRaidStrategy(parms, PawnGroupKindDefOf.Combat);
-                        __instance.ResolveRaidArriveMode(parms);
-                        var raidQueue = new RaidQueue(__instance.def, parms, tickToFire);
-                        comp.raidQueues.Add(raidQueue);
-                        TaggedString letterLabel = "VFEMech.RaidWarningTitle".Translate(parms.faction.Named("FACTION"));
-                        TaggedString letterText = "VFEMech.RaidWarningText".Translate(parms.faction.Named("FACTION"), parms.raidStrategy.arrivalTextEnemy);
-                        Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.ThreatBig);
-                        return false;
+                        var comp = Current.Game.GetComponent<StorytellerWatcher>();
+                        if (comp != null && !comp.raidQueues.Any(x => x.parms == parms))
+                        {
+                            var tickToFire = Find.TickManager.TicksAbs + options.storytellerThreat.raidWarningRange.Value.RandomInRange;
+                            __instance.ResolveRaidStrategy(parms, PawnGroupKindDefOf.Combat);
+                            __instance.ResolveRaidArriveMode(parms);
+                            var raidQueue = new RaidQueue(__instance.def, parms, tickToFire);
+                            comp.raidQueues.Add(raidQueue);
+                            TaggedString letterLabel = "VFEMech.RaidWarningTitle".Translate(parms.faction.Named("FACTION"));
+                            TaggedString letterText = "VFEMech.RaidWarningText".Translate(parms.faction.Named("FACTION"), parms.raidStrategy.arrivalTextEnemy);
+                            Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.ThreatBig);
+                            return false;
+                        }
                     }
                 }
             }
+
             return true;
         }
     }
