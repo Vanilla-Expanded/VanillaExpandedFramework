@@ -21,7 +21,15 @@ namespace VFECore
         public VFEGlobal(ModContentPack content) : base(content)
         {
             settings           = GetSettings<VFEGlobalSettings>();
-            ToggablePatchCount = LoadedModManager.RunningMods.Count(mcp => mcp.Patches?.Any(p => p is PatchOperationToggableSequence pt && pt.ModsFound()) ?? false);
+            foreach (ModContentPack mod in LoadedModManager.RunningMods)
+            {
+                if (mod.Patches != null)
+                {
+                    int modPatchesCount = mod.Patches.ToList().FindAll(p => p is PatchOperationToggableSequence pt && pt.ModsFound()).Count;
+                    ModUsingToggablePatchCount += modPatchesCount;
+                    ToggablePatchCount += modPatchesCount;
+                }
+            }
         }
 
         public override string SettingsCategory() => "Vanilla Framework Expanded";
@@ -63,6 +71,7 @@ namespace VFECore
         #region Toggable Patches
 
         private int ToggablePatchCount;
+        private int ModUsingToggablePatchCount;
 
         private void AddToggablePatchesSettings(Listing_Standard list)
         {
@@ -70,36 +79,39 @@ namespace VFECore
 
             Text.Anchor = TextAnchor.MiddleCenter;
             list.Label("NeedRestart".Translate());
-            list.Label("XPatchFound".Translate(ToggablePatchCount));
             Text.Anchor = TextAnchor.UpperLeft;
             list.Gap();
+
             foreach (ModContentPack modContentPack in (from m in LoadedModManager.RunningMods orderby m.OverwritePriority select m).ThenBy((ModContentPack x) => LoadedModManager.RunningModsListForReading.IndexOf(x)))
             {
-                this.AddButton(list, modContentPack);
+                if (modContentPack?.Patches != null && modContentPack.Patches.Any(p => p is PatchOperationToggableSequence pt && pt.ModsFound()))
+                {
+                    Text.Anchor = TextAnchor.MiddleCenter;
+                    list.Label(modContentPack.Name);
+                    Text.Anchor = TextAnchor.UpperLeft;
+                    this.AddButton(list, modContentPack);
+                }
             }
         }
 
         private void AddButton(Listing_Standard list, ModContentPack modContentPack)
         {
-            if (modContentPack?.Patches != null)
+            foreach (PatchOperation patchOperation in modContentPack.Patches)
             {
-                foreach (PatchOperation patchOperation in modContentPack.Patches)
+                if (patchOperation is PatchOperationToggableSequence p && p.ModsFound())
                 {
-                    if (patchOperation is PatchOperationToggableSequence p && p.ModsFound())
+                    string pLabelSmall = p.label.Replace(" ", "");
+                    string bLabel = !settings.toggablePatch.NullOrEmpty() && settings.toggablePatch.ContainsKey(pLabelSmall) ? settings.toggablePatch[pLabelSmall].ToString() : p.enabled.ToString();
+                    if (list.ButtonTextLabeled(p.label, bLabel))
                     {
-                        string pLabelSmall = p.label.Replace(" ", "");
-                        string bLabel = !settings.toggablePatch.NullOrEmpty() && settings.toggablePatch.ContainsKey(pLabelSmall) ? settings.toggablePatch[pLabelSmall].ToString() : p.enabled.ToString();
-                        if (list.ButtonTextLabeled(p.label, bLabel))
+                        if (!settings.toggablePatch.NullOrEmpty() && settings.toggablePatch.ContainsKey(pLabelSmall)) // Already in, we remove it
                         {
-                            if (!settings.toggablePatch.NullOrEmpty() && settings.toggablePatch.ContainsKey(pLabelSmall)) // Already in, we remove it
-                            {
-                                settings.toggablePatch.Remove(pLabelSmall);
-                            }
-                            else // Add to toggablePatch with the inverse value
-                            {
-                                if (settings.toggablePatch.NullOrEmpty()) settings.toggablePatch = new Dictionary<string, bool>();
-                                settings.toggablePatch.Add(pLabelSmall, !p.enabled);
-                            }
+                            settings.toggablePatch.Remove(pLabelSmall);
+                        }
+                        else // Add to toggablePatch with the inverse value
+                        {
+                            if (settings.toggablePatch.NullOrEmpty()) settings.toggablePatch = new Dictionary<string, bool>();
+                            settings.toggablePatch.Add(pLabelSmall, !p.enabled);
                         }
                     }
                 }
@@ -215,20 +227,32 @@ namespace VFECore
         {
             this.AddPageButtons(inRect);
 
+            Rect viewRect = new Rect(inRect);
+            if (PageIndex == (int)Pages.PatchOperationToggable)
+            {
+                viewRect.height = (ToggablePatchCount + ModUsingToggablePatchCount) * 20f;
+                viewRect.width -= 20f;
+            }
+
             Listing_Standard list = new Listing_Standard();
-            Widgets.BeginScrollView(inRect, ref scrollPosition, inRect, true);
-            list.Begin(inRect);
+            Widgets.BeginScrollView(inRect, ref scrollPosition, viewRect, true);
+            list.Begin(viewRect);
 
             #region settings
-
-            if (PageIndex == (int)Pages.FactionDiscovery) { 
-                this.AddFSKCSGSettings(list);
-                this.AddTextureVariations(list);
+            switch (PageIndex)
+            {
+                case (int)Pages.FactionDiscovery:
+                    this.AddFSKCSGSettings(list);
+                    this.AddTextureVariations(list);
+                    break;
+                case (int)Pages.PatchOperationToggable:
+                    this.AddToggablePatchesSettings(list);
+                    break;
+                default:
+                    break;
             }
-            else if (PageIndex == (int)Pages.PatchOperationToggable) this.AddToggablePatchesSettings(list);
 
             #endregion settings
-
             list.End();
             Widgets.EndScrollView();
             settings.Write();
