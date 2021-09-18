@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     ".NETFramework,Version=v4.7.2": {
-      "Krafs.Rimworld.Ref/1.3.3075-beta": {
+      "Krafs.Rimworld.Ref/1.3.3117": {
         "type": "package",
         "compile": {
           "ref/net472/Assembly-CSharp-firstpass.dll": {},
@@ -85,7 +85,7 @@
           "ref/net472/mscorlib.dll": {}
         }
       },
-      "Lib.Harmony/2.0.4": {
+      "Lib.Harmony/2.1.1": {
         "type": "package",
         "compile": {
           "lib/net472/0Harmony.dll": {}
@@ -96,7 +96,7 @@
       }
     },
     ".NETFramework,Version=v4.7.2/win": {
-      "Krafs.Rimworld.Ref/1.3.3075-beta": {
+      "Krafs.Rimworld.Ref/1.3.3117": {
         "type": "package",
         "compile": {
           "ref/net472/Assembly-CSharp-firstpass.dll": {},
@@ -179,7 +179,7 @@
           "ref/net472/mscorlib.dll": {}
         }
       },
-      "Lib.Harmony/2.0.4": {
+      "Lib.Harmony/2.1.1": {
         "type": "package",
         "compile": {
           "lib/net472/0Harmony.dll": {}
@@ -190,7 +190,7 @@
       }
     },
     ".NETFramework,Version=v4.7.2/win-x64": {
-      "Krafs.Rimworld.Ref/1.3.3075-beta": {
+      "Krafs.Rimworld.Ref/1.3.3117": {
         "type": "package",
         "compile": {
           "ref/net472/Assembly-CSharp-firstpass.dll": {},
@@ -273,7 +273,7 @@
           "ref/net472/mscorlib.dll": {}
         }
       },
-      "Lib.Harmony/2.0.4": {
+      "Lib.Harmony/2.1.1": {
         "type": "package",
         "compile": {
           "lib/net472/0Harmony.dll": {}
@@ -284,7 +284,7 @@
       }
     },
     ".NETFramework,Version=v4.7.2/win-x86": {
-      "Krafs.Rimworld.Ref/1.3.3075-beta": {
+      "Krafs.Rimworld.Ref/1.3.3117": {
         "type": "package",
         "compile": {
           "ref/net472/Assembly-CSharp-firstpass.dll": {},
@@ -367,7 +367,7 @@
           "ref/net472/mscorlib.dll": {}
         }
       },
-      "Lib.Harmony/2.0.4": {
+      "Lib.Harmony/2.1.1": {
         "type": "package",
         "compile": {
           "lib/net472/0Harmony.dll": {}
@@ -379,16 +379,16 @@
     }
   },
   "libraries": {
-    "Krafs.Rimworld.Ref/1.3.3075-beta": {
-      "sha512": "5xuXqQU0fCT3wv88s+PQvg+Xv9KSLpbZN/Pgbp0KvxBTAWr/3pXmZqCICuriOkhiMRc18CFSQ7nF0YM+foY2Fw==",
+    "Krafs.Rimworld.Ref/1.3.3117": {
+      "sha512": "mxTQbelrvwpnVfA+WztZFk68J/49uwbZQPgb1TpG9rC6+rRB0IhJLmR85jZ1Ua7WetNGiwkbmVltDyKlpEGudQ==",
       "type": "package",
-      "path": "krafs.rimworld.ref/1.3.3075-beta",
+      "path": "krafs.rimworld.ref/1.3.3117",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "LICENSE.txt",
         "icon.png",
-        "krafs.rimworld.ref.1.3.3075-beta.nupkg.sha512",
+        "krafs.rimworld.ref.1.3.3117.nupkg.sha512",
         "krafs.rimworld.ref.nuspec",
         "ref/net472/Assembly-CSharp-firstpass.dll",
         "ref/net472/Assembly-CSharp.dll",
@@ -470,16 +470,16 @@
         "ref/net472/mscorlib.dll"
       ]
     },
-    "Lib.Harmony/2.0.4": {
-      "sha512": "m4Lm5W2pYU6+aTJpeUzHsX12chKXynIZPlsM5tV6O+WQxs3xa+teQHBjCNFXePDB1HXiiuAmtjyCo/E9fRuSIg==",
+    "Lib.Harmony/2.1.1": {
+      "sha512": "CZiVcq01bVIjL2baWW5SVGZWyd6ew8adFp4BB2bzZfIGcWkTEto0G9sKu+9HDrEd75qBq3EHnZxx/gizi4NnqA==",
       "type": "package",
-      "path": "lib.harmony/2.0.4",
+      "path": "lib.harmony/2.1.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "HarmonyLogo.png",
         "LICENSE",
-        "lib.harmony.2.0.4.nupkg.sha512",
+        "lib.harmony.2.1.1.nupkg.sha512",
         "lib.harmony.nuspec",
         "lib/net35/0Harmony.dll",
         "lib/net35/0Harmony.xml",
@@ -489,6 +489,8 @@
         "lib/net472/0Harmony.xml",
         "lib/net48/0Harmony.dll",
         "lib/net48/0Harmony.xml",
+        "lib/net5.0/0Harmony.dll",
+        "lib/net5.0/0Harmony.xml",
         "lib/netcoreapp3.0/0Harmony.dll",
         "lib/netcoreapp3.0/0Harmony.xml",
         "lib/netcoreapp3.1/0Harmony.dll",
@@ -498,8 +500,8 @@
   },
   "projectFileDependencyGroups": {
     ".NETFramework,Version=v4.7.2": [
-      "Krafs.Rimworld.Ref >= 1.3.3075-beta",
-      "Lib.Harmony >= 2.0.4"
+      "Krafs.Rimworld.Ref >= 1.3.3117",
+      "Lib.Harmony >= 2.1.1"
     ]
   },
   "packageFolders": {
@@ -537,12 +539,12 @@
         "dependencies": {
           "Krafs.Rimworld.Ref": {
             "target": "Package",
-            "version": "[1.3.3075-beta, )"
+            "version": "[1.3.3117, )"
           },
           "Lib.Harmony": {
             "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",
             "target": "Package",
-            "version": "[2.0.4, )"
+            "version": "[2.1.1, )"
           }
         }
       }
