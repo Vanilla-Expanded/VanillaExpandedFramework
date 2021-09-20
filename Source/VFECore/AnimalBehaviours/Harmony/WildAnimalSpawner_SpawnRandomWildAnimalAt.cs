@@ -11,7 +11,6 @@ using Verse.AI;
 
 namespace AnimalBehaviours
 {
-    /*Buckle your belts or something, we are doing Transpilers!*/
 
     [HarmonyPatch(typeof(WildAnimalSpawner))]
     [HarmonyPatch("SpawnRandomWildAnimalAt")]

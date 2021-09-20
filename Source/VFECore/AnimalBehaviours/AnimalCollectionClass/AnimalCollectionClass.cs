@@ -21,6 +21,9 @@ namespace AnimalBehaviours
         // A list of hovering animals for CompProperties_Floating
         public static HashSet<Thing> floating_animals = new HashSet<Thing>();
 
+        // A list of animals that eat weird things to cache them for CompProperties_EatWeirdFood and its Harmony patch
+        public static HashSet<Thing> weirdeEaters_animals = new HashSet<Thing>();
+
         // A list of Salamander graphic paths    
         public static IDictionary<Thing, string> salamander_graphics = new Dictionary<Thing, string>();
 
@@ -84,7 +87,25 @@ namespace AnimalBehaviours
 
         }
 
-        
+        public static void AddWeirdEaterAnimalToList(Thing thing)
+        {
+
+            if (!weirdeEaters_animals.Contains(thing))
+            {
+                weirdeEaters_animals.Add(thing);
+            }
+        }
+
+        public static void RemoveWeirdEaterAnimalFromList(Thing thing)
+        {
+            if (weirdeEaters_animals.Contains(thing))
+            {
+                weirdeEaters_animals.Remove(thing);
+            }
+
+        }
+
+
 
         public static void AddControlHubBuilt()
         {

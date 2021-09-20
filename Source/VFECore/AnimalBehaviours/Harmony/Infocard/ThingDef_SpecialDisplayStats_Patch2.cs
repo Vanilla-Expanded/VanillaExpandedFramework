@@ -16,7 +16,7 @@ namespace NocturnalAnimals
 
         [HarmonyPatch(typeof(ThingDef))]
         [HarmonyPatch(nameof(ThingDef.SpecialDisplayStats))]
-        public static class AnimalBehaviours_ThingDef_SpecialDisplayStats_Patch
+        public static class VanillaExpandedFramework_ThingDef_SpecialDisplayStats_Nocturnal_Patch
         {
 
             public static void Postfix(ThingDef __instance, ref IEnumerable<StatDrawEntry> __result)

@@ -16,7 +16,7 @@ namespace NocturnalAnimals
 
         [HarmonyPatch(typeof(JobGiver_GetRest))]
         [HarmonyPatch(nameof(JobGiver_GetRest.GetPriority))]
-        public static class AnimalBehaviours_JobGiver_GetRest_GetPriority_Patch
+        public static class VanillaExpandedFramework_JobGiver_GetRest_GetPriority_Patch
         {
             public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator ilg)
             {
@@ -24,8 +24,8 @@ namespace NocturnalAnimals
                 bool found = false;
                 var label = ilg.DefineLabel();
                 var curLevelGetter = AccessTools.PropertyGetter(typeof(Need), "CurLevel");
-                var shouldOverride = AccessTools.Method(typeof(AnimalBehaviours_JobGiver_GetRest_GetPriority_Patch), "ShouldOverride");
-                var sleepHourFor = AccessTools.Method(typeof(AnimalBehaviours_JobGiver_GetRest_GetPriority_Patch), "TimeAssignmentFor");
+                var shouldOverride = AccessTools.Method(typeof(VanillaExpandedFramework_JobGiver_GetRest_GetPriority_Patch), "ShouldOverride");
+                var sleepHourFor = AccessTools.Method(typeof(VanillaExpandedFramework_JobGiver_GetRest_GetPriority_Patch), "TimeAssignmentFor");
                 for (int i = 0; i < instructionList.Count; i++)
                 {
                     CodeInstruction instruction = instructionList[i];

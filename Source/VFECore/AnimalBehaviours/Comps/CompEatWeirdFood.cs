@@ -26,5 +26,22 @@ namespace AnimalBehaviours
                 return (CompProperties_EatWeirdFood)this.props;
             }
         }
+
+        public override void PostSpawnSetup(bool respawningAfterLoad)
+        {
+
+            AnimalCollectionClass.AddWeirdEaterAnimalToList(this.parent);
+
+        }
+
+        public override void PostDeSpawn(Map map)
+        {
+            AnimalCollectionClass.RemoveWeirdEaterAnimalFromList(this.parent);
+        }
+
+        public override void PostDestroy(DestroyMode mode, Map previousMap)
+        {
+            AnimalCollectionClass.RemoveWeirdEaterAnimalFromList(this.parent);
+        }
     }
 }
