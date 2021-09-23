@@ -8,17 +8,20 @@ namespace KCSG
 {
     internal class ScenPart_AddStartingStructure : ScenPart
     {
-        /* Generation option */
+        // Gen options
         public bool allowFoggedPosition = false;
         public List<StructureLayoutDef> chooseFrom = new List<StructureLayoutDef>();
         public bool nearMapCenter;
         public bool spawnPartOfEnnemyFaction = false;
         public bool spawnConduits = true;
+        // Name in scenario
         public string structureLabel;
-        /* Clear filth, buildings, chunks, remove non-natural terrain */
+        // Clear options
         public bool preGenClear = true;
-        /* Clear everything */
         public bool fullClear = false;
+        // Starting spawn spawning
+        public bool spawnTheStartingPawn = false;
+        public PlayerPawnsArriveMethod method = PlayerPawnsArriveMethod.Standing;
 
         public override void DoEditInterface(Listing_ScenEdit listing)
         {
@@ -113,9 +116,73 @@ namespace KCSG
                 GenUtils.GenerateRoomFromLayout(item, cellRect, map, structureLayoutDef, spawnConduits);
             }
 
+            if (spawnTheStartingPawn && Find.GameInitData != null)
+            {
+                List<List<Thing>> thingsGroups = new List<List<Thing>>();
+                foreach (Pawn startingAndOptionalPawn in Find.GameInitData.startingAndOptionalPawns)
+                {
+                    thingsGroups.Add(new List<Thing>() { startingAndOptionalPawn });
+                }
+                    
+                List<Thing> thingList = new List<Thing>();
+                foreach (ScenPart allPart in Find.Scenario.AllParts)
+                {
+                    thingList.AddRange(allPart.PlayerStartingThings());
+                }
+
+                int index = 0;
+                foreach (Thing thing in thingList)
+                {
+                    if (thing.def.CanHaveFaction)
+                    {
+                        thing.SetFactionDirect(Faction.OfPlayer);
+                    }
+
+                    thingsGroups[index].Add(thing);
+                    ++index;
+                    if (index >= thingsGroups.Count)
+                    {
+                        index = 0;
+                    }
+                }
+
+                IntVec3 center = map.Center;
+                Pos offset = structureLayoutDef.spawnAtPos.RandomElement();
+                center.x += offset.x;
+                center.y += offset.y;
+                Log.Message($"Spawning at {center}");
+                this.DropThingGroupsAt(center, map, thingsGroups, instaDrop: (Find.GameInitData.QuickStarted || this.method != PlayerPawnsArriveMethod.DropPods), leaveSlag: true, allowFogged: false);
+            }
+
             if (map.mapPawns.FreeColonistsSpawned.Count > 0)
             {
                 FloodFillerFog.DebugRefogMap(map);
+            }
+        }
+
+        private void DropThingGroupsAt (IntVec3 dropCenter, Map map, List<List<Thing>> thingsGroups, int openDelay = 110, bool instaDrop = false, bool leaveSlag = false, bool forbid = true, bool allowFogged = true)
+        {
+            foreach (List<Thing> thingsGroup in thingsGroups)
+            {
+                if (forbid)
+                {
+                    for (int index = 0; index < thingsGroup.Count; ++index)
+                        thingsGroup[index].SetForbidden(true, false);
+                }
+                if (instaDrop)
+                {
+                    foreach (Thing thing in thingsGroup)
+                        GenPlace.TryPlaceThing(thing, dropCenter, map, ThingPlaceMode.Near);
+                }
+                else
+                {
+                    ActiveDropPodInfo info = new ActiveDropPodInfo();
+                    foreach (Thing thing in thingsGroup)
+                        info.innerContainer.TryAdd(thing);
+                    info.openDelay = openDelay;
+                    info.leaveSlag = leaveSlag;
+                    DropPodUtility.MakeDropPodAt(dropCenter, map, info);
+                }
             }
         }
 

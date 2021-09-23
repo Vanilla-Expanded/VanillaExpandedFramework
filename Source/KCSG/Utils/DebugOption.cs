@@ -52,6 +52,12 @@ namespace KCSG
             }
         }
 
+        [DebugAction("KCSG", "Point map center", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        private static void PointCenter()
+        {
+            Find.LetterStack.ReceiveLetter(LetterMaker.MakeLetter("Map center", "Map center", LetterDefOf.NeutralEvent, new LookTargets(Find.CurrentMap.Center, Find.CurrentMap)));
+        }
+
         [DebugAction("KCSG", "Spawn roof...", false, false, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void SpawnRoof()
         {
