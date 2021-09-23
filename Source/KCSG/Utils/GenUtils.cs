@@ -11,7 +11,7 @@ namespace KCSG
 {
     public class GenUtils
     {
-        public static void GenerateRoomFromLayout(List<string> layoutList, CellRect roomRect, Map map, StructureLayoutDef rld)
+        public static void GenerateRoomFromLayout(List<string> layoutList, CellRect roomRect, Map map, StructureLayoutDef rld, bool generateConduit = true)
         {
             bool parentFaction = map.ParentFaction != null;
 
@@ -90,13 +90,13 @@ namespace KCSG
                             CompPowerBattery battery = thing.TryGetComp<CompPowerBattery>();
                             battery?.AddEnergy(battery.Props.storedEnergyMax);
 
-                            if (thing is Building_CryptosleepCasket cryptosleepCasket)
+                            if (thing is Building_CryptosleepCasket cryptosleepCasket && Rand.Value < temp.chanceToContainPawn)
                             {
                                 Pawn pawn = GeneratePawnForContainer(temp, map);
                                 if (!cryptosleepCasket.TryAcceptThing(pawn))
                                     pawn.Destroy();
                             }
-                            else if (thing is Building_CorpseCasket corpseCasket)
+                            else if (thing is Building_CorpseCasket corpseCasket && Rand.Value < temp.chanceToContainPawn)
                             {
                                 Pawn pawn = GeneratePawnForContainer(temp, map);
                                 if (!corpseCasket.TryAcceptThing(pawn))
@@ -109,7 +109,7 @@ namespace KCSG
                                 {
                                     thingList = temp.thingSetMakerDefForPlayer.root.Generate(new ThingSetMakerParams());
                                 }
-                                else
+                                else if (temp.thingSetMakerDef != null)
                                 {
                                     thingList = temp.thingSetMakerDef.root.Generate(new ThingSetMakerParams());
                                 }
@@ -150,9 +150,9 @@ namespace KCSG
                                 if (parentFaction) thing.SetFactionDirect(map.ParentFaction);
                             }
 
-                            if (thing.def.passability == Traversability.Impassable && map.ParentFaction?.def.techLevel >= TechLevel.Industrial) // Add power cable under all impassable
+                            if (generateConduit && rld.spawnConduits && !thing.def.mineable && (thing.def.passability == Traversability.Impassable || thing.def.IsDoor) && map.ParentFaction?.def.techLevel >= TechLevel.Industrial) // Add power cable under all impassable
                             {
-                                Thing c = ThingMaker.MakeThing(KThingDefOf.KCSG_PowerConduit);
+                                Thing c = ThingMaker.MakeThing(ThingDefOf.PowerConduit);
                                 if (parentFaction) c.SetFactionDirect(map.ParentFaction);
                                 GenSpawn.Spawn(c, cell, map, WipeMode.FullRefund);
                             }
@@ -224,13 +224,24 @@ namespace KCSG
 
             for (int i = 0; i < rg.Count; i++)
             {
-                if (rg[i] == "1")
+                switch (rg[i])
                 {
-                    map.roofGrid.SetRoof(roomRect.Cells.ElementAt(i), RoofDefOf.RoofConstructed);
-                    if (!roomRect.Cells.ElementAt(i).GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
-                    {
-                        map.terrainGrid.SetTerrain(roomRect.Cells.ElementAt(i), TerrainDefOf.Bridge);
-                    }
+                    case "1":
+                        map.roofGrid.SetRoof(roomRect.Cells.ElementAt(i), RoofDefOf.RoofConstructed);
+                        break;
+                    case "2":
+                        map.roofGrid.SetRoof(roomRect.Cells.ElementAt(i), RoofDefOf.RoofRockThin);
+                        break;
+                    case "3":
+                        map.roofGrid.SetRoof(roomRect.Cells.ElementAt(i), RoofDefOf.RoofRockThick);
+                        break;
+                    default:
+                        break;
+                }
+
+                if (rg[i] != "." && !roomRect.Cells.ElementAt(i).GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
+                {
+                    map.terrainGrid.SetTerrain(roomRect.Cells.ElementAt(i), TerrainDefOf.Bridge);
                 }
             }
         }
@@ -264,7 +275,60 @@ namespace KCSG
             }
         }
 
-        public static void PreClean(Map map, CellRect rect, bool fullClean)
+        public static void PreClean(Map map, CellRect rect, List<string> roofGrid, bool fullClean)
+        {
+            if (map.TileInfo?.Roads?.Count > 0)
+            {
+                CGO.preRoadTypes = new List<TerrainDef>();
+                foreach (RimWorld.Planet.Tile.RoadLink roadLink in map.TileInfo.Roads)
+                {
+                    foreach (RoadDefGenStep rgs in roadLink.road.roadGenSteps)
+                    {
+                        if (rgs is RoadDefGenStep_Place rgsp && rgsp != null && rgsp.place is TerrainDef t && t != null && t != TerrainDefOf.Bridge)
+                        {
+                            CGO.preRoadTypes.Add(t);
+                        }
+                    }
+                }
+            }
+
+            List<string> rg = new List<string>();
+            foreach (string str in roofGrid)
+            {
+                rg.AddRange(str.Split(','));
+            }
+
+            for (int i = 0; i < rg.Count; i++)
+            {
+                if (rg[i] != ".")
+                {
+                    IntVec3 c = rect.Cells.ElementAt(i);
+                    if (fullClean)
+                    {
+                        c.GetThingList(map).ToList().ForEach((t) =>
+                        {
+                            if (t.def.race == null)
+                            {
+                                t.DeSpawn();
+                            }
+                        });
+                    }
+                    else
+                        c.GetThingList(map).ToList()
+                                       .FindAll(t1 => (t1.def.category == ThingCategory.Filth) ||
+                                                      (t1.def.thingCategories != null && t1.def.thingCategories.Contains(ThingCategoryDefOf.StoneChunks)) ||
+                                                      (t1.def.category == ThingCategory.Building && !t1.def.building.isNaturalRock))
+                                       .ForEach((t) => t.DeSpawn());
+
+                    if (map.terrainGrid.UnderTerrainAt(c) is TerrainDef terrain && terrain != null)
+                    {
+                        map.terrainGrid.SetTerrain(c, terrain);
+                    }
+                }
+            }
+        }
+
+        public static void SimplePreClean(Map map, CellRect rect, bool fullClean)
         {
             if (map.TileInfo?.Roads?.Count > 0)
             {

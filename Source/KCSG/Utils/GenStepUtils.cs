@@ -1,5 +1,6 @@
 ﻿using RimWorld;
 using RimWorld.BaseGen;
+using System.Collections.Generic;
 using System.Linq;
 using Verse;
 
@@ -13,8 +14,7 @@ namespace KCSG
 
             if (sf.useStructureLayout)
             {
-                if (ModLister.RoyaltyInstalled) CGO.structureLayoutDef = sf.chooseFromlayouts.RandomElement();
-                else CGO.structureLayoutDef = sf.chooseFromlayouts.ToList().FindAll(sfl => !sfl.requireRoyalty).RandomElement();
+                CGO.structureLayoutDef = LayoutUtils.ChooseLayoutFrom(sf.chooseFromlayouts);
             }
             else
             {

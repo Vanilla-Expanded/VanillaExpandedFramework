@@ -24,7 +24,7 @@ namespace KCSG
                 BaseGen.symbolStack.Push("kcsg_roomsgenfromstructure", rp, null);
 
                 if (CGO.factionSettlement.preGenClear)
-                    GenUtils.PreClean(map, rp.rect, CGO.factionSettlement.fullClear);
+                    GenUtils.PreClean(map, rp.rect, CGO.structureLayoutDef.roofGrid, CGO.factionSettlement.fullClear);
             }
             else
             {
@@ -45,7 +45,7 @@ namespace KCSG
                 this.GenerateRooms(CGO.settlementLayoutDef, map, rp);
 
                 if (CGO.factionSettlement.preGenClear)
-                    GenUtils.PreClean(map, rp.rect, CGO.factionSettlement.fullClear);
+                    GenUtils.SimplePreClean(map, rp.rect, CGO.factionSettlement.fullClear);
             }
         }
 

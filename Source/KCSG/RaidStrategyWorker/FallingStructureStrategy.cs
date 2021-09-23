@@ -18,10 +18,7 @@ namespace KCSG
 
             if (CGO.fallingStructure.canBeUsedBy.Contains(parms.faction.def))
             {
-                if (!ModLister.RoyaltyInstalled)
-                    CGO.fallingStructure.WeightedStructs.RemoveAll(ws => ws.structureLayoutDef.requireRoyalty);
-
-                CGO.fallingStructureChoosen = CGO.fallingStructure.WeightedStructs.RandomElementByWeight(x => Weight(x.weight, parms)).structureLayoutDef;
+                CGO.fallingStructureChoosen = LayoutUtils.ChooseWeightedStruct(CGO.fallingStructure.WeightedStructs, parms).structureLayoutDef;
 
                 if (CGO.fallingStructureChoosen != null)
                 {
@@ -32,8 +29,6 @@ namespace KCSG
             }
             else return false;
         }
-
-        private float Weight(float w, IncidentParms parms) => w * parms.points;
 
         public IntVec3 FindRect(Map map, int height, int width)
         {

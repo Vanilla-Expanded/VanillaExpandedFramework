@@ -7,7 +7,7 @@ namespace KCSG
 {
     public static class DebugOption
     {
-        [DebugAction("Custom Structure Generation", "Quickspawn structure", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        [DebugAction("KCSG", "Quickspawn structure...", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void QuickspawnStructure()
         {
             if (DefDatabase<StructureLayoutDef>.AllDefs.Count() > 0)
@@ -34,13 +34,62 @@ namespace KCSG
             }
         }
 
-        [DebugAction("Custom Structure Generation", "Destroy all hostile pawns on map", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        [DebugAction("KCSG", "Destroy all pawns", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        private static void RemoveAllPawns()
+        {
+            foreach (Pawn pawn in Find.CurrentMap.mapPawns.AllPawnsSpawned.ToList())
+            {
+                pawn.Destroy(DestroyMode.KillFinalize);
+            }
+        }
+
+        [DebugAction("KCSG", "Destroy all hostile pawns", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void RemoveAllHostilePawns()
         {
             foreach (Pawn pawn in Find.CurrentMap.mapPawns.AllPawnsSpawned.ToList())
             {
                 if (pawn.Faction != Faction.OfPlayer) pawn.Destroy(DestroyMode.KillFinalize);
             }
+        }
+
+        [DebugAction("KCSG", "Spawn roof...", false, false, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        private static void SpawnRoof()
+        {
+            List<DebugMenuOption> debugMenuOptionList = new List<DebugMenuOption>
+            {
+                // Constructed
+                new DebugMenuOption($"{RoofDefOf.RoofConstructed.defName} 1*1", DebugMenuOptionMode.Tool, () =>
+                {
+                    Find.CurrentMap.roofGrid.SetRoof(UI.MouseCell(), RoofDefOf.RoofConstructed);
+                }),
+                new DebugMenuOption($"{RoofDefOf.RoofConstructed.defName} 3*3", DebugMenuOptionMode.Tool, () =>
+                {
+                    foreach (IntVec3 c in CellRect.CenteredOn(UI.MouseCell(), 1))
+                        Find.CurrentMap.roofGrid.SetRoof(c, RoofDefOf.RoofConstructed);
+                }),
+                // Thin
+                new DebugMenuOption($"{RoofDefOf.RoofRockThin.defName} 1*1", DebugMenuOptionMode.Tool, () =>
+                {
+                    Find.CurrentMap.roofGrid.SetRoof(UI.MouseCell(), RoofDefOf.RoofRockThin);
+                }),
+                new DebugMenuOption($"{RoofDefOf.RoofRockThin.defName} 3*3", DebugMenuOptionMode.Tool, () =>
+                {
+                    foreach (IntVec3 c in CellRect.CenteredOn(UI.MouseCell(), 1))
+                        Find.CurrentMap.roofGrid.SetRoof(c, RoofDefOf.RoofRockThin);
+                }),
+                // Thick
+                new DebugMenuOption($"{RoofDefOf.RoofRockThick.defName} 1*1", DebugMenuOptionMode.Tool, () =>
+                {
+                    Find.CurrentMap.roofGrid.SetRoof(UI.MouseCell(), RoofDefOf.RoofRockThick);
+                }),
+                new DebugMenuOption($"{RoofDefOf.RoofRockThick.defName} 3*3", DebugMenuOptionMode.Tool, () =>
+                {
+                    foreach (IntVec3 c in CellRect.CenteredOn(UI.MouseCell(), 1))
+                        Find.CurrentMap.roofGrid.SetRoof(c, RoofDefOf.RoofRockThick);
+                })
+            };
+
+            Find.WindowStack.Add(new Dialog_DebugOptionListLister(debugMenuOptionList));
         }
     }
 }

@@ -65,7 +65,7 @@ namespace KCSG
             foreach (IntVec3 item in cellExport)
             {
                 List<Thing> things = pairsCellThingList.TryGetValue(item);
-                things.RemoveAll(t => t is Pawn || t.def.defName == "PowerConduit" || t.def.category == ThingCategory.Item);
+                things.RemoveAll(t => t is Pawn || t.def.category == ThingCategory.Item);
                 if (!exportFilth)
                 {
                     things.RemoveAll(t => t.def.category == ThingCategory.Filth);

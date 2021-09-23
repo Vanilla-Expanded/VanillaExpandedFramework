@@ -29,13 +29,14 @@ namespace KCSG
         public bool spawnPartOfFaction = true;
 
         // CryptosleepCasket and CorpseCasket
+        public float chanceToContainPawn = 1f;
         public string containPawnKind;
         public string containPawnKindForPlayer;
         public PawnKindDef containPawnKindDef = null;
         public PawnKindDef containPawnKindDefForPlayer = null;
 
         // Crate
-        public ThingSetMakerDef thingSetMakerDef;
+        public ThingSetMakerDef thingSetMakerDef = null;
         public ThingSetMakerDef thingSetMakerDefForPlayer = null;
 
         // Pawn

@@ -13,16 +13,20 @@ namespace KCSG
         private readonly Map map;
         private readonly Dictionary<IntVec3, List<Thing>> pairsCellThingList = new Dictionary<IntVec3, List<Thing>>();
         private readonly List<string> tags = new List<string>();
+        private readonly List<string> mods = new List<string>();
 
         private Color boxColor = new Color(0.13f, 0.14f, 0.16f);
         private string defname = "Placeholder";
         private bool isStorage = false;
-        private bool needRoyalty = false;
+        private bool spawnConduits = true;
         private bool exportFilth = false;
 
         private string structurePrefix = "Required";
         private List<XElement> symbols = new List<XElement>();
-        private string tempTagToAdd = "Optional, see tutorial";
+        private string tempTagToAdd = "Optional";
+        private string modIdToAdd = "Optional";
+
+        private Vector2 scrollPosition = Vector2.zero;
 
         public Dialog_ExportWindow(Map map, List<IntVec3> cells, Area area)
         {
@@ -51,15 +55,28 @@ namespace KCSG
         {
             this.DrawHeader();
             Text.Font = GameFont.Small;
+            Rect scrollRect = new Rect(inRect.x, inRect.y + 80f, inRect.width, inRect.height - 150f);
+            Rect viewRect = new Rect(inRect.x, inRect.y + 80f, inRect.width - 20f, scrollRect.height);
+            Listing_Standard lst = new Listing_Standard();
+            if (viewRect.height < viewRect.height + mods.Count * 12) viewRect.height += mods.Count * 12;
+            if (viewRect.height < viewRect.height + tags.Count * 12) viewRect.height += tags.Count * 12;
 
-            this.DrawDefNameChanger(90);
-            this.DrawRoyaltyChanger(130);
-            this.DrawStorageChanger(170);
-            this.DrawExportFilth(210);
-            this.DrawTagsEditing(250);
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Widgets.BeginScrollView(scrollRect, ref scrollPosition, viewRect);
+            lst.Begin(viewRect);
 
-            this.DrawStructurePrefix(inRect);
+            this.DrawDefNameChanger(lst);
+            this.DrawStorageChanger(lst);
+            this.DrawSpawnConduitChanger(lst);
+            this.DrawExportFilth(lst);
+            this.DrawStructurePrefix(lst);
+            this.DrawTagsEditing(lst);
+            this.DrawModsEditing(lst);
+
+            lst.End();
+            Widgets.EndScrollView();
             this.DrawFooter(inRect);
+            Text.Anchor = TextAnchor.UpperLeft;
         }
 
         private XElement CreateLayout()
@@ -68,21 +85,6 @@ namespace KCSG
             // Defname change
             XElement defName = new XElement("defName", structurePrefix + defname);
             structureL.AddFirst(defName);
-            // Royalty change
-            if (this.needRoyalty)
-            {
-                if (structureL.Element("requireRoyalty") == null)
-                {
-                    structureL.Add(new XElement("requireRoyalty", true));
-                }
-            }
-            else
-            {
-                if (structureL.Element("requireRoyalty") != null)
-                {
-                    structureL.Element("requireRoyalty").Remove();
-                }
-            }
             // isStorage change
             if (this.isStorage)
             {
@@ -98,25 +100,49 @@ namespace KCSG
                     structureL.Element("isStorage").Remove();
                 }
             }
+            // spawnConduits
+            if (!this.spawnConduits)
+            {
+                if (structureL.Element("spawnConduits") == null)
+                {
+                    structureL.Add(new XElement("spawnConduits", false));
+                }
+            }
+            else
+            {
+                if (structureL.Element("spawnConduits") != null)
+                {
+                    structureL.Element("spawnConduits").Remove();
+                }
+            }
             // Tags changes
             if (tags.Count > 0)
             {
-                XElement temp1 = new XElement("tags");
+                XElement temp = new XElement("tags");
                 foreach (var item in this.tags)
                 {
-                    temp1.Add(new XElement("li", item));
+                    temp.Add(new XElement("li", item));
                 }
-                structureL.Add(temp1);
+                structureL.Add(temp);
+            }
+            // Mods
+            if (mods.Count > 0)
+            {
+                XElement temp = new XElement("modRequirements");
+                foreach (var item in this.mods)
+                {
+                    temp.Add(new XElement("li", item));
+                }
+                structureL.Add(temp);
             }
             return structureL;
         }
 
-        private void DrawDefNameChanger(float y)
+        private void DrawDefNameChanger(Listing_Standard lst)
         {
-            Widgets.Label(new Rect(10, y, 200, 35), "Structure defName:");
-            Text.Anchor = TextAnchor.MiddleCenter;
-            defname = Widgets.TextField(new Rect(220, y, 480, 35), defname);
-            Text.Anchor = TextAnchor.UpperLeft;
+            lst.Label("Structure defName:");
+            defname = lst.TextEntry(defname);
+            lst.Gap();
         }
 
         private void DrawFooter(Rect inRect)
@@ -164,10 +190,11 @@ namespace KCSG
             Text.Anchor = TextAnchor.MiddleCenter;
 
             Widgets.DrawBoxSolid(new Rect(0, 0, 700, 50), boxColor);
-            Widgets.Label(new Rect(0, 0, 700, 50), "Custom Structure Generation - Export Menu");
+            Widgets.Label(new Rect(0, 0, 700, 50), "KCSG - Export Menu");
 
             Widgets.DrawBoxSolid(new Rect(710, 0, 50, 50), boxColor);
-            if (Widgets.ButtonImage(new Rect(715, 5, 40, 40), TextureLoader.helpIcon))
+            Rect infoRect = new Rect(715, 5, 40, 40);
+            if (Widgets.ButtonImage(infoRect, TextureLoader.helpIcon))
             {
                 System.Diagnostics.Process.Start("https://github.com/AndroidQuazar/VanillaExpandedFramework/wiki/Exporting-your-own-structures");
             }
@@ -175,58 +202,74 @@ namespace KCSG
             Text.Anchor = TextAnchor.UpperLeft;
         }
 
-        private void DrawRoyaltyChanger(float y)
+        private void DrawStorageChanger(Listing_Standard lst)
         {
-            Widgets.Label(new Rect(10, y, 200, 35), "Structure need royalty dlc:");
-            Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Checkbox(220, y, ref this.needRoyalty);
-            Text.Anchor = TextAnchor.UpperLeft;
+            lst.CheckboxLabeled("Structure is stockpile:", ref this.isStorage, "If this is on, random resources will be generated inside this structure when it's generated");
+            lst.Gap();
         }
 
-        private void DrawStorageChanger(float y)
+        private void DrawSpawnConduitChanger(Listing_Standard lst)
         {
-            Widgets.Label(new Rect(10, y, 200, 35), "Structure is stockpile:");
-            Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Checkbox(220, y, ref this.isStorage);
-            Text.Anchor = TextAnchor.UpperLeft;
+            lst.CheckboxLabeled("Spawn conduit under impassable buildings and doors when generating:", ref this.spawnConduits, "If this is on, conduit will be spawned under impassable buildings and doors of this structure when it's generated (if faction techlevel >= Industrial)");
+            lst.Gap();
         }
 
-        private void DrawExportFilth(float y)
+        private void DrawExportFilth(Listing_Standard lst)
         {
-            Widgets.Label(new Rect(10, y, 200, 35), "Export filth:");
-            Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Checkbox(220, y, ref this.exportFilth);
-            Text.Anchor = TextAnchor.UpperLeft;
+            lst.CheckboxLabeled("Export filth:", ref this.exportFilth);
+            lst.Gap();
         }
 
-        private void DrawStructurePrefix(Rect inRect)
+        private void DrawStructurePrefix(Listing_Standard lst)
         {
-            Widgets.Label(new Rect(10, inRect.height - 90, 200, 35), "Structure defName prefix:");
-            structurePrefix = Widgets.TextField(new Rect(220, inRect.height - 90, 480, 35), structurePrefix);
+            lst.Label("Structure defName prefix:", tooltip: "For example: VFEM_ for Vanilla Faction Expanded Mechanoid");
+            structurePrefix = lst.TextEntry(structurePrefix);
+            lst.Gap();
         }
 
-        private void DrawTagsEditing(float y)
+        private void DrawTagsEditing(Listing_Standard lst)
         {
-            Widgets.Label(new Rect(10, y, 200, 35), "Structure tags:");
-            tempTagToAdd = Widgets.TextField(new Rect(220, y, 270, 35), tempTagToAdd);
-            Text.Anchor = TextAnchor.MiddleCenter;
-            if (Widgets.ButtonText(new Rect(500, y, 200, 35), "Add tag"))
+            lst.Label("Structure tags:");
+            tempTagToAdd = lst.TextEntry(tempTagToAdd);
+            if (lst.ButtonText("Add tag"))
             {
                 this.tags.Add(tempTagToAdd);
             }
 
-            float tagY = y + 40f;
-            foreach (string tag in this.tags)
+            if (this.tags.Count > 0)
             {
-                Widgets.Label(new Rect(220, tagY, 270, 35), tag);
-                if (Widgets.ButtonText(new Rect(500, tagY, 200, 35), "Remove tag"))
+                foreach (string tag in this.tags)
                 {
-                    this.tags.Remove(tag);
-                    break;
+                    if (lst.ButtonTextLabeled(tag, "Remove tag"))
+                    {
+                        this.tags.Remove(tag);
+                        break;
+                    }
                 }
-                tagY += 40;
             }
-            Text.Anchor = TextAnchor.UpperLeft;
+            lst.Gap();
+        }
+
+        private void DrawModsEditing(Listing_Standard lst)
+        {
+            lst.Label("Additional mod(s) needed:");
+            modIdToAdd = lst.TextEntry(modIdToAdd);
+            if (lst.ButtonText("Add mod package id"))
+            {
+                this.mods.Add(modIdToAdd);
+            }
+
+            if (this.mods.Count > 0)
+            {
+                foreach (string mod in this.mods)
+                {
+                    if (lst.ButtonTextLabeled(mod, "Remove mod"))
+                    {
+                        this.mods.Remove(mod);
+                        break;
+                    }
+                }
+            }
         }
     }
 }

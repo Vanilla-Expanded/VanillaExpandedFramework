@@ -13,6 +13,7 @@ namespace KCSG
         public List<StructureLayoutDef> chooseFrom = new List<StructureLayoutDef>();
         public bool nearMapCenter;
         public bool spawnPartOfEnnemyFaction = false;
+        public bool spawnConduits = true;
         public string structureLabel;
         /* Clear filth, buildings, chunks, remove non-natural terrain */
         public bool preGenClear = true;
@@ -105,11 +106,11 @@ namespace KCSG
             CellRect cellRect = this.CreateCellRect(map, h, w);
 
             if (preGenClear)
-                GenUtils.PreClean(map, cellRect, fullClear);
+                GenUtils.PreClean(map, cellRect, structureLayoutDef.roofGrid, fullClear);
 
             foreach (List<string> item in structureLayoutDef.layouts)
             {
-                GenUtils.GenerateRoomFromLayout(item, cellRect, map, structureLayoutDef);
+                GenUtils.GenerateRoomFromLayout(item, cellRect, map, structureLayoutDef, spawnConduits);
             }
 
             if (map.mapPawns.FreeColonistsSpawned.Count > 0)
