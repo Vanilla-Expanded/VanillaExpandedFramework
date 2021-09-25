@@ -13,10 +13,7 @@ namespace MVCF.Comps
     {
         public List<AdditionalVerbProps> verbProps;
 
-        public HediffCompProperties_ExtendedVerbGiver()
-        {
-            compClass = typeof(HediffComp_ExtendedVerbGiver);
-        }
+        public HediffCompProperties_ExtendedVerbGiver() => compClass = typeof(HediffComp_ExtendedVerbGiver);
 
         public override void PostLoad()
         {
@@ -42,20 +39,14 @@ namespace MVCF.Comps
 
     public class CompProperties_VerbGiver : CompProperties_VerbProps
     {
-        public CompProperties_VerbGiver()
-        {
-            compClass = typeof(Comp_VerbGiver);
-        }
+        public CompProperties_VerbGiver() => compClass = typeof(Comp_VerbGiver);
     }
 
     public class Comp_VerbProps : ThingComp
     {
         public CompProperties_VerbProps Props => props as CompProperties_VerbProps;
 
-        public AdditionalVerbProps PropsFor(Verb verb)
-        {
-            return Props.PropsFor(verb);
-        }
+        public AdditionalVerbProps PropsFor(Verb verb) => Props.PropsFor(verb);
     }
 
     public class CompProperties_VerbProps : CompProperties
@@ -95,7 +86,7 @@ namespace MVCF.Comps
     {
         public static BodyTypeDef NA = new BodyTypeDef();
         public bool brawlerCaresAbout = true;
-        public bool canBeToggled;
+        public bool canBeToggled = true;
         public bool canFireIndependently;
         public bool colonistOnly;
         public DrawPosition defaultPosition;
@@ -142,9 +133,7 @@ namespace MVCF.Comps
                     yield return $"Found too many verbs on parent with label \"{label}\". Expected 1, found {matches}";
             }
             else
-            {
                 yield return "Could not find HediffCompProperties_VerbGiver, meaning this has VerbProps and no verbs.";
-            }
         }
 
         public virtual IEnumerable<string> ConfigErrors()

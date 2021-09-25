@@ -178,8 +178,8 @@ namespace MVCF.Harmony
             var man = manager?.GetManagedVerbForVerb(verb, false);
             if (man == null) return false;
             if (!pawn.RaceProps.Animal && manager.AllVerbs.Count(v => !v.IsMeleeAttack) <= 1 && !(man.Props != null &&
-                man.Props.canFireIndependently)) return false;
-            if (man.Props != null && man.Props.separateToggle) return false;
+                                                                                                  man.Props.canFireIndependently)) return false;
+            if (man.Props != null && (!man.Props.canBeToggled || man.Props.separateToggle)) return false;
             var rect = command.TopRightLabel.NullOrEmpty()
                 ? butRect.RightPart(0.35f).TopPart(0.35f)
                 : butRect
