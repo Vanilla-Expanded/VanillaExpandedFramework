@@ -74,9 +74,7 @@ namespace MVCF.Utilities
             gizmo.defaultLabel = verb.Label(props);
 
             if (verb.Caster.Faction != Faction.OfPlayer)
-            {
                 gizmo.Disable("CannotOrderNonControlled".Translate());
-            }
             else if (verb.CasterIsPawn)
             {
                 if (verb.verbProps.violent && verb.CasterPawn.WorkTagIsDisabled(WorkTags.Violent))
@@ -97,10 +95,8 @@ namespace MVCF.Utilities
                 verb.CasterIsPawn && verb.CasterPawn.RaceProps.Animal)
             {
                 if (props != null && props.separateToggle ||
-                    verb.CasterIsPawn && !verb.CasterPawn.RaceProps.Animal)
-                {
+                    verb.CasterIsPawn && verb.CasterPawn.RaceProps.Animal)
                     yield return new Command_ToggleVerbUsage(man);
-                }
                 else if (!Base.Features.IntegratedToggle)
                 {
                     Log.ErrorOnce(
@@ -143,11 +139,9 @@ namespace MVCF.Utilities
             return gizmo;
         }
 
-        private static string VerbLabel(Verb verb, AdditionalVerbProps props = null)
-        {
-            return FirstNonEmptyString(props?.visualLabel, verb.verbProps.label,
+        private static string VerbLabel(Verb verb, AdditionalVerbProps props = null) =>
+            FirstNonEmptyString(props?.visualLabel, verb.verbProps.label,
                 (verb as Verb_LaunchProjectile)?.Projectile.LabelCap, verb.caster?.def?.label);
-        }
 
         public static string FirstNonEmptyString(params string[] strings)
         {
@@ -157,10 +151,7 @@ namespace MVCF.Utilities
             return "";
         }
 
-        public static string Label(this Verb verb, AdditionalVerbProps props = null)
-        {
-            return VerbLabel(verb, props).CapitalizeFirst();
-        }
+        public static string Label(this Verb verb, AdditionalVerbProps props = null) => VerbLabel(verb, props).CapitalizeFirst();
 
         public static Texture2D Icon(this Verb verb, AdditionalVerbProps props, Thing ownerThing, bool toggle)
         {
