@@ -36,7 +36,7 @@ namespace VFECore.Misc
                 where conds != null || Math.Abs(apparel.GetStatValue(statRangedCooldownFactor) - 1f) > 0.001f
                 select (apparel, conds))
                 builder.AppendLine(
-                    conds.IsValid(req.Thing, thing.def)
+                    conds?.IsValid(req.Thing, thing.def) ?? true
                         ? $"{thing.def.LabelCap}: {statRangedCooldownFactor.Worker.ValueToString(thing.GetStatValue(statRangedCooldownFactor), true, ToStringNumberSense.Factor)}"
                         : $"{thing.def.LabelCap}: {req.Thing.def.LabelCap} {"VFECore.IsToo".Translate()} {(req.Thing.def.techLevel > conds.techLevels.Max() ? "VFECore.Advanced".Translate() : "VFECore.Primitive".Translate())}");
             return builder.ToString();
