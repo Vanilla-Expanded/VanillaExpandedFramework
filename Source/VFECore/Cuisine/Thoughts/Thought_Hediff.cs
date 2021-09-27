@@ -42,18 +42,19 @@ namespace VanillaCookingExpanded
                 //a simple list
                 if (this.def.HasModExtension<Thought_Hediff_Extension>())
                 {
-                    
-
                     Thought_Hediff_Extension extension = this.def.GetModExtension<Thought_Hediff_Extension>();
-                    BodyPartRecord part = this.pawn.RaceProps.body.GetPartsWithDef(extension.partToAffect).FirstOrDefault();
-                    //We check mod options for the toggle to deactivate chronic conditions
-                    if (VanillaCookingExpanded_Settings.allowConditions || ((extension.hediffToAffect.defName != "VCE_Cholesterol") && (extension.hediffToAffect.defName != "VCE_Diabetes")
-                        && (extension.hediffToAffect.defName != "VCE_HighBloodPressure")))
+                    if (extension.hediffToAffect != null)
                     {
-                        this.pawn.health.AddHediff(extension.hediffToAffect, part);
-                        pawn.health.hediffSet.GetFirstHediffOfDef(extension.hediffToAffect, false).Severity += extension.percentage;
+                        BodyPartRecord part = this.pawn.RaceProps.body.GetPartsWithDef(extension.partToAffect).FirstOrDefault();
+                        //We check mod options for the toggle to deactivate chronic conditions
+                        if (VanillaCookingExpanded_Settings.allowConditions || ((extension.hediffToAffect.defName != "VCE_Cholesterol") && (extension.hediffToAffect.defName != "VCE_Diabetes")
+                            && (extension.hediffToAffect.defName != "VCE_HighBloodPressure")))
+                        {
+                            this.pawn.health.AddHediff(extension.hediffToAffect, part);
+                            pawn.health.hediffSet.GetFirstHediffOfDef(extension.hediffToAffect, false).Severity += extension.percentage;
+                        }
                     }
-
+                                
                     if (extension.secondHediffToAffect != null)
                     {
                         BodyPartRecord part2 = this.pawn.RaceProps.body.GetPartsWithDef(extension.secondPartToAffect).FirstOrDefault();
@@ -66,7 +67,11 @@ namespace VanillaCookingExpanded
                         }
 
                     }
+                    if (extension.increaseJoy)
+                    {
+                        pawn.needs.joy.GainJoy(extension.extraJoy,JoyKindDefOf.Gluttonous);
 
+                    }
 
 
                 }

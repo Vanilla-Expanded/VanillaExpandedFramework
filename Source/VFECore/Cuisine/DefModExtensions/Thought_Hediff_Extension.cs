@@ -24,6 +24,10 @@ namespace VanillaCookingExpanded
         public BodyPartDef secondPartToAffect = null;
         public float secondPercentage = 1f;
 
+        //Joy increase from this thought
+        public bool increaseJoy = false;
+        public float extraJoy = 0;
+
 
 
     }
