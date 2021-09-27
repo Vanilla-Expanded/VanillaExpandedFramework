@@ -15,7 +15,7 @@ namespace AnimalBehaviours
     /*This second Harmony postfix adds or removes gizmos from the pawn's gizmo list (which is actually IEnumerable)
      * 
      */
-    [HarmonyPatch(typeof(Pawn))]
+   /* [HarmonyPatch(typeof(Pawn))]
     [HarmonyPatch("GetGizmos")]
 
     static class VanillaExpandedFramework_Pawn_GetGizmos_Patch
@@ -24,10 +24,10 @@ namespace AnimalBehaviours
 
         public static void AddGizmo(Pawn __instance, ref IEnumerable<Gizmo> __result)
         {
-            //I want access to the pawn object, and want to modify the original method's result
+         
             var pawn = __instance;
             var gizmos = __result.ToList();
-            // First two flags detect if the pawn is mine
+           
 
             bool flagIsCreatureMine = pawn.Faction != null && pawn.Faction.IsPlayer;
             bool flagIsCreatureDraftable = AnimalCollectionClass.draftable_animals.ContainsKey(pawn);
@@ -69,5 +69,5 @@ namespace AnimalBehaviours
 
     }
 
-
+    */
 }
