@@ -8,6 +8,8 @@
     {
         public override bool TryMakePreToilReservations(bool errorOnFailed) => true;
 
+        public override string GetReport() => this.pawn.GetComp<CompAbilities>().currentlyCasting.def.JobReportString;
+
         protected override IEnumerable<Toil> MakeNewToils()
         {
             this.FailOnDespawnedOrNull(TargetIndex.A);

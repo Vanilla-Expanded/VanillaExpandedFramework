@@ -48,6 +48,10 @@
         public float               chance          = 1f;
         public bool                autocastPlayerDefault = false;
 
+        public string jobReportString = "Using ability: {0}";
+
+        public string JobReportString => this.jobReportString.Formatted(this.LabelCap);
+
         public float Chance => 
             this.targetMode == AbilityTargetingMode.Self ? 0 : this.chance;
 
