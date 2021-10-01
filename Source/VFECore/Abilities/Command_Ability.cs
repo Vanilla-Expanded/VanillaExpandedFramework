@@ -50,7 +50,7 @@
                 GenDraw.DrawRadiusRing(this.pawn.Position, radius, Color.cyan);
         }
 
-        public override bool GroupsWith(Gizmo other) => false;// other is Command_Ability;
+        public override bool GroupsWith(Gizmo other) => other is Command_Ability ca && ca.ability.def == this.ability.def;
 
         protected override GizmoResult GizmoOnGUIInt(Rect butRect, GizmoRenderParms parms)
         {
