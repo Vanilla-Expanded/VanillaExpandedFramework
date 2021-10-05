@@ -14,7 +14,8 @@ namespace KCSG
 {
     public class GenStep_EnnemiesPresence : GenStep
     {
-		public Faction forcedfaction;
+		public FactionDef forcedfaction;
+		public float pointMultiplier = 1f;
 		public bool spawnOnEdge = false;
 
 		public override int SeedPart
@@ -27,12 +28,13 @@ namespace KCSG
 
 		public override void Generate(Map map, GenStepParams parms)
 		{
-			if (this.forcedfaction != null) parms.sitePart.site.SetFaction(forcedfaction); 
+			Faction fac = this.forcedfaction != null ? Find.FactionManager.FirstFactionOfDef(this.forcedfaction) : Find.FactionManager.RandomEnemyFaction(minTechLevel: TechLevel.Neolithic);
+			parms.sitePart.site.SetFaction(fac);
 
 			int h = 10, w = 10;
 			
 			List<Pawn> list = new List<Pawn>();
-			foreach (Pawn pawn in this.GeneratePawns(map, parms))
+			foreach (Pawn pawn in this.GeneratePawns(map, fac))
 			{
 				IntVec3 loc;
 				if (this.spawnOnEdge)
@@ -67,34 +69,15 @@ namespace KCSG
 			}
 		}
 
-		private IEnumerable<Pawn> GeneratePawns(Map map, GenStepParams parms)
+		private IEnumerable<Pawn> GeneratePawns(Map map, Faction faction)
         {
-			Faction faction;
-			faction = this.forcedfaction ?? (map.ParentFaction ?? Find.FactionManager.RandomEnemyFaction(false, false, false, TechLevel.Undefined));
-			if (faction == null)
-			{
-				return Enumerable.Empty<Pawn>();
-			}
 			return PawnGroupMakerUtility.GeneratePawns(new PawnGroupMakerParms
 			{
 				groupKind = PawnGroupKindDefOf.Combat,
 				tile = map.Tile,
 				faction = faction,
-				points = StorytellerUtility.DefaultSiteThreatPointsNow()// Mathf.Max(parms.sitePart.parms.threatPoints, faction.def.MinPointsToGeneratePawnGroup(PawnGroupKindDefOf.Combat))
+				points = StorytellerUtility.DefaultSiteThreatPointsNow() * this.pointMultiplier
 			}, true);
-		}
-
-		public IntVec3 FindRect(Map map, int height, int width)
-		{
-			CellRect rect;
-			bool shre = true;
-			while (shre)
-			{
-				rect = CellRect.CenteredOn(CellFinder.RandomNotEdgeCell(33, map), width, height);
-				if (rect.Cells.ToList().Any(i => !i.Walkable(map) || !i.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Medium))) { }
-				else return rect.CenterCell;
-			}
-			return IntVec3.Invalid;
 		}
 	}
 }
