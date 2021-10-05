@@ -114,6 +114,11 @@ namespace KCSG
                                     thingList = temp.thingSetMakerDef.root.Generate(new ThingSetMakerParams());
                                 }
 
+                                foreach (Thing t in thingList)
+                                {
+                                    t.stackCount = Math.Min((int)(t.stackCount * temp.crateStackMultiplier), t.def.stackLimit);
+                                }
+
                                 thingList.ForEach(t =>
                                 {
                                     if (!crate.TryAcceptThing(t, false))

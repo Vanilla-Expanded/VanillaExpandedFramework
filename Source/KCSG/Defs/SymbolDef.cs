@@ -38,6 +38,7 @@ namespace KCSG
         // Crate
         public ThingSetMakerDef thingSetMakerDef = null;
         public ThingSetMakerDef thingSetMakerDefForPlayer = null;
+        public float crateStackMultiplier = 1f;
 
         // Pawn
         public string pawnKindDef = null;
