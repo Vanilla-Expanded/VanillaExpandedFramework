@@ -144,8 +144,25 @@ namespace KCSG
                             }
                             else if (thing.def.category == ThingCategory.Building)
                             {
-                                if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy) && !thing.def.building.isNaturalRock)
-                                    map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
+                                if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
+                                {
+                                    if (thing.def.building.isNaturalRock)
+                                    {
+                                        TerrainDef t = DefDatabase<TerrainDef>.GetNamedSilentFail($"{thing.def.defName}_Rough");
+                                        map.terrainGrid.SetTerrain(cell, t ?? TerrainDefOf.Soil);
+                                        foreach (IntVec3 intVec3 in CellRect.CenteredOn(cell, 1))
+                                        {
+                                            if (!intVec3.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
+                                            {
+                                                map.terrainGrid.SetTerrain(intVec3, t ?? TerrainDefOf.Soil);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
+                                    }
+                                }
 
                                 if (thing.def.rotatable)
                                     GenSpawn.Spawn(thing, cell, map, new Rot4(temp.rotation.AsInt), WipeMode.VanishOrMoveAside);
