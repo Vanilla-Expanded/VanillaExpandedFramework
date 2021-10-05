@@ -52,9 +52,10 @@ namespace KCSG
             }
         }
 
-        [DebugAction("KCSG", "Point map center", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        [DebugAction("KCSG", "Map infos", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void PointCenter()
         {
+            Log.Message($"Map faction: {Find.CurrentMap.ParentFaction}");
             Find.LetterStack.ReceiveLetter(LetterMaker.MakeLetter("Map center", "Map center", LetterDefOf.NeutralEvent, new LookTargets(Find.CurrentMap.Center, Find.CurrentMap)));
         }
 
