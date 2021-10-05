@@ -152,7 +152,7 @@ namespace KCSG
                                         map.terrainGrid.SetTerrain(cell, t ?? TerrainDefOf.Soil);
                                         foreach (IntVec3 intVec3 in CellRect.CenteredOn(cell, 1))
                                         {
-                                            if (!intVec3.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
+                                            if (!intVec3.GetTerrain(map).BuildableByPlayer)
                                             {
                                                 map.terrainGrid.SetTerrain(intVec3, t ?? TerrainDefOf.Soil);
                                             }
@@ -260,24 +260,27 @@ namespace KCSG
 
             for (int i = 0; i < rg.Count; i++)
             {
+                IntVec3 cell = roomRect.Cells.ElementAt(i);
+                bool heavy = cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy);
+                ThingDef rock = Find.World.NaturalRockTypesIn(map.Tile).Select(r => r.building.mineableThing).RandomElement();
+                TerrainDef terrain = DefDatabase<TerrainDef>.GetNamedSilentFail($"{rock.defName}_Rough");
+
                 switch (rg[i])
                 {
                     case "1":
-                        map.roofGrid.SetRoof(roomRect.Cells.ElementAt(i), RoofDefOf.RoofConstructed);
+                        map.roofGrid.SetRoof(cell, RoofDefOf.RoofConstructed);
+                        if (!heavy) map.terrainGrid.SetTerrain(roomRect.Cells.ElementAt(i), TerrainDefOf.Bridge);
                         break;
                     case "2":
-                        map.roofGrid.SetRoof(roomRect.Cells.ElementAt(i), RoofDefOf.RoofRockThin);
+                        map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThin);
+                        if (!heavy) map.terrainGrid.SetTerrain(roomRect.Cells.ElementAt(i), terrain ?? TerrainDefOf.Soil);
                         break;
                     case "3":
-                        map.roofGrid.SetRoof(roomRect.Cells.ElementAt(i), RoofDefOf.RoofRockThick);
+                        map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThick);
+                        if (!heavy) map.terrainGrid.SetTerrain(roomRect.Cells.ElementAt(i), terrain ?? TerrainDefOf.Soil);
                         break;
                     default:
                         break;
-                }
-
-                if (rg[i] != "." && !roomRect.Cells.ElementAt(i).GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
-                {
-                    map.terrainGrid.SetTerrain(roomRect.Cells.ElementAt(i), TerrainDefOf.Bridge);
                 }
             }
         }
