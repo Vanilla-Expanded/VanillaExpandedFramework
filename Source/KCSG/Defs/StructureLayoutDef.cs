@@ -36,11 +36,17 @@ namespace KCSG
         public bool spawnConduits = true;
         public List<List<string>> layouts = new List<List<string>>();
         public List<string> roofGrid = new List<string>();
+
         // Settings for SettlementDef
         public List<string> tags = new List<string>();
+
         // Mod requirements
-        [Obsolete] public bool requireRoyalty = false;
         public List<string> modRequirements = new List<string>();
+
+        /* --- Obsolete --- */
+        public bool requireRoyalty = false;
+        /* --- ------- --- */
+
         // Spawn position
         public List<Pos> spawnAtPos = new List<Pos>();
         public List<string> spawnAt = new List<string>();
@@ -48,7 +54,11 @@ namespace KCSG
         public override void ResolveReferences()
         {
             base.ResolveReferences();
-            if (this.requireRoyalty) this.modRequirements.Add("ludeon.rimworld.royalty");
+            if (this.requireRoyalty)
+            {
+                Log.Warning($"{this.defName} is using obsolete field requireRoyalty. Report this to {this.modContentPack.Name}");
+                this.modRequirements.Add("ludeon.rimworld.royalty");
+            }
             foreach (string sPos in this.spawnAt)
             {
                 spawnAtPos.Add(Pos.FromString(sPos));

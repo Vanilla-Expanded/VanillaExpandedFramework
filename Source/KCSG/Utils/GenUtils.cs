@@ -208,15 +208,27 @@ namespace KCSG
 
         private static Pawn GeneratePawnForContainer(SymbolDef temp, Map map)
         {
+            // Kept for compat reasons
+            // TODO Remove
             Faction faction = temp.spawnPartOfFaction ? (temp.faction != null ? Find.FactionManager.FirstFactionOfDef(temp.faction) : map.ParentFaction) : null;
             if (temp.containPawnKindDefForPlayer != null && map.ParentFaction == Faction.OfPlayer)
             {
                 return PawnGenerator.GeneratePawn(temp.containPawnKindDefForPlayer, faction);
             }
-            else
+            else if (temp.containPawnKindDef != null)
             {
-                return temp.containPawnKindDef != null ? PawnGenerator.GeneratePawn(temp.containPawnKindDef, faction) : PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, faction);
+                return PawnGenerator.GeneratePawn(temp.containPawnKindDef, faction);
             }
+            else if (temp.containPawnKindForPlayerAnyOf.Count > 0 && map.ParentFaction == Faction.OfPlayer)
+            {
+                return PawnGenerator.GeneratePawn(temp.containPawnKindForPlayerAnyOf.RandomElement(), faction);
+            } 
+            else if (temp.containPawnKindAnyOf.Count > 0)
+            {
+                return PawnGenerator.GeneratePawn(temp.containPawnKindAnyOf.RandomElement(), faction);
+            }            
+
+            return PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, faction);
         }
 
         public static void GenerateRoofGrid(List<string> roofGrid, CellRect roomRect, Map map)
