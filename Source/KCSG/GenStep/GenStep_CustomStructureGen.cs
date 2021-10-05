@@ -9,6 +9,7 @@ namespace KCSG
     internal class GenStep_CustomStructureGen : GenStep
     {
         public List<StructureLayoutDef> structureLayoutDefs = new List<StructureLayoutDef>();
+        public bool fullClear = false;
 
         /* Ruin */
         public bool shouldRuin = false;
@@ -31,6 +32,8 @@ namespace KCSG
 
             RectUtils.HeightWidthFromLayout(structureLayoutDef, out int h, out int w);
             CellRect cellRect = CellRect.CenteredOn(map.Center, w, h);
+
+            GenUtils.PreClean(map, cellRect, structureLayoutDef.roofGrid, fullClear);
 
             foreach (List<string> item in structureLayoutDef.layouts)
             {

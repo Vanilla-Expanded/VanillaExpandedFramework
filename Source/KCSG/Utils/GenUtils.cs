@@ -210,7 +210,7 @@ namespace KCSG
         {
             // Kept for compat reasons
             // TODO Remove
-            Faction faction = temp.spawnPartOfFaction ? (temp.faction != null ? Find.FactionManager.FirstFactionOfDef(temp.faction) : map.ParentFaction) : null;
+            Faction faction = temp.spawnPartOfFaction ? map.ParentFaction : null;
             if (temp.containPawnKindDefForPlayer != null && map.ParentFaction == Faction.OfPlayer)
             {
                 return PawnGenerator.GeneratePawn(temp.containPawnKindDefForPlayer, faction);
@@ -219,7 +219,9 @@ namespace KCSG
             {
                 return PawnGenerator.GeneratePawn(temp.containPawnKindDef, faction);
             }
-            else if (temp.containPawnKindForPlayerAnyOf.Count > 0 && map.ParentFaction == Faction.OfPlayer)
+
+            if (VFECore.VFEGlobal.settings.enableVerboseLogging) Log.Message($"Faction for {temp.defName} is {faction?.def.defName}");
+            if (temp.containPawnKindForPlayerAnyOf.Count > 0 && map.ParentFaction == Faction.OfPlayer)
             {
                 return PawnGenerator.GeneratePawn(temp.containPawnKindForPlayerAnyOf.RandomElement(), faction);
             } 
@@ -317,7 +319,7 @@ namespace KCSG
 
             for (int i = 0; i < rg.Count; i++)
             {
-                if (rg[i] != ".")
+                if (rg[i] != null && rg[i] != ".")
                 {
                     IntVec3 c = rect.Cells.ElementAt(i);
                     if (fullClean)
