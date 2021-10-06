@@ -589,6 +589,7 @@
     <Compile Include="Memes\Defs\StartingItemsByIdeologyDef.cs" />
     <Compile Include="Memes\GameComponent\GameComponent_IdeologicalGoodies.cs" />
     <Compile Include="Memes\Harmony\Dialog_ChooseMemes_GetFirstIncompatibleMemePair_Patch.cs" />
+    <Compile Include="Memes\Harmony\Pawn_IdeoTracker_SetIdeo.cs" />
     <Compile Include="Memes\MapComponent\MapComponent_IdeologicalGoodies.cs" />
     <Compile Include="Misc\EquipmentOffsetConditions.cs" />
     <Compile Include="Misc\StatPart_Ammo.cs" />

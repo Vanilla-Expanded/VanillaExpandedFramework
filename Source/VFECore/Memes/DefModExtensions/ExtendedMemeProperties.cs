@@ -15,6 +15,7 @@ namespace VanillaMemesExpanded
     {
 
         public string neededMeme;
+        public TraitDef forcedTrait;
 
     }
 
