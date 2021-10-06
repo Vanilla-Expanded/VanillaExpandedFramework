@@ -24,7 +24,7 @@ namespace VanillaMemesExpanded
             for (int i = 0; i < ___newMemes.Count; i++)
             {
                 ExtendedMemeProperties extendedMemeProps = ___newMemes[i].GetModExtension<ExtendedMemeProperties>();
-                if (extendedMemeProps != null)
+                if (extendedMemeProps != null && extendedMemeProps.neededMeme!=null)
                 {
 
                     List<MemeDef> structureMemeDefs = (from k in DefDatabase<MemeDef>.AllDefsListForReading
