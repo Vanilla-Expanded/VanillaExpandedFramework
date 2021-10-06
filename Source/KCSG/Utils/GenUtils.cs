@@ -240,11 +240,11 @@ namespace KCSG
             if (VFECore.VFEGlobal.settings.enableVerboseLogging) Log.Message($"Faction for {temp.defName} is {faction?.def.defName}");
             if (temp.containPawnKindForPlayerAnyOf.Count > 0 && map.ParentFaction == Faction.OfPlayer)
             {
-                return PawnGenerator.GeneratePawn(temp.containPawnKindForPlayerAnyOf.RandomElement(), faction);
+                return PawnGenerator.GeneratePawn(new PawnGenerationRequest(temp.containPawnKindForPlayerAnyOf.RandomElement(), faction, forceGenerateNewPawn: true, certainlyBeenInCryptosleep: true));
             } 
             else if (temp.containPawnKindAnyOf.Count > 0)
             {
-                return PawnGenerator.GeneratePawn(temp.containPawnKindAnyOf.RandomElement(), faction);
+                return PawnGenerator.GeneratePawn(new PawnGenerationRequest(temp.containPawnKindAnyOf.RandomElement(), faction, forceGenerateNewPawn: true, certainlyBeenInCryptosleep: true));
             }            
 
             return PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, faction);
