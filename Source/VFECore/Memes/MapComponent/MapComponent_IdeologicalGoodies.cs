@@ -39,6 +39,21 @@ namespace VanillaMemesExpanded
                 }
                 if (things.Count > 0) { DropPodUtility.DropThingsNear(MapGenerator.PlayerStartSpot, map, things, 110); }
 
+                foreach (MemeDef meme in Current.Game.World.factionManager.OfPlayer.ideos.PrimaryIdeo.memes)
+                {
+                    ExtendedMemeProperties extendedMemeProperties = meme.GetModExtension<ExtendedMemeProperties>();
+                    if(extendedMemeProperties!=null && extendedMemeProperties.factionOpinionOffset != 0)
+                    {
+                        var factions = Find.FactionManager.AllFactions;
+                        foreach (var faction in factions)
+                        {
+                            faction.TryAffectGoodwillWith(Faction.OfPlayer, extendedMemeProperties.factionOpinionOffset, true, true);
+                        }
+                    }
+
+
+                }
+
 
                 Current.Game.GetComponent<GameComponent_IdeologicalGoodies>().sentOncePerGame = true;
             }
