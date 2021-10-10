@@ -42,17 +42,25 @@ namespace VanillaMemesExpanded
                 foreach (MemeDef meme in Current.Game.World.factionManager.OfPlayer.ideos.PrimaryIdeo.memes)
                 {
                     ExtendedMemeProperties extendedMemeProperties = meme.GetModExtension<ExtendedMemeProperties>();
-                    if(extendedMemeProperties!=null && extendedMemeProperties.factionOpinionOffset != 0)
+                    if(extendedMemeProperties != null)
                     {
-                        var factions = Find.FactionManager.AllFactions;
-                        foreach (var faction in factions)
+                        if (extendedMemeProperties.factionOpinionOffset != 0)
                         {
-                            faction.TryAffectGoodwillWith(Faction.OfPlayer, extendedMemeProperties.factionOpinionOffset, true, true);
+                            var factions = Find.FactionManager.AllFactions;
+                            foreach (var faction in factions)
+                            {
+                                faction.TryAffectGoodwillWith(Faction.OfPlayer, extendedMemeProperties.factionOpinionOffset, true, true);
+                            }
                         }
+
+                       
                     }
+                   
 
 
                 }
+
+                
 
 
                 Current.Game.GetComponent<GameComponent_IdeologicalGoodies>().sentOncePerGame = true;

@@ -23,11 +23,22 @@ namespace VanillaMemesExpanded
             foreach(MemeDef meme in ideo.memes)
             {
                 ExtendedMemeProperties extendedMemeProps = meme.GetModExtension<ExtendedMemeProperties>();
-                if (extendedMemeProps!=null && extendedMemeProps.forcedTrait != null)
+                if(extendedMemeProps != null)
                 {
-                    Trait trait = new Trait(extendedMemeProps.forcedTrait, 0, true);
-                    ___pawn.story.traits.GainTrait(trait);
+                    if (extendedMemeProps.forcedTrait != null)
+                    {
+                        Trait trait = new Trait(extendedMemeProps.forcedTrait, 0, true);
+                        ___pawn.story.traits.GainTrait(trait);
+                    }
+                    if (extendedMemeProps.abilitiesGiven != null)
+                    {
+                       foreach(AbilityDef ability in extendedMemeProps.abilitiesGiven)
+                        {
+                            ___pawn.abilities.GainAbility(ability);
+                        }
+                    }
                 }
+                
 
             }
             

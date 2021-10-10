@@ -17,6 +17,7 @@ namespace VanillaMemesExpanded
         public string neededMeme;
         public TraitDef forcedTrait;
         public int factionOpinionOffset;
+        public List<AbilityDef> abilitiesGiven;
     }
 
 }
