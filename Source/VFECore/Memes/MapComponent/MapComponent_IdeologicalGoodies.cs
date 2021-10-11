@@ -33,7 +33,7 @@ namespace VanillaMemesExpanded
                 {
                     if (Current.Game.World.factionManager.OfPlayer.ideos.PrimaryIdeo.HasMeme(startingItems.associatedMeme))
                     {
-                        things = startingItems.thingSetMaker.root.Generate();
+                        things.AddRange(startingItems.thingSetMaker.root.Generate());
                     }
 
                 }
