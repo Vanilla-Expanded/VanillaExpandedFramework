@@ -24,13 +24,34 @@ namespace VanillaMemesExpanded
             for (int i = 0; i < ___newMemes.Count; i++)
             {
                 ExtendedMemeProperties extendedMemeProps = ___newMemes[i].GetModExtension<ExtendedMemeProperties>();
-                if (extendedMemeProps != null && extendedMemeProps.pairedMeme!=null)
+                if (extendedMemeProps != null && extendedMemeProps.requiredMemes!=null)
                 {
-                    if (!___newMemes.Contains(DefDatabase<MemeDef>.GetNamedSilentFail(extendedMemeProps.pairedMeme)))
+                    bool flagAnyFound = false;
+                    List<string> memeNamesList = new List<string>();
+                    foreach (string requiredMeme in extendedMemeProps.requiredMemes)
                     {
-                        Messages.Message("VME_MessageNeedsThePairedMeme".Translate(___newMemes[i].label, DefDatabase<MemeDef>.GetNamedSilentFail(extendedMemeProps.pairedMeme)?.label), MessageTypeDefOf.RejectInput, false);
-                        return false;
+                        MemeDef meme = DefDatabase<MemeDef>.GetNamedSilentFail(requiredMeme);
+
+                        if (meme != null)
+                        {
+                            memeNamesList.Add(meme.LabelCap);
+                            if (___newMemes.Contains(meme))
+                            {
+                                flagAnyFound = true;
+                            }
+                        }
                     }
+                    if (!flagAnyFound) {
+                        
+                     
+                        
+                        string memeNames = string.Join(", ", memeNamesList);
+                        Messages.Message("VME_MessageNeedsThePairedMeme".Translate(___newMemes[i].label, memeNames), MessageTypeDefOf.RejectInput, false);
+                        return false;
+                        
+
+                    }
+                    
                    
                 }
 

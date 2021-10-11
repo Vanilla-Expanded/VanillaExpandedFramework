@@ -17,7 +17,7 @@ namespace VanillaMemesExpanded
         public string neededMeme;
 
         //Used to make a meme only be choosable if another different meme is chosen too
-        public string pairedMeme;
+        public List<string> requiredMemes;
 
         //Used to make all members of the Ideoligion acquire a given trait
         public TraitDef forcedTrait;

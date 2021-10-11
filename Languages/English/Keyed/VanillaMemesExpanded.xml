@@ -3,7 +3,7 @@
 
 
 
-	<VME_MessageNeedsThePairedMeme>{0} needs the {1} meme to be chosen too to work</VME_MessageNeedsThePairedMeme>
+	<VME_MessageNeedsThePairedMeme>{0} needs one of the following memes to be chosen too to work: {1}</VME_MessageNeedsThePairedMeme>
 
 
 
