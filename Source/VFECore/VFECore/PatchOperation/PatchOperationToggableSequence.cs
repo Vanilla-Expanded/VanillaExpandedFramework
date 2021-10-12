@@ -77,6 +77,8 @@ namespace VFECore
 				}
 			}
 
+			if (this.mods.NullOrEmpty()) modsFound = true;
+
 			return modsFound;
 		}
 	}

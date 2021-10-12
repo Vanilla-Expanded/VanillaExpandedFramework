@@ -30,6 +30,7 @@ namespace VFECore
                     ToggablePatchCount += modPatchesCount;
                 }
             }
+            Log.Message($"{ModUsingToggablePatchCount} - {ToggablePatchCount}");
         }
 
         public override string SettingsCategory() => "Vanilla Framework Expanded";
@@ -230,7 +231,8 @@ namespace VFECore
             Rect viewRect = new Rect(inRect);
             if (PageIndex == (int)Pages.PatchOperationToggable)
             {
-                viewRect.height = (ToggablePatchCount + ModUsingToggablePatchCount) * 20f;
+                viewRect.height = 120f;
+                viewRect.height += (ToggablePatchCount + ModUsingToggablePatchCount) * 20f;
                 viewRect.width -= 20f;
             }
 
