@@ -82,7 +82,7 @@ namespace KCSG
                         }
                         else if (temp.thingDef != null)
                         {
-                            thing = ThingMaker.MakeThing(temp.thingDef, temp.stuffDef);
+                            thing = ThingMaker.MakeThing(temp.thingDef, temp.thingDef.CostStuffCount > 0 ? (temp.stuffDef ?? temp.thingDef.defaultStuff ?? ThingDefOf.WoodLog) : null);
 
                             CompRefuelable refuelable = thing.TryGetComp<CompRefuelable>();
                             refuelable?.Refuel(refuelable.Props.fuelCapacity);
