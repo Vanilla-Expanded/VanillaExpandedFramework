@@ -41,104 +41,110 @@ namespace VanillaFurnitureExpanded
 
         public void ChangeGraphic()
         {
-            Vector2 sizeVector = this.parent.Graphic.drawSize;
-            Color objectColour = this.parent.Graphic.color;
-            ShaderTypeDef shaderUsed = this.parent.def.graphicData.shaderType;
+            try {
+                Vector2 sizeVector = this.parent.Graphic.drawSize;
+                Color objectColour = this.parent.Graphic.color;
+                ShaderTypeDef shaderUsed = this.parent.def.graphicData.shaderType;
 
-            if (this.parent.Faction != null && this.parent.Faction.IsPlayer)
-            {
-                if (this.parent.def.graphicData.graphicClass == typeof(Graphic_Multi))
+                if (this.parent.Faction != null && this.parent.Faction.IsPlayer)
                 {
-                    if (!VFECore.VFEGlobal.settings.isRandomGraphic) {
-                        if (!reloading) {
-                            int newGraphicPathIndex = Props.randomGraphics.IndexOf(newGraphicPath);
-                            if (newGraphicPathIndex + 1 > Props.randomGraphics.Count - 1)
+                    if (this.parent.def.graphicData.graphicClass == typeof(Graphic_Multi))
+                    {
+                        if (!VFECore.VFEGlobal.settings.isRandomGraphic)
+                        {
+                            if (!reloading)
                             {
-                                newGraphicPathIndex = 0;
+                                int newGraphicPathIndex = Props.randomGraphics.IndexOf(newGraphicPath);
+                                if (newGraphicPathIndex + 1 > Props.randomGraphics.Count - 1)
+                                {
+                                    newGraphicPathIndex = 0;
+                                }
+                                else newGraphicPathIndex++;
+                                newGraphicPath = Props.randomGraphics[newGraphicPathIndex];
+                                newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
                             }
-                            else newGraphicPathIndex++;
-                            newGraphicPath = Props.randomGraphics[newGraphicPathIndex];
+                            else
+                            {
+                                if (newGraphicPath == "")
+                                {
+                                    newGraphicPath = Props.randomGraphics[0];
+                                    newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
+                                }
+                                else
+                                {
+                                    newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
+                                }
+                                reloading = false;
+
+                            }
+
+
+
+                        }
+                        else if (newGraphicPath == "")
+                        {
+                            newGraphicPath = Props.randomGraphics.RandomElement();
                             newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
                         }
                         else
                         {
-                            if (newGraphicPath == "")
+                            newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
+                        }
+                        Type typ = typeof(Thing);
+                        FieldInfo type = typ.GetField("graphicInt", BindingFlags.Instance | BindingFlags.NonPublic);
+                        type.SetValue(thingToGrab, newGraphic);
+
+                    }
+                    else if (this.parent.def.graphicData.graphicClass == typeof(Graphic_Single))
+                    {
+                        if (!VFECore.VFEGlobal.settings.isRandomGraphic)
+                        {
+                            if (!reloading)
                             {
-                                newGraphicPath = Props.randomGraphics[0];
-                                newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
+                                int newGraphicPathIndex = Props.randomGraphics.IndexOf(newGraphicSinglePath);
+                                if (newGraphicPathIndex + 1 > Props.randomGraphics.Count - 1)
+                                {
+                                    newGraphicPathIndex = 0;
+                                }
+                                else newGraphicPathIndex++;
+                                newGraphicSinglePath = Props.randomGraphics[newGraphicPathIndex];
+                                newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
                             }
                             else
                             {
-                                newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
+                                if (newGraphicSinglePath == "")
+                                {
+                                    newGraphicSinglePath = Props.randomGraphics[0];
+                                    newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
+                                }
+                                else
+                                {
+                                    newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
+                                }
+                                reloading = false;
                             }
-                            reloading = false;
+
+
 
                         }
-                        
-
-
-                    }
-                    else if (newGraphicPath == "")
-                    {
-                        newGraphicPath = Props.randomGraphics.RandomElement();
-                        newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
-                    }
-                    else
-                    {
-                        newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
-                    }
-                    Type typ = typeof(Thing);
-                    FieldInfo type = typ.GetField("graphicInt", BindingFlags.Instance | BindingFlags.NonPublic);
-                    type.SetValue(thingToGrab, newGraphic);
-
-                }
-                else if (this.parent.def.graphicData.graphicClass == typeof(Graphic_Single))
-                {
-                    if (!VFECore.VFEGlobal.settings.isRandomGraphic)
-                    {
-                        if (!reloading)
+                        else
+                        if (newGraphicSinglePath == "")
                         {
-                            int newGraphicPathIndex = Props.randomGraphics.IndexOf(newGraphicSinglePath);
-                            if (newGraphicPathIndex + 1 > Props.randomGraphics.Count - 1)
-                            {
-                                newGraphicPathIndex = 0;
-                            }
-                            else newGraphicPathIndex++;
-                            newGraphicSinglePath = Props.randomGraphics[newGraphicPathIndex];
+                            newGraphicSinglePath = Props.randomGraphics.RandomElement();
                             newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
                         }
-                        else {
-                            if (newGraphicSinglePath == "")
-                            {
-                                newGraphicSinglePath = Props.randomGraphics[0];
-                                newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
-                            }
-                            else
-                            {
-                                newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
-                            }
-                            reloading = false;
+                        else
+                        {
+                            newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
                         }
-                        
+                        Type typ = typeof(Thing);
+                        FieldInfo type = typ.GetField("graphicInt", BindingFlags.Instance | BindingFlags.NonPublic);
+                        type.SetValue(thingToGrab, newGraphicSingle);
+                    }
 
-
-                    }
-                    else
-                    if (newGraphicSinglePath == "")
-                    {
-                        newGraphicSinglePath = Props.randomGraphics.RandomElement();
-                        newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
-                    }
-                    else
-                    {
-                        newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
-                    }
-                    Type typ = typeof(Thing);
-                    FieldInfo type = typ.GetField("graphicInt", BindingFlags.Instance | BindingFlags.NonPublic);
-                    type.SetValue(thingToGrab, newGraphicSingle);
                 }
-
-            }
+            }catch(Exception e) { Log.Message("The variations mod has probably been added to a running save. Ignoring load error."); }
+            
 
 
 
