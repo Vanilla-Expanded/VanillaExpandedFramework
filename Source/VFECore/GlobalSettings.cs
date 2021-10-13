@@ -26,11 +26,13 @@ namespace VFECore
                 if (mod.Patches != null)
                 {
                     int modPatchesCount = mod.Patches.ToList().FindAll(p => p is PatchOperationToggableSequence pt && pt.ModsFound()).Count;
-                    ModUsingToggablePatchCount += modPatchesCount;
-                    ToggablePatchCount += modPatchesCount;
+                    if (modPatchesCount > 0)
+                    {
+                        ModUsingToggablePatchCount++;
+                        ToggablePatchCount += modPatchesCount;
+                    }
                 }
             }
-            Log.Message($"{ModUsingToggablePatchCount} - {ToggablePatchCount}");
         }
 
         public override string SettingsCategory() => "Vanilla Framework Expanded";
@@ -72,7 +74,7 @@ namespace VFECore
         #region Toggable Patches
 
         private int ToggablePatchCount;
-        private int ModUsingToggablePatchCount;
+        private int ModUsingToggablePatchCount = 0;
 
         private void AddToggablePatchesSettings(Listing_Standard list)
         {
