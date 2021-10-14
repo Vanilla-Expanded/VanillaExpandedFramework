@@ -7,6 +7,8 @@ namespace AnimalBehaviours
     public class CompUntameable : ThingComp
     {
 
+        public bool externalOverride = false;
+
         public CompProperties_Untameable Props
         {
             get
@@ -15,11 +17,18 @@ namespace AnimalBehaviours
             }
         }
 
+        public override void PostExposeData()
+        {
+          
+            Scribe_Values.Look(ref externalOverride, "externalOverride", false, true);
 
+
+
+        }
         public override void CompTick()
         {
             base.CompTick();
-            if (this.parent.IsHashIntervalTick(500))
+            if (this.parent.IsHashIntervalTick(500) && !externalOverride)
             {
                 this.CheckFaction();
             }
