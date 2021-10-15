@@ -163,6 +163,7 @@
             }
         }
 
+        // Careful with changing this, hook in mp compat.
         public virtual void CreateCastJob(LocalTargetInfo target)
         {
             this.pawn.jobs.EndCurrentJob(JobCondition.InterruptForced, false);
@@ -315,7 +316,7 @@
         public bool      HidePawnTooltips { get; }
         public Thing     Caster           => this.pawn ?? this.holder;
         public Pawn      CasterPawn       => this.pawn;
-        public Verb      GetVerb          { get; }
+        public Verb      GetVerb          => this.verb;
         public Texture2D UIIcon           => this.def.icon;
 
         public virtual TargetingParameters targetParams
