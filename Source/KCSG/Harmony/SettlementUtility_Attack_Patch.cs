@@ -15,8 +15,8 @@ namespace KCSG
         [HarmonyPrefix]
         public static bool Prefix(Caravan caravan, Settlement settlement)
         {
-            if (settlement.Faction != null && settlement.Faction.def.HasModExtension<FactionSettlement>() ||
-                (Find.World.worldObjects.AllWorldObjects.Find(o => o.Tile == settlement.Tile && o.def.HasModExtension<FactionSettlement>()) is WorldObject worldObject))
+            if (settlement.Faction != null && settlement.Faction.def.HasModExtension<CustomGenOption>() ||
+                (Find.World.worldObjects.AllWorldObjects.Find(o => o.Tile == settlement.Tile && o.def.HasModExtension<CustomGenOption>()) is WorldObject worldObject))
             {
                 if (!settlement.HasMap)
                 {

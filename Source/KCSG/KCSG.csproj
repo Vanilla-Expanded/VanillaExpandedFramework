@@ -100,7 +100,7 @@
     <Compile Include="Utils\Algorithms\AStar.cs" />
     <Compile Include="Utils\Algorithms\BuildingPlacement.cs" />
     <Compile Include="Utils\DebugOption.cs" />
-    <Compile Include="DefModExtensions\FactionSettlement.cs" />
+    <Compile Include="DefModExtensions\CustomGenOption.cs" />
     <Compile Include="Defs\SettlementLayoutDef.cs" />
     <Compile Include="Defs\StructureLayoutDef.cs" />
     <Compile Include="Defs\SymbolDef.cs" />

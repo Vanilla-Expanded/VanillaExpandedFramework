@@ -3,7 +3,7 @@ using Verse;
 
 namespace KCSG
 {
-    public class FactionSettlement : DefModExtension
+    public class CustomGenOption : DefModExtension
     {
         /* Nomadic faction */
         public bool canSpawnSettlements = true;
@@ -35,11 +35,14 @@ namespace KCSG
         public override IEnumerable<string> ConfigErrors()
         {
             if (shouldRuin && !ruinSymbolResolvers.Any())
-                Log.Error($"FactionSettlement DefModExtension have shouldRuin at true but have empty ruinSymbolResolvers list");
+                Log.Error($"CustomGenOption DefModExtension have shouldRuin at true but have empty ruinSymbolResolvers list");
             if (filthTypes.Any(t => t.category != ThingCategory.Filth))
-                Log.Error($"FactionSettlement DefModExtension have filthTypes list with non filth thing(s)");
+                Log.Error($"CustomGenOption DefModExtension have filthTypes list with non filth thing(s)");
 
             return base.ConfigErrors();
         }
     }
+
+    // Compatibility
+    public class FactionSettlement : CustomGenOption { }
 }

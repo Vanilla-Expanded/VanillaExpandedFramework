@@ -9,7 +9,7 @@ namespace KCSG
     {
         public static bool Prefix(WorldObject o)
         {
-            return (o?.Faction?.def.GetModExtension<FactionSettlement>()?.canSpawnSettlements == false) ? false : true;
+            return (o?.Faction?.def.GetModExtension<CustomGenOption>()?.canSpawnSettlements == false) ? false : true;
         }
     }
 }

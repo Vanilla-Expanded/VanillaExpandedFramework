@@ -42,7 +42,7 @@ namespace KCSG
 
         public static bool usePathCostReduction;
 
-        public static FactionSettlement factionSettlement;
+        public static CustomGenOption factionSettlement;
 
         /*------ Falling structure ------*/
         public static FallingStructure fallingStructure;

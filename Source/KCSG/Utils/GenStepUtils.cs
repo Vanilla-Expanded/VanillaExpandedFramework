@@ -8,7 +8,7 @@ namespace KCSG
 {
     public class GenStepUtils
     {
-        public static void Generate(Map map, IntVec3 c, FactionSettlement sf, string symbolResolver = "kcsg_settlement")
+        public static void Generate(Map map, IntVec3 c, CustomGenOption sf, string symbolResolver = "kcsg_settlement")
         {
             CGO.useStructureLayout = sf.useStructureLayout;
 

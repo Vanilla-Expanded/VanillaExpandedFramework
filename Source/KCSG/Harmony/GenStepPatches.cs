@@ -12,7 +12,7 @@ namespace KCSG
         [HarmonyPrefix]
         public static bool Prefix(Map map)
         {
-            if (map.ParentFaction != null && map.ParentFaction.def.HasModExtension<FactionSettlement>())
+            if (map.ParentFaction != null && map.ParentFaction.def.HasModExtension<CustomGenOption>())
             {
                 return false;
             }
