@@ -20,7 +20,8 @@ namespace VanillaMemesExpanded
         [HarmonyPostfix]
         static void ForceTrait(Ideo ideo, Pawn ___pawn)
         {
-            foreach(MemeDef meme in ideo.memes)
+            
+            foreach(MemeDef meme in ideo?.memes)
             {
                 ExtendedMemeProperties extendedMemeProps = meme.GetModExtension<ExtendedMemeProperties>();
                 if(extendedMemeProps != null)
