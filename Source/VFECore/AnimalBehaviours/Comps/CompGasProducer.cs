@@ -32,20 +32,24 @@ namespace AnimalBehaviours
                     Pawn pawn = this.parent as Pawn;
                     if (pawn.Map != null)
                     {
-                        CellRect rect = GenAdj.OccupiedRect(pawn.Position, pawn.Rotation, IntVec2.One);
-                        rect = rect.ExpandedBy(Props.radius);
+                        if (!Props.generateIfDowned || (Props.generateIfDowned&&!pawn.Downed&&!pawn.Dead)) {
+                            CellRect rect = GenAdj.OccupiedRect(pawn.Position, pawn.Rotation, IntVec2.One);
+                            rect = rect.ExpandedBy(Props.radius);
 
-                        foreach (IntVec3 current in rect.Cells)
-                        {
-                            if (current.InBounds(pawn.Map) && rand.NextDouble() < Props.rate)
+                            foreach (IntVec3 current in rect.Cells)
                             {
-                                Thing thing = ThingMaker.MakeThing(ThingDef.Named(Props.gasType), null);
-                                thing.Rotation = Rot4.North;
-                                thing.Position = current;
-                                //Directly using SpawnSetup instead of GenSpawn.Spawn to further reduce lag
-                                thing.SpawnSetup(pawn.Map, false);
+                                if (current.InBounds(pawn.Map) && rand.NextDouble() < Props.rate)
+                                {
+                                    Thing thing = ThingMaker.MakeThing(ThingDef.Named(Props.gasType), null);
+                                    thing.Rotation = Rot4.North;
+                                    thing.Position = current;
+                                    //Directly using SpawnSetup instead of GenSpawn.Spawn to further reduce lag
+                                    thing.SpawnSetup(pawn.Map, false);
+                                }
                             }
+
                         }
+                        
                         this.gasProgress = 0;
                     }
                 }
