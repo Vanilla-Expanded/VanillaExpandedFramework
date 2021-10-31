@@ -57,7 +57,7 @@
 
         public bool Satisfied(Hediff_Abilities hediff) =>
             ((hediff != null && hediff.SatisfiesConditionForAbility(this)) || this.requiredHediff == null) && 
-            (this.requiredTrait == null || (hediff?.pawn?.story.traits.HasTrait(this.requiredTrait) ?? false));
+            (this.requiredTrait == null || (hediff?.pawn?.story?.traits.HasTrait(this.requiredTrait) ?? false));
 
         public override IEnumerable<string> ConfigErrors()
         {
