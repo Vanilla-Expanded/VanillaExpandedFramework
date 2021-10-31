@@ -7,7 +7,9 @@
     public class Hediff_Abilities : Hediff_Level
     {
         public bool giveRandomAbilities = true;
-        
+
+        public override bool ShouldRemove => false;
+
         public override void PostAdd(DamageInfo? dinfo)
         {
             base.PostAdd(dinfo);
@@ -44,5 +46,8 @@
         {
             yield break;
         }
+
+        public virtual bool SatisfiesConditionForAbility(AbilityDef abilityDef) => 
+            this.level >= abilityDef.requiredHediff.minimumLevel;
     }
 }
