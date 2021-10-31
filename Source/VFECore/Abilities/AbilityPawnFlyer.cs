@@ -11,14 +11,26 @@
         protected Vector3 position;
         public    Vector3 target;
 
+        public Rot4 direction;
+
+        public override void SpawnSetup(Map map, bool respawningAfterLoad)
+        {
+            base.SpawnSetup(map, respawningAfterLoad);
+            this.direction = this.startVec.x > this.target.ToIntVec3().x ? Rot4.West :
+                             this.startVec.x < this.target.ToIntVec3().x ? Rot4.East :
+                             this.startVec.y < this.target.ToIntVec3().y ? Rot4.North :
+                                                                           Rot4.South;
+        }
+
         public override void Tick()
         {
-            this.position = Vector3.Lerp(this.startVec, this.target, (float) this.ticksFlying / (float) this.ticksFlightTime);
+            float progress = (float) this.ticksFlying / (float) this.ticksFlightTime;
+            this.position = Vector3.Lerp(this.startVec, this.target, progress) + new Vector3(0f, 0f, 2f) * GenMath.InverseParabola(progress);
             base.Tick();
         }
 
-        public override void DrawAt(Vector3 drawLoc, bool flip = false) => 
-            this.FlyingPawn.DrawAt(this.position, flip);
+        public override void DrawAt(Vector3 drawLoc, bool flip = false) =>
+            this.FlyingPawn.Drawer.renderer.RenderPawnAt(this.position, this.direction);
 
         protected override void RespawnPawn()
         {
@@ -39,6 +51,7 @@
         {
             base.ExposeData();
             Scribe_References.Look(ref this.ability, nameof(this.ability));
+            Scribe_Values.Look(ref this.direction, nameof(this.direction));
         }
     }
 }
