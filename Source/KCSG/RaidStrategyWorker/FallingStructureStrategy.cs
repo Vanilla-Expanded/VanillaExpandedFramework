@@ -103,7 +103,7 @@ namespace KCSG
 
                         faller.skyfaller = new SkyfallerProperties()
                         {
-                            shadowSize = new UnityEngine.Vector2((float)(thing.def.size.x + 1), (float)(thing.def.size.z + 1)),
+                            shadowSize = new UnityEngine.Vector2(thing.def.size.x + 1, thing.def.size.z + 1),
                             ticksToImpactRange = new IntRange(150, 150),
                             movementType = SkyfallerMovementType.Decelerate
                         };

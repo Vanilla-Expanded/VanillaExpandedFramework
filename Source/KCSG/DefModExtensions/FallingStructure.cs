@@ -33,9 +33,9 @@ namespace KCSG
 
             if (array.Length == 2)
             {
-                return new WeightedStruct(DefDatabase<StructureLayoutDef>.GetNamedSilentFail(array[0]), float.Parse(array[1].TrimStart(new char[] { ' ' })));
+                return new WeightedStruct(DefDatabase<StructureLayoutDef>.GetNamed(array[0]), float.Parse(array[1].TrimStart(new char[] { ' ' })));
             }
-            else return new WeightedStruct(DefDatabase<StructureLayoutDef>.GetNamedSilentFail(array[0]), 1f);
+            else return new WeightedStruct(DefDatabase<StructureLayoutDef>.GetNamed(array[0]), 1f);
         }
     }
 
