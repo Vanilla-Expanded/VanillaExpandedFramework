@@ -101,7 +101,7 @@ namespace KCSG
                 {
                     compDormant.wokeUpTick = Find.TickManager.TicksGame + delayTicks;
                 }
-                GenPlace.TryPlaceThing(this.innerContainer[i], base.Position, base.Map, ThingPlaceMode.Near, delegate (Thing thing, int count)
+                GenPlace.TryPlaceThing(this.innerContainer[i], base.Position, base.Map, ThingPlaceMode.Direct, delegate (Thing thing, int count)
                 {
                     PawnUtility.RecoverFromUnwalkablePositionOrKill(thing.Position, thing.Map);
                     if (thing.def.Fillage == FillCategory.Full && this.def.skyfaller.CausesExplosion && this.def.skyfaller.explosionDamage.isExplosive && thing.Position.InHorDistOf(base.Position, this.def.skyfaller.explosionRadius))
