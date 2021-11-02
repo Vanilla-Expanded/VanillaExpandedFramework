@@ -55,6 +55,10 @@
         public float Chance => 
             this.targetMode == AbilityTargetingMode.Self ? 0 : this.chance;
 
+        public bool Satisfied(Hediff_Abilities hediff) =>
+            ((hediff != null && hediff.SatisfiesConditionForAbility(this)) || this.requiredHediff == null) && 
+            (this.requiredTrait == null || (hediff?.pawn?.story?.traits.HasTrait(this.requiredTrait) ?? false));
+
         public override IEnumerable<string> ConfigErrors()
         {
             foreach (string configError in base.ConfigErrors()) 
@@ -133,12 +137,6 @@
     {
         public HediffDef hediffDef;
         public int       minimumLevel;
-
-        public bool Satisfied(Pawn p) => 
-            this.Satisfied(p.health.hediffSet.GetFirstHediffOfDef(this.hediffDef) as Hediff_Level);
-
-        public bool Satisfied(Hediff_Level hediff) => 
-            hediff != null && hediff.level >= this.minimumLevel;
     }
 
     public enum AbilityTargetingMode : byte

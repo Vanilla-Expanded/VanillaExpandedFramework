@@ -34,8 +34,8 @@
 
         public void Init()
         {
-            if(this.verb == null)
-                this.verb             = (Abilities.Verb_CastAbility) Activator.CreateInstance(this.def.verbProperties.verbClass);
+            if (this.verb == null)
+                this.verb = (Abilities.Verb_CastAbility) Activator.CreateInstance(this.def.verbProperties.verbClass);
             this.verb.loadID      = this.GetUniqueLoadID() + "_Verb";
             this.verb.verbProps   = this.def.verbProperties;
             this.verb.verbTracker = this.pawn?.verbTracker;
@@ -44,7 +44,7 @@
             this.autoCast         = this.def.autocastPlayerDefault;
         }
 
-        public virtual bool ShowGizmoOnPawn() => 
+        public virtual bool ShowGizmoOnPawn() =>
             this.pawn != null && this.pawn.IsColonistPlayerControlled && this.pawn.Drafted;
 
         public virtual bool IsEnabledForPawn(out string reason)
@@ -66,12 +66,12 @@
 
             reason = "VFEA.AbilityDisableReasonGeneral".Translate(this.pawn?.NameShortColored ?? this.holder.LabelCap);
 
-            return (this.def.requiredHediff?.Satisfied(this.Hediff) ?? true) && (this.def.requiredTrait == null || (this.pawn?.story.traits.HasTrait(this.def.requiredTrait) ?? false));
+            return this.def.Satisfied(this.Hediff);
         }
 
         public virtual float GetRangeForPawn() =>
             this.def.targetMode == AbilityTargetingMode.Self
-                ? 0f 
+                ? 0f
                 : this.def.rangeStatFactors.Aggregate(this.def.range, (current, statFactor) => current * (this.pawn.GetStatValue(statFactor.stat) * statFactor.value));
 
         public virtual float GetRadiusForPawn() =>
@@ -84,10 +84,12 @@
             Mathf.RoundToInt(this.def.castTimeStatFactors.Aggregate((float) this.def.castTime, (current, statFactor) => current * (this.pawn.GetStatValue(statFactor.stat) * statFactor.value)));
 
         public virtual int GetCooldownForPawn() =>
-            Mathf.RoundToInt(this.def.cooldownTimeStatFactors.Aggregate((float) this.def.cooldownTime, (current, statFactor) => current * (this.pawn.GetStatValue(statFactor.stat) * statFactor.value)));
+            Mathf.RoundToInt(this.def.cooldownTimeStatFactors.Aggregate((float) this.def.cooldownTime,
+                                                                        (current, statFactor) => current * (this.pawn.GetStatValue(statFactor.stat) * statFactor.value)));
 
         public virtual int GetDurationForPawn() =>
-            Mathf.RoundToInt(this.def.durationTimeStatFactors.Aggregate((float)this.def.durationTime, (current, statFactor) => current * (this.pawn.GetStatValue(statFactor.stat) * statFactor.value)));
+            Mathf.RoundToInt(this.def.durationTimeStatFactors.Aggregate((float) this.def.durationTime,
+                                                                        (current, statFactor) => current * (this.pawn.GetStatValue(statFactor.stat) * statFactor.value)));
 
         public virtual string GetDescriptionForPawn()
         {
@@ -115,10 +117,11 @@
                 sb.AppendLine($"{"VFEA.AbilityStatsDuration".Translate()}: {durationForPawn.ToStringTicksToPeriod()}".Colorize(Color.cyan));
             else if (this.def.HasModExtension<AbilityExtension_Hediff>())
             {
-                AbilityExtension_Hediff         extension                      = this.def.GetModExtension<AbilityExtension_Hediff>();
+                AbilityExtension_Hediff         extension            = this.def.GetModExtension<AbilityExtension_Hediff>();
                 HediffCompProperties_Disappears propertiesDisappears = extension.hediff.CompProps<HediffCompProperties_Disappears>();
-                if (propertiesDisappears != null) 
-                    sb.AppendLine($"{"VFEA.AbilityStatsDuration".Translate()}: {propertiesDisappears.disappearsAfterTicks.min.ToStringTicksToPeriod()} ~ {propertiesDisappears.disappearsAfterTicks.max.ToStringTicksToPeriod()}".Colorize(Color.cyan));
+                if (propertiesDisappears != null)
+                    sb.AppendLine($"{"VFEA.AbilityStatsDuration".Translate()}: {propertiesDisappears.disappearsAfterTicks.min.ToStringTicksToPeriod()} ~ {propertiesDisappears.disappearsAfterTicks.max.ToStringTicksToPeriod()}"
+                                  .Colorize(Color.cyan));
             }
 
             foreach (AbilityExtension_AbilityMod modExtension in this.AbilityModExtensions)
@@ -135,10 +138,11 @@
 
         public virtual bool AutoCast =>
             !this.pawn.IsColonistPlayerControlled || this.autoCast;
+
         public virtual bool CanAutoCast =>
             this.AutoCast && this.Chance > 0;
 
-        public virtual float Chance => 
+        public virtual float Chance =>
             this.def.Chance;
 
         public virtual Command_Action GetGizmo()
@@ -177,18 +181,18 @@
         {
             this.cooldown = Find.TickManager.TicksGame + this.GetCooldownForPawn();
 
-            foreach (AbilityExtension_AbilityMod modExtension in this.AbilityModExtensions) 
+            foreach (AbilityExtension_AbilityMod modExtension in this.AbilityModExtensions)
                 modExtension.Cast(this);
 
             this.CheckCastEffects(target, out bool cast, out bool targetMote, out bool hediffApply);
 
-            if(hediffApply) 
+            if (hediffApply)
                 this.ApplyHediffs(target);
 
-            if (cast) 
+            if (cast)
                 this.CastEffects(target);
 
-            if(targetMote) 
+            if (targetMote)
                 this.TargetEffects(target);
         }
 
@@ -210,10 +214,10 @@
             if (targetInfo.Pawn?.health.hediffSet.hediffs != null)
                 foreach (Hediff hediff in targetInfo.Pawn.health.hediffSet.hediffs)
                 {
-                    if(hediff is HediffWithComps hediffWithComps)
+                    if (hediff is HediffWithComps hediffWithComps)
                         foreach (HediffComp comp in hediffWithComps.comps)
                         {
-                            if(comp is HediffComp_AbilityTargetReact compReact)
+                            if (comp is HediffComp_AbilityTargetReact compReact)
                                 compReact.ReactTo(this);
                         }
                 }
@@ -231,19 +235,19 @@
                         localHediff.Severity = hediffExtension.severity;
                     if (localHediff is HediffWithComps hwc)
                         foreach (HediffComp hediffComp in hwc.comps)
-                            if (hediffComp is HediffComp_Ability hca) 
+                            if (hediffComp is HediffComp_Ability hca)
                                 hca.ability = this;
                     targetInfo.Pawn.health.AddHediff(localHediff);
                 }
             }
         }
 
-        public virtual void CheckCastEffects(LocalTargetInfo targetInfo, out bool cast, out bool target, out bool hediffApply) => 
+        public virtual void CheckCastEffects(LocalTargetInfo targetInfo, out bool cast, out bool target, out bool hediffApply) =>
             cast = target = hediffApply = true;
 
         public void ExposeData()
         {
-            Scribe_References.Look(ref this.pawn,   nameof(this.pawn));
+            Scribe_References.Look(ref this.pawn, nameof(this.pawn));
             Scribe_Values.Look(ref this.cooldown, nameof(this.cooldown));
             Scribe_Defs.Look(ref this.def, nameof(this.def));
             Scribe_Deep.Look(ref this.verb, nameof(this.verb));
@@ -259,10 +263,10 @@
             }
         }
 
-        public string GetUniqueLoadID() => 
+        public string GetUniqueLoadID() =>
             $"Ability_{this.def.defName}_{this.holder.GetUniqueLoadID()}";
 
-        public virtual bool CanHitTarget(LocalTargetInfo   target) => this.CanHitTarget(target, true);
+        public virtual bool CanHitTarget(LocalTargetInfo target) => this.CanHitTarget(target, true);
 
         public virtual bool CanHitTarget(LocalTargetInfo target, bool sightCheck)
         {
@@ -275,13 +279,14 @@
                     return true;
                 List<IntVec3> tempSourceList = new List<IntVec3>();
                 ShootLeanUtility.LeanShootingSourcesFromTo(this.pawn.Position, target.Cell, this.pawn.Map, tempSourceList);
-                if(tempSourceList.Any(ivc => GenSight.LineOfSight(ivc, target.Cell, this.pawn.Map)))
+                if (tempSourceList.Any(ivc => GenSight.LineOfSight(ivc, target.Cell, this.pawn.Map)))
                     return true;
             }
+
             return false;
         }
 
-        public virtual bool ValidateTarget(LocalTargetInfo target, bool showMessages = true) => 
+        public virtual bool ValidateTarget(LocalTargetInfo target, bool showMessages = true) =>
             this.CanHitTarget(target);
 
         public virtual void DrawHighlight(LocalTargetInfo target)
@@ -300,7 +305,7 @@
             }
         }
 
-        public virtual void OrderForceTarget(LocalTargetInfo target) => 
+        public virtual void OrderForceTarget(LocalTargetInfo target) =>
             this.CreateCastJob(target);
 
         public virtual void OnGUI(LocalTargetInfo target)
@@ -325,7 +330,7 @@
             {
                 TargetingParameters parameters = this.def.targetingParameters;
 
-                if (this.def.targetMode == AbilityTargetingMode.Self) 
+                if (this.def.targetMode == AbilityTargetingMode.Self)
                     parameters.targetSpecificThing = this.pawn;
 
                 return parameters;
@@ -344,21 +349,22 @@
             {
                 Abilities.AbilityDef abilityDef = def;
 
-                list.Add(new DebugMenuOption(abilityDef.LabelCap, DebugMenuOptionMode.Tool, () =>
-                                                                                            {
+                list.Add(new
+                             DebugMenuOption($"{(abilityDef.requiredHediff != null ? $"{abilityDef.requiredHediff.hediffDef.LabelCap} ({abilityDef.requiredHediff.minimumLevel}): " : string.Empty)}{abilityDef.LabelCap}",
+                                             DebugMenuOptionMode.Tool, () =>
+                                                                       {
 
-                                                                                                foreach (Pawn item in (from t in Find.CurrentMap.thingGrid.ThingsAt(UI.MouseCell())
-                                                                                                                       where t is Pawn
-                                                                                                                       select t).Cast<Pawn>())
-                                                                                                {
-                                                                                                    CompAbilities abilityComp = item.TryGetComp<CompAbilities>();
-                                                                                                    if (abilityComp != null)
-                                                                                                    {
-                                                                                                        abilityComp.GiveAbility(abilityDef);
-                                                                                                        DebugActionsUtility.DustPuffFrom(item);
-                                                                                                    }
-                                                                                                }
-                                                                                            }));
+                                                                           foreach (Pawn item in (from t in Find.CurrentMap.thingGrid.ThingsAt(UI.MouseCell())
+                                                                                                  where t is Pawn select t).Cast<Pawn>())
+                                                                           {
+                                                                               CompAbilities abilityComp = item.TryGetComp<CompAbilities>();
+                                                                               if (abilityComp != null)
+                                                                               {
+                                                                                   abilityComp.GiveAbility(abilityDef);
+                                                                                   DebugActionsUtility.DustPuffFrom(item);
+                                                                               }
+                                                                           }
+                                                                       }));
             }
 
             Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
