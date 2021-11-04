@@ -10,7 +10,7 @@ namespace KCSG
         {
             Map map = BaseGen.globalSettings.map;
 
-            List<Thing> things = map.listerThings.AllThings.FindAll(t => rp.rect.Contains(t.Position) && t is Building);
+            List<Thing> things = map.listerThings.AllThings.FindAll(t => rp.rect.Contains(t.Position) && t is Building && !t.def.mineable);
             if (map.ParentFaction != null)
                 things.RemoveAll(t => t.Faction != map.ParentFaction);
 
