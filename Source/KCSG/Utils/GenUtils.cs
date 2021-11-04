@@ -346,17 +346,15 @@ namespace KCSG
                     {
                         c.GetThingList(map).ToList().ForEach((t) =>
                         {
-                            if (t.def.race == null)
-                            {
-                                t.DeSpawn();
-                            }
+                            t.DeSpawn();
                         });
                     }
                     else
                         c.GetThingList(map).ToList()
                                        .FindAll(t1 => (t1.def.category == ThingCategory.Filth) ||
                                                       (t1.def.thingCategories != null && t1.def.thingCategories.Contains(ThingCategoryDefOf.StoneChunks)) ||
-                                                      (t1.def.category == ThingCategory.Building && !t1.def.building.isNaturalRock))
+                                                      (t1.def.category == ThingCategory.Building && !t1.def.building.isNaturalRock) ||
+                                                      (t1 is Pawn p && p.Faction != Faction.OfPlayerSilentFail))
                                        .ForEach((t) => t.DeSpawn());
 
                     if (map.terrainGrid.UnderTerrainAt(c) is TerrainDef terrain && terrain != null)
