@@ -20,15 +20,24 @@ namespace VFECore.Abilities
             if (compAbilities == null)
                 return;
 
-            List<Verb_CastAbility> verbs = compAbilities.LearnedAbilities.Where(ab => ab.CanAutoCast && ab.IsEnabledForPawn(out string _) && ab.CanHitTarget(target)).Select(ab => ab.verb).ToList();
-
+            List<Verb_CastAbility> verbs = compAbilities.LearnedAbilities.Where(ab => ab.CanAutoCast && ab.IsEnabledForPawn(out string _) && (target == null || ab.CanHitTarget(target)))
+                                                     .Select(ab => ab.verb).ToList();
             if (verbs.NullOrEmpty())
                 return;
 
-            if (!verbs.Select(ve => new Tuple<Verb, float>(ve, ve.ability.Chance)).AddItem(new Tuple<Verb, float>(__result, 1f)).TryRandomElementByWeight(t => t.Item2, out Tuple<Verb, float> result))
-                return;
-
-            __result = result.Item1;
+            if (target != null)
+            {
+                if (verbs.Select(ve => new Tuple<Verb, float>(ve, ve.ability.Chance)).AddItem(new Tuple<Verb, float>(__result, 1f))
+                      .TryRandomElementByWeight(t => t.Item2, out Tuple<Verb, float> result))
+                {
+                    __result = result.Item1;
+                }
+            }
+            else
+            {
+                Verb verb = verbs.AddItem(__result).MaxBy(ve => ve.verbProps.range);
+                __result = verb;
+            }
         }
     }
 }

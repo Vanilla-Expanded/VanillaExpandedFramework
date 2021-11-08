@@ -53,7 +53,7 @@
         public string JobReportString => this.jobReportString.Formatted(this.LabelCap);
 
         public float Chance => 
-            this.targetMode == AbilityTargetingMode.Self ? 0 : this.chance;
+            this.chance;
 
         public bool Satisfied(Hediff_Abilities hediff) =>
             ((hediff != null && hediff.SatisfiesConditionForAbility(this)) || this.requiredHediff == null) && 
