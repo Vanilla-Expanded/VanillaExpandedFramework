@@ -83,4 +83,40 @@
 		</thinkRoot>
 	</ThinkTreeDef>
 
+	<ThinkTreeDef>
+		<defName>VFE_Mechanoids_Machine_Riddable</defName>
+		<thinkRoot Class="ThinkNode_Priority">
+			<subNodes>
+				<li Class="ThinkNode_Subtree">
+					<treeDef>Downed</treeDef>
+				</li>
+
+				<li Class="ThinkNode_QueuedJob" />
+
+				<li Class="ThinkNode_ConditionalHasLord">
+					<subNodes>
+						<li Class="ThinkNode_Duty"/>
+					</subNodes>
+				</li>
+				
+				<!-- Main colonist behavior core -->
+				<li Class="ThinkNode_Priority">
+					<subNodes>
+						<li Class="JobGiver_AIFightEnemies"/>
+
+						<li Class="ThinkNode_Tagger">
+							<tagToGive>Idle</tagToGive>
+							<subNodes>
+								<!-- Wander -->
+								<li Class="JobGiver_WanderColony">
+									<maxDanger>None</maxDanger>
+								</li>
+							</subNodes>
+						</li>
+					</subNodes>
+				</li>
+
+			</subNodes>
+		</thinkRoot>
+	</ThinkTreeDef>
 </Defs>
