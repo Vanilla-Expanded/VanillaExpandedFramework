@@ -4,7 +4,6 @@
     <defName>KCSG_EnnemiesPresence</defName>
     <label>enemies present</label>
     <description>Enemies are present in this place.</description>
-    <workerClass>SitePartWorker_Ambush</workerClass>
     <siteTexture>World/WorldObjects/Sites/GenericSite</siteTexture>
     <expandingIconTexture>World/WorldObjects/Expanding/Sites/Ambush</expandingIconTexture>
     <handlesWorldObjectTimeoutInspectString>true</handlesWorldObjectTimeoutInspectString>
@@ -17,7 +16,7 @@
   <GenStepDef>
     <defName>KCSG_EnnemiesPresence</defName>
     <linkWithSite>KCSG_EnnemiesPresence</linkWithSite>
-    <order>460</order>
+    <order>900</order>
     <genStep Class="KCSG.GenStep_EnnemiesPresence" />
   </GenStepDef>
 </Defs>

@@ -17,6 +17,7 @@ namespace KCSG
 		public FactionDef forcedfaction;
 		public float pointMultiplier = 1f;
 		public bool spawnOnEdge = false;
+		public FloatRange defaultPointsRange = new FloatRange(300f, 500f);
 
 		public override int SeedPart
 		{
@@ -26,57 +27,54 @@ namespace KCSG
 			}
 		}
 
+
 		public override void Generate(Map map, GenStepParams parms)
 		{
 			Faction fac = this.forcedfaction != null ? Find.FactionManager.FirstFactionOfDef(this.forcedfaction) : Find.FactionManager.RandomEnemyFaction(minTechLevel: TechLevel.Neolithic);
 			parms.sitePart.site.SetFaction(fac);
 
-			int h = 10, w = 10;
-			
-			List<Pawn> list = new List<Pawn>();
-			foreach (Pawn pawn in this.GeneratePawns(map, fac))
+			IEnumerable<Pawn> pawns = this.GeneratePawns(map, fac, parms);
+			Log.Message($"{pawns.Count()}");
+			foreach (Pawn pawn in pawns)
 			{
 				IntVec3 loc;
-				if (this.spawnOnEdge)
+				if (spawnOnEdge)
 				{
 					if (!CellFinder.TryFindRandomEdgeCellWith((IntVec3 x) => x.Standable(map) && !x.Fogged(map) && map.reachability.CanReachColony(x), map, CellFinder.EdgeRoadChance_Ignore, out loc))
 					{
-						Find.WorldPawns.PassToWorld(pawn, PawnDiscardDecideMode.Decide);
+						pawn.Discard();
 						break;
 					}
 				}
-				else if (!SiteGenStepUtility.TryFindSpawnCellAroundOrNear(CellRect.CenteredOn(map.Center, w, h), map.Center, map, out loc))
+				else if (!CellFinder.TryFindRandomSpawnCellForPawnNear(map.Center, map, out loc, 2))
 				{
-					Find.WorldPawns.PassToWorld(pawn, PawnDiscardDecideMode.Decide);
+					pawn.Discard();
 					break;
 				}
-				GenSpawn.Spawn(pawn, loc, map, WipeMode.Vanish);
-				list.Add(pawn);
+				GenSpawn.Spawn(pawn, loc, map);
 			}
-			if (!list.Any<Pawn>())
-			{
+
+			if (!pawns.Any())
 				return;
-			}
-			Faction faction = list[0].Faction;
-			LordMaker.MakeNewLord(faction, new LordJob_DefendBase(faction, map.Center), map, list);
+		
 			if (!this.spawnOnEdge)
 			{
-				for (int k = 0; k < list.Count; k++)
-				{
-					list[k].jobs.StartJob(JobMaker.MakeJob(JobDefOf.Wait, 120, false), JobCondition.None, null, false, true, null, null, false, false);
-					list[k].Rotation = Rot4.Random;
-				}
+				LordMaker.MakeNewLord(fac, new LordJob_DefendBase(fac, map.Center), map, pawns);
+			}
+            else
+            {
+				LordMaker.MakeNewLord(fac, new LordJob_AssaultColony(fac, canTimeoutOrFlee: true, canPickUpOpportunisticWeapons: true), map, pawns);
 			}
 		}
 
-		private IEnumerable<Pawn> GeneratePawns(Map map, Faction faction)
+		private IEnumerable<Pawn> GeneratePawns(Map map, Faction faction, GenStepParams parms)
         {
 			return PawnGroupMakerUtility.GeneratePawns(new PawnGroupMakerParms
 			{
 				groupKind = PawnGroupKindDefOf.Combat,
 				tile = map.Tile,
 				faction = faction,
-				points = StorytellerUtility.DefaultSiteThreatPointsNow() * this.pointMultiplier
+				points = (parms.sitePart != null ? parms.sitePart.parms.threatPoints : this.defaultPointsRange.RandomInRange) * this.pointMultiplier
 			}, true);
 		}
 	}
