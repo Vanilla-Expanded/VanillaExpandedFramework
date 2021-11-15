@@ -11,7 +11,7 @@ namespace VFECore.OptionalFeatures
     public class Dialog_FloatMenuOptions : Window
     {
         private readonly List<FloatMenuOption> options;
-        private readonly List<ThingDef> shownItems;
+        private readonly Dictionary<FloatMenuOption, ThingDef> shownItems;
         private Vector2 scrollPosition = new Vector2(0, 0);
         private string searchText = "";
 
@@ -19,7 +19,7 @@ namespace VFECore.OptionalFeatures
         {
             options = opts;
             var info1 = AccessTools.Field(typeof(FloatMenuOption), "shownItem");
-            shownItems = opts.Select(opt => (ThingDef) info1.GetValue(opt)).ToList();
+            shownItems = opts.ToDictionary(opt => opt, opt => (ThingDef) info1.GetValue(opt));
             doCloseX = true;
             doCloseButton = true;
             closeOnClickedOutside = true;
@@ -70,15 +70,14 @@ namespace VFECore.OptionalFeatures
             try
             {
                 var y = 0f;
-                for (var i = 0; i < shownOptions.Count; i++)
+                foreach (var opt in shownOptions)
                 {
-                    var opt = shownOptions[i];
                     var height = opt.RequiredHeight + 10f;
                     var rect2 = new Rect(0f, y, viewRect.width - 7f, height);
-                    if (shownItems[i] != null)
+                    if (shownItems[opt] != null)
                     {
                         rect2.xMax -= Widgets.InfoCardButtonSize + 7f;
-                        Widgets.InfoCardButton(rect2.xMax + 7f, rect2.y + 1f, shownItems[i]);
+                        Widgets.InfoCardButton(rect2.xMax + 7f, rect2.y + 1f, shownItems[opt]);
                     }
 
                     if (opt.DoGUI(rect2, false, null))
