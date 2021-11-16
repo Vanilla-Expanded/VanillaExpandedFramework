@@ -261,7 +261,7 @@ namespace VFECore
 				absorbed = false;
 			}
 			else if (Props.blockRangedAttack && dinfo.Def.isRanged || dinfo.Def.isExplosive || Props.blockMeleeAttack
-				&& (dinfo.Weapon == null && dinfo.Instigator is Pawn || dinfo.Weapon.IsMeleeWeapon))
+				&& (dinfo.Weapon == null && dinfo.Instigator is Pawn || (dinfo.Weapon?.IsMeleeWeapon ?? false)))
 			{
 				energy -= dinfo.Amount * EnergyLossPerDamage;
 				if (energy < 0f)
