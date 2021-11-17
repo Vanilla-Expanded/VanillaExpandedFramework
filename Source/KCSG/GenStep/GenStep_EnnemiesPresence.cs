@@ -34,7 +34,7 @@ namespace KCSG
 			parms.sitePart.site.SetFaction(fac);
 
 			IEnumerable<Pawn> pawns = this.GeneratePawns(map, fac, parms);
-			Log.Message($"{pawns.Count()}");
+			
 			foreach (Pawn pawn in pawns)
 			{
 				IntVec3 loc;
@@ -69,13 +69,14 @@ namespace KCSG
 
 		private IEnumerable<Pawn> GeneratePawns(Map map, Faction faction, GenStepParams parms)
         {
+			float p = (parms.sitePart != null ? parms.sitePart.parms.threatPoints : this.defaultPointsRange.RandomInRange) * this.pointMultiplier;
 			return PawnGroupMakerUtility.GeneratePawns(new PawnGroupMakerParms
 			{
 				groupKind = PawnGroupKindDefOf.Combat,
 				tile = map.Tile,
 				faction = faction,
-				points = (parms.sitePart != null ? parms.sitePart.parms.threatPoints : this.defaultPointsRange.RandomInRange) * this.pointMultiplier
-			}, true);
+                points = Math.Max(p, defaultPointsRange.min)
+            }, true);
 		}
 	}
 }
