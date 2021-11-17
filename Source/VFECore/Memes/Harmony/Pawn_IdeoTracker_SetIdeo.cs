@@ -29,13 +29,13 @@ namespace VanillaMemesExpanded
                     if (extendedMemeProps.forcedTrait != null)
                     {
                         Trait trait = new Trait(extendedMemeProps.forcedTrait, 0, true);
-                        ___pawn.story.traits.GainTrait(trait);
+                        ___pawn.story?.traits?.GainTrait(trait);
                     }
                     if (extendedMemeProps.abilitiesGiven != null)
                     {
                        foreach(AbilityDef ability in extendedMemeProps.abilitiesGiven)
                         {
-                            ___pawn.abilities.GainAbility(ability);
+                            ___pawn.abilities?.GainAbility(ability);
                         }
                     }
                 }
