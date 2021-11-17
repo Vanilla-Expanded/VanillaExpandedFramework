@@ -429,6 +429,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompMindEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompNearbyEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompPassiveRegenerator.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompPawnOverlay.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ApplyHediffWhenBound.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AcidImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_CauseIncident.cs" />
@@ -454,6 +455,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ExtremeXenophobia.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_GraphicByTerrain.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_LightSustenance.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_PawnOverlay.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_RegisterAlternateGraphic.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_SwallowWhole.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_TerrainChanger.cs" />
