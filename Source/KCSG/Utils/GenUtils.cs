@@ -344,18 +344,25 @@ namespace KCSG
                     IntVec3 c = rect.Cells.ElementAt(i);
                     if (fullClean)
                     {
-                        c.GetThingList(map).ToList().ForEach((t) =>
+                        c.GetThingList(map).ForEach((t) =>
                         {
-                            t.DeSpawn();
+                            if (t.Map != null) t.DeSpawn();
                         });
                     }
                     else
-                        c.GetThingList(map).ToList()
-                                       .FindAll(t1 => (t1.def.category == ThingCategory.Filth) ||
-                                                      (t1.def.thingCategories != null && t1.def.thingCategories.Contains(ThingCategoryDefOf.StoneChunks)) ||
-                                                      (t1.def.category == ThingCategory.Building && !t1.def.building.isNaturalRock) ||
-                                                      (t1 is Pawn p && p.Faction != Faction.OfPlayerSilentFail))
-                                       .ForEach((t) => t.DeSpawn());
+                    {
+                        c.GetThingList(map).ForEach((t) =>
+                        {
+                            if (t.Map != null && 
+                               (t.def.category == ThingCategory.Filth ||
+                                t.def.category == ThingCategory.Building && !t.def.building.isNaturalRock ||
+                                t is Pawn p && p.Faction != Faction.OfPlayerSilentFail ||
+                                t.def.thingCategories != null && t.def.thingCategories.Contains(ThingCategoryDefOf.StoneChunks)))
+                            {
+                                t.DeSpawn();
+                            }
+                        });
+                    }
 
                     if (map.terrainGrid.UnderTerrainAt(c) is TerrainDef terrain && terrain != null)
                     {
@@ -385,13 +392,26 @@ namespace KCSG
             foreach (IntVec3 c in rect)
             {
                 if (fullClean)
-                    c.GetThingList(map).ToList().ForEach((t) => t.DeSpawn());
+                {
+                    c.GetThingList(map).ForEach((t) =>
+                    {
+                        if (t.Map != null) t.DeSpawn();
+                    });
+                }
                 else
-                    c.GetThingList(map).ToList()
-                                   .FindAll(t1 => (t1.def.category == ThingCategory.Filth) ||
-                                                  (t1.def.thingCategories != null && t1.def.thingCategories.Contains(ThingCategoryDefOf.StoneChunks)) ||
-                                                  (t1.def.category == ThingCategory.Building && !t1.def.building.isNaturalRock))
-                                   .ForEach((t) => t.DeSpawn());
+                {
+                    c.GetThingList(map).ForEach((t) =>
+                    {
+                        if (t.Map != null &&
+                           (t.def.category == ThingCategory.Filth ||
+                            t.def.category == ThingCategory.Building && !t.def.building.isNaturalRock ||
+                            t is Pawn p && p.Faction != Faction.OfPlayerSilentFail ||
+                            t.def.thingCategories != null && t.def.thingCategories.Contains(ThingCategoryDefOf.StoneChunks)))
+                        {
+                            t.DeSpawn();
+                        }
+                    });
+                }
 
                 if (map.terrainGrid.UnderTerrainAt(c) is TerrainDef terrain && terrain != null)
                 {
