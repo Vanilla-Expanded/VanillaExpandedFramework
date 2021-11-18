@@ -344,14 +344,14 @@ namespace KCSG
                     IntVec3 c = rect.Cells.ElementAt(i);
                     if (fullClean)
                     {
-                        c.GetThingList(map).ForEach((t) =>
+                        c.GetThingList(map).ToList().ForEach((t) =>
                         {
                             if (t.Map != null) t.DeSpawn();
                         });
                     }
                     else
                     {
-                        c.GetThingList(map).ForEach((t) =>
+                        c.GetThingList(map).ToList().ForEach((t) =>
                         {
                             if (t.Map != null && 
                                (t.def.category == ThingCategory.Filth ||
@@ -393,14 +393,14 @@ namespace KCSG
             {
                 if (fullClean)
                 {
-                    c.GetThingList(map).ForEach((t) =>
+                    c.GetThingList(map).ToList().ForEach((t) =>
                     {
                         if (t.Map != null) t.DeSpawn();
                     });
                 }
                 else
                 {
-                    c.GetThingList(map).ForEach((t) =>
+                    c.GetThingList(map).ToList().ForEach((t) =>
                     {
                         if (t.Map != null &&
                            (t.def.category == ThingCategory.Filth ||
