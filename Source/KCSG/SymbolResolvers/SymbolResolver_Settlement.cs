@@ -45,7 +45,7 @@ namespace KCSG
                 this.GenerateRooms(CGO.settlementLayoutDef, map, rp);
 
                 if (CGO.factionSettlement.preGenClear)
-                    GenUtils.SimplePreClean(map, rp.rect, CGO.factionSettlement.fullClear);
+                    GenUtils.PreClean(map, rp.rect, CGO.factionSettlement.fullClear);
             }
         }
 

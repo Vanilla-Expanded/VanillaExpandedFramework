@@ -209,14 +209,14 @@ namespace KCSG
                                 }
                             }
                         }
-                        else if (VFECore.VFEGlobal.settings.enableVerboseLogging)
+                        else
                         {
-                            Log.Message($"SymbolDef for {allSymbList[l]} wasn't able to be used.");
+                            KLog.Message($"SymbolDef for {allSymbList[l]} wasn't able to be used.");
                         }
                     }
-                    else if (VFECore.VFEGlobal.settings.enableVerboseLogging)
+                    else
                     {
-                        Log.Message($"Null symbolDef for {allSymbList[l]}, ignoring.");
+                        KLog.Message($"Null symbolDef for {allSymbList[l]}, ignoring.");
                     }
                 }
                 l++;
@@ -237,7 +237,7 @@ namespace KCSG
                 return PawnGenerator.GeneratePawn(temp.containPawnKindDef, faction);
             }
 
-            if (VFECore.VFEGlobal.settings.enableVerboseLogging) Log.Message($"Faction for {temp.defName} is {faction?.def.defName}");
+            KLog.Message($"Faction for {temp.defName} is {faction?.def.defName}");
             if (temp.containPawnKindForPlayerAnyOf.Count > 0 && map.ParentFaction == Faction.OfPlayer)
             {
                 return PawnGenerator.GeneratePawn(new PawnGenerationRequest(temp.containPawnKindForPlayerAnyOf.RandomElement(), faction, forceGenerateNewPawn: true, certainlyBeenInCryptosleep: true));
@@ -316,21 +316,7 @@ namespace KCSG
 
         public static void PreClean(Map map, CellRect rect, List<string> roofGrid, bool fullClean)
         {
-            if (map.TileInfo?.Roads?.Count > 0)
-            {
-                CGO.preRoadTypes = new List<TerrainDef>();
-                foreach (RimWorld.Planet.Tile.RoadLink roadLink in map.TileInfo.Roads)
-                {
-                    foreach (RoadDefGenStep rgs in roadLink.road.roadGenSteps)
-                    {
-                        if (rgs is RoadDefGenStep_Place rgsp && rgsp != null && rgsp.place is TerrainDef t && t != null && t != TerrainDefOf.Bridge)
-                        {
-                            CGO.preRoadTypes.Add(t);
-                        }
-                    }
-                }
-            }
-
+            SetRoadInfo(map);
             List<string> rg = new List<string>();
             foreach (string str in roofGrid)
             {
@@ -342,27 +328,7 @@ namespace KCSG
                 if (rg[i] != null && rg[i] != ".")
                 {
                     IntVec3 c = rect.Cells.ElementAt(i);
-                    if (fullClean)
-                    {
-                        c.GetThingList(map).ToList().ForEach((t) =>
-                        {
-                            if (t.Map != null) t.DeSpawn();
-                        });
-                    }
-                    else
-                    {
-                        c.GetThingList(map).ToList().ForEach((t) =>
-                        {
-                            if (t.Map != null && 
-                               (t.def.category == ThingCategory.Filth ||
-                                t.def.category == ThingCategory.Building && !t.def.building.isNaturalRock ||
-                                t is Pawn p && p.Faction != Faction.OfPlayerSilentFail ||
-                                t.def.thingCategories != null && t.def.thingCategories.Contains(ThingCategoryDefOf.StoneChunks)))
-                            {
-                                t.DeSpawn();
-                            }
-                        });
-                    }
+                    CleanAt(c, map, fullClean);
 
                     if (map.terrainGrid.UnderTerrainAt(c) is TerrainDef terrain && terrain != null)
                     {
@@ -372,7 +338,20 @@ namespace KCSG
             }
         }
 
-        public static void SimplePreClean(Map map, CellRect rect, bool fullClean)
+        public static void PreClean(Map map, CellRect rect, bool fullClean)
+        {
+            SetRoadInfo(map);
+            foreach (IntVec3 c in rect)
+            {
+                CleanAt(c, map, fullClean);
+                if (map.terrainGrid.UnderTerrainAt(c) is TerrainDef terrain && terrain != null)
+                {
+                    map.terrainGrid.SetTerrain(c, terrain);
+                }
+            }
+        }
+
+        public static void SetRoadInfo(Map map)
         {
             if (map.TileInfo?.Roads?.Count > 0)
             {
@@ -388,35 +367,30 @@ namespace KCSG
                     }
                 }
             }
+        }
 
-            foreach (IntVec3 c in rect)
+        public static void CleanAt(IntVec3 c, Map map, bool fullClean)
+        {
+            if (fullClean)
             {
-                if (fullClean)
+                c.GetThingList(map).ToList().ForEach((t) =>
                 {
-                    c.GetThingList(map).ToList().ForEach((t) =>
+                    if (t.Map != null && t is Pawn p && p.Faction == map.ParentFaction) t.DeSpawn();
+                });
+            }
+            else
+            {
+                c.GetThingList(map).ToList().ForEach((t) =>
+                {
+                    if (t.Map != null &&
+                       (t.def.category == ThingCategory.Filth ||
+                        t.def.category == ThingCategory.Building && !t.def.building.isNaturalRock ||
+                        t is Pawn p && p.Faction != map.ParentFaction ||
+                        t.def.thingCategories != null && t.def.thingCategories.Contains(ThingCategoryDefOf.StoneChunks)))
                     {
-                        if (t.Map != null) t.DeSpawn();
-                    });
-                }
-                else
-                {
-                    c.GetThingList(map).ToList().ForEach((t) =>
-                    {
-                        if (t.Map != null &&
-                           (t.def.category == ThingCategory.Filth ||
-                            t.def.category == ThingCategory.Building && !t.def.building.isNaturalRock ||
-                            t is Pawn p && p.Faction != Faction.OfPlayerSilentFail ||
-                            t.def.thingCategories != null && t.def.thingCategories.Contains(ThingCategoryDefOf.StoneChunks)))
-                        {
-                            t.DeSpawn();
-                        }
-                    });
-                }
-
-                if (map.terrainGrid.UnderTerrainAt(c) is TerrainDef terrain && terrain != null)
-                {
-                    map.terrainGrid.SetTerrain(c, terrain);
-                }
+                        t.DeSpawn();
+                    }
+                });
             }
         }
 

@@ -33,6 +33,7 @@ namespace KCSG
 			Faction fac = this.forcedfaction != null ? Find.FactionManager.FirstFactionOfDef(this.forcedfaction) : Find.FactionManager.RandomEnemyFaction(minTechLevel: TechLevel.Neolithic);
 			parms.sitePart.site.SetFaction(fac);
 
+			Lord defend = LordMaker.MakeNewLord(fac, new LordJob_DefendBase(fac, map.Center), map);
 			IEnumerable<Pawn> pawns = this.GeneratePawns(map, fac, parms);
 			
 			foreach (Pawn pawn in pawns)
@@ -52,30 +53,35 @@ namespace KCSG
 					break;
 				}
 				GenSpawn.Spawn(pawn, loc, map);
+				defend.AddPawn(pawn);
 			}
 
 			if (!pawns.Any())
 				return;
-		
-			if (!this.spawnOnEdge)
-			{
-				LordMaker.MakeNewLord(fac, new LordJob_DefendBase(fac, map.Center), map, pawns);
-			}
-            else
-            {
-				LordMaker.MakeNewLord(fac, new LordJob_AssaultColony(fac, canTimeoutOrFlee: true, canPickUpOpportunisticWeapons: true), map, pawns);
-			}
 		}
 
 		private IEnumerable<Pawn> GeneratePawns(Map map, Faction faction, GenStepParams parms)
         {
-			float p = (parms.sitePart != null ? parms.sitePart.parms.threatPoints : this.defaultPointsRange.RandomInRange) * this.pointMultiplier;
+            float p;
+            if (parms.sitePart?.parms != null && parms.sitePart.parms.threatPoints >= defaultPointsRange.min)
+            {
+				p = parms.sitePart.parms.threatPoints;
+				KLog.Message($"Using sitePart parms threat points: {p}");
+			}
+			else
+            {
+				p = defaultPointsRange.RandomInRange;
+				KLog.Message($"Using sitePart parms threat points: {p}. Choosen from defaultPointsRange {defaultPointsRange}");
+			}
+			p *= pointMultiplier;
+			KLog.Message($"Final threat points: {p}");
+
 			return PawnGroupMakerUtility.GeneratePawns(new PawnGroupMakerParms
 			{
 				groupKind = PawnGroupKindDefOf.Combat,
 				tile = map.Tile,
 				faction = faction,
-                points = Math.Max(p, defaultPointsRange.min)
+                points = p
             }, true);
 		}
 	}
