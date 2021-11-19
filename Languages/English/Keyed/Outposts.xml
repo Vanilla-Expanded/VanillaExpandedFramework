@@ -22,4 +22,11 @@
     <Outposts.Packing>Packing into caravan. Done in {0}</Outposts.Packing>
     <Outposts.NotSkilledEnough>Pawns are not skilled enough, need a cumulative {0} skill of at least {1}</Outposts.NotSkilledEnough>
     <Outposts.RestingAt>Resting at outpost {0}</Outposts.RestingAt>
+    <Outposts.WillProduce.0>Will produce some items in {0}</Outposts.WillProduce.0>
+    <Outposts.WillProduce.1>Will produce {0} {1} in {2}</Outposts.WillProduce.1>
+    <Outposts.WillProduce.2>Will produce {0} {1} and {2} {3} in {4}</Outposts.WillProduce.2>
+    <Outposts.WillProduce.N>Will produce the following in {0}:\n{1}</Outposts.WillProduce.N>
+    <Outposts.CannotBeMade>Cannot be made in {0}</Outposts.CannotBeMade>
+    <Outposts.NotEnoughPawns>Not enough pawns in caravan, need at least {0}</Outposts.NotEnoughPawns>
+    <Outposts.TotalSkill>Cumulative {0} skill: {1}</Outposts.TotalSkill>
 </LanguageData>

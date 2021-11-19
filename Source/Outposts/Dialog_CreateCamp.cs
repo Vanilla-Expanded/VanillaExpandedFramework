@@ -14,7 +14,7 @@ namespace Outposts
         private readonly Dictionary<WorldObjectDef, Material> cachedMats;
         private readonly Caravan creator;
         private readonly Dictionary<WorldObjectDef, string> validity;
-        private Vector2 scrollPosition = new Vector2(0, 0);
+        private Vector2 scrollPosition = new(0, 0);
 
         public Dialog_CreateCamp(Caravan creator)
         {
@@ -27,17 +27,17 @@ namespace Outposts
             foreach (var outpost in OutpostsMod.Outposts)
             {
                 var method = outpost.worldObjectClass.GetMethod("CanSpawnOnWith", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
-                if (method == null)
-                    validity.Add(outpost, null);
-                else
-                    validity.Add(outpost, (string) method.Invoke(null, new object[] {creator.Tile, creator.PawnsListForReading}));
+                var ext = outpost.GetModExtension<OutpostExtension>();
+                validity.Add(outpost,
+                    (ext is not null ? Outpost.CanSpawnOnWithExt(ext, creator.Tile, creator.PawnsListForReading) : null) ??
+                    (string) method?.Invoke(null, new object[] {creator.Tile, creator.PawnsListForReading}));
 
                 cachedMats.Add(outpost,
                     MaterialPool.MatFrom(outpost.ExpandingIconTexture, ShaderDatabase.WorldOverlayTransparentLit, creator.Faction.Color, WorldMaterials.WorldObjectRenderQueue));
             }
         }
 
-        public override Vector2 InitialSize => new Vector2(800, 1000);
+        public override Vector2 InitialSize => new(800, 1000);
 
         public override void DoWindowContents(Rect inRect)
         {
@@ -82,9 +82,7 @@ namespace Outposts
                     Find.WorldSelector.Select(worldObject);
                 }
                 else
-                {
                     Messages.Message(validity[outpost], MessageTypeDefOf.RejectInput, false);
-                }
             }
 
             Text.Font = font;

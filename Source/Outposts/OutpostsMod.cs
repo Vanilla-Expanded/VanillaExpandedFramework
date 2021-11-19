@@ -26,10 +26,7 @@ namespace Outposts
             if (Outposts.Any()) HarmonyPatches.DoPatches();
         }
 
-        public override string SettingsCategory()
-        {
-            return Outposts.Any() ? "Outposts.Settings.Title".Translate() : null;
-        }
+        public override string SettingsCategory() => Outposts.Any() ? "Outposts.Settings.Title".Translate() : null;
 
         public override void DoSettingsWindowContents(Rect inRect)
         {

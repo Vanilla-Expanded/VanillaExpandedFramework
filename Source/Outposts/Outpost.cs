@@ -9,14 +9,18 @@ using Verse.AI;
 namespace Outposts
 {
     [StaticConstructorOnStartup]
-    public abstract class Outpost : MapParent
+    public class Outpost : MapParent
     {
         public static readonly Texture2D PackTex = ContentFinder<Texture2D>.Get("UI/Gizmo/AbandonOutpost");
         public static readonly Texture2D AddTex = ContentFinder<Texture2D>.Get("UI/Gizmo/AddToOutpost");
         public static readonly Texture2D RemoveTex = ContentFinder<Texture2D>.Get("UI/Gizmo/RemovePawnFromOutpost");
+
+        private readonly int chosenIdx = 0;
         private Material cachedMat;
+
+        private OutpostExtension extensionCached;
         public string Name;
-        private List<Pawn> occupants = new List<Pawn>();
+        private List<Pawn> occupants = new();
         private int ticksTillPacked = -1;
         protected int ticksTillProduction;
         public virtual float RestPerTickResting => 0.005714286f * 2.5f;
@@ -45,8 +49,25 @@ namespace Outposts
         public override MapGeneratorDef MapGeneratorDef => MapGeneratorDefOf.Base_Faction;
 
         public virtual ThingDef ProvidedFood => ThingDefOf.MealSimple;
+        public OutpostExtension Ext => extensionCached ??= def.GetModExtension<OutpostExtension>();
 
-        public int TotalSkil(SkillDef skill)
+        public virtual string TimeTillProduction => ticksTillProduction.ToStringTicksToPeriodVerbose().Colorize(ColoredText.DateTimeColor);
+
+        public static string CanSpawnOnWithExt(OutpostExtension ext, int tileIdx, List<Pawn> pawns)
+        {
+            var tile = Find.WorldGrid[tileIdx];
+            if (ext.DisallowedBiomes is {Count: >0} && ext.DisallowedBiomes.Contains(tile.biome) || ext.AllowedBiomes is {Count: >0} && !ext.AllowedBiomes.Contains(tile.biome))
+                return "Outposts.CannotBeMade".Translate(tile.biome.label);
+            if (ext.MinPawns > 0 && pawns.Count < ext.MinPawns)
+                return "Outposts.NotEnoughPawns".Translate(ext.MinPawns);
+            if (ext.RequiredSkills is {Count: >0} &&
+                ext.RequiredSkills.FirstOrDefault(requiredSkill => pawns.Sum(p => p.skills.GetSkill(requiredSkill.Skill).Level) < requiredSkill.Count) is
+                    {Skill: {skillLabel: var label}, Count: var minLevel})
+                return "Outposts.NotSkilledEnough".Translate(label, minLevel);
+            return null;
+        }
+
+        public int TotalSkill(SkillDef skill)
         {
             return occupants.Sum(p => p.skills.GetSkill(skill).Level);
         }
@@ -91,7 +112,7 @@ namespace Outposts
             return pawns.Sum(p => p.skills.GetSkill(skill).Level) < minLevel ? "Outposts.NotSkilledEnough".Translate(skill.skillLabel, minLevel) : null;
         }
 
-        public IEnumerable<Thing> MakeThings(ThingDef thingDef, int count, ThingDef stuff = null)
+        public static IEnumerable<Thing> MakeThings(ThingDef thingDef, int count, ThingDef stuff = null)
         {
             count = Mathf.RoundToInt(count * OutpostsMod.Settings.Multiplier);
             while (count > thingDef.stackLimit)
@@ -174,7 +195,12 @@ namespace Outposts
 
         public virtual IEnumerable<Thing> ProducedThings()
         {
-            yield break;
+            if (Ext.ChooseResult)
+                foreach (var thing in Ext.ResultOptions[chosenIdx].Make(occupants))
+                    yield return thing;
+            else
+                foreach (var thing in Ext.ResultOptions.SelectMany(resultOption => resultOption.Make(occupants)))
+                    yield return thing;
         }
 
         public virtual void Produce()
@@ -249,10 +275,28 @@ namespace Outposts
             });
         }
 
-        public override string GetInspectString()
+        public override string GetInspectString() =>
+            base.GetInspectString() + "\n" + def.LabelCap + "\n" + "Outposts.Contains".Translate(occupants.Count) +
+            (Packing ? "\n" + "Outposts.Packing".Translate(ticksTillPacked.ToStringTicksToPeriodVerbose()).RawText : "\n" + ProductionString()) +
+            (Ext.RelevantSkills.Count > 0 ? "\n" + RelevantSkillDisplay() : "");
+
+        public virtual string ProductionString()
         {
-            return base.GetInspectString() + "\n" + def.LabelCap + "\n" + "Outposts.Contains".Translate(occupants.Count) +
-                   (Packing ? "\n" + "Outposts.Packing".Translate(ticksTillPacked.ToStringTicksToPeriodVerbose()).RawText : "");
+            if (Ext.ResultOptions is null || Ext.ResultOptions.Count == 0) return "Outposts.WillProduce.0".Translate(TimeTillProduction);
+            if (Ext.ChooseResult)
+                return "Outposts.WillProduce.1".Translate(Ext.ResultOptions[chosenIdx].Amount(occupants), Ext.ResultOptions[chosenIdx].Thing.label, TimeTillProduction);
+            return Ext.ResultOptions.Count switch
+            {
+                1 => "Outposts.WillProduce.1".Translate(Ext.ResultOptions[0].Amount(occupants), Ext.ResultOptions[0].Thing.label, TimeTillProduction),
+                2 => "Outposts.WillProduce.2".Translate(Ext.ResultOptions[0].Amount(occupants), Ext.ResultOptions[0].Thing.label, Ext.ResultOptions[1].Amount(occupants),
+                    Ext.ResultOptions[1].Thing.label, TimeTillProduction),
+                _ => "Outposts.WillProduce.N".Translate(TimeTillProduction, Ext.ResultOptions.Select(ro => ro.Explain(occupants)).ToLineList("  - "))
+            };
+        }
+
+        public virtual string RelevantSkillDisplay()
+        {
+            return Ext.RelevantSkills.Select(skill => "Outposts.TotalSkill".Translate(skill.skillLabel, TotalSkill(skill)).RawText).ToLineList();
         }
     }
 }
