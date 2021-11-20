@@ -75,10 +75,7 @@ namespace KCSG
                     return result;
                 }
             }
-            if (VFECore.VFEGlobal.settings.enableVerboseLogging)
-            {
-                Log.Message($"Failed to find world tile for {wo.def.defName}");
-            }
+            KLog.Message($"Failed to find world tile for {wo.def.defName}");
             return 0;
         }
     }

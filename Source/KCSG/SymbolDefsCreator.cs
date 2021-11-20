@@ -35,7 +35,7 @@ namespace KCSG
             }
             else if (VFECore.VFEGlobal.settings.enableVerboseLogging)
             {
-                Log.Error($"[CSG] Error creating symbol: {def.defName} from {def.thingDef.modContentPack?.PackageId}. Suppressing further errors");
+                Log.Error($"[KCSG] Error creating symbol: {def.defName} from {def.thingDef.modContentPack?.PackageId}. Suppressing further errors");
                 defCreated = true;
             }
         }
@@ -169,7 +169,7 @@ namespace KCSG
 
         private static void CreateSymbolsFor(string modId)
         {
-            if (VFECore.VFEGlobal.settings.enableVerboseLogging) Log.Message($"Creating symbols for {modId}...");
+            KLog.Message($"Creating symbols for {modId}...");
 
             List<ThingDef> thingDefs = DefDatabase<ThingDef>.AllDefsListForReading.FindAll(t => t.modContentPack?.PackageId == modId);
             foreach (ThingDef thingDef in thingDefs)

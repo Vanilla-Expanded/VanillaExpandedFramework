@@ -329,11 +329,7 @@ namespace KCSG
                 {
                     IntVec3 c = rect.Cells.ElementAt(i);
                     CleanAt(c, map, fullClean);
-
-                    if (map.terrainGrid.UnderTerrainAt(c) is TerrainDef terrain && terrain != null)
-                    {
-                        map.terrainGrid.SetTerrain(c, terrain);
-                    }
+                    CleanTerrainAt(c, map);
                 }
             }
         }
@@ -344,10 +340,7 @@ namespace KCSG
             foreach (IntVec3 c in rect)
             {
                 CleanAt(c, map, fullClean);
-                if (map.terrainGrid.UnderTerrainAt(c) is TerrainDef terrain && terrain != null)
-                {
-                    map.terrainGrid.SetTerrain(c, terrain);
-                }
+                CleanTerrainAt(c, map);
             }
         }
 
@@ -375,7 +368,11 @@ namespace KCSG
             {
                 c.GetThingList(map).ToList().ForEach((t) =>
                 {
-                    if (t.Map != null && t is Pawn p && p.Faction == map.ParentFaction) t.DeSpawn();
+                    if (t.Map != null)
+                    {
+                        if (t is Pawn p && p.Faction == map.ParentFaction) KLog.Message($"Skipping {p.NameShortColored}, part of defender faction.");
+                        else t.DeSpawn();
+                    }
                 });
             }
             else
@@ -391,6 +388,14 @@ namespace KCSG
                         t.DeSpawn();
                     }
                 });
+            }
+        }
+
+        public static void CleanTerrainAt(IntVec3 c, Map map)
+        {
+            if (map.terrainGrid.UnderTerrainAt(c) is TerrainDef terrain && terrain != null)
+            {
+                map.terrainGrid.SetTerrain(c, terrain);
             }
         }
 

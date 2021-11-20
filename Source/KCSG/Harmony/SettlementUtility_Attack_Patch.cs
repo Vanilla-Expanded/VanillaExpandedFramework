@@ -32,7 +32,7 @@ namespace KCSG
                         CustomAttackNowNoLetter(caravan, settlement);
                         LongEventHandler.ExecuteWhenFinished(() =>
                         {
-                            if (VFECore.VFEGlobal.settings.enableVerboseLogging) Log.Message($"Generation done in {(DateTime.Now - CGO.dateTime).Duration().TotalSeconds}");
+                            KLog.Message($"Generation done in {(DateTime.Now - CGO.dateTime).Duration().TotalSeconds}");
                             // Send letter
                             if (settlement.Faction != null) SendAttackLetter(caravan, settlement);
                             // Clear

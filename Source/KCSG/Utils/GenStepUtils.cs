@@ -47,8 +47,7 @@ namespace KCSG
             if (CGO.factionSettlement.tryFindFreeArea)
             {
                 bool success = RCellFinder.TryFindRandomCellNearTheCenterOfTheMapWith(cell => new CellRect(cell.x - width / 2, cell.z - height / 2, width, height).Cells.All(pC => pC.Walkable(map) && !pC.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Bridgeable)), map, out intVec3);
-                if (VFECore.VFEGlobal.settings.enableVerboseLogging)
-                    Log.Message($"Trying to find free spawn area success: {success}");
+                KLog.Message($"Trying to find free spawn area success: {success}");
             }
 
             CellRect rect = new CellRect(intVec3.x - width / 2, intVec3.z - height / 2, width, height);
