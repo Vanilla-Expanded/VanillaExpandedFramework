@@ -63,7 +63,7 @@ namespace KCSG
 		private IEnumerable<Pawn> GeneratePawns(Map map, Faction faction, GenStepParams parms)
         {
             float p;
-            if (parms.sitePart?.parms != null && parms.sitePart.parms.threatPoints >= defaultPointsRange.min)
+            if (parms.sitePart?.parms != null && parms.sitePart.parms.threatPoints >= defaultPointsRange.min && parms.sitePart.parms.threatPoints <= defaultPointsRange.max)
             {
 				p = parms.sitePart.parms.threatPoints;
 				KLog.Message($"Using sitePart parms threat points: {p}");
@@ -71,7 +71,7 @@ namespace KCSG
 			else
             {
 				p = defaultPointsRange.RandomInRange;
-				KLog.Message($"Using sitePart parms threat points: {p}. Choosen from defaultPointsRange {defaultPointsRange}");
+				KLog.Message($"Using in-range threat points: {p}. Choosen from {defaultPointsRange}");
 			}
 			p *= pointMultiplier;
 			KLog.Message($"Final threat points: {p}");
