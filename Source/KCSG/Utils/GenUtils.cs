@@ -316,6 +316,7 @@ namespace KCSG
 
         public static void PreClean(Map map, CellRect rect, List<string> roofGrid, bool fullClean)
         {
+            KLog.Message($"Intiating pre-generation map clean - only under roof. Fullclean {fullClean}");
             SetRoadInfo(map);
             List<string> rg = new List<string>();
             foreach (string str in roofGrid)
@@ -336,6 +337,7 @@ namespace KCSG
 
         public static void PreClean(Map map, CellRect rect, bool fullClean)
         {
+            KLog.Message($"Intiating pre-generation map clean - full rect. Fullclean {fullClean}");
             SetRoadInfo(map);
             foreach (IntVec3 c in rect)
             {
