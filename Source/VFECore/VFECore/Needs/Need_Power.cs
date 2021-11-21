@@ -106,22 +106,27 @@ namespace VFE.Mechanoids.Needs
 
 		public override void NeedInterval()
 		{
-			if (ChargingStationComp != null)
+			var comp = ChargingStationComp;
+			if (comp != null)
             {
-				if (this.pawn.Position == ChargingStationComp.parent?.Position)
+				if (comp.myPawn is null)
+                {
+					comp.myPawn = this.pawn;
+                }
+				if (this.pawn.Position == comp.parent?.Position)
 				{
-					if (this.CurLevel >= 0.99f && ChargingStationComp.energyDrainMode)
+					if (this.CurLevel >= 0.99f && comp.energyDrainMode)
 					{
-						ChargingStationComp.StopEnergyDrain();
+						comp.StopEnergyDrain();
 					}
-					else if (this.CurLevel < 0.99f && !ChargingStationComp.energyDrainMode)
+					else if (this.CurLevel < 0.99f && !comp.energyDrainMode)
 					{
-						ChargingStationComp.StartEnergyDrain();
+						comp.StartEnergyDrain();
 					}
 				}
-				else if (this.CurLevel < 0.99f && !ChargingStationComp.energyDrainMode)
+				else if (this.CurLevel < 0.99f && !comp.energyDrainMode)
 				{
-					ChargingStationComp.StartEnergyDrain();
+					comp.StartEnergyDrain();
 				}
 
 				if (Enabled && !IsFrozen)
@@ -132,19 +137,18 @@ namespace VFE.Mechanoids.Needs
 						num *= pawn.GetStatValue(StatDefOf.RestRateMultiplier);
 						if (num > 0f)
 						{
-							CurLevel += 1 / ChargingStationComp.Props.hoursToRecharge / 2500 * num * 150f;
+							CurLevel += 1 / comp.Props.hoursToRecharge / 2500 * num * 150f;
 						}
 					}
 					else
 					{
-						if (this.pawn.Position != ChargingStationComp.parent.Position)
+						if (this.pawn.Position != comp.parent.Position)
 						{
 							CurLevel -= RestFallPerTick * 150f;
 						}
 					}
 				}
 			}
-
 		}
 
 		public void TickResting(float restEffectiveness)
