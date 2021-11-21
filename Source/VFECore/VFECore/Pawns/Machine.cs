@@ -24,5 +24,20 @@ namespace VFEMech
                 this.Kill(dinfo);
             }
         }
+
+        public override IEnumerable<Gizmo> GetGizmos()
+        {
+            foreach (var g in base.GetGizmos())
+            {
+                yield return g;
+            }
+            foreach (var comp in this.AllComps)
+            {
+                foreach (var g in comp.CompGetGizmosExtra())
+                {
+                    yield return g;
+                }
+            }
+        }
     }
 }
