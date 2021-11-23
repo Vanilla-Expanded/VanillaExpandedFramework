@@ -62,6 +62,7 @@
     <Compile Include="Outpost.cs" />
     <Compile Include="OutpostExtension.cs" />
     <Compile Include="OutpostsMod.cs" />
+    <Compile Include="Outpost_ChooseResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

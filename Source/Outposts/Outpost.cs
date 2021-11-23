@@ -15,7 +15,6 @@ namespace Outposts
         public static readonly Texture2D AddTex = ContentFinder<Texture2D>.Get("UI/Gizmo/AddToOutpost");
         public static readonly Texture2D RemoveTex = ContentFinder<Texture2D>.Get("UI/Gizmo/RemovePawnFromOutpost");
 
-        private readonly int chosenIdx = 0;
         private Material cachedMat;
 
         private OutpostExtension extensionCached;
@@ -27,12 +26,12 @@ namespace Outposts
         public IEnumerable<Pawn> AllPawns => occupants;
         public override Color ExpandingIconColor => Faction.Color;
 
-        public virtual int TicksPerProduction => 15 * 60000;
+        public virtual int TicksPerProduction => Ext?.TicksPerProduction ?? 15 * 60000;
         public override bool HasName => !Name.NullOrEmpty();
         public override string Label => Name;
-        public virtual int TicksToPack => 7 * 60000 / occupants.Count;
+        public virtual int TicksToPack => (Ext?.TicksToPack ?? 7 * 60000) / occupants.Count;
         public bool Packing => ticksTillPacked > 0;
-        public virtual int Range => -1;
+        public virtual int Range => Ext?.Range ?? -1;
 
         public override Material Material
         {
@@ -48,10 +47,12 @@ namespace Outposts
 
         public override MapGeneratorDef MapGeneratorDef => MapGeneratorDefOf.Base_Faction;
 
-        public virtual ThingDef ProvidedFood => ThingDefOf.MealSimple;
+        public virtual ThingDef ProvidedFood => Ext?.ProvidedFood ?? ThingDefOf.MealSimple;
         public OutpostExtension Ext => extensionCached ??= def.GetModExtension<OutpostExtension>();
 
         public virtual string TimeTillProduction => ticksTillProduction.ToStringTicksToPeriodVerbose().Colorize(ColoredText.DateTimeColor);
+
+        public virtual List<ResultOption> ResultOptions => Ext.ResultOptions;
 
         public static string CanSpawnOnWithExt(OutpostExtension ext, int tileIdx, List<Pawn> pawns)
         {
@@ -176,7 +177,7 @@ namespace Outposts
                 }
             }
 
-            if (Find.WorldObjects.PlayerControlledCaravanAt(Tile) is Caravan caravan && !caravan.pather.MovingNow)
+            if (Find.WorldObjects.PlayerControlledCaravanAt(Tile) is { } caravan && !caravan.pather.MovingNow)
                 foreach (var pawn in caravan.PawnsListForReading)
                 {
                     pawn.needs.rest.CurLevel += RestPerTickResting;
@@ -195,12 +196,7 @@ namespace Outposts
 
         public virtual IEnumerable<Thing> ProducedThings()
         {
-            if (Ext.ChooseResult)
-                foreach (var thing in Ext.ResultOptions[chosenIdx].Make(occupants))
-                    yield return thing;
-            else
-                foreach (var thing in Ext.ResultOptions.SelectMany(resultOption => resultOption.Make(occupants)))
-                    yield return thing;
+            return ResultOptions.SelectMany(resultOption => resultOption.Make(occupants));
         }
 
         public virtual void Produce()
@@ -248,31 +244,30 @@ namespace Outposts
 
         public override IEnumerable<Gizmo> GetGizmos()
         {
-            return base.GetGizmos().Concat(new[]
+            foreach (var gizmo in base.GetGizmos()) yield return gizmo;
+
+            yield return new Command_Action
             {
-                new Command_Action
-                {
-                    action = () => ticksTillPacked = TicksToPack,
-                    defaultLabel = "Outposts.Commands.Pack.Label".Translate(),
-                    defaultDesc = "Outposts.Commands.Pack.Desc".Translate(),
-                    icon = PackTex
-                },
-                new Command_Action
-                {
-                    action = () => Find.WindowStack.Add(new FloatMenu(occupants.Select(p =>
-                        new FloatMenuOption(p.NameFullColored.CapitalizeFirst().Resolve(), () =>
-                        {
-                            occupants.Remove(p);
-                            RecachePawnTraits();
-                            CaravanMaker.MakeCaravan(Gen.YieldSingle(p), p.Faction, Tile, true);
-                        })).ToList())),
-                    defaultLabel = "Outposts.Commands.Remove.Label".Translate(),
-                    defaultDesc = "Outposts.Commands.Remove.Desc".Translate(),
-                    icon = RemoveTex,
-                    disabled = occupants.Count == 1,
-                    disabledReason = "Outposts.Command.Remove.Only1".Translate()
-                }
-            });
+                action = () => ticksTillPacked = TicksToPack,
+                defaultLabel = "Outposts.Commands.Pack.Label".Translate(),
+                defaultDesc = "Outposts.Commands.Pack.Desc".Translate(),
+                icon = PackTex
+            };
+            yield return new Command_Action
+            {
+                action = () => Find.WindowStack.Add(new FloatMenu(occupants.Select(p =>
+                    new FloatMenuOption(p.NameFullColored.CapitalizeFirst().Resolve(), () =>
+                    {
+                        occupants.Remove(p);
+                        RecachePawnTraits();
+                        CaravanMaker.MakeCaravan(Gen.YieldSingle(p), p.Faction, Tile, true);
+                    })).ToList())),
+                defaultLabel = "Outposts.Commands.Remove.Label".Translate(),
+                defaultDesc = "Outposts.Commands.Remove.Desc".Translate(),
+                icon = RemoveTex,
+                disabled = occupants.Count == 1,
+                disabledReason = "Outposts.Command.Remove.Only1".Translate()
+            };
         }
 
         public override string GetInspectString() =>
@@ -282,17 +277,16 @@ namespace Outposts
 
         public virtual string ProductionString()
         {
-            if (Ext.ResultOptions is null || Ext.ResultOptions.Count == 0) return "Outposts.WillProduce.0".Translate(TimeTillProduction);
-            if (Ext.ChooseResult)
-                return "Outposts.WillProduce.1".Translate(Ext.ResultOptions[chosenIdx].Amount(occupants), Ext.ResultOptions[chosenIdx].Thing.label, TimeTillProduction);
-            return Ext.ResultOptions.Count switch
+            if (ResultOptions is null || ResultOptions.Count == 0) return "";
+            return ResultOptions.Count switch
             {
-                1 => "Outposts.WillProduce.1".Translate(Ext.ResultOptions[0].Amount(occupants), Ext.ResultOptions[0].Thing.label, TimeTillProduction),
-                2 => "Outposts.WillProduce.2".Translate(Ext.ResultOptions[0].Amount(occupants), Ext.ResultOptions[0].Thing.label, Ext.ResultOptions[1].Amount(occupants),
-                    Ext.ResultOptions[1].Thing.label, TimeTillProduction),
-                _ => "Outposts.WillProduce.N".Translate(TimeTillProduction, Ext.ResultOptions.Select(ro => ro.Explain(occupants)).ToLineList("  - "))
+                1 => "Outposts.WillProduce.1".Translate(ResultOptions[0].Amount(occupants), ResultOptions[0].Thing.label, TimeTillProduction),
+                2 => "Outposts.WillProduce.2".Translate(ResultOptions[0].Amount(occupants), ResultOptions[0].Thing.label, ResultOptions[1].Amount(occupants),
+                    ResultOptions[1].Thing.label, TimeTillProduction),
+                _ => "Outposts.WillProduce.N".Translate(TimeTillProduction, ResultOptions.Select(ro => ro.Explain(occupants)).ToLineList("  - "))
             };
         }
+
 
         public virtual string RelevantSkillDisplay()
         {
