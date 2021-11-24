@@ -28,6 +28,36 @@
 			</subNodes>
 		</thinkRoot>
 	</ThinkTreeDef>
+	
+	<ThinkTreeDef>
+		<defName>VFE_Mechanoids_MachineWandering</defName>
+		<thinkRoot Class="ThinkNode_Priority">
+			<subNodes>
+				<li Class="ThinkNode_Subtree">
+					<treeDef>Downed</treeDef>
+				</li>
+
+				<!-- Main colonist behavior core -->
+				<li Class="ThinkNode_Priority">
+					<subNodes>
+						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_Recharge"/>
+						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStation"/>
+						<li Class="JobGiver_Work"/>
+						<li Class="ThinkNode_Tagger">
+							<tagToGive>Idle</tagToGive>
+							<subNodes>              
+								<!-- Wander -->
+								<li Class="JobGiver_WanderColony">
+									<maxDanger>None</maxDanger>
+								</li>
+							</subNodes>
+						</li>
+					</subNodes>
+				</li>
+
+			</subNodes>
+		</thinkRoot>
+	</ThinkTreeDef>
 
 	<ThinkTreeDef>
 		<defName>VFE_Mechanoids_ViolentMachine</defName>
