@@ -23,8 +23,8 @@ namespace Outposts
             return base.GetGizmos().Append(new Command_Action
             {
                 action = () => Find.WindowStack.Add(new FloatMenu(Ext.ResultOptions.Concat(GetExtraOptions()).Select(ro => ro.MinSkills.SatisfiedBy(AllPawns)
-                    ? new FloatMenuOption(ro.Thing.LabelCap, () => choice = ro.Thing, ro.Thing)
-                    : new FloatMenuOption(ro.Thing.LabelCap + " - " + "Outposts.SkillTooLow".Translate(ro.MinSkills.Max(abs => abs.Count)), null, ro.Thing)).ToList())),
+                    ? new FloatMenuOption(ro.Explain(AllPawns.ToList()), () => choice = ro.Thing, ro.Thing)
+                    : new FloatMenuOption(ro.Explain(AllPawns.ToList()) + " - " + "Outposts.SkillTooLow".Translate(ro.MinSkills.Max(abs => abs.Count)), null, ro.Thing)).ToList())),
                 defaultLabel = ChooseExt.ChooseLabel.Formatted(choice.label),
                 defaultDesc = ChooseExt.ChooseDesc,
                 icon = choice.uiIcon

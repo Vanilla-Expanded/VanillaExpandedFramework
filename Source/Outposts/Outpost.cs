@@ -21,7 +21,7 @@ namespace Outposts
         public string Name;
         private List<Pawn> occupants = new();
         private int ticksTillPacked = -1;
-        protected int ticksTillProduction;
+        private int ticksTillProduction;
         public virtual float RestPerTickResting => 0.005714286f * 2.5f;
         public IEnumerable<Pawn> AllPawns => occupants;
         public override Color ExpandingIconColor => Faction.Color;
@@ -56,9 +56,9 @@ namespace Outposts
 
         public static string CanSpawnOnWithExt(OutpostExtension ext, int tileIdx, List<Pawn> pawns)
         {
-            var tile = Find.WorldGrid[tileIdx];
-            if (ext.DisallowedBiomes is {Count: >0} && ext.DisallowedBiomes.Contains(tile.biome) || ext.AllowedBiomes is {Count: >0} && !ext.AllowedBiomes.Contains(tile.biome))
-                return "Outposts.CannotBeMade".Translate(tile.biome.label);
+            if (Find.WorldGrid[tileIdx] is {biome: var biome} && (ext.DisallowedBiomes is {Count: >0} && ext.DisallowedBiomes.Contains(biome) ||
+                                                                  ext.AllowedBiomes is {Count: >0} && !ext.AllowedBiomes.Contains(biome)))
+                return "Outposts.CannotBeMade".Translate(biome.label);
             if (ext.MinPawns > 0 && pawns.Count < ext.MinPawns)
                 return "Outposts.NotEnoughPawns".Translate(ext.MinPawns);
             if (ext.RequiredSkills is {Count: >0} &&
@@ -271,9 +271,13 @@ namespace Outposts
         }
 
         public override string GetInspectString() =>
-            base.GetInspectString() + "\n" + def.LabelCap + "\n" + "Outposts.Contains".Translate(occupants.Count) +
-            (Packing ? "\n" + "Outposts.Packing".Translate(ticksTillPacked.ToStringTicksToPeriodVerbose()).RawText : "\n" + ProductionString()) +
-            (Ext.RelevantSkills.Count > 0 ? "\n" + RelevantSkillDisplay() : "");
+            base.GetInspectString() +
+            Line(def.LabelCap) +
+            Line("Outposts.Contains".Translate(occupants.Count)) +
+            Line(Packing ? "Outposts.Packing".Translate(ticksTillPacked.ToStringTicksToPeriodVerbose()).RawText : ProductionString()) +
+            Line(Ext.RelevantSkills.Count > 0 ? RelevantSkillDisplay() : "");
+
+        public static string Line(string input) => input.NullOrEmpty() ? "" : "\n" + input;
 
         public virtual string ProductionString()
         {

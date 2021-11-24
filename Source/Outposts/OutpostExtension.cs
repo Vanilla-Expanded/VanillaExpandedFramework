@@ -20,8 +20,9 @@ namespace Outposts
         public int TicksToPack = 7 * 60000;
 
         public List<SkillDef> RelevantSkills =>
-            new HashSet<SkillDef>(RequiredSkills.Select(rq => rq.Skill)
-                    .Concat(ResultOptions.SelectMany(ro => ro.AmountsPerSkills.Select(aps => aps.Skill).Concat(ro.MinSkills.Select(ms => ms.Skill)))).Concat(DisplaySkills))
+            new HashSet<SkillDef>(RequiredSkills.SelectOrEmpty(rq => rq.Skill)
+                    .Concat(ResultOptions.SelectManyOrEmpty(ro => ro.AmountsPerSkills.Select(aps => aps.Skill).Concat(ro.MinSkills.SelectOrEmpty(ms => ms.Skill))))
+                    .Concat(DisplaySkills ?? Enumerable.Empty<SkillDef>()))
                 .ToList();
     }
 
@@ -56,13 +57,5 @@ namespace Outposts
         }
 
         public int Amount(List<Pawn> pawns) => Count * pawns.Sum(p => p.skills.GetSkill(Skill).Level);
-    }
-
-    public static class Utils
-    {
-        public static bool SatisfiedBy(this List<AmountBySkill> minSkills, IEnumerable<Pawn> pawns)
-        {
-            return minSkills.All(abs => pawns.Sum(p => p.skills.GetSkill(abs.Skill).Level) >= abs.Count);
-        }
     }
 }

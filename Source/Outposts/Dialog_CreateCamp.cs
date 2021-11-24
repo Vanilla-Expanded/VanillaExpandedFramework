@@ -29,8 +29,8 @@ namespace Outposts
                 var method = outpost.worldObjectClass.GetMethod("CanSpawnOnWith", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
                 var ext = outpost.GetModExtension<OutpostExtension>();
                 validity.Add(outpost,
-                    (ext is not null ? Outpost.CanSpawnOnWithExt(ext, creator.Tile, creator.PawnsListForReading) : null) ??
-                    (string) method?.Invoke(null, new object[] {creator.Tile, creator.PawnsListForReading}));
+                    (ext is not null ? Outpost.CanSpawnOnWithExt(ext, creator.Tile, creator.HumanColonists()) : null) ??
+                    (string) method?.Invoke(null, new object[] {creator.Tile, creator.HumanColonists()}));
 
                 cachedMats.Add(outpost,
                     MaterialPool.MatFrom(outpost.ExpandingIconTexture, ShaderDatabase.WorldOverlayTransparentLit, creator.Faction.Color, WorldMaterials.WorldObjectRenderQueue));
@@ -56,33 +56,33 @@ namespace Outposts
             Widgets.EndScrollView();
         }
 
-        private void DoOutpostDisplay(Rect inRect, WorldObjectDef outpost)
+        private void DoOutpostDisplay(Rect inRect, WorldObjectDef outpostDef)
         {
             var image = inRect.LeftPartPixels(50f);
             var text = inRect.RightPartPixels(inRect.width - 60f);
-            var tex = outpost.ExpandingIconTexture;
+            var tex = outpostDef.ExpandingIconTexture;
             Widgets.DrawTextureFitted(image, tex, 1f, new Vector2(tex.width, tex.height), new Rect(0f, 0f, 1f, 1f) /*, 0f, cachedMats[outpost]*/);
             var font = Text.Font;
             Text.Font = GameFont.Medium;
-            Widgets.Label(text.TopPartPixels(30f), outpost.label.CapitalizeFirst(outpost));
+            Widgets.Label(text.TopPartPixels(30f), outpostDef.label.CapitalizeFirst(outpostDef));
             var button = text.BottomPartPixels(30f).LeftPartPixels(100f);
             Text.Font = GameFont.Tiny;
-            Widgets.TextArea(new Rect(text.x, text.y + 30f, text.width, text.height - 60f), outpost.description, true);
+            Widgets.TextArea(new Rect(text.x, text.y + 30f, text.width, text.height - 60f), outpostDef.description, true);
             if (Widgets.ButtonText(button, "Outposts.Dialog.Create".Translate()))
             {
-                if (validity[outpost].NullOrEmpty())
+                if (validity[outpostDef].NullOrEmpty())
                 {
-                    var worldObject = (Outpost) WorldObjectMaker.MakeWorldObject(outpost);
-                    worldObject.Name = NameGenerator.GenerateName(creator.Faction.def.settlementNameMaker, Find.WorldObjects.AllWorldObjects.OfType<Outpost>().Select(o => o.Name));
-                    worldObject.Tile = creator.Tile;
-                    worldObject.SetFaction(creator.Faction);
-                    foreach (var pawn in creator.PawnsListForReading.ListFullCopy()) worldObject.AddPawn(pawn);
-                    Find.WorldObjects.Add(worldObject);
+                    var outpost = (Outpost) WorldObjectMaker.MakeWorldObject(outpostDef);
+                    outpost.Name = NameGenerator.GenerateName(creator.Faction.def.settlementNameMaker, Find.WorldObjects.AllWorldObjects.OfType<Outpost>().Select(o => o.Name));
+                    outpost.Tile = creator.Tile;
+                    outpost.SetFaction(creator.Faction);
+                    foreach (var pawn in creator.PawnsListForReading.ListFullCopy()) outpost.AddPawn(pawn);
+                    Find.WorldObjects.Add(outpost);
                     Close();
-                    Find.WorldSelector.Select(worldObject);
+                    Find.WorldSelector.Select(outpost);
                 }
                 else
-                    Messages.Message(validity[outpost], MessageTypeDefOf.RejectInput, false);
+                    Messages.Message(validity[outpostDef], MessageTypeDefOf.RejectInput, false);
             }
 
             Text.Font = font;
