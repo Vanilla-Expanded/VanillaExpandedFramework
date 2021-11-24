@@ -76,16 +76,14 @@ namespace Reloading
                             "IsNotDrafted".Translate(verbReloadable.CasterPawn.LabelShort, verbReloadable.CasterPawn));
                     else if (reloadable.ShotsRemaining < verbReloadable.verbProps.burstShotCount)
                         reloadableVerbTarget.Disable("CommandReload_NoAmmo".Translate("ammo".Named("CHARGENOUN"),
-                            ThingDef.Named("AMMO"),
+                            reloadable.AmmoExample.Named("AMMO"),
                             ((reloadable.MaxShots - reloadable.ShotsRemaining) * reloadable.ItemsPerShot)
                             .Named("COUNT")));
 
                     yield return reloadableVerbTarget;
                 }
                 else
-                {
                     yield return gizmo;
-                }
         }
     }
 }
