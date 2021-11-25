@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using HarmonyLib;
 using RimWorld.Planet;
 using UnityEngine;
@@ -18,13 +17,6 @@ namespace Outposts
                 postfix: new HarmonyMethod(typeof(HarmonyPatches), nameof(AddCaravanGizmos)));
             OutpostsMod.Harm.Patch(AccessTools.Method(typeof(Caravan), nameof(Caravan.GetInspectString)),
                 postfix: new HarmonyMethod(typeof(HarmonyPatches), nameof(AddRestingAtOutpost)));
-            OutpostsMod.Harm.Patch(AccessTools.Method(typeof(Translator), nameof(Translator.Translate), new[] {typeof(string)}),
-                new HarmonyMethod(typeof(HarmonyPatches), nameof(Debug)));
-        }
-
-        public static void Debug(string key)
-        {
-            if (key == "CaravanDetectedRaidCountdownTip") Log.Message($"Found key at {new StackTrace()}");
         }
 
         public static IEnumerable<Gizmo> AddCaravanGizmos(IEnumerable<Gizmo> gizmos, Caravan __instance)
