@@ -56,6 +56,6 @@ namespace Outposts
             Count = ParseHelper.FromString<int>(xmlRoot.FirstChild.Value);
         }
 
-        public int Amount(List<Pawn> pawns) => Count * pawns.Sum(p => p.skills.GetSkill(Skill).Level);
+        public int Amount(List<Pawn> pawns) => Count * pawns.FindAll(p => p.def.race.Humanlike).Sum(p => p.skills.GetSkill(Skill).Level);
     }
 }

@@ -79,7 +79,7 @@ namespace Outposts
 
         public int TotalSkill(SkillDef skill)
         {
-            return occupants.Sum(p => p.skills.GetSkill(skill).Level);
+            return occupants.FindAll(p => p.def.race.Humanlike).Sum(p => p.skills.GetSkill(skill).Level);
         }
 
         public override void DrawExtraSelectionOverlays()
