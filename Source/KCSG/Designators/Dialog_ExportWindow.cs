@@ -20,6 +20,7 @@ namespace KCSG
         private bool isStorage = false;
         private bool spawnConduits = true;
         private bool exportFilth = false;
+        private bool exportNatTer = false;
 
         private string structurePrefix = "Required";
         private List<XElement> symbols = new List<XElement>();
@@ -69,6 +70,7 @@ namespace KCSG
             this.DrawStorageChanger(lst);
             this.DrawSpawnConduitChanger(lst);
             this.DrawExportFilth(lst);
+            this.DrawExportNaturalTerrain(lst);
             this.DrawStructurePrefix(lst);
             this.DrawTagsEditing(lst);
             this.DrawModsEditing(lst);
@@ -81,7 +83,7 @@ namespace KCSG
 
         private XElement CreateLayout()
         {
-            XElement structureL = LayoutUtils.CreateStructureDef(this.cells, this.map, pairsCellThingList, area, exportFilth);
+            XElement structureL = LayoutUtils.CreateStructureDef(this.cells, this.map, pairsCellThingList, area, exportFilth, exportNatTer);
             // Defname change
             XElement defName = new XElement("defName", structurePrefix + defname);
             structureL.AddFirst(defName);
@@ -217,6 +219,12 @@ namespace KCSG
         private void DrawExportFilth(Listing_Standard lst)
         {
             lst.CheckboxLabeled("Export filth:", ref this.exportFilth);
+            lst.Gap();
+        }
+
+        private void DrawExportNaturalTerrain(Listing_Standard lst)
+        {
+            lst.CheckboxLabeled("Export natural terrain:", ref this.exportNatTer);
             lst.Gap();
         }
 

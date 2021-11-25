@@ -56,7 +56,7 @@ namespace KCSG
             return choices.RandomElementByWeight((w) => w.weight * parms.points);
         }
 
-        public static XElement CreateStructureDef(List<IntVec3> cellExport, Map map, Dictionary<IntVec3, List<Thing>> pairsCellThingList, Area area, bool exportFilth)
+        public static XElement CreateStructureDef(List<IntVec3> cellExport, Map map, Dictionary<IntVec3, List<Thing>> pairsCellThingList, Area area, bool exportFilth, bool exportNatural)
         {
             cellExport.Sort((x, y) => x.z.CompareTo(y.z));
             XElement StructureLayoutDef = new XElement("KCSG.StructureLayoutDef", null);
@@ -69,7 +69,7 @@ namespace KCSG
             XElement itemsL = CreateItemlayout(cellExport, area, out bool add2, pairsCellThingList);
             if (add2) layouts.Add(itemsL);
             // Add terrain layout
-            XElement terrainL = CreateTerrainlayout(cellExport, area, map, out bool add3);
+            XElement terrainL = CreateTerrainlayout(cellExport, area, map, exportNatural, out bool add3);
             if (add3) layouts.Add(terrainL);
             // Add things layouts
             int numOfLayout = RectUtils.GetMaxThingOnOneCell(cellExport, pairsCellThingList, exportFilth);
@@ -161,7 +161,7 @@ namespace KCSG
             return liMain;
         }
 
-        public static XElement CreateTerrainlayout(List<IntVec3> cellExport, Area area, Map map, out bool add)
+        public static XElement CreateTerrainlayout(List<IntVec3> cellExport, Area area, Map map, bool exportNatural, out bool add)
         {
             XElement liMain = new XElement("li", null);
             RectUtils.EdgeFromList(cellExport, out int height, out int width);
@@ -179,7 +179,7 @@ namespace KCSG
                         if (i2 + 1 == width) temp += ".";
                         else temp += ".,";
                     }
-                    else if (map.terrainGrid.TerrainAt(first) is TerrainDef d && !d.BuildableByPlayer && !d.HasTag("Road"))
+                    else if (map.terrainGrid.TerrainAt(first) is TerrainDef d && !d.BuildableByPlayer && !d.HasTag("Road") && !exportNatural)
                     {
                         if (i2 + 1 == width) temp += ".";
                         else temp += ".,";
