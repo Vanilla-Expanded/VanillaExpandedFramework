@@ -45,7 +45,15 @@ namespace Outposts
             }
         }
 
-        public override MapGeneratorDef MapGeneratorDef => MapGeneratorDefOf.Base_Faction;
+        public override MapGeneratorDef MapGeneratorDef
+        {
+            get
+            {
+                if (def.GetModExtension<KCSG.CustomGenOption>() is KCSG.CustomGenOption cGen && (cGen.chooseFromlayouts.Count > 0 || cGen.chooseFromSettlements.Count > 0)) 
+                    return DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_Gen");
+                return MapGeneratorDefOf.Base_Faction;
+            }
+        }
 
         public virtual ThingDef ProvidedFood => Ext?.ProvidedFood ?? ThingDefOf.MealSimple;
         public OutpostExtension Ext => extensionCached ??= def.GetModExtension<OutpostExtension>();
