@@ -11,7 +11,7 @@ namespace Outposts
         public static bool SatisfiedBy(this List<AmountBySkill> minSkills, IEnumerable<Pawn> pawns) =>
             minSkills.All(abs => pawns.Sum(p => p.skills.GetSkill(abs.Skill).Level) >= abs.Count);
 
-        public static List<Pawn> HumanColonists(this Caravan caravan) => caravan.PawnsListForReading.Where(p => p.RaceProps.Humanlike && p.IsColonistPlayerControlled).ToList();
+        public static List<Pawn> HumanColonists(this Caravan caravan) => caravan.PawnsListForReading.Where(p => p.IsFreeColonist).ToList();
 
         public static IEnumerable<TResult> SelectOrEmpty<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector) =>
             source is null ? Enumerable.Empty<TResult>() : source.Select(selector);

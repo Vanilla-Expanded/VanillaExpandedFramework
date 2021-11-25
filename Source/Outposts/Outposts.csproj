@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="Dialog_CreateCamp.cs" />
     <Compile Include="HarmonyPatches.cs" />
+    <Compile Include="IncidentWorker_OutpostAttacked.cs" />
     <Compile Include="Outpost.cs" />
     <Compile Include="OutpostExtension.cs" />
     <Compile Include="OutpostsMod.cs" />

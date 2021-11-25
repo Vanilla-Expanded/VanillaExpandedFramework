@@ -56,6 +56,7 @@ namespace Outposts
 
         public static string CanSpawnOnWithExt(OutpostExtension ext, int tileIdx, List<Pawn> pawns)
         {
+            GenDebug.LogList(pawns);
             if (Find.WorldGrid[tileIdx] is {biome: var biome} && (ext.DisallowedBiomes is {Count: >0} && ext.DisallowedBiomes.Contains(biome) ||
                                                                   ext.AllowedBiomes is {Count: >0} && !ext.AllowedBiomes.Contains(biome)))
                 return "Outposts.CannotBeMade".Translate(biome.label);
