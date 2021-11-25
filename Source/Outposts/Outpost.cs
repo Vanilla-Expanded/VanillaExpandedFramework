@@ -277,6 +277,16 @@ namespace Outposts
                 disabled = occupants.Count == 1,
                 disabledReason = "Outposts.Command.Remove.Only1".Translate()
             };
+
+            if (Prefs.DevMode)
+            {
+                yield return new Command_Action
+                {
+                    action = () => ticksTillProduction = 10,
+                    defaultLabel = "Produce now",
+                    defaultDesc = "Reduce ticksTillProduction to 10"
+                };
+            }
         }
 
         public override string GetInspectString() =>
@@ -284,13 +294,13 @@ namespace Outposts
             Line(def.LabelCap) +
             Line("Outposts.Contains".Translate(occupants.Count)) +
             Line(Packing ? "Outposts.Packing".Translate(ticksTillPacked.ToStringTicksToPeriodVerbose()).RawText : ProductionString()) +
-            Line(Ext.RelevantSkills.Count > 0 ? RelevantSkillDisplay() : "");
+            Line(Ext?.RelevantSkills?.Count > 0 ? RelevantSkillDisplay() : "");
 
         public static string Line(string input) => input.NullOrEmpty() ? "" : "\n" + input;
 
         public virtual string ProductionString()
         {
-            if (ResultOptions is null || ResultOptions.Count == 0) return "";
+            if (Ext is null || ResultOptions is null || ResultOptions.Count == 0) return "";
             return ResultOptions.Count switch
             {
                 1 => "Outposts.WillProduce.1".Translate(ResultOptions[0].Amount(occupants), ResultOptions[0].Thing.label, TimeTillProduction),
@@ -299,7 +309,6 @@ namespace Outposts
                 _ => "Outposts.WillProduce.N".Translate(TimeTillProduction, ResultOptions.Select(ro => ro.Explain(occupants)).ToLineList("  - "))
             };
         }
-
 
         public virtual string RelevantSkillDisplay()
         {
