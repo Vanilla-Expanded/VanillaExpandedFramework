@@ -36,6 +36,7 @@ namespace VFECore
         public List<BiomeDef> allowedBiomes = new List<BiomeDef>();
         public List<BiomeDef> disallowedBiomes = new List<BiomeDef>();
 
+        public List<RaidStrategyDef> allowedStrategies = new List<RaidStrategyDef>();
     }
 
     // Pairs a given factionDef to a range of allowed starting goodwill

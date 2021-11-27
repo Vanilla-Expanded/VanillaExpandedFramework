@@ -670,6 +670,7 @@
     <Compile Include="VFECore\HarmonyPatches\FactionSpawning\Patch_FactionDiscovery_ModBase.cs" />
     <Compile Include="VFECore\HarmonyPatches\FactionSpawning\Patch_GameComponentUtility.cs" />
     <Compile Include="VFECore\HarmonyPatches\HarmonyPatches.cs" />
+    <Compile Include="VFECore\HarmonyPatches\ResolveRaidStrategy_Patch.cs" />
     <Compile Include="VFECore\HarmonyPatches\MachinesCannotJoinCaravans.cs" />
     <Compile Include="VFECore\HarmonyPatches\MachinesDie.cs" />
     <Compile Include="VFECore\HarmonyPatches\MechanoidsAreCapable.cs" />
