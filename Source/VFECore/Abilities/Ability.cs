@@ -255,6 +255,9 @@
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
+                if(this.verb == null) // no idea how the hell that happens
+                    this.verb = (Abilities.Verb_CastAbility)Activator.CreateInstance(this.def.verbProperties.verbClass);
+
                 this.verb.loadID      = this.GetUniqueLoadID() + "_Verb";
                 this.verb.verbProps   = this.def.verbProperties;
                 this.verb.verbTracker = this.pawn.verbTracker;
