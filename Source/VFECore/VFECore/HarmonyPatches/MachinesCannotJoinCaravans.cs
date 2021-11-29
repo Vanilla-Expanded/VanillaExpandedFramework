@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
+using Verse.AI;
 using VFE.Mechanoids.Needs;
 using VFEMech;
 
@@ -93,6 +94,8 @@ namespace VFE.Mechanoids
 			{
 				var owner = CaravanInventoryUtility.GetOwnerOf(caravan, food);
 				powerNeed.CurLevel += IngestedUranium(food, pawn, powerNeed.MaxLevel - powerNeed.CurLevel);
+				Log.Message("3 TrySatisfyPowerNeed: " + pawn + " - " + powerNeed.CurLevel);
+
 				if (food.Destroyed)
 				{
 					if (owner != null)
@@ -105,10 +108,10 @@ namespace VFE.Mechanoids
 			}
 		}
 
-		public const float NutritionPerCount = 5f;
+		[TweakValue("0Mech", 0, 10f)] public static float NutritionPerCount = 0.05f;
 		private static float IngestedUranium(Thing thing, Pawn pawn, float nutritionWanted)
 		{
-			int stackConsumed = (int)Mathf.Min(nutritionWanted * NutritionPerCount, thing.stackCount / NutritionPerCount);
+			int stackConsumed = (int)Mathf.Min(nutritionWanted / NutritionPerCount, thing.stackCount);
 			if (thing.stackCount > stackConsumed)
 			{
 				thing.SplitOff(stackConsumed);
@@ -117,8 +120,7 @@ namespace VFE.Mechanoids
 			{
 				thing.Destroy();
 			}
-			return stackConsumed / NutritionPerCount;
-
+			return NutritionPerCount * stackConsumed;
 		}
 	}
 }

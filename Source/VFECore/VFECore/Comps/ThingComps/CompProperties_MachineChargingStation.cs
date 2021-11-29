@@ -17,6 +17,7 @@ namespace VFE.Mechanoids
         public ThingDef spawnWithWeapon = null;
         public bool turret = false;
         public float hoursToRecharge = 24;
+        public bool showSetArea = true;
         public List<string> blackListTurretGuns = new List<string>();
         public CompProperties_MachineChargingStation()
         {

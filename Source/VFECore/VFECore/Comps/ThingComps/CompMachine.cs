@@ -71,18 +71,12 @@ namespace VFE.Mechanoids
             base.CompTickRare();
             turretAnglePerFrame = Rand.Range(-0.5f, 0.5f);
         }
-
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
             cachedMachines.Add(((Pawn)parent).Drawer.renderer, this);
             cachedPawns.Add(this, (Pawn)parent);
             cachedMachinesPawns.Add((Pawn)parent, this);
-            var machine = this.parent as Pawn;
-            if (!respawningAfterLoad)
-            {
-                machine.needs.TryGetNeed<Need_Power>().CurLevel = 0;
-            }
         }
 
         public override void PostDeSpawn(Map map)

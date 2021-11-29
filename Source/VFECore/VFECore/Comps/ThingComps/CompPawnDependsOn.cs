@@ -33,7 +33,6 @@ namespace VFECore
                 else
                     pawnComp.myBuilding = (Building)this.parent;
                 myPawn.SpawnSetup(parent.Map, false);
-                Log.Message("Spawning: " + myPawn);
             }
         }
 

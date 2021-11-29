@@ -104,7 +104,7 @@ namespace VFE.Mechanoids.Needs
 			CurLevel = 1f;
 		}
 
-		public override void NeedInterval()
+        public override void NeedInterval()
 		{
 			var comp = ChargingStationComp;
 			if (comp != null)

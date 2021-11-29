@@ -718,6 +718,7 @@
     <Compile Include="VFECore\JobDrivers\JobDriver_RepairMachine.cs" />
     <Compile Include="VFECore\JobGivers\JobGiver_Recharge.cs" />
     <Compile Include="VFECore\JobGivers\JobGiver_ReturnToStation.cs" />
+    <Compile Include="VFECore\JobGivers\JobGiver_StandIdle.cs" />
     <Compile Include="VFECore\JobGivers\JobGiver_ReturnToStationIdle.cs" />
     <Compile Include="VFECore\JobGivers\ThinkNode_ConditionalHasPower.cs" />
     <Compile Include="VFECore\Lords\LordJob_SiegeCustom.cs" />

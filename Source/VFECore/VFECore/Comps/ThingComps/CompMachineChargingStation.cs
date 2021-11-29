@@ -102,10 +102,13 @@ namespace VFE.Mechanoids
             }
             if (myPawn.needs.TryGetNeed<Need_Power>() == null)
                 typeof(Pawn_NeedsTracker).GetMethod("AddNeed", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Invoke(myPawn.needs, new object[] { DefDatabase<NeedDef>.GetNamed("VFE_Mechanoids_Power") });
+            myPawn.needs.TryGetNeed<Need_Power>().CurLevel = 0;
+
             if (myPawn.playerSettings != null)
             {
                 myPawn.playerSettings.AreaRestriction = allowedArea;
             }
+
             wantsRespawn = false;
         }
 
@@ -173,8 +176,10 @@ namespace VFE.Mechanoids
         }
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
-            List<Gizmo> gizmos = new List<Gizmo>();
-            gizmos.AddRange(base.CompGetGizmosExtra());
+            foreach (var g in base.CompGetGizmosExtra())
+            {
+                yield return g;
+            }
 
             Command_Toggle forceRest = new Command_Toggle
             {
@@ -206,7 +211,7 @@ namespace VFE.Mechanoids
                 }
             };
             forceRest.isActive = delegate { return forceStay; };
-            gizmos.Add(forceRest);
+            yield return forceRest;
 
             if (Props.turret)
             {
@@ -237,36 +242,37 @@ namespace VFE.Mechanoids
                         Find.WindowStack.Add(new FloatMenu(options));
                     }
                 };
-                gizmos.Add(attachTurret);
+                yield return attachTurret;
             }
 
-            Command_Action setArea = new Command_Action
+            if (Props.showSetArea)
             {
-                defaultLabel = "VFEMechSetArea".Translate(),
-                defaultDesc = "VFEMechSetAreaDesc".Translate(),
-                action = delegate
+                Command_Action setArea = new Command_Action
                 {
-                    AreaUtility.MakeAllowedAreaListFloatMenu(delegate (Area area)
+                    defaultLabel = "VFEMechSetArea".Translate(),
+                    defaultDesc = "VFEMechSetAreaDesc".Translate(),
+                    action = delegate
                     {
-                        foreach (var t in Find.Selector.SelectedObjects)
+                        AreaUtility.MakeAllowedAreaListFloatMenu(delegate (Area area)
                         {
-                            if (t is ThingWithComps thing && thing.TryGetComp<CompMachineChargingStation>() is CompMachineChargingStation comp)
+                            foreach (var t in Find.Selector.SelectedObjects)
                             {
-                                comp.allowedArea = area;
-                                if (comp.myPawn != null && !comp.myPawn.Dead)
+                                if (t is ThingWithComps thing && thing.TryGetComp<CompMachineChargingStation>() is CompMachineChargingStation comp)
                                 {
-                                    comp.myPawn.playerSettings.AreaRestriction = area;
+                                    comp.allowedArea = area;
+                                    if (comp.myPawn != null && !comp.myPawn.Dead)
+                                    {
+                                        comp.myPawn.playerSettings.AreaRestriction = area;
+                                    }
                                 }
                             }
-                        }
 
-                    }, true, true, parent.Map);
-                },
-                icon = ContentFinder<Texture2D>.Get("UI/SelectZone")
-            };
-            gizmos.Add(setArea);
-
-            return gizmos;
+                        }, true, true, parent.Map);
+                    },
+                    icon = ContentFinder<Texture2D>.Get("UI/SelectZone")
+                };
+                yield return setArea;
+            }
         }
 
         public override string CompInspectStringExtra()

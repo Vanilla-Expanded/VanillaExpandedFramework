@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Verse;
 using Verse.AI;
 using VFE.Mechanoids;
+using VFE.Mechanoids.Needs;
 using VFECore;
 using VFEMech;
 
@@ -18,26 +19,30 @@ namespace VFE.Mechanoids.AI.JobGivers
         {
             return 8f;
         }
-        private static Dictionary<Pawn, int> pawnsWithLastJobScanTick = new Dictionary<Pawn, int>();
 
+        private static Dictionary<Pawn, int> pawnsWithLastJobScanTick = new Dictionary<Pawn, int>();
         protected override Job TryGiveJob(Pawn pawn)
         {
-            var compMachine = CompMachine.cachedMachinesPawns[pawn];
-            var compMachineChargingStation = compMachine.myBuilding.TryGetComp<CompMachineChargingStation>();
-            if (compMachineChargingStation.wantsRest && compMachine.myBuilding.TryGetComp<CompPowerTrader>().PowerOn)
-                return JobMaker.MakeJob(VFEDefOf.VFE_Mechanoids_Recharge, compMachine.myBuilding);
-
-            if (pawn.mindState.lastJobTag == JobTag.Idle)
+            var myBuilding = CompMachine.cachedMachinesPawns[pawn].myBuilding;
+            if (myBuilding.Spawned && myBuilding.Map == pawn.Map)
             {
-                if (pawnsWithLastJobScanTick.ContainsKey(pawn))
+                var compMachine = CompMachine.cachedMachinesPawns[pawn];
+                var compMachineChargingStation = compMachine.myBuilding.TryGetComp<CompMachineChargingStation>();
+                if (compMachineChargingStation.wantsRest && compMachine.myBuilding.TryGetComp<CompPowerTrader>().PowerOn && pawn.CanReserveAndReach(myBuilding, PathEndMode.OnCell, Danger.Deadly))
+                    return JobMaker.MakeJob(VFEDefOf.VFE_Mechanoids_Recharge, compMachine.myBuilding);
+
+                if (pawn.mindState.lastJobTag == JobTag.Idle)
                 {
-                    if (Find.TickManager.TicksGame - pawnsWithLastJobScanTick[pawn] < 60)
+                    if (pawnsWithLastJobScanTick.ContainsKey(pawn))
                     {
-                        pawnsWithLastJobScanTick[pawn] = Find.TickManager.TicksGame;
-                        return JobMaker.MakeJob(JobDefOf.Wait, 300);
+                        if (Find.TickManager.TicksGame - pawnsWithLastJobScanTick[pawn] < 60)
+                        {
+                            pawnsWithLastJobScanTick[pawn] = Find.TickManager.TicksGame;
+                            return JobMaker.MakeJob(JobDefOf.Wait, 300);
+                        }
                     }
+                    pawnsWithLastJobScanTick[pawn] = Find.TickManager.TicksGame;
                 }
-                pawnsWithLastJobScanTick[pawn] = Find.TickManager.TicksGame;
             }
             return null;
         }
