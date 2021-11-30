@@ -60,15 +60,7 @@ namespace VFE.Mechanoids.AI.JobGivers
             {
                 if (building.TryGetComp<CompPowerTrader>().PowerOn)
                 {
-                    if (pawn.Position != building.Position)
-                    {
-                        return JobMaker.MakeJob(VFEDefOf.VFE_Mechanoids_Recharge, building);
-                    }
-                    else
-                    {
-                        pawn.Rotation = Rot4.South;
-                        return JobMaker.MakeJob(JobDefOf.Wait, 60);
-                    }
+                    return JobMaker.MakeJob(VFEDefOf.VFE_Mechanoids_Recharge, building);
                 }
                 else
                 {

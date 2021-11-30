@@ -9,15 +9,17 @@ using UnityEngine;
 using Verse;
 using Verse.AI;
 using VFE.Mechanoids.Needs;
+using VFEMech;
 
 namespace VFE.Mechanoids.HarmonyPatches
 {
+
     [HarmonyPatch(typeof(FloatMenuMakerMap), "CanTakeOrder")]
     public static class MechanoidsObeyOrders
     {
         public static void Postfix(Pawn pawn, ref bool __result)
         {
-            if (pawn.drafter != null)
+            if (pawn.drafter != null && pawn is Machine)
                 __result = true;
         }
     }
@@ -27,7 +29,8 @@ namespace VFE.Mechanoids.HarmonyPatches
     {
         public static bool Prefix(Vector3 clickPos, Pawn pawn, List<FloatMenuOption> opts)
         {
-            if (!AnimalBehaviours.AnimalCollectionClass.draftable_animals.ContainsKey(pawn)&& pawn.RaceProps.IsMechanoid && pawn.needs.TryGetNeed<Need_Power>() is Need_Power need && need.CurLevel <= 0f)
+            if (!AnimalBehaviours.AnimalCollectionClass.draftable_animals.ContainsKey(pawn) && pawn.RaceProps.IsMechanoid 
+                && pawn.needs.TryGetNeed<Need_Power>() is Need_Power need && need.CurLevel <= 0f)
             {
                 return false;
             }

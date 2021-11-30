@@ -138,7 +138,6 @@
 				<li Class="ThinkNode_Subtree">
 					<treeDef>Downed</treeDef>
 				</li>
-				
 				<!-- Drafted -->
 				<li Class="VFEMech.ThinkNode_ConditionalHasPower">
 					<subNodes>
@@ -181,6 +180,7 @@
 					<subNodes>
 						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_Recharge"/>
 						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStation"/>
+						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStationIdle"/>
 						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_StandIdle"/>
 					</subNodes>
 				</li>
