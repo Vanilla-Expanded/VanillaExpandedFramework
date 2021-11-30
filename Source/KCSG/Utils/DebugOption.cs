@@ -93,6 +93,11 @@ namespace KCSG
                 {
                     foreach (IntVec3 c in CellRect.CenteredOn(UI.MouseCell(), 1))
                         Find.CurrentMap.roofGrid.SetRoof(c, RoofDefOf.RoofRockThick);
+                }),
+                new DebugMenuOption($"{RoofDefOf.RoofRockThick.defName} 10*10", DebugMenuOptionMode.Tool, () =>
+                {
+                    foreach (IntVec3 c in CellRect.CenteredOn(UI.MouseCell(), 4))
+                        Find.CurrentMap.roofGrid.SetRoof(c, RoofDefOf.RoofRockThick);
                 })
             };
 
