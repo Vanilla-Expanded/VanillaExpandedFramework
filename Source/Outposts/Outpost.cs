@@ -53,7 +53,7 @@ namespace Outposts
         {
             get
             {
-                if (def.GetModExtension<CustomGenOption>() is CustomGenOption cGen && (cGen.chooseFromlayouts.Count > 0 || cGen.chooseFromSettlements.Count > 0))
+                if (def.GetModExtension<CustomGenOption>() is { } cGen && (cGen.chooseFromlayouts.Count > 0 || cGen.chooseFromSettlements.Count > 0))
                     return DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_Gen");
                 return MapGeneratorDefOf.Base_Faction;
             }
@@ -65,6 +65,12 @@ namespace Outposts
         public virtual string TimeTillProduction => ticksTillProduction.ToStringTicksToPeriodVerbose().Colorize(ColoredText.DateTimeColor);
 
         public virtual List<ResultOption> ResultOptions => Ext.ResultOptions;
+
+        public override void PostAdd()
+        {
+            base.PostAdd();
+            ticksTillProduction = TicksPerProduction;
+        }
 
         public static string CanSpawnOnWithExt(OutpostExtension ext, int tileIdx, List<Pawn> pawns)
         {
