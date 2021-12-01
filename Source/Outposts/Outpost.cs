@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using KCSG;
 using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
@@ -14,16 +15,19 @@ namespace Outposts
         public static readonly Texture2D PackTex = ContentFinder<Texture2D>.Get("UI/Gizmo/AbandonOutpost");
         public static readonly Texture2D AddTex = ContentFinder<Texture2D>.Get("UI/Gizmo/AddToOutpost");
         public static readonly Texture2D RemoveTex = ContentFinder<Texture2D>.Get("UI/Gizmo/RemovePawnFromOutpost");
+        private readonly Dictionary<SkillDef, int> totalSkills = new();
 
         private Material cachedMat;
 
         private OutpostExtension extensionCached;
         public string Name;
         private List<Pawn> occupants = new();
+        private bool skillsDirty = true;
         private int ticksTillPacked = -1;
         private int ticksTillProduction;
         public virtual float RestPerTickResting => 0.005714286f * 2.5f;
         public IEnumerable<Pawn> AllPawns => occupants;
+        public int PawnCount => occupants.Count;
         public override Color ExpandingIconColor => Faction.Color;
 
         public virtual int TicksPerProduction => Ext?.TicksPerProduction ?? 15 * 60000;
@@ -49,7 +53,7 @@ namespace Outposts
         {
             get
             {
-                if (def.GetModExtension<KCSG.CustomGenOption>() is KCSG.CustomGenOption cGen && (cGen.chooseFromlayouts.Count > 0 || cGen.chooseFromSettlements.Count > 0)) 
+                if (def.GetModExtension<CustomGenOption>() is CustomGenOption cGen && (cGen.chooseFromlayouts.Count > 0 || cGen.chooseFromSettlements.Count > 0))
                     return DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_Gen");
                 return MapGeneratorDefOf.Base_Faction;
             }
@@ -79,7 +83,10 @@ namespace Outposts
 
         public int TotalSkill(SkillDef skill)
         {
-            return occupants.FindAll(p => p.def.race.Humanlike).Sum(p => p.skills.GetSkill(skill).Level);
+            if (skillsDirty)
+                foreach (var skillDef in DefDatabase<SkillDef>.AllDefs)
+                    totalSkills[skillDef] = occupants.Where(p => p.def.race.Humanlike).Sum(p => p.skills.GetSkill(skill).Level);
+            return totalSkills[skill];
         }
 
         public override void DrawExtraSelectionOverlays()
@@ -91,7 +98,10 @@ namespace Outposts
         public override void PostMapGenerate()
         {
             base.PostMapGenerate();
-            foreach (var pawn in Map.mapPawns.AllPawns.ListFullCopy()) pawn.Destroy();
+
+            foreach (var pawn in Map.mapPawns.AllPawns.Where(p => p.RaceProps.Humanlike)) pawn.Destroy();
+
+            foreach (var building in Map.listerBuildings.allBuildingsNonColonist.ListFullCopy()) building.SetFaction(Faction.OfPlayer);
 
             foreach (var occupant in occupants) GenPlace.TryPlaceThing(occupant, Map.Center, Map, ThingPlaceMode.Near);
         }
@@ -100,15 +110,24 @@ namespace Outposts
         {
             if (!Map.mapPawns.FreeColonists.Any())
             {
+                occupants.Clear();
                 Find.LetterStack.ReceiveLetter("Outposts.Letters.Lost.Label".Translate(), "Outposts.Letters.Lost.Text".Translate(Name), LetterDefOf.NegativeEvent);
                 alsoRemoveWorldObject = true;
                 return true;
             }
 
-            if (Map.mapPawns.AllPawns.All(p => p.Faction.IsPlayer))
+            if (Map.mapPawns.AllPawns.Where(p => p.RaceProps.Humanlike).All(p => p.Faction is {IsPlayer: true}))
             {
+                occupants.Clear();
                 Find.LetterStack.ReceiveLetter("Outposts.Letters.BattleWon.Label".Translate(), "Outposts.Letters.BattleWon.Text".Translate(Name), LetterDefOf.PositiveEvent,
                     new LookTargets(Gen.YieldSingle(this)));
+                foreach (var pawn in Map.mapPawns.AllPawns.Where(p => p.RaceProps.Humanlike))
+                {
+                    pawn.DeSpawn();
+                    occupants.Add(pawn);
+                }
+
+                RecachePawnTraits();
                 alsoRemoveWorldObject = false;
                 return true;
             }
@@ -215,6 +234,7 @@ namespace Outposts
 
         public virtual void RecachePawnTraits()
         {
+            skillsDirty = true;
         }
 
         public void AddPawn(Pawn pawn)
@@ -279,14 +299,12 @@ namespace Outposts
             };
 
             if (Prefs.DevMode)
-            {
                 yield return new Command_Action
                 {
                     action = () => ticksTillProduction = 10,
                     defaultLabel = "Produce now",
                     defaultDesc = "Reduce ticksTillProduction to 10"
                 };
-            }
         }
 
         public override string GetInspectString() =>
