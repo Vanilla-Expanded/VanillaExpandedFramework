@@ -34,7 +34,7 @@ namespace Outposts
         public List<AmountBySkill> MinSkills;
         public ThingDef Thing;
 
-        public int Amount(List<Pawn> pawns) => BaseAmount + AmountPerPawn * pawns.Count + AmountsPerSkills.Sum(x => x.Amount(pawns));
+        public int Amount(List<Pawn> pawns) => BaseAmount + AmountPerPawn * pawns.Count + (AmountsPerSkills?.Sum(x => x.Amount(pawns)) ?? 0);
         public IEnumerable<Thing> Make(List<Pawn> pawns) => Outpost.MakeThings(Thing, Amount(pawns));
         public string Explain(List<Pawn> pawns) => $"{Amount(pawns)}x {Thing.LabelCap}";
     }

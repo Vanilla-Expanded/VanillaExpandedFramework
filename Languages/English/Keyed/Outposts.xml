@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
     <Outposts.Settings.Title>Vanilla Expanded Framework - Outposts</Outposts.Settings.Title>
-    <Outposts.Settings.Multiplier>Outpost Production Multiplier:</Outposts.Settings.Multiplier>
+    <Outposts.Settings.Multiplier.Production>Outpost Production Multiplier:</Outposts.Settings.Multiplier.Production>
+    <Outposts.Settings.Multiplier.Time>Outpost Time Multiplier:</Outposts.Settings.Multiplier.Time>
     <Outposts.Dialog.Create>Create</Outposts.Dialog.Create>
     <Outposts.Commands.Create.Label>Create Outpost</Outposts.Commands.Create.Label>
     <Outposts.Commands.Create.Desc>Create a new outpost using this caravan</Outposts.Commands.Create.Desc>
@@ -29,4 +30,9 @@
     <Outposts.CannotBeMade>Cannot be made in {0}</Outposts.CannotBeMade>
     <Outposts.NotEnoughPawns>Not enough pawns in caravan, need at least {0}</Outposts.NotEnoughPawns>
     <Outposts.TotalSkill>Cumulative {0} skill: {1}</Outposts.TotalSkill>
+    <Outposts.TooClose>Too close to settlement or other outpost</Outposts.TooClose>
+    <Outposts.AddedFromTransportPods>Your transport pods have arrived. {0} has been added to {1}.</Outposts.AddedFromTransportPods>
+    <Outposts.AddTo>Add to outpost</Outposts.AddTo>
+    <Outposts.SendNonPawns>Confirm sending items to the outpost? They will be permanently lost.</Outposts.SendNonPawns>
+    <Outposts.AlreadyPacking>Already packing</Outposts.AlreadyPacking>
 </LanguageData>

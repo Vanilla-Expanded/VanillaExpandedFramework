@@ -72,6 +72,8 @@ namespace Outposts
             if (Find.WorldGrid[tileIdx] is {biome: var biome} && (ext.DisallowedBiomes is {Count: >0} && ext.DisallowedBiomes.Contains(biome) ||
                                                                   ext.AllowedBiomes is {Count: >0} && !ext.AllowedBiomes.Contains(biome)))
                 return "Outposts.CannotBeMade".Translate(biome.label);
+            if (Find.WorldObjects.AnySettlementBaseAtOrAdjacent(tileIdx) ||
+                Find.WorldObjects.AllWorldObjects.OfType<Outpost>().Any(outpost => Find.WorldGrid.IsNeighborOrSame(tileIdx, outpost.Tile))) return "Outposts.TooClose".Translate();
             if (ext.MinPawns > 0 && pawns.Count < ext.MinPawns)
                 return "Outposts.NotEnoughPawns".Translate(ext.MinPawns);
             if (ext.RequiredSkills is {Count: >0} &&
@@ -141,7 +143,7 @@ namespace Outposts
 
         public static IEnumerable<Thing> MakeThings(ThingDef thingDef, int count, ThingDef stuff = null)
         {
-            count = Mathf.RoundToInt(count * OutpostsMod.Settings.Multiplier);
+            count = Mathf.RoundToInt(count * OutpostsMod.Settings.ProductionMultiplier);
             while (count > thingDef.stackLimit)
             {
                 var temp = ThingMaker.MakeThing(thingDef, stuff);
@@ -159,9 +161,12 @@ namespace Outposts
         {
             var map = Find.Maps.Where(m => m.IsPlayerHome).OrderByDescending(m => Find.WorldGrid.ApproxDistanceInTiles(m.Parent.Tile, Tile)).First();
             var dir = Find.WorldGrid.GetRotFromTo(map.Parent.Tile, Tile);
-            if (!CellFinder.TryFindRandomEdgeCellWith(x =>
+            IntVec3 cell;
+            if (map.listerBuildings.AllBuildingsColonistOfDef(Outposts_DefOf.VEF_OutpostDeliverySpot).TryRandomElement(out var spot))
+                cell = spot.Position;
+            else if (!CellFinder.TryFindRandomEdgeCellWith(x =>
                     !x.Fogged(map) && x.Standable(map) && map.mapPawns.FreeColonistsSpawned.Any(p => p.CanReach(x, PathEndMode.OnCell, Danger.Some)), map,
-                dir, CellFinder.EdgeRoadChance_Always, out var cell))
+                dir, CellFinder.EdgeRoadChance_Always, out cell))
                 cell = CellFinder.RandomEdgeCell(dir, map);
 
             var text = "Outposts.Letters.Items.Text".Translate(Name) + "\n";
@@ -185,6 +190,9 @@ namespace Outposts
             RecachePawnTraits();
         }
 
+        public override IEnumerable<FloatMenuOption> GetTransportPodsFloatMenuOptions(IEnumerable<IThingHolder> pods, CompLaunchable representative) =>
+            base.GetTransportPodsFloatMenuOptions(pods, representative).Concat(TransportPodsArrivalAction_AddToOutpost.GetFloatMenuOptions(representative, pods, this));
+
         public override void Tick()
         {
             base.Tick();
@@ -198,7 +206,7 @@ namespace Outposts
                 ticksTillProduction--;
                 if (ticksTillProduction <= 0)
                 {
-                    ticksTillProduction = TicksPerProduction;
+                    ticksTillProduction = Mathf.RoundToInt(TicksPerProduction * OutpostsMod.Settings.TimeMultiplier);
                     Produce();
                 }
             }
@@ -246,6 +254,8 @@ namespace Outposts
                 if (!caravan.PawnsListForReading.Any()) caravan.Destroy();
             }
 
+            pawn.holdingOwner?.Remove(pawn);
+
             Find.WorldPawns.RemovePawn(pawn);
             occupants.Add(pawn);
             RecachePawnTraits();
@@ -275,10 +285,12 @@ namespace Outposts
 
             yield return new Command_Action
             {
-                action = () => ticksTillPacked = TicksToPack,
+                action = () => ticksTillPacked = Mathf.RoundToInt(TicksToPack * OutpostsMod.Settings.TimeMultiplier),
                 defaultLabel = "Outposts.Commands.Pack.Label".Translate(),
                 defaultDesc = "Outposts.Commands.Pack.Desc".Translate(),
-                icon = PackTex
+                icon = PackTex,
+                disabled = Packing,
+                disabledReason = "Outposts.AlreadyPacking".Translate()
             };
             yield return new Command_Action
             {
@@ -309,7 +321,7 @@ namespace Outposts
             base.GetInspectString() +
             Line(def.LabelCap) +
             Line("Outposts.Contains".Translate(occupants.Count)) +
-            Line(Packing ? "Outposts.Packing".Translate(ticksTillPacked.ToStringTicksToPeriodVerbose()).RawText : ProductionString()) +
+            Line(Packing ? "Outposts.Packing".Translate(ticksTillPacked.ToStringTicksToPeriodVerbose().Colorize(ColoredText.DateTimeColor)).RawText : ProductionString()) +
             Line(Ext?.RelevantSkills?.Count > 0 ? RelevantSkillDisplay() : "");
 
         public static string Line(string input) => input.NullOrEmpty() ? "" : "\n" + input;
@@ -329,6 +341,49 @@ namespace Outposts
         public virtual string RelevantSkillDisplay()
         {
             return Ext.RelevantSkills.Select(skill => "Outposts.TotalSkill".Translate(skill.skillLabel, TotalSkill(skill)).RawText).ToLineList();
+        }
+
+        public class TransportPodsArrivalAction_AddToOutpost : TransportPodsArrivalAction
+        {
+            private Outpost outpost;
+
+            public TransportPodsArrivalAction_AddToOutpost()
+            {
+            }
+
+            public TransportPodsArrivalAction_AddToOutpost(Outpost addTo) => outpost = addTo;
+
+            public override void Arrived(List<ActiveDropPodInfo> pods, int tile)
+            {
+                var pawns = new List<Pawn>();
+                foreach (var p in pods.SelectMany(pod => pod.innerContainer).OfType<Pawn>())
+                {
+                    pawns.Add(p);
+                    Messages.Message("Outposts.AddedFromTransportPods".Translate(p.LabelShortCap, outpost.LabelCap), outpost, MessageTypeDefOf.TaskCompletion);
+                }
+
+                foreach (var pawn in pawns) outpost.AddPawn(pawn);
+            }
+
+            public override void ExposeData()
+            {
+                base.ExposeData();
+                Scribe_References.Look(ref outpost, "outpost");
+            }
+
+            public override FloatMenuAcceptanceReport StillValid(IEnumerable<IThingHolder> pods, int destinationTile) => outpost.Tile == destinationTile;
+
+            public static IEnumerable<FloatMenuOption> GetFloatMenuOptions(CompLaunchable representative, IEnumerable<IThingHolder> pods, Outpost outpost)
+            {
+                return TransportPodsArrivalActionUtility.GetFloatMenuOptions(
+                    () => true, () => new TransportPodsArrivalAction_AddToOutpost(outpost),
+                    "Outposts.AddTo".Translate(outpost.LabelCap), representative, outpost.Tile, launch =>
+                    {
+                        if (pods.SelectMany(pod => pod.GetDirectlyHeldThings()).Any(t => t is not Pawn))
+                            Dialog_MessageBox.CreateConfirmation("Outposts.SendNonPawns".Translate(), launch);
+                        else launch();
+                    });
+            }
         }
     }
 }
