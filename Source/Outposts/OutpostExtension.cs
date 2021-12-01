@@ -21,7 +21,7 @@ namespace Outposts
 
         public List<SkillDef> RelevantSkills =>
             new HashSet<SkillDef>(RequiredSkills.SelectOrEmpty(rq => rq.Skill)
-                    .Concat(ResultOptions.SelectManyOrEmpty(ro => ro.AmountsPerSkills.Select(aps => aps.Skill).Concat(ro.MinSkills.SelectOrEmpty(ms => ms.Skill))))
+                    .Concat(ResultOptions.SelectManyOrEmpty(ro => ro.AmountsPerSkills.SelectOrEmpty(aps => aps.Skill).Concat(ro.MinSkills.SelectOrEmpty(ms => ms.Skill))))
                     .Concat(DisplaySkills ?? Enumerable.Empty<SkillDef>()))
                 .ToList();
     }

@@ -14,6 +14,7 @@ namespace Outposts
         private readonly Dictionary<WorldObjectDef, Material> cachedMats;
         private readonly Caravan creator;
         private readonly Dictionary<WorldObjectDef, string> validity;
+        private float? prevHeight;
         private Vector2 scrollPosition = new(0, 0);
 
         public Dialog_CreateCamp(Caravan creator)
@@ -42,32 +43,38 @@ namespace Outposts
         public override void DoWindowContents(Rect inRect)
         {
             var outRect = inRect.ContractedBy(5f);
-            var viewRect = new Rect(0, 0, outRect.width - 50f, OutpostsMod.Outposts.Count * (LINE_HEIGHT + 10));
+            outRect.height -= 45f;
+            var viewRect = new Rect(0, 0, outRect.width - 50f, prevHeight ?? OutpostsMod.Outposts.Count * (LINE_HEIGHT + 10));
             Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
             var rect = new Rect(10, 0, viewRect.width, LINE_HEIGHT);
             foreach (var outpost in OutpostsMod.Outposts)
             {
-                DoOutpostDisplay(rect, outpost);
-                rect.y += LINE_HEIGHT + 5f;
+                DoOutpostDisplay(ref rect, outpost);
+                rect.y += rect.height + 5f;
                 Widgets.DrawLineHorizontal(rect.x, rect.y, rect.width);
                 rect.y += 5f;
             }
 
+            prevHeight = rect.y;
+
             Widgets.EndScrollView();
         }
 
-        private void DoOutpostDisplay(Rect inRect, WorldObjectDef outpostDef)
+        private void DoOutpostDisplay(ref Rect inRect, WorldObjectDef outpostDef)
         {
+            var font = Text.Font;
+            Text.Font = GameFont.Tiny;
+            inRect.height = Text.CalcHeight(outpostDef.description, inRect.width - 90f) + 60f;
             var image = inRect.LeftPartPixels(50f);
             var text = inRect.RightPartPixels(inRect.width - 60f);
             var tex = outpostDef.ExpandingIconTexture;
             Widgets.DrawTextureFitted(image, tex, 1f, new Vector2(tex.width, tex.height), new Rect(0f, 0f, 1f, 1f) /*, 0f, cachedMats[outpost]*/);
-            var font = Text.Font;
             Text.Font = GameFont.Medium;
             Widgets.Label(text.TopPartPixels(30f), outpostDef.label.CapitalizeFirst(outpostDef));
             var button = text.BottomPartPixels(30f).LeftPartPixels(100f);
             Text.Font = GameFont.Tiny;
             Widgets.TextArea(new Rect(text.x, text.y + 30f, text.width, text.height - 60f), outpostDef.description, true);
+            Text.Font = font;
             if (Widgets.ButtonText(button, "Outposts.Dialog.Create".Translate()))
             {
                 if (validity[outpostDef].NullOrEmpty())
@@ -84,8 +91,6 @@ namespace Outposts
                 else
                     Messages.Message(validity[outpostDef], MessageTypeDefOf.RejectInput, false);
             }
-
-            Text.Font = font;
         }
     }
 }
