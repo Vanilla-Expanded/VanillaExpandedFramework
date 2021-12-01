@@ -101,8 +101,6 @@ namespace Outposts
 
             foreach (var pawn in Map.mapPawns.AllPawns.Where(p => p.RaceProps.Humanlike)) pawn.Destroy();
 
-            foreach (var building in Map.listerBuildings.allBuildingsNonColonist.ListFullCopy()) building.SetFaction(Faction.OfPlayer);
-
             foreach (var occupant in occupants) GenPlace.TryPlaceThing(occupant, Map.Center, Map, ThingPlaceMode.Near);
         }
 
