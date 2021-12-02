@@ -741,6 +741,7 @@
     <Compile Include="VFECore\ScenParts\ScenPart_ArriveAtEdge.cs" />
     <Compile Include="VFECore\ScenParts\ScenPart_ForcedFactionGoodwill.cs" />
     <Compile Include="VFECore\StaticConstructorClass.cs" />
+    <Compile Include="VFECore\Utilities\VerbUtility.cs" />
     <Compile Include="VFECore\Traders\StockGenerator_ThingSetMakerTags.cs" />
     <Compile Include="VFECore\Utilities\CustomSiegeUtility.cs" />
     <Compile Include="VFECore\Utilities\ExtendedFactionUtility.cs" />

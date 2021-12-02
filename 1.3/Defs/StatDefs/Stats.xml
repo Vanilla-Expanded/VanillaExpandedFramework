@@ -1,13 +1,27 @@
 <Defs>
-    <StatDef>
-        <defName>VEF_RangedCooldownFactor</defName>
-        <label>ranged cooldown factor</label>
-        <description>The cooldown on ranged weapons of the wearer is multiplied by this value.</description>
-        <category>Apparel</category>
-        <defaultBaseValue>1</defaultBaseValue>
-        <minValue>0</minValue>
-        <toStringStyle>PercentZero</toStringStyle>
-        <showIfUndefined>false</showIfUndefined>
-        <displayPriorityInCategory>70</displayPriorityInCategory>
-    </StatDef>
+	<StatDef>
+		<defName>VEF_RangedCooldownFactor</defName>
+		<label>ranged cooldown factor</label>
+		<description>The cooldown on ranged weapons of the wearer is multiplied by this value.</description>
+		<category>Apparel</category>
+		<defaultBaseValue>1</defaultBaseValue>
+		<minValue>0</minValue>
+		<toStringStyle>PercentZero</toStringStyle>
+		<showIfUndefined>false</showIfUndefined>
+		<displayPriorityInCategory>70</displayPriorityInCategory>
+	</StatDef>
+
+	<StatDef>
+		<defName>VEF_VerbRangeFactor</defName>
+		<label>verb range factor</label>
+		<labelForFullStatList>verb range factor (people)</labelForFullStatList>
+		<description>The range on weapons of the wielder is multiplied by this value.</description>
+		<category>PawnCombat</category>
+		<defaultBaseValue>1</defaultBaseValue>
+		<minValue>0</minValue>
+		<toStringStyle>PercentOne</toStringStyle>
+		<toStringStyleUnfinalized>FloatOne</toStringStyleUnfinalized>
+		<displayPriorityInCategory>4050</displayPriorityInCategory>
+	</StatDef>
+
 </Defs>
