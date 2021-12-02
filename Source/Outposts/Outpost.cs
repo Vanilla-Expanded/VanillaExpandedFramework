@@ -193,6 +193,7 @@ namespace Outposts
             base.ExposeData();
             Scribe_Collections.Look(ref occupants, "occupants", LookMode.Deep);
             Scribe_Values.Look(ref ticksTillProduction, "ticksTillProduction");
+            Scribe_Values.Look(ref Name, "name");
             RecachePawnTraits();
         }
 
