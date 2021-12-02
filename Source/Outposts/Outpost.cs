@@ -301,12 +301,9 @@ namespace Outposts
             yield return new Command_Action
             {
                 action = () => Find.WindowStack.Add(new FloatMenu(occupants.Select(p =>
-                    new FloatMenuOption(p.NameFullColored.CapitalizeFirst().Resolve(), () =>
-                    {
-                        occupants.Remove(p);
-                        RecachePawnTraits();
-                        CaravanMaker.MakeCaravan(Gen.YieldSingle(p), p.Faction, Tile, true);
-                    })).ToList())),
+                        new FloatMenuOption(p.NameFullColored.CapitalizeFirst().Resolve(),
+                            () => { CaravanMaker.MakeCaravan(Gen.YieldSingle(RemovePawn(p)), p.Faction, Tile, true); }))
+                    .ToList())),
                 defaultLabel = "Outposts.Commands.Remove.Label".Translate(),
                 defaultDesc = "Outposts.Commands.Remove.Desc".Translate(),
                 icon = RemoveTex,
@@ -321,6 +318,13 @@ namespace Outposts
                     defaultLabel = "Produce now",
                     defaultDesc = "Reduce ticksTillProduction to 10"
                 };
+        }
+
+        public Pawn RemovePawn(Pawn p)
+        {
+            occupants.Remove(p);
+            RecachePawnTraits();
+            return p;
         }
 
         public override string GetInspectString() =>
