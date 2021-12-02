@@ -47,7 +47,7 @@ namespace MVCF.Harmony
                 : __instance.EquipmentSource.def?.modContentPack?.Name)) return true;
             var man = __instance.CasterPawn.Manager();
             if (man == null) return true;
-            var mv = man.GetManagedVerbForVerb(__instance);
+            var mv = man.GetManagedVerbForVerb(__instance, false);
             if (mv != null) mv.Enabled = true;
             if (mv is TurretVerb tv)
             {

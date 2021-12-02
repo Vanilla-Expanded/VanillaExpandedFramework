@@ -50,15 +50,9 @@ namespace MVCF
 
         public Pawn Pawn { get; private set; }
 
-        public string UniqueVerbOwnerID()
-        {
-            return "VerbManager_" + (Pawn as IVerbOwner).UniqueVerbOwnerID();
-        }
+        public string UniqueVerbOwnerID() => "VerbManager_" + (Pawn as IVerbOwner).UniqueVerbOwnerID();
 
-        public bool VerbsStillUsableBy(Pawn p)
-        {
-            return p == Pawn;
-        }
+        public bool VerbsStillUsableBy(Pawn p) => p == Pawn;
 
         public VerbTracker VerbTracker { get; private set; }
 
@@ -125,8 +119,8 @@ namespace MVCF
                 !Base.IsIgnoredMod(pawn?.def?.modContentPack?.Name))
             {
                 Log.ErrorOnce(
-                    "[MVCF] Found pawn with native ranged verbs while that feature is not enabled. Enabling now. This is not recommended. Contact the author of " +
-                    pawn?.def?.modContentPack?.Name + " and ask them to add a MVCF.ModDef.",
+                    $"[MVCF] Found pawn {pawn} with native ranged verbs while that feature is not enabled." +
+                    $" Enabling now. This is not recommended. Contact the author of {pawn?.def?.modContentPack?.Name} and ask them to add a MVCF.ModDef.",
                     pawn?.def?.modContentPack?.Name?.GetHashCode() ?? -1);
                 Base.Features.RangedAnimals = true;
                 Base.ApplyPatches();
@@ -281,14 +275,9 @@ namespace MVCF
     {
         public override bool TryStartCastOn(LocalTargetInfo castTarg, LocalTargetInfo destTarg,
             bool surpriseAttack = false,
-            bool canHitNonTargetPawns = true, bool preventFriendlyFire = false)
-        {
-            return false;
-        }
+            bool canHitNonTargetPawns = true, bool preventFriendlyFire = false) =>
+            false;
 
-        protected override bool TryCastShot()
-        {
-            return false;
-        }
+        protected override bool TryCastShot() => false;
     }
 }
