@@ -598,6 +598,9 @@
     <Compile Include="Misc\StatPart_Ammo.cs" />
     <Compile Include="OptionalFeatures\Dialog_FloatMenuOptions.cs" />
     <Compile Include="OptionalFeatures\OptionalFeatures.cs" />
+    <Compile Include="SoundTest\DebugWindowsOpener_DrawButtons_Patch.cs" />
+    <Compile Include="SoundTest\TextureButton.cs" />
+    <Compile Include="SoundTest\Window_SoundTest.cs" />
     <Compile Include="VFECore\Apparels\Apparel_ShieldBubble.cs" />
     <Compile Include="VFECore\Buildings\Building_BedMachine.cs" />
     <Compile Include="VFECore\Buildings\Building_MechTurretGun.cs" />
