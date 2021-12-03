@@ -10,7 +10,6 @@ namespace VanillaWeaponsExpandedLaser
     public class LaserBeam : Bullet
     {
         new LaserBeamDef def => base.def as LaserBeamDef;
-
         public override void Draw()
         {
 
@@ -35,9 +34,8 @@ namespace VanillaWeaponsExpandedLaser
         void SpawnBeam(Vector3 a, Vector3 b)
         {
             LaserBeamGraphic graphic = ThingMaker.MakeThing(def.beamGraphic, null) as LaserBeamGraphic;
+            graphic.laserBeam = this;
             if (graphic == null) return;
-
-            graphic.def = def;
             graphic.Setup(launcher, a, b);
             GenSpawn.Spawn(graphic, origin.ToIntVec3(), Map, WipeMode.Vanish);
         }
