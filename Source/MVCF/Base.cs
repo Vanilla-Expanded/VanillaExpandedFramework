@@ -70,10 +70,7 @@ namespace MVCF
             ApplyPatches();
         }
 
-        public static bool IsIgnoredMod(string name)
-        {
-            return name != null && IgnoredMods.Contains(name);
-        }
+        public static bool IsIgnoredMod(string name) => name != null && IgnoredMods.Contains(name);
 
         public static void ApplyPatches()
         {
@@ -117,6 +114,8 @@ namespace MVCF
             if (Features.Drawing) MiscPatches.DoDrawPatches(Harm);
 
             if (Features.TickVerbs) VerbPatches.DoTickPatches(Harm);
+
+            if (Features.HediffVerbs) VerbPatches.DoHediffPatches(Harm);
         }
     }
 

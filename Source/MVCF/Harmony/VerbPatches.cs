@@ -18,6 +18,12 @@ namespace MVCF.Harmony
                 new HarmonyMethod(typeof(VerbPatches), "Prefix_EquipmentSource"));
         }
 
+        public static void DoHediffPatches(HarmonyLib.Harmony harm)
+        {
+            harm.Patch(AccessTools.Method(typeof(VerbProperties), nameof(VerbProperties.GetForceMissFactorFor)),
+                new HarmonyMethod(typeof(VerbPatches), nameof(GetForceMissFactorFor_Prefix)));
+        }
+
         public static void DoIndependentPatches(HarmonyLib.Harmony harm)
         {
             harm.Patch(AccessTools.Method(typeof(Verb), "get_Caster"),
@@ -31,6 +37,17 @@ namespace MVCF.Harmony
         public static void DoTickPatches(HarmonyLib.Harmony harm)
         {
             harm.Patch(AccessTools.Method(typeof(Verb), nameof(Verb.VerbTick)), postfix: new HarmonyMethod(typeof(VerbPatches), nameof(TickVerb)));
+        }
+
+        public static bool GetForceMissFactorFor_Prefix(ref float __result, Thing equipment)
+        {
+            if (equipment is null)
+            {
+                __result = 1f;
+                return false;
+            }
+
+            return true;
         }
 
         public static void TickVerb(Verb __instance)
