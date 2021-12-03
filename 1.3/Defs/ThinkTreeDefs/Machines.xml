@@ -34,9 +34,9 @@
 					<subNodes>
 						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_Recharge"/>
 						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStation"/>
-						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_StandIdle"/>
 					</subNodes>
 				</li>
+				<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_StandIdle"/>
 			</subNodes>
 		</thinkRoot>
 	</ThinkTreeDef>
@@ -75,9 +75,10 @@
 					<subNodes>
 						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_Recharge"/>
 						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStation"/>
-						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_StandIdle"/>
 					</subNodes>
 				</li>
+				
+				<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_StandIdle"/>
 			</subNodes>
 		</thinkRoot>
 	</ThinkTreeDef>
@@ -124,9 +125,10 @@
 					<subNodes>
 						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_Recharge"/>
 						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStation"/>
-						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_StandIdle"/>
 					</subNodes>
 				</li>
+				
+				<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_StandIdle"/>
 			</subNodes>
 		</thinkRoot>
 	</ThinkTreeDef>
@@ -172,7 +174,6 @@
 								<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStationIdle"/>
 							</subNodes>
 						</li>
-						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_StandIdle"/>
 					</subNodes>
 				</li>
 				<li Class="VFEMech.ThinkNode_ConditionalHasPower">
@@ -181,9 +182,9 @@
 						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_Recharge"/>
 						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStation"/>
 						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStationIdle"/>
-						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_StandIdle"/>
 					</subNodes>
 				</li>
+				<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_StandIdle"/>
 			</subNodes>
 		</thinkRoot>
 	</ThinkTreeDef>
@@ -222,9 +223,9 @@
 					<subNodes>
 						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_Recharge"/>
 						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStation"/>
-						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_StandIdle"/>
 					</subNodes>
 				</li>
+				<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_StandIdle"/>
 			</subNodes>
 		</thinkRoot>
 	</ThinkTreeDef>

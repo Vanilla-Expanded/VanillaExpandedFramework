@@ -27,6 +27,7 @@ namespace VFECore
             {
                 myPawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(Props.pawnToSpawn, parent.Faction, newborn: true, canGeneratePawnRelations: false));
                 myPawn.Position = parent.Position;
+                myPawn.Rotation = Rot4.South;
                 CompDependsOnBuilding pawnComp = myPawn.TryGetComp<CompDependsOnBuilding>();
                 if (pawnComp == null)
                     Log.Error("CompPawnDependsOn spawned a pawn without CompDependsOnBuilding! This should never happen.");

@@ -62,7 +62,7 @@ namespace VFE.Mechanoids.AI.JobGivers
                 {
                     return JobMaker.MakeJob(VFEDefOf.VFE_Mechanoids_Recharge, building);
                 }
-                else
+                else if (building.Position != pawn.Position)
                 {
                     return JobMaker.MakeJob(JobDefOf.Goto, building);
                 }
