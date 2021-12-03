@@ -50,79 +50,79 @@ namespace VFE.Mechanoids
         }
     }
 
-	[HarmonyPatch(typeof(Caravan_NeedsTracker), "TrySatisfyPawnNeeds")]
-	public static class TrySatisfyPawnNeeds_Patch
-	{
-		[HarmonyPriority(Priority.First)]
-		public static bool Prefix(Caravan_NeedsTracker __instance, Pawn pawn)
-		{
-			var extension = pawn.def.GetModExtension<MechanoidExtension>();
-			if (extension != null && pawn.def.GetModExtension<MechanoidExtension>().isCaravanRiddable)
-			{
-				TrySatisfyPawnNeeds(__instance, pawn);
-				return false;
-			}
-			return true;
-		}
-
-		private static void TrySatisfyPawnNeeds(Caravan_NeedsTracker __instance, Pawn pawn)
-		{
-			if (pawn.Dead)
-			{
-				return;
-			}
-			List<Need> allNeeds = pawn.needs.AllNeeds;
-			for (int i = 0; i < allNeeds.Count; i++)
-			{
-				Need need = allNeeds[i];
-				Need_Power need_Power = need as Need_Power;
-				if (need_Power != null)
-				{
-					TrySatisfyPowerNeed(__instance.caravan, pawn, need_Power);
-				}
-			}
-		}
-
-		private static void TrySatisfyPowerNeed(Caravan caravan, Pawn pawn, Need_Power powerNeed)
-		{
-			if ((int)powerNeed.CurCategory < 1)
-			{
-				return;
-			}
-			var food = CaravanInventoryUtility.AllInventoryItems(caravan).FirstOrDefault(x => x.def == ThingDefOf.Uranium);
-			if (food != null)
-			{
-				var owner = CaravanInventoryUtility.GetOwnerOf(caravan, food);
-				powerNeed.CurLevel += IngestedUranium(food, pawn, powerNeed.MaxLevel - powerNeed.CurLevel);
-				Log.Message("3 TrySatisfyPowerNeed: " + pawn + " - " + powerNeed.CurLevel);
-
-				if (food.Destroyed)
-				{
-					if (owner != null)
-					{
-						owner.inventory.innerContainer.Remove(food);
-						caravan.RecacheImmobilizedNow();
-						caravan.RecacheDaysWorthOfFood();
-					}
-				}
-			}
-		}
-
-		[TweakValue("0Mech", 0, 10f)] public static float NutritionPerCount = 0.05f;
-		private static float IngestedUranium(Thing thing, Pawn pawn, float nutritionWanted)
-		{
-			int stackConsumed = (int)Mathf.Min(nutritionWanted / NutritionPerCount, thing.stackCount);
-			if (thing.stackCount > stackConsumed)
-			{
-				thing.SplitOff(stackConsumed);
-			}
-			else
-			{
-				thing.Destroy();
-			}
-			return NutritionPerCount * stackConsumed;
-		}
-	}
+	//[HarmonyPatch(typeof(Caravan_NeedsTracker), "TrySatisfyPawnNeeds")]
+	//public static class TrySatisfyPawnNeeds_Patch
+	//{
+	//	[HarmonyPriority(Priority.First)]
+	//	public static bool Prefix(Caravan_NeedsTracker __instance, Pawn pawn)
+	//	{
+	//		var extension = pawn.def.GetModExtension<MechanoidExtension>();
+	//		if (extension != null && pawn.def.GetModExtension<MechanoidExtension>().isCaravanRiddable)
+	//		{
+	//			TrySatisfyPawnNeeds(__instance, pawn);
+	//			return false;
+	//		}
+	//		return true;
+	//	}
+	//
+	//	private static void TrySatisfyPawnNeeds(Caravan_NeedsTracker __instance, Pawn pawn)
+	//	{
+	//		if (pawn.Dead)
+	//		{
+	//			return;
+	//		}
+	//		List<Need> allNeeds = pawn.needs.AllNeeds;
+	//		for (int i = 0; i < allNeeds.Count; i++)
+	//		{
+	//			Need need = allNeeds[i];
+	//			Need_Power need_Power = need as Need_Power;
+	//			if (need_Power != null)
+	//			{
+	//				TrySatisfyPowerNeed(__instance.caravan, pawn, need_Power);
+	//			}
+	//		}
+	//	}
+	//
+	//	private static void TrySatisfyPowerNeed(Caravan caravan, Pawn pawn, Need_Power powerNeed)
+	//	{
+	//		if ((int)powerNeed.CurCategory < 1)
+	//		{
+	//			return;
+	//		}
+	//		var food = CaravanInventoryUtility.AllInventoryItems(caravan).FirstOrDefault(x => x.def == ThingDefOf.Uranium);
+	//		if (food != null)
+	//		{
+	//			var owner = CaravanInventoryUtility.GetOwnerOf(caravan, food);
+	//			powerNeed.CurLevel += IngestedUranium(food, pawn, powerNeed.MaxLevel - powerNeed.CurLevel);
+	//			Log.Message("3 TrySatisfyPowerNeed: " + pawn + " - " + powerNeed.CurLevel);
+	//
+	//			if (food.Destroyed)
+	//			{
+	//				if (owner != null)
+	//				{
+	//					owner.inventory.innerContainer.Remove(food);
+	//					caravan.RecacheImmobilizedNow();
+	//					caravan.RecacheDaysWorthOfFood();
+	//				}
+	//			}
+	//		}
+	//	}
+	//
+	//	[TweakValue("0Mech", 0, 10f)] public static float NutritionPerCount = 0.05f;
+	//	private static float IngestedUranium(Thing thing, Pawn pawn, float nutritionWanted)
+	//	{
+	//		int stackConsumed = (int)Mathf.Min(nutritionWanted / NutritionPerCount, thing.stackCount);
+	//		if (thing.stackCount > stackConsumed)
+	//		{
+	//			thing.SplitOff(stackConsumed);
+	//		}
+	//		else
+	//		{
+	//			thing.Destroy();
+	//		}
+	//		return NutritionPerCount * stackConsumed;
+	//	}
+	//}
 
 	[StaticConstructorOnStartup]
 	[HarmonyPatch(typeof(TransferableUIUtility), "DoExtraAnimalIcons")]
