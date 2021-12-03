@@ -18,10 +18,7 @@ namespace Reloading
 
         private static readonly List<MethodInfo> patchedMethods = new List<MethodInfo>();
 
-        public new static Type GetType()
-        {
-            return typeof(HarmonyPatches);
-        }
+        public new static Type GetType() => typeof(HarmonyPatches);
 
 
         public static void Patch(MethodInfo target, HarmonyMethod prefix = null, HarmonyMethod postfix = null, string debug_targetName = null, Type debug_targetType = null)
@@ -56,7 +53,7 @@ namespace Reloading
             var idx = list.FindIndex(ins => ins.IsLdarg(0));
             var idx2 = list.FindIndex(idx + 1, ins => ins.IsLdarg(0));
             var idx3 = list.FindIndex(idx2, ins => ins.opcode == OpCodes.Ret);
-            var list2 = list.Skip(idx2).Take(idx3 - idx2).ToList().ListFullCopy();
+            var list2 = list.Skip(idx2).Take(idx3 - idx2 + 1).ToList().ListFullCopy();
             list2.Find(ins => ins.opcode == OpCodes.Ldc_I4_2).opcode = OpCodes.Ldc_I4_3;
             var idx4 = list.FindIndex(ins => ins.opcode == OpCodes.Stloc_2);
             var label = generator.DefineLabel();
