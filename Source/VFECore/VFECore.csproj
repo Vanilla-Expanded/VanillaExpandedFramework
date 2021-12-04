@@ -681,6 +681,7 @@
     <Compile Include="VFECore\HarmonyPatches\MechanoidsDoNotReserveBeds.cs" />
     <Compile Include="VFECore\HarmonyPatches\MechanoidsObeyOrders.cs" />
     <Compile Include="VFECore\HarmonyPatches\MobileTurretsShowTurrets.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Apparel_Draw_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\Stuff_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\Need_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\NoBioForMachines.cs" />
