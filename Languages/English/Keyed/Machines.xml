@@ -23,5 +23,6 @@
   <VFEMechSetArea>Set area</VFEMechSetArea>
   <VFEMechSetAreaDesc>Set the allowed area for all of this platform's associated machines.</VFEMechSetAreaDesc>
   <VFEMRideableMachineTip>This droid is rideable. People in a caravan will ride the fastest available animals/droids, improving the speed of the caravan as a whole.</VFEMRideableMachineTip>
+	<VFEM.CaravanMachineRanOutPower>{MACHINE_nameDef} ran out of power, and was left behind.</VFEM.CaravanMachineRanOutPower>
 
 </LanguageData>
