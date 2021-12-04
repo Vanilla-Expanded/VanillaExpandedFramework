@@ -18,6 +18,8 @@ namespace VFECore
     {
         public DrawSettings headgearDrawSettings;
         public DrawSettings apparelDrawSettings;
+        public DrawSettings packPosDrawSettings;
+        public DrawSettings shellPosDrawSettings;
     }
     public class DrawSettings
     {
@@ -179,6 +181,70 @@ namespace VFECore
         public static void ResetVector(ref Vector3 vector)
         {
             vector = oldVector;
+        }
+    }
+
+
+    [HarmonyPatch(typeof(PawnRenderer), "DrawBodyApparel")]
+    public static class Harmony_PawnRenderer_DrawBodyApparel
+    {
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            var drawMeshNowOrLaterMethod = AccessTools.Method(typeof(GenDraw), nameof(GenDraw.DrawMeshNowOrLater), new Type[] { typeof(Mesh), typeof(Matrix4x4), typeof(Material), typeof(bool) });
+            var translateMethod = AccessTools.Method(typeof(Matrix4x4), nameof(Matrix4x4.Translate));
+            List<CodeInstruction> codes = instructions.ToList();
+            bool foundFirstBlock = false;
+            bool foundSecondBlock = false;
+            bool foundThirdBlock = false;
+
+            for (var i = 0; i < codes.Count; i++)
+            {
+                yield return codes[i];
+                if (!foundFirstBlock && i > 3 && codes[i - 3].opcode == OpCodes.Ldc_R4 && codes[i - 3].OperandIs(0.00289575267f) && codes[i - 2].opcode == OpCodes.Add && codes[i - 1].opcode == OpCodes.Stind_R4)
+                {
+                    foundFirstBlock = true;
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PawnRenderer), "pawn"));
+                    yield return new CodeInstruction(OpCodes.Ldloca_S, 5);
+                    yield return new CodeInstruction(OpCodes.Ldloc_3);
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Harmony_PawnRenderer_DrawBodyApparel), nameof(ModifyShellLoc)));
+                }
+                if (!foundSecondBlock && codes[i + 1].Calls(translateMethod) && codes[i + 2].opcode == OpCodes.Ldloc_1)
+                {
+                    foundSecondBlock = true;
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PawnRenderer), "pawn"));
+                    yield return new CodeInstruction(OpCodes.Ldarga_S, 2);
+                    yield return new CodeInstruction(OpCodes.Ldloc_3);
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Harmony_PawnRenderer_DrawBodyApparel), nameof(ModifyPackLoc)));
+                }
+                if (!foundThirdBlock && i > 3 && codes[i - 2].Calls(drawMeshNowOrLaterMethod) && codes[i - 1].opcode == OpCodes.Br_S)
+                {
+                    foundThirdBlock = true;
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PawnRenderer), "pawn"));
+                    yield return new CodeInstruction(OpCodes.Ldarga_S, 1);
+                    yield return new CodeInstruction(OpCodes.Ldloc_3);
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Harmony_PawnRenderer_DrawBodyApparel), nameof(ModifyPackLoc)));
+                }
+            }
+        }
+        public static void ModifyPackLoc(Pawn pawn, ref Vector3 loc, ApparelGraphicRecord apparelRecord)
+        {
+            var extension = apparelRecord.sourceApparel.def.GetModExtension<ApparelDrawPosExtension>();
+            if (extension != null)
+            {
+                loc += extension.packPosDrawSettings.GetDrawPosOffset(pawn, loc);
+            }
+        }
+
+        public static void ModifyShellLoc(Pawn pawn, ref Vector3 loc, ApparelGraphicRecord apparelRecord)
+        {
+            var extension = apparelRecord.sourceApparel.def.GetModExtension<ApparelDrawPosExtension>();
+            if (extension != null)
+            {
+                loc += extension.shellPosDrawSettings.GetDrawPosOffset(pawn, loc);
+            }
         }
     }
 }
