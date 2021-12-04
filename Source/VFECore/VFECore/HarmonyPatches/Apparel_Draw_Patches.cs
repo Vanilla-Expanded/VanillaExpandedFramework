@@ -9,8 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
-using Verse.AI;
-using static RimWorld.FleshTypeDef;
 
 namespace VFECore
 {
@@ -20,6 +18,8 @@ namespace VFECore
         public DrawSettings apparelDrawSettings;
         public DrawSettings packPosDrawSettings;
         public DrawSettings shellPosDrawSettings;
+
+        public bool isUnifiedApparel;
     }
     public class DrawSettings
     {
@@ -48,6 +48,40 @@ namespace VFECore
                 return loc + drawPosOffset.Value;
             return loc;
         }
+
+        private Vector2 GetDrawSize(Rot4 rot)
+        {
+            switch (rot.AsByte)
+            {
+                case 0: if (drawNorthSize.HasValue) return drawNorthSize.Value; break;
+                case 1: if (drawSouthSize.HasValue) return drawSouthSize.Value; break;
+                case 2: if (drawEastSize.HasValue) return drawEastSize.Value; break;
+                case 3: if (drawWestSize.HasValue) return drawWestSize.Value; break;
+            }
+            if (drawSize.HasValue) return drawSize.Value;
+
+            return default;
+        }
+        public Mesh TryGetNewMesh(Mesh mesh, Pawn pawn)
+        {
+            var rot = pawn.Rotation;
+            var size = GetDrawSize(rot);
+            if (size == default)
+                return mesh;
+
+            size.x *= mesh.vertices[2].x * 2f;
+            size.y *= mesh.vertices[2].z * 2f;
+
+            if (!newPlanes.TryGetValue(size, out var value))
+            {
+                value = new GraphicMeshSet(size.x, size.y);
+                newPlanes.Add(size, value);
+            }
+
+            return value.MeshAt(rot);
+        }
+
+        public static Dictionary<Vector2, GraphicMeshSet> newPlanes = new Dictionary<Vector2, GraphicMeshSet>();
     }
 
     [HarmonyPatch]
@@ -61,35 +95,79 @@ namespace VFECore
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
         {
             var codes = codeInstructions.ToList();
-            bool found = false;
+            bool foundFirstBlock = false;
+            bool foundSecondBlock = false;
+            bool foundThirdBlock = false;
+            var drawMeshNowOrLaterMethod = AccessTools.Method(typeof(GenDraw), "DrawMeshNowOrLater", new Type[] { typeof(Mesh), typeof(Vector3), typeof(Quaternion), typeof(Material), typeof(bool) });
+            var displayType = typeof(PawnRenderer).GetNestedTypes(AccessTools.all).First();
+
             for (var i = 0; i < codes.Count; i++)
             {
                 yield return codes[i];
-                if (!found && i > 3 && codes[i - 3].opcode == OpCodes.Ldc_R4 && codes[i - 3].OperandIs(0.00289575267f) && codes[i - 2].opcode == OpCodes.Add && codes[i - 1].opcode == OpCodes.Stind_R4)
+
+                if (!foundFirstBlock && codes[i].opcode == OpCodes.Stloc_0)
                 {
-                    found = true;
+                    foundFirstBlock = true;
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PawnRenderer), "pawn"));
+                    yield return new CodeInstruction(OpCodes.Ldloca_S, 0);
+                    yield return new CodeInstruction(OpCodes.Ldarg_1);
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Patch_DrawHeadHair_DrawApparel_Transpiler), nameof(TryModifyMeshRef)));
+                }
+                if (foundFirstBlock && !foundSecondBlock && codes[i].opcode == OpCodes.Stloc_1 && codes[i + 1].opcode == OpCodes.Ldloc_0)
+                {
+                    foundSecondBlock = true;
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PawnRenderer), "pawn"));
+                    yield return new CodeInstruction(OpCodes.Ldarg_2);
+                    yield return new CodeInstruction(OpCodes.Ldflda, AccessTools.Field(displayType, "onHeadLoc"));
+                    yield return new CodeInstruction(OpCodes.Ldarg_1);
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Patch_DrawHeadHair_DrawApparel_Transpiler), nameof(TryModifyHeadGearLocRef)));
+                }
+
+                if (foundSecondBlock && !foundThirdBlock && i > 3 && codes[i - 3].opcode == OpCodes.Ldc_R4 && codes[i - 3].OperandIs(0.00289575267f) && codes[i - 2].opcode == OpCodes.Add && codes[i - 1].opcode == OpCodes.Stind_R4)
+                {
+                    foundThirdBlock = true;
                     yield return new CodeInstruction(OpCodes.Ldarg_0);
                     yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PawnRenderer), "pawn"));
                     yield return new CodeInstruction(OpCodes.Ldloc_3);
                     yield return new CodeInstruction(OpCodes.Ldarg_1);
-                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Patch_DrawHeadHair_DrawApparel_Transpiler), nameof(ModifyHeadGearLoc)));
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Patch_DrawHeadHair_DrawApparel_Transpiler), nameof(TryModifyHeadGearLoc)));
                     yield return new CodeInstruction(OpCodes.Stloc_3);
                 }
             }
-            if (!found)
+            if (!foundFirstBlock || !foundSecondBlock || !foundThirdBlock)
             {
                 Log.Error("[Vanilla Framework Expanded] Transpiler on PawnRenderer:DrawHeadHair+DrawApparel failed.");
             }
         }
 
-        public static Vector3 ModifyHeadGearLoc(Pawn pawn, Vector3 loc, ApparelGraphicRecord apparelRecord)
+        public static Vector3 TryModifyHeadGearLoc(Pawn pawn, Vector3 loc, ApparelGraphicRecord apparelRecord)
         {
             var extension = apparelRecord.sourceApparel.def.GetModExtension<ApparelDrawPosExtension>();
-            if (extension != null && extension.headgearDrawSettings != null)
+            if (extension?.headgearDrawSettings != null)
             {
                 return extension.headgearDrawSettings.GetDrawPosOffset(pawn, loc);
             }
             return loc;
+        }
+
+        public static void TryModifyHeadGearLocRef(Pawn pawn, ref Vector3 loc, ApparelGraphicRecord apparelRecord)
+        {
+            var extension = apparelRecord.sourceApparel.def.GetModExtension<ApparelDrawPosExtension>();
+            if (extension?.headgearDrawSettings != null)
+            {
+                loc = extension.headgearDrawSettings.GetDrawPosOffset(pawn, loc);
+            }
+        }
+
+        public static void TryModifyMeshRef(Pawn pawn, ref Mesh mesh, ApparelGraphicRecord apparelRecord)
+        {
+            var extension = apparelRecord.sourceApparel.def.GetModExtension<ApparelDrawPosExtension>();
+            if (extension?.headgearDrawSettings != null)
+            {
+                mesh = extension.headgearDrawSettings.TryGetNewMesh(mesh, pawn);
+            }
         }
     }
 
@@ -119,6 +197,10 @@ namespace VFECore
                     yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Patch_PawnGraphicSet_MatsBodyBaseAt_Transpiler), nameof(MapValue)));
                 }
             }
+            if (!foundApparelGraphicsField)
+            {
+                Log.Error("[Vanilla Framework Expanded] Transpiler on PawnGraphicSet:MatsBodyBaseAt failed.");
+            }
         }
 
         public static void MapValue(Material mat, ApparelGraphicRecord apparelGraphicRecord)
@@ -131,6 +213,8 @@ namespace VFECore
     public static class Patch_PawnRenderer_DrawPawnBody_Transpiler
     {
         public static Vector3 oldVector;
+
+        public static Mesh oldMesh;
     
         public static Dictionary<Material, ApparelGraphicRecord> mappedValues = new Dictionary<Material, ApparelGraphicRecord>();
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
@@ -151,6 +235,14 @@ namespace VFECore
                     yield return new CodeInstruction(OpCodes.Ldloca_S, 1);
                     yield return new CodeInstruction(OpCodes.Ldloc_S, 5);
                     yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Patch_PawnRenderer_DrawPawnBody_Transpiler), nameof(ModifyApparelLoc)));
+
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PawnRenderer), "pawn"));
+                    yield return new CodeInstruction(OpCodes.Ldarg_S, 6);
+                    yield return new CodeInstruction(OpCodes.Ldloc_S, 5);
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Patch_PawnRenderer_DrawPawnBody_Transpiler), nameof(ModifyMesh)));
+
+
                 }
                 yield return codes[i];
                 if (found1 && !found2 && codes[i].Calls(drawMeshNowOrLaterMethod))
@@ -158,9 +250,12 @@ namespace VFECore
                     found2 = true;
                     yield return new CodeInstruction(OpCodes.Ldloca_S, 1);
                     yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Patch_PawnRenderer_DrawPawnBody_Transpiler), nameof(ResetVector)));
-}
+                
+                    yield return new CodeInstruction(OpCodes.Ldarg_S, 6);
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Patch_PawnRenderer_DrawPawnBody_Transpiler), nameof(ResetMesh)));
+                }
             }
-            if (!found1 && !found2)
+            if (!found1 || !found2)
             {
                 Log.Error("[Vanilla Framework Expanded] Transpiler on PawnRenderer:DrawPawnBody failed.");
             }
@@ -171,7 +266,7 @@ namespace VFECore
             if (mappedValues.TryGetValue(mat, out var apparelRecord))
             {
                 var extension = apparelRecord.sourceApparel.def.GetModExtension<ApparelDrawPosExtension>();
-                if (extension != null)
+                if (extension?.apparelDrawSettings != null)
                 {
                     vector = extension.apparelDrawSettings.GetDrawPosOffset(pawn, vector);
                 }
@@ -182,6 +277,24 @@ namespace VFECore
         {
             vector = oldVector;
         }
+
+        public static void ModifyMesh(Pawn pawn, ref Mesh mesh, Material mat)
+        {
+            oldMesh = mesh;
+            if (mappedValues.TryGetValue(mat, out var apparelRecord))
+            {
+                var extension = apparelRecord.sourceApparel.def.GetModExtension<ApparelDrawPosExtension>();
+                if (extension?.apparelDrawSettings != null)
+                {
+                    mesh = extension.apparelDrawSettings.TryGetNewMesh(mesh, pawn);
+                }
+            }
+        }
+
+        public static void ResetMesh(ref Mesh mesh)
+        {
+            mesh = oldMesh;
+        }
     }
 
 
@@ -190,7 +303,9 @@ namespace VFECore
     {
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            var drawMeshNowOrLaterMethod = AccessTools.Method(typeof(GenDraw), nameof(GenDraw.DrawMeshNowOrLater), new Type[] { typeof(Mesh), typeof(Matrix4x4), typeof(Material), typeof(bool) });
+            var drawMeshNowOrLaterMethodMatrix = AccessTools.Method(typeof(GenDraw), nameof(GenDraw.DrawMeshNowOrLater), new Type[] { typeof(Mesh), typeof(Matrix4x4), typeof(Material), typeof(bool) });
+            var drawMeshNowOrLaterMethodVector3 = AccessTools.Method(typeof(GenDraw), nameof(GenDraw.DrawMeshNowOrLater), new Type[] { typeof(Mesh), typeof(Vector3), typeof(Quaternion), typeof(Material), typeof(bool) });
+        
             var translateMethod = AccessTools.Method(typeof(Matrix4x4), nameof(Matrix4x4.Translate));
             List<CodeInstruction> codes = instructions.ToList();
             bool foundFirstBlock = false;
@@ -208,8 +323,22 @@ namespace VFECore
                     yield return new CodeInstruction(OpCodes.Ldloca_S, 5);
                     yield return new CodeInstruction(OpCodes.Ldloc_3);
                     yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Harmony_PawnRenderer_DrawBodyApparel), nameof(ModifyShellLoc)));
+                
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PawnRenderer), "pawn"));
+                    yield return new CodeInstruction(OpCodes.Ldarga_S, 3);
+                    yield return new CodeInstruction(OpCodes.Ldloc_3);
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Harmony_PawnRenderer_DrawBodyApparel), nameof(ModifyShellMesh)));
                 }
-                if (!foundSecondBlock && codes[i + 1].Calls(translateMethod) && codes[i + 2].opcode == OpCodes.Ldloc_1)
+                if (foundFirstBlock && !foundSecondBlock && codes[i].Calls(drawMeshNowOrLaterMethodVector3))
+                {
+                    yield return new CodeInstruction(OpCodes.Ldloca_S, 5);
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Harmony_PawnRenderer_DrawBodyApparel), nameof(ResetLoc)));
+                
+                    yield return new CodeInstruction(OpCodes.Ldarga_S, 3);
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Harmony_PawnRenderer_DrawBodyApparel), nameof(ResetMesh)));
+                }
+                if (!foundSecondBlock && codes[i + 2].Calls(translateMethod) && codes[i + 3].opcode == OpCodes.Ldloc_1)
                 {
                     foundSecondBlock = true;
                     yield return new CodeInstruction(OpCodes.Ldarg_0);
@@ -218,7 +347,12 @@ namespace VFECore
                     yield return new CodeInstruction(OpCodes.Ldloc_3);
                     yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Harmony_PawnRenderer_DrawBodyApparel), nameof(ModifyPackLoc)));
                 }
-                if (!foundThirdBlock && i > 3 && codes[i - 2].Calls(drawMeshNowOrLaterMethod) && codes[i - 1].opcode == OpCodes.Br_S)
+                if (foundSecondBlock && !foundThirdBlock && codes[i].Calls(drawMeshNowOrLaterMethodMatrix))
+                {
+                    yield return new CodeInstruction(OpCodes.Ldarga_S, 2);
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Harmony_PawnRenderer_DrawBodyApparel), nameof(ResetLoc)));
+                }
+                if (!foundThirdBlock && i > 3 && codes[i - 2].Calls(drawMeshNowOrLaterMethodMatrix) && codes[i - 1].opcode == OpCodes.Br_S)
                 {
                     foundThirdBlock = true;
                     yield return new CodeInstruction(OpCodes.Ldarg_0);
@@ -227,12 +361,25 @@ namespace VFECore
                     yield return new CodeInstruction(OpCodes.Ldloc_3);
                     yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Harmony_PawnRenderer_DrawBodyApparel), nameof(ModifyPackLoc)));
                 }
+                if (foundThirdBlock && codes[i].Calls(drawMeshNowOrLaterMethodVector3))
+                {
+                    yield return new CodeInstruction(OpCodes.Ldarga_S, 1);
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Harmony_PawnRenderer_DrawBodyApparel), nameof(ResetLoc)));
+                }
+            }
+            if (!foundFirstBlock || !foundSecondBlock || !foundThirdBlock)
+            {
+                Log.Error("[Vanilla Framework Expanded] Transpiler on PawnRenderer:DrawBodyApparel failed.");
             }
         }
+
+        public static Vector3 oldVector;
+        public static Mesh oldMesh;
         public static void ModifyPackLoc(Pawn pawn, ref Vector3 loc, ApparelGraphicRecord apparelRecord)
         {
+            oldVector = loc;
             var extension = apparelRecord.sourceApparel.def.GetModExtension<ApparelDrawPosExtension>();
-            if (extension != null)
+            if (extension?.packPosDrawSettings != null)
             {
                 loc += extension.packPosDrawSettings.GetDrawPosOffset(pawn, loc);
             }
@@ -240,11 +387,75 @@ namespace VFECore
 
         public static void ModifyShellLoc(Pawn pawn, ref Vector3 loc, ApparelGraphicRecord apparelRecord)
         {
+            oldVector = loc;
             var extension = apparelRecord.sourceApparel.def.GetModExtension<ApparelDrawPosExtension>();
-            if (extension != null)
+            if (extension?.shellPosDrawSettings != null)
             {
                 loc += extension.shellPosDrawSettings.GetDrawPosOffset(pawn, loc);
             }
+        }
+        public static void ResetLoc(ref Vector3 loc)
+        {
+            loc = oldVector;
+        }
+
+        public static void ModifyShellMesh(Pawn pawn, ref Mesh mesh, ApparelGraphicRecord apparelRecord)
+        {
+            oldMesh = mesh;
+            var extension = apparelRecord.sourceApparel.def.GetModExtension<ApparelDrawPosExtension>();
+            if (extension?.shellPosDrawSettings != null)
+            {
+                mesh = extension.shellPosDrawSettings.TryGetNewMesh(mesh, pawn);
+            }
+        }
+
+        public static void ModifyPackMesh(Pawn pawn, ref Mesh mesh, ApparelGraphicRecord apparelRecord)
+        {
+            oldMesh = mesh;
+            var extension = apparelRecord.sourceApparel.def.GetModExtension<ApparelDrawPosExtension>();
+            if (extension?.packPosDrawSettings != null)
+            {
+                mesh = extension.packPosDrawSettings.TryGetNewMesh(mesh, pawn);
+            }
+        }
+
+        public static void ResetMesh(ref Mesh mesh)
+        {
+            mesh = oldMesh;
+        }
+
+    }
+
+    [HarmonyPatch(typeof(ApparelGraphicRecordGetter), "TryGetGraphicApparel")]
+    public static class Patch_ApparelGraphicRecordGetter_TryGetGraphicApparel_Transpiler
+    {
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
+        {
+            var renderAsPackMethod = AccessTools.Method(typeof(PawnRenderer), nameof(PawnRenderer.RenderAsPack));
+            var codes = codeInstructions.ToList();
+            bool found = false;
+            for (var i = 0; i < codes.Count; i++)
+            {
+                yield return codes[i];
+
+                if (codes[i].opcode == OpCodes.Brtrue_S && codes[i - 1].Calls(renderAsPackMethod))
+                {
+                    found = true;
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Patch_ApparelGraphicRecordGetter_TryGetGraphicApparel_Transpiler), nameof(IsUnifiedApparel)));
+                    yield return new CodeInstruction(OpCodes.Brtrue_S, codes[i].operand);
+                }
+            }
+            if (!found)
+            {
+                Log.Error("[Vanilla Framework Expanded] Transpiler on ApparelGraphicRecordGetter:TryGetGraphicApparel failed.");
+            }
+        }
+
+        public static bool IsUnifiedApparel(Apparel apparel)
+        {
+            var extension = apparel.def.GetModExtension<ApparelDrawPosExtension>();
+            return extension != null && extension.isUnifiedApparel;
         }
     }
 }
