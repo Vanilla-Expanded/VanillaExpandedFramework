@@ -668,6 +668,7 @@
     <Compile Include="VFECore\Dialogs\FactionSpawning\Dialog_NewFactionSpawningSettlements.cs" />
     <Compile Include="ItemProcessor\Enums\ProcessorStage.cs" />
     <Compile Include="ItemProcessor\GraphicsCache\GraphicsCache.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Apparel_Draw_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\DualWield\Patch_DualWield_Ext_Pawn_EquipmentTracker.cs" />
     <Compile Include="VFECore\HarmonyPatches\DualWield\Patch_DualWield_Harmony_FloatMenuMakerMap_AddHumanlikeOrders.cs" />
     <Compile Include="VFECore\HarmonyPatches\FactionSpawning\Patch_FactionDiscovery_ModBase.cs" />
@@ -681,7 +682,6 @@
     <Compile Include="VFECore\HarmonyPatches\MechanoidsDoNotReserveBeds.cs" />
     <Compile Include="VFECore\HarmonyPatches\MechanoidsObeyOrders.cs" />
     <Compile Include="VFECore\HarmonyPatches\MobileTurretsShowTurrets.cs" />
-    <Compile Include="VFECore\HarmonyPatches\Apparel_Draw_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\Stuff_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\Need_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\NoBioForMachines.cs" />

@@ -28,8 +28,9 @@ namespace VFECore
                 yield return instruction;
                 if (instruction.Calls(humanlikeInfo))
                 {
-                    yield return new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(VFEGlobal),         nameof(VFEGlobal.settings)));
-                    yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(VFEGlobalSettings), nameof(VFEGlobalSettings.disableCaching)));
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PawnRenderer), "pawn"));
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Patch_RenderPawnAt), nameof(ShouldDisableCaching)));
                     yield return new CodeInstruction(OpCodes.Ldc_I4_0);
                     yield return new CodeInstruction(OpCodes.Ceq);
                     yield return new CodeInstruction(OpCodes.And);
@@ -39,6 +40,11 @@ namespace VFECore
                     yield return new CodeInstruction(OpCodes.Stloc_1);
                 }
             }
+        }
+
+        public static bool ShouldDisableCaching(Pawn pawn)
+        {
+            return VFEGlobal.settings.disableCaching || (pawn.apparel?.WornApparel.Any(x => x.def.HasModExtension<ApparelDrawPosExtension>()) ?? false);
         }
 
         public static PawnRenderFlags ChangeFlags(PawnRenderFlags pawnRenderFlags)
@@ -51,7 +57,6 @@ namespace VFECore
     }
 
     
-
     [HarmonyPatch(typeof(GlobalTextureAtlasManager), nameof(GlobalTextureAtlasManager.TryGetPawnFrameSet))]
     [HarmonyPatch(typeof(GlobalTextureAtlasManager), nameof(GlobalTextureAtlasManager.TryMarkPawnFrameSetDirty))]
     public static class Patch_DisableAtlasCaching
