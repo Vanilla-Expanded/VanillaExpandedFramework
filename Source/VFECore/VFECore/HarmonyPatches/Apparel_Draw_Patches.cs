@@ -297,7 +297,6 @@ namespace VFECore
         }
     }
 
-
     [HarmonyPatch(typeof(PawnRenderer), "DrawBodyApparel")]
     public static class Harmony_PawnRenderer_DrawBodyApparel
     {
@@ -314,11 +313,10 @@ namespace VFECore
 
             for (var i = 0; i < codes.Count; i++)
             {
-                yield return codes[i];
                 if (!foundFirstBlock && i > 3 && codes[i - 3].opcode == OpCodes.Ldc_R4 && codes[i - 3].OperandIs(0.00289575267f) && codes[i - 2].opcode == OpCodes.Add && codes[i - 1].opcode == OpCodes.Stind_R4)
                 {
                     foundFirstBlock = true;
-                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(codes[i]);
                     yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PawnRenderer), "pawn"));
                     yield return new CodeInstruction(OpCodes.Ldloca_S, 5);
                     yield return new CodeInstruction(OpCodes.Ldloc_3);
@@ -330,6 +328,7 @@ namespace VFECore
                     yield return new CodeInstruction(OpCodes.Ldloc_3);
                     yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Harmony_PawnRenderer_DrawBodyApparel), nameof(ModifyShellMesh)));
                 }
+                yield return codes[i];
                 if (foundFirstBlock && !foundSecondBlock && codes[i].Calls(drawMeshNowOrLaterMethodVector3))
                 {
                     yield return new CodeInstruction(OpCodes.Ldloca_S, 5);
@@ -391,7 +390,7 @@ namespace VFECore
             var extension = apparelRecord.sourceApparel.def.GetModExtension<ApparelDrawPosExtension>();
             if (extension?.shellPosDrawSettings != null)
             {
-                loc += extension.shellPosDrawSettings.GetDrawPosOffset(pawn, loc);
+                loc = extension.shellPosDrawSettings.GetDrawPosOffset(pawn, loc);
             }
         }
         public static void ResetLoc(ref Vector3 loc)
