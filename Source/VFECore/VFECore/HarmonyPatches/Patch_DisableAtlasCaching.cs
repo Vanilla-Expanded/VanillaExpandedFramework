@@ -44,7 +44,7 @@ namespace VFECore
 
         public static bool ShouldDisableCaching(Pawn pawn)
         {
-            return VFEGlobal.settings.disableCaching || (pawn.apparel?.WornApparel.Any(x => x.def.HasModExtension<ApparelDrawPosExtension>()) ?? false);
+            return VFEGlobal.settings.disableCaching;// || (pawn.apparel?.WornApparel.Any(x => x.def.HasModExtension<ApparelDrawPosExtension>()) ?? false);
         }
 
         public static PawnRenderFlags ChangeFlags(PawnRenderFlags pawnRenderFlags)
