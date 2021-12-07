@@ -21,6 +21,7 @@ namespace VFECore
 
         public bool isUnifiedApparel;
         public bool hideHead;
+        public bool showBodyInBedAlways;
     }
     public class DrawSettings
     {
@@ -490,6 +491,25 @@ namespace VFECore
                 }
             }
             return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(PawnRenderer), "GetBodyPos")]
+    public static class PawnRenderer_GetBodyPos_Patch
+    {
+        public static void Postfix(Pawn ___pawn, Vector3 drawLoc, ref bool showBody)
+        {
+            if (!showBody)
+            {
+                Pawn pawn = ___pawn;
+                if (pawn.apparel.AnyApparel && ___pawn.CurrentBed() != null)
+                {
+                    if (pawn.apparel.WornApparel.Any(x => x.def.GetModExtension<ApparelDrawPosExtension>()?.showBodyInBedAlways ?? false))
+                    {
+                        showBody = true;
+                    }
+                }
+            }
         }
     }
 }
