@@ -63,13 +63,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dialog_CreateCamp.cs" />
+    <Compile Include="Dialog_TakeItems.cs" />
     <Compile Include="HarmonyPatches.cs" />
     <Compile Include="IncidentWorker_OutpostAttacked.cs" />
+    <Compile Include="LordJob_Deliver.cs" />
     <Compile Include="Outpost.cs" />
     <Compile Include="OutpostExtension.cs" />
     <Compile Include="OutpostsMod.cs" />
     <Compile Include="Outpost_ChooseResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TransportPodsArrivalAction_AddToOutpost.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

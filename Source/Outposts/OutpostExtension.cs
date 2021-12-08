@@ -15,6 +15,7 @@ namespace Outposts
         public ThingDef ProvidedFood;
         public int Range = -1;
         public List<AmountBySkill> RequiredSkills;
+        public bool RequiresGrowing;
         public List<ResultOption> ResultOptions;
         public int TicksPerProduction = 15 * 60000;
         public int TicksToPack = 7 * 60000;

@@ -10,19 +10,19 @@ namespace Outposts
 
         protected OutpostExtension_Choose ChooseExt => Ext as OutpostExtension_Choose;
 
-        public override List<ResultOption> ResultOptions => Ext.ResultOptions.Where(ro => ro.Thing == choice).ToList();
+        public override List<ResultOption> ResultOptions => Ext.ResultOptions.OrEmpty().Concat(GetExtraOptions()).Where(ro => ro.Thing == choice).ToList();
 
-        public override void PostMake()
+        public override void PostAdd()
         {
-            base.PostMake();
-            choice = Ext.ResultOptions.Concat(GetExtraOptions()).MinBy(ro => ro.MinSkills.Sum(abs => abs.Count)).Thing;
+            base.PostAdd();
+            choice = Ext.ResultOptions.OrEmpty().Concat(GetExtraOptions()).MinBy(ro => ro.MinSkills?.Sum(abs => abs.Count) ?? 0f).Thing;
         }
 
         public override IEnumerable<Gizmo> GetGizmos()
         {
             return base.GetGizmos().Append(new Command_Action
             {
-                action = () => Find.WindowStack.Add(new FloatMenu(Ext.ResultOptions.Concat(GetExtraOptions()).Select(ro => ro.MinSkills.SatisfiedBy(AllPawns)
+                action = () => Find.WindowStack.Add(new FloatMenu(Ext.ResultOptions.OrEmpty().Concat(GetExtraOptions()).Select(ro => ro.MinSkills?.SatisfiedBy(AllPawns) ?? true
                     ? new FloatMenuOption(ro.Explain(AllPawns.ToList()), () => choice = ro.Thing, ro.Thing)
                     : new FloatMenuOption(ro.Explain(AllPawns.ToList()) + " - " + "Outposts.SkillTooLow".Translate(ro.MinSkills.Max(abs => abs.Count)), null, ro.Thing)).ToList())),
                 defaultLabel = ChooseExt.ChooseLabel.Formatted(choice.label),
