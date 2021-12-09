@@ -66,6 +66,7 @@ namespace Outposts
         private void DoOutpostDisplay(ref Rect inRect, WorldObjectDef outpostDef)
         {
             var font = Text.Font;
+            var anchor = Text.Anchor;
             Text.Font = GameFont.Tiny;
             inRect.height = Text.CalcHeight(outpostDef.description, inRect.width - 90f) + 60f;
             var image = inRect.LeftPartPixels(50f);
@@ -78,8 +79,11 @@ namespace Outposts
             var errorText = text.BottomPartPixels(30f).RightPartPixels(text.width - 120f);
             Text.Font = GameFont.Tiny;
             Widgets.TextArea(new Rect(text.x, text.y + 30f, text.width, text.height - 60f), outpostDef.description, true);
-            Text.Font = font;
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleCenter;
             Widgets.Label(errorText, validity[outpostDef].First);
+            Text.Font = font;
+            Text.Anchor = anchor;
             if (Widgets.ButtonText(button, "Outposts.Dialog.Create".Translate()))
             {
                 if (validity[outpostDef].First.NullOrEmpty())

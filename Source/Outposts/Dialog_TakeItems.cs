@@ -21,25 +21,23 @@ namespace Outposts
             this.caravan = caravan;
         }
 
-        public override Vector2 InitialSize => new(1024f, UI.screenHeight);
+        public override Vector2 InitialSize => new(1024f, UI.screenHeight - 100f);
 
-        protected override float Margin => 0f;
+        protected override float Margin => 17f;
 
         public override void DoWindowContents(Rect inRect)
         {
-            inRect = inRect.ContractedBy(17f);
-            inRect.height += 17f;
             GUI.BeginGroup(inRect);
-            var rect2 = inRect.AtZero();
-            DoBottomButtons(rect2);
-            var rect3 = rect2;
-            rect3.yMax -= 76f;
-            itemsTransfer.OnGUI(rect3);
+            var rect = inRect.AtZero();
+            rect.yMin += 30f;
+            DoBottomButtons(rect);
+            itemsTransfer.OnGUI(rect);
+            GUI.EndGroup();
         }
 
         private void DoBottomButtons(Rect rect)
         {
-            var rect2 = new Rect(rect.width - BottomButtonSize.x, rect.height - 55f - 17f, BottomButtonSize.x, BottomButtonSize.y);
+            var rect2 = new Rect(rect.width - BottomButtonSize.x, rect.height - 40f, BottomButtonSize.x, BottomButtonSize.y);
             if (Widgets.ButtonText(rect2, "Outposts.Take".Translate()))
             {
                 foreach (var transferable in transferables)
@@ -64,7 +62,7 @@ namespace Outposts
 
             if (Widgets.ButtonText(new Rect(0f, rect2.y, BottomButtonSize.x, BottomButtonSize.y), "CancelButton".Translate())) Close();
 
-            if (Widgets.ButtonText(new Rect(rect.width / 2f - BottomButtonSize.x - 8.5f, rect2.y, BottomButtonSize.x, BottomButtonSize.y), "ResetButton".Translate()))
+            if (Widgets.ButtonText(new Rect(rect.width / 2f - BottomButtonSize.x, rect2.y, BottomButtonSize.x, BottomButtonSize.y), "ResetButton".Translate()))
             {
                 SoundDefOf.Tick_Low.PlayOneShotOnCamera();
                 CalculateAndRecacheTransferables();

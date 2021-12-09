@@ -325,6 +325,7 @@ namespace Outposts
             Scribe_Values.Look(ref ticksTillProduction, "ticksTillProduction");
             Scribe_Values.Look(ref Name, "name");
             Scribe_Collections.Look(ref containedItems, "containedItems", LookMode.Deep);
+            Scribe_Values.Look(ref costPaid, "costPaid");
             RecachePawnTraits();
         }
 
@@ -395,6 +396,7 @@ namespace Outposts
                 foreach (var item in CaravanInventoryUtility.AllInventoryItems(caravan).Where(item => CaravanInventoryUtility.GetOwnerOf(caravan, item) == item))
                     CaravanInventoryUtility.MoveInventoryToSomeoneElse(pawn, item, caravan.PawnsListForReading, new List<Pawn> {pawn}, item.stackCount);
                 caravan.RemovePawn(pawn);
+                containedItems.AddRange(pawn.inventory.innerContainer);
                 if (!caravan.PawnsListForReading.Any(p => p.RaceProps.Humanlike))
                 {
                     containedItems.AddRange(caravan.AllThings);
@@ -420,7 +422,7 @@ namespace Outposts
                             costs.Remove(cost);
                             return true;
                         });
-                        costPaid = true;
+                        if (!costs.Any()) costPaid = true;
                     }
 
                     caravan.Destroy();
