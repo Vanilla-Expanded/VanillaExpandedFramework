@@ -18,5 +18,8 @@ namespace VFECore
         public static JobDef VFE_Mechanoids_Recharge;
 
         public static StatDef VEF_VerbRangeFactor;
+
+        public static StatCategoryDef VFE_EquippedStatFactors;
     }
+
 }

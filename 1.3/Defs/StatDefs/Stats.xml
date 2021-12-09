@@ -23,5 +23,10 @@
 		<toStringStyleUnfinalized>FloatOne</toStringStyleUnfinalized>
 		<displayPriorityInCategory>4050</displayPriorityInCategory>
 	</StatDef>
-
+	
+	<StatCategoryDef>
+		<defName>VFE_EquippedStatFactors</defName>
+		<label>Factors when equipped</label>
+		<displayOrder>71</displayOrder>
+	</StatCategoryDef>
 </Defs>

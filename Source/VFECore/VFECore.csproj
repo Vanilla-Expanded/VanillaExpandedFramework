@@ -586,6 +586,7 @@
     <Compile Include="Furniture\Utility\StoneTypeSettableUtility.cs" />
     <Compile Include="GlobalSettings.cs" />
     <Compile Include="GlobalSettingsUtilities.cs" />
+    <Compile Include="VFECore\DefModExtensions\ApparelExtension.cs" />
     <Compile Include="ItemProcessor\FactoryMultiplierClass\FactoryMultiplierClass.cs" />
     <Compile Include="Memes\DefModExtensions\ExtendedMemeProperties.cs" />
     <Compile Include="Memes\Defs\StartingItemsByIdeologyDef.cs" />
@@ -668,6 +669,7 @@
     <Compile Include="VFECore\Dialogs\FactionSpawning\Dialog_NewFactionSpawningSettlements.cs" />
     <Compile Include="ItemProcessor\Enums\ProcessorStage.cs" />
     <Compile Include="ItemProcessor\GraphicsCache\GraphicsCache.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Apparel_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\Apparel_Draw_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\DualWield\Patch_DualWield_Ext_Pawn_EquipmentTracker.cs" />
     <Compile Include="VFECore\HarmonyPatches\DualWield\Patch_DualWield_Harmony_FloatMenuMakerMap_AddHumanlikeOrders.cs" />
