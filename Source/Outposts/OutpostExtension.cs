@@ -9,6 +9,7 @@ namespace Outposts
     public class OutpostExtension : DefModExtension
     {
         public List<BiomeDef> AllowedBiomes;
+        public List<ThingDefCountClass> CostToMake;
         public List<BiomeDef> DisallowedBiomes;
         public List<SkillDef> DisplaySkills;
         public int MinPawns;

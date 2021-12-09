@@ -53,4 +53,5 @@
     <Outposts.NumPawns>Must have at least {0} pawns</Outposts.NumPawns>
     <Outposts.RequiredSkill>Cumulative {0} skill must be at least {1}</Outposts.RequiredSkill>
     <Outposts.GrowingRequired>Must have ability to grow plants</Outposts.GrowingRequired>
+    <Outposts.MustHaveInCaravan>Must have {0} in caravan</Outposts.MustHaveInCaravan>
 </LanguageData>

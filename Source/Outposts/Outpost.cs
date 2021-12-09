@@ -20,6 +20,8 @@ namespace Outposts
 
         private List<Thing> containedItems = new();
 
+        private bool costPaid;
+
         private OutpostExtension extensionCached;
         public string Name;
         private List<Pawn> occupants = new();
@@ -102,6 +104,13 @@ namespace Outposts
             if (ext.RequiresGrowing)
                 builder.AppendLine(Requirement("Outposts.GrowingRequired".Translate(), GenTemperature.TwelfthsInAverageTemperatureRange(tileIdx, 6f, 42f)?.Any() ?? false));
 
+            if (ext.CostToMake is {Count: >0})
+            {
+                var caravan = Find.WorldObjects.PlayerControlledCaravanAt(tileIdx);
+                foreach (var tdcc in ext.CostToMake)
+                    builder.AppendLine(Requirement("Outposts.MustHaveInCaravan".Translate(tdcc.Label), CaravanInventoryUtility.HasThings(caravan, tdcc.thingDef, tdcc.count)));
+            }
+
             return builder.ToString();
         }
 
@@ -116,9 +125,15 @@ namespace Outposts
                 return "Outposts.NotEnoughPawns".Translate(ext.MinPawns);
             if (ext.RequiredSkills is {Count: >0} &&
                 ext.RequiredSkills.FirstOrDefault(requiredSkill => pawns.Sum(p => p.skills.GetSkill(requiredSkill.Skill).Level) < requiredSkill.Count) is
-                    {Skill: {skillLabel: var label}, Count: var minLevel})
-                return "Outposts.NotSkilledEnough".Translate(label, minLevel);
-            if (ext.RequiresGrowing && GenTemperature.TwelfthsInAverageTemperatureRange(tileIdx, 6f, 42f).NullOrEmpty()) return "Outposts.GrowingRequired".Translate();
+                    {Skill: {skillLabel: var skillLabel}, Count: var minLevel})
+                return "Outposts.NotSkilledEnough".Translate(skillLabel, minLevel);
+            if (ext.CostToMake is {Count: >0})
+            {
+                var caravan = Find.WorldObjects.PlayerControlledCaravanAt(tileIdx);
+                if (ext.CostToMake.FirstOrDefault(tdcc => !CaravanInventoryUtility.HasThings(caravan, tdcc.thingDef, tdcc.count)) is {Label: var label})
+                    return "Outposts.MustHaveInCaravan".Translate(label);
+            }
+
             return null;
         }
 
@@ -383,6 +398,31 @@ namespace Outposts
                 if (!caravan.PawnsListForReading.Any(p => p.RaceProps.Humanlike))
                 {
                     containedItems.AddRange(caravan.AllThings);
+                    if (!costPaid && Ext.CostToMake is {Count: >0})
+                    {
+                        var costs = Ext.CostToMake.Select(tdcc => new ThingDefCountClass(tdcc.thingDef, tdcc.count)).ToList();
+                        containedItems.RemoveAll(thing =>
+                        {
+                            if (costs.FirstOrDefault(tdcc => tdcc.thingDef == thing.def) is not { } cost) return false;
+                            if (cost.count > thing.stackCount)
+                            {
+                                cost.count -= thing.stackCount;
+                                return true;
+                            }
+
+                            if (cost.count < thing.stackCount)
+                            {
+                                thing.stackCount -= cost.count;
+                                costs.Remove(cost);
+                                return false;
+                            }
+
+                            costs.Remove(cost);
+                            return true;
+                        });
+                        costPaid = true;
+                    }
+
                     caravan.Destroy();
                 }
             }
@@ -413,6 +453,12 @@ namespace Outposts
                 defaultLabel = "Outposts.Commands.AddPawn.Label".Translate(),
                 defaultDesc = "Outposts.Commands.AddPawn.Desc".Translate(),
                 icon = TexOutposts.AddTex
+            }).Append(new Command_Action
+            {
+                action = () => Find.WindowStack.Add(new Dialog_TakeItems(this, caravan)),
+                defaultLabel = "Outposts.Commands.TakeItems.Label".Translate(),
+                defaultDesc = "Outposts.Commands.TakeItems.Desc".Translate(Name),
+                icon = TexOutposts.RemoveItemsTex
             });
         }
 
@@ -459,7 +505,7 @@ namespace Outposts
 
             yield return new Command_Action
             {
-                icon = ContentFinder<Texture2D>.Get("UI/Commands/RenameZone"),
+                icon = TexButton.Rename,
                 defaultLabel = "Rename".Translate(),
                 action = () => Find.WindowStack.Add(new Dialog_RenameOutpost(this))
             };
@@ -468,8 +514,11 @@ namespace Outposts
         public Pawn RemovePawn(Pawn p)
         {
             p.GetCaravan()?.RemovePawn(p);
+            p.holdingOwner?.Remove(p);
             occupants.Remove(p);
+            Find.WorldPawns.PassToWorld(p, PawnDiscardDecideMode.KeepForever);
             RecachePawnTraits();
+            p.SetFaction(Faction);
             return p;
         }
 

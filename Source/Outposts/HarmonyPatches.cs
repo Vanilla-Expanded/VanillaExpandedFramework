@@ -40,15 +40,6 @@ namespace Outposts
                     defaultDesc = "Outposts.Commands.Create.Desc".Translate(),
                     icon = TexOutposts.CreateTex
                 };
-
-            if (!__instance.pather.MovingNow && Find.WorldObjects.WorldObjectAt<Outpost>(__instance.Tile) is Outpost outpost)
-                yield return new Command_Action
-                {
-                    action = () => Find.WindowStack.Add(new Dialog_TakeItems(outpost, __instance)),
-                    defaultLabel = "Outposts.Commands.TakeItems.Label".Translate(),
-                    defaultDesc = "Outposts.Commands.TakeItems.Desc".Translate(outpost.Name),
-                    icon = TexOutposts.RemoveItemsTex
-                };
         }
 
         public static void AddRestingAtOutpost(Caravan __instance, ref string __result)
