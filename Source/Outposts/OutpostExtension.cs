@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Xml;
 using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace Outposts
@@ -24,7 +25,7 @@ namespace Outposts
         public List<SkillDef> RelevantSkills =>
             new HashSet<SkillDef>(RequiredSkills.SelectOrEmpty(rq => rq.Skill)
                     .Concat(ResultOptions.SelectManyOrEmpty(ro => ro.AmountsPerSkills.SelectOrEmpty(aps => aps.Skill).Concat(ro.MinSkills.SelectOrEmpty(ms => ms.Skill))))
-                    .Concat(DisplaySkills ?? Enumerable.Empty<SkillDef>()))
+                    .Concat(DisplaySkills.OrEmpty()))
                 .ToList();
     }
 
@@ -36,7 +37,9 @@ namespace Outposts
         public List<AmountBySkill> MinSkills;
         public ThingDef Thing;
 
-        public int Amount(List<Pawn> pawns) => BaseAmount + AmountPerPawn * pawns.Count + (AmountsPerSkills?.Sum(x => x.Amount(pawns)) ?? 0);
+        public int Amount(List<Pawn> pawns) =>
+            Mathf.RoundToInt((BaseAmount + AmountPerPawn * pawns.Count + (AmountsPerSkills?.Sum(x => x.Amount(pawns)) ?? 0)) * OutpostsMod.Settings.ProductionMultiplier);
+
         public IEnumerable<Thing> Make(List<Pawn> pawns) => Outpost.MakeThings(Thing, Amount(pawns));
         public string Explain(List<Pawn> pawns) => $"{Amount(pawns)}x {Thing.LabelCap}";
     }

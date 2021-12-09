@@ -80,7 +80,7 @@ namespace Outposts
             Text.Font = GameFont.Tiny;
             Widgets.TextArea(new Rect(text.x, text.y + 30f, text.width, text.height - 60f), outpostDef.description, true);
             Text.Font = GameFont.Small;
-            Text.Anchor = TextAnchor.MiddleCenter;
+            Text.Anchor = TextAnchor.MiddleLeft;
             Widgets.Label(errorText, validity[outpostDef].First);
             Text.Font = font;
             Text.Anchor = anchor;

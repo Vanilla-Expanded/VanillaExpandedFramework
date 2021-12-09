@@ -197,7 +197,6 @@ namespace Outposts
 
         public static IEnumerable<Thing> MakeThings(ThingDef thingDef, int count, ThingDef stuff = null)
         {
-            count = Mathf.RoundToInt(count * OutpostsMod.Settings.ProductionMultiplier);
             while (count > thingDef.stackLimit)
             {
                 var temp = ThingMaker.MakeThing(thingDef, stuff);
@@ -397,6 +396,7 @@ namespace Outposts
                     CaravanInventoryUtility.MoveInventoryToSomeoneElse(pawn, item, caravan.PawnsListForReading, new List<Pawn> {pawn}, item.stackCount);
                 caravan.RemovePawn(pawn);
                 containedItems.AddRange(pawn.inventory.innerContainer);
+                pawn.inventory.innerContainer.Clear();
                 if (!caravan.PawnsListForReading.Any(p => p.RaceProps.Humanlike))
                 {
                     containedItems.AddRange(caravan.AllThings);
@@ -535,19 +535,18 @@ namespace Outposts
 
         public virtual string ProductionString()
         {
-            if (Ext is null || ResultOptions is null || ResultOptions.Count == 0) return "";
-            return ResultOptions.Count switch
+            var options = ResultOptions;
+            if (Ext is null || options is not {Count: >0}) return "";
+            return options.Count switch
             {
-                1 => "Outposts.WillProduce.1".Translate(ResultOptions[0].Amount(occupants), ResultOptions[0].Thing.label, TimeTillProduction).RawText,
-                2 => "Outposts.WillProduce.2".Translate(ResultOptions[0].Amount(occupants), ResultOptions[0].Thing.label, ResultOptions[1].Amount(occupants),
-                    ResultOptions[1].Thing.label, TimeTillProduction).RawText,
-                _ => "Outposts.WillProduce.N".Translate(TimeTillProduction, ResultOptions.Select(ro => ro.Explain(occupants)).ToLineList("  - ")).RawText
+                1 => "Outposts.WillProduce.1".Translate(options[0].Amount(occupants), options[0].Thing.label, TimeTillProduction).RawText,
+                2 => "Outposts.WillProduce.2".Translate(options[0].Amount(occupants), options[0].Thing.label, options[1].Amount(occupants),
+                    options[1].Thing.label, TimeTillProduction).RawText,
+                _ => "Outposts.WillProduce.N".Translate(TimeTillProduction, options.Select(ro => ro.Explain(occupants)).ToLineList("  - ")).RawText
             };
         }
 
-        public virtual string RelevantSkillDisplay()
-        {
-            return Ext.RelevantSkills.Select(skill => "Outposts.TotalSkill".Translate(skill.skillLabel, TotalSkill(skill)).RawText).ToLineList();
-        }
+        public virtual string RelevantSkillDisplay() =>
+            Ext.RelevantSkills.Select(skill => "Outposts.TotalSkill".Translate(skill.skillLabel, TotalSkill(skill)).RawText).ToLineList();
     }
 }

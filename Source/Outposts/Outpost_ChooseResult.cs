@@ -15,7 +15,7 @@ namespace Outposts
         public override void PostAdd()
         {
             base.PostAdd();
-            choice = Ext.ResultOptions.OrEmpty().Concat(GetExtraOptions()).MinBy(ro => ro.MinSkills?.Sum(abs => abs.Count) ?? 0f).Thing;
+            choice ??= Ext.ResultOptions.OrEmpty().Concat(GetExtraOptions()).MinBy(ro => ro.MinSkills?.Sum(abs => abs.Count) ?? 0f).Thing;
         }
 
         public override IEnumerable<Gizmo> GetGizmos()
