@@ -245,7 +245,7 @@
         public virtual void CheckCastEffects(LocalTargetInfo targetInfo, out bool cast, out bool target, out bool hediffApply) =>
             cast = target = hediffApply = true;
 
-        public void ExposeData()
+        public virtual void ExposeData()
         {
             Scribe_References.Look(ref this.pawn, nameof(this.pawn));
             Scribe_Values.Look(ref this.cooldown, nameof(this.cooldown));
