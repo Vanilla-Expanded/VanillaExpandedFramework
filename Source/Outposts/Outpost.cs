@@ -190,26 +190,6 @@ namespace Outposts
             return false;
         }
 
-        public static string CheckSkill(IEnumerable<Pawn> pawns, SkillDef skill, int minLevel)
-        {
-            return pawns.Sum(p => p.skills.GetSkill(skill).Level) < minLevel ? "Outposts.NotSkilledEnough".Translate(skill.skillLabel, minLevel) : null;
-        }
-
-        public static IEnumerable<Thing> MakeThings(ThingDef thingDef, int count, ThingDef stuff = null)
-        {
-            while (count > thingDef.stackLimit)
-            {
-                var temp = ThingMaker.MakeThing(thingDef, stuff);
-                temp.stackCount = thingDef.stackLimit;
-                yield return temp;
-                count -= thingDef.stackLimit;
-            }
-
-            var temp2 = ThingMaker.MakeThing(thingDef, stuff);
-            temp2.stackCount = count;
-            yield return temp2;
-        }
-
         public void Deliver(IEnumerable<Thing> items)
         {
             var map = Find.Maps.Where(m => m.IsPlayerHome).OrderByDescending(m => Find.WorldGrid.ApproxDistanceInTiles(m.Parent.Tile, Tile)).First();
@@ -526,12 +506,11 @@ namespace Outposts
 
         public override string GetInspectString() =>
             base.GetInspectString() +
-            Line(def.LabelCap) +
-            Line("Outposts.Contains".Translate(occupants.Count)) +
-            Line(Packing ? "Outposts.Packing".Translate(ticksTillPacked.ToStringTicksToPeriodVerbose().Colorize(ColoredText.DateTimeColor)).RawText : ProductionString()) +
-            Line(Ext?.RelevantSkills?.Count > 0 ? RelevantSkillDisplay() : "");
-
-        public static string Line(string input) => input.NullOrEmpty() ? "" : "\n" + input;
+            def.LabelCap.Line() +
+            "Outposts.Contains".Translate(occupants.Count).Line() +
+            "Outposts.Packing".Translate(ticksTillPacked.ToStringTicksToPeriodVerbose().Colorize(ColoredText.DateTimeColor)).Line(Packing) +
+            ProductionString().Line(!Packing) +
+            RelevantSkillDisplay().Line(Ext?.RelevantSkills?.Count > 0);
 
         public virtual string ProductionString()
         {

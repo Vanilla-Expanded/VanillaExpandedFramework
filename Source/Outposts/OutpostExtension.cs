@@ -21,6 +21,7 @@ namespace Outposts
         public List<ResultOption> ResultOptions;
         public int TicksPerProduction = 15 * 60000;
         public int TicksToPack = 7 * 60000;
+        public int TicksToSetUp = -1;
 
         public List<SkillDef> RelevantSkills =>
             new HashSet<SkillDef>(RequiredSkills.SelectOrEmpty(rq => rq.Skill)
@@ -40,7 +41,7 @@ namespace Outposts
         public int Amount(List<Pawn> pawns) =>
             Mathf.RoundToInt((BaseAmount + AmountPerPawn * pawns.Count + (AmountsPerSkills?.Sum(x => x.Amount(pawns)) ?? 0)) * OutpostsMod.Settings.ProductionMultiplier);
 
-        public IEnumerable<Thing> Make(List<Pawn> pawns) => Outpost.MakeThings(Thing, Amount(pawns));
+        public IEnumerable<Thing> Make(List<Pawn> pawns) => Thing.Make(Amount(pawns));
         public string Explain(List<Pawn> pawns) => $"{Amount(pawns)}x {Thing.LabelCap}";
     }
 
