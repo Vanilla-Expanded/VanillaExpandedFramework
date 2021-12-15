@@ -27,18 +27,40 @@ namespace VFECore
 		{
 			public static void Postfix(Pawn ___pawn, bool __result, Apparel ap, ref Apparel resultingAp, IntVec3 pos, bool forbid = true)
 			{
-				if (__result && ___pawn != null && ap is Apparel_Shield newShield)
+				if (__result && ___pawn != null)
 				{
-					newShield.CompShield.equippedOffHand = false;
-					var comp = newShield.GetComp<CompEquippable>();
-					if (comp != null)
+					if (resultingAp is Apparel_Shield newShield)
                     {
-						foreach (var verb in comp.AllVerbs)
+						newShield.CompShield.equippedOffHand = false;
+						var comp = newShield.GetComp<CompEquippable>();
+						if (comp != null)
 						{
-							verb.caster = null;
-							verb.Reset();
+							foreach (var verb in comp.AllVerbs)
+							{
+								verb.caster = null;
+								verb.Reset();
+							}
 						}
 					}
+					var extension = resultingAp?.def.GetModExtension<ApparelExtension>();
+					if (extension != null)
+                    {
+						if (___pawn.story?.traits != null)
+                        {
+							if (extension.traitsOnUnequip != null)
+                            {
+								foreach (var traitDef in extension.traitsOnUnequip)
+								{
+									var trait = ___pawn.story.traits.GetTrait(traitDef);
+									if (trait != null)
+									{
+										___pawn.story.traits.RemoveTrait(trait);
+									}
+								}
+							}
+						}
+
+                    }
 				}
 			}
 		}
@@ -46,7 +68,7 @@ namespace VFECore
 		[HarmonyPatch(typeof(Pawn_ApparelTracker), nameof(Pawn_ApparelTracker.Wear))]
 		public static class Wear_Patch
 		{
-			public static void Postfix(Apparel newApparel, bool dropReplacedApparel = true, bool locked = false)
+			public static void Postfix(Pawn_ApparelTracker __instance, Apparel newApparel, bool dropReplacedApparel = true, bool locked = false)
 			{
 				if (newApparel is Apparel_Shield newShield)
 				{
@@ -58,6 +80,24 @@ namespace VFECore
 						{
 							verb.caster = newShield.Wearer;
 							verb.Reset();
+						}
+					}
+				}
+
+				var extension = newApparel?.def.GetModExtension<ApparelExtension>();
+				if (extension != null)
+				{
+					if (__instance.pawn.story?.traits != null)
+					{
+						if (extension.traitsOnEquip != null)
+						{
+							foreach (var traitDef in extension.traitsOnEquip)
+							{
+								if (!__instance.pawn.story.traits.HasTrait(traitDef))
+								{
+									__instance.pawn.story.traits.GainTrait(new Trait(traitDef));
+								}
+							}
 						}
 					}
 				}

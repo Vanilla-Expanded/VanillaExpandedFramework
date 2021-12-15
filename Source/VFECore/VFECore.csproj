@@ -557,6 +557,8 @@
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_Settings.cs" />
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_SettingsController.cs" />
     <Compile Include="Cuisine\Plants\Plant_NarrowTemperatures.cs" />
+    <Compile Include="VFECore\HarmonyPatches\CalculatePain_Patch.cs" />
+    <Compile Include="VFECore\DefModExtensions\TraitExtension.cs" />
     <Compile Include="Furniture\Comps\CompConfigurableSpawner.cs" />
     <Compile Include="Furniture\Comps\CompFireOverlayRotatable.cs" />
     <Compile Include="Furniture\Comps\CompGlowerExtended.cs" />
