@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using KCSG;
 using RimWorld;
 using RimWorld.Planet;
@@ -74,67 +73,6 @@ namespace Outposts
         {
             base.PostAdd();
             ticksTillProduction = Mathf.RoundToInt(TicksPerProduction * OutpostsMod.Settings.TimeMultiplier);
-        }
-
-        protected static string Requirement(string req, bool passed) => $"{(passed ? "✓" : "✖")} {req}".Colorize(passed ? Color.green : Color.red);
-
-        public static string RequirementsStringBase(OutpostExtension ext, int tileIdx, List<Pawn> pawns)
-        {
-            var builder = new StringBuilder();
-            var biome = Find.WorldGrid[tileIdx].biome;
-            if (ext.AllowedBiomes is {Count: >0})
-            {
-                builder.AppendLine(Requirement("Outposts.AllowedBiomes".Translate(), ext.AllowedBiomes.Contains(biome)));
-                builder.AppendLine(ext.AllowedBiomes.Select(b => b.label).ToLineList("  ", true));
-            }
-
-            if (ext.DisallowedBiomes is {Count: >0})
-            {
-                builder.AppendLine(Requirement("Outposts.DisallowedBiomes".Translate(), !ext.DisallowedBiomes.Contains(biome)));
-                builder.AppendLine(ext.DisallowedBiomes.Select(b => b.label).ToLineList("  ", true));
-            }
-
-            if (ext.MinPawns > 0) builder.AppendLine(Requirement("Outposts.NumPawns".Translate(ext.MinPawns), pawns.Count >= ext.MinPawns));
-
-            if (ext.RequiredSkills is {Count: >0})
-                foreach (var requiredSkill in ext.RequiredSkills)
-                    builder.AppendLine(Requirement("Outposts.RequiredSkill".Translate(requiredSkill.Skill.skillLabel, requiredSkill.Count),
-                        pawns.Sum(p => p.skills.GetSkill(requiredSkill.Skill).Level) >= requiredSkill.Count));
-
-            if (ext.RequiresGrowing)
-                builder.AppendLine(Requirement("Outposts.GrowingRequired".Translate(), GenTemperature.TwelfthsInAverageTemperatureRange(tileIdx, 6f, 42f)?.Any() ?? false));
-
-            if (ext.CostToMake is {Count: >0})
-            {
-                var caravan = Find.WorldObjects.PlayerControlledCaravanAt(tileIdx);
-                foreach (var tdcc in ext.CostToMake)
-                    builder.AppendLine(Requirement("Outposts.MustHaveInCaravan".Translate(tdcc.Label), CaravanInventoryUtility.HasThings(caravan, tdcc.thingDef, tdcc.count)));
-            }
-
-            return builder.ToString();
-        }
-
-        public static string CanSpawnOnWithExt(OutpostExtension ext, int tileIdx, List<Pawn> pawns)
-        {
-            if (Find.WorldGrid[tileIdx] is {biome: var biome} && (ext.DisallowedBiomes is {Count: >0} && ext.DisallowedBiomes.Contains(biome) ||
-                                                                  ext.AllowedBiomes is {Count: >0} && !ext.AllowedBiomes.Contains(biome)))
-                return "Outposts.CannotBeMade".Translate(biome.label);
-            if (Find.WorldObjects.AnySettlementBaseAtOrAdjacent(tileIdx) ||
-                Find.WorldObjects.AllWorldObjects.OfType<Outpost>().Any(outpost => Find.WorldGrid.IsNeighborOrSame(tileIdx, outpost.Tile))) return "Outposts.TooClose".Translate();
-            if (ext.MinPawns > 0 && pawns.Count < ext.MinPawns)
-                return "Outposts.NotEnoughPawns".Translate(ext.MinPawns);
-            if (ext.RequiredSkills is {Count: >0} &&
-                ext.RequiredSkills.FirstOrDefault(requiredSkill => pawns.Sum(p => p.skills.GetSkill(requiredSkill.Skill).Level) < requiredSkill.Count) is
-                    {Skill: {skillLabel: var skillLabel}, Count: var minLevel})
-                return "Outposts.NotSkilledEnough".Translate(skillLabel, minLevel);
-            if (ext.CostToMake is {Count: >0})
-            {
-                var caravan = Find.WorldObjects.PlayerControlledCaravanAt(tileIdx);
-                if (ext.CostToMake.FirstOrDefault(tdcc => !CaravanInventoryUtility.HasThings(caravan, tdcc.thingDef, tdcc.count)) is {Label: var label})
-                    return "Outposts.MustHaveInCaravan".Translate(label);
-            }
-
-            return null;
         }
 
         public int TotalSkill(SkillDef skill)
@@ -367,8 +305,9 @@ namespace Outposts
             skillsDirty = true;
         }
 
-        public void AddPawn(Pawn pawn)
+        public bool AddPawn(Pawn pawn)
         {
+            if (!Ext.CanAddPawn(pawn, out _)) return false;
             var caravan = pawn.GetCaravan();
             if (caravan != null)
             {
@@ -414,6 +353,8 @@ namespace Outposts
             Find.WorldPawns.RemovePawn(pawn);
             occupants.Add(pawn);
             RecachePawnTraits();
+
+            return true;
         }
 
         public void ConvertToCaravan()
@@ -431,7 +372,9 @@ namespace Outposts
             return base.GetCaravanGizmos(caravan).Append(new Command_Action
             {
                 action = () => Find.WindowStack.Add(new FloatMenu(caravan.PawnsListForReading.Select(p =>
-                    new FloatMenuOption(p.NameFullColored.CapitalizeFirst().Resolve(), () => AddPawn(p))).ToList())),
+                    Ext.CanAddPawn(p, out var reason)
+                        ? new FloatMenuOption(p.NameFullColored.CapitalizeFirst().Resolve(), () => AddPawn(p))
+                        : new FloatMenuOption(p.NameFullColored + " - " + reason, null)).ToList())),
                 defaultLabel = "Outposts.Commands.AddPawn.Label".Translate(),
                 defaultDesc = "Outposts.Commands.AddPawn.Desc".Translate(),
                 icon = TexOutposts.AddTex

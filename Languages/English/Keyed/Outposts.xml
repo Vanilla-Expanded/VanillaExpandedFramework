@@ -50,8 +50,9 @@
     <Outposts.Take>Take</Outposts.Take>
     <Outposts.AllowedBiomes>Must be in one of the following biomes:</Outposts.AllowedBiomes>
     <Outposts.DisallowedBiomes>Cannot be in any of the following biomes:</Outposts.DisallowedBiomes>
-    <Outposts.NumPawns>Must have at least {0} pawns</Outposts.NumPawns>
+    <Outposts.NumPawns>Must have at least {0} pawns willing to join the outpost</Outposts.NumPawns>
     <Outposts.RequiredSkill>Cumulative {0} skill must be at least {1}</Outposts.RequiredSkill>
     <Outposts.GrowingRequired>Must have ability to grow plants</Outposts.GrowingRequired>
     <Outposts.MustHaveInCaravan>Must have {0} in caravan</Outposts.MustHaveInCaravan>
+    <Outposts.NoValidPawns>No valid pawns to add to outpost</Outposts.NoValidPawns>
 </LanguageData>

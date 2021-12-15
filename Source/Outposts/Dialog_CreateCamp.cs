@@ -30,9 +30,9 @@ namespace Outposts
                 var method = outpost.worldObjectClass.GetMethod("CanSpawnOnWith", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
                 var method2 = outpost.worldObjectClass.GetMethod("RequirementsString", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
                 var ext = outpost.GetModExtension<OutpostExtension>();
-                var valid = (ext is not null ? Outpost.CanSpawnOnWithExt(ext, creator.Tile, creator.HumanColonists()) : null) ??
+                var valid = (ext is not null ? ext.CanSpawnOnWithExt(creator.Tile, creator.HumanColonists()) : null) ??
                             (string) method?.Invoke(null, new object[] {creator.Tile, creator.HumanColonists()});
-                var tip = (Outpost.RequirementsStringBase(ext, creator.Tile, creator.HumanColonists()) +
+                var tip = (ext.RequirementsStringBase(creator.Tile, creator.HumanColonists()) +
                            ((string) method2?.Invoke(null, new object[] {creator.Tile, creator.HumanColonists()}) ?? "")).TrimEndNewlines();
                 validity.Add(outpost, new Pair<string, string>(valid, tip));
 

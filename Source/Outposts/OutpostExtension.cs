@@ -13,6 +13,7 @@ namespace Outposts
         public List<ThingDefCountClass> CostToMake;
         public List<BiomeDef> DisallowedBiomes;
         public List<SkillDef> DisplaySkills;
+        public HistoryEventDef Event;
         public int MinPawns;
         public ThingDef ProvidedFood;
         public int Range = -1;
