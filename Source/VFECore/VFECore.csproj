@@ -597,7 +597,10 @@
     <Compile Include="Memes\Harmony\Dialog_ChooseMemes_GetFirstIncompatibleMemePair_Patch.cs" />
     <Compile Include="Memes\Harmony\Pawn_IdeoTracker_SetIdeo.cs" />
     <Compile Include="Memes\MapComponent\MapComponent_IdeologicalGoodies.cs" />
+    <Compile Include="Misc\Dialog_Hire.cs" />
     <Compile Include="Misc\EquipmentOffsetConditions.cs" />
+    <Compile Include="Misc\HireableFactionDef.cs" />
+    <Compile Include="Misc\HireableSystemStaticInitialization.cs" />
     <Compile Include="Misc\StatPart_Ammo.cs" />
     <Compile Include="OptionalFeatures\Dialog_FloatMenuOptions.cs" />
     <Compile Include="OptionalFeatures\OptionalFeatures.cs" />
