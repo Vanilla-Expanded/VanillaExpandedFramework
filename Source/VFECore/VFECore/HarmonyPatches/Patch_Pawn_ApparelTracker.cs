@@ -65,6 +65,36 @@ namespace VFECore
 			}
 		}
 
+		[HarmonyPatch(typeof(Pawn_ApparelTracker), nameof(Pawn_ApparelTracker.Remove))]
+		public class Pawn_ApparelTracker_Remove_Patch
+		{
+			public static void Postfix(Pawn ___pawn, Apparel ap)
+			{
+				if (___pawn != null)
+				{
+					var extension = ap?.def.GetModExtension<ApparelExtension>();
+					if (extension != null)
+					{
+						if (___pawn.story?.traits != null)
+						{
+							if (extension.traitsOnUnequip != null)
+							{
+								foreach (var traitDef in extension.traitsOnUnequip)
+								{
+									var trait = ___pawn.story.traits.GetTrait(traitDef);
+									if (trait != null)
+									{
+										___pawn.story.traits.RemoveTrait(trait);
+									}
+								}
+							}
+						}
+		
+					}
+				}
+			}
+		}
+
 		[HarmonyPatch(typeof(Pawn_ApparelTracker), nameof(Pawn_ApparelTracker.Wear))]
 		public static class Wear_Patch
 		{
