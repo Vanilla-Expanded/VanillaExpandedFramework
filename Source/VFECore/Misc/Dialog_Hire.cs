@@ -4,6 +4,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
+using VFECore.UItils;
 
 namespace VFECore.Misc
 {
@@ -59,7 +60,7 @@ namespace VFECore.Misc
             Widgets.Label(new Rect(rect.x, rect.y, rect.width, 20f), "VEF.AvailableSilver".Translate(availableSilver.ToStringMoney()));
             rect.yMin += 30f;
             foreach (var def in hireable) DoHireableFaction(ref rect, def);
-            var breakDownRect = rect.TopPartPixels(100f);
+            var breakDownRect = rect.TakeTopPart(100f);
             breakDownRect.xMin += 115f;
             Text.Anchor = TextAnchor.UpperLeft;
             Text.Font = GameFont.Small;
@@ -72,7 +73,7 @@ namespace VFECore.Misc
             infoRect.y += 20f;
             Widgets.DrawLightHighlight(infoRect);
             Widgets.Label(infoRect.LeftHalf(), "VEF.DayAmount".Translate());
-            CountAdjuster(ref daysAmount, infoRect.RightHalf(), ref daysAmountBuffer, 0, 60);
+            UIUtility.DrawCountAdjuster(ref daysAmount, infoRect.RightHalf(), ref daysAmountBuffer, 0, 60);
             infoRect.y += 20f;
             Widgets.DrawHighlight(infoRect);
             Widgets.Label(infoRect.LeftHalf(), "VEF.Cost".Translate());
@@ -85,9 +86,8 @@ namespace VFECore.Misc
             Widgets.DrawHighlight(infoRect);
             Widgets.Label(infoRect.LeftHalf(), "VEF.TotalPrice".Translate());
             Widgets.Label(infoRect.RightHalf(), CostFinal.ToStringMoney());
-            rect.yMin += 100f;
-            if (Widgets.ButtonText(rect.LeftPartPixels(120f).BottomPartPixels(40f), "Cancel".Translate())) OnCancelKeyPressed();
-            if (Widgets.ButtonText(rect.RightPartPixels(120f).BottomPartPixels(40f), "Confirm".Translate()))
+            if (Widgets.ButtonText(rect.TakeLeftPart(120f).BottomPartPixels(40f), "Cancel".Translate())) OnCancelKeyPressed();
+            if (Widgets.ButtonText(rect.TakeRightPart(120f).BottomPartPixels(40f), "Confirm".Translate()))
             {
                 if (CostFinal > availableSilver)
                     Messages.Message("NotEnoughSilver".Translate(), MessageTypeDefOf.RejectInput);
@@ -95,10 +95,8 @@ namespace VFECore.Misc
                     OnAcceptKeyPressed();
             }
 
-            rect.xMin += 150f;
-            rect.xMax -= 150f;
             Text.Font = GameFont.Tiny;
-            Widgets.Label(rect, "VEF.HiringDesc".Translate(hireable.Key).Colorize(ColoredText.SubtleGrayColor));
+            Widgets.Label(rect.ContractedBy(30f, 0f), "VEF.HiringDesc".Translate(hireable.Key).Colorize(ColoredText.SubtleGrayColor));
             Text.Anchor = anchor;
             Text.Font = font;
         }
@@ -107,9 +105,8 @@ namespace VFECore.Misc
         {
             var rect = inRect.TopPartPixels(Mathf.Max(20f + def.pawnKinds.Count * 30f, 120f));
             inRect.yMin += rect.height;
-            var titleRect = rect.TopPartPixels(20f);
+            var titleRect = rect.TakeTopPart(20f);
             var iconRect = rect.LeftPartPixels(105f).ContractedBy(5f);
-            rect.y += 20f;
             titleRect.x += 115f;
             Text.Anchor = TextAnchor.MiddleLeft;
             Text.Font = GameFont.Tiny;
@@ -144,7 +141,7 @@ namespace VFECore.Misc
                 var data = hireData[kind];
                 var amount = data.First;
                 var buffer = data.Second;
-                CountAdjuster(ref amount, numRect, ref buffer, 0, 999, curFaction != null && curFaction != def);
+                UIUtility.DrawCountAdjuster(ref amount, numRect, ref buffer, 0, 999, curFaction != null && curFaction != def);
                 if (amount != data.First || buffer != data.Second)
                 {
                     hireData[kind] = new Pair<int, string>(amount, buffer);
@@ -152,28 +149,6 @@ namespace VFECore.Misc
                     if (amount == 0 && curFaction == def && def.pawnKinds.All(pk => hireData[pk].First == 0)) curFaction = null;
                 }
             }
-        }
-
-        private static void CountAdjuster(ref int value, Rect inRect, ref string buffer, int min, int max, bool readOnly = false)
-        {
-            var temp = value;
-            var rect = inRect.ContractedBy(50f, 0);
-            var leftBigRect = rect.LeftPartPixels(30f);
-            rect.xMin += 30f;
-            var leftSmallRect = rect.LeftPartPixels(30f);
-            rect.xMin += 30f;
-            var rightBigRect = rect.RightPartPixels(30f);
-            rect.xMax -= 30f;
-            var rightSmallRect = rect.RightPartPixels(30f);
-            rect.xMax -= 30f;
-            var mult = GenUI.CurrentAdjustmentMultiplier();
-            if (!readOnly && value != min && Widgets.ButtonText(leftBigRect, "<<")) value = min;
-            if (!readOnly && value - mult >= min && Widgets.ButtonText(leftSmallRect, "<")) value -= mult;
-            if (!readOnly && value != max && Widgets.ButtonText(rightBigRect, ">>")) value = max;
-            if (!readOnly && value + mult <= max && Widgets.ButtonText(rightSmallRect, ">")) value += mult;
-            if (value != temp || readOnly) buffer = value.ToString();
-            Widgets.TextFieldNumeric(rect.ContractedBy(3f, 0f), ref temp, ref buffer, min, max);
-            if (!readOnly) value = temp;
         }
     }
 }
