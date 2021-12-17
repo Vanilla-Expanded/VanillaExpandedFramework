@@ -9,6 +9,7 @@ using Verse;
 using System.Reflection;
 using VFECore;
 using VFEMech;
+using UnityEngine;
 
 namespace VFE.Mechanoids.HarmonyPatches
 {
@@ -16,10 +17,12 @@ namespace VFE.Mechanoids.HarmonyPatches
     [HarmonyPatch("IsVisible", MethodType.Getter)]
     public static class NoBioForMachines
     {
-        static PropertyInfo propertyInfo = typeof(ITab_Pawn_Character).GetProperty("PawnToShowInfoAbout", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        public delegate Pawn PawnToShowInfoAbout(ITab_Pawn_Character __instance);
+        public static readonly PawnToShowInfoAbout pawnToShowInfoAbout = AccessTools.MethodDelegate<PawnToShowInfoAbout>
+            (AccessTools.Method(typeof(ITab_Pawn_Character), "get_PawnToShowInfoAbout"));
         public static void Postfix(ITab_Pawn_Character __instance, ref bool __result)
         {
-            Pawn pawn = (Pawn)propertyInfo.GetValue(__instance);
+            Pawn pawn = pawnToShowInfoAbout.Invoke(__instance);
             if (pawn is Machine)
                 __result = false;
         }
