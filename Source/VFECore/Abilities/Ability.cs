@@ -145,7 +145,7 @@
         public virtual float Chance =>
             this.def.Chance;
 
-        public virtual Command_Action GetGizmo()
+        public virtual Gizmo GetGizmo()
         {
             Abilities.Command_Ability action = new Abilities.Command_Ability(this.pawn, this);
             return action;
