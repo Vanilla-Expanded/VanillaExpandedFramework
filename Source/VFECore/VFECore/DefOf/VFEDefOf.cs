@@ -20,6 +20,8 @@ namespace VFECore
         public static StatDef VEF_VerbRangeFactor;
 
         public static StatCategoryDef VFE_EquippedStatFactors;
+
+        public static StatDef VEF_VerbCooldownFactor;
     }
 
 }

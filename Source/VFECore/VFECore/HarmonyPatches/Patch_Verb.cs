@@ -23,9 +23,23 @@ namespace VFECore
                 if (__result && __instance.EquipmentSource != null && __instance.EquipmentSource.IsShield(out CompShield shieldComp))
                     __result = shieldComp.UsableNow;
             }
-
         }
 
+        [HarmonyPatch(typeof(VerbProperties), "AdjustedCooldown", new Type[]
+        {
+            typeof(Verb), typeof(Pawn)
+        })]
+        public static class VerbProperties_AdjustedCooldown_Patch
+        {
+            public static void Postfix(ref float __result, Verb ownerVerb, Pawn attacker)
+            {
+                var pawn = ownerVerb.CasterPawn;
+                if (pawn != null)
+                {
+                    __result *= pawn.GetStatValue(VFEDefOf.VEF_VerbCooldownFactor);
+                }
+            }
+        }
     }
 
 }
