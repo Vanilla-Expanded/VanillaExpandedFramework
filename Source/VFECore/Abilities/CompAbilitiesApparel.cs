@@ -13,6 +13,7 @@
         private Pawn Pawn => (this.parent as Apparel)?.Wearer;
 
         private List<Abilities.Ability> givenAbilities = new List<Abilities.Ability>();
+        public List<Abilities.Ability> GivenAbilities => givenAbilities;
 
         public override void Initialize(CompProperties props)
         {
