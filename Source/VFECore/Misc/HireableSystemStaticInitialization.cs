@@ -22,15 +22,30 @@
 
                 VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(LoadedObjectDirectory), "Clear"),
                                               postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(AddHireablesToLoadedObjectDirectory)));
+                VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(QuestUtility), nameof(QuestUtility.IsQuestLodger)),
+                                              postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(IsQuestLodger_Postfix)));
+                VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(EquipmentUtility), nameof(EquipmentUtility.QuestLodgerCanUnequip)),
+                                              postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(QuestLodgerCanUnequip_Postfix)));
             }
         }
 
-        public static IEnumerable<ICommunicable> GetCommTargets_Postfix(IEnumerable<ICommunicable> communicables) => communicables.Concat(Hireables);
+        public static IEnumerable<ICommunicable> GetCommTargets_Postfix(IEnumerable<ICommunicable> communicables) =>
+            Find.World.GetComponent<HiringContractTracker>().pawns.Any() ? communicables : communicables.Concat(Hireables);
 
         public static void AddHireablesToLoadedObjectDirectory(LoadedObjectDirectory __instance)
         {
             foreach (Hireable hireable in Hireables)
                 __instance.RegisterLoaded(hireable);
+        }
+
+        public static void IsQuestLodger_Postfix(Pawn p, ref bool __result)
+        {
+            __result = __result || Find.World.GetComponent<HiringContractTracker>().pawns.Contains(p);
+        }
+
+        public static void QuestLodgerCanUnequip_Postfix(Pawn pawn, ref bool __result)
+        {
+            __result = __result && !Find.World.GetComponent<HiringContractTracker>().pawns.Contains(pawn);
         }
     }
 

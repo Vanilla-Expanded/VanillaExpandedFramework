@@ -22,6 +22,7 @@ namespace VFECore
         public static StatCategoryDef VFE_EquippedStatFactors;
 
         public static StatDef VEF_VerbCooldownFactor;
-    }
 
+        public static JobDef VFEC_LeaveMap;
+    }
 }

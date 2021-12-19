@@ -558,6 +558,7 @@
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_SettingsController.cs" />
     <Compile Include="Cuisine\Plants\Plant_NarrowTemperatures.cs" />
     <Compile Include="UItils\UIUtility.cs" />
+    <Compile Include="VFECore\Comps\WorldComponents\HiringContractTracker.cs" />
     <Compile Include="VFECore\HarmonyPatches\CalculatePain_Patch.cs" />
     <Compile Include="VFECore\DefModExtensions\TraitExtension.cs" />
     <Compile Include="Furniture\Comps\CompConfigurableSpawner.cs" />
@@ -726,6 +727,7 @@
     <Compile Include="VFECore\IncidentWorkers\IncidentWorker_RaidEnemySpecial.cs" />
     <Compile Include="VFECore\JobDrivers\JobDriver_AttachTurret.cs" />
     <Compile Include="VFECore\JobDrivers\JobDriver_EquipShield.cs" />
+    <Compile Include="VFECore\JobDrivers\JobDriver_LeaveMap.cs" />
     <Compile Include="VFECore\JobDrivers\JobDriver_Recharge.cs" />
     <Compile Include="VFECore\JobDrivers\JobDriver_RepairMachine.cs" />
     <Compile Include="VFECore\JobGivers\JobGiver_Recharge.cs" />
