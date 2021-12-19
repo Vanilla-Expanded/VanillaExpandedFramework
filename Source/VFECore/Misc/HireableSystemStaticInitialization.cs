@@ -3,8 +3,11 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
+    using System.Reflection.Emit;
     using HarmonyLib;
     using RimWorld;
+    using RimWorld.Planet;
     using Verse;
 
     [StaticConstructorOnStartup]
@@ -26,6 +29,8 @@
                                               postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(IsQuestLodger_Postfix)));
                 VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(EquipmentUtility), nameof(EquipmentUtility.QuestLodgerCanUnequip)),
                                               postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(QuestLodgerCanUnequip_Postfix)));
+                VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(CaravanFormingUtility), nameof(CaravanFormingUtility.AllSendablePawns)),
+                                              transpiler: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(CaravanAllSendablePawns_Transpiler)));
             }
         }
 
@@ -47,6 +52,26 @@
         {
             __result = __result && !Find.World.GetComponent<HiringContractTracker>().pawns.Contains(pawn);
         }
+
+        public static IEnumerable<CodeInstruction> CaravanAllSendablePawns_Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            MethodInfo questLodger = AccessTools.Method(typeof(QuestUtility), nameof(QuestUtility.IsQuestLodger));
+
+            foreach (CodeInstruction instruction in instructions)
+            {
+                if (instruction.Calls(questLodger))
+                {
+                    yield return new CodeInstruction(OpCodes.Dup);
+                    yield return instruction;
+                    yield return CodeInstruction.Call(typeof(HireableSystemStaticInitialization), nameof(CaravanAllSendablePawns_Helper));
+                }
+                else
+                    yield return instruction;
+            }
+        }
+
+        public static bool CaravanAllSendablePawns_Helper(Pawn pawn, bool questLodger) =>
+            questLodger && !Find.World.GetComponent<HiringContractTracker>().pawns.Contains(pawn);
     }
 
     public class Hireable : IGrouping<string, HireableFactionDef>, ICommunicable, ILoadReferenceable

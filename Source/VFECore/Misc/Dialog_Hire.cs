@@ -137,7 +137,7 @@ namespace VFECore.Misc
             var nameRect = new Rect(titleRect);
             Widgets.Label(titleRect, "VEF.Hire".Translate(def.LabelCap));
             titleRect.x     += 200f;
-            titleRect.width =  30f;
+            titleRect.width =  60f;
             Text.Anchor     =  TextAnchor.MiddleCenter;
             var valueRect = new Rect(titleRect);
             Widgets.Label(titleRect, "VEF.Value".Translate());

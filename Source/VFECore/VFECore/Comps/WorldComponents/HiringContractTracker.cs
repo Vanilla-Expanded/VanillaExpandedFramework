@@ -105,9 +105,24 @@ namespace VFECore
             Scribe_Values.Look(ref this.endTicks, nameof(this.endTicks));
             Scribe_Collections.Look(ref this.pawns, nameof(this.pawns), LookMode.Reference);
             Scribe_References.Look(ref this.hireable, nameof(this.hireable));
-            List<Hireable>            deadCountKey   = new List<Hireable>();
-            List<List<ExposablePair>> deadCountValue = new List<List<ExposablePair>>();
-            Scribe_Collections.Look(ref this.deadCount, nameof(this.deadCount), LookMode.Reference, LookMode.Deep, ref deadCountKey, ref deadCountValue);
+            List<Hireable> deadCountKey = new List<Hireable>(this.deadCount.Keys);
+            Scribe_Collections.Look(ref deadCountKey, nameof(deadCountKey), LookMode.Reference);
+            List<List<ExposablePair>> deadCountValue = new List<List<ExposablePair>>(this.deadCount.Values);
+
+            for (int i = 0; i < deadCountKey.Count; i++)
+            {
+                List<ExposablePair> exposablePairs = deadCountValue.Count > i ? deadCountValue[i] : new List<ExposablePair>();
+                Scribe_Collections.Look(ref exposablePairs, nameof(exposablePairs) + i, LookMode.Deep);
+
+                if (deadCountValue.Count > i)
+                    deadCountValue[i] = exposablePairs;
+                else
+                    deadCountValue.Add(exposablePairs);
+            }
+
+            this.deadCount.Clear();
+            for (int index = 0; index < deadCountKey.Count; index++)
+                this.deadCount.Add(deadCountKey[index], deadCountValue[index]);
         }
     }
 
