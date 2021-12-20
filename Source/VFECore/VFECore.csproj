@@ -557,6 +557,10 @@
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_Settings.cs" />
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_SettingsController.cs" />
     <Compile Include="Cuisine\Plants\Plant_NarrowTemperatures.cs" />
+    <Compile Include="UItils\UIUtility.cs" />
+    <Compile Include="VFECore\Comps\WorldComponents\HiringContractTracker.cs" />
+    <Compile Include="VFECore\HarmonyPatches\CalculatePain_Patch.cs" />
+    <Compile Include="VFECore\DefModExtensions\TraitExtension.cs" />
     <Compile Include="Furniture\Comps\CompConfigurableSpawner.cs" />
     <Compile Include="Furniture\Comps\CompFireOverlayRotatable.cs" />
     <Compile Include="Furniture\Comps\CompGlowerExtended.cs" />
@@ -586,6 +590,7 @@
     <Compile Include="Furniture\Utility\StoneTypeSettableUtility.cs" />
     <Compile Include="GlobalSettings.cs" />
     <Compile Include="GlobalSettingsUtilities.cs" />
+    <Compile Include="VFECore\DefModExtensions\ApparelExtension.cs" />
     <Compile Include="ItemProcessor\FactoryMultiplierClass\FactoryMultiplierClass.cs" />
     <Compile Include="Memes\DefModExtensions\ExtendedMemeProperties.cs" />
     <Compile Include="Memes\Defs\StartingItemsByIdeologyDef.cs" />
@@ -594,7 +599,10 @@
     <Compile Include="Memes\Harmony\Dialog_ChooseMemes_GetFirstIncompatibleMemePair_Patch.cs" />
     <Compile Include="Memes\Harmony\Pawn_IdeoTracker_SetIdeo.cs" />
     <Compile Include="Memes\MapComponent\MapComponent_IdeologicalGoodies.cs" />
+    <Compile Include="Misc\Dialog_Hire.cs" />
     <Compile Include="Misc\EquipmentOffsetConditions.cs" />
+    <Compile Include="Misc\HireableFactionDef.cs" />
+    <Compile Include="Misc\HireableSystemStaticInitialization.cs" />
     <Compile Include="Misc\StatPart_Ammo.cs" />
     <Compile Include="OptionalFeatures\Dialog_FloatMenuOptions.cs" />
     <Compile Include="OptionalFeatures\OptionalFeatures.cs" />
@@ -668,6 +676,8 @@
     <Compile Include="VFECore\Dialogs\FactionSpawning\Dialog_NewFactionSpawningSettlements.cs" />
     <Compile Include="ItemProcessor\Enums\ProcessorStage.cs" />
     <Compile Include="ItemProcessor\GraphicsCache\GraphicsCache.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Apparel_Patches.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Apparel_Draw_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\DualWield\Patch_DualWield_Ext_Pawn_EquipmentTracker.cs" />
     <Compile Include="VFECore\HarmonyPatches\DualWield\Patch_DualWield_Harmony_FloatMenuMakerMap_AddHumanlikeOrders.cs" />
     <Compile Include="VFECore\HarmonyPatches\FactionSpawning\Patch_FactionDiscovery_ModBase.cs" />
@@ -717,6 +727,7 @@
     <Compile Include="VFECore\IncidentWorkers\IncidentWorker_RaidEnemySpecial.cs" />
     <Compile Include="VFECore\JobDrivers\JobDriver_AttachTurret.cs" />
     <Compile Include="VFECore\JobDrivers\JobDriver_EquipShield.cs" />
+    <Compile Include="VFECore\JobDrivers\JobDriver_LeaveMap.cs" />
     <Compile Include="VFECore\JobDrivers\JobDriver_Recharge.cs" />
     <Compile Include="VFECore\JobDrivers\JobDriver_RepairMachine.cs" />
     <Compile Include="VFECore\JobGivers\JobGiver_Recharge.cs" />

@@ -8,4 +8,14 @@
         <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
     </JobDef>
 
+    <JobDef>
+        <defName>VFEC_LeaveMap</defName>
+        <driverClass>VFECore.JobDriver_LeaveMap</driverClass>
+        <reportString>leaving.</reportString>
+        <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+        <playerInterruptible>false</playerInterruptible>
+        <casualInterruptible>false</casualInterruptible>
+        <alwaysShowWeapon>true</alwaysShowWeapon>
+    </JobDef>
+
 </Defs>

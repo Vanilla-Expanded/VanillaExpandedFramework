@@ -23,7 +23,7 @@
         public Hediff_Abilities hediff;
 
         public Hediff_Abilities Hediff => this.hediff == null && this.def.requiredHediff != null
-                                              ? (this.hediff = (Hediff_Abilities) this.pawn?.health.hediffSet.GetFirstHediffOfDef(this.def.requiredHediff.hediffDef))
+                                              ? (this.hediff = (Hediff_Abilities)this.pawn?.health.hediffSet.GetFirstHediffOfDef(this.def.requiredHediff.hediffDef))
                                               : this.hediff;
 
         public List<AbilityExtension_AbilityMod> abilityModExtensions;
@@ -35,7 +35,7 @@
         public void Init()
         {
             if (this.verb == null)
-                this.verb = (Abilities.Verb_CastAbility) Activator.CreateInstance(this.def.verbProperties.verbClass);
+                this.verb = (Abilities.Verb_CastAbility)Activator.CreateInstance(this.def.verbProperties.verbClass);
             this.verb.loadID      = this.GetUniqueLoadID() + "_Verb";
             this.verb.verbProps   = this.def.verbProperties;
             this.verb.verbTracker = this.pawn?.verbTracker;
@@ -81,14 +81,14 @@
             this.def.powerStatFactors.Aggregate(this.def.power, (current, statFactor) => current * (this.pawn.GetStatValue(statFactor.stat) * statFactor.value));
 
         public virtual int GetCastTimeForPawn() =>
-            Mathf.RoundToInt(this.def.castTimeStatFactors.Aggregate((float) this.def.castTime, (current, statFactor) => current * (this.pawn.GetStatValue(statFactor.stat) * statFactor.value)));
+            Mathf.RoundToInt(this.def.castTimeStatFactors.Aggregate((float)this.def.castTime, (current, statFactor) => current * (this.pawn.GetStatValue(statFactor.stat) * statFactor.value)));
 
         public virtual int GetCooldownForPawn() =>
-            Mathf.RoundToInt(this.def.cooldownTimeStatFactors.Aggregate((float) this.def.cooldownTime,
+            Mathf.RoundToInt(this.def.cooldownTimeStatFactors.Aggregate((float)this.def.cooldownTime,
                                                                         (current, statFactor) => current * (this.pawn.GetStatValue(statFactor.stat) * statFactor.value)));
 
         public virtual int GetDurationForPawn() =>
-            Mathf.RoundToInt(this.def.durationTimeStatFactors.Aggregate((float) this.def.durationTime,
+            Mathf.RoundToInt(this.def.durationTimeStatFactors.Aggregate((float)this.def.durationTime,
                                                                         (current, statFactor) => current * (this.pawn.GetStatValue(statFactor.stat) * statFactor.value)));
 
         public virtual string GetDescriptionForPawn()
@@ -145,7 +145,7 @@
         public virtual float Chance =>
             this.def.Chance;
 
-        public virtual Command_Action GetGizmo()
+        public virtual Gizmo GetGizmo()
         {
             Abilities.Command_Ability action = new Abilities.Command_Ability(this.pawn, this);
             return action;
@@ -153,7 +153,6 @@
 
         public virtual void DoAction()
         {
-
             if (Event.current.button == 1)
             {
                 this.autoCast = !this.autoCast;
@@ -245,7 +244,7 @@
         public virtual void CheckCastEffects(LocalTargetInfo targetInfo, out bool cast, out bool target, out bool hediffApply) =>
             cast = target = hediffApply = true;
 
-        public void ExposeData()
+        public virtual void ExposeData()
         {
             Scribe_References.Look(ref this.pawn, nameof(this.pawn));
             Scribe_Values.Look(ref this.cooldown, nameof(this.cooldown));
@@ -255,12 +254,12 @@
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
-                if(this.verb == null) // no idea how the hell that happens
+                if (this.verb == null) // no idea how the hell that happens
                     this.verb = (Abilities.Verb_CastAbility)Activator.CreateInstance(this.def.verbProperties.verbClass);
 
                 this.verb.loadID      = this.GetUniqueLoadID() + "_Verb";
                 this.verb.verbProps   = this.def.verbProperties;
-                this.verb.verbTracker = this.pawn.verbTracker;
+                this.verb.verbTracker = this.pawn?.verbTracker;
                 this.verb.caster      = this.pawn;
                 this.verb.ability     = this;
             }
@@ -278,7 +277,6 @@
                 if ((this.targetParams.canTargetLocations && this.targetParams.CanTarget(new TargetInfo(target.Cell, this.Caster.Map))) ||
                     this.targetParams.CanTarget(target.ToTargetInfo(this.Caster.Map)))
                 {
-
                     if (!sightCheck)
                         return true;
 
@@ -361,9 +359,9 @@
                              DebugMenuOption($"{(abilityDef.requiredHediff != null ? $"{abilityDef.requiredHediff.hediffDef.LabelCap} ({abilityDef.requiredHediff.minimumLevel}): " : string.Empty)}{abilityDef.LabelCap}",
                                              DebugMenuOptionMode.Tool, () =>
                                                                        {
-
                                                                            foreach (Pawn item in (from t in Find.CurrentMap.thingGrid.ThingsAt(UI.MouseCell())
-                                                                                                  where t is Pawn select t).Cast<Pawn>())
+                                                                                                  where t is Pawn
+                                                                                                  select t).Cast<Pawn>())
                                                                            {
                                                                                CompAbilities abilityComp = item.TryGetComp<CompAbilities>();
                                                                                if (abilityComp != null)
@@ -381,7 +379,6 @@
 
     public class Ability_Blank : Ability
     {
-
     }
 
     public class AbilityExtension_AbilityMod : DefModExtension
@@ -392,12 +389,11 @@
             return true;
         }
 
-        public virtual string GetDescription(Ability ability) => 
+        public virtual string GetDescription(Ability ability) =>
             string.Empty;
 
         public virtual void Cast(Ability ability)
         {
-
         }
     }
 

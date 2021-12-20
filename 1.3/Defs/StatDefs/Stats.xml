@@ -24,4 +24,22 @@
 		<displayPriorityInCategory>4050</displayPriorityInCategory>
 	</StatDef>
 
+	<StatDef>
+		<defName>VEF_VerbCooldownFactor</defName>
+		<label>verb cooldown factor</label>
+		<labelForFullStatList>verb cooldown factor (people)</labelForFullStatList>
+		<description>The cooldown on weapons of the wielder is multiplied by this value.</description>
+		<category>PawnCombat</category>
+		<defaultBaseValue>1</defaultBaseValue>
+		<minValue>0</minValue>
+		<toStringStyle>PercentOne</toStringStyle>
+		<toStringStyleUnfinalized>FloatOne</toStringStyleUnfinalized>
+		<displayPriorityInCategory>4050</displayPriorityInCategory>
+	</StatDef>
+	
+	<StatCategoryDef>
+		<defName>VFE_EquippedStatFactors</defName>
+		<label>Factors when equipped</label>
+		<displayOrder>71</displayOrder>
+	</StatCategoryDef>
 </Defs>
