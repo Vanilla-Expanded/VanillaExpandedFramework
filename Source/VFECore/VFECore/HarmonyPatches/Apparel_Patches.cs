@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
+using static Verse.PawnCapacityUtility;
 
 namespace VFECore
 {
@@ -218,6 +219,36 @@ namespace VFECore
                         }
                         yield return new StatDrawEntry(VFEDefOf.VFE_EquippedStatFactors, extension.equippedStatFactors[k].stat, num3, StatRequest.ForEmpty(), ToStringNumberSense.Factor, null, forceUnfinalizedMode: true).SetReportText(stringBuilder5.ToString());
                     }
+                }
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(PawnCapacityUtility), "CalculateCapacityLevel")]
+    public static class PawnCapacityUtility_CalculateCapacityLevel
+    {
+        public static void Postfix(ref float __result, HediffSet diffSet, PawnCapacityDef capacity, List<CapacityImpactor> impactors = null, bool forTradePrice = false)
+        {
+            if (diffSet.pawn?.apparel != null)
+            {
+                var minLevels = new List<float>();
+                foreach (var apparel in diffSet.pawn.apparel.WornApparel)
+                {
+                    var extension = apparel.def.GetModExtension<ApparelExtension>();
+                    if (extension?.pawnCapacityMinLevels != null)
+                    {
+                        var minCapacity = extension.pawnCapacityMinLevels.FirstOrDefault(x => x.capacity == capacity);
+                        if (minCapacity != null)
+                        {
+                            minLevels.Add(minCapacity.minLevel);
+                        }
+                    }
+                }
+
+                if (minLevels.Any())
+                {
+                    var maxLevel = minLevels.Max();
+                    __result = Mathf.Max(__result, maxLevel);
                 }
             }
         }
