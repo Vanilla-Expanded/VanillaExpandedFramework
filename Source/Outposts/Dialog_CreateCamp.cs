@@ -13,7 +13,7 @@ namespace Outposts
         private const float LINE_HEIGHT = 100f;
         private readonly Dictionary<WorldObjectDef, Material> cachedMats;
         private readonly Caravan creator;
-        private readonly Dictionary<WorldObjectDef, string> validity;
+        private readonly Dictionary<WorldObjectDef, Pair<string, string>> validity;
         private float? prevHeight;
         private Vector2 scrollPosition = new(0, 0);
 
@@ -23,22 +23,25 @@ namespace Outposts
             doCloseX = true;
             doWindowBackground = true;
             this.creator = creator;
-            validity = new Dictionary<WorldObjectDef, string>();
+            validity = new Dictionary<WorldObjectDef, Pair<string, string>>();
             cachedMats = new Dictionary<WorldObjectDef, Material>();
             foreach (var outpost in OutpostsMod.Outposts)
             {
                 var method = outpost.worldObjectClass.GetMethod("CanSpawnOnWith", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                var method2 = outpost.worldObjectClass.GetMethod("RequirementsString", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
                 var ext = outpost.GetModExtension<OutpostExtension>();
-                validity.Add(outpost,
-                    (ext is not null ? Outpost.CanSpawnOnWithExt(ext, creator.Tile, creator.HumanColonists()) : null) ??
-                    (string) method?.Invoke(null, new object[] {creator.Tile, creator.HumanColonists()}));
+                var valid = (ext is not null ? ext.CanSpawnOnWithExt(creator.Tile, creator.HumanColonists()) : null) ??
+                            (string) method?.Invoke(null, new object[] {creator.Tile, creator.HumanColonists()});
+                var tip = (ext.RequirementsStringBase(creator.Tile, creator.HumanColonists()) +
+                           ((string) method2?.Invoke(null, new object[] {creator.Tile, creator.HumanColonists()}) ?? "")).TrimEndNewlines();
+                validity.Add(outpost, new Pair<string, string>(valid, tip));
 
                 cachedMats.Add(outpost,
                     MaterialPool.MatFrom(outpost.ExpandingIconTexture, ShaderDatabase.WorldOverlayTransparentLit, creator.Faction.Color, WorldMaterials.WorldObjectRenderQueue));
             }
         }
 
-        public override Vector2 InitialSize => new(800, 1000);
+        public override Vector2 InitialSize => new(800, Mathf.Min(1000f, UI.screenHeight - 200f));
 
         public override void DoWindowContents(Rect inRect)
         {
@@ -63,6 +66,7 @@ namespace Outposts
         private void DoOutpostDisplay(ref Rect inRect, WorldObjectDef outpostDef)
         {
             var font = Text.Font;
+            var anchor = Text.Anchor;
             Text.Font = GameFont.Tiny;
             inRect.height = Text.CalcHeight(outpostDef.description, inRect.width - 90f) + 60f;
             var image = inRect.LeftPartPixels(50f);
@@ -72,12 +76,17 @@ namespace Outposts
             Text.Font = GameFont.Medium;
             Widgets.Label(text.TopPartPixels(30f), outpostDef.label.CapitalizeFirst(outpostDef));
             var button = text.BottomPartPixels(30f).LeftPartPixels(100f);
+            var errorText = text.BottomPartPixels(30f).RightPartPixels(text.width - 120f);
             Text.Font = GameFont.Tiny;
             Widgets.TextArea(new Rect(text.x, text.y + 30f, text.width, text.height - 60f), outpostDef.description, true);
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Widgets.Label(errorText, validity[outpostDef].First);
             Text.Font = font;
+            Text.Anchor = anchor;
             if (Widgets.ButtonText(button, "Outposts.Dialog.Create".Translate()))
             {
-                if (validity[outpostDef].NullOrEmpty())
+                if (validity[outpostDef].First.NullOrEmpty())
                 {
                     var outpost = (Outpost) WorldObjectMaker.MakeWorldObject(outpostDef);
                     outpost.Name = NameGenerator.GenerateName(creator.Faction.def.settlementNameMaker, Find.WorldObjects.AllWorldObjects.OfType<Outpost>().Select(o => o.Name));
@@ -89,8 +98,10 @@ namespace Outposts
                     Find.WorldSelector.Select(outpost);
                 }
                 else
-                    Messages.Message(validity[outpostDef], MessageTypeDefOf.RejectInput, false);
+                    Messages.Message(validity[outpostDef].First, MessageTypeDefOf.RejectInput, false);
             }
+
+            TooltipHandler.TipRegion(inRect, validity[outpostDef].Second);
         }
     }
 }

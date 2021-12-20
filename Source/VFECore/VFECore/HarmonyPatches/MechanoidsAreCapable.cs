@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 using Verse.AI;
+using VFEMech;
 
 namespace VFE.Mechanoids.HarmonyPatches
 {
@@ -21,4 +22,20 @@ namespace VFE.Mechanoids.HarmonyPatches
             }
         }
     }
+
+	[HarmonyPatch(typeof(JobGiver_Work), "PawnCanUseWorkGiver")]
+	public class JobGiver_Work_PawnCanUseWorkGiver_Patch
+    {
+		public static void Postfix(ref bool __result, Pawn pawn, WorkGiver giver)
+		{
+            if (pawn is Machine && CompMachine.cachedMachinesPawns.TryGetValue(pawn, out CompMachine comp))
+            {
+                var chargingComp = comp?.myBuilding?.TryGetComp<CompMachineChargingStation>();
+                if (chargingComp != null && (chargingComp.Props.disallowedWorkGivers?.Contains(giver.def) ?? false))
+                {
+                    __result = false;
+                }
+            }
+        }
+	}
 }

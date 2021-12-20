@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Xml;
 using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace Outposts
@@ -9,20 +10,24 @@ namespace Outposts
     public class OutpostExtension : DefModExtension
     {
         public List<BiomeDef> AllowedBiomes;
+        public List<ThingDefCountClass> CostToMake;
         public List<BiomeDef> DisallowedBiomes;
         public List<SkillDef> DisplaySkills;
+        public HistoryEventDef Event;
         public int MinPawns;
         public ThingDef ProvidedFood;
         public int Range = -1;
         public List<AmountBySkill> RequiredSkills;
+        public bool RequiresGrowing;
         public List<ResultOption> ResultOptions;
         public int TicksPerProduction = 15 * 60000;
         public int TicksToPack = 7 * 60000;
+        public int TicksToSetUp = -1;
 
         public List<SkillDef> RelevantSkills =>
             new HashSet<SkillDef>(RequiredSkills.SelectOrEmpty(rq => rq.Skill)
                     .Concat(ResultOptions.SelectManyOrEmpty(ro => ro.AmountsPerSkills.SelectOrEmpty(aps => aps.Skill).Concat(ro.MinSkills.SelectOrEmpty(ms => ms.Skill))))
-                    .Concat(DisplaySkills ?? Enumerable.Empty<SkillDef>()))
+                    .Concat(DisplaySkills.OrEmpty()))
                 .ToList();
     }
 
@@ -34,8 +39,10 @@ namespace Outposts
         public List<AmountBySkill> MinSkills;
         public ThingDef Thing;
 
-        public int Amount(List<Pawn> pawns) => BaseAmount + AmountPerPawn * pawns.Count + (AmountsPerSkills?.Sum(x => x.Amount(pawns)) ?? 0);
-        public IEnumerable<Thing> Make(List<Pawn> pawns) => Outpost.MakeThings(Thing, Amount(pawns));
+        public int Amount(List<Pawn> pawns) =>
+            Mathf.RoundToInt((BaseAmount + AmountPerPawn * pawns.Count + (AmountsPerSkills?.Sum(x => x.Amount(pawns)) ?? 0)) * OutpostsMod.Settings.ProductionMultiplier);
+
+        public IEnumerable<Thing> Make(List<Pawn> pawns) => Thing.Make(Amount(pawns));
         public string Explain(List<Pawn> pawns) => $"{Amount(pawns)}x {Thing.LabelCap}";
     }
 

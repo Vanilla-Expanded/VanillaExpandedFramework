@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
     <Outposts.Settings.Title>Vanilla Expanded Framework - Outposts</Outposts.Settings.Title>
-    <Outposts.Settings.Multiplier.Production>Outpost Production Multiplier:</Outposts.Settings.Multiplier.Production>
-    <Outposts.Settings.Multiplier.Time>Outpost Time Multiplier:</Outposts.Settings.Multiplier.Time>
+    <Outposts.Settings.Multiplier.Production>Outpost Production Multiplier: {0}</Outposts.Settings.Multiplier.Production>
+    <Outposts.Settings.Multiplier.Time>Outpost Time Multiplier: {0}</Outposts.Settings.Multiplier.Time>
     <Outposts.Dialog.Create>Create</Outposts.Dialog.Create>
     <Outposts.Commands.Create.Label>Create Outpost</Outposts.Commands.Create.Label>
     <Outposts.Commands.Create.Desc>Create a new outpost using this caravan</Outposts.Commands.Create.Desc>
+    <Outposts.Commands.TakeItems.Label>Take items</Outposts.Commands.TakeItems.Label>
+    <Outposts.Commands.TakeItems.Desc>Take items from {0} and add them to the caravan</Outposts.Commands.TakeItems.Desc>
     <Outposts.Letters.Lost.Label>Outpost Lost</Outposts.Letters.Lost.Label>
     <Outposts.Letters.Lost.Text>Regretfully, due to the deaths of all inhabitants, the outpost of {0} has been lost to us.</Outposts.Letters.Lost.Text>
     <Outposts.Letters.BattleWon.Label>Outpost Battle Won</Outposts.Letters.BattleWon.Label>
@@ -16,6 +18,8 @@
     <Outposts.Commands.AddPawn.Desc>Transfer a pawn from this caravan to the outpost</Outposts.Commands.AddPawn.Desc>
     <Outposts.Commands.Pack.Label>Pack</Outposts.Commands.Pack.Label>
     <Outposts.Commands.Pack.Desc>Begin packing this outpost back into a caravan</Outposts.Commands.Pack.Desc>
+    <Outposts.Commands.StopPack.Label>Stop packing</Outposts.Commands.StopPack.Label>
+    <Outposts.Commands.StopPack.Desc>Cancel packing this outpost into a caravan</Outposts.Commands.StopPack.Desc>
     <Outposts.Commands.Remove.Label>Remove Pawn</Outposts.Commands.Remove.Label>
     <Outposts.Commands.Remove.Desc>Remove a pawn from this outpost into a new caravan</Outposts.Commands.Remove.Desc>
     <Outposts.Command.Remove.Only1>Cannot remove pawns: Only 1 inhabitant. If you want to remove this outpost, select "Pack".</Outposts.Command.Remove.Only1>
@@ -30,9 +34,25 @@
     <Outposts.CannotBeMade>Cannot be made in {0}</Outposts.CannotBeMade>
     <Outposts.NotEnoughPawns>Not enough pawns in caravan, need at least {0}</Outposts.NotEnoughPawns>
     <Outposts.TotalSkill>Cumulative {0} skill: {1}</Outposts.TotalSkill>
-    <Outposts.TooClose>Too close to settlement or other outpost</Outposts.TooClose>
+    <Outposts.TooClose>Too close to settlement or other outpost, must have at least 1 tile between them</Outposts.TooClose>
     <Outposts.AddedFromTransportPods>Your transport pods have arrived. {0} has been added to {1}.</Outposts.AddedFromTransportPods>
     <Outposts.AddTo>Add to outpost</Outposts.AddTo>
     <Outposts.SendNonPawns>Confirm sending items to the outpost? They will be permanently lost.</Outposts.SendNonPawns>
     <Outposts.AlreadyPacking>Already packing</Outposts.AlreadyPacking>
+    <Outposts.Settings.DeliveryMethod>Delivery Method</Outposts.Settings.DeliveryMethod>
+    <Outposts.Settings.DeliveryMethod.Teleport>Teleport items to colony</Outposts.Settings.DeliveryMethod.Teleport>
+    <Outposts.Settings.DeliveryMethod.PackAnimal>Send pack animal carrying items to colony</Outposts.Settings.DeliveryMethod.PackAnimal>
+    <Outposts.Settings.DeliveryMethod.Store>Store items at outpost</Outposts.Settings.DeliveryMethod.Store>
+    <Outposts.Settings.DeliveryMethod.ForcePods>Always send drop pods</Outposts.Settings.DeliveryMethod.ForcePods>
+    <Outposts.Settings.DeliveryMethod.PackOrPods>Pods if available, otherwise pack animal</Outposts.Settings.DeliveryMethod.PackOrPods>
+    <Outposts.Abandoned>Outpost Abandoned</Outposts.Abandoned>
+    <Outposts.Abandoned.Desc>{0} has been abonded due to having no one inside to run it. It will very quickly be looted and taken over by nature, leaving no trace it was ever there.</Outposts.Abandoned.Desc>
+    <Outposts.Take>Take</Outposts.Take>
+    <Outposts.AllowedBiomes>Must be in one of the following biomes:</Outposts.AllowedBiomes>
+    <Outposts.DisallowedBiomes>Cannot be in any of the following biomes:</Outposts.DisallowedBiomes>
+    <Outposts.NumPawns>Must have at least {0} pawns willing to join the outpost</Outposts.NumPawns>
+    <Outposts.RequiredSkill>Cumulative {0} skill must be at least {1}</Outposts.RequiredSkill>
+    <Outposts.GrowingRequired>Must have ability to grow plants</Outposts.GrowingRequired>
+    <Outposts.MustHaveInCaravan>Must have {0} in caravan</Outposts.MustHaveInCaravan>
+    <Outposts.NoValidPawns>No valid pawns to add to outpost</Outposts.NoValidPawns>
 </LanguageData>
