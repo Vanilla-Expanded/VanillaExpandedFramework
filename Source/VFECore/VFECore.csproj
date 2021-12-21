@@ -559,6 +559,7 @@
     <Compile Include="Cuisine\Plants\Plant_NarrowTemperatures.cs" />
     <Compile Include="UItils\UIUtility.cs" />
     <Compile Include="VFECore\Comps\WorldComponents\HiringContractTracker.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Apparel_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\CalculatePain_Patch.cs" />
     <Compile Include="VFECore\DefModExtensions\TraitExtension.cs" />
     <Compile Include="Furniture\Comps\CompConfigurableSpawner.cs" />
@@ -676,7 +677,6 @@
     <Compile Include="VFECore\Dialogs\FactionSpawning\Dialog_NewFactionSpawningSettlements.cs" />
     <Compile Include="ItemProcessor\Enums\ProcessorStage.cs" />
     <Compile Include="ItemProcessor\GraphicsCache\GraphicsCache.cs" />
-    <Compile Include="VFECore\HarmonyPatches\Apparel_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\Apparel_Draw_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\DualWield\Patch_DualWield_Ext_Pawn_EquipmentTracker.cs" />
     <Compile Include="VFECore\HarmonyPatches\DualWield\Patch_DualWield_Harmony_FloatMenuMakerMap_AddHumanlikeOrders.cs" />

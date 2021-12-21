@@ -67,7 +67,7 @@ namespace VFECore
                 }
             }
         }
-
+    
         public static float StatFactorFromGear(Apparel gear, StatDef stat)
         {
             var extension = gear?.def.GetModExtension<ApparelExtension>();
@@ -81,7 +81,7 @@ namespace VFECore
             return 1f;
         }
     }
-
+    
     [HarmonyPatch(typeof(StatWorker), "GetExplanationUnfinalized")]
     public static class StatWorker_GetExplanationUnfinalized_Transpiler
     {
@@ -89,7 +89,7 @@ namespace VFECore
         {
             var codes = instructions.ToList();
             var appendLineMethod = AccessTools.Method(typeof(StringBuilder), nameof(StringBuilder.AppendLine));
-
+    
             for (var i = 0; i < codes.Count; i++)
             {
                 yield return codes[i];
@@ -104,7 +104,7 @@ namespace VFECore
                 }
             }
         }
-
+    
         public static void ModifyValue(ref StringBuilder stringBuilder, Apparel apparel, StatDef stat)
         {
             if (GearAffectsStat(apparel.def, stat))
@@ -112,7 +112,7 @@ namespace VFECore
                 stringBuilder.AppendLine(InfoTextLineFromGear(apparel, stat));
             }
         }
-
+    
         private static bool GearAffectsStat(ThingDef gearDef, StatDef stat)
         {
             var extension = gearDef.GetModExtension<ApparelExtension>();
@@ -128,7 +128,7 @@ namespace VFECore
             }
             return false;
         }
-
+    
         private static string InfoTextLineFromGear(Thing gear, StatDef stat)
         {
             var extension = gear.def.GetModExtension<ApparelExtension>();
@@ -186,6 +186,10 @@ namespace VFECore
     {
         public static IEnumerable<StatDrawEntry> Postfix(IEnumerable<StatDrawEntry> __result, ThingDef __instance, StatRequest req)
         {
+            foreach (var r in __result)
+            {
+                yield return r;
+            }
             var extension = __instance.GetModExtension<ApparelExtension>();
             if (extension != null && !extension.equippedStatFactors.NullOrEmpty())
             {
