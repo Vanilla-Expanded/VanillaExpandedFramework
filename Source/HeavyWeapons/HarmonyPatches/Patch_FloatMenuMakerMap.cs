@@ -41,7 +41,7 @@ namespace HeavyWeapons
                             if (floatMenuOption != null && !CanEquip(pawn, options))
                             {
                                 opts.Remove(floatMenuOption);
-                                opts.Add(new FloatMenuOption("CannotEquip".Translate(equipment.LabelShort) + " (" + "VWE.CannotEquipHeavy".Translate(pawn.LabelShort) + ")", null));
+                                opts.Add(new FloatMenuOption("CannotEquip".Translate(equipment.LabelShort) + " (" + options.disableOptionLabelKey.Translate(pawn.LabelShort) + ")", null));
                             }
                             break;
                         }
@@ -51,9 +51,12 @@ namespace HeavyWeapons
     
             public static bool CanEquip(Pawn pawn, HeavyWeapon options)
             {
-                if (pawn.story?.traits?.HasTrait(TraitDefOf.Tough) ?? false)
+                if (pawn.story?.traits != null && options.supportedTraits != null)
                 {
-                    return true;
+                    if (pawn.story.traits.allTraits.Any(x => options.supportedTraits.Contains(x.def.defName)))
+                    {
+                        return true;
+                    }
                 }
                 if (pawn.apparel.WornApparel != null)
                 {

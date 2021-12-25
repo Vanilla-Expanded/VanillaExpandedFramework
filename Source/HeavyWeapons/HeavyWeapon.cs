@@ -10,7 +10,9 @@ namespace HeavyWeapons
 {
     public class HeavyWeapon : DefModExtension
     {
+        public List<string> supportedTraits;
         public List<string> supportedArmors;
+        public string disableOptionLabelKey;
         public int weaponHitPointsDeductionOnShot;
         public bool isHeavy;
     }
