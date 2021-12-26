@@ -52,6 +52,7 @@ namespace AnimalBehaviours
             Pawn pawn = this.parent as Pawn;
             animalProductComp = this.parent.TryGetComp<CompAnimalProduct>();
             Pawn_DrawTracker drawtracker = ((Pawn_DrawTracker)typeof(Pawn).GetField("drawer", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(pawn));
+           
             if (drawtracker != null)
             {
                 this.pawn_renderer = drawtracker.renderer;

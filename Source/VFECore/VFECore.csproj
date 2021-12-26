@@ -419,6 +419,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompFixedGender.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompFloating.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompGasProducer.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompGraphicByStyle.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompGraphicByTerrain.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompHediffEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompHighlyFlammable.cs" />
@@ -453,6 +454,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ExplodingEggLayer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ExplodingHatcher.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ExtremeXenophobia.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_GraphicByStyle.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_GraphicByTerrain.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_LightSustenance.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_PawnOverlay.cs" />
