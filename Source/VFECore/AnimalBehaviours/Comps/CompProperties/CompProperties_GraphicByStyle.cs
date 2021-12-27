@@ -14,6 +14,7 @@ namespace AnimalBehaviours
 
         public StyleCategoryDef style;
         public string newImagePath;
+        public bool changeDesiccatedGraphic = false;
         public string dessicatedTxt;
         public int changeGraphicsInterval = 2000;
 

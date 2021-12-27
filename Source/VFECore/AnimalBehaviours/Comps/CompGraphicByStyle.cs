@@ -35,7 +35,7 @@ namespace AnimalBehaviours
             if (changeGraphicsCounter > Props.changeGraphicsInterval)
             {
                 this.ChangeTheGraphics();
-
+                changeGraphicsCounter = 0;
             }
             base.CompTick();
         }
@@ -46,9 +46,12 @@ namespace AnimalBehaviours
             Pawn pawn = this.parent as Pawn;
             this.pawn_renderer = pawn.Drawer.renderer;
 
-            GraphicData dessicatedgraphicdata = new GraphicData();
-            dessicatedgraphicdata.texPath = Props.dessicatedTxt;
-            dessicatedGraphic = dessicatedgraphicdata.Graphic;
+            if (Props.changeDesiccatedGraphic) {
+                GraphicData dessicatedgraphicdata = new GraphicData();
+                dessicatedgraphicdata.texPath = Props.dessicatedTxt;
+                dessicatedGraphic = dessicatedgraphicdata.Graphic;
+            }
+            
             this.ChangeTheGraphics();
 
         }
@@ -90,7 +93,11 @@ namespace AnimalBehaviours
                             try
                             {
                                 Graphic_Multi nakedGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(Props.newImagePath, ShaderDatabase.Cutout, vector, Color.white);
-                                this.pawn_renderer.graphics.dessicatedGraphic = dessicatedGraphic;
+                                if (Props.changeDesiccatedGraphic)
+                                {
+                                    this.pawn_renderer.graphics.dessicatedGraphic = dessicatedGraphic;
+
+                                }
                                 this.pawn_renderer.graphics.ResolveAllGraphics();
                                 this.pawn_renderer.graphics.nakedGraphic = nakedGraphic;
                                 (this.pawn_renderer.graphics.nakedGraphic.data = new GraphicData()).shadowData = pawn.ageTracker.CurKindLifeStage.bodyGraphicData.shadowData;
@@ -110,8 +117,12 @@ namespace AnimalBehaviours
 
                             try
                             {
-                                Graphic_Multi nakedGraphic = (Graphic_Multi)this.parent.def.graphic;
-                                this.pawn_renderer.graphics.dessicatedGraphic = pawn.ageTracker.CurKindLifeStage.dessicatedBodyGraphicData.Graphic;
+                                Graphic nakedGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(pawn.ageTracker.CurKindLifeStage.bodyGraphicData.texPath, ShaderDatabase.Cutout, vector, Color.white);
+                                if (Props.changeDesiccatedGraphic)
+                                {
+                                    this.pawn_renderer.graphics.dessicatedGraphic = pawn.ageTracker.CurKindLifeStage.dessicatedBodyGraphicData.Graphic;
+
+                                }                               
                                 this.pawn_renderer.graphics.ResolveAllGraphics();
                                 this.pawn_renderer.graphics.nakedGraphic = nakedGraphic;
                                 (this.pawn_renderer.graphics.nakedGraphic.data = new GraphicData()).shadowData = pawn.ageTracker.CurKindLifeStage.bodyGraphicData.shadowData;
