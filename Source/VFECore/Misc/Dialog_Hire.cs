@@ -51,8 +51,17 @@ namespace VFECore.Misc
             {
                 List<Pawn> pawns = new List<Pawn>();
 
-                TradeUtility.LaunchSilver(this.targetMap, Mathf.RoundToInt(CostFinal));
+                int remainingCost = Mathf.RoundToInt(CostFinal);
 
+                List<Thing> silverList = this.targetMap.listerThings.ThingsOfDef(ThingDefOf.Silver)
+                                          .Where(x => !x.Position.Fogged(x.Map) && (this.targetMap.areaManager.Home[x.Position] || x.IsInAnyStorage())).ToList();
+                while (remainingCost > 0)
+                {
+                    Thing silver = silverList.First(t => t.stackCount > 0);
+                    int   num    = Mathf.Min(remainingCost, silver.stackCount);
+                    silver.SplitOff(num).Destroy();
+                    remainingCost -= num;
+                }
 
                 if (!RCellFinder.TryFindRandomPawnEntryCell(out IntVec3 cell, this.targetMap, 1f))
                     cell = CellFinder.RandomEdgeCell(this.targetMap);
@@ -60,11 +69,17 @@ namespace VFECore.Misc
                 foreach (KeyValuePair<PawnKindDef, Pair<int, string>> kvp in this.hireData)
                     for (int i = 0; i < kvp.Value.First; i++)
                     {
-                        Pawn pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(kvp.Key, mustBeCapableOfViolence: true, faction: Faction.OfPlayer));
+                        Pawn pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(kvp.Key, mustBeCapableOfViolence: true, faction: Faction.OfPlayer, forceNoIdeo: true));
                         pawns.Add(pawn);
-                        IntVec3 loc = CellFinder.RandomClosewalkCellNear(cell, this.targetMap, 8);
-                        GenSpawn.Spawn(pawn, loc, this.targetMap, Rot4.Random);
-                        pawn.jobs.TryTakeOrderedJob(job: new Job(JobDefOf.GotoWander, this.targetMap.areaManager.Home.ActiveCells.Where(iv => iv.Standable(this.targetMap)).RandomElement()));
+                        IntVec3 loc = DropCellFinder.TryFindSafeLandingSpotCloseToColony(this.targetMap, IntVec2.Two);
+
+                        ActiveDropPodInfo activeDropPodInfo = new ActiveDropPodInfo();
+                        activeDropPodInfo.innerContainer.TryAdd(pawn, 1);
+                        activeDropPodInfo.openDelay                     = 60;
+                        activeDropPodInfo.leaveSlag                     = false;
+                        activeDropPodInfo.despawnPodBeforeSpawningThing = true;
+                        activeDropPodInfo.spawnWipeMode                 = WipeMode.Vanish;
+                        DropPodUtility.MakeDropPodAt(loc, this.targetMap, activeDropPodInfo);
                     }
 
                 Find.World.GetComponent<HiringContractTracker>().SetNewContract(this.daysAmount, pawns, this.hireable);
