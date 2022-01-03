@@ -8,14 +8,16 @@ namespace VFECore.Misc
     {
         public Color color;
         public string commTag;
-        [Unsaved()]
-        private Material material;
+
+        [Unsaved] public string editBuffer;
+
+        [Unsaved] private Material material;
+
         public List<PawnKindDef> pawnKinds;
         public string texPath;
-        [Unsaved()]
-        private Texture2D texture;
-        [Unsaved()]
-        public string EditBuffer;
+
+        [Unsaved] private Texture2D texture;
+
         public Texture2D Texture => texture ?? (texture = ContentFinder<Texture2D>.Get(texPath));
         public Material Material => material ?? (material = MaterialPool.MatFrom(Texture, ShaderDatabase.DefaultShader, color));
     }

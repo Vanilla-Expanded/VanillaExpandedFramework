@@ -1,15 +1,14 @@
-﻿namespace VFECore.Misc
-{
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-    using System.Reflection.Emit;
-    using HarmonyLib;
-    using RimWorld;
-    using RimWorld.Planet;
-    using Verse;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Emit;
+using HarmonyLib;
+using RimWorld;
+using RimWorld.Planet;
+using Verse;
 
+namespace VFECore.Misc
+{
     [StaticConstructorOnStartup]
     public static class HireableSystemStaticInitialization
     {
@@ -21,44 +20,42 @@
             if (Hireables.Any())
             {
                 VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(Building_CommsConsole), nameof(Building_CommsConsole.GetCommTargets)),
-                                              postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(GetCommTargets_Postfix)));
-
+                    postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(GetCommTargets_Postfix)));
                 VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(LoadedObjectDirectory), "Clear"),
-                                              postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(AddHireablesToLoadedObjectDirectory)));
+                    postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(AddHireablesToLoadedObjectDirectory)));
                 VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(QuestUtility), nameof(QuestUtility.IsQuestLodger)),
-                                              postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(IsQuestLodger_Postfix)));
+                    postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(IsQuestLodger_Postfix)));
                 VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(EquipmentUtility), nameof(EquipmentUtility.QuestLodgerCanUnequip)),
-                                              postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(QuestLodgerCanUnequip_Postfix)));
+                    postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(QuestLodgerCanUnequip_Postfix)));
                 VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(CaravanFormingUtility), nameof(CaravanFormingUtility.AllSendablePawns)),
-                                              transpiler: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(CaravanAllSendablePawns_Transpiler)));
+                    transpiler: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(CaravanAllSendablePawns_Transpiler)));
             }
         }
 
         public static IEnumerable<ICommunicable> GetCommTargets_Postfix(IEnumerable<ICommunicable> communicables) =>
-            Find.World.GetComponent<HiringContractTracker>().pawns.Any() ? communicables : communicables.Concat(Hireables);
+            Find.World.GetComponent<HiringContractTracker>().pawns.Any() ? communicables.Concat(Find.World.GetComponent<HiringContractTracker>()) : communicables.Concat(Hireables);
 
         public static void AddHireablesToLoadedObjectDirectory(LoadedObjectDirectory __instance)
         {
-            foreach (Hireable hireable in Hireables)
+            foreach (var hireable in Hireables)
                 __instance.RegisterLoaded(hireable);
         }
 
         public static void IsQuestLodger_Postfix(Pawn p, ref bool __result)
         {
-            __result = __result || Find.World.GetComponent<HiringContractTracker>().pawns.Contains(p);
+            __result = __result || HiringContractTracker.IsHired(p);
         }
 
         public static void QuestLodgerCanUnequip_Postfix(Pawn pawn, ref bool __result)
         {
-            __result = __result && !Find.World.GetComponent<HiringContractTracker>().pawns.Contains(pawn);
+            __result = __result && !HiringContractTracker.IsHired(pawn);
         }
 
         public static IEnumerable<CodeInstruction> CaravanAllSendablePawns_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            MethodInfo questLodger = AccessTools.Method(typeof(QuestUtility), nameof(QuestUtility.IsQuestLodger));
+            var questLodger = AccessTools.Method(typeof(QuestUtility), nameof(QuestUtility.IsQuestLodger));
 
-            foreach (CodeInstruction instruction in instructions)
-            {
+            foreach (var instruction in instructions)
                 if (instruction.Calls(questLodger))
                 {
                     yield return new CodeInstruction(OpCodes.Dup);
@@ -67,11 +64,10 @@
                 }
                 else
                     yield return instruction;
-            }
         }
 
         public static bool CaravanAllSendablePawns_Helper(Pawn pawn, bool questLodger) =>
-            questLodger && !Find.World.GetComponent<HiringContractTracker>().pawns.Contains(pawn);
+            questLodger && !HiringContractTracker.IsHired(pawn);
     }
 
     public class Hireable : IGrouping<string, HireableFactionDef>, ICommunicable, ILoadReferenceable
@@ -83,15 +79,15 @@
 
         public Hireable(string label, List<HireableFactionDef> list)
         {
-            this.Key      = label;
-            this.factions = list;
+            Key = label;
+            factions = list;
 
             loadedObjectInfo(Scribe.loader.crossRefs).RegisterLoaded(this);
         }
 
-        public string GetCallLabel() => "VEF.Hire".Translate(this.Key.CapitalizeFirst());
+        public string GetCallLabel() => "VEF.Hire".Translate(Key.CapitalizeFirst());
 
-        public string GetInfoText() => "VEF.HireDesc".Translate(this.Key.CapitalizeFirst());
+        public string GetInfoText() => "VEF.HireDesc".Translate(Key.CapitalizeFirst());
 
         public void TryOpenComms(Pawn negotiator)
         {
@@ -101,13 +97,13 @@
         public Faction GetFaction() => null;
 
         public FloatMenuOption CommFloatMenuOption(Building_CommsConsole console, Pawn negotiator) => FloatMenuUtility.DecoratePrioritizedTask(
-         new FloatMenuOption(this.GetCallLabel(), () => console.GiveUseCommsJob(negotiator, this), MenuOptionPriority.InitiateSocial), negotiator, console);
+            new FloatMenuOption(GetCallLabel(), () => console.GiveUseCommsJob(negotiator, this), MenuOptionPriority.InitiateSocial), negotiator, console);
 
-        public IEnumerator<HireableFactionDef> GetEnumerator() => this.factions.GetEnumerator();
+        public IEnumerator<HireableFactionDef> GetEnumerator() => factions.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        public string Key               { get; }
-        public string GetUniqueLoadID() => $"{nameof(Hireable)}_{this.Key}";
+        public string Key { get; }
+        public string GetUniqueLoadID() => $"{nameof(Hireable)}_{Key}";
     }
 }
