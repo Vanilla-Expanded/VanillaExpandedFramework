@@ -15,11 +15,11 @@ namespace VFECore
         public Dictionary<Hireable, List<ExposablePair>>
             deadCount = new Dictionary<Hireable, List<ExposablePair>>(); //the pair being amount of dead people and at what tick it expires
 
-        public int endTicks;
+        public int                endTicks;
         public HireableFactionDef factionDef;
-        public Hireable hireable;
-        public List<Pawn> pawns = new List<Pawn>();
-        public float price;
+        public Hireable           hireable;
+        public List<Pawn>         pawns = new List<Pawn>();
+        public float              price;
 
         public HiringContractTracker(World world) : base(world)
         {
@@ -37,18 +37,18 @@ namespace VFECore
         public Faction GetFaction() => null;
 
         public FloatMenuOption CommFloatMenuOption(Building_CommsConsole console, Pawn negotiator) => FloatMenuUtility.DecoratePrioritizedTask(
-            new FloatMenuOption(GetCallLabel(), () => console.GiveUseCommsJob(negotiator, this), MenuOptionPriority.InitiateSocial), negotiator, console);
+         new FloatMenuOption(GetCallLabel(), () => console.GiveUseCommsJob(negotiator, this), MenuOptionPriority.InitiateSocial), negotiator, console);
 
-        public static bool IsHired(Pawn pawn) => hired.Contains(pawn);
+        public bool IsHired(Pawn pawn) => hired.Contains(pawn);
 
         public void SetNewContract(int days, List<Pawn> pawns, Hireable hireable, HireableFactionDef faction = null, float price = 0)
         {
-            endTicks = Find.TickManager.TicksAbs + days * GenDate.TicksPerDay;
-            this.pawns = pawns;
-            hired = pawns.ToHashSet();
+            endTicks      = Find.TickManager.TicksAbs + days * GenDate.TicksPerDay;
+            this.pawns    = pawns;
+            hired         = pawns.ToHashSet();
             this.hireable = hireable;
-            factionDef = faction;
-            this.price = price;
+            factionDef    = faction;
+            this.price    = price;
         }
 
         public override void WorldComponentTick()
@@ -108,10 +108,10 @@ namespace VFECore
             float factor = 0;
 
             for (var i = pairs.Count - 1; i >= 0; i--)
-                if (Find.TickManager.TicksAbs > (int) pairs[i].value)
+                if (Find.TickManager.TicksAbs > (int)pairs[i].value)
                     pairs.RemoveAt(i);
                 else
-                    factor += 0.05f * (int) pairs[i].key;
+                    factor += 0.05f * (int)pairs[i].key;
 
             return factor;
         }
@@ -156,13 +156,13 @@ namespace VFECore
 
         public ExposablePair(object key, object value)
         {
-            this.key = key;
+            this.key   = key;
             this.value = value;
         }
 
         public void ExposeData()
         {
-            Scribe_Values.Look(ref key, nameof(key));
+            Scribe_Values.Look(ref key,   nameof(key));
             Scribe_Values.Look(ref value, nameof(value));
         }
     }
