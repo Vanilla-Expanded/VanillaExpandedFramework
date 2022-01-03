@@ -11,7 +11,6 @@ namespace Outposts
     public class Dialog_CreateCamp : Window
     {
         private const float LINE_HEIGHT = 100f;
-        private readonly Dictionary<WorldObjectDef, Material> cachedMats;
         private readonly Caravan creator;
         private readonly Dictionary<WorldObjectDef, Pair<string, string>> validity;
         private float? prevHeight;
@@ -24,20 +23,17 @@ namespace Outposts
             doWindowBackground = true;
             this.creator = creator;
             validity = new Dictionary<WorldObjectDef, Pair<string, string>>();
-            cachedMats = new Dictionary<WorldObjectDef, Material>();
             foreach (var outpost in OutpostsMod.Outposts)
             {
                 var method = outpost.worldObjectClass.GetMethod("CanSpawnOnWith", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
                 var method2 = outpost.worldObjectClass.GetMethod("RequirementsString", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
                 var ext = outpost.GetModExtension<OutpostExtension>();
-                var valid = (ext is not null ? ext.CanSpawnOnWithExt(creator.Tile, creator.HumanColonists()) : null) ??
+                var valid = ext?.CanSpawnOnWithExt(creator.Tile, creator.HumanColonists()) ??
                             (string) method?.Invoke(null, new object[] {creator.Tile, creator.HumanColonists()});
-                var tip = (ext.RequirementsStringBase(creator.Tile, creator.HumanColonists()) +
-                           ((string) method2?.Invoke(null, new object[] {creator.Tile, creator.HumanColonists()}) ?? "")).TrimEndNewlines();
-                validity.Add(outpost, new Pair<string, string>(valid, tip));
+                var tip = (ext?.RequirementsStringBase(creator.Tile, creator.HumanColonists()) ?? "" +
+                    ((string) method2?.Invoke(null, new object[] {creator.Tile, creator.HumanColonists()}) ?? "")).TrimEndNewlines();
 
-                cachedMats.Add(outpost,
-                    MaterialPool.MatFrom(outpost.ExpandingIconTexture, ShaderDatabase.WorldOverlayTransparentLit, creator.Faction.Color, WorldMaterials.WorldObjectRenderQueue));
+                validity.Add(outpost, new Pair<string, string>(valid, tip));
             }
         }
 
@@ -72,7 +68,9 @@ namespace Outposts
             var image = inRect.LeftPartPixels(50f);
             var text = inRect.RightPartPixels(inRect.width - 60f);
             var tex = outpostDef.ExpandingIconTexture;
-            Widgets.DrawTextureFitted(image, tex, 1f, new Vector2(tex.width, tex.height), new Rect(0f, 0f, 1f, 1f) /*, 0f, cachedMats[outpost]*/);
+            GUI.color = Faction.OfPlayer.Color;
+            Widgets.DrawTextureFitted(image, tex, 1f, new Vector2(tex.width, tex.height), new Rect(0f, 0f, 1f, 1f));
+            GUI.color = Color.white;
             Text.Font = GameFont.Medium;
             Widgets.Label(text.TopPartPixels(30f), outpostDef.label.CapitalizeFirst(outpostDef));
             var button = text.BottomPartPixels(30f).LeftPartPixels(100f);

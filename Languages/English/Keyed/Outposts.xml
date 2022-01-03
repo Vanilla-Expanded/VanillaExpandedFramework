@@ -55,4 +55,5 @@
     <Outposts.GrowingRequired>Must have ability to grow plants</Outposts.GrowingRequired>
     <Outposts.MustHaveInCaravan>Must have {0} in caravan</Outposts.MustHaveInCaravan>
     <Outposts.NoValidPawns>No valid pawns to add to outpost</Outposts.NoValidPawns>
+    <Outposts.SkillChange>Due to changes in skill level, {0} can no longer produce {1}</Outposts.SkillChange>
 </LanguageData>

@@ -39,6 +39,7 @@ namespace Outposts
         public bool Packing => ticksTillPacked > 0;
         public virtual int Range => Ext?.Range ?? -1;
         public IEnumerable<Thing> Things => containedItems;
+        public IEnumerable<Pawn> CapablePawns => AllPawns.Where(IsCapable);
 
         public override Material Material
         {
@@ -69,6 +70,13 @@ namespace Outposts
 
         public virtual List<ResultOption> ResultOptions => Ext.ResultOptions;
 
+        protected virtual bool IsCapable(Pawn pawn)
+        {
+            if (!pawn.RaceProps.Humanlike) return false;
+            if (pawn.skills is null) return false;
+            return !Ext.RelevantSkills.Any(skill => pawn.skills.GetSkill(skill).TotallyDisabled);
+        }
+
         public override void PostAdd()
         {
             base.PostAdd();
@@ -79,7 +87,7 @@ namespace Outposts
         {
             if (skillsDirty)
                 foreach (var skillDef in DefDatabase<SkillDef>.AllDefs)
-                    totalSkills[skillDef] = occupants.Where(p => p.def.race.Humanlike).Sum(p => p.skills.GetSkill(skill).Level);
+                    totalSkills[skillDef] = CapablePawns.Sum(p => p.skills.GetSkill(skill).Level);
             return totalSkills[skill];
         }
 
@@ -113,7 +121,7 @@ namespace Outposts
                 occupants.Clear();
                 Find.LetterStack.ReceiveLetter("Outposts.Letters.BattleWon.Label".Translate(), "Outposts.Letters.BattleWon.Text".Translate(Name), LetterDefOf.PositiveEvent,
                     new LookTargets(Gen.YieldSingle(this)));
-                foreach (var pawn in Map.mapPawns.AllPawns.Where(p => p.RaceProps.Humanlike))
+                foreach (var pawn in Map.mapPawns.AllPawns.Where(p => p.Faction is {IsPlayer: true}))
                 {
                     pawn.DeSpawn();
                     occupants.Add(pawn);
@@ -280,7 +288,7 @@ namespace Outposts
                     if (pawn.IsHashIntervalTick(300))
                     {
                         var food = pawn.needs.food;
-                        if (food.CurLevelPercentage <= pawn.RaceProps.FoodLevelPercentageWantEat && ProvidedFood != null && ProvidedFood.IsNutritionGivingIngestible &&
+                        if (food.CurLevelPercentage <= pawn.RaceProps.FoodLevelPercentageWantEat && ProvidedFood is {IsNutritionGivingIngestible: true} &&
                             ProvidedFood.ingestible.HumanEdible)
                         {
                             var thing = ThingMaker.MakeThing(ProvidedFood);
@@ -288,11 +296,49 @@ namespace Outposts
                         }
                     }
                 }
+
+            if (this.IsHashIntervalTick(300)) SatisfyNeeds();
+        }
+
+        public virtual void SatisfyNeeds()
+        {
+            foreach (var pawn in AllPawns) SatisfyNeeds(pawn);
+        }
+
+        public virtual void SatisfyNeeds(Pawn pawn)
+        {
+            var food = pawn.needs.food;
+            if (food.CurLevelPercentage <= pawn.RaceProps.FoodLevelPercentageWantEat && ProvidedFood is {IsNutritionGivingIngestible: true} && ProvidedFood.ingestible.HumanEdible)
+            {
+                var thing = ThingMaker.MakeThing(ProvidedFood);
+                if (thing.IngestibleNow && pawn.RaceProps.CanEverEat(thing)) food.CurLevel += thing.Ingested(pawn, food.NutritionWanted);
+            }
+
+            if (GenLocalDate.HourInteger(Tile) >= 23 || GenLocalDate.HourInteger(Tile) <= 5) pawn.needs.rest.TickResting(0.75f);
+
+            if (pawn.health.HasHediffsNeedingTend())
+            {
+                var doctor = AllPawns.Where(p => p.RaceProps.Humanlike && !p.Downed).MaxBy(p => p.skills?.GetSkill(SkillDefOf.Medicine)?.Level ?? -1f);
+                Medicine medicine = null;
+                var potency = 0f;
+                foreach (var thing in containedItems)
+                    if (thing.def.IsMedicine && pawn.playerSettings.medCare.AllowsMedicine(thing.def))
+                    {
+                        var statValue = thing.GetStatValue(StatDefOf.MedicalPotency);
+                        if (statValue > potency || medicine == null)
+                        {
+                            potency = statValue;
+                            medicine = (Medicine) thing;
+                        }
+                    }
+
+                TendUtility.DoTend(doctor, pawn, medicine);
+            }
         }
 
         public virtual IEnumerable<Thing> ProducedThings()
         {
-            return ResultOptions.SelectMany(resultOption => resultOption.Make(occupants));
+            return ResultOptions.SelectMany(resultOption => resultOption.Make(CapablePawns.ToList()));
         }
 
         public virtual void Produce()
@@ -461,10 +507,10 @@ namespace Outposts
             if (Ext is null || options is not {Count: >0}) return "";
             return options.Count switch
             {
-                1 => "Outposts.WillProduce.1".Translate(options[0].Amount(occupants), options[0].Thing.label, TimeTillProduction).RawText,
-                2 => "Outposts.WillProduce.2".Translate(options[0].Amount(occupants), options[0].Thing.label, options[1].Amount(occupants),
+                1 => "Outposts.WillProduce.1".Translate(options[0].Amount(CapablePawns.ToList()), options[0].Thing.label, TimeTillProduction).RawText,
+                2 => "Outposts.WillProduce.2".Translate(options[0].Amount(CapablePawns.ToList()), options[0].Thing.label, options[1].Amount(CapablePawns.ToList()),
                     options[1].Thing.label, TimeTillProduction).RawText,
-                _ => "Outposts.WillProduce.N".Translate(TimeTillProduction, options.Select(ro => ro.Explain(occupants)).ToLineList("  - ")).RawText
+                _ => "Outposts.WillProduce.N".Translate(TimeTillProduction, options.Select(ro => ro.Explain(CapablePawns.ToList())).ToLineList("  - ")).RawText
             };
         }
 

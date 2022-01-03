@@ -11,7 +11,7 @@ namespace Outposts
         protected override bool TryExecuteWorker(IncidentParms parms)
         {
             if (!Find.WorldObjects.AllWorldObjects.OfType<Outpost>().TryRandomElement(out var target)) return false;
-            parms.target = GetOrGenerateMapUtility.GetOrGenerateMap(target.Tile, target.def);
+            parms.target = GetOrGenerateMapUtility.GetOrGenerateMap(target.Tile, new IntVec3(150, 1, 150), target.def);
             parms.points = StorytellerUtility.DefaultThreatPointsNow(parms.target);
             return base.TryExecuteWorker(parms);
         }
