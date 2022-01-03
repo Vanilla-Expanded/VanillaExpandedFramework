@@ -109,15 +109,6 @@ namespace VFECore
                 else
                     Log.Error("Could not find type RunAndGun.Harmony.Verb_TryCastNextBurstShot in RunAndGun");
             }
-
-            // Combat Extended rendering
-            if (ModCompatibilityCheck.CombatExtended)
-            {
-                var outerType = AccessTools.TypeByName("CombatExtended.HarmonyCE.Harmony_PawnRenderer");
-                var innerType = AccessTools.Inner(outerType, "Harmony_PawnRenderer_DrawBodyApparel");
-                var method = AccessTools.Method(innerType, "IsVisibleLayer");
-                Patch_PawnRenderer.CE_IsVisibleLayer = MethodInvoker.GetHandler(method);
-            }
         }
     }
 }
