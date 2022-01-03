@@ -10,8 +10,6 @@ namespace VFECore
 {
     public class HiringContractTracker : WorldComponent, ICommunicable
     {
-        private static HashSet<Pawn> hired;
-
         public Dictionary<Hireable, List<ExposablePair>>
             deadCount = new Dictionary<Hireable, List<ExposablePair>>(); //the pair being amount of dead people and at what tick it expires
 
@@ -39,13 +37,12 @@ namespace VFECore
         public FloatMenuOption CommFloatMenuOption(Building_CommsConsole console, Pawn negotiator) => FloatMenuUtility.DecoratePrioritizedTask(
          new FloatMenuOption(GetCallLabel(), () => console.GiveUseCommsJob(negotiator, this), MenuOptionPriority.InitiateSocial), negotiator, console);
 
-        public bool IsHired(Pawn pawn) => hired.Contains(pawn);
+        public bool IsHired(Pawn pawn) => pawns.Contains(pawn);
 
         public void SetNewContract(int days, List<Pawn> pawns, Hireable hireable, HireableFactionDef faction = null, float price = 0)
         {
             endTicks      = Find.TickManager.TicksAbs + days * GenDate.TicksPerDay;
             this.pawns    = pawns;
-            hired         = pawns.ToHashSet();
             this.hireable = hireable;
             factionDef    = faction;
             this.price    = price;
@@ -95,7 +92,6 @@ namespace VFECore
             }
 
             hireable = null;
-            hired.Clear();
         }
 
         public float GetFactorForHireable(Hireable hireable)
@@ -122,7 +118,6 @@ namespace VFECore
 
             Scribe_Values.Look(ref endTicks, nameof(endTicks));
             Scribe_Collections.Look(ref pawns, nameof(pawns), LookMode.Reference);
-            hired = pawns.ToHashSet();
             Scribe_References.Look(ref hireable, nameof(hireable));
             var deadCountKey = new List<Hireable>(deadCount.Keys);
             Scribe_Collections.Look(ref deadCountKey, nameof(deadCountKey), LookMode.Reference);
