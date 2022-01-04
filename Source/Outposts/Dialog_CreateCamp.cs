@@ -68,7 +68,7 @@ namespace Outposts
             var image = inRect.LeftPartPixels(50f);
             var text = inRect.RightPartPixels(inRect.width - 60f);
             var tex = outpostDef.ExpandingIconTexture;
-            GUI.color = Faction.OfPlayer.Color;
+            GUI.color = creator.Faction.Color;
             Widgets.DrawTextureFitted(image, tex, 1f, new Vector2(tex.width, tex.height), new Rect(0f, 0f, 1f, 1f));
             GUI.color = Color.white;
             Text.Font = GameFont.Medium;

@@ -13,12 +13,6 @@ namespace Outposts
 
         public override List<ResultOption> ResultOptions => Ext.ResultOptions.OrEmpty().Concat(GetExtraOptions()).Where(ro => ro.Thing == choice).ToList();
 
-        public override void PostAdd()
-        {
-            base.PostAdd();
-            choice ??= Ext.ResultOptions.OrEmpty().Concat(GetExtraOptions()).MinBy(ro => ro.MinSkills?.Sum(abs => abs.Count) ?? 0f).Thing;
-        }
-
         public override IEnumerable<Gizmo> GetGizmos()
         {
             return base.GetGizmos().Append(new Command_Action
@@ -36,6 +30,7 @@ namespace Outposts
         public override void RecachePawnTraits()
         {
             base.RecachePawnTraits();
+            choice ??= Ext.ResultOptions.OrEmpty().Concat(GetExtraOptions()).MinBy(ro => ro.MinSkills?.Sum(abs => abs.Count) ?? 0f).Thing;
             if (ResultOptions.FirstOrDefault(ro => !(ro.MinSkills?.SatisfiedBy(CapablePawns) ?? true)) is {Thing: {label: var produced}})
             {
                 Messages.Message("Outposts.SkillChange".Translate(Name, produced), this, MessageTypeDefOf.NegativeEvent);
