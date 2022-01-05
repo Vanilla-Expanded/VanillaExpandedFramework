@@ -39,10 +39,13 @@ namespace VFECore
 		{
 			get
 			{
-				var extension = this.def.GetModExtension<FloorGraphicExtension>();
-				if (extension != null)
+				if (this.ParentHolder is Map)
                 {
-					return FloorGraphic(extension);
+					var extension = this.def.GetModExtension<FloorGraphicExtension>();
+					if (extension != null)
+					{
+						return FloorGraphic(extension);
+					}
 				}
 				return base.Graphic;
 			}
