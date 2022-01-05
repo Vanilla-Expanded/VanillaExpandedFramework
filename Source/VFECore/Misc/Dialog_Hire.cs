@@ -34,11 +34,15 @@ namespace VFECore.Misc
 
         public override Vector2 InitialSize => new Vector2(750f, 650f);
         protected override float Margin => 15f;
+        private float CostBase => CostDays * CostPawns();
 
-        private float CostBase => Mathf.Pow(daysAmount, 0.8f) * hireData.Select(kv => new Pair<PawnKindDef, int>(kv.Key, kv.Value.First)).Where(pair => pair.Second > 0)
-            .Sum(pair => Mathf.Pow(pair.Second, 1.2f) * pair.First.combatPower);
+        private float CostDays => Mathf.Pow(daysAmount, 0.8f);
 
         private float CostFinal => CostBase * (riskMultiplier + 1f);
+
+        private float CostPawns(ICollection<PawnKindDef> except = null) =>
+            hireData.Select(kv => new Pair<PawnKindDef, int>(kv.Key, kv.Value.First)).Where(pair => pair.Second > 0 && (except == null || !except.Contains(pair.First)))
+                .Sum(pair => Mathf.Pow(pair.Second, 1.2f) * pair.First.combatPower);
 
         public override void OnAcceptKeyPressed()
         {
@@ -110,7 +114,8 @@ namespace VFECore.Misc
             infoRect.y += 20f;
             Widgets.DrawLightHighlight(infoRect);
             Widgets.Label(infoRect.LeftHalf(), "VEF.DayAmount".Translate());
-            UIUtility.DrawCountAdjuster(ref daysAmount, infoRect.RightHalf(), ref daysAmountBuffer, 0, 60);
+            UIUtility.DrawCountAdjuster(ref daysAmount, infoRect.RightHalf(), ref daysAmountBuffer, 0, 60, false, null,
+                Mathf.Max(Mathf.FloorToInt(Mathf.Pow(availableSilver / (riskMultiplier + 1f) / CostPawns(), 1f / 0.8f)), 1));
             infoRect.y += 20f;
             Widgets.DrawHighlight(infoRect);
             Widgets.Label(infoRect.LeftHalf(), "VEF.Cost".Translate());
@@ -178,7 +183,9 @@ namespace VFECore.Misc
                 var data = hireData[kind];
                 var amount = data.First;
                 var buffer = data.Second;
-                UIUtility.DrawCountAdjuster(ref amount, numRect, ref buffer, 0, 999, curFaction != null && curFaction != def);
+                UIUtility.DrawCountAdjuster(ref amount, numRect, ref buffer, 0, 99, curFaction != null && curFaction != def, null, Mathf.Max(Mathf.FloorToInt(Mathf.Pow(
+                    (availableSilver / (riskMultiplier + 1f) / CostDays - CostPawns(new HashSet<PawnKindDef> {kind})) /
+                    kind.combatPower, 1f / 1.2f)), 1));
                 if (amount != data.First || buffer != data.Second)
                 {
                     hireData[kind] = new Pair<int, string>(amount, buffer);

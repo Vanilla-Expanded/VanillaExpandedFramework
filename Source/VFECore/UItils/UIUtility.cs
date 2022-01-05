@@ -33,7 +33,7 @@ namespace VFECore.UItils
             return ret;
         }
 
-        public static void DrawCountAdjuster(ref int value, Rect inRect, ref string buffer, int min, int max, bool readOnly = false)
+        public static void DrawCountAdjuster(ref int value, Rect inRect, ref string buffer, int min, int max, bool readOnly = false, int? setToMin = null, int? setToMax = null)
         {
             var temp = value;
             var rect = inRect.ContractedBy(50f, 0);
@@ -46,10 +46,12 @@ namespace VFECore.UItils
             var rightSmallRect = rect.RightPartPixels(30f);
             rect.xMax -= 30f;
             var mult = GenUI.CurrentAdjustmentMultiplier();
-            if (!readOnly && value != min && Widgets.ButtonText(leftBigRect, "<<")) value = min;
+            if (!readOnly && (setToMin.HasValue ? value > setToMin.Value : value != min) && Widgets.ButtonText(leftBigRect, "<<")) value = setToMin ?? min;
             if (!readOnly && value - mult >= min && Widgets.ButtonText(leftSmallRect, "<")) value -= mult;
-            if (!readOnly && value != max && Widgets.ButtonText(rightBigRect, ">>")) value = max;
+            if (!readOnly && (setToMax.HasValue ? value < setToMax.Value : value != max) && Widgets.ButtonText(rightBigRect, ">>")) value = setToMax ?? max;
             if (!readOnly && value + mult <= max && Widgets.ButtonText(rightSmallRect, ">")) value += mult;
+            if (value < min) value = min;
+            if (value > max) value = max;
             if (value != temp || readOnly) buffer = value.ToString();
             Widgets.TextFieldNumeric(rect.ContractedBy(3f, 0f), ref temp, ref buffer, min, max);
             if (!readOnly) value = temp;
