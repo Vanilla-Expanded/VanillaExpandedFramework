@@ -116,7 +116,7 @@ namespace Outposts
                 return true;
             }
 
-            if (Map.mapPawns.AllPawns.Where(p => p.RaceProps.Humanlike).All(p => p.Faction is {IsPlayer: true}))
+            if (!Map.mapPawns.AllPawns.Where(p => p.RaceProps.Humanlike).Any(p => p.HostileTo(Faction.OfPlayer)))
             {
                 occupants.Clear();
                 Find.LetterStack.ReceiveLetter("Outposts.Letters.BattleWon.Label".Translate(), "Outposts.Letters.BattleWon.Text".Translate(Name), LetterDefOf.PositiveEvent,
@@ -346,6 +346,12 @@ namespace Outposts
             Deliver(ProducedThings());
         }
 
+        public override void SpawnSetup()
+        {
+            base.SpawnSetup();
+            RecachePawnTraits();
+        }
+
         public virtual void RecachePawnTraits()
         {
             skillsDirty = true;
@@ -359,9 +365,9 @@ namespace Outposts
             {
                 foreach (var item in CaravanInventoryUtility.AllInventoryItems(caravan).Where(item => CaravanInventoryUtility.GetOwnerOf(caravan, item) == item))
                     CaravanInventoryUtility.MoveInventoryToSomeoneElse(pawn, item, caravan.PawnsListForReading, new List<Pawn> {pawn}, item.stackCount);
+                if (!caravan.PawnsListForReading.Except(pawn).Any(p => p.RaceProps.Humanlike))
+                    containedItems.AddRange(CaravanInventoryUtility.AllInventoryItems(caravan));
                 caravan.RemovePawn(pawn);
-                containedItems.AddRange(pawn.inventory.innerContainer);
-                pawn.inventory.innerContainer.Clear();
                 if (!caravan.PawnsListForReading.Any(p => p.RaceProps.Humanlike))
                 {
                     containedItems.AddRange(caravan.AllThings);
@@ -487,9 +493,7 @@ namespace Outposts
             p.GetCaravan()?.RemovePawn(p);
             p.holdingOwner?.Remove(p);
             occupants.Remove(p);
-            Find.WorldPawns.PassToWorld(p, PawnDiscardDecideMode.KeepForever);
             RecachePawnTraits();
-            p.SetFaction(Faction);
             return p;
         }
 

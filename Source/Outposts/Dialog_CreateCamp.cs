@@ -90,8 +90,8 @@ namespace Outposts
                     outpost.Name = NameGenerator.GenerateName(creator.Faction.def.settlementNameMaker, Find.WorldObjects.AllWorldObjects.OfType<Outpost>().Select(o => o.Name));
                     outpost.Tile = creator.Tile;
                     outpost.SetFaction(creator.Faction);
-                    foreach (var pawn in creator.PawnsListForReading.ListFullCopy()) outpost.AddPawn(pawn);
                     Find.WorldObjects.Add(outpost);
+                    foreach (var pawn in creator.PawnsListForReading.ListFullCopy()) outpost.AddPawn(pawn);
                     Close();
                     Find.WorldSelector.Select(outpost);
                 }
