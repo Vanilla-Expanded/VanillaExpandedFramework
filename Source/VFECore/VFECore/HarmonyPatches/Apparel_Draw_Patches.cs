@@ -488,7 +488,7 @@ namespace VFECore
         public static bool Prefix(PawnGraphicSet __instance, ref Material __result, Rot4 facing, bool portrait = false, bool cached = false)
         {
             Pawn pawn = __instance.pawn;
-            if (pawn.apparel.AnyApparel && !portrait)
+            if (pawn.apparel.AnyApparel)
             {
                 if (pawn.apparel.WornApparel.Any(x => x.def.GetModExtension<ApparelDrawPosExtension>()?.hideHead ?? false))
                 {
@@ -505,7 +505,7 @@ namespace VFECore
         public static bool Prefix(PawnGraphicSet __instance, ref Material __result, Rot4 facing, RotDrawMode bodyCondition = RotDrawMode.Fresh, bool stump = false, bool portrait = false, bool allowOverride = true)
         {
             Pawn pawn = __instance.pawn;
-            if (pawn.apparel.AnyApparel && !portrait)
+            if (pawn.apparel.AnyApparel)
             {
                 if (pawn.apparel.WornApparel.Any(x => x.def.GetModExtension<ApparelDrawPosExtension>()?.hideHead ?? false))
                 {
