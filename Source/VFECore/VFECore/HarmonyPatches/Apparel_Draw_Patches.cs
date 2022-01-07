@@ -487,7 +487,15 @@ namespace VFECore
     {
         public static bool Prefix(PawnGraphicSet __instance, ref Material __result, Rot4 facing, bool portrait = false, bool cached = false)
         {
-            Pawn pawn = __instance.pawn;
+            return ShouldShowHead(__instance.pawn, portrait);
+        }
+
+        public static bool ShouldShowHead(Pawn pawn, bool portrait)
+        {
+            if (Prefs.HatsOnlyOnMap && portrait)
+            {
+                return true;
+            }
             if (pawn.apparel.AnyApparel)
             {
                 if (pawn.apparel.WornApparel.Any(x => x.def.GetModExtension<ApparelDrawPosExtension>()?.hideHead ?? false))
@@ -499,20 +507,21 @@ namespace VFECore
         }
     }
 
+    [HarmonyPatch(typeof(PawnGraphicSet), "BeardMatAt")]
+    public static class PawnGraphicSet_BeardMatAt_Patch
+    {
+        public static bool Prefix(PawnGraphicSet __instance, ref Material __result, Rot4 facing, bool portrait = false, bool cached = false)
+        {
+            return PawnGraphicSet_HairMatAt_Patch.ShouldShowHead(__instance.pawn, portrait);
+        }
+    }
+
     [HarmonyPatch(typeof(PawnGraphicSet), "HeadMatAt")]
     public static class PawnGraphicSet_HeadMatAt_Patch
     {
         public static bool Prefix(PawnGraphicSet __instance, ref Material __result, Rot4 facing, RotDrawMode bodyCondition = RotDrawMode.Fresh, bool stump = false, bool portrait = false, bool allowOverride = true)
         {
-            Pawn pawn = __instance.pawn;
-            if (pawn.apparel.AnyApparel)
-            {
-                if (pawn.apparel.WornApparel.Any(x => x.def.GetModExtension<ApparelDrawPosExtension>()?.hideHead ?? false))
-                {
-                    return false;
-                }
-            }
-            return true;
+            return PawnGraphicSet_HairMatAt_Patch.ShouldShowHead(__instance.pawn, portrait);
         }
     }
 
