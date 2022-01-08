@@ -185,8 +185,8 @@ namespace VFECore.Misc
                 var amount = data.First;
                 var buffer = data.Second;
                 UIUtility.DrawCountAdjuster(ref amount, numRect, ref buffer, 0, 99, curFaction != null && curFaction != def, null, Mathf.Max(Mathf.FloorToInt(Mathf.Pow(
-                                             (availableSilver / (riskMultiplier + 1f) / CostDays - CostPawns(new HashSet<PawnKindDef> { kind })) /
-                                             kind.combatPower, 1f / 1.2f)), 1));
+                    (availableSilver / (riskMultiplier + 1f) / CostDays - CostPawns(new HashSet<PawnKindDef> {kind})) /
+                    kind.combatPower, 1f / 1.2f)), 0));
                 if (amount != data.First || buffer != data.Second)
                 {
                     hireData[kind] = new Pair<int, string>(amount, buffer);
