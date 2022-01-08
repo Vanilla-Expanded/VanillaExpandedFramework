@@ -94,6 +94,38 @@ namespace VFECore
             hireable = null;
         }
 
+        public void BreakContract()
+        {
+            if (this.pawns.Count > 0)
+            {
+                if (!deadCount.ContainsKey(hireable))
+                    deadCount.Add(hireable, new List<ExposablePair>());
+
+                deadCount[hireable].Add(new ExposablePair(this.pawns.Count, Find.TickManager.TicksAbs + GenDate.TicksPerYear));
+
+                foreach (Pawn pawn in this.pawns)
+                {
+                    if (!pawn.Dead)
+                    {
+                        if (pawn.Map != null)
+                        {
+                            pawn.jobs.StopAll();
+                            pawn.SetFaction(Faction.OfAncientsHostile);
+                            RaidStrategyDefOf.ImmediateAttack.Worker.MakeLords(new IncidentParms() { target = pawn.Map, faction = Faction.OfAncientsHostile, canTimeoutOrFlee = false },
+                                                                               new List<Pawn>() { pawn });
+                        }
+                        else if (pawn.GetCaravan() != null)
+                        {
+                            pawn.GetCaravan().RemovePawn(pawn);
+                        }
+                    }
+                }
+            }
+
+            this.hireable = null;
+            this.pawns.Clear();
+        }
+
         public float GetFactorForHireable(Hireable hireable)
         {
             if (!deadCount.ContainsKey(hireable))

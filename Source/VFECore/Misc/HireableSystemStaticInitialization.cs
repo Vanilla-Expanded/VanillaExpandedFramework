@@ -29,6 +29,8 @@ namespace VFECore.Misc
                                               postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(QuestLodgerCanUnequip_Postfix)));
                 VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(CaravanFormingUtility), nameof(CaravanFormingUtility.AllSendablePawns)),
                                               transpiler: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(CaravanAllSendablePawns_Transpiler)));
+                VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(Pawn), nameof(Pawn.CheckAcceptArrest)),
+                                              postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(CheckAcceptArrestPostfix)));
             }
         }
 
@@ -77,6 +79,16 @@ namespace VFECore.Misc
 
         public static bool CaravanAllSendablePawns_Helper(Pawn pawn, bool questLodger) =>
             questLodger && !GetContractTracker(Find.World).IsHired(pawn);
+
+        public static void CheckAcceptArrestPostfix(Pawn __instance, ref bool __result)
+        {
+            HiringContractTracker tracker = GetContractTracker(Find.World);
+            if (tracker.IsHired(__instance))
+            {
+                tracker.BreakContract();
+                __result = false;
+            }
+        }
     }
 
     public class Hireable : IGrouping<string, HireableFactionDef>, ICommunicable, ILoadReferenceable
