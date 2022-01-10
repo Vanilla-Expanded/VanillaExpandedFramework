@@ -20,12 +20,13 @@ namespace MVCF
         private DummyCaster dummyCaster;
         private int warmUpTicksLeft;
 
-
         public TurretVerb(Verb verb, VerbSource source, AdditionalVerbProps props, VerbManager man) : base(verb, source,
             props, man)
         {
             verb.castCompleteCallback = () => cooldownTicksLeft = Verb.verbProps.AdjustedCooldownTicks(Verb, man.Pawn);
         }
+
+        public override bool NeedsTicking => true;
 
         public LocalTargetInfo Target => currentTarget;
 
@@ -48,7 +49,7 @@ namespace MVCF
             Verb.caster = man.Pawn;
         }
 
-        public virtual void Tick()
+        public override void Tick()
         {
             if (!man.Pawn.Spawned) return;
             if (Verb.Bursting) return;

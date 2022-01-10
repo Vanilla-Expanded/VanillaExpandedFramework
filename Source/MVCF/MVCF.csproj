@@ -59,6 +59,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command_VerbTargetExtended.cs" />
     <Compile Include="Comps\HediffComp_ExtendedVerbGiver.cs" />
     <Compile Include="Comps\Properties.cs" />
     <Compile Include="DebugActionsMVCF.cs" />

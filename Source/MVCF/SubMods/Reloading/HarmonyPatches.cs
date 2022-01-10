@@ -77,10 +77,15 @@ namespace Reloading
         public static bool PawnCanCurrentlyUseVerb(Verb verb, Pawn pawn)
         {
             Log.Message($"Checking use of {verb} for {pawn} with job {pawn.CurJob}");
-            if (verb.IsMeleeAttack && pawn.CurJobDef == JobDefOf.Hunt) return false;
+            if (verb.IsMeleeAttack)
+            {
+                if (pawn.CurJobDef == JobDefOf.Hunt) return false;
+                return pawn.Position.DistanceTo(verb.CurrentTarget.Cell) < 1.43f;
+            }
+
             var reloadable = verb.GetReloadable();
-            return (verb.IsStillUsableBy(pawn) || pawn.inventory.innerContainer.Any(t => reloadable.CanReloadFrom(t))) &&
-                   (!verb.IsMeleeAttack || pawn.Position.DistanceTo(verb.CurrentTarget.Cell) < 1.43f);
+            if (verb.IsStillUsableBy(pawn)) return true;
+            return reloadable != null && pawn.inventory.innerContainer.Any(t => reloadable.CanReloadFrom(t));
         }
 
         public static void ReloadWeaponIfEndingCooldown(Stance_Busy __instance)

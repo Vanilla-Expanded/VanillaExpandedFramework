@@ -38,9 +38,6 @@ namespace MVCF.Harmony
             man.Notify_Despawned();
         }
 
-        public static bool Pawn_StanceTracker_SetStance(Stance newStance)
-        {
-            return !(newStance is Stance_Busy busy && busy.verb?.caster is IFakeCaster);
-        }
+        public static bool Pawn_StanceTracker_SetStance(Stance newStance) => !(newStance is Stance_Busy busy && busy.verb?.caster is IFakeCaster);
     }
 }

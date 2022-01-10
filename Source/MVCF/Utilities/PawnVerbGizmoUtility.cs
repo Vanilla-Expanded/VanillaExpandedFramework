@@ -10,7 +10,7 @@ namespace MVCF.Utilities
 {
     public static class PawnVerbGizmoUtility
     {
-        private static readonly Dictionary<string, string> __truncateCache = new Dictionary<string, string>();
+        public static readonly Dictionary<string, string> __truncateCache = new Dictionary<string, string>();
 
         public static IEnumerable<Gizmo> GetGizmosForVerb(this Verb verb, ManagedVerb man = null)
         {
@@ -45,6 +45,11 @@ namespace MVCF.Utilities
                     yield return gizmo1;
 
             if (skipDefault) yield break;
+            if (man != null)
+            {
+                foreach (var gizmo1 in man.GetGizmos(ownerThing)) yield return gizmo1;
+                yield break;
+            }
 
             Command gizmo;
             var command = new Command_VerbTarget {verb = verb};

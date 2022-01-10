@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using MVCF.Comps;
+using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.AI.Group;
@@ -7,6 +9,13 @@ namespace MVCF
 {
     public class ManagedVerb
     {
+        public enum ToggleType
+        {
+            Separate,
+            Integrated,
+            None
+        }
+
         private static readonly Vector3 WestEquipOffset = new Vector3(-0.2f, 0.0367346928f, -0.22f);
         private static readonly Vector3 EastEquipOffset = new Vector3(0.2f, 0.0367346928f, -0.22f);
         private static readonly Vector3 NorthEquipOffset = new Vector3(0f, 0f, -0.11f);
@@ -14,7 +23,10 @@ namespace MVCF
 
         private static readonly Vector3 EquipPointOffset = new Vector3(0f, 0f, 0.4f);
         protected readonly VerbManager man;
-        public bool Enabled = true;
+
+        private int additionalCooldownTicksLeft;
+
+        private bool enabledInt;
         public AdditionalVerbProps Props;
         public VerbSource Source;
         public Verb Verb;
@@ -50,9 +62,20 @@ namespace MVCF
             }
         }
 
+        public float AdditionalCooldownPercent => (float) additionalCooldownTicksLeft / (Props?.additionalCooldownTime.SecondsToTicks() ?? 1);
+        public string AdditionalCooldownDesc => additionalCooldownTicksLeft.ToStringTicksToPeriodVerbose().Colorize(ColoredText.DateTimeColor);
+
+        public virtual bool Enabled
+        {
+            get => enabledInt && additionalCooldownTicksLeft > 0;
+            set => enabledInt = value;
+        }
+
+        public virtual bool NeedsTicking => Props?.additionalCooldownTime > 0.001f;
+
         public void Toggle()
         {
-            Enabled = !Enabled;
+            enabledInt = !enabledInt;
             man.RecalcSearchVerb();
         }
 
@@ -65,6 +88,11 @@ namespace MVCF
             var target = PointingTarget(p);
             DrawPointingAt(DrawPos(target, p, drawPos),
                 DrawAngle(target, p, drawPos), Props.Scale(p) * p.BodySize);
+        }
+
+        public virtual void Tick()
+        {
+            if (additionalCooldownTicksLeft > 0) additionalCooldownTicksLeft--;
         }
 
         public virtual float DrawAngle(LocalTargetInfo target, Pawn p, Vector3 drawPos)
@@ -88,6 +116,29 @@ namespace MVCF
             }
 
             return p.Rotation.AsAngle;
+        }
+
+        public virtual IEnumerable<Gizmo> GetGizmos(Thing ownerThing)
+        {
+            yield return new Command_VerbTargetExtended(this);
+
+            if (GetToggleType() == ToggleType.Separate)
+                yield return new Command_ToggleVerbUsage(this);
+        }
+
+        public virtual ToggleType GetToggleType()
+        {
+            if (Props == null) return Verb.CasterIsPawn && Verb.CasterPawn.RaceProps.Animal ? ToggleType.Separate : ToggleType.None;
+
+            if (!Props.canBeToggled) return ToggleType.None;
+            if (Props.separateToggle) return ToggleType.Separate;
+            if (Base.Features.IntegratedToggle) return ToggleType.Integrated;
+
+            Log.ErrorOnce(
+                "[MVCF] " + (Verb.EquipmentSource.LabelShortCap ?? "Hediff verb of " + Verb.caster) +
+                " wants an integrated toggle but that feature is not enabled. Using seperate toggle.",
+                Verb.GetHashCode());
+            return ToggleType.Separate;
         }
 
         public virtual Vector3 DrawPos(LocalTargetInfo target, Pawn p, Vector3 drawPos)
@@ -126,9 +177,7 @@ namespace MVCF
                 num -= 180f;
             }
             else
-            {
                 mesh = MeshPool.plane10;
-            }
 
             num %= 360f;
 
