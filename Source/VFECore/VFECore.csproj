@@ -407,6 +407,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompDigPeriodically.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDigWhenHungry.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDiseaseImmunity.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompDiseasesAfterPeriod.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDraftable.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDropOnDeath.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompEatWeirdFood.cs" />
@@ -434,6 +435,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ApplyHediffWhenBound.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AcidImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_CauseIncident.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DiseasesAfterPeriod.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Draftable.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DropOnDeath.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AnimalProduct.cs" />
