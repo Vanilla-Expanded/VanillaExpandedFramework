@@ -14,6 +14,8 @@ namespace AnimalBehaviours
         public bool onlyWhenTamed = false;
         //Should items be spawned forbidden?
         public bool spawnForbidden = false;
+        //Dig biome rocks. Animal will only dig rocks found on this biome, ignoring customThingToDig
+        public bool digBiomeRocks = false;
 
         public CompProperties_DigPeriodically()
         {
