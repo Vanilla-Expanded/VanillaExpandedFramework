@@ -76,7 +76,7 @@ namespace Outposts
             var button = text.BottomPartPixels(30f).LeftPartPixels(100f);
             var errorText = text.BottomPartPixels(30f).RightPartPixels(text.width - 120f);
             Text.Font = GameFont.Tiny;
-            Widgets.TextArea(new Rect(text.x, text.y + 30f, text.width, text.height - 60f), outpostDef.description, true);
+            Widgets.Label(new Rect(text.x, text.y + 30f, text.width, text.height - 60f), outpostDef.description);
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleLeft;
             Widgets.Label(errorText, validity[outpostDef].First);
