@@ -690,7 +690,6 @@
     <Compile Include="VFECore\HarmonyPatches\MachinesCaravansPatches.cs" />
     <Compile Include="VFECore\HarmonyPatches\MachinesDie.cs" />
     <Compile Include="VFECore\HarmonyPatches\MechanoidsAreCapable.cs" />
-    <Compile Include="VFECore\HarmonyPatches\MechanoidsCanBeDrafted.cs" />
     <Compile Include="VFECore\HarmonyPatches\MechanoidsDoNotReserveBeds.cs" />
     <Compile Include="VFECore\HarmonyPatches\MechanoidsObeyOrders.cs" />
     <Compile Include="VFECore\HarmonyPatches\MobileTurretsShowTurrets.cs" />

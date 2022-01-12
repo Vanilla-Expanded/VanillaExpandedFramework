@@ -31,7 +31,15 @@ namespace AnimalBehaviours
         // An integer with the current number of animal control hubs built
         public static int numberOfAnimalControlHubsBuilt = 0;
 
+        public static bool IsDraftableAnimal(this Pawn pawn)
+        {
+            return draftable_animals.ContainsKey(pawn);
+        }
 
+        public static bool IsDraftableControllableAnimal(this Pawn pawn)
+        {
+            return pawn.IsDraftableAnimal() && pawn.Faction != null && pawn.Faction.IsPlayer && pawn.MentalState is null;
+        }
         public static void AddDraftableAnimalToList(Thing thing, bool[] abilityArray)
         {
 
