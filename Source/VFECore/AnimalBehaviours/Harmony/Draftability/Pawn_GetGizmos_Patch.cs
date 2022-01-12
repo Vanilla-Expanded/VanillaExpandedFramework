@@ -10,6 +10,10 @@ using VFE.Mechanoids;
 
 namespace AnimalBehaviours
 {
+    public interface PawnGizmoProvider
+    {
+        IEnumerable<Gizmo> GetGizmos();
+    }
     [HarmonyPatch(typeof(Pawn), "GetGizmos")]
     public static class Pawn_GetGizmos_Patch
     {
@@ -43,6 +47,17 @@ namespace AnimalBehaviours
                 drafting_command.groupKey = 81729172;
                 drafting_command.turnOffSound = SoundDefOf.DraftOff;
                 yield return drafting_command;
+            }
+
+            foreach (var comp in __instance.AllComps)
+            {
+                if (comp is PawnGizmoProvider gizmoProvider)
+                {
+                    foreach (var gizmo in gizmoProvider.GetGizmos())
+                    {
+                        yield return gizmo;
+                    }
+                }
             }
 
             if (__instance.RaceProps.IsMechanoid && __instance.Faction == Faction.OfPlayer && __instance.drafter != null
