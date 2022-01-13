@@ -10,6 +10,7 @@ namespace VFECore.Misc
 {
     public class Dialog_Hire : Window
     {
+        private static   Ideo                                       hiredIdeo;
         private readonly float                                      availableSilver;
         private readonly Hireable                                   hireable;
         private readonly Dictionary<PawnKindDef, Pair<int, string>> hireData;
@@ -28,7 +29,7 @@ namespace VFECore.Misc
             forcePause    = true;
             closeOnAccept = true;
             availableSilver = targetMap.listerThings.ThingsOfDef(ThingDefOf.Silver)
-                                    .Where(x => !x.Position.Fogged(x.Map) && (targetMap.areaManager.Home[x.Position] || x.IsInAnyStorage())).Sum(t => t.stackCount);
+                .Where(x => !x.Position.Fogged(x.Map) && (targetMap.areaManager.Home[x.Position] || x.IsInAnyStorage())).Sum(t => t.stackCount);
             riskMultiplier = Find.World.GetComponent<HiringContractTracker>().GetFactorForHireable(hireable);
         }
 
@@ -42,7 +43,7 @@ namespace VFECore.Misc
 
         private float CostPawns(ICollection<PawnKindDef> except = null) =>
             hireData.Select(kv => new Pair<PawnKindDef, int>(kv.Key, kv.Value.First)).Where(pair => pair.Second > 0 && (except == null || !except.Contains(pair.First)))
-                 .Sum(pair => Mathf.Pow(pair.Second, 1.2f) * pair.First.combatPower);
+                .Sum(pair => Mathf.Pow(pair.Second, 1.2f) * pair.First.combatPower);
 
         public override void OnAcceptKeyPressed()
         {
@@ -56,7 +57,7 @@ namespace VFECore.Misc
                 var remainingCost = Mathf.RoundToInt(CostFinal);
 
                 var silverList = targetMap.listerThings.ThingsOfDef(ThingDefOf.Silver)
-                                       .Where(x => !x.Position.Fogged(x.Map) && (targetMap.areaManager.Home[x.Position] || x.IsInAnyStorage())).ToList();
+                    .Where(x => !x.Position.Fogged(x.Map) && (targetMap.areaManager.Home[x.Position] || x.IsInAnyStorage())).ToList();
                 while (remainingCost > 0)
                 {
                     var silver = silverList.First(t => t.stackCount > 0);
@@ -71,8 +72,14 @@ namespace VFECore.Misc
                 foreach (var kvp in hireData)
                     for (var i = 0; i < kvp.Value.First; i++)
                     {
-                        var pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(kvp.Key, mustBeCapableOfViolence: true, faction: Faction.OfPlayer, forceNoIdeo: true));
-                        pawn.playerSettings.hostilityResponse = HostilityResponseMode.Attack;
+                        var flag = kvp.Key.ignoreFactionApparelStuffRequirements;
+                        kvp.Key.ignoreFactionApparelStuffRequirements = true;
+                        var pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(kvp.Key, mustBeCapableOfViolence: true, faction: Faction.OfPlayer,
+                            forbidAnyTitle: true, fixedIdeo: curFaction.referencedFaction is null
+                                ? hiredIdeo ?? (hiredIdeo = IdeoGenerator.GenerateIdeo(new IdeoGenerationParms(Faction.OfPlayer.def, classic: true)))
+                                : Find.World.factionManager.FirstFactionOfDef(curFaction.referencedFaction).ideos.GetRandomIdeoForNewPawn()));
+                        kvp.Key.ignoreFactionApparelStuffRequirements = flag;
+                        pawn.playerSettings.hostilityResponse         = HostilityResponseMode.Attack;
                         pawns.Add(pawn);
                         var loc = DropCellFinder.TryFindSafeLandingSpotCloseToColony(targetMap, IntVec2.Two);
 
@@ -116,7 +123,7 @@ namespace VFECore.Misc
             Widgets.DrawLightHighlight(infoRect);
             Widgets.Label(infoRect.LeftHalf(), "VEF.DayAmount".Translate());
             UIUtility.DrawCountAdjuster(ref daysAmount, infoRect.RightHalf(), ref daysAmountBuffer, 0, 60, false, null,
-                                        Mathf.Max(Mathf.FloorToInt(Mathf.Pow(availableSilver / (riskMultiplier + 1f) / CostPawns(), 1f / 0.8f)), 1));
+                Mathf.Max(Mathf.FloorToInt(Mathf.Pow(availableSilver / (riskMultiplier + 1f) / CostPawns(), 1f / 0.8f)), 1));
             infoRect.y += 20f;
             Widgets.DrawHighlight(infoRect);
             Widgets.Label(infoRect.LeftHalf(),  "VEF.Cost".Translate());
@@ -167,7 +174,9 @@ namespace VFECore.Misc
             Widgets.Label(titleRect, "VEF.ChooseNumberOfUnits".Translate().Colorize(ColoredText.SubtleGrayColor));
             Text.Font = GameFont.Small;
             Widgets.DrawLightHighlight(iconRect);
-            Widgets.DrawTextureFitted(iconRect, def.Texture, 1f, new Vector2(def.Texture.width, def.Texture.height), new Rect(0f, 0f, 1f, 1f), 0, def.Material);
+            GUI.color = def.color;
+            Widgets.DrawTextureFitted(iconRect, def.Texture, 1f);
+            GUI.color = Color.white;
             var highlight = true;
             foreach (var kind in def.pawnKinds)
             {
