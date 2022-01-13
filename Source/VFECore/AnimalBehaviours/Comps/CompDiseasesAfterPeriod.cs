@@ -1,11 +1,12 @@
 ﻿using RimWorld;
 using Verse;
 using Verse.Sound;
+using System.Collections.Generic;
 
 namespace AnimalBehaviours
 
 {
-    public class CompDiseasesAfterPeriod : ThingComp
+    public class CompDiseasesAfterPeriod : ThingComp, PawnGizmoProvider
     {
         public int tickCounter = 0;
 
@@ -32,16 +33,32 @@ namespace AnimalBehaviours
                     Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(randomHediff);
                     if (hediff == null)
                     {
-                        pawn.health.AddHediff(hediff);
+                        pawn.health.AddHediff(randomHediff);
                     }
                     
                     
                 }
-                tickCounter = (int)(Props.timeToApplyInTicks*0.8);
+                tickCounter = (int)(Props.timeToApplyInTicks*Props.percentageOfMaxToReapply);
             }
         }
 
-        
+        public IEnumerable<Gizmo> GetGizmos()
+        {
+
+            if (Prefs.DevMode)
+            {
+                Command_Action command_Action = new Command_Action();
+                command_Action.defaultLabel = "DEBUG: Give age related diseases";
+                command_Action.icon = TexCommand.DesirePower;
+                command_Action.action = delegate
+                {
+                    tickCounter = Props.timeToApplyInTicks - 10;
+                };
+                yield return command_Action;
+            }
+        }
+
+
 
     }
 }

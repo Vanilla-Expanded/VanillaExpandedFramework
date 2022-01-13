@@ -11,6 +11,8 @@ namespace AnimalBehaviours
         public int timeToApplyInTicks = 1000;
 
         public List<HediffDef> hediffsToApply = null;
+
+        public float percentageOfMaxToReapply = 0.8f;
         
         public CompProperties_DiseasesAfterPeriod()
         {
