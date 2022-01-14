@@ -20,7 +20,7 @@ namespace AnimalBehaviours
         [HarmonyPostfix]
         static void AddAnimalAsColonist(Pawn __instance, ref bool __result)
         {
-            bool flagIsCreatureDraftable = AnimalCollectionClass.draftable_animals.ContainsKey(__instance);
+            bool flagIsCreatureDraftable = AnimalCollectionClass.draftable_animals.Contains(__instance);
           
             if (flagIsCreatureDraftable)
             {

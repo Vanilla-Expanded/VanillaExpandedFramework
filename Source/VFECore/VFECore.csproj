@@ -404,6 +404,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompCorpseDecayer.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDestroyThisItem.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDieAfterPeriod.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompDieAndChangeIntoOtherDef.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDigPeriodically.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDigWhenHungry.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDiseaseImmunity.cs" />
@@ -433,6 +434,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompNearbyEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompPassiveRegenerator.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompPawnOverlay.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DieAndChangeIntoOtherDef.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ApplyHediffWhenBound.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AcidImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_CauseIncident.cs" />
@@ -509,7 +511,6 @@
     <Compile Include="AnimalBehaviours\Enums\BodyClock.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\Bill_PawnAllowedToStartAnew_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\FloatMenuMakerMap_AddDraftedOrders_Patch.cs" />
-    <Compile Include="AnimalBehaviours\Harmony\Draftability\MassUtility_Capacity_ForDraftable_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\PawnComponentsUtility_AddAndRemoveDynamicComponents_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\Pawn_GetGizmos_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Infocard\Dialog_InfoCard_FillCard_Patch.cs" />

@@ -16,6 +16,9 @@ namespace AnimalBehaviours
         public bool spawnForbidden = false;
         //Dig biome rocks. Animal will only dig rocks found on this biome, ignoring customThingToDig
         public bool digBiomeRocks = false;
+        //If digBiomeRocks is true, do we also go further and turn those into bricks?
+        public bool digBiomeBricks = false;
+        public int customAmountToDigIfRocksOrBricks = 1;
 
         public CompProperties_DigPeriodically()
         {

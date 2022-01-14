@@ -16,7 +16,7 @@ namespace AnimalBehaviours
 
     
         // A list of draft-capable animals for Genetic Rim
-        public static IDictionary<Thing, bool[]> draftable_animals = new Dictionary<Thing, bool[]>();
+        public static HashSet<Thing> draftable_animals = new HashSet<Thing>();
 
         // A list of hovering animals for CompProperties_Floating
         public static HashSet<Thing> floating_animals = new HashSet<Thing>();
@@ -36,25 +36,25 @@ namespace AnimalBehaviours
 
         public static bool IsDraftableAnimal(this Pawn pawn)
         {
-            return draftable_animals.ContainsKey(pawn);
+            return draftable_animals.Contains(pawn);
         }
 
         public static bool IsDraftableControllableAnimal(this Pawn pawn)
         {
             return pawn.IsDraftableAnimal() && pawn.Faction != null && pawn.Faction.IsPlayer && pawn.MentalState is null;
         }
-        public static void AddDraftableAnimalToList(Thing thing, bool[] abilityArray)
+        public static void AddDraftableAnimalToList(Thing thing)
         {
 
-            if (!draftable_animals.ContainsKey(thing))
+            if (!draftable_animals.Contains(thing))
             {
-                draftable_animals.Add(thing, abilityArray);
+                draftable_animals.Add(thing);
             }
         }
 
         public static void RemoveDraftableAnimalFromList(Thing thing)
         {
-            if (draftable_animals.ContainsKey(thing))
+            if (draftable_animals.Contains(thing))
             {
                 draftable_animals.Remove(thing);
             }

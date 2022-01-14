@@ -25,6 +25,8 @@
 	<VEF_StomachContents>{0} creatures swallowed whole. </VEF_StomachContents>
 	<VEF_DigestionTime>Will be consumed in {0}</VEF_DigestionTime>
 	
+	<VEF_TerrainsNeedsDiggable>The terrain needs to be diggable to do this</VEF_TerrainsNeedsDiggable>
+	
 	<!-- Mod options -->
 	
 	<VCE_AffectsAllAnimalMods>These animal behaviours options will affect all animal mods that share code from the Vanilla Expanded Framework</VCE_AffectsAllAnimalMods>

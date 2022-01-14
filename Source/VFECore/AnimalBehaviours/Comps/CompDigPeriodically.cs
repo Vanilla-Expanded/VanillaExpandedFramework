@@ -47,13 +47,23 @@ namespace AnimalBehaviours
                             }
                             else
                             {
+                                amount = Props.customAmountToDigIfRocksOrBricks;
                                 IEnumerable<ThingDef> rocksInThisBiome = Find.World.NaturalRockTypesIn(this.parent.Map.Tile);
                                 List<ThingDef> chunksInThisBiome = new List<ThingDef>();
                                 foreach (ThingDef rock in rocksInThisBiome)
                                 {
                                     chunksInThisBiome.Add(rock.building.mineableThing);
                                 }
-                                newThing = Find.World.NaturalRockTypesIn(this.parent.Map.Tile).RandomElementWithFallback().building.mineableThing;
+                                if (!Props.digBiomeBricks) {
+                                    newThing = Find.World.NaturalRockTypesIn(this.parent.Map.Tile).RandomElementWithFallback().building.mineableThing;
+
+                                }
+                                else
+                                {
+                                    newThing = Find.World.NaturalRockTypesIn(this.parent.Map.Tile).RandomElementWithFallback().building.mineableThing.butcherProducts.FirstOrFallback().thingDef;
+
+                                }
+
                             }
                             
 

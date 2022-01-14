@@ -9,6 +9,8 @@ namespace AnimalBehaviours
 
         private Effecter effecter;
 
+        public Thing thingBuilt;
+
         public CompProperties_BuildPeriodically Props
         {
             get
@@ -17,17 +19,24 @@ namespace AnimalBehaviours
             }
         }
 
+        public override void PostExposeData()
+        {
+            base.PostExposeData();
+
+            Scribe_References.Look<Thing>(ref this.thingBuilt, "thingBuilt",false);
+
+        }
 
         public override void CompTick()
         {
             base.CompTick();
             if (this.parent.IsHashIntervalTick(Props.ticksToBuild) && AnimalBehaviours_Settings.flagBuildPeriodically)
             {
-                this.TryCreateBuilding();
+                this.CreateBuildingSetup();
             }
         }
 
-        public void TryCreateBuilding()
+        public void CreateBuildingSetup()
         {
             if (this.parent.Map!=null&&this.parent.Map.listerThings.ThingsOfDef(ThingDef.Named(Props.defOfBuilding)).Count < Props.maxBuildingsPerMap)
             {
@@ -39,27 +48,12 @@ namespace AnimalBehaviours
                     {
                         if (Props.acceptedTerrains.Contains(pawn.Position.GetTerrain(pawn.Map).defName))
                         {
-                            ThingDef newThing = ThingDef.Named(this.Props.defOfBuilding);
-                            Thing newbuilding = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
-
-                            if (this.effecter == null)
-                            {
-                                this.effecter = EffecterDefOf.Mine.Spawn();
-                            }
-                            this.effecter.Trigger(pawn, newbuilding);
+                            CheckDuplicates(pawn);
                         }
                     }
                     else
                     {
-                        ThingDef newThing = ThingDef.Named(this.Props.defOfBuilding);
-                        Thing newbuilding = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
-
-                        if (this.effecter == null)
-                        {
-                            this.effecter = EffecterDefOf.Mine.Spawn();
-                        }
-                        this.effecter.Trigger(pawn, newbuilding);
-
+                        CheckDuplicates(pawn);
                     }
 
                 }
@@ -68,9 +62,40 @@ namespace AnimalBehaviours
             
         }
 
+        public void CheckDuplicates(Pawn pawn)
+        {
+           
+            if (!Props.onlyOneExistingPerPawn)
+            {
+                TryCreateBuilding(pawn);
+            }
+            else if ((thingBuilt is null || (thingBuilt != null && !this.parent.Map.listerThings.AllThings.Contains(thingBuilt))))
+            {
+                TryCreateBuilding(pawn);
+            }
+          
+            
+
+        }
+
+        public void TryCreateBuilding(Pawn pawn)
+        {
+            ThingDef newThing = ThingDef.Named(this.Props.defOfBuilding);
+            Thing newbuilding = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
+
+            this.thingBuilt = newbuilding;
+
+            if (this.effecter == null)
+            {
+                this.effecter = EffecterDefOf.Mine.Spawn();
+            }
+            this.effecter.Trigger(pawn, newbuilding);
+
+        }
 
 
 
 
-    }
+
+        }
 }
