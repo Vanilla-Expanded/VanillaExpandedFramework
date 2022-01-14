@@ -14,31 +14,39 @@ namespace VFECore.Misc
     {
         public static List<Hireable> Hireables;
 
+        private static readonly Dictionary<World, HiringContractTracker> cachedTracker = new Dictionary<World, HiringContractTracker>();
+
         static HireableSystemStaticInitialization()
         {
             Hireables = DefDatabase<HireableFactionDef>.AllDefs.GroupBy(def => def.commTag).Select(group => new Hireable(group.Key, group.ToList())).ToList();
             if (Hireables.Any())
             {
                 VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(Building_CommsConsole), nameof(Building_CommsConsole.GetCommTargets)),
-                                              postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(GetCommTargets_Postfix)));
+                    postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(GetCommTargets_Postfix)));
                 VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(LoadedObjectDirectory), "Clear"),
-                                              postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(AddHireablesToLoadedObjectDirectory)));
+                    postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(AddHireablesToLoadedObjectDirectory)));
                 VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(QuestUtility), nameof(QuestUtility.IsQuestLodger)),
-                                              postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(IsQuestLodger_Postfix)));
+                    postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(IsQuestLodger_Postfix)));
                 VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(EquipmentUtility), nameof(EquipmentUtility.QuestLodgerCanUnequip)),
-                                              postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(QuestLodgerCanUnequip_Postfix)));
+                    postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(QuestLodgerCanUnequip_Postfix)));
                 VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(CaravanFormingUtility), nameof(CaravanFormingUtility.AllSendablePawns)),
-                                              transpiler: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(CaravanAllSendablePawns_Transpiler)));
+                    transpiler: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(CaravanAllSendablePawns_Transpiler)));
                 VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(Pawn), nameof(Pawn.CheckAcceptArrest)),
-                                              postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(CheckAcceptArrestPostfix)));
+                    postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(CheckAcceptArrestPostfix)));
+                // VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(PawnApparelGenerator), "GenerateWorkingPossibleApparelSetFor"),
+                //     new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(Debug)));
             }
         }
 
-        private static Dictionary<World, HiringContractTracker> cachedTracker = new Dictionary<World, HiringContractTracker>();
+        // public static void Debug(Pawn pawn, float money, List<ThingStuffPair> apparelCandidates)
+        // {
+        //     if (DebugViewSettings.logApparelGeneration)
+        //         Log.Message($"Generating apparel for {pawn} with money ${money} and candidates:\n{apparelCandidates.Select(pair => pair.ToString()).ToLineList("  - ")}");
+        // }
 
         private static HiringContractTracker GetContractTracker(World world)
         {
-            if (!cachedTracker.TryGetValue(world, out HiringContractTracker tracker))
+            if (!cachedTracker.TryGetValue(world, out var tracker))
                 cachedTracker.Add(world, tracker = world.GetComponent<HiringContractTracker>());
             return tracker;
         }
@@ -82,7 +90,7 @@ namespace VFECore.Misc
 
         public static void CheckAcceptArrestPostfix(Pawn __instance, ref bool __result)
         {
-            HiringContractTracker tracker = GetContractTracker(Find.World);
+            var tracker = GetContractTracker(Find.World);
             if (tracker.IsHired(__instance))
             {
                 tracker.BreakContract();
@@ -118,7 +126,7 @@ namespace VFECore.Misc
         public Faction GetFaction() => null;
 
         public FloatMenuOption CommFloatMenuOption(Building_CommsConsole console, Pawn negotiator) => FloatMenuUtility.DecoratePrioritizedTask(
-         new FloatMenuOption(GetCallLabel(), () => console.GiveUseCommsJob(negotiator, this), MenuOptionPriority.InitiateSocial), negotiator, console);
+            new FloatMenuOption(GetCallLabel(), () => console.GiveUseCommsJob(negotiator, this), MenuOptionPriority.InitiateSocial), negotiator, console);
 
         public IEnumerator<HireableFactionDef> GetEnumerator() => factions.GetEnumerator();
 
