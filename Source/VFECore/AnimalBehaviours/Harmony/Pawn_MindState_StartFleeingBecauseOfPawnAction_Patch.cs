@@ -14,7 +14,7 @@ namespace AnimalBehaviours
    
     [HarmonyPatch(typeof(Pawn_MindState))]
     [HarmonyPatch("StartFleeingBecauseOfPawnAction")]
-    public static class VanillaExpandedFramework_Pawn_MindState_StartFleeingBecauseOfPawnAction_Patch_Patch
+    public static class VanillaExpandedFramework_Pawn_MindState_StartFleeingBecauseOfPawnAction_Patch
     {
         [HarmonyPrefix]
         public static bool DontFlee(Pawn_MindState __instance)

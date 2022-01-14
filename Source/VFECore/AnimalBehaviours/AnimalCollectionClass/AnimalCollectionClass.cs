@@ -24,6 +24,9 @@ namespace AnimalBehaviours
         // A list of animals that don't flee for combat for CompProperties_DoesntFlee
         public static HashSet<Thing> nofleeing_animals = new HashSet<Thing>();
 
+        // A list of animals that don't produce filth for CompProperties_NoFilth
+        public static HashSet<Thing> nofilth_animals = new HashSet<Thing>();
+
         // A list of animals that eat weird things to cache them for CompProperties_EatWeirdFood and its Harmony patch
         public static HashSet<Thing> weirdeEaters_animals = new HashSet<Thing>();
 
@@ -94,6 +97,24 @@ namespace AnimalBehaviours
             if (floating_animals.Contains(thing))
             {
                 floating_animals.Remove(thing);
+            }
+
+        }
+
+        public static void AddNoFilthAnimalToList(Thing thing)
+        {
+
+            if (!nofilth_animals.Contains(thing))
+            {
+                nofilth_animals.Add(thing);
+            }
+        }
+
+        public static void RemoveNoFilthAnimalFromList(Thing thing)
+        {
+            if (nofilth_animals.Contains(thing))
+            {
+                nofilth_animals.Remove(thing);
             }
 
         }

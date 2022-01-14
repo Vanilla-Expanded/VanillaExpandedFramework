@@ -432,6 +432,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompMetamorphosis.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompMindEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompNearbyEffecter.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompNoFilth.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompPassiveRegenerator.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompPawnOverlay.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DieAndChangeIntoOtherDef.cs" />
@@ -439,6 +440,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AcidImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_CauseIncident.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DiseasesAfterPeriod.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_NoFilth.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DoesntFlee.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Draftable.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DropOnDeath.cs" />
@@ -519,6 +521,7 @@
     <Compile Include="AnimalBehaviours\Harmony\JobGiver_GetRest_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\Pawn_IsColonistPlayerControlled_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Infocard\ThingDef_SpecialDisplayStats_Patch2.cs" />
+    <Compile Include="AnimalBehaviours\Harmony\Pawn_FilthTracker_Notify_EnteredNewCell_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Pawn_MindState_StartFleeingBecauseOfPawnAction_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\QuestNode_GetPawnKind_SetVars_CanHandle_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\JobGiver_GetFood_TryGiveJob_Patch.cs" />
