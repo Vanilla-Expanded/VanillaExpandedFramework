@@ -190,15 +190,6 @@ namespace VFECore
         }
     }
 
-    [HarmonyPatch(typeof(Pawn_ApparelTracker), "Wear")]
-    public static class Pawn_ApparelTracker_Wear_Patch
-    {
-        public static void Postfix(Pawn_ApparelTracker __instance, Apparel newApparel)
-        {
-            VerbUtility.TryModifyThingsVerbs(newApparel);
-        }
-    }
-
     [HarmonyPatch(typeof(Pawn_EquipmentTracker), "TryDropEquipment")]
     public static class TryDropEquipment_Patch
     {

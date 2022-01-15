@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -257,4 +258,55 @@ namespace VFECore
             }
         }
     }
+
+    [HarmonyPatch(typeof(MassUtility), nameof(MassUtility.Capacity))]
+    public static class MassUtility_Capacity_Patch
+    {
+        private static float GetMutiplierForQuality(QualityCategory cat)
+        {
+            switch (cat)
+            {
+                case QualityCategory.Awful:
+                    return 0.5f;
+                case QualityCategory.Poor:
+                    return 0.8f;
+                case QualityCategory.Normal:
+                    return 1f;
+                case QualityCategory.Good:
+                    return 1.2f;
+                case QualityCategory.Excellent:
+                    return 1.5f;
+                case QualityCategory.Masterwork:
+                    return 1.7f;
+                case QualityCategory.Legendary:
+                    return 2f;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(cat), cat, null);
+            }
+        }
+
+        public static void ApparelMassCapacity(Pawn p, StringBuilder explanation, ref float __result)
+        {
+            if (p?.apparel?.WornApparel.NullOrEmpty() ?? true) return;
+            foreach (var apparel in p.apparel.WornApparel)
+            {
+                var modExtension = apparel.def.GetModExtension<ApparelExtension>();
+                if (modExtension != null)
+                {
+                    if (apparel.TryGetQuality(out var cat))
+                    {
+                        __result += modExtension.carryingCapacity * GetMutiplierForQuality(cat);
+                        explanation?.AppendLine(
+                            $"{apparel.LabelCapNoCount}: +{modExtension.carryingCapacity} * {GetMutiplierForQuality(cat)} ({cat.GetLabel()})");
+                    }
+                    else
+                    {
+                        __result += modExtension.carryingCapacity;
+                        explanation?.AppendLine($"{apparel.LabelCapNoCount}: +{modExtension.carryingCapacity}");
+                    }
+                }
+            }
+        }
+    }
+
 }

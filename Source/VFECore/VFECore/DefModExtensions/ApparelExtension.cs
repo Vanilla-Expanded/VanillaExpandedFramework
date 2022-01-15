@@ -15,6 +15,6 @@ namespace VFECore
         public List<TraitDef> traitsOnEquip;
         public List<TraitDef> traitsOnUnequip;
         public List<PawnCapacityMinLevel> pawnCapacityMinLevels;
-
+        public float carryingCapacity;
     }
 }
