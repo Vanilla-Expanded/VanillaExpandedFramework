@@ -285,7 +285,7 @@ namespace VFECore
             }
         }
 
-        public static void ApparelMassCapacity(Pawn p, StringBuilder explanation, ref float __result)
+        public static void Postfix(Pawn p, StringBuilder explanation, ref float __result)
         {
             if (p?.apparel?.WornApparel.NullOrEmpty() ?? true) return;
             foreach (var apparel in p.apparel.WornApparel)
