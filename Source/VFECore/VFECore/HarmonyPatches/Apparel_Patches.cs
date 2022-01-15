@@ -291,7 +291,7 @@ namespace VFECore
             foreach (var apparel in p.apparel.WornApparel)
             {
                 var modExtension = apparel.def.GetModExtension<ApparelExtension>();
-                if (modExtension != null)
+                if (modExtension != null && modExtension.carryingCapacity != -1f)
                 {
                     if (apparel.TryGetQuality(out var cat))
                     {
