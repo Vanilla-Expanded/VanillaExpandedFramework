@@ -94,8 +94,17 @@ namespace AnimalBehaviours
         }
 
 
-
-
+        public void NotifyBuildingDestroyed(Thing building)
+        {
+            if(building == this.thingBuilt)
+            {
+                this.thingBuilt = null;
+            }
 
         }
+
+
+
+
+    }
 }
