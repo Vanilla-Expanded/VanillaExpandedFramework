@@ -1,10 +1,7 @@
 ﻿using RimWorld;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Xml;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
@@ -20,7 +17,8 @@ namespace VFECore
 
         public VFEGlobal(ModContentPack content) : base(content)
         {
-            settings           = GetSettings<VFEGlobalSettings>();
+            settings = GetSettings<VFEGlobalSettings>();
+            // Toggable patches
             foreach (ModContentPack mod in LoadedModManager.RunningMods)
             {
                 if (mod.Patches != null)
@@ -41,13 +39,13 @@ namespace VFECore
 
         private enum Pages // Add pages here
         {
-            FactionDiscovery = 1,
+            General = 1,
             PatchOperationToggable = 2
         }
 
         private enum PagesHeadTitle // Add language data here, in the right order
         {
-            FDTitle = 1,
+            GeneralTitle = 1,
             TPTitle = 2
         }
 
@@ -60,13 +58,12 @@ namespace VFECore
 
         private void MakePageHead(Listing_Standard list)
         {
-            list.Gap(20);
+            list.Gap();
             var title = (PagesHeadTitle)PageIndex;
             Text.Font = GameFont.Medium;
             list.Label(title.ToString().Translate());
             Text.Font = GameFont.Small;
             list.Gap();
-            // list.GapLine();
         }
 
         #endregion Page Head
@@ -76,9 +73,19 @@ namespace VFECore
         private readonly int ToggablePatchCount;
         private readonly int ModUsingToggablePatchCount = 0;
 
-        private void AddToggablePatchesSettings(Listing_Standard list)
+        private void AddToggablePatchesSettings(Rect rect)
         {
-            this.MakePageHead(list);
+            Rect viewRect = new Rect(rect)
+            {
+                height = 110f + (ToggablePatchCount + ModUsingToggablePatchCount) * 32f,
+                width = rect.width - 20f,
+            };
+
+            Listing_Standard list = new Listing_Standard();
+            Widgets.BeginScrollView(rect, ref scrollPosition, viewRect, true);
+            list.Begin(viewRect);
+
+            MakePageHead(list);
 
             Text.Anchor = TextAnchor.MiddleCenter;
             list.Label("NeedRestart".Translate());
@@ -92,12 +99,15 @@ namespace VFECore
                     Text.Anchor = TextAnchor.MiddleCenter;
                     list.Label(modContentPack.Name);
                     Text.Anchor = TextAnchor.UpperLeft;
-                    this.AddButton(list, modContentPack);
+                    AddButtons(list, modContentPack);
                 }
             }
+
+            list.End();
+            Widgets.EndScrollView();
         }
 
-        private void AddButton(Listing_Standard list, ModContentPack modContentPack)
+        private void AddButtons(Listing_Standard list, ModContentPack modContentPack)
         {
             foreach (PatchOperation patchOperation in modContentPack.Patches)
             {
@@ -123,14 +133,18 @@ namespace VFECore
 
         #endregion Toggable Patches
 
-        #region Faction Discovery / KCSG
+        #region General
 
         private int FactionCanBeAddedCount;
 
-        private void AddFSKCSGSettings(Listing_Standard list)
+        private void GeneralSettings(Rect rect)
         {
-            this.MakePageHead(list);
+            Listing_Standard list = new Listing_Standard();
+            list.Begin(rect);
 
+            Text.Font = GameFont.Medium;
+            list.Label("Faction Discovery");
+            Text.Font = GameFont.Small;
             if (Current.Game != null)
             {
                 FactionCanBeAddedCount = DefDatabase<FactionDef>.AllDefs.Where(ValidatorAnyFactionLeft).Count();
@@ -167,8 +181,19 @@ namespace VFECore
             Text.Font = GameFont.Small;
             list.Gap();
             list.CheckboxLabeled("Disable Texture Caching", ref settings.disableCaching, "Warning: Enabling this might cause performance issues.");
-            
-            
+
+            // Texture Variations
+            list.Gap(20);
+            Text.Font = GameFont.Medium;
+            list.Label("Texture Variations");
+            Text.Font = GameFont.Small;
+            list.Gap();
+            list.CheckboxLabeled("VFE_RandomOrSequentially".Translate(), ref settings.isRandomGraphic, null);
+            list.Gap();
+            list.CheckboxLabeled("VFE_HideRandomizeButton".Translate(), ref settings.hideRandomizeButton, null);
+            list.Gap();
+
+            list.End();
         }
 
         private bool ValidatorAnyFactionLeft(FactionDef faction)
@@ -181,44 +206,18 @@ namespace VFECore
             return true;
         }
 
-        #endregion Faction Discovery
-
-        #region Texture Variations
-
-       
-        private void AddTextureVariations(Listing_Standard list)
-        {
-           
-            // Texture Variations
-           
-            list.Gap(20);
-            Text.Font = GameFont.Medium;
-            list.Label("Texture Variations");
-            Text.Font = GameFont.Small;
-            list.Gap();
-            list.CheckboxLabeled("VFE_RandomOrSequentially".Translate(), ref settings.isRandomGraphic, null);
-            list.Gap(12f);
-            list.CheckboxLabeled("VFE_HideRandomizeButton".Translate(), ref settings.hideRandomizeButton, null);
-            list.Gap(12f);
-
-
-
-        }
-
-
-
-        #endregion Texture Variations
+        #endregion General
 
         private void AddPageButtons(Rect rect)
         {
-            Rect leftButtonRect = new Rect(rect.width / 2f - this.ButtonSize.x / 2f - this.ButtonSize.x - buttonOffset, rect.height + this.ButtonSize.y + 2, this.ButtonSize.x, this.ButtonSize.y);
+            Rect leftButtonRect = new Rect(rect.width / 2f - ButtonSize.x / 2f - ButtonSize.x - buttonOffset, rect.height + ButtonSize.y + 2, ButtonSize.x, ButtonSize.y);
             if (PageIndex > 1 && Widgets.ButtonText(leftButtonRect, "Previous Page"))
             {
                 SoundDefOf.Click.PlayOneShot(null);
                 if (PageIndex - 1 >= 1) PageIndex--;
             }
 
-            Rect rightButtonRect = new Rect(rect.width / 2f + this.ButtonSize.x / 2f + buttonOffset, rect.height + this.ButtonSize.y + 2, this.ButtonSize.x, this.ButtonSize.y);
+            Rect rightButtonRect = new Rect(rect.width / 2f + ButtonSize.x / 2f + buttonOffset, rect.height + ButtonSize.y + 2, ButtonSize.x, ButtonSize.y);
             if (PageIndex < MaxIndex && Widgets.ButtonText(rightButtonRect, "Next Page"))
             {
                 SoundDefOf.Click.PlayOneShot(null);
@@ -228,37 +227,20 @@ namespace VFECore
 
         public override void DoSettingsWindowContents(Rect inRect)
         {
-            this.AddPageButtons(inRect);
+            AddPageButtons(inRect);
 
-            Rect viewRect = new Rect(inRect);
-            if (PageIndex == (int)Pages.PatchOperationToggable)
-            {
-                viewRect.height = 120f;
-                viewRect.height += (ToggablePatchCount + ModUsingToggablePatchCount) * 20f;
-                viewRect.width -= 20f;
-            }
-
-            Listing_Standard list = new Listing_Standard();
-            Widgets.BeginScrollView(inRect, ref scrollPosition, viewRect, true);
-            list.Begin(viewRect);
-
-            #region settings
             switch (PageIndex)
             {
-                case (int)Pages.FactionDiscovery:
-                    this.AddFSKCSGSettings(list);
-                    this.AddTextureVariations(list);
+                case (int)Pages.General:
+                    GeneralSettings(inRect);
                     break;
                 case (int)Pages.PatchOperationToggable:
-                    this.AddToggablePatchesSettings(list);
+                    AddToggablePatchesSettings(inRect);
                     break;
                 default:
                     break;
             }
 
-            #endregion settings
-            list.End();
-            Widgets.EndScrollView();
             settings.Write();
         }
     }
@@ -268,15 +250,15 @@ namespace VFECore
         public Dictionary<string, bool> toggablePatch = new Dictionary<string, bool>();
         public bool enableVerboseLogging;
         public bool disableCaching;
-        public  bool isRandomGraphic = true;
-        public  bool hideRandomizeButton = false;
+        public bool isRandomGraphic = true;
+        public bool hideRandomizeButton = false;
 
         public override void ExposeData()
         {
             base.ExposeData();
             Scribe_Collections.Look(ref toggablePatch, "toggablePatch", LookMode.Value);
-            Scribe_Values.Look(ref enableVerboseLogging,  "enableVerboseLogging", false);
-            Scribe_Values.Look(ref this.disableCaching, "disableCaching", true);
+            Scribe_Values.Look(ref enableVerboseLogging, "enableVerboseLogging", false);
+            Scribe_Values.Look(ref disableCaching, "disableCaching", true);
             Scribe_Values.Look(ref isRandomGraphic, "isRandomGraphic", true, true);
             Scribe_Values.Look(ref hideRandomizeButton, "hideRandomizeButton", false, true);
         }
