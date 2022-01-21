@@ -73,8 +73,8 @@ namespace VFECore
 
         #region Toggable Patches
 
-        private int ToggablePatchCount;
-        private int ModUsingToggablePatchCount = 0;
+        private readonly int ToggablePatchCount;
+        private readonly int ModUsingToggablePatchCount = 0;
 
         private void AddToggablePatchesSettings(Listing_Standard list)
         {
@@ -212,14 +212,14 @@ namespace VFECore
         private void AddPageButtons(Rect rect)
         {
             Rect leftButtonRect = new Rect(rect.width / 2f - this.ButtonSize.x / 2f - this.ButtonSize.x - buttonOffset, rect.height + this.ButtonSize.y + 2, this.ButtonSize.x, this.ButtonSize.y);
-            if (Widgets.ButtonText(leftButtonRect, "Previous Page"))
+            if (PageIndex > 1 && Widgets.ButtonText(leftButtonRect, "Previous Page"))
             {
                 SoundDefOf.Click.PlayOneShot(null);
                 if (PageIndex - 1 >= 1) PageIndex--;
             }
 
             Rect rightButtonRect = new Rect(rect.width / 2f + this.ButtonSize.x / 2f + buttonOffset, rect.height + this.ButtonSize.y + 2, this.ButtonSize.x, this.ButtonSize.y);
-            if (Widgets.ButtonText(rightButtonRect, "Next Page"))
+            if (PageIndex < MaxIndex && Widgets.ButtonText(rightButtonRect, "Next Page"))
             {
                 SoundDefOf.Click.PlayOneShot(null);
                 if (PageIndex + 1 <= MaxIndex) PageIndex++;
