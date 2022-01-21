@@ -46,8 +46,11 @@
 	<VCE_RegenerationOption>Allow health regeneration (active and passive)</VCE_RegenerationOption>
 	<VCE_ResurrectionOption>Allow animals to auto-resurrect (for example Phoenix Owlcat)</VCE_ResurrectionOption>
 	<VCE_UntameableOption>Allow some animals to be untameable</VCE_UntameableOption>
-
-
+	
+	<!-- Bills -->
+	
+	<VEF_BillRequiresMass>Requires {0} Kg total mass</VEF_BillRequiresMass>
+    
 
 
 </LanguageData>
