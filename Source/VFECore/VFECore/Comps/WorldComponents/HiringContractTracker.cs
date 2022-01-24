@@ -8,6 +8,8 @@ using VFECore.Misc;
 
 namespace VFECore
 {
+    using UnityEngine;
+
     public class HiringContractTracker : WorldComponent, ICommunicable
     {
         public Dictionary<Hireable, List<ExposablePair>>
@@ -72,7 +74,16 @@ namespace VFECore
                     if (pawn.Map != null && pawn.CurJobDef != VFEDefOf.VFEC_LeaveMap)
                     {
                         pawn.jobs.StopAll();
-                        CellFinder.TryFindRandomPawnExitCell(pawn, out var exit);
+                        IntVec3 exit = IntVec3.Zero;
+                        if (!CellFinder.TryFindRandomPawnExitCell(pawn, out exit))
+                            if (!CellFinder.TryFindRandomEdgeCellWith((IntVec3 c) => !pawn.Map.roofGrid.Roofed(c) && c.WalkableBy(pawn.Map, pawn) &&
+                                                                                     pawn.CanReach(c, PathEndMode.OnCell, Danger.Deadly, canBashDoors: true, canBashFences: true,
+                                                                                                   TraverseMode.PassDoors), pawn.Map, 0f, out exit))
+                            {
+                                this.BreakContract();
+                                return;
+                            }
+
                         pawn.jobs.TryTakeOrderedJob(new Job(VFEDefOf.VFEC_LeaveMap, exit));
                     }
                     else if (pawn.GetCaravan() != null)

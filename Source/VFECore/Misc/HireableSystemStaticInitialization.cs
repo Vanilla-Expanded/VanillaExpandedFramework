@@ -22,19 +22,23 @@ namespace VFECore.Misc
             if (Hireables.Any())
             {
                 VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(Building_CommsConsole), nameof(Building_CommsConsole.GetCommTargets)),
-                    postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(GetCommTargets_Postfix)));
+                                              postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(GetCommTargets_Postfix)));
                 VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(LoadedObjectDirectory), "Clear"),
-                    postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(AddHireablesToLoadedObjectDirectory)));
+                                              postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(AddHireablesToLoadedObjectDirectory)));
                 VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(QuestUtility), nameof(QuestUtility.IsQuestLodger)),
-                    postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(IsQuestLodger_Postfix)));
+                                              postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(IsQuestLodger_Postfix)));
                 VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(EquipmentUtility), nameof(EquipmentUtility.QuestLodgerCanUnequip)),
-                    postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(QuestLodgerCanUnequip_Postfix)));
+                                              postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(QuestLodgerCanUnequip_Postfix)));
                 VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(CaravanFormingUtility), nameof(CaravanFormingUtility.AllSendablePawns)),
-                    transpiler: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(CaravanAllSendablePawns_Transpiler)));
+                                              transpiler: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(CaravanAllSendablePawns_Transpiler)));
                 VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(Pawn), nameof(Pawn.CheckAcceptArrest)),
-                    postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(CheckAcceptArrestPostfix)));
+                                              postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(CheckAcceptArrestPostfix)));
                 // VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(PawnApparelGenerator), "GenerateWorkingPossibleApparelSetFor"),
                 //     new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(Debug)));
+                VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(BillUtility), nameof(BillUtility.IsSurgeryViolationOnExtraFactionMember)),
+                                              postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(IsSurgeryViolation_Postfix)));
+                VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(ForbidUtility), nameof(ForbidUtility.CaresAboutForbidden)),
+                                              postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(CaresAboutForbidden_Postfix)));
             }
         }
 
@@ -97,6 +101,16 @@ namespace VFECore.Misc
                 __result = false;
             }
         }
+
+        public static void IsSurgeryViolation_Postfix(Bill_Medical bill, ref bool __result)
+        {
+            __result = __result || (GetContractTracker(Find.World).IsHired(bill.GiverPawn) && bill.recipe.Worker.IsViolationOnPawn(bill.GiverPawn, bill.Part, Faction.OfPlayer));
+        }
+
+        public static void CaresAboutForbidden_Postfix(Pawn pawn, ref bool __result)
+        {
+            __result = __result && (!GetContractTracker(Find.World).IsHired(pawn) || pawn.CurJobDef != VFEDefOf.VFEC_LeaveMap);
+        }
     }
 
     public class Hireable : IGrouping<string, HireableFactionDef>, ICommunicable, ILoadReferenceable
@@ -126,7 +140,7 @@ namespace VFECore.Misc
         public Faction GetFaction() => null;
 
         public FloatMenuOption CommFloatMenuOption(Building_CommsConsole console, Pawn negotiator) => FloatMenuUtility.DecoratePrioritizedTask(
-            new FloatMenuOption(GetCallLabel(), () => console.GiveUseCommsJob(negotiator, this), MenuOptionPriority.InitiateSocial), negotiator, console);
+         new FloatMenuOption(GetCallLabel(), () => console.GiveUseCommsJob(negotiator, this), MenuOptionPriority.InitiateSocial), negotiator, console);
 
         public IEnumerator<HireableFactionDef> GetEnumerator() => factions.GetEnumerator();
 
