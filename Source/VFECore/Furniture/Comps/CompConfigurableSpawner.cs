@@ -63,7 +63,7 @@ namespace VanillaFurnitureExpanded
             {
                 return;
             }
-            if (!this.parent.Spawned)
+            if (this.parent.MapHeld is null)
             {
                 return;
             }
@@ -75,7 +75,7 @@ namespace VanillaFurnitureExpanded
                     return;
                 }
             }
-            else if (this.parent.Position.Fogged(this.parent.Map))
+            else if (this.parent.PositionHeld.Fogged(this.parent.MapHeld))
             {
                 return;
             }
@@ -107,7 +107,7 @@ namespace VanillaFurnitureExpanded
                 if (this.cachedAdjCellsCardinal == null)
                 {
                     this.cachedAdjCellsCardinal = (from c in GenAdj.CellsAdjacentCardinal(this.parent)
-                                                   where c.InBounds(this.parent.Map)
+                                                   where c.InBounds(this.parent.MapHeld)
                                                    select c).ToList<IntVec3>();
                 }
                 return this.cachedAdjCellsCardinal;
@@ -141,7 +141,7 @@ namespace VanillaFurnitureExpanded
                     thing.SetFaction(this.parent.Faction, null);
                 }
                 Thing t;
-                GenPlace.TryPlaceThing(thing, this.parent.InteractionCell, this.parent.Map, ThingPlaceMode.Direct, out t, null, null, default(Rot4));
+                GenPlace.TryPlaceThing(thing, this.parent.InteractionCell, this.parent.MapHeld, ThingPlaceMode.Direct, out t, null, null, default(Rot4));
                 if (this.PropsSpawner.spawnForbidden)
                 {
                     t.SetForbidden(true, true);
@@ -159,16 +159,17 @@ namespace VanillaFurnitureExpanded
         {
             foreach (IntVec3 intVec in GenAdj.CellsAdjacent8Way(parent).InRandomOrder(null))
             {
-                if (intVec.Walkable(parent.Map))
+                if (intVec.Walkable(parent.MapHeld))
                 {
-                    Building edifice = intVec.GetEdifice(parent.Map);
+                    Building edifice = intVec.GetEdifice(parent.MapHeld);
                     if (edifice == null || !thingToSpawn.IsEdifice())
                     {
                         Building_Door building_Door = edifice as Building_Door;
-                        if ((building_Door == null || building_Door.FreePassage) && (parent.def.passability == Traversability.Impassable || GenSight.LineOfSight(parent.Position, intVec, parent.Map, false, null, 0, 0)))
+                        if ((building_Door == null || building_Door.FreePassage) && (parent.def.passability == Traversability.Impassable || GenSight.LineOfSight(parent.PositionHeld, 
+                            intVec, parent.MapHeld, false, null, 0, 0)))
                         {
                             bool flag = false;
-                            List<Thing> thingList = intVec.GetThingList(parent.Map);
+                            List<Thing> thingList = intVec.GetThingList(parent.MapHeld);
                             for (int i = 0; i < thingList.Count; i++)
                             {
                                 Thing thing = thingList[i];
