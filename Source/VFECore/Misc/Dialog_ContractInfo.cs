@@ -73,14 +73,15 @@ namespace VFECore.Misc
             Widgets.DrawLineHorizontal(textRect.x, textRect.y + 30f, textRect.width);
             textRect.y    += 30;
             infoRect.yMin += 30;
-            Widgets.Label(textRect.LeftHalf(),  "VEF.TimeLeft".Translate());
-            Widgets.Label(textRect.RightHalf(), (Find.TickManager.TicksAbs - contract.endTicks).ToStringTicksToPeriodVerbose().Colorize(ColoredText.DateTimeColor));
+            Widgets.Label(textRect.LeftHalf(), "VEF.TimeLeft".Translate());
+            int remainingTicks = (this.contract.endTicks - Find.TickManager.TicksAbs);
+            Widgets.Label(textRect.RightHalf(), (remainingTicks < 0 ? 0 : remainingTicks).ToStringTicksToPeriodVerbose().Colorize(ColoredText.DateTimeColor));
             if (Widgets.ButtonText(infoRect.TakeBottomPart(40f), "VEF.CancelContract".Translate()))
                 Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("VEF.NoRefund".Translate(), () =>
-                {
-                    Close();
-                    contract.EndContract();
-                }, true, "VEF.CancelContract".Translate()));
+                                                                                                      {
+                                                                                                          Close();
+                                                                                                          this.contract.endTicks = Find.TickManager.TicksAbs;
+                                                                                                      }, true, "VEF.CancelContract".Translate()));
             Text.Anchor = anchor;
             Text.Font   = font;
         }

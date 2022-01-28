@@ -54,7 +54,8 @@ namespace VFECore
         {
             base.WorldComponentTick();
 
-            if (Find.TickManager.TicksAbs % 150 == 0 && Find.TickManager.TicksAbs > endTicks && !pawns.NullOrEmpty()) EndContract();
+            if (Find.TickManager.TicksAbs % 150 == 0 && Find.TickManager.TicksAbs > endTicks && !pawns.NullOrEmpty())
+                this.EndContract();
         }
 
         public void EndContract()
@@ -64,7 +65,7 @@ namespace VFECore
             for (var index = pawns.Count - 1; index >= 0; index--)
             {
                 var pawn = pawns[index];
-                if (pawn.Dead)
+                if (pawn.Dead || Faction.OfPlayer.kidnapped.KidnappedPawnsListForReading.Contains(pawn))
                 {
                     deadPeople++;
                     pawns.Remove(pawn);
@@ -74,8 +75,7 @@ namespace VFECore
                     if (pawn.Map != null && pawn.CurJobDef != VFEDefOf.VFEC_LeaveMap)
                     {
                         pawn.jobs.StopAll();
-                        IntVec3 exit = IntVec3.Zero;
-                        if (!CellFinder.TryFindRandomPawnExitCell(pawn, out exit))
+                        if (!CellFinder.TryFindRandomPawnExitCell(pawn, out IntVec3 exit))
                             if (!CellFinder.TryFindRandomEdgeCellWith((IntVec3 c) => !pawn.Map.roofGrid.Roofed(c) && c.WalkableBy(pawn.Map, pawn) &&
                                                                                      pawn.CanReach(c, PathEndMode.OnCell, Danger.Deadly, canBashDoors: true, canBashFences: true,
                                                                                                    TraverseMode.PassDoors), pawn.Map, 0f, out exit))
@@ -102,7 +102,8 @@ namespace VFECore
                 deadCount[hireable].Add(new ExposablePair(deadPeople, Find.TickManager.TicksAbs + GenDate.TicksPerYear));
             }
 
-            hireable = null;
+            if (this.pawns.Count <= 0)
+                this.hireable = null;
         }
 
         public void BreakContract()
