@@ -41,6 +41,9 @@ namespace ItemProcessor
         //If it's a butchery recipe, calculate yield accordingly
         public bool isButcheryRecipe = false;
         public float efficiency = 1;
+        //If the recipe is nutritionGetter, amount will be the total nutrition needed. Ignores amount and instead uses nutritionAmount
+        public bool isNutritionGetterRecipe = false;
+        public List<float> nutritionAmount;
         //Does this recipe accept output stack limit control?
         public bool outputLimitControlled = false;
         public int maxTotalOutput = 1;

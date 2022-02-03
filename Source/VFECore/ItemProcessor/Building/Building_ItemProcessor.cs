@@ -943,8 +943,13 @@ namespace ItemProcessor
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && element.items.Contains(firstItem))).First();
                     if (thisRecipe == null)
                     {
+                        if (thisElement.isNutritionGetterRecipe) {
+                           
 
-                        ExpectedAmountFirstIngredient = thisElement.amount[0];
+                            ExpectedAmountFirstIngredient = (int)(Math.Ceiling(thisElement.nutritionAmount[0]/ThingDef.Named(thisElement.items[0]).GetStatValueAbstract(StatDefOf.Nutrition)));
+                        } else {
+                            ExpectedAmountFirstIngredient = thisElement.amount[0];
+                        }
                         thisRecipe = thisElement.defName;
                     }
                     break;
@@ -952,8 +957,18 @@ namespace ItemProcessor
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && (element.items.Contains(firstItem) && element.secondItems.Contains(secondItem)))).First();
                     if (thisRecipe == null)
                     {
-                        ExpectedAmountFirstIngredient = thisElement.amount[0];
-                        ExpectedAmountSecondIngredient = thisElement.amount[1];
+                       
+                        if (thisElement.isNutritionGetterRecipe)
+                        {
+                            ExpectedAmountFirstIngredient = (int)(Math.Ceiling(thisElement.nutritionAmount[0] / ThingDef.Named(thisElement.items[0]).GetStatValueAbstract(StatDefOf.Nutrition)));
+                            ExpectedAmountSecondIngredient = (int)(Math.Ceiling(thisElement.nutritionAmount[1] / ThingDef.Named(thisElement.items[1]).GetStatValueAbstract(StatDefOf.Nutrition)));
+
+                        }
+                        else
+                        {
+                            ExpectedAmountFirstIngredient = thisElement.amount[0];
+                            ExpectedAmountSecondIngredient = thisElement.amount[1];
+                        }
                         thisRecipe = thisElement.defName;
                     }
                     break;
@@ -961,9 +976,21 @@ namespace ItemProcessor
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && (element.items.Contains(firstItem) && element.secondItems.Contains(secondItem) && element.thirdItems.Contains(thirdItem)))).First();
                     if (thisRecipe == null)
                     {
-                        ExpectedAmountFirstIngredient = thisElement.amount[0];
-                        ExpectedAmountSecondIngredient = thisElement.amount[1];
-                        ExpectedAmountThirdIngredient = thisElement.amount[2];
+                       
+                        if (thisElement.isNutritionGetterRecipe)
+                        {
+                            ExpectedAmountFirstIngredient = (int)(Math.Ceiling(thisElement.nutritionAmount[0] / ThingDef.Named(thisElement.items[0]).GetStatValueAbstract(StatDefOf.Nutrition)));
+                            ExpectedAmountSecondIngredient = (int)(Math.Ceiling(thisElement.nutritionAmount[1] / ThingDef.Named(thisElement.items[1]).GetStatValueAbstract(StatDefOf.Nutrition)));
+                            ExpectedAmountThirdIngredient = (int)(Math.Ceiling(thisElement.nutritionAmount[2] / ThingDef.Named(thisElement.items[2]).GetStatValueAbstract(StatDefOf.Nutrition)));
+
+                        }
+                        else
+                        {
+                            ExpectedAmountFirstIngredient = thisElement.amount[0];
+                            ExpectedAmountSecondIngredient = thisElement.amount[1];
+                            ExpectedAmountThirdIngredient = thisElement.amount[2];
+
+                        }
                         thisRecipe = thisElement.defName;
                     }
                     break;
@@ -971,10 +998,23 @@ namespace ItemProcessor
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && (element.items.Contains(firstItem) && element.secondItems.Contains(secondItem) && element.thirdItems.Contains(thirdItem) && element.fourthItems.Contains(fourthItem)))).First();
                     if (thisRecipe == null)
                     {
-                        ExpectedAmountFirstIngredient = thisElement.amount[0];
-                        ExpectedAmountSecondIngredient = thisElement.amount[1];
-                        ExpectedAmountThirdIngredient = thisElement.amount[2];
-                        ExpectedAmountFourthIngredient = thisElement.amount[3];
+                        if (thisElement.isNutritionGetterRecipe)
+                        {
+                            ExpectedAmountFirstIngredient = (int)(Math.Ceiling(thisElement.nutritionAmount[0] / ThingDef.Named(thisElement.items[0]).GetStatValueAbstract(StatDefOf.Nutrition)));
+                            ExpectedAmountSecondIngredient = (int)(Math.Ceiling(thisElement.nutritionAmount[1] / ThingDef.Named(thisElement.items[1]).GetStatValueAbstract(StatDefOf.Nutrition)));
+                            ExpectedAmountThirdIngredient = (int)(Math.Ceiling(thisElement.nutritionAmount[2] / ThingDef.Named(thisElement.items[2]).GetStatValueAbstract(StatDefOf.Nutrition)));
+                            ExpectedAmountFourthIngredient = (int)(Math.Ceiling(thisElement.nutritionAmount[3] / ThingDef.Named(thisElement.items[3]).GetStatValueAbstract(StatDefOf.Nutrition)));
+
+                        }
+                        else
+                        {
+                            ExpectedAmountFirstIngredient = thisElement.amount[0];
+                            ExpectedAmountSecondIngredient = thisElement.amount[1];
+                            ExpectedAmountThirdIngredient = thisElement.amount[2];
+                            ExpectedAmountFourthIngredient = thisElement.amount[3];
+
+                        }
+                      
                         thisRecipe = thisElement.defName;
                     }
                     break;
@@ -982,7 +1022,14 @@ namespace ItemProcessor
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && element.items.Contains(firstItem))).First();
                     if (thisRecipe == null)
                     {
-                        ExpectedAmountFirstIngredient = thisElement.amount[0];
+                        if (thisElement.isNutritionGetterRecipe)
+                        {
+                            ExpectedAmountFirstIngredient = (int)Math.Ceiling(thisElement.nutritionAmount[0] / ThingDef.Named(thisElement.items[0]).GetStatValueAbstract(StatDefOf.Nutrition));
+                        }
+                        else
+                        {
+                            ExpectedAmountFirstIngredient = thisElement.amount[0];
+                        }
                         thisRecipe = thisElement.defName;
                     }
                     break;
