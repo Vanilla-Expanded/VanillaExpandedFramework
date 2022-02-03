@@ -19,8 +19,8 @@ namespace AnimalBehaviours
         public IEnumerable<Gizmo> GetGizmos()
         {
 
-            
 
+            if (!Props.mustBeTamed ||(Props.mustBeTamed &&this.parent.Faction?.IsPlayer==true)) {
                 yield return new Command_Action
                 {
                     defaultLabel = Props.gizmoLabel.Translate(),
@@ -31,6 +31,8 @@ namespace AnimalBehaviours
                         DiggableTerrainSetup();
                     }
                 };
+            }
+                
             
         }
 

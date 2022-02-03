@@ -9,6 +9,7 @@ namespace AnimalBehaviours
         //A comp that displays a gizmo if the animal is tamed. When clicked, it destroys the animal and turns it into a different def
 
         public bool needsDiggableTerrain = false;
+        public bool mustBeTamed = true;
         public ThingDef defToChangeTo;
         public string gizmoImage;
         public string gizmoLabel;
