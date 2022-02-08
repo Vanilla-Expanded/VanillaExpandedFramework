@@ -570,6 +570,8 @@
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_SettingsController.cs" />
     <Compile Include="Cuisine\Plants\Plant_NarrowTemperatures.cs" />
     <Compile Include="Misc\Dialog_ContractInfo.cs" />
+    <Compile Include="Plants\DefExtensions\DualCropExtension.cs" />
+    <Compile Include="Plants\Harmony\Plant_PlantCollected.cs" />
     <Compile Include="UItils\UIUtility.cs" />
     <Compile Include="VFECore\Comps\WorldComponents\HiringContractTracker.cs" />
     <Compile Include="VFECore\HarmonyPatches\Apparel_Patches.cs" />
