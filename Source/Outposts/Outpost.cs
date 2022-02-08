@@ -334,6 +334,17 @@ namespace Outposts
 
                 TendUtility.DoTend(doctor, pawn, medicine);
             }
+
+            if (pawn.health.hediffSet.HasNaturallyHealingInjury())
+                pawn.health.hediffSet.GetHediffs<Hediff_Injury>().Where(x => x.CanHealNaturally()).RandomElement()
+                    .Heal(pawn.HealthScale * 0.01f * pawn.GetStatValue(StatDefOf.InjuryHealingFactor));
+
+            if (pawn.health.hediffSet.HasTendedAndHealingInjury())
+            {
+                var injury = pawn.health.hediffSet.GetHediffs<Hediff_Injury>().Where(x => x.CanHealFromTending()).RandomElement();
+                injury.Heal(GenMath.LerpDouble(0f, 1f, 0.5f, 1.5f, Mathf.Clamp01(injury.TryGetComp<HediffComp_TendDuration>().tendQuality)) * pawn.HealthScale * 0.01f *
+                            pawn.GetStatValue(StatDefOf.InjuryHealingFactor));
+            }
         }
 
         public virtual IEnumerable<Thing> ProducedThings()
