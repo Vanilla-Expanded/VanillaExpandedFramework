@@ -7,65 +7,50 @@ using Verse;
 using RimWorld;
 using HarmonyLib;
 using RimWorld.Planet;
+using System.Reflection;
 
 namespace VFECore
 {
+    [HarmonyPatch]
     public static class Patch_RandomSettlementTileFor
     {
+        [HarmonyTargetMethod]
+        public static MethodBase TargetMethod()
+        {
+            return typeof(TileFinder).GetNestedTypes(AccessTools.all)
+                .SelectMany(x => x.GetMethods(AccessTools.all))
+                .FirstOrDefault(x => x.Name.Contains("<RandomSettlementTileFor>") && x.ReturnType == typeof(float));
+        }
+
+        public static void Postfix(ref float __result, int x)
+        {
+            if (RandomSettlementTileFor_Patch.factionToCheck != null && __result > 0)
+            {
+                var options = RandomSettlementTileFor_Patch.factionToCheck.def.GetModExtension<FactionDefExtension>();
+                if (options != null)
+                {
+                    Tile tile = Find.WorldGrid[x];
+                    if ((options.disallowedBiomes?.Any() ?? false) && options.disallowedBiomes.Contains(tile.biome))
+                    {
+                        //Log.Message(RandomSettlementTileFor_Patch.factionToCheck.def + " can't settle in " + tile.biome + ", disallowed biomes: " + String.Join(", ", options.disallowedBiomes));
+                        __result = 0f;
+                    }
+                    else if ((options.allowedBiomes?.Any() ?? false) && !options.allowedBiomes.Contains(tile.biome))
+                    {
+                        //Log.Message(RandomSettlementTileFor_Patch.factionToCheck.def + " can't settle in " + tile.biome + ", allowed biomes: " + String.Join(", ", options.allowedBiomes));
+                        __result = 0f;
+                    }
+                }
+            }
+        }
+
         [HarmonyPatch(typeof(TileFinder), nameof(TileFinder.RandomSettlementTileFor))]
         public static class RandomSettlementTileFor_Patch
         {
-            public static bool Prefix(ref int __result, Faction faction, bool mustBeAutoChoosable = false, Predicate<int> extraValidator = null)
+            public static Faction factionToCheck;
+            public static void Prefix(Faction faction)
             {
-                if (faction?.def != null && faction.def.HasModExtension<FactionDefExtension>())
-                {
-                    var options = faction.def.GetModExtension<FactionDefExtension>();
-                    if (options.allowedBiomes != null && options.allowedBiomes.Count > 0)
-                    {
-                        __result = RandomSettlementTileFor(options, faction, mustBeAutoChoosable, extraValidator);
-                        return false;
-                    }
-                    if (options.disallowedBiomes != null && options.disallowedBiomes.Count > 0)
-                    {
-                        __result = RandomSettlementTileFor(options, faction, mustBeAutoChoosable, extraValidator);
-                        return false;
-                    }
-                }
-                return true;
-            }
-
-            public static int RandomSettlementTileFor(FactionDefExtension options, Faction faction, bool mustBeAutoChoosable = false, Predicate<int> extraValidator = null)
-            {
-                for (int i = 0; i < 500; i++)
-                {
-                    if ((from _ in Enumerable.Range(0, 100)
-                         select Rand.Range(0, Find.WorldGrid.TilesCount)).TryRandomElementByWeight(delegate (int x)
-                         {
-                             Tile tile = Find.WorldGrid[x];
-                             if (options.disallowedBiomes != null && options.disallowedBiomes.Contains(tile.biome))
-                             {
-                                 return 0f;
-                             }
-                             if (options.allowedBiomes != null && !options.allowedBiomes.Contains(tile.biome))
-                             {
-                                 return 0f;
-                             }
-                             if (!tile.biome.canBuildBase || !tile.biome.implemented || tile.hilliness == Hilliness.Impassable)
-                             {
-                                 return 0f;
-                             }
-                             if (mustBeAutoChoosable && !tile.biome.canAutoChoose)
-                             {
-                                 return 0f;
-                             }
-                             return (extraValidator != null && !extraValidator(x)) ? 0f : tile.biome.settlementSelectionWeight;
-                         }, out int result) && TileFinder.IsValidTileForNewSettlement(result))
-                    {
-                        return result;
-                    }
-                }
-                Log.Error("Failed to find faction base tile for " + faction);
-                return 0;
+                factionToCheck = faction;
             }
         }
     }
