@@ -52,6 +52,11 @@ namespace VFECore
             {
                 factionToCheck = faction;
             }
+
+            public static void Postfix()
+            {
+                factionToCheck = null;
+            }
         }
     }
 }
