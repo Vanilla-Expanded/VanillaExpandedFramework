@@ -49,9 +49,20 @@ namespace VFEMech
             {
                 this.mainLauncher = this.launcher;
             }
+
+            if (equipmentDef == null)
+            {
+                equipmentDef = ThingDef.Named("Gun_Autopistol");
+            }
+
             if (hitThing != null && !firedOnce)
             {
-                hitThing.TakeDamage(new DamageInfo(Props.damageDef, this.def.projectile.GetDamageAmount(1f), -1f, Holder.DrawPos.AngleToFlat(hitThing.DrawPos), this.Launcher));
+                BattleLogEntry_RangedImpact battleLogEntry_RangedImpact = new BattleLogEntry_RangedImpact(launcher, hitThing, intendedTarget.Thing, equipmentDef, def, targetCoverDef);
+                Find.BattleLog.Add(battleLogEntry_RangedImpact);
+
+                hitThing.TakeDamage(new DamageInfo(Props.damageDef, this.def.projectile.GetDamageAmount(1f), -1f,
+                    Holder.DrawPos.AngleToFlat(hitThing.DrawPos), this.Launcher)).AssociateWithLog(battleLogEntry_RangedImpact);
+
                 if (Props.addFire && hitThing.TryGetComp<CompAttachBase>() != null)
                 {
                     var fire = (Fire)GenSpawn.Spawn(ThingDefOf.Fire, hitThing.Position, hitThing.Map);
