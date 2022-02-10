@@ -30,7 +30,7 @@ namespace VFEMech
         private List<Thing> prevTargets = new List<Thing>();
         private Thing holder;
         private Thing mainLauncher;
-        private bool firedOnce;
+        private bool shotAnything;
         public Thing Holder
         {
             get
@@ -42,6 +42,8 @@ namespace VFEMech
                 return holder;
             }
         }
+
+        
 
         protected override void Impact(Thing hitThing)
         {
@@ -55,7 +57,7 @@ namespace VFEMech
                 equipmentDef = ThingDef.Named("Gun_Autopistol");
             }
 
-            if (hitThing != null && !firedOnce)
+            if (hitThing != null && !shotAnything)
             {
                 BattleLogEntry_RangedImpact battleLogEntry_RangedImpact = new BattleLogEntry_RangedImpact(launcher, hitThing, intendedTarget.Thing, equipmentDef, def, targetCoverDef);
                 Find.BattleLog.Add(battleLogEntry_RangedImpact);
@@ -81,7 +83,7 @@ namespace VFEMech
                         FireAt(target);
                     }
                 }
-                firedOnce = true;
+                shotAnything = true;
             }
 
             base.Impact(hitThing);
@@ -217,7 +219,10 @@ namespace VFEMech
         public override void Tick()
         {
             base.Tick();
-            this.curLifetime++;
+            if (shotAnything)
+            {
+                this.curLifetime++;
+            }
             if (curLifetime > Props.maxLifetime)
             {
                 DestroyAll();
@@ -261,7 +266,7 @@ namespace VFEMech
             Scribe_References.Look(ref holder, "holder");
             Scribe_Values.Look(ref numBounces, "numBounces");
             Scribe_Values.Look(ref curLifetime, "curLifetime");
-            Scribe_Values.Look(ref firedOnce, "firedOnce");
+            Scribe_Values.Look(ref shotAnything, "firedOnce");
             Scribe_Collections.Look(ref allProjectiles, "allProjectiles", LookMode.Reference);
             Scribe_Collections.Look(ref prevTargets, "prevTargets", LookMode.Reference);
         }
