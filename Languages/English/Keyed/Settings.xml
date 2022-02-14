@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LanguageData>
+    <GeneralTitle>General</GeneralTitle>
     <!-- CSG -->
     <CSGTitle>Custom structure generation:</CSGTitle>
     <CSGLog>Enable structure generation debugging log: </CSGLog>
 
     <!-- Toggable patches -->
-    <TPTitle>Toggable patches:</TPTitle>
+    <TPTitle>Toggable patches</TPTitle>
     <NeedRestart>All settings need a restart to be applied</NeedRestart>
     <XPatchFound>{0} patches found</XPatchFound>
 
