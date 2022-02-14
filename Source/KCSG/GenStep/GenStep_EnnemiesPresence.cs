@@ -73,7 +73,7 @@ namespace KCSG
 				p = defaultPointsRange.RandomInRange;
 				KLog.Message($"Using in-range threat points: {p}. Choosen from {defaultPointsRange}");
 			}
-			p *= pointMultiplier;
+			p = Math.Max(p, 150) * pointMultiplier;
 			KLog.Message($"Final threat points: {p}");
 
 			return PawnGroupMakerUtility.GeneratePawns(new PawnGroupMakerParms
