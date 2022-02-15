@@ -11,6 +11,9 @@ namespace VanillaFurnitureExpanded
 		public Vector3 southOffset;
 		public Vector3 westOffset;
 		public Vector3 eastOffset;
+		public string texPath = "Things/Special/Fire";
+		public Color color = Color.white;
+		public Vector2 size = Vector2.one;
 		public CompProperties_FireOverlayRotatable()
         {
 			this.compClass = typeof(CompFireOverlayRotatable);
@@ -21,7 +24,18 @@ namespace VanillaFurnitureExpanded
 	{
 		protected CompRefuelable refuelableComp;
 
-		public static readonly Graphic FireGraphic = GraphicDatabase.Get<Graphic_Flicker>("Things/Special/Fire", ShaderDatabase.TransparentPostLight, Vector2.one, Color.white);
+		public Graphic cachedGraphic;
+		public  Graphic FireGraphic
+        {
+            get
+            {
+				if (cachedGraphic == null)
+                {
+					cachedGraphic = GraphicDatabase.Get<Graphic_Flicker>(Props.texPath, ShaderDatabase.TransparentPostLight, Props.size, Props.color);
+				}
+				return cachedGraphic;
+			}
+        }
 
 		public new CompProperties_FireOverlayRotatable Props => (CompProperties_FireOverlayRotatable)props;
 
