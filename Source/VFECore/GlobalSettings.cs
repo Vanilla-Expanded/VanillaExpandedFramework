@@ -1,7 +1,9 @@
-﻿using RimWorld;
+﻿using HarmonyLib;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
@@ -13,7 +15,6 @@ namespace VFECore
         public static VFEGlobalSettings settings;
         private Vector2 scrollPosition = Vector2.zero;
         protected readonly Vector2 ButtonSize = new Vector2(120f, 40f);
-        private readonly float buttonOffset = 20f;
 
         public VFEGlobal(ModContentPack content) : base(content)
         {
@@ -35,45 +36,124 @@ namespace VFECore
 
         public override string SettingsCategory() => "Vanilla Framework Expanded";
 
-        #region Pages
+        private int PageIndex = 0;
 
-        private enum Pages // Add pages here
+        public override void DoSettingsWindowContents(Rect inRect)
         {
-            General = 1,
-            PatchOperationToggable = 2
+            Rect tabRect = new Rect(inRect)
+            {
+                y = inRect.y + 40f
+            };
+            Rect mainRect = new Rect(inRect)
+            {
+                height = inRect.height - 40f,
+                y = inRect.y + 40f
+            };
+
+            Widgets.DrawMenuSection(mainRect);
+            List<TabRecord> tabs = new List<TabRecord>
+            {
+                new TabRecord("GeneralTitle".Translate(), () =>
+                {
+                    PageIndex = 0;
+                    WriteSettings();
+
+                }, PageIndex == 0),
+                new TabRecord("TPTitle".Translate(), () =>
+                {
+                    PageIndex = 1;
+                    WriteSettings();
+
+                }, PageIndex == 1)
+            };
+            TabDrawer.DrawTabs(tabRect, tabs);
+
+            switch (PageIndex)
+            {
+                case 0:
+                    GeneralSettings(mainRect.ContractedBy(15f));
+                    break;
+                case 1:
+                    ToggablePatchesSettings(mainRect.ContractedBy(15f));
+                    break;
+                default:
+                    break;
+            }
         }
 
-        private enum PagesHeadTitle // Add language data here, in the right order
+        // General settings
+
+        private int FactionCanBeAddedCount;
+
+        private void GeneralSettings(Rect rect)
         {
-            GeneralTitle = 1,
-            TPTitle = 2
-        }
+            Listing_Standard list = new Listing_Standard();
+            list.Begin(rect);
 
-        private readonly int MaxIndex = Enum.GetNames(typeof(Pages)).Length;
-        private int PageIndex = 1;
-
-        #endregion Pages
-
-        #region Page Head
-
-        private void MakePageHead(Listing_Standard list)
-        {
-            list.Gap();
-            var title = (PagesHeadTitle)PageIndex;
-            Text.Font = GameFont.Medium;
-            list.Label(title.ToString().Translate());
             Text.Font = GameFont.Small;
-            list.Gap();
+            list.Label("Faction Discovery");
+            if (Current.Game != null)
+            {
+                FactionCanBeAddedCount = DefDatabase<FactionDef>.AllDefs.Where(ValidatorAnyFactionLeft).Count();
+                list.Label("CanAddXFaction".Translate(FactionCanBeAddedCount));
+                if (FactionCanBeAddedCount > 0 && list.ButtonText("AskForPopUp".Translate(), "AskForPopUpExplained".Translate()))
+                {
+                    Current.Game.World.GetComponent<NewFactionSpawningState>().ignoredFactions.Clear();
+                    IEnumerator<FactionDef> factionEnumerator = DefDatabase<FactionDef>.AllDefs.Where(Patch_GameComponentUtility.LoadedGame.Validator).GetEnumerator();
+                    if (factionEnumerator.MoveNext())
+                    {
+                        // Only one dialog can be stacked at a time, so give it the list of all factions
+                        Dialog_NewFactionSpawning.OpenDialog(factionEnumerator);
+                    }
+                }
+            }
+            else
+            {
+                Text.Anchor = TextAnchor.MiddleCenter;
+                list.Label("NeedToBeInGame".Translate());
+                Text.Anchor = TextAnchor.UpperLeft;
+            }
+            list.GapLine(12);
+
+            // KCSG
+            list.Gap(12);
+            list.Label("Custom Structure Generation :");
+            list.Gap(5);
+            list.CheckboxLabeled("Verbose logging", ref settings.enableVerboseLogging);
+            list.GapLine(12);
+
+            // Texture Variations
+            list.Gap(12);
+            list.Label("Texture Variations:");
+            list.Gap(5);
+            list.CheckboxLabeled("VFE_RandomOrSequentially".Translate(), ref settings.isRandomGraphic, null);
+            list.Gap(5);
+            list.CheckboxLabeled("VFE_HideRandomizeButton".Translate(), ref settings.hideRandomizeButton, null);
+            list.GapLine(12);
+
+            // General
+            list.Gap(12);
+            list.CheckboxLabeled("Disable Texture Caching", ref settings.disableCaching, "Warning: Enabling this might cause performance issues.");
+
+            list.End();
         }
 
-        #endregion Page Head
+        private bool ValidatorAnyFactionLeft(FactionDef faction)
+        {
+            if (faction == null) return false;
+            if (faction.isPlayer) return false;
+            if (!faction.canMakeRandomly && faction.hidden && faction.maxCountAtGameStart <= 0) return false;
+            if (Find.FactionManager.AllFactions.Count(f => f.def == faction) > 0) return false;
+            if (NewFactionSpawningUtility.NeverSpawn(faction)) return false;
+            return true;
+        }
 
-        #region Toggable Patches
+        // Toggable patches settings
 
         private readonly int ToggablePatchCount;
         private readonly int ModUsingToggablePatchCount = 0;
 
-        private void AddToggablePatchesSettings(Rect rect)
+        private void ToggablePatchesSettings(Rect rect)
         {
             Rect viewRect = new Rect(rect)
             {
@@ -84,8 +164,6 @@ namespace VFECore
             Listing_Standard list = new Listing_Standard();
             Widgets.BeginScrollView(rect, ref scrollPosition, viewRect, true);
             list.Begin(viewRect);
-
-            MakePageHead(list);
 
             Text.Anchor = TextAnchor.MiddleCenter;
             list.Label("NeedRestart".Translate());
@@ -129,119 +207,6 @@ namespace VFECore
                     }
                 }
             }
-        }
-
-        #endregion Toggable Patches
-
-        #region General
-
-        private int FactionCanBeAddedCount;
-
-        private void GeneralSettings(Rect rect)
-        {
-            Listing_Standard list = new Listing_Standard();
-            list.Begin(rect);
-
-            Text.Font = GameFont.Medium;
-            list.Label("Faction Discovery");
-            Text.Font = GameFont.Small;
-            if (Current.Game != null)
-            {
-                FactionCanBeAddedCount = DefDatabase<FactionDef>.AllDefs.Where(ValidatorAnyFactionLeft).Count();
-                list.Label("CanAddXFaction".Translate(FactionCanBeAddedCount));
-                if (FactionCanBeAddedCount > 0 && list.ButtonText("AskForPopUp".Translate(), "AskForPopUpExplained".Translate()))
-                {
-                    Current.Game.World.GetComponent<NewFactionSpawningState>().ignoredFactions.Clear();
-                    IEnumerator<FactionDef> factionEnumerator = DefDatabase<FactionDef>.AllDefs.Where(Patch_GameComponentUtility.LoadedGame.Validator).GetEnumerator();
-                    if (factionEnumerator.MoveNext())
-                    {
-                        // Only one dialog can be stacked at a time, so give it the list of all factions
-                        Dialog_NewFactionSpawning.OpenDialog(factionEnumerator);
-                    }
-                }
-            }
-            else
-            {
-                Text.Anchor = TextAnchor.MiddleCenter;
-                list.Label("NeedToBeInGame".Translate());
-                Text.Anchor = TextAnchor.UpperLeft;
-            }
-            // KCSG
-            list.Gap(20);
-            Text.Font = GameFont.Medium;
-            list.Label("Custom Structure Generation");
-            Text.Font = GameFont.Small;
-            list.Gap();
-            list.CheckboxLabeled("Verbose logging", ref settings.enableVerboseLogging);
-
-            // General
-            list.Gap(20);
-            Text.Font = GameFont.Medium;
-            list.Label("General Settings");
-            Text.Font = GameFont.Small;
-            list.Gap();
-            list.CheckboxLabeled("Disable Texture Caching", ref settings.disableCaching, "Warning: Enabling this might cause performance issues.");
-
-            // Texture Variations
-            list.Gap(20);
-            Text.Font = GameFont.Medium;
-            list.Label("Texture Variations");
-            Text.Font = GameFont.Small;
-            list.Gap();
-            list.CheckboxLabeled("VFE_RandomOrSequentially".Translate(), ref settings.isRandomGraphic, null);
-            list.Gap();
-            list.CheckboxLabeled("VFE_HideRandomizeButton".Translate(), ref settings.hideRandomizeButton, null);
-            list.Gap();
-
-            list.End();
-        }
-
-        private bool ValidatorAnyFactionLeft(FactionDef faction)
-        {
-            if (faction == null) return false;
-            if (faction.isPlayer) return false;
-            if (!faction.canMakeRandomly && faction.hidden && faction.maxCountAtGameStart <= 0) return false;
-            if (Find.FactionManager.AllFactions.Count(f => f.def == faction) > 0) return false;
-            if (NewFactionSpawningUtility.NeverSpawn(faction)) return false;
-            return true;
-        }
-
-        #endregion General
-
-        private void AddPageButtons(Rect rect)
-        {
-            Rect leftButtonRect = new Rect(rect.width / 2f - ButtonSize.x / 2f - ButtonSize.x - buttonOffset, rect.height + ButtonSize.y + 2, ButtonSize.x, ButtonSize.y);
-            if (PageIndex > 1 && Widgets.ButtonText(leftButtonRect, "Previous Page"))
-            {
-                SoundDefOf.Click.PlayOneShot(null);
-                if (PageIndex - 1 >= 1) PageIndex--;
-            }
-
-            Rect rightButtonRect = new Rect(rect.width / 2f + ButtonSize.x / 2f + buttonOffset, rect.height + ButtonSize.y + 2, ButtonSize.x, ButtonSize.y);
-            if (PageIndex < MaxIndex && Widgets.ButtonText(rightButtonRect, "Next Page"))
-            {
-                SoundDefOf.Click.PlayOneShot(null);
-                if (PageIndex + 1 <= MaxIndex) PageIndex++;
-            }
-        }
-
-        public override void DoSettingsWindowContents(Rect inRect)
-        {
-            AddPageButtons(inRect);
-
-            switch (PageIndex)
-            {
-                case (int)Pages.General:
-                    GeneralSettings(inRect);
-                    break;
-                case (int)Pages.PatchOperationToggable:
-                    AddToggablePatchesSettings(inRect);
-                    break;
-                default:
-                    break;
-            }
-
-            settings.Write();
         }
     }
 
