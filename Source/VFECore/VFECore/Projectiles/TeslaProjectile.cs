@@ -57,7 +57,11 @@ namespace VFEMech
                 equipmentDef = ThingDef.Named("Gun_Autopistol");
             }
 
-            if (hitThing != null && !shotAnything)
+            if (hitThing == null && !shotAnything)
+            {
+                shotAnything = true;
+            }
+            else if (hitThing != null && !shotAnything)
             {
                 BattleLogEntry_RangedImpact battleLogEntry_RangedImpact = new BattleLogEntry_RangedImpact(launcher, hitThing, intendedTarget.Thing, equipmentDef, def, targetCoverDef);
                 Find.BattleLog.Add(battleLogEntry_RangedImpact);
