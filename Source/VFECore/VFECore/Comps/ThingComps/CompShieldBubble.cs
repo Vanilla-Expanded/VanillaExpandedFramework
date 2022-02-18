@@ -31,6 +31,9 @@ namespace VFECore
 		public Color  shieldColor = Color.white;
 		public float  EnergyLossPerDamage = 1f;
 		public bool disableRotation;
+		public SoundDef absorbDamageSound;
+		public SoundDef brokenSound;
+		public SoundDef resetSound;
 	}
 
 	[StaticConstructorOnStartup]
@@ -287,7 +290,11 @@ namespace VFECore
 		}
 		private void AbsorbedDamage(DamageInfo dinfo)
 		{
-			SoundDefOf.EnergyShield_AbsorbDamage.PlayOneShot(new TargetInfo(this.Pawn.Position, this.Pawn.Map));
+			if (Props.absorbDamageSound != null)
+				Props.absorbDamageSound.PlayOneShot(new TargetInfo(this.Pawn.Position, this.Pawn.Map));
+			else
+				SoundDefOf.EnergyShield_AbsorbDamage.PlayOneShot(new TargetInfo(this.Pawn.Position, this.Pawn.Map));
+
 			impactAngleVect = Vector3Utility.HorizontalVectorFromAngle(dinfo.Angle);
 			Vector3 loc = this.Pawn.TrueCenter() + impactAngleVect.RotatedBy(180f) * 0.5f;
 			float   num = Mathf.Min(10f, 2f + dinfo.Amount / 10f);
@@ -307,7 +314,10 @@ namespace VFECore
 		{
 			if (this.Pawn?.Map != null && this.Pawn.Position.InBounds(this.Pawn.Map))
 			{
-				SoundDefOf.EnergyShield_Broken.PlayOneShot(new TargetInfo(this.Pawn.Position, this.Pawn.Map));
+				if (Props.brokenSound != null)
+					Props.brokenSound.PlayOneShot(new TargetInfo(this.Pawn.Position, this.Pawn.Map));
+				else
+					SoundDefOf.EnergyShield_Broken.PlayOneShot(new TargetInfo(this.Pawn.Position, this.Pawn.Map));
 				
 				FleckMaker.Static(this.Pawn.TrueCenter(), this.Pawn.Map, FleckDefOf.ExplosionFlash, 12f);
 				for (int i = 0; i < 6; i++)
@@ -324,7 +334,11 @@ namespace VFECore
 		{
 			if (this.Pawn.Spawned)
 			{
-				SoundDefOf.EnergyShield_Reset.PlayOneShot(new TargetInfo(this.Pawn.Position, this.Pawn.Map));
+				if (Props.resetSound != null)
+					Props.resetSound.PlayOneShot(new TargetInfo(this.Pawn.Position, this.Pawn.Map));
+				else
+					SoundDefOf.EnergyShield_Reset.PlayOneShot(new TargetInfo(this.Pawn.Position, this.Pawn.Map));
+
 				FleckMaker.ThrowLightningGlow(this.Pawn.TrueCenter(), this.Pawn.Map, 3f);
 			}
 

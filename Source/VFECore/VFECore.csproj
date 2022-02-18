@@ -574,6 +574,7 @@
     <Compile Include="Plants\Harmony\Plant_PlantCollected.cs" />
     <Compile Include="UItils\UIUtility.cs" />
     <Compile Include="VFECore\Comps\WorldComponents\HiringContractTracker.cs" />
+    <Compile Include="VFECore\Defs\BackstoryDef.cs" />
     <Compile Include="VFECore\HarmonyPatches\Apparel_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\CalculatePain_Patch.cs" />
     <Compile Include="VFECore\DefModExtensions\TraitExtension.cs" />
@@ -751,6 +752,8 @@
     <Compile Include="VFECore\Lords\LordJob_SiegeCustom.cs" />
     <Compile Include="VFECore\Lords\LordToilData_SiegeCustom.cs" />
     <Compile Include="VFECore\Lords\LordToil_SiegeCustom.cs" />
+    <Compile Include="VFECore\MapExtender\MapGenerator_GenerateMap_Patch.cs" />
+    <Compile Include="VFECore\MapExtender\ObjectSpawnsDef.cs" />
     <Compile Include="VFECore\ModCompatibilityCheck.cs" />
     <Compile Include="VFECore\Needs\Need_Power.cs" />
     <Compile Include="VFECore\PatchOperation\PatchOperationToggableSequence.cs" />
@@ -781,6 +784,8 @@
     <Compile Include="VFECore\VFECore.cs" />
     <Compile Include="VFECore\WorkGivers\WorkGiver_AttachTurret.cs" />
     <Compile Include="VFECore\WorkGivers\WorkGiver_RepairMachine.cs" />
+    <Compile Include="WeatherOverlays\WeatherOverlay_Custom.cs" />
+    <Compile Include="WeatherOverlays\WeatherOverlay_CustomTwo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="VFECore\Verbs\" />
