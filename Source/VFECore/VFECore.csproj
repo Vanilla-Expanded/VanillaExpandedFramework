@@ -784,8 +784,8 @@
     <Compile Include="VFECore\VFECore.cs" />
     <Compile Include="VFECore\WorkGivers\WorkGiver_AttachTurret.cs" />
     <Compile Include="VFECore\WorkGivers\WorkGiver_RepairMachine.cs" />
-    <Compile Include="WeatherOverlays\WeatherOverlay_Custom.cs" />
-    <Compile Include="WeatherOverlays\WeatherOverlay_CustomTwo.cs" />
+    <Compile Include="VFECore\WeatherOverlays\WeatherOverlay_Custom.cs" />
+    <Compile Include="VFECore\WeatherOverlays\WeatherOverlay_CustomTwo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="VFECore\Verbs\" />
