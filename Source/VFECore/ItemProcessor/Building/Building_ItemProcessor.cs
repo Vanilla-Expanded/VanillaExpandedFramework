@@ -1720,6 +1720,11 @@ namespace ItemProcessor
 
         public override string GetInspectString()
         {
+            // Fon't do anything if minified/missing the comp
+            if (compItemProcessor == null)
+            {
+                return base.GetInspectString();
+            }
 
             //This just displays all the above shit in the Inspect box at the bottom left corner of the screen
             string text = base.GetInspectString();
@@ -1935,7 +1940,11 @@ namespace ItemProcessor
             //This changes the graphic of the building. Runs very seldom unless called by  base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
             get
             {
-                if (processorStage == ProcessorStage.Working && compItemProcessor.Props.buildingOnGraphic != "")
+                if (compItemProcessor == null)
+                {
+                    return this.DefaultGraphic;
+                }
+                else if (processorStage == ProcessorStage.Working && compItemProcessor.Props.buildingOnGraphic != "")
                 {
                     Shader shader;
                     if (compItemProcessor.Props.shaderForBuildingOnGraphic != null)
