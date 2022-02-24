@@ -74,6 +74,11 @@ namespace KCSG
                     foreach (IntVec3 c in CellRect.CenteredOn(UI.MouseCell(), 1))
                         Find.CurrentMap.roofGrid.SetRoof(c, RoofDefOf.RoofConstructed);
                 }),
+                new DebugMenuOption($"{RoofDefOf.RoofConstructed.defName} 9*9", DebugMenuOptionMode.Tool, () =>
+                {
+                    foreach (IntVec3 c in CellRect.CenteredOn(UI.MouseCell(), 4))
+                        Find.CurrentMap.roofGrid.SetRoof(c, RoofDefOf.RoofConstructed);
+                }),
                 // Thin
                 new DebugMenuOption($"{RoofDefOf.RoofRockThin.defName} 1*1", DebugMenuOptionMode.Tool, () =>
                 {
@@ -82,6 +87,11 @@ namespace KCSG
                 new DebugMenuOption($"{RoofDefOf.RoofRockThin.defName} 3*3", DebugMenuOptionMode.Tool, () =>
                 {
                     foreach (IntVec3 c in CellRect.CenteredOn(UI.MouseCell(), 1))
+                        Find.CurrentMap.roofGrid.SetRoof(c, RoofDefOf.RoofRockThin);
+                }),
+                 new DebugMenuOption($"{RoofDefOf.RoofRockThin.defName} 9*9", DebugMenuOptionMode.Tool, () =>
+                {
+                    foreach (IntVec3 c in CellRect.CenteredOn(UI.MouseCell(), 4))
                         Find.CurrentMap.roofGrid.SetRoof(c, RoofDefOf.RoofRockThin);
                 }),
                 // Thick
