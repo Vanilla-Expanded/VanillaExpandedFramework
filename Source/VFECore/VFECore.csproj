@@ -574,6 +574,7 @@
     <Compile Include="Plants\Harmony\Plant_PlantCollected.cs" />
     <Compile Include="UItils\UIUtility.cs" />
     <Compile Include="VFECore\Comps\WorldComponents\HiringContractTracker.cs" />
+    <Compile Include="VFECore\DefModExtensions\ThoughtExtension.cs" />
     <Compile Include="VFECore\Defs\BackstoryDef.cs" />
     <Compile Include="VFECore\HarmonyPatches\Apparel_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\CalculatePain_Patch.cs" />
@@ -699,6 +700,7 @@
     <Compile Include="VFECore\HarmonyPatches\FactionSpawning\Patch_FactionDiscovery_ModBase.cs" />
     <Compile Include="VFECore\HarmonyPatches\FactionSpawning\Patch_GameComponentUtility.cs" />
     <Compile Include="VFECore\HarmonyPatches\HarmonyPatches.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_TryGainMemory.cs" />
     <Compile Include="VFECore\HarmonyPatches\ResolveRaidStrategy_Patch.cs" />
     <Compile Include="VFECore\HarmonyPatches\MachinesCaravansPatches.cs" />
     <Compile Include="VFECore\HarmonyPatches\MachinesDie.cs" />
