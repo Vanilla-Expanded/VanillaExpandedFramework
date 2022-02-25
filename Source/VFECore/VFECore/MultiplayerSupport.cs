@@ -1,6 +1,10 @@
-﻿namespace VFECore
+﻿using HarmonyLib;
+using Multiplayer.API;
+using Verse;
+
+namespace VFECore
 {
-    /*[StaticConstructorOnStartup]
+    [StaticConstructorOnStartup]
     internal static class MultiplayerSupport
     {
         static MultiplayerSupport()
@@ -25,5 +29,5 @@
         }
 
         private static readonly Harmony harmony = new Harmony("vfe.multiplayersupport");
-    }*/
+    }
 }
