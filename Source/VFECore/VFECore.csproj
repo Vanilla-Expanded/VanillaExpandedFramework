@@ -570,10 +570,12 @@
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_SettingsController.cs" />
     <Compile Include="Cuisine\Plants\Plant_NarrowTemperatures.cs" />
     <Compile Include="Misc\Dialog_ContractInfo.cs" />
+    <Compile Include="VFECore\MultiplayerSupport.cs" />
     <Compile Include="Plants\DefExtensions\DualCropExtension.cs" />
     <Compile Include="Plants\Harmony\Plant_PlantCollected.cs" />
     <Compile Include="UItils\UIUtility.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompHediffGiver.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompLeavesSpawnerBase.cs" />
     <Compile Include="VFECore\Comps\WorldComponents\HiringContractTracker.cs" />
     <Compile Include="VFECore\DefModExtensions\ThoughtExtension.cs" />
     <Compile Include="VFECore\DefModExtensions\WeatherLetterExtensions.cs" />
@@ -703,6 +705,7 @@
     <Compile Include="VFECore\HarmonyPatches\FactionSpawning\Patch_GameComponentUtility.cs" />
     <Compile Include="VFECore\HarmonyPatches\HarmonyPatches.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_CurWeatherPerceived.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_GetFallColorFactor.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_TryGainMemory.cs" />
     <Compile Include="VFECore\HarmonyPatches\ResolveRaidStrategy_Patch.cs" />
     <Compile Include="VFECore\HarmonyPatches\MachinesCaravansPatches.cs" />

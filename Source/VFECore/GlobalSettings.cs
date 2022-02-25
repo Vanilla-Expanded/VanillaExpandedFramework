@@ -1,12 +1,8 @@
-﻿using HarmonyLib;
-using RimWorld;
-using System;
+﻿using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 using Verse;
-using Verse.Sound;
 
 namespace VFECore
 {
@@ -64,7 +60,13 @@ namespace VFECore
                     PageIndex = 1;
                     WriteSettings();
 
-                }, PageIndex == 1)
+                }, PageIndex == 1),
+                new TabRecord("Comps", () =>
+                {
+                    PageIndex = 2;
+                    WriteSettings();
+
+                }, PageIndex == 2)
             };
             TabDrawer.DrawTabs(tabRect, tabs);
 
@@ -75,6 +77,9 @@ namespace VFECore
                     break;
                 case 1:
                     ToggablePatchesSettings(mainRect.ContractedBy(15f));
+                    break;
+                case 2:
+                    CompSettings(mainRect.ContractedBy(15f));
                     break;
                 default:
                     break;
@@ -208,6 +213,20 @@ namespace VFECore
                 }
             }
         }
+
+        // Comps settings
+
+        private void CompSettings(Rect rect)
+        {
+            Listing_Standard list = new Listing_Standard();
+            list.Begin(rect);
+
+            Text.Font = GameFont.Small;
+            list.CheckboxLabeled("Enable all leaves spawners", ref settings.enableLeaveSpawners);
+            list.Gap(5);
+            list.CheckboxLabeled("Enable all autumn leaves spawners", ref settings.enableAutumnLeaveSpawners);
+            list.End();
+        }
     }
 
     public class VFEGlobalSettings : ModSettings
@@ -218,6 +237,9 @@ namespace VFECore
         public bool isRandomGraphic = true;
         public bool hideRandomizeButton = false;
 
+        public bool enableLeaveSpawners = true;
+        public bool enableAutumnLeaveSpawners = true;
+
         public override void ExposeData()
         {
             base.ExposeData();
@@ -226,6 +248,8 @@ namespace VFECore
             Scribe_Values.Look(ref disableCaching, "disableCaching", true);
             Scribe_Values.Look(ref isRandomGraphic, "isRandomGraphic", true, true);
             Scribe_Values.Look(ref hideRandomizeButton, "hideRandomizeButton", false, true);
+            Scribe_Values.Look(ref enableLeaveSpawners, "enableLeaveSpawners", true, true);
+            Scribe_Values.Look(ref enableAutumnLeaveSpawners, "enableAutumnLeaveSpawners", true, true);
         }
     }
 }
