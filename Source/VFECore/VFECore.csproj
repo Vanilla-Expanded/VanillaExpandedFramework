@@ -573,6 +573,7 @@
     <Compile Include="Plants\DefExtensions\DualCropExtension.cs" />
     <Compile Include="Plants\Harmony\Plant_PlantCollected.cs" />
     <Compile Include="UItils\UIUtility.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompHediffGiver.cs" />
     <Compile Include="VFECore\Comps\WorldComponents\HiringContractTracker.cs" />
     <Compile Include="VFECore\DefModExtensions\ThoughtExtension.cs" />
     <Compile Include="VFECore\Defs\BackstoryDef.cs" />
