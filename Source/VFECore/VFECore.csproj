@@ -570,6 +570,7 @@
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_SettingsController.cs" />
     <Compile Include="Cuisine\Plants\Plant_NarrowTemperatures.cs" />
     <Compile Include="Misc\Dialog_ContractInfo.cs" />
+    <Compile Include="VFECore\DefModExtensions\WeatherEffectsExtension.cs" />
     <Compile Include="VFECore\MultiplayerSupport.cs" />
     <Compile Include="Plants\DefExtensions\DualCropExtension.cs" />
     <Compile Include="Plants\Harmony\Plant_PlantCollected.cs" />
@@ -790,6 +791,7 @@
     <Compile Include="VFECore\Utilities\ShieldUtility.cs" />
     <Compile Include="VFECore\Utilities\ApparelUtility.cs" />
     <Compile Include="VFECore\VFECore.cs" />
+    <Compile Include="VFECore\WeatherOverlays\WeatherOverlay_Effects.cs" />
     <Compile Include="VFECore\WorkGivers\WorkGiver_AttachTurret.cs" />
     <Compile Include="VFECore\WorkGivers\WorkGiver_RepairMachine.cs" />
     <Compile Include="VFECore\WeatherOverlays\WeatherOverlay_Custom.cs" />
