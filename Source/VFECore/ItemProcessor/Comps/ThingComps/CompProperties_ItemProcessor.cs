@@ -123,6 +123,12 @@ namespace ItemProcessor
         public string messageIfWrongTemp = "IP_SpoiledDueToWrongTemp";
         public int rareTicksToDestroyDueToWrongTemp = 30;
 
+        //This defines whether the building goes faster if temperature is in a given range
+        public bool isTemperatureAcceleratingMachine = false;
+        public float maxAccelerationTemp = 1f;
+        public float minAccelerationTemp = 0f;
+        public float accelerationFactor = 1f;
+
         //This defines whether the building shows a fermenting progress bar like base game's
         public bool showProgressBar = false;
         //This defines whether the building shows a simple progress bar that goes from red to green

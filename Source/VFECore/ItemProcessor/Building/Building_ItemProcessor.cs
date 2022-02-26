@@ -1362,7 +1362,40 @@ namespace ItemProcessor
                 progressCounter++;
 
 
+                //If isTemperatureAcceleratingMachine has been set in CompProperties_ItemProcessor, we will multiply the times by the specified time factor
 
+               
+              
+                if (compItemProcessor.Props.isTemperatureAcceleratingMachine)
+                {
+                    float currentTempInMap = this.Position.GetTemperature(this.Map);
+                    CombinationDef thisCombinationRecipe = DefDatabase<CombinationDef>.GetNamed(thisRecipe);
+                    if ((currentTempInMap > compItemProcessor.Props.maxAccelerationTemp) || (currentTempInMap < compItemProcessor.Props.minAccelerationTemp))                     
+                    {
+                        
+                        this.days = thisCombinationRecipe.singleTimeIfNotQualityIncreasing * compItemProcessor.Props.accelerationFactor;
+                        this.awfulQualityAgeDaysThreshold = thisCombinationRecipe.awfulQualityAgeDaysThreshold * compItemProcessor.Props.accelerationFactor;
+                        this.poorQualityAgeDaysThreshold = thisCombinationRecipe.poorQualityAgeDaysThreshold * compItemProcessor.Props.accelerationFactor;
+                        this.normalQualityAgeDaysThreshold = thisCombinationRecipe.normalQualityAgeDaysThreshold * compItemProcessor.Props.accelerationFactor;
+                        this.goodQualityAgeDaysThreshold = thisCombinationRecipe.goodQualityAgeDaysThreshold * compItemProcessor.Props.accelerationFactor;
+                        this.excellentQualityAgeDaysThreshold = thisCombinationRecipe.excellentQualityAgeDaysThreshold * compItemProcessor.Props.accelerationFactor;
+                        this.masterworkQualityAgeDaysThreshold = thisCombinationRecipe.masterworkQualityAgeDaysThreshold * compItemProcessor.Props.accelerationFactor;
+                        this.legendaryQualityAgeDaysThreshold = thisCombinationRecipe.legendaryQualityAgeDaysThreshold * compItemProcessor.Props.accelerationFactor;
+                    }
+                    else
+                    {
+                        this.days = thisCombinationRecipe.singleTimeIfNotQualityIncreasing;
+                        this.awfulQualityAgeDaysThreshold = thisCombinationRecipe.awfulQualityAgeDaysThreshold;
+                        this.poorQualityAgeDaysThreshold = thisCombinationRecipe.poorQualityAgeDaysThreshold;
+                        this.normalQualityAgeDaysThreshold = thisCombinationRecipe.normalQualityAgeDaysThreshold;
+                        this.goodQualityAgeDaysThreshold = thisCombinationRecipe.goodQualityAgeDaysThreshold;
+                        this.excellentQualityAgeDaysThreshold = thisCombinationRecipe.excellentQualityAgeDaysThreshold;
+                        this.masterworkQualityAgeDaysThreshold = thisCombinationRecipe.masterworkQualityAgeDaysThreshold;
+                        this.legendaryQualityAgeDaysThreshold = thisCombinationRecipe.legendaryQualityAgeDaysThreshold;
+                    }
+                  
+
+                }
 
                 //If noPowerDestroysProgress has been set in CompProperties_ItemProcessor, a new counter starts. This is shared for fueled
                 //and powered buildings, since there are none that are both
