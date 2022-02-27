@@ -10,7 +10,7 @@ namespace MVCF.Utilities
 {
     public static class PawnVerbGizmoUtility
     {
-        public static readonly Dictionary<string, string> __truncateCache = new Dictionary<string, string>();
+        public static readonly Dictionary<string, string> __truncateCache = new();
 
         public static IEnumerable<Gizmo> GetGizmosForVerb(this Verb verb, ManagedVerb man = null)
         {
@@ -19,7 +19,7 @@ namespace MVCF.Utilities
             Thing ownerThing = null;
             switch (verb.DirectOwner)
             {
-                case ThingWithComps twc when twc.TryGetComp<Comp_VerbGiver>() is Comp_VerbGiver giver:
+                case ThingWithComps twc when twc.TryGetComp<Comp_VerbGiver>() is { } giver:
                     ownerThing = twc;
                     props = giver.PropsFor(verb);
                     break;

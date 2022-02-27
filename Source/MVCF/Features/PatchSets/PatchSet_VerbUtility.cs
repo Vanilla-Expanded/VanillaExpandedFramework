@@ -1,27 +1,14 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using HarmonyLib;
 using MVCF.Utilities;
 using RimWorld;
 using Verse;
 
-namespace MVCF.Harmony
+namespace MVCF.Features.PatchSets
 {
-    public class VerbUtilityPatches
+    public class PatchSet_VerbUtility : PatchSet
     {
-        public static void DoPatches(HarmonyLib.Harmony harm)
-        {
-            harm.Patch(AccessTools.Method(typeof(VerbUtility), "IsEMP"),
-                new HarmonyMethod(typeof(VerbUtilityPatches), "IsEMP_Prefix"));
-            harm.Patch(AccessTools.Method(typeof(VerbUtility), "IsIncendiary"),
-                new HarmonyMethod(typeof(VerbUtilityPatches), "IsIncendiary_Prefix"));
-            harm.Patch(AccessTools.Method(typeof(VerbUtility), "UsesExplosiveProjectiles"),
-                new HarmonyMethod(typeof(VerbUtilityPatches), "UsesExplosiveProjectiles_Prefix"));
-            harm.Patch(AccessTools.Method(typeof(VerbUtility), "ProjectileFliesOverhead"),
-                new HarmonyMethod(typeof(VerbUtilityPatches), "ProjectileFliesOverhead_Prefix"));
-            harm.Patch(AccessTools.Method(typeof(VerbUtility), "HarmsHealth"),
-                new HarmonyMethod(typeof(VerbUtilityPatches), "HarmsHealth_Prefix"));
-        }
-
         public static bool IsEMP_Prefix(Verb verb, ref bool __result)
         {
             if (verb.verbProps.label.NullOrEmpty()) return true;
@@ -80,6 +67,17 @@ namespace MVCF.Harmony
             __result = man.ManagedVerbs.Any(v =>
                 v.Enabled && verb.GetDamageDef() == null && verb.GetDamageDef().harmsHealth);
             return false;
+        }
+
+        public override IEnumerable<Patch> GetPatches()
+        {
+            yield return Patch.Prefix(AccessTools.Method(typeof(VerbUtility), nameof(VerbUtility.IsEMP)), AccessTools.Method(GetType(), nameof(IsEMP_Prefix)));
+            yield return Patch.Prefix(AccessTools.Method(typeof(VerbUtility), nameof(VerbUtility.IsIncendiary)), AccessTools.Method(GetType(), nameof(IsIncendiary_Prefix)));
+            yield return Patch.Prefix(AccessTools.Method(typeof(VerbUtility), nameof(VerbUtility.UsesExplosiveProjectiles)),
+                AccessTools.Method(GetType(), nameof(UsesExplosiveProjectiles_Prefix)));
+            yield return Patch.Prefix(AccessTools.Method(typeof(VerbUtility), nameof(VerbUtility.ProjectileFliesOverhead)),
+                AccessTools.Method(GetType(), nameof(ProjectileFliesOverhead_Prefix)));
+            yield return Patch.Prefix(AccessTools.Method(typeof(VerbUtility), nameof(VerbUtility.HarmsHealth)), AccessTools.Method(GetType(), nameof(HarmsHealth_Prefix)));
         }
     }
 }

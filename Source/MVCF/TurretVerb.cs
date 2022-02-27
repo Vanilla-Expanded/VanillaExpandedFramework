@@ -1,11 +1,7 @@
-// TurretVerb.cs by Joshua Bennett
-// 
-// Created 2021-02-02
-
 using System;
 using System.Linq;
 using MVCF.Comps;
-using MVCF.Harmony;
+using MVCF.HarmonyPatches;
 using RimWorld;
 using UnityEngine;
 using Verse;

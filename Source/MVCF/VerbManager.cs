@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MVCF.Comps;
+using MVCF.Features;
 using MVCF.Utilities;
 using RimWorld;
 using UnityEngine;
@@ -12,11 +13,11 @@ namespace MVCF
     public class VerbManager : IVerbOwner
     {
         private static readonly Dictionary<ThingWithComps, bool> preferMeleeCache =
-            new Dictionary<ThingWithComps, bool>();
+            new();
 
-        private readonly List<ManagedVerb> drawVerbs = new List<ManagedVerb>();
-        private readonly List<ManagedVerb> tickVerbs = new List<ManagedVerb>();
-        private readonly List<ManagedVerb> verbs = new List<ManagedVerb>();
+        private readonly List<ManagedVerb> drawVerbs = new();
+        private readonly List<ManagedVerb> tickVerbs = new();
+        private readonly List<ManagedVerb> verbs = new();
         public Verb CurrentVerb;
         public DebugOptions debugOpts;
         public bool HasVerbs;
@@ -25,12 +26,12 @@ namespace MVCF
         public bool NeedsTicking { get; private set; }
 
         public IEnumerable<ManagedVerb> CurrentlyUseableRangedVerbs => verbs.Where(v =>
-            !v.Verb.IsMeleeAttack && (v.Props == null || !v.Props.canFireIndependently) && v.Enabled &&
-            v.Verb.Available() && (Pawn.IsColonist || v.Props == null || !v.Props.colonistOnly));
+            !v.Verb.IsMeleeAttack && v.Props is not {canFireIndependently: true} && v.Enabled &&
+            v.Verb.Available() && (Pawn.IsColonist || v.Props is not {colonistOnly: true}));
 
         public bool ShouldBrawlerUpset => BrawlerHated.Any();
 
-        public IEnumerable<Verb> BrawlerTolerates => ManagedVerbs.Where(mv => mv.Props != null && !mv.Props.brawlerCaresAbout).Select(mv => mv.Verb).Concat(
+        public IEnumerable<Verb> BrawlerTolerates => ManagedVerbs.Where(mv => mv.Props is {brawlerCaresAbout: false}).Select(mv => mv.Verb).Concat(
             PreferMelee(Pawn.equipment.Primary)
                 ? Pawn.equipment.PrimaryEq?.AllVerbs.Where(v => !v.IsMeleeAttack) ?? new List<Verb>()
                 : new List<Verb>());
@@ -56,7 +57,7 @@ namespace MVCF
 
         public VerbTracker VerbTracker { get; private set; }
 
-        public List<VerbProperties> VerbProperties => new List<VerbProperties>
+        public List<VerbProperties> VerbProperties => new()
         {
             new VerbProperties
             {
@@ -70,7 +71,7 @@ namespace MVCF
             }
         };
 
-        public List<Tool> Tools => new List<Tool>();
+        public List<Tool> Tools => new();
         public ImplementOwnerTypeDef ImplementOwnerTypeDef => ImplementOwnerTypeDefOf.NativeVerb;
         public Thing ConstantCaster => Pawn;
 
@@ -113,33 +114,26 @@ namespace MVCF
             NeedsTicking = false;
             debugOpts.ScoreLogging = false;
             debugOpts.VerbLogging = false;
-            if (!Base.Features.RangedAnimals && !Base.IgnoredFeatures.RangedAnimals &&
-                pawn?.VerbTracker?.AllVerbs != null &&
-                pawn.VerbTracker.AllVerbs.Any(v => !v.IsMeleeAttack) &&
-                !Base.IsIgnoredMod(pawn?.def?.modContentPack?.Name))
-            {
+            if (Base.IsIgnoredMod(pawn?.def?.modContentPack?.Name)) return;
+            if (!Base.GetFeature<Feature_RangedAnimals>().Enabled && pawn?.VerbTracker?.AllVerbs != null && pawn.VerbTracker.AllVerbs.Any(v => !v.IsMeleeAttack))
                 Log.ErrorOnce(
                     $"[MVCF] Found pawn {pawn} with native ranged verbs while that feature is not enabled." +
                     $" Enabling now. This is not recommended. Contact the author of {pawn?.def?.modContentPack?.Name} and ask them to add a MVCF.ModDef.",
                     pawn?.def?.modContentPack?.Name?.GetHashCode() ?? -1);
-                Base.Features.RangedAnimals = true;
-                Base.ApplyPatches();
-            }
 
-            if (!Base.IsIgnoredMod(pawn?.def?.modContentPack?.Name) && pawn?.VerbTracker?.AllVerbs != null &&
-                Base.Features.RangedAnimals && !Base.IgnoredFeatures.RangedAnimals)
+            if (pawn?.VerbTracker?.AllVerbs != null && Base.GetFeature<Feature_RangedAnimals>().Enabled)
                 foreach (var verb in pawn.VerbTracker.AllVerbs)
                     AddVerb(verb, VerbSource.RaceDef, pawn.TryGetComp<Comp_VerbProps>()?.PropsFor(verb));
 
-            if (pawn?.health?.hediffSet?.hediffs != null && !Base.IgnoredFeatures.HediffVerbs)
+            if (pawn?.health?.hediffSet?.hediffs != null && Base.GetFeature<Feature_HediffVerb>().Enabled)
                 foreach (var hediff in pawn.health.hediffSet.hediffs)
                     this.AddVerbs(hediff);
 
-            if (pawn?.apparel?.WornApparel != null && !Base.IgnoredFeatures.ApparelVerbs)
+            if (pawn?.apparel?.WornApparel != null && Base.GetFeature<Feature_ApparelVerbs>().Enabled)
                 foreach (var apparel in pawn.apparel.WornApparel)
                     this.AddVerbs(apparel);
 
-            if (pawn?.equipment?.AllEquipmentListForReading != null && !Base.IgnoredFeatures.ExtraEquipmentVerbs)
+            if (pawn?.equipment?.AllEquipmentListForReading != null && Base.GetFeature<Feature_ExtraEquipmentVerbs>().Enabled)
                 foreach (var eq in pawn.equipment.AllEquipmentListForReading)
                     this.AddVerbs(eq);
         }
@@ -154,7 +148,7 @@ namespace MVCF
             }
 
             ManagedVerb mv;
-            if (props != null && props.canFireIndependently)
+            if (props is {canFireIndependently: true})
             {
                 TurretVerb tv;
                 if (props.managedClass != null)
@@ -172,7 +166,7 @@ namespace MVCF
                     mv = new ManagedVerb(verb, source, props, this);
             }
 
-            if (props != null && props.draw) drawVerbs.Add(mv);
+            if (props is {draw: true}) drawVerbs.Add(mv);
             if (mv.NeedsTicking)
             {
                 if (tickVerbs.Count == 0)
@@ -197,19 +191,14 @@ namespace MVCF
             var success = verbs.Remove(mv);
             if (debugOpts.VerbLogging) Log.Message("Succeeded at removing: " + success);
             if (drawVerbs.Contains(mv)) drawVerbs.Remove(mv);
-            var idx = tickVerbs.FindIndex(tv => tv.Verb == verb);
-            if (idx >= 0)
+            if (tickVerbs.Contains(mv) && tickVerbs.Remove(mv) && tickVerbs.Count == 0)
             {
-                tickVerbs.RemoveAt(idx);
-                if (tickVerbs.Count == 0)
+                NeedsTicking = false;
+                WorldComponent_MVCF.GetComp().TickManagers.RemoveAll(wr =>
                 {
-                    NeedsTicking = false;
-                    WorldComponent_MVCF.GetComp().TickManagers.RemoveAll(wr =>
-                    {
-                        if (!wr.TryGetTarget(out var man)) return true;
-                        return man == this;
-                    });
-                }
+                    if (!wr.TryGetTarget(out var man)) return true;
+                    return man == this;
+                });
             }
 
             RecalcSearchVerb();

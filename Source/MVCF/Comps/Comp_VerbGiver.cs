@@ -10,10 +10,7 @@ namespace MVCF.Comps
     {
         private VerbTracker verbTracker;
 
-        public Comp_VerbGiver()
-        {
-            verbTracker = new VerbTracker(this);
-        }
+        public Comp_VerbGiver() => verbTracker = new VerbTracker(this);
 
         public CompProperties_VerbGiver Props => (CompProperties_VerbGiver) props;
 
@@ -27,20 +24,14 @@ namespace MVCF.Comps
 
         ImplementOwnerTypeDef IVerbOwner.ImplementOwnerTypeDef => ImplementOwnerTypeDefOf.Weapon;
 
-        string IVerbOwner.UniqueVerbOwnerID()
-        {
-            return parent.GetUniqueLoadID() + "_" + parent.AllComps.IndexOf(this);
-        }
+        string IVerbOwner.UniqueVerbOwnerID() => parent.GetUniqueLoadID() + "_" + parent.AllComps.IndexOf(this);
 
-        bool IVerbOwner.VerbsStillUsableBy(Pawn p)
-        {
-            return p.equipment.Contains(parent) || p.apparel.Contains(parent) || p.inventory.Contains(parent);
-        }
+        bool IVerbOwner.VerbsStillUsableBy(Pawn p) => p.equipment.Contains(parent) || p.apparel.Contains(parent) || p.inventory.Contains(parent);
 
         public override void PostExposeData()
         {
             base.PostExposeData();
-            Scribe_Deep.Look(ref verbTracker, "verbTracker", (object) this);
+            Scribe_Deep.Look(ref verbTracker, "verbTracker", this);
             if (Scribe.mode != LoadSaveMode.PostLoadInit)
                 return;
             if (verbTracker == null)
@@ -87,9 +78,6 @@ namespace MVCF.Comps
                 select gizmo) yield return gizmo;
         }
 
-        public AdditionalVerbProps PropsFor(Verb verb)
-        {
-            return Props.PropsFor(verb);
-        }
+        public AdditionalVerbProps PropsFor(Verb verb) => Props.PropsFor(verb);
     }
 }

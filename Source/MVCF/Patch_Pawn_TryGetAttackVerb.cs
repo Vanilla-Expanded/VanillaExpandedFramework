@@ -5,20 +5,15 @@ using MVCF.Utilities;
 using RimWorld;
 using Verse;
 
-// ReSharper disable InconsistentNaming
-
-namespace MVCF.Harmony
+namespace MVCF.HarmonyPatches
 {
-    public class Pawn_TryGetAttackVerb
+    public class Patch_Pawn_TryGetAttackVerb
     {
-        public static List<JobDef> AggressiveJobs;
+        public static HashSet<JobDef> AggressiveJobs = new();
 
-        public static void DoPatches(HarmonyLib.Harmony harm)
+        public static Patch GetPatch()
         {
-            harm.Patch(AccessTools.Method(typeof(Pawn), "TryGetAttackVerb"),
-                new HarmonyMethod(typeof(Pawn_TryGetAttackVerb), "Prefix"),
-                new HarmonyMethod(typeof(Pawn_TryGetAttackVerb), "Postfix"));
-            AggressiveJobs = new List<JobDef>
+            AggressiveJobs.AddRange(new List<JobDef>
             {
                 // Vanilla:
                 JobDefOf.AttackStatic,
@@ -39,7 +34,9 @@ namespace MVCF.Harmony
                 DefDatabase<JobDef>.GetNamedSilentFail("PlayAtTarget"),
                 // Hardcore SK:
                 DefDatabase<JobDef>.GetNamedSilentFail("AnimalRangeAttack")
-            }.Where(def => def != null).ToList();
+            }.Where(def => def != null));
+            return new Patch(AccessTools.Method(typeof(Pawn), "TryGetAttackVerb"), AccessTools.Method(typeof(Patch_Pawn_TryGetAttackVerb), "Prefix"), AccessTools.Method(
+                typeof(Patch_Pawn_TryGetAttackVerb), "Postfix"));
         }
 
         public static Verb AttackVerb(Pawn pawn, Thing target, bool allowManualCastWeapons = false)

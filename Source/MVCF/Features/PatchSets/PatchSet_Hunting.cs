@@ -6,19 +6,18 @@ using RimWorld;
 using Verse;
 using Verse.AI;
 
-namespace MVCF.Harmony
+namespace MVCF.Features.PatchSets
 {
-    [HarmonyPatch]
-    public class Hunting
+    public class PatchSet_Hunting : PatchSet
     {
-        public static void DoPatches(HarmonyLib.Harmony harm)
+        public override IEnumerable<Patch> GetPatches()
         {
-            harm.Patch(AccessTools.Method(typeof(WorkGiver_HunterHunt), "HasHuntingWeapon"),
-                new HarmonyMethod(typeof(Hunting), "HasHuntingWeapon") {priority = Priority.Last});
-            harm.Patch(AccessTools.Method(typeof(Toils_Combat), "TrySetJobToUseAttackVerb"),
-                new HarmonyMethod(typeof(Hunting), "TrySetJobToUseAttackVerb"));
-            harm.Patch(AccessTools.Method(typeof(JobDriver_Hunt), "MakeNewToils"),
-                postfix: new HarmonyMethod(typeof(Hunting), "MakeNewToils"));
+            yield return Patch.Prefix(AccessTools.Method(typeof(WorkGiver_HunterHunt), nameof(WorkGiver_HunterHunt.HasHuntingWeapon)),
+                AccessTools.Method(GetType(), nameof(HasHuntingWeapon)));
+            yield return Patch.Prefix(AccessTools.Method(typeof(Toils_Combat), nameof(Toils_Combat.TrySetJobToUseAttackVerb)),
+                AccessTools.Method(GetType(), nameof(TrySetJobToUseAttackVerb)));
+            yield return Patch.Postfix(AccessTools.Method(typeof(JobDriver_Hunt), "MakeNewToils"),
+                AccessTools.Method(GetType(), nameof(MakeNewToils)));
         }
 
         public static bool HasHuntingWeapon(Pawn p, ref bool __result)
@@ -27,7 +26,7 @@ namespace MVCF.Harmony
             __result = man.ManagedVerbs.Any(mv =>
                 !mv.Verb.IsMeleeAttack && mv.Verb.HarmsHealth() && !mv.Verb.UsesExplosiveProjectiles() &&
                 mv.Enabled && mv.Verb.Available());
-            if (man.debugOpts.VerbLogging) Verse.Log.Message($"[MVCF] {p} HasHuntingWeapon: {__result}");
+            if (man.debugOpts.VerbLogging) Log.Message($"[MVCF] {p} HasHuntingWeapon: {__result}");
             return false;
         }
 

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using MVCF.Comps;
+using MVCF.Features;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -16,17 +17,18 @@ namespace MVCF
             None
         }
 
-        private static readonly Vector3 WestEquipOffset = new Vector3(-0.2f, 0.0367346928f, -0.22f);
-        private static readonly Vector3 EastEquipOffset = new Vector3(0.2f, 0.0367346928f, -0.22f);
-        private static readonly Vector3 NorthEquipOffset = new Vector3(0f, 0f, -0.11f);
-        private static readonly Vector3 SouthEquipOffset = new Vector3(0f, 0.0367346928f, -0.22f);
 
-        private static readonly Vector3 EquipPointOffset = new Vector3(0f, 0f, 0.4f);
+        private static readonly Vector3 WestEquipOffset = new(-0.2f, 0.0367346928f);
+        private static readonly Vector3 EastEquipOffset = new(0.2f, 0.28f, -0.22f);
+        private static readonly Vector3 NorthEquipOffset = new(0f, 0f, -0.11f);
+        private static readonly Vector3 SouthEquipOffset = new(0f, 0.0367346928f, -0.22f);
+
+        private static readonly Vector3 EquipPointOffset = new(0f, 0f, 0.4f);
         protected readonly VerbManager man;
 
-        private int additionalCooldownTicksLeft;
+        private int additionalCooldownTicksLeft = -1;
 
-        private bool enabledInt;
+        private bool enabledInt = true;
         public AdditionalVerbProps Props;
         public VerbSource Source;
         public Verb Verb;
@@ -37,32 +39,19 @@ namespace MVCF
             Source = source;
             Props = props;
             this.man = man;
-            if (Props != null && Props.draw && !Base.Features.Drawing)
-            {
-                Log.Error(
-                    "[MVCF] Found a verb marked to draw while that feature is not enabled. Enabling now. This is not recommend.");
-                Base.Features.Drawing = true;
-                Base.ApplyPatches();
-            }
+            if (Props is {draw: true} && !Base.GetFeature<Feature_Drawing>().Enabled)
+                Log.Error("[MVCF] Found a verb marked to draw while that feature is not enabled.");
 
-            if (Props != null && Props.canFireIndependently && !Base.Features.IndependentFire)
-            {
-                Log.Error(
-                    "[MVCF] Found a verb marked to fire independently while that feature is not enabled. Enabling now. This is not recommend.");
-                Base.Features.IndependentFire = true;
-                Base.ApplyPatches();
-            }
+            if (Props is {canFireIndependently: true} && !Base.GetFeature<Feature_IndependentVerbs>().Enabled)
+                Log.Error("[MVCF] Found a verb marked to fire independently while that feature is not enabled.");
 
-            if (Props != null && !Props.separateToggle && !Base.Features.IntegratedToggle)
-            {
-                Log.Error(
-                    "[MVCF] Found a verb marked for an integrated toggle while that feature is not enabled. Enabling now. This is not recommend.");
-                Base.Features.IntegratedToggle = true;
-                Base.ApplyPatches();
-            }
+            if (Props is {separateToggle: false} && !Base.GetFeature<Feature_IntegratedToggle>().Enabled)
+                Log.Error("[MVCF] Found a verb marked for an integrated toggle while that feature is not enabled.");
         }
 
-        public float AdditionalCooldownPercent => (float) additionalCooldownTicksLeft / (Props?.additionalCooldownTime.SecondsToTicks() ?? 1);
+        public float AdditionalCooldownPercent =>
+            Props?.additionalCooldownTime <= 0 ? -1f : additionalCooldownTicksLeft / (Props?.additionalCooldownTime.SecondsToTicks() ?? -1f);
+
         public string AdditionalCooldownDesc => additionalCooldownTicksLeft.ToStringTicksToPeriodVerbose().Colorize(ColoredText.DateTimeColor);
 
         public virtual bool Enabled
@@ -72,6 +61,7 @@ namespace MVCF
         }
 
         public virtual bool NeedsTicking => Props?.additionalCooldownTime > 0.001f;
+        public bool GetToggleStatus() => enabledInt;
 
         public void Toggle()
         {
@@ -81,8 +71,7 @@ namespace MVCF
 
         public virtual void DrawOn(Pawn p, Vector3 drawPos)
         {
-            if (Props == null) return;
-            if (!Props.draw) return;
+            if (Props is not {draw: true}) return;
             if (p.Dead || !p.Spawned) return;
             drawPos.y += 0.0367346928f;
             var target = PointingTarget(p);
@@ -132,7 +121,7 @@ namespace MVCF
 
             if (!Props.canBeToggled) return ToggleType.None;
             if (Props.separateToggle) return ToggleType.Separate;
-            if (Base.Features.IntegratedToggle) return ToggleType.Integrated;
+            if (Base.GetFeature<Feature_IntegratedToggle>().Enabled) return ToggleType.Integrated;
 
             Log.ErrorOnce(
                 "[MVCF] " + (Verb.EquipmentSource.LabelShortCap ?? "Hediff verb of " + Verb.caster) +
@@ -162,7 +151,7 @@ namespace MVCF
 
         public virtual LocalTargetInfo PointingTarget(Pawn p)
         {
-            if (p.stances.curStance is Stance_Busy busy && !busy.neverAimWeapon && busy.focusTarg.IsValid)
+            if (p.stances.curStance is Stance_Busy {neverAimWeapon: false, focusTarg: {IsValid: true}} busy)
                 return busy.focusTarg;
             return null;
         }

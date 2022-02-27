@@ -46,11 +46,10 @@ namespace MVCF
             else if (verb.CasterIsPawn && verb.verbProps.violent && verb.CasterPawn.WorkTagIsDisabled(WorkTags.Violent))
                 Disable("IsIncapableOfViolence".Translate(verb.CasterPawn.LabelShort,
                     verb.CasterPawn));
-            else if (verb.CasterIsPawn && verb.CasterPawn.drafter != null && !verb.CasterPawn.drafter.Drafted &&
-                     !(mv.Props != null && mv.Props.canFireIndependently))
+            else if (verb.CasterIsPawn && verb.CasterPawn.drafter is {Drafted: false} && mv.Props is not {canFireIndependently: true})
                 Disable("IsNotDrafted".Translate(verb.CasterPawn.LabelShort,
                     verb.CasterPawn));
-            else if (verb.CasterIsPawn && verb.CasterPawn.InMentalState && !(mv.Props != null && mv.Props.canFireIndependently))
+            else if (verb.CasterIsPawn && verb.CasterPawn.InMentalState && mv.Props is not {canFireIndependently: true})
                 Disable("CannotOrderNonControlled".Translate());
             else if (mv.AdditionalCooldownPercent > 0)
                 Disable("MVCF.Cooldown".Translate(mv.AdditionalCooldownDesc));

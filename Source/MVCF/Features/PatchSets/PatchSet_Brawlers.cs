@@ -7,20 +7,20 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace MVCF.Harmony
+namespace MVCF.Features.PatchSets
 {
-    public class Brawlers
+    public class PatchSet_Brawlers : PatchSet
     {
-        public static void DoPatches(HarmonyLib.Harmony harm)
+        public override IEnumerable<Patch> GetPatches()
         {
-            harm.Patch(AccessTools.Method(typeof(Alert_BrawlerHasRangedWeapon), "GetReport"),
-                new HarmonyMethod(typeof(Brawlers), "GetReport_Prefix"));
-            harm.Patch(AccessTools.Method(typeof(ThoughtWorker_IsCarryingRangedWeapon), "CurrentStateInternal"),
-                new HarmonyMethod(typeof(Brawlers), "CurrentStateInternal_Prefix"));
-            harm.Patch(AccessTools.Method(typeof(HealthCardUtility), "GenerateSurgeryOption"),
-                postfix: new HarmonyMethod(typeof(Brawlers), "GenerateSurgeryOption_Postfix"));
-            harm.Patch(AccessTools.Method(typeof(FloatMenuMakerMap), "AddHumanlikeOrders"),
-                postfix: new HarmonyMethod(typeof(Brawlers), "AddHumanlikeOrders_Postfix"));
+            yield return Patch.Prefix(AccessTools.Method(typeof(Alert_BrawlerHasRangedWeapon), nameof(Alert_BrawlerHasRangedWeapon.GetReport)),
+                AccessTools.Method(GetType(), nameof(GetReport_Prefix)));
+            yield return Patch.Prefix(AccessTools.Method(typeof(ThoughtWorker_IsCarryingRangedWeapon), "CurrentStateInternal"),
+                AccessTools.Method(GetType(), nameof(CurrentStateInternal_Prefix)));
+            yield return Patch.Postfix(AccessTools.Method(typeof(HealthCardUtility), "GenerateSurgeryOption"),
+                AccessTools.Method(GetType(), nameof(GenerateSurgeryOption_Postfix)));
+            yield return Patch.Postfix(AccessTools.Method(typeof(FloatMenuMakerMap), "AddHumanlikeOrders"),
+                AccessTools.Method(GetType(), nameof(AddHumanlikeOrders_Postfix)));
         }
 
         public static bool GetReport_Prefix(ref AlertReport __result)
