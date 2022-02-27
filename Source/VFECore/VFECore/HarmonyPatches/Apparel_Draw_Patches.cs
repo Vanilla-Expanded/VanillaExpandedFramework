@@ -482,6 +482,33 @@ namespace VFECore
         }
     }
 
+    [HarmonyPatch]
+    public static class FemaleBB_BodyType_Support_Patch
+    {
+        private static MethodBase target;
+        private static bool Prepare()
+        {
+            target = AccessTools.Method(AccessTools.TypeByName("BBBodySupport.BBBodyTypeSupportHarmony+BBBodyGraphicApparelPatch"), "BBBody_ApparelPatch");
+            return target != null;
+        }
+
+        [HarmonyTargetMethod]
+        public static MethodBase GetMethod()
+        {
+            return target;
+        }
+        public static bool Prefix(ref Apparel apparel, ref BodyTypeDef bodyType, ref ApparelGraphicRecord rec, ref bool __3, ref bool __result)
+        {
+            if (Patch_ApparelGraphicRecordGetter_TryGetGraphicApparel_Transpiler.IsUnifiedApparel(apparel))
+            {
+                __3 = true;
+                __result = true;
+                return false;
+            }
+            return true;
+        }
+    }
+
     [HarmonyPatch(typeof(PawnGraphicSet), "HairMatAt")]
     public static class PawnGraphicSet_HairMatAt_Patch
     {

@@ -6,7 +6,6 @@ using Verse;
 namespace VFECore
 {
 
-
     internal class Patch_Pawn_ApparelTracker
 	{
 		[HarmonyPatch(typeof(Pawn_ApparelTracker), "TryDrop")]
@@ -64,56 +63,60 @@ namespace VFECore
 				}
 			}
 		}
+	}
 
-		[HarmonyPatch(typeof(Pawn_ApparelTracker), nameof(Pawn_ApparelTracker.Remove))]
-		public class Pawn_ApparelTracker_Remove_Patch
+	[HarmonyPatch(typeof(Pawn_ApparelTracker), nameof(Pawn_ApparelTracker.Remove))]
+	public class Pawn_ApparelTracker_Remove_Patch
+	{
+		public static void Postfix(Pawn ___pawn, Apparel ap)
 		{
-			public static void Postfix(Pawn ___pawn, Apparel ap)
+			if (___pawn != null)
 			{
-				if (___pawn != null)
+				var extension = ap?.def.GetModExtension<ApparelExtension>();
+				if (extension != null)
 				{
-					var extension = ap?.def.GetModExtension<ApparelExtension>();
-					if (extension != null)
+					if (___pawn.story?.traits != null)
 					{
-						if (___pawn.story?.traits != null)
+						if (extension.traitsOnUnequip != null)
 						{
-							if (extension.traitsOnUnequip != null)
+							foreach (var traitDef in extension.traitsOnUnequip)
 							{
-								foreach (var traitDef in extension.traitsOnUnequip)
+								var trait = ___pawn.story.traits.GetTrait(traitDef);
+								if (trait != null)
 								{
-									var trait = ___pawn.story.traits.GetTrait(traitDef);
-									if (trait != null)
-									{
-										___pawn.story.traits.RemoveTrait(trait);
-									}
+									___pawn.story.traits.RemoveTrait(trait);
 								}
 							}
 						}
-		
 					}
+
 				}
 			}
 		}
+	}
 
-		[HarmonyPatch(typeof(Pawn_ApparelTracker), nameof(Pawn_ApparelTracker.Wear))]
-		public static class Wear_Patch
+	[HarmonyPatch(typeof(Pawn_ApparelTracker), nameof(Pawn_ApparelTracker.Wear))]
+	public static class Pawn_ApparelTracker_Wear_Patch
+	{
+		public static bool doNotRunTraitsPatch;
+		public static void Postfix(Pawn_ApparelTracker __instance, Apparel newApparel, bool dropReplacedApparel = true, bool locked = false)
 		{
-			public static void Postfix(Pawn_ApparelTracker __instance, Apparel newApparel, bool dropReplacedApparel = true, bool locked = false)
+			VerbUtility.TryModifyThingsVerbs(newApparel);
+			if (newApparel is Apparel_Shield newShield)
 			{
-				if (newApparel is Apparel_Shield newShield)
+				newShield.CompShield.equippedOffHand = true;
+				var comp = newShield.GetComp<CompEquippable>();
+				if (comp != null)
 				{
-					newShield.CompShield.equippedOffHand = true;
-					var comp = newShield.GetComp<CompEquippable>();
-					if (comp != null)
+					foreach (var verb in comp.AllVerbs)
 					{
-						foreach (var verb in comp.AllVerbs)
-						{
-							verb.caster = newShield.Wearer;
-							verb.Reset();
-						}
+						verb.caster = newShield.Wearer;
+						verb.Reset();
 					}
 				}
-
+			}
+			if (!doNotRunTraitsPatch)
+			{
 				var extension = newApparel?.def.GetModExtension<ApparelExtension>();
 				if (extension != null)
 				{

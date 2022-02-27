@@ -16,7 +16,7 @@ namespace VFECore
         {
             if (RealInvolvedFactions(__result).Any(f => f.def.HasModExtension<ExcludeFromQuestsExtension>()))
             {
-                Log.Message($"QuestGen Generate - {__result.name} contains not allowed faction(s) - Regenerating quest...");
+                // Log.Message($"QuestGen Generate - {__result.name} contains not allowed faction(s) - Regenerating quest...");
                 Quest newResult = null;
 
                 while (newResult == null || RealInvolvedFactions(newResult).Any(f => f.def.HasModExtension<ExcludeFromQuestsExtension>()))
@@ -29,7 +29,7 @@ namespace VFECore
             }
             if (iterationNumber > 0)
             {
-                Log.Message($"QuestGen Generate - Regenerated quest {iterationNumber} time - Regeneration ended...");
+                // Log.Message($"QuestGen Generate - Regenerated quest {iterationNumber} time - Regeneration ended...");
                 iterationNumber = 0;
             }
         }

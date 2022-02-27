@@ -64,22 +64,12 @@ namespace VFECore
 
 		public bool ModsFound()
         {
-			bool modsFound = false;
 			for (int index = 0; index < this.mods.Count; index++)
 			{
-				if (ModLister.HasActiveModWithName(this.mods[index]))
-				{
-					modsFound = true;
-				}
-				else
-                {
-					modsFound = false;
-				}
+				if (!ModLister.HasActiveModWithName(this.mods[index]))
+					return false;
 			}
-
-			if (this.mods.NullOrEmpty()) modsFound = true;
-
-			return modsFound;
+			return true;
 		}
 	}
 }

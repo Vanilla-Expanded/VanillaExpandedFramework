@@ -20,5 +20,6 @@ namespace AnimalBehaviours
         public int ticksToBuild = 1000;
         public int maxBuildingsPerMap = 10;
         public List<string> acceptedTerrains = null;
+        public bool onlyOneExistingPerPawn = false;
     }
 }

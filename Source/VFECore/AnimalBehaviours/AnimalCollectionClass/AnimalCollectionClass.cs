@@ -16,10 +16,16 @@ namespace AnimalBehaviours
 
     
         // A list of draft-capable animals for Genetic Rim
-        public static IDictionary<Thing, bool[]> draftable_animals = new Dictionary<Thing, bool[]>();
+        public static HashSet<Thing> draftable_animals = new HashSet<Thing>();
 
         // A list of hovering animals for CompProperties_Floating
         public static HashSet<Thing> floating_animals = new HashSet<Thing>();
+
+        // A list of animals that don't flee for combat for CompProperties_DoesntFlee
+        public static HashSet<Thing> nofleeing_animals = new HashSet<Thing>();
+
+        // A list of animals that don't produce filth for CompProperties_NoFilth
+        public static HashSet<Thing> nofilth_animals = new HashSet<Thing>();
 
         // A list of animals that eat weird things to cache them for CompProperties_EatWeirdFood and its Harmony patch
         public static HashSet<Thing> weirdeEaters_animals = new HashSet<Thing>();
@@ -31,19 +37,27 @@ namespace AnimalBehaviours
         // An integer with the current number of animal control hubs built
         public static int numberOfAnimalControlHubsBuilt = 0;
 
+        public static bool IsDraftableAnimal(this Pawn pawn)
+        {
+            return draftable_animals.Contains(pawn);
+        }
 
-        public static void AddDraftableAnimalToList(Thing thing, bool[] abilityArray)
+        public static bool IsDraftableControllableAnimal(this Pawn pawn)
+        {
+            return pawn.IsDraftableAnimal() && pawn.Faction != null && pawn.Faction.IsPlayer && pawn.MentalState is null;
+        }
+        public static void AddDraftableAnimalToList(Thing thing)
         {
 
-            if (!draftable_animals.ContainsKey(thing))
+            if (!draftable_animals.Contains(thing))
             {
-                draftable_animals.Add(thing, abilityArray);
+                draftable_animals.Add(thing);
             }
         }
 
         public static void RemoveDraftableAnimalFromList(Thing thing)
         {
-            if (draftable_animals.ContainsKey(thing))
+            if (draftable_animals.Contains(thing))
             {
                 draftable_animals.Remove(thing);
             }
@@ -83,6 +97,42 @@ namespace AnimalBehaviours
             if (floating_animals.Contains(thing))
             {
                 floating_animals.Remove(thing);
+            }
+
+        }
+
+        public static void AddNoFilthAnimalToList(Thing thing)
+        {
+
+            if (!nofilth_animals.Contains(thing))
+            {
+                nofilth_animals.Add(thing);
+            }
+        }
+
+        public static void RemoveNoFilthAnimalFromList(Thing thing)
+        {
+            if (nofilth_animals.Contains(thing))
+            {
+                nofilth_animals.Remove(thing);
+            }
+
+        }
+
+        public static void AddNotFleeingAnimalToList(Thing thing)
+        {
+
+            if (!nofleeing_animals.Contains(thing))
+            {
+                nofleeing_animals.Add(thing);
+            }
+        }
+
+        public static void RemoveNotFleeingAnimalFromList(Thing thing)
+        {
+            if (nofleeing_animals.Contains(thing))
+            {
+                nofleeing_animals.Remove(thing);
             }
 
         }

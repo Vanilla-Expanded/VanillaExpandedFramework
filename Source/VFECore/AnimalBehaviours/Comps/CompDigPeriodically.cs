@@ -35,12 +35,39 @@ namespace AnimalBehaviours
                     {
                         if (pawn.Position.GetTerrain(pawn.Map).affordances.Contains(TerrainAffordanceDefOf.Diggable))
                         {
-                            //This could have been done with a Dictionary
-                            string thingToDig = this.Props.customThingToDig.RandomElement();
-                            int index = Props.customThingToDig.IndexOf(thingToDig);
-                            int amount = Props.customAmountToDig[index];
+                            string thingToDig ="";
+                            int amount=1;
+                            ThingDef newThing = null;
+                            if (!Props.digBiomeRocks) {
+                                //This could have been done with a Dictionary
+                                thingToDig = this.Props.customThingToDig.RandomElement();
+                                int index = Props.customThingToDig.IndexOf(thingToDig);
+                                amount = Props.customAmountToDig[index];
+                                newThing = ThingDef.Named(thingToDig);
+                            }
+                            else
+                            {
+                                amount = Props.customAmountToDigIfRocksOrBricks;
+                                IEnumerable<ThingDef> rocksInThisBiome = Find.World.NaturalRockTypesIn(this.parent.Map.Tile);
+                                List<ThingDef> chunksInThisBiome = new List<ThingDef>();
+                                foreach (ThingDef rock in rocksInThisBiome)
+                                {
+                                    chunksInThisBiome.Add(rock.building.mineableThing);
+                                }
+                                if (!Props.digBiomeBricks) {
+                                    newThing = Find.World.NaturalRockTypesIn(this.parent.Map.Tile).RandomElementWithFallback().building.mineableThing;
 
-                            ThingDef newThing = ThingDef.Named(thingToDig);
+                                }
+                                else
+                                {
+                                    newThing = Find.World.NaturalRockTypesIn(this.parent.Map.Tile).RandomElementWithFallback().building.mineableThing.butcherProducts.FirstOrFallback().thingDef;
+
+                                }
+
+                            }
+                            
+
+                           
                             Thing newDugThing = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
                             newDugThing.stackCount = amount;
                             if (Props.spawnForbidden)

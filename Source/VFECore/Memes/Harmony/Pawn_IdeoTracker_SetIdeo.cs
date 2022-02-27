@@ -20,28 +20,33 @@ namespace VanillaMemesExpanded
         [HarmonyPostfix]
         static void ForceTrait(Ideo ideo, Pawn ___pawn)
         {
-            
-            foreach(MemeDef meme in ideo?.memes)
-            {
-                ExtendedMemeProperties extendedMemeProps = meme.GetModExtension<ExtendedMemeProperties>();
-                if(extendedMemeProps != null)
+
+            if (ideo != null) {
+
+                foreach (MemeDef meme in ideo.memes)
                 {
-                    if (extendedMemeProps.forcedTrait != null)
+                    ExtendedMemeProperties extendedMemeProps = meme.GetModExtension<ExtendedMemeProperties>();
+                    if (extendedMemeProps != null)
                     {
-                        Trait trait = new Trait(extendedMemeProps.forcedTrait, 0, true);
-                        ___pawn.story?.traits?.GainTrait(trait);
-                    }
-                    if (extendedMemeProps.abilitiesGiven != null)
-                    {
-                       foreach(AbilityDef ability in extendedMemeProps.abilitiesGiven)
+                        if (extendedMemeProps.forcedTrait != null)
                         {
-                            ___pawn.abilities?.GainAbility(ability);
+                            Trait trait = new Trait(extendedMemeProps.forcedTrait, 0, true);
+                            ___pawn.story?.traits?.GainTrait(trait);
+                        }
+                        if (extendedMemeProps.abilitiesGiven != null)
+                        {
+                            foreach (AbilityDef ability in extendedMemeProps.abilitiesGiven)
+                            {
+                                ___pawn.abilities?.GainAbility(ability);
+                            }
                         }
                     }
+
+
                 }
-                
 
             }
+            
             
             
             

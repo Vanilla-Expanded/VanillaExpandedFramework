@@ -22,7 +22,7 @@ namespace AnimalBehaviours
         public static bool AvoidGeneralErrorIfPawnIsAnimal(Pawn pawn)
 
         {
-            bool flagIsCreatureDraftable = AnimalCollectionClass.draftable_animals.ContainsKey(pawn);
+            bool flagIsCreatureDraftable = AnimalCollectionClass.draftable_animals.Contains(pawn);
 
             if (flagIsCreatureDraftable)
             {

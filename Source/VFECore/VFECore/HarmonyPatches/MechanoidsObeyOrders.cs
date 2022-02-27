@@ -29,7 +29,7 @@ namespace VFE.Mechanoids.HarmonyPatches
     {
         public static bool Prefix(Vector3 clickPos, Pawn pawn, List<FloatMenuOption> opts)
         {
-            if (!AnimalBehaviours.AnimalCollectionClass.draftable_animals.ContainsKey(pawn) && pawn.RaceProps.IsMechanoid 
+            if (!AnimalBehaviours.AnimalCollectionClass.draftable_animals.Contains(pawn) && pawn.RaceProps.IsMechanoid 
                 && pawn.needs.TryGetNeed<Need_Power>() is Need_Power need && need.CurLevel <= 0f)
             {
                 return false;

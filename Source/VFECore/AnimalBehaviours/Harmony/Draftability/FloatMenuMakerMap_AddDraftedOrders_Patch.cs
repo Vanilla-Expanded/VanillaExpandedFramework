@@ -7,69 +7,41 @@ using System.Collections.Generic;
 using System;
 using Verse.AI;
 using RimWorld.Planet;
-
+using System.Reflection.Emit;
+using System.Linq;
 
 namespace AnimalBehaviours
 {
-
-    /*This Harmony Prefix makes jobs not return an error if the player right clicks something with a drafted animal
-         */
-    [HarmonyPatch(typeof(FloatMenuMakerMap))]
-    [HarmonyPatch("AddDraftedOrders")]
-    public static class VanillaExpandedFramework_FloatMenuMakerMap_AddDraftedOrders_Patch
+    [HarmonyPatch(typeof(FloatMenuMakerMap), "AddDraftedOrders")]
+    public static class FloatMenuMakerMap_Patch
     {
-        [HarmonyPrefix]
-        public static bool AvoidGeneralErrorIfPawnIsAnimal(Vector3 clickPos, Pawn pawn, List<FloatMenuOption> opts, bool suppressAutoTakeableGoto)
-
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator ilg)
         {
-            bool flagIsCreatureDraftable = AnimalCollectionClass.draftable_animals.ContainsKey(pawn);
-
-            if (flagIsCreatureDraftable)
+            var shouldSkip = AccessTools.Method(typeof(AnimalCollectionClass), nameof(AnimalCollectionClass.IsDraftableControllableAnimal));
+            var codes = instructions.ToList();
+            var pawnField = AccessTools.Field(typeof(FloatMenuMakerMap).GetNestedTypes(AccessTools.all).First(c => c.Name.Contains("c__DisplayClass8_0")), "pawn");
+            var skillsField = AccessTools.Field(typeof(Pawn), "skills");
+            var constructionDefField = AccessTools.Field(typeof(SkillDefOf), "Construction");
+            bool patched = false;
+            for (var i = 0; i < codes.Count; i++)
             {
-                IntVec3 clickCell = IntVec3.FromVector3(clickPos);
-                // AddJobGiverWorkOrders(clickPos, pawn, opts, drafted: true);
-                FloatMenuOption floatMenuOption3 = GotoLocationOption(clickCell, pawn, suppressAutoTakeableGoto);
-                if (floatMenuOption3 != null)
+                var instr = codes[i];
+                if (!patched && codes[i].opcode == OpCodes.Ldloc_0 && codes[i + 1].LoadsField(pawnField) && codes[i + 2].LoadsField(skillsField)
+                    && codes[i + 3].LoadsField(constructionDefField))
                 {
-                    opts.Add(floatMenuOption3);
+                    patched = true;
+                    yield return new CodeInstruction(OpCodes.Ldloc_0).MoveLabelsFrom(codes[i]);
+                    yield return new CodeInstruction(OpCodes.Ldfld, pawnField);
+                    yield return new CodeInstruction(OpCodes.Call, shouldSkip);
+                    yield return new CodeInstruction(OpCodes.Brtrue_S, codes[i + 6].operand);
                 }
-
-                return false;
+                yield return instr;
             }
-            else return true;
 
-        }
-
-        private static FloatMenuOption GotoLocationOption(IntVec3 clickCell, Pawn pawn, bool suppressAutoTakeableGoto)
-        {
-            if (suppressAutoTakeableGoto)
+            if (!patched)
             {
-                return null;
+                Log.Error("FloatMenuMakerMap:AddDraftedOrders Transpiler failed");
             }
-            IntVec3 curLoc = CellFinder.StandableCellNear(clickCell, pawn.Map, 2.9f);
-            if (curLoc.IsValid && curLoc != pawn.Position)
-            {
-                if (!pawn.CanReach(curLoc, PathEndMode.OnCell, Danger.Deadly))
-                {
-                    return new FloatMenuOption("CannotGoNoPath".Translate(), null);
-                }
-                Action action = delegate
-                {
-                    FloatMenuMakerMap.PawnGotoAction(clickCell, pawn, RCellFinder.BestOrderedGotoDestNear(curLoc, pawn));
-                };
-                return new FloatMenuOption("GoHere".Translate(), action, MenuOptionPriority.GoHere)
-                {
-                    autoTakeable = true,
-                    autoTakeablePriority = 10f
-                };
-            }
-            return null;
         }
-
-
     }
-
-
-
-
 }

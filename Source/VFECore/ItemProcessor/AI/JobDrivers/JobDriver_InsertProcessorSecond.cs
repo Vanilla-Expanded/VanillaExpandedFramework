@@ -31,6 +31,7 @@ namespace ItemProcessor
             //Log.Message("I am inside the job now, with "+pawn.ToString(), false);
             Building_ItemProcessor building_processor = (Building_ItemProcessor)this.job.GetTarget(TargetIndex.A).Thing;
             this.FailOnDespawnedNullOrForbidden(TargetIndex.A);
+          
             this.FailOnBurningImmobile(TargetIndex.A);
             yield return Toils_General.DoAtomic(delegate
             {

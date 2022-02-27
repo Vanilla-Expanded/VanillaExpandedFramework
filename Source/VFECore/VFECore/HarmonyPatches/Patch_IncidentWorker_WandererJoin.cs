@@ -15,7 +15,7 @@ namespace VFECore
     public static class Patch_IncidentWorker_WandererJoin
     {
 
-        [HarmonyPatch(typeof(IncidentWorker_WandererJoin), "TryExecuteWorker")]
+        [HarmonyPatch(typeof(IncidentWorker_WandererJoin), "GeneratePawn")]
         public static class TryExecuteWorker
         {
 

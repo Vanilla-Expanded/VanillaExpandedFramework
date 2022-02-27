@@ -121,7 +121,7 @@ namespace Outposts
                 occupants.Clear();
                 Find.LetterStack.ReceiveLetter("Outposts.Letters.BattleWon.Label".Translate(), "Outposts.Letters.BattleWon.Text".Translate(Name), LetterDefOf.PositiveEvent,
                     new LookTargets(Gen.YieldSingle(this)));
-                foreach (var pawn in Map.mapPawns.AllPawns.Where(p => p.Faction is {IsPlayer: true}))
+                foreach (var pawn in Map.mapPawns.AllPawns.Where(p => p.Faction is {IsPlayer: true} || p.HostFaction is {IsPlayer: true}))
                 {
                     pawn.DeSpawn();
                     occupants.Add(pawn);
@@ -307,22 +307,24 @@ namespace Outposts
 
         public virtual void SatisfyNeeds(Pawn pawn)
         {
-            var food = pawn.needs.food;
-            if (food.CurLevelPercentage <= pawn.RaceProps.FoodLevelPercentageWantEat && ProvidedFood is {IsNutritionGivingIngestible: true} && ProvidedFood.ingestible.HumanEdible)
+            if (pawn is null) return;
+            var food = pawn.needs?.food;
+            if (food is not null && food.CurLevelPercentage <= pawn.RaceProps.FoodLevelPercentageWantEat && ProvidedFood is {IsNutritionGivingIngestible: true} &&
+                ProvidedFood.ingestible.HumanEdible)
             {
                 var thing = ThingMaker.MakeThing(ProvidedFood);
                 if (thing.IngestibleNow && pawn.RaceProps.CanEverEat(thing)) food.CurLevel += thing.Ingested(pawn, food.NutritionWanted);
             }
 
-            if (GenLocalDate.HourInteger(Tile) >= 23 || GenLocalDate.HourInteger(Tile) <= 5) pawn.needs.rest.TickResting(0.75f);
+            if (GenLocalDate.HourInteger(Tile) >= 23 || GenLocalDate.HourInteger(Tile) <= 5) pawn.needs?.rest?.TickResting(0.75f);
 
-            if (pawn.health.HasHediffsNeedingTend())
+            if (pawn.health is not null && pawn.health.HasHediffsNeedingTend())
             {
                 var doctor = AllPawns.Where(p => p.RaceProps.Humanlike && !p.Downed).MaxBy(p => p.skills?.GetSkill(SkillDefOf.Medicine)?.Level ?? -1f);
                 Medicine medicine = null;
                 var potency = 0f;
                 foreach (var thing in containedItems)
-                    if (thing.def.IsMedicine && pawn.playerSettings.medCare.AllowsMedicine(thing.def))
+                    if (thing.def.IsMedicine && (pawn.playerSettings is null || pawn.playerSettings.medCare.AllowsMedicine(thing.def)))
                     {
                         var statValue = thing.GetStatValue(StatDefOf.MedicalPotency);
                         if (statValue > potency || medicine == null)
@@ -333,6 +335,17 @@ namespace Outposts
                     }
 
                 TendUtility.DoTend(doctor, pawn, medicine);
+            }
+
+            if (pawn.health?.hediffSet is not null && pawn.health.hediffSet.HasNaturallyHealingInjury())
+                pawn.health.hediffSet.GetHediffs<Hediff_Injury>().Where(x => x.CanHealNaturally()).RandomElement()
+                    .Heal(pawn.HealthScale * 0.01f * pawn.GetStatValue(StatDefOf.InjuryHealingFactor));
+
+            if (pawn.health?.hediffSet is not null && pawn.health.hediffSet.HasTendedAndHealingInjury())
+            {
+                var injury = pawn.health.hediffSet.GetHediffs<Hediff_Injury>().Where(x => x.CanHealFromTending()).RandomElement();
+                injury.Heal(GenMath.LerpDouble(0f, 1f, 0.5f, 1.5f, Mathf.Clamp01(injury.TryGetComp<HediffComp_TendDuration>().tendQuality)) * pawn.HealthScale * 0.01f *
+                            pawn.GetStatValue(StatDefOf.InjuryHealingFactor));
             }
         }
 

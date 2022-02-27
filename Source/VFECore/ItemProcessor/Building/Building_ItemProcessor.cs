@@ -943,8 +943,13 @@ namespace ItemProcessor
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && element.items.Contains(firstItem))).First();
                     if (thisRecipe == null)
                     {
+                        if (thisElement.isNutritionGetterRecipe) {
+                           
 
-                        ExpectedAmountFirstIngredient = thisElement.amount[0];
+                            ExpectedAmountFirstIngredient = (int)(Math.Ceiling(thisElement.nutritionAmount[0]/ThingDef.Named(thisElement.items[0]).GetStatValueAbstract(StatDefOf.Nutrition)));
+                        } else {
+                            ExpectedAmountFirstIngredient = thisElement.amount[0];
+                        }
                         thisRecipe = thisElement.defName;
                     }
                     break;
@@ -952,8 +957,18 @@ namespace ItemProcessor
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && (element.items.Contains(firstItem) && element.secondItems.Contains(secondItem)))).First();
                     if (thisRecipe == null)
                     {
-                        ExpectedAmountFirstIngredient = thisElement.amount[0];
-                        ExpectedAmountSecondIngredient = thisElement.amount[1];
+                       
+                        if (thisElement.isNutritionGetterRecipe)
+                        {
+                            ExpectedAmountFirstIngredient = (int)(Math.Ceiling(thisElement.nutritionAmount[0] / ThingDef.Named(thisElement.items[0]).GetStatValueAbstract(StatDefOf.Nutrition)));
+                            ExpectedAmountSecondIngredient = (int)(Math.Ceiling(thisElement.nutritionAmount[1] / ThingDef.Named(thisElement.items[1]).GetStatValueAbstract(StatDefOf.Nutrition)));
+
+                        }
+                        else
+                        {
+                            ExpectedAmountFirstIngredient = thisElement.amount[0];
+                            ExpectedAmountSecondIngredient = thisElement.amount[1];
+                        }
                         thisRecipe = thisElement.defName;
                     }
                     break;
@@ -961,9 +976,21 @@ namespace ItemProcessor
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && (element.items.Contains(firstItem) && element.secondItems.Contains(secondItem) && element.thirdItems.Contains(thirdItem)))).First();
                     if (thisRecipe == null)
                     {
-                        ExpectedAmountFirstIngredient = thisElement.amount[0];
-                        ExpectedAmountSecondIngredient = thisElement.amount[1];
-                        ExpectedAmountThirdIngredient = thisElement.amount[2];
+                       
+                        if (thisElement.isNutritionGetterRecipe)
+                        {
+                            ExpectedAmountFirstIngredient = (int)(Math.Ceiling(thisElement.nutritionAmount[0] / ThingDef.Named(thisElement.items[0]).GetStatValueAbstract(StatDefOf.Nutrition)));
+                            ExpectedAmountSecondIngredient = (int)(Math.Ceiling(thisElement.nutritionAmount[1] / ThingDef.Named(thisElement.items[1]).GetStatValueAbstract(StatDefOf.Nutrition)));
+                            ExpectedAmountThirdIngredient = (int)(Math.Ceiling(thisElement.nutritionAmount[2] / ThingDef.Named(thisElement.items[2]).GetStatValueAbstract(StatDefOf.Nutrition)));
+
+                        }
+                        else
+                        {
+                            ExpectedAmountFirstIngredient = thisElement.amount[0];
+                            ExpectedAmountSecondIngredient = thisElement.amount[1];
+                            ExpectedAmountThirdIngredient = thisElement.amount[2];
+
+                        }
                         thisRecipe = thisElement.defName;
                     }
                     break;
@@ -971,10 +998,23 @@ namespace ItemProcessor
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && (element.items.Contains(firstItem) && element.secondItems.Contains(secondItem) && element.thirdItems.Contains(thirdItem) && element.fourthItems.Contains(fourthItem)))).First();
                     if (thisRecipe == null)
                     {
-                        ExpectedAmountFirstIngredient = thisElement.amount[0];
-                        ExpectedAmountSecondIngredient = thisElement.amount[1];
-                        ExpectedAmountThirdIngredient = thisElement.amount[2];
-                        ExpectedAmountFourthIngredient = thisElement.amount[3];
+                        if (thisElement.isNutritionGetterRecipe)
+                        {
+                            ExpectedAmountFirstIngredient = (int)(Math.Ceiling(thisElement.nutritionAmount[0] / ThingDef.Named(thisElement.items[0]).GetStatValueAbstract(StatDefOf.Nutrition)));
+                            ExpectedAmountSecondIngredient = (int)(Math.Ceiling(thisElement.nutritionAmount[1] / ThingDef.Named(thisElement.items[1]).GetStatValueAbstract(StatDefOf.Nutrition)));
+                            ExpectedAmountThirdIngredient = (int)(Math.Ceiling(thisElement.nutritionAmount[2] / ThingDef.Named(thisElement.items[2]).GetStatValueAbstract(StatDefOf.Nutrition)));
+                            ExpectedAmountFourthIngredient = (int)(Math.Ceiling(thisElement.nutritionAmount[3] / ThingDef.Named(thisElement.items[3]).GetStatValueAbstract(StatDefOf.Nutrition)));
+
+                        }
+                        else
+                        {
+                            ExpectedAmountFirstIngredient = thisElement.amount[0];
+                            ExpectedAmountSecondIngredient = thisElement.amount[1];
+                            ExpectedAmountThirdIngredient = thisElement.amount[2];
+                            ExpectedAmountFourthIngredient = thisElement.amount[3];
+
+                        }
+                      
                         thisRecipe = thisElement.defName;
                     }
                     break;
@@ -982,7 +1022,14 @@ namespace ItemProcessor
                     thisElement = DefDatabase<CombinationDef>.AllDefs.Where(element => ((element.building == this.def.defName) && element.items.Contains(firstItem))).First();
                     if (thisRecipe == null)
                     {
-                        ExpectedAmountFirstIngredient = thisElement.amount[0];
+                        if (thisElement.isNutritionGetterRecipe)
+                        {
+                            ExpectedAmountFirstIngredient = (int)Math.Ceiling(thisElement.nutritionAmount[0] / ThingDef.Named(thisElement.items[0]).GetStatValueAbstract(StatDefOf.Nutrition));
+                        }
+                        else
+                        {
+                            ExpectedAmountFirstIngredient = thisElement.amount[0];
+                        }
                         thisRecipe = thisElement.defName;
                     }
                     break;
@@ -1315,7 +1362,40 @@ namespace ItemProcessor
                 progressCounter++;
 
 
+                //If isTemperatureAcceleratingMachine has been set in CompProperties_ItemProcessor, we will multiply the times by the specified time factor
 
+               
+              
+                if (compItemProcessor.Props.isTemperatureAcceleratingMachine)
+                {
+                    float currentTempInMap = this.Position.GetTemperature(this.Map);
+                    CombinationDef thisCombinationRecipe = DefDatabase<CombinationDef>.GetNamed(thisRecipe);
+                    if ((currentTempInMap > compItemProcessor.Props.maxAccelerationTemp) || (currentTempInMap < compItemProcessor.Props.minAccelerationTemp))                     
+                    {
+                        
+                        this.days = thisCombinationRecipe.singleTimeIfNotQualityIncreasing * compItemProcessor.Props.accelerationFactor;
+                        this.awfulQualityAgeDaysThreshold = thisCombinationRecipe.awfulQualityAgeDaysThreshold * compItemProcessor.Props.accelerationFactor;
+                        this.poorQualityAgeDaysThreshold = thisCombinationRecipe.poorQualityAgeDaysThreshold * compItemProcessor.Props.accelerationFactor;
+                        this.normalQualityAgeDaysThreshold = thisCombinationRecipe.normalQualityAgeDaysThreshold * compItemProcessor.Props.accelerationFactor;
+                        this.goodQualityAgeDaysThreshold = thisCombinationRecipe.goodQualityAgeDaysThreshold * compItemProcessor.Props.accelerationFactor;
+                        this.excellentQualityAgeDaysThreshold = thisCombinationRecipe.excellentQualityAgeDaysThreshold * compItemProcessor.Props.accelerationFactor;
+                        this.masterworkQualityAgeDaysThreshold = thisCombinationRecipe.masterworkQualityAgeDaysThreshold * compItemProcessor.Props.accelerationFactor;
+                        this.legendaryQualityAgeDaysThreshold = thisCombinationRecipe.legendaryQualityAgeDaysThreshold * compItemProcessor.Props.accelerationFactor;
+                    }
+                    else
+                    {
+                        this.days = thisCombinationRecipe.singleTimeIfNotQualityIncreasing;
+                        this.awfulQualityAgeDaysThreshold = thisCombinationRecipe.awfulQualityAgeDaysThreshold;
+                        this.poorQualityAgeDaysThreshold = thisCombinationRecipe.poorQualityAgeDaysThreshold;
+                        this.normalQualityAgeDaysThreshold = thisCombinationRecipe.normalQualityAgeDaysThreshold;
+                        this.goodQualityAgeDaysThreshold = thisCombinationRecipe.goodQualityAgeDaysThreshold;
+                        this.excellentQualityAgeDaysThreshold = thisCombinationRecipe.excellentQualityAgeDaysThreshold;
+                        this.masterworkQualityAgeDaysThreshold = thisCombinationRecipe.masterworkQualityAgeDaysThreshold;
+                        this.legendaryQualityAgeDaysThreshold = thisCombinationRecipe.legendaryQualityAgeDaysThreshold;
+                    }
+                  
+
+                }
 
                 //If noPowerDestroysProgress has been set in CompProperties_ItemProcessor, a new counter starts. This is shared for fueled
                 //and powered buildings, since there are none that are both
@@ -1673,6 +1753,11 @@ namespace ItemProcessor
 
         public override string GetInspectString()
         {
+            // Fon't do anything if minified/missing the comp
+            if (compItemProcessor == null)
+            {
+                return base.GetInspectString();
+            }
 
             //This just displays all the above shit in the Inspect box at the bottom left corner of the screen
             string text = base.GetInspectString();
@@ -1888,7 +1973,11 @@ namespace ItemProcessor
             //This changes the graphic of the building. Runs very seldom unless called by  base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
             get
             {
-                if (processorStage == ProcessorStage.Working && compItemProcessor.Props.buildingOnGraphic != "")
+                if (compItemProcessor == null)
+                {
+                    return this.DefaultGraphic;
+                }
+                else if (processorStage == ProcessorStage.Working && compItemProcessor.Props.buildingOnGraphic != "")
                 {
                     Shader shader;
                     if (compItemProcessor.Props.shaderForBuildingOnGraphic != null)

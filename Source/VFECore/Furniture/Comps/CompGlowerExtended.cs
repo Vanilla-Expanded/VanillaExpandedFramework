@@ -121,7 +121,7 @@ namespace VanillaFurnitureExpanded
             {
                 if (!shouldBeLitNow)
                 {
-                    this.RemoveGlower();
+                    this.RemoveGlower(this.parent.Map);
                 }
                 else
                 {
@@ -138,6 +138,17 @@ namespace VanillaFurnitureExpanded
             this.dirty = true;
         }
 
+        public override void PostDeSpawn(Map map)
+        {
+            this.RemoveGlower(map);
+            base.PostDeSpawn(map);
+        }
+
+        public override void PostDestroy(DestroyMode mode, Map previousMap)
+        {
+            this.RemoveGlower(previousMap);
+            base.PostDestroy(mode, previousMap);
+        }
         public override void CompTick()
         {
             base.CompTick();
@@ -150,7 +161,7 @@ namespace VanillaFurnitureExpanded
                 }
                 else
                 {
-                    RemoveGlower();
+                    RemoveGlower(this.parent.Map);
                 }
                 dirty = false;
             }
@@ -187,11 +198,11 @@ namespace VanillaFurnitureExpanded
                 this.ChangeGraphic();
             }
         }
-        public void RemoveGlower()
+        public void RemoveGlower(Map map)
         {
             if (this.compGlower != null)
             {
-                base.parent.Map.glowGrid.DeRegisterGlower(this.compGlower);
+                map.glowGrid?.DeRegisterGlower(this.compGlower);
                 this.compGlower = null;
             }
         }
@@ -215,7 +226,7 @@ namespace VanillaFurnitureExpanded
 
         public void UpdateGlower(int colorOptionInd)
         {
-            RemoveGlower();
+            RemoveGlower(this.parent.Map);
             var colorOption = Props.colorOptions[colorOptionInd];
             this.currentColor = colorOption;
             this.currentColorInd = colorOptionInd;

@@ -14,6 +14,8 @@ namespace VFECore.Misc
     {
         public static List<Hireable> Hireables;
 
+        private static readonly Dictionary<World, HiringContractTracker> cachedTracker = new Dictionary<World, HiringContractTracker>();
+
         static HireableSystemStaticInitialization()
         {
             Hireables = DefDatabase<HireableFactionDef>.AllDefs.GroupBy(def => def.commTag).Select(group => new Hireable(group.Key, group.ToList())).ToList();
@@ -31,14 +33,24 @@ namespace VFECore.Misc
                                               transpiler: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(CaravanAllSendablePawns_Transpiler)));
                 VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(Pawn), nameof(Pawn.CheckAcceptArrest)),
                                               postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(CheckAcceptArrestPostfix)));
+                // VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(PawnApparelGenerator), "GenerateWorkingPossibleApparelSetFor"),
+                //     new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(Debug)));
+                VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(BillUtility), nameof(BillUtility.IsSurgeryViolationOnExtraFactionMember)),
+                                              postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(IsSurgeryViolation_Postfix)));
+                VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(ForbidUtility), nameof(ForbidUtility.CaresAboutForbidden)),
+                                              postfix: new HarmonyMethod(typeof(HireableSystemStaticInitialization), nameof(CaresAboutForbidden_Postfix)));
             }
         }
 
-        private static Dictionary<World, HiringContractTracker> cachedTracker = new Dictionary<World, HiringContractTracker>();
+        // public static void Debug(Pawn pawn, float money, List<ThingStuffPair> apparelCandidates)
+        // {
+        //     if (DebugViewSettings.logApparelGeneration)
+        //         Log.Message($"Generating apparel for {pawn} with money ${money} and candidates:\n{apparelCandidates.Select(pair => pair.ToString()).ToLineList("  - ")}");
+        // }
 
         private static HiringContractTracker GetContractTracker(World world)
         {
-            if (!cachedTracker.TryGetValue(world, out HiringContractTracker tracker))
+            if (!cachedTracker.TryGetValue(world, out var tracker))
                 cachedTracker.Add(world, tracker = world.GetComponent<HiringContractTracker>());
             return tracker;
         }
@@ -82,12 +94,22 @@ namespace VFECore.Misc
 
         public static void CheckAcceptArrestPostfix(Pawn __instance, ref bool __result)
         {
-            HiringContractTracker tracker = GetContractTracker(Find.World);
+            var tracker = GetContractTracker(Find.World);
             if (tracker.IsHired(__instance))
             {
                 tracker.BreakContract();
                 __result = false;
             }
+        }
+
+        public static void IsSurgeryViolation_Postfix(Bill_Medical bill, ref bool __result)
+        {
+            __result = __result || (GetContractTracker(Find.World).IsHired(bill.GiverPawn) && bill.recipe.Worker.IsViolationOnPawn(bill.GiverPawn, bill.Part, Faction.OfPlayer));
+        }
+
+        public static void CaresAboutForbidden_Postfix(Pawn pawn, ref bool __result)
+        {
+            __result = __result && (!GetContractTracker(Find.World).IsHired(pawn) || pawn.CurJobDef != VFEDefOf.VFEC_LeaveMap);
         }
     }
 

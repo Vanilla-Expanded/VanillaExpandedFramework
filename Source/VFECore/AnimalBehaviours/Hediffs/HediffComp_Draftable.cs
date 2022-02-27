@@ -24,7 +24,7 @@ namespace AnimalBehaviours
             {
                 if (this.parent.pawn.drafter == null) { this.parent.pawn.drafter = new Pawn_DraftController(this.parent.pawn); }
                 if (this.parent.pawn.equipment == null) { this.parent.pawn.equipment = new Pawn_EquipmentTracker(this.parent.pawn); }
-                AnimalCollectionClass.AddDraftableAnimalToList(this.parent.pawn, new bool[14]);
+                AnimalCollectionClass.AddDraftableAnimalToList(this.parent.pawn);
                 tickCounter = 0;
             }
         }
@@ -33,7 +33,7 @@ namespace AnimalBehaviours
         {
             if (this.parent.pawn.drafter == null) { this.parent.pawn.drafter = new Pawn_DraftController(this.parent.pawn); }
             if (this.parent.pawn.equipment == null) { this.parent.pawn.equipment = new Pawn_EquipmentTracker(this.parent.pawn); }
-            AnimalCollectionClass.AddDraftableAnimalToList(this.parent.pawn, new bool[14]);
+            AnimalCollectionClass.AddDraftableAnimalToList(this.parent.pawn);
         }
 
         public override void CompPostPostRemoved()

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Verse;
-using RimWorld;
-using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using Verse;
 
 
 namespace VanillaFurnitureExpanded
@@ -25,30 +23,31 @@ namespace VanillaFurnitureExpanded
         {
             get
             {
-                return (CompProperties_RandomBuildingGraphic)this.props;
+                return (CompProperties_RandomBuildingGraphic)props;
             }
         }
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
-            thingToGrab = (Thing)this.parent;
+            thingToGrab = parent;
             reloading = true;
             //Using LongEventHandler to avoid having to create a GraphicCache
             LongEventHandler.ExecuteWhenFinished(ChangeGraphic);
-            
+
 
         }
 
         public void ChangeGraphic()
         {
-            try {
-                Vector2 sizeVector = this.parent.Graphic.drawSize;
-                Color objectColour = this.parent.Graphic.color;
-                ShaderTypeDef shaderUsed = this.parent.def.graphicData.shaderType;
+            try
+            {
+                Vector2 sizeVector = parent.Graphic.drawSize;
+                Color objectColour = parent.Graphic.color;
+                ShaderTypeDef shaderUsed = parent.def.graphicData.shaderType;
 
-                if (this.parent.Faction != null && this.parent.Faction.IsPlayer)
+                if (parent.Faction != null && parent.Faction.IsPlayer)
                 {
-                    if (this.parent.def.graphicData.graphicClass == typeof(Graphic_Multi))
+                    if (parent.def.graphicData.graphicClass == typeof(Graphic_Multi))
                     {
                         if (!VFECore.VFEGlobal.settings.isRandomGraphic)
                         {
@@ -95,7 +94,7 @@ namespace VanillaFurnitureExpanded
                         type.SetValue(thingToGrab, newGraphic);
 
                     }
-                    else if (this.parent.def.graphicData.graphicClass == typeof(Graphic_Single))
+                    else if (parent.def.graphicData.graphicClass == typeof(Graphic_Single))
                     {
                         if (!VFECore.VFEGlobal.settings.isRandomGraphic)
                         {
@@ -143,46 +142,42 @@ namespace VanillaFurnitureExpanded
                     }
 
                 }
-            }catch(Exception e) { Log.Message("The variations mod has probably been added to a running save. Ignoring load error."); }
-            
-
-
-
-
-
+            }
+            catch (Exception) { Log.Message("The variations mod has probably been added to a running save. Ignoring load error."); }
         }
 
         public override void PostExposeData()
         {
-            Scribe_Values.Look<string>(ref this.newGraphicPath, "newGraphicPath");
-            Scribe_Values.Look<string>(ref this.newGraphicSinglePath, "newGraphicSinglePath");
-            Scribe_Values.Look<bool>(ref this.reloading, "reloading", false);
+            Scribe_Values.Look<string>(ref newGraphicPath, "newGraphicPath");
+            Scribe_Values.Look<string>(ref newGraphicSinglePath, "newGraphicSinglePath");
+            Scribe_Values.Look<bool>(ref reloading, "reloading", false);
 
         }
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
-            if (this.parent.Faction != null && this.parent.Faction.IsPlayer && this.parent.StyleDef==null && !VFECore.VFEGlobal.settings.hideRandomizeButton)
+            if (parent.Faction != null && parent.Faction.IsPlayer && parent.StyleDef == null && !VFECore.VFEGlobal.settings.hideRandomizeButton)
             {
                 yield return new Command_Action
                 {
                     defaultLabel = "VFE_ChangeGraphic".Translate(),
                     defaultDesc = "VFE_ChangeGraphicDesc".Translate(),
-                   
+
                     icon = ContentFinder<Texture2D>.Get("UI/VEF_ChangeGraphic", true),
                     action = delegate ()
                     {
-                        if (VFECore.VFEGlobal.settings.isRandomGraphic) {
+                        if (VFECore.VFEGlobal.settings.isRandomGraphic)
+                        {
                             newGraphicPath = "";
                             newGraphicSinglePath = "";
-                        }                     
+                        }
                         LongEventHandler.ExecuteWhenFinished(ChangeGraphic);
-                        this.parent.Map.mapDrawer.MapMeshDirty(this.parent.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+                        parent.Map.mapDrawer.MapMeshDirty(parent.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
                     }
                 };
 
             }
-            
+
 
 
             yield break;

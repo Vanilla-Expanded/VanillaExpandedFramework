@@ -23,7 +23,7 @@ namespace AnimalBehaviours
 
         {
             bool flagIsCreatureMine = pawn.Faction != null && pawn.Faction?.IsPlayer==true;
-            bool flagIsCreatureDraftable = AnimalCollectionClass.draftable_animals.ContainsKey(pawn);
+            bool flagIsCreatureDraftable = AnimalCollectionClass.draftable_animals.Contains(pawn);
 
             if (flagIsCreatureDraftable && flagIsCreatureMine)
             {
