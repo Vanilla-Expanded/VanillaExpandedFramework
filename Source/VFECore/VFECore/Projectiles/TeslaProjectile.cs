@@ -3,6 +3,7 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -43,10 +44,43 @@ namespace VFEMech
             }
         }
 
-        
+        [HarmonyPatch]
+        public static class CheckPreAbsorbDamagePatch
+        {
+            [HarmonyTargetMethods]
+            public static IEnumerable<MethodBase> GetMethods()
+            {
+                yield return AccessTools.Method(typeof(ShieldBelt), "CheckPreAbsorbDamage");
+            }
+
+            public static void Postfix(bool __result)
+            {
+                wasDeflected = __result;
+            }
+        }
+
+        [HarmonyPatch]
+        public static class ProjectilePatches
+        {
+            [HarmonyTargetMethods]
+            public static IEnumerable<MethodBase> GetMethods()
+            {
+                yield return AccessTools.Method(typeof(Projectile), "ImpactSomething");
+                yield return AccessTools.Method(typeof(Projectile), "CheckForFreeIntercept");
+            }
+            public static void Postfix()
+            {
+                wasDeflected = false;
+            }
+        }
 
         protected override void Impact(Thing hitThing)
         {
+            var oldValue = def.projectile.damageDef.isRanged; // all of this jazz is to make shield belt deflecting tesla projectiles
+            def.projectile.damageDef.isRanged = true;
+            base.Impact(hitThing);
+            def.projectile.damageDef.isRanged = oldValue;
+
             if (this.mainLauncher == null)
             {
                 this.mainLauncher = this.launcher;
@@ -56,7 +90,15 @@ namespace VFEMech
             {
                 equipmentDef = ThingDef.Named("Gun_Autopistol");
             }
-
+            if (wasDeflected)
+            {
+                wasDeflected = false;
+                if (Rand.Chance(0.3f))
+                {
+                    this.DestroyAll();
+                }
+                return;
+            }
             if (hitThing == null && !shotAnything)
             {
                 shotAnything = true;
@@ -65,9 +107,8 @@ namespace VFEMech
             {
                 BattleLogEntry_RangedImpact battleLogEntry_RangedImpact = new BattleLogEntry_RangedImpact(launcher, hitThing, intendedTarget.Thing, equipmentDef, def, targetCoverDef);
                 Find.BattleLog.Add(battleLogEntry_RangedImpact);
-
-                hitThing.TakeDamage(new DamageInfo(Props.damageDef, this.def.projectile.GetDamageAmount(1f), -1f,
-                    Holder.DrawPos.AngleToFlat(hitThing.DrawPos), this.Launcher)).AssociateWithLog(battleLogEntry_RangedImpact);
+                var dinfo = new DamageInfo(Props.damageDef, this.def.projectile.GetDamageAmount(1f), -1f, Holder.DrawPos.AngleToFlat(hitThing.DrawPos), this.Launcher);
+                hitThing.TakeDamage(dinfo).AssociateWithLog(battleLogEntry_RangedImpact);
 
                 if (Props.addFire && hitThing.TryGetComp<CompAttachBase>() != null)
                 {
@@ -89,10 +130,9 @@ namespace VFEMech
                 }
                 shotAnything = true;
             }
-
-            base.Impact(hitThing);
         }
 
+        public static bool wasDeflected;
         private void RegisterHit(Thing hitThing)
         {
             RegisterHit(this, hitThing);
