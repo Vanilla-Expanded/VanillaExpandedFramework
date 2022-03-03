@@ -82,11 +82,11 @@
     <Compile Include="Features\PatchSets\PatchSet_Hunting.cs" />
     <Compile Include="Features\PatchSets\PatchSet_BatteLog.cs" />
     <Compile Include="Features\PatchSets\PatchSet_IndependentVerbs.cs" />
-    <Compile Include="Features\PatchSets\PatchSet_VerbUtility.cs" />
     <Compile Include="JobGiver_ManhunterRanged.cs" />
     <Compile Include="ManagedVerb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TurretVerb.cs" />
+    <Compile Include="Utilities\TargetFinder.cs" />
     <Compile Include="Utilities\VerbManagerUtility.cs" />
     <Compile Include="VerbManager.cs" />
     <Compile Include="Verbs\Interfaces.cs" />

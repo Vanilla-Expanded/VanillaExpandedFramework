@@ -21,6 +21,11 @@ namespace MVCF.Features
                 AccessTools.Method(GetType(), nameof(GetGizmos_Postfix)));
             yield return Patch.Postfix(AccessTools.Method(typeof(PawnAttackGizmoUtility), "GetAttackGizmos"),
                 AccessTools.Method(GetType(), nameof(GetAttackGizmos_Postfix)));
+            var type = typeof(Pawn_EquipmentTracker);
+            yield return Patch.Postfix(AccessTools.Method(type, "Notify_EquipmentAdded"),
+                AccessTools.Method(GetType(), nameof(EquipmentAdded_Postfix)));
+            yield return Patch.Postfix(AccessTools.Method(type, "Notify_EquipmentRemoved"),
+                AccessTools.Method(GetType(), nameof(EquipmentRemoved_Postfix)));
         }
 
         public override IEnumerable<PatchSet> GetPatchSets()
@@ -36,7 +41,7 @@ namespace MVCF.Features
             foreach (var gizmo in __result) yield return gizmo;
 
             if (!__instance.Drafted || __instance.pawn.equipment.Primary != null && __instance.pawn.equipment
-                .Primary.def.IsRangedWeapon || !__instance.pawn.AllRangedVerbsPawnNoEquipment().Any())
+                .Primary.def.IsRangedWeapon || !__instance.pawn.Manager().AllRangedVerbsNoEquipment.Any())
                 yield break;
 
             yield return new Command_Toggle
@@ -83,6 +88,21 @@ namespace MVCF.Features
                     },
                     hotKey = KeyBindingDefOf.Misc5
                 };
+        }
+
+        public static void EquipmentAdded_Postfix(ThingWithComps eq, Pawn_EquipmentTracker __instance)
+        {
+            __instance.pawn.Manager()?.AddVerbs(eq);
+        }
+
+        public static void EquipmentRemoved_Postfix(ThingWithComps eq, Pawn_EquipmentTracker __instance)
+        {
+            if (Base.IsIgnoredMod(eq?.def?.modContentPack?.Name)) return;
+            var comp = eq.TryGetComp<CompEquippable>();
+            if (comp?.VerbTracker?.AllVerbs == null) return;
+            var manager = __instance?.pawn?.Manager();
+            if (manager == null) return;
+            foreach (var verb in comp.VerbTracker.AllVerbs) manager.RemoveVerb(verb);
         }
     }
 }

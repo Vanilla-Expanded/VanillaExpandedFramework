@@ -56,7 +56,7 @@ namespace MVCF
 
         public virtual bool Enabled
         {
-            get => enabledInt && additionalCooldownTicksLeft > 0;
+            get => enabledInt && additionalCooldownTicksLeft < 0;
             set => enabledInt = value;
         }
 

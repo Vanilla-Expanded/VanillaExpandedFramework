@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using MVCF.Features.PatchSets;
-using MVCF.HarmonyPatches;
+using MVCF.Utilities;
 using Verse;
 
 namespace MVCF.Features
@@ -17,12 +17,12 @@ namespace MVCF.Features
         public virtual IEnumerable<Patch> GetPatches()
         {
             yield return Patch_Pawn_TryGetAttackVerb.GetPatch();
+            foreach (var patch in TargetFinder.GetPatches()) yield return patch;
         }
 
         public virtual IEnumerable<PatchSet> GetPatchSets()
         {
             yield return new PatchSet_BatteLog();
-            yield return new PatchSet_VerbUtility();
             yield return new PatchSet_Base();
             if (ModLister.HasActiveModWithName("RunAndGun")) yield return new PatchSet_RunAndGun();
         }

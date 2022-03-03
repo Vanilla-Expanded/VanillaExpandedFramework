@@ -29,21 +29,6 @@ namespace MVCF.Utilities
             return p.MVCF_VerbManager;
         }
 
-        public static IEnumerable<Verb> AllRangedVerbsPawn(this Pawn p)
-        {
-            return p.Manager().AllRangedVerbs;
-        }
-
-        public static IEnumerable<Verb> AllRangedVerbsPawnNoEquipment(this Pawn p)
-        {
-            return p.Manager().AllRangedVerbsNoEquipment;
-        }
-
-        public static IEnumerable<Verb> AllRangedVerbsPawnNoEquipmentNoApparel(this Pawn p)
-        {
-            return p.Manager().AllRangedVerbsNoEquipmentNoApparel;
-        }
-
         public static Verb BestVerbForTarget(this Pawn p, LocalTargetInfo target, IEnumerable<ManagedVerb> verbs,
             VerbManager man = null)
         {
@@ -58,7 +43,7 @@ namespace MVCF.Utilities
             }
 
             Verb bestVerb = null;
-            float bestScore = 0;
+            var bestScore = 0f;
             foreach (var verb in verbs)
             {
                 if (verb.Verb is IVerbScore verbScore && verbScore.ForceUse(p, target)) return verb.Verb;
@@ -73,7 +58,7 @@ namespace MVCF.Utilities
             return bestVerb;
         }
 
-        private static float VerbScore(Pawn p, Verb verb, LocalTargetInfo target, bool debug = false)
+        public static float VerbScore(Pawn p, Verb verb, LocalTargetInfo target, bool debug = false)
         {
             if (debug) Log.Message("Getting score of " + verb + " with target " + target);
             if (verb is IVerbScore score) return score.GetScore(p, target);

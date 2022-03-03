@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using MVCF.Comps;
-using MVCF.HarmonyPatches;
+using MVCF.Utilities;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -64,9 +64,7 @@ namespace MVCF
                 currentTarget.HasThing && currentTarget.Thing is Pawn p && (p.Downed || p.Dead) ||
                 !Verb.CanHitTarget(currentTarget))
             {
-                man.OverrideVerb = Verb;
                 currentTarget = TryFindNewTarget();
-                man.OverrideVerb = null;
                 TryStartCast();
             }
             else if (warmUpTicksLeft == 0)
@@ -121,8 +119,8 @@ namespace MVCF
 
         protected virtual LocalTargetInfo TryFindNewTarget()
         {
-            return AttackTargetFinder.BestShootTargetFromCurrentPosition(
-                man.Pawn,
+            return TargetFinder.BestAttackTarget(
+                man.Pawn, Verb,
                 TargetScanFlags.NeedActiveThreat | TargetScanFlags.NeedLOSToAll |
                 TargetScanFlags.NeedAutoTargetable,
                 Props.uniqueTargets
@@ -131,7 +129,7 @@ namespace MVCF
                         man.ManagedVerbs.All(verb =>
                             verb.Verb.CurrentTarget.Thing != thing &&
                             (verb as TurretVerb)?.currentTarget.Thing != thing))
-                    : null)?.Thing ?? LocalTargetInfo.Invalid;
+                    : null, Verb.verbProps.minRange, Verb.verbProps.range, canTakeTargetsCloserThanEffectiveMinRange: false)?.Thing ?? LocalTargetInfo.Invalid;
         }
     }
 

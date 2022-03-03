@@ -26,11 +26,6 @@ namespace MVCF.Features
                 AccessTools.Method(typeof(Feature_RangedAnimals), nameof(Feature_RangedAnimals.Pawn_GetGizmos_Postfix)));
             yield return Patch.Prefix(AccessTools.Method(typeof(CompEquippable), nameof(CompEquippable.GetVerbsCommands)),
                 AccessTools.Method(GetType(), nameof(GetVerbsCommands_Prefix)));
-            var type = typeof(Pawn_EquipmentTracker);
-            yield return Patch.Postfix(AccessTools.Method(type, "Notify_EquipmentAdded"),
-                AccessTools.Method(GetType(), nameof(EquipmentAdded_Postfix)));
-            yield return Patch.Postfix(AccessTools.Method(type, "Notify_EquipmentRemoved"),
-                AccessTools.Method(GetType(), nameof(EquipmentRemoved_Postfix)));
             yield return Patch.Prefix(AccessTools.PropertyGetter(typeof(ThingDef), nameof(ThingDef.IsRangedWeapon)),
                 AccessTools.Method(GetType(), nameof(Prefix_IsRangedWeapon)));
             yield return Patch.Transpiler(AccessTools.Method(typeof(FloatMenuMakerMap), "AddDraftedOrders"),
@@ -49,21 +44,6 @@ namespace MVCF.Features
             if (melee)
                 __result = __result.Prepend(createVerbTargetCommand(__instance.verbTracker, __instance.parent, __instance.AllVerbs.First(v => v.verbProps.IsMeleeAttack)));
             return false;
-        }
-
-        public static void EquipmentAdded_Postfix(ThingWithComps eq, Pawn_EquipmentTracker __instance)
-        {
-            __instance.pawn.Manager()?.AddVerbs(eq);
-        }
-
-        public static void EquipmentRemoved_Postfix(ThingWithComps eq, Pawn_EquipmentTracker __instance)
-        {
-            if (Base.IsIgnoredMod(eq?.def?.modContentPack?.Name)) return;
-            var comp = eq.TryGetComp<CompEquippable>();
-            if (comp?.VerbTracker?.AllVerbs == null) return;
-            var manager = __instance?.pawn?.Manager();
-            if (manager == null) return;
-            foreach (var verb in comp.VerbTracker.AllVerbs) manager.RemoveVerb(verb);
         }
 
         public static IEnumerable<CodeInstruction> CheckForMelee(IEnumerable<CodeInstruction> instructions)

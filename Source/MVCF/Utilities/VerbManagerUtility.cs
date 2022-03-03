@@ -1,4 +1,5 @@
 ﻿using MVCF.Comps;
+using MVCF.Features;
 using RimWorld;
 using Verse;
 
@@ -13,10 +14,15 @@ namespace MVCF.Utilities
             if (Base.ShouldIgnore(eq)) return;
             var comp = eq.TryGetComp<CompEquippable>();
             if (comp?.VerbTracker?.AllVerbs == null) return;
-            foreach (var verb in comp.VerbTracker.AllVerbs)
-                man.AddVerb(verb, VerbSource.Equipment, comp.props is CompProperties_VerbProps props
-                    ? props.PropsFor(verb)
-                    : eq.TryGetComp<Comp_VerbProps>()?.Props?.PropsFor(verb));
+            if (Base.GetFeature<Feature_ExtraEquipmentVerbs>().Enabled)
+                foreach (var verb in comp.VerbTracker.AllVerbs)
+                    man.AddVerb(verb, VerbSource.Equipment, comp.props is CompProperties_VerbProps props
+                        ? props.PropsFor(verb)
+                        : eq.TryGetComp<Comp_VerbProps>()?.Props?.PropsFor(verb));
+            else if (eq is {def: {equipmentType: EquipmentType.Primary}})
+                man.AddVerb(comp.PrimaryVerb, VerbSource.Equipment, comp.props is CompProperties_VerbProps props
+                    ? props.PropsFor(comp.PrimaryVerb)
+                    : eq.TryGetComp<Comp_VerbProps>()?.Props?.PropsFor(comp.PrimaryVerb));
         }
 
         public static void AddVerbs(this VerbManager man, Apparel apparel)
