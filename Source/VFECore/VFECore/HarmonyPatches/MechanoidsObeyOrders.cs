@@ -42,7 +42,6 @@ namespace VFE.Mechanoids.HarmonyPatches
 	[StaticConstructorOnStartup]
 	public static class SimpleSidearmsPatch
     {
-
 		public static bool SimpleSidearmsActive;
 		static SimpleSidearmsPatch()
         {
@@ -131,7 +130,6 @@ namespace VFE.Mechanoids.HarmonyPatches
                 var compMachine = pawn.GetComp<CompMachine>();
                 if (compMachine != null && compMachine.Props.canPickupWeapons)
 				{
-					Log.Message(pawn.inventory + " - " + pawn.equipment);
 					IntVec3 c = IntVec3.FromVector3(clickPos);
 					ThingWithComps equipment = null;
 					List<Thing> thingList2 = c.GetThingList(pawn.Map);
@@ -212,6 +210,59 @@ namespace VFE.Mechanoids.HarmonyPatches
 							}
 						}
 						__result.Add(item6);
+					}
+
+					if (SimpleSidearmsPatch.SimpleSidearmsActive)
+                    {
+						try
+						{
+							List<Thing> thingList = c.GetThingList(pawn.Map);
+							for (int i = 0; i < thingList.Count; i++)
+							{
+								if (thingList[i].TryGetComp<CompEquippable>() != null)
+								{
+									equipment = (ThingWithComps)thingList[i];
+									break;
+								}
+							}
+							if (equipment == null)
+							{
+								return;
+							}
+							string labelShort = equipment.LabelShort;
+							if (!pawn.CanReach(new LocalTargetInfo(equipment), PathEndMode.ClosestTouch, Danger.Deadly) || !pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation) || !equipment.def.IsWeapon || equipment.IsBurning() || pawn.IsQuestLodger())
+							{
+								return;
+							}
+							FloatMenuOption item3;
+							if (!PeteTimesSix.SimpleSidearms.Utilities.StatCalculator.canCarrySidearmInstance(equipment, pawn, out var errStr))
+							{
+								"CannotEquip".Translate();
+								item3 = new FloatMenuOption("CannotEquip".Translate(labelShort) + " (" + errStr + ")", null);
+								__result.Add(item3);
+								return;
+							}
+							string text2 = "Equip".Translate(labelShort);
+							text2 = (((pawn.CombinedDisabledWorkTags & WorkTags.Violent) == 0 && !PeteTimesSix.SimpleSidearms.Extensions.isToolNotWeapon
+								(PeteTimesSix.SimpleSidearms.Extensions.toThingDefStuffDefPair(equipment))) ? ((string)(text2 + "AsSidearm".Translate())) : ((string)(text2 + "AsTool".Translate())));
+							if (equipment.def.IsRangedWeapon && pawn.story != null && pawn.story.traits.HasTrait(TraitDefOf.Brawler))
+							{
+								text2 = text2 + " " + "EquipWarningBrawler".Translate();
+							}
+							item3 = FloatMenuUtility.DecoratePrioritizedTask(new FloatMenuOption(text2, delegate
+							{
+								equipment.SetForbidden(value: false);
+								pawn.jobs.TryTakeOrderedJob(JobMaker.MakeJob(SimpleSidearms.rimworld.SidearmsDefOf.EquipSecondary, equipment), JobTag.Misc);
+								PlayerKnowledgeDatabase.KnowledgeDemonstrated(SimpleSidearms.rimworld.SidearmsDefOf.Concept_SimpleSidearmsBasic, KnowledgeAmount.SmallInteraction);
+							}, MenuOptionPriority.High), pawn, equipment);
+							__result.Add(item3);
+						}
+						catch (Exception e)
+						{
+							Log.Error("Exception during SimpleSidearms floatmenumaker intercept. Cancelling intercept. Exception: " + e.ToString());
+						}
+
+
 					}
 					void Equip()
 					{
