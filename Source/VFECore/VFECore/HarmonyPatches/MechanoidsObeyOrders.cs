@@ -3,6 +3,7 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -38,6 +39,88 @@ namespace VFE.Mechanoids.HarmonyPatches
         }
     }
 
+	[StaticConstructorOnStartup]
+	public static class SimpleSidearmsPatch
+    {
+
+		public static bool SimpleSidearmsActive;
+		static SimpleSidearmsPatch()
+        {
+			SimpleSidearmsActive = ModsConfig.IsActive("PeteTimesSix.SimpleSidearms");
+			if (SimpleSidearmsActive)
+            {
+				var type = AccessTools.TypeByName("PeteTimesSix.SimpleSidearms.Extensions");
+				if (type != null)
+				{
+					var target = AccessTools.Method(type, "IsValidSidearmsCarrier");
+					VFECore.VFECore.harmonyInstance.Patch(target, postfix: new HarmonyMethod(AccessTools.Method(typeof(SimpleSidearmsPatch), nameof(IsValidSidearmsCarrierPostfix))));
+					type = AccessTools.TypeByName("SimpleSidearms.rimworld.CompSidearmMemory");
+					target = AccessTools.Method(type, "GetMemoryCompForPawn");
+					VFECore.VFECore.harmonyInstance.Patch(target, prefix: new HarmonyMethod(AccessTools.Method(typeof(SimpleSidearmsPatch), nameof(GetMemoryCompForPawnPrefix))));
+					type = AccessTools.TypeByName("SimpleSidearms.rimworld.Gizmo_SidearmsList");
+					target = AccessTools.Method(type, "DrawGizmoLabel");
+					VFECore.VFECore.harmonyInstance.Patch(target, prefix: new HarmonyMethod(AccessTools.Method(typeof(SimpleSidearmsPatch), nameof(GizmoLabelFixer))));
+				}
+				else
+                {
+					Log.Error("[Vanilla Expanded Framework] Patching Simple Sidearms failed.");
+                }
+			}
+        }
+		public static void IsValidSidearmsCarrierPostfix(ref bool __result, Pawn pawn)
+        {
+			if (!__result)
+            {
+				var compMachine = pawn.GetComp<CompMachine>();
+				if (compMachine != null && compMachine.Props.canPickupWeapons)
+                {
+					__result = true;
+                }
+			}
+        }
+
+		public static void GizmoLabelFixer(ref string labelText, Rect gizmoRect)
+        {
+			labelText = labelText.Replace(" (godmode)", "");
+
+		}
+		public static IEnumerable<Gizmo> SimpleSidearmsGizmos(Pawn __instance)
+		{
+			if (PeteTimesSix.SimpleSidearms.Extensions.IsValidSidearmsCarrier(__instance) && __instance.equipment != null && __instance.inventory != null)
+			{
+				IEnumerable<ThingWithComps> carriedWeapons = PeteTimesSix.SimpleSidearms.Extensions.getCarriedWeapons(__instance, includeEquipped: true, includeTools: true);
+				SimpleSidearms.rimworld.CompSidearmMemory pawnMemory = SimpleSidearms.rimworld.CompSidearmMemory.GetMemoryCompForPawn(__instance);
+				if (pawnMemory != null)
+				{
+					List<SimpleSidearms.rimworld.ThingDefStuffDefPair> rangedWeaponMemories = new List<SimpleSidearms.rimworld.ThingDefStuffDefPair>();
+					List<SimpleSidearms.rimworld.ThingDefStuffDefPair> meleeWeaponMemories = new List<SimpleSidearms.rimworld.ThingDefStuffDefPair>();
+					foreach (SimpleSidearms.rimworld.ThingDefStuffDefPair weapon in pawnMemory.RememberedWeapons)
+					{
+						if (weapon.thing.IsMeleeWeapon)
+						{
+							meleeWeaponMemories.Add(weapon);
+						}
+						else if (weapon.thing.IsRangedWeapon)
+						{
+							rangedWeaponMemories.Add(weapon);
+						}
+					}
+					yield return new SimpleSidearms.rimworld.Gizmo_SidearmsList(__instance, carriedWeapons, pawnMemory.RememberedWeapons);
+				}
+			}
+		}
+		public static bool GetMemoryCompForPawnPrefix(ref object __result, Pawn pawn, bool fillExistingIfCreating = true)
+		{
+			var compMachine = pawn.GetComp<CompMachine>();
+			if (compMachine != null && compMachine.Props.canPickupWeapons)
+			{
+				__result = pawn.TryGetComp<SimpleSidearms.rimworld.CompSidearmMemory>();
+				return false;
+			}
+			return true;
+		}
+	}
+
     [HarmonyPatch(typeof(FloatMenuMakerMap), "ChoicesAtFor")]
     public static class FloatMenuMakerMap_ChoicesAtFor_Patch
     {
@@ -48,6 +131,7 @@ namespace VFE.Mechanoids.HarmonyPatches
                 var compMachine = pawn.GetComp<CompMachine>();
                 if (compMachine != null && compMachine.Props.canPickupWeapons)
 				{
+					Log.Message(pawn.inventory + " - " + pawn.equipment);
 					IntVec3 c = IntVec3.FromVector3(clickPos);
 					ThingWithComps equipment = null;
 					List<Thing> thingList2 = c.GetThingList(pawn.Map);
