@@ -6,6 +6,7 @@ using UnityEngine;
 using Verse;
 using RimWorld;
 using System.Xml;
+using RimWorld.Planet;
 
 namespace VFECore
 {
@@ -35,6 +36,8 @@ namespace VFECore
 
         public List<BiomeDef> allowedBiomes = new List<BiomeDef>();
         public List<BiomeDef> disallowedBiomes = new List<BiomeDef>();
+        public List<Hilliness> requiredHillLevels;
+        public bool spawnOnCoastalTilesOnly;
 
         public List<RaidStrategyDef> allowedStrategies = new List<RaidStrategyDef>();
     }
