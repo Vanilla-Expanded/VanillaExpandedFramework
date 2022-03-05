@@ -84,7 +84,7 @@ namespace MVCF.Comps
 
     public class AdditionalVerbProps
     {
-        public static BodyTypeDef NA = new BodyTypeDef();
+        public static BodyTypeDef NA = new();
         public float additionalCooldownTime;
         public bool brawlerCaresAbout = true;
         public bool canBeToggled = true;
@@ -150,6 +150,9 @@ namespace MVCF.Comps
 
             if (managedClass != null && canFireIndependently && !managedClass.IsSubclassOf(typeof(TurretVerb)))
                 yield return "managedClass of independent verb must be a subclass of TurretVerb";
+
+            if (managedClass != null && draw && !managedClass.IsSubclassOf(typeof(DrawnVerb)))
+                yield return "managedClass of drawn verb must be a subclass of DrawnVerb";
         }
 
         public virtual Vector3 DrawPos(Pawn pawn, Vector3 drawPos, Rot4 rot)
@@ -160,7 +163,7 @@ namespace MVCF.Comps
                 if (!(pawn.story?.bodyType != null && dic.TryGetValue(pawn.story.bodyType, out pos)))
                     dic.TryGetValue(NA, out pos);
 
-            pos = pos ?? defaultPosition ?? DrawPosition.Zero;
+            pos ??= defaultPosition ?? DrawPosition.Zero;
             return drawPos + pos.ForRot(rot);
         }
 
@@ -221,7 +224,7 @@ namespace MVCF.Comps
         public Vector2 Right = PLACEHOLDER;
         public Vector2 Up = PLACEHOLDER;
 
-        public static DrawPosition Zero => new DrawPosition
+        public static DrawPosition Zero => new()
         {
             defName = "",
             Default = Vector2.zero

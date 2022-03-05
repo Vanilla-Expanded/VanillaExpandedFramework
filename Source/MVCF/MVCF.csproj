@@ -61,10 +61,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Command_VerbTargetExtended.cs" />
+    <Compile Include="Commands\Command_VerbTargetExtended.cs" />
     <Compile Include="Comps\HediffComp_ExtendedVerbGiver.cs" />
     <Compile Include="Comps\Properties.cs" />
     <Compile Include="DebugActionsMVCF.cs" />
+    <Compile Include="DrawnVerb.cs" />
     <Compile Include="Features\Feature.cs" />
     <Compile Include="Features\Feature_ApparelVerbs.cs" />
     <Compile Include="Features\Feature_Drawing.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="Features\Feature_IndependentVerbs.cs" />
     <Compile Include="Features\Feature_IntegratedToggle.cs" />
     <Compile Include="Features\Feature_RangedAnimals.cs" />
+    <Compile Include="Features\Feature_Reloading.cs" />
     <Compile Include="Features\Feature_TickVerbs.cs" />
     <Compile Include="Features\PatchSets\PatchSet_Base.cs" />
     <Compile Include="Features\PatchSets\PatchSet_Brawlers.cs" />
@@ -85,23 +87,21 @@
     <Compile Include="JobGiver_ManhunterRanged.cs" />
     <Compile Include="ManagedVerb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reloading\Command_ReloadableVerbTarget.cs" />
-    <Compile Include="Reloading\CompChangeableAmmo.cs" />
-    <Compile Include="Reloading\CompReloadable.cs" />
-    <Compile Include="Reloading\HarmonyPatches.cs" />
-    <Compile Include="Reloading\HediffComp_ChangeableAmmo.cs" />
-    <Compile Include="Reloading\HediffComp_Reloadable.cs" />
-    <Compile Include="Reloading\IReloadable.cs" />
-    <Compile Include="Reloading\JobDriver_Reload.cs" />
-    <Compile Include="Reloading\JobDriver_ReloadFromInventory.cs" />
-    <Compile Include="Reloading\JobDriver_Unload.cs" />
-    <Compile Include="Reloading\JobGiver_Reload.cs" />
-    <Compile Include="Reloading\JobGiver_ReloadFromInventory.cs" />
+    <Compile Include="Commands\Command_ReloadableVerbTarget.cs" />
+    <Compile Include="Reloading\Comps\CompChangeableAmmo.cs" />
+    <Compile Include="Reloading\Comps\CompReloadable.cs" />
+    <Compile Include="Reloading\Comps\HediffComp_ChangeableAmmo.cs" />
+    <Compile Include="Reloading\Comps\HediffComp_Reloadable.cs" />
+    <Compile Include="Reloading\Comps\IReloadable.cs" />
+    <Compile Include="Reloading\Jobs\JobDriver_Reload.cs" />
+    <Compile Include="Reloading\Jobs\JobDriver_ReloadFromInventory.cs" />
+    <Compile Include="Reloading\Jobs\JobDriver_Unload.cs" />
+    <Compile Include="Reloading\Jobs\JobGiver_Reload.cs" />
+    <Compile Include="Reloading\Jobs\JobGiver_ReloadFromInventory.cs" />
     <Compile Include="Reloading\ReloadingDefOf.cs" />
-    <Compile Include="Reloading\ReloadingFloatMenuAdder.cs" />
-    <Compile Include="Reloading\ReloadingGizmos.cs" />
+    <Compile Include="Utilities\FloatMenuUtility.cs" />
     <Compile Include="Reloading\ReloadingMod.cs" />
-    <Compile Include="Reloading\Utils.cs" />
+    <Compile Include="Utilities\ReloadingUtility.cs" />
     <Compile Include="TurretVerb.cs" />
     <Compile Include="Utilities\TargetFinder.cs" />
     <Compile Include="Utilities\VerbManagerUtility.cs" />
@@ -111,7 +111,7 @@
     <Compile Include="Verbs\Verb_SmokePop.cs" />
     <Compile Include="WorldComponent_MVCF.cs" />
     <Compile Include="Base.cs" />
-    <Compile Include="Command_ToggleVerbUsage.cs" />
+    <Compile Include="Commands\Command_ToggleVerbUsage.cs" />
     <Compile Include="Utilities\PawnVerbGizmoUtility.cs" />
     <Compile Include="Utilities\PawnVerbUtility.cs" />
     <Compile Include="Comps\Comp_VerbGiver.cs" />

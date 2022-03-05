@@ -1,7 +1,7 @@
 ﻿using RimWorld;
 using Verse;
 
-namespace Reloading
+namespace MVCF.Reloading
 {
     [DefOf]
     public class ReloadingDefOf

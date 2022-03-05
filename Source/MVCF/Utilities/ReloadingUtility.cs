@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Reloading;
 using Verse;
 
-namespace Reloading
+namespace MVCF.Utilities
 {
-    public static class Utils
+    public static class ReloadingUtility
     {
-        private static readonly Dictionary<Verb, IReloadable> reloadables = new Dictionary<Verb, IReloadable>();
+        private static readonly Dictionary<Verb, IReloadable> reloadables = new();
 
         public static IEnumerable<IReloadable> AllReloadComps(this Pawn p)
         {

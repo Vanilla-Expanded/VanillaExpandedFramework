@@ -3,21 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using HarmonyLib;
+using MVCF.Utilities;
 using Verse;
 
-namespace Reloading
+namespace MVCF.Reloading
 {
     public class ReloadingMod : Mod
     {
-        private static HarmonyMethod[] patches;
+        private static MethodInfo[] patches;
+        public static HashSet<Patch> Patches;
 
         public ReloadingMod(ModContentPack content) : base(content)
         {
             patches = new[]
             {
-                new HarmonyMethod(GetType(), nameof(CheckShots)),
-                new HarmonyMethod(GetType(), nameof(TryCastShot_Postfix)),
-                new HarmonyMethod(GetType(), nameof(Projectile_Prefix))
+                AccessTools.Method(GetType(), nameof(CheckShots)),
+                AccessTools.Method(GetType(), nameof(TryCastShot_Postfix)),
+                AccessTools.Method(GetType(), nameof(Projectile_Prefix))
             };
         }
 
@@ -61,10 +63,10 @@ namespace Reloading
 
         public static void RegisterVerb(Type verbType, bool patchFirstFound = false)
         {
-            HarmonyPatches.Patch(BestMethod(verbType, "TryCastShot", patchFirstFound), patches[0], patches[1], "TryCastShot", verbType);
-            HarmonyPatches.Patch(BestMethod(verbType, "Available", patchFirstFound), patches[0], debug_targetName: "Available", debug_targetType: verbType);
+            Patches.Add(new Patch(BestMethod(verbType, "TryCastShot", patchFirstFound), patches[0], patches[1]));
+            Patches.Add(new Patch(BestMethod(verbType, "Available", patchFirstFound), patches[0]));
             var method = BestMethod(verbType, "get_Projectile", patchFirstFound);
-            if (method != null) HarmonyPatches.Patch(method, patches[2], debug_targetName: "Projectile", debug_targetType: verbType);
+            if (method != null) Patches.Add(new Patch(method, patches[2]));
         }
     }
 }

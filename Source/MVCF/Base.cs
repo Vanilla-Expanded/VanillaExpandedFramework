@@ -14,6 +14,7 @@ namespace MVCF
         public static string SearchLabel;
         public static bool Prepatcher;
         public static List<Feature> AllFeatures;
+        public static HashSet<string> EnabledFeatures = new();
 
         [Obsolete] public static FeatureOpts Features = new();
 
@@ -66,10 +67,10 @@ namespace MVCF
                     if (def.Features.TickVerbs) Features.TickVerbs = true;
                 }
 
-                foreach (var feature in def.ActivateFeatures.SelectMany(featureName => AllFeatures.Where(feature => feature.Name == featureName)))
+                foreach (var feature in def.ActivateFeatures)
                 {
-                    Log.Message($"[MVCF] Mod {def.modContentPack.Name} is enabling feature {feature.Name}");
-                    feature.Enable(Harm);
+                    Log.Message($"[MVCF] Mod {def.modContentPack.Name} is enabling feature {feature}");
+                    EnabledFeatures.Add(feature);
                 }
 
                 if (def.IgnoreThisMod)
@@ -78,6 +79,8 @@ namespace MVCF
                     IgnoredMods.Add(def.modContentPack.Name);
                 }
             }
+
+            foreach (var feature in EnabledFeatures.SelectMany(f => AllFeatures.Where(feature => feature.Name == f))) feature.Enable(Harm);
 
             Patch.PrintSummary();
         }
@@ -160,7 +163,7 @@ namespace MVCF
 
         public static void PrintSummary()
         {
-            Log.Message($"MVCF successfully appiled {numPatches} patches");
+            Log.Message($"MVCF successfully applied {numPatches} patches");
         }
 
         public static Patch Prefix(MethodBase target, MethodInfo prefix) => new(target, prefix);

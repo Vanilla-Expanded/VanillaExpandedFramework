@@ -4,36 +4,39 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
+using MVCF.Reloading;
+using MVCF.Utilities;
+using Reloading;
 using RimWorld;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
+using FloatMenuUtility = MVCF.Utilities.FloatMenuUtility;
 
-namespace Reloading
+namespace MVCF.Features
 {
-    public class HarmonyPatches
+    public class Feature_Reloading : Feature_Humanoid
     {
-        private static Harmony harm;
-        private static FieldInfo thisPropertyInfo;
+        private static readonly Type AttackStaticSubType = typeof(JobDriver_AttackStatic).GetNestedType("<>c__DisplayClass4_0", BindingFlags.NonPublic);
+        private static readonly FieldInfo thisPropertyInfo = AttackStaticSubType.GetField("<>4__this", BindingFlags.Public | BindingFlags.Instance);
+        public override string Name => "Reloading";
 
-        private static readonly List<MethodInfo> patchedMethods = new List<MethodInfo>();
-
-        public new static Type GetType() => typeof(HarmonyPatches);
-
-
-        public static void Patch(MethodInfo target, HarmonyMethod prefix = null, HarmonyMethod postfix = null, string debug_targetName = null, Type debug_targetType = null)
+        public override IEnumerable<Patch> GetPatches()
         {
-            if (target is null)
-            {
-                Log.Warning(
-                    $"[MVCF] [Reloading] Target method of patch is null: Failed to find {debug_targetName} method of {debug_targetType?.Namespace}.{debug_targetType?.Name}");
-                return;
-            }
+            foreach (var patch in base.GetPatches()) yield return patch;
 
-            if (patchedMethods.Contains(target)) return;
-            Log.Message($"[MVCF] [Reloading] Patching method {target.DeclaringType?.Namespace}.{target.DeclaringType?.Name}.{target.Name}");
-            patchedMethods.Add(target);
-            harm.Patch(target, prefix, postfix);
+            yield return Patch.Postfix(AccessTools.Method(typeof(FloatMenuMakerMap), "AddHumanlikeOrders"),
+                AccessTools.Method(typeof(FloatMenuUtility), nameof(FloatMenuUtility.AddWeaponReloadOrders)));
+            yield return Patch.Transpiler(AttackStaticSubType.GetMethod("<MakeNewToils>b__1", BindingFlags.NonPublic | BindingFlags.Instance),
+                AccessTools.Method(GetType(), nameof(EndJobIfVerbNotAvailable)));
+            yield return Patch.Postfix(AccessTools.Method(typeof(Stance_Busy), "Expire"),
+                AccessTools.Method(GetType(), nameof(ReloadWeaponIfEndingCooldown)));
+            yield return Patch.Postfix(AccessTools.Method(typeof(PawnInventoryGenerator), "GenerateInventoryFor"),
+                AccessTools.Method(GetType(), nameof(GenerateAdditionalAmmo)));
+            yield return Patch.Postfix(AccessTools.Method(typeof(JobDriver_Hunt), "MakeNewToils"),
+                AccessTools.Method(GetType(), nameof(MakeNewToils_Postfix)));
+            yield return Patch.Postfix(AccessTools.Method(typeof(WorkGiver_HunterHunt), nameof(WorkGiver_HunterHunt.HasHuntingWeapon)),
+                AccessTools.Method(GetType(), nameof(HasHuntingWeapon_Postfix)));
         }
 
         public static void HasHuntingWeapon_Postfix(ref bool __result, Pawn p)
@@ -60,14 +63,14 @@ namespace Reloading
             list[idx4 + 1].labels.Add(label);
             var list3 = new List<CodeInstruction>
             {
-                new CodeInstruction(OpCodes.Ldloc_2),
-                new CodeInstruction(OpCodes.Brfalse_S, label),
-                new CodeInstruction(OpCodes.Ldloc_2),
-                new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Ldfld, thisPropertyInfo),
-                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(JobDriver), "pawn")),
-                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(HarmonyPatches), nameof(PawnCanCurrentlyUseVerb))),
-                new CodeInstruction(OpCodes.Brtrue_S, label)
+                new(OpCodes.Ldloc_2),
+                new(OpCodes.Brfalse_S, label),
+                new(OpCodes.Ldloc_2),
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Ldfld, thisPropertyInfo),
+                new(OpCodes.Ldfld, AccessTools.Field(typeof(JobDriver), "pawn")),
+                new(OpCodes.Call, AccessTools.Method(typeof(Feature_Reloading), nameof(PawnCanCurrentlyUseVerb))),
+                new(OpCodes.Brtrue_S, label)
             };
             list3.AddRange(list2);
             list.InsertRange(idx4 + 1, list3);
@@ -184,29 +187,6 @@ namespace Reloading
                     }
                 }
             }
-        }
-
-        public static void DoPatches()
-        {
-            if (harm != null) return;
-
-            harm = new Harmony("legodude17.reloading");
-
-            harm.Patch(AccessTools.Method(typeof(FloatMenuMakerMap), "AddHumanlikeOrders"), postfix: ReloadingFloatMenuAdder.Method);
-            harm.Patch(AccessTools.Method(typeof(VerbTracker), "CreateVerbTargetCommand"), ReloadingGizmos.Create);
-            var type = typeof(JobDriver_AttackStatic).GetNestedType("<>c__DisplayClass4_0", BindingFlags.NonPublic);
-            thisPropertyInfo = type.GetField("<>4__this", BindingFlags.Public | BindingFlags.Instance);
-            harm.Patch(type.GetMethod("<MakeNewToils>b__1", BindingFlags.NonPublic | BindingFlags.Instance),
-                transpiler: new HarmonyMethod(AccessTools.Method(GetType(), nameof(EndJobIfVerbNotAvailable))));
-            harm.Patch(AccessTools.Method(typeof(Stance_Busy), "Expire"),
-                postfix: new HarmonyMethod(GetType(), nameof(ReloadWeaponIfEndingCooldown)));
-            harm.Patch(AccessTools.Method(typeof(PawnInventoryGenerator), "GenerateInventoryFor"),
-                postfix: new HarmonyMethod(GetType(), nameof(GenerateAdditionalAmmo)));
-            harm.Patch(AccessTools.Method(typeof(JobDriver_Hunt), "MakeNewToils"),
-                postfix: new HarmonyMethod(GetType(), nameof(MakeNewToils_Postfix)));
-            harm.Patch(AccessTools.Method(typeof(WorkGiver_HunterHunt), nameof(WorkGiver_HunterHunt.HasHuntingWeapon)),
-                new HarmonyMethod(GetType(), nameof(HasHuntingWeapon_Postfix)));
-            harm.Patch(AccessTools.Method(Type.GetType("MVCF.Utilities.PawnVerbGizmoUtility, MVCF"), "GetGizmosForVerb"), postfix: ReloadingGizmos.Use);
         }
     }
 }

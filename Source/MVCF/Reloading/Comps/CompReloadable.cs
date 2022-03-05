@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MVCF;
+using MVCF.Reloading;
 using Verse;
 using Verse.Sound;
 
@@ -29,15 +31,9 @@ namespace Reloading
             return ammo.SplitOff(shotsToFill * ItemsPerShot);
         }
 
-        public virtual int ReloadTicks(Thing ammo)
-        {
-            return ammo == null ? 0 : (Props.ReloadTimePerShot * ShotsToReload(ammo)).SecondsToTicks();
-        }
+        public virtual int ReloadTicks(Thing ammo) => ammo == null ? 0 : (Props.ReloadTimePerShot * ShotsToReload(ammo)).SecondsToTicks();
 
-        public virtual bool NeedsReload()
-        {
-            return ShotsRemaining < MaxShots;
-        }
+        public virtual bool NeedsReload() => ShotsRemaining < MaxShots;
 
         public virtual bool CanReloadFrom(Thing ammo)
         {
@@ -70,10 +66,7 @@ namespace Reloading
             ShotsRemaining = Props.StartLoaded ? Props.MaxShots : 0;
         }
 
-        private int ShotsToReload(Thing ammo)
-        {
-            return Math.Min(ammo.stackCount / ItemsPerShot, MaxShots - ShotsRemaining);
-        }
+        private int ShotsToReload(Thing ammo) => Math.Min(ammo.stackCount / ItemsPerShot, MaxShots - ShotsRemaining);
 
         public override void PostExposeData()
         {
@@ -83,12 +76,10 @@ namespace Reloading
             ShotsRemaining = sr;
         }
 
-        public override string CompInspectStringExtra()
-        {
-            return base.CompInspectStringExtra() + (ShotsRemaining == 0
+        public override string CompInspectStringExtra() =>
+            base.CompInspectStringExtra() + (ShotsRemaining == 0
                 ? "Reloading.NoAmmo".Translate()
                 : "Reloading.Ammo".Translate(ShotsRemaining, Props.MaxShots));
-        }
     }
 
     public class CompProperties_Reloadable : CompProperties
@@ -121,7 +112,7 @@ namespace Reloading
         public override void PostLoadSpecial(ThingDef parent)
         {
             base.PostLoadSpecial(parent);
-            HarmonyPatches.DoPatches();
+            Base.EnabledFeatures.Add("Reloading");
             ref var type = ref TargetVerb(parent).verbClass;
             if (NewVerbClass != null) type = NewVerbClass;
             ReloadingMod.RegisterVerb(type, PatchFirstFound);

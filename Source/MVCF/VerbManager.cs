@@ -137,36 +137,27 @@ namespace MVCF
                 return;
             }
 
-            ManagedVerb mv;
-            if (props is {canFireIndependently: true})
+            var mv = props switch
             {
-                TurretVerb tv;
-                if (props.managedClass != null)
-                    tv = (TurretVerb) Activator.CreateInstance(props.managedClass, verb, source, props, this);
-                else tv = new TurretVerb(verb, source, props, this);
+                {managedClass: { } type} => (ManagedVerb) Activator.CreateInstance(type, verb, source, props, this),
+                {canFireIndependently: true} => new TurretVerb(verb, source, props, this),
+                {draw: true} => new DrawnVerb(verb, source, props, this),
+                _ => new ManagedVerb(verb, source, props, this)
+            };
 
-                if (Pawn.Spawned) tv.CreateCaster();
-                mv = tv;
-            }
-            else
-            {
-                if (props?.managedClass != null)
-                    mv = (ManagedVerb) Activator.CreateInstance(props.managedClass, verb, source, props, this);
-                else
-                    mv = new ManagedVerb(verb, source, props, this);
-            }
+            if (Pawn.Spawned && mv is TurretVerb tv) tv.CreateCaster();
 
-            if (props is {draw: true}) drawVerbs.Add(mv);
-            if (mv.NeedsTicking)
-            {
-                if (tickVerbs.Count == 0)
+            if (props is {draw: true})
+                if (mv.NeedsTicking)
                 {
-                    NeedsTicking = true;
-                    WorldComponent_MVCF.GetComp().TickManagers.Add(new System.WeakReference<VerbManager>(this));
-                }
+                    if (tickVerbs.Count == 0)
+                    {
+                        NeedsTicking = true;
+                        WorldComponent_MVCF.GetComp().TickManagers.Add(new System.WeakReference<VerbManager>(this));
+                    }
 
-                tickVerbs.Add(mv);
-            }
+                    tickVerbs.Add(mv);
+                }
 
             verbs.Add(mv);
             RecalcSearchVerb();

@@ -1,10 +1,8 @@
-﻿// HediffComp_Reloadable.cs by Joshua Bennett
-// 
-// Created 2021-02-06
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MVCF;
+using MVCF.Reloading;
 using Verse;
 using Verse.Sound;
 
@@ -105,7 +103,7 @@ namespace Reloading
         {
             base.ResolveReferences(parent);
             AmmoFilter.ResolveReferences();
-            HarmonyPatches.DoPatches();
+            Base.EnabledFeatures.Add("Reloading");
             var verb = TargetVerb(parent);
             if (verb == null) return;
             if (NewVerbClass != null) verb.verbClass = NewVerbClass;

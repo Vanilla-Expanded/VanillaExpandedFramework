@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
+using MVCF.Utilities;
 using RimWorld;
 using Verse.AI;
 
+// ReSharper disable once CheckNamespace
 namespace Reloading
 {
     internal class JobDriver_ReloadFromInventory : JobDriver
     {
-        public override bool TryMakePreToilReservations(bool errorOnFailed)
-        {
-            return true;
-        }
+        public override bool TryMakePreToilReservations(bool errorOnFailed) => true;
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
@@ -44,7 +43,7 @@ namespace Reloading
                     }
                 }
             };
-            toil.WithProgressBar(TargetIndex.A, () => (float) debugTicksSpentThisToil / (float) reloadTicks);
+            toil.WithProgressBar(TargetIndex.A, () => debugTicksSpentThisToil / (float) reloadTicks);
             yield return toil;
 
             yield return done;

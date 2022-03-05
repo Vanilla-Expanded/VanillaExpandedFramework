@@ -9,7 +9,7 @@ using Verse.AI;
 
 namespace MVCF
 {
-    public class TurretVerb : ManagedVerb
+    public class TurretVerb : DrawnVerb
     {
         private int cooldownTicksLeft;
         private LocalTargetInfo currentTarget = LocalTargetInfo.Invalid;

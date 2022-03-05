@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using MVCF.Reloading;
+using MVCF.Utilities;
 using Verse;
 using Verse.AI;
 
@@ -7,10 +9,7 @@ namespace Reloading
 {
     internal class JobGiver_ReloadFromInventory : ThinkNode_JobGiver
     {
-        public override float GetPriority(Pawn pawn)
-        {
-            return 6.1f;
-        }
+        public override float GetPriority(Pawn pawn) => 6.1f;
 
         protected override Job TryGiveJob(Pawn pawn)
         {

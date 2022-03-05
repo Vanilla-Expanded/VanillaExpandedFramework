@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MVCF.Reloading;
+using MVCF.Utilities;
 using RimWorld;
 using Verse;
 using Verse.AI;
 
+// ReSharper disable once CheckNamespace
 namespace Reloading
 {
     internal class JobGiver_Reload : ThinkNode_JobGiver
     {
-        public override float GetPriority(Pawn pawn)
-        {
-            return 5.9f;
-        }
+        public override float GetPriority(Pawn pawn) => 5.9f;
 
         protected override Job TryGiveJob(Pawn pawn)
         {

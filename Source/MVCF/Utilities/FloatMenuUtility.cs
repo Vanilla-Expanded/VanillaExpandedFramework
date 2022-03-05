@@ -1,22 +1,20 @@
 ﻿using System.Collections.Generic;
-using HarmonyLib;
-using RimWorld;
+using MVCF.Reloading;
+using Reloading;
 using UnityEngine;
 using Verse;
 using Verse.AI;
 
-namespace Reloading
+namespace MVCF.Utilities
 {
-    public static class ReloadingFloatMenuAdder
+    public static class FloatMenuUtility
     {
-        public static HarmonyMethod Method => new HarmonyMethod(typeof(ReloadingFloatMenuAdder), nameof(AddWeaponReloadOrders));
-
         public static void AddWeaponReloadOrders(List<FloatMenuOption> opts, Vector3 clickPos, Pawn pawn)
         {
             var c = IntVec3.FromVector3(clickPos);
 
             foreach (var thing in c.GetThingList(pawn.Map))
-                if (thing.TryGetComp<CompReloadable>() is CompReloadable comp)
+                if (thing.TryGetComp<CompReloadable>() is { } comp)
                 {
                     var text = "Reloading.Unload".Translate(comp.parent.Named("GEAR")) + " (" + comp.ShotsRemaining +
                                "/" +
@@ -27,10 +25,8 @@ namespace Reloading
                         opts.Add(new FloatMenuOption(text, null));
                     }
                     else
-                    {
                         opts.Add(new FloatMenuOption(text,
                             () => pawn.jobs.TryTakeOrderedJob(JobMaker.MakeJob(ReloadingDefOf.Unload, thing))));
-                    }
                 }
 
             foreach (var reloadable in pawn.AllReloadComps())
@@ -61,13 +57,12 @@ namespace Reloading
 
                     if (failed) opts.Add(new FloatMenuOption(text, null));
                     else
-                        opts.Add(FloatMenuUtility.DecoratePrioritizedTask(
+                        opts.Add(RimWorld.FloatMenuUtility.DecoratePrioritizedTask(
                             new FloatMenuOption(text,
                                 () => pawn.jobs.TryTakeOrderedJob(
                                     JobGiver_Reload.MakeReloadJob(reloadable, ammo))), pawn, thing));
                 }
                 else if (thing == pawn)
-                {
                     foreach (var item in pawn.inventory.innerContainer)
                         if (reloadable.CanReloadFrom(item))
                         {
@@ -83,7 +78,6 @@ namespace Reloading
                                         () => pawn.jobs.TryTakeOrderedJob(
                                             JobGiver_ReloadFromInventory.MakeReloadJob(reloadable, item))));
                         }
-                }
         }
     }
 }

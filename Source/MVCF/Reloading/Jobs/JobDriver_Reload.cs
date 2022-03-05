@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using MVCF.Utilities;
 using RimWorld;
 using Verse;
 using Verse.AI;
 using Verse.Sound;
 
+// ReSharper disable once CheckNamespace
 namespace Reloading
 {
     public class JobDriver_Reload : JobDriver
@@ -74,7 +76,7 @@ namespace Reloading
                     reloadSound?.Maintain();
                 }
             };
-            toil.WithProgressBar(TargetIndex.A, () => (float) debugTicksSpentThisToil / (float) reloadTicks);
+            toil.WithProgressBar(TargetIndex.A, () => debugTicksSpentThisToil / (float) reloadTicks);
             yield return toil;
             yield return done;
             yield return Toils_General.Do(() => reloadSound?.End());

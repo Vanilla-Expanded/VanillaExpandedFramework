@@ -1,17 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Reloading;
 using Verse;
 
-namespace Reloading
+namespace MVCF.Commands
 {
-    public class Command_ReloadableVerbTarget : Command_VerbTarget
+    public class Command_ReloadableVerbTarget : Command_VerbTargetExtended
     {
         public IReloadable Reloadable;
 
-        public Command_ReloadableVerbTarget(IReloadable reloadable)
-        {
-            Reloadable = reloadable;
-        }
+        public Command_ReloadableVerbTarget(IReloadable reloadable, ManagedVerb mv) : base(mv) => Reloadable = reloadable;
 
         public override string TopRightLabel => Reloadable.ShotsRemaining + " / " + Reloadable.MaxShots;
 
