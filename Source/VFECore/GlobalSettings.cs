@@ -66,7 +66,12 @@ namespace VFECore
                     PageIndex = 2;
                     WriteSettings();
 
-                }, PageIndex == 2)
+                }, PageIndex == 2),
+                new TabRecord("VEF.WeatherDamages".Translate(), () =>
+                {
+                    PageIndex = 3;
+                    WriteSettings();
+                }, PageIndex == 3)
             };
             TabDrawer.DrawTabs(tabRect, tabs);
 
@@ -80,6 +85,9 @@ namespace VFECore
                     break;
                 case 2:
                     CompSettings(mainRect.ContractedBy(15f));
+                    break;
+                case 3:
+                    WeatherDamageSettings(mainRect.ContractedBy(15f));
                     break;
                 default:
                     break;
@@ -227,6 +235,51 @@ namespace VFECore
             list.CheckboxLabeled("Enable all autumn leaves spawners", ref settings.enableAutumnLeaveSpawners);
             list.End();
         }
+
+        // Weather damage settings
+        private void WeatherDamageSettings(Rect rect)
+        {
+            Listing_Standard list = new Listing_Standard();
+            list.Begin(rect);
+
+            Text.Font = GameFont.Small;
+            foreach (var key in settings.weatherDamagesOptions.Keys.ToList())
+            {
+                var weatherDef = DefDatabase<WeatherDef>.GetNamedSilentFail(key);
+                if (weatherDef != null)
+                {
+                    var extension = weatherDef.GetModExtension<WeatherEffectsExtension>();
+                    if (extension != null)
+                    {
+                        var value = settings.weatherDamagesOptions[key];
+                        list.CheckboxLabeled("VEF.EnableWeatherDamage".Translate(weatherDef.LabelCap), ref value);
+                        settings.weatherDamagesOptions[key] = value;
+                        list.Gap(5);
+                    }
+                }
+            }
+            list.End();
+        }
+    }
+
+    [StaticConstructorOnStartup]
+    public static class ModSettingsHandler
+    {
+        static ModSettingsHandler()
+        {
+            VFEGlobal.settings.weatherDamagesOptions = new Dictionary<string, bool>();
+            foreach (var weatherDef in DefDatabase<WeatherDef>.AllDefs)
+            {
+                var extension = weatherDef.GetModExtension<WeatherEffectsExtension>();
+                if (extension != null)
+                {
+                    if (!VFEGlobal.settings.weatherDamagesOptions.ContainsKey(weatherDef.defName))
+                    {
+                        VFEGlobal.settings.weatherDamagesOptions[weatherDef.defName] = true;
+                    }
+                }
+            }
+        }
     }
 
     public class VFEGlobalSettings : ModSettings
@@ -239,17 +292,18 @@ namespace VFECore
 
         public bool enableLeaveSpawners = true;
         public bool enableAutumnLeaveSpawners = true;
-
+        public Dictionary<string, bool> weatherDamagesOptions = new Dictionary<string, bool>();
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Collections.Look(ref toggablePatch, "toggablePatch", LookMode.Value);
+            Scribe_Collections.Look(ref toggablePatch, "toggablePatch", LookMode.Value, LookMode.Value);
             Scribe_Values.Look(ref enableVerboseLogging, "enableVerboseLogging", false);
             Scribe_Values.Look(ref disableCaching, "disableCaching", true);
             Scribe_Values.Look(ref isRandomGraphic, "isRandomGraphic", true, true);
             Scribe_Values.Look(ref hideRandomizeButton, "hideRandomizeButton", false, true);
             Scribe_Values.Look(ref enableLeaveSpawners, "enableLeaveSpawners", true, true);
             Scribe_Values.Look(ref enableAutumnLeaveSpawners, "enableAutumnLeaveSpawners", true, true);
+            Scribe_Collections.Look(ref weatherDamagesOptions, "weatherDamagesOptions", LookMode.Value, LookMode.Value);
         }
     }
 }

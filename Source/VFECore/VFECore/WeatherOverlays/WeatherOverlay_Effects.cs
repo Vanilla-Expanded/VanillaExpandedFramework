@@ -11,6 +11,10 @@ namespace VFECore
         public override void TickOverlay(Map map)
         {
             base.TickOverlay(map);
+            if (VFEGlobal.settings.weatherDamagesOptions.TryGetValue(map.weatherManager.curWeather.defName, out var option) && !option)
+            {
+                return;
+            }
             var options = map.weatherManager.curWeather.GetModExtension<WeatherEffectsExtension>();
             if (options != null)
             {
