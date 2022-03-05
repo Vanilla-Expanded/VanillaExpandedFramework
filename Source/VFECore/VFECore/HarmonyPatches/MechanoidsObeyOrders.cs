@@ -87,26 +87,36 @@ namespace VFE.Mechanoids.HarmonyPatches
 		{
 			if (PeteTimesSix.SimpleSidearms.Extensions.IsValidSidearmsCarrier(__instance) && __instance.equipment != null && __instance.inventory != null)
 			{
-				IEnumerable<ThingWithComps> carriedWeapons = PeteTimesSix.SimpleSidearms.Extensions.getCarriedWeapons(__instance, includeEquipped: true, includeTools: true);
-				SimpleSidearms.rimworld.CompSidearmMemory pawnMemory = SimpleSidearms.rimworld.CompSidearmMemory.GetMemoryCompForPawn(__instance);
-				if (pawnMemory != null)
-				{
-					List<SimpleSidearms.rimworld.ThingDefStuffDefPair> rangedWeaponMemories = new List<SimpleSidearms.rimworld.ThingDefStuffDefPair>();
-					List<SimpleSidearms.rimworld.ThingDefStuffDefPair> meleeWeaponMemories = new List<SimpleSidearms.rimworld.ThingDefStuffDefPair>();
-					foreach (SimpleSidearms.rimworld.ThingDefStuffDefPair weapon in pawnMemory.RememberedWeapons)
-					{
-						if (weapon.thing.IsMeleeWeapon)
-						{
-							meleeWeaponMemories.Add(weapon);
-						}
-						else if (weapon.thing.IsRangedWeapon)
-						{
-							rangedWeaponMemories.Add(weapon);
-						}
-					}
-					yield return new SimpleSidearms.rimworld.Gizmo_SidearmsList(__instance, carriedWeapons, pawnMemory.RememberedWeapons);
-				}
+				var gizmo = GetSimpleSidearmsGizmo(__instance);
+				if (gizmo != null)
+                {
+					yield return gizmo;
+                }
 			}
+		}
+
+		public static Gizmo GetSimpleSidearmsGizmo(Pawn __instance)
+        {
+			IEnumerable<ThingWithComps> carriedWeapons = PeteTimesSix.SimpleSidearms.Extensions.getCarriedWeapons(__instance, includeEquipped: true, includeTools: true);
+			SimpleSidearms.rimworld.CompSidearmMemory pawnMemory = SimpleSidearms.rimworld.CompSidearmMemory.GetMemoryCompForPawn(__instance);
+			if (pawnMemory != null)
+			{
+				List<SimpleSidearms.rimworld.ThingDefStuffDefPair> rangedWeaponMemories = new List<SimpleSidearms.rimworld.ThingDefStuffDefPair>();
+				List<SimpleSidearms.rimworld.ThingDefStuffDefPair> meleeWeaponMemories = new List<SimpleSidearms.rimworld.ThingDefStuffDefPair>();
+				foreach (SimpleSidearms.rimworld.ThingDefStuffDefPair weapon in pawnMemory.RememberedWeapons)
+				{
+					if (weapon.thing.IsMeleeWeapon)
+					{
+						meleeWeaponMemories.Add(weapon);
+					}
+					else if (weapon.thing.IsRangedWeapon)
+					{
+						rangedWeaponMemories.Add(weapon);
+					}
+				}
+				return new SimpleSidearms.rimworld.Gizmo_SidearmsList(__instance, carriedWeapons, pawnMemory.RememberedWeapons);
+			}
+			return null;
 		}
 		public static bool GetMemoryCompForPawnPrefix(ref object __result, Pawn pawn, bool fillExistingIfCreating = true)
 		{
@@ -210,60 +220,12 @@ namespace VFE.Mechanoids.HarmonyPatches
 							}
 						}
 						__result.Add(item6);
+						if (SimpleSidearmsPatch.SimpleSidearmsActive)
+						{
+							AppendSidearmsOptions(pawn, equipment, ref __result);
+						}
 					}
 
-					if (SimpleSidearmsPatch.SimpleSidearmsActive)
-                    {
-						try
-						{
-							List<Thing> thingList = c.GetThingList(pawn.Map);
-							for (int i = 0; i < thingList.Count; i++)
-							{
-								if (thingList[i].TryGetComp<CompEquippable>() != null)
-								{
-									equipment = (ThingWithComps)thingList[i];
-									break;
-								}
-							}
-							if (equipment == null)
-							{
-								return;
-							}
-							string labelShort = equipment.LabelShort;
-							if (!pawn.CanReach(new LocalTargetInfo(equipment), PathEndMode.ClosestTouch, Danger.Deadly) || !pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation) || !equipment.def.IsWeapon || equipment.IsBurning() || pawn.IsQuestLodger())
-							{
-								return;
-							}
-							FloatMenuOption item3;
-							if (!PeteTimesSix.SimpleSidearms.Utilities.StatCalculator.canCarrySidearmInstance(equipment, pawn, out var errStr))
-							{
-								"CannotEquip".Translate();
-								item3 = new FloatMenuOption("CannotEquip".Translate(labelShort) + " (" + errStr + ")", null);
-								__result.Add(item3);
-								return;
-							}
-							string text2 = "Equip".Translate(labelShort);
-							text2 = (((pawn.CombinedDisabledWorkTags & WorkTags.Violent) == 0 && !PeteTimesSix.SimpleSidearms.Extensions.isToolNotWeapon
-								(PeteTimesSix.SimpleSidearms.Extensions.toThingDefStuffDefPair(equipment))) ? ((string)(text2 + "AsSidearm".Translate())) : ((string)(text2 + "AsTool".Translate())));
-							if (equipment.def.IsRangedWeapon && pawn.story != null && pawn.story.traits.HasTrait(TraitDefOf.Brawler))
-							{
-								text2 = text2 + " " + "EquipWarningBrawler".Translate();
-							}
-							item3 = FloatMenuUtility.DecoratePrioritizedTask(new FloatMenuOption(text2, delegate
-							{
-								equipment.SetForbidden(value: false);
-								pawn.jobs.TryTakeOrderedJob(JobMaker.MakeJob(SimpleSidearms.rimworld.SidearmsDefOf.EquipSecondary, equipment), JobTag.Misc);
-								PlayerKnowledgeDatabase.KnowledgeDemonstrated(SimpleSidearms.rimworld.SidearmsDefOf.Concept_SimpleSidearmsBasic, KnowledgeAmount.SmallInteraction);
-							}, MenuOptionPriority.High), pawn, equipment);
-							__result.Add(item3);
-						}
-						catch (Exception e)
-						{
-							Log.Error("Exception during SimpleSidearms floatmenumaker intercept. Cancelling intercept. Exception: " + e.ToString());
-						}
-
-
-					}
 					void Equip()
 					{
 						equipment.SetForbidden(value: false);
@@ -274,6 +236,44 @@ namespace VFE.Mechanoids.HarmonyPatches
 				}
             }
         }
+
+		public static void AppendSidearmsOptions(Pawn pawn, ThingWithComps equipment, ref List<FloatMenuOption> __result)
+        {
+			try
+			{
+				string labelShort = equipment.LabelShort;
+				if (!pawn.CanReach(new LocalTargetInfo(equipment), PathEndMode.ClosestTouch, Danger.Deadly) || !pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation) || !equipment.def.IsWeapon || equipment.IsBurning() || pawn.IsQuestLodger())
+				{
+					return;
+				}
+				FloatMenuOption item3;
+				if (!PeteTimesSix.SimpleSidearms.Utilities.StatCalculator.canCarrySidearmInstance(equipment, pawn, out var errStr))
+				{
+					"CannotEquip".Translate();
+					item3 = new FloatMenuOption("CannotEquip".Translate(labelShort) + " (" + errStr + ")", null);
+					__result.Add(item3);
+					return;
+				}
+				string text2 = "Equip".Translate(labelShort);
+				text2 = (((pawn.CombinedDisabledWorkTags & WorkTags.Violent) == 0 && !PeteTimesSix.SimpleSidearms.Extensions.isToolNotWeapon
+					(PeteTimesSix.SimpleSidearms.Extensions.toThingDefStuffDefPair(equipment))) ? ((string)(text2 + "AsSidearm".Translate())) : ((string)(text2 + "AsTool".Translate())));
+				if (equipment.def.IsRangedWeapon && pawn.story != null && pawn.story.traits.HasTrait(TraitDefOf.Brawler))
+				{
+					text2 = text2 + " " + "EquipWarningBrawler".Translate();
+				}
+				item3 = FloatMenuUtility.DecoratePrioritizedTask(new FloatMenuOption(text2, delegate
+				{
+					equipment.SetForbidden(value: false);
+					pawn.jobs.TryTakeOrderedJob(JobMaker.MakeJob(SimpleSidearms.rimworld.SidearmsDefOf.EquipSecondary, equipment), JobTag.Misc);
+					PlayerKnowledgeDatabase.KnowledgeDemonstrated(SimpleSidearms.rimworld.SidearmsDefOf.Concept_SimpleSidearmsBasic, KnowledgeAmount.SmallInteraction);
+				}, MenuOptionPriority.High), pawn, equipment);
+				__result.Add(item3);
+			}
+			catch (Exception e)
+			{
+				Log.Error("Exception during SimpleSidearms floatmenumaker intercept. Cancelling intercept. Exception: " + e.ToString());
+			}
+		}
     }
 
     [HarmonyPatch(typeof(WanderUtility), "GetColonyWanderRoot")]
