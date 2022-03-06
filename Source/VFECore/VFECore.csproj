@@ -446,6 +446,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompHediffEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompHighlyFlammable.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompInfecter.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompInitialAbility.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompInitialHediff.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompLightSustenance.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompMetamorphosis.cs" />
@@ -454,6 +455,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompNoFilth.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompPassiveRegenerator.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompPawnOverlay.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_InitialAbility.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DieAndChangeIntoOtherDef.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ApplyHediffWhenBound.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AcidImmunity.cs" />
