@@ -11,6 +11,7 @@ namespace AnimalBehaviours
 
         public int electroRate = 0;
         public int electroRadius = 0;
+        public int electroChargeAmount = 1;
         public List<string> batteriesToAffect = null;
 
         public CompProperties_Electrified()
