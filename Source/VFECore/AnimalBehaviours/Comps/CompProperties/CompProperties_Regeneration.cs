@@ -8,6 +8,8 @@ namespace AnimalBehaviours
         //A very simple class that regenerates wounds
 
         public int rateInTicks = 1000;
+        public float healAmount = 0.1f;
+        public bool healAll = true;
 
         public CompProperties_Regeneration()
         {
