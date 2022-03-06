@@ -9,7 +9,14 @@ namespace MVCF.Commands
     {
         public IReloadable Reloadable;
 
-        public Command_ReloadableVerbTarget(IReloadable reloadable, ManagedVerb mv) : base(mv) => Reloadable = reloadable;
+        public Command_ReloadableVerbTarget(IReloadable reloadable, ManagedVerb mv) : base(mv)
+        {
+            Reloadable = reloadable;
+            if (reloadable.ShotsRemaining < verb.verbProps.burstShotCount)
+                Disable("CommandReload_NoAmmo".Translate("ammo".Named("CHARGENOUN"),
+                    reloadable.AmmoExample.Named("AMMO"),
+                    ((reloadable.MaxShots - reloadable.ShotsRemaining) * reloadable.ItemsPerShot).Named("COUNT")));
+        }
 
         public override string TopRightLabel => Reloadable.ShotsRemaining + " / " + Reloadable.MaxShots;
 

@@ -7,13 +7,13 @@ namespace Reloading
 {
     public class CompChangeableAmmo : CompReloadable, IThingHolder
     {
-        private readonly ThingOwner<Thing> loadedAmmo = new ThingOwner<Thing>();
+        private readonly ThingOwner<Thing> loadedAmmo = new();
 
         private Thing nextAmmoItem;
 
         public override ThingDef CurrentProjectile => nextAmmoItem?.def?.projectileWhenLoaded;
 
-        public IEnumerable<Pair<ThingDef, Action>> AmmoOptions =>
+        public virtual IEnumerable<Pair<ThingDef, Action>> AmmoOptions =>
             loadedAmmo.Select(t => new Pair<ThingDef, Action>(t.def, () => { nextAmmoItem = t; }));
 
         public void GetChildHolders(List<IThingHolder> outChildren)
@@ -21,16 +21,13 @@ namespace Reloading
             ThingOwnerUtility.AppendThingHoldersFromThings(outChildren, loadedAmmo);
         }
 
-        public ThingOwner GetDirectlyHeldThings()
-        {
-            return loadedAmmo;
-        }
+        public ThingOwner GetDirectlyHeldThings() => loadedAmmo;
 
         public override Thing Reload(Thing ammo)
         {
             var t = base.Reload(ammo);
             loadedAmmo.TryAddOrTransfer(t);
-            if (nextAmmoItem == null) nextAmmoItem = t;
+            nextAmmoItem ??= t;
             return null;
         }
 
