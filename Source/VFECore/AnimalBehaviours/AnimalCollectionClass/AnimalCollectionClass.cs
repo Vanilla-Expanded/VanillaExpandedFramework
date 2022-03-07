@@ -24,6 +24,9 @@ namespace AnimalBehaviours
         // A list of animals that don't flee for combat for CompProperties_DoesntFlee
         public static HashSet<Thing> nofleeing_animals = new HashSet<Thing>();
 
+        // A list of animals that can use abilities
+        public static HashSet<Thing> abilityUsing_animals = new HashSet<Thing>();
+
         // A list of animals that don't produce filth for CompProperties_NoFilth
         public static HashSet<Thing> nofilth_animals = new HashSet<Thing>();
 
@@ -40,6 +43,11 @@ namespace AnimalBehaviours
         public static bool IsDraftableAnimal(this Pawn pawn)
         {
             return draftable_animals.Contains(pawn);
+        }
+
+        public static bool IsAbilityUserAnimal(this Pawn pawn)
+        {
+            return abilityUsing_animals.Contains(pawn);
         }
 
         public static bool IsDraftableControllableAnimal(this Pawn pawn)
@@ -60,6 +68,24 @@ namespace AnimalBehaviours
             if (draftable_animals.Contains(thing))
             {
                 draftable_animals.Remove(thing);
+            }
+
+        }
+
+        public static void AddAbilityUsingAnimalToList(Thing thing)
+        {
+
+            if (!abilityUsing_animals.Contains(thing))
+            {
+                abilityUsing_animals.Add(thing);
+            }
+        }
+
+        public static void RemoveAbilityUsingFromList(Thing thing)
+        {
+            if (abilityUsing_animals.Contains(thing))
+            {
+                abilityUsing_animals.Remove(thing);
             }
 
         }

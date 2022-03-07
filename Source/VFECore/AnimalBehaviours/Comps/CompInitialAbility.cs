@@ -40,6 +40,25 @@ namespace AnimalBehaviours
                 addHediffOnce = false;
             }
         }
+        public override void PostSpawnSetup(bool respawningAfterLoad)
+        {
+
+            AnimalCollectionClass.AddAbilityUsingAnimalToList(this.parent);
+           
+
+        }
+
+        public override void PostDeSpawn(Map map)
+        {
+            AnimalCollectionClass.RemoveAbilityUsingFromList(this.parent);
+           
+        }
+
+        public override void PostDestroy(DestroyMode mode, Map previousMap)
+        {
+            AnimalCollectionClass.RemoveAbilityUsingFromList(this.parent);
+           
+        }
     }
 }
 
