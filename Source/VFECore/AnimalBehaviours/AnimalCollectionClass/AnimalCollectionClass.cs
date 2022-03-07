@@ -33,6 +33,9 @@ namespace AnimalBehaviours
         // A list of animals that eat weird things to cache them for CompProperties_EatWeirdFood and its Harmony patch
         public static HashSet<Thing> weirdeEaters_animals = new HashSet<Thing>();
 
+        // A list of animals for ComLastStand    
+        public static IDictionary<Thing, float> lastStand_animals = new Dictionary<Thing, float>();
+
         // A list of Salamander graphic paths    
         public static IDictionary<Thing, string> salamander_graphics = new Dictionary<Thing, string>();
 
@@ -48,6 +51,16 @@ namespace AnimalBehaviours
         public static bool IsAbilityUserAnimal(this Pawn pawn)
         {
             return abilityUsing_animals.Contains(pawn);
+        }
+
+        public static bool IsLastStandAnimal(this Pawn pawn)
+        {
+            return lastStand_animals.ContainsKey(pawn);
+        }
+
+        public static float LastStandAnimalRate(this Pawn pawn)
+        {
+            return lastStand_animals[pawn];
         }
 
         public static bool IsDraftableControllableAnimal(this Pawn pawn)
@@ -68,6 +81,25 @@ namespace AnimalBehaviours
             if (draftable_animals.Contains(thing))
             {
                 draftable_animals.Remove(thing);
+            }
+
+        }
+
+        public static void AddLastStandAnimalToList(Thing thing, float rate)
+        {
+
+            if (!lastStand_animals.ContainsKey(thing))
+            {
+                lastStand_animals.Add(thing,rate);
+                
+            }
+        }
+
+        public static void RemoveLastStandAnimalFromList(Thing thing)
+        {
+            if (lastStand_animals.ContainsKey(thing))
+            {
+                lastStand_animals.Remove(thing);
             }
 
         }

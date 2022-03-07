@@ -448,6 +448,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompInfecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompInitialAbility.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompInitialHediff.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompLastStand.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompLightSustenance.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompMetamorphosis.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompMindEffecter.cs" />
@@ -461,6 +462,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AcidImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_CauseIncident.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DiseasesAfterPeriod.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_LastStand.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_NoFilth.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DoesntFlee.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Draftable.cs" />
@@ -551,6 +553,7 @@
     <Compile Include="AnimalBehaviours\Harmony\Pawn_PathFollower_CostToMoveIntoCell_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\IncidentWorker_SelfTame_Candidates_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Infocard\ThingDef_SpecialDisplayStats_Patch.cs" />
+    <Compile Include="AnimalBehaviours\Harmony\VerbProperties_AdjustedCooldown_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\WildAnimalSpawner_SpawnRandomWildAnimalAt.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_AutoPermanentInjury.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Draftable.cs" />
