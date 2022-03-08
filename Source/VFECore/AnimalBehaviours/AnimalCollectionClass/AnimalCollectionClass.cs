@@ -50,7 +50,7 @@ namespace AnimalBehaviours
 
         public static bool IsAbilityUserAnimal(this Pawn pawn)
         {
-            return abilityUsing_animals.Contains(pawn);
+            return abilityUsing_animals.Contains(pawn)&&pawn.Faction?.IsPlayer==true && pawn.MentalState is null;
         }
 
         public static bool IsLastStandAnimal(this Pawn pawn)
