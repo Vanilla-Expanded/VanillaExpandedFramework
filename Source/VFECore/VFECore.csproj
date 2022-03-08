@@ -454,8 +454,10 @@
     <Compile Include="AnimalBehaviours\Comps\CompMindEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompNearbyEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompNoFilth.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompNoTamingDecay.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompPassiveRegenerator.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompPawnOverlay.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_NoTamingDecay.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_InitialAbility.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DieAndChangeIntoOtherDef.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ApplyHediffWhenBound.cs" />
@@ -553,6 +555,7 @@
     <Compile Include="AnimalBehaviours\Harmony\Pawn_PathFollower_CostToMoveIntoCell_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\IncidentWorker_SelfTame_Candidates_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Infocard\ThingDef_SpecialDisplayStats_Patch.cs" />
+    <Compile Include="AnimalBehaviours\Harmony\TrainableUtility_TamenessCanDecay_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\VerbProperties_AdjustedCooldown_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\WildAnimalSpawner_SpawnRandomWildAnimalAt.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_AutoPermanentInjury.cs" />

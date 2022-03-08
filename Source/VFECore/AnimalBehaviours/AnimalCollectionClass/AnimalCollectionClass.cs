@@ -33,6 +33,9 @@ namespace AnimalBehaviours
         // A list of animals that eat weird things to cache them for CompProperties_EatWeirdFood and its Harmony patch
         public static HashSet<Thing> weirdeEaters_animals = new HashSet<Thing>();
 
+        // A list of animals that don't have taming decay
+        public static HashSet<ThingDef> notamingdecay_animals = new HashSet<ThingDef>();
+
         // A list of animals for ComLastStand    
         public static IDictionary<Thing, float> lastStand_animals = new Dictionary<Thing, float>();
 
@@ -157,6 +160,29 @@ namespace AnimalBehaviours
                 floating_animals.Remove(thing);
             }
 
+        }
+
+        public static void AddNoTamingDecayAnimalToList(ThingDef thing)
+        {
+
+            if (!notamingdecay_animals.Contains(thing))
+            {
+                notamingdecay_animals.Add(thing);
+            }
+        }
+
+        public static void RemoveNoTamingDecayAnimalFromList(ThingDef thing)
+        {
+            if (notamingdecay_animals.Contains(thing))
+            {
+                notamingdecay_animals.Remove(thing);
+            }
+
+        }
+
+        public static bool IsNoTamingDecayAnimal(this ThingDef pawn)
+        {
+            return notamingdecay_animals.Contains(pawn);
         }
 
         public static void AddNoFilthAnimalToList(Thing thing)
