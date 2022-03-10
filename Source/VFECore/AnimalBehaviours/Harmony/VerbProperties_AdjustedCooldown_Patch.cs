@@ -27,14 +27,18 @@ namespace AnimalBehaviours
         public static void LastStand(Tool tool, Pawn attacker, Thing equipment, ref float __result)
 
         {
-            if (AnimalCollectionClass.IsLastStandAnimal(attacker)) {
-                float health = attacker.health.summaryHealth.SummaryHealthPercent;
-                float factor = ((AnimalCollectionClass.LastStandAnimalRate(attacker) - 1) * (1-health)) + 1;
+            if (attacker != null) {
+                if (AnimalCollectionClass.IsLastStandAnimal(attacker))
+                {
+                    float health = attacker.health.summaryHealth.SummaryHealthPercent;
+                    float factor = ((AnimalCollectionClass.LastStandAnimalRate(attacker) - 1) * (1 - health)) + 1;
 
-                __result = __result / factor;
+                    __result = __result / factor;
 
 
+                }
             }
+            
 
         }
     }
