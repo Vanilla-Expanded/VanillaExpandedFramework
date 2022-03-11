@@ -15,7 +15,7 @@ namespace Reloading
 
         public virtual IEnumerable<VerbCompProperties> GetCompsFor(VerbProperties verbProps)
         {
-            if (Props.VerbLabel is null || verbProps.label == Props.VerbLabel)
+            if (Props.VerbLabel is null && !verbProps.IsMeleeAttack || verbProps.label == Props.VerbLabel)
                 yield return new VerbCompProperties_Reloadable
                 {
                     AmmoFilter = Props.AmmoFilter,

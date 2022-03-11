@@ -59,7 +59,7 @@ namespace MVCF.Features
                 CodeInstruction.Call(typeof(ManagedVerbUtility), nameof(ManagedVerbUtility.Managed)),
                 new CodeInstruction(OpCodes.Dup),
                 new CodeInstruction(OpCodes.Brfalse, label),
-                CodeInstruction.Call(typeof(ManagedVerb), nameof(ManagedVerb.Notify_ProjectileFired)),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(ManagedVerb), nameof(ManagedVerb.Notify_ProjectileFired))),
                 new CodeInstruction(OpCodes.Br, label2),
                 new CodeInstruction(OpCodes.Pop).WithLabels(label)
             });

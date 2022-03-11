@@ -10,6 +10,8 @@ namespace MVCF
 {
     public class VerbWithComps : ManagedVerb
     {
+        public override bool NeedsTicking => base.NeedsTicking || AllComps.Any(comp => comp.NeedsTicking);
+
         public override void Initialize(Verb verb, AdditionalVerbProps props, IEnumerable<VerbCompProperties> additionalComps)
         {
             base.Initialize(verb, props, additionalComps);
@@ -44,6 +46,9 @@ namespace MVCF
 
             return command;
         }
+
+        public override IEnumerable<CommandPart> GetCommandParts(Command_VerbTargetExtended command) =>
+            base.GetCommandParts(command).Concat(AllComps.SelectMany(comp => comp.GetCommandParts(command)));
 
         protected override Command_VerbTargetExtended GetTargetCommand(Thing ownerThing)
         {

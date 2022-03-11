@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MVCF.Commands;
 using MVCF.Comps;
 using MVCF.VerbComps;
+using UnityEngine;
 using Verse;
 using Verse.Sound;
 
@@ -17,6 +19,15 @@ namespace MVCF.Reloading.Comps
         {
             base.PostExposeData();
             Scribe_Values.Look(ref ShotsRemaining, "shotsRemaining");
+        }
+
+        public override IEnumerable<CommandPart> GetCommandParts(Command_VerbTargetExtended command)
+        {
+            yield return new CommandPart_Reloadable
+            {
+                parent = command,
+                Reloadable = this
+            };
         }
 
         public virtual Thing Reload(Thing ammo)
@@ -58,9 +69,6 @@ namespace MVCF.Reloading.Comps
             ShotsRemaining = Props.StartLoaded ? Props.MaxShots : 0;
         }
 
-        public override Command_VerbTargetExtended OverrideTargetCommand(Command_VerbTargetExtended old) =>
-            new Command_ReloadableVerbTarget(this, old.managedVerb, old.owner);
-
         public override void Notify_ShotFired()
         {
             base.Notify_ShotFired();
@@ -68,6 +76,34 @@ namespace MVCF.Reloading.Comps
         }
 
         public override bool Available() => ShotsRemaining >= (parent.Verb.Bursting ? 0 : parent.Verb.verbProps.burstShotCount);
+    }
+
+    public class CommandPart_Reloadable : CommandPart
+    {
+        public VerbComp_Reloadable Reloadable;
+
+        public override void PostInit()
+        {
+            base.PostInit();
+            if (Reloadable.ShotsRemaining < parent.verb.verbProps.burstShotCount)
+                parent.Disable("CommandReload_NoAmmo".Translate("ammo".Named("CHARGENOUN"),
+                    Reloadable.Props.AmmoFilter.AnyAllowedDef.Named("AMMO"),
+                    ((Reloadable.Props.MaxShots - Reloadable.ShotsRemaining) * Reloadable.Props.ItemsPerShot).Named("COUNT")));
+        }
+
+        public override void ModifyInfo(ref string label, ref string topRightLabel, ref string desc, ref Texture2D icon)
+        {
+            base.ModifyInfo(ref label, ref topRightLabel, ref desc, ref icon);
+            topRightLabel = Reloadable.ShotsRemaining + " / " + Reloadable.Props.MaxShots;
+        }
+
+        public override IEnumerable<FloatMenuOption> GetRightClickOptions()
+        {
+            if (Reloadable is VerbComp_Reloadable_ChangeableAmmo ccwa)
+                foreach (var option in ccwa.AmmoOptions.Select(pair =>
+                    new FloatMenuOption(pair.First.LabelCap, pair.Second)))
+                    yield return option;
+        }
     }
 
     public class VerbCompProperties_Reloadable : VerbCompProperties

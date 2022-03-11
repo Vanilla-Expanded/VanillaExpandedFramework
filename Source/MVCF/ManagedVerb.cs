@@ -35,7 +35,7 @@ namespace MVCF
             set => enabledInt = value;
         }
 
-        public virtual bool NeedsTicking => AllComps.Any(comp => comp.NeedsTicking);
+        public virtual bool NeedsTicking => false;
 
         public void ExposeData()
         {
@@ -78,6 +78,11 @@ namespace MVCF
 
         public virtual void Notify_ProjectileFired()
         {
+        }
+
+        public virtual IEnumerable<CommandPart> GetCommandParts(Command_VerbTargetExtended command)
+        {
+            yield break;
         }
 
         public virtual void ModifyProjectile(ref ThingDef projectile)

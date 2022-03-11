@@ -1,4 +1,6 @@
-﻿using MVCF.Utilities;
+﻿using System.Collections.Generic;
+using System.Linq;
+using MVCF.Utilities;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -10,17 +12,19 @@ namespace MVCF.Commands
     [StaticConstructorOnStartup]
     public class Command_VerbTargetExtended : Command_VerbTarget
     {
-        public static readonly Texture2D CooldownTex =
-            SolidColorMaterials.NewSolidColorTexture(new Color(1f, 1f, 1f, 0.1f));
+        public static readonly Texture2D CooldownTex = SolidColorMaterials.NewSolidColorTexture(new Color(1f, 1f, 1f, 0.1f));
+        private readonly List<CommandPart> parts;
 
         public ManagedVerb managedVerb;
         public Thing owner;
+        private readonly string topRightLabel;
 
         public Command_VerbTargetExtended(ManagedVerb mv, Thing ownerThing = null)
         {
             managedVerb = mv;
             verb = mv.Verb;
             owner = ownerThing;
+            parts = mv.GetCommandParts(this).ToList();
             if (ownerThing != null)
             {
                 defaultDesc = PawnVerbGizmoUtility.FirstNonEmptyString(mv.Props?.description, ownerThing.def.LabelCap + ": " +
@@ -43,6 +47,8 @@ namespace MVCF.Commands
             tutorTag = "VerbTarget";
             defaultLabel = verb.Label(mv.Props);
 
+            for (var i = 0; i < parts.Count; i++) parts[i].ModifyInfo(ref defaultLabel, ref topRightLabel, ref defaultDesc, ref icon);
+
             if (verb.Caster.Faction != Faction.OfPlayer)
                 Disable("CannotOrderNonControlled".Translate());
             else if (verb.CasterIsPawn && verb.verbProps.violent && verb.CasterPawn.WorkTagIsDisabled(WorkTags.Violent))
@@ -53,16 +59,20 @@ namespace MVCF.Commands
                     verb.CasterPawn));
             else if (verb.CasterIsPawn && verb.CasterPawn.InMentalState && mv.Props is not {canFireIndependently: true})
                 Disable("CannotOrderNonControlled".Translate());
+            for (var i = 0; i < parts.Count; i++) parts[i].PostInit();
         }
+
+        public override string TopRightLabel => topRightLabel;
+        public override IEnumerable<FloatMenuOption> RightClickFloatMenuOptions => parts.SelectMany(part => part.GetRightClickOptions());
 
         protected override GizmoResult GizmoOnGUIInt(Rect butRect, GizmoRenderParms parms)
         {
+            for (var i = 0; i < parts.Count; i++) parts[i].PreGizmoOnGUI(butRect, parms);
             var result = base.GizmoOnGUIInt(butRect, parms);
-
+            for (var i = 0; i < parts.Count; i++) parts[i].PostGizmoOnGUI(butRect, parms, ref result);
             // if (disabled && managedVerb.AdditionalCooldownPercent > 0)
             //     GUI.DrawTexture(butRect.RightPartPixels(butRect.width * managedVerb.AdditionalCooldownPercent),
             //         CooldownTex);
-
             return result;
         }
     }

@@ -14,6 +14,11 @@ namespace MVCF.VerbComps
         {
         }
 
+        public virtual IEnumerable<CommandPart> GetCommandParts(Command_VerbTargetExtended command)
+        {
+            yield break;
+        }
+
         public virtual void Initialize(VerbCompProperties props)
         {
             this.props = props;

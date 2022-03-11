@@ -35,7 +35,10 @@ namespace MVCF
             DebugActionsUtility.DustPuffFrom(p);
             Log.Message("All ManagedVerbs for " + p.LabelCap);
             foreach (var verb in man.ManagedVerbs)
-                Log.Message("  " + verb.Verb + ": " + (verb.Enabled ? "Enabled" : "Disabled"));
+            {
+                Log.Message($"  {verb.Verb}: {(verb.Enabled ? "Enabled" : "Disabled")}{(verb.AllComps.Any() ? "Comps:" : "")}");
+                foreach (var comp in verb.AllComps) Log.Message($"    {comp}");
+            }
         }
     }
 

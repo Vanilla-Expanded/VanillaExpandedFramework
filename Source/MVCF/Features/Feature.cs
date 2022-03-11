@@ -44,32 +44,33 @@ namespace MVCF.Features
         public static void PostInitVerb(VerbTracker __instance, Verb verb)
         {
             AdditionalVerbProps props;
-            List<VerbCompProperties> additionalComps;
+            IEnumerable<VerbCompProperties> additionalComps;
             switch (__instance.directOwner)
             {
                 case CompEquippable comp:
                     props = comp.props is CompProperties_VerbProps compProps
                         ? compProps.PropsFor(verb)
                         : comp.parent.TryGetComp<Comp_VerbProps>()?.Props?.PropsFor(verb);
-                    additionalComps = comp.parent.AllComps.OfType<VerbComp.IVerbCompProvider>().SelectMany(p => p.GetCompsFor(comp.PrimaryVerb.verbProps)).ToList();
+                    additionalComps = comp.parent.AllComps.OfType<VerbComp.IVerbCompProvider>().SelectMany(p => p.GetCompsFor(verb.verbProps));
                     break;
                 case HediffComp_VerbGiver comp:
                     props = (comp as HediffComp_ExtendedVerbGiver)?.PropsFor(verb);
-                    additionalComps = comp.parent.comps.OfType<VerbComp.IVerbCompProvider>().SelectMany(p => p.GetCompsFor(verb.verbProps)).ToList();
+                    additionalComps = comp.parent.comps.OfType<VerbComp.IVerbCompProvider>().SelectMany(p => p.GetCompsFor(verb.verbProps));
                     break;
                 case Comp_VerbGiver comp:
                     props = comp.PropsFor(verb);
-                    additionalComps = comp.parent.AllComps.OfType<VerbComp.IVerbCompProvider>().SelectMany(p => p.GetCompsFor(verb.verbProps)).ToList();
+                    additionalComps = comp.parent.AllComps.OfType<VerbComp.IVerbCompProvider>().SelectMany(p => p.GetCompsFor(verb.verbProps));
                     break;
                 case Pawn pawn:
                     props = pawn.TryGetComp<Comp_VerbProps>()?.PropsFor(verb);
-                    additionalComps = pawn.AllComps.OfType<VerbComp.IVerbCompProvider>().SelectMany(p => p.GetCompsFor(verb.verbProps)).ToList();
+                    additionalComps = pawn.AllComps.OfType<VerbComp.IVerbCompProvider>().SelectMany(p => p.GetCompsFor(verb.verbProps));
                     break;
                 default: return;
             }
 
-            var mv = verb.Managed(false) ?? props.CreateManaged(!((props is null || props.comps.NullOrEmpty()) && additionalComps.NullOrEmpty()));
-            mv.Initialize(verb, props, additionalComps);
+            var comps = additionalComps.ToList();
+            var mv = verb.Managed(false) ?? props.CreateManaged(!((props is null || props.comps.NullOrEmpty()) && comps.NullOrEmpty()));
+            mv.Initialize(verb, props, comps);
         }
     }
 }
