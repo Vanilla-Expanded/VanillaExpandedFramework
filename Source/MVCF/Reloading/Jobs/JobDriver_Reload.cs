@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MVCF.Reloading.Comps;
 using MVCF.Utilities;
 using RimWorld;
 using Verse;
@@ -10,18 +11,18 @@ namespace Reloading
 {
     public class JobDriver_Reload : JobDriver
     {
+        private const TargetIndex AMMO_INDEX = TargetIndex.A;
         private Sustainer reloadSound;
 
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
-            pawn.ReserveAsManyAsPossible(job.GetTargetQueue(TargetIndex.B), job);
+            pawn.ReserveAsManyAsPossible(job.GetTargetQueue(AMMO_INDEX), job);
             return true;
         }
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
-            var thing = job.GetTarget(TargetIndex.A).Thing;
-            var comp = thing?.GetReloadableComp();
+            var comp = job.verbToUse.Managed().TryGetComp<VerbComp_Reloadable>();
 
             this.FailOn(() => comp == null);
             this.FailOn(() => !comp.NeedsReload());
@@ -30,11 +31,11 @@ namespace Reloading
             var getNextIngredient = Toils_General.Label();
             yield return getNextIngredient;
             foreach (var toil in ReloadFromCarried(comp)) yield return toil;
-            yield return Toils_JobTransforms.ExtractNextTargetFromQueue(TargetIndex.B);
-            yield return Toils_Goto.GotoThing(TargetIndex.B, PathEndMode.ClosestTouch)
-                .FailOnDespawnedNullOrForbidden(TargetIndex.B).FailOnSomeonePhysicallyInteracting(TargetIndex.B);
-            yield return Toils_Haul.StartCarryThing(TargetIndex.B, false, true);
-            yield return Toils_Jump.JumpIf(getNextIngredient, () => !job.GetTargetQueue(TargetIndex.B).NullOrEmpty());
+            yield return Toils_JobTransforms.ExtractNextTargetFromQueue(AMMO_INDEX);
+            yield return Toils_Goto.GotoThing(AMMO_INDEX, PathEndMode.ClosestTouch)
+                .FailOnDespawnedNullOrForbidden(AMMO_INDEX).FailOnSomeonePhysicallyInteracting(AMMO_INDEX);
+            yield return Toils_Haul.StartCarryThing(AMMO_INDEX, false, true);
+            yield return Toils_Jump.JumpIf(getNextIngredient, () => !job.GetTargetQueue(AMMO_INDEX).NullOrEmpty());
             foreach (var toil in ReloadFromCarried(comp)) yield return toil;
 
             yield return new Toil
@@ -49,7 +50,7 @@ namespace Reloading
             };
         }
 
-        private IEnumerable<Toil> ReloadFromCarried(IReloadable comp)
+        private IEnumerable<Toil> ReloadFromCarried(VerbComp_Reloadable comp)
         {
             var done = Toils_General.Label();
             yield return Toils_Jump.JumpIf(done,

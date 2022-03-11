@@ -94,7 +94,7 @@
     <Compile Include="Reloading\Comps\CompReloadable.cs" />
     <Compile Include="Reloading\Comps\HediffComp_ChangeableAmmo.cs" />
     <Compile Include="Reloading\Comps\HediffComp_Reloadable.cs" />
-    <Compile Include="Reloading\Comps\IReloadable.cs" />
+    <Compile Include="Reloading\Comps\VerbComp_Reloadable_ChangeableAmmo.cs" />
     <Compile Include="Reloading\Jobs\JobDriver_Reload.cs" />
     <Compile Include="Reloading\Jobs\JobDriver_ReloadFromInventory.cs" />
     <Compile Include="Reloading\Jobs\JobDriver_Unload.cs" />

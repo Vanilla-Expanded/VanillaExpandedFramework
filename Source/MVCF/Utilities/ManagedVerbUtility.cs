@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using MVCF.Comps;
+using MVCF.VerbComps;
 using Verse;
 
 namespace MVCF.Utilities
@@ -21,6 +23,8 @@ namespace MVCF.Utilities
 
             return mv;
         }
+
+        public static T TryGetComp<T>(this ManagedVerb verb) where T : VerbComp => verb.Comps.OfType<T>().FirstOrDefault();
 
         public static void SaveManaged(this Verb verb)
         {

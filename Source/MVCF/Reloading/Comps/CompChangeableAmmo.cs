@@ -1,66 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using MVCF.Reloading.Comps;
+using MVCF.VerbComps;
 using Verse;
 
 namespace Reloading
 {
-    public class CompChangeableAmmo : CompReloadable, IThingHolder, IChangeableAmmo
+    [Obsolete]
+    public class CompChangeableAmmo : CompReloadable
     {
-        private readonly ThingOwner<Thing> loadedAmmo = new();
-
-        private Thing nextAmmoItem;
-
-        public override ThingDef CurrentProjectile => nextAmmoItem?.def?.projectileWhenLoaded;
-
-        public virtual IEnumerable<Pair<ThingDef, Action>> AmmoOptions =>
-            loadedAmmo.Select(t => new Pair<ThingDef, Action>(t.def, () => { nextAmmoItem = t; }));
-
-        public void GetChildHolders(List<IThingHolder> outChildren)
+        public override IEnumerable<VerbCompProperties> GetCompsFor(VerbProperties verbProps)
         {
-            ThingOwnerUtility.AppendThingHoldersFromThings(outChildren, loadedAmmo);
-        }
-
-        public ThingOwner GetDirectlyHeldThings() => loadedAmmo;
-
-        public override Thing Reload(Thing ammo)
-        {
-            var t = base.Reload(ammo);
-            loadedAmmo.TryAddOrTransfer(t);
-            nextAmmoItem ??= t;
-            return null;
-        }
-
-        public override void Notify_ProjectileFired()
-        {
-            base.Notify_ProjectileFired();
-            nextAmmoItem.stackCount--;
-            if (nextAmmoItem.stackCount == 0)
-            {
-                loadedAmmo.Remove(nextAmmoItem);
-                nextAmmoItem.Destroy();
-                nextAmmoItem = loadedAmmo.FirstOrFallback();
-            }
-        }
-
-        public override void Initialize(CompProperties props)
-        {
-            base.Initialize(props);
-            ShotsRemaining = 0;
-        }
-
-        public override void PostExposeData()
-        {
-            base.PostExposeData();
-            loadedAmmo.ExposeData();
-            Scribe_References.Look(ref nextAmmoItem, "nextLoadedItem");
-        }
-
-        public override void Unload()
-        {
-            loadedAmmo.TryDropAll(parent.Position, parent.Map, ThingPlaceMode.Near);
-            nextAmmoItem = null;
-            ShotsRemaining = 0;
+            if (Props.VerbLabel is null || verbProps.label == Props.VerbLabel)
+                yield return new VerbCompProperties_Reloadable
+                {
+                    AmmoFilter = Props.AmmoFilter,
+                    GenerateAmmo = Props.GenerateAmmo,
+                    GenerateBackupWeapon = Props.GenerateBackupWeapon,
+                    ItemsPerShot = Props.ItemsPerShot,
+                    MaxShots = Props.MaxShots,
+                    NewVerbClass = Props.NewVerbClass,
+                    ReloadTimePerShot = Props.ReloadTimePerShot,
+                    ReloadSound = Props.ReloadSound,
+                    StartLoaded = Props.StartLoaded,
+                    compClass = typeof(VerbComp_Reloadable_ChangeableAmmo)
+                };
         }
     }
 }

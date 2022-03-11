@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MVCF.Reloading.Comps;
-using Reloading;
 using Verse;
 
 namespace MVCF.Commands
@@ -27,7 +26,7 @@ namespace MVCF.Commands
             {
                 foreach (var option in base.RightClickFloatMenuOptions) yield return option;
 
-                if (Reloadable is IChangeableAmmo ccwa)
+                if (Reloadable is VerbComp_Reloadable_ChangeableAmmo ccwa)
                     foreach (var option in ccwa.AmmoOptions.Select(pair =>
                         new FloatMenuOption(pair.First.LabelCap, pair.Second)))
                         yield return option;

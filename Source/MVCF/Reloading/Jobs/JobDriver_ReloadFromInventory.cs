@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MVCF.Reloading.Comps;
 using MVCF.Utilities;
 using RimWorld;
 using Verse.AI;
@@ -12,8 +13,7 @@ namespace Reloading
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
-            var thing = job.targetA.Thing;
-            var comp = thing?.GetReloadableComp();
+            var comp = job.verbToUse.Managed().TryGetComp<VerbComp_Reloadable>();
 
             this.FailOn(() => comp == null);
             this.FailOnIncapable(PawnCapacityDefOf.Manipulation);
@@ -21,16 +21,14 @@ namespace Reloading
             var reloadTicks = 0;
             var done = Toils_General.Label();
 
-            yield return Toils_Jump.JumpIf(done, () => comp == null || pawn.carryTracker.CarriedThing != null ||
-                                                       !comp.NeedsReload());
+            yield return Toils_Jump.JumpIf(done, () => comp == null || pawn.carryTracker.CarriedThing != null || !comp.NeedsReload());
             var toil = new Toil
             {
                 initAction = () =>
                 {
                     pawn.pather.StopDead();
-                    var item = job.targetB.Thing;
-                    pawn.inventory.innerContainer.TryTransferToContainer(item, pawn.carryTracker.innerContainer,
-                        job.count);
+                    var item = job.targetA.Thing;
+                    pawn.inventory.innerContainer.TryTransferToContainer(item, pawn.carryTracker.innerContainer, job.count);
                     reloadTicks = comp.ReloadTicks(pawn.carryTracker.CarriedThing);
                 },
                 defaultCompleteMode = ToilCompleteMode.Never,

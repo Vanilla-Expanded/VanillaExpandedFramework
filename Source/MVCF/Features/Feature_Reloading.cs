@@ -19,7 +19,6 @@ namespace MVCF.Features
     {
         private static readonly Type AttackStaticSubType = typeof(JobDriver_AttackStatic).GetNestedType("<>c__DisplayClass4_0", BindingFlags.NonPublic);
         private static readonly FieldInfo thisPropertyInfo = AttackStaticSubType.GetField("<>4__this", BindingFlags.Public | BindingFlags.Instance);
-        public static Dictionary<Job, IReloadable> JobReloadables = new();
         public override string Name => "Reloading";
 
         public override IEnumerable<Patch> GetPatches()
@@ -34,17 +33,7 @@ namespace MVCF.Features
                 AccessTools.Method(GetType(), nameof(ReloadWeaponIfEndingCooldown)));
             yield return Patch.Postfix(AccessTools.Method(typeof(PawnInventoryGenerator), "GenerateInventoryFor"),
                 AccessTools.Method(GetType(), nameof(PostGenerate)));
-            yield return Patch.Postfix(AccessTools.Method(typeof(Job), nameof(Job.ExposeData)), AccessTools.Method(GetType(), nameof(SaveJobReloadable)));
         }
-
-        public static void SaveJobReloadable(Job __instance)
-        {
-            if (!JobReloadables.TryGetValue(__instance, out var reloadable)) reloadable = null;
-            Scribe_References.Look(ref reloadable, "reloadable");
-            JobReloadables.SetOrAdd(__instance, reloadable);
-        }
-
-        // public override IEnumerable<PatchSet> GetPatchSets() => base.GetPatchSets().Append(new PatchSet_ReloadingAuto());
 
         public static IEnumerable<CodeInstruction> EndJobIfVerbNotAvailable(IEnumerable<CodeInstruction> instructions,
             ILGenerator generator)
@@ -100,16 +89,14 @@ namespace MVCF.Features
 
             if (item == null)
             {
-                if (!pawn.IsColonist && reloadable.Parent is ThingWithComps eq &&
-                    !pawn.equipment.TryDropEquipment(eq, out var result, pawn.Position))
-                    Log.Message("Failed to drop " + result);
+                // if (!pawn.IsColonist && reloadable.Parent is ThingWithComps eq &&
+                //     !pawn.equipment.TryDropEquipment(eq, out var result, pawn.Position))
+                //     Log.Message("Failed to drop " + result);
                 pawn.jobs.EndCurrentJob(JobCondition.InterruptForced);
                 if (pawn.inventory.innerContainer.FirstOrDefault(t => t.def.IsWeapon && t.def.equipmentType == EquipmentType.Primary) is ThingWithComps newWeapon)
-                {
-                    if (reloadable.Parent == pawn.equipment.Primary && reloadable.Parent is ThingWithComps oldWeapon)
-                        pawn.inventory.innerContainer.TryAddOrTransfer(oldWeapon, false);
+                    // if (pawn.equipment.Primary && reloadable.Parent is ThingWithComps oldWeapon)
+                    //     pawn.inventory.innerContainer.TryAddOrTransfer(oldWeapon, false);
                     pawn.inventory.innerContainer.TryTransferToContainer(newWeapon, pawn.equipment.GetDirectlyHeldThings(), 1, false);
-                }
 
                 if (!pawn.IsColonist && (pawn.equipment.Primary?.def.IsMeleeWeapon ?? true)) pawn.GetLord()?.CurLordToil?.UpdateAllDuties();
                 return;
@@ -122,15 +109,15 @@ namespace MVCF.Features
         {
             foreach (var reloadable in p.AllReloadComps())
             {
-                if (reloadable.GenerateAmmo != null)
-                    foreach (var thingDefCountRange in reloadable.GenerateAmmo)
+                if (reloadable.Props.GenerateAmmo != null)
+                    foreach (var thingDefCountRange in reloadable.Props.GenerateAmmo)
                     {
                         var ammo = ThingMaker.MakeThing(thingDefCountRange.thingDef);
                         ammo.stackCount = thingDefCountRange.countRange.RandomInRange;
                         p.inventory?.innerContainer.TryAdd(ammo);
                     }
 
-                if (reloadable.GenerateBackupWeapon)
+                if (reloadable.Props.GenerateBackupWeapon)
                 {
                     var weaponPairs = Traverse.Create(typeof(PawnWeaponGenerator)).Field("allWeaponPairs").GetValue<List<ThingStuffPair>>().Where(w =>
                         !w.thing.IsRangedWeapon || !p.WorkTagIsDisabled(WorkTags.Shooting));

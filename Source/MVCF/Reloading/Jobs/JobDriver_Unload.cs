@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using MVCF.Reloading.Comps;
+using MVCF.Utilities;
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -6,17 +8,13 @@ using Verse.Sound;
 
 namespace Reloading
 {
-    internal class JobDriver_Unload : JobDriver
+    public class JobDriver_Unload : JobDriver
     {
-        public override bool TryMakePreToilReservations(bool errorOnFailed)
-        {
-            return pawn.Reserve(job.targetA, job);
-        }
+        public override bool TryMakePreToilReservations(bool errorOnFailed) => pawn.Reserve(job.targetA, job);
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
-            var thing = job.GetTarget(TargetIndex.A).Thing;
-            var comp = thing?.TryGetComp<CompReloadable>();
+            var comp = job.verbToUse.Managed().TryGetComp<VerbComp_Reloadable>();
 
             this.FailOn(() => comp == null);
             this.FailOnIncapable(PawnCapacityDefOf.Manipulation);
@@ -28,10 +26,7 @@ namespace Reloading
             {
                 defaultCompleteMode = ToilCompleteMode.Never,
                 defaultDuration = comp.Props.ReloadTimePerShot.SecondsToTicks(),
-                initAction = () =>
-                {
-                    reloadTicks = (comp.Props.ReloadTimePerShot * comp.ShotsRemaining).SecondsToTicks();
-                },
+                initAction = () => { reloadTicks = (comp.Props.ReloadTimePerShot * comp.ShotsRemaining).SecondsToTicks(); },
                 tickAction = () =>
                 {
                     if (debugTicksSpentThisToil >= reloadTicks)
@@ -44,7 +39,7 @@ namespace Reloading
                         comp.Props.ReloadSound?.PlayOneShot(pawn);
                 }
             };
-            toil.WithProgressBar(TargetIndex.A, () => (float) debugTicksSpentThisToil / (float) reloadTicks);
+            toil.WithProgressBar(TargetIndex.A, () => debugTicksSpentThisToil / (float) reloadTicks);
             yield return toil;
             yield return done;
         }

@@ -1,57 +1,32 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Reloading;
+using MVCF.Comps;
+using MVCF.Reloading.Comps;
 using Verse;
 
 namespace MVCF.Utilities
 {
     public static class ReloadingUtility
     {
-        private static readonly Dictionary<Verb, IReloadable> reloadables = new();
+        public static IEnumerable<VerbComp_Reloadable> AllReloadComps(this Pawn p) => p.Manager().ManagedVerbs.SelectMany(mv => mv.Comps).OfType<VerbComp_Reloadable>();
 
-        public static IEnumerable<IReloadable> AllReloadComps(this Pawn p)
+        public static IEnumerable<VerbComp_Reloadable> AllReloadComps(this Thing t)
         {
-            if (p?.equipment != null)
-                foreach (var reloadable in p.equipment.AllEquipmentListForReading.SelectMany(eq => eq.AllComps).OfType<IReloadable>())
-                    yield return reloadable;
-
-            if (p?.apparel != null)
-                foreach (var reloadable in p.apparel.WornApparel.SelectMany(app => app.AllComps).OfType<IReloadable>())
-                    yield return reloadable;
-
-            if (p?.health?.hediffSet != null)
-                foreach (var reloadable in p.health.hediffSet.hediffs.OfType<HediffWithComps>()
-                    .SelectMany(hediff => hediff.comps).OfType<IReloadable>())
-                    yield return reloadable;
+            if (t is not ThingWithComps twc) yield break;
+            foreach (var comp in twc.AllComps)
+                switch (comp)
+                {
+                    case CompEquippable eq:
+                        foreach (var verbComp in eq.AllVerbs.SelectMany(verb => verb.Managed().Comps).OfType<VerbComp_Reloadable>())
+                            yield return verbComp;
+                        break;
+                    case Comp_VerbGiver giver:
+                        foreach (var reloadable in giver.VerbTracker.AllVerbs.SelectMany(verb => verb.Managed().Comps).OfType<VerbComp_Reloadable>())
+                            yield return reloadable;
+                        break;
+                }
         }
 
-        public static IReloadable GetReloadableComp(this Thing thing)
-        {
-            switch (thing)
-            {
-                case Pawn p:
-                    return p.health?.hediffSet?.hediffs?.OfType<HediffWithComps>()?.SelectMany(hediff => hediff.comps)
-                        .OfType<IReloadable>()?.FirstOrDefault();
-                case ThingWithComps twc:
-                    return twc.AllComps.OfType<IReloadable>().FirstOrDefault();
-                default:
-                    return thing.TryGetComp<CompReloadable>();
-            }
-        }
-
-        public static IReloadable GetReloadable(this Verb verb)
-        {
-            if (reloadables.TryGetValue(verb, out var rv)) return rv;
-
-            if (verb.Managed(false)?.Comps.FirstOrDefault(comp => comp is IReloadable) is IReloadable r3)
-                rv = r3;
-            else if (verb.EquipmentSource?.AllComps.FirstOrFallback(comp => comp is IReloadable) is IReloadable r1)
-                rv = r1;
-            else if (verb.HediffCompSource?.parent?.comps.FirstOrFallback(comp => comp is IReloadable) is IReloadable r2)
-                rv = r2;
-
-            reloadables.Add(verb, rv);
-            return rv;
-        }
+        public static VerbComp_Reloadable GetReloadable(this Verb verb) => verb.Managed().TryGetComp<VerbComp_Reloadable>();
     }
 }

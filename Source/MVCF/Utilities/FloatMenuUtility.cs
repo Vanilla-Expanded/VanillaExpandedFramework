@@ -14,29 +14,31 @@ namespace MVCF.Utilities
             var c = IntVec3.FromVector3(clickPos);
 
             foreach (var thing in c.GetThingList(pawn.Map))
-                if (thing.TryGetComp<CompReloadable>() is { } comp)
+            foreach (var comp in thing.AllReloadComps())
+            {
+                var text = $"{"Reloading.Unload".Translate(thing.Named("GEAR"))} ({comp.ShotsRemaining}/{comp.Props.MaxShots})";
+                if (comp.ShotsRemaining == 0)
                 {
-                    var text = "Reloading.Unload".Translate(comp.parent.Named("GEAR")) + " (" + comp.ShotsRemaining +
-                               "/" +
-                               comp.Props.MaxShots + ")";
-                    if (comp.ShotsRemaining == 0)
-                    {
-                        text += ": " + "Reloading.NoAmmo".Translate();
-                        opts.Add(new FloatMenuOption(text, null));
-                    }
-                    else
-                        opts.Add(new FloatMenuOption(text,
-                            () => pawn.jobs.TryTakeOrderedJob(JobMaker.MakeJob(ReloadingDefOf.Unload, thing))));
+                    text += ": " + "Reloading.NoAmmo".Translate();
+                    opts.Add(new FloatMenuOption(text, null));
                 }
+                else
+                    opts.Add(new FloatMenuOption(text, () =>
+                    {
+                        var job = JobMaker.MakeJob(ReloadingDefOf.Unload, thing);
+                        job.verbToUse = comp.parent.Verb;
+                        pawn.jobs.TryTakeOrderedJob(job);
+                    }));
+            }
 
             foreach (var reloadable in pawn.AllReloadComps())
             foreach (var thing in c.GetThingList(pawn.Map))
                 if (reloadable.CanReloadFrom(thing))
                 {
-                    var text = (reloadable.Parent is Thing ? "Reload" : "Reloading.Reload").Translate(
-                                   reloadable.Parent.Named("GEAR"),
+                    var text = "Reloading.Reload".Translate(
+                                   reloadable.parent.Verb.Label(reloadable.parent.Props).Named("GEAR"),
                                    thing.def.Named("AMMO")) + " (" + reloadable.ShotsRemaining + "/" +
-                               reloadable.MaxShots + ")";
+                               reloadable.Props.MaxShots + ")";
                     var failed = false;
                     var ammo = new List<Thing>();
                     if (!pawn.CanReach(thing, PathEndMode.ClosestTouch, Danger.Deadly))
@@ -66,10 +68,10 @@ namespace MVCF.Utilities
                     foreach (var item in pawn.inventory.innerContainer)
                         if (reloadable.CanReloadFrom(item))
                         {
-                            var text = (reloadable.Parent is Thing ? "Reload" : "Reloading.Reload").Translate(
-                                           reloadable.Parent.Named("GEAR"),
+                            var text = "Reloading.Reload".Translate(
+                                           reloadable.parent.Verb.Label(reloadable.parent.Props).Named("GEAR"),
                                            item.def.Named("AMMO")) + " (" + reloadable.ShotsRemaining + "/" +
-                                       reloadable.MaxShots + ")";
+                                       reloadable.Props.MaxShots + ")";
                             if (!reloadable.NeedsReload())
                                 opts.Add(new FloatMenuOption(text + ": " + "ReloadFull".Translate(), null));
                             else

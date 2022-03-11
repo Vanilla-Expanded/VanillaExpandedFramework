@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using MVCF.Reloading;
+using MVCF.Reloading.Comps;
 using MVCF.Utilities;
 using Verse;
 using Verse.AI;
@@ -20,12 +21,11 @@ namespace Reloading
                 select MakeReloadJob(comp, thing)).FirstOrDefault();
         }
 
-        public static Job MakeReloadJob(IReloadable comp, Thing ammo)
+        public static Job MakeReloadJob(VerbComp_Reloadable comp, Thing ammo)
         {
-            var job = JobMaker.MakeJob(ReloadingDefOf.ReloadFromInventory, comp.Thing);
-            job.targetB = ammo;
-            job.count = Math.Min(ammo.stackCount,
-                comp.ItemsPerShot * (comp.MaxShots - comp.ShotsRemaining));
+            var job = JobMaker.MakeJob(ReloadingDefOf.ReloadFromInventory, ammo);
+            job.verbToUse = comp.parent.Verb;
+            job.count = Math.Min(ammo.stackCount, comp.Props.ItemsPerShot * (comp.Props.MaxShots - comp.ShotsRemaining));
             return job;
         }
     }
