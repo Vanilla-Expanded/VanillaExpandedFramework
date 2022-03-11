@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using MVCF.Commands;
 using MVCF.Comps;
 using MVCF.Features;
@@ -21,7 +18,7 @@ namespace MVCF
             None
         }
 
-        public List<VerbComp> Comps = new();
+        public List<VerbComp> AllComps = new();
 
         private bool enabledInt = true;
 
@@ -38,13 +35,13 @@ namespace MVCF
             set => enabledInt = value;
         }
 
-        public virtual bool NeedsTicking => Comps.Any(comp => comp.NeedsTicking);
+        public virtual bool NeedsTicking => AllComps.Any(comp => comp.NeedsTicking);
 
         public void ExposeData()
         {
             Scribe_Values.Look(ref enabledInt, "enabled");
             Scribe_Values.Look(ref loadId, "loadId");
-            foreach (var comp in Comps) comp.PostExposeData();
+            foreach (var comp in AllComps) comp.PostExposeData();
         }
 
         public string GetUniqueLoadID() => loadId;
@@ -63,46 +60,28 @@ namespace MVCF
 
             if (Props is {separateToggle: false} && !Base.GetFeature<Feature_IntegratedToggle>().Enabled)
                 Log.Error("[MVCF] Found a verb marked for an integrated toggle while that feature is not enabled.");
-
-            var comps = (props?.comps ?? Enumerable.Empty<VerbCompProperties>()).Concat(additionalComps ?? Enumerable.Empty<VerbCompProperties>());
-            foreach (var compProps in comps)
-            {
-                var comp = (VerbComp) Activator.CreateInstance(compProps.compClass);
-                comp.parent = this;
-                Comps.Add(comp);
-                comp.Initialize(compProps);
-            }
         }
 
-        public void Notify_Added(VerbManager man, VerbSource source)
+        public virtual void Notify_Added(VerbManager man, VerbSource source)
         {
             Manager = man;
             Source = source;
         }
 
-        public void Notify_Removed()
+        public virtual void Notify_Removed()
         {
             Manager = null;
             Source = VerbSource.None;
         }
 
-        public virtual bool Available() => Comps.All(comp => comp.Available());
+        public virtual bool Available() => true;
 
         public virtual void Notify_ProjectileFired()
         {
-            for (var i = 0; i < Comps.Count; i++) Comps[i].Notify_ShotFired();
         }
 
         public virtual void ModifyProjectile(ref ThingDef projectile)
         {
-            // ReSharper disable once ForCanBeConvertedToForeach
-            for (var i = 0; i < Comps.Count; i++)
-            {
-                var newProj = Comps[i].ProjectileOverride(projectile);
-                if (newProj is null) continue;
-                projectile = newProj;
-                return;
-            }
         }
 
         public bool GetToggleStatus() => enabledInt;
@@ -119,8 +98,6 @@ namespace MVCF
 
         public virtual void Tick()
         {
-            // ReSharper disable once ForCanBeConvertedToForeach
-            for (var i = 0; i < Comps.Count; i++) Comps[i].CompTick();
         }
 
 
@@ -130,41 +107,11 @@ namespace MVCF
 
             if (GetToggleType() == ToggleType.Separate)
                 yield return GetToggleCommand(ownerThing);
-
-            // ReSharper disable once ForCanBeConvertedToForeach
-            for (var i = 0; i < Comps.Count; i++)
-                foreach (var gizmo in Comps[i].CompGetGizmosExtra())
-                    yield return gizmo;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private Command_ToggleVerbUsage GetToggleCommand(Thing ownerThing)
-        {
-            var command = new Command_ToggleVerbUsage(this);
+        protected virtual Command_ToggleVerbUsage GetToggleCommand(Thing ownerThing) => new(this);
 
-            // ReSharper disable once ForCanBeConvertedToForeach
-            for (var i = 0; i < Comps.Count; i++)
-            {
-                var newCommand = Comps[i].OverrideToggleCommand(command);
-                if (newCommand is not null) return newCommand;
-            }
-
-            return command;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private Command_VerbTargetExtended GetTargetCommand(Thing ownerThing)
-        {
-            var command = new Command_VerbTargetExtended(this, ownerThing);
-            // ReSharper disable once ForCanBeConvertedToForeach
-            for (var i = 0; i < Comps.Count; i++)
-            {
-                var newCommand = Comps[i].OverrideTargetCommand(command);
-                if (newCommand is not null) return newCommand;
-            }
-
-            return command;
-        }
+        protected virtual Command_VerbTargetExtended GetTargetCommand(Thing ownerThing) => new(this, ownerThing);
 
         public virtual ToggleType GetToggleType()
         {

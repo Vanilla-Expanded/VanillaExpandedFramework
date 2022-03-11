@@ -114,6 +114,7 @@
     <Compile Include="VerbManager.cs" />
     <Compile Include="Verbs\Verb_Jump.cs" />
     <Compile Include="Verbs\Verb_SmokePop.cs" />
+    <Compile Include="VerbWithComps.cs" />
     <Compile Include="WorldComponent_MVCF.cs" />
     <Compile Include="Base.cs" />
     <Compile Include="Commands\Command_ToggleVerbUsage.cs" />

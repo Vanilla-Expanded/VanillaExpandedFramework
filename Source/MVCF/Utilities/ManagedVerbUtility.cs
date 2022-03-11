@@ -11,20 +11,21 @@ namespace MVCF.Utilities
     {
         private static readonly ConditionalWeakTable<Verb, ManagedVerb> managedVerbForVerbs = new();
 
-        public static ManagedVerb CreateManaged(this AdditionalVerbProps props)
+        public static ManagedVerb CreateManaged(this AdditionalVerbProps props, bool hasComps)
         {
             var mv = props switch
             {
                 {managedClass: { } type} => (ManagedVerb) Activator.CreateInstance(type),
                 {canFireIndependently: true} => new TurretVerb(),
                 {draw: true} => new DrawnVerb(),
+                _ when hasComps => new VerbWithComps(),
                 _ => new ManagedVerb()
             };
 
             return mv;
         }
 
-        public static T TryGetComp<T>(this ManagedVerb verb) where T : VerbComp => verb.Comps.OfType<T>().FirstOrDefault();
+        public static T TryGetComp<T>(this ManagedVerb verb) where T : VerbComp => verb.AllComps.OfType<T>().FirstOrDefault();
 
         public static void SaveManaged(this Verb verb)
         {
