@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using MVCF.Commands;
 using MVCF.Comps;
-using MVCF.Verbs;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -38,13 +38,6 @@ namespace MVCF.Utilities
                     break;
             }
 
-            var skipDefault = false;
-
-            if (verb is IVerbGizmos gizmos)
-                foreach (var gizmo1 in gizmos.GetGizmos(out skipDefault))
-                    yield return gizmo1;
-
-            if (skipDefault) yield break;
             if (man != null)
             {
                 foreach (var gizmo1 in man.GetGizmos(ownerThing)) yield return gizmo1;
@@ -164,8 +157,9 @@ namespace MVCF.Utilities
             if (props?.Graphic != null && props.Icon != null && props.Icon != BaseContent.BadTex) return props.Icon;
             if (verb.UIIcon != null && verb.verbProps.commandIcon != null && verb.UIIcon != BaseContent.BadTex)
                 return verb.UIIcon;
+            if (ownerThing is ThingWithComps and not Pawn and not Apparel) return ownerThing.def.uiIcon;
             if (verb is Verb_LaunchProjectile proj) return proj.Projectile.uiIcon;
-            if (ownerThing != null) return ownerThing.def.uiIcon;
+            if (ownerThing is not null) return ownerThing.def.uiIcon;
             return TexCommand.Attack;
         }
     }

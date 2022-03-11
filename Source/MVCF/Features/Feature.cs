@@ -1,15 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
+using MVCF.Comps;
 using MVCF.Features.PatchSets;
 using MVCF.Utilities;
+using MVCF.VerbComps;
 using Verse;
 
 namespace MVCF.Features
 {
     public abstract class Feature
     {
-        private static readonly HashSet<Patch> appliedPatches = new();
         public bool Enabled;
         public abstract string Name { get; }
         public IEnumerable<Patch> Patches => GetPatches().Concat(GetPatchSets().SelectMany(set => set.GetPatches()));
@@ -17,6 +18,9 @@ namespace MVCF.Features
         public virtual IEnumerable<Patch> GetPatches()
         {
             yield return Patch_Pawn_TryGetAttackVerb.GetPatch();
+            yield return Patch.Postfix(AccessTools.Method(typeof(Pawn), nameof(Pawn.ExposeData)), AccessTools.Method(GetType(), nameof(PostExposeDataPawn)));
+            yield return Patch.Postfix(AccessTools.Method(typeof(Verb), nameof(Verb.ExposeData)), AccessTools.Method(GetType(), nameof(PostExposeDataVerb)));
+            yield return Patch.Postfix(AccessTools.Method(typeof(VerbTracker), "InitVerb"), AccessTools.Method(GetType(), nameof(PostInitVerb)));
             foreach (var patch in TargetFinder.GetPatches()) yield return patch;
         }
 
@@ -27,26 +31,45 @@ namespace MVCF.Features
             if (ModLister.HasActiveModWithName("RunAndGun")) yield return new PatchSet_RunAndGun();
         }
 
-        public virtual void Enable(Harmony harm)
+        public static void PostExposeDataPawn(Pawn __instance)
         {
-            Enabled = true;
-            foreach (var patch in Patches)
-                if (!appliedPatches.Contains(patch))
-                {
-                    patch.Apply(harm);
-                    appliedPatches.Add(patch);
-                }
+            __instance.SaveManager();
         }
 
-        public virtual void Disable(Harmony harm)
+        public static void PostExposeDataVerb(Verb __instance)
         {
-            Enabled = false;
-            foreach (var patch in Patches)
-                if (appliedPatches.Contains(patch))
-                {
-                    patch.Unapply(harm);
-                    appliedPatches.Remove(patch);
-                }
+            __instance.SaveManaged();
+        }
+
+        public static void PostInitVerb(VerbTracker __instance, Verb verb)
+        {
+            AdditionalVerbProps props;
+            IEnumerable<VerbCompProperties> additionalComps;
+            switch (__instance.directOwner)
+            {
+                case CompEquippable comp:
+                    props = comp.props is CompProperties_VerbProps compProps
+                        ? compProps.PropsFor(verb)
+                        : comp.parent.TryGetComp<Comp_VerbProps>()?.Props?.PropsFor(verb);
+                    additionalComps = comp.parent.AllComps.OfType<VerbComp.IVerbCompProvider>().SelectMany(p => p.GetCompsFor(comp.PrimaryVerb.verbProps));
+                    break;
+                case HediffComp_VerbGiver comp:
+                    props = (comp as HediffComp_ExtendedVerbGiver)?.PropsFor(verb);
+                    additionalComps = comp.parent.comps.OfType<VerbComp.IVerbCompProvider>().SelectMany(p => p.GetCompsFor(verb.verbProps));
+                    break;
+                case Comp_VerbGiver comp:
+                    props = comp.PropsFor(verb);
+                    additionalComps = comp.parent.AllComps.OfType<VerbComp.IVerbCompProvider>().SelectMany(p => p.GetCompsFor(verb.verbProps));
+                    break;
+                case Pawn pawn:
+                    props = pawn.TryGetComp<Comp_VerbProps>()?.PropsFor(verb);
+                    additionalComps = pawn.AllComps.OfType<VerbComp.IVerbCompProvider>().SelectMany(p => p.GetCompsFor(verb.verbProps));
+                    break;
+                default: return;
+            }
+
+            var mv = verb.Managed(false) ?? props.CreateManaged();
+            mv.Initialize(verb, props, additionalComps);
         }
     }
 }

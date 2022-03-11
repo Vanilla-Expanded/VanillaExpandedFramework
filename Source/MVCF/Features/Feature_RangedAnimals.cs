@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
+using MVCF.Commands;
 using MVCF.Utilities;
 using RimWorld;
 using UnityEngine;

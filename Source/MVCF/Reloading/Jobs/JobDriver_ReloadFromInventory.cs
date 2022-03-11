@@ -6,7 +6,7 @@ using Verse.AI;
 // ReSharper disable once CheckNamespace
 namespace Reloading
 {
-    internal class JobDriver_ReloadFromInventory : JobDriver
+    public class JobDriver_ReloadFromInventory : JobDriver
     {
         public override bool TryMakePreToilReservations(bool errorOnFailed) => true;
 

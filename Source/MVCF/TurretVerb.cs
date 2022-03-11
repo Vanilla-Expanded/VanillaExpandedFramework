@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using MVCF.Comps;
 using MVCF.Utilities;
+using MVCF.VerbComps;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -16,21 +18,22 @@ namespace MVCF
         private DummyCaster dummyCaster;
         private int warmUpTicksLeft;
 
-        public TurretVerb(Verb verb, VerbSource source, AdditionalVerbProps props, VerbManager man) : base(verb, source,
-            props, man)
-        {
-            verb.castCompleteCallback = () => cooldownTicksLeft = Verb.verbProps.AdjustedCooldownTicks(Verb, man.Pawn);
-        }
-
         public override bool NeedsTicking => true;
 
         public LocalTargetInfo Target => currentTarget;
 
+        public override void Initialize(Verb verb, AdditionalVerbProps props, IEnumerable<VerbCompProperties> additionalComps)
+        {
+            base.Initialize(verb, props, additionalComps);
+            if (Manager is not null) verb.castCompleteCallback = () => cooldownTicksLeft = Verb.verbProps.AdjustedCooldownTicks(Verb, Manager.Pawn);
+        }
+
         public void CreateCaster()
         {
-            dummyCaster = new DummyCaster(man.Pawn, this);
+            if (Manager is not {Pawn: var pawn}) return;
+            dummyCaster = new DummyCaster(pawn, this);
             dummyCaster.Tick();
-            dummyCaster.SpawnSetup(man.Pawn.Map, false);
+            dummyCaster.SpawnSetup(pawn.Map, false);
             Verb.caster = dummyCaster;
         }
 
@@ -42,12 +45,13 @@ namespace MVCF
                 dummyCaster = null;
             }
 
-            Verb.caster = man.Pawn;
+            if (Manager is {Pawn: var pawn})
+                Verb.caster = pawn;
         }
 
         public override void Tick()
         {
-            if (!man.Pawn.Spawned) return;
+            if (Manager is not {Pawn: {Spawned: true}}) return;
             if (Verb.Bursting) return;
 
             if (cooldownTicksLeft > 0) cooldownTicksLeft--;
@@ -79,7 +83,7 @@ namespace MVCF
         {
             if (currentTarget == null || !currentTarget.IsValid) return;
             if (Verb.verbProps.warmupTime > 0)
-                warmUpTicksLeft = (Verb.verbProps.warmupTime * man.Pawn.GetStatValue(StatDefOf.AimingDelayFactor))
+                warmUpTicksLeft = (Verb.verbProps.warmupTime * (Manager?.Pawn?.GetStatValue(StatDefOf.AimingDelayFactor) ?? 1f))
                     .SecondsToTicks();
             else
                 TryCast();
@@ -94,9 +98,7 @@ namespace MVCF
 
         public override LocalTargetInfo PointingTarget(Pawn p) => currentTarget;
 
-        public virtual bool CanFire() =>
-            !man.Pawn.Dead && !man.Pawn.Downed && !(!Verb.verbProps.violent ||
-                                                    man.Pawn.WorkTagIsDisabled(WorkTags.Violent));
+        public virtual bool CanFire() => Manager is {Pawn: var pawn} && !pawn.Dead && !pawn.Downed && !(!Verb.verbProps.violent || pawn.WorkTagIsDisabled(WorkTags.Violent));
 
         public override void DrawOn(Pawn p, Vector3 drawPos)
         {
@@ -119,6 +121,7 @@ namespace MVCF
 
         protected virtual LocalTargetInfo TryFindNewTarget()
         {
+            if (Manager is not { } man) return LocalTargetInfo.Invalid;
             return TargetFinder.BestAttackTarget(
                 man.Pawn, Verb,
                 TargetScanFlags.NeedActiveThreat | TargetScanFlags.NeedLOSToAll |

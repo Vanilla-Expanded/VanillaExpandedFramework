@@ -5,9 +5,9 @@ using Verse;
 
 namespace Reloading
 {
-    public class HediffComp_ChangeableAmmo : HediffComp_Reloadable, IThingHolder
+    public class HediffComp_ChangeableAmmo : HediffComp_Reloadable, IThingHolder, IChangeableAmmo
     {
-        private readonly ThingOwner<Thing> loadedAmmo = new ThingOwner<Thing>();
+        private readonly ThingOwner<Thing> loadedAmmo = new();
 
         private Thing nextAmmoItem;
 
@@ -21,10 +21,7 @@ namespace Reloading
             ThingOwnerUtility.AppendThingHoldersFromThings(outChildren, loadedAmmo);
         }
 
-        public ThingOwner GetDirectlyHeldThings()
-        {
-            return loadedAmmo;
-        }
+        public ThingOwner GetDirectlyHeldThings() => loadedAmmo;
 
         public IThingHolder ParentHolder => parent.pawn;
 

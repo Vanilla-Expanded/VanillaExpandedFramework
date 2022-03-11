@@ -19,6 +19,7 @@ namespace MVCF.Features
     {
         private static readonly Type AttackStaticSubType = typeof(JobDriver_AttackStatic).GetNestedType("<>c__DisplayClass4_0", BindingFlags.NonPublic);
         private static readonly FieldInfo thisPropertyInfo = AttackStaticSubType.GetField("<>4__this", BindingFlags.Public | BindingFlags.Instance);
+        public static Dictionary<Job, IReloadable> JobReloadables = new();
         public override string Name => "Reloading";
 
         public override IEnumerable<Patch> GetPatches()
@@ -27,27 +28,23 @@ namespace MVCF.Features
 
             yield return Patch.Postfix(AccessTools.Method(typeof(FloatMenuMakerMap), "AddHumanlikeOrders"),
                 AccessTools.Method(typeof(FloatMenuUtility), nameof(FloatMenuUtility.AddWeaponReloadOrders)));
-            yield return Patch.Transpiler(AttackStaticSubType.GetMethod("<MakeNewToils>b__1", BindingFlags.NonPublic | BindingFlags.Instance),
-                AccessTools.Method(GetType(), nameof(EndJobIfVerbNotAvailable)));
+            // yield return Patch.Transpiler(AttackStaticSubType.GetMethod("<MakeNewToils>b__1", BindingFlags.NonPublic | BindingFlags.Instance),
+            //     AccessTools.Method(GetType(), nameof(EndJobIfVerbNotAvailable)));
             yield return Patch.Postfix(AccessTools.Method(typeof(Stance_Busy), "Expire"),
                 AccessTools.Method(GetType(), nameof(ReloadWeaponIfEndingCooldown)));
             yield return Patch.Postfix(AccessTools.Method(typeof(PawnInventoryGenerator), "GenerateInventoryFor"),
-                AccessTools.Method(GetType(), nameof(GenerateAdditionalAmmo)));
-            yield return Patch.Postfix(AccessTools.Method(typeof(JobDriver_Hunt), "MakeNewToils"),
-                AccessTools.Method(GetType(), nameof(MakeNewToils_Postfix)));
-            yield return Patch.Postfix(AccessTools.Method(typeof(WorkGiver_HunterHunt), nameof(WorkGiver_HunterHunt.HasHuntingWeapon)),
-                AccessTools.Method(GetType(), nameof(HasHuntingWeapon_Postfix)));
+                AccessTools.Method(GetType(), nameof(PostGenerate)));
+            yield return Patch.Postfix(AccessTools.Method(typeof(Job), nameof(Job.ExposeData)), AccessTools.Method(GetType(), nameof(SaveJobReloadable)));
         }
 
-        public static void HasHuntingWeapon_Postfix(ref bool __result, Pawn p)
+        public static void SaveJobReloadable(Job __instance)
         {
-            if (__result) __result = p.equipment.PrimaryEq.PrimaryVerb.IsStillUsableBy(p);
+            if (!JobReloadables.TryGetValue(__instance, out var reloadable)) reloadable = null;
+            Scribe_References.Look(ref reloadable, "reloadable");
+            JobReloadables.SetOrAdd(__instance, reloadable);
         }
 
-        public static void MakeNewToils_Postfix(JobDriver_Hunt __instance)
-        {
-            __instance.FailOn(() => __instance.job?.verbToUse != null && __instance.job.verbToUse.IsMeleeAttack);
-        }
+        // public override IEnumerable<PatchSet> GetPatchSets() => base.GetPatchSets().Append(new PatchSet_ReloadingAuto());
 
         public static IEnumerable<CodeInstruction> EndJobIfVerbNotAvailable(IEnumerable<CodeInstruction> instructions,
             ILGenerator generator)
@@ -97,7 +94,7 @@ namespace MVCF.Features
             var pawn = __instance.verb.CasterPawn;
             if (pawn == null) return;
             var reloadable = __instance.verb.GetReloadable();
-            if (reloadable == null || reloadable.ShotsRemaining != 0 || pawn.stances.curStance.StanceBusy) return;
+            if (reloadable is not {ShotsRemaining: 0} || pawn.stances.curStance.StanceBusy) return;
 
             var item = pawn.inventory.innerContainer.FirstOrDefault(t => reloadable.CanReloadFrom(t));
 
@@ -118,29 +115,11 @@ namespace MVCF.Features
                 return;
             }
 
-            var job = new Job(pawn.CurJobDef, pawn.CurJob.targetA, pawn.CurJob.targetB, pawn.CurJob.targetC)
-            {
-                canUseRangedWeapon = pawn.CurJob.canUseRangedWeapon,
-                verbToUse = __instance.verb,
-                endIfCantShootInMelee = pawn.CurJob.endIfCantShootInMelee
-            };
-            pawn.jobs.EndCurrentJob(JobCondition.InterruptForced);
-            pawn.jobs.TryTakeOrderedJob(JobGiver_ReloadFromInventory.MakeReloadJob(reloadable, item),
-                JobTag.UnspecifiedLordDuty);
-            if (!pawn.IsColonist) pawn.GetLord()?.CurLordToil?.UpdateAllDuties();
-            else pawn.jobs.TryTakeOrderedJob(job, JobTag.UnspecifiedLordDuty, true);
+            pawn.jobs.StartJob(JobGiver_ReloadFromInventory.MakeReloadJob(reloadable, item), JobCondition.InterruptForced, null, true);
         }
 
-        public static void GenerateAdditionalAmmo(Pawn p, PawnGenerationRequest request)
+        public static void PostGenerate(Pawn p, PawnGenerationRequest request)
         {
-            foreach (var thingDefCountRange in from comp in p.AllReloadComps()
-                let gen = comp.GenerateAmmo
-                where gen != null
-                from tdcr in gen
-                select tdcr)
-            {
-            }
-
             foreach (var reloadable in p.AllReloadComps())
             {
                 if (reloadable.GenerateAmmo != null)
@@ -175,13 +154,10 @@ namespace MVCF.Features
                         var num = request.BiocodeWeaponChance > 0f ? request.BiocodeWeaponChance : p.kindDef.biocodeWeaponChance;
                         if (Rand.Chance(num)) weapon.TryGetComp<CompBiocodable>()?.CodeFor(p);
 
-                        var compEquippable = weapon.TryGetComp<CompEquippable>();
-                        if (compEquippable != null)
-                        {
-                            if (p.kindDef.weaponStyleDef != null)
-                                compEquippable.parent.StyleDef = p.kindDef.weaponStyleDef;
-                            else if (p.Ideo != null) compEquippable.parent.StyleDef = p.Ideo.GetStyleFor(weapon.def);
-                        }
+                        if (p.kindDef.weaponStyleDef != null)
+                            weapon.StyleDef = p.kindDef.weaponStyleDef;
+                        else if (p.Ideo != null) weapon.StyleDef = p.Ideo.GetStyleFor(weapon.def);
+
 
                         p.inventory?.innerContainer.TryAdd(weapon, false);
                     }

@@ -36,7 +36,7 @@ namespace MVCF.Comps
                 return;
             if (verbTracker == null)
                 verbTracker = new VerbTracker(this);
-            if (!(parent?.holdingOwner?.Owner is Pawn_ApparelTracker tracker)) return;
+            if (parent?.holdingOwner?.Owner is not Pawn_ApparelTracker tracker) return;
             foreach (var verb in verbTracker.AllVerbs)
                 verb.caster = tracker.pawn;
         }
@@ -71,10 +71,8 @@ namespace MVCF.Comps
         {
             foreach (var gizmo in base.CompGetWornGizmosExtra())
                 yield return gizmo;
-            var man = (parent as Apparel)?.Wearer?.Manager();
-            if (man == null) yield break;
             foreach (var gizmo in from verb in verbTracker.AllVerbs
-                from gizmo in verb.GetGizmosForVerb(man.GetManagedVerbForVerb(verb))
+                from gizmo in verb.GetGizmosForVerb(verb.Managed())
                 select gizmo) yield return gizmo;
         }
 

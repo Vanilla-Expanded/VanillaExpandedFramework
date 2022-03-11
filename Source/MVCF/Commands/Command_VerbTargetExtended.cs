@@ -5,7 +5,7 @@ using Verse;
 
 // ReSharper disable InconsistentNaming
 
-namespace MVCF
+namespace MVCF.Commands
 {
     [StaticConstructorOnStartup]
     public class Command_VerbTargetExtended : Command_VerbTarget
@@ -14,11 +14,13 @@ namespace MVCF
             SolidColorMaterials.NewSolidColorTexture(new Color(1f, 1f, 1f, 0.1f));
 
         public ManagedVerb managedVerb;
+        public Thing owner;
 
         public Command_VerbTargetExtended(ManagedVerb mv, Thing ownerThing = null)
         {
             managedVerb = mv;
             verb = mv.Verb;
+            owner = ownerThing;
             if (ownerThing != null)
             {
                 defaultDesc = PawnVerbGizmoUtility.FirstNonEmptyString(mv.Props?.description, ownerThing.def.LabelCap + ": " +
@@ -51,17 +53,15 @@ namespace MVCF
                     verb.CasterPawn));
             else if (verb.CasterIsPawn && verb.CasterPawn.InMentalState && mv.Props is not {canFireIndependently: true})
                 Disable("CannotOrderNonControlled".Translate());
-            else if (mv.AdditionalCooldownPercent > 0)
-                Disable("MVCF.Cooldown".Translate(mv.AdditionalCooldownDesc));
         }
 
         protected override GizmoResult GizmoOnGUIInt(Rect butRect, GizmoRenderParms parms)
         {
             var result = base.GizmoOnGUIInt(butRect, parms);
 
-            if (disabled && managedVerb.AdditionalCooldownPercent > 0)
-                GUI.DrawTexture(butRect.RightPartPixels(butRect.width * managedVerb.AdditionalCooldownPercent),
-                    CooldownTex);
+            // if (disabled && managedVerb.AdditionalCooldownPercent > 0)
+            //     GUI.DrawTexture(butRect.RightPartPixels(butRect.width * managedVerb.AdditionalCooldownPercent),
+            //         CooldownTex);
 
             return result;
         }

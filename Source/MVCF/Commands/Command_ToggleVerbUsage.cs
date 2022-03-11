@@ -1,7 +1,7 @@
 using MVCF.Utilities;
 using Verse;
 
-namespace MVCF
+namespace MVCF.Commands
 {
     public class Command_ToggleVerbUsage : Command_Toggle
     {

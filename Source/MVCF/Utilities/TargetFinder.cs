@@ -18,7 +18,7 @@ namespace MVCF.Utilities
             if (searchVerb is null)
             {
                 var man = __instance.Manager();
-                if (!man.HasVerbs || !man.HasVerbs || man.SearchVerb == null || !man.SearchVerb.Available()) return true;
+                if (!man.HasVerbs || man.SearchVerb == null || !man.SearchVerb.Available()) return true;
                 if (man.debugOpts.VerbLogging) Log.Message("[MVCF] Giving SearchVerb from CurrentEffectiveVerb");
                 __result = man.SearchVerb;
                 return false;

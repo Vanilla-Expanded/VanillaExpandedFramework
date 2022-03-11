@@ -12,17 +12,13 @@ namespace MVCF.Utilities
             if (man == null) return;
             if (Base.IsIgnoredMod(eq?.def?.modContentPack?.Name)) return;
             if (Base.ShouldIgnore(eq)) return;
-            var comp = eq.TryGetComp<CompEquippable>();
+            var comp = eq?.TryGetComp<CompEquippable>();
             if (comp?.VerbTracker?.AllVerbs == null) return;
             if (Base.GetFeature<Feature_ExtraEquipmentVerbs>().Enabled)
                 foreach (var verb in comp.VerbTracker.AllVerbs)
-                    man.AddVerb(verb, VerbSource.Equipment, comp.props is CompProperties_VerbProps props
-                        ? props.PropsFor(verb)
-                        : eq.TryGetComp<Comp_VerbProps>()?.Props?.PropsFor(verb));
+                    man.AddVerb(verb, VerbSource.Equipment);
             else if (eq is {def: {equipmentType: EquipmentType.Primary}})
-                man.AddVerb(comp.PrimaryVerb, VerbSource.Equipment, comp.props is CompProperties_VerbProps props
-                    ? props.PropsFor(comp.PrimaryVerb)
-                    : eq.TryGetComp<Comp_VerbProps>()?.Props?.PropsFor(comp.PrimaryVerb));
+                man.AddVerb(comp.PrimaryVerb, VerbSource.Equipment);
         }
 
         public static void AddVerbs(this VerbManager man, Apparel apparel)
@@ -30,11 +26,11 @@ namespace MVCF.Utilities
             if (man == null) return;
             if (Base.IsIgnoredMod(apparel?.def?.modContentPack?.Name)) return;
             if (Base.ShouldIgnore(apparel)) return;
-            var comp = apparel.TryGetComp<Comp_VerbGiver>();
+            var comp = apparel?.TryGetComp<Comp_VerbGiver>();
             if (comp?.VerbTracker?.AllVerbs == null) return;
             comp.Notify_Worn(man.Pawn);
             foreach (var verb in comp.VerbTracker.AllVerbs)
-                man.AddVerb(verb, VerbSource.Apparel, comp.PropsFor(verb));
+                man.AddVerb(verb, VerbSource.Apparel);
         }
 
         public static void AddVerbs(this VerbManager man, Hediff hediff)
@@ -45,7 +41,7 @@ namespace MVCF.Utilities
             if (comp?.VerbTracker?.AllVerbs == null) return;
             var extComp = comp as HediffComp_ExtendedVerbGiver;
             foreach (var verb in comp.VerbTracker.AllVerbs)
-                man.AddVerb(verb, VerbSource.Hediff, extComp?.PropsFor(verb));
+                man.AddVerb(verb, VerbSource.Hediff);
         }
     }
 }

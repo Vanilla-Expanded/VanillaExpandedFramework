@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using MVCF;
-using MVCF.Reloading;
+using MVCF.Reloading.Comps;
+using MVCF.VerbComps;
 using Verse;
 using Verse.Sound;
 
@@ -62,6 +63,25 @@ namespace Reloading
 
         public bool GenerateBackupWeapon => Props.GenerateBackupWeapon;
 
+        public string GetUniqueLoadID() => $"{parent.GetUniqueLoadID()}_Reloadable";
+
+        public IEnumerable<VerbCompProperties> GetCompsFor(VerbProperties verbProps)
+        {
+            if (verbProps.label is null || verbProps.label == Props.VerbLabel)
+                yield return new VerbCompProperties_Reloadable
+                {
+                    AmmoFilter = Props.AmmoFilter,
+                    GenerateAmmo = Props.GenerateAmmo,
+                    GenerateBackupWeapon = Props.GenerateBackupWeapon,
+                    ItemsPerShot = Props.ItemsPerShot,
+                    MaxShots = Props.MaxShots,
+                    NewVerbClass = Props.NewVerbClass,
+                    ReloadTimePerShot = Props.ReloadTimePerShot,
+                    ReloadSound = Props.ReloadSound,
+                    compClass = typeof(VerbComp_Reloadable)
+                };
+        }
+
         private int ShotsToReload(Thing ammo) => Math.Min(ammo.stackCount / Props.ItemsPerShot, Props.MaxShots - ShotsRemaining);
 
         public override void CompExposeData()
@@ -87,7 +107,6 @@ namespace Reloading
         public int ItemsPerShot;
         public int MaxShots;
         public Type NewVerbClass;
-        public bool PatchFirstFound;
         public SoundDef ReloadSound;
         public float ReloadTimePerShot;
         public string VerbLabel;
@@ -104,10 +123,12 @@ namespace Reloading
             base.ResolveReferences(parent);
             AmmoFilter.ResolveReferences();
             Base.EnabledFeatures.Add("Reloading");
+            Base.EnabledFeatures.Add("VerbComps");
+            Base.EnabledFeatures.Add("ExtraEquipmentVerbs");
             var verb = TargetVerb(parent);
             if (verb == null) return;
             if (NewVerbClass != null) verb.verbClass = NewVerbClass;
-            ReloadingMod.RegisterVerb(verb.verbClass, PatchFirstFound);
+            // PatchSet_ReloadingAuto.RegisterVerb(verb.verbClass, PatchFirstFound);
         }
 
         private VerbProperties TargetVerb(HediffDef parent)

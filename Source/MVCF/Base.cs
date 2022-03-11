@@ -12,6 +12,7 @@ namespace MVCF
     public class Base : Mod
     {
         public static string SearchLabel;
+        private static readonly HashSet<Patch> appliedPatches = new();
         public static bool Prepatcher;
         public static List<Feature> AllFeatures;
         public static HashSet<string> EnabledFeatures = new();
@@ -32,6 +33,8 @@ namespace MVCF
             "Cybernetic Warfare and Special Weapons"
         };
 
+        private static Dictionary<Type, Feature> features;
+
         public Base(ModContentPack content) : base(content)
         {
             Harm = new Harmony("legodude17.mvcf");
@@ -40,9 +43,10 @@ namespace MVCF
             if (Prepatcher) Log.Message("[MVCF] Prepatcher installed, switching");
             LongEventHandler.ExecuteWhenFinished(CollectFeatureData);
             AllFeatures = typeof(Feature).AllSubclassesNonAbstract().Select(type => (Feature) Activator.CreateInstance(type)).ToList();
+            features = AllFeatures.ToDictionary(f => f.GetType());
         }
 
-        public static Feature GetFeature<T>() where T : Feature => AllFeatures.OfType<T>().FirstOrDefault();
+        public static Feature GetFeature<T>() where T : Feature => features[typeof(T)];
 
         public static bool ShouldIgnore(Thing thing)
         {
@@ -80,17 +84,42 @@ namespace MVCF
                 }
             }
 
-            foreach (var feature in EnabledFeatures.SelectMany(f => AllFeatures.Where(feature => feature.Name == f))) feature.Enable(Harm);
+            foreach (var feature in EnabledFeatures.SelectMany(f => AllFeatures.Where(feature => feature.Name == f)))
+            {
+                Log.Message($"[MVCF] Applying patches for feature {feature.Name}");
+                EnableFeature(feature);
+            }
 
             Patch.PrintSummary();
         }
 
-        public static bool IsIgnoredMod(string name) => name != null && IgnoredMods.Contains(name);
-
-        [Obsolete]
-        public static void ApplyPatches()
+        public static void EnableFeature(Feature feature)
         {
+            feature.Enabled = true;
+            foreach (var patch in feature.Patches) ApplyPatch(patch);
         }
+
+        public static void DisableFeature(Feature feature)
+        {
+            feature.Enabled = false;
+            foreach (var patch in feature.Patches.Except(AllFeatures.Where(f => f.Enabled).SelectMany(f => f.Patches))) UnapplyPatch(patch);
+        }
+
+        public static void ApplyPatch(Patch patch)
+        {
+            if (appliedPatches.Contains(patch)) return;
+            patch.Apply(Harm);
+            appliedPatches.Add(patch);
+        }
+
+        public static void UnapplyPatch(Patch patch)
+        {
+            if (!appliedPatches.Contains(patch)) return;
+            patch.Unapply(Harm);
+            appliedPatches.Remove(patch);
+        }
+
+        public static bool IsIgnoredMod(string name) => name != null && IgnoredMods.Contains(name);
     }
 
     public interface IFakeCaster
@@ -116,6 +145,9 @@ namespace MVCF
         public override void PostLoad()
         {
             base.PostLoad();
+
+            #region BackCompatability
+
             if (Features is not null)
             {
                 if (Features.ApparelVerbs) ActivateFeatures.Add("ApparelVerbs");
@@ -127,6 +159,8 @@ namespace MVCF
                 if (Features.RangedAnimals) ActivateFeatures.Add("RangedAnimals");
                 if (Features.TickVerbs) ActivateFeatures.Add("TickVerbs");
             }
+
+            #endregion
         }
     }
 

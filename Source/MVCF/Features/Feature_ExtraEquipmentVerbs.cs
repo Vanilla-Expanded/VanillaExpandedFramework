@@ -36,10 +36,9 @@ namespace MVCF.Features
         {
             var rangedVerbs = __instance.AllVerbs.Where(v => !v.IsMeleeAttack).ToList();
             var melee = VerbManager.PreferMelee(__instance.parent);
-            if (rangedVerbs.Count <= 1 && !melee) return true;
-            var man = __instance.PrimaryVerb?.CasterPawn?.Manager(false);
+            if (rangedVerbs.Count <= 1 && !melee && !Base.GetFeature<Feature_VerbComps>().Enabled) return true;
             __result = rangedVerbs
-                .SelectMany(v => v.GetGizmosForVerb(man?.GetManagedVerbForVerb(v)))
+                .SelectMany(v => v.GetGizmosForVerb(v.Managed()))
                 .OfType<Command>();
             if (melee)
                 __result = __result.Prepend(createVerbTargetCommand(__instance.verbTracker, __instance.parent, __instance.AllVerbs.First(v => v.verbProps.IsMeleeAttack)));

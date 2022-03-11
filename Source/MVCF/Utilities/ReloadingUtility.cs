@@ -12,19 +12,17 @@ namespace MVCF.Utilities
         public static IEnumerable<IReloadable> AllReloadComps(this Pawn p)
         {
             if (p?.equipment != null)
-                foreach (var comp in p.equipment.AllEquipmentListForReading.SelectMany(eq => eq.AllComps))
-                    if (comp is IReloadable reloadable)
-                        yield return reloadable;
+                foreach (var reloadable in p.equipment.AllEquipmentListForReading.SelectMany(eq => eq.AllComps).OfType<IReloadable>())
+                    yield return reloadable;
+
             if (p?.apparel != null)
-                foreach (var comp in p.apparel.WornApparel.SelectMany(app => app.AllComps))
-                    if (comp is IReloadable reloadable)
-                        yield return reloadable;
+                foreach (var reloadable in p.apparel.WornApparel.SelectMany(app => app.AllComps).OfType<IReloadable>())
+                    yield return reloadable;
 
             if (p?.health?.hediffSet != null)
-                foreach (var comp in p.health.hediffSet.hediffs.OfType<HediffWithComps>()
-                    .SelectMany(hediff => hediff.comps))
-                    if (comp is IReloadable reloadable)
-                        yield return reloadable;
+                foreach (var reloadable in p.health.hediffSet.hediffs.OfType<HediffWithComps>()
+                    .SelectMany(hediff => hediff.comps).OfType<IReloadable>())
+                    yield return reloadable;
         }
 
         public static IReloadable GetReloadableComp(this Thing thing)
@@ -43,19 +41,15 @@ namespace MVCF.Utilities
 
         public static IReloadable GetReloadable(this Verb verb)
         {
-            if (reloadables.ContainsKey(verb)) return reloadables[verb];
+            if (reloadables.TryGetValue(verb, out var rv)) return rv;
 
-            IReloadable rv;
-
-            if (verb.EquipmentSource != null &&
-                verb.EquipmentSource.AllComps.FirstOrFallback(comp => comp is IReloadable) is IReloadable r1)
+            if (verb.Managed(false)?.Comps.FirstOrDefault(comp => comp is IReloadable) is IReloadable r3)
+                rv = r3;
+            else if (verb.EquipmentSource?.AllComps.FirstOrFallback(comp => comp is IReloadable) is IReloadable r1)
                 rv = r1;
-
-            else if (verb.HediffCompSource?.parent != null &&
-                     verb.HediffCompSource.parent.comps.FirstOrFallback(comp => comp is IReloadable) is IReloadable r2
-            )
+            else if (verb.HediffCompSource?.parent?.comps.FirstOrFallback(comp => comp is IReloadable) is IReloadable r2)
                 rv = r2;
-            else rv = null;
+
             reloadables.Add(verb, rv);
             return rv;
         }

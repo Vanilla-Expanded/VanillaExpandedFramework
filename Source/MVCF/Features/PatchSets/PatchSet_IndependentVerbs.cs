@@ -28,7 +28,7 @@ namespace MVCF.Features.PatchSets
             var man = __instance.Manager();
             if (man == null) return;
             if (man.NeedsTicking)
-                WorldComponent_MVCF.GetComp().TickManagers.Add(new System.WeakReference<VerbManager>(man));
+                WorldComponent_MVCF.Instance.TickManagers.Add(new System.WeakReference<VerbManager>(man));
             man.Notify_Spawned();
         }
 
@@ -37,7 +37,7 @@ namespace MVCF.Features.PatchSets
             var man = __instance.Manager(false);
             if (man == null) return;
             if (man.NeedsTicking)
-                WorldComponent_MVCF.GetComp().TickManagers.RemoveAll(wr =>
+                WorldComponent_MVCF.Instance.TickManagers.RemoveAll(wr =>
                 {
                     if (!wr.TryGetTarget(out var vm)) return true;
                     return vm == man;

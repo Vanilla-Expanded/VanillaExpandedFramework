@@ -7,7 +7,7 @@ using Verse.AI;
 
 namespace Reloading
 {
-    internal class JobGiver_ReloadFromInventory : ThinkNode_JobGiver
+    public class JobGiver_ReloadFromInventory : ThinkNode_JobGiver
     {
         public override float GetPriority(Pawn pawn) => 6.1f;
 

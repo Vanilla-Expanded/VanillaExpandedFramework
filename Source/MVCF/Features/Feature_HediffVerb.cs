@@ -34,7 +34,7 @@ namespace MVCF.Features
 
         public static void AddHediff_Postfix(Hediff hediff, Pawn_HealthTracker __instance)
         {
-            __instance.hediffSet.pawn.Manager().AddVerbs(hediff);
+            __instance.hediffSet.pawn.Manager(false)?.AddVerbs(hediff);
         }
 
         public static void PostRemoved_Postfix(Hediff __instance)
@@ -42,7 +42,7 @@ namespace MVCF.Features
             if (Base.IsIgnoredMod(__instance.def?.modContentPack?.Name)) return;
             var comp = __instance.TryGetComp<HediffComp_VerbGiver>();
             if (comp?.VerbTracker?.AllVerbs == null) return;
-            var manager = __instance.pawn.Manager();
+            var manager = __instance.pawn.Manager(false);
             if (manager == null) return;
             foreach (var verb in comp.VerbTracker.AllVerbs) manager.RemoveVerb(verb);
         }

@@ -1,27 +1,25 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using MVCF.Comps;
 using MVCF.Features;
 using MVCF.Utilities;
-using RimWorld;
 using UnityEngine;
 using Verse;
 
 namespace MVCF
 {
-    public class VerbManager : IVerbOwner
+    public class VerbManager : IExposable
     {
         private static readonly Dictionary<ThingWithComps, bool> preferMeleeCache =
             new();
 
         private readonly List<ManagedVerb> drawVerbs = new();
         private readonly List<ManagedVerb> tickVerbs = new();
-        private readonly List<ManagedVerb> verbs = new();
         public Verb CurrentVerb;
         public DebugOptions debugOpts;
         public bool HasVerbs;
         public Verb SearchVerb;
+        private List<ManagedVerb> verbs = new();
         public bool NeedsTicking { get; private set; }
 
         public IEnumerable<ManagedVerb> CurrentlyUseableRangedVerbs => verbs.Where(v =>
@@ -45,22 +43,13 @@ namespace MVCF
 
         public IEnumerable<ManagedVerb> ManagedVerbs => verbs;
 
-        public IEnumerable<Verb> AllRangedVerbsNoEquipmentNoApparel => verbs
-            .Where(mv => mv.Source != VerbSource.Equipment && mv.Source != VerbSource.Apparel).Select(mv => mv.Verb);
-
         public Pawn Pawn { get; private set; }
 
-        public string UniqueVerbOwnerID() => "VerbManager_" + (Pawn as IVerbOwner).UniqueVerbOwnerID();
-
-        public bool VerbsStillUsableBy(Pawn p) => p == Pawn;
-
-        public VerbTracker VerbTracker { get; private set; }
-
-        public List<VerbProperties> VerbProperties => new();
-
-        public List<Tool> Tools => new();
-        public ImplementOwnerTypeDef ImplementOwnerTypeDef => ImplementOwnerTypeDefOf.NativeVerb;
-        public Thing ConstantCaster => Pawn;
+        public void ExposeData()
+        {
+            Scribe_References.Look(ref CurrentVerb, "currentVerb");
+            Scribe_Collections.Look(ref verbs, "verbs", LookMode.Reference);
+        }
 
         public void Notify_Spawned()
         {
@@ -83,20 +72,9 @@ namespace MVCF
             return res;
         }
 
-        public ManagedVerb GetManagedVerbForVerb(Verb verb, bool warnOnFailed = true)
-        {
-            var mv = verbs.FirstOrFallback(v => v.Verb == verb);
-            if (mv == null && warnOnFailed)
-                Log.ErrorOnce("[MVCF] Attempted to get ManagedVerb for verb " + verb.Label() +
-                              " which does not have one. This may cause issues.", verb.GetHashCode());
-
-            return mv;
-        }
-
         public void Initialize(Pawn pawn)
         {
             Pawn = pawn;
-            VerbTracker = new VerbTracker(this);
             NeedsTicking = false;
             debugOpts.ScoreLogging = false;
             debugOpts.VerbLogging = false;
@@ -106,58 +84,62 @@ namespace MVCF
                     $"[MVCF] Found pawn {pawn} with native ranged verbs while that feature is not enabled." +
                     $" Enabling now. This is not recommended. Contact the author of {pawn?.def?.modContentPack?.Name} and ask them to add a MVCF.ModDef.",
                     pawn?.def?.modContentPack?.Name?.GetHashCode() ?? -1);
+            if (verbs.NullOrEmpty()) InitializeVerbs();
 
-            if (pawn?.VerbTracker?.AllVerbs != null && Base.GetFeature<Feature_RangedAnimals>().Enabled)
-                foreach (var verb in pawn.VerbTracker.AllVerbs)
-                    AddVerb(verb, VerbSource.RaceDef, pawn.TryGetComp<Comp_VerbProps>()?.PropsFor(verb));
+            RecalcSearchVerb();
+        }
 
-            if (pawn?.health?.hediffSet?.hediffs != null && Base.GetFeature<Feature_HediffVerb>().Enabled)
-                foreach (var hediff in pawn.health.hediffSet.hediffs)
+        public void InitializeVerbs()
+        {
+            if (Pawn?.VerbTracker?.AllVerbs != null && Base.GetFeature<Feature_RangedAnimals>().Enabled)
+                foreach (var verb in Pawn.VerbTracker.AllVerbs)
+                    AddVerb(verb, VerbSource.RaceDef);
+
+            if (Pawn?.health?.hediffSet?.hediffs != null && Base.GetFeature<Feature_HediffVerb>().Enabled)
+                foreach (var hediff in Pawn.health.hediffSet.hediffs)
                     this.AddVerbs(hediff);
 
-            if (pawn?.apparel?.WornApparel != null && Base.GetFeature<Feature_ApparelVerbs>().Enabled)
-                foreach (var apparel in pawn.apparel.WornApparel)
+            if (Pawn?.apparel?.WornApparel != null && Base.GetFeature<Feature_ApparelVerbs>().Enabled)
+                foreach (var apparel in Pawn.apparel.WornApparel)
                     this.AddVerbs(apparel);
 
-            if (pawn?.equipment?.AllEquipmentListForReading != null)
+            if (Pawn?.equipment?.AllEquipmentListForReading != null)
             {
                 if (Base.GetFeature<Feature_ExtraEquipmentVerbs>().Enabled)
-                    foreach (var eq in pawn.equipment.AllEquipmentListForReading)
+                    foreach (var eq in Pawn.equipment.AllEquipmentListForReading)
                         this.AddVerbs(eq);
-                else if (pawn.equipment.Primary is { } eq) this.AddVerbs(eq);
+                else if (Pawn.equipment.Primary is { } eq) this.AddVerbs(eq);
             }
         }
 
-        public void AddVerb(Verb verb, VerbSource source, AdditionalVerbProps props)
+        public void AddVerb(Verb verb, VerbSource source)
         {
-            if (debugOpts.VerbLogging) Log.Message("Adding " + verb + " from " + source + " with props " + props);
+            if (debugOpts.VerbLogging) Log.Message($"Adding {verb} from {source}");
+
             if (AllVerbs.Contains(verb))
             {
                 if (debugOpts.VerbLogging) Log.Warning("Added duplicate verb " + verb);
                 return;
             }
 
-            var mv = props switch
-            {
-                {managedClass: { } type} => (ManagedVerb) Activator.CreateInstance(type, verb, source, props, this),
-                {canFireIndependently: true} => new TurretVerb(verb, source, props, this),
-                {draw: true} => new DrawnVerb(verb, source, props, this),
-                _ => new ManagedVerb(verb, source, props, this)
-            };
+            var mv = verb.Managed();
+
+            mv.Notify_Added(this, source);
 
             if (Pawn.Spawned && mv is TurretVerb tv) tv.CreateCaster();
 
-            if (props is {draw: true})
-                if (mv.NeedsTicking)
+            if (mv.Props is {draw: true})
+                drawVerbs.Add(mv);
+            if (mv.NeedsTicking)
+            {
+                if (tickVerbs.Count == 0)
                 {
-                    if (tickVerbs.Count == 0)
-                    {
-                        NeedsTicking = true;
-                        WorldComponent_MVCF.GetComp().TickManagers.Add(new System.WeakReference<VerbManager>(this));
-                    }
-
-                    tickVerbs.Add(mv);
+                    NeedsTicking = true;
+                    WorldComponent_MVCF.Instance.TickManagers.Add(new System.WeakReference<VerbManager>(this));
                 }
+
+                tickVerbs.Add(mv);
+            }
 
             verbs.Add(mv);
             RecalcSearchVerb();
@@ -169,6 +151,7 @@ namespace MVCF
             var mv = verbs.Find(m => m.Verb == verb);
             if (debugOpts.VerbLogging) Log.Message("Found ManagedVerb: " + mv);
 
+            mv.Notify_Removed();
             var success = verbs.Remove(mv);
             if (debugOpts.VerbLogging) Log.Message("Succeeded at removing: " + success);
             if (!success) return;
@@ -176,7 +159,7 @@ namespace MVCF
             if (tickVerbs.Contains(mv) && tickVerbs.Remove(mv) && tickVerbs.Count == 0)
             {
                 NeedsTicking = false;
-                WorldComponent_MVCF.GetComp().TickManagers.RemoveAll(wr =>
+                WorldComponent_MVCF.Instance.TickManagers.RemoveAll(wr =>
                 {
                     if (!wr.TryGetTarget(out var man)) return true;
                     return man == this;
@@ -217,6 +200,7 @@ namespace MVCF
 
     public enum VerbSource
     {
+        None,
         Apparel,
         Equipment,
         Hediff,

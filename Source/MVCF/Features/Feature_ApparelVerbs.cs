@@ -22,7 +22,7 @@ namespace MVCF.Features
 
         public static void ApparelAdded_Postfix(Pawn_ApparelTracker __instance, Apparel apparel)
         {
-            __instance.pawn.Manager().AddVerbs(apparel);
+            __instance.pawn.Manager(false)?.AddVerbs(apparel);
         }
 
         public static void ApparelRemoved_Postfix(Apparel apparel, Pawn_ApparelTracker __instance)
@@ -31,7 +31,7 @@ namespace MVCF.Features
             var comp = apparel.TryGetComp<Comp_VerbGiver>();
             if (comp?.VerbTracker?.AllVerbs == null) return;
             comp.Notify_Unworn();
-            var manager = __instance.pawn?.Manager();
+            var manager = __instance.pawn?.Manager(false);
             if (manager == null) return;
             foreach (var verb in comp.VerbTracker.AllVerbs) manager.RemoveVerb(verb);
         }

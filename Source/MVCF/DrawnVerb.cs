@@ -1,5 +1,4 @@
-﻿using MVCF.Comps;
-using UnityEngine;
+﻿using UnityEngine;
 using Verse;
 using Verse.AI.Group;
 
@@ -13,10 +12,6 @@ namespace MVCF
         private static readonly Vector3 SouthEquipOffset = new(0f, 0.0367346928f, -0.22f);
 
         private static readonly Vector3 EquipPointOffset = new(0f, 0f, 0.4f);
-
-        public DrawnVerb(Verb verb, VerbSource source, AdditionalVerbProps props, VerbManager man) : base(verb, source, props, man)
-        {
-        }
 
         public override void DrawOn(Pawn p, Vector3 drawPos)
         {
@@ -81,7 +76,7 @@ namespace MVCF
         {
             var num = aimAngle - 90f;
             Mesh mesh;
-            if (aimAngle > 200f && aimAngle < 340f)
+            if (aimAngle is > 200f and < 340f)
             {
                 mesh = MeshPool.plane10Flip;
                 num -= 180f;
@@ -99,7 +94,7 @@ namespace MVCF
 
         private static bool CarryWeaponOpenly(Pawn pawn)
         {
-            if (pawn.carryTracker != null && pawn.carryTracker.CarriedThing != null) return false;
+            if (pawn.carryTracker is {CarriedThing: { }}) return false;
 
             if (pawn.Drafted) return true;
 

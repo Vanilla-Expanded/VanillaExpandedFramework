@@ -92,7 +92,7 @@ namespace MVCF.Features
 
         public static void EquipmentAdded_Postfix(ThingWithComps eq, Pawn_EquipmentTracker __instance)
         {
-            __instance.pawn.Manager()?.AddVerbs(eq);
+            __instance.pawn.Manager(false)?.AddVerbs(eq);
         }
 
         public static void EquipmentRemoved_Postfix(ThingWithComps eq, Pawn_EquipmentTracker __instance)
@@ -100,7 +100,7 @@ namespace MVCF.Features
             if (Base.IsIgnoredMod(eq?.def?.modContentPack?.Name)) return;
             var comp = eq.TryGetComp<CompEquippable>();
             if (comp?.VerbTracker?.AllVerbs == null) return;
-            var manager = __instance?.pawn?.Manager();
+            var manager = __instance?.pawn?.Manager(false);
             if (manager == null) return;
             foreach (var verb in comp.VerbTracker.AllVerbs) manager.RemoveVerb(verb);
         }

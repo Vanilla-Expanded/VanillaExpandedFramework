@@ -11,22 +11,31 @@ namespace MVCF.Utilities
             if (p == null) return null;
             return Base.Prepatcher
                 ? PrepatchedVerbManager(p, createIfMissing)
-                : WorldComponent_MVCF.GetComp().GetManagerFor(p, createIfMissing);
+                : WorldComponent_MVCF.Instance.GetManagerFor(p, createIfMissing);
         }
 
-        public static VerbManager PrepatchedVerbManager(Pawn p, bool createIfMissing = true)
+        private static VerbManager PrepatchedVerbManager(Pawn p, bool createIfMissing = true)
         {
             if (p.MVCF_VerbManager == null && createIfMissing)
             {
-                var comp = WorldComponent_MVCF.GetComp();
                 p.MVCF_VerbManager = new VerbManager();
                 p.MVCF_VerbManager.Initialize(p);
-                comp.allManagers.Add(new System.WeakReference<VerbManager>(p.MVCF_VerbManager));
-                if (comp.currentVerbSaved != null && comp.currentVerbSaved.TryGetValue(p, out var currentVerb))
-                    p.MVCF_VerbManager.CurrentVerb = currentVerb;
             }
 
             return p.MVCF_VerbManager;
+        }
+
+        public static void SaveManager(this Pawn p)
+        {
+            if (Base.Prepatcher) PrepatchedSaveManager(p);
+            else WorldComponent_MVCF.Instance.SaveManager(p);
+        }
+
+
+        private static void PrepatchedSaveManager(Pawn p)
+        {
+            Scribe_Deep.Look(ref p.MVCF_VerbManager, "MVCF_VerbManager");
+            if (Scribe.mode == LoadSaveMode.PostLoadInit) p.MVCF_VerbManager?.Initialize(p);
         }
 
         public static Verb BestVerbForTarget(this Pawn p, LocalTargetInfo target, IEnumerable<ManagedVerb> verbs,

@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using MVCF;
-using MVCF.Reloading;
+using MVCF.Reloading.Comps;
+using MVCF.VerbComps;
 using Verse;
 using Verse.Sound;
 
@@ -13,6 +14,7 @@ namespace Reloading
         public CompProperties_Reloadable Props => props as CompProperties_Reloadable;
 
         public bool GenerateBackupWeapon => Props.GenerateBackupWeapon;
+        public Pawn Pawn => (parent.ParentHolder as Pawn_EquipmentTracker)?.pawn;
         public List<ThingDefCountRangeClass> GenerateAmmo => Props.GenerateAmmo;
         public int ShotsRemaining { get; set; }
         public int ItemsPerShot => Props.ItemsPerShot;
@@ -58,6 +60,26 @@ namespace Reloading
         public void ReloadEffect(int curTick, int ticksTillDone)
         {
             if (curTick == ticksTillDone - 2f.SecondsToTicks()) Props.ReloadSound?.PlayOneShot(parent);
+        }
+
+        public string GetUniqueLoadID() => $"{parent.GetUniqueLoadID()}_Reloadable";
+
+        public IEnumerable<VerbCompProperties> GetCompsFor(VerbProperties verbProps)
+        {
+            if (Props.VerbLabel is null || verbProps.label == Props.VerbLabel)
+                yield return new VerbCompProperties_Reloadable
+                {
+                    AmmoFilter = Props.AmmoFilter,
+                    GenerateAmmo = Props.GenerateAmmo,
+                    GenerateBackupWeapon = Props.GenerateBackupWeapon,
+                    ItemsPerShot = Props.ItemsPerShot,
+                    MaxShots = Props.MaxShots,
+                    NewVerbClass = Props.NewVerbClass,
+                    ReloadTimePerShot = Props.ReloadTimePerShot,
+                    ReloadSound = Props.ReloadSound,
+                    StartLoaded = Props.StartLoaded,
+                    compClass = typeof(VerbComp_Reloadable)
+                };
         }
 
         public override void Initialize(CompProperties props)
@@ -113,9 +135,11 @@ namespace Reloading
         {
             base.PostLoadSpecial(parent);
             Base.EnabledFeatures.Add("Reloading");
+            Base.EnabledFeatures.Add("VerbComps");
+            Base.EnabledFeatures.Add("ExtraEquipmentVerbs");
             ref var type = ref TargetVerb(parent).verbClass;
             if (NewVerbClass != null) type = NewVerbClass;
-            ReloadingMod.RegisterVerb(type, PatchFirstFound);
+            // PatchSet_ReloadingAuto.RegisterVerb(type, PatchFirstFound);
         }
 
         private VerbProperties TargetVerb(ThingDef parent)

@@ -34,7 +34,7 @@ namespace MVCF.Features.PatchSets
                 : __instance.EquipmentSource.def?.modContentPack?.Name)) return true;
             var man = __instance.CasterPawn.Manager();
             if (man == null) return true;
-            var mv = man.GetManagedVerbForVerb(__instance, false);
+            var mv = __instance.Managed(false);
             if (mv != null) mv.Enabled = true;
             if (mv is TurretVerb tv)
             {

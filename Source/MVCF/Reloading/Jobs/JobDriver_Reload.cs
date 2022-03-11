@@ -42,7 +42,7 @@ namespace Reloading
                 initAction = () =>
                 {
                     var t = pawn.carryTracker.CarriedThing;
-                    if (t != null && !t.Destroyed)
+                    if (t is {Destroyed: false})
                         pawn.carryTracker.TryDropCarriedThing(pawn.Position, ThingPlaceMode.Near, out var dropped);
                 },
                 defaultCompleteMode = ToilCompleteMode.Instant

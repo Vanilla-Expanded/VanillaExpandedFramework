@@ -5,7 +5,7 @@ using Verse;
 
 namespace Reloading
 {
-    public class CompChangeableAmmo : CompReloadable, IThingHolder
+    public class CompChangeableAmmo : CompReloadable, IThingHolder, IChangeableAmmo
     {
         private readonly ThingOwner<Thing> loadedAmmo = new();
 
