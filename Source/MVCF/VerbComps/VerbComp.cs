@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using MVCF.Commands;
+using UnityEngine;
 using Verse;
 
 namespace MVCF.VerbComps
@@ -10,9 +11,25 @@ namespace MVCF.VerbComps
         public VerbCompProperties props;
         public virtual bool NeedsTicking => false;
 
+        public virtual bool Independent => false;
+
         public virtual void PostExposeData()
         {
         }
+
+        public virtual void DrawOnAt(Pawn p, Vector3 drawPos)
+        {
+        }
+
+        public virtual void Notify_Spawned()
+        {
+        }
+
+        public virtual void Notify_Despawned()
+        {
+        }
+
+        public virtual bool SetTarget(LocalTargetInfo target) => true;
 
         public virtual IEnumerable<CommandPart> GetCommandParts(Command_VerbTargetExtended command)
         {

@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using RimWorld;
-using UnityEngine;
 using Verse;
 
 // ReSharper disable InconsistentNaming
@@ -94,57 +92,5 @@ namespace MVCF.Comps
             base.ResolveReferences(parentDef);
             foreach (var verbProp in verbProps) verbProp.ResolveReferences();
         }
-    }
-
-    public class DrawPosition
-    {
-        private static readonly Vector2 PLACEHOLDER = Vector2.positiveInfinity;
-        public BodyTypeDef BodyType = AdditionalVerbProps.NA;
-        public Vector2 Default = PLACEHOLDER;
-        public string defName;
-        public Vector2 Down = PLACEHOLDER;
-        public Vector2 Left = PLACEHOLDER;
-        public Vector2 Right = PLACEHOLDER;
-        public Vector2 Up = PLACEHOLDER;
-
-        public static DrawPosition Zero => new()
-        {
-            defName = "",
-            Default = Vector2.zero
-        };
-
-        public Vector3 ForRot(Rot4 rot)
-        {
-            var vec = PLACEHOLDER;
-            switch (rot.AsInt)
-            {
-                case 0:
-                    vec = Up;
-                    break;
-                case 1:
-                    vec = Right;
-                    break;
-                case 2:
-                    vec = Down;
-                    break;
-                case 3:
-                    vec = Left;
-                    break;
-                default:
-                    vec = Default;
-                    break;
-            }
-
-            if (double.IsPositiveInfinity(vec.x)) vec = Default;
-            if (double.IsPositiveInfinity(vec.x)) vec = Vector2.zero;
-            return new Vector3(vec.x, 0, vec.y);
-        }
-    }
-
-    public class Scaling
-    {
-        public BodyTypeDef BodyType;
-        public string defName;
-        public float scaling;
     }
 }

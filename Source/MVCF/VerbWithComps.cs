@@ -4,6 +4,7 @@ using System.Linq;
 using MVCF.Commands;
 using MVCF.Comps;
 using MVCF.VerbComps;
+using UnityEngine;
 using Verse;
 
 namespace MVCF
@@ -11,6 +12,8 @@ namespace MVCF
     public class VerbWithComps : ManagedVerb
     {
         public override bool NeedsTicking => base.NeedsTicking || AllComps.Any(comp => comp.NeedsTicking);
+
+        public override bool Independent => base.Independent || AllComps.Any(comp => comp.Independent);
 
         public override void Initialize(Verb verb, AdditionalVerbProps props, IEnumerable<VerbCompProperties> additionalComps)
         {
@@ -24,6 +27,31 @@ namespace MVCF
                 AllComps.Add(comp);
                 comp.Initialize(compProps);
             }
+        }
+
+        public override bool SetTarget(LocalTargetInfo target)
+        {
+            foreach (var comp in AllComps)
+                if (!comp.SetTarget(target))
+                    return false;
+
+            return base.SetTarget(target);
+        }
+
+        public override void Notify_Spawned()
+        {
+            foreach (var comp in AllComps) comp.Notify_Spawned();
+        }
+
+        public override void Notify_Despawned()
+        {
+            foreach (var comp in AllComps) comp.Notify_Despawned();
+        }
+
+        public override void DrawOn(Pawn p, Vector3 drawPos)
+        {
+            base.DrawOn(p, drawPos);
+            for (var i = 0; i < AllComps.Count; i++) AllComps[i].DrawOnAt(p, drawPos);
         }
 
         public override bool Available() => base.Available() && AllComps.All(comp => comp.Available());

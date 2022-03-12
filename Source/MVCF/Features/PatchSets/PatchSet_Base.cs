@@ -24,7 +24,6 @@ namespace MVCF.Features.PatchSets
             yield return Patch.Postfix(AccessTools.Method(typeof(SlaveRebellionUtility), "CanApplyWeaponFactor"), AccessTools.Method(GetType(), nameof(CanApplyWeaponFactor)));
         }
 
-
         public static bool Prefix_OrderForceTarget(LocalTargetInfo target, Verb __instance)
         {
             if (__instance.verbProps.IsMeleeAttack || !__instance.CasterIsPawn)
@@ -36,11 +35,8 @@ namespace MVCF.Features.PatchSets
             if (man == null) return true;
             var mv = __instance.Managed(false);
             if (mv != null) mv.Enabled = true;
-            if (mv is TurretVerb tv)
-            {
-                tv.SetTarget(target);
-                return false;
-            }
+
+            if (mv != null && !mv.SetTarget(target)) return false;
 
             if (man.debugOpts.VerbLogging)
                 Log.Message("Changing CurrentVerb of " + __instance.CasterPawn + " to " + __instance);

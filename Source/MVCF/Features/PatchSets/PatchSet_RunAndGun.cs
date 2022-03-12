@@ -60,11 +60,6 @@ namespace MVCF.Features.PatchSets
             if (!__result) __result = instance.Manager().CurrentlyUseableRangedVerbs.Any();
         }
 
-        public static bool RunAndGunVerbCast(ref bool __result, Verb __0)
-        {
-            if (!(__0.caster is IFakeCaster)) return true;
-            __result = true;
-            return false;
-        }
+        public static bool RunAndGunVerbCast(ref bool __result, Verb __0) => true;
     }
 }

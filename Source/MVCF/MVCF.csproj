@@ -68,7 +68,6 @@
     <Compile Include="Comps\HediffComp_ExtendedVerbGiver.cs" />
     <Compile Include="Comps\Properties.cs" />
     <Compile Include="DebugActionsMVCF.cs" />
-    <Compile Include="DrawnVerb.cs" />
     <Compile Include="Features\Feature.cs" />
     <Compile Include="Features\Feature_ApparelVerbs.cs" />
     <Compile Include="Features\Feature_Drawing.cs" />
@@ -86,7 +85,6 @@
     <Compile Include="Features\PatchSets\PatchSet_RunAndGun.cs" />
     <Compile Include="Features\PatchSets\PatchSet_Hunting.cs" />
     <Compile Include="Features\PatchSets\PatchSet_BatteLog.cs" />
-    <Compile Include="Features\PatchSets\PatchSet_IndependentVerbs.cs" />
     <Compile Include="JobGiver_ManhunterRanged.cs" />
     <Compile Include="ManagedVerb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -104,12 +102,13 @@
     <Compile Include="Utilities\FloatMenuUtility.cs" />
     <Compile Include="Utilities\ManagedVerbUtility.cs" />
     <Compile Include="Utilities\ReloadingUtility.cs" />
-    <Compile Include="TurretVerb.cs" />
     <Compile Include="Utilities\TargetFinder.cs" />
     <Compile Include="Utilities\VerbManagerUtility.cs" />
     <Compile Include="VerbComps\VerbComp.cs" />
     <Compile Include="VerbComps\VerbCompProperties.cs" />
     <Compile Include="Reloading\Comps\VerbComp_Reloadable.cs" />
+    <Compile Include="VerbComps\VerbComp_Draw.cs" />
+    <Compile Include="VerbComps\VerbComp_Turret.cs" />
     <Compile Include="VerbManager.cs" />
     <Compile Include="Verbs\Verb_Jump.cs" />
     <Compile Include="Verbs\Verb_SmokePop.cs" />

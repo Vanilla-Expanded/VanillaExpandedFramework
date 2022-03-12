@@ -16,8 +16,6 @@ namespace MVCF.Utilities
             var mv = props switch
             {
                 {managedClass: { } type} => (ManagedVerb) Activator.CreateInstance(type),
-                {canFireIndependently: true} => new TurretVerb(),
-                {draw: true} => new DrawnVerb(),
                 _ when hasComps => new VerbWithComps(),
                 _ => new ManagedVerb()
             };

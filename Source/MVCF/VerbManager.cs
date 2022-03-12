@@ -53,12 +53,12 @@ namespace MVCF
 
         public void Notify_Spawned()
         {
-            foreach (var tv in tickVerbs.OfType<TurretVerb>()) tv.CreateCaster();
+            foreach (var verb in verbs) verb.Notify_Spawned();
         }
 
         public void Notify_Despawned()
         {
-            foreach (var tv in tickVerbs.OfType<TurretVerb>()) tv.DestroyCaster();
+            foreach (var verb in verbs) verb.Notify_Despawned();
         }
 
         public static bool PreferMelee(ThingWithComps eq)
@@ -126,7 +126,7 @@ namespace MVCF
 
             mv.Notify_Added(this, source);
 
-            if (Pawn.Spawned && mv is TurretVerb tv) tv.CreateCaster();
+            if (Pawn.Spawned) mv.Notify_Spawned();
 
             if (mv.Props is {draw: true})
                 drawVerbs.Add(mv);

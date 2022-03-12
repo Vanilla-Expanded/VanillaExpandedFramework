@@ -122,11 +122,6 @@ namespace MVCF
         public static bool IsIgnoredMod(string name) => name != null && IgnoredMods.Contains(name);
     }
 
-    public interface IFakeCaster
-    {
-        Thing RealCaster();
-    }
-
     public class ModDef : Def
     {
         public List<string> ActivateFeatures = new();

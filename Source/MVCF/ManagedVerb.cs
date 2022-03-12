@@ -37,6 +37,8 @@ namespace MVCF
 
         public virtual bool NeedsTicking => false;
 
+        public virtual bool Independent => false;
+
         public void ExposeData()
         {
             Scribe_Values.Look(ref enabledInt, "enabled");
@@ -45,6 +47,16 @@ namespace MVCF
         }
 
         public string GetUniqueLoadID() => loadId;
+
+        public virtual bool SetTarget(LocalTargetInfo target) => true;
+
+        public virtual void Notify_Spawned()
+        {
+        }
+
+        public virtual void Notify_Despawned()
+        {
+        }
 
         public virtual void Initialize(Verb verb, AdditionalVerbProps props, IEnumerable<VerbCompProperties> additionalComps)
         {

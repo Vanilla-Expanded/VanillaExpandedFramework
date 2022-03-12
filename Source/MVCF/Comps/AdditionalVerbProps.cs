@@ -23,10 +23,9 @@ namespace MVCF.Comps
         public float drawScale = 1f;
         public GraphicData graphic;
         public bool humanAsDefault;
+        public Texture2D Icon;
         public string label;
         public Type managedClass;
-        private Dictionary<string, Dictionary<BodyTypeDef, DrawPosition>> positions;
-        private Dictionary<string, Dictionary<BodyTypeDef, Scaling>> scale;
         public List<Scaling> scalings;
         public bool separateToggle;
         public List<DrawPosition> specificPositions;
@@ -35,9 +34,7 @@ namespace MVCF.Comps
         public string toggleLabel;
         public bool uniqueTargets;
         public string visualLabel;
-        public Texture2D ToggleIcon { get; protected set; }
-        public Texture2D Icon { get; protected set; }
-        public Graphic Graphic { get; protected set; }
+        public Texture2D ToggleIcon { get; private set; }
 
         public virtual IEnumerable<string> ConfigErrors(ThingDef parentDef)
         {
@@ -84,11 +81,11 @@ namespace MVCF.Comps
             if (managedClass != null && !managedClass.IsSubclassOf(typeof(ManagedVerb)))
                 yield return "managedClass must be subclass of ManagedVerb";
 
-            if (managedClass != null && canFireIndependently && !managedClass.IsSubclassOf(typeof(TurretVerb)))
-                yield return "managedClass of independent verb must be a subclass of TurretVerb";
+            if (managedClass != null && comps.Any() && !managedClass.IsSubclassOf(typeof(VerbWithComps)))
+                yield return "Has comps but is not VerbWithComps";
 
-            if (managedClass != null && draw && !managedClass.IsSubclassOf(typeof(DrawnVerb)))
-                yield return "managedClass of drawn verb must be a subclass of DrawnVerb";
+            if (draw) yield return "draw is deprecated, use VerbCompProperties_Draw";
+            if (canFireIndependently) yield return "canFireIndependently is deprecated, use VerbCompProperties_Turret";
         }
 
         public void ResolveReferences()
@@ -96,61 +93,35 @@ namespace MVCF.Comps
             foreach (var comp in comps) comp.ResolveReferences();
         }
 
-        public virtual Vector3 DrawPos(Pawn pawn, Vector3 drawPos, Rot4 rot)
-        {
-            DrawPosition pos = null;
-            if (positions.TryGetValue(pawn.def.defName, out var dic) ||
-                humanAsDefault && positions.TryGetValue(ThingDefOf.Human.defName, out dic))
-                if (!(pawn.story?.bodyType != null && dic.TryGetValue(pawn.story.bodyType, out pos)))
-                    dic.TryGetValue(NA, out pos);
-
-            pos ??= defaultPosition ?? DrawPosition.Zero;
-            return drawPos + pos.ForRot(rot);
-        }
-
-        public virtual float Scale(Pawn pawn)
-        {
-            Scaling s = null;
-            if (scale.TryGetValue(pawn.def.defName, out var dic) ||
-                humanAsDefault && scale.TryGetValue(ThingDefOf.Human.defName, out dic))
-                if (!(pawn.story?.bodyType != null && dic.TryGetValue(pawn.story.bodyType, out s)))
-                    dic.TryGetValue(NA, out s);
-
-            return s?.scaling ?? (drawScale == 0 ? 1f : drawScale);
-        }
-
         public virtual void Initialize(VerbProperties parent)
         {
             if (!string.IsNullOrWhiteSpace(toggleIconPath))
                 ToggleIcon = ContentFinder<Texture2D>.Get(toggleIconPath);
-            if (graphic != null)
-            {
-                Graphic = graphic.Graphic;
-                Icon = (Texture2D) Graphic.ExtractInnerGraphicFor(null).MatNorth.mainTexture;
-            }
 
-            if (positions == null)
-            {
-                positions = new Dictionary<string, Dictionary<BodyTypeDef, DrawPosition>>();
-                if (specificPositions != null)
-                    foreach (var pos in specificPositions)
-                        if (!positions.ContainsKey(pos.defName))
-                            positions.Add(pos.defName, new Dictionary<BodyTypeDef, DrawPosition> {{pos.BodyType, pos}});
-                        else
-                            positions[pos.defName].Add(pos.BodyType, pos);
-            }
-
-            if (scale == null)
-            {
-                scale = new Dictionary<string, Dictionary<BodyTypeDef, Scaling>>();
-                if (scalings != null)
-                    foreach (var scaling in scalings)
-                        if (scale.ContainsKey(scaling.defName))
-                            scale[scaling.defName].Add(scaling.BodyType, scaling);
-                        else
-                            scale.Add(scaling.defName,
-                                new Dictionary<BodyTypeDef, Scaling> {{scaling.BodyType, scaling}});
-            }
+            if (canFireIndependently)
+                comps.Add(new VerbCompProperties_Turret
+                {
+                    compClass = typeof(VerbComp_Turret),
+                    defaultPosition = defaultPosition,
+                    drawScale = drawScale,
+                    graphic = graphic,
+                    humanAsDefault = humanAsDefault,
+                    scalings = scalings,
+                    specificPositions = specificPositions,
+                    uniqueTargets = uniqueTargets,
+                    invisible = !draw
+                });
+            else if (draw)
+                comps.Add(new VerbCompProperties_Draw
+                {
+                    compClass = typeof(VerbComp_Draw),
+                    defaultPosition = defaultPosition,
+                    drawScale = drawScale,
+                    graphic = graphic,
+                    humanAsDefault = humanAsDefault,
+                    scalings = scalings,
+                    specificPositions = specificPositions
+                });
 
             if (comps.Any())
                 foreach (var comp in comps)

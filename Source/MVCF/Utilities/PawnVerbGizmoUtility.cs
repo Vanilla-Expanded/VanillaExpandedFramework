@@ -154,7 +154,7 @@ namespace MVCF.Utilities
         public static Texture2D Icon(this Verb verb, AdditionalVerbProps props, Thing ownerThing, bool toggle)
         {
             if (toggle && props?.ToggleIcon != null && props.ToggleIcon != BaseContent.BadTex) return props.ToggleIcon;
-            if (props?.Graphic != null && props.Icon != null && props.Icon != BaseContent.BadTex) return props.Icon;
+            if (props.Icon != null && props.Icon != BaseContent.BadTex) return props.Icon;
             if (verb.UIIcon != null && verb.verbProps.commandIcon != null && verb.UIIcon != BaseContent.BadTex)
                 return verb.UIIcon;
             if (ownerThing is ThingWithComps and not Pawn and not Apparel) return ownerThing.def.uiIcon;
