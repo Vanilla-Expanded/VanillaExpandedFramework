@@ -12,12 +12,11 @@ namespace MVCF.Commands
     [StaticConstructorOnStartup]
     public class Command_VerbTargetExtended : Command_VerbTarget
     {
-        public static readonly Texture2D CooldownTex = SolidColorMaterials.NewSolidColorTexture(new Color(1f, 1f, 1f, 0.1f));
         private readonly List<CommandPart> parts;
+        private readonly string topRightLabel;
 
         public ManagedVerb managedVerb;
         public Thing owner;
-        private readonly string topRightLabel;
 
         public Command_VerbTargetExtended(ManagedVerb mv, Thing ownerThing = null)
         {
@@ -70,9 +69,6 @@ namespace MVCF.Commands
             for (var i = 0; i < parts.Count; i++) parts[i].PreGizmoOnGUI(butRect, parms);
             var result = base.GizmoOnGUIInt(butRect, parms);
             for (var i = 0; i < parts.Count; i++) parts[i].PostGizmoOnGUI(butRect, parms, ref result);
-            // if (disabled && managedVerb.AdditionalCooldownPercent > 0)
-            //     GUI.DrawTexture(butRect.RightPartPixels(butRect.width * managedVerb.AdditionalCooldownPercent),
-            //         CooldownTex);
             return result;
         }
     }

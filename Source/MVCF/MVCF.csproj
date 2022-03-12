@@ -107,6 +107,7 @@
     <Compile Include="VerbComps\VerbComp.cs" />
     <Compile Include="VerbComps\VerbCompProperties.cs" />
     <Compile Include="Reloading\Comps\VerbComp_Reloadable.cs" />
+    <Compile Include="VerbComps\VerbComp_Cooldown.cs" />
     <Compile Include="VerbComps\VerbComp_Draw.cs" />
     <Compile Include="VerbComps\VerbComp_Turret.cs" />
     <Compile Include="VerbManager.cs" />
