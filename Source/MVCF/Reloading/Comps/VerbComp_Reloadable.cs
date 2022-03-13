@@ -124,9 +124,9 @@ namespace MVCF.Reloading.Comps
             AmmoFilter.ResolveReferences();
         }
 
-        public override void PostLoad(VerbProperties verbProps, AdditionalVerbProps additionalProps)
+        public override void PostLoadSpecial(VerbProperties verbProps, AdditionalVerbProps additionalProps)
         {
-            base.PostLoad(verbProps, additionalProps);
+            base.PostLoadSpecial(verbProps, additionalProps);
             Base.EnabledFeatures.Add("Reloading");
             Base.EnabledFeatures.Add("VerbComps");
             Base.EnabledFeatures.Add("ExtraEquipmentVerbs");

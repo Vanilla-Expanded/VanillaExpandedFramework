@@ -24,7 +24,7 @@ namespace MVCF.VerbComps
             yield break;
         }
 
-        public virtual void PostLoad(VerbProperties verbProps, AdditionalVerbProps additionalProps)
+        public virtual void PostLoadSpecial(VerbProperties verbProps, AdditionalVerbProps additionalProps)
         {
             Base.EnabledFeatures.Add("VerbComps");
         }

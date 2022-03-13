@@ -125,7 +125,7 @@ namespace MVCF.Comps
 
             if (comps.Any())
                 foreach (var comp in comps)
-                    comp.PostLoad(parent, this);
+                    comp.PostLoadSpecial(parent, this);
         }
     }
 }

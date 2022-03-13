@@ -179,9 +179,9 @@ namespace MVCF.VerbComps
             return s?.scaling ?? (drawScale == 0 ? 1f : drawScale);
         }
 
-        public override void PostLoad(VerbProperties verbProps, AdditionalVerbProps additionalProps)
+        public override void PostLoadSpecial(VerbProperties verbProps, AdditionalVerbProps additionalProps)
         {
-            base.PostLoad(verbProps, additionalProps);
+            base.PostLoadSpecial(verbProps, additionalProps);
             if (graphic != null)
             {
                 Graphic = graphic.Graphic;
