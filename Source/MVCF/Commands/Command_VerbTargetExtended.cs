@@ -14,6 +14,7 @@ namespace MVCF.Commands
     {
         private readonly List<CommandPart> parts;
         private readonly string topRightLabel;
+        private List<ManagedVerb> groupedVerbs;
 
         public ManagedVerb managedVerb;
         public Thing owner;
@@ -63,6 +64,25 @@ namespace MVCF.Commands
 
         public override string TopRightLabel => topRightLabel;
         public override IEnumerable<FloatMenuOption> RightClickFloatMenuOptions => parts.SelectMany(part => part.GetRightClickOptions());
+
+        public override bool GroupsWith(Gizmo other)
+        {
+            // Do not merge verbs on the same pawn, so that you can have multiple hediffs providing the same verbs that you can target separately
+            if (other is Command_VerbTargetExtended command && managedVerb.Manager.Pawn == command.managedVerb.Manager.Pawn) return false;
+            return base.GroupsWith(other);
+        }
+
+        public override void MergeWith(Gizmo other)
+        {
+            if (other is Command_VerbTargetExtended command)
+            {
+                groupedVerbs ??= new List<ManagedVerb>();
+                groupedVerbs.Add(command.managedVerb);
+                if (command.groupedVerbs is not null) groupedVerbs.AddRange(command.groupedVerbs);
+            }
+
+            base.MergeWith(other);
+        }
 
         protected override GizmoResult GizmoOnGUIInt(Rect butRect, GizmoRenderParms parms)
         {

@@ -117,7 +117,6 @@ namespace MVCF
         {
         }
 
-
         public virtual IEnumerable<Gizmo> GetGizmos(Thing ownerThing)
         {
             yield return GetTargetCommand(ownerThing);

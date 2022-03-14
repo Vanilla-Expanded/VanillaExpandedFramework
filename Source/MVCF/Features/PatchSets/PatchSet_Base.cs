@@ -22,6 +22,14 @@ namespace MVCF.Features.PatchSets
             yield return Patch.Postfix(AccessTools.Method(typeof(BreachingUtility), nameof(BreachingUtility.FindVerbToUseForBreaching)),
                 AccessTools.Method(GetType(), nameof(FindVerbToUseForBreaching)));
             yield return Patch.Postfix(AccessTools.Method(typeof(SlaveRebellionUtility), "CanApplyWeaponFactor"), AccessTools.Method(GetType(), nameof(CanApplyWeaponFactor)));
+            yield return Patch.Prefix(AccessTools.Method(typeof(Targeter), "GetTargetingVerb"), AccessTools.Method(GetType(), nameof(Prefix_GetTargetingVerb)));
+        }
+
+        public static bool Prefix_GetTargetingVerb(Pawn pawn, Targeter __instance, ref Verb __result)
+        {
+            if (pawn.Manager(false) is not { } man) return true;
+            __result = man.AllVerbs.FirstOrDefault(verb => verb.verbProps == __instance.targetingSource.GetVerb.verbProps);
+            return false;
         }
 
         public static bool Prefix_OrderForceTarget(LocalTargetInfo target, Verb __instance)

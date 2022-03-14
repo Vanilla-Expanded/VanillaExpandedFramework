@@ -20,7 +20,7 @@ namespace MVCF.VerbComps
         public override void Notify_ShotFired()
         {
             base.Notify_ShotFired();
-            cooldownTicksLeft = Props.cooldownTime.SecondsToTicks();
+            if (!parent.Verb.Bursting) cooldownTicksLeft = Props.cooldownTime.SecondsToTicks();
         }
 
         public override void CompTick()

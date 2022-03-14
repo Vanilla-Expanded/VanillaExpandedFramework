@@ -84,13 +84,16 @@ namespace MVCF
                 }
             }
 
-            foreach (var feature in EnabledFeatures.SelectMany(f => AllFeatures.Where(feature => feature.Name == f)))
+            LongEventHandler.ExecuteWhenFinished(() =>
             {
-                Log.Message($"[MVCF] Applying patches for feature {feature.Name}");
-                EnableFeature(feature);
-            }
+                foreach (var feature in EnabledFeatures.SelectMany(f => AllFeatures.Where(feature => feature.Name == f)))
+                {
+                    Log.Message($"[MVCF] Applying patches for feature {feature.Name}");
+                    EnableFeature(feature);
+                }
 
-            Patch.PrintSummary();
+                Patch.PrintSummary();
+            });
         }
 
         public static void EnableFeature(Feature feature)

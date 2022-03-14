@@ -36,7 +36,7 @@ namespace MVCF
             Log.Message("All ManagedVerbs for " + p.LabelCap);
             foreach (var verb in man.ManagedVerbs)
             {
-                Log.Message($"  {verb.Verb}: {(verb.Enabled ? "Enabled" : "Disabled")}{(verb.AllComps.Any() ? "Comps:" : "")}");
+                Log.Message($"  {verb.Verb} ({verb.Verb.loadID}, {verb.GetUniqueLoadID()}): {(verb.Enabled ? "Enabled" : "Disabled")}{(verb.AllComps.Any() ? " Comps:" : "")}");
                 foreach (var comp in verb.AllComps) Log.Message($"    {comp}");
             }
         }
