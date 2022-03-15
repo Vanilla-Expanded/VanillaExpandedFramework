@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using KCSG;
 using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
@@ -10,8 +9,6 @@ namespace Outposts
 {
     public partial class Outpost : MapParent
     {
-        private readonly Dictionary<SkillDef, int> totalSkills = new();
-
         private Material cachedMat;
 
         private List<Thing> containedItems = new();
@@ -50,24 +47,12 @@ namespace Outposts
             }
         }
 
-        public override MapGeneratorDef MapGeneratorDef
-        {
-            get
-            {
-                if (def.GetModExtension<CustomGenOption>() is { } cGen && (cGen.chooseFromlayouts.Count > 0 || cGen.chooseFromSettlements.Count > 0))
-                    return DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_Gen");
-                return MapGeneratorDefOf.Base_Faction;
-            }
-        }
-
         public virtual ThingDef ProvidedFood => Ext?.ProvidedFood ?? ThingDefOf.MealSimple;
         public OutpostExtension Ext => extensionCached ??= def.GetModExtension<OutpostExtension>();
 
         public virtual string TimeTillProduction => ticksTillProduction.ToStringTicksToPeriodVerbose().Colorize(ColoredText.DateTimeColor);
 
         public virtual List<ResultOption> ResultOptions => Ext.ResultOptions;
-
-        public bool Has(Pawn pawn) => occupants.Contains(pawn);
 
         public void AddItem(Thing t)
         {
@@ -80,70 +65,16 @@ namespace Outposts
             return t;
         }
 
-        protected virtual bool IsCapable(Pawn pawn)
-        {
-            if (!pawn.RaceProps.Humanlike) return false;
-            if (pawn.skills is null) return false;
-            return !Ext.RelevantSkills.Any(skill => pawn.skills.GetSkill(skill).TotallyDisabled);
-        }
-
         public override void PostAdd()
         {
             base.PostAdd();
             ticksTillProduction = Mathf.RoundToInt(TicksPerProduction * OutpostsMod.Settings.TimeMultiplier);
         }
 
-        public int TotalSkill(SkillDef skill)
-        {
-            if (skillsDirty)
-                foreach (var skillDef in DefDatabase<SkillDef>.AllDefs)
-                    totalSkills[skillDef] = CapablePawns.Sum(p => p.skills.GetSkill(skill).Level);
-            return totalSkills[skill];
-        }
-
         public override void DrawExtraSelectionOverlays()
         {
             base.DrawExtraSelectionOverlays();
             if (Range > 0) GenDraw.DrawWorldRadiusRing(Tile, Range);
-        }
-
-        public override void PostMapGenerate()
-        {
-            base.PostMapGenerate();
-
-            foreach (var pawn in Map.mapPawns.AllPawns.Where(p => p.RaceProps.Humanlike)) pawn.Destroy();
-
-            foreach (var occupant in occupants) GenPlace.TryPlaceThing(occupant, Map.Center, Map, ThingPlaceMode.Near);
-        }
-
-        public override bool ShouldRemoveMapNow(out bool alsoRemoveWorldObject)
-        {
-            if (!Map.mapPawns.FreeColonists.Any())
-            {
-                occupants.Clear();
-                Find.LetterStack.ReceiveLetter("Outposts.Letters.Lost.Label".Translate(), "Outposts.Letters.Lost.Text".Translate(Name), LetterDefOf.NegativeEvent);
-                alsoRemoveWorldObject = true;
-                return true;
-            }
-
-            if (!Map.mapPawns.AllPawns.Where(p => p.RaceProps.Humanlike).Any(p => p.HostileTo(Faction.OfPlayer)))
-            {
-                occupants.Clear();
-                Find.LetterStack.ReceiveLetter("Outposts.Letters.BattleWon.Label".Translate(), "Outposts.Letters.BattleWon.Text".Translate(Name), LetterDefOf.PositiveEvent,
-                    new LookTargets(Gen.YieldSingle(this)));
-                foreach (var pawn in Map.mapPawns.AllPawns.Where(p => p.Faction is {IsPlayer: true} || p.HostFaction is {IsPlayer: true}))
-                {
-                    pawn.DeSpawn();
-                    occupants.Add(pawn);
-                }
-
-                RecachePawnTraits();
-                alsoRemoveWorldObject = false;
-                return true;
-            }
-
-            alsoRemoveWorldObject = false;
-            return false;
         }
 
         public override void ExposeData()
@@ -154,6 +85,7 @@ namespace Outposts
             Scribe_Values.Look(ref Name, "name");
             Scribe_Collections.Look(ref containedItems, "containedItems", LookMode.Deep);
             Scribe_Values.Look(ref costPaid, "costPaid");
+            Scribe_Values.Look(ref ticksTillPacked, "ticksTillPacked");
             RecachePawnTraits();
         }
 
@@ -270,8 +202,8 @@ namespace Outposts
 
             pawn.holdingOwner?.Remove(pawn);
 
-            Find.WorldPawns.RemovePawn(pawn);
-            occupants.Add(pawn);
+            if (Find.WorldPawns.Contains(pawn)) Find.WorldPawns.RemovePawn(pawn);
+            if (!occupants.Contains(pawn)) occupants.Add(pawn);
             RecachePawnTraits();
 
             return true;
@@ -366,6 +298,13 @@ namespace Outposts
                     },
                     defaultLabel = "Dev: All pawns 0% food"
                 };
+                if (Packing)
+                    yield return new Command_Action
+                    {
+                        action = () => { ticksTillPacked = 1; },
+                        defaultLabel = "Dev: Pack now",
+                        defaultDesc = "Reduce ticksTillPacked to 1"
+                    };
             }
 
             yield return new Command_Action
@@ -392,21 +331,5 @@ namespace Outposts
             "Outposts.Packing".Translate(ticksTillPacked.ToStringTicksToPeriodVerbose().Colorize(ColoredText.DateTimeColor)).Line(Packing) +
             ProductionString().Line(!Packing) +
             RelevantSkillDisplay().Line(Ext?.RelevantSkills?.Count > 0);
-
-        public virtual string ProductionString()
-        {
-            var options = ResultOptions;
-            if (Ext is null || options is not {Count: >0}) return "";
-            return options.Count switch
-            {
-                1 => "Outposts.WillProduce.1".Translate(options[0].Amount(CapablePawns.ToList()), options[0].Thing.label, TimeTillProduction).RawText,
-                2 => "Outposts.WillProduce.2".Translate(options[0].Amount(CapablePawns.ToList()), options[0].Thing.label, options[1].Amount(CapablePawns.ToList()),
-                    options[1].Thing.label, TimeTillProduction).RawText,
-                _ => "Outposts.WillProduce.N".Translate(TimeTillProduction, options.Select(ro => ro.Explain(CapablePawns.ToList())).ToLineList("  - ")).RawText
-            };
-        }
-
-        public virtual string RelevantSkillDisplay() =>
-            Ext.RelevantSkills.Select(skill => "Outposts.TotalSkill".Translate(skill.skillLabel, TotalSkill(skill)).RawText).ToLineList();
     }
 }

@@ -74,9 +74,11 @@
     <Compile Include="Outpost.cs" />
     <Compile Include="OutpostExtension.cs" />
     <Compile Include="OutpostsMod.cs" />
+    <Compile Include="Outpost_Attacks.cs" />
     <Compile Include="Outpost_ChooseResult.cs" />
     <Compile Include="Outpost_Deliveries.cs" />
     <Compile Include="Outpost_Needs.cs" />
+    <Compile Include="Outpost_Utilities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransportPodsArrivalAction_AddToOutpost.cs" />
     <Compile Include="Utils.cs" />
