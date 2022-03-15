@@ -7,7 +7,7 @@ using Verse;
 
 namespace MVCF.Features
 {
-    public class Feature_VerbComps : Feature
+    public class Feature_VerbComps : Feature_Humanoid
     {
         public override string Name => "VerbComps";
 

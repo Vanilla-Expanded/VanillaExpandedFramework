@@ -15,7 +15,7 @@ using FloatMenuUtility = MVCF.Utilities.FloatMenuUtility;
 
 namespace MVCF.Features
 {
-    public class Feature_Reloading : Feature_Humanoid
+    public class Feature_Reloading : Feature_VerbComps
     {
         private static readonly Type AttackStaticSubType = typeof(JobDriver_AttackStatic).GetNestedType("<>c__DisplayClass4_0", BindingFlags.NonPublic);
         private static readonly FieldInfo thisPropertyInfo = AttackStaticSubType.GetField("<>4__this", BindingFlags.Public | BindingFlags.Instance);
