@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using KCSG;
 using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
 using Verse;
-using Verse.AI;
-using Verse.AI.Group;
 
 namespace Outposts
 {
-    public class Outpost : MapParent
+    public partial class Outpost : MapParent
     {
         private readonly Dictionary<SkillDef, int> totalSkills = new();
 
@@ -69,6 +66,19 @@ namespace Outposts
         public virtual string TimeTillProduction => ticksTillProduction.ToStringTicksToPeriodVerbose().Colorize(ColoredText.DateTimeColor);
 
         public virtual List<ResultOption> ResultOptions => Ext.ResultOptions;
+
+        public bool Has(Pawn pawn) => occupants.Contains(pawn);
+
+        public void AddItem(Thing t)
+        {
+            containedItems.Add(t);
+        }
+
+        public Thing TakeItem(Thing t)
+        {
+            containedItems.Remove(t);
+            return t;
+        }
 
         protected virtual bool IsCapable(Pawn pawn)
         {
@@ -136,113 +146,6 @@ namespace Outposts
             return false;
         }
 
-        public void Deliver(IEnumerable<Thing> items)
-        {
-            var map = Find.Maps.Where(m => m.IsPlayerHome).OrderByDescending(m => Find.WorldGrid.ApproxDistanceInTiles(m.Parent.Tile, Tile)).First();
-
-            var text = "Outposts.Letters.Items.Text".Translate(Name) + "\n";
-
-            var lookAt = new List<Thing>();
-
-            var dir = Find.WorldGrid.GetRotFromTo(map.Parent.Tile, Tile);
-
-            switch (OutpostsMod.Settings.DeliveryMethod)
-            {
-                case DeliveryMethod.Teleport:
-                {
-                    IntVec3 cell;
-                    if (map.listerBuildings.AllBuildingsColonistOfDef(Outposts_DefOf.VEF_OutpostDeliverySpot).TryRandomElement(out var spot))
-                        cell = spot.Position;
-                    else if (!CellFinder.TryFindRandomEdgeCellWith(x =>
-                            !x.Fogged(map) && x.Standable(map) && map.mapPawns.FreeColonistsSpawned.Any(p => p.CanReach(x, PathEndMode.OnCell, Danger.Some)), map,
-                        dir, CellFinder.EdgeRoadChance_Always, out cell))
-                        cell = CellFinder.RandomEdgeCell(dir, map);
-                    foreach (var item in items)
-                    {
-                        GenPlace.TryPlaceThing(item, cell, map, ThingPlaceMode.Near, (t, i) => lookAt.Add(t));
-                        text += "  - " + item.LabelCap + "\n";
-                    }
-
-                    break;
-                }
-                case DeliveryMethod.PackAnimal:
-                    Deliver_PackAnimal(items, map, dir, lookAt, ref text);
-                    break;
-                case DeliveryMethod.Store:
-                    foreach (var item in items)
-                    {
-                        containedItems.Add(item);
-                        text += "  - " + item.LabelCap + "\n";
-                    }
-
-                    break;
-                case DeliveryMethod.ForcePods:
-                    Deliver_Pods(items, map, lookAt, ref text);
-                    break;
-                case DeliveryMethod.PackOrPods:
-                    if (Outposts_DefOf.TransportPod.IsFinished)
-                        Deliver_Pods(items, map, lookAt, ref text);
-                    else
-                        Deliver_PackAnimal(items, map, dir, lookAt, ref text);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            Find.LetterStack.ReceiveLetter("Outposts.Letters.Items.Label".Translate(Name), text, LetterDefOf.PositiveEvent, new LookTargets(lookAt));
-        }
-
-        private static void Deliver_Pods(IEnumerable<Thing> items, Map map, List<Thing> lookAt, ref TaggedString text)
-        {
-            IntVec3 cell;
-            if (map.listerBuildings.AllBuildingsColonistOfDef(Outposts_DefOf.VEF_OutpostDeliverySpot).TryRandomElement(out var spot))
-            {
-                lookAt.Add(spot);
-                cell = spot.Position;
-            }
-            else
-                cell = DropCellFinder.TradeDropSpot(map);
-
-            foreach (var item in items)
-            {
-                if (!DropCellFinder.TryFindDropSpotNear(cell, map, out var loc, false, false, false))
-                    loc = DropCellFinder.RandomDropSpot(map);
-                TradeUtility.SpawnDropPod(loc, map, item);
-                text += "  - " + item.LabelCap + "\n";
-            }
-        }
-
-        private void Deliver_PackAnimal(IEnumerable<Thing> items, Map map, Rot4 dir, List<Thing> lookAt, ref TaggedString text)
-        {
-            if (!Biome.AllWildAnimals.Where(x => x.RaceProps.packAnimal).TryRandomElement(out var pawnKind)) pawnKind = PawnKindDefOf.Muffalo;
-
-            if (!CellFinder.TryFindRandomEdgeCellWith(x => !x.Fogged(map) && x.Standable(map), map,
-                dir, CellFinder.EdgeRoadChance_Always, out var cell) && !RCellFinder.TryFindRandomPawnEntryCell(out cell, map, CellFinder.EdgeRoadChance_Always))
-                cell = CellFinder.RandomEdgeCell(dir, map);
-
-            var animal = PawnGenerator.GeneratePawn(pawnKind, Faction.OfPlayer);
-
-            lookAt.Add(animal);
-
-            foreach (var item in items)
-            {
-                animal.inventory.TryAddItemNotForSale(item);
-                text += "  - " + item.LabelCap + "\n";
-            }
-
-            GenSpawn.Spawn(animal, cell, map);
-
-            IntVec3 deliverTo;
-            if (
-                map.listerBuildings.AllBuildingsColonistOfDef(Outposts_DefOf.VEF_OutpostDeliverySpot).TryRandomElement(out var spot))
-                deliverTo = spot.Position;
-            else if (!RCellFinder.TryFindRandomSpotJustOutsideColony(animal, out deliverTo))
-                deliverTo = CellFinderLoose.RandomCellWith(x =>
-                    !x.Fogged(map) && x.Standable(map) && animal.CanReach(x, PathEndMode.OnCell, Danger.Deadly), map);
-
-            LordMaker.MakeNewLord(Faction.OfPlayer, new LordJob_Deliver(deliverTo), map, new[] {animal});
-        }
-
         public override void ExposeData()
         {
             base.ExposeData();
@@ -297,57 +200,9 @@ namespace Outposts
                     }
                 }
 
-            if (this.IsHashIntervalTick(300)) SatisfyNeeds();
+            SatisfyNeeds();
         }
 
-        public virtual void SatisfyNeeds()
-        {
-            foreach (var pawn in AllPawns) SatisfyNeeds(pawn);
-        }
-
-        public virtual void SatisfyNeeds(Pawn pawn)
-        {
-            if (pawn is null) return;
-            var food = pawn.needs?.food;
-            if (food is not null && food.CurLevelPercentage <= pawn.RaceProps.FoodLevelPercentageWantEat && ProvidedFood is {IsNutritionGivingIngestible: true} &&
-                ProvidedFood.ingestible.HumanEdible)
-            {
-                var thing = ThingMaker.MakeThing(ProvidedFood);
-                if (thing.IngestibleNow && pawn.RaceProps.CanEverEat(thing)) food.CurLevel += thing.Ingested(pawn, food.NutritionWanted);
-            }
-
-            if (GenLocalDate.HourInteger(Tile) >= 23 || GenLocalDate.HourInteger(Tile) <= 5) pawn.needs?.rest?.TickResting(0.75f);
-
-            if (pawn.health is not null && pawn.health.HasHediffsNeedingTend())
-            {
-                var doctor = AllPawns.Where(p => p.RaceProps.Humanlike && !p.Downed).MaxBy(p => p.skills?.GetSkill(SkillDefOf.Medicine)?.Level ?? -1f);
-                Medicine medicine = null;
-                var potency = 0f;
-                foreach (var thing in containedItems)
-                    if (thing.def.IsMedicine && (pawn.playerSettings is null || pawn.playerSettings.medCare.AllowsMedicine(thing.def)))
-                    {
-                        var statValue = thing.GetStatValue(StatDefOf.MedicalPotency);
-                        if (statValue > potency || medicine == null)
-                        {
-                            potency = statValue;
-                            medicine = (Medicine) thing;
-                        }
-                    }
-
-                TendUtility.DoTend(doctor, pawn, medicine);
-            }
-
-            if (pawn.health?.hediffSet is not null && pawn.health.hediffSet.HasNaturallyHealingInjury())
-                pawn.health.hediffSet.GetHediffs<Hediff_Injury>().Where(x => x.CanHealNaturally()).RandomElement()
-                    .Heal(pawn.HealthScale * 0.01f * pawn.GetStatValue(StatDefOf.InjuryHealingFactor));
-
-            if (pawn.health?.hediffSet is not null && pawn.health.hediffSet.HasTendedAndHealingInjury())
-            {
-                var injury = pawn.health.hediffSet.GetHediffs<Hediff_Injury>().Where(x => x.CanHealFromTending()).RandomElement();
-                injury.Heal(GenMath.LerpDouble(0f, 1f, 0.5f, 1.5f, Mathf.Clamp01(injury.TryGetComp<HediffComp_TendDuration>().tendQuality)) * pawn.HealthScale * 0.01f *
-                            pawn.GetStatValue(StatDefOf.InjuryHealingFactor));
-            }
-        }
 
         public virtual IEnumerable<Thing> ProducedThings()
         {
@@ -486,12 +341,32 @@ namespace Outposts
             };
 
             if (Prefs.DevMode)
+            {
                 yield return new Command_Action
                 {
                     action = () => ticksTillProduction = 10,
-                    defaultLabel = "Produce now",
+                    defaultLabel = "Dev: Produce now",
                     defaultDesc = "Reduce ticksTillProduction to 10"
                 };
+                yield return new Command_Action
+                {
+                    action = () =>
+                    {
+                        var dinfo = new DamageInfo(DamageDefOf.Crush, 10f);
+                        dinfo.SetIgnoreInstantKillProtection(true);
+                        occupants.RandomElement().TakeDamage(dinfo);
+                    },
+                    defaultLabel = "Dev: Random pawn takes 10 damage"
+                };
+                yield return new Command_Action
+                {
+                    action = () =>
+                    {
+                        foreach (var pawn in occupants) pawn.needs.food.CurLevel = 0f;
+                    },
+                    defaultLabel = "Dev: All pawns 0% food"
+                };
+            }
 
             yield return new Command_Action
             {

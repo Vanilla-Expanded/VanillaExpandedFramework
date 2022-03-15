@@ -4,7 +4,7 @@ using Verse;
 
 namespace Outposts
 {
-    public class IncidentWorker_OutpostAttacked : IncidentWorker_RaidEnemy
+    public class IncidentWorker_OutpostAttacked : IncidentWorker
     {
         protected override bool CanFireNowSub(IncidentParms parms) => Find.WorldObjects.AllWorldObjects.Any(wo => wo is Outpost {Faction: {IsPlayer: true}});
 
