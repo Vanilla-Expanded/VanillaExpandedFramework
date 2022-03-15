@@ -42,23 +42,31 @@ namespace VFECore
 
             bool flagAllowed = true;
 
-            foreach (string allowed in element.allowedTerrains)
+            if (element.allowedTerrains != null)
             {
-                if (terrain.defName == allowed)
+                foreach (string allowed in element.allowedTerrains)
                 {
-                    break;
+                    if (terrain.defName == allowed)
+                    {
+                        break;
+                    }
+                    else flagAllowed = false;
                 }
-                else flagAllowed = false;
             }
+
             if (!flagAllowed) return false;
 
-            foreach (string notAllowed in element.disallowedTerrainTags)
+            if (element.disallowedTerrainTags != null)
             {
-                if (terrain.HasTag(notAllowed))
+                foreach (string notAllowed in element.disallowedTerrainTags)
                 {
-                    return false;
+                    if (terrain.HasTag(notAllowed))
+                    {
+                        return false;
+                    }
                 }
             }
+
 
             if (!element.allowOnWater && terrain.IsWater)
             {
