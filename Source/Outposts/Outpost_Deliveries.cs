@@ -15,10 +15,13 @@ namespace Outposts
             var map = Find.Maps.Where(m => m.IsPlayerHome).OrderByDescending(m => Find.WorldGrid.ApproxDistanceInTiles(m.Parent.Tile, Tile)).First();
 
             var text = "Outposts.Letters.Items.Text".Translate(Name) + "\n";
+            var counts = new List<ThingDefCountClass>();
 
             var lookAt = new List<Thing>();
 
             var dir = Find.WorldGrid.GetRotFromTo(map.Parent.Tile, Tile);
+
+            var things = items.ToList();
 
             switch (OutpostsMod.Settings.DeliveryMethod)
             {
@@ -31,37 +34,50 @@ namespace Outposts
                             !x.Fogged(map) && x.Standable(map) && map.mapPawns.FreeColonistsSpawned.Any(p => p.CanReach(x, PathEndMode.OnCell, Danger.Some)), map,
                         dir, CellFinder.EdgeRoadChance_Always, out cell))
                         cell = CellFinder.RandomEdgeCell(dir, map);
-                    foreach (var item in items)
-                    {
-                        GenPlace.TryPlaceThing(item, cell, map, ThingPlaceMode.Near, (t, i) => lookAt.Add(t));
-                        text += "  - " + item.LabelCap + "\n";
-                    }
+                    foreach (var item in things) GenPlace.TryPlaceThing(item, cell, map, ThingPlaceMode.Near, (t, i) => lookAt.Add(t));
 
                     break;
                 }
                 case DeliveryMethod.PackAnimal:
-                    Deliver_PackAnimal(items, map, dir, lookAt, ref text);
+                    Deliver_PackAnimal(things, map, dir, lookAt, ref text);
                     break;
                 case DeliveryMethod.Store:
-                    foreach (var item in items)
-                    {
-                        containedItems.Add(item);
-                        text += "  - " + item.LabelCap + "\n";
-                    }
-
+                    foreach (var item in things) containedItems.Add(item);
                     break;
                 case DeliveryMethod.ForcePods:
-                    Deliver_Pods(items, map, lookAt, ref text);
+                    Deliver_Pods(things, map, lookAt, ref text);
                     break;
                 case DeliveryMethod.PackOrPods:
                     if (Outposts_DefOf.TransportPod.IsFinished)
-                        Deliver_Pods(items, map, lookAt, ref text);
+                        Deliver_Pods(things, map, lookAt, ref text);
                     else
-                        Deliver_PackAnimal(items, map, dir, lookAt, ref text);
+                        Deliver_PackAnimal(things, map, dir, lookAt, ref text);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            var singles = new List<Thing>();
+            foreach (var item in things)
+            {
+                if (item.def.MadeFromStuff || item.def.useHitPoints && item.HitPoints < item.MaxHitPoints || item.TryGetQuality(out _))
+                {
+                    singles.Add(item);
+                    continue;
+                }
+
+                var count = counts.Find(cc => cc.thingDef == item.def);
+                if (count is null)
+                {
+                    count = new ThingDefCountClass {thingDef = item.def, count = 0};
+                    counts.Add(count);
+                }
+
+                count.count += item.stackCount;
+            }
+
+            foreach (var single in singles) text += "  - " + single.LabelCap + "\n";
+            foreach (var count in counts) text += "  - " + count.Summary + "\n";
 
             Find.LetterStack.ReceiveLetter("Outposts.Letters.Items.Label".Translate(Name), text, LetterDefOf.PositiveEvent, new LookTargets(lookAt));
         }
