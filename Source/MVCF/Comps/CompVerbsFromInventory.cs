@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using MVCF.Utilities;
 using RimWorld;
@@ -6,32 +6,25 @@ using Verse;
 
 namespace MVCF.Comps
 {
-    public class Comp_VerbGiver : ThingComp, IVerbOwner
+    public class CompVerbsFromInventory : ThingComp, IVerbOwner
     {
         private VerbTracker verbTracker;
+        public CompVerbsFromInventory() => verbTracker = new VerbTracker(this);
+        public CompProperties_VerbsFromInventory Props => props as CompProperties_VerbsFromInventory;
+        string IVerbOwner.UniqueVerbOwnerID() => parent.GetUniqueLoadID() + "_" + parent.AllComps.IndexOf(this);
 
-        public Comp_VerbGiver() => verbTracker = new VerbTracker(this);
-
-        public CompProperties_VerbGiver Props => (CompProperties_VerbGiver) props;
-
+        public bool VerbsStillUsableBy(Pawn p) => p.inventory.Contains(parent);
         public VerbTracker VerbTracker => verbTracker;
 
         public List<VerbProperties> VerbProperties => parent.def.Verbs;
-
         public List<Tool> Tools => parent.def.tools;
-
-        Thing IVerbOwner.ConstantCaster => null;
-
-        ImplementOwnerTypeDef IVerbOwner.ImplementOwnerTypeDef => ImplementOwnerTypeDefOf.Weapon;
-
-        string IVerbOwner.UniqueVerbOwnerID() => parent.GetUniqueLoadID() + "_" + parent.AllComps.IndexOf(this);
-
-        bool IVerbOwner.VerbsStillUsableBy(Pawn p) => p.equipment.Contains(parent) || p.apparel.Contains(parent);
+        public ImplementOwnerTypeDef ImplementOwnerTypeDef => ImplementOwnerTypeDefOf.Weapon;
+        public Thing ConstantCaster => null;
 
         public override void PostExposeData()
         {
             base.PostExposeData();
-            Scribe_Deep.Look(ref verbTracker, "verbTracker", this);
+            Scribe_Deep.Look(ref verbTracker, "inventoryVerbTracker", this);
             if (Scribe.mode != LoadSaveMode.PostLoadInit) return;
             verbTracker ??= new VerbTracker(this);
             if (parent?.holdingOwner?.Owner is not Pawn_ApparelTracker tracker) return;
@@ -46,7 +39,7 @@ namespace MVCF.Comps
                 verbTracker.VerbsTick();
         }
 
-        public void Notify_Worn(Pawn pawn)
+        public void Notify_PickedUp(Pawn pawn)
         {
             foreach (var verb in verbTracker.AllVerbs)
             {
@@ -55,7 +48,7 @@ namespace MVCF.Comps
             }
         }
 
-        public void Notify_Unworn()
+        public void Notify_Dropped()
         {
             foreach (var verb in verbTracker.AllVerbs)
             {
@@ -75,5 +68,16 @@ namespace MVCF.Comps
         }
 
         public AdditionalVerbProps PropsFor(Verb verb) => Props.PropsFor(verb);
+    }
+
+    public class CompProperties_VerbsFromInventory : CompProperties_VerbProps
+    {
+        public CompProperties_VerbsFromInventory() => compClass = typeof(CompVerbsFromInventory);
+
+        public override void PostLoadSpecial(ThingDef parent)
+        {
+            base.PostLoadSpecial(parent);
+            Base.EnabledFeatures.Add("InventoryVerbs");
+        }
     }
 }

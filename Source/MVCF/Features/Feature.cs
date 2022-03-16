@@ -65,6 +65,10 @@ namespace MVCF.Features
                     props = pawn.TryGetComp<Comp_VerbProps>()?.PropsFor(verb);
                     additionalComps = pawn.AllComps.OfType<VerbComp.IVerbCompProvider>().SelectMany(p => p.GetCompsFor(verb.verbProps));
                     break;
+                case CompVerbsFromInventory comp:
+                    props = comp.PropsFor(verb);
+                    additionalComps = comp.parent.AllComps.OfType<VerbComp.IVerbCompProvider>().SelectMany(p => p.GetCompsFor(verb.verbProps));
+                    break;
                 default: return;
             }
 

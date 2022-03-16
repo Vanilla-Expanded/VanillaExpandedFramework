@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using HarmonyLib;
 using MVCF.Comps;
 using MVCF.Utilities;
@@ -33,7 +34,7 @@ namespace MVCF.Features
             comp.Notify_Unworn();
             var manager = __instance.pawn?.Manager(false);
             if (manager == null) return;
-            foreach (var verb in comp.VerbTracker.AllVerbs) manager.RemoveVerb(verb);
+            foreach (var verb in comp.VerbTracker.AllVerbs.Concat(manager.ExtraVerbsFor(apparel))) manager.RemoveVerb(verb);
         }
     }
 }

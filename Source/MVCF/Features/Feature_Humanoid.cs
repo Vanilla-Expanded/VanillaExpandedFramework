@@ -102,7 +102,7 @@ namespace MVCF.Features
             if (comp?.VerbTracker?.AllVerbs == null) return;
             var manager = __instance?.pawn?.Manager(false);
             if (manager == null) return;
-            foreach (var verb in comp.VerbTracker.AllVerbs) manager.RemoveVerb(verb);
+            foreach (var verb in comp.VerbTracker.AllVerbs.Concat(manager.ExtraVerbsFor(eq))) manager.RemoveVerb(verb);
         }
     }
 }

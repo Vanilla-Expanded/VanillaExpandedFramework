@@ -240,6 +240,7 @@ namespace MVCF
         public IEnumerable<Verb> ExtraVerbsFor(ThingWithComps eq) => comps.SelectMany(comp => comp.ExtraVerbsFor(eq));
         public IEnumerable<Verb> ExtraVerbsFor(Apparel apparel) => comps.SelectMany(comp => comp.ExtraVerbsFor(apparel));
         public IEnumerable<Verb> ExtraVerbsFor(Hediff hediff) => comps.SelectMany(comp => comp.ExtraVerbsFor(hediff));
+        public IEnumerable<Verb> ExtraVerbsFor(Thing item) => comps.SelectMany(comp => comp.ExtraVerbsFor(item));
     }
 
     public enum VerbSource
@@ -262,6 +263,7 @@ namespace MVCF
         IEnumerable<Verb> ExtraVerbsFor(ThingWithComps eq);
         IEnumerable<Verb> ExtraVerbsFor(Apparel apparel);
         IEnumerable<Verb> ExtraVerbsFor(Hediff hediff);
+        IEnumerable<Verb> ExtraVerbsFor(Thing item);
     }
 
     public abstract class VerbManagerComp : ThingComp, IVerbManagerComp
@@ -302,6 +304,11 @@ namespace MVCF
         }
 
         public virtual IEnumerable<Verb> ExtraVerbsFor(Hediff hediff)
+        {
+            yield break;
+        }
+
+        public virtual IEnumerable<Verb> ExtraVerbsFor(Thing item)
         {
             yield break;
         }

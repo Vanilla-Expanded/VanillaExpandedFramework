@@ -43,5 +43,17 @@ namespace MVCF.Utilities
             foreach (var verb in comp.VerbTracker.AllVerbs.Concat(man.ExtraVerbsFor(hediff)))
                 man.AddVerb(verb, VerbSource.Hediff);
         }
+
+        public static void AddVerbs(this VerbManager man, Thing item)
+        {
+            if (man == null) return;
+            if (Base.IsIgnoredMod(item?.def?.modContentPack?.Name)) return;
+            if (Base.ShouldIgnore(item)) return;
+            var comp = item?.TryGetComp<CompVerbsFromInventory>();
+            if (comp?.VerbTracker?.AllVerbs == null) return;
+            comp.Notify_PickedUp(man.Pawn);
+            foreach (var verb in comp.VerbTracker.AllVerbs.Concat(man.ExtraVerbsFor(item)))
+                man.AddVerb(verb, VerbSource.Inventory);
+        }
     }
 }
