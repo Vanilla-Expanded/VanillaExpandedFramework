@@ -56,4 +56,8 @@
     <Outposts.MustHaveInCaravan>Must have {0} in caravan</Outposts.MustHaveInCaravan>
     <Outposts.NoValidPawns>No valid pawns to add to outpost</Outposts.NoValidPawns>
     <Outposts.SkillChange>Due to changes in skill level, {0} can no longer produce {1}</Outposts.SkillChange>
+    <Outposts.Setting.ProductionTime>Production Time</Outposts.Setting.ProductionTime>
+    <Outposts.Setting.PackTime>Pack Time</Outposts.Setting.PackTime>
+    <Outposts.Setting.Range>Range</Outposts.Setting.Range>
+    <Outposts.Setting.MinimumPawns>Minimum Pawns to Create</Outposts.Setting.MinimumPawns>
 </LanguageData>

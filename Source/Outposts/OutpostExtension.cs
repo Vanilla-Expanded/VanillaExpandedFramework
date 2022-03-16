@@ -14,14 +14,25 @@ namespace Outposts
         public List<BiomeDef> DisallowedBiomes;
         public List<SkillDef> DisplaySkills;
         public HistoryEventDef Event;
+
+        [PostToSetings("Outposts.Setting.MinimumPawns", PostToSetingsAttribute.DrawMode.IntSlider, min: 1f, max: 10f, dontShowAt: 0)]
         public int MinPawns;
+
         public ThingDef ProvidedFood;
+
+        [PostToSetings("Outposts.Setting.Range", PostToSetingsAttribute.DrawMode.IntSlider, min: 1f, max: 30f, dontShowAt: -1)]
         public int Range = -1;
+
         public List<AmountBySkill> RequiredSkills;
         public bool RequiresGrowing;
         public List<ResultOption> ResultOptions;
+
+        [PostToSetings("Outposts.Setting.ProductionTime", PostToSetingsAttribute.DrawMode.Time, dontShowAt: -1)]
         public int TicksPerProduction = 15 * 60000;
+
+        [PostToSetings("Outposts.Setting.PackTime", PostToSetingsAttribute.DrawMode.Time)]
         public int TicksToPack = 7 * 60000;
+
         public int TicksToSetUp = -1;
 
         public List<SkillDef> RelevantSkills =>

@@ -135,7 +135,6 @@ namespace Outposts
             SatisfyNeeds();
         }
 
-
         public virtual IEnumerable<Thing> ProducedThings()
         {
             return ResultOptions.SelectMany(resultOption => resultOption.Make(CapablePawns.ToList()));
@@ -150,6 +149,7 @@ namespace Outposts
         {
             base.SpawnSetup();
             RecachePawnTraits();
+            OutpostsMod.Notify_Spawned(this);
         }
 
         public virtual void RecachePawnTraits()
@@ -207,6 +207,12 @@ namespace Outposts
             RecachePawnTraits();
 
             return true;
+        }
+
+        public override void PostRemove()
+        {
+            base.PostRemove();
+            OutpostsMod.Notify_Removed(this);
         }
 
         public void ConvertToCaravan()
