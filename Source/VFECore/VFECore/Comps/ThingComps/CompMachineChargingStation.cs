@@ -229,6 +229,7 @@ namespace VFE.Mechanoids
                                 &&t.GetCompProperties<CompProperties_Mannable>()==null
                                 &&t.size.x<=3
                                 &&t.size.z<=3
+                                &&t.IsResearchFinished
                                 && !Props.blackListTurretGuns.Contains(t.building.turretGunDef.defName)
                         ))
                         {
