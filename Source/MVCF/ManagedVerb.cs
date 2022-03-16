@@ -143,5 +143,28 @@ namespace MVCF
                 Verb.GetHashCode());
             return ToggleType.Separate;
         }
+
+        public virtual float GetScore(Pawn p, LocalTargetInfo target, bool debug = false)
+        {
+            if (debug) Log.Message("Getting score of " + Verb + " with target " + target);
+            if (Verb is IVerbScore verbScore) return verbScore.GetScore(p, target);
+            var accuracy = 0f;
+            if (p.Map != null)
+                accuracy = ShotReport.HitReportFor(p, Verb, target).TotalEstimatedHitChance;
+            else if (Verb.TryFindShootLineFromTo(p.Position, target, out var line))
+                accuracy = Verb.verbProps.GetHitChanceFactor(Verb.EquipmentSource, line.Source.DistanceTo(line.Dest));
+
+            var damage = accuracy * Verb.verbProps.burstShotCount * Verb.GetDamage();
+            var timeSpent = Verb.verbProps.AdjustedCooldownTicks(Verb, p) + Verb.verbProps.warmupTime.SecondsToTicks();
+            if (debug)
+            {
+                Log.Message("Accuracy: " + accuracy);
+                Log.Message("Damage: " + damage);
+                Log.Message("timeSpent: " + timeSpent);
+                Log.Message("Score of " + Verb + " on target " + target + " is " + damage / timeSpent);
+            }
+
+            return damage / timeSpent;
+        }
     }
 }

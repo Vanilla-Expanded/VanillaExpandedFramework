@@ -21,6 +21,10 @@ namespace MVCF.VerbComps
         {
         }
 
+        public virtual void ModifyScore(Pawn p, LocalTargetInfo target, ref float score)
+        {
+        }
+
         public virtual void Notify_Spawned()
         {
         }

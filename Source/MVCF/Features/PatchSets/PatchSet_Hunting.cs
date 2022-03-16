@@ -43,8 +43,7 @@ namespace MVCF.Features.PatchSets
                 }
 
                 var man = actor.Manager();
-                var verb = actor.BestVerbForTarget(actor.jobs.curJob.GetTarget(targetInd),
-                               man.CurrentlyUseableRangedVerbs, man) ??
+                var verb = actor.BestVerbForTarget(actor.jobs.curJob.GetTarget(targetInd), man.CurrentlyUseableRangedVerbs) ??
                            actor.TryGetAttackVerb(actor.jobs.curJob.GetTarget(targetInd).Thing, !actor.IsColonist);
                 if (verb == null)
                     actor.jobs.EndCurrentJob(JobCondition.Incompletable);

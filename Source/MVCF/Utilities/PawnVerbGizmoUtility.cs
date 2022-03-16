@@ -120,8 +120,7 @@ namespace MVCF.Utilities
                     {
                         var manager = pawn.Manager();
                         manager.CurrentVerb = null;
-                        var verb = pawn.BestVerbForTarget(target, verbs.Where(v => v.Enabled && !v.Verb.IsMeleeAttack),
-                            manager);
+                        var verb = pawn.BestVerbForTarget(target, verbs.Where(v => v.Enabled && !v.Verb.IsMeleeAttack));
                         verb.OrderForceTarget(target);
                     }, pawn, null, TexCommand.Attack);
                 }

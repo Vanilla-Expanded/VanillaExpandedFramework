@@ -39,7 +39,7 @@ namespace MVCF
             if (manager.debugOpts.ScoreLogging)
                 Log.Message($"[MVCF] Getting best verb for target {target} or {job?.targetA} which is {usedTarget}");
             if (!usedTarget.IsValid || !usedTarget.Cell.InBounds(pawn.Map)) return null;
-            return pawn.BestVerbForTarget(usedTarget, verbsToUse, manager);
+            return pawn.BestVerbForTarget(usedTarget, verbsToUse);
         }
 
         public static bool Prefix(ref Verb __result, Pawn __instance, Thing target,

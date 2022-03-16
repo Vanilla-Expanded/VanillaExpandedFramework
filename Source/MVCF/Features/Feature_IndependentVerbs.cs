@@ -43,6 +43,6 @@ namespace MVCF.Features
             man.Notify_Despawned();
         }
 
-        public static bool Pawn_StanceTracker_SetStance(Stance newStance) => !(newStance is Stance_Busy busy && busy.verb.Managed().Independent);
+        public static bool Pawn_StanceTracker_SetStance(Stance newStance) => !(newStance is Stance_Busy busy && (busy.verb.Managed(false)?.Independent ?? false));
     }
 }

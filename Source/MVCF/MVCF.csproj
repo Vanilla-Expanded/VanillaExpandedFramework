@@ -65,6 +65,7 @@
     <Compile Include="Commands\CommandPart.cs" />
     <Compile Include="Commands\Command_VerbTargetExtended.cs" />
     <Compile Include="Comps\AdditionalVerbProps.cs" />
+    <Compile Include="Comps\CompRandomVerbs.cs" />
     <Compile Include="Comps\HediffComp_ExtendedVerbGiver.cs" />
     <Compile Include="Comps\Properties.cs" />
     <Compile Include="DebugActionsMVCF.cs" />

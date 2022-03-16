@@ -29,6 +29,15 @@ namespace MVCF
             }
         }
 
+        public override float GetScore(Pawn p, LocalTargetInfo target, bool debug = false)
+        {
+            var score = base.GetScore(p, target, debug);
+
+            foreach (var comp in AllComps) comp.ModifyScore(p, target, ref score);
+
+            return score;
+        }
+
         public override bool SetTarget(LocalTargetInfo target)
         {
             foreach (var comp in AllComps)

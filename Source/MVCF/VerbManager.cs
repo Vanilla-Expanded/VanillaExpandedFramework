@@ -3,6 +3,7 @@ using System.Linq;
 using MVCF.Comps;
 using MVCF.Features;
 using MVCF.Utilities;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -12,6 +13,8 @@ namespace MVCF
     {
         private static readonly Dictionary<ThingWithComps, bool> preferMeleeCache =
             new();
+
+        private readonly List<IVerbManagerComp> comps = new();
 
         private readonly List<ManagedVerb> drawVerbs = new();
         private readonly List<ManagedVerb> tickVerbs = new();
@@ -78,6 +81,9 @@ namespace MVCF
             NeedsTicking = false;
             debugOpts.ScoreLogging = false;
             debugOpts.VerbLogging = false;
+            comps.Clear();
+            comps.AddRange(pawn.AllComps.OfType<IVerbManagerComp>());
+            foreach (var comp in comps) comp.Initialize(this);
             if (Base.IsIgnoredMod(pawn?.def?.modContentPack?.Name)) return;
             if (!Base.GetFeature<Feature_RangedAnimals>().Enabled && pawn?.VerbTracker?.AllVerbs != null && pawn.VerbTracker.AllVerbs.Any(v => !v.IsMeleeAttack))
                 Log.ErrorOnce(
@@ -85,7 +91,7 @@ namespace MVCF
                     $" Enabling now. This is not recommended. Contact the author of {pawn?.def?.modContentPack?.Name} and ask them to add a MVCF.ModDef.",
                     pawn?.def?.modContentPack?.Name?.GetHashCode() ?? -1);
             if (verbs.NullOrEmpty()) InitializeVerbs();
-
+            foreach (var comp in comps) comp.PostInit();
             RecalcSearchVerb();
         }
 
@@ -142,7 +148,39 @@ namespace MVCF
             }
 
             verbs.Add(mv);
+            foreach (var comp in comps) comp.PostAdded(mv);
             RecalcSearchVerb();
+        }
+
+        public ManagedVerb ChooseVerb(LocalTargetInfo target, List<ManagedVerb> options)
+        {
+            ManagedVerb bestVerb = null;
+            foreach (var comp in comps)
+                if (comp.ChooseVerb(target, options, out bestVerb))
+                    return bestVerb;
+
+            if (!target.IsValid || Pawn.Map != null && !target.Cell.InBounds(Pawn.Map))
+            {
+                Log.Error("[MVCF] ChooseVerb given invalid target with pawn " + Pawn + " and target " + target);
+                if (debugOpts.ScoreLogging)
+                    Log.Error("(Current job is " + Pawn.CurJob + " with verb " + Pawn.CurJob?.verbToUse + " and target " +
+                              Pawn.CurJob?.targetA + ")");
+                return null;
+            }
+
+            var bestScore = 0f;
+            foreach (var verb in options)
+            {
+                if (verb.Verb is IVerbScore verbScore && verbScore.ForceUse(Pawn, target)) return verb;
+                var score = verb.GetScore(Pawn, target, debugOpts.ScoreLogging);
+                if (debugOpts.ScoreLogging) Log.Message("Score is " + score + " compared to " + bestScore);
+                if (score <= bestScore) continue;
+                bestScore = score;
+                bestVerb = verb;
+            }
+
+            if (debugOpts.ScoreLogging) Log.Message("ChooseVerb returning " + bestVerb);
+            return bestVerb;
         }
 
         public void RemoveVerb(Verb verb)
@@ -165,6 +203,8 @@ namespace MVCF
                     return man == this;
                 });
             }
+
+            foreach (var comp in comps) comp.PostRemoved(mv);
 
             RecalcSearchVerb();
         }
@@ -196,6 +236,10 @@ namespace MVCF
         {
             foreach (var mv in tickVerbs) mv.Tick();
         }
+
+        public IEnumerable<Verb> ExtraVerbsFor(ThingWithComps eq) => comps.SelectMany(comp => comp.ExtraVerbsFor(eq));
+        public IEnumerable<Verb> ExtraVerbsFor(Apparel apparel) => comps.SelectMany(comp => comp.ExtraVerbsFor(apparel));
+        public IEnumerable<Verb> ExtraVerbsFor(Hediff hediff) => comps.SelectMany(comp => comp.ExtraVerbsFor(hediff));
     }
 
     public enum VerbSource
@@ -204,6 +248,62 @@ namespace MVCF
         Apparel,
         Equipment,
         Hediff,
-        RaceDef
+        RaceDef,
+        Inventory
+    }
+
+    public interface IVerbManagerComp
+    {
+        bool ChooseVerb(LocalTargetInfo target, List<ManagedVerb> verbs, out ManagedVerb verb);
+        void PostInit();
+        void Initialize(VerbManager parent);
+        void PostAdded(ManagedVerb verb);
+        void PostRemoved(ManagedVerb verb);
+        IEnumerable<Verb> ExtraVerbsFor(ThingWithComps eq);
+        IEnumerable<Verb> ExtraVerbsFor(Apparel apparel);
+        IEnumerable<Verb> ExtraVerbsFor(Hediff hediff);
+    }
+
+    public abstract class VerbManagerComp : ThingComp, IVerbManagerComp
+    {
+        public VerbManager Manager;
+
+        public virtual bool ChooseVerb(LocalTargetInfo target, List<ManagedVerb> verbs, out ManagedVerb verb)
+        {
+            verb = null;
+            return false;
+        }
+
+        public virtual void PostInit()
+        {
+        }
+
+        public void Initialize(VerbManager parent)
+        {
+            Manager = parent;
+        }
+
+        public virtual void PostAdded(ManagedVerb verb)
+        {
+        }
+
+        public virtual void PostRemoved(ManagedVerb verb)
+        {
+        }
+
+        public virtual IEnumerable<Verb> ExtraVerbsFor(ThingWithComps eq)
+        {
+            yield break;
+        }
+
+        public virtual IEnumerable<Verb> ExtraVerbsFor(Apparel apparel)
+        {
+            yield break;
+        }
+
+        public virtual IEnumerable<Verb> ExtraVerbsFor(Hediff hediff)
+        {
+            yield break;
+        }
     }
 }

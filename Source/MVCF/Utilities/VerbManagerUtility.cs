@@ -1,4 +1,5 @@
-﻿using MVCF.Comps;
+﻿using System.Linq;
+using MVCF.Comps;
 using MVCF.Features;
 using RimWorld;
 using Verse;
@@ -15,7 +16,7 @@ namespace MVCF.Utilities
             var comp = eq?.TryGetComp<CompEquippable>();
             if (comp?.VerbTracker?.AllVerbs == null) return;
             if (Base.GetFeature<Feature_ExtraEquipmentVerbs>().Enabled)
-                foreach (var verb in comp.VerbTracker.AllVerbs)
+                foreach (var verb in comp.VerbTracker.AllVerbs.Concat(man.ExtraVerbsFor(eq)))
                     man.AddVerb(verb, VerbSource.Equipment);
             else if (eq is {def: {equipmentType: EquipmentType.Primary}})
                 man.AddVerb(comp.PrimaryVerb, VerbSource.Equipment);
@@ -29,7 +30,7 @@ namespace MVCF.Utilities
             var comp = apparel?.TryGetComp<Comp_VerbGiver>();
             if (comp?.VerbTracker?.AllVerbs == null) return;
             comp.Notify_Worn(man.Pawn);
-            foreach (var verb in comp.VerbTracker.AllVerbs)
+            foreach (var verb in comp.VerbTracker.AllVerbs.Concat(man.ExtraVerbsFor(apparel)))
                 man.AddVerb(verb, VerbSource.Apparel);
         }
 
@@ -39,8 +40,7 @@ namespace MVCF.Utilities
             if (Base.IsIgnoredMod(hediff?.def?.modContentPack?.Name)) return;
             var comp = hediff.TryGetComp<HediffComp_VerbGiver>();
             if (comp?.VerbTracker?.AllVerbs == null) return;
-            var extComp = comp as HediffComp_ExtendedVerbGiver;
-            foreach (var verb in comp.VerbTracker.AllVerbs)
+            foreach (var verb in comp.VerbTracker.AllVerbs.Concat(man.ExtraVerbsFor(hediff)))
                 man.AddVerb(verb, VerbSource.Hediff);
         }
     }

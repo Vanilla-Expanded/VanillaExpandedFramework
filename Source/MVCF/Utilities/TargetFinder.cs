@@ -82,7 +82,7 @@ namespace MVCF.Utilities
                         canMove && canTakeTargetsCloserThanEffectiveMinRange, canBashFences);
                     if (man.debugOpts.VerbLogging) Log.Message($"[MVCF] Found target {target} for verb {verb.Verb}");
                     if (target is null) continue;
-                    var score = PawnVerbUtility.VerbScore(pawn, verb.Verb, target.Thing, man.debugOpts.ScoreLogging);
+                    var score = verb.GetScore(pawn, target.Thing, man.debugOpts.ScoreLogging);
                     if (score <= bestScore) continue;
                     bestScore = score;
                     bestTarget = target;
