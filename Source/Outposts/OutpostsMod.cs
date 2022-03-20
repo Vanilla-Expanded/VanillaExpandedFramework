@@ -16,6 +16,7 @@ namespace Outposts
         public static Harmony Harm;
         public static OutpostsSettings Settings;
         private static Dictionary<Type, List<FieldInfo>> editableFields;
+        private float outpostAttackedBaseChance;
         private float prevHeight = float.MaxValue;
         private Vector2 scrollPos;
         private Dictionary<WorldObjectDef, float> sectionHeights;
@@ -39,11 +40,15 @@ namespace Outposts
             Outposts = DefDatabase<WorldObjectDef>.AllDefs.Where(def => typeof(Outpost).IsAssignableFrom(def.worldObjectClass)).ToList();
             Harm = new Harmony("vanillaexpanded.outposts");
             sectionHeights = Outposts.ToDictionary(o => o, _ => float.MaxValue);
+            outpostAttackedBaseChance = Outposts_DefOf.VEF_OutpostAttacked.baseChance;
             if (Outposts.Any())
             {
                 HarmonyPatches.DoPatches();
                 Outposts_DefOf.VEF_OutpostDeliverySpot.designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed("Misc");
+                if (!Settings.DoRaids) Outposts_DefOf.VEF_OutpostAttacked.baseChance = 0f;
             }
+            else
+                Outposts_DefOf.VEF_OutpostAttacked.baseChance = 0f;
         }
 
         public static void Notify_Spawned(Outpost outpost)
@@ -85,6 +90,7 @@ namespace Outposts
             if (listing.ButtonTextLabeled("Outposts.Settings.DeliveryMethod".Translate(), $"Outposts.Settings.DeliveryMethod.{Settings.DeliveryMethod}".Translate()))
                 Find.WindowStack.Add(new FloatMenu(Enum.GetValues(typeof(DeliveryMethod)).OfType<DeliveryMethod>().Select(method => new FloatMenuOption(
                     $"Outposts.Settings.DeliveryMethod.{method}".Translate(), () => Settings.DeliveryMethod = method)).ToList()));
+            listing.CheckboxLabeled("Outposts.Settings.DoRaids".Translate(), ref Settings.DoRaids);
 
             listing.GapLine();
 
@@ -129,6 +135,7 @@ namespace Outposts
             if (Find.World?.worldObjects is not null)
                 foreach (var outpost in Find.World.worldObjects.AllWorldObjects.OfType<Outpost>())
                     Setup(outpost);
+            Outposts_DefOf.VEF_OutpostAttacked.baseChance = Settings.DoRaids ? outpostAttackedBaseChance : 0f;
         }
     }
 
@@ -201,6 +208,7 @@ namespace Outposts
     public class OutpostsSettings : ModSettings
     {
         public DeliveryMethod DeliveryMethod = DeliveryMethod.Teleport;
+        public bool DoRaids = true;
         public float ProductionMultiplier = 1f;
         public Dictionary<string, OutpostSettings> SettingsPerOutpost = new();
         public float TimeMultiplier = 1f;
@@ -219,6 +227,7 @@ namespace Outposts
             Scribe_Values.Look(ref TimeMultiplier, "timeMultiplier", 1f);
             Scribe_Values.Look(ref DeliveryMethod, "deliveryMethod");
             Scribe_Collections.Look(ref SettingsPerOutpost, "settingsPerOutpost", LookMode.Value, LookMode.Deep);
+            Scribe_Values.Look(ref DoRaids, "doRaids", true);
         }
 
         public class OutpostSettings : IExposable
@@ -259,6 +268,7 @@ namespace Outposts
         public static ThingDef VEF_OutpostDeliverySpot;
         public static DutyDef VEF_DropAllInInventory;
         public static ResearchProjectDef TransportPod;
+        public static IncidentDef VEF_OutpostAttacked;
     }
 
     public enum DeliveryMethod

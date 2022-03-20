@@ -61,4 +61,5 @@
     <Outposts.Setting.Range>Range</Outposts.Setting.Range>
     <Outposts.Setting.MinimumPawns>Minimum Pawns to Create</Outposts.Setting.MinimumPawns>
     <Outposts.Settings.Production>Production Multiplier</Outposts.Settings.Production>
+    <Outposts.Settings.DoRaids>Enable Outpost Raids?</Outposts.Settings.DoRaids>
 </LanguageData>
