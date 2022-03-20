@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using MVCF.Comps;
 using MVCF.Features;
-using MVCF.ModCompat;
 using RimWorld;
 using Verse;
 
@@ -14,7 +13,6 @@ namespace MVCF.Utilities
             if (man == null) return;
             if (Base.IsIgnoredMod(eq?.def?.modContentPack?.Name)) return;
             if (Base.ShouldIgnore(eq)) return;
-            if (DualWield_Interop.Active && DualWield_Interop.IsOffHand(eq)) return;
             var comp = eq?.TryGetComp<CompEquippable>();
             if (comp?.VerbTracker?.AllVerbs == null) return;
             if (Base.GetFeature<Feature_ExtraEquipmentVerbs>().Enabled)

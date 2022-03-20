@@ -20,8 +20,9 @@ namespace MVCF
             if (managers.TryGetValue(pawn, out var man)) managers.Remove(pawn);
             else man = null;
             Scribe_Deep.Look(ref man, "MVCF_VerbManager");
-            if (man is not null) managers.Add(pawn, man);
-            if (Scribe.mode == LoadSaveMode.PostLoadInit) man?.Initialize(pawn);
+            if (man is null) return;
+            managers.Add(pawn, man);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit) man.Initialize(pawn);
         }
 
         public VerbManager GetManagerFor(Pawn pawn, bool createIfMissing = true)

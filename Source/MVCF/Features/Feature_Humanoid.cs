@@ -2,8 +2,6 @@
 using System.Linq;
 using HarmonyLib;
 using MVCF.Features.PatchSets;
-using MVCF.ModCompat;
-using MVCF.ModCompat.PatchSets;
 using MVCF.Utilities;
 using RimWorld;
 using UnityEngine;
@@ -35,7 +33,6 @@ namespace MVCF.Features
             foreach (var patchSet in base.GetPatchSets()) yield return patchSet;
             yield return new PatchSet_Brawlers();
             yield return new PatchSet_Hunting();
-            if (ModLister.HasActiveModWithName("Dual Wield")) yield return new PatchSet_DualWield();
         }
 
         public static IEnumerable<Gizmo> GetGizmos_Postfix(IEnumerable<Gizmo> __result, Pawn_DraftController __instance)
@@ -101,7 +98,6 @@ namespace MVCF.Features
         {
             if (Base.IsIgnoredMod(eq?.def?.modContentPack?.Name)) return;
             if (Base.ShouldIgnore(eq)) return;
-            if (DualWield_Interop.Active && DualWield_Interop.IsOffHand(eq)) return;
             var comp = eq.TryGetComp<CompEquippable>();
             if (comp?.VerbTracker?.AllVerbs == null) return;
             var manager = __instance?.pawn?.Manager(false);
