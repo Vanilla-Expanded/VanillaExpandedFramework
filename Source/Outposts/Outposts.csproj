@@ -66,27 +66,28 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Dialog_CreateCamp.cs" />
-    <Compile Include="Dialog_TakeItems.cs" />
+    <Compile Include="Dialogs\Dialog_CreateCamp.cs" />
+    <Compile Include="Dialogs\Dialog_TakeItems.cs" />
     <Compile Include="HarmonyPatches.cs" />
     <Compile Include="IncidentWorker_OutpostAttacked.cs" />
     <Compile Include="LordJob_Deliver.cs" />
-    <Compile Include="Outpost.cs" />
+    <Compile Include="Outpost\Outpost.cs" />
     <Compile Include="OutpostExtension.cs" />
     <Compile Include="OutpostsMod.cs" />
-    <Compile Include="Outpost_Attacks.cs" />
-    <Compile Include="Outpost_ChooseResult.cs" />
-    <Compile Include="Outpost_Deliveries.cs" />
-    <Compile Include="Outpost_Needs.cs" />
-    <Compile Include="Outpost_Utilities.cs" />
+    <Compile Include="Outpost\Outpost_Attacks.cs" />
+    <Compile Include="Outpost\Outpost_ChooseResult.cs" />
+    <Compile Include="Outpost\Outpost_Deliveries.cs" />
+    <Compile Include="Outpost\Outpost_Needs.cs" />
+    <Compile Include="Outpost\Outpost_Utilities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransportPodsArrivalAction_AddToOutpost.cs" />
     <Compile Include="Utils.cs" />
-    <Compile Include="WITab_Outpost_Gear.cs" />
-    <Compile Include="WITab_Outpost_Health.cs" />
-    <Compile Include="WITab_Outpost_Items.cs" />
-    <Compile Include="WITab_Outpost_Needs.cs" />
+    <Compile Include="WITabs\WITab_Outpost_Gear.cs" />
+    <Compile Include="WITabs\WITab_Outpost_Health.cs" />
+    <Compile Include="WITabs\WITab_Outpost_Items.cs" />
+    <Compile Include="WITabs\WITab_Outpost_Needs.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
          Other similar extension points exist, see Microsoft.Common.targets.
