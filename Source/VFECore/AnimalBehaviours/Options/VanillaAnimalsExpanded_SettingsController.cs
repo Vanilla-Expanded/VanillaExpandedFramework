@@ -28,7 +28,7 @@ namespace AnimalBehaviours
 
             if (anyToggles)
             {
-                return "Vanilla Animals Expanded";
+                return "Animal Toggles";
             }
             else return "";
 

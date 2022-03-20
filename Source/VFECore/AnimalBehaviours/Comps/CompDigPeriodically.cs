@@ -65,11 +65,23 @@ namespace AnimalBehaviours
                                 }
 
                             }
-                            
-
+                            Thing newDugThing;
+                            if (Props.resultIsCorpse)
+                            {
+                                PawnKindDef pawnkind = PawnKindDef.Named(thingToDig);
+                                newDugThing = PawnGenerator.GeneratePawn(new PawnGenerationRequest(pawnkind));
+                                newDugThing.Kill();
+                                IntVec3 near = CellFinder.StandableCellNear(this.parent.Position, this.parent.Map, 1f);
+                                Thing spawnedPawn = GenSpawn.Spawn(newDugThing, near, this.parent.Map, WipeMode.Vanish);
+                                
+                            }
+                            else
+                            {
+                                newDugThing = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
+                                newDugThing.stackCount = amount;
+                            }
                            
-                            Thing newDugThing = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
-                            newDugThing.stackCount = amount;
+                            
                             if (Props.spawnForbidden)
                             {
                                 newDugThing.SetForbidden(true);

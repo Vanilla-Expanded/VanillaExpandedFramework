@@ -40,6 +40,22 @@ namespace VFECore
                         //Log.Message(RandomSettlementTileFor_Patch.factionToCheck.def + " can't settle in " + tile.biome + ", allowed biomes: " + String.Join(", ", options.allowedBiomes));
                         __result = 0f;
                     }
+
+                    if ((options.requiredHillLevels?.Any() ?? false) && !options.requiredHillLevels.Contains(tile.hilliness))
+                    {                        
+                        //Log.Message(RandomSettlementTileFor_Patch.factionToCheck.def + " can't settle in " + tile.biome + ", allowed hill levels: " + String.Join(", ", options.requiredHillLevels));
+                        __result = 0f;
+                    }
+
+                    if (options.spawnOnCoastalTilesOnly)
+                    {
+                        Rot4 rot = Find.World.CoastDirectionAt(x);
+                        if (!rot.IsValid)
+                        {
+                            //Log.Message(RandomSettlementTileFor_Patch.factionToCheck.def + " can't settle in " + tile.biome + ", only coastal tiles allowed");
+                            __result = 0f;
+                        }
+                    }
                 }
             }
         }

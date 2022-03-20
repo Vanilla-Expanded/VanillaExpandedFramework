@@ -35,6 +35,14 @@ namespace AnimalBehaviours
             }
         }
 
+        protected int electroChargeAmount
+        {
+            get
+            {
+                return this.Props.electroChargeAmount;
+            }
+        }
+
         public override void CompTick()
         {
             //null map check
@@ -96,8 +104,8 @@ namespace AnimalBehaviours
                         FleckMaker.ThrowMicroSparks(batteryToAffect.Position.ToVector3(), batteryToAffect.Map);
                         foreach (CompPowerBattery current2 in batteryToAffect.GetComps<CompPowerBattery>())
                         {
-                            //Add 1 energy. The rate it fills is thus defined by electroRate
-                            current2.AddEnergy((float)1);
+                            //Add specified amount of energy. The rate it fills is thus defined by electroRate and electroChargeAmount
+                            current2.AddEnergy(electroChargeAmount);
                             break;
                         }
 

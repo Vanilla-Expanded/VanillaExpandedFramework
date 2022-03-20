@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 using System.Linq;
@@ -29,6 +30,22 @@ namespace AnimalBehaviours
             }
         }
 
+        protected float healAmount
+        {
+            get
+            {
+                return this.Props.healAmount;
+            }
+        }
+
+        protected bool healAll
+        {
+            get
+            {
+                return this.Props.healAll;
+            }
+        }
+
 
         public override void CompTick()
         {
@@ -42,12 +59,27 @@ namespace AnimalBehaviours
 
                     if (pawn.health != null)
                     {
-                        if (pawn.health.hediffSet.GetInjuriesTendable() != null && pawn.health.hediffSet.GetInjuriesTendable().Count<Hediff_Injury>() > 0)
+                        IEnumerable<Hediff_Injury> injuriesEnumerable = pawn.health.hediffSet.GetInjuriesTendable();
+
+                        if (injuriesEnumerable != null)
                         {
-                            foreach (Hediff_Injury injury in pawn.health.hediffSet.GetInjuriesTendable())
+                            Hediff_Injury[] injuries = injuriesEnumerable.ToArray();
+
+                            if (injuries.Any())
                             {
-                                injury.Severity = injury.Severity - 0.1f;
-                                break;
+                                if (healAll)
+                                {
+                                    foreach (Hediff_Injury injury in injuries)
+                                    {
+                                        injury.Severity = injury.Severity - healAmount;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    Hediff_Injury injury = injuries.RandomElement();
+                                    injury.Severity = injury.Severity - healAmount;
+                                }
                             }
                         }
                     }

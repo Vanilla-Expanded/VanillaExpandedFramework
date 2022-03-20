@@ -19,6 +19,8 @@ namespace AnimalBehaviours
         //If digBiomeRocks is true, do we also go further and turn those into bricks?
         public bool digBiomeBricks = false;
         public int customAmountToDigIfRocksOrBricks = 1;
+        //Is the result a corpse? If so, spawn a pawn, and kill it
+        public bool resultIsCorpse = false;
 
         public CompProperties_DigPeriodically()
         {

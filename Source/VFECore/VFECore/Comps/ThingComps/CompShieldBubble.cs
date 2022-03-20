@@ -281,7 +281,8 @@ namespace VFECore
 			{
 				absorbed = false;
 			}
-			return absorbed;
+			VFEMech.TeslaProjectile.wasDeflected = absorbed;
+            return absorbed;
 		}
 
 		public void KeepDisplaying()

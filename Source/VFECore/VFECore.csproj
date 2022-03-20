@@ -40,6 +40,10 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
+    <Reference Include="SimpleSidearms">
+      <HintPath>..\..\..\..\..\..\workshop\content\294100\927155256\v1.3\Assemblies\SimpleSidearms.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation" />
@@ -379,6 +383,21 @@
     <Compile Include="Abilities\TryGetAttackVerb_Patch.cs" />
     <Compile Include="Abilities\Verb_CastAbility.cs" />
     <Compile Include="Abilities\VFE_DefOf_Abilities.cs" />
+    <Compile Include="ActiveTerrain\ActiveTerrainUtility.cs" />
+    <Compile Include="ActiveTerrain\Comps\TerrainCompBase.cs" />
+    <Compile Include="ActiveTerrain\Comps\TerrainCompProperties.cs" />
+    <Compile Include="ActiveTerrain\Comps\TerrainComps_Power.cs" />
+    <Compile Include="ActiveTerrain\Comps\TerrainComp_Glower.cs" />
+    <Compile Include="ActiveTerrain\Comps\TerrainComp_HeatPush.cs" />
+    <Compile Include="ActiveTerrain\Comps\TerrainComp_MoteSpawner.cs" />
+    <Compile Include="ActiveTerrain\Comps\TerrainComp_Healer.cs" />
+    <Compile Include="ActiveTerrain\Comps\TerrainComp_SelfClean.cs" />
+    <Compile Include="ActiveTerrain\Comps\TerrainComp_TempControl.cs" />
+    <Compile Include="ActiveTerrain\DefExtensionActive.cs" />
+    <Compile Include="ActiveTerrain\Patches.cs" />
+    <Compile Include="ActiveTerrain\SpecialTerrain.cs" />
+    <Compile Include="ActiveTerrain\SpecialTerrainList.cs" />
+    <Compile Include="ActiveTerrain\ThingComps.cs" />
     <Compile Include="AnimalBehaviours\AI\JobDrivers\JobDriver_AnimalResource.cs" />
     <Compile Include="AnimalBehaviours\AI\JobDrivers\JobDriver_AutoNutrition.cs" />
     <Compile Include="AnimalBehaviours\AI\JobDrivers\JobDriver_DestroyItem.cs" />
@@ -427,19 +446,25 @@
     <Compile Include="AnimalBehaviours\Comps\CompHediffEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompHighlyFlammable.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompInfecter.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompInitialAbility.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompInitialHediff.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompLastStand.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompLightSustenance.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompMetamorphosis.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompMindEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompNearbyEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompNoFilth.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompNoTamingDecay.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompPassiveRegenerator.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompPawnOverlay.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_NoTamingDecay.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_InitialAbility.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DieAndChangeIntoOtherDef.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_ApplyHediffWhenBound.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AcidImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_CauseIncident.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DiseasesAfterPeriod.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_LastStand.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_NoFilth.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DoesntFlee.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_Draftable.cs" />
@@ -530,6 +555,8 @@
     <Compile Include="AnimalBehaviours\Harmony\Pawn_PathFollower_CostToMoveIntoCell_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\IncidentWorker_SelfTame_Candidates_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Infocard\ThingDef_SpecialDisplayStats_Patch.cs" />
+    <Compile Include="AnimalBehaviours\Harmony\TrainableUtility_TamenessCanDecay_Patch.cs" />
+    <Compile Include="AnimalBehaviours\Harmony\VerbProperties_AdjustedCooldown_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\WildAnimalSpawner_SpawnRandomWildAnimalAt.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_AutoPermanentInjury.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Draftable.cs" />
@@ -571,6 +598,7 @@
     <Compile Include="Cuisine\Plants\Plant_NarrowTemperatures.cs" />
     <Compile Include="Misc\Dialog_ContractInfo.cs" />
     <Compile Include="VFECore\DefModExtensions\WeatherEffectsExtension.cs" />
+    <Compile Include="VFECore\HarmonyPatches\DefIndicesFixer.cs" />
     <Compile Include="VFECore\MultiplayerSupport.cs" />
     <Compile Include="Plants\DefExtensions\DualCropExtension.cs" />
     <Compile Include="Plants\Harmony\Plant_PlantCollected.cs" />
@@ -802,7 +830,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Lib.Harmony">
-      <Version>2.2.0</Version>
+      <Version>2.2.1</Version>
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

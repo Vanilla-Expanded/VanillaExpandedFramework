@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
     <Outposts.Settings.Title>Vanilla Expanded Framework - Outposts</Outposts.Settings.Title>
-    <Outposts.Settings.Multiplier.Production>Outpost Production Multiplier: {0}</Outposts.Settings.Multiplier.Production>
-    <Outposts.Settings.Multiplier.Time>Outpost Time Multiplier: {0}</Outposts.Settings.Multiplier.Time>
+    <Outposts.Settings.Multiplier.Production>Gloabal Production Multiplier: {0}</Outposts.Settings.Multiplier.Production>
+    <Outposts.Settings.Multiplier.Time>Global Time Multiplier: {0}</Outposts.Settings.Multiplier.Time>
     <Outposts.Dialog.Create>Create</Outposts.Dialog.Create>
     <Outposts.Commands.Create.Label>Create Outpost</Outposts.Commands.Create.Label>
     <Outposts.Commands.Create.Desc>Create a new outpost using this caravan</Outposts.Commands.Create.Desc>
@@ -56,4 +56,10 @@
     <Outposts.MustHaveInCaravan>Must have {0} in caravan</Outposts.MustHaveInCaravan>
     <Outposts.NoValidPawns>No valid pawns to add to outpost</Outposts.NoValidPawns>
     <Outposts.SkillChange>Due to changes in skill level, {0} can no longer produce {1}</Outposts.SkillChange>
+    <Outposts.Setting.ProductionTime>Production Time</Outposts.Setting.ProductionTime>
+    <Outposts.Setting.PackTime>Pack Time</Outposts.Setting.PackTime>
+    <Outposts.Setting.Range>Range</Outposts.Setting.Range>
+    <Outposts.Setting.MinimumPawns>Minimum Pawns to Create</Outposts.Setting.MinimumPawns>
+    <Outposts.Settings.Production>Production Multiplier</Outposts.Settings.Production>
+    <Outposts.Settings.DoRaids>Enable Outpost Raids?</Outposts.Settings.DoRaids>
 </LanguageData>

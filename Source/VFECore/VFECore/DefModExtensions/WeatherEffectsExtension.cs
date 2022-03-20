@@ -6,20 +6,35 @@ namespace VFECore
 {
     public class WeatherEffectsExtension : DefModExtension
     {
-        public List<HediffAndStat> hediffs;
+        public List<HediffAndStat> hediffsToApply;
 
-        public int ticksInterval;
-
-        public float severity;
+        public IntRange ticksInterval;
 
         public bool causesRotting;
 
-        public bool killingPlants;
+        public bool killsPlants;
+
+        public float chanceToKillPlants;
+
+        public float rotProgressPerDamage;
+
+        public WeatherDef activeOnWeatherPerceived;
+
+        public bool worksOnNonFleshPawns;
+
+        public DamageDef damageToApply;
+
+        public FloatRange damageRange;
+
+        public bool worksIndoors;
+
+        public float percentOfPawnsToDealDamage;
     }
 
     public class HediffAndStat
     {
-        public string hediffDefName;
-        public StatDef affectingStat;
+        public string hediff;
+        public StatDef effectMultiplyingStat;
+        public float severityOffset;
     }
 }

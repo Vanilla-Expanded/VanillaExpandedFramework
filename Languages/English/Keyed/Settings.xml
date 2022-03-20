@@ -10,6 +10,9 @@
     <NeedRestart>All settings need a restart to be applied</NeedRestart>
     <XPatchFound>{0} patches found</XPatchFound>
 
+	<!-- Weather damages -->
+	<VEF.WeatherDamages>Weather damages</VEF.WeatherDamages>
+	<VEF.EnableWeatherDamage>{0}</VEF.EnableWeatherDamage>
     <!-- Faction Discovery -->
     <FDTitle>Faction Discovery</FDTitle>
     <NeedToBeInGame>You first need to load a save</NeedToBeInGame>

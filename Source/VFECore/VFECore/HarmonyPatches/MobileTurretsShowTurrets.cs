@@ -16,7 +16,7 @@ namespace VFE.Mechanoids.HarmonyPatches
 
         public static void Postfix(PawnRenderer __instance, ref bool __result)
         {
-            if (CompMachine.cachedMachines.TryGetValue(__instance, out CompMachine value) && value.turretAttached != null)
+            if (CompMachine.cachedMachines.TryGetValue(__instance, out CompMachine value) && (value.turretAttached != null || value.Props.violent))
             {
                 __result = true;
             }

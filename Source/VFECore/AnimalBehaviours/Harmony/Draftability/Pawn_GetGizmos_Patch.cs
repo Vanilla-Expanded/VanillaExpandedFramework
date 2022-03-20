@@ -7,6 +7,8 @@ using System.Linq;
 using Verse.AI.Group;
 using System.Reflection;
 using VFE.Mechanoids;
+using VFEMech;
+using VFE.Mechanoids.HarmonyPatches;
 
 namespace AnimalBehaviours
 {
@@ -22,6 +24,7 @@ namespace AnimalBehaviours
         {
             var pawn = __instance;
             bool shouldbeDraftable = pawn.IsDraftableControllableAnimal();
+            bool abilityUser = pawn.IsAbilityUserAnimal();
             foreach (var g in __result)
             {
                 if (shouldbeDraftable && g is Command_Toggle command && command.defaultDesc == "CommandToggleDraftDesc".Translate())
@@ -29,6 +32,26 @@ namespace AnimalBehaviours
                     continue;
                 }
                 yield return g;
+            }
+
+            if (abilityUser && pawn.abilities != null)
+            {
+                foreach (Gizmo gizmoAbility in pawn.abilities.GetGizmos())
+                {
+                    yield return gizmoAbility;
+                }
+            }
+
+            if (SimpleSidearmsPatch.SimpleSidearmsActive && __instance is Machine)
+            {
+                var compMachine = pawn.GetComp<CompMachine>();
+                if (compMachine != null && compMachine.Props.canPickupWeapons)
+                {
+                    foreach (var g in SimpleSidearmsPatch.SimpleSidearmsGizmos(__instance))
+                    {
+                        yield return g;
+                    }
+                }
             }
 
             if (shouldbeDraftable && pawn.drafter != null)
