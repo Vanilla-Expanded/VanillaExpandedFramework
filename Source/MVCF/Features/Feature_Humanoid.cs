@@ -33,6 +33,7 @@ namespace MVCF.Features
             foreach (var patchSet in base.GetPatchSets()) yield return patchSet;
             yield return new PatchSet_Brawlers();
             yield return new PatchSet_Hunting();
+            if (ModLister.HasActiveModWithName("Dual Wield")) yield return new PatchSet_DualWield();
         }
 
         public static IEnumerable<Gizmo> GetGizmos_Postfix(IEnumerable<Gizmo> __result, Pawn_DraftController __instance)
@@ -98,6 +99,7 @@ namespace MVCF.Features
         {
             if (Base.IsIgnoredMod(eq?.def?.modContentPack?.Name)) return;
             if (Base.ShouldIgnore(eq)) return;
+            if (DualWieldCompat.Active && eq.IsOffHand()) return;
             var comp = eq.TryGetComp<CompEquippable>();
             if (comp?.VerbTracker?.AllVerbs == null) return;
             var manager = __instance?.pawn?.Manager(false);

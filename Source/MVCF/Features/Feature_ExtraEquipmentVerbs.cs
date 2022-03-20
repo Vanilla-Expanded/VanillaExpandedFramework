@@ -5,6 +5,7 @@ using System.Reflection.Emit;
 using HarmonyLib;
 using MonoMod.Utils;
 using MVCF.Comps;
+using MVCF.Features.PatchSets;
 using MVCF.Utilities;
 using RimWorld;
 using Verse;
@@ -37,6 +38,8 @@ namespace MVCF.Features
             var rangedVerbs = __instance.AllVerbs.Where(v => !v.IsMeleeAttack).ToList();
             var melee = VerbManager.PreferMelee(__instance.parent);
             if (rangedVerbs.Count <= 1 && !melee && !Base.GetFeature<Feature_VerbComps>().Enabled) return true;
+            if (DualWieldCompat.Active && __instance.parent.ParentHolder is Pawn_EquipmentTracker {pawn: Pawn pawn} tracker && tracker.PrimaryEq == __instance &&
+                pawn.HasOffHand()) return true;
             __result = rangedVerbs
                 .SelectMany(v => v.GetGizmosForVerb(v.Managed()))
                 .OfType<Command>();
