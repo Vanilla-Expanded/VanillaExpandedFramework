@@ -3,6 +3,7 @@ using System.Linq;
 using HarmonyLib;
 using MVCF.Comps;
 using MVCF.Features.PatchSets;
+using MVCF.ModCompat.PatchSets;
 using MVCF.Utilities;
 using MVCF.VerbComps;
 using Verse;

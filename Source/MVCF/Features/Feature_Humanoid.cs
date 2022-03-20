@@ -2,6 +2,8 @@
 using System.Linq;
 using HarmonyLib;
 using MVCF.Features.PatchSets;
+using MVCF.ModCompat;
+using MVCF.ModCompat.PatchSets;
 using MVCF.Utilities;
 using RimWorld;
 using UnityEngine;
@@ -98,6 +100,8 @@ namespace MVCF.Features
         public static void EquipmentRemoved_Postfix(ThingWithComps eq, Pawn_EquipmentTracker __instance)
         {
             if (Base.IsIgnoredMod(eq?.def?.modContentPack?.Name)) return;
+            if (Base.ShouldIgnore(eq)) return;
+            if (DualWield_Interop.Active && DualWield_Interop.IsOffHand(eq)) return;
             var comp = eq.TryGetComp<CompEquippable>();
             if (comp?.VerbTracker?.AllVerbs == null) return;
             var manager = __instance?.pawn?.Manager(false);

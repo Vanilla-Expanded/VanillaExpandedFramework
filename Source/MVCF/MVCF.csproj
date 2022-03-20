@@ -84,7 +84,6 @@
     <Compile Include="Features\Feature_VerbComps.cs" />
     <Compile Include="Features\PatchSets\PatchSet_Base.cs" />
     <Compile Include="Features\PatchSets\PatchSet_Brawlers.cs" />
-    <Compile Include="Features\PatchSets\PatchSet_DualWield.cs" />
     <Compile Include="Features\PatchSets\PatchSet_RunAndGun.cs" />
     <Compile Include="Features\PatchSets\PatchSet_Hunting.cs" />
     <Compile Include="Features\PatchSets\PatchSet_BatteLog.cs" />
@@ -125,7 +124,9 @@
     <Compile Include="Comps\Comp_VerbGiver.cs" />
     <Compile Include="Patch_Pawn_TryGetAttackVerb.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="ModCompat\PatchSets\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
          Other similar extension points exist, see Microsoft.Common.targets.

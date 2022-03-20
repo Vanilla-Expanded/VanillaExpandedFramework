@@ -8,7 +8,7 @@ using MonoMod.Utils;
 using MVCF.Utilities;
 using Verse;
 
-namespace MVCF.Features.PatchSets
+namespace MVCF.ModCompat.PatchSets
 {
     public class PatchSet_RunAndGun : PatchSet
     {
@@ -16,11 +16,10 @@ namespace MVCF.Features.PatchSets
 
         public override IEnumerable<Patch> GetPatches()
         {
-            IsOffHand ??= AccessTools.Method(AccessTools.TypeByName("DualWield.Ext_ThingWithComps"), "IsOffHand").CreateDelegate<Func<ThingWithComps, bool>>();
+            var type = AccessTools.TypeByName("DualWield.Ext_ThingWithComps");
+            if (type is not null) IsOffHand ??= AccessTools.Method(type, "IsOffHand")?.CreateDelegate<Func<ThingWithComps, bool>>();
             yield return Patch.Transpiler(AccessTools.Method(AccessTools.TypeByName("RunAndGun.Harmony.Verb_TryCastNextBurstShot"), "SetStanceRunAndGun"),
                 AccessTools.Method(GetType(), nameof(RunAndGunSetStance)));
-            yield return Patch.Prefix(AccessTools.Method(AccessTools.TypeByName("RunAndGun.Harmony.Verb_TryStartCastOn"), "Prefix"),
-                AccessTools.Method(GetType(), nameof(RunAndGunVerbCast)));
             yield return Patch.Postfix(AccessTools.TypeByName("RunAndGun.Extensions")?.GetMethod("HasRangedWeapon", AccessTools.all),
                 AccessTools.Method(GetType(), nameof(RunAndGunHasRangedWeapon)));
         }
@@ -40,7 +39,7 @@ namespace MVCF.Features.PatchSets
                 new(OpCodes.Ldfld, AccessTools.Field(typeof(Pawn_StanceTracker), "pawn")),
                 new(OpCodes.Ldarg_1),
                 new(OpCodes.Ldfld, AccessTools.Field(typeof(Stance_Busy), "verb")),
-                new(OpCodes.Call, AccessTools.Method(typeof(PatchSet_RunAndGun), "CanRunAndGun")),
+                new(OpCodes.Call, AccessTools.Method(typeof(PatchSet_RunAndGun), nameof(CanRunAndGun))),
                 new(OpCodes.Brfalse_S, label)
             };
             list.InsertRange(idx3 - 1, list2);
@@ -59,7 +58,5 @@ namespace MVCF.Features.PatchSets
         {
             if (!__result) __result = instance.Manager().CurrentlyUseableRangedVerbs.Any();
         }
-
-        public static bool RunAndGunVerbCast(ref bool __result, Verb __0) => true;
     }
 }
