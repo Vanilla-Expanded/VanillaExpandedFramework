@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using MVCF;
+using MVCF.Features;
 using MVCF.Reloading;
 using MVCF.Reloading.Comps;
 using MVCF.Utilities;
@@ -14,6 +16,7 @@ namespace Reloading
 
         protected override Job TryGiveJob(Pawn pawn)
         {
+            if (!Base.GetFeature<Feature_Reloading>().Enabled) return null;
             var comp = pawn.AllReloadComps().FirstOrDefault(r => r.NeedsReload());
             if (comp == null) return null;
             return (from thing in pawn.inventory.GetDirectlyHeldThings()
