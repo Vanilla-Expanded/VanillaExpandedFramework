@@ -272,39 +272,47 @@ namespace PipeSystem
                 comp.ResourceOn = true;
                 receiversDirty = true;
             }
+            var pMc = Production - Consumption;
+            // We manage the converters with produced resources
+            var used = DistributeAmongConverter(pMc);
             // Update amount stored
-            ChangeStoredResource(Production - Consumption);
-            // We manage the converters
-            DistributeAmongConverter();
+            ChangeStoredResource(pMc - used);
+            // We manage the converters with stored resources
+            DistributeAmongConverter(Stored);
         }
 
         /// <summary>
         /// Distribute resources stored into the converters
         /// </summary>
-        private void DistributeAmongConverter()
+        private int DistributeAmongConverter(float available)
         {
-            if (!converters.Any() || Stored <= 0)
-                return;
+            int used = 0;
+            if (!converters.Any() || available <= 0)
+                return used;
 
             // Get all converter ready
             List<CompConvertToThing> convertersReady = converters.FindAll(s => s.CanOutputNow && s.MaxCanOutput > 0).ToList();
             // If no converters are ready
             if (convertersReady.NullOrEmpty())
-                return;
+                return used;
 
             // Convert it
             for (int i = 0; i < convertersReady.Count; i++)
             {
                 var converter = convertersReady[i];
                 // cap amountInEach to amount storage can accept
-                int toConvert = Math.Min(converter.MaxCanOutput, (int)(Stored / converter.Props.ratio));
+                int toConvert = (int)Math.Min(converter.MaxCanOutput, available / converter.Props.ratio);
                 if (toConvert > 0)
                 {
                     converter.OutputResource(toConvert);
-                    DrawAmongStorage(toConvert * converter.Props.ratio);
+                    var toDraw = toConvert * converter.Props.ratio;
+                    DrawAmongStorage(toDraw);
+                    used += toDraw;
                     PipeSystemDebug.Message($"Converted {toConvert * converter.Props.ratio} resource for {toConvert}");
                 }
             }
+
+            return used;
         }
 
         /// <summary>
