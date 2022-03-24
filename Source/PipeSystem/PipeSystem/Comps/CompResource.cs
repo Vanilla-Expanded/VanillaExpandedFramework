@@ -28,7 +28,6 @@ namespace PipeSystem
 
         public override void PostDeSpawn(Map map)
         {
-            PipeSystemDebug.Message($"Unregistering {parent.ThingID}");
             pipeNetManager.UnregisterConnector(this);
             base.PostDeSpawn(map);
         }
