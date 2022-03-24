@@ -87,14 +87,20 @@ namespace PipeSystem
             List<PipeNet> foundNets = new List<PipeNet>();
             for (int i = 0; i < things.Count; i++)
             {
-                var rComp = things[i].TryGetComp<CompResource>();
-                if (rComp != null
-                    && rComp.Props.pipeNet == comp.Props.pipeNet
-                    && rComp.PipeNet is PipeNet p
-                    && p != null
-                    && !foundNets.Contains(p))
+                var thing = (ThingWithComps)things[i];
+                var comps = thing.GetComps<CompResource>();
+
+                for (int o = 0; o < comps.Count(); o++)
                 {
-                    foundNets.Add(p);
+                    var rComp = comps.ElementAt(o);
+                    if (rComp != null
+                        && rComp.Props.pipeNet == comp.Props.pipeNet
+                        && rComp.PipeNet is PipeNet p
+                        && p != null
+                        && !foundNets.Contains(p))
+                    {
+                        foundNets.Add(p);
+                    }
                 }
             }
 
