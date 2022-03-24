@@ -1,5 +1,4 @@
-﻿using RimWorld;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -20,14 +19,14 @@ namespace PipeSystem
         private static int lastFrameDraw;
 
         public static PipeNetDef PipeNet { get; set; }
-        public bool DrawNow { get; set; }
+
         public virtual bool ShouldDraw => lastFrameDraw + 1 >= Time.frameCount;
 
-        public static void UpdateAndDrawFor(PipeNetDef resource)
+        public static void UpdateAndDrawFor(PipeNetDef pipeNetDef)
         {
-            if (resource != PipeNet)
+            if (pipeNetDef != PipeNet)
             {
-                PipeNet = resource;
+                PipeNet = pipeNetDef;
                 Find.CurrentMap.mapDrawer.WholeMapChanged((MapMeshFlag)455);
                 PipeSystemDebug.Message("Regenerated MapMeshFlag 455 for SectionLayer_Resource.");
             }
@@ -36,43 +35,44 @@ namespace PipeSystem
 
         public override void DrawLayer()
         {
-            if (ShouldDraw || DrawNow)
-            {
+            if (ShouldDraw)
                 base.DrawLayer();
-            }
         }
 
         public override void Regenerate()
         {
             ClearSubMeshes(MeshParts.All);
+            // Loop in all cells of the section
             var cells = section.CellRect.Cells;
             for (int i = 0; i < cells.Count(); i++)
             {
                 var cell = cells.ElementAt(i);
-                var thingsAt = GridsUtility.GetThingList(cell, Map).OfType<ThingWithComps>();
-                for (int o = 0; o < thingsAt.Count(); o++)
+                // Loop on thing(s) on this cell
+                var things = GridsUtility.GetThingList(cell, Map);
+                for (int o = 0; o < things.Count; o++)
                 {
-                    var thing = thingsAt.ElementAt(o);
-                    var comps = thing.AllComps.OfType<CompResource>();
-                    for (int p = 0; p < comps.Count(); p++)
+                    var thing = things[o];
+                    if (thing is ThingWithComps thingWC)
                     {
-                        var comp = comps.ElementAt(p);
-                        if (comp.Props.pipeNet == PipeNet && thing.Position.x == cell.x && thing.Position.z == cell.z)
-                            TakePrintFrom(thing);
+                        var comps = thingWC.GetComps<CompResource>();
+                        // Loop through comps
+                        for (int p = 0; p < comps.Count(); p++)
+                        {
+                            var comp = comps.ElementAt(p);
+                            var compNet = comp.Props.pipeNet;
+                            if (compNet == PipeNet && thing.Position.x == cell.x && thing.Position.z == cell.z)
+                            {
+                                LinkedPipes.GetOverlayFor(compNet).Print(this, thing, 0);
+                                break; // Don't bother checking the others comps
+                            }
+                        }
                     }
                 }
             }
+
             FinalizeMesh(MeshParts.All);
         }
 
-        protected override void TakePrintFrom(Thing t)
-        {
-            if ((t.Faction == null || t.Faction == Faction.OfPlayer)
-                && t.TryGetComp<CompResource>() is CompResource compResource
-                && compResource.TransmitResourceNow)
-            {
-                LinkedPipes.GetOverlayFor(compResource.Props.pipeNet).Print(this, t, 0);
-            }
-        }
+        protected override void TakePrintFrom(Thing t) { }
     }
 }
