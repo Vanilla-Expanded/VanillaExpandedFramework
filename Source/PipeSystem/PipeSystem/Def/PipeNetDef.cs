@@ -12,7 +12,7 @@ namespace PipeSystem
     public class PipeNetDef : Def
     {
         public Resource resource; // The resource used for this net.
-        public ThingDef pipeDef; // The pipe used for this net.
+        public List<ThingDef> pipeDefs; // The pipes used for this net.
 
         public DeconstructOption designator; // If this ins't null, we create a new designator that only deconstruct the given pipe.
         public OverlayOption overlayOptions; // Overlay option, with a default value

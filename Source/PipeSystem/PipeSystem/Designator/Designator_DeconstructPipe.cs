@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -22,8 +23,8 @@ namespace PipeSystem
 
         public override AcceptanceReport CanDesignateThing(Thing t)
         {
-            if (t.def != pipeNetDef.pipeDef) return false;
-            if (t is Blueprint_Build blueprint && blueprint.def.entityDefToBuild != pipeNetDef.pipeDef) return false;
+            if (!pipeNetDef.pipeDefs.Contains(t.def)) return false;
+            if (t is Blueprint_Build blueprint && !pipeNetDef.pipeDefs.Contains(blueprint.def.entityDefToBuild)) return false;
             return base.CanDesignateThing(t);
         }
 

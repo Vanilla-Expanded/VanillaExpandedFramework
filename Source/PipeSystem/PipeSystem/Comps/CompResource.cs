@@ -38,11 +38,20 @@ namespace PipeSystem
         /// </summary>
         internal void RemovePipes()
         {
-            if (parent.def != Props.pipeNet.pipeDef)
+            if (!Props.pipeNet.pipeDefs.Contains(parent.def))
             {
+                Map map = parent.Map;
                 foreach (var cell in GenAdj.CellsOccupiedBy(parent))
                 {
-                    cell.GetFirstThing(parent.Map, Props.pipeNet.pipeDef)?.Destroy(DestroyMode.Deconstruct);
+                    var things = cell.GetThingList(map);
+                    for (int i = 0; i < things.Count; i++)
+                    {
+                        var thing = things[i];
+                        if (Props.pipeNet.pipeDefs.Contains(thing.def))
+                        {
+                            thing.Destroy(DestroyMode.Deconstruct);
+                        }
+                    }
                 }
             }
         }

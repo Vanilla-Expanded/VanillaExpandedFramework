@@ -13,12 +13,12 @@ namespace PipeSystem
     {
         private static readonly Dictionary<PipeNetDef, Graphic_LinkedOverlayPipe> overlayLinked;
 
-        private static readonly Dictionary<PipeNetDef, Graphic_LinkedPipe> pipesLinked;
+        private static readonly Dictionary<ThingDef, Graphic_LinkedPipe> pipesLinked;
 
         static LinkedPipes()
         {
             overlayLinked = new Dictionary<PipeNetDef, Graphic_LinkedOverlayPipe>();
-            pipesLinked = new Dictionary<PipeNetDef, Graphic_LinkedPipe>();
+            pipesLinked = new Dictionary<ThingDef, Graphic_LinkedPipe>();
 
             var netDefs = DefDatabase<PipeNetDef>.AllDefsListForReading;
             for (int i = 0; i < netDefs.Count; i++)
@@ -35,14 +35,18 @@ namespace PipeSystem
                 overlayLinked.Add(netDef, new Graphic_LinkedOverlayPipe(graphicO, netDef));
 
                 // Moving on to actual pipes linked graphics
-                Graphic graphicP = GraphicDatabase.Get<Graphic_Single>(netDef.pipeDef.graphic.data.texPath, ShaderDatabase.Cutout);
+                for (int o = 0; o < netDef.pipeDefs.Count; o++)
+                {
+                    var pipeDef = netDef.pipeDefs[o];
 
-                pipesLinked.Add(netDef, new Graphic_LinkedPipe(graphicP, netDef));
+                    Graphic graphicP = GraphicDatabase.Get<Graphic_Single>(pipeDef.graphic.data.texPath, ShaderDatabase.Cutout);
+                    pipesLinked.Add(pipeDef, new Graphic_LinkedPipe(graphicP, netDef));
+                }
             }
         }
 
         public static Graphic_LinkedOverlayPipe GetOverlayFor(PipeNetDef resource) => overlayLinked[resource];
 
-        public static Graphic_LinkedPipe GetPipeFor(PipeNetDef resource) => pipesLinked[resource];
+        public static Graphic_LinkedPipe GetPipeFor(ThingDef pipe) => pipesLinked[pipe];
     }
 }

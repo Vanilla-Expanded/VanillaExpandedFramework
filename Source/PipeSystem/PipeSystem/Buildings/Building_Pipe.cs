@@ -15,6 +15,6 @@ namespace PipeSystem
             compResource = GetComp<CompResource>();
         }
 
-        public override Graphic Graphic => LinkedPipes.GetPipeFor(compResource.Props.pipeNet);
+        public override Graphic Graphic => LinkedPipes.GetPipeFor(def);
     }
 }
