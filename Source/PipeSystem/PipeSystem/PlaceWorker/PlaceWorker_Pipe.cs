@@ -16,16 +16,26 @@ namespace PipeSystem
             for (int i = 0; i < thingList.Count; i++)
             {
                 var t = thingList[i];
-                if (CachedResourceThings.firstCompOf.ContainsKey(t.def))
+                if (CachedResourceThings.resourceCompsOf.ContainsKey(t.def))
                 {
-                    var props = CachedResourceThings.firstCompOf[t.def];
-                    return props.pipeNet != pipeNet;
+                    return Accept(t.def, pipeNet);
                 }
-                if (t.def.entityDefToBuild is ThingDef thingDef && CachedResourceThings.firstCompOf.ContainsKey(thingDef))
+                if (t.def.entityDefToBuild is ThingDef thingDef && CachedResourceThings.resourceCompsOf.ContainsKey(thingDef))
                 {
-                    var props = CachedResourceThings.firstCompOf[thingDef];
-                    return props.pipeNet != pipeNet;
+                    return Accept(thingDef, pipeNet);
                 }
+            }
+            return true;
+        }
+
+        private bool Accept(ThingDef thingDef, PipeNetDef pipeNetDef)
+        {
+            var props = CachedResourceThings.resourceCompsOf[thingDef];
+            for (int i = 0; i < props.Count; i++)
+            {
+                var prop = props[i];
+                if (prop.pipeNet == pipeNetDef)
+                    return false;
             }
             return true;
         }

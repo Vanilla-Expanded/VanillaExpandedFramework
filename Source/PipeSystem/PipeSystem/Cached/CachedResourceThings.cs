@@ -6,7 +6,7 @@ namespace PipeSystem
     [StaticConstructorOnStartup]
     public static class CachedResourceThings
     {
-        public static readonly Dictionary<ThingDef, CompProperties_Resource> firstCompOf = new Dictionary<ThingDef, CompProperties_Resource>();
+        public static readonly Dictionary<ThingDef, List<CompProperties_Resource>> resourceCompsOf = new Dictionary<ThingDef, List<CompProperties_Resource>>();
 
         static CachedResourceThings()
         {
@@ -14,9 +14,22 @@ namespace PipeSystem
             for (int i = 0; i < things.Count; i++)
             {
                 var thing = things[i];
-                if (thing.GetCompProperties<CompProperties_Resource>() is CompProperties_Resource cpR)
+                var comps = thing.comps;
+
+                for (int o = 0; o < comps.Count; o++)
                 {
-                    firstCompOf.Add(thing, cpR);
+                    var comp = comps[o];
+                    if (comp is CompProperties_Resource cpR)
+                    {
+                        if (!resourceCompsOf.ContainsKey(thing))
+                        {
+                            resourceCompsOf.Add(thing, new List<CompProperties_Resource>() { cpR });
+                        }
+                        else
+                        {
+                            resourceCompsOf[thing].Add(cpR);
+                        }
+                    }
                 }
             }
         }
