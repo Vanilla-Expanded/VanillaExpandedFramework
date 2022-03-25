@@ -139,7 +139,6 @@ namespace PipeSystem
         /// <param name="comp">The comp of the thing we register</param>
         public virtual void RegisterComp(CompResource comp)
         {
-            PipeSystemDebug.Message($"Registering {comp}");
             if (connectors.Contains(comp))
                 return;
 
@@ -181,7 +180,6 @@ namespace PipeSystem
         /// <param name="comp"></param>
         public virtual void UnregisterComp(CompResource comp)
         {
-            PipeSystemDebug.Message($"Unregistering {comp}");
             connectors.Remove(comp);
             if (comp is CompResourceTrader trader)
             {

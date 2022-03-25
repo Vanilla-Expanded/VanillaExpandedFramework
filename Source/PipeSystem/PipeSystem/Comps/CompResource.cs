@@ -24,11 +24,13 @@ namespace PipeSystem
             RemovePipes();
             pipeNetManager = parent.Map.GetComponent<PipeNetManager>();
             pipeNetManager.RegisterConnector(this);
+            PipeSystemDebug.Message($"Registering {this}");
         }
 
         public override void PostDeSpawn(Map map)
         {
             pipeNetManager.UnregisterConnector(this);
+            PipeSystemDebug.Message($"Unregistering {this}");
             base.PostDeSpawn(map);
         }
 
