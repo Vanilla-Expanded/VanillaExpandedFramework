@@ -538,6 +538,7 @@
     <Compile Include="AnimalBehaviours\Enums\BodyClock.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\Bill_PawnAllowedToStartAnew_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\FloatMenuMakerMap_AddDraftedOrders_Patch.cs" />
+    <Compile Include="AnimalBehaviours\Harmony\Draftability\ITab_Pawn_Gear_IsVisible.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\PawnComponentsUtility_AddAndRemoveDynamicComponents_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\Pawn_GetGizmos_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Infocard\Dialog_InfoCard_FillCard_Patch.cs" />
