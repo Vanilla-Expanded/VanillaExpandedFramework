@@ -155,6 +155,12 @@ namespace Outposts
         public virtual void RecachePawnTraits()
         {
             skillsDirty = true;
+            foreach (var pawn in containedItems.OfType<Pawn>().ToList())
+            {
+                containedItems.Remove(pawn);
+                if (pawn.GetCaravan() is { } c) c.RemovePawn(pawn);
+                AddPawn(pawn);
+            }
         }
 
         public bool AddPawn(Pawn pawn)
@@ -163,7 +169,7 @@ namespace Outposts
             var caravan = pawn.GetCaravan();
             if (caravan != null)
             {
-                foreach (var item in CaravanInventoryUtility.AllInventoryItems(caravan).Where(item => CaravanInventoryUtility.GetOwnerOf(caravan, item) == item))
+                foreach (var item in CaravanInventoryUtility.AllInventoryItems(caravan).Where(item => CaravanInventoryUtility.GetOwnerOf(caravan, item) == pawn))
                     CaravanInventoryUtility.MoveInventoryToSomeoneElse(pawn, item, caravan.PawnsListForReading, new List<Pawn> {pawn}, item.stackCount);
                 if (!caravan.PawnsListForReading.Except(pawn).Any(p => p.RaceProps.Humanlike))
                     containedItems.AddRange(CaravanInventoryUtility.AllInventoryItems(caravan));
