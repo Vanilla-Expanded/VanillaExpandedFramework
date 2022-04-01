@@ -34,4 +34,6 @@
   <PipeSystem_DecreaseStackDescB>Decrease output maximum stack size by 10.</PipeSystem_DecreaseStackDescB>
 
   <PipeSystem_AmountOut>Maximum amount stored here: {0}</PipeSystem_AmountOut>
+
+  <PipeSystem_ProcessorBuffer>Buffer: {0}</PipeSystem_ProcessorBuffer>
 </LanguageData>

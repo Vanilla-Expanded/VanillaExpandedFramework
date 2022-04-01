@@ -12,6 +12,7 @@ namespace PipeSystem
         public List<CompResourceTrader> receivers = new List<CompResourceTrader>();
         public List<CompResourceStorage> storages = new List<CompResourceStorage>();
         public List<CompConvertToThing> converters = new List<CompConvertToThing>();
+        public List<CompResourceProcessor> processors = new List<CompResourceProcessor>();
 
         public Map map;
         public BoolGrid networkGrid;
@@ -106,7 +107,7 @@ namespace PipeSystem
         }
 
         /// <summary>
-        /// Destroy this PipeNet, by setting null as all it's connectors net
+        /// Unregister all comp, remove the class from manager list
         /// </summary>
         public virtual void Destroy()
         {
@@ -165,6 +166,10 @@ namespace PipeSystem
             {
                 converters.Add(convertToThing);
             }
+            else if (comp is CompResourceProcessor processor)
+            {
+                processors.Add(processor);
+            }
             comp.PipeNet = this;
 
             var cells = comp.parent.OccupiedRect().Cells;
@@ -202,6 +207,10 @@ namespace PipeSystem
             else if (comp is CompConvertToThing convertToThing)
             {
                 converters.Remove(convertToThing);
+            }
+            else if (comp is CompResourceProcessor processor)
+            {
+                processors.Remove(processor);
             }
 
             var cells = comp.parent.OccupiedRect().Cells;
@@ -272,21 +281,66 @@ namespace PipeSystem
                 comp.ResourceOn = true;
                 receiversDirty = true;
             }
-            var pMc = Production - Consumption;
-            // We manage the converters with produced resources
-            var used = DistributeAmongConverter(pMc);
-            // Update amount stored
-            ChangeStoredResource(pMc - used);
-            // We manage the converters with stored resources
-            DistributeAmongConverter(Stored);
+
+            // Get the usable resource
+            var usable = Production - Consumption;
+            // Draw from storage if we use more than we produce
+            if (usable < 0)
+            {
+                DrawAmongStorage(-usable);
+            }
+            // If we produce resource, and there is storage
+            else if (storages.Count > 0)
+            {
+                // Store it
+                DistributeAmongStorage(usable);
+                // Distribute using the whole storage
+                DistributeAmongProcessor(Stored);
+                DistributeAmongConverter(Stored);
+            }
+            else
+            {
+                var pUsage = DistributeAmongProcessor(usable);
+                DistributeAmongConverter(usable - pUsage);
+            }
         }
 
         /// <summary>
         /// Distribute resources stored into the converters
         /// </summary>
-        private int DistributeAmongConverter(float available)
+        private float DistributeAmongProcessor(float available)
         {
-            int used = 0;
+            float used = 0;
+            if (!processors.Any() || available <= 0)
+                return used;
+
+            for (int i = 0; i < processors.Count; i++)
+            {
+                var processor = processors[i];
+                var sub = processor.Props.bufferSize - processor.Storage;
+
+                if (sub > 0)
+                {
+                    var toStore = sub > available ? available : sub;
+                    processor.Storage += toStore;
+                    available -= toStore;
+                    used += toStore;
+                }
+
+                if (available <= 0)
+                    break;
+            }
+
+            DrawAmongStorage(used);
+            return used;
+        }
+
+        /// <summary>
+        /// Distribute resources stored into the converters
+        /// </summary>
+        internal float DistributeAmongConverter(float available)
+        {
+            float used = 0;
             if (!converters.Any() || available <= 0)
                 return used;
 
@@ -306,25 +360,13 @@ namespace PipeSystem
                 {
                     converter.OutputResource(toConvert);
                     var toDraw = toConvert * converter.Props.ratio;
-                    DrawAmongStorage(toDraw);
                     used += toDraw;
                     PipeSystemDebug.Message($"Converted {toConvert * converter.Props.ratio} resource for {toConvert}");
                 }
             }
 
+            DrawAmongStorage(used);
             return used;
-        }
-
-        /// <summary>
-        /// Withdraw or add resource.
-        /// </summary>
-        /// <param name="num">Amount</param>
-        private void ChangeStoredResource(float amount)
-        {
-            if (amount > 0)
-                DistributeAmongStorage(amount);
-            if (amount < 0)
-                DrawAmongStorage(-amount);
         }
 
         /// <summary>
@@ -374,6 +416,7 @@ namespace PipeSystem
         /// <param name="amount">Amount to draw</param>
         internal void DrawAmongStorage(float amount)
         {
+            Log.Message($"Drawing {amount} from storage");
             if (amount <= 0 || !storages.Any())
                 return;
             // Get all storage that can provide resources
