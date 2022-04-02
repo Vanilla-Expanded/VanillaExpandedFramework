@@ -311,7 +311,7 @@ namespace PipeSystem
         private float DistributeAmongProcessor(float available)
         {
             float used = 0;
-            if (!processors.Any() || available <= 0)
+            if (processors.Count == 0 || available <= 0)
                 return used;
 
             for (int i = 0; i < processors.Count; i++)

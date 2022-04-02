@@ -24,6 +24,15 @@ namespace PipeSystem
         private bool canCreateItems;
         private Vector3 trueCenter;
         private bool cantRefine;
+        private bool enoughResource;
+
+        public bool Working
+        {
+            get
+            {
+                return (flickable == null || flickable.SwitchIsOn) && (compPower == null || compPower.PowerOn) && enoughResource && !cantRefine;
+            }
+        }
 
         public override void PostPostMake()
         {
@@ -31,6 +40,7 @@ namespace PipeSystem
             nextProcessTick = Find.TickManager.TicksGame + Props.eachTicks;
             Storage = 0;
             cantRefine = false;
+            enoughResource = false;
         }
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
@@ -70,6 +80,11 @@ namespace PipeSystem
                     && (compPower == null || compPower.PowerOn))
                 {
                     SpawnOrCreateResource();
+                    enoughResource = true;
+                }
+                else if (Storage == 0)
+                {
+                    enoughResource = false;
                 }
                 nextProcessTick = tick + Props.eachTicks;
             }
@@ -81,6 +96,7 @@ namespace PipeSystem
             Scribe_Values.Look(ref Storage, "storage");
             Scribe_Values.Look(ref nextProcessTick, "nextProcessTick");
             Scribe_Values.Look(ref cantRefine, "cantRefine", false, true);
+            Scribe_Values.Look(ref enoughResource, "enoughResource", false, true);
         }
 
         public override string CompInspectStringExtra()
@@ -97,7 +113,7 @@ namespace PipeSystem
         public override void PostDraw()
         {
             base.PostDraw();
-            if (Storage == 0 && Props.pipeNet.offMat != null)
+            if (!enoughResource && Props.pipeNet.offMat != null)
                 IconOverlay.RenderPusling(parent, Props.pipeNet.offMat, trueCenter, MeshPool.plane08);
         }
 
@@ -160,6 +176,7 @@ namespace PipeSystem
             }
             // Reset buffer
             Storage = 0;
+            cantRefine = false;
         }
     }
 }
