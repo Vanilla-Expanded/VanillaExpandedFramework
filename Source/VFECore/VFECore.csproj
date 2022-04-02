@@ -599,6 +599,7 @@
     <Compile Include="Cuisine\Plants\Plant_NarrowTemperatures.cs" />
     <Compile Include="Misc\Dialog_ContractInfo.cs" />
     <Compile Include="VFECore\DefModExtensions\WeatherEffectsExtension.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_DeepResourceGrid_GetCellExtraColor.cs" />
     <Compile Include="VFECore\HarmonyPatches\DefIndicesFixer.cs" />
     <Compile Include="VFECore\MultiplayerSupport.cs" />
     <Compile Include="Plants\DefExtensions\DualCropExtension.cs" />
