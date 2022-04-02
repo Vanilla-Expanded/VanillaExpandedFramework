@@ -8,17 +8,17 @@
 
     public class AbilityDef : Def
     {
-        public Type    abilityClass;
+        public Type abilityClass;
 
         public HediffWithLevelCombination requiredHediff;
         public TraitDef                   requiredTrait;
 
         public AbilityTargetingMode targetMode = AbilityTargetingMode.Self;
 
-        public float              range             = 0f;
+        public float              range            = 0f;
         public List<StatModifier> rangeStatFactors = new List<StatModifier>();
 
-        public float              radius           = 0f;
+        public float              radius            = 0f;
         public List<StatModifier> radiusStatFactors = new List<StatModifier>();
 
         public float              power            = 0f;
@@ -27,41 +27,40 @@
         public int                castTime            = 0;
         public List<StatModifier> castTimeStatFactors = new List<StatModifier>();
 
-        public int              cooldownTime         = 0;
+        public int                cooldownTime            = 0;
         public List<StatModifier> cooldownTimeStatFactors = new List<StatModifier>();
 
         public int                durationTime            = 0;
         public List<StatModifier> durationTimeStatFactors = new List<StatModifier>();
 
-        [Unsaved(false)]
-        public Texture2D icon = BaseContent.BadTex;
-        public string iconPath;
+        [Unsaved(false)] public Texture2D icon = BaseContent.BadTex;
+        public                  string    iconPath;
 
-        public SoundDef                 castSound;
-        public FleckDef                 castFleck;
-        public HediffDef                casterHediff;
+        public SoundDef  castSound;
+        public FleckDef  castFleck;
+        public HediffDef casterHediff;
 
-        public List<FleckDef>           targetFlecks;
+        public List<FleckDef> targetFlecks;
 
         public VerbProperties      verbProperties;
         public TargetingParameters targetingParameters;
-        public float               chance          = 1f;
+        public float               chance                = 1f;
         public bool                autocastPlayerDefault = false;
 
         public string jobReportString = "Using ability: {0}";
 
         public string JobReportString => this.jobReportString.Formatted(this.LabelCap);
 
-        public float Chance => 
+        public float Chance =>
             this.chance;
 
         public bool Satisfied(Hediff_Abilities hediff) =>
-            ((hediff != null && hediff.SatisfiesConditionForAbility(this)) || this.requiredHediff == null) && 
-            (this.requiredTrait == null || (hediff?.pawn?.story?.traits.HasTrait(this.requiredTrait) ?? false));
+            ((hediff != null && hediff.SatisfiesConditionForAbility(this)) || this.requiredHediff == null) &&
+            (this.requiredTrait                                                                   == null || (hediff?.pawn?.story?.traits.HasTrait(this.requiredTrait) ?? false));
 
         public override IEnumerable<string> ConfigErrors()
         {
-            foreach (string configError in base.ConfigErrors()) 
+            foreach (string configError in base.ConfigErrors())
                 yield return configError;
 
             if (!typeof(Abilities.Ability).IsAssignableFrom(this.abilityClass))
@@ -79,13 +78,14 @@
 
             if (this.targetingParameters == null)
             {
-                this.targetingParameters = new TargetingParameters() {
-                                                                         canTargetPawns = false,
-                                                                         canTargetBuildings = false,
-                                                                         canTargetAnimals = false,
-                                                                         canTargetHumans = false,
-                                                                         canTargetMechs = false
-                                                                     };
+                this.targetingParameters = new TargetingParameters()
+                                           {
+                                               canTargetPawns     = false,
+                                               canTargetBuildings = false,
+                                               canTargetAnimals   = false,
+                                               canTargetHumans    = false,
+                                               canTargetMechs     = false
+                                           };
 
                 switch (this.targetMode)
                 {
@@ -96,7 +96,7 @@
                         this.targetingParameters.canTargetLocations = true;
                         break;
                     case AbilityTargetingMode.Thing:
-                        this.targetingParameters.canTargetItems  = true;
+                        this.targetingParameters.canTargetItems     = true;
                         this.targetingParameters.canTargetBuildings = true;
                         break;
                     case AbilityTargetingMode.Pawn:
@@ -128,9 +128,15 @@
                                           meleeDamageBaseAmount = Mathf.RoundToInt(this.power),
                                           meleeDamageDef        = DamageDefOf.Blunt
                                       };
+
+            if (this.modExtensions != null)
+                foreach (DefModExtension extension in this.modExtensions)
+                {
+                    if (extension is AbilityExtension_AbilityMod abilityExtension)
+                        abilityExtension.abilityDef = this;
+                }
         }
     }
-
 
 
     public class HediffWithLevelCombination
