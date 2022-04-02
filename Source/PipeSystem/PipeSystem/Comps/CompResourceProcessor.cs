@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 using Verse;
 
 namespace PipeSystem
@@ -17,12 +18,20 @@ namespace PipeSystem
         private CompPowerTrader compPower;
 
         private int nextProcessTick;
-        private List<IntVec3> adjCells;
 
+        private List<IntVec3> adjCells;
         private bool canPushToNet;
         private bool canCreateItems;
+        private Vector3 trueCenter;
+        private bool cantRefine;
 
-        private bool cantRefine = false;
+        public override void PostPostMake()
+        {
+            base.PostPostMake();
+            nextProcessTick = Find.TickManager.TicksGame + Props.eachTicks;
+            Storage = 0;
+            cantRefine = false;
+        }
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
@@ -48,7 +57,7 @@ namespace PipeSystem
             compPower = parent.GetComp<CompPowerTrader>();
 
             adjCells = GenAdj.CellsAdjacent8Way(parent).ToList();
-            nextProcessTick = Find.TickManager.TicksGame + Props.eachTicks;
+            trueCenter = parent.TrueCenter();
         }
 
         public override void CompTick()
@@ -83,6 +92,13 @@ namespace PipeSystem
             if (cantRefine && Props.notWorkingKey != null)
                 sb.AppendInNewLine(Props.notWorkingKey.Translate());
             return sb.ToString().Trim();
+        }
+
+        public override void PostDraw()
+        {
+            base.PostDraw();
+            if (Storage == 0 && Props.pipeNet.offMat != null)
+                IconOverlay.RenderPusling(parent, Props.pipeNet.offMat, trueCenter, MeshPool.plane08);
         }
 
         private void SpawnOrCreateResource()
