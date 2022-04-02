@@ -429,7 +429,6 @@ namespace PipeSystem
         /// <param name="amount">Amount to draw</param>
         internal void DrawAmongStorage(float amount)
         {
-            Log.Message($"Drawing {amount} from storage");
             if (amount <= 0 || !storages.Any())
                 return;
             // Get all storage that can provide resources
