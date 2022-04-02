@@ -345,24 +345,37 @@ namespace PipeSystem
                 return used;
 
             // Get all converter ready
-            List<CompConvertToThing> convertersReady = converters.FindAll(s => s.CanOutputNow && s.MaxCanOutput > 0).ToList();
+            var convertersReady = new List<CompConvertToThing>();
+            for (int i = 0; i < converters.Count; i++)
+            {
+                var converter = converters[i];
+                if (converter.CanOutputNow && converter.MaxCanOutput > 0)
+                {
+                    convertersReady.Add(converter);
+                }
+            }
             // If no converters are ready
-            if (convertersReady.NullOrEmpty())
+            if (convertersReady.Count == 0)
                 return used;
 
             // Convert it
             for (int i = 0; i < convertersReady.Count; i++)
             {
                 var converter = convertersReady[i];
-                // cap amountInEach to amount storage can accept
-                int toConvert = (int)Math.Min(converter.MaxCanOutput, available / converter.Props.ratio);
+                // cap to max amount storage can accept
+                int availableWRatio = (int)(available / converter.Props.ratio);
+                int max = converter.MaxCanOutput;
+                int toConvert = max > availableWRatio ? availableWRatio : max;
                 if (toConvert > 0)
                 {
                     converter.OutputResource(toConvert);
                     var toDraw = toConvert * converter.Props.ratio;
                     used += toDraw;
-                    PipeSystemDebug.Message($"Converted {toConvert * converter.Props.ratio} resource for {toConvert}");
+                    available -= toDraw;
+                    PipeSystemDebug.Message($"Converted {toDraw} resource for {toConvert}");
                 }
+                // Don't iterate if nothing more is available
+                else break;
             }
 
             DrawAmongStorage(used);
