@@ -32,7 +32,7 @@ namespace KCSG
         {
             X = x;
             Y = y;
-            this.Type = type;
+            Type = type;
 
             Parent = null;
             DistanceToTarget = -1f;

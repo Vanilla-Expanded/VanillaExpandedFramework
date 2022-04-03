@@ -40,7 +40,7 @@ namespace KCSG
                             CGO.ClearAll();
                             LongEventHandler_Patches.LongEventsOnGUI_Prefix.structure = null;
                         });
-                    }, "GeneratingMapForNewEncounter", true, delegate(Exception e) 
+                    }, "GeneratingMapForNewEncounter", true, delegate (Exception e)
                     {
                         Log.Error($"{e}");
                         CGO.ClearUI();

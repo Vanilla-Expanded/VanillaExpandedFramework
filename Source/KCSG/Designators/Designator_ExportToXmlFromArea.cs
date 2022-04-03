@@ -33,12 +33,12 @@ namespace KCSG
 
         public Designator_ExportToXmlFromArea()
         {
-            this.defaultLabel = "Export from area";
-            this.defaultDesc = "Export a building to xml from area";
-            this.icon = ContentFinder<Texture2D>.Get("UI/Designators/exportFA", true);
-            this.soundDragSustain = SoundDefOf.Designate_DragStandard;
-            this.soundDragChanged = SoundDefOf.Designate_DragStandard_Changed;
-            this.useMouseIcon = true;
+            defaultLabel = "Export from area";
+            defaultDesc = "Export a building to xml from area";
+            icon = ContentFinder<Texture2D>.Get("UI/Designators/exportFA", true);
+            soundDragSustain = SoundDefOf.Designate_DragStandard;
+            soundDragChanged = SoundDefOf.Designate_DragStandard_Changed;
+            useMouseIcon = true;
         }
 
         public override AcceptanceReport CanDesignateCell(IntVec3 c)

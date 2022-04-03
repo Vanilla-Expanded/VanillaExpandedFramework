@@ -1,7 +1,4 @@
-﻿using RimWorld;
-using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 using Verse;
 
 namespace KCSG
@@ -25,7 +22,7 @@ namespace KCSG
             {
                 return new Pos(int.Parse(array[0]), int.Parse(array[1]));
             }
-            
+
             return new Pos(0, 0);
         }
     }
@@ -54,12 +51,12 @@ namespace KCSG
         public override void ResolveReferences()
         {
             base.ResolveReferences();
-            if (this.requireRoyalty)
+            if (requireRoyalty)
             {
-                Log.Warning($"{this.defName} is using obsolete field requireRoyalty. Report this to {this.modContentPack.Name}");
-                this.modRequirements.Add("ludeon.rimworld.royalty");
+                Log.Warning($"{defName} is using obsolete field requireRoyalty. Report this to {modContentPack.Name}");
+                modRequirements.Add("ludeon.rimworld.royalty");
             }
-            foreach (string sPos in this.spawnAt)
+            foreach (string sPos in spawnAt)
             {
                 spawnAtPos.Add(Pos.FromString(sPos));
             }

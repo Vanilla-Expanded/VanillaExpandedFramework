@@ -28,7 +28,7 @@ namespace KCSG
             RectUtils.HeightWidthFromLayout(CGO.fallingStructureChoosen, out int h, out int w);
 
             Map map = (Map)parms.target;
-            parms.spawnCenter = this.FindRect(map, h, w);
+            parms.spawnCenter = FindRect(map, h, w);
             parms.spawnRotation = Rot4.Random;
             return true;
         }

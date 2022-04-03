@@ -14,19 +14,19 @@ namespace KCSG
         {
             Map map = BaseGen.globalSettings.map;
 
-            this.CalculateFreeCells(rp.rect, 0.45f);
+            CalculateFreeCells(rp.rect, 0.45f);
 
             ThingSetMakerParams value = default;
             value.techLevel = new TechLevel?((rp.faction != null) ? rp.faction.def.techLevel : TechLevel.Undefined);
             value.makingFaction = rp.faction;
             value.validator = (ThingDef x) => rp.faction == null || x.techLevel >= rp.faction.def.techLevel || !x.IsWeapon || x.GetStatValueAbstract(StatDefOf.MarketValue, GenStuff.DefaultStuffFor(x)) >= 100f;
-            float marketValue = rp.stockpileMarketValue ?? Mathf.Min((float)this.cells.Count * 130f, 1800f);
+            float marketValue = rp.stockpileMarketValue ?? Mathf.Min(cells.Count * 130f, 1800f);
             marketValue *= CGO.settlementLayoutDef.stockpileValueMultiplier;
             value.totalMarketValueRange = new FloatRange?(new FloatRange(marketValue, marketValue));
 
             if (value.countRange == null)
             {
-                value.countRange = new IntRange?(new IntRange(this.cells.Count, this.cells.Count));
+                value.countRange = new IntRange?(new IntRange(cells.Count, cells.Count));
             }
 
             ResolveParams rp2 = rp;
@@ -38,20 +38,20 @@ namespace KCSG
         private void CalculateFreeCells(CellRect rect, float freeCellsFraction)
         {
             Map map = BaseGen.globalSettings.map;
-            this.cells.Clear();
+            cells.Clear();
             foreach (IntVec3 intVec in rect)
             {
                 if (intVec.Standable(map) && intVec.Roofed(map) && intVec.GetFirstItem(map) == null)
                 {
-                    this.cells.Add(intVec);
+                    cells.Add(intVec);
                 }
             }
-            int num = (int)(freeCellsFraction * (float)this.cells.Count);
+            int num = (int)(freeCellsFraction * cells.Count);
             for (int i = 0; i < num; i++)
             {
-                this.cells.RemoveAt(Rand.Range(0, this.cells.Count));
+                cells.RemoveAt(Rand.Range(0, cells.Count));
             }
-            this.cells.Shuffle<IntVec3>();
+            cells.Shuffle<IntVec3>();
         }
     }
 }

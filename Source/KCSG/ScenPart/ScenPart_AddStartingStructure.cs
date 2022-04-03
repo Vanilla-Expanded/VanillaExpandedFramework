@@ -106,7 +106,7 @@ namespace KCSG
             else structureLayoutDef = chooseFrom.RandomElement();
 
             RectUtils.HeightWidthFromLayout(structureLayoutDef, out int h, out int w);
-            CellRect cellRect = this.CreateCellRect(map, h, w);
+            CellRect cellRect = CreateCellRect(map, h, w);
 
             if (preGenClear)
                 GenUtils.PreClean(map, cellRect, structureLayoutDef.roofGrid, fullClear);
@@ -123,7 +123,7 @@ namespace KCSG
                 {
                     thingsGroups.Add(new List<Thing>() { startingAndOptionalPawn });
                 }
-                    
+
                 List<Thing> thingList = new List<Thing>();
                 foreach (ScenPart allPart in Find.Scenario.AllParts)
                 {
@@ -151,7 +151,7 @@ namespace KCSG
                 center.x += offset.x;
                 center.y += offset.y;
                 KLog.Message($"Spawning pawns and stuff at {center}");
-                this.DropThingGroupsAt(center, map, thingsGroups, instaDrop: (Find.GameInitData.QuickStarted || this.method != PlayerPawnsArriveMethod.DropPods), leaveSlag: true, allowFogged: false);
+                DropThingGroupsAt(center, map, thingsGroups, instaDrop: (Find.GameInitData.QuickStarted || method != PlayerPawnsArriveMethod.DropPods), leaveSlag: true, allowFogged: false);
             }
 
             if (map.mapPawns.FreeColonistsSpawned.Count > 0)
@@ -160,7 +160,7 @@ namespace KCSG
             }
         }
 
-        private void DropThingGroupsAt (IntVec3 dropCenter, Map map, List<List<Thing>> thingsGroups, int openDelay = 110, bool instaDrop = false, bool leaveSlag = false, bool forbid = true, bool allowFogged = true)
+        private void DropThingGroupsAt(IntVec3 dropCenter, Map map, List<List<Thing>> thingsGroups, int openDelay = 110, bool instaDrop = false, bool leaveSlag = false, bool forbid = true, bool allowFogged = true)
         {
             foreach (List<Thing> thingsGroup in thingsGroups)
             {
@@ -214,17 +214,17 @@ namespace KCSG
         private bool CanScatterAt(IntVec3 c, Map map, int height, int widht)
         {
             if (c.CloseToEdge(map, height)) return false;
-            if (!this.allowFoggedPosition && c.Fogged(map)) return false;
+            if (!allowFoggedPosition && c.Fogged(map)) return false;
             if (!c.SupportsStructureType(map, TerrainAffordanceDefOf.Heavy)) return false;
             CellRect rect = new CellRect(c.x, c.z, widht, height).ClipInsideMap(map);
-            return this.CanPlaceInRange(rect, map);
+            return CanPlaceInRange(rect, map);
         }
 
         private CellRect CreateCellRect(Map map, int height, int widht)
         {
             IntVec3 rectCenter;
             if (nearMapCenter) rectCenter = map.Center;
-            else rectCenter = map.AllCells.ToList().FindAll(c => this.CanScatterAt(c, map, height, widht)).InRandomOrder().RandomElement();
+            else rectCenter = map.AllCells.ToList().FindAll(c => CanScatterAt(c, map, height, widht)).InRandomOrder().RandomElement();
 
             return CellRect.CenteredOn(rectCenter, widht, height);
         }

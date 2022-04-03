@@ -1,7 +1,6 @@
 ﻿using RimWorld;
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 using Verse;
 
 namespace KCSG
@@ -54,22 +53,22 @@ namespace KCSG
 
         public override void ResolveReferences()
         {
-            if (this.terrain != null) this.terrainDef = DefDatabase<TerrainDef>.GetNamed(this.terrain, VFECore.VFEGlobal.settings.enableVerboseLogging);
-            if (this.thing != null) this.thingDef = DefDatabase<ThingDef>.GetNamed(this.thing, VFECore.VFEGlobal.settings.enableVerboseLogging);
-            if (this.stuff != null) this.stuffDef = DefDatabase<ThingDef>.GetNamed(this.stuff, VFECore.VFEGlobal.settings.enableVerboseLogging);
-            if (this.pawnKindDef != null) this.pawnKindDefNS = DefDatabase<PawnKindDef>.GetNamed(this.pawnKindDef, VFECore.VFEGlobal.settings.enableVerboseLogging);
-            if (this.thingSetMakerDef == null) this.thingSetMakerDef = ThingSetMakerDefOf.MapGen_AncientComplexRoomLoot_Default;
+            if (terrain != null) terrainDef = DefDatabase<TerrainDef>.GetNamed(terrain, VFECore.VFEGlobal.settings.enableVerboseLogging);
+            if (thing != null) thingDef = DefDatabase<ThingDef>.GetNamed(thing, VFECore.VFEGlobal.settings.enableVerboseLogging);
+            if (stuff != null) stuffDef = DefDatabase<ThingDef>.GetNamed(stuff, VFECore.VFEGlobal.settings.enableVerboseLogging);
+            if (pawnKindDef != null) pawnKindDefNS = DefDatabase<PawnKindDef>.GetNamed(pawnKindDef, VFECore.VFEGlobal.settings.enableVerboseLogging);
+            if (thingSetMakerDef == null) thingSetMakerDef = ThingSetMakerDefOf.MapGen_AncientComplexRoomLoot_Default;
 
             // Obsolete
-            if (this.containPawnKind != null)
+            if (containPawnKind != null)
             {
-                this.containPawnKindDef = DefDatabase<PawnKindDef>.GetNamed(this.containPawnKind, VFECore.VFEGlobal.settings.enableVerboseLogging);
-                Log.Warning($"{this.defName} is using obsolete field containPawnKind. Report this to {this.modContentPack.Name}");
+                containPawnKindDef = DefDatabase<PawnKindDef>.GetNamed(containPawnKind, VFECore.VFEGlobal.settings.enableVerboseLogging);
+                Log.Warning($"{defName} is using obsolete field containPawnKind. Report this to {modContentPack.Name}");
             }
-            if (this.containPawnKindForPlayer != null)
+            if (containPawnKindForPlayer != null)
             {
-                this.containPawnKindDefForPlayer = DefDatabase<PawnKindDef>.GetNamed(this.containPawnKindForPlayer, VFECore.VFEGlobal.settings.enableVerboseLogging);
-                Log.Warning($"{this.defName} is using obsolete field containPawnKindDefForPlayer. Report this to {this.modContentPack.Name}");
+                containPawnKindDefForPlayer = DefDatabase<PawnKindDef>.GetNamed(containPawnKindForPlayer, VFECore.VFEGlobal.settings.enableVerboseLogging);
+                Log.Warning($"{defName} is using obsolete field containPawnKindDefForPlayer. Report this to {modContentPack.Name}");
             }
         }
     }

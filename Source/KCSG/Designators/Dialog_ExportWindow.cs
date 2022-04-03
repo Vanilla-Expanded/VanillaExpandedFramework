@@ -35,11 +35,11 @@ namespace KCSG
             this.cells = cells;
             this.area = area;
             // Window settings
-            this.forcePause = true;
-            this.doCloseX = false;
-            this.doCloseButton = false;
-            this.closeOnClickedOutside = false;
-            this.absorbInputAroundWindow = true;
+            forcePause = true;
+            doCloseX = false;
+            doCloseButton = false;
+            closeOnClickedOutside = false;
+            absorbInputAroundWindow = true;
 
             if (!SymbolDefsCreator.defCreated) SymbolDefsCreator.Run();
         }
@@ -54,7 +54,7 @@ namespace KCSG
 
         public override void DoWindowContents(Rect inRect)
         {
-            this.DrawHeader();
+            DrawHeader();
             Text.Font = GameFont.Small;
             Rect scrollRect = new Rect(inRect.x, inRect.y + 80f, inRect.width, inRect.height - 150f);
             Rect viewRect = new Rect(inRect.x, inRect.y + 80f, inRect.width - 20f, scrollRect.height);
@@ -66,29 +66,29 @@ namespace KCSG
             Widgets.BeginScrollView(scrollRect, ref scrollPosition, viewRect);
             lst.Begin(viewRect);
 
-            this.DrawDefNameChanger(lst);
-            this.DrawStorageChanger(lst);
-            this.DrawSpawnConduitChanger(lst);
-            this.DrawExportFilth(lst);
-            this.DrawExportNaturalTerrain(lst);
-            this.DrawStructurePrefix(lst);
-            this.DrawTagsEditing(lst);
-            this.DrawModsEditing(lst);
+            DrawDefNameChanger(lst);
+            DrawStorageChanger(lst);
+            DrawSpawnConduitChanger(lst);
+            DrawExportFilth(lst);
+            DrawExportNaturalTerrain(lst);
+            DrawStructurePrefix(lst);
+            DrawTagsEditing(lst);
+            DrawModsEditing(lst);
 
             lst.End();
             Widgets.EndScrollView();
-            this.DrawFooter(inRect);
+            DrawFooter(inRect);
             Text.Anchor = TextAnchor.UpperLeft;
         }
 
         private XElement CreateLayout()
         {
-            XElement structureL = LayoutUtils.CreateStructureDef(this.cells, this.map, pairsCellThingList, area, exportFilth, exportNatTer);
+            XElement structureL = LayoutUtils.CreateStructureDef(cells, map, pairsCellThingList, area, exportFilth, exportNatTer);
             // Defname change
             XElement defName = new XElement("defName", structurePrefix + defname);
             structureL.AddFirst(defName);
             // isStorage change
-            if (this.isStorage)
+            if (isStorage)
             {
                 if (structureL.Element("isStorage") == null)
                 {
@@ -103,7 +103,7 @@ namespace KCSG
                 }
             }
             // spawnConduits
-            if (!this.spawnConduits)
+            if (!spawnConduits)
             {
                 if (structureL.Element("spawnConduits") == null)
                 {
@@ -121,7 +121,7 @@ namespace KCSG
             if (tags.Count > 0)
             {
                 XElement temp = new XElement("tags");
-                foreach (var item in this.tags)
+                foreach (var item in tags)
                 {
                     temp.Add(new XElement("li", item));
                 }
@@ -131,7 +131,7 @@ namespace KCSG
             if (mods.Count > 0)
             {
                 XElement temp = new XElement("modRequirements");
-                foreach (var item in this.mods)
+                foreach (var item in mods)
                 {
                     temp.Add(new XElement("li", item));
                 }
@@ -153,25 +153,25 @@ namespace KCSG
 
             if (Widgets.ButtonText(new Rect(0, inRect.height - bHeight, 340, bHeight), "Copy structure def"))
             {
-                if (this.structurePrefix.Length == 0 || this.structurePrefix == "Required")
+                if (structurePrefix.Length == 0 || structurePrefix == "Required")
                 {
                     Messages.Message("Structure prefix required.", MessageTypeDefOf.NegativeEvent);
                 }
                 else
                 {
-                    LayoutUtils.FillCellThingsList(cells, this.map, this.pairsCellThingList);
-                    GUIUtility.systemCopyBuffer = this.CreateLayout().ToString();
+                    LayoutUtils.FillCellThingsList(cells, map, pairsCellThingList);
+                    GUIUtility.systemCopyBuffer = CreateLayout().ToString();
                     Messages.Message("Copied to clipboard.", MessageTypeDefOf.TaskCompletion);
                 }
             }
             if (Widgets.ButtonText(new Rect(350, inRect.height - bHeight, 340, bHeight), "Copy symbol(s) def(s)"))
             {
-                LayoutUtils.FillCellThingsList(cells, this.map, this.pairsCellThingList);
-                this.symbols = SymbolUtils.CreateSymbolIfNeeded(this.cells, this.map, pairsCellThingList, area);
-                if (this.symbols.Count > 0)
+                LayoutUtils.FillCellThingsList(cells, map, pairsCellThingList);
+                symbols = SymbolUtils.CreateSymbolIfNeeded(cells, map, pairsCellThingList, area);
+                if (symbols.Count > 0)
                 {
                     string toCopy = "";
-                    foreach (XElement item in this.symbols)
+                    foreach (XElement item in symbols)
                     {
                         toCopy += item.ToString() + "\n\n";
                     }
@@ -182,7 +182,7 @@ namespace KCSG
             }
             if (Widgets.ButtonText(new Rect(700, inRect.height - bHeight, 60, bHeight), "Close"))
             {
-                this.Close();
+                Close();
             }
         }
 
@@ -206,25 +206,25 @@ namespace KCSG
 
         private void DrawStorageChanger(Listing_Standard lst)
         {
-            lst.CheckboxLabeled("Structure is stockpile:", ref this.isStorage, "If this is on, random resources will be generated inside this structure when it's generated");
+            lst.CheckboxLabeled("Structure is stockpile:", ref isStorage, "If this is on, random resources will be generated inside this structure when it's generated");
             lst.Gap();
         }
 
         private void DrawSpawnConduitChanger(Listing_Standard lst)
         {
-            lst.CheckboxLabeled("Spawn conduit under impassable buildings and doors when generating:", ref this.spawnConduits, "If this is on, conduit will be spawned under impassable buildings and doors of this structure when it's generated (if faction techlevel >= Industrial)");
+            lst.CheckboxLabeled("Spawn conduit under impassable buildings and doors when generating:", ref spawnConduits, "If this is on, conduit will be spawned under impassable buildings and doors of this structure when it's generated (if faction techlevel >= Industrial)");
             lst.Gap();
         }
 
         private void DrawExportFilth(Listing_Standard lst)
         {
-            lst.CheckboxLabeled("Export filth:", ref this.exportFilth);
+            lst.CheckboxLabeled("Export filth:", ref exportFilth);
             lst.Gap();
         }
 
         private void DrawExportNaturalTerrain(Listing_Standard lst)
         {
-            lst.CheckboxLabeled("Export natural terrain:", ref this.exportNatTer);
+            lst.CheckboxLabeled("Export natural terrain:", ref exportNatTer);
             lst.Gap();
         }
 
@@ -241,16 +241,16 @@ namespace KCSG
             tempTagToAdd = lst.TextEntry(tempTagToAdd);
             if (lst.ButtonText("Add tag"))
             {
-                this.tags.Add(tempTagToAdd);
+                tags.Add(tempTagToAdd);
             }
 
-            if (this.tags.Count > 0)
+            if (tags.Count > 0)
             {
-                foreach (string tag in this.tags)
+                foreach (string tag in tags)
                 {
                     if (lst.ButtonTextLabeled(tag, "Remove tag"))
                     {
-                        this.tags.Remove(tag);
+                        tags.Remove(tag);
                         break;
                     }
                 }
@@ -264,16 +264,16 @@ namespace KCSG
             modIdToAdd = lst.TextEntry(modIdToAdd);
             if (lst.ButtonText("Add mod package id"))
             {
-                this.mods.Add(modIdToAdd);
+                mods.Add(modIdToAdd);
             }
 
-            if (this.mods.Count > 0)
+            if (mods.Count > 0)
             {
-                foreach (string mod in this.mods)
+                foreach (string mod in mods)
                 {
                     if (lst.ButtonTextLabeled(mod, "Remove mod"))
                     {
-                        this.mods.Remove(mod);
+                        mods.Remove(mod);
                         break;
                     }
                 }

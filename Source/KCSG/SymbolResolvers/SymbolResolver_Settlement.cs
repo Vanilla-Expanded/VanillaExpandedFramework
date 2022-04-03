@@ -18,8 +18,8 @@ namespace KCSG
 
             if (CGO.useStructureLayout)
             {
-                this.HandleRuin(rp);
-                this.AddHostilePawnGroup(rp.faction, map, rp);
+                HandleRuin(rp);
+                AddHostilePawnGroup(rp.faction, map, rp);
 
                 BaseGen.symbolStack.Push("kcsg_roomsgenfromstructure", rp, null);
 
@@ -28,8 +28,8 @@ namespace KCSG
             }
             else
             {
-                this.HandleRuin(rp);
-                this.AddHostilePawnGroup(rp.faction, map, rp);
+                HandleRuin(rp);
+                AddHostilePawnGroup(rp.faction, map, rp);
 
                 if (CGO.settlementLayoutDef.vanillaLikeDefense)
                 {
@@ -42,7 +42,7 @@ namespace KCSG
                     BaseGen.symbolStack.Push("edgeDefense", rp3, null);
                 }
 
-                this.GenerateRooms(CGO.settlementLayoutDef, map, rp);
+                GenerateRooms(CGO.settlementLayoutDef, map, rp);
 
                 if (CGO.factionSettlement.preGenClear)
                     GenUtils.PreClean(map, rp.rect, CGO.factionSettlement.fullClear);

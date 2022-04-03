@@ -11,7 +11,7 @@ namespace KCSG
     {
         public override bool CanUseWith(IncidentParms parms, PawnGroupKindDef groupKind)
         {
-            CGO.fallingStructure = this.def.GetModExtension<FallingStructure>();
+            CGO.fallingStructure = def.GetModExtension<FallingStructure>();
 
             if (CGO.fallingStructure.needToHaveSettlements && !Find.World.worldObjects.Settlements.FindAll(s => s.Faction == parms.faction).Any())
                 return false;
@@ -23,7 +23,7 @@ namespace KCSG
                 if (CGO.fallingStructureChoosen != null)
                 {
                     RectUtils.HeightWidthFromLayout(CGO.fallingStructureChoosen, out int h, out int w);
-                    return parms.points >= this.MinimumPoints(parms.faction, groupKind) && this.FindRect((Map)parms.target, h, w) != IntVec3.Invalid;
+                    return parms.points >= MinimumPoints(parms.faction, groupKind) && FindRect((Map)parms.target, h, w) != IntVec3.Invalid;
                 }
                 else return false;
             }
@@ -129,7 +129,7 @@ namespace KCSG
                 l++;
             }
             // ARRIVAL
-            fallers.ForEach(ttir => this.SpawnSkyfaller(ttir.faller, ttir.toSpawn, ttir.cell, map, ttir.rot));
+            fallers.ForEach(ttir => SpawnSkyfaller(ttir.faller, ttir.toSpawn, ttir.cell, map, ttir.rot));
             for (int i = 0; i < pods.Count; i++)
             {
                 DropPodUtility.MakeDropPodAt(pods.ElementAt(i).Value, map, pods.ElementAt(i).Key);
