@@ -1,5 +1,6 @@
 ﻿using RimWorld.BaseGen;
 using System.Collections.Generic;
+using System.Linq;
 using Verse;
 
 namespace KCSG
@@ -33,9 +34,10 @@ namespace KCSG
 
             GenUtils.PreClean(map, cellRect, structureLayoutDef.roofGrid, fullClear);
 
-            foreach (List<string> item in structureLayoutDef.layouts)
+            for (int i = 0; i < structureLayoutDef.layouts.Count; i++)
             {
-                GenUtils.GenerateRoomFromLayout(item, cellRect, map, structureLayoutDef);
+                var layout = structureLayoutDef.layouts[i];
+                GenUtils.GenerateRoomFromLayout(layout, cellRect, map, structureLayoutDef);
             }
 
             if (shouldRuin)
@@ -52,8 +54,10 @@ namespace KCSG
                     faction = map.ParentFaction,
                     rect = cellRect
                 };
-                foreach (string resolver in ruinSymbolResolvers)
+
+                for (int i = 0; i < ruinSymbolResolvers.Count; i++)
                 {
+                    var resolver = ruinSymbolResolvers[i];
                     if (!(ruinSymbolResolvers.Contains("kcsg_randomroofremoval") && resolver == "kcsg_scatterstuffaround"))
                         BaseGen.symbolStack.Push(resolver, rp, null);
                 }
@@ -71,10 +75,13 @@ namespace KCSG
             CellIndices cellIndices = map.cellIndices;
             if (map.fogGrid?.fogGrid != null)
             {
-                foreach (IntVec3 c in map.AllCells)
+                var cells = map.AllCells;
+                for (int i = 0; i < cells.Count(); i++)
                 {
-                    map.fogGrid.fogGrid[cellIndices.CellToIndex(c)] = true;
+                    var cell = cells.ElementAt(i);
+                    map.fogGrid.fogGrid[cellIndices.CellToIndex(cell)] = true;
                 }
+
                 if (Current.ProgramState == ProgramState.Playing)
                 {
                     map.roofGrid.Drawer.SetDirty();
