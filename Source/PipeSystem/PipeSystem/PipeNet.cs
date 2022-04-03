@@ -386,7 +386,7 @@ namespace PipeSystem
         /// Add resource to storage.
         /// </summary>
         /// <param name="amount">Amount to add</param>
-        internal void DistributeAmongStorage(float amount)
+        public void DistributeAmongStorage(float amount)
         {
             if (amount <= 0 || !storages.Any())
                 return;
@@ -427,7 +427,7 @@ namespace PipeSystem
         /// Withdraw resource from storage.
         /// </summary>
         /// <param name="amount">Amount to draw</param>
-        internal void DrawAmongStorage(float amount)
+        public void DrawAmongStorage(float amount)
         {
             if (amount <= 0 || !storages.Any())
                 return;
