@@ -1,10 +1,6 @@
-﻿using HarmonyLib;
-using System.Collections.Generic;
-using Verse;
-
-namespace KCSG
+﻿namespace KCSG
 {
-    [HarmonyPatch(typeof(MapPawns))]
+    /*[HarmonyPatch(typeof(MapPawns))]
     [HarmonyPatch("AllPawns", MethodType.Getter)]
     public class FixCaravanThreadingPatch
     {
@@ -12,5 +8,5 @@ namespace KCSG
         {
             __result = __result.ListFullCopy();
         }
-    }
+    }*/
 }
