@@ -31,8 +31,9 @@ namespace KCSG
             Lord defend = LordMaker.MakeNewLord(fac, new LordJob_DefendBase(fac, map.Center), map);
             IEnumerable<Pawn> pawns = GeneratePawns(map, fac, parms);
 
-            foreach (Pawn pawn in pawns)
+            for (int i = 0; i < pawns.Count(); i++)
             {
+                var pawn = pawns.ElementAt(i);
                 IntVec3 loc;
                 if (spawnOnEdge)
                 {
@@ -50,9 +51,6 @@ namespace KCSG
                 GenSpawn.Spawn(pawn, loc, map);
                 defend.AddPawn(pawn);
             }
-
-            if (!pawns.Any())
-                return;
         }
 
         private IEnumerable<Pawn> GeneratePawns(Map map, Faction faction, GenStepParams parms)
