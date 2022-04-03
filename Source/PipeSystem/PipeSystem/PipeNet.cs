@@ -436,10 +436,16 @@ namespace PipeSystem
         /// <param name="amount">Amount to draw</param>
         public void DrawAmongStorage(float amount)
         {
-            if (amount <= 0 || !storages.Any())
+            if (amount <= 0 || storages.Count == 0)
                 return;
             // Get all storage that can provide resources
-            List<CompResourceStorage> resourceStorages = storages.FindAll(s => s.AmountStored > 0).ToList();
+            var resourceStorages = new List<CompResourceStorage>();
+            for (int i = 0; i < storages.Count; i++)
+            {
+                var storage = storages[i];
+                if (storage.AmountStored > 0)
+                    resourceStorages.Add(storage);
+            }
             // If all empty
             if (resourceStorages.Count == 0)
                 return;
@@ -459,7 +465,7 @@ namespace PipeSystem
                 {
                     var storage = resourceStorages[i];
                     // cap amountInEach to amount that can be draw
-                    float toDraw = Math.Min(storage.AmountStored, amountInEach);
+                    float toDraw = Mathf.Min(storage.AmountStored, amountInEach);
                     storage.DrawResource(toDraw);
                     // If empty delete for the next iteration
                     if (storage.AmountStored == 0) resourceStorages.Remove(storage);
