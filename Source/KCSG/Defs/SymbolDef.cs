@@ -32,13 +32,6 @@ namespace KCSG
         public List<PawnKindDef> containPawnKindAnyOf = new List<PawnKindDef>();
         public List<PawnKindDef> containPawnKindForPlayerAnyOf = new List<PawnKindDef>();
 
-        /* --- Obsolete --- */
-        public string containPawnKind;
-        public string containPawnKindForPlayer;
-        public PawnKindDef containPawnKindDef = null;
-        public PawnKindDef containPawnKindDefForPlayer = null;
-        /* --- ------- --- */
-
         // Crate
         public ThingSetMakerDef thingSetMakerDef = null;
         public ThingSetMakerDef thingSetMakerDefForPlayer = null;
@@ -59,18 +52,6 @@ namespace KCSG
             if (stuff != null) stuffDef = DefDatabase<ThingDef>.GetNamed(stuff, VFECore.VFEGlobal.settings.enableVerboseLogging);
             if (pawnKindDef != null) pawnKindDefNS = DefDatabase<PawnKindDef>.GetNamed(pawnKindDef, VFECore.VFEGlobal.settings.enableVerboseLogging);
             if (thingSetMakerDef == null) thingSetMakerDef = ThingSetMakerDefOf.MapGen_AncientComplexRoomLoot_Default;
-
-            // Obsolete
-            if (containPawnKind != null)
-            {
-                containPawnKindDef = DefDatabase<PawnKindDef>.GetNamed(containPawnKind, VFECore.VFEGlobal.settings.enableVerboseLogging);
-                Log.Warning($"{defName} is using obsolete field containPawnKind. Report this to {modContentPack.Name}");
-            }
-            if (containPawnKindForPlayer != null)
-            {
-                containPawnKindDefForPlayer = DefDatabase<PawnKindDef>.GetNamed(containPawnKindForPlayer, VFECore.VFEGlobal.settings.enableVerboseLogging);
-                Log.Warning($"{defName} is using obsolete field containPawnKindDefForPlayer. Report this to {modContentPack.Name}");
-            }
         }
     }
 }

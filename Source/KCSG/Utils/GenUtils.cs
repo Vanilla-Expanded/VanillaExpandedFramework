@@ -233,19 +233,7 @@ namespace KCSG
 
         private static Pawn GeneratePawnForContainer(SymbolDef temp, Map map)
         {
-            // Kept for compat reasons
-            // TODO Remove
             Faction faction = temp.spawnPartOfFaction ? map.ParentFaction : null;
-            if (temp.containPawnKindDefForPlayer != null && map.ParentFaction == Faction.OfPlayer)
-            {
-                return PawnGenerator.GeneratePawn(temp.containPawnKindDefForPlayer, faction);
-            }
-            else if (temp.containPawnKindDef != null)
-            {
-                return PawnGenerator.GeneratePawn(temp.containPawnKindDef, faction);
-            }
-
-            KLog.Message($"Faction for {temp.defName} is {faction?.def.defName}");
             if (temp.containPawnKindForPlayerAnyOf.Count > 0 && map.ParentFaction == Faction.OfPlayer)
             {
                 return PawnGenerator.GeneratePawn(new PawnGenerationRequest(temp.containPawnKindForPlayerAnyOf.RandomElement(), faction, forceGenerateNewPawn: true, certainlyBeenInCryptosleep: true));
