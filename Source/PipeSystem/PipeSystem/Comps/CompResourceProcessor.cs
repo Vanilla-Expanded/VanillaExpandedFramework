@@ -161,6 +161,8 @@ namespace PipeSystem
                     var thing = cell.GetFirstThing(map, Props.result.thing);
                     if (thing != null)
                     {
+                        if ((thing.stackCount + Props.result.thingCount) > thing.def.stackLimit)
+                            continue;
                         // We found some, modifying stack size
                         thing.stackCount += Props.result.thingCount;
                     }
