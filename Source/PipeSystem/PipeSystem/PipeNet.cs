@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Verse;
 
 namespace PipeSystem
@@ -391,12 +392,18 @@ namespace PipeSystem
             if (amount <= 0 || !storages.Any())
                 return;
             // Get all storage that can accept resources
-            List<CompResourceStorage> resourceStorages = storages.FindAll(s => s.AmountCanAccept > 0).ToList();
+            var resourceStorages = new List<CompResourceStorage>();
+            for (int i = 0; i < storages.Count; i++)
+            {
+                var storage = storages[i];
+                if (storage.AmountCanAccept > 0)
+                    resourceStorages.Add(storage);
+            }
             // If all full
             if (resourceStorages.Count == 0)
                 return;
             // Get the amount that can be stored, max amount being the whole grid capacity
-            float toBeStored = Math.Min(amount, MaxGridStorageCapacity - Stored);
+            float toBeStored = Mathf.Min(amount, MaxGridStorageCapacity - Stored);
             // Store it
             int iteration = 0;
             while (toBeStored > 0)
@@ -413,7 +420,7 @@ namespace PipeSystem
                 {
                     var storage = resourceStorages[i];
                     // cap amountInEach to amount storage can accept
-                    float toStore = Math.Min(storage.AmountCanAccept, amountInEach);
+                    float toStore = Mathf.Min(storage.AmountCanAccept, amountInEach);
                     storage.AddResource(toStore);
                     // If full delete for the next iteration
                     if (storage.AmountCanAccept == 0) resourceStorages.Remove(storage);
