@@ -13,6 +13,7 @@ namespace PipeSystem
         public List<CompResourceTrader> receivers = new List<CompResourceTrader>();
         public List<CompResourceStorage> storages = new List<CompResourceStorage>();
         public List<CompConvertToThing> converters = new List<CompConvertToThing>();
+        public List<CompRefillRefuelable> refuelables = new List<CompRefillRefuelable>();
         public List<CompResourceProcessor> processors = new List<CompResourceProcessor>();
 
         public Map map;
@@ -171,6 +172,10 @@ namespace PipeSystem
             {
                 processors.Add(processor);
             }
+            else if (comp is CompRefillRefuelable refuelable)
+            {
+                refuelables.Add(refuelable);
+            }
             comp.PipeNet = this;
 
             var cells = comp.parent.OccupiedRect().Cells;
@@ -212,6 +217,10 @@ namespace PipeSystem
             else if (comp is CompResourceProcessor processor)
             {
                 processors.Remove(processor);
+            }
+            else if (comp is CompRefillRefuelable refuelable)
+            {
+                refuelables.Remove(refuelable);
             }
 
             var cells = comp.parent.OccupiedRect().Cells;
@@ -296,18 +305,21 @@ namespace PipeSystem
                 // Store it
                 DistributeAmongStorage(usable);
                 // Distribute using the whole storage
+                DistributeAmongRefuelables(Stored);
                 DistributeAmongProcessor(Stored);
                 DistributeAmongConverter(Stored);
             }
             else
             {
-                var pUsage = DistributeAmongProcessor(usable);
-                DistributeAmongConverter(usable - pUsage);
+                var rUsage = DistributeAmongRefuelables(usable);
+                var leftAfter = usable - rUsage;
+                var pUsage = DistributeAmongProcessor(leftAfter);
+                DistributeAmongConverter(leftAfter - pUsage);
             }
         }
 
         /// <summary>
-        /// Distribute resources stored into the converters
+        /// Distribute resources stored into the processors
         /// </summary>
         private float DistributeAmongProcessor(float available)
         {
@@ -327,6 +339,38 @@ namespace PipeSystem
                     available -= toStore;
                     used += toStore;
                 }
+
+                if (available <= 0)
+                    break;
+            }
+
+            DrawAmongStorage(used);
+            return used;
+        }
+
+        // <summary>
+        /// Distribute resources stored into the converters
+        /// </summary>
+        private float DistributeAmongRefuelables(float available)
+        {
+            float used = 0;
+            if (refuelables.Count == 0 || available <= 0)
+                return used;
+
+            for (int i = 0; i < refuelables.Count; i++)
+            {
+                var refuelable = refuelables[i];
+                var compRefuelable = refuelables[i].compRefuelable;
+
+                var toAdd = compRefuelable.TargetFuelLevel - compRefuelable.Fuel; // The amount of fuel needed by compRefuelable
+                var resourceNeeded = toAdd * refuelable.Props.ratio; // Converted to the amount of resource
+                // Check if needed resource is more that available resource
+                var resourceCanBeUsed = resourceNeeded < available ? resourceNeeded : available; // Can we spare all of it?
+
+                compRefuelable.Refuel(resourceCanBeUsed / refuelable.Props.ratio);
+
+                available -= resourceCanBeUsed;
+                used += resourceCanBeUsed;
 
                 if (available <= 0)
                     break;
