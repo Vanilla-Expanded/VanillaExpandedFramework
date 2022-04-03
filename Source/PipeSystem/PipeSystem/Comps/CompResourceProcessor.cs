@@ -138,6 +138,10 @@ namespace PipeSystem
                     // Convert it, if some left keep it inside here
                     Storage -= net.DistributeAmongConverter(count);
                 }
+                else if (net.refuelables.Count > 0)
+                {
+                    Storage -= net.DistributeAmongRefuelables(count);
+                }
                 // We shouldn't have anymore resource, if we do -> storage full or converter full
                 cantRefine = Storage > 0;
             }

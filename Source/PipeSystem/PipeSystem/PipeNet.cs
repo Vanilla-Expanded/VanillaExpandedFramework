@@ -351,7 +351,7 @@ namespace PipeSystem
         // <summary>
         /// Distribute resources stored into the converters
         /// </summary>
-        private float DistributeAmongRefuelables(float available)
+        internal float DistributeAmongRefuelables(float available)
         {
             float used = 0;
             if (refuelables.Count == 0 || available <= 0)
