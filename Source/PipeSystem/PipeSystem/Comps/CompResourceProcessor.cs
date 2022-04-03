@@ -171,7 +171,8 @@ namespace PipeSystem
                         // We didn't find any, creating thing
                         thing = ThingMaker.MakeThing(Props.result.thing);
                         thing.stackCount = Props.result.thingCount;
-                        GenSpawn.Spawn(thing, cell, map, WipeMode.FullRefund);
+                        if (!GenPlace.TryPlaceThing(thing, cell, map, ThingPlaceMode.Near))
+                            continue;
                     }
                     break;
                 }
