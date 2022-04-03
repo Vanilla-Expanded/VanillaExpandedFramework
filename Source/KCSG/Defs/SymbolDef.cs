@@ -19,6 +19,7 @@ namespace KCSG
         public string thing = null;
         public ThingDef stuffDef = null;
         public string stuff = null;
+        public int maxStackSize = -1;
 
         // Building info
         public Rot4 rotation = Rot4.Invalid;

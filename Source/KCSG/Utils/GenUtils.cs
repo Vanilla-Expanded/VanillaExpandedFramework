@@ -72,7 +72,15 @@ namespace KCSG
                         else if (temp.thingDef?.category == ThingCategory.Item && cell.Walkable(map))
                         {
                             thing = ThingMaker.MakeThing(temp.thingDef, temp.stuffDef ?? (temp.thingDef.stuffCategories?.Count > 0 ? GenStuff.RandomStuffFor(temp.thingDef) : null));
-                            thing.stackCount = Mathf.Clamp(Rand.RangeInclusive(1, temp.thingDef.stackLimit), 1, 75);
+
+                            if (temp.maxStackSize != -1)
+                            {
+                                thing.stackCount = Rand.RangeInclusive(1, temp.maxStackSize);
+                            }
+                            else
+                            {
+                                thing.stackCount = Mathf.Clamp(Rand.RangeInclusive(1, temp.thingDef.stackLimit), 1, 75);
+                            }
 
                             CompQuality quality = thing.TryGetComp<CompQuality>();
                             quality?.SetQuality(QualityUtility.GenerateQualityBaseGen(), ArtGenerationContext.Outsider);
