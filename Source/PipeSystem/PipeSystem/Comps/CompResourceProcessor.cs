@@ -11,7 +11,9 @@ namespace PipeSystem
     {
         public new CompProperties_ResourceProcessor Props => (CompProperties_ResourceProcessor)props;
 
-        public float Storage;
+        public float Storage { get => storage; }
+
+        private float storage;
 
         private CompResource otherComp;
         private CompFlickable flickable;
@@ -38,7 +40,7 @@ namespace PipeSystem
         {
             base.PostPostMake();
             nextProcessTick = Find.TickManager.TicksGame + Props.eachTicks;
-            Storage = 0;
+            storage = 0;
             cantRefine = false;
             enoughResource = false;
         }
@@ -75,14 +77,14 @@ namespace PipeSystem
             int tick = Find.TickManager.TicksGame;
             if (tick >= nextProcessTick)
             {
-                if (Storage == Props.bufferSize
+                if (storage == Props.bufferSize
                     && (flickable == null || flickable.SwitchIsOn)
                     && (compPower == null || compPower.PowerOn))
                 {
-                    SpawnOrCreateResource();
+                    SpawnOrPushToNet();
                     enoughResource = true;
                 }
-                else if (Storage == 0)
+                else if (storage == 0)
                 {
                     enoughResource = false;
                 }
@@ -93,7 +95,7 @@ namespace PipeSystem
         public override void PostExposeData()
         {
             base.PostExposeData();
-            Scribe_Values.Look(ref Storage, "storage");
+            Scribe_Values.Look(ref storage, "storage");
             Scribe_Values.Look(ref nextProcessTick, "nextProcessTick");
             Scribe_Values.Look(ref cantRefine, "cantRefine", false, true);
             Scribe_Values.Look(ref enoughResource, "enoughResource", false, true);
@@ -104,7 +106,7 @@ namespace PipeSystem
             StringBuilder sb = new StringBuilder();
             sb.AppendInNewLine(base.CompInspectStringExtra());
             if (Props.showBufferInfo)
-                sb.AppendInNewLine("PipeSystem_ProcessorBuffer".Translate((Storage / Props.bufferSize).ToStringPercent()));
+                sb.AppendInNewLine("PipeSystem_ProcessorBuffer".Translate((storage / Props.bufferSize).ToStringPercent()));
             if (cantRefine && Props.notWorkingKey != null)
                 sb.AppendInNewLine(Props.notWorkingKey.Translate());
             return sb.ToString().Trim();
@@ -117,7 +119,24 @@ namespace PipeSystem
                 IconOverlay.RenderPusling(parent, Props.pipeNet.offMat, trueCenter, MeshPool.plane08);
         }
 
-        private void SpawnOrCreateResource()
+        /// <summary>
+        /// Push resource to processor. Return amount used.
+        /// </summary>
+        public float PushTo(float amount)
+        {
+            var used = 0f;
+            var sub = Props.bufferSize - storage;
+            if (sub > 0f)
+            {
+                var toStore = sub > amount ? amount : sub;
+                storage += toStore;
+                used += toStore;
+            }
+
+            return used;
+        }
+
+        private void SpawnOrPushToNet()
         {
             // If it can directly go into the net
             if (canPushToNet && otherComp.PipeNet is PipeNet net
@@ -130,60 +149,55 @@ namespace PipeSystem
                 {
                     // Store it
                     net.DistributeAmongStorage(count);
-                    Storage = 0;
+                    storage = 0;
                 }
                 // No storage but converters?
                 else if (net.converters.Count > 0)
                 {
                     // Convert it, if some left keep it inside here
-                    Storage -= net.DistributeAmongConverter(count);
+                    storage -= net.DistributeAmongConverter(count);
                 }
                 else if (net.refuelables.Count > 0)
                 {
-                    Storage -= net.DistributeAmongRefuelables(count);
+                    storage -= net.DistributeAmongRefuelables(count);
                 }
                 // We shouldn't have anymore resource, if we do -> storage full or converter full
-                cantRefine = Storage > 0;
+                cantRefine = storage > 0;
             }
             // If can't go into net
             else if (canCreateItems)
             {
-                CreateItem();
-            }
-        }
-
-        private void CreateItem()
-        {
-            var map = parent.Map;
-            for (int i = 0; i < adjCells.Count; i++)
-            {
-                // Find an output cell
-                var cell = adjCells[i];
-                if (cell.Walkable(map))
+                var map = parent.Map;
+                for (int i = 0; i < adjCells.Count; i++)
                 {
-                    // Try find thing of the same def
-                    var thing = cell.GetFirstThing(map, Props.result.thing);
-                    if (thing != null)
+                    // Find an output cell
+                    var cell = adjCells[i];
+                    if (cell.Walkable(map))
                     {
-                        if ((thing.stackCount + Props.result.thingCount) > thing.def.stackLimit)
-                            continue;
-                        // We found some, modifying stack size
-                        thing.stackCount += Props.result.thingCount;
+                        // Try find thing of the same def
+                        var thing = cell.GetFirstThing(map, Props.result.thing);
+                        if (thing != null)
+                        {
+                            if ((thing.stackCount + Props.result.thingCount) > thing.def.stackLimit)
+                                continue;
+                            // We found some, modifying stack size
+                            thing.stackCount += Props.result.thingCount;
+                        }
+                        else
+                        {
+                            // We didn't find any, creating thing
+                            thing = ThingMaker.MakeThing(Props.result.thing);
+                            thing.stackCount = Props.result.thingCount;
+                            if (!GenPlace.TryPlaceThing(thing, cell, map, ThingPlaceMode.Near))
+                                continue;
+                        }
+                        break;
                     }
-                    else
-                    {
-                        // We didn't find any, creating thing
-                        thing = ThingMaker.MakeThing(Props.result.thing);
-                        thing.stackCount = Props.result.thingCount;
-                        if (!GenPlace.TryPlaceThing(thing, cell, map, ThingPlaceMode.Near))
-                            continue;
-                    }
-                    break;
                 }
+                // Reset buffer
+                storage = 0;
+                cantRefine = false;
             }
-            // Reset buffer
-            Storage = 0;
-            cantRefine = false;
         }
     }
 }

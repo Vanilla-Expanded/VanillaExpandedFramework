@@ -13,6 +13,7 @@ namespace PipeSystem
         public float storageCapacity; // Maximum amount of resource to be stored
 
         public bool drawStorageBar = true; // Should draw the storage bar on screen?
+        public bool addStorageInfo = true; // Should we add storage info on comp inspect
         public float margin = 0.15f;
         public Vector2 barSize = new Vector2(1.3f, 0.4f);
         public Vector3 centerOffset = new Vector3(0, 0);
