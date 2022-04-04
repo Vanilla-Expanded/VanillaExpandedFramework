@@ -138,7 +138,8 @@ namespace PipeSystem
         public override string CompInspectStringExtra()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append($"{"PipeSystem_ResourceStored".Translate(Resource.name)} {amountStored:##0} / {Props.storageCapacity:F0} {Resource.unit}"); // Show the amount stored
+            if (Props.addStorageInfo)
+                sb.Append($"{"PipeSystem_ResourceStored".Translate(Resource.name)} {amountStored:##0} / {Props.storageCapacity:F0} {Resource.unit}"); // Show the amount stored
             sb.AppendInNewLine(base.CompInspectStringExtra());
 
             return sb.ToString();
