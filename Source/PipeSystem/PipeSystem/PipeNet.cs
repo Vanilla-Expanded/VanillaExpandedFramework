@@ -329,16 +329,9 @@ namespace PipeSystem
 
             for (int i = 0; i < processors.Count; i++)
             {
-                var processor = processors[i];
-                var sub = processor.Props.bufferSize - processor.Storage;
-
-                if (sub > 0)
-                {
-                    var toStore = sub > available ? available : sub;
-                    processor.Storage += toStore;
-                    available -= toStore;
-                    used += toStore;
-                }
+                var temp = processors[i].PushTo(available);
+                available -= temp;
+                used += temp;
 
                 if (available <= 0)
                     break;
