@@ -15,11 +15,28 @@ namespace AnimalBehaviours
        
         CompSwallowWhole comp = null;
 
+
+        public CompSwallowWhole Comp
+        {
+            get
+            {
+                if (this.comp != null)
+                {
+                    return this.comp;
+                }
+                this.comp = this.TryGetComp<CompSwallowWhole>();
+                return this.comp;
+
+
+            }
+        }
+
+
         public Pawn_SwallowWhole()
         {
             //Constructor initializes the pawn container and the comp
             this.innerContainer = new ThingOwner<Thing>(this, false, LookMode.Deep);
-            comp = this.TryGetComp<CompSwallowWhole>();
+            comp = Comp;
 
         }
         public override void ExposeData()
@@ -62,18 +79,18 @@ namespace AnimalBehaviours
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
         {
 
-            if (this.Map != null && comp.Props.createFilthWhenKilled)
+            if (this.Map != null && Comp.Props.createFilthWhenKilled)
             {
                 EjectContents();
                 for (int i = 0; i < 20; i++)
                 {
                     IntVec3 c;
                     CellFinder.TryFindRandomReachableCellNear(this.Position, this.Map, 2, TraverseParms.For(TraverseMode.NoPassClosedDoors, Danger.Deadly, false), null, null, out c);
-                    FilthMaker.TryMakeFilth(c, this.Map, comp.Props.filthToMake);
+                    FilthMaker.TryMakeFilth(c, this.Map, Comp.Props.filthToMake);
 
                 }
-                if (comp.Props.playSoundWhenKilled) {
-                    SoundDef.Named(comp.Props.soundToPlay).PlayOneShot(new TargetInfo(this.Position, this.Map, false));
+                if (Comp.Props.playSoundWhenKilled) {
+                    SoundDef.Named(Comp.Props.soundToPlay).PlayOneShot(new TargetInfo(this.Position, this.Map, false));
 
                 }
             }
@@ -83,19 +100,19 @@ namespace AnimalBehaviours
 
         public override void Kill(DamageInfo? dinfo, Hediff exactCulprit = null)
         {
-            if (this.Map != null && comp.Props.createFilthWhenKilled)
+            if (this.Map != null && Comp.Props.createFilthWhenKilled)
             {
                 EjectContents();
                 for (int i = 0; i < 20; i++)
                 {
                     IntVec3 c;
                     CellFinder.TryFindRandomReachableCellNear(this.Position, this.Map, 2, TraverseParms.For(TraverseMode.NoPassClosedDoors, Danger.Deadly, false), null, null, out c);
-                    FilthMaker.TryMakeFilth(c, this.Map, comp.Props.filthToMake);
+                    FilthMaker.TryMakeFilth(c, this.Map, Comp.Props.filthToMake);
 
                 }
-                if (comp.Props.playSoundWhenKilled)
+                if (Comp.Props.playSoundWhenKilled)
                 {
-                    SoundDef.Named(comp.Props.soundToPlay).PlayOneShot(new TargetInfo(this.Position, this.Map, false));
+                    SoundDef.Named(Comp.Props.soundToPlay).PlayOneShot(new TargetInfo(this.Position, this.Map, false));
 
                 }
             }
@@ -139,10 +156,10 @@ namespace AnimalBehaviours
         public override void TickRare()
         {
             base.TickRare();
-            if (innerContainer.Count >= comp.Props.stomachCapacity)
+            if (innerContainer.Count >= Comp.Props.stomachCapacity)
             {
                 tickCounter++;
-                if (tickCounter > comp.Props.digestionPeriod)
+                if (tickCounter > Comp.Props.digestionPeriod)
                 {
                     foreach (Thing thing in innerContainer)
                     {
@@ -174,9 +191,9 @@ namespace AnimalBehaviours
         {
             string stomachContents = "";
 
-            if (innerContainer.Count >= comp.Props.stomachCapacity)
+            if (innerContainer.Count >= Comp.Props.stomachCapacity)
             {
-                stomachContents += "\n" + "VEF_StomachContents".Translate(innerContainer.Count) + "VEF_DigestionTime".Translate(((comp.Props.digestionPeriod - tickCounter) * 250).ToStringTicksToPeriod(true, false, true, true));
+                stomachContents += "\n" + "VEF_StomachContents".Translate(innerContainer.Count) + "VEF_DigestionTime".Translate(((Comp.Props.digestionPeriod - tickCounter) * 250).ToStringTicksToPeriod(true, false, true, true));
             }
             else stomachContents += "\n" + "VEF_StomachContents".Translate(innerContainer.Count);
 
