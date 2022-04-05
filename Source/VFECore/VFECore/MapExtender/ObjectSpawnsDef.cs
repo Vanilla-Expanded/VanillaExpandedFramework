@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -20,5 +21,17 @@ namespace VFECore
         public bool findCellsOutsideColony = false;
         public bool spawnOnlyInPlayerMaps = false;
         public bool randomRotation;
+
+        public override IEnumerable<string> ConfigErrors()
+        {
+            foreach (var error in base.ConfigErrors())
+            {
+                yield return error;
+            }
+            if (thingDef is null)
+            {
+                yield return "[VEF] ObjectSpawnsDef " + this.defName + " contain null thing def. It will not work.";
+            }
+        }
     }
 }
