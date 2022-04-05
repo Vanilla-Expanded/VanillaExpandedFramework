@@ -93,6 +93,11 @@ namespace VFECore
             int spawnCounter = 0;
             foreach (ObjectSpawnsDef element in DefDatabase<ObjectSpawnsDef>.AllDefs.Where(element => element.allowedBiomes.Contains(map.Biome)))
             {
+                if (element.thingDef is null)
+                {
+                    Log.Error("[VEF] ObjectSpawnsDef " + element.defName + " contain null thing def. It will not work.");
+                    return;
+                }
                 if (element.spawnOnlyInPlayerMaps && !map.IsPlayerHome)
                 {
                     continue;
