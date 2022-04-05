@@ -25,13 +25,13 @@ namespace VanillaPlantsExpanded
             {
 
                 float statValue = by.GetStatValue(StatDefOf.PlantHarvestYield);
-                if (!(by.RaceProps.Humanlike && !__instance.Blighted && Rand.Value > statValue))
+                if (!(by.RaceProps.Humanlike && !__instance.Blighted && __instance.CanYieldNow() && Rand.Value > statValue))
                 {
 
                     int num = extension.outPutAmount;
                     if (statValue > 1f)
                     {
-                        num = GenMath.RoundRandom((float)num * statValue);
+                        num = GenMath.RoundRandom((float)num * statValue * __instance.Growth);
                     }
                     if (num > 0)
                     {

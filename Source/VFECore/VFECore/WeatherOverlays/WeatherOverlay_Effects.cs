@@ -77,7 +77,7 @@ namespace VFECore
                 }
             }
 
-            if (thing.Position.Roofed(map) && !options.worksIndoors)
+            if (!thing.Position.InBounds(map) || thing.Position.Roofed(map) && !options.worksIndoors)
             {
                 return false;
             }

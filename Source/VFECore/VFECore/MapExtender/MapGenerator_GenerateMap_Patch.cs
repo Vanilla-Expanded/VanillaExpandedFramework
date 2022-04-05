@@ -85,9 +85,19 @@ namespace VFECore
         }
         public static void DoMapSpawns(Map map)
         {
+            if (map is null)
+            {
+                Log.Error("[VEF] Map was null, MapGenerator_GenerateMap_Patch won't properly.");
+                return;
+            }
             int spawnCounter = 0;
             foreach (ObjectSpawnsDef element in DefDatabase<ObjectSpawnsDef>.AllDefs.Where(element => element.allowedBiomes.Contains(map.Biome)))
             {
+                if (element.thingDef is null)
+                {
+                    Log.Error("[VEF] ObjectSpawnsDef " + element.defName + " contain null thing def. It will not work.");
+                    continue;
+                }
                 if (element.spawnOnlyInPlayerMaps && !map.IsPlayerHome)
                 {
                     continue;
@@ -117,13 +127,20 @@ namespace VFECore
                             }
                             if (canSpawn)
                             {
-                                if (element.randomRotation)
+                                try
                                 {
-                                    GenPlace.TryPlaceThing(thing, c, map, ThingPlaceMode.Direct, null, null, Rot4.Random);
+                                    if (element.randomRotation)
+                                    {
+                                        GenPlace.TryPlaceThing(thing, c, map, ThingPlaceMode.Direct, null, null, Rot4.Random);
+                                    }
+                                    else
+                                    {
+                                        GenSpawn.Spawn(thing, c, map);
+                                    }
                                 }
-                                else
+                                catch (Exception e)
                                 {
-                                    GenSpawn.Spawn(thing, c, map);
+                                    Log.Error("Exception spawning thing " + thing);
                                 }
                                 spawnCounter--;
                             }
