@@ -85,6 +85,11 @@ namespace VFECore
         }
         public static void DoMapSpawns(Map map)
         {
+            if (map is null)
+            {
+                Log.Error("[VEF] Map was null, MapGenerator_GenerateMap_Patch won't properly.");
+                return;
+            }
             int spawnCounter = 0;
             foreach (ObjectSpawnsDef element in DefDatabase<ObjectSpawnsDef>.AllDefs.Where(element => element.allowedBiomes.Contains(map.Biome)))
             {
