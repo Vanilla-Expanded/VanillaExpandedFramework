@@ -96,7 +96,7 @@ namespace VFECore
                 if (element.thingDef is null)
                 {
                     Log.Error("[VEF] ObjectSpawnsDef " + element.defName + " contain null thing def. It will not work.");
-                    return;
+                    continue;
                 }
                 if (element.spawnOnlyInPlayerMaps && !map.IsPlayerHome)
                 {
