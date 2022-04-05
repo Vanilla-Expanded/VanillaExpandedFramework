@@ -117,13 +117,20 @@ namespace VFECore
                             }
                             if (canSpawn)
                             {
-                                if (element.randomRotation)
+                                try
                                 {
-                                    GenPlace.TryPlaceThing(thing, c, map, ThingPlaceMode.Direct, null, null, Rot4.Random);
+                                    if (element.randomRotation)
+                                    {
+                                        GenPlace.TryPlaceThing(thing, c, map, ThingPlaceMode.Direct, null, null, Rot4.Random);
+                                    }
+                                    else
+                                    {
+                                        GenSpawn.Spawn(thing, c, map);
+                                    }
                                 }
-                                else
+                                catch (Exception e)
                                 {
-                                    GenSpawn.Spawn(thing, c, map);
+                                    Log.Error("Exception spawning thing " + thing);
                                 }
                                 spawnCounter--;
                             }
