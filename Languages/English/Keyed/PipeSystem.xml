@@ -36,4 +36,5 @@
   <PipeSystem_AmountOut>Maximum amount stored here: {0}</PipeSystem_AmountOut>
 
   <PipeSystem_ProcessorBuffer>Buffer: {0}</PipeSystem_ProcessorBuffer>
+  <PipeSystem_Producing>Producing {0} {1}. Cycle progress: {2}.</PipeSystem_Producing>
 </LanguageData>

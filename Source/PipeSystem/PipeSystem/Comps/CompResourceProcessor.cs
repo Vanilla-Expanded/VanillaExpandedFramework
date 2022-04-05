@@ -105,10 +105,16 @@ namespace PipeSystem
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendInNewLine(base.CompInspectStringExtra());
+
             if (Props.showBufferInfo)
                 sb.AppendInNewLine("PipeSystem_ProcessorBuffer".Translate((storage / Props.bufferSize).ToStringPercent()));
+
             if (cantRefine && Props.notWorkingKey != null)
                 sb.AppendInNewLine(Props.notWorkingKey.Translate());
+
+            if (Working)
+                sb.AppendInNewLine("PipeSystem_Producing".Translate(Props.result.thingCount, Props.result.thing.LabelCap, (1f - ((nextProcessTick - Find.TickManager.TicksGame) / (float)Props.eachTicks)).ToStringPercent()));
+
             return sb.ToString().Trim();
         }
 
