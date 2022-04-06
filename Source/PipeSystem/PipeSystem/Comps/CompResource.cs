@@ -9,27 +9,26 @@ namespace PipeSystem
     /// </summary>
     public class CompResource : ThingComp
     {
+        public CompProperties_Resource Props => props as CompProperties_Resource;
+
         public virtual PipeNet PipeNet { get; set; }
         public virtual bool TransmitResourceNow => true;
-
-        public CompProperties_Resource Props => props as CompProperties_Resource;
         public Resource Resource => Props.pipeNet.resource;
-
-        public PipeNetManager pipeNetManager;
+        public PipeNetManager PipeNetManager { get; private set; }
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
 
             RemovePipes();
-            pipeNetManager = parent.Map.GetComponent<PipeNetManager>();
-            pipeNetManager.RegisterConnector(this);
+            PipeNetManager = parent.Map.GetComponent<PipeNetManager>();
+            PipeNetManager.RegisterConnector(this);
             PipeSystemDebug.Message($"Registering {this}");
         }
 
         public override void PostDeSpawn(Map map)
         {
-            pipeNetManager.UnregisterConnector(this);
+            PipeNetManager.UnregisterConnector(this);
             PipeSystemDebug.Message($"Unregistering {this}");
             base.PostDeSpawn(map);
         }
