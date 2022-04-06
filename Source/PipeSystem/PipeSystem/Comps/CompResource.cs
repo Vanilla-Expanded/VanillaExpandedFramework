@@ -1,6 +1,7 @@
 ﻿using RimWorld;
 using System.Text;
 using Verse;
+using Verse.Sound;
 
 namespace PipeSystem
 {
@@ -16,6 +17,11 @@ namespace PipeSystem
         public Resource Resource => Props.pipeNet.resource;
         public PipeNetManager PipeNetManager { get; private set; }
 
+        public Sustainer sustainer;
+
+        /// <summary>
+        /// Remove under pipes. Get and set manager. Start sustainer.
+        /// </summary>
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
@@ -24,6 +30,11 @@ namespace PipeSystem
             PipeNetManager = parent.Map.GetComponent<PipeNetManager>();
             PipeNetManager.RegisterConnector(this);
             PipeSystemDebug.Message($"Registering {this}");
+
+            LongEventHandler.ExecuteWhenFinished(delegate
+            {
+                StartSustainer();
+            });
         }
 
         public override void PostDeSpawn(Map map)
@@ -57,6 +68,9 @@ namespace PipeSystem
             }
         }
 
+        /// <summary>
+        /// Inspect infos
+        /// </summary>
         public override string CompInspectStringExtra()
         {
             StringBuilder sb = new StringBuilder();
@@ -70,6 +84,57 @@ namespace PipeSystem
             sb.AppendInNewLine(base.CompInspectStringExtra());
 
             return sb.ToString().Trim();
+        }
+
+        /// <summary>
+        /// Try spawn sustainer
+        /// </summary>
+        public void StartSustainer()
+        {
+            if (!Props.soundAmbient.NullOrUndefined() && sustainer == null)
+            {
+                SoundInfo info = SoundInfo.InMap(parent);
+                sustainer = Props.soundAmbient.TrySpawnSustainer(info);
+            }
+        }
+
+        /// <summary>
+        /// End and remove sustainer
+        /// </summary>
+        public void EndSustainer()
+        {
+            if (sustainer != null)
+            {
+                sustainer.End();
+                sustainer = null;
+            }
+        }
+
+        /// <summary>
+        /// If have an ambient sound, and should be active now, maintain it
+        /// If it is null or ended, recreate it.
+        /// If it shouldn't make sound, end it and null it.
+        /// </summary>
+        /// <param name="check">Should make sound?</param>
+        public void UpdateSustainer(bool check)
+        {
+            if (Props.soundAmbient == null)
+            {
+                return;
+            }
+            if (check)
+            {
+                if (sustainer == null || sustainer.Ended)
+                {
+                    sustainer = Props.soundAmbient.TrySpawnSustainer(SoundInfo.InMap(parent));
+                }
+                sustainer.Maintain();
+            }
+            else if (sustainer != null)
+            {
+                sustainer.End();
+                sustainer = null;
+            }
         }
     }
 }

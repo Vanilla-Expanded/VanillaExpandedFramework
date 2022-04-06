@@ -90,6 +90,8 @@ namespace PipeSystem
                 }
                 nextProcessTick = tick + Props.eachTicks;
             }
+            // Sound
+            UpdateSustainer(Working);
         }
 
         public override void PostExposeData()
