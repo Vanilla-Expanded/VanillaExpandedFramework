@@ -10,24 +10,20 @@ namespace PipeSystem
     /// <summary>
     /// Comp used by CompProperties_ResourceStorage.
     /// </summary>
-    [StaticConstructorOnStartup]
     public class CompResourceStorage : CompResource
     {
-        public static Material mat = MaterialPool.MatFrom("UI/Commands/DesirePower", ShaderDatabase.MetaOverlay);
+        public bool markedForExtract = false;
+        public float extractResourceAmount;
 
         private float amountStored;
         private bool isBreakdownable;
-
         private GenDraw.FillableBarRequest request;
         private Command_Action extractGizmo;
-
-        internal float extractResourceAmount;
 
         public new CompProperties_ResourceStorage Props => (CompProperties_ResourceStorage)props;
 
         public float AmountStored => amountStored;
         public float AmountStoredPct => amountStored / Props.storageCapacity;
-
         public float AmountCanAccept
         {
             get
@@ -38,11 +34,14 @@ namespace PipeSystem
             }
         }
 
-        public bool MarkedForExtract;
-
+        /// <summary>
+        /// Create FillableBarRequest and gizmos
+        /// </summary>
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
+            isBreakdownable = parent.TryGetComp<CompBreakdownable>() != null;
+            // Fillable bar request
             request = new GenDraw.FillableBarRequest
             {
                 center = parent.DrawPos + Props.centerOffset + Vector3.up * 0.1f,
@@ -53,8 +52,7 @@ namespace PipeSystem
                 margin = Props.margin,
                 rotation = parent.Rotation.Rotated(RotationDirection.Clockwise)
             };
-
-            MarkedForExtract = false;
+            // Extract gizmo
             if (Props.extractOptions != null)
             {
                 extractResourceAmount = Props.extractOptions.ratio * Props.extractOptions.extractAmount;
@@ -63,7 +61,7 @@ namespace PipeSystem
                 {
                     action = delegate
                     {
-                        MarkedForExtract = !MarkedForExtract;
+                        markedForExtract = !markedForExtract;
                         UpdateDesignation(parent);
                     },
                     defaultLabel = Props.extractOptions.labelKey.Translate(),
@@ -73,12 +71,9 @@ namespace PipeSystem
             }
         }
 
-        public override void PostPostMake()
-        {
-            base.PostPostMake();
-            isBreakdownable = parent.TryGetComp<CompBreakdownable>() != null;
-        }
-
+        /// <summary>
+        /// Draw the fillable bar
+        /// </summary>
         public override void PostDraw()
         {
             base.PostDraw();
@@ -89,13 +84,15 @@ namespace PipeSystem
             }
         }
 
+        /// <summary>
+        /// Save data
+        /// </summary>
         public override void PostExposeData()
         {
             if (amountStored > Props.storageCapacity) amountStored = Props.storageCapacity;
 
             Scribe_Values.Look(ref amountStored, "storedResource", 0f);
-            Scribe_Values.Look(ref isBreakdownable, "isBreakdownable");
-            Scribe_Values.Look(ref MarkedForExtract, "MarkedForExtract");
+            Scribe_Values.Look(ref markedForExtract, "markedForExtract");
             base.PostExposeData();
         }
 
@@ -129,12 +126,18 @@ namespace PipeSystem
             }
         }
 
+        /// <summary>
+        /// Handle breakdown signal
+        /// </summary>
         public override void ReceiveCompSignal(string signal)
         {
             if (signal == "Breakdown") // If the parent break down, we set the amount stored to 0
                 amountStored = 0f;
         }
 
+        /// <summary>
+        /// Add storage info to inspect string
+        /// </summary>
         public override string CompInspectStringExtra()
         {
             StringBuilder sb = new StringBuilder();
@@ -146,9 +149,8 @@ namespace PipeSystem
         }
 
         /// <summary>
-        /// Add debug gizmo to fill/empty storage
+        /// Add gizmos to storage
         /// </summary>
-        /// <returns></returns>
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             foreach (Gizmo gizmo in base.CompGetGizmosExtra())
@@ -183,6 +185,9 @@ namespace PipeSystem
             }
         }
 
+        /// <summary>
+        /// Manage drain designation on parent
+        /// </summary>
         private void UpdateDesignation(Thing t)
         {
             Designation designation = t.Map.designationManager.DesignationOn(t, PSDefOf.PS_Drain);
