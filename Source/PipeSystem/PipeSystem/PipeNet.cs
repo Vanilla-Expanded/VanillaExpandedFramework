@@ -13,7 +13,7 @@ namespace PipeSystem
         public List<CompResourceTrader> receivers = new List<CompResourceTrader>();
         public List<CompResourceStorage> storages = new List<CompResourceStorage>();
         public List<CompConvertToThing> converters = new List<CompConvertToThing>();
-        public List<CompRefillRefuelable> refuelables = new List<CompRefillRefuelable>();
+        public List<CompRefillWithPipes> refuelables = new List<CompRefillWithPipes>();
         public List<CompResourceProcessor> processors = new List<CompResourceProcessor>();
 
         public Map map;
@@ -181,7 +181,7 @@ namespace PipeSystem
             {
                 processors.Add(processor);
             }
-            else if (comp is CompRefillRefuelable refuelable)
+            else if (comp is CompRefillWithPipes refuelable)
             {
                 refuelables.Add(refuelable);
             }
@@ -227,7 +227,7 @@ namespace PipeSystem
             {
                 processors.Remove(processor);
             }
-            else if (comp is CompRefillRefuelable refuelable)
+            else if (comp is CompRefillWithPipes refuelable)
             {
                 refuelables.Remove(refuelable);
             }

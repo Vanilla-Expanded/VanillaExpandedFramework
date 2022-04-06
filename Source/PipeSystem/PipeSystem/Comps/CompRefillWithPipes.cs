@@ -2,11 +2,11 @@
 
 namespace PipeSystem
 {
-    public class CompRefillRefuelable : CompResource
+    public class CompRefillWithPipes : CompResource
     {
         public CompRefuelable compRefuelable;
 
-        public new CompProperties_RefillRefuelable Props => (CompProperties_RefillRefuelable)props;
+        public new CompProperties_RefillWithPipes Props => (CompProperties_RefillWithPipes)props;
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {

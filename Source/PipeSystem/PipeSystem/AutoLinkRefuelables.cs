@@ -36,7 +36,7 @@ namespace PipeSystem
                         // Loop through all refuelable things
                         for (int t = 0; t < refuelablesThing.Count; t++)
                         {
-                            CompProperties_RefillRefuelable compRR = refuelablesThing[t].GetCompProperties<CompProperties_RefillRefuelable>();
+                            CompProperties_RefillWithPipes compRR = refuelablesThing[t].GetCompProperties<CompProperties_RefillWithPipes>();
                             if (compRR == null || compRR.thing != linkOption.thing)
                             {
                                 // If it don't already have a CompProperties_RefillRefuelable set to use the same thing
@@ -44,7 +44,7 @@ namespace PipeSystem
                                 if (comp.fuelFilter.AllowedThingDefs.Contains(linkOption.thing))
                                 {
                                     // If fuelfilter can accept the thing. Add a new CompProperties_RefillRefuelable
-                                    DefDatabase<ThingDef>.GetNamed(refuelablesThing[t].defName).comps.Add(new CompProperties_RefillRefuelable
+                                    DefDatabase<ThingDef>.GetNamed(refuelablesThing[t].defName).comps.Add(new CompProperties_RefillWithPipes
                                     {
                                         pipeNet = netDef,
                                         thing = linkOption.thing,

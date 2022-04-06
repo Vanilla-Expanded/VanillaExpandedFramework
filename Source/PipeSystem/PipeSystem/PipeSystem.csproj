@@ -53,12 +53,12 @@
     <Compile Include="Comps\CompProperties\CompProperties_ConvertResourceToThing.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_ConvertThingToResource.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_ExplosiveContent.cs" />
-    <Compile Include="Comps\CompProperties\CompProperties_RefillRefuelable.cs" />
+    <Compile Include="Comps\CompProperties\CompProperties_RefillWithPipes.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_ResourceProcessor.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_ResourceTrader.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_ResourceStorage.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_SpillWhenDamaged.cs" />
-    <Compile Include="Comps\CompRefillRefuelable.cs" />
+    <Compile Include="Comps\CompRefillWithPipes.cs" />
     <Compile Include="Comps\CompResource.cs" />
     <Compile Include="Comps\CompResourceProcessor.cs" />
     <Compile Include="Comps\CompResourceStorage.cs" />
