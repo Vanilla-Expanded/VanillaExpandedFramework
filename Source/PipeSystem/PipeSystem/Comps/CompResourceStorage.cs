@@ -4,21 +4,27 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using Verse;
+using static Verse.GenDraw;
 
 namespace PipeSystem
 {
     /// <summary>
     /// Comp used by CompProperties_ResourceStorage.
     /// </summary>
+    [StaticConstructorOnStartup]
     public class CompResourceStorage : CompResource
     {
         public bool markedForExtract = false;
+        public bool markedForTransfer = false;
         public float extractResourceAmount;
 
         private float amountStored;
         private bool isBreakdownable;
-        private GenDraw.FillableBarRequest request;
+        private FillableBarRequest request;
         private Command_Action extractGizmo;
+        private Command_Action transferGizmo;
+
+        private static readonly Texture2D transferIcon = ContentFinder<Texture2D>.Get("");
 
         public new CompProperties_ResourceStorage Props => (CompProperties_ResourceStorage)props;
 
@@ -42,7 +48,7 @@ namespace PipeSystem
             base.PostSpawnSetup(respawningAfterLoad);
             isBreakdownable = parent.TryGetComp<CompBreakdownable>() != null;
             // Fillable bar request
-            request = new GenDraw.FillableBarRequest
+            request = new FillableBarRequest
             {
                 center = parent.DrawPos + Props.centerOffset + Vector3.up * 0.1f,
                 size = Props.barSize,
@@ -69,6 +75,39 @@ namespace PipeSystem
                     icon = Props.extractOptions.tex
                 };
             }
+            // Transfer gizmo
+            if (Props.addTransferGizmo)
+            {
+                transferGizmo = new Command_Action()
+                {
+                    action = delegate
+                    {
+                        markedForTransfer = !markedForTransfer;
+                        if (markedForTransfer)
+                        {
+                            PipeNet.MaxGridStorageCapacity -= Props.storageCapacity;
+                            PipeNet.markedForTransfer.Add(this);
+                            PipeNet.storages.Remove(this);
+                        }
+                        else
+                        {
+                            PipeNet.MaxGridStorageCapacity += Props.storageCapacity;
+                            PipeNet.markedForTransfer.Remove(this);
+                            PipeNet.storages.Add(this);
+                        }
+                    },
+                    defaultLabel = "PipeSystem_TransferContent".Translate(),
+                    defaultDesc = "PipeSystem_TransferContentDesc".Translate(),
+                    icon = transferIcon
+                };
+            }
+            // Post load change if saved as marked
+            if (markedForTransfer)
+            {
+                PipeNet.MaxGridStorageCapacity -= Props.storageCapacity;
+                PipeNet.markedForTransfer.Add(this);
+                PipeNet.storages.Remove(this);
+            }
         }
 
         /// <summary>
@@ -93,6 +132,7 @@ namespace PipeSystem
 
             Scribe_Values.Look(ref amountStored, "storedResource", 0f);
             Scribe_Values.Look(ref markedForExtract, "markedForExtract");
+            Scribe_Values.Look(ref markedForTransfer, "markedForTransfer");
             base.PostExposeData();
         }
 
@@ -142,10 +182,13 @@ namespace PipeSystem
         {
             StringBuilder sb = new StringBuilder();
             if (Props.addStorageInfo)
-                sb.Append($"{"PipeSystem_ResourceStored".Translate(Resource.name)} {amountStored:##0} / {Props.storageCapacity:F0} {Resource.unit}"); // Show the amount stored
-            sb.AppendInNewLine(base.CompInspectStringExtra());
+                sb.AppendInNewLine($"{"PipeSystem_ResourceStored".Translate(Resource.name)} {amountStored:##0} / {Props.storageCapacity:F0} {Resource.unit}"); // Show the amount stored
 
-            return sb.ToString();
+            if (markedForTransfer)
+                sb.AppendInNewLine("PipeSystem_MarkedToTransferContent".Translate());
+
+            sb.AppendInNewLine(base.CompInspectStringExtra());
+            return sb.ToString().TrimEndNewlines();
         }
 
         /// <summary>
@@ -155,6 +198,9 @@ namespace PipeSystem
         {
             foreach (Gizmo gizmo in base.CompGetGizmosExtra())
                 yield return gizmo;
+
+            if (transferGizmo != null)
+                yield return transferGizmo;
 
             if (extractGizmo != null)
             {

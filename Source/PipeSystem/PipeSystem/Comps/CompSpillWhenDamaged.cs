@@ -63,9 +63,9 @@ namespace PipeSystem
             {
                 Map map = parent.Map;
                 IntVec3 pos = parent.Position;
-                if (Props.amountToDraw > 0 && compResource.PipeNet != null && compResource.PipeNet.Stored > Props.amountToDraw)
+                if (Props.amountToDraw > 0 && compResource.PipeNet is PipeNet p && p.Stored > Props.amountToDraw)
                 {
-                    compResource.PipeNet.DrawAmongStorage(Props.amountToDraw);
+                    p.DrawAmongStorage(Props.amountToDraw, p.storages);
 
                     if (createFilth)
                     {

@@ -22,6 +22,8 @@ namespace PipeSystem
         public bool receiversDirty;
         public bool producersDirty;
 
+        internal List<CompResourceStorage> markedForTransfer = new List<CompResourceStorage>();
+
         private readonly List<CompResourceTrader> receiversOn = new List<CompResourceTrader>();
         private readonly List<CompResourceTrader> receiversOff = new List<CompResourceTrader>();
         private readonly List<CompResourceTrader> producersOn = new List<CompResourceTrader>();
@@ -31,7 +33,7 @@ namespace PipeSystem
         public float Consumption { get; private set; }
         public float Production { get; private set; }
         public float Stored { get; private set; }
-        public float MaxGridStorageCapacity { get; private set; }
+        public float MaxGridStorageCapacity { get; internal set; }
         public float AvailableCapacity => MaxGridStorageCapacity - Stored;
 
         public PipeNet(IEnumerable<CompResource> connectors, Map map, PipeNetDef resource)
@@ -293,11 +295,11 @@ namespace PipeSystem
             }
 
             // Get the usable resource
-            var usable = Production - Consumption;
+            float usable = Production - Consumption;
             // Draw from storage if we use more than we produce
             if (usable < 0)
             {
-                DrawAmongStorage(-usable);
+                DrawAmongStorage(-usable, storages);
             }
             // If we produce resource, and there is storage
             else if (storages.Count > 0)
@@ -311,10 +313,29 @@ namespace PipeSystem
             }
             else
             {
-                var rUsage = DistributeAmongRefuelables(usable);
-                var leftAfter = usable - rUsage;
-                var pUsage = DistributeAmongProcessor(leftAfter);
+                float rUsage = DistributeAmongRefuelables(usable);
+                float leftAfter = usable - rUsage;
+                float pUsage = DistributeAmongProcessor(leftAfter);
                 DistributeAmongConverter(leftAfter - pUsage);
+            }
+
+            // Manage the tank marked for transfer
+            if (markedForTransfer.Count > 0)
+            {
+                float canTransfer = 0f;
+                // Get everything that need to be transfered
+                for (int i = 0; i < markedForTransfer.Count; i++)
+                {
+                    var marked = markedForTransfer[i];
+                    canTransfer += marked.AmountStored;
+                }
+                // Actual transfer we will do
+                float availableCapacity = AvailableCapacity;
+                float toTransfer = availableCapacity > canTransfer ? canTransfer : availableCapacity;
+                float willTransfer = toTransfer > 100 ? 100 : toTransfer;
+                // Draw from marked and distribute to others
+                DrawAmongStorage(willTransfer, markedForTransfer);
+                DistributeAmongStorage(willTransfer);
             }
         }
 
@@ -337,7 +358,7 @@ namespace PipeSystem
                     break;
             }
 
-            DrawAmongStorage(used);
+            DrawAmongStorage(used, storages);
             return used;
         }
 
@@ -369,7 +390,7 @@ namespace PipeSystem
                     break;
             }
 
-            DrawAmongStorage(used);
+            DrawAmongStorage(used, storages);
             return used;
         }
 
@@ -416,7 +437,7 @@ namespace PipeSystem
                 else break;
             }
 
-            DrawAmongStorage(used);
+            DrawAmongStorage(used, storages);
             return used;
         }
 
@@ -433,7 +454,7 @@ namespace PipeSystem
             for (int i = 0; i < storages.Count; i++)
             {
                 var storage = storages[i];
-                if (storage.AmountCanAccept > 0)
+                if (!storage.markedForTransfer && storage.AmountCanAccept > 0)
                     resourceStorages.Add(storage);
             }
             // If all full
@@ -471,7 +492,7 @@ namespace PipeSystem
         /// Withdraw resource from storage.
         /// </summary>
         /// <param name="amount">Amount to draw</param>
-        public void DrawAmongStorage(float amount)
+        public void DrawAmongStorage(float amount, List<CompResourceStorage> storages)
         {
             if (amount <= 0 || storages.Count == 0)
                 return;
