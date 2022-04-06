@@ -163,8 +163,15 @@ namespace PipeSystem
             }
             else if (comp is CompResourceStorage storage)
             {
-                storages.Add(storage);
-                MaxGridStorageCapacity += storage.Props.storageCapacity;
+                if (storage.markedForTransfer)
+                {
+                    markedForTransfer.Add(storage);
+                }
+                else
+                {
+                    storages.Add(storage);
+                    MaxGridStorageCapacity += storage.Props.storageCapacity;
+                }
             }
             else if (comp is CompConvertToThing convertToThing)
             {

@@ -85,28 +85,21 @@ namespace PipeSystem
                         markedForTransfer = !markedForTransfer;
                         if (markedForTransfer)
                         {
-                            PipeNet.MaxGridStorageCapacity -= Props.storageCapacity;
                             PipeNet.markedForTransfer.Add(this);
                             PipeNet.storages.Remove(this);
+                            PipeNet.MaxGridStorageCapacity -= Props.storageCapacity;
                         }
                         else
                         {
-                            PipeNet.MaxGridStorageCapacity += Props.storageCapacity;
                             PipeNet.markedForTransfer.Remove(this);
                             PipeNet.storages.Add(this);
+                            PipeNet.MaxGridStorageCapacity += Props.storageCapacity;
                         }
                     },
                     defaultLabel = "PipeSystem_TransferContent".Translate(),
                     defaultDesc = "PipeSystem_TransferContentDesc".Translate(),
                     icon = transferIcon
                 };
-            }
-            // Post load change if saved as marked
-            if (markedForTransfer)
-            {
-                PipeNet.MaxGridStorageCapacity -= Props.storageCapacity;
-                PipeNet.markedForTransfer.Add(this);
-                PipeNet.storages.Remove(this);
             }
         }
 
