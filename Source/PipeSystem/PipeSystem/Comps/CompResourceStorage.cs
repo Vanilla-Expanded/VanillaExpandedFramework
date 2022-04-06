@@ -24,7 +24,7 @@ namespace PipeSystem
         private Command_Action extractGizmo;
         private Command_Action transferGizmo;
 
-        private static readonly Texture2D transferIcon = ContentFinder<Texture2D>.Get("");
+        private static readonly Texture2D transferIcon = ContentFinder<Texture2D>.Get("UI/TransferStorageContent");
 
         public new CompProperties_ResourceStorage Props => (CompProperties_ResourceStorage)props;
 
