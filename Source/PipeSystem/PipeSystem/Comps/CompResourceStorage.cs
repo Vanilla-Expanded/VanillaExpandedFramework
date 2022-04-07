@@ -112,8 +112,10 @@ namespace PipeSystem
             if (Props.drawStorageBar)
             {
                 request.fillPercent = AmountStoredPct;
-                GenDraw.DrawFillableBar(request);
+                DrawFillableBar(request);
             }
+            if (Props.showOffMatWhenTransfering && markedForTransfer && Props.pipeNet.offMat != null)
+                IconOverlay.Render(Props.pipeNet.offMat, request.center, MeshPool.plane08);
         }
 
         /// <summary>
