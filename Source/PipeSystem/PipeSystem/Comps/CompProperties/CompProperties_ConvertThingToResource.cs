@@ -8,7 +8,7 @@ namespace PipeSystem
     {
         public CompProperties_ConvertThingToResource()
         {
-            compClass = typeof(ConvertToResource);
+            compClass = typeof(CompConvertToResource);
         }
 
         public int ratio = 1;

@@ -127,6 +127,10 @@ namespace PipeSystem
             }
         }
 
+        /// <summary>
+        /// Spawn X things
+        /// </summary>
+        /// <param name="amount">Amount to spawn</param>
         public void OutputResource(int amount)
         {
             if (CanOutputNow)

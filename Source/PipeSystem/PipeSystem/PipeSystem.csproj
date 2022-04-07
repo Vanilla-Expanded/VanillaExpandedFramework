@@ -65,7 +65,7 @@
     <Compile Include="Comps\CompResourceTrader.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_Resource.cs" />
     <Compile Include="Comps\CompSpillWhenDamaged.cs" />
-    <Compile Include="Comps\ConvertToResource.cs" />
+    <Compile Include="Comps\CompConvertToResource.cs" />
     <Compile Include="Graphic\IconOverlay.cs" />
     <Compile Include="Harmony\CompGlower\ReceiveCompSignal_Postfix.cs" />
     <Compile Include="Harmony\CompGlower\ShouldBeLitNow_Postfix.cs" />

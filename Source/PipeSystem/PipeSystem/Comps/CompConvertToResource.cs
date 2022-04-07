@@ -4,7 +4,7 @@ using Verse;
 
 namespace PipeSystem
 {
-    internal class ConvertToResource : CompResource
+    internal class CompConvertToResource : CompResource
     {
         private CompBreakdownable compBreakdownable;
         private CompPowerTrader compPowerTrader;
