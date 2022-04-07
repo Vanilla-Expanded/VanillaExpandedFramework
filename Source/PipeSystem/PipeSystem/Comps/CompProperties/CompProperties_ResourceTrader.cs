@@ -9,8 +9,6 @@ namespace PipeSystem
         public float consumptionPerTick;
         // TODO: Add idle consumption as an option
 
-        public SoundDef soundResourceOn;
-        public SoundDef soundResourceOff;
         public SoundDef soundAmbientReceivingResource;
 
         private string nameCapitalized;
