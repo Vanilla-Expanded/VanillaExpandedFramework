@@ -412,6 +412,7 @@
     <Compile Include="AnimalBehaviours\AnimalCollectionClass\AnimalCollectionClass.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompAcidImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompAnimalProduct.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompAnimalProductOnCaravan.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompApplyHediffWhenBound.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompAsexualReproduction.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompAutoNutrition.cs" />
@@ -457,6 +458,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompNoTamingDecay.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompPassiveRegenerator.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompPawnOverlay.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AnimalProductOnCaravan.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_NoTamingDecay.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_InitialAbility.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DieAndChangeIntoOtherDef.cs" />
