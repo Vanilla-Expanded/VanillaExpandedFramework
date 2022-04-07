@@ -9,8 +9,7 @@ namespace AnimalBehaviours
 
 	public class CompAnimalProductOnCaravan : ThingComp
 	{
-		private int ticksUntilSpawn;
-
+		
 		public CompProperties_AnimalProductOnCaravan Props => (CompProperties_AnimalProductOnCaravan)props;
 
 		
@@ -45,18 +44,13 @@ namespace AnimalBehaviours
 
 		
 
-		public override void PostExposeData()
-		{
-		
-			Scribe_Values.Look(ref ticksUntilSpawn, "ticksUntilSpawn", 0);
-		}
 
 		
 
 		public override string CompInspectStringExtra()
 		{
 			
-				return "GR_WhileCaravaning".Translate(GenLabel.ThingLabel(Props.resourceDef, null, Props.resourceAmount)).Resolve()+ ticksUntilSpawn.ToStringTicksToPeriod().Colorize(ColoredText.DateTimeColor);
+				return "VEF_WhileCaravaning".Translate(Props.resourceAmount,Props.resourceDef.LabelCap)+ Props.gatheringIntervalTicks.ToStringTicksToPeriod().Colorize(ColoredText.DateTimeColor);
 			
 		}
 	}
