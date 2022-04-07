@@ -47,6 +47,7 @@ namespace PipeSystem
         public string unit; // Unit that should be used in report strings.
         public Color color; // Resource color, used in overlay/storage bar. New material created at startup.
 
+        public bool onlyShowStored = false;
         public string offTexPath;
     }
 

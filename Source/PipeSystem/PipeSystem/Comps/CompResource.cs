@@ -80,7 +80,14 @@ namespace PipeSystem
                 return sb.ToString().Trim();
             }
 
-            sb.Append($"{"PipeSystem_ExcessStored".Translate(Resource.name)} {((PipeNet.Production - PipeNet.Consumption) / 100) * GenDate.TicksPerDay:##0} {Resource.unit}/d ({PipeNet.Stored:##0} {Resource.unit})");
+            if (!PipeNet.resource.resource.onlyShowStored)
+            {
+                sb.Append($"{"PipeSystem_ExcessStored".Translate(Resource.name)} {((PipeNet.Production - PipeNet.Consumption) / 100) * GenDate.TicksPerDay:##0} {Resource.unit}/d ({PipeNet.Stored:##0} {Resource.unit})");
+            }
+            else
+            {
+                sb.Append($"{"PipeSystem_Stored".Translate(Resource.name)} {PipeNet.Stored:##0} {Resource.unit}");
+            }
             sb.AppendInNewLine(base.CompInspectStringExtra());
 
             return sb.ToString().Trim();
