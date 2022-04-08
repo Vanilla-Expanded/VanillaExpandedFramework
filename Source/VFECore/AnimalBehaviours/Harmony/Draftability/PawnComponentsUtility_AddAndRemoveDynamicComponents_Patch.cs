@@ -33,8 +33,14 @@ namespace AnimalBehaviours
             {
                 //Log.Message("Patching "+ pawn.kindDef.ToString() + " with a draft controller and equipment tracker");
                 //If everything goes well, add drafter and equipment to the pawn 
-                pawn.drafter = new Pawn_DraftController(pawn);
-                pawn.equipment = new Pawn_EquipmentTracker(pawn);
+                if (pawn.drafter is null)
+                {
+                    pawn.drafter = new Pawn_DraftController(pawn);
+                }
+                if (pawn.equipment is null)
+                {
+                    pawn.equipment = new Pawn_EquipmentTracker(pawn);
+                }
             }
         }
     }
