@@ -15,7 +15,7 @@ namespace VFECore
             if (thingDef.GetModExtension<ThingDefExtension>() is ThingDefExtension thingDefExtension)
             {
                 int num = __instance.CountAt(c);
-                var percent = (float)num / thingDef.deepCountPerCell / 2f;
+                float percent = num / thingDef.deepCountPerCell * thingDefExtension.transparencyMultiplier;
                 __result = thingDefExtension.deepColor.ToTransparent(percent);
             }
         }
