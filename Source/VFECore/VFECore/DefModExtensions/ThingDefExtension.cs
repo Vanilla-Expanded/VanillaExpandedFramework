@@ -13,7 +13,7 @@ namespace VFECore
 
         // For weapons
         public bool usableWithShields = false;
-        public DraftedDrawOffsets draftedDrawOffsets = new DraftedDrawOffsets();
+        public DraftedDrawOffsets draftedDrawOffsets = null;
 
         // For shields and apparel
         public List<PawnKindDef> useFactionColourForPawnKinds;
@@ -28,16 +28,16 @@ namespace VFECore
 
     public class DraftedDrawOffsets
     {
-        public Offset north = new Offset();
-        public Offset east = new Offset();
-        public Offset south = new Offset();
-        public Offset west = new Offset();
+        public Offset north = null;
+        public Offset east = null;
+        public Offset south = null;
+        public Offset west = null;
     }
 
     public class Offset
     {
-        public Vector3 posOffset = new Vector3(-999, -999, -999);
-        public float angOffset = -999;
+        public Vector3 posOffset = new Vector3(0, 0, 0);
+        public float angOffset = 0;
     }
 
 }
