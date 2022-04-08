@@ -11,6 +11,7 @@ namespace AnimalBehaviours
         public int gatheringIntervalTicks = 30000;
         public int resourceAmount = 1;
         public ThingDef resourceDef = null;
+        public bool femaleOnly = false;
 
        
         public CompProperties_AnimalProductOnCaravan()
