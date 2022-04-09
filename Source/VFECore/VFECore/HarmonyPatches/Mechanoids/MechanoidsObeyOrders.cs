@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using AnimalBehaviours;
+using HarmonyLib;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -14,24 +15,58 @@ using VFEMech;
 
 namespace VFE.Mechanoids.HarmonyPatches
 {
+	[StaticConstructorOnStartup]
+	public static class MechanoidDraftCompInitializer
+	{
+		static MechanoidDraftCompInitializer()
+		{
+			foreach (var pawn in DefDatabase<PawnKindDef>.AllDefs)
+			{
+				var compPropsMachine = pawn.race.GetCompProperties<CompProperties_Machine>();
+				if (compPropsMachine != null && compPropsMachine.violent)
+				{
+					if (pawn.race.GetCompProperties<CompProperties_Draftable>() is null)
+					{
+						pawn.race.comps.Add(new CompProperties_Draftable());
+					}
+				}
+			}
+		}
+	}
 
-    [HarmonyPatch(typeof(FloatMenuMakerMap), "CanTakeOrder")]
+	[HarmonyPatch(typeof(FloatMenuMakerMap), "CanTakeOrder")]
     public static class MechanoidsObeyOrders
     {
         public static void Postfix(Pawn pawn, ref bool __result)
         {
-            if (pawn.drafter != null && pawn is Machine)
+            if (pawn.drafter != null && pawn.RaceProps.IsMechanoid && pawn.Faction != null && pawn.Faction.IsPlayer)
                 __result = true;
         }
     }
+
+	// an attempt to make draftable mechanoids be selected with other colonists, didn't find a time to make a proper patch
+	//[HarmonyPatch]
+	//public static class MakeMechanoidsMultiSelectable
+    //{
+	//	[HarmonyTargetMethod]
+	//	public static MethodBase GetMethod()
+    //    {
+	//		return typeof(Selector).GetNestedTypes(AccessTools.all).Select(type => type.GetMethods(AccessTools.all).FirstOrDefault(method => method.Name.Contains("<SelectAllMatchingObjectUnderMouseOnScreen>")
+	//		&& method.ReturnType == typeof(bool) && method.GetParameters().FirstOrDefault()?.ParameterType == typeof(Thing))).FirstOrDefault();
+    //    }
+	//
+	//	public static void Postfix(Thing t)
+    //    {
+	//		Log.Message("T: " + t);
+    //    }
+    //}
 
     [HarmonyPatch(typeof(FloatMenuMakerMap), "AddDraftedOrders")]
     public static class AddDraftedOrders_Patch
     {
         public static bool Prefix(Vector3 clickPos, Pawn pawn, List<FloatMenuOption> opts)
         {
-            if (!AnimalBehaviours.AnimalCollectionClass.draftable_animals.Contains(pawn) && pawn.RaceProps.IsMechanoid 
-                && pawn.needs.TryGetNeed<Need_Power>() is Need_Power need && need.CurLevel <= 0f)
+            if (pawn.RaceProps.IsMechanoid && pawn.needs.TryGetNeed<Need_Power>() is Need_Power need && need.CurLevel <= 0f)
             {
                 return false;
             }

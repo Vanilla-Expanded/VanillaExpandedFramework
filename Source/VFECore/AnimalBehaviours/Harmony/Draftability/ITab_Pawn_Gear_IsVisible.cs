@@ -20,7 +20,7 @@ namespace AnimalBehaviours
         [HarmonyPostfix]
         static void RemoveTab(Pawn p, ref bool __result)
         {
-            if (AnimalCollectionClass.draftable_animals.Contains(p))
+            if (AnimalCollectionClass.draftable_animals.Contains(p) && !p.RaceProps.IsMechanoid)
             {
                 __result = false;
             }
