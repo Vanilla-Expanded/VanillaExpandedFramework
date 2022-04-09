@@ -20,10 +20,13 @@ namespace VFE.Mechanoids
         public static Dictionary<CompMachine, Pawn> cachedPawns = new Dictionary<CompMachine, Pawn>();
         public static Dictionary<Pawn, CompMachine> cachedMachinesPawns = new Dictionary<Pawn, CompMachine>();
 
-        public override void OnBuildingDestroyed()
+        public override void OnBuildingDestroyed(CompPawnDependsOn compPawnDependsOn)
         {
-            base.OnBuildingDestroyed();
-            parent.Kill();
+            base.OnBuildingDestroyed(compPawnDependsOn);
+            if (compPawnDependsOn.Props.killPawnAfterDestroying)
+            {
+                parent.Kill();
+            }
         }
 
         public new CompProperties_Machine Props

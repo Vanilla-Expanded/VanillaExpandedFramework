@@ -11,6 +11,7 @@ namespace VFECore
     {
         public PawnKindDef pawnToSpawn;
 
+        public bool killPawnAfterDestroying = true;
         public CompProperties_PawnDependsOn()
         {
             this.compClass = typeof(CompPawnDependsOn);

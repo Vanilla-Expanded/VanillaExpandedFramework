@@ -22,7 +22,7 @@ namespace VFE.Mechanoids.HarmonyPatches
             (AccessTools.Method(typeof(ITab_Pawn_Character), "get_PawnToShowInfoAbout"));
         public static void Postfix(ITab_Pawn_Character __instance, ref bool __result)
         {
-            Pawn pawn = pawnToShowInfoAbout.Invoke(__instance);
+            Pawn pawn = pawnToShowInfoAbout(__instance);
             if (pawn is Machine)
                 __result = false;
         }

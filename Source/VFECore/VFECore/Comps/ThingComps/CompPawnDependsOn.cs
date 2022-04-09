@@ -47,17 +47,17 @@ namespace VFECore
             base.PostDestroy(mode, previousMap);
             if (myPawn != null)
             {
-                myPawn.TryGetComp<CompDependsOnBuilding>().OnBuildingDestroyed();
-                myPawn.TryGetComp<CompDependsOnBuilding>().myBuilding = null;
+                var comp = myPawn.TryGetComp<CompDependsOnBuilding>();
+                comp.OnBuildingDestroyed(this);
+                comp.myBuilding = null;
                 myPawn = null;
             }
         }
-
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             List<Gizmo> gizmos = new List<Gizmo>();
             gizmos.AddRange(base.CompGetGizmosExtra());
-            if (Prefs.DevMode)
+            if (Prefs.DevMode && this.Props.pawnToSpawn != null)
             {
                 Command_Action debugForceSpawn = new Command_Action
                 {

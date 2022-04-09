@@ -8,7 +8,11 @@ using Verse;
 
 namespace VFE.Mechanoids.Buildings
 {
-    public class Building_BedMachine : Building
+    public interface IBedMachine
+    {
+        Pawn occupant { get; }
+    }
+    public class Building_BedMachine : Building, IBedMachine
     {
         public Pawn occupant
         {
