@@ -117,14 +117,14 @@ namespace VFE.Mechanoids
         public override void CompTickRare()
         {
             base.CompTickRare();
-            Building_BedMachine bed = (Building_BedMachine)parent;
+            IBedMachine bed = (IBedMachine)parent;
             if(bed.occupant!=null)
             {
                 if (this.energyDrainMode)
                 {
                     PowerComp.powerOutputInt = 0 - PowerComp.Props.basePowerConsumption - Props.extraChargingPower;
                 }
-                if (myPawn.health.hediffSet.HasNaturallyHealingInjury() && bed.TryGetComp<CompPowerTrader>().PowerOn)
+                if (myPawn.health.hediffSet.HasNaturallyHealingInjury() && parent.TryGetComp<CompPowerTrader>().PowerOn)
                 {
                     float num3 = 12f;
                 (from x in myPawn.health.hediffSet.GetHediffs<Hediff_Injury>()
@@ -279,18 +279,21 @@ namespace VFE.Mechanoids
         public override string CompInspectStringExtra()
         {
             StringBuilder builder = new StringBuilder(base.CompInspectStringExtra());
-            if(myPawn==null || myPawn.Dead)
+            if (Props.pawnToSpawn != null)
             {
-                bool comma = false;
-                string resources = "VFEMechReconstruct".Translate()+" ";
-                foreach(ThingDefCountClass resource in Props.pawnToSpawn.race.butcherProducts)
+                if (myPawn == null || myPawn.Dead)
                 {
-                    if (comma)
-                        resources += ", ";
-                    comma = true;
-                    resources += resource.thingDef.label + " x" + resource.count;
+                    bool comma = false;
+                    string resources = "VFEMechReconstruct".Translate() + " ";
+                    foreach (ThingDefCountClass resource in Props.pawnToSpawn.race.butcherProducts)
+                    {
+                        if (comma)
+                            resources += ", ";
+                        comma = true;
+                        resources += resource.thingDef.label + " x" + resource.count;
+                    }
+                    builder.AppendLine(resources);
                 }
-                builder.AppendLine(resources);
             }
             if(turretToInstall!=null)
             {

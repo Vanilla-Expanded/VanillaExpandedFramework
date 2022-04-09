@@ -19,7 +19,7 @@ namespace VFECore
             }
         }
 
-        public virtual void OnBuildingDestroyed()
+        public virtual void OnBuildingDestroyed(CompPawnDependsOn compPawnDependsOn)
         {
             //Do something - or just fall over dead
         }

@@ -18,6 +18,7 @@ namespace VFE.Mechanoids
     public class MechanoidExtension : DefModExtension
     {
         public bool isCaravanRiddable;
+		public bool hasPowerNeedWhenHacked;
     }
 
 	[HarmonyPatch]
