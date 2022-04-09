@@ -9,16 +9,19 @@ namespace PipeSystem
     public class CompPipeValve : CompResource
     {
         private CompFlickable compFlickable;
-        private PipeNetManager netManager;
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             compFlickable = parent.GetComp<CompFlickable>();
+
             RemovePipes();
-            netManager = parent.Map.GetComponent<PipeNetManager>();
+            PipeNetManager = parent.Map.GetComponent<PipeNetManager>();
 
             if (TransmitResourceNow)
-                netManager.RegisterConnector(this);
+            {
+                PipeNetManager.RegisterConnector(this);
+                PipeSystemDebug.Message($"Registering {this}");
+            }
         }
 
         public override bool TransmitResourceNow
@@ -40,17 +43,22 @@ namespace PipeSystem
 
         public override void ReceiveCompSignal(string signal)
         {
+            var map = parent.Map;
+            var root = parent.Position;
+
             if (signal == CompFlickable.FlickedOffSignal)
             {
                 // Unregister it, and make our MapMeshFlag dirty at this pos
-                netManager.UnregisterConnector(this);
-                parent.Map.mapDrawer.MapMeshDirty(parent.Position, (MapMeshFlag)455, true, false);
+                PipeNetManager.UnregisterConnector(this);
+                map.mapDrawer.MapMeshDirty(root, MapMeshFlag.Things, true, false);
+                map.mapDrawer.MapMeshDirty(root, (MapMeshFlag)455, true, false);
             }
             if (signal == CompFlickable.FlickedOnSignal)
             {
                 // Register it, and make our MapMeshFlag dirty at this pos
-                netManager.RegisterConnector(this);
-                parent.Map.mapDrawer.MapMeshDirty(parent.Position, (MapMeshFlag)455, true, false);
+                PipeNetManager.RegisterConnector(this);
+                map.mapDrawer.MapMeshDirty(root, MapMeshFlag.Things, true, false);
+                map.mapDrawer.MapMeshDirty(root, (MapMeshFlag)455, true, false);
             }
             base.ReceiveCompSignal(signal);
         }

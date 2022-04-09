@@ -15,7 +15,7 @@ namespace PipeSystem
         public virtual PipeNet PipeNet { get; set; }
         public virtual bool TransmitResourceNow => true;
         public Resource Resource => Props.pipeNet.resource;
-        public PipeNetManager PipeNetManager { get; private set; }
+        public PipeNetManager PipeNetManager { get; internal set; }
 
         public Sustainer sustainer;
 

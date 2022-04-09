@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="AutoLinkRefuelables.cs" />
     <Compile Include="Buildings\Building_Pipe.cs" />
+    <Compile Include="Buildings\Building_PipeValve.cs" />
     <Compile Include="Buildings\Building_ResourceHeater.cs" />
     <Compile Include="Buildings\Building_ResourceWorkTable_HeatPush.cs" />
     <Compile Include="Buildings\Building_ResourceWorkTable.cs" />
