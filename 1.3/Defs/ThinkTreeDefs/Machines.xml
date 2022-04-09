@@ -156,8 +156,9 @@
 							</subNodes>
 						</li>
 						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_Recharge"/>
-						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStation"/>
 						<li Class="JobGiver_AIFightEnemies"/>
+						<li Class="JobGiver_Work"/>
+						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStation"/>
 						<li Class="ThinkNode_Tagger">
 							<tagToGive>Idle</tagToGive>
 							<subNodes>
