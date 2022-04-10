@@ -332,6 +332,11 @@ namespace VFECore
 				}
 			}
 		}
+
+		public virtual bool IsDamagable(Thing t)
+		{
+			return t.def != this.def && t != this.launcher && (t.def.useHitPoints || t is Pawn);
+		}
 		public virtual void DoDamage(IntVec3 pos)
 		{
 

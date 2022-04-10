@@ -21,7 +21,7 @@ namespace VFECore
 					var list = this.launcher.Map.thingGrid.ThingsListAt(pos);
 					for (int num = list.Count - 1; num >= 0; num--)
 					{
-						if (list[num].def != this.def && list[num] != this.launcher && list[num].def != ThingDefOf.Fire && (!(list[num] is Mote) && (!(list[num] is Filth))))
+						if (IsDamagable(list[num]))
 						{
 							if (!list.Where(x => x.def == ThingDefOf.Fire).Any())
 							{
@@ -49,5 +49,10 @@ namespace VFECore
 			}
 			catch { };
 		}
-	}
+
+        public override bool IsDamagable(Thing t)
+        {
+            return base.IsDamagable(t) && t.def != ThingDefOf.Fire;
+        }
+    }
 }
