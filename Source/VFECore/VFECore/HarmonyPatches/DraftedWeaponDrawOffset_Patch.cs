@@ -54,28 +54,32 @@ namespace VFECore
                     // Get pawn only if canCarryWeaponOpenly isn't null, instead of before, prevent method call
                     Pawn pawn = pawnField.GetValue(__instance) as Pawn;
 
-                    // Every offset is null by default, faster than checking if two vect are equal
-                    // I've been told it is better to call getter only once and store the value
-                    Rot4 pawnRot = pawn.Rotation;
-                    if (pawnRot == Rot4.South && thingDefExtension.draftedDrawOffsets.south != null)
+                    // Only apply offset when drafted (but not actually engaging in combat)
+                    if (!pawn.stances.curStance.StanceBusy)
                     {
-                        drawLoc -= new Vector3(0f, 0f, -0.22f) - thingDefExtension.draftedDrawOffsets.south.posOffset;
-                        aimAngle = thingDefExtension.draftedDrawOffsets.south.angOffset;
-                    }
-                    else if (pawnRot == Rot4.North && thingDefExtension.draftedDrawOffsets.north != null)
-                    {
-                        drawLoc -= new Vector3(0f, 0f, -0.11f) - thingDefExtension.draftedDrawOffsets.north.posOffset;
-                        aimAngle = thingDefExtension.draftedDrawOffsets.north.angOffset;
-                    }
-                    else if (pawnRot == Rot4.East && thingDefExtension.draftedDrawOffsets.east.posOffset != null)
-                    {
-                        drawLoc -= new Vector3(0.2f, 0f, -0.22f) - thingDefExtension.draftedDrawOffsets.east.posOffset;
-                        aimAngle = thingDefExtension.draftedDrawOffsets.east.angOffset;
-                    }
-                    else if (pawnRot == Rot4.West && thingDefExtension.draftedDrawOffsets.west.posOffset != null)
-                    {
-                        drawLoc -= new Vector3(-0.2f, 0f, -0.22f) - thingDefExtension.draftedDrawOffsets.west.posOffset;
-                        aimAngle = thingDefExtension.draftedDrawOffsets.west.angOffset;
+                        // Every offset is null by default, faster than checking if two vect are equal
+                        // I've been told it is better to call getter only once and store the value
+                        Rot4 pawnRot = pawn.Rotation;
+                        if (pawnRot == Rot4.South && thingDefExtension.draftedDrawOffsets.south != null)
+                        {
+                            drawLoc -= new Vector3(0f, 0f, -0.22f) - thingDefExtension.draftedDrawOffsets.south.posOffset;
+                            aimAngle = thingDefExtension.draftedDrawOffsets.south.angOffset;
+                        }
+                        else if (pawnRot == Rot4.North && thingDefExtension.draftedDrawOffsets.north != null)
+                        {
+                            drawLoc -= new Vector3(0f, 0f, -0.11f) - thingDefExtension.draftedDrawOffsets.north.posOffset;
+                            aimAngle = thingDefExtension.draftedDrawOffsets.north.angOffset;
+                        }
+                        else if (pawnRot == Rot4.East && thingDefExtension.draftedDrawOffsets.east.posOffset != null)
+                        {
+                            drawLoc -= new Vector3(0.2f, 0f, -0.22f) - thingDefExtension.draftedDrawOffsets.east.posOffset;
+                            aimAngle = thingDefExtension.draftedDrawOffsets.east.angOffset;
+                        }
+                        else if (pawnRot == Rot4.West && thingDefExtension.draftedDrawOffsets.west.posOffset != null)
+                        {
+                            drawLoc -= new Vector3(-0.2f, 0f, -0.22f) - thingDefExtension.draftedDrawOffsets.west.posOffset;
+                            aimAngle = thingDefExtension.draftedDrawOffsets.west.angOffset;
+                        }
                     }
                 }
             }
