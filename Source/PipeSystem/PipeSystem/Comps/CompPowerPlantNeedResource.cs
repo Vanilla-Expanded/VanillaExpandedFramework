@@ -9,11 +9,11 @@ namespace PipeSystem
     /// </summary>
     public class CompPowerPlantNeedResource : CompPowerPlant
     {
-        private IEnumerable<CompResourceTrader> compResourceTraders;
+        private List<CompResourceTrader> compResourceTraders;
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
-            compResourceTraders = parent.GetComps<CompResourceTrader>();
+            compResourceTraders = parent.GetComps<CompResourceTrader>().ToList();
             base.PostSpawnSetup(respawningAfterLoad);
         }
 
@@ -21,10 +21,9 @@ namespace PipeSystem
         {
             get
             {
-                for (int i = 0; i < compResourceTraders.Count(); i++)
+                for (int i = 0; i < compResourceTraders.Count; i++)
                 {
-                    var comp = compResourceTraders.ElementAt(i);
-                    if (!comp.ResourceOn)
+                    if (!compResourceTraders[i].ResourceOn)
                         return 0f;
                 }
                 return base.DesiredPowerOutput;
