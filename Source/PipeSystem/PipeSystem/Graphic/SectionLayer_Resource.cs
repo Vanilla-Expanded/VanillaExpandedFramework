@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 using Verse;
 
 namespace PipeSystem
@@ -43,11 +42,8 @@ namespace PipeSystem
         {
             ClearSubMeshes(MeshParts.All);
             // Loop in all cells of the section
-            var cells = section.CellRect.Cells;
-            for (int i = 0; i < cells.Count(); i++)
+            foreach (var cell in section.CellRect.Cells)
             {
-                var cell = cells.ElementAt(i);
-                // Loop on thing(s) on this cell
                 var things = GridsUtility.GetThingList(cell, Map);
                 for (int o = 0; o < things.Count; o++)
                 {
@@ -56,9 +52,8 @@ namespace PipeSystem
                     {
                         var comps = thingWC.GetComps<CompResource>();
                         // Loop through comps
-                        for (int p = 0; p < comps.Count(); p++)
+                        foreach (var comp in comps)
                         {
-                            var comp = comps.ElementAt(p);
                             var compNet = comp.Props.pipeNet;
                             if (compNet == PipeNet && thing.Position.x == cell.x && thing.Position.z == cell.z)
                             {
@@ -69,7 +64,6 @@ namespace PipeSystem
                     }
                 }
             }
-
             FinalizeMesh(MeshParts.All);
         }
 
