@@ -38,7 +38,7 @@ namespace PipeSystem
                 StartSustainer();
             });
 
-            graphicLinkedOverlay = LinkedPipes.GetOverlayFor(PipeNet.resource);
+            graphicLinkedOverlay = LinkedPipes.GetOverlayFor(PipeNet.def);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace PipeSystem
                 return sb.ToString().Trim();
             }
 
-            if (!PipeNet.resource.resource.onlyShowStored)
+            if (!PipeNet.def.resource.onlyShowStored)
             {
                 sb.Append($"{"PipeSystem_ExcessStored".Translate(Resource.name)} {((PipeNet.Production - PipeNet.Consumption) / 100) * GenDate.TicksPerDay:##0} {Resource.unit}/d ({PipeNet.Stored:##0} {Resource.unit})");
             }

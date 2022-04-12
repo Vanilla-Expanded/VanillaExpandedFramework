@@ -18,7 +18,7 @@ namespace PipeSystem
 
         public Map map;
         public BoolGrid networkGrid;
-        public PipeNetDef resource;
+        public PipeNetDef def;
         public bool receiversDirty;
         public bool producersDirty;
 
@@ -36,10 +36,10 @@ namespace PipeSystem
         public float MaxGridStorageCapacity { get; internal set; }
         public float AvailableCapacity => MaxGridStorageCapacity - Stored;
 
-        public PipeNet(IEnumerable<CompResource> connectors, Map map, PipeNetDef resource)
+        public PipeNet(IEnumerable<CompResource> connectors, Map map, PipeNetDef def)
         {
             this.map = map;
-            this.resource = resource;
+            this.def = def;
             networkGrid = new BoolGrid(map);
 
             NextTick = Find.TickManager.TicksGame;

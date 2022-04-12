@@ -239,7 +239,7 @@ namespace PipeSystem
         /// <returns>The PipeNet found or null</returns>
         public PipeNet GetPipeNetAt(IntVec3 cell, PipeNetDef resource)
         {
-            return pipeNets.Find(n => n.resource == resource && n.networkGrid[cell]);
+            return pipeNets.Find(n => n.def == resource && n.networkGrid[cell]);
         }
     }
 }
