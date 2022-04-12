@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 using Verse;
 
 namespace PipeSystem
@@ -23,12 +22,10 @@ namespace PipeSystem
 
         public override void Print(SectionLayer layer, Thing thing, float extraRotation)
         {
-            var cells = thing.OccupiedRect().Cells;
-            for (int i = 0; i < cells.Count(); i++)
+            foreach (IntVec3 item in thing.OccupiedRect())
             {
-                var cell = cells.ElementAt(i);
-                Vector3 center = cell.ToVector3ShiftedWithAltitude(AltitudeLayer.MapDataOverlay);
-                Printer_Plane.PrintPlane(layer, center, new Vector2(1f, 1f), LinkedDrawMatFrom(thing, cell), extraRotation);
+                Vector3 center = item.ToVector3ShiftedWithAltitude(AltitudeLayer.MapDataOverlay);
+                Printer_Plane.PrintPlane(layer, center, new Vector2(1f, 1f), LinkedDrawMatFrom(thing, item), extraRotation);
             }
         }
     }
