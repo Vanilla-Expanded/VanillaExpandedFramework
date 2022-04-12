@@ -16,16 +16,15 @@ namespace PipeSystem
         }
 
         private static int lastFrameDraw;
-
-        public static PipeNetDef PipeNet { get; set; }
+        private static PipeNetDef pipeNet;
 
         public virtual bool ShouldDraw => lastFrameDraw + 1 >= Time.frameCount;
 
         public static void UpdateAndDrawFor(PipeNetDef pipeNetDef)
         {
-            if (pipeNetDef != PipeNet)
+            if (pipeNetDef != pipeNet)
             {
-                PipeNet = pipeNetDef;
+                pipeNet = pipeNetDef;
                 Find.CurrentMap.mapDrawer.WholeMapChanged((MapMeshFlag)455);
                 PipeSystemDebug.Message("Regenerated MapMeshFlag 455 for SectionLayer_Resource.");
             }
@@ -38,35 +37,23 @@ namespace PipeSystem
                 base.DrawLayer();
         }
 
-        public override void Regenerate()
+        protected override void TakePrintFrom(Thing t)
         {
-            ClearSubMeshes(MeshParts.All);
-            // Loop in all cells of the section
-            foreach (var cell in section.CellRect.Cells)
+            if (t is ThingWithComps twc)
             {
-                var things = GridsUtility.GetThingList(cell, Map);
-                for (int o = 0; o < things.Count; o++)
+                var comps = twc.AllComps;
+                if (comps != null)
                 {
-                    var thing = things[o];
-                    if (thing is ThingWithComps thingWC)
+                    for (int i = 0; i < comps.Count; i++)
                     {
-                        var comps = thingWC.GetComps<CompResource>();
-                        // Loop through comps
-                        foreach (var comp in comps)
+                        if (comps[i] is CompResource comp && comp.PipeNet.resource == pipeNet)
                         {
-                            var compNet = comp.Props.pipeNet;
-                            if (compNet == PipeNet && thing.Position.x == cell.x && thing.Position.z == cell.z)
-                            {
-                                LinkedPipes.GetOverlayFor(compNet).Print(this, thing, 0);
-                                break; // Don't bother checking the others comps
-                            }
+                            comp.CompPrintForResourceGrid(this);
+                            break; // We can only have one comp of the same netDef
                         }
                     }
                 }
             }
-            FinalizeMesh(MeshParts.All);
         }
-
-        protected override void TakePrintFrom(Thing t) { }
     }
 }

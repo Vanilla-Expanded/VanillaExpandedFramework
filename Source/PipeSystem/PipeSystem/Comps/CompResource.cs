@@ -19,6 +19,8 @@ namespace PipeSystem
 
         public Sustainer sustainer;
 
+        private Graphic_LinkedOverlayPipe graphicLinkedOverlay;
+
         /// <summary>
         /// Remove under pipes. Get and set manager. Start sustainer.
         /// </summary>
@@ -35,8 +37,13 @@ namespace PipeSystem
             {
                 StartSustainer();
             });
+
+            graphicLinkedOverlay = LinkedPipes.GetOverlayFor(PipeNet.resource);
         }
 
+        /// <summary>
+        /// Unregister comp
+        /// </summary>
         public override void PostDeSpawn(Map map)
         {
             PipeNetManager.UnregisterConnector(this);
@@ -141,6 +148,17 @@ namespace PipeSystem
             {
                 sustainer.End();
                 sustainer = null;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void CompPrintForResourceGrid(SectionLayer layer)
+        {
+            if (TransmitResourceNow)
+            {
+                graphicLinkedOverlay.Print(layer, parent, 0);
             }
         }
     }
