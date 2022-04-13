@@ -13,7 +13,7 @@ namespace PipeSystem
         public List<CompResourceTrader> receivers = new List<CompResourceTrader>();
         public List<CompResourceStorage> storages = new List<CompResourceStorage>();
         public List<CompConvertToThing> converters = new List<CompConvertToThing>();
-        public List<CompRefillWithPipes> refuelables = new List<CompRefillWithPipes>();
+        public List<CompRefillWithPipes> refillables = new List<CompRefillWithPipes>();
         public List<CompResourceProcessor> processors = new List<CompResourceProcessor>();
 
         public Map map;
@@ -183,7 +183,7 @@ namespace PipeSystem
             }
             else if (comp is CompRefillWithPipes refuelable)
             {
-                refuelables.Add(refuelable);
+                refillables.Add(refuelable);
             }
             comp.PipeNet = this;
 
@@ -229,7 +229,7 @@ namespace PipeSystem
             }
             else if (comp is CompRefillWithPipes refuelable)
             {
-                refuelables.Remove(refuelable);
+                refillables.Remove(refuelable);
             }
 
             var cells = comp.parent.OccupiedRect().Cells;
@@ -375,23 +375,16 @@ namespace PipeSystem
         internal float DistributeAmongRefuelables(float available)
         {
             float used = 0;
-            if (refuelables.Count == 0 || available <= 0)
+            if (refillables.Count == 0 || available <= 0)
                 return used;
 
-            for (int i = 0; i < refuelables.Count; i++)
+            for (int i = 0; i < refillables.Count; i++)
             {
-                var refuelable = refuelables[i];
-                var compRefuelable = refuelables[i].compRefuelable;
+                var refillable = refillables[i];
+                float resourceUsed = refillable.Refill(available);
 
-                var toAdd = compRefuelable.TargetFuelLevel - compRefuelable.Fuel; // The amount of fuel needed by compRefuelable
-                var resourceNeeded = toAdd * refuelable.Props.ratio; // Converted to the amount of resource
-                // Check if needed resource is more that available resource
-                var resourceCanBeUsed = resourceNeeded < available ? resourceNeeded : available; // Can we spare all of it?
-
-                compRefuelable.Refuel(resourceCanBeUsed / refuelable.Props.ratio);
-
-                available -= resourceCanBeUsed;
-                used += resourceCanBeUsed;
+                available -= resourceUsed;
+                used += resourceUsed;
 
                 if (available <= 0)
                     break;
