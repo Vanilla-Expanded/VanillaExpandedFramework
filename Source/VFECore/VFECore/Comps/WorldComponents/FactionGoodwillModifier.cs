@@ -12,10 +12,9 @@ namespace VFECore
 
         public override void FinalizeInit()
         {
-            ScenPartUtility.SetCache();
             ScenPartUtility.goodwillScenParts = null;
             var factionList = DefDatabase<FactionDef>.AllDefsListForReading;
-            for (int i = 0; i < factionList.Count; i++)
+            for (var i = 0; i < factionList.Count; i++)
             {
                 var faction = factionList[i];
                 ScenPartUtility.FinaliseFactionGoodwillCharacteristics(faction);

@@ -1,8 +1,8 @@
-﻿using HarmonyLib;
+﻿using System.Collections.Generic;
+using System.Linq;
+using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
-using System.Collections.Generic;
-using System.Linq;
 using Verse;
 
 namespace VFECore
@@ -14,8 +14,8 @@ namespace VFECore
             // Temporarily set to hidden, so FactionGenerator doesn't spawn a base
             var hidden = factionDef.hidden;
             factionDef.hidden = true;
-            FactionGeneratorParms factionGeneratorParms = new FactionGeneratorParms(factionDef);
-            var faction = FactionGenerator.NewGeneratedFaction(factionGeneratorParms);
+            var factionGeneratorParms = new FactionGeneratorParms(factionDef);
+            var faction               = FactionGenerator.NewGeneratedFaction(factionGeneratorParms);
             factionDef.hidden = hidden;
 
             var relationKind = GetFactionKind(faction, true);
@@ -27,21 +27,18 @@ namespace VFECore
         {
             var result = FactionRelationKind.Hostile;
             if (faction.def.CanEverBeNonHostile)
-            {
                 if (!firstOfKind || !faction.def.mustStartOneEnemy)
-                {
-                    if (faction.NaturalGoodwill > 0) result = FactionRelationKind.Neutral;
-                }
-            }
+                    if (faction.NaturalGoodwill > 0)
+                        result = FactionRelationKind.Neutral;
 
             return result;
         }
 
         private static void InitializeFaction(Faction faction, FactionRelationKind kind)
         {
-            if (ScenPartUtility.cachedFactionDefAffectedByForcedFactionGoodwill.ContainsKey(faction.def))
+            if (ScenPartUtility.startingGoodwillRangeCache.ContainsKey(faction.def))
             {
-                IntRange range = ScenPartUtility.cachedFactionDefAffectedByForcedFactionGoodwill.TryGetValue(faction.def);
+                var range = ScenPartUtility.startingGoodwillRangeCache.TryGetValue(faction.def);
                 faction.TryAffectGoodwillWith(Faction.OfPlayer, range.RandomInRange - faction.PlayerGoodwill, false, false);
             }
 
@@ -62,19 +59,20 @@ namespace VFECore
                 foreach (var playerSettlement in Find.WorldObjects.SettlementBases)
                 {
                     if (playerSettlement.Faction != Faction.OfPlayer) continue;
-                    int distance = Find.WorldGrid.TraversalDistanceBetween(tileId, playerSettlement.Tile, false, minDistance);
-                    var objects = Find.WorldObjects.ObjectsAt(tileId).ToArray();
+                    var distance = Find.WorldGrid.TraversalDistanceBetween(tileId, playerSettlement.Tile, false, minDistance);
+                    var objects  = Find.WorldObjects.ObjectsAt(tileId).ToArray();
                     if (objects.Length > 0)
                         Log.Message($"Tile: {tileId} has {objects.Select(o => o.Label).ToCommaList(true)}.");
                     if (distance < minDistance) return false;
                 }
+
                 return true;
             }
 
             foreach (var tile in tilesInDistance)
             {
                 // Spawn base
-                var factionBase = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
+                var factionBase = (Settlement) WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
                 factionBase.SetFaction(faction);
                 factionBase.Tile = tile;
                 factionBase.Name = SettlementNameGenerator.GenerateSettlementName(factionBase);
@@ -88,10 +86,7 @@ namespace VFECore
             var faction = SpawnWithoutSettlements(factionDef);
             CreateSettlements(faction, amount, minDistance, out spawned);
 
-            if (amount > 0 && spawned <= 0)
-            {
-                RemoveFaction(faction);
-            }
+            if (amount > 0 && spawned <= 0) RemoveFaction(faction);
 
             return faction;
         }
@@ -114,7 +109,7 @@ namespace VFECore
             switch (faction.defName)
             {
                 case "PColony": return true; // Empire mod's player faction
-                default: return false;
+                default:        return false;
             }
         }
     }
