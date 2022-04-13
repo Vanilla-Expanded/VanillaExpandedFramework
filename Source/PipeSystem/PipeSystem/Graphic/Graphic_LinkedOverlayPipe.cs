@@ -6,19 +6,9 @@ namespace PipeSystem
     /// <summary>
     /// Link with adjacent building part of the same kind of PipeNet. For overlay.
     /// </summary>
-    public class Graphic_LinkedOverlayPipe : Graphic_Linked
+    public class Graphic_LinkedOverlayPipe : Graphic_LinkedPipe
     {
-        private readonly PipeNetDef resourceDef;
-
-        public Graphic_LinkedOverlayPipe(Graphic innerGraphic, PipeNetDef resource) : base(innerGraphic)
-        {
-            resourceDef = resource;
-        }
-
-        public override bool ShouldLinkWith(IntVec3 c, Thing parent)
-        {
-            return c.InBounds(parent.Map) && parent.Map.GetComponent<PipeNetManager>().GetPipeNetAt(c, resourceDef) != null;
-        }
+        public Graphic_LinkedOverlayPipe(Graphic innerGraphic, PipeNetDef resource) : base(innerGraphic, resource) { }
 
         public override void Print(SectionLayer layer, Thing thing, float extraRotation)
         {

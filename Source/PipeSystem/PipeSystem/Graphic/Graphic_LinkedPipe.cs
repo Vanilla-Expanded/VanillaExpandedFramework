@@ -7,7 +7,8 @@ namespace PipeSystem
     /// </summary>
     public class Graphic_LinkedPipe : Graphic_Linked
     {
-        private readonly PipeNetDef resourceDef;
+        internal readonly PipeNetDef resourceDef;
+        internal PipeNetManager pipeNetManager;
 
         public Graphic_LinkedPipe(Graphic innerGraphic, PipeNetDef resource) : base(innerGraphic)
         {
@@ -16,7 +17,12 @@ namespace PipeSystem
 
         public override bool ShouldLinkWith(IntVec3 c, Thing parent)
         {
-            return c.InBounds(parent.Map) && parent.Map.GetComponent<PipeNetManager>().GetPipeNetAt(c, resourceDef) != null;
+            var map = parent.Map;
+            if (pipeNetManager == null || pipeNetManager.map != map)
+            {
+                pipeNetManager = map.GetComponent<PipeNetManager>();
+            }
+            return c.InBounds(map) && pipeNetManager.GetPipeNetAt(c, resourceDef) != null;
         }
     }
 }

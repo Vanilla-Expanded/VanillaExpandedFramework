@@ -11,6 +11,8 @@ namespace PipeSystem
         }
 
         public List<PipeNet> pipeNets = new List<PipeNet>();
+        // To avoid getting List Count
+        private int pipeNetsCount = 0;
 
         /// <summary>
         /// We draw resources grid if wanted.
@@ -38,7 +40,7 @@ namespace PipeSystem
         public override void MapComponentTick()
         {
             base.MapComponentTick();
-            for (int i = 0; i < pipeNets.Count; i++)
+            for (int i = 0; i < pipeNetsCount; i++)
             {
                 var net = pipeNets[i];
                 var tick = Find.TickManager.TicksGame;
@@ -109,6 +111,7 @@ namespace PipeSystem
             if (foundNets.Count == 0)
             {
                 pipeNets.Add(new PipeNet(new List<CompResource> { comp }, map, comp.Props.pipeNet));
+                pipeNetsCount++;
                 PipeSystemDebug.Message($"Creating new net");
             }
             // We found only one, register the comp to it
@@ -126,6 +129,7 @@ namespace PipeSystem
                     foundNets[0].Merge(foundNets[i + 1]);
                 }
                 PipeSystemDebug.Message($"Merged {foundNets.Count} networks");
+                pipeNetsCount = pipeNets.Count;
             }
             PipeSystemDebug.Message($"Network(s) number: {pipeNets.Count}");
         }
@@ -176,7 +180,7 @@ namespace PipeSystem
             while (connectors.Any())
             {
                 pipeNets.Add(CreatePipeNetFrom(connectors.First(), pipeNet, out var treated));
-
+                pipeNetsCount++;
                 // remove things we've seen from the list
                 foreach (var connector in treated)
                     connectors.Remove(connector);
@@ -239,7 +243,13 @@ namespace PipeSystem
         /// <returns>The PipeNet found or null</returns>
         public PipeNet GetPipeNetAt(IntVec3 cell, PipeNetDef resource)
         {
-            return pipeNets.Find(n => n.def == resource && n.networkGrid[cell]);
+            for (int i = 0; i < pipeNetsCount; i++)
+            {
+                PipeNet pipeNet = pipeNets[i];
+                if (pipeNet.def == resource && pipeNet.networkGrid[cell])
+                    return pipeNet;
+            }
+            return null;
         }
     }
 }
