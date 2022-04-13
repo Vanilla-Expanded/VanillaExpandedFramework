@@ -164,6 +164,7 @@ namespace PipeSystem
 
             // Destroy the PipeNet
             comp.PipeNet.Destroy();
+            pipeNetsCount--;
             // Recreate PipeNet(s) based on neigbours connectors
             CreatePipeSystemNets(foundConnectors, comp.Props.pipeNet);
 
