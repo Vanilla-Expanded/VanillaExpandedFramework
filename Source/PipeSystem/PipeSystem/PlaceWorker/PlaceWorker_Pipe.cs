@@ -16,13 +16,16 @@ namespace PipeSystem
             for (int i = 0; i < thingList.Count; i++)
             {
                 var t = thingList[i];
-                if (CachedResourceThings.resourceCompsOf.ContainsKey(t.def))
+                if (t != thingToIgnore && t != null)
                 {
-                    return Accept(t.def, pipeNet);
-                }
-                if (t.def.entityDefToBuild is ThingDef thingDef && CachedResourceThings.resourceCompsOf.ContainsKey(thingDef))
-                {
-                    return Accept(thingDef, pipeNet);
+                    if ((CachedResourceThings.resourceCompsOf.ContainsKey(t.def)
+                         && !Accept(t.def, pipeNet))
+                        || (t.def.entityDefToBuild is ThingDef thingDef
+                            && CachedResourceThings.resourceCompsOf.ContainsKey(thingDef)
+                            && !Accept(thingDef, pipeNet)))
+                    {
+                        return false;
+                    }
                 }
             }
             return true;
