@@ -4,7 +4,7 @@ using Verse;
 
 namespace PipeSystem
 {
-    internal class CompConvertToResource : CompResource
+    public class CompConvertToResource : CompResource
     {
         private CompBreakdownable compBreakdownable;
         private CompPowerTrader compPowerTrader;
@@ -23,8 +23,7 @@ namespace PipeSystem
         {
             get
             {
-                return (int)PipeNet.AvailableCapacity > 0
-                       && (compBreakdownable == null || !compBreakdownable.BrokenDown)
+                return (compBreakdownable == null || !compBreakdownable.BrokenDown)
                        && (compPowerTrader == null || compPowerTrader.PowerOn)
                        && (compFlickable == null || compFlickable.SwitchIsOn);
             }

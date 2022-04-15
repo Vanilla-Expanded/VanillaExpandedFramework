@@ -275,7 +275,7 @@ namespace PipeSystem
                 else if (net.converters.Count > 0)
                 {
                     // Convert it, if some left keep it inside here
-                    storage -= net.DistributeAmongConverter(count);
+                    storage -= net.DistributeAmongConverters(count);
                 }
                 // No storage/converter, try refuel connected things
                 else if (net.refillables.Count > 0)

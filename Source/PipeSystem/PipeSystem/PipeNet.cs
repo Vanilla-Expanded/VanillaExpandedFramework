@@ -8,12 +8,21 @@ namespace PipeSystem
 {
     public class PipeNet
     {
+        // Everything
         public List<CompResource> connectors = new List<CompResource>();
+        // Producing traders
         public List<CompResourceTrader> producers = new List<CompResourceTrader>();
+        // Consuming traders
         public List<CompResourceTrader> receivers = new List<CompResourceTrader>();
+        // Storages
         public List<CompResourceStorage> storages = new List<CompResourceStorage>();
+        // Converters to things
         public List<CompConvertToThing> converters = new List<CompConvertToThing>();
+        // Converters to resource
+        public List<CompConvertToResource> convertersB = new List<CompConvertToResource>();
+        // All refillables compRefuelable/ItemProcessor
         public List<CompRefillWithPipes> refillables = new List<CompRefillWithPipes>();
+        // Processor
         public List<CompResourceProcessor> processors = new List<CompResourceProcessor>();
 
         public Map map;
@@ -177,6 +186,10 @@ namespace PipeSystem
             {
                 converters.Add(convertToThing);
             }
+            else if (comp is CompConvertToResource toResource)
+            {
+                convertersB.Add(toResource);
+            }
             else if (comp is CompResourceProcessor processor)
             {
                 processors.Add(processor);
@@ -222,6 +235,10 @@ namespace PipeSystem
             else if (comp is CompConvertToThing convertToThing)
             {
                 converters.Remove(convertToThing);
+            }
+            else if (comp is CompConvertToResource toResource)
+            {
+                convertersB.Remove(toResource);
             }
             else if (comp is CompResourceProcessor processor)
             {
@@ -313,17 +330,19 @@ namespace PipeSystem
             {
                 // Store it
                 DistributeAmongStorage(usable);
+                // Get other inputs
+                GetFromConverters();
                 // Distribute using the whole storage
                 DistributeAmongRefuelables(Stored);
-                DistributeAmongProcessor(Stored);
-                DistributeAmongConverter(Stored);
+                DistributeAmongProcessors(Stored);
+                DistributeAmongConverters(Stored);
             }
             else
             {
                 float rUsage = DistributeAmongRefuelables(usable);
                 float leftAfter = usable - rUsage;
-                float pUsage = DistributeAmongProcessor(leftAfter);
-                DistributeAmongConverter(leftAfter - pUsage);
+                float pUsage = DistributeAmongProcessors(leftAfter);
+                DistributeAmongConverters(leftAfter - pUsage);
             }
 
             // Manage the tank marked for transfer
@@ -333,8 +352,7 @@ namespace PipeSystem
                 // Get everything that need to be transfered
                 for (int i = 0; i < markedForTransfer.Count; i++)
                 {
-                    var marked = markedForTransfer[i];
-                    canTransfer += marked.AmountStored;
+                    canTransfer += markedForTransfer[i].AmountStored;
                 }
                 // Actual transfer we will do
                 float availableCapacity = AvailableCapacity;
@@ -349,7 +367,7 @@ namespace PipeSystem
         /// <summary>
         /// Distribute resources stored into the processors
         /// </summary>
-        private float DistributeAmongProcessor(float available)
+        private float DistributeAmongProcessors(float available)
         {
             float used = 0;
             if (processors.Count == 0 || available <= 0)
@@ -397,7 +415,7 @@ namespace PipeSystem
         /// <summary>
         /// Distribute resources stored into the converters
         /// </summary>
-        internal float DistributeAmongConverter(float available)
+        internal float DistributeAmongConverters(float available)
         {
             float used = 0;
             if (!converters.Any() || available <= 0)
@@ -440,6 +458,46 @@ namespace PipeSystem
             DrawAmongStorage(used, storages);
             return used;
         }
+
+        /// <summary>
+        /// Take resources away from converters
+        /// </summary>
+        internal void GetFromConverters()
+        {
+            for (int i = 0; i < convertersB.Count; i++)
+            {
+                var converter = convertersB[i];
+                // Verify others comps
+                if (converter.CanInputNow)
+                {
+                    var heldThing = converter.HeldThing;
+                    // Anything stored on the converter?
+                    if (heldThing != null)
+                    {
+                        // Get the resource we can add to the net
+                        var resourceToAdd = heldThing.stackCount / converter.Props.ratio;
+                        var resourceCanAdd = resourceToAdd > AvailableCapacity ? AvailableCapacity : resourceToAdd;
+                        if (resourceCanAdd > 0)
+                        {
+                            // Add it
+                            DistributeAmongStorage(resourceCanAdd);
+                            // Change heldthing stacksize, or despawn it
+                            if (resourceToAdd == resourceCanAdd)
+                            {
+                                heldThing.DeSpawn();
+                            }
+                            else
+                            {
+                                heldThing.stackCount -= (int)(resourceCanAdd * converter.Props.ratio);
+                                // We did not use all converter thing, no need to iterate over the other ones
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
 
         /// <summary>
         /// Add resource to storage.
