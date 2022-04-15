@@ -8,7 +8,8 @@ namespace Outposts
 {
     public class IncidentWorker_OutpostAttacked : IncidentWorker_RaidEnemy
     {
-        protected override bool CanFireNowSub(IncidentParms parms) => Find.WorldObjects.AllWorldObjects.Any(wo => wo is Outpost {Faction: {IsPlayer: true}});
+        protected override bool CanFireNowSub(IncidentParms parms) =>
+            Find.WorldObjects.AllWorldObjects.Any(wo => wo is Outpost {Faction: {IsPlayer: true}}) && OutpostsMod.Settings.DoRaids;
 
         protected override bool TryExecuteWorker(IncidentParms parms)
         {
