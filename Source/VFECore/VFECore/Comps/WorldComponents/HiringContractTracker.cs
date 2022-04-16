@@ -39,7 +39,7 @@ namespace VFECore
         public FloatMenuOption CommFloatMenuOption(Building_CommsConsole console, Pawn negotiator) => FloatMenuUtility.DecoratePrioritizedTask(
          new FloatMenuOption(GetCallLabel(), () => console.GiveUseCommsJob(negotiator, this), MenuOptionPriority.InitiateSocial), negotiator, console);
 
-        public bool IsHired(Pawn pawn) => pawns.Contains(pawn);
+        public bool IsHired(Pawn pawn) => this.pawns.Contains(pawn);
 
         public void SetNewContract(int days, List<Pawn> pawns, Hireable hireable, HireableFactionDef faction = null, float price = 0)
         {
@@ -54,7 +54,7 @@ namespace VFECore
         {
             base.WorldComponentTick();
 
-            if (Find.TickManager.TicksAbs % 150 == 0 && Find.TickManager.TicksAbs > endTicks && !pawns.NullOrEmpty())
+            if (Find.TickManager.TicksAbs % 150 == 0 && Find.TickManager.TicksAbs > endTicks && this.pawns.Any())
                 this.EndContract();
         }
 
@@ -62,13 +62,13 @@ namespace VFECore
         {
             var deadPeople = 0;
 
-            for (var index = pawns.Count - 1; index >= 0; index--)
+            for (int index = pawns.Count - 1; index >= 0; index--)
             {
-                var pawn = pawns[index];
-                if (pawn.Dead || Faction.OfPlayer.kidnapped.KidnappedPawnsListForReading.Contains(pawn))
+                Pawn pawn = pawns[index];
+                if (pawn == null || pawn.Dead || Faction.OfPlayer.kidnapped.KidnappedPawnsListForReading.Contains(pawn))
                 {
                     deadPeople++;
-                    pawns.Remove(pawn);
+                    this.pawns.Remove(pawn);
                 }
                 else if (pawn.health.capacities.CapableOf(PawnCapacityDefOf.Moving))
                 {
@@ -89,17 +89,17 @@ namespace VFECore
                     else if (pawn.GetCaravan() != null)
                     {
                         pawn.GetCaravan().RemovePawn(pawn);
-                        pawns.Remove(pawn);
+                        this.pawns.Remove(pawn);
                     }
                 }
-            }
 
-            if (deadPeople > 0)
-            {
-                if (!deadCount.ContainsKey(hireable))
-                    deadCount.Add(hireable, new List<ExposablePair>());
+                if (deadPeople > 0)
+                {
+                    if (!deadCount.ContainsKey(hireable))
+                        deadCount.Add(hireable, new List<ExposablePair>());
 
-                deadCount[hireable].Add(new ExposablePair(deadPeople, Find.TickManager.TicksAbs + GenDate.TicksPerYear));
+                    deadCount[hireable].Add(new ExposablePair(deadPeople, Find.TickManager.TicksAbs + GenDate.TicksPerYear));
+                }
             }
 
             if (this.pawns.Count <= 0)
@@ -161,12 +161,13 @@ namespace VFECore
             base.ExposeData();
 
             Scribe_Values.Look(ref endTicks, nameof(endTicks));
-            Scribe_Collections.Look(ref pawns, nameof(pawns), LookMode.Reference);
+
+            Scribe_Collections.Look(ref this.pawns, nameof(this.pawns), LookMode.Reference);
+
             Scribe_References.Look(ref hireable, nameof(hireable));
             var deadCountKey = new List<Hireable>(deadCount.Keys);
             Scribe_Collections.Look(ref deadCountKey, nameof(deadCountKey), LookMode.Reference);
             var deadCountValue = new List<List<ExposablePair>>(deadCount.Values);
-
             for (var i = 0; i < deadCountKey.Count; i++)
             {
                 var exposablePairs = deadCountValue.Count > i ? deadCountValue[i] : new List<ExposablePair>();
@@ -177,6 +178,7 @@ namespace VFECore
                 else
                     deadCountValue.Add(exposablePairs);
             }
+
 
             deadCount.Clear();
             for (var index = 0; index < deadCountKey.Count; index++)

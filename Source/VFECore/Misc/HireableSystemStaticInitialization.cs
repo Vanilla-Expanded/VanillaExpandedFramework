@@ -14,7 +14,8 @@ namespace VFECore.Misc
     {
         public static List<Hireable> Hireables;
 
-        private static readonly Dictionary<World, HiringContractTracker> cachedTracker = new Dictionary<World, HiringContractTracker>();
+        private static HiringContractTracker cachedTracker      = null;
+        private static World                 cachedTrackerWorld = null;
 
         static HireableSystemStaticInitialization()
         {
@@ -50,9 +51,13 @@ namespace VFECore.Misc
 
         private static HiringContractTracker GetContractTracker(World world)
         {
-            if (!cachedTracker.TryGetValue(world, out var tracker))
-                cachedTracker.Add(world, tracker = world.GetComponent<HiringContractTracker>());
-            return tracker;
+            if (cachedTrackerWorld != world)
+            {
+                cachedTracker      = world.GetComponent<HiringContractTracker>();
+                cachedTrackerWorld = world;
+            }
+
+            return cachedTracker;
         }
 
         public static IEnumerable<ICommunicable> GetCommTargets_Postfix(IEnumerable<ICommunicable> communicables) =>
@@ -71,7 +76,7 @@ namespace VFECore.Misc
 
         public static void QuestLodgerCanUnequip_Postfix(Pawn pawn, ref bool __result)
         {
-            __result = __result && !GetContractTracker(Find.World).IsHired(pawn);
+            __result = __result && pawn.RaceProps.Humanlike && !GetContractTracker(Find.World).IsHired(pawn);
         }
 
         public static IEnumerable<CodeInstruction> CaravanAllSendablePawns_Transpiler(IEnumerable<CodeInstruction> instructions)
