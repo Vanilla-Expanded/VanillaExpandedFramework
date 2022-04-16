@@ -52,7 +52,7 @@ namespace VFECore.Misc
 
             if (daysAmount > 0 && hireData.Any(kvp => kvp.Value.First > 0))
             {
-                var pawns = new HashSet<Pawn>();
+                var pawns = new List<Pawn>();
 
                 var remainingCost = Mathf.RoundToInt(CostFinal);
 
