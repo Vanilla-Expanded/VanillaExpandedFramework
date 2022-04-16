@@ -14,6 +14,7 @@ namespace VFECore
         public static void SetCache()
         {
             orginalPermanentEnemyCache = new Dictionary<FactionDef, bool>();
+            startingGoodwillRangeCache = new Dictionary<FactionDef, IntRange>();
 
             var factions = DefDatabase<FactionDef>.AllDefsListForReading;
             for (var i = 0; i < factions.Count; i++)
@@ -26,7 +27,8 @@ namespace VFECore
         public static void FinaliseFactionGoodwillCharacteristics(FactionDef faction)
         {
             if (goodwillScenParts == null)
-                goodwillScenParts = Find.Scenario.AllParts.Where(p => p.def == ScenPartDefOf.VFEC_ForcedFactionGoodwill).Cast<ScenPart_ForcedFactionGoodwill>().ToList();
+                goodwillScenParts = Find.Scenario.AllParts.Where(p => p.def == ScenPartDefOf.VFEC_ForcedFactionGoodwill).Cast<ScenPart_ForcedFactionGoodwill>()
+                    .ToList();
 
             // Go through each scenario part that modifies goodwill in reverse order and return an appropriate natural goodwill range
             for (var i = goodwillScenParts.Count - 1; i >= 0; i--)
