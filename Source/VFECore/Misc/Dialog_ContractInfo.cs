@@ -5,6 +5,8 @@ using VFECore.UItils;
 
 namespace VFECore.Misc
 {
+    using System.Linq;
+
     public class Dialog_ContractInfo : Window
     {
         private readonly HiringContractTracker contract;
@@ -49,7 +51,7 @@ namespace VFECore.Misc
             foreach (var pawn in contract.pawns)
             {
                 var pawnRect = viewRect.TakeTopPart(33f);
-                if (pawn != contract.pawns[contract.pawns.Count - 1]) Widgets.DrawLineHorizontal(pawnRect.x, pawnRect.yMax, pawnRect.width);
+                if (pawn != contract.pawns.Last()) Widgets.DrawLineHorizontal(pawnRect.x, pawnRect.yMax, pawnRect.width);
                 Widgets.DrawHighlightIfMouseover(pawnRect);
                 if (Widgets.ButtonInvisible(pawnRect))
                 {

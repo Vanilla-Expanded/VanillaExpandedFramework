@@ -18,7 +18,7 @@ namespace VFECore
         public int                endTicks;
         public HireableFactionDef factionDef;
         public Hireable           hireable;
-        public List<Pawn>         pawns = new List<Pawn>();
+        public HashSet<Pawn>      pawns = new HashSet<Pawn>();
         public float              price;
 
         public HiringContractTracker(World world) : base(world)
@@ -41,7 +41,7 @@ namespace VFECore
 
         public bool IsHired(Pawn pawn) => pawns.Contains(pawn);
 
-        public void SetNewContract(int days, List<Pawn> pawns, Hireable hireable, HireableFactionDef faction = null, float price = 0)
+        public void SetNewContract(int days, HashSet<Pawn> pawns, Hireable hireable, HireableFactionDef faction = null, float price = 0)
         {
             endTicks      = Find.TickManager.TicksAbs + days * GenDate.TicksPerDay;
             this.pawns    = pawns;
@@ -54,7 +54,7 @@ namespace VFECore
         {
             base.WorldComponentTick();
 
-            if (Find.TickManager.TicksAbs % 150 == 0 && Find.TickManager.TicksAbs > endTicks && !pawns.NullOrEmpty())
+            if (Find.TickManager.TicksAbs % 150 == 0 && Find.TickManager.TicksAbs > endTicks && pawns.Any())
                 this.EndContract();
         }
 
@@ -62,10 +62,9 @@ namespace VFECore
         {
             var deadPeople = 0;
 
-            for (var index = pawns.Count - 1; index >= 0; index--)
+            foreach (Pawn pawn in pawns)
             {
-                var pawn = pawns[index];
-                if (pawn.Dead || Faction.OfPlayer.kidnapped.KidnappedPawnsListForReading.Contains(pawn))
+                if (pawn == null || pawn.Dead || Faction.OfPlayer.kidnapped.KidnappedPawnsListForReading.Contains(pawn))
                 {
                     deadPeople++;
                     pawns.Remove(pawn);
