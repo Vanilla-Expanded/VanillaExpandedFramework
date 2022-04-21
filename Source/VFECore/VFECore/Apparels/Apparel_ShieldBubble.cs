@@ -68,6 +68,16 @@ namespace VFECore
                 return shieldComp;
             }
         }
+
+        public override void PostPostMake()
+        {
+            base.PostPostMake();
+            var comp = ShieldComp;
+            if (comp.Props.chargeFullyWhenMade)
+            {
+                comp.Energy = comp.EnergyMax;
+            }
+        }
         public override bool CheckPreAbsorbDamage(DamageInfo dinfo)
         {
             var shield = ShieldComp;
