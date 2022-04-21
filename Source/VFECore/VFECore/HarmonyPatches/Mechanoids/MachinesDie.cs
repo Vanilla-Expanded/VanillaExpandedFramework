@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Verse;
+using VFEMech;
 
 namespace VFE.Mechanoids.HarmonyPatches
 {
@@ -14,7 +15,7 @@ namespace VFE.Mechanoids.HarmonyPatches
     {
         public static void Postfix(Pawn __instance)
         {
-            if (__instance.RaceProps.IsMechanoid && __instance.Faction == Faction.OfPlayer)
+            if (__instance is Machine && __instance.Faction == Faction.OfPlayer && __instance.def.butcherProducts != null)
             {
                 string ingredients = "";
                 bool comma = false;
