@@ -6,10 +6,6 @@ using Verse;
 
 namespace VFECore
 {
-    public class DamageExtension : DefModExtension
-    {
-        public FloatRange pushBackDistance;
-    }
     public class DamageWorker_PushBackAttackMelee : DamageWorker_Blunt
     {
         public override DamageResult Apply(DamageInfo dinfo, Thing thing)
