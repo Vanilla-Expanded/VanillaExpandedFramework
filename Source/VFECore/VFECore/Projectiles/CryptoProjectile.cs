@@ -22,7 +22,6 @@ namespace VFECore
 					var list = this.launcher.Map.thingGrid.ThingsListAt(pos);
 					for (int num = list.Count - 1; num >= 0; num--)
 					{
-						Log.Message("Damaging " + list[num]);
 						if (IsDamagable(list[num]))
 						{
 							this.customImpact = true;

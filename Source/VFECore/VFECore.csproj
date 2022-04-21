@@ -363,6 +363,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abilities\Abilities\Ability_Barrier.cs" />
+    <Compile Include="Abilities\Abilities\Ability_Explode.cs" />
     <Compile Include="Abilities\Abilities\Ability_ShootProjectile.cs" />
     <Compile Include="Abilities\Abilities\Ability_SpawnBuilding.cs" />
     <Compile Include="Abilities\Ability.cs" />
@@ -603,6 +604,7 @@
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_SettingsController.cs" />
     <Compile Include="Cuisine\Plants\Plant_NarrowTemperatures.cs" />
     <Compile Include="Misc\Dialog_ContractInfo.cs" />
+    <Compile Include="UItils\FormatUtils.cs" />
     <Compile Include="VFECore\DefModExtensions\WeatherEffectsExtension.cs" />
     <Compile Include="VFECore\HarmonyPatches\DraftedWeaponDrawOffset_Patch.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_DeepResourceGrid_GetCellExtraColor.cs" />

@@ -74,7 +74,7 @@ namespace PipeSystem
             {
                 // Get the amount needed
                 int thingNeed = itemProcessor.ExpectedAmountFirstIngredient - itemProcessor.CurrentAmountFirstIngredient;
-                if (itemProcessor.processorStage != ProcessorStage.Inactive && thingNeed > 0)
+                if (itemProcessor.processorStage != ProcessorStage.Working && thingNeed > 0)
                 {
                     // Converted to the amount of resource
                     int resourceNeeded = thingNeed * Props.ratio;
@@ -109,7 +109,7 @@ namespace PipeSystem
             {
                 // Get the amount needed
                 int thingNeed = itemProcessor.ExpectedAmountSecondIngredient - itemProcessor.CurrentAmountSecondIngredient;
-                if (itemProcessor.processorStage != ProcessorStage.Inactive && thingNeed > 0)
+                if (itemProcessor.processorStage != ProcessorStage.Working && thingNeed > 0)
                 {
                     // Converted to the amount of resource
                     int resourceNeeded = thingNeed * Props.ratio;
@@ -144,7 +144,7 @@ namespace PipeSystem
             {
                 // Get the amount needed
                 int thingNeed = itemProcessor.ExpectedAmountThirdIngredient - itemProcessor.CurrentAmountThirdIngredient;
-                if (itemProcessor.processorStage != ProcessorStage.Inactive && thingNeed > 0)
+                if (itemProcessor.processorStage != ProcessorStage.Working && thingNeed > 0)
                 {
                     // Converted to the amount of resource
                     int resourceNeeded = thingNeed * Props.ratio;
@@ -179,7 +179,7 @@ namespace PipeSystem
             {
                 // Get the amount needed
                 int thingNeed = itemProcessor.ExpectedAmountFourthIngredient - itemProcessor.CurrentAmountFourthIngredient;
-                if (itemProcessor.processorStage != ProcessorStage.Inactive && thingNeed > 0)
+                if (itemProcessor.processorStage != ProcessorStage.Working && thingNeed > 0)
                 {
                     // Converted to the amount of resource
                     int resourceNeeded = thingNeed * Props.ratio;
