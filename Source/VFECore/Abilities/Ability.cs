@@ -10,6 +10,7 @@
     using Verse;
     using Verse.AI;
     using Verse.Sound;
+    using UItils;
 
     public abstract class Ability : IExposable, ILoadReferenceable, ITargetingSource
     {
@@ -108,19 +109,19 @@
                 sb.AppendLine($"{"VFEA.AbilityStatsPower".Translate()}: {powerForPawn}".Colorize(Color.cyan));
             int castTimeForPawn = this.GetCastTimeForPawn();
             if (castTimeForPawn > 0)
-                sb.AppendLine($"{"AbilityCastingTime".Translate()}: {castTimeForPawn.ToStringTicksToPeriod()}".Colorize(Color.cyan));
+                sb.AppendLine($"{"AbilityCastingTime".Translate()}: {castTimeForPawn.ToStringTicksToPeriodSpecific()}".Colorize(Color.cyan));
             int cooldownForPawn = this.GetCooldownForPawn();
             if (cooldownForPawn > 0)
-                sb.AppendLine($"{"CooldownTime".Translate()}: {cooldownForPawn.ToStringTicksToPeriod()}".Colorize(Color.cyan));
+                sb.AppendLine($"{"CooldownTime".Translate()}: {cooldownForPawn.ToStringTicksToPeriodSpecific()}".Colorize(Color.cyan));
             int durationForPawn = this.GetDurationForPawn();
             if (durationForPawn > 0)
-                sb.AppendLine($"{"VFEA.AbilityStatsDuration".Translate()}: {durationForPawn.ToStringTicksToPeriod()}".Colorize(Color.cyan));
+                sb.AppendLine($"{"VFEA.AbilityStatsDuration".Translate()}: {durationForPawn.ToStringTicksToPeriodSpecific()}".Colorize(Color.cyan));
             else if (this.def.HasModExtension<AbilityExtension_Hediff>())
             {
                 AbilityExtension_Hediff         extension            = this.def.GetModExtension<AbilityExtension_Hediff>();
                 HediffCompProperties_Disappears propertiesDisappears = extension.hediff.CompProps<HediffCompProperties_Disappears>();
                 if (propertiesDisappears != null)
-                    sb.AppendLine($"{"VFEA.AbilityStatsDuration".Translate()}: {propertiesDisappears.disappearsAfterTicks.min.ToStringTicksToPeriod()} ~ {propertiesDisappears.disappearsAfterTicks.max.ToStringTicksToPeriod()}"
+                    sb.AppendLine($"{"VFEA.AbilityStatsDuration".Translate()}: {propertiesDisappears.disappearsAfterTicks.min.ToStringTicksToPeriodSpecific()} ~ {propertiesDisappears.disappearsAfterTicks.max.ToStringTicksToPeriodSpecific()}"
                                   .Colorize(Color.cyan));
             }
 
