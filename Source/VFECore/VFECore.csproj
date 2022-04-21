@@ -808,7 +808,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VFECore\Pawns\Machine.cs" />
     <Compile Include="VFECore\Projectiles\ExpandableGraphicData.cs" />
-    <Compile Include="VFECore\Projectiles\CryptoProjectile.cs" />
     <Compile Include="VFECore\Projectiles\FlamethrowProjectile.cs" />
     <Compile Include="VFECore\Projectiles\ExpandableProjectileDef.cs" />
     <Compile Include="VFECore\Projectiles\ExpandableProjectile.cs" />
