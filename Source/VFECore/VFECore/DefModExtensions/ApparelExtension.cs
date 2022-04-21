@@ -16,5 +16,8 @@ namespace VFECore
         public List<TraitDef> traitsOnUnequip;
         public List<PawnCapacityMinLevel> pawnCapacityMinLevels;
         public float carryingCapacity = -1;
+        public bool preventDowning;
+        public bool preventKilling;
+        public bool preventBleeding;
     }
 }

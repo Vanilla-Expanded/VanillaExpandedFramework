@@ -603,6 +603,9 @@
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_Settings.cs" />
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_SettingsController.cs" />
     <Compile Include="Cuisine\Plants\Plant_NarrowTemperatures.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_BleedRateTotal.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_Kill.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_ShouldBeDowned.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_Thing_TakeDamage.cs" />
     <Compile Include="VFECore\DefModExtensions\DamageExtension.cs" />
     <Compile Include="Misc\Dialog_ContractInfo.cs" />
@@ -839,6 +842,7 @@
     <Compile Include="VFECore\WeatherOverlays\WeatherOverlay_CustomTwo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="HarmonyPatches\" />
     <Folder Include="VFECore\Verbs\" />
   </ItemGroup>
   <ItemGroup>
