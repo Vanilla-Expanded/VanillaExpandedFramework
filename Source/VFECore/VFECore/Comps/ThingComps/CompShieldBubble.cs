@@ -21,6 +21,8 @@ namespace VFECore
 
 		public bool   blockRangedAttack = true;
 		public bool   blockMeleeAttack  = false;
+		public bool dontAllowRangedAttack = false;
+		public bool dontAllowMeleeAttack = false;
 		public string shieldTexPath;
 		public bool	showWhenDrafted;
 		public bool	showAlways;
@@ -108,7 +110,19 @@ namespace VFECore
 			get { return (CompProperties_ShieldBubble) this.props; }
 		}
 
-		protected virtual float EnergyMax => Props.EnergyShieldEnergyMax;
+		public virtual float EnergyMax
+        {
+            get
+            {
+                var value = this.Props.EnergyShieldEnergyMax;
+                if (Pawn != null)
+                {
+					value *= Pawn.GetStatValue(VFEDefOf.VEF_EnergyShieldEnergyMaxFactor, true);
+					value += Pawn.GetStatValue(VFEDefOf.VEF_EnergyShieldEnergyMaxOffset, true);
+				}
+				return value;
+			}
+        }
 
 		protected virtual float EnergyGainPerTick => Props.EnergyShieldRechargeRate / 60f;
 

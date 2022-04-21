@@ -15,7 +15,6 @@ namespace VFECore
                 if (extension.soundOnDamage != null)
                 {
                     extension.soundOnDamage.PlayOneShot(__instance);
-                    Log.Message("Played sound: " + extension.soundOnDamage);
                 }
             }
         }

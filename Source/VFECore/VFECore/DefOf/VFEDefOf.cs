@@ -24,5 +24,8 @@ namespace VFECore
         public static StatDef VEF_VerbCooldownFactor;
 
         public static JobDef VFEC_LeaveMap;
+
+        public static StatDef VEF_EnergyShieldEnergyMaxOffset;
+        public static StatDef VEF_EnergyShieldEnergyMaxFactor;
     }
 }

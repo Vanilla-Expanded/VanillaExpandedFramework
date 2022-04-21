@@ -36,7 +36,30 @@
 		<toStringStyleUnfinalized>FloatOne</toStringStyleUnfinalized>
 		<displayPriorityInCategory>4050</displayPriorityInCategory>
 	</StatDef>
-	
+
+  <StatDef>
+    <defName>VEF_EnergyShieldEnergyMaxOffset</defName>
+    <label>Shield max energy offset</label>
+    <description>Offset of the maximum shield energy that the user can boost through various means.</description>
+	<category>PawnCombat</category>
+    <minValue>0</minValue>
+    <defaultBaseValue>0</defaultBaseValue>
+    <toStringStyle>FloatOne</toStringStyle>
+    <hideAtValue>0</hideAtValue>
+	<displayPriorityInCategory>4050</displayPriorityInCategory>
+  </StatDef>
+  
+  <StatDef>
+    <defName>VEF_EnergyShieldEnergyMaxFactor</defName>
+    <label>Shield max energy factor</label>
+    <description>Factor of the maximum shield energy that the user can boost through various means.</description>
+	<category>PawnCombat</category>
+    <minValue>0</minValue>
+	<defaultBaseValue>1</defaultBaseValue>
+    <toStringStyle>PercentZero</toStringStyle>
+	<displayPriorityInCategory>4050</displayPriorityInCategory>
+  </StatDef>
+  
 	<StatCategoryDef>
 		<defName>VFE_EquippedStatFactors</defName>
 		<label>Factors when equipped</label>

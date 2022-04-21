@@ -16,9 +16,9 @@
         private List<Abilities.Ability> learnedAbilities = new List<Abilities.Ability>();
 
         public Abilities.Ability currentlyCasting;
-
+        
         private float energyMax;
-        protected override float EnergyMax => this.energyMax;
+        public override float EnergyMax => this.energyMax;
 
         protected override float EnergyGainPerTick => 0f;
 
