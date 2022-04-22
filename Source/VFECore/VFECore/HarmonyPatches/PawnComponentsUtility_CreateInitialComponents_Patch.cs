@@ -10,9 +10,16 @@ namespace VFECore
         [HarmonyPostfix]
         public static void Postfix(Pawn pawn)
         {
-            if (pawn.skills is null && pawn.kindDef.skills != null)
+            if (pawn.kindDef.skills != null)
             {
-                pawn.skills = new Pawn_SkillTracker(pawn);
+                if (pawn.skills is null)
+                {
+                    pawn.skills = new Pawn_SkillTracker(pawn);
+                }
+                if (pawn.story is null)
+                {
+                    pawn.story = new Pawn_StoryTracker(pawn);
+                }
             }
         }
     }
