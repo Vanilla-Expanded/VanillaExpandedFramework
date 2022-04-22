@@ -8,6 +8,7 @@ using UnityEngine;
 using Verse;
 using RimWorld;
 using HarmonyLib;
+using RimWorld.Planet;
 
 namespace VFECore
 {
@@ -15,19 +16,16 @@ namespace VFECore
     [StaticConstructorOnStartup]
     public static class NonPublicFields
     {
-
-        public static FieldInfo Pawn_EquipmentTracker_equipment = AccessTools.Field(typeof(Pawn_EquipmentTracker), "equipment");
-
-        public static FieldInfo Pawn_HealthTracker_pawn = AccessTools.Field(typeof(Pawn_HealthTracker), "pawn");
-
-        public static FieldInfo PawnRenderer_pawn = AccessTools.Field(typeof(PawnRenderer), "pawn");
-
         public static FieldInfo SiegeBlueprintPlacer_center = AccessTools.Field(typeof(SiegeBlueprintPlacer), "center");
         public static FieldInfo SiegeBlueprintPlacer_faction = AccessTools.Field(typeof(SiegeBlueprintPlacer), "faction");
         public static FieldInfo SiegeBlueprintPlacer_NumCoverRange = AccessTools.Field(typeof(SiegeBlueprintPlacer), "NumCoverRange");
         public static FieldInfo SiegeBlueprintPlacer_placedCoverLocs = AccessTools.Field(typeof(SiegeBlueprintPlacer), "placedCoverLocs");
         public static FieldInfo SiegeBlueprintPlacer_CoverLengthRange = AccessTools.Field(typeof(SiegeBlueprintPlacer), "CoverLengthRange");
 
+        public static FieldInfo Projectile_launcher = AccessTools.Field(typeof(Projectile), "launcher");
+        public static FieldInfo Projectile_ticksToImpact = AccessTools.Field(typeof(Projectile), "ticksToImpact");
+        public static FieldInfo Projectile_origin = AccessTools.Field(typeof(Projectile), "origin");
+        public static FieldInfo Projectile_usedTarget = AccessTools.Field(typeof(Projectile), "usedTarget");
     }
 
 }

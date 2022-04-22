@@ -23,7 +23,6 @@ namespace VFECore
     [HarmonyPatch(typeof(PawnBioAndNameGenerator), "FillBackstorySlotShuffled")]
     public static class PawnBioAndNameGenerator_FillBackstorySlotShuffled
     {
-        [HarmonyDebug]
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) // mostly copied from AlienRaces
 																										 // as it seems to be only one way to add in
 																										 // age and gender restrictions for backstories

@@ -24,6 +24,10 @@ namespace VFECore
         // For thing that can be discovered by deep scanner
         public Color deepColor = Color.white;
         public float transparencyMultiplier = 0.5f;
+
+        // For skyfallers that can fall into shield fields
+        public int shieldDamageIntercepted = -1;
+
     }
 
     public class DraftedDrawOffsets

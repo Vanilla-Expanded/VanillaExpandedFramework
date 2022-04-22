@@ -59,7 +59,78 @@
     <toStringStyle>PercentZero</toStringStyle>
 	<displayPriorityInCategory>4050</displayPriorityInCategory>
   </StatDef>
-  
+
+
+	<StatDef>
+		<defName>VEF_EnergyShieldEnergyMaxApparel</defName>
+		<label>shield max energy</label>
+		<description>The maximum energy a shield generator can have at one time. More energy absorbs more damage.</description>
+		<category>Apparel</category>
+		<minValue>0</minValue>
+		<hideAtValue>0</hideAtValue>
+		<toStringStyle>PercentZero</toStringStyle>
+		<showIfUndefined>false</showIfUndefined>
+		<parts>
+			<li Class="StatPart_Quality">
+				<factorAwful>0.6</factorAwful>
+				<factorPoor>0.8</factorPoor>
+				<factorNormal>1</factorNormal>
+				<factorGood>1.2</factorGood>
+				<factorExcellent>1.4</factorExcellent>
+				<factorMasterwork>1.7</factorMasterwork>
+				<factorLegendary>2.1</factorLegendary>
+			</li>
+		</parts>
+	</StatDef>
+	
+	<StatDef>
+		<defName>VEF_EnergyShieldRechargeRateApparel</defName>
+		<label>shield recharge rate</label>
+		<description>The rate at which a shield gains energy as long as it is not broken.</description>
+		<category>Apparel</category>
+		<minValue>0</minValue>
+		<hideAtValue>0</hideAtValue>
+		<defaultBaseValue>0.45</defaultBaseValue>
+		<toStringStyle>PercentZero</toStringStyle>
+		<formatString>{0}/s</formatString>
+		<showIfUndefined>false</showIfUndefined>
+		<parts>
+			<li Class="StatPart_Quality">
+				<factorAwful>0.9</factorAwful>
+				<factorPoor>0.95</factorPoor>
+				<factorNormal>1</factorNormal>
+				<factorGood>1.05</factorGood>
+				<factorExcellent>1.1</factorExcellent>
+				<factorMasterwork>1.2</factorMasterwork>
+				<factorLegendary>1.3</factorLegendary>
+			</li>
+		</parts>
+	</StatDef>
+	
+	<StatDef>
+		<defName>VEF_EnergyShieldRadiusApparel</defName>
+		<label>shield radius</label>
+		<description>The area covered when the energy shield is active.</description>
+		<category>Apparel</category>
+		<hideAtValue>0</hideAtValue>
+		<defaultBaseValue>3</defaultBaseValue>
+		<minValue>0</minValue>
+		<toStringStyle>FloatOne</toStringStyle>
+		<formatString>{0} c</formatString>
+		<showIfUndefined>false</showIfUndefined>
+		<parts>
+			<li Class="StatPart_Quality">
+				<factorAwful>0.76</factorAwful>
+				<factorPoor>0.88</factorPoor>
+				<factorNormal>1</factorNormal>
+				<factorGood>1.12</factorGood>
+				<factorExcellent>1.24</factorExcellent>
+				<factorMasterwork>1.45</factorMasterwork>
+				<factorLegendary>1.66</factorLegendary>
+			</li>
+		</parts>
+	</StatDef>
+	
 	<StatCategoryDef>
 		<defName>VFE_EquippedStatFactors</defName>
 		<label>Factors when equipped</label>

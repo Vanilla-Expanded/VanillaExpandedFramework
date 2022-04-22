@@ -1,0 +1,749 @@
+﻿using HarmonyLib;
+using RimWorld;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using UnityEngine;
+using UnityEngine.UIElements;
+using Verse;
+using Verse.AI;
+using Verse.Sound;
+
+namespace VFECore
+{
+    [StaticConstructorOnStartup]
+    public class Command_ActionWithCooldown : Command_Action
+    {
+        private static readonly Texture2D cooldownBarTex = SolidColorMaterials.NewSolidColorTexture(new Color(Color.grey.r, Color.grey.g, Color.grey.b, 0.6f));
+        private int lastUsedTick;
+        private int cooldownTicks;
+        public Command_ActionWithCooldown(int lastUsedTick, int cooldownTicks)
+        {
+            this.lastUsedTick = lastUsedTick;
+            this.cooldownTicks = cooldownTicks;
+        }
+
+        public override GizmoResult GizmoOnGUI(Vector2 topLeft, float maxWidth, GizmoRenderParms parms)
+        {
+            Rect rect = new Rect(topLeft.x, topLeft.y, GetWidth(maxWidth), 75f);
+            GizmoResult result = base.GizmoOnGUI(topLeft, maxWidth, parms);
+            if (this.lastUsedTick > 0)
+            {
+                var cooldownTicksRemaining = Find.TickManager.TicksGame - this.lastUsedTick;
+                if (cooldownTicksRemaining < this.cooldownTicks)
+                {
+                    float num = Mathf.InverseLerp(this.cooldownTicks, 0, cooldownTicksRemaining);
+                    Widgets.FillableBar(rect, Mathf.Clamp01(num), cooldownBarTex, null, doBorder: false);
+                }
+            }
+            if (result.State == GizmoState.Interacted)
+            {
+                return result;
+            }
+            return new GizmoResult(result.State);
+        }
+    }
+    public class CompProperties_ShieldField : CompProperties
+    {
+        public float initialEnergyPercentage;
+        public int rechargeTicksWhenDepleted;
+        public float shortCircuitChancePerEnergyLost;
+        public float inactivePowerConsumption;
+        public Color shieldColour = Color.white;
+        public StatDef rechargeRateStat;
+        public StatDef shieldEnergyMaxStat;
+        public StatDef shieldRadiusStat;
+        public int workingTimeTicks = -1;
+        public int cooldownTicks = -1;
+        public bool manualActivation;
+        public string activationLabelKey;
+        public string activationDescKey;
+        public string activationIconTexPath;
+        public CompProperties_ShieldField()
+		{
+			this.compClass = typeof(CompShieldField);
+		}
+	}
+
+	[StaticConstructorOnStartup]
+	public class CompShieldField : ThingComp
+	{
+        public bool active;
+        public Dictionary<Thing, int> affectedThings = new Dictionary<Thing, int>();
+        public HashSet<IntVec3> coveredCells;
+        public HashSet<IntVec3> scanCells;
+        private const int CacheUpdateInterval = 15;
+        private const float EdgeCellRadius = 5;
+        private const float EnergyLossPerDamage = 0.033f;
+        private int lastTimeActivated;
+        private int lastTimeDisabled;
+        private static readonly Material BaseBubbleMat = MaterialPool.MatFrom("Other/ShieldBubble", ShaderDatabase.MoteGlow);
+        private static readonly MaterialPropertyBlock MatPropertyBlock = new MaterialPropertyBlock();
+        private List<Thing> affectedThingsKeysWorkingList;
+        private List<int> affectedThingsValuesWorkingList;
+        private CompPowerTrader cachedPowerComp;
+        private bool checkedPowerComp;
+        private float energy;
+        private Vector3 impactAngleVect;
+        private int lastAbsorbDamageTick;
+        private int shieldBuffer = 0;
+        private int ticksToRecharge;
+
+        public Faction HostFaction
+        {
+            get
+            {
+                if (this.parent is Apparel apparel)
+                {
+                    return apparel.Wearer?.Faction;
+                }
+                return this.parent.Faction;
+            }
+        }
+
+        public Thing HostThing
+        {
+            get
+            {
+                if (this.parent is Apparel apparel && apparel.Wearer != null)
+                {
+                    return apparel.Wearer;
+                }
+                return this.parent;
+            }
+        }
+        public bool Indestructible => Props.shieldEnergyMaxStat is null;
+        
+        public static Dictionary<Map, List<CompShieldField>> listerShieldGensByMaps = new Dictionary<Map, List<CompShieldField>>();
+        public static IEnumerable<CompShieldField> ListerShieldGensActiveIn(Map map)
+        {
+            if (listerShieldGensByMaps.TryGetValue(map, out var list))
+            {
+                foreach (var shield in list.Where(g => g.active && (g.Energy > 0 || g.Indestructible)))
+                {
+                    yield return shield;
+                }
+            }
+        }
+        public float Energy
+        {
+            get => energy;
+            set
+            {
+                energy = Mathf.Clamp(value, 0, CurMaxEnergy);
+                if (energy == 0)
+                    Notify_EnergyDepleted();
+            }
+        }
+        public CompProperties_ShieldField Props => base.props as CompProperties_ShieldField;
+        public float EnergyGainPerTick => this.parent.GetStatValue(Props.rechargeRateStat) / 60;
+        public float MaxEnergy => this.parent.GetStatValue(Props.shieldEnergyMaxStat);
+        public float ShieldRadius => this.parent.GetStatValue(Props.shieldRadiusStat);
+        public LocalTargetInfo TargetCurrentlyAimingAt => LocalTargetInfo.Invalid;
+        public float TargetPriorityFactor => 1;
+        public Thing Thing => this.parent;
+        public IEnumerable<Thing> ThingsWithinRadius
+        {
+            get
+            {
+                foreach (var cell in coveredCells)
+                {
+                    var thingList = cell.GetThingList(parent.MapHeld);
+                    for (int i = 0; i < thingList.Count; i++)
+                        yield return thingList[i];
+                }
+            }
+        }
+
+        public IEnumerable<Thing> ThingsWithinScanArea
+        {
+            get
+            {
+                foreach (var cell in scanCells)
+                {
+                    var thingList = cell.GetThingList(parent.MapHeld);
+                    for (int i = 0; i < thingList.Count; i++)
+                        yield return thingList[i];
+                }
+            }
+        }
+
+        private bool CanFunction => (PowerTraderComp == null || PowerTraderComp.PowerOn) && !parent.IsBrokenDown();
+        private float CurMaxEnergy => MaxEnergy * (active ? 1 : Props.initialEnergyPercentage);
+        private CompPowerTrader PowerTraderComp
+        {
+            get
+            {
+                if (!checkedPowerComp)
+                {
+                    cachedPowerComp = parent.GetComp<CompPowerTrader>();
+                    checkedPowerComp = true;
+                }
+                return cachedPowerComp;
+            }
+        }
+        public void AbsorbDamage(float amount, DamageDef def, Thing source)
+        {
+            AbsorbDamage(amount, def, (parent.TrueCenter() - source.TrueCenter()).AngleFlat());
+        }
+
+        public void AbsorbDamage(float amount, DamageDef def, float angle)
+        {
+            SoundDefOf.EnergyShield_AbsorbDamage.PlayOneShot(new TargetInfo(parent.PositionHeld, parent.MapHeld, false));
+            impactAngleVect = Vector3Utility.HorizontalVectorFromAngle(angle);
+            Vector3 loc = parent.TrueCenter() + impactAngleVect.RotatedBy(180f) * (ShieldRadius / 2);
+            float flashSize = Mathf.Min(10f, 2f + amount / 10f);
+            FleckMaker.Static(parent.TrueCenter(), parent.MapHeld, FleckDefOf.ExplosionFlash, 12);
+            int dustCount = (int)flashSize;
+            for (int i = 0; i < dustCount; i++)
+            {
+                FleckMaker.ThrowDustPuff(loc, parent.MapHeld, Rand.Range(0.8f, 1.2f));
+            }
+            if (!Indestructible)
+            {
+                float energyLoss = amount * EnergyLossMultiplier(def) * EnergyLossPerDamage;
+                Energy -= energyLoss;
+                // try to do short circuit
+                if (Rand.Chance(energyLoss * Props.shortCircuitChancePerEnergyLost))
+                    GenExplosion.DoExplosion(parent.OccupiedRect().RandomCell, parent.MapHeld, 1.9f, DamageDefOf.Flame, null);
+            }
+            
+            lastAbsorbDamageTick = Find.TickManager.TicksGame;
+        }
+
+        public override void PostDeSpawn(Map map)
+        {
+            coveredCells = null;
+            scanCells = null;
+            if (listerShieldGensByMaps.TryGetValue(map, out var list))
+            {
+                list.Remove(this);
+            }
+            base.PostDeSpawn(map);
+        }
+
+        public override void PostDraw()
+        {
+            base.PostDraw();
+            // Draw shield bubble
+            if (active && (Energy > 0 || Indestructible))
+            {
+                float size = ShieldRadius * 2;
+                if (!Indestructible)
+                {
+                    size *= Mathf.Lerp(0.9f, 1.1f, Energy / MaxEnergy);
+                }
+                Vector3 pos = HostThing.TrueCenter();
+                pos.y = AltitudeLayer.MoteOverhead.AltitudeFor();
+
+                int ticksSinceAbsorbDamage = Find.TickManager.TicksGame - lastAbsorbDamageTick;
+                if (ticksSinceAbsorbDamage < 8)
+                {
+                    float sizeMod = (8 - ticksSinceAbsorbDamage) / 8f * 0.05f;
+                    pos += impactAngleVect * sizeMod;
+                    size -= sizeMod;
+                }
+
+                float angle = Rand.Range(0, 45);
+                Vector3 s = new Vector3(size, 1f, size);
+                Matrix4x4 matrix = default;
+                matrix.SetTRS(pos, Quaternion.AngleAxis(angle, Vector3.up), s);
+
+                MatPropertyBlock.SetColor(ShaderPropertyIDs.Color, Props.shieldColour);
+                Graphics.DrawMesh(MeshPool.plane10, matrix, BaseBubbleMat, 0, null, 0, MatPropertyBlock);
+            }
+        }
+
+        public override void PostExposeData()
+        {
+            base.PostExposeData();
+            Scribe_Collections.Look(ref affectedThings, "affectedThings", LookMode.Reference, LookMode.Value, ref affectedThingsKeysWorkingList, ref affectedThingsValuesWorkingList);
+            Scribe_Values.Look(ref ticksToRecharge, "ticksToRecharge");
+            Scribe_Values.Look(ref energy, "energy");
+            Scribe_Values.Look(ref shieldBuffer, "shieldBuffer");
+            Scribe_Values.Look(ref active, "active");
+            Scribe_Values.Look(ref lastTimeActivated, "lastTimeActivated");
+            Scribe_Values.Look(ref lastTimeDisabled, "lastTimeDisabled");
+        }
+
+        public override IEnumerable<Gizmo> CompGetGizmosExtra()
+        {
+            if (!(this.HostThing is Pawn) || this.HostThing.Faction == Faction.OfPlayer)
+            {
+                // Shield health
+                if (!Indestructible && Find.Selector.SingleSelectedThing == this.parent)
+                {
+                    yield return new Gizmo_EnergyShieldGeneratorStatus()
+                    {
+                        shieldGenerator = this
+                    };
+                }
+                if (Props.manualActivation)
+                {
+                    yield return new Command_ActionWithCooldown(this.lastTimeDisabled, this.Props.cooldownTicks)
+                    {
+                        defaultLabel = Props.activationLabelKey.Translate(),
+                        defaultDesc = Props.activationDescKey.Translate(),
+                        icon = ContentFinder<Texture2D>.Get(Props.activationIconTexPath),
+                        action = delegate
+                        {
+                            this.lastTimeActivated = Find.TickManager.TicksGame;
+                            this.lastTimeDisabled = 0;
+                            this.active = true;
+                        },
+                        disabled = ManuallyActivated || !CanActivateShield()
+                    };
+                }
+            }
+            
+            foreach (var gizmo in base.CompGetGizmosExtra())
+                yield return gizmo;
+        }
+
+        public bool CanActivateShield()
+        {
+            if (Props.manualActivation)
+            {
+                if (this.lastTimeDisabled > 0 && Find.TickManager.TicksGame - this.lastTimeDisabled < this.Props.cooldownTicks)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public bool ManuallyActivated => this.lastTimeActivated > 0 && Find.TickManager.TicksGame - this.lastTimeActivated < Props.workingTimeTicks;
+
+        public override IEnumerable<Gizmo> CompGetWornGizmosExtra()
+        {
+            if (this.HostThing.Faction == Faction.OfPlayer)
+            {
+                // Shield health
+                if (!Indestructible && Find.Selector.SingleSelectedThing == this.HostThing)
+                {
+                    yield return new Gizmo_EnergyShieldGeneratorStatus()
+                    {
+                        shieldGenerator = this
+                    };
+                }
+                if (Props.manualActivation)
+                {
+                    yield return new Command_ActionWithCooldown(this.lastTimeDisabled, this.Props.cooldownTicks)
+                    {
+                        defaultLabel = Props.activationLabelKey.Translate(),
+                        defaultDesc = Props.activationDescKey.Translate(),
+                        icon = ContentFinder<Texture2D>.Get(Props.activationIconTexPath),
+                        action = delegate
+                        {
+                            this.lastTimeActivated = Find.TickManager.TicksGame;
+                            this.lastTimeDisabled = 0;
+                            this.active = true;
+                        },
+                        disabled = ManuallyActivated || !CanActivateShield()
+                    };
+                }
+            }
+
+
+            foreach (var gizmo in base.CompGetWornGizmosExtra())
+                yield return gizmo;
+        }
+
+
+        public override string CompInspectStringExtra()
+        {
+            var inspectBuilder = new StringBuilder();
+
+            // Inactive
+            if (!active)
+                inspectBuilder.AppendLine("InactiveFacility".Translate().CapitalizeFirst());
+
+            inspectBuilder.AppendLine(base.CompInspectStringExtra());
+
+            return inspectBuilder.ToString().TrimEndNewlines();
+        }
+
+        public override void PostPreApplyDamage(DamageInfo dinfo, out bool absorbed)
+        {
+            // EMP - direct
+            if (dinfo.Def == DamageDefOf.EMP && !Indestructible)
+                Energy = 0;
+            base.PostPreApplyDamage(dinfo, out absorbed);
+        }
+
+        [HarmonyPatch(typeof(Pawn), "SpawnSetup")]
+        class SpawnSetup_Patch
+        {
+            public static void Postfix(Pawn __instance)
+            {
+                if (__instance.apparel?.WornApparel != null)
+                {
+                    foreach (var apparel in __instance.apparel.WornApparel)
+                    {
+                        var comp = apparel.GetComp<CompShieldField>();
+                        if (comp != null)
+                        {
+                            comp.Initialize();
+                        }
+                    }
+                }
+            }
+        }
+        
+        public override void PostSpawnSetup(bool respawningAfterLoad)
+        {
+            base.PostSpawnSetup(respawningAfterLoad);
+            Initialize();
+        }
+
+        public override void Notify_Equipped(Pawn pawn)
+        {
+            base.Notify_Equipped(pawn);
+            Initialize();
+        }
+
+        public void Initialize()
+        {
+            if (!listerShieldGensByMaps.TryGetValue(parent.MapHeld, out var list))
+            {
+                listerShieldGensByMaps[parent.MapHeld] = list = new List<CompShieldField>();
+            }
+            if (!list.Contains(this))
+            {
+                list.Add(this);
+            }
+
+            // Set up shield coverage
+            coveredCells = new HashSet<IntVec3>(GenRadial.RadialCellsAround(parent.PositionHeld, ShieldRadius, true));
+            if (ShieldRadius < EdgeCellRadius + 1)
+                scanCells = coveredCells;
+            else
+            {
+                IEnumerable<IntVec3> interiorCells = GenRadial.RadialCellsAround(parent.PositionHeld, ShieldRadius - EdgeCellRadius, true);
+                scanCells = new HashSet<IntVec3>(coveredCells.Where(c => !interiorCells.Contains(c)));
+            }
+        }
+
+        public bool ThreatDisabled(IAttackTargetSearcher disabledFor)
+        {
+            // No energy
+            if (!Indestructible && Energy == 0)
+                return true;
+
+            // Attacker isn't using EMPs
+            if (!disabledFor.CurrentEffectiveVerb.IsEMP())
+                return true;
+
+            // Return whether or not the shield can function
+            return !CanFunction;
+        }
+
+        public override void CompTick()
+        {
+            if (this.parent.IsHashIntervalTick(CacheUpdateInterval))
+                UpdateCache();
+
+            if (Props.workingTimeTicks != -1 && this.lastTimeActivated > 0 && Find.TickManager.TicksGame - this.lastTimeActivated >= this.Props.workingTimeTicks)
+            {
+                this.lastTimeDisabled = Find.TickManager.TicksGame;
+                this.lastTimeActivated = 0;
+            }
+            if (CanFunction)
+            {
+                if (!Indestructible)
+                {
+                    // Recharge shield
+                    if (ticksToRecharge > 0)
+                    {
+                        ticksToRecharge--;
+                        if (ticksToRecharge == 0)
+                            Energy = MaxEnergy * Props.initialEnergyPercentage;
+                    }
+                    else
+                        Energy += EnergyGainPerTick;
+                }
+
+
+                // If shield is active
+                if (active)
+                {
+                    // Power consumption
+                    if (PowerTraderComp != null)
+                        PowerTraderComp.PowerOutput = -PowerTraderComp.Props.basePowerConsumption;
+
+                    if ((ShieldRadius < EdgeCellRadius + 1 || Find.TickManager.TicksGame % 2 == 0) && (Energy > 0 || Indestructible))
+                        EnergyShieldTick();
+                }
+                else if (PowerTraderComp != null)
+                    PowerTraderComp.PowerOutput = -Props.inactivePowerConsumption;
+            }
+            else if (PowerTraderComp != null)
+                PowerTraderComp.PowerOutput = -Props.inactivePowerConsumption;
+
+            base.CompTick();
+        }
+
+        public bool WithinBoundary(IntVec3 sourcePos, IntVec3 checkedPos)
+        {
+            return (coveredCells.Contains(sourcePos) && coveredCells.Contains(checkedPos)) || (!coveredCells.Contains(sourcePos) && !coveredCells.Contains(checkedPos));
+        }
+
+        private float EnergyLossMultiplier(DamageDef damageDef)
+        {
+            // EMP - on shield
+            if (damageDef == DamageDefOf.EMP)
+                return 4;
+
+            return 1;
+        }
+
+        private void EnergyShieldTick()
+        {
+            HashSet<Thing> thingsWithinRadius = new HashSet<Thing>(ThingsWithinRadius);
+            HashSet<Thing> thingsWithinScanArea = new HashSet<Thing>(ThingsWithinScanArea);
+            foreach (var thing in thingsWithinScanArea)
+            {
+                // Try and block projectiles from outside
+                if (thing is Projectile proj && proj.BlockableByShield(this))
+                {
+                    if (NonPublicFields.Projectile_launcher.GetValue(proj) is Thing launcher && !thingsWithinRadius.Contains(launcher))
+                    {
+                        // Explosives are handled separately
+                        if (!(proj is Projectile_Explosive))
+                            AbsorbDamage(proj.DamageAmount, proj.def.projectile.damageDef, proj.ExactRotation.eulerAngles.y);
+                        proj.Position += Rot4.FromAngleFlat((parent.PositionHeld - proj.Position).AngleFlat).Opposite.FacingCell;
+                        NonPublicFields.Projectile_usedTarget.SetValue(proj, new LocalTargetInfo(proj.Position));
+                        NonPublicMethods.Projectile_ImpactSomething(proj);
+                    }
+                }
+
+                if (thing is Skyfaller)
+                {
+                }
+            }
+        }
+
+        private void Notify_EnergyDepleted()
+        {
+            SoundDefOf.EnergyShield_Broken.PlayOneShot(new TargetInfo(parent.PositionHeld, parent.MapHeld));
+            FleckMaker.Static(parent.TrueCenter(), parent.MapHeld, FleckDefOf.ExplosionFlash, 12);
+            for (int i = 0; i < 6; i++)
+            {
+                Vector3 loc = parent.TrueCenter() + Vector3Utility.HorizontalVectorFromAngle(Rand.Range(0, 360)) * Rand.Range(0.3f, 0.6f);
+                FleckMaker.ThrowDustPuff(loc, parent.MapHeld, Rand.Range(0.8f, 1.2f));
+            }
+            ticksToRecharge = Props.rechargeTicksWhenDepleted;
+        }
+
+        private void UpdateCache()
+        {
+            for (int i = 0; i < affectedThings.Count; i++)
+            {
+                var curKey = affectedThings.Keys.ToList()[i];
+                if (affectedThings[curKey] <= 0)
+                    affectedThings.Remove(curKey);
+                else
+                    affectedThings[curKey] -= CacheUpdateInterval;
+            }
+
+            if (!Props.manualActivation)
+            {
+                active = this.parent.MapHeld != null && CanFunction &&
+                (
+                GenHostility.AnyHostileActiveThreatTo_NewTemp(parent.MapHeld, HostFaction) ||
+                parent.MapHeld.listerThings.ThingsOfDef(RimWorld.ThingDefOf.Tornado).Any() ||
+                parent.MapHeld.listerThings.ThingsOfDef(RimWorld.ThingDefOf.DropPodIncoming).Any() || shieldBuffer > 0);
+            }
+            if (active)
+            {
+                active = CanActivateShield();
+            }
+            if ((GenHostility.AnyHostileActiveThreatTo_NewTemp(parent.MapHeld, HostFaction) 
+                || parent.MapHeld.listerThings.ThingsOfDef(RimWorld.ThingDefOf.Tornado).Any() 
+                || parent.MapHeld.listerThings.ThingsOfDef(RimWorld.ThingDefOf.DropPodIncoming).Any()) && shieldBuffer < 15)
+                shieldBuffer = 15;
+            else
+                shieldBuffer -= 1;
+        }
+    }
+
+    public static class ShieldGeneratorUtility
+    {
+
+        public static bool AffectsShields(this DamageDef damageDef)
+        {
+            return damageDef.isExplosive || damageDef == DamageDefOf.EMP;
+        }
+        public static void CheckIntercept(Thing thing, Map map, int damageAmount, DamageDef damageDef, Func<IEnumerable<IntVec3>> cellGetter, Func<bool> canIntercept = null, Func<CompShieldField, bool> preIntercept = null, Action<CompShieldField> postIntercept = null)
+        {
+            if (canIntercept == null || canIntercept())
+            {
+                var occupiedCells = new HashSet<IntVec3>(cellGetter());
+                var listerShields = CompShieldField.ListerShieldGensActiveIn(map).ToList();
+                for (int i = 0; i < listerShields.Count; i++)
+                {
+                    var shield = listerShields[i];
+                    var coveredCells = new HashSet<IntVec3>(shield.coveredCells);
+                    if ((preIntercept == null || preIntercept.Invoke(shield)) && occupiedCells.Any(c => coveredCells.Contains(c)))
+                    {
+                        shield.AbsorbDamage(damageAmount, damageDef, thing);
+                        postIntercept?.Invoke(shield);
+                        return;
+                    }
+                }
+            }
+        }
+
+        public static bool BlockableByShield(this Projectile proj, CompShieldField shieldGen)
+        {
+            if (!proj.def.projectile.flyOverhead)
+                return true;
+            return !shieldGen.coveredCells.Contains(((Vector3)NonPublicFields.Projectile_origin.GetValue(proj)).ToIntVec3()) &&
+                (int)NonPublicFields.Projectile_ticksToImpact.GetValue(proj) / (float)NonPublicProperties.Projectile_get_StartingTicksToImpact(proj) <= 0.5f;
+        }
+
+        //---added--- inspired by Frontier Security's method (distributed under an open-source non-profit license)
+        public static bool CheckPodHostility(DropPodIncoming dropPod)  //this is me. Didn't want to zap trader deliveries or allies
+        {
+            var innerContainer = dropPod.Contents.innerContainer;
+            for (int i = 0; i < innerContainer.Count; i++)
+            {
+                if (innerContainer[i] is Pawn pawn)
+                {
+                    if (GenHostility.IsActiveThreatToPlayer(pawn) || pawn.RaceProps.IsMechanoid)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public static void KillPawn(Pawn pawn, IntVec3 position, Map map) //FD inspired - means zapped pawns actually count as dead. FD has a tale recorder in here so cause of death is right, but should work ok.
+        {
+            // spawn on map for just an instant
+            GenPlace.TryPlaceThing(pawn, position, map, ThingPlaceMode.Near);
+            pawn.inventory.DestroyAll();
+            pawn.Kill(new DamageInfo(DamageDefOf.Crush, 100));
+            pawn.Corpse.Destroy();
+        }
+
+    }
+
+    [StaticConstructorOnStartup]
+    public class Gizmo_EnergyShieldGeneratorStatus : Gizmo
+    {
+        public Gizmo_EnergyShieldGeneratorStatus()
+        {
+            order = -100;
+        }
+
+        public override float GetWidth(float maxWidth)
+        {
+            return 140;
+        }
+
+        public override GizmoResult GizmoOnGUI(Vector2 topLeft, float maxWidth, GizmoRenderParms parms)
+        {
+            Rect overRect = new Rect(topLeft.x, topLeft.y, GetWidth(maxWidth), 75f);
+            Find.WindowStack.ImmediateWindow(984688, overRect, WindowLayer.GameUI, delegate
+            {
+                Rect rect = overRect.AtZero().ContractedBy(6f);
+                Rect rect2 = rect;
+                rect2.height = overRect.height / 2f;
+                Text.Font = GameFont.Tiny;
+                Widgets.Label(rect2, shieldGenerator.parent.LabelCap);
+                Rect rect3 = rect;
+                rect3.yMin = overRect.height / 2f;
+                float displayEnergy = shieldGenerator.active ? shieldGenerator.Energy : 0;
+                float fillPercent = displayEnergy / shieldGenerator.MaxEnergy;
+                Widgets.FillableBar(rect3, fillPercent, FullShieldBarTex, EmptyShieldBarTex, false);
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleCenter;
+                Widgets.Label(rect3, (displayEnergy * 100).ToString("F0") + " / " + (shieldGenerator.MaxEnergy * 100f).ToString("F0"));
+                Text.Anchor = TextAnchor.UpperLeft;
+            }, true, false, 1f);
+            return new GizmoResult(GizmoState.Clear);
+        }
+
+        public CompShieldField shieldGenerator;
+
+        private static readonly Texture2D FullShieldBarTex = SolidColorMaterials.NewSolidColorTexture(new Color(0.2f, 0.2f, 0.24f));
+
+        private static readonly Texture2D EmptyShieldBarTex = SolidColorMaterials.NewSolidColorTexture(Color.clear);
+    }
+
+    [HarmonyPatch(typeof(Tornado), "CellImmuneToDamage")]
+    public static class CellImmuneToDamage
+    {
+        public static void Postfix(Tornado __instance, IntVec3 c, ref bool __result)
+        {
+            // Shield-covered cells are immune to damage
+            if (!__result)
+            {
+                List<CompShieldField> shieldGens = CompShieldField.ListerShieldGensActiveIn(__instance.Map).ToList();
+                for (int i = 0; i < shieldGens.Count; i++)
+                {
+                    CompShieldField gen = shieldGens[i];
+                    if (gen.coveredCells.Contains(c))
+                    {
+                        if (!gen.affectedThings.ContainsKey(__instance))
+                        {
+                            gen.AbsorbDamage(30, DamageDefOf.TornadoScratch, __instance);
+                            gen.affectedThings.Add(__instance, 15);
+                        }
+                        __result = true;
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(Skyfaller), nameof(Skyfaller.Tick))]
+    public static class Patch_Tick
+    {
+        public static void Prefix(Skyfaller __instance) //patch the tick, not the creation - means shields can turn on in time to do something
+        {
+            if (__instance.Map != null && __instance.ticksToImpact <= 20)
+            {
+                var thingDefExtension = __instance.def.GetModExtension<ThingDefExtension>();
+                if (thingDefExtension != null)
+                {
+                    ShieldGeneratorUtility.CheckIntercept(__instance, __instance.Map, thingDefExtension.shieldDamageIntercepted, DamageDefOf.Blunt, () => __instance.OccupiedRect().Cells, () => thingDefExtension.shieldDamageIntercepted > -1,
+                    postIntercept: s =>
+                    {
+                        if (s.Energy > 0)
+                        {
+                            switch (__instance)
+                            {
+                                case DropPodIncoming dropPod:
+                                    if (ShieldGeneratorUtility.CheckPodHostility(dropPod))
+                                    {
+                                        var innerContainer = dropPod.Contents.innerContainer;
+                                        for (int i = 0; i < innerContainer.Count; i++)
+                                        {
+                                            var thing = innerContainer[i];
+                                            if (thing is Pawn pawn)
+                                                ShieldGeneratorUtility.KillPawn(pawn, dropPod.Position, dropPod.Map);
+                                        }
+                                        dropPod.Destroy();
+                                        return;
+                                    }
+                                    return;
+                                    /*case DropPodLeaving _:
+                                        return;*/
+                                default:
+                                    __instance.Destroy();
+                                    return;
+                            }
+                        }
+                    });
+                }
+
+            }
+        }
+    }
+}

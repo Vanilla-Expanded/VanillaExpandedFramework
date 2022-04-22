@@ -598,11 +598,13 @@
     <Compile Include="Apparel\Harmony\SkillRecord_Learn_Patch.cs" />
     <Compile Include="Apparel\Harmony\ThingSelectionUtility_SelectableByMapClick_Patch.cs" />
     <Compile Include="Apparel\ModExtensions\ApparelExtension.cs" />
+    <Compile Include="VFECore\Reflection\NonPublicProperties.cs" />
     <Compile Include="Cuisine\GraphicClasses\Graphic_RandomStackCount.cs" />
     <Compile Include="Cuisine\Harmony\FoodUtility_GetMeatSourceCategory_Patch.cs" />
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_Settings.cs" />
     <Compile Include="Cuisine\Options\VanillaCookingExpanded_SettingsController.cs" />
     <Compile Include="Cuisine\Plants\Plant_NarrowTemperatures.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompShieldField.cs" />
     <Compile Include="VFECore\HarmonyPatches\PawnComponentsUtility_CreateInitialComponents_Patch.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_BleedRateTotal.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_Kill.cs" />
