@@ -33,6 +33,9 @@
         public int                durationTime            = 0;
         public List<StatModifier> durationTimeStatFactors = new List<StatModifier>();
 
+        public int goodwillImpact = 0;
+        public bool applyGoodwillImpactToLodgers = true;
+
         [Unsaved(false)] public Texture2D icon = BaseContent.BadTex;
         public                  string    iconPath;
 

@@ -180,7 +180,19 @@
         public virtual void Cast(LocalTargetInfo target)
         {
             this.cooldown = Find.TickManager.TicksGame + this.GetCooldownForPawn();
-
+            if (this.def.goodwillImpact != 0 && target.Thing is Pawn pawnTarget)
+            {
+                Pawn pawn = this.pawn;
+                if (pawnTarget != null && !pawnTarget.IsSlaveOfColony)
+                {
+                    Faction homeFaction = pawnTarget.HomeFaction;
+                    if (pawn.Faction == Faction.OfPlayer && homeFaction != null && !homeFaction.HostileTo(pawn.Faction) 
+                        && (def.applyGoodwillImpactToLodgers || !pawnTarget.IsQuestLodger()) && !pawnTarget.IsQuestHelper())
+                    {
+                        Faction.OfPlayer.TryAffectGoodwillWith(homeFaction, def.goodwillImpact, canSendMessage: true, canSendHostilityLetter: true, HistoryEventDefOf.UsedHarmfulAbility);
+                    }
+                }
+            }
             foreach (AbilityExtension_AbilityMod modExtension in this.AbilityModExtensions)
                 modExtension.Cast(this);
 
@@ -230,7 +242,10 @@
                 AbilityExtension_Hediff hediffExtension = this.def.GetModExtension<AbilityExtension_Hediff>();
                 if (hediffExtension?.applyAuto ?? false)
                 {
-                    Hediff localHediff = HediffMaker.MakeHediff(hediffExtension.hediff, targetInfo.Pawn);
+                    BodyPartRecord bodyPart = hediffExtension.bodyPartToApply != null 
+                        ? pawn.health.hediffSet.GetNotMissingParts().FirstOrDefault((BodyPartRecord x) => x.def == hediffExtension.bodyPartToApply)
+                        : null;
+                    Hediff localHediff = HediffMaker.MakeHediff(hediffExtension.hediff, targetInfo.Pawn, bodyPart);
                     if (hediffExtension.severity > float.Epsilon)
                         localHediff.Severity = hediffExtension.severity;
                     if (localHediff is HediffWithComps hwc)
@@ -399,10 +414,11 @@
         {
         }
     }
-
+    
     public class AbilityExtension_Hediff : DefModExtension
     {
         public HediffDef hediff;
+        public BodyPartDef bodyPartToApply;
         public float     severity  = -1f;
         public bool      applyAuto = true;
     }

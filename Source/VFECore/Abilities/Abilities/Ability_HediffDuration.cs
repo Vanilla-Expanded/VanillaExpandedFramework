@@ -1,4 +1,5 @@
-﻿using Verse;
+﻿using System.Linq;
+using Verse;
 
 namespace VFECore.Abilities
 {
@@ -8,7 +9,10 @@ namespace VFECore.Abilities
         {
             var hediffExtension = def.GetModExtension<AbilityExtension_Hediff>();
             if (targetInfo.Pawn == null || !(hediffExtension?.applyAuto ?? false)) return;
-            var localHediff = HediffMaker.MakeHediff(hediffExtension.hediff, targetInfo.Pawn);
+            BodyPartRecord bodyPart = hediffExtension.bodyPartToApply != null
+                ? pawn.health.hediffSet.GetNotMissingParts().FirstOrDefault((BodyPartRecord x) => x.def == hediffExtension.bodyPartToApply)
+                : null;            
+            var localHediff = HediffMaker.MakeHediff(hediffExtension.hediff, targetInfo.Pawn, bodyPart);
             if (hediffExtension.severity > float.Epsilon)
                 localHediff.Severity = hediffExtension.severity;
             if (localHediff is HediffWithComps hwc)
