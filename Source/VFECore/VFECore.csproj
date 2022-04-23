@@ -364,6 +364,7 @@
   <ItemGroup>
     <Compile Include="Abilities\Abilities\Ability_Barrier.cs" />
     <Compile Include="Abilities\Abilities\Ability_Explode.cs" />
+    <Compile Include="Abilities\Abilities\Ability_HediffDuration.cs" />
     <Compile Include="Abilities\Abilities\Ability_ShootProjectile.cs" />
     <Compile Include="Abilities\Abilities\Ability_SpawnBuilding.cs" />
     <Compile Include="Abilities\Ability.cs" />
@@ -606,12 +607,15 @@
     <Compile Include="Cuisine\Plants\Plant_NarrowTemperatures.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompShieldField.cs" />
     <Compile Include="VFECore\HarmonyPatches\PawnComponentsUtility_CreateInitialComponents_Patch.cs" />
+    <Compile Include="Misc\Shields\HediffComp_Draw.cs" />
+    <Compile Include="Misc\Shields\HediffComp_Shield.cs" />
+    <Compile Include="Misc\Shields\ShieldsSystem.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_BleedRateTotal.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_Kill.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_ShouldBeDowned.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_Thing_TakeDamage.cs" />
     <Compile Include="VFECore\DefModExtensions\DamageExtension.cs" />
-    <Compile Include="Misc\Dialog_ContractInfo.cs" />
+    <Compile Include="Misc\HireableSystem\Dialog_ContractInfo.cs" />
     <Compile Include="UItils\FormatUtils.cs" />
     <Compile Include="VFECore\Damages\DamageWorker_PushBackAttackMelee.cs" />
     <Compile Include="VFECore\DefModExtensions\WeatherEffectsExtension.cs" />
@@ -669,10 +673,10 @@
     <Compile Include="Memes\Harmony\Dialog_ChooseMemes_GetFirstIncompatibleMemePair_Patch.cs" />
     <Compile Include="Memes\Harmony\Pawn_IdeoTracker_SetIdeo.cs" />
     <Compile Include="Memes\MapComponent\MapComponent_IdeologicalGoodies.cs" />
-    <Compile Include="Misc\Dialog_Hire.cs" />
-    <Compile Include="Misc\EquipmentOffsetConditions.cs" />
-    <Compile Include="Misc\HireableFactionDef.cs" />
-    <Compile Include="Misc\HireableSystemStaticInitialization.cs" />
+    <Compile Include="Misc\HireableSystem\Dialog_Hire.cs" />
+    <Compile Include="Misc\HireableSystem\EquipmentOffsetConditions.cs" />
+    <Compile Include="Misc\HireableSystem\HireableFactionDef.cs" />
+    <Compile Include="Misc\HireableSystem\HireableSystemStaticInitialization.cs" />
     <Compile Include="Misc\StatPart_Ammo.cs" />
     <Compile Include="OptionalFeatures\Dialog_FloatMenuOptions.cs" />
     <Compile Include="OptionalFeatures\OptionalFeatures.cs" />
