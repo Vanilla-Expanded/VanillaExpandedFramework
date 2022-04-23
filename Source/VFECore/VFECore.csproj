@@ -599,6 +599,8 @@
     <Compile Include="Apparel\Harmony\SkillRecord_Learn_Patch.cs" />
     <Compile Include="Apparel\Harmony\ThingSelectionUtility_SelectableByMapClick_Patch.cs" />
     <Compile Include="Apparel\ModExtensions\ApparelExtension.cs" />
+    <Compile Include="VFECore\DefModExtensions\ProjectileExtension.cs" />
+    <Compile Include="VFECore\Projectiles\BeamProjectile.cs" />
     <Compile Include="VFECore\Reflection\NonPublicProperties.cs" />
     <Compile Include="Cuisine\GraphicClasses\Graphic_RandomStackCount.cs" />
     <Compile Include="Cuisine\Harmony\FoodUtility_GetMeatSourceCategory_Patch.cs" />
