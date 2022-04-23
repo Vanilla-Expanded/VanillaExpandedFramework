@@ -61,6 +61,8 @@ namespace VFECore
         public string activationLabelKey;
         public string activationDescKey;
         public string activationIconTexPath;
+        public int disarmedByEmpForTicks = -1;
+        public SoundDef activeSound;
         public CompProperties_ShieldField()
 		{
 			this.compClass = typeof(CompShieldField);
@@ -79,6 +81,7 @@ namespace VFECore
         private const float EnergyLossPerDamage = 0.033f;
         private int lastTimeActivated;
         private int lastTimeDisabled;
+        private int lastTimeDisarmed;
         private static readonly Material BaseBubbleMat = MaterialPool.MatFrom("Other/ShieldBubble", ShaderDatabase.MoteGlow);
         private static readonly MaterialPropertyBlock MatPropertyBlock = new MaterialPropertyBlock();
         private List<Thing> affectedThingsKeysWorkingList;
@@ -161,11 +164,16 @@ namespace VFECore
         {
             get
             {
+
                 foreach (var cell in scanCells)
                 {
                     var thingList = cell.GetThingList(parent.MapHeld);
                     for (int i = 0; i < thingList.Count; i++)
-                        yield return thingList[i];
+                    {
+                        var thing = thingList[i];
+                        if (Vector3.Distance(this.parent.TrueCenter(), thing.TrueCenter()) <= ShieldRadius)
+                            yield return thing;
+                    }
                 }
             }
         }
@@ -209,7 +217,10 @@ namespace VFECore
                 if (Rand.Chance(energyLoss * Props.shortCircuitChancePerEnergyLost))
                     GenExplosion.DoExplosion(parent.OccupiedRect().RandomCell, parent.MapHeld, 1.9f, DamageDefOf.Flame, null);
             }
-            
+            if (Props.disarmedByEmpForTicks != -1 && def == DamageDefOf.EMP)
+            {
+                BreakShield(new DamageInfo(def, amount, 0, angle));
+            }
             lastAbsorbDamageTick = Find.TickManager.TicksGame;
         }
 
@@ -266,6 +277,7 @@ namespace VFECore
             Scribe_Values.Look(ref active, "active");
             Scribe_Values.Look(ref lastTimeActivated, "lastTimeActivated");
             Scribe_Values.Look(ref lastTimeDisabled, "lastTimeDisabled");
+            Scribe_Values.Look(ref lastTimeDisarmed, "lastTimeDisarmed");
         }
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
@@ -310,6 +322,10 @@ namespace VFECore
                 {
                     return false;
                 }
+            }
+            if (Props.disarmedByEmpForTicks != -1 && this.lastTimeDisarmed > 0 && Find.TickManager.TicksGame - this.lastTimeDisarmed < Props.disarmedByEmpForTicks)
+            {
+                return false;
             }
             return true;
         }
@@ -369,7 +385,16 @@ namespace VFECore
         {
             // EMP - direct
             if (dinfo.Def == DamageDefOf.EMP && !Indestructible)
-                Energy = 0;
+            {
+                if (Props.disarmedByEmpForTicks != -1)
+                {
+                    BreakShield(dinfo);
+                }
+                else
+                {
+                    Energy = 0;
+                }
+            }
             base.PostPreApplyDamage(dinfo, out absorbed);
         }
 
@@ -415,6 +440,11 @@ namespace VFECore
                 list.Add(this);
             }
 
+            UpdateShieldCoverage();
+        }
+
+        private void UpdateShieldCoverage()
+        {
             // Set up shield coverage
             coveredCells = new HashSet<IntVec3>(GenRadial.RadialCellsAround(parent.PositionHeld, ShieldRadius, true));
             if (ShieldRadius < EdgeCellRadius + 1)
@@ -439,7 +469,8 @@ namespace VFECore
             // Return whether or not the shield can function
             return !CanFunction;
         }
-
+        
+        private Sustainer sustainer;
         public override void CompTick()
         {
             if (this.parent.IsHashIntervalTick(CacheUpdateInterval))
@@ -469,15 +500,29 @@ namespace VFECore
                 // If shield is active
                 if (active)
                 {
+                    if (Props.activeSound != null)
+                    {
+                        if (sustainer == null || sustainer.Ended)
+                        {
+                            sustainer = Props.activeSound.TrySpawnSustainer(SoundInfo.InMap(parent));
+                        }
+                        sustainer.Maintain();
+                    }
+                    
                     // Power consumption
                     if (PowerTraderComp != null)
                         PowerTraderComp.PowerOutput = -PowerTraderComp.Props.basePowerConsumption;
 
-                    if ((ShieldRadius < EdgeCellRadius + 1 || Find.TickManager.TicksGame % 2 == 0) && (Energy > 0 || Indestructible))
+                    if (Energy > 0 || Indestructible)
                         EnergyShieldTick();
                 }
                 else if (PowerTraderComp != null)
                     PowerTraderComp.PowerOutput = -Props.inactivePowerConsumption;
+                
+                if (Props.activeSound != null && !active && sustainer != null && !sustainer.Ended)
+                {
+                    sustainer.End();
+                }
             }
             else if (PowerTraderComp != null)
                 PowerTraderComp.PowerOutput = -Props.inactivePowerConsumption;
@@ -485,6 +530,38 @@ namespace VFECore
             base.CompTick();
         }
 
+        private void BreakShield(DamageInfo dinfo)
+        {
+            float fTheta;
+            Vector3 center;
+            if (active)
+            {
+                SoundDefOf.EnergyShield_Broken.PlayOneShot(new TargetInfo(parent));
+                int num = Mathf.CeilToInt(ShieldRadius * 2f);
+                fTheta = (float)Math.PI * 2f / (float)num;
+                center = parent.TrueCenter();
+                for (int i = 0; i < num; i++)
+                {
+                    FleckMaker.ConnectingLine(PosAtIndex(i), PosAtIndex((i + 1) % num), FleckDefOf.LineEMP, parent.Map, 1.5f);
+                }
+            }
+            
+            if (HostThing is Pawn pawn)
+            {
+                dinfo.SetAmount((float)Props.disarmedByEmpForTicks / 30f);
+                pawn.stances.stunner.Notify_DamageApplied(dinfo);
+            }
+            if (!Indestructible)
+            {
+                Energy = 0;
+            }
+            lastTimeDisarmed = Find.TickManager.TicksGame;
+            Vector3 PosAtIndex(int index)
+            {
+                return new Vector3(ShieldRadius * Mathf.Cos(fTheta * (float)index) + center.x, 0f, ShieldRadius * Mathf.Sin(fTheta * (float)index) + center.z);
+            }
+        }
+        
         public bool WithinBoundary(IntVec3 sourcePos, IntVec3 checkedPos)
         {
             return (coveredCells.Contains(sourcePos) && coveredCells.Contains(checkedPos)) || (!coveredCells.Contains(sourcePos) && !coveredCells.Contains(checkedPos));
@@ -508,10 +585,10 @@ namespace VFECore
                 // Try and block projectiles from outside
                 if (thing is Projectile proj && proj.BlockableByShield(this))
                 {
-                    if (NonPublicFields.Projectile_launcher.GetValue(proj) is Thing launcher && !thingsWithinRadius.Contains(launcher))
+                    if (!thingsWithinRadius.Contains(proj.Launcher))
                     {
                         // Explosives are handled separately
-                        if (!(proj is Projectile_Explosive))
+                        if (!(proj is Projectile_Explosive) || proj.def.projectile.damageDef == DamageDefOf.EMP)
                             AbsorbDamage(proj.DamageAmount, proj.def.projectile.damageDef, proj.ExactRotation.eulerAngles.y);
                         proj.Position += Rot4.FromAngleFlat((parent.PositionHeld - proj.Position).AngleFlat).Opposite.FacingCell;
                         NonPublicFields.Projectile_usedTarget.SetValue(proj, new LocalTargetInfo(proj.Position));
@@ -524,7 +601,6 @@ namespace VFECore
                 }
             }
         }
-
         private void Notify_EnergyDepleted()
         {
             SoundDefOf.EnergyShield_Broken.PlayOneShot(new TargetInfo(parent.PositionHeld, parent.MapHeld));
@@ -539,6 +615,7 @@ namespace VFECore
 
         private void UpdateCache()
         {
+            UpdateShieldCoverage();
             for (int i = 0; i < affectedThings.Count; i++)
             {
                 var curKey = affectedThings.Keys.ToList()[i];
@@ -571,7 +648,6 @@ namespace VFECore
 
     public static class ShieldGeneratorUtility
     {
-
         public static bool AffectsShields(this DamageDef damageDef)
         {
             return damageDef.isExplosive || damageDef == DamageDefOf.EMP;

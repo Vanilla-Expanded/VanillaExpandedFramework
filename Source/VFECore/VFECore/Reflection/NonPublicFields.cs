@@ -22,7 +22,6 @@ namespace VFECore
         public static FieldInfo SiegeBlueprintPlacer_placedCoverLocs = AccessTools.Field(typeof(SiegeBlueprintPlacer), "placedCoverLocs");
         public static FieldInfo SiegeBlueprintPlacer_CoverLengthRange = AccessTools.Field(typeof(SiegeBlueprintPlacer), "CoverLengthRange");
 
-        public static FieldInfo Projectile_launcher = AccessTools.Field(typeof(Projectile), "launcher");
         public static FieldInfo Projectile_ticksToImpact = AccessTools.Field(typeof(Projectile), "ticksToImpact");
         public static FieldInfo Projectile_origin = AccessTools.Field(typeof(Projectile), "origin");
         public static FieldInfo Projectile_usedTarget = AccessTools.Field(typeof(Projectile), "usedTarget");
