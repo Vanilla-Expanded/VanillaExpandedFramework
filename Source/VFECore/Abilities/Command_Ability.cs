@@ -41,6 +41,7 @@
                 case AbilityTargetingMode.Location:
                 case AbilityTargetingMode.Thing:
                 case AbilityTargetingMode.Pawn:
+                case AbilityTargetingMode.Humanlike:
                     radius = this.ability.GetRangeForPawn();
                     break;
                 default:

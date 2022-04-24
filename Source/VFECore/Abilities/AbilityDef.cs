@@ -109,6 +109,9 @@
                     case AbilityTargetingMode.Pawn:
                         this.targetingParameters.canTargetPawns = this.targetingParameters.canTargetHumans = this.targetingParameters.canTargetMechs = this.targetingParameters.canTargetAnimals = true;
                         break;
+                    case AbilityTargetingMode.Humanlike:
+                        this.targetingParameters.canTargetPawns = this.targetingParameters.canTargetHumans = true;
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
@@ -157,6 +160,7 @@
         Self,
         Location,
         Thing,
-        Pawn
+        Pawn,
+        Humanlike
     }
 }
