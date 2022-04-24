@@ -1,6 +1,7 @@
 ﻿namespace VFECore.Abilities
 {
     using System.Collections.Generic;
+    using RimWorld;
     using Verse;
     using Verse.AI;
 
@@ -21,6 +22,12 @@
             CompAbilities comp     = this.pawn.GetComp<CompAbilities>();
             Toil          waitToil = Toils_General.Wait(comp.currentlyCasting.GetCastTimeForPawn(), TargetIndex.A);
             waitToil.WithProgressBarToilDelay(TargetIndex.C);
+            if (this.TargetA.Pawn != this.pawn)
+                waitToil.AddPreTickAction(() =>
+                                          {
+                                              if (Find.Selector.IsSelected(this.pawn))
+                                                  GenDraw.DrawAimPie(this.pawn, this.TargetA, this.ticksLeftThisToil, 0.2f);
+                                          });
             yield return waitToil;
 
             Toil castToil = new Toil();
