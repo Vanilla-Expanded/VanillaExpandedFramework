@@ -1,6 +1,6 @@
-﻿using RimWorld;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using RimWorld;
 using Verse;
 
 namespace VFECore
@@ -92,7 +92,10 @@ namespace VFECore
                     var hediffDef = HediffDef.Named(opt.hediff);
                     if (hediffDef != null)
                     {
-                        var severity = opt.severityOffset * p.GetStatValue(opt.effectMultiplyingStat, true);
+                        var severity                                    = opt.severityOffset;
+
+                        if (opt.effectMultiplyingStat != null) severity *= p.GetStatValue(opt.effectMultiplyingStat);
+
                         if (severity != 0f)
                         {
                             HealthUtility.AdjustSeverity(p, hediffDef, severity);
