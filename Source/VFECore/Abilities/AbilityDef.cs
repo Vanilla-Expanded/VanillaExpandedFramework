@@ -36,6 +36,10 @@
         public int goodwillImpact = 0;
         public bool applyGoodwillImpactToLodgers = true;
 
+        public bool requireLineOfSight = true;
+        public JobDef jobDef;
+        public float distanceToTarget = 1.5f;
+
         [Unsaved(false)] public Texture2D icon = BaseContent.BadTex;
         public                  string    iconPath;
 

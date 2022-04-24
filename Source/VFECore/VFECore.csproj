@@ -381,7 +381,9 @@
     <Compile Include="Abilities\HediffComp_AbilityTargetReact.cs" />
     <Compile Include="Abilities\Hediff_Abilities.cs" />
     <Compile Include="Abilities\InitializeAbilityComp.cs" />
-    <Compile Include="Abilities\JobDriver_CastAbilityOnce.cs" />
+    <Compile Include="Abilities\Jobs\JobDriver_CastAbilityOnce.cs" />
+    <Compile Include="Abilities\Jobs\JobDriver_GotoTargetAndCastAbilityOnce.cs" />
+    <Compile Include="Abilities\Jobs\JobDriver_StandAndFaceTarget.cs" />
     <Compile Include="Abilities\PawnGen_Patch.cs" />
     <Compile Include="Abilities\PawnKindAbilityExtension.cs" />
     <Compile Include="Abilities\TryGetAttackVerb_Patch.cs" />

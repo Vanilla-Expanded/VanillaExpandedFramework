@@ -172,7 +172,7 @@
         {
             this.pawn.jobs.EndCurrentJob(JobCondition.InterruptForced, false);
 
-            Job job = JobMaker.MakeJob(VFE_DefOf_Abilities.VFEA_UseAbility, target);
+            Job job = JobMaker.MakeJob(def.jobDef ?? VFE_DefOf_Abilities.VFEA_UseAbility, target);
             this.pawn.GetComp<CompAbilities>().currentlyCasting = this;
             this.pawn.jobs.StartJob(job, JobCondition.InterruptForced);
         }
@@ -284,7 +284,7 @@
         public string GetUniqueLoadID() =>
             $"Ability_{this.def.defName}_{this.holder.GetUniqueLoadID()}";
 
-        public virtual bool CanHitTarget(LocalTargetInfo target) => this.CanHitTarget(target, true);
+        public virtual bool CanHitTarget(LocalTargetInfo target) => this.CanHitTarget(target, this.def.requireLineOfSight);
 
         public virtual bool CanHitTarget(LocalTargetInfo target, bool sightCheck)
         {

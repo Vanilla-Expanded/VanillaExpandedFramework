@@ -10,5 +10,6 @@
         public static JobDef   VFEA_UseAbility;
         public static ThingDef VFEA_AbilityFlyer;
         public static ThingDef VFEA_AbilityFlyer_Charge;
+        public static JobDef VFEA_StandAndFaceTarget;
     }
 }

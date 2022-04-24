@@ -1,15 +1,26 @@
 ﻿namespace VFECore.Abilities
 {
     using System.Collections.Generic;
-    using RimWorld;
     using Verse;
     using Verse.AI;
 
     public class JobDriver_CastAbilityOnce : JobDriver
     {
+        private CompAbilities cachedComp;
+        public CompAbilities CompAbilities
+        {
+            get
+            {
+                if (cachedComp is null)
+                {
+                    cachedComp = this.pawn.GetComp<CompAbilities>();
+                }
+                return cachedComp;
+            }
+        }
         public override bool TryMakePreToilReservations(bool errorOnFailed) => true;
 
-        public override string GetReport() => this.pawn.GetComp<CompAbilities>().currentlyCasting.def.JobReportString;
+        public override string GetReport() => CompAbilities.currentlyCasting.def.JobReportString;
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
@@ -19,7 +30,7 @@
 
             //yield return Toils_Combat.GotoCastPosition(TargetIndex.A);
 
-            CompAbilities comp     = this.pawn.GetComp<CompAbilities>();
+            CompAbilities comp     = CompAbilities;
             Toil          waitToil = Toils_General.Wait(comp.currentlyCasting.GetCastTimeForPawn(), TargetIndex.A);
             waitToil.WithProgressBarToilDelay(TargetIndex.C);
             if (this.TargetA.Pawn != this.pawn)
