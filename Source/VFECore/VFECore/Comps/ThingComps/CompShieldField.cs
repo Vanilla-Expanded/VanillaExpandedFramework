@@ -616,6 +616,10 @@ namespace VFECore
         private void UpdateCache()
         {
             UpdateShieldCoverage();
+            if (affectedThings is null)
+            {
+                affectedThings = new Dictionary<Thing, int>();
+            }
             for (int i = 0; i < affectedThings.Count; i++)
             {
                 var curKey = affectedThings.Keys.ToList()[i];
@@ -765,6 +769,10 @@ namespace VFECore
                     CompShieldField gen = shieldGens[i];
                     if (gen.coveredCells.Contains(c))
                     {
+                        if (gen.affectedThings is null)
+                        {
+                            gen.affectedThings = new Dictionary<Thing, int>();
+                        }
                         if (!gen.affectedThings.ContainsKey(__instance))
                         {
                             gen.AbsorbDamage(30, DamageDefOf.TornadoScratch, __instance);
