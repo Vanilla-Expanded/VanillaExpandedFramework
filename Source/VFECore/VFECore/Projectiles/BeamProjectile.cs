@@ -22,7 +22,7 @@ namespace VFECore
             DRAWERS       = new Dictionary<ThingDef, ThingDef>();
             giveShortHash = AccessTools.Method(typeof(ShortHashGiver), "GiveShortHash").CreateDelegate<Action<Def, Type>>();
             foreach (var thingDef in DefDatabase<ThingDef>.AllDefs)
-                if (thingDef.thingClass.IsAssignableFrom(typeof(BeamProjectile)))
+                if (thingDef.thingClass?.IsAssignableFrom(typeof(BeamProjectile)) ?? false)
                 {
                     var drawer     = BaseBeamDrawer();
                     var affectsSky = thingDef.GetCompProperties<CompProperties_AffectsSky>();
