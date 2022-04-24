@@ -109,8 +109,13 @@ namespace VFECore
         public override void Tick()
         {
             if (ticksRemaining == projectileExt.beamLifetimeTicks)
+            {
                 if (projectileExt.flashIntensity > 0)
                     FleckMaker.Static(b + Vector3.up * def.Altitude + Altitudes.AltIncVect / 2, Map, FleckDefOf.ExplosionFlash, projectileExt.flashIntensity);
+
+                if (projectileExt.hitFleck != null) FleckMaker.Static(b + Vector3.up * def.Altitude + Altitudes.AltIncVect, Map, projectileExt.hitFleck);
+            }
+
             ticksRemaining--;
             if (ticksRemaining <= 0) Destroy();
         }

@@ -1,19 +1,20 @@
-﻿namespace VFECore.Abilities
-{
-    using RimWorld;
-    using UnityEngine;
-    using Verse;
-    using Verse.Sound;
+﻿using RimWorld;
+using UnityEngine;
+using Verse;
+using Verse.Sound;
 
+namespace VFECore.Abilities
+{
     public class AbilityProjectile : Projectile
     {
-        public Abilities.Ability ability;
+        public Ability ability;
 
         protected override void Impact(Thing hitThing)
         {
             Map     map      = this.Map;
             base.Impact(hitThing);
-            BattleLogEntry_RangedImpact battleLogEntryRangedImpact = new BattleLogEntry_RangedImpact(this.launcher, hitThing, this.intendedTarget.Thing, this.equipmentDef, this.def, this.targetCoverDef);
+            var battleLogEntryRangedImpact =
+                new BattleLogEntry_RangedImpact(launcher, hitThing, intendedTarget.Thing, equipmentDef ?? ability.pawn.def, def, targetCoverDef);
             Find.BattleLog.Add(battleLogEntryRangedImpact);
 
             this.ability.TargetEffects(new LocalTargetInfo(this.Position));
