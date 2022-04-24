@@ -601,6 +601,7 @@
     <Compile Include="Apparel\Harmony\SkillRecord_Learn_Patch.cs" />
     <Compile Include="Apparel\Harmony\ThingSelectionUtility_SelectableByMapClick_Patch.cs" />
     <Compile Include="Apparel\ModExtensions\ApparelExtension.cs" />
+    <Compile Include="Misc\Shields\HediffComp_DamageAura.cs" />
     <Compile Include="VFECore\DefModExtensions\ProjectileExtension.cs" />
     <Compile Include="VFECore\Projectiles\BeamProjectile.cs" />
     <Compile Include="VFECore\Reflection\NonPublicProperties.cs" />
