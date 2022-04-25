@@ -209,7 +209,7 @@
         {
             foreach (var modExtension in this.AbilityModExtensions)
             {
-                if (!modExtension.Valid(target, this))
+                if (!modExtension.Valid(target, this, true))
                 {
                     return;
                 }

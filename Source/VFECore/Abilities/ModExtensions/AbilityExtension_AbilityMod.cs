@@ -34,7 +34,7 @@
 
 		}
 
-		public virtual bool Valid(LocalTargetInfo target, Ability ability)
+		public virtual bool Valid(LocalTargetInfo target, Ability ability, bool throwMessages = false)
         {
 			return true;
         }
@@ -42,7 +42,7 @@
 		{
 
 		}
-		public virtual bool CanApplyOn(LocalTargetInfo target, Ability ability)
+		public virtual bool CanApplyOn(LocalTargetInfo target, Ability ability, bool throwMessages = false)
 		{
 			return true;
 		}

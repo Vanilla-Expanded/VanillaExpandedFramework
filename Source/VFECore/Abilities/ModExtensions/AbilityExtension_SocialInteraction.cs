@@ -12,7 +12,7 @@
 		public bool canApplyToUnconscious;
 		public override void Cast(LocalTargetInfo target, Ability ability)
 		{
-			if (CanApplyOn(target))
+			if (CanApplyOn(target, ability, true))
             {
 				Apply(target, ability);
 			}
@@ -27,13 +27,13 @@
 			}
 		}
 
-		public bool CanApplyOn(LocalTargetInfo target)
-		{
-			return Valid(target);
-		}
+        public override bool CanApplyOn(LocalTargetInfo target, Ability ability, bool throwMessages = false)
+        {
+            return Valid(target, ability, throwMessages);
+        }
 
-		public bool Valid(LocalTargetInfo target, bool throwMessages = false)
-		{
+        public override bool Valid(LocalTargetInfo target, Ability ability, bool throwMessages = false)
+        {
 			Pawn pawn = target.Pawn;
 			if (pawn != null)
 			{
@@ -41,7 +41,7 @@
 				{
 					return false;
 				}
-				if (!AbilityUtility.ValidateIsAwake(pawn, throwMessages))
+				if (!AbilityUtility.ValidateIsAwake(pawn, true))
 				{
 					return false;
 				}
