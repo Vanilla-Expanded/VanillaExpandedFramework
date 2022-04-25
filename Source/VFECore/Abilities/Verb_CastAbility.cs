@@ -1,5 +1,6 @@
 ﻿namespace VFECore.Abilities
 {
+using RimWorld;
     using Verse;
 
     public class Verb_CastAbility : Verb
@@ -30,6 +31,22 @@
             this.ability.OrderForceTarget(target);
         }
 
+        public override void OnGUI(LocalTargetInfo target)
+        {
+            DrawAttachmentExtraLabel(target);
+        }
+        protected void DrawAttachmentExtraLabel(LocalTargetInfo target)
+        {
+            foreach (var modExtension in ability.AbilityModExtensions)
+            {
+                string text = modExtension.ExtraLabelMouseAttachment(target, ability);
+                if (!text.NullOrEmpty())
+                {
+                    Widgets.MouseAttachedLabel(text);
+                    break;
+                }
+            }
+        }
         public override void ExposeData()
         {
             base.ExposeData();

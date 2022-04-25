@@ -34,6 +34,7 @@
                                                                        .Cast<AbilityExtension_AbilityMod>().ToList());
         public Mote warmupMote;
         private Sustainer soundCast;
+        public LocalTargetInfo selectedTarget = LocalTargetInfo.Invalid;
         public void Init()
         {
             if (this.verb == null)
@@ -324,6 +325,14 @@
 
         public virtual bool CanHitTarget(LocalTargetInfo target, bool sightCheck)
         {
+            foreach (var modExtension in this.AbilityModExtensions)
+            {
+                if (!modExtension.CanApplyOn(target, this))
+                {
+                    return false;
+                }
+            }
+
             if (target.IsValid && target.Cell.DistanceTo(this.pawn.Position) < this.GetRangeForPawn())
             {
                 if ((this.targetParams.canTargetLocations && this.targetParams.CanTarget(new TargetInfo(target.Cell, this.Caster.Map))) ||
