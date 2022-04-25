@@ -29,7 +29,7 @@ namespace VFECore.Shields
             base.CompPostPostRemoved();
         }
 
-        protected virtual bool ValidateTarget(Thing thing) => thing.HostileTo(Pawn) && Props.targetingParameters.CanTarget(thing);
+        protected virtual bool ValidateTarget(Thing thing) => (!Props.hostileOnly || thing.HostileTo(Pawn)) && Props.targetingParameters.CanTarget(thing);
     }
 
     public class HediffCompProperties_DamageAura : HediffCompProperties_Draw
@@ -41,6 +41,7 @@ namespace VFECore.Shields
         public float     radius;
         public SoundDef  sustainer;
         public SoundDef  soundEnded;
+        public bool      hostileOnly = true;
 
 
         public TargetingParameters targetingParameters = new TargetingParameters
