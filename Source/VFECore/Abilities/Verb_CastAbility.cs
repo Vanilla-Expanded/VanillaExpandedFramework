@@ -17,6 +17,19 @@
             return false;
         }
 
+        public override bool TryStartCastOn(LocalTargetInfo castTarg, LocalTargetInfo destTarg, bool surpriseAttack = false, bool canHitNonTargetPawns = true, bool preventFriendlyFire = false)
+        {
+            if (base.TryStartCastOn(castTarg, destTarg, surpriseAttack, canHitNonTargetPawns, preventFriendlyFire))
+                this.ability.OrderForceTarget(castTarg);
+            return false;
+        }
+
+        public override void OrderForceTarget(LocalTargetInfo target)
+        {
+            base.OrderForceTarget(target);
+            this.ability.OrderForceTarget(target);
+        }
+
         public override void ExposeData()
         {
             base.ExposeData();
