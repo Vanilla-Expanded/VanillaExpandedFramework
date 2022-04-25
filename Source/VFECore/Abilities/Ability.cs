@@ -152,6 +152,12 @@
             return action;
         }
 
+        public virtual void WarmupToil(Toil toil)
+        {
+            foreach (AbilityExtension_AbilityMod modExtension in this.AbilityModExtensions)
+                modExtension.WarmupToil(toil);
+        }
+
         public virtual void DoAction()
         {
             if (Event.current.button == 1)
@@ -410,11 +416,15 @@
         public virtual string GetDescription(Ability ability) =>
             string.Empty;
 
+        public virtual void WarmupToil(Toil toil)
+        {
+        }
+
         public virtual void Cast(Ability ability)
         {
         }
     }
-    
+
     public class AbilityExtension_Hediff : DefModExtension
     {
         public HediffDef hediff;
