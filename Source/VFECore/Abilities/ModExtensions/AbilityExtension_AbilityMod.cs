@@ -25,7 +25,10 @@
 		{
 
 		}
+		public virtual void PreCast(LocalTargetInfo target, Ability ability, ref bool startAbilityJob)
+		{
 
+		}
 		public virtual void Cast(LocalTargetInfo target, Ability ability)
 		{
 

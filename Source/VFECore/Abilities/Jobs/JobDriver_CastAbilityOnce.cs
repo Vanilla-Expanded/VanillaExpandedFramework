@@ -52,7 +52,10 @@
             castToil.defaultCompleteMode = ToilCompleteMode.Instant;
             castToil.atomicWithPrevious  = true;
             yield return castToil;
-
+            AddFinishAction(delegate
+            {
+                comp.currentlyCasting.EndCastJob();
+            });
         }
     }
 }

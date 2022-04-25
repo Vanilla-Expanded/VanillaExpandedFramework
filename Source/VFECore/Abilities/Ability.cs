@@ -207,13 +207,27 @@
         // Careful with changing this, hook in mp compat.
         public virtual void CreateCastJob(LocalTargetInfo target)
         {
-            this.pawn.jobs.EndCurrentJob(JobCondition.InterruptForced, false);
+            bool startAbilityJob = true;
+            PreCast(target, ref startAbilityJob);
+            if (startAbilityJob)
+            {
+                Log.Message("1 STARTING ABILITY JOB");
+                StartAbilityJob(target);
+            }
+        }
 
+        public void StartAbilityJob(LocalTargetInfo target)
+        {
+            this.pawn.jobs.EndCurrentJob(JobCondition.InterruptForced, false);
             Job job = JobMaker.MakeJob(def.jobDef ?? VFE_DefOf_Abilities.VFEA_UseAbility, target);
             this.pawn.GetComp<CompAbilities>().currentlyCasting = this;
             this.pawn.jobs.StartJob(job, JobCondition.InterruptForced);
         }
-
+        public virtual void PreCast(LocalTargetInfo target, ref bool startAbilityJob)
+        {
+            foreach (AbilityExtension_AbilityMod modExtension in this.AbilityModExtensions)
+                modExtension.PreCast(target, this, ref startAbilityJob);
+        }
         public virtual void Cast(LocalTargetInfo target)
         {
             this.cooldown = Find.TickManager.TicksGame + this.GetCooldownForPawn();
@@ -245,6 +259,10 @@
                 this.TargetEffects(target);
         }
 
+        public virtual void EndCastJob()
+        {
+            this.selectedTarget = IntVec3.Invalid;
+        }
         public virtual void CastEffects(LocalTargetInfo targetInfo)
         {
             if (this.def.castFleck != null)
@@ -304,6 +322,7 @@
             Scribe_Defs.Look(ref this.def, nameof(this.def));
             Scribe_Deep.Look(ref this.verb, nameof(this.verb));
             Scribe_Values.Look(ref this.autoCast, nameof(this.autoCast));
+            Scribe_TargetInfo.Look(ref this.selectedTarget, nameof(this.selectedTarget));
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {

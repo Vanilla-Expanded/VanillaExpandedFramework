@@ -30,7 +30,6 @@ using RimWorld;
             base.OrderForceTarget(target);
             this.ability.OrderForceTarget(target);
         }
-
         public override void OnGUI(LocalTargetInfo target)
         {
             DrawAttachmentExtraLabel(target);
@@ -40,6 +39,7 @@ using RimWorld;
             foreach (var modExtension in ability.AbilityModExtensions)
             {
                 string text = modExtension.ExtraLabelMouseAttachment(target, ability);
+                Log.Message("Drawing text: " + text + " from " + modExtension); ;
                 if (!text.NullOrEmpty())
                 {
                     Widgets.MouseAttachedLabel(text);
