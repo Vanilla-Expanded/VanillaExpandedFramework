@@ -50,7 +50,10 @@
         public                  string    iconPath;
 
         public SoundDef  castSound;
-        public FleckDef  castFleck;
+        public FleckDef castFleck;
+        public float castFleckScale = 1f;
+        public FleckDef fleckOnTarget;
+        public float fleckOnTargetScale = 1f;
         public HediffDef casterHediff;
 
         public List<FleckDef> targetFlecks;

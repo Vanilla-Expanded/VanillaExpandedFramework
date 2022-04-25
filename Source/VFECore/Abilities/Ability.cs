@@ -273,7 +273,9 @@
         public virtual void CastEffects(LocalTargetInfo targetInfo)
         {
             if (this.def.castFleck != null)
-                FleckMaker.Static(this.pawn.DrawPos, this.pawn.Map, this.def.castFleck);
+                FleckMaker.Static(this.pawn.DrawPos, this.pawn.Map, this.def.castFleck, this.def.castFleckScale);
+            if (this.def.fleckOnTarget != null)
+                FleckMaker.Static(targetInfo.Thing.DrawPos, targetInfo.Thing.Map, this.def.fleckOnTarget, this.def.fleckOnTargetScale);
             if (this.def.casterHediff != null)
                 this.pawn.health.AddHediff(this.def.casterHediff);
             this.def.castSound?.PlayOneShot(new TargetInfo(this.pawn.Position, this.pawn.Map));

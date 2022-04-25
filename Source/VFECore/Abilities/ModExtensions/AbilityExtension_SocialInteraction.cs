@@ -12,14 +12,6 @@
 		public bool canApplyToUnconscious;
 		public override void Cast(LocalTargetInfo target, Ability ability)
 		{
-			if (CanApplyOn(target, ability, true))
-            {
-				Apply(target, ability);
-			}
-		}
-
-		public void Apply(LocalTargetInfo target, Ability ability)
-		{
 			Pawn pawn = target.Pawn;
 			if (pawn != null && ability.pawn != pawn)
 			{

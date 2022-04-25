@@ -38,10 +38,6 @@
         {
 			return true;
         }
-		public virtual void Apply(LocalTargetInfo target, LocalTargetInfo dest, Ability ability)
-		{
-
-		}
 		public virtual bool CanApplyOn(LocalTargetInfo target, Ability ability, bool throwMessages = false)
 		{
 			return true;
