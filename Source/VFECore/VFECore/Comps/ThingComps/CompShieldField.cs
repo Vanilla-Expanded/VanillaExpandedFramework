@@ -431,16 +431,20 @@ namespace VFECore
 
         public void Initialize()
         {
-            if (!listerShieldGensByMaps.TryGetValue(parent.MapHeld, out var list))
+            if (parent.MapHeld != null)
             {
-                listerShieldGensByMaps[parent.MapHeld] = list = new List<CompShieldField>();
-            }
-            if (!list.Contains(this))
-            {
-                list.Add(this);
+                if (!listerShieldGensByMaps.TryGetValue(parent.MapHeld, out var list))
+                {
+                    listerShieldGensByMaps[parent.MapHeld] = list = new List<CompShieldField>();
+                }
+                if (!list.Contains(this))
+                {
+                    list.Add(this);
+                }
+
+                UpdateShieldCoverage();
             }
 
-            UpdateShieldCoverage();
         }
 
         private void UpdateShieldCoverage()
