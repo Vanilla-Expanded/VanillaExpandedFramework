@@ -207,6 +207,13 @@
         // Careful with changing this, hook in mp compat.
         public virtual void CreateCastJob(LocalTargetInfo target)
         {
+            foreach (var modExtension in this.AbilityModExtensions)
+            {
+                if (!modExtension.Valid(target, this))
+                {
+                    return;
+                }
+            }
             bool startAbilityJob = true;
             PreCast(target, ref startAbilityJob);
             if (startAbilityJob)

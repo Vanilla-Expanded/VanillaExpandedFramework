@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using RimWorld;
+using System.Linq;
 using Verse;
+using static HarmonyLib.Code;
 
 namespace VFECore.Abilities
 {
@@ -15,6 +17,11 @@ namespace VFECore.Abilities
             var localHediff = HediffMaker.MakeHediff(hediffExtension.hediff, targetInfo.Pawn, bodyPart);
             if (hediffExtension.severity > float.Epsilon)
                 localHediff.Severity = hediffExtension.severity;
+            var duration = GetDurationForPawn();
+            if (hediffExtension.durationMultiplier != null)
+            {
+                duration *= (int)(duration * targetInfo.Pawn.GetStatValue(hediffExtension.durationMultiplier));
+            }
             if (localHediff is HediffWithComps hwc)
                 foreach (var hediffComp in hwc.comps)
                     switch (hediffComp)
@@ -23,11 +30,12 @@ namespace VFECore.Abilities
                             hca.ability = this;
                             break;
                         case HediffComp_Disappears hcd:
-                            hcd.ticksToDisappear = GetDurationForPawn();
+                            hcd.ticksToDisappear = duration;
                             break;
                     }
 
             targetInfo.Pawn.health.AddHediff(localHediff);
+            Log.Message("Adding " + localHediff + " to " + targetInfo.Pawn);
         }
     }
 }

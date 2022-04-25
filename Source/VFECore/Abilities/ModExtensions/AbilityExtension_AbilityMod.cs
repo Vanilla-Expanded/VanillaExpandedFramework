@@ -33,6 +33,11 @@
 		{
 
 		}
+
+		public virtual bool Valid(LocalTargetInfo target, Ability ability)
+        {
+			return true;
+        }
 		public virtual void Apply(LocalTargetInfo target, LocalTargetInfo dest, Ability ability)
 		{
 
