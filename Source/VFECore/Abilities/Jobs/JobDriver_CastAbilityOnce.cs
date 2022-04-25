@@ -37,7 +37,7 @@
             if (this.TargetA.Pawn != this.pawn)
                 waitToil.AddPreTickAction(() =>
                                           {
-                                              if (Find.Selector.IsSelected(this.pawn))
+                                              if (comp.currentlyCasting.def.drawAimPie && Find.Selector.IsSelected(this.pawn))
                                                   GenDraw.DrawAimPie(this.pawn, this.TargetA, this.ticksLeftThisToil, 0.2f);
                                           });
             comp.currentlyCasting.WarmupToil(waitToil);

@@ -40,6 +40,12 @@
         public JobDef jobDef;
         public float distanceToTarget = 1.5f;
 
+        public ThingDef warmupMote;
+        public SoundDef warmupSound;
+        public float moteOffsetAmountTowardsTarget;
+        public bool drawAimPie = true;
+
+
         [Unsaved(false)] public Texture2D icon = BaseContent.BadTex;
         public                  string    iconPath;
 

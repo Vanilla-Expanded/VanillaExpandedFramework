@@ -32,7 +32,8 @@
         public List<AbilityExtension_AbilityMod> AbilityModExtensions =>
             this.abilityModExtensions ?? (this.abilityModExtensions = this.def.modExtensions.Where(dme => dme is AbilityExtension_AbilityMod)
                                                                        .Cast<AbilityExtension_AbilityMod>().ToList());
-
+        public Mote warmupMote;
+        private Sustainer soundCast;
         public void Init()
         {
             if (this.verb == null)
@@ -154,6 +155,35 @@
 
         public virtual void WarmupToil(Toil toil)
         {
+            toil.AddPreTickAction(delegate
+            {
+                if (def.warmupMote != null)
+                {
+                    Vector3 vector = pawn.DrawPos;
+                    vector += (verb.CurrentTarget.CenterVector3 - vector) * def.moteOffsetAmountTowardsTarget;
+                    if (warmupMote == null || warmupMote.Destroyed)
+                    {
+                        warmupMote = MoteMaker.MakeStaticMote(vector, pawn.Map, def.warmupMote);
+                    }
+                    else
+                    {
+                        warmupMote.exactPosition = vector;
+                        warmupMote.Maintain();
+                    }
+                }
+
+                if (def.warmupSound != null)
+                {
+                    if (soundCast == null || soundCast.Ended)
+                    {
+                        soundCast = def.warmupSound.TrySpawnSustainer(SoundInfo.InMap(new TargetInfo(pawn.Position, pawn.Map), MaintenanceType.PerTick));
+                    }
+                    else
+                    {
+                        soundCast.Maintain();
+                    }
+                }
+            });
             foreach (AbilityExtension_AbilityMod modExtension in this.AbilityModExtensions)
                 modExtension.WarmupToil(toil);
         }
@@ -200,7 +230,7 @@
                 }
             }
             foreach (AbilityExtension_AbilityMod modExtension in this.AbilityModExtensions)
-                modExtension.Cast(this);
+                modExtension.Cast(target, this);
 
             this.CheckCastEffects(target, out bool cast, out bool targetMote, out bool hediffApply);
 
@@ -401,35 +431,5 @@
 
     public class Ability_Blank : Ability
     {
-    }
-
-    public class AbilityExtension_AbilityMod : DefModExtension
-    {
-        [Unsaved] public AbilityDef abilityDef;
-
-        public virtual bool IsEnabledForPawn(Ability ability, out string reason)
-        {
-            reason = string.Empty;
-            return true;
-        }
-
-        public virtual string GetDescription(Ability ability) =>
-            string.Empty;
-
-        public virtual void WarmupToil(Toil toil)
-        {
-        }
-
-        public virtual void Cast(Ability ability)
-        {
-        }
-    }
-
-    public class AbilityExtension_Hediff : DefModExtension
-    {
-        public HediffDef hediff;
-        public BodyPartDef bodyPartToApply;
-        public float     severity  = -1f;
-        public bool      applyAuto = true;
     }
 }
