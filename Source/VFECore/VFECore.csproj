@@ -390,6 +390,7 @@
     <Compile Include="Abilities\Jobs\JobDriver_CastAbilityOnce.cs" />
     <Compile Include="Abilities\Jobs\JobDriver_GotoTargetAndCastAbilityOnce.cs" />
     <Compile Include="Abilities\Jobs\JobDriver_StandAndFaceTarget.cs" />
+    <Compile Include="Abilities\ModExtensions\AbilityExtension_ThoughtOnTarget.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_SocialInteraction.cs" />
     <Compile Include="Abilities\PawnGen_Patch.cs" />
     <Compile Include="Abilities\PawnKindAbilityExtension.cs" />
