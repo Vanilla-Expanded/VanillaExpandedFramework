@@ -45,6 +45,7 @@
             this.verb.caster      = this.pawn;
             this.verb.ability     = this;
             this.autoCast         = this.def.autocastPlayerDefault;
+            AbilityManager.Instance.AddAbility(this);
         }
 
         public virtual bool ShowGizmoOnPawn() =>
@@ -93,7 +94,8 @@
         public virtual int GetDurationForPawn() =>
             Mathf.RoundToInt(this.def.durationTimeStatFactors.Aggregate((float)this.def.durationTime,
                                                                         (current, statFactor) => current * (this.pawn.GetStatValue(statFactor.stat) * statFactor.value)));
-
+        
+        private List<Pair<Effecter, TargetInfo>> maintainedEffecters = new List<Pair<Effecter, TargetInfo>>();
         public virtual string GetDescriptionForPawn()
         {
             StringBuilder sb = new StringBuilder(this.def.description);
@@ -148,6 +150,28 @@
         public virtual float Chance =>
             this.def.Chance;
 
+        public virtual void Tick()
+        {
+            for (int num2 = maintainedEffecters.Count - 1; num2 >= 0; num2--)
+            {
+                Effecter first = maintainedEffecters[num2].First;
+                if (first.ticksLeft > 0)
+                {
+                    TargetInfo second = maintainedEffecters[num2].Second;
+                    first.EffectTick(second, second);
+                    first.ticksLeft--;
+                }
+                else
+                {
+                    first.Cleanup();
+                    maintainedEffecters.RemoveAt(num2);
+                }
+            }
+        }
+        public virtual void Update()
+        {
+
+        }
         public virtual Gizmo GetGizmo()
         {
             Abilities.Command_Ability action = new Abilities.Command_Ability(this.pawn, this);
@@ -292,6 +316,11 @@
             Log.Message(fleckDef + " - Speed: " + speed);
             map.flecks.CreateFleck(data);
         }
+        public void AddEffecterToMaintain(Effecter eff, IntVec3 pos, int ticks, Map map = null)
+        {
+            eff.ticksLeft = ticks;
+            maintainedEffecters.Add(new Pair<Effecter, TargetInfo>(eff, new TargetInfo(pos, map ?? pawn.Map)));
+        }
         public virtual void TargetEffects(LocalTargetInfo targetInfo)
         {
             if (!this.def.targetFlecks.NullOrEmpty())
@@ -354,6 +383,7 @@
                 this.verb.verbTracker = this.pawn?.verbTracker;
                 this.verb.caster      = this.pawn;
                 this.verb.ability     = this;
+                AbilityManager.Instance.AddAbility(this);
             }
         }
 
