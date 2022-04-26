@@ -21,9 +21,7 @@ namespace VFECore
                 }
                 if (!pawn.RaceProps.Humanlike)
                 {
-                    Log.Message(pawn.skills.GetSkill(SkillDefOf.Shooting).Level + " - " + pawn.skills.GetSkill(SkillDefOf.Shooting).LevelDescriptor);
                     NonPublicMethods.GenerateSkills(pawn);
-                    Log.Message(pawn.skills.GetSkill(SkillDefOf.Shooting).Level + " - " + pawn.skills.GetSkill(SkillDefOf.Shooting).LevelDescriptor);
                 }
             }
         }
