@@ -15,10 +15,10 @@ namespace VFECore
         public VFECore(ModContentPack content) : base(content)
         {
             harmonyInstance = new Harmony("OskarPotocki.VFECore");
+            harmonyInstance.PatchAll();
         }
 
         public static Harmony harmonyInstance;
-
     }
 
 }

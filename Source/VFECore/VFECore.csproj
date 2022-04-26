@@ -609,6 +609,7 @@
     <Compile Include="Apparel\ModExtensions\ApparelExtension.cs" />
     <Compile Include="Misc\Shields\HediffComp_DamageAura.cs" />
     <Compile Include="VFECore\DefModExtensions\ProjectileExtension.cs" />
+    <Compile Include="VFECore\HarmonyPatches\ThingDefGenerator_Corpses_ImpliedCorpseDefs_Patch.cs" />
     <Compile Include="VFECore\Projectiles\BeamProjectile.cs" />
     <Compile Include="VFECore\Reflection\NonPublicProperties.cs" />
     <Compile Include="Cuisine\GraphicClasses\Graphic_RandomStackCount.cs" />
@@ -762,8 +763,8 @@
     <Compile Include="ItemProcessor\Enums\ProcessorStage.cs" />
     <Compile Include="ItemProcessor\GraphicsCache\GraphicsCache.cs" />
     <Compile Include="VFECore\HarmonyPatches\Apparel_Draw_Patches.cs" />
-    <Compile Include="VFECore\HarmonyPatches\DualWield\Patch_DualWield_Ext_Pawn_EquipmentTracker.cs" />
-    <Compile Include="VFECore\HarmonyPatches\DualWield\Patch_DualWield_Harmony_FloatMenuMakerMap_AddHumanlikeOrders.cs" />
+    <Compile Include="VFECore\HarmonyPatches\ModCompatibility\DualWield\Patch_DualWield_Ext_Pawn_EquipmentTracker.cs" />
+    <Compile Include="VFECore\HarmonyPatches\ModCompatibility\DualWield\Patch_DualWield_Harmony_FloatMenuMakerMap_AddHumanlikeOrders.cs" />
     <Compile Include="VFECore\HarmonyPatches\FactionSpawning\Patch_FactionDiscovery_ModBase.cs" />
     <Compile Include="VFECore\HarmonyPatches\FactionSpawning\Patch_GameComponentUtility.cs" />
     <Compile Include="VFECore\HarmonyPatches\HarmonyPatches.cs" />
@@ -804,9 +805,9 @@
     <Compile Include="VFECore\HarmonyPatches\Verb_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\PickUpAndHaul_Patch.cs" />
     <Compile Include="VFECore\HarmonyPatches\Mechanoids\RenderTurretCentered.cs" />
-    <Compile Include="VFECore\HarmonyPatches\RimCities\Patch_Cities_GenCity.cs" />
-    <Compile Include="VFECore\HarmonyPatches\RPGStyleInventory\Patch_RPG_GearTab.cs" />
-    <Compile Include="VFECore\HarmonyPatches\RunAndGun\Patch_RunAndGun_Harmony_Verb_TryCastNextBurstShot.cs" />
+    <Compile Include="VFECore\HarmonyPatches\ModCompatibility\RimCities\Patch_Cities_GenCity.cs" />
+    <Compile Include="VFECore\HarmonyPatches\ModCompatibility\RPGStyleInventory\Patch_RPG_GearTab.cs" />
+    <Compile Include="VFECore\HarmonyPatches\ModCompatibility\RunAndGun\Patch_RunAndGun_Harmony_Verb_TryCastNextBurstShot.cs" />
     <Compile Include="VFECore\HarmonyPatches\Patch_DrugPolicy.cs" />
     <Compile Include="VFECore\HarmonyPatches\SetInitialRelationsBetweenNpcFactions.cs" />
     <Compile Include="VFECore\IncidentWorkers\IncidentWorker_RaidEnemySpecial.cs" />

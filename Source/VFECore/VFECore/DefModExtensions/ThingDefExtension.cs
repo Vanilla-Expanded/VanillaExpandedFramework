@@ -28,6 +28,8 @@ namespace VFECore
         // For skyfallers that can fall into shield fields
         public int shieldDamageIntercepted = -1;
 
+        public bool destroyCorpse;
+
     }
 
     public class DraftedDrawOffsets

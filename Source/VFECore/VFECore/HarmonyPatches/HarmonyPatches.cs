@@ -12,13 +12,14 @@ namespace VFECore
         static HarmonyPatches()
         {
             //Harmony.DEBUG = true;
-            VFECore.harmonyInstance.PatchAll();
             // PawnApparelGenerator.PossibleApparelSet.CoatButNoShirt
             VFECore.harmonyInstance.Patch(
                 typeof(PawnApparelGenerator).GetNestedType("PossibleApparelSet", BindingFlags.NonPublic | BindingFlags.Instance)
                     .GetMethod("CoatButNoShirt", BindingFlags.Public | BindingFlags.Instance),
                 transpiler: new HarmonyMethod(typeof(Patch_PawnApparelGenerator.PossibleApparelSet.manual_CoatButNoShirt), "Transpiler"));
 
+            VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(PawnApparelGenerator), nameof(PawnApparelGenerator.GenerateStartingApparelFor)),
+                postfix: new HarmonyMethod(AccessTools.Method(typeof(Patch_PawnApparelGenerator), nameof(Patch_PawnApparelGenerator.GenerateStartingApparelFor_Postfix))));
             // Dual Wield
             if (ModCompatibilityCheck.DualWield)
             {
