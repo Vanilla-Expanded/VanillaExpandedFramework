@@ -28,6 +28,10 @@
             Toil toil = new Toil();
             toil.tickAction = delegate
             {
+                if (base.pawn.pather.Moving)
+                {
+                    base.pawn.pather.StopDead();
+                }
                 base.pawn.rotationTracker.FaceTarget(TargetA);
                 base.pawn.GainComfortFromCellIfPossible();
             };
