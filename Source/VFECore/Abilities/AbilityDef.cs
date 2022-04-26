@@ -52,8 +52,11 @@
         public SoundDef  castSound;
         public FleckDef castFleck;
         public float castFleckScale = 1f;
+        public float castFleckSpeed;
         public FleckDef fleckOnTarget;
         public float fleckOnTargetScale = 1f;
+        public float fleckOnTargetSpeed;
+
         public HediffDef casterHediff;
 
         public List<FleckDef> targetFlecks;

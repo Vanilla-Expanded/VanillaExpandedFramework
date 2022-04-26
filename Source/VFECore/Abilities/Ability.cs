@@ -273,14 +273,25 @@
         public virtual void CastEffects(LocalTargetInfo targetInfo)
         {
             if (this.def.castFleck != null)
-                FleckMaker.Static(this.pawn.DrawPos, this.pawn.Map, this.def.castFleck, this.def.castFleckScale);
+                MakeStaticFleck(this.pawn.DrawPos, this.pawn.Map, this.def.castFleck, this.def.castFleckScale, this.def.castFleckSpeed);
             if (this.def.fleckOnTarget != null)
-                FleckMaker.Static(targetInfo.Thing.DrawPos, targetInfo.Thing.Map, this.def.fleckOnTarget, this.def.fleckOnTargetScale);
+                MakeStaticFleck(targetInfo.Thing.DrawPos, targetInfo.Thing.Map, this.def.fleckOnTarget, this.def.fleckOnTargetScale, this.def.fleckOnTargetSpeed);
             if (this.def.casterHediff != null)
                 this.pawn.health.AddHediff(this.def.casterHediff);
             this.def.castSound?.PlayOneShot(new TargetInfo(this.pawn.Position, this.pawn.Map));
         }
 
+        public static void MakeStaticFleck(IntVec3 cell, Map map, FleckDef fleckDef, float scale, float speed)
+        {
+            MakeStaticFleck(cell.ToVector3Shifted(), map, fleckDef, scale, speed);
+        }
+        public static void MakeStaticFleck(Vector3 loc, Map map, FleckDef fleckDef, float scale, float speed)
+        {
+            var data = FleckMaker.GetDataStatic(loc, map, fleckDef, scale);
+            data.velocitySpeed = speed;
+            Log.Message(fleckDef + " - Speed: " + speed);
+            map.flecks.CreateFleck(data);
+        }
         public virtual void TargetEffects(LocalTargetInfo targetInfo)
         {
             if (!this.def.targetFlecks.NullOrEmpty())
