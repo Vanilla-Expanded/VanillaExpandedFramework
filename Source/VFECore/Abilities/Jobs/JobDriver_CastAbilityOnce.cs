@@ -35,7 +35,7 @@
             waitToil.WithProgressBarToilDelay(TargetIndex.C);
             waitToil.initAction = delegate
             {
-                comp.currentlyCasting.PreWarmupAction();
+                comp.currentlyCasting.PreWarmupAction(this.TargetA);
             };
             if (this.TargetA.Pawn != this.pawn)
                 waitToil.AddPreTickAction(() =>
