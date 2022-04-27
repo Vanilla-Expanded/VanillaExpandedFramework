@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
@@ -47,7 +47,8 @@ namespace Outposts
                         if (thing.stackCount <= transferable.CountToTransfer)
                         {
                             transferable.AdjustBy(-thing.stackCount);
-                            caravan.AddPawnOrItem(thing, true);
+                            thing.holdingOwner?.Remove(thing);
+                            caravan.AddPawnOrItem(outpost.TakeItem(thing), true);
                         }
                         else
                         {
