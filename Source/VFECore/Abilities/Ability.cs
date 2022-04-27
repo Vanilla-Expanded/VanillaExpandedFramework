@@ -259,6 +259,12 @@
             foreach (AbilityExtension_AbilityMod modExtension in this.AbilityModExtensions)
                 modExtension.PreCast(target, this, ref startAbilityJob);
         }
+
+        public virtual void PreWarmupAction(LocalTargetInfo target)
+        {
+            foreach (AbilityExtension_AbilityMod modExtension in this.AbilityModExtensions)
+                modExtension.PreWarmupAction(target, this);
+        }
         public virtual void Cast(LocalTargetInfo target)
         {
             this.cooldown = Find.TickManager.TicksGame + this.GetCooldownForPawn();

@@ -21,6 +21,10 @@
 		public virtual string GetDescription(Ability ability) =>
 			string.Empty;
 
+		public virtual void PreWarmupAction(LocalTargetInfo target, Ability ability)
+        {
+
+        }
 		public virtual void WarmupToil(Toil toil)
 		{
 
