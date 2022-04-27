@@ -20,7 +20,7 @@ namespace VFECore.Abilities
             var duration = GetDurationForPawn();
             if (hediffExtension.durationMultiplier != null)
             {
-                duration *= (int)(duration * targetInfo.Pawn.GetStatValue(hediffExtension.durationMultiplier));
+                duration = (int)(duration * targetInfo.Pawn.GetStatValue(hediffExtension.durationMultiplier));
             }
             if (localHediff is HediffWithComps hwc)
                 foreach (var hediffComp in hwc.comps)
@@ -35,7 +35,7 @@ namespace VFECore.Abilities
                     }
 
             targetInfo.Pawn.health.AddHediff(localHediff);
-            Log.Message("Adding " + localHediff + " to " + targetInfo.Pawn);
+            Log.Message("Adding " + localHediff + " to " + targetInfo.Pawn + ", duration: " + duration);
         }
     }
 }
