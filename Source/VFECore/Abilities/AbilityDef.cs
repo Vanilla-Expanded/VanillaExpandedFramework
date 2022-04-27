@@ -105,28 +105,28 @@
                                                canTargetHumans    = false,
                                                canTargetMechs     = false
                                            };
+            }
 
-                switch (this.targetMode)
-                {
-                    case AbilityTargetingMode.Self:
-                        this.targetingParameters = TargetingParameters.ForSelf(null);
-                        break;
-                    case AbilityTargetingMode.Location:
-                        this.targetingParameters.canTargetLocations = true;
-                        break;
-                    case AbilityTargetingMode.Thing:
-                        this.targetingParameters.canTargetItems     = true;
-                        this.targetingParameters.canTargetBuildings = true;
-                        break;
-                    case AbilityTargetingMode.Pawn:
-                        this.targetingParameters.canTargetPawns = this.targetingParameters.canTargetHumans = this.targetingParameters.canTargetMechs = this.targetingParameters.canTargetAnimals = true;
-                        break;
-                    case AbilityTargetingMode.Humanlike:
-                        this.targetingParameters.canTargetPawns = this.targetingParameters.canTargetHumans = true;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+            switch (this.targetMode)
+            {
+                case AbilityTargetingMode.Self:
+                    this.targetingParameters = TargetingParameters.ForSelf(null);
+                    break;
+                case AbilityTargetingMode.Location:
+                    this.targetingParameters.canTargetLocations = true;
+                    break;
+                case AbilityTargetingMode.Thing:
+                    this.targetingParameters.canTargetItems = true;
+                    this.targetingParameters.canTargetBuildings = true;
+                    break;
+                case AbilityTargetingMode.Pawn:
+                    this.targetingParameters.canTargetPawns = this.targetingParameters.canTargetHumans = this.targetingParameters.canTargetMechs = this.targetingParameters.canTargetAnimals = true;
+                    break;
+                case AbilityTargetingMode.Humanlike:
+                    this.targetingParameters.canTargetPawns = this.targetingParameters.canTargetHumans = true;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
