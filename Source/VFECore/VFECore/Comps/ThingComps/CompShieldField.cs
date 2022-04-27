@@ -510,7 +510,7 @@ namespace VFECore
                         {
                             sustainer = Props.activeSound.TrySpawnSustainer(SoundInfo.InMap(parent));
                         }
-                        sustainer.Maintain();
+                        sustainer?.Maintain();
                     }
                     
                     // Power consumption
