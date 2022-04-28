@@ -68,6 +68,8 @@
                 if(this.breakTicks <= 0)
                     this.Break();
             }
+            foreach (Abilities.Ability learnedAbility in this.learnedAbilities)
+                learnedAbility.Tick();
         }
 
         public override string CompInspectStringExtra() => string.Empty;

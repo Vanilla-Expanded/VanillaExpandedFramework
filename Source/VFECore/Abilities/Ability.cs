@@ -45,7 +45,6 @@
             this.verb.caster      = this.pawn;
             this.verb.ability     = this;
             this.autoCast         = this.def.autocastPlayerDefault;
-            AbilityManager.Instance.AddAbility(this);
         }
 
         public virtual bool ShowGizmoOnPawn() =>
@@ -168,10 +167,7 @@
                 }
             }
         }
-        public virtual void Update()
-        {
 
-        }
         public virtual Gizmo GetGizmo()
         {
             Abilities.Command_Ability action = new Abilities.Command_Ability(this.pawn, this);
@@ -389,7 +385,6 @@
                 this.verb.verbTracker = this.pawn?.verbTracker;
                 this.verb.caster      = this.pawn;
                 this.verb.ability     = this;
-                AbilityManager.Instance.AddAbility(this);
             }
         }
 
