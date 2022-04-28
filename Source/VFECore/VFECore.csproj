@@ -611,8 +611,10 @@
     <Compile Include="Apparel\Harmony\SkillRecord_Learn_Patch.cs" />
     <Compile Include="Apparel\Harmony\ThingSelectionUtility_SelectableByMapClick_Patch.cs" />
     <Compile Include="Apparel\ModExtensions\ApparelExtension.cs" />
+    <Compile Include="VFECore\HarmonyPatches\GenStep_Terrain_TerrainFrom_Patch.cs" />
     <Compile Include="Misc\Shields\HediffComp_DamageAura.cs" />
     <Compile Include="VFECore\DefModExtensions\ProjectileExtension.cs" />
+    <Compile Include="VFECore\DefModExtensions\BiomeExtension.cs" />
     <Compile Include="VFECore\HarmonyPatches\ThingDefGenerator_Corpses_ImpliedCorpseDefs_Patch.cs" />
     <Compile Include="VFECore\Projectiles\BeamProjectile.cs" />
     <Compile Include="VFECore\Reflection\NonPublicProperties.cs" />
@@ -865,6 +867,7 @@
     <Compile Include="VFECore\WeatherOverlays\WeatherOverlay_CustomTwo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="HarmonyPatches\" />
     <Folder Include="VFECore\Verbs\" />
   </ItemGroup>
   <ItemGroup>
