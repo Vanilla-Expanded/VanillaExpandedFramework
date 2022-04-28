@@ -1,11 +1,11 @@
-﻿namespace VFECore.Abilities
-{
-    using System;
-    using System.Collections.Generic;
-    using RimWorld;
-    using UnityEngine;
-    using Verse;
+﻿using System;
+using System.Collections.Generic;
+using RimWorld;
+using UnityEngine;
+using Verse;
 
+namespace VFECore.Abilities
+{
     public class AbilityDef : Def
     {
         public Type abilityClass;
@@ -13,7 +13,7 @@
         public HediffWithLevelCombination requiredHediff;
         public TraitDef                   requiredTrait;
 
-        public AbilityTargetingMode targetMode = AbilityTargetingMode.Self;
+        public AbilityTargetingMode targetMode = AbilityTargetingMode.None;
 
         public float              range            = 0f;
         public List<StatModifier> rangeStatFactors = new List<StatModifier>();
@@ -82,7 +82,7 @@
             foreach (string configError in base.ConfigErrors())
                 yield return configError;
 
-            if (!typeof(Abilities.Ability).IsAssignableFrom(this.abilityClass))
+            if (!typeof(Ability).IsAssignableFrom(this.abilityClass))
                 yield return $"{this.abilityClass} is not a valid ability type";
             /*
             if (this.GetModExtension<AbilityExtension_Projectile>() != null && (this.GetModExtension<AbilityExtension_Hediff>()?.applyAuto ?? false))
@@ -95,38 +95,42 @@
             if (!this.iconPath.NullOrEmpty())
                 LongEventHandler.ExecuteWhenFinished(delegate { this.icon = ContentFinder<Texture2D>.Get(this.iconPath); });
 
-            if (this.targetingParameters == null)
+            if (targetingParameters == null)
             {
-                this.targetingParameters = new TargetingParameters()
-                                           {
-                                               canTargetPawns     = false,
-                                               canTargetBuildings = false,
-                                               canTargetAnimals   = false,
-                                               canTargetHumans    = false,
-                                               canTargetMechs     = false
-                                           };
-            }
+                targetingParameters = new TargetingParameters
+                {
+                    canTargetPawns     = false,
+                    canTargetBuildings = false,
+                    canTargetAnimals   = false,
+                    canTargetHumans    = false,
+                    canTargetMechs     = false
+                };
 
-            switch (this.targetMode)
-            {
-                case AbilityTargetingMode.Self:
-                    this.targetingParameters = TargetingParameters.ForSelf(null);
-                    break;
-                case AbilityTargetingMode.Location:
-                    this.targetingParameters.canTargetLocations = true;
-                    break;
-                case AbilityTargetingMode.Thing:
-                    this.targetingParameters.canTargetItems = true;
-                    this.targetingParameters.canTargetBuildings = true;
-                    break;
-                case AbilityTargetingMode.Pawn:
-                    this.targetingParameters.canTargetPawns = this.targetingParameters.canTargetHumans = this.targetingParameters.canTargetMechs = this.targetingParameters.canTargetAnimals = true;
-                    break;
-                case AbilityTargetingMode.Humanlike:
-                    this.targetingParameters.canTargetPawns = this.targetingParameters.canTargetHumans = true;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                if (targetMode == AbilityTargetingMode.None) targetMode = AbilityTargetingMode.Self;
+
+                switch (targetMode)
+                {
+                    case AbilityTargetingMode.Self:
+                        targetingParameters = TargetingParameters.ForSelf(null);
+                        break;
+                    case AbilityTargetingMode.Location:
+                        targetingParameters.canTargetLocations = true;
+                        break;
+                    case AbilityTargetingMode.Thing:
+                        targetingParameters.canTargetItems     = true;
+                        targetingParameters.canTargetBuildings = true;
+                        break;
+                    case AbilityTargetingMode.Pawn:
+                        targetingParameters.canTargetPawns = targetingParameters.canTargetHumans =
+                            targetingParameters.canTargetMechs = targetingParameters.canTargetAnimals = true;
+                        break;
+                    case AbilityTargetingMode.Humanlike:
+                        targetingParameters.canTargetPawns = targetingParameters.canTargetHumans = true;
+                        break;
+                    case AbilityTargetingMode.None:
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             }
         }
 
@@ -169,6 +173,7 @@
 
     public enum AbilityTargetingMode : byte
     {
+        None,
         Self,
         Location,
         Thing,

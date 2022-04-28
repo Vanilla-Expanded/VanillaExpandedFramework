@@ -374,6 +374,7 @@
     <Compile Include="Abilities\AbilityDef.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_AbilityMod.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_EffecterOnTarget.cs" />
+    <Compile Include="Abilities\ModExtensions\AbilityExtension_ExtraHediffs.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_FleckOnTarget.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_Hediff.cs" />
     <Compile Include="Abilities\AbilityPawnFlyer.cs" />
