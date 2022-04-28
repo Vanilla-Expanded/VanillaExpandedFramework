@@ -12,5 +12,6 @@ namespace VFECore
     public class BiomeExtension : DefModExtension
     {
         public List<SwapTerrainDef> terrainsToSwap;
+        public List<GenStepDef> skipGenSteps;
     }
 }
