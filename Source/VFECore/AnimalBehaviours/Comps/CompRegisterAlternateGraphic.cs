@@ -73,7 +73,7 @@ namespace AnimalBehaviours
 
           
             Pawn pawn = this.parent as Pawn;
-            string graphicPath = pawn.Drawer.renderer.graphics.nakedGraphic.path;
+            string graphicPath = pawn?.Drawer?.renderer?.graphics?.nakedGraphic?.path;
             AnimalCollectionClass.RemoveGraphicPathFromList(pawn,graphicPath);
         }
 
@@ -82,8 +82,8 @@ namespace AnimalBehaviours
 
            
              Pawn pawn = this.parent as Pawn;
-             string graphicPath = pawn.Drawer.renderer.graphics.nakedGraphic.path;
-             AnimalCollectionClass.RemoveGraphicPathFromList(pawn,graphicPath);
+            string graphicPath = pawn?.Drawer?.renderer?.graphics?.nakedGraphic?.path;
+            AnimalCollectionClass.RemoveGraphicPathFromList(pawn,graphicPath);
          }
     }
 }
