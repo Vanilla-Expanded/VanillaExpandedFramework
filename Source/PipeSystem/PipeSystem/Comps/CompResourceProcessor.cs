@@ -203,7 +203,7 @@ namespace PipeSystem
             if (cantProcess && Props.notWorkingKey != null)
                 sb.AppendInNewLine(Props.notWorkingKey.Translate());
             // If working show the thing that will be produced, the amount, and the progress
-            if (Working && storage >= ChoosedResult.countNeeded)
+            if (ChoosedResult.thing != null && Working && storage >= ChoosedResult.countNeeded)
                 sb.AppendInNewLine("PipeSystem_Producing".Translate(
                     ChoosedResult.thingCount,
                     ChoosedResult.thing.LabelCap,
