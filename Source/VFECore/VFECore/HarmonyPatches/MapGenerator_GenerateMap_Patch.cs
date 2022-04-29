@@ -93,9 +93,9 @@ namespace VFECore
             int spawnCounter = 0;
             foreach (ObjectSpawnsDef element in DefDatabase<ObjectSpawnsDef>.AllDefs.Where(element => element.allowedBiomes.Contains(map.Biome)))
             {
-                if (element.thingDef is null)
+                if (element.thingDef is null && element.pawnKindDef is null)
                 {
-                    Log.Error("[VEF] ObjectSpawnsDef " + element.defName + " contain null thing def. It will not work.");
+                    Log.Error("[VEF] ObjectSpawnsDef " + element.defName + " contain null thing / pawnkind def. It will not work.");
                     continue;
                 }
                 if (element.spawnOnlyInPlayerMaps && !map.IsPlayerHome)
@@ -112,7 +112,12 @@ namespace VFECore
                     bool canSpawn = CanSpawnAt(c, map, element);
                     if (canSpawn)
                     {
-                        Thing thing = (Thing)ThingMaker.MakeThing(element.thingDef, null);
+                        var faction = element.factionDef != null ? Find.FactionManager.FirstFactionOfDef(element.factionDef) : null;
+                        Thing thing = element.thingDef != null ? ThingMaker.MakeThing(element.thingDef, null) : PawnGenerator.GeneratePawn(element.pawnKindDef, faction);
+                        if (faction != null && !(thing is Pawn))
+                        {
+                            thing.SetFaction(faction);
+                        }
                         CellRect occupiedRect = GenAdj.OccupiedRect(c, thing.Rotation, thing.def.Size);
                         if (occupiedRect.InBounds(map))
                         {

@@ -12,6 +12,9 @@ namespace VFECore
     public class ObjectSpawnsDef : Def
     {
         public ThingDef thingDef;
+        public PawnKindDef pawnKindDef;
+        public FactionDef factionDef;
+
         public bool allowOnWater;
         public bool allowOnChunks;
         public IntRange numberToSpawn;

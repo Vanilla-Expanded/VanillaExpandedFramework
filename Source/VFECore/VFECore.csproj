@@ -833,8 +833,8 @@
     <Compile Include="VFECore\Lords\LordJob_SiegeCustom.cs" />
     <Compile Include="VFECore\Lords\LordToilData_SiegeCustom.cs" />
     <Compile Include="VFECore\Lords\LordToil_SiegeCustom.cs" />
-    <Compile Include="VFECore\MapExtender\MapGenerator_GenerateMap_Patch.cs" />
-    <Compile Include="VFECore\MapExtender\ObjectSpawnsDef.cs" />
+    <Compile Include="VFECore\HarmonyPatches\MapGenerator_GenerateMap_Patch.cs" />
+    <Compile Include="VFECore\Defs\ObjectSpawnsDef.cs" />
     <Compile Include="VFECore\ModCompatibilityCheck.cs" />
     <Compile Include="VFECore\Needs\Need_Power.cs" />
     <Compile Include="VFECore\PatchOperation\PatchOperationToggableSequence.cs" />
