@@ -79,7 +79,14 @@ namespace PipeSystem
                 {
                     FleckMaker.Static(pos, map, Props.chooseFleckFrom.RandomElement());
                 }
+
+                MoreSpillEffect(map, pos);
             }
+        }
+
+        public void MoreSpillEffect(Map map, IntVec3 position)
+        {
+            return;
         }
     }
 }
