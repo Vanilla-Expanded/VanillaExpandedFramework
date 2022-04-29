@@ -1,9 +1,8 @@
-﻿namespace VFECore.Abilities
-{
-    using System;
-    using UnityEngine;
-    using Verse;
+﻿using UnityEngine;
+using Verse;
 
+namespace VFECore.Abilities
+{
     [StaticConstructorOnStartup]
     public class Command_Ability : Command_Action
     {
@@ -33,19 +32,14 @@
             base.GizmoUpdateOnMouseover();
 
             float radius;
-            switch (this.ability.def.targetMode)
+            switch (ability.def.targetMode)
             {
                 case AbilityTargetingMode.Self:
-                    radius = this.ability.GetRadiusForPawn();
-                    break;
-                case AbilityTargetingMode.Location:
-                case AbilityTargetingMode.Thing:
-                case AbilityTargetingMode.Pawn:
-                case AbilityTargetingMode.Humanlike:
-                    radius = this.ability.GetRangeForPawn();
+                    radius = ability.GetRadiusForPawn();
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    radius = ability.GetRangeForPawn();
+                    break;
             }
 
             if (GenRadial.MaxRadialPatternRadius > radius && radius >= 1)
