@@ -17,7 +17,7 @@ namespace VFECore
         public List<ThingDef>       forceRockTypes;
         public List<ThingDef>       uniqueRockTypes;
         public List<ThingDef>       disallowRockTypes;
-        public bool                 onlyAllowForcedAndUniqueRockTypes = true;
-        public bool                 forceUniqueRockTypes              = true;
+        public bool                 onlyAllowForcedRockTypes = true;
+        public bool                 forceUniqueRockTypes     = true;
     }
 }

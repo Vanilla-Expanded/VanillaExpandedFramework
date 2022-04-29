@@ -36,7 +36,7 @@ namespace VFECore
             var list = new List<ThingDef>();
             if (ext.uniqueRockTypes != null && ext.forceUniqueRockTypes) list.AddRange(ext.uniqueRockTypes);
             if (ext.forceRockTypes  != null) list.AddRange(ext.forceRockTypes);
-            removeOthers = ext.onlyAllowForcedAndUniqueRockTypes;
+            removeOthers = ext.onlyAllowForcedRockTypes;
             return list.Count == 0 ? null : list;
         }
 
