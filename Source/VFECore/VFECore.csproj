@@ -618,6 +618,7 @@
     <Compile Include="VFECore\DefModExtensions\BiomeExtension.cs" />
     <Compile Include="VFECore\HarmonyPatches\SectionLayer_FogOfWar_Regenerate_Patch.cs" />
     <Compile Include="VFECore\HarmonyPatches\ThingDefGenerator_Corpses_ImpliedCorpseDefs_Patch.cs" />
+    <Compile Include="VFECore\HarmonyPatches\World_NaturalRockTypesIn_Patch.cs" />
     <Compile Include="VFECore\Projectiles\BeamProjectile.cs" />
     <Compile Include="VFECore\Reflection\NonPublicProperties.cs" />
     <Compile Include="Cuisine\GraphicClasses\Graphic_RandomStackCount.cs" />
@@ -853,6 +854,7 @@
     <Compile Include="VFECore\ScenParts\ScenPart_ForcedFactionGoodwill.cs" />
     <Compile Include="VFECore\StaticConstructorClass.cs" />
     <Compile Include="VFECore\Things\ThingWithFloorGraphic.cs" />
+    <Compile Include="VFECore\Utilities\RockUtility.cs" />
     <Compile Include="VFECore\Utilities\VerbUtility.cs" />
     <Compile Include="VFECore\Traders\StockGenerator_ThingSetMakerTags.cs" />
     <Compile Include="VFECore\Utilities\CustomSiegeUtility.cs" />
