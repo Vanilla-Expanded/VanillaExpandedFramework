@@ -1,5 +1,5 @@
-﻿using RimWorld;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using Verse;
 
 namespace VFECore
@@ -12,6 +12,7 @@ namespace VFECore
     public class BiomeExtension : DefModExtension
     {
         public List<SwapTerrainDef> terrainsToSwap;
-        public List<GenStepDef> skipGenSteps;
+        public List<GenStepDef>     skipGenSteps;
+        public Color                fogColor = Color.white;
     }
 }
