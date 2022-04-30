@@ -27,5 +27,9 @@ namespace VFECore
 
         public static StatDef VEF_EnergyShieldEnergyMaxOffset;
         public static StatDef VEF_EnergyShieldEnergyMaxFactor;
+        public static StatDef VEF_MeleeAttackSpeedFactor;
+        public static StatDef VEF_RangeAttackSpeedFactor;
+        public static StatDef VEF_MeleeAttackDamageFactor;
+        public static StatDef VEF_RangeAttackDamageFactor;
     }
 }

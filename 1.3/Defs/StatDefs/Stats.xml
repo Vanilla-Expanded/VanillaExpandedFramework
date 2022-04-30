@@ -165,6 +165,54 @@
         <formatString>{0} c</formatString>
         <showIfUndefined>false</showIfUndefined>
     </StatDef>
+
+    <StatDef>
+        <defName>VEF_MeleeAttackSpeedFactor</defName>
+        <label>melee attack speed factor</label>
+        <description>A multiplier on melee attack speed.</description>
+		<category>PawnCombat</category>
+        <minValue>0</minValue>
+        <hideAtValue>1</hideAtValue>
+        <defaultBaseValue>1</defaultBaseValue>
+        <toStringStyle>PercentZero</toStringStyle>
+        <displayPriorityInCategory>3400</displayPriorityInCategory>
+    </StatDef>
+	
+    <StatDef>
+        <defName>VEF_RangeAttackSpeedFactor</defName>
+        <label>range attack speed factor</label>
+        <description>A multiplier on range attack speed.</description>
+		<category>PawnCombat</category>
+        <minValue>0</minValue>
+        <hideAtValue>1</hideAtValue>
+        <defaultBaseValue>1</defaultBaseValue>
+        <toStringStyle>PercentZero</toStringStyle>
+        <displayPriorityInCategory>3400</displayPriorityInCategory>
+    </StatDef>
+	
+    <StatDef>
+        <defName>VEF_MeleeAttackDamageFactor</defName>
+        <label>melee attack damage factor</label>
+        <description>A multiplier on melee attack damage.</description>
+		<category>PawnCombat</category>
+        <minValue>0</minValue>
+        <hideAtValue>1</hideAtValue>
+        <defaultBaseValue>1</defaultBaseValue>
+        <toStringStyle>PercentZero</toStringStyle>
+        <displayPriorityInCategory>3400</displayPriorityInCategory>
+    </StatDef>
+	
+    <StatDef>
+        <defName>VEF_RangeAttackDamageFactor</defName>
+        <label>range attack damage factor</label>
+        <description>A multiplier on range attack damage.</description>
+		<category>PawnCombat</category>
+        <minValue>0</minValue>
+        <hideAtValue>1</hideAtValue>
+        <defaultBaseValue>1</defaultBaseValue>
+        <toStringStyle>PercentZero</toStringStyle>
+        <displayPriorityInCategory>3400</displayPriorityInCategory>
+    </StatDef>
 	
 	<StatCategoryDef>
 		<defName>VFE_EquippedStatFactors</defName>

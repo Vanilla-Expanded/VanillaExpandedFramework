@@ -31,9 +31,9 @@ namespace VFECore
             {
                 yield return error;
             }
-            if (thingDef is null)
+            if (thingDef is null && pawnKindDef is null)
             {
-                yield return "[VEF] ObjectSpawnsDef " + this.defName + " contain null thing def. It will not work.";
+                yield return "[VEF] ObjectSpawnsDef " + this.defName + " contain null thing/pawnkind def. It will not work.";
             }
         }
     }
