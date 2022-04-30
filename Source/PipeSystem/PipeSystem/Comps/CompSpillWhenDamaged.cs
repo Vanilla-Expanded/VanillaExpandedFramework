@@ -84,7 +84,7 @@ namespace PipeSystem
             }
         }
 
-        public void MoreSpillEffect(Map map, IntVec3 position)
+        public virtual void MoreSpillEffect(Map map, IntVec3 position)
         {
             return;
         }
