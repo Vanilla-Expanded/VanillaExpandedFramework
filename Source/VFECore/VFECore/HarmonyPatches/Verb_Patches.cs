@@ -48,11 +48,20 @@ namespace VFECore
             public static bool accuracy;
             public static void Prefix(ref ShotReport __result, Thing caster, Verb verb, LocalTargetInfo target)
             {
-                var projectileClass = verb.GetProjectile()?.thingClass;
-                if (projectileClass != null && typeof(TeslaProjectile).IsAssignableFrom(projectileClass))
+                if (ShouldHitAlways(verb))
                 {
                     accuracy = true;
                 }
+            }
+
+            public static bool ShouldHitAlways(Verb verb)
+            {
+                var projectileClass = verb.GetProjectile()?.thingClass;
+                if (projectileClass != null && typeof(TeslaProjectile).IsAssignableFrom(projectileClass))
+                {
+                    return true;
+                }
+                return false;
             }
         }
 
@@ -61,8 +70,7 @@ namespace VFECore
         {
             public static void Prefix(Verb_LaunchProjectile __instance)
             {
-                var projectileClass = __instance.GetProjectile()?.thingClass;
-                if (projectileClass != null && typeof(TeslaProjectile).IsAssignableFrom(projectileClass))
+                if (ShotReport_HitReportFor.ShouldHitAlways(__instance))
                 {
                     ShotReport_HitReportFor.accuracy = true;
                 }
