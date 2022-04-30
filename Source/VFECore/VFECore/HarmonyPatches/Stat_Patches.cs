@@ -44,11 +44,11 @@ namespace VFECore
     [HarmonyPatch(typeof(Projectile), "DamageAmount", MethodType.Getter)]
     public static class Projectile_DamageAmount_Patch
     {
-        public static void Postfix(Projectile __instance, ref float __result)
+        public static void Postfix(Projectile __instance, ref int __result)
         {
             if (__instance.Launcher is Pawn attacker)
             {
-                __result *= attacker.GetStatValue(VFEDefOf.VEF_RangeAttackDamageFactor);
+                __result = (int)(__result * attacker.GetStatValue(VFEDefOf.VEF_RangeAttackDamageFactor));
             }
         }
     }
