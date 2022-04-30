@@ -17,6 +17,10 @@ namespace VFECore.Abilities
             var localHediff = HediffMaker.MakeHediff(hediffExtension.hediff, targetInfo.Pawn, bodyPart);
             if (hediffExtension.severity > float.Epsilon)
                 localHediff.Severity = hediffExtension.severity;
+            if (localHediff is Hediff_Ability hediffAbility)
+            {
+                hediffAbility.ability = this;
+            }
             var duration = GetDurationForPawn();
             if (hediffExtension.durationMultiplier != null)
             {
@@ -35,7 +39,6 @@ namespace VFECore.Abilities
                     }
 
             targetInfo.Pawn.health.AddHediff(localHediff);
-            Log.Message("Adding " + localHediff + " to " + targetInfo.Pawn + ", duration: " + duration);
         }
     }
 }

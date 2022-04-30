@@ -352,6 +352,10 @@
                         ? pawn.health.hediffSet.GetNotMissingParts().FirstOrDefault((BodyPartRecord x) => x.def == hediffExtension.bodyPartToApply)
                         : null;
                     Hediff localHediff = HediffMaker.MakeHediff(hediffExtension.hediff, targetInfo.Pawn, bodyPart);
+                    if (localHediff is Hediff_Ability hediffAbility)
+                    {
+                        hediffAbility.ability = this;
+                    }
                     if (hediffExtension.severity > float.Epsilon)
                         localHediff.Severity = hediffExtension.severity;
                     if (localHediff is HediffWithComps hwc)
