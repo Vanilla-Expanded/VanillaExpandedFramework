@@ -612,6 +612,7 @@
     <Compile Include="Apparel\Harmony\SkillRecord_Learn_Patch.cs" />
     <Compile Include="Apparel\Harmony\ThingSelectionUtility_SelectableByMapClick_Patch.cs" />
     <Compile Include="Apparel\ModExtensions\ApparelExtension.cs" />
+    <Compile Include="VFECore\Comps\HediffComps\HediffComp_Targeting.cs" />
     <Compile Include="VFECore\HarmonyPatches\Stat_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\MapGenerator_GenerateContentsIntoMap_Patch.cs" />
     <Compile Include="VFECore\HarmonyPatches\GenStep_Terrain_TerrainFrom_Patch.cs" />
@@ -620,6 +621,7 @@
     <Compile Include="VFECore\DefModExtensions\BiomeExtension.cs" />
     <Compile Include="VFECore\HarmonyPatches\SectionLayer_FogOfWar_Regenerate_Patch.cs" />
     <Compile Include="VFECore\HarmonyPatches\ThingDefGenerator_Corpses_ImpliedCorpseDefs_Patch.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Stances_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\World_NaturalRockTypesIn_Patch.cs" />
     <Compile Include="VFECore\Projectiles\BeamProjectile.cs" />
     <Compile Include="VFECore\Reflection\NonPublicProperties.cs" />

@@ -7,6 +7,7 @@ using Verse;
 using RimWorld;
 using HarmonyLib;
 using VFEMech;
+using VFECore.Abilities;
 
 namespace VFECore
 {
@@ -60,6 +61,17 @@ namespace VFECore
                 if (projectileClass != null && typeof(TeslaProjectile).IsAssignableFrom(projectileClass))
                 {
                     return true;
+                }
+                if (verb.caster is Pawn attacker && attacker.health?.hediffSet?.hediffs != null)
+                {
+                    foreach (var hediff in attacker.health.hediffSet.hediffs)
+                    {
+                        var comp = hediff.TryGetComp<HediffComp_Targeting>();
+                        if (comp != null && comp.Props.neverMiss)
+                        {
+                            return true;
+                        }
+                    }
                 }
                 return false;
             }
