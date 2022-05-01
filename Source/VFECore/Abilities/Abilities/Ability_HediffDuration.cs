@@ -24,7 +24,28 @@ namespace VFECore.Abilities
             var duration = GetDurationForPawn();
             if (hediffExtension.durationMultiplier != null)
             {
-                duration = (int)(duration * targetInfo.Pawn.GetStatValue(hediffExtension.durationMultiplier));
+                if (this.pawn == targetInfo.Pawn)
+                {
+                    if (hediffExtension.scalesWithCasterStat)
+                    {
+                        duration = (int)(duration * this.pawn.GetStatValue(hediffExtension.durationMultiplier));
+                    }
+                    else if (hediffExtension.scalesWithTargetStat)
+                    {
+                        duration = (int)(duration * targetInfo.Pawn.GetStatValue(hediffExtension.durationMultiplier));
+                    }
+                }
+                else
+                {
+                    if (hediffExtension.scalesWithCasterStat)
+                    {
+                        duration = (int)(duration * this.pawn.GetStatValue(hediffExtension.durationMultiplier));
+                    }
+                    if (hediffExtension.scalesWithTargetStat)
+                    {
+                        duration = (int)(duration * targetInfo.Pawn.GetStatValue(hediffExtension.durationMultiplier));
+                    }
+                }
             }
             if (localHediff is HediffWithComps hwc)
                 foreach (var hediffComp in hwc.comps)
