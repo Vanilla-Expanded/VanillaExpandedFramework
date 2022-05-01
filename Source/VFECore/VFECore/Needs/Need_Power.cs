@@ -89,7 +89,9 @@ namespace VFE.Mechanoids.Needs
 			}
 		}
 
-		private bool Resting => Find.TickManager.TicksGame < lastRestTick + 2;
+        public override float MaxLevel => base.MaxLevel;
+
+        private bool Resting => Find.TickManager.TicksGame < lastRestTick + 2;
 
 		public Need_Power(Pawn pawn)
 			: base(pawn)
