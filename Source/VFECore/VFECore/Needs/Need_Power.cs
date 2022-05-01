@@ -72,10 +72,11 @@ namespace VFE.Mechanoids.Needs
 		{
 			get
 			{
-				return 1 / MachineComp.Props.hoursActive / 2500;
+				return 1 / PowerNeedCapacity;
 			}
 		}
 
+		public float PowerNeedCapacity => MachineComp.Props.hoursActive / 2500;
 		public override int GUIChangeArrow
 		{
 			get
