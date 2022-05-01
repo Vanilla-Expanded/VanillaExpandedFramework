@@ -70,7 +70,7 @@ namespace VFE.Mechanoids.HarmonyPatches
                 }
                 else if (aimAngle > 200f && aimAngle < 340f)
                 {
-                    mesh = StaticConstructorClass.plane20Flip;
+                    mesh = Startup.plane20Flip;
                     num -= 180f;
                     num -= eq.def.equippedAngleOffset;
                 }

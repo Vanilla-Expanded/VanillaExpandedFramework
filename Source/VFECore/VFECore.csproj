@@ -856,7 +856,7 @@
     <Compile Include="VFECore\Reflection\NonPublicMethods.cs" />
     <Compile Include="VFECore\ScenParts\ScenPart_ArriveAtEdge.cs" />
     <Compile Include="VFECore\ScenParts\ScenPart_ForcedFactionGoodwill.cs" />
-    <Compile Include="VFECore\StaticConstructorClass.cs" />
+    <Compile Include="VFECore\Startup.cs" />
     <Compile Include="VFECore\Things\ThingWithFloorGraphic.cs" />
     <Compile Include="VFECore\Utilities\RockUtility.cs" />
     <Compile Include="VFECore\Utilities\VerbUtility.cs" />
