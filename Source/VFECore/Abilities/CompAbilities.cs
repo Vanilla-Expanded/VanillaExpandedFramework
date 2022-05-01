@@ -10,10 +10,10 @@
 
     public class CompAbilities : CompShieldBubble
     {
-
         private new Pawn Pawn => (Pawn) this.parent;
 
         private List<Abilities.Ability> learnedAbilities = new List<Abilities.Ability>();
+        private List<Ability> abilitiesToTick = new List<Ability>();
 
         public Abilities.Ability currentlyCasting;
         
@@ -47,7 +47,10 @@
             ability.Init();
 
             this.learnedAbilities.Add(ability);
-
+            if (ability.def.needsTicking)
+            {
+                this.abilitiesToTick.Add(ability);
+            }
             this.learnedAbilities = this.LearnedAbilities.OrderBy(ab => ab.def.requiredHediff?.minimumLevel ?? 0).GroupBy(ab => ab.Hediff).SelectMany(grp => grp).ToList();
         }
 
@@ -68,8 +71,9 @@
                 if(this.breakTicks <= 0)
                     this.Break();
             }
-            foreach (Abilities.Ability learnedAbility in this.learnedAbilities)
-                learnedAbility.Tick();
+            int abilitiesToTickCount = this.abilitiesToTick.Count;
+            for (var i = 0; i < abilitiesToTickCount; i++)
+                this.abilitiesToTick[i].Tick();
         }
 
         public override string CompInspectStringExtra() => string.Empty;
@@ -106,6 +110,10 @@
                 {
                     ability.holder = this.parent;
                 }
+            }
+            if (this.learnedAbilities?.Any() ?? false)
+            {
+                this.abilitiesToTick = this.learnedAbilities.Where(x => x.def.needsTicking).ToList();
             }
         }
 

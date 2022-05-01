@@ -9,6 +9,7 @@ namespace VFECore.Abilities
     public class AbilityDef : Def
     {
         public Type abilityClass;
+        public bool needsTicking;
 
         public HediffWithLevelCombination requiredHediff;
         public TraitDef                   requiredTrait;
