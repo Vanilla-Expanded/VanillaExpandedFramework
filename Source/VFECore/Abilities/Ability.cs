@@ -79,7 +79,7 @@
 
         public virtual float GetRadiusForPawn() =>
             this.def.radiusStatFactors.Aggregate(this.def.radius, (current, statFactor) => current * (this.pawn.GetStatValue(statFactor.stat) * statFactor.value));
-
+        public float GetAdditionalRadius() => this.def.GetModExtension<AbilityExtension_AdditionalRadius>().GetRadiusFor(this.pawn);
         public virtual float GetPowerForPawn() =>
             this.def.powerStatFactors.Aggregate(this.def.power, (current, statFactor) => current * (this.pawn.GetStatValue(statFactor.stat) * statFactor.value));
 
@@ -174,6 +174,27 @@
             return action;
         }
 
+        public virtual void GizmoUpdateOnMouseover()
+        {
+            float radius;
+            switch (this.def.targetMode)
+            {
+                case AbilityTargetingMode.Self:
+                    radius = this.GetRadiusForPawn();
+                    break;
+                default:
+                    radius = this.GetRangeForPawn();
+                    break;
+            }
+
+            if (GenRadial.MaxRadialPatternRadius > radius && radius >= 1)
+                GenDraw.DrawRadiusRing(this.pawn.Position, radius, Color.cyan);
+
+            foreach (var extension in AbilityModExtensions)
+            {
+                extension.GizmoUpdateOnMouseover(this);
+            }
+        }
         public virtual void WarmupToil(Toil toil)
         {
             toil.AddPreTickAction(delegate

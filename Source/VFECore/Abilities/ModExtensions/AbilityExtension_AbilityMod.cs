@@ -51,5 +51,10 @@
 		{
 			return null;
 		}
+
+		public virtual void GizmoUpdateOnMouseover(Ability ability)
+        {
+
+        }
 	}
 }

@@ -30,20 +30,7 @@ namespace VFECore.Abilities
         public override void GizmoUpdateOnMouseover()
         {
             base.GizmoUpdateOnMouseover();
-
-            float radius;
-            switch (ability.def.targetMode)
-            {
-                case AbilityTargetingMode.Self:
-                    radius = ability.GetRadiusForPawn();
-                    break;
-                default:
-                    radius = ability.GetRangeForPawn();
-                    break;
-            }
-
-            if (GenRadial.MaxRadialPatternRadius > radius && radius >= 1)
-                GenDraw.DrawRadiusRing(this.pawn.Position, radius, Color.cyan);
+            ability.GizmoUpdateOnMouseover();
         }
 
         public override bool GroupsWith(Gizmo other) => other is Command_Ability ca && ca.ability.def == this.ability.def;
