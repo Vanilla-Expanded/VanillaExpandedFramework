@@ -19,7 +19,7 @@ namespace VFECore
             var force = biome.ForcedRocksFor(out var removeOthers);
             if (force != null)
             {
-                GenDebug.LogList(force);
+                // GenDebug.LogList(force);
                 if (removeOthers) list = force;
                 else
                 {
