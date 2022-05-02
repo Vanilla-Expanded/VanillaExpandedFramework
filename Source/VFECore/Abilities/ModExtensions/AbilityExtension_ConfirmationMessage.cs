@@ -1,7 +1,7 @@
 ﻿namespace VFECore.Abilities
 {
     using RimWorld;
-using System;
+    using System;
     using Verse;
 
     public class AbilityExtension_ConfirmationMessage : AbilityExtension_AbilityMod

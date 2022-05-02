@@ -43,6 +43,9 @@ namespace VFECore.Abilities
 
         public ThingDef warmupMote;
         public SoundDef warmupSound;
+        public SoundDef warmupStartSound;
+        public SoundDef warmupPreEndSound;
+        public int warmupPreEndSoundTicks;
         public float moteOffsetAmountTowardsTarget;
         public bool drawAimPie = true;
 

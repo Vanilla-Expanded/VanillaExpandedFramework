@@ -197,8 +197,16 @@
         }
         public virtual void WarmupToil(Toil toil)
         {
+            toil.initAction = delegate
+            {
+                def.warmupStartSound?.PlayOneShot(new TargetInfo(toil.actor.Position, toil.actor.Map));
+            };
             toil.AddPreTickAction(delegate
             {
+                if (def.warmupPreEndSound != null && this.verb.WarmupTicksLeft == def.warmupPreEndSoundTicks)
+                {
+                    def.warmupPreEndSound.PlayOneShot(new TargetInfo(toil.actor.Position, toil.actor.Map));
+                }
                 if (def.warmupMote != null)
                 {
                     Vector3 vector = pawn.DrawPos;
