@@ -10,21 +10,24 @@ namespace VFECore.Abilities
         public List<HediffDef> onTarget;
         public List<HediffDef> onCaster;
         public StatDef         durationMultiplier;
+        public int?            durationTimeOverride = null;
 
         public override void Cast(LocalTargetInfo target, Ability ability)
         {
             base.Cast(target, ability);
-            var duration = ability.GetDurationForPawn();
+            var duration = durationTimeOverride ?? ability.GetDurationForPawn();
 
             if (target.Thing != null && durationMultiplier != null) duration = Mathf.RoundToInt(duration * target.Thing.GetStatValue(durationMultiplier));
-            foreach (var def in onCaster)
-            {
-                var hediff = HediffMaker.MakeHediff(def, ability.pawn);
-                if (hediff.TryGetComp<HediffComp_Disappears>() is HediffComp_Disappears disappears) disappears.ticksToDisappear = duration;
-                ability.pawn.health.AddHediff(hediff);
-            }
 
-            if (target.Pawn is Pawn p)
+            if (onCaster != null)
+                foreach (var def in onCaster)
+                {
+                    var hediff = HediffMaker.MakeHediff(def, ability.pawn);
+                    if (hediff.TryGetComp<HediffComp_Disappears>() is HediffComp_Disappears disappears) disappears.ticksToDisappear = duration;
+                    ability.pawn.health.AddHediff(hediff);
+                }
+
+            if (target.Pawn is Pawn p && onTarget != null)
                 foreach (var def in onTarget)
                 {
                     var hediff = HediffMaker.MakeHediff(def, p);
