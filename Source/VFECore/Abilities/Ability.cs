@@ -270,7 +270,6 @@
             });
             if (startAbilityJobImmediately)
             {
-                Log.Message("1 STARTING ABILITY JOB");
                 StartAbilityJob(target);
             }
         }
