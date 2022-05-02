@@ -2,6 +2,16 @@
 <Defs>
 
   <JobDef>
+    <defName>VFEA_UseAbilityUninterruptible</defName>
+    <driverClass>VFECore.Abilities.JobDriver_CastAbilityOnce</driverClass>
+    <casualInterruptible>false</casualInterruptible>
+    <collideWithPawns>true</collideWithPawns>
+    <playerInterruptible>false</playerInterruptible>
+    <suspendable>false</suspendable>
+  </JobDef>
+
+
+  <JobDef>
     <defName>VFEA_UseAbility</defName>
     <driverClass>VFECore.Abilities.JobDriver_CastAbilityOnce</driverClass>
     <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
