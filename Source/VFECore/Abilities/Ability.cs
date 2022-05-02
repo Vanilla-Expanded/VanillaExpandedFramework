@@ -255,9 +255,12 @@
                     return;
                 }
             }
-            bool startAbilityJob = true;
-            PreCast(target, ref startAbilityJob);
-            if (startAbilityJob)
+            bool startAbilityJobImmediately = true;
+            PreCast(target, ref startAbilityJobImmediately, delegate
+            {
+                StartAbilityJob(target);
+            });
+            if (startAbilityJobImmediately)
             {
                 Log.Message("1 STARTING ABILITY JOB");
                 StartAbilityJob(target);
@@ -271,10 +274,10 @@
             this.pawn.GetComp<CompAbilities>().currentlyCasting = this;
             this.pawn.jobs.StartJob(job, JobCondition.InterruptForced);
         }
-        public virtual void PreCast(LocalTargetInfo target, ref bool startAbilityJob)
+        public virtual void PreCast(LocalTargetInfo target, ref bool startAbilityJobImmediately, Action startJobAction)
         {
             foreach (AbilityExtension_AbilityMod modExtension in this.AbilityModExtensions)
-                modExtension.PreCast(target, this, ref startAbilityJob);
+                modExtension.PreCast(target, this, ref startAbilityJobImmediately, startJobAction);
         }
 
         public virtual void PreWarmupAction(LocalTargetInfo target)

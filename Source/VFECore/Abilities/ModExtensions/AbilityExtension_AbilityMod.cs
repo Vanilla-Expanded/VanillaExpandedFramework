@@ -29,7 +29,7 @@
 		{
 
 		}
-		public virtual void PreCast(LocalTargetInfo target, Ability ability, ref bool startAbilityJob)
+		public virtual void PreCast(LocalTargetInfo target, Ability ability, ref bool startAbilityJobImmediately, Action startJobAction)
 		{
 
 		}
