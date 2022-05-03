@@ -80,16 +80,32 @@ namespace AnimalBehaviours
 
         public void TryCreateBuilding(Pawn pawn)
         {
-            ThingDef newThing = ThingDef.Named(this.Props.defOfBuilding);
-            Thing newbuilding = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
-
-            this.thingBuilt = newbuilding;
-
-            if (this.effecter == null)
+            bool buildingFound = false;
+            List<Thing> list = parent.Map.thingGrid.ThingsListAt(pawn.Position);
+            for (int i = 0; i < list.Count; i++)
             {
-                this.effecter = EffecterDefOf.Mine.Spawn();
+                if (list[i].def.IsEdifice())
+                {
+                    buildingFound = true;
+                }
             }
-            this.effecter.Trigger(pawn, newbuilding);
+
+            if (!Props.checkForExistingEdifices || (Props.checkForExistingEdifices && !buildingFound)) {
+
+                ThingDef newThing = ThingDef.Named(this.Props.defOfBuilding);
+                Thing newbuilding = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
+
+                this.thingBuilt = newbuilding;
+
+                if (this.effecter == null)
+                {
+                    this.effecter = EffecterDefOf.Mine.Spawn();
+                }
+                this.effecter.Trigger(pawn, newbuilding);
+
+            }
+
+            
 
         }
 
