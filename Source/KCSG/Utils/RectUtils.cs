@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Verse;
 
@@ -76,6 +77,7 @@ namespace KCSG
             return max;
         }
 
+        [Obsolete]
         public static void HeightWidthFromLayout(StructureLayoutDef structureLayoutDef, out int height, out int width)
         {
             if (structureLayoutDef == null || structureLayoutDef.layouts.Count == 0)

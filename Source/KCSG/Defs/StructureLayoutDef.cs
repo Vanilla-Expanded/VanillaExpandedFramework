@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Verse;
 
 namespace KCSG
@@ -48,6 +49,9 @@ namespace KCSG
         public List<Pos> spawnAtPos = new List<Pos>();
         public List<string> spawnAt = new List<string>();
 
+        internal int width;
+        internal int height;
+
         public override void ResolveReferences()
         {
             base.ResolveReferences();
@@ -60,6 +64,9 @@ namespace KCSG
             {
                 spawnAtPos.Add(Pos.FromString(sPos));
             }
+
+            height = layouts[0].Count;
+            width = layouts[0][0].Split(',').Count();
         }
     }
 }
