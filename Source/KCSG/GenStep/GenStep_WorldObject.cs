@@ -1,11 +1,12 @@
 ﻿using RimWorld;
+using RimWorld.Planet;
 using Verse;
 
 namespace KCSG
 {
-    internal class GenStep_KCSGSettlement : GenStep_Settlement
+    internal class GenStep_WorldObject : RimWorld.GenStep_Settlement
     {
-        public override int SeedPart => 1931078471;
+        public override int SeedPart => 1969308471;
 
         protected override bool CanScatterAt(IntVec3 loc, Map map)
         {
@@ -14,7 +15,8 @@ namespace KCSG
 
         protected override void ScatterAt(IntVec3 loc, Map map, GenStepParams parms, int count = 1)
         {
-            CGO.factionSettlement = map.ParentFaction.def.GetModExtension<CustomGenOption>();
+            WorldObject worldO = Find.World.worldObjects.AllWorldObjects.Find(o => o.Tile == map.Tile && o.def.HasModExtension<CustomGenOption>());
+            CGO.factionSettlement = worldO.def.GetModExtension<CustomGenOption>();
 
             if (CGO.factionSettlement.symbolResolver == null) GenStepUtils.Generate(map, loc, CGO.factionSettlement);
             else GenStepUtils.Generate(map, loc, CGO.factionSettlement, CGO.factionSettlement.symbolResolver);
