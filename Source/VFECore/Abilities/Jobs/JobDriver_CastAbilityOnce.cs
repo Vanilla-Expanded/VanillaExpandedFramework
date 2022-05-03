@@ -33,10 +33,10 @@
             CompAbilities comp     = CompAbilities;
             Toil          waitToil = Toils_General.Wait(comp.currentlyCasting.GetCastTimeForPawn(), TargetIndex.A);
             waitToil.WithProgressBarToilDelay(TargetIndex.C);
-            waitToil.initAction = delegate
+            waitToil.AddPreInitAction(delegate
             {
                 comp.currentlyCasting.PreWarmupAction(this.TargetA);
-            };
+            });
             if (this.TargetA.Pawn != this.pawn)
                 waitToil.AddPreTickAction(() =>
                                           {

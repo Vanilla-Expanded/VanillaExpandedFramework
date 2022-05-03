@@ -197,10 +197,10 @@
         }
         public virtual void WarmupToil(Toil toil)
         {
-            toil.initAction = delegate
+            toil.AddPreInitAction(delegate
             {
                 def.warmupStartSound?.PlayOneShot(new TargetInfo(toil.actor.Position, toil.actor.Map));
-            };
+            });
             toil.AddPreTickAction(delegate
             {
                 if (def.warmupPreEndSound != null && this.verb.WarmupTicksLeft == def.warmupPreEndSoundTicks)
