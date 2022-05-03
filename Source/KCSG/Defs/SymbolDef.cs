@@ -22,7 +22,7 @@ namespace KCSG
         public int maxStackSize = -1;
 
         // Building info
-        public Rot4 rotation = Rot4.Invalid;
+        public Rot4 rotation = Rot4.North;
 
         // Plant
         public float plantGrowth = 0.5f;
