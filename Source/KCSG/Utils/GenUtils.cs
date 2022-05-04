@@ -15,14 +15,16 @@ namespace KCSG
         {
             Faction faction = map.ParentFaction;
 
-            int l = 0;
-            int symbolCount = layout.symbolsLists[index].Count;
-            foreach (IntVec3 cell in rect)
+            var cells = rect.Cells.ToList();
+            int count = cells.Count;
+
+            for (int i = 0; i < count; i++)
             {
+                IntVec3 cell = cells[i];
                 if (cell.InBounds(map))
                 {
-                    SymbolDef temp = layout.symbolsLists[index][l];
-                    if (l < symbolCount && temp != null)
+                    SymbolDef temp = layout.symbolsLists[index][i];
+                    if (temp != null)
                     {
                         if (temp.isTerrain && temp.terrainDef != null)
                         {
@@ -48,7 +50,6 @@ namespace KCSG
                             {
                                 if (CGO.factionSettlement?.shouldRuin == true)
                                 {
-                                    l++;
                                     continue;
                                 }
                                 GenSpawn.Spawn(temp.thingDef, cell, map, WipeMode.VanishOrMoveAside);
@@ -57,23 +58,13 @@ namespace KCSG
                             {
                                 if (cell.GetFirstMineable(map) != null && temp.thingDef.designationCategory == DesignationCategoryDefOf.Security)
                                 {
-                                    l++;
                                     continue;
                                 }
                                 GenerateBuildingAt(map, cell, temp, faction, layout.spawnConduits);
                             }
                         }
-                        else
-                        {
-                            KLog.Message($"SymbolDef for {temp.defName} wasn't able to be used, ignoring.");
-                        }
                     }
                 }
-                else
-                {
-                    KLog.Message($"Tried to spawn thing out of bound, ignoring.");
-                }
-                l++;
             }
         }
 
@@ -194,12 +185,15 @@ namespace KCSG
                 if (thing.def.building.isNaturalRock)
                 {
                     TerrainDef t = DefDatabase<TerrainDef>.GetNamedSilentFail($"{thing.def.defName}_Rough");
-                    map.terrainGrid.SetTerrain(cell, t ?? TerrainDefOf.Soil);
-                    foreach (IntVec3 intVec3 in CellRect.CenteredOn(cell, 1))
+                    if (t != null)
                     {
-                        if (!intVec3.GetTerrain(map).BuildableByPlayer)
+                        map.terrainGrid.SetTerrain(cell, t);
+                        foreach (IntVec3 intVec3 in CellRect.CenteredOn(cell, 1))
                         {
-                            map.terrainGrid.SetTerrain(intVec3, t ?? TerrainDefOf.Soil);
+                            if (!intVec3.GetTerrain(map).BuildableByPlayer)
+                            {
+                                map.terrainGrid.SetTerrain(intVec3, t);
+                            }
                         }
                     }
                 }
@@ -272,38 +266,32 @@ namespace KCSG
             return PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, faction);
         }
 
-        public static void GenerateRoofGrid(List<string> roofGrid, CellRect roomRect, Map map)
+        public static void GenerateRoofGrid(StructureLayoutDef layout, CellRect rect, Map map)
         {
-            List<string> rg = new List<string>();
-            foreach (string str in roofGrid)
-            {
-                rg.AddRange(str.Split(','));
-            }
+            var cells = rect.Cells.ToList();
+            int count = cells.Count;
 
-            for (int i = 0; i < rg.Count; i++)
+            for (int i = 0; i < count; i++)
             {
-                IntVec3 cell = roomRect.Cells.ElementAt(i);
-                bool heavy = cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy);
-                ThingDef rock = Find.World.NaturalRockTypesIn(map.Tile)?.Select(r => r.building.mineableThing)?.RandomElement();
-                TerrainDef terrain = DefDatabase<TerrainDef>.GetNamedSilentFail($"{rock.defName}_Rough");
-
-                switch (rg[i])
+                IntVec3 cell = cells[i];
+                if (cell.InBounds(map))
                 {
-                    case "1":
-                        map.roofGrid.SetRoof(cell, RoofDefOf.RoofConstructed);
-                        if (!heavy) map.terrainGrid.SetTerrain(roomRect.Cells.ElementAt(i), TerrainDefOf.Bridge);
-                        break;
-                    case "2":
-                        map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThin);
-                        if (!heavy && terrain != null) map.terrainGrid.SetTerrain(roomRect.Cells.ElementAt(i), terrain);
-                        break;
-                    case "3":
-                        map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThick);
-                        if (!heavy && terrain != null) map.terrainGrid.SetTerrain(roomRect.Cells.ElementAt(i), terrain);
-                        break;
-                    default:
-                        break;
+                    switch (layout.roofGridResolved[i])
+                    {
+                        case "1":
+                            map.roofGrid.SetRoof(cell, RoofDefOf.RoofConstructed);
+                            break;
+                        case "2":
+                            map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThin);
+                            break;
+                        case "3":
+                            map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThick);
+                            break;
+                        default:
+                            break;
+                    }
                 }
+                    
             }
         }
 

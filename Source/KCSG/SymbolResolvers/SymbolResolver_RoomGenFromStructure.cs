@@ -23,7 +23,7 @@ namespace KCSG
             {
                 GenUtils.GenerateRoomFromLayout(CGO.structureLayoutDef, i, rp.rect, map);
             }
-            GenUtils.GenerateRoofGrid(CGO.structureLayoutDef.roofGrid, rp.rect, map);
+            GenUtils.GenerateRoofGrid(CGO.structureLayoutDef, rp.rect, map);
 
             GenUtils.EnsureBatteriesConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, KThingDefOf.KCSG_PowerConduit);
             GenUtils.EnsurePowerUsersConnected(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, KThingDefOf.KCSG_PowerConduit);

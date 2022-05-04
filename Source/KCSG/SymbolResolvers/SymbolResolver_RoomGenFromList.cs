@@ -26,7 +26,7 @@ namespace KCSG
                 {
                     GenUtils.GenerateRoomFromLayout(layoutDef, i, rect, BaseGen.globalSettings.map);
                 }
-                GenUtils.GenerateRoofGrid(layoutDef.roofGrid, rect, BaseGen.globalSettings.map);
+                GenUtils.GenerateRoofGrid(layoutDef, rect, BaseGen.globalSettings.map);
 
                 if (keyValue.Value.isStorage)
                 {
