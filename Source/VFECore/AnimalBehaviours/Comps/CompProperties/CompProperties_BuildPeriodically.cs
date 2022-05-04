@@ -21,5 +21,6 @@ namespace AnimalBehaviours
         public int maxBuildingsPerMap = 10;
         public List<string> acceptedTerrains = null;
         public bool onlyOneExistingPerPawn = false;
+        public bool checkForExistingEdifices = false;
     }
 }
