@@ -1,7 +1,6 @@
 ﻿using RimWorld;
 using System.Linq;
 using Verse;
-using static HarmonyLib.Code;
 
 namespace VFECore.Abilities
 {
@@ -9,19 +8,23 @@ namespace VFECore.Abilities
     {
         public override void ApplyHediffs(LocalTargetInfo targetInfo)
         {
-            var hediffExtension = def.GetModExtension<AbilityExtension_Hediff>();
+            ApplyHediff(this, targetInfo);
+        }
+        public static void ApplyHediff(Ability ability, LocalTargetInfo targetInfo)
+        {
+            var hediffExtension = ability.def.GetModExtension<AbilityExtension_Hediff>();
             if (targetInfo.Pawn == null || !(hediffExtension?.applyAuto ?? false)) return;
             BodyPartRecord bodyPart = hediffExtension.bodyPartToApply != null
-                ? pawn.health.hediffSet.GetNotMissingParts().FirstOrDefault((BodyPartRecord x) => x.def == hediffExtension.bodyPartToApply)
-                : null;            
+                ? ability.pawn.health.hediffSet.GetNotMissingParts().FirstOrDefault((BodyPartRecord x) => x.def == hediffExtension.bodyPartToApply)
+                : null;
             var localHediff = HediffMaker.MakeHediff(hediffExtension.hediff, targetInfo.Pawn, bodyPart);
             if (hediffExtension.severity > float.Epsilon)
                 localHediff.Severity = hediffExtension.severity;
             if (localHediff is Hediff_Ability hediffAbility)
             {
-                hediffAbility.ability = this;
+                hediffAbility.ability = ability;
             }
-            var duration = GetDurationForPawn();
+            var duration = ability.GetDurationForPawn();
             if (hediffExtension.durationMultiplier != null)
             {
                 duration = (int)(duration * targetInfo.Pawn.GetStatValue(hediffExtension.durationMultiplier));
@@ -31,7 +34,7 @@ namespace VFECore.Abilities
                     switch (hediffComp)
                     {
                         case HediffComp_Ability hca:
-                            hca.ability = this;
+                            hca.ability = ability;
                             break;
                         case HediffComp_Disappears hcd:
                             hcd.ticksToDisappear = duration;
