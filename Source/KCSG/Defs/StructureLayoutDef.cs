@@ -48,6 +48,8 @@ namespace KCSG
         // Values used regularly in gen
         internal int width;
         internal int height;
+        // Symbols lists, without limiters
+        internal List<List<SymbolDef>> symbolsLists = new List<List<SymbolDef>>();
 
         public override void ResolveReferences()
         {
@@ -58,8 +60,31 @@ namespace KCSG
                 spawnAtPos.Add(Pos.FromString(sPos));
             }
 
+            // Get height and width
             height = layouts[0].Count;
             width = layouts[0][0].Split(',').Count();
+        }
+
+        public void ResolveLayouts()
+        {
+            // Populate symbolsLists
+            for (int i = 0; i < layouts.Count; i++)
+            {
+                var layout = layouts[i];
+                symbolsLists.Add(new List<SymbolDef>());
+                for (int o = 0; o < layout.Count; o++)
+                {
+                    var symbols = layout[o].Split(',');
+                    for (int p = 0; p < symbols.Length; p++)
+                    {
+                        string symbol = symbols[p];
+                        if (symbol == ".")
+                            symbolsLists[i].Add(null);
+                        else
+                            symbolsLists[i].Add(DefDatabase<SymbolDef>.GetNamedSilentFail(symbol));
+                    }
+                }
+            }
         }
     }
 }

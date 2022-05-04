@@ -24,6 +24,10 @@ namespace KCSG
             {
                 Run();
             }
+
+            var layouts = DefDatabase<StructureLayoutDef>.AllDefsListForReading;
+            for (int i = 0; i < layouts.Count; i++)
+                layouts[i].ResolveLayouts();
         }
 
         private static void AddDef(SymbolDef def)

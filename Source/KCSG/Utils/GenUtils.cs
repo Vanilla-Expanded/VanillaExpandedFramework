@@ -11,29 +11,18 @@ namespace KCSG
 {
     public class GenUtils
     {
-        public static void GenerateRoomFromLayout(List<string> symbols, CellRect rect, Map map, StructureLayoutDef rld)
+        public static void GenerateRoomFromLayout(StructureLayoutDef layout, int index, CellRect rect, Map map)
         {
             Faction faction = map.ParentFaction;
-            // TODO Move out
-            if (rld.roofGrid != null)
-            {
-                GenerateRoofGrid(rld.roofGrid, rect, map);
-            }
 
-            List<string> allSymbList = new List<string>();
-            foreach (string str in symbols)
-            {
-                allSymbList.AddRange(str.Split(','));
-            }
-
-            int symbolCount = allSymbList.Count;
             int l = 0;
+            int symbolCount = layout.symbolsLists[index].Count;
             foreach (IntVec3 cell in rect)
             {
-                if (l < symbolCount && allSymbList[l] != ".")
+                if (cell.InBounds(map))
                 {
-                    SymbolDef temp = DefDatabase<SymbolDef>.GetNamedSilentFail(allSymbList[l]);
-                    if (temp != null)
+                    SymbolDef temp = layout.symbolsLists[index][l];
+                    if (l < symbolCount && temp != null)
                     {
                         if (temp.isTerrain && temp.terrainDef != null)
                         {
@@ -71,18 +60,18 @@ namespace KCSG
                                     l++;
                                     continue;
                                 }
-                                GenerateBuildingAt(map, cell, temp, faction, rld.spawnConduits);
+                                GenerateBuildingAt(map, cell, temp, faction, layout.spawnConduits);
                             }
                         }
                         else
                         {
-                            KLog.Message($"SymbolDef for {allSymbList[l]} wasn't able to be used.");
+                            KLog.Message($"SymbolDef for {temp.defName} wasn't able to be used, ignoring.");
                         }
                     }
-                    else
-                    {
-                        KLog.Message($"Null symbolDef for {allSymbList[l]}, ignoring.");
-                    }
+                }
+                else
+                {
+                    KLog.Message($"Tried to spawn thing out of bound, ignoring.");
                 }
                 l++;
             }

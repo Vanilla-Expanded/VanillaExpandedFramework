@@ -22,10 +22,11 @@ namespace KCSG
                 };
                 CellRect rect = new CellRect(limitMin.x, limitMin.z, layoutDef.width, layoutDef.height);
 
-                foreach (List<string> item in layoutDef.layouts)
+                for (int i = 0; i < layoutDef.layouts.Count; i++)
                 {
-                    GenUtils.GenerateRoomFromLayout(item, rect, BaseGen.globalSettings.map, layoutDef);
+                    GenUtils.GenerateRoomFromLayout(layoutDef, i, rect, BaseGen.globalSettings.map);
                 }
+                GenUtils.GenerateRoofGrid(layoutDef.roofGrid, rect, BaseGen.globalSettings.map);
 
                 if (keyValue.Value.isStorage)
                 {

@@ -17,13 +17,15 @@ namespace KCSG
                 {
                     list.Add(new DebugMenuOption(layoutDef.defName, DebugMenuOptionMode.Tool, delegate ()
                     {
-                        if (UI.MouseCell().InBounds(Find.CurrentMap))
+                        Map map = Find.CurrentMap;
+                        if (UI.MouseCell().InBounds(map))
                         {
                             CellRect cellRect = CellRect.CenteredOn(UI.MouseCell(), layoutDef.width, layoutDef.height);
                             for (int i = 0; i < layoutDef.layouts.Count; i++)
                             {
-                                GenUtils.GenerateRoomFromLayout(layoutDef.layouts[i], cellRect, Find.CurrentMap, layoutDef);
+                                GenUtils.GenerateRoomFromLayout(layoutDef, i, cellRect, map);
                             }
+                            GenUtils.GenerateRoofGrid(layoutDef.roofGrid, cellRect, map);
                         }
                     }));
                 }

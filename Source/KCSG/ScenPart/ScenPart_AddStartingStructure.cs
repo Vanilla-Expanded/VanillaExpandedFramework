@@ -96,23 +96,24 @@ namespace KCSG
         {
             if (Find.TickManager.TicksGame > 5f || chooseFrom.Count <= 0 || PrepareCarefully_Util.pcScenariosSave.Count <= 0) return;
 
-            StructureLayoutDef structureLayoutDef;
+            StructureLayoutDef layoutDef;
             if (ModLister.GetActiveModWithIdentifier("EdB.PrepareCarefully") != null)
             {
-                structureLayoutDef = PrepareCarefully_Util.pcScenariosSave.First().Key;
+                layoutDef = PrepareCarefully_Util.pcScenariosSave.First().Key;
                 nearMapCenter = PrepareCarefully_Util.pcScenariosSave.First().Value;
             }
-            else structureLayoutDef = chooseFrom.RandomElement();
+            else layoutDef = chooseFrom.RandomElement();
 
-            CellRect cellRect = CreateCellRect(map, structureLayoutDef.height, structureLayoutDef.width);
+            CellRect cellRect = CreateCellRect(map, layoutDef.height, layoutDef.width);
 
             if (preGenClear)
-                GenUtils.PreClean(map, cellRect, structureLayoutDef.roofGrid, fullClear);
+                GenUtils.PreClean(map, cellRect, layoutDef.roofGrid, fullClear);
 
-            foreach (List<string> item in structureLayoutDef.layouts)
+            for (int i = 0; i < layoutDef.layouts.Count; i++)
             {
-                GenUtils.GenerateRoomFromLayout(item, cellRect, map, structureLayoutDef);
+                GenUtils.GenerateRoomFromLayout(layoutDef, i, cellRect, map);
             }
+            GenUtils.GenerateRoofGrid(layoutDef.roofGrid, cellRect, map);
 
             if (spawnTheStartingPawn && Find.GameInitData != null)
             {
@@ -145,7 +146,7 @@ namespace KCSG
                 }
 
                 IntVec3 center = map.Center;
-                Pos offset = structureLayoutDef.spawnAtPos.RandomElement();
+                Pos offset = layoutDef.spawnAtPos.RandomElement();
                 center.x += offset.x;
                 center.y += offset.y;
                 KLog.Message($"Spawning pawns and stuff at {center}");
