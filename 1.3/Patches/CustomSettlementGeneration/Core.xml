@@ -7,4 +7,11 @@
       <li>KCSG.Designator_ExportToXmlFromArea</li>
     </value>
   </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/MapGeneratorDef[@Name="MapCommonBase"]/genSteps</xpath>
+    <value>
+      <li>KCSG_GenerateBiomeStructures</li>
+    </value>
+  </Operation>
 </Patch>

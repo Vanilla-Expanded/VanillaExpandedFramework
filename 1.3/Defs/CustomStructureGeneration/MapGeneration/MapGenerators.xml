@@ -41,9 +41,9 @@
   </GenStepDef>
 
   <!-- Generate structure based on biome def -->
-  <!-- <GenStepDef>
+  <GenStepDef>
     <defName>KCSG_GenerateBiomeStructures</defName>
-    <order>280</order>
+    <order>400</order>
     <genStep Class="KCSG.GenStep_BiomeStructures" />
-  </GenStepDef> -->
+  </GenStepDef>
 </Defs>
