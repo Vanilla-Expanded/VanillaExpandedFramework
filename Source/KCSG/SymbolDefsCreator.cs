@@ -19,7 +19,6 @@ namespace KCSG
             if (VFECore.VFEGlobal.settings.enableVerboseLogging
                 || DefDatabase<SettlementLayoutDef>.DefCount > 0
                 || DefDatabase<StructureLayoutDef>.DefCount > 0
-                || DefDatabase<SymbolAutoCreation>.DefCount > 0
                 || DefDatabase<SymbolDef>.DefCount > 0)
             {
                 Run();
@@ -207,15 +206,7 @@ namespace KCSG
             CreateSymbolsFor("ludeon.rimworld.royalty");
             CreateSymbolsFor("ludeon.rimworld.ideology");
 
-            foreach (var item in ModsConfig.ActiveModsInLoadOrder)
-            {
-                if (DefDatabase<SymbolAutoCreation>.AllDefsListForReading.Find(d => d.modContentPack?.PackageId == item.PackageId && d.autoSymbolsCreation) != null)
-                {
-                    CreateSymbolsFor(item.PackageId.ToLower());
-                }
-            }
-
-            Log.Message($"<color=orange>[CSG]</color> Created {sCreated} symbolDefs for {modCount} mods. Took {(DateTime.Now - before).TotalSeconds.ToString("00.00")}s.");
+            Log.Message($"<color=orange>[CSG]</color> Created {sCreated} symbolDefs for {modCount} mods. Took {(DateTime.Now - before).TotalSeconds:00.00}s.");
             defCreated = true;
         }
     }
