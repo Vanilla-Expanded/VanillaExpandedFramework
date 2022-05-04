@@ -41,25 +41,18 @@ namespace KCSG
         // Mod requirements
         public List<string> modRequirements = new List<string>();
 
-        /* --- Obsolete --- */
-        public bool requireRoyalty = false;
-        /* --- ------- --- */
-
         // Spawn position
         public List<Pos> spawnAtPos = new List<Pos>();
         public List<string> spawnAt = new List<string>();
 
+        // Values used regularly in gen
         internal int width;
         internal int height;
 
         public override void ResolveReferences()
         {
             base.ResolveReferences();
-            if (requireRoyalty)
-            {
-                Log.Warning($"{defName} is using obsolete field requireRoyalty. Report this to {modContentPack.Name}");
-                modRequirements.Add("ludeon.rimworld.royalty");
-            }
+
             foreach (string sPos in spawnAt)
             {
                 spawnAtPos.Add(Pos.FromString(sPos));
