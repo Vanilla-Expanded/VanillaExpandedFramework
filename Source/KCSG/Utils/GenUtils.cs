@@ -11,26 +11,26 @@ namespace KCSG
 {
     public class GenUtils
     {
-        public static void GenerateRoomFromLayout(List<string> layoutList, CellRect roomRect, Map map, StructureLayoutDef rld, bool generateConduit = true, bool generatePartOfFaction = true)
+        public static void GenerateRoomFromLayout(List<string> symbols, CellRect rect, Map map, StructureLayoutDef rld)
         {
             Faction faction = map.ParentFaction;
             // TODO Move out
             if (rld.roofGrid != null)
             {
-                GenerateRoofGrid(rld.roofGrid, roomRect, map);
+                GenerateRoofGrid(rld.roofGrid, rect, map);
             }
 
             List<string> allSymbList = new List<string>();
-            foreach (string str in layoutList)
+            foreach (string str in symbols)
             {
                 allSymbList.AddRange(str.Split(','));
             }
 
             int symbolCount = allSymbList.Count;
             int l = 0;
-            foreach (IntVec3 cell in roomRect)
+            foreach (IntVec3 cell in rect)
             {
-                if (l < allSymbList.Count && allSymbList[l] != ".")
+                if (l < symbolCount && allSymbList[l] != ".")
                 {
                     SymbolDef temp = DefDatabase<SymbolDef>.GetNamedSilentFail(allSymbList[l]);
                     if (temp != null)
@@ -66,7 +66,12 @@ namespace KCSG
                             }
                             else
                             {
-                                GenerateBuildingAt(map, cell, rld, temp, faction, generatePartOfFaction, generateConduit);
+                                if (cell.GetFirstMineable(map) != null && temp.thingDef.designationCategory == DesignationCategoryDefOf.Security)
+                                {
+                                    l++;
+                                    continue;
+                                }
+                                GenerateBuildingAt(map, cell, temp, faction, rld.spawnConduits);
                             }
                         }
                         else
@@ -149,13 +154,8 @@ namespace KCSG
             thing.SetForbidden(true, false);
         }
 
-        public static void GenerateBuildingAt(Map map, IntVec3 cell, StructureLayoutDef rld, SymbolDef symbol, Faction faction, bool generatePartOfFaction, bool generateConduit)
+        public static void GenerateBuildingAt(Map map, IntVec3 cell, SymbolDef symbol, Faction faction, bool generateConduit)
         {
-            if (cell.GetFirstMineable(map) != null && symbol.thingDef.designationCategory == DesignationCategoryDefOf.Security)
-            {
-                return;
-            }
-
             Thing thing = ThingMaker.MakeThing(symbol.thingDef, symbol.thingDef.CostStuffCount > 0 ? (symbol.stuffDef ?? symbol.thingDef.defaultStuff ?? ThingDefOf.WoodLog) : null);
 
             CompRefuelable refuelable = thing.TryGetComp<CompRefuelable>();
@@ -222,9 +222,9 @@ namespace KCSG
 
             GenSpawn.Spawn(thing, cell, map, symbol.rotation, WipeMode.VanishOrMoveAside);
 
-            if (generatePartOfFaction && faction != null) thing.SetFactionDirect(faction);
+            if (faction != null) thing.SetFactionDirect(faction);
 
-            if (generateConduit && rld.spawnConduits && !thing.def.mineable && (thing.def.passability == Traversability.Impassable || thing.def.IsDoor) && faction?.def.techLevel >= TechLevel.Industrial) // Add power cable under all impassable
+            if (generateConduit && !thing.def.mineable && (thing.def.passability == Traversability.Impassable || thing.def.IsDoor) && faction?.def.techLevel >= TechLevel.Industrial) // Add power cable under all impassable
             {
                 Thing c = ThingMaker.MakeThing(ThingDefOf.PowerConduit);
                 if (faction != null) c.SetFactionDirect(faction);
@@ -306,11 +306,11 @@ namespace KCSG
                         break;
                     case "2":
                         map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThin);
-                        if (!heavy) map.terrainGrid.SetTerrain(roomRect.Cells.ElementAt(i), terrain ?? TerrainDefOf.Soil);
+                        if (!heavy && terrain != null) map.terrainGrid.SetTerrain(roomRect.Cells.ElementAt(i), terrain);
                         break;
                     case "3":
                         map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThick);
-                        if (!heavy) map.terrainGrid.SetTerrain(roomRect.Cells.ElementAt(i), terrain ?? TerrainDefOf.Soil);
+                        if (!heavy && terrain != null) map.terrainGrid.SetTerrain(roomRect.Cells.ElementAt(i), terrain);
                         break;
                     default:
                         break;

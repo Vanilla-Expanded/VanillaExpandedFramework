@@ -13,19 +13,16 @@ namespace KCSG
             if (DefDatabase<StructureLayoutDef>.AllDefs.Count() > 0)
             {
                 List<DebugMenuOption> list = new List<DebugMenuOption>();
-                foreach (StructureLayoutDef localDef2 in DefDatabase<StructureLayoutDef>.AllDefs)
+                foreach (StructureLayoutDef layoutDef in DefDatabase<StructureLayoutDef>.AllDefs)
                 {
-                    StructureLayoutDef localDef = localDef2;
-                    list.Add(new DebugMenuOption(localDef.defName, DebugMenuOptionMode.Tool, delegate ()
+                    list.Add(new DebugMenuOption(layoutDef.defName, DebugMenuOptionMode.Tool, delegate ()
                     {
                         if (UI.MouseCell().InBounds(Find.CurrentMap))
                         {
-                            RectUtils.HeightWidthFromLayout(localDef, out int h, out int w);
-                            CellRect cellRect = CellRect.CenteredOn(UI.MouseCell(), w, h);
-
-                            foreach (List<string> item in localDef.layouts)
+                            CellRect cellRect = CellRect.CenteredOn(UI.MouseCell(), layoutDef.width, layoutDef.height);
+                            for (int i = 0; i < layoutDef.layouts.Count; i++)
                             {
-                                GenUtils.GenerateRoomFromLayout(item, cellRect, Find.CurrentMap, localDef);
+                                GenUtils.GenerateRoomFromLayout(layoutDef.layouts[i], cellRect, Find.CurrentMap, layoutDef);
                             }
                         }
                     }));
@@ -110,8 +107,6 @@ namespace KCSG
                         Find.CurrentMap.roofGrid.SetRoof(c, RoofDefOf.RoofRockThick);
                 })
             };
-
-
 
             Find.WindowStack.Add(new Dialog_DebugOptionListLister(debugMenuOptionList));
         }

@@ -77,20 +77,6 @@ namespace KCSG
             return max;
         }
 
-        [Obsolete]
-        public static void HeightWidthFromLayout(StructureLayoutDef structureLayoutDef, out int height, out int width)
-        {
-            if (structureLayoutDef == null || structureLayoutDef.layouts.Count == 0)
-            {
-                Log.Warning("StructureLayoutDef was null or empty. Throwing 10 10 size");
-                height = 10;
-                width = 10;
-                return;
-            }
-            height = structureLayoutDef.layouts[0].Count;
-            width = structureLayoutDef.layouts[0][0].Split(',').ToList().Count;
-        }
-
         public static void MinMaxXZ(List<IntVec3> list, out int zMin, out int zMax, out int xMin, out int xMax)
         {
             zMin = list[0].z;

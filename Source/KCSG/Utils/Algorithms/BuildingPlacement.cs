@@ -8,11 +8,9 @@ namespace KCSG
         public static bool CanPlaceAt(CustomVector point, StructureLayoutDef building, CustomVector[][] grid)
         {
             bool result = true;
-            RectUtils.HeightWidthFromLayout(building, out int height, out int width);
-
-            for (int i = (int)point.X - 1; i < width + point.X + 1 && result; i++)
+            for (int i = (int)point.X - 1; i < building.width + point.X + 1 && result; i++)
             {
-                for (int j = (int)(point.Y - 1); j < height + point.Y + 1 && result; j++)
+                for (int j = (int)(point.Y - 1); j < building.height + point.Y + 1 && result; j++)
                 {
                     if (IsInBound(i, j, grid.Length, grid[0].Length))
                     {
@@ -52,13 +50,12 @@ namespace KCSG
 
         public static List<CustomVector> PlaceAt(CustomVector point, StructureLayoutDef building, CustomVector[][] grid)
         {
-            RectUtils.HeightWidthFromLayout(building, out int height, out int width);
             List<CustomVector> doors = GetDoorsInLayout(building);
             List<CustomVector> doorsAdjusted = new List<CustomVector>();
 
-            for (int i = (int)point.X; i < width + point.X; i++)
+            for (int i = (int)point.X; i < building.width + point.X; i++)
             {
-                for (int j = (int)point.Y; j < height + point.Y; j++)
+                for (int j = (int)point.Y; j < building.height + point.Y; j++)
                 {
                     CellType type = doors.FindAll(d => i == d.X + point.X && j == d.Y + point.Y).Any() ? CellType.DOOR : CellType.BUILDING;
                     if (type == CellType.DOOR)

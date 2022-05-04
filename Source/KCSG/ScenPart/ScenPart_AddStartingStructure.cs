@@ -13,7 +13,6 @@ namespace KCSG
         public List<StructureLayoutDef> chooseFrom = new List<StructureLayoutDef>();
         public bool nearMapCenter;
         public bool spawnPartOfEnnemyFaction = false;
-        public bool spawnConduits = true;
         // Name in scenario
         public string structureLabel;
         // Clear options
@@ -105,15 +104,14 @@ namespace KCSG
             }
             else structureLayoutDef = chooseFrom.RandomElement();
 
-            RectUtils.HeightWidthFromLayout(structureLayoutDef, out int h, out int w);
-            CellRect cellRect = CreateCellRect(map, h, w);
+            CellRect cellRect = CreateCellRect(map, structureLayoutDef.height, structureLayoutDef.width);
 
             if (preGenClear)
                 GenUtils.PreClean(map, cellRect, structureLayoutDef.roofGrid, fullClear);
 
             foreach (List<string> item in structureLayoutDef.layouts)
             {
-                GenUtils.GenerateRoomFromLayout(item, cellRect, map, structureLayoutDef, spawnConduits);
+                GenUtils.GenerateRoomFromLayout(item, cellRect, map, structureLayoutDef);
             }
 
             if (spawnTheStartingPawn && Find.GameInitData != null)

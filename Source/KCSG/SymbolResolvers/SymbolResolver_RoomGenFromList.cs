@@ -12,25 +12,25 @@ namespace KCSG
 
             foreach (KeyValuePair<CustomVector, StructureLayoutDef> keyValue in CGO.vectStruct)
             {
-                CGO.currentGenStepMoreInfo = "Generating " + keyValue.Value.defName;
+                StructureLayoutDef layoutDef = keyValue.Value;
+                CGO.currentGenStepMoreInfo = "Generating " + layoutDef.defName;
 
-                RectUtils.HeightWidthFromLayout(keyValue.Value, out int height, out int width);
                 IntVec3 limitMin = new IntVec3
                 {
                     x = CGO.offset.x + (int)keyValue.Key.X,
-                    z = CGO.offset.z - (int)keyValue.Key.Y - height + 1
+                    z = CGO.offset.z - (int)keyValue.Key.Y - layoutDef.height + 1
                 };
-                CellRect rect = new CellRect(limitMin.x, limitMin.z, width, height);
+                CellRect rect = new CellRect(limitMin.x, limitMin.z, layoutDef.width, layoutDef.height);
 
-                foreach (List<string> item in keyValue.Value.layouts)
+                foreach (List<string> item in layoutDef.layouts)
                 {
-                    GenUtils.GenerateRoomFromLayout(item, rect, BaseGen.globalSettings.map, keyValue.Value);
+                    GenUtils.GenerateRoomFromLayout(item, rect, BaseGen.globalSettings.map, layoutDef);
                 }
 
                 if (keyValue.Value.isStorage)
                 {
                     ResolveParams rstock = rp;
-                    rstock.rect = new CellRect(limitMin.x, limitMin.z, width, height);
+                    rstock.rect = new CellRect(limitMin.x, limitMin.z, layoutDef.width, layoutDef.height);
                     BaseGen.symbolStack.Push("kcsg_storagezone", rstock, null);
                 }
             }

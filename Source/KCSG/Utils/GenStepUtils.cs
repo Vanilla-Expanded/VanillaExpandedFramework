@@ -33,7 +33,8 @@ namespace KCSG
             int height;
             if (sf.useStructureLayout)
             {
-                RectUtils.HeightWidthFromLayout(CGO.structureLayoutDef, out height, out width);
+                width = CGO.structureLayoutDef.width;
+                height = CGO.structureLayoutDef.height;
             }
             else
             {
