@@ -1,10 +1,5 @@
 ﻿using RimWorld;
 using RimWorld.Planet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Verse;
 
 namespace KCSG
@@ -15,69 +10,86 @@ namespace KCSG
 
         public override void Generate(Map map, GenStepParams parms)
         {
-            if (map.Biome.GetModExtension<BiomeStructGenExtension>() is BiomeStructGenExtension ext)
+            if (map.Biome.modExtensions.NullOrEmpty())
             {
-                if (ext.onlyOnPlayerMap && map.ParentFaction != Faction.OfPlayer)
-                    return;
+                return;
+            }
 
-                int spawnCount = ext.countScaleHiliness ? ext.scalingOptions.GetScalingFor(map, ext.spawnCount) : ext.spawnCount;
-                for (int i = 0; i < spawnCount; i++)
+            for (int p = 0; p < map.Biome.modExtensions.Count; p++)
+            {
+                var extension = map.Biome.modExtensions[p];
+                if (extension is BiomeStructGenExtension ext)
                 {
-                    StructureLayoutDef layout = ext.structures.RandomElementByWeight(l => l.commonality).layout;
-                    int height = layout.height;
-                    int width = layout.width;
-
-                    IntVec3 spawnPos = CellFinderLoose.RandomCellWith((c) =>
+                    if (ext.onlyOnPlayerMap && map.ParentFaction != Faction.OfPlayer)
                     {
-                        CellRect rect = CellRect.CenteredOn(c, width + ext.clearCellRadiusAround, height + ext.clearCellRadiusAround);
+                        return;
+                    }
 
-                        if (!rect.InBounds(map))
-                            return false;
+                    int spawnCount = ext.countScaleHiliness ? ext.scalingOptions.GetScalingFor(map, ext.spawnCount) : ext.spawnCount;
+                    for (int i = 0; i < spawnCount; i++)
+                    {
+                        StructureLayoutDef layout = ext.structures.RandomElementByWeight(l => l.commonality).layout;
+                        int height = layout.height;
+                        int width = layout.width;
 
-                        if (!ext.canSpawnInMontains)
-                            foreach (IntVec3 cell in rect.Cells)
+                        IntVec3 spawnPos = CellFinderLoose.RandomCellWith((c) =>
+                        {
+                            CellRect rect = CellRect.CenteredOn(c, width + ext.clearCellRadiusAround, height + ext.clearCellRadiusAround);
+
+                            if (!rect.InBounds(map))
                             {
-                                if (!cell.Walkable(map))
-                                    return false;
+                                return false;
                             }
 
-                        return true;
-                    }, map);
+                            if (!ext.canSpawnInMontains)
+                            {
+                                foreach (IntVec3 cell in rect.Cells)
+                                {
+                                    if (!cell.Walkable(map))
+                                    {
+                                        return false;
+                                    }
+                                }
+                            }
+
+                            return true;
+                        }, map);
 
 
-                    CellRect spawnRect = CellRect.CenteredOn(spawnPos, width, height);
-                    for (int o = 0; o < layout.layouts.Count; o++)
-                    {
-                        GenUtils.GenerateRoomFromLayout(layout, o, spawnRect, map);
+                        CellRect spawnRect = CellRect.CenteredOn(spawnPos, width, height);
+                        for (int o = 0; o < layout.layouts.Count; o++)
+                        {
+                            GenUtils.GenerateRoomFromLayout(layout, o, spawnRect, map);
+                        }
+                        GenUtils.GenerateRoofGrid(layout, spawnRect, map);
                     }
-                    GenUtils.GenerateRoofGrid(layout, spawnRect, map);
-                }
 
-                if (ext.postGenerateOre)
-                {
-                    GenStep_ScatterLumpsMineable gen = new GenStep_ScatterLumpsMineable
+                    if (ext.postGenerateOre)
                     {
-                        maxValue = ext.maxMineableValue
-                    };
+                        GenStep_ScatterLumpsMineable gen = new GenStep_ScatterLumpsMineable
+                        {
+                            maxValue = ext.maxMineableValue
+                        };
 
-                    float count = 0f;
-                    switch (Find.WorldGrid[map.Tile].hilliness)
-                    {
-                        case Hilliness.Flat:
-                            count = 4f;
-                            break;
-                        case Hilliness.SmallHills:
-                            count = 8f;
-                            break;
-                        case Hilliness.LargeHills:
-                            count = 11f;
-                            break;
-                        case Hilliness.Mountainous:
-                            count = 15f;
-                            break;
+                        float count = 0f;
+                        switch (Find.WorldGrid[map.Tile].hilliness)
+                        {
+                            case Hilliness.Flat:
+                                count = 4f;
+                                break;
+                            case Hilliness.SmallHills:
+                                count = 8f;
+                                break;
+                            case Hilliness.LargeHills:
+                                count = 11f;
+                                break;
+                            case Hilliness.Mountainous:
+                                count = 15f;
+                                break;
+                        }
+                        gen.countPer10kCellsRange = new FloatRange(count, count);
+                        gen.Generate(map, parms);
                     }
-                    gen.countPer10kCellsRange = new FloatRange(count, count);
-                    gen.Generate(map, parms);
                 }
             }
         }
