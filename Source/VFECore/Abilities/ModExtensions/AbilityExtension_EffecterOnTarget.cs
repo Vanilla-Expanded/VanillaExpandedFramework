@@ -1,6 +1,7 @@
 ﻿namespace VFECore.Abilities
 {
     using RimWorld;
+    using System.Collections.Generic;
     using UnityEngine;
     using Verse;
     using Verse.Sound;
@@ -33,6 +34,15 @@
             else
             {
                 effecter.Cleanup();
+            }
+        }
+
+        public override IEnumerable<string> ConfigErrors()
+        {
+            if (maintainForTicks > 0 && !this.abilityDef.needsTicking)
+            {
+                yield return this.abilityDef.defName + " has AbilityExtension_EffecterOnTarget mod extension with maintainForTicks set to " 
+                    + maintainForTicks + " but doesn't have needsTicking set to true. It will not work without ticking.";
             }
         }
     }
