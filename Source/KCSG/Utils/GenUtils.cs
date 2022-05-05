@@ -94,7 +94,10 @@ namespace KCSG
                     Pawn pawn = symbol.spawnPartOfFaction ? PawnGenerator.GeneratePawn(symbol.pawnKindDefNS, map.ParentFaction) : PawnGenerator.GeneratePawn(symbol.pawnKindDefNS);
                     if (pawn != null)
                     {
-                        if (symbol.isSlave && parentFaction) pawn.guest.SetGuestStatus(map.ParentFaction, GuestStatus.Prisoner);
+                        if (symbol.isSlave && parentFaction)
+                        {
+                            pawn.guest.SetGuestStatus(map.ParentFaction, GuestStatus.Prisoner);
+                        }
 
                         GenSpawn.Spawn(pawn, cell, map, WipeMode.FullRefund);
                         lord.AddPawn(pawn);
@@ -108,7 +111,11 @@ namespace KCSG
                     Pawn pawn = symbol.spawnPartOfFaction ? PawnGenerator.GeneratePawn(symbol.pawnKindDefNS, map.ParentFaction) : PawnGenerator.GeneratePawn(symbol.pawnKindDefNS);
                     if (pawn != null)
                     {
-                        if (symbol.isSlave && parentFaction) pawn.guest.SetGuestStatus(map.ParentFaction, GuestStatus.Prisoner);
+                        if (symbol.isSlave && parentFaction)
+                        {
+                            pawn.guest.SetGuestStatus(map.ParentFaction, GuestStatus.Prisoner);
+                        }
+
                         GenSpawn.Spawn(pawn, cell, map, WipeMode.FullRefund);
                     }
                 }
@@ -148,13 +155,17 @@ namespace KCSG
             {
                 Pawn pawn = GeneratePawnForContainer(symbol, map);
                 if (!cryptosleepCasket.TryAcceptThing(pawn))
+                {
                     pawn.Destroy();
+                }
             }
             else if (thing is Building_CorpseCasket corpseCasket && Rand.Value < symbol.chanceToContainPawn)
             {
                 Pawn pawn = GeneratePawnForContainer(symbol, map);
                 if (!corpseCasket.TryAcceptThing(pawn))
+                {
                     pawn.Destroy();
+                }
             }
             else if (thing is Building_Crate crate)
             {
@@ -176,7 +187,9 @@ namespace KCSG
                 thingList.ForEach(t =>
                 {
                     if (!crate.TryAcceptThing(t, false))
+                    {
                         t.Destroy();
+                    }
                 });
             }
 
@@ -205,12 +218,19 @@ namespace KCSG
 
             GenSpawn.Spawn(thing, cell, map, symbol.rotation, WipeMode.VanishOrMoveAside);
 
-            if (faction != null) thing.SetFactionDirect(faction);
+            if (faction != null && thing.def.CanHaveFaction)
+            {
+                thing.SetFactionDirect(faction);
+            }
 
             if (generateConduit && !thing.def.mineable && (thing.def.passability == Traversability.Impassable || thing.def.IsDoor) && faction?.def.techLevel >= TechLevel.Industrial) // Add power cable under all impassable
             {
                 Thing c = ThingMaker.MakeThing(ThingDefOf.PowerConduit);
-                if (faction != null) c.SetFactionDirect(faction);
+                if (faction != null)
+                {
+                    c.SetFactionDirect(faction);
+                }
+
                 GenSpawn.Spawn(c, cell, map, WipeMode.FullRefund);
             }
             // Handle mortar and mortar pawns
@@ -291,7 +311,7 @@ namespace KCSG
                             break;
                     }
                 }
-                    
+
             }
         }
 
@@ -317,10 +337,19 @@ namespace KCSG
                     rect = CellRect.CenteredOn(CellFinder.RandomClosewalkCellNear(map.Center, map, fromCenter), w, h);
                     rect.ClipInsideMap(map);
                 }
-                else rect = CellRect.CenteredOn(CellFinder.RandomNotEdgeCell(h, map), w, h);
+                else
+                {
+                    rect = CellRect.CenteredOn(CellFinder.RandomNotEdgeCell(h, map), w, h);
+                }
 
-                if (rect.Cells.ToList().Any(i => !i.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Medium))) fromCenter += 2;
-                else return rect.CenterCell;
+                if (rect.Cells.ToList().Any(i => !i.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Medium)))
+                {
+                    fromCenter += 2;
+                }
+                else
+                {
+                    return rect.CenterCell;
+                }
             }
         }
 
@@ -382,8 +411,14 @@ namespace KCSG
                 {
                     if (t.Map != null)
                     {
-                        if (t is Pawn p && p.Faction == map.ParentFaction) KLog.Message($"Skipping {p.NameShortColored}, part of defender faction.");
-                        else t.DeSpawn();
+                        if (t is Pawn p && p.Faction == map.ParentFaction)
+                        {
+                            KLog.Message($"Skipping {p.NameShortColored}, part of defender faction.");
+                        }
+                        else
+                        {
+                            t.DeSpawn();
+                        }
                     }
                 });
             }
