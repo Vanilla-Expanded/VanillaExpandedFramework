@@ -288,30 +288,33 @@ namespace KCSG
 
         public static void GenerateRoofGrid(StructureLayoutDef layout, CellRect rect, Map map)
         {
-            var cells = rect.Cells.ToList();
-            int count = cells.Count;
-
-            for (int i = 0; i < count; i++)
+            if (layout.roofGrid != null && layout.roofGridResolved.Count > 0)
             {
-                IntVec3 cell = cells[i];
-                if (cell.InBounds(map))
-                {
-                    switch (layout.roofGridResolved[i])
-                    {
-                        case "1":
-                            map.roofGrid.SetRoof(cell, RoofDefOf.RoofConstructed);
-                            break;
-                        case "2":
-                            map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThin);
-                            break;
-                        case "3":
-                            map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThick);
-                            break;
-                        default:
-                            break;
-                    }
-                }
+                var cells = rect.Cells.ToList();
+                int count = cells.Count;
 
+                for (int i = 0; i < count; i++)
+                {
+                    IntVec3 cell = cells[i];
+                    if (cell.InBounds(map))
+                    {
+                        switch (layout.roofGridResolved[i])
+                        {
+                            case "1":
+                                map.roofGrid.SetRoof(cell, RoofDefOf.RoofConstructed);
+                                break;
+                            case "2":
+                                map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThin);
+                                break;
+                            case "3":
+                                map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThick);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                }
             }
         }
 
