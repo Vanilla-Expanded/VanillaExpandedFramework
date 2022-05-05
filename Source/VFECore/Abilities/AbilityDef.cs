@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -88,6 +89,13 @@ namespace VFECore.Abilities
 
             if (!typeof(Ability).IsAssignableFrom(this.abilityClass))
                 yield return $"{this.abilityClass} is not a valid ability type";
+            else
+            {
+                if (!this.needsTicking && AccessTools.DeclaredMethod(this.abilityClass, "Tick") != null)
+                {
+                    yield return $"{this.defName} has a Tick method but doesn't have the needsTicking field. It will not work.";
+                }
+            }
             /*
             if (this.GetModExtension<AbilityExtension_Projectile>() != null && (this.GetModExtension<AbilityExtension_Hediff>()?.applyAuto ?? false))
                 yield return "Projectile and auto apply hediff present. Please check if that is intended.";
