@@ -17,6 +17,7 @@ namespace VFECore
         public List<PawnCapacityMinLevel> pawnCapacityMinLevels;
         public float carryingCapacity = -1;
         public bool preventDowning;
+        public bool preventKilling;
         public bool preventBleeding;
     }
 }
