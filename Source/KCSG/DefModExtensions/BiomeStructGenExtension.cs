@@ -1,9 +1,5 @@
-﻿using RimWorld.Planet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using RimWorld.Planet;
 using Verse;
 
 namespace KCSG
@@ -11,7 +7,7 @@ namespace KCSG
     public class BiomeStructGenExtension : DefModExtension
     {
         public List<LayoutCommonality> structures = new List<LayoutCommonality>();
-        
+
         public int spawnCount = 1;
         public bool countScaleHiliness = false;
         public Scaling scalingOptions = new Scaling();
@@ -19,8 +15,10 @@ namespace KCSG
         public bool canSpawnInMontains = true;
         public int clearCellRadiusAround = 0;
 
+        public bool canSpawnOnBridgeableTerrain = true;
+
         public bool onlyOnPlayerMap = false;
-                
+
         public bool postGenerateOre = false;
         public float maxMineableValue = float.MaxValue;
     }
@@ -33,10 +31,10 @@ namespace KCSG
 
     public class Scaling
     {
-        float flat = 0.15f;
-        float smallHills = 0.5f;
-        float largeHills = 0.75f;
-        float mountainous = 1f;
+        readonly float flat = 0.15f;
+        readonly float smallHills = 0.5f;
+        readonly float largeHills = 0.75f;
+        readonly float mountainous = 1f;
 
         public int GetScalingFor(Map map, int count)
         {

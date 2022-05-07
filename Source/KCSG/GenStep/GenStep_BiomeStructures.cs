@@ -41,14 +41,20 @@ namespace KCSG
                                 return false;
                             }
 
-                            if (!ext.canSpawnInMontains)
+                            foreach (IntVec3 cell in rect.Cells)
                             {
-                                foreach (IntVec3 cell in rect.Cells)
+                                if (!ext.canSpawnInMontains)
                                 {
                                     if (!cell.Walkable(map))
                                     {
                                         return false;
                                     }
+                                }
+
+                                if (!ext.canSpawnOnBridgeableTerrain)
+                                {
+                                    if (cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Bridgeable))
+                                        return false;
                                 }
                             }
 
