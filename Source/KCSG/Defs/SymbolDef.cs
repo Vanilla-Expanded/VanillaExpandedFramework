@@ -1,6 +1,6 @@
-﻿using RimWorld;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using RimWorld;
 using Verse;
 
 namespace KCSG
@@ -40,10 +40,16 @@ namespace KCSG
         // Pawn
         public string pawnKindDef = null;
         public PawnKindDef pawnKindDefNS = null;
-        public Type lordJob = null;
         public bool isSlave = false;
         public FactionDef faction;
         public int numberToSpawn = 1;
+        public bool spawnDead = false;
+        public bool spawnRotten = false;
+        public bool spawnFilthAround = false;
+        public bool defendSpawnPoint = false;
+
+        [Obsolete]
+        public string lordJob = null;
 
         public override void ResolveReferences()
         {

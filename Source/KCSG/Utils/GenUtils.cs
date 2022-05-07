@@ -1,8 +1,8 @@
-﻿using RimWorld;
-using RimWorld.BaseGen;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using RimWorld;
+using RimWorld.BaseGen;
 using UnityEngine;
 using Verse;
 using Verse.AI.Group;
@@ -30,7 +30,7 @@ namespace KCSG
                         {
                             GenerateTerrainAt(map, cell, temp.terrainDef);
                         }
-                        else if (temp.pawnKindDefNS != null && CGO.factionSettlement?.shouldRuin == false)
+                        else if (temp.pawnKindDefNS != null && (CGO.factionSettlement == null || CGO.factionSettlement.shouldRuin == false))
                         {
                             GeneratePawnAt(map, cell, temp);
                         }
@@ -85,40 +85,53 @@ namespace KCSG
         public static void GeneratePawnAt(Map map, IntVec3 cell, SymbolDef symbol)
         {
             bool parentFaction = map.ParentFaction != null;
+            var pawns = new List<Pawn>();
 
-            if (symbol.lordJob != null)
+            for (int i = 0; i < symbol.numberToSpawn; i++)
             {
-                Lord lord = CreateNewLord(symbol.lordJob, map, cell);
-                for (int i = 0; i < symbol.numberToSpawn; i++)
+                Pawn pawn = symbol.spawnPartOfFaction ? PawnGenerator.GeneratePawn(symbol.pawnKindDefNS, map.ParentFaction) : PawnGenerator.GeneratePawn(symbol.pawnKindDefNS, symbol.faction != null ? Find.FactionManager.FirstFactionOfDef(symbol.faction) : null);
+                if (pawn == null)
                 {
-                    Pawn pawn = symbol.spawnPartOfFaction ? PawnGenerator.GeneratePawn(symbol.pawnKindDefNS, map.ParentFaction) : PawnGenerator.GeneratePawn(symbol.pawnKindDefNS);
-                    if (pawn != null)
-                    {
-                        if (symbol.isSlave && parentFaction)
-                        {
-                            pawn.guest.SetGuestStatus(map.ParentFaction, GuestStatus.Prisoner);
-                        }
+                    KLog.Message("Null pawn in GeneratePawnAt");
+                    break;
+                }
 
-                        GenSpawn.Spawn(pawn, cell, map, WipeMode.FullRefund);
-                        lord.AddPawn(pawn);
+                if (symbol.isSlave && parentFaction)
+                {
+                    pawn.guest.SetGuestStatus(map.ParentFaction, GuestStatus.Prisoner);
+                }
+
+                if (symbol.spawnDead)
+                {
+                    pawn.Kill(new DamageInfo(DamageDefOf.Cut, 9999));
+                    Corpse corpse = pawn.Corpse;
+                    corpse.timeOfDeath = Mathf.Max(Find.TickManager.TicksGame - 120000, 0);
+                    if (symbol.spawnRotten)
+                    {
+                        corpse.timeOfDeath = Mathf.Max(Find.TickManager.TicksGame - 60000 * Rand.RangeInclusive(5, 15), 0);
+                        corpse.TryGetComp<CompRottable>().RotImmediately();
+                        if (symbol.spawnFilthAround)
+                        {
+                            for (int x = 0; x < 5; x++)
+                            {
+                                IntVec3 rNext = new IntVec3();
+                                RCellFinder.TryFindRandomCellNearWith(cell, ni => ni.Walkable(map), map, out rNext, 1, 3);
+                                GenSpawn.Spawn(ThingDefOf.Filth_CorpseBile, rNext, map);
+                            }
+                        }
                     }
+                    GenSpawn.Spawn(corpse, cell, map);
+                }
+                else
+                {
+                    GenSpawn.Spawn(pawn, cell, map, WipeMode.FullRefund);
+                    pawns.Add(pawn);
                 }
             }
-            else
-            {
-                for (int i = 0; i < symbol.numberToSpawn; i++)
-                {
-                    Pawn pawn = symbol.spawnPartOfFaction ? PawnGenerator.GeneratePawn(symbol.pawnKindDefNS, map.ParentFaction) : PawnGenerator.GeneratePawn(symbol.pawnKindDefNS);
-                    if (pawn != null)
-                    {
-                        if (symbol.isSlave && parentFaction)
-                        {
-                            pawn.guest.SetGuestStatus(map.ParentFaction, GuestStatus.Prisoner);
-                        }
 
-                        GenSpawn.Spawn(pawn, cell, map, WipeMode.FullRefund);
-                    }
-                }
+            if (symbol.defendSpawnPoint)
+            {
+                Lord lord = LordMaker.MakeNewLord(map.ParentFaction, new LordJob_DefendPoint(cell, 3f, addFleeToil: false), map, pawns);
             }
         }
 
@@ -316,17 +329,6 @@ namespace KCSG
 
                 }
             }
-        }
-
-        public static Lord CreateNewLord(Type lordJobType, Map map, IntVec3 cell)
-        {
-            return LordMaker.MakeNewLord(map.ParentFaction, Activator.CreateInstance(lordJobType, new object[]
-            {
-                new SpawnedPawnParams
-                {
-                    defSpot = cell,
-                }
-            }) as LordJob, map, null);
         }
 
         public static IntVec3 FindRect(Map map, int h, int w, bool nearCenter = false)

@@ -50,7 +50,7 @@ namespace KCSG
         internal int height;
         // Symbols lists, without limiters
         internal List<List<SymbolDef>> symbolsLists = new List<List<SymbolDef>>();
-        
+
         internal List<string> roofGridResolved = new List<string>();
 
         public override void ResolveReferences()
@@ -81,9 +81,17 @@ namespace KCSG
                     {
                         string symbol = symbols[p];
                         if (symbol == ".")
+                        {
                             symbolsLists[i].Add(null);
+                        }
                         else
-                            symbolsLists[i].Add(DefDatabase<SymbolDef>.GetNamedSilentFail(symbol));
+                        {
+                            SymbolDef def = DefDatabase<SymbolDef>.GetNamedSilentFail(symbol);
+                            symbolsLists[i].Add(def);
+
+                            if (def == null)
+                                KLog.Message($"{symbol} not found.");
+                        }
                     }
                 }
             }
