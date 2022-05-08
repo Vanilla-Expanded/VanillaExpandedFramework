@@ -4,7 +4,7 @@ using Verse;
 namespace KCSG
 {
     [DefOf]
-    public static class KThingDefOf
+    public static class DefOfs
     {
         public static ThingDef KCSG_PowerConduit;
 
@@ -17,7 +17,7 @@ namespace KCSG
         public static ThingDef Marble;
 
 
-        static KThingDefOf()
+        static DefOfs()
         {
             DefOfHelper.EnsureInitializedInCtor(typeof(ThingDefOf));
         }

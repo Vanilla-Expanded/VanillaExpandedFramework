@@ -82,7 +82,7 @@
     <Compile Include="Utils\GenStepUtils.cs" />
     <Compile Include="Utils\KLog.cs" />
     <Compile Include="Utils\TextureLoader.cs" />
-    <Compile Include="DefOfs\KThingDefOf.cs" />
+    <Compile Include="DefOfs\DefOfs.cs" />
     <Compile Include="Utils\Algorithms\AStar.cs" />
     <Compile Include="Utils\Algorithms\BuildingPlacement.cs" />
     <Compile Include="Utils\DebugOption.cs" />

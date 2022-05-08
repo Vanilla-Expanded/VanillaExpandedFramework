@@ -158,58 +158,58 @@ namespace KCSG
                 //Marble
                 new DebugMenuOption("Marble 1*1", DebugMenuOptionMode.Tool, () =>
                 {
-                    GenSpawn.Spawn(KThingDefOf.Marble, UI.MouseCell(), Find.CurrentMap);
+                    GenSpawn.Spawn(DefOfs.Marble, UI.MouseCell(), Find.CurrentMap);
                 }),
                 new DebugMenuOption("Marble 3*3", DebugMenuOptionMode.Tool, () =>
                 {
                    foreach (IntVec3 item in CellRect.CenteredOn(UI.MouseCell(), 1).ClipInsideMap(Find.CurrentMap))
                     {
-                        GenSpawn.Spawn(KThingDefOf.Marble, item, Find.CurrentMap);
+                        GenSpawn.Spawn(DefOfs.Marble, item, Find.CurrentMap);
                     }
                 }),
                 new DebugMenuOption("Marble 5*5", DebugMenuOptionMode.Tool, () =>
                 {
                    foreach (IntVec3 item in CellRect.CenteredOn(UI.MouseCell(), 2).ClipInsideMap(Find.CurrentMap))
                     {
-                        GenSpawn.Spawn(KThingDefOf.Marble, item, Find.CurrentMap);
+                        GenSpawn.Spawn(DefOfs.Marble, item, Find.CurrentMap);
                     }
                 }),
                 //Limestone
                 new DebugMenuOption("Limestone 1*1", DebugMenuOptionMode.Tool, () =>
                 {
-                    GenSpawn.Spawn(KThingDefOf.Limestone, UI.MouseCell(), Find.CurrentMap);
+                    GenSpawn.Spawn(DefOfs.Limestone, UI.MouseCell(), Find.CurrentMap);
                 }),
                 new DebugMenuOption("Limestone 3*3", DebugMenuOptionMode.Tool, () =>
                 {
                    foreach (IntVec3 item in CellRect.CenteredOn(UI.MouseCell(), 1).ClipInsideMap(Find.CurrentMap))
                     {
-                        GenSpawn.Spawn(KThingDefOf.Limestone, item, Find.CurrentMap);
+                        GenSpawn.Spawn(DefOfs.Limestone, item, Find.CurrentMap);
                     }
                 }),
                 new DebugMenuOption("Limestone 5*5", DebugMenuOptionMode.Tool, () =>
                 {
                    foreach (IntVec3 item in CellRect.CenteredOn(UI.MouseCell(), 2).ClipInsideMap(Find.CurrentMap))
                     {
-                        GenSpawn.Spawn(KThingDefOf.Limestone, item, Find.CurrentMap);
+                        GenSpawn.Spawn(DefOfs.Limestone, item, Find.CurrentMap);
                     }
                 }),
                 //Slate
                 new DebugMenuOption("Slate 1*1", DebugMenuOptionMode.Tool, () =>
                 {
-                    GenSpawn.Spawn(KThingDefOf.Slate, UI.MouseCell(), Find.CurrentMap);
+                    GenSpawn.Spawn(DefOfs.Slate, UI.MouseCell(), Find.CurrentMap);
                 }),
                 new DebugMenuOption("Slate 3*3", DebugMenuOptionMode.Tool, () =>
                 {
                    foreach (IntVec3 item in CellRect.CenteredOn(UI.MouseCell(), 1).ClipInsideMap(Find.CurrentMap))
                     {
-                        GenSpawn.Spawn(KThingDefOf.Slate, item, Find.CurrentMap);
+                        GenSpawn.Spawn(DefOfs.Slate, item, Find.CurrentMap);
                     }
                 }),
                 new DebugMenuOption("Slate 5*5", DebugMenuOptionMode.Tool, () =>
                 {
                    foreach (IntVec3 item in CellRect.CenteredOn(UI.MouseCell(), 2).ClipInsideMap(Find.CurrentMap))
                     {
-                        GenSpawn.Spawn(KThingDefOf.Slate, item, Find.CurrentMap);
+                        GenSpawn.Spawn(DefOfs.Slate, item, Find.CurrentMap);
                     }
                 })
 

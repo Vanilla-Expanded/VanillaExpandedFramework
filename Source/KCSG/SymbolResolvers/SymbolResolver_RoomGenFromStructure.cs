@@ -25,9 +25,9 @@ namespace KCSG
             }
             GenUtils.GenerateRoofGrid(CGO.structureLayoutDef, rp.rect, map);
 
-            GenUtils.EnsureBatteriesConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, KThingDefOf.KCSG_PowerConduit);
-            GenUtils.EnsurePowerUsersConnected(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, KThingDefOf.KCSG_PowerConduit);
-            GenUtils.EnsureGeneratorsConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, KThingDefOf.KCSG_PowerConduit);
+            GenUtils.EnsureBatteriesConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, DefOfs.KCSG_PowerConduit);
+            GenUtils.EnsurePowerUsersConnected(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, DefOfs.KCSG_PowerConduit);
+            GenUtils.EnsureGeneratorsConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, DefOfs.KCSG_PowerConduit);
         }
     }
 }
