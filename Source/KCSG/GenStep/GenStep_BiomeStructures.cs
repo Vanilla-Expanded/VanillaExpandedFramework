@@ -51,9 +51,9 @@ namespace KCSG
                                     }
                                 }
 
-                                if (!ext.canSpawnOnBridgeableTerrain)
+                                if (!ext.canSpawnOnWaterTerrain)
                                 {
-                                    if (cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Bridgeable))
+                                    if (cell.GetTerrain(map).HasTag("Water"))
                                         return false;
                                 }
                             }

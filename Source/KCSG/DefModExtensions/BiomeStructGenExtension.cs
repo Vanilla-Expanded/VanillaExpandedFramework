@@ -15,7 +15,7 @@ namespace KCSG
         public bool canSpawnInMontains = true;
         public int clearCellRadiusAround = 0;
 
-        public bool canSpawnOnBridgeableTerrain = true;
+        public bool canSpawnOnWaterTerrain = true;
 
         public bool onlyOnPlayerMap = false;
 
