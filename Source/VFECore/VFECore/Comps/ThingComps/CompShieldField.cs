@@ -643,12 +643,15 @@ namespace VFECore
             {
                 active = CanActivateShield();
             }
-            if ((GenHostility.AnyHostileActiveThreatTo_NewTemp(HostThing.Map, HostFaction)
-                || HostThing.Map.listerThings.ThingsOfDef(RimWorld.ThingDefOf.Tornado).Any()
-                || HostThing.Map.listerThings.ThingsOfDef(RimWorld.ThingDefOf.DropPodIncoming).Any()) && shieldBuffer < 15)
-                shieldBuffer = 15;
-            else
-                shieldBuffer -= 1;
+            if (HostThing.Map != null)
+            {
+                if ((GenHostility.AnyHostileActiveThreatTo_NewTemp(HostThing.Map, HostFaction)
+                    || HostThing.Map.listerThings.ThingsOfDef(RimWorld.ThingDefOf.Tornado).Any()
+                    || HostThing.Map.listerThings.ThingsOfDef(RimWorld.ThingDefOf.DropPodIncoming).Any()) && shieldBuffer < 15)
+                    shieldBuffer = 15;
+                else
+                    shieldBuffer -= 1;
+            }
         }
     }
 
