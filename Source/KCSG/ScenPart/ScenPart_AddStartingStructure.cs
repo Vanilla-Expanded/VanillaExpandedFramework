@@ -1,6 +1,6 @@
-﻿using RimWorld;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -13,6 +13,7 @@ namespace KCSG
         public List<StructureLayoutDef> chooseFrom = new List<StructureLayoutDef>();
         public bool nearMapCenter;
         public bool spawnPartOfEnnemyFaction = false;
+        public bool spawnConduits = true;
         // Name in scenario
         public string structureLabel;
         // Clear options
@@ -76,11 +77,11 @@ namespace KCSG
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look<string>(ref structureLabel, "structureLabel");
-            Scribe_Values.Look<bool>(ref nearMapCenter, "nearMapCenter");
-            Scribe_Values.Look<bool>(ref allowFoggedPosition, "allowFoggedPosition");
-            Scribe_Values.Look<bool>(ref spawnPartOfEnnemyFaction, "spawnPartOfEnnemyFaction");
-            Scribe_Collections.Look<StructureLayoutDef>(ref chooseFrom, "chooseFrom", LookMode.Def);
+            Scribe_Values.Look(ref structureLabel, "structureLabel");
+            Scribe_Values.Look(ref nearMapCenter, "nearMapCenter");
+            Scribe_Values.Look(ref allowFoggedPosition, "allowFoggedPosition");
+            Scribe_Values.Look(ref spawnPartOfEnnemyFaction, "spawnPartOfEnnemyFaction");
+            Scribe_Collections.Look(ref chooseFrom, "chooseFrom", LookMode.Def);
         }
 
         public override IEnumerable<string> GetSummaryListEntries(string tag)
@@ -102,7 +103,10 @@ namespace KCSG
                 layoutDef = PrepareCarefully_Util.pcScenariosSave.First().Key;
                 nearMapCenter = PrepareCarefully_Util.pcScenariosSave.First().Value;
             }
-            else layoutDef = chooseFrom.RandomElement();
+            else
+            {
+                layoutDef = chooseFrom.RandomElement();
+            }
 
             CellRect cellRect = CreateCellRect(map, layoutDef.height, layoutDef.width);
 
