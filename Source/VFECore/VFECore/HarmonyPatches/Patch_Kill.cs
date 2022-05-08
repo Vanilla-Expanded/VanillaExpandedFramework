@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using System.Linq;
 using Verse;
 
 namespace VFECore
@@ -15,7 +16,14 @@ namespace VFECore
                     var extension = apparel.def.GetModExtension<ApparelExtension>();
                     if (extension != null && extension.preventKilling)
                     {
-                        return false;
+                        var pawnBodyPercentage = (float)__instance.health.hediffSet.GetNotMissingParts()
+                            .Sum(x => x.def.GetMaxHealth(__instance)) 
+                            / (float)__instance.def.race.body.AllParts.Sum(x => x.def.GetMaxHealth(__instance));
+                        if (extension.preventKillingUntilHealthHPPercentage < pawnBodyPercentage
+                            && (!extension.preventKillingUntilBrainMissing || __instance.health.hediffSet.GetBrain() != null))
+                        {
+                            return false;
+                        }
                     }
                 }
             }

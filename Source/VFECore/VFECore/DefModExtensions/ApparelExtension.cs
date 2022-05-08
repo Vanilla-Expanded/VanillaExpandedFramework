@@ -18,6 +18,8 @@ namespace VFECore
         public float carryingCapacity = -1;
         public bool preventDowning;
         public bool preventKilling;
+        public float preventKillingUntilHealthHPPercentage = 1f;
+        public bool preventKillingUntilBrainMissing;
         public bool preventBleeding;
     }
 }
