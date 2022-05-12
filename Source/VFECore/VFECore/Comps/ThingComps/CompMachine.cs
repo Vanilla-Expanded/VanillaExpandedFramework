@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using AnimalBehaviours;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ using VFECore;
 
 namespace VFE.Mechanoids
 {
-    public class CompMachine : CompDependsOnBuilding
+    public class CompMachine : CompDependsOnBuilding, PawnGizmoProvider
     {
         public ThingDef turretAttached = null;
         public float turretAngle = 0f; //Purely cosmetic, don't need to save it
@@ -96,6 +97,21 @@ namespace VFE.Mechanoids
             cachedMachines.Remove(((Pawn)parent).Drawer.renderer);
             cachedPawns.Remove(this);
             cachedMachinesPawns.Remove((Pawn)parent);
+        }
+
+        public IEnumerable<Gizmo> GetGizmos()
+        {
+            if (Prefs.DevMode)
+            {
+                yield return new Command_Action
+                {
+                    defaultLabel = "Recharge fully",
+                    action = delegate ()
+                    {
+                        (this.parent as Pawn).needs.TryGetNeed<Need_Power>().CurLevel = 1;
+                    }
+                };
+            }
         }
     }
 }

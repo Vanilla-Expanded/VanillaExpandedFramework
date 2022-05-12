@@ -34,32 +34,5 @@ namespace VFEMech
                 this.Kill(dinfo);
             }
         }
-
-        public override IEnumerable<Gizmo> GetGizmos()
-        {
-            foreach (var g in base.GetGizmos())
-            {
-                yield return g;
-            }
-            if (Prefs.DevMode)
-            {
-                yield return new Command_Action
-                {
-                    defaultLabel = "Recharge fully",
-                    action = delegate ()
-                    {
-                        this.needs.TryGetNeed<Need_Power>().CurLevel = 1;
-                    }
-                };
-            }
-
-            foreach (var comp in this.AllComps)
-            {
-                foreach (var g in comp.CompGetGizmosExtra())
-                {
-                    yield return g;
-                }
-            }
-        }
     }
 }
