@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using HarmonyLib;
     using RimWorld;
+    using RimWorld.Planet;
     using UnityEngine;
     using Verse;
 
@@ -48,7 +49,7 @@
             this.Position = this.target.ToIntVec3();
             Pawn pawn = this.FlyingPawn;
             base.RespawnPawn();
-            this.ability.ApplyHediffs(pawn);
+            this.ability.ApplyHediffs(new GlobalTargetInfo(pawn));
 
             int? staggerTicks = this.ability.def.GetModExtension<AbilityExtension_Hediff>()?.hediff.CompProps<HediffCompProperties_Disappears>()?.disappearsAfterTicks.RandomInRange;
             if (staggerTicks.HasValue)

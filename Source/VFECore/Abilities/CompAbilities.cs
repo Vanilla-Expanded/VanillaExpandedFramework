@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using RimWorld;
+    using RimWorld.Planet;
     using UnityEngine;
     using Verse;
     using Verse.Sound;
@@ -15,8 +16,9 @@
         private List<Abilities.Ability> learnedAbilities = new List<Abilities.Ability>();
         private List<Ability> abilitiesToTick = new List<Ability>();
 
-        public Abilities.Ability currentlyCasting;
-        
+        public Abilities.Ability  currentlyCasting;
+        public GlobalTargetInfo[] currentlyCastingTargets;
+
         private float energyMax;
         public override float EnergyMax => this.energyMax;
 
@@ -99,6 +101,7 @@
             base.PostExposeData();
             Scribe_Collections.Look(ref this.learnedAbilities, nameof(this.learnedAbilities), LookMode.Deep);
             Scribe_References.Look(ref this.currentlyCasting, nameof(this.currentlyCasting));
+            Scribe_Deep.Look(ref this.currentlyCastingTargets, nameof(this.currentlyCastingTargets));
             Scribe_Values.Look(ref this.energyMax, nameof(this.energyMax));
             Scribe_Values.Look(ref this.shieldPath, nameof(this.shieldPath));
 

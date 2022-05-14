@@ -15,7 +15,12 @@ namespace VFECore.Abilities
         public HediffWithLevelCombination requiredHediff;
         public TraitDef                   requiredTrait;
 
-        public AbilityTargetingMode targetMode = AbilityTargetingMode.None;
+        public int                        targetCount = 1;
+
+        private AbilityTargetingMode       targetMode  = AbilityTargetingMode.None;
+        public  List<AbilityTargetingMode> targetModes = new List<AbilityTargetingMode>();
+        private TargetingParameters        targetingParameters;
+        public  List<TargetingParameters>  targetingParametersList = new List<TargetingParameters>();
 
         public float              range            = 0f;
         public List<StatModifier> rangeStatFactors = new List<StatModifier>();
@@ -38,9 +43,12 @@ namespace VFECore.Abilities
         public int goodwillImpact = 0;
         public bool applyGoodwillImpactToLodgers = true;
 
-        public bool requireLineOfSight = true;
+
+        public bool   worldTargeting;
+
+        public bool   requireLineOfSight = true;
         public JobDef jobDef;
-        public float distanceToTarget = 1.5f;
+        public float  distanceToTarget = 1.5f;
 
         public ThingDef warmupMote;
         public SoundDef warmupSound;
@@ -66,10 +74,9 @@ namespace VFECore.Abilities
 
         public List<FleckDef> targetFlecks;
 
-        public VerbProperties      verbProperties;
-        public TargetingParameters targetingParameters;
-        public float               chance                = 1f;
-        public bool                autocastPlayerDefault = false;
+        public VerbProperties verbProperties;
+        public float          chance                = 1f;
+        public bool           autocastPlayerDefault = false;
 
         public string jobReportString = "Using ability: {0}";
 
@@ -107,42 +114,64 @@ namespace VFECore.Abilities
             if (!this.iconPath.NullOrEmpty())
                 LongEventHandler.ExecuteWhenFinished(delegate { this.icon = ContentFinder<Texture2D>.Get(this.iconPath); });
 
-            if (targetingParameters == null)
+            if (this.targetMode != AbilityTargetingMode.None)
+                if (this.targetModes.Any())
+                    this.targetModes.Insert(0, this.targetMode);
+                else
+                    this.targetModes.Add(this.targetMode);
+
+            for (int i = 0; i < this.targetCount; i++)
             {
-                targetingParameters = new TargetingParameters
-                {
-                    canTargetPawns     = false,
-                    canTargetBuildings = false,
-                    canTargetAnimals   = false,
-                    canTargetHumans    = false,
-                    canTargetMechs     = false
-                };
+                AbilityTargetingMode targetingMode = this.targetModes.Count > i ? this.targetModes[i] : AbilityTargetingMode.Self;
 
-                if (targetMode == AbilityTargetingMode.None) targetMode = AbilityTargetingMode.Self;
+                TargetingParameters parameters = this.targetingParametersList.Count > i ?
+                                                     this.targetingParametersList[i] :
+                                                     new TargetingParameters
+                                                     {
+                                                         canTargetPawns     = false,
+                                                         canTargetBuildings = false,
+                                                         canTargetAnimals   = false,
+                                                         canTargetHumans    = false,
+                                                         canTargetMechs     = false
+                                                     };
 
-                switch (targetMode)
+                if (targetingMode == AbilityTargetingMode.None)
+                    targetingMode = AbilityTargetingMode.Self;
+
+                switch (targetingMode)
                 {
                     case AbilityTargetingMode.Self:
-                        targetingParameters = TargetingParameters.ForSelf(null);
+                        parameters = TargetingParameters.ForSelf(null);
                         break;
                     case AbilityTargetingMode.Location:
-                        targetingParameters.canTargetLocations = true;
+                        parameters.canTargetLocations = true;
                         break;
                     case AbilityTargetingMode.Thing:
-                        targetingParameters.canTargetItems     = true;
-                        targetingParameters.canTargetBuildings = true;
+                        parameters.canTargetItems     = true;
+                        parameters.canTargetBuildings = true;
                         break;
                     case AbilityTargetingMode.Pawn:
-                        targetingParameters.canTargetPawns = targetingParameters.canTargetHumans =
-                            targetingParameters.canTargetMechs = targetingParameters.canTargetAnimals = true;
+                        parameters.canTargetPawns = parameters.canTargetHumans = parameters.canTargetMechs = parameters.canTargetAnimals = true;
                         break;
                     case AbilityTargetingMode.Humanlike:
-                        targetingParameters.canTargetPawns = targetingParameters.canTargetHumans = true;
+                        parameters.canTargetPawns = parameters.canTargetHumans = true;
+                        break;
+                    case AbilityTargetingMode.Tile:
                         break;
                     case AbilityTargetingMode.None:
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
+
+                if (i < this.targetingParametersList.Count)
+                    this.targetModes[i] = targetingMode;
+                else
+                    this.targetModes.Add(targetingMode);
+
+                if (i < this.targetingParametersList.Count)
+                    this.targetingParametersList[i] = parameters;
+                else
+                    this.targetingParametersList.Add(parameters);
             }
         }
 
@@ -190,6 +219,7 @@ namespace VFECore.Abilities
         Location,
         Thing,
         Pawn,
-        Humanlike
+        Humanlike,
+        Tile
     }
 }
