@@ -615,6 +615,7 @@
     <Compile Include="Apparel\Harmony\SkillRecord_Learn_Patch.cs" />
     <Compile Include="Apparel\Harmony\ThingSelectionUtility_SelectableByMapClick_Patch.cs" />
     <Compile Include="Apparel\ModExtensions\ApparelExtension.cs" />
+    <Compile Include="Memes\PlaceWorkers\PlaceWorker_DisabledByMeme.cs" />
     <Compile Include="VFECore\Comps\HediffComps\HediffComp_Targeting.cs" />
     <Compile Include="VFECore\HarmonyPatches\Stat_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\MapGenerator_GenerateContentsIntoMap_Patch.cs" />
