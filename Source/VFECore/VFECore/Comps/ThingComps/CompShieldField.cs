@@ -152,10 +152,13 @@ namespace VFECore
             {
                 foreach (var cell in coveredCells)
                 {
-                    var thingList = cell.GetThingList(HostThing.Map);
-                    for (int i = 0; i < thingList.Count; i++)
+                    if (cell.InBounds(HostThing.Map))
                     {
-                        yield return thingList[i];
+                        var thingList = cell.GetThingList(HostThing.Map);
+                        for (int i = 0; i < thingList.Count; i++)
+                        {
+                            yield return thingList[i];
+                        }
                     }
                 }
             }
@@ -165,16 +168,18 @@ namespace VFECore
         {
             get
             {
-
                 foreach (var cell in scanCells)
                 {
-                    var thingList = cell.GetThingList(HostThing.Map);
-                    for (int i = 0; i < thingList.Count; i++)
+                    if (cell.InBounds(HostThing.Map))
                     {
-                        var thing = thingList[i];
-                        var distance = Vector3.Distance(this.HostThing.TrueCenter().Yto0(), thing.TrueCenter().Yto0());
-                        if (distance <= ShieldRadius)
-                            yield return thing;
+                        var thingList = cell.GetThingList(HostThing.Map);
+                        for (int i = 0; i < thingList.Count; i++)
+                        {
+                            var thing = thingList[i];
+                            var distance = Vector3.Distance(this.HostThing.TrueCenter().Yto0(), thing.TrueCenter().Yto0());
+                            if (distance <= ShieldRadius)
+                                yield return thing;
+                        }
                     }
                 }
             }
