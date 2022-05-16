@@ -20,7 +20,8 @@ namespace VFECore.Abilities
         private AbilityTargetingMode       targetMode  = AbilityTargetingMode.None;
         public  List<AbilityTargetingMode> targetModes = new List<AbilityTargetingMode>();
         private TargetingParameters        targetingParameters;
-        public  List<TargetingParameters>  targetingParametersList = new List<TargetingParameters>();
+        public TargetingParameters targetingParametersForAoE;
+        public List<TargetingParameters>  targetingParametersList = new List<TargetingParameters>();
 
         public float              range            = 0f;
         public List<StatModifier> rangeStatFactors = new List<StatModifier>();
@@ -45,7 +46,7 @@ namespace VFECore.Abilities
 
 
         public bool   worldTargeting;
-
+        public bool hasAoE;
         public bool   requireLineOfSight = true;
         public JobDef jobDef;
         public float  distanceToTarget = 1.5f;

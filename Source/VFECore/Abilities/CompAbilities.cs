@@ -96,12 +96,17 @@
             }
         }
 
+        public List<GlobalTargetInfo> tmpCurrentlyCastingTargets;
         public override void PostExposeData()
         {
             base.PostExposeData();
             Scribe_Collections.Look(ref this.learnedAbilities, nameof(this.learnedAbilities), LookMode.Deep);
             Scribe_References.Look(ref this.currentlyCasting, nameof(this.currentlyCasting));
-            Scribe_Deep.Look(ref this.currentlyCastingTargets, nameof(this.currentlyCastingTargets));
+
+            tmpCurrentlyCastingTargets = currentlyCastingTargets?.ToList() ?? new List<GlobalTargetInfo>();
+            Scribe_Collections.Look(ref this.tmpCurrentlyCastingTargets, nameof(this.currentlyCastingTargets));
+            currentlyCastingTargets = this.tmpCurrentlyCastingTargets?.ToArray();
+
             Scribe_Values.Look(ref this.energyMax, nameof(this.energyMax));
             Scribe_Values.Look(ref this.shieldPath, nameof(this.shieldPath));
 

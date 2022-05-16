@@ -344,6 +344,33 @@
             Job           job  = JobMaker.MakeJob(this.def.jobDef ?? VFE_DefOf_Abilities.VFEA_UseAbility, targets.Any() ? targets[0].IsMapTarget ? targets[0].Cell : default : default);
             CompAbilities comp = this.pawn.GetComp<CompAbilities>();
             comp.currentlyCasting        = this;
+            if (this.def.hasAoE)
+            {
+                var targetsTmp = new List<GlobalTargetInfo>();
+                var radius = this.GetRadiusForPawn();
+                if (this.def.targetingParametersForAoE.canTargetLocations)
+                {
+                    foreach (var cell in GenRadial.RadialCellsAround(targets[0].Cell, radius, true))
+                    {
+                        targetsTmp.Add(new GlobalTargetInfo(cell, pawn.Map));
+                    }
+                }
+                else
+                {
+                    foreach (var thing in GenRadial.RadialDistinctThingsAround(targets[0].Cell, pawn.Map, radius, true))
+                    {
+                        if (this.def.targetingParametersForAoE.CanTarget(thing))
+                        {
+                            if (!this.def.targetingParametersForAoE.canTargetSelf && thing == pawn)
+                            {
+                                continue;
+                            }
+                            targetsTmp.Add(thing);
+                        }
+                    }
+                }
+                targets = targetsTmp.ToArray();
+            }
             comp.currentlyCastingTargets = targets;
             this.pawn.jobs.StartJob(job, JobCondition.InterruptForced);
         }
@@ -368,7 +395,6 @@
                 modExtension.PreWarmupAction(this.pawn.GetComp<CompAbilities>().currentlyCastingTargets, this);
         }
 
-
         [Obsolete("Use the new Cast method using GlobalTargets instead")]
         public virtual void Cast(LocalTargetInfo target) =>
             this.Cast(target.ToGlobalTargetInfo(this.Caster.Map));
@@ -392,10 +418,12 @@
             }
 
             foreach (AbilityExtension_AbilityMod modExtension in this.AbilityModExtensions)
+            {
                 if (targets.Length > 1 || (targets.Any() && targets.First().Map != this.Caster.Map))
                     modExtension.Cast(targets, this);
                 else
                     modExtension.Cast(targets.Any() ? targets[0].Thing != null ? new LocalTargetInfo(targets[0].Thing) : new LocalTargetInfo(targets[0].Cell) : default, this);
+            }
 
             // Obsolete methods used below during transition
 
