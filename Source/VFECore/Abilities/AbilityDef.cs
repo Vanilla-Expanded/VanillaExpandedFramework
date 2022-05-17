@@ -131,42 +131,46 @@ namespace VFECore.Abilities
             {
                 AbilityTargetingMode targetingMode = this.targetModes.Count > i ? this.targetModes[i] : AbilityTargetingMode.Self;
 
-                TargetingParameters parameters = this.targetingParametersList.Count > i ?
-                                                     this.targetingParametersList[i] :
-                                                     new TargetingParameters
-                                                     {
-                                                         canTargetPawns     = false,
-                                                         canTargetBuildings = false,
-                                                         canTargetAnimals   = false,
-                                                         canTargetHumans    = false,
-                                                         canTargetMechs     = false
-                                                     };
-                if (targetingMode == AbilityTargetingMode.None)
-                    targetingMode = AbilityTargetingMode.Self;
+                TargetingParameters parameters = this.targetingParametersList.Count > i ? this.targetingParametersList[i] : null;
 
-                switch (targetingMode)
+                if (parameters == null)
                 {
-                    case AbilityTargetingMode.Self:
-                        parameters = TargetingParameters.ForSelf(null);
-                        break;
-                    case AbilityTargetingMode.Location:
-                        parameters.canTargetLocations = true;
-                        break;
-                    case AbilityTargetingMode.Thing:
-                        parameters.canTargetItems     = true;
-                        parameters.canTargetBuildings = true;
-                        break;
-                    case AbilityTargetingMode.Pawn:
-                        parameters.canTargetPawns = parameters.canTargetHumans = parameters.canTargetMechs = parameters.canTargetAnimals = true;
-                        break;
-                    case AbilityTargetingMode.Humanlike:
-                        parameters.canTargetPawns = parameters.canTargetHumans = true;
-                        break;
-                    case AbilityTargetingMode.Tile:
-                        break;
-                    case AbilityTargetingMode.None:
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    parameters = new TargetingParameters
+                    {
+                        canTargetPawns = false,
+                        canTargetBuildings = false,
+                        canTargetAnimals = false,
+                        canTargetHumans = false,
+                        canTargetMechs = false
+                    };
+
+                    if (targetingMode == AbilityTargetingMode.None)
+                        targetingMode = AbilityTargetingMode.Self;
+
+                    switch (targetingMode)
+                    {
+                        case AbilityTargetingMode.Self:
+                            parameters = TargetingParameters.ForSelf(null);
+                            break;
+                        case AbilityTargetingMode.Location:
+                            parameters.canTargetLocations = true;
+                            break;
+                        case AbilityTargetingMode.Thing:
+                            parameters.canTargetItems = true;
+                            parameters.canTargetBuildings = true;
+                            break;
+                        case AbilityTargetingMode.Pawn:
+                            parameters.canTargetPawns = parameters.canTargetHumans = parameters.canTargetMechs = parameters.canTargetAnimals = true;
+                            break;
+                        case AbilityTargetingMode.Humanlike:
+                            parameters.canTargetPawns = parameters.canTargetHumans = true;
+                            break;
+                        case AbilityTargetingMode.Tile:
+                            break;
+                        case AbilityTargetingMode.None:
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                 }
 
                 if (i < this.targetModes.Count)
