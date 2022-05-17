@@ -115,6 +115,12 @@ namespace VFECore.Abilities
             if (!this.iconPath.NullOrEmpty())
                 LongEventHandler.ExecuteWhenFinished(delegate { this.icon = ContentFinder<Texture2D>.Get(this.iconPath); });
 
+            if (this.targetingParameters != null)
+                if (this.targetingParametersList.Any())
+                    this.targetingParametersList.Insert(0, this.targetingParameters);
+                else
+                    this.targetingParametersList.Add(this.targetingParameters);
+
             if (this.targetMode != AbilityTargetingMode.None)
                 if (this.targetModes.Any())
                     this.targetModes.Insert(0, this.targetMode);
@@ -135,7 +141,6 @@ namespace VFECore.Abilities
                                                          canTargetHumans    = false,
                                                          canTargetMechs     = false
                                                      };
-
                 if (targetingMode == AbilityTargetingMode.None)
                     targetingMode = AbilityTargetingMode.Self;
 
@@ -164,7 +169,7 @@ namespace VFECore.Abilities
                         throw new ArgumentOutOfRangeException();
                 }
 
-                if (i < this.targetingParametersList.Count)
+                if (i < this.targetModes.Count)
                     this.targetModes[i] = targetingMode;
                 else
                     this.targetModes.Add(targetingMode);
