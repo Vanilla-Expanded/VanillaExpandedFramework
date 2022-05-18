@@ -25,7 +25,7 @@ namespace VFECore.Abilities
         public List<TargetingParameters>  targetingParametersList = new List<TargetingParameters>();
 
         public float              range            = 0f;
-        public float              minRange         = 0f;
+        public float              minRange         = -1f;
         public List<StatModifier> rangeStatFactors = new List<StatModifier>();
 
         public float              radius            = 0f;
