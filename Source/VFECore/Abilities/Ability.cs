@@ -120,9 +120,13 @@
             float rangeForPawn = this.GetRangeForPawn();
             if (rangeForPawn > 0f)
                 sb.AppendLine($"{"Range".Translate()}: {rangeForPawn}".Colorize(Color.cyan));
+            if (this.def.minRange > 0f)
+                sb.AppendLine($"{"MinimumRange".Translate()}: {this.def.minRange}".Colorize(Color.cyan));
             float radiusForPawn = this.GetRadiusForPawn();
             if (radiusForPawn > 0f)
                 sb.AppendLine($"{"radius".Translate()}: {radiusForPawn}".Colorize(Color.cyan));
+            if (this.def.minRadius > 0f)
+                sb.AppendLine($"{"VFEA.MinRadius".Translate()}: {this.def.minRadius}".Colorize(Color.cyan));
             float powerForPawn = this.GetPowerForPawn();
             if (powerForPawn > 0f)
                 sb.AppendLine($"{"VFEA.AbilityStatsPower".Translate()}: {powerForPawn}".Colorize(Color.cyan));
@@ -204,6 +208,9 @@
 
             if (GenRadial.MaxRadialPatternRadius > radius && radius >= 1)
                 GenDraw.DrawRadiusRing(this.pawn.Position, radius, Color.cyan);
+
+            if (GenRadial.MaxRadialPatternRadius > this.def.minRange && this.def.minRange >= 1)
+                GenDraw.DrawRadiusRing(this.pawn.Position, this.def.minRange, Color.cyan);
 
             foreach (AbilityExtension_AbilityMod extension in this.AbilityModExtensions)
                 extension.GizmoUpdateOnMouseover(this);
@@ -287,6 +294,16 @@
                 this.currentTargets[this.currentTargetingIndex] = this.pawn;
                 this.DoTargeting();
             }
+            else if (targetMode == AbilityTargetingMode.Random)
+            {
+                var cell = this.currentTargets.Length > this.currentTargetingIndex
+                    ? this.currentTargets[this.currentTargetingIndex - 1].Cell
+                    : pawn.Position;
+                if (this.GetTargetsAround(cell, this.targetParams, true)
+                        .TryRandomElement(out var target))
+                    this.currentTargets[this.currentTargetingIndex] = target;
+                this.DoTargeting();
+            }
             else if (this.def.worldTargeting)
             {
                 CameraJumper.TryJump(CameraJumper.GetWorldTarget(this.pawn));
@@ -347,33 +364,53 @@
             comp.currentlyCasting        = this;
             if (this.def.hasAoE)
             {
-                var targetsTmp = new List<GlobalTargetInfo>();
-                var radius = this.GetRadiusForPawn();
-                if (this.def.targetingParametersForAoE.canTargetLocations)
+                var targetsTmp = GetTargetsAround(targets[0].Cell, this.def.targetingParametersForAoE);
+                if (this.def.targetCount == 2 && this.def.targetModes[1] == AbilityTargetingMode.Random)
                 {
-                    foreach (var cell in GenRadial.RadialCellsAround(targets[0].Cell, radius, true))
+                    targetsTmp = targetsTmp.SelectMany(target => new []
                     {
-                        targetsTmp.Add(new GlobalTargetInfo(cell, pawn.Map));
-                    }
-                }
-                else
-                {
-                    foreach (var thing in GenRadial.RadialDistinctThingsAround(targets[0].Cell, pawn.Map, radius, true))
-                    {
-                        if (this.def.targetingParametersForAoE.CanTarget(thing) && this.ValidateTarget(thing, false))
-                        {
-                            if (!this.def.targetingParametersForAoE.canTargetSelf && thing == pawn)
-                            {
-                                continue;
-                            }
-                            targetsTmp.Add(thing);
-                        }
-                    }
+                        target,
+                        GetTargetsAround(target.Cell, this.def.targetingParametersList[1], true).RandomElement()
+                    });
                 }
                 targets = targetsTmp.ToArray();
             }
             comp.currentlyCastingTargets = targets;
             this.pawn.jobs.StartJob(job, JobCondition.InterruptForced);
+        }
+
+        protected IEnumerable<GlobalTargetInfo> GetTargetsAround(IntVec3 cell, TargetingParameters parms, bool isRandom = false)
+        {
+            var minRadius = this.def.minRadius;
+            var maxRadius = this.GetRadiusForPawn();
+            if (isRandom)
+            {
+                var ext = this.def.GetModExtension<AbilityExtension_RandomRadius>();
+                if (ext != null)
+                {
+                    minRadius = ext.minRadius;
+                    maxRadius = ext.maxRadius;
+                }
+            }
+            if (parms.canTargetLocations)
+            {
+                foreach (var c in GenRadial.RadialCellsAround(cell, minRadius, maxRadius))
+                {
+                    if (c.InBounds(pawn.Map)) yield return new GlobalTargetInfo(c, pawn.Map);
+                }
+            }
+            else
+            {
+                foreach (var thing in GenRadial.RadialDistinctThingsAround(cell, pawn.Map, maxRadius, true))
+                {
+                    if (parms.CanTarget(thing) && thing.OccupiedRect().ClosestDistSquaredTo(cell) > minRadius)
+                    {
+                        if (!parms.canTargetSelf && thing == pawn) continue;
+
+                        yield return thing;
+                    }
+                }
+            }
         }
 
         [Obsolete("Use new method using GlobalTargetInfo instead")]
@@ -496,6 +533,12 @@
             this.maintainedEffecters.Add(new Pair<Effecter, TargetInfo>(eff, new TargetInfo(pos, map ?? pawn.Map)));
         }
 
+        public void AddEffecterToMaintain(Effecter eff, TargetInfo target, int ticks)
+        {
+            eff.ticksLeft = ticks;
+            this.maintainedEffecters.Add(new Pair<Effecter, TargetInfo>(eff, target));
+        }
+
         [Obsolete("Use new Method using GlobalTargetInfo instead")]
         public virtual void TargetEffects(LocalTargetInfo targetInfo) =>
             this.TargetEffects(targetInfo.ToGlobalTargetInfo(this.Caster.Map));
@@ -595,7 +638,8 @@
                 if (!modExtension.CanApplyOn(target, this))
                     return false;
 
-            if (target.IsValid && (this.def.worldTargeting || target.Cell.DistanceTo(this.pawn.Position) < this.GetRangeForPawn()))
+            var distance = target.Cell.DistanceTo(this.pawn.Position);
+            if (target.IsValid && (this.def.worldTargeting || (distance < this.GetRangeForPawn() && distance > this.def.minRange)))
             {
                 if ((this.targetParams.canTargetLocations && this.targetParams.CanTarget(new TargetInfo(target.Cell, this.Caster.Map))) ||
                     this.targetParams.CanTarget(target.ToTargetInfo(this.Caster.Map)))
@@ -631,6 +675,10 @@
                 float radius = this.GetRadiusForPawn();
                 if (GenRadial.MaxRadialPatternRadius > radius && radius >= 1)
                     GenDraw.DrawRadiusRing(target.Cell, radius, Color.red);
+
+
+                if (GenRadial.MaxRadialPatternRadius > this.def.minRadius && this.def.minRadius >= 1)
+                    GenDraw.DrawRadiusRing(target.Cell, this.def.minRadius, Color.red);
             }
         }
 
@@ -658,7 +706,8 @@
                 if (!modExtension.ValidTile(target, this))
                     return false;
 
-            return target.IsValid && Find.World.grid.ApproxDistanceInTiles(target.Tile, this.Caster.Map.Tile) < this.GetRangeForPawn();
+            var distance = Find.World.grid.ApproxDistanceInTiles(target.Tile, this.Caster.Map.Tile);
+            return target.IsValid && distance < this.GetRangeForPawn() && distance > this.def.minRange;
         }
 
         public virtual void OnUpdateWorld()

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using HarmonyLib;
 using RimWorld;
 using UnityEngine;
@@ -24,9 +25,11 @@ namespace VFECore.Abilities
         public List<TargetingParameters>  targetingParametersList = new List<TargetingParameters>();
 
         public float              range            = 0f;
+        public float              minRange         = 0f;
         public List<StatModifier> rangeStatFactors = new List<StatModifier>();
 
         public float              radius            = 0f;
+        public float              minRadius         = 0f;
         public List<StatModifier> radiusStatFactors = new List<StatModifier>();
 
         public float              power            = 0f;
@@ -46,7 +49,7 @@ namespace VFECore.Abilities
 
 
         public bool   worldTargeting;
-        public bool hasAoE;
+        public bool   hasAoE;
         public bool   requireLineOfSight = true;
         public JobDef jobDef;
         public float  distanceToTarget = 1.5f;
@@ -102,6 +105,28 @@ namespace VFECore.Abilities
                 if (!this.needsTicking && AccessTools.DeclaredMethod(this.abilityClass, "Tick") != null)
                 {
                     yield return $"{this.defName} has a Tick method but doesn't have the needsTicking field. It will not work.";
+                }
+            }
+
+            if (this.targetModes != null && this.targetModes.Count != this.targetCount)
+            {
+                yield return $"{this.defName} has {this.targetCount} targets but {this.targetModes.Count} modes. This will lead to unexpected behavior";
+            }
+
+            if (this.targetingParametersList != null && this.targetingParametersList.Count != this.targetCount)
+            {
+                yield return $"{this.defName} has {this.targetCount} targets but {this.targetingParametersList.Count} targeting parameters. This will lead to unexpected behavior";
+            }
+
+            if (this.hasAoE && this.targetCount != 1)
+            {
+                if (this.targetCount == 2 && this.targetModes != null && this.targetModes.Count == 2 && this.targetModes[1] == AbilityTargetingMode.Random)
+                {
+
+                }
+                else
+                {
+                    yield return $"{this.defName} is AoE but has more than one target. This will lead to unexpected behavior";
                 }
             }
             /*
@@ -198,6 +223,7 @@ namespace VFECore.Abilities
                                           label                 = this.label,
                                           category              = VerbCategory.Misc,
                                           range                 = this.range,
+                                          minRange              = this.minRange,
                                           noiseRadius           = 3f,
                                           targetParams          = this.targetingParameters,
                                           warmupTime            = this.castTime / (float)GenTicks.TicksPerRealSecond,
@@ -230,6 +256,7 @@ namespace VFECore.Abilities
         Thing,
         Pawn,
         Humanlike,
-        Tile
+        Tile,
+        Random
     }
 }
