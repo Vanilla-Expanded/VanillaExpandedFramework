@@ -362,21 +362,27 @@
             Job           job  = JobMaker.MakeJob(this.def.jobDef ?? VFE_DefOf_Abilities.VFEA_UseAbility, targets.Any() ? targets[0].IsMapTarget ? targets[0].Cell : default : default);
             CompAbilities comp = this.pawn.GetComp<CompAbilities>();
             comp.currentlyCasting        = this;
+            ModifyTargets(ref targets);
+            comp.currentlyCastingTargets = targets;
+            this.pawn.jobs.StartJob(job, JobCondition.InterruptForced);
+        }
+
+        protected virtual void ModifyTargets(ref GlobalTargetInfo[] targets)
+        {
             if (this.def.hasAoE)
             {
                 var targetsTmp = GetTargetsAround(targets[0].Cell, this.def.targetingParametersForAoE);
                 if (this.def.targetCount == 2 && this.def.targetModes[1] == AbilityTargetingMode.Random)
                 {
-                    targetsTmp = targetsTmp.SelectMany(target => new []
+                    targetsTmp = targetsTmp.SelectMany(target => new[]
                     {
                         target,
                         GetTargetsAround(target.Cell, this.def.targetingParametersList[1], true).RandomElement()
                     });
                 }
+
                 targets = targetsTmp.ToArray();
             }
-            comp.currentlyCastingTargets = targets;
-            this.pawn.jobs.StartJob(job, JobCondition.InterruptForced);
         }
 
         protected IEnumerable<GlobalTargetInfo> GetTargetsAround(IntVec3 cell, TargetingParameters parms, bool isRandom = false)
