@@ -324,13 +324,14 @@
                 if (!modExtension.Valid(targets, this, true))
                     return;
 
+            this.currentTargetingIndex = -1;
+
             bool startAbilityJobImmediately = true;
             this.PreCast(targets, ref startAbilityJobImmediately, () => this.StartAbilityJob(targets));
 
             if (startAbilityJobImmediately)
                 this.StartAbilityJob(targets);
 
-            this.currentTargetingIndex = -1;
             this.currentTargets        = new GlobalTargetInfo[this.def.targetCount];
         }
 
