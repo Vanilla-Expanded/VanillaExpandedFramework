@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using RimWorld.Planet;
 using System.Linq;
 using Verse;
 
@@ -9,6 +10,13 @@ namespace VFECore.Abilities
         public override void ApplyHediffs(LocalTargetInfo targetInfo)
         {
             ApplyHediff(this, targetInfo);
+        }
+        public override void ApplyHediffs(params GlobalTargetInfo[] targetInfo)
+        {
+            foreach (GlobalTargetInfo target in targetInfo)
+            {
+                ApplyHediff(this, (LocalTargetInfo)target);
+            }
         }
         public static void ApplyHediff(Ability ability, LocalTargetInfo targetInfo)
         {

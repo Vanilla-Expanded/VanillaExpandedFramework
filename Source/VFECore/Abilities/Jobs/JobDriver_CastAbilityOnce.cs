@@ -51,7 +51,7 @@
                                              {
                                                  GlobalTargetInfo[] targets = comp.currentlyCastingTargets;
                                                  if (targets.Length == 1 && targets[0].Map == this.pawn.Map)
-                                                     comp.currentlyCasting.Cast(targets[0].Thing != null ? new GlobalTargetInfo(targets[0].Thing) : new GlobalTargetInfo(targets[0].Cell, targets[0].Map));
+                                                     comp.currentlyCasting.Cast(targets[0].Thing != null ? new LocalTargetInfo(targets[0].Thing) : new LocalTargetInfo(targets[0].Cell));
                                                  else
                                                      comp.currentlyCasting.Cast(targets);
                                              },
