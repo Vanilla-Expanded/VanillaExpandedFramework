@@ -129,9 +129,9 @@ namespace VFECore.Abilities
 
             for (int i = 0; i < this.targetCount; i++)
             {
-                AbilityTargetingMode targetingMode = this.targetModes.Count > i ? this.targetModes[i] : AbilityTargetingMode.Self;
-
                 TargetingParameters parameters = this.targetingParametersList.Count > i ? this.targetingParametersList[i] : null;
+                AbilityTargetingMode targetingMode = this.targetModes.Count > i ? this.targetModes[i] :
+                    parameters == null ? AbilityTargetingMode.Self : AbilityTargetingMode.None;
 
                 if (parameters == null)
                 {
