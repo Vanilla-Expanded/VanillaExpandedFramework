@@ -1,12 +1,26 @@
 ﻿using RimWorld;
 using RimWorld.Planet;
 using System.Linq;
+using UnityEngine.Networking;
 using Verse;
 
 namespace VFECore.Abilities
 {
     public class Ability_HediffDuration : Ability
     {
+        public override bool ValidateTarget(LocalTargetInfo target, bool showMessages = true)
+        {
+            var hediffExtension = this.def.GetModExtension<AbilityExtension_Hediff>();
+            if (hediffExtension.targetOnlyEnemies && target.Thing != null && !target.Thing.HostileTo(pawn))
+            {
+                if (showMessages)
+                {
+                    Messages.Message("VFEA.TargetMustBeHostile".Translate(), target.Thing, MessageTypeDefOf.CautionInput, null);
+                }
+                return false;
+            }
+            return base.ValidateTarget(target, showMessages);
+        }
         public override void ApplyHediffs(LocalTargetInfo targetInfo)
         {
             ApplyHediff(this, targetInfo);

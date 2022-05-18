@@ -359,7 +359,7 @@
                 {
                     foreach (var thing in GenRadial.RadialDistinctThingsAround(targets[0].Cell, pawn.Map, radius, true))
                     {
-                        if (this.def.targetingParametersForAoE.CanTarget(thing))
+                        if (this.def.targetingParametersForAoE.CanTarget(thing) && this.ValidateTarget(thing, false))
                         {
                             if (!this.def.targetingParametersForAoE.canTargetSelf && thing == pawn)
                             {

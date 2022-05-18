@@ -6,4 +6,7 @@
 
 	<VFEA.AbilityStatsPower>Power</VFEA.AbilityStatsPower>
 	<VFEA.AbilityStatsDuration>Duration</VFEA.AbilityStatsDuration>
+	
+	<VFEA.TargetMustBeHostile>Target must be hostile</VFEA.TargetMustBeHostile>
+
 </LanguageData>
