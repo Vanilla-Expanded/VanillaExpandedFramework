@@ -409,7 +409,7 @@
             {
                 foreach (var thing in GenRadial.RadialDistinctThingsAround(cell, pawn.Map, maxRadius, true))
                 {
-                    if (parms.CanTarget(thing) && thing.OccupiedRect().ClosestDistSquaredTo(cell) > minRadius)
+                    if (parms.CanTarget(thing) && this.ValidateTarget(thing, false) && thing.OccupiedRect().ClosestDistSquaredTo(cell) > minRadius)
                     {
                         if (!parms.canTargetSelf && thing == pawn) continue;
 
