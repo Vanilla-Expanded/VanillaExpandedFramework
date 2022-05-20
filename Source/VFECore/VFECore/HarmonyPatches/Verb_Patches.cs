@@ -14,6 +14,44 @@ namespace VFECore
 
     public static class Patch_Verb
     {
+        public static bool forceHit;
+        public static bool forceMiss;
+
+        public static void CheckAccuracyEffects(Verb verb, LocalTargetInfo target, out bool forceHit, out bool forceMiss)
+        {
+            forceHit = forceMiss = false;
+            if (verb.caster is Pawn attacker && attacker.health?.hediffSet?.hediffs != null)
+            {
+                foreach (var hediff in attacker.health.hediffSet.hediffs)
+                {
+                    var comp = hediff.TryGetComp<HediffComp_Targeting>();
+                    if (comp != null)
+                    {
+                        forceHit  = comp.Props.neverMiss;
+                        forceMiss = comp.Props.neverHit;
+                    }
+                }
+            }
+
+            if (target.Thing is Pawn attackee && attackee.health?.hediffSet?.hediffs != null)
+            {
+                foreach (var hediff in attackee.health.hediffSet.hediffs)
+                {
+                    var comp = hediff.TryGetComp<HediffComp_Targeting>();
+                    if (comp != null)
+                    {
+                        forceHit  = comp.Props.alwaysHit;
+                        forceMiss = comp.Props.alwaysMiss;
+                    }
+                }
+            }
+
+            var projectileClass = verb.GetProjectile()?.thingClass;
+            if (projectileClass != null && typeof(TeslaProjectile).IsAssignableFrom(projectileClass))
+            {
+                forceHit = true;
+            }
+        }
 
         [HarmonyPatch(typeof(Verb), nameof(Verb.Available))]
         public static class Available
@@ -46,34 +84,9 @@ namespace VFECore
         [HarmonyPatch(typeof(ShotReport), "HitReportFor")]
         public static class ShotReport_HitReportFor
         {
-            public static bool accuracy;
-            public static void Prefix(ref ShotReport __result, Thing caster, Verb verb, LocalTargetInfo target)
+            public static void Prefix(Verb verb, LocalTargetInfo target)
             {
-                if (ShouldHitAlways(verb))
-                {
-                    accuracy = true;
-                }
-            }
-
-            public static bool ShouldHitAlways(Verb verb)
-            {
-                var projectileClass = verb.GetProjectile()?.thingClass;
-                if (projectileClass != null && typeof(TeslaProjectile).IsAssignableFrom(projectileClass))
-                {
-                    return true;
-                }
-                if (verb.caster is Pawn attacker && attacker.health?.hediffSet?.hediffs != null)
-                {
-                    foreach (var hediff in attacker.health.hediffSet.hediffs)
-                    {
-                        var comp = hediff.TryGetComp<HediffComp_Targeting>();
-                        if (comp != null && comp.Props.neverMiss)
-                        {
-                            return true;
-                        }
-                    }
-                }
-                return false;
+                CheckAccuracyEffects(verb, target, out forceHit, out forceMiss);
             }
         }
 
@@ -82,14 +95,12 @@ namespace VFECore
         {
             public static void Prefix(Verb_LaunchProjectile __instance)
             {
-                if (ShotReport_HitReportFor.ShouldHitAlways(__instance))
-                {
-                    ShotReport_HitReportFor.accuracy = true;
-                }
+                CheckAccuracyEffects(__instance, __instance.CurrentTarget, out forceHit, out forceMiss);
             }
             public static void Postfix()
             {
-                ShotReport_HitReportFor.accuracy = false;
+                forceHit = false;
+                forceMiss = false;
             }
         }
 
@@ -98,9 +109,12 @@ namespace VFECore
         {
             public static void Postfix(ref float __result)
             {
-                if (ShotReport_HitReportFor.accuracy)
+                if (forceHit)
                 {
                     __result = 1f;
+                } else if (forceMiss)
+                {
+                    __result = 0f;
                 }
             }
         }
