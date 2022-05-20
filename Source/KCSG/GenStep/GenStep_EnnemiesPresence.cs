@@ -1,7 +1,7 @@
-﻿using RimWorld;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using RimWorld;
 using Verse;
 using Verse.AI.Group;
 
@@ -25,8 +25,13 @@ namespace KCSG
 
         public override void Generate(Map map, GenStepParams parms)
         {
-            Faction fac = forcedfaction != null ? Find.FactionManager.FirstFactionOfDef(forcedfaction) : Find.FactionManager.RandomEnemyFaction(minTechLevel: TechLevel.Neolithic);
-            parms.sitePart.site.SetFaction(fac);
+            Faction fac = forcedfaction != null ? Find.FactionManager.FirstFactionOfDef(forcedfaction) : parms.sitePart.site.Faction;
+
+            if (fac == null)
+            {
+                Find.FactionManager.RandomEnemyFaction(minTechLevel: TechLevel.Neolithic);
+                parms.sitePart.site.SetFaction(fac);
+            }
 
             Lord defend = LordMaker.MakeNewLord(fac, new LordJob_DefendBase(fac, map.Center), map);
             IEnumerable<Pawn> pawns = GeneratePawns(map, fac, parms);
