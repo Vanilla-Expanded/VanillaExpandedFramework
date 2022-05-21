@@ -359,7 +359,8 @@
         public void StartAbilityJob(params GlobalTargetInfo[] targets)
         {
             this.pawn.jobs.EndCurrentJob(JobCondition.InterruptForced, false);
-            Job           job  = JobMaker.MakeJob(this.def.jobDef ?? VFE_DefOf_Abilities.VFEA_UseAbility, targets.Any() ? targets[0].IsMapTarget ? targets[0].Cell : default : default);
+            Job           job  = JobMaker.MakeJob(this.def.jobDef ?? VFE_DefOf_Abilities.VFEA_UseAbility, targets.Any() && targets[0].IsMapTarget ?
+                (LocalTargetInfo) targets[0] : default);
             CompAbilities comp = this.pawn.GetComp<CompAbilities>();
             comp.currentlyCasting        = this;
             ModifyTargets(ref targets);
