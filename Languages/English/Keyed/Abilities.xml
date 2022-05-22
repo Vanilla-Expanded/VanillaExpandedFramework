@@ -10,4 +10,7 @@
 	<VFEA.TargetMustBeHostile>Target must be hostile</VFEA.TargetMustBeHostile>
 
 	<VFEA.MinRadius>Minimum radius</VFEA.MinRadius>
+
+	<VFEA.RClickToAuto>Right-click to enable autocasting.</VFEA.RClickToAuto>
+	<VFEA.RClickToNoAuto>Right-click to disable autocasting.</VFEA.RClickToNoAuto>
 </LanguageData>

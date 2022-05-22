@@ -154,6 +154,8 @@
                     sb.AppendLine(description);
             }
 
+            if (this.Chance > 0) sb.AppendLine((this.AutoCast ? "VFEA.RClickToNoAuto" : "VFEA.RClickToAuto").Translate());
+
             return sb.ToString();
         }
 
