@@ -32,10 +32,11 @@ namespace VFECore.Abilities
         public override void GizmoUpdateOnMouseover()
         {
             base.GizmoUpdateOnMouseover();
-            ability.GizmoUpdateOnMouseover();
+            this.ability.GizmoUpdateOnMouseover();
         }
 
-        public override bool GroupsWith(Gizmo other) => other is Command_Ability ca && ca.ability.def == this.ability.def;
+        public override bool GroupsWith(Gizmo other) => 
+            other is Command_Ability ca && ca.ability.def == this.ability.def;
 
         protected override GizmoResult GizmoOnGUIInt(Rect butRect, GizmoRenderParms parms)
         {

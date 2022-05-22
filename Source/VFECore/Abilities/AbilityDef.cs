@@ -82,6 +82,8 @@ namespace VFECore.Abilities
         public float          chance                = 1f;
         public bool           autocastPlayerDefault = false;
 
+        public Type gizmoClass = typeof(Command_Ability);
+
         public string jobReportString = "Using ability: {0}";
 
         public string JobReportString => this.jobReportString.Formatted(this.LabelCap);
@@ -129,6 +131,9 @@ namespace VFECore.Abilities
                     yield return $"{this.defName} is AoE but has more than one target. This will lead to unexpected behavior";
                 }
             }
+
+            if (!typeof(Command_Ability).IsAssignableFrom(this.gizmoClass))
+                yield return $"{this.defName} uses gizmo class {this.gizmoClass.ToStringSafe()} not subclassing from Command_Ability";
             /*
             if (this.GetModExtension<AbilityExtension_Projectile>() != null && (this.GetModExtension<AbilityExtension_Hediff>()?.applyAuto ?? false))
                 yield return "Projectile and auto apply hediff present. Please check if that is intended.";

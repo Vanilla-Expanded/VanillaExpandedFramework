@@ -191,7 +191,7 @@
 
         public virtual Gizmo GetGizmo()
         {
-            Abilities.Command_Ability action = new Abilities.Command_Ability(this.pawn, this);
+            Command_Ability action = (Command_Ability) Activator.CreateInstance(this.def.gizmoClass, this.pawn, this);
             return action;
         }
 
