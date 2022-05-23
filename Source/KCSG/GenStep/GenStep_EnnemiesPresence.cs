@@ -32,6 +32,10 @@ namespace KCSG
                 Find.FactionManager.RandomEnemyFaction(minTechLevel: TechLevel.Neolithic);
                 parms.sitePart.site.SetFaction(fac);
             }
+            else
+            {
+                parms.sitePart.site.SetFaction(fac);
+            }
 
             Lord defend = LordMaker.MakeNewLord(fac, new LordJob_DefendBase(fac, map.Center), map);
             IEnumerable<Pawn> pawns = GeneratePawns(map, fac, parms);
