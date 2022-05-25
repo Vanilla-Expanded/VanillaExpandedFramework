@@ -18,7 +18,12 @@ namespace VFECore.Abilities
                 for (var i = 0; i < targets.Length; i++)
                 {
                     var thing = GenSpawn.Spawn(extension.thing, targets[i].Cell, pawn.Map);
-                    if (thing.TryGetComp<CompDuration>() is CompDuration comp) comp.durationTicksLeft = GetDurationForPawn();
+                    if (thing.TryGetComp<CompDuration>() is CompDuration comp1) comp1.durationTicksLeft = GetDurationForPawn();
+                    if (thing.TryGetComp<CompAbilitySpawn>() is CompAbilitySpawn comp2)
+                    {
+                        comp2.pawn   = pawn;
+                        comp2.source = this;
+                    }
                 }
         }
 
@@ -59,6 +64,19 @@ namespace VFECore.Abilities
         {
             base.PostExposeData();
             Scribe_Values.Look(ref durationTicksLeft, nameof(durationTicksLeft));
+        }
+    }
+
+    public class CompAbilitySpawn : ThingComp
+    {
+        public Pawn    pawn;
+        public Ability source;
+
+        public override void PostExposeData()
+        {
+            base.PostExposeData();
+            Scribe_References.Look(ref pawn,   "spawningPawn");
+            Scribe_References.Look(ref source, "abilitySource");
         }
     }
 }
