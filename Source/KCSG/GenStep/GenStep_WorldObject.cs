@@ -1,5 +1,4 @@
-﻿using RimWorld;
-using RimWorld.Planet;
+﻿using RimWorld.Planet;
 using Verse;
 
 namespace KCSG
@@ -18,8 +17,7 @@ namespace KCSG
             WorldObject worldO = Find.World.worldObjects.AllWorldObjects.Find(o => o.Tile == map.Tile && o.def.HasModExtension<CustomGenOption>());
             CGO.factionSettlement = worldO.def.GetModExtension<CustomGenOption>();
 
-            if (CGO.factionSettlement.symbolResolver == null) GenStepUtils.Generate(map, loc, CGO.factionSettlement);
-            else GenStepUtils.Generate(map, loc, CGO.factionSettlement, CGO.factionSettlement.symbolResolver);
+            GenStepUtils.Generate(map, loc, CGO.factionSettlement, CGO.factionSettlement.symbolResolver ?? "kcsg_settlement");
         }
     }
 }

@@ -17,7 +17,10 @@ namespace KCSG
                         if (grid[i][j] != null && grid[i][j].Type != CellType.NONE)
                             return false;
                     }
-                    else return false;
+                    else
+                    {
+                        return false;
+                    }
                 }
             }
             return result;
@@ -25,15 +28,15 @@ namespace KCSG
 
         public static float GetWeight(StructOption structOption, Dictionary<string, int> structCount)
         {
-            bool containKey = structCount.ContainsKey(structOption.structureLayoutTag);
+            bool containKey = structCount.ContainsKey(structOption.tag);
             if (containKey)
             {
-                int count = structCount.TryGetValue(structOption.structureLayoutTag);
-                if (count < structOption.minCount)
+                int count = structCount.TryGetValue(structOption.tag);
+                if (count < structOption.count.min)
                 {
                     return 2f;
                 }
-                else if (structOption.maxCount != -1 && count == structOption.maxCount)
+                else if (structOption.count.max != -1 && count == structOption.count.max)
                 {
                     return 0f;
                 }
@@ -84,21 +87,21 @@ namespace KCSG
             {
                 for (int i = 0; i < maxTries; i++)
                 {
-                    sld.allowedStructuresConverted.TryRandomElementByWeight(p => GetWeight(p, structCount), out StructOption option);
-                    List<StructureLayoutDef> all = DefDatabase<StructureLayoutDef>.AllDefsListForReading.FindAll(s => s.tags.Contains(option.structureLayoutTag));
+                    sld.allowedStructures.TryRandomElementByWeight(p => GetWeight(p, structCount), out StructOption option);
+                    List<StructureLayoutDef> all = DefDatabase<StructureLayoutDef>.AllDefsListForReading.FindAll(s => s.tags.Contains(option.tag));
                     StructureLayoutDef b = LayoutUtils.ChooseLayoutFrom(all);
 
                     if (CanPlaceAt(vector, b, grid))
                     {
                         CGO.vectStruct.Add(vector, b);
                         doors.AddRange(PlaceAt(vector, b, grid));
-                        if (structCount.ContainsKey(option.structureLayoutTag))
+                        if (structCount.ContainsKey(option.tag))
                         {
-                            structCount[option.structureLayoutTag]++;
+                            structCount[option.tag]++;
                         }
                         else
                         {
-                            structCount.Add(option.structureLayoutTag, 1);
+                            structCount.Add(option.tag, 1);
                         }
                         CGO.vectors.Remove(vector);
                         break;

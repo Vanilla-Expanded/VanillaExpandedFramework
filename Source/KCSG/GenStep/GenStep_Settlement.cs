@@ -1,5 +1,4 @@
-﻿using RimWorld;
-using Verse;
+﻿using Verse;
 
 namespace KCSG
 {
@@ -16,8 +15,7 @@ namespace KCSG
         {
             CGO.factionSettlement = map.ParentFaction.def.GetModExtension<CustomGenOption>();
 
-            if (CGO.factionSettlement.symbolResolver == null) GenStepUtils.Generate(map, loc, CGO.factionSettlement);
-            else GenStepUtils.Generate(map, loc, CGO.factionSettlement, CGO.factionSettlement.symbolResolver);
+            GenStepUtils.Generate(map, loc, CGO.factionSettlement, CGO.factionSettlement.symbolResolver ?? "kcsg_settlement");
         }
     }
 }

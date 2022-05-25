@@ -1,13 +1,13 @@
-﻿using RimWorld;
+﻿using System.Linq;
+using RimWorld;
 using RimWorld.BaseGen;
-using System.Linq;
 using Verse;
 
 namespace KCSG
 {
     public class GenStepUtils
     {
-        public static void Generate(Map map, IntVec3 c, CustomGenOption sf, string symbolResolver = "kcsg_settlement")
+        public static void Generate(Map map, IntVec3 c, CustomGenOption sf, string symbolResolver)
         {
             CGO.useStructureLayout = sf.useStructureLayout;
 
@@ -26,7 +26,10 @@ namespace KCSG
             {
                 faction = Find.FactionManager.RandomEnemyFaction(false, false, true, TechLevel.Undefined);
             }
-            else faction = map.ParentFaction;
+            else
+            {
+                faction = map.ParentFaction;
+            }
 
             // Get settlement size
             int width;

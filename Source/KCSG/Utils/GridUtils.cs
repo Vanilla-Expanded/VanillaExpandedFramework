@@ -1,7 +1,7 @@
-﻿using RimWorld;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using RimWorld;
 using Verse;
 
 namespace KCSG
@@ -137,7 +137,7 @@ namespace KCSG
             CGO.radius = 9999;
             for (int i = 0; i < sld.allowedStructures.Count; i++)
             {
-                foreach (StructureLayoutDef item in DefDatabase<StructureLayoutDef>.AllDefsListForReading.FindAll(s => s.tags.Contains(sld.allowedStructuresConverted[i].structureLayoutTag)))
+                foreach (StructureLayoutDef item in DefDatabase<StructureLayoutDef>.AllDefsListForReading.FindAll(s => s.tags.Contains(sld.allowedStructures[i].tag)))
                 {
                     if (item.height < CGO.radius)
                         CGO.radius = item.height;
