@@ -468,6 +468,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompInfecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompInitialAbility.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompInitialHediff.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompInitialMentalState.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompLastStand.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompLightSustenance.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompMetamorphosis.cs" />
@@ -479,6 +480,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompPawnOverlay.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_GiveThoughtsOnCaravan.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AnimalProductOnCaravan.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_InitialMentalState.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_NoTamingDecay.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_InitialAbility.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DieAndChangeIntoOtherDef.cs" />
