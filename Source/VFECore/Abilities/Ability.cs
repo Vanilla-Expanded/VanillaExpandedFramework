@@ -405,14 +405,20 @@
             {
                 foreach (var c in GenRadial.RadialCellsAround(cell, minRadius, maxRadius))
                 {
-                    if (c.InBounds(pawn.Map)) yield return new GlobalTargetInfo(c, pawn.Map);
+                    if (c.InBounds(pawn.Map))
+                    {
+                        if (parms is TargetingParametersForAoE aoe && !aoe.CanTarget(new TargetInfo(c, pawn.Map), this)) continue;
+                        yield return new GlobalTargetInfo(c, pawn.Map);
+                    }
                 }
             }
             else
             {
                 foreach (var thing in GenRadial.RadialDistinctThingsAround(cell, pawn.Map, maxRadius, true))
                 {
-                    if (parms.CanTarget(thing) && this.ValidateTarget(thing, false) && thing.OccupiedRect().ClosestDistSquaredTo(cell) > minRadius)
+                    if ((parms is TargetingParametersForAoE aoe ? aoe.CanTarget(thing, this) : parms.CanTarget(thing))            &&
+                        (parms is TargetingParametersForAoE aoe2 && aoe2.ignoreRangeAndSight || this.ValidateTarget(thing, false) &&
+                            thing.OccupiedRect().ClosestDistSquaredTo(cell) > minRadius))
                     {
                         if (!parms.canTargetSelf && thing == pawn) continue;
 

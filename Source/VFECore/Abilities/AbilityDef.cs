@@ -21,8 +21,8 @@ namespace VFECore.Abilities
         private AbilityTargetingMode       targetMode  = AbilityTargetingMode.None;
         public  List<AbilityTargetingMode> targetModes = new List<AbilityTargetingMode>();
         private TargetingParameters        targetingParameters;
-        public TargetingParameters targetingParametersForAoE;
-        public List<TargetingParameters>  targetingParametersList = new List<TargetingParameters>();
+        public TargetingParametersForAoE   targetingParametersForAoE;
+        public List<TargetingParameters>   targetingParametersList = new List<TargetingParameters>();
 
         public float              range            = 0f;
         public float              minRange         = -1f;
@@ -246,7 +246,6 @@ namespace VFECore.Abilities
         }
     }
 
-
     public class HediffWithLevelCombination
     {
         public HediffDef hediffDef;
@@ -263,5 +262,18 @@ namespace VFECore.Abilities
         Humanlike,
         Tile,
         Random
+    }
+
+    public class TargetingParametersForAoE : TargetingParameters
+    {
+        public bool mustBeSameFaction;
+        public bool canTargetBlockedLocations = true;
+        public bool ignoreRangeAndSight;
+
+        public bool CanTarget(TargetInfo target, Ability ability)
+        {
+            return base.CanTarget(target, ability) && (!mustBeSameFaction || target.HasThing && target.Thing.Faction == ability.pawn.Faction) &&
+                   (canTargetBlockedLocations                             || !target.Cell.Filled(target.Map));
+        }
     }
 }
