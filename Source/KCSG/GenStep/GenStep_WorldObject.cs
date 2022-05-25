@@ -15,9 +15,9 @@ namespace KCSG
         protected override void ScatterAt(IntVec3 loc, Map map, GenStepParams parms, int count = 1)
         {
             WorldObject worldO = Find.World.worldObjects.AllWorldObjects.Find(o => o.Tile == map.Tile && o.def.HasModExtension<CustomGenOption>());
-            CGO.factionSettlement = worldO.def.GetModExtension<CustomGenOption>();
+            GenOption.ext = worldO.def.GetModExtension<CustomGenOption>();
 
-            GenStepUtils.Generate(map, loc, CGO.factionSettlement, CGO.factionSettlement.symbolResolver ?? "kcsg_settlement");
+            GenStepUtils.Generate(map, loc, GenOption.ext, GenOption.ext.symbolResolver ?? "kcsg_settlement");
         }
     }
 }

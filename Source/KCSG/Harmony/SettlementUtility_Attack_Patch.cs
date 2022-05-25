@@ -20,31 +20,31 @@ namespace KCSG
             {
                 if (!settlement.HasMap)
                 {
-                    CGO.useCustomWindowContent = true;
-                    CGO.dateTime = DateTime.Now;
+                    GenOption.useCustomWindowContent = true;
+                    GenOption.dateTime = DateTime.Now;
                     LongEventHandler.QueueLongEvent(delegate ()
                     {
-                        CGO.allTip = DefDatabase<TipSetDef>.AllDefsListForReading.SelectMany((TipSetDef set) => set.tips).InRandomOrder().ToList();
-                        if (CGO.allTip.Count > 0)
+                        GenOption.allTip = DefDatabase<TipSetDef>.AllDefsListForReading.SelectMany((TipSetDef set) => set.tips).InRandomOrder().ToList();
+                        if (GenOption.allTip.Count > 0)
                         {
-                            CGO.tipAvailable = true;
+                            GenOption.tipAvailable = true;
                         }
                         CustomAttackNowNoLetter(caravan, settlement);
                         LongEventHandler.ExecuteWhenFinished(() =>
                         {
-                            KLog.Message($"Generation done in {(DateTime.Now - CGO.dateTime).Duration().TotalSeconds}");
+                            KLog.Message($"Generation done in {(DateTime.Now - GenOption.dateTime).Duration().TotalSeconds}");
                             // Send letter
                             if (settlement.Faction != null) SendAttackLetter(caravan, settlement);
                             // Clear
-                            CGO.ClearUI();
-                            CGO.ClearAll();
+                            GenOption.ClearUI();
+                            GenOption.ClearAll();
                             LongEventHandler_Patches.LongEventsOnGUI_Prefix.structure = null;
                         });
                     }, "GeneratingMapForNewEncounter", true, delegate (Exception e)
                     {
                         Log.Error($"{e}");
-                        CGO.ClearUI();
-                        CGO.ClearAll();
+                        GenOption.ClearUI();
+                        GenOption.ClearAll();
                     }, true);
                 }
                 else

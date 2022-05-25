@@ -4,7 +4,7 @@ using Verse;
 
 namespace KCSG
 {
-    public struct CGO
+    public static class GenOption
     {
         /*-------- Loading screen --------*/
         public static bool useCustomWindowContent;
@@ -42,7 +42,7 @@ namespace KCSG
 
         public static bool usePathCostReduction;
 
-        public static CustomGenOption factionSettlement;
+        public static CustomGenOption ext;
 
         /*------ Falling structure ------*/
         public static FallingStructure fallingStructure;
@@ -67,7 +67,7 @@ namespace KCSG
         public static void ClearAll()
         {
             grid = null;
-            factionSettlement = null;
+            ext = null;
             if (vectStruct != null) vectStruct.Clear();
             if (doors != null) doors.Clear();
             if (vectors != null) vectors.Clear();

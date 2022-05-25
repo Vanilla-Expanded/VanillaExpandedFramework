@@ -41,7 +41,7 @@ namespace KCSG
 
             if (shouldRuin)
             {
-                CGO.factionSettlement = new CustomGenOption
+                GenOption.ext = new CustomGenOption
                 {
                     filthTypes = filthTypes,
                     scatterThings = scatterThings,

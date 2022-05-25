@@ -1,5 +1,5 @@
-﻿using RimWorld.BaseGen;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using RimWorld.BaseGen;
 using Verse;
 
 namespace KCSG
@@ -8,17 +8,17 @@ namespace KCSG
     {
         public override void Resolve(ResolveParams rp)
         {
-            CGO.currentGenStep = "Generating structures";
+            GenOption.currentGenStep = "Generating rooms";
 
-            foreach (KeyValuePair<CustomVector, StructureLayoutDef> keyValue in CGO.vectStruct)
+            foreach (KeyValuePair<CustomVector, StructureLayoutDef> keyValue in GenOption.vectStruct)
             {
                 StructureLayoutDef layoutDef = keyValue.Value;
-                CGO.currentGenStepMoreInfo = "Generating " + layoutDef.defName;
+                GenOption.currentGenStepMoreInfo = "Generating " + layoutDef.defName;
 
                 IntVec3 limitMin = new IntVec3
                 {
-                    x = CGO.offset.x + (int)keyValue.Key.X,
-                    z = CGO.offset.z - (int)keyValue.Key.Y - layoutDef.height + 1
+                    x = GenOption.offset.x + (int)keyValue.Key.X,
+                    z = GenOption.offset.z - (int)keyValue.Key.Y - layoutDef.height + 1
                 };
                 CellRect rect = new CellRect(limitMin.x, limitMin.z, layoutDef.width, layoutDef.height);
 
@@ -36,11 +36,11 @@ namespace KCSG
                 }
             }
 
-            if (CGO.settlementLayoutDef.addLandingPad && ModLister.RoyaltyInstalled)
+            if (GenOption.settlementLayoutDef.addLandingPad && ModLister.RoyaltyInstalled)
             {
                 if (rp.rect.TryFindRandomInnerRect(new IntVec2(9, 9), out CellRect rect, null))
                 {
-                    CGO.currentGenStepMoreInfo = "Generating landing pad";
+                    GenOption.currentGenStepMoreInfo = "Generating landing pad";
                     ResolveParams resolveParams = rp;
                     resolveParams.rect = rect;
                     BaseGen.symbolStack.Push("landingPad", resolveParams, null);

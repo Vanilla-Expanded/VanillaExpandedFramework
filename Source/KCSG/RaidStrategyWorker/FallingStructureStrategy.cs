@@ -11,20 +11,20 @@ namespace KCSG
     {
         public override bool CanUseWith(IncidentParms parms, PawnGroupKindDef groupKind)
         {
-            CGO.fallingStructure = def.GetModExtension<FallingStructure>();
+            GenOption.fallingStructure = def.GetModExtension<FallingStructure>();
 
-            if (CGO.fallingStructure.needToHaveSettlements && !Find.World.worldObjects.Settlements.FindAll(s => s.Faction == parms.faction).Any())
+            if (GenOption.fallingStructure.needToHaveSettlements && !Find.World.worldObjects.Settlements.FindAll(s => s.Faction == parms.faction).Any())
                 return false;
 
-            if (CGO.fallingStructure.canBeUsedBy.Contains(parms.faction.def))
+            if (GenOption.fallingStructure.canBeUsedBy.Contains(parms.faction.def))
             {
-                CGO.fallingStructureChoosen = LayoutUtils.ChooseWeightedStruct(CGO.fallingStructure.WeightedStructs, parms).structureLayoutDef;
+                GenOption.fallingStructureChoosen = LayoutUtils.ChooseWeightedStruct(GenOption.fallingStructure.WeightedStructs, parms).structureLayoutDef;
 
-                if (CGO.fallingStructureChoosen != null)
+                if (GenOption.fallingStructureChoosen != null)
                 {
                     return parms.points >= MinimumPoints(parms.faction, groupKind) && FindRect((Map)parms.target,
-                                                                                               CGO.fallingStructureChoosen.height,
-                                                                                               CGO.fallingStructureChoosen.width) != IntVec3.Invalid;
+                                                                                               GenOption.fallingStructureChoosen.height,
+                                                                                               GenOption.fallingStructureChoosen.width) != IntVec3.Invalid;
                 }
                 else return false;
             }
@@ -47,12 +47,12 @@ namespace KCSG
 
         public override List<Pawn> SpawnThreats(IncidentParms parms)
         {
-            CellRect cellRect = CellRect.CenteredOn(parms.spawnCenter, CGO.fallingStructureChoosen.width, CGO.fallingStructureChoosen.height);
+            CellRect cellRect = CellRect.CenteredOn(parms.spawnCenter, GenOption.fallingStructureChoosen.width, GenOption.fallingStructureChoosen.height);
 
             List<string> allSymbList = new List<string>();
             Map map = (Map)parms.target;
 
-            foreach (string str in CGO.fallingStructureChoosen.layouts[0])
+            foreach (string str in GenOption.fallingStructureChoosen.layouts[0])
             {
                 List<string> symbSplitFromLine = str.Split(',').ToList();
                 symbSplitFromLine.ForEach((s) => allSymbList.Add(s));
@@ -69,13 +69,13 @@ namespace KCSG
                     SymbolDef temp = DefDatabase<SymbolDef>.GetNamed(allSymbList[l], false);
                     Thing thing;
 
-                    if (temp.thingDef != null && !CGO.fallingStructure.thingsToSpawnInDropPod.Contains(temp.thingDef))
+                    if (temp.thingDef != null && !GenOption.fallingStructure.thingsToSpawnInDropPod.Contains(temp.thingDef))
                     {
                         TTIR ttir = new TTIR();
 
                         thing = ThingMaker.MakeThing(temp.thingDef, temp.stuffDef);
                         thing.SetFactionDirect(parms.faction);
-                        if (!CGO.fallingStructure.spawnDormantWhenPossible && thing.TryGetComp<CompCanBeDormant>() is CompCanBeDormant ccbd && ccbd != null)
+                        if (!GenOption.fallingStructure.spawnDormantWhenPossible && thing.TryGetComp<CompCanBeDormant>() is CompCanBeDormant ccbd && ccbd != null)
                         {
                             ccbd.wakeUpOnTick = Find.TickManager.TicksGame + 150;
                         }
@@ -87,7 +87,7 @@ namespace KCSG
 
                         ThingDef faller = new ThingDef
                         {
-                            thingClass = CGO.fallingStructure.skyfaller,
+                            thingClass = GenOption.fallingStructure.skyfaller,
                             category = ThingCategory.Ethereal,
                             useHitPoints = false,
 
@@ -139,7 +139,7 @@ namespace KCSG
             RCellFinder.TryFindRandomCellNearWith(parms.spawnCenter, i => i.Walkable(map), map, out parms1.spawnCenter, 33, 40);
 
             base.SpawnThreats(parms1);
-            CGO.ClearFalling();
+            GenOption.ClearFalling();
             return null;
         }
 

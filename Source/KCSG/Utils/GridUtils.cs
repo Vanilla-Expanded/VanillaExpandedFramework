@@ -87,10 +87,10 @@ namespace KCSG
         /// <param name="doors">List of doors, filled int AddRoadToGrid()</param>
         public static void AddRoadToGrid(CustomVector[][] grid, List<CustomVector> doors)
         {
-            int mapWidth = CGO.settlementLayoutDef.settlementSize.x,
-                mapHeight = CGO.settlementLayoutDef.settlementSize.z;
+            int mapWidth = GenOption.settlementLayoutDef.settlementSize.x,
+                mapHeight = GenOption.settlementLayoutDef.settlementSize.z;
             // Delaunay to find neigbours doors to path to, and ensure each doors will have a road
-            CGO.currentGenStepMoreInfo = "Running Delaunay algorithm";
+            GenOption.currentGenStepMoreInfo = "Running Delaunay algorithm";
             List<Triangle> triangulation = Delaunay.Run(doors, mapWidth, mapHeight).ToList();
             List<Edge> edges = new List<Edge>();
             foreach (Triangle triangle in triangulation)
@@ -100,7 +100,7 @@ namespace KCSG
                 edges.Add(new Edge(triangle.Vertices[2], triangle.Vertices[0]));
             }
             // A* to find the path in the grid
-            CGO.currentGenStepMoreInfo = "Running A* algorithm";
+            GenOption.currentGenStepMoreInfo = "Running A* algorithm";
             foreach (Edge ed in edges)
             {
                 if (ed != null && ed.Point1 != null && ed.Point2 != null)
@@ -129,23 +129,23 @@ namespace KCSG
         /// <returns></returns>
         public static CustomVector[][] GenerateGrid(int seed, SettlementLayoutDef sld, Map map)
         {
-            CGO.currentGenStepMoreInfo = "Generating grid and main road";
+            GenOption.currentGenStepMoreInfo = "Generating grid and main road";
             int mapWidth = Math.Min(map.Size.x, sld.settlementSize.x),
                 mapHeight = Math.Min(map.Size.z, sld.settlementSize.z);
 
             // Search for the smallest sized allowed structure. It will be the radius between potential building spawn points
-            CGO.radius = 9999;
+            GenOption.radius = 9999;
             for (int i = 0; i < sld.allowedStructures.Count; i++)
             {
                 foreach (StructureLayoutDef item in DefDatabase<StructureLayoutDef>.AllDefsListForReading.FindAll(s => s.tags.Contains(sld.allowedStructures[i].tag)))
                 {
-                    if (item.height < CGO.radius)
-                        CGO.radius = item.height;
-                    if (item.width < CGO.radius)
-                        CGO.radius = item.width;
+                    if (item.height < GenOption.radius)
+                        GenOption.radius = item.height;
+                    if (item.width < GenOption.radius)
+                        GenOption.radius = item.width;
                 }
             }
-            CGO.radius += 2; // Add to radius to ensure no building touch one another
+            GenOption.radius += 2; // Add to radius to ensure no building touch one another
 
             // Initialize the grid used for generation
             Random r = new Random(seed);
@@ -164,7 +164,7 @@ namespace KCSG
             {
                 for (int j = 0; j < mapHeight; j++)
                 {
-                    TerrainDef t = map.terrainGrid.TerrainAt(new IntVec3(CGO.offset.x + i, 0, CGO.offset.y + j));
+                    TerrainDef t = map.terrainGrid.TerrainAt(new IntVec3(GenOption.offset.x + i, 0, GenOption.offset.y + j));
                     if (t.HasTag("Water") && (t.affordances == null || !t.affordances.Contains(TerrainAffordanceDefOf.Bridgeable)))
                     {
                         grid[i][j].Type = CellType.WATER;
@@ -172,7 +172,7 @@ namespace KCSG
                 }
             }
             // Main roads
-            CGO.usePathCostReduction = false; // No path cost reduction for main road, for them to be distinct
+            GenOption.usePathCostReduction = false; // No path cost reduction for main road, for them to be distinct
             DrawXMainRoad(grid, mapWidth, mapHeight, 15, r);
             DrawYMainRoad(grid, mapWidth, mapHeight, 15, r);
             // If bigger sized settlement, add more main roads
@@ -190,24 +190,24 @@ namespace KCSG
                 }
             }
             // Get vanilla world road type and use it if present
-            if (CGO.preRoadTypes?.Count > 0)
+            if (GenOption.preRoadTypes?.Count > 0)
             {
                 for (int i = 0; i < mapWidth; i++)
                 {
                     for (int j = 0; j < mapHeight; j++)
                     {
-                        TerrainDef t = map.terrainGrid.TerrainAt(new IntVec3(CGO.offset.x + i, 0, CGO.offset.y + j));
-                        if (CGO.preRoadTypes.Contains(t))
+                        TerrainDef t = map.terrainGrid.TerrainAt(new IntVec3(GenOption.offset.x + i, 0, GenOption.offset.y + j));
+                        if (GenOption.preRoadTypes.Contains(t))
                         {
                             grid[i][j].Type = CellType.MAINROAD; // Add vanilla generated road to the grid
                         }
                     }
                 }
             }
-            CGO.usePathCostReduction = true; // Renable path cost reduction
+            GenOption.usePathCostReduction = true; // Renable path cost reduction
 
-            CGO.vectors = PoissonDiskSampling.Run(50, mapWidth, mapHeight, r, grid); // Get all possible points with radius
-            CGO.doors = BuildingPlacement.Run(sld, grid, 50); // Place buildings on grid and add them/their origin into vectStruct
+            GenOption.vectors = PoissonDiskSampling.Run(50, mapWidth, mapHeight, r, grid); // Get all possible points with radius
+            GenOption.doors = BuildingPlacement.Run(sld, grid, 50); // Place buildings on grid and add them/their origin into vectStruct
             return grid;
         }
     }

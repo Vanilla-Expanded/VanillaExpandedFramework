@@ -1,7 +1,7 @@
-﻿using RimWorld;
-using RimWorld.BaseGen;
-using System;
+﻿using System;
 using System.Linq;
+using RimWorld;
+using RimWorld.BaseGen;
 using Verse;
 using Verse.AI.Group;
 
@@ -11,27 +11,27 @@ namespace KCSG
     {
         public override void Resolve(ResolveParams rp)
         {
-            CGO.currentGenStep = "Generating settlement";
+            GenOption.currentGenStep = "Generating settlement";
 
             Map map = BaseGen.globalSettings.map;
             rp.faction = rp.faction ?? Find.FactionManager.RandomEnemyFaction(false, false, true, TechLevel.Undefined);
 
-            if (CGO.useStructureLayout)
+            if (GenOption.useStructureLayout)
             {
                 HandleRuin(rp);
                 AddHostilePawnGroup(rp.faction, map, rp);
 
                 BaseGen.symbolStack.Push("kcsg_roomsgenfromstructure", rp, null);
 
-                if (CGO.factionSettlement.preGenClear)
-                    GenUtils.PreClean(map, rp.rect, CGO.structureLayoutDef.roofGrid, CGO.factionSettlement.fullClear);
+                if (GenOption.ext.preGenClear)
+                    GenUtils.PreClean(map, rp.rect, GenOption.structureLayoutDef.roofGrid, GenOption.ext.fullClear);
             }
             else
             {
                 HandleRuin(rp);
                 AddHostilePawnGroup(rp.faction, map, rp);
 
-                if (CGO.settlementLayoutDef.vanillaLikeDefense)
+                if (GenOption.settlementLayoutDef.vanillaLikeDefense)
                 {
                     int dWidth = (Rand.Bool ? 2 : 4);
                     ResolveParams rp3 = rp;
@@ -42,65 +42,61 @@ namespace KCSG
                     BaseGen.symbolStack.Push("edgeDefense", rp3, null);
                 }
 
-                GenerateRooms(CGO.settlementLayoutDef, map, rp);
+                int seed = new Random().Next(0, 100000);
 
-                if (CGO.factionSettlement.preGenClear)
-                    GenUtils.PreClean(map, rp.rect, CGO.factionSettlement.fullClear);
+                GenOption.offset = rp.rect.Corners.ElementAt(2);
+                GenOption.grid = GridUtils.GenerateGrid(seed, GenOption.settlementLayoutDef, map);
+
+                BaseGen.symbolStack.Push("kcsg_roomgenfromlist", rp, null);
+
+                if (GenOption.ext.preGenClear)
+                    GenUtils.PreClean(map, rp.rect, GenOption.ext.fullClear);
             }
         }
 
-        private void AddHostilePawnGroup(Faction faction, Map map, ResolveParams rp)
+        private void AddHostilePawnGroup(Faction faction, Map map, ResolveParams parms)
         {
             Lord singlePawnLord;
             if (faction.def.pawnGroupMakers.Any(pgm => pgm.options.Any(k => !k.kind.RaceProps.EatsFood)))
-                singlePawnLord = rp.singlePawnLord ?? LordMaker.MakeNewLord(faction, new LordJob_DefendBaseNoEat(faction, rp.rect.CenterCell), map, null);
+                singlePawnLord = parms.singlePawnLord ?? LordMaker.MakeNewLord(faction, new LordJob_DefendBaseNoEat(faction, parms.rect.CenterCell), map, null);
             else
-                singlePawnLord = rp.singlePawnLord ?? LordMaker.MakeNewLord(faction, new LordJob_DefendBase(faction, rp.rect.CenterCell), map, null);
+                singlePawnLord = parms.singlePawnLord ?? LordMaker.MakeNewLord(faction, new LordJob_DefendBase(faction, parms.rect.CenterCell), map, null);
 
-            TraverseParms traverseParms = TraverseParms.For(TraverseMode.PassDoors, Danger.Deadly, false);
-            ResolveParams resolveParams = rp;
-            resolveParams.rect = rp.rect;
-            resolveParams.faction = faction;
-            resolveParams.singlePawnLord = singlePawnLord;
-            resolveParams.pawnGroupKindDef = CGO.settlementLayoutDef?.groupKindDef ?? rp.pawnGroupKindDef ?? PawnGroupKindDefOf.Settlement;
-            resolveParams.singlePawnSpawnCellExtraPredicate = (rp.singlePawnSpawnCellExtraPredicate ?? ((IntVec3 x) => map.reachability.CanReachMapEdge(x, traverseParms)));
-            if (resolveParams.pawnGroupMakerParams == null && faction.def.pawnGroupMakers.Any(pgm => pgm.kindDef == PawnGroupKindDefOf.Settlement))
+            TraverseParms tp = TraverseParms.For(TraverseMode.PassDoors, Danger.Deadly, false);
+            ResolveParams rp = parms;
+            rp.rect = parms.rect;
+            rp.faction = faction;
+            rp.singlePawnLord = singlePawnLord;
+            rp.pawnGroupKindDef = GenOption.settlementLayoutDef?.groupKindDef ?? parms.pawnGroupKindDef ?? PawnGroupKindDefOf.Settlement;
+            rp.singlePawnSpawnCellExtraPredicate = parms.singlePawnSpawnCellExtraPredicate ?? ((IntVec3 x) => map.reachability.CanReachMapEdge(x, tp));
+            if (rp.pawnGroupMakerParams == null && faction.def.pawnGroupMakers.Any(pgm => pgm.kindDef == PawnGroupKindDefOf.Settlement))
             {
-                resolveParams.pawnGroupMakerParams = new PawnGroupMakerParms
+                rp.pawnGroupMakerParams = new PawnGroupMakerParms
                 {
                     tile = map.Tile,
                     faction = faction,
-                    points = rp.settlementPawnGroupPoints ?? RimWorld.BaseGen.SymbolResolver_Settlement.DefaultPawnsPoints.RandomInRange,
+                    points = parms.settlementPawnGroupPoints ?? RimWorld.BaseGen.SymbolResolver_Settlement.DefaultPawnsPoints.RandomInRange,
                     inhabitants = true,
-                    seed = rp.settlementPawnGroupSeed
+                    seed = parms.settlementPawnGroupSeed
                 };
             }
-            if (CGO.settlementLayoutDef != null) resolveParams.pawnGroupMakerParams.points *= CGO.settlementLayoutDef.pawnGroupMultiplier;
-            if (faction.def.pawnGroupMakers.Any(pgm => pgm.kindDef == PawnGroupKindDefOf.Settlement)) BaseGen.symbolStack.Push("pawnGroup", resolveParams, null);
+            if (GenOption.settlementLayoutDef != null) rp.pawnGroupMakerParams.points *= GenOption.settlementLayoutDef.pawnGroupMultiplier;
+
+            BaseGen.symbolStack.Push("pawnGroup", rp, null);
         }
 
         private void HandleRuin(ResolveParams rp)
         {
-            CGO.currentGenStep = "";
-            CGO.currentGenStepMoreInfo = "";
-            if (CGO.factionSettlement.shouldRuin)
+            GenOption.currentGenStep = "";
+            GenOption.currentGenStepMoreInfo = "";
+            if (GenOption.ext.shouldRuin)
             {
-                foreach (string resolver in CGO.factionSettlement.ruinSymbolResolvers)
+                foreach (string resolver in GenOption.ext.ruinSymbolResolvers)
                 {
-                    if (!(CGO.factionSettlement.ruinSymbolResolvers.Contains("kcsg_randomroofremoval") && resolver == "kcsg_scatterstuffaround"))
+                    if (!(GenOption.ext.ruinSymbolResolvers.Contains("kcsg_randomroofremoval") && resolver == "kcsg_scatterstuffaround"))
                         BaseGen.symbolStack.Push(resolver, rp, null);
                 }
             }
-        }
-
-        private void GenerateRooms(SettlementLayoutDef sld, Map map, ResolveParams rp)
-        {
-            int seed = new Random().Next(0, 100000);
-
-            CGO.offset = rp.rect.Corners.ElementAt(2);
-            CGO.grid = GridUtils.GenerateGrid(seed, sld, map);
-
-            BaseGen.symbolStack.Push("kcsg_roomgenfromlist", rp, null);
         }
     }
 }

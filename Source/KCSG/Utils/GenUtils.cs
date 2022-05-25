@@ -30,7 +30,7 @@ namespace KCSG
                         {
                             GenerateTerrainAt(map, cell, temp.terrainDef);
                         }
-                        else if (temp.pawnKindDefNS != null && (CGO.factionSettlement == null || CGO.factionSettlement.shouldRuin == false))
+                        else if (temp.pawnKindDefNS != null && (GenOption.ext == null || GenOption.ext.shouldRuin == false))
                         {
                             GeneratePawnAt(map, cell, temp);
                         }
@@ -48,7 +48,7 @@ namespace KCSG
                             }
                             else if (temp.thingDef.category == ThingCategory.Pawn)
                             {
-                                if (CGO.factionSettlement?.shouldRuin == true)
+                                if (GenOption.ext?.shouldRuin == true)
                                 {
                                     continue;
                                 }
@@ -394,14 +394,14 @@ namespace KCSG
         {
             if (map.TileInfo?.Roads?.Count > 0)
             {
-                CGO.preRoadTypes = new List<TerrainDef>();
+                GenOption.preRoadTypes = new List<TerrainDef>();
                 foreach (RimWorld.Planet.Tile.RoadLink roadLink in map.TileInfo.Roads)
                 {
                     foreach (RoadDefGenStep rgs in roadLink.road.roadGenSteps)
                     {
                         if (rgs is RoadDefGenStep_Place rgsp && rgsp != null && rgsp.place is TerrainDef t && t != null && t != TerrainDefOf.Bridge)
                         {
-                            CGO.preRoadTypes.Add(t);
+                            GenOption.preRoadTypes.Add(t);
                         }
                     }
                 }

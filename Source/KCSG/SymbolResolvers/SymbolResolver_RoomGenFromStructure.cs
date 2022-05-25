@@ -15,15 +15,15 @@ namespace KCSG
 
         public override void Resolve(ResolveParams rp)
         {
-            CGO.currentGenStep = "Generating single structure";
+            GenOption.currentGenStep = "Generating single structure";
 
             Map map = BaseGen.globalSettings.map;
 
-            for (int i = 0; i < CGO.structureLayoutDef.layouts.Count; i++)
+            for (int i = 0; i < GenOption.structureLayoutDef.layouts.Count; i++)
             {
-                GenUtils.GenerateRoomFromLayout(CGO.structureLayoutDef, i, rp.rect, map);
+                GenUtils.GenerateRoomFromLayout(GenOption.structureLayoutDef, i, rp.rect, map);
             }
-            GenUtils.GenerateRoofGrid(CGO.structureLayoutDef, rp.rect, map);
+            GenUtils.GenerateRoofGrid(GenOption.structureLayoutDef, rp.rect, map);
 
             GenUtils.EnsureBatteriesConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, DefOfs.KCSG_PowerConduit);
             GenUtils.EnsurePowerUsersConnected(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, DefOfs.KCSG_PowerConduit);
