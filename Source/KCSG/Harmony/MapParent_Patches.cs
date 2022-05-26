@@ -5,7 +5,7 @@ using Verse;
 
 namespace KCSG
 {
-    public class MapGeneratorDef_Patches
+    public class MapParent_Patches
     {
         [HarmonyPatch(typeof(MapParent), nameof(MapParent.MapGeneratorDef), MethodType.Getter)]
         public static class MapParent_MapGeneratorDef_Patch
