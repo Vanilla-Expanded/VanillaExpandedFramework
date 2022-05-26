@@ -11,6 +11,9 @@ namespace KCSG
 {
     public class GenUtils
     {
+        /// <summary>
+        /// Entry method to generate a structure from a StructureLayoutDef
+        /// </summary>
         public static void GenerateRoomFromLayout(StructureLayoutDef layout, int index, CellRect rect, Map map)
         {
             Faction faction = map.ParentFaction;
@@ -68,7 +71,9 @@ namespace KCSG
             }
         }
 
-        // Gen methods
+        /// <summary>
+        /// Generate terrain at cell. Make bridge if needed, remove mineable if needed.
+        /// </summary>
         public static void GenerateTerrainAt(Map map, IntVec3 cell, TerrainDef terrainDef)
         {
             if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
@@ -82,6 +87,9 @@ namespace KCSG
             }
         }
 
+        /// <summary>
+        /// Generate pawn(s) at pos
+        /// </summary>
         public static void GeneratePawnAt(Map map, IntVec3 cell, SymbolDef symbol)
         {
             bool parentFaction = map.ParentFaction != null;
@@ -135,6 +143,9 @@ namespace KCSG
             }
         }
 
+        /// <summary>
+        /// Generate item at pos
+        /// </summary>
         public static void GenerateItemAt(Map map, IntVec3 cell, SymbolDef symbol)
         {
             Thing thing = ThingMaker.MakeThing(symbol.thingDef, symbol.stuffDef ?? (symbol.thingDef.stuffCategories?.Count > 0 ? GenStuff.RandomStuffFor(symbol.thingDef) : null));
@@ -154,6 +165,9 @@ namespace KCSG
             thing.SetForbidden(true, false);
         }
 
+        /// <summary>
+        /// Generate building at pos
+        /// </summary>
         public static void GenerateBuildingAt(Map map, IntVec3 cell, SymbolDef symbol, Faction faction, bool generateConduit)
         {
             Thing thing = ThingMaker.MakeThing(symbol.thingDef, symbol.thingDef.CostStuffCount > 0 ? (symbol.stuffDef ?? symbol.thingDef.defaultStuff ?? ThingDefOf.WoodLog) : null);
@@ -182,28 +196,25 @@ namespace KCSG
             }
             else if (thing is Building_Crate crate)
             {
-                List<Thing> thingList = new List<Thing>();
+                List<Thing> innerThings = new List<Thing>();
                 if (faction == Faction.OfPlayer && symbol.thingSetMakerDefForPlayer != null)
                 {
-                    thingList = symbol.thingSetMakerDefForPlayer.root.Generate(new ThingSetMakerParams());
+                    innerThings = symbol.thingSetMakerDefForPlayer.root.Generate(new ThingSetMakerParams());
                 }
                 else if (symbol.thingSetMakerDef != null)
                 {
-                    thingList = symbol.thingSetMakerDef.root.Generate(new ThingSetMakerParams());
+                    innerThings = symbol.thingSetMakerDef.root.Generate(new ThingSetMakerParams());
                 }
 
-                foreach (Thing t in thingList)
+                for (int i = 0; i < innerThings.Count; i++)
                 {
-                    t.stackCount = Math.Min((int)(t.stackCount * symbol.crateStackMultiplier), t.def.stackLimit);
-                }
-
-                thingList.ForEach(t =>
-                {
-                    if (!crate.TryAcceptThing(t, false))
+                    var innerThing = innerThings[i];
+                    innerThing.stackCount = Math.Min((int)(innerThing.stackCount * symbol.crateStackMultiplier), innerThing.def.stackLimit);
+                    if (!crate.TryAcceptThing(innerThing))
                     {
-                        t.Destroy();
+                        innerThing.Destroy();
                     }
-                });
+                }
             }
 
             if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
@@ -250,6 +261,9 @@ namespace KCSG
             SpawnMortar(thing, faction, map);
         }
 
+        /// <summary>
+        /// Spawn mortar and manning pawn with the right job
+        /// </summary>
         private static void SpawnMortar(Thing thing, Faction faction, Map map)
         {
             if (thing?.def?.building?.buildingTags?.Count > 0)
@@ -283,7 +297,9 @@ namespace KCSG
             }
         }
 
-
+        /// <summary>
+        /// Generate pawn to be put inside container (casked, tomb...)
+        /// </summary>
         private static Pawn GeneratePawnForContainer(SymbolDef temp, Map map)
         {
             Faction faction = temp.spawnPartOfFaction ? map.ParentFaction : null;
@@ -299,6 +315,9 @@ namespace KCSG
             return PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, faction);
         }
 
+        /// <summary>
+        /// Generate roof from layout resolved roof grid
+        /// </summary>
         public static void GenerateRoofGrid(StructureLayoutDef layout, CellRect rect, Map map)
         {
             if (layout.roofGrid != null && layout.roofGridResolved.Count > 0)
@@ -327,33 +346,6 @@ namespace KCSG
                         }
                     }
 
-                }
-            }
-        }
-
-        public static IntVec3 FindRect(Map map, int h, int w, bool nearCenter = false)
-        {
-            CellRect rect;
-            int fromCenter = 1;
-            while (true)
-            {
-                if (nearCenter)
-                {
-                    rect = CellRect.CenteredOn(CellFinder.RandomClosewalkCellNear(map.Center, map, fromCenter), w, h);
-                    rect.ClipInsideMap(map);
-                }
-                else
-                {
-                    rect = CellRect.CenteredOn(CellFinder.RandomNotEdgeCell(h, map), w, h);
-                }
-
-                if (rect.Cells.ToList().Any(i => !i.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Medium)))
-                {
-                    fromCenter += 2;
-                }
-                else
-                {
-                    return rect.CenterCell;
                 }
             }
         }
