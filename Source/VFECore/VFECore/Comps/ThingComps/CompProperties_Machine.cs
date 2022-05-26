@@ -12,7 +12,8 @@ namespace VFE.Mechanoids
         public bool violent;
         public bool canPickupWeapons;
         public float hoursActive = 24;
-
+        public bool canUseTurrets;
+        public List<string> blackListTurretGuns = new List<string>();
         public CompProperties_Machine()
         {
             this.compClass = typeof(CompMachine);
