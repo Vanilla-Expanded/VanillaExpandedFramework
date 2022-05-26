@@ -35,7 +35,7 @@ namespace KCSG
                     }
                     else if (Find.World.worldObjects.AllWorldObjects.FindAll(o => o.Tile == __instance.Tile && o.def.HasModExtension<CustomGenOption>()).Any())
                     {
-                        KLog.Message($"Faction: {__instance.Faction.NameColored} - Faction do not have CustomGenOption extension");
+                        KLog.Message($"Generating world object map");
                         __result = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_Gen");
                     }
                 }

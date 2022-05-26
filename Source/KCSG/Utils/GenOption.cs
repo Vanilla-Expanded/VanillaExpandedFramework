@@ -6,6 +6,10 @@ namespace KCSG
 {
     public static class GenOption
     {
+
+
+
+
         /*-------- Loading screen --------*/
         public static bool useCustomWindowContent;
 
@@ -37,8 +41,6 @@ namespace KCSG
         public static List<CustomVector> vectors;
 
         public static List<TerrainDef> preRoadTypes;
-
-        public static bool useStructureLayout;
 
         public static bool usePathCostReduction;
 
@@ -72,7 +74,6 @@ namespace KCSG
             if (doors != null) doors.Clear();
             if (vectors != null) vectors.Clear();
             if (preRoadTypes != null) preRoadTypes.Clear();
-            useStructureLayout = false;
             usePathCostReduction = false;
         }
     }

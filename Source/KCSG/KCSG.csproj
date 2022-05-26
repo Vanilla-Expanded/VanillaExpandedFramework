@@ -72,7 +72,6 @@
     <Compile Include="SymbolResolvers\SymbolResolver_ThingSetOnlyRoofed.cs" />
     <Compile Include="SymbolDefsCreator.cs" />
     <Compile Include="Thing\KCSG_Skyfaller.cs" />
-    <Compile Include="Utils\GenStepUtils.cs" />
     <Compile Include="Utils\KLog.cs" />
     <Compile Include="Utils\TextureLoader.cs" />
     <Compile Include="DefOfs\DefOfs.cs" />
@@ -92,7 +91,7 @@
     <Compile Include="GenStep\GenStep_EnnemiesPresence.cs" />
     <Compile Include="Harmony\PrepareCarefully_Fix.cs" />
     <Compile Include="Utils\Algorithms\Delaunay.cs" />
-    <Compile Include="Utils\CGO.cs" />
+    <Compile Include="Utils\GenOption.cs" />
     <Compile Include="Utils\GenUtils.cs" />
     <Compile Include="Utils\GridUtils.cs" />
     <Compile Include="Utils\LayoutUtils.cs" />

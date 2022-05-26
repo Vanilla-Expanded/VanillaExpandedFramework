@@ -16,7 +16,7 @@ namespace KCSG
             Map map = BaseGen.globalSettings.map;
             rp.faction = rp.faction ?? Find.FactionManager.RandomEnemyFaction(false, false, true, TechLevel.Undefined);
 
-            if (GenOption.useStructureLayout)
+            if (GenOption.ext.useStructureLayout)
             {
                 HandleRuin(rp);
                 AddHostilePawnGroup(rp.faction, map, rp);
@@ -33,13 +33,13 @@ namespace KCSG
 
                 if (GenOption.settlementLayoutDef.vanillaLikeDefense)
                 {
-                    int dWidth = (Rand.Bool ? 2 : 4);
-                    ResolveParams rp3 = rp;
-                    rp3.rect = new CellRect(rp.rect.minX - dWidth, rp.rect.minZ - dWidth, rp.rect.Width + (dWidth * 2), rp.rect.Height + (dWidth * 2));
-                    rp3.faction = rp.faction;
-                    rp3.edgeDefenseWidth = dWidth;
-                    rp3.edgeThingMustReachMapEdge = new bool?(rp.edgeThingMustReachMapEdge ?? true);
-                    BaseGen.symbolStack.Push("edgeDefense", rp3, null);
+                    int dWidth = Rand.Bool ? 2 : 4;
+                    ResolveParams edgeParms = rp;
+                    edgeParms.rect = new CellRect(rp.rect.minX - dWidth, rp.rect.minZ - dWidth, rp.rect.Width + (dWidth * 2), rp.rect.Height + (dWidth * 2));
+                    edgeParms.faction = rp.faction;
+                    edgeParms.edgeDefenseWidth = dWidth;
+                    edgeParms.edgeThingMustReachMapEdge = new bool?(rp.edgeThingMustReachMapEdge ?? true);
+                    BaseGen.symbolStack.Push("edgeDefense", edgeParms, null);
                 }
 
                 int seed = new Random().Next(0, 100000);

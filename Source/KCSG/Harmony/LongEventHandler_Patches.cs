@@ -1,6 +1,6 @@
-﻿using HarmonyLib;
+﻿using System;
+using HarmonyLib;
 using RimWorld;
-using System;
 using UnityEngine;
 using Verse;
 
@@ -66,7 +66,7 @@ namespace KCSG
                     Widgets.DrawShadowAround(gridRect);
                     Widgets.DrawWindowBackground(gridRect);
 
-                    if (GenOption.useStructureLayout)
+                    if (GenOption.ext.useStructureLayout)
                     {
                         if (structure == null && GenOption.structureLayoutDef != null)
                         {
