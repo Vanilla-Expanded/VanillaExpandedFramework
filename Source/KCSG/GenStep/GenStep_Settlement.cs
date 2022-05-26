@@ -33,31 +33,13 @@ namespace KCSG
             }
 
             // Get faction
-            Faction faction;
-            if (map.ParentFaction == null || map.ParentFaction == Faction.OfPlayer)
-            {
-                faction = Find.FactionManager.RandomEnemyFaction();
-            }
-            else
-            {
-                faction = map.ParentFaction;
-            }
+            Faction faction = map.ParentFaction == null || map.ParentFaction == Faction.OfPlayer ? Find.FactionManager.RandomEnemyFaction() : map.ParentFaction;
 
             // Get settlement size
-            int width;
-            int height;
-            if (GenOption.ext.useStructureLayout)
-            {
-                width = GenOption.structureLayoutDef.width;
-                height = GenOption.structureLayoutDef.height;
-            }
-            else
-            {
-                SettlementLayoutDef temp = GenOption.settlementLayoutDef;
-                height = temp.settlementSize.x;
-                width = temp.settlementSize.z;
-            }
+            int width = GenOption.ext.useStructureLayout ? GenOption.structureLayoutDef.width : GenOption.settlementLayoutDef.settlementSize.x;
+            int height = GenOption.ext.useStructureLayout ? GenOption.structureLayoutDef.height : GenOption.settlementLayoutDef.settlementSize.z;
 
+            // Get spawn position
             IntVec3 spawn = loc;
             if (GenOption.ext.tryFindFreeArea)
             {
@@ -66,9 +48,15 @@ namespace KCSG
                     Log.Warning($"[KCSG] Trying to find free spawn area failed");
             }
 
+            // Create rect
             CellRect rect = new CellRect(spawn.x - (width / 2), spawn.z - (height / 2), width, height);
             rect.ClipInsideMap(map);
 
+            // Pre-gen clean
+            if (ext.preGenClear)
+                GenUtils.PreClean(map, rect, ext.fullClear, GenOption.structureLayoutDef?.roofGridResolved);
+
+            // Push symbolresolver
             ResolveParams rp = default;
             rp.faction = faction;
             rp.rect = rect;
