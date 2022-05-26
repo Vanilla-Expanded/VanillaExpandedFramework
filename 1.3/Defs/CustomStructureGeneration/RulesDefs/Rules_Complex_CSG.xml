@@ -74,6 +74,15 @@
     </resolvers>
   </RuleDef>
 
+  <!-- Handle ruin -->
+  <RuleDef>
+    <defName>KCSG_HandleRuins</defName>
+    <symbol>kcsg_handleruins</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_HandleRuins" />
+    </resolvers>
+  </RuleDef>
+
   <!-- Ruin -->
   <RuleDef>
     <defName>KCSG_RandomDamage</defName>

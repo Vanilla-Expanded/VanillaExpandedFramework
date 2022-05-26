@@ -16,6 +16,8 @@ namespace KCSG
                 GenUtils.GenerateRoomFromLayout(GenOption.structureLayoutDef, i, rp.rect, map);
             }
             GenUtils.GenerateRoofGrid(GenOption.structureLayoutDef, rp.rect, map);
+
+            BaseGen.symbolStack.Push("kcsg_handleruins", rp, null);
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿using RimWorld.BaseGen;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using RimWorld.BaseGen;
 using Verse;
 
 namespace KCSG
@@ -10,7 +10,7 @@ namespace KCSG
     {
         public override void Resolve(ResolveParams rp)
         {
-            if (GenOption.ext.spawnCropsField)
+            if (GenOption.ext.spawnCropsField && !GenOption.ext.shouldRuin)
             {
                 GenOption.currentGenStep = "Generating crops fields";
 
@@ -36,6 +36,8 @@ namespace KCSG
                     }
                 }
             }
+
+            BaseGen.symbolStack.Push("kcsg_handleruins", rp, null);
         }
 
         private bool AwayFromAllField(List<CustomVector> allFields, int distance, CustomVector point)

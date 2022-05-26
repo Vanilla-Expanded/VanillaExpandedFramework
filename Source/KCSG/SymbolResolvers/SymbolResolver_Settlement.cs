@@ -18,17 +18,12 @@ namespace KCSG
 
             if (GenOption.ext.useStructureLayout)
             {
-                HandleRuin(rp);
                 AddHostilePawnGroup(rp.faction, map, rp);
 
                 BaseGen.symbolStack.Push("kcsg_roomsgenfromstructure", rp, null);
-
-                if (GenOption.ext.preGenClear)
-                    GenUtils.PreClean(map, rp.rect, GenOption.ext.fullClear, GenOption.structureLayoutDef.roofGridResolved);
             }
             else
             {
-                HandleRuin(rp);
                 AddHostilePawnGroup(rp.faction, map, rp);
 
                 if (GenOption.settlementLayoutDef.vanillaLikeDefense)
@@ -50,8 +45,6 @@ namespace KCSG
                 BaseGen.symbolStack.Push("kcsg_roomgenfromlist", rp, null);
 
                 GenUtils.SetRoadInfo(map);
-                if (GenOption.ext.preGenClear)
-                    GenUtils.PreClean(map, rp.rect, GenOption.ext.fullClear);
             }
         }
 
@@ -84,20 +77,6 @@ namespace KCSG
             if (GenOption.settlementLayoutDef != null) rp.pawnGroupMakerParams.points *= GenOption.settlementLayoutDef.pawnGroupMultiplier;
 
             BaseGen.symbolStack.Push("pawnGroup", rp, null);
-        }
-
-        private void HandleRuin(ResolveParams rp)
-        {
-            GenOption.currentGenStep = "";
-            GenOption.currentGenStepMoreInfo = "";
-            if (GenOption.ext.shouldRuin)
-            {
-                foreach (string resolver in GenOption.ext.ruinSymbolResolvers)
-                {
-                    if (!(GenOption.ext.ruinSymbolResolvers.Contains("kcsg_randomroofremoval") && resolver == "kcsg_scatterstuffaround"))
-                        BaseGen.symbolStack.Push(resolver, rp, null);
-                }
-            }
         }
     }
 }
