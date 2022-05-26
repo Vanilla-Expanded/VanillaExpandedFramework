@@ -5,7 +5,7 @@
 
     public class Ability_SpawnBuilding : Abilities.Ability
     {
-        public override float Chance => 0f;
+        public override bool CanAutoCast => false;
 
         public override void Cast(LocalTargetInfo target)
         {

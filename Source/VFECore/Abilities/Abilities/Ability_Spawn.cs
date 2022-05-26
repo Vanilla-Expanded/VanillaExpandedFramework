@@ -6,7 +6,7 @@ namespace VFECore.Abilities
 {
     public class Ability_Spawn : Ability
     {
-        public override float Chance => 0f;
+        public override bool CanAutoCast => false;
 
         public override void Cast(params GlobalTargetInfo[] targets)
         {
@@ -16,15 +16,7 @@ namespace VFECore.Abilities
 
             if (extension?.thing != null)
                 for (var i = 0; i < targets.Length; i++)
-                {
-                    var thing = GenSpawn.Spawn(extension.thing, targets[i].Cell, pawn.Map);
-                    if (thing.TryGetComp<CompDuration>() is CompDuration comp1) comp1.durationTicksLeft = GetDurationForPawn();
-                    if (thing.TryGetComp<CompAbilitySpawn>() is CompAbilitySpawn comp2)
-                    {
-                        comp2.pawn   = pawn;
-                        comp2.source = this;
-                    }
-                }
+                    Spawn(targets[i], extension.thing, this);
         }
 
         public override bool ValidateTarget(LocalTargetInfo target, bool showMessages = true)
@@ -40,6 +32,17 @@ namespace VFECore.Abilities
             }
 
             return base.ValidateTarget(target, showMessages);
+        }
+
+        public static void Spawn(GlobalTargetInfo target, ThingDef def, Ability ability)
+        {
+            var thing                                                                           = GenSpawn.Spawn(def, target.Cell, target.Map);
+            if (thing.TryGetComp<CompDuration>() is CompDuration comp1) comp1.durationTicksLeft = ability.GetDurationForPawn();
+            if (thing.TryGetComp<CompAbilitySpawn>() is CompAbilitySpawn comp2)
+            {
+                comp2.pawn   = ability.pawn;
+                comp2.source = ability;
+            }
         }
     }
 

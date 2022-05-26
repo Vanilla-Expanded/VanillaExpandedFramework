@@ -154,21 +154,18 @@
                     sb.AppendLine(description);
             }
 
-            if (this.Chance > 0) sb.AppendLine((this.AutoCast ? "VFEA.RClickToNoAuto" : "VFEA.RClickToAuto").Translate());
+            if (this.CanAutoCast) sb.AppendLine((this.AutoCast ? "VFEA.RClickToNoAuto" : "VFEA.RClickToAuto").Translate());
 
             return sb.ToString();
         }
 
         public bool autoCast;
 
-        public virtual bool AutoCast =>
-            !this.pawn.IsColonistPlayerControlled || this.autoCast;
+        public virtual bool AutoCast => !this.pawn.IsColonistPlayerControlled || this.autoCast;
 
-        public virtual bool CanAutoCast =>
-            this.AutoCast && this.Chance > 0;
+        public virtual bool CanAutoCast => this.Chance > 0;
 
-        public virtual float Chance =>
-            this.def.Chance;
+        public virtual float Chance => this.def.Chance;
 
         public virtual void Tick()
         {
@@ -265,7 +262,8 @@
         {
             if (Event.current.button == 1)
             {
-                this.autoCast = !this.autoCast;
+               if (this.CanAutoCast) this.autoCast = !this.autoCast;
+               else this.autoCast = false;
             }
             else
             {

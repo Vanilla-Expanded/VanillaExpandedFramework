@@ -42,7 +42,7 @@ namespace VFECore.Abilities
         {
             GizmoResult result = base.GizmoOnGUIInt(butRect, parms);
 
-            if (this.ability.Chance > 0f && this.ability.AutoCast)
+            if (this.ability.AutoCast)
             {
                 Rect      position = new Rect(butRect.x + butRect.width - 24f, butRect.y, 24f, 24f);
                 GUI.DrawTexture(position, AutoCastTex);

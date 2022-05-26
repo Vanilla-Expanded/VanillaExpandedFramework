@@ -20,7 +20,7 @@ namespace VFECore.Abilities
             if (compAbilities == null)
                 return;
 
-            List<Verb_CastAbility> verbs = compAbilities.LearnedAbilities.Where(ab => ab.CanAutoCast && ab.IsEnabledForPawn(out string _) && (target == null || ab.CanHitTarget(target)))
+            List<Verb_CastAbility> verbs = compAbilities.LearnedAbilities.Where(ab => ab.AutoCast && ab.IsEnabledForPawn(out string _) && (target == null || ab.CanHitTarget(target)))
                                                      .Select(ab => ab.verb).ToList();
             if (verbs.NullOrEmpty())
                 return;
