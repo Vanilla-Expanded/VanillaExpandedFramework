@@ -1,6 +1,6 @@
-﻿using RimWorld.BaseGen;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using RimWorld.BaseGen;
 using Verse;
 
 namespace KCSG
@@ -31,7 +31,7 @@ namespace KCSG
 
             CellRect cellRect = CellRect.CenteredOn(map.Center, layoutDef.width, layoutDef.height);
 
-            GenUtils.PreClean(map, cellRect, layoutDef.roofGrid, fullClear);
+            GenUtils.PreClean(map, cellRect, fullClear, layoutDef.roofGridResolved);
 
             for (int i = 0; i < layoutDef.layouts.Count; i++)
             {

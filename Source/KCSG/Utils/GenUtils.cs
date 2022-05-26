@@ -358,38 +358,9 @@ namespace KCSG
             }
         }
 
-        public static void PreClean(Map map, CellRect rect, List<string> roofGrid, bool fullClean)
-        {
-            KLog.Message($"Intiating pre-generation map clean - only under roof. Fullclean {fullClean}");
-            SetRoadInfo(map);
-            List<string> rg = new List<string>();
-            foreach (string str in roofGrid)
-            {
-                rg.AddRange(str.Split(','));
-            }
-
-            for (int i = 0; i < rg.Count; i++)
-            {
-                if (rg[i] != null && rg[i] != ".")
-                {
-                    IntVec3 c = rect.Cells.ElementAt(i);
-                    CleanAt(c, map, fullClean);
-                    CleanTerrainAt(c, map);
-                }
-            }
-        }
-
-        public static void PreClean(Map map, CellRect rect, bool fullClean)
-        {
-            KLog.Message($"Intiating pre-generation map clean - full rect. Fullclean {fullClean}");
-            SetRoadInfo(map);
-            foreach (IntVec3 c in rect)
-            {
-                CleanAt(c, map, fullClean);
-                CleanTerrainAt(c, map);
-            }
-        }
-
+        /// <summary>
+        /// Get road type already on map if applicable
+        /// </summary>
         public static void SetRoadInfo(Map map)
         {
             if (map.TileInfo?.Roads?.Count > 0)
@@ -408,43 +379,64 @@ namespace KCSG
             }
         }
 
-        public static void CleanAt(IntVec3 c, Map map, bool fullClean)
+        /// <summary>
+        /// Clean structure spawn rect. Full clean remove everything but player/map pawns.
+        /// Normal clean remove filth, non-natural buildings and stone chunks
+        /// </summary>
+        public static void PreClean(Map map, CellRect rect, bool fullClean, List<string> roofGrid = null)
         {
-            if (fullClean)
+            KLog.Message($"Pre-generation map clean. Fullclean {fullClean}");
+            var mapFaction = map.ParentFaction;
+            var player = Faction.OfPlayer;
+
+            if (roofGrid != null)
             {
-                c.GetThingList(map).ToList().ForEach((t) =>
+                var cells = rect.Cells.ToList();
+                for (int i = 0; i < roofGrid.Count; i++)
                 {
-                    if (t.Map != null)
-                    {
-                        if (t is Pawn p && p.Faction == map.ParentFaction)
-                        {
-                            KLog.Message($"Skipping {p.NameShortColored}, part of defender faction.");
-                        }
-                        else
-                        {
-                            t.DeSpawn();
-                        }
-                    }
-                });
+                    IntVec3 cell = cells[i];
+                    if (cell.InBounds(map) && roofGrid[i] != ".")
+                        CleanAt(cell, map, fullClean, mapFaction, player);
+                }
             }
             else
             {
-                c.GetThingList(map).ToList().ForEach((t) =>
-                {
-                    if (t.Map != null &&
-                       (t.def.category == ThingCategory.Filth ||
-                        t.def.category == ThingCategory.Building && !t.def.building.isNaturalRock ||
-                        t is Pawn p && p.Faction != map.ParentFaction ||
-                        t.def.thingCategories != null && t.def.thingCategories.Contains(ThingCategoryDefOf.StoneChunks)))
-                    {
-                        t.DeSpawn();
-                    }
-                });
+                foreach (IntVec3 c in rect)
+                    CleanAt(c, map, fullClean, mapFaction, player);
             }
         }
 
-        public static void CleanTerrainAt(IntVec3 c, Map map)
+        /// <summary>
+        /// Clean at a cell. Terrain & things
+        /// </summary>
+        public static void CleanAt(IntVec3 c, Map map, bool fullClean, Faction mapFaction, Faction player)
         {
+            // Clean things
+            var things = c.GetThingList(map);
+
+            for (int i = 0; i < things.Count; i++)
+            {
+                if (things[i] is Thing thing && thing.Spawned)
+                {
+                    if (thing is Pawn p && p.Faction != mapFaction && p.Faction != player)
+                    {
+                        thing.DeSpawn();
+                    }
+                    if (fullClean)
+                    {
+                        thing.DeSpawn();
+                    }
+                    // Clear filth, buildings, stone chunks
+                    else if (thing.def.category == ThingCategory.Filth ||
+                             (thing.def.category == ThingCategory.Building && thing.def.building.isNaturalRock) ||
+                             (thing.def.thingCategories != null && thing.def.thingCategories.Contains(ThingCategoryDefOf.StoneChunks)))
+                    {
+                        thing.DeSpawn();
+                    }
+                }
+            }
+
+            // Clean terrain
             if (map.terrainGrid.UnderTerrainAt(c) is TerrainDef terrain && terrain != null)
             {
                 map.terrainGrid.SetTerrain(c, terrain);

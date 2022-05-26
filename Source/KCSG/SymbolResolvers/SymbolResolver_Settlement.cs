@@ -24,7 +24,7 @@ namespace KCSG
                 BaseGen.symbolStack.Push("kcsg_roomsgenfromstructure", rp, null);
 
                 if (GenOption.ext.preGenClear)
-                    GenUtils.PreClean(map, rp.rect, GenOption.structureLayoutDef.roofGrid, GenOption.ext.fullClear);
+                    GenUtils.PreClean(map, rp.rect, GenOption.ext.fullClear, GenOption.structureLayoutDef.roofGridResolved);
             }
             else
             {
@@ -49,6 +49,7 @@ namespace KCSG
 
                 BaseGen.symbolStack.Push("kcsg_roomgenfromlist", rp, null);
 
+                GenUtils.SetRoadInfo(map);
                 if (GenOption.ext.preGenClear)
                     GenUtils.PreClean(map, rp.rect, GenOption.ext.fullClear);
             }

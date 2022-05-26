@@ -111,7 +111,7 @@ namespace KCSG
             CellRect cellRect = CreateCellRect(map, layoutDef.height, layoutDef.width);
 
             if (preGenClear)
-                GenUtils.PreClean(map, cellRect, layoutDef.roofGrid, fullClear);
+                GenUtils.PreClean(map, cellRect, fullClear, layoutDef.roofGridResolved);
 
             for (int i = 0; i < layoutDef.layouts.Count; i++)
             {
