@@ -101,7 +101,6 @@
     <Compile Include="SymbolResolvers\SymbolResolver_Settlement.cs" />
     <Compile Include="Utils\Algorithms\CustomVector.cs" />
     <Compile Include="Utils\Algorithms\PoissonDiskSampling.cs" />
-    <Compile Include="Utils\SymbolUtils.cs" />
     <Compile Include="WorldGenSteps\WorldGenStep_SpawnWorldObjects.cs" />
   </ItemGroup>
   <ItemGroup>

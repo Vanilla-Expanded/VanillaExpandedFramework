@@ -1,6 +1,6 @@
-﻿using RimWorld;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Xml.Linq;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -11,10 +11,10 @@ namespace KCSG
         private readonly Area area;
         private readonly List<IntVec3> cells = new List<IntVec3>();
         private readonly Map map;
-        private readonly Dictionary<IntVec3, List<Thing>> pairsCellThingList = new Dictionary<IntVec3, List<Thing>>();
         private readonly List<string> tags = new List<string>();
         private readonly List<string> mods = new List<string>();
 
+        private Dictionary<IntVec3, List<Thing>> pairsCellThingList = new Dictionary<IntVec3, List<Thing>>();
         private Color boxColor = new Color(0.13f, 0.14f, 0.16f);
         private string defname = "Placeholder";
         private bool isStorage = false;
@@ -159,15 +159,15 @@ namespace KCSG
                 }
                 else
                 {
-                    ExportUtils.FillCellThingsList(cells, map, pairsCellThingList);
+                    pairsCellThingList = ExportUtils.FillCellThingsList(cells, map);
                     GUIUtility.systemCopyBuffer = CreateLayout().ToString();
                     Messages.Message("Copied to clipboard.", MessageTypeDefOf.TaskCompletion);
                 }
             }
             if (Widgets.ButtonText(new Rect(350, inRect.height - bHeight, 340, bHeight), "Copy symbol(s) def(s)"))
             {
-                ExportUtils.FillCellThingsList(cells, map, pairsCellThingList);
-                symbols = SymbolUtils.CreateSymbolIfNeeded(cells, map, pairsCellThingList, area);
+                pairsCellThingList = ExportUtils.FillCellThingsList(cells, map);
+                symbols = ExportUtils.CreateSymbolIfNeeded(cells, map, pairsCellThingList, area);
                 if (symbols.Count > 0)
                 {
                     string toCopy = "";
@@ -178,7 +178,10 @@ namespace KCSG
                     GUIUtility.systemCopyBuffer = toCopy;
                     Messages.Message("Copied to clipboard.", MessageTypeDefOf.TaskCompletion);
                 }
-                else Messages.Message("No new symbols needed.", MessageTypeDefOf.TaskCompletion);
+                else
+                {
+                    Messages.Message("No new symbols needed.", MessageTypeDefOf.TaskCompletion);
+                }
             }
             if (Widgets.ButtonText(new Rect(700, inRect.height - bHeight, 60, bHeight), "Close"))
             {
