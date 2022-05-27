@@ -434,5 +434,39 @@ namespace KCSG
                 map.terrainGrid.SetTerrain(c, terrain);
             }
         }
+
+        /// <summary>
+        /// Choose a random layout that match requirement(s) from a list.
+        /// </summary>
+        public static StructureLayoutDef ChooseStructureLayoutFrom(List<StructureLayoutDef> list)
+        {
+            List<StructureLayoutDef> choices = new List<StructureLayoutDef>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                var layout = list[i];
+                if (layout.RequiredModLoaded)
+                {
+                    choices.Add(layout);
+                }
+            }
+            return choices.RandomElement();
+        }
+
+        /// <summary>
+        /// Choose a random WeightedStruct from a list.
+        /// </summary>
+        public static WeightedStruct ChooseWeightedStructFrom(List<WeightedStruct> list, IncidentParms parms)
+        {
+            List<WeightedStruct> choices = new List<WeightedStruct>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                var weightedStruct = list[i];
+                if (weightedStruct.structureLayoutDef.RequiredModLoaded)
+                {
+                    choices.Add(weightedStruct);
+                }
+            }
+            return choices.RandomElementByWeight((w) => w.weight * parms.points);
+        }
     }
 }

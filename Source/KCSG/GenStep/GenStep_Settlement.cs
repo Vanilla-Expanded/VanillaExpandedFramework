@@ -25,7 +25,7 @@ namespace KCSG
 
             if (GenOption.ext.useStructureLayout)
             {
-                GenOption.structureLayoutDef = LayoutUtils.ChooseLayoutFrom(GenOption.ext.chooseFromlayouts);
+                GenOption.structureLayoutDef = GenUtils.ChooseStructureLayoutFrom(GenOption.ext.chooseFromlayouts);
             }
             else
             {

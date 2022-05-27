@@ -1,7 +1,7 @@
-﻿using RimWorld;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using RimWorld;
 using Verse;
 using Verse.AI.Group;
 
@@ -18,7 +18,7 @@ namespace KCSG
 
             if (GenOption.fallingStructure.canBeUsedBy.Contains(parms.faction.def))
             {
-                GenOption.fallingStructureChoosen = LayoutUtils.ChooseWeightedStruct(GenOption.fallingStructure.WeightedStructs, parms).structureLayoutDef;
+                GenOption.fallingStructureChoosen = GenUtils.ChooseWeightedStructFrom(GenOption.fallingStructure.WeightedStructs, parms).structureLayoutDef;
 
                 if (GenOption.fallingStructureChoosen != null)
                 {
@@ -26,9 +26,15 @@ namespace KCSG
                                                                                                GenOption.fallingStructureChoosen.height,
                                                                                                GenOption.fallingStructureChoosen.width) != IntVec3.Invalid;
                 }
-                else return false;
+                else
+                {
+                    return false;
+                }
             }
-            else return false;
+            else
+            {
+                return false;
+            }
         }
 
         public IntVec3 FindRect(Map map, int height, int width)

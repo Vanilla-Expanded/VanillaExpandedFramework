@@ -1,61 +1,13 @@
-﻿using RimWorld;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using RimWorld;
 using Verse;
 
 namespace KCSG
 {
     public class LayoutUtils
     {
-        public static StructureLayoutDef ChooseLayoutFrom(List<StructureLayoutDef> list)
-        {
-            List<StructureLayoutDef> choices = new List<StructureLayoutDef>();
-            foreach (StructureLayoutDef layout in list)
-            {
-                if (layout.modRequirements.NullOrEmpty()) choices.Add(layout);
-                else
-                {
-                    bool allModLoaded = true;
-                    foreach (string mod in layout.modRequirements)
-                    {
-                        if (!ModsConfig.ActiveModsInLoadOrder.Any(m => m.PackageId == mod.ToLower()))
-                        {
-                            allModLoaded = false;
-                            break;
-                        }
-                    }
-
-                    if (allModLoaded) choices.Add(layout);
-                }
-            }
-            return choices.RandomElement();
-        }
-
-        public static WeightedStruct ChooseWeightedStruct(List<WeightedStruct> list, IncidentParms parms)
-        {
-            List<WeightedStruct> choices = new List<WeightedStruct>();
-            foreach (WeightedStruct weightedStruct in list)
-            {
-                if (weightedStruct.structureLayoutDef.modRequirements.NullOrEmpty()) choices.Add(weightedStruct);
-                else
-                {
-                    bool allModLoaded = true;
-                    foreach (string mod in weightedStruct.structureLayoutDef.modRequirements)
-                    {
-                        if (!ModsConfig.ActiveModsInLoadOrder.Any(m => m.PackageId == mod.ToLower()))
-                        {
-                            allModLoaded = false;
-                            break;
-                        }
-                    }
-
-                    if (allModLoaded) choices.Add(weightedStruct);
-                }
-            }
-            return choices.RandomElementByWeight((w) => w.weight * parms.points);
-        }
-
         public static XElement CreateStructureDef(List<IntVec3> cellExport, Map map, Dictionary<IntVec3, List<Thing>> pairsCellThingList, Area area, bool exportFilth, bool exportNatural)
         {
             cellExport.Sort((x, y) => x.z.CompareTo(y.z));
