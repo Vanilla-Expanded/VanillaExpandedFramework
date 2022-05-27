@@ -116,7 +116,6 @@ namespace KCSG
 
                 if (symbol.isSlave && parentFaction != null)
                 {
-                    Log.Message($"slave faction: {slaveFaction.NameColored}");
                     pawn.guest.SetGuestStatus(parentFaction, GuestStatus.Prisoner);
                 }
 
