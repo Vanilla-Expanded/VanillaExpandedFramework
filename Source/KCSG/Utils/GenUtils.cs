@@ -45,6 +45,11 @@ namespace KCSG
                             }
                             else if (temp.thingDef.category == ThingCategory.Plant)
                             {
+                                if (cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Bridgeable))
+                                {
+                                    map.terrainGrid.SetTerrain(cell, TerrainDefOf.Soil);
+                                }
+
                                 Plant plant = ThingMaker.MakeThing(temp.thingDef) as Plant;
                                 plant.Growth = temp.plantGrowth;
                                 GenSpawn.Spawn(plant, cell, map, WipeMode.VanishOrMoveAside);
