@@ -9,7 +9,7 @@ namespace KCSG
     {
         public static void Message(string message)
         {
-            if (VFECore.VFEGlobal.settings.enableVerboseLogging) Log.Message("[KCSG]" + message);
+            if (VFECore.VFEGlobal.settings.enableVerboseLogging) Log.Message("<color=orange>[KCSG]</color>" + message);
         }
 
         [DebugAction("KCSG", "Quickspawn structure...", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]

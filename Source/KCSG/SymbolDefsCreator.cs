@@ -1,6 +1,6 @@
-﻿using RimWorld;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using RimWorld;
 using Verse;
 
 namespace KCSG
@@ -172,8 +172,6 @@ namespace KCSG
 
         private static void CreateSymbolsFor(string modId)
         {
-            Debug.Message($"Creating symbols for {modId}...");
-
             List<ThingDef> thingDefs = DefDatabase<ThingDef>.AllDefsListForReading.FindAll(t => t.modContentPack?.PackageId == modId);
             foreach (ThingDef thingDef in thingDefs)
             {
@@ -200,13 +198,11 @@ namespace KCSG
             sCreated = 0;
             DateTime before = DateTime.Now;
 
-            Log.Message($"<color=orange>[CSG]</color> Symbols Creator Started.");
-
             CreateSymbolsFor("ludeon.rimworld");
             CreateSymbolsFor("ludeon.rimworld.royalty");
             CreateSymbolsFor("ludeon.rimworld.ideology");
 
-            Log.Message($"<color=orange>[CSG]</color> Created {sCreated} symbolDefs for {modCount} mods. Took {(DateTime.Now - before).TotalSeconds:00.00}s.");
+            Log.Message($"<color=orange>[KCSG]</color> Created {sCreated} symbolDefs for vanilla and DLCs. Took {(DateTime.Now - before).TotalSeconds:00.00}s.");
             defCreated = true;
         }
     }
