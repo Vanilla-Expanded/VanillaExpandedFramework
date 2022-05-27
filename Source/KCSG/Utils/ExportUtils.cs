@@ -6,7 +6,7 @@ using Verse;
 
 namespace KCSG
 {
-    public class LayoutUtils
+    public class ExportUtils
     {
         public static XElement CreateStructureDef(List<IntVec3> cellExport, Map map, Dictionary<IntVec3, List<Thing>> pairsCellThingList, Area area, bool exportFilth, bool exportNatural)
         {
@@ -24,7 +24,7 @@ namespace KCSG
             XElement terrainL = CreateTerrainlayout(cellExport, area, map, exportNatural, out bool add3);
             if (add3) layouts.Add(terrainL);
             // Add things layouts
-            int numOfLayout = RectUtils.GetMaxThingOnOneCell(cellExport, pairsCellThingList, exportFilth);
+            int numOfLayout = GetMaxThingOnOneCell(cellExport, pairsCellThingList, exportFilth);
             for (int i = 0; i < numOfLayout; i++)
             {
                 layouts.Add(CreateThinglayout(cellExport, i, area, pairsCellThingList, exportFilth));
@@ -42,7 +42,7 @@ namespace KCSG
         public static XElement CreateThinglayout(List<IntVec3> cellExport, int index, Area area, Dictionary<IntVec3, List<Thing>> pairsCellThingList, bool exportFilth)
         {
             XElement liMain = new XElement("li", null);
-            RectUtils.EdgeFromList(cellExport, out int height, out int width);
+            EdgeFromList(cellExport, out int height, out int width);
             List<Thing> aAdded = new List<Thing>();
 
             IntVec3 first = cellExport.First();
@@ -116,7 +116,7 @@ namespace KCSG
         public static XElement CreateTerrainlayout(List<IntVec3> cellExport, Area area, Map map, bool exportNatural, out bool add)
         {
             XElement liMain = new XElement("li", null);
-            RectUtils.EdgeFromList(cellExport, out int height, out int width);
+            EdgeFromList(cellExport, out int height, out int width);
             add = false;
 
             IntVec3 first = cellExport.First();
@@ -171,7 +171,7 @@ namespace KCSG
         public static XElement CreateRoofGrid(List<IntVec3> cellExport, Map map, out bool add, Area area)
         {
             XElement roofGrid = new XElement("roofGrid", null);
-            RectUtils.EdgeFromList(cellExport, out int height, out int width);
+            EdgeFromList(cellExport, out int height, out int width);
             add = false;
 
             IntVec3 first = cellExport.First();
@@ -211,7 +211,7 @@ namespace KCSG
         public static XElement CreatePawnlayout(List<IntVec3> cellExport, Area area, out bool add, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
         {
             XElement liMain = new XElement("li", null);
-            RectUtils.EdgeFromList(cellExport, out int height, out int width);
+            EdgeFromList(cellExport, out int height, out int width);
             add = false;
 
             IntVec3 first = cellExport.First();
@@ -259,7 +259,7 @@ namespace KCSG
         {
             add = false;
             XElement liMain = new XElement("li", null);
-            RectUtils.EdgeFromList(cellExport, out int height, out int width);
+            EdgeFromList(cellExport, out int height, out int width);
 
             IntVec3 first = cellExport.First();
             for (int i = 0; i < height; i++)
@@ -306,6 +306,80 @@ namespace KCSG
             {
                 pairsCellThingList.Add(intVec, intVec.GetThingList(map).ToList());
             }
+        }
+
+        public static List<IntVec3> AreaToSquare(Area a)
+        {
+            List<IntVec3> list = a.ActiveCells.ToList();
+            MinMaxXZ(list, out int zMin, out int zMax, out int xMin, out int xMax);
+
+            List<IntVec3> listOut = new List<IntVec3>();
+
+            for (int zI = zMin; zI <= zMax; zI++)
+            {
+                for (int xI = xMin; xI <= xMax; xI++)
+                {
+                    listOut.Add(new IntVec3(xI, 0, zI));
+                }
+            }
+            listOut.Sort((x, y) => x.z.CompareTo(y.z));
+            return listOut;
+        }
+
+        public static void MinMaxXZ(List<IntVec3> list, out int zMin, out int zMax, out int xMin, out int xMax)
+        {
+            zMin = list[0].z;
+            zMax = 0;
+            xMin = list[0].x;
+            xMax = 0;
+            foreach (IntVec3 c in list)
+            {
+                if (c.z < zMin) zMin = c.z;
+                if (c.z > zMax) zMax = c.z;
+                if (c.x < xMin) xMin = c.x;
+                if (c.x > xMax) xMax = c.x;
+            }
+        }
+
+        public static void EdgeFromList(List<IntVec3> cellExport, out int height, out int width)
+        {
+            height = 0;
+            width = 0;
+            IntVec3 first = cellExport[0];
+
+            for (int i = 0; i < cellExport.Count; i++)
+            {
+                var cell = cellExport[i];
+                if (first.z == cell.z) width++;
+                if (first.x == cell.x) height++;
+            }
+        }
+
+        public static int GetMaxThingOnOneCell(List<IntVec3> cellExport, Dictionary<IntVec3, List<Thing>> pairsCellThingList, bool exportFilth)
+        {
+            int max = 1;
+            for (int i = 0; i < cellExport.Count; i++)
+            {
+                var things = pairsCellThingList.TryGetValue(cellExport[i]);
+                var count = 0;
+
+                for (int o = 0; o < things.Count; o++)
+                {
+                    var thing = things[o];
+                    if (thing is Pawn
+                        || thing.def.category == ThingCategory.Item
+                        || (!exportFilth && thing.def.category == ThingCategory.Filth))
+                    {
+                        continue;
+                    }
+
+                    count++;
+                }
+
+                if (count > max) max = count;
+            }
+
+            return max;
         }
     }
 }

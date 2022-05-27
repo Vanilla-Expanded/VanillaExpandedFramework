@@ -83,7 +83,7 @@ namespace KCSG
 
         private XElement CreateLayout()
         {
-            XElement structureL = LayoutUtils.CreateStructureDef(cells, map, pairsCellThingList, area, exportFilth, exportNatTer);
+            XElement structureL = ExportUtils.CreateStructureDef(cells, map, pairsCellThingList, area, exportFilth, exportNatTer);
             // Defname change
             XElement defName = new XElement("defName", structurePrefix + defname);
             structureL.AddFirst(defName);
@@ -159,14 +159,14 @@ namespace KCSG
                 }
                 else
                 {
-                    LayoutUtils.FillCellThingsList(cells, map, pairsCellThingList);
+                    ExportUtils.FillCellThingsList(cells, map, pairsCellThingList);
                     GUIUtility.systemCopyBuffer = CreateLayout().ToString();
                     Messages.Message("Copied to clipboard.", MessageTypeDefOf.TaskCompletion);
                 }
             }
             if (Widgets.ButtonText(new Rect(350, inRect.height - bHeight, 340, bHeight), "Copy symbol(s) def(s)"))
             {
-                LayoutUtils.FillCellThingsList(cells, map, pairsCellThingList);
+                ExportUtils.FillCellThingsList(cells, map, pairsCellThingList);
                 symbols = SymbolUtils.CreateSymbolIfNeeded(cells, map, pairsCellThingList, area);
                 if (symbols.Count > 0)
                 {

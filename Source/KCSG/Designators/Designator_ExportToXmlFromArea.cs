@@ -1,7 +1,7 @@
-﻿using RimWorld;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -43,7 +43,7 @@ namespace KCSG
 
         public override AcceptanceReport CanDesignateCell(IntVec3 c)
         {
-            if (!c.InBounds(base.Map))
+            if (!c.InBounds(Map))
             {
                 return false;
             }
@@ -52,19 +52,18 @@ namespace KCSG
 
         public override void ProcessInput(Event ev)
         {
-            if (!base.CheckCanInteract())
+            if (!CheckCanInteract())
             {
                 return;
             }
 
             MakeAllowedAreaListFloatMenu(delegate (Area a)
             {
-                RectUtils.EdgeFromArea(a.ActiveCells.ToList(), out int height, out int width);
-                List<IntVec3> cellExport = RectUtils.AreaToSquare(a, height, width);
+                List<IntVec3> cellExport = ExportUtils.AreaToSquare(a);
 
-                Dialog_ExportWindow exportWindow = new Dialog_ExportWindow(base.Map, cellExport, a);
+                Dialog_ExportWindow exportWindow = new Dialog_ExportWindow(Map, cellExport, a);
                 Find.WindowStack.Add(exportWindow);
-            }, false, true, base.Map);
+            }, false, true, Map);
         }
 
         public static void MakeAllowedAreaListFloatMenu(Action<Area> selAction, bool addNullAreaOption, bool addManageOption, Map map)
