@@ -97,21 +97,27 @@ namespace KCSG
         /// </summary>
         public static void GeneratePawnAt(Map map, IntVec3 cell, SymbolDef symbol)
         {
-            bool parentFaction = map.ParentFaction != null;
+            var factionManager = Find.FactionManager;
+            var parentFaction = map.ParentFaction;
+            var symbolFaction = symbol.faction != null ? factionManager.FirstFactionOfDef(symbol.faction) : null;
+            var slaveFaction = factionManager.AllFactionsListForReading.Find(f => parentFaction.HostileTo(f)) ?? factionManager.AllFactionsListForReading.Find(f => f != Faction.OfPlayer && f != parentFaction);
             var pawns = new List<Pawn>();
+
+            var request = new PawnGenerationRequest(symbol.pawnKindDefNS, symbol.isSlave ? slaveFaction : (symbol.spawnPartOfFaction ? parentFaction : symbolFaction), mustBeCapableOfViolence: true);
 
             for (int i = 0; i < symbol.numberToSpawn; i++)
             {
-                Pawn pawn = symbol.spawnPartOfFaction ? PawnGenerator.GeneratePawn(symbol.pawnKindDefNS, map.ParentFaction) : PawnGenerator.GeneratePawn(symbol.pawnKindDefNS, symbol.faction != null ? Find.FactionManager.FirstFactionOfDef(symbol.faction) : null);
+                Pawn pawn = PawnGenerator.GeneratePawn(request);
                 if (pawn == null)
                 {
                     KLog.Message("Null pawn in GeneratePawnAt");
-                    break;
+                    continue;
                 }
 
-                if (symbol.isSlave && parentFaction)
+                if (symbol.isSlave && parentFaction != null)
                 {
-                    pawn.guest.SetGuestStatus(map.ParentFaction, GuestStatus.Prisoner);
+                    Log.Message($"slave faction: {slaveFaction.NameColored}");
+                    pawn.guest.SetGuestStatus(parentFaction, GuestStatus.Prisoner);
                 }
 
                 if (symbol.spawnDead)
@@ -137,14 +143,14 @@ namespace KCSG
                 }
                 else
                 {
-                    GenSpawn.Spawn(pawn, cell, map, WipeMode.FullRefund);
+                    GenSpawn.Spawn(pawn, cell, map, WipeMode.VanishOrMoveAside);
                     pawns.Add(pawn);
                 }
             }
 
             if (symbol.defendSpawnPoint)
             {
-                Lord lord = LordMaker.MakeNewLord(map.ParentFaction, new LordJob_DefendPoint(cell, 3f, addFleeToil: false), map, pawns);
+                Lord lord = LordMaker.MakeNewLord(parentFaction, new LordJob_DefendPoint(cell, 3f, addFleeToil: false), map, pawns);
             }
         }
 
