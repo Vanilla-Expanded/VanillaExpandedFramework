@@ -14,7 +14,7 @@ namespace KCSG
             {
                 if (Find.World.worldObjects.AllWorldObjects.Find(o => o.Tile == __instance.Tile && o.def.HasModExtension<CustomGenOption>()) is WorldObject worldObject)
                 {
-                    KLog.Message($"Generating worldObject {worldObject.LabelCap}");
+                    Debug.Message($"Generating worldObject {worldObject.LabelCap}");
                     __result = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_Gen");
                 }
             }
@@ -27,15 +27,15 @@ namespace KCSG
             {
                 if (__instance != null && __instance.Faction != null && __instance.Faction != Faction.OfPlayer)
                 {
-                    KLog.Message($"Faction: {__instance.Faction.NameColored} - Generating");
+                    Debug.Message($"Faction: {__instance.Faction.NameColored} - Generating");
                     if (__instance.Faction.def.HasModExtension<CustomGenOption>())
                     {
-                        KLog.Message($"Faction: {__instance.Faction.NameColored} - Faction have CustomGenOption extension");
+                        Debug.Message($"Faction: {__instance.Faction.NameColored} - Faction have CustomGenOption extension");
                         __result = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_Base_Faction");
                     }
                     else if (Find.World.worldObjects.AllWorldObjects.FindAll(o => o.Tile == __instance.Tile && o.def.HasModExtension<CustomGenOption>()).Any())
                     {
-                        KLog.Message($"Generating world object map");
+                        Debug.Message($"Generating world object map");
                         __result = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_Gen");
                     }
                 }

@@ -68,15 +68,15 @@ namespace KCSG
             if (parms.sitePart?.parms != null && parms.sitePart.parms.threatPoints >= defaultPointsRange.min && parms.sitePart.parms.threatPoints <= defaultPointsRange.max)
             {
                 p = parms.sitePart.parms.threatPoints;
-                KLog.Message($"Using sitePart parms threat points: {p}");
+                Debug.Message($"Using sitePart parms threat points: {p}");
             }
             else
             {
                 p = defaultPointsRange.RandomInRange;
-                KLog.Message($"Using in-range threat points: {p}. Choosen from {defaultPointsRange}");
+                Debug.Message($"Using in-range threat points: {p}. Choosen from {defaultPointsRange}");
             }
             p = Math.Max(p, 150) * pointMultiplier;
-            KLog.Message($"Final threat points: {p}");
+            Debug.Message($"Final threat points: {p}");
 
             return PawnGroupMakerUtility.GeneratePawns(new PawnGroupMakerParms
             {

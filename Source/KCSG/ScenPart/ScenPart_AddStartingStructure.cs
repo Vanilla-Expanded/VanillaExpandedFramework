@@ -153,7 +153,7 @@ namespace KCSG
                 Pos offset = layoutDef.spawnAtPos.RandomElement();
                 center.x += offset.x;
                 center.y += offset.y;
-                KLog.Message($"Spawning pawns and stuff at {center}");
+                Debug.Message($"Spawning pawns and stuff at {center}");
                 DropThingGroupsAt(center, map, thingsGroups, instaDrop: (Find.GameInitData.QuickStarted || method != PlayerPawnsArriveMethod.DropPods), leaveSlag: true, allowFogged: false);
             }
 

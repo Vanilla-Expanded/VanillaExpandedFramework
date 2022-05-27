@@ -172,7 +172,7 @@ namespace KCSG
 
         private static void CreateSymbolsFor(string modId)
         {
-            KLog.Message($"Creating symbols for {modId}...");
+            Debug.Message($"Creating symbols for {modId}...");
 
             List<ThingDef> thingDefs = DefDatabase<ThingDef>.AllDefsListForReading.FindAll(t => t.modContentPack?.PackageId == modId);
             foreach (ThingDef thingDef in thingDefs)

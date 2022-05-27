@@ -110,7 +110,7 @@ namespace KCSG
                 Pawn pawn = PawnGenerator.GeneratePawn(request);
                 if (pawn == null)
                 {
-                    KLog.Message("Null pawn in GeneratePawnAt");
+                    Debug.Message("Null pawn in GeneratePawnAt");
                     continue;
                 }
 
@@ -387,7 +387,7 @@ namespace KCSG
         /// </summary>
         public static void PreClean(Map map, CellRect rect, bool fullClean, List<string> roofGrid = null)
         {
-            KLog.Message($"Pre-generation map clean. Fullclean {fullClean}");
+            Debug.Message($"Pre-generation map clean. Fullclean {fullClean}");
             var mapFaction = map.ParentFaction;
             var player = Faction.OfPlayer;
 

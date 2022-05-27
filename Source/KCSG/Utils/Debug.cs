@@ -1,12 +1,17 @@
-﻿using RimWorld;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using RimWorld;
 using Verse;
 
 namespace KCSG
 {
-    public static class DebugOption
+    public static class Debug
     {
+        public static void Message(string message)
+        {
+            if (VFECore.VFEGlobal.settings.enableVerboseLogging) Log.Message("[KCSG]" + message);
+        }
+
         [DebugAction("KCSG", "Quickspawn structure...", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void QuickspawnStructure()
         {
@@ -214,8 +219,6 @@ namespace KCSG
                 })
 
             };
-
-
 
             Find.WindowStack.Add(new Dialog_DebugOptionListLister(debugMenuOptionList));
         }
