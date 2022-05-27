@@ -1,13 +1,6 @@
-﻿using HarmonyLib;
-using RimWorld;
-using RimWorld.Planet;
-using System;
-using System.Linq;
-using Verse;
-
-namespace KCSG
+﻿namespace KCSG
 {
-    [StaticConstructorOnStartup]
+    /*[StaticConstructorOnStartup]
     [HarmonyPatch(typeof(SettlementUtility))]
     [HarmonyPatch("Attack", MethodType.Normal)]
     public class SettlementUtility_Attack_Patch
@@ -73,5 +66,5 @@ namespace KCSG
             if (settlement.HasMap) PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter(settlement.Map.mapPawns.AllPawns, ref letterLabel, ref letterText, "LetterRelatedPawnsSettlement".Translate(Faction.OfPlayer.def.pawnsPlural), true);
             Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.NeutralEvent, caravan.PawnsListForReading, settlement.Faction, null, null, null);
         }
-    }
+    }*/
 }

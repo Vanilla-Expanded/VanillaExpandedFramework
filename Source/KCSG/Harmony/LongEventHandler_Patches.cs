@@ -1,12 +1,6 @@
-﻿using System;
-using HarmonyLib;
-using RimWorld;
-using UnityEngine;
-using Verse;
-
-namespace KCSG
+﻿namespace KCSG
 {
-    public class LongEventHandler_Patches
+    /*public class LongEventHandler_Patches
     {
         [StaticConstructorOnStartup]
         [HarmonyPatch(typeof(LongEventHandler))]
@@ -164,5 +158,5 @@ namespace KCSG
                 return true;
             }
         }
-    }
+    }*/
 }
