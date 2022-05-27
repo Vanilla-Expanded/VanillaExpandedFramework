@@ -196,7 +196,7 @@ namespace KCSG
 
             Widgets.DrawBoxSolid(new Rect(710, 0, 50, 50), boxColor);
             Rect infoRect = new Rect(715, 5, 40, 40);
-            if (Widgets.ButtonImage(infoRect, TextureLoader.helpIcon))
+            if (Widgets.ButtonImage(infoRect, Textures.helpIcon))
             {
                 System.Diagnostics.Process.Start("https://github.com/AndroidQuazar/VanillaExpandedFramework/wiki/Exporting-your-own-structures");
             }

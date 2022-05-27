@@ -74,7 +74,7 @@
     <Compile Include="SymbolDefsCreator.cs" />
     <Compile Include="Thing\KCSG_Skyfaller.cs" />
     <Compile Include="Utils\KLog.cs" />
-    <Compile Include="Utils\TextureLoader.cs" />
+    <Compile Include="Textures.cs" />
     <Compile Include="DefOfs\DefOfs.cs" />
     <Compile Include="Utils\Algorithms\AStar.cs" />
     <Compile Include="Utils\Algorithms\BuildingPlacement.cs" />
