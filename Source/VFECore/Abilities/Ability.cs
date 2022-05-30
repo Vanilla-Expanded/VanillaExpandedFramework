@@ -36,7 +36,6 @@
                                                                        .Cast<AbilityExtension_AbilityMod>().ToList());
         public Mote warmupMote;
         private Sustainer soundCast;
-        public LocalTargetInfo selectedTarget = LocalTargetInfo.Invalid;
 
         private CompAbilities comp;
         public  CompAbilities Comp => this.comp ?? (this.comp = this.pawn.GetComp<CompAbilities>());
@@ -367,7 +366,6 @@
             comp.currentlyCastingTargets = targets;
             this.pawn.jobs.StartJob(job, JobCondition.InterruptForced);
         }
-
         protected virtual void ModifyTargets(ref GlobalTargetInfo[] targets)
         {
             if (this.def.hasAoE)
@@ -419,16 +417,12 @@
                             thing.OccupiedRect().ClosestDistSquaredTo(cell) > minRadius))
                     {
                         if (!parms.canTargetSelf && thing == pawn) continue;
-
+                        
                         yield return thing;
                     }
                 }
             }
         }
-
-        [Obsolete("Use new method using GlobalTargetInfo instead")]
-        public virtual void PreCast(LocalTargetInfo target, ref bool startAbilityJobImmediately, Action startJobAction) =>
-            this.PreCast(new[] { target.ToGlobalTargetInfo(this.Caster.Map) }, ref startAbilityJobImmediately, startJobAction);
 
         public virtual void PreCast(GlobalTargetInfo[] target, ref bool startAbilityJobImmediately, Action startJobAction)
         {
@@ -508,7 +502,7 @@
 
         public virtual void EndCastJob()
         {
-            this.selectedTarget = IntVec3.Invalid;
+
         }
 
         [Obsolete("Use the new method that uses GlobalTargetInfo instead")]
@@ -621,7 +615,6 @@
             Scribe_Defs.Look(ref this.def, nameof(this.def));
             Scribe_Deep.Look(ref this.verb, nameof(this.verb));
             Scribe_Values.Look(ref this.autoCast, nameof(this.autoCast));
-            Scribe_TargetInfo.Look(ref this.selectedTarget, nameof(this.selectedTarget));
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
@@ -673,7 +666,7 @@
         }
 
         public virtual bool ValidateTarget(LocalTargetInfo target, bool showMessages = true) =>
-            this.CanHitTarget(target);
+            this.CanHitTarget(target) && AbilityModExtensions.All(x => x.ValidateTarget(target, this, showMessages));
 
         public virtual void DrawHighlight(LocalTargetInfo target)
         {

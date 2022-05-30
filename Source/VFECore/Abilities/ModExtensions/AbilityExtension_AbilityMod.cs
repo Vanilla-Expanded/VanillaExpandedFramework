@@ -30,11 +30,6 @@
 		{
 
 		}
-
-		[Obsolete("Use new method using GlobalTargetInfo instead")]
-		public virtual void PreCast(LocalTargetInfo target, Ability ability, ref bool startAbilityJobImmediately, Action startJobAction) =>
-			this.PreCast(new[] { target.ToGlobalTargetInfo(ability.pawn.Map) }, ability, ref startAbilityJobImmediately, startJobAction);
-
 		public virtual void PreCast(GlobalTargetInfo[] target, Ability ability, ref bool startAbilityJobImmediately, Action startJobAction)
 		{
 		}
@@ -48,11 +43,6 @@
 		public virtual void Cast(GlobalTargetInfo[] targets, Ability ability)
 		{
 		}
-
-		[Obsolete("Use new method using GlobalTargetInfo instead")]
-		public virtual bool Valid(LocalTargetInfo target, Ability ability, bool throwMessages = false) =>
-			this.Valid(new[] { target.ToGlobalTargetInfo(ability.Caster.Map) }, ability, throwMessages);
-
 		public virtual bool Valid(GlobalTargetInfo[] targets, Ability ability, bool throwMessages = false)
 		{
 			return true;
@@ -62,6 +52,11 @@
 		{
 			return true;
 		}
+
+		public virtual bool ValidateTarget(LocalTargetInfo target, Ability ability, bool throwMessages = false)
+        {
+			return true;
+        }
 
 		public virtual bool CanApplyOn(LocalTargetInfo target, Ability ability, bool throwMessages = false)
 		{

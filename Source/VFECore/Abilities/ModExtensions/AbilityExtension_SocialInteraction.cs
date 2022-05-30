@@ -1,6 +1,7 @@
 ﻿namespace VFECore.Abilities
 {
     using RimWorld;
+    using RimWorld.Planet;
     using Verse;
 
     public class AbilityExtension_SocialInteraction : AbilityExtension_AbilityMod
@@ -21,28 +22,31 @@
 
         public override bool CanApplyOn(LocalTargetInfo target, Ability ability, bool throwMessages = false)
         {
-            return Valid(target, ability, throwMessages);
+            return Valid(new[] { target.ToGlobalTargetInfo(target.Thing.Map) }, ability, throwMessages);
         }
 
-        public override bool Valid(LocalTargetInfo target, Ability ability, bool throwMessages = false)
+        public override bool Valid(GlobalTargetInfo[] targets, Ability ability, bool throwMessages = false)
         {
-			Pawn pawn = target.Pawn;
-			if (pawn != null)
-			{
-				if (!canApplyToMentallyBroken && !AbilityUtility.ValidateNoMentalState(pawn, throwMessages))
+			foreach (GlobalTargetInfo target in targets)
+            {
+				Pawn pawn = target.Thing as Pawn;
+				if (pawn != null)
 				{
-					return false;
-				}
-				if (!AbilityUtility.ValidateIsAwake(pawn, true))
-				{
-					return false;
-				}
-				if (!canApplyToUnconscious && !AbilityUtility.ValidateIsConscious(pawn, throwMessages))
-				{
-					return false;
+					if (!canApplyToMentallyBroken && !AbilityUtility.ValidateNoMentalState(pawn, throwMessages))
+					{
+						return false;
+					}
+					if (!AbilityUtility.ValidateIsAwake(pawn, true))
+					{
+						return false;
+					}
+					if (!canApplyToUnconscious && !AbilityUtility.ValidateIsConscious(pawn, throwMessages))
+					{
+						return false;
+					}
 				}
 			}
-			return true;
-		}
+			return base.Valid(targets, ability, throwMessages);
+        }
 	}
 }
