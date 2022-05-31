@@ -395,6 +395,7 @@
     <Compile Include="Abilities\ModExtensions\AbilityExtension_ConfirmationMessage.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_RandomRadius.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_ScreenShaker.cs" />
+    <Compile Include="Abilities\ModExtensions\AbilityExtension_Stun.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_ThoughtOnTarget.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_SocialInteraction.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_WarmupEffecter.cs" />
