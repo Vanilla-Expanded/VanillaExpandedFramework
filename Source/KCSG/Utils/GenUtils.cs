@@ -346,19 +346,24 @@ namespace KCSG
                     IntVec3 cell = cells[i];
                     if (cell.InBounds(map))
                     {
-                        switch (layout.roofGridResolved[i])
+                        var wantedRoof = layout.roofGridResolved[i];
+                        var currentRoof = cell.GetRoof(map);
+                        if (wantedRoof == "1" && (layout.forceGenerateRoof || currentRoof == null))
                         {
-                            case "1":
-                                map.roofGrid.SetRoof(cell, RoofDefOf.RoofConstructed);
-                                break;
-                            case "2":
-                                map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThin);
-                                break;
-                            case "3":
-                                map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThick);
-                                break;
-                            default:
-                                break;
+                            map.roofGrid.SetRoof(cell, RoofDefOf.RoofConstructed);
+                            continue;
+                        }
+
+                        if (wantedRoof == "2" && (layout.forceGenerateRoof || currentRoof == null || currentRoof == RoofDefOf.RoofConstructed))
+                        {
+                            map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThin);
+                            continue;
+                        }
+
+                        if (wantedRoof == "3")
+                        {
+                            map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThick);
+                            continue;
                         }
                     }
 

@@ -21,6 +21,7 @@ namespace KCSG
         private bool spawnConduits = true;
         private bool exportFilth = false;
         private bool exportNatTer = false;
+        private bool forceGenerateRoof = false;
 
         private string structurePrefix = "Required";
         private List<XElement> symbols = new List<XElement>();
@@ -71,6 +72,7 @@ namespace KCSG
             DrawSpawnConduitChanger(lst);
             DrawExportFilth(lst);
             DrawExportNaturalTerrain(lst);
+            DrawForceGenerateRoof(lst);
             DrawStructurePrefix(lst);
             DrawTagsEditing(lst);
             DrawModsEditing(lst);
@@ -116,6 +118,17 @@ namespace KCSG
                 {
                     structureL.Element("spawnConduits").Remove();
                 }
+            }
+            if (forceGenerateRoof)
+            {
+                if (structureL.Element("forceGenerateRoof") == null)
+                {
+                    structureL.Add(new XElement("forceGenerateRoof", true));
+                }
+            }
+            else
+            {
+                structureL.Element("forceGenerateRoof")?.Remove();
             }
             // Tags changes
             if (tags.Count > 0)
@@ -216,6 +229,12 @@ namespace KCSG
         private void DrawSpawnConduitChanger(Listing_Standard lst)
         {
             lst.CheckboxLabeled("Spawn conduit under impassable buildings and doors when generating:", ref spawnConduits, "If this is on, conduit will be spawned under impassable buildings and doors of this structure when it's generated (if faction techlevel >= Industrial)");
+            lst.Gap();
+        }
+
+        private void DrawForceGenerateRoof(Listing_Standard lst)
+        {
+            lst.CheckboxLabeled("Force generate roofs:", ref forceGenerateRoof, "By default constructed roof will only be constructed if the cell isn't roofed at all. Thin roof will be on cell with no roof or constructed roof. Thick roof override everything. Enable to alway generate exported roof.");
             lst.Gap();
         }
 
