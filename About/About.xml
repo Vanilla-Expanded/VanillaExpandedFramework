@@ -29,4 +29,7 @@ Yes!We have negotiated a deal with Orion and included his Faction Discovery mod 
 		<li>Ludeon.RimWorld.Royalty</li>
 		<li>brrainz.harmony</li>
 	</loadAfter>
+	<incompatibleWith>
+        <li>hatena.RangeAnimalFramework</li>
+    </incompatibleWith>
 </ModMetaData>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using RimWorld;
 using Verse;
 
 namespace AnimalBehaviours
@@ -17,6 +17,15 @@ namespace AnimalBehaviours
             get
             {
                 return (CompProperties_SwallowWhole)this.props;
+            }
+        }
+
+        public override void PostExposeData()
+        {
+            base.PostExposeData();
+            if (Props.filthToMake == null)
+            {
+                Props.filthToMake = ThingDefOf.Filth_AmnioticFluid;
             }
         }
 

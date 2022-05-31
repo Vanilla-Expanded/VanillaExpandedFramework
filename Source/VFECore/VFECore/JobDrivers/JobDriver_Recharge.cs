@@ -147,14 +147,14 @@ namespace VFE.Mechanoids.AI.JobDrivers
 			layDown.AddFinishAction(delegate
 			{
 				Pawn actor = layDown.actor;
-				if ((PawnNeed_Power.CurLevelPercentage > 0.99f && !layDown.actor.health.hediffSet.HasNaturallyHealingInjury() && MyBuildingCompMachineChargingStation.turretToInstall==null))
+				if ((PawnNeed_Power.CurLevelPercentage > 0.99f && !layDown.actor.health.hediffSet.HasNaturallyHealingInjury() && CompMachine.cachedMachinesPawns[pawn].turretToInstall==null))
 				{
 					MyBuildingCompMachineChargingStation.wantsRest = false;
 				}
 			});
 			layDown.handlingFacing = true;
 			layDown.FailOn(() => !MyBuildingCompMachineChargingStation.forceStay && (!MyBuildingCompPowerTrader.PowerOn || 
-				(PawnNeed_Power.CurLevelPercentage > 0.99f && !layDown.actor.health.hediffSet.HasNaturallyHealingInjury() && MyBuildingCompMachineChargingStation.turretToInstall==null)));
+				(PawnNeed_Power.CurLevelPercentage > 0.99f && !layDown.actor.health.hediffSet.HasNaturallyHealingInjury() && CompMachine.cachedMachinesPawns[pawn].turretToInstall==null)));
 
 			layDown.defaultCompleteMode = ToilCompleteMode.Never;
 			return layDown;

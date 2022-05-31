@@ -31,7 +31,7 @@ namespace VFE.Mechanoids.AI.JobGivers
                     var compMachine = CompMachine.cachedMachinesPawns[pawn];
                     var compMachineChargingStation = compMachine.myBuilding.TryGetComp<CompMachineChargingStation>();
                     if (compMachineChargingStation.wantsRest && compMachine.myBuilding.TryGetComp<CompPowerTrader>().PowerOn 
-                        && pawn.CanReserveAndReach(myBuilding, PathEndMode.OnCell, Danger.Deadly))
+                        && pawn.CanReach(myBuilding, PathEndMode.OnCell, Danger.Deadly))
                         return JobMaker.MakeJob(VFEDefOf.VFE_Mechanoids_Recharge, compMachine.myBuilding);
 
                     if (pawn.mindState.lastJobTag == JobTag.Idle)
