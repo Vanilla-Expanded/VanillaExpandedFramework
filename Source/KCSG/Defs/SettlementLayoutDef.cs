@@ -16,7 +16,11 @@ namespace KCSG
 
         public List<StructOption> allowedStructures = new List<StructOption>();
 
+        public int spaceAround = 2;
+
+        public bool addMainRoad = false;
         public TerrainDef mainRoadDef = null;
+
         public TerrainDef roadDef = null;
 
         public bool addLandingPad = false;

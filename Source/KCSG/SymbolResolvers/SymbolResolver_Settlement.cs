@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using RimWorld;
 using RimWorld.BaseGen;
 using Verse;
@@ -11,21 +10,28 @@ namespace KCSG
     {
         public override void Resolve(ResolveParams rp)
         {
-            GenOption.currentGenStep = "Generating settlement";
-
             Map map = BaseGen.globalSettings.map;
             rp.faction = rp.faction ?? Find.FactionManager.RandomEnemyFaction(false, false, true, TechLevel.Undefined);
 
             if (GenOption.ext.useStructureLayout)
             {
+                // Add hostile pawns
                 AddHostilePawnGroup(rp.faction, map, rp);
-
+                // Generate structure
                 BaseGen.symbolStack.Push("kcsg_roomsgenfromstructure", rp, null);
             }
             else
             {
+                // Add hostile pawns
                 AddHostilePawnGroup(rp.faction, map, rp);
 
+                // Handle power
+                BaseGen.symbolStack.Push("kcsg_settlementpower", rp, null);
+
+                // Handle road
+                BaseGen.symbolStack.Push("kcsg_generateroad", rp, null);
+
+                // Add vanilla settlement defense
                 if (GenOption.settlementLayoutDef.vanillaLikeDefense)
                 {
                     int dWidth = Rand.Bool ? 2 : 4;
@@ -37,14 +43,23 @@ namespace KCSG
                     BaseGen.symbolStack.Push("edgeDefense", edgeParms, null);
                 }
 
-                int seed = new Random().Next(0, 100000);
+                // Add pad if needed
+                if (GenOption.settlementLayoutDef.addLandingPad && ModLister.RoyaltyInstalled)
+                {
+                    if (rp.rect.TryFindRandomInnerRect(new IntVec2(9, 9), out CellRect rect, null))
+                    {
+                        ResolveParams resolveParams = rp;
+                        resolveParams.rect = rect;
+                        BaseGen.symbolStack.Push("landingPad", resolveParams, null);
+                        BaseGen.globalSettings.basePart_landingPadsResolved++;
+                    }
+                }
 
-                GenOption.offset = rp.rect.Corners.ElementAt(2);
-                GenOption.grid = GridUtils.GenerateGrid(seed, GenOption.settlementLayoutDef, map);
+                // Push ruin symbol
+                BaseGen.symbolStack.Push("kcsg_handleruins", rp, null);
 
-                BaseGen.symbolStack.Push("kcsg_roomgenfromlist", rp, null);
-
-                GenUtils.SetRoadInfo(map);
+                // Start gen
+                SettlementGenUtils.StartGen(rp, map, GenOption.settlementLayoutDef);
             }
         }
 

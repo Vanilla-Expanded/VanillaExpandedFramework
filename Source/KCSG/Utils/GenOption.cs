@@ -1,50 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using Verse;
-
-namespace KCSG
+﻿namespace KCSG
 {
     public static class GenOption
     {
-
-
-
-
-        /*-------- Loading screen --------*/
-        public static bool useCustomWindowContent;
-
-        public static DateTime dateTime;
-
-        public static string currentGenStep;
-
-        public static string currentGenStepMoreInfo;
-
-        public static List<string> allTip;
-
-        public static bool tipAvailable;
-
-        /*------ Generation options ------*/
-        public static CustomVector[][] grid;
-
-        public static IntVec3 offset;
-
-        public static int radius;
+        public static CustomGenOption ext;
 
         public static SettlementLayoutDef settlementLayoutDef;
 
         public static StructureLayoutDef structureLayoutDef;
-
-        public static Dictionary<CustomVector, StructureLayoutDef> vectStruct;
-
-        public static List<CustomVector> doors;
-
-        public static List<CustomVector> vectors;
-
-        public static List<TerrainDef> preRoadTypes;
-
-        public static bool usePathCostReduction;
-
-        public static CustomGenOption ext;
 
         /*------ Falling structure ------*/
         public static FallingStructure fallingStructure;
@@ -55,26 +17,6 @@ namespace KCSG
         {
             fallingStructure = null;
             fallingStructureChoosen = null;
-        }
-
-        public static void ClearUI()
-        {
-            useCustomWindowContent = false;
-            dateTime = default;
-            currentGenStep = "";
-            currentGenStepMoreInfo = "";
-            UIMenuBackgroundManager.background = null;
-        }
-
-        public static void ClearAll()
-        {
-            grid = null;
-            ext = null;
-            if (vectStruct != null) vectStruct.Clear();
-            if (doors != null) doors.Clear();
-            if (vectors != null) vectors.Clear();
-            if (preRoadTypes != null) preRoadTypes.Clear();
-            usePathCostReduction = false;
         }
     }
 }

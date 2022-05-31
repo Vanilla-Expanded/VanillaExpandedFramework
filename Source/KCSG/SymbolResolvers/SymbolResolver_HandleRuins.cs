@@ -6,8 +6,6 @@ namespace KCSG
     {
         public override void Resolve(ResolveParams rp)
         {
-            GenOption.currentGenStep = "Ruining structure";
-
             if (GenOption.ext.shouldRuin)
             {
                 for (int i = 0; i < GenOption.ext.ruinSymbolResolvers.Count; i++)

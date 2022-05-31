@@ -64,6 +64,12 @@ namespace KCSG
                             }
                             else
                             {
+                                // Generating settlement, we want to keep tracks of doors
+                                if (!GenOption.ext.useStructureLayout && temp.thingDef.altitudeLayer == AltitudeLayer.DoorMoveable)
+                                {
+                                    SettlementGenUtils.doors.Add(cell);
+                                }
+
                                 if (cell.GetFirstMineable(map) != null && temp.thingDef.designationCategory == DesignationCategoryDefOf.Security)
                                 {
                                     continue;
@@ -363,22 +369,24 @@ namespace KCSG
         /// <summary>
         /// Get road type already on map if applicable
         /// </summary>
-        public static void SetRoadInfo(Map map)
+        public static List<TerrainDef> SetRoadInfo(Map map)
         {
             if (map.TileInfo?.Roads?.Count > 0)
             {
-                GenOption.preRoadTypes = new List<TerrainDef>();
+                var preRoadTypes = new List<TerrainDef>();
                 foreach (RimWorld.Planet.Tile.RoadLink roadLink in map.TileInfo.Roads)
                 {
                     foreach (RoadDefGenStep rgs in roadLink.road.roadGenSteps)
                     {
                         if (rgs is RoadDefGenStep_Place rgsp && rgsp != null && rgsp.place is TerrainDef t && t != null && t != TerrainDefOf.Bridge)
                         {
-                            GenOption.preRoadTypes.Add(t);
+                            preRoadTypes.Add(t);
                         }
                     }
                 }
+                return preRoadTypes;
             }
+            return null;
         }
 
         /// <summary>
@@ -424,13 +432,13 @@ namespace KCSG
                     {
                         thing.DeSpawn();
                     }
-                    if (fullClean)
+                    else if (fullClean && (thing.def.category != ThingCategory.Building || !thing.def.building.isNaturalRock))
                     {
                         thing.DeSpawn();
                     }
                     // Clear filth, buildings, stone chunks
                     else if (thing.def.category == ThingCategory.Filth ||
-                             (thing.def.category == ThingCategory.Building && thing.def.building.isNaturalRock) ||
+                             (thing.def.category == ThingCategory.Building && !thing.def.building.isNaturalRock) ||
                              (thing.def.thingCategories != null && thing.def.thingCategories.Contains(ThingCategoryDefOf.StoneChunks)))
                     {
                         thing.DeSpawn();

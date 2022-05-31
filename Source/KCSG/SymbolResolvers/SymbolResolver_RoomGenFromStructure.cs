@@ -7,8 +7,6 @@ namespace KCSG
     {
         public override void Resolve(ResolveParams rp)
         {
-            GenOption.currentGenStep = "Generating single structure";
-
             Map map = BaseGen.globalSettings.map;
 
             for (int i = 0; i < GenOption.structureLayoutDef.layouts.Count; i++)
