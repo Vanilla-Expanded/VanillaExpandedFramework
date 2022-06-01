@@ -347,6 +347,12 @@ namespace KCSG
                     if (cell.InBounds(map))
                     {
                         var wantedRoof = layout.roofGridResolved[i];
+                        if (wantedRoof == "0" && layout.forceGenerateRoof)
+                        {
+                            map.roofGrid.SetRoof(cell, null);
+                            continue;
+                        }
+
                         var currentRoof = cell.GetRoof(map);
                         if (wantedRoof == "1" && (layout.forceGenerateRoof || currentRoof == null))
                         {
