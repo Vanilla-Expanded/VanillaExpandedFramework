@@ -239,10 +239,7 @@
 		<hediffClass>HediffWithComps</hediffClass>
 		<comps>
 			<li Class="HediffCompProperties_Disappears">
-				<disappearsAfterTicks>45000~120000</disappearsAfterTicks>
-			</li>
-			<li Class="HediffCompProperties_SeverityPerDay">
-				<severityPerDay>-0.8</severityPerDay>
+				<disappearsAfterTicks>7500~10000</disappearsAfterTicks>
 			</li>
 		</comps>
 		<lethalSeverity>1</lethalSeverity>
