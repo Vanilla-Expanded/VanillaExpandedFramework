@@ -59,7 +59,9 @@
         }
 
         public virtual bool ShowGizmoOnPawn() =>
-            this.pawn != null && this.pawn.IsColonistPlayerControlled && this.pawn.Drafted;
+            this.pawn != null && (this.pawn.IsColonistPlayerControlled && this.pawn.Drafted ||
+                                  this.pawn.IsCaravanMember() && this.pawn.IsColonist && !this.pawn.IsPrisoner &&
+                                  !this.pawn.Downed);
 
         public virtual bool IsEnabledForPawn(out string reason)
         {
@@ -160,7 +162,7 @@
 
         public bool autoCast;
 
-        public virtual bool AutoCast => !this.pawn.IsColonistPlayerControlled || this.autoCast;
+        public virtual bool AutoCast => this.pawn.IsColonistPlayerControlled ? this.autoCast : this.pawn.Spawned;
 
         public virtual bool CanAutoCast => this.Chance > 0;
 
@@ -279,10 +281,12 @@
 
             if (this.currentTargetingIndex >= this.def.targetCount)
             {
-                if (this.currentTargets.Length > 1 || (this.currentTargets.Any() && this.currentTargets.First().Map != this.Caster.Map))
+                if (this.currentTargets.Length > 1 || (this.currentTargets.Any() && this.currentTargets.First().Map != this.Caster.Map) ||
+                    this.pawn.IsCaravanMember() || this.currentTargets.Any(gti => gti.HasWorldObject))
                     this.CreateCastJob(this.currentTargets);
                 else
-                    this.CreateCastJob(this.currentTargets.Any() ? this.currentTargets[0].Thing != null ? new LocalTargetInfo(this.currentTargets[0].Thing) : new LocalTargetInfo(this.currentTargets[0].Cell) : default);
+                    this.CreateCastJob(this.currentTargets.Any() ? this.currentTargets[0].Thing != null ?
+                        new LocalTargetInfo(this.currentTargets[0].Thing) : new LocalTargetInfo(this.currentTargets[0].Cell) : default);
                 return;
             }
 
@@ -357,14 +361,15 @@
 
         public void StartAbilityJob(params GlobalTargetInfo[] targets)
         {
-            this.pawn.jobs.EndCurrentJob(JobCondition.InterruptForced, false);
+            this.pawn.jobs?.EndCurrentJob(JobCondition.InterruptForced, false);
             Job           job  = JobMaker.MakeJob(this.def.jobDef ?? VFE_DefOf_Abilities.VFEA_UseAbility, targets.Any() && targets[0].IsMapTarget ?
                 (LocalTargetInfo) targets[0] : default);
-            CompAbilities comp = this.pawn.GetComp<CompAbilities>();
-            comp.currentlyCasting        = this;
+            CompAbilities comp    = this.pawn.GetComp<CompAbilities>();
+            comp.currentlyCasting = this;
             ModifyTargets(ref targets);
             comp.currentlyCastingTargets = targets;
-            this.pawn.jobs.StartJob(job, JobCondition.InterruptForced);
+            if (this.pawn.IsCaravanMember()) this.Cast(targets);
+            else this.pawn.jobs.StartJob(job, JobCondition.InterruptForced);
         }
         protected virtual void ModifyTargets(ref GlobalTargetInfo[] targets)
         {
@@ -712,15 +717,19 @@
                 if (!modExtension.ValidTile(target, this))
                     return false;
 
-            var distance = Find.World.grid.ApproxDistanceInTiles(target.Tile, this.Caster.Map.Tile);
+            var distance = Find.World.grid.ApproxDistanceInTiles(target.Tile, Tile);
             return target.IsValid && distance < this.GetRangeForPawn() && distance > this.def.minRange;
         }
+
+        protected int Tile => this.pawn.GetCaravan()?.Tile ?? this.pawn.Map?.Tile ??
+            Find.Maps.FirstOrDefault(m => m.IsPlayerHome)?.Tile ??
+            Find.Maps.FirstOrDefault()?.Tile ?? TileFinder.RandomStartingTile();
 
         public virtual void OnUpdateWorld()
         {
             float range = this.GetRangeForPawn();
             if (range >= 1)
-                GenDraw.DrawWorldRadiusRing(this.pawn.Map.Tile, Mathf.RoundToInt(range));
+                GenDraw.DrawWorldRadiusRing(Tile, Mathf.RoundToInt(range));
         }
 
         public bool      CasterIsPawn     => this.CasterPawn                                                                        != null;

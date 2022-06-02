@@ -372,6 +372,7 @@
     <Compile Include="Abilities\Abilities\Ability_SpawnBuilding.cs" />
     <Compile Include="Abilities\Ability.cs" />
     <Compile Include="Abilities\AbilityDef.cs" />
+    <Compile Include="Abilities\Caravan_GetGizmos_Patch.cs" />
     <Compile Include="Abilities\Hediff_Ability.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_AbilityMod.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_EffecterOnTarget.cs" />

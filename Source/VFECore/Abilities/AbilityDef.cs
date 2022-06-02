@@ -53,6 +53,7 @@ namespace VFECore.Abilities
         public bool   requireLineOfSight = true;
         public JobDef jobDef;
         public float  distanceToTarget = 1.5f;
+        public bool   showGizmoOnWorldView;
 
         public ThingDef warmupMote;
         public SoundDef warmupSound;
