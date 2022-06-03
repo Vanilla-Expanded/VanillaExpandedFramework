@@ -14,7 +14,7 @@ namespace KCSG
 
             var delaunayStart = DateTime.Now;
             var edges = new Delaunay(doors).GetEdges();
-            Debug.Message($"Delaunat time: {(DateTime.Now - delaunayStart).TotalMilliseconds}ms. Edges count: {edges.Count()}");
+            Debug.Message($"Delaunay time: {(DateTime.Now - delaunayStart).TotalMilliseconds}ms. Edges count: {edges.Count()}");
             /*foreach (var edge in edges)
             {
                 var path = PathFinder.GetPath(edge.P.IntVec3, edge.Q.IntVec3, grid, map);

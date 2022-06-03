@@ -69,7 +69,7 @@ namespace KCSG
 
             // Run poisson disk sampling
             var samplingStart = DateTime.Now;
-            var vects = PoissonDiskSampling.SampleCircle(rect, rect.CenterCell, Math.Max(rect.Width, rect.Height), radius, new Random());
+            var vects = Sampling.SampleCircle(rect, rect.CenterCell, Math.Max(rect.Width, rect.Height), radius, new Random());
             Debug.Message($"Sampling time: {(DateTime.Now - samplingStart).TotalMilliseconds}ms. Vects count: {vects?.Count}");
 
             // Place and choose buildings. Also push resolvers
@@ -78,11 +78,12 @@ namespace KCSG
             Debug.Message($"Building time: {(DateTime.Now - buildingStart).TotalMilliseconds}ms. Doors count: {doors.Count}");
         }
 
-        public static class PoissonDiskSampling
+        public static class Sampling
         {
             /**
+             * Poisson Disk Sampling
              * 
-             * Adapated from java source by Herman Tulleken
+             * Based from java source by Herman Tulleken
              * http://www.luma.co.za/labs/2008/02/27/poisson-disk-sampling/
              * 
              * The algorithm is from the "Fast Poisson Disk Sampling in Arbitrary Dimensions" paper by Robert Bridson
@@ -92,119 +93,111 @@ namespace KCSG
 
             public const int DefaultPointsPerIteration = 30;
 
-            struct Settings
-            {
-                public IntVec3 dimensions;
-                public float minimumDistance;
-                public float rejectionSqDistance;
+            public static IntVec3 dimensions;
+            public static float minimumDistance;
+            public static float rejectionSqDistance;
 
-                public IntVec3 topLeft;
-                public IntVec3 bottomRight;
-                public IntVec3 center;
+            public static IntVec3 topLeft;
+            public static IntVec3 bottomRight;
+            public static IntVec3 center;
 
-                public CellRect rect;
-            }
+            public static CellRect rect;
 
-            struct State
-            {
-                public IntVec3?[,] grid;
-                public List<IntVec3> activePoints;
-                public int activePointsCount;
-                public List<IntVec3> points;
-            }
+            public static IntVec3?[,] grid;
+            public static List<IntVec3> activePoints;
+            public static int activePointsCount;
+            public static List<IntVec3> points;
+
+            public static Random random;
 
             public static List<IntVec3> SampleCircle(CellRect rect, IntVec3 center, int radius, float minimumDistance, Random random)
             {
                 return Sample(rect, center - new IntVec3(radius, 0, radius), center + new IntVec3(radius, 0, radius), radius, minimumDistance, random);
             }
 
-            public static List<IntVec3> Sample(CellRect rect, IntVec3 topLeft, IntVec3 bottomRight, float rejectionDistance, float minimumDistance, Random random)
+            static List<IntVec3> Sample(CellRect rect, IntVec3 topLeft, IntVec3 bottomRight, float rejectionDistance, float minimumDistance, Random random)
             {
-                var s = new Settings
+                Sampling.minimumDistance = minimumDistance;
+                Sampling.topLeft = topLeft;
+                Sampling.bottomRight = bottomRight;
+                Sampling.rect = rect;
+                Sampling.random = random;
+
+                dimensions = BaseGen.globalSettings.map.Size;
+                rejectionSqDistance = rejectionDistance * rejectionDistance;
+                center = new IntVec3((topLeft.x + bottomRight.x) / 2, 0, (topLeft.z + bottomRight.z) / 2);
+
+                grid = new IntVec3?[dimensions.z, dimensions.x];
+                activePoints = new List<IntVec3>();
+                points = new List<IntVec3>();
+
+                AddFirstPoint();
+
+                while (activePointsCount > 0)
                 {
-                    topLeft = topLeft,
-                    bottomRight = bottomRight,
-                    dimensions = BaseGen.globalSettings.map.Size,
-                    center = new IntVec3((topLeft.x + bottomRight.x) / 2, 0, (topLeft.z + bottomRight.z) / 2),
-                    minimumDistance = minimumDistance,
-                    rejectionSqDistance = rejectionDistance * rejectionDistance,
-                    rect = rect
-                };
+                    var listIndex = random.Next(activePointsCount);
 
-                var state = new State
-                {
-                    grid = new IntVec3?[s.dimensions.z, s.dimensions.x],
-                    activePoints = new List<IntVec3>(),
-                    points = new List<IntVec3>()
-                };
-
-                AddFirstPoint(ref s, ref state, random);
-
-                while (state.activePointsCount > 0)
-                {
-                    var listIndex = random.Next(state.activePointsCount);
-
-                    var point = state.activePoints[listIndex];
+                    var point = activePoints[listIndex];
                     var found = false;
 
                     for (var k = 0; k < DefaultPointsPerIteration; k++)
-                        found |= AddNextPoint(point, ref s, ref state, random);
+                        found |= AddNextPoint(point);
 
                     if (!found)
                     {
-                        state.activePoints.RemoveAt(listIndex);
-                        state.activePointsCount--;
+                        activePoints.RemoveAt(listIndex);
+                        activePointsCount--;
                     }
                 }
 
-                return state.points;
+                return points;
             }
 
-            static void AddFirstPoint(ref Settings settings, ref State state, Random random)
+            static void AddFirstPoint()
             {
                 var added = false;
                 while (!added)
                 {
                     var d = random.NextDouble();
-                    int xr = (int)(settings.topLeft.x + settings.dimensions.x * d);
+                    int xr = (int)(topLeft.x + dimensions.x * d);
 
                     d = random.NextDouble();
-                    int yr = (int)(settings.topLeft.z + settings.dimensions.z * d);
+                    int yr = (int)(topLeft.z + dimensions.z * d);
 
                     var p = new IntVec3(xr, 0, yr);
-                    if (DistanceSquared(settings.center, p) > settings.rejectionSqDistance)
+                    if (DistanceSquared(center, p) > rejectionSqDistance)
                         continue;
                     added = true;
 
-                    var index = Denormalize(p, settings.topLeft);
+                    var index = Denormalize(p, topLeft);
 
-                    state.grid[index.x, index.z] = p;
+                    grid[index.x, index.z] = p;
 
-                    state.activePoints.Add(p);
-                    state.activePointsCount++;
-                    state.points.Add(p);
+                    activePoints.Add(p);
+                    activePointsCount++;
+                    points.Add(p);
                 }
             }
 
-            static bool AddNextPoint(IntVec3 point, ref Settings settings, ref State state, Random random)
+            static bool AddNextPoint(IntVec3 point)
             {
                 var found = false;
-                var q = GenerateRandomAround(point, settings.minimumDistance, random);
+                var q = GenerateRandomAround(point, minimumDistance, random);
 
-                if (q.x >= settings.topLeft.x
-                    && q.x < settings.bottomRight.x
-                    && q.z > settings.topLeft.z
-                    && q.z < settings.bottomRight.z
-                    && DistanceSquared(settings.center, q) <= settings.rejectionSqDistance)
+                if (q.x >= topLeft.x
+                    && q.x < bottomRight.x
+                    && q.z > topLeft.z
+                    && q.z < bottomRight.z
+                    && DistanceSquared(center, q) <= rejectionSqDistance)
                 {
-                    var qIndex = Denormalize(q, settings.topLeft);
+                    var qIndex = Denormalize(q, topLeft);
                     var tooClose = false;
 
-                    for (var i = Math.Max(0, qIndex.x - 2); i < Math.Min(settings.dimensions.x, qIndex.x + 3) && !tooClose; i++)
+                    for (var i = Math.Max(0, qIndex.x - 2); i < Math.Min(dimensions.x, qIndex.x + 3) && !tooClose; i++)
                     {
-                        for (var j = Math.Max(0, qIndex.z - 2); j < Math.Min(settings.dimensions.z, qIndex.z + 3) && !tooClose; j++)
+                        for (var j = Math.Max(0, qIndex.z - 2); j < Math.Min(dimensions.z, qIndex.z + 3) && !tooClose; j++)
                         {
-                            if (state.grid[i, j].HasValue && Distance(state.grid[i, j].Value, q) < settings.minimumDistance)
+                            if (grid[i, j].HasValue && Distance(grid[i, j].Value, q) < minimumDistance)
                                 tooClose = true;
                         }
                     }
@@ -212,10 +205,10 @@ namespace KCSG
                     if (!tooClose)
                     {
                         found = true;
-                        state.activePoints.Add(q);
-                        state.activePointsCount++;
-                        state.points.Add(q);
-                        state.grid[qIndex.x, qIndex.z] = q;
+                        activePoints.Add(q);
+                        activePointsCount++;
+                        points.Add(q);
+                        grid[qIndex.x, qIndex.z] = q;
                     }
                 }
                 return found;
@@ -245,13 +238,7 @@ namespace KCSG
                 return (x * x) + (y * y);
             }
 
-            static float Distance(IntVec3 intVec3, IntVec3 other)
-            {
-                float x = intVec3.x - other.x;
-                float y = intVec3.z - other.z;
-
-                return Mathf.Sqrt((x * x) + (y * y));
-            }
+            static float Distance(IntVec3 intVec3, IntVec3 other) => Mathf.Sqrt(DistanceSquared(intVec3, other));
         }
 
         public static class BuildingPlacement
