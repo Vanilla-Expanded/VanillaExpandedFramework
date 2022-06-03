@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using RimWorld.BaseGen;
 using Verse;
+using static KCSG.SettlementGenUtils;
 
 namespace KCSG
 {
@@ -10,21 +12,43 @@ namespace KCSG
         {
             Map map = BaseGen.globalSettings.map;
 
-            // Generate road between doors
-            Debug.Message($"Doors count: {SettlementGenUtils.doors.Count}");
-            var toLink = SettlementGenUtils.Delaunay.Run(rp.rect.Corners.ElementAt(2), SettlementGenUtils.doors, rp.rect.Width, rp.rect.Height);
-            Debug.Message($"To link count: {toLink.Count}");
-
-            for (int i = 0; i < toLink.Count; i++)
+            var delaunayStart = DateTime.Now;
+            var edges = new Delaunay(doors).GetEdges();
+            Debug.Message($"Delaunat time: {(DateTime.Now - delaunayStart).TotalMilliseconds}ms. Edges count: {edges.Count()}");
+            /*foreach (var edge in edges)
             {
-                var edge = toLink[i];
+                var path = PathFinder.GetPath(edge.P.IntVec3, edge.Q.IntVec3, grid, map);
+                if (path != null)
+                {
+                    Debug.Message($"Path cells count: {path.Count}");
+                    for (int o = 0; o < path.Count; o++)
+                    {
+                        var cell = path[o];
+                        map.terrainGrid.SetTerrain(cell, GenOption.settlementLayoutDef.roadDef);
 
+                        var things = map.thingGrid.ThingsListAtFast(cell);
+                        for (int p = 0; p < things.Count; p++)
+                        {
+                            var thing = things[p];
+                            if (thing.def.passability == Traversability.Impassable)
+                            {
+                                thing.DeSpawn();
+                            }
+                        }
+                    }
+                }
             }
+
+            doors.ForEach(d =>
+            {
+                GenSpawn.Spawn(ThingMaker.MakeThing(ThingDefOf.Wall, ThingDefOf.Gold), d, map, WipeMode.Vanish);
+            });*/
 
             // TODO: Field gen
             // BaseGen.symbolStack.Push("kcsg_addfields", rp, null);
 
             // rp.rect.EdgeCells.ToList().ForEach(cell => SpawnConduit(cell, map));
+            Debug.Message($"Total time (without pawn gen): {(DateTime.Now - startTime).TotalSeconds}s.");
         }
     }
 }

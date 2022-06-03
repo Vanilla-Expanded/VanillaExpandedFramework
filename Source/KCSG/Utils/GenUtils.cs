@@ -67,7 +67,20 @@ namespace KCSG
                                 // Generating settlement, we want to keep tracks of doors
                                 if (!GenOption.ext.useStructureLayout && temp.thingDef.altitudeLayer == AltitudeLayer.DoorMoveable)
                                 {
-                                    SettlementGenUtils.doors.Add(cell);
+                                    // Only register door that lead outside
+                                    var adj = GenAdjFast.AdjacentCellsCardinal(cell);
+                                    var anyLeadOutside = false;
+                                    for (int o = 0; o < adj.Count; o++)
+                                    {
+                                        if (adj[o].UsesOutdoorTemperature(map))
+                                        {
+                                            anyLeadOutside = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (anyLeadOutside)
+                                        SettlementGenUtils.doors.Add(cell);
                                 }
 
                                 if (cell.GetFirstMineable(map) != null && temp.thingDef.designationCategory == DesignationCategoryDefOf.Security)
@@ -425,6 +438,8 @@ namespace KCSG
                 foreach (IntVec3 c in rect)
                     CleanAt(c, map, fullClean, mapFaction, player);
             }
+
+            map.roofGrid.RoofGridUpdate();
         }
 
         /// <summary>
@@ -443,7 +458,7 @@ namespace KCSG
                     {
                         thing.DeSpawn();
                     }
-                    else if (fullClean && (thing.def.category != ThingCategory.Building || !thing.def.building.isNaturalRock))
+                    else if (fullClean /*&& (thing.def.category != ThingCategory.Building || !thing.def.building.isNaturalRock)*/)
                     {
                         thing.DeSpawn();
                     }
@@ -462,6 +477,9 @@ namespace KCSG
             {
                 map.terrainGrid.SetTerrain(c, terrain);
             }
+
+            // Clean roof
+            map.roofGrid.SetRoof(c, null);
         }
 
         /// <summary>

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using RimWorld.BaseGen;
-using UnityEngine;
 using Verse;
 using Random = System.Random;
 
@@ -23,8 +22,11 @@ namespace KCSG
         public static List<TerrainDef> mapRoad;
         public static List<IntVec3> doors;
 
+        public static DateTime startTime;
+
         public static void StartGen(ResolveParams rp, Map map, SettlementLayoutDef settlementLayoutDef)
         {
+            startTime = DateTime.Now;
             // Setup
             rect = rp.rect;
             doors = new List<IntVec3>();
@@ -65,11 +67,14 @@ namespace KCSG
             radius += 2;
 
             // Run poisson disk sampling
+            var samplingStart = DateTime.Now;
             var vects = PoissonDiskSampling.Run(rect.Corners.ElementAt(2), radius, new Random());
-            Debug.Message($"Vects count: {vects?.Count}");
+            Debug.Message($"Sampling time: {(DateTime.Now - samplingStart).TotalMilliseconds}ms. Vects count: {vects?.Count}");
 
             // Place and choose buildings. Also push resolvers
+            var buildingStart = DateTime.Now;
             BuildingPlacement.Run(vects, settlementLayoutDef, rp);
+            Debug.Message($"Building time: {(DateTime.Now - buildingStart).TotalMilliseconds}ms. Doors count: {doors.Count}");
         }
 
         public static class PoissonDiskSampling
@@ -445,7 +450,7 @@ namespace KCSG
                 for (int index = 0; index < cells.Count; ++index)
                 {
                     if (cells[index].GetTransmitter(map) == null)
-                        GenSpawn.Spawn(ThingDefOf.PowerConduit, cells[index], map).SetFaction(faction);
+                        GenSpawn.Spawn(DefOfs.KCSG_PowerConduit, cells[index], map).SetFaction(faction);
                 }
             }
 
@@ -465,230 +470,728 @@ namespace KCSG
             }
         }
 
-        public static class Delaunay
+        public class Delaunay
         {
-            public class Edge
+            /**
+             * Delaunay class -only-
+             *
+             * MIT License
+             *
+             * Copyright (c) 2019 Patryk Grech
+             *
+             * Permission is hereby granted, free of charge, to any person obtaining a copy
+             * of this software and associated documentation files (the "Software"), to deal
+             * in the Software without restriction, including without limitation the rights
+             * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+             * copies of the Software, and to permit persons to whom the Software is
+             * furnished to do so, subject to the following conditions:
+             * 
+             * The above copyright notice and this permission notice shall be included in all
+             * copies or substantial portions of the Software.
+             *
+             **/
+            private readonly double EPSILON = Math.Pow(2, -52);
+            private readonly int[] EDGE_STACK = new int[512];
+
+            public int[] Triangles { get; private set; }
+            public int[] Halfedges { get; private set; }
+            public IPoint[] Points { get; private set; }
+            public int[] Hull { get; private set; }
+
+            private readonly int hashSize;
+            private readonly int[] hullPrev;
+            private readonly int[] hullNext;
+            private readonly int[] hullTri;
+            private readonly int[] hullHash;
+
+            private readonly double cx;
+            private readonly double cy;
+
+            private int trianglesLen;
+            private readonly double[] coords;
+            private readonly int hullStart;
+            private readonly int hullSize;
+
+            public interface IPoint
             {
-                public Edge(IntVec3 pointA, IntVec3 pointB)
+                double X { get; set; }
+                double Y { get; set; }
+
+                IntVec3 IntVec3 { get; set; }
+            }
+
+            public interface IEdge
+            {
+                IPoint P { get; }
+                IPoint Q { get; }
+                int Index { get; }
+            }
+
+            public struct Point : IPoint
+            {
+                public double X { get; set; }
+                public double Y { get; set; }
+                public IntVec3 IntVec3 { get; set; }
+
+                public Point(double x, double y)
                 {
-                    Point1 = pointA;
-                    Point2 = pointB;
+                    X = x;
+                    Y = y;
+                    IntVec3 = new IntVec3((int)x, 0, (int)y);
                 }
 
-                public IntVec3 Point1 { get; }
-                public IntVec3 Point2 { get; }
+                public override string ToString() => $"{X},{Y}";
+            }
 
-                public bool Equals(Edge other)
+            public struct Edge : IEdge
+            {
+                public IPoint P { get; set; }
+                public IPoint Q { get; set; }
+                public int Index { get; set; }
+
+                public Edge(int e, IPoint p, IPoint q)
                 {
-                    return (Point1 == other.Point1 && Point2 == other.Point2) || (Point1 == other.Point2 && Point2 == other.Point1);
+                    Index = e;
+                    P = p;
+                    Q = q;
                 }
             }
 
-            public class Triangle
+            public Delaunay(List<IntVec3> doors)
             {
-                public double RadiusSquared;
-
-                public Triangle(IntVec3 pointA, IntVec3 pointB, IntVec3 pointC)
+                List<IPoint> doorsC = new List<IPoint>();
+                for (int i = 0; i < doors.Count; i++)
                 {
-                    Points[0] = pointA;
-                    if (!IsCounterClockwise(pointA, pointB, pointC))
+                    var door = doors[i];
+                    doorsC.Add(new Point(door.x, door.z));
+                }
+                IPoint[] points = doorsC.ToArray();
+
+                Points = points;
+                coords = new double[Points.Length * 2];
+
+                for (var i = 0; i < Points.Length; i++)
+                {
+                    var p = Points[i];
+                    coords[2 * i] = p.X;
+                    coords[2 * i + 1] = p.Y;
+                }
+
+                var n = points.Length;
+                var maxTriangles = 2 * n - 5;
+
+                Triangles = new int[maxTriangles * 3];
+
+                Halfedges = new int[maxTriangles * 3];
+                hashSize = (int)Math.Ceiling(Math.Sqrt(n));
+
+                hullPrev = new int[n];
+                hullNext = new int[n];
+                hullTri = new int[n];
+                hullHash = new int[hashSize];
+
+                var ids = new int[n];
+
+                var minX = double.PositiveInfinity;
+                var minY = double.PositiveInfinity;
+                var maxX = double.NegativeInfinity;
+                var maxY = double.NegativeInfinity;
+
+                for (var i = 0; i < n; i++)
+                {
+                    var x = coords[2 * i];
+                    var y = coords[2 * i + 1];
+                    if (x < minX) minX = x;
+                    if (y < minY) minY = y;
+                    if (x > maxX) maxX = x;
+                    if (y > maxY) maxY = y;
+                    ids[i] = i;
+                }
+
+                var cx = (minX + maxX) / 2;
+                var cy = (minY + maxY) / 2;
+
+                var minDist = double.PositiveInfinity;
+                var i0 = 0;
+                var i1 = 0;
+                var i2 = 0;
+
+                // pick a seed point close to the center
+                for (int i = 0; i < n; i++)
+                {
+                    var d = Dist(cx, cy, coords[2 * i], coords[2 * i + 1]);
+                    if (d < minDist)
                     {
-                        Points[1] = pointC;
-                        Points[2] = pointB;
+                        i0 = i;
+                        minDist = d;
+                    }
+                }
+                var i0x = coords[2 * i0];
+                var i0y = coords[2 * i0 + 1];
+
+                minDist = double.PositiveInfinity;
+
+                // find the point closest to the seed
+                for (int i = 0; i < n; i++)
+                {
+                    if (i == i0) continue;
+                    var d = Dist(i0x, i0y, coords[2 * i], coords[2 * i + 1]);
+                    if (d < minDist && d > 0)
+                    {
+                        i1 = i;
+                        minDist = d;
+                    }
+                }
+
+                var i1x = coords[2 * i1];
+                var i1y = coords[2 * i1 + 1];
+
+                var minRadius = double.PositiveInfinity;
+
+                // find the third point which forms the smallest circumcircle with the first two
+                for (int i = 0; i < n; i++)
+                {
+                    if (i == i0 || i == i1) continue;
+                    var r = Circumradius(i0x, i0y, i1x, i1y, coords[2 * i], coords[2 * i + 1]);
+                    if (r < minRadius)
+                    {
+                        i2 = i;
+                        minRadius = r;
+                    }
+                }
+                var i2x = coords[2 * i2];
+                var i2y = coords[2 * i2 + 1];
+
+                if (minRadius == double.PositiveInfinity)
+                {
+                    throw new Exception("No Delaunay triangulation exists for this input.");
+                }
+
+                if (Orient(i0x, i0y, i1x, i1y, i2x, i2y))
+                {
+                    var i = i1;
+                    var x = i1x;
+                    var y = i1y;
+                    i1 = i2;
+                    i1x = i2x;
+                    i1y = i2y;
+                    i2 = i;
+                    i2x = x;
+                    i2y = y;
+                }
+
+                var center = Circumcenter(i0x, i0y, i1x, i1y, i2x, i2y);
+                this.cx = center.X;
+                this.cy = center.Y;
+
+                var dists = new double[n];
+                for (var i = 0; i < n; i++)
+                {
+                    dists[i] = Dist(coords[2 * i], coords[2 * i + 1], center.X, center.Y);
+                }
+
+                // sort the points by distance from the seed triangle circumcenter
+                Quicksort(ids, dists, 0, n - 1);
+
+                // set up the seed triangle as the starting hull
+                hullStart = i0;
+                hullSize = 3;
+
+                hullNext[i0] = hullPrev[i2] = i1;
+                hullNext[i1] = hullPrev[i0] = i2;
+                hullNext[i2] = hullPrev[i1] = i0;
+
+                hullTri[i0] = 0;
+                hullTri[i1] = 1;
+                hullTri[i2] = 2;
+
+                hullHash[HashKey(i0x, i0y)] = i0;
+                hullHash[HashKey(i1x, i1y)] = i1;
+                hullHash[HashKey(i2x, i2y)] = i2;
+
+                trianglesLen = 0;
+                AddTriangle(i0, i1, i2, -1, -1, -1);
+
+                double xp = 0;
+                double yp = 0;
+
+                for (var k = 0; k < ids.Length; k++)
+                {
+                    var i = ids[k];
+                    var x = coords[2 * i];
+                    var y = coords[2 * i + 1];
+
+                    // skip near-duplicate points
+                    if (k > 0 && Math.Abs(x - xp) <= EPSILON && Math.Abs(y - yp) <= EPSILON) continue;
+                    xp = x;
+                    yp = y;
+
+                    // skip seed triangle points
+                    if (i == i0 || i == i1 || i == i2) continue;
+
+                    // find a visible edge on the convex hull using edge hash
+                    var start = 0;
+                    for (var j = 0; j < hashSize; j++)
+                    {
+                        var key = HashKey(x, y);
+                        start = hullHash[(key + j) % hashSize];
+                        if (start != -1 && start != hullNext[start]) break;
+                    }
+
+                    start = hullPrev[start];
+                    var e = start;
+                    var q = hullNext[e];
+
+                    while (!Orient(x, y, coords[2 * e], coords[2 * e + 1], coords[2 * q], coords[2 * q + 1]))
+                    {
+                        e = q;
+                        if (e == start)
+                        {
+                            e = int.MaxValue;
+                            break;
+                        }
+
+                        q = hullNext[e];
+                    }
+
+                    if (e == int.MaxValue) continue; // likely a near-duplicate point; skip it
+
+                    // add the first triangle from the point
+                    var t = AddTriangle(e, i, hullNext[e], -1, -1, hullTri[e]);
+
+                    // recursively flip triangles from the point until they satisfy the Delaunay condition
+                    hullTri[i] = Legalize(t + 2);
+                    hullTri[e] = t; // keep track of boundary triangles on the hull
+                    hullSize++;
+
+                    // walk forward through the hull, adding more triangles and flipping recursively
+                    var next = hullNext[e];
+                    q = hullNext[next];
+
+                    while (Orient(x, y, coords[2 * next], coords[2 * next + 1], coords[2 * q], coords[2 * q + 1]))
+                    {
+                        t = AddTriangle(next, i, q, hullTri[i], -1, hullTri[next]);
+                        hullTri[i] = Legalize(t + 2);
+                        hullNext[next] = next; // mark as removed
+                        hullSize--;
+                        next = q;
+
+                        q = hullNext[next];
+                    }
+
+                    // walk backward from the other side, adding more triangles and flipping
+                    if (e == start)
+                    {
+                        q = hullPrev[e];
+
+                        while (Orient(x, y, coords[2 * q], coords[2 * q + 1], coords[2 * e], coords[2 * e + 1]))
+                        {
+                            t = AddTriangle(q, i, e, -1, hullTri[e], hullTri[q]);
+                            Legalize(t + 2);
+                            hullTri[q] = t;
+                            hullNext[e] = e; // mark as removed
+                            hullSize--;
+                            e = q;
+
+                            q = hullPrev[e];
+                        }
+                    }
+
+                    // update the hull indices
+                    hullStart = hullPrev[i] = e;
+                    hullNext[e] = hullPrev[next] = i;
+                    hullNext[i] = next;
+
+                    // save the two new edges in the hash table
+                    hullHash[HashKey(x, y)] = i;
+                    hullHash[HashKey(coords[2 * e], coords[2 * e + 1])] = e;
+                }
+
+                Hull = new int[hullSize];
+                var s = hullStart;
+                for (var i = 0; i < hullSize; i++)
+                {
+                    Hull[i] = s;
+                    s = hullNext[s];
+                }
+
+                hullPrev = hullNext = hullTri = null; // get rid of temporary arrays
+
+                //// trim typed triangle mesh arrays
+                Triangles = Triangles.Take(trianglesLen).ToArray();
+                Halfedges = Halfedges.Take(trianglesLen).ToArray();
+            }
+
+            private int Legalize(int a)
+            {
+                var i = 0;
+                int ar;
+
+                // recursion eliminated with a fixed-size stack
+                while (true)
+                {
+                    var b = Halfedges[a];
+
+                    /* if the pair of triangles doesn't satisfy the Delaunay condition
+                     * (p1 is inside the circumcircle of [p0, pl, pr]), flip them,
+                     * then do the same check/flip recursively for the new pair of triangles
+                     *
+                     *           pl                    pl
+                     *          /||\                  /  \
+                     *       al/ || \bl            al/    \a
+                     *        /  ||  \              /      \
+                     *       /  a||b  \    flip    /___ar___\
+                     *     p0\   ||   /p1   =>   p0\---bl---/p1
+                     *        \  ||  /              \      /
+                     *       ar\ || /br             b\    /br
+                     *          \||/                  \  /
+                     *           pr                    pr
+                     */
+                    int a0 = a - a % 3;
+                    ar = a0 + (a + 2) % 3;
+
+                    if (b == -1)
+                    { // convex hull edge
+                        if (i == 0) break;
+                        a = EDGE_STACK[--i];
+                        continue;
+                    }
+
+                    var b0 = b - b % 3;
+                    var al = a0 + (a + 1) % 3;
+                    var bl = b0 + (b + 2) % 3;
+
+                    var p0 = Triangles[ar];
+                    var pr = Triangles[a];
+                    var pl = Triangles[al];
+                    var p1 = Triangles[bl];
+
+                    var illegal = InCircle(
+                        coords[2 * p0], coords[2 * p0 + 1],
+                        coords[2 * pr], coords[2 * pr + 1],
+                        coords[2 * pl], coords[2 * pl + 1],
+                        coords[2 * p1], coords[2 * p1 + 1]);
+
+                    if (illegal)
+                    {
+                        Triangles[a] = p1;
+                        Triangles[b] = p0;
+
+                        var hbl = Halfedges[bl];
+
+                        // edge swapped on the other side of the hull (rare); fix the halfedge reference
+                        if (hbl == -1)
+                        {
+                            var e = hullStart;
+                            do
+                            {
+                                if (hullTri[e] == bl)
+                                {
+                                    hullTri[e] = a;
+                                    break;
+                                }
+                                e = hullPrev[e];
+                            } while (e != hullStart);
+                        }
+                        Link(a, hbl);
+                        Link(b, Halfedges[ar]);
+                        Link(ar, bl);
+
+                        var br = b0 + (b + 1) % 3;
+
+                        // don't worry about hitting the cap: it can only happen on extremely degenerate input
+                        if (i < EDGE_STACK.Length)
+                        {
+                            EDGE_STACK[i++] = br;
+                        }
                     }
                     else
                     {
-                        Points[1] = pointB;
-                        Points[2] = pointC;
+                        if (i == 0) break;
+                        a = EDGE_STACK[--i];
                     }
-                    UpdateCircumcircle();
                 }
 
-                public IntVec3 Circumcenter { get; private set; }
-                public IntVec3[] Points { get; } = new IntVec3[3];
+                return ar;
+            }
 
-                public bool IsPointInsideCircumcircle(IntVec3 point)
+            private static bool InCircle(double ax, double ay, double bx, double by, double cx, double cy, double px, double py)
+            {
+                var dx = ax - px;
+                var dy = ay - py;
+                var ex = bx - px;
+                var ey = by - py;
+                var fx = cx - px;
+                var fy = cy - py;
+
+                var ap = dx * dx + dy * dy;
+                var bp = ex * ex + ey * ey;
+                var cp = fx * fx + fy * fy;
+
+                return dx * (ey * cp - bp * fy) -
+                       dy * (ex * cp - bp * fx) +
+                       ap * (ex * fy - ey * fx) < 0;
+            }
+
+            private int AddTriangle(int i0, int i1, int i2, int a, int b, int c)
+            {
+                var t = trianglesLen;
+
+                Triangles[t] = i0;
+                Triangles[t + 1] = i1;
+                Triangles[t + 2] = i2;
+
+                Link(t, a);
+                Link(t + 1, b);
+                Link(t + 2, c);
+
+                trianglesLen += 3;
+                return t;
+            }
+
+            private void Link(int a, int b)
+            {
+                Halfedges[a] = b;
+                if (b != -1) Halfedges[b] = a;
+            }
+
+            private int HashKey(double x, double y)
+            {
+                return (int)(Math.Floor(PseudoAngle(x - cx, y - cy) * hashSize) % hashSize);
+            }
+
+            private static double PseudoAngle(double dx, double dy)
+            {
+                var p = dx / (Math.Abs(dx) + Math.Abs(dy));
+                return (dy > 0 ? 3 - p : 1 + p) / 4; // [0..1]
+            }
+
+            private static void Quicksort(int[] ids, double[] dists, int left, int right)
+            {
+                if (right - left <= 20)
                 {
-                    double d_squared = (point.x - Circumcenter.x) * (point.x - Circumcenter.x) + (point.z - Circumcenter.z) * (point.z - Circumcenter.z);
-                    return d_squared < RadiusSquared;
-                }
-
-                private bool IsCounterClockwise(IntVec3 pointA, IntVec3 pointB, IntVec3 pointC)
-                {
-                    double result = (pointB.x - pointA.x) * (pointC.z - pointA.z) - (pointC.x - pointA.x) * (pointB.z - pointA.z);
-                    return result > 0;
-                }
-
-                private void UpdateCircumcircle()
-                {
-                    IntVec3 p0 = Points[0];
-                    IntVec3 p1 = Points[1];
-                    IntVec3 p2 = Points[2];
-
-                    float dA = p0.x * p0.x + p0.z * p0.z;
-                    float dB = p1.x * p1.x + p1.z * p1.z;
-                    float dC = p2.x * p2.x + p2.z * p2.z;
-
-                    int aux1 = (int)(dA * (p2.z - p1.z) + dB * (p0.z - p2.z) + dC * (p1.z - p0.z));
-                    int aux2 = (int)-((dA * (p2.x - p1.x)) + dB * (p0.x - p2.x) + dC * (p1.x - p0.x));
-                    int div = 2 * (p0.x * (p2.z - p1.z) + p1.x * (p0.z - p2.z) + p2.x * (p1.z - p0.z));
-
-                    if (div == 0)
+                    for (var i = left + 1; i <= right; i++)
                     {
-                        Log.Error(new DivideByZeroException().ToString());
+                        var temp = ids[i];
+                        var tempDist = dists[temp];
+                        var j = i - 1;
+                        while (j >= left && dists[ids[j]] > tempDist) ids[j + 1] = ids[j--];
+                        ids[j + 1] = temp;
                     }
-
-                    IntVec3 center = new IntVec3(aux1 / div, 0, aux2 / div);
-                    Circumcenter = center;
-                    RadiusSquared = (center.x - p0.x) * (center.x - p0.x) + (center.z - p0.z) * (center.z - p0.z);
                 }
-            }
-
-            public static List<Edge> Run(IntVec3 origin, List<IntVec3> points, int maxX, int maxY)
-            {
-                var point0 = origin;
-                var point1 = new IntVec3(origin.x, 0, origin.z + maxY);
-                var point2 = new IntVec3(origin.x + maxX, 0, origin.z + maxY);
-                var point3 = new IntVec3(origin.x + maxX, 0, origin.z);
-
-                var triangle1 = new Triangle(point0, point1, point2);
-                var triangle2 = new Triangle(point0, point2, point3);
-
-                var triangulation = new List<Triangle> { triangle1, triangle2 };
-
-                for (int i = 0; i < points.Count; i++)
+                else
                 {
-                    var point = points[i];
-                    List<Triangle> badTriangles = FindBadTriangles(point, triangulation);
-                    List<Edge> polygon = FindAllEdges(badTriangles);
+                    var median = (left + right) >> 1;
+                    var i = left + 1;
+                    var j = right;
+                    Swap(ids, median, i);
+                    if (dists[ids[left]] > dists[ids[right]]) Swap(ids, left, right);
+                    if (dists[ids[i]] > dists[ids[right]]) Swap(ids, i, right);
+                    if (dists[ids[left]] > dists[ids[i]]) Swap(ids, left, i);
 
-                    triangulation.RemoveAll(t => badTriangles.Contains(t));
-
-                    foreach (Edge edge in polygon.Where(possibleEdge => possibleEdge.Point1 != point && possibleEdge.Point2 != point))
+                    var temp = ids[i];
+                    var tempDist = dists[temp];
+                    while (true)
                     {
-                        Triangle triangle = new Triangle(point, edge.Point1, edge.Point2);
-                        triangulation.Add(triangle);
+                        do i++; while (dists[ids[i]] < tempDist);
+                        do j--; while (dists[ids[j]] > tempDist);
+                        if (j < i) break;
+                        Swap(ids, i, j);
+                    }
+                    ids[left + 1] = ids[j];
+                    ids[j] = temp;
+
+                    if (right - i + 1 >= j - left)
+                    {
+                        Quicksort(ids, dists, i, right);
+                        Quicksort(ids, dists, left, j - 1);
+                    }
+                    else
+                    {
+                        Quicksort(ids, dists, left, j - 1);
+                        Quicksort(ids, dists, i, right);
                     }
                 }
-
-                return FindAllEdges(triangulation);
             }
 
-            private static List<Triangle> FindBadTriangles(IntVec3 point, List<Triangle> triangles)
+            private static void Swap(int[] arr, int i, int j)
             {
-                List<Triangle> badTriangles = new List<Triangle>();
-                for (int i = 0; i < triangles.Count; i++)
-                {
-                    var triangle = triangles[i];
-                    if (triangle.IsPointInsideCircumcircle(point))
-                        badTriangles.Add(triangle);
-                }
-
-                return badTriangles;
+                (arr[j], arr[i]) = (arr[i], arr[j]);
             }
 
-            private static List<Edge> FindAllEdges(List<Triangle> triangles)
-            {
-                HashSet<Edge> edges = new HashSet<Edge>();
-                foreach (var triangle in triangles)
-                {
-                    edges.Add(new Edge(triangle.Points[0], triangle.Points[1]));
-                    edges.Add(new Edge(triangle.Points[1], triangle.Points[2]));
-                    edges.Add(new Edge(triangle.Points[2], triangle.Points[0]));
-                }
+            private static bool Orient(double px, double py, double qx, double qy, double rx, double ry) => (qy - py) * (rx - qx) - (qx - px) * (ry - qy) < 0;
 
-                return edges.ToList();
+            private static double Circumradius(double ax, double ay, double bx, double by, double cx, double cy)
+            {
+                var dx = bx - ax;
+                var dy = by - ay;
+                var ex = cx - ax;
+                var ey = cy - ay;
+                var bl = dx * dx + dy * dy;
+                var cl = ex * ex + ey * ey;
+                var d = 0.5 / (dx * ey - dy * ex);
+                var x = (ey * bl - dy * cl) * d;
+                var y = (dx * cl - ex * bl) * d;
+                return x * x + y * y;
+            }
+
+            private static Point Circumcenter(double ax, double ay, double bx, double by, double cx, double cy)
+            {
+                var dx = bx - ax;
+                var dy = by - ay;
+                var ex = cx - ax;
+                var ey = cy - ay;
+                var bl = dx * dx + dy * dy;
+                var cl = ex * ex + ey * ey;
+                var d = 0.5 / (dx * ey - dy * ex);
+                var x = ax + (ey * bl - dy * cl) * d;
+                var y = ay + (dx * cl - ex * bl) * d;
+
+                return new Point(x, y);
+            }
+
+            private static double Dist(double ax, double ay, double bx, double by)
+            {
+                var dx = ax - bx;
+                var dy = ay - by;
+                return dx * dx + dy * dy;
+            }
+
+            public IEnumerable<IEdge> GetEdges()
+            {
+                for (var e = 0; e < Triangles.Length; e++)
+                {
+                    if (e > Halfedges[e])
+                    {
+                        var p = Points[Triangles[e]];
+                        var q = Points[Triangles[(e % 3 == 2) ? e - 2 : e + 1]];
+                        yield return new Edge(e, p, q);
+                    }
+                }
             }
         }
 
         public static class PathFinder
         {
-            private const int NumPathNodes = 8;
-            private const float StepDistMin = 2f;
-            private const float StepDistMax = 14f;
-
-            private static readonly int StartRadialIndex = GenRadial.NumCellsInRadius(StepDistMax);
-            private static readonly int EndRadialIndex = GenRadial.NumCellsInRadius(StepDistMin);
-            private static readonly int RadialIndexStride = 3;
-
-            public static List<IntVec3> TryFindWalkPath(Map map, IntVec3 root)
+            public class Location
             {
-                List<IntVec3> path = new List<IntVec3>
-                {
-                    root
-                };
+                public IntVec3 vec3;
+                public int f;
+                public int g;
+                public int h;
 
-                IntVec3 start = root;
-                for (int index1 = 0; index1 < NumPathNodes; ++index1)
+                public Location parent;
+
+                public void SetHScore(int targetX, int targetY)
                 {
-                    IntVec3 intVec3_1 = IntVec3.Invalid;
-                    float num1 = -1f;
-                    for (int startRadialIndex = StartRadialIndex; startRadialIndex > EndRadialIndex; startRadialIndex -= RadialIndexStride)
+                    h = Math.Abs(targetX - vec3.x) + Math.Abs(targetY - vec3.z);
+                }
+
+                public void SetFScore()
+                {
+                    f = g + h;
+                }
+            }
+
+            public static List<IntVec3> GetPath(IntVec3 start, IntVec3 target, CellType[][] grid, Map map)
+            {
+                // Setup
+                Location current = null;
+                var lStart = new Location { vec3 = start };
+                var lTarget = new Location { vec3 = target };
+
+                var openList = new List<Location>();
+                var closedList = new List<Location>();
+
+                int g = 0;
+                int openListCount = 0;
+
+                openList.Add(lStart);
+                openListCount++;
+
+                // Main loop
+                while (openListCount > 0)
+                {
+                    var lowest = openList.Min(l => l.f);
+                    current = openList.First(l => l.f == lowest);
+
+                    closedList.Add(current);
+                    openList.Remove(current);
+                    openListCount--;
+
+                    if (closedList.FirstOrDefault(l => l.vec3.x == lTarget.vec3.x && l.vec3.y == lTarget.vec3.y) != null)
+                        break;
+
+                    var adjacentCells = GetWalkableAdjacentCells(current.vec3, map);
+                    g++;
+
+                    for (int i = 0; i < adjacentCells.Count; i++)
                     {
-                        IntVec3 intVec3_2 = start + GenRadial.RadialPattern[startRadialIndex];
-                        if (intVec3_2.InBounds(map)
-                            /*&& intVec3_2.Standable(map)*/
-                            && !intVec3_2.GetTerrain(map).avoidWander
-                            /*&& GenSight.LineOfSight(start, intVec3_2, map)*/
-                            /*&& !intVec3_2.Roofed(map)*/)
+                        var adjacentCell = adjacentCells[i];
+
+                        // already in the closed list, ignore it
+                        if (closedList.FirstOrDefault(l => l.vec3.x == adjacentCell.vec3.x && l.vec3.z == adjacentCell.vec3.z) != null)
                         {
-                            float num2 = 10000f;
-                            IntVec3 intVec3_3;
-                            for (int index2 = 0; index2 < path.Count; ++index2)
+                            continue;
+                        }
+
+                        // if it's not in the open list...
+                        if (openList.FirstOrDefault(l => l.vec3.x == adjacentCell.vec3.x && l.vec3.z == adjacentCell.vec3.z) == null)
+                        {
+                            // compute its scores, set the parent
+                            adjacentCell.g = g + map.pathing.Normal.pathGrid.PerceivedPathCostAt(adjacentCell.vec3);
+                            adjacentCell.SetHScore(lTarget.vec3.x, lTarget.vec3.z);
+                            adjacentCell.SetFScore();
+                            adjacentCell.parent = current;
+
+                            // and add it to the open list
+                            openList.Insert(0, adjacentCell);
+                            openListCount++;
+                        }
+                        else
+                        {
+                            // test if using the current G score makes the adjacent square's F score
+                            // lower, if yes update the parent because it means it's a better path
+                            if (g + adjacentCell.h < adjacentCell.f)
                             {
-                                double num3 = (double)num2;
-                                intVec3_3 = path[index2] - intVec3_2;
-                                double lengthManhattan = intVec3_3.LengthManhattan;
-                                num2 = (float)(num3 + lengthManhattan);
-                            }
-                            intVec3_3 = intVec3_2 - root;
-                            float lengthManhattan1 = intVec3_3.LengthManhattan;
-                            if (lengthManhattan1 > 40f)
-                                num2 *= Mathf.InverseLerp(70f, 40f, lengthManhattan1);
-                            if (path.Count >= 2)
-                            {
-                                intVec3_3 = path[path.Count - 1] - path[path.Count - 2];
-                                float angleFlat1 = intVec3_3.AngleFlat;
-                                intVec3_3 = intVec3_2 - start;
-                                float angleFlat2 = intVec3_3.AngleFlat;
-                                float num4;
-                                if ((double)angleFlat2 > (double)angleFlat1)
-                                {
-                                    num4 = angleFlat2 - angleFlat1;
-                                }
-                                else
-                                {
-                                    float num5 = angleFlat1 - 360f;
-                                    num4 = angleFlat2 - num5;
-                                }
-                                if ((double)num4 > 110.0)
-                                    num2 *= 0.01f;
-                            }
-                            if (path.Count >= 4)
-                            {
-                                intVec3_3 = start - root;
-                                int lengthManhattan2 = intVec3_3.LengthManhattan;
-                                intVec3_3 = intVec3_2 - root;
-                                int lengthManhattan3 = intVec3_3.LengthManhattan;
-                                if (lengthManhattan2 < lengthManhattan3)
-                                    num2 *= 1E-05f;
-                            }
-                            if ((double)num2 > (double)num1)
-                            {
-                                intVec3_1 = intVec3_2;
-                                num1 = num2;
+                                adjacentCell.g = g + map.pathing.Normal.pathGrid.PerceivedPathCostAt(adjacentCell.vec3);
+                                adjacentCell.SetFScore();
+                                adjacentCell.parent = current;
                             }
                         }
                     }
-                    if ((double)num1 < 0.0)
-                    {
-                        return null;
-                    }
-                    path.Add(intVec3_1);
-                    start = intVec3_1;
                 }
-                path.Add(root);
+
+                // Get the path
+                var path = new List<IntVec3>();
+                while (current != null)
+                {
+                    path.Add(current.vec3);
+                    current = current.parent;
+                }
+
                 return path;
+            }
+
+            private static List<Location> GetWalkableAdjacentCells(IntVec3 pos, Map map)
+            {
+                var adjacent4ways = new List<Location>()
+                {
+                    new Location { vec3 = new IntVec3(pos.x, 0, pos.z - 1) },
+                    new Location { vec3 = new IntVec3(pos.x, 0, pos.z + 1) },
+                    new Location { vec3 = new IntVec3(pos.x - 1, 0, pos.z) },
+                    new Location { vec3 = new IntVec3(pos.x + 1, 0, pos.z) },
+                };
+
+                var result = new List<Location>();
+                for (int i = 0; i < 4; i++)
+                {
+                    var loc = adjacent4ways[i];
+                    if (loc.vec3.Walkable(map) || (loc.vec3.InBounds(map) && loc.vec3.GetFirstMineable(map) != null))
+                        result.Add(loc);
+                }
+
+                return result;
             }
         }
     }
