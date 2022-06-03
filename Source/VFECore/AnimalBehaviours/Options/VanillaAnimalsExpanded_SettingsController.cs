@@ -47,7 +47,7 @@ namespace AnimalBehaviours
                 if (settings.pawnSpawnStates == null) settings.pawnSpawnStates = new Dictionary<string, bool>();
                 foreach (string defName in toggleablespawndef.toggleablePawns)
                 {
-                    if (!settings.pawnSpawnStates.ContainsKey(defName))
+                    if (!settings.pawnSpawnStates.ContainsKey(defName) && DefDatabase<ThingDef>.GetNamedSilentFail(defName) != null)
                     {
                         settings.pawnSpawnStates[defName] = false;
                     }
