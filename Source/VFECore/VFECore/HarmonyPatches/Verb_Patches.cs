@@ -54,32 +54,35 @@ namespace VFECore
 
         private static IntVec3 FindCellToHit(Vector3 origin, Projectile projectile, Pawn victim)
         {
-            float projectileSpeed = 0;
-            int victimSpeed = 0;
-            bool startCalculation = false;
-            var nodes = victim.pather.curPath.NodesReversed.ListFullCopy();
-            nodes.Reverse();
-            var prevCell = victim.DrawPos.ToIntVec3();
-            var speedPairs = new Dictionary<IntVec3, Pair<float, float>>();
-            foreach (var cell in nodes)
+            if (victim.pather?.curPath != null)
             {
-                if (startCalculation)
+                float projectileSpeed = 0;
+                int victimSpeed = 0;
+                bool startCalculation = false;
+                var nodes = victim.pather.curPath.NodesReversed.ListFullCopy();
+                nodes.Reverse();
+                var prevCell = victim.DrawPos.ToIntVec3();
+                var speedPairs = new Dictionary<IntVec3, Pair<float, float>>();
+                foreach (var cell in nodes)
                 {
-                    projectileSpeed = ((origin.Yto0() - cell.ToVector3Shifted().Yto0()).magnitude) / projectile.def.projectile.SpeedTilesPerTick;
-                    victimSpeed += CostToMoveIntoCell(victim, prevCell, cell);
-                    victim.Map.debugDrawer.FlashCell(cell, 0, Math.Abs(victimSpeed - projectileSpeed).ToString(), 20);
-                    speedPairs[cell] = new Pair<float, float>(victimSpeed, projectileSpeed);
+                    if (startCalculation)
+                    {
+                        projectileSpeed = ((origin.Yto0() - cell.ToVector3Shifted().Yto0()).magnitude) / projectile.def.projectile.SpeedTilesPerTick;
+                        victimSpeed += CostToMoveIntoCell(victim, prevCell, cell);
+                        victim.Map.debugDrawer.FlashCell(cell, 0, Math.Abs(victimSpeed - projectileSpeed).ToString(), 20);
+                        speedPairs[cell] = new Pair<float, float>(victimSpeed, projectileSpeed);
+                    }
+                    if (cell == victim.DrawPos.ToIntVec3())
+                    {
+                        startCalculation = true;
+                    }
+                    prevCell = cell;
                 }
-                if (cell == victim.DrawPos.ToIntVec3())
+                if (speedPairs.Any())
                 {
-                    startCalculation = true;
+                    var closestCell = speedPairs.MinBy(x => Math.Abs(x.Value.First - x.Value.Second));
+                    return closestCell.Key;
                 }
-                prevCell = cell;
-            }
-            if (speedPairs.Any())
-            {
-                var closestCell = speedPairs.MinBy(x => Math.Abs(x.Value.First - x.Value.Second));
-                return closestCell.Key;
             }
             return victim.Position;
         }
