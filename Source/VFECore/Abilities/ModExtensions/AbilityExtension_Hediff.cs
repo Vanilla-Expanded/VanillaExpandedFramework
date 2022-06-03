@@ -11,5 +11,18 @@
         public bool      applyAuto = true;
         public StatDef durationMultiplier;
         public bool targetOnlyEnemies;
+
+        public override bool ValidateTarget(LocalTargetInfo target, Ability ability, bool throwMessages = false)
+        {
+            if (this.targetOnlyEnemies && target.Thing != null && !target.Thing.HostileTo(ability.pawn))
+            {
+                if (throwMessages)
+                {
+                    Messages.Message("VFEA.TargetMustBeHostile".Translate(), target.Thing, MessageTypeDefOf.CautionInput, null);
+                }
+                return false;
+            }
+            return base.ValidateTarget(target, ability, throwMessages);
+        }
     }
 }

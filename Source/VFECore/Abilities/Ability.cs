@@ -583,25 +583,37 @@
 
         public virtual void ApplyHediffs(params GlobalTargetInfo[] targetInfo)
         {
-            if (targetInfo.FirstOrDefault().Thing is Pawn targetPawn)
+            foreach (GlobalTargetInfo target in targetInfo)
             {
-                AbilityExtension_Hediff hediffExtension = this.def.GetModExtension<AbilityExtension_Hediff>();
-                if (hediffExtension?.applyAuto ?? false)
+                if (target.Thing is Pawn targetPawn)
                 {
-                    BodyPartRecord bodyPart = hediffExtension.bodyPartToApply != null
-                                                  ? targetPawn.health.hediffSet.GetNotMissingParts().FirstOrDefault((BodyPartRecord x) => x.def == hediffExtension.bodyPartToApply)
-                                                  : null;
-                    Hediff localHediff = HediffMaker.MakeHediff(hediffExtension.hediff, targetPawn, bodyPart);
-                    if (localHediff is Hediff_Ability hediffAbility)
-                        hediffAbility.ability = this;
+                    AbilityExtension_Hediff hediffExtension = this.def.GetModExtension<AbilityExtension_Hediff>();
+                    if (hediffExtension?.applyAuto ?? false)
+                    {
+                        BodyPartRecord bodyPart = hediffExtension.bodyPartToApply != null
+                                                      ? targetPawn.health.hediffSet.GetNotMissingParts().FirstOrDefault((BodyPartRecord x) => x.def == hediffExtension.bodyPartToApply)
+                                                      : null;
+                        Hediff localHediff = HediffMaker.MakeHediff(hediffExtension.hediff, targetPawn, bodyPart);
+                        if (localHediff is Hediff_Ability hediffAbility)
+                            hediffAbility.ability = this;
 
-                    if (hediffExtension.severity > float.Epsilon)
-                        localHediff.Severity = hediffExtension.severity;
-                    if (localHediff is HediffWithComps hwc)
-                        foreach (HediffComp hediffComp in hwc.comps)
-                            if (hediffComp is HediffComp_Ability hca)
-                                hca.ability = this;
-                    targetPawn.health.AddHediff(localHediff);
+                        var duration = this.GetDurationForPawn();
+                        if (hediffExtension.durationMultiplier != null)
+                        {
+                            duration = (int)(duration * targetPawn.GetStatValue(hediffExtension.durationMultiplier));
+                        }
+                        if (hediffExtension.severity > float.Epsilon)
+                            localHediff.Severity = hediffExtension.severity;
+                        if (localHediff is HediffWithComps hwc)
+                            foreach (HediffComp hediffComp in hwc.comps)
+                            {
+                                if (hediffComp is HediffComp_Ability hca)
+                                    hca.ability = this;
+                                if (hediffComp is HediffComp_Disappears hcd)
+                                    hcd.ticksToDisappear = duration;
+                            }
+                        targetPawn.health.AddHediff(localHediff);
+                    }
                 }
             }
         }

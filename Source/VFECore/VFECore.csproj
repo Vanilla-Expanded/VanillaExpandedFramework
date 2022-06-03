@@ -364,7 +364,6 @@
   <ItemGroup>
     <Compile Include="Abilities\Abilities\Ability_Barrier.cs" />
     <Compile Include="Abilities\Abilities\Ability_Explode.cs" />
-    <Compile Include="Abilities\Abilities\Ability_HediffDuration.cs" />
     <Compile Include="Abilities\Abilities\Ability_OrbitalStrike.cs" />
     <Compile Include="Abilities\Abilities\Ability_ShootProjectile.cs" />
     <Compile Include="Abilities\Abilities\Ability_Skyfallers.cs" />
