@@ -10,6 +10,7 @@
         public float     severity  = -1f;
         public bool      applyAuto = true;
         public StatDef durationMultiplier;
+        public bool durationMultiplierFromCaster;
         public bool targetOnlyEnemies;
 
         public override bool ValidateTarget(LocalTargetInfo target, Ability ability, bool throwMessages = false)

@@ -606,7 +606,9 @@
                 var duration = this.GetDurationForPawn();
                 if (hediffExtension.durationMultiplier != null)
                 {
-                    duration = (int)(duration * targetPawn.GetStatValue(hediffExtension.durationMultiplier));
+                    duration = (int)(duration * (hediffExtension.durationMultiplierFromCaster 
+                        ? pawn.GetStatValue(hediffExtension.durationMultiplier) 
+                        :  targetPawn.GetStatValue(hediffExtension.durationMultiplier)));
                 }
                 if (hediffExtension.severity > float.Epsilon)
                     localHediff.Severity = hediffExtension.severity;
