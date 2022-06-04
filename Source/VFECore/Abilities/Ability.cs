@@ -619,7 +619,7 @@
                             hcd.ticksToDisappear = duration;
                     }
                 targetPawn.health.AddHediff(localHediff);
-                return localHediff;
+                return pawn.health.hediffSet.GetFirstHediffOfDef(hediffExtension.hediff); // accounts for merged hediffs in this case
             }
             return null;
         }
