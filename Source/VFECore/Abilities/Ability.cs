@@ -418,11 +418,11 @@
                 foreach (var thing in GenRadial.RadialDistinctThingsAround(cell, pawn.Map, maxRadius, true))
                 {
                     if ((parms is TargetingParametersForAoE aoe ? aoe.CanTarget(thing, this) : parms.CanTarget(thing))            &&
-                        (parms is TargetingParametersForAoE aoe2 && aoe2.ignoreRangeAndSight || this.ValidateTarget(thing, false) &&
+                        (parms is TargetingParametersForAoE aoe2 && aoe2.ignoreRangeAndSight 
+                        || AbilityModExtensions.All(x => x.ValidateTarget(thing, this, false)) &&
                             thing.OccupiedRect().ClosestDistSquaredTo(cell) > minRadius))
                     {
                         if (!parms.canTargetSelf && thing == pawn) continue;
-                        
                         yield return thing;
                     }
                 }
