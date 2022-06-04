@@ -591,7 +591,7 @@
                 }
             }
         }
-        public void ApplyHediff(Pawn targetPawn)
+        public virtual Hediff ApplyHediff(Pawn targetPawn)
         {
             AbilityExtension_Hediff hediffExtension = this.def.GetModExtension<AbilityExtension_Hediff>();
             if (hediffExtension?.applyAuto ?? false)
@@ -619,7 +619,9 @@
                             hcd.ticksToDisappear = duration;
                     }
                 targetPawn.health.AddHediff(localHediff);
+                return localHediff;
             }
+            return null;
         }
 
         [Obsolete("Use new method that uses GlobalTargetInfos")]
