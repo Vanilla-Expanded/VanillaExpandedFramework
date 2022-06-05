@@ -70,6 +70,7 @@ namespace VFECore.Abilities
         public SoundDef  castSound;
         public FleckDef castFleck;
         public float castFleckScale = 1f;
+        public bool castFleckScaleWithRadius;
         public float castFleckSpeed;
         public FleckDef fleckOnTarget;
         public float fleckOnTargetScale = 1f;

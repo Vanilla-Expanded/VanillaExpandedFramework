@@ -517,7 +517,8 @@
         public virtual void CastEffects(params GlobalTargetInfo[] targetInfos)
         {
             if (this.def.castFleck != null)
-                MakeStaticFleck(this.pawn.DrawPos, this.pawn.Map, this.def.castFleck, this.def.castFleckScale, this.def.castFleckSpeed);
+                MakeStaticFleck(this.pawn.DrawPos, this.pawn.Map, this.def.castFleck, this.def.castFleckScaleWithRadius ?
+                    this.GetRadiusForPawn() : this.def.castFleckScale, this.def.castFleckSpeed);
 
             if (this.def.fleckOnTarget != null && targetInfos.Any())
                 MakeStaticFleck(targetInfos[0].Thing.DrawPos, targetInfos[0].Map, this.def.fleckOnTarget, this.def.fleckOnTargetScale, this.def.fleckOnTargetSpeed);
