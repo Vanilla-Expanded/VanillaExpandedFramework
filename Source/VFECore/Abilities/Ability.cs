@@ -584,32 +584,32 @@
 
         public virtual void ApplyHediffs(params GlobalTargetInfo[] targetInfo)
         {
-            foreach (GlobalTargetInfo target in targetInfo)
+            AbilityExtension_Hediff hediffExtension = this.def.GetModExtension<AbilityExtension_Hediff>();
+            if (hediffExtension?.applyAuto ?? false)
             {
-                if (target.Thing is Pawn targetPawn)
+                foreach (GlobalTargetInfo target in targetInfo)
                 {
-                    ApplyHediff(targetPawn);
+                    if (target.Thing is Pawn targetPawn)
+                    {
+                        ApplyHediff(targetPawn, hediffExtension);
+                    }
                 }
             }
         }
 
-        public virtual void ApplyHediff(Pawn targetPawn)
+        public Hediff ApplyHediff(Pawn targetPawn, AbilityExtension_Hediff hediffExtension)
         {
-            AbilityExtension_Hediff hediffExtension = this.def.GetModExtension<AbilityExtension_Hediff>();
-            if (hediffExtension?.applyAuto ?? false)
+            BodyPartRecord bodyPart = hediffExtension.bodyPartToApply != null
+                     ? targetPawn.health.hediffSet.GetNotMissingParts().FirstOrDefault((BodyPartRecord x) => x.def == hediffExtension.bodyPartToApply)
+                     : null;
+            var duration = this.GetDurationForPawn();
+            if (hediffExtension.durationMultiplier != null)
             {
-                BodyPartRecord bodyPart = hediffExtension.bodyPartToApply != null
-                         ? targetPawn.health.hediffSet.GetNotMissingParts().FirstOrDefault((BodyPartRecord x) => x.def == hediffExtension.bodyPartToApply)
-                         : null;
-                var duration = this.GetDurationForPawn();
-                if (hediffExtension.durationMultiplier != null)
-                {
-                    duration = (int)(duration * (hediffExtension.durationMultiplierFromCaster
-                        ? pawn.GetStatValue(hediffExtension.durationMultiplier)
-                        : targetPawn.GetStatValue(hediffExtension.durationMultiplier)));
-                }
-                ApplyHediff(targetPawn, hediffExtension.hediff, bodyPart, duration, hediffExtension.severity);
+                duration = (int)(duration * (hediffExtension.durationMultiplierFromCaster
+                    ? pawn.GetStatValue(hediffExtension.durationMultiplier)
+                    : targetPawn.GetStatValue(hediffExtension.durationMultiplier)));
             }
+            return ApplyHediff(targetPawn, hediffExtension.hediff, bodyPart, duration, hediffExtension.severity);
         }
 
         public virtual Hediff ApplyHediff(Pawn targetPawn, HediffDef hediffDef, BodyPartRecord bodyPart, int duration, float severity)
