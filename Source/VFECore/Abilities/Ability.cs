@@ -597,6 +597,12 @@
             }
         }
 
+        public Hediff ApplyHediff(Pawn targetPawn)
+        {
+            AbilityExtension_Hediff hediffExtension = this.def.GetModExtension<AbilityExtension_Hediff>();
+            return ApplyHediff(targetPawn, hediffExtension);
+        }
+
         public Hediff ApplyHediff(Pawn targetPawn, AbilityExtension_Hediff hediffExtension)
         {
             BodyPartRecord bodyPart = hediffExtension.bodyPartToApply != null
