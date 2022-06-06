@@ -634,7 +634,7 @@
                         hcd.ticksToDisappear = duration;
                 }
             targetPawn.health.AddHediff(localHediff);
-            return pawn.health.hediffSet.GetFirstHediffOfDef(hediffDef); // accounts for merged hediffs in this case
+            return targetPawn.health.hediffSet.GetFirstHediffOfDef(hediffDef); // accounts for merged hediffs in this case
         }
 
         [Obsolete("Use new method that uses GlobalTargetInfos")]
