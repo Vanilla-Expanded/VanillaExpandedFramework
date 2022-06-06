@@ -23,6 +23,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -618,7 +619,9 @@
     <Compile Include="Apparel\Harmony\SkillRecord_Learn_Patch.cs" />
     <Compile Include="Apparel\Harmony\ThingSelectionUtility_SelectableByMapClick_Patch.cs" />
     <Compile Include="Apparel\ModExtensions\ApparelExtension.cs" />
+    <Compile Include="VFECore\Comps\HediffComps\HediffComp_Phasing.cs" />
     <Compile Include="VFECore\Comps\HediffComps\HediffComp_Targeting.cs" />
+    <Compile Include="VFECore\HarmonyPatches\PhasingPatches.cs" />
     <Compile Include="VFECore\HarmonyPatches\Stat_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\MapGenerator_GenerateContentsIntoMap_Patch.cs" />
     <Compile Include="VFECore\HarmonyPatches\GenStep_Terrain_TerrainFrom_Patch.cs" />
