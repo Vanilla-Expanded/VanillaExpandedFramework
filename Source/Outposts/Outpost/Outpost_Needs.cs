@@ -14,11 +14,12 @@ namespace Outposts
 
         public virtual void SatisfyNeeds(Pawn pawn)
         {
-            if (pawn is null) return;
+            if (pawn is null || pawn.Spawned) return;
             var food = pawn.needs?.food;
             if (GenLocalDate.HourInteger(Tile) >= 23 || GenLocalDate.HourInteger(Tile) <= 5) pawn.needs?.rest?.TickResting(0.75f);
             if (!pawn.IsHashIntervalTick(300)) return;
-            if (food is not null && food.CurLevelPercentage <= pawn.RaceProps.FoodLevelPercentageWantEat && ProvidedFood is {IsNutritionGivingIngestible: true} &&
+            if (food is not null && food.CurLevelPercentage <= pawn.RaceProps.FoodLevelPercentageWantEat &&
+                ProvidedFood is {IsNutritionGivingIngestible: true} &&
                 ProvidedFood.ingestible.HumanEdible)
             {
                 var thing = ThingMaker.MakeThing(ProvidedFood);

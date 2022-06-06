@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using RimWorld.Planet;
@@ -18,14 +18,19 @@ namespace Outposts
 
         public override void Arrived(List<ActiveDropPodInfo> pods, int tile)
         {
-            var pawns = new List<Pawn>();
-            foreach (var p in pods.SelectMany(pod => pod.innerContainer).OfType<Pawn>())
+            var things = new List<Thing>();
+            foreach (var t in pods.SelectMany(pod => pod.innerContainer).OfType<Thing>())
             {
-                pawns.Add(p);
-                Messages.Message("Outposts.AddedFromTransportPods".Translate(p.LabelShortCap, outpost.LabelCap), outpost, MessageTypeDefOf.TaskCompletion);
+                things.Add(t);
+                if(t is Pawn){
+                	Messages.Message("Outposts.AddedFromTransportPods".Translate(t.LabelShortCap, outpost.LabelCap), outpost, MessageTypeDefOf.TaskCompletion);
+            	}
             }
 
-            foreach (var pawn in pawns) outpost.AddPawn(pawn);
+            foreach (var t in things){
+            	if(t is Pawn) outpost.AddPawn(t as Pawn);
+            	else outpost.AddItem(t);
+            }
         }
 
         public override void ExposeData()
@@ -40,12 +45,7 @@ namespace Outposts
         {
             return TransportPodsArrivalActionUtility.GetFloatMenuOptions(
                 () => true, () => new TransportPodsArrivalAction_AddToOutpost(outpost),
-                "Outposts.AddTo".Translate(outpost.LabelCap), representative, outpost.Tile, launch =>
-                {
-                    if (pods.SelectMany(pod => pod.GetDirectlyHeldThings()).Any(t => t is not Pawn))
-                        Dialog_MessageBox.CreateConfirmation("Outposts.SendNonPawns".Translate(), launch);
-                    else launch();
-                });
+                "Outposts.AddTo".Translate(outpost.LabelCap), representative, outpost.Tile, launch =>{launch();});
         }
     }
 }

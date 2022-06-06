@@ -45,11 +45,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefModExtensions\BiomeStructGenExtension.cs" />
     <Compile Include="DefModExtensions\FallingStructure.cs" />
     <Compile Include="DefModExtensions\SpawnAtWorldGen.cs" />
-    <Compile Include="Defs\SymbolAutoCreation.cs" />
-    <Compile Include="GenStep\GenStep_KCSGSettlement.cs" />
-    <Compile Include="GenStep\GenStep_WorldObjectKCSG.cs" />
+    <Compile Include="GenStep\GenStep_BiomeStructures.cs" />
+    <Compile Include="GenStep\GenStep_Settlement.cs" />
+    <Compile Include="GenStep\GenStep_WorldObject.cs" />
     <Compile Include="Harmony\HideSettlementsForNomadicFactionsPatch.cs" />
     <Compile Include="Harmony\Init.cs" />
     <Compile Include="Harmony\LongEventHandler_Patches.cs" />
@@ -81,7 +82,7 @@
     <Compile Include="Utils\GenStepUtils.cs" />
     <Compile Include="Utils\KLog.cs" />
     <Compile Include="Utils\TextureLoader.cs" />
-    <Compile Include="DefOfs\KThingDefOf.cs" />
+    <Compile Include="DefOfs\DefOfs.cs" />
     <Compile Include="Utils\Algorithms\AStar.cs" />
     <Compile Include="Utils\Algorithms\BuildingPlacement.cs" />
     <Compile Include="Utils\DebugOption.cs" />

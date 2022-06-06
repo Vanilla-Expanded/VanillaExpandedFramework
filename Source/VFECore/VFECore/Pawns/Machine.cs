@@ -25,40 +25,19 @@ namespace VFEMech
                     this.drafter = new Pawn_DraftController(this);
                 }
             }
+
+            if (this.Faction == Faction.OfPlayer && this.Name == null)
+            {
+                this.Name = PawnBioAndNameGenerator.GeneratePawnName(this, NameStyle.Numeric);
+            }
         }
+
         public override void PostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
         {
             base.PostApplyDamage(dinfo, totalDamageDealt);
             if (!this.health.Dead && (!this.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation) || !this.health.capacities.CapableOf(PawnCapacityDefOf.Moving)))
             {
                 this.Kill(dinfo);
-            }
-        }
-
-        public override IEnumerable<Gizmo> GetGizmos()
-        {
-            foreach (var g in base.GetGizmos())
-            {
-                yield return g;
-            }
-            if (Prefs.DevMode)
-            {
-                yield return new Command_Action
-                {
-                    defaultLabel = "Recharge fully",
-                    action = delegate ()
-                    {
-                        this.needs.TryGetNeed<Need_Power>().CurLevel = 1;
-                    }
-                };
-            }
-
-            foreach (var comp in this.AllComps)
-            {
-                foreach (var g in comp.CompGetGizmosExtra())
-                {
-                    yield return g;
-                }
             }
         }
     }

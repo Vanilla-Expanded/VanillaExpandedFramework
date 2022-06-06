@@ -1,10 +1,12 @@
 ﻿using AnimalBehaviours;
 using HarmonyLib;
+using NAudio.SoundFont;
 using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -44,24 +46,91 @@ namespace VFE.Mechanoids.HarmonyPatches
         }
     }
 
-	// an attempt to make draftable mechanoids be selected with other colonists, didn't find a time to make a proper patch
-	//[HarmonyPatch]
-	//public static class MakeMechanoidsMultiSelectable
-    //{
-	//	[HarmonyTargetMethod]
-	//	public static MethodBase GetMethod()
-    //    {
-	//		return typeof(Selector).GetNestedTypes(AccessTools.all).Select(type => type.GetMethods(AccessTools.all).FirstOrDefault(method => method.Name.Contains("<SelectAllMatchingObjectUnderMouseOnScreen>")
-	//		&& method.ReturnType == typeof(bool) && method.GetParameters().FirstOrDefault()?.ParameterType == typeof(Thing))).FirstOrDefault();
-    //    }
-	//
-	//	public static void Postfix(Thing t)
-    //    {
-	//		Log.Message("T: " + t);
-    //    }
-    //}
+	[HarmonyPatch(typeof(Selector), "SelectInsideDragBox")]
+	public static class Selector_SelectInsideDragBox_Patch
+	{
+		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
+		{
+			var codes = codeInstructions.ToList();
+			foreach (var code in codes)
+			{
+				yield return code;
+				if (code.opcode == OpCodes.Stloc_3)
+				{
+					yield return new CodeInstruction(OpCodes.Ldloc_3);
+					yield return new CodeInstruction(OpCodes.Call,
+						AccessTools.Method(typeof(Selector_SelectInsideDragBox_Patch), nameof(WrappedPredicator)));
+					yield return new CodeInstruction(OpCodes.Stloc_3);
+				}
+			}
+		}
 
-    [HarmonyPatch(typeof(FloatMenuMakerMap), "AddDraftedOrders")]
+		public static Predicate<Thing> WrappedPredicator(Predicate<Thing> predicate)
+		{
+			Predicate<Thing> wrappedPredicate = delegate (Thing t)
+			{
+				var result = predicate(t);
+				if (!result)
+				{
+					if (t is Pawn pawn)
+					{
+						if (pawn.Faction == Faction.OfPlayer && pawn.RaceProps.IsMechanoid)
+						{
+							return true;
+						}
+					}
+				}
+				return result;
+			};
+			return wrappedPredicate;
+		}
+	}
+
+	[HarmonyPatch(typeof(Selector), "SelectAllMatchingObjectUnderMouseOnScreen")]
+	public static class Selector_SelectAllMatchingObjectUnderMouseOnScreen_Patch
+    {
+		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
+        {
+			var codes = codeInstructions.ToList();
+			var clickedThingField = typeof(Selector).GetNestedTypes(AccessTools.all).SelectMany(x => x.GetFields(AccessTools.all))
+				.FirstOrDefault(x => x.Name == "clickedThing");
+			foreach (var code in codes)
+            {
+				yield return code;
+				if (code.opcode == OpCodes.Stloc_3)
+                {
+					yield return new CodeInstruction(OpCodes.Ldloc_0);
+					yield return new CodeInstruction(OpCodes.Ldfld, clickedThingField);
+					yield return new CodeInstruction(OpCodes.Ldloc_3);
+					yield return new CodeInstruction(OpCodes.Call, 
+						AccessTools.Method(typeof(Selector_SelectAllMatchingObjectUnderMouseOnScreen_Patch), nameof(WrappedPredicator)));
+					yield return new CodeInstruction(OpCodes.Stloc_3);
+                }
+            }
+		}
+
+		public static Predicate<Thing> WrappedPredicator(Thing clickedThing, Predicate<Thing> predicate)
+        {
+			Predicate<Thing> wrappedPredicate = delegate (Thing t)
+			{
+				var result = predicate(t);
+				if (!result)
+                {
+					if (t is Pawn pawn2 && clickedThing is Pawn pawn1)
+                    {
+						if (pawn2.Faction == Faction.OfPlayer && pawn1.Faction == Faction.OfPlayer && (pawn2.RaceProps.IsMechanoid || pawn1.RaceProps.IsMechanoid))
+                        {
+							return true;
+                        }
+                    }
+                }
+				return result;
+			};
+			return wrappedPredicate;
+		}
+	}
+
+	[HarmonyPatch(typeof(FloatMenuMakerMap), "AddDraftedOrders")]
     public static class AddDraftedOrders_Patch
     {
         public static bool Prefix(Vector3 clickPos, Pawn pawn, List<FloatMenuOption> opts)

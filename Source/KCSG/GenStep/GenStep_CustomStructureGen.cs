@@ -27,18 +27,17 @@ namespace KCSG
 
         public override void Generate(Map map, GenStepParams parms)
         {
-            StructureLayoutDef structureLayoutDef = structureLayoutDefs.RandomElement();
+            StructureLayoutDef layoutDef = structureLayoutDefs.RandomElement();
 
-            RectUtils.HeightWidthFromLayout(structureLayoutDef, out int h, out int w);
-            CellRect cellRect = CellRect.CenteredOn(map.Center, w, h);
+            CellRect cellRect = CellRect.CenteredOn(map.Center, layoutDef.width, layoutDef.height);
 
-            GenUtils.PreClean(map, cellRect, structureLayoutDef.roofGrid, fullClear);
+            GenUtils.PreClean(map, cellRect, layoutDef.roofGrid, fullClear);
 
-            for (int i = 0; i < structureLayoutDef.layouts.Count; i++)
+            for (int i = 0; i < layoutDef.layouts.Count; i++)
             {
-                var layout = structureLayoutDef.layouts[i];
-                GenUtils.GenerateRoomFromLayout(layout, cellRect, map, structureLayoutDef);
+                GenUtils.GenerateRoomFromLayout(layoutDef, i, cellRect, map);
             }
+            GenUtils.GenerateRoofGrid(layoutDef, cellRect, map);
 
             if (shouldRuin)
             {

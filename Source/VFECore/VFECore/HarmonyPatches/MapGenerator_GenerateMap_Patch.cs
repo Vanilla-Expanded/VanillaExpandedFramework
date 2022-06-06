@@ -143,7 +143,7 @@ namespace VFECore
                                         GenSpawn.Spawn(thing, c, map);
                                     }
                                 }
-                                catch (Exception e)
+                                catch (Exception)
                                 {
                                     Log.Error("Exception spawning thing " + thing);
                                 }

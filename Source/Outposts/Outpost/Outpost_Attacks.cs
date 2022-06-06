@@ -37,13 +37,14 @@ namespace Outposts
                 return true;
             }
 
-            if (!Map.mapPawns.AllPawns.Where(p => p.RaceProps.Humanlike).Any(p => p.HostileTo(Faction.OfPlayer)))
+            var pawns = Map.mapPawns.AllPawns.ListFullCopy();
+            if (!pawns.Any(p => p.HostileTo(Faction.OfPlayer)))
             {
                 occupants.Clear();
                 Find.LetterStack.ReceiveLetter("Outposts.Letters.BattleWon.Label".Translate(), "Outposts.Letters.BattleWon.Text".Translate(Name),
                     LetterDefOf.PositiveEvent,
                     new LookTargets(Gen.YieldSingle(this)));
-                foreach (var pawn in Map.mapPawns.AllPawns.Where(p => p.Faction is {IsPlayer: true} || p.HostFaction is {IsPlayer: true}).ToList())
+                foreach (var pawn in pawns.Where(pawn => pawn.Faction is {IsPlayer: true} || pawn.HostFaction is {IsPlayer: true}))
                 {
                     pawn.DeSpawn();
                     occupants.Add(pawn);

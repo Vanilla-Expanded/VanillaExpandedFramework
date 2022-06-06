@@ -64,14 +64,14 @@ namespace VFECore
         public int disarmedByEmpForTicks = -1;
         public SoundDef activeSound;
         public CompProperties_ShieldField()
-		{
-			this.compClass = typeof(CompShieldField);
-		}
-	}
+        {
+            this.compClass = typeof(CompShieldField);
+        }
+    }
 
-	[StaticConstructorOnStartup]
-	public class CompShieldField : ThingComp
-	{
+    [StaticConstructorOnStartup]
+    public class CompShieldField : ThingComp
+    {
         public bool active;
         public Dictionary<Thing, int> affectedThings = new Dictionary<Thing, int>();
         public HashSet<IntVec3> coveredCells;
@@ -118,7 +118,7 @@ namespace VFECore
             }
         }
         public bool Indestructible => Props.shieldEnergyMaxStat is null;
-        
+
         public static Dictionary<Map, List<CompShieldField>> listerShieldGensByMaps = new Dictionary<Map, List<CompShieldField>>();
         public static IEnumerable<CompShieldField> ListerShieldGensActiveIn(Map map)
         {
@@ -146,16 +146,20 @@ namespace VFECore
         public float ShieldRadius => this.parent.GetStatValue(Props.shieldRadiusStat);
         public LocalTargetInfo TargetCurrentlyAimingAt => LocalTargetInfo.Invalid;
         public float TargetPriorityFactor => 1;
-        public Thing Thing => this.parent;
         public IEnumerable<Thing> ThingsWithinRadius
         {
             get
             {
                 foreach (var cell in coveredCells)
                 {
-                    var thingList = cell.GetThingList(parent.MapHeld);
-                    for (int i = 0; i < thingList.Count; i++)
-                        yield return thingList[i];
+                    if (cell.InBounds(HostThing.Map))
+                    {
+                        var thingList = cell.GetThingList(HostThing.Map);
+                        for (int i = 0; i < thingList.Count; i++)
+                        {
+                            yield return thingList[i];
+                        }
+                    }
                 }
             }
         }
@@ -164,15 +168,18 @@ namespace VFECore
         {
             get
             {
-
                 foreach (var cell in scanCells)
                 {
-                    var thingList = cell.GetThingList(parent.MapHeld);
-                    for (int i = 0; i < thingList.Count; i++)
+                    if (cell.InBounds(HostThing.Map))
                     {
-                        var thing = thingList[i];
-                        if (Vector3.Distance(this.parent.TrueCenter(), thing.TrueCenter()) <= ShieldRadius)
-                            yield return thing;
+                        var thingList = cell.GetThingList(HostThing.Map);
+                        for (int i = 0; i < thingList.Count; i++)
+                        {
+                            var thing = thingList[i];
+                            var distance = Vector3.Distance(this.HostThing.TrueCenter().Yto0(), thing.TrueCenter().Yto0());
+                            if (distance <= ShieldRadius)
+                                yield return thing;
+                        }
                     }
                 }
             }
@@ -194,20 +201,20 @@ namespace VFECore
         }
         public void AbsorbDamage(float amount, DamageDef def, Thing source)
         {
-            AbsorbDamage(amount, def, (parent.TrueCenter() - source.TrueCenter()).AngleFlat());
+            AbsorbDamage(amount, def, (HostThing.TrueCenter() - source.TrueCenter()).AngleFlat());
         }
 
         public void AbsorbDamage(float amount, DamageDef def, float angle)
         {
-            SoundDefOf.EnergyShield_AbsorbDamage.PlayOneShot(new TargetInfo(parent.PositionHeld, parent.MapHeld, false));
+            SoundDefOf.EnergyShield_AbsorbDamage.PlayOneShot(new TargetInfo(HostThing.Position, HostThing.Map, false));
             impactAngleVect = Vector3Utility.HorizontalVectorFromAngle(angle);
-            Vector3 loc = parent.TrueCenter() + impactAngleVect.RotatedBy(180f) * (ShieldRadius / 2);
+            Vector3 loc = HostThing.TrueCenter() + impactAngleVect.RotatedBy(180f) * (ShieldRadius / 2);
             float flashSize = Mathf.Min(10f, 2f + amount / 10f);
-            FleckMaker.Static(parent.TrueCenter(), parent.MapHeld, FleckDefOf.ExplosionFlash, 12);
+            FleckMaker.Static(HostThing.TrueCenter(), HostThing.Map, FleckDefOf.ExplosionFlash, 12);
             int dustCount = (int)flashSize;
             for (int i = 0; i < dustCount; i++)
             {
-                FleckMaker.ThrowDustPuff(loc, parent.MapHeld, Rand.Range(0.8f, 1.2f));
+                FleckMaker.ThrowDustPuff(loc, HostThing.Map, Rand.Range(0.8f, 1.2f));
             }
             if (!Indestructible)
             {
@@ -215,7 +222,7 @@ namespace VFECore
                 Energy -= energyLoss;
                 // try to do short circuit
                 if (Rand.Chance(energyLoss * Props.shortCircuitChancePerEnergyLost))
-                    GenExplosion.DoExplosion(parent.OccupiedRect().RandomCell, parent.MapHeld, 1.9f, DamageDefOf.Flame, null);
+                    GenExplosion.DoExplosion(HostThing.OccupiedRect().RandomCell, HostThing.Map, 1.9f, DamageDefOf.Flame, null);
             }
             if (Props.disarmedByEmpForTicks != -1 && def == DamageDefOf.EMP)
             {
@@ -309,7 +316,7 @@ namespace VFECore
                     };
                 }
             }
-            
+
             foreach (var gizmo in base.CompGetGizmosExtra())
                 yield return gizmo;
         }
@@ -416,7 +423,7 @@ namespace VFECore
                 }
             }
         }
-        
+
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
@@ -431,11 +438,11 @@ namespace VFECore
 
         public void Initialize()
         {
-            if (parent.MapHeld != null)
+            if (HostThing.Map != null)
             {
-                if (!listerShieldGensByMaps.TryGetValue(parent.MapHeld, out var list))
+                if (!listerShieldGensByMaps.TryGetValue(HostThing.Map, out var list))
                 {
-                    listerShieldGensByMaps[parent.MapHeld] = list = new List<CompShieldField>();
+                    listerShieldGensByMaps[HostThing.Map] = list = new List<CompShieldField>();
                 }
                 if (!list.Contains(this))
                 {
@@ -450,12 +457,12 @@ namespace VFECore
         private void UpdateShieldCoverage()
         {
             // Set up shield coverage
-            coveredCells = new HashSet<IntVec3>(GenRadial.RadialCellsAround(parent.PositionHeld, ShieldRadius, true));
+            coveredCells = new HashSet<IntVec3>(GenRadial.RadialCellsAround(HostThing.Position, ShieldRadius, true));
             if (ShieldRadius < EdgeCellRadius + 1)
                 scanCells = coveredCells;
             else
             {
-                IEnumerable<IntVec3> interiorCells = GenRadial.RadialCellsAround(parent.PositionHeld, ShieldRadius - EdgeCellRadius, true);
+                IEnumerable<IntVec3> interiorCells = GenRadial.RadialCellsAround(HostThing.Position, ShieldRadius - EdgeCellRadius, true);
                 scanCells = new HashSet<IntVec3>(coveredCells.Where(c => !interiorCells.Contains(c)));
             }
         }
@@ -473,7 +480,7 @@ namespace VFECore
             // Return whether or not the shield can function
             return !CanFunction;
         }
-        
+
         private Sustainer sustainer;
         public override void CompTick()
         {
@@ -508,11 +515,11 @@ namespace VFECore
                     {
                         if (sustainer == null || sustainer.Ended)
                         {
-                            sustainer = Props.activeSound.TrySpawnSustainer(SoundInfo.InMap(parent));
+                            sustainer = Props.activeSound.TrySpawnSustainer(SoundInfo.InMap(HostThing));
                         }
                         sustainer?.Maintain();
                     }
-                    
+
                     // Power consumption
                     if (PowerTraderComp != null)
                         PowerTraderComp.PowerOutput = -PowerTraderComp.Props.basePowerConsumption;
@@ -522,7 +529,7 @@ namespace VFECore
                 }
                 else if (PowerTraderComp != null)
                     PowerTraderComp.PowerOutput = -Props.inactivePowerConsumption;
-                
+
                 if (Props.activeSound != null && !active && sustainer != null && !sustainer.Ended)
                 {
                     sustainer.End();
@@ -540,16 +547,16 @@ namespace VFECore
             Vector3 center;
             if (active)
             {
-                SoundDefOf.EnergyShield_Broken.PlayOneShot(new TargetInfo(parent));
+                SoundDefOf.EnergyShield_Broken.PlayOneShot(new TargetInfo(HostThing));
                 int num = Mathf.CeilToInt(ShieldRadius * 2f);
                 fTheta = (float)Math.PI * 2f / (float)num;
-                center = parent.TrueCenter();
+                center = HostThing.TrueCenter();
                 for (int i = 0; i < num; i++)
                 {
-                    FleckMaker.ConnectingLine(PosAtIndex(i), PosAtIndex((i + 1) % num), FleckDefOf.LineEMP, parent.Map, 1.5f);
+                    FleckMaker.ConnectingLine(PosAtIndex(i), PosAtIndex((i + 1) % num), FleckDefOf.LineEMP, HostThing.Map, 1.5f);
                 }
             }
-            
+
             if (HostThing is Pawn pawn)
             {
                 dinfo.SetAmount((float)Props.disarmedByEmpForTicks / 30f);
@@ -565,7 +572,7 @@ namespace VFECore
                 return new Vector3(ShieldRadius * Mathf.Cos(fTheta * (float)index) + center.x, 0f, ShieldRadius * Mathf.Sin(fTheta * (float)index) + center.z);
             }
         }
-        
+
         public bool WithinBoundary(IntVec3 sourcePos, IntVec3 checkedPos)
         {
             return (coveredCells.Contains(sourcePos) && coveredCells.Contains(checkedPos)) || (!coveredCells.Contains(sourcePos) && !coveredCells.Contains(checkedPos));
@@ -594,25 +601,21 @@ namespace VFECore
                         // Explosives are handled separately
                         if (!(proj is Projectile_Explosive) || proj.def.projectile.damageDef == DamageDefOf.EMP)
                             AbsorbDamage(proj.DamageAmount, proj.def.projectile.damageDef, proj.ExactRotation.eulerAngles.y);
-                        proj.Position += Rot4.FromAngleFlat((parent.PositionHeld - proj.Position).AngleFlat).Opposite.FacingCell;
+                        proj.Position += Rot4.FromAngleFlat((HostThing.Position - proj.Position).AngleFlat).Opposite.FacingCell;
                         NonPublicFields.Projectile_usedTarget.SetValue(proj, new LocalTargetInfo(proj.Position));
                         NonPublicMethods.Projectile_ImpactSomething(proj);
                     }
-                }
-
-                if (thing is Skyfaller)
-                {
                 }
             }
         }
         private void Notify_EnergyDepleted()
         {
-            SoundDefOf.EnergyShield_Broken.PlayOneShot(new TargetInfo(parent.PositionHeld, parent.MapHeld));
-            FleckMaker.Static(parent.TrueCenter(), parent.MapHeld, FleckDefOf.ExplosionFlash, 12);
+            SoundDefOf.EnergyShield_Broken.PlayOneShot(new TargetInfo(HostThing.Position, HostThing.Map));
+            FleckMaker.Static(HostThing.TrueCenter(), HostThing.Map, FleckDefOf.ExplosionFlash, 12);
             for (int i = 0; i < 6; i++)
             {
-                Vector3 loc = parent.TrueCenter() + Vector3Utility.HorizontalVectorFromAngle(Rand.Range(0, 360)) * Rand.Range(0.3f, 0.6f);
-                FleckMaker.ThrowDustPuff(loc, parent.MapHeld, Rand.Range(0.8f, 1.2f));
+                Vector3 loc = HostThing.TrueCenter() + Vector3Utility.HorizontalVectorFromAngle(Rand.Range(0, 360)) * Rand.Range(0.3f, 0.6f);
+                FleckMaker.ThrowDustPuff(loc, HostThing.Map, Rand.Range(0.8f, 1.2f));
             }
             ticksToRecharge = Props.rechargeTicksWhenDepleted;
         }
@@ -635,22 +638,25 @@ namespace VFECore
 
             if (!Props.manualActivation)
             {
-                active = this.parent.MapHeld != null && CanFunction &&
+                active = this.HostThing.Map != null && CanFunction &&
                 (
-                GenHostility.AnyHostileActiveThreatTo_NewTemp(parent.MapHeld, HostFaction) ||
-                parent.MapHeld.listerThings.ThingsOfDef(RimWorld.ThingDefOf.Tornado).Any() ||
-                parent.MapHeld.listerThings.ThingsOfDef(RimWorld.ThingDefOf.DropPodIncoming).Any() || shieldBuffer > 0);
+                GenHostility.AnyHostileActiveThreatTo_NewTemp(HostThing.Map, HostFaction) ||
+                HostThing.Map.listerThings.ThingsOfDef(RimWorld.ThingDefOf.Tornado).Any() ||
+                HostThing.Map.listerThings.ThingsOfDef(RimWorld.ThingDefOf.DropPodIncoming).Any() || shieldBuffer > 0);
             }
             if (active)
             {
                 active = CanActivateShield();
             }
-            if ((GenHostility.AnyHostileActiveThreatTo_NewTemp(parent.MapHeld, HostFaction) 
-                || parent.MapHeld.listerThings.ThingsOfDef(RimWorld.ThingDefOf.Tornado).Any() 
-                || parent.MapHeld.listerThings.ThingsOfDef(RimWorld.ThingDefOf.DropPodIncoming).Any()) && shieldBuffer < 15)
-                shieldBuffer = 15;
-            else
-                shieldBuffer -= 1;
+            if (HostThing.Map != null)
+            {
+                if ((GenHostility.AnyHostileActiveThreatTo_NewTemp(HostThing.Map, HostFaction)
+                    || HostThing.Map.listerThings.ThingsOfDef(RimWorld.ThingDefOf.Tornado).Any()
+                    || HostThing.Map.listerThings.ThingsOfDef(RimWorld.ThingDefOf.DropPodIncoming).Any()) && shieldBuffer < 15)
+                    shieldBuffer = 15;
+                else
+                    shieldBuffer -= 1;
+            }
         }
     }
 
@@ -821,8 +827,8 @@ namespace VFECore
                                         return;
                                     }
                                     return;
-                                    /*case DropPodLeaving _:
-                                        return;*/
+                                /*case DropPodLeaving _:
+                                    return;*/
                                 default:
                                     __instance.Destroy();
                                     return;

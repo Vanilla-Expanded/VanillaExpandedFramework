@@ -22,8 +22,9 @@ namespace KCSG
 
                 if (CGO.fallingStructureChoosen != null)
                 {
-                    RectUtils.HeightWidthFromLayout(CGO.fallingStructureChoosen, out int h, out int w);
-                    return parms.points >= MinimumPoints(parms.faction, groupKind) && FindRect((Map)parms.target, h, w) != IntVec3.Invalid;
+                    return parms.points >= MinimumPoints(parms.faction, groupKind) && FindRect((Map)parms.target,
+                                                                                               CGO.fallingStructureChoosen.height,
+                                                                                               CGO.fallingStructureChoosen.width) != IntVec3.Invalid;
                 }
                 else return false;
             }
@@ -46,8 +47,7 @@ namespace KCSG
 
         public override List<Pawn> SpawnThreats(IncidentParms parms)
         {
-            RectUtils.HeightWidthFromLayout(CGO.fallingStructureChoosen, out int h, out int w);
-            CellRect cellRect = CellRect.CenteredOn(parms.spawnCenter, w, h);
+            CellRect cellRect = CellRect.CenteredOn(parms.spawnCenter, CGO.fallingStructureChoosen.width, CGO.fallingStructureChoosen.height);
 
             List<string> allSymbList = new List<string>();
             Map map = (Map)parms.target;

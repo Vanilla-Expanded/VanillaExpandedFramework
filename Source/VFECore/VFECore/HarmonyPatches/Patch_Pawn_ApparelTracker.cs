@@ -46,9 +46,9 @@ namespace VFECore
                     {
 						if (___pawn.story?.traits != null)
                         {
-							if (extension.traitsOnUnequip != null)
+							if (extension.traitsOnEquip != null)
                             {
-								foreach (var traitDef in extension.traitsOnUnequip)
+								foreach (var traitDef in extension.traitsOnEquip)
 								{
 									var trait = ___pawn.story.traits.GetTrait(traitDef);
 									if (trait != null)
@@ -57,8 +57,18 @@ namespace VFECore
 									}
 								}
 							}
+							if (extension.traitsOnUnequip != null)
+                            {
+								foreach (var traitDef in extension.traitsOnUnequip)
+								{
+									if (!___pawn.story.traits.HasTrait(traitDef))
+                                    {
+										var trait = new Trait(traitDef);
+										___pawn.story.traits.GainTrait(trait);
+									}
+								}
+							}
 						}
-
                     }
 				}
 			}
@@ -77,14 +87,28 @@ namespace VFECore
 				{
 					if (___pawn.story?.traits != null)
 					{
-						if (extension.traitsOnUnequip != null)
+						if (___pawn.story?.traits != null)
 						{
-							foreach (var traitDef in extension.traitsOnUnequip)
+							if (extension.traitsOnEquip != null)
 							{
-								var trait = ___pawn.story.traits.GetTrait(traitDef);
-								if (trait != null)
+								foreach (var traitDef in extension.traitsOnEquip)
 								{
-									___pawn.story.traits.RemoveTrait(trait);
+									var trait = ___pawn.story.traits.GetTrait(traitDef);
+									if (trait != null)
+									{
+										___pawn.story.traits.RemoveTrait(trait);
+									}
+								}
+							}
+							if (extension.traitsOnUnequip != null)
+							{
+								foreach (var traitDef in extension.traitsOnUnequip)
+								{
+									if (!___pawn.story.traits.HasTrait(traitDef))
+                                    {
+										var trait = new Trait(traitDef);
+										___pawn.story.traits.GainTrait(trait);
+									}
 								}
 							}
 						}
@@ -129,6 +153,17 @@ namespace VFECore
 								if (!__instance.pawn.story.traits.HasTrait(traitDef))
 								{
 									__instance.pawn.story.traits.GainTrait(new Trait(traitDef));
+								}
+							}
+						}
+						if (extension.traitsOnUnequip != null)
+						{
+							foreach (var traitDef in extension.traitsOnUnequip)
+							{
+								var trait = __instance.pawn.story.traits.GetTrait(traitDef);
+								if (trait != null)
+								{
+									__instance.pawn.story.traits.RemoveTrait(trait);
 								}
 							}
 						}

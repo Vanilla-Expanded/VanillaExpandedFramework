@@ -18,16 +18,16 @@ namespace KCSG
             CGO.currentGenStep = "Generating single structure";
 
             Map map = BaseGen.globalSettings.map;
-            StructureLayoutDef rld = CGO.structureLayoutDef;
 
-            foreach (List<string> item in rld.layouts)
+            for (int i = 0; i < CGO.structureLayoutDef.layouts.Count; i++)
             {
-                GenUtils.GenerateRoomFromLayout(item, rp.rect, map, rld);
+                GenUtils.GenerateRoomFromLayout(CGO.structureLayoutDef, i, rp.rect, map);
             }
+            GenUtils.GenerateRoofGrid(CGO.structureLayoutDef, rp.rect, map);
 
-            GenUtils.EnsureBatteriesConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, KThingDefOf.KCSG_PowerConduit);
-            GenUtils.EnsurePowerUsersConnected(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, KThingDefOf.KCSG_PowerConduit);
-            GenUtils.EnsureGeneratorsConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, KThingDefOf.KCSG_PowerConduit);
+            GenUtils.EnsureBatteriesConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, DefOfs.KCSG_PowerConduit);
+            GenUtils.EnsurePowerUsersConnected(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, DefOfs.KCSG_PowerConduit);
+            GenUtils.EnsureGeneratorsConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, DefOfs.KCSG_PowerConduit);
         }
     }
 }

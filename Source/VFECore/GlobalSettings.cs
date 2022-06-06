@@ -147,6 +147,7 @@ namespace VFECore
             // General
             list.Gap(12);
             list.CheckboxLabeled("Disable Texture Caching", ref settings.disableCaching, "Warning: Enabling this might cause performance issues.");
+            list.CheckboxLabeled("VEF.DisableModSourceReport".Translate(), ref settings.disableModSourceReport);
 
             list.End();
         }
@@ -293,6 +294,7 @@ namespace VFECore
         public bool enableLeaveSpawners = true;
         public bool enableAutumnLeaveSpawners = true;
         public Dictionary<string, bool> weatherDamagesOptions = new Dictionary<string, bool>();
+        public bool disableModSourceReport;
         public override void ExposeData()
         {
             base.ExposeData();
@@ -303,6 +305,7 @@ namespace VFECore
             Scribe_Values.Look(ref hideRandomizeButton, "hideRandomizeButton", false, true);
             Scribe_Values.Look(ref enableLeaveSpawners, "enableLeaveSpawners", true, true);
             Scribe_Values.Look(ref enableAutumnLeaveSpawners, "enableAutumnLeaveSpawners", true, true);
+            Scribe_Values.Look(ref disableModSourceReport, "disableModSourceReport");
             Scribe_Collections.Look(ref weatherDamagesOptions, "weatherDamagesOptions", LookMode.Value, LookMode.Value);
         }
     }

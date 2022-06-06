@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Verse;
 
 namespace KCSG
@@ -40,25 +41,64 @@ namespace KCSG
         // Mod requirements
         public List<string> modRequirements = new List<string>();
 
-        /* --- Obsolete --- */
-        public bool requireRoyalty = false;
-        /* --- ------- --- */
-
         // Spawn position
         public List<Pos> spawnAtPos = new List<Pos>();
         public List<string> spawnAt = new List<string>();
 
+        // Values used regularly in gen
+        internal int width;
+        internal int height;
+        // Symbols lists, without limiters
+        internal List<List<SymbolDef>> symbolsLists = new List<List<SymbolDef>>();
+
+        internal List<string> roofGridResolved = new List<string>();
+
         public override void ResolveReferences()
         {
             base.ResolveReferences();
-            if (requireRoyalty)
-            {
-                Log.Warning($"{defName} is using obsolete field requireRoyalty. Report this to {modContentPack.Name}");
-                modRequirements.Add("ludeon.rimworld.royalty");
-            }
+
             foreach (string sPos in spawnAt)
             {
                 spawnAtPos.Add(Pos.FromString(sPos));
+            }
+
+            // Get height and width
+            height = layouts[0].Count;
+            width = layouts[0][0].Split(',').Count();
+        }
+
+        public void ResolveLayouts()
+        {
+            // Populate symbolsLists
+            for (int i = 0; i < layouts.Count; i++)
+            {
+                var layout = layouts[i];
+                symbolsLists.Add(new List<SymbolDef>());
+                for (int o = 0; o < layout.Count; o++)
+                {
+                    var symbols = layout[o].Split(',');
+                    for (int p = 0; p < symbols.Length; p++)
+                    {
+                        string symbol = symbols[p];
+                        if (symbol == ".")
+                        {
+                            symbolsLists[i].Add(null);
+                        }
+                        else
+                        {
+                            SymbolDef def = DefDatabase<SymbolDef>.GetNamedSilentFail(symbol);
+                            symbolsLists[i].Add(def);
+
+                            if (def == null)
+                                KLog.Message($"{symbol} not found.");
+                        }
+                    }
+                }
+            }
+            // Populate roofgrid
+            for (int i = 0; i < roofGrid.Count; i++)
+            {
+                roofGridResolved.AddRange(roofGrid[i].Split(','));
             }
         }
     }

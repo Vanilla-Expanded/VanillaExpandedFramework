@@ -139,11 +139,10 @@ namespace KCSG
             {
                 foreach (StructureLayoutDef item in DefDatabase<StructureLayoutDef>.AllDefsListForReading.FindAll(s => s.tags.Contains(sld.allowedStructuresConverted[i].structureLayoutTag)))
                 {
-                    RectUtils.HeightWidthFromLayout(item, out int height, out int width);
-                    if (height < CGO.radius)
-                        CGO.radius = height;
-                    if (width < CGO.radius)
-                        CGO.radius = width;
+                    if (item.height < CGO.radius)
+                        CGO.radius = item.height;
+                    if (item.width < CGO.radius)
+                        CGO.radius = item.width;
                 }
             }
             CGO.radius += 2; // Add to radius to ensure no building touch one another

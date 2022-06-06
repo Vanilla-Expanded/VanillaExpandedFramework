@@ -57,7 +57,7 @@ namespace KCSG
             {
                 if (Map == Find.CurrentMap && item.InBounds(Map))
                 {
-                    MoteThrown moteThrown = (MoteThrown)ThingMaker.MakeThing(KThingDefOf.KCSG_LongMote_DustPuff, null);
+                    MoteThrown moteThrown = (MoteThrown)ThingMaker.MakeThing(DefOfs.KCSG_LongMote_DustPuff, null);
                     moteThrown.Scale = Rand.Range(3f, 6f);
                     moteThrown.rotationRate = Rand.Range(-60, 60);
                     moteThrown.exactPosition = item.ToVector3();
@@ -77,7 +77,7 @@ namespace KCSG
                 {
                     if (Map == Find.CurrentMap && item.InBounds(Map))
                     {
-                        MoteThrown moteThrown = (MoteThrown)ThingMaker.MakeThing(KThingDefOf.KCSG_LongMote_DustPuff, null);
+                        MoteThrown moteThrown = (MoteThrown)ThingMaker.MakeThing(DefOfs.KCSG_LongMote_DustPuff, null);
                         moteThrown.Scale = Rand.Range(3f, 6f);
                         moteThrown.rotationRate = Rand.Range(-60, 60);
                         moteThrown.exactPosition = item.ToVector3();

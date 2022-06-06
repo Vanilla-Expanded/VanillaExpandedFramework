@@ -27,6 +27,9 @@ namespace VanillaMemesExpanded
 
         //Used to make all members of the Ideoligion acquire a given ability
         public List<AbilityDef> abilitiesGiven;
+
+        //Used to remove designators if meme is part of the primary ideo
+        public List<ThingDef> removedDesignators;
     }
 
 }
