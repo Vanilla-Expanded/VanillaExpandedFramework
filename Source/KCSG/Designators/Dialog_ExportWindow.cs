@@ -6,8 +6,10 @@ using Verse;
 
 namespace KCSG
 {
-    internal class Dialog_ExportWindow : Window
+    public class Dialog_ExportWindow : Window
     {
+        public static string Prefix = "";
+
         private readonly Area area;
         private readonly List<IntVec3> cells = new List<IntVec3>();
         private readonly Map map;
@@ -43,6 +45,8 @@ namespace KCSG
             absorbInputAroundWindow = true;
 
             if (!SymbolDefsCreator.defCreated) SymbolDefsCreator.Run();
+
+            if (Prefix != "") structurePrefix = Prefix;
         }
 
         public override Vector2 InitialSize
@@ -168,13 +172,14 @@ namespace KCSG
             {
                 if (structurePrefix.Length == 0 || structurePrefix == "Required")
                 {
-                    Messages.Message("Structure prefix required.", MessageTypeDefOf.NegativeEvent);
+                    Messages.Message("Prefix required.", MessageTypeDefOf.NegativeEvent);
                 }
                 else
                 {
                     pairsCellThingList = ExportUtils.FillCellThingsList(cells, map);
                     GUIUtility.systemCopyBuffer = CreateLayout().ToString();
                     Messages.Message("Copied to clipboard.", MessageTypeDefOf.TaskCompletion);
+                    Prefix = structurePrefix;
                 }
             }
             if (Widgets.ButtonText(new Rect(350, inRect.height - bHeight, 340, bHeight), "Copy symbol(s) def(s)"))
@@ -252,7 +257,7 @@ namespace KCSG
 
         private void DrawStructurePrefix(Listing_Standard lst)
         {
-            lst.Label("Structure defName prefix:", tooltip: "For example: VFEM_ for Vanilla Faction Expanded Mechanoid");
+            lst.Label("defName(s) prefix:", tooltip: "For example: VFEM_ for Vanilla Faction Expanded Mechanoid");
             structurePrefix = lst.TextEntry(structurePrefix);
             lst.Gap();
         }
