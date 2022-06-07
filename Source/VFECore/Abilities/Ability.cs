@@ -526,7 +526,13 @@
                     this.GetRadiusForPawn() : this.def.castFleckScale, this.def.castFleckSpeed);
 
             if (this.def.fleckOnTarget != null && targetInfos.Any())
-                MakeStaticFleck(targetInfos[0].Thing.DrawPos, targetInfos[0].Map, this.def.fleckOnTarget, this.def.fleckOnTargetScale, this.def.fleckOnTargetSpeed);
+            {
+                var vec = this.def.hasAoE ? firstTarget.CenterVector3 :
+                    targetInfos[0].Thing != null ? targetInfos[0].Thing.DrawPos : targetInfos[0].Cell.ToVector3();
+                var map = targetInfos[0].Thing != null ? targetInfos[0].Map : this.pawn.Map;
+                MakeStaticFleck(vec, map, this.def.fleckOnTarget, this.def.fleckOnTargetScaleWithRadius 
+                    ? this.GetRadiusForPawn() : this.def.fleckOnTargetScale, this.def.fleckOnTargetSpeed);
+            }
 
             if (this.def.casterHediff != null)
                 this.pawn.health.AddHediff(this.def.casterHediff);
@@ -734,8 +740,10 @@
             }
         }
 
+        public LocalTargetInfo firstTarget;
         public virtual void OrderForceTarget(LocalTargetInfo target)
         {
+            firstTarget = target;
             if (target.Thing != null)
                 this.currentTargets[this.currentTargetingIndex] = target.Thing;
             else if (this.currentTargets[this.currentTargetingIndex].Map != null)

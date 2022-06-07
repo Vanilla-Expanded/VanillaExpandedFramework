@@ -73,6 +73,7 @@ namespace VFECore.Abilities
         public bool castFleckScaleWithRadius;
         public float castFleckSpeed;
         public FleckDef fleckOnTarget;
+        public bool fleckOnTargetScaleWithRadius;
         public float fleckOnTargetScale = 1f;
         public float fleckOnTargetSpeed;
 
