@@ -371,10 +371,13 @@
             if (this.pawn.IsCaravanMember()) this.Cast(targets);
             else this.pawn.jobs.StartJob(job, JobCondition.InterruptForced);
         }
+
+        private bool currentAoETargeting;
         protected virtual void ModifyTargets(ref GlobalTargetInfo[] targets)
         {
             if (this.def.hasAoE)
             {
+                currentAoETargeting = true;
                 var targetsTmp = GetTargetsAround(targets[0].Cell, this.def.targetingParametersForAoE);
                 if (this.def.targetCount == 2 && this.def.targetModes[1] == AbilityTargetingMode.Random)
                 {
@@ -386,6 +389,7 @@
                 }
 
                 targets = targetsTmp.ToArray();
+                currentAoETargeting = false;
             }
         }
 
@@ -415,12 +419,13 @@
             }
             else
             {
+
                 foreach (var thing in GenRadial.RadialDistinctThingsAround(cell, pawn.Map, maxRadius, true))
                 {
-                    if ((parms is TargetingParametersForAoE aoe ? aoe.CanTarget(thing, this) : parms.CanTarget(thing))            &&
-                        (parms is TargetingParametersForAoE aoe2 && aoe2.ignoreRangeAndSight 
-                        || AbilityModExtensions.All(x => x.ValidateTarget(thing, this, false)) &&
-                            thing.OccupiedRect().ClosestDistSquaredTo(cell) > minRadius))
+                    var aoeTargetParms = parms as TargetingParametersForAoE;
+                    if ((aoeTargetParms != null ? aoeTargetParms.CanTarget(thing, this) : parms.CanTarget(thing)) &&
+                        (aoeTargetParms != null && aoeTargetParms.ignoreRangeAndSight
+                        || this.ValidateTarget(thing, false) && thing.OccupiedRect().ClosestDistSquaredTo(cell) > minRadius))
                     {
                         if (!parms.canTargetSelf && thing == pawn) continue;
                         yield return thing;
@@ -679,6 +684,11 @@
             foreach (AbilityExtension_AbilityMod modExtension in this.AbilityModExtensions)
                 if (!modExtension.CanApplyOn(target, this))
                     return false;
+
+            if (currentAoETargeting)
+            {
+                return true;
+            }
 
             var distance = target.Cell.DistanceTo(this.pawn.Position);
             if (target.IsValid && (this.def.worldTargeting || (distance < this.GetRangeForPawn() && distance > this.def.minRange)))
