@@ -9,6 +9,7 @@ namespace KCSG
     public class Dialog_ExportWindow : Window
     {
         public static string Prefix = "";
+        public static List<string> Tags = new List<string>();
 
         private readonly Area area;
         private readonly List<IntVec3> cells = new List<IntVec3>();
@@ -47,6 +48,7 @@ namespace KCSG
             if (!SymbolDefsCreator.defCreated) SymbolDefsCreator.Run();
 
             if (Prefix != "") structurePrefix = Prefix;
+            if (!Tags.NullOrEmpty()) tags = Tags;
         }
 
         public override Vector2 InitialSize
@@ -180,6 +182,7 @@ namespace KCSG
                     GUIUtility.systemCopyBuffer = CreateLayout().ToString();
                     Messages.Message("Copied to clipboard.", MessageTypeDefOf.TaskCompletion);
                     Prefix = structurePrefix;
+                    Tags = tags;
                 }
             }
             if (Widgets.ButtonText(new Rect(350, inRect.height - bHeight, 340, bHeight), "Copy symbol(s) def(s)"))
