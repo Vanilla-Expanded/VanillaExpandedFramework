@@ -243,7 +243,9 @@ namespace KCSG
 
         public static class BuildingPlacement
         {
-            public static float GetWeight(StructOption structOption, Dictionary<string, int> structCount)
+            private static readonly Dictionary<string, List<StructureLayoutDef>> structuresTagsCache = new Dictionary<string, List<StructureLayoutDef>>();
+
+            private static float GetWeight(StructOption structOption, Dictionary<string, int> structCount)
             {
                 if (structCount.ContainsKey(structOption.tag))
                 {
@@ -267,7 +269,7 @@ namespace KCSG
                 }
             }
 
-            public static bool CanPlaceAt(IntVec3 point, StructureLayoutDef building, ResolveParams rp)
+            private static bool CanPlaceAt(IntVec3 point, StructureLayoutDef building, ResolveParams rp)
             {
                 for (int x = point.x - 1; x < building.width + point.x + 1; x++)
                 {
@@ -283,7 +285,7 @@ namespace KCSG
                 return true;
             }
 
-            public static void PlaceAt(IntVec3 point, StructureLayoutDef building)
+            private static void PlaceAt(IntVec3 point, StructureLayoutDef building)
             {
                 for (int x = point.x; x < building.width + point.x; x++)
                 {
@@ -294,16 +296,40 @@ namespace KCSG
                 }
             }
 
+            public static void CacheTags()
+            {
+                if (structuresTagsCache.NullOrEmpty())
+                {
+                    var layoutDefs = DefDatabase<StructureLayoutDef>.AllDefsListForReading;
+                    for (int i = 0; i < layoutDefs.Count; i++)
+                    {
+                        var layout = layoutDefs[i];
+                        if (!layout.tags.NullOrEmpty())
+                        {
+                            for (int o = 0; o < layout.tags.Count; o++)
+                            {
+                                string tag = layout.tags[o];
+                                if (structuresTagsCache.ContainsKey(tag))
+                                {
+                                    structuresTagsCache[tag].Add(layout);
+                                }
+                                else
+                                {
+                                    structuresTagsCache.Add(tag, new List<StructureLayoutDef> { layout });
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             public static void Run(List<IntVec3> spawnPoints, SettlementLayoutDef sld, ResolveParams rp)
             {
-                var layoutDefs = DefDatabase<StructureLayoutDef>.AllDefsListForReading;
                 Dictionary<string, int> structCount = new Dictionary<string, int>();
 
                 if (!sld.centerBuilding.NullOrEmpty())
                 {
                     var layout = sld.centerBuilding.RandomElement();
-                    Log.Warning($"Generating {layout.defName}");
-
                     var cellRect = CellRect.CenteredOn(rp.rect.CenterCell, layout.width, layout.height);
 
                     foreach (var cell in cellRect)
@@ -325,17 +351,7 @@ namespace KCSG
                             return;
                         }
 
-                        var allWithTag = new List<StructureLayoutDef>();
-                        for (int p = 0; p < layoutDefs.Count; p++)
-                        {
-                            var layout = layoutDefs[p];
-                            if (layout.tags.Contains(option.tag))
-                            {
-                                allWithTag.Add(layout);
-                            }
-                        }
-                        var layoutDef = GenUtils.ChooseStructureLayoutFrom(allWithTag);
-
+                        var layoutDef = GenUtils.ChooseStructureLayoutFrom(structuresTagsCache[option.tag]);
                         if (CanPlaceAt(vector, layoutDef, rp))
                         {
                             PlaceAt(vector, layoutDef);
