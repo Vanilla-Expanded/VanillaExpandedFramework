@@ -299,6 +299,19 @@ namespace KCSG
                 var layoutDefs = DefDatabase<StructureLayoutDef>.AllDefsListForReading;
                 Dictionary<string, int> structCount = new Dictionary<string, int>();
 
+                if (!sld.centerBuilding.NullOrEmpty())
+                {
+                    var layout = sld.centerBuilding.RandomElement();
+                    Log.Warning($"Generating {layout.defName}");
+
+                    var cellRect = CellRect.CenteredOn(rp.rect.CenterCell, layout.width, layout.height);
+
+                    foreach (var cell in cellRect)
+                        grid[cell.z][cell.x] = CellType.Used;
+
+                    GenUtils.GenerateLayout(layout, cellRect, BaseGen.globalSettings.map);
+                }
+
                 for (int i = 0; i < spawnPoints.Count; i++)
                 {
                     IntVec3 vector = spawnPoints[i];
@@ -337,12 +350,7 @@ namespace KCSG
                             }
 
                             CellRect rect = new CellRect(vector.x, vector.z, layoutDef.width, layoutDef.height);
-
-                            for (int p = 0; p < layoutDef.layouts.Count; p++)
-                            {
-                                GenUtils.GenerateRoomFromLayout(layoutDef, p, rect, BaseGen.globalSettings.map);
-                            }
-                            GenUtils.GenerateRoofGrid(layoutDef, rect, BaseGen.globalSettings.map);
+                            GenUtils.GenerateLayout(layoutDef, rect, BaseGen.globalSettings.map);
 
                             if (layoutDef.isStorage)
                             {

@@ -113,11 +113,7 @@ namespace KCSG
             if (preGenClear)
                 GenUtils.PreClean(map, cellRect, fullClear, layoutDef.roofGridResolved);
 
-            for (int i = 0; i < layoutDef.layouts.Count; i++)
-            {
-                GenUtils.GenerateRoomFromLayout(layoutDef, i, cellRect, map);
-            }
-            GenUtils.GenerateRoofGrid(layoutDef, cellRect, map);
+            GenUtils.GenerateLayout(layoutDef, cellRect, map);
 
             if (spawnTheStartingPawn && Find.GameInitData != null)
             {

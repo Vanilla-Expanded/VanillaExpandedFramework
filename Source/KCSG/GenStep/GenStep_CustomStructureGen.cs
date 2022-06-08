@@ -32,12 +32,7 @@ namespace KCSG
             CellRect cellRect = CellRect.CenteredOn(map.Center, layoutDef.width, layoutDef.height);
 
             GenUtils.PreClean(map, cellRect, fullClear, layoutDef.roofGridResolved);
-
-            for (int i = 0; i < layoutDef.layouts.Count; i++)
-            {
-                GenUtils.GenerateRoomFromLayout(layoutDef, i, cellRect, map);
-            }
-            GenUtils.GenerateRoofGrid(layoutDef, cellRect, map);
+            GenUtils.GenerateLayout(layoutDef, cellRect, map);
 
             if (shouldRuin)
             {

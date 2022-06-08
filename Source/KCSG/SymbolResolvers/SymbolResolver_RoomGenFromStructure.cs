@@ -9,12 +9,7 @@ namespace KCSG
         {
             Map map = BaseGen.globalSettings.map;
 
-            for (int i = 0; i < GenOption.structureLayoutDef.layouts.Count; i++)
-            {
-                GenUtils.GenerateRoomFromLayout(GenOption.structureLayoutDef, i, rp.rect, map);
-            }
-            GenUtils.GenerateRoofGrid(GenOption.structureLayoutDef, rp.rect, map);
-
+            GenUtils.GenerateLayout(GenOption.structureLayoutDef, rp.rect, map);
             BaseGen.symbolStack.Push("kcsg_handleruins", rp, null);
         }
     }

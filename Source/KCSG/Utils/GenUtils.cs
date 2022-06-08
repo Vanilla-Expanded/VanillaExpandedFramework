@@ -12,9 +12,21 @@ namespace KCSG
     public class GenUtils
     {
         /// <summary>
+        /// Generate layoutDef in rect
+        /// </summary>
+        public static void GenerateLayout(StructureLayoutDef layout, CellRect rect, Map map)
+        {
+            for (int index = 0; index < layout.layouts.Count; index++)
+            {
+                GenerateRoomFromLayout(layout, index, rect, map);
+            }
+            GenerateRoofGrid(layout, rect, map);
+        }
+
+        /// <summary>
         /// Entry method to generate a structure from a StructureLayoutDef
         /// </summary>
-        public static void GenerateRoomFromLayout(StructureLayoutDef layout, int index, CellRect rect, Map map)
+        private static void GenerateRoomFromLayout(StructureLayoutDef layout, int index, CellRect rect, Map map)
         {
             Faction faction = map.ParentFaction;
 
@@ -64,6 +76,12 @@ namespace KCSG
                             }
                             else
                             {
+                                if (cell.GetFirstMineable(map) != null && temp.thingDef.designationCategory == DesignationCategoryDefOf.Security)
+                                {
+                                    continue;
+                                }
+                                GenerateBuildingAt(map, cell, temp, faction, layout.spawnConduits);
+
                                 // Generating settlement, we want to keep tracks of doors
                                 if (!GenOption.ext.useStructureLayout && temp.thingDef.altitudeLayer == AltitudeLayer.DoorMoveable)
                                 {
@@ -82,12 +100,6 @@ namespace KCSG
                                     if (anyLeadOutside)
                                         SettlementGenUtils.doors.Add(cell);
                                 }
-
-                                if (cell.GetFirstMineable(map) != null && temp.thingDef.designationCategory == DesignationCategoryDefOf.Security)
-                                {
-                                    continue;
-                                }
-                                GenerateBuildingAt(map, cell, temp, faction, layout.spawnConduits);
                             }
                         }
                     }
@@ -98,7 +110,7 @@ namespace KCSG
         /// <summary>
         /// Generate terrain at cell. Make bridge if needed, remove mineable if needed.
         /// </summary>
-        public static void GenerateTerrainAt(Map map, IntVec3 cell, TerrainDef terrainDef)
+        private static void GenerateTerrainAt(Map map, IntVec3 cell, TerrainDef terrainDef)
         {
             if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
             {
@@ -114,7 +126,7 @@ namespace KCSG
         /// <summary>
         /// Generate pawn(s) at pos
         /// </summary>
-        public static void GeneratePawnAt(Map map, IntVec3 cell, SymbolDef symbol)
+        private static void GeneratePawnAt(Map map, IntVec3 cell, SymbolDef symbol)
         {
             var factionManager = Find.FactionManager;
             var parentFaction = map.ParentFaction;
@@ -175,7 +187,7 @@ namespace KCSG
         /// <summary>
         /// Generate item at pos
         /// </summary>
-        public static void GenerateItemAt(Map map, IntVec3 cell, SymbolDef symbol)
+        private static void GenerateItemAt(Map map, IntVec3 cell, SymbolDef symbol)
         {
             Thing thing = ThingMaker.MakeThing(symbol.thingDef, symbol.stuffDef ?? (symbol.thingDef.stuffCategories?.Count > 0 ? GenStuff.RandomStuffFor(symbol.thingDef) : null));
 
@@ -197,7 +209,7 @@ namespace KCSG
         /// <summary>
         /// Generate building at pos
         /// </summary>
-        public static void GenerateBuildingAt(Map map, IntVec3 cell, SymbolDef symbol, Faction faction, bool generateConduit)
+        private static void GenerateBuildingAt(Map map, IntVec3 cell, SymbolDef symbol, Faction faction, bool generateConduit)
         {
             Thing thing = ThingMaker.MakeThing(symbol.thingDef, symbol.thingDef.CostStuffCount > 0 ? (symbol.stuffDef ?? symbol.thingDef.defaultStuff ?? ThingDefOf.WoodLog) : null);
 
@@ -347,7 +359,7 @@ namespace KCSG
         /// <summary>
         /// Generate roof from layout resolved roof grid
         /// </summary>
-        public static void GenerateRoofGrid(StructureLayoutDef layout, CellRect rect, Map map)
+        private static void GenerateRoofGrid(StructureLayoutDef layout, CellRect rect, Map map)
         {
             if (layout.roofGrid != null && layout.roofGridResolved.Count > 0)
             {
@@ -445,7 +457,7 @@ namespace KCSG
         /// <summary>
         /// Clean at a cell. Terrain & things
         /// </summary>
-        public static void CleanAt(IntVec3 c, Map map, bool fullClean, Faction mapFaction, Faction player)
+        private static void CleanAt(IntVec3 c, Map map, bool fullClean, Faction mapFaction, Faction player)
         {
             // Clean things
             var things = c.GetThingList(map);

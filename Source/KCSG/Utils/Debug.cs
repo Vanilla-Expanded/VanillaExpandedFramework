@@ -26,11 +26,7 @@ namespace KCSG
                         if (UI.MouseCell().InBounds(map))
                         {
                             CellRect cellRect = CellRect.CenteredOn(UI.MouseCell(), layoutDef.width, layoutDef.height);
-                            for (int i = 0; i < layoutDef.layouts.Count; i++)
-                            {
-                                GenUtils.GenerateRoomFromLayout(layoutDef, i, cellRect, map);
-                            }
-                            GenUtils.GenerateRoofGrid(layoutDef, cellRect, map);
+                            GenUtils.GenerateLayout(layoutDef, cellRect, map);
                         }
                     }));
                 }

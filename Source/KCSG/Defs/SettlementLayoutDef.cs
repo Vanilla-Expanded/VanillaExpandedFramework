@@ -15,6 +15,7 @@ namespace KCSG
         public IntVec2 settlementSize = new IntVec2(42, 42);
 
         public List<StructOption> allowedStructures = new List<StructOption>();
+        public List<StructureLayoutDef> centerBuilding = new List<StructureLayoutDef>();
 
         public int spaceAround = 2;
 
