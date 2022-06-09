@@ -119,12 +119,12 @@
             sb.AppendLine();
 
             float rangeForPawn = this.GetRangeForPawn();
-            if (rangeForPawn > 0f)
+            if (rangeForPawn > 0f && rangeForPawn < 500f)
                 sb.AppendLine($"{"Range".Translate()}: {rangeForPawn}".Colorize(Color.cyan));
             if (this.def.minRange > 0f)
                 sb.AppendLine($"{"MinimumRange".Translate()}: {this.def.minRange}".Colorize(Color.cyan));
             float radiusForPawn = this.GetRadiusForPawn();
-            if (radiusForPawn > 0f)
+            if (radiusForPawn > 0f && radiusForPawn < 500f)
                 sb.AppendLine($"{"radius".Translate()}: {radiusForPawn}".Colorize(Color.cyan));
             if (this.def.minRadius > 0f)
                 sb.AppendLine($"{"VFEA.MinRadius".Translate()}: {this.def.minRadius}".Colorize(Color.cyan));
