@@ -131,7 +131,7 @@ namespace KCSG
             var factionManager = Find.FactionManager;
             var parentFaction = map.ParentFaction;
             var symbolFaction = symbol.faction != null ? factionManager.FirstFactionOfDef(symbol.faction) : null;
-            var slaveFaction = factionManager.AllFactionsListForReading.FindAll(f => parentFaction.HostileTo(f)).RandomElement() ?? factionManager.AllFactionsListForReading.Find(f => f != Faction.OfPlayer && f != parentFaction);
+            var slaveFaction = parentFaction != null ? factionManager.AllFactionsListForReading.FindAll(f => parentFaction.HostileTo(f)).RandomElement() : factionManager.AllFactionsListForReading.Find(f => f != Faction.OfPlayer && f != parentFaction);
             var pawns = new List<Pawn>();
 
             var request = new PawnGenerationRequest(symbol.pawnKindDefNS, symbol.isSlave ? slaveFaction : (symbol.spawnPartOfFaction ? parentFaction : symbolFaction), mustBeCapableOfViolence: true);
