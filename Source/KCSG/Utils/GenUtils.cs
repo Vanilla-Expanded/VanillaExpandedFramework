@@ -83,7 +83,7 @@ namespace KCSG
                                 GenerateBuildingAt(map, cell, temp, faction, layout.spawnConduits);
 
                                 // Generating settlement, we want to keep tracks of doors
-                                if (!GenOption.ext.useStructureLayout && temp.thingDef.altitudeLayer == AltitudeLayer.DoorMoveable)
+                                if (GenOption.ext != null && !GenOption.ext.useStructureLayout && temp.thingDef.altitudeLayer == AltitudeLayer.DoorMoveable)
                                 {
                                     // Only register door that lead outside
                                     var adj = GenAdjFast.AdjacentCellsCardinal(cell);
@@ -98,7 +98,7 @@ namespace KCSG
                                     }
 
                                     if (anyLeadOutside)
-                                        SettlementGenUtils.doors.Add(cell);
+                                        SettlementGenUtils.doors?.Add(cell);
                                 }
                             }
                         }
