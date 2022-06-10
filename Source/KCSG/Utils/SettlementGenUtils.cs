@@ -73,9 +73,12 @@ namespace KCSG
             Debug.Message($"Sampling time: {(DateTime.Now - samplingStart).TotalMilliseconds}ms. Vects count: {vects?.Count}");
 
             // Place and choose buildings. Also push resolvers
-            var buildingStart = DateTime.Now;
-            BuildingPlacement.Run(vects, settlementLayoutDef, rp);
-            Debug.Message($"Building time: {(DateTime.Now - buildingStart).TotalMilliseconds}ms. Doors count: {doors.Count}");
+            if (!vects.NullOrEmpty())
+            {
+                var buildingStart = DateTime.Now;
+                BuildingPlacement.Run(vects, settlementLayoutDef, rp);
+                Debug.Message($"Building time: {(DateTime.Now - buildingStart).TotalMilliseconds}ms. Doors count: {doors.Count}");
+            }
         }
 
         public static class Sampling
@@ -327,6 +330,16 @@ namespace KCSG
 
             public static void Run(List<IntVec3> spawnPoints, SettlementLayoutDef sld, ResolveParams rp)
             {
+                // NO full clear, avoid mountains
+                if (!GenOption.ext.fullClear)
+                {
+                    foreach (var cell in rp.rect)
+                    {
+                        if (!cell.Walkable(BaseGen.globalSettings.map))
+                            grid[cell.x][cell.z] = CellType.Used;
+                    }
+                }
+
                 Dictionary<string, int> structCount = new Dictionary<string, int>();
 
                 if (!sld.centerBuilding.NullOrEmpty())
