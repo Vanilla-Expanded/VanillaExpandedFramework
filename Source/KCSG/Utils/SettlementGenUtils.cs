@@ -245,28 +245,30 @@ namespace KCSG
         {
             private static readonly Dictionary<string, List<StructureLayoutDef>> structuresTagsCache = new Dictionary<string, List<StructureLayoutDef>>();
 
-            private static float GetWeight(StructOption structOption, Dictionary<string, int> structCount)
+            private static float GetWeight(StructOption structOption, StructOption lastStructOption, Dictionary<string, int> structCount)
             {
                 if (structCount.ContainsKey(structOption.tag))
                 {
                     int count = structCount.TryGetValue(structOption.tag);
+
+                    if (count == structOption.count.max)
+                        return 0;
+
+                    if (lastStructOption != null && lastStructOption.tag == structOption.tag)
+                        return 0.1f;
+
                     if (count < structOption.count.min)
-                    {
-                        return 2f;
-                    }
-                    else if (count == structOption.count.max)
-                    {
-                        return 0f;
-                    }
-                    else
-                    {
-                        return 1f;
-                    }
+                        return 2;
+
+                    return 1;
                 }
-                else
+
+                if (structOption.count.min > 0)
                 {
-                    return 3f;
+                    return 3;
                 }
+
+                return 1;
             }
 
             private static bool CanPlaceAt(IntVec3 point, StructureLayoutDef building, ResolveParams rp)
@@ -338,18 +340,20 @@ namespace KCSG
                     GenUtils.GenerateLayout(layout, cellRect, BaseGen.globalSettings.map);
                 }
 
+                StructOption last = null;
                 for (int i = 0; i < spawnPoints.Count; i++)
                 {
                     IntVec3 vector = spawnPoints[i];
                     for (int o = 0; o < 50; o++)
                     {
-                        sld.allowedStructures.TryRandomElementByWeight(p => GetWeight(p, structCount), out StructOption option);
+                        sld.allowedStructures.TryRandomElementByWeight(p => GetWeight(p, last, structCount), out StructOption option);
 
                         if (option == null)
                         {
                             Debug.Message($"No available structures. Allow more of one or multiples structure tags");
                             return;
                         }
+                        last = option;
 
                         var layoutDef = GenUtils.ChooseStructureLayoutFrom(structuresTagsCache[option.tag]);
                         if (CanPlaceAt(vector, layoutDef, rp))
