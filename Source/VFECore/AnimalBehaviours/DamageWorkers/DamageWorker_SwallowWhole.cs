@@ -15,7 +15,7 @@ namespace AnimalBehaviours
         public static Thing instigatorToSet;
         public static void Prefix(Thing __instance, DamageInfo dinfo)
         {
-            if (instigatorToSet != null)
+            if (instigatorToSet != null && dinfo.Instigator is null)
             {
                 AccessTools.Field(typeof(DamageInfo), "instigatorInt").SetValueDirect(__makeref(dinfo), instigatorToSet);
             }
