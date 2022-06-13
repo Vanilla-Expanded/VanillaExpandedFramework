@@ -22,6 +22,7 @@ namespace KCSG
         public bool addMainRoad = false;
         public TerrainDef mainRoadDef = null;
 
+        public bool addRoad = false;
         public TerrainDef roadDef = null;
 
         public bool addLandingPad = false;
