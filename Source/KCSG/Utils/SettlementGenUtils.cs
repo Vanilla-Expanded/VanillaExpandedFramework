@@ -75,7 +75,7 @@ namespace KCSG
             Debug.Message($"Sampling time: {(DateTime.Now - samplingStart).TotalMilliseconds}ms. Vects count: {vects?.Count}");
 
             // Place and choose buildings.
-            if (!vects.NullOrEmpty())
+            if (vects != null && vects.Count > 1)
             {
                 var buildingStart = DateTime.Now;
                 BuildingPlacement.Run(vects, settlementLayoutDef, rp);
