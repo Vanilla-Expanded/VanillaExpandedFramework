@@ -43,6 +43,13 @@ namespace KCSG
             }
 
             Debug.Message($"Total time (without pawn gen): {(DateTime.Now - startTime).TotalSeconds}s.");
+
+            // Flood refog
+            if (map.mapPawns.FreeColonistsSpawned.Count > 0)
+            {
+                Debug.Message($"Refog map.");
+                FloodFillerFog.DebugRefogMap(map);
+            }
         }
     }
 }
