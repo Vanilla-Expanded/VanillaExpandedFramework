@@ -12,7 +12,7 @@
   <!-- Generate faction base -->
   <GenStepDef>
     <defName>KCSG_Settlement</defName>
-    <order>599</order>
+    <order>999</order>
     <genStep Class="KCSG.GenStep_Settlement">
       <count>1</count>
       <nearMapCenter>true</nearMapCenter>
