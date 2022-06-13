@@ -42,6 +42,17 @@ namespace KCSG
                     edgeParms.edgeThingMustReachMapEdge = new bool?(rp.edgeThingMustReachMapEdge ?? true);
                     BaseGen.symbolStack.Push("edgeDefense", edgeParms, null);
                 }
+                // Add vanilla settlement defense
+                else if (GenOption.settlementLayoutDef.vanillaLikeDefenseNoSandBags)
+                {
+                    int dWidth = Rand.Bool ? 2 : 4;
+                    ResolveParams edgeParms = rp;
+                    edgeParms.rect = new CellRect(rp.rect.minX - dWidth, rp.rect.minZ - dWidth, rp.rect.Width + (dWidth * 2), rp.rect.Height + (dWidth * 2));
+                    edgeParms.faction = rp.faction;
+                    edgeParms.edgeDefenseWidth = dWidth;
+                    edgeParms.edgeThingMustReachMapEdge = new bool?(rp.edgeThingMustReachMapEdge ?? true);
+                    BaseGen.symbolStack.Push("kcsg_edgeDefense", edgeParms, null);
+                }
 
                 // Add pad if needed
                 if (GenOption.settlementLayoutDef.addLandingPad && ModLister.RoyaltyInstalled)

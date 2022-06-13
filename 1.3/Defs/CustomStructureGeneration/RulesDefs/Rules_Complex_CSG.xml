@@ -130,4 +130,13 @@
       <li Class="KCSG.SymbolResolver_ScatterStuffAround" />
     </resolvers>
   </RuleDef>
+
+  <!-- defense -->
+  <RuleDef>
+    <defName>KCSG_EdgeDefense</defName>
+    <symbol>kcsg_edgeDefense</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_EdgeDefenseNoSandbags" />
+    </resolvers>
+  </RuleDef>
 </Defs>

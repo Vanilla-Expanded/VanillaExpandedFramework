@@ -62,6 +62,7 @@
     <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_RandomTerrainRemoval.cs" />
     <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_RemovePerishable.cs" />
     <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_ScatterStuffAround.cs" />
+    <Compile Include="SymbolResolvers\SymbolResolver_EdgeDefenseNoSandbags.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_GenerateRoad.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_HandleRuins.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_SettlementPower.cs" />
