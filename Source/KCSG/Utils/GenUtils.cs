@@ -469,7 +469,7 @@ namespace KCSG
                     {
                         thing.DeSpawn();
                     }
-                    else if (fullClean /*&& (thing.def.category != ThingCategory.Building || !thing.def.building.isNaturalRock)*/)
+                    else if (fullClean && (thing.def.category != ThingCategory.Building || !thing.def.building.isNaturalRock))
                     {
                         thing.DeSpawn();
                     }
@@ -490,7 +490,8 @@ namespace KCSG
             }
 
             // Clean roof
-            map.roofGrid.SetRoof(c, null);
+            if (fullClean)
+                map.roofGrid.SetRoof(c, null);
         }
 
         /// <summary>
