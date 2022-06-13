@@ -382,24 +382,34 @@ namespace KCSG
                         if (wantedRoof == "1" && (layout.forceGenerateRoof || currentRoof == null))
                         {
                             map.roofGrid.SetRoof(cell, RoofDefOf.RoofConstructed);
+                            ClearInterferesWithRoof(cell, map);
                             continue;
                         }
 
                         if (wantedRoof == "2" && (layout.forceGenerateRoof || currentRoof == null || currentRoof == RoofDefOf.RoofConstructed))
                         {
                             map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThin);
+                            ClearInterferesWithRoof(cell, map);
                             continue;
                         }
 
                         if (wantedRoof == "3")
                         {
                             map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThick);
+                            ClearInterferesWithRoof(cell, map);
                             continue;
                         }
                     }
 
                 }
             }
+        }
+
+        private static void ClearInterferesWithRoof(IntVec3 cell, Map map)
+        {
+            var t = cell.GetPlant(map);
+            if (t != null && t.def.plant != null && t.def.plant.interferesWithRoof)
+                t.DeSpawn();
         }
 
         /// <summary>
