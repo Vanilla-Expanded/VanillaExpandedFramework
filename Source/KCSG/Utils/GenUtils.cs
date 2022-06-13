@@ -410,6 +410,8 @@ namespace KCSG
             var t = cell.GetPlant(map);
             if (t != null && t.def.plant != null && t.def.plant.interferesWithRoof)
                 t.DeSpawn();
+
+            cell.GetFirstMineable(map)?.DeSpawn();
         }
 
         /// <summary>
