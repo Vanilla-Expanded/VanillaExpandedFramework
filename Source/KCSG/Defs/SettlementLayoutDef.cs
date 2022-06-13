@@ -29,6 +29,7 @@ namespace KCSG
 
         public bool addLandingPad = false;
         public bool vanillaLikeDefense = false;
+        public bool vanillaLikeDefenseNoSandBags = false;
 
         public PawnGroupKindDef groupKindDef = null;
         public float pawnGroupMultiplier = 1f;

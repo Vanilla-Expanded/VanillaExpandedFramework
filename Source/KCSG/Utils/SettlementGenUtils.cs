@@ -1222,119 +1222,108 @@ namespace KCSG
             public class Location
             {
                 public IntVec3 vec3;
-                public int f;
-                public int g;
-                public int h;
+                public int distance;
+                public int cost;
 
-                public Location parent;
+                public Location Parent { get; set; }
+                public int CostDistance => cost + distance;
+                public int X => vec3.x;
+                public int Y => vec3.z;
 
-                public void SetHScore(int targetX, int targetY)
+                public void SetDistance(int targetX, int targetY)
                 {
-                    h = Math.Abs(targetX - vec3.x) + Math.Abs(targetY - vec3.z);
-                }
-
-                public void SetFScore()
-                {
-                    f = g + h;
+                    distance = Math.Abs(targetX - X) + Math.Abs(targetY - Y);
                 }
             }
 
-            public static List<IntVec3> GetPath(IntVec3 start, IntVec3 target, CellType[][] grid, Map map)
+            public static void DoPath(IntVec3 iStart, IntVec3 iTarget, Map map, SettlementLayoutDef sld, CellRect rect)
             {
                 // Setup
-                Location current = null;
-                var lStart = new Location { vec3 = start };
-                var lTarget = new Location { vec3 = target };
+                var start = new Location { vec3 = iStart };
+                var target = new Location { vec3 = iTarget };
 
-                var openList = new List<Location>();
-                var closedList = new List<Location>();
+                start.SetDistance(target.X, target.Y);
 
-                int g = 0;
-                int openListCount = 0;
-
-                openList.Add(lStart);
-                openListCount++;
-
-                // Main loop
-                while (openListCount > 0)
+                var lActive = new List<Location>
                 {
-                    var lowest = openList.Min(l => l.f);
-                    current = openList.First(l => l.f == lowest);
+                    start
+                };
+                var lVisited = new List<Location>();
+                var lActiveCount = 1;
 
-                    closedList.Add(current);
-                    openList.Remove(current);
-                    openListCount--;
-
-                    if (closedList.FirstOrDefault(l => l.vec3.x == lTarget.vec3.x && l.vec3.y == lTarget.vec3.y) != null)
-                        break;
-
-                    var adjacentCells = GetWalkableAdjacentCells(current.vec3, map);
-                    g++;
-
-                    for (int i = 0; i < adjacentCells.Count; i++)
+                while (lActiveCount > 0)
+                {
+                    var checkCell = lActive.OrderByDescending(x => x.CostDistance).Last();
+                    if (checkCell.X == target.X && checkCell.Y == target.Y)
                     {
-                        var adjacentCell = adjacentCells[i];
-
-                        // already in the closed list, ignore it
-                        if (closedList.FirstOrDefault(l => l.vec3.x == adjacentCell.vec3.x && l.vec3.z == adjacentCell.vec3.z) != null)
+                        var cell = checkCell;
+                        while (cell != null)
                         {
-                            continue;
+                            if (map.terrainGrid.TerrainAt(cell.vec3) is TerrainDef terrainDef)
+                            {
+                                if (!terrainDef.BuildableByPlayer)
+                                {
+                                    if (terrainDef.affordances.Contains(TerrainAffordanceDefOf.Bridgeable))
+                                        map.terrainGrid.SetTerrain(cell.vec3, TerrainDefOf.Bridge);
+                                    else
+                                        map.terrainGrid.SetTerrain(cell.vec3, sld.roadDef);
+                                }
+                            }
+
+                            cell.vec3.GetFirstMineable(map)?.DeSpawn();
+                            cell = cell.Parent;
                         }
+                        return;
+                    }
 
-                        // if it's not in the open list...
-                        if (openList.FirstOrDefault(l => l.vec3.x == adjacentCell.vec3.x && l.vec3.z == adjacentCell.vec3.z) == null)
+                    lVisited.Add(checkCell);
+                    lActive.Remove(checkCell);
+                    lActiveCount--;
+
+                    var adj = GetWalkableAdjacentCells(map, checkCell, target, rect);
+                    for (int i = 0; i < adj.Count; i++)
+                    {
+                        var cell = adj[i];
+                        if (lVisited.Any(x => x.vec3 == cell.vec3))
+                            continue;
+
+                        if (lActive.Find(x => x.vec3 == cell.vec3) is Location loc && loc.CostDistance > checkCell.CostDistance)
                         {
-                            // compute its scores, set the parent
-                            adjacentCell.g = g + map.pathing.Normal.pathGrid.PerceivedPathCostAt(adjacentCell.vec3);
-                            adjacentCell.SetHScore(lTarget.vec3.x, lTarget.vec3.z);
-                            adjacentCell.SetFScore();
-                            adjacentCell.parent = current;
-
-                            // and add it to the open list
-                            openList.Insert(0, adjacentCell);
-                            openListCount++;
+                            lActive.Remove(loc);
+                            lActive.Add(cell);
                         }
                         else
                         {
-                            // test if using the current G score makes the adjacent square's F score
-                            // lower, if yes update the parent because it means it's a better path
-                            if (g + adjacentCell.h < adjacentCell.f)
-                            {
-                                adjacentCell.g = g + map.pathing.Normal.pathGrid.PerceivedPathCostAt(adjacentCell.vec3);
-                                adjacentCell.SetFScore();
-                                adjacentCell.parent = current;
-                            }
+                            lActive.Add(cell);
+                            lActiveCount++;
                         }
                     }
                 }
-
-                // Get the path
-                var path = new List<IntVec3>();
-                while (current != null)
-                {
-                    path.Add(current.vec3);
-                    current = current.parent;
-                }
-
-                return path;
             }
 
-            private static List<Location> GetWalkableAdjacentCells(IntVec3 pos, Map map)
+            private static List<Location> GetWalkableAdjacentCells(Map map, Location current, Location target, CellRect rect)
             {
-                var adjacent4ways = new List<Location>()
+                var result = new List<Location>();
+                var adj = new List<Location>()
                 {
-                    new Location { vec3 = new IntVec3(pos.x, 0, pos.z - 1) },
-                    new Location { vec3 = new IntVec3(pos.x, 0, pos.z + 1) },
-                    new Location { vec3 = new IntVec3(pos.x - 1, 0, pos.z) },
-                    new Location { vec3 = new IntVec3(pos.x + 1, 0, pos.z) },
+                    new Location { vec3 = new IntVec3(current.X, 0, current.Y - 1), Parent = current },
+                    new Location { vec3 = new IntVec3(current.X, 0, current.Y + 1), Parent = current },
+                    new Location { vec3 = new IntVec3(current.X - 1, 0, current.Y), Parent = current },
+                    new Location { vec3 = new IntVec3(current.X + 1, 0, current.Y), Parent = current }
                 };
 
-                var result = new List<Location>();
+                bool InBound(IntVec3 cell) => cell.x >= rect.minX && cell.x <= rect.maxX && cell.z >= rect.minZ && cell.z <= rect.maxZ;
+
+                var pathGrid = map.pathing.Normal.pathGrid;
                 for (int i = 0; i < 4; i++)
                 {
-                    var loc = adjacent4ways[i];
-                    if (loc.vec3.Walkable(map) || (loc.vec3.InBounds(map) && loc.vec3.GetFirstMineable(map) != null))
+                    var loc = adj[i];
+                    if (InBound(loc.vec3) && (pathGrid.WalkableFast(loc.vec3) || loc.vec3.GetFirstMineable(map) != null))
+                    {
+                        loc.SetDistance(target.X, target.Y);
+                        loc.cost = current.cost + 1 + pathGrid.PerceivedPathCostAt(loc.vec3);
                         result.Add(loc);
+                    }
                 }
 
                 return result;

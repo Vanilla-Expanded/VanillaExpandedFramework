@@ -85,20 +85,7 @@ namespace KCSG
                                 // Generating settlement, we want to keep tracks of doors
                                 if (GenOption.ext != null && !GenOption.ext.useStructureLayout && temp.thingDef.altitudeLayer == AltitudeLayer.DoorMoveable)
                                 {
-                                    // Only register door that lead outside
-                                    var adj = GenAdjFast.AdjacentCellsCardinal(cell);
-                                    var anyLeadOutside = false;
-                                    for (int o = 0; o < adj.Count; o++)
-                                    {
-                                        if (adj[o].UsesOutdoorTemperature(map))
-                                        {
-                                            anyLeadOutside = true;
-                                            break;
-                                        }
-                                    }
-
-                                    if (anyLeadOutside)
-                                        SettlementGenUtils.doors?.Add(cell);
+                                    SettlementGenUtils.doors?.Add(cell);
                                 }
                             }
                         }

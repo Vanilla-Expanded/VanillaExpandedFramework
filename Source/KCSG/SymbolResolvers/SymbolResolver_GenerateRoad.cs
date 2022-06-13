@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using RimWorld.BaseGen;
 using Verse;
@@ -12,42 +13,35 @@ namespace KCSG
         {
             Map map = BaseGen.globalSettings.map;
 
-            var delaunayStart = DateTime.Now;
-            var edges = new Delaunay(doors).GetEdges();
-            Debug.Message($"Delaunay time: {(DateTime.Now - delaunayStart).TotalMilliseconds}ms. Edges count: {edges.Count()}");
-            /*foreach (var edge in edges)
+            var doorsLeadingOutside = new List<IntVec3>();
+            for (int i = 0; i < doors.Count; i++)
             {
-                var path = PathFinder.GetPath(edge.P.IntVec3, edge.Q.IntVec3, grid, map);
-                if (path != null)
+                var door = doors[i];
+                // Only register door that lead outside
+                var adj = GenAdjFast.AdjacentCellsCardinal(door);
+                var anyLeadOutside = false;
+                for (int o = 0; o < adj.Count; o++)
                 {
-                    Debug.Message($"Path cells count: {path.Count}");
-                    for (int o = 0; o < path.Count; o++)
+                    if (adj[o].UsesOutdoorTemperature(map) || adj[o].GetFirstMineable(map) != null)
                     {
-                        var cell = path[o];
-                        map.terrainGrid.SetTerrain(cell, GenOption.settlementLayoutDef.roadDef);
-
-                        var things = map.thingGrid.ThingsListAtFast(cell);
-                        for (int p = 0; p < things.Count; p++)
-                        {
-                            var thing = things[p];
-                            if (thing.def.passability == Traversability.Impassable)
-                            {
-                                thing.DeSpawn();
-                            }
-                        }
+                        anyLeadOutside = true;
+                        break;
                     }
                 }
+
+                if (anyLeadOutside)
+                    doorsLeadingOutside.Add(door);
             }
 
-            doors.ForEach(d =>
+            var delaunayStart = DateTime.Now;
+            var edges = new Delaunay(doorsLeadingOutside).GetEdges();
+            Debug.Message($"Delaunay time: {(DateTime.Now - delaunayStart).TotalMilliseconds}ms. Edges count: {edges.Count()}");
+
+            foreach (var edge in edges)
             {
-                GenSpawn.Spawn(ThingMaker.MakeThing(ThingDefOf.Wall, ThingDefOf.Gold), d, map, WipeMode.Vanish);
-            });*/
+                PathFinder.DoPath(edge.P.IntVec3, edge.Q.IntVec3, map, GenOption.settlementLayoutDef, rp.rect);
+            }
 
-            // TODO: Field gen
-            // BaseGen.symbolStack.Push("kcsg_addfields", rp, null);
-
-            // rp.rect.EdgeCells.ToList().ForEach(cell => SpawnConduit(cell, map));
             Debug.Message($"Total time (without pawn gen): {(DateTime.Now - startTime).TotalSeconds}s.");
         }
     }
