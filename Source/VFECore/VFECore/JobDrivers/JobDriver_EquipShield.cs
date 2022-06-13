@@ -42,6 +42,10 @@ namespace VFECore
 
                     ShieldUtility.MakeRoomForShield(pawn, equippedThing);
                     pawn.apparel.Wear((Apparel)equippedThing);
+                    if (pawn.outfits != null && job.playerForced)
+                    {
+                        pawn.outfits.forcedHandler.SetForced((Apparel)equippedThing, forced: true);
+                    }
                     if (equipmentStack.def.soundInteract != null)
                     {
                         equipmentStack.def.soundInteract.PlayOneShot(new TargetInfo(pawn.Position, pawn.Map, false));

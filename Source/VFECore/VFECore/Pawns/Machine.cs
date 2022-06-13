@@ -25,7 +25,13 @@ namespace VFEMech
                     this.drafter = new Pawn_DraftController(this);
                 }
             }
+
+            if (this.Faction == Faction.OfPlayer && this.Name == null)
+            {
+                this.Name = PawnBioAndNameGenerator.GeneratePawnName(this, NameStyle.Numeric);
+            }
         }
+
         public override void PostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
         {
             base.PostApplyDamage(dinfo, totalDamageDealt);
