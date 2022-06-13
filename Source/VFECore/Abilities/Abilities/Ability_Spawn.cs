@@ -36,13 +36,14 @@ namespace VFECore.Abilities
 
         public static void Spawn(GlobalTargetInfo target, ThingDef def, Ability ability)
         {
-            var thing                                                                           = GenSpawn.Spawn(def, target.Cell, target.Map);
-            if (thing.TryGetComp<CompDuration>() is CompDuration comp1) comp1.durationTicksLeft = ability.GetDurationForPawn();
-            if (thing.TryGetComp<CompAbilitySpawn>() is CompAbilitySpawn comp2)
+            var thing                                                                  = ThingMaker.MakeThing(def);
+            if (thing.TryGetComp<CompDuration>() is { } comp1) comp1.durationTicksLeft = ability.GetDurationForPawn();
+            if (thing.TryGetComp<CompAbilitySpawn>() is { } comp2)
             {
                 comp2.pawn   = ability.pawn;
                 comp2.source = ability;
             }
+            GenSpawn.Spawn(thing, target.Cell, target.Map);
         }
     }
 
