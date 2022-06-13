@@ -47,9 +47,9 @@ namespace KCSG
             foreach (var cell in rect)
             {
                 TerrainDef t = map.terrainGrid.TerrainAt(cell);
-                if (t.affordances.Contains(TerrainAffordanceDefOf.Bridgeable)
-                    || (mapRoad != null && mapRoad.Contains(t))
-                    || cell.GetFirstMineable(map) != null)
+                if ((mapRoad != null && mapRoad.Contains(t))
+                    || (settlementLayoutDef.avoidBridgeable && t.affordances.Contains(TerrainAffordanceDefOf.Bridgeable))
+                    || (settlementLayoutDef.avoidMountains && cell.GetFirstMineable(map) != null))
                 {
                     grid[cell.z][cell.x] = CellType.Used;
                 }

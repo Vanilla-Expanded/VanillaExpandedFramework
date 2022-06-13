@@ -18,6 +18,8 @@ namespace KCSG
         public List<StructureLayoutDef> centerBuilding = new List<StructureLayoutDef>();
 
         public int spaceAround = 2;
+        public bool avoidBridgeable = false;
+        public bool avoidMountains = false;
 
         public bool addMainRoad = false;
         public TerrainDef mainRoadDef = null;
