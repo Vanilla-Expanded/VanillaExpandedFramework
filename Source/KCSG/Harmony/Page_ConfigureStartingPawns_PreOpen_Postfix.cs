@@ -1,14 +1,15 @@
-﻿using HarmonyLib;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using HarmonyLib;
+using RimWorld;
 using Verse;
 
 namespace KCSG
 {
     [StaticConstructorOnStartup]
-    [HarmonyPatch(typeof(RimWorld.Page_ConfigureStartingPawns))]
+    [HarmonyPatch(typeof(Page_ConfigureStartingPawns))]
     [HarmonyPatch("PreOpen", MethodType.Normal)]
-    public class PrepareCarefully_Fix
+    public class Page_ConfigureStartingPawns_PreOpen_Postfix
     {
         [HarmonyPostfix]
         private static void Postfix()
