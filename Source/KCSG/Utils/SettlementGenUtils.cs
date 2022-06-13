@@ -43,11 +43,13 @@ namespace KCSG
             }
             // Get vanilla road if applicable
             mapRoad = GenUtils.SetRoadInfo(map);
-            // Check all terrain for bridgeable and existing vanilla road(s)
+            // Check all terrain for bridgeable, existing vanilla road(s), moutains
             foreach (var cell in rect)
             {
                 TerrainDef t = map.terrainGrid.TerrainAt(cell);
-                if (t.affordances.Contains(TerrainAffordanceDefOf.Bridgeable) || (mapRoad != null && mapRoad.Contains(t)))
+                if (t.affordances.Contains(TerrainAffordanceDefOf.Bridgeable)
+                    || (mapRoad != null && mapRoad.Contains(t))
+                    || cell.GetFirstMineable(map) != null)
                 {
                     grid[cell.z][cell.x] = CellType.Used;
                 }
@@ -72,7 +74,7 @@ namespace KCSG
             var vects = Sampling.SampleCircle(rect, rect.CenterCell, Math.Max(rect.Width, rect.Height), radius, new Random());
             Debug.Message($"Sampling time: {(DateTime.Now - samplingStart).TotalMilliseconds}ms. Vects count: {vects?.Count}");
 
-            // Place and choose buildings. Also push resolvers
+            // Place and choose buildings.
             if (!vects.NullOrEmpty())
             {
                 var buildingStart = DateTime.Now;
@@ -292,14 +294,18 @@ namespace KCSG
 
             private static void PlaceAt(IntVec3 point, StructureLayoutDef building)
             {
-                for (int x = point.x; x < building.width + point.x; x++)
+                int m = GenOption.settlementLayoutDef.spaceAround;
+                for (int x = point.x - m; x < building.width + point.x + m; x++)
                 {
-                    for (int z = point.z; z < building.height + point.z; z++)
+                    for (int z = point.z - m; z < building.height + point.z + m; z++)
                     {
-                        grid[z][x] = CellType.Used;
+                        if (InBound(x, z))
+                            grid[z][x] = CellType.Used;
                     }
                 }
             }
+
+            private static bool InBound(int x, int z) => x > 0 && x < grid[0].Length && z > 0 && z < grid.Length;
 
             public static void CacheTags()
             {
