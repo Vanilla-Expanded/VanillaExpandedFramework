@@ -14,7 +14,7 @@ namespace KCSG
         public static XElement CreateStructureDef(List<IntVec3> cellExport, Map map, Dictionary<IntVec3, List<Thing>> pairsCellThingList, Area area, bool exportFilth, bool exportNatural)
         {
             cellExport.Sort((x, y) => x.z.CompareTo(y.z));
-            XElement StructureLayoutDef = new XElement("KCSG.StructureLayoutDef", null);
+            XElement sld = new XElement("KCSG.StructureLayoutDef", null);
 
             XElement layouts = new XElement("layouts", null);
             // Add pawns layout
@@ -27,25 +27,37 @@ namespace KCSG
             XElement terrainL = CreateTerrainlayout(cellExport, area, map, exportNatural, out bool add3);
             if (add3) layouts.Add(terrainL);
             // Add things layouts
-            int numOfLayout = GetMaxThingOnOneCell(cellExport, pairsCellThingList, exportFilth);
+            int numOfLayout = GetMaxThings(cellExport, pairsCellThingList, exportFilth);
             for (int i = 0; i < numOfLayout; i++)
             {
                 layouts.Add(CreateThinglayout(cellExport, i, area, pairsCellThingList, exportFilth));
             }
 
-            StructureLayoutDef.Add(layouts);
+            sld.Add(layouts);
 
             // Add roofGrid
             XElement roofGrid = CreateRoofGrid(cellExport, map, out bool add4, area);
-            if (add4) StructureLayoutDef.Add(roofGrid);
+            if (add4) sld.Add(roofGrid);
 
-            return StructureLayoutDef;
+            // Mod required
+            var requiredMods = GetNeededMods(cellExport, pairsCellThingList);
+            if (requiredMods.Count > 0)
+            {
+                XElement requiredX = new XElement("modRequirements");
+                for (int i = 0; i < requiredMods.Count; i++)
+                {
+                    requiredX.Add(new XElement("li", requiredMods[i]));
+                }
+                sld.Add(requiredX);
+            }
+
+            return sld;
         }
 
         /// <summary>
         /// Create layout for things
         /// </summary>
-        public static XElement CreateThinglayout(List<IntVec3> cellExport, int index, Area area, Dictionary<IntVec3, List<Thing>> pairsCellThingList, bool exportFilth)
+        private static XElement CreateThinglayout(List<IntVec3> cellExport, int index, Area area, Dictionary<IntVec3, List<Thing>> pairsCellThingList, bool exportFilth)
         {
             XElement liMain = new XElement("li", null);
             EdgeFromList(cellExport, out int height, out int width);
@@ -122,7 +134,7 @@ namespace KCSG
         /// <summary>
         /// Create layout for terrains
         /// </summary>
-        public static XElement CreateTerrainlayout(List<IntVec3> cellExport, Area area, Map map, bool exportNatural, out bool add)
+        private static XElement CreateTerrainlayout(List<IntVec3> cellExport, Area area, Map map, bool exportNatural, out bool add)
         {
             XElement liMain = new XElement("li", null);
             EdgeFromList(cellExport, out int height, out int width);
@@ -180,7 +192,7 @@ namespace KCSG
         /// <summary>
         /// Create roof grid
         /// </summary>
-        public static XElement CreateRoofGrid(List<IntVec3> cellExport, Map map, out bool add, Area area)
+        private static XElement CreateRoofGrid(List<IntVec3> cellExport, Map map, out bool add, Area area)
         {
             XElement roofGrid = new XElement("roofGrid", null);
             EdgeFromList(cellExport, out int height, out int width);
@@ -223,7 +235,7 @@ namespace KCSG
         /// <summary>
         /// Create layout for pawns
         /// </summary>
-        public static XElement CreatePawnlayout(List<IntVec3> cellExport, Area area, out bool add, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
+        private static XElement CreatePawnlayout(List<IntVec3> cellExport, Area area, out bool add, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
         {
             XElement liMain = new XElement("li", null);
             EdgeFromList(cellExport, out int height, out int width);
@@ -273,7 +285,7 @@ namespace KCSG
         /// <summary>
         /// Create layout for items
         /// </summary>
-        public static XElement CreateItemlayout(List<IntVec3> cellExport, Area area, out bool add, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
+        private static XElement CreateItemlayout(List<IntVec3> cellExport, Area area, out bool add, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
         {
             add = false;
             XElement liMain = new XElement("li", null);
@@ -383,7 +395,7 @@ namespace KCSG
         /// <summary>
         /// Get smallest X and Z value out of a list
         /// </summary>
-        public static void MinMaxXZ(List<IntVec3> list, out int zMin, out int zMax, out int xMin, out int xMax)
+        private static void MinMaxXZ(List<IntVec3> list, out int zMin, out int zMax, out int xMin, out int xMax)
         {
             zMin = list[0].z;
             zMax = 0;
@@ -403,7 +415,7 @@ namespace KCSG
         /// <summary>
         /// Get height/width from list
         /// </summary>
-        public static void EdgeFromList(List<IntVec3> cellExport, out int height, out int width)
+        private static void EdgeFromList(List<IntVec3> cellExport, out int height, out int width)
         {
             height = 0;
             width = 0;
@@ -420,7 +432,7 @@ namespace KCSG
         /// <summary>
         /// Get the maximum amount of things in one cell in this list
         /// </summary>
-        public static int GetMaxThingOnOneCell(List<IntVec3> cellExport, Dictionary<IntVec3, List<Thing>> pairsCellThingList, bool exportFilth)
+        private static int GetMaxThings(List<IntVec3> cellExport, Dictionary<IntVec3, List<Thing>> pairsCellThingList, bool exportFilth)
         {
             int max = 1;
             for (int i = 0; i < cellExport.Count; i++)
@@ -448,9 +460,29 @@ namespace KCSG
         }
 
         /// <summary>
+        /// Get the needed mods for an export
+        /// </summary>
+        private static List<string> GetNeededMods(List<IntVec3> cellExport, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
+        {
+            var modsId = new HashSet<string>();
+            for (int i = 0; i < cellExport.Count; i++)
+            {
+                var things = pairsCellThingList.TryGetValue(cellExport[i]);
+                for (int o = 0; o < things.Count; o++)
+                {
+                    var packageId = things[o].def.modContentPack.PackageId;
+                    if (packageId != "ludeon.rimworld")
+                        modsId.Add(packageId);
+                }
+            }
+
+            return modsId.ToList();
+        }
+
+        /// <summary>
         /// Create symbol from item
         /// </summary>
-        public static void CreateItemSymbolFromThing(Thing thingT, List<XElement> symbols)
+        private static void CreateItemSymbolFromThing(Thing thingT, List<XElement> symbols)
         {
             if (!DefDatabase<SymbolDef>.AllDefsListForReading.FindAll(s => s.thingDef == thingT.def).Any())
             {
@@ -468,7 +500,7 @@ namespace KCSG
         /// <summary>
         /// Create symbol from pawn
         /// </summary>
-        public static void CreateSymbolFromPawn(Pawn pawn, List<XElement> symbols)
+        private static void CreateSymbolFromPawn(Pawn pawn, List<XElement> symbols)
         {
             if (!DefDatabase<SymbolDef>.AllDefsListForReading.FindAll(s => s.pawnKindDefNS == pawn.kindDef).Any())
             {
@@ -486,7 +518,7 @@ namespace KCSG
         /// <summary>
         /// Create symbol from terrain
         /// </summary>
-        public static void CreateSymbolFromTerrain(TerrainDef terrainD, List<XElement> symbols)
+        private static void CreateSymbolFromTerrain(TerrainDef terrainD, List<XElement> symbols)
         {
             if (!DefDatabase<SymbolDef>.AllDefsListForReading.FindAll(s => s.terrainDef == terrainD).Any())
             {
@@ -505,7 +537,7 @@ namespace KCSG
         /// <summary>
         /// Create symbol from thing
         /// </summary>
-        public static void CreateSymbolFromThing(Thing thingT, List<XElement> symbols)
+        private static void CreateSymbolFromThing(Thing thingT, List<XElement> symbols)
         {
             // Generate defName
             string defNameString = thingT.def.defName;

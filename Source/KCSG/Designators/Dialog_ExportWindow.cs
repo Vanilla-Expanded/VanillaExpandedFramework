@@ -81,7 +81,7 @@ namespace KCSG
             DrawForceGenerateRoof(lst);
             DrawStructurePrefix(lst);
             DrawTagsEditing(lst);
-            DrawModsEditing(lst);
+            // DrawModsEditing(lst);
 
             lst.End();
             Widgets.EndScrollView();
