@@ -32,7 +32,7 @@ namespace KCSG
                 BaseGen.symbolStack.Push("kcsg_generateroad", rp, null);
 
                 // Add vanilla settlement defense
-                if (GenOption.settlementLayoutDef.vanillaLikeDefense)
+                if (GenOption.sld.vanillaLikeDefense)
                 {
                     int dWidth = Rand.Bool ? 2 : 4;
                     ResolveParams edgeParms = rp;
@@ -43,7 +43,7 @@ namespace KCSG
                     BaseGen.symbolStack.Push("edgeDefense", edgeParms, null);
                 }
                 // Add vanilla settlement defense
-                else if (GenOption.settlementLayoutDef.vanillaLikeDefenseNoSandBags)
+                else if (GenOption.sld.vanillaLikeDefenseNoSandBags)
                 {
                     int dWidth = Rand.Bool ? 2 : 4;
                     ResolveParams edgeParms = rp;
@@ -55,7 +55,7 @@ namespace KCSG
                 }
 
                 // Add pad if needed
-                if (GenOption.settlementLayoutDef.addLandingPad && ModLister.RoyaltyInstalled)
+                if (GenOption.sld.addLandingPad && ModLister.RoyaltyInstalled)
                 {
                     if (rp.rect.TryFindRandomInnerRect(new IntVec2(9, 9), out CellRect rect, null))
                     {
@@ -70,7 +70,7 @@ namespace KCSG
                 BaseGen.symbolStack.Push("kcsg_handleruins", rp, null);
 
                 // Start gen
-                SettlementGenUtils.StartGen(rp, map, GenOption.settlementLayoutDef);
+                SettlementGenUtils.StartGen(rp, map, GenOption.sld);
             }
         }
 
@@ -87,7 +87,7 @@ namespace KCSG
             rp.rect = parms.rect;
             rp.faction = faction;
             rp.singlePawnLord = singlePawnLord;
-            rp.pawnGroupKindDef = GenOption.settlementLayoutDef?.groupKindDef ?? parms.pawnGroupKindDef ?? PawnGroupKindDefOf.Settlement;
+            rp.pawnGroupKindDef = GenOption.sld?.groupKindDef ?? parms.pawnGroupKindDef ?? PawnGroupKindDefOf.Settlement;
             rp.singlePawnSpawnCellExtraPredicate = parms.singlePawnSpawnCellExtraPredicate ?? ((IntVec3 x) => map.reachability.CanReachMapEdge(x, tp));
             if (rp.pawnGroupMakerParams == null && faction.def.pawnGroupMakers.Any(pgm => pgm.kindDef == PawnGroupKindDefOf.Settlement))
             {
@@ -100,7 +100,7 @@ namespace KCSG
                     seed = parms.settlementPawnGroupSeed
                 };
             }
-            if (GenOption.settlementLayoutDef != null) rp.pawnGroupMakerParams.points *= GenOption.settlementLayoutDef.pawnGroupMultiplier;
+            if (GenOption.sld != null) rp.pawnGroupMakerParams.points *= GenOption.sld.pawnGroupMultiplier;
 
             BaseGen.symbolStack.Push("pawnGroup", rp, null);
         }

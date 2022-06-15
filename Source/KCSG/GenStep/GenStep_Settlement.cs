@@ -29,15 +29,15 @@ namespace KCSG
             }
             else
             {
-                GenOption.settlementLayoutDef = GenOption.ext.chooseFromSettlements.RandomElement();
+                GenOption.sld = GenOption.ext.chooseFromSettlements.RandomElement();
             }
 
             // Get faction
             Faction faction = map.ParentFaction == null || map.ParentFaction == Faction.OfPlayer ? Find.FactionManager.RandomEnemyFaction() : map.ParentFaction;
 
             // Get settlement size
-            int width = GenOption.ext.useStructureLayout ? GenOption.structureLayoutDef.width : GenOption.settlementLayoutDef.settlementSize.x;
-            int height = GenOption.ext.useStructureLayout ? GenOption.structureLayoutDef.height : GenOption.settlementLayoutDef.settlementSize.z;
+            int width = GenOption.ext.useStructureLayout ? GenOption.structureLayoutDef.width : GenOption.sld.settlementSize.x;
+            int height = GenOption.ext.useStructureLayout ? GenOption.structureLayoutDef.height : GenOption.sld.settlementSize.z;
 
             // Get spawn position
             IntVec3 spawn = loc;

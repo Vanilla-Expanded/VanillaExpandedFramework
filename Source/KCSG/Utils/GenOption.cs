@@ -4,7 +4,7 @@
     {
         public static CustomGenOption ext;
 
-        public static SettlementLayoutDef settlementLayoutDef;
+        public static SettlementLayoutDef sld;
 
         public static StructureLayoutDef structureLayoutDef;
 

@@ -39,7 +39,7 @@ namespace KCSG
 
             foreach (var edge in edges)
             {
-                PathFinder.DoPath(edge.P.IntVec3, edge.Q.IntVec3, map, GenOption.settlementLayoutDef, rp.rect);
+                PathFinder.DoPath(edge.P.IntVec3, edge.Q.IntVec3, map, GenOption.sld, rp.rect, GenOption.sld.roadOptions.addLinkRoad);
             }
 
             Debug.Message($"Total time (without pawn gen): {(DateTime.Now - startTime).TotalSeconds}s.");

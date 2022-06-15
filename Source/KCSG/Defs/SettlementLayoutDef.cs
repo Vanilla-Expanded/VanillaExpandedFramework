@@ -10,6 +10,15 @@ namespace KCSG
         public string tag;
     }
 
+    public class RoadOptions
+    {
+        public bool addMainRoad = false;
+        public TerrainDef mainRoadDef = null;
+
+        public bool addLinkRoad = false;
+        public TerrainDef linkRoadDef = null;
+    }
+
     public class SettlementLayoutDef : Def
     {
         public IntVec2 settlementSize = new IntVec2(42, 42);
@@ -17,15 +26,11 @@ namespace KCSG
         public List<StructOption> allowedStructures = new List<StructOption>();
         public List<StructureLayoutDef> centerBuilding = new List<StructureLayoutDef>();
 
-        public int spaceAround = 2;
+        public int spaceAround = 1;
         public bool avoidBridgeable = false;
         public bool avoidMountains = false;
 
-        public bool addMainRoad = false;
-        public TerrainDef mainRoadDef = null;
-
-        public bool addRoad = false;
-        public TerrainDef roadDef = null;
+        public RoadOptions roadOptions;
 
         public bool addLandingPad = false;
         public bool vanillaLikeDefense = false;
@@ -35,5 +40,12 @@ namespace KCSG
         public float pawnGroupMultiplier = 1f;
 
         public float stockpileValueMultiplier = 1f;
+
+        public override void ResolveReferences()
+        {
+            base.ResolveReferences();
+            if (roadOptions == null)
+                roadOptions = new RoadOptions();
+        }
     }
 }
