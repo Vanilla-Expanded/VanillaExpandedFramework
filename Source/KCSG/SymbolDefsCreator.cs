@@ -9,10 +9,9 @@ namespace KCSG
     internal class SymbolDefsCreator
     {
         public static bool defCreated = false;
+        public static List<ThingDef> stuffs = new List<ThingDef>();
 
-        private static int modCount;
         private static int sCreated;
-        private static List<ThingDef> stuffs = new List<ThingDef>();
 
         static SymbolDefsCreator()
         {
@@ -191,7 +190,6 @@ namespace KCSG
             {
                 if (!defCreated) AddDef(CreateSymbolDef(pawnKindDef));
             }
-            modCount++;
         }
 
         public static void Run()

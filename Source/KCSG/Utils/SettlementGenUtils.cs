@@ -78,6 +78,9 @@ namespace KCSG
             var vects = Sampling.SampleCircle(rect, rect.CenterCell, Math.Max(rect.Width, rect.Height), radius, new Random());
             Debug.Message($"Sampling time: {(DateTime.Now - samplingStart).TotalMilliseconds}ms. Vects count: {vects?.Count}");
 
+            if (settlementLayoutDef.stuffableOptions.generalWallStuff)
+                GenOption.generalWallStuff = GenOption.RandomWallStuffByWeight();
+
             // Place and choose buildings.
             if (vects != null && vects.Count > 1)
             {

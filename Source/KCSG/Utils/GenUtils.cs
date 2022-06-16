@@ -16,9 +16,10 @@ namespace KCSG
         /// </summary>
         public static void GenerateLayout(StructureLayoutDef layout, CellRect rect, Map map)
         {
+            var wallForRoom = GenOption.StuffableOptions.randomizeWall ? GenOption.RandomWallStuffByWeight() : null;
             for (int index = 0; index < layout.layouts.Count; index++)
             {
-                GenerateRoomFromLayout(layout, index, rect, map);
+                GenerateRoomFromLayout(layout, index, rect, map, wallForRoom);
             }
             GenerateRoofGrid(layout, rect, map);
         }
@@ -26,7 +27,7 @@ namespace KCSG
         /// <summary>
         /// Entry method to generate a structure from a StructureLayoutDef
         /// </summary>
-        private static void GenerateRoomFromLayout(StructureLayoutDef layout, int index, CellRect rect, Map map)
+        private static void GenerateRoomFromLayout(StructureLayoutDef layout, int index, CellRect rect, Map map, ThingDef wallForRoom = null)
         {
             Faction faction = map.ParentFaction;
 
@@ -80,7 +81,7 @@ namespace KCSG
                                 {
                                     continue;
                                 }
-                                GenerateBuildingAt(map, cell, temp, faction, layout.spawnConduits);
+                                GenerateBuildingAt(map, cell, temp, faction, layout.spawnConduits, wallForRoom);
 
                                 // Generating settlement, we want to keep tracks of doors
                                 if (GenOption.ext != null && !GenOption.ext.useStructureLayout && temp.thingDef.altitudeLayer == AltitudeLayer.DoorMoveable)
@@ -196,9 +197,17 @@ namespace KCSG
         /// <summary>
         /// Generate building at pos
         /// </summary>
-        private static void GenerateBuildingAt(Map map, IntVec3 cell, SymbolDef symbol, Faction faction, bool generateConduit)
+        private static void GenerateBuildingAt(Map map, IntVec3 cell, SymbolDef symbol, Faction faction, bool generateConduit, ThingDef wallStuff = null)
         {
-            Thing thing = ThingMaker.MakeThing(symbol.thingDef, symbol.thingDef.CostStuffCount > 0 ? (symbol.stuffDef ?? symbol.thingDef.defaultStuff ?? ThingDefOf.WoodLog) : null);
+            Thing thing;
+            if (symbol.thingDef.defName.ToLower().Contains("wall"))
+            {
+                thing = ThingMaker.MakeThing(symbol.thingDef, wallStuff ?? GenOption.RandomWallStuffByWeight());
+            }
+            else
+            {
+                thing = ThingMaker.MakeThing(symbol.thingDef, GenOption.RandomFurnitureStuffByWeight(symbol));
+            }
 
             CompRefuelable refuelable = thing.TryGetComp<CompRefuelable>();
             refuelable?.Refuel(refuelable.Props.fuelCapacity);

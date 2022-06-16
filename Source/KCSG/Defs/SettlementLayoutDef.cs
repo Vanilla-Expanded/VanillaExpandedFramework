@@ -19,6 +19,19 @@ namespace KCSG
         public TerrainDef linkRoadDef = null;
     }
 
+    public class StuffableOptions
+    {
+        public bool randomizeWall = false;
+        public bool generalWallStuff = false;
+        public List<ThingDef> allowedWallStuff = new List<ThingDef>();
+        public List<ThingDef> disallowedWallStuff = new List<ThingDef>();
+
+        public bool randomizeFurniture = false;
+        public List<ThingDef> allowedFurnitureStuff = new List<ThingDef>();
+        public List<ThingDef> disallowedFurnitureStuff = new List<ThingDef>();
+        public List<ThingDef> excludedFunitureDefs = new List<ThingDef>();
+    }
+
     public class SettlementLayoutDef : Def
     {
         public IntVec2 settlementSize = new IntVec2(42, 42);
@@ -32,6 +45,8 @@ namespace KCSG
 
         public RoadOptions roadOptions;
 
+        public StuffableOptions stuffableOptions;
+
         public bool addLandingPad = false;
         public bool vanillaLikeDefense = false;
         public bool vanillaLikeDefenseNoSandBags = false;
@@ -44,8 +59,24 @@ namespace KCSG
         public override void ResolveReferences()
         {
             base.ResolveReferences();
+
             if (roadOptions == null)
                 roadOptions = new RoadOptions();
+            if (stuffableOptions == null)
+                stuffableOptions = new StuffableOptions();
+
+            if (stuffableOptions.randomizeWall
+                && stuffableOptions.allowedWallStuff.NullOrEmpty()
+                && stuffableOptions.disallowedWallStuff.NullOrEmpty())
+            {
+                Debug.Error($"{defName} using randomizeWall with empty allowedWallStuff/disallowedWallStuff list.", modContentPack.Name);
+            }
+            if (stuffableOptions.randomizeFurniture
+                && stuffableOptions.allowedFurnitureStuff.NullOrEmpty()
+                && stuffableOptions.disallowedFurnitureStuff.NullOrEmpty())
+            {
+                Debug.Error($"{defName} using randomizeFurniture with empty allowedFurnitureStuff/disallowedFurnitureStuff list.", modContentPack.Name);
+            }
         }
     }
 }
