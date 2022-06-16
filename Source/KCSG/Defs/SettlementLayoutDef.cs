@@ -64,19 +64,6 @@ namespace KCSG
                 roadOptions = new RoadOptions();
             if (stuffableOptions == null)
                 stuffableOptions = new StuffableOptions();
-
-            if (stuffableOptions.randomizeWall
-                && stuffableOptions.allowedWallStuff.NullOrEmpty()
-                && stuffableOptions.disallowedWallStuff.NullOrEmpty())
-            {
-                Debug.Error($"{defName} using randomizeWall with empty allowedWallStuff/disallowedWallStuff list.", modContentPack.Name);
-            }
-            if (stuffableOptions.randomizeFurniture
-                && stuffableOptions.allowedFurnitureStuff.NullOrEmpty()
-                && stuffableOptions.disallowedFurnitureStuff.NullOrEmpty())
-            {
-                Debug.Error($"{defName} using randomizeFurniture with empty allowedFurnitureStuff/disallowedFurnitureStuff list.", modContentPack.Name);
-            }
         }
     }
 }

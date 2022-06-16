@@ -16,7 +16,7 @@ namespace KCSG
         /// </summary>
         public static void GenerateLayout(StructureLayoutDef layout, CellRect rect, Map map)
         {
-            var wallForRoom = GenOption.StuffableOptions.randomizeWall ? GenOption.RandomWallStuffByWeight() : null;
+            var wallForRoom = GenOption.StuffableOptions.randomizeWall ? GenOption.RandomWallStuffByWeight(ThingDefOf.Wall) : null;
             for (int index = 0; index < layout.layouts.Count; index++)
             {
                 GenerateRoomFromLayout(layout, index, rect, map, wallForRoom);
@@ -202,7 +202,7 @@ namespace KCSG
             Thing thing;
             if (symbol.thingDef.defName.ToLower().Contains("wall"))
             {
-                thing = ThingMaker.MakeThing(symbol.thingDef, wallStuff ?? GenOption.RandomWallStuffByWeight());
+                thing = ThingMaker.MakeThing(symbol.thingDef, wallStuff ?? GenOption.RandomWallStuffByWeight(symbol.thingDef));
             }
             else
             {

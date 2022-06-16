@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using System.Collections.Generic;
+using RimWorld;
 using Verse;
 
 namespace KCSG
@@ -24,24 +25,23 @@ namespace KCSG
             fallingStructureChoosen = null;
         }
 
-        public static ThingDef RandomWallStuffByWeight()
+        public static ThingDef RandomWallStuffByWeight(ThingDef thingDef)
         {
             if (StuffableOptions.generalWallStuff && generalWallStuff != null)
                 return generalWallStuff;
 
             if (StuffableOptions.allowedWallStuff.Count > 0)
             {
-                return StuffableOptions.allowedWallStuff.RandomElementByWeight(t => t.stuffProps.commonality);
+                return RandomStuffFromFor(StuffableOptions.allowedWallStuff, thingDef);
             }
 
             if (StuffableOptions.disallowedWallStuff.Count > 0)
             {
                 var from = SymbolDefsCreator.stuffs.FindAll(t => !StuffableOptions.disallowedWallStuff.Contains(t));
-                return from.RandomElementByWeight(t => t.stuffProps.commonality);
+                return RandomStuffFromFor(from, thingDef);
             }
 
-            Debug.Error("Using RandomWallStuffByWeight with empty allowedWallStuff/disallowedWallStuff");
-            return null;
+            return RandomStuffFromFor(SymbolDefsCreator.stuffs, thingDef);
         }
 
         public static ThingDef RandomFurnitureStuffByWeight(SymbolDef symbol)
@@ -53,17 +53,21 @@ namespace KCSG
             {
                 if (StuffableOptions.allowedFurnitureStuff.Count > 0)
                 {
-                    return StuffableOptions.allowedFurnitureStuff.FindAll(t => symbol.thingDef.stuffCategories.Find(c => t.stuffProps.categories.Contains(c)) != null).RandomElementByWeight(t => t.stuffProps.commonality);
+                    return RandomStuffFromFor(StuffableOptions.allowedFurnitureStuff, symbol.thingDef);
                 }
 
                 if (StuffableOptions.disallowedFurnitureStuff.Count > 0)
                 {
                     var from = SymbolDefsCreator.stuffs.FindAll(t => !StuffableOptions.disallowedFurnitureStuff.Contains(t));
-                    return from.FindAll(t => symbol.thingDef.stuffCategories.Find(c => t.stuffProps.categories.Contains(c)) != null).RandomElementByWeight(t => t.stuffProps.commonality);
+                    return RandomStuffFromFor(from, symbol.thingDef);
                 }
+
+                return RandomStuffFromFor(SymbolDefsCreator.stuffs, symbol.thingDef);
             }
 
             return symbol.stuffDef ?? symbol.thingDef.defaultStuff ?? ThingDefOf.WoodLog;
         }
+
+        public static ThingDef RandomStuffFromFor(List<ThingDef> from, ThingDef thingDef) => from.FindAll(t => thingDef.stuffCategories.Find(c => t.stuffProps.categories.Contains(c)) != null).RandomElementByWeight(t => t.stuffProps.commonality);
     }
 }

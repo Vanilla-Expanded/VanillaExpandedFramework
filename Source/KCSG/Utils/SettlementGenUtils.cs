@@ -79,7 +79,7 @@ namespace KCSG
             Debug.Message($"Sampling time: {(DateTime.Now - samplingStart).TotalMilliseconds}ms. Vects count: {vects?.Count}");
 
             if (settlementLayoutDef.stuffableOptions.generalWallStuff)
-                GenOption.generalWallStuff = GenOption.RandomWallStuffByWeight();
+                GenOption.generalWallStuff = GenOption.RandomWallStuffByWeight(ThingDefOf.Wall);
 
             // Place and choose buildings.
             if (vects != null && vects.Count > 1)
