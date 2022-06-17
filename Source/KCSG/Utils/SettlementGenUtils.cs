@@ -1405,7 +1405,7 @@ namespace KCSG
                             break;
                     }
 
-                    if (curr.z < next.z)
+                    /*if (curr.z < next.z)
                     {
                         grid[curr.z + 2][curr.x] = CellType.Used;
                         SetTerrainAt(new IntVec3(curr.x, 0, curr.z + 2), map, terrain);
@@ -1425,7 +1425,7 @@ namespace KCSG
                     {
                         grid[curr.z][curr.x - 2] = CellType.Used;
                         SetTerrainAt(new IntVec3(curr.x - 2, 0, curr.z), map, terrain);
-                    }
+                    }*/
                 }
             }
         }

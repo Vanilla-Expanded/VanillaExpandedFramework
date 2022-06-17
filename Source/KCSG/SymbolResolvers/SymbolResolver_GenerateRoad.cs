@@ -42,7 +42,8 @@ namespace KCSG
 
                 foreach (var edge in edges)
                 {
-                    PathFinder.DoPath(edge.P.IntVec3, edge.Q.IntVec3, map, rp.rect, GenOption.RoadOptions.linkRoadDef ?? TerrainDefOf.Concrete);
+                    var road = PathFinder.DoPath(edge.P.IntVec3, edge.Q.IntVec3, map, rp.rect, GenOption.RoadOptions.linkRoadDef ?? TerrainDefOf.Concrete);
+                    PathFinder.WidenPath(road, map, GenOption.RoadOptions.linkRoadDef ?? TerrainDefOf.Concrete, GenOption.RoadOptions.LinkRoadWidth);
                 }
             }
 
