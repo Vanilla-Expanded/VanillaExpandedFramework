@@ -12,11 +12,17 @@ namespace KCSG
 
     public class RoadOptions
     {
+        public int MainRoadWidth => mainRoadWidth - 1;
+        public int LinkRoadWidth => linkRoadWidth - 1;
+
         public bool addMainRoad = false;
+        public int mainRoadCount = 1;
         public TerrainDef mainRoadDef = null;
+        public int mainRoadWidth = 2;
 
         public bool addLinkRoad = false;
         public TerrainDef linkRoadDef = null;
+        public int linkRoadWidth = 1;
     }
 
     public class StuffableOptions

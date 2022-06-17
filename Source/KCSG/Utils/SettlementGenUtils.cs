@@ -67,10 +67,19 @@ namespace KCSG
                 }
             }
 
-            if (GenOption.sld.roadOptions != null && GenOption.sld.roadOptions.addMainRoad)
+            if (GenOption.RoadOptions.addMainRoad)
             {
-                PathFinder.XMainRoad(rp.rect, map, GenOption.sld);
-                PathFinder.ZMainRoad(rp.rect, map, GenOption.sld);
+                var edgeCells = rect.EdgeCells.ToList();
+                var terrain = GenOption.RoadOptions.mainRoadDef ?? TerrainDefOf.Concrete;
+
+                for (int i = 0; i < GenOption.RoadOptions.mainRoadCount; i++)
+                {
+                    var start = edgeCells.RandomElement();
+                    var target = edgeCells.FindAll(cell => cell.x != start.x || cell.z != start.z).RandomElement();
+                    var road = PathFinder.DoPath(start, target, map, rect, terrain);
+
+                    PathFinder.WidenPath(road, map, terrain, GenOption.RoadOptions.MainRoadWidth);
+                }
             }
 
             // Run poisson disk sampling
@@ -90,6 +99,9 @@ namespace KCSG
             }
         }
 
+        /// <summary>
+        /// Find all points spaced evenly
+        /// </summary>
         public static class Sampling
         {
             /**
@@ -253,6 +265,9 @@ namespace KCSG
             static float Distance(IntVec3 intVec3, IntVec3 other) => Mathf.Sqrt(DistanceSquared(intVec3, other));
         }
 
+        /// <summary>
+        /// Place buildings on map, prevent overlap
+        /// </summary>
         public static class BuildingPlacement
         {
             private static readonly Dictionary<string, List<StructureLayoutDef>> structuresTagsCache = new Dictionary<string, List<StructureLayoutDef>>();
@@ -412,6 +427,9 @@ namespace KCSG
             }
         }
 
+        /// <summary>
+        /// Make sure all map net are connected together
+        /// </summary>
         public static class PowerNetManagement
         {
             private static readonly List<Thing> tmpThings = new List<Thing>();
@@ -624,6 +642,9 @@ namespace KCSG
             }
         }
 
+        /// <summary>
+        /// Find all needed paths betweens doors
+        /// </summary>
         public class Delaunay
         {
             /**
@@ -1225,6 +1246,9 @@ namespace KCSG
             }
         }
 
+        /// <summary>
+        /// Path finding
+        /// </summary>
         public static class PathFinder
         {
             public class Location
@@ -1258,7 +1282,7 @@ namespace KCSG
                 }
             }
 
-            public static List<IntVec3> DoPath(IntVec3 iStart, IntVec3 iTarget, Map map, SettlementLayoutDef sld, CellRect rect, bool drawPath = true)
+            public static List<IntVec3> DoPath(IntVec3 iStart, IntVec3 iTarget, Map map, CellRect rect, TerrainDef terrain)
             {
                 // Setup
                 var start = new Location { vec3 = iStart };
@@ -1283,25 +1307,12 @@ namespace KCSG
 
                         while (cell != null)
                         {
-                            if (drawPath)
-                            {
-                                SetTerrainAt(cell.vec3, map, sld.roadOptions.linkRoadDef ?? TerrainDefOf.Concrete);
-                                cell.vec3.GetFirstMineable(map)?.DeSpawn();
-                            }
+                            SetTerrainAt(cell.vec3, map, terrain);
+                            cell.vec3.GetFirstMineable(map)?.DeSpawn();
 
                             cells.Add(cell.vec3);
                             cell = cell.Parent;
                         }
-
-                        /*for (int i = 0; i < cells.Count; i++)
-                        {
-                            var c = cells[i];
-                            var adjC = GenAdjFast.AdjacentCells8Way(c);
-                            for (int p = 0; p < adjC.Count; p++)
-                            {
-                                SetTerrainAt(adjC[p], map, TerrainDefOf.PavedTile);
-                            }
-                        }*/
 
                         return cells;
                     }
@@ -1361,92 +1372,59 @@ namespace KCSG
                 return result;
             }
 
-            internal static void XMainRoad(CellRect rect, Map map, SettlementLayoutDef sld)
+            public static void WidenPath(List<IntVec3> path, Map map, TerrainDef terrain, int width)
             {
-                var from = rect.EdgeCells.ToList().FindAll(i => i.x == rect.maxX || i.x == rect.minX);
-                var start = from.RandomElement();
-                var target = from.FindAll(i => i.x != start.x).RandomElement();
-                List<IntVec3> all = DoPath(start, target, map, sld, rect, false);
+                if (width <= 0)
+                    return;
 
-                var terrain = sld.roadOptions.linkRoadDef ?? TerrainDefOf.Concrete;
-
-                int y;
-                for (int i = 0; i < all.Count; i++)
+                int count = path.Count;
+                for (int c = 0; c < count; c++)
                 {
-                    var v = all[i];
-                    y = i + 1 < all.Count ? all[i + 1].z : v.z;
+                    IntVec3 curr = path[c];
+                    IntVec3 next = c + 1 < count ? path[c + 1] : curr;
 
-                    grid[v.z][v.x] = CellType.Used;
-                    SetTerrainAt(v, map, terrain);
-                    if (v.z == y)
+                    int by = 0;
+                    for (int i = 1; i <= width; i++)
                     {
-                        grid[v.z - 1][v.x] = CellType.Used;
-                        SetTerrainAt(new IntVec3(v.x, 0, v.z - 1), map, terrain);
-                        grid[v.z + 1][v.x] = CellType.Used;
-                        SetTerrainAt(new IntVec3(v.x, 0, v.z + 1), map, terrain);
-                    }
-                    else if (v.z < y)
-                    {
-                        grid[v.z - 1][v.x] = CellType.Used;
-                        SetTerrainAt(new IntVec3(v.x, 0, v.z - 1), map, terrain);
-                        grid[v.z + 1][v.x] = CellType.Used;
-                        SetTerrainAt(new IntVec3(v.x, 0, v.z + 1), map, terrain);
-                        grid[v.z + 2][v.x] = CellType.Used;
-                        SetTerrainAt(new IntVec3(v.x, 0, v.z + 2), map, terrain);
-                    }
-                    else if (v.z > y)
-                    {
-                        grid[v.z - 2][v.x] = CellType.Used;
-                        SetTerrainAt(new IntVec3(v.x, 0, v.z - 2), map, terrain);
-                        grid[v.z - 1][v.x] = CellType.Used;
-                        SetTerrainAt(new IntVec3(v.x, 0, v.z - 1), map, terrain);
-                        grid[v.z + 1][v.x] = CellType.Used;
-                        SetTerrainAt(new IntVec3(v.x, 0, v.z + 1), map, terrain);
-                    }
-                }
-            }
+                        grid[curr.z + i][curr.x] = CellType.Used;
+                        SetTerrainAt(new IntVec3(curr.x, 0, curr.z + i), map, terrain);
+                        grid[curr.z][curr.x + i] = CellType.Used;
+                        SetTerrainAt(new IntVec3(curr.x + i, 0, curr.z), map, terrain);
+                        by++;
 
-            internal static void ZMainRoad(CellRect rect, Map map, SettlementLayoutDef sld)
-            {
-                var from = rect.EdgeCells.ToList().FindAll(i => i.z == rect.maxZ || i.z == rect.minZ);
-                var start = from.RandomElement();
-                var target = from.FindAll(i => i.z != start.z).RandomElement();
-                List<IntVec3> all = DoPath(start, target, map, sld, rect, false);
+                        if (by >= width)
+                            break;
 
-                var terrain = sld.roadOptions.linkRoadDef ?? TerrainDefOf.Concrete;
+                        grid[curr.z - i][curr.x] = CellType.Used;
+                        SetTerrainAt(new IntVec3(curr.x, 0, curr.z - i), map, terrain);
+                        grid[curr.z][curr.x - i] = CellType.Used;
+                        SetTerrainAt(new IntVec3(curr.x - i, 0, curr.z), map, terrain);
+                        by++;
 
-                int x;
-                for (int i = 0; i < all.Count; i++)
-                {
-                    var v = all[i];
-                    x = i + 1 < all.Count ? all[i + 1].x : v.x;
-
-                    grid[v.z][v.x] = CellType.Used;
-                    SetTerrainAt(v, map, terrain);
-                    if (v.x == x)
-                    {
-                        grid[v.z][v.x - 1] = CellType.Used;
-                        SetTerrainAt(new IntVec3(v.x - 1, 0, v.z), map, terrain);
-                        grid[v.z][v.x + 1] = CellType.Used;
-                        SetTerrainAt(new IntVec3(v.x + 1, 0, v.z), map, terrain);
+                        if (by >= width)
+                            break;
                     }
-                    else if (v.x < x)
+
+                    if (curr.z < next.z)
                     {
-                        grid[v.z][v.x - 1] = CellType.Used;
-                        SetTerrainAt(new IntVec3(v.x - 1, 0, v.z), map, terrain);
-                        grid[v.z][v.x + 1] = CellType.Used;
-                        SetTerrainAt(new IntVec3(v.x + 1, 0, v.z), map, terrain);
-                        grid[v.z][v.x + 2] = CellType.Used;
-                        SetTerrainAt(new IntVec3(v.x + 2, 0, v.z), map, terrain);
+                        grid[curr.z + 2][curr.x] = CellType.Used;
+                        SetTerrainAt(new IntVec3(curr.x, 0, curr.z + 2), map, terrain);
                     }
-                    else if (v.x > x)
+                    else if (curr.z > next.z)
                     {
-                        grid[v.z][v.x - 2] = CellType.Used;
-                        SetTerrainAt(new IntVec3(v.x - 2, 0, v.z), map, terrain);
-                        grid[v.z][v.x - 1] = CellType.Used;
-                        SetTerrainAt(new IntVec3(v.x - 1, 0, v.z), map, terrain);
-                        grid[v.z][v.x + 1] = CellType.Used;
-                        SetTerrainAt(new IntVec3(v.x + 1, 0, v.z), map, terrain);
+                        grid[curr.z - 2][curr.x] = CellType.Used;
+                        SetTerrainAt(new IntVec3(curr.x, 0, curr.z - 2), map, terrain);
+                    }
+
+                    if (curr.x < next.x)
+                    {
+                        grid[curr.z][curr.x + 2] = CellType.Used;
+                        SetTerrainAt(new IntVec3(curr.x + 2, 0, curr.z), map, terrain);
+                    }
+                    else if (curr.x > next.x)
+                    {
+                        grid[curr.z][curr.x - 2] = CellType.Used;
+                        SetTerrainAt(new IntVec3(curr.x - 2, 0, curr.z), map, terrain);
                     }
                 }
             }

@@ -7,6 +7,8 @@ namespace KCSG
     public class GenOption
     {
         public static StuffableOptions StuffableOptions => sld.stuffableOptions;
+        public static RoadOptions RoadOptions => sld.roadOptions;
+
 
         public static CustomGenOption ext;
 
