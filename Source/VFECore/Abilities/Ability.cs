@@ -419,13 +419,12 @@
             }
             else
             {
-
                 foreach (var thing in GenRadial.RadialDistinctThingsAround(cell, pawn.Map, maxRadius, true))
                 {
                     var aoeTargetParms = parms as TargetingParametersForAoE;
-                    if ((aoeTargetParms != null ? aoeTargetParms.CanTarget(thing, this) : parms.CanTarget(thing)) &&
-                        (aoeTargetParms != null && aoeTargetParms.ignoreRangeAndSight
-                        || this.ValidateTarget(thing, false) && thing.OccupiedRect().ClosestDistSquaredTo(cell) > minRadius))
+                    if ((aoeTargetParms?.CanTarget(thing, this) ?? parms.CanTarget(thing)) &&
+                        (aoeTargetParms is {ignoreRangeAndSight: true} 
+                            || this.ValidateTarget(thing, false) && thing.OccupiedRect().ClosestDistSquaredTo(cell) > minRadius))
                     {
                         if (!parms.canTargetSelf && thing == pawn) continue;
                         yield return thing;

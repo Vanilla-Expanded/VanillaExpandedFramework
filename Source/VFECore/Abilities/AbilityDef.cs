@@ -29,7 +29,7 @@ namespace VFECore.Abilities
         public List<StatModifier> rangeStatFactors = new List<StatModifier>();
 
         public float              radius            = 0f;
-        public float              minRadius         = 0f;
+        public float              minRadius         = -1f;
         public List<StatModifier> radiusStatFactors = new List<StatModifier>();
 
         public float              power            = 0f;
