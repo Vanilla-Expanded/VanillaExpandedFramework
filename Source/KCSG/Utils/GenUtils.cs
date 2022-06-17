@@ -16,7 +16,7 @@ namespace KCSG
         /// </summary>
         public static void GenerateLayout(StructureLayoutDef layout, CellRect rect, Map map)
         {
-            var wallForRoom = GenOption.StuffableOptions.randomizeWall ? GenOption.RandomWallStuffByWeight(ThingDefOf.Wall) : null;
+            var wallForRoom = GenOption.StuffableOptions.randomizeWall ? RandomWallStuffByWeight(ThingDefOf.Wall) : null;
             for (int index = 0; index < layout.layouts.Count; index++)
             {
                 GenerateRoomFromLayout(layout, index, rect, map, wallForRoom);
@@ -202,11 +202,11 @@ namespace KCSG
             Thing thing;
             if (symbol.thingDef.defName.ToLower().Contains("wall"))
             {
-                thing = ThingMaker.MakeThing(symbol.thingDef, wallStuff ?? GenOption.RandomWallStuffByWeight(symbol.thingDef));
+                thing = ThingMaker.MakeThing(symbol.thingDef, wallStuff ?? RandomWallStuffByWeight(symbol.thingDef));
             }
             else
             {
-                thing = ThingMaker.MakeThing(symbol.thingDef, GenOption.RandomFurnitureStuffByWeight(symbol));
+                thing = ThingMaker.MakeThing(symbol.thingDef, RandomFurnitureStuffByWeight(symbol));
             }
 
             CompRefuelable refuelable = thing.TryGetComp<CompRefuelable>();
@@ -536,5 +536,63 @@ namespace KCSG
             }
             return choices.RandomElementByWeight((w) => w.weight * parms.points);
         }
+
+        /// <summary>
+        /// Get random stuff for wall
+        /// </summary>
+        public static ThingDef RandomWallStuffByWeight(ThingDef thingDef)
+        {
+            var option = GenOption.StuffableOptions;
+
+            if (option.generalWallStuff && GenOption.generalWallStuff != null)
+                return GenOption.generalWallStuff;
+
+            if (option.allowedWallStuff.Count > 0)
+            {
+                return RandomStuffFromFor(option.allowedWallStuff, thingDef);
+            }
+
+            if (option.disallowedWallStuff.Count > 0)
+            {
+                var from = SymbolDefsCreator.stuffs.FindAll(t => !option.disallowedWallStuff.Contains(t));
+                return RandomStuffFromFor(from, thingDef);
+            }
+
+            return RandomStuffFromFor(SymbolDefsCreator.stuffs, thingDef);
+        }
+
+        /// <summary>
+        /// Get random stuff for furniture
+        /// </summary>
+        public static ThingDef RandomFurnitureStuffByWeight(SymbolDef symbol)
+        {
+            if (symbol.thingDef.costStuffCount <= 0)
+                return null;
+
+            var option = GenOption.StuffableOptions;
+
+            if (option.randomizeFurniture && !option.excludedFunitureDefs.Contains(symbol.thingDef))
+            {
+                if (option.allowedFurnitureStuff.Count > 0)
+                {
+                    return RandomStuffFromFor(option.allowedFurnitureStuff, symbol.thingDef);
+                }
+
+                if (option.disallowedFurnitureStuff.Count > 0)
+                {
+                    var from = SymbolDefsCreator.stuffs.FindAll(t => !option.disallowedFurnitureStuff.Contains(t));
+                    return RandomStuffFromFor(from, symbol.thingDef);
+                }
+
+                return RandomStuffFromFor(SymbolDefsCreator.stuffs, symbol.thingDef);
+            }
+
+            return symbol.stuffDef ?? symbol.thingDef.defaultStuff ?? ThingDefOf.WoodLog;
+        }
+
+        /// <summary>
+        /// Get stuff by commonality from list, matching thingDef requirement
+        /// </summary>
+        public static ThingDef RandomStuffFromFor(List<ThingDef> from, ThingDef thingDef) => from.FindAll(t => thingDef.stuffCategories.Find(c => t.stuffProps.categories.Contains(c)) != null).RandomElementByWeight(t => t.stuffProps.commonality);
     }
 }
