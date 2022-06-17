@@ -38,6 +38,19 @@ namespace KCSG
         public List<ThingDef> excludedFunitureDefs = new List<ThingDef>();
     }
 
+    public class PropsOptions
+    {
+        public bool addRoadProps = false;
+        public List<ThingDef> mainRoadPropsDefs = new List<ThingDef>();
+        public float mainRoadPropsChance = 0.25f;
+        public List<ThingDef> linkRoadPropsDefs = new List<ThingDef>();
+        public float linkRoadPropsChance = 0.25f;
+
+        public bool scatterProps = false;
+        public List<ThingDef> scatterPropsDefs = new List<ThingDef>();
+        public float scatterPropsChance = 0.25f;
+    }
+
     public class SettlementLayoutDef : Def
     {
         public IntVec2 settlementSize = new IntVec2(42, 42);
@@ -52,6 +65,8 @@ namespace KCSG
         public RoadOptions roadOptions;
 
         public StuffableOptions stuffableOptions;
+
+        public PropsOptions propsOptions;
 
         public bool addLandingPad = false;
         public bool vanillaLikeDefense = false;
@@ -70,6 +85,8 @@ namespace KCSG
                 roadOptions = new RoadOptions();
             if (stuffableOptions == null)
                 stuffableOptions = new StuffableOptions();
+            if (roadOptions == null)
+                roadOptions = new RoadOptions();
         }
     }
 }
