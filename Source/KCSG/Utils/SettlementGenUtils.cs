@@ -359,21 +359,11 @@ namespace KCSG
 
             public static void Run(List<IntVec3> spawnPoints, SettlementLayoutDef sld, ResolveParams rp)
             {
-                // NO full clear, avoid mountains
-                if (!GenOption.ext.fullClear)
-                {
-                    foreach (var cell in rp.rect)
-                    {
-                        if (!cell.Walkable(BaseGen.globalSettings.map))
-                            grid[cell.x][cell.z] = CellType.Used;
-                    }
-                }
-
                 Dictionary<string, int> structCount = new Dictionary<string, int>();
 
-                if (!sld.centerBuilding.NullOrEmpty())
+                if (!sld.centralBuildingTags.NullOrEmpty())
                 {
-                    var layout = sld.centerBuilding.RandomElement();
+                    var layout = GenUtils.ChooseStructureLayoutFrom(structuresTagsCache[sld.centralBuildingTags.RandomElement()]);
                     var cellRect = CellRect.CenteredOn(rp.rect.CenterCell, layout.width, layout.height);
 
                     foreach (var cell in cellRect)
