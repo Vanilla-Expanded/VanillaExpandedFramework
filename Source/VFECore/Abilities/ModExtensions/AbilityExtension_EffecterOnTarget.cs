@@ -11,6 +11,7 @@
 		public EffecterDef effecterDef;
 		public int maintainForTicks = -1;
 		public float scale = 1f;
+        public bool maintainForDuration = false;
         public override void Cast(LocalTargetInfo target, Ability ability)
         {
             base.Cast(target, ability);
@@ -27,7 +28,11 @@
                 effecter = ((!target.HasThing) ? effecterDef.Spawn(cell, ability.pawn.Map, scale) : effecterDef.Spawn(target.Thing, ability.pawn.Map, scale));
             }
 
-            if (maintainForTicks > 0)
+            if (maintainForDuration)
+            {
+                ability.AddEffecterToMaintain(effecter, cell, ability.GetDurationForPawn());
+            }
+            else if (maintainForTicks > 0)
             {
                 ability.AddEffecterToMaintain(effecter, cell, maintainForTicks);
             }
