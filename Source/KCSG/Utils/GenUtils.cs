@@ -87,7 +87,7 @@ namespace KCSG
                                 // Generating settlement, we want to keep tracks of doors
                                 if (GenOption.ext != null && !GenOption.ext.useStructureLayout && temp.thingDef.altitudeLayer == AltitudeLayer.DoorMoveable)
                                 {
-                                    SettlementGenUtils.doors?.Add(cell);
+                                    doors?.Add(cell);
                                 }
                             }
                         }
@@ -200,6 +200,28 @@ namespace KCSG
         /// </summary>
         private static void GenerateBuildingAt(Map map, IntVec3 cell, SymbolDef symbol, Faction faction, bool generateConduit, ThingDef wallStuff = null)
         {
+            if (symbol.thingDef == ThingDefOf.Shuttle)
+            {
+                ResolveParams rp = new ResolveParams
+                {
+                    singleThingDef = ThingDefOf.Shuttle,
+                    rect = CellRect.SingleCell(cell),
+                    faction = faction,
+                    postThingSpawn = x =>
+                    {
+                        TransportShip transportShip = TransportShipMaker.MakeTransportShip(TransportShipDefOf.Ship_Shuttle, null, x);
+                        ShipJob_WaitTime shipJobWaitTime = (ShipJob_WaitTime)ShipJobMaker.MakeShipJob(ShipJobDefOf.WaitTime);
+                        shipJobWaitTime.duration = new IntRange(300, 3600).RandomInRange;
+                        shipJobWaitTime.showGizmos = false;
+                        transportShip.AddJob(shipJobWaitTime);
+                        transportShip.AddJob(ShipJobDefOf.FlyAway);
+                        transportShip.Start();
+                    }
+                };
+                BaseGen.symbolStack.Push("thing", rp);
+                return;
+            }
+
             Thing thing;
             if (symbol.thingDef.defName.ToLower().Contains("wall"))
             {
