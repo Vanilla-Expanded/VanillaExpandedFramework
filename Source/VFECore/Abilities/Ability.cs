@@ -207,13 +207,19 @@
             }
 
             if (GenRadial.MaxRadialPatternRadius > radius && radius >= 1)
-                GenDraw.DrawRadiusRing(this.pawn.Position, radius, Color.cyan);
+                GenDraw.DrawRadiusRing(this.pawn.Position, radius, this.def.rangeRingColor);
 
             if (GenRadial.MaxRadialPatternRadius > this.def.minRange && this.def.minRange >= 1)
-                GenDraw.DrawRadiusRing(this.pawn.Position, this.def.minRange, Color.cyan);
+                GenDraw.DrawRadiusRing(this.pawn.Position, this.def.minRange, this.def.rangeRingColor);
 
             foreach (AbilityExtension_AbilityMod extension in this.AbilityModExtensions)
+            {
                 extension.GizmoUpdateOnMouseover(this);
+                if (this.def.targetModes[0] == AbilityTargetingMode.Self && this.def.targetCount == 1)
+                {
+                    extension.TargetingOnGUI(this.pawn, this);
+                }
+            }
         }
 
         public virtual void WarmupToil(Toil toil)
@@ -723,7 +729,7 @@
         {
             float range = this.GetRangeForPawn();
             if (!this.def.worldTargeting && GenRadial.MaxRadialPatternRadius > range && range >= 1)
-                GenDraw.DrawRadiusRing(this.pawn.Position, range, Color.cyan);
+                GenDraw.DrawRadiusRing(this.pawn.Position, range, this.def.rangeRingColor);
 
             if (target.IsValid)
             {
@@ -731,11 +737,11 @@
 
                 float radius = this.GetRadiusForPawn();
                 if (GenRadial.MaxRadialPatternRadius > radius && radius >= 1)
-                    GenDraw.DrawRadiusRing(target.Cell, radius, Color.red);
+                    GenDraw.DrawRadiusRing(target.Cell, radius, this.def.radiusRingColor);
 
 
                 if (GenRadial.MaxRadialPatternRadius > this.def.minRadius && this.def.minRadius >= 1)
-                    GenDraw.DrawRadiusRing(target.Cell, this.def.minRadius, Color.red);
+                    GenDraw.DrawRadiusRing(target.Cell, this.def.minRadius, this.def.radiusRingColor);
             }
         }
 

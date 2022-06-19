@@ -87,6 +87,9 @@ namespace VFECore.Abilities
 
         public Type gizmoClass = typeof(Command_Ability);
 
+        public Color rangeRingColor = Color.cyan;
+        public Color radiusRingColor = Color.red;
+
         public string jobReportString = "Using ability: {0}";
 
         public string JobReportString => this.jobReportString.Formatted(this.LabelCap);
