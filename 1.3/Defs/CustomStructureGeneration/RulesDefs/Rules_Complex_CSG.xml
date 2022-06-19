@@ -139,4 +139,12 @@
       <li Class="KCSG.SymbolResolver_EdgeDefenseNoSandbags" />
     </resolvers>
   </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_ScatterPropsAround</defName>
+    <symbol>kcsg_scatterpropsaround</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_ScatterPropsAround" />
+    </resolvers>
+  </RuleDef>
 </Defs>

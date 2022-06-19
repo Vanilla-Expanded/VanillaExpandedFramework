@@ -40,20 +40,20 @@ namespace KCSG
                 var edges = new Delaunay(doorsLeadingOutside).GetEdges();
                 Debug.Message($"Delaunay time: {(DateTime.Now - delaunayStart).TotalMilliseconds}ms. Edges count: {edges.Count()}");
 
+                var linkStart = DateTime.Now;
                 foreach (var edge in edges)
                 {
                     var road = PathFinder.DoPath(edge.P.IntVec3, edge.Q.IntVec3, map, rp.rect, GenOption.RoadOptions.linkRoadDef ?? TerrainDefOf.Concrete);
-                    PathFinder.WidenPath(road, map, GenOption.RoadOptions.linkRoadDef ?? TerrainDefOf.Concrete, GenOption.RoadOptions.LinkRoadWidth);
+
+                    if (road != null)
+                    {
+                        GenUtils.WidenPath(road, map, GenOption.RoadOptions.linkRoadDef ?? TerrainDefOf.Concrete, GenOption.RoadOptions.LinkRoadWidth);
+
+                        if (GenOption.PropsOptions.addLinkRoadProps)
+                            GenUtils.SpawnLinkRoadProps(road);
+                    }
                 }
-            }
-
-            Debug.Message($"Total time (without pawn gen): {(DateTime.Now - startTime).TotalSeconds}s.");
-
-            // Flood refog
-            if (map.mapPawns.FreeColonistsSpawned.Count > 0)
-            {
-                Debug.Message($"Refog map.");
-                FloodFillerFog.DebugRefogMap(map);
+                Debug.Message($"Link road (+ props) time: {(DateTime.Now - linkStart).TotalMilliseconds}ms.");
             }
         }
     }

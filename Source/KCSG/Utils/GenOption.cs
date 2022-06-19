@@ -1,4 +1,5 @@
-﻿using Verse;
+﻿using System.Collections.Generic;
+using Verse;
 
 namespace KCSG
 {
@@ -6,12 +7,14 @@ namespace KCSG
     {
         public static StuffableOptions StuffableOptions => sld.stuffableOptions;
         public static RoadOptions RoadOptions => sld.roadOptions;
+        public static PropsOptions PropsOptions => sld.propsOptions;
 
 
         public static CustomGenOption ext;
 
         public static SettlementLayoutDef sld;
         public static ThingDef generalWallStuff;
+        public static List<IntVec3> usedSpots;
 
         public static StructureLayoutDef structureLayoutDef;
 

@@ -6,6 +6,7 @@ using RimWorld.BaseGen;
 using UnityEngine;
 using Verse;
 using Verse.AI.Group;
+using static KCSG.SettlementGenUtils;
 
 namespace KCSG
 {
@@ -594,5 +595,168 @@ namespace KCSG
         /// Get stuff by commonality from list, matching thingDef requirement
         /// </summary>
         public static ThingDef RandomStuffFromFor(List<ThingDef> from, ThingDef thingDef) => from.FindAll(t => thingDef.stuffCategories.Find(c => t.stuffProps.categories.Contains(c)) != null).RandomElementByWeight(t => t.stuffProps.commonality);
+
+        /// <summary>
+        /// Check a list to know if anything is near a given point
+        /// </summary>
+        public static bool NearUsedSpot(List<IntVec3> usedSpots, IntVec3 c, float dist)
+        {
+            for (int index = 0; index < usedSpots.Count; ++index)
+            {
+                if ((usedSpots[index] - c).LengthHorizontalSquared <= dist * dist)
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Set terrain at pos if it's not a buildable, set bridge if needed.
+        /// For road gen.
+        /// </summary>
+        public static void SetTerrainAt(IntVec3 c, Map map, TerrainDef roadDef)
+        {
+            if (map.terrainGrid.TerrainAt(c) is TerrainDef terrainDef)
+            {
+                if (!terrainDef.BuildableByPlayer)
+                {
+                    if (terrainDef.affordances.Contains(TerrainAffordanceDefOf.Bridgeable))
+                        map.terrainGrid.SetTerrain(c, TerrainDefOf.Bridge);
+                    else
+                        map.terrainGrid.SetTerrain(c, roadDef);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Widen a given path
+        /// </summary>
+        public static void WidenPath(List<IntVec3> path, Map map, TerrainDef terrain, int width)
+        {
+            if (width <= 0 || path.NullOrEmpty())
+                return;
+
+            IntVec3 last = path[0];
+            int count = path.Count;
+            for (int c = 0; c < count; c++)
+            {
+                IntVec3 curr = path[c];
+
+                int widenBy = 0;
+                for (int i = 1; i <= width && widenBy < width; i++)
+                {
+                    if (last.x != curr.x)
+                    {
+                        grid[curr.z + i][curr.x] = CellType.Used;
+                        SetTerrainAt(new IntVec3(curr.x, 0, curr.z + i), map, terrain);
+                        widenBy++;
+
+                        if (widenBy < width)
+                        {
+                            grid[curr.z - i][curr.x] = CellType.Used;
+                            SetTerrainAt(new IntVec3(curr.x, 0, curr.z - i), map, terrain);
+                            widenBy++;
+                        }
+                    }
+
+                    if (last.z != curr.z)
+                    {
+                        grid[curr.z][curr.x + i] = CellType.Used;
+                        SetTerrainAt(new IntVec3(curr.x + i, 0, curr.z), map, terrain);
+                        widenBy++;
+
+                        if (widenBy < width)
+                        {
+                            grid[curr.z][curr.x - i] = CellType.Used;
+                            SetTerrainAt(new IntVec3(curr.x - i, 0, curr.z), map, terrain);
+                            widenBy++;
+                        }
+                    }
+                }
+
+                last = curr;
+            }
+        }
+
+        /// <summary>
+        /// Spawn main road props
+        /// </summary>
+        public static void SpawnMainRoadProps(List<IntVec3> road)
+        {
+            var map = BaseGen.globalSettings.map;
+            for (int i = 0; i < road.Count; i++)
+            {
+                IntVec3 curr = road[i];
+                IntVec3 last = i - 1 > 0 ? road[i - 1] : curr;
+
+                if (Rand.Chance(GenOption.PropsOptions.mainRoadPropsChance)
+                    && !NearUsedSpot(GenOption.usedSpots, curr, GenOption.PropsOptions.mainRoadMinDistance))
+                {
+                    var rot = last.x != curr.x ? Rot4.East : Rot4.North;
+                    var thingDef = GenOption.PropsOptions.RandomMainRoadProps();
+
+                    if (thingDef != null)
+                    {
+                        var thing = ThingMaker.MakeThing(thingDef, GenStuff.DefaultStuffFor(thingDef));
+                        if (thingDef.rotatable)
+                            GenSpawn.Spawn(thing, curr, map, rot);
+                        else
+                            GenSpawn.Spawn(thing, curr, map);
+
+                        GenOption.usedSpots.Add(curr);
+                    }
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Spawn link road props
+        /// </summary>
+        public static void SpawnLinkRoadProps(List<IntVec3> road)
+        {
+            var map = BaseGen.globalSettings.map;
+            for (int i = 0; i < road.Count; i++)
+            {
+                IntVec3 cell = road[i];
+
+                if (Rand.Chance(GenOption.PropsOptions.linkRoadPropsChance))
+                {
+                    var thingDef = GenOption.PropsOptions.RandomLinkRoadProps();
+                    if (thingDef == null)
+                        return;
+
+                    var cells = GenAdj.CellsAdjacent8Way(new TargetInfo(cell, map));
+
+                    var matchingCells = new List<IntVec3>();
+                    foreach (var c in cells)
+                    {
+                        if (grid[c.z][c.x] == CellType.Used)
+                            continue;
+                        if (NearUsedSpot(GenOption.usedSpots, c, GenOption.PropsOptions.linkRoadMinDistance))
+                            continue;
+
+                        var rect = new CellRect(c.x, c.z, thingDef.size.x, thingDef.size.z);
+                        foreach (var ce in rect)
+                        {
+                            if (grid[ce.z][ce.x] == CellType.Used || !ce.Walkable(map))
+                                continue;
+                        }
+
+                        matchingCells.Add(c);
+                    }
+
+                    if (matchingCells.Count > 0)
+                    {
+                        var thing = ThingMaker.MakeThing(thingDef, GenStuff.DefaultStuffFor(thingDef));
+                        if (thingDef.rotatable)
+                            GenSpawn.Spawn(thing, matchingCells.RandomElement(), map, Rot4.Random);
+                        else
+                            GenSpawn.Spawn(thing, matchingCells.RandomElement(), map);
+
+                        GenOption.usedSpots.Add(cell);
+                    }
+                }
+            }
+        }
     }
 }

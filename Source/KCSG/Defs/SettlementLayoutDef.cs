@@ -40,15 +40,44 @@ namespace KCSG
 
     public class PropsOptions
     {
-        public bool addRoadProps = false;
+        public bool addMainRoadProps = false;
         public List<ThingDef> mainRoadPropsDefs = new List<ThingDef>();
         public float mainRoadPropsChance = 0.25f;
+        public int mainRoadMinDistance = 10;
+
+        public bool addLinkRoadProps = false;
         public List<ThingDef> linkRoadPropsDefs = new List<ThingDef>();
         public float linkRoadPropsChance = 0.25f;
+        public int linkRoadMinDistance = 10;
 
         public bool scatterProps = false;
+        public int scatterMaxAmount = 100;
+        public int scatterMinDistance = 10;
         public List<ThingDef> scatterPropsDefs = new List<ThingDef>();
-        public float scatterPropsChance = 0.25f;
+
+        internal ThingDef RandomMainRoadProps()
+        {
+            if (mainRoadPropsDefs.NullOrEmpty())
+                return null;
+
+            return mainRoadPropsDefs.RandomElement();
+        }
+
+        internal ThingDef RandomLinkRoadProps()
+        {
+            if (linkRoadPropsDefs.NullOrEmpty())
+                return null;
+
+            return linkRoadPropsDefs.RandomElement();
+        }
+
+        internal ThingDef RandomScatterRoadProps()
+        {
+            if (scatterPropsDefs.NullOrEmpty())
+                return null;
+
+            return scatterPropsDefs.RandomElement();
+        }
     }
 
     public class SettlementLayoutDef : Def

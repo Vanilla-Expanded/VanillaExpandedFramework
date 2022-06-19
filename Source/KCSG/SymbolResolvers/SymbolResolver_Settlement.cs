@@ -25,6 +25,9 @@ namespace KCSG
                 // Add hostile pawns
                 AddHostilePawnGroup(rp.faction, map, rp);
 
+                // Props scatterer
+                BaseGen.symbolStack.Push("kcsg_scatterpropsaround", rp, null);
+
                 // Handle power
                 BaseGen.symbolStack.Push("kcsg_settlementpower", rp, null);
 
