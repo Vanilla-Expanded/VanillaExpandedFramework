@@ -25,6 +25,7 @@ namespace KCSG
         private bool exportFilth = false;
         private bool exportNatTer = false;
         private bool forceGenerateRoof = false;
+        private bool needRoofClearance = false;
 
         private string structurePrefix = "Required";
         private List<XElement> symbols = new List<XElement>();
@@ -79,6 +80,7 @@ namespace KCSG
             DrawExportFilth(lst);
             DrawExportNaturalTerrain(lst);
             DrawForceGenerateRoof(lst);
+            DrawNeedRoofClearance(lst);
             DrawStructurePrefix(lst);
             DrawTagsEditing(lst);
             // DrawModsEditing(lst);
@@ -135,6 +137,17 @@ namespace KCSG
             else
             {
                 structureL.Element("forceGenerateRoof")?.Remove();
+            }
+            if (needRoofClearance)
+            {
+                if (structureL.Element("needRoofClearance") == null)
+                {
+                    structureL.Add(new XElement("needRoofClearance", true));
+                }
+            }
+            else
+            {
+                structureL.Element("needRoofClearance")?.Remove();
             }
             // Tags changes
             if (tags.Count > 0)
@@ -243,6 +256,12 @@ namespace KCSG
         private void DrawForceGenerateRoof(Listing_Standard lst)
         {
             lst.CheckboxLabeled("Force generate roofs:", ref forceGenerateRoof, "By default constructed roof will only be constructed if the cell isn't roofed at all. Thin roof will be on cell with no roof or constructed roof. Thick roof override everything. Enable to alway generate exported roof.");
+            lst.Gap();
+        }
+
+        private void DrawNeedRoofClearance(Listing_Standard lst)
+        {
+            lst.CheckboxLabeled("Need roof clearance:", ref needRoofClearance, "Check this if the structure you are exporting need to placed in a rect free of roofs.");
             lst.Gap();
         }
 

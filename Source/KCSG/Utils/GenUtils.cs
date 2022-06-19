@@ -584,6 +584,9 @@ namespace KCSG
             return RandomStuffFromFor(SymbolDefsCreator.stuffs, thingDef);
         }
 
+        /// <summary>
+        /// Get random stuff for wall, from symbol
+        /// </summary>
         public static ThingDef RandomWallStuffByWeight(SymbolDef symbol)
         {
             if (!GenOption.StuffableOptions.randomizeWall)

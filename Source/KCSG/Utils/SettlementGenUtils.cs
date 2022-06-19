@@ -308,14 +308,26 @@ namespace KCSG
             private static bool CanPlaceAt(IntVec3 point, StructureLayoutDef building, ResolveParams rp)
             {
                 int m = GenOption.sld.spaceAround;
+                var map = BaseGen.globalSettings.map;
+
                 for (int x = point.x - m; x < building.width + point.x + m; x++)
                 {
                     for (int z = point.z - m; z < building.height + point.z + m; z++)
                     {
                         var cell = new IntVec3(x, 0, z);
-                        if (!rp.rect.Contains(cell) || grid[z][x] == CellType.Used)
+                        if (grid[z][x] == CellType.Used || !rp.rect.Contains(cell))
                         {
                             return false;
+                        }
+
+                        if (building.needRoofClearance)
+                        {
+                            var bRect = new CellRect(cell.x, cell.z, building.width, building.height);
+                            foreach (var c in bRect)
+                            {
+                                if (c.Roofed(map))
+                                    return false;
+                            }
                         }
                     }
                 }

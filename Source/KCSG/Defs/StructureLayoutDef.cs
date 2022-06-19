@@ -35,6 +35,7 @@ namespace KCSG
         public List<List<string>> layouts = new List<List<string>>();
         public List<string> roofGrid = new List<string>();
         public bool forceGenerateRoof = false;
+        public bool needRoofClearance = false;
 
         // Settings for SettlementDef
         public List<string> tags = new List<string>();
