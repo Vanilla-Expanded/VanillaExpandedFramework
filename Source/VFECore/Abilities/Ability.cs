@@ -373,7 +373,7 @@
         }
 
         private bool currentAoETargeting;
-        protected virtual void ModifyTargets(ref GlobalTargetInfo[] targets)
+        public virtual void ModifyTargets(ref GlobalTargetInfo[] targets)
         {
             if (this.def.hasAoE)
             {
@@ -757,6 +757,10 @@
         {
             Texture2D icon = (!target.IsValid) ? TexCommand.CannotShoot : ((!(this.UIIcon != BaseContent.BadTex)) ? TexCommand.Attack : this.UIIcon);
             GenUI.DrawMouseAttachment(icon);
+            foreach (var abilityModExtension in AbilityModExtensions)
+            {
+                abilityModExtension.TargetingOnGUI(target, this);
+            }
         }
 
         public virtual bool ValidateTargetTile(GlobalTargetInfo target)

@@ -71,5 +71,9 @@
 		public virtual void GizmoUpdateOnMouseover(Ability ability)
 		{
 		}
+
+		public virtual void TargetingOnGUI(LocalTargetInfo target, Ability ability)
+		{
+		}
 	}
 }
