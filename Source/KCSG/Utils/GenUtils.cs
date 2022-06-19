@@ -225,7 +225,7 @@ namespace KCSG
             Thing thing;
             if (symbol.thingDef.defName.ToLower().Contains("wall"))
             {
-                thing = ThingMaker.MakeThing(symbol.thingDef, wallStuff ?? RandomWallStuffByWeight(symbol.thingDef));
+                thing = ThingMaker.MakeThing(symbol.thingDef, wallStuff ?? RandomWallStuffByWeight(symbol));
             }
             else
             {
@@ -582,6 +582,14 @@ namespace KCSG
             }
 
             return RandomStuffFromFor(SymbolDefsCreator.stuffs, thingDef);
+        }
+
+        public static ThingDef RandomWallStuffByWeight(SymbolDef symbol)
+        {
+            if (!GenOption.StuffableOptions.randomizeWall)
+                return symbol.stuffDef;
+
+            return RandomWallStuffByWeight(symbol.thingDef);
         }
 
         /// <summary>
