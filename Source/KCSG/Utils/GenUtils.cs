@@ -615,6 +615,7 @@ namespace KCSG
         /// </summary>
         public static void SetTerrainAt(IntVec3 c, Map map, TerrainDef roadDef)
         {
+            c.GetFirstMineable(map)?.DeSpawn();
             if (map.terrainGrid.TerrainAt(c) is TerrainDef terrainDef)
             {
                 if (!terrainDef.BuildableByPlayer)

@@ -1298,7 +1298,6 @@ namespace KCSG
                             IntVec3 vec3 = cell.vec3;
 
                             GenUtils.SetTerrainAt(vec3, map, terrain);
-                            vec3.GetFirstMineable(map)?.DeSpawn();
                             grid[vec3.z][vec3.x] = CellType.Used;
 
                             cells.Add(vec3);
