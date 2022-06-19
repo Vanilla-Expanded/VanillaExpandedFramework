@@ -379,6 +379,7 @@ namespace KCSG
             public static void Run(List<IntVec3> spawnPoints, SettlementLayoutDef sld, ResolveParams rp)
             {
                 Dictionary<string, int> structCount = new Dictionary<string, int>();
+                var usedLayoutDefs = new HashSet<StructureLayoutDef>();
 
                 if (!sld.centralBuildingTags.NullOrEmpty())
                 {
@@ -391,33 +392,46 @@ namespace KCSG
                     GenUtils.GenerateLayout(layout, cellRect, BaseGen.globalSettings.map);
                 }
 
-                StructOption last = null;
+                StructOption lastOpt = null;
                 for (int i = 0; i < spawnPoints.Count; i++)
                 {
                     IntVec3 vector = spawnPoints[i];
                     for (int o = 0; o < 100; o++)
                     {
-                        sld.allowedStructures.TryRandomElementByWeight(p => GetWeight(p, last, structCount), out StructOption option);
+                        sld.allowedStructures.TryRandomElementByWeight(p => GetWeight(p, lastOpt, structCount), out StructOption opt);
 
-                        if (option == null)
+                        if (opt == null)
                         {
                             Debug.Message($"No available structures. Allow more of one or multiples structure tags");
                             return;
                         }
-                        last = option;
+                        lastOpt = opt;
 
-                        var layoutDef = GenUtils.ChooseStructureLayoutFrom(structuresTagsCache[option.tag]);
+                        var choices = new List<StructureLayoutDef>();
+                        for (int s = 0; s < structuresTagsCache[opt.tag].Count; s++)
+                        {
+                            var layout = structuresTagsCache[opt.tag][s];
+                            if (layout.RequiredModLoaded && !usedLayoutDefs.Contains(layout))
+                            {
+                                choices.Add(layout);
+                            }
+                        }
+
+                        var layoutDef = choices.Count > 0 ? choices.RandomElement() : structuresTagsCache[opt.tag].RandomElement();
+
                         if (CanPlaceAt(vector, layoutDef, rp))
                         {
+                            usedLayoutDefs.Add(layoutDef);
+
                             PlaceAt(vector, layoutDef);
 
-                            if (structCount.ContainsKey(option.tag))
+                            if (structCount.ContainsKey(opt.tag))
                             {
-                                structCount[option.tag]++;
+                                structCount[opt.tag]++;
                             }
                             else
                             {
-                                structCount.Add(option.tag, 1);
+                                structCount.Add(opt.tag, 1);
                             }
 
                             CellRect rect = new CellRect(vector.x, vector.z, layoutDef.width, layoutDef.height);
