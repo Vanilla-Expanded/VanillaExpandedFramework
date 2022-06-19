@@ -114,8 +114,8 @@ namespace KCSG
                 roadOptions = new RoadOptions();
             if (stuffableOptions == null)
                 stuffableOptions = new StuffableOptions();
-            if (roadOptions == null)
-                roadOptions = new RoadOptions();
+            if (propsOptions == null)
+                propsOptions = new PropsOptions();
         }
     }
 }
