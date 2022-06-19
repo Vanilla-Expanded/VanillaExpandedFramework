@@ -35,7 +35,15 @@ namespace VanillaPlantsExpanded
                     }
                     if (num > 0)
                     {
-                        Thing thing = ThingMaker.MakeThing(extension.secondaryOutput);
+                        Thing thing;
+                        if (extension.randomOutput)
+                        {
+                            thing = ThingMaker.MakeThing(extension.randomSecondaryOutput.RandomElement());
+                        }
+                        else
+                        {
+                            thing = ThingMaker.MakeThing(extension.secondaryOutput);
+                        }
                         thing.stackCount = num;
                         if (by.Faction != Faction.OfPlayer)
                         {
