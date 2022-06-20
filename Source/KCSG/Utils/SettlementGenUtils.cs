@@ -24,9 +24,11 @@ namespace KCSG
         public static List<IntVec3> doors;
 
         public static DateTime startTime;
+        public static int seed;
 
         public static void StartGen(ResolveParams rp, Map map, SettlementLayoutDef settlementLayoutDef)
         {
+            seed = map.Tile;
             startTime = DateTime.Now;
             // Setup
             rect = rp.rect;
@@ -91,7 +93,7 @@ namespace KCSG
 
             // Run poisson disk sampling
             var samplingStart = DateTime.Now;
-            var vects = Sampling.SampleCircle(rect, rect.CenterCell, Math.Max(rect.Width, rect.Height), radius, new Random());
+            var vects = Sampling.SampleCircle(rect, rect.CenterCell, Math.Max(rect.Width, rect.Height), radius, new Random(seed));
             Debug.Message($"Sampling time: {(DateTime.Now - samplingStart).TotalMilliseconds}ms. Vects count: {vects?.Count}");
 
             if (settlementLayoutDef.stuffableOptions.generalWallStuff)
