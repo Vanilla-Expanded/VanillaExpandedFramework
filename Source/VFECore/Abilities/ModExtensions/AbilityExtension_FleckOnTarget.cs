@@ -27,7 +27,7 @@ namespace VFECore.Abilities
         public override void Cast(GlobalTargetInfo[] targets, Ability ability)
         {
             base.Cast(targets, ability);
-            if (preCastTicks <= 0) SpawnAll(targets);
+            if (preCastTicks <= 0) SpawnAll(targets, ability);
         }
 
         public override void WarmupToil(Toil toil)
@@ -37,18 +37,21 @@ namespace VFECore.Abilities
                 toil.AddPreTickAction(delegate
                 {
                     if (toil.actor.jobs.curDriver.ticksLeftThisToil == preCastTicks)
-                        SpawnAll(toil.actor.GetComp<CompAbilities>().currentlyCastingTargets);
+                    {
+                        var compAbilities = toil.actor.GetComp<CompAbilities>();
+                        SpawnAll(compAbilities.currentlyCastingTargets, compAbilities.currentlyCasting);
+                    }
                 });
         }
 
 
-        private void SpawnAll(GlobalTargetInfo[] targets)
+        private void SpawnAll(GlobalTargetInfo[] targets, Ability ability)
         {
             if (allTargets)
                 for (var i = 0; i < targets.Length; i++)
                     SpawnOn(targets[i]);
             else if (tryCenter)
-                SpawnOn(targets.MinBy(target => targets.Sum(t => target.Cell.DistanceTo(t.Cell))));
+                SpawnOn(ability.firstTarget.ToGlobalTargetInfo(targets[0].Map));
             else
                 SpawnOn(targets[0]);
         }
