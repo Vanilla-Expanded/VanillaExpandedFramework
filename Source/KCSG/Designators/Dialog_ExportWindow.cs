@@ -46,7 +46,7 @@ namespace KCSG
             closeOnClickedOutside = false;
             absorbInputAroundWindow = true;
 
-            if (!SymbolDefsCreator.defCreated) SymbolDefsCreator.Run();
+            if (!StartupActions.defCreated) StartupActions.CreateSymbols();
 
             if (Prefix != "") structurePrefix = Prefix;
             if (!Tags.NullOrEmpty()) tags = Tags;

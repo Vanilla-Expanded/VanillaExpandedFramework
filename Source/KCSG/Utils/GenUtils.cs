@@ -576,11 +576,11 @@ namespace KCSG
 
             if (option.disallowedWallStuff.Count > 0)
             {
-                var from = SymbolDefsCreator.stuffs.FindAll(t => !option.disallowedWallStuff.Contains(t));
+                var from = StartupActions.stuffs.FindAll(t => !option.disallowedWallStuff.Contains(t));
                 return RandomStuffFromFor(from, thingDef);
             }
 
-            return RandomStuffFromFor(SymbolDefsCreator.stuffs, thingDef);
+            return RandomStuffFromFor(StartupActions.stuffs, thingDef);
         }
 
         /// <summary>
@@ -613,11 +613,11 @@ namespace KCSG
 
                 if (option.disallowedFurnitureStuff.Count > 0)
                 {
-                    var from = SymbolDefsCreator.stuffs.FindAll(t => !option.disallowedFurnitureStuff.Contains(t));
+                    var from = StartupActions.stuffs.FindAll(t => !option.disallowedFurnitureStuff.Contains(t));
                     return RandomStuffFromFor(from, symbol.thingDef);
                 }
 
-                return RandomStuffFromFor(SymbolDefsCreator.stuffs, symbol.thingDef);
+                return RandomStuffFromFor(StartupActions.stuffs, symbol.thingDef);
             }
 
             return symbol.stuffDef ?? symbol.thingDef.defaultStuff ?? ThingDefOf.WoodLog;

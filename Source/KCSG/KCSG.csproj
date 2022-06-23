@@ -70,7 +70,7 @@
     <Compile Include="SymbolResolvers\SymbolResolver_SingleThingRoofed.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_StorageZone.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_ThingSetOnlyRoofed.cs" />
-    <Compile Include="SymbolDefsCreator.cs" />
+    <Compile Include="StartupActions.cs" />
     <Compile Include="Thing\KCSG_Skyfaller.cs" />
     <Compile Include="Textures.cs" />
     <Compile Include="DefOfs\DefOfs.cs" />

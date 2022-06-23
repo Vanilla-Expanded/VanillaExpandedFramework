@@ -95,7 +95,7 @@ namespace KCSG
                             symbolsLists[i].Add(def);
 
                             if (def == null)
-                                Debug.Message($"{symbol} not found.");
+                                StartupActions.AddToMissing(symbol);
                         }
                     }
                 }

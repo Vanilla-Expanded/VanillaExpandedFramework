@@ -1,33 +1,67 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using RimWorld;
 using Verse;
 
 namespace KCSG
 {
     [StaticConstructorOnStartup]
-    internal class SymbolDefsCreator
+    internal class StartupActions
     {
         public static bool defCreated = false;
         public static List<ThingDef> stuffs = new List<ThingDef>();
+        public static Dictionary<string, int> missingSymbols;
 
-        private static int sCreated;
+        private static int createdSymbolAmount;
 
-        static SymbolDefsCreator()
+        static StartupActions()
         {
-            if (VFECore.VFEGlobal.settings.enableVerboseLogging
+            var debug = VFECore.VFEGlobal.settings.enableVerboseLogging;
+            stuffs = DefDatabase<ThingDef>.AllDefsListForReading.FindAll(t => t.IsStuff);
+
+            if (debug
                 || DefDatabase<SettlementLayoutDef>.DefCount > 0
                 || DefDatabase<StructureLayoutDef>.DefCount > 0
                 || DefDatabase<SymbolDef>.DefCount > 0)
             {
-                Run();
+                CreateSymbols();
             }
+
+            missingSymbols = new Dictionary<string, int>();
 
             var layouts = DefDatabase<StructureLayoutDef>.AllDefsListForReading;
             for (int i = 0; i < layouts.Count; i++)
                 layouts[i].ResolveLayouts();
 
+            if (debug)
+            {
+                foreach (var m in missingSymbols)
+                {
+                    Debug.Message($"Missing symbol: {m.Key} ({m.Value})");
+                }
+            }
+
             SettlementGenUtils.BuildingPlacement.CacheTags();
+        }
+
+
+        public static void AddToMissing(string symbol)
+        {
+            if (missingSymbols.ContainsKey(symbol))
+                missingSymbols[symbol]++;
+            else
+                missingSymbols.Add(symbol, 1);
+        }
+
+        public static void CreateSymbols()
+        {
+            createdSymbolAmount = 0;
+
+            CreateSymbolsFor("ludeon.rimworld");
+            CreateSymbolsFor("ludeon.rimworld.royalty");
+            CreateSymbolsFor("ludeon.rimworld.ideology");
+
+            Debug.Message($"Created {createdSymbolAmount} symbolDefs for vanilla and DLCs");
+            defCreated = true;
         }
 
         private static void AddDef(SymbolDef def)
@@ -37,9 +71,9 @@ namespace KCSG
                 if (DefDatabase<SymbolDef>.GetNamedSilentFail(def.defName) == null)
                     DefDatabase<SymbolDef>.Add(def);
             }
-            else if (VFECore.VFEGlobal.settings.enableVerboseLogging)
+            else
             {
-                Log.Error($"[KCSG] Error creating symbol: {def.defName} from {def.thingDef.modContentPack?.PackageId}. Suppressing further errors");
+                Debug.Error("Cannot add more symbolDef. Maximum amount reached.");
                 defCreated = true;
             }
         }
@@ -95,7 +129,7 @@ namespace KCSG
                 thingDef = thing,
             };
 
-            sCreated++;
+            createdSymbolAmount++;
             return symbolDef;
         }
 
@@ -107,7 +141,7 @@ namespace KCSG
                 isTerrain = true,
                 terrainDef = terrain,
             };
-            sCreated++;
+            createdSymbolAmount++;
             return symbolDef;
         }
 
@@ -118,7 +152,7 @@ namespace KCSG
                 defName = $"{pawnKindDef.defName}",
                 pawnKindDefNS = pawnKindDef,
             };
-            sCreated++;
+            createdSymbolAmount++;
             return symbolDef;
         }
 
@@ -131,7 +165,7 @@ namespace KCSG
                 stuffDef = stuff,
                 rotation = rot,
             };
-            sCreated++;
+            createdSymbolAmount++;
             return symbolDef;
         }
 
@@ -143,7 +177,7 @@ namespace KCSG
                 thingDef = thing,
                 stuffDef = stuff,
             };
-            sCreated++;
+            createdSymbolAmount++;
             return symbolDef;
         }
 
@@ -155,7 +189,7 @@ namespace KCSG
                 thingDef = thing,
                 rotation = rot,
             };
-            sCreated++;
+            createdSymbolAmount++;
             return symbolDef;
         }
 
@@ -167,7 +201,7 @@ namespace KCSG
                 thingDef = thing,
             };
 
-            sCreated++;
+            createdSymbolAmount++;
             return symbolDef;
         }
 
@@ -190,20 +224,6 @@ namespace KCSG
             {
                 if (!defCreated) AddDef(CreateSymbolDef(pawnKindDef));
             }
-        }
-
-        public static void Run()
-        {
-            stuffs = DefDatabase<ThingDef>.AllDefsListForReading.FindAll(t => t.IsStuff);
-            sCreated = 0;
-            DateTime before = DateTime.Now;
-
-            CreateSymbolsFor("ludeon.rimworld");
-            CreateSymbolsFor("ludeon.rimworld.royalty");
-            CreateSymbolsFor("ludeon.rimworld.ideology");
-
-            Log.Message($"<color=orange>[KCSG]</color> Created {sCreated} symbolDefs for vanilla and DLCs. Took {(DateTime.Now - before).TotalSeconds:00.00}s.");
-            defCreated = true;
         }
     }
 }
