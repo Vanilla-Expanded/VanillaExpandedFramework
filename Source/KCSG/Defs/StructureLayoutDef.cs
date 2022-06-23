@@ -74,6 +74,7 @@ namespace KCSG
         /// </summary>
         public void ResolveLayouts()
         {
+            var modName = modContentPack.Name;
             // Populate symbolsLists
             for (int i = 0; i < layouts.Count; i++)
             {
@@ -95,7 +96,7 @@ namespace KCSG
                             symbolsLists[i].Add(def);
 
                             if (def == null)
-                                StartupActions.AddToMissing(symbol);
+                                StartupActions.AddToMissing($"{modName} {symbol}");
                         }
                     }
                 }
