@@ -23,7 +23,7 @@ namespace KCSG
         {
             GenOption.ext = ext;
 
-            if (GenOption.ext.useStructureLayout)
+            if (GenOption.ext.UsingSingleLayout)
             {
                 GenOption.structureLayoutDef = GenUtils.ChooseStructureLayoutFrom(GenOption.ext.chooseFromlayouts);
             }
@@ -36,8 +36,8 @@ namespace KCSG
             Faction faction = map.ParentFaction == null || map.ParentFaction == Faction.OfPlayer ? Find.FactionManager.RandomEnemyFaction() : map.ParentFaction;
 
             // Get settlement size
-            int width = GenOption.ext.useStructureLayout ? GenOption.structureLayoutDef.width : GenOption.sld.settlementSize.x;
-            int height = GenOption.ext.useStructureLayout ? GenOption.structureLayoutDef.height : GenOption.sld.settlementSize.z;
+            int width = GenOption.ext.UsingSingleLayout ? GenOption.structureLayoutDef.width : GenOption.sld.settlementSize.x;
+            int height = GenOption.ext.UsingSingleLayout ? GenOption.structureLayoutDef.height : GenOption.sld.settlementSize.z;
 
             // Get spawn position
             IntVec3 spawn = loc;

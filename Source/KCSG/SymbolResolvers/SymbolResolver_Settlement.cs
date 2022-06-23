@@ -13,7 +13,7 @@ namespace KCSG
             Map map = BaseGen.globalSettings.map;
             rp.faction = rp.faction ?? Find.FactionManager.RandomEnemyFaction(false, false, true, TechLevel.Undefined);
 
-            if (GenOption.ext.useStructureLayout)
+            if (GenOption.ext.UsingSingleLayout)
             {
                 // Add hostile pawns
                 AddHostilePawnGroup(rp.faction, map, rp);
@@ -45,7 +45,7 @@ namespace KCSG
                     edgeParms.edgeThingMustReachMapEdge = new bool?(rp.edgeThingMustReachMapEdge ?? true);
                     BaseGen.symbolStack.Push("edgeDefense", edgeParms, null);
                 }
-                // Add vanilla settlement defense
+                // Add vanilla settlement defense without sandbags
                 else if (GenOption.sld.vanillaLikeDefenseNoSandBags)
                 {
                     int dWidth = Rand.Bool ? 2 : 4;
@@ -69,8 +69,8 @@ namespace KCSG
                     }
                 }
 
-                // Push ruin symbol
-                BaseGen.symbolStack.Push("kcsg_handleruins", rp, null);
+                // Push additional resolver symbol
+                BaseGen.symbolStack.Push("kcsg_runresolvers", rp, null);
 
                 // Start gen
                 SettlementGenUtils.StartGen(rp, map, GenOption.sld);

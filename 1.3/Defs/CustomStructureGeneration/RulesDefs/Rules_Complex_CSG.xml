@@ -32,6 +32,14 @@
     </resolvers>
   </RuleDef>
 
+  <RuleDef>
+    <defName>KCSG_RunResolvers</defName>
+    <symbol>kcsg_runresolvers</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_RunResolvers" />
+    </resolvers>
+  </RuleDef>
+
   <!-- storage -->
   <RuleDef>
     <defName>KCSG_StorageZone</defName>
@@ -54,15 +62,6 @@
     <symbol>kcsg_thingroofed</symbol>
     <resolvers>
       <li Class="KCSG.SymbolResolver_SingleThingRoofed" />
-    </resolvers>
-  </RuleDef>
-
-  <!-- Handle ruin -->
-  <RuleDef>
-    <defName>KCSG_HandleRuins</defName>
-    <symbol>kcsg_handleruins</symbol>
-    <resolvers>
-      <li Class="KCSG.SymbolResolver_HandleRuins" />
     </resolvers>
   </RuleDef>
 

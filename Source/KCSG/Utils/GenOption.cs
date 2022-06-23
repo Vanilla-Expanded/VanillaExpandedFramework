@@ -5,7 +5,17 @@ namespace KCSG
 {
     public class GenOption
     {
-        public static StuffableOptions StuffableOptions => sld.stuffableOptions;
+        public static StuffableOptions StuffableOptions
+        {
+            get
+            {
+                if (sld != null)
+                    return sld.stuffableOptions;
+
+                return null;
+            }
+        }
+
         public static RoadOptions RoadOptions => sld.roadOptions;
         public static PropsOptions PropsOptions => sld.propsOptions;
 

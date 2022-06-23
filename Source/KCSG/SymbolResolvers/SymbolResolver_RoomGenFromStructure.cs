@@ -10,7 +10,7 @@ namespace KCSG
             Map map = BaseGen.globalSettings.map;
 
             GenUtils.GenerateLayout(GenOption.structureLayoutDef, rp.rect, map);
-            BaseGen.symbolStack.Push("kcsg_handleruins", rp, null);
+            BaseGen.symbolStack.Push("kcsg_runresolvers", rp, null);
         }
     }
 }

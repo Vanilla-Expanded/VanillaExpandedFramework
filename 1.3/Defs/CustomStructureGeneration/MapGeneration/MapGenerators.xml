@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
-
+  <!-- Generate faction base -->
   <MapGeneratorDef ParentName="MapCommonBase">
     <defName>KCSG_Base_Faction</defName>
     <genSteps>
@@ -9,7 +9,6 @@
     </genSteps>
   </MapGeneratorDef>
 
-  <!-- Generate faction base -->
   <GenStepDef>
     <defName>KCSG_Settlement</defName>
     <order>599</order>
@@ -19,7 +18,7 @@
     </genStep>
   </GenStepDef>
 
-
+  <!-- Generate world object -->
   <MapGeneratorDef ParentName="MapCommonBase">
     <defName>KCSG_WorldObject_Gen</defName>
     <genSteps>
@@ -28,7 +27,6 @@
     </genSteps>
   </MapGeneratorDef>
 
-  <!-- Generate world object -->
   <GenStepDef>
     <defName>KCSG_WorldObject</defName>
     <order>599</order>

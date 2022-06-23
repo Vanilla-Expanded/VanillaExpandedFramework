@@ -9,7 +9,8 @@ namespace KCSG
     {
         public static void Message(string message)
         {
-            if (VFECore.VFEGlobal.settings.enableVerboseLogging) Log.Message($"<color=orange>[KCSG]</color> {message}");
+            if (VFECore.VFEGlobal.settings.enableVerboseLogging)
+                Log.Message($"<color=orange>[KCSG]</color> {message}");
         }
 
         public static void Error(string message, string mod = "")

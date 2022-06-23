@@ -17,7 +17,10 @@ namespace KCSG
         /// </summary>
         public static void GenerateLayout(StructureLayoutDef layout, CellRect rect, Map map)
         {
-            var wallForRoom = GenOption.StuffableOptions.randomizeWall ? RandomWallStuffByWeight(ThingDefOf.Wall) : null;
+            ThingDef wallForRoom = null;
+            if (GenOption.StuffableOptions != null && GenOption.StuffableOptions.randomizeWall)
+                wallForRoom = RandomWallStuffByWeight(ThingDefOf.Wall);
+
             for (int index = 0; index < layout.layouts.Count; index++)
             {
                 GenerateRoomFromLayout(layout, index, rect, map, wallForRoom);
@@ -47,7 +50,7 @@ namespace KCSG
                         {
                             GenerateTerrainAt(map, cell, temp.terrainDef);
                         }
-                        else if (temp.pawnKindDefNS != null && (GenOption.ext == null || GenOption.ext.shouldRuin == false))
+                        else if (temp.pawnKindDefNS != null && GenOption.ext?.AdditionalResolvers == false)
                         {
                             GeneratePawnAt(map, cell, temp);
                         }
@@ -68,12 +71,8 @@ namespace KCSG
                                 plant.Growth = temp.plantGrowth;
                                 GenSpawn.Spawn(plant, cell, map, WipeMode.VanishOrMoveAside);
                             }
-                            else if (temp.thingDef.category == ThingCategory.Pawn)
+                            else if (temp.thingDef.category == ThingCategory.Pawn && GenOption.ext?.AdditionalResolvers == false)
                             {
-                                if (GenOption.ext?.shouldRuin == true)
-                                {
-                                    continue;
-                                }
                                 GenSpawn.Spawn(temp.thingDef, cell, map, WipeMode.VanishOrMoveAside);
                             }
                             else
@@ -85,7 +84,7 @@ namespace KCSG
                                 GenerateBuildingAt(map, cell, temp, faction, layout.spawnConduits, wallForRoom);
 
                                 // Generating settlement, we want to keep tracks of doors
-                                if (GenOption.ext != null && !GenOption.ext.useStructureLayout && temp.thingDef.altitudeLayer == AltitudeLayer.DoorMoveable)
+                                if (GenOption.ext != null && !GenOption.ext.UsingSingleLayout && temp.thingDef.altitudeLayer == AltitudeLayer.DoorMoveable)
                                 {
                                     doors?.Add(cell);
                                 }
@@ -589,10 +588,10 @@ namespace KCSG
         /// </summary>
         public static ThingDef RandomWallStuffByWeight(SymbolDef symbol)
         {
-            if (!GenOption.StuffableOptions.randomizeWall)
-                return symbol.stuffDef;
+            if (GenOption.StuffableOptions != null && GenOption.StuffableOptions.randomizeWall)
+                return RandomWallStuffByWeight(symbol.thingDef);
 
-            return RandomWallStuffByWeight(symbol.thingDef);
+            return symbol.stuffDef;
         }
 
         /// <summary>
@@ -605,7 +604,7 @@ namespace KCSG
 
             var option = GenOption.StuffableOptions;
 
-            if (option.randomizeFurniture && !option.excludedFunitureDefs.Contains(symbol.thingDef))
+            if (option != null && option.randomizeFurniture && !option.excludedFunitureDefs.Contains(symbol.thingDef))
             {
                 if (option.allowedFurnitureStuff.Count > 0)
                 {

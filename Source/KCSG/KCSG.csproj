@@ -64,7 +64,7 @@
     <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_ScatterStuffAround.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_EdgeDefenseNoSandbags.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_GenerateRoad.cs" />
-    <Compile Include="SymbolResolvers\SymbolResolver_HandleRuins.cs" />
+    <Compile Include="SymbolResolvers\SymbolResolver_RunResolvers.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_ScatterPropsAround.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_SettlementPower.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_SingleThingRoofed.cs" />
