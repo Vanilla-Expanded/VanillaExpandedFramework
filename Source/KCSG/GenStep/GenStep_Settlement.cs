@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using RimWorld;
+﻿using RimWorld;
 using RimWorld.BaseGen;
 using Verse;
 
@@ -43,8 +42,7 @@ namespace KCSG
             IntVec3 spawn = loc;
             if (GenOption.ext.tryFindFreeArea)
             {
-                bool validator(IntVec3 cell) => new CellRect(cell.x - (width / 2), cell.z - (height / 2), width, height).Cells.All(pC => pC.Walkable(map) && !pC.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Bridgeable));
-                if (!RCellFinder.TryFindRandomCellNearTheCenterOfTheMapWith(validator, map, out spawn))
+                if (!RCellFinder.TryFindRandomCellNearTheCenterOfTheMapWith(i => RectFreeValidator(new CellRect(i.x - (width / 2), i.z - (height / 2), width, height), map), map, out spawn))
                     Log.Warning($"[KCSG] Trying to find free spawn area failed");
             }
 
@@ -63,6 +61,16 @@ namespace KCSG
             BaseGen.globalSettings.map = map;
             BaseGen.symbolStack.Push(GenOption.ext.symbolResolver ?? "kcsg_settlement", rp, null);
             BaseGen.Generate();
+        }
+
+        private static bool RectFreeValidator(CellRect rect, Map map)
+        {
+            foreach (var cell in rect)
+            {
+                if (!cell.Walkable(map) || cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Bridgeable))
+                    return false;
+            }
+            return true;
         }
     }
 }
