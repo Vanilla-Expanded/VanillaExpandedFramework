@@ -333,13 +333,13 @@ namespace PipeSystem
                 // Get other inputs
                 GetFromConverters();
                 // Distribute using the whole storage
-                DistributeAmongRefuelables(Stored);
+                DistributeAmongRefillables(Stored);
                 DistributeAmongProcessors(Stored);
                 DistributeAmongConverters(Stored);
             }
             else
             {
-                float rUsage = DistributeAmongRefuelables(usable);
+                float rUsage = DistributeAmongRefillables(usable);
                 float leftAfter = usable - rUsage;
                 float pUsage = DistributeAmongProcessors(leftAfter);
                 DistributeAmongConverters(leftAfter - pUsage);
@@ -387,10 +387,10 @@ namespace PipeSystem
             return used;
         }
 
-        // <summary>
+        /// <summary>
         /// Distribute resources stored into the converters
         /// </summary>
-        internal float DistributeAmongRefuelables(float available)
+        internal float DistributeAmongRefillables(float available)
         {
             float used = 0;
             if (refillables.Count == 0 || available <= 0)
@@ -452,7 +452,10 @@ namespace PipeSystem
                     PipeSystemDebug.Message($"Converted {toDraw} resource for {toConvert}");
                 }
                 // Don't iterate if nothing more is available
-                else break;
+                else
+                {
+                    break;
+                }
             }
 
             DrawAmongStorage(used, storages);
