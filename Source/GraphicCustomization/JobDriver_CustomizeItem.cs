@@ -17,10 +17,7 @@ namespace GraphicCustomization
             yield return Toils_General.Do(() =>
             {
                 var comp = TargetA.Thing.TryGetComp<CompGraphicCustomization>();
-                if (comp != null)
-                {
-                    comp.Customize();
-                }
+                comp.Customize();
             });
         }
     }

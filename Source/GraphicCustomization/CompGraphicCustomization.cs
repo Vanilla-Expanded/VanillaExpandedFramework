@@ -30,7 +30,7 @@ namespace GraphicCustomization
             {
                 if (graphicInt is null)
                 {
-                    TryInitTexPaths();
+                    TryInit();
                     var graphicRequest = new GraphicRequest(this.parent.def.graphicData.graphicClass, this.parent.def.graphicData.texPath,
                         this.parent.def.graphicData.shaderType.Shader, this.parent.def.graphicData.drawSize, this.parent.def.graphicData.color,
                         this.parent.def.graphicData.colorTwo, this.parent.def.graphicData, 0, this.parent.def.graphicData.shaderParameters, null);
@@ -40,7 +40,7 @@ namespace GraphicCustomization
             }
         }
 
-        private void TryInitTexPaths()
+        public void TryInit()
         {
             if (texPaths.NullOrEmpty())
             {
@@ -80,7 +80,7 @@ namespace GraphicCustomization
             {
                 if (textureInt is null)
                 {
-                    TryInitTexPaths();
+                    TryInit();
                     textureInt = GetCombinedTexture(texPaths);
                 }
                 return textureInt;
