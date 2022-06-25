@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -65,12 +66,26 @@ namespace GraphicCustomization
 
         public List<TextureVariant> GetRandomizedTexVariants()
         {
-            var randomizedPaths = new List<TextureVariant>();
+            var randomizedVariants = new Dictionary<string, TextureVariant>();
             foreach (var graphicPart in Props.graphics)
             {
-                randomizedPaths.Add(graphicPart.texVariants.RandomElement());
+                randomizedVariants[graphicPart.name] = graphicPart.texVariants.RandomElement();
             }
-            return randomizedPaths;
+
+            List<TextureVariant> variantsToReplace = new List<TextureVariant>();
+            foreach (var key in randomizedVariants.Keys.ToList())
+            {
+                var variant = randomizedVariants[key];
+                if (variant.textureVariantOverride != null)
+                {
+                    if (Rand.Chance(variant.textureVariantOverride.chance))
+                    {
+                        var group = Props.graphics.First(x => x.name == variant.textureVariantOverride.groupName);
+                        randomizedVariants[group.name] = group.texVariants.First(x => x.texName == variant.textureVariantOverride.texName);
+                    }
+                }
+            }
+            return randomizedVariants.Values.ToList();
         }
 
         private Texture2D textureInt;

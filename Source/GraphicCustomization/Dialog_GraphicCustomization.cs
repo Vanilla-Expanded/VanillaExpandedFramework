@@ -65,7 +65,7 @@ namespace GraphicCustomization
             Widgets.EndScrollView();
 
             var cancelRect = new Rect((inRect.width / 2f) - 155, inRect.height - 32, 150, 32);
-            if (Widgets.ButtonText(cancelRect, "Cancel".Translate()))
+            if (Widgets.ButtonText(cancelRect, "VEF.Cancel".Translate()))
             {
                 this.Close();
             }
@@ -119,7 +119,7 @@ namespace GraphicCustomization
             if (compGeneratedName != null)
             {
                 var nameRect = new Rect(position.x, position.y - 3, 350, 25);
-                Widgets.Label(nameRect, "Name".Translate() + ": ");
+                Widgets.Label(nameRect, "VEF.Name".Translate() + ": ");
                 position.y += 25;
                 var nameInputRect = new Rect(nameRect.x, nameRect.yMax, 350, 32);
                 currentName = Widgets.TextField(nameInputRect, currentName);
