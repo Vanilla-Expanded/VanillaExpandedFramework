@@ -43,8 +43,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CompGraphicCustomization.cs" />
+    <Compile Include="Dialog_GraphicCustomization.cs" />
     <Compile Include="GraphicCustomizationMod.cs" />
+    <Compile Include="GraphicCustomization_DefOf.cs" />
+    <Compile Include="GraphicPart.cs" />
+    <Compile Include="HotSwappableAttribute.cs" />
+    <Compile Include="JobDriver_CustomizeItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TextureUtils.cs" />
+    <Compile Include="TextureVariant.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Krafs.Publicizer">

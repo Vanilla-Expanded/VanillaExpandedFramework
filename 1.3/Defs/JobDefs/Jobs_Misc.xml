@@ -18,4 +18,11 @@
         <alwaysShowWeapon>true</alwaysShowWeapon>
     </JobDef>
 
+
+    <JobDef>
+        <defName>VEF_CustomizeItem</defName>
+        <driverClass>GraphicCustomization.JobDriver_CustomizeItem</driverClass>
+        <reportString>customizing TargetA.</reportString>
+    </JobDef>
+
 </Defs>
