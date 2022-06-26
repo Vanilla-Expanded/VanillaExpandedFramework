@@ -73,7 +73,7 @@ namespace KCSG
                 BaseGen.symbolStack.Push("kcsg_runresolvers", rp, null);
 
                 // Start gen
-                SettlementGenUtils.StartGen(rp, map, GenOption.sld);
+                SettlementGenUtils.Generate(rp, map, GenOption.sld);
             }
         }
 

@@ -70,26 +70,35 @@ namespace KCSG
 
             return linkRoadPropsDefs.RandomElement();
         }
+    }
 
-        internal ThingDef RandomScatterRoadProps()
-        {
-            if (scatterPropsDefs.NullOrEmpty())
-                return null;
+    public class PeripheralBuildings
+    {
+        public int spaceAround = 1;
 
-            return scatterPropsDefs.RandomElement();
-        }
+        public List<StructOption> allowedStructures = new List<StructOption>();
+    }
+
+    public class CenterBuildings
+    {
+        public IntVec2 centerSize = new IntVec2(42, 42);
+
+        public int spaceAround = 1;
+
+        public List<StructOption> allowedStructures = new List<StructOption>();
+        public List<string> centralBuildingTags = new List<string>();
     }
 
     public class SettlementLayoutDef : Def
     {
         public IntVec2 settlementSize = new IntVec2(42, 42);
 
-        public List<StructOption> allowedStructures = new List<StructOption>();
-        public List<string> centralBuildingTags = new List<string>();
-
-        public int spaceAround = 1;
         public bool avoidBridgeable = false;
         public bool avoidMountains = false;
+
+        public PeripheralBuildings peripheralBuildings;
+
+        public CenterBuildings centerBuildings;
 
         public RoadOptions roadOptions;
 
@@ -116,6 +125,17 @@ namespace KCSG
                 stuffableOptions = new StuffableOptions();
             if (propsOptions == null)
                 propsOptions = new PropsOptions();
+            if (peripheralBuildings == null)
+                peripheralBuildings = new PeripheralBuildings();
+        }
+
+        public override IEnumerable<string> ConfigErrors()
+        {
+            foreach (var err in base.ConfigErrors())
+                yield return err;
+
+            if (centerBuildings == null)
+                yield return "Cannot use SettlementLayoutDef with null centerBuildings";
         }
     }
 }

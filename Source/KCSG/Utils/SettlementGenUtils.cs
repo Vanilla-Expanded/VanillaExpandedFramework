@@ -26,7 +26,7 @@ namespace KCSG
         public static DateTime startTime;
         public static int seed;
 
-        public static void StartGen(ResolveParams rp, Map map, SettlementLayoutDef settlementLayoutDef)
+        public static void Generate(ResolveParams rp, Map map, SettlementLayoutDef settlementLayoutDef)
         {
             seed = map.Tile;
             startTime = DateTime.Now;
@@ -59,9 +59,9 @@ namespace KCSG
 
             // Get smallest allowed structure
             int radius = 9999;
-            for (int i = 0; i < settlementLayoutDef.allowedStructures.Count; i++)
+            for (int i = 0; i < settlementLayoutDef.centerBuildings.allowedStructures.Count; i++)
             {
-                var allowedLayouts = DefDatabase<StructureLayoutDef>.AllDefsListForReading.FindAll(s => s.tags.Contains(settlementLayoutDef.allowedStructures[i].tag));
+                var allowedLayouts = DefDatabase<StructureLayoutDef>.AllDefsListForReading.FindAll(s => s.tags.Contains(settlementLayoutDef.centerBuildings.allowedStructures[i].tag));
                 for (int o = 0; o < allowedLayouts.Count; o++)
                 {
                     var layout = allowedLayouts[o];
@@ -168,7 +168,7 @@ namespace KCSG
 
                 while (activePointsCount > 0)
                 {
-                    var listIndex = random.Next(activePointsCount);
+                    var listIndex = random.Next(activePointsCount - 1);
 
                     var point = activePoints[listIndex];
                     var found = false;
@@ -279,6 +279,8 @@ namespace KCSG
         /// </summary>
         public static class BuildingPlacement
         {
+            private const int maxTry = 100;
+
             private static readonly Dictionary<string, List<StructureLayoutDef>> structuresTagsCache = new Dictionary<string, List<StructureLayoutDef>>();
 
             private static float GetWeight(StructOption structOption, StructOption lastStructOption, Dictionary<string, int> structCount)
@@ -287,7 +289,7 @@ namespace KCSG
                 {
                     int count = structCount.TryGetValue(structOption.tag);
 
-                    if (count == structOption.count.max)
+                    if (count >= structOption.count.max)
                         return 0;
 
                     if (lastStructOption != null && lastStructOption.tag == structOption.tag)
@@ -307,28 +309,36 @@ namespace KCSG
                 return 1;
             }
 
-            private static bool CanPlaceAt(IntVec3 point, StructureLayoutDef building, ResolveParams rp)
+            /// <summary>
+            /// Check if all cell are free and if the layout need roof clearance, also check for roofed cells
+            /// </summary>
+            private static bool CanPlaceAt(IntVec3 point, StructureLayoutDef building, ResolveParams rp, int spaceAround, CellRect centerRect, bool inCenter)
             {
-                int m = GenOption.sld.spaceAround;
                 var map = BaseGen.globalSettings.map;
 
-                for (int x = point.x - m; x < building.width + point.x + m; x++)
+                for (int x = point.x - spaceAround; x < building.width + point.x + spaceAround; x++)
                 {
-                    for (int z = point.z - m; z < building.height + point.z + m; z++)
+                    for (int z = point.z - spaceAround; z < building.height + point.z + spaceAround; z++)
                     {
                         var cell = new IntVec3(x, 0, z);
-                        if (grid[z][x] == CellType.Used || !rp.rect.Contains(cell))
-                        {
+                        if (!inCenter && centerRect.Contains(cell))
                             return false;
-                        }
 
-                        if (building.needRoofClearance)
+                        if (InBound(x, z))
                         {
-                            var bRect = new CellRect(cell.x, cell.z, building.width, building.height);
-                            foreach (var c in bRect)
+                            if (grid[z][x] == CellType.Used || !rp.rect.Contains(cell))
                             {
-                                if (c.Roofed(map))
-                                    return false;
+                                return false;
+                            }
+
+                            if (building.needRoofClearance)
+                            {
+                                var bRect = new CellRect(cell.x, cell.z, building.width, building.height);
+                                foreach (var c in bRect)
+                                {
+                                    if (c.Roofed(map))
+                                        return false;
+                                }
                             }
                         }
                     }
@@ -336,21 +346,28 @@ namespace KCSG
                 return true;
             }
 
-            private static void PlaceAt(IntVec3 point, StructureLayoutDef building)
+            /// <summary>
+            /// Set rect cells + space around to used
+            /// </summary>
+            private static void PlaceAt(IntVec3 point, StructureLayoutDef building, int spaceAround)
             {
-                int m = GenOption.sld.spaceAround;
-                for (int x = point.x - m; x < building.width + point.x + m; x++)
+                for (int x = point.x - spaceAround; x < building.width + point.x + spaceAround; x++)
                 {
-                    for (int z = point.z - m; z < building.height + point.z + m; z++)
+                    for (int z = point.z - spaceAround; z < building.height + point.z + spaceAround; z++)
                     {
-                        if (InBound(x, z))
-                            grid[z][x] = CellType.Used;
+                        grid[z][x] = CellType.Used;
                     }
                 }
             }
 
+            /// <summary>
+            /// Grid bound check
+            /// </summary>
             private static bool InBound(int x, int z) => x > 0 && x < grid[0].Length && z > 0 && z < grid.Length;
 
+            /// <summary>
+            /// Cache all structure in a dict per tag
+            /// </summary>
             public static void CacheTags()
             {
                 if (structuresTagsCache.NullOrEmpty())
@@ -378,29 +395,44 @@ namespace KCSG
                 }
             }
 
+            /// <summary>
+            /// Place buildings
+            /// </summary>
             public static void Run(List<IntVec3> spawnPoints, SettlementLayoutDef sld, ResolveParams rp)
             {
                 Dictionary<string, int> structCount = new Dictionary<string, int>();
                 var usedLayoutDefs = new HashSet<StructureLayoutDef>();
-
-                if (!sld.centralBuildingTags.NullOrEmpty())
+                // Generate center building
+                if (!sld.centerBuildings.centralBuildingTags.NullOrEmpty())
                 {
-                    var layout = GenUtils.ChooseStructureLayoutFrom(structuresTagsCache[sld.centralBuildingTags.RandomElement()]);
-                    var cellRect = CellRect.CenteredOn(rp.rect.CenterCell, layout.width, layout.height);
+                    var layout = GenUtils.ChooseStructureLayoutFrom(structuresTagsCache[sld.centerBuildings.centralBuildingTags.RandomElement()]);
+                    var cellRect = CellRect.CenteredOn(rect.CenterCell, layout.width, layout.height);
 
                     foreach (var cell in cellRect)
                         grid[cell.z][cell.x] = CellType.Used;
 
                     GenUtils.GenerateLayout(layout, cellRect, BaseGen.globalSettings.map);
                 }
+                // Generate other buildings
+                CellRect centerRect = CellRect.CenteredOn(rect.CenterCell, sld.centerBuildings.centerSize.x, sld.centerBuildings.centerSize.z);
+                int periCount = sld.peripheralBuildings.allowedStructures.Count;
 
                 StructOption lastOpt = null;
                 for (int i = 0; i < spawnPoints.Count; i++)
                 {
-                    IntVec3 vector = spawnPoints[i];
-                    for (int o = 0; o < 100; o++)
+                    IntVec3 vec = spawnPoints[i];
+                    bool inCenter = centerRect.Contains(vec);
+                    int spaceAround = inCenter ? sld.centerBuildings.spaceAround : sld.peripheralBuildings.spaceAround;
+
+                    for (int o = 0; o < maxTry; o++)
                     {
-                        sld.allowedStructures.TryRandomElementByWeight(p => GetWeight(p, lastOpt, structCount), out StructOption opt);
+                        StructOption opt;
+                        if (inCenter)
+                            sld.centerBuildings.allowedStructures.TryRandomElementByWeight(p => GetWeight(p, lastOpt, structCount), out opt);
+                        else if (periCount == 0)
+                            continue;
+                        else
+                            sld.peripheralBuildings.allowedStructures.TryRandomElementByWeight(p => GetWeight(p, lastOpt, structCount), out opt);
 
                         if (opt == null)
                         {
@@ -421,11 +453,11 @@ namespace KCSG
 
                         var layoutDef = choices.Count > 0 ? choices.RandomElement() : structuresTagsCache[opt.tag].RandomElement();
 
-                        if (CanPlaceAt(vector, layoutDef, rp))
+                        if (CanPlaceAt(vec, layoutDef, rp, spaceAround, centerRect, inCenter))
                         {
                             usedLayoutDefs.Add(layoutDef);
 
-                            PlaceAt(vector, layoutDef);
+                            PlaceAt(vec, layoutDef, spaceAround);
 
                             if (structCount.ContainsKey(opt.tag))
                             {
@@ -436,13 +468,13 @@ namespace KCSG
                                 structCount.Add(opt.tag, 1);
                             }
 
-                            CellRect rect = new CellRect(vector.x, vector.z, layoutDef.width, layoutDef.height);
+                            CellRect rect = new CellRect(vec.x, vec.z, layoutDef.width, layoutDef.height);
                             GenUtils.GenerateLayout(layoutDef, rect, BaseGen.globalSettings.map);
 
                             if (layoutDef.isStorage)
                             {
                                 ResolveParams rstock = rp;
-                                rstock.rect = new CellRect(vector.x, vector.z, layoutDef.width, layoutDef.height);
+                                rstock.rect = new CellRect(vec.x, vec.z, layoutDef.width, layoutDef.height);
                                 BaseGen.symbolStack.Push("kcsg_storagezone", rstock, null);
                             }
                             break;

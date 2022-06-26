@@ -42,12 +42,12 @@ namespace KCSG
             IntVec3 spawn = loc;
             if (GenOption.ext.tryFindFreeArea)
             {
-                if (!RCellFinder.TryFindRandomCellNearTheCenterOfTheMapWith(i => RectFreeValidator(new CellRect(i.x - (width / 2), i.z - (height / 2), width, height), map), map, out spawn))
+                if (!RCellFinder.TryFindRandomCellNearTheCenterOfTheMapWith(i => RectFreeValidator(CellRect.CenteredOn(i, width, height), map), map, out spawn))
                     Log.Warning($"[KCSG] Trying to find free spawn area failed");
             }
 
             // Create rect
-            CellRect rect = new CellRect(spawn.x - (width / 2), spawn.z - (height / 2), width, height);
+            CellRect rect = CellRect.CenteredOn(spawn, width, height);
             rect.ClipInsideMap(map);
 
             // Pre-gen clean
