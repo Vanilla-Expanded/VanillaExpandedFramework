@@ -16,7 +16,7 @@ namespace KCSG
             Map map = BaseGen.globalSettings.map;
             var propsOpt = GenOption.PropsOptions;
 
-            if (propsOpt.scatterProps)
+            if (propsOpt.scatterProps && propsOpt.scatterPropsDefs.Count > 0)
             {
                 usedSpots = new List<IntVec3>();
 
