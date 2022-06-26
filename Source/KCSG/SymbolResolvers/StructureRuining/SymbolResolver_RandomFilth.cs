@@ -10,13 +10,13 @@ namespace KCSG
         {
             Map map = BaseGen.globalSettings.map;
 
-            if (CGO.factionSettlement.filthTypes != null && CGO.factionSettlement.filthTypes.Any())
+            if (GenOption.ext.filthTypes != null && GenOption.ext.filthTypes.Any())
             {
                 foreach (IntVec3 pos in rp.rect)
                 {
                     if (Rand.Bool && pos.GetTerrain(map).filthAcceptanceMask != RimWorld.FilthSourceFlags.None)
                     {
-                        GenSpawn.Spawn(ThingMaker.MakeThing(CGO.factionSettlement.filthTypes.RandomElement()), pos, BaseGen.globalSettings.map, WipeMode.FullRefund);
+                        GenSpawn.Spawn(ThingMaker.MakeThing(GenOption.ext.filthTypes.RandomElement()), pos, BaseGen.globalSettings.map, WipeMode.FullRefund);
                     }
                 }
             }

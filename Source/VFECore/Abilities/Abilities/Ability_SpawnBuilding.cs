@@ -1,5 +1,6 @@
 ﻿namespace VFECore.Abilities
 {
+    using RimWorld.Planet;
     using UnityEngine;
     using Verse;
 
@@ -7,26 +8,30 @@
     {
         public override bool CanAutoCast => false;
 
-        public override void Cast(LocalTargetInfo target)
+        public override void Cast(params GlobalTargetInfo[] targets)
         {
-            base.Cast(target);
+            base.Cast(targets);
 
             AbilityExtension_Building extension = this.def.GetModExtension<AbilityExtension_Building>();
 
             if (extension.building != null)
             {
-                Thing building = GenSpawn.Spawn(extension.building, target.Cell, this.pawn.Map);
-                building.SetFactionDirect(this.pawn.Faction);
-
-                CompSpawnedBuilding comp = building.TryGetComp<CompSpawnedBuilding>();
-                if (comp != null)
+                foreach (GlobalTargetInfo target in targets)
                 {
-                    comp.lastDamageTick = Find.TickManager.TicksGame;
-                    comp.damagePerTick  = Mathf.RoundToInt(this.GetPowerForPawn());
 
-                    int duration = this.GetDurationForPawn();
-                    if (duration > 0)
-                        comp.finalTick = comp.lastDamageTick + duration;
+                    Thing building = GenSpawn.Spawn(extension.building, target.Cell, this.pawn.Map);
+                    building.SetFactionDirect(this.pawn.Faction);
+
+                    CompSpawnedBuilding comp = building.TryGetComp<CompSpawnedBuilding>();
+                    if (comp != null)
+                    {
+                        comp.lastDamageTick = Find.TickManager.TicksGame;
+                        comp.damagePerTick = Mathf.RoundToInt(this.GetPowerForPawn());
+
+                        int duration = this.GetDurationForPawn();
+                        if (duration > 0)
+                            comp.finalTick = comp.lastDamageTick + duration;
+                    }
                 }
             }
         }

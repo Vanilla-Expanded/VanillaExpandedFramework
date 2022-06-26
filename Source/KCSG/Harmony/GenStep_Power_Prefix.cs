@@ -7,7 +7,7 @@ namespace KCSG
     [StaticConstructorOnStartup]
     [HarmonyPatch(typeof(GenStep_Power))]
     [HarmonyPatch("Generate", MethodType.Normal)]
-    public class GenStep_Power_Patch
+    public class GenStep_Power_Prefix
     {
         [HarmonyPrefix]
         public static bool Prefix(Map map)
@@ -16,7 +16,10 @@ namespace KCSG
             {
                 return false;
             }
-            else return true;
+            else
+            {
+                return true;
+            }
         }
     }
 }

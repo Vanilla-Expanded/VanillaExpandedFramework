@@ -11,26 +11,25 @@
 		public bool canApplyToMentallyBroken;
 
 		public bool canApplyToUnconscious;
-		public override void Cast(LocalTargetInfo target, Ability ability)
+		public override void Cast(GlobalTargetInfo[] targets, Ability ability)
 		{
-			Pawn pawn = target.Pawn;
-			if (pawn != null && ability.pawn != pawn)
+			foreach (GlobalTargetInfo target in targets)
 			{
-				ability.pawn.interactions?.TryInteractWith(pawn, interactionDef);
+				if (target.Thing is Pawn pawn && ability.pawn != pawn)
+					ability.pawn.interactions?.TryInteractWith(pawn, this.interactionDef);
 			}
 		}
 
-        public override bool CanApplyOn(LocalTargetInfo target, Ability ability, bool throwMessages = false)
-        {
-            return Valid(new[] { target.ToGlobalTargetInfo(target.Thing.Map) }, ability, throwMessages);
-        }
+		public override bool CanApplyOn(LocalTargetInfo target, Ability ability, bool throwMessages = false)
+		{
+			return Valid(new[] { target.ToGlobalTargetInfo(target.Thing.Map) }, ability, throwMessages);
+		}
 
-        public override bool Valid(GlobalTargetInfo[] targets, Ability ability, bool throwMessages = false)
-        {
+		public override bool Valid(GlobalTargetInfo[] targets, Ability ability, bool throwMessages = false)
+		{
 			foreach (GlobalTargetInfo target in targets)
-            {
-				Pawn pawn = target.Thing as Pawn;
-				if (pawn != null)
+			{
+				if (target.Thing is Pawn pawn)
 				{
 					if (!canApplyToMentallyBroken && !AbilityUtility.ValidateNoMentalState(pawn, throwMessages))
 					{
@@ -47,6 +46,6 @@
 				}
 			}
 			return base.Valid(targets, ability, throwMessages);
-        }
+		}
 	}
 }

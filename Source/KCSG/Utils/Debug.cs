@@ -1,12 +1,23 @@
-﻿using RimWorld;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using RimWorld;
 using Verse;
 
 namespace KCSG
 {
-    public static class DebugOption
+    public static class Debug
     {
+        public static void Message(string message)
+        {
+            if (VFECore.VFEGlobal.settings.enableVerboseLogging)
+                Log.Message($"<color=orange>[KCSG]</color> {message}");
+        }
+
+        public static void Error(string message, string mod = "")
+        {
+            Log.Error($"[KCSG] {(mod != "" ? "[" + mod + "] " : "")}{message}");
+        }
+
         [DebugAction("KCSG", "Quickspawn structure...", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void QuickspawnStructure()
         {
@@ -21,11 +32,7 @@ namespace KCSG
                         if (UI.MouseCell().InBounds(map))
                         {
                             CellRect cellRect = CellRect.CenteredOn(UI.MouseCell(), layoutDef.width, layoutDef.height);
-                            for (int i = 0; i < layoutDef.layouts.Count; i++)
-                            {
-                                GenUtils.GenerateRoomFromLayout(layoutDef, i, cellRect, map);
-                            }
-                            GenUtils.GenerateRoofGrid(layoutDef, cellRect, map);
+                            GenUtils.GenerateLayout(layoutDef, cellRect, map);
                         }
                     }));
                 }
@@ -214,8 +221,6 @@ namespace KCSG
                 })
 
             };
-
-
 
             Find.WindowStack.Add(new Dialog_DebugOptionListLister(debugMenuOptionList));
         }

@@ -8,6 +8,8 @@ namespace VanillaPlantsExpanded
     {     
         public ThingDef secondaryOutput;
         public int outPutAmount;
+        public bool randomOutput = false;
+        public List<ThingDef> randomSecondaryOutput;
     }
 
 }

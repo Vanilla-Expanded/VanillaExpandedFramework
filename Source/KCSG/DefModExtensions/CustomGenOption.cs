@@ -1,48 +1,62 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Verse;
 
 namespace KCSG
 {
     public class CustomGenOption : DefModExtension
     {
+        public bool AdditionalResolvers { get; set; }
+        public bool UsingSingleLayout { get; set; }
+
         /* Nomadic faction */
         public bool canSpawnSettlements = true;
 
         /* Structure generation */
-        public bool useStructureLayout; // Settlement def or single structure
-
         public List<StructureLayoutDef> chooseFromlayouts = new List<StructureLayoutDef>();
         public List<SettlementLayoutDef> chooseFromSettlements = new List<SettlementLayoutDef>();
 
-        /* Custom symbol resolver */
         public string symbolResolver = null;
-        /* Clear filth, buildings, chunks, remove non-natural terrain */
-        public bool preGenClear = true;
-        /* Clear everything */
-        public bool fullClear = false;
-        /* Try to find a clear area to fit the structure */
+
         public bool tryFindFreeArea = false;
+        public bool preGenClear = true;
+        public bool fullClear = false;
 
-        /* Ruin */
-        public bool shouldRuin = false;
-        public bool spawnCropsField = true;
-        public List<ThingDef> filthTypes = new List<ThingDef>();
+        public List<string> symbolResolvers = new List<string>();
         public List<ThingDef> scatterThings = new List<ThingDef>();
+        public List<ThingDef> filthTypes = new List<ThingDef>();
         public float scatterChance = 0.4f;
-        public List<string> ruinSymbolResolvers = new List<string>();
 
-        /* Handle errors */
+        // TODO Obsolete - To remove in next rimworld version
+        [Obsolete]
+        public bool useStructureLayout;
+        [Obsolete]
+        public bool shouldRuin = false;
+        [Obsolete]
+        public List<string> ruinSymbolResolvers;
+
         public override IEnumerable<string> ConfigErrors()
         {
-            if (shouldRuin && !ruinSymbolResolvers.Any())
-                Log.Error($"CustomGenOption DefModExtension have shouldRuin at true but have empty ruinSymbolResolvers list");
-            if (filthTypes.Any(t => t.category != ThingCategory.Filth))
-                Log.Error($"CustomGenOption DefModExtension have filthTypes list with non filth thing(s)");
+            foreach (var error in base.ConfigErrors())
+                yield return error;
 
-            return base.ConfigErrors();
+            for (int i = 0; i < filthTypes.Count; i++)
+            {
+                if (filthTypes[i].category != ThingCategory.Filth)
+                    yield return $"{filthTypes[i].defName} in filthTypes, but isn't in category Filth.";
+            }
+
+            // TODO Compat - To remove in next rimworld version
+            if (!ruinSymbolResolvers.NullOrEmpty())
+                symbolResolvers = ruinSymbolResolvers;
+            //
+            AdditionalResolvers = symbolResolvers.Count > 0;
+
+            UsingSingleLayout = chooseFromlayouts.Count > 0;
         }
     }
 
-    // Compatibility
+    // TODO Obsolete - To remove in next rimworld version
+    [Obsolete]
     public class FactionSettlement : CustomGenOption { }
 }

@@ -63,11 +63,7 @@ namespace KCSG
 
 
                         CellRect spawnRect = CellRect.CenteredOn(spawnPos, width, height);
-                        for (int o = 0; o < layout.layouts.Count; o++)
-                        {
-                            GenUtils.GenerateRoomFromLayout(layout, o, spawnRect, map);
-                        }
-                        GenUtils.GenerateRoofGrid(layout, spawnRect, map);
+                        GenUtils.GenerateLayout(layout, spawnRect, map);
                     }
 
                     if (ext.postGenerateOre)

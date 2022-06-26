@@ -20,4 +20,8 @@ If hired {0} die on duty, you will incur an additional 5% increase to contract p
     <VEF.TimeLeft>Time remaining:</VEF.TimeLeft>
     <VEF.CancelContract>Cancel Contract</VEF.CancelContract>
     <VEF.NoRefund>Cancelling your contract will not refund the silver you spent on it.</VEF.NoRefund>
+	<VEF.Customize>Customize {0}</VEF.Customize>
+	<VEF.CustomizationTitle>{0} Customization</VEF.CustomizationTitle>
+	<VEF.Name>Name</VEF.Name>
+	<VEF.Cancel>Cancel</VEF.Cancel>
 </LanguageData>

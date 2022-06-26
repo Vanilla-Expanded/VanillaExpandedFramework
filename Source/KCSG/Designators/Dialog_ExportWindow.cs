@@ -1,26 +1,31 @@
-﻿using RimWorld;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Xml.Linq;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
 namespace KCSG
 {
-    internal class Dialog_ExportWindow : Window
+    public class Dialog_ExportWindow : Window
     {
+        public static string Prefix = "";
+        public static List<string> Tags = new List<string>();
+
         private readonly Area area;
         private readonly List<IntVec3> cells = new List<IntVec3>();
         private readonly Map map;
-        private readonly Dictionary<IntVec3, List<Thing>> pairsCellThingList = new Dictionary<IntVec3, List<Thing>>();
         private readonly List<string> tags = new List<string>();
         private readonly List<string> mods = new List<string>();
 
+        private Dictionary<IntVec3, List<Thing>> pairsCellThingList = new Dictionary<IntVec3, List<Thing>>();
         private Color boxColor = new Color(0.13f, 0.14f, 0.16f);
         private string defname = "Placeholder";
         private bool isStorage = false;
         private bool spawnConduits = true;
         private bool exportFilth = false;
         private bool exportNatTer = false;
+        private bool forceGenerateRoof = false;
+        private bool needRoofClearance = false;
 
         private string structurePrefix = "Required";
         private List<XElement> symbols = new List<XElement>();
@@ -41,7 +46,10 @@ namespace KCSG
             closeOnClickedOutside = false;
             absorbInputAroundWindow = true;
 
-            if (!SymbolDefsCreator.defCreated) SymbolDefsCreator.Run();
+            if (!StartupActions.defCreated) StartupActions.CreateSymbols();
+
+            if (Prefix != "") structurePrefix = Prefix;
+            if (!Tags.NullOrEmpty()) tags = Tags;
         }
 
         public override Vector2 InitialSize
@@ -71,9 +79,11 @@ namespace KCSG
             DrawSpawnConduitChanger(lst);
             DrawExportFilth(lst);
             DrawExportNaturalTerrain(lst);
+            DrawForceGenerateRoof(lst);
+            DrawNeedRoofClearance(lst);
             DrawStructurePrefix(lst);
             DrawTagsEditing(lst);
-            DrawModsEditing(lst);
+            // DrawModsEditing(lst);
 
             lst.End();
             Widgets.EndScrollView();
@@ -83,7 +93,7 @@ namespace KCSG
 
         private XElement CreateLayout()
         {
-            XElement structureL = LayoutUtils.CreateStructureDef(cells, map, pairsCellThingList, area, exportFilth, exportNatTer);
+            XElement structureL = ExportUtils.CreateStructureDef(cells, map, pairsCellThingList, area, exportFilth, exportNatTer);
             // Defname change
             XElement defName = new XElement("defName", structurePrefix + defname);
             structureL.AddFirst(defName);
@@ -116,6 +126,28 @@ namespace KCSG
                 {
                     structureL.Element("spawnConduits").Remove();
                 }
+            }
+            if (forceGenerateRoof)
+            {
+                if (structureL.Element("forceGenerateRoof") == null)
+                {
+                    structureL.Add(new XElement("forceGenerateRoof", true));
+                }
+            }
+            else
+            {
+                structureL.Element("forceGenerateRoof")?.Remove();
+            }
+            if (needRoofClearance)
+            {
+                if (structureL.Element("needRoofClearance") == null)
+                {
+                    structureL.Add(new XElement("needRoofClearance", true));
+                }
+            }
+            else
+            {
+                structureL.Element("needRoofClearance")?.Remove();
             }
             // Tags changes
             if (tags.Count > 0)
@@ -155,19 +187,21 @@ namespace KCSG
             {
                 if (structurePrefix.Length == 0 || structurePrefix == "Required")
                 {
-                    Messages.Message("Structure prefix required.", MessageTypeDefOf.NegativeEvent);
+                    Messages.Message("Prefix required.", MessageTypeDefOf.NegativeEvent);
                 }
                 else
                 {
-                    LayoutUtils.FillCellThingsList(cells, map, pairsCellThingList);
+                    pairsCellThingList = ExportUtils.FillCellThingsList(cells, map);
                     GUIUtility.systemCopyBuffer = CreateLayout().ToString();
                     Messages.Message("Copied to clipboard.", MessageTypeDefOf.TaskCompletion);
+                    Prefix = structurePrefix;
+                    Tags = tags;
                 }
             }
             if (Widgets.ButtonText(new Rect(350, inRect.height - bHeight, 340, bHeight), "Copy symbol(s) def(s)"))
             {
-                LayoutUtils.FillCellThingsList(cells, map, pairsCellThingList);
-                symbols = SymbolUtils.CreateSymbolIfNeeded(cells, map, pairsCellThingList, area);
+                pairsCellThingList = ExportUtils.FillCellThingsList(cells, map);
+                symbols = ExportUtils.CreateSymbolIfNeeded(cells, map, pairsCellThingList, area);
                 if (symbols.Count > 0)
                 {
                     string toCopy = "";
@@ -178,7 +212,10 @@ namespace KCSG
                     GUIUtility.systemCopyBuffer = toCopy;
                     Messages.Message("Copied to clipboard.", MessageTypeDefOf.TaskCompletion);
                 }
-                else Messages.Message("No new symbols needed.", MessageTypeDefOf.TaskCompletion);
+                else
+                {
+                    Messages.Message("No new symbols needed.", MessageTypeDefOf.TaskCompletion);
+                }
             }
             if (Widgets.ButtonText(new Rect(700, inRect.height - bHeight, 60, bHeight), "Close"))
             {
@@ -196,7 +233,7 @@ namespace KCSG
 
             Widgets.DrawBoxSolid(new Rect(710, 0, 50, 50), boxColor);
             Rect infoRect = new Rect(715, 5, 40, 40);
-            if (Widgets.ButtonImage(infoRect, TextureLoader.helpIcon))
+            if (Widgets.ButtonImage(infoRect, Textures.helpIcon))
             {
                 System.Diagnostics.Process.Start("https://github.com/AndroidQuazar/VanillaExpandedFramework/wiki/Exporting-your-own-structures");
             }
@@ -216,6 +253,18 @@ namespace KCSG
             lst.Gap();
         }
 
+        private void DrawForceGenerateRoof(Listing_Standard lst)
+        {
+            lst.CheckboxLabeled("Force generate roofs:", ref forceGenerateRoof, "By default constructed roof will only be constructed if the cell isn't roofed at all. Thin roof will be on cell with no roof or constructed roof. Thick roof override everything. Enable to alway generate exported roof.");
+            lst.Gap();
+        }
+
+        private void DrawNeedRoofClearance(Listing_Standard lst)
+        {
+            lst.CheckboxLabeled("Need roof clearance:", ref needRoofClearance, "Check this if the structure you are exporting need to placed in a rect free of roofs.");
+            lst.Gap();
+        }
+
         private void DrawExportFilth(Listing_Standard lst)
         {
             lst.CheckboxLabeled("Export filth:", ref exportFilth);
@@ -230,7 +279,7 @@ namespace KCSG
 
         private void DrawStructurePrefix(Listing_Standard lst)
         {
-            lst.Label("Structure defName prefix:", tooltip: "For example: VFEM_ for Vanilla Faction Expanded Mechanoid");
+            lst.Label("defName(s) prefix:", tooltip: "For example: VFEM_ for Vanilla Faction Expanded Mechanoid");
             structurePrefix = lst.TextEntry(structurePrefix);
             lst.Gap();
         }

@@ -75,7 +75,7 @@ namespace KCSG
                     return result;
                 }
             }
-            KLog.Message($"Failed to find world tile for {wo.def.defName}");
+            Debug.Message($"Failed to find world tile for {wo.def.defName}");
             return 0;
         }
     }

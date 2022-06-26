@@ -5,11 +5,11 @@ namespace KCSG
 {
     [HarmonyPatch(typeof(WorldObjectsHolder))]
     [HarmonyPatch("Add", MethodType.Normal)]
-    public class HideSettlementsForNomadicFactionsPatch
+    public class WorldObjectsHolder_Add_Prefix
     {
         public static bool Prefix(WorldObject o)
         {
-            return (o?.Faction?.def.GetModExtension<CustomGenOption>()?.canSpawnSettlements == false) ? false : true;
+            return (o?.Faction?.def.GetModExtension<CustomGenOption>()?.canSpawnSettlements) != false;
         }
     }
 }

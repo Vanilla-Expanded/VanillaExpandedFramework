@@ -111,13 +111,9 @@ namespace KCSG
             CellRect cellRect = CreateCellRect(map, layoutDef.height, layoutDef.width);
 
             if (preGenClear)
-                GenUtils.PreClean(map, cellRect, layoutDef.roofGrid, fullClear);
+                GenUtils.PreClean(map, cellRect, fullClear, layoutDef.roofGridResolved);
 
-            for (int i = 0; i < layoutDef.layouts.Count; i++)
-            {
-                GenUtils.GenerateRoomFromLayout(layoutDef, i, cellRect, map);
-            }
-            GenUtils.GenerateRoofGrid(layoutDef, cellRect, map);
+            GenUtils.GenerateLayout(layoutDef, cellRect, map);
 
             if (spawnTheStartingPawn && Find.GameInitData != null)
             {
@@ -153,7 +149,7 @@ namespace KCSG
                 Pos offset = layoutDef.spawnAtPos.RandomElement();
                 center.x += offset.x;
                 center.y += offset.y;
-                KLog.Message($"Spawning pawns and stuff at {center}");
+                Debug.Message($"Spawning pawns and stuff at {center}");
                 DropThingGroupsAt(center, map, thingsGroups, instaDrop: (Find.GameInitData.QuickStarted || method != PlayerPawnsArriveMethod.DropPods), leaveSlag: true, allowFogged: false);
             }
 

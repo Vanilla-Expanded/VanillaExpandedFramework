@@ -19,7 +19,7 @@ namespace VFECore
         {
             public static void Postfix(Vector3 clickPos, Pawn pawn, ref List<FloatMenuOption> opts)
             {
-                var shield = GridsUtility.GetThingList(IntVec3.FromVector3(clickPos), pawn.Map).FirstOrDefault((Thing x) => x is Apparel_Shield) as Apparel_Shield;
+                var shield = GridsUtility.GetThingList(IntVec3.FromVector3(clickPos), pawn.Map).OfType<Apparel_Shield>().FirstOrDefault();
                 if (shield != null)
                 {
                     TaggedString toCheck = "ForceWear".Translate(shield.LabelCap, shield);
@@ -47,7 +47,7 @@ namespace VFECore
                             {
                                 floatMenuOption.Label += $" {"VanillaFactionsExpanded.EquipWarningShieldUnusableWithWeapon".Translate(oldShield.def.label)}";
                             }
-    
+                            
                             AddShieldFloatMenuOption(pawn, equipment, ref opts);
                             break;
                         }
@@ -94,11 +94,10 @@ namespace VFECore
                     {
                         optionLabel += $" {"VanillaFactionsExpanded.EquipWarningShieldUnusable".Translate(weapon.def.label)}";
                     }
-    
                     shieldOption = FloatMenuUtility.DecoratePrioritizedTask(new FloatMenuOption(optionLabel, delegate () {
                         equipment.SetForbidden(false, true);
                         pawn.jobs.TryTakeOrderedJob(new Job(VFEDefOf.VFEC_EquipShield, equipment), JobTag.Misc);
-                        FleckMaker.Static(equipment.DrawPos, equipment.Map, FleckDefOf.FeedbackEquip, 1f);
+                        FleckMaker.Static(equipment.DrawPos, equipment.MapHeld, FleckDefOf.FeedbackEquip, 1f);
                         PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.EquippingWeapons, KnowledgeAmount.Total);
                     }, MenuOptionPriority.High, null, null, 0f, null, null), pawn, equipment, "ReservedBy");
                 }

@@ -1,90 +1,68 @@
-﻿using RimWorld.BaseGen;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using RimWorld.BaseGen;
 using Verse;
 
 namespace KCSG
 {
     internal class GenStep_CustomStructureGen : GenStep
     {
-        public List<StructureLayoutDef> structureLayoutDefs = new List<StructureLayoutDef>();
         public bool fullClear = false;
 
-        /* Ruin */
-        public bool shouldRuin = false;
-        public List<ThingDef> filthTypes = new List<ThingDef>();
+        public List<StructureLayoutDef> structureLayoutDefs = new List<StructureLayoutDef>();
+
+        public List<string> symbolResolvers = new List<string>();
+
         public List<ThingDef> scatterThings = new List<ThingDef>();
+        public List<ThingDef> filthTypes = new List<ThingDef>();
         public float scatterChance = 0.4f;
+
+        // TODO Obsolete - To remove in next rimworld version
+        [Obsolete]
+        public bool shouldRuin = false;
+
+        [Obsolete]
         public List<string> ruinSymbolResolvers = new List<string>();
 
-        public override int SeedPart
-        {
-            get
-            {
-                return 916595355;
-            }
-        }
+        public override int SeedPart => 916595355;
 
         public override void Generate(Map map, GenStepParams parms)
         {
+            // TODO Compat - To remove in next rimworld version
+            if (!ruinSymbolResolvers.NullOrEmpty())
+                symbolResolvers = ruinSymbolResolvers.ListFullCopy();
+
+            GenOption.ext = new CustomGenOption
+            {
+                UsingSingleLayout = true,
+                AdditionalResolvers = symbolResolvers.Count > 0,
+                symbolResolvers = symbolResolvers,
+                filthTypes = filthTypes,
+                scatterThings = scatterThings,
+                scatterChance = scatterChance,
+            };
+
             StructureLayoutDef layoutDef = structureLayoutDefs.RandomElement();
 
             CellRect cellRect = CellRect.CenteredOn(map.Center, layoutDef.width, layoutDef.height);
 
-            GenUtils.PreClean(map, cellRect, layoutDef.roofGrid, fullClear);
+            GenUtils.PreClean(map, cellRect, fullClear, layoutDef.roofGridResolved);
+            GenUtils.GenerateLayout(layoutDef, cellRect, map);
 
-            for (int i = 0; i < layoutDef.layouts.Count; i++)
+            if (GenOption.ext.AdditionalResolvers)
             {
-                GenUtils.GenerateRoomFromLayout(layoutDef, i, cellRect, map);
-            }
-            GenUtils.GenerateRoofGrid(layoutDef, cellRect, map);
-
-            if (shouldRuin)
-            {
-                CGO.factionSettlement = new CustomGenOption
-                {
-                    filthTypes = filthTypes,
-                    scatterThings = scatterThings,
-                    scatterChance = scatterChance
-                };
-
-                ResolveParams rp = new ResolveParams
+                Debug.Message("GenStep_CustomStructureGen - Additional symbol resolvers");
+                BaseGen.symbolStack.Push("kcsg_runresolvers", new ResolveParams
                 {
                     faction = map.ParentFaction,
                     rect = cellRect
-                };
-
-                for (int i = 0; i < ruinSymbolResolvers.Count; i++)
-                {
-                    var resolver = ruinSymbolResolvers[i];
-                    if (!(ruinSymbolResolvers.Contains("kcsg_randomroofremoval") && resolver == "kcsg_scatterstuffaround"))
-                        BaseGen.symbolStack.Push(resolver, rp, null);
-                }
+                }, null);
             }
 
             // Flood refog
             if (map.mapPawns.FreeColonistsSpawned.Count > 0)
             {
                 FloodFillerFog.DebugRefogMap(map);
-            }
-        }
-
-        internal void SetAllFogged(Map map)
-        {
-            CellIndices cellIndices = map.cellIndices;
-            if (map.fogGrid?.fogGrid != null)
-            {
-                var cells = map.AllCells;
-                for (int i = 0; i < cells.Count(); i++)
-                {
-                    var cell = cells.ElementAt(i);
-                    map.fogGrid.fogGrid[cellIndices.CellToIndex(cell)] = true;
-                }
-
-                if (Current.ProgramState == ProgramState.Playing)
-                {
-                    map.roofGrid.Drawer.SetDirty();
-                }
             }
         }
     }

@@ -1,7 +1,7 @@
-﻿using RimWorld;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -204,10 +204,12 @@ namespace PipeSystem
                 sb.AppendInNewLine(Props.notWorkingKey.Translate());
             // If working show the thing that will be produced, the amount, and the progress
             if (ChoosedResult.thing != null && Working && storage >= ChoosedResult.countNeeded)
+            {
                 sb.AppendInNewLine("PipeSystem_Producing".Translate(
                     ChoosedResult.thingCount,
                     ChoosedResult.thing.LabelCap,
                     (1f - ((nextProcessTick - Find.TickManager.TicksGame) / (float)ChoosedResult.eachTicks)).ToStringPercent()));
+            }
 
             return sb.ToString().Trim();
         }
@@ -274,13 +276,28 @@ namespace PipeSystem
                 // No storage but converters?
                 else if (net.converters.Count > 0)
                 {
+                    var outCap = 0;
                     // Convert it, if some left keep it inside here
-                    storage -= net.DistributeAmongConverters(count);
+                    for (int i = 0; i < net.converters.Count; i++)
+                    {
+                        var converter = net.converters[i];
+                        if (converter.CanOutputNow)
+                        {
+                            outCap += converter.MaxCanOutput;
+                        }
+                    }
+                    // If no converters are ready
+                    if (outCap >= count)
+                    {
+                        net.DistributeAmongConverters(count);
+                        storage = 0;
+                    }
                 }
                 // No storage/converter, try refuel connected things
                 else if (net.refillables.Count > 0)
                 {
-                    storage -= net.DistributeAmongRefuelables(count);
+                    net.DistributeAmongRefillables(count);
+                    storage = 0;
                 }
                 // We shouldn't have anymore resource, if we do -> storage full or converter full
                 cantProcess = storage > 0;

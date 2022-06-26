@@ -1,11 +1,11 @@
-﻿using HarmonyLib;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using HarmonyLib;
 using Verse;
 
 namespace KCSG
 {
     [HarmonyPatch(typeof(Map), "ExposeData")]
-    public static class Map_ExposeData_Patch
+    public static class Map_ExposeData_Prefix
     {
         [HarmonyPrefix]
         public static void Prefix(Map __instance)

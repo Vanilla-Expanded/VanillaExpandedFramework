@@ -34,6 +34,8 @@ namespace KCSG
         public bool spawnConduits = true;
         public List<List<string>> layouts = new List<List<string>>();
         public List<string> roofGrid = new List<string>();
+        public bool forceGenerateRoof = false;
+        public bool needRoofClearance = false;
 
         // Settings for SettlementDef
         public List<string> tags = new List<string>();
@@ -45,13 +47,13 @@ namespace KCSG
         public List<Pos> spawnAtPos = new List<Pos>();
         public List<string> spawnAt = new List<string>();
 
-        // Values used regularly in gen
+        // Values used regularly in gen :
         internal int width;
         internal int height;
-        // Symbols lists, without limiters
         internal List<List<SymbolDef>> symbolsLists = new List<List<SymbolDef>>();
-
         internal List<string> roofGridResolved = new List<string>();
+
+        internal bool RequiredModLoaded { get; private set; }
 
         public override void ResolveReferences()
         {
@@ -67,8 +69,12 @@ namespace KCSG
             width = layouts[0][0].Split(',').Count();
         }
 
+        /// <summary>
+        /// Populate symbol list and roofgrid. Prevent the need of doing it at each gen
+        /// </summary>
         public void ResolveLayouts()
         {
+            var modName = modContentPack.Name;
             // Populate symbolsLists
             for (int i = 0; i < layouts.Count; i++)
             {
@@ -90,7 +96,7 @@ namespace KCSG
                             symbolsLists[i].Add(def);
 
                             if (def == null)
-                                KLog.Message($"{symbol} not found.");
+                                StartupActions.AddToMissing($"{modName} {symbol}");
                         }
                     }
                 }
@@ -99,6 +105,16 @@ namespace KCSG
             for (int i = 0; i < roofGrid.Count; i++)
             {
                 roofGridResolved.AddRange(roofGrid[i].Split(','));
+            }
+            // Resolve mod requirement(s)
+            RequiredModLoaded = true;
+            for (int o = 0; o < modRequirements.Count; o++)
+            {
+                if (!ModsConfig.ActiveModsInLoadOrder.Any(m => m.PackageId == modRequirements[o].ToLower()))
+                {
+                    RequiredModLoaded = false;
+                    break;
+                }
             }
         }
     }

@@ -29,7 +29,7 @@
                                                                 maxShieldSize         = 1.5f,
                                                                 shieldColor           = new Color(1, 1, 1, 1),
                                                                 EnergyLossPerDamage   = 1f
-                                                            };
+                    };
                         def.comps.Add(props);
                         props.ResolveReferences(def);
                         props.PostLoadSpecial(def);
