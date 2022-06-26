@@ -62,7 +62,9 @@ namespace KCSG
                             }
                             else if (temp.thingDef.category == ThingCategory.Plant)
                             {
-                                if (cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Bridgeable))
+                                var terrain = cell.GetTerrain(map);
+                                if (terrain.affordances.Contains(TerrainAffordanceDefOf.Bridgeable)
+                                    || (temp.thingDef.plant != null && terrain.fertility < temp.thingDef.plant.fertilityMin))
                                 {
                                     map.terrainGrid.SetTerrain(cell, TerrainDefOf.Soil);
                                 }
