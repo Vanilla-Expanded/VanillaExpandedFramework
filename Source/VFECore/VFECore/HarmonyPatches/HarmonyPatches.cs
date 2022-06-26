@@ -21,6 +21,9 @@ namespace VFECore
 
             VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(PawnApparelGenerator), nameof(PawnApparelGenerator.GenerateStartingApparelFor)),
                 postfix: new HarmonyMethod(AccessTools.Method(typeof(Patch_PawnApparelGenerator), nameof(Patch_PawnApparelGenerator.GenerateStartingApparelFor_Postfix))));
+
+            PhasingPatches.Do(VFECore.harmonyInstance);
+
             // Dual Wield
             if (ModCompatibilityCheck.DualWield)
             {

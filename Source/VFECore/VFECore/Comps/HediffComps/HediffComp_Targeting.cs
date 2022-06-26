@@ -11,6 +11,9 @@ namespace VFECore
 	public class HediffCompProperties_Targeting : HediffCompProperties
 	{
 		public bool neverMiss;
+		public bool neverHit;
+		public bool alwaysHit;
+		public bool alwaysMiss;
 		public ThingDef targetingMote;
 		public float initialTargetingMoteScale;
 		public string targetingLineTexPath;
@@ -43,26 +46,29 @@ namespace VFECore
 		public Action actionOnTick;
 		public void DrawTargetingEffects(LocalTargetInfo target, float progress)
         {
-			if (mote is null || mote.Destroyed)
-            {
-				actionOnTick = delegate
+			if (Props.targetingMote != null)
+			{
+				if (mote is null || mote.Destroyed)
 				{
-					if (target.HasThing)
+					actionOnTick = delegate
 					{
-						Log.Message("Making attached mote");
-						mote = MoteMaker.MakeAttachedOverlay(target.Thing, Props.targetingMote, Vector3.zero, Props.initialTargetingMoteScale);
-					}
-					else
-					{
-						Log.Message("Making static mote");
-						mote = MakeStaticMote(target.CenterVector3, Pawn.Map, Props.targetingMote, Props.initialTargetingMoteScale);
-					}
-				};
-			}
-			else
-            {
-				mote.Scale = progress;
-				mote.Maintain();
+						if (target.HasThing)
+						{
+							Log.Message("Making attached mote");
+							mote = MoteMaker.MakeAttachedOverlay(target.Thing, Props.targetingMote, Vector3.zero, Props.initialTargetingMoteScale);
+						}
+						else
+						{
+							Log.Message("Making static mote");
+							mote = MakeStaticMote(target.CenterVector3, Pawn.Map, Props.targetingMote, Props.initialTargetingMoteScale);
+						}
+					};
+				}
+				else
+				{
+					mote.Scale = progress;
+					mote.Maintain();
+				}
 			}
 			if (!Props.targetingLineTexPath.NullOrEmpty())
             {

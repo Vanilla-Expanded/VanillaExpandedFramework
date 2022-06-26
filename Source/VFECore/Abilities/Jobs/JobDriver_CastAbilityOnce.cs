@@ -1,6 +1,7 @@
 ﻿namespace VFECore.Abilities
 {
     using System.Collections.Generic;
+    using RimWorld.Planet;
     using Verse;
     using Verse.AI;
 
@@ -20,45 +21,46 @@
         }
         public override bool TryMakePreToilReservations(bool errorOnFailed) => true;
 
-        public override string GetReport() => CompAbilities.currentlyCasting.def.JobReportString;
+        public override string GetReport() => this.CompAbilities.currentlyCasting.def.JobReportString;
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
             this.FailOnDespawnedOrNull(TargetIndex.A);
 
 
-
             //yield return Toils_Combat.GotoCastPosition(TargetIndex.A);
 
-            CompAbilities comp     = CompAbilities;
+            CompAbilities comp     = this.CompAbilities;
             Toil          waitToil = Toils_General.Wait(comp.currentlyCasting.GetCastTimeForPawn(), TargetIndex.A);
             waitToil.WithProgressBarToilDelay(TargetIndex.C);
-            waitToil.initAction = delegate
-            {
-                comp.currentlyCasting.PreWarmupAction(this.TargetA);
-            };
+            waitToil.AddPreInitAction(() => comp.currentlyCasting.PreWarmupAction());
+
             if (this.TargetA.Pawn != this.pawn)
                 waitToil.AddPreTickAction(() =>
                                           {
                                               if (comp.currentlyCasting.def.drawAimPie && Find.Selector.IsSelected(this.pawn))
                                                   GenDraw.DrawAimPie(this.pawn, this.TargetA, this.ticksLeftThisToil, 0.2f);
                                           });
+
             comp.currentlyCasting.WarmupToil(waitToil);
             yield return waitToil;
 
-            Toil castToil = new Toil();
-            castToil.initAction = () =>
-                                  {
-                                      LocalTargetInfo target = castToil.actor.jobs.curJob.GetTarget(TargetIndex.A);
-                                      comp.currentlyCasting.Cast(target);
-                                  };
-            castToil.defaultCompleteMode = ToilCompleteMode.Instant;
-            castToil.atomicWithPrevious  = true;
+            Toil castToil = new Toil
+                            {
+                                initAction = () =>
+                                             {
+                                                 GlobalTargetInfo[] targets = comp.currentlyCastingTargets;
+                                                 if (targets.Length == 1 && targets[0].Map == this.pawn.Map)
+                                                     comp.currentlyCasting.Cast(targets[0].Thing != null ? new LocalTargetInfo(targets[0].Thing) : new LocalTargetInfo(targets[0].Cell));
+                                                 else
+                                                     comp.currentlyCasting.Cast(targets);
+                                             },
+                                defaultCompleteMode = ToilCompleteMode.Instant,
+                                atomicWithPrevious  = true
+                            };
             yield return castToil;
-            AddFinishAction(delegate
-            {
-                comp.currentlyCasting.EndCastJob();
-            });
+
+            this.AddFinishAction(() => comp.currentlyCasting.EndCastJob());
         }
     }
 }

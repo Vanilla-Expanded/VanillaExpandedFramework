@@ -23,6 +23,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -56,7 +57,6 @@
   <ItemGroup>
     <Compile Include="Abilities\Abilities\Ability_Barrier.cs" />
     <Compile Include="Abilities\Abilities\Ability_Explode.cs" />
-    <Compile Include="Abilities\Abilities\Ability_HediffDuration.cs" />
     <Compile Include="Abilities\Abilities\Ability_OrbitalStrike.cs" />
     <Compile Include="Abilities\Abilities\Ability_ShootProjectile.cs" />
     <Compile Include="Abilities\Abilities\Ability_Skyfallers.cs" />
@@ -64,6 +64,7 @@
     <Compile Include="Abilities\Abilities\Ability_SpawnBuilding.cs" />
     <Compile Include="Abilities\Ability.cs" />
     <Compile Include="Abilities\AbilityDef.cs" />
+    <Compile Include="Abilities\Caravan_GetGizmos_Patch.cs" />
     <Compile Include="Abilities\Hediff_Ability.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_AbilityMod.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_EffecterOnTarget.cs" />
@@ -85,9 +86,12 @@
     <Compile Include="Abilities\Jobs\JobDriver_StandAndFaceTarget.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_AdditionalRadius.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_ConfirmationMessage.cs" />
+    <Compile Include="Abilities\ModExtensions\AbilityExtension_RandomRadius.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_ScreenShaker.cs" />
+    <Compile Include="Abilities\ModExtensions\AbilityExtension_Stun.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_ThoughtOnTarget.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_SocialInteraction.cs" />
+    <Compile Include="Abilities\ModExtensions\AbilityExtension_WarmupEffecter.cs" />
     <Compile Include="Abilities\PawnGen_Patch.cs" />
     <Compile Include="Abilities\PawnKindAbilityExtension.cs" />
     <Compile Include="Abilities\TryGetAttackVerb_Patch.cs" />
@@ -309,6 +313,9 @@
     <Compile Include="Apparel\Harmony\SkillRecord_Learn_Patch.cs" />
     <Compile Include="Apparel\Harmony\ThingSelectionUtility_SelectableByMapClick_Patch.cs" />
     <Compile Include="Apparel\ModExtensions\ApparelExtension.cs" />
+    <Compile Include="VFECore\Comps\HediffComps\HediffComp_Phasing.cs" />
+    <Compile Include="VFECore\Comps\HediffComps\HediffComp_Targeting.cs" />
+    <Compile Include="VFECore\HarmonyPatches\PhasingPatches.cs" />
     <Compile Include="VFECore\HarmonyPatches\Def_SpecialDisplayStats_Patch.cs" />
     <Compile Include="Memes\PlaceWorkers\PlaceWorker_DisabledByMeme.cs" />
     <Compile Include="VFECore\Comps\HediffComps\HediffComp_Targeting.cs" />
