@@ -51,14 +51,20 @@ namespace KCSG
         private static void CreateMapDefs()
         {
             var baseA = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_Base_Faction");
-            MapGeneratorDef mgdA = baseA;
-            mgdA.defName = "KCSG_Base_Faction_NoBridge";
+            MapGeneratorDef mgdA = new MapGeneratorDef
+            {
+                defName = "KCSG_Base_Faction_NoBridge",
+                genSteps = baseA.genSteps.ListFullCopy()
+            };
             mgdA.genSteps.Replace(AllDefOf.Terrain, AllDefOf.KCSG_TerrainNoPatches);
             DefDatabase<MapGeneratorDef>.Add(mgdA);
 
             var baseB = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_Gen");
-            MapGeneratorDef mgdB = baseB;
-            mgdB.defName = "KCSG_WorldObject_Gen_NoBridge";
+            MapGeneratorDef mgdB = new MapGeneratorDef
+            {
+                defName = "KCSG_WorldObject_Gen_NoBridge",
+                genSteps = baseB.genSteps.ListFullCopy()
+            };
             mgdB.genSteps.Replace(AllDefOf.Terrain, AllDefOf.KCSG_TerrainNoPatches);
             DefDatabase<MapGeneratorDef>.Add(mgdB);
         }
