@@ -424,13 +424,14 @@ namespace KCSG
                     bool inCenter = centerRect.Contains(vec);
                     int spaceAround = inCenter ? sld.centerBuildings.spaceAround : sld.peripheralBuildings.spaceAround;
 
+                    if (!inCenter && periCount == 0)
+                        continue;
+
                     for (int o = 0; o < maxTry; o++)
                     {
                         StructOption opt;
                         if (inCenter)
                             sld.centerBuildings.allowedStructures.TryRandomElementByWeight(p => GetWeight(p, lastOpt, structCount), out opt);
-                        else if (periCount == 0)
-                            continue;
                         else
                             sld.peripheralBuildings.allowedStructures.TryRandomElementByWeight(p => GetWeight(p, lastOpt, structCount), out opt);
 
