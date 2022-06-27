@@ -5,6 +5,8 @@ using Verse.Sound;
 
 namespace VFECore.Abilities
 {
+    using RimWorld.Planet;
+
     public class AbilityProjectile : Projectile
     {
         public Ability ability;
@@ -13,11 +15,11 @@ namespace VFECore.Abilities
         {
             Map     map      = this.Map;
             base.Impact(hitThing);
-            var battleLogEntryRangedImpact =
+            BattleLogEntry_RangedImpact battleLogEntryRangedImpact =
                 new BattleLogEntry_RangedImpact(launcher, hitThing, intendedTarget.Thing, equipmentDef ?? ability.pawn.def, def, targetCoverDef);
             Find.BattleLog.Add(battleLogEntryRangedImpact);
 
-            this.ability.TargetEffects(new LocalTargetInfo(this.Position));
+            this.ability.TargetEffects(new GlobalTargetInfo(this.Position, this.Map));
 
             float power = this.ability.GetPowerForPawn();
 
@@ -28,8 +30,8 @@ namespace VFECore.Abilities
 
                 if (hitThing is Pawn pawn)
                 {
-                    this.ability.ApplyHediffs(pawn);
-                    
+                    this.ability.ApplyHediffs(new GlobalTargetInfo(pawn));
+
                     if (pawn.stances != null && pawn.BodySize <= this.def.projectile.StoppingPower + 0.001f)
                     {
                         pawn.stances.StaggerFor(95);

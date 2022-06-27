@@ -10,9 +10,12 @@
     {
         protected override IEnumerable<Toil> MakeNewToils()
         {
-            foreach (var toil in GotoToils())
+            if (this.pawn != this.TargetA.Thing)
             {
-                yield return toil;
+                foreach (var toil in GotoToils())
+                {
+                    yield return toil;
+                }
             }
             foreach (var toil in base.MakeNewToils())
             {

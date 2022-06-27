@@ -1,9 +1,6 @@
 ﻿namespace VFECore.Abilities
 {
-	using Mono.Unix.Native;
 	using RimWorld.Planet;
-	using RimWorld;
-	using System.Collections.Generic;
 	using System;
 	using Verse;
 	using Verse.AI;
@@ -21,27 +18,46 @@
 		public virtual string GetDescription(Ability ability) =>
 			string.Empty;
 
-		public virtual void PreWarmupAction(LocalTargetInfo target, Ability ability)
-        {
+		[Obsolete("Use new method with GlobalTargetInfos instead")]
+		public virtual void PreWarmupAction(LocalTargetInfo target, Ability ability) =>
+			this.PreWarmupAction(new[] { target.ToGlobalTargetInfo(ability.Caster.Map) }, ability);
 
-        }
+		public virtual void PreWarmupAction(GlobalTargetInfo[] targets, Ability ability)
+		{
+		}
+
 		public virtual void WarmupToil(Toil toil)
 		{
 
 		}
-		public virtual void PreCast(LocalTargetInfo target, Ability ability, ref bool startAbilityJobImmediately, Action startJobAction)
+		public virtual void PreCast(GlobalTargetInfo[] target, Ability ability, ref bool startAbilityJobImmediately, Action startJobAction)
 		{
-
 		}
+
+		[Obsolete("Use the new Cast method using GlobalTargets instead")]
 		public virtual void Cast(LocalTargetInfo target, Ability ability)
 		{
-
+			this.Cast(new[] { target.ToGlobalTargetInfo(ability.Caster.Map) }, ability);
 		}
 
-		public virtual bool Valid(LocalTargetInfo target, Ability ability, bool throwMessages = false)
+		public virtual void Cast(GlobalTargetInfo[] targets, Ability ability)
+		{
+		}
+		public virtual bool Valid(GlobalTargetInfo[] targets, Ability ability, bool throwMessages = false)
+		{
+			return true;
+		}
+
+		public virtual bool ValidTile(GlobalTargetInfo target, Ability ability, bool throwMessages = false)
+		{
+			return true;
+		}
+
+		public virtual bool ValidateTarget(LocalTargetInfo target, Ability ability, bool throwMessages = false)
         {
 			return true;
         }
+
 		public virtual bool CanApplyOn(LocalTargetInfo target, Ability ability, bool throwMessages = false)
 		{
 			return true;
@@ -53,8 +69,11 @@
 		}
 
 		public virtual void GizmoUpdateOnMouseover(Ability ability)
-        {
+		{
+		}
 
-        }
+		public virtual void TargetingOnGUI(LocalTargetInfo target, Ability ability)
+		{
+		}
 	}
 }

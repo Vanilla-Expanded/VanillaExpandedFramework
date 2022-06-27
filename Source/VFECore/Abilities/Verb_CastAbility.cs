@@ -1,4 +1,6 @@
-﻿namespace VFECore.Abilities
+﻿using RimWorld.Planet;
+
+namespace VFECore.Abilities
 {
 using RimWorld;
     using Verse;
@@ -18,16 +20,28 @@ using RimWorld;
             return false;
         }
 
+        private void StartAbilityJob(LocalTargetInfo castTarg, LocalTargetInfo destTarg)
+        {
+            if (castTarg.IsValid  && !destTarg.IsValid) this.ability.CreateCastJob(castTarg);
+            if (!castTarg.IsValid && destTarg.IsValid) this.ability.CreateCastJob(destTarg);
+            if (castTarg.IsValid && destTarg.IsValid) this.ability.CreateCastJob(castTarg.ToGlobalTargetInfo(this.ability.pawn.Map),
+                destTarg.ToGlobalTargetInfo(this.ability.pawn.Map));
+        }
+
         public override bool TryStartCastOn(LocalTargetInfo castTarg, LocalTargetInfo destTarg, bool surpriseAttack = false, bool canHitNonTargetPawns = true, bool preventFriendlyFire = false)
         {
             if (base.TryStartCastOn(castTarg, destTarg, surpriseAttack, canHitNonTargetPawns, preventFriendlyFire))
-                this.ability.OrderForceTarget(castTarg);
+            {
+                StartAbilityJob(castTarg, destTarg);
+            }
             return false;
         }
 
         public override void OrderForceTarget(LocalTargetInfo target)
         {
             base.OrderForceTarget(target);
+            this.ability.currentTargetingIndex = -1;
+            this.ability.currentTargets        = new GlobalTargetInfo[this.ability.def.targetCount];
             this.ability.OrderForceTarget(target);
         }
         public override void OnGUI(LocalTargetInfo target)

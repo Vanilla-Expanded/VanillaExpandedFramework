@@ -12,14 +12,16 @@ namespace VFECore.Abilities
         private static readonly AccessTools.FieldRef<World, List<ThingDef>> allNaturalRockDefs =
             AccessTools.FieldRefAccess<World, List<ThingDef>>("allNaturalRockDefs");
 
-        public override void Cast(LocalTargetInfo target)
+        public override void Cast(params GlobalTargetInfo[] targets)
         {
-            base.Cast(target);
-
-            var cells = GenRadial.RadialCellsAround(target.Cell, GetRadiusForPawn(), true)
-                .Where(c => c.InBounds(pawn.Map) && !c.Fogged(pawn.Map) && c.GetEdifice(pawn.Map) == null).ToList();
-            var count = GetPowerForPawn();
-            for (var i = 0; i < count; i++) SpawnSkyfaller(cells.RandomElement());
+            base.Cast(targets);
+            foreach (GlobalTargetInfo target in targets)
+            {
+                var cells = GenRadial.RadialCellsAround(target.Cell, GetRadiusForPawn(), true)
+                                  .Where(c => c.InBounds(pawn.Map) && !c.Fogged(pawn.Map) && c.GetEdifice(pawn.Map) == null).ToList();
+                var count = GetPowerForPawn();
+                for (var i = 0; i < count; i++) SpawnSkyfaller(cells.RandomElement());
+            }
         }
 
         protected virtual void SpawnSkyfaller(IntVec3 cell)

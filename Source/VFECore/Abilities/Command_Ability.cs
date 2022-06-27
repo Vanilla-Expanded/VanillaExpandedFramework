@@ -9,6 +9,8 @@ namespace VFECore.Abilities
         public static readonly Texture2D CooldownTex =
             SolidColorMaterials.NewSolidColorTexture(new Color(1f, 1f, 1f, 0.1f));
 
+        public static readonly Texture2D AutoCastTex = ContentFinder<Texture2D>.Get("UI/CheckAuto");
+
         public Pawn    pawn;
         public Ability ability;
 
@@ -30,20 +32,20 @@ namespace VFECore.Abilities
         public override void GizmoUpdateOnMouseover()
         {
             base.GizmoUpdateOnMouseover();
-            ability.GizmoUpdateOnMouseover();
+            this.ability.GizmoUpdateOnMouseover();
         }
 
-        public override bool GroupsWith(Gizmo other) => other is Command_Ability ca && ca.ability.def == this.ability.def;
+        public override bool GroupsWith(Gizmo other) => 
+            other is Command_Ability ca && ca.ability.def == this.ability.def;
 
         protected override GizmoResult GizmoOnGUIInt(Rect butRect, GizmoRenderParms parms)
         {
             GizmoResult result = base.GizmoOnGUIInt(butRect, parms);
 
-            if (this.ability.Chance > 0f)
+            if (this.ability.AutoCast)
             {
-                Texture2D texture  = this.ability.AutoCast ? Widgets.CheckboxOnTex : Widgets.CheckboxOffTex;
                 Rect      position = new Rect(butRect.x + butRect.width - 24f, butRect.y, 24f, 24f);
-                GUI.DrawTexture(position, texture);
+                GUI.DrawTexture(position, AutoCastTex);
             }
 
             if(this.disabled && this.ability.cooldown > Find.TickManager.TicksGame)

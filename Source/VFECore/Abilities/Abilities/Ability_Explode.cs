@@ -3,17 +3,22 @@ using Verse;
 
 namespace VFECore.Abilities
 {
+    using RimWorld.Planet;
+
     public class Ability_Explode : Ability
     {
-        public override void Cast(LocalTargetInfo target)
+        public override void Cast(params GlobalTargetInfo[] targets)
         {
-            base.Cast(target);
+            base.Cast(targets);
             if (def.GetModExtension<AbilityExtension_Explosion>() is AbilityExtension_Explosion ext)
-                GenExplosion.DoExplosion(ext.onCaster ? pawn.Position : target.Cell, pawn.Map, ext.explosionRadius, ext.explosionDamageDef, pawn,
-                    ext.explosionDamageAmount, ext.explosionArmorPenetration, ext.explosionSound, null, null, null, ext.postExplosionSpawnThingDef,
-                    ext.postExplosionSpawnChance, ext.postExplosionSpawnThingCount, ext.applyDamageToExplosionCellsNeighbors, ext.preExplosionSpawnThingDef,
-                    ext.preExplosionSpawnChance, ext.preExplosionSpawnThingCount, ext.chanceToStartFire, ext.damageFalloff, ext.explosionDirection,
-                    new List<Thing> {pawn});
+                foreach (GlobalTargetInfo target in targets)
+                {
+                    GenExplosion.DoExplosion(ext.onCaster ? pawn.Position : target.Cell, pawn.Map, ext.explosionRadius, ext.explosionDamageDef, pawn,
+                                             ext.explosionDamageAmount, ext.explosionArmorPenetration, ext.explosionSound, null, null, null, ext.postExplosionSpawnThingDef,
+                                             ext.postExplosionSpawnChance, ext.postExplosionSpawnThingCount, ext.applyDamageToExplosionCellsNeighbors, ext.preExplosionSpawnThingDef,
+                                             ext.preExplosionSpawnChance, ext.preExplosionSpawnThingCount, ext.chanceToStartFire, ext.damageFalloff, ext.explosionDirection,
+                                             new List<Thing> { this.pawn });
+                }
         }
     }
 
