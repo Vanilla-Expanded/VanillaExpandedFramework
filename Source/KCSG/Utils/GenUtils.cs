@@ -675,40 +675,52 @@ namespace KCSG
             for (int c = 0; c < count; c++)
             {
                 IntVec3 curr = path[c];
-
-                int widenBy = 0;
-                for (int i = 1; i <= width && widenBy < width; i++)
+                if (curr.InBounds(map))
                 {
-                    if (last.x != curr.x)
+                    int widenBy = 0;
+                    for (int i = 1; i <= width && widenBy < width; i++)
                     {
-                        grid[curr.z + i][curr.x] = CellType.Used;
-                        SetTerrainAt(new IntVec3(curr.x, 0, curr.z + i), map, terrain);
-                        widenBy++;
-
-                        if (widenBy < width)
+                        if (last.x != curr.x)
                         {
-                            grid[curr.z - i][curr.x] = CellType.Used;
-                            SetTerrainAt(new IntVec3(curr.x, 0, curr.z - i), map, terrain);
-                            widenBy++;
+                            var c1 = new IntVec3(curr.x, 0, curr.z + i);
+                            if (c1.InBounds(map))
+                            {
+                                grid[c1.z][c1.x] = CellType.Used;
+                                SetTerrainAt(c1, map, terrain);
+                                widenBy++;
+                            }
+
+                            var c2 = new IntVec3(curr.x, 0, curr.z - i);
+                            if (widenBy < width && c2.InBounds(map))
+                            {
+                                grid[c2.z - i][c2.x] = CellType.Used;
+                                SetTerrainAt(c2, map, terrain);
+                                widenBy++;
+                            }
+                        }
+
+                        if (last.z != curr.z)
+                        {
+                            var c1 = new IntVec3(curr.x + i, 0, curr.z);
+                            if (c1.InBounds(map))
+                            {
+                                grid[c1.z][c1.x] = CellType.Used;
+                                SetTerrainAt(c1, map, terrain);
+                                widenBy++;
+                            }
+
+                            var c2 = new IntVec3(curr.x - i, 0, curr.z);
+                            if (widenBy < width && c2.InBounds(map))
+                            {
+                                grid[c2.z][c2.x] = CellType.Used;
+                                SetTerrainAt(c2, map, terrain);
+                                widenBy++;
+                            }
                         }
                     }
 
-                    if (last.z != curr.z)
-                    {
-                        grid[curr.z][curr.x + i] = CellType.Used;
-                        SetTerrainAt(new IntVec3(curr.x + i, 0, curr.z), map, terrain);
-                        widenBy++;
-
-                        if (widenBy < width)
-                        {
-                            grid[curr.z][curr.x - i] = CellType.Used;
-                            SetTerrainAt(new IntVec3(curr.x - i, 0, curr.z), map, terrain);
-                            widenBy++;
-                        }
-                    }
+                    last = curr;
                 }
-
-                last = curr;
             }
         }
 

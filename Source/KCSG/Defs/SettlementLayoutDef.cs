@@ -16,6 +16,7 @@ namespace KCSG
         public int LinkRoadWidth => linkRoadWidth - 1;
 
         public bool addMainRoad = false;
+        public bool mainRoadLinkToEdges = false;
         public int mainRoadCount = 1;
         public TerrainDef mainRoadDef = null;
         public int mainRoadWidth = 2;

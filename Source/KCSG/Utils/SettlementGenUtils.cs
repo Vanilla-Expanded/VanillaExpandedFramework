@@ -73,20 +73,39 @@ namespace KCSG
             {
                 var edgeCells = rect.EdgeCells.ToList();
                 var terrain = GenOption.RoadOptions.mainRoadDef ?? TerrainDefOf.Concrete;
-                // var usedOutPos = new List<IntVec3>();
+                var cellRect = new CellRect(0, 0, width, height);
+                var mainRoadWidth = GenOption.RoadOptions.MainRoadWidth;
 
                 for (int i = 0; i < GenOption.RoadOptions.mainRoadCount; i++)
                 {
                     var start = edgeCells.RandomElement();
-                    var target = edgeCells.FindAll(cell => (cell.x != start.x || cell.z != start.z)).RandomElement();
+                    var target = edgeCells.FindAll(c => c.x != start.x || c.z != start.z).RandomElement();
                     var road = PathFinder.DoPath(start, target, map, rect, terrain);
 
-                    GenUtils.WidenPath(road, map, terrain, GenOption.RoadOptions.MainRoadWidth);
+                    GenUtils.WidenPath(road, map, terrain, mainRoadWidth);
 
                     if (GenOption.PropsOptions.addMainRoadProps && road != null)
                     {
                         GenOption.usedSpots = new List<IntVec3>();
                         GenUtils.SpawnMainRoadProps(road);
+                    }
+
+                    if (GenOption.RoadOptions.mainRoadLinkToEdges)
+                    {
+                        if (CellFinder.TryFindRandomEdgeCellNearWith(start, 100, map, c => c.Walkable(map), out IntVec3 outOnetarget))
+                        {
+                            var outOne = PathFinder.DoPath(start, outOnetarget, map, cellRect, terrain);
+                            if (outOne == null)
+                                Debug.Message($"No path for {start} to {outOnetarget}");
+                            GenUtils.WidenPath(outOne, map, terrain, mainRoadWidth);
+                        }
+
+                        /*if (CellFinder.TryFindRandomEdgeCellNearWith(target, 100, map, c => c.Walkable(map), out IntVec3 outTwotarget))
+                        {
+                            var outTwo = PathFinder.DoPath(target, outTwotarget, map, cellRect, terrain);
+                            Debug.Message($"outTwo count: {outTwo.Count}");
+                            GenUtils.WidenPath(outTwo, map, terrain, GenOption.RoadOptions.MainRoadWidth);
+                        }*/
                     }
                 }
             }
