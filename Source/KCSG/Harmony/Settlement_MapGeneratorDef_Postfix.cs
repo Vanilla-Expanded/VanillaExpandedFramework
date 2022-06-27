@@ -14,16 +14,17 @@ namespace KCSG
             {
                 if (__instance != null && __instance.Faction != null && __instance.Faction != Faction.OfPlayer)
                 {
-                    Debug.Message($"Faction: {__instance.Faction.NameColored} - Generating");
                     if (__instance.Faction.def.HasModExtension<CustomGenOption>())
                     {
-                        Debug.Message($"Faction: {__instance.Faction.NameColored} - Faction have CustomGenOption extension");
-                        __result = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_Base_Faction");
+                        Debug.Message($"Generating base for faction: {__instance.Faction.NameColored}");
+                        var ext = __instance.Faction.def.GetModExtension<CustomGenOption>();
+                        __result = ext.preventBridgeable ? DefDatabase<MapGeneratorDef>.GetNamed("KCSG_Base_Faction_NoBridge") : DefDatabase<MapGeneratorDef>.GetNamed("KCSG_Base_Faction");
                     }
-                    else if (Find.World.worldObjects.AllWorldObjects.FindAll(o => o.Tile == __instance.Tile && o.def.HasModExtension<CustomGenOption>()).Any())
+                    else if (Find.World.worldObjects.AllWorldObjects.Find(o => o.Tile == __instance.Tile && o.def.HasModExtension<CustomGenOption>()) is WorldObject wo)
                     {
                         Debug.Message($"Generating world object map");
-                        __result = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_Gen");
+                        var ext = wo.def.GetModExtension<CustomGenOption>();
+                        __result = ext.preventBridgeable ? DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_Gen_NoBridge") : DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_Gen");
                     }
                 }
             }

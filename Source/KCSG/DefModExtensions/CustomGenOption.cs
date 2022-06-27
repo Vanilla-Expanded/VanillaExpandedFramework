@@ -21,6 +21,7 @@ namespace KCSG
         public bool tryFindFreeArea = false;
         public bool preGenClear = true;
         public bool fullClear = false;
+        public bool preventBridgeable = false;
 
         public List<string> symbolResolvers = new List<string>();
         public List<ThingDef> scatterThings = new List<ThingDef>();

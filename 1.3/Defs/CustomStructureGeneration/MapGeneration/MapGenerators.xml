@@ -18,6 +18,12 @@
     </genStep>
   </GenStepDef>
 
+  <GenStepDef>
+    <defName>KCSG_TerrainNoPatches</defName>
+    <order>210</order>
+    <genStep Class="KCSG.GenStep_TerrainNoPatches" />
+  </GenStepDef>
+
   <!-- Generate world object -->
   <MapGeneratorDef ParentName="MapCommonBase">
     <defName>KCSG_WorldObject_Gen</defName>

@@ -18,6 +18,7 @@ namespace KCSG
             var debug = VFECore.VFEGlobal.settings.enableVerboseLogging;
             stuffs = DefDatabase<ThingDef>.AllDefsListForReading.FindAll(t => t.IsStuff);
 
+            // Create vanilla + dlcs sybmols
             if (debug
                 || DefDatabase<SettlementLayoutDef>.DefCount > 0
                 || DefDatabase<StructureLayoutDef>.DefCount > 0
@@ -26,12 +27,14 @@ namespace KCSG
                 CreateSymbols();
             }
 
+            // Resolve all layouts, for faster gen time
             missingSymbols = new Dictionary<string, int>();
 
             var layouts = DefDatabase<StructureLayoutDef>.AllDefsListForReading;
             for (int i = 0; i < layouts.Count; i++)
                 layouts[i].ResolveLayouts();
 
+            // Output list of missing symbols
             if (debug)
             {
                 foreach (var m in missingSymbols)
@@ -39,10 +42,26 @@ namespace KCSG
                     Debug.Message($"Missing symbol: {m.Key} ({m.Value})");
                 }
             }
-
+            // Cache layout per tag
             SettlementGenUtils.BuildingPlacement.CacheTags();
+            // Make two new map generator, used with preventBridgeable
+            CreateMapDefs();
         }
 
+        private static void CreateMapDefs()
+        {
+            var baseA = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_Base_Faction");
+            MapGeneratorDef mgdA = baseA;
+            mgdA.defName = "KCSG_Base_Faction_NoBridge";
+            mgdA.genSteps.Replace(AllDefOf.Terrain, AllDefOf.KCSG_TerrainNoPatches);
+            DefDatabase<MapGeneratorDef>.Add(mgdA);
+
+            var baseB = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_Gen");
+            MapGeneratorDef mgdB = baseB;
+            mgdB.defName = "KCSG_WorldObject_Gen_NoBridge";
+            mgdB.genSteps.Replace(AllDefOf.Terrain, AllDefOf.KCSG_TerrainNoPatches);
+            DefDatabase<MapGeneratorDef>.Add(mgdB);
+        }
 
         public static void AddToMissing(string symbol)
         {
