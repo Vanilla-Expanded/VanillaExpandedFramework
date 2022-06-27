@@ -49,6 +49,7 @@ namespace KCSG
             // Create rect
             CellRect rect = CellRect.CenteredOn(spawn, width, height);
             rect.ClipInsideMap(map);
+            Debug.Message($"rect count: {rect.Cells.EnumerableCount()}");
 
             // Pre-gen clean
             if (ext.preGenClear)

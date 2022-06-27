@@ -636,6 +636,9 @@ namespace KCSG
         /// </summary>
         public static bool NearUsedSpot(List<IntVec3> usedSpots, IntVec3 c, float dist)
         {
+            if (usedSpots.NullOrEmpty())
+                return false;
+
             for (int index = 0; index < usedSpots.Count; ++index)
             {
                 if ((usedSpots[index] - c).LengthHorizontalSquared <= dist * dist)
