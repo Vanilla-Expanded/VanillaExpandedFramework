@@ -694,7 +694,7 @@ namespace KCSG
                             var c2 = new IntVec3(curr.x, 0, curr.z - i);
                             if (widenBy < width && c2.InBounds(map))
                             {
-                                grid[c2.z - i][c2.x] = CellType.Used;
+                                grid[c2.z][c2.x] = CellType.Used;
                                 SetTerrainAt(c2, map, terrain);
                                 widenBy++;
                             }
@@ -719,7 +719,6 @@ namespace KCSG
                             }
                         }
                     }
-
                     last = curr;
                 }
             }

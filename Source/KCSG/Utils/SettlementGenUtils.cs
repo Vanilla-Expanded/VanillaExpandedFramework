@@ -73,7 +73,7 @@ namespace KCSG
             {
                 var edgeCells = rect.EdgeCells.ToList();
                 var terrain = GenOption.RoadOptions.mainRoadDef ?? TerrainDefOf.Concrete;
-                var cellRect = new CellRect(0, 0, width, height);
+                var cellRect = CellRect.WholeMap(map);
                 var mainRoadWidth = GenOption.RoadOptions.MainRoadWidth;
 
                 for (int i = 0; i < GenOption.RoadOptions.mainRoadCount; i++)
@@ -92,7 +92,7 @@ namespace KCSG
 
                     if (GenOption.RoadOptions.mainRoadLinkToEdges)
                     {
-                        if (CellFinder.TryFindRandomEdgeCellNearWith(start, 100, map, c => c.Walkable(map), out IntVec3 outOnetarget))
+                        if (CellFinder.TryFindRandomEdgeCellNearWith(start, 100, map, c => c.Walkable(map) && cellRect.Contains(c), out IntVec3 outOnetarget))
                         {
                             var outOne = PathFinder.DoPath(start, outOnetarget, map, cellRect, terrain);
                             if (outOne == null)
@@ -1368,6 +1368,7 @@ namespace KCSG
                 while (lActiveCount > 0)
                 {
                     var checkCell = lActive.OrderByDescending(x => x.CostDistance).Last();
+                    // Found target
                     if (checkCell.X == target.X && checkCell.Y == target.Y)
                     {
                         var cell = checkCell;
