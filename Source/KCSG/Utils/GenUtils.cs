@@ -591,7 +591,7 @@ namespace KCSG
         /// </summary>
         public static ThingDef RandomWallStuffByWeight(SymbolDef symbol)
         {
-            if (GenOption.StuffableOptions != null && GenOption.StuffableOptions.randomizeWall)
+            if (GenOption.StuffableOptions != null && GenOption.StuffableOptions.randomizeWall && symbol.thingDef.MadeFromStuff)
                 return RandomWallStuffByWeight(symbol.thingDef);
 
             return symbol.stuffDef;
@@ -602,7 +602,7 @@ namespace KCSG
         /// </summary>
         public static ThingDef RandomFurnitureStuffByWeight(SymbolDef symbol)
         {
-            if (symbol.thingDef.costStuffCount <= 0)
+            if (!symbol.thingDef.MadeFromStuff)
                 return null;
 
             var option = GenOption.StuffableOptions;
