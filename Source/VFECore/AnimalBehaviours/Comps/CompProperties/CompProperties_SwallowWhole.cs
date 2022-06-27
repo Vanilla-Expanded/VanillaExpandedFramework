@@ -31,7 +31,7 @@ namespace AnimalBehaviours
 
         //Create filth around it if killed or otherwise destroyed
         public bool createFilthWhenKilled = false;
-        public ThingDef filthToMake = ThingDefOf.Filth_AmnioticFluid;
+        public ThingDef filthToMake;
         //Play sound if killed or otherwise destroyed
         public bool playSoundWhenKilled = false;
         public string soundToPlay = "Hive_Spawn";

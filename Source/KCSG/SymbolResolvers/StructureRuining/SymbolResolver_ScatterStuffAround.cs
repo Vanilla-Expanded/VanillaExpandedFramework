@@ -10,15 +10,15 @@ namespace KCSG
         public override void Resolve(ResolveParams rp)
         {
             Map map = BaseGen.globalSettings.map;
-            if (CGO.factionSettlement.scatterThings?.Count > 0)
+            if (GenOption.ext.scatterThings?.Count > 0)
             {
                 Random r = new Random(Find.TickManager.TicksGame);
 
                 foreach (IntVec3 cell in rp.rect)
                 {
-                    if (cell.Roofed(map) && cell.Walkable(map) && r.NextDouble() < CGO.factionSettlement.scatterChance)
+                    if (cell.Roofed(map) && cell.Walkable(map) && r.NextDouble() < GenOption.ext.scatterChance)
                     {
-                        ThingDef thingDef = CGO.factionSettlement.scatterThings.RandomElement();
+                        ThingDef thingDef = GenOption.ext.scatterThings.RandomElement();
                         Thing thing = ThingMaker.MakeThing(thingDef, thingDef.MadeFromStuff ? thingDef.defaultStuff : null);
                         thing.stackCount = Math.Min(r.Next(5, thing.def.stackLimit), 75);
                         thing.SetForbidden(true, false);

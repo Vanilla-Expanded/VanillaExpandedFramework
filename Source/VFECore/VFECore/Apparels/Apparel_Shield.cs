@@ -108,28 +108,16 @@ namespace VFECore
             }
         }
 
-        private bool cachedUsableNow = false;
-        public bool CachedUsableNow
-        {
-            get
-            {
-                if (Find.TickManager.TicksGame % 60 == 0)
-                {
-                    cachedUsableNow = this.CompShield.UsableNow;
-                }
-                return cachedUsableNow;
-            }
-        }
-
         public override void DrawWornExtras()
         {
             if (this.Wearer.Dead || !this.Wearer.Spawned || (this.Wearer.CurJob != null && this.Wearer.CurJob.def.neverShowWeapon))
             {
                 return;
             }
-            if (CachedUsableNow)
+            var comp = CompShield;
+            if (comp.UsableNow)
             {
-                var curHoldOffset = CompShield.Props.offHandHoldOffset.Pick(Wearer.Rotation);
+                var curHoldOffset = comp.Props.offHandHoldOffset.Pick(Wearer.Rotation);
                 var finalDrawLoc = this.GetAimingVector(this.Wearer.DrawPos) + curHoldOffset.offset + new Vector3(0, (curHoldOffset.behind ? -0.0390625f : 0.0390625f), 0);
                 ShieldGraphic.Draw(finalDrawLoc, (curHoldOffset.flip ? Wearer.Rotation.Opposite : Wearer.Rotation), Wearer);
             }
@@ -138,7 +126,6 @@ namespace VFECore
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look(ref cachedUsableNow, "cachedUsableNow", false);
             if (Scribe.mode == LoadSaveMode.PostLoadInit && this.Wearer != null)
             {
                 var comp = this.GetComp<CompEquippable>();

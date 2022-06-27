@@ -16,32 +16,35 @@ namespace VFE.Mechanoids.AI.WorkGivers
         public override PathEndMode PathEndMode => PathEndMode.Touch;
         public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
-            if (CompMachineChargingStation.cachedChargingStationsDict.TryGetValue(t, out CompMachineChargingStation comp)) 
-            {
-                if (comp == null || comp.turretToInstall == null)
-                    return false;
+            var chargingStationComp = t.TryGetComp<CompMachineChargingStation>();
+            var mech = chargingStationComp.myPawn;
+            var comp = mech?.TryGetComp<CompMachine>();
+            if (mech is null || comp == null || comp.turretToInstall == null)
+                return false;
 
-                if (!comp.MyPawnIsAlive)
+            if (mech.Dead || mech.Destroyed)
+            {
+                JobFailReason.Is("VFEMechNoTurret".Translate());
+                return false;
+            }
+            List<ThingDefCountClass> products = comp.turretToInstall.costList;
+            foreach (ThingDefCountClass thingNeeded in products)
+            {
+                if (!pawn.Map.itemAvailability.ThingsAvailableAnywhere(thingNeeded, pawn))
                 {
-                    JobFailReason.Is("VFEMechNoTurret".Translate());
+                    JobFailReason.Is("VFEMechNoResources".Translate());
                     return false;
                 }
-                List<ThingDefCountClass> products = comp.turretToInstall.costList;
-                foreach (ThingDefCountClass thingNeeded in products)
-                {
-                    if (!pawn.Map.itemAvailability.ThingsAvailableAnywhere(thingNeeded, pawn))
-                    {
-                        JobFailReason.Is("VFEMechNoResources".Translate());
-                        return false;
-                    }
-                }
-                return pawn.CanReserveAndReach(t, PathEndMode.OnCell, Danger.Deadly, ignoreOtherReservations: forced);
             }
-            return false;
+            return pawn.CanReserveAndReach(t, PathEndMode.OnCell, Danger.Deadly, ignoreOtherReservations: forced);
         }
         public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
-            List<ThingDefCountClass> products = t.TryGetComp<CompMachineChargingStation>().turretToInstall.costList;
+            var chargingStationComp = t.TryGetComp<CompMachineChargingStation>();
+            var mech = chargingStationComp.myPawn;
+            var comp = mech?.TryGetComp<CompMachine>();
+
+            List<ThingDefCountClass> products = comp.turretToInstall.costList;
             List<Thing> toGrab = new List<Thing>();
             List<int> toGrabCount = new List<int>();
             foreach (ThingDefCountClass thingNeeded in products)

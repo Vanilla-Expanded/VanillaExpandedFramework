@@ -18,19 +18,6 @@ namespace VFE.Mechanoids.AI.JobDrivers
 		public static FleckDef MoteRecharge = DefDatabase<FleckDef>.GetNamed("VFE_Mechanoids_Mote_Recharge");
 		public static FleckDef MoteRepair = DefDatabase<FleckDef>.GetNamed("VFE_Mechanoids_Mote_Repair");
 
-		private Building_BedMachine bed;
-		public Building_BedMachine Bed
-		{
-			get
-            {
-				if (bed == null)
-                {
-					bed = (Building_BedMachine)job.GetTarget(TargetIndex.A).Thing;
-                }
-				return bed;
-            }
-		}
-
 		private CompPowerTrader compPowerTrader;
 		public CompPowerTrader BedCompPowerTrader
 		{
@@ -38,7 +25,7 @@ namespace VFE.Mechanoids.AI.JobDrivers
 			{
 				if (compPowerTrader == null)
 				{
-					compPowerTrader = Bed.TryGetComp<CompPowerTrader>();
+					compPowerTrader = job.GetTarget(TargetIndex.A).Thing.TryGetComp<CompPowerTrader>();
 				}
 				return compPowerTrader;
 			}
@@ -160,14 +147,14 @@ namespace VFE.Mechanoids.AI.JobDrivers
 			layDown.AddFinishAction(delegate
 			{
 				Pawn actor = layDown.actor;
-				if ((PawnNeed_Power.CurLevelPercentage > 0.99f && !layDown.actor.health.hediffSet.HasNaturallyHealingInjury() && MyBuildingCompMachineChargingStation.turretToInstall==null))
+				if ((PawnNeed_Power.CurLevelPercentage > 0.99f && !layDown.actor.health.hediffSet.HasNaturallyHealingInjury() && CompMachine.cachedMachinesPawns[pawn].turretToInstall==null))
 				{
 					MyBuildingCompMachineChargingStation.wantsRest = false;
 				}
 			});
 			layDown.handlingFacing = true;
 			layDown.FailOn(() => !MyBuildingCompMachineChargingStation.forceStay && (!MyBuildingCompPowerTrader.PowerOn || 
-				(PawnNeed_Power.CurLevelPercentage > 0.99f && !layDown.actor.health.hediffSet.HasNaturallyHealingInjury() && MyBuildingCompMachineChargingStation.turretToInstall==null)));
+				(PawnNeed_Power.CurLevelPercentage > 0.99f && !layDown.actor.health.hediffSet.HasNaturallyHealingInjury() && CompMachine.cachedMachinesPawns[pawn].turretToInstall==null)));
 
 			layDown.defaultCompleteMode = ToilCompleteMode.Never;
 			return layDown;

@@ -1,22 +1,25 @@
-﻿namespace VFECore.Abilities
+﻿using RimWorld;
+using UnityEngine;
+using Verse;
+using Verse.Sound;
+
+namespace VFECore.Abilities
 {
-    using RimWorld;
-    using UnityEngine;
-    using Verse;
-    using Verse.Sound;
+    using RimWorld.Planet;
 
     public class AbilityProjectile : Projectile
     {
-        public Abilities.Ability ability;
+        public Ability ability;
 
         protected override void Impact(Thing hitThing)
         {
             Map     map      = this.Map;
             base.Impact(hitThing);
-            BattleLogEntry_RangedImpact battleLogEntryRangedImpact = new BattleLogEntry_RangedImpact(this.launcher, hitThing, this.intendedTarget.Thing, this.equipmentDef, this.def, this.targetCoverDef);
+            BattleLogEntry_RangedImpact battleLogEntryRangedImpact =
+                new BattleLogEntry_RangedImpact(launcher, hitThing, intendedTarget.Thing, equipmentDef ?? ability.pawn.def, def, targetCoverDef);
             Find.BattleLog.Add(battleLogEntryRangedImpact);
 
-            this.ability.TargetEffects(new LocalTargetInfo(this.Position));
+            this.ability.TargetEffects(new GlobalTargetInfo(this.Position, this.Map));
 
             float power = this.ability.GetPowerForPawn();
 
@@ -27,8 +30,8 @@
 
                 if (hitThing is Pawn pawn)
                 {
-                    this.ability.ApplyHediffs(pawn);
-                    
+                    this.ability.ApplyHediffs(new GlobalTargetInfo(pawn));
+
                     if (pawn.stances != null && pawn.BodySize <= this.def.projectile.StoppingPower + 0.001f)
                     {
                         pawn.stances.StaggerFor(95);

@@ -1,86 +1,68 @@
-﻿using RimWorld;
-using RimWorld.BaseGen;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using RimWorld.BaseGen;
 using Verse;
 
 namespace KCSG
 {
     internal class GenStep_CustomStructureGen : GenStep
     {
-        public List<StructureLayoutDef> structureLayoutDefs = new List<StructureLayoutDef>();
         public bool fullClear = false;
 
-        /* Ruin */
-        public bool shouldRuin = false;
-        public List<ThingDef> filthTypes = new List<ThingDef>();
+        public List<StructureLayoutDef> structureLayoutDefs = new List<StructureLayoutDef>();
+
+        public List<string> symbolResolvers = new List<string>();
+
         public List<ThingDef> scatterThings = new List<ThingDef>();
+        public List<ThingDef> filthTypes = new List<ThingDef>();
         public float scatterChance = 0.4f;
+
+        // TODO Obsolete - To remove in next rimworld version
+        [Obsolete]
+        public bool shouldRuin = false;
+
+        [Obsolete]
         public List<string> ruinSymbolResolvers = new List<string>();
 
-        public override int SeedPart
-        {
-            get
-            {
-                return 916595355;
-            }
-        }
+        public override int SeedPart => 916595355;
 
         public override void Generate(Map map, GenStepParams parms)
         {
-            StructureLayoutDef structureLayoutDef = structureLayoutDefs.RandomElement();
+            // TODO Compat - To remove in next rimworld version
+            if (!ruinSymbolResolvers.NullOrEmpty())
+                symbolResolvers = ruinSymbolResolvers.ListFullCopy();
 
-            RectUtils.HeightWidthFromLayout(structureLayoutDef, out int h, out int w);
-            CellRect cellRect = CellRect.CenteredOn(map.Center, w, h);
-
-            GenUtils.PreClean(map, cellRect, structureLayoutDef.roofGrid, fullClear);
-
-            foreach (List<string> item in structureLayoutDef.layouts)
+            GenOption.ext = new CustomGenOption
             {
-                GenUtils.GenerateRoomFromLayout(item, cellRect, map, structureLayoutDef);
-            }
+                UsingSingleLayout = true,
+                AdditionalResolvers = symbolResolvers.Count > 0,
+                symbolResolvers = symbolResolvers,
+                filthTypes = filthTypes,
+                scatterThings = scatterThings,
+                scatterChance = scatterChance,
+            };
 
-            if (shouldRuin)
+            StructureLayoutDef layoutDef = structureLayoutDefs.RandomElement();
+
+            CellRect cellRect = CellRect.CenteredOn(map.Center, layoutDef.width, layoutDef.height);
+
+            GenUtils.PreClean(map, cellRect, fullClear, layoutDef.roofGridResolved);
+            GenUtils.GenerateLayout(layoutDef, cellRect, map);
+
+            if (GenOption.ext.AdditionalResolvers)
             {
-                CGO.factionSettlement = new CustomGenOption
-                {
-                    filthTypes = filthTypes,
-                    scatterThings = scatterThings,
-                    scatterChance = scatterChance
-                };
-
-                ResolveParams rp = new ResolveParams
+                Debug.Message("GenStep_CustomStructureGen - Additional symbol resolvers");
+                BaseGen.symbolStack.Push("kcsg_runresolvers", new ResolveParams
                 {
                     faction = map.ParentFaction,
                     rect = cellRect
-                };
-                foreach (string resolver in ruinSymbolResolvers)
-                {
-                    if (!(ruinSymbolResolvers.Contains("kcsg_randomroofremoval") && resolver == "kcsg_scatterstuffaround"))
-                        BaseGen.symbolStack.Push(resolver, rp, null);
-                }
+                }, null);
             }
 
             // Flood refog
             if (map.mapPawns.FreeColonistsSpawned.Count > 0)
             {
                 FloodFillerFog.DebugRefogMap(map);
-            }
-        }
-
-        internal void SetAllFogged(Map map)
-        {
-            CellIndices cellIndices = map.cellIndices;
-            if (map.fogGrid?.fogGrid != null)
-            {
-                foreach (IntVec3 c in map.AllCells)
-                {
-                    map.fogGrid.fogGrid[cellIndices.CellToIndex(c)] = true;
-                }
-                if (Current.ProgramState == ProgramState.Playing)
-                {
-                    map.roofGrid.Drawer.SetDirty();
-                }
             }
         }
     }

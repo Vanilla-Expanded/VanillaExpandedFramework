@@ -26,9 +26,6 @@ namespace MVCF
         public static readonly HashSet<string> IgnoredMods = new()
         {
             "Misc. Robots++",
-            "Dragon's Descent",
-            "[RWY]Dragon's Descent: Void Dwellers",
-            "Genetic Rim",
             "Cybernetic Warfare and Special Weapons (Continued)",
             "Cybernetic Warfare and Special Weapons"
         };

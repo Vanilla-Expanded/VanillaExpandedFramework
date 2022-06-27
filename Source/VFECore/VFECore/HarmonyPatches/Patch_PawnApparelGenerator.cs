@@ -14,7 +14,6 @@ namespace VFECore
 
     public static class Patch_PawnApparelGenerator
     {
-
         public static class PossibleApparelSet
         {
 
@@ -55,53 +54,43 @@ namespace VFECore
                         yield return instruction;
                     }
                 }
-
             }
-
-            [HarmonyPatch(typeof(PawnApparelGenerator), nameof(PawnApparelGenerator.GenerateStartingApparelFor))]
-            public static class GenerateStartingApparelFor
-            {
-
-                public static void Postfix(Pawn pawn)
-                {
-                    // Change the colour of appropriate apparel items to match the pawn's faction's colour
-                    if (pawn.apparel != null && pawn.Faction != null && pawn.kindDef.apparelColor == Color.white)
-                    {
-                        var pawnKindDefExtension = PawnKindDefExtension.Get(pawn.kindDef);
-                        var wornApparel = pawn.apparel.WornApparel;
-                        for (int i = 0; i < wornApparel.Count; i++)
-                        {
-                            var apparel = wornApparel[i];
-
-                            // Check from ThingDefExtension
-                            var thingDefExtension = ThingDefExtension.Get(apparel.def);
-                            if (!thingDefExtension.useFactionColourForPawnKinds.NullOrEmpty() && thingDefExtension.useFactionColourForPawnKinds.Contains(pawn.kindDef))
-                            {
-                                apparel.SetColor(pawn.Faction.Color);
-                                continue;
-                            }
-
-                            // Check from PawnKindDefExtension
-                            var apparelProps = apparel.def.apparel;
-                            var partGroupAndLayerPairs = pawnKindDefExtension.FactionColourApparelWithPartAndLayersList;
-                            for (int j = 0; j < partGroupAndLayerPairs.Count; j++)
-                            {
-                                var partGroupAndLayerPair = partGroupAndLayerPairs[j];
-                                if (apparelProps.bodyPartGroups.Contains(partGroupAndLayerPair.First) && apparelProps.layers.Contains(partGroupAndLayerPair.Second))
-                                {
-                                    apparel.SetColor(pawn.Faction.Color);
-                                    break;
-                                }
-                            }
-
-                        }
-                    }
-                }
-
-            }
-
         }
 
-    }
+        public static void GenerateStartingApparelFor_Postfix(Pawn pawn)
+        {
+            // Change the colour of appropriate apparel items to match the pawn's faction's colour
+            if (pawn.apparel != null && pawn.Faction != null && pawn.kindDef.apparelColor == Color.white)
+            {
+                var pawnKindDefExtension = PawnKindDefExtension.Get(pawn.kindDef);
+                var wornApparel = pawn.apparel.WornApparel;
+                for (int i = 0; i < wornApparel.Count; i++)
+                {
+                    var apparel = wornApparel[i];
 
+                    // Check from ThingDefExtension
+                    var thingDefExtension = ThingDefExtension.Get(apparel.def);
+                    if (!thingDefExtension.useFactionColourForPawnKinds.NullOrEmpty() && thingDefExtension.useFactionColourForPawnKinds.Contains(pawn.kindDef))
+                    {
+                        apparel.SetColor(pawn.Faction.Color);
+                        continue;
+                    }
+
+                    // Check from PawnKindDefExtension
+                    var apparelProps = apparel.def.apparel;
+                    var partGroupAndLayerPairs = pawnKindDefExtension.FactionColourApparelWithPartAndLayersList;
+                    for (int j = 0; j < partGroupAndLayerPairs.Count; j++)
+                    {
+                        var partGroupAndLayerPair = partGroupAndLayerPairs[j];
+                        if (apparelProps.bodyPartGroups.Contains(partGroupAndLayerPair.First) && apparelProps.layers.Contains(partGroupAndLayerPair.Second))
+                        {
+                            apparel.SetColor(pawn.Faction.Color);
+                            break;
+                        }
+                    }
+
+                }
+            }
+        }
+    }
 }

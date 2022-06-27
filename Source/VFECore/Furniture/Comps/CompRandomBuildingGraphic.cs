@@ -122,6 +122,7 @@ namespace VanillaFurnitureExpanded
                                 }
                                 reloading = false;
                             }
+                            
 
 
 
@@ -135,6 +136,11 @@ namespace VanillaFurnitureExpanded
                         else
                         {
                             newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
+                        }
+                        if (!parent.def.graphicData.drawRotated)
+                        {
+                            newGraphicSingle.data = new GraphicData();
+                            newGraphicSingle.data.drawRotated = false;
                         }
                         Type typ = typeof(Thing);
                         FieldInfo type = typ.GetField("graphicInt", BindingFlags.Instance | BindingFlags.NonPublic);

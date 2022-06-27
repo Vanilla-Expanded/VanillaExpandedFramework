@@ -1,50 +1,53 @@
-﻿using RimWorld;
+﻿using System.Linq;
+using RimWorld;
 using RimWorld.BaseGen;
-using System.Collections.Generic;
-using System.Linq;
 using Verse;
 
 namespace KCSG
 {
     public class GenStepUtils
     {
-        public static void Generate(Map map, IntVec3 c, CustomGenOption sf, string symbolResolver = "kcsg_settlement")
+        public static void Generate(Map map, IntVec3 c, CustomGenOption sf, string symbolResolver)
         {
-            CGO.useStructureLayout = sf.useStructureLayout;
+            GenOption.useStructureLayout = sf.useStructureLayout;
 
             if (sf.useStructureLayout)
             {
-                CGO.structureLayoutDef = LayoutUtils.ChooseLayoutFrom(sf.chooseFromlayouts);
+                GenOption.structureLayoutDef = LayoutUtils.ChooseLayoutFrom(sf.chooseFromlayouts);
             }
             else
             {
-                CGO.settlementLayoutDef = sf.chooseFromSettlements.RandomElement();
+                GenOption.settlementLayoutDef = sf.chooseFromSettlements.RandomElement();
             }
 
             // Get faction
             Faction faction;
             if (map.ParentFaction == null || map.ParentFaction == Faction.OfPlayer)
             {
-                faction = Find.FactionManager.RandomEnemyFaction(false, false, true, TechLevel.Undefined);
+                faction = Find.FactionManager.RandomEnemyFaction();
             }
-            else faction = map.ParentFaction;
+            else
+            {
+                faction = map.ParentFaction;
+            }
 
             // Get settlement size
             int width;
             int height;
             if (sf.useStructureLayout)
             {
-                RectUtils.HeightWidthFromLayout(CGO.structureLayoutDef, out height, out width);
+                width = GenOption.structureLayoutDef.width;
+                height = GenOption.structureLayoutDef.height;
             }
             else
             {
-                SettlementLayoutDef temp = CGO.settlementLayoutDef;
+                SettlementLayoutDef temp = GenOption.settlementLayoutDef;
                 height = temp.settlementSize.x;
                 width = temp.settlementSize.z;
             }
 
             IntVec3 intVec3 = c;
-            if (CGO.factionSettlement.tryFindFreeArea)
+            if (GenOption.ext.tryFindFreeArea)
             {
                 bool success = RCellFinder.TryFindRandomCellNearTheCenterOfTheMapWith(cell => new CellRect(cell.x - width / 2, cell.z - height / 2, width, height).Cells.All(pC => pC.Walkable(map) && !pC.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Bridgeable)), map, out intVec3);
                 KLog.Message($"Trying to find free spawn area success: {success}");

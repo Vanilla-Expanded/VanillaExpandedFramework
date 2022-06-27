@@ -23,23 +23,26 @@ namespace VFE.Mechanoids.AI.JobGivers
             Need_Power power = pawn.needs.TryGetNeed<Need_Power>();
             if (power == null || power.CurLevelPercentage > maxLevelPercentage)
                 return null;
-
-            if (myBuilding.Spawned && myBuilding.Map == pawn.Map && pawn.CanReserveAndReach(myBuilding, PathEndMode.OnCell, Danger.Deadly))
+            if (myBuilding != null)
             {
-                if (pawn.Position != buildingPosition)
+                if (myBuilding.Spawned && myBuilding.Map == pawn.Map && pawn.CanReserveAndReach(myBuilding, PathEndMode.OnCell, Danger.Deadly))
                 {
-                    return JobMaker.MakeJob(JobDefOf.Goto, buildingPosition);
-                }
-                else
-                {
-                    pawn.Rotation = Rot4.South;
-                    if (myBuilding.TryGetComp<CompPowerTrader>().PowerOn)
+                    if (pawn.Position != buildingPosition)
                     {
-                        return JobMaker.MakeJob(VFEDefOf.VFE_Mechanoids_Recharge, myBuilding);
+                        return JobMaker.MakeJob(JobDefOf.Goto, buildingPosition);
+                    }
+                    else
+                    {
+                        pawn.Rotation = Rot4.South;
+                        if (myBuilding.TryGetComp<CompPowerTrader>().PowerOn)
+                        {
+                            return JobMaker.MakeJob(VFEDefOf.VFE_Mechanoids_Recharge, myBuilding);
+                        }
                     }
                 }
+                return JobMaker.MakeJob(JobDefOf.Wait, 300);
             }
-            return JobMaker.MakeJob(JobDefOf.Wait, 300);
+            return null;
         }
     }
 }

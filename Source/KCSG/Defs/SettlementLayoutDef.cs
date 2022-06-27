@@ -1,65 +1,121 @@
-﻿using RimWorld;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using RimWorld;
 using Verse;
 
 namespace KCSG
 {
-    public struct StructOption
+    public class StructOption
     {
-        public int maxCount;
-        public int minCount;
-        public string structureLayoutTag;
-        public StructOption(string structureLayoutTag, int minCount, int maxCount = -1)
+        public IntRange count = new IntRange(1, 20);
+        public string tag;
+    }
+
+    public class RoadOptions
+    {
+        public int MainRoadWidth => mainRoadWidth - 1;
+        public int LinkRoadWidth => linkRoadWidth - 1;
+
+        public bool addMainRoad = false;
+        public int mainRoadCount = 1;
+        public TerrainDef mainRoadDef = null;
+        public int mainRoadWidth = 2;
+
+        public bool addLinkRoad = false;
+        public TerrainDef linkRoadDef = null;
+        public int linkRoadWidth = 1;
+    }
+
+    public class StuffableOptions
+    {
+        public bool randomizeWall = false;
+        public bool generalWallStuff = false;
+        public List<ThingDef> allowedWallStuff = new List<ThingDef>();
+        public List<ThingDef> disallowedWallStuff = new List<ThingDef>();
+
+        public bool randomizeFurniture = false;
+        public List<ThingDef> allowedFurnitureStuff = new List<ThingDef>();
+        public List<ThingDef> disallowedFurnitureStuff = new List<ThingDef>();
+        public List<ThingDef> excludedFunitureDefs = new List<ThingDef>();
+    }
+
+    public class PropsOptions
+    {
+        public bool addMainRoadProps = false;
+        public List<ThingDef> mainRoadPropsDefs = new List<ThingDef>();
+        public float mainRoadPropsChance = 0.25f;
+        public int mainRoadMinDistance = 10;
+
+        public bool addLinkRoadProps = false;
+        public List<ThingDef> linkRoadPropsDefs = new List<ThingDef>();
+        public float linkRoadPropsChance = 0.25f;
+        public int linkRoadMinDistance = 10;
+
+        public bool scatterProps = false;
+        public int scatterMaxAmount = 100;
+        public int scatterMinDistance = 10;
+        public List<ThingDef> scatterPropsDefs = new List<ThingDef>();
+
+        internal ThingDef RandomMainRoadProps()
         {
-            this.structureLayoutTag = structureLayoutTag;
-            this.minCount = minCount;
-            this.maxCount = maxCount;
+            if (mainRoadPropsDefs.NullOrEmpty())
+                return null;
+
+            return mainRoadPropsDefs.RandomElement();
         }
 
-        public static StructOption FromString(string str)
+        internal ThingDef RandomLinkRoadProps()
         {
-            str = str.TrimStart(new char[]
-            {
-                '('
-            });
-            str = str.TrimEnd(new char[]
-            {
-                ')'
-            });
-            string[] array = str.Split(new char[]
-            {
-                ','
-            });
-            int minCount = Convert.ToInt32(array[1]);
-            if (array.Length == 3)
-                return new StructOption(array[0], minCount, Convert.ToInt32(array[2]));
-            else
-                return new StructOption(array[0], minCount);
+            if (linkRoadPropsDefs.NullOrEmpty())
+                return null;
+
+            return linkRoadPropsDefs.RandomElement();
+        }
+
+        internal ThingDef RandomScatterRoadProps()
+        {
+            if (scatterPropsDefs.NullOrEmpty())
+                return null;
+
+            return scatterPropsDefs.RandomElement();
         }
     }
 
     public class SettlementLayoutDef : Def
     {
-        public bool addLandingPad = false;
-        public List<string> allowedStructures = new List<string>();
-        public List<StructOption> allowedStructuresConverted = new List<StructOption>();
-        public List<string> atLeastOneOfTags = new List<string>();
-        public PawnGroupKindDef groupKindDef = null;
-        public TerrainDef mainRoadDef = null;
-        public float pawnGroupMultiplier = 1f;
-        public TerrainDef roadDef = null;
         public IntVec2 settlementSize = new IntVec2(42, 42);
-        public float stockpileValueMultiplier = 1f;
-        public bool vanillaLikeDefense = false;
-        public override IEnumerable<string> ConfigErrors()
-        {
-            foreach (string str in allowedStructures)
-            {
-                allowedStructuresConverted.Add(StructOption.FromString(str));
-            }
 
-            return base.ConfigErrors();
+        public List<StructOption> allowedStructures = new List<StructOption>();
+        public List<string> centralBuildingTags = new List<string>();
+
+        public int spaceAround = 1;
+        public bool avoidBridgeable = false;
+        public bool avoidMountains = false;
+
+        public RoadOptions roadOptions;
+
+        public StuffableOptions stuffableOptions;
+
+        public PropsOptions propsOptions;
+
+        public bool addLandingPad = false;
+        public bool vanillaLikeDefense = false;
+        public bool vanillaLikeDefenseNoSandBags = false;
+
+        public PawnGroupKindDef groupKindDef = null;
+        public float pawnGroupMultiplier = 1f;
+
+        public float stockpileValueMultiplier = 1f;
+
+        public override void ResolveReferences()
+        {
+            base.ResolveReferences();
+
+            if (roadOptions == null)
+                roadOptions = new RoadOptions();
+            if (stuffableOptions == null)
+                stuffableOptions = new StuffableOptions();
+            if (propsOptions == null)
+                propsOptions = new PropsOptions();
         }
     }
 }

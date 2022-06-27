@@ -31,29 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.UI.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="VFECore, Version=1.1.7.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\1.3\Assemblies\VFECore.dll</HintPath>
@@ -61,17 +38,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefModExtensions\BiomeStructGenExtension.cs" />
     <Compile Include="DefModExtensions\FallingStructure.cs" />
     <Compile Include="DefModExtensions\SpawnAtWorldGen.cs" />
-    <Compile Include="Defs\SymbolAutoCreation.cs" />
-    <Compile Include="GenStep\GenStep_KCSGSettlement.cs" />
-    <Compile Include="GenStep\GenStep_WorldObjectKCSG.cs" />
-    <Compile Include="Harmony\HideSettlementsForNomadicFactionsPatch.cs" />
-    <Compile Include="Harmony\Init.cs" />
-    <Compile Include="Harmony\LongEventHandler_Patches.cs" />
-    <Compile Include="Harmony\MapGeneratorDef_Patches.cs" />
-    <Compile Include="Harmony\Map_ExposeData_Patch.cs" />
-    <Compile Include="Harmony\SettlementUtility_Attack_Patch.cs" />
+    <Compile Include="GenStep\GenStep_BiomeStructures.cs" />
+    <Compile Include="GenStep\GenStep_Settlement.cs" />
+    <Compile Include="GenStep\GenStep_WorldObject.cs" />
+    <Compile Include="Harmony\MapParent_MapGeneratorDef_Postfix.cs" />
+    <Compile Include="Harmony\WorldObjectsHolder_Add_Prefix.cs" />
+    <Compile Include="Harmony\HarmonyInit.cs" />
+    <Compile Include="Harmony\Settlement_MapGeneratorDef_Postfix.cs" />
+    <Compile Include="Harmony\Map_ExposeData_Prefix.cs" />
     <Compile Include="LordJob\LordJob_DefendBaseNoEat.cs" />
     <Compile Include="PawnArrivalMethod\FallingStructureArrival.cs" />
     <Compile Include="RaidStrategyWorker\FallingStructureStrategy.cs" />
@@ -85,22 +62,19 @@
     <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_RandomTerrainRemoval.cs" />
     <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_RemovePerishable.cs" />
     <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_ScatterStuffAround.cs" />
-    <Compile Include="SymbolResolvers\SymbolResolver_AddFields.cs" />
-    <Compile Include="SymbolResolvers\SymbolResolver_GenerateRoadPower.cs" />
-    <Compile Include="SymbolResolvers\SymbolResolver_GridSecondPass.cs" />
-    <Compile Include="SymbolResolvers\SymbolResolver_RoomGenFromList.cs" />
+    <Compile Include="SymbolResolvers\SymbolResolver_EdgeDefenseNoSandbags.cs" />
+    <Compile Include="SymbolResolvers\SymbolResolver_GenerateRoad.cs" />
+    <Compile Include="SymbolResolvers\SymbolResolver_RunResolvers.cs" />
+    <Compile Include="SymbolResolvers\SymbolResolver_ScatterPropsAround.cs" />
+    <Compile Include="SymbolResolvers\SymbolResolver_SettlementPower.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_SingleThingRoofed.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_StorageZone.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_ThingSetOnlyRoofed.cs" />
-    <Compile Include="SymbolDefsCreator.cs" />
+    <Compile Include="StartupActions.cs" />
     <Compile Include="Thing\KCSG_Skyfaller.cs" />
-    <Compile Include="Utils\GenStepUtils.cs" />
-    <Compile Include="Utils\KLog.cs" />
-    <Compile Include="Utils\TextureLoader.cs" />
-    <Compile Include="DefOfs\KThingDefOf.cs" />
-    <Compile Include="Utils\Algorithms\AStar.cs" />
-    <Compile Include="Utils\Algorithms\BuildingPlacement.cs" />
-    <Compile Include="Utils\DebugOption.cs" />
+    <Compile Include="Textures.cs" />
+    <Compile Include="DefOfs\DefOfs.cs" />
+    <Compile Include="Utils\Debug.cs" />
     <Compile Include="DefModExtensions\CustomGenOption.cs" />
     <Compile Include="Defs\SettlementLayoutDef.cs" />
     <Compile Include="Defs\StructureLayoutDef.cs" />
@@ -108,28 +82,27 @@
     <Compile Include="Designators\Designator_ExportToXml.cs" />
     <Compile Include="Designators\Designator_ExportToXmlFromArea.cs" />
     <Compile Include="Designators\Dialog_ExportWindow.cs" />
-    <Compile Include="Harmony\FixCaravanThreadingPatch.cs" />
-    <Compile Include="Harmony\GenStepPatches.cs" />
+    <Compile Include="Harmony\GenStep_Power_Prefix.cs" />
     <Compile Include="GenStep\GenStep_CustomStructureGen.cs" />
     <Compile Include="GenStep\GenStep_EnnemiesPresence.cs" />
-    <Compile Include="Harmony\PrepareCarefully_Fix.cs" />
-    <Compile Include="Utils\Algorithms\Delaunay.cs" />
-    <Compile Include="Utils\CGO.cs" />
+    <Compile Include="Harmony\Page_ConfigureStartingPawns_PreOpen_Postfix.cs" />
+    <Compile Include="Utils\GenOption.cs" />
     <Compile Include="Utils\GenUtils.cs" />
     <Compile Include="Utils\GridUtils.cs" />
-    <Compile Include="Utils\LayoutUtils.cs" />
+    <Compile Include="Utils\ExportUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_RoomGenFromStructure.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_Settlement.cs" />
-    <Compile Include="Utils\Algorithms\CustomVector.cs" />
-    <Compile Include="Utils\Algorithms\PoissonDiskSampling.cs" />
-    <Compile Include="Utils\RectUtils.cs" />
-    <Compile Include="Utils\SymbolUtils.cs" />
+    <Compile Include="Utils\SettlementGenUtils.cs" />
     <Compile Include="WorldGenSteps\WorldGenStep_SpawnWorldObjects.cs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Krafs.Rimworld.Ref">
+      <Version>1.3.3326</Version>
+    </PackageReference>
     <PackageReference Include="Lib.Harmony" ExcludeAssets="runtime">
-      <Version>2.1.0</Version>
+      <Version>2.2.1</Version>
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

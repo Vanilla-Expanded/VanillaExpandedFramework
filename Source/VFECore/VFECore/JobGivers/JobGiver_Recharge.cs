@@ -56,18 +56,20 @@ namespace VFE.Mechanoids.AI.JobGivers
                 return null;
             }
             var building = CompMachine.cachedMachinesPawns[pawn].myBuilding;
-            if (building.Spawned && building.Map == pawn.Map && pawn.CanReserveAndReach(building, PathEndMode.OnCell, Danger.Deadly))
+            if (building != null)
             {
-                if (building.TryGetComp<CompPowerTrader>().PowerOn)
+                if (building.Spawned && building.Map == pawn.Map && pawn.CanReserveAndReach(building, PathEndMode.OnCell, Danger.Deadly))
                 {
-                    return JobMaker.MakeJob(VFEDefOf.VFE_Mechanoids_Recharge, building);
-                }
-                else if (building.Position != pawn.Position)
-                {
-                    return JobMaker.MakeJob(JobDefOf.Goto, building);
+                    if (building.TryGetComp<CompPowerTrader>().PowerOn)
+                    {
+                        return JobMaker.MakeJob(VFEDefOf.VFE_Mechanoids_Recharge, building);
+                    }
+                    else if (building.Position != pawn.Position)
+                    {
+                        return JobMaker.MakeJob(JobDefOf.Goto, building);
+                    }
                 }
             }
-
             return null;
         }
     }

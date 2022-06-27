@@ -18,7 +18,6 @@ namespace VFE.Mechanoids
         public bool wantsRespawn=false; //Used to determine whether a rebuild job is desired
         public bool forceStay = false;
         public bool wantsRest = false; //Used to force a machine to return to base, for healing or recharging
-        public ThingDef turretToInstall = null; //Used to specify a turret to put on the mobile turret
         public Area allowedArea = null;
         public bool energyDrainMode = true;
 
@@ -117,14 +116,14 @@ namespace VFE.Mechanoids
         public override void CompTickRare()
         {
             base.CompTickRare();
-            Building_BedMachine bed = (Building_BedMachine)parent;
+            IBedMachine bed = (IBedMachine)parent;
             if(bed.occupant!=null)
             {
                 if (this.energyDrainMode)
                 {
                     PowerComp.powerOutputInt = 0 - PowerComp.Props.basePowerConsumption - Props.extraChargingPower;
                 }
-                if (myPawn.health.hediffSet.HasNaturallyHealingInjury() && bed.TryGetComp<CompPowerTrader>().PowerOn)
+                if (myPawn.health.hediffSet.HasNaturallyHealingInjury() && parent.TryGetComp<CompPowerTrader>().PowerOn)
                 {
                     float num3 = 12f;
                 (from x in myPawn.health.hediffSet.GetHediffs<Hediff_Injury>()
@@ -153,7 +152,6 @@ namespace VFE.Mechanoids
             Scribe_Values.Look<bool>(ref wantsRest, "wantsRest");
             Scribe_Values.Look<bool>(ref forceStay, "forceStay");
             Scribe_Values.Look<bool>(ref energyDrainMode, "energyDrainMode", true);
-            Scribe_Defs.Look<ThingDef>(ref turretToInstall, "turretToInstall");
             Scribe_References.Look<Area>(ref allowedArea, "allowedArea");
         }
 
@@ -201,7 +199,6 @@ namespace VFE.Mechanoids
                             {
                                 comp.wantsRest = true;
                                 comp.forceStay = true;
-                                comp.turretToInstall = null;
                                 Job job = JobMaker.MakeJob(VFEDefOf.VFE_Mechanoids_Recharge, comp.parent);
                                 comp.myPawn.jobs.StopAll();
                                 comp.myPawn.jobs.TryTakeOrderedJob(job);
@@ -212,39 +209,6 @@ namespace VFE.Mechanoids
             };
             forceRest.isActive = delegate { return forceStay; };
             yield return forceRest;
-
-            if (Props.turret)
-            {
-                Command_Action attachTurret = new Command_Action
-                {
-                    defaultLabel = "VFEMechAttachTurret".Translate(),
-                    defaultDesc = "VFEMechAttachTurretDesc".Translate(),
-                    icon = ContentFinder<Texture2D>.Get("UI/AttachTurret"),
-                    action = delegate {
-                        List<FloatMenuOption> options = new List<FloatMenuOption>();
-                        foreach(ThingDef thing in DefDatabase<ThingDef>.AllDefs.Where(t=>
-                                t.building!=null
-                                &&t.building.turretGunDef!=null
-                                &&t.costList!=null
-                                &&t.GetCompProperties<CompProperties_Mannable>()==null
-                                &&t.size.x<=3
-                                &&t.size.z<=3
-                                &&t.IsResearchFinished
-                                && !Props.blackListTurretGuns.Contains(t.building.turretGunDef.defName)
-                        ))
-                        {
-                            FloatMenuOption opt = new FloatMenuOption(thing.label, delegate
-                            {
-                                turretToInstall = thing;
-                                wantsRest = true;
-                            },thing.building.turretGunDef);
-                            options.Add(opt);
-                        }
-                        Find.WindowStack.Add(new FloatMenu(options));
-                    }
-                };
-                yield return attachTurret;
-            }
 
             if (Props.showSetArea)
             {
@@ -279,31 +243,21 @@ namespace VFE.Mechanoids
         public override string CompInspectStringExtra()
         {
             StringBuilder builder = new StringBuilder(base.CompInspectStringExtra());
-            if(myPawn==null || myPawn.Dead)
+            if (Props.pawnToSpawn != null)
             {
-                bool comma = false;
-                string resources = "VFEMechReconstruct".Translate()+" ";
-                foreach(ThingDefCountClass resource in Props.pawnToSpawn.race.butcherProducts)
+                if (myPawn == null || myPawn.Dead)
                 {
-                    if (comma)
-                        resources += ", ";
-                    comma = true;
-                    resources += resource.thingDef.label + " x" + resource.count;
+                    bool comma = false;
+                    string resources = "VFEMechReconstruct".Translate() + " ";
+                    foreach (ThingDefCountClass resource in Props.pawnToSpawn.race.butcherProducts)
+                    {
+                        if (comma)
+                            resources += ", ";
+                        comma = true;
+                        resources += resource.thingDef.label + " x" + resource.count;
+                    }
+                    builder.AppendLine(resources);
                 }
-                builder.AppendLine(resources);
-            }
-            if(turretToInstall!=null)
-            {
-                bool comma = false;
-                string resources = "VFEMechTurretResources".Translate()+" ";
-                foreach (ThingDefCountClass resource in turretToInstall.costList)
-                {
-                    if (comma)
-                        resources += ", ";
-                    comma = true;
-                    resources += resource.thingDef.label + " x" + resource.count;
-                }
-                builder.AppendLine(resources);
             }
             return builder.ToString().Trim();
         }

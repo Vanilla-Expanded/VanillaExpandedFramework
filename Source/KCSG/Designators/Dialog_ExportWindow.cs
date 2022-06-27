@@ -1,26 +1,31 @@
-﻿using RimWorld;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Xml.Linq;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
 namespace KCSG
 {
-    internal class Dialog_ExportWindow : Window
+    public class Dialog_ExportWindow : Window
     {
+        public static string Prefix = "";
+        public static List<string> Tags = new List<string>();
+
         private readonly Area area;
         private readonly List<IntVec3> cells = new List<IntVec3>();
         private readonly Map map;
-        private readonly Dictionary<IntVec3, List<Thing>> pairsCellThingList = new Dictionary<IntVec3, List<Thing>>();
         private readonly List<string> tags = new List<string>();
         private readonly List<string> mods = new List<string>();
 
+        private Dictionary<IntVec3, List<Thing>> pairsCellThingList = new Dictionary<IntVec3, List<Thing>>();
         private Color boxColor = new Color(0.13f, 0.14f, 0.16f);
         private string defname = "Placeholder";
         private bool isStorage = false;
         private bool spawnConduits = true;
         private bool exportFilth = false;
         private bool exportNatTer = false;
+        private bool forceGenerateRoof = false;
+        private bool needRoofClearance = false;
 
         private string structurePrefix = "Required";
         private List<XElement> symbols = new List<XElement>();
@@ -35,13 +40,16 @@ namespace KCSG
             this.cells = cells;
             this.area = area;
             // Window settings
-            this.forcePause = true;
-            this.doCloseX = false;
-            this.doCloseButton = false;
-            this.closeOnClickedOutside = false;
-            this.absorbInputAroundWindow = true;
+            forcePause = true;
+            doCloseX = false;
+            doCloseButton = false;
+            closeOnClickedOutside = false;
+            absorbInputAroundWindow = true;
 
-            if (!SymbolDefsCreator.defCreated) SymbolDefsCreator.Run();
+            if (!StartupActions.defCreated) StartupActions.CreateSymbols();
+
+            if (Prefix != "") structurePrefix = Prefix;
+            if (!Tags.NullOrEmpty()) tags = Tags;
         }
 
         public override Vector2 InitialSize
@@ -54,7 +62,7 @@ namespace KCSG
 
         public override void DoWindowContents(Rect inRect)
         {
-            this.DrawHeader();
+            DrawHeader();
             Text.Font = GameFont.Small;
             Rect scrollRect = new Rect(inRect.x, inRect.y + 80f, inRect.width, inRect.height - 150f);
             Rect viewRect = new Rect(inRect.x, inRect.y + 80f, inRect.width - 20f, scrollRect.height);
@@ -66,29 +74,31 @@ namespace KCSG
             Widgets.BeginScrollView(scrollRect, ref scrollPosition, viewRect);
             lst.Begin(viewRect);
 
-            this.DrawDefNameChanger(lst);
-            this.DrawStorageChanger(lst);
-            this.DrawSpawnConduitChanger(lst);
-            this.DrawExportFilth(lst);
-            this.DrawExportNaturalTerrain(lst);
-            this.DrawStructurePrefix(lst);
-            this.DrawTagsEditing(lst);
-            this.DrawModsEditing(lst);
+            DrawDefNameChanger(lst);
+            DrawStorageChanger(lst);
+            DrawSpawnConduitChanger(lst);
+            DrawExportFilth(lst);
+            DrawExportNaturalTerrain(lst);
+            DrawForceGenerateRoof(lst);
+            DrawNeedRoofClearance(lst);
+            DrawStructurePrefix(lst);
+            DrawTagsEditing(lst);
+            // DrawModsEditing(lst);
 
             lst.End();
             Widgets.EndScrollView();
-            this.DrawFooter(inRect);
+            DrawFooter(inRect);
             Text.Anchor = TextAnchor.UpperLeft;
         }
 
         private XElement CreateLayout()
         {
-            XElement structureL = LayoutUtils.CreateStructureDef(this.cells, this.map, pairsCellThingList, area, exportFilth, exportNatTer);
+            XElement structureL = ExportUtils.CreateStructureDef(cells, map, pairsCellThingList, area, exportFilth, exportNatTer);
             // Defname change
             XElement defName = new XElement("defName", structurePrefix + defname);
             structureL.AddFirst(defName);
             // isStorage change
-            if (this.isStorage)
+            if (isStorage)
             {
                 if (structureL.Element("isStorage") == null)
                 {
@@ -103,7 +113,7 @@ namespace KCSG
                 }
             }
             // spawnConduits
-            if (!this.spawnConduits)
+            if (!spawnConduits)
             {
                 if (structureL.Element("spawnConduits") == null)
                 {
@@ -117,11 +127,33 @@ namespace KCSG
                     structureL.Element("spawnConduits").Remove();
                 }
             }
+            if (forceGenerateRoof)
+            {
+                if (structureL.Element("forceGenerateRoof") == null)
+                {
+                    structureL.Add(new XElement("forceGenerateRoof", true));
+                }
+            }
+            else
+            {
+                structureL.Element("forceGenerateRoof")?.Remove();
+            }
+            if (needRoofClearance)
+            {
+                if (structureL.Element("needRoofClearance") == null)
+                {
+                    structureL.Add(new XElement("needRoofClearance", true));
+                }
+            }
+            else
+            {
+                structureL.Element("needRoofClearance")?.Remove();
+            }
             // Tags changes
             if (tags.Count > 0)
             {
                 XElement temp = new XElement("tags");
-                foreach (var item in this.tags)
+                foreach (var item in tags)
                 {
                     temp.Add(new XElement("li", item));
                 }
@@ -131,7 +163,7 @@ namespace KCSG
             if (mods.Count > 0)
             {
                 XElement temp = new XElement("modRequirements");
-                foreach (var item in this.mods)
+                foreach (var item in mods)
                 {
                     temp.Add(new XElement("li", item));
                 }
@@ -153,36 +185,41 @@ namespace KCSG
 
             if (Widgets.ButtonText(new Rect(0, inRect.height - bHeight, 340, bHeight), "Copy structure def"))
             {
-                if (this.structurePrefix.Length == 0 || this.structurePrefix == "Required")
+                if (structurePrefix.Length == 0 || structurePrefix == "Required")
                 {
-                    Messages.Message("Structure prefix required.", MessageTypeDefOf.NegativeEvent);
+                    Messages.Message("Prefix required.", MessageTypeDefOf.NegativeEvent);
                 }
                 else
                 {
-                    LayoutUtils.FillCellThingsList(cells, this.map, this.pairsCellThingList);
-                    GUIUtility.systemCopyBuffer = this.CreateLayout().ToString();
+                    pairsCellThingList = ExportUtils.FillCellThingsList(cells, map);
+                    GUIUtility.systemCopyBuffer = CreateLayout().ToString();
                     Messages.Message("Copied to clipboard.", MessageTypeDefOf.TaskCompletion);
+                    Prefix = structurePrefix;
+                    Tags = tags;
                 }
             }
             if (Widgets.ButtonText(new Rect(350, inRect.height - bHeight, 340, bHeight), "Copy symbol(s) def(s)"))
             {
-                LayoutUtils.FillCellThingsList(cells, this.map, this.pairsCellThingList);
-                this.symbols = SymbolUtils.CreateSymbolIfNeeded(this.cells, this.map, pairsCellThingList, area);
-                if (this.symbols.Count > 0)
+                pairsCellThingList = ExportUtils.FillCellThingsList(cells, map);
+                symbols = ExportUtils.CreateSymbolIfNeeded(cells, map, pairsCellThingList, area);
+                if (symbols.Count > 0)
                 {
                     string toCopy = "";
-                    foreach (XElement item in this.symbols)
+                    foreach (XElement item in symbols)
                     {
                         toCopy += item.ToString() + "\n\n";
                     }
                     GUIUtility.systemCopyBuffer = toCopy;
                     Messages.Message("Copied to clipboard.", MessageTypeDefOf.TaskCompletion);
                 }
-                else Messages.Message("No new symbols needed.", MessageTypeDefOf.TaskCompletion);
+                else
+                {
+                    Messages.Message("No new symbols needed.", MessageTypeDefOf.TaskCompletion);
+                }
             }
             if (Widgets.ButtonText(new Rect(700, inRect.height - bHeight, 60, bHeight), "Close"))
             {
-                this.Close();
+                Close();
             }
         }
 
@@ -196,7 +233,7 @@ namespace KCSG
 
             Widgets.DrawBoxSolid(new Rect(710, 0, 50, 50), boxColor);
             Rect infoRect = new Rect(715, 5, 40, 40);
-            if (Widgets.ButtonImage(infoRect, TextureLoader.helpIcon))
+            if (Widgets.ButtonImage(infoRect, Textures.helpIcon))
             {
                 System.Diagnostics.Process.Start("https://github.com/AndroidQuazar/VanillaExpandedFramework/wiki/Exporting-your-own-structures");
             }
@@ -206,31 +243,43 @@ namespace KCSG
 
         private void DrawStorageChanger(Listing_Standard lst)
         {
-            lst.CheckboxLabeled("Structure is stockpile:", ref this.isStorage, "If this is on, random resources will be generated inside this structure when it's generated");
+            lst.CheckboxLabeled("Structure is stockpile:", ref isStorage, "If this is on, random resources will be generated inside this structure when it's generated");
             lst.Gap();
         }
 
         private void DrawSpawnConduitChanger(Listing_Standard lst)
         {
-            lst.CheckboxLabeled("Spawn conduit under impassable buildings and doors when generating:", ref this.spawnConduits, "If this is on, conduit will be spawned under impassable buildings and doors of this structure when it's generated (if faction techlevel >= Industrial)");
+            lst.CheckboxLabeled("Spawn conduit under impassable buildings and doors when generating:", ref spawnConduits, "If this is on, conduit will be spawned under impassable buildings and doors of this structure when it's generated (if faction techlevel >= Industrial)");
+            lst.Gap();
+        }
+
+        private void DrawForceGenerateRoof(Listing_Standard lst)
+        {
+            lst.CheckboxLabeled("Force generate roofs:", ref forceGenerateRoof, "By default constructed roof will only be constructed if the cell isn't roofed at all. Thin roof will be on cell with no roof or constructed roof. Thick roof override everything. Enable to alway generate exported roof.");
+            lst.Gap();
+        }
+
+        private void DrawNeedRoofClearance(Listing_Standard lst)
+        {
+            lst.CheckboxLabeled("Need roof clearance:", ref needRoofClearance, "Check this if the structure you are exporting need to placed in a rect free of roofs.");
             lst.Gap();
         }
 
         private void DrawExportFilth(Listing_Standard lst)
         {
-            lst.CheckboxLabeled("Export filth:", ref this.exportFilth);
+            lst.CheckboxLabeled("Export filth:", ref exportFilth);
             lst.Gap();
         }
 
         private void DrawExportNaturalTerrain(Listing_Standard lst)
         {
-            lst.CheckboxLabeled("Export natural terrain:", ref this.exportNatTer);
+            lst.CheckboxLabeled("Export natural terrain:", ref exportNatTer);
             lst.Gap();
         }
 
         private void DrawStructurePrefix(Listing_Standard lst)
         {
-            lst.Label("Structure defName prefix:", tooltip: "For example: VFEM_ for Vanilla Faction Expanded Mechanoid");
+            lst.Label("defName(s) prefix:", tooltip: "For example: VFEM_ for Vanilla Faction Expanded Mechanoid");
             structurePrefix = lst.TextEntry(structurePrefix);
             lst.Gap();
         }
@@ -241,16 +290,16 @@ namespace KCSG
             tempTagToAdd = lst.TextEntry(tempTagToAdd);
             if (lst.ButtonText("Add tag"))
             {
-                this.tags.Add(tempTagToAdd);
+                tags.Add(tempTagToAdd);
             }
 
-            if (this.tags.Count > 0)
+            if (tags.Count > 0)
             {
-                foreach (string tag in this.tags)
+                foreach (string tag in tags)
                 {
                     if (lst.ButtonTextLabeled(tag, "Remove tag"))
                     {
-                        this.tags.Remove(tag);
+                        tags.Remove(tag);
                         break;
                     }
                 }
@@ -264,16 +313,16 @@ namespace KCSG
             modIdToAdd = lst.TextEntry(modIdToAdd);
             if (lst.ButtonText("Add mod package id"))
             {
-                this.mods.Add(modIdToAdd);
+                mods.Add(modIdToAdd);
             }
 
-            if (this.mods.Count > 0)
+            if (mods.Count > 0)
             {
-                foreach (string mod in this.mods)
+                foreach (string mod in mods)
                 {
                     if (lst.ButtonTextLabeled(mod, "Remove mod"))
                     {
-                        this.mods.Remove(mod);
+                        mods.Remove(mod);
                         break;
                     }
                 }

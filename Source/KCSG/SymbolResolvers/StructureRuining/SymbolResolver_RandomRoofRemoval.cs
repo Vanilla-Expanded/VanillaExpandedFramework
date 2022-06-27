@@ -18,7 +18,7 @@ namespace KCSG
                 }
             }
 
-            if (CGO.factionSettlement.scatterThings?.Count > 0)
+            if (GenOption.ext.scatterThings?.Count > 0)
                 BaseGen.symbolStack.Push("kcsg_scatterstuffaround", rp, null);
         }
     }

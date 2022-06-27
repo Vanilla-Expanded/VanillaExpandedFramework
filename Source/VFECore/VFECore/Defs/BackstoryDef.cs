@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
+using System.Reflection.Emit;
+using System.Reflection;
 using HarmonyLib;
 using RimWorld;
 using Verse;
@@ -16,16 +19,58 @@ namespace VFECore
 
 		public int chance;
 	}
+
+    [HarmonyPatch(typeof(PawnBioAndNameGenerator), "FillBackstorySlotShuffled")]
+    public static class PawnBioAndNameGenerator_FillBackstorySlotShuffled
+    {
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) // mostly copied from AlienRaces
+																										 // as it seems to be only one way to add in
+																										 // age and gender restrictions for backstories
+        {
+			MethodInfo shuffleableInfo = AccessTools.Method(typeof(BackstoryDatabase), "ShuffleableBackstoryList");
+			foreach (CodeInstruction codeInstruction in instructions)
+			{
+				yield return codeInstruction;
+				if (codeInstruction.opcode == OpCodes.Call && codeInstruction.OperandIs(shuffleableInfo))
+				{
+					yield return new CodeInstruction(OpCodes.Ldarg_0);
+					yield return new CodeInstruction(OpCodes.Call, 
+						AccessTools.Method(typeof(PawnBioAndNameGenerator_FillBackstorySlotShuffled), nameof(Backstories)));
+				}
+			}
+		}
+
+		public static List<Backstory> Backstories(List<Backstory> backstories, Pawn pawn)
+		{
+			return backstories.Where(delegate (Backstory bs)
+			{
+				var def = DefDatabase<BackstoryDef>.GetNamedSilentFail(bs.identifier);
+                if (def != null)
+                {
+					if (def.maleCommonality.HasValue && Rand.Chance(def.maleCommonality.Value) && pawn.gender != Gender.Male)
+                    {
+						return false;
+                    }
+                    if (def.chronologicalAgeRestriction.HasValue && !def.chronologicalAgeRestriction.Value.Includes(pawn.ageTracker.AgeChronologicalYearsFloat))
+                    {
+                        return false;
+                    }
+                    if (def.biologicalAgeRestriction.HasValue && !def.biologicalAgeRestriction.Value.Includes(pawn.ageTracker.AgeBiologicalYearsFloat))
+                    {
+                        return false;
+                    }
+                }
+				return true;
+			}).ToList();
+		}
+	}
 	public class BackstoryDef : Def
 	{
+        public float? maleCommonality = 50f;
+        public FloatRange? chronologicalAgeRestriction;
+		public FloatRange? biologicalAgeRestriction;
 		public override void ResolveReferences()
 		{
-			if (BackstoryDatabase.allBackstories.ContainsKey(this.saveKeyIdentifier))
-			{
-				Log.Error(this.defName + " contains a saveKeyIdentifier value " + saveKeyIdentifier + " which is used already. It won't be added as a def. Make sure that the identifier is unique.");
-				return;
-			}
-
 			Backstory backstory = new Backstory();
 			if (this.forcedTraits?.Any() ?? false)
             {
@@ -71,7 +116,6 @@ namespace VFECore
 			backstory.slot = this.slot;
 			backstory.shuffleable = this.shuffleable;
 			backstory.spawnCategories = this.spawnCategories;
-
 			if (this.workDisables.Any())
 			{
 				foreach (var workTag in this.workDisables)
@@ -86,7 +130,7 @@ namespace VFECore
 
 			backstory.PostLoad();
 			backstory.ResolveReferences();
-			backstory.identifier = this.saveKeyIdentifier;
+			backstory.identifier = this.defName;
 
 			if (!backstory.ConfigErrors(true).Any())
 			{
@@ -126,7 +170,5 @@ namespace VFECore
 		public List<TraitEntryBackstory> forcedTraits = new List<TraitEntryBackstory>();
 
 		public List<TraitEntryBackstory> disallowedTraits = new List<TraitEntryBackstory>();
-
-		public string saveKeyIdentifier;
 	}
 }

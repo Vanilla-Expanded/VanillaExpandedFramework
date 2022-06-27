@@ -1370,7 +1370,7 @@ namespace ItemProcessor
                 {
                     float currentTempInMap = this.Position.GetTemperature(this.Map);
                     CombinationDef thisCombinationRecipe = DefDatabase<CombinationDef>.GetNamed(thisRecipe);
-                    if ((currentTempInMap > compItemProcessor.Props.maxAccelerationTemp) || (currentTempInMap < compItemProcessor.Props.minAccelerationTemp))                     
+                    if ((currentTempInMap > compItemProcessor.Props.minAccelerationTemp) && (currentTempInMap < compItemProcessor.Props.maxAccelerationTemp))                     
                     {
                         
                         this.days = thisCombinationRecipe.singleTimeIfNotQualityIncreasing * compItemProcessor.Props.accelerationFactor;

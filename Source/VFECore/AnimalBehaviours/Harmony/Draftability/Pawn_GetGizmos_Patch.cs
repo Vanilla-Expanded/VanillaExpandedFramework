@@ -19,17 +19,17 @@ namespace AnimalBehaviours
     [HarmonyPatch(typeof(Pawn), "GetGizmos")]
     public static class Pawn_GetGizmos_Patch
     {
-        private static MethodInfo getGizmosDraftController = typeof(Pawn_DraftController).GetMethod("GetGizmos", BindingFlags.Instance | BindingFlags.NonPublic);
         public static IEnumerable<Gizmo> Postfix(IEnumerable<Gizmo> __result, Pawn __instance)
         {
             var pawn = __instance;
-            bool shouldbeDraftable = pawn.IsDraftableControllableAnimal();
+            bool isDraftableAnimal = pawn.IsDraftableControllableAnimal();
             bool abilityUser = pawn.IsAbilityUserAnimal();
+            bool alreadyHasVanillaDraftButton = false;
             foreach (var g in __result)
             {
-                if (shouldbeDraftable && g is Command_Toggle command && command.defaultDesc == "CommandToggleDraftDesc".Translate())
+                if (g is Command_Toggle command && command.defaultDesc == "CommandToggleDraftDesc".Translate())
                 {
-                    continue;
+                    alreadyHasVanillaDraftButton = true;
                 }
                 yield return g;
             }
@@ -54,7 +54,7 @@ namespace AnimalBehaviours
                 }
             }
 
-            if (shouldbeDraftable && pawn.drafter != null)
+            if (!alreadyHasVanillaDraftButton && isDraftableAnimal && pawn.drafter != null)
             {
                 Command_Toggle drafting_command = new Command_Toggle();
                 drafting_command.toggleAction = delegate
@@ -80,16 +80,6 @@ namespace AnimalBehaviours
                     {
                         yield return gizmo;
                     }
-                }
-            }
-
-            if (__instance.RaceProps.IsMechanoid && __instance.Faction == Faction.OfPlayer && __instance.drafter != null
-                && CompMachine.cachedMachines.ContainsKey(__instance.Drawer.renderer))
-            {
-                IEnumerable<Gizmo> collection = (IEnumerable<Gizmo>)getGizmosDraftController.Invoke(__instance.drafter, new object[0]);
-                foreach (var gizmo in collection)
-                {
-                    yield return gizmo;
                 }
             }
         }

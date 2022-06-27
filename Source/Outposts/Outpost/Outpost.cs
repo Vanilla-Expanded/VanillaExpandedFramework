@@ -90,7 +90,8 @@ namespace Outposts
         }
 
         public override IEnumerable<FloatMenuOption> GetTransportPodsFloatMenuOptions(IEnumerable<IThingHolder> pods, CompLaunchable representative) =>
-            base.GetTransportPodsFloatMenuOptions(pods, representative).Concat(TransportPodsArrivalAction_AddToOutpost.GetFloatMenuOptions(representative, pods, this));
+            base.GetTransportPodsFloatMenuOptions(pods, representative)
+                .Concat(TransportPodsArrivalAction_AddToOutpost.GetFloatMenuOptions(representative, pods, this));
 
         public override void Tick()
         {
@@ -155,6 +156,12 @@ namespace Outposts
         public virtual void RecachePawnTraits()
         {
             skillsDirty = true;
+            foreach (var pawn in containedItems.OfType<Pawn>().ToList())
+            {
+                containedItems.Remove(pawn);
+                if (pawn.GetCaravan() is { } c) c.RemovePawn(pawn);
+                AddPawn(pawn);
+            }
         }
 
         public bool AddPawn(Pawn pawn)
@@ -163,7 +170,8 @@ namespace Outposts
             var caravan = pawn.GetCaravan();
             if (caravan != null)
             {
-                foreach (var item in CaravanInventoryUtility.AllInventoryItems(caravan).Where(item => CaravanInventoryUtility.GetOwnerOf(caravan, item) == item))
+                foreach (var item in CaravanInventoryUtility.AllInventoryItems(caravan)
+                    .Where(item => CaravanInventoryUtility.GetOwnerOf(caravan, item) == pawn))
                     CaravanInventoryUtility.MoveInventoryToSomeoneElse(pawn, item, caravan.PawnsListForReading, new List<Pawn> {pawn}, item.stackCount);
                 if (!caravan.PawnsListForReading.Except(pawn).Any(p => p.RaceProps.Humanlike))
                     containedItems.AddRange(CaravanInventoryUtility.AllInventoryItems(caravan));
@@ -219,7 +227,7 @@ namespace Outposts
         {
             var caravan = CaravanMaker.MakeCaravan(occupants, Faction, Tile, true);
             if (containedItems is not null)
-                foreach (var item in containedItems)
+                foreach (var item in containedItems.Except(caravan.AllThings))
                     caravan.AddPawnOrItem(item, true);
             if (Find.WorldSelector.IsSelected(this)) Find.WorldSelector.Select(caravan, false);
             Destroy();

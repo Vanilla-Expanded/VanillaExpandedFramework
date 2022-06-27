@@ -1,407 +1,104 @@
-﻿using RimWorld;
-using RimWorld.BaseGen;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using RimWorld;
+using RimWorld.BaseGen;
 using UnityEngine;
 using Verse;
 using Verse.AI.Group;
+using static KCSG.SettlementGenUtils;
 
 namespace KCSG
 {
     public class GenUtils
     {
-        public static void GenerateRoomFromLayout(List<string> layoutList, CellRect roomRect, Map map, StructureLayoutDef rld, bool generateConduit = true)
+        /// <summary>
+        /// Generate layoutDef in rect
+        /// </summary>
+        public static void GenerateLayout(StructureLayoutDef layout, CellRect rect, Map map)
         {
-            bool parentFaction = map.ParentFaction != null;
+            ThingDef wallForRoom = null;
+            if (GenOption.StuffableOptions != null && GenOption.StuffableOptions.randomizeWall)
+                wallForRoom = RandomWallStuffByWeight(ThingDefOf.Wall);
 
-            if (rld.roofGrid != null)
+            for (int index = 0; index < layout.layouts.Count; index++)
             {
-                GenerateRoofGrid(rld.roofGrid, roomRect, map);
+                GenerateRoomFromLayout(layout, index, rect, map, wallForRoom);
             }
+            GenerateRoofGrid(layout, rect, map);
+        }
 
-            List<string> allSymbList = new List<string>();
-            foreach (string str in layoutList)
-            {
-                allSymbList.AddRange(str.Split(','));
-            }
+        /// <summary>
+        /// Entry method to generate a structure from a StructureLayoutDef
+        /// </summary>
+        private static void GenerateRoomFromLayout(StructureLayoutDef layout, int index, CellRect rect, Map map, ThingDef wallForRoom = null)
+        {
+            Faction faction = map.ParentFaction;
 
-            int l = 0;
-            foreach (IntVec3 cell in roomRect)
+            var cells = rect.Cells.ToList();
+            int count = cells.Count;
+
+            for (int i = 0; i < count; i++)
             {
-                if (l < allSymbList.Count && allSymbList[l] != ".")
+                IntVec3 cell = cells[i];
+                if (cell.InBounds(map))
                 {
-                    SymbolDef temp = DefDatabase<SymbolDef>.GetNamedSilentFail(allSymbList[l]);
-                    Thing thing;
+                    SymbolDef temp = layout.symbolsLists[index][i];
                     if (temp != null)
                     {
                         if (temp.isTerrain && temp.terrainDef != null)
                         {
                             GenerateTerrainAt(map, cell, temp.terrainDef);
                         }
-                        else if (temp.pawnKindDefNS != null && CGO.factionSettlement?.shouldRuin == false)
+                        else if (temp.pawnKindDefNS != null && GenOption.ext?.AdditionalResolvers == false)
                         {
-                            if (temp.lordJob != null)
-                            {
-                                Lord lord = CreateNewLord(temp.lordJob, map, cell);
-                                for (int i = 0; i < temp.numberToSpawn; i++)
-                                {
-                                    Pawn pawn = temp.spawnPartOfFaction ? PawnGenerator.GeneratePawn(temp.pawnKindDefNS, map.ParentFaction) : PawnGenerator.GeneratePawn(temp.pawnKindDefNS);
-                                    if (pawn != null)
-                                    {
-                                        if (temp.isSlave && parentFaction) pawn.guest.SetGuestStatus(map.ParentFaction, GuestStatus.Prisoner);
-
-                                        GenSpawn.Spawn(pawn, cell, map, WipeMode.FullRefund);
-                                        lord.AddPawn(pawn);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                for (int i = 0; i < temp.numberToSpawn; i++)
-                                {
-                                    Pawn pawn = temp.spawnPartOfFaction ? PawnGenerator.GeneratePawn(temp.pawnKindDefNS, map.ParentFaction) : PawnGenerator.GeneratePawn(temp.pawnKindDefNS);
-                                    if (pawn != null)
-                                    {
-                                        if (temp.isSlave && parentFaction) pawn.guest.SetGuestStatus(map.ParentFaction, GuestStatus.Prisoner);
-                                        GenSpawn.Spawn(pawn, cell, map, WipeMode.FullRefund);
-                                    }
-                                }
-                            }
-                        }
-                        else if (temp.thingDef?.category == ThingCategory.Item && cell.Walkable(map))
-                        {
-                            thing = ThingMaker.MakeThing(temp.thingDef, temp.stuffDef ?? (temp.thingDef.stuffCategories?.Count > 0 ? GenStuff.RandomStuffFor(temp.thingDef) : null));
-                            thing.stackCount = Mathf.Clamp(Rand.RangeInclusive(1, temp.thingDef.stackLimit), 1, 75);
-
-                            CompQuality quality = thing.TryGetComp<CompQuality>();
-                            quality?.SetQuality(QualityUtility.GenerateQualityBaseGen(), ArtGenerationContext.Outsider);
-
-                            GenSpawn.Spawn(thing, cell, map, WipeMode.FullRefund);
-                            thing.SetForbidden(true, false);
+                            GeneratePawnAt(map, cell, temp);
                         }
                         else if (temp.thingDef != null)
                         {
-                            thing = ThingMaker.MakeThing(temp.thingDef, temp.thingDef.CostStuffCount > 0 ? (temp.stuffDef ?? temp.thingDef.defaultStuff ?? ThingDefOf.WoodLog) : null);
-
-                            CompRefuelable refuelable = thing.TryGetComp<CompRefuelable>();
-                            refuelable?.Refuel(refuelable.Props.fuelCapacity);
-
-                            CompPowerBattery battery = thing.TryGetComp<CompPowerBattery>();
-                            battery?.AddEnergy(battery.Props.storedEnergyMax);
-
-                            if (thing is Building_CryptosleepCasket cryptosleepCasket && Rand.Value < temp.chanceToContainPawn)
+                            if (temp.thingDef.category == ThingCategory.Item)
                             {
-                                Pawn pawn = GeneratePawnForContainer(temp, map);
-                                if (!cryptosleepCasket.TryAcceptThing(pawn))
-                                    pawn.Destroy();
+                                GenerateItemAt(map, cell, temp);
                             }
-                            else if (thing is Building_CorpseCasket corpseCasket && Rand.Value < temp.chanceToContainPawn)
+                            else if (temp.thingDef.category == ThingCategory.Plant)
                             {
-                                Pawn pawn = GeneratePawnForContainer(temp, map);
-                                if (!corpseCasket.TryAcceptThing(pawn))
-                                    pawn.Destroy();
-                            }
-                            else if (thing is Building_Crate crate)
-                            {
-                                List<Thing> thingList = new List<Thing>();
-                                if (map.ParentFaction == Faction.OfPlayer && temp.thingSetMakerDefForPlayer != null)
+                                if (cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Bridgeable))
                                 {
-                                    thingList = temp.thingSetMakerDefForPlayer.root.Generate(new ThingSetMakerParams());
-                                }
-                                else if (temp.thingSetMakerDef != null)
-                                {
-                                    thingList = temp.thingSetMakerDef.root.Generate(new ThingSetMakerParams());
+                                    map.terrainGrid.SetTerrain(cell, TerrainDefOf.Soil);
                                 }
 
-                                foreach (Thing t in thingList)
-                                {
-                                    t.stackCount = Math.Min((int)(t.stackCount * temp.crateStackMultiplier), t.def.stackLimit);
-                                }
-
-                                thingList.ForEach(t =>
-                                {
-                                    if (!crate.TryAcceptThing(t, false))
-                                        t.Destroy();
-                                });
-                            }
-
-                            if (thing.def.category == ThingCategory.Pawn && CGO.factionSettlement?.shouldRuin == true)
-                            {
-                                l++;
-                                continue;
-                            }
-                            else if (cell.GetFirstMineable(map) is Mineable m && thing.def.designationCategory == DesignationCategoryDefOf.Security)
-                            {
-                                l++;
-                                continue;
-                            }
-                            else if (thing.def.category == ThingCategory.Plant && cell.GetTerrain(map).fertility > 0.5 && cell.Walkable(map)) // If it's a plant
-                            {
-                                Plant plant = thing as Plant;
-                                plant.Growth = temp.plantGrowth; // apply the growth
+                                Plant plant = ThingMaker.MakeThing(temp.thingDef) as Plant;
+                                plant.Growth = temp.plantGrowth;
                                 GenSpawn.Spawn(plant, cell, map, WipeMode.VanishOrMoveAside);
                             }
-                            else if (thing.def.category == ThingCategory.Building)
+                            else if (temp.thingDef.category == ThingCategory.Pawn && GenOption.ext?.AdditionalResolvers == false)
                             {
-                                if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
+                                GenSpawn.Spawn(temp.thingDef, cell, map, WipeMode.VanishOrMoveAside);
+                            }
+                            else
+                            {
+                                if (cell.GetFirstMineable(map) != null && temp.thingDef.designationCategory == DesignationCategoryDefOf.Security)
                                 {
-                                    if (thing.def.building.isNaturalRock)
-                                    {
-                                        TerrainDef t = DefDatabase<TerrainDef>.GetNamedSilentFail($"{thing.def.defName}_Rough");
-                                        map.terrainGrid.SetTerrain(cell, t ?? TerrainDefOf.Soil);
-                                        foreach (IntVec3 intVec3 in CellRect.CenteredOn(cell, 1))
-                                        {
-                                            if (!intVec3.GetTerrain(map).BuildableByPlayer)
-                                            {
-                                                map.terrainGrid.SetTerrain(intVec3, t ?? TerrainDefOf.Soil);
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
-                                    }
+                                    continue;
                                 }
+                                GenerateBuildingAt(map, cell, temp, faction, layout.spawnConduits, wallForRoom);
 
-                                if (thing.def.rotatable)
-                                    GenSpawn.Spawn(thing, cell, map, new Rot4(temp.rotation.AsInt), WipeMode.VanishOrMoveAside);
-                                else
-                                    GenSpawn.Spawn(thing, cell, map, WipeMode.VanishOrMoveAside);
-
-                                if (parentFaction) thing.SetFactionDirect(map.ParentFaction);
-                            }
-
-                            if (generateConduit && rld.spawnConduits && !thing.def.mineable && (thing.def.passability == Traversability.Impassable || thing.def.IsDoor) && map.ParentFaction?.def.techLevel >= TechLevel.Industrial) // Add power cable under all impassable
-                            {
-                                Thing c = ThingMaker.MakeThing(ThingDefOf.PowerConduit);
-                                if (parentFaction) c.SetFactionDirect(map.ParentFaction);
-                                GenSpawn.Spawn(c, cell, map, WipeMode.FullRefund);
-                            }
-                            // Handle mortar and mortar pawns
-                            if (thing?.def?.building?.buildingTags?.Count > 0)
-                            {
-                                if (thing.def.building.IsMortar && thing.def.category == ThingCategory.Building && thing.def.building.buildingTags.Contains("Artillery_MannedMortar") && thing.def.HasComp(typeof(CompMannable)) && parentFaction)
+                                // Generating settlement, we want to keep tracks of doors
+                                if (GenOption.ext != null && !GenOption.ext.UsingSingleLayout && temp.thingDef.altitudeLayer == AltitudeLayer.DoorMoveable)
                                 {
-                                    // Spawn pawn
-                                    Lord singlePawnLord = LordMaker.MakeNewLord(map.ParentFaction, new LordJob_ManTurrets(), map, null);
-                                    PawnGenerationRequest value = new PawnGenerationRequest(map.ParentFaction.RandomPawnKind(), map.ParentFaction, PawnGenerationContext.NonPlayer, map.Tile, mustBeCapableOfViolence: true, inhabitant: true);
-                                    ResolveParams rpPawn = new ResolveParams
-                                    {
-                                        faction = map.ParentFaction,
-                                        singlePawnGenerationRequest = new PawnGenerationRequest?(value),
-                                        rect = CellRect.SingleCell(thing.InteractionCell),
-                                        singlePawnLord = singlePawnLord
-                                    };
-                                    BaseGen.symbolStack.Push("pawn", rpPawn);
-                                    // Spawn shells
-                                    ThingDef shellDef = TurretGunUtility.TryFindRandomShellDef(thing.def, false, true, map.ParentFaction.def.techLevel, false, 250f);
-                                    if (shellDef != null)
-                                    {
-                                        ResolveParams rpShell = new ResolveParams
-                                        {
-                                            faction = map.ParentFaction,
-                                            singleThingDef = shellDef,
-                                            singleThingStackCount = Rand.RangeInclusive(8, Math.Min(12, shellDef.stackLimit))
-                                        };
-                                        BaseGen.symbolStack.Push("thing", rpShell);
-                                    }
+                                    doors?.Add(cell);
                                 }
                             }
                         }
-                        else
-                        {
-                            KLog.Message($"SymbolDef for {allSymbList[l]} wasn't able to be used.");
-                        }
-                    }
-                    else
-                    {
-                        KLog.Message($"Null symbolDef for {allSymbList[l]}, ignoring.");
-                    }
-                }
-                l++;
-            }
-        }
-
-        private static Pawn GeneratePawnForContainer(SymbolDef temp, Map map)
-        {
-            // Kept for compat reasons
-            // TODO Remove
-            Faction faction = temp.spawnPartOfFaction ? map.ParentFaction : null;
-            if (temp.containPawnKindDefForPlayer != null && map.ParentFaction == Faction.OfPlayer)
-            {
-                return PawnGenerator.GeneratePawn(temp.containPawnKindDefForPlayer, faction);
-            }
-            else if (temp.containPawnKindDef != null)
-            {
-                return PawnGenerator.GeneratePawn(temp.containPawnKindDef, faction);
-            }
-
-            KLog.Message($"Faction for {temp.defName} is {faction?.def.defName}");
-            if (temp.containPawnKindForPlayerAnyOf.Count > 0 && map.ParentFaction == Faction.OfPlayer)
-            {
-                return PawnGenerator.GeneratePawn(new PawnGenerationRequest(temp.containPawnKindForPlayerAnyOf.RandomElement(), faction, forceGenerateNewPawn: true, certainlyBeenInCryptosleep: true));
-            } 
-            else if (temp.containPawnKindAnyOf.Count > 0)
-            {
-                return PawnGenerator.GeneratePawn(new PawnGenerationRequest(temp.containPawnKindAnyOf.RandomElement(), faction, forceGenerateNewPawn: true, certainlyBeenInCryptosleep: true));
-            }            
-
-            return PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, faction);
-        }
-
-        public static void GenerateRoofGrid(List<string> roofGrid, CellRect roomRect, Map map)
-        {
-            List<string> rg = new List<string>();
-            foreach (string str in roofGrid)
-            {
-                rg.AddRange(str.Split(','));
-            }
-
-            for (int i = 0; i < rg.Count; i++)
-            {
-                IntVec3 cell = roomRect.Cells.ElementAt(i);
-                bool heavy = cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy);
-                ThingDef rock = Find.World.NaturalRockTypesIn(map.Tile).Select(r => r.building.mineableThing).RandomElement();
-                TerrainDef terrain = DefDatabase<TerrainDef>.GetNamedSilentFail($"{rock.defName}_Rough");
-
-                switch (rg[i])
-                {
-                    case "1":
-                        map.roofGrid.SetRoof(cell, RoofDefOf.RoofConstructed);
-                        if (!heavy) map.terrainGrid.SetTerrain(roomRect.Cells.ElementAt(i), TerrainDefOf.Bridge);
-                        break;
-                    case "2":
-                        map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThin);
-                        if (!heavy) map.terrainGrid.SetTerrain(roomRect.Cells.ElementAt(i), terrain ?? TerrainDefOf.Soil);
-                        break;
-                    case "3":
-                        map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThick);
-                        if (!heavy) map.terrainGrid.SetTerrain(roomRect.Cells.ElementAt(i), terrain ?? TerrainDefOf.Soil);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-
-        public static Lord CreateNewLord(Type lordJobType, Map map, IntVec3 cell)
-        {
-            return LordMaker.MakeNewLord(map.ParentFaction, Activator.CreateInstance(lordJobType, new object[]
-            {
-                new SpawnedPawnParams
-                {
-                    defSpot = cell,
-                }
-            }) as LordJob, map, null);
-        }
-
-        public static IntVec3 FindRect(Map map, int h, int w, bool nearCenter = false)
-        {
-            CellRect rect;
-            int fromCenter = 1;
-            while (true)
-            {
-                if (nearCenter)
-                {
-                    rect = CellRect.CenteredOn(CellFinder.RandomClosewalkCellNear(map.Center, map, fromCenter), w, h);
-                    rect.ClipInsideMap(map);
-                }
-                else rect = CellRect.CenteredOn(CellFinder.RandomNotEdgeCell(h, map), w, h);
-
-                if (rect.Cells.ToList().Any(i => !i.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Medium))) fromCenter += 2;
-                else return rect.CenterCell;
-            }
-        }
-
-        public static void PreClean(Map map, CellRect rect, List<string> roofGrid, bool fullClean)
-        {
-            KLog.Message($"Intiating pre-generation map clean - only under roof. Fullclean {fullClean}");
-            SetRoadInfo(map);
-            List<string> rg = new List<string>();
-            foreach (string str in roofGrid)
-            {
-                rg.AddRange(str.Split(','));
-            }
-
-            for (int i = 0; i < rg.Count; i++)
-            {
-                if (rg[i] != null && rg[i] != ".")
-                {
-                    IntVec3 c = rect.Cells.ElementAt(i);
-                    CleanAt(c, map, fullClean);
-                    CleanTerrainAt(c, map);
-                }
-            }
-        }
-
-        public static void PreClean(Map map, CellRect rect, bool fullClean)
-        {
-            KLog.Message($"Intiating pre-generation map clean - full rect. Fullclean {fullClean}");
-            SetRoadInfo(map);
-            foreach (IntVec3 c in rect)
-            {
-                CleanAt(c, map, fullClean);
-                CleanTerrainAt(c, map);
-            }
-        }
-
-        public static void SetRoadInfo(Map map)
-        {
-            if (map.TileInfo?.Roads?.Count > 0)
-            {
-                CGO.preRoadTypes = new List<TerrainDef>();
-                foreach (RimWorld.Planet.Tile.RoadLink roadLink in map.TileInfo.Roads)
-                {
-                    foreach (RoadDefGenStep rgs in roadLink.road.roadGenSteps)
-                    {
-                        if (rgs is RoadDefGenStep_Place rgsp && rgsp != null && rgsp.place is TerrainDef t && t != null && t != TerrainDefOf.Bridge)
-                        {
-                            CGO.preRoadTypes.Add(t);
-                        }
                     }
                 }
             }
         }
 
-        public static void CleanAt(IntVec3 c, Map map, bool fullClean)
-        {
-            if (fullClean)
-            {
-                c.GetThingList(map).ToList().ForEach((t) =>
-                {
-                    if (t.Map != null)
-                    {
-                        if (t is Pawn p && p.Faction == map.ParentFaction) KLog.Message($"Skipping {p.NameShortColored}, part of defender faction.");
-                        else t.DeSpawn();
-                    }
-                });
-            }
-            else
-            {
-                c.GetThingList(map).ToList().ForEach((t) =>
-                {
-                    if (t.Map != null &&
-                       (t.def.category == ThingCategory.Filth ||
-                        t.def.category == ThingCategory.Building && !t.def.building.isNaturalRock ||
-                        t is Pawn p && p.Faction != map.ParentFaction ||
-                        t.def.thingCategories != null && t.def.thingCategories.Contains(ThingCategoryDefOf.StoneChunks)))
-                    {
-                        t.DeSpawn();
-                    }
-                });
-            }
-        }
-
-        public static void CleanTerrainAt(IntVec3 c, Map map)
-        {
-            if (map.terrainGrid.UnderTerrainAt(c) is TerrainDef terrain && terrain != null)
-            {
-                map.terrainGrid.SetTerrain(c, terrain);
-            }
-        }
-
-        public static void GenerateTerrainAt(Map map, IntVec3 cell, TerrainDef terrainDef)
+        /// <summary>
+        /// Generate terrain at cell. Make bridge if needed, remove mineable if needed.
+        /// </summary>
+        private static void GenerateTerrainAt(Map map, IntVec3 cell, TerrainDef terrainDef)
         {
             if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
             {
@@ -414,200 +111,685 @@ namespace KCSG
             }
         }
 
-        #region Power Function
-
-        // Vanilla function, remade to be able to use subsurface conduit when mod loaded
-        public static void EnsureBatteriesConnectedAndMakeSense(Map map, List<Thing> tmpThings, Dictionary<PowerNet, bool> tmpPowerNetPredicateResults, List<IntVec3> tmpCells, ThingDef conduit, bool spawnTransmitters = true)
+        /// <summary>
+        /// Generate pawn(s) at pos
+        /// </summary>
+        private static void GeneratePawnAt(Map map, IntVec3 cell, SymbolDef symbol)
         {
-            tmpThings.Clear();
-            tmpThings.AddRange(map.listerThings.ThingsInGroup(ThingRequestGroup.BuildingArtificial));
-            for (int i = 0; i < tmpThings.Count; i++)
+            var factionManager = Find.FactionManager;
+            var parentFaction = map.ParentFaction;
+            var symbolFaction = symbol.faction != null ? factionManager.FirstFactionOfDef(symbol.faction) : null;
+            var slaveFaction = parentFaction != null ? factionManager.AllFactionsListForReading.FindAll(f => parentFaction.HostileTo(f)).RandomElement() : factionManager.AllFactionsListForReading.Find(f => f != Faction.OfPlayer && f != parentFaction);
+            var pawns = new List<Pawn>();
+
+            var request = new PawnGenerationRequest(symbol.pawnKindDefNS, symbol.isSlave ? slaveFaction : (symbol.spawnPartOfFaction ? parentFaction : symbolFaction), mustBeCapableOfViolence: true);
+
+            for (int i = 0; i < symbol.numberToSpawn; i++)
             {
-                CompPowerBattery compPowerBattery = tmpThings[i].TryGetComp<CompPowerBattery>();
-                if (compPowerBattery != null)
+                Pawn pawn = PawnGenerator.GeneratePawn(request);
+                if (pawn == null)
                 {
-                    PowerNet powerNet = compPowerBattery.PowerNet;
-                    if (powerNet == null)
+                    Debug.Message("Null pawn in GeneratePawnAt");
+                    continue;
+                }
+
+                if (symbol.isSlave && parentFaction != null)
+                {
+                    pawn.guest.SetGuestStatus(parentFaction, GuestStatus.Prisoner);
+                }
+
+                if (symbol.spawnDead)
+                {
+                    pawn.Kill(new DamageInfo(DamageDefOf.Cut, 9999));
+                    Corpse corpse = pawn.Corpse;
+                    corpse.timeOfDeath = Mathf.Max(Find.TickManager.TicksGame - 120000, 0);
+                    if (symbol.spawnRotten)
                     {
-                        map.powerNetManager.UpdatePowerNetsAndConnections_First();
-                        if (TryFindClosestReachableNet(compPowerBattery.parent.Position, (PowerNet x) => HasAnyPowerGenerator(x), map, out PowerNet powerNet2, out IntVec3 dest, tmpPowerNetPredicateResults))
+                        corpse.timeOfDeath = Mathf.Max(Find.TickManager.TicksGame - 60000 * Rand.RangeInclusive(5, 15), 0);
+                        corpse.TryGetComp<CompRottable>().RotImmediately();
+                        if (symbol.spawnFilthAround)
                         {
-                            map.floodFiller.ReconstructLastFloodFillPath(dest, tmpCells);
-                            if (powerNet2 != null && spawnTransmitters)
+                            for (int x = 0; x < 5; x++)
                             {
-                                SpawnTransmitters(tmpCells, map, compPowerBattery.parent.Faction, conduit);
+                                IntVec3 rNext = new IntVec3();
+                                RCellFinder.TryFindRandomCellNearWith(cell, ni => ni.Walkable(map), map, out rNext, 1, 3);
+                                GenSpawn.Spawn(ThingDefOf.Filth_CorpseBile, rNext, map);
+                            }
+                        }
+                    }
+                    GenSpawn.Spawn(corpse, cell, map);
+                }
+                else
+                {
+                    GenSpawn.Spawn(pawn, cell, map, WipeMode.VanishOrMoveAside);
+                    pawns.Add(pawn);
+                }
+            }
+
+            if (symbol.defendSpawnPoint)
+            {
+                Lord lord = LordMaker.MakeNewLord(parentFaction, new LordJob_DefendPoint(cell, 3f, addFleeToil: false), map, pawns);
+            }
+        }
+
+        /// <summary>
+        /// Generate item at pos
+        /// </summary>
+        private static void GenerateItemAt(Map map, IntVec3 cell, SymbolDef symbol)
+        {
+            Thing thing = ThingMaker.MakeThing(symbol.thingDef, symbol.stuffDef ?? (symbol.thingDef.stuffCategories?.Count > 0 ? GenStuff.RandomStuffFor(symbol.thingDef) : null));
+
+            if (symbol.maxStackSize != -1)
+            {
+                thing.stackCount = Rand.RangeInclusive(1, symbol.maxStackSize);
+            }
+            else
+            {
+                thing.stackCount = Mathf.Clamp(Rand.RangeInclusive(1, symbol.thingDef.stackLimit), 1, 75);
+            }
+
+            thing.TryGetComp<CompQuality>()?.SetQuality(QualityUtility.GenerateQualityBaseGen(), ArtGenerationContext.Outsider);
+
+            GenPlace.TryPlaceThing(thing, cell, map, ThingPlaceMode.Direct);
+            thing.SetForbidden(true, false);
+        }
+
+        /// <summary>
+        /// Generate building at pos
+        /// </summary>
+        private static void GenerateBuildingAt(Map map, IntVec3 cell, SymbolDef symbol, Faction faction, bool generateConduit, ThingDef wallStuff = null)
+        {
+            if (symbol.thingDef == ThingDefOf.Shuttle)
+            {
+                ResolveParams rp = new ResolveParams
+                {
+                    singleThingDef = ThingDefOf.Shuttle,
+                    rect = CellRect.SingleCell(cell),
+                    faction = faction,
+                    postThingSpawn = x =>
+                    {
+                        TransportShip transportShip = TransportShipMaker.MakeTransportShip(TransportShipDefOf.Ship_Shuttle, null, x);
+                        ShipJob_WaitTime shipJobWaitTime = (ShipJob_WaitTime)ShipJobMaker.MakeShipJob(ShipJobDefOf.WaitTime);
+                        shipJobWaitTime.duration = new IntRange(300, 3600).RandomInRange;
+                        shipJobWaitTime.showGizmos = false;
+                        transportShip.AddJob(shipJobWaitTime);
+                        transportShip.AddJob(ShipJobDefOf.FlyAway);
+                        transportShip.Start();
+                    }
+                };
+                BaseGen.symbolStack.Push("thing", rp);
+                return;
+            }
+
+            Thing thing;
+            if (symbol.thingDef.defName.ToLower().Contains("wall"))
+            {
+                thing = ThingMaker.MakeThing(symbol.thingDef, wallStuff ?? RandomWallStuffByWeight(symbol));
+            }
+            else
+            {
+                thing = ThingMaker.MakeThing(symbol.thingDef, RandomFurnitureStuffByWeight(symbol));
+            }
+
+            CompRefuelable refuelable = thing.TryGetComp<CompRefuelable>();
+            refuelable?.Refuel(refuelable.Props.fuelCapacity);
+
+            CompPowerBattery battery = thing.TryGetComp<CompPowerBattery>();
+            battery?.AddEnergy(battery.Props.storedEnergyMax);
+
+            if (thing is Building_CryptosleepCasket cryptosleepCasket && Rand.Value < symbol.chanceToContainPawn)
+            {
+                Pawn pawn = GeneratePawnForContainer(symbol, map);
+                if (!cryptosleepCasket.TryAcceptThing(pawn))
+                {
+                    pawn.Destroy();
+                }
+            }
+            else if (thing is Building_CorpseCasket corpseCasket && Rand.Value < symbol.chanceToContainPawn)
+            {
+                Pawn pawn = GeneratePawnForContainer(symbol, map);
+                if (!corpseCasket.TryAcceptThing(pawn))
+                {
+                    pawn.Destroy();
+                }
+            }
+            else if (thing is Building_Crate crate)
+            {
+                List<Thing> innerThings = new List<Thing>();
+                if (faction == Faction.OfPlayer && symbol.thingSetMakerDefForPlayer != null)
+                {
+                    innerThings = symbol.thingSetMakerDefForPlayer.root.Generate(new ThingSetMakerParams());
+                }
+                else if (symbol.thingSetMakerDef != null)
+                {
+                    innerThings = symbol.thingSetMakerDef.root.Generate(new ThingSetMakerParams());
+                }
+
+                for (int i = 0; i < innerThings.Count; i++)
+                {
+                    var innerThing = innerThings[i];
+                    innerThing.stackCount = Math.Min((int)(innerThing.stackCount * symbol.crateStackMultiplier), innerThing.def.stackLimit);
+                    if (!crate.TryAcceptThing(innerThing))
+                    {
+                        innerThing.Destroy();
+                    }
+                }
+            }
+
+            if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
+            {
+                if (thing.def.building.isNaturalRock)
+                {
+                    TerrainDef t = DefDatabase<TerrainDef>.GetNamedSilentFail($"{thing.def.defName}_Rough");
+                    if (t != null)
+                    {
+                        map.terrainGrid.SetTerrain(cell, t);
+                        foreach (IntVec3 intVec3 in CellRect.CenteredOn(cell, 1))
+                        {
+                            if (!intVec3.GetTerrain(map).BuildableByPlayer)
+                            {
+                                map.terrainGrid.SetTerrain(intVec3, t);
                             }
                         }
                     }
                 }
+                else
+                {
+                    map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
+                }
+            }
+
+            GenSpawn.Spawn(thing, cell, map, symbol.rotation, WipeMode.VanishOrMoveAside);
+
+            if (faction != null && thing.def.CanHaveFaction)
+            {
+                thing.SetFactionDirect(faction);
+            }
+
+            if (generateConduit && !thing.def.mineable && (thing.def.passability == Traversability.Impassable || thing.def.IsDoor) && faction?.def.techLevel >= TechLevel.Industrial) // Add power cable under all impassable
+            {
+                Thing c = ThingMaker.MakeThing(ThingDefOf.PowerConduit);
+                if (faction != null)
+                {
+                    c.SetFactionDirect(faction);
+                }
+
+                GenSpawn.Spawn(c, cell, map, WipeMode.FullRefund);
+            }
+            // Handle mortar and mortar pawns
+            SpawnMortar(thing, faction, map);
+        }
+
+        /// <summary>
+        /// Spawn mortar and manning pawn with the right job
+        /// </summary>
+        private static void SpawnMortar(Thing thing, Faction faction, Map map)
+        {
+            if (thing?.def?.building?.buildingTags?.Count > 0)
+            {
+                if (thing.def.building.IsMortar && thing.def.category == ThingCategory.Building && thing.def.building.buildingTags.Contains("Artillery_MannedMortar") && thing.def.HasComp(typeof(CompMannable)) && faction != null)
+                {
+                    // Spawn pawn
+                    Lord singlePawnLord = LordMaker.MakeNewLord(faction, new LordJob_ManTurrets(), map, null);
+                    PawnGenerationRequest value = new PawnGenerationRequest(faction.RandomPawnKind(), faction, PawnGenerationContext.NonPlayer, map.Tile, mustBeCapableOfViolence: true, inhabitant: true);
+                    ResolveParams rpPawn = new ResolveParams
+                    {
+                        faction = faction,
+                        singlePawnGenerationRequest = new PawnGenerationRequest?(value),
+                        rect = CellRect.SingleCell(thing.InteractionCell),
+                        singlePawnLord = singlePawnLord
+                    };
+                    BaseGen.symbolStack.Push("pawn", rpPawn);
+                    // Spawn shells
+                    ThingDef shellDef = TurretGunUtility.TryFindRandomShellDef(thing.def, false, true, faction.def.techLevel, false, 250f);
+                    if (shellDef != null)
+                    {
+                        ResolveParams rpShell = new ResolveParams
+                        {
+                            faction = faction,
+                            singleThingDef = shellDef,
+                            singleThingStackCount = Rand.RangeInclusive(8, Math.Min(12, shellDef.stackLimit))
+                        };
+                        BaseGen.symbolStack.Push("thing", rpShell);
+                    }
+                }
             }
         }
 
-        public static void EnsurePowerUsersConnected(Map map, List<Thing> tmpThings, Dictionary<PowerNet, bool> tmpPowerNetPredicateResults, List<IntVec3> tmpCells, ThingDef conduit, bool spawnTransmitters = true)
+        /// <summary>
+        /// Generate pawn to be put inside container (casked, tomb...)
+        /// </summary>
+        private static Pawn GeneratePawnForContainer(SymbolDef temp, Map map)
         {
-            tmpThings.Clear();
-            tmpThings.AddRange(map.listerThings.ThingsInGroup(ThingRequestGroup.BuildingArtificial));
-            bool hasAtleast1TurretInt = tmpThings.Any((Thing t) => t is Building_Turret);
-            for (int i = 0; i < tmpThings.Count; i++)
+            Faction faction = temp.spawnPartOfFaction ? map.ParentFaction : null;
+            if (temp.containPawnKindForPlayerAnyOf.Count > 0 && faction == Faction.OfPlayer)
             {
-                if (IsPowerUser(tmpThings[i]))
+                return PawnGenerator.GeneratePawn(new PawnGenerationRequest(temp.containPawnKindForPlayerAnyOf.RandomElement(), faction, forceGenerateNewPawn: true, certainlyBeenInCryptosleep: true));
+            }
+            else if (temp.containPawnKindAnyOf.Count > 0)
+            {
+                return PawnGenerator.GeneratePawn(new PawnGenerationRequest(temp.containPawnKindAnyOf.RandomElement(), faction, forceGenerateNewPawn: true, certainlyBeenInCryptosleep: true));
+            }
+
+            return PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, faction);
+        }
+
+        /// <summary>
+        /// Generate roof from layout resolved roof grid
+        /// </summary>
+        private static void GenerateRoofGrid(StructureLayoutDef layout, CellRect rect, Map map)
+        {
+            if (layout.roofGrid != null && layout.roofGridResolved.Count > 0)
+            {
+                var cells = rect.Cells.ToList();
+                int count = cells.Count;
+
+                for (int i = 0; i < count; i++)
                 {
-                    CompPowerTrader powerComp = tmpThings[i].TryGetComp<CompPowerTrader>();
-                    PowerNet powerNet = powerComp.PowerNet;
-                    if (powerNet != null && powerNet.hasPowerSource)
+                    IntVec3 cell = cells[i];
+                    if (cell.InBounds(map))
                     {
-                        TryTurnOnImmediately(powerComp, map);
+                        var wantedRoof = layout.roofGridResolved[i];
+                        if (wantedRoof == "0" && layout.forceGenerateRoof)
+                        {
+                            map.roofGrid.SetRoof(cell, null);
+                            continue;
+                        }
+
+                        var currentRoof = cell.GetRoof(map);
+                        if (wantedRoof == "1" && (layout.forceGenerateRoof || currentRoof == null))
+                        {
+                            map.roofGrid.SetRoof(cell, RoofDefOf.RoofConstructed);
+                            ClearInterferesWithRoof(cell, map);
+                            continue;
+                        }
+
+                        if (wantedRoof == "2" && (layout.forceGenerateRoof || currentRoof == null || currentRoof == RoofDefOf.RoofConstructed))
+                        {
+                            map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThin);
+                            ClearInterferesWithRoof(cell, map);
+                            continue;
+                        }
+
+                        if (wantedRoof == "3")
+                        {
+                            map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThick);
+                            ClearInterferesWithRoof(cell, map);
+                            continue;
+                        }
                     }
+
+                }
+            }
+        }
+
+        private static void ClearInterferesWithRoof(IntVec3 cell, Map map)
+        {
+            var t = cell.GetPlant(map);
+            if (t != null && t.def.plant != null && t.def.plant.interferesWithRoof)
+                t.DeSpawn();
+
+            cell.GetFirstMineable(map)?.DeSpawn();
+        }
+
+        /// <summary>
+        /// Get road type already on map if applicable
+        /// </summary>
+        public static List<TerrainDef> SetRoadInfo(Map map)
+        {
+            if (map.TileInfo?.Roads?.Count > 0)
+            {
+                var preRoadTypes = new List<TerrainDef>();
+                foreach (RimWorld.Planet.Tile.RoadLink roadLink in map.TileInfo.Roads)
+                {
+                    foreach (RoadDefGenStep rgs in roadLink.road.roadGenSteps)
+                    {
+                        if (rgs is RoadDefGenStep_Place rgsp && rgsp != null && rgsp.place is TerrainDef t && t != null && t != TerrainDefOf.Bridge)
+                        {
+                            preRoadTypes.Add(t);
+                        }
+                    }
+                }
+                return preRoadTypes;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Clean structure spawn rect. Full clean remove everything but player/map pawns.
+        /// Normal clean remove filth, non-natural buildings and stone chunks
+        /// </summary>
+        public static void PreClean(Map map, CellRect rect, bool fullClean, List<string> roofGrid = null)
+        {
+            Debug.Message($"Pre-generation map clean. Fullclean {fullClean}");
+            var mapFaction = map.ParentFaction;
+            var player = Faction.OfPlayer;
+
+            if (roofGrid != null)
+            {
+                var cells = rect.Cells.ToList();
+                for (int i = 0; i < roofGrid.Count; i++)
+                {
+                    IntVec3 cell = cells[i];
+                    if (cell.InBounds(map) && roofGrid[i] != ".")
+                        CleanAt(cell, map, fullClean, mapFaction, player);
+                }
+            }
+            else
+            {
+                foreach (IntVec3 c in rect)
+                    CleanAt(c, map, fullClean, mapFaction, player);
+            }
+
+            map.roofGrid.RoofGridUpdate();
+        }
+
+        /// <summary>
+        /// Clean at a cell. Terrain & things
+        /// </summary>
+        private static void CleanAt(IntVec3 c, Map map, bool fullClean, Faction mapFaction, Faction player)
+        {
+            // Clean things
+            var things = c.GetThingList(map);
+
+            for (int i = 0; i < things.Count; i++)
+            {
+                if (things[i] is Thing thing && thing.Spawned)
+                {
+                    if (thing is Pawn p && p.Faction != mapFaction && p.Faction != player)
+                    {
+                        thing.DeSpawn();
+                    }
+                    else if (fullClean && (thing.def.category != ThingCategory.Building || !thing.def.building.isNaturalRock))
+                    {
+                        thing.DeSpawn();
+                    }
+                    // Clear filth, buildings, stone chunks
+                    else if (thing.def.category == ThingCategory.Filth ||
+                             (thing.def.category == ThingCategory.Building && !thing.def.building.isNaturalRock) ||
+                             (thing.def.thingCategories != null && thing.def.thingCategories.Contains(ThingCategoryDefOf.StoneChunks)))
+                    {
+                        thing.DeSpawn();
+                    }
+                }
+            }
+
+            // Clean terrain
+            if (map.terrainGrid.UnderTerrainAt(c) is TerrainDef terrain && terrain != null)
+            {
+                map.terrainGrid.SetTerrain(c, terrain);
+            }
+
+            // Clean roof
+            if (fullClean)
+                map.roofGrid.SetRoof(c, null);
+        }
+
+        /// <summary>
+        /// Choose a random layout that match requirement(s) from a list.
+        /// </summary>
+        public static StructureLayoutDef ChooseStructureLayoutFrom(List<StructureLayoutDef> list)
+        {
+            List<StructureLayoutDef> choices = new List<StructureLayoutDef>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                var layout = list[i];
+                if (layout.RequiredModLoaded)
+                {
+                    choices.Add(layout);
+                }
+            }
+            return choices.RandomElement();
+        }
+
+        /// <summary>
+        /// Choose a random WeightedStruct from a list.
+        /// </summary>
+        public static WeightedStruct ChooseWeightedStructFrom(List<WeightedStruct> list, IncidentParms parms)
+        {
+            List<WeightedStruct> choices = new List<WeightedStruct>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                var weightedStruct = list[i];
+                if (weightedStruct.structureLayoutDef.RequiredModLoaded)
+                {
+                    choices.Add(weightedStruct);
+                }
+            }
+            return choices.RandomElementByWeight((w) => w.weight * parms.points);
+        }
+
+        /// <summary>
+        /// Get random stuff for wall
+        /// </summary>
+        public static ThingDef RandomWallStuffByWeight(ThingDef thingDef)
+        {
+            var option = GenOption.StuffableOptions;
+
+            if (option.generalWallStuff && GenOption.generalWallStuff != null)
+                return GenOption.generalWallStuff;
+
+            if (option.allowedWallStuff.Count > 0)
+            {
+                return RandomStuffFromFor(option.allowedWallStuff, thingDef);
+            }
+
+            if (option.disallowedWallStuff.Count > 0)
+            {
+                var from = StartupActions.stuffs.FindAll(t => !option.disallowedWallStuff.Contains(t));
+                return RandomStuffFromFor(from, thingDef);
+            }
+
+            return RandomStuffFromFor(StartupActions.stuffs, thingDef);
+        }
+
+        /// <summary>
+        /// Get random stuff for wall, from symbol
+        /// </summary>
+        public static ThingDef RandomWallStuffByWeight(SymbolDef symbol)
+        {
+            if (GenOption.StuffableOptions != null && GenOption.StuffableOptions.randomizeWall)
+                return RandomWallStuffByWeight(symbol.thingDef);
+
+            return symbol.stuffDef;
+        }
+
+        /// <summary>
+        /// Get random stuff for furniture
+        /// </summary>
+        public static ThingDef RandomFurnitureStuffByWeight(SymbolDef symbol)
+        {
+            if (symbol.thingDef.costStuffCount <= 0)
+                return null;
+
+            var option = GenOption.StuffableOptions;
+
+            if (option != null && option.randomizeFurniture && !option.excludedFunitureDefs.Contains(symbol.thingDef))
+            {
+                if (option.allowedFurnitureStuff.Count > 0)
+                {
+                    return RandomStuffFromFor(option.allowedFurnitureStuff, symbol.thingDef);
+                }
+
+                if (option.disallowedFurnitureStuff.Count > 0)
+                {
+                    var from = StartupActions.stuffs.FindAll(t => !option.disallowedFurnitureStuff.Contains(t));
+                    return RandomStuffFromFor(from, symbol.thingDef);
+                }
+
+                return RandomStuffFromFor(StartupActions.stuffs, symbol.thingDef);
+            }
+
+            return symbol.stuffDef ?? symbol.thingDef.defaultStuff ?? ThingDefOf.WoodLog;
+        }
+
+        /// <summary>
+        /// Get stuff by commonality from list, matching thingDef requirement
+        /// </summary>
+        public static ThingDef RandomStuffFromFor(List<ThingDef> from, ThingDef thingDef) => from.FindAll(t => thingDef.stuffCategories.Find(c => t.stuffProps.categories.Contains(c)) != null).RandomElementByWeight(t => t.stuffProps.commonality);
+
+        /// <summary>
+        /// Check a list to know if anything is near a given point
+        /// </summary>
+        public static bool NearUsedSpot(List<IntVec3> usedSpots, IntVec3 c, float dist)
+        {
+            for (int index = 0; index < usedSpots.Count; ++index)
+            {
+                if ((usedSpots[index] - c).LengthHorizontalSquared <= dist * dist)
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Set terrain at pos if it's not a buildable, set bridge if needed.
+        /// For road gen.
+        /// </summary>
+        public static void SetTerrainAt(IntVec3 c, Map map, TerrainDef roadDef)
+        {
+            c.GetFirstMineable(map)?.DeSpawn();
+            if (map.terrainGrid.TerrainAt(c) is TerrainDef terrainDef)
+            {
+                if (!terrainDef.BuildableByPlayer)
+                {
+                    if (terrainDef.affordances.Contains(TerrainAffordanceDefOf.Bridgeable))
+                        map.terrainGrid.SetTerrain(c, TerrainDefOf.Bridge);
                     else
-                    {
-                        map.powerNetManager.UpdatePowerNetsAndConnections_First();
-                        if (TryFindClosestReachableNet(powerComp.parent.Position, (PowerNet x) => x.CurrentEnergyGainRate() - powerComp.Props.basePowerConsumption * CompPower.WattsToWattDaysPerTick > 1E-07f, map, out PowerNet powerNet2, out IntVec3 dest, tmpPowerNetPredicateResults) && spawnTransmitters)
-                        {
-                            map.floodFiller.ReconstructLastFloodFillPath(dest, tmpCells);
-                            SpawnTransmitters(tmpCells, map, tmpThings[i].Faction, conduit);
-                            TryTurnOnImmediately(powerComp, map);
-                        }
-                        else if (TryFindClosestReachableNet(powerComp.parent.Position, (PowerNet x) => x.CurrentStoredEnergy() > 1E-07f, map, out powerNet2, out dest, tmpPowerNetPredicateResults) && spawnTransmitters)
-                        {
-                            map.floodFiller.ReconstructLastFloodFillPath(dest, tmpCells);
-                            SpawnTransmitters(tmpCells, map, tmpThings[i].Faction, conduit);
-                        }
-                    }
+                        map.terrainGrid.SetTerrain(c, roadDef);
                 }
             }
         }
 
-        public static void EnsureGeneratorsConnectedAndMakeSense(Map map, List<Thing> tmpThings, Dictionary<PowerNet, bool> tmpPowerNetPredicateResults, List<IntVec3> tmpCells, ThingDef conduit, bool spawnTransmitters = true)
+        /// <summary>
+        /// Widen a given path
+        /// </summary>
+        public static void WidenPath(List<IntVec3> path, Map map, TerrainDef terrain, int width)
         {
-            tmpThings.Clear();
-            tmpThings.AddRange(map.listerThings.ThingsInGroup(ThingRequestGroup.BuildingArtificial));
-            for (int i = 0; i < tmpThings.Count; i++)
-            {
-                if (IsPowerGenerator(tmpThings[i]))
-                {
-                    PowerNet powerNet = tmpThings[i].TryGetComp<CompPower>().PowerNet;
-                    if (powerNet == null || !HasAnyPowerUser(powerNet))
-                    {
-                        map.powerNetManager.UpdatePowerNetsAndConnections_First();
-                        if (TryFindClosestReachableNet(tmpThings[i].Position, (PowerNet x) => HasAnyPowerUser(x), map, out PowerNet powerNet2, out IntVec3 dest, tmpPowerNetPredicateResults) && spawnTransmitters)
-                        {
-                            map.floodFiller.ReconstructLastFloodFillPath(dest, tmpCells);
-                            SpawnTransmitters(tmpCells, map, tmpThings[i].Faction, conduit);
-                        }
-                    }
-                }
-            }
-        }
-
-        public static bool HasAnyPowerUser(PowerNet net)
-        {
-            List<CompPowerTrader> powerComps = net.powerComps;
-            for (int i = 0; i < powerComps.Count; i++)
-            {
-                if (IsPowerUser(powerComps[i].parent))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public static void TryTurnOnImmediately(CompPowerTrader powerComp, Map map)
-        {
-            if (powerComp.PowerOn)
-            {
+            if (width <= 0 || path.NullOrEmpty())
                 return;
-            }
-            map.powerNetManager.UpdatePowerNetsAndConnections_First();
-            if (powerComp.PowerNet != null && powerComp.PowerNet.CurrentEnergyGainRate() > 1E-07f)
-            {
-                powerComp.PowerOn = true;
-            }
-        }
 
-        public static bool IsPowerUser(Thing thing)
-        {
-            CompPowerTrader compPowerTrader = thing.TryGetComp<CompPowerTrader>();
-            return compPowerTrader != null && (compPowerTrader.PowerOutput < 0f || (!compPowerTrader.PowerOn && compPowerTrader.Props.basePowerConsumption > 0f));
-        }
-
-        public static void SpawnTransmitters(List<IntVec3> cells, Map map, Faction faction, ThingDef conduit)
-        {
-            for (int i = 0; i < cells.Count; i++)
+            IntVec3 last = path[0];
+            int count = path.Count;
+            for (int c = 0; c < count; c++)
             {
-                if (cells[i].GetTransmitter(map) == null)
+                IntVec3 curr = path[c];
+
+                int widenBy = 0;
+                for (int i = 1; i <= width && widenBy < width; i++)
                 {
-                    GenSpawn.Spawn(conduit, cells[i], map, WipeMode.FullRefund).SetFaction(faction, null);
+                    if (last.x != curr.x)
+                    {
+                        grid[curr.z + i][curr.x] = CellType.Used;
+                        SetTerrainAt(new IntVec3(curr.x, 0, curr.z + i), map, terrain);
+                        widenBy++;
+
+                        if (widenBy < width)
+                        {
+                            grid[curr.z - i][curr.x] = CellType.Used;
+                            SetTerrainAt(new IntVec3(curr.x, 0, curr.z - i), map, terrain);
+                            widenBy++;
+                        }
+                    }
+
+                    if (last.z != curr.z)
+                    {
+                        grid[curr.z][curr.x + i] = CellType.Used;
+                        SetTerrainAt(new IntVec3(curr.x + i, 0, curr.z), map, terrain);
+                        widenBy++;
+
+                        if (widenBy < width)
+                        {
+                            grid[curr.z][curr.x - i] = CellType.Used;
+                            SetTerrainAt(new IntVec3(curr.x - i, 0, curr.z), map, terrain);
+                            widenBy++;
+                        }
+                    }
+                }
+
+                last = curr;
+            }
+        }
+
+        /// <summary>
+        /// Spawn main road props
+        /// </summary>
+        public static void SpawnMainRoadProps(List<IntVec3> road)
+        {
+            var map = BaseGen.globalSettings.map;
+            for (int i = 0; i < road.Count; i++)
+            {
+                IntVec3 curr = road[i];
+                IntVec3 last = i - 1 > 0 ? road[i - 1] : curr;
+
+                if (Rand.Chance(GenOption.PropsOptions.mainRoadPropsChance)
+                    && !NearUsedSpot(GenOption.usedSpots, curr, GenOption.PropsOptions.mainRoadMinDistance))
+                {
+                    var rot = last.x != curr.x ? Rot4.East : Rot4.North;
+                    var thingDef = GenOption.PropsOptions.RandomMainRoadProps();
+
+                    if (thingDef != null)
+                    {
+                        var thing = ThingMaker.MakeThing(thingDef, GenStuff.DefaultStuffFor(thingDef));
+                        if (thingDef.rotatable)
+                            GenSpawn.Spawn(thing, curr, map, rot);
+                        else
+                            GenSpawn.Spawn(thing, curr, map);
+
+                        GenOption.usedSpots.Add(curr);
+                    }
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Spawn link road props
+        /// </summary>
+        public static void SpawnLinkRoadProps(List<IntVec3> road)
+        {
+            var map = BaseGen.globalSettings.map;
+            for (int i = 0; i < road.Count; i++)
+            {
+                IntVec3 cell = road[i];
+
+                if (Rand.Chance(GenOption.PropsOptions.linkRoadPropsChance))
+                {
+                    var thingDef = GenOption.PropsOptions.RandomLinkRoadProps();
+                    if (thingDef == null)
+                        return;
+
+                    var cells = GenAdj.CellsAdjacent8Way(new TargetInfo(cell, map));
+
+                    var matchingCells = new List<IntVec3>();
+                    foreach (var c in cells)
+                    {
+                        if (grid[c.z][c.x] == CellType.Used)
+                            continue;
+                        if (NearUsedSpot(GenOption.usedSpots, c, GenOption.PropsOptions.linkRoadMinDistance))
+                            continue;
+
+                        var rect = new CellRect(c.x, c.z, thingDef.size.x, thingDef.size.z);
+                        foreach (var ce in rect)
+                        {
+                            if (grid[ce.z][ce.x] == CellType.Used || !ce.Walkable(map))
+                                continue;
+                        }
+
+                        matchingCells.Add(c);
+                    }
+
+                    if (matchingCells.Count > 0)
+                    {
+                        var thing = ThingMaker.MakeThing(thingDef, GenStuff.DefaultStuffFor(thingDef));
+                        if (thingDef.rotatable)
+                            GenSpawn.Spawn(thing, matchingCells.RandomElement(), map, Rot4.Random);
+                        else
+                            GenSpawn.Spawn(thing, matchingCells.RandomElement(), map);
+
+                        GenOption.usedSpots.Add(cell);
+                    }
                 }
             }
         }
-
-        public static bool EverPossibleToTransmitPowerAt(IntVec3 c, Map map)
-        {
-            return c.GetTransmitter(map) != null || GenConstruct.CanBuildOnTerrain(ThingDefOf.PowerConduit, c, map, Rot4.North, null, null);
-        }
-
-        public static bool IsPowerGenerator(Thing thing)
-        {
-            if (thing.TryGetComp<CompPowerPlant>() != null)
-            {
-                return true;
-            }
-            CompPowerTrader compPowerTrader = thing.TryGetComp<CompPowerTrader>();
-            return compPowerTrader != null && (compPowerTrader.PowerOutput > 0f || (!compPowerTrader.PowerOn && compPowerTrader.Props.basePowerConsumption < 0f));
-        }
-
-        public static bool HasAnyPowerGenerator(PowerNet net)
-        {
-            List<CompPowerTrader> powerComps = net.powerComps;
-            for (int i = 0; i < powerComps.Count; i++)
-            {
-                if (IsPowerGenerator(powerComps[i].parent))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public static bool TryFindClosestReachableNet(IntVec3 root, Predicate<PowerNet> predicate, Map map, out PowerNet foundNet, out IntVec3 closestTransmitter, Dictionary<PowerNet, bool> tmpPowerNetPredicateResults)
-        {
-            tmpPowerNetPredicateResults.Clear();
-            PowerNet foundNetLocal = null;
-            IntVec3 closestTransmitterLocal = IntVec3.Invalid;
-            map.floodFiller.FloodFill(root, (IntVec3 x) => EverPossibleToTransmitPowerAt(x, map), delegate (IntVec3 x)
-            {
-                Building transmitter = x.GetTransmitter(map);
-                PowerNet powerNet = transmitter?.GetComp<CompPower>().PowerNet;
-                if (powerNet == null)
-                {
-                    return false;
-                }
-                if (!tmpPowerNetPredicateResults.TryGetValue(powerNet, out bool flag))
-                {
-                    flag = predicate(powerNet);
-                    tmpPowerNetPredicateResults.Add(powerNet, flag);
-                }
-                if (flag)
-                {
-                    foundNetLocal = powerNet;
-                    closestTransmitterLocal = x;
-                    return true;
-                }
-                return false;
-            }, int.MaxValue, true, null);
-            tmpPowerNetPredicateResults.Clear();
-            if (foundNetLocal != null)
-            {
-                foundNet = foundNetLocal;
-                closestTransmitter = closestTransmitterLocal;
-                return true;
-            }
-            foundNet = null;
-            closestTransmitter = IntVec3.Invalid;
-            return false;
-        }
-
-        #endregion Power Function
     }
 }

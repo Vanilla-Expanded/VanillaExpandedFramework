@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  <PipeSystem_Consumption>{0} consumption</PipeSystem_Consumption>
+  <PipeSystem_ConsumptionExplained>The amount per day of {0} this building will draw from the {1} grid.</PipeSystem_ConsumptionExplained>
+
+  <PipeSystem_IdleConsumption>{0} idle consumption</PipeSystem_IdleConsumption>
+  <PipeSystem_IdleConsumptionExplained>The amount of {0} this building will draw from the {1} grid when idle.</PipeSystem_IdleConsumptionExplained>
+
+  <PipeSystem_Production>{0} production</PipeSystem_Production>
+  <PipeSystem_ProductionExplained>The amount per day of {0} this building will produce for the {1} grid.</PipeSystem_ProductionExplained>
+
+  <PipeSystem_DeconstructLabel>Deconstruct {0} pipes</PipeSystem_DeconstructLabel>
+  <PipeSystem_DeconstructDesc>Only deconstruct pipes part of the {0} network.</PipeSystem_DeconstructDesc>
+
+  <PipeSystem_ResourceOutput>{0} output:</PipeSystem_ResourceOutput>
+  <PipeSystem_ResourceNeeded>{0} needed:</PipeSystem_ResourceNeeded>
+
+  <PipeSystem_ResourceStored>{0} stored:</PipeSystem_ResourceStored>
+
+  <PipeSystem_NotConnected>Not connected to {}.</PipeSystem_NotConnected>
+  <PipeSystem_ExcessStored>{0} excess (stored) in network:</PipeSystem_ExcessStored>
+  <PipeSystem_Stored>{0} stored in network:</PipeSystem_Stored>
+
+  <PipeSystem_ValveClosed>Valve closed.</PipeSystem_ValveClosed>
+  <PipeSystem_ValveOpened>Valve opened.</PipeSystem_ValveOpened>
+
+  <PipeSystem_AugmentStack>+1</PipeSystem_AugmentStack>
+  <PipeSystem_AugmentStackDesc>Augment output maximum stack size by 1.</PipeSystem_AugmentStackDesc>
+  <PipeSystem_AugmentStackB>+10</PipeSystem_AugmentStackB>
+  <PipeSystem_AugmentStackDescB>Augment output maximum stack size by 10.</PipeSystem_AugmentStackDescB>
+
+  <PipeSystem_DecreaseStack>-1</PipeSystem_DecreaseStack>
+  <PipeSystem_DecreaseStackDesc>Decrease output maximum stack size by 1.</PipeSystem_DecreaseStackDesc>
+  <PipeSystem_DecreaseStackB>-10</PipeSystem_DecreaseStackB>
+  <PipeSystem_DecreaseStackDescB>Decrease output maximum stack size by 10.</PipeSystem_DecreaseStackDescB>
+
+  <PipeSystem_AmountOut>Maximum amount stored here: {0}</PipeSystem_AmountOut>
+
+  <PipeSystem_ProcessorBuffer>Buffer: {0}</PipeSystem_ProcessorBuffer>
+  <PipeSystem_Producing>Producing {0} {1}. Cycle progress: {2}.</PipeSystem_Producing>
+  <PipeSystem_Produce>Produce {0} {1}.</PipeSystem_Produce>
+  <PipeSystem_ChooseResult>Choose result</PipeSystem_ChooseResult>
+  <PipeSystem_ChooseResultDesc>Choose processor result.</PipeSystem_ChooseResultDesc>
+
+  <PipeSystem_TransferContent>Transfer storage content</PipeSystem_TransferContent>
+  <PipeSystem_TransferContentDesc>Transfer storage content to other available storages.</PipeSystem_TransferContentDesc>
+  <PipeSystem_MarkedToTransferContent>Transfering content to other available storages...</PipeSystem_MarkedToTransferContent>
+</LanguageData>

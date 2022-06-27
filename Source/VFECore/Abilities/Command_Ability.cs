@@ -1,14 +1,15 @@
-﻿namespace VFECore.Abilities
-{
-    using System;
-    using UnityEngine;
-    using Verse;
+﻿using UnityEngine;
+using Verse;
 
+namespace VFECore.Abilities
+{
     [StaticConstructorOnStartup]
     public class Command_Ability : Command_Action
     {
         public static readonly Texture2D CooldownTex =
             SolidColorMaterials.NewSolidColorTexture(new Color(1f, 1f, 1f, 0.1f));
+
+        public static readonly Texture2D AutoCastTex = ContentFinder<Texture2D>.Get("UI/CheckAuto");
 
         public Pawn    pawn;
         public Ability ability;
@@ -31,37 +32,20 @@
         public override void GizmoUpdateOnMouseover()
         {
             base.GizmoUpdateOnMouseover();
-
-            float radius;
-            switch (this.ability.def.targetMode)
-            {
-                case AbilityTargetingMode.Self:
-                    radius = this.ability.GetRadiusForPawn();
-                    break;
-                case AbilityTargetingMode.Location:
-                case AbilityTargetingMode.Thing:
-                case AbilityTargetingMode.Pawn:
-                    radius = this.ability.GetRangeForPawn();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            if (GenRadial.MaxRadialPatternRadius > radius && radius >= 1)
-                GenDraw.DrawRadiusRing(this.pawn.Position, radius, Color.cyan);
+            this.ability.GizmoUpdateOnMouseover();
         }
 
-        public override bool GroupsWith(Gizmo other) => other is Command_Ability ca && ca.ability.def == this.ability.def;
+        public override bool GroupsWith(Gizmo other) => 
+            other is Command_Ability ca && ca.ability.def == this.ability.def;
 
         protected override GizmoResult GizmoOnGUIInt(Rect butRect, GizmoRenderParms parms)
         {
             GizmoResult result = base.GizmoOnGUIInt(butRect, parms);
 
-            if (this.ability.Chance > 0f)
+            if (this.ability.AutoCast)
             {
-                Texture2D texture  = this.ability.AutoCast ? Widgets.CheckboxOnTex : Widgets.CheckboxOffTex;
                 Rect      position = new Rect(butRect.x + butRect.width - 24f, butRect.y, 24f, 24f);
-                GUI.DrawTexture(position, texture);
+                GUI.DrawTexture(position, AutoCastTex);
             }
 
             if(this.disabled && this.ability.cooldown > Find.TickManager.TicksGame)

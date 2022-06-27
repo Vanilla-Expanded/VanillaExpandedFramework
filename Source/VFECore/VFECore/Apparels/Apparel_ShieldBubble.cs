@@ -44,11 +44,11 @@ namespace VFECore
             Widgets.Label(rect3, shield.parent.LabelCap);
             Rect rect4 = rect2;
             rect4.yMin = rect2.y + rect2.height / 2f;
-            float fillPercent = shield.Energy / shield.Props.EnergyShieldEnergyMax;
+            float fillPercent = shield.Energy / shield.EnergyMax;
             Widgets.FillableBar(rect4, fillPercent, FullShieldBarTex, EmptyShieldBarTex, doBorder: false);
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(rect4, shield.Energy.ToString("F0") + " / " + shield.Props.EnergyShieldEnergyMax.ToString("F0"));
+            Widgets.Label(rect4, shield.Energy.ToString("F0") + " / " + shield.EnergyMax.ToString("F0"));
             Text.Anchor = TextAnchor.UpperLeft;
             return new GizmoResult(GizmoState.Clear);
         }
@@ -68,6 +68,16 @@ namespace VFECore
                 return shieldComp;
             }
         }
+
+        public override void PostPostMake()
+        {
+            base.PostPostMake();
+            var comp = ShieldComp;
+            if (comp.Props.chargeFullyWhenMade)
+            {
+                comp.Energy = comp.EnergyMax;
+            }
+        }
         public override bool CheckPreAbsorbDamage(DamageInfo dinfo)
         {
             var shield = ShieldComp;
@@ -85,7 +95,22 @@ namespace VFECore
             base.DrawWornExtras();
             Comps_PostDraw();
         }
-
+        public override bool AllowVerbCast(Verb verb)
+        {
+            var comp = shieldComp;
+            if (comp != null)
+            {
+                if (verb.IsMeleeAttack && comp.Props.dontAllowMeleeAttack)
+                {
+                    return false;
+                }
+                else if (!verb.IsMeleeAttack && comp.Props.dontAllowRangedAttack)
+                {
+                    return false;
+                }
+            }
+            return base.AllowVerbCast(verb);
+        }
         public override IEnumerable<Gizmo> GetWornGizmos()
         {
             foreach (Gizmo wornGizmo in base.GetWornGizmos())

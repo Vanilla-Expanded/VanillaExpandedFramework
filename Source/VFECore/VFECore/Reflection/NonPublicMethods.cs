@@ -8,6 +8,7 @@ using UnityEngine;
 using Verse;
 using RimWorld;
 using HarmonyLib;
+using RimWorld.Planet;
 
 namespace VFECore
 {
@@ -18,26 +19,20 @@ namespace VFECore
 
         public static ApplyArmourDelegate<float, float, float, Thing, DamageDef, Pawn, bool> ArmorUtility_ApplyArmor = (ApplyArmourDelegate<float, float, float, Thing, DamageDef, Pawn, bool>)
             Delegate.CreateDelegate(typeof(ApplyArmourDelegate<float, float, float, Thing, DamageDef, Pawn, bool>), AccessTools.Method(typeof(ArmorUtility), "ApplyArmor"));
-
-        public static Action<CompUseEffect_FinishRandomResearchProject, ResearchProjectDef, Pawn> CompUseEffect_FinishRandomResearchProject_FinishInstantly = (Action<CompUseEffect_FinishRandomResearchProject, ResearchProjectDef, Pawn>)
-            Delegate.CreateDelegate(typeof(Action<CompUseEffect_FinishRandomResearchProject, ResearchProjectDef, Pawn>), null, AccessTools.Method(typeof(CompUseEffect_FinishRandomResearchProject), "FinishInstantly"));
-
+        
         public static Func<IntVec3, Rot4, ThingDef, Map, ThingDef, bool> SiegeBlueprintPlacer_CanPlaceBlueprintAt = (Func<IntVec3, Rot4, ThingDef, Map, ThingDef, bool>)
             Delegate.CreateDelegate(typeof(Func<IntVec3, Rot4, ThingDef, Map, ThingDef, bool>), AccessTools.Method(typeof(SiegeBlueprintPlacer), "CanPlaceBlueprintAt"));
         public static Func<ThingDef, Rot4, Map, IntVec3> SiegeBlueprintPlacer_FindArtySpot = (Func<ThingDef, Rot4, Map, IntVec3>)
             Delegate.CreateDelegate(typeof(Func<ThingDef, Rot4, Map, IntVec3>), AccessTools.Method(typeof(SiegeBlueprintPlacer), "FindArtySpot"));
-        public static Func<float, Map, IEnumerable<Blueprint_Build>> SiegeBlueprintPlacer_PlaceArtilleryBlueprints = (Func<float, Map, IEnumerable<Blueprint_Build>>)
-            Delegate.CreateDelegate(typeof(Func<float, Map, IEnumerable<Blueprint_Build>>), AccessTools.Method(typeof(SiegeBlueprintPlacer), "PlaceArtilleryBlueprints"));
-        public static Func<Map, IEnumerable<Blueprint_Build>> SiegeBlueprintPlacer_PlaceCoverBlueprints = (Func<Map, IEnumerable<Blueprint_Build>>)
-            Delegate.CreateDelegate(typeof(Func<Map, IEnumerable<Blueprint_Build>>), AccessTools.Method(typeof(SiegeBlueprintPlacer), "PlaceCoverBlueprints"));
-
-        public static Func<Thing, StatDef, string> StatWorker_InfoTextLineFromGear = (Func<Thing, StatDef, string>)
-            Delegate.CreateDelegate(typeof(Func<Thing, StatDef, string>), null, AccessTools.Method(typeof(StatWorker), "InfoTextLineFromGear"));
-        public static Func<Thing, StatDef, float> StatWorker_StatOffsetFromGear = (Func<Thing, StatDef, float>)
-            Delegate.CreateDelegate(typeof(Func<Thing, StatDef, float>), null, AccessTools.Method(typeof(StatWorker), "StatOffsetFromGear"));
 
         public delegate void ApplyArmourDelegate<A, B, C, D, E, F, G>(ref A first, B second, C third, D fourth, ref E fifth, F sixth, out G seventh);
         public delegate C FuncOut<A, B, C>(A first, out B second);
+        
+        public static Action<Projectile> Projectile_ImpactSomething = (Action<Projectile>)
+            Delegate.CreateDelegate(typeof(Action<Projectile>), null, AccessTools.Method(typeof(Projectile), "ImpactSomething"));
+
+        public static Action<Pawn> GenerateSkills = (Action<Pawn>)
+            Delegate.CreateDelegate(typeof(Action<Pawn>), null, AccessTools.Method(typeof(PawnGenerator), "GenerateSkills"));
 
         [StaticConstructorOnStartup]
         public static class DualWield

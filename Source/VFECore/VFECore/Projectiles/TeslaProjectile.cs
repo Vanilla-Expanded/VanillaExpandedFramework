@@ -1,27 +1,26 @@
-﻿using HarmonyLib;
-using RimWorld;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using HarmonyLib;
+using RimWorld;
 using UnityEngine;
 using Verse;
-using static UnityEngine.GraphicsBuffer;
+using Verse.Sound;
 
 namespace VFEMech
 {
     public class TeslaChainingProps : DefModExtension
     {
-        public bool addFire;
-        public float bounceRange;
-        public int maxBounceCount;
+        public bool      addFire;
+        public float     bounceRange;
+        public int       maxBounceCount;
         public DamageDef damageDef;
         public DamageDef explosionDamageDef;
-        public float impactRadius;
-        public bool targetFriendly;
-        public int maxLifetime;
+        public float     impactRadius;
+        public bool      targetFriendly;
+        public int       maxLifetime;
+        public SoundDef  impactSound;
     }
     public class TeslaProjectile : Bullet
     {
@@ -119,6 +118,8 @@ namespace VFEMech
                 {
                     GenExplosion.DoExplosion(hitThing.Position, Map, Props.impactRadius, Props.explosionDamageDef, this.Launcher, this.def.projectile.GetDamageAmount(1f));
                 }
+
+                Props.impactSound?.PlayOneShot(hitThing);
                 RegisterHit(hitThing);
                 if (numBounces < Props.maxBounceCount)
                 {

@@ -23,10 +23,10 @@ namespace KCSG
         {
             StateGraph stateGraph = new StateGraph();
 
-            LordToil_DefendBase lordToilDefendBase1 = new LordToil_DefendBase(this.baseCenter);
+            LordToil_DefendBase lordToilDefendBase1 = new LordToil_DefendBase(baseCenter);
             stateGraph.StartingToil = lordToilDefendBase1;
 
-            LordToil_DefendBase lordToilDefendBase2 = new LordToil_DefendBase(this.baseCenter);
+            LordToil_DefendBase lordToilDefendBase2 = new LordToil_DefendBase(baseCenter);
             stateGraph.AddToil(lordToilDefendBase2);
 
             LordToil_AssaultColony toilAssaultColony = new LordToil_AssaultColony(true)
@@ -48,7 +48,7 @@ namespace KCSG
             transition3.AddTrigger(new Trigger_ChanceOnPlayerHarmNPCBuilding(0.4f));
             transition3.AddTrigger(new Trigger_OnClamor(ClamorDefOf.Ability));
             transition3.AddPostAction(new TransitionAction_WakeAll());
-            TaggedString taggedString = "MessageDefendersAttacking".Translate(this.faction.def.pawnsPlural, this.faction.Name, Faction.OfPlayer.def.pawnsPlural).CapitalizeFirst();
+            TaggedString taggedString = "MessageDefendersAttacking".Translate(faction.def.pawnsPlural, faction.Name, Faction.OfPlayer.def.pawnsPlural).CapitalizeFirst();
             transition3.AddPreAction(new TransitionAction_Message(taggedString, MessageTypeDefOf.ThreatBig));
             stateGraph.AddTransition(transition3);
 
@@ -58,8 +58,8 @@ namespace KCSG
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_References.Look(ref this.faction, "faction");
-            Scribe_Values.Look(ref this.baseCenter, "baseCenter");
+            Scribe_References.Look(ref faction, "faction");
+            Scribe_Values.Look(ref baseCenter, "baseCenter");
         }
     }
 }

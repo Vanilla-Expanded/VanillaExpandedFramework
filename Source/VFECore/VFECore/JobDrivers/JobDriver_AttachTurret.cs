@@ -20,6 +20,7 @@ namespace VFE.Mechanoids.AI.JobDrivers
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
+            this.FailOn(() => !TargetA.Thing.TryGetComp<CompPowerTrader>().PowerOn);
             this.FailOnDespawnedNullOrForbidden(TargetIndex.A);
             Toil getNextIngredient = Toils_General.Label();
             yield return getNextIngredient;
@@ -32,10 +33,22 @@ namespace VFE.Mechanoids.AI.JobDrivers
             yield return JobDriver_RepairMachine.PlaceHauledThingInCell(TargetIndex.C, findPlaceTarget, storageMode: false);
             yield return Toils_Jump.JumpIf(getNextIngredient, () => !job.GetTargetQueue(TargetIndex.B).NullOrEmpty());
             Toil waitForMachineToReturn = Toils_General.Label();
+            waitForMachineToReturn.AddPreInitAction(delegate
+            {
+                var compMachineStation = TargetA.Thing.TryGetComp<CompMachineChargingStation>();
+                compMachineStation.wantsRest = true;
+            });
             yield return waitForMachineToReturn;
             yield return Toils_General.Wait(240).FailOnDestroyedNullOrForbidden(TargetIndex.A).FailOnCannotTouch(TargetIndex.A, PathEndMode.Touch)
                 .WithProgressBarToilDelay(TargetIndex.A);
-            yield return Toils_Jump.JumpIf(waitForMachineToReturn, () => ((Building_BedMachine)TargetA).occupant == null);
+            yield return Toils_Jump.JumpIf(waitForMachineToReturn, delegate
+            {
+                if (TargetA.Thing is IBedMachine bedMachine)
+                {
+                    return bedMachine.occupant == null;
+                }
+                return false;
+            });
             yield return Finalize(TargetIndex.A, TargetIndex.B);
         }
 
@@ -48,9 +61,10 @@ namespace VFE.Mechanoids.AI.JobDrivers
                 Thing thing = curJob.GetTarget(buildingIndex).Thing;
 				foreach (ThingCountClass toDestroy in toil.actor.CurJob.placedThings)
 					toDestroy.thing.Destroy();
-                thing.TryGetComp<CompMachineChargingStation>().myPawn.TryGetComp<CompMachine>().AttachTurret(thing.TryGetComp<CompMachineChargingStation>().turretToInstall);
-                thing.TryGetComp<CompMachineChargingStation>().wantsRest = false;
-                thing.TryGetComp<CompMachineChargingStation>().turretToInstall = null;
+                var compMachineStation = thing.TryGetComp<CompMachineChargingStation>();
+                var compMachine = compMachineStation.myPawn.TryGetComp<CompMachine>();
+                compMachine.AttachTurret();
+                compMachineStation.wantsRest = false;
             };
             toil.defaultCompleteMode = ToilCompleteMode.Instant;
             return toil;

@@ -15,7 +15,7 @@ namespace KCSG
                 things.RemoveAll(t => t.Faction != map.ParentFaction);
 
             things.RemoveAll(t => t.def?.graphicData?.linkFlags != null && t.def?.graphicData?.linkFlags == LinkFlags.PowerConduit);
-            
+
             for (int i = 0; i < things.Count; i++)
             {
                 Thing t = things[i];
@@ -31,7 +31,7 @@ namespace KCSG
                 else if (t.def.destroyable)
                 {
                     t.HitPoints -= hitPointLoss;
-                }                    
+                }
             }
         }
     }

@@ -18,9 +18,12 @@ namespace VFECore
 		public float EnergyShieldEnergyMax = 0f;
 
 		public float EnergyShieldRechargeRate = 0f;
+		public bool chargeFullyWhenMade;
 
 		public bool   blockRangedAttack = true;
 		public bool   blockMeleeAttack  = false;
+		public bool dontAllowRangedAttack = false;
+		public bool dontAllowMeleeAttack = false;
 		public string shieldTexPath;
 		public bool	showWhenDrafted;
 		public bool	showAlways;
@@ -108,13 +111,29 @@ namespace VFECore
 			get { return (CompProperties_ShieldBubble) this.props; }
 		}
 
-		protected virtual float EnergyMax => Props.EnergyShieldEnergyMax;
+		public virtual float EnergyMax
+        {
+            get
+            {
+                var value = this.Props.EnergyShieldEnergyMax;
+                if (Pawn != null)
+                {
+					value *= Pawn.GetStatValue(VFEDefOf.VEF_EnergyShieldEnergyMaxFactor, true);
+					value += Pawn.GetStatValue(VFEDefOf.VEF_EnergyShieldEnergyMaxOffset, true);
+				}
+				return value;
+			}
+        }
 
 		protected virtual float EnergyGainPerTick => Props.EnergyShieldRechargeRate / 60f;
 
 		protected virtual float EnergyLossPerDamage => Props.EnergyLossPerDamage;
 
-		public float Energy => energy;
+		public float Energy
+        {
+            get { return energy; }
+            set { energy = Mathf.Clamp(value, 0f, EnergyMax); }
+        }
 
 		private bool firstTime = true;
 		public ShieldState ShieldState
@@ -275,6 +294,7 @@ namespace VFECore
 				{
 					AbsorbedDamage(dinfo);
 				}
+				Log.Message("Absorbed: " + energy);
 				absorbed = true;
 			}
 			else

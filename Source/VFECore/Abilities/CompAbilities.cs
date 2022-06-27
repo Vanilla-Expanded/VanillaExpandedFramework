@@ -3,22 +3,25 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using AnimalBehaviours;
     using RimWorld;
+    using RimWorld.Planet;
     using UnityEngine;
     using Verse;
     using Verse.Sound;
 
-    public class CompAbilities : CompShieldBubble
+    public class CompAbilities : CompShieldBubble, PawnGizmoProvider
     {
-
         private new Pawn Pawn => (Pawn) this.parent;
 
         private List<Abilities.Ability> learnedAbilities = new List<Abilities.Ability>();
+        private List<Ability> abilitiesToTick = new List<Ability>();
 
-        public Abilities.Ability currentlyCasting;
+        public Abilities.Ability  currentlyCasting;
+        public GlobalTargetInfo[] currentlyCastingTargets;
 
         private float energyMax;
-        protected override float EnergyMax => this.energyMax;
+        public override float EnergyMax => this.energyMax;
 
         protected override float EnergyGainPerTick => 0f;
 
@@ -47,7 +50,10 @@
             ability.Init();
 
             this.learnedAbilities.Add(ability);
-
+            if (ability.def.needsTicking)
+            {
+                this.abilitiesToTick.Add(ability);
+            }
             this.learnedAbilities = this.LearnedAbilities.OrderBy(ab => ab.def.requiredHediff?.minimumLevel ?? 0).GroupBy(ab => ab.Hediff).SelectMany(grp => grp).ToList();
         }
 
@@ -68,31 +74,24 @@
                 if(this.breakTicks <= 0)
                     this.Break();
             }
+            int abilitiesToTickCount = this.abilitiesToTick.Count;
+            for (var i = 0; i < abilitiesToTickCount; i++)
+                this.abilitiesToTick[i].Tick();
         }
 
         public override string CompInspectStringExtra() => string.Empty;
 
-        public override IEnumerable<Gizmo> CompGetGizmosExtra()
-        {
-            foreach (Gizmo gizmo in base.CompGetGizmosExtra()) 
-                yield return gizmo;
-            
-            foreach (Abilities.Ability ability in this.learnedAbilities) 
-                if(ability.ShowGizmoOnPawn())
-                    yield return ability.GetGizmo();
-
-            foreach (Hediff_Abilities hediff in this.Pawn.health.hediffSet.GetHediffs<Hediff_Abilities>())
-            {
-                foreach (Gizmo gizmo in hediff.DrawGizmos()) 
-                    yield return gizmo;
-            }
-        }
-
+        public List<GlobalTargetInfo> tmpCurrentlyCastingTargets;
         public override void PostExposeData()
         {
             base.PostExposeData();
             Scribe_Collections.Look(ref this.learnedAbilities, nameof(this.learnedAbilities), LookMode.Deep);
             Scribe_References.Look(ref this.currentlyCasting, nameof(this.currentlyCasting));
+
+            tmpCurrentlyCastingTargets = currentlyCastingTargets?.ToList() ?? new List<GlobalTargetInfo>();
+            Scribe_Collections.Look(ref this.tmpCurrentlyCastingTargets, nameof(this.currentlyCastingTargets));
+            currentlyCastingTargets = this.tmpCurrentlyCastingTargets?.ToArray();
+
             Scribe_Values.Look(ref this.energyMax, nameof(this.energyMax));
             Scribe_Values.Look(ref this.shieldPath, nameof(this.shieldPath));
 
@@ -104,6 +103,10 @@
                 {
                     ability.holder = this.parent;
                 }
+            }
+            if (this.learnedAbilities?.Any() ?? false)
+            {
+                this.abilitiesToTick = this.learnedAbilities.Where(x => x.def.needsTicking).ToList();
             }
         }
 
@@ -136,6 +139,19 @@
             this.shieldPath   = shieldTexturePath;
 
             return true;
+        }
+
+        public IEnumerable<Gizmo> GetGizmos()
+        {
+            foreach (Abilities.Ability ability in this.learnedAbilities)
+                if (ability.ShowGizmoOnPawn())
+                    yield return ability.GetGizmo();
+
+            foreach (Hediff_Abilities hediff in this.Pawn.health.hediffSet.GetHediffs<Hediff_Abilities>())
+            {
+                foreach (Gizmo gizmo in hediff.DrawGizmos())
+                    yield return gizmo;
+            }
         }
 
         private string currentShieldPath;

@@ -1,6 +1,6 @@
-﻿using RimWorld;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -77,11 +77,11 @@ namespace KCSG
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look<string>(ref structureLabel, "structureLabel");
-            Scribe_Values.Look<bool>(ref nearMapCenter, "nearMapCenter");
-            Scribe_Values.Look<bool>(ref allowFoggedPosition, "allowFoggedPosition");
-            Scribe_Values.Look<bool>(ref spawnPartOfEnnemyFaction, "spawnPartOfEnnemyFaction");
-            Scribe_Collections.Look<StructureLayoutDef>(ref chooseFrom, "chooseFrom", LookMode.Def);
+            Scribe_Values.Look(ref structureLabel, "structureLabel");
+            Scribe_Values.Look(ref nearMapCenter, "nearMapCenter");
+            Scribe_Values.Look(ref allowFoggedPosition, "allowFoggedPosition");
+            Scribe_Values.Look(ref spawnPartOfEnnemyFaction, "spawnPartOfEnnemyFaction");
+            Scribe_Collections.Look(ref chooseFrom, "chooseFrom", LookMode.Def);
         }
 
         public override IEnumerable<string> GetSummaryListEntries(string tag)
@@ -97,24 +97,23 @@ namespace KCSG
         {
             if (Find.TickManager.TicksGame > 5f || chooseFrom.Count <= 0 || PrepareCarefully_Util.pcScenariosSave.Count <= 0) return;
 
-            StructureLayoutDef structureLayoutDef;
+            StructureLayoutDef layoutDef;
             if (ModLister.GetActiveModWithIdentifier("EdB.PrepareCarefully") != null)
             {
-                structureLayoutDef = PrepareCarefully_Util.pcScenariosSave.First().Key;
+                layoutDef = PrepareCarefully_Util.pcScenariosSave.First().Key;
                 nearMapCenter = PrepareCarefully_Util.pcScenariosSave.First().Value;
             }
-            else structureLayoutDef = chooseFrom.RandomElement();
+            else
+            {
+                layoutDef = chooseFrom.RandomElement();
+            }
 
-            RectUtils.HeightWidthFromLayout(structureLayoutDef, out int h, out int w);
-            CellRect cellRect = this.CreateCellRect(map, h, w);
+            CellRect cellRect = CreateCellRect(map, layoutDef.height, layoutDef.width);
 
             if (preGenClear)
-                GenUtils.PreClean(map, cellRect, structureLayoutDef.roofGrid, fullClear);
+                GenUtils.PreClean(map, cellRect, fullClear, layoutDef.roofGridResolved);
 
-            foreach (List<string> item in structureLayoutDef.layouts)
-            {
-                GenUtils.GenerateRoomFromLayout(item, cellRect, map, structureLayoutDef, spawnConduits);
-            }
+            GenUtils.GenerateLayout(layoutDef, cellRect, map);
 
             if (spawnTheStartingPawn && Find.GameInitData != null)
             {
@@ -123,7 +122,7 @@ namespace KCSG
                 {
                     thingsGroups.Add(new List<Thing>() { startingAndOptionalPawn });
                 }
-                    
+
                 List<Thing> thingList = new List<Thing>();
                 foreach (ScenPart allPart in Find.Scenario.AllParts)
                 {
@@ -147,11 +146,11 @@ namespace KCSG
                 }
 
                 IntVec3 center = map.Center;
-                Pos offset = structureLayoutDef.spawnAtPos.RandomElement();
+                Pos offset = layoutDef.spawnAtPos.RandomElement();
                 center.x += offset.x;
                 center.y += offset.y;
-                KLog.Message($"Spawning pawns and stuff at {center}");
-                this.DropThingGroupsAt(center, map, thingsGroups, instaDrop: (Find.GameInitData.QuickStarted || this.method != PlayerPawnsArriveMethod.DropPods), leaveSlag: true, allowFogged: false);
+                Debug.Message($"Spawning pawns and stuff at {center}");
+                DropThingGroupsAt(center, map, thingsGroups, instaDrop: (Find.GameInitData.QuickStarted || method != PlayerPawnsArriveMethod.DropPods), leaveSlag: true, allowFogged: false);
             }
 
             if (map.mapPawns.FreeColonistsSpawned.Count > 0)
@@ -160,7 +159,7 @@ namespace KCSG
             }
         }
 
-        private void DropThingGroupsAt (IntVec3 dropCenter, Map map, List<List<Thing>> thingsGroups, int openDelay = 110, bool instaDrop = false, bool leaveSlag = false, bool forbid = true, bool allowFogged = true)
+        private void DropThingGroupsAt(IntVec3 dropCenter, Map map, List<List<Thing>> thingsGroups, int openDelay = 110, bool instaDrop = false, bool leaveSlag = false, bool forbid = true, bool allowFogged = true)
         {
             foreach (List<Thing> thingsGroup in thingsGroups)
             {
@@ -214,17 +213,17 @@ namespace KCSG
         private bool CanScatterAt(IntVec3 c, Map map, int height, int widht)
         {
             if (c.CloseToEdge(map, height)) return false;
-            if (!this.allowFoggedPosition && c.Fogged(map)) return false;
+            if (!allowFoggedPosition && c.Fogged(map)) return false;
             if (!c.SupportsStructureType(map, TerrainAffordanceDefOf.Heavy)) return false;
             CellRect rect = new CellRect(c.x, c.z, widht, height).ClipInsideMap(map);
-            return this.CanPlaceInRange(rect, map);
+            return CanPlaceInRange(rect, map);
         }
 
         private CellRect CreateCellRect(Map map, int height, int widht)
         {
             IntVec3 rectCenter;
             if (nearMapCenter) rectCenter = map.Center;
-            else rectCenter = map.AllCells.ToList().FindAll(c => this.CanScatterAt(c, map, height, widht)).InRandomOrder().RandomElement();
+            else rectCenter = map.AllCells.ToList().FindAll(c => CanScatterAt(c, map, height, widht)).InRandomOrder().RandomElement();
 
             return CellRect.CenteredOn(rectCenter, widht, height);
         }

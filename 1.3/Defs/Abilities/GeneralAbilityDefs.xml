@@ -1,9 +1,33 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
+
+  <JobDef>
+    <defName>VFEA_UseAbilityUninterruptible</defName>
+    <driverClass>VFECore.Abilities.JobDriver_CastAbilityOnce</driverClass>
+    <casualInterruptible>false</casualInterruptible>
+    <collideWithPawns>true</collideWithPawns>
+    <playerInterruptible>false</playerInterruptible>
+    <suspendable>false</suspendable>
+  </JobDef>
+
+
   <JobDef>
     <defName>VFEA_UseAbility</defName>
     <driverClass>VFECore.Abilities.JobDriver_CastAbilityOnce</driverClass>
     <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
+  
+
+  <JobDef>
+    <defName>VFEA_GotoTargetAndUseAbility</defName>
+    <driverClass>VFECore.Abilities.JobDriver_GotoTargetAndCastAbilityOnce</driverClass>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
+  
+  <JobDef>
+  	<defName>VFEA_StandAndFaceTarget</defName>
+  	<driverClass>VFECore.Abilities.JobDriver_StandAndFaceTarget</driverClass>
+  	<reportString>standing.</reportString>
   </JobDef>
 
   <ThingDef ParentName="PawnFlyerBase">

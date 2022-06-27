@@ -32,12 +32,12 @@ namespace KCSG
 
         public Designator_ExportToXml()
         {
-            this.defaultLabel = "Export";
-            this.defaultDesc = "Export a building to xml";
-            this.icon = ContentFinder<Texture2D>.Get("UI/Designators/export", true);
-            this.soundDragSustain = SoundDefOf.Designate_DragStandard;
-            this.soundDragChanged = SoundDefOf.Designate_DragStandard_Changed;
-            this.useMouseIcon = true;
+            defaultLabel = "Export";
+            defaultDesc = "Export a building to xml";
+            icon = ContentFinder<Texture2D>.Get("UI/Designators/export", true);
+            soundDragSustain = SoundDefOf.Designate_DragStandard;
+            soundDragChanged = SoundDefOf.Designate_DragStandard_Changed;
+            useMouseIcon = true;
         }
 
         public override AcceptanceReport CanDesignateCell(IntVec3 c)

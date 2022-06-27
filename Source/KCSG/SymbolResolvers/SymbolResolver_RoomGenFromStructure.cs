@@ -1,33 +1,16 @@
-﻿using RimWorld;
-using RimWorld.BaseGen;
-using System.Collections.Generic;
+﻿using RimWorld.BaseGen;
 using Verse;
 
 namespace KCSG
 {
     internal class SymbolResolver_RoomGenFromStructure : SymbolResolver
     {
-        private readonly List<IntVec3> tmpCells = new List<IntVec3>();
-
-        private readonly Dictionary<PowerNet, bool> tmpPowerNetPredicateResults = new Dictionary<PowerNet, bool>();
-
-        private readonly List<Thing> tmpThings = new List<Thing>();
-
         public override void Resolve(ResolveParams rp)
         {
-            CGO.currentGenStep = "Generating single structure";
-
             Map map = BaseGen.globalSettings.map;
-            StructureLayoutDef rld = CGO.structureLayoutDef;
 
-            foreach (List<string> item in rld.layouts)
-            {
-                GenUtils.GenerateRoomFromLayout(item, rp.rect, map, rld);
-            }
-
-            GenUtils.EnsureBatteriesConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, KThingDefOf.KCSG_PowerConduit);
-            GenUtils.EnsurePowerUsersConnected(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, KThingDefOf.KCSG_PowerConduit);
-            GenUtils.EnsureGeneratorsConnectedAndMakeSense(map, tmpThings, tmpPowerNetPredicateResults, tmpCells, KThingDefOf.KCSG_PowerConduit);
+            GenUtils.GenerateLayout(GenOption.structureLayoutDef, rp.rect, map);
+            BaseGen.symbolStack.Push("kcsg_runresolvers", rp, null);
         }
     }
 }

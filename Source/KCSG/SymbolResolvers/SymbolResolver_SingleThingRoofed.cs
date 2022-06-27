@@ -15,7 +15,7 @@ namespace KCSG
                 return false;
             }
 
-            return this.TryFindSpawnCellForItem(rp.rect, out spawnPosition);
+            return TryFindSpawnCellForItem(rp.rect, out spawnPosition);
         }
 
         public override void Resolve(ResolveParams rp)
