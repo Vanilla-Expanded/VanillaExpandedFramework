@@ -36,24 +36,27 @@ namespace KCSG
                         doorsLeadingOutside.Add(door);
                 }
 
-                var delaunayStart = DateTime.Now;
-                var edges = new Delaunay(doorsLeadingOutside).GetEdges();
-                Debug.Message($"Delaunay time: {(DateTime.Now - delaunayStart).TotalMilliseconds}ms. Edges count: {edges.Count()}");
-
-                var linkStart = DateTime.Now;
-                foreach (var edge in edges)
+                if (doorsLeadingOutside.Count > 0)
                 {
-                    var road = PathFinder.DoPath(edge.P.IntVec3, edge.Q.IntVec3, map, rp.rect, GenOption.RoadOptions.linkRoadDef ?? TerrainDefOf.Concrete);
+                    var delaunayStart = DateTime.Now;
+                    var edges = new Delaunay(doorsLeadingOutside).GetEdges();
+                    Debug.Message($"Delaunay time: {(DateTime.Now - delaunayStart).TotalMilliseconds}ms. Edges count: {edges.Count()}");
 
-                    if (road != null)
+                    var linkStart = DateTime.Now;
+                    foreach (var edge in edges)
                     {
-                        GenUtils.WidenPath(road, map, GenOption.RoadOptions.linkRoadDef ?? TerrainDefOf.Concrete, GenOption.RoadOptions.LinkRoadWidth);
+                        var road = PathFinder.DoPath(edge.P.IntVec3, edge.Q.IntVec3, map, rp.rect, GenOption.RoadOptions.linkRoadDef ?? TerrainDefOf.Concrete);
 
-                        if (GenOption.PropsOptions.addLinkRoadProps)
-                            GenUtils.SpawnLinkRoadProps(road);
+                        if (road != null)
+                        {
+                            GenUtils.WidenPath(road, map, GenOption.RoadOptions.linkRoadDef ?? TerrainDefOf.Concrete, GenOption.RoadOptions.LinkRoadWidth);
+
+                            if (GenOption.PropsOptions.addLinkRoadProps)
+                                GenUtils.SpawnLinkRoadProps(road);
+                        }
                     }
+                    Debug.Message($"Link road (+ props) time: {(DateTime.Now - linkStart).TotalMilliseconds}ms.");
                 }
-                Debug.Message($"Link road (+ props) time: {(DateTime.Now - linkStart).TotalMilliseconds}ms.");
             }
         }
     }
