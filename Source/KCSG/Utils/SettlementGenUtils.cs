@@ -25,7 +25,7 @@ namespace KCSG
         public static DateTime startTime;
         public static int seed;
 
-        public static void Generate(ResolveParams rp, Map map, SettlementLayoutDef settlementLayoutDef)
+        public static void Generate(ResolveParams rp, Map map, SettlementLayoutDef sld)
         {
             seed = map.Tile;
             startTime = DateTime.Now;
@@ -50,8 +50,8 @@ namespace KCSG
             {
                 TerrainDef t = map.terrainGrid.TerrainAt(cell);
                 if ((mapRoad != null && mapRoad.Contains(t))
-                    || (settlementLayoutDef.avoidBridgeable && t.affordances.Contains(TerrainAffordanceDefOf.Bridgeable))
-                    || (settlementLayoutDef.avoidMountains && cell.GetFirstMineable(map) != null))
+                    || (sld.avoidBridgeable && t.affordances.Contains(TerrainAffordanceDefOf.Bridgeable))
+                    || (sld.avoidMountains && cell.GetFirstMineable(map) != null))
                 {
                     grid[cell.z][cell.x] = CellType.Used;
                 }
@@ -100,17 +100,18 @@ namespace KCSG
 
             // Run poisson disk sampling
             var samplingStart = DateTime.Now;
-            var vects = Sampling.SampleCircle(rect, rect.CenterCell, Math.Max(rect.Width, rect.Height), settlementLayoutDef.samplingDistance, new Random(seed), map);
+            var rDistance = Math.Max(width, height);
+            var vects = Sampling.Sample(rect, rect.CenterCell - new IntVec3(rDistance, 0, rDistance), rDistance, sld.samplingDistance);
             Debug.Message($"Sampling time: {(DateTime.Now - samplingStart).TotalMilliseconds}ms. Vects count: {vects?.Count}");
 
-            if (settlementLayoutDef.stuffableOptions.generalWallStuff)
+            if (sld.stuffableOptions.generalWallStuff)
                 GenOption.generalWallStuff = GenUtils.RandomWallStuffByWeight(ThingDefOf.Wall);
 
             // Place and choose buildings.
             if (vects != null && vects.Count > 1)
             {
                 var buildingStart = DateTime.Now;
-                BuildingPlacement.Run(vects, settlementLayoutDef, rp);
+                BuildingPlacement.Run(vects, sld, rp);
                 Debug.Message($"Building time: {(DateTime.Now - buildingStart).TotalMilliseconds}ms. Doors count: {doors.Count}");
             }
         }
@@ -133,38 +134,33 @@ namespace KCSG
 
             public const int DefaultPointsPerIteration = 30;
 
-            public static IntVec3 dimensions;
+            public static IntVec3 size;
+            public static IntVec3 center;
+
             public static float rejectionSqDistance;
             public static float minimumSqDistance;
 
-            public static IntVec3 center;
-
             public static IntVec3?[,] grid;
+
             public static List<IntVec3> activePoints;
             public static int activePointsCount;
             public static List<IntVec3> points;
 
             public static Random random;
 
-            public static List<IntVec3> SampleCircle(CellRect rect, IntVec3 center, int radius, float minimumDistance, Random random, Map map)
+            public static List<IntVec3> Sample(CellRect rect, IntVec3 topLeft, float rejectionDistance, float minimumDistance)
             {
-                return Sample(rect, center - new IntVec3(radius, 0, radius), center + new IntVec3(radius, 0, radius), radius, minimumDistance, random, map);
-            }
-
-            static List<IntVec3> Sample(CellRect rect, IntVec3 topLeft, IntVec3 bottomRight, float rejectionDistance, float minimumDistance, Random random, Map map)
-            {
-                Sampling.random = random;
-
-                dimensions = BaseGen.globalSettings.map.Size;
+                random = new Random();
+                size = BaseGen.globalSettings.map.Size;
                 rejectionSqDistance = rejectionDistance * rejectionDistance;
                 minimumSqDistance = minimumDistance * minimumDistance;
-                center = new IntVec3((topLeft.x + bottomRight.x) / 2, 0, (topLeft.z + bottomRight.z) / 2);
+                center = rect.CenterCell;
 
-                grid = new IntVec3?[dimensions.z, dimensions.x];
+                grid = new IntVec3?[size.z, size.x];
                 activePoints = new List<IntVec3>();
                 points = new List<IntVec3>();
 
-                AddFirstPoint(topLeft);
+                AddFirstPoint(rect, topLeft);
 
                 while (activePointsCount > 0)
                 {
@@ -174,7 +170,7 @@ namespace KCSG
                     var found = false;
 
                     for (var k = 0; k < DefaultPointsPerIteration; k++)
-                        found |= AddNextPoint(rect, point, topLeft, bottomRight, minimumDistance);
+                        found |= AddNextPoint(rect, point, topLeft, minimumDistance);
 
                     if (!found)
                     {
@@ -186,33 +182,31 @@ namespace KCSG
                 return points;
             }
 
-            static void AddFirstPoint(IntVec3 topLeft)
+            static void AddFirstPoint(CellRect rect, IntVec3 topLeft)
             {
-                var added = false;
-                while (!added)
+                while (true)
                 {
                     var d = random.NextDouble();
-                    int xr = (int)(topLeft.x + dimensions.x * d);
+                    int xr = (int)(topLeft.x + size.x * d);
 
                     d = random.NextDouble();
-                    int yr = (int)(topLeft.z + dimensions.z * d);
+                    int yr = (int)(topLeft.z + size.z * d);
 
                     var p = new IntVec3(xr, 0, yr);
-                    if (DistanceSquared(center, p) > rejectionSqDistance)
-                        continue;
-                    added = true;
+                    if (rect.Contains(p) && DistanceSquared(center, p) <= rejectionSqDistance)
+                    {
+                        var index = Denormalize(p, topLeft);
+                        grid[index.x, index.z] = p;
 
-                    var index = Denormalize(p, topLeft);
-
-                    grid[index.x, index.z] = p;
-
-                    activePoints.Add(p);
-                    activePointsCount++;
-                    points.Add(p);
+                        activePoints.Add(p);
+                        activePointsCount++;
+                        points.Add(p);
+                        return;
+                    }
                 }
             }
 
-            static bool AddNextPoint(CellRect rect, IntVec3 point, IntVec3 topLeft, IntVec3 bottomRight, float minimumDistance)
+            static bool AddNextPoint(CellRect rect, IntVec3 point, IntVec3 topLeft, float minimumDistance)
             {
                 var found = false;
                 var q = GenerateRandomAround(point, minimumDistance, random);
@@ -223,12 +217,12 @@ namespace KCSG
                     var qIndex = Denormalize(q, topLeft);
                     var tooClose = false;
 
-                    for (var i = Math.Max(0, qIndex.x - 2); i < Math.Min(dimensions.x, qIndex.x + 3) && !tooClose; i++)
+                    for (var i = qIndex.x - 2; i < qIndex.x + 3 && !tooClose; i++)
                     {
-                        for (var j = Math.Max(0, qIndex.z - 2); j < Math.Min(dimensions.z, qIndex.z + 3) && !tooClose; j++)
+                        for (var j = qIndex.z - 2; j < qIndex.z + 3 && !tooClose; j++)
                         {
-                            if (grid[i, j].HasValue && DistanceSquared(grid[i, j].Value, q) < minimumSqDistance)
-                                tooClose = true;
+                            if (i >= 0 && i < size.x && j >= 0 && j < size.z && grid[i, j].HasValue)
+                                tooClose = DistanceSquared(grid[i, j].Value, q) < minimumSqDistance;
                         }
                     }
 
