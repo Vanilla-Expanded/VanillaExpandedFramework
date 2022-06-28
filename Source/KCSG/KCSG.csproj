@@ -21,6 +21,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+	  <TransformOnBuild>true</TransformOnBuild>
+	  <OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
+	  <TransformOutOfDateOnly>false</TransformOutOfDateOnly>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +32,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+	  <TransformOnBuild>true</TransformOnBuild>
+	  <OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
+	  <TransformOutOfDateOnly>false</TransformOutOfDateOnly>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="VFECore, Version=1.1.7.0, Culture=neutral, processorArchitecture=MSIL">
@@ -38,6 +44,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoIncrement.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AutoIncrement.tt</DependentUpon>
+    </Compile>
     <Compile Include="DefModExtensions\BiomeStructGenExtension.cs" />
     <Compile Include="DefModExtensions\FallingStructure.cs" />
     <Compile Include="DefModExtensions\SpawnAtWorldGen.cs" />
@@ -106,5 +117,15 @@
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="AutoIncrement.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AutoIncrement.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TextTemplating\Microsoft.TextTemplating.targets"/>
 </Project>

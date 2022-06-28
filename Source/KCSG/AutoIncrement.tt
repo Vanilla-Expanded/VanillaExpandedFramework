@@ -1,0 +1,14 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ output extension=".cs" #>
+
+using System.Reflection;
+
+[assembly: AssemblyVersion("<#= this.year #>.<#= this.month #>.<#= this.day #>.<#= 0 #>")]
+
+<#+
+
+ static DateTime date = DateTime.Now;
+ string year = date.ToString("yy");
+ string month = date.ToString("MM");
+ string day = date.ToString("dd");
+#>
