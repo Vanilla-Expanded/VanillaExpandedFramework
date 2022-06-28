@@ -80,7 +80,7 @@ namespace KCSG
                             }
                             else
                             {
-                                if (cell.GetFirstMineable(map) != null && temp.thingDef.designationCategory == DesignationCategoryDefOf.Security)
+                                if (GenOption.mineables[cell] != null && temp.thingDef.designationCategory == DesignationCategoryDefOf.Security)
                                 {
                                     continue;
                                 }
@@ -109,7 +109,7 @@ namespace KCSG
             }
             else
             {
-                cell.GetFirstMineable(map)?.DeSpawn();
+                GenOption.DespawnMineableAt(cell);
                 map.terrainGrid.SetTerrain(cell, terrainDef);
             }
         }
@@ -432,7 +432,7 @@ namespace KCSG
             if (t != null && t.def.plant != null && t.def.plant.interferesWithRoof)
                 t.DeSpawn();
 
-            cell.GetFirstMineable(map)?.DeSpawn();
+            GenOption.DespawnMineableAt(cell);
         }
 
         /// <summary>
@@ -653,7 +653,15 @@ namespace KCSG
         /// </summary>
         public static void SetTerrainAt(IntVec3 c, Map map, TerrainDef roadDef)
         {
-            c.GetFirstMineable(map)?.DeSpawn();
+            if (GenOption.mineables.ContainsKey(c))
+            {
+                GenOption.DespawnMineableAt(c);
+            }
+            else
+            {
+                c.GetFirstMineable(map)?.DeSpawn();
+            }
+
             if (map.terrainGrid.TerrainAt(c) is TerrainDef terrainDef)
             {
                 if (!terrainDef.BuildableByPlayer)

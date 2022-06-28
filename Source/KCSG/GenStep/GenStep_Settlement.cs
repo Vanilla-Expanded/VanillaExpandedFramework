@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using System.Collections.Generic;
+using RimWorld;
 using RimWorld.BaseGen;
 using Verse;
 
@@ -49,7 +50,10 @@ namespace KCSG
             // Create rect
             CellRect rect = CellRect.CenteredOn(spawn, width, height);
             rect.ClipInsideMap(map);
-            Debug.Message($"rect count: {rect.Cells.EnumerableCount()}");
+
+            GenOption.mineables = new Dictionary<IntVec3, Mineable>();
+            foreach (var cell in rect)
+                GenOption.mineables.Add(cell, cell.GetFirstMineable(map));
 
             // Pre-gen clean
             if (ext.preGenClear)

@@ -25,7 +25,8 @@ namespace KCSG
                     var anyLeadOutside = false;
                     for (int o = 0; o < adj.Count; o++)
                     {
-                        if (adj[o].UsesOutdoorTemperature(map) || adj[o].GetFirstMineable(map) != null)
+                        var adjCell = adj[o];
+                        if (adjCell.UsesOutdoorTemperature(map) || GenOption.mineables[adjCell] != null)
                         {
                             anyLeadOutside = true;
                             break;

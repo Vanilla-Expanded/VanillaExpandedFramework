@@ -53,7 +53,7 @@ namespace KCSG
                 TerrainDef t = map.terrainGrid.TerrainAt(cell);
                 if ((mapRoad != null && mapRoad.Contains(t))
                     || (sld.avoidBridgeable && t.affordances.Contains(TerrainAffordanceDefOf.Bridgeable))
-                    || (sld.avoidMountains && cell.GetFirstMineable(map) != null))
+                    || (sld.avoidMountains && GenOption.mineables[cell] != null))
                 {
                     grid[cell.z][cell.x] = CellType.Used;
                 }
@@ -1400,11 +1400,17 @@ namespace KCSG
                 for (int i = 0; i < 4; i++)
                 {
                     var loc = adj[i];
-                    if (InBound(loc.vec3) && (pathGrid.WalkableFast(loc.vec3) || loc.vec3.GetFirstMineable(map) != null))
+                    var vec = loc.vec3;
+
+                    if (InBound(vec))
                     {
-                        loc.SetDistance(target.X, target.Y);
-                        loc.cost = current.cost + 1 + pathGrid.PerceivedPathCostAt(loc.vec3);
-                        result.Add(loc);
+                        var mineable = GenOption.mineables.ContainsKey(vec) ? GenOption.mineables[vec] : vec.GetFirstMineable(map);
+                        if ((pathGrid.WalkableFast(vec) || mineable != null))
+                        {
+                            loc.SetDistance(target.X, target.Y);
+                            loc.cost = current.cost + 1 + (mineable != null ? 5 : pathGrid.PerceivedPathCostAt(vec));
+                            result.Add(loc);
+                        }
                     }
                 }
 
