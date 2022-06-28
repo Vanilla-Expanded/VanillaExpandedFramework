@@ -46,7 +46,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Core" />
-	<Reference Include="System.Data" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="VFEM">
@@ -64,6 +64,7 @@
     <Compile Include="Abilities\Abilities\Ability_SpawnBuilding.cs" />
     <Compile Include="Abilities\Ability.cs" />
     <Compile Include="Abilities\AbilityDef.cs" />
+    <Compile Include="Abilities\AbilityMigrationUtility.cs" />
     <Compile Include="Abilities\Caravan_GetGizmos_Patch.cs" />
     <Compile Include="Abilities\Hediff_Ability.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_AbilityMod.cs" />
