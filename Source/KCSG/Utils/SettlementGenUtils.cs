@@ -59,6 +59,8 @@ namespace KCSG
             // Add main roads
             if (GenOption.RoadOptions.addMainRoad)
             {
+                var mainRoadStart = DateTime.Now;
+
                 var edgeCells = rect.EdgeCells.ToList();
                 var terrain = GenOption.RoadOptions.mainRoadDef ?? TerrainDefOf.Concrete;
                 var cellRect = CellRect.WholeMap(map);
@@ -88,14 +90,16 @@ namespace KCSG
                             GenUtils.WidenPath(outOne, map, terrain, mainRoadWidth);
                         }
 
-                        /*if (CellFinder.TryFindRandomEdgeCellNearWith(target, 100, map, c => c.Walkable(map), out IntVec3 outTwotarget))
+                        if (CellFinder.TryFindRandomEdgeCellNearWith(target, 100, map, c => c.Walkable(map), out IntVec3 outTwotarget))
                         {
                             var outTwo = PathFinder.DoPath(target, outTwotarget, map, cellRect, terrain);
-                            Debug.Message($"outTwo count: {outTwo.Count}");
+                            if (outTwo == null)
+                                Debug.Message($"No path for {target} to {outTwotarget}");
                             GenUtils.WidenPath(outTwo, map, terrain, GenOption.RoadOptions.MainRoadWidth);
-                        }*/
+                        }
                     }
                 }
+                Debug.Message($"Main road time: {(DateTime.Now - mainRoadStart).TotalMilliseconds}ms.");
             }
 
             // Run poisson disk sampling
