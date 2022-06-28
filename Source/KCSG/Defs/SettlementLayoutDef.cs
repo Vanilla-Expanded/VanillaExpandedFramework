@@ -94,6 +94,7 @@ namespace KCSG
     {
         public IntVec2 settlementSize = new IntVec2(42, 42);
 
+        public int samplingDistance = 8;
         public bool avoidBridgeable = false;
         public bool avoidMountains = false;
 

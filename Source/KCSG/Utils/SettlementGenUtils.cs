@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using RimWorld.BaseGen;
-using UnityEngine;
 using Verse;
 using Random = System.Random;
 
@@ -37,6 +36,7 @@ namespace KCSG
             // Settlement height/width
             int height = rect.Height;
             int width = rect.Width;
+            Debug.Message($"Generating in rect: {height}x{width}");
             // Init grid
             grid = new CellType[size.z][];
             for (int i = 0; i < size.z; i++)
@@ -56,19 +56,7 @@ namespace KCSG
                     grid[cell.z][cell.x] = CellType.Used;
                 }
             }
-
-            // Get smallest allowed structure
-            int radius = 9999;
-            for (int i = 0; i < settlementLayoutDef.centerBuildings.allowedStructures.Count; i++)
-            {
-                var allowedLayouts = DefDatabase<StructureLayoutDef>.AllDefsListForReading.FindAll(s => s.tags.Contains(settlementLayoutDef.centerBuildings.allowedStructures[i].tag));
-                for (int o = 0; o < allowedLayouts.Count; o++)
-                {
-                    var layout = allowedLayouts[o];
-                    radius = Math.Min(radius, Math.Min(layout.height, layout.width));
-                }
-            }
-
+            // Add main roads
             if (GenOption.RoadOptions.addMainRoad)
             {
                 var edgeCells = rect.EdgeCells.ToList();
@@ -112,7 +100,7 @@ namespace KCSG
 
             // Run poisson disk sampling
             var samplingStart = DateTime.Now;
-            var vects = Sampling.SampleCircle(rect, rect.CenterCell, Math.Max(rect.Width, rect.Height), radius, new Random(seed));
+            var vects = Sampling.SampleCircle(rect, rect.CenterCell, Math.Max(rect.Width, rect.Height), settlementLayoutDef.samplingDistance, new Random(seed), map);
             Debug.Message($"Sampling time: {(DateTime.Now - samplingStart).TotalMilliseconds}ms. Vects count: {vects?.Count}");
 
             if (settlementLayoutDef.stuffableOptions.generalWallStuff)
@@ -146,14 +134,10 @@ namespace KCSG
             public const int DefaultPointsPerIteration = 30;
 
             public static IntVec3 dimensions;
-            public static float minimumDistance;
             public static float rejectionSqDistance;
+            public static float minimumSqDistance;
 
-            public static IntVec3 topLeft;
-            public static IntVec3 bottomRight;
             public static IntVec3 center;
-
-            public static CellRect rect;
 
             public static IntVec3?[,] grid;
             public static List<IntVec3> activePoints;
@@ -162,28 +146,25 @@ namespace KCSG
 
             public static Random random;
 
-            public static List<IntVec3> SampleCircle(CellRect rect, IntVec3 center, int radius, float minimumDistance, Random random)
+            public static List<IntVec3> SampleCircle(CellRect rect, IntVec3 center, int radius, float minimumDistance, Random random, Map map)
             {
-                return Sample(rect, center - new IntVec3(radius, 0, radius), center + new IntVec3(radius, 0, radius), radius, minimumDistance, random);
+                return Sample(rect, center - new IntVec3(radius, 0, radius), center + new IntVec3(radius, 0, radius), radius, minimumDistance, random, map);
             }
 
-            static List<IntVec3> Sample(CellRect rect, IntVec3 topLeft, IntVec3 bottomRight, float rejectionDistance, float minimumDistance, Random random)
+            static List<IntVec3> Sample(CellRect rect, IntVec3 topLeft, IntVec3 bottomRight, float rejectionDistance, float minimumDistance, Random random, Map map)
             {
-                Sampling.minimumDistance = minimumDistance;
-                Sampling.topLeft = topLeft;
-                Sampling.bottomRight = bottomRight;
-                Sampling.rect = rect;
                 Sampling.random = random;
 
                 dimensions = BaseGen.globalSettings.map.Size;
                 rejectionSqDistance = rejectionDistance * rejectionDistance;
+                minimumSqDistance = minimumDistance * minimumDistance;
                 center = new IntVec3((topLeft.x + bottomRight.x) / 2, 0, (topLeft.z + bottomRight.z) / 2);
 
                 grid = new IntVec3?[dimensions.z, dimensions.x];
                 activePoints = new List<IntVec3>();
                 points = new List<IntVec3>();
 
-                AddFirstPoint();
+                AddFirstPoint(topLeft);
 
                 while (activePointsCount > 0)
                 {
@@ -193,7 +174,7 @@ namespace KCSG
                     var found = false;
 
                     for (var k = 0; k < DefaultPointsPerIteration; k++)
-                        found |= AddNextPoint(point);
+                        found |= AddNextPoint(rect, point, topLeft, bottomRight, minimumDistance);
 
                     if (!found)
                     {
@@ -205,7 +186,7 @@ namespace KCSG
                 return points;
             }
 
-            static void AddFirstPoint()
+            static void AddFirstPoint(IntVec3 topLeft)
             {
                 var added = false;
                 while (!added)
@@ -231,15 +212,12 @@ namespace KCSG
                 }
             }
 
-            static bool AddNextPoint(IntVec3 point)
+            static bool AddNextPoint(CellRect rect, IntVec3 point, IntVec3 topLeft, IntVec3 bottomRight, float minimumDistance)
             {
                 var found = false;
                 var q = GenerateRandomAround(point, minimumDistance, random);
 
-                if (q.x >= topLeft.x
-                    && q.x < bottomRight.x
-                    && q.z > topLeft.z
-                    && q.z < bottomRight.z
+                if (rect.Contains(q)
                     && DistanceSquared(center, q) <= rejectionSqDistance)
                 {
                     var qIndex = Denormalize(q, topLeft);
@@ -249,7 +227,7 @@ namespace KCSG
                     {
                         for (var j = Math.Max(0, qIndex.z - 2); j < Math.Min(dimensions.z, qIndex.z + 3) && !tooClose; j++)
                         {
-                            if (grid[i, j].HasValue && Distance(grid[i, j].Value, q) < minimumDistance)
+                            if (grid[i, j].HasValue && DistanceSquared(grid[i, j].Value, q) < minimumSqDistance)
                                 tooClose = true;
                         }
                     }
@@ -289,8 +267,6 @@ namespace KCSG
 
                 return (x * x) + (y * y);
             }
-
-            static float Distance(IntVec3 intVec3, IntVec3 other) => Mathf.Sqrt(DistanceSquared(intVec3, other));
         }
 
         /// <summary>
