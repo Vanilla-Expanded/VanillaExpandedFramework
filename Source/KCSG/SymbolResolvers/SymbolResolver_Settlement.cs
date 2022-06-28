@@ -57,18 +57,6 @@ namespace KCSG
                     BaseGen.symbolStack.Push("kcsg_edgeDefense", edgeParms, null);
                 }
 
-                // Add pad if needed
-                if (GenOption.sld.addLandingPad && ModLister.RoyaltyInstalled)
-                {
-                    if (rp.rect.TryFindRandomInnerRect(new IntVec2(9, 9), out CellRect rect, null))
-                    {
-                        ResolveParams resolveParams = rp;
-                        resolveParams.rect = rect;
-                        BaseGen.symbolStack.Push("landingPad", resolveParams, null);
-                        BaseGen.globalSettings.basePart_landingPadsResolved++;
-                    }
-                }
-
                 // Push additional resolver symbol
                 BaseGen.symbolStack.Push("kcsg_runresolvers", rp, null);
 

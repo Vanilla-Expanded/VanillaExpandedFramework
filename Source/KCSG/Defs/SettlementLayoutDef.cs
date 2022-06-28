@@ -107,7 +107,6 @@ namespace KCSG
 
         public PropsOptions propsOptions;
 
-        public bool addLandingPad = false;
         public bool vanillaLikeDefense = false;
         public bool vanillaLikeDefenseNoSandBags = false;
 

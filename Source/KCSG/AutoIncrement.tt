@@ -3,7 +3,8 @@
 
 using System.Reflection;
 
-[assembly: AssemblyVersion("<#= this.year #>.<#= this.month #>.<#= this.day #>.<#= 0 #>")]
+[assembly: AssemblyVersion("1.1.2.0")]
+[assembly: AssemblyFileVersion("<#= this.year #>.<#= this.month #>.<#= this.day #>.<#= 0 #>")]
 
 <#+
 
