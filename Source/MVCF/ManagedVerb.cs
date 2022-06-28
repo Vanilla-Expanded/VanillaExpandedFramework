@@ -166,5 +166,7 @@ namespace MVCF
 
             return damage / timeSpent;
         }
+
+        public virtual bool PreCastShot() => true;
     }
 }

@@ -53,6 +53,8 @@ namespace MVCF.VerbComps
         {
         }
 
+        public virtual bool PreCastShot() => true;
+
         public virtual bool Available() => true;
 
         public virtual ThingDef ProjectileOverride(ThingDef oldProjectile) => null;

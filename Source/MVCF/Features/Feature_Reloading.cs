@@ -29,10 +29,11 @@ namespace MVCF.Features
                 AccessTools.Method(typeof(FloatMenuUtility), nameof(FloatMenuUtility.AddWeaponReloadOrders)));
             // yield return Patch.Transpiler(AttackStaticSubType.GetMethod("<MakeNewToils>b__1", BindingFlags.NonPublic | BindingFlags.Instance),
             //     AccessTools.Method(GetType(), nameof(EndJobIfVerbNotAvailable)));
-            yield return Patch.Postfix(AccessTools.Method(typeof(Stance_Busy), "Expire"),
-                AccessTools.Method(GetType(), nameof(ReloadWeaponIfEndingCooldown)));
+            // yield return Patch.Postfix(AccessTools.Method(typeof(Stance_Busy), "Expire"),
+            //     AccessTools.Method(GetType(), nameof(ReloadWeaponIfEndingCooldown)));
             yield return Patch.Postfix(AccessTools.Method(typeof(PawnInventoryGenerator), "GenerateInventoryFor"),
                 AccessTools.Method(GetType(), nameof(PostGenerate)));
+            yield return Patch.Prefix(AccessTools.Method(typeof(JobGiver_AIFightEnemy), "TryGiveJob"), AccessTools.Method(GetType(), nameof(PreTryGiveJob)));
         }
 
         public static IEnumerable<CodeInstruction> EndJobIfVerbNotAvailable(IEnumerable<CodeInstruction> instructions,
@@ -93,7 +94,8 @@ namespace MVCF.Features
                 //     !pawn.equipment.TryDropEquipment(eq, out var result, pawn.Position))
                 //     Log.Message("Failed to drop " + result);
                 pawn.jobs.EndCurrentJob(JobCondition.InterruptForced);
-                if (pawn.inventory.innerContainer.FirstOrDefault(t => t.def.IsWeapon && t.def.equipmentType == EquipmentType.Primary) is ThingWithComps newWeapon)
+                if (pawn.inventory.innerContainer.FirstOrDefault(t => t.def.IsWeapon && t.def.equipmentType == EquipmentType.Primary) is ThingWithComps
+                        newWeapon)
                     // if (pawn.equipment.Primary && reloadable.Parent is ThingWithComps oldWeapon)
                     //     pawn.inventory.innerContainer.TryAddOrTransfer(oldWeapon, false);
                     pawn.inventory.innerContainer.TryTransferToContainer(newWeapon, pawn.equipment.GetDirectlyHeldThings(), 1, false);
@@ -131,7 +133,8 @@ namespace MVCF.Features
                         weaponPairs = weaponPairs.Where(w => w.stuff == p.kindDef.weaponStuffOverride);
 
                     weaponPairs = weaponPairs.Where(w =>
-                        w.thing.weaponClasses == null || w.thing.weaponClasses.Contains(ReloadingDefOf.RangedLight) && w.thing.weaponClasses.Contains(ReloadingDefOf.ShortShots) ||
+                        w.thing.weaponClasses == null || w.thing.weaponClasses.Contains(ReloadingDefOf.RangedLight) &&
+                        w.thing.weaponClasses.Contains(ReloadingDefOf.ShortShots) ||
                         w.thing.weaponTags.Contains("MedievalMeleeBasic") || w.thing.weaponTags.Contains("SimpleGun"));
 
                     if (weaponPairs.TryRandomElementByWeight(w => w.Price * w.Commonality, out var weaponPair))
@@ -150,6 +153,18 @@ namespace MVCF.Features
                     }
                 }
             }
+        }
+
+        public static bool PreTryGiveJob(Pawn pawn, ref Job __result)
+        {
+            if (JobGiver_ReloadFromInventory.TryGiveReloadJob(pawn) is { } job)
+            {
+                __result = job;
+                return false;
+            }
+
+            JobGiver_SwitchWeapon.TrySwitchWeapon(pawn);
+            return true;
         }
     }
 }

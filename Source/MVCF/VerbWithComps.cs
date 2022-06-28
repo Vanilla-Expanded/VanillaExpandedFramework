@@ -71,6 +71,16 @@ namespace MVCF
             for (var i = 0; i < AllComps.Count; i++) AllComps[i].Notify_ShotFired();
         }
 
+        public override bool PreCastShot()
+        {
+            var flag = base.PreCastShot();
+            for (var i = 0; i < AllComps.Count; i++)
+                if (!AllComps[i].PreCastShot())
+                    flag = false;
+
+            return flag;
+        }
+
         protected override Command_ToggleVerbUsage GetToggleCommand(Thing ownerThing)
         {
             var command = base.GetToggleCommand(ownerThing);
@@ -107,7 +117,8 @@ namespace MVCF
             for (var i = 0; i < AllComps.Count; i++) AllComps[i].CompTick();
         }
 
-        public override IEnumerable<Gizmo> GetGizmos(Thing ownerThing) => base.GetGizmos(ownerThing).Concat(AllComps.SelectMany(comp => comp.CompGetGizmosExtra()));
+        public override IEnumerable<Gizmo> GetGizmos(Thing ownerThing) =>
+            base.GetGizmos(ownerThing).Concat(AllComps.SelectMany(comp => comp.CompGetGizmosExtra()));
 
         public override void ModifyProjectile(ref ThingDef projectile)
         {

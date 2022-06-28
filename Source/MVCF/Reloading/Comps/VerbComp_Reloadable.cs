@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using HarmonyLib;
 using MVCF.Commands;
 using MVCF.Comps;
 using MVCF.VerbComps;
@@ -12,8 +13,13 @@ namespace MVCF.Reloading.Comps
 {
     public class VerbComp_Reloadable : VerbComp
     {
+        private static readonly AccessTools.FieldRef<Verb, int> burstShotsLeft = AccessTools.FieldRefAccess<Verb, int>("burstShotsLeft");
         public int ShotsRemaining;
         public VerbCompProperties_Reloadable Props => props as VerbCompProperties_Reloadable;
+
+        public Thing ReloadItemInInventory => Pawn?.inventory?.innerContainer?.FirstOrDefault(CanReloadFrom);
+        public Thing NewWeapon => Pawn?.inventory?.innerContainer?.FirstOrDefault(t => t.def.IsWeapon && t.def.equipmentType == EquipmentType.Primary);
+        private Pawn Pawn => parent?.Manager?.Pawn;
 
         public override void PostExposeData()
         {
@@ -75,7 +81,31 @@ namespace MVCF.Reloading.Comps
             ShotsRemaining--;
         }
 
-        public override bool Available() => ShotsRemaining >= (parent.Verb.Bursting ? 0 : parent.Verb.verbProps.burstShotCount);
+        public override bool Available() => ShotsRemaining >= (parent.Verb.Bursting ? burstShotsLeft(parent.Verb) : parent.Verb.verbProps.burstShotCount);
+
+        // public override bool PreCastShot()
+        // {
+        //     if (ShotsRemaining >= (parent.Verb.Bursting ? burstShotsLeft(parent.Verb) : parent.Verb.verbProps.burstShotCount)) return true;
+        //     if (ReloadItemInInventory is { } item)
+        //     {
+        //         Pawn.jobs.StartJob(JobGiver_ReloadFromInventory.MakeReloadJob(this, item), JobCondition.InterruptForced, null, true);
+        //         return true;
+        //     }
+        //
+        //     Pawn.jobs.EndCurrentJob(JobCondition.InterruptForced);
+        //     if (NewWeapon is ThingWithComps newWeapon)
+        //     {
+        //         if (Pawn.equipment.Primary is { } oldWeapon)
+        //             Pawn.inventory.innerContainer.TryAddOrTransfer(oldWeapon, false);
+        //         if (!Pawn.IsColonist && parent.Verb.EquipmentSource is { } eq &&
+        //             !Pawn.equipment.TryDropEquipment(eq, out var result, Pawn.Position))
+        //             Log.Message("Failed to drop " + result);
+        //         Pawn.inventory.innerContainer.TryTransferToContainer(newWeapon, Pawn.equipment.GetDirectlyHeldThings(), 1, false);
+        //     }
+        //
+        //     if (!Pawn.IsColonist && (Pawn.equipment.Primary?.def.IsMeleeWeapon ?? true)) Pawn.GetLord()?.CurLordToil?.UpdateAllDuties();
+        //     return false;
+        // }
     }
 
     public class CommandPart_Reloadable : CommandPart

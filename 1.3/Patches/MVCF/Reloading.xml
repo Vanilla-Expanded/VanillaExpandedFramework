@@ -6,11 +6,12 @@
             <li Class="Reloading.JobGiver_Reload" />
         </value>
     </Operation>
-    <Operation Class="PatchOperationInsert">
+    <!-- <Operation Class="PatchOperationInsert">
         <order>Prepend</order>
-        <xpath>/Defs/DutyDef/thinkNode/subNodes/li[@Class="JobGiver_AIFightEnemies"]</xpath>
+        <xpath>/Defs//li[@Class="JobGiver_AIFightEnemies"]</xpath>
         <value>
+            <li Class="Reloading.JobGiver_SwitchWeapon" />
             <li Class="Reloading.JobGiver_ReloadFromInventory" />
         </value>
-    </Operation>
+    </Operation> -->
 </Patch>

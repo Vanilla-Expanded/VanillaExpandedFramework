@@ -101,6 +101,7 @@
     <Compile Include="Reloading\Jobs\JobDriver_Unload.cs" />
     <Compile Include="Reloading\Jobs\JobGiver_Reload.cs" />
     <Compile Include="Reloading\Jobs\JobGiver_ReloadFromInventory.cs" />
+    <Compile Include="Reloading\Jobs\JobGiver_SwitchWeapon.cs" />
     <Compile Include="Reloading\ReloadingDefOf.cs" />
     <Compile Include="Utilities\FloatMenuUtility.cs" />
     <Compile Include="Utilities\ManagedVerbUtility.cs" />

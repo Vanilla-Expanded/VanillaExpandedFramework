@@ -12,16 +12,14 @@ namespace Reloading
 {
     public class JobGiver_ReloadFromInventory : ThinkNode_JobGiver
     {
-        public override float GetPriority(Pawn pawn) => 6.1f;
+        public override float GetPriority(Pawn pawn) => 99f;
 
-        protected override Job TryGiveJob(Pawn pawn)
+        protected override Job TryGiveJob(Pawn pawn) => Base.GetFeature<Feature_Reloading>().Enabled ? TryGiveReloadJob(pawn) : null;
+
+        public static Job TryGiveReloadJob(Pawn pawn)
         {
-            if (!Base.GetFeature<Feature_Reloading>().Enabled) return null;
-            var comp = pawn.AllReloadComps().FirstOrDefault(r => r.NeedsReload());
-            if (comp == null) return null;
-            return (from thing in pawn.inventory.GetDirectlyHeldThings()
-                where comp.CanReloadFrom(thing)
-                select MakeReloadJob(comp, thing)).FirstOrDefault();
+            var comp = pawn.AllReloadComps().FirstOrDefault(r => r.NeedsReload() && r.ReloadItemInInventory != null);
+            return comp == null ? null : MakeReloadJob(comp, comp.ReloadItemInInventory);
         }
 
         public static Job MakeReloadJob(VerbComp_Reloadable comp, Thing ammo)
