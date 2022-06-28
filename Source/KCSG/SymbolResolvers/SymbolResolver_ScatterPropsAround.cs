@@ -24,6 +24,11 @@ namespace KCSG
                 for (int i = 0; i < propsOpt.scatterMaxAmount; i++)
                 {
                     var prop = propsOpt.scatterPropsDefs.RandomElement();
+                    Rot4 rot = Rot4.North;
+
+                    if (prop.rotatable && Rand.Bool)
+                        rot = Rot4.East;
+
                     if (RCellFinder.TryFindRandomCellNearTheCenterOfTheMapWith(c =>
                     {
                         if (!rp.rect.Contains(c))
@@ -32,7 +37,12 @@ namespace KCSG
                         if (GenUtils.NearUsedSpot(usedSpots, c, propsOpt.scatterMinDistance))
                             return false;
 
-                        var rect = new CellRect(c.x, c.z, prop.size.x, prop.size.z);
+                        CellRect rect;
+                        if (rot == Rot4.North)
+                            rect = new CellRect(c.x, c.z, prop.size.x, prop.size.z);
+                        else
+                            rect = new CellRect(c.x, c.z, prop.size.z, prop.size.x);
+
                         foreach (var ce in rect)
                         {
                             if (grid[ce.z][ce.x] == CellType.Used || !ce.Walkable(map))
@@ -44,7 +54,12 @@ namespace KCSG
                     {
                         Thing thing = ThingMaker.MakeThing(prop, GenStuff.DefaultStuffFor(prop));
                         thing.SetFactionDirect(map.ParentFaction);
-                        GenSpawn.Spawn(thing, cell, map);
+
+                        if (prop.rotatable)
+                            GenSpawn.Spawn(thing, cell, map, rot);
+                        else
+                            GenSpawn.Spawn(thing, cell, map);
+
                         usedSpots.Add(cell);
                     }
                 }

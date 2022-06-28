@@ -740,6 +740,9 @@ namespace KCSG
         /// </summary>
         public static void SpawnMainRoadProps(List<IntVec3> road)
         {
+            if (road.NullOrEmpty())
+                return;
+
             var map = BaseGen.globalSettings.map;
             for (int i = 0; i < road.Count; i++)
             {
@@ -772,6 +775,9 @@ namespace KCSG
         /// </summary>
         public static void SpawnLinkRoadProps(List<IntVec3> road)
         {
+            if (road.NullOrEmpty())
+                return;
+
             var map = BaseGen.globalSettings.map;
             for (int i = 0; i < road.Count; i++)
             {
