@@ -43,56 +43,64 @@ namespace KCSG
                 IntVec3 cell = cells[i];
                 if (cell.InBounds(map))
                 {
-                    SymbolDef temp = layout.symbolsLists[index][i];
-                    if (temp != null)
+                    SymbolDef symbol = layout.symbolsLists[index][i];
+                    if (symbol != null)
                     {
-                        if (temp.isTerrain && temp.terrainDef != null)
-                        {
-                            GenerateTerrainAt(map, cell, temp.terrainDef);
-                        }
-                        else if (temp.pawnKindDefNS != null && GenOption.ext?.AdditionalResolvers == false)
-                        {
-                            GeneratePawnAt(map, cell, temp);
-                        }
-                        else if (temp.thingDef != null)
-                        {
-                            if (temp.thingDef.category == ThingCategory.Item)
-                            {
-                                GenerateItemAt(map, cell, temp);
-                            }
-                            else if (temp.thingDef.category == ThingCategory.Plant)
-                            {
-                                var terrain = cell.GetTerrain(map);
-                                if (!terrain.BuildableByPlayer &&
-                                    (terrain.affordances.Contains(TerrainAffordanceDefOf.Bridgeable)
-                                    || (temp.thingDef.plant != null && terrain.fertility < temp.thingDef.plant.fertilityMin)))
-                                {
-                                    map.terrainGrid.SetTerrain(cell, TerrainDefOf.Soil);
-                                }
+                        GenerateSymbol(symbol, layout, map, cell, faction, wallForRoom);
+                    }
+                }
+            }
+        }
 
-                                Plant plant = ThingMaker.MakeThing(temp.thingDef) as Plant;
-                                plant.Growth = temp.plantGrowth;
-                                GenSpawn.Spawn(plant, cell, map, WipeMode.VanishOrMoveAside);
-                            }
-                            else if (temp.thingDef.category == ThingCategory.Pawn && GenOption.ext?.AdditionalResolvers == false)
-                            {
-                                GenSpawn.Spawn(temp.thingDef, cell, map, WipeMode.VanishOrMoveAside);
-                            }
-                            else
-                            {
-                                if (GenOption.mineables[cell] != null && temp.thingDef.designationCategory == DesignationCategoryDefOf.Security)
-                                {
-                                    continue;
-                                }
-                                GenerateBuildingAt(map, cell, temp, faction, layout.spawnConduits, wallForRoom);
+        /// <summary>
+        /// Generate symbol at cell
+        /// </summary>
+        public static void GenerateSymbol(SymbolDef symbol, StructureLayoutDef layout, Map map, IntVec3 cell, Faction faction, ThingDef wallForRoom)
+        {
+            if (symbol.isTerrain && symbol.terrainDef != null)
+            {
+                GenerateTerrainAt(map, cell, symbol.terrainDef);
+            }
+            else if (symbol.pawnKindDefNS != null && (GenOption.ext == null || GenOption.ext.AdditionalResolvers == false))
+            {
+                GeneratePawnAt(map, cell, symbol);
+            }
+            else if (symbol.thingDef != null)
+            {
+                if (symbol.thingDef.category == ThingCategory.Item)
+                {
+                    GenerateItemAt(map, cell, symbol);
+                }
+                else if (symbol.thingDef.category == ThingCategory.Plant)
+                {
+                    var terrain = cell.GetTerrain(map);
+                    if (!terrain.BuildableByPlayer &&
+                        (terrain.affordances.Contains(TerrainAffordanceDefOf.Bridgeable)
+                        || (symbol.thingDef.plant != null && terrain.fertility < symbol.thingDef.plant.fertilityMin)))
+                    {
+                        map.terrainGrid.SetTerrain(cell, TerrainDefOf.Soil);
+                    }
 
-                                // Generating settlement, we want to keep tracks of doors
-                                if (GenOption.ext != null && !GenOption.ext.UsingSingleLayout && temp.thingDef.altitudeLayer == AltitudeLayer.DoorMoveable)
-                                {
-                                    doors?.Add(cell);
-                                }
-                            }
-                        }
+                    Plant plant = ThingMaker.MakeThing(symbol.thingDef) as Plant;
+                    plant.Growth = symbol.plantGrowth;
+                    GenSpawn.Spawn(plant, cell, map, WipeMode.VanishOrMoveAside);
+                }
+                else if (symbol.thingDef.category == ThingCategory.Pawn && GenOption.ext?.AdditionalResolvers == false)
+                {
+                    GenSpawn.Spawn(symbol.thingDef, cell, map, WipeMode.VanishOrMoveAside);
+                }
+                else
+                {
+                    if (GenOption.mineables[cell] != null && symbol.thingDef.designationCategory == DesignationCategoryDefOf.Security)
+                    {
+                        return;
+                    }
+                    GenerateBuildingAt(map, cell, symbol, faction, layout != null ? layout.spawnConduits : true, wallForRoom);
+
+                    // Generating settlement, we want to keep tracks of doors
+                    if (GenOption.ext != null && !GenOption.ext.UsingSingleLayout && symbol.thingDef.altitudeLayer == AltitudeLayer.DoorMoveable)
+                    {
+                        doors?.Add(cell);
                     }
                 }
             }

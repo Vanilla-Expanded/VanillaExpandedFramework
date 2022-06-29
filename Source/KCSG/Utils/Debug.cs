@@ -43,6 +43,31 @@ namespace KCSG
             }
         }
 
+        [DebugAction("KCSG", "Quickspawn mod symbol...", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        private static void QuickspawnSymbol()
+        {
+            if (DefDatabase<SymbolDef>.AllDefs.Count() > 0)
+            {
+                List<DebugMenuOption> list = new List<DebugMenuOption>();
+                foreach (SymbolDef sym in DefDatabase<SymbolDef>.AllDefs)
+                {
+                    if (sym.modContentPack != null && sym.modContentPack.Name != null)
+                    {
+                        list.Add(new DebugMenuOption(sym.defName, DebugMenuOptionMode.Tool, delegate ()
+                        {
+                            Map map = Find.CurrentMap;
+                            if (UI.MouseCell().InBounds(map))
+                            {
+                                Message(sym.ToString());
+                                GenUtils.GenerateSymbol(sym, null, map, UI.MouseCell(), map.ParentFaction, null);
+                            }
+                        }));
+                    }
+                }
+                Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
+            }
+        }
+
         [DebugAction("KCSG", "Destroy all pawns", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void RemoveAllPawns()
         {

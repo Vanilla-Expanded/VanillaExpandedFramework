@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using RimWorld;
 using Verse;
 
@@ -58,6 +59,21 @@ namespace KCSG
             if (stuff != null) stuffDef = DefDatabase<ThingDef>.GetNamed(stuff, VFECore.VFEGlobal.settings.enableVerboseLogging);
             if (pawnKindDef != null) pawnKindDefNS = DefDatabase<PawnKindDef>.GetNamed(pawnKindDef, VFECore.VFEGlobal.settings.enableVerboseLogging);
             if (thingSetMakerDef == null) thingSetMakerDef = ThingSetMakerDefOf.MapGen_AncientComplexRoomLoot_Default;
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append($"Def: {defName}");
+            if (terrainDef != null)
+                sb.AppendInNewLine($"Terrain: {terrainDef.defName}");
+            if (thingDef != null)
+                sb.AppendInNewLine($"Thing: {thingDef.defName} | Stuff: {stuffDef?.defName} | Stack size: {maxStackSize} | Rot: {rotation}");
+            if (pawnKindDefNS != null)
+                sb.AppendInNewLine($"Pawn: {pawnKindDefNS.defName} | Slave: {isSlave} | Number: {numberToSpawn} | Dead: {spawnDead} | Rotten: {spawnRotten}");
+
+            return sb.ToString();
         }
     }
 }
