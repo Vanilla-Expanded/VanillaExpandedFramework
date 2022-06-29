@@ -103,7 +103,7 @@ namespace KCSG
                             {
                                 string symbolString = thing.def.defName;
                                 if (thing.Stuff != null) symbolString += "_" + thing.Stuff.defName;
-                                if (thing.def.rotatable && thing.def.category != ThingCategory.Plant) symbolString += "_" + thing.Rotation.ToStringHuman();
+                                if (thing.def.rotatable && thing.def.category != ThingCategory.Plant) symbolString += "_" + StartupActions.Rot4ToStringEnglish(thing.Rotation);
 
                                 if (i2 + 1 == width) temp += symbolString;
                                 else temp += symbolString + ",";
@@ -542,7 +542,7 @@ namespace KCSG
             // Generate defName
             string defNameString = thingT.def.defName;
             if (thingT.Stuff != null) defNameString += "_" + thingT.Stuff.defName;
-            if (thingT.def.rotatable && thingT.def.category != ThingCategory.Plant && !thingT.def.IsFilth) defNameString += "_" + thingT.Rotation.ToStringHuman();
+            if (thingT.def.rotatable && thingT.def.category != ThingCategory.Plant && !thingT.def.IsFilth) defNameString += "_" + StartupActions.Rot4ToStringEnglish(thingT.Rotation);
 
             if (!DefDatabase<SymbolDef>.AllDefsListForReading.FindAll(s => s.defName == defNameString).Any())
             {
@@ -552,7 +552,7 @@ namespace KCSG
                 if (thingT.Stuff != null)
                     symbolDef.Add(new XElement("stuff", thingT.Stuff.defName)); // Add stuff
                 if (thingT.def.rotatable && thingT.def.category != ThingCategory.Plant)
-                    symbolDef.Add(new XElement("rotation", thingT.Rotation.ToStringHuman())); // Add rotation
+                    symbolDef.Add(new XElement("rotation", StartupActions.Rot4ToStringEnglish(thingT.Rotation))); // Add rotation
 
                 if (!symbols.Any(s => s.Value == symbolDef.Value))
                 {

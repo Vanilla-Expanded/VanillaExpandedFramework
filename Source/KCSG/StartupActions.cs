@@ -47,6 +47,13 @@ namespace KCSG
             // Make two new map generator, used with preventBridgeable
             CreateMapDefs();
         }
+        public static void AddToMissing(string symbol)
+        {
+            if (missingSymbols.ContainsKey(symbol))
+                missingSymbols[symbol]++;
+            else
+                missingSymbols.Add(symbol, 1);
+        }
 
         private static void CreateMapDefs()
         {
@@ -69,14 +76,6 @@ namespace KCSG
             DefDatabase<MapGeneratorDef>.Add(mgdB);
         }
 
-        public static void AddToMissing(string symbol)
-        {
-            if (missingSymbols.ContainsKey(symbol))
-                missingSymbols[symbol]++;
-            else
-                missingSymbols.Add(symbol, 1);
-        }
-
         public static void CreateSymbols()
         {
             createdSymbolAmount = 0;
@@ -94,7 +93,9 @@ namespace KCSG
             if (DefDatabase<SymbolDef>.DefCount < 65535)
             {
                 if (DefDatabase<SymbolDef>.GetNamedSilentFail(def.defName) == null)
+                {
                     DefDatabase<SymbolDef>.Add(def);
+                }
             }
             else
             {
@@ -185,7 +186,7 @@ namespace KCSG
         {
             SymbolDef symbolDef = new SymbolDef
             {
-                defName = $"{thing.defName}_{stuff.defName}_{rot.ToStringHuman()}",
+                defName = $"{thing.defName}_{stuff.defName}_{Rot4ToStringEnglish(rot)}",
                 thingDef = thing,
                 stuffDef = stuff,
                 rotation = rot,
@@ -210,7 +211,7 @@ namespace KCSG
         {
             SymbolDef symbolDef = new SymbolDef
             {
-                defName = $"{thing.defName}_{rot.ToStringHuman()}",
+                defName = $"{thing.defName}_{Rot4ToStringEnglish(rot)}",
                 thingDef = thing,
                 rotation = rot,
             };
@@ -248,6 +249,23 @@ namespace KCSG
             foreach (PawnKindDef pawnKindDef in pawnKindDefs)
             {
                 if (!defCreated) AddDef(CreateSymbolDef(pawnKindDef));
+            }
+        }
+
+        public static string Rot4ToStringEnglish(Rot4 rot4)
+        {
+            switch (rot4.AsInt)
+            {
+                case 0:
+                    return "North";
+                case 1:
+                    return "East";
+                case 2:
+                    return "South";
+                case 3:
+                    return "West";
+                default:
+                    return "error";
             }
         }
     }
