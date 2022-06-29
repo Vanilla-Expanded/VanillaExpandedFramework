@@ -32,6 +32,9 @@ namespace KCSG
                         if (UI.MouseCell().InBounds(map))
                         {
                             CellRect cellRect = CellRect.CenteredOn(UI.MouseCell(), layoutDef.width, layoutDef.height);
+                            GenOption.mineables = new Dictionary<IntVec3, Mineable>();
+                            foreach (var cell in cellRect)
+                                GenOption.mineables.Add(cell, cell.GetFirstMineable(map));
                             GenUtils.GenerateLayout(layoutDef, cellRect, map);
                         }
                     }));
