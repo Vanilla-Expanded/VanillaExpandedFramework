@@ -786,6 +786,9 @@ namespace KCSG
             if (road.NullOrEmpty())
                 return;
 
+            if (GenOption.usedSpots == null)
+                GenOption.usedSpots = new List<IntVec3>();
+
             var map = BaseGen.globalSettings.map;
             for (int i = 0; i < road.Count; i++)
             {
