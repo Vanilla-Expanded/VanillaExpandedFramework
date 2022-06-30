@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using RimWorld;
 using RimWorld.BaseGen;
 using Verse;
 
@@ -45,6 +46,9 @@ namespace KCSG
             StructureLayoutDef layoutDef = structureLayoutDefs.RandomElement();
 
             CellRect cellRect = CellRect.CenteredOn(map.Center, layoutDef.width, layoutDef.height);
+            GenOption.mineables = new Dictionary<IntVec3, Mineable>();
+            foreach (var cell in cellRect)
+                GenOption.mineables.Add(cell, cell.GetFirstMineable(map));
 
             GenUtils.PreClean(map, cellRect, fullClear, layoutDef.roofGridResolved);
             GenUtils.GenerateLayout(layoutDef, cellRect, map);

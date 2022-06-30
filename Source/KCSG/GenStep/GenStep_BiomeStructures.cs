@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using System.Collections.Generic;
+using RimWorld;
 using RimWorld.Planet;
 using Verse;
 
@@ -63,6 +64,9 @@ namespace KCSG
 
 
                         CellRect spawnRect = CellRect.CenteredOn(spawnPos, width, height);
+                        GenOption.mineables = new Dictionary<IntVec3, Mineable>();
+                        foreach (var cell in spawnRect)
+                            GenOption.mineables.Add(cell, cell.GetFirstMineable(map));
                         GenUtils.GenerateLayout(layout, spawnRect, map);
                     }
 

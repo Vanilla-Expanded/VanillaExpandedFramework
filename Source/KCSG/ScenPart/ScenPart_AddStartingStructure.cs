@@ -113,6 +113,10 @@ namespace KCSG
             if (preGenClear)
                 GenUtils.PreClean(map, cellRect, fullClear, layoutDef.roofGridResolved);
 
+            GenOption.mineables = new Dictionary<IntVec3, Mineable>();
+            foreach (var cell in cellRect)
+                GenOption.mineables.Add(cell, cell.GetFirstMineable(map));
+
             GenUtils.GenerateLayout(layoutDef, cellRect, map);
 
             if (spawnTheStartingPawn && Find.GameInitData != null)
