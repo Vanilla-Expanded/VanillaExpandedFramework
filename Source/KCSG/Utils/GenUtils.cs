@@ -242,6 +242,11 @@ namespace KCSG
                 thing = ThingMaker.MakeThing(symbol.thingDef, RandomFurnitureStuffByWeight(symbol));
             }
 
+            if (ModsConfig.IdeologyActive && faction != null && faction.ideos != null && faction.ideos.PrimaryIdeo is Ideo p)
+            {
+                thing.SetStyleDef(p.GetStyleFor(thing.def));
+            }
+
             CompRefuelable refuelable = thing.TryGetComp<CompRefuelable>();
             refuelable?.Refuel(refuelable.Props.fuelCapacity);
 
