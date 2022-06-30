@@ -248,20 +248,27 @@ namespace KCSG
             CompPowerBattery battery = thing.TryGetComp<CompPowerBattery>();
             battery?.AddEnergy(battery.Props.storedEnergyMax);
 
-            if (thing is Building_CryptosleepCasket cryptosleepCasket && Rand.Value < symbol.chanceToContainPawn)
+            if (thing is Building_CorpseCasket corpseCasket && Rand.Value <= symbol.chanceToContainPawn)
             {
                 Pawn pawn = GeneratePawnForContainer(symbol, map);
-                if (!cryptosleepCasket.TryAcceptThing(pawn))
+                pawn.Kill(null);
+
+                var corpse = pawn.Corpse;
+                corpse.timeOfDeath = Mathf.Max(Find.TickManager.TicksGame - 60000 * Rand.RangeInclusive(5, 15), 0);
+                corpse.GetComp<CompRottable>()?.RotImmediately();
+
+                corpseCasket.GetComp<CompAssignableToPawn_Grave>()?.TryAssignPawn(pawn);
+                if (!corpseCasket.TryAcceptThing(corpse))
                 {
-                    pawn.Destroy();
+                    Debug.Message($"Building_CorpseCasket: Cannot add {pawn.Corpse} to {corpseCasket.def.defName}");
                 }
             }
-            else if (thing is Building_CorpseCasket corpseCasket && Rand.Value < symbol.chanceToContainPawn)
+            else if (thing is Building_Casket casket && Rand.Value <= symbol.chanceToContainPawn)
             {
                 Pawn pawn = GeneratePawnForContainer(symbol, map);
-                if (!corpseCasket.TryAcceptThing(pawn))
+                if (!casket.TryAcceptThing(pawn))
                 {
-                    pawn.Destroy();
+                    Debug.Message($"Building_Casket: Cannot add {pawn} to {casket.def.defName}");
                 }
             }
             else if (thing is Building_Crate crate)
@@ -282,6 +289,7 @@ namespace KCSG
                     innerThing.stackCount = Math.Min((int)(innerThing.stackCount * symbol.crateStackMultiplier), innerThing.def.stackLimit);
                     if (!crate.TryAcceptThing(innerThing))
                     {
+                        Debug.Message($"Cannot add {innerThing.def.defName} to {crate.def.defName}");
                         innerThing.Destroy();
                     }
                 }
@@ -380,7 +388,7 @@ namespace KCSG
                 return PawnGenerator.GeneratePawn(new PawnGenerationRequest(temp.containPawnKindAnyOf.RandomElement(), faction, forceGenerateNewPawn: true, certainlyBeenInCryptosleep: true));
             }
 
-            return PawnGenerator.GeneratePawn(PawnKindDefOf.Villager, faction);
+            return PawnGenerator.GeneratePawn(faction != null ? faction.RandomPawnKind() : PawnKindDefOf.Villager, faction);
         }
 
         /// <summary>
