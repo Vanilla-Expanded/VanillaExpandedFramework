@@ -55,6 +55,8 @@ namespace KCSG
 
         internal bool RequiredModLoaded { get; private set; }
 
+        internal bool IsForSlaves { get; private set; }
+
         public override void ResolveReferences()
         {
             base.ResolveReferences();
@@ -75,7 +77,7 @@ namespace KCSG
         public void ResolveLayouts()
         {
             var modName = modContentPack.Name;
-            // Populate symbolsLists
+            // Populate symbolsLists and setup IsForSlaves
             for (int i = 0; i < layouts.Count; i++)
             {
                 var layout = layouts[i];
@@ -97,6 +99,9 @@ namespace KCSG
 
                             if (def == null)
                                 StartupActions.AddToMissing($"{modName} {symbol}");
+
+                            if (def.isSlave)
+                                IsForSlaves = true;
                         }
                     }
                 }

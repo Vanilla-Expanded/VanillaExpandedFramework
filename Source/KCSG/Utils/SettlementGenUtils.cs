@@ -27,6 +27,9 @@ namespace KCSG
         public static DateTime startTime;
         public static int seed;
 
+        /// <summary>
+        /// Generate settlement
+        /// </summary>
         public static void Generate(ResolveParams rp, Map map, SettlementLayoutDef sld)
         {
             seed = map.Tile;
@@ -270,6 +273,9 @@ namespace KCSG
 
             private static readonly Dictionary<string, List<StructureLayoutDef>> structuresTagsCache = new Dictionary<string, List<StructureLayoutDef>>();
 
+            /// <summary>
+            /// Get structoptin weight
+            /// </summary>
             private static float GetWeight(StructOption structOption, StructOption lastStructOption, Dictionary<string, int> structCount)
             {
                 if (structCount.ContainsKey(structOption.tag))
@@ -383,6 +389,23 @@ namespace KCSG
             }
 
             /// <summary>
+            /// Validate layout
+            /// </summary>
+            private static bool LayoutValidator(StructureLayoutDef def, Faction faction, HashSet<StructureLayoutDef> used)
+            {
+                if (!def.RequiredModLoaded)
+                    return false;
+
+                if (used.Contains(def))
+                    return false;
+
+                if (def.IsForSlaves && ModsConfig.IdeologyActive && faction.ideos != null && faction.ideos.PrimaryIdeo is Ideo p && !p.IdeoApprovesOfSlavery())
+                    return false;
+
+                return true;
+            }
+
+            /// <summary>
             /// Place buildings
             /// </summary>
             public static void Run(List<IntVec3> spawnPoints, SettlementLayoutDef sld, ResolveParams rp)
@@ -433,10 +456,8 @@ namespace KCSG
                         for (int s = 0; s < structuresTagsCache[opt.tag].Count; s++)
                         {
                             var layout = structuresTagsCache[opt.tag][s];
-                            if (layout.RequiredModLoaded && !usedLayoutDefs.Contains(layout))
-                            {
+                            if (LayoutValidator(layout, rp.faction, usedLayoutDefs))
                                 choices.Add(layout);
-                            }
                         }
 
                         var layoutDef = choices.Count > 0 ? choices.RandomElement() : structuresTagsCache[opt.tag].RandomElement();

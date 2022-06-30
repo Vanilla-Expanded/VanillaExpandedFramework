@@ -95,7 +95,7 @@ namespace KCSG
                     {
                         return;
                     }
-                    GenerateBuildingAt(map, cell, symbol, faction, layout != null ? layout.spawnConduits : true, wallForRoom);
+                    GenerateBuildingAt(map, cell, symbol, layout, faction, wallForRoom);
 
                     // Generating settlement, we want to keep tracks of doors
                     if (GenOption.ext != null && !GenOption.ext.UsingSingleLayout && symbol.thingDef.altitudeLayer == AltitudeLayer.DoorMoveable)
@@ -208,8 +208,9 @@ namespace KCSG
         /// <summary>
         /// Generate building at pos
         /// </summary>
-        private static void GenerateBuildingAt(Map map, IntVec3 cell, SymbolDef symbol, Faction faction, bool generateConduit, ThingDef wallStuff = null)
+        private static void GenerateBuildingAt(Map map, IntVec3 cell, SymbolDef symbol, StructureLayoutDef layout, Faction faction, ThingDef wallStuff = null)
         {
+            // If it's a shuttle, generate it properly
             if (symbol.thingDef == ThingDefOf.Shuttle)
             {
                 ResolveParams rp = new ResolveParams
@@ -231,7 +232,7 @@ namespace KCSG
                 BaseGen.symbolStack.Push("thing", rp);
                 return;
             }
-
+            // Make the thing, with the right stuff for it
             Thing thing;
             if (symbol.thingDef.defName.ToLower().Contains("wall"))
             {
@@ -241,18 +242,18 @@ namespace KCSG
             {
                 thing = ThingMaker.MakeThing(symbol.thingDef, RandomFurnitureStuffByWeight(symbol));
             }
-
+            // If ideology is loaded, try to apply the right style
             if (ModsConfig.IdeologyActive && faction != null && faction.ideos != null && faction.ideos.PrimaryIdeo is Ideo p)
             {
                 thing.SetStyleDef(p.GetStyleFor(thing.def));
             }
-
+            // Try to refuel if applicable
             CompRefuelable refuelable = thing.TryGetComp<CompRefuelable>();
             refuelable?.Refuel(refuelable.Props.fuelCapacity);
-
+            // Try to recharge if applicable
             CompPowerBattery battery = thing.TryGetComp<CompPowerBattery>();
             battery?.AddEnergy(battery.Props.storedEnergyMax);
-
+            // Try to fill corpse container
             if (thing is Building_CorpseCasket corpseCasket && Rand.Value <= symbol.chanceToContainPawn)
             {
                 Pawn pawn = GeneratePawnForContainer(symbol, map);
@@ -268,6 +269,7 @@ namespace KCSG
                     Debug.Message($"Building_CorpseCasket: Cannot add {pawn.Corpse} to {corpseCasket.def.defName}");
                 }
             }
+            // Try to fill pawn container
             else if (thing is Building_Casket casket && Rand.Value <= symbol.chanceToContainPawn)
             {
                 Pawn pawn = GeneratePawnForContainer(symbol, map);
@@ -276,6 +278,7 @@ namespace KCSG
                     Debug.Message($"Building_Casket: Cannot add {pawn} to {casket.def.defName}");
                 }
             }
+            // Try to fill item container
             else if (thing is Building_Crate crate)
             {
                 List<Thing> innerThings = new List<Thing>();
@@ -299,45 +302,51 @@ namespace KCSG
                     }
                 }
             }
-
+            // If terrain at pos is bridgeable
             if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
             {
+                // If is natural rock, try to spawn rough stone terrain around
                 if (thing.def.building.isNaturalRock)
                 {
                     TerrainDef t = DefDatabase<TerrainDef>.GetNamedSilentFail($"{thing.def.defName}_Rough");
                     if (t != null)
                     {
                         map.terrainGrid.SetTerrain(cell, t);
-                        foreach (IntVec3 intVec3 in CellRect.CenteredOn(cell, 1))
+                        foreach (IntVec3 intVec3 in GenAdjFast.AdjacentCells8Way(cell))
                         {
-                            if (!intVec3.GetTerrain(map).BuildableByPlayer)
+                            if (intVec3.InBounds(map) && !intVec3.GetTerrain(map).BuildableByPlayer)
                             {
                                 map.terrainGrid.SetTerrain(intVec3, t);
                             }
                         }
                     }
                 }
+                // else spawn bridge
                 else
                 {
                     map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
                 }
             }
-
+            // Spawn the thing
             GenSpawn.Spawn(thing, cell, map, symbol.rotation, WipeMode.VanishOrMoveAside);
-
+            // Set the faction if applicable
             if (faction != null && thing.def.CanHaveFaction)
             {
                 thing.SetFactionDirect(faction);
             }
-
-            if (generateConduit && !thing.def.mineable && (thing.def.passability == Traversability.Impassable || thing.def.IsDoor) && faction?.def.techLevel >= TechLevel.Industrial) // Add power cable under all impassable
+            // Set bed for slave
+            if (thing is Building_Bed bed && layout.IsForSlaves)
             {
-                Thing c = ThingMaker.MakeThing(ThingDefOf.PowerConduit);
+                bed.ForOwnerType = BedOwnerType.Slave;
+            }
+            // Try generate conduit under impassable things and doors
+            if (layout.spawnConduits && !thing.def.mineable && (thing.def.passability == Traversability.Impassable || thing.def.IsDoor) && faction?.def.techLevel >= TechLevel.Industrial)
+            {
+                Thing c = ThingMaker.MakeThing(AllDefOf.KCSG_PowerConduit);
                 if (faction != null)
                 {
                     c.SetFactionDirect(faction);
                 }
-
                 GenSpawn.Spawn(c, cell, map, WipeMode.FullRefund);
             }
             // Handle mortar and mortar pawns
@@ -445,6 +454,9 @@ namespace KCSG
             }
         }
 
+        /// <summary>
+        /// Despawn everything that block/interfer with roofs
+        /// </summary>
         private static void ClearInterferesWithRoof(IntVec3 cell, Map map)
         {
             var t = cell.GetPlant(map);
