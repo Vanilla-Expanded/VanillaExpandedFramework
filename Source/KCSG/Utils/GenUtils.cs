@@ -332,25 +332,23 @@ namespace KCSG
         }
 
         /// <summary>
-        /// Spawn mortar and manning pawn with the right job
+        /// Spawn mortar manning pawn with the right job
         /// </summary>
         private static void SpawnMortar(Thing thing, Faction faction, Map map)
         {
             if (thing?.def?.building?.buildingTags?.Count > 0)
             {
-                if (thing.def.building.IsMortar && thing.def.category == ThingCategory.Building && thing.def.building.buildingTags.Contains("Artillery_MannedMortar") && thing.def.HasComp(typeof(CompMannable)) && faction != null)
+                if (thing.def.building.IsMortar && thing.def.building.buildingTags.Contains("Artillery_MannedMortar") && thing.def.HasComp(typeof(CompMannable)) && faction != null)
                 {
                     // Spawn pawn
-                    Lord singlePawnLord = LordMaker.MakeNewLord(faction, new LordJob_ManTurrets(), map, null);
-                    PawnGenerationRequest value = new PawnGenerationRequest(faction.RandomPawnKind(), faction, PawnGenerationContext.NonPlayer, map.Tile, mustBeCapableOfViolence: true, inhabitant: true);
-                    ResolveParams rpPawn = new ResolveParams
-                    {
-                        faction = faction,
-                        singlePawnGenerationRequest = new PawnGenerationRequest?(value),
-                        rect = CellRect.SingleCell(thing.InteractionCell),
-                        singlePawnLord = singlePawnLord
-                    };
-                    BaseGen.symbolStack.Push("pawn", rpPawn);
+                    var request = new PawnGenerationRequest(faction.RandomPawnKind(), faction, PawnGenerationContext.NonPlayer, map.Tile, mustBeCapableOfViolence: true, inhabitant: true);
+                    var pawn = PawnGenerator.GeneratePawn(request);
+                    var job = JobMaker.MakeJob(JobDefOf.ManTurret, thing);
+                    job.expiryInterval = 20000;
+                    job.expireRequiresEnemiesNearby = true;
+
+                    GenSpawn.Spawn(pawn, thing.InteractionCell, map);
+                    pawn.jobs.TryTakeOrderedJob(job);
                     // Spawn shells
                     ThingDef shellDef = TurretGunUtility.TryFindRandomShellDef(thing.def, false, true, faction.def.techLevel, false, 250f);
                     if (shellDef != null)

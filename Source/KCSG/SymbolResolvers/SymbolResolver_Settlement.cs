@@ -34,19 +34,8 @@ namespace KCSG
                 // Handle road
                 BaseGen.symbolStack.Push("kcsg_generateroad", rp, null);
 
-                // Add vanilla settlement defense
-                if (GenOption.sld.vanillaLikeDefense)
-                {
-                    int dWidth = Rand.Bool ? 2 : 4;
-                    ResolveParams edgeParms = rp;
-                    edgeParms.rect = new CellRect(rp.rect.minX - dWidth, rp.rect.minZ - dWidth, rp.rect.Width + (dWidth * 2), rp.rect.Height + (dWidth * 2));
-                    edgeParms.faction = rp.faction;
-                    edgeParms.edgeDefenseWidth = dWidth;
-                    edgeParms.edgeThingMustReachMapEdge = new bool?(rp.edgeThingMustReachMapEdge ?? true);
-                    BaseGen.symbolStack.Push("edgeDefense", edgeParms, null);
-                }
-                // Add vanilla settlement defense without sandbags
-                else if (GenOption.sld.vanillaLikeDefenseNoSandBags)
+                // Add settlement defense
+                if (GenOption.sld.defenseOptions.addEdgeDefense)
                 {
                     int dWidth = Rand.Bool ? 2 : 4;
                     ResolveParams edgeParms = rp;
@@ -78,7 +67,7 @@ namespace KCSG
             rp.rect = parms.rect;
             rp.faction = faction;
             rp.singlePawnLord = singlePawnLord;
-            rp.pawnGroupKindDef = GenOption.sld?.groupKindDef ?? parms.pawnGroupKindDef ?? PawnGroupKindDefOf.Settlement;
+            rp.pawnGroupKindDef = GenOption.sld.defenseOptions.groupKindDef;
             rp.singlePawnSpawnCellExtraPredicate = parms.singlePawnSpawnCellExtraPredicate ?? ((IntVec3 x) => map.reachability.CanReachMapEdge(x, tp));
             if (rp.pawnGroupMakerParams == null && faction.def.pawnGroupMakers.Any(pgm => pgm.kindDef == PawnGroupKindDefOf.Settlement))
             {
@@ -91,7 +80,7 @@ namespace KCSG
                     seed = parms.settlementPawnGroupSeed
                 };
             }
-            if (GenOption.sld != null) rp.pawnGroupMakerParams.points *= GenOption.sld.pawnGroupMultiplier;
+            if (GenOption.sld != null) rp.pawnGroupMakerParams.points *= GenOption.sld.defenseOptions.pawnGroupMultiplier;
 
             BaseGen.symbolStack.Push("pawnGroup", rp, null);
         }

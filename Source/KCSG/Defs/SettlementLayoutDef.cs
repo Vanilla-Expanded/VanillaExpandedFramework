@@ -90,6 +90,30 @@ namespace KCSG
         public List<string> centralBuildingTags = new List<string>();
     }
 
+    public class DefenseOptions
+    {
+        public bool addEdgeDefense = false;
+
+        public bool addSandbags = false;
+
+        public bool addTurrets = false;
+        public int cellsPerTurret = 30;
+        public List<ThingDef> allowedTurretsDefs = new List<ThingDef>()
+        {
+            ThingDefOf.Turret_AutoMiniTurret
+        };
+
+        public bool addMortars = false;
+        public int cellsPerMortar = 75;
+        public List<ThingDef> allowedMortarsDefs = new List<ThingDef>()
+        {
+            ThingDefOf.Turret_Mortar
+        };
+
+        public PawnGroupKindDef groupKindDef = PawnGroupKindDefOf.Settlement;
+        public float pawnGroupMultiplier = 1f;
+    }
+
     public class SettlementLayoutDef : Def
     {
         public IntVec2 settlementSize = new IntVec2(42, 42);
@@ -108,11 +132,7 @@ namespace KCSG
 
         public PropsOptions propsOptions;
 
-        public bool vanillaLikeDefense = false;
-        public bool vanillaLikeDefenseNoSandBags = false;
-
-        public PawnGroupKindDef groupKindDef = null;
-        public float pawnGroupMultiplier = 1f;
+        public DefenseOptions defenseOptions;
 
         public float stockpileValueMultiplier = 1f;
 
@@ -128,6 +148,8 @@ namespace KCSG
                 propsOptions = new PropsOptions();
             if (peripheralBuildings == null)
                 peripheralBuildings = new PeripheralBuildings();
+            if (defenseOptions == null)
+                defenseOptions = new DefenseOptions();
         }
 
         public override IEnumerable<string> ConfigErrors()

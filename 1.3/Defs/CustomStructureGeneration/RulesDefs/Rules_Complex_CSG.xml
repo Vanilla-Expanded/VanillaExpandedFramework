@@ -135,7 +135,7 @@
     <defName>KCSG_EdgeDefense</defName>
     <symbol>kcsg_edgeDefense</symbol>
     <resolvers>
-      <li Class="KCSG.SymbolResolver_EdgeDefenseNoSandbags" />
+      <li Class="KCSG.SymbolResolver_EdgeDefenseCustomizable" />
     </resolvers>
   </RuleDef>
 

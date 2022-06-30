@@ -21,9 +21,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-	  <TransformOnBuild>true</TransformOnBuild>
-	  <OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
-	  <TransformOutOfDateOnly>false</TransformOutOfDateOnly>
+    <TransformOnBuild>true</TransformOnBuild>
+    <OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
+    <TransformOutOfDateOnly>false</TransformOutOfDateOnly>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,9 +32,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-	  <TransformOnBuild>true</TransformOnBuild>
-	  <OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
-	  <TransformOutOfDateOnly>false</TransformOutOfDateOnly>
+    <TransformOnBuild>true</TransformOnBuild>
+    <OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
+    <TransformOutOfDateOnly>false</TransformOutOfDateOnly>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="VFECore, Version=1.1.7.0, Culture=neutral, processorArchitecture=MSIL">
@@ -74,7 +74,7 @@
     <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_RandomTerrainRemoval.cs" />
     <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_RemovePerishable.cs" />
     <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_ScatterStuffAround.cs" />
-    <Compile Include="SymbolResolvers\SymbolResolver_EdgeDefenseNoSandbags.cs" />
+    <Compile Include="SymbolResolvers\SymbolResolver_EdgeDefenseCustomizable.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_GenerateRoad.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_RunResolvers.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_ScatterPropsAround.cs" />
@@ -127,5 +127,5 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TextTemplating\Microsoft.TextTemplating.targets"/>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TextTemplating\Microsoft.TextTemplating.targets" />
 </Project>
