@@ -1,6 +1,6 @@
-﻿using RimWorld;
+﻿using System.Collections.Generic;
+using RimWorld;
 using RimWorld.BaseGen;
-using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 
@@ -21,7 +21,7 @@ namespace KCSG
             value.makingFaction = rp.faction;
             value.validator = (ThingDef x) => rp.faction == null || x.techLevel >= rp.faction.def.techLevel || !x.IsWeapon || x.GetStatValueAbstract(StatDefOf.MarketValue, GenStuff.DefaultStuffFor(x)) >= 100f;
             float marketValue = rp.stockpileMarketValue ?? Mathf.Min(cells.Count * 130f, 1800f);
-            marketValue *= GenOption.sld.stockpileValueMultiplier;
+            marketValue *= GenOption.sld.stockpileOptions.stockpileValueMultiplier;
             value.totalMarketValueRange = new FloatRange?(new FloatRange(marketValue, marketValue));
 
             if (value.countRange == null)

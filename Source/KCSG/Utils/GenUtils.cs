@@ -349,6 +349,26 @@ namespace KCSG
                 }
                 GenSpawn.Spawn(c, cell, map, WipeMode.FullRefund);
             }
+            // Try to fill shelf
+            if (GenOption.sld != null
+                && GenOption.sld.stockpileOptions.fillStorageBuildings
+                && !GenOption.sld.stockpileOptions.fillWithDefs.NullOrEmpty()
+                && thing is Building_Storage storage)
+            {
+                foreach (var storageCell in storage.OccupiedRect())
+                {
+                    if (storageCell.GetFirstItem(map) == null)
+                    {
+                        var thingDef = GenOption.sld.stockpileOptions.fillWithDefs.RandomElementByWeight(t => Math.Max(500 - t.BaseMarketValue, 0));
+                        var item = ThingMaker.MakeThing(thingDef, thingDef.stuffCategories?.Count > 0 ? GenStuff.RandomStuffFor(thingDef) : null);
+                        item.stackCount = Math.Min(Rand.RangeInclusive(1, thingDef.stackLimit), 150);
+                        item.TryGetComp<CompQuality>()?.SetQuality(QualityUtility.GenerateQualityBaseGen(), ArtGenerationContext.Outsider);
+
+                        GenPlace.TryPlaceThing(item, storageCell, map, ThingPlaceMode.Direct);
+                        item.SetForbidden(true, false);
+                    }
+                }
+            }
             // Handle mortar and mortar pawns
             SpawnMortar(thing, faction, map);
         }

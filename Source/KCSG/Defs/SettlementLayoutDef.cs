@@ -106,6 +106,24 @@ namespace KCSG
 
         public PawnGroupKindDef groupKindDef = null;
         public float pawnGroupMultiplier = 1f;
+
+        public void ResolveReference()
+        {
+            if (allowedTurretsDefs.Count == 0)
+                allowedTurretsDefs.Add(ThingDefOf.Turret_AutoMiniTurret);
+            if (allowedMortarsDefs.Count == 0)
+                allowedMortarsDefs.Add(ThingDefOf.Turret_Mortar);
+            if (groupKindDef == null)
+                groupKindDef = PawnGroupKindDefOf.Settlement;
+        }
+    }
+
+    public class StockpileOptions
+    {
+        public float stockpileValueMultiplier = 1f;
+
+        public bool fillStorageBuildings = false;
+        public List<ThingDef> fillWithDefs = new List<ThingDef>();
     }
 
     public class SettlementLayoutDef : Def
@@ -116,41 +134,24 @@ namespace KCSG
         public bool avoidBridgeable = false;
         public bool avoidMountains = false;
 
-        public PeripheralBuildings peripheralBuildings;
-
         public CenterBuildings centerBuildings;
 
-        public RoadOptions roadOptions;
+        public PeripheralBuildings peripheralBuildings = new PeripheralBuildings();
 
-        public StuffableOptions stuffableOptions;
+        public RoadOptions roadOptions = new RoadOptions();
 
-        public PropsOptions propsOptions;
+        public StuffableOptions stuffableOptions = new StuffableOptions();
 
-        public DefenseOptions defenseOptions;
+        public PropsOptions propsOptions = new PropsOptions();
 
-        public float stockpileValueMultiplier = 1f;
+        public DefenseOptions defenseOptions = new DefenseOptions();
+
+        public StockpileOptions stockpileOptions = new StockpileOptions();
 
         public override void ResolveReferences()
         {
             base.ResolveReferences();
-
-            if (roadOptions == null)
-                roadOptions = new RoadOptions();
-            if (stuffableOptions == null)
-                stuffableOptions = new StuffableOptions();
-            if (propsOptions == null)
-                propsOptions = new PropsOptions();
-            if (peripheralBuildings == null)
-                peripheralBuildings = new PeripheralBuildings();
-            if (defenseOptions == null)
-                defenseOptions = new DefenseOptions();
-
-            if (defenseOptions.allowedTurretsDefs.Count == 0)
-                defenseOptions.allowedTurretsDefs.Add(ThingDefOf.Turret_AutoMiniTurret);
-            if (defenseOptions.allowedMortarsDefs.Count == 0)
-                defenseOptions.allowedMortarsDefs.Add(ThingDefOf.Turret_Mortar);
-            if (defenseOptions.groupKindDef == null)
-                defenseOptions.groupKindDef = PawnGroupKindDefOf.Settlement;
+            defenseOptions.ResolveReference();
         }
 
         public override IEnumerable<string> ConfigErrors()
@@ -160,6 +161,9 @@ namespace KCSG
 
             if (centerBuildings == null)
                 yield return "Cannot use SettlementLayoutDef with null centerBuildings";
+
+            if (stockpileOptions.fillStorageBuildings && stockpileOptions.fillWithDefs.NullOrEmpty())
+                yield return "Cannot use fillShelf with empty or null fillShelfDefs";
         }
     }
 }
