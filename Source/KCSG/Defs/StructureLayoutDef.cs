@@ -100,7 +100,7 @@ namespace KCSG
                             if (def == null)
                                 StartupActions.AddToMissing($"{modName} {symbol}");
 
-                            if (def.isSlave)
+                            if (def != null && def.isSlave)
                                 IsForSlaves = true;
                         }
                     }
