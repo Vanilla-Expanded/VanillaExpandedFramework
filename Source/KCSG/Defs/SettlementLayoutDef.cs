@@ -98,17 +98,11 @@ namespace KCSG
 
         public bool addTurrets = false;
         public int cellsPerTurret = 30;
-        public List<ThingDef> allowedTurretsDefs = new List<ThingDef>()
-        {
-            ThingDefOf.Turret_AutoMiniTurret
-        };
+        public List<ThingDef> allowedTurretsDefs = new List<ThingDef>();
 
         public bool addMortars = false;
         public int cellsPerMortar = 75;
-        public List<ThingDef> allowedMortarsDefs = new List<ThingDef>()
-        {
-            ThingDefOf.Turret_Mortar
-        };
+        public List<ThingDef> allowedMortarsDefs = new List<ThingDef>();
 
         public PawnGroupKindDef groupKindDef = PawnGroupKindDefOf.Settlement;
         public float pawnGroupMultiplier = 1f;
@@ -150,6 +144,11 @@ namespace KCSG
                 peripheralBuildings = new PeripheralBuildings();
             if (defenseOptions == null)
                 defenseOptions = new DefenseOptions();
+
+            if (defenseOptions.allowedTurretsDefs.Count == 0)
+                defenseOptions.allowedTurretsDefs.Add(ThingDefOf.Turret_AutoMiniTurret);
+            if (defenseOptions.allowedMortarsDefs.Count == 0)
+                defenseOptions.allowedMortarsDefs.Add(ThingDefOf.Turret_Mortar);
         }
 
         public override IEnumerable<string> ConfigErrors()
