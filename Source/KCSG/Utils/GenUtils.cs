@@ -502,7 +502,8 @@ namespace KCSG
             if (roofGrid != null)
             {
                 var cells = rect.Cells.ToList();
-                for (int i = 0; i < roofGrid.Count; i++)
+
+                for (int i = 0; i < roofGrid.Count && i < cells.Count; i++)
                 {
                     IntVec3 cell = cells[i];
                     if (cell.InBounds(map) && roofGrid[i] != ".")

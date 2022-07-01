@@ -422,6 +422,7 @@ namespace KCSG
                         grid[cell.z][cell.x] = CellType.Used;
 
                     GenUtils.GenerateLayout(layout, cellRect, BaseGen.globalSettings.map);
+                    usedLayoutDefs.Add(layout);
                 }
                 // Generate other buildings
                 CellRect centerRect = CellRect.CenteredOn(rect.CenterCell, sld.centerBuildings.centerSize.x, sld.centerBuildings.centerSize.z);
