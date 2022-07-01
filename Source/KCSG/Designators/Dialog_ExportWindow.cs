@@ -10,12 +10,12 @@ namespace KCSG
     {
         public static string Prefix = "";
         public static List<string> Tags = new List<string>();
+        public static List<string> AlreadyExported = new List<string>();
 
         private readonly Area area;
         private readonly List<IntVec3> cells = new List<IntVec3>();
         private readonly Map map;
         private readonly List<string> tags = new List<string>();
-        private readonly List<string> mods = new List<string>();
 
         private Dictionary<IntVec3, List<Thing>> pairsCellThingList = new Dictionary<IntVec3, List<Thing>>();
         private Color boxColor = new Color(0.13f, 0.14f, 0.16f);
@@ -28,9 +28,7 @@ namespace KCSG
         private bool needRoofClearance = false;
 
         private string structurePrefix = "Required";
-        private List<XElement> symbols = new List<XElement>();
         private string tempTagToAdd = "Optional";
-        private string modIdToAdd = "Optional";
 
         private Vector2 scrollPosition = Vector2.zero;
 
@@ -52,13 +50,7 @@ namespace KCSG
             if (!Tags.NullOrEmpty()) tags = Tags;
         }
 
-        public override Vector2 InitialSize
-        {
-            get
-            {
-                return new Vector2(800f, 800f);
-            }
-        }
+        public override Vector2 InitialSize => new Vector2(800f, 800f);
 
         public override void DoWindowContents(Rect inRect)
         {
@@ -67,21 +59,38 @@ namespace KCSG
             Rect scrollRect = new Rect(inRect.x, inRect.y + 80f, inRect.width, inRect.height - 150f);
             Rect viewRect = new Rect(inRect.x, inRect.y + 80f, inRect.width - 20f, scrollRect.height);
             Listing_Standard lst = new Listing_Standard();
-            if (viewRect.height < viewRect.height + mods.Count * 12) viewRect.height += mods.Count * 12;
             if (viewRect.height < viewRect.height + tags.Count * 12) viewRect.height += tags.Count * 12;
 
             Text.Anchor = TextAnchor.MiddleLeft;
             Widgets.BeginScrollView(scrollRect, ref scrollPosition, viewRect);
             lst.Begin(viewRect);
 
-            DrawDefNameChanger(lst);
-            DrawStorageChanger(lst);
-            DrawSpawnConduitChanger(lst);
-            DrawExportFilth(lst);
-            DrawExportNaturalTerrain(lst);
-            DrawForceGenerateRoof(lst);
-            DrawNeedRoofClearance(lst);
-            DrawStructurePrefix(lst);
+            lst.Label("Structure defName:");
+            defname = lst.TextEntry(defname);
+            lst.Gap();
+
+            lst.CheckboxLabeled("Structure is stockpile:", ref isStorage, "If this is on, random resources will be generated inside this structure when it's generated");
+            lst.Gap();
+
+            lst.CheckboxLabeled("Spawn conduit under impassable buildings and doors when generating:", ref spawnConduits, "If this is on, conduit will be spawned under impassable buildings and doors of this structure when it's generated (if faction techlevel >= Industrial)");
+            lst.Gap();
+
+            lst.CheckboxLabeled("Export filth:", ref exportFilth);
+            lst.Gap();
+
+            lst.CheckboxLabeled("Export natural terrain:", ref exportNatTer);
+            lst.Gap();
+
+            lst.CheckboxLabeled("Force generate roofs:", ref forceGenerateRoof, "By default constructed roof will only be constructed if the cell isn't roofed at all. Thin roof will be on cell with no roof or constructed roof. Thick roof override everything. Enable to alway generate exported roof.");
+            lst.Gap();
+
+            lst.CheckboxLabeled("Need roof clearance:", ref needRoofClearance, "Check this if the structure you are exporting need to placed in a rect free of roofs.");
+            lst.Gap();
+
+            lst.Label("defName(s) prefix:", tooltip: "For example: VFEM_ for Vanilla Faction Expanded Mechanoid");
+            structurePrefix = lst.TextEntry(structurePrefix);
+            lst.Gap();
+
             DrawTagsEditing(lst);
             // DrawModsEditing(lst);
 
@@ -159,24 +168,7 @@ namespace KCSG
                 }
                 structureL.Add(temp);
             }
-            // Mods
-            if (mods.Count > 0)
-            {
-                XElement temp = new XElement("modRequirements");
-                foreach (var item in mods)
-                {
-                    temp.Add(new XElement("li", item));
-                }
-                structureL.Add(temp);
-            }
             return structureL;
-        }
-
-        private void DrawDefNameChanger(Listing_Standard lst)
-        {
-            lst.Label("Structure defName:");
-            defname = lst.TextEntry(defname);
-            lst.Gap();
         }
 
         private void DrawFooter(Rect inRect)
@@ -200,16 +192,29 @@ namespace KCSG
             }
             if (Widgets.ButtonText(new Rect(350, inRect.height - bHeight, 340, bHeight), "Copy symbol(s) def(s)"))
             {
+                Prefix = structurePrefix;
                 pairsCellThingList = ExportUtils.FillCellThingsList(cells, map);
-                symbols = ExportUtils.CreateSymbolIfNeeded(cells, map, pairsCellThingList, area);
-                if (symbols.Count > 0)
+
+                var allSymbols = ExportUtils.CreateSymbolIfNeeded(cells, map, pairsCellThingList, area);
+                var output = "";
+
+                if (allSymbols.Count > 0)
                 {
-                    string toCopy = "";
-                    foreach (XElement item in symbols)
+                    for (int i = 0; i < allSymbols.Count; i++)
                     {
-                        toCopy += item.ToString() + "\n\n";
+                        var symb = allSymbols[i];
+                        var toStr = symb.ToString();
+                        if (!AlreadyExported.Contains(toStr))
+                        {
+                            output += toStr + "\n\n";
+                            AlreadyExported.Add(toStr);
+                        }
                     }
-                    GUIUtility.systemCopyBuffer = toCopy;
+                }
+
+                if (output != "")
+                {
+                    GUIUtility.systemCopyBuffer = output;
                     Messages.Message("Copied to clipboard.", MessageTypeDefOf.TaskCompletion);
                 }
                 else
@@ -241,49 +246,6 @@ namespace KCSG
             Text.Anchor = TextAnchor.UpperLeft;
         }
 
-        private void DrawStorageChanger(Listing_Standard lst)
-        {
-            lst.CheckboxLabeled("Structure is stockpile:", ref isStorage, "If this is on, random resources will be generated inside this structure when it's generated");
-            lst.Gap();
-        }
-
-        private void DrawSpawnConduitChanger(Listing_Standard lst)
-        {
-            lst.CheckboxLabeled("Spawn conduit under impassable buildings and doors when generating:", ref spawnConduits, "If this is on, conduit will be spawned under impassable buildings and doors of this structure when it's generated (if faction techlevel >= Industrial)");
-            lst.Gap();
-        }
-
-        private void DrawForceGenerateRoof(Listing_Standard lst)
-        {
-            lst.CheckboxLabeled("Force generate roofs:", ref forceGenerateRoof, "By default constructed roof will only be constructed if the cell isn't roofed at all. Thin roof will be on cell with no roof or constructed roof. Thick roof override everything. Enable to alway generate exported roof.");
-            lst.Gap();
-        }
-
-        private void DrawNeedRoofClearance(Listing_Standard lst)
-        {
-            lst.CheckboxLabeled("Need roof clearance:", ref needRoofClearance, "Check this if the structure you are exporting need to placed in a rect free of roofs.");
-            lst.Gap();
-        }
-
-        private void DrawExportFilth(Listing_Standard lst)
-        {
-            lst.CheckboxLabeled("Export filth:", ref exportFilth);
-            lst.Gap();
-        }
-
-        private void DrawExportNaturalTerrain(Listing_Standard lst)
-        {
-            lst.CheckboxLabeled("Export natural terrain:", ref exportNatTer);
-            lst.Gap();
-        }
-
-        private void DrawStructurePrefix(Listing_Standard lst)
-        {
-            lst.Label("defName(s) prefix:", tooltip: "For example: VFEM_ for Vanilla Faction Expanded Mechanoid");
-            structurePrefix = lst.TextEntry(structurePrefix);
-            lst.Gap();
-        }
-
         private void DrawTagsEditing(Listing_Standard lst)
         {
             lst.Label("Structure tags:");
@@ -305,28 +267,6 @@ namespace KCSG
                 }
             }
             lst.Gap();
-        }
-
-        private void DrawModsEditing(Listing_Standard lst)
-        {
-            lst.Label("Additional mod(s) needed:");
-            modIdToAdd = lst.TextEntry(modIdToAdd);
-            if (lst.ButtonText("Add mod package id"))
-            {
-                mods.Add(modIdToAdd);
-            }
-
-            if (mods.Count > 0)
-            {
-                foreach (string mod in mods)
-                {
-                    if (lst.ButtonTextLabeled(mod, "Remove mod"))
-                    {
-                        mods.Remove(mod);
-                        break;
-                    }
-                }
-            }
         }
     }
 }
