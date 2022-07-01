@@ -104,7 +104,7 @@ namespace KCSG
         public int cellsPerMortar = 75;
         public List<ThingDef> allowedMortarsDefs = new List<ThingDef>();
 
-        public PawnGroupKindDef groupKindDef = PawnGroupKindDefOf.Settlement;
+        public PawnGroupKindDef groupKindDef = null;
         public float pawnGroupMultiplier = 1f;
     }
 
@@ -149,6 +149,8 @@ namespace KCSG
                 defenseOptions.allowedTurretsDefs.Add(ThingDefOf.Turret_AutoMiniTurret);
             if (defenseOptions.allowedMortarsDefs.Count == 0)
                 defenseOptions.allowedMortarsDefs.Add(ThingDefOf.Turret_Mortar);
+            if (defenseOptions.groupKindDef == null)
+                defenseOptions.groupKindDef = PawnGroupKindDefOf.Settlement;
         }
 
         public override IEnumerable<string> ConfigErrors()
