@@ -242,6 +242,9 @@ namespace KCSG
             {
                 thing = ThingMaker.MakeThing(symbol.thingDef, RandomFurnitureStuffByWeight(symbol));
             }
+            // Sanity check
+            if (thing == null)
+                return;
             // If ideology is loaded, try to apply the right style
             if (ModsConfig.IdeologyActive && faction != null && faction.ideos != null && faction.ideos.PrimaryIdeo is Ideo p)
             {
@@ -306,7 +309,7 @@ namespace KCSG
             if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
             {
                 // If is natural rock, try to spawn rough stone terrain around
-                if (thing.def.building.isNaturalRock)
+                if (thing.def.building != null && thing.def.building.isNaturalRock)
                 {
                     TerrainDef t = DefDatabase<TerrainDef>.GetNamedSilentFail($"{thing.def.defName}_Rough");
                     if (t != null)
