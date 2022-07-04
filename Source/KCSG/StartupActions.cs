@@ -83,6 +83,8 @@ namespace KCSG
             CreateSymbolsFor("ludeon.rimworld");
             CreateSymbolsFor("ludeon.rimworld.royalty");
             CreateSymbolsFor("ludeon.rimworld.ideology");
+            if (ModLister.GetActiveModWithIdentifier("vanillaexpanded.vfepropsanddecor") != null)
+                CreateSymbolsFor("vanillaexpanded.vfepropsanddecor");
 
             Debug.Message($"Created {createdSymbolAmount} symbolDefs for vanilla and DLCs");
             defCreated = true;
