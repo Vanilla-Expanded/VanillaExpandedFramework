@@ -16,14 +16,14 @@ namespace KCSG
             if (GenOption.ext.UsingSingleLayout)
             {
                 // Add hostile pawns
-                AddHostilePawnGroup(rp.faction, map, rp);
+                AddHostilePawnGroup(rp.faction, map, rp, PawnGroupKindDefOf.Settlement);
                 // Generate structure
                 BaseGen.symbolStack.Push("kcsg_roomsgenfromstructure", rp, null);
             }
             else
             {
                 // Add hostile pawns
-                AddHostilePawnGroup(rp.faction, map, rp);
+                AddHostilePawnGroup(rp.faction, map, rp, GenOption.sld.defenseOptions.groupKindDef);
 
                 // Props scatterer
                 BaseGen.symbolStack.Push("kcsg_scatterpropsaround", rp, null);
@@ -54,7 +54,7 @@ namespace KCSG
             }
         }
 
-        private void AddHostilePawnGroup(Faction faction, Map map, ResolveParams parms)
+        private void AddHostilePawnGroup(Faction faction, Map map, ResolveParams parms, PawnGroupKindDef pawnGroup)
         {
             Lord singlePawnLord;
             if (faction.def.pawnGroupMakers.Any(pgm => pgm.options.Any(k => !k.kind.RaceProps.EatsFood)))
@@ -67,7 +67,7 @@ namespace KCSG
             rp.rect = parms.rect;
             rp.faction = faction;
             rp.singlePawnLord = singlePawnLord;
-            rp.pawnGroupKindDef = GenOption.sld.defenseOptions.groupKindDef;
+            rp.pawnGroupKindDef = pawnGroup;
             rp.singlePawnSpawnCellExtraPredicate = parms.singlePawnSpawnCellExtraPredicate ?? ((IntVec3 x) => map.reachability.CanReachMapEdge(x, tp));
             if (rp.pawnGroupMakerParams == null && faction.def.pawnGroupMakers.Any(pgm => pgm.kindDef == PawnGroupKindDefOf.Settlement))
             {
