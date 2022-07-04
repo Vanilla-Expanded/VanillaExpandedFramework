@@ -352,7 +352,7 @@ namespace KCSG
                 }
                 GenSpawn.Spawn(c, cell, map, WipeMode.FullRefund);
             }
-            // Try to fill shelf
+            // Try to fill shelves
             if (thing is Building_Storage storage
                 && GenOption.sld != null
                 && GenOption.sld.stockpileOptions.fillStorageBuildings
@@ -362,14 +362,16 @@ namespace KCSG
                 foreach (var storageCell in storage.AllSlotCells())
                 {
                     var otherThing = storageCell.GetFirstItem(map);
-                    if (GenOption.sld.stockpileOptions.replaceOtherThings || otherThing == null)
+                    if (Rand.Value < GenOption.sld.stockpileOptions.fillChance && GenOption.sld.stockpileOptions.replaceOtherThings || otherThing == null)
                     {
                         if (GenOption.sld.stockpileOptions.replaceOtherThings && otherThing.Spawned)
                             otherThing.DeSpawn();
 
                         var thingDef = GenOption.sld.stockpileOptions.fillWithDefs.RandomElementByWeight(t => marketValue - t.BaseMarketValue);
                         var item = ThingMaker.MakeThing(thingDef, thingDef.stuffCategories?.Count > 0 ? GenStuff.RandomStuffFor(thingDef) : null);
-                        item.stackCount = Math.Max(Rand.RangeInclusive(1, thingDef.stackLimit), 120);
+
+                        if (item.MarketValue <= GenOption.sld.stockpileOptions.maxValueStackIncrease)
+                            item.stackCount = Mathf.Clamp(Rand.RangeInclusive(1, thingDef.stackLimit), 1, 90);
 
                         item.TryGetComp<CompQuality>()?.SetQuality(QualityUtility.GenerateQualityBaseGen(), ArtGenerationContext.Outsider);
 

@@ -125,6 +125,8 @@ namespace KCSG
         public float stockpileValueMultiplier = 1f;
 
         public bool fillStorageBuildings = false;
+        public float fillChance = 0.6f;
+        public float maxValueStackIncrease = 40f;
         public bool replaceOtherThings = false;
         public List<ThingDef> fillWithDefs = new List<ThingDef>();
 
@@ -140,7 +142,7 @@ namespace KCSG
                         RefMarketValue = defMarketValue;
                 }
 
-                RefMarketValue += 0.5f;
+                RefMarketValue += 1f;
             }
         }
     }
