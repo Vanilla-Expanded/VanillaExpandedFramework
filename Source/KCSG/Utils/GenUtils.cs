@@ -350,18 +350,24 @@ namespace KCSG
                 GenSpawn.Spawn(c, cell, map, WipeMode.FullRefund);
             }
             // Try to fill shelf
-            if (GenOption.sld != null
+            if (thing is Building_Storage storage
+                && GenOption.sld != null
                 && GenOption.sld.stockpileOptions.fillStorageBuildings
-                && !GenOption.sld.stockpileOptions.fillWithDefs.NullOrEmpty()
-                && thing is Building_Storage storage)
+                && !GenOption.sld.stockpileOptions.fillWithDefs.NullOrEmpty())
             {
-                foreach (var storageCell in storage.OccupiedRect())
+                var marketValue = GenOption.sld.stockpileOptions.RefMarketValue;
+                foreach (var storageCell in storage.AllSlotCells())
                 {
-                    if (storageCell.GetFirstItem(map) == null)
+                    var otherThing = storageCell.GetFirstItem(map);
+                    if (GenOption.sld.stockpileOptions.replaceOtherThings || otherThing == null)
                     {
-                        var thingDef = GenOption.sld.stockpileOptions.fillWithDefs.RandomElementByWeight(t => Math.Max(500 - t.BaseMarketValue, 0));
+                        if (GenOption.sld.stockpileOptions.replaceOtherThings && otherThing.Spawned)
+                            otherThing.DeSpawn();
+
+                        var thingDef = GenOption.sld.stockpileOptions.fillWithDefs.RandomElementByWeight(t => marketValue - t.BaseMarketValue);
                         var item = ThingMaker.MakeThing(thingDef, thingDef.stuffCategories?.Count > 0 ? GenStuff.RandomStuffFor(thingDef) : null);
-                        item.stackCount = Math.Min(Rand.RangeInclusive(1, thingDef.stackLimit), 150);
+                        item.stackCount = Math.Max(Rand.RangeInclusive(1, thingDef.stackLimit), 120);
+
                         item.TryGetComp<CompQuality>()?.SetQuality(QualityUtility.GenerateQualityBaseGen(), ArtGenerationContext.Outsider);
 
                         GenPlace.TryPlaceThing(item, storageCell, map, ThingPlaceMode.Direct);

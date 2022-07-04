@@ -120,10 +120,29 @@ namespace KCSG
 
     public class StockpileOptions
     {
+        public float RefMarketValue { get; set; }
+
         public float stockpileValueMultiplier = 1f;
 
         public bool fillStorageBuildings = false;
+        public bool replaceOtherThings = false;
         public List<ThingDef> fillWithDefs = new List<ThingDef>();
+
+        public void ResolveReference()
+        {
+            RefMarketValue = 0;
+            if (fillStorageBuildings && !fillWithDefs.NullOrEmpty())
+            {
+                for (int i = 0; i < fillWithDefs.Count; i++)
+                {
+                    var defMarketValue = fillWithDefs[i].BaseMarketValue;
+                    if (defMarketValue > RefMarketValue)
+                        RefMarketValue = defMarketValue;
+                }
+
+                RefMarketValue += 0.5f;
+            }
+        }
     }
 
     public class SettlementLayoutDef : Def
@@ -152,6 +171,7 @@ namespace KCSG
         {
             base.ResolveReferences();
             defenseOptions.ResolveReference();
+            stockpileOptions.ResolveReference();
         }
 
         public override IEnumerable<string> ConfigErrors()
