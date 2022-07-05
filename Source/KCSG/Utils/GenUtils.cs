@@ -76,15 +76,12 @@ namespace KCSG
                     var terrain = cell.GetTerrain(map);
                     if (!terrain.BuildableByPlayer)
                     {
-                        if (terrain.affordances.Contains(TerrainAffordanceDefOf.Bridgeable)
-                            || (symbol.thingDef.plant != null && terrain.fertility < symbol.thingDef.plant.fertilityMin))
+                        if (symbol.thingDef.plant != null && terrain.fertility >= symbol.thingDef.plant.fertilityMin)
                         {
-                            map.terrainGrid.SetTerrain(cell, TerrainDefOf.Soil);
+                            Plant plant = ThingMaker.MakeThing(symbol.thingDef) as Plant;
+                            plant.Growth = symbol.plantGrowth;
+                            GenSpawn.Spawn(plant, cell, map, WipeMode.VanishOrMoveAside);
                         }
-
-                        Plant plant = ThingMaker.MakeThing(symbol.thingDef) as Plant;
-                        plant.Growth = symbol.plantGrowth;
-                        GenSpawn.Spawn(plant, cell, map, WipeMode.VanishOrMoveAside);
                     }
                 }
                 else if (symbol.thingDef.category == ThingCategory.Pawn && GenOption.ext?.AdditionalResolvers == false)
