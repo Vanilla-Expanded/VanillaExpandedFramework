@@ -10,12 +10,6 @@ namespace KCSG
 
         public static ThingDef KCSG_LongMote_DustPuff;
 
-        public static ThingDef Limestone;
-
-        public static ThingDef Slate;
-
-        public static ThingDef Marble;
-
         public static GenStepDef Terrain;
 
         public static GenStepDef KCSG_TerrainNoPatches;
