@@ -315,9 +315,11 @@
             }
             else if (this.def.worldTargeting)
             {
-                CameraJumper.TryJump(CameraJumper.GetWorldTarget(this.pawn));
+                var initialTarget = CameraJumper.GetWorldTarget(this.pawn);
+                CameraJumper.TryJump(initialTarget);
                 Find.WorldTargeter.BeginTargeting(gti =>
                                                   {
+                                                      if (!this.ValidateTargetTile(gti, true)) return false;
                                                       if (targetMode == AbilityTargetingMode.Tile)
                                                       {
                                                           this.currentTargets[this.currentTargetingIndex] = gti;
@@ -328,16 +330,23 @@
                                                       {
                                                           Map map = Find.WorldObjects.MapParentAt(gti.Tile).Map;
                                                           this.currentTargets[this.currentTargetingIndex] = new GlobalTargetInfo(map.AllCells.First(), map);
-                                                          CameraJumper.TryJump(map.Center.ToIntVec2.ToIntVec3, map);
-                                                          Find.Targeter.BeginTargeting(this.targetParams, this.OrderForceTarget, this.DrawHighlight, lti => this.ValidateTarget(lti));
+                                                          CameraJumper.TryJump(map.Center, map);
+                                                          Find.Targeter.BeginTargeting(this.targetParams, this.OrderForceTarget, this.DrawHighlight,
+                                                              lti => this.ValidateTarget(lti), mouseAttachment:this.MouseAttachment(this.currentTargets[this.currentTargetingIndex]));
                                                           return true;
                                                       }
-                                                  }, targetMode == AbilityTargetingMode.Tile, closeWorldTabWhenFinished: targetMode == AbilityTargetingMode.Tile, canSelectTarget: this.ValidateTargetTile, onUpdate: this.OnUpdateWorld);
+                                                  }, targetMode == AbilityTargetingMode.Tile, this.MouseAttachment(initialTarget),
+                    targetMode == AbilityTargetingMode.Tile, this.OnUpdateWorld, this.WorldTargetingLabel, this.CanHitTargetTile);
             }
             else
             {
                 Find.Targeter.BeginTargeting(this);
             }
+        }
+
+        protected virtual string WorldTargetingLabel(GlobalTargetInfo target)
+        {
+            return null;
         }
 
         // Careful with changing this, hook in mp compat.
@@ -761,15 +770,24 @@
 
         public virtual void OnGUI(LocalTargetInfo target)
         {
-            Texture2D icon = (!target.IsValid) ? TexCommand.CannotShoot : ((!(this.UIIcon != BaseContent.BadTex)) ? TexCommand.Attack : this.UIIcon);
-            GenUI.DrawMouseAttachment(icon);
+            GenUI.DrawMouseAttachment(MouseAttachment(target.ToGlobalTargetInfo(pawn.Map)));
             foreach (var abilityModExtension in AbilityModExtensions)
             {
                 abilityModExtension.TargetingOnGUI(target, this);
             }
         }
 
-        public virtual bool ValidateTargetTile(GlobalTargetInfo target)
+        protected virtual Texture2D MouseAttachment(GlobalTargetInfo target)
+        {
+            return (!target.IsValid) ? TexCommand.CannotShoot : ((!(this.UIIcon != BaseContent.BadTex)) ? TexCommand.Attack : this.UIIcon);
+        }
+
+        public virtual bool ValidateTargetTile(GlobalTargetInfo target, bool showMessages = false)
+        {
+            return CanHitTargetTile(target);
+        }
+
+        public virtual bool CanHitTargetTile(GlobalTargetInfo target)
         {
             foreach (AbilityExtension_AbilityMod modExtension in this.AbilityModExtensions)
                 if (!modExtension.ValidTile(target, this))
