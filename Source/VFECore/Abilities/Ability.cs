@@ -357,7 +357,10 @@
         {
             foreach (AbilityExtension_AbilityMod modExtension in this.AbilityModExtensions)
                 if (!modExtension.Valid(targets, this, true))
+                {
+                    this.currentTargetingIndex--;
                     return;
+                }
 
             this.currentTargetingIndex = -1;
 

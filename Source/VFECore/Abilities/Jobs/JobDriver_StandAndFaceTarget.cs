@@ -32,7 +32,10 @@
                 {
                     base.pawn.pather.StopDead();
                 }
-                base.pawn.rotationTracker.FaceTarget(TargetA);
+                if (base.pawn.GetPosture() == PawnPosture.Standing)
+                {
+                    base.pawn.rotationTracker.FaceTarget(TargetA);
+                }
                 base.pawn.GainComfortFromCellIfPossible();
             };
             toil.socialMode = RandomSocialMode.Off;

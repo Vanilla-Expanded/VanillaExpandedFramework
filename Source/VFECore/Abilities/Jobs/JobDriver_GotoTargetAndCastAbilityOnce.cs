@@ -33,6 +33,10 @@
         private IEnumerable<Toil> GotoToils()
         {
             Toil toil = new Toil();
+            toil.initAction = delegate
+            {
+                pawn.pather.StopDead();
+            };
             toil.tickAction = delegate
             {
                 Thing target = job.targetA.Thing;

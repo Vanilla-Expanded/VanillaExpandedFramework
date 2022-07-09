@@ -22,7 +22,11 @@
 
 		public override bool CanApplyOn(LocalTargetInfo target, Ability ability, bool throwMessages = false)
 		{
-			return Valid(new[] { target.ToGlobalTargetInfo(target.Thing.Map) }, ability, throwMessages);
+			if (target.Thing?.Map != null)
+            {
+				return Valid(new[] { target.ToGlobalTargetInfo(target.Thing.Map) }, ability, throwMessages);
+			}
+			return false;
 		}
 
 		public override bool Valid(GlobalTargetInfo[] targets, Ability ability, bool throwMessages = false)
