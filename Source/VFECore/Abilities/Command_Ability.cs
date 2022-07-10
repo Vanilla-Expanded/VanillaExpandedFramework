@@ -50,6 +50,15 @@ namespace VFECore.Abilities
 
             if(this.disabled && this.ability.cooldown > Find.TickManager.TicksGame)
                 GUI.DrawTexture(butRect.RightPartPixels(butRect.width * ((float) (this.ability.cooldown - Find.TickManager.TicksGame) / this.ability.GetCooldownForPawn())), CooldownTex);
+            
+            if (Mouse.IsOver(butRect))
+            {
+                if (this.ability.def.targetModes[0] == AbilityTargetingMode.Self && this.ability.def.targetCount == 1)
+                {
+                    this.ability.OnGUI(this.pawn);
+                }
+            }
+
             return result;
         }
     }

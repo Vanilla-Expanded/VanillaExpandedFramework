@@ -215,10 +215,6 @@
             foreach (AbilityExtension_AbilityMod extension in this.AbilityModExtensions)
             {
                 extension.GizmoUpdateOnMouseover(this);
-                if (this.def.targetModes[0] == AbilityTargetingMode.Self && this.def.targetCount == 1)
-                {
-                    extension.TargetingOnGUI(this.pawn, this);
-                }
             }
         }
 
