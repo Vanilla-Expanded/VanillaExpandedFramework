@@ -255,8 +255,32 @@ namespace KCSG
             // Try to recharge if applicable
             CompPowerBattery battery = thing.TryGetComp<CompPowerBattery>();
             battery?.AddEnergy(battery.Props.storedEnergyMax);
+            // Try to fill item container
+            if (thing is Building_Crate crate)
+            {
+                List<Thing> innerThings = new List<Thing>();
+                if (faction == Faction.OfPlayer && symbol.thingSetMakerDefForPlayer != null)
+                {
+                    innerThings = symbol.thingSetMakerDefForPlayer.root.Generate(new ThingSetMakerParams());
+                }
+                else if (symbol.thingSetMakerDef != null)
+                {
+                    innerThings = symbol.thingSetMakerDef.root.Generate(new ThingSetMakerParams());
+                }
+
+                for (int i = 0; i < innerThings.Count; i++)
+                {
+                    var innerThing = innerThings[i];
+                    innerThing.stackCount = Math.Min((int)(innerThing.stackCount * symbol.crateStackMultiplier), innerThing.def.stackLimit);
+                    if (!crate.TryAcceptThing(innerThing))
+                    {
+                        Debug.Message($"Cannot add {innerThing.def.defName} to {crate.def.defName}");
+                        innerThing.Destroy();
+                    }
+                }
+            }
             // Try to fill corpse container
-            if (thing is Building_CorpseCasket corpseCasket && Rand.Value <= symbol.chanceToContainPawn)
+            else if (thing is Building_CorpseCasket corpseCasket && Rand.Value <= symbol.chanceToContainPawn)
             {
                 Pawn pawn = GeneratePawnForContainer(symbol, map);
                 pawn.Kill(null);
@@ -278,30 +302,6 @@ namespace KCSG
                 if (!casket.TryAcceptThing(pawn))
                 {
                     Debug.Message($"Building_Casket: Cannot add {pawn} to {casket.def.defName}");
-                }
-            }
-            // Try to fill item container
-            else if (thing is Building_Crate crate)
-            {
-                List<Thing> innerThings = new List<Thing>();
-                if (faction == Faction.OfPlayer && symbol.thingSetMakerDefForPlayer != null)
-                {
-                    innerThings = symbol.thingSetMakerDefForPlayer.root.Generate(new ThingSetMakerParams());
-                }
-                else if (symbol.thingSetMakerDef != null)
-                {
-                    innerThings = symbol.thingSetMakerDef.root.Generate(new ThingSetMakerParams());
-                }
-
-                for (int i = 0; i < innerThings.Count; i++)
-                {
-                    var innerThing = innerThings[i];
-                    innerThing.stackCount = Math.Min((int)(innerThing.stackCount * symbol.crateStackMultiplier), innerThing.def.stackLimit);
-                    if (!crate.TryAcceptThing(innerThing))
-                    {
-                        Debug.Message($"Cannot add {innerThing.def.defName} to {crate.def.defName}");
-                        innerThing.Destroy();
-                    }
                 }
             }
             // If terrain at pos is bridgeable
