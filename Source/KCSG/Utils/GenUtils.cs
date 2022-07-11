@@ -296,7 +296,7 @@ namespace KCSG
                 }
             }
             // Try to fill pawn container
-            else if (thing is Building_Casket casket && Rand.Value <= symbol.chanceToContainPawn)
+            else if (thing is Building_CryptosleepCasket casket && Rand.Value <= symbol.chanceToContainPawn)
             {
                 Pawn pawn = GeneratePawnForContainer(symbol, map);
                 if (!casket.TryAcceptThing(pawn))
@@ -425,14 +425,14 @@ namespace KCSG
             Faction faction = temp.spawnPartOfFaction ? map.ParentFaction : null;
             if (temp.containPawnKindForPlayerAnyOf.Count > 0 && faction == Faction.OfPlayer)
             {
-                return PawnGenerator.GeneratePawn(new PawnGenerationRequest(temp.containPawnKindForPlayerAnyOf.RandomElement(), faction, forceGenerateNewPawn: true, certainlyBeenInCryptosleep: true));
+                return PawnGenerator.GeneratePawn(new PawnGenerationRequest(temp.containPawnKindForPlayerAnyOf.RandomElement(), faction, forceGenerateNewPawn: true));
             }
             else if (temp.containPawnKindAnyOf.Count > 0)
             {
-                return PawnGenerator.GeneratePawn(new PawnGenerationRequest(temp.containPawnKindAnyOf.RandomElement(), faction, forceGenerateNewPawn: true, certainlyBeenInCryptosleep: true));
+                return PawnGenerator.GeneratePawn(new PawnGenerationRequest(temp.containPawnKindAnyOf.RandomElement(), faction, forceGenerateNewPawn: true));
             }
 
-            return PawnGenerator.GeneratePawn(faction != null ? faction.RandomPawnKind() : PawnKindDefOf.Villager, faction);
+            return PawnGenerator.GeneratePawn(new PawnGenerationRequest(faction != null ? faction.RandomPawnKind() : PawnKindDefOf.Villager, faction, forceGenerateNewPawn: true));
         }
 
         /// <summary>
