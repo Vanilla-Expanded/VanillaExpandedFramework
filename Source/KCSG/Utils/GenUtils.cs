@@ -255,33 +255,8 @@ namespace KCSG
             // Try to recharge if applicable
             CompPowerBattery battery = thing.TryGetComp<CompPowerBattery>();
             battery?.AddEnergy(battery.Props.storedEnergyMax);
-            // Try to fill corpse container
-            if (thing is Building_CorpseCasket corpseCasket && Rand.Value <= symbol.chanceToContainPawn)
-            {
-                Pawn pawn = GeneratePawnForContainer(symbol, map);
-                pawn.Kill(null);
-
-                var corpse = pawn.Corpse;
-                corpse.timeOfDeath = Mathf.Max(Find.TickManager.TicksGame - 60000 * Rand.RangeInclusive(5, 15), 0);
-                corpse.GetComp<CompRottable>()?.RotImmediately();
-
-                corpseCasket.GetComp<CompAssignableToPawn_Grave>()?.TryAssignPawn(pawn);
-                if (!corpseCasket.TryAcceptThing(corpse))
-                {
-                    Debug.Message($"Building_CorpseCasket: Cannot add {pawn.Corpse} to {corpseCasket.def.defName}");
-                }
-            }
-            // Try to fill pawn container
-            else if (thing is Building_Casket casket && Rand.Value <= symbol.chanceToContainPawn)
-            {
-                Pawn pawn = GeneratePawnForContainer(symbol, map);
-                if (!casket.TryAcceptThing(pawn))
-                {
-                    Debug.Message($"Building_Casket: Cannot add {pawn} to {casket.def.defName}");
-                }
-            }
             // Try to fill item container
-            else if (thing is Building_Crate crate)
+            if (thing is Building_Crate crate)
             {
                 List<Thing> innerThings = new List<Thing>();
                 if (faction == Faction.OfPlayer && symbol.thingSetMakerDefForPlayer != null)
@@ -302,6 +277,31 @@ namespace KCSG
                         Debug.Message($"Cannot add {innerThing.def.defName} to {crate.def.defName}");
                         innerThing.Destroy();
                     }
+                }
+            }
+            // Try to fill corpse container
+            else if (thing is Building_CorpseCasket corpseCasket && Rand.Value <= symbol.chanceToContainPawn)
+            {
+                Pawn pawn = GeneratePawnForContainer(symbol, map);
+                pawn.Kill(null);
+
+                var corpse = pawn.Corpse;
+                corpse.timeOfDeath = Mathf.Max(Find.TickManager.TicksGame - 60000 * Rand.RangeInclusive(5, 15), 0);
+                corpse.GetComp<CompRottable>()?.RotImmediately();
+
+                corpseCasket.GetComp<CompAssignableToPawn_Grave>()?.TryAssignPawn(pawn);
+                if (!corpseCasket.TryAcceptThing(corpse))
+                {
+                    Debug.Message($"Building_CorpseCasket: Cannot add {pawn.Corpse} to {corpseCasket.def.defName}");
+                }
+            }
+            // Try to fill pawn container
+            else if (thing is Building_CryptosleepCasket casket && Rand.Value <= symbol.chanceToContainPawn)
+            {
+                Pawn pawn = GeneratePawnForContainer(symbol, map);
+                if (!casket.TryAcceptThing(pawn))
+                {
+                    Debug.Message($"Building_Casket: Cannot add {pawn} to {casket.def.defName}");
                 }
             }
             // If terrain at pos is bridgeable
@@ -425,14 +425,14 @@ namespace KCSG
             Faction faction = temp.spawnPartOfFaction ? map.ParentFaction : null;
             if (temp.containPawnKindForPlayerAnyOf.Count > 0 && faction == Faction.OfPlayer)
             {
-                return PawnGenerator.GeneratePawn(new PawnGenerationRequest(temp.containPawnKindForPlayerAnyOf.RandomElement(), faction, forceGenerateNewPawn: true, certainlyBeenInCryptosleep: true));
+                return PawnGenerator.GeneratePawn(new PawnGenerationRequest(temp.containPawnKindForPlayerAnyOf.RandomElement(), faction, forceGenerateNewPawn: true));
             }
             else if (temp.containPawnKindAnyOf.Count > 0)
             {
-                return PawnGenerator.GeneratePawn(new PawnGenerationRequest(temp.containPawnKindAnyOf.RandomElement(), faction, forceGenerateNewPawn: true, certainlyBeenInCryptosleep: true));
+                return PawnGenerator.GeneratePawn(new PawnGenerationRequest(temp.containPawnKindAnyOf.RandomElement(), faction, forceGenerateNewPawn: true));
             }
 
-            return PawnGenerator.GeneratePawn(faction != null ? faction.RandomPawnKind() : PawnKindDefOf.Villager, faction);
+            return PawnGenerator.GeneratePawn(new PawnGenerationRequest(faction != null ? faction.RandomPawnKind() : PawnKindDefOf.Villager, faction, forceGenerateNewPawn: true));
         }
 
         /// <summary>
