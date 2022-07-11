@@ -59,7 +59,7 @@
         }
 
         public virtual bool ShowGizmoOnPawn() =>
-            this.pawn != null && (this.pawn.IsColonistPlayerControlled && this.pawn.Drafted ||
+            this.pawn != null && (this.pawn.IsColonistPlayerControlled && (this.def.showUndrafted || this.pawn.Drafted) ||
                                   this.pawn.IsCaravanMember() && this.pawn.IsColonist && !this.pawn.IsPrisoner &&
                                   !this.pawn.Downed);
 
