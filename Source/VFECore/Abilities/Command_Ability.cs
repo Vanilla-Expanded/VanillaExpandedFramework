@@ -26,7 +26,7 @@ namespace VFECore.Abilities
             this.disabledReason = reason.Colorize(Color.red);
             this.action         = ability.DoAction;
             this.order          = 10f + (ability.def.requiredHediff?.hediffDef?.index ?? 0) + (ability.def.requiredHediff?.minimumLevel ?? 0);
-            //this.shrinkable     = true;
+            this.shrinkable     = true;
         }
 
         public override void GizmoUpdateOnMouseover()
