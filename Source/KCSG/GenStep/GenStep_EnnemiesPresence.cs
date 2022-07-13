@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using RimWorld;
 using Verse;
 using Verse.AI.Group;
@@ -38,11 +37,9 @@ namespace KCSG
             }
 
             Lord defend = LordMaker.MakeNewLord(fac, new LordJob_DefendBase(fac, map.Center), map);
-            IEnumerable<Pawn> pawns = GeneratePawns(map, fac, parms);
 
-            for (int i = 0; i < pawns.Count(); i++)
+            foreach (var pawn in GeneratePawns(map, fac, parms))
             {
-                var pawn = pawns.ElementAt(i);
                 IntVec3 loc;
                 if (spawnOnEdge)
                 {
