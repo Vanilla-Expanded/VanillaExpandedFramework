@@ -6,8 +6,19 @@ namespace KCSG
 {
     public class CustomGenOption : DefModExtension
     {
-        public bool AdditionalResolvers { get; set; }
-        public bool UsingSingleLayout { get; set; }
+        public bool UsingSingleLayout => chooseFromlayouts.Count > 0;
+
+        // TODO - Compat remove in next version
+        public List<string> SymbolResolvers
+        {
+            get
+            {
+                if (symbolResolvers == null)
+                    return ruinSymbolResolvers;
+
+                return symbolResolvers;
+            }
+        }
 
         /* Nomadic faction */
         public bool canSpawnSettlements = true;
@@ -23,7 +34,7 @@ namespace KCSG
         public bool fullClear = false;
         public bool preventBridgeable = false;
 
-        public List<string> symbolResolvers = new List<string>();
+        public List<string> symbolResolvers = null;
         public List<ThingDef> scatterThings = new List<ThingDef>();
         public List<ThingDef> filthTypes = new List<ThingDef>();
         public float scatterChance = 0.4f;
@@ -46,14 +57,6 @@ namespace KCSG
                 if (filthTypes[i].category != ThingCategory.Filth)
                     yield return $"{filthTypes[i].defName} in filthTypes, but isn't in category Filth.";
             }
-
-            // TODO Compat - To remove in next rimworld version
-            if (!ruinSymbolResolvers.NullOrEmpty())
-                symbolResolvers = ruinSymbolResolvers;
-            //
-            AdditionalResolvers = symbolResolvers.Count > 0;
-
-            UsingSingleLayout = chooseFromlayouts.Count > 0;
         }
     }
 

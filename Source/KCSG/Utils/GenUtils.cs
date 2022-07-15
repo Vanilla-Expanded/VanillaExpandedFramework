@@ -61,7 +61,7 @@ namespace KCSG
             {
                 GenerateTerrainAt(map, cell, symbol.terrainDef);
             }
-            else if (symbol.pawnKindDefNS != null && (GenOption.ext == null || GenOption.ext.AdditionalResolvers == false))
+            else if (symbol.pawnKindDefNS != null && (GenOption.ext == null || GenOption.ext.SymbolResolvers == null))
             {
                 GeneratePawnAt(map, cell, symbol);
             }
@@ -84,7 +84,7 @@ namespace KCSG
                         }
                     }
                 }
-                else if (symbol.thingDef.category == ThingCategory.Pawn && GenOption.ext?.AdditionalResolvers == false)
+                else if (symbol.thingDef.category == ThingCategory.Pawn && GenOption.ext?.SymbolResolvers == null)
                 {
                     GenSpawn.Spawn(symbol.thingDef, cell, map, WipeMode.VanishOrMoveAside);
                 }
