@@ -32,6 +32,7 @@ namespace PipeSystem
         public string labelKey;
         public string descKey;
 
+        public int extractTime = 150;
         public int extractAmount;
         public ThingDef thing;
 

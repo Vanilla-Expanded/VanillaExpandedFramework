@@ -16,29 +16,35 @@ namespace PipeSystem
             this.FailOnDespawnedOrNull(TargetIndex.A);
             this.FailOn(() => Map.designationManager.DesignationOn(TargetThingA, PSDefOf.PS_Drain) == null);
 
-            yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
-            yield return Toils_General.Wait(150).FailOnCannotTouch(TargetIndex.A, PathEndMode.Touch).FailOnDestroyedOrNull(TargetIndex.A).WithProgressBarToilDelay(TargetIndex.A);
+            ThingWithComps thingWithComps = (ThingWithComps)pawn.CurJob.targetA.Thing;
+            CompResourceStorage compRS = null;
 
-            Toil finalize = new Toil();
-            finalize.initAction = delegate
+            for (int i = 0; i < thingWithComps.AllComps.Count; i++)
             {
-                Pawn actor = finalize.actor;
-                ThingWithComps thingWithComps = (ThingWithComps)actor.CurJob.targetA.Thing;
-                for (int i = 0; i < thingWithComps.AllComps.Count; i++)
-                {
-                    if (thingWithComps.AllComps[i] is CompResourceStorage cPS && cPS.extractResourceAmount <= cPS.AmountStored)
-                    {
-                        cPS.DrawResource(cPS.extractResourceAmount);
+                if (thingWithComps.AllComps[i] is CompResourceStorage cps)
+                    compRS = cps;
+            }
 
-                        var opt = cPS.Props.extractOptions;
-                        Thing createdThing = ThingMaker.MakeThing(opt.thing);
-                        createdThing.stackCount = opt.extractAmount;
-                        GenSpawn.Spawn(createdThing, pawn.Position, Map, WipeMode.VanishOrMoveAside);
-                    }
-                }
-                Map.designationManager.DesignationOn(thingWithComps, PSDefOf.PS_Drain)?.Delete();
+            this.FailOn(() => compRS == null);
+
+            yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
+            yield return Toils_General.Wait(compRS.Props.extractOptions.extractTime).FailOnCannotTouch(TargetIndex.A, PathEndMode.Touch).FailOnDestroyedOrNull(TargetIndex.A).WithProgressBarToilDelay(TargetIndex.A);
+
+            Toil finalize = new Toil
+            {
+                initAction = delegate
+                {
+                    compRS.DrawResource(compRS.extractResourceAmount);
+
+                    var opt = compRS.Props.extractOptions;
+                    Thing createdThing = ThingMaker.MakeThing(opt.thing);
+                    createdThing.stackCount = opt.extractAmount;
+                    GenSpawn.Spawn(createdThing, pawn.Position, Map, WipeMode.VanishOrMoveAside);
+
+                    Map.designationManager.DesignationOn(thingWithComps, PSDefOf.PS_Drain)?.Delete();
+                },
+                defaultCompleteMode = ToilCompleteMode.Instant
             };
-            finalize.defaultCompleteMode = ToilCompleteMode.Instant;
             yield return finalize;
         }
     }
