@@ -19,6 +19,8 @@ namespace PipeSystem
 
         public List<LinkOption> linkToRefuelables;
 
+        public float transferAmount = 100f;
+
         internal Material offMat; // Off material
 
         public override IEnumerable<string> ConfigErrors()

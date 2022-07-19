@@ -357,7 +357,7 @@ namespace PipeSystem
                 // Actual transfer we will do
                 float availableCapacity = AvailableCapacity;
                 float toTransfer = availableCapacity > canTransfer ? canTransfer : availableCapacity;
-                float willTransfer = toTransfer > 100 ? 100 : toTransfer;
+                float willTransfer = toTransfer > def.transferAmount ? def.transferAmount : toTransfer;
                 // Draw from marked and distribute to others
                 DrawAmongStorage(willTransfer, markedForTransfer);
                 DistributeAmongStorage(willTransfer);
