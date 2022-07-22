@@ -49,7 +49,9 @@
     <Compile Include="Buildings\Building_ResourceHeater.cs" />
     <Compile Include="Buildings\Building_ResourceWorkTable_HeatPush.cs" />
     <Compile Include="Buildings\Building_ResourceWorkTable.cs" />
+    <Compile Include="Cached\CachedCompResourceStorage.cs" />
     <Compile Include="Cached\CachedCompResourceTrader.cs" />
+    <Compile Include="Cached\CachedPipeNetManager.cs" />
     <Compile Include="Cached\CachedResourceThings.cs" />
     <Compile Include="Comps\CompConvertToThing.cs" />
     <Compile Include="Comps\CompExplosiveContent.cs" />
@@ -81,7 +83,9 @@
     <Compile Include="Harmony\Designator_Build_Patch.cs" />
     <Compile Include="Graphic\LinkedPipes.cs" />
     <Compile Include="Jobs\JobDriver_DrainFromMarkedStorage.cs" />
+    <Compile Include="Jobs\JobDriver_FillStorage.cs" />
     <Compile Include="Jobs\WorkGiver_DrainFromMarkedStorage.cs" />
+    <Compile Include="Jobs\WorkGiver_RefillStorage.cs" />
     <Compile Include="PipeSystemDebug\PipeSystemDebug.cs" />
     <Compile Include="Designator\Designator_DeconstructPipe.cs" />
     <Compile Include="Harmony\ResolvedAllowedDesignators_Patch.cs" />

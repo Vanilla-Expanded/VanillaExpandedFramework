@@ -22,6 +22,7 @@ namespace PipeSystem
         public Vector3 centerOffset = new Vector3(0, 0);
 
         public ExtractOptions extractOptions;
+        public RefillOptions refillOptions;
     }
 
     public class ExtractOptions
@@ -34,6 +35,16 @@ namespace PipeSystem
 
         public int extractTime = 150;
         public int extractAmount;
+        public ThingDef thing;
+
+        public int ratio = 1;
+    }
+
+    public class RefillOptions
+    {
+        public bool alwaysRefill = false;
+
+        public int refillTime = 150;
         public ThingDef thing;
 
         public int ratio = 1;

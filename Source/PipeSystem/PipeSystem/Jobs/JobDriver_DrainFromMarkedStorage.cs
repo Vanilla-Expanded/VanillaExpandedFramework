@@ -16,15 +16,8 @@ namespace PipeSystem
             this.FailOnDespawnedOrNull(TargetIndex.A);
             this.FailOn(() => Map.designationManager.DesignationOn(TargetThingA, PSDefOf.PS_Drain) == null);
 
-            ThingWithComps thingWithComps = (ThingWithComps)pawn.CurJob.targetA.Thing;
-            CompResourceStorage compRS = null;
-
-            for (int i = 0; i < thingWithComps.AllComps.Count; i++)
-            {
-                if (thingWithComps.AllComps[i] is CompResourceStorage cps)
-                    compRS = cps;
-            }
-
+            var thing = job.targetA.Thing;
+            var compRS = thing.TryGetComp<CompResourceStorage>();
             this.FailOn(() => compRS == null);
 
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
@@ -41,7 +34,7 @@ namespace PipeSystem
                     createdThing.stackCount = opt.extractAmount;
                     GenSpawn.Spawn(createdThing, pawn.Position, Map, WipeMode.VanishOrMoveAside);
 
-                    Map.designationManager.DesignationOn(thingWithComps, PSDefOf.PS_Drain)?.Delete();
+                    Map.designationManager.DesignationOn(thing, PSDefOf.PS_Drain)?.Delete();
                 },
                 defaultCompleteMode = ToilCompleteMode.Instant
             };
