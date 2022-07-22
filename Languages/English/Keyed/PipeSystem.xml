@@ -45,4 +45,8 @@
   <PipeSystem_TransferContent>Transfer storage content</PipeSystem_TransferContent>
   <PipeSystem_TransferContentDesc>Transfer storage content to other available storages.</PipeSystem_TransferContentDesc>
   <PipeSystem_MarkedToTransferContent>Transfering content to other available storages...</PipeSystem_MarkedToTransferContent>
+
+  <PipeSystem_NothingToRefill>No thing to refill {0}</PipeSystem_NothingToRefill>
+  <PipeSystem_AllowManualRefill>Allow manual refill</PipeSystem_AllowManualRefill>
+  <PipeSystem_AllowManualRefillDesc>Allow pawns to directly refill storage</PipeSystem_AllowManualRefillDesc>
 </LanguageData>

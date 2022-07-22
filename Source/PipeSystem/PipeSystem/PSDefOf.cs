@@ -9,5 +9,6 @@ namespace PipeSystem
         public static DesignationDef PS_Drain;
 
         public static JobDef PS_DrainFromMarkedStorage;
+        public static JobDef PS_FillStorage;
     }
 }

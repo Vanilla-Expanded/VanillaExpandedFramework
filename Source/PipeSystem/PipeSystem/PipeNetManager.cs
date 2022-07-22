@@ -10,6 +10,8 @@ namespace PipeSystem
         {
         }
 
+        public HashSet<Thing> wantRefill = new HashSet<Thing>();
+
         public List<PipeNet> pipeNets = new List<PipeNet>();
         // To avoid getting List Count
         private int pipeNetsCount = 0;
@@ -251,6 +253,18 @@ namespace PipeSystem
                     return pipeNet;
             }
             return null;
+        }
+
+        /// <summary>
+        /// Cache storage that want to be refilled for quicker job scanner
+        /// </summary>
+        public void UpdateRefillableWith(Thing thing)
+        {
+            Log.Warning($"Adding {thing}");
+            if (wantRefill.Contains(thing))
+                wantRefill.Remove(thing);
+            else
+                wantRefill.Add(thing);
         }
     }
 }

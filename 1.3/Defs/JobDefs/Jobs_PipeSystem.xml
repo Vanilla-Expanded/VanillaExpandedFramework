@@ -6,4 +6,11 @@
     <reportString>draining out of TargetA.</reportString>
     <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
   </JobDef>
+
+  <JobDef>
+    <defName>PS_FillStorage</defName>
+    <driverClass>PipeSystem.JobDriver_FillStorage</driverClass>
+    <reportString>filling TargetA.</reportString>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
 </Defs>

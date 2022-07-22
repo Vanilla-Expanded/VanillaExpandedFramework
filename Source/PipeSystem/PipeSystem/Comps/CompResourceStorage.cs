@@ -1,7 +1,7 @@
-﻿using RimWorld;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using RimWorld;
 using UnityEngine;
 using Verse;
 using static Verse.GenDraw;
@@ -16,6 +16,7 @@ namespace PipeSystem
     {
         public bool markedForExtract = false;
         public bool markedForTransfer = false;
+        public bool markedForRefill = false;
         public float extractResourceAmount;
 
         private float amountStored;
@@ -23,6 +24,7 @@ namespace PipeSystem
         private FillableBarRequest request;
         private Command_Action extractGizmo;
         private Command_Action transferGizmo;
+        private Command_Toggle refillGizmo;
 
         private static readonly Texture2D transferIcon = ContentFinder<Texture2D>.Get("UI/TransferStorageContent");
 
@@ -46,6 +48,7 @@ namespace PipeSystem
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
+            CachedCompResourceStorage.Cache(this);
             isBreakdownable = parent.TryGetComp<CompBreakdownable>() != null;
             // Fillable bar request
             request = new FillableBarRequest
@@ -74,6 +77,26 @@ namespace PipeSystem
                     defaultDesc = Props.extractOptions.descKey.Translate(),
                     icon = Props.extractOptions.tex
                 };
+            }
+            // Refill gizmo
+            if (Props.refillOptions != null && !Props.refillOptions.alwaysRefill)
+            {
+                refillGizmo = new Command_Toggle()
+                {
+                    isActive = () => markedForRefill,
+                    toggleAction = delegate
+                    {
+                        markedForRefill = !markedForRefill;
+                        PipeNetManager.UpdateRefillableWith(parent);
+                    },
+                    defaultLabel = "PipeSystem_AllowManualRefill".Translate(),
+                    defaultDesc = "PipeSystem_AllowManualRefillDesc".Translate(),
+                    icon = TexCommand.ForbidOff
+                };
+            }
+            else if (Props.refillOptions != null && Props.refillOptions.alwaysRefill)
+            {
+                PipeNetManager.UpdateRefillableWith(parent);
             }
             // Transfer gizmo
             if (Props.addTransferGizmo)
@@ -128,6 +151,7 @@ namespace PipeSystem
             Scribe_Values.Look(ref amountStored, "storedResource", 0f);
             Scribe_Values.Look(ref markedForExtract, "markedForExtract");
             Scribe_Values.Look(ref markedForTransfer, "markedForTransfer");
+            Scribe_Values.Look(ref markedForTransfer, "markedForRefill");
             base.PostExposeData();
         }
 
@@ -197,6 +221,9 @@ namespace PipeSystem
             if (transferGizmo != null)
                 yield return transferGizmo;
 
+            if (refillGizmo != null)
+                yield return refillGizmo;
+
             if (extractGizmo != null)
             {
                 extractGizmo.disabled = AmountStored < extractResourceAmount;
@@ -205,7 +232,7 @@ namespace PipeSystem
 
             if (Prefs.DevMode)
             {
-                Command_Action fill = new Command_Action
+                yield return new Command_Action
                 {
                     defaultLabel = "DEBUG: Fill",
                     action = new Action(() =>
@@ -213,8 +240,18 @@ namespace PipeSystem
                         amountStored = Props.storageCapacity;
                     })
                 };
-                yield return fill;
-                Command_Action draw = new Command_Action
+                yield return new Command_Action
+                {
+                    defaultLabel = "DEBUG: Add 5",
+                    action = new Action(() =>
+                    {
+                        if (amountStored + 5 > Props.storageCapacity)
+                            amountStored = Props.storageCapacity;
+                        else
+                            amountStored += 5;
+                    })
+                };
+                yield return new Command_Action
                 {
                     defaultLabel = "DEBUG: Empty",
                     action = new Action(() =>
@@ -222,7 +259,6 @@ namespace PipeSystem
                         amountStored = 0f;
                     })
                 };
-                yield return draw;
             }
         }
 
