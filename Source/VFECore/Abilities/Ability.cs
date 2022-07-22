@@ -164,7 +164,7 @@
 
         public virtual bool AutoCast => this.pawn.IsColonistPlayerControlled ? this.autoCast : this.pawn.Spawned;
 
-        public virtual bool CanAutoCast => this.Chance > 0;
+        public virtual bool CanAutoCast => this.def.targetCount == 1 && this.Chance > 0;
 
         public virtual float Chance => this.def.Chance;
 
