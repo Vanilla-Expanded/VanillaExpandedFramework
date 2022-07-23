@@ -13,6 +13,7 @@ using UnityEngine;
 
 namespace VFE.Mechanoids.HarmonyPatches
 {
+
     [HarmonyPatch(typeof(ITab_Pawn_Character))]
     [HarmonyPatch("IsVisible", MethodType.Getter)]
     public static class NoBioForMachines

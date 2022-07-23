@@ -17,7 +17,6 @@ namespace VFE.Mechanoids.AI.JobDrivers
             pawn.ReserveAsManyAsPossible(job.GetTargetQueue(TargetIndex.B), job);
             return pawn.Reserve(job.GetTarget(TargetIndex.A),job,1,-1,null,errorOnFailed);
         }
-
         protected override IEnumerable<Toil> MakeNewToils()
         {
             this.FailOn(() => !TargetA.Thing.TryGetComp<CompPowerTrader>().PowerOn);
@@ -32,15 +31,13 @@ namespace VFE.Mechanoids.AI.JobDrivers
             yield return findPlaceTarget;
             yield return JobDriver_RepairMachine.PlaceHauledThingInCell(TargetIndex.C, findPlaceTarget, storageMode: false);
             yield return Toils_Jump.JumpIf(getNextIngredient, () => !job.GetTargetQueue(TargetIndex.B).NullOrEmpty());
-            Toil waitForMachineToReturn = Toils_General.Label();
+            Toil waitForMachineToReturn = Toils_General.Wait(60)
+                .FailOnDestroyedNullOrForbidden(TargetIndex.A).FailOnCannotTouch(TargetIndex.A, PathEndMode.Touch);
             waitForMachineToReturn.AddPreInitAction(delegate
             {
                 var compMachineStation = TargetA.Thing.TryGetComp<CompMachineChargingStation>();
                 compMachineStation.wantsRest = true;
             });
-            yield return waitForMachineToReturn;
-            yield return Toils_General.Wait(240).FailOnDestroyedNullOrForbidden(TargetIndex.A).FailOnCannotTouch(TargetIndex.A, PathEndMode.Touch)
-                .WithProgressBarToilDelay(TargetIndex.A);
             yield return Toils_Jump.JumpIf(waitForMachineToReturn, delegate
             {
                 if (TargetA.Thing is IBedMachine bedMachine)
@@ -49,6 +46,26 @@ namespace VFE.Mechanoids.AI.JobDrivers
                 }
                 return false;
             });
+            var compMachineStation = TargetA.Thing.TryGetComp<CompMachineChargingStation>();
+            var compMachine = compMachineStation.myPawn.TryGetComp<CompMachine>();
+            var attachTurret = new Toil();
+            attachTurret.defaultDuration = (int)compMachine.turretToInstall.GetStatValueAbstract(StatDefOf.WorkToBuild, null);
+            attachTurret.initAction = delegate
+            {
+                GenClamor.DoClamor(pawn, 15f, ClamorDefOf.Construction);
+            };
+            attachTurret.WithEffect(() =>
+            {
+                var def = compMachine.turretToInstall;
+                if (def.constructEffect != null)
+                {
+                    return def.constructEffect;
+                }
+                return EffecterDefOf.ConstructMetal;
+            }, TargetIndex.A).WithProgressBarToilDelay(TargetIndex.A);
+            attachTurret.defaultCompleteMode = ToilCompleteMode.Delay;
+            attachTurret.activeSkill = () => SkillDefOf.Construction;
+            yield return attachTurret;
             yield return Finalize(TargetIndex.A, TargetIndex.B);
         }
 
