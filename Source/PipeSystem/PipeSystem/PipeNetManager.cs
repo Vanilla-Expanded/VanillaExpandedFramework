@@ -63,15 +63,20 @@ namespace PipeSystem
         private List<Thing> NeighbourThingsCardinal(Thing thing)
         {
             List<Thing> things = new List<Thing>();
-            var adjCells = GenAdjFast.AdjacentCellsCardinal(thing);
-            for (int i = 0; i < adjCells.Count; i++)
+            var pos = thing.Position;
+
+            for (int i = 0; i < 4; ++i)
             {
-                var thingsAt = map.thingGrid.ThingsListAt(adjCells[i]);
-                for (int o = 0; o < thingsAt.Count; o++)
+                var adj = pos + GenAdj.CardinalDirections[i];
+                if (adj.InBounds(map))
                 {
-                    var t = thingsAt[o];
-                    if (!things.Contains(t))
-                        things.Add(t);
+                    var thingsAt = map.thingGrid.ThingsListAt(adj);
+                    for (int o = 0; o < thingsAt.Count; o++)
+                    {
+                        var t = thingsAt[o];
+                        if (!things.Contains(t))
+                            things.Add(t);
+                    }
                 }
             }
 
