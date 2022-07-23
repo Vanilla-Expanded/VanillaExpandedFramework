@@ -19,6 +19,7 @@ namespace VFE.Mechanoids
     {
         public bool isCaravanRiddable;
 		public bool hasPowerNeedWhenHacked;
+		public bool preventSpawnInAncientDangersAndClusters;
     }
 
 	[HarmonyPatch]
