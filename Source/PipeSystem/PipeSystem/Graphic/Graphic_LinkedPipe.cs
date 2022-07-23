@@ -1,4 +1,5 @@
-﻿using Verse;
+﻿using UnityEngine;
+using Verse;
 
 namespace PipeSystem
 {
@@ -23,6 +24,23 @@ namespace PipeSystem
                 pipeNetManager = map.GetComponent<PipeNetManager>();
             }
             return c.InBounds(map) && pipeNetManager.GetPipeNetAt(c, resourceDef) != null;
+        }
+
+        public override void Print(SectionLayer layer, Thing thing, float extraRotation)
+        {
+            base.Print(layer, thing, extraRotation);
+            var map = thing.Map;
+            var pos = thing.Position;
+
+            for (int i = 0; i < 4; ++i)
+            {
+                IntVec3 adj = pos + GenAdj.CardinalDirections[i];
+                if (adj.InBounds(map) && adj.GetNetTransmitter(map, thing) is Building transmitter && transmitter != null)
+                {
+                    Material mat = LinkedDrawMatFrom(thing, adj);
+                    Printer_Plane.PrintPlane(layer, adj.ToVector3ShiftedWithAltitude(thing.def.Altitude), Vector2.one, mat, extraRotation);
+                }
+            }
         }
     }
 }

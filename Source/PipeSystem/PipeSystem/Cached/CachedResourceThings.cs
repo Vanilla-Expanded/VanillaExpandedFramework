@@ -33,5 +33,13 @@ namespace PipeSystem
                 }
             }
         }
+
+        public static List<CompProperties_Resource> GetFor(ThingDef thingDef)
+        {
+            if (resourceCompsOf.ContainsKey(thingDef))
+                return resourceCompsOf[thingDef];
+
+            return null;
+        }
     }
 }
