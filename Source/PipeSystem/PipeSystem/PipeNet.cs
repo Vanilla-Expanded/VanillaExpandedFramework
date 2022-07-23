@@ -200,10 +200,9 @@ namespace PipeSystem
             }
             comp.PipeNet = this;
 
-            var cells = comp.parent.OccupiedRect().Cells;
-            for (int i = 0; i < cells.Count(); i++)
+            foreach (var c in comp.parent.OccupiedRect())
             {
-                networkGrid.Set(cells.ElementAt(i), true);
+                networkGrid.Set(c, true);
             }
         }
 
@@ -249,10 +248,9 @@ namespace PipeSystem
                 refillables.Remove(refuelable);
             }
 
-            var cells = comp.parent.OccupiedRect().Cells;
-            for (int i = 0; i < cells.Count(); i++)
+            foreach (var c in comp.parent.OccupiedRect())
             {
-                networkGrid.Set(cells.ElementAt(i), false);
+                networkGrid.Set(c, false);
             }
 
             if (connectors.NullOrEmpty())
