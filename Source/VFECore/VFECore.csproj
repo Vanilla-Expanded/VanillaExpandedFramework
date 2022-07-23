@@ -314,6 +314,7 @@
     <Compile Include="Apparel\Harmony\SkillRecord_Learn_Patch.cs" />
     <Compile Include="Apparel\Harmony\ThingSelectionUtility_SelectableByMapClick_Patch.cs" />
     <Compile Include="Apparel\ModExtensions\ApparelExtension.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Mechanoids\JobDriver_Flee_MakeNewToils_Patch.cs" />
     <Compile Include="VFECore\HarmonyPatches\Mechanoids\Pawn_MainDesc_Patch.cs" />
     <Compile Include="VFECore\Comps\HediffComps\HediffComp_Phasing.cs" />
     <Compile Include="VFECore\Comps\HediffComps\HediffComp_Targeting.cs" />
