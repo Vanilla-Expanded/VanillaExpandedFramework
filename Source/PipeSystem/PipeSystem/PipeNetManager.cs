@@ -260,7 +260,6 @@ namespace PipeSystem
         /// </summary>
         public void UpdateRefillableWith(Thing thing)
         {
-            Log.Warning($"Adding {thing}");
             if (wantRefill.Contains(thing))
                 wantRefill.Remove(thing);
             else
