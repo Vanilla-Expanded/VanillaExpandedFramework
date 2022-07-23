@@ -12,16 +12,22 @@ namespace Outposts
     {
         public void Deliver(IEnumerable<Thing> items)
         {
-            var map = Find.Maps.Where(m => m.IsPlayerHome).OrderByDescending(m => Find.WorldGrid.ApproxDistanceInTiles(m.Parent.Tile, Tile)).First();
-
+            var things = items.ToList();            
+            var map = deliveryMap != null ? deliveryMap : Find.Maps.Where(m => m.IsPlayerHome).OrderBy(m => Find.WorldGrid.ApproxDistanceInTiles(m.Parent.Tile, Tile)).FirstOrDefault();
+            if (!map?.Parent?.HasMap ?? true) //chance of this is super low, but it's possible for those dumb enough to play nomads
+            {
+                Log.Warning("Vanilla Outpost Expanded Tried to deliver to a null map storing instead");
+                foreach (var item in things) containedItems.Add(item);
+                return;
+            }
             var text = "Outposts.Letters.Items.Text".Translate(Name) + "\n";
             var counts = new List<ThingDefCountClass>();
 
             var lookAt = new List<Thing>();
-
+            
             var dir = Find.WorldGrid.GetRotFromTo(map.Parent.Tile, Tile);
 
-            var things = items.ToList();
+            
 
             switch (OutpostsMod.Settings.DeliveryMethod)
             {

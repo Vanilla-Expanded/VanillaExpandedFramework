@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using RimWorld;
 using Verse;
 
@@ -16,9 +17,11 @@ namespace Outposts
             if (!Find.WorldObjects.AllWorldObjects.OfType<Outpost>().TryRandomElement(out var target)) return false;
             LongEventHandler.QueueLongEvent(() =>
             {
-                parms.target = GetOrGenerateMapUtility.GetOrGenerateMap(target.Tile, new IntVec3(150, 1, 150), target.def);
-                parms.points = StorytellerUtility.DefaultThreatPointsNow(parms.target);
+                parms.target = GetOrGenerateMapUtility.GetOrGenerateMap(target.Tile, new IntVec3(150, 1, 150), target.def);               
+                parms.points = target.ResolveRaidPoints(parms);
                 TryGenerateRaidInfo(parms, out var pawns);
+                target.raidFaction = parms.faction;
+                target.raidPoints = parms.points;
                 TaggedString baseLetterLabel = GetLetterLabel(parms);
                 TaggedString baseLetterText = GetLetterText(parms, pawns);
                 PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter(pawns, ref baseLetterLabel, ref baseLetterText, GetRelatedPawnsInfoLetterText(parms), true);
@@ -43,6 +46,7 @@ namespace Outposts
             else if (pawns.Any()) result.AddRange(pawns.Select(t => (TargetInfo) t));
 
             return result;
-        }
+        }   
+
     }
 }

@@ -16,7 +16,6 @@ namespace Outposts
         public static Harmony Harm;
         public static OutpostsSettings Settings;
         private static Dictionary<Type, List<FieldInfo>> editableFields;
-        private float outpostAttackedBaseChance;
         private float prevHeight = float.MaxValue;
         private Vector2 scrollPos;
         private Dictionary<WorldObjectDef, float> sectionHeights;
@@ -40,15 +39,13 @@ namespace Outposts
             Outposts = DefDatabase<WorldObjectDef>.AllDefs.Where(def => typeof(Outpost).IsAssignableFrom(def.worldObjectClass)).ToList();
             Harm = new Harmony("vanillaexpanded.outposts");
             sectionHeights = Outposts.ToDictionary(o => o, _ => float.MaxValue);
-            outpostAttackedBaseChance = Outposts_DefOf.VEF_OutpostAttacked.baseChance;
+            
             if (Outposts.Any())
             {
                 HarmonyPatches.DoPatches();
-                Outposts_DefOf.VEF_OutpostDeliverySpot.designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed("Misc");
-                if (!Settings.DoRaids) Outposts_DefOf.VEF_OutpostAttacked.baseChance = 0f;
+                Outposts_DefOf.VEF_OutpostDeliverySpot.designationCategory = DefDatabase<DesignationCategoryDef>.GetNamed("Misc");               
             }
-            else
-                Outposts_DefOf.VEF_OutpostAttacked.baseChance = 0f;
+
         }
 
         public static void Notify_Spawned(Outpost outpost)
@@ -91,6 +88,11 @@ namespace Outposts
                 Find.WindowStack.Add(new FloatMenu(Enum.GetValues(typeof(DeliveryMethod)).OfType<DeliveryMethod>().Select(method => new FloatMenuOption(
                     $"Outposts.Settings.DeliveryMethod.{method}".Translate(), () => Settings.DeliveryMethod = method)).ToList()));
             listing.CheckboxLabeled("Outposts.Settings.DoRaids".Translate(), ref Settings.DoRaids);
+            listing.Label("Outposts.Settings.RaidFrequency".Translate());
+            listing.Label($"{Settings.raidTimeInterval.min.ToStringTicksToPeriodVerbose(false)} - {Settings.raidTimeInterval.max.ToStringTicksToPeriodVerbose(false)}");
+            listing.IntRange(ref Settings.raidTimeInterval, GenDate.TicksPerDay, GenDate.TicksPerYear*2);
+            listing.Label("Outposts.Settings.RaidDifficulty".Translate(Settings.RaidDifficultyMultiplier.ToStringPercent()));
+            Settings.RaidDifficultyMultiplier = listing.Slider(Settings.RaidDifficultyMultiplier, 0.01f, 10f);
 
             listing.GapLine();
 
@@ -123,7 +125,7 @@ namespace Outposts
                 listing.EndSection(section);
                 listing.Gap();
             }
-
+            
             prevHeight = listing.CurHeight;
             listing.End();
             Widgets.EndScrollView();
@@ -135,7 +137,6 @@ namespace Outposts
             if (Find.World?.worldObjects is not null)
                 foreach (var outpost in Find.World.worldObjects.AllWorldObjects.OfType<Outpost>())
                     Setup(outpost);
-            Outposts_DefOf.VEF_OutpostAttacked.baseChance = Settings.DoRaids ? outpostAttackedBaseChance : 0f;
         }
     }
 
@@ -212,6 +213,9 @@ namespace Outposts
         public float ProductionMultiplier = 1f;
         public Dictionary<string, OutpostSettings> SettingsPerOutpost = new();
         public float TimeMultiplier = 1f;
+        public float RaidDifficultyMultiplier = 1f;
+        public IntRange raidTimeInterval = new IntRange(GenDate.TicksPerQuadrum/2, GenDate.TicksPerQuadrum);
+
 
         public OutpostSettings SettingsFor(string defName)
         {
@@ -228,6 +232,13 @@ namespace Outposts
             Scribe_Values.Look(ref DeliveryMethod, "deliveryMethod");
             Scribe_Collections.Look(ref SettingsPerOutpost, "settingsPerOutpost", LookMode.Value, LookMode.Deep);
             Scribe_Values.Look(ref DoRaids, "doRaids", true);
+            Scribe_Values.Look(ref RaidDifficultyMultiplier, "RaidDifficultyMultiplier",1f);
+            
+            int RaidMinDays = raidTimeInterval.min;
+            int RaidMaxDays = raidTimeInterval.max;
+            Scribe_Values.Look(ref RaidMinDays, "RaidMinDays",600000);
+            Scribe_Values.Look(ref RaidMaxDays, "RaidMaxDays",1800000);
+            raidTimeInterval = new IntRange(RaidMinDays, RaidMaxDays);
         }
 
         public class OutpostSettings : IExposable

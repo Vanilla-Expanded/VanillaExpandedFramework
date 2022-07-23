@@ -3,19 +3,28 @@
     <Outposts.Settings.Title>Vanilla Expanded Framework - Outposts</Outposts.Settings.Title>
     <Outposts.Settings.Multiplier.Production>Gloabal Production Multiplier: {0}</Outposts.Settings.Multiplier.Production>
     <Outposts.Settings.Multiplier.Time>Global Time Multiplier: {0}</Outposts.Settings.Multiplier.Time>
+	<Outposts.Settings.RaidDifficulty>Global Raid Difficulty Multiplier: {0}</Outposts.Settings.RaidDifficulty>
+	<Outposts.Settings.RaidFrequency>Raid Frequency Range</Outposts.Settings.RaidFrequency>
     <Outposts.Dialog.Create>Create</Outposts.Dialog.Create>
     <Outposts.Commands.Create.Label>Create Outpost</Outposts.Commands.Create.Label>
     <Outposts.Commands.Create.Desc>Create a new outpost using this caravan</Outposts.Commands.Create.Desc>
     <Outposts.Commands.TakeItems.Label>Take items</Outposts.Commands.TakeItems.Label>
     <Outposts.Commands.TakeItems.Desc>Take items from {0} and add them to the caravan</Outposts.Commands.TakeItems.Desc>
+	<Outposts.Commands.GiveItems.Label>Give items</Outposts.Commands.GiveItems.Label>
+    <Outposts.Commands.GiveItems.Desc>Take items from {0} and add them to the outpost</Outposts.Commands.GiveItems.Desc>
     <Outposts.Letters.Lost.Label>Outpost Lost</Outposts.Letters.Lost.Label>
     <Outposts.Letters.Lost.Text>Regretfully, due to the deaths of all inhabitants, the outpost of {0} has been lost to us.</Outposts.Letters.Lost.Text>
     <Outposts.Letters.BattleWon.Label>Outpost Battle Won</Outposts.Letters.BattleWon.Label>
-    <Outposts.Letters.BattleWon.Text>We have successfully won the battle for {0}.</Outposts.Letters.BattleWon.Text>
+    <Outposts.Letters.BattleWon.Text>We have successfully won the battle for {0}.{1}</Outposts.Letters.BattleWon.Text>
+	<Outposts.Letters.BattleWon.Captured>We have managed to capture {0} in the aftermath</Outposts.Letters.BattleWon.Captured>
+	<Outposts.Letters.BattleWon.Rescued>We have managed to recover {0}'s body</Outposts.Letters.BattleWon.Rescued>
+	<Outposts.Letters.BattleWon.Secured>We have secured: {0} worth of goods and weapons from the raiders</Outposts.Letters.BattleWon.Secured>
     <Outposts.Letters.Items.Label>Items From {0}</Outposts.Letters.Items.Label>
     <Outposts.Letters.Items.Text>You have received the follow items from the outpost {0}:</Outposts.Letters.Items.Text>
     <Outposts.Commands.AddPawn.Label>Add Pawn</Outposts.Commands.AddPawn.Label>
     <Outposts.Commands.AddPawn.Desc>Transfer a pawn from this caravan to the outpost</Outposts.Commands.AddPawn.Desc>
+	<Outposts.Commands.DeliveryColony.Label>Delivery Destination</Outposts.Commands.DeliveryColony.Label>
+    <Outposts.Commands.DeliveryColony.Desc>Select which colony will recieve the goods. Currently: {0}</Outposts.Commands.DeliveryColony.Desc>
     <Outposts.Commands.Pack.Label>Pack</Outposts.Commands.Pack.Label>
     <Outposts.Commands.Pack.Desc>Begin packing this outpost back into a caravan</Outposts.Commands.Pack.Desc>
     <Outposts.Commands.StopPack.Label>Stop packing</Outposts.Commands.StopPack.Label>
@@ -48,6 +57,7 @@
     <Outposts.Abandoned>Outpost Abandoned</Outposts.Abandoned>
     <Outposts.Abandoned.Desc>{0} has been abonded due to having no one inside to run it. It will very quickly be looted and taken over by nature, leaving no trace it was ever there.</Outposts.Abandoned.Desc>
     <Outposts.Take>Take</Outposts.Take>
+	<Outposts.Give>Give</Outposts.Give>
     <Outposts.AllowedBiomes>Must be in one of the following biomes:</Outposts.AllowedBiomes>
     <Outposts.DisallowedBiomes>Cannot be in any of the following biomes:</Outposts.DisallowedBiomes>
     <Outposts.NumPawns>Must have at least {0} pawns willing to join the outpost</Outposts.NumPawns>

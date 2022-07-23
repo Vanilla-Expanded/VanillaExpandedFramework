@@ -25,7 +25,14 @@ namespace Outposts
         }
 
         public bool Has(Pawn pawn) => occupants.Contains(pawn);
-
+        //Theres a few things that seem to leave 0 or destroyed things in contained. I fixed tend, I think the other ones is stuff decaying maybe? Not sure typically its food stuff doing it
+        public void CheckNoDestroyedOrNoStack()
+        {
+            if (containedItems.Any(x=> x.Destroyed||x.stackCount==0))
+            {
+                foreach (var item in containedItems.Where(x=>x.Destroyed||x.stackCount==0).ToList()) containedItems.Remove(item);
+            }
+        }
         public virtual string ProductionString()
         {
             var options = ResultOptions;

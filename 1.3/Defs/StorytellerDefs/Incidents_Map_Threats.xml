@@ -23,8 +23,8 @@
       <li>World</li>
     </targetTags>
     <workerClass>Outposts.IncidentWorker_OutpostAttacked</workerClass>
-    <baseChance>1</baseChance>
-    <category>ThreatBig</category>
+    <baseChance>0</baseChance>
+    <category>VEF_OutpostAttack</category>
     <pointsScaleable>true</pointsScaleable>
     <tale>Raid</tale>
   </IncidentDef>

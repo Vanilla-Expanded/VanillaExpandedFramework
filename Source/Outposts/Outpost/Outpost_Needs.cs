@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -14,41 +15,97 @@ namespace Outposts
 
         public virtual void SatisfyNeeds(Pawn pawn)
         {
-            if (pawn is null || pawn.Spawned) return;
-            var food = pawn.needs?.food;
+            if (pawn is null || pawn.Spawned || pawn.Dead) return;
             if (GenLocalDate.HourInteger(Tile) >= 23 || GenLocalDate.HourInteger(Tile) <= 5) pawn.needs?.rest?.TickResting(0.75f);
+
+            pawn.ageTracker?.AgeTick();//Making pawns age
+            //Seperated out Health
+            OutpostHealthTick(pawn);
+            if (pawn.Dead)
+            {
+                occupants.Remove(pawn);
+                containedItems.Add(pawn.Corpse);
+                return;
+            }
             if (!pawn.IsHashIntervalTick(300)) return;
+            var food = pawn.needs?.food;
             if (food is not null && food.CurLevelPercentage <= pawn.RaceProps.FoodLevelPercentageWantEat &&
-                ProvidedFood is {IsNutritionGivingIngestible: true} &&
+                ProvidedFood is { IsNutritionGivingIngestible: true } &&
                 ProvidedFood.ingestible.HumanEdible)
             {
                 var thing = ThingMaker.MakeThing(ProvidedFood);
                 if (thing.IngestibleNow && pawn.RaceProps.CanEverEat(thing)) food.CurLevel += thing.Ingested(pawn, food.NutritionWanted);
             }
-
-            if (pawn.health is null) return;
+        }
+        //Profiled with 7 outposts 62 pawns
+        //my "light" health tick Max 0.308 avg 0.122
+        //pawn Health Tick 0.344 max avg 0.152
+        //Just wounds 0.201 max avg 0.065
+        //Light vs Health tick makes marginal difference. Though I might still leave it because health tick will cause disease traits which unesecarry and does have a bit of bloat
+        //With Just wounds people are basically in stasis which leads to awkward situations. Like a pawn I had who had anesthia woozy still a year later when it got raided
+        //In my mind the impact of performance is small enough that the "realism" is worth it.
+        public virtual void OutpostHealthTick(Pawn pawn)
+        {
+            if(pawn.health?.hediffSet == null || pawn.Dead) { return; } //Just in case the birthday killed them XD
+            var removedAnything = false;            
+            var health = pawn.health;
+            //Hediff ticks and immunes
+            for (int index = health.hediffSet.hediffs.Count - 1; index >= 0; index--)
+            {
+                Hediff hediff = health.hediffSet.hediffs[index];
+                try
+                {
+                    hediff.Tick();
+                    hediff.PostTick();
+                }
+                catch
+                {
+                    health.RemoveHediff(hediff);
+                }
+                if (pawn.Dead)
+                {
+                    return;
+                }
+                if (hediff.ShouldRemove)
+                {
+                    health.hediffSet.hediffs.RemoveAt(index);
+                    hediff.PostRemoved();
+                    removedAnything = true;
+                }
+            }
+            if (removedAnything)
+            {
+                health.Notify_HediffChanged(null);
+                removedAnything=false;
+            }
+            Utils.immunityTick(health.immunity);
+            
+            //Tend and injuries
+            //Changed interval to 600 as thats what health tick is, and ppl seemed to heal super fast
+            if (!pawn.IsHashIntervalTick(600)) return;
 
             if (pawn.health.HasHediffsNeedingTend())
             {
                 var doctor = AllPawns.Where(p => p.RaceProps.Humanlike && !p.Downed).MaxBy(p => p.skills?.GetSkill(SkillDefOf.Medicine)?.Level ?? -1f);
-                Medicine medicine = null;
-                var potency = 0f;
-                foreach (var thing in containedItems)
-                    if (thing.def.IsMedicine && (pawn.playerSettings is null || pawn.playerSettings.medCare.AllowsMedicine(thing.def)))
-                    {
-                        var statValue = thing.GetStatValue(StatDefOf.MedicalPotency);
-                        if (statValue > potency || medicine == null)
+                if (doctor != null)
+                {
+                    Medicine medicine = null;
+                    var potency = 0f;
+                    CheckNoDestroyedOrNoStack();
+                    foreach (var thing in containedItems.ToList())
+                        if (thing.def.IsMedicine && (pawn.playerSettings is null || pawn.playerSettings.medCare.AllowsMedicine(thing.def)))
                         {
-                            potency = statValue;
-                            medicine = (Medicine) thing;
+                            var statValue = thing.GetStatValue(StatDefOf.MedicalPotency);
+                            if (statValue > potency || medicine == null)
+                            {
+                                potency = statValue;
+                                medicine = (Medicine)TakeItem(thing);
+                            }
                         }
-                    }
-
-                TendUtility.DoTend(doctor, pawn, medicine);
+                    TendUtility.DoTend(doctor, pawn, medicine);
+                }
             }
 
-            if (pawn.health.hediffSet is null) return;
-            var removedAnything = false;
 
             if (pawn.health.hediffSet.HasNaturallyHealingInjury())
             {
@@ -61,7 +118,6 @@ namespace Outposts
                     removedAnything = true;
                 }
             }
-
             if (pawn.health.hediffSet.HasTendedAndHealingInjury())
             {
                 var injury = pawn.health.hediffSet.GetHediffs<Hediff_Injury>().Where(x => x.CanHealFromTending()).RandomElement();
@@ -74,8 +130,8 @@ namespace Outposts
                     removedAnything = true;
                 }
             }
-
             if (removedAnything) pawn.health.Notify_HediffChanged(null);
         }
+
     }
 }

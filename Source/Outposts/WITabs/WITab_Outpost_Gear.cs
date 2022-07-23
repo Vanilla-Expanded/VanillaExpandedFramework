@@ -175,13 +175,13 @@ namespace Outposts
         private void CheckDraggedItemStillValid()
         {
             if (draggedItem == null) return;
-
+            
             if (draggedItem.Destroyed)
             {
                 draggedItem = null;
                 return;
             }
-
+            
             if (CurrentWearerOf(draggedItem) != null) return;
 
             if (allThings.Contains(draggedItem)) return;
@@ -331,11 +331,13 @@ namespace Outposts
                     return;
                 }
             }
-
+            //This was just duplicating everything lol            
             tmpExistingEquipment.Clear();
-            tmpExistingEquipment.AddRange(p.apparel.WornApparel);
+            tmpExistingEquipment.AddRange(p.equipment.AllEquipmentListForReading);
+
             for (var i = 0; i < tmpExistingEquipment.Count; i++)
             {
+                
                 p.equipment.Remove(tmpExistingEquipment[i]);
                 SelOutpost.AddItem(tmpExistingEquipment[i]);
             }
@@ -359,7 +361,7 @@ namespace Outposts
         {
             droppedDraggedItem = false;
             var apparel = draggedItem as Apparel;
-            var pawn = CurrentWearerOf(apparel);
+            var pawn = CurrentWearerOf(draggedItem);
             if (pawn is not null)
             {
                 if (apparel is not null)

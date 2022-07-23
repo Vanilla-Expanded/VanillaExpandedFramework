@@ -7,7 +7,8 @@ using Verse.Sound;
 
 namespace Outposts
 {
-    public class Dialog_TakeItems : Window
+    //Making just 1 dialog thats 2 way would be superior. But I dont know rimworld ui stuff well so just do it easy way
+    public class Dialog_GiveItems : Window
     {
         private readonly Vector2 BottomButtonSize = new(160f, 40f);
         private readonly Caravan caravan;
@@ -15,7 +16,7 @@ namespace Outposts
         private TransferableOneWayWidget itemsTransfer;
         private List<TransferableOneWay> transferables;
 
-        public Dialog_TakeItems(Outpost outpost, Caravan caravan)
+        public Dialog_GiveItems(Outpost outpost, Caravan caravan)
         {
             outpost.CheckNoDestroyedOrNoStack();
             this.outpost = outpost;
@@ -39,7 +40,7 @@ namespace Outposts
         private void DoBottomButtons(Rect rect)
         {
             var rect2 = new Rect(rect.width - BottomButtonSize.x, rect.height - 40f, BottomButtonSize.x, BottomButtonSize.y);
-            if (Widgets.ButtonText(rect2, "Outposts.Take".Translate()))
+            if (Widgets.ButtonText(rect2, "Outposts.Give".Translate()))
             {
                 foreach (var transferable in transferables)
                     while (transferable.HasAnyThing && transferable.CountToTransfer > 0)
@@ -49,11 +50,11 @@ namespace Outposts
                         {
                             transferable.AdjustBy(-thing.stackCount);
                             thing.holdingOwner?.Remove(thing);
-                            caravan.AddPawnOrItem(outpost.TakeItem(thing), true);
+                            outpost.AddItem(thing);
                         }
                         else
                         {
-                            caravan.AddPawnOrItem(thing.SplitOff(transferable.CountToTransfer), true);
+                            outpost.AddItem(thing.SplitOff(transferable.CountToTransfer));
                             transferable.AdjustTo(0);
                             transferable.things.Add(thing);
                         }
@@ -80,7 +81,7 @@ namespace Outposts
         private void CalculateAndRecacheTransferables()
         {
             transferables = new List<TransferableOneWay>();
-            foreach (var t in outpost.Things)
+            foreach (var t in CaravanInventoryUtility.AllInventoryItems(caravan))
             {
                 var transferableOneWay = TransferableUtility.TransferableMatching(t, transferables, TransferAsOneMode.PodsOrCaravanPacking);
                 if (transferableOneWay == null)
@@ -98,7 +99,7 @@ namespace Outposts
                 transferableOneWay.things.Add(t);
             }
 
-            itemsTransfer = new TransferableOneWayWidget(transferables, outpost.Name, caravan.Name, "FormCaravanColonyThingCountTip".Translate());
+            itemsTransfer = new TransferableOneWayWidget(transferables, caravan.Name,outpost.Name,  "FormCaravanColonyThingCountTip".Translate());
         }
     }
 }

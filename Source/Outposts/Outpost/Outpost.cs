@@ -26,6 +26,8 @@ namespace Outposts
         public int PawnCount => occupants.Count;
         public override Color ExpandingIconColor => Faction.Color;
 
+        public Map deliveryMap;
+
         public virtual int TicksPerProduction => Ext?.TicksPerProduction ?? 15 * 60000;
         public override bool HasName => !Name.NullOrEmpty();
         public override string Label => Name;
@@ -34,6 +36,9 @@ namespace Outposts
         public virtual int Range => Ext?.Range ?? -1;
         public IEnumerable<Thing> Things => containedItems;
         public IEnumerable<Pawn> CapablePawns => AllPawns.Where(IsCapable);
+
+        public float raidPoints;
+        public Faction raidFaction;
 
         public override Material Material
         {
@@ -64,7 +69,28 @@ namespace Outposts
             containedItems.Remove(t);
             return t;
         }
-
+        public List<Thing> TakeItems(ThingDef thingDef, int stackCount)
+        {
+            var items = new List<Thing>();
+            foreach (var item in containedItems)
+            {
+                if (item.def == thingDef)
+                {
+                    if (stackCount < item.stackCount)
+                    {
+                        items.Add(item.SplitOff(stackCount));
+                        stackCount = 0;                        
+                    }
+                    else
+                    {
+                        stackCount = -item.stackCount;
+                        items.Add(TakeItem(item));
+                    }
+                }
+                if(stackCount == 0) { break; }
+            }
+            return items;
+        }
         public override void PostAdd()
         {
             base.PostAdd();
@@ -86,6 +112,9 @@ namespace Outposts
             Scribe_Collections.Look(ref containedItems, "containedItems", LookMode.Deep);
             Scribe_Values.Look(ref costPaid, "costPaid");
             Scribe_Values.Look(ref ticksTillPacked, "ticksTillPacked");
+            Scribe_References.Look(ref raidFaction, "raidFaction");
+            Scribe_Values.Look(ref raidPoints, "raidPoints");
+            Scribe_References.Look(ref deliveryMap, "deliveryMap");
             RecachePawnTraits();
         }
 
@@ -120,10 +149,13 @@ namespace Outposts
             if (Find.WorldObjects.PlayerControlledCaravanAt(Tile) is { } caravan && !caravan.pather.MovingNow)
                 foreach (var pawn in caravan.PawnsListForReading)
                 {
+                    //Adding these as in a mass caravan spam test there was dyrad with no rest need
+                    if(pawn.needs?.rest == null) { continue; }
                     pawn.needs.rest.CurLevel += RestPerTickResting;
                     if (pawn.IsHashIntervalTick(300))
                     {
-                        var food = pawn.needs.food;
+                        var food = pawn.needs?.food;
+                        if(food == null) { continue;}
                         if (food.CurLevelPercentage <= pawn.RaceProps.FoodLevelPercentageWantEat && ProvidedFood is {IsNutritionGivingIngestible: true} &&
                             ProvidedFood.ingestible.HumanEdible)
                         {
@@ -132,8 +164,13 @@ namespace Outposts
                         }
                     }
                 }
+            //Probably shouldnt be doing this during a raid. Fixed one bug in there, but really it just shouldnt be happening
+            if (Map == null)
+            {
+                SatisfyNeeds();
+            }
 
-            SatisfyNeeds();
+
         }
 
         public virtual IEnumerable<Thing> ProducedThings()
@@ -148,7 +185,11 @@ namespace Outposts
 
         public override void SpawnSetup()
         {
-            base.SpawnSetup();
+            base.SpawnSetup();            
+            if (deliveryMap == null)
+            {
+                deliveryMap = Find.Maps.Where(m => m.IsPlayerHome).OrderBy(m => Find.WorldGrid.ApproxDistanceInTiles(m.Parent.Tile, Tile)).FirstOrDefault();
+            }
             RecachePawnTraits();
             OutpostsMod.Notify_Spawned(this);
         }
@@ -169,12 +210,24 @@ namespace Outposts
             if (!Ext.CanAddPawn(pawn, out _)) return false;
             var caravan = pawn.GetCaravan();
             if (caravan != null)
-            {
+            {                        
                 foreach (var item in CaravanInventoryUtility.AllInventoryItems(caravan)
                     .Where(item => CaravanInventoryUtility.GetOwnerOf(caravan, item) == pawn))
-                    CaravanInventoryUtility.MoveInventoryToSomeoneElse(pawn, item, caravan.PawnsListForReading, new List<Pawn> {pawn}, item.stackCount);
+                {
+                    CaravanInventoryUtility.MoveInventoryToSomeoneElse(pawn, item, caravan.PawnsListForReading, new List<Pawn> { pawn }, item.stackCount);                    
+                }
+                //Have to empty every pawns inventory items first or they will get added with the things on them. Creating duplicate load IDs/items
+                //Move either fails or moves it to an animal. Neither result work
                 if (!caravan.PawnsListForReading.Except(pawn).Any(p => p.RaceProps.Humanlike))
-                    containedItems.AddRange(CaravanInventoryUtility.AllInventoryItems(caravan));
+                {
+                    foreach (var item in CaravanInventoryUtility.AllInventoryItems(caravan).ToList())
+                    {
+                        Pawn caravanPawn = CaravanInventoryUtility.GetOwnerOf(caravan, item);
+                        containedItems.Add(item);
+                        caravanPawn.inventory.innerContainer.Remove(item);
+                    }
+                }
+                pawn.ownership.UnclaimAll();
                 caravan.RemovePawn(pawn);
                 if (!caravan.PawnsListForReading.Any(p => p.RaceProps.Humanlike))
                 {
@@ -250,6 +303,12 @@ namespace Outposts
                 defaultLabel = "Outposts.Commands.TakeItems.Label".Translate(),
                 defaultDesc = "Outposts.Commands.TakeItems.Desc".Translate(Name),
                 icon = TexOutposts.RemoveItemsTex
+            }).Append(new Command_Action
+            {
+                action = () => Find.WindowStack.Add(new Dialog_GiveItems(this, caravan)),
+                defaultLabel = "Outposts.Commands.GiveItems.Label".Translate(),
+                defaultDesc = "Outposts.Commands.GiveItems.Desc".Translate(caravan.Name),
+                icon = TexOutposts.RemoveItemsTex
             });
         }
 
@@ -285,7 +344,24 @@ namespace Outposts
                 disabled = occupants.Count == 1,
                 disabledReason = "Outposts.Command.Remove.Only1".Translate()
             };
-
+            if (OutpostsMod.Settings.DeliveryMethod != DeliveryMethod.Store && !ResultOptions.NullOrEmpty())
+            {
+                yield return new Command_Action
+                {
+                    action = () =>
+                    {
+                        var menuOptions = new List<FloatMenuOption>();
+                        foreach (var map in Find.Maps.Where(m => m.IsPlayerHome).OrderBy(m => Find.WorldGrid.ApproxDistanceInTiles(m.Parent.Tile, Tile)))
+                        {                            
+                            menuOptions.Add(new FloatMenuOption(map.Parent.LabelCap, () => deliveryMap = map));
+                        }
+                        Find.WindowStack.Add(new FloatMenu(menuOptions));
+                    },
+                    defaultLabel = "Outposts.Commands.DeliveryColony.Label".Translate(),
+                    defaultDesc = "Outposts.Commands.DeliveryColony.Desc".Translate(deliveryMap?.Parent.LabelCap),
+                    icon = SettleUtility.SettleCommandTex
+                };
+            }
             if (Prefs.DevMode)
             {
                 yield return new Command_Action
