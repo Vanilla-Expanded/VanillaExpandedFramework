@@ -38,6 +38,7 @@ namespace VFE.Mechanoids.AI.JobDrivers
                 var compMachineStation = TargetA.Thing.TryGetComp<CompMachineChargingStation>();
                 compMachineStation.wantsRest = true;
             });
+            yield return waitForMachineToReturn;
             yield return Toils_Jump.JumpIf(waitForMachineToReturn, delegate
             {
                 if (TargetA.Thing is IBedMachine bedMachine)

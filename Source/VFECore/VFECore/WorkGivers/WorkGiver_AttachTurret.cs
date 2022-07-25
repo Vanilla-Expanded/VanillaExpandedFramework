@@ -30,7 +30,6 @@ namespace VFE.Mechanoids.AI.WorkGivers
                 return false;
             }
 
-            Log.Message("Can have job on " + t);
             List<ThingDefCountClass> products = comp.turretToInstall.costList;
             foreach (ThingDefCountClass thingNeeded in products)
             {
