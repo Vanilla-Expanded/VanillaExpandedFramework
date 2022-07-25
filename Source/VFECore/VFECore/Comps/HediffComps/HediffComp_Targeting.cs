@@ -54,12 +54,10 @@ namespace VFECore
 					{
 						if (target.HasThing)
 						{
-							Log.Message("Making attached mote");
 							mote = MoteMaker.MakeAttachedOverlay(target.Thing, Props.targetingMote, Vector3.zero, Props.initialTargetingMoteScale);
 						}
 						else
 						{
-							Log.Message("Making static mote");
 							mote = MakeStaticMote(target.CenterVector3, Pawn.Map, Props.targetingMote, Props.initialTargetingMoteScale);
 						}
 					};

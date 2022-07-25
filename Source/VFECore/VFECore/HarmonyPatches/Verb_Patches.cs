@@ -69,7 +69,6 @@ namespace VFECore
                     {
                         projectileSpeed = ((origin.Yto0() - cell.ToVector3Shifted().Yto0()).magnitude) / projectile.def.projectile.SpeedTilesPerTick;
                         victimSpeed += CostToMoveIntoCell(victim, prevCell, cell);
-                        victim.Map.debugDrawer.FlashCell(cell, 0, Math.Abs(victimSpeed - projectileSpeed).ToString(), 20);
                         speedPairs[cell] = new Pair<float, float>(victimSpeed, projectileSpeed);
                     }
                     if (cell == victim.DrawPos.ToIntVec3())
