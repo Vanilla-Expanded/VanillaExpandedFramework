@@ -91,7 +91,7 @@ namespace VanillaWeaponsExpandedLaser
                 bool flag2 = this.def.causefireChance > 0f && Rand.Chance(this.def.causefireChance);
                 if (flag2)
                 {
-                    FireUtility.TryStartFireIn(destination.ToIntVec3(), pawn.Map, 0.05f);
+                    FireUtility.TryStartFireIn(destination.ToIntVec3(), this.launcher.Map, 0.05f);
                 }
             }
             else
