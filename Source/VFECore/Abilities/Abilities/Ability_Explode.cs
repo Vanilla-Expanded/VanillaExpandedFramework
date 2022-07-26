@@ -17,7 +17,7 @@ namespace VFECore.Abilities
                                              ext.explosionDamageAmount, ext.explosionArmorPenetration, ext.explosionSound, null, null, null, ext.postExplosionSpawnThingDef,
                                              ext.postExplosionSpawnChance, ext.postExplosionSpawnThingCount, ext.applyDamageToExplosionCellsNeighbors, ext.preExplosionSpawnThingDef,
                                              ext.preExplosionSpawnChance, ext.preExplosionSpawnThingCount, ext.chanceToStartFire, ext.damageFalloff, ext.explosionDirection,
-                                             new List<Thing> { this.pawn });
+                                             ext.casterImmune ? new List<Thing> { this.pawn } : null);
                 }
         }
     }
@@ -28,7 +28,7 @@ namespace VFECore.Abilities
         public float     chanceToStartFire;
         public bool      damageFalloff;
         public float     explosionArmorPenetration = -1f;
-        public int       explosionDamageAmount = -1;
+        public int       explosionDamageAmount     = -1;
         public DamageDef explosionDamageDef;
         public float?    explosionDirection;
         public float     explosionRadius;
@@ -40,5 +40,6 @@ namespace VFECore.Abilities
         public float     preExplosionSpawnChance;
         public int       preExplosionSpawnThingCount = 1;
         public ThingDef  preExplosionSpawnThingDef;
+        public bool      casterImmune;
     }
 }
