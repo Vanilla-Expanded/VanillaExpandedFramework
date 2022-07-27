@@ -46,7 +46,7 @@ namespace VanillaFurnitureExpanded
         public CompProperties_GlowerExtended Props => (CompProperties_GlowerExtended)props;
         public override string TransformLabel(string label)
         {
-            if (!currentColor.colorLabel.NullOrEmpty())
+            if (!(currentColor?.colorLabel).NullOrEmpty())
             {
                 return base.TransformLabel(label) + " (" + currentColor.colorLabel + ")";
             }
