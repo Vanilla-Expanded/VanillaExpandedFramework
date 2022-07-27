@@ -137,7 +137,11 @@ namespace VanillaFurnitureExpanded
             this.currentColor = Props.colorOptions[currentColorInd];
             this.dirty = true;
         }
-
+        public override void PostPostMake()
+        {
+            base.PostPostMake();
+            this.currentColor = Props.colorOptions[currentColorInd];
+        }
         public override void PostDeSpawn(Map map)
         {
             this.RemoveGlower(map);
