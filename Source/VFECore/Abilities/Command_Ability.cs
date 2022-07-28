@@ -49,7 +49,8 @@ namespace VFECore.Abilities
 
             if (this.ability.AutoCast)
             {
-                Rect      position = new Rect(butRect.x + butRect.width - 24f, butRect.y, 24f, 24f);
+                var  size     = parms.shrunk ? 12f : 24f;
+                Rect position = new Rect(butRect.x + butRect.width - size, butRect.y, size, size);
                 GUI.DrawTexture(position, AutoCastTex);
             }
 
