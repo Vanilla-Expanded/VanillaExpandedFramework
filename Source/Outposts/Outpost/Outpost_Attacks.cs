@@ -4,6 +4,7 @@ using System.Text;
 using KCSG;
 using RimWorld;
 using RimWorld.Planet;
+using Verse.AI.Group;
 using Verse;
 
 namespace Outposts
@@ -25,7 +26,7 @@ namespace Outposts
         {
             base.PostMapGenerate();
 
-            foreach (var pawn in Map.mapPawns.AllPawns.Where(p => p.RaceProps.Humanlike).ToList()) pawn.Destroy();
+            foreach (var pawn in Map.mapPawns.AllPawns.Where(p => p.RaceProps.Humanlike || p.HostileTo(Faction)).ToList()) pawn.Destroy();
 
             foreach (var occupant in occupants)
             {
@@ -63,9 +64,28 @@ namespace Outposts
                 alsoRemoveWorldObject = true;
                 return true;
             }
+
             var pawns = Map.mapPawns.AllPawns.ListFullCopy();
-            if (!pawns.Any(p => p.Faction == raidFaction && !p.Downed)) //Tweak so that random ancients that spawn dont prevent it. (I suspect this is also why raids dont end sometimes some invisible or fogged enemy)
+            if (!pawns.Any(p => p.Faction == raidFaction && !p.Downed )) 
             {
+                //This is what's required for gauntlet figured i'd put it after the initial if so we're not checking bunch of extra things per tick
+                if (Map.listerThings.ThingsInGroup(ThingRequestGroup.ThingHolder).Any(x => x is Skyfaller)) 
+                {
+                    foreach (var thing in Map.listerThings.ThingsInGroup(ThingRequestGroup.ThingHolder).Where(x => x is Skyfaller))
+                    {
+                        var skyfaller = thing as Skyfaller;
+                        if (skyfaller.Faction == raidFaction || skyfaller.innerContainer.Any(x => x.Faction == raidFaction))
+                        {
+                            alsoRemoveWorldObject = false;
+                            return false;
+                        }
+                    }
+                }
+                if (Map.listerBuildings.allBuildingsNonColonist.Any(x => x.Faction == raidFaction)) //I think this would make it so you have to destroy hives as well for something like AA blackhvie raid
+                {
+                    alsoRemoveWorldObject = false;
+                    return false;
+                }
                 occupants.Clear();
                 foreach (var pawn in pawns)
                 {
