@@ -471,16 +471,13 @@
         {
             this.cooldown = Find.TickManager.TicksGame + this.GetCooldownForPawn();
 
-            if (this.def.goodwillImpact != 0 && targets.Any() && targets[0].Thing is Pawn pawnTarget)
+            if (this.def.goodwillImpact != 0 && targets.Any())
             {
-                Pawn pawn = this.pawn;
-                if (!pawnTarget.IsSlaveOfColony)
+                foreach (var target in targets)
                 {
-                    Faction homeFaction = pawnTarget.HomeFaction;
-                    if (pawn.Faction == Faction.OfPlayer                                      && homeFaction != null && !homeFaction.HostileTo(pawn.Faction)
-                    && (this.def.applyGoodwillImpactToLodgers || !pawnTarget.IsQuestLodger()) && !pawnTarget.IsQuestHelper())
+                    if (target.Thing is Pawn pawnTarget)
                     {
-                        Faction.OfPlayer.TryAffectGoodwillWith(homeFaction, this.def.goodwillImpact, canSendMessage: true, canSendHostilityLetter: true, HistoryEventDefOf.UsedHarmfulAbility);
+                        ApplyGoodwillImpact(pawnTarget);
                     }
                 }
             }
@@ -521,6 +518,19 @@
                     this.TargetEffects(targets);
                 else
                     this.TargetEffects(targets.Any() ? targets[0].Thing != null ? new LocalTargetInfo(targets[0].Thing) : new LocalTargetInfo(targets[0].Cell) : default);
+        }
+
+        public void ApplyGoodwillImpact(Pawn pawnTarget)
+        {
+            if (!pawnTarget.IsSlaveOfColony)
+            {
+                Faction homeFaction = pawnTarget.HomeFaction;
+                if (pawn.Faction == Faction.OfPlayer && homeFaction != null && !homeFaction.HostileTo(pawn.Faction)
+                && (this.def.applyGoodwillImpactToLodgers || !pawnTarget.IsQuestLodger()) && !pawnTarget.IsQuestHelper())
+                {
+                    Faction.OfPlayer.TryAffectGoodwillWith(homeFaction, this.def.goodwillImpact, canSendMessage: true, canSendHostilityLetter: true, HistoryEventDefOf.UsedHarmfulAbility);
+                }
+            }
         }
 
         public virtual void EndCastJob()

@@ -8,22 +8,25 @@
         public override void Cast(params GlobalTargetInfo[] targets)
         {
             base.Cast(targets);
-
             foreach (GlobalTargetInfo target in targets)
             {
-
-                Projectile projectile = GenSpawn.Spawn(this.def.GetModExtension<AbilityExtension_Projectile>().projectile, this.pawn.Position, this.pawn.Map) as Projectile;
-                if (projectile is AbilityProjectile abilityProjectile)
-                {
-                    abilityProjectile.ability = this;
-                }
-                if(target.HasThing)
-                    projectile?.Launch(this.pawn, this.pawn.DrawPos, target.Thing, target.Thing, ProjectileHitFlags.IntendedTarget);
-                else
-                    projectile?.Launch(this.pawn, this.pawn.DrawPos, target.Cell, target.Cell, ProjectileHitFlags.IntendedTarget);
+                ShootProjectile(target);
             }
         }
-        
+        protected virtual Projectile ShootProjectile(GlobalTargetInfo target)
+        {
+            Projectile projectile = GenSpawn.Spawn(this.def.GetModExtension<AbilityExtension_Projectile>().projectile, this.pawn.Position, this.pawn.Map) as Projectile;
+            if (projectile is AbilityProjectile abilityProjectile)
+            {
+                abilityProjectile.ability = this;
+            }
+            if (target.HasThing)
+                projectile?.Launch(this.pawn, this.pawn.DrawPos, target.Thing, target.Thing, ProjectileHitFlags.IntendedTarget);
+            else
+                projectile?.Launch(this.pawn, this.pawn.DrawPos, target.Cell, target.Cell, ProjectileHitFlags.IntendedTarget);
+            return projectile;
+        }
+
         public override void CheckCastEffects(GlobalTargetInfo[] targetInfos, out bool cast, out bool target, out bool hediffApply)
         {
             base.CheckCastEffects(targetInfos, out cast, out _, out _);
