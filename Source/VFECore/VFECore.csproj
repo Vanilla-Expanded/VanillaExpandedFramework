@@ -316,6 +316,8 @@
     <Compile Include="Apparel\ModExtensions\ApparelExtension.cs" />
     <Compile Include="VFECore\Comps\HediffComps\HediffComp_Phasing.cs" />
     <Compile Include="VFECore\Comps\HediffComps\HediffComp_Targeting.cs" />
+    <Compile Include="VFECore\DefModExtensions\WeatherExtension.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_RandomizeSettings.cs" />
     <Compile Include="VFECore\HarmonyPatches\PhasingPatches.cs" />
     <Compile Include="VFECore\HarmonyPatches\Def_SpecialDisplayStats_Patch.cs" />
     <Compile Include="Memes\PlaceWorkers\PlaceWorker_DisabledByMeme.cs" />
