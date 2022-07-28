@@ -52,7 +52,7 @@
             this.verb.verbTracker = this.pawn?.verbTracker;
             this.verb.caster      = this.pawn;
             this.verb.ability     = this;
-            this.autoCast         = this.def.autocastPlayerDefault;
+            this.autoCast         = this.CanAutoCast && this.def.autocastPlayerDefault;
 
             this.currentTargetingIndex = -1;
             this.currentTargets        = new GlobalTargetInfo[this.def.targetCount];
@@ -162,7 +162,7 @@
 
         public bool autoCast;
 
-        public virtual bool AutoCast => this.pawn.IsColonistPlayerControlled ? this.autoCast : this.pawn.Spawned;
+        public virtual bool AutoCast => this.pawn.IsColonistPlayerControlled ? this.autoCast : this.pawn.Spawned && this.CanAutoCast;
 
         public virtual bool CanAutoCast => this.def.targetCount == 1 && this.Chance > 0;
 
