@@ -142,6 +142,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompDieAndChangeIntoOtherDef.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDigPeriodically.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDigWhenHungry.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompDiseaseEventImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDiseaseImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDiseasesAfterPeriod.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDoesntFlee.cs" />
@@ -175,6 +176,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompNoTamingDecay.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompPassiveRegenerator.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompPawnOverlay.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DiseaseEventImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_GiveThoughtsOnCaravan.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AnimalProductOnCaravan.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_InitialMentalState.cs" />
@@ -263,6 +265,7 @@
     <Compile Include="AnimalBehaviours\Harmony\Draftability\PawnComponentsUtility_AddAndRemoveDynamicComponents_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\Pawn_GetGizmos_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\Pawn_WorkTypeIsDisabled.cs" />
+    <Compile Include="AnimalBehaviours\Harmony\IncidentWorker_Disease_PotentialVictims.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Infocard\Dialog_InfoCard_FillCard_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\FloatMenuMakerMap_AddUndraftedOrders_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\FloatMenuMakerMap_CanTakeOrder_Patch.cs" />

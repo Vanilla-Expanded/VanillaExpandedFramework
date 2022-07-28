@@ -30,6 +30,9 @@ namespace AnimalBehaviours
         // A list of animals that don't produce filth for CompProperties_NoFilth
         public static HashSet<Thing> nofilth_animals = new HashSet<Thing>();
 
+        // A list of animals unaffected by the animal disease incident
+        public static HashSet<Thing> nodisease_animals = new HashSet<Thing>();
+
         // A list of animals that eat weird things to cache them for CompProperties_EatWeirdFood and its Harmony patch
         public static HashSet<Thing> weirdeEaters_animals = new HashSet<Thing>();
 
@@ -121,6 +124,24 @@ namespace AnimalBehaviours
             if (abilityUsing_animals.Contains(thing))
             {
                 abilityUsing_animals.Remove(thing);
+            }
+
+        }
+
+        public static void AddNoDiseasesAnimalToList(Thing thing)
+        {
+
+            if (!nodisease_animals.Contains(thing))
+            {
+                nodisease_animals.Add(thing);
+            }
+        }
+
+        public static void RemoveNoDiseasesAnimalFromList(Thing thing)
+        {
+            if (nodisease_animals.Contains(thing))
+            {
+                nodisease_animals.Remove(thing);
             }
 
         }
