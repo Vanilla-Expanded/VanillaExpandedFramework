@@ -40,6 +40,11 @@ namespace VFECore.Abilities
 
         protected override GizmoResult GizmoOnGUIInt(Rect butRect, GizmoRenderParms parms)
         {
+            if (parms.shrunk)
+            {
+                this.defaultDesc = $"{ability.def.LabelCap}\n\n{this.defaultDesc}";
+            }
+
             GizmoResult result = base.GizmoOnGUIInt(butRect, parms);
 
             if (this.ability.AutoCast)
