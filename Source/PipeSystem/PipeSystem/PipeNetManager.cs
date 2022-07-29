@@ -62,21 +62,35 @@ namespace PipeSystem
         /// <returns>List of things adjacent</returns>
         private List<Thing> NeighbourThingsCardinal(Thing thing)
         {
-            List<Thing> things = new List<Thing>();
-            var pos = thing.Position;
+            /* List<Thing> things = new List<Thing>();
+             var pos = thing.Position;
 
-            for (int i = 0; i < 4; ++i)
+             for (int i = 0; i < 4; ++i)
+             {
+                 var adj = pos + GenAdj.CardinalDirections[i];
+                 if (adj.InBounds(map))
+                 {
+                     var thingsAt = map.thingGrid.ThingsListAt(adj);
+                     for (int o = 0; o < thingsAt.Count; o++)
+                     {
+                         var t = thingsAt[o];
+                         if (!things.Contains(t))
+                             things.Add(t);
+                     }
+                 }
+             }
+
+             return things;*/
+            List<Thing> things = new List<Thing>();
+            var adjCells = GenAdjFast.AdjacentCellsCardinal(thing);
+            for (int i = 0; i < adjCells.Count; i++)
             {
-                var adj = pos + GenAdj.CardinalDirections[i];
-                if (adj.InBounds(map))
+                var thingsAt = map.thingGrid.ThingsListAt(adjCells[i]);
+                for (int o = 0; o < thingsAt.Count; o++)
                 {
-                    var thingsAt = map.thingGrid.ThingsListAt(adj);
-                    for (int o = 0; o < thingsAt.Count; o++)
-                    {
-                        var t = thingsAt[o];
-                        if (!things.Contains(t))
-                            things.Add(t);
-                    }
+                    var t = thingsAt[o];
+                    if (!things.Contains(t))
+                        things.Add(t);
                 }
             }
 
