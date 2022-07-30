@@ -45,7 +45,7 @@ namespace VFECore
                 case 0: if (drawPosNorthOffset.HasValue) return loc + drawPosNorthOffset.Value; break;
                 case 1: if (drawPosEastOffset.HasValue) return loc + drawPosEastOffset.Value; break;
                 case 2: if (drawPosSouthOffset.HasValue) return loc + drawPosSouthOffset.Value; break;
-                case 3: if (drawPosNorthOffset.HasValue) return loc + drawPosWestOffset.Value; break;
+                case 3: if (drawPosWestOffset.HasValue) return loc + drawPosWestOffset.Value; break;
             }
             if (drawPosOffset.HasValue)
                 return loc + drawPosOffset.Value;
@@ -148,9 +148,16 @@ namespace VFECore
         public static Vector3 TryModifyHeadGearLoc(Rot4 rot, Vector3 loc, ApparelGraphicRecord apparelRecord)
         {
             var extension = apparelRecord.sourceApparel.def.GetModExtension<ApparelDrawPosExtension>();
-            if (extension?.headgearDrawSettings != null)
+            if (extension != null)
             {
-                return extension.headgearDrawSettings.GetDrawPosOffset(rot, loc);
+                if (extension.apparelDrawSettings != null)
+                {
+                    return extension.apparelDrawSettings.GetDrawPosOffset(rot, loc);
+                }
+                if (extension.headgearDrawSettings != null)
+                {
+                    return extension.headgearDrawSettings.GetDrawPosOffset(rot, loc);
+                }
             }
             return loc;
         }
@@ -158,19 +165,34 @@ namespace VFECore
         public static void TryModifyHeadGearLocRef(Rot4 rot, ref Vector3 loc, ApparelGraphicRecord apparelRecord)
         {
             var extension = apparelRecord.sourceApparel.def.GetModExtension<ApparelDrawPosExtension>();
-            if (extension?.headgearDrawSettings != null)
+            if (extension != null)
             {
-                loc = extension.headgearDrawSettings.GetDrawPosOffset(rot, loc);
+                if (extension.apparelDrawSettings != null)
+                {
+                    loc = extension.apparelDrawSettings.GetDrawPosOffset(rot, loc);
+                }
+                else if (extension.headgearDrawSettings != null)
+                {
+                    loc = extension.headgearDrawSettings.GetDrawPosOffset(rot, loc);
+                }
             }
         }
     
         public static void TryModifyMeshRef(Pawn pawn, ref Mesh mesh, ApparelGraphicRecord apparelRecord)
         {
             var extension = apparelRecord.sourceApparel.def.GetModExtension<ApparelDrawPosExtension>();
-            if (extension?.headgearDrawSettings != null)
+            if (extension != null)
             {
-                mesh = extension.headgearDrawSettings.TryGetNewMesh(mesh, pawn);
+                if (extension.apparelDrawSettings != null)
+                {
+                    mesh = extension.apparelDrawSettings.TryGetNewMesh(mesh, pawn);
+                }
+                else if (extension.headgearDrawSettings != null)
+                {
+                    mesh = extension.headgearDrawSettings.TryGetNewMesh(mesh, pawn);
+                }
             }
+
         }
     }
     
@@ -402,20 +424,36 @@ namespace VFECore
         {
             oldVector = loc;
             var extension = apparelRecord.sourceApparel.def.GetModExtension<ApparelDrawPosExtension>();
-            if (extension?.packPosDrawSettings != null)
+            if (extension != null)
             {
-                loc = extension.packPosDrawSettings.GetDrawPosOffset(rot, loc);
+                if (extension.apparelDrawSettings != null)
+                {
+                    loc = extension.apparelDrawSettings.GetDrawPosOffset(rot, loc);
+                }
+                else if (extension.packPosDrawSettings != null)
+                {
+                    loc = extension.packPosDrawSettings.GetDrawPosOffset(rot, loc);
+                }
             }
+
         }
     
         public static void ModifyShellLoc(Rot4 rot, ref Vector3 loc, ApparelGraphicRecord apparelRecord)
         {
             oldVector = loc;
             var extension = apparelRecord.sourceApparel.def.GetModExtension<ApparelDrawPosExtension>();
-            if (extension?.shellPosDrawSettings != null)
+            if (extension != null)
             {
-                loc = extension.shellPosDrawSettings.GetDrawPosOffset(rot, loc);
+                if (extension.apparelDrawSettings != null)
+                {
+                    loc = extension.apparelDrawSettings.GetDrawPosOffset(rot, loc);
+                }
+                else if (extension?.shellPosDrawSettings != null)
+                {
+                    loc = extension.shellPosDrawSettings.GetDrawPosOffset(rot, loc);
+                }
             }
+
         }
         public static void ResetLoc(ref Vector3 loc)
         {
@@ -426,19 +464,34 @@ namespace VFECore
         {
             oldMesh = mesh;
             var extension = apparelRecord.sourceApparel.def.GetModExtension<ApparelDrawPosExtension>();
-            if (extension?.shellPosDrawSettings != null)
+            if (extension != null)
             {
-                mesh = extension.shellPosDrawSettings.TryGetNewMesh(mesh, pawn);
+                if (extension.apparelDrawSettings != null)
+                {
+                    mesh = extension.apparelDrawSettings.TryGetNewMesh(mesh, pawn);
+                }
+                else if (extension.shellPosDrawSettings != null)
+                {
+                    mesh = extension.shellPosDrawSettings.TryGetNewMesh(mesh, pawn);
+                }
             }
+
         }
     
         public static void ModifyPackMesh(Pawn pawn, ref Mesh mesh, ApparelGraphicRecord apparelRecord)
         {
             oldMesh = mesh;
             var extension = apparelRecord.sourceApparel.def.GetModExtension<ApparelDrawPosExtension>();
-            if (extension?.packPosDrawSettings != null)
+            if (extension != null)
             {
-                mesh = extension.packPosDrawSettings.TryGetNewMesh(mesh, pawn);
+                if (extension.apparelDrawSettings != null)
+                {
+                    mesh = extension.apparelDrawSettings.TryGetNewMesh(mesh, pawn);
+                }
+                else if (extension.packPosDrawSettings != null)
+                {
+                    mesh = extension.packPosDrawSettings.TryGetNewMesh(mesh, pawn);
+                }
             }
         }
     
