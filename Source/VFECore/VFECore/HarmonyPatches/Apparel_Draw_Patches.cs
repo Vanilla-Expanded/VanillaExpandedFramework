@@ -230,7 +230,10 @@ namespace VFECore
 
         public static void MapValue(Material mat, ApparelGraphicRecord apparelGraphicRecord)
         {
-            Patch_PawnRenderer_DrawPawnBody_Transpiler.mappedValues[mat] = apparelGraphicRecord;
+            if (mat != null)
+            {
+                Patch_PawnRenderer_DrawPawnBody_Transpiler.mappedValues[mat] = apparelGraphicRecord;
+            }
         }
     }
 
@@ -312,7 +315,7 @@ namespace VFECore
         public static void ModifyApparelLoc(Rot4 rot, ref Vector3 vector, Material mat)
         {
             oldVector = vector;
-            if (mappedValues.TryGetValue(mat, out var apparelRecord))
+            if (mat != null && mappedValues.TryGetValue(mat, out var apparelRecord))
             {
                 var extension = apparelRecord.sourceApparel.def.GetModExtension<ApparelDrawPosExtension>();
                 if (extension?.apparelDrawSettings != null)
@@ -330,7 +333,7 @@ namespace VFECore
         public static void ModifyMesh(Pawn pawn, ref Mesh mesh, Material mat)
         {
             oldMesh = mesh;
-            if (mappedValues.TryGetValue(mat, out var apparelRecord))
+            if (mat != null && mappedValues.TryGetValue(mat, out var apparelRecord))
             {
                 var extension = apparelRecord.sourceApparel.def.GetModExtension<ApparelDrawPosExtension>();
                 if (extension?.apparelDrawSettings != null)
@@ -475,7 +478,6 @@ namespace VFECore
                     mesh = extension.shellPosDrawSettings.TryGetNewMesh(mesh, pawn);
                 }
             }
-
         }
     
         public static void ModifyPackMesh(Pawn pawn, ref Mesh mesh, ApparelGraphicRecord apparelRecord)
