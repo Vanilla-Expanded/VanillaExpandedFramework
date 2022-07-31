@@ -4,7 +4,7 @@ using Verse;
 
 namespace KCSG
 {
-    public class MapParent_MapGeneratorDef_Postfix
+    public class Postfix_MapParent_MapGeneratorDef
     {
         [HarmonyPatch(typeof(MapParent), nameof(MapParent.MapGeneratorDef), MethodType.Getter)]
         public static class MapParent_MapGeneratorDef_Patch

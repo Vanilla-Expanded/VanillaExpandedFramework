@@ -9,7 +9,7 @@ namespace KCSG
     [StaticConstructorOnStartup]
     [HarmonyPatch(typeof(Page_ConfigureStartingPawns))]
     [HarmonyPatch("PreOpen", MethodType.Normal)]
-    public class Page_ConfigureStartingPawns_PreOpen_Postfix
+    public class Postfix_Page_ConfigureStartingPawns_PreOpen
     {
         [HarmonyPostfix]
         private static void Postfix()

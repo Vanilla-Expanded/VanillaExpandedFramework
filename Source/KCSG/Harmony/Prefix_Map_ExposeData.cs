@@ -5,7 +5,7 @@ using Verse;
 namespace KCSG
 {
     [HarmonyPatch(typeof(Map), "ExposeData")]
-    public static class Map_ExposeData_Prefix
+    public static class Prefix_Map_ExposeData
     {
         [HarmonyPrefix]
         public static void Prefix(Map __instance)
