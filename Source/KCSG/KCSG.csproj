@@ -57,6 +57,7 @@
     <Compile Include="GenStep\GenStep_TerrainNoPatches.cs" />
     <Compile Include="GenStep\GenStep_WorldObject.cs" />
     <Compile Include="Harmony\Postfix_MapParent_MapGeneratorDef.cs" />
+    <Compile Include="Harmony\Postfix_SettlementUtility_Attack.cs" />
     <Compile Include="Harmony\Prefix_WorldObjectsHolder_Add.cs" />
     <Compile Include="Harmony\HarmonyInit.cs" />
     <Compile Include="Harmony\Postfix_Settlement_MapGeneratorDef.cs" />
