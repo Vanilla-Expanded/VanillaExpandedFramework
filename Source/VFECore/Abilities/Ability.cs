@@ -784,6 +784,30 @@
             {
                 abilityModExtension.TargetingOnGUI(target, this);
             }
+            DrawAttachmentExtraLabel(target);
+        }
+
+        public virtual string ExtraLabelMouseAttachment(LocalTargetInfo target)
+        {
+            return null;
+        }
+        protected void DrawAttachmentExtraLabel(LocalTargetInfo target)
+        {
+            string text = ExtraLabelMouseAttachment(target);
+            if (!text.NullOrEmpty())
+            {
+                Widgets.MouseAttachedLabel(text);
+                return;
+            }
+            foreach (var abilityModExtension in AbilityModExtensions)
+            {
+                text = abilityModExtension.ExtraLabelMouseAttachment(target, this);
+                if (!text.NullOrEmpty())
+                {
+                    Widgets.MouseAttachedLabel(text);
+                    break;
+                }
+            }
         }
 
         protected virtual Texture2D MouseAttachment(GlobalTargetInfo target)
@@ -821,7 +845,20 @@
         public bool      IsMeleeAttack    => this.GetRangeForPawn()                                                                 < 6;
         public bool      Targetable       => this.def.targetModes[this.currentTargetingIndex >= 0 ? this.currentTargetingIndex : 0] != AbilityTargetingMode.Self;
         public bool      MultiSelect      { get; }
-        public bool      HidePawnTooltips { get; }
+        public virtual bool HidePawnTooltips 
+        { 
+            get
+            {
+                foreach (var abilityExtension in AbilityModExtensions)
+                {
+                    if (abilityExtension.HidePawnTooltips)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
         public Thing     Caster           => this.pawn ?? this.holder;
         public Pawn      CasterPawn       => this.pawn;
         public Verb      GetVerb          => this.verb;
