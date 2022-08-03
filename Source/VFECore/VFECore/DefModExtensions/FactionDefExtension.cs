@@ -38,6 +38,7 @@ namespace VFECore
         public List<BiomeDef> disallowedBiomes = new List<BiomeDef>();
         public List<Hilliness> requiredHillLevels;
         public bool spawnOnCoastalTilesOnly;
+        public bool neverConnectToRoads;
 
         public List<RaidStrategyDef> allowedStrategies = new List<RaidStrategyDef>();
     }
