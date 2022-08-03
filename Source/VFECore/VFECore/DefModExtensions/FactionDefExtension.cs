@@ -39,6 +39,7 @@ namespace VFECore
         public List<Hilliness> requiredHillLevels;
         public bool spawnOnCoastalTilesOnly;
         public bool neverConnectToRoads;
+        public float minDistanceToOtherSettlements;
 
         public List<RaidStrategyDef> allowedStrategies = new List<RaidStrategyDef>();
     }
