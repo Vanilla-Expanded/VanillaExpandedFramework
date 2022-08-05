@@ -4,8 +4,6 @@
 
     public class MoteAttachedOneTime : MoteAttached, IAnimationOneTime
     {
-        public bool shouldDestroy;
-
         public int currentIndex;
         public int CurrentIndex()
         {

@@ -4,8 +4,6 @@
 
     public class MoteOneTime : Mote, IAnimationOneTime
     {
-        public bool shouldDestroy;
-
         public int currentIndex;
         public int CurrentIndex()
         {
