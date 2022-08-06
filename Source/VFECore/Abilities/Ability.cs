@@ -43,7 +43,7 @@
         public int                currentTargetingIndex = -1;
         public GlobalTargetInfo[] currentTargets        = Array.Empty<GlobalTargetInfo>();
 
-        public void Init()
+        public virtual void Init()
         {
             if (this.verb == null)
                 this.verb = (Abilities.Verb_CastAbility)Activator.CreateInstance(this.def.verbProperties.verbClass);
