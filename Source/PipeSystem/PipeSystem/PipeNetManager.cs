@@ -62,35 +62,20 @@ namespace PipeSystem
         /// <returns>List of things adjacent</returns>
         private List<Thing> NeighbourThingsCardinal(Thing thing)
         {
-            /* List<Thing> things = new List<Thing>();
-             var pos = thing.Position;
-
-             for (int i = 0; i < 4; ++i)
-             {
-                 var adj = pos + GenAdj.CardinalDirections[i];
-                 if (adj.InBounds(map))
-                 {
-                     var thingsAt = map.thingGrid.ThingsListAt(adj);
-                     for (int o = 0; o < thingsAt.Count; o++)
-                     {
-                         var t = thingsAt[o];
-                         if (!things.Contains(t))
-                             things.Add(t);
-                     }
-                 }
-             }
-
-             return things;*/
             List<Thing> things = new List<Thing>();
             var adjCells = GenAdjFast.AdjacentCellsCardinal(thing);
             for (int i = 0; i < adjCells.Count; i++)
             {
-                var thingsAt = map.thingGrid.ThingsListAt(adjCells[i]);
-                for (int o = 0; o < thingsAt.Count; o++)
+                var adj = adjCells[i];
+                if (adj.InBounds(map))
                 {
-                    var t = thingsAt[o];
-                    if (!things.Contains(t))
-                        things.Add(t);
+                    var thingsAt = map.thingGrid.ThingsListAt(adj);
+                    for (int o = 0; o < thingsAt.Count; o++)
+                    {
+                        var t = thingsAt[o];
+                        if (!things.Contains(t))
+                            things.Add(t);
+                    }
                 }
             }
 
@@ -209,6 +194,13 @@ namespace PipeSystem
             }
         }
 
+        /// <summary>
+        /// Create PipeNet from a root connector
+        /// </summary>
+        /// <param name="rootComp">Root resouce comp</param>
+        /// <param name="pipeNet">Pipe net definition</param>
+        /// <param name="treated">Out net connectors</param>
+        /// <returns>PipeNet</returns>
         public PipeNet CreatePipeNetFrom(CompResource rootComp, PipeNetDef pipeNet, out HashSet<CompResource> treated)
         {
             Queue<CompResource> queue = new Queue<CompResource>();
