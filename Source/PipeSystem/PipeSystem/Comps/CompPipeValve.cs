@@ -13,15 +13,7 @@ namespace PipeSystem
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             compFlickable = parent.GetComp<CompFlickable>();
-
-            RemovePipes();
-            PipeNetManager = parent.Map.GetComponent<PipeNetManager>();
-
-            if (TransmitResourceNow)
-            {
-                PipeNetManager.RegisterConnector(this);
-                PipeSystemDebug.Message($"Registering {this}");
-            }
+            base.PostSpawnSetup(respawningAfterLoad);
         }
 
         public override bool TransmitResourceNow

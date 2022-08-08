@@ -1,5 +1,5 @@
-﻿using RimWorld;
-using System.Text;
+﻿using System.Text;
+using RimWorld;
 using Verse;
 using Verse.Sound;
 
@@ -30,8 +30,11 @@ namespace PipeSystem
 
             RemovePipes();
             PipeNetManager = parent.Map.GetComponent<PipeNetManager>();
-            PipeNetManager.RegisterConnector(this);
-            PipeSystemDebug.Message($"Registering {this}");
+            if (TransmitResourceNow)
+            {
+                PipeNetManager.RegisterConnector(this);
+                PipeSystemDebug.Message($"Registering {this}");
+            }
 
             LongEventHandler.ExecuteWhenFinished(delegate
             {
@@ -152,7 +155,7 @@ namespace PipeSystem
         }
 
         /// <summary>
-        /// 
+        /// Print comp on ressource grid
         /// </summary>
         public void CompPrintForResourceGrid(SectionLayer layer)
         {
