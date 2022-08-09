@@ -61,6 +61,7 @@
     <Compile Include="Comps\CompProperties\CompProperties_ConvertResourceToThing.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_ConvertThingToResource.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_ExplosiveContent.cs" />
+    <Compile Include="Comps\CompProperties\CompProperties_PipeValve.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_RefillWithPipes.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_ResourceProcessor.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_ResourceTrader.cs" />

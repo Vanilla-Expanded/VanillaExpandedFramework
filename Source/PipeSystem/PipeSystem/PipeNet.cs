@@ -55,9 +55,9 @@ namespace PipeSystem
             MaxGridStorageCapacity = 0;
 
             // Register all
-            for (int i = 0; i < connectors.Count(); i++)
+            foreach (var connector in connectors)
             {
-                RegisterComp(connectors.ElementAt(i));
+                RegisterComp(connector);
             }
         }
 
@@ -305,7 +305,14 @@ namespace PipeSystem
                 receiversDirty = true;
             }
             // Get all buildings that can potentially turn on
-            var wantToBeOn = receiversOff.FindAll(t => t.CanBeOn() && (available - (Consumption + t.Consumption)) > 0f);
+            var wantToBeOn = new List<CompResourceTrader>();
+            for (int w = 0; w < receiversOff.Count; w++)
+            {
+                var r = receiversOff[w];
+                if (r.CanBeOn() && (available - (Consumption + r.Consumption)) > 0f)
+                    wantToBeOn.Add(r);
+            }
+
             if (wantToBeOn.Any())
             {
                 PipeSystemDebug.Message("Turning on random building");

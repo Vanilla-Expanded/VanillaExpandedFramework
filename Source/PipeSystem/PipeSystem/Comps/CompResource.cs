@@ -19,16 +19,16 @@ namespace PipeSystem
 
         public Sustainer sustainer;
 
-        private Graphic_LinkedOverlayPipe graphicLinkedOverlay;
+        public Graphic_LinkedOverlayPipe graphicLinkedOverlay;
 
         /// <summary>
         /// Remove under pipes. Get and set manager. Start sustainer.
         /// </summary>
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
-            base.PostSpawnSetup(respawningAfterLoad);
+            if (!respawningAfterLoad)
+                RemovePipes();
 
-            RemovePipes();
             PipeNetManager = parent.Map.GetComponent<PipeNetManager>();
             if (TransmitResourceNow)
             {
@@ -41,7 +41,7 @@ namespace PipeSystem
                 StartSustainer();
             });
 
-            graphicLinkedOverlay = LinkedPipes.GetOverlayFor(PipeNet.def);
+            graphicLinkedOverlay = LinkedPipes.GetOverlayFor(Props.pipeNet);
         }
 
         /// <summary>

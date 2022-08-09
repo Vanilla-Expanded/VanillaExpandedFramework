@@ -6,15 +6,19 @@ namespace PipeSystem
 {
     public class PipeNetManager : MapComponent
     {
-        public PipeNetManager(Map map) : base(map)
-        {
-        }
-
+        // Cache wanting refill for performance
         public HashSet<Thing> wantRefill = new HashSet<Thing>();
-
+        // All map nets
         public List<PipeNet> pipeNets = new List<PipeNet>();
         // To avoid getting List Count
         private int pipeNetsCount = 0;
+        // Valve that link even when off
+        public BoolGrid valveGrid;
+
+        public PipeNetManager(Map map) : base(map)
+        {
+            valveGrid = new BoolGrid(map);
+        }
 
         /// <summary>
         /// We draw resources grid if wanted.
@@ -98,10 +102,10 @@ namespace PipeSystem
                 if (things[i] is ThingWithComps thing)
                 {
                     var comps = thing.GetComps<CompResource>();
-                    for (int o = 0; o < comps.Count(); o++)
+                    foreach (var compR in comps)
                     {
-                        var compR = comps.ElementAt(o);
                         if (compR != null
+                            && compR.TransmitResourceNow
                             && compR.Props.pipeNet == comp.Props.pipeNet
                             && compR.PipeNet is PipeNet p
                             && p != null
@@ -155,10 +159,10 @@ namespace PipeSystem
                 if (things[i] is ThingWithComps thing)
                 {
                     var comps = thing.GetComps<CompResource>();
-                    for (int o = 0; o < comps.Count(); o++)
+                    foreach (var compR in comps)
                     {
-                        var compR = comps.ElementAt(o);
                         if (compR != null
+                            && compR.TransmitResourceNow
                             && compR.Props.pipeNet == comp.Props.pipeNet
                             && !foundConnectors.Contains(compR))
                         {
@@ -224,9 +228,8 @@ namespace PipeSystem
                         if (thing is ThingWithComps tWC)
                         {
                             var comps = tWC.GetComps<CompResource>();
-                            for (int o = 0; o < comps.Count(); o++)
+                            foreach (var comp in comps)
                             {
-                                var comp = comps.ElementAt(o);
                                 if (!treated.Contains(comp) && comp.Props.pipeNet == pipeNet)
                                 {
                                     treated.Add(comp);
@@ -260,10 +263,40 @@ namespace PipeSystem
             for (int i = 0; i < pipeNetsCount; i++)
             {
                 PipeNet pipeNet = pipeNets[i];
-                if (pipeNet.def == resource && pipeNet.networkGrid[cell])
+                if (pipeNet.def == resource && (pipeNet.networkGrid[cell] || valveGrid[cell]))
                     return pipeNet;
             }
             return null;
+        }
+
+        /// <summary>
+        /// Register a valve
+        /// </summary>
+        /// <param name="pipeValve"></param>
+        public void RegisterValve(CompPipeValve pipeValve)
+        {
+            if (pipeValve.Props.alwaysLinkToPipes)
+            {
+                foreach (var c in pipeValve.parent.OccupiedRect())
+                {
+                    valveGrid.Set(c, true);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Unregister a valve
+        /// </summary>
+        /// <param name="pipeValve"></param>
+        public void UnregisterValve(CompPipeValve pipeValve)
+        {
+            if (pipeValve.Props.alwaysLinkToPipes)
+            {
+                foreach (var c in pipeValve.parent.OccupiedRect())
+                {
+                    valveGrid.Set(c, false);
+                }
+            }
         }
 
         /// <summary>

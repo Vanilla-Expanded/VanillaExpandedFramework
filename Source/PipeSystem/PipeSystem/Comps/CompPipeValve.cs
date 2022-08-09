@@ -10,10 +10,20 @@ namespace PipeSystem
     {
         private CompFlickable compFlickable;
 
+        public new CompProperties_PipeValve Props => (CompProperties_PipeValve)props;
+
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             compFlickable = parent.GetComp<CompFlickable>();
             base.PostSpawnSetup(respawningAfterLoad);
+
+            PipeNetManager.RegisterValve(this);
+        }
+
+        public override void PostDeSpawn(Map map)
+        {
+            base.PostDeSpawn(map);
+            PipeNetManager.UnregisterValve(this);
         }
 
         public override bool TransmitResourceNow
