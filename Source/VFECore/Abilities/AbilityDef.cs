@@ -55,6 +55,7 @@ namespace VFECore.Abilities
         public JobDef jobDef;
         public float  distanceToTarget = 1.5f;
         public bool   showGizmoOnWorldView;
+        public bool reserveTargets;
 
         public ThingDef warmupMote;
         public SoundDef warmupSound;

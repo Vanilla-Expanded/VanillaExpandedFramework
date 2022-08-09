@@ -75,5 +75,7 @@
 		public virtual void TargetingOnGUI(LocalTargetInfo target, Ability ability)
 		{
 		}
+
+		public virtual bool HidePawnTooltips => false;
 	}
 }
