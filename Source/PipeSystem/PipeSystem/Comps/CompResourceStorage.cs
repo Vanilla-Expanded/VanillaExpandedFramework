@@ -137,8 +137,8 @@ namespace PipeSystem
                 request.fillPercent = AmountStoredPct;
                 DrawFillableBar(request);
             }
-            if (Props.showOffMatWhenTransfering && markedForTransfer && Props.pipeNet.offMat != null)
-                IconOverlay.Render(Props.pipeNet.offMat, request.center, MeshPool.plane08);
+            if (markedForTransfer)
+                IconOverlay.Render(MaterialCreator.transferMat, request.center, MeshPool.plane08);
         }
 
         /// <summary>
