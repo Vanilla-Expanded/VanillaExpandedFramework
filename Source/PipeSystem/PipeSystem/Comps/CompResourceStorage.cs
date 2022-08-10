@@ -155,6 +155,19 @@ namespace PipeSystem
             base.PostExposeData();
         }
 
+        public override void PostDestroy(DestroyMode mode, Map previousMap)
+        {
+            if (Props.destroyOption != null)
+            {
+                var pos = parent.Position;
+                int num = (int)(amountStored / Props.destroyOption.ratio);
+                for (int i = 0; i < num; i++)
+                {
+                    FilthMaker.TryMakeFilth(CellFinder.StandableCellNear(pos, previousMap, Props.destroyOption.maxRadius), previousMap, Props.destroyOption.filth);
+                }
+            }
+        }
+
         /// <summary>
         /// Add resources to a storage
         /// </summary>
