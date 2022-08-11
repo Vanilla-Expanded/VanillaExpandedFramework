@@ -680,7 +680,7 @@
 
         public virtual void ExposeData()
         {
-            Scribe_References.Look(ref this.pawn, nameof(this.pawn));
+            Scribe_References.Look(ref this.pawn, nameof(this.pawn), saveDestroyedThings: true);
             Scribe_Values.Look(ref this.cooldown, nameof(this.cooldown));
             Scribe_Defs.Look(ref this.def, nameof(this.def));
             Scribe_Deep.Look(ref this.verb, nameof(this.verb));
