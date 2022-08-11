@@ -104,6 +104,16 @@
                     ability.holder = this.parent;
                 }
             }
+            else if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                foreach (Ability ability in this.learnedAbilities)
+                {
+                    if (ability.pawn == null && this.parent is Pawn pawn)
+                    {
+                        ability.pawn = pawn;
+                    }
+                }
+            }
             if (this.learnedAbilities?.Any() ?? false)
             {
                 this.abilitiesToTick = this.learnedAbilities.Where(x => x.def.needsTicking).ToList();
