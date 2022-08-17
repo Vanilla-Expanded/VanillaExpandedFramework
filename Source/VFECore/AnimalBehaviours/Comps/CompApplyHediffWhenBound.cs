@@ -50,6 +50,10 @@ namespace AnimalBehaviours
                 if (flag)
                 {
                     thisPawn.health.AddHediff(Props.hediffToApply);
+                    if (Props.applyHediffToBonded)
+                    {
+                        bondedPawn.health.AddHediff(Props.hediffToApplyToBonded);
+                    }
                 }
                 else
                 {
@@ -76,6 +80,11 @@ namespace AnimalBehaviours
                         }
 
                     }
+                    if (Props.dieIfBondedDies && bondedPawn != null && bondedPawn.Dead)
+                    {
+                        this.parent.Kill();
+                    }
+                    
                 }
 
             }
