@@ -94,6 +94,14 @@ namespace AnimalBehaviours
 
                 ThingDef newThing = ThingDef.Named(this.Props.defOfBuilding);
                 Thing newbuilding = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
+                if (Props.ifBedAssignOwnership)
+                {
+                    CompAssignableToPawn_Bed comp = newbuilding.TryGetComp<CompAssignableToPawn_Bed>();
+                    if (comp != null)
+                    {
+                        comp.TryAssignPawn(pawn);
+                    }
+                }
 
                 this.thingBuilt = newbuilding;
 
