@@ -23,5 +23,6 @@ namespace AnimalBehaviours
         public bool onlyOneExistingPerPawn = false;
         public bool checkForExistingEdifices = false;
         public bool ifBedAssignOwnership = false;
+        public bool onlyTamed = false;
     }
 }

@@ -32,7 +32,8 @@ namespace AnimalBehaviours
             base.CompTick();
             if (this.parent.IsHashIntervalTick(Props.ticksToBuild) && AnimalBehaviours_Settings.flagBuildPeriodically)
             {
-                this.CreateBuildingSetup();
+                if(!Props.onlyTamed ||(Props.onlyTamed&&this.parent.Faction == Faction.OfPlayer)) { this.CreateBuildingSetup(); }
+                
             }
         }
 
