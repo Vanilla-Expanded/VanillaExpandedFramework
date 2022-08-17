@@ -101,6 +101,8 @@ namespace AnimalBehaviours
                     if (comp != null)
                     {
                         comp.TryAssignPawn(pawn);
+                        newbuilding.SetFaction ( Faction.OfPlayerSilentFail);
+
                     }
                 }
 
