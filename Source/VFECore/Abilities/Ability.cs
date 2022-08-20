@@ -621,11 +621,18 @@
             AbilityExtension_Hediff hediffExtension = this.def.GetModExtension<AbilityExtension_Hediff>();
             if (hediffExtension?.applyAuto ?? false)
             {
-                foreach (GlobalTargetInfo target in targetInfo)
+                if (hediffExtension.applyToCaster)
                 {
-                    if (target.Thing is Pawn targetPawn)
+                    ApplyHediff(this.pawn, hediffExtension);
+                }
+                else
+                {
+                    foreach (GlobalTargetInfo target in targetInfo)
                     {
-                        ApplyHediff(targetPawn, hediffExtension);
+                        if (target.Thing is Pawn targetPawn)
+                        {
+                            ApplyHediff(targetPawn, hediffExtension);
+                        }
                     }
                 }
             }
