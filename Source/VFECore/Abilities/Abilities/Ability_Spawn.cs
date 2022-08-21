@@ -43,6 +43,7 @@ namespace VFECore.Abilities
                 comp2.pawn   = ability.pawn;
                 comp2.source = ability;
             }
+            if (thing.def.CanHaveFaction) thing.SetFactionDirect(ability.pawn.Faction);
             GenSpawn.Spawn(thing, target.Cell, target.Map);
         }
     }
