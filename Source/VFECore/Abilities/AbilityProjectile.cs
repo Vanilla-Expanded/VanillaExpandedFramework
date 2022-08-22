@@ -6,15 +6,17 @@ using Verse.Sound;
 namespace VFECore.Abilities
 {
     using RimWorld.Planet;
-
     public class AbilityProjectile : Projectile
     {
         public Ability ability;
-
         protected override void Impact(Thing hitThing)
         {
-            Map     map      = this.Map;
+            Map map = this.Map;
             base.Impact(hitThing);
+            DoImpact(hitThing, map);
+        }
+        protected virtual void DoImpact(Thing hitThing, Map map)
+        {
             BattleLogEntry_RangedImpact battleLogEntryRangedImpact =
                 new BattleLogEntry_RangedImpact(launcher, hitThing, intendedTarget.Thing, equipmentDef ?? ability.pawn.def, def, targetCoverDef);
             Find.BattleLog.Add(battleLogEntryRangedImpact);
@@ -63,7 +65,7 @@ namespace VFECore.Abilities
                     FleckMaker.Static(this.ExactPosition, map, FleckDefOf.ShotHit_Dirt);
                 }
             }
-            
+
             if (this.def.projectile.explosionRadius > 0)
             {
                 if (this.def.projectile.explosionEffect != null)

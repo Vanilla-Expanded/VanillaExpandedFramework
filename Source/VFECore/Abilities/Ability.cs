@@ -386,7 +386,7 @@
             else this.pawn.jobs.StartJob(job, JobCondition.InterruptForced);
         }
 
-        private bool currentAoETargeting;
+        protected bool currentAoETargeting;
         public virtual void ModifyTargets(ref GlobalTargetInfo[] targets)
         {
             if (this.def.hasAoE)
