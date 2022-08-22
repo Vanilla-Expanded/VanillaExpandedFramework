@@ -520,6 +520,14 @@
                     this.TargetEffects(targets.Any() ? targets[0].Thing != null ? new LocalTargetInfo(targets[0].Thing) : new LocalTargetInfo(targets[0].Cell) : default);
         }
 
+        public virtual void PostCast(params GlobalTargetInfo[] targets)
+        {
+            foreach (AbilityExtension_AbilityMod modExtension in this.AbilityModExtensions)
+            {
+                modExtension.PostCast(targets, this);
+            }
+        }
+
         public void ApplyGoodwillImpact(Pawn pawnTarget)
         {
             if (!pawnTarget.IsSlaveOfColony)
