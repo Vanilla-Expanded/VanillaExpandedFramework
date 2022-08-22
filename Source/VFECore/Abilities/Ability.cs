@@ -518,6 +518,8 @@
                     this.TargetEffects(targets);
                 else
                     this.TargetEffects(targets.Any() ? targets[0].Thing != null ? new LocalTargetInfo(targets[0].Thing) : new LocalTargetInfo(targets[0].Cell) : default);
+            
+            PostCast(targets);
         }
 
         public virtual void PostCast(params GlobalTargetInfo[] targets)
