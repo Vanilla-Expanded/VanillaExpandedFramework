@@ -162,6 +162,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompGraphicByStyle.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompGraphicByTerrain.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompHediffEffecter.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompHediffWhenFleeing.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompHighlyFlammable.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompInfecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompInitialAbility.cs" />
@@ -176,6 +177,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompNoTamingDecay.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompPassiveRegenerator.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompPawnOverlay.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_HediffWhenFleeing.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DiseaseEventImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_GiveThoughtsOnCaravan.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AnimalProductOnCaravan.cs" />
