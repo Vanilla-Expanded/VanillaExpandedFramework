@@ -75,7 +75,7 @@ namespace VFEMech
         protected virtual int GetDamageAmount => this.def.projectile.GetDamageAmount(1f);
         protected virtual DamageInfo GetDamageInfo(Thing hitThing)
         {
-            return new DamageInfo(Props.damageDef, GetDamageAmount, -1f, Holder.DrawPos.AngleToFlat(hitThing.DrawPos), this.Launcher);
+            return new DamageInfo(Props.damageDef, GetDamageAmount, def.projectile.GetArmorPenetration(this.launcher), Holder.DrawPos.AngleToFlat(hitThing.DrawPos), this.Launcher);
         }
         protected override void Impact(Thing hitThing)
         {
