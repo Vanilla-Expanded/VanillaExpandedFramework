@@ -25,9 +25,9 @@ namespace VFEMech
     public class TeslaProjectile : Bullet
     {
         public int curLifetime;
-        private int numBounces;
+        protected int numBounces;
         private List<TeslaProjectile> allProjectiles = new List<TeslaProjectile>();
-        private List<Thing> prevTargets = new List<Thing>();
+        protected List<Thing> prevTargets = new List<Thing>();
         private Thing holder;
         private Thing mainLauncher;
         private bool shotAnything;
