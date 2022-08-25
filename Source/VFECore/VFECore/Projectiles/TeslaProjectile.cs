@@ -72,7 +72,6 @@ namespace VFEMech
                 wasDeflected = false;
             }
         }
-
         protected virtual int GetDamageAmount => this.def.projectile.GetDamageAmount(1f);
         protected virtual DamageInfo GetDamageInfo(Thing hitThing)
         {
@@ -113,7 +112,6 @@ namespace VFEMech
                 Find.BattleLog.Add(battleLogEntry_RangedImpact);
                 var dinfo = GetDamageInfo(hitThing);
                 hitThing.TakeDamage(dinfo).AssociateWithLog(battleLogEntry_RangedImpact);
-
                 if (Props.addFire && hitThing.TryGetComp<CompAttachBase>() != null)
                 {
                     var fire = (Fire)GenSpawn.Spawn(ThingDefOf.Fire, hitThing.Position, hitThing.Map);
@@ -216,9 +214,9 @@ namespace VFEMech
                 projectile.prevTargets = new List<Thing>();
             }
             projectile.prevTargets.AddRange(prevTargets);
+            numBounces++;
             projectile.numBounces = numBounces;
             projectile.curLifetime = curLifetime;
-            numBounces++;
         }
 
         private static readonly Func<Building_TurretGun, Thing, bool> isValidTarget = (Func<Building_TurretGun, Thing, bool>)Delegate.CreateDelegate(typeof(Func<Building_TurretGun, Thing, bool>),
