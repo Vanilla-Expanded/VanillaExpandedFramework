@@ -73,7 +73,11 @@ namespace VFEMech
             }
         }
 
-        public virtual int GetDamageAmount => this.def.projectile.GetDamageAmount(1f);
+        protected virtual int GetDamageAmount => this.def.projectile.GetDamageAmount(1f);
+        protected virtual DamageInfo GetDamageInfo(Thing hitThing)
+        {
+            return new DamageInfo(Props.damageDef, GetDamageAmount, -1f, Holder.DrawPos.AngleToFlat(hitThing.DrawPos), this.Launcher);
+        }
         protected override void Impact(Thing hitThing)
         {
             var oldValue = def.projectile.damageDef.isRanged; // all of this jazz is to make shield belt deflecting tesla projectiles
@@ -107,7 +111,7 @@ namespace VFEMech
             {
                 BattleLogEntry_RangedImpact battleLogEntry_RangedImpact = new BattleLogEntry_RangedImpact(launcher, hitThing, intendedTarget.Thing, equipmentDef, def, targetCoverDef);
                 Find.BattleLog.Add(battleLogEntry_RangedImpact);
-                var dinfo = new DamageInfo(Props.damageDef, GetDamageAmount, -1f, Holder.DrawPos.AngleToFlat(hitThing.DrawPos), this.Launcher);
+                var dinfo = GetDamageInfo(hitThing);
                 hitThing.TakeDamage(dinfo).AssociateWithLog(battleLogEntry_RangedImpact);
 
                 if (Props.addFire && hitThing.TryGetComp<CompAttachBase>() != null)
