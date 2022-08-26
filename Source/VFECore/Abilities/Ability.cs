@@ -702,6 +702,7 @@
             Scribe_Defs.Look(ref this.def, nameof(this.def));
             Scribe_Deep.Look(ref this.verb, nameof(this.verb));
             Scribe_Values.Look(ref this.autoCast, nameof(this.autoCast));
+            Scribe_Values.Look(ref this.firstTarget, nameof(this.firstTarget));
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
