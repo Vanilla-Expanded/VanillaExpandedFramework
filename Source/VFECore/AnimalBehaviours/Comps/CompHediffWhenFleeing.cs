@@ -42,7 +42,7 @@ namespace AnimalBehaviours
                 {
                     onCoolDown=false;
                 }
-            }else if (this.parent.IsHashIntervalTick(Props.tickInterval))
+            }else if (this.parent.IsHashIntervalTick(Props.tickInterval) &&parent.Map!=null)
             {
                 Pawn pawn = this.parent as Pawn;
 
