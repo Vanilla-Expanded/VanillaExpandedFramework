@@ -24,13 +24,22 @@ namespace VFECore
             this.exactRotation = oldRot;
             this.exactPosition = oldPos;
         }
+
+        public override void Tick()
+        {
+            base.Tick();
+            if (!link1.Linked || link1.Target.ThingDestroyed)
+            {
+                this.Destroy();
+            }
+        }
     }
 
     public class MoteAttached_TargetingLockFixed : MoteAttached_TargetingLock
     {
         public override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
-            DrawTargetingLock(1f);
+            DrawTargetingLock(0.2f);
         }
     }
 

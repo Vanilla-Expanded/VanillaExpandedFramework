@@ -30,5 +30,14 @@ namespace VFECore
                 mote.Maintain();
             }
         }
+
+        public override void CompPostPostRemoved()
+        {
+            base.CompPostPostRemoved();
+            if (mote != null)
+            {
+                mote.Destroy();
+            }
+        }
     }
 }
