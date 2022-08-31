@@ -39,7 +39,12 @@ namespace AnimalBehaviours
                         }
                         SoundDefOf.Hive_Spawn.PlayOneShot(new TargetInfo(this.parent.Position, this.parent.Map, false));
                     }
-                    pawn.Kill(null);
+                    if (Props.justVanish)
+                    {
+                        pawn.Discard();
+                    }
+                    else { pawn.Kill(null);}
+                    
                 }
                 tickCounter = 0;
             }

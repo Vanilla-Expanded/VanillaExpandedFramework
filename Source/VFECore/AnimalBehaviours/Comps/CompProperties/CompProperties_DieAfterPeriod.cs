@@ -9,6 +9,7 @@ namespace AnimalBehaviours
         //"effect" is just an effectFilth splash around the animal, and a hive spawn sound being played
 
         public int timeToDieInTicks = 1000;
+        public bool justVanish = false;
         public bool effect = false;
         public string effectFilth = "Filth_Blood";
 
