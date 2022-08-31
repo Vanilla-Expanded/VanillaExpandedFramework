@@ -140,20 +140,20 @@ namespace VFECore
             return Mathf.Max(num, 1);
         }
 
-        [HarmonyPatch(typeof(Projectile), "Launch", new Type[]
-        {
-            typeof(Thing), typeof(Vector3), typeof(LocalTargetInfo), typeof(LocalTargetInfo), typeof(ProjectileHitFlags),typeof(bool), typeof(Thing), typeof(ThingDef)
-        })]
-        public static class Projectile_Launch_Patch
-        {
-            public static void Prefix(Projectile __instance, Thing launcher, Vector3 origin, ref LocalTargetInfo usedTarget, LocalTargetInfo intendedTarget, ProjectileHitFlags hitFlags, bool preventFriendlyFire = false, Thing equipment = null, ThingDef targetCoverDef = null)
-            {
-                if (forceHit && intendedTarget.Thing is Pawn victim && victim.pather.MovingNow)
-                {
-                    usedTarget = FindCellToHit(origin, __instance, victim);
-                }
-            }
-        }
+        //[HarmonyPatch(typeof(Projectile), "Launch", new Type[]
+        //{
+        //    typeof(Thing), typeof(Vector3), typeof(LocalTargetInfo), typeof(LocalTargetInfo), typeof(ProjectileHitFlags),typeof(bool), typeof(Thing), typeof(ThingDef)
+        //})]
+        //public static class Projectile_Launch_Patch
+        //{
+        //    public static void Prefix(Projectile __instance, Thing launcher, Vector3 origin, ref LocalTargetInfo usedTarget, LocalTargetInfo intendedTarget, ProjectileHitFlags hitFlags, bool preventFriendlyFire = false, Thing equipment = null, ThingDef targetCoverDef = null)
+        //    {
+        //        if (forceHit && intendedTarget.Thing is Pawn victim && victim.pather.MovingNow)
+        //        {
+        //            usedTarget = FindCellToHit(origin, __instance, victim);
+        //        }
+        //    }
+        //}
 
         [HarmonyPatch(typeof(Verb), nameof(Verb.Available))]
         public static class Available

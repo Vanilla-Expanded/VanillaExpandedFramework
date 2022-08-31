@@ -320,6 +320,10 @@
     <Compile Include="Apparel\Harmony\SkillRecord_Learn_Patch.cs" />
     <Compile Include="Apparel\Harmony\ThingSelectionUtility_SelectableByMapClick_Patch.cs" />
     <Compile Include="Apparel\ModExtensions\ApparelExtension.cs" />
+    <Compile Include="VFECore\Comps\HediffComps\HediffComp_Mote.cs" />
+    <Compile Include="VFECore\Motes\MoteAttached_TargetingLock.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompWeaponHediffs.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompHomingProjectile.cs" />
     <Compile Include="VFECore\Comps\HediffComps\HediffComp_Phasing.cs" />
     <Compile Include="VFECore\Comps\HediffComps\HediffComp_Targeting.cs" />
     <Compile Include="VFECore\DefModExtensions\WeatherExtension.cs" />
@@ -330,6 +334,7 @@
     <Compile Include="VFECore\Comps\HediffComps\HediffComp_Targeting.cs" />
     <Compile Include="VFECore\Dialogs\Dialog_NameDrone.cs" />
     <Compile Include="VFECore\HarmonyPatches\Mechanoids\MainTabWindow_Patches.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Projectile_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\Stat_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\MapGenerator_GenerateContentsIntoMap_Patch.cs" />
     <Compile Include="VFECore\HarmonyPatches\GenStep_Terrain_TerrainFrom_Patch.cs" />
