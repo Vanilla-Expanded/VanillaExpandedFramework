@@ -17,6 +17,13 @@ namespace AnimalBehaviours
             }
         }
 
+        public override void PostExposeData()
+        {
+            base.PostExposeData();
+            Scribe_Values.Look<int>(ref this.tickCounter, "tickCounter", 0, false);
+
+        }
+
         public override void CompTick()
         {
             base.CompTick();
@@ -41,7 +48,7 @@ namespace AnimalBehaviours
                     }
                     if (Props.justVanish)
                     {
-                        pawn.Discard();
+                        pawn.Destroy();
                     }
                     else { pawn.Kill(null);}
                     
