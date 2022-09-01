@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "YFbGulD6tyIg6V70Gw8kG8MmGjIjuAU4cNEXbgFNuBwLjHXOY0kCeIbaryi3OFUCW7kTxsj9KlOtPLR5QgbwEg==",
+  "dgSpecHash": "rMTOKuQG1p7jdfYIThWJTISVT1YLTV3aJ5KN6DAiTXNFcEYJBrfWhK82ITI6EKgc9VN7tYMqmWzOY3QyHgToVQ==",
   "success": true,
   "projectFilePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\VanillaExpandedFramework\\Source\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded\\VanillaStorytellersExpanded.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Vova\\.nuget\\packages\\krafs.rimworld.ref\\1.3.3159\\krafs.rimworld.ref.1.3.3159.nupkg.sha512",
-    "C:\\Users\\Vova\\.nuget\\packages\\lib.harmony\\2.1.1\\lib.harmony.2.1.1.nupkg.sha512"
+    "C:\\Users\\Vova\\.nuget\\packages\\krafs.rimworld.ref\\1.3.3389\\krafs.rimworld.ref.1.3.3389.nupkg.sha512",
+    "C:\\Users\\Vova\\.nuget\\packages\\lib.harmony\\2.2.2\\lib.harmony.2.2.2.nupkg.sha512"
   ],
   "logs": []
 }
