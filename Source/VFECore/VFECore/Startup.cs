@@ -15,6 +15,9 @@ namespace VFECore
             PawnShieldGenerator.Reset();
             ScenPartUtility.SetCache();
             CheckXmlErrors();
+
+            foreach (BackstoryDef bd in DefDatabase<BackstoryDef>.AllDefs)
+                BackstoryDef.UpdateTranslateableFields(bd);
         }
 
         public static void CheckXmlErrors()
