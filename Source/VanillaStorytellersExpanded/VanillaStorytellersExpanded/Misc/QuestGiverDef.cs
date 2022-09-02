@@ -33,7 +33,7 @@ namespace VanillaStorytellersExpanded
             }
         }
 
-        public Type windowClass;
+        public Type windowClass = typeof(Window_Contracts);
 
         public string windowTitleKey;
     }
