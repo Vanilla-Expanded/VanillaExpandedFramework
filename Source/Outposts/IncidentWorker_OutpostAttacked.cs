@@ -11,7 +11,10 @@ namespace Outposts
     {
         protected override bool CanFireNowSub(IncidentParms parms) =>
             Find.WorldObjects.AllWorldObjects.Any(wo => wo is Outpost {Faction: {IsPlayer: true}}) && OutpostsMod.Settings.DoRaids;
-
+        public override void ResolveRaidStrategy(IncidentParms parms, PawnGroupKindDef groupKind)
+        {
+            base.ResolveRaidStrategy(parms, groupKind);
+        }
         protected override bool TryExecuteWorker(IncidentParms parms)
         {
             if (!Find.WorldObjects.AllWorldObjects.OfType<Outpost>().TryRandomElement(out var target)) return false;
@@ -19,9 +22,14 @@ namespace Outposts
             {
                 parms.target = GetOrGenerateMapUtility.GetOrGenerateMap(target.Tile, new IntVec3(150, 1, 150), target.def);               
                 parms.points = target.ResolveRaidPoints(parms);
-                TryGenerateRaidInfo(parms, out var pawns);
+                //To test with
+/*                parms.faction = Find.FactionManager.FirstFactionOfDef(DefDatabase<FactionDef>.GetNamed("VFEP_Junkers"));
+                parms.raidStrategy = DefDatabase<RaidStrategyDef>.GetNamed("VFEP_GauntletStrat");
+                parms.raidArrivalMode = DefDatabase<PawnsArrivalModeDef>.GetNamed("VFEP_GauntletDrop")*/;
+                TryGenerateRaidInfo(parms, out var pawns);              
                 target.raidFaction = parms.faction;
                 target.raidPoints = parms.points;
+
                 TaggedString baseLetterLabel = GetLetterLabel(parms);
                 TaggedString baseLetterText = GetLetterText(parms, pawns);
                 PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter(pawns, ref baseLetterLabel, ref baseLetterText, GetRelatedPawnsInfoLetterText(parms), true);

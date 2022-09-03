@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -18,14 +19,21 @@ namespace VFECore
             // Toggable patches
             foreach (ModContentPack mod in LoadedModManager.RunningMods)
             {
-                if (mod.Patches != null)
+                try
                 {
-                    int modPatchesCount = mod.Patches.ToList().FindAll(p => p is PatchOperationToggableSequence pt && pt.ModsFound()).Count;
-                    if (modPatchesCount > 0)
+                    if (mod.Patches != null)
                     {
-                        ModUsingToggablePatchCount++;
-                        ToggablePatchCount += modPatchesCount;
+                        int modPatchesCount = mod.Patches.ToList().FindAll(p => p is PatchOperationToggableSequence pt && pt.ModsFound()).Count;
+                        if (modPatchesCount > 0)
+                        {
+                            ModUsingToggablePatchCount++;
+                            ToggablePatchCount += modPatchesCount;
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(mod.Name + " produced an error with XML patches: " + ex.ToString());
                 }
             }
         }
@@ -268,7 +276,6 @@ namespace VFECore
     {
         static ModSettingsHandler()
         {
-            VFEGlobal.settings.weatherDamagesOptions = new Dictionary<string, bool>();
             foreach (var weatherDef in DefDatabase<WeatherDef>.AllDefs)
             {
                 var extension = weatherDef.GetModExtension<WeatherEffectsExtension>();

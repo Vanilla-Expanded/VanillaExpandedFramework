@@ -46,7 +46,7 @@ namespace PipeSystem
                 {
                     for (int i = 0; i < comps.Count; i++)
                     {
-                        if (comps[i] is CompResource comp && comp.PipeNet.def == pipeNet)
+                        if (comps[i] is CompResource comp && comp.Props.pipeNet == pipeNet)
                         {
                             comp.CompPrintForResourceGrid(this);
                             break; // We can only have one comp of the same netDef

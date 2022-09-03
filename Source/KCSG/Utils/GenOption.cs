@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace KCSG
@@ -32,6 +33,8 @@ namespace KCSG
         public static FallingStructure fallingStructure;
         public static StructureLayoutDef fallingStructureChoosen;
 
+        public static List<Corpse> corpseToRot = new List<Corpse>();
+
         public static void ClearFalling()
         {
             fallingStructure = null;
@@ -47,6 +50,17 @@ namespace KCSG
 
                 mineables[cell] = null;
             }
+        }
+
+        public static void RotAllThing()
+        {
+            for (int i = 0; i < corpseToRot.Count; i++)
+            {
+                var corpse = corpseToRot[i];
+                corpse.timeOfDeath = Mathf.Max(Find.TickManager.TicksGame - 60000 * Rand.RangeInclusive(5, 15), 0);
+                corpse.TryGetComp<CompRottable>()?.RotImmediately();
+            }
+            corpseToRot.Clear();
         }
     }
 }

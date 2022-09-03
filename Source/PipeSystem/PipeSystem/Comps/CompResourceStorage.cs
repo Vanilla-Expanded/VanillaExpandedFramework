@@ -137,8 +137,8 @@ namespace PipeSystem
                 request.fillPercent = AmountStoredPct;
                 DrawFillableBar(request);
             }
-            if (Props.showOffMatWhenTransfering && markedForTransfer && Props.pipeNet.offMat != null)
-                IconOverlay.Render(Props.pipeNet.offMat, request.center, MeshPool.plane08);
+            if (markedForTransfer)
+                IconOverlay.Render(MaterialCreator.transferMat, request.center, MeshPool.plane08);
         }
 
         /// <summary>
@@ -153,6 +153,19 @@ namespace PipeSystem
             Scribe_Values.Look(ref markedForTransfer, "markedForTransfer");
             Scribe_Values.Look(ref markedForTransfer, "markedForRefill");
             base.PostExposeData();
+        }
+
+        public override void PostDestroy(DestroyMode mode, Map previousMap)
+        {
+            if (Props.destroyOption != null)
+            {
+                var pos = parent.Position;
+                int num = (int)(amountStored / Props.destroyOption.ratio);
+                for (int i = 0; i < num; i++)
+                {
+                    FilthMaker.TryMakeFilth(CellFinder.StandableCellNear(pos, previousMap, Props.destroyOption.maxRadius), previousMap, Props.destroyOption.filth);
+                }
+            }
         }
 
         /// <summary>

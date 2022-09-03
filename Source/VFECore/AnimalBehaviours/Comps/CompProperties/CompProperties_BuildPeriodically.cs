@@ -22,5 +22,7 @@ namespace AnimalBehaviours
         public List<string> acceptedTerrains = null;
         public bool onlyOneExistingPerPawn = false;
         public bool checkForExistingEdifices = false;
+        public bool ifBedAssignOwnership = false;
+        public bool onlyTamed = false;
     }
 }

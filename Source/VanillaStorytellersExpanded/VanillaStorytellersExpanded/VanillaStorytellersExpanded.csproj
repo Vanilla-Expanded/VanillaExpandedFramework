@@ -45,12 +45,14 @@
     <Compile Include="Misc\QuestGiverManager.cs" />
     <Compile Include="Misc\CurrencyInfo.cs" />
     <Compile Include="Misc\QuestInfo.cs" />
+    <Compile Include="Misc\QuestWorker.cs" />
     <Compile Include="Misc\RaidQueue.cs" />
     <Compile Include="Misc\RaidGroup.cs" />
     <Compile Include="HarmonyPatches\IncidentWatcher.cs" />
     <Compile Include="HarmonyPatches\RaidWatcher.cs" />
     <Compile Include="Misc\StorytellerComp_IncidentSpawner.cs" />
     <Compile Include="Misc\QuestGiverDef.cs" />
+    <Compile Include="Misc\Window_Contracts.cs" />
     <Compile Include="StorytellerWatcher.cs" />
     <Compile Include="HarmonyPatches\QuestWatcher.cs" />
     <Compile Include="Incidents\IncidentWorker_Reinforcements.cs" />
@@ -74,10 +76,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Krafs.Rimworld.Ref">
-      <Version>1.3.3159</Version>
+      <Version>1.3.3389</Version>
     </PackageReference>
     <PackageReference Include="Lib.Harmony" Version="2.0.4" ExcludeAssets="runtime">
-      <Version>2.1.1</Version>
+      <Version>2.2.2</Version>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>

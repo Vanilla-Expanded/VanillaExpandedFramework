@@ -10,22 +10,6 @@ using Verse.Sound;
 
 namespace VFECore
 {
-
-	[HarmonyPatch(typeof(Projectile), "Launch", new Type[] 
-	{
-		typeof(Thing), typeof(Vector3), typeof(LocalTargetInfo), typeof(LocalTargetInfo), typeof(ProjectileHitFlags),typeof(bool), typeof(Thing), typeof(ThingDef)
-	})]
-	public static class Projectile_Launch_Patch
-	{
-		public static void Postfix(Projectile __instance, Thing launcher, Vector3 origin, LocalTargetInfo usedTarget, LocalTargetInfo intendedTarget, ProjectileHitFlags hitFlags,  bool preventFriendlyFire = false,Thing equipment = null, ThingDef targetCoverDef = null)
-		{
-			if (__instance is ExpandableProjectile expandableProjectile && expandableProjectile.def.reachMaxRangeAlways)
-			{
-				expandableProjectile.SetDestinationToMax(equipment);
-			}
-		}
-	}
-
 	public class ExpandableProjectile : Bullet
 	{
 		private int curDuration;

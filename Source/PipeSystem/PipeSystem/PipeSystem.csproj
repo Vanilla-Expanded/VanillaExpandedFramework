@@ -61,6 +61,7 @@
     <Compile Include="Comps\CompProperties\CompProperties_ConvertResourceToThing.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_ConvertThingToResource.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_ExplosiveContent.cs" />
+    <Compile Include="Comps\CompProperties\CompProperties_PipeValve.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_RefillWithPipes.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_ResourceProcessor.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_ResourceTrader.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Jobs\JobDriver_FillStorage.cs" />
     <Compile Include="Jobs\WorkGiver_DrainFromMarkedStorage.cs" />
     <Compile Include="Jobs\WorkGiver_RefillStorage.cs" />
+    <Compile Include="NetGridUtility.cs" />
     <Compile Include="PipeSystemDebug\PipeSystemDebug.cs" />
     <Compile Include="Designator\Designator_DeconstructPipe.cs" />
     <Compile Include="Harmony\ResolvedAllowedDesignators_Patch.cs" />

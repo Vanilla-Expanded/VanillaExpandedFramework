@@ -190,6 +190,11 @@ namespace VFECore
         public static void Postfix(Pawn_EquipmentTracker __instance, ref ThingWithComps newEq)
         {
             VerbUtility.TryModifyThingsVerbs(newEq);
+            var comp = newEq.TryGetComp<CompWeaponHediffs>();
+            if (comp != null)
+            {
+                comp.AssignHediffs();
+            }
         }
     }
 
@@ -199,6 +204,11 @@ namespace VFECore
         public static void Postfix(Pawn_EquipmentTracker __instance, ThingWithComps eq, ThingWithComps resultingEq, IntVec3 pos, bool forbid = true)
         {
             VerbUtility.TryModifyThingsVerbs(resultingEq);
+            var comp = resultingEq.TryGetComp<CompWeaponHediffs>();
+            if (comp != null)
+            {
+                comp.AssignHediffs();
+            }
         }
     }
 

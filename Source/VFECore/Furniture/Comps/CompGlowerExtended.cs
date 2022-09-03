@@ -46,7 +46,7 @@ namespace VanillaFurnitureExpanded
         public CompProperties_GlowerExtended Props => (CompProperties_GlowerExtended)props;
         public override string TransformLabel(string label)
         {
-            if (!currentColor.colorLabel.NullOrEmpty())
+            if (!(currentColor?.colorLabel).NullOrEmpty())
             {
                 return base.TransformLabel(label) + " (" + currentColor.colorLabel + ")";
             }
@@ -137,7 +137,11 @@ namespace VanillaFurnitureExpanded
             this.currentColor = Props.colorOptions[currentColorInd];
             this.dirty = true;
         }
-
+        public override void PostPostMake()
+        {
+            base.PostPostMake();
+            this.currentColor = Props.colorOptions[currentColorInd];
+        }
         public override void PostDeSpawn(Map map)
         {
             this.RemoveGlower(map);

@@ -12,7 +12,7 @@
         public StatDef durationMultiplier;
         public bool durationMultiplierFromCaster;
         public bool targetOnlyEnemies;
-
+        public bool applyToCaster;
         public override bool ValidateTarget(LocalTargetInfo target, Ability ability, bool throwMessages = false)
         {
             if (this.targetOnlyEnemies && target.Thing != null && !target.Thing.HostileTo(ability.pawn))

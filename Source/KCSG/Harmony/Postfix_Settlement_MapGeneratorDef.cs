@@ -5,7 +5,7 @@ using Verse;
 
 namespace KCSG
 {
-    public class Settlement_MapGeneratorDef_Postfix
+    public class Postfix_Settlement_MapGeneratorDef
     {
         [HarmonyPatch(typeof(Settlement), nameof(Settlement.MapGeneratorDef), MethodType.Getter)]
         public static class Settlement_MapGeneratorDef_Patch

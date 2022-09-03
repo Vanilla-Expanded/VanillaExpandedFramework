@@ -43,7 +43,11 @@
 		public virtual void Cast(GlobalTargetInfo[] targets, Ability ability)
 		{
 		}
-		public virtual bool Valid(GlobalTargetInfo[] targets, Ability ability, bool throwMessages = false)
+
+        public virtual void PostCast(GlobalTargetInfo[] targets, Ability ability)
+        {
+        }
+        public virtual bool Valid(GlobalTargetInfo[] targets, Ability ability, bool throwMessages = false)
 		{
 			return true;
 		}
@@ -75,5 +79,7 @@
 		public virtual void TargetingOnGUI(LocalTargetInfo target, Ability ability)
 		{
 		}
+
+		public virtual bool HidePawnTooltips => false;
 	}
 }

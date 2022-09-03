@@ -155,8 +155,7 @@ namespace KCSG
                     corpse.timeOfDeath = Mathf.Max(Find.TickManager.TicksGame - 120000, 0);
                     if (symbol.spawnRotten)
                     {
-                        corpse.timeOfDeath = Mathf.Max(Find.TickManager.TicksGame - 60000 * Rand.RangeInclusive(5, 15), 0);
-                        corpse.TryGetComp<CompRottable>().RotImmediately();
+                        GenOption.corpseToRot.Add(corpse);
                         if (symbol.spawnFilthAround)
                         {
                             for (int x = 0; x < 5; x++)
@@ -286,8 +285,7 @@ namespace KCSG
                 pawn.Kill(null);
 
                 var corpse = pawn.Corpse;
-                corpse.timeOfDeath = Mathf.Max(Find.TickManager.TicksGame - 60000 * Rand.RangeInclusive(5, 15), 0);
-                corpse.GetComp<CompRottable>()?.RotImmediately();
+                GenOption.corpseToRot.Add(corpse);
 
                 corpseCasket.GetComp<CompAssignableToPawn_Grave>()?.TryAssignPawn(pawn);
                 if (!corpseCasket.TryAcceptThing(corpse))

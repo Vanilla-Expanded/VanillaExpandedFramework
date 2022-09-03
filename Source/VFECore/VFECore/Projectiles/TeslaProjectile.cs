@@ -25,9 +25,9 @@ namespace VFEMech
     public class TeslaProjectile : Bullet
     {
         public int curLifetime;
-        private int numBounces;
+        protected int numBounces;
         private List<TeslaProjectile> allProjectiles = new List<TeslaProjectile>();
-        private List<Thing> prevTargets = new List<Thing>();
+        protected List<Thing> prevTargets = new List<Thing>();
         private Thing holder;
         private Thing mainLauncher;
         private bool shotAnything;
@@ -72,7 +72,11 @@ namespace VFEMech
                 wasDeflected = false;
             }
         }
-
+        protected virtual int GetDamageAmount => this.def.projectile.GetDamageAmount(1f);
+        protected virtual DamageInfo GetDamageInfo(Thing hitThing)
+        {
+            return new DamageInfo(Props.damageDef, GetDamageAmount, def.projectile.GetArmorPenetration(this.launcher), Holder.DrawPos.AngleToFlat(hitThing.DrawPos), this.Launcher);
+        }
         protected override void Impact(Thing hitThing)
         {
             var oldValue = def.projectile.damageDef.isRanged; // all of this jazz is to make shield belt deflecting tesla projectiles
@@ -106,9 +110,8 @@ namespace VFEMech
             {
                 BattleLogEntry_RangedImpact battleLogEntry_RangedImpact = new BattleLogEntry_RangedImpact(launcher, hitThing, intendedTarget.Thing, equipmentDef, def, targetCoverDef);
                 Find.BattleLog.Add(battleLogEntry_RangedImpact);
-                var dinfo = new DamageInfo(Props.damageDef, this.def.projectile.GetDamageAmount(1f), -1f, Holder.DrawPos.AngleToFlat(hitThing.DrawPos), this.Launcher);
+                var dinfo = GetDamageInfo(hitThing);
                 hitThing.TakeDamage(dinfo).AssociateWithLog(battleLogEntry_RangedImpact);
-
                 if (Props.addFire && hitThing.TryGetComp<CompAttachBase>() != null)
                 {
                     var fire = (Fire)GenSpawn.Spawn(ThingDefOf.Fire, hitThing.Position, hitThing.Map);
@@ -211,9 +214,9 @@ namespace VFEMech
                 projectile.prevTargets = new List<Thing>();
             }
             projectile.prevTargets.AddRange(prevTargets);
+            numBounces++;
             projectile.numBounces = numBounces;
             projectile.curLifetime = curLifetime;
-            numBounces++;
         }
 
         private static readonly Func<Building_TurretGun, Thing, bool> isValidTarget = (Func<Building_TurretGun, Thing, bool>)Delegate.CreateDelegate(typeof(Func<Building_TurretGun, Thing, bool>),

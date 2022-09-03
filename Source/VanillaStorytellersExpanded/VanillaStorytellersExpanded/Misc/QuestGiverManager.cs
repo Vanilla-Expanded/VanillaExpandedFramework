@@ -10,6 +10,8 @@ namespace VanillaStorytellersExpanded
     {
         public QuestGiverDef def;
         private List<QuestInfo> availableQuests = new List<QuestInfo>();
+        public Faction FixedQuestGiverFaction => def.fixedQuestGiverFaction != null
+            ? Find.FactionManager.FirstFactionOfDef(def.fixedQuestGiverFaction) : Find.FactionManager.RandomAlliedFaction();
         public List<QuestInfo> AvailableQuests
         {
             get

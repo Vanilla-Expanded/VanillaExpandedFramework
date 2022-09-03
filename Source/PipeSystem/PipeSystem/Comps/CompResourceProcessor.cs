@@ -98,8 +98,7 @@ namespace PipeSystem
                             var label = res.net != null ? res.net.resource.name : res.thing.label;
                             var count = res.net != null ? res.netCount : res.thingCount;
                             floatMenuOptions.Add(new FloatMenuOption(
-                                "PipeSystem_Produce".Translate(count, label),
-                                () =>
+                                "PipeSystem_Produce".Translate(count, label, res.countNeeded, PipeNet.def.resource.name.ToLower()), () =>
                                 {
                                     resultIndex = Props.results.IndexOf(res);
                                     SetupForChoice();

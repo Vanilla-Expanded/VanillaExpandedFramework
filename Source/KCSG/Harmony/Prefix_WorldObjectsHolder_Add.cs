@@ -5,7 +5,7 @@ namespace KCSG
 {
     [HarmonyPatch(typeof(WorldObjectsHolder))]
     [HarmonyPatch("Add", MethodType.Normal)]
-    public class WorldObjectsHolder_Add_Prefix
+    public class Prefix_WorldObjectsHolder_Add
     {
         public static bool Prefix(WorldObject o)
         {

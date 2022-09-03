@@ -16,14 +16,14 @@ namespace VanillaStorytellersExpanded
         public QuestPart_Choice.Choice choice;
         public Faction askerFaction;
         public int tickGenerated;
-        public CurrencyInfo currencyInfo;
+        public QuestCurrencyInfo currencyInfo;
 
         public QuestInfo()
         {
 
         }
 
-        public QuestInfo(Quest quest, Faction askerFaction, CurrencyInfo currencyInfo, bool onlyOneChoice = false)
+        public QuestInfo(Quest quest, Faction askerFaction, QuestCurrencyInfo currencyInfo, bool onlyOneChoice = false)
         {
             this.quest = quest;
             this.askerFaction = askerFaction;

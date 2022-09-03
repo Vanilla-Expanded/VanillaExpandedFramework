@@ -8,7 +8,12 @@ using Verse;
 
 namespace VFECore
 {
-	public class HediffCompProperties_Targeting : HediffCompProperties
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+    public class HotSwappableAttribute : Attribute
+    {
+    }
+
+    public class HediffCompProperties_Targeting : HediffCompProperties
 	{
 		public bool neverMiss;
 		public bool neverHit;
@@ -16,6 +21,7 @@ namespace VFECore
 		public bool alwaysMiss;
 		public ThingDef targetingMote;
 		public float initialTargetingMoteScale;
+		public bool sizeScalesWithProgress = true;
 		public string targetingLineTexPath;
 		public Color targetingLineColor = Color.red;
 		public float targetingLineWidth = 0.2f;
@@ -54,23 +60,30 @@ namespace VFECore
 					{
 						if (target.HasThing)
 						{
-							Log.Message("Making attached mote");
 							mote = MoteMaker.MakeAttachedOverlay(target.Thing, Props.targetingMote, Vector3.zero, Props.initialTargetingMoteScale);
 						}
 						else
 						{
-							Log.Message("Making static mote");
 							mote = MakeStaticMote(target.CenterVector3, Pawn.Map, Props.targetingMote, Props.initialTargetingMoteScale);
 						}
 					};
 				}
 				else
 				{
-					mote.Scale = progress;
-					mote.Maintain();
-				}
-			}
-			if (!Props.targetingLineTexPath.NullOrEmpty())
+                    if (Props.sizeScalesWithProgress)
+                    {
+                        mote.Scale = progress;
+                    }
+                    mote.Maintain();
+					if (mote is MoteAttached_TargetingLockDynamic targetingLock)
+					{
+						targetingLock.DrawTargetingLock(progress);
+
+                    }
+                }
+            }
+
+            if (!Props.targetingLineTexPath.NullOrEmpty())
             {
 				Vector3 b = ((!target.HasThing) ? target.Cell.ToVector3Shifted() : target.Thing.TrueCenter());
 				Vector3 a = this.Pawn.TrueCenter();

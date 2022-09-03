@@ -32,7 +32,8 @@ namespace AnimalBehaviours
             base.CompTick();
             if (this.parent.IsHashIntervalTick(Props.ticksToBuild) && AnimalBehaviours_Settings.flagBuildPeriodically)
             {
-                this.CreateBuildingSetup();
+                if(!Props.onlyTamed ||(Props.onlyTamed&&this.parent.Faction == Faction.OfPlayer)) { this.CreateBuildingSetup(); }
+                
             }
         }
 
@@ -94,6 +95,16 @@ namespace AnimalBehaviours
 
                 ThingDef newThing = ThingDef.Named(this.Props.defOfBuilding);
                 Thing newbuilding = GenSpawn.Spawn(newThing, pawn.Position, pawn.Map, WipeMode.Vanish);
+                if (Props.ifBedAssignOwnership)
+                {
+                    CompAssignableToPawn_Bed comp = newbuilding.TryGetComp<CompAssignableToPawn_Bed>();
+                    if (comp != null)
+                    {
+                        comp.TryAssignPawn(pawn);
+                        newbuilding.SetFaction ( Faction.OfPlayerSilentFail);
+
+                    }
+                }
 
                 this.thingBuilt = newbuilding;
 

@@ -19,7 +19,22 @@
                 return cachedComp;
             }
         }
-        public override bool TryMakePreToilReservations(bool errorOnFailed) => true;
+        public override bool TryMakePreToilReservations(bool errorOnFailed)
+        {
+            if (this.CompAbilities.currentlyCasting.def.reserveTargets)
+            {
+                var targets = new List<LocalTargetInfo>();
+                foreach (var target in this.CompAbilities.currentlyCasting.currentTargets)
+                {
+                    if (target.HasThing)
+                        targets.Add(new LocalTargetInfo(target.Thing));
+                    else
+                        targets.Add(new LocalTargetInfo(target.Cell));
+                }
+                pawn.ReserveAsManyAsPossible(targets, job);
+            }
+            return true;
+        }
 
         public override string GetReport() => this.CompAbilities.currentlyCasting.def.JobReportString;
 

@@ -71,6 +71,7 @@
     <Compile Include="Abilities\ModExtensions\AbilityExtension_EffecterOnTarget.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_ExtraHediffs.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_FleckOnTarget.cs" />
+    <Compile Include="Abilities\ModExtensions\AbilityExtension_GiveMentalState.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_Hediff.cs" />
     <Compile Include="Abilities\AbilityPawnFlyer.cs" />
     <Compile Include="Abilities\AbilityProjectile.cs" />
@@ -142,6 +143,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompDieAndChangeIntoOtherDef.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDigPeriodically.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDigWhenHungry.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompDiseaseEventImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDiseaseImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDiseasesAfterPeriod.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompDoesntFlee.cs" />
@@ -161,6 +163,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompGraphicByStyle.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompGraphicByTerrain.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompHediffEffecter.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompHediffWhenFleeing.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompHighlyFlammable.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompInfecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompInitialAbility.cs" />
@@ -175,6 +178,8 @@
     <Compile Include="AnimalBehaviours\Comps\CompNoTamingDecay.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompPassiveRegenerator.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompPawnOverlay.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_HediffWhenFleeing.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DiseaseEventImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_GiveThoughtsOnCaravan.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AnimalProductOnCaravan.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_InitialMentalState.cs" />
@@ -263,6 +268,7 @@
     <Compile Include="AnimalBehaviours\Harmony\Draftability\PawnComponentsUtility_AddAndRemoveDynamicComponents_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\Pawn_GetGizmos_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\Pawn_WorkTypeIsDisabled.cs" />
+    <Compile Include="AnimalBehaviours\Harmony\IncidentWorker_Disease_PotentialVictims.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Infocard\Dialog_InfoCard_FillCard_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\FloatMenuMakerMap_AddUndraftedOrders_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\FloatMenuMakerMap_CanTakeOrder_Patch.cs" />
@@ -325,14 +331,21 @@
     <Compile Include="VFECore\HarmonyPatches\Mechanoids\MechClusterGenerator_MechKindSuitableForCluster_Patch.cs" />
     <Compile Include="VFECore\HarmonyPatches\Mechanoids\JobDriver_Flee_MakeNewToils_Patch.cs" />
     <Compile Include="VFECore\HarmonyPatches\Mechanoids\Pawn_MainDesc_Patch.cs" />
+    <Compile Include="VFECore\Comps\HediffComps\HediffComp_Mote.cs" />
+    <Compile Include="VFECore\Motes\MoteAttached_TargetingLock.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompWeaponHediffs.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompHomingProjectile.cs" />
     <Compile Include="VFECore\Comps\HediffComps\HediffComp_Phasing.cs" />
     <Compile Include="VFECore\Comps\HediffComps\HediffComp_Targeting.cs" />
+    <Compile Include="VFECore\DefModExtensions\WeatherExtension.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_RandomizeSettings.cs" />
     <Compile Include="VFECore\HarmonyPatches\PhasingPatches.cs" />
     <Compile Include="VFECore\HarmonyPatches\Def_SpecialDisplayStats_Patch.cs" />
     <Compile Include="Memes\PlaceWorkers\PlaceWorker_DisabledByMeme.cs" />
     <Compile Include="VFECore\Comps\HediffComps\HediffComp_Targeting.cs" />
     <Compile Include="VFECore\Dialogs\Dialog_NameDrone.cs" />
     <Compile Include="VFECore\HarmonyPatches\Mechanoids\MainTabWindow_Patches.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Projectile_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\Stat_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\MapGenerator_GenerateContentsIntoMap_Patch.cs" />
     <Compile Include="VFECore\HarmonyPatches\GenStep_Terrain_TerrainFrom_Patch.cs" />

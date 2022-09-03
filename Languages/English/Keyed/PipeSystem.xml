@@ -38,7 +38,7 @@
 
   <PipeSystem_ProcessorBuffer>Buffer: {0}</PipeSystem_ProcessorBuffer>
   <PipeSystem_Producing>Producing {0} {1}. Cycle progress: {2}.</PipeSystem_Producing>
-  <PipeSystem_Produce>Produce {0} {1}.</PipeSystem_Produce>
+  <PipeSystem_Produce>Produce {0} {1} from {2} {3}.</PipeSystem_Produce>
   <PipeSystem_ChooseResult>Choose result</PipeSystem_ChooseResult>
   <PipeSystem_ChooseResultDesc>Choose processor result.</PipeSystem_ChooseResultDesc>
 

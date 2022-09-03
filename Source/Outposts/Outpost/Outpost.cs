@@ -344,7 +344,7 @@ namespace Outposts
                 disabled = occupants.Count == 1,
                 disabledReason = "Outposts.Command.Remove.Only1".Translate()
             };
-            if (OutpostsMod.Settings.DeliveryMethod != DeliveryMethod.Store && !ResultOptions.NullOrEmpty())
+            if (OutpostsMod.Settings.DeliveryMethod != DeliveryMethod.Store && !ProductionString().NullOrEmpty())
             {
                 yield return new Command_Action
                 {

@@ -23,6 +23,7 @@ namespace PipeSystem
 
         public ExtractOptions extractOptions;
         public RefillOptions refillOptions;
+        public DestroyOption destroyOption;
     }
 
     public class ExtractOptions
@@ -48,5 +49,12 @@ namespace PipeSystem
         public ThingDef thing;
 
         public int ratio = 1;
+    }
+
+    public class DestroyOption
+    {
+        public ThingDef filth;
+        public int ratio = 1;
+        public int maxRadius;
     }
 }

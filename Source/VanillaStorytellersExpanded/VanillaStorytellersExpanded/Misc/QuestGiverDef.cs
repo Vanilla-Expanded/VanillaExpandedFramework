@@ -1,8 +1,6 @@
 ﻿using RimWorld;
-using RimWorld.QuestGen;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Verse;
 
 namespace VanillaStorytellersExpanded
@@ -10,6 +8,8 @@ namespace VanillaStorytellersExpanded
     public class QuestGiverDef : Def
     {
         public QuestCurrency currency;
+        public FactionDef fixedQuestGiverFaction;
+        public List<QuestScriptDef> onlySpecifiedQuests;
         public int resetEveryTick = -1;
         public bool hideGeneratedQuestsInVanilla;
         public bool generateOnce;
@@ -33,53 +33,8 @@ namespace VanillaStorytellersExpanded
             }
         }
 
-        public Type windowClass;
+        public Type windowClass = typeof(Window_Contracts);
 
-
-    }
-
-    public class QuestWorker
-    {
-        public QuestGiverDef def;
-        public virtual List<QuestInfo> GenerateQuests(QuestGiverManager questGiverManager)
-        {
-            List<QuestInfo> generatedQuests = new List<QuestInfo>();
-            var questCountToGenerate = def.maximumAvailableQuestCount != -1 ? (def.maximumAvailableQuestCount - questGiverManager.AvailableQuests.Count) : 100;
-            var points = StorytellerUtility.DefaultThreatPointsNow(Find.World);
-            var questDefsToProcess = DefDatabase<QuestScriptDef>.AllDefs.Where(x => !x.isRootSpecial && x.IsRootAny).ToList();
-
-            while (generatedQuests.Count < questCountToGenerate)
-            {
-                if (!questDefsToProcess.Any())
-                {
-                    break;
-                }
-                var newQuestCandidate = questDefsToProcess.RandomElement();
-                questDefsToProcess.Remove(newQuestCandidate);
-                try
-                {
-                    Slate slate = new Slate();
-                    slate.Set("points", points);
-                    if (newQuestCandidate == QuestScriptDefOf.LongRangeMineralScannerLump)
-                    {
-                        slate.Set("targetMineable", ThingDefOf.MineableGold);
-                        slate.Set("worker", PawnsFinder.AllMaps_FreeColonists.FirstOrDefault());
-                    }
-                    if (newQuestCandidate.CanRun(slate))
-                    {
-                        Quest quest = QuestGen.Generate(newQuestCandidate, slate);
-                        if (def.currency.Allows(questGiverManager, quest, Patch_AddSlateQuestTags.slate, out QuestInfo questInfo))
-                        {
-                            generatedQuests.Add(questInfo);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                }
-
-            }
-            return generatedQuests;
-        }
+        public string windowTitleKey;
     }
 }

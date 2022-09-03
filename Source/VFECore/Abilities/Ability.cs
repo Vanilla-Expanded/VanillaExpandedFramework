@@ -43,7 +43,7 @@
         public int                currentTargetingIndex = -1;
         public GlobalTargetInfo[] currentTargets        = Array.Empty<GlobalTargetInfo>();
 
-        public void Init()
+        public virtual void Init()
         {
             if (this.verb == null)
                 this.verb = (Abilities.Verb_CastAbility)Activator.CreateInstance(this.def.verbProperties.verbClass);
@@ -52,7 +52,7 @@
             this.verb.verbTracker = this.pawn?.verbTracker;
             this.verb.caster      = this.pawn;
             this.verb.ability     = this;
-            this.autoCast         = this.def.autocastPlayerDefault;
+            this.autoCast         = this.CanAutoCast && this.def.autocastPlayerDefault;
 
             this.currentTargetingIndex = -1;
             this.currentTargets        = new GlobalTargetInfo[this.def.targetCount];
@@ -125,7 +125,7 @@
                 sb.AppendLine($"{"MinimumRange".Translate()}: {this.def.minRange}".Colorize(Color.cyan));
             float radiusForPawn = this.GetRadiusForPawn();
             if (radiusForPawn > 0f && radiusForPawn < 500f)
-                sb.AppendLine($"{"radius".Translate()}: {radiusForPawn}".Colorize(Color.cyan));
+                sb.AppendLine($"{"radius".Translate().CapitalizeFirst()}: {radiusForPawn}".Colorize(Color.cyan));
             if (this.def.minRadius > 0f)
                 sb.AppendLine($"{"VFEA.MinRadius".Translate()}: {this.def.minRadius}".Colorize(Color.cyan));
             float powerForPawn = this.GetPowerForPawn();
@@ -162,7 +162,7 @@
 
         public bool autoCast;
 
-        public virtual bool AutoCast => this.pawn.IsColonistPlayerControlled ? this.autoCast : this.pawn.Spawned;
+        public virtual bool AutoCast => this.pawn.IsColonistPlayerControlled ? this.autoCast : this.pawn.Spawned && this.CanAutoCast;
 
         public virtual bool CanAutoCast => this.def.targetCount == 1 && this.Chance > 0;
 
@@ -386,7 +386,7 @@
             else this.pawn.jobs.StartJob(job, JobCondition.InterruptForced);
         }
 
-        private bool currentAoETargeting;
+        protected bool currentAoETargeting;
         public virtual void ModifyTargets(ref GlobalTargetInfo[] targets)
         {
             if (this.def.hasAoE)
@@ -471,16 +471,13 @@
         {
             this.cooldown = Find.TickManager.TicksGame + this.GetCooldownForPawn();
 
-            if (this.def.goodwillImpact != 0 && targets.Any() && targets[0].Thing is Pawn pawnTarget)
+            if (this.def.goodwillImpact != 0 && targets.Any())
             {
-                Pawn pawn = this.pawn;
-                if (!pawnTarget.IsSlaveOfColony)
+                foreach (var target in targets)
                 {
-                    Faction homeFaction = pawnTarget.HomeFaction;
-                    if (pawn.Faction == Faction.OfPlayer                                      && homeFaction != null && !homeFaction.HostileTo(pawn.Faction)
-                    && (this.def.applyGoodwillImpactToLodgers || !pawnTarget.IsQuestLodger()) && !pawnTarget.IsQuestHelper())
+                    if (target.Thing is Pawn pawnTarget)
                     {
-                        Faction.OfPlayer.TryAffectGoodwillWith(homeFaction, this.def.goodwillImpact, canSendMessage: true, canSendHostilityLetter: true, HistoryEventDefOf.UsedHarmfulAbility);
+                        ApplyGoodwillImpact(pawnTarget);
                     }
                 }
             }
@@ -521,6 +518,29 @@
                     this.TargetEffects(targets);
                 else
                     this.TargetEffects(targets.Any() ? targets[0].Thing != null ? new LocalTargetInfo(targets[0].Thing) : new LocalTargetInfo(targets[0].Cell) : default);
+            
+            PostCast(targets);
+        }
+
+        public virtual void PostCast(params GlobalTargetInfo[] targets)
+        {
+            foreach (AbilityExtension_AbilityMod modExtension in this.AbilityModExtensions)
+            {
+                modExtension.PostCast(targets, this);
+            }
+        }
+
+        public void ApplyGoodwillImpact(Pawn pawnTarget)
+        {
+            if (!pawnTarget.IsSlaveOfColony)
+            {
+                Faction homeFaction = pawnTarget.HomeFaction;
+                if (pawn.Faction == Faction.OfPlayer && homeFaction != null && !homeFaction.HostileTo(pawn.Faction)
+                && (this.def.applyGoodwillImpactToLodgers || !pawnTarget.IsQuestLodger()) && !pawnTarget.IsQuestHelper())
+                {
+                    Faction.OfPlayer.TryAffectGoodwillWith(homeFaction, this.def.goodwillImpact, canSendMessage: true, canSendHostilityLetter: true, HistoryEventDefOf.UsedHarmfulAbility);
+                }
+            }
         }
 
         public virtual void EndCastJob()
@@ -611,11 +631,18 @@
             AbilityExtension_Hediff hediffExtension = this.def.GetModExtension<AbilityExtension_Hediff>();
             if (hediffExtension?.applyAuto ?? false)
             {
-                foreach (GlobalTargetInfo target in targetInfo)
+                if (hediffExtension.applyToCaster)
                 {
-                    if (target.Thing is Pawn targetPawn)
+                    ApplyHediff(this.pawn, hediffExtension);
+                }
+                else
+                {
+                    foreach (GlobalTargetInfo target in targetInfo)
                     {
-                        ApplyHediff(targetPawn, hediffExtension);
+                        if (target.Thing is Pawn targetPawn)
+                        {
+                            ApplyHediff(targetPawn, hediffExtension);
+                        }
                     }
                 }
             }
@@ -670,11 +697,12 @@
 
         public virtual void ExposeData()
         {
-            Scribe_References.Look(ref this.pawn, nameof(this.pawn));
+            Scribe_References.Look(ref this.pawn, nameof(this.pawn), saveDestroyedThings: true);
             Scribe_Values.Look(ref this.cooldown, nameof(this.cooldown));
             Scribe_Defs.Look(ref this.def, nameof(this.def));
             Scribe_Deep.Look(ref this.verb, nameof(this.verb));
             Scribe_Values.Look(ref this.autoCast, nameof(this.autoCast));
+            Scribe_TargetInfo.Look(ref this.firstTarget, nameof(this.firstTarget));
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
@@ -774,6 +802,30 @@
             {
                 abilityModExtension.TargetingOnGUI(target, this);
             }
+            DrawAttachmentExtraLabel(target);
+        }
+
+        public virtual string ExtraLabelMouseAttachment(LocalTargetInfo target)
+        {
+            return null;
+        }
+        protected void DrawAttachmentExtraLabel(LocalTargetInfo target)
+        {
+            string text = ExtraLabelMouseAttachment(target);
+            if (!text.NullOrEmpty())
+            {
+                Widgets.MouseAttachedLabel(text);
+                return;
+            }
+            foreach (var abilityModExtension in AbilityModExtensions)
+            {
+                text = abilityModExtension.ExtraLabelMouseAttachment(target, this);
+                if (!text.NullOrEmpty())
+                {
+                    Widgets.MouseAttachedLabel(text);
+                    break;
+                }
+            }
         }
 
         protected virtual Texture2D MouseAttachment(GlobalTargetInfo target)
@@ -811,7 +863,20 @@
         public bool      IsMeleeAttack    => this.GetRangeForPawn()                                                                 < 6;
         public bool      Targetable       => this.def.targetModes[this.currentTargetingIndex >= 0 ? this.currentTargetingIndex : 0] != AbilityTargetingMode.Self;
         public bool      MultiSelect      { get; }
-        public bool      HidePawnTooltips { get; }
+        public virtual bool HidePawnTooltips 
+        { 
+            get
+            {
+                foreach (var abilityExtension in AbilityModExtensions)
+                {
+                    if (abilityExtension.HidePawnTooltips)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
         public Thing     Caster           => this.pawn ?? this.holder;
         public Pawn      CasterPawn       => this.pawn;
         public Verb      GetVerb          => this.verb;

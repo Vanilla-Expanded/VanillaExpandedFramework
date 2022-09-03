@@ -17,6 +17,13 @@ namespace AnimalBehaviours
             }
         }
 
+        public override void PostExposeData()
+        {
+            base.PostExposeData();
+            Scribe_Values.Look<int>(ref this.tickCounter, "tickCounter", 0, false);
+
+        }
+
         public override void CompTick()
         {
             base.CompTick();
@@ -39,7 +46,12 @@ namespace AnimalBehaviours
                         }
                         SoundDefOf.Hive_Spawn.PlayOneShot(new TargetInfo(this.parent.Position, this.parent.Map, false));
                     }
-                    pawn.Kill(null);
+                    if (Props.justVanish)
+                    {
+                        pawn.Destroy();
+                    }
+                    else { pawn.Kill(null);}
+                    
                 }
                 tickCounter = 0;
             }

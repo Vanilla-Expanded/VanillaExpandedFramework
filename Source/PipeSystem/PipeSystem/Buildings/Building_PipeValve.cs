@@ -11,8 +11,8 @@ namespace PipeSystem
 
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
-            base.SpawnSetup(map, respawningAfterLoad);
             flickableComp = GetComp<CompFlickable>();
+            base.SpawnSetup(map, respawningAfterLoad);
         }
     }
 }

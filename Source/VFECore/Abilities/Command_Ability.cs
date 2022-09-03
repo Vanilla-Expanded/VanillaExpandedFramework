@@ -40,11 +40,17 @@ namespace VFECore.Abilities
 
         protected override GizmoResult GizmoOnGUIInt(Rect butRect, GizmoRenderParms parms)
         {
+            if (parms.shrunk)
+            {
+                this.defaultDesc = $"{ability.def.LabelCap}\n\n{this.defaultDesc}";
+            }
+
             GizmoResult result = base.GizmoOnGUIInt(butRect, parms);
 
             if (this.ability.AutoCast)
             {
-                Rect      position = new Rect(butRect.x + butRect.width - 24f, butRect.y, 24f, 24f);
+                var  size     = parms.shrunk ? 12f : 24f;
+                Rect position = new Rect(butRect.x + butRect.width - size, butRect.y, size, size);
                 GUI.DrawTexture(position, AutoCastTex);
             }
 

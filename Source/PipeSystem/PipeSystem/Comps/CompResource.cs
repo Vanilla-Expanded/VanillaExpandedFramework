@@ -1,5 +1,5 @@
-﻿using RimWorld;
-using System.Text;
+﻿using System.Text;
+using RimWorld;
 using Verse;
 using Verse.Sound;
 
@@ -19,26 +19,29 @@ namespace PipeSystem
 
         public Sustainer sustainer;
 
-        private Graphic_LinkedOverlayPipe graphicLinkedOverlay;
+        public Graphic_LinkedOverlayPipe graphicLinkedOverlay;
 
         /// <summary>
         /// Remove under pipes. Get and set manager. Start sustainer.
         /// </summary>
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
-            base.PostSpawnSetup(respawningAfterLoad);
+            if (!respawningAfterLoad)
+                RemovePipes();
 
-            RemovePipes();
             PipeNetManager = parent.Map.GetComponent<PipeNetManager>();
-            PipeNetManager.RegisterConnector(this);
-            PipeSystemDebug.Message($"Registering {this}");
+            if (TransmitResourceNow)
+            {
+                PipeNetManager.RegisterConnector(this);
+                PipeSystemDebug.Message($"Registering {this}");
+            }
 
             LongEventHandler.ExecuteWhenFinished(delegate
             {
                 StartSustainer();
             });
 
-            graphicLinkedOverlay = LinkedPipes.GetOverlayFor(PipeNet.def);
+            graphicLinkedOverlay = LinkedPipes.GetOverlayFor(Props.pipeNet);
         }
 
         /// <summary>
@@ -152,7 +155,7 @@ namespace PipeSystem
         }
 
         /// <summary>
-        /// 
+        /// Print comp on ressource grid
         /// </summary>
         public void CompPrintForResourceGrid(SectionLayer layer)
         {
