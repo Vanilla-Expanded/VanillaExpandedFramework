@@ -276,7 +276,6 @@ namespace VFECore
     {
         static ModSettingsHandler()
         {
-            VFEGlobal.settings.weatherDamagesOptions = new Dictionary<string, bool>();
             foreach (var weatherDef in DefDatabase<WeatherDef>.AllDefs)
             {
                 var extension = weatherDef.GetModExtension<WeatherEffectsExtension>();
