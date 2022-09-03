@@ -320,6 +320,8 @@
     <Compile Include="Apparel\Harmony\SkillRecord_Learn_Patch.cs" />
     <Compile Include="Apparel\Harmony\ThingSelectionUtility_SelectableByMapClick_Patch.cs" />
     <Compile Include="Apparel\ModExtensions\ApparelExtension.cs" />
+    <Compile Include="VFECore\MapGen\LordJob_DefendShip.cs" />
+    <Compile Include="VFECore\MapGen\SymbolResolverShips.cs" />
     <Compile Include="VFECore\Graphics\Graphic_Animated.cs" />
     <Compile Include="VFECore\Graphics\Graphic_AnimatedMote.cs" />
     <Compile Include="VFECore\Graphics\Graphic_FleckCollection.cs" />
@@ -465,7 +467,7 @@
     <Compile Include="ItemProcessor\AI\WorkGivers\WorkGiver_InsertProcessorThird.cs" />
     <Compile Include="ItemProcessor\AI\WorkGivers\WorkGiver_RemoveProduct.cs" />
     <Compile Include="VFECore\Apparels\Apparel_Shield.cs" />
-    <Compile Include="VFECore\BaseGen\VFEResolveParams.cs" />
+    <Compile Include="VFECore\MapGen\VFEResolveParams.cs" />
     <Compile Include="ItemProcessor\Building\Building_ItemProcessor.cs" />
     <Compile Include="ItemProcessor\Commands\Command_ItemLists.cs" />
     <Compile Include="ItemProcessor\Commands\ItemListSetupUtility.cs" />

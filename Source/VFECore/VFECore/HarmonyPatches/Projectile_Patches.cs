@@ -52,8 +52,6 @@ namespace VFECore
                 NonPublicFields.Projectile_destination.SetValue(projectile, Vector3.RotateTowards(projDestination, destination, 1, 9999999));
                 NonPublicFields.Projectile_ticksToImpact.SetValue(projectile, Mathf.CeilToInt((float)NonPublicProperties.Projectile_get_StartingTicksToImpact(projectile)));
             }
-            Log.Message("SetDestination: " + projectile);
-
         }
         public static bool IsHomingProjectile(this Projectile projectile, out CompHomingProjectile comp)
         {
@@ -93,16 +91,9 @@ namespace VFECore
                             if (Vector3.Distance(thing.DrawPos.Yto0(), __instance.ExactPosition.Yto0()) <= 0.5f)
                             {
                                 hitThing = thing;
-                                Log.Message("Hitting " + hitThing);
-                                return true;
-                            }
-                            else
-                            {
-                                Log.Message("Not hitting " + thing + " - " + Vector3.Distance(thing.DrawPos.Yto0(), __instance.ExactPosition.Yto0()));
                             }
                         }
                     }
-                    Log.Message("Hitting another " + hitThing);
                 }
                 if (hitThing != null && comp.Props.hitSound != null)
                 {
