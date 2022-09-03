@@ -320,6 +320,8 @@
     <Compile Include="Apparel\Harmony\SkillRecord_Learn_Patch.cs" />
     <Compile Include="Apparel\Harmony\ThingSelectionUtility_SelectableByMapClick_Patch.cs" />
     <Compile Include="Apparel\ModExtensions\ApparelExtension.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Building_CommsConsole_GetCommTargets_Patch.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Faction_ShouldHaveLeader_Patch.cs" />
     <Compile Include="VFECore\MapGen\LordJob_DefendShip.cs" />
     <Compile Include="VFECore\MapGen\SymbolResolverShips.cs" />
     <Compile Include="VFECore\Graphics\Graphic_Animated.cs" />

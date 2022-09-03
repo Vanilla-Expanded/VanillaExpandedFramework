@@ -40,6 +40,8 @@ namespace VFECore
         public bool spawnOnCoastalTilesOnly;
         public bool neverConnectToRoads;
         public float minDistanceToOtherSettlements;
+        public bool shouldHaveLeader = true;
+        public bool excludeFromCommConsole = false;
 
         public List<RaidStrategyDef> allowedStrategies = new List<RaidStrategyDef>();
     }
