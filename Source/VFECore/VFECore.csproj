@@ -320,6 +320,17 @@
     <Compile Include="Apparel\Harmony\SkillRecord_Learn_Patch.cs" />
     <Compile Include="Apparel\Harmony\ThingSelectionUtility_SelectableByMapClick_Patch.cs" />
     <Compile Include="Apparel\ModExtensions\ApparelExtension.cs" />
+    <Compile Include="VFECore\Graphics\Graphic_Animated.cs" />
+    <Compile Include="VFECore\Graphics\Graphic_AnimatedMote.cs" />
+    <Compile Include="VFECore\Graphics\Graphic_FleckCollection.cs" />
+    <Compile Include="VFECore\Graphics\Graphic_Fleck_Animated.cs" />
+    <Compile Include="VFECore\Graphics\IAnimationOneTime.cs" />
+    <Compile Include="VFECore\Graphics\MoteOneTime.cs" />
+    <Compile Include="VFECore\Graphics\MoteAttachedOneTime.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Patch_GenerateRoadEndpoints.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Mechanoids\MechClusterGenerator_MechKindSuitableForCluster_Patch.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Mechanoids\JobDriver_Flee_MakeNewToils_Patch.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Mechanoids\Pawn_MainDesc_Patch.cs" />
     <Compile Include="VFECore\Comps\HediffComps\HediffComp_Mote.cs" />
     <Compile Include="VFECore\Motes\MoteAttached_TargetingLock.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompWeaponHediffs.cs" />

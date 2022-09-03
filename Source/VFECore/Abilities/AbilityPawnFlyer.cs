@@ -49,13 +49,16 @@
             this.Position = this.target.ToIntVec3();
             Pawn pawn = this.FlyingPawn;
             base.RespawnPawn();
-            this.ability.ApplyHediffs(new GlobalTargetInfo(pawn));
-
-            int? staggerTicks = this.ability.def.GetModExtension<AbilityExtension_Hediff>()?.hediff.CompProps<HediffCompProperties_Disappears>()?.disappearsAfterTicks.RandomInRange;
-            if (staggerTicks.HasValue)
+            if (this.ability != null)
             {
-                pawn.stances.SetStance(new Stance_Cooldown(staggerTicks.Value + 1, this.ability.CasterPawn, null));
-                pawn.stances.StaggerFor(staggerTicks.Value);
+                this.ability.ApplyHediffs(new GlobalTargetInfo(pawn));
+
+                int? staggerTicks = this.ability.def.GetModExtension<AbilityExtension_Hediff>()?.hediff.CompProps<HediffCompProperties_Disappears>()?.disappearsAfterTicks.RandomInRange;
+                if (staggerTicks.HasValue)
+                {
+                    pawn.stances.SetStance(new Stance_Cooldown(staggerTicks.Value + 1, this.ability.CasterPawn, null));
+                    pawn.stances.StaggerFor(staggerTicks.Value);
+                }
             }
         }
 

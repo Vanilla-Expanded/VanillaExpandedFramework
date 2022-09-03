@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using AnimalBehaviours;
+using HarmonyLib;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -63,6 +64,9 @@ namespace VFECore
         public string activationIconTexPath;
         public int disarmedByEmpForTicks = -1;
         public SoundDef activeSound;
+        public bool toggleable = false;
+        public string toggleLabelKey;
+        public string toggleDescKey;
         public CompProperties_ShieldField()
         {
             this.compClass = typeof(CompShieldField);
@@ -70,7 +74,7 @@ namespace VFECore
     }
 
     [StaticConstructorOnStartup]
-    public class CompShieldField : ThingComp
+    public class CompShieldField : ThingComp, PawnGizmoProvider
     {
         public bool active;
         public Dictionary<Thing, int> affectedThings = new Dictionary<Thing, int>();
@@ -93,7 +97,7 @@ namespace VFECore
         private int lastAbsorbDamageTick;
         private int shieldBuffer = 0;
         private int ticksToRecharge;
-
+        private bool toggleIsActive = true;
         public Faction HostFaction
         {
             get
@@ -150,14 +154,18 @@ namespace VFECore
         {
             get
             {
-                foreach (var cell in coveredCells)
+                var map = HostThing?.MapHeld;
+                if (map != null && coveredCells != null)
                 {
-                    if (cell.InBounds(HostThing.Map))
+                    foreach (var cell in coveredCells)
                     {
-                        var thingList = cell.GetThingList(HostThing.Map);
-                        for (int i = 0; i < thingList.Count; i++)
+                        if (cell.InBounds(map))
                         {
-                            yield return thingList[i];
+                            var thingList = cell.GetThingList(map);
+                            for (int i = 0; i < thingList.Count; i++)
+                            {
+                                yield return thingList[i];
+                            }
                         }
                     }
                 }
@@ -168,24 +176,29 @@ namespace VFECore
         {
             get
             {
-                foreach (var cell in scanCells)
+                var map = HostThing?.MapHeld;
+                if (map != null && scanCells != null)
                 {
-                    if (cell.InBounds(HostThing.Map))
+                    foreach (var cell in scanCells)
                     {
-                        var thingList = cell.GetThingList(HostThing.Map);
-                        for (int i = 0; i < thingList.Count; i++)
+                        if (cell.InBounds(map))
                         {
-                            var thing = thingList[i];
-                            var distance = Vector3.Distance(this.HostThing.TrueCenter().Yto0(), thing.TrueCenter().Yto0());
-                            if (distance <= ShieldRadius)
-                                yield return thing;
+                            var thingList = cell.GetThingList(map);
+                            for (int i = 0; i < thingList.Count; i++)
+                            {
+                                var thing = thingList[i];
+                                var distance = Vector3.Distance(this.HostThing.TrueCenter().Yto0(), thing.TrueCenter().Yto0());
+                                if (distance <= ShieldRadius)
+                                    yield return thing;
+                            }
                         }
                     }
                 }
+
             }
         }
 
-        private bool CanFunction => (PowerTraderComp == null || PowerTraderComp.PowerOn) && !parent.IsBrokenDown();
+        private bool CanFunction => (!Props.toggleable || toggleIsActive) && (PowerTraderComp == null || PowerTraderComp.PowerOn) && !parent.IsBrokenDown();
         private float CurMaxEnergy => MaxEnergy * (active ? 1 : Props.initialEnergyPercentage);
         private CompPowerTrader PowerTraderComp
         {
@@ -285,40 +298,7 @@ namespace VFECore
             Scribe_Values.Look(ref lastTimeActivated, "lastTimeActivated");
             Scribe_Values.Look(ref lastTimeDisabled, "lastTimeDisabled");
             Scribe_Values.Look(ref lastTimeDisarmed, "lastTimeDisarmed");
-        }
-
-        public override IEnumerable<Gizmo> CompGetGizmosExtra()
-        {
-            if (!(this.HostThing is Pawn) || this.HostThing.Faction == Faction.OfPlayer)
-            {
-                // Shield health
-                if (!Indestructible && Find.Selector.SingleSelectedThing == this.parent)
-                {
-                    yield return new Gizmo_EnergyShieldGeneratorStatus()
-                    {
-                        shieldGenerator = this
-                    };
-                }
-                if (Props.manualActivation)
-                {
-                    yield return new Command_ActionWithCooldown(this.lastTimeDisabled, this.Props.cooldownTicks)
-                    {
-                        defaultLabel = Props.activationLabelKey.Translate(),
-                        defaultDesc = Props.activationDescKey.Translate(),
-                        icon = ContentFinder<Texture2D>.Get(Props.activationIconTexPath),
-                        action = delegate
-                        {
-                            this.lastTimeActivated = Find.TickManager.TicksGame;
-                            this.lastTimeDisabled = 0;
-                            this.active = true;
-                        },
-                        disabled = ManuallyActivated || !CanActivateShield()
-                    };
-                }
-            }
-
-            foreach (var gizmo in base.CompGetGizmosExtra())
-                yield return gizmo;
+            Scribe_Values.Look(ref toggleIsActive, "toggleIsActive", true);
         }
 
         public bool CanActivateShield()
@@ -656,6 +636,54 @@ namespace VFECore
                     shieldBuffer = 15;
                 else
                     shieldBuffer -= 1;
+            }
+        }
+
+        public IEnumerable<Gizmo> GetGizmos()
+        {
+            if (this.HostThing.Faction == Faction.OfPlayer)
+            {
+                // Shield health
+                if (!Indestructible && Find.Selector.SingleSelectedThing == this.parent)
+                {
+                    yield return new Gizmo_EnergyShieldGeneratorStatus()
+                    {
+                        shieldGenerator = this
+                    };
+                }
+
+                if (Props.toggleable)
+                {
+                    yield return new Command_Toggle
+                    {
+                        defaultLabel = Props.toggleLabelKey.Translate(toggleIsActive ? "On".Translate() : "Off".Translate()),
+                        defaultDesc = Props.toggleDescKey.Translate(),
+                        icon = ContentFinder<Texture2D>.Get("UI/ToggleIcon"),
+                        toggleAction = delegate 
+                        { 
+                            toggleIsActive = !toggleIsActive; 
+                            UpdateCache();
+                        },
+                        isActive = () => toggleIsActive,
+                    };
+                }
+
+                if (Props.manualActivation)
+                {
+                    yield return new Command_ActionWithCooldown(this.lastTimeDisabled, this.Props.cooldownTicks)
+                    {
+                        defaultLabel = Props.activationLabelKey.Translate(),
+                        defaultDesc = Props.activationDescKey.Translate(),
+                        icon = ContentFinder<Texture2D>.Get(Props.activationIconTexPath),
+                        action = delegate
+                        {
+                            this.lastTimeActivated = Find.TickManager.TicksGame;
+                            this.lastTimeDisabled = 0;
+                            this.active = true;
+                        },
+                        disabled = ManuallyActivated || !CanActivateShield()
+                    };
+                }
             }
         }
     }

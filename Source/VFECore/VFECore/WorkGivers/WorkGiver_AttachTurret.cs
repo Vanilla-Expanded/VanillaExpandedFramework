@@ -17,9 +17,11 @@ namespace VFE.Mechanoids.AI.WorkGivers
         public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
             var chargingStationComp = t.TryGetComp<CompMachineChargingStation>();
-            var mech = chargingStationComp.myPawn;
+            var mech = chargingStationComp?.myPawn;
             var comp = mech?.TryGetComp<CompMachine>();
             if (mech is null || comp == null || comp.turretToInstall == null)
+                return false;
+            if (!t.TryGetComp<CompPowerTrader>()?.PowerOn ?? true)
                 return false;
 
             if (mech.Dead || mech.Destroyed)
@@ -27,6 +29,7 @@ namespace VFE.Mechanoids.AI.WorkGivers
                 JobFailReason.Is("VFEMechNoTurret".Translate());
                 return false;
             }
+
             List<ThingDefCountClass> products = comp.turretToInstall.costList;
             foreach (ThingDefCountClass thingNeeded in products)
             {
