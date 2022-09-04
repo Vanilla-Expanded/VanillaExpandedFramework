@@ -386,6 +386,10 @@ namespace KCSG
         /// </summary>
         private static void SpawnMortar(Thing thing, Faction faction, Map map)
         {
+            // Prevent spawning new colonists
+            if (faction == Faction.OfPlayer)
+                return;
+
             if (thing?.def?.building?.buildingTags?.Count > 0)
             {
                 if (thing.def.building.IsMortar && thing.def.building.buildingTags.Contains("Artillery_MannedMortar") && thing.def.HasComp(typeof(CompMannable)) && faction != null)
