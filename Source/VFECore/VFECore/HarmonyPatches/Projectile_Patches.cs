@@ -8,6 +8,8 @@ using RimWorld;
 using HarmonyLib;
 using VFEMech;
 using Verse.Sound;
+using System.Reflection.Emit;
+using System.Reflection;
 
 namespace VFECore
 {
@@ -42,7 +44,7 @@ namespace VFECore
                 __instance.SetDestination(__instance.intendedTarget.CenterVector3);
             }
         }
-
+    
         public static void SetDestination(this Projectile projectile, Vector3 destination)
         {
             var projDestination = ((Vector3)NonPublicFields.Projectile_destination.GetValue(projectile));
@@ -60,10 +62,50 @@ namespace VFECore
         }
     }
 
+    [HarmonyPatch]
+    public static class Projectile_SetTrueOrigin
+    {
+        public static IEnumerable<MethodBase> TargetMethods()
+        {
+            yield return AccessTools.Method(typeof(Projectile), "CheckForFreeInterceptBetween");
+            yield return AccessTools.Method(typeof(Projectile), "CheckForFreeIntercept");
+            yield return AccessTools.Method(typeof(Projectile), "ImpactSomething");
+        }
+
+        public static MethodInfo InterceptChanceFactorFromDistanceInfo
+            = AccessTools.Method(typeof(Verse.VerbUtility), "InterceptChanceFactorFromDistance");
+
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
+        {
+            var codes = codeInstructions.ToList();
+            for (var i = 0; i < codes.Count; i++)
+            {
+                var codeInstruction = codes[i];
+                if (codes.Count - 3 > i && codeInstruction.LoadsField(NonPublicFields.Projectile_origin) && codes[i + 2].Calls(InterceptChanceFactorFromDistanceInfo))
+                {
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Projectile_SetTrueOrigin), nameof(GetTrueOrigin)));
+                }
+                else
+                {
+                    yield return codeInstruction;
+                }
+            }
+        }
+
+        public static Vector3 GetTrueOrigin(Projectile projectile)
+        {
+            if (projectile.IsHomingProjectile(out var comp))
+            {
+                return comp.originLaunchCell;
+            }
+            return (Vector3)NonPublicFields.Projectile_origin.GetValue(projectile);
+        }
+    }
+
     [HarmonyPatch(typeof(Projectile), nameof(Projectile.Tick))]
     public static class Projectile_Tick_Patch
     {
-        public static void Prefix(Projectile __instance)
+        public static void Postfix(Projectile __instance)
         {
             if (__instance.IsHomingProjectile(out var comp))
             {
@@ -74,7 +116,7 @@ namespace VFECore
             }
         }
     }
-
+    
     [HarmonyPatch(typeof(Projectile), "Impact")]
     public static class Projectile_Impact_Patch
     {
