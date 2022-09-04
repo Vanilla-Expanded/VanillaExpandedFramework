@@ -19,6 +19,7 @@ namespace KCSG
         // Clear options
         public bool preGenClear = true;
         public bool fullClear = false;
+        public bool clearFogInRect = false;
         // Starting spawn spawning
         public bool spawnTheStartingPawn = false;
         public PlayerPawnsArriveMethod method = PlayerPawnsArriveMethod.Standing;
@@ -160,6 +161,15 @@ namespace KCSG
             if (map.mapPawns.FreeColonistsSpawned.Count > 0)
             {
                 FloodFillerFog.DebugRefogMap(map);
+            }
+            // Clear fog in rect if wanted
+            if (clearFogInRect)
+            {
+                foreach (var c in cellRect)
+                {
+                    if (map.fogGrid.IsFogged(c))
+                        map.fogGrid.Unfog(c);
+                }
             }
         }
 

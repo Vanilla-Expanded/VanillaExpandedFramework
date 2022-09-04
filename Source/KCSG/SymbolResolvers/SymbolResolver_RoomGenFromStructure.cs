@@ -16,6 +16,17 @@ namespace KCSG
                 GenOption.mineables.Add(cell, cell.GetFirstMineable(map));
 
             GenUtils.GenerateLayout(GenOption.structureLayoutDef, rp.rect, map);
+
+            // Clear fog in rect if wanted
+            if (GenOption.ext.clearFogInRect)
+            {
+                foreach (var c in rp.rect)
+                {
+                    if (map.fogGrid.IsFogged(c))
+                        map.fogGrid.Unfog(c);
+                }
+            }
+
             BaseGen.symbolStack.Push("kcsg_runresolvers", rp, null);
         }
     }

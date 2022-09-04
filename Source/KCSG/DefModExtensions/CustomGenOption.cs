@@ -33,6 +33,7 @@ namespace KCSG
         public bool preGenClear = true;
         public bool fullClear = false;
         public bool preventBridgeable = false;
+        public bool clearFogInRect = false;
 
         public List<string> symbolResolvers = null;
         public List<ThingDef> scatterThings = new List<ThingDef>();
