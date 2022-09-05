@@ -289,11 +289,17 @@
     <Compile Include="AnimalBehaviours\Harmony\WildAnimalSpawner_SpawnRandomWildAnimalAt.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_AutoPermanentInjury.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Draftable.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Electrified.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Exploder.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Floating.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_HighlyFlammable.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\HediffComp_LightSustenance.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Regeneration.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_ThoughtEffecter.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Resurrect.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Regeneration.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Electrified.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_LightSustenance.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_HighlyFlammable.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_AutoPermanentInjury.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Floating.cs" />
