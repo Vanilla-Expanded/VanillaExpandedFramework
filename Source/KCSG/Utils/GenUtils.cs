@@ -569,7 +569,6 @@ namespace KCSG
                     }
                     else if (fullClean && thing.def.category != ThingCategory.Plant)
                     {
-                        Log.Warning($"full clean cleaning {thing}");
                         thing.DeSpawn();
                     }
                     // Clear filth, buildings, stone chunks
