@@ -74,6 +74,8 @@ namespace KCSG
                 {
                     if (map.fogGrid.IsFogged(c))
                         map.fogGrid.Unfog(c);
+                    else
+                        MapGenerator.rootsToUnfog.Add(c);
                 }
             }
         }
