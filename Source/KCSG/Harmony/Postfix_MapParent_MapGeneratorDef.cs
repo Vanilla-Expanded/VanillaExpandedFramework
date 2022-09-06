@@ -11,11 +11,19 @@ namespace KCSG
         {
             public static void Postfix(MapParent __instance, ref MapGeneratorDef __result)
             {
-                if (Find.World.worldObjects.AllWorldObjects.Find(o => o.Tile == __instance.Tile && o.def.HasModExtension<CustomGenOption>()) is WorldObject wo)
+                var tile = __instance.Tile;
+                var worldObjects = Find.World.worldObjects.AllWorldObjects;
+
+                for (int i = 0; i < worldObjects.Count; i++)
                 {
-                    Debug.Message($"Generating worldObject {wo.LabelCap}");
-                    var ext = wo.def.GetModExtension<CustomGenOption>();
-                    __result = ext.preventBridgeable ? DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_Gen_NoBridge") : DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_Gen");
+                    var obj = worldObjects[i];
+                    if (obj.Tile == tile && obj.def.HasModExtension<CustomGenOption>())
+                    {
+                        var ext = obj.def.GetModExtension<CustomGenOption>();
+                        __result = ext.preventBridgeable ? DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_NoBridge") : DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject");
+                        return;
+                    }
+                    }
                 }
             }
         }

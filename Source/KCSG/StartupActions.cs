@@ -66,10 +66,10 @@ namespace KCSG
             mgdA.genSteps.Replace(AllDefOf.Terrain, AllDefOf.KCSG_TerrainNoPatches);
             DefDatabase<MapGeneratorDef>.Add(mgdA);
 
-            var baseB = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_Gen");
+            var baseB = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject");
             MapGeneratorDef mgdB = new MapGeneratorDef
             {
-                defName = "KCSG_WorldObject_Gen_NoBridge",
+                defName = "KCSG_WorldObject_NoBridge",
                 genSteps = baseB.genSteps.ListFullCopy()
             };
             mgdB.genSteps.Replace(AllDefOf.Terrain, AllDefOf.KCSG_TerrainNoPatches);

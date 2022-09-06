@@ -26,7 +26,7 @@
 
   <!-- Generate world object -->
   <MapGeneratorDef ParentName="MapCommonBase">
-    <defName>KCSG_WorldObject_Gen</defName>
+    <defName>KCSG_WorldObject</defName>
     <genSteps>
       <li>RocksFromGrid</li>
       <li>KCSG_WorldObject</li>
