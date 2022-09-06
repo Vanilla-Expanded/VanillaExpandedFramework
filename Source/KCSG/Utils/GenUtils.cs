@@ -531,7 +531,12 @@ namespace KCSG
             var mapFaction = map.ParentFaction;
             var player = Faction.OfPlayer;
 
-            if (roofGrid != null)
+            if (roofGrid.NullOrEmpty())
+            {
+                foreach (IntVec3 c in rect)
+                    CleanAt(c, map, fullClean, mapFaction, player);
+            }
+            else
             {
                 var cells = rect.Cells.ToList();
 
@@ -541,11 +546,6 @@ namespace KCSG
                     if (cell.InBounds(map) && roofGrid[i] != ".")
                         CleanAt(cell, map, fullClean, mapFaction, player);
                 }
-            }
-            else
-            {
-                foreach (IntVec3 c in rect)
-                    CleanAt(c, map, fullClean, mapFaction, player);
             }
 
             map.roofGrid.RoofGridUpdate();
@@ -567,8 +567,9 @@ namespace KCSG
                     {
                         thing.DeSpawn();
                     }
-                    else if (fullClean && (thing.def.category != ThingCategory.Building || !thing.def.building.isNaturalRock))
+                    else if (fullClean && thing.def.category != ThingCategory.Plant)
                     {
+                        Log.Warning($"full clean cleaning {thing}");
                         thing.DeSpawn();
                     }
                     // Clear filth, buildings, stone chunks
