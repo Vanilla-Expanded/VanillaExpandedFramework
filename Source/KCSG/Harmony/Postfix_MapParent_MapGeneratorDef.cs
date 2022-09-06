@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using RimWorld;
 using RimWorld.Planet;
 using Verse;
 
@@ -23,6 +24,16 @@ namespace KCSG
                         __result = ext.preventBridgeable ? DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_NoBridge") : DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject");
                         return;
                     }
+                    else if (obj is Site site)
+                    {
+                        foreach (var step in site.ExtraGenStepDefs)
+                        {
+                            if (step.def.genStep is GenStep_CustomStructureGen csg)
+                            {
+                                __result = csg.preventBridgeable ? DefDatabase<MapGeneratorDef>.GetNamed("KCSG_Encounter_NoBridge") : MapGeneratorDefOf.Encounter;
+                                return;
+                            }
+                        }
                     }
                 }
             }

@@ -10,6 +10,7 @@ namespace KCSG
     {
         public bool fullClear = false;
         public bool clearFogInRect = false;
+        public bool preventBridgeable = false;
 
         public List<StructureLayoutDef> structureLayoutDefs = new List<StructureLayoutDef>();
 

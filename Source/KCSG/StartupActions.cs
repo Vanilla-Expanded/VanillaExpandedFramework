@@ -74,6 +74,14 @@ namespace KCSG
             };
             mgdB.genSteps.Replace(AllDefOf.Terrain, AllDefOf.KCSG_TerrainNoPatches);
             DefDatabase<MapGeneratorDef>.Add(mgdB);
+
+            MapGeneratorDef enc = new MapGeneratorDef
+            {
+                defName = "KCSG_Encounter_NoBridge",
+                genSteps = MapGeneratorDefOf.Encounter.genSteps.ListFullCopy()
+            };
+            enc.genSteps.Replace(AllDefOf.Terrain, AllDefOf.KCSG_TerrainNoPatches);
+            DefDatabase<MapGeneratorDef>.Add(enc);
         }
 
         public static void CreateSymbols()
