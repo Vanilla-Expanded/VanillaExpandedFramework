@@ -150,24 +150,14 @@ namespace KCSG
 
                 if (symbol.spawnDead)
                 {
-                    pawn.Kill(new DamageInfo(DamageDefOf.Cut, 9999));
-                    Corpse corpse = pawn.Corpse;
-
-                    if (corpse == null)
-                        continue;
-
-                    corpse.timeOfDeath = Mathf.Max(Find.TickManager.TicksGame - 120000, 0);
-                    if (symbol.spawnRotten)
+                    var corpse = PreparePawnCorpse(pawn, symbol.spawnRotten);
+                    if (symbol.spawnFilthAround)
                     {
-                        GenOption.corpseToRot.Add(corpse);
-                        if (symbol.spawnFilthAround)
+                        for (int x = 0; x < 5; x++)
                         {
-                            for (int x = 0; x < 5; x++)
-                            {
-                                IntVec3 rNext = new IntVec3();
-                                RCellFinder.TryFindRandomCellNearWith(cell, ni => ni.Walkable(map), map, out rNext, 1, 3);
-                                GenSpawn.Spawn(ThingDefOf.Filth_CorpseBile, rNext, map);
-                            }
+                            IntVec3 rNext = new IntVec3();
+                            RCellFinder.TryFindRandomCellNearWith(cell, ni => ni.Walkable(map), map, out rNext, 1, 3);
+                            GenSpawn.Spawn(ThingDefOf.Filth_CorpseBile, rNext, map);
                         }
                     }
                     GenSpawn.Spawn(corpse, cell, map);
@@ -286,10 +276,7 @@ namespace KCSG
             else if (thing is Building_CorpseCasket corpseCasket && Rand.Value <= symbol.chanceToContainPawn)
             {
                 Pawn pawn = GeneratePawnForContainer(symbol, map);
-                pawn.Kill(null);
-
-                var corpse = pawn.Corpse;
-                GenOption.corpseToRot.Add(corpse);
+                var corpse = PreparePawnCorpse(pawn, true);
 
                 corpseCasket.GetComp<CompAssignableToPawn_Grave>()?.TryAssignPawn(pawn);
                 if (!corpseCasket.TryAcceptThing(corpse))
@@ -383,6 +370,49 @@ namespace KCSG
             }
             // Handle mortar and mortar pawns
             SpawnMortar(thing, faction, map);
+        }
+
+        /// <summary>
+        /// Prepare corpse spawn
+        /// </summary>
+        private static Corpse PreparePawnCorpse(Pawn pawn, bool rot)
+        {
+            if (pawn.apparel != null)
+            {
+                var apparels = pawn.apparel.WornApparel;
+                for (int a = 0; a < apparels.Count; a++)
+                {
+                    var apparel = apparels[a];
+                    apparel.HitPoints = Rand.Range(1, (int)(apparel.MaxHitPoints * 0.75));
+                }
+            }
+
+            if (pawn.inventory != null)
+            {
+                var inv = pawn.inventory.GetDirectlyHeldThings();
+                foreach (var item in inv)
+                {
+                    if (item.TryGetComp<CompRottable>() != null)
+                    {
+                        inv.Remove(item);
+                    }
+                }
+            }
+
+            if (pawn.equipment != null && pawn.equipment.Primary is ThingWithComps p)
+            {
+                p.HitPoints = Rand.Range(1, (int)(p.MaxHitPoints * 0.75));
+            }
+
+            pawn.Kill(null);
+            var corpse = pawn.Corpse;
+            if (rot)
+            {
+                corpse.timeOfDeath = Mathf.Max(Find.TickManager.TicksGame - 120000, 0);
+                GenOption.corpseToRot.Add(corpse);
+            }
+
+            return corpse;
         }
 
         /// <summary>
