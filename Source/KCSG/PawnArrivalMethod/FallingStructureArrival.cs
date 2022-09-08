@@ -1,8 +1,8 @@
-﻿using RimWorld;
-using RimWorld.Planet;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using RimWorld;
+using RimWorld.Planet;
 using Verse;
 
 namespace KCSG
@@ -26,7 +26,7 @@ namespace KCSG
         public override bool TryResolveRaidSpawnCenter(IncidentParms parms)
         {
             Map map = (Map)parms.target;
-            parms.spawnCenter = FindRect(map, GenOption.fallingStructureChoosen.height, GenOption.fallingStructureChoosen.width);
+            parms.spawnCenter = FindRect(map, GenOption.fDef.height, GenOption.fDef.width);
             parms.spawnRotation = Rot4.Random;
             return true;
         }

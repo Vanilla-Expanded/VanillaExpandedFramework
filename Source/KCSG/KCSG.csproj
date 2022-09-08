@@ -65,7 +65,6 @@
     <Compile Include="LordJob\LordJob_DefendBaseNoEat.cs" />
     <Compile Include="PawnArrivalMethod\FallingStructureArrival.cs" />
     <Compile Include="RaidStrategyWorker\FallingStructureStrategy.cs" />
-    <Compile Include="RaidStrategyWorker\TTIR.cs" />
     <Compile Include="ScenPart\ScenPart_AddStartingStructure.cs" />
     <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_DestroyRefuelableLightSource.cs" />
     <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_RandomDamage.cs" />

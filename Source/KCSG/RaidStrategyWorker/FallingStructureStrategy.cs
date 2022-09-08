@@ -3,97 +3,118 @@ using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using Verse;
-using Verse.AI.Group;
 
 namespace KCSG
 {
-    internal class FallingStructureStrategy : RaidStrategyWorker_Siege
+    internal class FallingStructureStrategy : RaidStrategyWorker_ImmediateAttack
     {
+        /// <summary>
+        /// Check if map and faction are valid for falling structure
+        /// </summary>
         public override bool CanUseWith(IncidentParms parms, PawnGroupKindDef groupKind)
         {
-            GenOption.fallingStructure = def.GetModExtension<FallingStructure>();
+            GenOption.fExt = def.GetModExtension<FallingStructure>();
 
-            if (GenOption.fallingStructure.needToHaveSettlements && !Find.World.worldObjects.Settlements.FindAll(s => s.Faction == parms.faction).Any())
+            if (!GenOption.fExt.canBeUsedBy.Contains(parms.faction.def))
                 return false;
 
-            if (GenOption.fallingStructure.canBeUsedBy.Contains(parms.faction.def))
-            {
-                GenOption.fallingStructureChoosen = GenUtils.ChooseWeightedStructFrom(GenOption.fallingStructure.WeightedStructs, parms).structureLayoutDef;
-
-                if (GenOption.fallingStructureChoosen != null)
-                {
-                    return parms.points >= MinimumPoints(parms.faction, groupKind) && FindRect((Map)parms.target,
-                                                                                               GenOption.fallingStructureChoosen.height,
-                                                                                               GenOption.fallingStructureChoosen.width) != IntVec3.Invalid;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
+            if (GenOption.fExt.needToHaveSettlements && !Find.World.worldObjects.Settlements.FindAll(s => s.Faction == parms.faction).Any())
                 return false;
-            }
+
+            GenOption.fDef = GenUtils.ChooseWeightedStructFrom(GenOption.fExt.weightedStructs, parms).structureLayoutDef;
+
+            if (GenOption.fDef == null)
+                return false;
+
+            return base.CanUseWith(parms, groupKind) && FindRect((Map)parms.target, GenOption.fDef.height, GenOption.fDef.width) != IntVec3.Invalid;
         }
 
+        /// <summary>
+        /// Find a valid spawn rect on the map
+        /// </summary>
         public IntVec3 FindRect(Map map, int height, int width)
         {
-            int maxSize = Math.Max(width, height);
-            for (int tries = 0; tries < 100; tries++)
+            int edgeDist = Math.Max(width, height);
+            for (int t = 0; t < 100; t++)
             {
-                CellRect rect = CellRect.CenteredOn(CellFinder.RandomNotEdgeCell(maxSize, map), width, height);
-                if (rect.Cells.ToList().Any(i => !i.Walkable(map) || !i.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Medium)))
-                    continue;
-                else
+                CellRect rect = CellRect.CenteredOn(CellFinder.RandomNotEdgeCell(edgeDist, map), width, height);
+
+                bool valid = true;
+                foreach (var i in rect.Cells)
+                {
+                    if (!i.Walkable(map) || !i.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Medium))
+                    {
+                        valid = false;
+                        break;
+                    }
+                }
+
+                if (valid)
                     return rect.CenterCell;
             }
-            return CellFinder.RandomNotEdgeCell(maxSize, map);
+
+            return IntVec3.Invalid;
         }
 
+        /// <summary>
+        /// Spawn pawns and structure
+        /// </summary>
         public override List<Pawn> SpawnThreats(IncidentParms parms)
         {
-            CellRect cellRect = CellRect.CenteredOn(parms.spawnCenter, GenOption.fallingStructureChoosen.width, GenOption.fallingStructureChoosen.height);
+            var cellRect = CellRect.CenteredOn(parms.spawnCenter, GenOption.fDef.width, GenOption.fDef.height);
 
-            List<string> allSymbList = new List<string>();
+            var allSymbList = new List<string>();
             Map map = (Map)parms.target;
 
-            foreach (string str in GenOption.fallingStructureChoosen.layouts[0])
+            for (int i = 0; i < GenOption.fDef.layouts[0].Count; i++)
             {
-                List<string> symbSplitFromLine = str.Split(',').ToList();
-                symbSplitFromLine.ForEach((s) => allSymbList.Add(s));
+                var str = GenOption.fDef.layouts[0][i];
+                var split = str.Split(',');
+                for (int s = 0; s < split.Count(); s++)
+                {
+                    allSymbList.Add(split[s]);
+                }
             }
 
-            List<TTIR> fallers = new List<TTIR>();
-            Dictionary<ActiveDropPodInfo, IntVec3> pods = new Dictionary<ActiveDropPodInfo, IntVec3>();
+            var fallers = new Dictionary<KCSG_Skyfaller, IntVec3>();
+            var pods = new Dictionary<ActiveDropPodInfo, IntVec3>();
 
             int l = 0;
+            int count = allSymbList.Count;
             foreach (IntVec3 cell in cellRect.Cells)
             {
-                if (l < allSymbList.Count && allSymbList[l] != ".")
+                if (l < count && allSymbList[l] != ".")
                 {
-                    SymbolDef temp = DefDatabase<SymbolDef>.GetNamed(allSymbList[l], false);
-                    Thing thing;
+                    var temp = DefDatabase<SymbolDef>.GetNamed(allSymbList[l], false);
+                    if (temp.thingDef == null)
+                        continue;
 
-                    if (temp.thingDef != null && !GenOption.fallingStructure.thingsToSpawnInDropPod.Contains(temp.thingDef))
+                    if (GenOption.fExt.thingsToSpawnInDropPod.Contains(temp.thingDef))
                     {
-                        TTIR ttir = new TTIR();
-
-                        thing = ThingMaker.MakeThing(temp.thingDef, temp.stuffDef);
+                        var thing = ThingMaker.MakeThing(temp.thingDef, temp.stuffDef ?? GenStuff.RandomStuffFor(temp.thingDef));
                         thing.SetFactionDirect(parms.faction);
-                        if (!GenOption.fallingStructure.spawnDormantWhenPossible && thing.TryGetComp<CompCanBeDormant>() is CompCanBeDormant ccbd && ccbd != null)
+
+                        var info = new ActiveDropPodInfo
+                        {
+                            openDelay = 40,
+                            leaveSlag = false
+                        };
+                        info.innerContainer.TryAdd(thing);
+                        pods.Add(info, cell);
+                    }
+                    else
+                    {
+                        var thing = ThingMaker.MakeThing(temp.thingDef, temp.stuffDef ?? GenStuff.RandomStuffFor(temp.thingDef));
+                        thing.SetFactionDirect(parms.faction);
+
+                        if (!GenOption.fExt.spawnDormantWhenPossible && thing.TryGetComp<CompCanBeDormant>() is CompCanBeDormant ccbd && ccbd != null)
                         {
                             ccbd.wakeUpOnTick = Find.TickManager.TicksGame + 150;
                         }
 
-                        if (thing.def.rotatable && thing.def.category == ThingCategory.Building)
+                        ThingDef def = new ThingDef
                         {
-                            ttir.rot = new Rot4(temp.rotation.AsInt);
-                        }
-
-                        ThingDef faller = new ThingDef
-                        {
-                            thingClass = GenOption.fallingStructure.skyfaller,
+                            thingClass = GenOption.fExt.skyfaller,
                             category = ThingCategory.Ethereal,
                             useHitPoints = false,
 
@@ -104,76 +125,48 @@ namespace KCSG
 
                             defName = temp.thingDef.defName,
                             label = temp.thingDef.label + " (incoming)",
-                            size = new IntVec2(thing.def.size.x, thing.def.size.z)
+                            size = new IntVec2(thing.def.size.x, thing.def.size.z),
+                            skyfaller = new SkyfallerProperties()
+                            {
+                                shadowSize = new UnityEngine.Vector2(thing.def.size.x + 1, thing.def.size.z + 1),
+                                ticksToImpactRange = new IntRange(150, 150),
+                                movementType = SkyfallerMovementType.Decelerate
+                            }
                         };
 
-                        faller.skyfaller = new SkyfallerProperties()
+                        var faller = (KCSG_Skyfaller)SkyfallerMaker.MakeSkyfaller(def);
+                        if (thing != null)
                         {
-                            shadowSize = new UnityEngine.Vector2(thing.def.size.x + 1, thing.def.size.z + 1),
-                            ticksToImpactRange = new IntRange(150, 150),
-                            movementType = SkyfallerMovementType.Decelerate
-                        };
-
-                        ttir.faller = faller;
-                        ttir.toSpawn = thing;
-                        ttir.cell = cell;
-
-                        fallers.Add(ttir);
-                    }
-                    else if (temp.thingDef != null)
-                    {
-                        thing = ThingMaker.MakeThing(temp.thingDef, temp.stuffDef);
-                        thing.SetFactionDirect(parms.faction);
-
-                        ActiveDropPodInfo activeDropPodInfo = new ActiveDropPodInfo();
-                        activeDropPodInfo.innerContainer.TryAdd(thing);
-                        activeDropPodInfo.openDelay = 40;
-                        activeDropPodInfo.leaveSlag = false;
-                        pods.Add(activeDropPodInfo, cell);
+                            if (!faller.innerContainer.TryAdd(thing, true))
+                            {
+                                Log.Error($"Could not add {thing.ToStringSafe()} to a KCSG_Skyfaller.");
+                                thing.Destroy(DestroyMode.Vanish);
+                            }
+                        }
+                        faller.rot = temp.rotation != null ? temp.rotation : Rot4.North;
+                        fallers.Add(faller, cell);
                     }
                 }
                 l++;
             }
-            // ARRIVAL
-            fallers.ForEach(ttir => SpawnSkyfaller(ttir.faller, ttir.toSpawn, ttir.cell, map, ttir.rot));
+
+            // Arrival
+            for (int i = 0; i < fallers.Count; i++)
+            {
+                var f = fallers.ElementAt(i);
+                GenSpawn.Spawn(f.Key, f.Value, map, f.Key.rot, WipeMode.Vanish);
+            }
+
             for (int i = 0; i < pods.Count; i++)
             {
-                DropPodUtility.MakeDropPodAt(pods.ElementAt(i).Value, map, pods.ElementAt(i).Key);
+                var kvp = pods.ElementAt(i);
+                DropPodUtility.MakeDropPodAt(kvp.Value, map, kvp.Key);
             }
 
-            IncidentParms parms1 = parms;
-            RCellFinder.TryFindRandomCellNearWith(parms.spawnCenter, i => i.Walkable(map), map, out parms1.spawnCenter, 33, 40);
+            IncidentParms nParms = parms;
+            RCellFinder.TryFindRandomCellNearWith(parms.spawnCenter, i => i.Walkable(map), map, out nParms.spawnCenter, Math.Min(GenOption.fDef.width, GenOption.fDef.height));
 
-            base.SpawnThreats(parms1);
-            GenOption.ClearFalling();
-            return null;
-        }
-
-        protected override LordJob MakeLordJob(IncidentParms parms, Map map, List<Pawn> pawns, int raidSeed)
-        {
-            IntVec3 originCell = parms.spawnCenter.IsValid ? parms.spawnCenter : pawns[0].PositionHeld;
-            if (parms.faction.HostileTo(Faction.OfPlayer))
-            {
-                return new LordJob_AssaultColony(parms.faction, true, true, false, false, true);
-            }
-            RCellFinder.TryFindRandomSpotJustOutsideColony(originCell, map, out IntVec3 fallbackLocation);
-            return new LordJob_AssistColony(parms.faction, fallbackLocation);
-        }
-
-        private KCSG_Skyfaller SpawnSkyfaller(ThingDef skyfaller, Thing innerThing, IntVec3 pos, Map map, Rot4 rot)
-        {
-            KCSG_Skyfaller faller = (KCSG_Skyfaller)SkyfallerMaker.MakeSkyfaller(skyfaller);
-            if (innerThing != null)
-            {
-                if (!faller.innerContainer.TryAdd(innerThing, true))
-                {
-                    Log.Error($"Could not add {innerThing.ToStringSafe()} to a KCSG_Skyfaller.");
-                    innerThing.Destroy(DestroyMode.Vanish);
-                }
-            }
-            faller.rot = rot;
-
-            return (KCSG_Skyfaller)GenSpawn.Spawn(faller, pos, map, rot, WipeMode.Vanish);
+            return base.SpawnThreats(nParms);
         }
     }
 }

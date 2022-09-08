@@ -1,6 +1,6 @@
-﻿using RimWorld;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using RimWorld;
 using Verse;
 
 namespace KCSG
@@ -18,53 +18,38 @@ namespace KCSG
 
         public static WeightedStruct FromString(string str)
         {
-            str = str.TrimStart(new char[]
-            {
-                '('
-            });
-            str = str.TrimEnd(new char[]
-            {
-                ')'
-            });
-            string[] array = str.Split(new char[]
-            {
-                ','
-            });
-
-            if (array.Length == 2)
-            {
-                return new WeightedStruct(DefDatabase<StructureLayoutDef>.GetNamed(array[0]), float.Parse(array[1].TrimStart(new char[] { ' ' })));
-            }
-            else return new WeightedStruct(DefDatabase<StructureLayoutDef>.GetNamed(array[0]), 1f);
+            string[] array = str.Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            return new WeightedStruct(DefDatabase<StructureLayoutDef>.GetNamed(array[0]), array.Length == 2 ? float.Parse(array[1]) : 1f);
         }
     }
 
     public class FallingStructure : DefModExtension
     {
-        public List<string> weightedStruct = new List<string>();
+        public List<string> structures = new List<string>();
         public List<ThingDef> thingsToSpawnInDropPod = new List<ThingDef>();
         public List<FactionDef> canBeUsedBy = new List<FactionDef>();
         public bool spawnDormantWhenPossible = true;
         public bool needToHaveSettlements = true;
         public Type skyfaller = typeof(KCSG_Skyfaller);
-        internal List<WeightedStruct> WeightedStructs = new List<WeightedStruct>();
+
+        internal List<WeightedStruct> weightedStructs = new List<WeightedStruct>();
 
         public override IEnumerable<string> ConfigErrors()
         {
-            foreach (string str in weightedStruct)
+            foreach (string str in structures)
             {
-                WeightedStructs.Add(WeightedStruct.FromString(str));
+                weightedStructs.Add(WeightedStruct.FromString(str));
             }
 
-            if (weightedStruct.NullOrEmpty())
-            {
-                Log.Error($"FallingStructure defModExtension can't have an empty weightedStruct");
-            }
+            foreach (var err in base.ConfigErrors())
+                yield return err;
+
+            if (structures.NullOrEmpty())
+                yield return $"FallingStructure defModExtension can't have an empty structures list";
+
             if (canBeUsedBy.NullOrEmpty())
-            {
-                Log.Error($"FallingStructure defModExtension can't have an empty canBeUsedBy");
-            }
-            return base.ConfigErrors();
+                yield return $"FallingStructure defModExtension can't have an empty canBeUsedBy list";
+
         }
     }
 }

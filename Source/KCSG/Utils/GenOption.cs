@@ -29,17 +29,11 @@ namespace KCSG
         public static ThingDef generalWallStuff;
         public static List<IntVec3> usedSpots;
         public static Dictionary<IntVec3, Mineable> mineables;
-
-        public static FallingStructure fallingStructure;
-        public static StructureLayoutDef fallingStructureChoosen;
-
+        // Falling structures
+        public static FallingStructure fExt;
+        public static StructureLayoutDef fDef;
+        // List of corpses to rot
         public static List<Corpse> corpseToRot = new List<Corpse>();
-
-        public static void ClearFalling()
-        {
-            fallingStructure = null;
-            fallingStructureChoosen = null;
-        }
 
         public static void DespawnMineableAt(IntVec3 cell)
         {
