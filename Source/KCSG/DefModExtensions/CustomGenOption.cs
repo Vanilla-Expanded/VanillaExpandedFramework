@@ -60,8 +60,4 @@ namespace KCSG
             }
         }
     }
-
-    // TODO Obsolete - To remove in next rimworld version
-    [Obsolete]
-    public class FactionSettlement : CustomGenOption { }
 }
