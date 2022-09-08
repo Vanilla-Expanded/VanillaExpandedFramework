@@ -126,7 +126,6 @@ namespace KCSG
         /// </summary>
         private static void GeneratePawnAt(Map map, IntVec3 cell, SymbolDef symbol)
         {
-            Debug.Message($"Generating {symbol}");
             var factionManager = Find.FactionManager;
             var parentFaction = map.ParentFaction;
             var symbolFaction = symbol.faction != null ? factionManager.FirstFactionOfDef(symbol.faction) : null;
