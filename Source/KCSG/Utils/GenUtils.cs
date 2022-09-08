@@ -61,7 +61,7 @@ namespace KCSG
             {
                 GenerateTerrainAt(map, cell, symbol.terrainDef);
             }
-            else if (symbol.pawnKindDefNS != null && (GenOption.ext == null || GenOption.ext.SymbolResolvers == null))
+            else if (symbol.pawnKindDefNS != null)
             {
                 GeneratePawnAt(map, cell, symbol);
             }
@@ -126,6 +126,7 @@ namespace KCSG
         /// </summary>
         private static void GeneratePawnAt(Map map, IntVec3 cell, SymbolDef symbol)
         {
+            Debug.Message($"Generating {symbol}");
             var factionManager = Find.FactionManager;
             var parentFaction = map.ParentFaction;
             var symbolFaction = symbol.faction != null ? factionManager.FirstFactionOfDef(symbol.faction) : null;
@@ -139,7 +140,7 @@ namespace KCSG
                 Pawn pawn = PawnGenerator.GeneratePawn(request);
                 if (pawn == null)
                 {
-                    Debug.Message("Null pawn in GeneratePawnAt");
+                    Debug.Error("Null pawn in GeneratePawnAt");
                     continue;
                 }
 
@@ -152,6 +153,10 @@ namespace KCSG
                 {
                     pawn.Kill(new DamageInfo(DamageDefOf.Cut, 9999));
                     Corpse corpse = pawn.Corpse;
+
+                    if (corpse == null)
+                        continue;
+
                     corpse.timeOfDeath = Mathf.Max(Find.TickManager.TicksGame - 120000, 0);
                     if (symbol.spawnRotten)
                     {
