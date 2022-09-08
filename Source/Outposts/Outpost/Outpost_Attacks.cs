@@ -17,7 +17,7 @@ namespace Outposts
             get
             {
                 if (def.GetModExtension<CustomGenOption>() is { } cGen && (cGen.chooseFromlayouts.Count > 0 || cGen.chooseFromSettlements.Count > 0))
-                    return DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_Gen");
+                    return DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject");
                 return MapGeneratorDefOf.Base_Faction;
             }
         }
