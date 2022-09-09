@@ -5,6 +5,7 @@ using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using HarmonyLib;
 using RimWorld;
 using Verse;
@@ -54,29 +55,50 @@ namespace VFECore
 		}
 	}
 
+	[HarmonyPatch(typeof(PawnGenerator), "GenerateSkills")]
+	public static class PawnGenerator_GenerateSkills
+	{
+		public static void Postfix(Pawn pawn)
+		{
+			foreach (var backstory in pawn.story.AllBackstories)
+			{
+				if (PASSIONS.TryGetValue(backstory, out var passions))
+				{
+					foreach (var passion in passions)
+					{
+						pawn.skills.GetSkill(passion.skill).passion = (Passion) passion.xp;
+					}
+				}
+			}
+		}
+
+		public static readonly ConditionalWeakTable<Backstory, List<SkillGain>> PASSIONS = new();
+	}
+
 	public class BackstoryDef : Def
 	{
-		public string baseDescription;
-		public BodyTypeDef bodyTypeGlobal;
-		public BodyTypeDef bodyTypeMale;
-		public BodyTypeDef bodyTypeFemale;
-		public string title;
-		public string titleFemale;
-		public string titleShort;
-		public string titleShortFemale;
-		public BackstorySlot slot = BackstorySlot.Adulthood;
-		public bool shuffleable = true;
-		public bool addToDatabase = true;
-		public List<WorkTags> workAllows = new List<WorkTags>();
-		public List<WorkTags> workDisables = new List<WorkTags>();
-		public List<WorkTags> requiredWorkTags = new List<WorkTags>();
-		public List<BackstoryDefSkillListItem> skillGains = new List<BackstoryDefSkillListItem>();
-		public List<string> spawnCategories = new List<string>();
-		public List<TraitEntryBackstory> forcedTraits = new List<TraitEntryBackstory>();
-		public List<TraitEntryBackstory> disallowedTraits = new List<TraitEntryBackstory>();
-		public float maleCommonality = 100f;
-		public float femaleCommonality = 100f;
-		public string linkedBackstory;
+		public string                    baseDescription;
+		public BodyTypeDef               bodyTypeGlobal;
+		public BodyTypeDef               bodyTypeMale;
+		public BodyTypeDef               bodyTypeFemale;
+		public string                    title;
+		public string                    titleFemale;
+		public string                    titleShort;
+		public string                    titleShortFemale;
+		public BackstorySlot             slot              = BackstorySlot.Adulthood;
+		public bool                      shuffleable       = true;
+		public bool                      addToDatabase     = true;
+		public List<WorkTags>            workAllows        = new List<WorkTags>();
+		public List<WorkTags>            workDisables      = new List<WorkTags>();
+		public List<WorkTags>            requiredWorkTags  = new List<WorkTags>();
+		public List<SkillGain>           skillGains        = new List<SkillGain>();
+		public List<SkillGain>           passions          = new List<SkillGain>();
+		public List<string>              spawnCategories   = new List<string>();
+		public List<TraitEntryBackstory> forcedTraits      = new List<TraitEntryBackstory>();
+		public List<TraitEntryBackstory> disallowedTraits  = new List<TraitEntryBackstory>();
+		public float                     maleCommonality   = 100f;
+		public float                     femaleCommonality = 100f;
+		public string                    linkedBackstory;
 		//public RelationSettings relationSettings = new RelationSettings();
 		public List<string> forcedHediffs = new List<string>();
 		public IntRange bioAgeRange;
@@ -87,8 +109,8 @@ namespace VFECore
 		public bool CommonalityApproved(Gender g) => Rand.Range(min: 0, max: 100) < (g == Gender.Female ? this.femaleCommonality : this.maleCommonality);
 
 		public bool Approved(Pawn p) => this.CommonalityApproved(p.gender) &&
-										(this.bioAgeRange == default || (this.bioAgeRange.min < p.ageTracker.AgeBiologicalYears && p.ageTracker.AgeBiologicalYears < this.bioAgeRange.max)) &&
-										(this.chronoAgeRange == default || (this.chronoAgeRange.min < p.ageTracker.AgeChronologicalYears && p.ageTracker.AgeChronologicalYears < this.chronoAgeRange.max));
+		                                (this.bioAgeRange == default || (this.bioAgeRange.min < p.ageTracker.AgeBiologicalYears && p.ageTracker.AgeBiologicalYears < this.bioAgeRange.max)) &&
+		                                (this.chronoAgeRange == default || (this.chronoAgeRange.min < p.ageTracker.AgeChronologicalYears && p.ageTracker.AgeChronologicalYears < this.chronoAgeRange.max));
 
 		public override void ResolveReferences()
 		{
@@ -132,7 +154,10 @@ namespace VFECore
 			Traverse.Create(this.backstory).Field(name: "bodyTypeFemaleResolved").SetValue(this.bodyTypeFemale);
 			Traverse.Create(this.backstory).Field(name: "bodyTypeMaleResolved").SetValue(this.bodyTypeMale);
 
-			Traverse.Create(this.backstory).Field(nameof(this.skillGains)).SetValue(this.skillGains.ToDictionary(keySelector: i => i.defName, elementSelector: i => i.amount));
+			Traverse.Create(this.backstory).Field(nameof(this.skillGains)).SetValue(this.skillGains.ToDictionary(keySelector: i => i.skill.defName, elementSelector: i => i.xp));
+
+			if (!passions.NullOrEmpty())
+				PawnGenerator_GenerateSkills.PASSIONS.Add(this.backstory, this.passions);
 
 			UpdateTranslateableFields(this);
 
@@ -156,16 +181,6 @@ namespace VFECore
 			bs.backstory.SetTitle(bs.title, bs.titleFemale);
 			bs.backstory.SetTitleShort(bs.titleShort.NullOrEmpty() ? bs.backstory.title : bs.titleShort,
 										bs.titleShortFemale.NullOrEmpty() ? bs.backstory.titleFemale : bs.titleShortFemale);
-		}
-
-
-
-		public struct BackstoryDefSkillListItem
-		{
-#pragma warning disable CS0649
-			public string defName;
-			public int amount;
-#pragma warning restore CS0649
 		}
 	}
 }
