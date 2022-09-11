@@ -276,6 +276,7 @@ namespace VFECore
     {
         static ModSettingsHandler()
         {
+            VFEGlobal.settings.weatherDamagesOptions ??= new Dictionary<string, bool>();
             foreach (var weatherDef in DefDatabase<WeatherDef>.AllDefs)
             {
                 var extension = weatherDef.GetModExtension<WeatherEffectsExtension>();
@@ -314,6 +315,11 @@ namespace VFECore
             Scribe_Values.Look(ref enableAutumnLeaveSpawners, "enableAutumnLeaveSpawners", true, true);
             Scribe_Values.Look(ref disableModSourceReport, "disableModSourceReport");
             Scribe_Collections.Look(ref weatherDamagesOptions, "weatherDamagesOptions", LookMode.Value, LookMode.Value);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                weatherDamagesOptions ??= new Dictionary<string, bool>();
+                toggablePatch ??= new Dictionary<string, bool>();
+            }
         }
     }
 }
