@@ -80,15 +80,19 @@ namespace VFE.Mechanoids
             priorities.SetAll(0);
             typeof(Pawn_WorkSettings).GetField("priorities", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(myPawn.workSettings, priorities);
             
-            foreach (WorkTypeDef workType in Props.allowedWorkTypes)
+            if (Props.allowedWorkTypes != null)
             {
-                foreach (SkillDef skill in workType.relevantSkills)
+                foreach (WorkTypeDef workType in Props.allowedWorkTypes)
                 {
-                    SkillRecord record = myPawn.skills.skills.Find(rec => rec.def == skill);
-                    record.levelInt = Props.skillLevel;
+                    foreach (SkillDef skill in workType.relevantSkills)
+                    {
+                        SkillRecord record = myPawn.skills.skills.Find(rec => rec.def == skill);
+                        record.levelInt = Props.skillLevel;
+                    }
+                    myPawn.workSettings.SetPriority(workType, 1);
                 }
-                myPawn.workSettings.SetPriority(workType, 1);
             }
+
             if (myPawn.TryGetComp<CompMachine>().Props.violent)
             {
                 if (myPawn.drafter == null)
@@ -107,7 +111,6 @@ namespace VFE.Mechanoids
             {
                 myPawn.playerSettings.AreaRestriction = allowedArea;
             }
-
             wantsRespawn = false;
         }
 

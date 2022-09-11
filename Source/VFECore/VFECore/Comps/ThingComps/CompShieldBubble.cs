@@ -294,7 +294,6 @@ namespace VFECore
 				{
 					AbsorbedDamage(dinfo);
 				}
-				Log.Message("Absorbed: " + energy);
 				absorbed = true;
 			}
 			else
