@@ -334,7 +334,7 @@ namespace KCSG
             // Spawn the thing
             GenSpawn.Spawn(thing, cell, map, symbol.rotation, WipeMode.VanishOrMoveAside);
             // Set the faction if applicable
-            if (faction != null && thing.def.CanHaveFaction)
+            if (symbol.spawnPartOfFaction != false && faction != null && thing.def.CanHaveFaction)
             {
                 thing.SetFactionDirect(faction);
             }
