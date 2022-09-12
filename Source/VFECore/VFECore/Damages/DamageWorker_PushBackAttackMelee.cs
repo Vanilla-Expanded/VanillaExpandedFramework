@@ -58,6 +58,7 @@ namespace VFECore
                 {
                     victim.pather.StopDead();
                     victim.jobs.StopAll();
+                    FleckMaker.Static(victim.Position, victim.Map, FleckDefOf.PsycastAreaEffect, 2f);
                 }
             }
         }
