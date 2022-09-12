@@ -100,7 +100,6 @@
     <Compile Include="Harmony\Postfix_Page_ConfigureStartingPawns_PreOpen.cs" />
     <Compile Include="Utils\GenOption.cs" />
     <Compile Include="Utils\GenUtils.cs" />
-    <Compile Include="Utils\GridUtils.cs" />
     <Compile Include="Utils\ExportUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_RoomGenFromStructure.cs" />
