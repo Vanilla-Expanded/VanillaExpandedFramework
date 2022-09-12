@@ -160,14 +160,7 @@ namespace KCSG
                     else
                     {
                         // Find corresponding symbol
-                        TerrainDef terrainD = map.terrainGrid.TerrainAt(first);
-                        if (DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.isTerrain && s.terrainDef.defName == terrainD.defName) is SymbolDef symbolDef && symbolDef != null)
-                        {
-                            add = true;
-                            if (i2 + 1 == width) temp += symbolDef.defName;
-                            else temp += symbolDef.defName + ",";
-                        }
-                        else if (terrainD != null)
+                        if (map.terrainGrid.TerrainAt(first) is TerrainDef terrainD)
                         {
                             add = true;
                             if (i2 + 1 == width) temp += terrainD.defName;
@@ -335,15 +328,12 @@ namespace KCSG
         public static List<XElement> CreateSymbolIfNeeded(List<IntVec3> cellExport, Map map, Dictionary<IntVec3, List<Thing>> pairsCellThingList, Area area = null)
         {
             List<XElement> symbols = new List<XElement>();
+            var activeCells = area?.ActiveCells;
 
             foreach (IntVec3 c in cellExport)
             {
-                if (area != null && !area.ActiveCells.Contains(c)) { }
-                else
+                if (activeCells != null && activeCells.Contains(c))
                 {
-                    TerrainDef terrainDef = c.GetTerrain(map);
-                    if (terrainDef != null && terrainDef.BuildableByPlayer) CreateSymbolFromTerrain(terrainDef, symbols);
-
                     List<Thing> things = pairsCellThingList.TryGetValue(c);
                     foreach (Thing t in things)
                     {
@@ -507,25 +497,6 @@ namespace KCSG
                 XElement symbolDef = new XElement("KCSG.SymbolDef", null);
                 symbolDef.Add(new XElement("defName", pawn.kindDef.defName));
                 symbolDef.Add(new XElement("pawnKindDef", pawn.kindDef.defName));
-
-                if (!symbols.Any(s => s.Value == symbolDef.Value))
-                {
-                    symbols.Add(symbolDef);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Create symbol from terrain
-        /// </summary>
-        private static void CreateSymbolFromTerrain(TerrainDef terrainD, List<XElement> symbols)
-        {
-            if (!DefDatabase<SymbolDef>.AllDefsListForReading.FindAll(s => s.terrainDef == terrainD).Any())
-            {
-                XElement symbolDef = new XElement("KCSG.SymbolDef", null);
-                symbolDef.Add(new XElement("defName", terrainD.defName));
-                symbolDef.Add(new XElement("isTerrain", "true"));
-                symbolDef.Add(new XElement("terrain", terrainD.defName));
 
                 if (!symbols.Any(s => s.Value == symbolDef.Value))
                 {

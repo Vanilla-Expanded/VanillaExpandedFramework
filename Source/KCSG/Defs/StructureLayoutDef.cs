@@ -34,6 +34,7 @@ namespace KCSG
         public bool spawnConduits = true;
         public List<List<string>> layouts = new List<List<string>>();
         public List<string> roofGrid = new List<string>();
+        public List<string> terrainGrid = new List<string>();
         public bool forceGenerateRoof = false;
         public bool needRoofClearance = false;
 
@@ -47,10 +48,11 @@ namespace KCSG
         public List<Pos> spawnAtPos = new List<Pos>();
         public List<string> spawnAt = new List<string>();
 
-        // Values used regularly in gen :
+        // Values used regularly in gen:
         internal int width;
         internal int height;
         internal List<List<SymbolDef>> symbolsLists = new List<List<SymbolDef>>();
+        internal List<TerrainDef> terrainGridResolved = new List<TerrainDef>();
         internal List<string> roofGridResolved = new List<string>();
 
         internal bool RequiredModLoaded { get; private set; }
@@ -109,6 +111,16 @@ namespace KCSG
             for (int i = 0; i < roofGrid.Count; i++)
             {
                 roofGridResolved.AddRange(roofGrid[i].Split(','));
+            }
+            // Populate terrainGrid
+            for (int i = 0; i < terrainGrid.Count; i++)
+            {
+                var tList = terrainGrid[i].Split(',');
+                for (int o = 0; o < tList.Length; o++)
+                {
+                    var terrain = DefDatabase<TerrainDef>.GetNamedSilentFail(tList[o]);
+                    terrainGridResolved.Add(terrain);
+                }
             }
             // Resolve mod requirement(s)
             RequiredModLoaded = true;

@@ -10,11 +10,6 @@ namespace KCSG
     {
         public bool spawnPartOfFaction = true;
 
-        // Terrain
-        public bool isTerrain = false;
-        public TerrainDef terrainDef = null;
-        public string terrain = null;
-
         // Building & item basic infos
         public ThingDef thingDef = null;
         public string thing = null;
@@ -54,7 +49,6 @@ namespace KCSG
 
         public override void ResolveReferences()
         {
-            if (terrain != null) terrainDef = DefDatabase<TerrainDef>.GetNamed(terrain, VFECore.VFEGlobal.settings.enableVerboseLogging);
             if (thing != null) thingDef = DefDatabase<ThingDef>.GetNamed(thing, VFECore.VFEGlobal.settings.enableVerboseLogging);
             if (stuff != null) stuffDef = DefDatabase<ThingDef>.GetNamed(stuff, VFECore.VFEGlobal.settings.enableVerboseLogging);
             if (pawnKindDef != null) pawnKindDefNS = DefDatabase<PawnKindDef>.GetNamed(pawnKindDef, VFECore.VFEGlobal.settings.enableVerboseLogging);
@@ -66,8 +60,6 @@ namespace KCSG
             StringBuilder sb = new StringBuilder();
 
             sb.Append($"Def: {defName}");
-            if (terrainDef != null)
-                sb.AppendInNewLine($"Terrain: {terrainDef.defName}");
             if (thingDef != null)
                 sb.AppendInNewLine($"Thing: {thingDef.defName} | Stuff: {stuffDef?.defName} | Stack size: {maxStackSize} | Rot: {rotation}");
             if (pawnKindDefNS != null)

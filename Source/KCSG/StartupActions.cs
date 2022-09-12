@@ -169,18 +169,6 @@ namespace KCSG
             return symbolDef;
         }
 
-        private static SymbolDef CreateSymbolDef(TerrainDef terrain)
-        {
-            SymbolDef symbolDef = new SymbolDef
-            {
-                defName = $"{terrain.defName}",
-                isTerrain = true,
-                terrainDef = terrain,
-            };
-            createdSymbolAmount++;
-            return symbolDef;
-        }
-
         private static SymbolDef CreateSymbolDef(PawnKindDef pawnKindDef)
         {
             SymbolDef symbolDef = new SymbolDef
@@ -247,12 +235,6 @@ namespace KCSG
             foreach (ThingDef thingDef in thingDefs)
             {
                 if (!defCreated) CreateAllSymbolsForDef(thingDef);
-            }
-
-            List<TerrainDef> terrainDefs = DefDatabase<TerrainDef>.AllDefsListForReading.FindAll(t => t.modContentPack?.PackageId == modId);
-            foreach (TerrainDef terrainDef in terrainDefs)
-            {
-                if (!defCreated) AddDef(CreateSymbolDef(terrainDef));
             }
 
             List<PawnKindDef> pawnKindDefs = DefDatabase<PawnKindDef>.AllDefsListForReading.FindAll(t => t.modContentPack?.PackageId == modId);

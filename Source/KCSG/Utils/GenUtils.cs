@@ -25,6 +25,7 @@ namespace KCSG
             {
                 GenerateRoomFromLayout(layout, index, rect, map, wallForRoom);
             }
+            GenerateTerrainGrid(layout, rect, map);
             GenerateRoofGrid(layout, rect, map);
         }
 
@@ -57,11 +58,7 @@ namespace KCSG
         /// </summary>
         public static void GenerateSymbol(SymbolDef symbol, StructureLayoutDef layout, Map map, IntVec3 cell, Faction faction, ThingDef wallForRoom)
         {
-            if (symbol.isTerrain && symbol.terrainDef != null)
-            {
-                GenerateTerrainAt(map, cell, symbol.terrainDef);
-            }
-            else if (symbol.pawnKindDefNS != null)
+            if (symbol.pawnKindDefNS != null)
             {
                 GeneratePawnAt(map, cell, symbol);
             }
@@ -102,22 +99,6 @@ namespace KCSG
                         doors?.Add(cell);
                     }
                 }
-            }
-        }
-
-        /// <summary>
-        /// Generate terrain at cell. Make bridge if needed, remove mineable if needed.
-        /// </summary>
-        private static void GenerateTerrainAt(Map map, IntVec3 cell, TerrainDef terrainDef)
-        {
-            if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
-            {
-                map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
-            }
-            else
-            {
-                GenOption.DespawnMineableAt(cell);
-                map.terrainGrid.SetTerrain(cell, terrainDef);
             }
         }
 
@@ -516,6 +497,34 @@ namespace KCSG
                         }
                     }
 
+                }
+            }
+        }
+
+        /// <summary>
+        /// Generate terrain grid from layout
+        /// </summary>
+        private static void GenerateTerrainGrid(StructureLayoutDef layout, CellRect rect, Map map)
+        {
+            if (layout.terrainGridResolved.NullOrEmpty())
+                return;
+
+            var cells = rect.Cells.ToList();
+            for (int i = 0; i < cells.Count; i++)
+            {
+                IntVec3 cell = cells[i];
+                var wantedTerrain = layout.terrainGridResolved[i];
+                if (wantedTerrain == null || !cell.InBounds(map))
+                    continue;
+
+                if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
+                {
+                    map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
+                }
+                else
+                {
+                    GenOption.DespawnMineableAt(cell);
+                    map.terrainGrid.SetTerrain(cell, wantedTerrain);
                 }
             }
         }
