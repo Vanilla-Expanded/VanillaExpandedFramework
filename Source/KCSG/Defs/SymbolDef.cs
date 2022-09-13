@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using RimWorld;
 using Verse;
@@ -43,9 +42,6 @@ namespace KCSG
         public bool spawnRotten = false;
         public bool spawnFilthAround = false;
         public bool defendSpawnPoint = false;
-
-        [Obsolete]
-        public string lordJob = null;
 
         public override void ResolveReferences()
         {
