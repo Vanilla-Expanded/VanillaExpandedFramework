@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Xml.Linq;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -9,27 +8,30 @@ namespace KCSG
     public class Dialog_ExportWindow : Window
     {
         // Save stuff in between exports
-        public static HashSet<string> Tags = new HashSet<string>();
-        public static List<string> AlreadyExported = new List<string>();
+        public static List<string> exportedSymbols = new List<string>();
+        public static Dictionary<string, StructureLayoutDef> exportedLayouts = new Dictionary<string, StructureLayoutDef>();
 
+        public static string defName = "";
+
+        public static HashSet<string> tags = new HashSet<string>();
+
+        public static bool exportNatural = false;
+        public static bool exportFilth = false;
+        public static bool exportPlant = true;
+        public static bool needRoofClearance = false;
+        public static bool spawnConduits = true;
+        public static bool forceGenerateRoof = false;
+        public static bool isStorage = false;
+
+        private static readonly int bottomBH = 30;
+        private static readonly int tagBH = 30;
+
+        private readonly Dictionary<IntVec3, List<Thing>> pairsCellThingList = new Dictionary<IntVec3, List<Thing>>();
         private readonly List<IntVec3> cells = new List<IntVec3>();
-        private readonly HashSet<string> tags = new HashSet<string>();
         private readonly Area area;
         private readonly Map map;
 
-        private readonly Dictionary<IntVec3, List<Thing>> pairsCellThingList = new Dictionary<IntVec3, List<Thing>>();
         private string tempTagToAdd = "";
-        private string defName = "";
-        private bool exportNatural = false;
-        private bool roofClearance = false;
-        private bool spawnConduits = true;
-        private bool exportFilth = false;
-        private bool exportPlant = true;
-        private bool forceRoof = false;
-        private bool storage = false;
-
-        private readonly int bottomBH = 30;
-        private readonly int tagBH = 30;
 
         public Dialog_ExportWindow(Map map, List<IntVec3> cells, Area area)
         {
@@ -43,11 +45,10 @@ namespace KCSG
             closeOnClickedOutside = false;
             absorbInputAroundWindow = true;
 
-            StartupActions.CreateSymbols();
-            if (Tags.Count > 0)
-                tags = Tags;
+            this.cells.Sort((x, y) => x.z.CompareTo(y.z));
 
-            pairsCellThingList = ExportUtils.FillCellThingsList(cells, map);
+            StartupActions.CreateSymbols();
+            pairsCellThingList = ExportUtils.FillCellThingsList(this.cells, map);
         }
 
         public override Vector2 InitialSize => new Vector2(610f, 520f);
@@ -88,13 +89,13 @@ namespace KCSG
             lst.CheckboxLabeled("Export natural terrain:", ref exportNatural);
             lst.GapLine();
 
-            lst.CheckboxLabeled("Stockpile:", ref storage, "Generate random items inside when used with SettlementLayoutDef");
+            lst.CheckboxLabeled("Stockpile:", ref isStorage, "Generate random items inside when used with SettlementLayoutDef");
             lst.Gap(5);
 
-            lst.CheckboxLabeled("Force generate roofs:", ref forceRoof, "Alway generate exported roof");
+            lst.CheckboxLabeled("Force generate roofs:", ref forceGenerateRoof, "Alway generate exported roof");
             lst.Gap(5);
 
-            lst.CheckboxLabeled("Need roof clearance:", ref roofClearance, "Need to be placed in a rect free of roofs");
+            lst.CheckboxLabeled("Need roof clearance:", ref needRoofClearance, "Need to be placed in a rect free of roofs");
             lst.GapLine();
 
             lst.Label("Structure tags:", tooltip: "Tags are used with SettlementLayoutDef");
@@ -141,9 +142,15 @@ namespace KCSG
             {
                 if (defName.Length > 0)
                 {
-                    GUIUtility.systemCopyBuffer = CreateLayout().ToString();
+                    var sld = ExportUtils.CreateStructureDef(cells, map, pairsCellThingList, area);
+
+                    if (exportedLayouts.ContainsKey(defName))
+                        exportedLayouts[defName] = sld;
+                    else
+                        exportedLayouts.Add(defName, sld);
+
+                    GUIUtility.systemCopyBuffer = sld.ToXMLString();
                     Messages.Message("Copied to clipboard.", MessageTypeDefOf.TaskCompletion);
-                    Tags = tags;
                 }
                 else
                 {
@@ -161,10 +168,10 @@ namespace KCSG
                     {
                         var symb = allSymbols[i];
                         var toStr = symb.ToString();
-                        if (!AlreadyExported.Contains(toStr))
+                        if (!exportedSymbols.Contains(toStr))
                         {
                             output += toStr + "\n\n";
-                            AlreadyExported.Add(toStr);
+                            exportedSymbols.Add(toStr);
                         }
                     }
 
@@ -181,37 +188,6 @@ namespace KCSG
             {
                 Close();
             }
-        }
-
-        private XElement CreateLayout()
-        {
-            XElement structureL = ExportUtils.CreateStructureDef(cells, map, pairsCellThingList, area, exportFilth, exportNatural, exportPlant);
-
-            structureL.AddFirst(new XElement("defName", defName));
-
-            if (storage)
-                structureL.Add(new XElement("isStorage", true));
-
-            if (!spawnConduits)
-                structureL.Add(new XElement("spawnConduits", false));
-
-            if (forceRoof)
-                structureL.Add(new XElement("forceGenerateRoof", true));
-
-            if (roofClearance)
-                structureL.Add(new XElement("needRoofClearance", true));
-
-            if (tags.Count > 0)
-            {
-                XElement temp = new XElement("tags");
-                foreach (var item in tags)
-                {
-                    temp.Add(new XElement("li", item));
-                }
-                structureL.Add(temp);
-            }
-
-            return structureL;
         }
     }
 }

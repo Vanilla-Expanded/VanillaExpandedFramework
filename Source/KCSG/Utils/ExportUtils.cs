@@ -11,46 +11,32 @@ namespace KCSG
         /// <summary>
         /// Return a struct def coresponding to area exported
         /// </summary>
-        public static XElement CreateStructureDef(List<IntVec3> cellExport, Map map, Dictionary<IntVec3, List<Thing>> pairsCellThingList, Area area, bool exportFilth, bool exportNatural, bool exportPlant)
+        public static StructureLayoutDef CreateStructureDef(List<IntVec3> cellExport, Map map, Dictionary<IntVec3, List<Thing>> pairsCellThingList, Area area)
         {
-            cellExport.Sort((x, y) => x.z.CompareTo(y.z));
-            XElement sld = new XElement("KCSG.StructureLayoutDef", null);
+            var sld = new StructureLayoutDef();
 
-            XElement layouts = new XElement("layouts", null);
-            // Add pawns layout
-            XElement pawnsL = CreatePawnlayout(cellExport, area, out bool add, pairsCellThingList);
-            if (add) layouts.Add(pawnsL);
-            // Add items layout
-            XElement itemsL = CreateItemlayout(cellExport, area, out bool add2, pairsCellThingList);
-            if (add2) layouts.Add(itemsL);
-            // Add things layouts
-            int numOfLayout = GetMaxThings(cellExport, pairsCellThingList, exportFilth, exportPlant);
+            sld.defName = Dialog_ExportWindow.defName;
+            sld.isStorage = Dialog_ExportWindow.isStorage;
+            sld.spawnConduits = Dialog_ExportWindow.spawnConduits;
+            sld.forceGenerateRoof = Dialog_ExportWindow.forceGenerateRoof;
+            sld.needRoofClearance = Dialog_ExportWindow.needRoofClearance;
+            sld.tags = Dialog_ExportWindow.tags.ToList();
+            sld.terrainGrid = CreateTerrainlayout(cellExport, area, map);
+            sld.roofGrid = CreateRoofGrid(cellExport, area, map);
+            sld.modRequirements = GetNeededMods(cellExport, pairsCellThingList);
+
+            int numOfLayout = GetMaxThings(cellExport, pairsCellThingList);
             for (int i = 0; i < numOfLayout; i++)
             {
-                layouts.Add(CreateThinglayout(cellExport, i, area, pairsCellThingList, exportFilth, exportPlant));
+                sld.layouts.Add(CreateIndexLayout(cellExport, pairsCellThingList, area, i));
             }
 
-            sld.Add(layouts);
-
-            // Add terrain layout
-            XElement terrainGrid = CreateTerrainlayout(cellExport, area, map, exportNatural, out bool addTerrain);
-            if (addTerrain)
-                sld.Add(terrainGrid);
-            // Add roofGrid
-            XElement roofGrid = CreateRoofGrid(cellExport, map, out bool addRoof, area);
-            if (addRoof)
-                sld.Add(roofGrid);
-            // Mod required
-            var requiredMods = GetNeededMods(cellExport, pairsCellThingList);
-            if (requiredMods.Count > 0)
-            {
-                XElement modRequirements = new XElement("modRequirements");
-                for (int i = 0; i < requiredMods.Count; i++)
-                {
-                    modRequirements.Add(new XElement("li", requiredMods[i]));
-                }
-                sld.Add(modRequirements);
-            }
+            sld.spawnAtPos = new List<Pos>();
+            sld.spawnAt = new List<string>();
+            sld.symbolsLists = new List<List<SymbolDef>>();
+            sld.terrainGridResolved = new List<TerrainDef>();
+            sld.roofGridResolved = new List<string>();
+            sld.ResolveLayouts();
 
             return sld;
         }
@@ -58,50 +44,80 @@ namespace KCSG
         /// <summary>
         /// Create layout for things
         /// </summary>
-        private static XElement CreateThinglayout(List<IntVec3> cellExport, int index, Area area, Dictionary<IntVec3, List<Thing>> pairsCellThingList, bool exportFilth, bool exportPlant)
+        private static List<string> CreateIndexLayout(List<IntVec3> cellExport, Dictionary<IntVec3, List<Thing>> pairsCellThingList, Area area, int index)
         {
-            XElement liMain = new XElement("li", null);
-            EdgeFromList(cellExport, out int height, out int width);
-            List<Thing> aAdded = new List<Thing>();
+            var ll = new List<string>();
+            var hw = EdgeFromList(cellExport);
+            var active = area?.ActiveCells;
 
-            IntVec3 first = cellExport.First();
-            for (int i = 0; i < height; i++)
+            List<Thing> addedThings = new List<Thing>();
+
+            IntVec3 cell = cellExport.First();
+            // For each row
+            for (int z = 0; z < hw.z; z++)
             {
-                XElement li = new XElement("li", null);
                 string temp = "";
-                for (int i2 = 0; i2 < width; i2++)
+                // For each cell of the row
+                for (int x = 0; x < hw.x; x++)
                 {
-                    List<Thing> things = pairsCellThingList.TryGetValue(first).FindAll(t => t.def.category != ThingCategory.Pawn && t.def.category != ThingCategory.Item);
-                    if (!exportFilth)
-                    {
+                    // Get the thing on the cell
+                    List<Thing> things = pairsCellThingList.TryGetValue(cell);
+                    // Remove filth if needed
+                    if (!Dialog_ExportWindow.exportFilth)
                         things.RemoveAll(t => t.def.category == ThingCategory.Filth);
-                    }
-                    if (!exportPlant)
-                    {
+                    // Remove plant if needed
+                    if (!Dialog_ExportWindow.exportPlant)
                         things.RemoveAll(t => t.def.category == ThingCategory.Plant);
-                    }
 
-                    Thing thing;
-                    if (things.Count < index + 1 || (area != null && !area.ActiveCells.Contains(first)))
+                    // Shouldn't be exported
+                    if (things.Count < index + 1 || (area != null && !active.Contains(cell)))
                     {
-                        if (i2 + 1 == width) temp += ".";
-                        else temp += ".,";
+                        AddToString(ref temp, ".", x, hw.x);
                     }
                     else
                     {
-                        thing = things[index];
-                        if (!aAdded.Contains(thing) && thing.Position == first)
+                        Thing thing = things[index];
+                        // It's a pawn
+                        if (thing is Pawn pawn && pawn != null)
+                        {
+                            SymbolDef symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.pawnKindDefNS == pawn.kindDef);
+                            if (symbolDef == null)
+                            {
+                                AddToString(ref temp, pawn.kindDef.defName, x, hw.x);
+                            }
+                            else
+                            {
+                                AddToString(ref temp, symbolDef.defName, x, hw.x);
+                            }
+                        }
+                        // It's an item
+                        else if (thing.def.category == ThingCategory.Item)
+                        {
+                            SymbolDef symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.thingDef == things.First().def && s.thingDef.category == ThingCategory.Item);
+                            if (symbolDef == null)
+                            {
+                                AddToString(ref temp, thing.def.defName, x, hw.x);
+                            }
+                            else
+                            {
+                                AddToString(ref temp, symbolDef.defName, x, hw.x);
+                            }
+                        }
+                        // It's something else
+                        // Make sure we don't add big building multiple times/add them on the right cell
+                        else if (!addedThings.Contains(thing) && thing.Position == cell)
                         {
                             SymbolDef symbolDef;
                             if (thing.Stuff != null)
                             {
-                                if (thing.def.rotatable) symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.thingDef == thing.def && s.stuffDef == thing.Stuff && s.rotation == thing.Rotation);
-                                else symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.thingDef == thing.def && s.stuffDef == thing.Stuff);
+                                symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.thingDef == thing.def
+                                                                                                   && s.stuffDef == thing.Stuff
+                                                                                                   && (thing.def.rotatable == false || s.rotation == thing.Rotation));
                             }
                             else
                             {
-                                if (thing.def.rotatable) symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.thingDef == thing.def && s.rotation == thing.Rotation);
-                                else symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.thingDef == thing.def);
+                                symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.thingDef == thing.def
+                                                                                                   && (thing.def.rotatable == false || s.rotation == thing.Rotation));
                             }
 
                             if (symbolDef == null)
@@ -110,221 +126,136 @@ namespace KCSG
                                 if (thing.Stuff != null) symbolString += "_" + thing.Stuff.defName;
                                 if (thing.def.rotatable && thing.def.category != ThingCategory.Plant) symbolString += "_" + StartupActions.Rot4ToStringEnglish(thing.Rotation);
 
-                                if (i2 + 1 == width) temp += symbolString;
-                                else temp += symbolString + ",";
+                                AddToString(ref temp, symbolString, x, hw.x);
                             }
                             else
                             {
-                                if (i2 + 1 == width) temp += symbolDef.defName;
-                                else temp += symbolDef.defName + ",";
+                                AddToString(ref temp, symbolDef.defName, x, hw.x);
                             }
-                            aAdded.Add(thing);
+                            // Add to treated things
+                            addedThings.Add(thing);
                         }
+                        // We added it, skip
                         else
                         {
-                            if (i2 + 1 == width) temp += ".";
-                            else temp += ".,";
+                            AddToString(ref temp, ".", x, hw.x);
                         }
                     }
-                    first.x++;
+
+                    cell.x++;
                 }
-                first.x -= width;
-                li.Add(temp);
-                liMain.Add(li);
-                first.z++;
+
+                cell.x -= hw.x;
+                cell.z++;
+
+                ll.Add(temp);
             }
-            return liMain;
+
+            return ll;
+        }
+
+        /// <summary>
+        /// Add a string to a string, add comma if necessary
+        /// </summary>
+        private static void AddToString(ref string str, string add, int x, int rx)
+        {
+            if (x + 1 == rx)
+            {
+                str += add;
+            }
+            else
+            {
+                str += add;
+                str += ",";
+            }
         }
 
         /// <summary>
         /// Create layout for terrains
         /// </summary>
-        private static XElement CreateTerrainlayout(List<IntVec3> cellExport, Area area, Map map, bool exportNatural, out bool add)
+        private static List<string> CreateTerrainlayout(List<IntVec3> cellExport, Area area, Map map)
         {
-            XElement liMain = new XElement("terrainGrid", null);
-            EdgeFromList(cellExport, out int height, out int width);
-            add = false;
+            var ll = new List<string>();
+            var hw = EdgeFromList(cellExport);
+            var active = area?.ActiveCells;
+            var add = false;
 
-            IntVec3 first = cellExport.First();
-            for (int i = 0; i < height; i++)
+            IntVec3 cell = cellExport.First();
+            for (int z = 0; z < hw.z; z++)
             {
-                XElement li = new XElement("li", null);
                 string temp = "";
-                for (int i2 = 0; i2 < width; i2++)
+                for (int x = 0; x < hw.x; x++)
                 {
-                    if (area != null && !area.ActiveCells.Contains(first))
+                    TerrainDef terrain = map.terrainGrid.TerrainAt(cell);
+                    // Shouldn't be exported
+                    if (area != null && !active.Contains(cell))
                     {
-                        if (i2 + 1 == width) temp += ".";
-                        else temp += ".,";
+                        AddToString(ref temp, ".", x, hw.x);
                     }
-                    else if (map.terrainGrid.TerrainAt(first) is TerrainDef d && !d.BuildableByPlayer && !d.HasTag("Road") && !exportNatural)
+                    else if (!terrain.BuildableByPlayer && !terrain.HasTag("Road") && !Dialog_ExportWindow.exportNatural)
                     {
-                        if (i2 + 1 == width) temp += ".";
-                        else temp += ".,";
+                        AddToString(ref temp, ".", x, hw.x);
                     }
                     else
                     {
-                        // Find corresponding symbol
-                        if (map.terrainGrid.TerrainAt(first) is TerrainDef terrainD)
-                        {
-                            add = true;
-                            if (i2 + 1 == width) temp += terrainD.defName;
-                            else temp += terrainD.defName + ",";
-                        }
-                        else
-                        {
-                            if (i2 + 1 == width) temp += ".";
-                            else temp += ".,";
-                        }
+                        AddToString(ref temp, terrain.defName, x, hw.x);
+                        add = true;
                     }
-                    first.x++;
+
+                    cell.x++;
                 }
-                first.x -= width;
-                li.Add(temp);
-                liMain.Add(li);
-                first.z++;
+
+                cell.x -= hw.x;
+                cell.z++;
+
+                ll.Add(temp);
             }
-            return liMain;
+
+            if (add)
+                return ll;
+
+            return new List<string>();
         }
 
         /// <summary>
         /// Create roof grid
         /// </summary>
-        private static XElement CreateRoofGrid(List<IntVec3> cellExport, Map map, out bool add, Area area)
+        private static List<string> CreateRoofGrid(List<IntVec3> cellExport, Area area, Map map)
         {
-            XElement roofGrid = new XElement("roofGrid", null);
-            EdgeFromList(cellExport, out int height, out int width);
-            add = false;
+            var ll = new List<string>();
+            var hw = EdgeFromList(cellExport);
+            var active = area?.ActiveCells;
 
-            IntVec3 first = cellExport.First();
-            for (int i = 0; i < height; i++)
+            IntVec3 cell = cellExport.First();
+            for (int z = 0; z < hw.z; z++)
             {
-                XElement li = new XElement("li", null);
                 string temp = "";
-                for (int i2 = 0; i2 < width; i2++)
+                for (int x = 0; x < hw.x; x++)
                 {
-                    if (area != null && !area.ActiveCells.Contains(first))
+                    if (area != null && !active.Contains(cell))
                     {
-                        if (i2 + 1 == width) temp += ".";
-                        else temp += ".,";
+                        AddToString(ref temp, ".", x, hw.x);
                     }
-                    else if (first.GetRoof(map) is RoofDef roofDef && roofDef != null)
+                    else if (cell.GetRoof(map) is RoofDef roofDef && roofDef != null)
                     {
-                        add = true;
-                        string roofType = roofDef == RoofDefOf.RoofRockThick ? "3" : (roofDef == RoofDefOf.RoofRockThin ? "2" : "1");
-                        if (i2 + 1 == width) temp += roofType;
-                        else temp += $"{roofType},";
+                        var roofType = roofDef == RoofDefOf.RoofRockThick ? "3" : (roofDef == RoofDefOf.RoofRockThin ? "2" : "1");
+                        AddToString(ref temp, roofType, x, hw.x);
                     }
                     else
                     {
-                        if (i2 + 1 == width) temp += ".";
-                        else temp += ".,";
+                        AddToString(ref temp, ".", x, hw.x);
                     }
-                    first.x++;
+
+                    cell.x++;
                 }
-                first.x -= width;
-                li.Add(temp);
-                roofGrid.Add(li);
-                first.z++;
+
+                cell.x -= hw.x;
+                cell.z++;
+
+                ll.Add(temp);
             }
-            return roofGrid;
-        }
 
-        /// <summary>
-        /// Create layout for pawns
-        /// </summary>
-        private static XElement CreatePawnlayout(List<IntVec3> cellExport, Area area, out bool add, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
-        {
-            XElement liMain = new XElement("li", null);
-            EdgeFromList(cellExport, out int height, out int width);
-            add = false;
-
-            IntVec3 first = cellExport.First();
-            for (int i = 0; i < height; i++)
-            {
-                string temp = "";
-                for (int i2 = 0; i2 < width; i2++)
-                {
-                    List<Thing> pawns = pairsCellThingList.TryGetValue(first).FindAll(t => t is Pawn p && p != null).ToList();
-                    if (pawns.Count <= 0 || (area != null && !area.ActiveCells.Contains(first)))
-                    {
-                        if (i2 + 1 == width) temp += ".";
-                        else temp += ".,";
-                    }
-                    else
-                    {
-                        if (pawns.First() is Pawn pawn && pawn != null)
-                        {
-                            if (!add) add = true;
-                            SymbolDef symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.pawnKindDefNS == pawn.kindDef);
-                            if (symbolDef == null)
-                            {
-                                string symbolString = pawn.kindDef.defName;
-
-                                if (i2 + 1 == width) temp += symbolString;
-                                else temp += symbolString + ",";
-                            }
-                            else
-                            {
-                                if (i2 + 1 == width) temp += symbolDef.defName;
-                                else temp += symbolDef.defName + ",";
-                            }
-                        }
-                    }
-                    first.x++;
-                }
-                first.x -= width;
-                liMain.Add(new XElement("li", temp));
-                first.z++;
-            }
-            return liMain;
-        }
-
-        /// <summary>
-        /// Create layout for items
-        /// </summary>
-        private static XElement CreateItemlayout(List<IntVec3> cellExport, Area area, out bool add, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
-        {
-            add = false;
-            XElement liMain = new XElement("li", null);
-            EdgeFromList(cellExport, out int height, out int width);
-
-            IntVec3 first = cellExport.First();
-            for (int i = 0; i < height; i++)
-            {
-                string temp = "";
-                for (int i2 = 0; i2 < width; i2++)
-                {
-                    List<Thing> things = pairsCellThingList.TryGetValue(first).FindAll(t => t.def.category == ThingCategory.Item && t.def.category != ThingCategory.Filth).ToList();
-                    if (things.Count == 0 || (area != null && !area.ActiveCells.Contains(first)))
-                    {
-                        if (i2 + 1 == width) temp += ".";
-                        else temp += ".,";
-                    }
-                    else
-                    {
-                        if (!add) add = true;
-                        SymbolDef symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.thingDef == things.First().def && s.thingDef.category == ThingCategory.Item);
-                        if (symbolDef == null)
-                        {
-                            string symbolString = things.First().def.defName;
-
-                            if (i2 + 1 == width) temp += symbolString;
-                            else temp += symbolString + ",";
-                        }
-                        else
-                        {
-                            if (i2 + 1 == width) temp += symbolDef.defName;
-                            else temp += symbolDef.defName + ",";
-                        }
-                    }
-                    first.x++;
-                }
-                first.x -= width;
-                liMain.Add(new XElement("li", temp));
-                first.z++;
-            }
-            return liMain;
+            return ll;
         }
 
         /// <summary>
@@ -410,24 +341,25 @@ namespace KCSG
         /// <summary>
         /// Get height/width from list
         /// </summary>
-        private static void EdgeFromList(List<IntVec3> cellExport, out int height, out int width)
+        private static IntVec2 EdgeFromList(List<IntVec3> cellExport)
         {
-            height = 0;
-            width = 0;
+            var vec = new IntVec2();
             IntVec3 first = cellExport[0];
 
             for (int i = 0; i < cellExport.Count; i++)
             {
                 var cell = cellExport[i];
-                if (first.z == cell.z) width++;
-                if (first.x == cell.x) height++;
+                if (first.z == cell.z) vec.x++;
+                if (first.x == cell.x) vec.z++;
             }
+
+            return vec;
         }
 
         /// <summary>
-        /// Get the maximum amount of things in one cell in this list
+        /// Get the maximum amount of things on one cell of the list
         /// </summary>
-        private static int GetMaxThings(List<IntVec3> cellExport, Dictionary<IntVec3, List<Thing>> pairsCellThingList, bool exportFilth, bool exportPlant)
+        private static int GetMaxThings(List<IntVec3> cellExport, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
         {
             int max = 1;
             for (int i = 0; i < cellExport.Count; i++)
@@ -438,13 +370,10 @@ namespace KCSG
                 for (int o = 0; o < things.Count; o++)
                 {
                     var thing = things[o];
-                    if (thing is Pawn
-                        || thing.def.category == ThingCategory.Item
-                        || (!exportFilth && thing.def.category == ThingCategory.Filth)
-                        || (!exportPlant && thing.def.category == ThingCategory.Plant))
-                    {
+                    if (!Dialog_ExportWindow.exportFilth && thing.def.category == ThingCategory.Filth)
                         continue;
-                    }
+                    if (!Dialog_ExportWindow.exportPlant && thing.def.category == ThingCategory.Plant)
+                        continue;
 
                     count++;
                 }

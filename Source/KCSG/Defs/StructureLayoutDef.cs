@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using Verse;
 
 namespace KCSG
@@ -59,10 +60,11 @@ namespace KCSG
 
         internal bool IsForSlaves { get; private set; }
 
-        public override void ResolveReferences()
+        /// <summary>
+        /// Populate symbol list and roofgrid. Prevent the need of doing it at each gen
+        /// </summary>
+        public void ResolveLayouts()
         {
-            base.ResolveReferences();
-
             foreach (string sPos in spawnAt)
             {
                 spawnAtPos.Add(Pos.FromString(sPos));
@@ -71,14 +73,8 @@ namespace KCSG
             // Get height and width
             height = layouts[0].Count;
             width = layouts[0][0].Split(',').Count();
-        }
 
-        /// <summary>
-        /// Populate symbol list and roofgrid. Prevent the need of doing it at each gen
-        /// </summary>
-        public void ResolveLayouts()
-        {
-            var modName = modContentPack.Name;
+            var modName = modContentPack?.Name;
             // Populate symbolsLists and setup IsForSlaves
             for (int i = 0; i < layouts.Count; i++)
             {
@@ -132,6 +128,82 @@ namespace KCSG
                     break;
                 }
             }
+        }
+
+        /// <summary>
+        /// Create XML elements
+        /// </summary>
+        public string ToXMLString()
+        {
+            XElement layoutDef = new XElement("KCSG.StructureLayoutDef", null);
+
+            if (isStorage)
+                layoutDef.Add(new XElement("isStorage", isStorage));
+
+            if (!spawnConduits)
+                layoutDef.Add(new XElement("spawnConduits", spawnConduits));
+
+            if (!layouts.NullOrEmpty())
+            {
+                var l = new XElement("layouts", null);
+                foreach (var lst in layouts)
+                {
+                    var ll = new XElement("li", null);
+                    foreach (var str in lst)
+                        ll.Add(new XElement("li", str));
+
+                    l.Add(ll);
+                }
+                layoutDef.Add(l);
+            }
+
+            if (!roofGrid.NullOrEmpty())
+            {
+                var l = new XElement("roofGrid", null);
+                foreach (var str in roofGrid)
+                {
+                    l.Add(new XElement("li", str));
+                }
+                layoutDef.Add(l);
+            }
+
+            if (!terrainGrid.NullOrEmpty())
+            {
+                var l = new XElement("terrainGrid", null);
+                foreach (var str in terrainGrid)
+                {
+                    l.Add(new XElement("li", str));
+                }
+                layoutDef.Add(l);
+            }
+
+            if (forceGenerateRoof)
+                layoutDef.Add(new XElement("forceGenerateRoof", forceGenerateRoof));
+
+            if (needRoofClearance)
+                layoutDef.Add(new XElement("needRoofClearance", needRoofClearance));
+
+            if (!tags.NullOrEmpty())
+            {
+                var l = new XElement("tags", null);
+                foreach (var str in tags)
+                {
+                    l.Add(new XElement("li", str));
+                }
+                layoutDef.Add(l);
+            }
+
+            if (!modRequirements.NullOrEmpty())
+            {
+                var l = new XElement("modRequirements", null);
+                foreach (var str in modRequirements)
+                {
+                    l.Add(new XElement("li", str));
+                }
+                layoutDef.Add(l);
+            }
+
+            return layoutDef.ToString();
         }
     }
 }

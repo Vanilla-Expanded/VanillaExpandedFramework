@@ -46,7 +46,36 @@ namespace KCSG
             }
         }
 
-        [DebugAction("KCSG", "Quickspawn mod symbol...", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        [DebugAction("KCSG", "Quickspawn temp structure...", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        private static void QuickspawnTempStructure()
+        {
+            if (Dialog_ExportWindow.exportedLayouts.Count > 0)
+            {
+                List<DebugMenuOption> list = new List<DebugMenuOption>();
+                foreach (var pair in Dialog_ExportWindow.exportedLayouts)
+                {
+                    var layoutDef = pair.Value;
+                    list.Add(new DebugMenuOption(layoutDef.defName, DebugMenuOptionMode.Tool, delegate ()
+                    {
+                        Map map = Find.CurrentMap;
+                        if (UI.MouseCell().InBounds(map))
+                        {
+                            CellRect cellRect = CellRect.CenteredOn(UI.MouseCell(), layoutDef.width, layoutDef.height);
+                            GenOption.mineables = new Dictionary<IntVec3, Mineable>();
+                            foreach (var cell in cellRect)
+                            {
+                                if (cell.InBounds(map))
+                                    GenOption.mineables.Add(cell, cell.GetFirstMineable(map));
+                            }
+                            GenUtils.GenerateLayout(layoutDef, cellRect, map);
+                        }
+                    }));
+                }
+                Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
+            }
+        }
+
+        [DebugAction("KCSG", "Quickspawn symbol...", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void QuickspawnSymbol()
         {
             if (DefDatabase<SymbolDef>.AllDefs.Count() > 0)
@@ -71,21 +100,21 @@ namespace KCSG
             }
         }
 
-        [DebugAction("KCSG", "Destroy all pawns", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
-        private static void RemoveAllPawns()
-        {
-            foreach (Pawn pawn in Find.CurrentMap.mapPawns.AllPawnsSpawned.ToList())
-            {
-                pawn.Destroy(DestroyMode.KillFinalize);
-            }
-        }
-
         [DebugAction("KCSG", "Destroy all hostile pawns", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void RemoveAllHostilePawns()
         {
             foreach (Pawn pawn in Find.CurrentMap.mapPawns.AllPawnsSpawned.ToList())
             {
                 if (pawn.Faction != Faction.OfPlayer) pawn.Destroy(DestroyMode.KillFinalize);
+            }
+        }
+
+        [DebugAction("KCSG", "Destroy all pawns", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        private static void RemoveAllPawns()
+        {
+            foreach (Pawn pawn in Find.CurrentMap.mapPawns.AllPawnsSpawned.ToList())
+            {
+                pawn.Destroy(DestroyMode.KillFinalize);
             }
         }
 
