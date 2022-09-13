@@ -11,7 +11,7 @@ namespace KCSG
         /// <summary>
         /// Return a struct def coresponding to area exported
         /// </summary>
-        public static XElement CreateStructureDef(List<IntVec3> cellExport, Map map, Dictionary<IntVec3, List<Thing>> pairsCellThingList, Area area, bool exportFilth, bool exportNatural)
+        public static XElement CreateStructureDef(List<IntVec3> cellExport, Map map, Dictionary<IntVec3, List<Thing>> pairsCellThingList, Area area, bool exportFilth, bool exportNatural, bool exportPlant)
         {
             cellExport.Sort((x, y) => x.z.CompareTo(y.z));
             XElement sld = new XElement("KCSG.StructureLayoutDef", null);
@@ -23,17 +23,18 @@ namespace KCSG
             // Add items layout
             XElement itemsL = CreateItemlayout(cellExport, area, out bool add2, pairsCellThingList);
             if (add2) layouts.Add(itemsL);
-            // Add terrain layout
-            XElement terrainL = CreateTerrainlayout(cellExport, area, map, exportNatural, out bool add3);
-            if (add3) layouts.Add(terrainL);
             // Add things layouts
-            int numOfLayout = GetMaxThings(cellExport, pairsCellThingList, exportFilth);
+            int numOfLayout = GetMaxThings(cellExport, pairsCellThingList, exportFilth, exportPlant);
             for (int i = 0; i < numOfLayout; i++)
             {
-                layouts.Add(CreateThinglayout(cellExport, i, area, pairsCellThingList, exportFilth));
+                layouts.Add(CreateThinglayout(cellExport, i, area, pairsCellThingList, exportFilth, exportPlant));
             }
 
             sld.Add(layouts);
+
+            // Add terrain layout
+            XElement terrainL = CreateTerrainlayout(cellExport, area, map, exportNatural, out bool add3);
+            if (add3) sld.Add(terrainL);
 
             // Add roofGrid
             XElement roofGrid = CreateRoofGrid(cellExport, map, out bool add4, area);
@@ -57,7 +58,7 @@ namespace KCSG
         /// <summary>
         /// Create layout for things
         /// </summary>
-        private static XElement CreateThinglayout(List<IntVec3> cellExport, int index, Area area, Dictionary<IntVec3, List<Thing>> pairsCellThingList, bool exportFilth)
+        private static XElement CreateThinglayout(List<IntVec3> cellExport, int index, Area area, Dictionary<IntVec3, List<Thing>> pairsCellThingList, bool exportFilth, bool exportPlant)
         {
             XElement liMain = new XElement("li", null);
             EdgeFromList(cellExport, out int height, out int width);
@@ -74,6 +75,10 @@ namespace KCSG
                     if (!exportFilth)
                     {
                         things.RemoveAll(t => t.def.category == ThingCategory.Filth);
+                    }
+                    if (!exportPlant)
+                    {
+                        things.RemoveAll(t => t.def.category == ThingCategory.Plant);
                     }
 
                     Thing thing;
@@ -136,7 +141,7 @@ namespace KCSG
         /// </summary>
         private static XElement CreateTerrainlayout(List<IntVec3> cellExport, Area area, Map map, bool exportNatural, out bool add)
         {
-            XElement liMain = new XElement("li", null);
+            XElement liMain = new XElement("terrainGrid", null);
             EdgeFromList(cellExport, out int height, out int width);
             add = false;
 
@@ -422,7 +427,7 @@ namespace KCSG
         /// <summary>
         /// Get the maximum amount of things in one cell in this list
         /// </summary>
-        private static int GetMaxThings(List<IntVec3> cellExport, Dictionary<IntVec3, List<Thing>> pairsCellThingList, bool exportFilth)
+        private static int GetMaxThings(List<IntVec3> cellExport, Dictionary<IntVec3, List<Thing>> pairsCellThingList, bool exportFilth, bool exportPlant)
         {
             int max = 1;
             for (int i = 0; i < cellExport.Count; i++)
@@ -435,7 +440,8 @@ namespace KCSG
                     var thing = things[o];
                     if (thing is Pawn
                         || thing.def.category == ThingCategory.Item
-                        || (!exportFilth && thing.def.category == ThingCategory.Filth))
+                        || (!exportFilth && thing.def.category == ThingCategory.Filth)
+                        || (!exportPlant && thing.def.category == ThingCategory.Plant))
                     {
                         continue;
                     }

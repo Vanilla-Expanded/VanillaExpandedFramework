@@ -86,6 +86,9 @@ namespace KCSG
 
         public static void CreateSymbols()
         {
+            if (defCreated)
+                return;
+
             createdSymbolAmount = 0;
 
             CreateSymbolsFor("ludeon.rimworld");
