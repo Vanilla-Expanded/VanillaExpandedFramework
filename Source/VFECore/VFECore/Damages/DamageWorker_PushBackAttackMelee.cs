@@ -13,12 +13,12 @@ namespace VFECore
             if (dinfo.Instigator != null)
             {
                 var extension = this.def.GetModExtension<DamageExtension>();
-                TryToKnockBack(dinfo.Instigator, thing, extension.pushBackDistance.RandomInRange);
+                TryToKnockBack(dinfo.Instigator, thing, extension.pushBackDistance.RandomInRange, extension);
             }
             return base.Apply(dinfo, thing);
         }
 
-        private void TryToKnockBack(Thing attacker, Thing thing, float knockBackDistance)
+        private void TryToKnockBack(Thing attacker, Thing thing, float knockBackDistance, DamageExtension extension)
         {
             float distanceDiff = attacker.Position.DistanceTo(thing.Position) < knockBackDistance ? attacker.Position.DistanceTo(thing.Position) : knockBackDistance;
             Predicate<IntVec3> validator = delegate (IntVec3 x)
@@ -58,7 +58,11 @@ namespace VFECore
                 {
                     victim.pather.StopDead();
                     victim.jobs.StopAll();
-                    FleckMaker.Static(victim.Position, victim.Map, FleckDefOf.PsycastAreaEffect, 2f);
+                }
+                if (extension.fleckOnDamage != null)
+                {
+                    var target = extension.fleckOnInstigator ? attacker : thing;
+                    FleckMaker.Static(target.Position, target.Map, extension.fleckOnDamage, extension.fleckRadius);
                 }
             }
         }

@@ -6,5 +6,8 @@ namespace VFECore
     {
         public FloatRange pushBackDistance;
         public SoundDef soundOnDamage;
+        public FleckDef fleckOnDamage;
+        public float fleckRadius;
+        public bool fleckOnInstigator;
     }
 }
