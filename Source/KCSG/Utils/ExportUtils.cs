@@ -33,23 +33,23 @@ namespace KCSG
             sld.Add(layouts);
 
             // Add terrain layout
-            XElement terrainL = CreateTerrainlayout(cellExport, area, map, exportNatural, out bool add3);
-            if (add3) sld.Add(terrainL);
-
+            XElement terrainGrid = CreateTerrainlayout(cellExport, area, map, exportNatural, out bool addTerrain);
+            if (addTerrain)
+                sld.Add(terrainGrid);
             // Add roofGrid
-            XElement roofGrid = CreateRoofGrid(cellExport, map, out bool add4, area);
-            if (add4) sld.Add(roofGrid);
-
+            XElement roofGrid = CreateRoofGrid(cellExport, map, out bool addRoof, area);
+            if (addRoof)
+                sld.Add(roofGrid);
             // Mod required
             var requiredMods = GetNeededMods(cellExport, pairsCellThingList);
             if (requiredMods.Count > 0)
             {
-                XElement requiredX = new XElement("modRequirements");
+                XElement modRequirements = new XElement("modRequirements");
                 for (int i = 0; i < requiredMods.Count; i++)
                 {
-                    requiredX.Add(new XElement("li", requiredMods[i]));
+                    modRequirements.Add(new XElement("li", requiredMods[i]));
                 }
-                sld.Add(requiredX);
+                sld.Add(modRequirements);
             }
 
             return sld;
