@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Verse;
 
 namespace KCSG
@@ -7,18 +6,6 @@ namespace KCSG
     public class CustomGenOption : DefModExtension
     {
         public bool UsingSingleLayout => chooseFromlayouts.Count > 0;
-
-        // TODO - Compat remove in next version
-        public List<string> SymbolResolvers
-        {
-            get
-            {
-                if (symbolResolvers == null)
-                    return ruinSymbolResolvers;
-
-                return symbolResolvers;
-            }
-        }
 
         /* Nomadic faction */
         public bool canSpawnSettlements = true;
@@ -39,14 +26,6 @@ namespace KCSG
         public List<ThingDef> scatterThings = new List<ThingDef>();
         public List<ThingDef> filthTypes = new List<ThingDef>();
         public float scatterChance = 0.4f;
-
-        // TODO Obsolete - To remove in next rimworld version
-        [Obsolete]
-        public bool useStructureLayout;
-        [Obsolete]
-        public bool shouldRuin = false;
-        [Obsolete]
-        public List<string> ruinSymbolResolvers;
 
         public override IEnumerable<string> ConfigErrors()
         {

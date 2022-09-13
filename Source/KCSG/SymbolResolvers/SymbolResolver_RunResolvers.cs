@@ -6,7 +6,7 @@ namespace KCSG
     {
         public override void Resolve(ResolveParams rp)
         {
-            if (GenOption.ext.SymbolResolvers?.Count > 0)
+            if (GenOption.ext.symbolResolvers?.Count > 0)
             {
                 for (int i = 0; i < GenOption.ext.symbolResolvers.Count; i++)
                 {

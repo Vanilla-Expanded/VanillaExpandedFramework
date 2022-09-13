@@ -81,7 +81,7 @@ namespace KCSG
                         }
                     }
                 }
-                else if (symbol.thingDef.category == ThingCategory.Pawn && GenOption.ext?.SymbolResolvers == null)
+                else if (symbol.thingDef.category == ThingCategory.Pawn && GenOption.ext?.symbolResolvers == null)
                 {
                     GenSpawn.Spawn(symbol.thingDef, cell, map, WipeMode.VanishOrMoveAside);
                 }

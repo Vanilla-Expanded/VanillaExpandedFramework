@@ -53,7 +53,7 @@ namespace KCSG
             GenUtils.PreClean(map, cellRect, fullClear, layoutDef.roofGridResolved);
             GenUtils.GenerateLayout(layoutDef, cellRect, map);
 
-            if (GenOption.ext.SymbolResolvers?.Count > 0)
+            if (GenOption.ext.symbolResolvers?.Count > 0)
             {
                 Debug.Message("GenStep_CustomStructureGen - Additional symbol resolvers");
                 BaseGen.symbolStack.Push("kcsg_runresolvers", new ResolveParams
