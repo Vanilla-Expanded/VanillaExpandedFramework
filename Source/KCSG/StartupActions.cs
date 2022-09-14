@@ -178,6 +178,7 @@ namespace KCSG
             {
                 defName = $"{pawnKindDef.defName}",
                 pawnKindDefNS = pawnKindDef,
+                isSlave = pawnKindDef.defName == "Slave"
             };
             createdSymbolAmount++;
             return symbolDef;

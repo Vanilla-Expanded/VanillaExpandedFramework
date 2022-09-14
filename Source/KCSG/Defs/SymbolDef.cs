@@ -83,6 +83,18 @@ namespace KCSG
             if (pawnKindDef != null)
                 layoutDef.Add(new XElement("pawnKindDef", pawnKindDef));
 
+            if (isSlave)
+                layoutDef.Add(new XElement("isSlave", isSlave));
+
+            if (faction != null)
+                layoutDef.Add(new XElement("faction", faction));
+
+            if (spawnDead)
+                layoutDef.Add(new XElement("spawnDead", spawnDead));
+
+            if (spawnRotten)
+                layoutDef.Add(new XElement("spawnRotten", spawnRotten));
+
             if (rotation != Rot4.North)
                 layoutDef.Add(new XElement("rotation", StartupActions.Rot4ToStringEnglish(rotation)));
 

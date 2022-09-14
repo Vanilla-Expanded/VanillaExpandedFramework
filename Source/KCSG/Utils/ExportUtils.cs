@@ -414,15 +414,21 @@ namespace KCSG
                         if (symbolBlacklist.Contains(t.def.defName))
                             continue;
 
-                        if (t.def.category == ThingCategory.Item)
+                        if (t is Corpse corpse)
                         {
-                            var sym = CreateItemSymbol(t);
+                            var sym = CreateCorpseSymbol(corpse);
                             if (sym != null)
                                 symbols.Add(sym);
                         }
-                        else if (t.def.category == ThingCategory.Pawn)
+                        else if (t is Pawn pawn)
                         {
-                            var sym = CreatePawnSymbol(t as Pawn);
+                            var sym = CreatePawnSymbol(pawn);
+                            if (sym != null)
+                                symbols.Add(sym);
+                        }
+                        else if (t.def.category == ThingCategory.Item)
+                        {
+                            var sym = CreateItemSymbol(t);
                             if (sym != null)
                                 symbols.Add(sym);
                         }
@@ -478,8 +484,42 @@ namespace KCSG
                 var symbol = new SymbolDef
                 {
                     defName = defName,
-                    pawnKindDef = defName
+                    pawnKindDef = defName,
+                    isSlave = pawn.IsSlave,
                 };
+
+                symbol.ResolveReferences();
+                Dialog_ExportWindow.exportedSymbolsName.Add(defName);
+                DefDatabase<SymbolDef>.Add(symbol);
+
+                return symbol;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Create symbol from a corpse
+        /// </summary>
+        private static SymbolDef CreateCorpseSymbol(Corpse corpse)
+        {
+            var pawn = corpse.InnerPawn;
+            var defName = pawn.kindDef.defName;
+
+            if (!Dialog_ExportWindow.exportedSymbolsName.Contains(defName)
+                && !DefDatabase<SymbolDef>.AllDefsListForReading.FindAll(s => s.defName == defName).Any())
+            {
+                var symbol = new SymbolDef
+                {
+                    defName = "Corpse_" + defName,
+                    pawnKindDef = defName,
+                    isSlave = pawn.IsSlave,
+                    spawnDead = true
+                };
+
+                var comp = corpse.GetComp<CompRottable>();
+                if (comp != null)
+                    symbol.spawnRotten = comp.RotProgress == 1f;
 
                 symbol.ResolveReferences();
                 Dialog_ExportWindow.exportedSymbolsName.Add(defName);
