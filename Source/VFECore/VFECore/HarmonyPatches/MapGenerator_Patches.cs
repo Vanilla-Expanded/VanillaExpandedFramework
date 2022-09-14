@@ -8,10 +8,40 @@ using UnityEngine;
 using RimWorld.Planet;
 using HarmonyLib;
 
-// Copyright Sarg - Alpha Biomes 2020 & Taranchuck
-
 namespace VFECore
 {
+    [HarmonyPatch(typeof(GenStep_Terrain), "TerrainFrom")]
+    public static class GenStep_Terrain_TerrainFrom_Patch
+    {
+        public static void Postfix(Map map, ref TerrainDef __result)
+        {
+            var extension = map.Biome.GetModExtension<BiomeExtension>();
+            if (extension?.terrainsToSwap != null)
+            {
+                foreach (var terrainData in extension.terrainsToSwap)
+                {
+                    if (terrainData.from == __result)
+                    {
+                        __result = terrainData.to;
+                    }
+                }
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(MapGenerator), "GenerateContentsIntoMap")]
+    public static class MapGenerator_GenerateContentsIntoMap_Patch
+    {
+        public static void Prefix(ref IEnumerable<GenStepWithParams> genStepDefs, Map map, int seed)
+        {
+            var extension = map.Biome.GetModExtension<BiomeExtension>();
+            if (extension?.skipGenSteps != null)
+            {
+                genStepDefs = genStepDefs.Where(x => !extension.skipGenSteps.Contains(x.def)).ToList();
+            }
+        }
+    }
+
     [HarmonyPatch(typeof(MapGenerator), nameof(MapGenerator.GenerateMap))]
     public static class MapGenerator_GenerateMap_Patch
     {

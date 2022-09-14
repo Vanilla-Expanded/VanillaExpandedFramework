@@ -41,7 +41,8 @@ namespace VFECore
         public bool neverConnectToRoads;
         public float minDistanceToOtherSettlements;
         public bool shouldHaveLeader = true;
-        public bool excludeFromCommConsole = false;
+        public bool excludeFromCommConsole;
+        public bool excludeFromQuests;
 
         public List<RaidStrategyDef> allowedStrategies = new List<RaidStrategyDef>();
     }
