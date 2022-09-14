@@ -171,7 +171,7 @@ namespace KCSG
                     }
 
                     GUIUtility.systemCopyBuffer = output;
-                    Messages.Message("Copied to clipboard.", MessageTypeDefOf.TaskCompletion);
+                    Messages.Message($"Copied {count} symbols to clipboard.", MessageTypeDefOf.TaskCompletion);
                 }
                 else
                 {
