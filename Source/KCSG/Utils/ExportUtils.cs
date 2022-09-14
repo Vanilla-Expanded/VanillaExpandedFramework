@@ -8,6 +8,11 @@ namespace KCSG
     public class ExportUtils
     {
         /// <summary>
+        /// All blacklisted things
+        /// </summary>
+        private static readonly List<string> symbolBlacklist = new List<string> { "KCSG_PowerConduit", "MVCF_Dummy" };
+
+        /// <summary>
         /// Return a struct def coresponding to area exported
         /// </summary>
         public static StructureLayoutDef CreateStructureDef(Map map, Area area)
@@ -106,7 +111,7 @@ namespace KCSG
                         }
                         // It's something else
                         // Make sure we don't add big building multiple times/add them on the right cell
-                        else if (!addedThings.Contains(thing) && thing.Position == cell)
+                        else if (!symbolBlacklist.Contains(thing.def.defName) && !addedThings.Contains(thing) && thing.Position == cell)
                         {
                             SymbolDef symbolDef;
                             if (thing.Stuff != null)
@@ -355,6 +360,8 @@ namespace KCSG
                         continue;
                     if (!Dialog_ExportWindow.exportPlant && thing.def.category == ThingCategory.Plant)
                         continue;
+                    if (symbolBlacklist.Contains(thing.def.defName))
+                        continue;
 
                     count++;
                 }
@@ -404,6 +411,9 @@ namespace KCSG
                     List<Thing> things = pairsCellThingList.TryGetValue(c);
                     foreach (Thing t in things)
                     {
+                        if (symbolBlacklist.Contains(t.def.defName))
+                            continue;
+
                         if (t.def.category == ThingCategory.Item)
                         {
                             var sym = CreateItemSymbol(t);
