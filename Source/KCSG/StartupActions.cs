@@ -45,8 +45,12 @@ namespace KCSG
             // Cache layout per tag
             SettlementGenUtils.BuildingPlacement.CacheTags();
             // Make two new map generator, used with preventBridgeable
-            CreateMapDefs();
+            CreateMapGeneratorDefs();
         }
+
+        /// <summary>
+        /// Add missing symbol to dic, for verbose
+        /// </summary>
         public static void AddToMissing(string symbol)
         {
             if (missingSymbols.ContainsKey(symbol))
@@ -55,7 +59,11 @@ namespace KCSG
                 missingSymbols.Add(symbol, 1);
         }
 
-        private static void CreateMapDefs()
+        /// <summary>
+        /// Create MapGeneratorDef that use KCSG_TerrainNoPatches instead of Terrain
+        /// Allow to skip terrain patches maker
+        /// </summary>
+        private static void CreateMapGeneratorDefs()
         {
             var baseA = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_Base_Faction");
             MapGeneratorDef mgdA = new MapGeneratorDef
@@ -84,6 +92,9 @@ namespace KCSG
             DefDatabase<MapGeneratorDef>.Add(enc);
         }
 
+        /// <summary>
+        /// Create all symbols for rimworld/royalty/ideology and vfepropsanddecor if possible
+        /// </summary>
         public static void CreateSymbols()
         {
             if (defCreated)
@@ -101,14 +112,15 @@ namespace KCSG
             defCreated = true;
         }
 
+        /// <summary>
+        /// Add def with a max amount of 65535 SymbolDefs loaded
+        /// </summary>
+        /// <param name="def"></param>
         private static void AddDef(SymbolDef def)
         {
-            if (DefDatabase<SymbolDef>.DefCount < 65535)
+            if (DefDatabase<SymbolDef>.DefCount < 65535 && DefDatabase<SymbolDef>.GetNamedSilentFail(def.defName) == null)
             {
-                if (DefDatabase<SymbolDef>.GetNamedSilentFail(def.defName) == null)
-                {
-                    DefDatabase<SymbolDef>.Add(def);
-                }
+                DefDatabase<SymbolDef>.Add(def);
             }
             else
             {
@@ -117,6 +129,9 @@ namespace KCSG
             }
         }
 
+        /// <summary>
+        /// Create a thing SymbolDef
+        /// </summary>
         private static void CreateAllSymbolsForDef(ThingDef thing)
         {
             if (thing.category == ThingCategory.Item || thing.IsFilth)
@@ -160,6 +175,9 @@ namespace KCSG
             }
         }
 
+        /// <summary>
+        /// Create a plant SymbolDef
+        /// </summary>
         private static SymbolDef CreatePlantSymbolDef(ThingDef thing)
         {
             SymbolDef symbolDef = new SymbolDef
@@ -172,6 +190,9 @@ namespace KCSG
             return symbolDef;
         }
 
+        /// <summary>
+        /// Create a SymbolDef from a PawnKindDef
+        /// </summary>
         private static SymbolDef CreateSymbolDef(PawnKindDef pawnKindDef)
         {
             SymbolDef symbolDef = new SymbolDef
@@ -184,6 +205,9 @@ namespace KCSG
             return symbolDef;
         }
 
+        /// <summary>
+        /// Create a SymbolDef from a thing/stuff/rot
+        /// </summary>
         private static SymbolDef CreateSymbolDef(ThingDef thing, ThingDef stuff, Rot4 rot)
         {
             SymbolDef symbolDef = new SymbolDef
@@ -197,6 +221,9 @@ namespace KCSG
             return symbolDef;
         }
 
+        /// <summary>
+        /// Create a SymbolDef from a thing/stuff
+        /// </summary>
         private static SymbolDef CreateSymbolDef(ThingDef thing, ThingDef stuff)
         {
             SymbolDef symbolDef = new SymbolDef
@@ -209,6 +236,9 @@ namespace KCSG
             return symbolDef;
         }
 
+        /// <summary>
+        /// Create a SymbolDef from a thing/rot
+        /// </summary>
         private static SymbolDef CreateSymbolDef(ThingDef thing, Rot4 rot)
         {
             SymbolDef symbolDef = new SymbolDef
@@ -221,6 +251,9 @@ namespace KCSG
             return symbolDef;
         }
 
+        /// <summary>
+        /// Create a SymbolDef from a thing
+        /// </summary>
         private static SymbolDef CreateSymbolDef(ThingDef thing)
         {
             SymbolDef symbolDef = new SymbolDef
@@ -233,6 +266,9 @@ namespace KCSG
             return symbolDef;
         }
 
+        /// <summary>
+        /// Call CreateAllSymbolsForDef & CreateSymbolDef
+        /// </summary>
         private static void CreateSymbolsFor(string modId)
         {
             List<ThingDef> thingDefs = DefDatabase<ThingDef>.AllDefsListForReading.FindAll(t => t.modContentPack?.PackageId == modId);
@@ -248,6 +284,9 @@ namespace KCSG
             }
         }
 
+        /// <summary>
+        /// Translate a rot to english, no matter the choosen game language
+        /// </summary>
         public static string Rot4ToStringEnglish(Rot4 rot4)
         {
             switch (rot4.AsInt)
