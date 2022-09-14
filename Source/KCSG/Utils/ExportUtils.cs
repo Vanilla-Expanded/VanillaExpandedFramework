@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 using RimWorld;
 using Verse;
 
@@ -11,7 +10,7 @@ namespace KCSG
         /// <summary>
         /// Return a struct def coresponding to area exported
         /// </summary>
-        public static StructureLayoutDef CreateStructureDef(List<IntVec3> cellExport, Map map, Dictionary<IntVec3, List<Thing>> pairsCellThingList, Area area)
+        public static StructureLayoutDef CreateStructureDef(Map map, Area area)
         {
             var sld = new StructureLayoutDef();
 
@@ -21,14 +20,14 @@ namespace KCSG
             sld.forceGenerateRoof = Dialog_ExportWindow.forceGenerateRoof;
             sld.needRoofClearance = Dialog_ExportWindow.needRoofClearance;
             sld.tags = Dialog_ExportWindow.tags.ToList();
-            sld.terrainGrid = CreateTerrainlayout(cellExport, area, map);
-            sld.roofGrid = CreateRoofGrid(cellExport, area, map);
-            sld.modRequirements = GetNeededMods(cellExport, pairsCellThingList);
+            sld.terrainGrid = CreateTerrainlayout(area, map);
+            sld.roofGrid = CreateRoofGrid(area, map);
+            sld.modRequirements = GetNeededMods();
 
-            int numOfLayout = GetMaxThings(cellExport, pairsCellThingList);
+            int numOfLayout = GetMaxThings();
             for (int i = 0; i < numOfLayout; i++)
             {
-                sld.layouts.Add(CreateIndexLayout(cellExport, pairsCellThingList, area, i));
+                sld.layouts.Add(CreateIndexLayout(area, i));
             }
 
             sld.spawnAtPos = new List<Pos>();
@@ -44,8 +43,10 @@ namespace KCSG
         /// <summary>
         /// Create layout for things
         /// </summary>
-        private static List<string> CreateIndexLayout(List<IntVec3> cellExport, Dictionary<IntVec3, List<Thing>> pairsCellThingList, Area area, int index)
+        private static List<string> CreateIndexLayout(Area area, int index)
         {
+            var cellExport = Dialog_ExportWindow.cells;
+            var pairsCellThingList = Dialog_ExportWindow.pairsCellThingList;
             var ll = new List<string>();
             var hw = EdgeFromList(cellExport);
             var active = area?.ActiveCells;
@@ -173,8 +174,9 @@ namespace KCSG
         /// <summary>
         /// Create layout for terrains
         /// </summary>
-        private static List<string> CreateTerrainlayout(List<IntVec3> cellExport, Area area, Map map)
+        private static List<string> CreateTerrainlayout(Area area, Map map)
         {
+            var cellExport = Dialog_ExportWindow.cells;
             var ll = new List<string>();
             var hw = EdgeFromList(cellExport);
             var active = area?.ActiveCells;
@@ -220,8 +222,9 @@ namespace KCSG
         /// <summary>
         /// Create roof grid
         /// </summary>
-        private static List<string> CreateRoofGrid(List<IntVec3> cellExport, Area area, Map map)
+        private static List<string> CreateRoofGrid(Area area, Map map)
         {
+            var cellExport = Dialog_ExportWindow.cells;
             var ll = new List<string>();
             var hw = EdgeFromList(cellExport);
             var active = area?.ActiveCells;
@@ -259,35 +262,11 @@ namespace KCSG
         }
 
         /// <summary>
-        /// Create needed symbols
-        /// </summary>
-        public static List<XElement> CreateSymbolIfNeeded(List<IntVec3> cellExport, Map map, Dictionary<IntVec3, List<Thing>> pairsCellThingList, Area area = null)
-        {
-            List<XElement> symbols = new List<XElement>();
-            var activeCells = area?.ActiveCells;
-
-            foreach (IntVec3 c in cellExport)
-            {
-                if (activeCells != null && activeCells.Contains(c))
-                {
-                    List<Thing> things = pairsCellThingList.TryGetValue(c);
-                    foreach (Thing t in things)
-                    {
-                        if (t.def.category == ThingCategory.Item) CreateItemSymbolFromThing(t, symbols);
-                        else if (t.def.category == ThingCategory.Pawn) CreateSymbolFromPawn(t as Pawn, symbols);
-                        else if (t.def.category == ThingCategory.Building || t.def.category == ThingCategory.Plant) CreateSymbolFromThing(t, symbols);
-                    }
-                }
-            }
-
-            return symbols;
-        }
-
-        /// <summary>
         /// Create cache dic for things on area cells
         /// </summary>
-        public static Dictionary<IntVec3, List<Thing>> FillCellThingsList(List<IntVec3> cellExport, Map map)
+        public static Dictionary<IntVec3, List<Thing>> FillCellThingsList(Map map)
         {
+            var cellExport = Dialog_ExportWindow.cells;
             var list = new Dictionary<IntVec3, List<Thing>>();
             for (int i = 0; i < cellExport.Count; i++)
             {
@@ -359,8 +338,10 @@ namespace KCSG
         /// <summary>
         /// Get the maximum amount of things on one cell of the list
         /// </summary>
-        private static int GetMaxThings(List<IntVec3> cellExport, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
+        private static int GetMaxThings()
         {
+            var cellExport = Dialog_ExportWindow.cells;
+            var pairsCellThingList = Dialog_ExportWindow.pairsCellThingList;
             int max = 1;
             for (int i = 0; i < cellExport.Count; i++)
             {
@@ -387,8 +368,10 @@ namespace KCSG
         /// <summary>
         /// Get the needed mods for an export
         /// </summary>
-        private static List<string> GetNeededMods(List<IntVec3> cellExport, Dictionary<IntVec3, List<Thing>> pairsCellThingList)
+        private static List<string> GetNeededMods()
         {
+            var cellExport = Dialog_ExportWindow.cells;
+            var pairsCellThingList = Dialog_ExportWindow.pairsCellThingList;
             var modsId = new HashSet<string>();
             for (int i = 0; i < cellExport.Count; i++)
             {
@@ -405,66 +388,135 @@ namespace KCSG
         }
 
         /// <summary>
-        /// Create symbol from item
+        /// Create needed symbols
         /// </summary>
-        private static void CreateItemSymbolFromThing(Thing thingT, List<XElement> symbols)
+        public static List<SymbolDef> CreateSymbolIfNeeded(Area area)
         {
-            if (!DefDatabase<SymbolDef>.AllDefsListForReading.FindAll(s => s.thingDef == thingT.def).Any())
-            {
-                XElement symbolDef = new XElement("KCSG.SymbolDef", null);
-                symbolDef.Add(new XElement("defName", thingT.def.defName));
-                symbolDef.Add(new XElement("thing", thingT.def.defName));
+            var cellExport = Dialog_ExportWindow.cells;
+            var pairsCellThingList = Dialog_ExportWindow.pairsCellThingList;
+            var symbols = new List<SymbolDef>();
+            var activeCells = area?.ActiveCells;
 
-                if (!symbols.Any(s => s.Value == symbolDef.Value))
+            foreach (IntVec3 c in cellExport)
+            {
+                if (activeCells == null || activeCells.Contains(c))
                 {
-                    symbols.Add(symbolDef);
+                    List<Thing> things = pairsCellThingList.TryGetValue(c);
+                    foreach (Thing t in things)
+                    {
+                        if (t.def.category == ThingCategory.Item)
+                        {
+                            var sym = CreateItemSymbol(t);
+                            if (sym != null)
+                                symbols.Add(sym);
+                        }
+                        else if (t.def.category == ThingCategory.Pawn)
+                        {
+                            var sym = CreatePawnSymbol(t as Pawn);
+                            if (sym != null)
+                                symbols.Add(sym);
+                        }
+                        else if (t.def.category == ThingCategory.Building || t.def.category == ThingCategory.Plant)
+                        {
+                            var sym = CreateThingSymbol(t);
+                            if (sym != null)
+                                symbols.Add(sym);
+                        }
+                    }
                 }
             }
+
+            return symbols;
+        }
+
+        /// <summary>
+        /// Create symbol from item
+        /// </summary>
+        private static SymbolDef CreateItemSymbol(Thing thing)
+        {
+            var defName = thing.def.defName;
+
+            if (!Dialog_ExportWindow.exportedSymbolsName.Contains(defName)
+                && !DefDatabase<SymbolDef>.AllDefsListForReading.FindAll(s => s.defName == defName).Any())
+            {
+                var symbol = new SymbolDef
+                {
+                    defName = defName,
+                    thing = defName
+                };
+
+                symbol.ResolveReferences();
+                Dialog_ExportWindow.exportedSymbolsName.Add(defName);
+                DefDatabase<SymbolDef>.Add(symbol);
+
+                return symbol;
+            }
+
+            return null;
         }
 
         /// <summary>
         /// Create symbol from pawn
         /// </summary>
-        private static void CreateSymbolFromPawn(Pawn pawn, List<XElement> symbols)
+        private static SymbolDef CreatePawnSymbol(Pawn pawn)
         {
-            if (!DefDatabase<SymbolDef>.AllDefsListForReading.FindAll(s => s.pawnKindDefNS == pawn.kindDef).Any())
-            {
-                XElement symbolDef = new XElement("KCSG.SymbolDef", null);
-                symbolDef.Add(new XElement("defName", pawn.kindDef.defName));
-                symbolDef.Add(new XElement("pawnKindDef", pawn.kindDef.defName));
+            var defName = pawn.kindDef.defName;
 
-                if (!symbols.Any(s => s.Value == symbolDef.Value))
+            if (!Dialog_ExportWindow.exportedSymbolsName.Contains(defName)
+                && !DefDatabase<SymbolDef>.AllDefsListForReading.FindAll(s => s.defName == defName).Any())
+            {
+                var symbol = new SymbolDef
                 {
-                    symbols.Add(symbolDef);
-                }
+                    defName = defName,
+                    pawnKindDef = defName
+                };
+
+                symbol.ResolveReferences();
+                Dialog_ExportWindow.exportedSymbolsName.Add(defName);
+                DefDatabase<SymbolDef>.Add(symbol);
+
+                return symbol;
             }
+
+            return null;
         }
 
         /// <summary>
         /// Create symbol from thing
         /// </summary>
-        private static void CreateSymbolFromThing(Thing thingT, List<XElement> symbols)
+        private static SymbolDef CreateThingSymbol(Thing thing)
         {
-            // Generate defName
-            string defNameString = thingT.def.defName;
-            if (thingT.Stuff != null) defNameString += "_" + thingT.Stuff.defName;
-            if (thingT.def.rotatable && thingT.def.category != ThingCategory.Plant && !thingT.def.IsFilth) defNameString += "_" + StartupActions.Rot4ToStringEnglish(thingT.Rotation);
+            var defName = thing.def.defName;
 
-            if (!DefDatabase<SymbolDef>.AllDefsListForReading.FindAll(s => s.defName == defNameString).Any())
+            if (thing.Stuff != null)
+                defName += "_" + thing.Stuff.defName;
+
+            if (thing.def.rotatable && thing.def.category != ThingCategory.Plant && !thing.def.IsFilth)
+                defName += "_" + StartupActions.Rot4ToStringEnglish(thing.Rotation);
+
+            if (!Dialog_ExportWindow.exportedSymbolsName.Contains(defName)
+                && !DefDatabase<SymbolDef>.AllDefsListForReading.FindAll(s => s.defName == defName).Any())
             {
-                XElement symbolDef = new XElement("KCSG.SymbolDef", null);
-                symbolDef.Add(new XElement("defName", defNameString)); // defName
-                symbolDef.Add(new XElement("thing", thingT.def.defName)); // thing defName
-                if (thingT.Stuff != null)
-                    symbolDef.Add(new XElement("stuff", thingT.Stuff.defName)); // Add stuff
-                if (thingT.def.rotatable && thingT.def.category != ThingCategory.Plant)
-                    symbolDef.Add(new XElement("rotation", StartupActions.Rot4ToStringEnglish(thingT.Rotation))); // Add rotation
-
-                if (!symbols.Any(s => s.Value == symbolDef.Value))
+                var symbol = new SymbolDef
                 {
-                    symbols.Add(symbolDef);
-                }
+                    defName = defName,
+                    thing = thing.def.defName
+                };
+
+                if (thing.Stuff != null)
+                    symbol.stuff = thing.Stuff.defName;
+
+                if (thing.def.rotatable && thing.def.category != ThingCategory.Plant)
+                    symbol.rotation = thing.Rotation;
+
+                symbol.ResolveReferences();
+                Dialog_ExportWindow.exportedSymbolsName.Add(defName);
+                DefDatabase<SymbolDef>.Add(symbol);
+
+                return symbol;
             }
+
+            return null;
         }
     }
 }

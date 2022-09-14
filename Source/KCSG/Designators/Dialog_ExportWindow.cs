@@ -8,11 +8,14 @@ namespace KCSG
     public class Dialog_ExportWindow : Window
     {
         // Save stuff in between exports
-        public static List<string> exportedSymbols = new List<string>();
+        public static HashSet<string> exportedSymbolsName = new HashSet<string>();
+        public static List<SymbolDef> exportedSymbolsDef = new List<SymbolDef>();
         public static Dictionary<string, StructureLayoutDef> exportedLayouts = new Dictionary<string, StructureLayoutDef>();
 
         public static string defName = "";
 
+        public static Dictionary<IntVec3, List<Thing>> pairsCellThingList = new Dictionary<IntVec3, List<Thing>>();
+        public static List<IntVec3> cells = new List<IntVec3>();
         public static HashSet<string> tags = new HashSet<string>();
 
         public static bool exportNatural = false;
@@ -23,21 +26,18 @@ namespace KCSG
         public static bool forceGenerateRoof = false;
         public static bool isStorage = false;
 
-        private static readonly int bottomBH = 30;
-        private static readonly int tagBH = 30;
-
-        private readonly Dictionary<IntVec3, List<Thing>> pairsCellThingList = new Dictionary<IntVec3, List<Thing>>();
-        private readonly List<IntVec3> cells = new List<IntVec3>();
         private readonly Area area;
         private readonly Map map;
 
+        private static readonly int bottomBH = 30;
+        private static readonly int tagBH = 30;
         private string tempTagToAdd = "";
 
-        public Dialog_ExportWindow(Map map, List<IntVec3> cells, Area area)
+        public Dialog_ExportWindow(Map map, List<IntVec3> rCells, Area area)
         {
             this.map = map;
-            this.cells = cells;
             this.area = area;
+            cells = rCells;
             // Window settings
             forcePause = true;
             doCloseX = false;
@@ -45,10 +45,11 @@ namespace KCSG
             closeOnClickedOutside = false;
             absorbInputAroundWindow = true;
 
-            this.cells.Sort((x, y) => x.z.CompareTo(y.z));
+            cells.Sort((x, y) => x.z.CompareTo(y.z));
 
             StartupActions.CreateSymbols();
-            pairsCellThingList = ExportUtils.FillCellThingsList(this.cells, map);
+            pairsCellThingList = ExportUtils.FillCellThingsList(map);
+            exportedSymbolsDef = ExportUtils.CreateSymbolIfNeeded(area);
         }
 
         public override Vector2 InitialSize => new Vector2(610f, 520f);
@@ -142,7 +143,7 @@ namespace KCSG
             {
                 if (defName.Length > 0)
                 {
-                    var sld = ExportUtils.CreateStructureDef(cells, map, pairsCellThingList, area);
+                    var sld = ExportUtils.CreateStructureDef(map, area);
 
                     if (exportedLayouts.ContainsKey(defName))
                         exportedLayouts[defName] = sld;
@@ -160,19 +161,13 @@ namespace KCSG
 
             if (Widgets.ButtonText(new Rect(200, inRect.height - bottomBH, 190, bottomBH), "Copy symbols"))
             {
-                var allSymbols = ExportUtils.CreateSymbolIfNeeded(cells, map, pairsCellThingList, area);
-                if (allSymbols.Count is int count && count > 0)
+                var count = exportedSymbolsDef.Count;
+                if (count > 0)
                 {
                     var output = "";
                     for (int i = 0; i < count; i++)
                     {
-                        var symb = allSymbols[i];
-                        var toStr = symb.ToString();
-                        if (!exportedSymbols.Contains(toStr))
-                        {
-                            output += toStr + "\n\n";
-                            exportedSymbols.Add(toStr);
-                        }
+                        output += exportedSymbolsDef[i].ToXMLString() + "\n\n";
                     }
 
                     GUIUtility.systemCopyBuffer = output;

@@ -100,6 +100,31 @@ namespace KCSG
             }
         }
 
+        [DebugAction("KCSG", "Quickspawn temp symbol...", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        private static void QuickspawnTempSymbol()
+        {
+            if (Dialog_ExportWindow.exportedSymbolsDef.Count > 0)
+            {
+                List<DebugMenuOption> list = new List<DebugMenuOption>();
+                foreach (var sym in Dialog_ExportWindow.exportedSymbolsDef)
+                {
+                    if (sym.modContentPack != null && sym.modContentPack.Name != null)
+                    {
+                        list.Add(new DebugMenuOption(sym.defName, DebugMenuOptionMode.Tool, delegate ()
+                        {
+                            Map map = Find.CurrentMap;
+                            if (UI.MouseCell().InBounds(map))
+                            {
+                                Message(sym.ToString());
+                                GenUtils.GenerateSymbol(sym, null, map, UI.MouseCell(), map.ParentFaction, null);
+                            }
+                        }));
+                    }
+                }
+                Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
+            }
+        }
+
         [DebugAction("KCSG", "Destroy all hostile pawns", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void RemoveAllHostilePawns()
         {

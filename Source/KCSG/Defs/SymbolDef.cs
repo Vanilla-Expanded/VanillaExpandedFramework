@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+using System.Xml.Linq;
 using RimWorld;
 using Verse;
 
@@ -62,6 +63,30 @@ namespace KCSG
                 sb.AppendInNewLine($"Pawn: {pawnKindDefNS.defName} | Slave: {isSlave} | Number: {numberToSpawn} | Dead: {spawnDead} | Rotten: {spawnRotten}");
 
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Create XML elements
+        /// </summary>
+        public string ToXMLString()
+        {
+            XElement layoutDef = new XElement("KCSG.SymbolDef", null);
+
+            layoutDef.Add(new XElement("defName", defName));
+
+            if (thing != null)
+                layoutDef.Add(new XElement("thing", thing));
+
+            if (stuff != null)
+                layoutDef.Add(new XElement("stuff", stuff));
+
+            if (pawnKindDef != null)
+                layoutDef.Add(new XElement("pawnKindDef", pawnKindDef));
+
+            if (rotation != Rot4.North)
+                layoutDef.Add(new XElement("rotation", StartupActions.Rot4ToStringEnglish(rotation)));
+
+            return layoutDef.ToString();
         }
     }
 }
