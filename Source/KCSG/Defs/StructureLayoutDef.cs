@@ -137,6 +137,8 @@ namespace KCSG
         {
             XElement layoutDef = new XElement("KCSG.StructureLayoutDef", null);
 
+            layoutDef.Add(new XElement("defName", defName));
+
             if (isStorage)
                 layoutDef.Add(new XElement("isStorage", isStorage));
 
