@@ -58,10 +58,11 @@ namespace ItemProcessor
                             }
                             else
                             {
-                               if (ThingDef.Named(element.result).graphic.path != null)
+                                if (ThingDef.Named(element.result).graphic.path != null)
                                 {
                                     icon = ContentFinder<Texture2D>.Get(ThingDef.Named(element.result).graphic.path, false);
-                                } else icon = ContentFinder<Texture2D>.Get(ThingDef.Named(element.result).graphicData.texPath, false);
+                                }
+                                else icon = ContentFinder<Texture2D>.Get(ThingDef.Named(element.result).graphicData.texPath, false);
 
 
                             }
@@ -77,7 +78,7 @@ namespace ItemProcessor
                                     ThingCategoryDef categorytwo = DefDatabase<ThingCategoryDef>.GetNamedSilentFail(element.secondItems[0]);
                                     if (categorytwo != null)
                                     {
-                                        categorytwoLabel = ", "+categorytwo.LabelCap;
+                                        categorytwoLabel = ", " + categorytwo.LabelCap;
                                     }
                                 }
                                 if (element.thirdItems != null)
@@ -97,7 +98,7 @@ namespace ItemProcessor
                                     }
                                 }
                                 defaultDesc = "IP_OutputDesc".Translate(ThingDef.Named(element.result).LabelCap, DefDatabase<ThingCategoryDef>.GetNamedSilentFail(building.firstItem).LabelCap
-                                    +  categorytwoLabel + categorythreeLabel +  categoryfourLabel);
+                                    + categorytwoLabel + categorythreeLabel + categoryfourLabel);
                             }
                             else
                             {
@@ -129,7 +130,7 @@ namespace ItemProcessor
                                     }
                                 }
                                 defaultDesc = "IP_OutputDesc".Translate(ThingDef.Named(element.result).LabelCap, DefDatabase<ThingDef>.GetNamedSilentFail(building.firstItem).LabelCap
-                                    +  itemtwoLabel + itemthreeLabel + itemfourLabel);
+                                    + itemtwoLabel + itemthreeLabel + itemfourLabel);
                             }
 
                         }
@@ -178,10 +179,10 @@ namespace ItemProcessor
                         }
                     }
                     list.Add(new FloatMenuOption("IP_OutputVariable".Translate(ThingDef.Named(element.result).LabelCap, DefDatabase<ThingCategoryDef>.GetNamedSilentFail(element.items[0]).LabelCap +
-                             categorytwoLabel  + categorythreeLabel + categoryfourLabel), delegate
-                            {
-                                if (building.processorStage <= ProcessorStage.ExpectingIngredients) { this.TryConfigureIngredientsByOutput(element); }
-                            }, MenuOptionPriority.Default, null, null, 29f, null, null));
+                             categorytwoLabel + categorythreeLabel + categoryfourLabel), delegate
+                           {
+                               if (building.processorStage <= ProcessorStage.ExpectingIngredients) { this.TryConfigureIngredientsByOutput(element); }
+                           }, MenuOptionPriority.Default, null, null, 29f, null, null));
                 }
                 else
                 {
@@ -234,7 +235,7 @@ namespace ItemProcessor
         {
             building.productToTurnInto = element.result;
             building.thisRecipe = element.defName;
-            
+
             if (element.isCategoryRecipe)
             {
                 switch (building.compItemProcessor.Props.numberOfInputs)
@@ -305,7 +306,7 @@ namespace ItemProcessor
                         building.thirdItem = ThingDef.Named(element.thirdItems[0]).defName;
                         building.ExpectedAmountFirstIngredient = element.amount[0];
                         building.ExpectedAmountSecondIngredient = element.amount[1];
-                        building.ExpectedAmountThirdIngredient = element.amount[2];                        
+                        building.ExpectedAmountThirdIngredient = element.amount[2];
                         break;
                     case 4:
                         building.firstItem = ThingDef.Named(element.items[0]).defName;
@@ -510,9 +511,9 @@ namespace ItemProcessor
                 }
             }
 
-            
 
-          
+
+
 
         }
 
@@ -628,7 +629,7 @@ namespace ItemProcessor
             Find.WindowStack.Add(new FloatMenu(list));
         }
 
-       
+
         private void TryInsertSecondThing(string item = "")
         {
 
@@ -669,7 +670,7 @@ namespace ItemProcessor
 
                 }
             }
-            
+
         }
 
 
@@ -781,7 +782,7 @@ namespace ItemProcessor
             Find.WindowStack.Add(new FloatMenu(list));
         }
 
-       
+
         private void TryInsertThirdThing(string item = "")
         {
             List<object> selectedObjects = Find.Selector.SelectedObjects;
@@ -820,7 +821,7 @@ namespace ItemProcessor
                     }
                 }
             }
-                    
+
         }
 
 
@@ -932,7 +933,7 @@ namespace ItemProcessor
             Find.WindowStack.Add(new FloatMenu(list));
         }
 
-        
+
         private void TryInsertFourthThing(string item = "")
         {
             List<object> selectedObjects = Find.Selector.SelectedObjects;
@@ -971,7 +972,7 @@ namespace ItemProcessor
                     }
                 }
             }
-                    
+
         }
 
 
@@ -1050,48 +1051,69 @@ namespace ItemProcessor
 
 
             list.Add(new FloatMenuOption("IP_QualityAutoIs".Translate(QualityCategory.Awful.ToString()), delegate
-            {
-                building.qualityRequested = QualityCategory.Awful;
-                building.qualityEstablished = true;
-            }, MenuOptionPriority.Default, null, null, 29f, null, null));
+           {
+               AddQuality(QualityCategory.Awful);
+             
+           }, MenuOptionPriority.Default, null, null, 29f, null, null));
             list.Add(new FloatMenuOption("IP_QualityAutoIs".Translate(QualityCategory.Poor.ToString()), delegate
             {
-                building.qualityRequested = QualityCategory.Poor;
-                building.qualityEstablished = true;
+                AddQuality(QualityCategory.Poor);
+               
             }, MenuOptionPriority.Default, null, null, 29f, null, null));
             list.Add(new FloatMenuOption("IP_QualityAutoIs".Translate(QualityCategory.Normal.ToString()), delegate
             {
-                building.qualityRequested = QualityCategory.Normal;
-                building.qualityEstablished = true;
+                AddQuality(QualityCategory.Normal);
+               
             }, MenuOptionPriority.Default, null, null, 29f, null, null));
             list.Add(new FloatMenuOption("IP_QualityAutoIs".Translate(QualityCategory.Good.ToString()), delegate
             {
-                building.qualityRequested = QualityCategory.Good;
-                building.qualityEstablished = true;
+                AddQuality(QualityCategory.Good);
+               
             }, MenuOptionPriority.Default, null, null, 29f, null, null));
             list.Add(new FloatMenuOption("IP_QualityAutoIs".Translate(QualityCategory.Excellent.ToString()), delegate
             {
-                building.qualityRequested = QualityCategory.Excellent;
-                building.qualityEstablished = true;
+                AddQuality(QualityCategory.Excellent);
+               
             }, MenuOptionPriority.Default, null, null, 29f, null, null));
             list.Add(new FloatMenuOption("IP_QualityAutoIs".Translate(QualityCategory.Masterwork.ToString()), delegate
             {
-                building.qualityRequested = QualityCategory.Masterwork;
-                building.qualityEstablished = true;
+                AddQuality(QualityCategory.Masterwork);
+                
             }, MenuOptionPriority.Default, null, null, 29f, null, null));
             list.Add(new FloatMenuOption("IP_QualityAutoIs".Translate(QualityCategory.Legendary.ToString()), delegate
             {
-                building.qualityRequested = QualityCategory.Legendary;
-                building.qualityEstablished = true;
+                AddQuality(QualityCategory.Legendary);
+                
             }, MenuOptionPriority.Default, null, null, 29f, null, null));
             list.Add(new FloatMenuOption("IP_QualityAutoNot".Translate(), delegate
             {
-                building.qualityEstablished = false;
+                foreach (object obj in Find.Selector.SelectedObjects)
+                {
+                    building = obj as Building_ItemProcessor;
+                    if (building != null)
+                    {
+                        building.qualityEstablished = false;
+                    }
+                }
             }, MenuOptionPriority.Default, null, null, 29f, null, null));
 
 
 
             Find.WindowStack.Add(new FloatMenu(list));
+        }
+
+        public void AddQuality(QualityCategory quality)
+        {
+            foreach (object obj in Find.Selector.SelectedObjects)
+            {
+                building = obj as Building_ItemProcessor;
+                if (building != null)
+                {
+                    building.qualityRequested = quality;
+                    building.qualityEstablished = true;
+
+                }
+            }
         }
 
 
