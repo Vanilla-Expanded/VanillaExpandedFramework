@@ -23,12 +23,6 @@ namespace KCSG
         public float maxMineableValue = float.MaxValue;
     }
 
-    public class LayoutCommonality
-    {
-        public StructureLayoutDef layout;
-        public float commonality = 1f;
-    }
-
     public class Scaling
     {
         readonly float flat = 0.15f;

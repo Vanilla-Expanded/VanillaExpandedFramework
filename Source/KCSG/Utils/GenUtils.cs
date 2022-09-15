@@ -653,20 +653,18 @@ namespace KCSG
         }
 
         /// <summary>
-        /// Choose a random WeightedStruct from a list.
+        /// Choose a random structure from a list.
         /// </summary>
-        public static WeightedStruct ChooseWeightedStructFrom(List<WeightedStruct> list, IncidentParms parms)
+        public static StructureLayoutDef ChooseWeightedStructFrom(List<LayoutCommonality> list, IncidentParms parms)
         {
-            List<WeightedStruct> choices = new List<WeightedStruct>();
+            var choices = new List<LayoutCommonality>();
             for (int i = 0; i < list.Count; i++)
             {
-                var weightedStruct = list[i];
-                if (weightedStruct.structureLayoutDef.RequiredModLoaded)
-                {
-                    choices.Add(weightedStruct);
-                }
+                var lComm = list[i];
+                if (lComm.layout.RequiredModLoaded)
+                    choices.Add(lComm);
             }
-            return choices.RandomElementByWeight((w) => w.weight * parms.points);
+            return choices.RandomElementByWeight(l => l.commonality * parms.points).layout;
         }
 
         /// <summary>
