@@ -50,10 +50,10 @@ namespace KCSG
 
                         if (road != null)
                         {
-                            GenUtils.WidenPath(road, map, GenOption.RoadOptions.linkRoadDef ?? TerrainDefOf.Concrete, GenOption.RoadOptions.LinkRoadWidth);
+                            WidenPath(road, map, GenOption.RoadOptions.linkRoadDef ?? TerrainDefOf.Concrete, GenOption.RoadOptions.LinkRoadWidth);
 
                             if (GenOption.PropsOptions.addLinkRoadProps)
-                                GenUtils.SpawnLinkRoadProps(road);
+                                SpawnLinkRoadProps(road);
                         }
                     }
                     Debug.Message($"Link road (+ props) time: {(DateTime.Now - linkStart).TotalMilliseconds}ms.");

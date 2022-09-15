@@ -51,7 +51,7 @@ namespace KCSG
                         if (!rp.rect.Contains(c))
                             return false;
 
-                        if (GenUtils.NearUsedSpot(usedSpots, c, propsOpt.scatterMinDistance))
+                        if (NearUsedSpot(usedSpots, c, propsOpt.scatterMinDistance))
                             return false;
 
                         CellRect rect;
