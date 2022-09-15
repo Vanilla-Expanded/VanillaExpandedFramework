@@ -84,7 +84,6 @@
     <Compile Include="SymbolResolvers\SymbolResolver_ThingSetOnlyRoofed.cs" />
     <Compile Include="StartupActions.cs" />
     <Compile Include="Thing\KCSG_Skyfaller.cs" />
-    <Compile Include="Textures.cs" />
     <Compile Include="AllDefOf.cs" />
     <Compile Include="Utils\Debug.cs" />
     <Compile Include="DefModExtensions\CustomGenOption.cs" />

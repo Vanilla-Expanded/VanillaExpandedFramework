@@ -21,7 +21,7 @@ namespace KCSG
             if (GenOption.fExt.needToHaveSettlements && !Find.World.worldObjects.Settlements.FindAll(s => s.Faction == parms.faction).Any())
                 return false;
 
-            GenOption.fDef = GenUtils.ChooseWeightedStructFrom(GenOption.fExt.structures, parms);
+            GenOption.fDef = GenUtils.ChooseStructureLayoutFrom(GenOption.fExt.structures, parms);
 
             if (GenOption.fDef == null)
                 return false;

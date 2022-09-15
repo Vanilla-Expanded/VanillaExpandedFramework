@@ -5,8 +5,11 @@ using Verse;
 
 namespace KCSG
 {
+    [StaticConstructorOnStartup]
     public class Dialog_ExportWindow : Window
     {
+        public static readonly Texture2D helpIcon = ContentFinder<Texture2D>.Get("UI/CSG/help");
+
         // Save stuff in between exports
         public static HashSet<string> exportedSymbolsName = new HashSet<string>();
         public static List<SymbolDef> exportedSymbolsDef = new List<SymbolDef>();
@@ -61,7 +64,7 @@ namespace KCSG
             Text.Font = GameFont.Medium;
 
             Widgets.Label(new Rect(0, 0, 500, 30), "Structure export menu");
-            if (Widgets.ButtonImage(new Rect(530, 0, 30, 30), Textures.helpIcon))
+            if (Widgets.ButtonImage(new Rect(530, 0, 30, 30), helpIcon))
             {
                 System.Diagnostics.Process.Start("https://github.com/AndroidQuazar/VanillaExpandedFramework/wiki/Exporting-buildings");
             }

@@ -632,7 +632,7 @@ namespace KCSG
         /// <summary>
         /// Choose a random structure from a list.
         /// </summary>
-        public static StructureLayoutDef ChooseWeightedStructFrom(List<LayoutCommonality> list, IncidentParms parms)
+        public static StructureLayoutDef ChooseStructureLayoutFrom(List<LayoutCommonality> list, IncidentParms parms)
         {
             var choices = new List<LayoutCommonality>();
             for (int i = 0; i < list.Count; i++)
