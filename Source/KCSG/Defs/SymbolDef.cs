@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Text;
 using System.Xml.Linq;
 using RimWorld;
 using Verse;
@@ -13,6 +12,8 @@ namespace KCSG
         // Building & item basic infos
         public ThingDef thingDef = null;
         public string thing = null;
+        public ThingDef replacementDef = null;
+
         public ThingDef stuffDef = null;
         public string stuff = null;
         public int maxStackSize = -1;
@@ -46,24 +47,27 @@ namespace KCSG
 
         public override void ResolveReferences()
         {
-            if (thing != null) thingDef = DefDatabase<ThingDef>.GetNamed(thing, VFECore.VFEGlobal.settings.enableVerboseLogging);
-            if (stuff != null) stuffDef = DefDatabase<ThingDef>.GetNamed(stuff, VFECore.VFEGlobal.settings.enableVerboseLogging);
-            if (pawnKindDef != null) pawnKindDefNS = DefDatabase<PawnKindDef>.GetNamed(pawnKindDef, VFECore.VFEGlobal.settings.enableVerboseLogging);
-            if (thingSetMakerDef == null) thingSetMakerDef = ThingSetMakerDefOf.MapGen_AncientComplexRoomLoot_Default;
+            if (thing != null)
+            {
+                thingDef = DefDatabase<ThingDef>.GetNamed(thing, Debug.Enabled);
+                if (thingDef == null && replacementDef != null)
+                {
+                    thingDef = replacementDef;
+                    Debug.Message($"Replaced by {replacementDef.defName}");
+                }
+            }
+
+            if (stuff != null)
+                stuffDef = DefDatabase<ThingDef>.GetNamed(stuff, Debug.Enabled);
+
+            if (pawnKindDef != null)
+                pawnKindDefNS = DefDatabase<PawnKindDef>.GetNamed(pawnKindDef, Debug.Enabled);
+
+            if (thingSetMakerDef == null)
+                thingSetMakerDef = ThingSetMakerDefOf.MapGen_AncientComplexRoomLoot_Default;
         }
 
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
-
-            sb.Append($"Def: {defName}");
-            if (thingDef != null)
-                sb.AppendInNewLine($"Thing: {thingDef.defName} | Stuff: {stuffDef?.defName} | Stack size: {maxStackSize} | Rot: {rotation}");
-            if (pawnKindDefNS != null)
-                sb.AppendInNewLine($"Pawn: {pawnKindDefNS.defName} | Slave: {isSlave} | Number: {numberToSpawn} | Dead: {spawnDead} | Rotten: {spawnRotten}");
-
-            return sb.ToString();
-        }
+        public override string ToString() => defName;
 
         /// <summary>
         /// Create XML elements
