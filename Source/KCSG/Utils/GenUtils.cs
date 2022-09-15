@@ -502,6 +502,18 @@ namespace KCSG
         }
 
         /// <summary>
+        /// Despawn everything that block/interfer with roofs
+        /// </summary>
+        private static void ClearInterferesWithRoof(IntVec3 cell, Map map)
+        {
+            var t = cell.GetPlant(map);
+            if (t != null && t.def.plant != null && t.def.plant.interferesWithRoof)
+                t.DeSpawn();
+
+            GenOption.DespawnMineableAt(cell);
+        }
+
+        /// <summary>
         /// Generate terrain grid from layout
         /// </summary>
         private static void GenerateTerrainGrid(StructureLayoutDef layout, CellRect rect, Map map)
@@ -527,41 +539,6 @@ namespace KCSG
                     map.terrainGrid.SetTerrain(cell, wantedTerrain);
                 }
             }
-        }
-
-        /// <summary>
-        /// Despawn everything that block/interfer with roofs
-        /// </summary>
-        private static void ClearInterferesWithRoof(IntVec3 cell, Map map)
-        {
-            var t = cell.GetPlant(map);
-            if (t != null && t.def.plant != null && t.def.plant.interferesWithRoof)
-                t.DeSpawn();
-
-            GenOption.DespawnMineableAt(cell);
-        }
-
-        /// <summary>
-        /// Get road type already on map if applicable
-        /// </summary>
-        public static List<TerrainDef> SetRoadInfo(Map map)
-        {
-            if (map.TileInfo?.Roads?.Count > 0)
-            {
-                var preRoadTypes = new List<TerrainDef>();
-                foreach (RimWorld.Planet.Tile.RoadLink roadLink in map.TileInfo.Roads)
-                {
-                    foreach (RoadDefGenStep rgs in roadLink.road.roadGenSteps)
-                    {
-                        if (rgs is RoadDefGenStep_Place rgsp && rgsp != null && rgsp.place is TerrainDef t && t != null && t != TerrainDefOf.Bridge)
-                        {
-                            preRoadTypes.Add(t);
-                        }
-                    }
-                }
-                return preRoadTypes;
-            }
-            return null;
         }
 
         /// <summary>
@@ -734,7 +711,11 @@ namespace KCSG
         /// <summary>
         /// Get stuff by commonality from list, matching thingDef requirement
         /// </summary>
-        public static ThingDef RandomStuffFromFor(List<ThingDef> from, ThingDef thingDef) => from.FindAll(t => thingDef.stuffCategories.Find(c => t.stuffProps.categories.Contains(c)) != null).RandomElementByWeight(t => t.stuffProps.commonality);
+        public static ThingDef RandomStuffFromFor(List<ThingDef> from, ThingDef thingDef)
+        {
+            return from.FindAll(t => thingDef.stuffCategories.Find(c => t.stuffProps.categories.Contains(c)) != null)
+                .RandomElementByWeight(t => t.stuffProps.commonality);
+        }
 
         /// <summary>
         /// Check a list to know if anything is near a given point

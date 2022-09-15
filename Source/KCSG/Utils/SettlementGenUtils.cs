@@ -49,7 +49,7 @@ namespace KCSG
                 grid[i] = new CellType[size.x];
             }
             // Get vanilla road if applicable
-            mapRoad = GenUtils.SetRoadInfo(map);
+            mapRoad = SetRoadInfo(map);
             // Check all terrain for bridgeable, existing vanilla road(s), moutains
             foreach (var cell in rect)
             {
@@ -123,6 +123,29 @@ namespace KCSG
                 BuildingPlacement.Run(vects, sld, rp);
                 Debug.Message($"Building time: {(DateTime.Now - buildingStart).TotalMilliseconds}ms. Doors count: {doors.Count}");
             }
+        }
+
+        /// <summary>
+        /// Get road type already on map if applicable
+        /// </summary>
+        public static List<TerrainDef> SetRoadInfo(Map map)
+        {
+            if (map.TileInfo?.Roads?.Count > 0)
+            {
+                var preRoadTypes = new List<TerrainDef>();
+                foreach (RimWorld.Planet.Tile.RoadLink roadLink in map.TileInfo.Roads)
+                {
+                    foreach (RoadDefGenStep rgs in roadLink.road.roadGenSteps)
+                    {
+                        if (rgs is RoadDefGenStep_Place rgsp && rgsp != null && rgsp.place is TerrainDef t && t != null && t != TerrainDefOf.Bridge)
+                        {
+                            preRoadTypes.Add(t);
+                        }
+                    }
+                }
+                return preRoadTypes;
+            }
+            return null;
         }
 
         /// <summary>
