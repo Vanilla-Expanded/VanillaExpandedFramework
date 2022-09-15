@@ -15,7 +15,8 @@ namespace ItemProcessor
         AllIngredientReceived,
         Working,
         Finished,
-        ProductRemoved
+        ProductRemoved,
+        Invalid
 
     }
 }

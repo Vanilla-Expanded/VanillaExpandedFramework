@@ -468,36 +468,49 @@ namespace ItemProcessor
 
         private void TryInsertFirstThing(string item = "")
         {
-            if (item != "")
-            {
-                building.firstCategory = ThingCategoryDef.Named(item).defName;
-                building.firstItem = building.firstCategory;
-            }
-            else
-            {
-                building.firstItem = things.RandomElement().def.defName;
-            }
-            if (building.compItemProcessor.Props.isSemiAutomaticMachine)
-            {
-                if (building.compPowerTrader != null && !building.compPowerTrader.PowerOn && building.compItemProcessor.Props.noPowerDestroysProgress)
-                {
-                    Messages.Message("IP_NoPowerDestroysWarning".Translate(building.def.LabelCap), building, MessageTypeDefOf.NegativeEvent, true);
-                }
-                else if (building.compFuelable != null && !building.compFuelable.HasFuel && building.compItemProcessor.Props.noPowerDestroysProgress)
-                {
-                    Messages.Message("IP_NoFuelDestroysWarning".Translate(building.def.LabelCap), building, MessageTypeDefOf.NegativeEvent, true);
-                }
-                else
-                {
-                    building.IngredientsChosenBringThemIn();
-                }
 
-            }
-            else
+            List<object> selectedObjects = Find.Selector.SelectedObjects;
+            foreach (object selectedObject in selectedObjects)
             {
-                building.processorStage = ProcessorStage.IngredientsChosen;
+                Building_ItemProcessor processor = selectedObject as Building_ItemProcessor;
+                if (processor != null)
+                {
 
+                    if (item != "")
+                    {
+                        processor.firstCategory = ThingCategoryDef.Named(item).defName;
+                        processor.firstItem = processor.firstCategory;
+                    }
+                    else
+                    {
+                        processor.firstItem = things.RandomElement().def.defName;
+                    }
+                    if (processor.compItemProcessor.Props.isSemiAutomaticMachine)
+                    {
+                        if (processor.compPowerTrader != null && !processor.compPowerTrader.PowerOn && processor.compItemProcessor.Props.noPowerDestroysProgress)
+                        {
+                            Messages.Message("IP_NoPowerDestroysWarning".Translate(processor.def.LabelCap), processor, MessageTypeDefOf.NegativeEvent, true);
+                        }
+                        else if (processor.compFuelable != null && !processor.compFuelable.HasFuel && processor.compItemProcessor.Props.noPowerDestroysProgress)
+                        {
+                            Messages.Message("IP_NoFuelDestroysWarning".Translate(processor.def.LabelCap), processor, MessageTypeDefOf.NegativeEvent, true);
+                        }
+                        else
+                        {
+                            processor.IngredientsChosenBringThemIn();
+                        }
+
+                    }
+                    else
+                    {
+                        processor.processorStage = ProcessorStage.IngredientsChosen;
+
+                    }
+
+                }
             }
+
+            
 
           
 
@@ -618,34 +631,45 @@ namespace ItemProcessor
        
         private void TryInsertSecondThing(string item = "")
         {
-            if (item != "")
+
+            List<object> selectedObjects = Find.Selector.SelectedObjects;
+            foreach (object selectedObject in selectedObjects)
             {
-                building.secondCategory = ThingCategoryDef.Named(item).defName;
-                building.secondItem = building.secondCategory;
-            }
-            else
-            {
-                building.secondItem = things.RandomElement().def.defName;
-            }
-            if (building.compItemProcessor.Props.isSemiAutomaticMachine)
-            {
-                if (building.compPowerTrader != null && !building.compPowerTrader.PowerOn && building.compItemProcessor.Props.noPowerDestroysProgress)
+                Building_ItemProcessor processor = selectedObject as Building_ItemProcessor;
+                if (processor != null)
                 {
-                    Messages.Message("IP_NoPowerDestroysWarning".Translate(building.def.LabelCap), building, MessageTypeDefOf.NegativeEvent, true);
-                }
-                else if (building.compFuelable != null && !building.compFuelable.HasFuel && building.compItemProcessor.Props.noPowerDestroysProgress)
-                {
-                    Messages.Message("IP_NoFuelDestroysWarning".Translate(building.def.LabelCap), building, MessageTypeDefOf.NegativeEvent, true);
-                }
-                else
-                {
-                    building.IngredientsChosenBringThemIn();
+                    if (item != "")
+                    {
+                        processor.secondCategory = ThingCategoryDef.Named(item).defName;
+                        processor.secondItem = processor.secondCategory;
+                    }
+                    else
+                    {
+                        processor.secondItem = things.RandomElement().def.defName;
+                    }
+                    if (processor.compItemProcessor.Props.isSemiAutomaticMachine)
+                    {
+                        if (processor.compPowerTrader != null && !processor.compPowerTrader.PowerOn && processor.compItemProcessor.Props.noPowerDestroysProgress)
+                        {
+                            Messages.Message("IP_NoPowerDestroysWarning".Translate(processor.def.LabelCap), processor, MessageTypeDefOf.NegativeEvent, true);
+                        }
+                        else if (processor.compFuelable != null && !processor.compFuelable.HasFuel && processor.compItemProcessor.Props.noPowerDestroysProgress)
+                        {
+                            Messages.Message("IP_NoFuelDestroysWarning".Translate(processor.def.LabelCap), processor, MessageTypeDefOf.NegativeEvent, true);
+                        }
+                        else
+                        {
+                            processor.IngredientsChosenBringThemIn();
+                        }
+                    }
+                    else
+                    {
+                        processor.processorStage = ProcessorStage.IngredientsChosen;
+                    }
+
                 }
             }
-            else
-            {
-                building.processorStage = ProcessorStage.IngredientsChosen;
-            }
+            
         }
 
 
@@ -760,34 +784,43 @@ namespace ItemProcessor
        
         private void TryInsertThirdThing(string item = "")
         {
-            if (item != "")
+            List<object> selectedObjects = Find.Selector.SelectedObjects;
+            foreach (object selectedObject in selectedObjects)
             {
-                building.thirdCategory = ThingCategoryDef.Named(item).defName;
-                building.thirdItem = building.thirdCategory;
-            }
-            else
-            {
-                building.thirdItem = things.RandomElement().def.defName;
-            }
-            if (building.compItemProcessor.Props.isSemiAutomaticMachine)
-            {
-                if (building.compPowerTrader != null && !building.compPowerTrader.PowerOn && building.compItemProcessor.Props.noPowerDestroysProgress)
+                Building_ItemProcessor processor = selectedObject as Building_ItemProcessor;
+                if (processor != null)
                 {
-                    Messages.Message("IP_NoPowerDestroysWarning".Translate(building.def.LabelCap), building, MessageTypeDefOf.NegativeEvent, true);
-                }
-                else if (building.compFuelable != null && !building.compFuelable.HasFuel && building.compItemProcessor.Props.noPowerDestroysProgress)
-                {
-                    Messages.Message("IP_NoFuelDestroysWarning".Translate(building.def.LabelCap), building, MessageTypeDefOf.NegativeEvent, true);
-                }
-                else
-                {
-                    building.IngredientsChosenBringThemIn();
+                    if (item != "")
+                    {
+                        processor.thirdCategory = ThingCategoryDef.Named(item).defName;
+                        processor.thirdItem = processor.thirdCategory;
+                    }
+                    else
+                    {
+                        processor.thirdItem = things.RandomElement().def.defName;
+                    }
+                    if (processor.compItemProcessor.Props.isSemiAutomaticMachine)
+                    {
+                        if (processor.compPowerTrader != null && !processor.compPowerTrader.PowerOn && processor.compItemProcessor.Props.noPowerDestroysProgress)
+                        {
+                            Messages.Message("IP_NoPowerDestroysWarning".Translate(processor.def.LabelCap), processor, MessageTypeDefOf.NegativeEvent, true);
+                        }
+                        else if (processor.compFuelable != null && !processor.compFuelable.HasFuel && processor.compItemProcessor.Props.noPowerDestroysProgress)
+                        {
+                            Messages.Message("IP_NoFuelDestroysWarning".Translate(processor.def.LabelCap), processor, MessageTypeDefOf.NegativeEvent, true);
+                        }
+                        else
+                        {
+                            processor.IngredientsChosenBringThemIn();
+                        }
+                    }
+                    else
+                    {
+                        processor.processorStage = ProcessorStage.IngredientsChosen;
+                    }
                 }
             }
-            else
-            {
-                building.processorStage = ProcessorStage.IngredientsChosen;
-            }
+                    
         }
 
 
@@ -902,34 +935,43 @@ namespace ItemProcessor
         
         private void TryInsertFourthThing(string item = "")
         {
-            if (item != "")
+            List<object> selectedObjects = Find.Selector.SelectedObjects;
+            foreach (object selectedObject in selectedObjects)
             {
-                building.fourthCategory = ThingCategoryDef.Named(item).defName;
-                building.fourthItem = building.fourthCategory;
-            }
-            else
-            {
-                building.fourthItem = things.RandomElement().def.defName;
-            }
-            if (building.compItemProcessor.Props.isSemiAutomaticMachine)
-            {
-                if (building.compPowerTrader != null && !building.compPowerTrader.PowerOn && building.compItemProcessor.Props.noPowerDestroysProgress)
+                Building_ItemProcessor processor = selectedObject as Building_ItemProcessor;
+                if (processor != null)
                 {
-                    Messages.Message("IP_NoPowerDestroysWarning".Translate(building.def.LabelCap), building, MessageTypeDefOf.NegativeEvent, true);
-                }
-                else if (building.compFuelable != null && !building.compFuelable.HasFuel && building.compItemProcessor.Props.noPowerDestroysProgress)
-                {
-                    Messages.Message("IP_NoFuelDestroysWarning".Translate(building.def.LabelCap), building, MessageTypeDefOf.NegativeEvent, true);
-                }
-                else
-                {
-                    building.IngredientsChosenBringThemIn();
+                    if (item != "")
+                    {
+                        processor.fourthCategory = ThingCategoryDef.Named(item).defName;
+                        processor.fourthItem = processor.fourthCategory;
+                    }
+                    else
+                    {
+                        processor.fourthItem = things.RandomElement().def.defName;
+                    }
+                    if (processor.compItemProcessor.Props.isSemiAutomaticMachine)
+                    {
+                        if (processor.compPowerTrader != null && !processor.compPowerTrader.PowerOn && processor.compItemProcessor.Props.noPowerDestroysProgress)
+                        {
+                            Messages.Message("IP_NoPowerDestroysWarning".Translate(processor.def.LabelCap), processor, MessageTypeDefOf.NegativeEvent, true);
+                        }
+                        else if (processor.compFuelable != null && !processor.compFuelable.HasFuel && processor.compItemProcessor.Props.noPowerDestroysProgress)
+                        {
+                            Messages.Message("IP_NoFuelDestroysWarning".Translate(processor.def.LabelCap), processor, MessageTypeDefOf.NegativeEvent, true);
+                        }
+                        else
+                        {
+                            processor.IngredientsChosenBringThemIn();
+                        }
+                    }
+                    else
+                    {
+                        processor.processorStage = ProcessorStage.IngredientsChosen;
+                    }
                 }
             }
-            else
-            {
-                building.processorStage = ProcessorStage.IngredientsChosen;
-            }
+                    
         }
 
 

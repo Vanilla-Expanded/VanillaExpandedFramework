@@ -624,13 +624,39 @@ namespace ItemProcessor
             {
                 yield return g;
             }
-            //If more than one thing is selected, disable all building gizmos related to item processing. Just in case
-            bool flagMoreThanOneSelected = false;
-            if (Find.Selector.SelectedObjects.Count > 1)
+            //If more than one processor is selected, detect if they are in the same stage. If not, no gizmos
+            bool allProcessorsInSameStage = true;
+            ProcessorStage stageToDetect = ProcessorStage.Invalid;
+            ThingDef processorDef = null;
+            List<object> selectedObjects = Find.Selector.SelectedObjects;
+            foreach (object selectedObject in selectedObjects)
             {
-                flagMoreThanOneSelected = true;
+                Building_ItemProcessor processor = selectedObject as Building_ItemProcessor;
+                if (processor != null)
+                {
+
+                    if (processorDef == null)
+                    {
+                        processorDef = processor.def;
+                    }
+                    else if (processor.def != processorDef)
+                    {
+                        allProcessorsInSameStage = false;
+                    }
+
+
+                    if (stageToDetect == ProcessorStage.Invalid) { 
+                        stageToDetect = processor.processorStage; 
+                    } else if(processor.processorStage!= stageToDetect)
+                    {
+                        allProcessorsInSameStage = false;
+                    }
+                }
+
             }
-            if (!flagMoreThanOneSelected)
+
+           
+            if (allProcessorsInSameStage)
             {
 
                 //Ingredient selection gizmos only appear when the building is in Inactive or IngredientsChosen, the first because
