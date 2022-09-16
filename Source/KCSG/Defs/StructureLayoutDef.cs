@@ -5,39 +5,20 @@ using Verse;
 
 namespace KCSG
 {
-    public struct Pos
-    {
-        public int x;
-        public int y;
-
-        public Pos(int x, int y)
-        {
-            this.x = x;
-            this.y = y;
-        }
-
-        public static Pos FromString(string str)
-        {
-            string[] array = str.Split(',');
-
-            if (array.Length == 2)
-            {
-                return new Pos(int.Parse(array[0]), int.Parse(array[1]));
-            }
-
-            return new Pos(0, 0);
-        }
-    }
-
     public class StructureLayoutDef : Def
     {
+        internal bool RequiredModLoaded { get; private set; }
+        internal bool IsForSlaves { get; private set; }
+
+        public List<List<string>> layouts = new List<List<string>>();
+        public List<string> terrainGrid = new List<string>();
+        public List<string> roofGrid = new List<string>();
+
         public bool isStorage = false;
         public bool spawnConduits = true;
-        public List<List<string>> layouts = new List<List<string>>();
-        public List<string> roofGrid = new List<string>();
-        public List<string> terrainGrid = new List<string>();
         public bool forceGenerateRoof = false;
         public bool needRoofClearance = false;
+        public bool randomRotation = false;
 
         // Settings for SettlementDef
         public List<string> tags = new List<string>();
@@ -56,30 +37,85 @@ namespace KCSG
         internal List<TerrainDef> terrainGridResolved = new List<TerrainDef>();
         internal List<string> roofGridResolved = new List<string>();
 
-        internal bool RequiredModLoaded { get; private set; }
-
-        internal bool IsForSlaves { get; private set; }
-
         /// <summary>
-        /// Populate symbol list and roofgrid. Prevent the need of doing it at each gen
+        /// Resolve layout infos
         /// </summary>
         public void ResolveLayouts()
         {
+            // Read pos from strings
             foreach (string sPos in spawnAt)
-            {
                 spawnAtPos.Add(Pos.FromString(sPos));
-            }
 
             // Get height and width
             height = layouts[0].Count;
             width = layouts[0][0].Split(',').Count();
 
+            // Resolve
+            ResolveModRequirements();
+            ResolveSymbols();
+            ResolveTerrain();
+            ResolveRoof();
+        }
+
+        /// <summary>
+        /// Resolve requirements
+        /// </summary>
+        private void ResolveModRequirements()
+        {
+            RequiredModLoaded = true;
+            for (int o = 0; o < modRequirements.Count; o++)
+            {
+                if (!ModsConfig.ActiveModsInLoadOrder.Any(m => m.PackageId == modRequirements[o].ToLower()))
+                {
+                    RequiredModLoaded = false;
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Resolve terrain grid
+        /// </summary>
+        private void ResolveTerrain()
+        {
+            for (int i = 0; i < terrainGrid.Count; i++)
+            {
+                var tList = terrainGrid[i].Split(',');
+                for (int o = 0; o < tList.Length; o++)
+                {
+                    var terrain = DefDatabase<TerrainDef>.GetNamedSilentFail(tList[o]);
+                    terrainGridResolved.Add(terrain);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Resolve roof grid
+        /// </summary>
+        private void ResolveRoof()
+        {
+            for (int i = 0; i < roofGrid.Count; i++)
+            {
+                var rList = roofGrid[i].Split(',');
+                for (int o = 0; o < width; o++)
+                {
+                    roofGridResolved.Add(rList[o]);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Resolve symbols grids
+        /// </summary>
+        private void ResolveSymbols()
+        {
             var modName = modContentPack?.Name;
-            // Populate symbolsLists and setup IsForSlaves
+
             for (int i = 0; i < layouts.Count; i++)
             {
                 var layout = layouts[i];
                 symbolsLists.Add(new List<SymbolDef>());
+
                 for (int o = 0; o < layout.Count; o++)
                 {
                     var symbols = layout[o].Split(',');
@@ -101,31 +137,6 @@ namespace KCSG
                                 IsForSlaves = true;
                         }
                     }
-                }
-            }
-            // Populate roofgrid
-            for (int i = 0; i < roofGrid.Count; i++)
-            {
-                roofGridResolved.AddRange(roofGrid[i].Split(','));
-            }
-            // Populate terrainGrid
-            for (int i = 0; i < terrainGrid.Count; i++)
-            {
-                var tList = terrainGrid[i].Split(',');
-                for (int o = 0; o < tList.Length; o++)
-                {
-                    var terrain = DefDatabase<TerrainDef>.GetNamedSilentFail(tList[o]);
-                    terrainGridResolved.Add(terrain);
-                }
-            }
-            // Resolve mod requirement(s)
-            RequiredModLoaded = true;
-            for (int o = 0; o < modRequirements.Count; o++)
-            {
-                if (!ModsConfig.ActiveModsInLoadOrder.Any(m => m.PackageId == modRequirements[o].ToLower()))
-                {
-                    RequiredModLoaded = false;
-                    break;
                 }
             }
         }

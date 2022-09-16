@@ -103,7 +103,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_RoomGenFromStructure.cs" />
     <Compile Include="SymbolResolvers\SymbolResolver_Settlement.cs" />
-    <Compile Include="Utils\LayoutCommonality.cs" />
+    <Compile Include="Utils\XMLStruct\LayoutCommonality.cs" />
+    <Compile Include="Utils\XMLStruct\Pos.cs" />
     <Compile Include="Utils\SettlementGenUtils.cs" />
     <Compile Include="WorldGenSteps\WorldGenStep_SpawnWorldObjects.cs" />
   </ItemGroup>
