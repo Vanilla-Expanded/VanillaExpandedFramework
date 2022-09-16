@@ -109,10 +109,10 @@ namespace KCSG
                 layoutDef = chooseFrom.RandomElement();
             }
 
-            CellRect cellRect = CreateCellRect(map, layoutDef.height, layoutDef.width);
+            CellRect cellRect = CreateCellRect(map, layoutDef.size, layoutDef.size);
 
             if (preGenClear)
-                GenUtils.PreClean(map, cellRect, fullClear, layoutDef.roofGridResolved);
+                GenUtils.PreClean(layoutDef, map, cellRect, fullClear);
 
             GenOption.mineables = new Dictionary<IntVec3, Mineable>();
             foreach (var cell in cellRect)

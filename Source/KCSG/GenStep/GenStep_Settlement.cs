@@ -36,8 +36,8 @@ namespace KCSG
             Faction faction = map.ParentFaction == null || map.ParentFaction == Faction.OfPlayer ? Find.FactionManager.RandomEnemyFaction() : map.ParentFaction;
 
             // Get settlement size
-            int width = GenOption.ext.UsingSingleLayout ? GenOption.structureLayoutDef.width : GenOption.sld.settlementSize.x;
-            int height = GenOption.ext.UsingSingleLayout ? GenOption.structureLayoutDef.height : GenOption.sld.settlementSize.z;
+            int width = GenOption.ext.UsingSingleLayout ? GenOption.structureLayoutDef.size : GenOption.sld.settlementSize.x;
+            int height = GenOption.ext.UsingSingleLayout ? GenOption.structureLayoutDef.size : GenOption.sld.settlementSize.z;
 
             // Get spawn position
             IntVec3 spawn = loc;
@@ -57,7 +57,7 @@ namespace KCSG
 
             // Pre-gen clean
             if (ext.preGenClear)
-                GenUtils.PreClean(map, rect, ext.fullClear, GenOption.structureLayoutDef?.roofGridResolved);
+                GenUtils.PreClean(GenOption.structureLayoutDef, map, rect, ext.fullClear);
 
             // Push symbolresolver
             ResolveParams rp = default;

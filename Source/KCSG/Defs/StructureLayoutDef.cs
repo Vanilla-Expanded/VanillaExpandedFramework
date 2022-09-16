@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using Verse;
@@ -27,15 +28,15 @@ namespace KCSG
         public List<string> modRequirements = new List<string>();
 
         // Spawn position
-        public List<Pos> spawnAtPos = new List<Pos>();
         public List<string> spawnAt = new List<string>();
+        public List<Pos> spawnAtPos = new List<Pos>();
 
         // Values used regularly in gen:
-        internal int width;
-        internal int height;
-        internal List<List<SymbolDef>> symbolsLists = new List<List<SymbolDef>>();
-        internal List<TerrainDef> terrainGridResolved = new List<TerrainDef>();
-        internal List<string> roofGridResolved = new List<string>();
+        internal int size;
+        internal int gridCount;
+        internal List<SymbolDef[,]> _layouts = new List<SymbolDef[,]>();
+        internal TerrainDef[,] _terrainGrid;
+        internal string[,] _roofGrid;
 
         /// <summary>
         /// Resolve layout infos
@@ -46,9 +47,11 @@ namespace KCSG
             foreach (string sPos in spawnAt)
                 spawnAtPos.Add(Pos.FromString(sPos));
 
-            // Get height and width
-            height = layouts[0].Count;
-            width = layouts[0][0].Split(',').Count();
+            // Make it a even rect
+            var height = layouts[0].Count;
+            var width = layouts[0][0].Split(',').Count();
+            size = Math.Max(height, width);
+            gridCount = size * size;
 
             // Resolve
             ResolveModRequirements();
@@ -78,13 +81,31 @@ namespace KCSG
         /// </summary>
         private void ResolveTerrain()
         {
-            for (int i = 0; i < terrainGrid.Count; i++)
+            var tCount = terrainGrid.Count;
+            if (tCount == 0)
+                return;
+
+            _terrainGrid = new TerrainDef[size, size];
+
+            for (int h = 0; h < size; h++)
             {
-                var tList = terrainGrid[i].Split(',');
-                for (int o = 0; o < tList.Length; o++)
+                if (h < tCount)
                 {
-                    var terrain = DefDatabase<TerrainDef>.GetNamedSilentFail(tList[o]);
-                    terrainGridResolved.Add(terrain);
+                    var tLine = terrainGrid[h].Split(',');
+                    var tLineCount = tLine.Length;
+
+                    for (int w = 0; w < size; w++)
+                    {
+                        if (w < tLineCount)
+                            _terrainGrid[h, w] = DefDatabase<TerrainDef>.GetNamedSilentFail(tLine[w]);
+                        else
+                            _terrainGrid[h, w] = null;
+                    }
+                }
+                else
+                {
+                    for (int w = 0; w < size; w++)
+                        _terrainGrid[h, w] = null;
                 }
             }
         }
@@ -94,12 +115,31 @@ namespace KCSG
         /// </summary>
         private void ResolveRoof()
         {
-            for (int i = 0; i < roofGrid.Count; i++)
+            var rCount = roofGrid.Count;
+            if (rCount == 0)
+                return;
+
+            _roofGrid = new string[size, size];
+
+            for (int h = 0; h < size; h++)
             {
-                var rList = roofGrid[i].Split(',');
-                for (int o = 0; o < width; o++)
+                if (h < rCount)
                 {
-                    roofGridResolved.Add(rList[o]);
+                    var rLine = roofGrid[h].Split(',');
+                    var rLineCount = rLine.Length;
+
+                    for (int w = 0; w < size; w++)
+                    {
+                        if (w < rLineCount)
+                            _roofGrid[h, w] = rLine[w];
+                        else
+                            _roofGrid[h, w] = ".";
+                    }
+                }
+                else
+                {
+                    for (int w = 0; w < size; w++)
+                        _roofGrid[h, w] = ".";
                 }
             }
         }
@@ -111,31 +151,49 @@ namespace KCSG
         {
             var modName = modContentPack?.Name;
 
-            for (int i = 0; i < layouts.Count; i++)
+            for (int l = 0; l < layouts.Count; l++)
             {
-                var layout = layouts[i];
-                symbolsLists.Add(new List<SymbolDef>());
+                var layout = layouts[l];
+                var lCount = layout.Count;
+                _layouts.Add(new SymbolDef[size, size]);
 
-                for (int o = 0; o < layout.Count; o++)
+                for (int h = 0; h < size; h++)
                 {
-                    var symbols = layout[o].Split(',');
-                    for (int p = 0; p < symbols.Length; p++)
+                    if (h < lCount)
                     {
-                        string symbol = symbols[p];
-                        if (symbol == ".")
-                        {
-                            symbolsLists[i].Add(null);
-                        }
-                        else
-                        {
-                            SymbolDef def = DefDatabase<SymbolDef>.GetNamedSilentFail(symbol);
-                            symbolsLists[i].Add(def);
+                        var symbols = layout[h].Split(',');
+                        var symbolsCount = symbols.Length;
 
-                            if (def == null)
-                                StartupActions.AddToMissing($"{modName} {symbol}");
-                            else if (def.isSlave)
-                                IsForSlaves = true;
+                        for (int w = 0; w < size; w++)
+                        {
+                            if (w < symbolsCount)
+                            {
+                                var symbol = symbols[w];
+                                if (symbol == ".")
+                                {
+                                    _layouts[l][h, w] = null;
+                                }
+                                else
+                                {
+                                    SymbolDef def = DefDatabase<SymbolDef>.GetNamedSilentFail(symbol);
+                                    _layouts[l][h, w] = def;
+
+                                    if (def == null)
+                                        StartupActions.AddToMissing($"{modName} {symbol}");
+                                    else if (def.isSlave)
+                                        IsForSlaves = true;
+                                }
+                            }
+                            else
+                            {
+                                _layouts[l][h, w] = null;
+                            }
                         }
+                    }
+                    else
+                    {
+                        for (int w = 0; w < size; w++)
+                            _layouts[l][h, w] = null;
                     }
                 }
             }

@@ -37,9 +37,7 @@ namespace KCSG
 
             sld.spawnAtPos = new List<Pos>();
             sld.spawnAt = new List<string>();
-            sld.symbolsLists = new List<List<SymbolDef>>();
-            sld.terrainGridResolved = new List<TerrainDef>();
-            sld.roofGridResolved = new List<string>();
+            sld._layouts = new List<SymbolDef[,]>();
             sld.ResolveLayouts();
 
             return sld;

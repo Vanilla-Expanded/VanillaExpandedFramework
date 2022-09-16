@@ -600,9 +600,9 @@ namespace KCSG
             {
                 var map = BaseGen.globalSettings.map;
 
-                for (int x = point.x - spaceAround; x < building.width + point.x + spaceAround; x++)
+                for (int x = point.x - spaceAround; x < building.size + point.x + spaceAround; x++)
                 {
-                    for (int z = point.z - spaceAround; z < building.height + point.z + spaceAround; z++)
+                    for (int z = point.z - spaceAround; z < building.size + point.z + spaceAround; z++)
                     {
                         var cell = new IntVec3(x, 0, z);
                         if (!inCenter && centerRect.Contains(cell))
@@ -617,7 +617,7 @@ namespace KCSG
 
                             if (building.needRoofClearance)
                             {
-                                var bRect = new CellRect(cell.x, cell.z, building.width, building.height);
+                                var bRect = new CellRect(cell.x, cell.z, building.size, building.size);
                                 foreach (var c in bRect)
                                 {
                                     if (c.Roofed(map))
@@ -635,9 +635,9 @@ namespace KCSG
             /// </summary>
             private static void PlaceAt(IntVec3 point, StructureLayoutDef building, int spaceAround)
             {
-                for (int x = point.x - spaceAround; x < building.width + point.x + spaceAround; x++)
+                for (int x = point.x - spaceAround; x < building.size + point.x + spaceAround; x++)
                 {
-                    for (int z = point.z - spaceAround; z < building.height + point.z + spaceAround; z++)
+                    for (int z = point.z - spaceAround; z < building.size + point.z + spaceAround; z++)
                     {
                         grid[z][x] = CellType.Used;
                     }
@@ -707,7 +707,7 @@ namespace KCSG
                 if (!sld.centerBuildings.centralBuildingTags.NullOrEmpty())
                 {
                     var layout = GenUtils.ChooseStructureLayoutFrom(structuresTagsCache[sld.centerBuildings.centralBuildingTags.RandomElement()]);
-                    var cellRect = CellRect.CenteredOn(rect.CenterCell, layout.width, layout.height);
+                    var cellRect = CellRect.CenteredOn(rect.CenterCell, layout.size, layout.size);
 
                     foreach (var cell in cellRect)
                         grid[cell.z][cell.x] = CellType.Used;
@@ -769,13 +769,13 @@ namespace KCSG
                                 structCount.Add(opt.tag, 1);
                             }
 
-                            CellRect rect = new CellRect(vec.x, vec.z, layoutDef.width, layoutDef.height);
+                            CellRect rect = new CellRect(vec.x, vec.z, layoutDef.size, layoutDef.size);
                             GenUtils.GenerateLayout(layoutDef, rect, BaseGen.globalSettings.map);
 
                             if (layoutDef.isStorage)
                             {
                                 ResolveParams rstock = rp;
-                                rstock.rect = new CellRect(vec.x, vec.z, layoutDef.width, layoutDef.height);
+                                rstock.rect = new CellRect(vec.x, vec.z, layoutDef.size, layoutDef.size);
                                 BaseGen.symbolStack.Push("kcsg_storagezone", rstock, null);
                             }
                             break;

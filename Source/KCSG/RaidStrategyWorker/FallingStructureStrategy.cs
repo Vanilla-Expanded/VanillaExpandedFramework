@@ -26,7 +26,7 @@ namespace KCSG
             if (GenOption.fDef == null)
                 return false;
 
-            return base.CanUseWith(parms, groupKind) && FindRect((Map)parms.target, GenOption.fDef.height, GenOption.fDef.width) != IntVec3.Invalid;
+            return base.CanUseWith(parms, groupKind) && FindRect((Map)parms.target, GenOption.fDef.size, GenOption.fDef.size) != IntVec3.Invalid;
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace KCSG
         /// </summary>
         public override List<Pawn> SpawnThreats(IncidentParms parms)
         {
-            var cellRect = CellRect.CenteredOn(parms.spawnCenter, GenOption.fDef.width, GenOption.fDef.height);
+            var cellRect = CellRect.CenteredOn(parms.spawnCenter, GenOption.fDef.size, GenOption.fDef.size);
 
             var allSymbList = new List<string>();
             Map map = (Map)parms.target;
@@ -164,7 +164,7 @@ namespace KCSG
             }
 
             IncidentParms nParms = parms;
-            RCellFinder.TryFindRandomCellNearWith(parms.spawnCenter, i => i.Walkable(map), map, out nParms.spawnCenter, Math.Min(GenOption.fDef.width, GenOption.fDef.height));
+            RCellFinder.TryFindRandomCellNearWith(parms.spawnCenter, i => i.Walkable(map), map, out nParms.spawnCenter, Math.Min(GenOption.fDef.size, GenOption.fDef.size));
 
             return base.SpawnThreats(nParms);
         }

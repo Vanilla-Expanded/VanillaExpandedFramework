@@ -26,7 +26,7 @@ namespace KCSG
         public override bool TryResolveRaidSpawnCenter(IncidentParms parms)
         {
             Map map = (Map)parms.target;
-            parms.spawnCenter = FindRect(map, GenOption.fDef.height, GenOption.fDef.width);
+            parms.spawnCenter = FindRect(map, GenOption.fDef.size, GenOption.fDef.size);
             parms.spawnRotation = Rot4.Random;
             return true;
         }

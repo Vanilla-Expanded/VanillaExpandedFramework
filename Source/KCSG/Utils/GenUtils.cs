@@ -37,15 +37,15 @@ namespace KCSG
             Faction faction = map.ParentFaction;
 
             var cells = rect.Cells.ToList();
-            int count = cells.Count;
 
-            for (int i = 0; i < count; i++)
+            for (int h = 0; h < layout.size; h++)
             {
-                IntVec3 cell = cells[i];
-                if (cell.InBounds(map))
+                for (int w = 0; w < layout.size; w++)
                 {
-                    SymbolDef symbol = layout.symbolsLists[index][i];
-                    if (symbol != null)
+                    var cell = cells[(h * layout.size) + w];
+                    var symbol = layout._layouts[index][h, w];
+
+                    if (cell.InBounds(map) && symbol != null)
                     {
                         GenerateSymbol(symbol, layout, map, cell, faction, wallForRoom);
                     }
@@ -457,46 +457,47 @@ namespace KCSG
         /// </summary>
         private static void GenerateRoofGrid(StructureLayoutDef layout, CellRect rect, Map map)
         {
-            if (layout.roofGrid != null && layout.roofGridResolved.Count > 0)
+            if (layout._roofGrid != null && layout._roofGrid.Length > 0)
             {
                 var cells = rect.Cells.ToList();
-                int count = cells.Count;
-
-                for (int i = 0; i < count; i++)
+                for (int h = 0; h < layout.size; h++)
                 {
-                    IntVec3 cell = cells[i];
-                    if (cell.InBounds(map))
+                    for (int w = 0; w < layout.size; w++)
                     {
-                        var wantedRoof = layout.roofGridResolved[i];
-                        if (wantedRoof == "0" && layout.forceGenerateRoof)
-                        {
-                            map.roofGrid.SetRoof(cell, null);
-                            continue;
-                        }
+                        var cell = cells[(h * layout.size) + w];
+                        var roof = layout._roofGrid[h, w];
 
-                        var currentRoof = cell.GetRoof(map);
-                        if (wantedRoof == "1" && (layout.forceGenerateRoof || currentRoof == null))
+                        if (cell.InBounds(map) && roof != null)
                         {
-                            map.roofGrid.SetRoof(cell, RoofDefOf.RoofConstructed);
-                            ClearInterferesWithRoof(cell, map);
-                            continue;
-                        }
+                            if (roof == "0" && layout.forceGenerateRoof)
+                            {
+                                map.roofGrid.SetRoof(cell, null);
+                                continue;
+                            }
 
-                        if (wantedRoof == "2" && (layout.forceGenerateRoof || currentRoof == null || currentRoof == RoofDefOf.RoofConstructed))
-                        {
-                            map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThin);
-                            ClearInterferesWithRoof(cell, map);
-                            continue;
-                        }
+                            var currentRoof = cell.GetRoof(map);
+                            if (roof == "1" && (layout.forceGenerateRoof || currentRoof == null))
+                            {
+                                map.roofGrid.SetRoof(cell, RoofDefOf.RoofConstructed);
+                                ClearInterferesWithRoof(cell, map);
+                                continue;
+                            }
 
-                        if (wantedRoof == "3")
-                        {
-                            map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThick);
-                            ClearInterferesWithRoof(cell, map);
-                            continue;
+                            if (roof == "2" && (layout.forceGenerateRoof || currentRoof == null || currentRoof == RoofDefOf.RoofConstructed))
+                            {
+                                map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThin);
+                                ClearInterferesWithRoof(cell, map);
+                                continue;
+                            }
+
+                            if (roof == "3")
+                            {
+                                map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThick);
+                                ClearInterferesWithRoof(cell, map);
+                                continue;
+                            }
                         }
                     }
-
                 }
             }
         }
@@ -518,25 +519,29 @@ namespace KCSG
         /// </summary>
         private static void GenerateTerrainGrid(StructureLayoutDef layout, CellRect rect, Map map)
         {
-            if (layout.terrainGridResolved.NullOrEmpty())
+            if (layout._terrainGrid == null || layout._terrainGrid.Length == 0)
                 return;
 
             var cells = rect.Cells.ToList();
-            for (int i = 0; i < cells.Count; i++)
+            for (int h = 0; h < layout.size; h++)
             {
-                IntVec3 cell = cells[i];
-                var wantedTerrain = layout.terrainGridResolved[i];
-                if (wantedTerrain == null || !cell.InBounds(map))
-                    continue;
+                for (int w = 0; w < layout.size; w++)
+                {
+                    var cell = cells[(h * layout.size) + w];
+                    var terrain = layout._terrainGrid[h, w];
 
-                if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
-                {
-                    map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
-                }
-                else
-                {
-                    GenOption.DespawnMineableAt(cell);
-                    map.terrainGrid.SetTerrain(cell, wantedTerrain);
+                    if (terrain == null || !cell.InBounds(map))
+                        continue;
+
+                    if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
+                    {
+                        map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
+                    }
+                    else
+                    {
+                        GenOption.DespawnMineableAt(cell);
+                        map.terrainGrid.SetTerrain(cell, terrain);
+                    }
                 }
             }
         }
@@ -545,13 +550,13 @@ namespace KCSG
         /// Clean structure spawn rect. Full clean remove everything but player/map pawns.
         /// Normal clean remove filth, non-natural buildings and stone chunks
         /// </summary>
-        public static void PreClean(Map map, CellRect rect, bool fullClean, List<string> roofGrid = null)
+        public static void PreClean(StructureLayoutDef layout, Map map, CellRect rect, bool fullClean)
         {
             Debug.Message($"Pre-generation map clean. Fullclean {fullClean}");
             var mapFaction = map.ParentFaction;
             var player = Faction.OfPlayer;
 
-            if (roofGrid.NullOrEmpty())
+            if (layout == null || layout._roofGrid == null || layout._roofGrid.Length == 0)
             {
                 foreach (IntVec3 c in rect)
                     CleanAt(c, map, fullClean, mapFaction, player);
@@ -559,12 +564,16 @@ namespace KCSG
             else
             {
                 var cells = rect.Cells.ToList();
-
-                for (int i = 0; i < roofGrid.Count && i < cells.Count; i++)
+                for (int h = 0; h < layout.size; h++)
                 {
-                    IntVec3 cell = cells[i];
-                    if (cell.InBounds(map) && roofGrid[i] != ".")
-                        CleanAt(cell, map, fullClean, mapFaction, player);
+                    for (int w = 0; w < layout.size; w++)
+                    {
+                        var cell = cells[(h * layout.size) + w];
+                        var roof = layout._roofGrid[h, w];
+
+                        if (cell.InBounds(map) && roof != ".")
+                            CleanAt(cell, map, fullClean, mapFaction, player);
+                    }
                 }
             }
 

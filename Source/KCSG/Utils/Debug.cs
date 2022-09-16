@@ -33,13 +33,14 @@ namespace KCSG
                         Map map = Find.CurrentMap;
                         if (UI.MouseCell().InBounds(map))
                         {
-                            CellRect cellRect = CellRect.CenteredOn(UI.MouseCell(), layoutDef.width, layoutDef.height);
+                            CellRect cellRect = CellRect.CenteredOn(UI.MouseCell(), layoutDef.size, layoutDef.size);
                             GenOption.mineables = new Dictionary<IntVec3, Mineable>();
                             foreach (var cell in cellRect)
                             {
                                 if (cell.InBounds(map))
                                     GenOption.mineables.Add(cell, cell.GetFirstMineable(map));
                             }
+                            GenUtils.PreClean(layoutDef, map, cellRect, true);
                             GenUtils.GenerateLayout(layoutDef, cellRect, map);
                         }
                     }));
@@ -62,13 +63,14 @@ namespace KCSG
                         Map map = Find.CurrentMap;
                         if (UI.MouseCell().InBounds(map))
                         {
-                            CellRect cellRect = CellRect.CenteredOn(UI.MouseCell(), layoutDef.width, layoutDef.height);
+                            CellRect cellRect = CellRect.CenteredOn(UI.MouseCell(), layoutDef.size, layoutDef.size);
                             GenOption.mineables = new Dictionary<IntVec3, Mineable>();
                             foreach (var cell in cellRect)
                             {
                                 if (cell.InBounds(map))
                                     GenOption.mineables.Add(cell, cell.GetFirstMineable(map));
                             }
+                            GenUtils.PreClean(layoutDef, map, cellRect, true);
                             GenUtils.GenerateLayout(layoutDef, cellRect, map);
                         }
                     }));

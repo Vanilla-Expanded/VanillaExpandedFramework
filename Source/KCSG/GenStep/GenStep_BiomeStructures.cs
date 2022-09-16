@@ -30,12 +30,11 @@ namespace KCSG
                     for (int i = 0; i < spawnCount; i++)
                     {
                         StructureLayoutDef layout = ext.structures.RandomElementByWeight(l => l.commonality).layout;
-                        int height = layout.height;
-                        int width = layout.width;
+                        int size = layout.size;
 
                         IntVec3 spawnPos = CellFinderLoose.RandomCellWith((c) =>
                         {
-                            CellRect rect = CellRect.CenteredOn(c, width + ext.clearCellRadiusAround, height + ext.clearCellRadiusAround);
+                            CellRect rect = CellRect.CenteredOn(c, size + ext.clearCellRadiusAround, size + ext.clearCellRadiusAround);
 
                             if (!rect.InBounds(map))
                             {
@@ -63,7 +62,7 @@ namespace KCSG
                         }, map);
 
 
-                        CellRect spawnRect = CellRect.CenteredOn(spawnPos, width, height);
+                        CellRect spawnRect = CellRect.CenteredOn(spawnPos, size, size);
                         GenOption.mineables = new Dictionary<IntVec3, Mineable>();
                         foreach (var cell in spawnRect)
                             GenOption.mineables.Add(cell, cell.GetFirstMineable(map));
