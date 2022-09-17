@@ -1,0 +1,315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+	<ThinkTreeDef>
+		<defName>VFE_Mechanoids_Machine</defName>
+		<thinkRoot Class="ThinkNode_Priority">
+			<subNodes>
+				<li Class="ThinkNode_Subtree">
+					<treeDef>Downed</treeDef>
+				</li>
+				<li Class="VFEMech.ThinkNode_ConditionalHasPower">
+					<subNodes>
+						<!-- Main colonist behavior core -->
+						<li Class="ThinkNode_Priority">
+							<subNodes>
+								<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_Recharge"/>
+								<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStation"/>
+								<li Class="JobGiver_Work"/>
+								<li Class="ThinkNode_Tagger">
+									<tagToGive>Idle</tagToGive>
+									<subNodes>
+										<!-- Wander -->
+										<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStationIdle"/>
+									</subNodes>
+								</li>
+								
+								<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_StandIdle"/>
+							</subNodes>
+						</li>
+					</subNodes>
+				</li>
+				<li Class="VFEMech.ThinkNode_ConditionalHasPower">
+					<invert>true</invert>
+					<subNodes>
+						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_Recharge"/>
+						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStation"/>
+					</subNodes>
+				</li>
+				<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_StandIdle"/>
+			</subNodes>
+		</thinkRoot>
+	</ThinkTreeDef>
+
+	<ThinkTreeDef>
+		<defName>VFE_Mechanoids_MachineWandering</defName>
+		<thinkRoot Class="ThinkNode_Priority">
+			<subNodes>
+				<li Class="ThinkNode_Subtree">
+					<treeDef>Downed</treeDef>
+				</li>
+				<li Class="VFEMech.ThinkNode_ConditionalHasPower">
+					<subNodes>
+						<!-- Main colonist behavior core -->
+						<li Class="ThinkNode_Priority">
+							<subNodes>
+								<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_Recharge"/>
+								<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStation"/>
+								<li Class="JobGiver_Work"/>
+								<li Class="ThinkNode_Tagger">
+									<tagToGive>Idle</tagToGive>
+									<subNodes>
+										<!-- Wander -->
+										<li Class="JobGiver_WanderColony">
+											<maxDanger>None</maxDanger>
+										</li>
+									</subNodes>
+								</li>
+								<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_StandIdle"/>
+							</subNodes>
+						</li>
+					</subNodes>
+				</li>
+				<li Class="VFEMech.ThinkNode_ConditionalHasPower">
+					<invert>true</invert>
+					<subNodes>
+						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_Recharge"/>
+						<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStation"/>
+					</subNodes>
+				</li>
+				
+				<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_StandIdle"/>
+			</subNodes>
+		</thinkRoot>
+	</ThinkTreeDef>
+
+	<ThinkTreeDef>
+		<defName>VFE_Mechanoids_ViolentMachine</defName>
+		<thinkRoot Class="ThinkNode_Priority">
+			<subNodes>
+				<li Class="ThinkNode_Subtree">
+					<treeDef>Downed</treeDef>
+				</li>
+				
+				<li Class="ThinkNode_Subtree">
+					<treeDef>VFE_MainMachineBehaviourViolentActive</treeDef>
+				</li>
+				
+			</subNodes>
+		</thinkRoot>
+	</ThinkTreeDef>
+
+	<ThinkTreeDef>
+		<defName>VFE_Mechanoids_Raider</defName>
+		<thinkRoot Class="ThinkNode_Priority">
+			<subNodes>
+				<li Class="ThinkNode_Subtree">
+					<treeDef>Downed</treeDef>
+				</li>
+
+				<li Class="ThinkNode_Subtree">
+					<treeDef>VFE_MainMachineBehaviourViolent</treeDef>
+				</li>
+			</subNodes>
+		</thinkRoot>
+	</ThinkTreeDef>
+	
+	<ThinkTreeDef>
+		<defName>VFE_Mechanoids_Machine_Riddable</defName>
+		<thinkRoot Class="ThinkNode_Priority">
+			<subNodes>
+				<li Class="ThinkNode_Subtree">
+					<treeDef>Downed</treeDef>
+				</li>
+				
+				<li Class="ThinkNode_Subtree">
+					<treeDef>VFE_MainMachineBehaviour</treeDef>
+				</li>
+				
+			</subNodes>
+		</thinkRoot>
+	</ThinkTreeDef>
+
+  <ThinkTreeDef>
+    <defName>VFE_MainMachineBehaviourViolentActive</defName>
+	<thinkRoot Class="ThinkNode_Priority">
+      <subNodes>
+			<li Class="ThinkNode_ConditionalOfPlayerFaction">
+				<subNodes>
+				<!-- Drafted -->
+					<li Class="VFEMech.ThinkNode_ConditionalHasPower">
+						<subNodes>
+							<!-- React to close melee threat -->
+							<li Class="JobGiver_ReactToCloseMeleeThreat"/>
+							<li Class="ThinkNode_QueuedJob"/>
+							<li Class="ThinkNode_Priority">
+								<subNodes>
+									<li Class="ThinkNode_Tagger">
+										<tagToGive>DraftedOrder</tagToGive>
+										<subNodes>
+											<li Class="JobGiver_Orders"/>
+										</subNodes>
+									</li>
+								</subNodes>
+							</li>
+							<li Class="ThinkNode_ConditionalHasLord">
+								<subNodes>
+									<li Class="ThinkNode_Duty"/>
+								</subNodes>
+							</li>
+							<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_Recharge"/>
+							<li Class="JobGiver_AIFightEnemies"/>
+							<li Class="JobGiver_Work"/>
+							<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStation"/>
+							<li Class="ThinkNode_Tagger">
+								<tagToGive>Idle</tagToGive>
+								<subNodes>
+									<!-- Wander -->
+									<li Class="JobGiver_WanderColony">
+										<maxDanger>None</maxDanger>
+									</li>
+								</subNodes>
+							</li>
+						</subNodes>
+					</li>
+					<li Class="VFEMech.ThinkNode_ConditionalHasPower">
+						<invert>true</invert>
+						<subNodes>
+							<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_Recharge"/>
+							<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStation"/>
+						</subNodes>
+					</li>
+				
+				<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_StandIdle"/>
+				</subNodes>
+			</li>
+      </subNodes>
+    </thinkRoot>
+  </ThinkTreeDef>
+  
+  <ThinkTreeDef>
+    <defName>VFE_MainMachineBehaviourViolent</defName>
+	<thinkRoot Class="ThinkNode_Priority">
+      <subNodes>
+			<li Class="ThinkNode_ConditionalOfPlayerFaction">
+				<subNodes>
+
+					<li Class="VFEMech.ThinkNode_ConditionalHasPower">
+						<subNodes>
+							<!-- React to close melee threat -->
+							<li Class="JobGiver_ReactToCloseMeleeThreat"/>
+							
+							<li Class="ThinkNode_QueuedJob"/>
+							
+							<li Class="ThinkNode_Priority">
+								<subNodes>
+									<li Class="ThinkNode_Tagger">
+										<tagToGive>DraftedOrder</tagToGive>
+										<subNodes>
+											<li Class="JobGiver_Orders"/>
+										</subNodes>
+									</li>
+								</subNodes>
+							</li>
+							
+							<li Class="ThinkNode_ConditionalHasLord">
+								<subNodes>
+									<li Class="ThinkNode_Duty"/>
+								</subNodes>
+							</li>
+							
+							<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_Recharge"/>
+							<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStation"/>
+							<li Class="JobGiver_AIFightEnemies"/>
+							<li Class="ThinkNode_Tagger">
+								<tagToGive>Idle</tagToGive>
+								<subNodes>
+									<!-- Wander -->
+									<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStationIdle"/>
+								</subNodes>
+							</li>
+						</subNodes>
+					</li>
+					
+					<li Class="VFEMech.ThinkNode_ConditionalHasPower">
+						<invert>true</invert>
+						<subNodes>
+							<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_Recharge"/>
+							<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStation"/>
+							<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStationIdle"/>
+						</subNodes>
+					</li>
+					<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_StandIdle"/>
+			
+				</subNodes>
+			</li>
+      </subNodes>
+    </thinkRoot>
+  </ThinkTreeDef>
+  
+  <ThinkTreeDef>
+    <defName>VFE_MainMachineBehaviour</defName>
+	<thinkRoot Class="ThinkNode_Priority">
+      <subNodes>
+			<li Class="ThinkNode_ConditionalOfPlayerFaction">
+				<subNodes>
+
+					<li Class="VFEMech.ThinkNode_ConditionalHasPower">
+						<subNodes>
+							<li Class="ThinkNode_QueuedJob"/>
+					
+							<li Class="ThinkNode_ConditionalHasLord">
+								<subNodes>
+									<li Class="ThinkNode_Duty"/>
+								</subNodes>
+							</li>
+							<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_Recharge"/>
+							<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStation"/>
+							<li Class="ThinkNode_Tagger">
+								<tagToGive>Idle</tagToGive>
+								<subNodes>
+									<!-- Wander -->
+									<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStationIdle"/>
+								</subNodes>
+							</li>
+							<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_StandIdle"/>
+						</subNodes>
+					</li>
+					
+					<li Class="VFEMech.ThinkNode_ConditionalHasPower">
+						<invert>true</invert>
+						<subNodes>
+							<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_Recharge"/>
+							<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_ReturnToStation"/>
+						</subNodes>
+					</li>
+					<li Class="VFE.Mechanoids.AI.JobGivers.JobGiver_StandIdle"/>
+		
+				</subNodes>
+			</li>
+      </subNodes>
+    </thinkRoot>
+  </ThinkTreeDef>
+  
+  <ThinkTreeDef>
+    <defName>VFE_Mechanoids_Machine_RiddableConstant</defName>
+    <thinkRoot Class="ThinkNode_Priority">
+      <subNodes>
+        <li Class="ThinkNode_ConditionalCanDoConstantThinkTreeJobNow">
+          <subNodes>
+
+            <!-- Join auto joinable caravan -->
+            <li Class="ThinkNode_Subtree">
+              <treeDef>JoinAutoJoinableCaravan</treeDef>
+            </li>
+            
+            <!-- Lord directives -->
+            <li Class="ThinkNode_Subtree">
+              <treeDef>LordDutyConstant</treeDef>
+            </li>
+          </subNodes>
+        </li>
+      </subNodes>
+    </thinkRoot>
+  </ThinkTreeDef>
+</Defs>

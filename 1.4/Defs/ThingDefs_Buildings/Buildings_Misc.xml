@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+    <ThingDef ParentName="BuildingBase">
+        <defName>VEF_OutpostDeliverySpot</defName>
+        <label>outpost delivery spot</label>
+        <description>Designates a spot for items from outposts to be delivered to.</description>
+        <drawerType>MapMeshAndRealTime</drawerType>
+        <graphicData>
+          <texPath>Things/OutpostDropOffSpot</texPath>
+          <graphicClass>Graphic_Single</graphicClass>
+          <drawSize>(1,1)</drawSize>
+        </graphicData>
+        <altitudeLayer>FloorEmplacement</altitudeLayer>
+        <statBases>
+          <WorkToBuild>0</WorkToBuild>
+        </statBases>
+        <useHitPoints>false</useHitPoints>
+        <scatterableOnMapGen>false</scatterableOnMapGen>
+        <passability>Standable</passability>
+        <building>
+          <canPlaceOverImpassablePlant>false</canPlaceOverImpassablePlant>
+          <ai_chillDestination>false</ai_chillDestination>
+          <artificialForMeditationPurposes>false</artificialForMeditationPurposes>
+        </building>
+      </ThingDef>
+</Defs>

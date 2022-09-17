@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <WorkGiverDef>
+    <defName>PS_DrainOutOfStorage</defName>
+    <label>drain out of storage</label>
+    <giverClass>PipeSystem.WorkGiver_DrainFromMarkedStorage</giverClass>
+    <workType>Hauling</workType>
+    <verb>drain out of storage</verb>
+    <gerund>draining out of storage</gerund>
+    <canBeDoneWhileDrafted>true</canBeDoneWhileDrafted>
+    <priorityInType>510</priorityInType>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>PS_FillStorage</defName>
+    <label>fill storage</label>
+    <giverClass>PipeSystem.WorkGiver_RefillStorage</giverClass>
+    <workType>Hauling</workType>
+    <verb>fill storage</verb>
+    <gerund>filling storage</gerund>
+    <canBeDoneWhileDrafted>false</canBeDoneWhileDrafted>
+    <priorityInType>510</priorityInType>
+  </WorkGiverDef>
+</Defs>

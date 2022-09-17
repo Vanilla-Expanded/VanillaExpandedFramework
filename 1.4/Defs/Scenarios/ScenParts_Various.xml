@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <ScenPartDef>
+    <defName>VFEC_ForcedFactionGoodwill</defName>
+    <label>forced faction relations</label>
+    <scenPartClass>VFECore.ScenPart_ForcedFactionGoodwill</scenPartClass>
+    <category>Misc</category>
+    <selectionWeight>1.0</selectionWeight>
+    <summaryPriority>340</summaryPriority>
+  </ScenPartDef>
+
+  <ScenPartDef>
+    <defName>VFEC_PlayerPawnsArriveMethodEdge</defName>
+    <label>pawn arrive method</label>
+    <category>Fixed</category>
+    <scenPartClass>VFECore.ScenPart_ArriveAtEdge</scenPartClass>
+    <maxUses>1</maxUses>
+  </ScenPartDef>
+
+  <ScenPartDef>
+    <defName>VFEC_AddStartingStructure</defName>
+    <label>add custom structure to starting map</label>
+    <category>Misc</category>
+    <scenPartClass>KCSG.ScenPart_AddStartingStructure</scenPartClass>
+    <maxUses>1</maxUses>
+  </ScenPartDef>
+
+</Defs>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+
+	<!-- Make skyfallers affect shields -->
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>/Defs/ThingDef[defName="DropPodIncoming"]</xpath>
+		<value>
+			<li Class="VFECore.ThingDefExtension">
+				<shieldDamageIntercepted>100</shieldDamageIntercepted>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>/Defs/ThingDef[defName="ShipChunkIncoming"]</xpath>
+		<value>
+			<li Class="VFECore.ThingDefExtension">
+				<shieldDamageIntercepted>100</shieldDamageIntercepted>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>/Defs/ThingDef[defName="CrashedShipPartIncoming"]</xpath>
+		<value>
+			<li Class="VFECore.ThingDefExtension">
+				<shieldDamageIntercepted>500</shieldDamageIntercepted>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>/Defs/ThingDef[defName="MeteoriteIncoming"]</xpath>
+		<value>
+			<li Class="VFECore.ThingDefExtension">
+				<shieldDamageIntercepted>500</shieldDamageIntercepted>
+			</li>
+		</value>
+	</Operation>
+
+</Patch>

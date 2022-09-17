@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+    <JobDef>
+        <defName>VFEC_EquipShield</defName>
+        <driverClass>VFECore.JobDriver_EquipShield</driverClass>
+        <reportString>equipping TargetA.</reportString>
+        <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+    </JobDef>
+
+    <JobDef>
+        <defName>VFEC_LeaveMap</defName>
+        <driverClass>VFECore.JobDriver_LeaveMap</driverClass>
+        <reportString>leaving.</reportString>
+        <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+        <playerInterruptible>false</playerInterruptible>
+        <casualInterruptible>false</casualInterruptible>
+        <alwaysShowWeapon>true</alwaysShowWeapon>
+    </JobDef>
+
+
+    <JobDef>
+        <defName>VEF_CustomizeItem</defName>
+        <driverClass>GraphicCustomization.JobDriver_CustomizeItem</driverClass>
+        <reportString>customizing TargetA.</reportString>
+    </JobDef>
+
+</Defs>

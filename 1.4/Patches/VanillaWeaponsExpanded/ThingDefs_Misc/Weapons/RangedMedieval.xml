@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+    <Operation Class="PatchOperationFindMod">
+        <mods>
+            <li>Vanilla Weapons Expanded</li>
+        </mods>
+        <match Class="PatchOperationSequence">
+            <success>Always</success>
+            <operations>
+
+                <!-- Patch appropriate weapons to be usable with shields -->
+                <li Class="PatchOperationAddModExtension">
+                    <xpath>/Defs/ThingDef[defName="VWE_Gun_Flintlock"]</xpath>
+                    <value>
+                        <li Class="VFECore.ThingDefExtension">
+                            <usableWithShields>true</usableWithShields>
+                        </li>
+                    </value>
+                </li>
+
+                <li Class="PatchOperationAddModExtension">
+                    <xpath>/Defs/ThingDef[defName="VWE_Throwing_Knives"]</xpath>
+                    <value>
+                        <li Class="VFECore.ThingDefExtension">
+                            <usableWithShields>true</usableWithShields>
+                        </li>
+                    </value>
+                </li>
+
+                <li Class="PatchOperationAddModExtension">
+                    <xpath>/Defs/ThingDef[defName="VWE_Tool_Whip"]</xpath>
+                    <value>
+                        <li Class="VFECore.ThingDefExtension">
+                            <usableWithShields>true</usableWithShields>
+                        </li>
+                    </value>
+                </li>
+
+            </operations>
+        </match>
+    </Operation>
+
+</Patch>

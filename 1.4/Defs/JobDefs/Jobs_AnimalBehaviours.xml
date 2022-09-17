@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<JobDef>
+		<defName>VEF_AnimalResource</defName>
+		<driverClass>AnimalBehaviours.JobDriver_AnimalResource</driverClass>
+		<reportString>gathering animal resource from TargetA.</reportString>
+	</JobDef>
+	<JobDef>
+		<defName>VEF_DestroyItem</defName>
+		<driverClass>AnimalBehaviours.JobDriver_DestroyItem</driverClass>
+		<reportString>destroying an item.</reportString>
+	</JobDef>
+	<JobDef>
+		<defName>VEF_LayExplodingEgg</defName>
+		<driverClass>AnimalBehaviours.JobDriver_LayExplodingEgg</driverClass>
+		<reportString>laying egg.</reportString>
+		<casualInterruptible>false</casualInterruptible>
+		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+	</JobDef>
+	<JobDef>
+		<defName>VEF_IngestWeird</defName>
+		<driverClass>AnimalBehaviours.JobDriver_IngestWeird</driverClass>
+		<reportString>consuming TargetA.</reportString>
+		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+	</JobDef>
+	<JobDef>
+		<defName>VEF_AutoNutrition</defName>
+		<driverClass>AnimalBehaviours.JobDriver_AutoNutrition</driverClass>
+		<reportString>eating.</reportString>
+		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+	</JobDef>
+</Defs>
