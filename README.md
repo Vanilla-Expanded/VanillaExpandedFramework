@@ -14,7 +14,7 @@ First of all, you'll need to add the framework as a dependency. You do this by a
     <packageId>OskarPotocki.VanillaFactionsExpanded.Core</packageId>
     <displayName>Vanilla Expanded Framework</displayName>
     <steamWorkshopUrl>https://steamcommunity.com/workshop/filedetails/?id=2023507013</steamWorkshopUrl>
-    <downloadUrl>https://github.com/AndroidQuazar/VanillaExpandedFramework</downloadUrl>
+    <downloadUrl>https://github.com/Vanilla-Expanded/VanillaExpandedFramework</downloadUrl>
   </li>
 </modDependencies>
 ```
