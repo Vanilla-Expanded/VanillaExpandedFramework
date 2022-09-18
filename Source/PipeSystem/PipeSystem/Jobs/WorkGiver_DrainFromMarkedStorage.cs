@@ -1,5 +1,5 @@
-﻿using RimWorld;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using RimWorld;
 using Verse;
 using Verse.AI;
 
@@ -13,7 +13,7 @@ namespace PipeSystem
 
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
-            List<Designation> desList = pawn.Map.designationManager.allDesignations;
+            List<Designation> desList = pawn.Map.designationManager.AllDesignations;
             for (int i = 0; i < desList.Count; i++)
             {
                 var des = desList[i];
