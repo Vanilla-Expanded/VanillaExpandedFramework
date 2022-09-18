@@ -147,7 +147,7 @@ namespace VanillaWeaponsExpandedLaser
             ThingDef preExplosionSpawnThingDef = this.def.projectile.preExplosionSpawnThingDef;
             GenExplosion.DoExplosion(center, map2, explosionRadius, damageDef, launcher, damageAmount, 0f, 
                 soundExplode, equipmentDef, def, null, postExplosionSpawnThingDef, postExplosionSpawnChance, 
-                postExplosionSpawnThingCount, GasType.Unused, this.def.projectile.applyDamageToExplosionCellsNeighbors, 
+                postExplosionSpawnThingCount, this.def.projectile.postExplosionGasType, this.def.projectile.applyDamageToExplosionCellsNeighbors, 
                 preExplosionSpawnThingDef, this.def.projectile.preExplosionSpawnChance, 
                 this.def.projectile.preExplosionSpawnThingCount, this.def.projectile.explosionChanceToStartFire, 
                 this.def.projectile.explosionDamageFalloff);
