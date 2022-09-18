@@ -1,12 +1,8 @@
-﻿using HarmonyLib;
-using RimWorld;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
+using RimWorld;
 using UnityEngine;
 using Verse;
-using Verse.Sound;
 
 namespace VFECore
 {
@@ -20,7 +16,7 @@ namespace VFECore
 		private bool stopped;
 		private float maxRange;
 		public void SetDestinationToMax(Thing equipment)
-        {
+		{
 			maxRange = equipment.TryGetComp<CompEquippable>().PrimaryVerb.verbProps.range;
 			var origin2 = new Vector3(this.launcher.TrueCenter().x, 0, this.launcher.TrueCenter().z);
 			var destination2 = new Vector3(destination.x, 0, destination.z);
@@ -127,7 +123,7 @@ namespace VFECore
 			get
 			{
 				if (!(this.launcher is Pawn))
-                {
+				{
 					this.startingPosition = this.launcher.OccupiedRect().CenterVector3;
 				}
 				else if (!pawnMoved && this.launcher is Pawn pawn && !pawn.Dead)
@@ -151,25 +147,25 @@ namespace VFECore
 			get
 			{
 				if (stopped)
-                {
+				{
 					return curPosition;
-                }
+				}
 				else if (this.def.reachMaxRangeAlways)
-                {
+				{
 					var origin2 = new Vector3(this.launcher.TrueCenter().x, 0, this.launcher.TrueCenter().z);
 					var curPos = this.DrawPos;
 					var distance = Vector3.Distance(origin2, curPos);
 					var distanceDiff = maxRange - distance;
 					if (distanceDiff < 0)
-                    {
+					{
 						if (!stopped)
-                        {
+						{
 							StopMotion();
-                        }
+						}
 						return curPosition;
 					}
 					else
-                    {
+					{
 						return this.DrawPos;
 					}
 				}
@@ -197,8 +193,9 @@ namespace VFECore
 				startingPositionOffsetMirrored.x = -startingPositionOffsetMirrored.x;
 				pos += Quaternion.Euler(0, (startingPosition - currentPos).AngleFlat(), 0) * startingPositionOffsetMirrored;
 			}
-		
-			else {
+
+			else
+			{
 				pos += Quaternion.Euler(0, (startingPosition - currentPos).AngleFlat(), 0) * def.startingPositionOffset;
 
 			}
@@ -228,14 +225,15 @@ namespace VFECore
 			Vector3 pos = (startingPosition + currentPos) / 2f;
 			pos.y = 10;
 			if (this.launcher.Rotation == Rot4.West)
-            {
+			{
 				Vector3 startingPositionOffsetMirrored = this.def.startingPositionOffset;
 				startingPositionOffsetMirrored.x = -startingPositionOffsetMirrored.x;
 				pos += Quaternion.Euler(0, (startingPosition - currentPos).AngleFlat(), 0) * startingPositionOffsetMirrored;
 
 
 			}
-			else {
+			else
+			{
 				pos += Quaternion.Euler(0, (startingPosition - currentPos).AngleFlat(), 0) * this.def.startingPositionOffset;
 
 			}
@@ -275,9 +273,9 @@ namespace VFECore
 		}
 
 		private void StopMotion()
-        {
+		{
 			if (!stopped)
-            {
+			{
 				stopped = true;
 				curPosition = this.DrawPos;
 				this.destination = this.curPosition;
@@ -329,7 +327,7 @@ namespace VFECore
 		protected bool customImpact;
 
 		public List<Thing> hitThings;
-		protected override void Impact(Thing hitThing)
+		protected override void Impact(Thing hitThing, bool blockedByShield = false)
 		{
 			if (def.stopWhenHit && !stopped && !customImpact)
 			{
@@ -337,9 +335,9 @@ namespace VFECore
 			}
 			if (hitThings == null) hitThings = new List<Thing>();
 			if (this.def.dealsDamageOnce && hitThings.Contains(hitThing))
-            {
+			{
 				return;
-            }
+			}
 			hitThings.Add(hitThing);
 			Map map = base.Map;
 			IntVec3 position = base.Position;
@@ -361,7 +359,7 @@ namespace VFECore
 				Pawn pawn = hitThing as Pawn;
 				if (pawn != null && pawn.stances != null && pawn.BodySize <= def.projectile.StoppingPower + 0.001f)
 				{
-					pawn.stances.StaggerFor(95);
+					pawn.stances.stagger.StaggerFor(95);
 				}
 				if (def.projectile.extraDamages != null)
 				{
@@ -376,12 +374,12 @@ namespace VFECore
 				}
 
 				if (this.def.stopWhenHitAt.Contains(hitThing.def.defName))
-                {
+				{
 					if (!stopped)
-                    {
+					{
 						StopMotion();
 					}
-                }
+				}
 			}
 		}
 
@@ -411,9 +409,9 @@ namespace VFECore
 					if (thingList[j] != hitThing)
 					{
 						try
-                        {
+						{
 							thingList[j].Notify_BulletImpactNearby(impactData);
-                        }
+						}
 						catch { };
 					}
 				}

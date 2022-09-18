@@ -2,7 +2,6 @@
 
 namespace VFECore.Abilities
 {
-using RimWorld;
     using Verse;
 
     public class Verb_CastAbility : Verb
@@ -22,13 +21,16 @@ using RimWorld;
 
         private void StartAbilityJob(LocalTargetInfo castTarg, LocalTargetInfo destTarg)
         {
-            if (castTarg.IsValid  && !destTarg.IsValid) this.ability.CreateCastJob(castTarg);
+            if (castTarg.IsValid && !destTarg.IsValid) this.ability.CreateCastJob(castTarg);
             if (!castTarg.IsValid && destTarg.IsValid) this.ability.CreateCastJob(destTarg);
-            if (castTarg.IsValid && destTarg.IsValid) this.ability.CreateCastJob(castTarg.ToGlobalTargetInfo(this.ability.pawn.Map),
+            if (castTarg.IsValid && destTarg.IsValid)
+            {
+                this.ability.CreateCastJob(castTarg.ToGlobalTargetInfo(this.ability.pawn.Map),
                 destTarg.ToGlobalTargetInfo(this.ability.pawn.Map));
+            }
         }
 
-        public override bool TryStartCastOn(LocalTargetInfo castTarg, LocalTargetInfo destTarg, bool surpriseAttack = false, bool canHitNonTargetPawns = true, bool preventFriendlyFire = false)
+        public override bool TryStartCastOn(LocalTargetInfo castTarg, LocalTargetInfo destTarg, bool surpriseAttack = false, bool canHitNonTargetPawns = true, bool preventFriendlyFire = false, bool nonInterruptingSelfCast = false)
         {
             if (base.TryStartCastOn(castTarg, destTarg, surpriseAttack, canHitNonTargetPawns, preventFriendlyFire))
             {
@@ -41,7 +43,7 @@ using RimWorld;
         {
             base.OrderForceTarget(target);
             this.ability.currentTargetingIndex = -1;
-            this.ability.currentTargets        = new GlobalTargetInfo[this.ability.def.targetCount];
+            this.ability.currentTargets = new GlobalTargetInfo[this.ability.def.targetCount];
             this.ability.OrderForceTarget(target);
         }
         public override void OnGUI(LocalTargetInfo target)

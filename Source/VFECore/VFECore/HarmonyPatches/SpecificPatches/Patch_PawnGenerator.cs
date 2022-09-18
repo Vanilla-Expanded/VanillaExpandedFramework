@@ -15,7 +15,7 @@ namespace VFECore
     public static class Patch_PawnGenerator
     {
 
-        [HarmonyPatch(typeof(PawnGenerator), "GenerateGearFor")]
+        /*[HarmonyPatch(typeof(PawnGenerator), "GenerateGearFor")]
         public static class GenerateGearFor
         {
             public static void Postfix(Pawn pawn)
@@ -38,9 +38,9 @@ namespace VFECore
                                                                         });
             }
 
-        }
+        }*/
 
-        [HarmonyPatch(typeof(PawnGenerator), "GenerateInitialHediffs")]
+        /*[HarmonyPatch(typeof(PawnGenerator), "GenerateInitialHediffs")]
         public static class GenerateInitialHediffs
         {
             public static void Postfix(Pawn pawn)
@@ -56,6 +56,6 @@ namespace VFECore
                                     pawn.health.AddHediff(hd, bodyPartRecord);
                                 });
             }
-        }
+        }*/
     }
 }

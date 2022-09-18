@@ -157,7 +157,9 @@
                 if (ability.ShowGizmoOnPawn())
                     yield return ability.GetGizmo();
 
-            foreach (Hediff_Abilities hediff in this.Pawn.health.hediffSet.GetHediffs<Hediff_Abilities>())
+            var hediffsAbilities = new List<Hediff_Abilities>();
+            Pawn.health.hediffSet.GetHediffs<Hediff_Abilities>(ref hediffsAbilities);
+            foreach (Hediff_Abilities hediff in hediffsAbilities)
             {
                 foreach (Gizmo gizmo in hediff.DrawGizmos())
                     yield return gizmo;

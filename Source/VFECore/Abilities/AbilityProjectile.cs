@@ -9,7 +9,8 @@ namespace VFECore.Abilities
     public class AbilityProjectile : Projectile
     {
         public Ability ability;
-        protected override void Impact(Thing hitThing)
+
+        protected override void Impact(Thing hitThing, bool blockedByShield = false)
         {
             Map map = this.Map;
             base.Impact(hitThing);
@@ -36,7 +37,7 @@ namespace VFECore.Abilities
 
                     if (pawn.stances != null && pawn.BodySize <= this.def.projectile.StoppingPower + 0.001f)
                     {
-                        pawn.stances.StaggerFor(95);
+                        pawn.stances.stagger.StaggerFor(95);
                     }
                 }
 

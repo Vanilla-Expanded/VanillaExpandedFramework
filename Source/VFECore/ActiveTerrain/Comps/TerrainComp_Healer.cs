@@ -36,7 +36,8 @@ namespace VFECore
 
         public Hediff FirstInjuryToThreat(Pawn pawn)
         {
-            var injuries = pawn.health.hediffSet.GetHediffs<Hediff_Injury>().ToList();
+            var injuries = new List<Hediff_Injury>();
+            pawn.health.hediffSet.GetHediffs<Hediff_Injury>(ref injuries);
             var minorInjuries = new List<Hediff>();
             var permanentInjuries = new List<Hediff>();
             foreach (var injury in injuries)

@@ -107,7 +107,7 @@ namespace VFECore
                     ThingDef turret = thingDef;
                     bool allowEMP = false;
                     TechLevel techLevel = lord.faction.def.techLevel;
-                    ThingDef thingDef2 = TurretGunUtility.TryFindRandomShellDef(turret, allowEMP, true, techLevel, false, 250f);
+                    ThingDef thingDef2 = TurretGunUtility.TryFindRandomShellDef(turret, allowEMP, false, true, techLevel, false, 250f);
                     if (thingDef2 != null)
                     {
                         Thing thing3 = ThingMaker.MakeThing(thingDef2, null);
@@ -348,7 +348,7 @@ namespace VFECore
                     for (int i = 0; i < ShellReplenishCount; i++)
                     {
                         var artillery = distinctArtillery.RandomElementByWeight(a => data.artilleryCounts[a]);
-                        ThingDef shellDef = TurretGunUtility.TryFindRandomShellDef(artillery, allowEMP, true, techLevel, false, 250f);
+                        ThingDef shellDef = TurretGunUtility.TryFindRandomShellDef(artillery, allowEMP, false, true, techLevel, false, 250f);
                         if (shellDef != null)
                         {
                             if (shellCountsToGive.ContainsKey(shellDef))

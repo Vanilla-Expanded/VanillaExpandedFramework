@@ -25,7 +25,7 @@ namespace VFECore
 
         public Gizmo_EnergyCompShieldStatus()
         {
-            order = -100f;
+            Order = -100f;
         }
 
         public override float GetWidth(float maxWidth)

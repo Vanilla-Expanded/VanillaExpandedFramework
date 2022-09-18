@@ -25,7 +25,7 @@ namespace VFECore
         {
             if (!MyPawnIsAlive)
             {
-                myPawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(Props.pawnToSpawn, parent.Faction, newborn: true, canGeneratePawnRelations: false));
+                myPawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(Props.pawnToSpawn, parent.Faction, canGeneratePawnRelations: false));
                 myPawn.Position = parent.Position;
                 myPawn.Rotation = Rot4.South;
                 CompDependsOnBuilding pawnComp = myPawn.TryGetComp<CompDependsOnBuilding>();

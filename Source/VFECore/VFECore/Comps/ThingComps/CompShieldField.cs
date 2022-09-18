@@ -502,7 +502,7 @@ namespace VFECore
 
                     // Power consumption
                     if (PowerTraderComp != null)
-                        PowerTraderComp.PowerOutput = -PowerTraderComp.Props.basePowerConsumption;
+                        PowerTraderComp.PowerOutput = -PowerTraderComp.Props.PowerConsumption;
 
                     if (Energy > 0 || Indestructible)
                         EnergyShieldTick();
@@ -755,7 +755,7 @@ namespace VFECore
     {
         public Gizmo_EnergyShieldGeneratorStatus()
         {
-            order = -100;
+            Order = -100;
         }
 
         public override float GetWidth(float maxWidth)

@@ -80,8 +80,8 @@ namespace VanillaFurnitureExpanded
                 {
                     return false;
                 }
-                CompSendSignalOnPawnProximity compSendSignalOnPawnProximity = parent.TryGetComp<CompSendSignalOnPawnProximity>();
-                if (compSendSignalOnPawnProximity != null && compSendSignalOnPawnProximity.Sent)
+                CompSendSignalOnMotion compSendSignalOnMotion = parent.TryGetComp<CompSendSignalOnMotion>();
+                if (compSendSignalOnMotion != null && compSendSignalOnMotion.Sent)
                 {
                     return false;
                 }

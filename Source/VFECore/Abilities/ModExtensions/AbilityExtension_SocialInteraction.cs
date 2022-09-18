@@ -35,7 +35,7 @@
 			{
 				if (target.Thing is Pawn pawn)
 				{
-					if (!canApplyToMentallyBroken && !AbilityUtility.ValidateNoMentalState(pawn, throwMessages))
+					/*if (!canApplyToMentallyBroken && !AbilityUtility.ValidateNoMentalState(pawn, throwMessages))
 					{
 						return false;
 					}
@@ -46,7 +46,7 @@
 					if (!canApplyToUnconscious && !AbilityUtility.ValidateIsConscious(pawn, throwMessages))
 					{
 						return false;
-					}
+					}*/
 				}
 			}
 			return base.Valid(targets, ability, throwMessages);

@@ -120,23 +120,26 @@ namespace VFE.Mechanoids
         {
             base.CompTickRare();
             IBedMachine bed = (IBedMachine)parent;
+            var consumption = PowerComp.Props.PowerConsumption;
+
             if(bed.occupant!=null)
             {
                 if (this.energyDrainMode)
                 {
-                    PowerComp.powerOutputInt = 0 - PowerComp.Props.basePowerConsumption - Props.extraChargingPower;
+                    PowerComp.powerOutputInt = 0 - consumption - Props.extraChargingPower;
                 }
                 if (myPawn.health.hediffSet.HasNaturallyHealingInjury() && parent.TryGetComp<CompPowerTrader>().PowerOn)
                 {
                     float num3 = 12f;
-                (from x in myPawn.health.hediffSet.GetHediffs<Hediff_Injury>()
-                 where x.CanHealNaturally()
-                 select x).RandomElement().Heal(num3 * myPawn.HealthScale * 0.01f);
+
+                    var hediffsInjury = new List<Hediff_Injury>();
+                    myPawn.health.hediffSet.GetHediffs<Hediff_Injury>(ref hediffsInjury);
+                    (from x in hediffsInjury where x.CanHealNaturally() select x).RandomElement().Heal(num3 * myPawn.HealthScale * 0.01f);
                 }
             }
             else if (this.energyDrainMode)
             {
-                PowerComp.powerOutputInt = 0 - PowerComp.Props.basePowerConsumption;
+                PowerComp.powerOutputInt = 0 - consumption;
             }
             CheckWantsRespawn();
         }
@@ -172,7 +175,7 @@ namespace VFE.Mechanoids
             if (myPawn.needs.TryGetNeed<Need_Power>().CurLevel < 0.99f)
             {
                 this.energyDrainMode = true;
-                PowerComp.powerOutputInt = -PowerComp.Props.basePowerConsumption;
+                PowerComp.powerOutputInt = -PowerComp.Props.PowerConsumption;
             }
         }
         public override IEnumerable<Gizmo> CompGetGizmosExtra()

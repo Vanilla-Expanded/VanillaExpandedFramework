@@ -12,16 +12,17 @@ namespace VFEMech
 {
     public class TeslaChainingProps : DefModExtension
     {
-        public bool      addFire;
-        public float     bounceRange;
-        public int       maxBounceCount;
+        public bool addFire;
+        public float bounceRange;
+        public int maxBounceCount;
         public DamageDef damageDef;
         public DamageDef explosionDamageDef;
-        public float     impactRadius;
-        public bool      targetFriendly;
-        public int       maxLifetime;
-        public SoundDef  impactSound;
+        public float impactRadius;
+        public bool targetFriendly;
+        public int maxLifetime;
+        public SoundDef impactSound;
     }
+
     public class TeslaProjectile : Bullet
     {
         public int curLifetime;
@@ -43,7 +44,7 @@ namespace VFEMech
             }
         }
 
-        [HarmonyPatch]
+        /*[HarmonyPatch]
         public static class CheckPreAbsorbDamagePatch
         {
             [HarmonyTargetMethods]
@@ -56,7 +57,7 @@ namespace VFEMech
             {
                 wasDeflected = __result;
             }
-        }
+        }*/
 
         [HarmonyPatch]
         public static class ProjectilePatches
@@ -72,12 +73,15 @@ namespace VFEMech
                 wasDeflected = false;
             }
         }
+
         protected virtual int GetDamageAmount => this.def.projectile.GetDamageAmount(1f);
+
         protected virtual DamageInfo GetDamageInfo(Thing hitThing)
         {
             return new DamageInfo(Props.damageDef, GetDamageAmount, def.projectile.GetArmorPenetration(this.launcher), Holder.DrawPos.AngleToFlat(hitThing.DrawPos), this.Launcher);
         }
-        protected override void Impact(Thing hitThing)
+
+        protected override void Impact(Thing hitThing, bool blockedByShield = false)
         {
             var oldValue = def.projectile.damageDef.isRanged; // all of this jazz is to make shield belt deflecting tesla projectiles
             def.projectile.damageDef.isRanged = true;
@@ -93,6 +97,7 @@ namespace VFEMech
             {
                 equipmentDef = ThingDef.Named("Gun_Autopistol");
             }
+
             if (wasDeflected)
             {
                 wasDeflected = false;

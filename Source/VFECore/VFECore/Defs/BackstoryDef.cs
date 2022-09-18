@@ -1,18 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using HarmonyLib;
-using RimWorld;
-using Verse;
-
-namespace VFECore
+﻿namespace VFECore
 {
-	public class TraitEntryBackstory
+	/*public class TraitEntryBackstory
 	{
 		public TraitDef defName;
 		public int degree = 0;
@@ -20,9 +8,9 @@ namespace VFECore
 
 		public float commonalityMale = -1f;
 		public float commonalityFemale = -1f;
-	}
+	}*/
 
-	[HarmonyPatch(typeof(PawnBioAndNameGenerator), "FillBackstorySlotShuffled")]
+	/*[HarmonyPatch(typeof(PawnBioAndNameGenerator), "FillBackstorySlotShuffled")]
 	public static class PawnBioAndNameGenerator_FillBackstorySlotShuffled
 	{
 		public static bool Prefix(Pawn pawn, BackstorySlot slot, ref Backstory backstory) =>
@@ -53,9 +41,9 @@ namespace VFECore
 										return (def?.Approved(pawn) ?? true) && (slot != BackstorySlot.Adulthood || ((def?.linkedBackstory.NullOrEmpty() ?? true) || pawn.story.childhood.identifier == def.linkedBackstory));
 									}).ToList();
 		}
-	}
+	}*/
 
-	[HarmonyPatch(typeof(PawnGenerator), "GenerateSkills")]
+	/*[HarmonyPatch(typeof(PawnGenerator), "GenerateSkills")]
 	public static class PawnGenerator_GenerateSkills
 	{
 		public static void Postfix(Pawn pawn)
@@ -66,39 +54,39 @@ namespace VFECore
 				{
 					foreach (var passion in passions)
 					{
-						pawn.skills.GetSkill(passion.skill).passion = (Passion) passion.xp;
+						pawn.skills.GetSkill(passion.skill).passion = (Passion)passion.xp;
 					}
 				}
 			}
 		}
 
 		public static readonly ConditionalWeakTable<Backstory, List<SkillGain>> PASSIONS = new();
-	}
+	}*/
 
-	public class BackstoryDef : Def
+	/*public class BackstoryDef : Def
 	{
-		public string                    baseDescription;
-		public BodyTypeDef               bodyTypeGlobal;
-		public BodyTypeDef               bodyTypeMale;
-		public BodyTypeDef               bodyTypeFemale;
-		public string                    title;
-		public string                    titleFemale;
-		public string                    titleShort;
-		public string                    titleShortFemale;
-		public BackstorySlot             slot              = BackstorySlot.Adulthood;
-		public bool                      shuffleable       = true;
-		public bool                      addToDatabase     = true;
-		public List<WorkTags>            workAllows        = new List<WorkTags>();
-		public List<WorkTags>            workDisables      = new List<WorkTags>();
-		public List<WorkTags>            requiredWorkTags  = new List<WorkTags>();
-		public List<SkillGain>           skillGains        = new List<SkillGain>();
-		public List<SkillGain>           passions          = new List<SkillGain>();
-		public List<string>              spawnCategories   = new List<string>();
-		public List<TraitEntryBackstory> forcedTraits      = new List<TraitEntryBackstory>();
-		public List<TraitEntryBackstory> disallowedTraits  = new List<TraitEntryBackstory>();
-		public float                     maleCommonality   = 100f;
-		public float                     femaleCommonality = 100f;
-		public string                    linkedBackstory;
+		public string baseDescription;
+		public BodyTypeDef bodyTypeGlobal;
+		public BodyTypeDef bodyTypeMale;
+		public BodyTypeDef bodyTypeFemale;
+		public string title;
+		public string titleFemale;
+		public string titleShort;
+		public string titleShortFemale;
+		public BackstorySlot slot = BackstorySlot.Adulthood;
+		public bool shuffleable = true;
+		public bool addToDatabase = true;
+		public List<WorkTags> workAllows = new List<WorkTags>();
+		public List<WorkTags> workDisables = new List<WorkTags>();
+		public List<WorkTags> requiredWorkTags = new List<WorkTags>();
+		public List<SkillGain> skillGains = new List<SkillGain>();
+		public List<SkillGain> passions = new List<SkillGain>();
+		public List<string> spawnCategories = new List<string>();
+		public List<TraitEntryBackstory> forcedTraits = new List<TraitEntryBackstory>();
+		public List<TraitEntryBackstory> disallowedTraits = new List<TraitEntryBackstory>();
+		public float maleCommonality = 100f;
+		public float femaleCommonality = 100f;
+		public string linkedBackstory;
 		//public RelationSettings relationSettings = new RelationSettings();
 		public List<string> forcedHediffs = new List<string>();
 		public IntRange bioAgeRange;
@@ -109,8 +97,8 @@ namespace VFECore
 		public bool CommonalityApproved(Gender g) => Rand.Range(min: 0, max: 100) < (g == Gender.Female ? this.femaleCommonality : this.maleCommonality);
 
 		public bool Approved(Pawn p) => this.CommonalityApproved(p.gender) &&
-		                                (this.bioAgeRange == default || (this.bioAgeRange.min < p.ageTracker.AgeBiologicalYears && p.ageTracker.AgeBiologicalYears < this.bioAgeRange.max)) &&
-		                                (this.chronoAgeRange == default || (this.chronoAgeRange.min < p.ageTracker.AgeChronologicalYears && p.ageTracker.AgeChronologicalYears < this.chronoAgeRange.max));
+										(this.bioAgeRange == default || (this.bioAgeRange.min < p.ageTracker.AgeBiologicalYears && p.ageTracker.AgeBiologicalYears < this.bioAgeRange.max)) &&
+										(this.chronoAgeRange == default || (this.chronoAgeRange.min < p.ageTracker.AgeChronologicalYears && p.ageTracker.AgeChronologicalYears < this.chronoAgeRange.max));
 
 		public override void ResolveReferences()
 		{
@@ -127,7 +115,7 @@ namespace VFECore
 				spawnCategories = this.spawnCategories,
 				forcedTraits = this.forcedTraits.NullOrEmpty() ? null : this.forcedTraits.Where(predicate: trait => Rand.Range(min: 0, max: 100) < trait.chance).ToList().ConvertAll(converter: trait => new TraitEntry(trait.defName, trait.degree)),
 				disallowedTraits = this.disallowedTraits.NullOrEmpty() ? null : this.disallowedTraits.Where(predicate: trait => Rand.Range(min: 0, max: 100) < trait.chance).ToList().ConvertAll(converter: trait => new TraitEntry(trait.defName, trait.degree)),
-				workDisables = this.workAllows.NullOrEmpty() ? this.workDisables.NullOrEmpty() ? WorkTags.None : ((Func<WorkTags>) delegate
+				workDisables = this.workAllows.NullOrEmpty() ? this.workDisables.NullOrEmpty() ? WorkTags.None : ((Func<WorkTags>)delegate
 																																{
 																																	WorkTags wt = WorkTags.None;
 																																	this.workDisables.ForEach(action: tag => wt |= tag);
@@ -139,7 +127,7 @@ namespace VFECore
 																																							return wt;
 																																						})(),
 				identifier = this.defName,
-				requiredWorkTags = ((Func<WorkTags>) delegate
+				requiredWorkTags = ((Func<WorkTags>)delegate
 													{
 														WorkTags wt = WorkTags.None;
 														this.requiredWorkTags.ForEach(action: tag => wt |= tag);
@@ -182,5 +170,5 @@ namespace VFECore
 			bs.backstory.SetTitleShort(bs.titleShort.NullOrEmpty() ? bs.backstory.title : bs.titleShort,
 										bs.titleShortFemale.NullOrEmpty() ? bs.backstory.titleFemale : bs.titleShortFemale);
 		}
-	}
+	}*/
 }

@@ -57,7 +57,7 @@
                 if (staggerTicks.HasValue)
                 {
                     pawn.stances.SetStance(new Stance_Cooldown(staggerTicks.Value + 1, this.ability.CasterPawn, null));
-                    pawn.stances.StaggerFor(staggerTicks.Value);
+                    pawn.stances.stagger.StaggerFor(staggerTicks.Value);
                 }
             }
         }

@@ -34,7 +34,7 @@ namespace AnimalBehaviours
                 int numToSpawn = Rand.RangeInclusive(Props.numberOfSpawn[0], Props.numberOfSpawn[1]);
                 for (int i = 0; i < numToSpawn; i++)
                 {
-                    PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDef.Named(Props.thingToTurnTo), faction, PawnGenerationContext.NonPlayer, -1, false, true, false, false, true, false, 1f, false, true, true, false, false);
+                    PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDef.Named(Props.thingToTurnTo), faction, PawnGenerationContext.NonPlayer, -1, false, true, false, false, true, 1f, false, false, true, true, false, false);
                     Pawn pawn = PawnGenerator.GeneratePawn(request);
                     PawnUtility.TrySpawnHatchedOrBornPawn(pawn, this.parent.pawn.Corpse);
                     if (Props.keepGender)

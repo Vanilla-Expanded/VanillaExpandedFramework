@@ -36,7 +36,7 @@ namespace AnimalBehaviours
                     int numToSpawn = Rand.RangeInclusive(Props.groupMinMax[0], Props.groupMinMax[1]);
                     for (int i = 0; i < numToSpawn; i++)
                     {
-                        PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDef.Named(Props.pawnDef), Find.FactionManager.FirstFactionOfDef(FactionDefOf.AncientsHostile), PawnGenerationContext.NonPlayer, -1, false, false, false, false, true, false, 1f, false, true, true, false, false);
+                        PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDef.Named(Props.pawnDef), Find.FactionManager.FirstFactionOfDef(FactionDefOf.AncientsHostile), PawnGenerationContext.NonPlayer, -1, false, false, false, false, true, 1f, false, false, true, true, false, false);
                         Pawn pawn = PawnGenerator.GeneratePawn(request);
                         GenSpawn.Spawn(pawn, CellFinder.RandomClosewalkCellNear(parent.Position, parent.Map, 3, null), parent.Map, WipeMode.Vanish);
                         if (Props.summonsAreManhunters)

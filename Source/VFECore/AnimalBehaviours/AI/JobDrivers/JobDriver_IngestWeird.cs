@@ -286,7 +286,7 @@ namespace AnimalBehaviours
                             {
                                 for (int i = 0; i < comp.Props.numberOfOffspring; i++)
                                 {
-                                    PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDef.Named(comp.Props.defToFissionTo), actor.Faction, PawnGenerationContext.NonPlayer, -1, true, true, false, false, true, false, 1f, false, true, true, false, false);
+                                    PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDef.Named(comp.Props.defToFissionTo), actor.Faction, PawnGenerationContext.NonPlayer, -1, true, true, false, false, true, 1f, false, false, true, true, false, false);
                                     Pawn newPawn = PawnGenerator.GeneratePawn(request);
                                     newPawn.playerSettings.AreaRestriction = actor.playerSettings.AreaRestriction;
                                     newPawn.relations.AddDirectRelation(PawnRelationDefOf.Parent, actor);
@@ -301,7 +301,7 @@ namespace AnimalBehaviours
                         }
                         else
                         {
-                            PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDef.Named(comp.Props.defToAdvanceTo), actor.Faction, PawnGenerationContext.NonPlayer, -1, true, true, false, false, true, false, 1f, false, true, true, false, false);
+                            PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDef.Named(comp.Props.defToAdvanceTo), actor.Faction, PawnGenerationContext.NonPlayer, -1, true, true, false, false, true, 1f, false, false, true, true, false, false);
                             Pawn newPawn = PawnGenerator.GeneratePawn(request);
                             if (actor.Name!=null && !actor.Name.ToString().UncapitalizeFirst().Contains(actor.def.label))
                             {

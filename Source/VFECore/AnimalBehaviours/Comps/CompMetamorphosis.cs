@@ -44,7 +44,7 @@ namespace AnimalBehaviours
                     //Keep parent's faction, BUT only faction
                     Faction faction = this.parent.Faction;
 
-                    PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDef.Named(Props.pawnToTurnInto), faction, PawnGenerationContext.NonPlayer, -1, false, true, false, false, true, false, 1f, false, true, true, false, false);
+                    PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDef.Named(Props.pawnToTurnInto), faction, PawnGenerationContext.NonPlayer, -1, false, true, false, false, true, 1f, false, false, true, true, false, false);
                     Pawn pawn = PawnGenerator.GeneratePawn(request);
                     GenSpawn.Spawn(pawn, CellFinder.RandomClosewalkCellNear(parent.Position, parent.Map, 3, null), parent.Map, WipeMode.Vanish);
 

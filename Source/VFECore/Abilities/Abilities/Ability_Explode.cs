@@ -11,14 +11,16 @@ namespace VFECore.Abilities
         {
             base.Cast(targets);
             if (def.GetModExtension<AbilityExtension_Explosion>() is AbilityExtension_Explosion ext)
+            {
                 foreach (GlobalTargetInfo target in targets)
                 {
                     GenExplosion.DoExplosion(ext.onCaster ? pawn.Position : target.Cell, pawn.Map, ext.explosionRadius, ext.explosionDamageDef, pawn,
                                              ext.explosionDamageAmount, ext.explosionArmorPenetration, ext.explosionSound, null, null, null, ext.postExplosionSpawnThingDef,
-                                             ext.postExplosionSpawnChance, ext.postExplosionSpawnThingCount, ext.applyDamageToExplosionCellsNeighbors, ext.preExplosionSpawnThingDef,
+                                             ext.postExplosionSpawnChance, ext.postExplosionSpawnThingCount, ext.postExplosionGasType, ext.applyDamageToExplosionCellsNeighbors, ext.preExplosionSpawnThingDef,
                                              ext.preExplosionSpawnChance, ext.preExplosionSpawnThingCount, ext.chanceToStartFire, ext.damageFalloff, ext.explosionDirection,
                                              ext.casterImmune ? new List<Thing> { this.pawn } : null);
                 }
+            }
         }
     }
 
@@ -36,6 +38,7 @@ namespace VFECore.Abilities
         public bool      onCaster;
         public float     postExplosionSpawnChance;
         public int       postExplosionSpawnThingCount = 1;
+        public GasType?  postExplosionGasType = null;
         public ThingDef  postExplosionSpawnThingDef;
         public float     preExplosionSpawnChance;
         public int       preExplosionSpawnThingCount = 1;

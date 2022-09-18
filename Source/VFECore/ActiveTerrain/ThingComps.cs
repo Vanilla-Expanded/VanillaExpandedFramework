@@ -28,7 +28,7 @@ namespace VFECore
         public void UpdatePowerOutput()
         {
             float f = CurPowerDemand;
-            var output = -Props.basePowerConsumption + f;
+            var output = -Props.PowerConsumption + f;
             PowerOutput = output;
         }
 
