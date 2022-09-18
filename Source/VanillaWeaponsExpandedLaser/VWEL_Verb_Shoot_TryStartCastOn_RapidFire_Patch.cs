@@ -7,11 +7,12 @@ using HarmonyLib;
 namespace VanillaWeaponsExpandedLaser.HarmonyPatches
 {
     
-    [HarmonyPatch(typeof(Verb), "TryStartCastOn", new Type[] { typeof(LocalTargetInfo), typeof(LocalTargetInfo), typeof(bool), typeof(bool), typeof(bool) })]
+    [HarmonyPatch(typeof(Verb), "TryStartCastOn", new Type[] 
+    { typeof(LocalTargetInfo), typeof(LocalTargetInfo), typeof(bool), typeof(bool), typeof(bool), typeof(bool) })]
     public static class VWEL_Verb_Shoot_TryStartCastOn_RapidFire_Patch
     {
         [HarmonyPrefix, HarmonyPriority(100)]
-        public static void TryStartCastOn_RapidFire_Prefix(ref Verb __instance, LocalTargetInfo castTarg, float __state, ref bool __result)
+        public static void TryStartCastOn_RapidFire_Prefix(ref Verb __instance, LocalTargetInfo castTarg)
         {
             if (__instance.GetType() == typeof(Verb_Shoot))
             {
