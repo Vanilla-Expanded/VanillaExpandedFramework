@@ -13,6 +13,7 @@
         "packagesPath": "C:\\Users\\Vova\\.nuget\\packages\\",
         "outputPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\VanillaExpandedFramework\\Source\\VanillaWeaponsExpandedLaser\\obj\\",
         "projectStyle": "PackageReference",
+        "skipContentFileWrite": true,
         "configFilePaths": [
           "C:\\Users\\Vova\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
@@ -26,42 +27,36 @@
         },
         "frameworks": {
           "net472": {
-            "targetAlias": "net472",
             "projectReferences": {}
           }
-        },
-        "warningProperties": {
-          "warnAsError": [
-            "NU1605"
-          ]
         }
       },
       "frameworks": {
         "net472": {
-          "targetAlias": "net472",
           "dependencies": {
-            "Krafs.Rimworld.Ref": {
-              "target": "Package",
-              "version": "[1.3.0, )",
-              "generatePathProperty": true
-            },
-            "Lib.Harmony": {
-              "target": "Package",
-              "version": "[2.0.4, )"
-            },
-            "TaskPubliciser": {
+            "Krafs.Publicizer": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[1.0.3, )"
+              "version": "[2.0.1, )"
             },
-            "UnlimitedHugs.Rimworld.HugsLib": {
+            "Lib.Harmony": {
               "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "target": "Package",
-              "version": "[8.0.0, )"
+              "version": "[2.2.2, )"
             }
-          },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100\\RuntimeIdentifierGraph.json"
+          }
+        }
+      },
+      "runtimes": {
+        "win": {
+          "#import": []
+        },
+        "win-x64": {
+          "#import": []
+        },
+        "win-x86": {
+          "#import": []
         }
       }
     }

@@ -51,10 +51,9 @@ namespace VanillaWeaponsExpandedLaser
             }
         }
 
-        public override void Impact(Thing hitThing)
+        public override void Impact(Thing hitThing, bool blockedByShield = false)
         {
-            bool shielded = hitThing.IsShielded() && def.IsWeakToShields;
-
+            bool shielded = hitThing.IsShielded() && def.IsWeakToShields || blockedByShield;
             LaserGunDef defWeapon = equipmentDef as LaserGunDef;
             Vector3 dir = (destination - origin).normalized;
             dir.y = 0;
@@ -114,7 +113,7 @@ namespace VanillaWeaponsExpandedLaser
                 }
                 TriggerEffect(def.explosionEffect, ExactPosition);
             }
-            base.Impact(hitThing);
+            base.Impact(hitThing, blockedByShield);
         }
         
         // Token: 0x060000FB RID: 251 RVA: 0x00009248 File Offset: 0x00007448
@@ -146,7 +145,12 @@ namespace VanillaWeaponsExpandedLaser
             float postExplosionSpawnChance = this.def.projectile.postExplosionSpawnChance;
             int postExplosionSpawnThingCount = this.def.projectile.postExplosionSpawnThingCount;
             ThingDef preExplosionSpawnThingDef = this.def.projectile.preExplosionSpawnThingDef;
-            GenExplosion.DoExplosion(center, map2, explosionRadius, damageDef, launcher, damageAmount, 0f, soundExplode, equipmentDef, def, null, postExplosionSpawnThingDef, postExplosionSpawnChance, postExplosionSpawnThingCount, this.def.projectile.applyDamageToExplosionCellsNeighbors, preExplosionSpawnThingDef, this.def.projectile.preExplosionSpawnChance, this.def.projectile.preExplosionSpawnThingCount, this.def.projectile.explosionChanceToStartFire, this.def.projectile.explosionDamageFalloff);
+            GenExplosion.DoExplosion(center, map2, explosionRadius, damageDef, launcher, damageAmount, 0f, 
+                soundExplode, equipmentDef, def, null, postExplosionSpawnThingDef, postExplosionSpawnChance, 
+                postExplosionSpawnThingCount, GasType.Unused, this.def.projectile.applyDamageToExplosionCellsNeighbors, 
+                preExplosionSpawnThingDef, this.def.projectile.preExplosionSpawnChance, 
+                this.def.projectile.preExplosionSpawnThingCount, this.def.projectile.explosionChanceToStartFire, 
+                this.def.projectile.explosionDamageFalloff);
         }
         
     }
