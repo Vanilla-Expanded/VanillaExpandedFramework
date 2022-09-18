@@ -126,7 +126,7 @@ public class CommandPart_Reloadable : CommandPart
                 ((Reloadable.Props.MaxShots - Reloadable.ShotsRemaining) * Reloadable.Props.ItemsPerShot).Named("COUNT")));
     }
 
-    public override void ModifyInfo(ref string label, ref string topRightLabel, ref string desc, ref Texture2D icon)
+    public override void ModifyInfo(ref string label, ref string topRightLabel, ref string desc, ref Texture icon)
     {
         base.ModifyInfo(ref label, ref topRightLabel, ref desc, ref icon);
         topRightLabel = Reloadable.ShotsRemaining + " / " + Reloadable.Props.MaxShots;
