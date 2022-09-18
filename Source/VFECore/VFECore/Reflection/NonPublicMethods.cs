@@ -31,8 +31,8 @@ namespace VFECore
         public static Action<Projectile> Projectile_ImpactSomething = (Action<Projectile>)
             Delegate.CreateDelegate(typeof(Action<Projectile>), null, AccessTools.Method(typeof(Projectile), "ImpactSomething"));
 
-        public static Action<Pawn> GenerateSkills = (Action<Pawn>)
-            Delegate.CreateDelegate(typeof(Action<Pawn>), null, AccessTools.Method(typeof(PawnGenerator), "GenerateSkills"));
+        public static Action<Pawn, PawnGenerationRequest> GenerateSkills = (Action<Pawn, PawnGenerationRequest>)
+            Delegate.CreateDelegate(typeof(Action<Pawn, PawnGenerationRequest>), null, AccessTools.Method(typeof(PawnGenerator), "GenerateSkills"));
 
         [StaticConstructorOnStartup]
         public static class DualWield

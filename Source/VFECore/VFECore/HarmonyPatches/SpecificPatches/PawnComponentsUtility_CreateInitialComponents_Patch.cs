@@ -21,7 +21,8 @@ namespace VFECore
                 }
                 if (!pawn.RaceProps.Humanlike)
                 {
-                    NonPublicMethods.GenerateSkills(pawn);
+                    // TODO: Fix
+                    // NonPublicMethods.GenerateSkills(pawn);
                 }
             }
         }
