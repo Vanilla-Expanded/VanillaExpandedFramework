@@ -93,8 +93,13 @@ namespace VFECore
         [HarmonyTargetMethod]
         public static MethodBase TargetMethod()
         {
-            return typeof(PawnRenderer).GetMethods(AccessTools.all).FirstOrDefault(x => x.Name.Contains("<DrawHeadHair>") && x.Name.Contains("DrawApparel"));
+            var method = typeof(PawnRenderer).GetNestedTypes(AccessTools.all)
+                .SelectMany(type => type.GetMethods(AccessTools.all))
+                .FirstOrDefault(x => x.Name.Contains("<DrawHeadHair>") && x.Name.Contains("DrawApparel"));
+            displayType = method.DeclaringType;
+            return method;
         }
+        private static Type displayType;
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
         {
             var codes = codeInstructions.ToList();
@@ -102,7 +107,8 @@ namespace VFECore
             bool foundSecondBlock = false;
             bool foundThirdBlock = false;
             var drawMeshNowOrLaterMethod = AccessTools.Method(typeof(GenDraw), "DrawMeshNowOrLater", new Type[] { typeof(Mesh), typeof(Vector3), typeof(Quaternion), typeof(Material), typeof(bool) });
-            var displayType = typeof(PawnRenderer).GetNestedTypes(AccessTools.all).First();
+            
+            var getThis = codes.First(ins => ins.opcode == OpCodes.Ldfld);
     
             for (var i = 0; i < codes.Count; i++)
             {
@@ -112,17 +118,18 @@ namespace VFECore
                 {
                     foundFirstBlock = true;
                     yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return getThis.Clone();
                     yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PawnRenderer), "pawn"));
-                    yield return new CodeInstruction(OpCodes.Ldloca_S, 0);
+                    yield return new CodeInstruction(OpCodes.Ldloca, 0);
                     yield return new CodeInstruction(OpCodes.Ldarg_1);
                     yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Patch_DrawHeadHair_DrawApparel_Transpiler), nameof(TryModifyMeshRef)));
                 }
                 if (foundFirstBlock && !foundSecondBlock && codes[i].opcode == OpCodes.Stloc_1 && codes[i + 1].opcode == OpCodes.Ldloc_0)
                 {
                     foundSecondBlock = true;
-                    yield return new CodeInstruction(OpCodes.Ldarg_2);
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
                     yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(displayType, "headFacing"));
-                    yield return new CodeInstruction(OpCodes.Ldarg_2);
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
                     yield return new CodeInstruction(OpCodes.Ldflda, AccessTools.Field(displayType, "onHeadLoc"));
                     yield return new CodeInstruction(OpCodes.Ldarg_1);
                     yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Patch_DrawHeadHair_DrawApparel_Transpiler), nameof(TryModifyHeadGearLocRef)));
@@ -131,7 +138,7 @@ namespace VFECore
                 if (foundSecondBlock && !foundThirdBlock && i > 3 && codes[i - 3].opcode == OpCodes.Ldc_R4 && codes[i - 3].OperandIs(0.00289575267f) && codes[i - 2].opcode == OpCodes.Add && codes[i - 1].opcode == OpCodes.Stind_R4)
                 {
                     foundThirdBlock = true;
-                    yield return new CodeInstruction(OpCodes.Ldarg_2);
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
                     yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(displayType, "headFacing"));
                     yield return new CodeInstruction(OpCodes.Ldloc_3);
                     yield return new CodeInstruction(OpCodes.Ldarg_1);
@@ -141,7 +148,7 @@ namespace VFECore
             }
             if (!foundFirstBlock || !foundSecondBlock || !foundThirdBlock)
             {
-                Log.Error("[Vanilla Framework Expanded] Transpiler on PawnRenderer:DrawHeadHair+DrawApparel failed.");
+                Log.Error($"[Vanilla Framework Expanded] Transpiler on PawnRenderer:DrawHeadHair+DrawApparel failed.");
             }
         }
     
@@ -280,9 +287,7 @@ namespace VFECore
             var drawMeshNowOrLaterMethod = AccessTools.Method(typeof(GenDraw), nameof(GenDraw.DrawMeshNowOrLater), new Type[] { typeof(Mesh), typeof(Vector3), typeof(Quaternion), typeof(Material), typeof(bool) });
             for (var i = 0; i < codes.Count; i++)
             {
-                if (!found1 && i > 3 && codes[i - 1].opcode == OpCodes.Stloc_S
-                    && codes[i - 1].operand is LocalBuilder lb && lb.LocalIndex == 5
-                    && codes[i].opcode == OpCodes.Ldarg_S && codes[i].OperandIs(6))
+                if (!found1 && i > 3 && codes[i - 1].opcode == OpCodes.Stloc_S && codes[i - 1].operand is LocalBuilder { LocalIndex: 5 })
                 {
                     found1 = true;
                     yield return new CodeInstruction(OpCodes.Ldarg_3);

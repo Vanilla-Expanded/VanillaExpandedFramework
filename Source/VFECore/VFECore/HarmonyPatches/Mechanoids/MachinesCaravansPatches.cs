@@ -132,8 +132,8 @@ namespace VFE.Mechanoids
 	}
 
 	[StaticConstructorOnStartup]
-	[HarmonyPatch(typeof(TransferableUIUtility), "DoExtraAnimalIcons")]
-	public static class TransferableUIUtility_DoExtraAnimalIcons_Patch
+	[HarmonyPatch(typeof(TransferableUIUtility), "DoExtraIcons")]
+	public static class TransferableUIUtility_DoExtraIcons_Patch
 	{
 		private static float RideableIconWidth = 24f;
 

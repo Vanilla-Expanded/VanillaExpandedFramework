@@ -545,7 +545,6 @@
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_Game.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_IncidentWorker_WandererJoin.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_ITab_Pawn_Gear.cs" />
-    <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_WorldFactionsUIUtility.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_Pawn.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_Pawn_ApparelTracker.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_PawnApparelGenerator.cs" />

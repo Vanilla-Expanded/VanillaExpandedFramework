@@ -11,6 +11,7 @@ namespace VFECore
         [HarmonyPatch(typeof(GameComponentUtility), nameof(GameComponentUtility.LoadedGame))]
         public static class LoadedGame
         {
+            [HarmonyPostfix]
             public static void Postfix()
             {
                 LongEventHandler.ExecuteWhenFinished(OnGameLoaded);
@@ -37,6 +38,21 @@ namespace VFECore
                 if (Find.World?.GetComponent<NewFactionSpawningState>()?.IsIgnored(faction) == true) return false;
                 if (NewFactionSpawningUtility.NeverSpawn(faction)) return false;
                 return true;
+            }
+        }
+
+        [HarmonyPatch(typeof(GameComponentUtility), nameof(GameComponentUtility.StartedNewGame))]
+        public static class StartedNewGame
+        {
+            [HarmonyPostfix]
+            public static void Postfix()
+            {
+                LongEventHandler.ExecuteWhenFinished(OnNewGame);
+            }
+
+            private static void OnNewGame()
+            {
+                Find.World?.GetComponent<NewFactionSpawningState>()?.Ignore(DefDatabase<FactionDef>.AllDefs);
             }
         }
     }

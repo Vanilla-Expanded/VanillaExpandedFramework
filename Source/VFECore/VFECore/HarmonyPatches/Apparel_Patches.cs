@@ -58,7 +58,7 @@ namespace VFECore
                     yield return new CodeInstruction(OpCodes.Ldloc_1);
                     yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(Pawn), "apparel"));
                     yield return new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(Pawn_ApparelTracker), "get_WornApparel"));
-                    yield return new CodeInstruction(OpCodes.Ldloc_S, 16);
+                    yield return new CodeInstruction(OpCodes.Ldloc_S, 20);
                     yield return new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(List<Apparel>), "get_Item"));
                     yield return new CodeInstruction(OpCodes.Ldarg_0);
                     yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(StatWorker), "stat"));

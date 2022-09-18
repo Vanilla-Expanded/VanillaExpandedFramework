@@ -119,7 +119,7 @@ namespace VFECore
                 list.Label("CanAddXFaction".Translate(FactionCanBeAddedCount));
                 if (FactionCanBeAddedCount > 0 && list.ButtonText("AskForPopUp".Translate(), "AskForPopUpExplained".Translate()))
                 {
-                    Current.Game.World.GetComponent<NewFactionSpawningState>().ignoredFactions.Clear();
+                    Current.Game.World.GetComponent<NewFactionSpawningState>().ClearIgnored();
                     IEnumerator<FactionDef> factionEnumerator = DefDatabase<FactionDef>.AllDefs.Where(Patch_GameComponentUtility.LoadedGame.Validator).GetEnumerator();
                     if (factionEnumerator.MoveNext())
                     {

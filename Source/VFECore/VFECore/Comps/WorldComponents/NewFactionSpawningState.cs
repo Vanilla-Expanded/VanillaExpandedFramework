@@ -7,7 +7,7 @@ namespace VFECore
 {
     public class NewFactionSpawningState : WorldComponent
     {
-        internal List<FactionDef> ignoredFactions = new List<FactionDef>();
+        private HashSet<FactionDef> ignoredFactions = new HashSet<FactionDef>();
 
         public NewFactionSpawningState(World world) : base(world) { }
 
@@ -15,23 +15,18 @@ namespace VFECore
         {
             Scribe_Collections.Look(ref ignoredFactions, "ignoredFactions", LookMode.Def);
         }
-
-        public override void FinalizeInit()
-        {
-            base.FinalizeInit();
-            if (UIUtilityData.factionCounts != null)
-            {
-                foreach (var item in UIUtilityData.factionCounts)
-                {
-                    if (item.Value <= 0) Ignore(item.Key); 
-                }
-            }
-            UIUtilityData.factionCounts.Clear();
-        }
-
         public void Ignore(FactionDef faction)
         {
-            if (!ignoredFactions.Contains(faction)) ignoredFactions.Add(faction);
+            ignoredFactions.Add(faction);
+        }
+
+        public void Ignore(IEnumerable<FactionDef> factions)
+        {
+            ignoredFactions.AddRange(factions);
+        }
+        public void ClearIgnored()
+        {
+            ignoredFactions.Clear();
         }
 
         public bool IsIgnored(FactionDef faction)
