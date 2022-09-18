@@ -1,5 +1,4 @@
 ﻿using RimWorld;
-using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -48,7 +47,7 @@ namespace KCSG
         {
             if (def.skyfaller.CausesExplosion)
             {
-                GenExplosion.DoExplosion(base.Position, base.Map, def.skyfaller.explosionRadius, def.skyfaller.explosionDamage, null, GenMath.RoundRandom(def.skyfaller.explosionDamage.defaultDamage * def.skyfaller.explosionDamageFactor), -1f, null, null, null, null, null, 0f, 1, false, null, 0f, 1, 0f, false, null, (!def.skyfaller.damageSpawnedThings) ? innerContainer.ToList<Thing>() : null);
+                GenExplosion.DoExplosion(Position, Map, def.skyfaller.explosionRadius, def.skyfaller.explosionDamage, null, GenMath.RoundRandom(def.skyfaller.explosionDamage.defaultDamage * def.skyfaller.explosionDamageFactor));
             }
             SpawnThings();
             innerContainer.ClearAndDestroyContents(DestroyMode.Vanish);
@@ -101,12 +100,12 @@ namespace KCSG
                 {
                     compDormant.wokeUpTick = Find.TickManager.TicksGame + delayTicks;
                 }
-                GenPlace.TryPlaceThing(innerContainer[i], base.Position, base.Map, ThingPlaceMode.Direct, delegate (Thing thing, int count)
+                GenPlace.TryPlaceThing(innerContainer[i], Position, Map, ThingPlaceMode.Direct, delegate (Thing thing, int count)
                 {
                     PawnUtility.RecoverFromUnwalkablePositionOrKill(thing.Position, thing.Map);
-                    if (thing.def.Fillage == FillCategory.Full && def.skyfaller.CausesExplosion && def.skyfaller.explosionDamage.isExplosive && thing.Position.InHorDistOf(base.Position, def.skyfaller.explosionRadius))
+                    if (thing.def.Fillage == FillCategory.Full && def.skyfaller.CausesExplosion && def.skyfaller.explosionDamage.isExplosive && thing.Position.InHorDistOf(Position, def.skyfaller.explosionRadius))
                     {
-                        base.Map.terrainGrid.Notify_TerrainDestroyed(thing.Position);
+                        Map.terrainGrid.Notify_TerrainDestroyed(thing.Position);
                     }
                 }, null, rot);
             }

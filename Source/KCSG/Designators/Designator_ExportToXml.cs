@@ -1,6 +1,6 @@
-﻿using RimWorld;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -8,22 +8,9 @@ namespace KCSG
 {
     internal class Designator_ExportToXml : Designator
     {
-        public override bool Visible
-        {
-            get
-            {
-                if (Prefs.DevMode) return true;
-                else return false;
-            }
-        }
+        public override bool Visible => Prefs.DevMode;
 
-        public override int DraggableDimensions
-        {
-            get
-            {
-                return 2;
-            }
-        }
+        public override int DraggableDimensions => 2;
 
         public override void RenderHighlight(List<IntVec3> dragCells)
         {

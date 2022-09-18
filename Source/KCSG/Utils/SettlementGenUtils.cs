@@ -855,7 +855,7 @@ namespace KCSG
                         else
                         {
                             map.powerNetManager.UpdatePowerNetsAndConnections_First();
-                            if (TryFindClosestReachableNet(powerComp.parent.Position, x => (double)x.CurrentEnergyGainRate() - powerComp.Props.basePowerConsumption * (double)CompPower.WattsToWattDaysPerTick > 1.0000000116861E-07, map, out PowerNet foundNet, out IntVec3 closestTransmitter))
+                            if (TryFindClosestReachableNet(powerComp.parent.Position, x => (double)x.CurrentEnergyGainRate() - powerComp.Props.PowerConsumption * (double)CompPower.WattsToWattDaysPerTick > 1.0000000116861E-07, map, out PowerNet foundNet, out IntVec3 closestTransmitter))
                             {
                                 map.floodFiller.ReconstructLastFloodFillPath(closestTransmitter, tmpCells);
                                 SpawnTransmitters(tmpCells, map, tmpThings[index].Faction);
@@ -898,7 +898,7 @@ namespace KCSG
                     return false;
                 if ((double)comp.PowerOutput < 0.0)
                     return true;
-                return !comp.PowerOn && comp.Props.basePowerConsumption > 0.0;
+                return !comp.PowerOn && comp.Props.PowerConsumption > 0.0;
             }
 
             private static bool IsPowerGenerator(Thing thing)
@@ -911,7 +911,7 @@ namespace KCSG
                     return false;
                 if (comp.PowerOutput > 0)
                     return true;
-                return !comp.PowerOn && comp.Props.basePowerConsumption < 0;
+                return !comp.PowerOn && comp.Props.PowerConsumption < 0;
             }
 
             private static bool HasAnyPowerGenerator(PowerNet net)

@@ -7,29 +7,11 @@ using Verse;
 
 namespace KCSG
 {
-    internal class Designator_ExportToXmlFromArea : Designator_Area
+    internal class Designator_ExportToXmlFromArea : Designator_Cells
     {
-        public override bool Visible
-        {
-            get
-            {
-                if (Prefs.DevMode) return true;
-                else return false;
-            }
-        }
+        public override bool Visible => Prefs.DevMode;
 
-        public override int DraggableDimensions
-        {
-            get
-            {
-                return 2;
-            }
-        }
-
-        public override void RenderHighlight(List<IntVec3> dragCells)
-        {
-            DesignatorUtility.RenderHighlightOverSelectableCells(this, dragCells);
-        }
+        public override int DraggableDimensions => 2;
 
         public Designator_ExportToXmlFromArea()
         {

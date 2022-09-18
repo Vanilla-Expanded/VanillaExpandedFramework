@@ -419,7 +419,7 @@ namespace KCSG
                     GenSpawn.Spawn(pawn, thing.InteractionCell, map);
                     pawn.jobs.TryTakeOrderedJob(job);
                     // Spawn shells
-                    ThingDef shellDef = TurretGunUtility.TryFindRandomShellDef(thing.def, false, true, faction.def.techLevel, false, 250f);
+                    ThingDef shellDef = TurretGunUtility.TryFindRandomShellDef(thing.def, false, true, true, faction.def.techLevel, false, 250f);
                     if (shellDef != null)
                     {
                         ResolveParams rpShell = new ResolveParams
