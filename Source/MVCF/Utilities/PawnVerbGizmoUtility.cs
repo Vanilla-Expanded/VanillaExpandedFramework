@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using MVCF.Commands;
 using MVCF.Comps;
-using MVCF.Verbs;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -10,7 +10,7 @@ namespace MVCF.Utilities
 {
     public static class PawnVerbGizmoUtility
     {
-        private static readonly Dictionary<string, string> __truncateCache = new Dictionary<string, string>();
+        public static readonly Dictionary<string, string> __truncateCache = new();
 
         public static IEnumerable<Gizmo> GetGizmosForVerb(this Verb verb, ManagedVerb man = null)
         {
@@ -19,7 +19,7 @@ namespace MVCF.Utilities
             Thing ownerThing = null;
             switch (verb.DirectOwner)
             {
-                case ThingWithComps twc when twc.TryGetComp<Comp_VerbGiver>() is Comp_VerbGiver giver:
+                case ThingWithComps twc when twc.TryGetComp<Comp_VerbGiver>() is { } giver:
                     ownerThing = twc;
                     props = giver.PropsFor(verb);
                     break;
@@ -38,13 +38,11 @@ namespace MVCF.Utilities
                     break;
             }
 
-            var skipDefault = false;
-
-            if (verb is IVerbGizmos gizmos)
-                foreach (var gizmo1 in gizmos.GetGizmos(out skipDefault))
-                    yield return gizmo1;
-
-            if (skipDefault) yield break;
+            if (man != null)
+            {
+                foreach (var gizmo1 in man.GetGizmos(ownerThing)) yield return gizmo1;
+                yield break;
+            }
 
             Command gizmo;
             var command = new Command_VerbTarget {verb = verb};
@@ -122,8 +120,7 @@ namespace MVCF.Utilities
                     {
                         var manager = pawn.Manager();
                         manager.CurrentVerb = null;
-                        var verb = pawn.BestVerbForTarget(target, verbs.Where(v => v.Enabled && !v.Verb.IsMeleeAttack),
-                            manager);
+                        var verb = pawn.BestVerbForTarget(target, verbs.Where(v => v.Enabled && !v.Verb.IsMeleeAttack));
                         verb.OrderForceTarget(target);
                     }, pawn, null, TexCommand.Attack);
                 }
@@ -156,11 +153,12 @@ namespace MVCF.Utilities
         public static Texture2D Icon(this Verb verb, AdditionalVerbProps props, Thing ownerThing, bool toggle)
         {
             if (toggle && props?.ToggleIcon != null && props.ToggleIcon != BaseContent.BadTex) return props.ToggleIcon;
-            if (props?.Graphic != null && props.Icon != null && props.Icon != BaseContent.BadTex) return props.Icon;
+            if (props?.Icon != null && props.Icon != BaseContent.BadTex) return props.Icon;
             if (verb.UIIcon != null && verb.verbProps.commandIcon != null && verb.UIIcon != BaseContent.BadTex)
                 return verb.UIIcon;
+            if (ownerThing is ThingWithComps and not Pawn and not Apparel) return ownerThing.def.uiIcon;
             if (verb is Verb_LaunchProjectile proj) return proj.Projectile.uiIcon;
-            if (ownerThing != null) return ownerThing.def.uiIcon;
+            if (ownerThing is not null) return ownerThing.def.uiIcon;
             return TexCommand.Attack;
         }
     }

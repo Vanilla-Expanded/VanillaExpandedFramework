@@ -1,7 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using MVCF.Comps;
+using MVCF.Features;
 using MVCF.Utilities;
 using RimWorld;
 using UnityEngine;
@@ -9,28 +9,29 @@ using Verse;
 
 namespace MVCF
 {
-    public class VerbManager : IVerbOwner
+    public class VerbManager : IExposable
     {
         private static readonly Dictionary<ThingWithComps, bool> preferMeleeCache =
-            new Dictionary<ThingWithComps, bool>();
+            new();
 
-        private readonly List<ManagedVerb> drawVerbs = new List<ManagedVerb>();
-        public readonly List<TurretVerb> tickVerbs = new List<TurretVerb>();
-        private readonly List<ManagedVerb> verbs = new List<ManagedVerb>();
+        private readonly List<IVerbManagerComp> comps = new();
+
+        private readonly List<ManagedVerb> drawVerbs = new();
+        private readonly List<ManagedVerb> tickVerbs = new();
         public Verb CurrentVerb;
         public DebugOptions debugOpts;
         public bool HasVerbs;
-        public Verb OverrideVerb;
         public Verb SearchVerb;
+        private List<ManagedVerb> verbs = new();
         public bool NeedsTicking { get; private set; }
 
         public IEnumerable<ManagedVerb> CurrentlyUseableRangedVerbs => verbs.Where(v =>
-            !v.Verb.IsMeleeAttack && (v.Props == null || !v.Props.canFireIndependently) && v.Enabled &&
-            v.Verb.Available() && (Pawn.IsColonist || v.Props == null || !v.Props.colonistOnly));
+            !v.Verb.IsMeleeAttack && v.Props is not {canFireIndependently: true} && v.Enabled &&
+            v.Verb.Available() && (Pawn.IsColonist || v.Props is not {colonistOnly: true}));
 
         public bool ShouldBrawlerUpset => BrawlerHated.Any();
 
-        public IEnumerable<Verb> BrawlerTolerates => ManagedVerbs.Where(mv => mv.Props != null && !mv.Props.brawlerCaresAbout).Select(mv => mv.Verb).Concat(
+        public IEnumerable<Verb> BrawlerTolerates => ManagedVerbs.Where(mv => mv.Props is {brawlerCaresAbout: false}).Select(mv => mv.Verb).Concat(
             PreferMelee(Pawn.equipment.Primary)
                 ? Pawn.equipment.PrimaryEq?.AllVerbs.Where(v => !v.IsMeleeAttack) ?? new List<Verb>()
                 : new List<Verb>());
@@ -45,43 +46,22 @@ namespace MVCF
 
         public IEnumerable<ManagedVerb> ManagedVerbs => verbs;
 
-        public IEnumerable<Verb> AllRangedVerbsNoEquipmentNoApparel => verbs
-            .Where(mv => mv.Source != VerbSource.Equipment && mv.Source != VerbSource.Apparel).Select(mv => mv.Verb);
-
         public Pawn Pawn { get; private set; }
 
-        public string UniqueVerbOwnerID() => "VerbManager_" + (Pawn as IVerbOwner).UniqueVerbOwnerID();
-
-        public bool VerbsStillUsableBy(Pawn p) => p == Pawn;
-
-        public VerbTracker VerbTracker { get; private set; }
-
-        public List<VerbProperties> VerbProperties => new List<VerbProperties>
+        public void ExposeData()
         {
-            new VerbProperties
-            {
-                range = 0,
-                minRange = 9999,
-                targetParams = new TargetingParameters(),
-                verbClass = typeof(Verb_Search),
-                label = Base.SearchLabel,
-                defaultProjectile = ThingDef.Named("Bullet_Revolver"),
-                onlyManualCast = false
-            }
-        };
-
-        public List<Tool> Tools => new List<Tool>();
-        public ImplementOwnerTypeDef ImplementOwnerTypeDef => ImplementOwnerTypeDefOf.NativeVerb;
-        public Thing ConstantCaster => Pawn;
+            Scribe_References.Look(ref CurrentVerb, "currentVerb");
+            Scribe_Collections.Look(ref verbs, "verbs", LookMode.Reference);
+        }
 
         public void Notify_Spawned()
         {
-            foreach (var tv in tickVerbs) tv.CreateCaster();
+            foreach (var verb in verbs) verb.Notify_Spawned();
         }
 
         public void Notify_Despawned()
         {
-            foreach (var tv in tickVerbs) tv.DestroyCaster();
+            foreach (var verb in verbs) verb.Notify_Despawned();
         }
 
         public static bool PreferMelee(ThingWithComps eq)
@@ -95,93 +75,112 @@ namespace MVCF
             return res;
         }
 
-        public ManagedVerb GetManagedVerbForVerb(Verb verb, bool warnOnFailed = true)
-        {
-            var mv = verbs.FirstOrFallback(v => v.Verb == verb);
-            if (mv == null && warnOnFailed)
-                Log.ErrorOnce("[MVCF] Attempted to get ManagedVerb for verb " + verb.Label() +
-                              " which does not have one. This may cause issues.", verb.Label().GetHashCode());
-
-            return mv;
-        }
-
         public void Initialize(Pawn pawn)
         {
             Pawn = pawn;
-            VerbTracker = new VerbTracker(this);
-            SearchVerb = (Verb_Search) VerbTracker.PrimaryVerb;
             NeedsTicking = false;
             debugOpts.ScoreLogging = false;
             debugOpts.VerbLogging = false;
-            if (!Base.Features.RangedAnimals && !Base.IgnoredFeatures.RangedAnimals &&
-                pawn?.VerbTracker?.AllVerbs != null &&
-                pawn.VerbTracker.AllVerbs.Any(v => !v.IsMeleeAttack) &&
-                !Base.IsIgnoredMod(pawn?.def?.modContentPack?.Name))
-            {
+            comps.Clear();
+            comps.AddRange(pawn.AllComps.OfType<IVerbManagerComp>());
+            foreach (var comp in comps) comp.Initialize(this);
+            if (Base.IsIgnoredMod(pawn?.def?.modContentPack?.Name)) return;
+            if (!Base.GetFeature<Feature_RangedAnimals>().Enabled && pawn?.VerbTracker?.AllVerbs != null && pawn.VerbTracker.AllVerbs.Any(v => !v.IsMeleeAttack))
                 Log.ErrorOnce(
                     $"[MVCF] Found pawn {pawn} with native ranged verbs while that feature is not enabled." +
                     $" Enabling now. This is not recommended. Contact the author of {pawn?.def?.modContentPack?.Name} and ask them to add a MVCF.ModDef.",
                     pawn?.def?.modContentPack?.Name?.GetHashCode() ?? -1);
-                Base.Features.RangedAnimals = true;
-                Base.ApplyPatches();
-            }
-
-            if (!Base.IsIgnoredMod(pawn?.def?.modContentPack?.Name) && pawn?.VerbTracker?.AllVerbs != null &&
-                Base.Features.RangedAnimals && !Base.IgnoredFeatures.RangedAnimals)
-                foreach (var verb in pawn.VerbTracker.AllVerbs)
-                    AddVerb(verb, VerbSource.RaceDef, pawn.TryGetComp<Comp_VerbProps>()?.PropsFor(verb));
-
-            if (pawn?.health?.hediffSet?.hediffs != null && !Base.IgnoredFeatures.HediffVerbs)
-                foreach (var hediff in pawn.health.hediffSet.hediffs)
-                    this.AddVerbs(hediff);
-
-            if (pawn?.apparel?.WornApparel != null && !Base.IgnoredFeatures.ApparelVerbs)
-                foreach (var apparel in pawn.apparel.WornApparel)
-                    this.AddVerbs(apparel);
-
-            if (pawn?.equipment?.AllEquipmentListForReading != null && !Base.IgnoredFeatures.ExtraEquipmentVerbs)
-                foreach (var eq in pawn.equipment.AllEquipmentListForReading)
-                    this.AddVerbs(eq);
+            if (verbs.NullOrEmpty()) InitializeVerbs();
+            foreach (var comp in comps) comp.PostInit();
+            RecalcSearchVerb();
         }
 
-        public void AddVerb(Verb verb, VerbSource source, AdditionalVerbProps props)
+        public void InitializeVerbs()
         {
-            if (debugOpts.VerbLogging) Log.Message("Adding " + verb + " from " + source + " with props " + props);
+            if (Pawn?.VerbTracker?.AllVerbs != null && Base.GetFeature<Feature_RangedAnimals>().Enabled)
+                foreach (var verb in Pawn.VerbTracker.AllVerbs)
+                    AddVerb(verb, VerbSource.RaceDef);
+
+            if (Pawn?.health?.hediffSet?.hediffs != null && Base.GetFeature<Feature_HediffVerb>().Enabled)
+                foreach (var hediff in Pawn.health.hediffSet.hediffs)
+                    this.AddVerbs(hediff);
+
+            if (Pawn?.apparel?.WornApparel != null && Base.GetFeature<Feature_ApparelVerbs>().Enabled)
+                foreach (var apparel in Pawn.apparel.WornApparel)
+                    this.AddVerbs(apparel);
+
+            if (Pawn?.equipment?.AllEquipmentListForReading != null)
+            {
+                if (Base.GetFeature<Feature_ExtraEquipmentVerbs>().Enabled)
+                    foreach (var eq in Pawn.equipment.AllEquipmentListForReading)
+                        this.AddVerbs(eq);
+                else if (Pawn.equipment.Primary is { } eq) this.AddVerbs(eq);
+            }
+        }
+
+        public void AddVerb(Verb verb, VerbSource source)
+        {
+            if (debugOpts.VerbLogging) Log.Message($"Adding {verb} from {source}");
+
             if (AllVerbs.Contains(verb))
             {
                 if (debugOpts.VerbLogging) Log.Warning("Added duplicate verb " + verb);
                 return;
             }
 
-            ManagedVerb mv;
-            if (props != null && props.canFireIndependently)
+            var mv = verb.Managed();
+
+            mv.Notify_Added(this, source);
+
+            if (Pawn.Spawned) mv.Notify_Spawned();
+
+            if (mv.Props is {draw: true})
+                drawVerbs.Add(mv);
+            if (mv.NeedsTicking)
             {
-                TurretVerb tv;
-                if (props.managedClass != null)
-                    tv = (TurretVerb) Activator.CreateInstance(props.managedClass, verb, source, props, this);
-                else tv = new TurretVerb(verb, source, props, this);
                 if (tickVerbs.Count == 0)
                 {
                     NeedsTicking = true;
-                    WorldComponent_MVCF.GetComp().TickManagers.Add(new System.WeakReference<VerbManager>(this));
+                    WorldComponent_MVCF.Instance.TickManagers.Add(new System.WeakReference<VerbManager>(this));
                 }
 
-                if (Pawn.Spawned) tv.CreateCaster();
-                tickVerbs.Add(tv);
-                mv = tv;
+                tickVerbs.Add(mv);
             }
-            else
-            {
-                if (props?.managedClass != null)
-                    mv = (ManagedVerb) Activator.CreateInstance(props.managedClass, verb, source, props, this);
-                else
-                    mv = new ManagedVerb(verb, source, props, this);
-            }
-
-            if (props != null && props.draw) drawVerbs.Add(mv);
 
             verbs.Add(mv);
+            foreach (var comp in comps) comp.PostAdded(mv);
             RecalcSearchVerb();
+        }
+
+        public ManagedVerb ChooseVerb(LocalTargetInfo target, List<ManagedVerb> options)
+        {
+            ManagedVerb bestVerb = null;
+            foreach (var comp in comps)
+                if (comp.ChooseVerb(target, options, out bestVerb))
+                    return bestVerb;
+
+            if (!target.IsValid || Pawn.Map != null && !target.Cell.InBounds(Pawn.Map))
+            {
+                Log.Error("[MVCF] ChooseVerb given invalid target with pawn " + Pawn + " and target " + target);
+                if (debugOpts.ScoreLogging)
+                    Log.Error("(Current job is " + Pawn.CurJob + " with verb " + Pawn.CurJob?.verbToUse + " and target " +
+                              Pawn.CurJob?.targetA + ")");
+                return null;
+            }
+
+            var bestScore = 0f;
+            foreach (var verb in options)
+            {
+                if (verb.Verb is IVerbScore verbScore && verbScore.ForceUse(Pawn, target)) return verb;
+                var score = verb.GetScore(Pawn, target, debugOpts.ScoreLogging);
+                if (debugOpts.ScoreLogging) Log.Message("Score is " + score + " compared to " + bestScore);
+                if (score <= bestScore) continue;
+                bestScore = score;
+                bestVerb = verb;
+            }
+
+            if (debugOpts.ScoreLogging) Log.Message("ChooseVerb returning " + bestVerb);
+            return bestVerb;
         }
 
         public void RemoveVerb(Verb verb)
@@ -190,23 +189,22 @@ namespace MVCF
             var mv = verbs.Find(m => m.Verb == verb);
             if (debugOpts.VerbLogging) Log.Message("Found ManagedVerb: " + mv);
 
+            mv.Notify_Removed();
             var success = verbs.Remove(mv);
             if (debugOpts.VerbLogging) Log.Message("Succeeded at removing: " + success);
+            if (!success) return;
             if (drawVerbs.Contains(mv)) drawVerbs.Remove(mv);
-            var idx = tickVerbs.FindIndex(tv => tv.Verb == verb);
-            if (idx >= 0)
+            if (tickVerbs.Contains(mv) && tickVerbs.Remove(mv) && tickVerbs.Count == 0)
             {
-                tickVerbs.RemoveAt(idx);
-                if (tickVerbs.Count == 0)
+                NeedsTicking = false;
+                WorldComponent_MVCF.Instance.TickManagers.RemoveAll(wr =>
                 {
-                    NeedsTicking = false;
-                    WorldComponent_MVCF.GetComp().TickManagers.RemoveAll(wr =>
-                    {
-                        if (!wr.TryGetTarget(out var man)) return true;
-                        return man == this;
-                    });
-                }
+                    if (!wr.TryGetTarget(out var man)) return true;
+                    return man == this;
+                });
             }
+
+            foreach (var comp in comps) comp.PostRemoved(mv);
 
             RecalcSearchVerb();
         }
@@ -215,7 +213,7 @@ namespace MVCF
         {
             if (debugOpts.VerbLogging) Log.Message("RecalcSearchVerb");
             var verbsToUse = verbs
-                .Where(v => v.Enabled && (v.Props == null || !v.Props.canFireIndependently) && !v.Verb.IsMeleeAttack)
+                .Where(v => v.Enabled && v.Props is not {canFireIndependently: true} && !v.Verb.IsMeleeAttack)
                 .ToList();
             if (debugOpts.VerbLogging) verbsToUse.ForEach(v => Log.Message("Verb: " + v.Verb));
             if (verbsToUse.Count == 0)
@@ -226,30 +224,7 @@ namespace MVCF
             }
 
             HasVerbs = true;
-
-            SearchVerb.verbProps.range = verbsToUse.Select(v => v.Verb.verbProps.range).Max();
-            if (debugOpts.VerbLogging) Log.Message("Resulting range: " + SearchVerb.verbProps.range);
-            SearchVerb.verbProps.minRange = verbsToUse.Select(v => v.Verb.verbProps.minRange).Min();
-            if (debugOpts.VerbLogging) Log.Message("Resulting minRange: " + SearchVerb.verbProps.minRange);
-            SearchVerb.verbProps.requireLineOfSight = verbsToUse.All(v => v.Verb.verbProps.requireLineOfSight);
-            if (debugOpts.VerbLogging)
-                Log.Message("Resulting requireLineOfSight: " + SearchVerb.verbProps.requireLineOfSight);
-            SearchVerb.verbProps.mustCastOnOpenGround = verbsToUse.All(v => v.Verb.verbProps.mustCastOnOpenGround);
-            if (debugOpts.VerbLogging)
-                Log.Message("Resulting mustCastOnOpenGround: " + SearchVerb.verbProps.mustCastOnOpenGround);
-            var targetParams = verbsToUse.Select(mv => mv.Verb.targetParams).ToList();
-            SearchVerb.verbProps.targetParams = new TargetingParameters
-            {
-                canTargetAnimals = targetParams.Any(tp => tp.canTargetAnimals),
-                canTargetBuildings = targetParams.Any(tp => tp.canTargetBuildings),
-                canTargetPawns = targetParams.Any(tp => tp.canTargetPawns),
-                canTargetFires = targetParams.Any(tp => tp.canTargetFires),
-                canTargetHumans = targetParams.Any(tp => tp.canTargetHumans),
-                canTargetItems = targetParams.Any(tp => tp.canTargetItems),
-                canTargetLocations = targetParams.Any(tp => tp.canTargetLocations),
-                canTargetMechs = targetParams.Any(tp => tp.canTargetMechs),
-                canTargetSelf = targetParams.Any(tp => tp.canTargetSelf)
-            };
+            SearchVerb = verbsToUse.MaxBy(verb => verb.Verb.verbProps.range)?.Verb;
         }
 
         public void DrawAt(Vector3 drawPos)
@@ -261,23 +236,81 @@ namespace MVCF
         {
             foreach (var mv in tickVerbs) mv.Tick();
         }
+
+        public IEnumerable<Verb> ExtraVerbsFor(ThingWithComps eq) => comps.SelectMany(comp => comp.ExtraVerbsFor(eq));
+        public IEnumerable<Verb> ExtraVerbsFor(Apparel apparel) => comps.SelectMany(comp => comp.ExtraVerbsFor(apparel));
+        public IEnumerable<Verb> ExtraVerbsFor(Hediff hediff) => comps.SelectMany(comp => comp.ExtraVerbsFor(hediff));
+        public IEnumerable<Verb> ExtraVerbsFor(Thing item) => comps.SelectMany(comp => comp.ExtraVerbsFor(item));
     }
 
     public enum VerbSource
     {
+        None,
         Apparel,
         Equipment,
         Hediff,
-        RaceDef
+        RaceDef,
+        Inventory
     }
 
-    public class Verb_Search : Verb_LaunchProjectile
+    public interface IVerbManagerComp
     {
-        public override bool TryStartCastOn(LocalTargetInfo castTarg, LocalTargetInfo destTarg,
-            bool surpriseAttack = false,
-            bool canHitNonTargetPawns = true, bool preventFriendlyFire = false) =>
-            false;
+        bool ChooseVerb(LocalTargetInfo target, List<ManagedVerb> verbs, out ManagedVerb verb);
+        void PostInit();
+        void Initialize(VerbManager parent);
+        void PostAdded(ManagedVerb verb);
+        void PostRemoved(ManagedVerb verb);
+        IEnumerable<Verb> ExtraVerbsFor(ThingWithComps eq);
+        IEnumerable<Verb> ExtraVerbsFor(Apparel apparel);
+        IEnumerable<Verb> ExtraVerbsFor(Hediff hediff);
+        IEnumerable<Verb> ExtraVerbsFor(Thing item);
+    }
 
-        protected override bool TryCastShot() => false;
+    public abstract class VerbManagerComp : ThingComp, IVerbManagerComp
+    {
+        public VerbManager Manager;
+
+        public virtual bool ChooseVerb(LocalTargetInfo target, List<ManagedVerb> verbs, out ManagedVerb verb)
+        {
+            verb = null;
+            return false;
+        }
+
+        public virtual void PostInit()
+        {
+        }
+
+        public void Initialize(VerbManager parent)
+        {
+            Manager = parent;
+        }
+
+        public virtual void PostAdded(ManagedVerb verb)
+        {
+        }
+
+        public virtual void PostRemoved(ManagedVerb verb)
+        {
+        }
+
+        public virtual IEnumerable<Verb> ExtraVerbsFor(ThingWithComps eq)
+        {
+            yield break;
+        }
+
+        public virtual IEnumerable<Verb> ExtraVerbsFor(Apparel apparel)
+        {
+            yield break;
+        }
+
+        public virtual IEnumerable<Verb> ExtraVerbsFor(Hediff hediff)
+        {
+            yield break;
+        }
+
+        public virtual IEnumerable<Verb> ExtraVerbsFor(Thing item)
+        {
+            yield break;
+        }
     }
 }

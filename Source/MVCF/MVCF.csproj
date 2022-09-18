@@ -22,6 +22,8 @@
     </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,6 +33,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
@@ -59,39 +62,69 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\CommandPart.cs" />
+    <Compile Include="Commands\Command_VerbTargetExtended.cs" />
+    <Compile Include="Comps\AdditionalVerbProps.cs" />
+    <Compile Include="Comps\CompRandomVerbs.cs" />
+    <Compile Include="Comps\CompVerbsFromInventory.cs" />
     <Compile Include="Comps\HediffComp_ExtendedVerbGiver.cs" />
     <Compile Include="Comps\Properties.cs" />
     <Compile Include="DebugActionsMVCF.cs" />
-    <Compile Include="Harmony\Brawlers.cs" />
-    <Compile Include="Harmony\Compat.cs" />
-    <Compile Include="Harmony\ExtraEquipment.cs" />
-    <Compile Include="Harmony\Gizmos.cs" />
-    <Compile Include="Harmony\Hunting.cs" />
-    <Compile Include="Harmony\BatteLog.cs" />
-    <Compile Include="Harmony\IndependentVerbs.cs" />
-    <Compile Include="Harmony\Trackers.cs">
-      <DependentUpon>
-      </DependentUpon>
-    </Compile>
-    <Compile Include="Harmony\VerbPatches.cs" />
-    <Compile Include="Harmony\VerbUtilityPatches.cs" />
+    <Compile Include="Features\Feature.cs" />
+    <Compile Include="Features\Feature_ApparelVerbs.cs" />
+    <Compile Include="Features\Feature_Drawing.cs" />
+    <Compile Include="Features\Feature_ExtraEquipmentVerbs.cs" />
+    <Compile Include="Features\Feature_HediffVerb.cs" />
+    <Compile Include="Features\Feature_Humanoid.cs" />
+    <Compile Include="Features\Feature_IndependentVerbs.cs" />
+    <Compile Include="Features\Feature_IntegratedToggle.cs" />
+    <Compile Include="Features\Feature_InventoryVerbs.cs" />
+    <Compile Include="Features\Feature_RangedAnimals.cs" />
+    <Compile Include="Features\Feature_Reloading.cs" />
+    <Compile Include="Features\Feature_VerbComps.cs" />
+    <Compile Include="Features\PatchSets\PatchSet_Base.cs" />
+    <Compile Include="Features\PatchSets\PatchSet_Brawlers.cs" />
+    <Compile Include="Features\PatchSets\PatchSet_DualWield.cs" />
+    <Compile Include="Features\PatchSets\PatchSet_RunAndGun.cs" />
+    <Compile Include="Features\PatchSets\PatchSet_Hunting.cs" />
+    <Compile Include="Features\PatchSets\PatchSet_BatteLog.cs" />
     <Compile Include="JobGiver_ManhunterRanged.cs" />
     <Compile Include="ManagedVerb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TurretVerb.cs" />
+    <Compile Include="Reloading\Comps\CompChangeableAmmo.cs" />
+    <Compile Include="Reloading\Comps\CompReloadable.cs" />
+    <Compile Include="Reloading\Comps\HediffComp_ChangeableAmmo.cs" />
+    <Compile Include="Reloading\Comps\HediffComp_Reloadable.cs" />
+    <Compile Include="Reloading\Comps\VerbComp_Reloadable_ChangeableAmmo.cs" />
+    <Compile Include="Reloading\Jobs\JobDriver_Reload.cs" />
+    <Compile Include="Reloading\Jobs\JobDriver_ReloadFromInventory.cs" />
+    <Compile Include="Reloading\Jobs\JobDriver_Unload.cs" />
+    <Compile Include="Reloading\Jobs\JobGiver_Reload.cs" />
+    <Compile Include="Reloading\Jobs\JobGiver_ReloadFromInventory.cs" />
+    <Compile Include="Reloading\Jobs\JobGiver_SwitchWeapon.cs" />
+    <Compile Include="Reloading\ReloadingDefOf.cs" />
+    <Compile Include="Utilities\FloatMenuUtility.cs" />
+    <Compile Include="Utilities\ManagedVerbUtility.cs" />
+    <Compile Include="Utilities\ReloadingUtility.cs" />
+    <Compile Include="Utilities\TargetFinder.cs" />
     <Compile Include="Utilities\VerbManagerUtility.cs" />
+    <Compile Include="VerbComps\VerbComp.cs" />
+    <Compile Include="VerbComps\VerbCompProperties.cs" />
+    <Compile Include="Reloading\Comps\VerbComp_Reloadable.cs" />
+    <Compile Include="VerbComps\VerbComp_Cooldown.cs" />
+    <Compile Include="VerbComps\VerbComp_Draw.cs" />
+    <Compile Include="VerbComps\VerbComp_Turret.cs" />
     <Compile Include="VerbManager.cs" />
-    <Compile Include="Verbs\Interfaces.cs" />
     <Compile Include="Verbs\Verb_Jump.cs" />
     <Compile Include="Verbs\Verb_SmokePop.cs" />
+    <Compile Include="VerbWithComps.cs" />
     <Compile Include="WorldComponent_MVCF.cs" />
     <Compile Include="Base.cs" />
-    <Compile Include="Commands.cs" />
+    <Compile Include="Commands\Command_ToggleVerbUsage.cs" />
     <Compile Include="Utilities\PawnVerbGizmoUtility.cs" />
     <Compile Include="Utilities\PawnVerbUtility.cs" />
     <Compile Include="Comps\Comp_VerbGiver.cs" />
-    <Compile Include="Harmony\Pawn_TryGetAttackVerb.cs" />
-    <Compile Include="Harmony\MiscPatches.cs" />
+    <Compile Include="Patch_Pawn_TryGetAttackVerb.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

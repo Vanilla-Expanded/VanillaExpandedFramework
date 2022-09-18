@@ -7,67 +7,41 @@ namespace MVCF
 {
     public class WorldComponent_MVCF : WorldComponent
     {
-        private static WorldComponent_MVCF localCache;
+        public static WorldComponent_MVCF Instance;
 
-        public readonly List<System.WeakReference<VerbManager>> allManagers =
-            new List<System.WeakReference<VerbManager>>();
+        private readonly ConditionalWeakTable<Pawn, VerbManager> managers = new();
 
-        private readonly int key;
+        public readonly List<System.WeakReference<VerbManager>> TickManagers = new();
 
-        private readonly ConditionalWeakTable<Pawn, VerbManager> managers =
-            new ConditionalWeakTable<Pawn, VerbManager>();
+        public WorldComponent_MVCF(World world) : base(world) => Instance = this;
 
-        public readonly List<System.WeakReference<VerbManager>> TickManagers =
-            new List<System.WeakReference<VerbManager>>();
-
-        public Dictionary<Pawn, Verb> currentVerbSaved = new Dictionary<Pawn, Verb>();
-
-        public WorldComponent_MVCF(World world) : base(world)
+        public void SaveManager(Pawn pawn)
         {
-            key = world.ConstantRandSeed;
-            localCache = this;
-        }
-
-        public static WorldComponent_MVCF GetComp()
-        {
-            var getKey = Find.World.ConstantRandSeed;
-            if (getKey != localCache.key)
-                localCache = Find.World.GetComponent<WorldComponent_MVCF>();
-
-            return localCache;
+            if (managers.TryGetValue(pawn, out var man)) managers.Remove(pawn);
+            else man = null;
+            Scribe_Deep.Look(ref man, "MVCF_VerbManager");
+            if (man is null) return;
+            managers.Add(pawn, man);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit) man.Initialize(pawn);
         }
 
         public VerbManager GetManagerFor(Pawn pawn, bool createIfMissing = true)
         {
-            if (managers.TryGetValue(pawn, out var manager)) return manager;
+            if (managers.TryGetValue(pawn, out var manager) && manager is not null) return manager;
             if (!createIfMissing) return null;
             manager = new VerbManager();
             manager.Initialize(pawn);
-            if (currentVerbSaved != null && currentVerbSaved.TryGetValue(pawn, out var currentVerb))
-                manager.CurrentVerb = currentVerb;
             managers.Add(pawn, manager);
-            allManagers.Add(new System.WeakReference<VerbManager>(manager));
             return manager;
         }
 
         public override void WorldComponentTick()
         {
             base.WorldComponentTick();
-            foreach (var wr in TickManagers)
-                if (wr.TryGetTarget(out var man))
+            // ReSharper disable once ForCanBeConvertedToForeach
+            for (var i = 0; i < TickManagers.Count; i++)
+                if (TickManagers[i].TryGetTarget(out var man))
                     man.Tick();
-        }
-
-        public override void ExposeData()
-        {
-            base.ExposeData();
-            currentVerbSaved.Clear();
-            allManagers.ForEach(vm =>
-            {
-                if (vm.TryGetTarget(out var man) && man.Pawn != null && man.Pawn.Spawned && !man.Pawn.Dead)
-                    currentVerbSaved.SetOrAdd(man.Pawn, man.CurrentVerb);
-            });
-            Scribe_Collections.Look(ref currentVerbSaved, "currentVerbs", LookMode.Reference, LookMode.Reference);
         }
     }
 }
