@@ -26,14 +26,23 @@ namespace VFECore
         {
             base.PostSpawnSetup(respawningAfterLoad);
 
-            CompPowerTrader compPower = parent.TryGetComp<CompPowerTrader>();
-
-            if ((compPower == null || compPower.PowerOn) && FlickUtility.WantsToBeOn(parent))
+            if (parent is Pawn)
             {
                 LongEventHandler.ExecuteWhenFinished(delegate
                 {
                     StartSustainer();
                 });
+            }
+            else
+            {
+                CompPowerTrader compPower = parent.TryGetComp<CompPowerTrader>();
+                if ((compPower == null || compPower.PowerOn) && FlickUtility.WantsToBeOn(parent))
+                {
+                    LongEventHandler.ExecuteWhenFinished(delegate
+                    {
+                        StartSustainer();
+                    });
+                }
             }
         }
 
@@ -49,11 +58,14 @@ namespace VFECore
 
             switch (signal)
             {
+                case CompAutoPowered.AutoPoweredWantsOffSignal:
                 case CompPowerTrader.PowerTurnedOffSignal:
+                case CompSchedule.ScheduledOffSignal:
                 case CompFlickable.FlickedOffSignal:
                     EndSustainer();
                     break;
                 case CompPowerTrader.PowerTurnedOnSignal:
+                case CompSchedule.ScheduledOnSignal:
                 case CompFlickable.FlickedOnSignal:
                     StartSustainer();
                     break;
