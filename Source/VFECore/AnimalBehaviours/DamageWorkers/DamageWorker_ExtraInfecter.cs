@@ -20,10 +20,10 @@ namespace AnimalBehaviours
             {
                 pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.WoundInfection, false).Severity += comp.Props.severityToAdd;
             }
-            /*else if (pawn.GetStatValue(StatDefOf.ToxicSensitivity, true) > 0f && random.NextDouble() > ((float)(100 - comp.GetChance) / 100))
+            else if (pawn.GetStatValue(StatDefOf.ToxicResistance, true) < 1f && random.NextDouble() > ((float)(100 - comp.GetChance) / 100))
             {
                 pawn.health.AddHediff(HediffDefOf.WoundInfection, dinfo.HitPart, null, null);
-            }*/
+            }
         }
     }
 }
