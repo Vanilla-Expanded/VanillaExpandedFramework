@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using UnityEngine;
 using Verse;
-using RimWorld;
 
 namespace VFECore
 {
-
     public class SiegeParameterSetDef : Def
     {
-
         public override void ResolveReferences()
         {
             var thingDefs = DefDatabase<ThingDef>.AllDefsListForReading;
@@ -48,11 +42,11 @@ namespace VFECore
 
         [Unsaved]
         public List<ThingDef> artilleryDefs = new List<ThingDef>();
+
         [Unsaved]
-        public float lowestArtilleryBlueprintPoints = Int32.MaxValue;
+        public float lowestArtilleryBlueprintPoints = int.MaxValue;
+
         [Unsaved]
         public int maxArtilleryConstructionSkill;
-
     }
-
 }

@@ -1,32 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
-using RimWorld;
 
 namespace VFECore
 {
-
     public class LordToil_SiegeCustom : LordToil
     {
 
         private const float BaseRadiusMin = 14f;
         private const float BaseRadiusMax = 25f;
-        private static readonly FloatRange NutritionRangePerRaider = new FloatRange(0.9f, 2.7f);
+        private static readonly FloatRange NutritionRangePerRaider = new(0.9f, 2.7f);
         private const int StartBuildingDelay = 450;
-        private static readonly FloatRange BuilderCountFraction = new FloatRange(0.25f, 0.4f);
-        private const float FractionLossesToAssault = 0.4f;
+        private static readonly FloatRange BuilderCountFraction = new(0.25f, 0.4f);
         private const int InitalShellsPerCannon = 5;
         private const int ReplenishAtShells = 4;
         private const int ShellReplenishCount = 10;
         private const int ReplenishAtMeals = 5;
         private const int MealReplenishCount = 12;
 
-        public Dictionary<Pawn, DutyDef> rememberedDuties = new Dictionary<Pawn, DutyDef>();
+        public Dictionary<Pawn, DutyDef> rememberedDuties = new();
 
         public LordToil_SiegeCustom(IntVec3 siegeCenter, float blueprintPoints)
         {
@@ -47,7 +43,7 @@ namespace VFECore
             {
                 var data = Data;
                 float radSquared = (data.baseRadius + 10f) * (data.baseRadius + 10f);
-                List<Thing> framesList = base.Map.listerThings.ThingsInGroup(ThingRequestGroup.BuildingFrame);
+                List<Thing> framesList = Map.listerThings.ThingsInGroup(ThingRequestGroup.BuildingFrame);
                 if (framesList.Count == 0)
                 {
                     yield break;
@@ -55,7 +51,7 @@ namespace VFECore
                 for (int i = 0; i < framesList.Count; i++)
                 {
                     Frame frame = (Frame)framesList[i];
-                    if (frame.Faction == lord.faction && (float)(frame.Position - data.siegeCenter).LengthHorizontalSquared < radSquared)
+                    if (frame.Faction == lord.faction && (frame.Position - data.siegeCenter).LengthHorizontalSquared < radSquared)
                     {
                         yield return frame;
                     }
@@ -77,8 +73,8 @@ namespace VFECore
 
             Data.baseRadius = Mathf.InverseLerp(BaseRadiusMin, BaseRadiusMax, (float)lord.ownedPawns.Count / 50);
             Data.baseRadius = Mathf.Clamp(Data.baseRadius, BaseRadiusMin, BaseRadiusMax);
-            List<Thing> list = new List<Thing>();
-            var placedBlueprints = CustomSiegeUtility.PlaceBlueprints(Data, base.Map, lord.faction).ToList();
+            List<Thing> list = new();
+            var placedBlueprints = CustomSiegeUtility.PlaceBlueprints(Data, Map, lord.faction).ToList();
             for (int i = 0; i < placedBlueprints.Count; i++)
             {
                 var blueprint_Build = placedBlueprints[i];
@@ -101,16 +97,15 @@ namespace VFECore
                         }
                     }
                 }
-                ThingDef thingDef = blueprint_Build.def.entityDefToBuild as ThingDef;
-                if (thingDef != null)
+
+                if (blueprint_Build.def.entityDefToBuild is ThingDef thingDef)
                 {
                     ThingDef turret = thingDef;
                     bool allowEMP = false;
                     TechLevel techLevel = lord.faction.def.techLevel;
-                    ThingDef thingDef2 = TurretGunUtility.TryFindRandomShellDef(turret, allowEMP, false, true, techLevel, false, 250f);
-                    if (thingDef2 != null)
+                    if (TurretGunUtility.TryFindRandomShellDef(turret, allowEMP, false, true, techLevel, false, 250f) is ThingDef shellDef)
                     {
-                        Thing thing3 = ThingMaker.MakeThing(thingDef2, null);
+                        Thing thing3 = ThingMaker.MakeThing(shellDef, null);
                         thing3.stackCount = InitalShellsPerCannon;
                         list.Add(thing3);
                     }
@@ -118,21 +113,21 @@ namespace VFECore
             }
             for (int i = 0; i < list.Count; i++)
             {
-                list[i].stackCount = Mathf.CeilToInt((float)list[i].stackCount * Rand.Range(1f, 1.2f));
+                list[i].stackCount = Mathf.CeilToInt(list[i].stackCount * Rand.Range(1f, 1.2f));
             }
-            List<List<Thing>> list2 = new List<List<Thing>>();
+            List<List<Thing>> list2 = new();
             for (int j = 0; j < list.Count; j++)
             {
                 while (list[j].stackCount > list[j].def.stackLimit)
                 {
-                    int num = Mathf.CeilToInt((float)list[j].def.stackLimit * Rand.Range(0.9f, 0.999f));
+                    int num = Mathf.CeilToInt(list[j].def.stackLimit * Rand.Range(0.9f, 0.999f));
                     Thing thing4 = ThingMaker.MakeThing(list[j].def, null);
                     thing4.stackCount = num;
                     list[j].stackCount -= num;
                     list.Add(thing4);
                 }
             }
-            List<Thing> list3 = new List<Thing>();
+            List<Thing> list3 = new();
             for (int k = 0; k < list.Count; k++)
             {
                 list3.Add(list[k]);
@@ -142,7 +137,7 @@ namespace VFECore
                     list3 = new List<Thing>();
                 }
             }
-            List<Thing> list4 = new List<Thing>();
+            List<Thing> list4 = new();
             int num2 = Mathf.RoundToInt(NutritionRangePerRaider.RandomInRange / customParams.mealDef.GetStatValueAbstract(StatDefOf.Nutrition) * lord.ownedPawns.Count);
             for (int l = 0; l < num2; l++)
             {
@@ -151,7 +146,9 @@ namespace VFECore
             }
             list2.Add(list4);
             if (lord.faction.def.techLevel >= TechLevel.Industrial)
+            {
                 DropPodUtility.DropThingGroupsNear(Data.siegeCenter, Map, list2, 110);
+            }
             else
             {
                 for (int i = 0; i < list2.Count; i++)
@@ -184,12 +181,12 @@ namespace VFECore
             else
             {
                 rememberedDuties.Clear();
-                int num = Mathf.RoundToInt((float)lord.ownedPawns.Count * data.desiredBuilderFraction);
+                int num = Mathf.RoundToInt(lord.ownedPawns.Count * data.desiredBuilderFraction);
                 if (num <= 0)
                 {
                     num = 1;
                 }
-                int num2 = (from b in base.Map.listerThings.ThingsInGroup(ThingRequestGroup.BuildingArtificial)
+                int num2 = (from b in Map.listerThings.ThingsInGroup(ThingRequestGroup.BuildingArtificial)
                             where b.def.hasInteractionCell && b.Faction == lord.faction && b.Position.InHorDistOf(FlagLoc, data.baseRadius)
                             select b).Count<Thing>();
                 if (num < num2)
@@ -210,10 +207,9 @@ namespace VFECore
                 int num4 = num - num3;
                 for (int k = 0; k < num4; k++)
                 {
-                    Pawn pawn2;
                     if ((from pa in lord.ownedPawns
                          where !rememberedDuties.ContainsKey(pa) && CanBeBuilder(pa)
-                         select pa).TryRandomElement(out pawn2))
+                         select pa).TryRandomElement(out Pawn pawn2))
                     {
                         rememberedDuties.Add(pawn2, DutyDefOf.Build);
                         SetAsBuilder(pawn2);
@@ -261,8 +257,10 @@ namespace VFECore
         {
             var data = Data;
             var customParams = CustomParams;
-            p.mindState.duty = new PawnDuty(DutyDefOf.Build, data.siegeCenter, -1f);
-            p.mindState.duty.radius = data.baseRadius;
+            p.mindState.duty = new PawnDuty(DutyDefOf.Build, data.siegeCenter, -1f)
+            {
+                radius = data.baseRadius
+            };
             int minLevel = Mathf.Max(customParams.coverDef.constructionSkillPrerequisite, customParams.maxArtilleryConstructionSkill);
             p.skills.GetSkill(SkillDefOf.Construction).EnsureMinLevelWithMargin(minLevel);
             p.workSettings.EnableAndInitialize();
@@ -284,8 +282,10 @@ namespace VFECore
         private void SetAsDefender(Pawn p)
         {
             var data = Data;
-            p.mindState.duty = new PawnDuty(DutyDefOf.Defend, data.siegeCenter, -1f);
-            p.mindState.duty.radius = data.baseRadius;
+            p.mindState.duty = new PawnDuty(DutyDefOf.Defend, data.siegeCenter, -1f)
+            {
+                radius = data.baseRadius
+            };
         }
 
         public override void LordToilTick()
@@ -309,7 +309,7 @@ namespace VFECore
                 {
                     if (!(from blue in data.blueprints
                           where !blue.Destroyed
-                          select blue).Any<Blueprint>() && !base.Map.listerThings.ThingsInGroup(ThingRequestGroup.BuildingArtificial).Any((Thing b) => b.Faction == lord.faction && b.def.building.buildingTags.Contains("Artillery")))
+                          select blue).Any<Blueprint>() && !Map.listerThings.ThingsInGroup(ThingRequestGroup.BuildingArtificial).Any((Thing b) => b.Faction == lord.faction && b.def.building.buildingTags.Contains("Artillery")))
                     {
                         lord.ReceiveMemo("NoArtillery");
                         return;
@@ -327,7 +327,7 @@ namespace VFECore
                         for (int j = 0; j < thingList.Count; j++)
                         {
                             var curThing = thingList[j];
-                            if (curThing.def.IsShell && arties.Any(a => CustomSiegeUtility.AcceptsShell(a, curThing.def)))
+                            if (/*curThing.def.IsShell && */arties.Any(a => CustomSiegeUtility.AcceptsShell(a, curThing.def)))
                             {
                                 shellCount += curThing.stackCount;
                             }
@@ -369,12 +369,14 @@ namespace VFECore
 
         private void DropSupplies(ThingDef thingDef, int count)
         {
-            List<Thing> list = new List<Thing>();
+            List<Thing> list = new();
             Thing thing = ThingMaker.MakeThing(thingDef, null);
             thing.stackCount = count;
             list.Add(thing);
             if (lord.faction.def.techLevel >= TechLevel.Industrial)
-                DropPodUtility.DropThingsNear(Data.siegeCenter, base.Map, list, 110, false, false, true);
+            {
+                DropPodUtility.DropThingsNear(Data.siegeCenter, Map, list, 110, false, false, true);
+            }
             else
             {
                 for (int i = 0; i < list.Count; i++)
