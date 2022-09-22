@@ -24,6 +24,8 @@
                              this.startVec.x < this.target.ToIntVec3().x ? Rot4.East :
                              this.startVec.y < this.target.ToIntVec3().y ? Rot4.North :
                                                                            Rot4.South;
+            float progress = (float)this.ticksFlying / (float)this.ticksFlightTime;
+            this.position = Vector3.Lerp(this.startVec, this.target, progress) + new Vector3(0f, 0f, 2f) * GenMath.InverseParabola(progress);
         }
 
         public override void Tick()
