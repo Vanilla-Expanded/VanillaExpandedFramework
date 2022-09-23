@@ -8,33 +8,32 @@ namespace RecipeInheritance
     {
         static StaticConstructorClass()
         {
-            for (int i = 0; i < DefDatabase<ThingDef>.AllDefsListForReading.Count; i++)
+            var defs = DefDatabase<ThingDef>.AllDefsListForReading;
+            for (int i = 0; i < defs.Count; i++)
             {
-                ThingDef thingDef = DefDatabase<ThingDef>.AllDefsListForReading[i];
-                if (thingDef.IsWorkTable)
+                var self = defs[i];
+                if (self.IsWorkTable && self.GetModExtension<ThingDefExtension>() is ThingDefExtension ext && ext.inheritRecipesFrom != null)
                 {
-                    ThingDefExtension thingDefExtension = ThingDefExtension.Get(thingDef);
-                    if (thingDefExtension.inheritRecipesFrom != null)
-                    {
-                        List<RecipeDef> list = new List<RecipeDef>(thingDef.AllRecipes);
-                        NonPublicFields.ThingDef_allRecipesCached.SetValue(thingDef, null);
+                    var list = new List<RecipeDef>(self.AllRecipes);
+                    NonPublicFields.ThingDef_allRecipesCached.SetValue(self, null);
 
-                        for (int j = 0; j < thingDefExtension.inheritRecipesFrom.Count; j++)
+                    for (int j = 0; j < ext.inheritRecipesFrom.Count; j++)
+                    {
+                        var worktable = ext.inheritRecipesFrom[j];
+                        var recipeDefs = worktable.AllRecipes ?? new List<RecipeDef>();
+
+                        for (int k = 0; k < recipeDefs.Count; k++)
                         {
-                            ThingDef thingDef2 = thingDefExtension.inheritRecipesFrom[j];
-                            for (int k = 0; k < thingDef2.AllRecipes.Count; k++)
+                            var recipeDef = worktable.AllRecipes[k];
+                            if (ext.Allows(recipeDef))
                             {
-                                RecipeDef recipeDef = thingDef2.AllRecipes[k];
-                                if (thingDefExtension.Allows(recipeDef))
+                                if (self.recipes == null)
                                 {
-                                    if (thingDef.recipes == null)
-                                    {
-                                        thingDef.recipes = new List<RecipeDef>();
-                                    }
-                                    if (!list.Contains(recipeDef))
-                                    {
-                                        thingDef.recipes.Add(recipeDef);
-                                    }
+                                    self.recipes = new List<RecipeDef>();
+                                }
+                                if (!list.Contains(recipeDef))
+                                {
+                                    self.recipes.Add(recipeDef);
                                 }
                             }
                         }
