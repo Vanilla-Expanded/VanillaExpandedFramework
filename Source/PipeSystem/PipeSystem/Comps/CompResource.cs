@@ -51,6 +51,7 @@ namespace PipeSystem
         {
             PipeNetManager.UnregisterConnector(this);
             PipeSystemDebug.Message($"Unregistering {this}");
+            EndSustainer();
             base.PostDeSpawn(map);
         }
 
