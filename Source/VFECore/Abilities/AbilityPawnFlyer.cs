@@ -7,6 +7,7 @@
     using RimWorld.Planet;
     using UnityEngine;
     using Verse;
+    using Verse.Sound;
 
     public class AbilityPawnFlyer : PawnFlyer
     {
@@ -49,6 +50,7 @@
         protected override void RespawnPawn()
         {
             this.Position = this.target.ToIntVec3();
+            LandingEffects();
             Pawn pawn = this.FlyingPawn;
             base.RespawnPawn();
             if (this.ability != null)
@@ -61,6 +63,14 @@
                     pawn.stances.SetStance(new Stance_Cooldown(staggerTicks.Value + 1, this.ability.CasterPawn, null));
                     pawn.stances.stagger.StaggerFor(staggerTicks.Value);
                 }
+            }
+        }
+
+        protected virtual void LandingEffects()
+        {
+            if (soundLanding != null)
+            {
+                soundLanding.PlayOneShot(new TargetInfo(base.Position, base.Map));
             }
         }
 
