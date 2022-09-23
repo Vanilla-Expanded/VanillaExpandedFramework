@@ -7,8 +7,47 @@ using Verse.Sound;
 
 namespace VFECore
 {
+    [StaticConstructorOnStartup]
+    public class Gizmo_EnergyCompShieldStatus : Gizmo
+    {
+        public CompShieldBubble shield;
 
-	public class CompProperties_ShieldBubble : CompProperties
+        private static readonly Texture2D FullShieldBarTex = SolidColorMaterials.NewSolidColorTexture(new Color(0.2f, 0.2f, 0.24f));
+
+        private static readonly Texture2D EmptyShieldBarTex = SolidColorMaterials.NewSolidColorTexture(Color.clear);
+
+        public Gizmo_EnergyCompShieldStatus()
+        {
+            Order = -100f;
+        }
+
+        public override float GetWidth(float maxWidth)
+        {
+            return 140f;
+        }
+
+        public override GizmoResult GizmoOnGUI(Vector2 topLeft, float maxWidth, GizmoRenderParms parms)
+        {
+            Rect rect = new Rect(topLeft.x, topLeft.y, GetWidth(maxWidth), 75f);
+            Rect rect2 = rect.ContractedBy(6f);
+            Widgets.DrawWindowBackground(rect);
+            Rect rect3 = rect2;
+            rect3.height = rect.height / 2f;
+            Text.Font = GameFont.Tiny;
+            Widgets.Label(rect3, shield.parent.LabelCap);
+            Rect rect4 = rect2;
+            rect4.yMin = rect2.y + rect2.height / 2f;
+            float fillPercent = shield.Energy / shield.EnergyMax;
+            Widgets.FillableBar(rect4, fillPercent, FullShieldBarTex, EmptyShieldBarTex, doBorder: false);
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleCenter;
+            Widgets.Label(rect4, shield.Energy.ToString("F0") + " / " + shield.EnergyMax.ToString("F0"));
+            Text.Anchor = TextAnchor.UpperLeft;
+            return new GizmoResult(GizmoState.Clear);
+        }
+    }
+
+    public class CompProperties_ShieldBubble : CompProperties
 	{
 		public CompProperties_ShieldBubble()
 		{
@@ -233,7 +272,6 @@ namespace VFECore
 
 			return false;
 		}
-
 		public void DrawWornExtras()
 		{
 			if (ShieldState == ShieldState.Active)
@@ -265,7 +303,7 @@ namespace VFECore
 			}
 		}
 
-		public override void PostPreApplyDamage(DamageInfo dinfo, out bool absorbed)
+        public override void PostPreApplyDamage(DamageInfo dinfo, out bool absorbed)
 		{
 			base.PostPreApplyDamage(dinfo, out absorbed);
 			AbsorbingDamage(dinfo, out absorbed);
@@ -365,5 +403,46 @@ namespace VFECore
 			ticksToReset = -1;
 			energy       = EnergyOnReset;
 		}
-	}
+
+		public override void PostPostMake()
+		{
+			base.PostPostMake();
+            if (Props.chargeFullyWhenMade)
+            {
+                Energy = EnergyMax;
+            }
+        }
+
+        public override IEnumerable<Gizmo> CompGetGizmosExtra()
+        {
+            if (Find.Selector.SingleSelectedThing == this.Pawn && this.Pawn.Faction == Faction.OfPlayer)
+            {
+                Gizmo_EnergyCompShieldStatus gizmo_EnergyShieldStatus = new Gizmo_EnergyCompShieldStatus();
+                gizmo_EnergyShieldStatus.shield = this;
+                yield return gizmo_EnergyShieldStatus;
+            }
+        }
+        public override IEnumerable<Gizmo> CompGetWornGizmosExtra()
+		{
+            if (Find.Selector.SingleSelectedThing == this.Pawn && this.Pawn.IsColonistPlayerControlled)
+            {
+                Gizmo_EnergyCompShieldStatus gizmo_EnergyShieldStatus = new Gizmo_EnergyCompShieldStatus();
+                gizmo_EnergyShieldStatus.shield = this;
+                yield return gizmo_EnergyShieldStatus;
+            }
+		}
+
+        public override bool CompAllowVerbCast(Verb verb)
+        {
+            if (verb.IsMeleeAttack && Props.dontAllowMeleeAttack)
+            {
+                return false;
+            }
+            else if (!verb.IsMeleeAttack && Props.dontAllowRangedAttack)
+            {
+                return false;
+            }
+            return true;
+        }
+    }
 }
