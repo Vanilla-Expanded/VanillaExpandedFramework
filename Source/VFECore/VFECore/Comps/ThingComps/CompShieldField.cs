@@ -65,6 +65,7 @@ namespace VFECore
         public int disarmedByEmpForTicks = -1;
         public SoundDef activeSound;
         public bool toggleable = false;
+        public string toggleIconPath = "UI/ToggleIcon";
         public string toggleLabelKey;
         public string toggleDescKey;
         public CompProperties_ShieldField()
@@ -658,7 +659,7 @@ namespace VFECore
                     {
                         defaultLabel = Props.toggleLabelKey.Translate(toggleIsActive ? "On".Translate() : "Off".Translate()),
                         defaultDesc = Props.toggleDescKey.Translate(),
-                        icon = ContentFinder<Texture2D>.Get("UI/ToggleIcon"),
+                        icon = ContentFinder<Texture2D>.Get(Props.toggleIconPath),
                         toggleAction = delegate 
                         { 
                             toggleIsActive = !toggleIsActive; 
