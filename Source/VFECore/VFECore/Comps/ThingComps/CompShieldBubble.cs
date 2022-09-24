@@ -415,7 +415,8 @@ namespace VFECore
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
-            if (Find.Selector.SingleSelectedThing == this.Pawn && this.Pawn.Faction == Faction.OfPlayer)
+            if (typeof(Abilities.CompAbilities).IsAssignableFrom(this.Props.compClass) is false 
+				&& Find.Selector.SingleSelectedThing == this.Pawn && this.Pawn.Faction == Faction.OfPlayer)
             {
                 Gizmo_EnergyCompShieldStatus gizmo_EnergyShieldStatus = new Gizmo_EnergyCompShieldStatus();
                 gizmo_EnergyShieldStatus.shield = this;
