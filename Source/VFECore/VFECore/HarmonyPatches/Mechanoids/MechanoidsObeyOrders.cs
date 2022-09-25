@@ -36,12 +36,24 @@ namespace VFE.Mechanoids.HarmonyPatches
 		}
 	}
 
-	[HarmonyPatch(typeof(FloatMenuMakerMap), "CanTakeOrder")]
+	[HarmonyPatch(typeof(MechanitorUtility), "InMechanitorCommandRange")]
+	public static class MechanitorUtility_InMechanitorCommandRange_Patch
+	{
+		public static void Postfix(Pawn mech, ref bool __result)
+		{
+			if (mech is Machine)
+			{
+				__result = true;
+			}
+		}
+	}
+
+    [HarmonyPatch(typeof(FloatMenuMakerMap), "CanTakeOrder")]
     public static class MechanoidsObeyOrders
     {
         public static void Postfix(Pawn pawn, ref bool __result)
         {
-            if (pawn.drafter != null && pawn.RaceProps.IsMechanoid && pawn.Faction != null && pawn.Faction.IsPlayer)
+            if (!__result && pawn.drafter != null && pawn is Machine && pawn.Faction != null && pawn.Faction.IsPlayer)
                 __result = true;
         }
     }
@@ -74,7 +86,7 @@ namespace VFE.Mechanoids.HarmonyPatches
 				{
 					if (t is Pawn pawn)
 					{
-						if (pawn.Faction == Faction.OfPlayer && pawn.RaceProps.IsMechanoid)
+						if (pawn.Faction == Faction.OfPlayer && pawn is Machine)
 						{
 							return true;
 						}
@@ -118,7 +130,7 @@ namespace VFE.Mechanoids.HarmonyPatches
                 {
 					if (t is Pawn pawn2 && clickedThing is Pawn pawn1)
                     {
-						if (pawn2.Faction == Faction.OfPlayer && pawn1.Faction == Faction.OfPlayer && (pawn2.RaceProps.IsMechanoid || pawn1.RaceProps.IsMechanoid))
+						if (pawn2.Faction == Faction.OfPlayer && pawn1.Faction == Faction.OfPlayer && (pawn2 is Machine || pawn1 is Machine))
                         {
 							return true;
                         }
@@ -135,7 +147,7 @@ namespace VFE.Mechanoids.HarmonyPatches
     {
         public static bool Prefix(Vector3 clickPos, Pawn pawn, List<FloatMenuOption> opts)
         {
-            if (pawn.RaceProps.IsMechanoid && pawn.needs.TryGetNeed<Need_Power>() is Need_Power need && need.CurLevel <= 0f)
+            if (pawn is Machine && pawn.needs.TryGetNeed<Need_Power>() is Need_Power need && need.CurLevel <= 0f)
             {
                 return false;
             }
@@ -387,7 +399,7 @@ namespace VFE.Mechanoids.HarmonyPatches
         {
             try
             {
-                if (pawn.Map != null && pawn.RaceProps.IsMechanoid && pawn.Faction == Faction.OfPlayer && __result.IsForbidden(pawn) && pawn.playerSettings?.EffectiveAreaRestrictionInPawnCurrentMap.ActiveCells.Count() > 0)
+                if (pawn.Map != null && pawn is Machine && pawn.Faction == Faction.OfPlayer && __result.IsForbidden(pawn) && pawn.playerSettings?.EffectiveAreaRestrictionInPawnCurrentMap.ActiveCells.Count() > 0)
                 {
                     __result = pawn.playerSettings.EffectiveAreaRestrictionInPawnCurrentMap.ActiveCells.OrderBy(x => x.DistanceTo(pawn.Position))
                         .Where(x => x.Walkable(pawn.Map) && pawn.CanReserveAndReach(x, PathEndMode.OnCell, Danger.Deadly)).Take(10).RandomElement();

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Verse.AI;
 using RimWorld.Planet;
-
+using VFEMech;
 
 namespace AnimalBehaviours
 {
@@ -20,9 +20,7 @@ namespace AnimalBehaviours
         [HarmonyPostfix]
         static void RemoveTendFromAnimals(WorkTypeDef w, Pawn __instance, ref bool __result)
         {
-
-
-            if (w == WorkTypeDefOf.Doctor && AnimalCollectionClass.draftable_animals.Contains(__instance) && !__instance.RaceProps.IsMechanoid)
+            if (w == WorkTypeDefOf.Doctor && AnimalCollectionClass.draftable_animals.Contains(__instance) && !(__instance is Machine))
             {
                 __result = true;
             }
