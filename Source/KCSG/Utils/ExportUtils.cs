@@ -377,14 +377,15 @@ namespace KCSG
         {
             var cellExport = Dialog_ExportWindow.cells;
             var pairsCellThingList = Dialog_ExportWindow.pairsCellThingList;
+
             var modsId = new HashSet<string>();
             for (int i = 0; i < cellExport.Count; i++)
             {
                 var things = pairsCellThingList.TryGetValue(cellExport[i]);
                 for (int o = 0; o < things.Count; o++)
                 {
-                    var packageId = things[o].def.modContentPack.PackageId;
-                    if (packageId != "ludeon.rimworld")
+                    var packageId = things[o]?.def?.modContentPack?.PackageId;
+                    if (packageId != null && packageId != "ludeon.rimworld")
                         modsId.Add(packageId);
                 }
             }
