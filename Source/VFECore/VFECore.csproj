@@ -347,6 +347,7 @@
     <Compile Include="VFECore\HarmonyPatches\Mechanoids\Need_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\Mechanoids\Pawn_MainDesc_Patch.cs" />
     <Compile Include="VFECore\HarmonyPatches\Mechanoids\RenderTurretCentered.cs" />
+    <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_DeepResourceGrid_DeepResourcesOnGUI.cs" />
     <Compile Include="VFECore\MapGen\LordJob_DefendShip.cs" />
     <Compile Include="VFECore\MapGen\SymbolResolverShips.cs" />
     <Compile Include="VFECore\Graphics\Graphic_Animated.cs" />

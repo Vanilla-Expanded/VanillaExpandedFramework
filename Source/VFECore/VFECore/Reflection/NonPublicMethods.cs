@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
-using System.Text;
-using UnityEngine;
-using Verse;
-using RimWorld;
 using HarmonyLib;
-using RimWorld.Planet;
+using RimWorld;
+using Verse;
 
 namespace VFECore
 {
@@ -19,7 +13,7 @@ namespace VFECore
 
         public static ApplyArmourDelegate<float, float, float, Thing, DamageDef, Pawn, bool> ArmorUtility_ApplyArmor = (ApplyArmourDelegate<float, float, float, Thing, DamageDef, Pawn, bool>)
             Delegate.CreateDelegate(typeof(ApplyArmourDelegate<float, float, float, Thing, DamageDef, Pawn, bool>), AccessTools.Method(typeof(ArmorUtility), "ApplyArmor"));
-        
+
         public static Func<IntVec3, Rot4, ThingDef, Map, ThingDef, bool> SiegeBlueprintPlacer_CanPlaceBlueprintAt = (Func<IntVec3, Rot4, ThingDef, Map, ThingDef, bool>)
             Delegate.CreateDelegate(typeof(Func<IntVec3, Rot4, ThingDef, Map, ThingDef, bool>), AccessTools.Method(typeof(SiegeBlueprintPlacer), "CanPlaceBlueprintAt"));
         public static Func<ThingDef, Rot4, Map, IntVec3> SiegeBlueprintPlacer_FindArtySpot = (Func<ThingDef, Rot4, Map, IntVec3>)
@@ -27,12 +21,14 @@ namespace VFECore
 
         public delegate void ApplyArmourDelegate<A, B, C, D, E, F, G>(ref A first, B second, C third, D fourth, ref E fifth, F sixth, out G seventh);
         public delegate C FuncOut<A, B, C>(A first, out B second);
-        
+
         public static Action<Projectile> Projectile_ImpactSomething = (Action<Projectile>)
             Delegate.CreateDelegate(typeof(Action<Projectile>), null, AccessTools.Method(typeof(Projectile), "ImpactSomething"));
 
         public static Action<Pawn, PawnGenerationRequest> GenerateSkills = (Action<Pawn, PawnGenerationRequest>)
             Delegate.CreateDelegate(typeof(Action<Pawn, PawnGenerationRequest>), null, AccessTools.Method(typeof(PawnGenerator), "GenerateSkills"));
+
+        public static MethodInfo RenderMouseAttachments = AccessTools.Method(typeof(DeepResourceGrid), "RenderMouseAttachments");
 
         [StaticConstructorOnStartup]
         public static class DualWield
@@ -53,7 +49,7 @@ namespace VFECore
                     #region Ext_ThingDef
                     var extThingDef = GenTypes.GetTypeInAnyAssembly("DualWield.Ext_ThingDef", "DualWield");
 
-                    Ext_ThingDef_CanBeOffHand = (Func<ThingDef, bool>) Delegate.CreateDelegate(typeof(Func<ThingDef, bool>), AccessTools.Method(extThingDef, "CanBeOffHand"));
+                    Ext_ThingDef_CanBeOffHand = (Func<ThingDef, bool>)Delegate.CreateDelegate(typeof(Func<ThingDef, bool>), AccessTools.Method(extThingDef, "CanBeOffHand"));
                     Ext_ThingDef_IsTwoHand = (Func<ThingDef, bool>)Delegate.CreateDelegate(typeof(Func<ThingDef, bool>), AccessTools.Method(extThingDef, "IsTwoHand"));
                     #endregion
                 }

@@ -25,6 +25,8 @@ namespace VFECore
         public Color deepColor = Color.white;
         public float transparencyMultiplier = 0.5f;
         public bool allowDeepDrill = true;
+        // For buildings that need to render deep resources mouse attachments
+        public bool deepResourcesOnGUI = false;
 
         // For skyfallers that can fall into shield fields
         public int shieldDamageIntercepted = -1;
