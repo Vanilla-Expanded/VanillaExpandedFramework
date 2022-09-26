@@ -1,28 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
+	<!-- Shield -->
+	<VanillaFactionsExpanded.EquipShield>Equip {0} as shield</VanillaFactionsExpanded.EquipShield>
+	<VanillaFactionsExpanded.EquipWarningShieldUnusable>(unusable with {0})</VanillaFactionsExpanded.EquipWarningShieldUnusable>
+	<VanillaFactionsExpanded.EquipWarningShieldUnusableWithWeapon>({0} will be unusable)</VanillaFactionsExpanded.EquipWarningShieldUnusableWithWeapon>
 
-    <!-- Shield -->
-    <VanillaFactionsExpanded.EquipShield>Equip {0} as shield</VanillaFactionsExpanded.EquipShield>
-    <VanillaFactionsExpanded.EquipWarningShieldUnusable>(unusable with {0})</VanillaFactionsExpanded.EquipWarningShieldUnusable>
-    <VanillaFactionsExpanded.EquipWarningShieldUnusableWithWeapon>({0} will be unusable)</VanillaFactionsExpanded.EquipWarningShieldUnusableWithWeapon>
+	<VanillaFactionsExpanded.Protects>Protects</VanillaFactionsExpanded.Protects>
+	<VanillaFactionsExpanded.Protects_Desc>What body parts the shield protects.</VanillaFactionsExpanded.Protects_Desc>
 
-    <VanillaFactionsExpanded.Protects>Protects</VanillaFactionsExpanded.Protects>
-    <VanillaFactionsExpanded.Protects_Desc>What body parts the shield protects.</VanillaFactionsExpanded.Protects_Desc>
-    
-    <!-- Scenario parts -->
-    <VanillaFactionsExpanded.ScenPart_ForcedFactionRelations>Faction relation modifiers</VanillaFactionsExpanded.ScenPart_ForcedFactionRelations>
-    <VanillaFactionsExpanded.NumberRange>{0} to {1}</VanillaFactionsExpanded.NumberRange>
-    <VanillaFactionsExpanded.AllFactions>All factions</VanillaFactionsExpanded.AllFactions>
-    <VanillaFactionsExpanded.AllFactionsIncludingHidden>All factions including hidden</VanillaFactionsExpanded.AllFactionsIncludingHidden>
-    <VanillaFactionsExpanded.AlwaysHostile>Always hostile</VanillaFactionsExpanded.AlwaysHostile>
-    <VanillaFactionsExpanded.AffectHiddenFactions>Affect hidden</VanillaFactionsExpanded.AffectHiddenFactions>
-    <VanillaFactionsExpanded.StartingGoodwill>Starting</VanillaFactionsExpanded.StartingGoodwill>
-    <VanillaFactionsExpanded.NaturalGoodwill>Natural</VanillaFactionsExpanded.NaturalGoodwill>
+	<!-- Scenario parts -->
+	<VanillaFactionsExpanded.ScenPart_ForcedFactionRelations>Faction relation modifiers</VanillaFactionsExpanded.ScenPart_ForcedFactionRelations>
+	<VanillaFactionsExpanded.NumberRange>{0} to {1}</VanillaFactionsExpanded.NumberRange>
+	<VanillaFactionsExpanded.AllFactions>All factions</VanillaFactionsExpanded.AllFactions>
+	<VanillaFactionsExpanded.AllFactionsIncludingHidden>All factions including hidden</VanillaFactionsExpanded.AllFactionsIncludingHidden>
+	<VanillaFactionsExpanded.AlwaysHostile>Always hostile</VanillaFactionsExpanded.AlwaysHostile>
+	<VanillaFactionsExpanded.AffectHiddenFactions>Affect hidden</VanillaFactionsExpanded.AffectHiddenFactions>
+	<VanillaFactionsExpanded.StartingGoodwill>Starting</VanillaFactionsExpanded.StartingGoodwill>
+	<VanillaFactionsExpanded.NaturalGoodwill>Natural</VanillaFactionsExpanded.NaturalGoodwill>
 
-    <!-- Stat Draw Entries -->
-    <VanillaFactionsExpanded.UsableWithShield>Usable with shields</VanillaFactionsExpanded.UsableWithShield>
-    <VanillaFactionsExpanded.UsableWithShield_Desc>Whether or not this weapon can be used if the character also has a shield equipped.</VanillaFactionsExpanded.UsableWithShield_Desc>
-	
+	<!-- Stat Draw Entries -->
+	<VanillaFactionsExpanded.UsableWithShield>Usable with shields</VanillaFactionsExpanded.UsableWithShield>
+	<VanillaFactionsExpanded.UsableWithShield_Desc>Whether or not this weapon can be used if the character also has a shield equipped.</VanillaFactionsExpanded.UsableWithShield_Desc>
+
 	<!-- New Faction Spawning -->
 	<VanillaFactionsExpanded.FactionTitle>New faction: {FactionName}</VanillaFactionsExpanded.FactionTitle>
 	<VanillaFactionsExpanded.ModInfo>This faction is added by {ModName} and not currently present in your game.</VanillaFactionsExpanded.ModInfo>
@@ -39,19 +38,18 @@
 	<VanillaFactionsExpanded.FactionMessageFailedFull>Failed to create a faction with settlements.</VanillaFactionsExpanded.FactionMessageFailedFull>
 	<VanillaFactionsExpanded.FactionMessageSuccessFull>Added {FactionName} with {Amount} settlements.</VanillaFactionsExpanded.FactionMessageSuccessFull>
 	<VanillaFactionsExpanded.FactionMessageSuccess>Added {FactionName}.</VanillaFactionsExpanded.FactionMessageSuccess>
-	
+
 	<VanillaFactionsExpanded.FactionSettlementsToSpawn>Settlements to spawn (recommended are {0}): {1}</VanillaFactionsExpanded.FactionSettlementsToSpawn>
 	<VanillaFactionsExpanded.FactionMinDistance>The minimum distance from player bases (recommended are {0}): {1}</VanillaFactionsExpanded.FactionMinDistance>
 	<VanillaFactionsExpanded.FactionButtonSpawn>Spawn</VanillaFactionsExpanded.FactionButtonSpawn>
 	<VanillaFactionsExpanded.FactionButtonCancel>Cancel</VanillaFactionsExpanded.FactionButtonCancel>
-	
+
 	<VSE.Reinforcements>Reinforcements</VSE.Reinforcements>
 	<VSE.ReinforcementsDesc>Seeing that your forces suffered losses, {FACTION_name} has decided to reinforce their raiding force</VSE.ReinforcementsDesc>
-	
 	<VSE.CostGoodwill>cost: {0} goodwill</VSE.CostGoodwill>
-	
-  <VWEL_ToggleHotshotLabel>Weapon warm-up</VWEL_ToggleHotshotLabel>
-  <VWEL_ToggleHotshotDesc>Shots fired when standing still warm-up the weapon allowing for increased firing speed. Overheating can lead to detonation.</VWEL_ToggleHotshotDesc>
 
-	
+	<VWEL_ToggleHotshotLabel>Weapon warm-up</VWEL_ToggleHotshotLabel>
+	<VWEL_ToggleHotshotDesc>Shots fired when standing still warm-up the weapon allowing for increased firing speed. Overheating can lead to detonation.</VWEL_ToggleHotshotDesc>
+
+	<VFE_DeepDrillNo>Deep drill cannot be used with {0}.</VFE_DeepDrillNo>
 </LanguageData>

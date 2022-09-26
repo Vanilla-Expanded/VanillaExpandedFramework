@@ -378,6 +378,7 @@
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\ThingDefGenerator_Corpses_ImpliedCorpseDefs_Patch.cs" />
     <Compile Include="VFECore\HarmonyPatches\Stances_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\World_NaturalRockTypesIn_Patch.cs" />
+    <Compile Include="VFECore\PlaceWorker\PlaceWorker_DeepDrillLimitation.cs" />
     <Compile Include="VFECore\Projectiles\BeamProjectile.cs" />
     <Compile Include="VFECore\Reflection\NonPublicProperties.cs" />
     <Compile Include="Cuisine\GraphicClasses\Graphic_RandomStackCount.cs" />
