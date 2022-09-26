@@ -49,4 +49,8 @@
   <PipeSystem_NothingToRefill>No thing to refill {0}</PipeSystem_NothingToRefill>
   <PipeSystem_AllowManualRefill>Allow manual refill</PipeSystem_AllowManualRefill>
   <PipeSystem_AllowManualRefillDesc>Allow pawns to directly refill storage</PipeSystem_AllowManualRefillDesc>
+
+  <PipeSystem_CantExtract>Can’t extract: Tanks are full</PipeSystem_CantExtract>
+  <PipeSystem_CantPlaceHere>{0} can only be placed on the {1} deposit. Use ground-penetrating scanner to find the deposits.</PipeSystem_CantPlaceHere>
+  <PipeSystem_ResourceLeft>Amount left in deposit: {0}.</PipeSystem_ResourceLeft>
 </LanguageData>

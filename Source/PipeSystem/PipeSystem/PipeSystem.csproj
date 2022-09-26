@@ -63,12 +63,14 @@
     <Compile Include="Cached\CachedPipeNetManager.cs" />
     <Compile Include="Cached\CachedResourceThings.cs" />
     <Compile Include="Comps\CompConvertToThing.cs" />
+    <Compile Include="Comps\CompDeepExtractor.cs" />
     <Compile Include="Comps\CompExplosiveContent.cs" />
     <Compile Include="Comps\CompHeatPusherNeedResource.cs" />
     <Compile Include="Comps\CompPipeValve.cs" />
     <Compile Include="Comps\CompPowerPlantNeedResource.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_ConvertResourceToThing.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_ConvertThingToResource.cs" />
+    <Compile Include="Comps\CompProperties\CompProperties_DeepExtractor.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_ExplosiveContent.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_PipeValve.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_RefillWithPipes.cs" />
@@ -105,6 +107,7 @@
     <Compile Include="Graphic\MaterialCreator.cs" />
     <Compile Include="PipeNet.cs" />
     <Compile Include="PipeNetManager.cs" />
+    <Compile Include="PlaceWorker\PlaceWorker_DeepExtractor.cs" />
     <Compile Include="PlaceWorker\PlaceWorker_Pipe.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Graphic\SectionLayer_Resource.cs" />
