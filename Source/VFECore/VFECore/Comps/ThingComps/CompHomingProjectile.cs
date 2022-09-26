@@ -34,8 +34,20 @@ namespace VFECore
             {
                 return false;
             }
-            return (Vector3.Distance(origCell, curPosCell) / Vector3.Distance(origCell, targetCell)) >= Props.homingDistanceFractionPassed
+            var distanceBetweenOrigAndCurPos = Vector3.Distance(origCell, curPosCell);
+            var distanceBetweenOrigAndTargetPos = Vector3.Distance(origCell, targetCell);
+            var result = (distanceBetweenOrigAndCurPos / distanceBetweenOrigAndTargetPos) >= Props.homingDistanceFractionPassed
                 && Find.TickManager.TicksGame % Props.homingCorrectionTickRate == 0;
+            //Log.Message(result + " - Find.TickManager.TicksGame: " + Find.TickManager.TicksGame + " - " + this + " - origCell: " + origCell + " - curPosCell: " + curPosCell + " - targetCell: " + targetCell
+            //   + " - distanceBetweenOrigAndCurPos: " + distanceBetweenOrigAndCurPos
+            //   + " - distanceBetweenOrigAndTargetPos: " + distanceBetweenOrigAndTargetPos + " - (distanceBetweenOrigAndCurPos / distanceBetweenOrigAndTargetPos): " 
+            //   + (distanceBetweenOrigAndCurPos / distanceBetweenOrigAndTargetPos)
+            //   + " - Find.TickManager.TicksGame % Props.homingCorrectionTickRate: " + (Find.TickManager.TicksGame % Props.homingCorrectionTickRate));
+            //if (result)
+            //{
+            //    Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
+            //}
+            return result;
         }
 
         public override void PostExposeData()

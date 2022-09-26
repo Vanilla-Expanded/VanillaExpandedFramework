@@ -80,9 +80,9 @@ namespace VFE.Mechanoids
             priorities.SetAll(0);
             typeof(Pawn_WorkSettings).GetField("priorities", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(myPawn.workSettings, priorities);
             
-            if (Props.allowedWorkTypes != null)
+            if (myPawn.def.race.mechEnabledWorkTypes != null)
             {
-                foreach (WorkTypeDef workType in Props.allowedWorkTypes)
+                foreach (WorkTypeDef workType in myPawn.def.race.mechEnabledWorkTypes)
                 {
                     foreach (SkillDef skill in workType.relevantSkills)
                     {

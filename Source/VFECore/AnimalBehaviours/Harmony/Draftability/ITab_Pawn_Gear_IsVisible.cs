@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Verse.AI;
 using RimWorld.Planet;
-
+using VFEMech;
 
 namespace AnimalBehaviours
 {
@@ -20,7 +20,7 @@ namespace AnimalBehaviours
         [HarmonyPostfix]
         static void RemoveTab(Pawn p, ref bool __result)
         {
-            if (AnimalCollectionClass.draftable_animals.Contains(p) && !p.RaceProps.IsMechanoid)
+            if (AnimalCollectionClass.draftable_animals.Contains(p) && !(p is Machine))
             {
                 __result = false;
             }
