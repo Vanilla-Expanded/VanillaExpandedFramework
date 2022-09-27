@@ -23,9 +23,9 @@ namespace KCSG
 
         public static bool exportNatural = false;
         public static bool exportFilth = false;
-        public static bool exportPlant = true;
+        public static bool exportPlant = false;
         public static bool needRoofClearance = false;
-        public static bool spawnConduits = true;
+        public static bool spawnConduits = false;
         public static bool forceGenerateRoof = false;
         public static bool isStorage = false;
 
