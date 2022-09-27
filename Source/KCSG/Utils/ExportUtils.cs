@@ -17,27 +17,27 @@ namespace KCSG
         /// </summary>
         public static StructureLayoutDef CreateStructureDef(Map map, Area area)
         {
-            var sld = new StructureLayoutDef();
-
-            sld.defName = Dialog_ExportWindow.defName;
-            sld.isStorage = Dialog_ExportWindow.isStorage;
-            sld.spawnConduits = Dialog_ExportWindow.spawnConduits;
-            sld.forceGenerateRoof = Dialog_ExportWindow.forceGenerateRoof;
-            sld.needRoofClearance = Dialog_ExportWindow.needRoofClearance;
-            sld.tags = Dialog_ExportWindow.tags.ToList();
-            sld.terrainGrid = CreateTerrainlayout(area, map);
-            sld.roofGrid = CreateRoofGrid(area, map);
-            sld.modRequirements = GetNeededMods();
+            var sld = new StructureLayoutDef
+            {
+                defName = Dialog_ExportWindow.defName,
+                isStorage = Dialog_ExportWindow.isStorage,
+                spawnConduits = Dialog_ExportWindow.spawnConduits,
+                forceGenerateRoof = Dialog_ExportWindow.forceGenerateRoof,
+                needRoofClearance = Dialog_ExportWindow.needRoofClearance,
+                tags = Dialog_ExportWindow.tags.ToList(),
+                terrainGrid = CreateTerrainlayout(area, map),
+                roofGrid = CreateRoofGrid(area, map),
+                modRequirements = GetNeededMods(),
+                spawnAtPos = new List<Pos>(),
+                spawnAt = new List<string>(),
+                _layouts = new List<SymbolDef[,]>()
+            };
 
             int numOfLayout = GetMaxThings();
             for (int i = 0; i < numOfLayout; i++)
             {
                 sld.layouts.Add(CreateIndexLayout(area, i));
             }
-
-            sld.spawnAtPos = new List<Pos>();
-            sld.spawnAt = new List<string>();
-            sld._layouts = new List<SymbolDef[,]>();
             sld.ResolveLayouts();
 
             return sld;
@@ -66,6 +66,8 @@ namespace KCSG
                 {
                     // Get the thing on the cell
                     List<Thing> things = pairsCellThingList.TryGetValue(cell);
+                    // Remove motes & blacklisted
+                    things.RemoveAll(t => t.def.category == ThingCategory.Mote || symbolBlacklist.Contains(t.def.defName));
                     // Remove filth if needed
                     if (!Dialog_ExportWindow.exportFilth)
                         things.RemoveAll(t => t.def.category == ThingCategory.Filth);
@@ -197,7 +199,7 @@ namespace KCSG
                     {
                         AddToString(ref temp, ".", x, hw.x);
                     }
-                    else if (!terrain.BuildableByPlayer && !terrain.HasTag("Road") && !Dialog_ExportWindow.exportNatural)
+                    else if (!Dialog_ExportWindow.exportNatural && terrain.natural)
                     {
                         AddToString(ref temp, ".", x, hw.x);
                     }
@@ -231,6 +233,7 @@ namespace KCSG
             var ll = new List<string>();
             var hw = EdgeFromList(cellExport);
             var active = area?.ActiveCells;
+            var add = false;
 
             IntVec3 cell = cellExport.First();
             for (int z = 0; z < hw.z; z++)
@@ -246,6 +249,7 @@ namespace KCSG
                     {
                         var roofType = roofDef == RoofDefOf.RoofRockThick ? "3" : (roofDef == RoofDefOf.RoofRockThin ? "2" : "1");
                         AddToString(ref temp, roofType, x, hw.x);
+                        add = true;
                     }
                     else
                     {
@@ -261,7 +265,7 @@ namespace KCSG
                 ll.Add(temp);
             }
 
-            return ll;
+            return add ? ll : new List<string>();
         }
 
         /// <summary>
@@ -354,6 +358,8 @@ namespace KCSG
                 for (int o = 0; o < things.Count; o++)
                 {
                     var thing = things[o];
+                    if (thing.def.category == ThingCategory.Mote)
+                        continue;
                     if (!Dialog_ExportWindow.exportFilth && thing.def.category == ThingCategory.Filth)
                         continue;
                     if (!Dialog_ExportWindow.exportPlant && thing.def.category == ThingCategory.Plant)
@@ -506,7 +512,7 @@ namespace KCSG
             var defName = pawn.kindDef.defName;
 
             if (!Dialog_ExportWindow.exportedSymbolsName.Contains(defName)
-                && !DefDatabase<SymbolDef>.AllDefsListForReading.FindAll(s => s.defName == defName).Any())
+                && !DefDatabase<SymbolDef>.AllDefsListForReading.FindAll(s => s.pawnKindDef == defName).Any())
             {
                 var symbol = new SymbolDef
                 {
@@ -521,7 +527,7 @@ namespace KCSG
                     symbol.spawnRotten = comp.RotProgress == 1f;
 
                 symbol.ResolveReferences();
-                Dialog_ExportWindow.exportedSymbolsName.Add(defName);
+                Dialog_ExportWindow.exportedSymbolsName.Add(symbol.defName);
                 DefDatabase<SymbolDef>.Add(symbol);
 
                 return symbol;
