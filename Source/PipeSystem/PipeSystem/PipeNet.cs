@@ -345,6 +345,10 @@ namespace PipeSystem
             if (usable < 0)
             {
                 DrawAmongStorage(-usable, storages);
+                // Distribute using the whole storage
+                DistributeAmongRefillables(Stored);
+                DistributeAmongProcessors(Stored);
+                DistributeAmongConverters(Stored);
             }
             // If we produce resource, and there is storage
             else if (storages.Count > 0)
@@ -596,7 +600,7 @@ namespace PipeSystem
                 ++iteration;
                 if (iteration > 1000)
                 {
-                    PipeSystemDebug.Message("To many iteration in DrawAmongStorage");
+                    PipeSystemDebug.Message($"To many iteration in DrawAmongStorage. Amount left: {amount}");
                     break;
                 }
                 // Amount to draw in each
