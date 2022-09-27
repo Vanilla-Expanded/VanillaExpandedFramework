@@ -16,19 +16,19 @@ namespace VFECore.Abilities
         [HarmonyPostfix]
         public static void Postfix(Pawn __result)
         {
-            PawnKindAbilityExtension abilityExtension = __result.kindDef.GetModExtension<PawnKindAbilityExtension>();
+            PawnKindAbilityExtension abilityExtension = __result.kindDef?.GetModExtension<PawnKindAbilityExtension>();
             if (abilityExtension == null)
                 return;
 
             if (abilityExtension.implantDef != null)
             {
-                Hediff_Abilities implant = __result.health.hediffSet.GetFirstHediffOfDef(abilityExtension.implantDef) as Hediff_Abilities ??
+                Hediff_Abilities implant = __result.health?.hediffSet?.GetFirstHediffOfDef(abilityExtension.implantDef) as Hediff_Abilities ??
                                            HediffMaker.MakeHediff(abilityExtension.implantDef, __result,
-                                                                  __result.RaceProps.body.GetPartsWithDef(BodyPartDefOf.Brain).FirstOrFallback()) as Hediff_Abilities;
+                                                                  __result.RaceProps?.body?.GetPartsWithDef(BodyPartDefOf.Brain).FirstOrFallback()) as Hediff_Abilities;
                 if(implant != null)
                 {
                     implant.giveRandomAbilities = abilityExtension.giveRandomAbilities;
-                    __result.health.AddHediff(implant);
+                    __result.health?.AddHediff(implant);
                     implant.SetLevelTo(abilityExtension.initialLevel);
                 }
             }
