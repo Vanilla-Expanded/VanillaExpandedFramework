@@ -1,5 +1,5 @@
-﻿using RimWorld;
-using System.Text;
+﻿using System.Text;
+using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
@@ -26,7 +26,16 @@ namespace PipeSystem
 
         public string OnSignal => $"Resource{Resource.name}TurnedOn";
         public string OffSignal => $"Resource{Resource.name}TurnedOff";
-        public float Consumption { get; set; }
+
+        public float BaseConsumption { get; set; }
+        public bool UsedLastTick { get; set; }
+        public float Consumption
+        {
+            get
+            {
+                return Props.idleConsumptionPerTick >= 0f ? (UsedLastTick ? BaseConsumption : Props.idleConsumptionPerTick) : BaseConsumption;
+            }
+        }
 
         public bool ResourceOn
         {
@@ -72,7 +81,7 @@ namespace PipeSystem
             compRefuelable = parent.TryGetComp<CompRefuelable>();
             compPowerTrader = parent.TryGetComp<CompPowerTrader>();
 
-            Consumption = Props.consumptionPerTick;
+            BaseConsumption = Props.consumptionPerTick;
 
             trueCenter = parent.TrueCenter();
 
@@ -99,12 +108,14 @@ namespace PipeSystem
         public override string CompInspectStringExtra()
         {
             StringBuilder sb = new StringBuilder();
-            if (Consumption > 0)
+            if (Consumption >= 0)
             {
                 sb.Append($"{"PipeSystem_ResourceNeeded".Translate(Resource.name)} {Consumption / 100 * GenDate.TicksPerDay:##0} {Resource.unit}/d");
             }
             else
+            {
                 sb.Append($"{"PipeSystem_ResourceOutput".Translate(Resource.name)} {(ResourceOn ? (-Consumption / 100) * GenDate.TicksPerDay : 0f):##0} {Resource.unit}/d");
+            }
 
             sb.AppendInNewLine(base.CompInspectStringExtra());
 
@@ -157,6 +168,18 @@ namespace PipeSystem
                 sustainerResourceOn.End();
                 sustainerResourceOn = null;
             }
+        }
+
+        /// <summary>
+        /// Was used => consume
+        /// </summary>
+        public void Notify_UsedThisTick()
+        {
+            if (UsedLastTick)
+                return;
+
+            UsedLastTick = true;
+            PipeNet.receiversDirty = true;
         }
 
         /// <summary>
@@ -216,7 +239,7 @@ namespace PipeSystem
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(parent.LabelCap + " CompResourceTrader:");
                 sb.AppendLine("   ResourceOn: " + ResourceOn.ToString());
-                sb.AppendLine("   resourceProduction: " + -Consumption);
+                sb.AppendLine("   consumption: " + Consumption);
                 return sb.ToString().Trim();
             }
         }

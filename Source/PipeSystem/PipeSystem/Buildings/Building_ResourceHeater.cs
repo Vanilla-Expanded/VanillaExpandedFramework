@@ -25,12 +25,12 @@ namespace PipeSystem
                 if (!Mathf.Approximately(tempChange, 0f))
                 {
                     this.GetRoom().Temperature += tempChange;
-                    compResourceTrader.Consumption = compResourceTrader.Props.consumptionPerTick;
+                    compResourceTrader.BaseConsumption = compResourceTrader.Props.consumptionPerTick;
                     compResourceTrader.PipeNet.receiversDirty = true;
                 }
                 else
                 {
-                    compResourceTrader.Consumption = compResourceTrader.Props.consumptionPerTick * compTempControl.Props.lowPowerConsumptionFactor;
+                    compResourceTrader.BaseConsumption = compResourceTrader.Props.consumptionPerTick * compTempControl.Props.lowPowerConsumptionFactor;
                     compResourceTrader.PipeNet.receiversDirty = true;
                 }
             }

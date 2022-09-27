@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -29,6 +30,7 @@ namespace PipeSystem
         public BoolGrid networkGrid;
         public PipeNetDef def;
         public bool receiversDirty;
+        public bool nextTickRDirty;
         public bool producersDirty;
 
         internal List<CompResourceStorage> markedForTransfer = new List<CompResourceStorage>();
@@ -65,8 +67,9 @@ namespace PipeSystem
         /// Loop on all receivers, sort them in receiversOn and receiversOff.
         /// Update Consumption. This is called when receiversDirty is true.
         /// </summary>
-        private void ReceiversDirty()
+        private bool ReceiversDirty()
         {
+            var nextTickDirty = false;
             PipeSystemDebug.Message("Receivers dirty");
             receiversOn.Clear();
             receiversOff.Clear();
@@ -79,6 +82,17 @@ namespace PipeSystem
                 {
                     receiversOn.Add(trader);
                     consumption += trader.Consumption;
+
+                    if (trader.UsedLastTick)
+                    {
+                        if (!map.reservationManager.IsReservedByAnyoneOf(trader.parent, Faction.OfPlayer))
+                        {
+                            trader.UsedLastTick = false;
+                            PipeSystemDebug.Message("setting UsedLastTick to false");
+                        }
+
+                        nextTickDirty = true;
+                    }
                 }
                 else
                 {
@@ -88,6 +102,8 @@ namespace PipeSystem
 
             Consumption = consumption;
             receiversDirty = false;
+
+            return nextTickDirty;
         }
 
         /// <summary>
@@ -164,7 +180,7 @@ namespace PipeSystem
                     producers.Add(trader);
                     producersDirty = true;
                 }
-                else if (trader.Consumption > 0f)
+                else if (trader.Consumption >= 0f)
                 {
                     receivers.Add(trader);
                     receiversDirty = true;
@@ -276,8 +292,8 @@ namespace PipeSystem
         /// </summary>
         public virtual void PipeSystemTick()
         {
-            if (receiversDirty)
-                ReceiversDirty();
+            if (receiversDirty || nextTickRDirty)
+                nextTickRDirty = ReceiversDirty();
             if (producersDirty)
                 ProducersDirty();
 

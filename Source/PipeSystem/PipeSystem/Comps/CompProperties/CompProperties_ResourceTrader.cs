@@ -1,5 +1,5 @@
-﻿using RimWorld;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using RimWorld;
 using Verse;
 
 namespace PipeSystem
@@ -7,7 +7,7 @@ namespace PipeSystem
     public class CompProperties_ResourceTrader : CompProperties_Resource
     {
         public float consumptionPerTick;
-        // TODO: Add idle consumption as an option
+        public float idleConsumptionPerTick = -1f;
 
         public SoundDef soundAmbientReceivingResource;
 
@@ -36,9 +36,18 @@ namespace PipeSystem
             {
                 yield return new StatDrawEntry(StatCategoryDefOf.Building,
                                                "PipeSystem_Consumption".Translate(nameCapitalized),
-                                               $"{(consumptionPerTick / 100) * GenDate.TicksPerDay:##0} {unit}/d",
+                                               $"{consumptionPerTick / 100 * GenDate.TicksPerDay:##0} {unit}/d",
                                                "PipeSystem_ConsumptionExplained".Translate(nameLowered, nameLowered),
                                                5500);
+
+                if (idleConsumptionPerTick >= 0f)
+                {
+                    yield return new StatDrawEntry(StatCategoryDefOf.Building,
+                                                   "PipeSystem_IdleConsumption".Translate(nameCapitalized),
+                                                   $"{idleConsumptionPerTick / 100 * GenDate.TicksPerDay:##0} {unit}/d",
+                                                   "PipeSystem_IdleConsumptionExplained".Translate(nameLowered, nameLowered),
+                                                   5500);
+                }
             }
             else
             {

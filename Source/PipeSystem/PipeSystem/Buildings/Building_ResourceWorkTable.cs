@@ -1,6 +1,6 @@
-﻿using RimWorld;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using RimWorld;
 using Verse;
 
 namespace PipeSystem
@@ -11,6 +11,7 @@ namespace PipeSystem
     public class Building_ResourceWorkTable : Building_WorkTable, IBillGiver, IBillGiverWithTickAction
     {
         private List<CompResourceTrader> traders = new List<CompResourceTrader>();
+        private int tradersCount = 0;
 
         public bool CanWorkWithoutResource
         {
@@ -46,6 +47,16 @@ namespace PipeSystem
             base.SpawnSetup(map, respawningAfterLoad);
 
             traders = GetComps<CompResourceTrader>().ToList();
+            tradersCount = traders.Count;
+        }
+
+        public override void UsedThisTick()
+        {
+            base.UsedThisTick();
+            for (int i = 0; i < tradersCount; i++)
+            {
+                traders[i].Notify_UsedThisTick();
+            }
         }
 
         /// <summary>
