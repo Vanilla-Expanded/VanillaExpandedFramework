@@ -35,7 +35,7 @@
         public override bool Valid(GlobalTargetInfo[] targets, Ability ability, bool throwMessages = false)
         {
             Pawn pawn = targets.Select(t => t.Thing).OfType<Pawn>().FirstOrDefault();
-            // if (pawn != null && !AbilityUtility.ValidateNoMentalState(pawn, throwMessages)) return false;
+            if (pawn != null && !AbilityUtility.ValidateNoMentalState(pawn, throwMessages, null)) return false;
             return true;
         }
 

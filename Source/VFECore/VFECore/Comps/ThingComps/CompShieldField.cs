@@ -621,7 +621,7 @@ namespace VFECore
             {
                 active = this.HostThing.Map != null && CanFunction &&
                 (
-                GenHostility.AnyHostileActiveThreatTo_NewTemp(HostThing.Map, HostFaction) ||
+                GenHostility.AnyHostileActiveThreatTo(HostThing.Map, HostFaction) ||
                 HostThing.Map.listerThings.ThingsOfDef(RimWorld.ThingDefOf.Tornado).Any() ||
                 HostThing.Map.listerThings.ThingsOfDef(RimWorld.ThingDefOf.DropPodIncoming).Any() || shieldBuffer > 0);
             }
@@ -631,7 +631,7 @@ namespace VFECore
             }
             if (HostThing.Map != null)
             {
-                if ((GenHostility.AnyHostileActiveThreatTo_NewTemp(HostThing.Map, HostFaction)
+                if ((GenHostility.AnyHostileActiveThreatTo(HostThing.Map, HostFaction)
                     || HostThing.Map.listerThings.ThingsOfDef(RimWorld.ThingDefOf.Tornado).Any()
                     || HostThing.Map.listerThings.ThingsOfDef(RimWorld.ThingDefOf.DropPodIncoming).Any()) && shieldBuffer < 15)
                     shieldBuffer = 15;
