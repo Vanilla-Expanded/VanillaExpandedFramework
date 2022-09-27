@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Policy;
 using HarmonyLib;
 using MonoMod.Utils;
 using RimWorld;
@@ -12,15 +13,26 @@ namespace VFECore
     public class BeamProjectile : Projectile_Explosive
     {
         private static readonly Dictionary<ThingDef, ThingDef> DRAWERS;
-        private static readonly Action<Def, Type> giveShortHash;
 
         public Vector3 Origin => origin;
         public Vector3 Dest => destination;
+        
+
+        private static Dictionary<Type, HashSet<ushort>> takenHashesPerDeftype;
+        
+        private static readonly Action<Def, Type, HashSet<ushort>> giveShortHash;
+
+        public static void GiveShortHash(Def def, Type defType)
+        {
+            giveShortHash(def, defType, takenHashesPerDeftype[defType]);
+        }
 
         static BeamProjectile()
         {
-            DRAWERS = new Dictionary<ThingDef, ThingDef>();
-            giveShortHash = AccessTools.Method(typeof(ShortHashGiver), "GiveShortHash").CreateDelegate<Action<Def, Type>>();
+            DRAWERS               = new Dictionary<ThingDef, ThingDef>();
+            takenHashesPerDeftype = (Dictionary<Type, HashSet<ushort>>)AccessTools.Field(typeof(ShortHashGiver), "takenHashesPerDeftype").GetValue(null);
+            giveShortHash =
+                AccessTools.Method(typeof(ShortHashGiver), "GiveShortHash").CreateDelegate<Action<Def, Type, HashSet<ushort>>>();
             foreach (var thingDef in DefDatabase<ThingDef>.AllDefs)
             {
                 if (thingDef.thingClass != null && typeof(BeamProjectile).IsAssignableFrom(thingDef.thingClass))
@@ -28,10 +40,10 @@ namespace VFECore
                     var drawer = BaseBeamDrawer();
                     var affectsSky = thingDef.GetCompProperties<CompProperties_AffectsSky>();
                     var extension = thingDef.GetModExtension<ProjectileExtension>();
-                    drawer.comps = new List<CompProperties>();
-                    drawer.graphicData = thingDef.graphicData;
+                    drawer.comps         = new List<CompProperties>();
+                    drawer.graphicData   = thingDef.graphicData;
                     drawer.modExtensions = new List<DefModExtension>();
-                    drawer.defName = thingDef.defName + "Drawer";
+                    drawer.defName       = thingDef.defName + "Drawer";
                     if (affectsSky != null) drawer.comps.Add(affectsSky);
                     if (extension != null) drawer.modExtensions.Add(extension);
                     DRAWERS.Add(thingDef, drawer);
@@ -40,13 +52,13 @@ namespace VFECore
 
             foreach (var drawer in DRAWERS.Values)
             {
-                giveShortHash(drawer, typeof(ThingDef));
+                GiveShortHash(drawer, typeof(ThingDef));
                 DefGenerator.AddImpliedDef(drawer);
             }
         }
 
         private static ThingDef BaseBeamDrawer() =>
-            new ThingDef
+            new()
             {
                 thingClass = typeof(BeamDraw),
                 drawOffscreen = true,
