@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+	<ThingDef ParentName="BasePawn" Name="BaseVFEMachine" Abstract="True">
+		<thingClass>VFEMech.Machine</thingClass>
+		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+		<statBases>
+			<MarketValue>1200</MarketValue>
+			<PsychicSensitivity>0.5</PsychicSensitivity>
+			<ToxicResistance>1</ToxicResistance>
+			<Flammability>0</Flammability>
+			<ComfyTemperatureMin>-100</ComfyTemperatureMin>
+			<ComfyTemperatureMax>250</ComfyTemperatureMax>
+			<MeatAmount>0</MeatAmount>
+			<ArmorRating_Heat>2.00</ArmorRating_Heat>
+			<ToxicEnvironmentResistance MayRequire="Ludeon.RimWorld.Biotech">1</ToxicEnvironmentResistance>
+		</statBases>
+		<receivesSignals>true</receivesSignals>
+		<tradeability>None</tradeability>
+		<race>
+			<allowedOnCaravan>false</allowedOnCaravan>
+			<fleshType>Mechanoid</fleshType>
+			<needsRest>false</needsRest>
+			<hasGenders>false</hasGenders>
+			<foodType>None</foodType>
+			<lifeExpectancy>2500</lifeExpectancy>
+			<bloodDef>Filth_MachineBits</bloodDef>
+			<soundCallIntervalRange>1000~2000</soundCallIntervalRange>
+			<soundCallIntervalFriendlyFactor>2</soundCallIntervalFriendlyFactor>
+		</race>
+	</ThingDef>
+</Defs>
