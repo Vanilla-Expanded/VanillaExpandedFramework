@@ -16,16 +16,23 @@ namespace VanillaStorytellersExpanded
             {
                 var allDefsInfo = AccessTools.PropertyGetter(typeof(DefDatabase<FactionDef>), "AllDefs");
                 var allowedFactionDefsInfo = AccessTools.Method(typeof(GenerateFactionsIntoWorld), nameof(AllowedFactionDefs));
-                foreach (var instruction in instructions)
+                var factionAllowed = AccessTools.Method(typeof(CustomStorytellerUtility), nameof(CustomStorytellerUtility.FactionAllowed));
+                var codes = instructions.ToList();
+                var idx1 = codes.FindIndex(ins => ins.Calls(allDefsInfo));
+                codes.Insert(idx1 + 1, new CodeInstruction(OpCodes.Call, allowedFactionDefsInfo));
+                var label = (Label)codes.Find(ins => ins.opcode == OpCodes.Br_S).operand;
+                var idx2 = codes.FindIndex(ins => ins.opcode == OpCodes.Stloc_2);
+                codes.InsertRange(idx2 + 1, new[]
                 {
-                    yield return instruction;
-                    if (instruction.Calls(allDefsInfo) || instruction.opcode == OpCodes.Ldarg_0)
-                        yield return new CodeInstruction(OpCodes.Call, allowedFactionDefsInfo);
-                }
+                    new CodeInstruction(OpCodes.Ldloc_2),
+                    new CodeInstruction(OpCodes.Call, factionAllowed),
+                    new CodeInstruction(OpCodes.Brfalse, label)
+                });
+                return codes;
             }
 
             private static IEnumerable<FactionDef> AllowedFactionDefs(IEnumerable<FactionDef> original) =>
-                original?.Where(f => CustomStorytellerUtility.FactionAllowed(f));
+                original?.Where(CustomStorytellerUtility.FactionAllowed);
         }
     }
 }
