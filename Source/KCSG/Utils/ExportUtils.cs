@@ -231,6 +231,7 @@ namespace KCSG
             var ll = new List<string>();
             var hw = EdgeFromList(cellExport);
             var active = area?.ActiveCells;
+            var add = false;
 
             IntVec3 cell = cellExport.First();
             for (int z = 0; z < hw.z; z++)
@@ -246,6 +247,7 @@ namespace KCSG
                     {
                         var roofType = roofDef == RoofDefOf.RoofRockThick ? "3" : (roofDef == RoofDefOf.RoofRockThin ? "2" : "1");
                         AddToString(ref temp, roofType, x, hw.x);
+                        add = true;
                     }
                     else
                     {
@@ -261,7 +263,7 @@ namespace KCSG
                 ll.Add(temp);
             }
 
-            return ll;
+            return add ? ll : new List<string>();
         }
 
         /// <summary>
