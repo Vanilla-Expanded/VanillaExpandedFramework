@@ -66,6 +66,8 @@ namespace KCSG
                 {
                     // Get the thing on the cell
                     List<Thing> things = pairsCellThingList.TryGetValue(cell);
+                    // Remove motes & blacklisted
+                    things.RemoveAll(t => t.def.category == ThingCategory.Mote || symbolBlacklist.Contains(t.def.defName));
                     // Remove filth if needed
                     if (!Dialog_ExportWindow.exportFilth)
                         things.RemoveAll(t => t.def.category == ThingCategory.Filth);
@@ -356,6 +358,8 @@ namespace KCSG
                 for (int o = 0; o < things.Count; o++)
                 {
                     var thing = things[o];
+                    if (thing.def.category == ThingCategory.Mote)
+                        continue;
                     if (!Dialog_ExportWindow.exportFilth && thing.def.category == ThingCategory.Filth)
                         continue;
                     if (!Dialog_ExportWindow.exportPlant && thing.def.category == ThingCategory.Plant)
