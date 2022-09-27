@@ -508,7 +508,7 @@ namespace KCSG
             var defName = pawn.kindDef.defName;
 
             if (!Dialog_ExportWindow.exportedSymbolsName.Contains(defName)
-                && !DefDatabase<SymbolDef>.AllDefsListForReading.FindAll(s => s.defName == defName).Any())
+                && !DefDatabase<SymbolDef>.AllDefsListForReading.FindAll(s => s.pawnKindDef == defName).Any())
             {
                 var symbol = new SymbolDef
                 {
@@ -523,7 +523,7 @@ namespace KCSG
                     symbol.spawnRotten = comp.RotProgress == 1f;
 
                 symbol.ResolveReferences();
-                Dialog_ExportWindow.exportedSymbolsName.Add(defName);
+                Dialog_ExportWindow.exportedSymbolsName.Add(symbol.defName);
                 DefDatabase<SymbolDef>.Add(symbol);
 
                 return symbol;
