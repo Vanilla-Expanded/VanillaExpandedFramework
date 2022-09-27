@@ -17,27 +17,27 @@ namespace KCSG
         /// </summary>
         public static StructureLayoutDef CreateStructureDef(Map map, Area area)
         {
-            var sld = new StructureLayoutDef();
-
-            sld.defName = Dialog_ExportWindow.defName;
-            sld.isStorage = Dialog_ExportWindow.isStorage;
-            sld.spawnConduits = Dialog_ExportWindow.spawnConduits;
-            sld.forceGenerateRoof = Dialog_ExportWindow.forceGenerateRoof;
-            sld.needRoofClearance = Dialog_ExportWindow.needRoofClearance;
-            sld.tags = Dialog_ExportWindow.tags.ToList();
-            sld.terrainGrid = CreateTerrainlayout(area, map);
-            sld.roofGrid = CreateRoofGrid(area, map);
-            sld.modRequirements = GetNeededMods();
+            var sld = new StructureLayoutDef
+            {
+                defName = Dialog_ExportWindow.defName,
+                isStorage = Dialog_ExportWindow.isStorage,
+                spawnConduits = Dialog_ExportWindow.spawnConduits,
+                forceGenerateRoof = Dialog_ExportWindow.forceGenerateRoof,
+                needRoofClearance = Dialog_ExportWindow.needRoofClearance,
+                tags = Dialog_ExportWindow.tags.ToList(),
+                terrainGrid = CreateTerrainlayout(area, map),
+                roofGrid = CreateRoofGrid(area, map),
+                modRequirements = GetNeededMods(),
+                spawnAtPos = new List<Pos>(),
+                spawnAt = new List<string>(),
+                _layouts = new List<SymbolDef[,]>()
+            };
 
             int numOfLayout = GetMaxThings();
             for (int i = 0; i < numOfLayout; i++)
             {
                 sld.layouts.Add(CreateIndexLayout(area, i));
             }
-
-            sld.spawnAtPos = new List<Pos>();
-            sld.spawnAt = new List<string>();
-            sld._layouts = new List<SymbolDef[,]>();
             sld.ResolveLayouts();
 
             return sld;
@@ -199,7 +199,7 @@ namespace KCSG
                     {
                         AddToString(ref temp, ".", x, hw.x);
                     }
-                    else if (!terrain.BuildableByPlayer && !terrain.HasTag("Road") && !Dialog_ExportWindow.exportNatural)
+                    else if (!Dialog_ExportWindow.exportNatural && terrain.natural)
                     {
                         AddToString(ref temp, ".", x, hw.x);
                     }
