@@ -336,6 +336,7 @@
     <Compile Include="Genes\GeneClasses\Gene_AddsHediff.cs" />
     <Compile Include="Genes\GraphicsCache\GraphicsCache.cs" />
     <Compile Include="Genes\Harmony\GeneUIUtility_DrawGeneBasics.cs" />
+    <Compile Include="SoundTest\VEDebug.cs" />
     <Compile Include="VFECore\DefModExtensions\MechanoidExtension.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompAmbientSound.cs" />
     <Compile Include="VFECore\HarmonyPatches\Faction_Patches.cs" />
@@ -466,8 +467,7 @@
     <Compile Include="Misc\StatPart_Ammo.cs" />
     <Compile Include="OptionalFeatures\Dialog_FloatMenuOptions.cs" />
     <Compile Include="OptionalFeatures\OptionalFeatures.cs" />
-    <Compile Include="SoundTest\DebugWindowsOpener_DrawButtons_Patch.cs" />
-    <Compile Include="SoundTest\TextureButton.cs" />
+    <Compile Include="SoundTest\DebugWindowsOpener_Patches.cs" />
     <Compile Include="SoundTest\Window_SoundTest.cs" />
     <Compile Include="VFECore\Buildings\Building_BedMachine.cs" />
     <Compile Include="VFECore\Buildings\Building_MechTurretGun.cs" />
