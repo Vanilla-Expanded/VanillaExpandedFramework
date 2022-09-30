@@ -287,7 +287,10 @@
     <Compile Include="AnimalBehaviours\Harmony\TrainableUtility_TamenessCanDecay_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\VerbProperties_AdjustedCooldown_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\WildAnimalSpawner_SpawnRandomWildAnimalAt.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\HediffComp_AsexualReproduction.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_AutoPermanentInjury.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\HediffComp_CauseIncident.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\HediffComp_ChangeWeather.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Draftable.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Electrified.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Exploder.cs" />
@@ -297,6 +300,9 @@
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Regeneration.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_ThoughtEffecter.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Resurrect.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_ChangeWeather.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_CauseIncident.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_AsexualReproduction.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Regeneration.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Electrified.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_LightSustenance.cs" />
