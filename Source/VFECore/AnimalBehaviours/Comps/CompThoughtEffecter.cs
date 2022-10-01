@@ -59,19 +59,19 @@ namespace AnimalBehaviours
                                     }
                                     else
                                     {
-                                        bool wellbeingAffectedFlag = thisPawn.needs.food.Starving || (thisPawn.health.hediffSet.PainTotal > 0);
+                                        bool wellbeingAffectedFlag = thisPawn.needs?.food?.Starving==true || (thisPawn.health?.hediffSet?.PainTotal > 0);
                                         if (wellbeingAffectedFlag)
                                         {
-                                            pawn.needs.mood.thoughts.memories.RemoveMemoriesOfDef(ThoughtDef.Named(Props.thoughtDef));
-                                            pawn.needs.mood.thoughts.memories.TryGainMemory(ThoughtDef.Named(Props.thoughtDefWhenSuffering), null);
+                                            pawn.needs?.mood?.thoughts?.memories?.RemoveMemoriesOfDef(ThoughtDef.Named(Props.thoughtDef));
+                                            pawn.needs?.mood?.thoughts?.memories?.TryGainMemory(ThoughtDef.Named(Props.thoughtDefWhenSuffering), null);
                                         }
                                         else
                                         {
 
-                                            pawn.needs.mood.thoughts.memories.TryGainMemory(ThoughtDef.Named(Props.thoughtDef), null);
+                                            pawn.needs?.mood?.thoughts?.memories?.TryGainMemory(ThoughtDef.Named(Props.thoughtDef), null);
                                         }
                                     }
-                                    //Find.HistoryEventsManager.RecordEvent(new HistoryEvent(DefDatabase<HistoryEventDef>.GetNamed("AA_DisgustEvent"), pawn.Named(HistoryEventArgsNames.Doer)), true);
+                                  
                                 }
                             }
                         }
