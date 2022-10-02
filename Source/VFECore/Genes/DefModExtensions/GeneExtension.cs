@@ -11,6 +11,9 @@ namespace VanillaGenesExpanded
         public string backgroundPathEndogenes = "";
         public string backgroundPathXenogenes = "";
 
+        public List<HediffToBodyparts> hediffsToBodyParts;
+        public HediffDef hediffToWholeBody;
+
     }
 
 }

@@ -666,6 +666,7 @@
     <Compile Include="Apparel\Harmony\ThingSelectionUtility_SelectableByMapClick_Patch.cs" />
     <Compile Include="Apparel\ModExtensions\ApparelExtension.cs" />
     <Compile Include="Genes\DefModExtensions\GeneExtension.cs" />
+    <Compile Include="Genes\Defs\HediffToBodyparts.cs" />
     <Compile Include="Genes\GeneClasses\Gene_AddsHediff.cs" />
     <Compile Include="Genes\GraphicsCache\GraphicsCache.cs" />
     <Compile Include="Genes\Harmony\GeneUIUtility_DrawGeneBasics.cs" />

@@ -10,7 +10,28 @@ namespace VanillaGenesExpanded
 		public override void PostAdd()
 		{
 			base.PostAdd();
-			pawn.health.AddHediff(this.def.hediff);
+			GeneExtension extension = this.def.GetModExtension<GeneExtension>();
+			if (extension?.hediffToWholeBody != null)
+            {
+				pawn.health.AddHediff(extension?.hediffToWholeBody);
+
+			}
+			if (extension?.hediffsToBodyParts != null)
+			{
+				
+				foreach(HediffToBodyparts hediffToBodypart in extension?.hediffsToBodyParts)
+                {
+					foreach (BodyPartDef bodypart in hediffToBodypart.bodyparts)
+                    {
+						if (!pawn.RaceProps.body.GetPartsWithDef(bodypart).EnumerableNullOrEmpty())
+						{
+							pawn.health.AddHediff(hediffToBodypart.hediff, pawn.RaceProps.body.GetPartsWithDef(bodypart).RandomElement());
+						}
+
+					}
+                }
+			}
+
 
 		}
 	}
