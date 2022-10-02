@@ -1,33 +1,34 @@
-﻿using RimWorld;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿
 using Verse;
+using RimWorld;
+using System.Collections.Generic;
+using System.Linq;
 using Verse.Sound;
 using UnityEngine;
-using System.Collections;
-
-using System.Linq;
 
 namespace AnimalBehaviours
 {
-    public class CompPassiveRegenerator : ThingComp
+    class HediffComp_PassiveRegenerator : HediffComp
     {
+
+
         public int tickCounter = 0;
         public List<Pawn> pawnList = new List<Pawn>();
         public Pawn thisPawn;
 
-        public CompProperties_PassiveRegenerator Props
+        public HediffCompProperties_PassiveRegenerator Props
         {
             get
             {
-                return (CompProperties_PassiveRegenerator)this.props;
+                return (HediffCompProperties_PassiveRegenerator)this.props;
             }
         }
+       
 
-        public override void CompTick()
+
+        public override void CompPostTick(ref float severityAdjustment)
         {
-            base.CompTick();
+            base.CompPostTick(ref severityAdjustment);
             if (AnimalBehaviours_Settings.flagRegeneration)
             {
 
@@ -35,7 +36,7 @@ namespace AnimalBehaviours
                 //Only do anything every tickInterval
                 if (tickCounter > Props.tickInterval)
                 {
-                    thisPawn = this.parent as Pawn;
+                    thisPawn = this.parent.pawn as Pawn;
                     //Null map check. Also will only work if pawn is not dead or downed
                     if (thisPawn != null && thisPawn.Map != null && !thisPawn.Dead && !thisPawn.Downed && (!Props.needsToBeTamed || (Props.needsToBeTamed && thisPawn.Faction != null && thisPawn.Faction.IsPlayer)))
                     {
@@ -43,15 +44,15 @@ namespace AnimalBehaviours
                         {
                             Pawn pawn = thing as Pawn;
                             //It won't affect mechanoids, dead people or itself
-                            if (pawn != null && !pawn.Dead && pawn.RaceProps.IsFlesh && pawn != this.parent)
+                            if (pawn != null && !pawn.Dead && pawn.RaceProps.IsFlesh && pawn != this.parent.pawn)
                             {
 
                                 //Only show an effect if the user wants it to, or it gets obnoxious
                                 if (Props.showEffect)
                                 {
 
-                                    SoundDefOf.PsychicPulseGlobal.PlayOneShot(new TargetInfo(this.parent.Position, this.parent.Map, false));
-                                    FleckMaker.AttachedOverlay(this.parent, DefDatabase<FleckDef>.GetNamed("PsycastPsychicEffect"), Vector3.zero, 1f, -1f);
+                                    SoundDefOf.PsychicPulseGlobal.PlayOneShot(new TargetInfo(this.parent.pawn.Position, this.parent.pawn.Map, false));
+                                    FleckMaker.AttachedOverlay(this.parent.pawn, DefDatabase<FleckDef>.GetNamed("PsycastPsychicEffect"), Vector3.zero, 1f, -1f);
                                 }
                                 //Regenerate wounds
                                 if (pawn.health != null)
@@ -87,9 +88,8 @@ namespace AnimalBehaviours
                     tickCounter = 0;
                 }
             }
-            
         }
+
+
     }
 }
-
-
