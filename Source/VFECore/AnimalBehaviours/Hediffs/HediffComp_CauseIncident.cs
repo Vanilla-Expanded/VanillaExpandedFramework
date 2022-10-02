@@ -13,6 +13,7 @@ namespace AnimalBehaviours
 
         public bool waitingForNight = false;
         public int checkingForNightInterval = 100;
+        
 
         public override void CompExposeData()
         {

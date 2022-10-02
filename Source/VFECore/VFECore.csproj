@@ -611,6 +611,7 @@
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Exploder.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_FilthProducer.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Floating.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\HediffComp_HeatPusher.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_HighlyFlammable.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_LastStand.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_LightSustenance.cs" />
@@ -619,6 +620,7 @@
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Regeneration.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_ThoughtEffecter.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Resurrect.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_HeatPusher.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_ChangeWeather.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_CauseIncident.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_AsexualReproduction.cs" />
