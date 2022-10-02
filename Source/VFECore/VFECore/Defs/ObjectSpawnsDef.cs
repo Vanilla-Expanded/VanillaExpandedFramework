@@ -1,8 +1,5 @@
-﻿using System;
+﻿using RimWorld;
 using System.Collections.Generic;
-using System.ComponentModel;
-using RimWorld;
-using UnityEngine;
 using Verse;
 
 // Copyright Sarg - Alpha Biomes 2020 & Taranchuck
@@ -27,13 +24,13 @@ namespace VFECore
 
         public override IEnumerable<string> ConfigErrors()
         {
-            foreach (var error in base.ConfigErrors())
+            foreach (string error in base.ConfigErrors())
             {
                 yield return error;
             }
             if (thingDef is null && pawnKindDef is null)
             {
-                yield return "[VEF] ObjectSpawnsDef " + this.defName + " contain null thing/pawnkind def. It will not work.";
+                yield return "[VEF] ObjectSpawnsDef " + defName + " contain null thing/pawnkind def. It will not work.";
             }
         }
     }

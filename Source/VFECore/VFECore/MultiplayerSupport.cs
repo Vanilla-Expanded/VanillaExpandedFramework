@@ -1,6 +1,4 @@
 ﻿using HarmonyLib;
-using Multiplayer.API;
-using RimWorld;
 using Verse;
 
 namespace VFECore
@@ -14,10 +12,6 @@ namespace VFECore
             {
                 return;
             }
-            MP.RegisterSyncMethod(typeof(CompAutumnLeavesSpawner), "TryFindSpawnCell", null);
-            var tryFindSpawnCell = AccessTools.Method(typeof(CompAutumnLeavesSpawner), "TryFindSpawnCell", null, null);
-            harmony.Patch(tryFindSpawnCell, new HarmonyMethod(typeof(MultiplayerSupport), "FixRNGPre", null), new HarmonyMethod(typeof(MultiplayerSupport), "FixRNGPos", null), null, null);
-
             MP.RegisterSyncMethod(typeof(WeatherOverlay_Effects), "DoDamage", null);
             var doDamage = AccessTools.Method(typeof(WeatherOverlay_Effects), "DoDamage", null, null);
             harmony.Patch(doDamage, new HarmonyMethod(typeof(MultiplayerSupport), "FixRNGPre", null), new HarmonyMethod(typeof(MultiplayerSupport), "FixRNGPos", null), null, null);
@@ -33,6 +27,6 @@ namespace VFECore
             Rand.PopState();
         }
 
-        private static readonly Harmony harmony = new Harmony("vfe.multiplayersupport");
+        private static readonly Harmony harmony = new("vfe.multiplayersupport");
     }
 }

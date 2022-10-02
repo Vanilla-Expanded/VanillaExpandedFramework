@@ -11,13 +11,13 @@ namespace VFECore
     {
         public static VFEGlobalSettings settings;
         private Vector2 scrollPosition = Vector2.zero;
-        protected readonly Vector2 ButtonSize = new Vector2(120f, 40f);
+        protected readonly Vector2 ButtonSize = new(120f, 40f);
 
         public VFEGlobal(ModContentPack content) : base(content)
         {
             settings = GetSettings<VFEGlobalSettings>();
             // Toggable patches
-            foreach (ModContentPack mod in LoadedModManager.RunningMods)
+            foreach (var mod in LoadedModManager.RunningMods)
             {
                 try
                 {
@@ -38,24 +38,27 @@ namespace VFECore
             }
         }
 
-        public override string SettingsCategory() => "Vanilla Framework Expanded";
+        public override string SettingsCategory()
+        {
+            return "Vanilla Framework Expanded";
+        }
 
         private int PageIndex = 0;
 
         public override void DoSettingsWindowContents(Rect inRect)
         {
-            Rect tabRect = new Rect(inRect)
+            var tabRect = new Rect(inRect)
             {
                 y = inRect.y + 40f
             };
-            Rect mainRect = new Rect(inRect)
+            var mainRect = new Rect(inRect)
             {
                 height = inRect.height - 40f,
                 y = inRect.y + 40f
             };
 
             Widgets.DrawMenuSection(mainRect);
-            List<TabRecord> tabs = new List<TabRecord>
+            var tabs = new List<TabRecord>
             {
                 new TabRecord("GeneralTitle".Translate(), () =>
                 {
@@ -69,17 +72,11 @@ namespace VFECore
                     WriteSettings();
 
                 }, PageIndex == 1),
-                new TabRecord("Comps", () =>
+                new TabRecord("VEF.WeatherDamages".Translate(), () =>
                 {
                     PageIndex = 2;
                     WriteSettings();
-
-                }, PageIndex == 2),
-                new TabRecord("VEF.WeatherDamages".Translate(), () =>
-                {
-                    PageIndex = 3;
-                    WriteSettings();
-                }, PageIndex == 3)
+                }, PageIndex == 2)
             };
             TabDrawer.DrawTabs(tabRect, tabs);
 
@@ -92,9 +89,6 @@ namespace VFECore
                     ToggablePatchesSettings(mainRect.ContractedBy(15f));
                     break;
                 case 2:
-                    CompSettings(mainRect.ContractedBy(15f));
-                    break;
-                case 3:
                     WeatherDamageSettings(mainRect.ContractedBy(15f));
                     break;
                 default:
@@ -108,7 +102,7 @@ namespace VFECore
 
         private void GeneralSettings(Rect rect)
         {
-            Listing_Standard list = new Listing_Standard();
+            var list = new Listing_Standard();
             list.Begin(rect);
 
             Text.Font = GameFont.Small;
@@ -120,7 +114,7 @@ namespace VFECore
                 if (FactionCanBeAddedCount > 0 && list.ButtonText("AskForPopUp".Translate(), "AskForPopUpExplained".Translate()))
                 {
                     Current.Game.World.GetComponent<NewFactionSpawningState>().ClearIgnored();
-                    IEnumerator<FactionDef> factionEnumerator = DefDatabase<FactionDef>.AllDefs.Where(Patch_GameComponentUtility.LoadedGame.Validator).GetEnumerator();
+                    var factionEnumerator = DefDatabase<FactionDef>.AllDefs.Where(Patch_GameComponentUtility.LoadedGame.Validator).GetEnumerator();
                     if (factionEnumerator.MoveNext())
                     {
                         // Only one dialog can be stacked at a time, so give it the list of all factions
@@ -162,11 +156,31 @@ namespace VFECore
 
         private bool ValidatorAnyFactionLeft(FactionDef faction)
         {
-            if (faction == null) return false;
-            if (faction.isPlayer) return false;
-            if (!faction.canMakeRandomly && faction.hidden && faction.maxCountAtGameStart <= 0) return false;
-            if (Find.FactionManager.AllFactions.Count(f => f.def == faction) > 0) return false;
-            if (NewFactionSpawningUtility.NeverSpawn(faction)) return false;
+            if (faction == null)
+            {
+                return false;
+            }
+
+            if (faction.isPlayer)
+            {
+                return false;
+            }
+
+            if (!faction.canMakeRandomly && faction.hidden && faction.maxCountAtGameStart <= 0)
+            {
+                return false;
+            }
+
+            if (Find.FactionManager.AllFactions.Count(f => f.def == faction) > 0)
+            {
+                return false;
+            }
+
+            if (NewFactionSpawningUtility.NeverSpawn(faction))
+            {
+                return false;
+            }
+
             return true;
         }
 
@@ -177,13 +191,13 @@ namespace VFECore
 
         private void ToggablePatchesSettings(Rect rect)
         {
-            Rect viewRect = new Rect(rect)
+            var viewRect = new Rect(rect)
             {
-                height = 110f + (ToggablePatchCount + ModUsingToggablePatchCount) * 32f,
+                height = 110f + ((ToggablePatchCount + ModUsingToggablePatchCount) * 32f),
                 width = rect.width - 20f,
             };
 
-            Listing_Standard list = new Listing_Standard();
+            var list = new Listing_Standard();
             Widgets.BeginScrollView(rect, ref scrollPosition, viewRect, true);
             list.Begin(viewRect);
 
@@ -192,7 +206,7 @@ namespace VFECore
             Text.Anchor = TextAnchor.UpperLeft;
             list.Gap();
 
-            foreach (ModContentPack modContentPack in (from m in LoadedModManager.RunningMods orderby m.OverwritePriority select m).ThenBy((ModContentPack x) => LoadedModManager.RunningModsListForReading.IndexOf(x)))
+            foreach (var modContentPack in (from m in LoadedModManager.RunningMods orderby m.OverwritePriority select m).ThenBy((ModContentPack x) => LoadedModManager.RunningModsListForReading.IndexOf(x)))
             {
                 if (modContentPack?.Patches != null && modContentPack.Patches.Any(p => p is PatchOperationToggableSequence pt && pt.ModsFound()))
                 {
@@ -209,7 +223,7 @@ namespace VFECore
 
         private void AddButtons(Listing_Standard list, ModContentPack modContentPack)
         {
-            foreach (PatchOperation patchOperation in modContentPack.Patches)
+            foreach (var patchOperation in modContentPack.Patches)
             {
                 if (patchOperation is PatchOperationToggableSequence p && p.ModsFound())
                 {
@@ -223,7 +237,11 @@ namespace VFECore
                         }
                         else // Add to toggablePatch with the inverse value
                         {
-                            if (settings.toggablePatch.NullOrEmpty()) settings.toggablePatch = new Dictionary<string, bool>();
+                            if (settings.toggablePatch.NullOrEmpty())
+                            {
+                                settings.toggablePatch = new Dictionary<string, bool>();
+                            }
+
                             settings.toggablePatch.Add(pLabelSmall, !p.enabled);
                         }
                     }
@@ -231,28 +249,14 @@ namespace VFECore
             }
         }
 
-        // Comps settings
-
-        private void CompSettings(Rect rect)
-        {
-            Listing_Standard list = new Listing_Standard();
-            list.Begin(rect);
-
-            Text.Font = GameFont.Small;
-            list.CheckboxLabeled("Enable all leaves spawners", ref settings.enableLeaveSpawners);
-            list.Gap(5);
-            list.CheckboxLabeled("Enable all autumn leaves spawners", ref settings.enableAutumnLeaveSpawners);
-            list.End();
-        }
-
         // Weather damage settings
         private void WeatherDamageSettings(Rect rect)
         {
-            Listing_Standard list = new Listing_Standard();
+            var list = new Listing_Standard();
             list.Begin(rect);
 
             Text.Font = GameFont.Small;
-            foreach (var key in settings.weatherDamagesOptions.Keys.ToList())
+            foreach (string key in settings.weatherDamagesOptions.Keys.ToList())
             {
                 var weatherDef = DefDatabase<WeatherDef>.GetNamedSilentFail(key);
                 if (weatherDef != null)
@@ -260,7 +264,7 @@ namespace VFECore
                     var extension = weatherDef.GetModExtension<WeatherEffectsExtension>();
                     if (extension != null)
                     {
-                        var value = settings.weatherDamagesOptions[key];
+                        bool value = settings.weatherDamagesOptions[key];
                         list.CheckboxLabeled("VEF.EnableWeatherDamage".Translate(weatherDef.LabelCap), ref value);
                         settings.weatherDamagesOptions[key] = value;
                         list.Gap(5);
@@ -293,15 +297,14 @@ namespace VFECore
 
     public class VFEGlobalSettings : ModSettings
     {
-        public Dictionary<string, bool> toggablePatch = new Dictionary<string, bool>();
+        public Dictionary<string, bool> toggablePatch = new();
         public bool enableVerboseLogging;
         public bool disableCaching;
         public bool isRandomGraphic = true;
         public bool hideRandomizeButton = false;
 
-        public bool enableLeaveSpawners = true;
-        public bool enableAutumnLeaveSpawners = true;
-        public Dictionary<string, bool> weatherDamagesOptions = new Dictionary<string, bool>();
+
+        public Dictionary<string, bool> weatherDamagesOptions = new();
         public bool disableModSourceReport;
         public override void ExposeData()
         {
@@ -311,8 +314,6 @@ namespace VFECore
             Scribe_Values.Look(ref disableCaching, "disableCaching", true);
             Scribe_Values.Look(ref isRandomGraphic, "isRandomGraphic", true, true);
             Scribe_Values.Look(ref hideRandomizeButton, "hideRandomizeButton", false, true);
-            Scribe_Values.Look(ref enableLeaveSpawners, "enableLeaveSpawners", true, true);
-            Scribe_Values.Look(ref enableAutumnLeaveSpawners, "enableAutumnLeaveSpawners", true, true);
             Scribe_Values.Look(ref disableModSourceReport, "disableModSourceReport");
             Scribe_Collections.Look(ref weatherDamagesOptions, "weatherDamagesOptions", LookMode.Value, LookMode.Value);
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
