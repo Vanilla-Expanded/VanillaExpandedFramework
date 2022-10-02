@@ -47,7 +47,7 @@ namespace VanillaGenesExpanded
 
         public static CachedTexture ChooseEndogeneBackground(GeneDef gene)
         {
-            if (gene.GetModExtension<GeneExtension>() != null)
+            if (gene.GetModExtension<GeneExtension>()?.backgroundPathEndogenes != null)
             {
                 return new CachedTexture(gene.GetModExtension<GeneExtension>().backgroundPathEndogenes);
             }
@@ -56,7 +56,7 @@ namespace VanillaGenesExpanded
 
         public static CachedTexture ChooseXenogeneBackground(GeneDef gene)
         {
-            if (gene.GetModExtension<GeneExtension>() != null)
+            if (gene.GetModExtension<GeneExtension>()?.backgroundPathXenogenes != null)
             {
                 return new CachedTexture(gene.GetModExtension<GeneExtension>().backgroundPathXenogenes);
             }
