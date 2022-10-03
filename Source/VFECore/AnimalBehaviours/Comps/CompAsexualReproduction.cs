@@ -116,13 +116,13 @@ namespace AnimalBehaviours
                                 PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDef.Named(Props.newDef), pawn.Faction, PawnGenerationContext.NonPlayer, -1, false, true, false, false, true, 1f, false, false, true, true, true, false, false, false, false, 0f, 0f,null, 1f, null, null, null, null, null, null, null, null, null, null, null, null);
                                 Pawn pawnToGenerate = PawnGenerator.GeneratePawn(request);
                                 PawnUtility.TrySpawnHatchedOrBornPawn(pawnToGenerate, pawn);
-                                Messages.Message(Props.asexualEggMessage.Translate(pawn.LabelIndefinite().CapitalizeFirst()), pawn, MessageTypeDefOf.PositiveEvent, true);
+                                Messages.Message(Props.asexualHatchedMessage.Translate(pawn.LabelIndefinite().CapitalizeFirst()), pawn, MessageTypeDefOf.PositiveEvent, true);
                                 asexualFissionCounter = 0;
                             }
                             else
                             {
                                 Hediff_Pregnant.DoBirthSpawn(pawn, pawn);
-                                Messages.Message(Props.asexualEggMessage.Translate(pawn.LabelIndefinite().CapitalizeFirst()), pawn, MessageTypeDefOf.PositiveEvent, true);
+                                Messages.Message(Props.asexualHatchedMessage.Translate(pawn.LabelIndefinite().CapitalizeFirst()), pawn, MessageTypeDefOf.PositiveEvent, true);
                                 asexualFissionCounter = 0;
                             }
 
