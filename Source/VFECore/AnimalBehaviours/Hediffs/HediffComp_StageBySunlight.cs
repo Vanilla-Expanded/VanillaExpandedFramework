@@ -30,8 +30,8 @@ namespace AnimalBehaviours
             {
                 if (this.parent.pawn.Position.InSunlight(this.parent.pawn.Map))
                 {
-                    this.parent.Severity = 0.1f;
-                }else this.parent.Severity = 1f;
+                    this.parent.Severity = Props.sunlightStageIndex;
+                }else this.parent.Severity = Props.sunlessStageIndex;
             }
 
 
