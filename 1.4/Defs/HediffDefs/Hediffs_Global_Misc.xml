@@ -1,5 +1,31 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
+
+	<HediffDef ParentName="InjuryBase">
+		<defName>VEF_PermanentBurn</defName>
+		<label>permanent burn</label>
+		<description>A permanent burn scar that cannot be treated.</description>
+		<labelNoun>a permanent burn</labelNoun>
+		<comps>
+			<li Class="HediffCompProperties_Infecter">
+				<infectionChance>0.30</infectionChance>
+			</li>
+			<li Class="HediffCompProperties_GetsPermanent">
+				<permanentLabel>permanent burn</permanentLabel>
+				<becomePermanentChanceFactor>100</becomePermanentChanceFactor>
+			</li>
+			<li Class="AnimalBehaviours.HediffCompProperties_AutoPermanentInjury">
+        
+      </li>
+		</comps>
+		<injuryProps>
+			<painPerSeverity>0.10</painPerSeverity>
+			<averagePainPerSeverityPermanent>0.05</averagePainPerSeverityPermanent>
+			<canMerge>true</canMerge>
+			<destroyedLabel>Burned off</destroyedLabel>
+			<destroyedOutLabel>Burned out</destroyedOutLabel>
+		</injuryProps>
+	</HediffDef>
 	<HediffDef>
 		<defName>VEF_AcidBuildup</defName>
 		<hediffClass>AnimalBehaviours.Hediff_AcidBuildup</hediffClass>

@@ -23,8 +23,10 @@ namespace AnimalBehaviours
             if (tickCounter > Props.tickInterval)
             {
                 Pawn pawn = parent.pawn;
-                //Only do things if pawn is burning
-                if ((pawn.Map != null) && (pawn.IsBurning()))
+
+                bool flagIsBurning = (pawn.IsBurning() && !Props.sunlightBurns) || (Props.sunlightBurns && this.parent.pawn.Position.InSunlight(this.parent.pawn.Map));
+                //Only do things if pawn is burning (or in sunlight if sunlightBurns is true)
+                if (pawn.Map != null && flagIsBurning)
                 {
                     BattleLogEntry_DamageTaken battleLogEntry_DamageTaken = null;
                     if (pawn != null)

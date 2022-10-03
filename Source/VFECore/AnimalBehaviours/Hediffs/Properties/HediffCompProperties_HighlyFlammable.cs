@@ -11,6 +11,7 @@ namespace AnimalBehaviours
         public DamageDef damageToInflict = null;
         public float damageAmount = 15;
         public int tickInterval = 50;
+        public bool sunlightBurns = false;
 
         public HediffCompProperties_HighlyFlammable()
         {
