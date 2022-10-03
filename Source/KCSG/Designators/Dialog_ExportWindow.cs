@@ -117,6 +117,8 @@ namespace KCSG
                     tags.Add(tempTagToAdd);
                 else
                     Messages.Message("Cannot add empty tag.", MessageTypeDefOf.NegativeEvent);
+
+                tempTagToAdd = "";
             }
 
             if (Widgets.ButtonText(new Rect(400, height, 190, tagBH), "Remove tag..."))
