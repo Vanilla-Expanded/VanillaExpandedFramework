@@ -1,8 +1,0 @@
-C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaFurnitureExpanded_Security\Source\NoCamShakeExplosions\obj\Debug\NoCamShakeExplosions.csprojAssemblyReference.cache
-C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaFurnitureExpanded_Security\Source\NoCamShakeExplosions\obj\Debug\NoCamShakeExplosions.csproj.CoreCompileInputs.cache
-C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaFurnitureExpanded_Security\1.3\Assemblies\NoCamShakeExplosions.dll
-C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaFurnitureExpanded_Security\Source\NoCamShakeExplosions\obj\Debug\NoCamShakeExplosions.dll
-C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework-Dev\1.3\Assemblies\NoCamShakeExplosions.dll
-C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework-Dev\Source\NoCamShakeExplosions\obj\Debug\NoCamShakeExplosions.csprojAssemblyReference.cache
-C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework-Dev\Source\NoCamShakeExplosions\obj\Debug\NoCamShakeExplosions.csproj.CoreCompileInputs.cache
-C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework-Dev\Source\NoCamShakeExplosions\obj\Debug\NoCamShakeExplosions.dll

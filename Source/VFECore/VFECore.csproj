@@ -675,6 +675,7 @@
     <Compile Include="SoundTest\VEDebug.cs" />
     <Compile Include="VFECore\DefModExtensions\MechanoidExtension.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompAmbientSound.cs" />
+    <Compile Include="VFECore\HarmonyPatches\DisableModSourceReport_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\Faction_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\Mechanoids\ITab_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\Mechanoids\JobDriver_Flee_MakeNewToils_Patch.cs" />
@@ -707,7 +708,6 @@
     <Compile Include="VFECore\DefModExtensions\WeatherExtension.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_RandomizeSettings.cs" />
     <Compile Include="VFECore\HarmonyPatches\PhasingPatches.cs" />
-    <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Def_SpecialDisplayStats_Patch.cs" />
     <Compile Include="Memes\PlaceWorkers\PlaceWorker_DisabledByMeme.cs" />
     <Compile Include="VFECore\Comps\HediffComps\HediffComp_Targeting.cs" />
     <Compile Include="VFECore\Dialogs\Dialog_NameDrone.cs" />

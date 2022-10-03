@@ -1,4 +1,0 @@
-C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework-Dev\1.3\Assemblies\SmokingGun.dll
-C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework-Dev\Source\SmokingGun\SmokingGun\obj\Debug\SmokingGun.csprojAssemblyReference.cache
-C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework-Dev\Source\SmokingGun\SmokingGun\obj\Debug\SmokingGun.csproj.CoreCompileInputs.cache
-C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\VanillaExpandedFramework-Dev\Source\SmokingGun\SmokingGun\obj\Debug\SmokingGun.dll
