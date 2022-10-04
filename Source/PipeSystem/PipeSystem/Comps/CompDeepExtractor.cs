@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using Verse;
@@ -9,14 +8,15 @@ namespace PipeSystem
     public class CompDeepExtractor : CompResource
     {
         public List<IntVec3> lumpCells;
+        public bool cycleOver = true;
+        public bool noCapacity = false;
 
         private List<IntVec3> adjCells;
         private CompPowerTrader compPower;
         private CompFlickable compFlickable;
         private int nextProduceTick = -1;
-        private bool noCapacity = false;
 
-        private int count = 0;
+        private int globalCount = 0;
 
         public new CompProperties_DeepExtractor Props => (CompProperties_DeepExtractor)props;
 
@@ -51,7 +51,7 @@ namespace PipeSystem
                     var n = neighbours[i];
                     if (n.InBounds(map) && !treated.Contains(n) && map.deepResourceGrid.ThingDefAt(n) is ThingDef r && r.defName == thing)
                     {
-                        count += map.deepResourceGrid.CountAt(n);
+                        globalCount += map.deepResourceGrid.CountAt(n);
                         treated.Add(n);
                         toCheck.Enqueue(n);
                     }
@@ -70,6 +70,7 @@ namespace PipeSystem
         {
             base.PostDeSpawn(map);
             nextProduceTick = -1;
+            cycleOver = true;
         }
 
         public override void PostExposeData()
@@ -77,22 +78,29 @@ namespace PipeSystem
             base.PostExposeData();
             Scribe_Values.Look(ref nextProduceTick, "nextProduceTick", 0);
             Scribe_Values.Look(ref noCapacity, "noCapacity", false);
+            Scribe_Values.Look(ref cycleOver, "cycleOver", true);
         }
 
         public override void CompTick()
         {
             base.CompTick();
-            if (parent.Spawned && lumpCells.Count > 0)
+            if (parent.Spawned
+                && !noCapacity
+                && lumpCells.Count > 0
+                && (compPower == null || compPower.PowerOn)
+                && (compFlickable == null || compFlickable.SwitchIsOn))
             {
                 var ticksGame = Find.TickManager.TicksGame;
                 if (nextProduceTick == -1)
                 {
                     nextProduceTick = ticksGame + Props.ticksPerPortion;
+                    cycleOver = false;
                 }
                 else if (ticksGame >= nextProduceTick)
                 {
                     TryProducePortion();
                     nextProduceTick = ticksGame + Props.ticksPerPortion;
+                    cycleOver = false;
                 }
 
                 sustainer?.Maintain();
@@ -100,6 +108,8 @@ namespace PipeSystem
             else
             {
                 EndSustainer();
+                cycleOver = true;
+                noCapacity = (int)PipeNet.AvailableCapacity <= 1;
             }
         }
 
@@ -109,7 +119,7 @@ namespace PipeSystem
 
             if (parent.Spawned)
             {
-                str += "\n" + "PipeSystem_ResourceLeft".Translate(count);
+                str += "\n" + "PipeSystem_ResourceLeft".Translate(globalCount);
                 if (noCapacity)
                 {
                     str += "\n" + Props.noStorageLeftKey.Translate();
@@ -124,12 +134,6 @@ namespace PipeSystem
 
         private void TryProducePortion()
         {
-            // No power -> Return
-            if ((compPower != null && !compPower.PowerOn) || (compFlickable != null && !compFlickable.SwitchIsOn))
-            {
-                EndSustainer();
-                return;
-            }
             // Get resource
             bool nextResource = GetNextResource(out ThingDef resDef, out int count, out IntVec3 cell);
             // Resource is null or not the wanted one -> Return
@@ -143,13 +147,18 @@ namespace PipeSystem
                 var available = (int)net.AvailableCapacity;
                 noCapacity = available <= 1;
 
-                var extractAmount = Math.Min(Math.Min(resDef.deepCountPerPortion, count), available);
-                if (!noCapacity)
+                if (noCapacity == false)
                 {
+                    var initialCount = Props.useDeepCountPerPortion ? resDef.deepCountPerPortion : 1;
+                    var min = initialCount > count ? count : initialCount;
+                    var extractAmount = min > available ? available : min;
+
                     parent.Map.deepResourceGrid.SetAt(cell, resDef, count - extractAmount);
                     net.DistributeAmongStorage(extractAmount);
-                    this.count -= extractAmount;
+                    globalCount -= extractAmount;
                     StartSustainer();
+
+                    if (!cycleOver) cycleOver = true;
                 }
                 else
                 {
@@ -161,12 +170,16 @@ namespace PipeSystem
             else if (nextResource && !Props.onlyExtractToNet)
             {
                 StartSustainer();
-                var extractAmount = Math.Min(resDef.deepCountPerPortion, count);
-                parent.Map.deepResourceGrid.SetAt(cell, resDef, count - resDef.deepCountPerPortion);
+                var initialCount = Props.useDeepCountPerPortion ? resDef.deepCountPerPortion : 1;
+                var extractAmount = initialCount > count ? count : initialCount;
+
+                parent.Map.deepResourceGrid.SetAt(cell, resDef, count - extractAmount);
                 // Spawn items
                 var t = ThingMaker.MakeThing(resDef);
                 t.stackCount = extractAmount;
                 GenPlace.TryPlaceThing(t, adjCells.RandomElement(), map, ThingPlaceMode.Near);
+
+                if (!cycleOver) cycleOver = true;
             }
 
             lumpCells.RemoveAll(c => map.deepResourceGrid.ThingDefAt(c) == null);
