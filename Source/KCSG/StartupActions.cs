@@ -120,7 +120,7 @@ namespace KCSG
         /// </summary>
         private static void AddDef(SymbolDef def)
         {
-            if (DefDatabase<SymbolDef>.DefCount < ushort.MaxValue && DefDatabase<SymbolDef>.GetNamedSilentFail(def.defName) == null)
+            if (!defCreated && DefDatabase<SymbolDef>.DefCount < ushort.MaxValue && DefDatabase<SymbolDef>.GetNamedSilentFail(def.defName) == null)
             {
                 DefDatabase<SymbolDef>.Add(def);
             }
@@ -136,9 +136,13 @@ namespace KCSG
         /// </summary>
         private static void CreateAllSymbolsForDef(ThingDef thing)
         {
-            if (thing.category == ThingCategory.Item || thing.IsFilth)
+            if (thing.IsCorpse)
             {
-                if (!defCreated) AddDef(CreateSymbolDef(thing));
+                return;
+            }
+            else if (thing.category == ThingCategory.Item || thing.IsFilth)
+            {
+                AddDef(CreateSymbolDef(thing));
             }
             else if (thing.stuffCategories != null)
             {
@@ -148,32 +152,32 @@ namespace KCSG
                     {
                         if (thing.rotatable)
                         {
-                            if (!defCreated) AddDef(CreateSymbolDef(thing, stuffDef, Rot4.North));
-                            if (!defCreated) AddDef(CreateSymbolDef(thing, stuffDef, Rot4.South));
-                            if (!defCreated) AddDef(CreateSymbolDef(thing, stuffDef, Rot4.East));
-                            if (!defCreated) AddDef(CreateSymbolDef(thing, stuffDef, Rot4.West));
+                            AddDef(CreateSymbolDef(thing, stuffDef, Rot4.North));
+                            AddDef(CreateSymbolDef(thing, stuffDef, Rot4.South));
+                            AddDef(CreateSymbolDef(thing, stuffDef, Rot4.East));
+                            AddDef(CreateSymbolDef(thing, stuffDef, Rot4.West));
                         }
                         else
                         {
-                            if (!defCreated) AddDef(CreateSymbolDef(thing, stuffDef));
+                            AddDef(CreateSymbolDef(thing, stuffDef));
                         }
                     }
                 }
             }
             else if (thing.plant != null)
             {
-                if (!defCreated) AddDef(CreatePlantSymbolDef(thing));
+                AddDef(CreatePlantSymbolDef(thing));
             }
             else if (thing.rotatable)
             {
-                if (!defCreated) AddDef(CreateSymbolDef(thing, Rot4.North));
-                if (!defCreated) AddDef(CreateSymbolDef(thing, Rot4.South));
-                if (!defCreated) AddDef(CreateSymbolDef(thing, Rot4.East));
-                if (!defCreated) AddDef(CreateSymbolDef(thing, Rot4.West));
+                AddDef(CreateSymbolDef(thing, Rot4.North));
+                AddDef(CreateSymbolDef(thing, Rot4.South));
+                AddDef(CreateSymbolDef(thing, Rot4.East));
+                AddDef(CreateSymbolDef(thing, Rot4.West));
             }
             else
             {
-                if (!defCreated) AddDef(CreateSymbolDef(thing));
+                AddDef(CreateSymbolDef(thing));
             }
         }
 
@@ -202,6 +206,22 @@ namespace KCSG
                 defName = $"{pawnKindDef.defName}",
                 pawnKindDefNS = pawnKindDef,
                 isSlave = pawnKindDef.defName == "Slave"
+            };
+            createdSymbolAmount++;
+            return symbolDef;
+        }
+
+
+        /// <summary>
+        /// Create a SymbolDef from a corpse
+        /// </summary>
+        private static SymbolDef CreateCorpseSymbolDef(PawnKindDef pawnKindDef)
+        {
+            SymbolDef symbolDef = new SymbolDef
+            {
+                defName = $"Corpse_{pawnKindDef.defName}",
+                pawnKindDefNS = pawnKindDef,
+                spawnDead = true
             };
             createdSymbolAmount++;
             return symbolDef;
@@ -284,7 +304,10 @@ namespace KCSG
             {
                 var kind = pawnKindDefs[i];
                 if (kind.modContentPack?.PackageId == modId)
+                {
                     AddDef(CreateSymbolDef(kind));
+                    AddDef(CreateCorpseSymbolDef(kind));
+                }
             }
         }
 
