@@ -509,15 +509,15 @@ namespace KCSG
         private static SymbolDef CreateCorpseSymbol(Corpse corpse)
         {
             var pawn = corpse.InnerPawn;
-            var defName = pawn.kindDef.defName;
+            var kindName = pawn.kindDef.defName;
 
-            if (!Dialog_ExportWindow.exportedSymbolsName.Contains(defName)
-                && !DefDatabase<SymbolDef>.AllDefsListForReading.FindAll(s => s.pawnKindDef == defName).Any())
+            if (!Dialog_ExportWindow.exportedSymbolsName.Contains("Corpse_" + kindName)
+                && DefDatabase<SymbolDef>.AllDefsListForReading.FindAll(s => (s.pawnKindDef == kindName && s.spawnDead) || s.defName == "Corpse_" + kindName).Count == 0)
             {
                 var symbol = new SymbolDef
                 {
-                    defName = "Corpse_" + defName,
-                    pawnKindDef = defName,
+                    defName = "Corpse_" + kindName,
+                    pawnKindDef = kindName,
                     isSlave = pawn.IsSlave,
                     spawnDead = true
                 };
