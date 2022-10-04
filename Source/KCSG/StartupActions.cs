@@ -44,7 +44,7 @@ namespace KCSG
             }
             // Cache layout per tag
             SettlementGenUtils.BuildingPlacement.CacheTags();
-            // Make two new map generator, used with preventBridgeable
+            // Make new map generators, used with preventBridgeable
             CreateMapGeneratorDefs();
         }
 
@@ -101,24 +101,26 @@ namespace KCSG
                 return;
 
             createdSymbolAmount = 0;
+            var thingDefs = DefDatabase<ThingDef>.AllDefsListForReading;
+            var pawnKindDefs = DefDatabase<PawnKindDef>.AllDefsListForReading;
 
-            CreateSymbolsFor("ludeon.rimworld");
-            CreateSymbolsFor("ludeon.rimworld.royalty");
-            CreateSymbolsFor("ludeon.rimworld.ideology");
+            CreateSymbolsFor(thingDefs, pawnKindDefs, "ludeon.rimworld");
+            CreateSymbolsFor(thingDefs, pawnKindDefs, "ludeon.rimworld.royalty");
+            CreateSymbolsFor(thingDefs, pawnKindDefs, "ludeon.rimworld.ideology");
+
             if (ModLister.GetActiveModWithIdentifier("vanillaexpanded.vfepropsanddecor") != null)
-                CreateSymbolsFor("vanillaexpanded.vfepropsanddecor");
+                CreateSymbolsFor(thingDefs, pawnKindDefs, "vanillaexpanded.vfepropsanddecor");
 
             Debug.Message($"Created {createdSymbolAmount} symbolDefs for vanilla and DLCs");
             defCreated = true;
         }
 
         /// <summary>
-        /// Add def with a max amount of 65535 SymbolDefs loaded
+        /// Add def with a max amount of ushort.MaxValue SymbolDefs in database
         /// </summary>
-        /// <param name="def"></param>
         private static void AddDef(SymbolDef def)
         {
-            if (DefDatabase<SymbolDef>.DefCount < 65535 && DefDatabase<SymbolDef>.GetNamedSilentFail(def.defName) == null)
+            if (DefDatabase<SymbolDef>.DefCount < ushort.MaxValue && DefDatabase<SymbolDef>.GetNamedSilentFail(def.defName) == null)
             {
                 DefDatabase<SymbolDef>.Add(def);
             }
@@ -269,18 +271,20 @@ namespace KCSG
         /// <summary>
         /// Call CreateAllSymbolsForDef & CreateSymbolDef
         /// </summary>
-        private static void CreateSymbolsFor(string modId)
+        private static void CreateSymbolsFor(List<ThingDef> thingDefs, List<PawnKindDef> pawnKindDefs, string modId)
         {
-            List<ThingDef> thingDefs = DefDatabase<ThingDef>.AllDefsListForReading.FindAll(t => t.modContentPack?.PackageId == modId);
-            foreach (ThingDef thingDef in thingDefs)
+            for (int i = 0; i < thingDefs.Count && !defCreated; i++)
             {
-                if (!defCreated) CreateAllSymbolsForDef(thingDef);
+                var thing = thingDefs[i];
+                if (thing.modContentPack?.PackageId == modId)
+                    CreateAllSymbolsForDef(thing);
             }
 
-            List<PawnKindDef> pawnKindDefs = DefDatabase<PawnKindDef>.AllDefsListForReading.FindAll(t => t.modContentPack?.PackageId == modId);
-            foreach (PawnKindDef pawnKindDef in pawnKindDefs)
+            for (int i = 0; i < pawnKindDefs.Count && !defCreated; i++)
             {
-                if (!defCreated) AddDef(CreateSymbolDef(pawnKindDef));
+                var kind = pawnKindDefs[i];
+                if (kind.modContentPack?.PackageId == modId)
+                    AddDef(CreateSymbolDef(kind));
             }
         }
 
