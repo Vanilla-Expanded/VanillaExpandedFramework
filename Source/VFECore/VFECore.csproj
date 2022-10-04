@@ -618,6 +618,7 @@
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_NearbyEffecter.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_PassiveRegenerator.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Regeneration.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Spawner.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_StageBySunlight.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_ThoughtEffecter.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Resurrect.cs" />
@@ -639,6 +640,7 @@
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Floating.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Draftable.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Exploder.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Spawner.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Resurrect.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_ThoughtEffecter.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_StageBySunlight.cs" />
