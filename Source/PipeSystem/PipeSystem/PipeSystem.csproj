@@ -77,6 +77,7 @@
     <Compile Include="Comps\CompProperties\CompProperties_ResourceProcessor.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_ResourceTrader.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_ResourceStorage.cs" />
+    <Compile Include="Comps\CompProperties\CompProperties_SpawnerOrNet.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_SpillWhenDamaged.cs" />
     <Compile Include="Comps\CompRefillWithPipes.cs" />
     <Compile Include="Comps\CompResource.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Comps\CompResourceStorage.cs" />
     <Compile Include="Comps\CompResourceTrader.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_Resource.cs" />
+    <Compile Include="Comps\CompSpawnerOrNet.cs" />
     <Compile Include="Comps\CompSpillWhenDamaged.cs" />
     <Compile Include="Comps\CompConvertToResource.cs" />
     <Compile Include="Graphic\IconOverlay.cs" />
