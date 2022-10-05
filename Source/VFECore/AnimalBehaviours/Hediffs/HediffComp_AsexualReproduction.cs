@@ -138,8 +138,16 @@ namespace AnimalBehaviours
 
                                     if (Props.endogeneTransfer)
                                     {
-                                        List<Gene> listOfEndogenes = progenitor.genes.Endogenes;
-                                        pawnCreated.genes.Endogenes.AddRange(listOfEndogenes);
+                                        List<Gene> listOfEndogenes = progenitor.genes?.Endogenes;
+                                        
+                                        foreach(Gene gene in listOfEndogenes)
+                                        {
+                                            pawnCreated.genes?.AddGene(gene.def,false);
+                                        }
+                                        if (progenitor.genes?.Xenotype != null)
+                                        {
+                                            pawnCreated.genes?.SetXenotype(progenitor.genes?.Xenotype);
+                                        }
 
 
                                     }
