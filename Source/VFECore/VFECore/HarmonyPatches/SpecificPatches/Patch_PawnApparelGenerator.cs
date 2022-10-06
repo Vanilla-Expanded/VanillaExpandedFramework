@@ -1,13 +1,9 @@
-﻿using System;
+﻿using HarmonyLib;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
 using UnityEngine;
 using Verse;
-using RimWorld;
-using HarmonyLib;
 
 namespace VFECore
 {
@@ -22,9 +18,9 @@ namespace VFECore
 
                 public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
                 {
-                    #if DEBUG
+#if DEBUG
                         Log.Message("PawnApparelGenerator.PossibleApparelSet.manual_CoatButNoShirt transpiler start (1 match todo)");
-                    #endif
+#endif
 
                     var instructionList = instructions.ToList();
 
@@ -41,9 +37,9 @@ namespace VFECore
                             var prevInstruction = instructionList[i - 1];
                             if (prevInstruction.opcode == OpCodes.Ldsfld && prevInstruction.OperandIs(apparelLayerDefOfShellInfo))
                             {
-                                #if DEBUG
+#if DEBUG
                                     Log.Message("PawnApparelGenerator.PossibleApparelSet.manual_CoatButNoShirt match 1 of 1");
-                                #endif
+#endif
                                 yield return instruction;
                                 yield return instructionList[i - 2]; // apparelLayerDef
                                 yield return new CodeInstruction(OpCodes.Ldsfld, apparelLayerDefOfOuterShellInfo); // ApparelLayerDefOf.OuterShell
@@ -69,8 +65,8 @@ namespace VFECore
                     var apparel = wornApparel[i];
 
                     // Check from ThingDefExtension
-                    var thingDefExtension = ThingDefExtension.Get(apparel.def);
-                    if (!thingDefExtension.useFactionColourForPawnKinds.NullOrEmpty() && thingDefExtension.useFactionColourForPawnKinds.Contains(pawn.kindDef))
+                    var thingDefExtension = apparel.def.GetModExtension<ThingDefExtension>();
+                    if (thingDefExtension != null && !thingDefExtension.useFactionColourForPawnKinds.NullOrEmpty() && thingDefExtension.useFactionColourForPawnKinds.Contains(pawn.kindDef))
                     {
                         apparel.SetColor(pawn.Faction.Color);
                         continue;

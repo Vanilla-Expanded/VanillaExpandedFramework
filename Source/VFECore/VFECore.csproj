@@ -747,7 +747,7 @@
     <Compile Include="UItils\FormatUtils.cs" />
     <Compile Include="VFECore\Damages\DamageWorker_PushBackAttackMelee.cs" />
     <Compile Include="VFECore\DefModExtensions\WeatherEffectsExtension.cs" />
-    <Compile Include="VFECore\HarmonyPatches\SpecificPatches\DraftedWeaponDrawOffset_Patch.cs" />
+    <Compile Include="VFECore\HarmonyPatches\SpecificPatches\PawnRenderer_DrawEquipmentAiming_Patch.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_DeepResourceGrid_GetCellExtraColor.cs" />
     <Compile Include="VFECore\HarmonyPatches\DefIndicesFixer.cs" />
     <Compile Include="Plants\DefExtensions\DualCropExtension.cs" />

@@ -36,6 +36,16 @@ namespace VFECore
                 {
                     Log.Error(def.defName + " is missing thing class and will not work properly. Report about it to " + def.modContentPack?.Name + " devs.");
                 }
+                if (def.comps != null)
+                {
+                    foreach (var compProps in def.comps)
+                    {
+                        if (compProps.compClass is null)
+                        {
+                            Log.Error(def.defName + " one of comps is missing comp class and will not work properly. Report about it to " + def.modContentPack?.Name + " devs.");
+                        }
+                    }
+                }
             }
 
             foreach (var def in DefDatabase<SoundDef>.AllDefs)

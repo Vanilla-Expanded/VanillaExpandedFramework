@@ -1,13 +1,9 @@
-﻿using System;
+﻿using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.AI;
-using RimWorld;
-using HarmonyLib;
 
 namespace VFECore
 {
@@ -21,7 +17,10 @@ namespace VFECore
         {
             var changeableProjComp = artillery.gun.TryGetComp<CompChangeableProjectile>();
             if (changeableProjComp == null)
+            {
                 return false;
+            }
+
             return changeableProjComp.allowedShellsSettings.AllowedToAccept(shellDef);
         }
 
@@ -36,7 +35,9 @@ namespace VFECore
             {
                 var coverBlueprints = PlaceCoverBlueprints(map).ToList();
                 for (int i = 0; i < coverBlueprints.Count; i++)
+                {
                     yield return coverBlueprints[i];
+                }
             }
 
             // Artillery
@@ -44,7 +45,9 @@ namespace VFECore
             {
                 var artilleryBlueprints = PlaceArtilleryBlueprints(data, map).ToList();
                 for (int i = 0; i < artilleryBlueprints.Count; i++)
+                {
                     yield return artilleryBlueprints[i];
+                }
             }
         }
 
@@ -60,7 +63,7 @@ namespace VFECore
                 GenStuff.RandomStuffInexpensiveFor(customParams.coverDef, (Faction)NonPublicFields.SiegeBlueprintPlacer_faction.GetValue(null)) : null;
             for (int i = 0; i < numSandbags; i++)
             {
-                IntVec3 bagRoot = FindCoverRoot(map, customParams.coverDef, coverStuff);
+                var bagRoot = FindCoverRoot(map, customParams.coverDef, coverStuff);
                 if (!bagRoot.IsValid)
                 {
                     yield break;
@@ -85,12 +88,16 @@ namespace VFECore
                 }
                 var coverLine = MakeCoverLine(bagRoot, map, growDirA, lengthRange.RandomInRange, customParams.coverDef, coverStuff).ToList();
                 for (int j = 0; j < coverLine.Count; j++)
+                {
                     yield return coverLine[j];
+                }
 
                 bagRoot += growDirB.FacingCell;
                 coverLine = MakeCoverLine(bagRoot, map, growDirB, lengthRange.RandomInRange, customParams.coverDef, coverStuff).ToList();
                 for (int j = 0; j < coverLine.Count; j++)
+                {
                     yield return coverLine[j];
+                }
             }
             yield break;
         }
@@ -99,9 +106,9 @@ namespace VFECore
         {
             var centre = (IntVec3)NonPublicFields.SiegeBlueprintPlacer_center.GetValue(null);
             var placedCoverLocs = (List<IntVec3>)NonPublicFields.SiegeBlueprintPlacer_placedCoverLocs.GetValue(null);
-            CellRect cellRect = CellRect.CenteredOn(centre, 13);
+            var cellRect = CellRect.CenteredOn(centre, 13);
             cellRect.ClipInsideMap(map);
-            CellRect cellRect2 = CellRect.CenteredOn(centre, 8);
+            var cellRect2 = CellRect.CenteredOn(centre, 8);
             cellRect2.ClipInsideMap(map);
             int num = 0;
             for (; ; )
@@ -111,7 +118,7 @@ namespace VFECore
                 {
                     break;
                 }
-                IntVec3 randomCell = cellRect.RandomCell;
+                var randomCell = cellRect.RandomCell;
                 if (!cellRect2.Contains(randomCell))
                 {
                     if (map.reachability.CanReach(randomCell, centre, PathEndMode.OnCell, TraverseMode.NoPassClosedDoors, Danger.Deadly))
@@ -121,7 +128,7 @@ namespace VFECore
                             bool flag = false;
                             for (int i = 0; i < placedCoverLocs.Count; i++)
                             {
-                                float num2 = (float)(placedCoverLocs[i] - randomCell).LengthHorizontalSquared;
+                                float num2 = (placedCoverLocs[i] - randomCell).LengthHorizontalSquared;
                                 if (num2 < 36f)
                                 {
                                     flag = true;
@@ -141,7 +148,7 @@ namespace VFECore
         private static IEnumerable<Blueprint_Build> MakeCoverLine(IntVec3 root, Map map, Rot4 growDir, int maxLength, ThingDef coverThing, ThingDef coverStuff)
         {
             var placedSandbagLocs = (List<IntVec3>)NonPublicFields.SiegeBlueprintPlacer_placedCoverLocs.GetValue(null);
-            IntVec3 cur = root;
+            var cur = root;
             for (int i = 0; i < maxLength; i++)
             {
                 if (!NonPublicMethods.SiegeBlueprintPlacer_CanPlaceBlueprintAt(cur, Rot4.North, coverThing, map, coverStuff))
@@ -174,20 +181,32 @@ namespace VFECore
             int i = 0;
             while (points > 0 && i < numArtillery)
             {
-                artyDefs = artyDefs.Where(t => ThingDefExtension.Get(t).siegeBlueprintPoints <= points);
+                artyDefs = artyDefs.Where(t => t.GetModExtension<ThingDefExtension>() is ThingDefExtension extension
+                && extension.siegeBlueprintPoints <= points);
                 if (!artyDefs.Any())
+                {
                     yield break;
+                }
+
                 var rot = Rot4.Random;
-                var artyDef = artyDefs.RandomElementByWeight(t => ThingDefExtension.Get(t).siegeBlueprintPoints);
+                var artyDef = artyDefs.RandomElementByWeight(t => t.GetModExtension<ThingDefExtension>().siegeBlueprintPoints);
                 var artySpot = NonPublicMethods.SiegeBlueprintPlacer_FindArtySpot(artyDef, rot, map);
                 if (!artySpot.IsValid)
+                {
                     yield break;
+                }
+
                 yield return GenConstruct.PlaceBlueprintForBuild(artyDef, artySpot, map, rot, (Faction)NonPublicFields.SiegeBlueprintPlacer_faction.GetValue(null), GenStuff.DefaultStuffFor(artyDef));
                 if (data.artilleryCounts.ContainsKey(artyDef))
+                {
                     data.artilleryCounts[artyDef]++;
+                }
                 else
+                {
                     data.artilleryCounts.Add(artyDef, 1);
-                points -= ThingDefExtension.Get(artyDef).siegeBlueprintPoints;
+                }
+
+                points -= artyDef.GetModExtension<ThingDefExtension>().siegeBlueprintPoints;
                 i++;
             }
             yield break;

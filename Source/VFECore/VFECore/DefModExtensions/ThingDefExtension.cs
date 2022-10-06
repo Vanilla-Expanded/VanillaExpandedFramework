@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using RimWorld;
+﻿using RimWorld;
+using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 
@@ -7,13 +7,9 @@ namespace VFECore
 {
     public class ThingDefExtension : DefModExtension
     {
-        private static readonly ThingDefExtension DefaultValues = new ThingDefExtension();
-
-        public static ThingDefExtension Get(Def def) => def.GetModExtension<ThingDefExtension>() ?? DefaultValues;
-
         // For weapons
         public bool usableWithShields = false;
-        public DraftedDrawOffsets draftedDrawOffsets = null;
+        public WeaponCarryDrawOffsets weaponCarryDrawOffsets = null;
 
         // For shields and apparel
         public List<PawnKindDef> useFactionColourForPawnKinds;
@@ -35,7 +31,7 @@ namespace VFECore
 
     }
 
-    public class DraftedDrawOffsets
+    public class WeaponCarryDrawOffsets
     {
         public Offset north = null;
         public Offset east = null;
@@ -45,8 +41,8 @@ namespace VFECore
 
     public class Offset
     {
-        public Vector3 posOffset = new Vector3(0, 0, 0);
-        public float angOffset = 0;
+        public Vector3 drawOffset = new(0, 0, 0);
+        public float angleOffset = 0;
     }
 
 }

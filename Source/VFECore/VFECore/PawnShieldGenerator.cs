@@ -110,8 +110,8 @@ namespace VFECore
                 // Colour the shield
                 if (pawn.Faction != null)
                 {
-                    var thingDefExtension = ThingDefExtension.Get(thingStuffPair.thing);
-                    if (!thingDefExtension.useFactionColourForPawnKinds.NullOrEmpty() && thingDefExtension.useFactionColourForPawnKinds.Contains(pawn.kindDef))
+                    var thingDefExtension = thingStuffPair.thing.GetModExtension<ThingDefExtension>();
+                    if (thingDefExtension != null && !thingDefExtension.useFactionColourForPawnKinds.NullOrEmpty() && thingDefExtension.useFactionColourForPawnKinds.Contains(pawn.kindDef))
                     {
                         shield.SetColor(pawn.Faction.Color);
                     }

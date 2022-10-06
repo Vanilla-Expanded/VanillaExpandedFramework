@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using RimWorld;
 using System.Linq;
-using System.Text;
-using UnityEngine;
 using Verse;
-using RimWorld;
 
 namespace VFECore
 {
@@ -22,13 +18,16 @@ namespace VFECore
             for (int i = 0; i < manipCoreLimbs.Count; i++)
             {
                 var manipCore = manipCoreLimbs[i];
-                count += manipCore.GetChildParts(BodyPartTagDefOf.ManipulationLimbSegment).Count(p => p.depth == BodyPartDepth.Outside && !hediffSet.PartIsMissing(p) 
+                count += manipCore.GetChildParts(BodyPartTagDefOf.ManipulationLimbSegment).Count(p => (p.depth == BodyPartDepth.Outside && !hediffSet.PartIsMissing(p))
                 || hediffSet.PartOrAnyAncestorHasDirectlyAddedParts(p));
             }
             return count;
         }
 
-        public static bool CanUseShields(this Pawn p) => p.HandCount() > 1;
+        public static bool CanUseShields(this Pawn p)
+        {
+            return p.HandCount() > 1;
+        }
 
         public static bool IsShield(this Thing thing, out CompShield shieldComp)
         {
@@ -50,38 +49,44 @@ namespace VFECore
         {
             // If Dual Wield is active, return whether or not the weapon isn't two-handed and can be equipped off hand
             if (ModCompatibilityCheck.DualWield)
+            {
                 return !NonPublicMethods.DualWield.Ext_ThingDef_IsTwoHand(def) && NonPublicMethods.DualWield.Ext_ThingDef_CanBeOffHand(def);
+            }
 
-            // Otherwise return based on DefModExtension
-            return ThingDefExtension.Get(def).usableWithShields;
+            var extension = def.GetModExtension<ThingDefExtension>();
+            if (extension != null)
+            {
+                return extension.usableWithShields;
+            }
+            return false;
         }
 
         public static ThingWithComps OffHandShield(this Pawn pawn)
         {
-            return pawn.apparel?.WornApparel?.FirstOrDefault(t => t.IsShield(out CompShield shieldComp) && shieldComp.equippedOffHand);
+            return pawn.apparel?.WornApparel?.FirstOrDefault(t => t.IsShield(out var shieldComp) && shieldComp.equippedOffHand);
         }
 
         public static void MakeRoomForShield(this Pawn pawn, ThingWithComps eq)
         {
-                if (pawn.OffHandShield() != null)
+            if (pawn.OffHandShield() != null)
+            {
+                if (pawn.apparel.TryDrop((Apparel)pawn.OffHandShield(), out var thingWithComps, pawn.Position, true))
                 {
-                    if (pawn.apparel.TryDrop((Apparel)pawn.OffHandShield(), out Apparel thingWithComps, pawn.Position, true))
+                    if (thingWithComps != null)
                     {
-                        if (thingWithComps != null)
-                        {
-                            thingWithComps.SetForbidden(false, true);
-                        }
-                    }
-                    else
-                    {
-                        Log.Error(pawn + " couldn't make room for shield " + eq);
+                        thingWithComps.SetForbidden(false, true);
                     }
                 }
+                else
+                {
+                    Log.Error(pawn + " couldn't make room for shield " + eq);
+                }
+            }
 
-                // Taranchuk: no idea how to handle this
-                //// Prevent infinite looping :P
-                //else if (ModCompatibilityCheck.DualWield && NonPublicMethods.DualWield.Ext_Pawn_EquipmentTracker_TryGetOffHandEquipment(equipment, out ThingWithComps eq2))
-                //    NonPublicMethods.DualWield.Ext_Pawn_EquipmentTracker_MakeRoomForOffHand(equipment, eq2);
+            // Taranchuk: no idea how to handle this
+            //// Prevent infinite looping :P
+            //else if (ModCompatibilityCheck.DualWield && NonPublicMethods.DualWield.Ext_Pawn_EquipmentTracker_TryGetOffHandEquipment(equipment, out ThingWithComps eq2))
+            //    NonPublicMethods.DualWield.Ext_Pawn_EquipmentTracker_MakeRoomForOffHand(equipment, eq2);
 
         }
 

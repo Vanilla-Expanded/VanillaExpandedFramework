@@ -15,16 +15,22 @@ namespace VFECore
                 if (thingDef.building != null && !thingDef.building.buildingTags.NullOrEmpty() && thingDef.building.buildingTags.Any(t => artilleryBuildingTags.Contains(t)))
                 {
                     // Min blueprint points
-                    var thingDefExtension = ThingDefExtension.Get(thingDef);
-                    if (thingDefExtension.siegeBlueprintPoints < lowestArtilleryBlueprintPoints)
+                    var thingDefExtension = thingDef.GetModExtension<ThingDefExtension>();
+                    if (thingDefExtension != null && thingDefExtension.siegeBlueprintPoints < lowestArtilleryBlueprintPoints)
+                    {
                         lowestArtilleryBlueprintPoints = thingDefExtension.siegeBlueprintPoints;
+                    }
 
                     // Skill prerequisite
                     if (thingDef.constructionSkillPrerequisite > maxArtilleryConstructionSkill)
+                    {
                         maxArtilleryConstructionSkill = thingDef.constructionSkillPrerequisite;
+                    }
 
                     if (!artilleryDefs.Contains(thingDef))
+                    {
                         artilleryDefs.Add(thingDef);
+                    }
                 }
             }
         }
@@ -32,7 +38,9 @@ namespace VFECore
         public override IEnumerable<string> ConfigErrors()
         {
             if (coverDef != null && coverDef.size != IntVec2.One)
+            {
                 yield return $"coverDef must be a 1x1 building. {coverDef}'s size is {coverDef.size.x}x{coverDef.size.z}";
+            }
         }
 
         public ThingDef coverDef;
@@ -41,7 +49,7 @@ namespace VFECore
         public ThingDef mealDef;
 
         [Unsaved]
-        public List<ThingDef> artilleryDefs = new List<ThingDef>();
+        public List<ThingDef> artilleryDefs = new();
 
         [Unsaved]
         public float lowestArtilleryBlueprintPoints = int.MaxValue;
