@@ -21,4 +21,10 @@
     <CanAddXFaction>{0} faction(s) can be added to your current save</CanAddXFaction>
 	
 	<VEF.DisableModSourceReport>Disable mod source reports</VEF.DisableModSourceReport>
+	
+	<VEF.Shields.Search>Search: </VEF.Shields.Search>
+	<VEF.Shields.ResetModSettingsToDefault>Reset mod settings to default</VEF.Shields.ResetModSettingsToDefault>
+	<VEF.Shields.ExplanationTitle>Set weapons to be usable or not usable with shields.</VEF.Shields.ExplanationTitle>
+	<VEF.Shields.ShowMeleeWeapons>Show melee weapons</VEF.Shields.ShowMeleeWeapons>
+	<VEF.Shields.ShowRangeWeapons>Show range weapons</VEF.Shields.ShowRangeWeapons>
 </LanguageData>
