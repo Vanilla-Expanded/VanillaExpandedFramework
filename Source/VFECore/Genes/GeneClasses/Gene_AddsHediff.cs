@@ -21,11 +21,16 @@ namespace VanillaGenesExpanded
 				
 				foreach(HediffToBodyparts hediffToBodypart in extension?.hediffsToBodyParts)
                 {
+					int enumerator = 0;
 					foreach (BodyPartDef bodypart in hediffToBodypart.bodyparts)
                     {
 						if (!pawn.RaceProps.body.GetPartsWithDef(bodypart).EnumerableNullOrEmpty())
 						{
-							pawn.health.AddHediff(hediffToBodypart.hediff, pawn.RaceProps.body.GetPartsWithDef(bodypart).RandomElement());
+							if(enumerator<= pawn.RaceProps.body.GetPartsWithDef(bodypart).Count) {
+								pawn.health.AddHediff(hediffToBodypart.hediff, pawn.RaceProps.body.GetPartsWithDef(bodypart).ToArray()[enumerator]);
+								enumerator++;
+							}
+							
 						}
 
 					}

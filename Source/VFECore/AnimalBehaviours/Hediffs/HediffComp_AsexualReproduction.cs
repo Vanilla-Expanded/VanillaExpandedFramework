@@ -3,6 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Verse;
+using RimWorld.Planet;
+using UnityEngine;
+using Verse.AI.Group;
 
 namespace AnimalBehaviours
 {
@@ -121,8 +124,75 @@ namespace AnimalBehaviours
                             }
                             else
                             {
-                                Hediff_Pregnant.DoBirthSpawn(pawn, pawn);
+                                Pawn progenitor = this.parent.pawn as Pawn;
+                                int num = (progenitor.RaceProps.litterSizeCurve == null) ? 1 : Mathf.RoundToInt(Rand.ByCurve(progenitor.RaceProps.litterSizeCurve));
+                                if (num < 1)
+                                {
+                                    num = 1;
+                                }
+                                PawnGenerationRequest request = new PawnGenerationRequest(progenitor.kindDef, progenitor.Faction, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, allowDead: false, allowDowned: true, canGeneratePawnRelations: true, mustBeCapableOfViolence: false, 1f, forceAddFreeWarmLayerIfNeeded: false, allowGay: true, allowPregnant: false, allowFood: true, allowAddictions: true, inhabitant: false, certainlyBeenInCryptosleep: false, forceRedressWorldPawnIfFormerColonist: false, worldPawnFactionDoesntMatter: false, 0f, 0f, null, 1f, null, null, null, null, null, null, null, null, null, null, null, null, forceNoIdeo: false, forceNoBackstory: false, forbidAnyTitle: false, forceDead: false, null, null, null, null, null, 0f, DevelopmentalStage.Newborn);
+                                Pawn pawnCreated = null;
+                                for (int i = 0; i < num; i++)
+                                {
+                                    pawnCreated = PawnGenerator.GeneratePawn(request);
+
+                                    if (Props.endogeneTransfer)
+                                    {
+                                        List<Gene> listOfEndogenes = progenitor.genes?.Endogenes;
+                                        
+                                        foreach(Gene gene in listOfEndogenes)
+                                        {
+                                            pawnCreated.genes?.AddGene(gene.def,false);
+                                        }
+                                        if (progenitor.genes?.Xenotype != null)
+                                        {
+                                            pawnCreated.genes?.SetXenotype(progenitor.genes?.Xenotype);
+                                        }
+
+
+                                    }
+
+                                    if (PawnUtility.TrySpawnHatchedOrBornPawn(pawnCreated, progenitor))
+                                    {
+                                        if (pawnCreated.playerSettings != null && progenitor.playerSettings != null)
+                                        {
+                                            pawnCreated.playerSettings.AreaRestriction = progenitor.playerSettings.AreaRestriction;
+                                        }
+                                        if (pawnCreated.RaceProps.IsFlesh)
+                                        {
+                                            pawnCreated.relations.AddDirectRelation(PawnRelationDefOf.Parent, progenitor);
+                                           
+                                        }
+                                        if (progenitor.Spawned)
+                                        {
+                                            progenitor.GetLord()?.AddPawn(pawnCreated);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Find.WorldPawns.PassToWorld(pawnCreated, PawnDiscardDecideMode.Discard);
+                                    }
+                                    TaleRecorder.RecordTale(TaleDefOf.GaveBirth, progenitor, pawn);
+                                }
+                                if (progenitor.Spawned)
+                                {
+                                    FilthMaker.TryMakeFilth(progenitor.Position, progenitor.Map, ThingDefOf.Filth_AmnioticFluid, progenitor.LabelIndefinite(), 5);
+                                    if (progenitor.caller != null)
+                                    {
+                                        progenitor.caller.DoCall();
+                                    }
+                                    if (pawn.caller != null)
+                                    {
+                                        pawn.caller.DoCall();
+                                    }
+                                }
+
+
+
+
+
                                 Messages.Message(Props.asexualHatchedMessage.Translate(pawn.LabelIndefinite().CapitalizeFirst()), pawn, MessageTypeDefOf.PositiveEvent, true);
+                                
                                 asexualFissionCounter = 0;
                             }
 

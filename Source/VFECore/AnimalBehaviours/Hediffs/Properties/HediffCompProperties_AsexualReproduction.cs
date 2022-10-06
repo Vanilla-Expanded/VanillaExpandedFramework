@@ -25,6 +25,8 @@ namespace AnimalBehaviours
         //Some creatures need to spawn a different def
         public bool convertsIntoAnotherDef = false;
         public string newDef = "";
+        //In fission, transfer endogenes
+        public bool endogeneTransfer = false;
 
         public HediffCompProperties_AsexualReproduction()
         {

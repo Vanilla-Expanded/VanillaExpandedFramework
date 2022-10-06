@@ -70,7 +70,7 @@ namespace AnimalBehaviours
 
         public string GetLabel()
         {
-            string timeToLive = "VEF_TimeToDie".Translate((Props.timeToDieInTicks - tickCounter).ToStringTicksToPeriod(true, false, true, true));
+            string timeToLive = Props.DescriptionLabel.Translate((Props.timeToDieInTicks - tickCounter).ToStringTicksToPeriod(true, false, true, true));
 
             return timeToLive;
 

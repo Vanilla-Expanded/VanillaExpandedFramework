@@ -15,6 +15,7 @@ namespace PipeSystem
         public string noStorageLeftKey = "PipeSystem_CantExtract";
         public bool onlyExtractToNet = false;
         public bool onlyExtractToGround = false;
+        public bool useDeepCountPerPortion = true;
 
         public override IEnumerable<string> ConfigErrors(ThingDef parentDef)
         {
