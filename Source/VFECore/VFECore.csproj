@@ -747,7 +747,6 @@
     <Compile Include="UItils\FormatUtils.cs" />
     <Compile Include="VFECore\Damages\DamageWorker_PushBackAttackMelee.cs" />
     <Compile Include="VFECore\DefModExtensions\WeatherEffectsExtension.cs" />
-    <Compile Include="VFECore\HarmonyPatches\SpecificPatches\PawnRenderer_DrawEquipmentAiming_Patch.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_DeepResourceGrid_GetCellExtraColor.cs" />
     <Compile Include="VFECore\HarmonyPatches\DefIndicesFixer.cs" />
     <Compile Include="Plants\DefExtensions\DualCropExtension.cs" />
@@ -874,7 +873,7 @@
     <Compile Include="VFECore\Dialogs\FactionSpawning\Dialog_NewFactionSpawningSettlements.cs" />
     <Compile Include="ItemProcessor\Enums\ProcessorStage.cs" />
     <Compile Include="ItemProcessor\GraphicsCache\GraphicsCache.cs" />
-    <Compile Include="VFECore\HarmonyPatches\Apparel_Draw_Patches.cs" />
+    <Compile Include="VFECore\HarmonyPatches\PawnRenderer_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\ModCompatibility\DualWield\Patch_DualWield_Ext_Pawn_EquipmentTracker.cs" />
     <Compile Include="VFECore\HarmonyPatches\ModCompatibility\DualWield\Patch_DualWield_Harmony_FloatMenuMakerMap_AddHumanlikeOrders.cs" />
     <Compile Include="VFECore\HarmonyPatches\FactionSpawning\Patch_FactionDiscovery_ModBase.cs" />
@@ -891,10 +890,8 @@
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_IncidentWorker_WandererJoin.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_ITab_Pawn_Gear.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_Pawn.cs" />
-    <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_Pawn_ApparelTracker.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_PawnApparelGenerator.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_PawnGenerator.cs" />
-    <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_PawnGraphicSet.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_Pawn_HealthTracker.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_QuestGen_Generate.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_RaidStrategyWorker_Siege.cs" />

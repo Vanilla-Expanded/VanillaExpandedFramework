@@ -3,11 +3,8 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Reflection.Emit;
-using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 using static Verse.PawnCapacityUtility;
@@ -48,10 +45,10 @@ namespace VFECore
             var codes = instructions.ToList();
             var statOffsetFromGearMethod = AccessTools.Method(typeof(StatWorker), nameof(StatWorker.StatOffsetFromGear));
             bool found = false;
-            for (var i = 0; i < codes.Count; i++)
+            for (int i = 0; i < codes.Count; i++)
             {
                 yield return codes[i];
-                if (!found && codes[i].opcode == OpCodes.Stloc_0 && codes[i - 1].opcode == OpCodes.Add && codes[i- 2].Calls(statOffsetFromGearMethod))
+                if (!found && codes[i].opcode == OpCodes.Stloc_0 && codes[i - 1].opcode == OpCodes.Add && codes[i - 2].Calls(statOffsetFromGearMethod))
                 {
                     found = true;
                     yield return new CodeInstruction(OpCodes.Ldloc_0);
@@ -68,7 +65,7 @@ namespace VFECore
                 }
             }
         }
-    
+
         public static float StatFactorFromGear(Apparel gear, StatDef stat)
         {
             var extension = gear?.def.GetModExtension<ApparelExtension>();
@@ -82,7 +79,7 @@ namespace VFECore
             return 1f;
         }
     }
-    
+
     [HarmonyPatch(typeof(StatWorker), "GetExplanationUnfinalized")]
     public static class StatWorker_GetExplanationUnfinalized_Transpiler
     {
@@ -90,11 +87,11 @@ namespace VFECore
         {
             var codes = instructions.ToList();
             var appendLineMethod = AccessTools.Method(typeof(StringBuilder), nameof(StringBuilder.AppendLine));
-    
-            for (var i = 0; i < codes.Count; i++)
+
+            for (int i = 0; i < codes.Count; i++)
             {
                 yield return codes[i];
-                if (codes[i].opcode == OpCodes.Stloc_S && codes[i].operand is LocalBuilder lb && lb.LocalIndex == 24 
+                if (codes[i].opcode == OpCodes.Stloc_S && codes[i].operand is LocalBuilder lb && lb.LocalIndex == 24
                     && codes[i + 1].opcode == OpCodes.Ldloc_S && codes[i + 1].operand is LocalBuilder lb2 && lb2.LocalIndex == 24)
                 {
                     yield return new CodeInstruction(OpCodes.Ldloca_S, 0);
@@ -105,7 +102,7 @@ namespace VFECore
                 }
             }
         }
-    
+
         public static void ModifyValue(ref StringBuilder stringBuilder, Apparel apparel, StatDef stat)
         {
             if (GearAffectsStat(apparel.def, stat))
@@ -113,7 +110,7 @@ namespace VFECore
                 stringBuilder.AppendLine(InfoTextLineFromGear(apparel, stat));
             }
         }
-    
+
         private static bool GearAffectsStat(ThingDef gearDef, StatDef stat)
         {
             var extension = gearDef.GetModExtension<ApparelExtension>();
@@ -129,7 +126,7 @@ namespace VFECore
             }
             return false;
         }
-    
+
         private static string InfoTextLineFromGear(Thing gear, StatDef stat)
         {
             var extension = gear.def.GetModExtension<ApparelExtension>();
@@ -148,7 +145,7 @@ namespace VFECore
             var codes = instructions.ToList();
             var appendLineMethod = AccessTools.Method(typeof(StringBuilder), nameof(StringBuilder.AppendLine));
 
-            for (var i = 0; i < codes.Count; i++)
+            for (int i = 0; i < codes.Count; i++)
             {
                 yield return codes[i];
                 if (codes[i].opcode == OpCodes.Pop && codes[i - 1].Calls(appendLineMethod) && codes[i + 1].opcode == OpCodes.Ldc_I4_0 && codes[i + 2].opcode == OpCodes.Stloc_1)
@@ -174,7 +171,7 @@ namespace VFECore
                         {
                             stringBuilder.AppendLine();
                         }
-                        StatModifier statModifier = extension.equippedStatFactors[i];
+                        var statModifier = extension.equippedStatFactors[i];
                         stringBuilder.Append($"{statModifier.stat.LabelCap}: {statModifier.stat.Worker.ValueToString(statModifier.value, finalized: false, ToStringNumberSense.Factor)}");
                     }
                 }
@@ -198,9 +195,9 @@ namespace VFECore
                 {
                     for (int k = 0; k < extension.equippedStatFactors.Count; k++)
                     {
-                        StatDef stat = extension.equippedStatFactors[k].stat;
+                        var stat = extension.equippedStatFactors[k].stat;
                         float num3 = extension.equippedStatFactors[k].value;
-                        StringBuilder stringBuilder5 = new StringBuilder(stat.description);
+                        var stringBuilder5 = new StringBuilder(stat.description);
                         if (req.HasThing && stat.Worker != null)
                         {
                             stringBuilder5.AppendLine();
@@ -252,7 +249,7 @@ namespace VFECore
 
                 if (minLevels.Any())
                 {
-                    var maxLevel = minLevels.Max();
+                    float maxLevel = minLevels.Max();
                     __result = Mathf.Max(__result, maxLevel);
                 }
             }
@@ -287,7 +284,11 @@ namespace VFECore
 
         public static void Postfix(Pawn p, StringBuilder explanation, ref float __result)
         {
-            if (p?.apparel?.WornApparel.NullOrEmpty() ?? true) return;
+            if (p?.apparel?.WornApparel.NullOrEmpty() ?? true)
+            {
+                return;
+            }
+
             foreach (var apparel in p.apparel.WornApparel)
             {
                 var modExtension = apparel.def.GetModExtension<ApparelExtension>();
@@ -309,4 +310,167 @@ namespace VFECore
         }
     }
 
+    [HarmonyPatch(typeof(Pawn_ApparelTracker), "TryDrop")]
+    [HarmonyPatch(new Type[]
+{
+            typeof(Apparel),
+            typeof(Apparel),
+            typeof(IntVec3),
+            typeof(bool)
+}, new ArgumentType[]
+{
+            0,
+            ArgumentType.Ref,
+            0,
+            0
+})]
+    public static class Pawn_ApparelTracker_TryDrop_Patch
+    {
+        public static void Postfix(Pawn ___pawn, bool __result, Apparel ap, ref Apparel resultingAp, IntVec3 pos, bool forbid = true)
+        {
+            if (__result && ___pawn != null)
+            {
+                if (resultingAp is Apparel_Shield newShield)
+                {
+                    newShield.CompShield.equippedOffHand = false;
+                    var comp = newShield.GetComp<CompEquippable>();
+                    if (comp != null)
+                    {
+                        foreach (var verb in comp.AllVerbs)
+                        {
+                            verb.caster = null;
+                            verb.Reset();
+                        }
+                    }
+                }
+                var extension = resultingAp?.def.GetModExtension<ApparelExtension>();
+                if (extension != null)
+                {
+                    if (___pawn.story?.traits != null)
+                    {
+                        if (extension.traitsOnEquip != null)
+                        {
+                            foreach (var traitDef in extension.traitsOnEquip)
+                            {
+                                var trait = ___pawn.story.traits.GetTrait(traitDef);
+                                if (trait != null)
+                                {
+                                    ___pawn.story.traits.RemoveTrait(trait);
+                                }
+                            }
+                        }
+                        if (extension.traitsOnUnequip != null)
+                        {
+                            foreach (var traitDef in extension.traitsOnUnequip)
+                            {
+                                if (!___pawn.story.traits.HasTrait(traitDef))
+                                {
+                                    var trait = new Trait(traitDef);
+                                    ___pawn.story.traits.GainTrait(trait);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(Pawn_ApparelTracker), nameof(Pawn_ApparelTracker.Remove))]
+    public class Pawn_ApparelTracker_Remove_Patch
+    {
+        public static void Postfix(Pawn ___pawn, Apparel ap)
+        {
+            if (___pawn != null)
+            {
+                var extension = ap?.def.GetModExtension<ApparelExtension>();
+                if (extension != null)
+                {
+                    if (___pawn.story?.traits != null)
+                    {
+                        if (___pawn.story?.traits != null)
+                        {
+                            if (extension.traitsOnEquip != null)
+                            {
+                                foreach (var traitDef in extension.traitsOnEquip)
+                                {
+                                    var trait = ___pawn.story.traits.GetTrait(traitDef);
+                                    if (trait != null)
+                                    {
+                                        ___pawn.story.traits.RemoveTrait(trait);
+                                    }
+                                }
+                            }
+                            if (extension.traitsOnUnequip != null)
+                            {
+                                foreach (var traitDef in extension.traitsOnUnequip)
+                                {
+                                    if (!___pawn.story.traits.HasTrait(traitDef))
+                                    {
+                                        var trait = new Trait(traitDef);
+                                        ___pawn.story.traits.GainTrait(trait);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(Pawn_ApparelTracker), nameof(Pawn_ApparelTracker.Wear))]
+    public static class Pawn_ApparelTracker_Wear_Patch
+    {
+        public static bool doNotRunTraitsPatch;
+        public static void Postfix(Pawn_ApparelTracker __instance, Apparel newApparel, bool dropReplacedApparel = true, bool locked = false)
+        {
+            VerbUtility.TryModifyThingsVerbs(newApparel);
+            if (newApparel is Apparel_Shield newShield)
+            {
+                newShield.CompShield.equippedOffHand = true;
+                var comp = newShield.GetComp<CompEquippable>();
+                if (comp != null)
+                {
+                    foreach (var verb in comp.AllVerbs)
+                    {
+                        verb.caster = newShield.Wearer;
+                        verb.Reset();
+                    }
+                }
+            }
+            if (!doNotRunTraitsPatch)
+            {
+                var extension = newApparel?.def.GetModExtension<ApparelExtension>();
+                if (extension != null)
+                {
+                    if (__instance.pawn.story?.traits != null)
+                    {
+                        if (extension.traitsOnEquip != null)
+                        {
+                            foreach (var traitDef in extension.traitsOnEquip)
+                            {
+                                if (!__instance.pawn.story.traits.HasTrait(traitDef))
+                                {
+                                    __instance.pawn.story.traits.GainTrait(new Trait(traitDef));
+                                }
+                            }
+                        }
+                        if (extension.traitsOnUnequip != null)
+                        {
+                            foreach (var traitDef in extension.traitsOnUnequip)
+                            {
+                                var trait = __instance.pawn.story.traits.GetTrait(traitDef);
+                                if (trait != null)
+                                {
+                                    __instance.pawn.story.traits.RemoveTrait(trait);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
