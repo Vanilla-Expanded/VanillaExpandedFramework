@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<ThingDef>
+		<defName>MVCF_Dummy</defName>
+		<label>dummy</label>
+		<description>no</description>
+		<selectable>false</selectable>
+		<thingClass>MVCF.DummyCaster</thingClass>
+		<tickerType>Normal</tickerType>
+		<isSaveable>false</isSaveable>
+  	</ThingDef>
+</Defs>
