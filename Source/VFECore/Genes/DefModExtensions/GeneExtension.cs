@@ -14,6 +14,8 @@ namespace VanillaGenesExpanded
         public List<HediffToBodyparts> hediffsToBodyParts;
         public HediffDef hediffToWholeBody;
 
+		public bool useSkinColorForFur = false;
+
     }
 
 }

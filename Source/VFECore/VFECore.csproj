@@ -676,6 +676,7 @@
     <Compile Include="Genes\GeneClasses\Gene_AddsHediff.cs" />
     <Compile Include="Genes\GraphicsCache\GraphicsCache.cs" />
     <Compile Include="Genes\Harmony\GeneUIUtility_DrawGeneBasics.cs" />
+    <Compile Include="Genes\Harmony\PawnGraphicSet_ResolveAllGraphics.cs" />
     <Compile Include="VFECore\VanillaShieldsExpandedPatcher.cs" />
     <Compile Include="SoundTest\VEDebug.cs" />
     <Compile Include="VFECore\DefModExtensions\MechanoidExtension.cs" />
