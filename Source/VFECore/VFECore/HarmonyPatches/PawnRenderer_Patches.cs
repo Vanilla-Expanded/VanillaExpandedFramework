@@ -668,15 +668,16 @@ namespace VFECore
         public static void Prefix(PawnRenderer __instance, Pawn ___pawn, Thing eq, ref Vector3 drawLoc, ref float aimAngle, CarryWeaponOpenly carryWeaponOpenly)
         {
             var thingDefExtension = eq.def.GetModExtension<ThingDefExtension>();
-            if (carryWeaponOpenly())
+
+            if (thingDefExtension != null && carryWeaponOpenly())
             {
                 var pawn = ___pawn;
                 var pawnRot = pawn.Rotation;
 
                 // Weapon draw offsets that apply at all times (i.e. carrying weapons while working, drafted, attacking)
                 // Replaces the now-defunct CompOversizedWeapon
-                if (thingDefExtension?.weaponCarryDrawOffsets != null)
-                {                   
+                if (thingDefExtension.weaponCarryDrawOffsets != null)
+                {
                     if (pawnRot == Rot4.South)
                     {
                         drawLoc += thingDefExtension.weaponCarryDrawOffsets.south.drawOffset;
@@ -703,7 +704,7 @@ namespace VFECore
                 // Useful for things like holding a pike/halberd while standing at attention
                 //
                 // Note: These offsets add on to anything in weaponCarryDrawOffsets
-                if (thingDefExtension?.weaponDraftedDrawOffsets != null && !___pawn.stances.curStance.StanceBusy)
+                if (thingDefExtension.weaponDraftedDrawOffsets != null && !___pawn.stances.curStance.StanceBusy)
                 {
                     if (pawnRot == Rot4.South)
                     {
