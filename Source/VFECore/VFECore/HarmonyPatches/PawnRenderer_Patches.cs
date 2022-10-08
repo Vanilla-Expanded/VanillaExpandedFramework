@@ -669,9 +669,9 @@ namespace VFECore
         {
             var thingDefExtension = eq.def.GetModExtension<ThingDefExtension>();
             if (thingDefExtension?.weaponCarryDrawOffsets != null)
-            {
-                if (carryWeaponOpenly())
-                {
+            {                
+                if (carryWeaponOpenly() && !___pawn.stances.curStance.StanceBusy)
+                {                   
                     var pawn = ___pawn;
                     var pawnRot = pawn.Rotation;
                     if (pawnRot == Rot4.South)
