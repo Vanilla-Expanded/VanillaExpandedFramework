@@ -9,7 +9,8 @@ namespace VFECore
     {
         // For weapons
         public bool usableWithShields = false;
-        public WeaponCarryDrawOffsets weaponCarryDrawOffsets = null;
+        public WeaponDrawOffsets weaponCarryDrawOffsets = null;     // Offsets carried weapon regardless of stance
+        public WeaponDrawOffsets weaponDraftedDrawOffsets = null;   // Only when drafted but not actively attacking/aiming
 
         // For shields and apparel
         public List<PawnKindDef> useFactionColourForPawnKinds;
@@ -31,7 +32,7 @@ namespace VFECore
 
     }
 
-    public class WeaponCarryDrawOffsets
+    public class WeaponDrawOffsets
     {
         public Offset north = null;
         public Offset east = null;
