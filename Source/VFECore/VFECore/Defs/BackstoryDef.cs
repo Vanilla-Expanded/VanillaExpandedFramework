@@ -1,6 +1,16 @@
 ﻿namespace VFECore
 {
-	/*public class TraitEntryBackstory
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Reflection;
+	using System.Reflection.Emit;
+	using System.Runtime.CompilerServices;
+	using HarmonyLib;
+	using RimWorld;
+	using Verse;
+
+	public class TraitEntryBackstory
 	{
 		public TraitDef defName;
 		public int degree = 0;
@@ -8,24 +18,33 @@
 
 		public float commonalityMale = -1f;
 		public float commonalityFemale = -1f;
-	}*/
+	}
 
-	/*[HarmonyPatch(typeof(PawnBioAndNameGenerator), "FillBackstorySlotShuffled")]
+	[HarmonyPatch(typeof(PawnBioAndNameGenerator), "FillBackstorySlotShuffled")]
 	public static class PawnBioAndNameGenerator_FillBackstorySlotShuffled
 	{
-		public static bool Prefix(Pawn pawn, BackstorySlot slot, ref Backstory backstory) =>
-			slot != BackstorySlot.Adulthood ||
-			DefDatabase<BackstoryDef>.GetNamedSilentFail(pawn.story.childhood.identifier)?.linkedBackstory is not string id ||
-				!BackstoryDatabase.TryGetWithIdentifier(id, out backstory);
+		public static bool Prefix(Pawn pawn, BackstorySlot slot, ref BackstoryDef backstory)
+		{
+			VEBackstoryDef bs = (pawn.story.Childhood as VEBackstoryDef);
+			return slot != BackstorySlot.Adulthood || bs?.linkedBackstory == null || pawn.story.Childhood == bs.linkedBackstory;
+		}
 
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
-			MethodInfo shuffleableInfo = AccessTools.Method(typeof(BackstoryDatabase), "ShuffleableBackstoryList");
-			foreach (CodeInstruction codeInstruction in instructions)
+			MethodInfo backstoryDatabaseInfo = AccessTools.PropertyGetter(typeof(DefDatabase<BackstoryDef>), nameof(DefDatabase<BackstoryDef>.AllDefs));
+
+			bool done = false;
+
+			List<CodeInstruction> instructionList = instructions.ToList();
+
+			for (int i = 0; i < instructionList.Count; i++)
 			{
+				CodeInstruction codeInstruction = instructionList[i];
 				yield return codeInstruction;
-				if (codeInstruction.opcode == OpCodes.Call && codeInstruction.OperandIs(shuffleableInfo))
+
+				if (!done && i > 1 && codeInstruction.Calls(backstoryDatabaseInfo))
 				{
+					done = true;
 					yield return new CodeInstruction(OpCodes.Ldarg_0);
 					yield return new CodeInstruction(OpCodes.Ldarg_1);
 					yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(PawnBioAndNameGenerator_FillBackstorySlotShuffled), nameof(Backstories)));
@@ -33,22 +52,22 @@
 			}
 		}
 
-		public static List<Backstory> Backstories(List<Backstory> backstories, Pawn pawn, BackstorySlot slot)
+		public static List<BackstoryDef> Backstories(List<BackstoryDef> backstories, Pawn pawn, BackstorySlot slot)
 		{
 			return backstories.Where(bs =>
 									{
-										BackstoryDef def = DefDatabase<BackstoryDef>.GetNamedSilentFail(bs.identifier);
-										return (def?.Approved(pawn) ?? true) && (slot != BackstorySlot.Adulthood || ((def?.linkedBackstory.NullOrEmpty() ?? true) || pawn.story.childhood.identifier == def.linkedBackstory));
+										VEBackstoryDef def = bs as VEBackstoryDef;
+										return (def?.Approved(pawn) ?? true) && (slot != BackstorySlot.Adulthood || ((def?.linkedBackstory == null) || pawn.story.Childhood == def.linkedBackstory));
 									}).ToList();
 		}
-	}*/
+	}
 
-	/*[HarmonyPatch(typeof(PawnGenerator), "GenerateSkills")]
+	[HarmonyPatch(typeof(PawnGenerator), "GenerateSkills")]
 	public static class PawnGenerator_GenerateSkills
 	{
 		public static void Postfix(Pawn pawn)
 		{
-			foreach (var backstory in pawn.story.AllBackstories)
+			foreach (BackstoryDef backstory in pawn.story.AllBackstories)
 			{
 				if (PASSIONS.TryGetValue(backstory, out var passions))
 				{
@@ -60,115 +79,45 @@
 			}
 		}
 
-		public static readonly ConditionalWeakTable<Backstory, List<SkillGain>> PASSIONS = new();
-	}*/
+		public static readonly ConditionalWeakTable<BackstoryDef, List<SkillGain>> PASSIONS = new();
+	}
 
-	/*public class BackstoryDef : Def
+	public class VEBackstoryDef : BackstoryDef
 	{
-		public string baseDescription;
-		public BodyTypeDef bodyTypeGlobal;
-		public BodyTypeDef bodyTypeMale;
-		public BodyTypeDef bodyTypeFemale;
-		public string title;
-		public string titleFemale;
-		public string titleShort;
-		public string titleShortFemale;
-		public BackstorySlot slot = BackstorySlot.Adulthood;
-		public bool shuffleable = true;
-		public bool addToDatabase = true;
-		public List<WorkTags> workAllows = new List<WorkTags>();
-		public List<WorkTags> workDisables = new List<WorkTags>();
-		public List<WorkTags> requiredWorkTags = new List<WorkTags>();
-		public List<SkillGain> skillGains = new List<SkillGain>();
-		public List<SkillGain> passions = new List<SkillGain>();
-		public List<string> spawnCategories = new List<string>();
-		public List<TraitEntryBackstory> forcedTraits = new List<TraitEntryBackstory>();
-		public List<TraitEntryBackstory> disallowedTraits = new List<TraitEntryBackstory>();
-		public float maleCommonality = 100f;
-		public float femaleCommonality = 100f;
-		public string linkedBackstory;
-		//public RelationSettings relationSettings = new RelationSettings();
-		public List<string> forcedHediffs = new List<string>();
-		public IntRange bioAgeRange;
-		public IntRange chronoAgeRange;
-		public List<ThingDefCountRangeClass> forcedItems = new List<ThingDefCountRangeClass>();
-		public Backstory backstory;
+        public List<TraitEntryBackstory>     forcedTraitsChance     = new List<TraitEntryBackstory>();
+        public List<TraitEntryBackstory>     disallowedTraitsChance = new List<TraitEntryBackstory>();
+        public WorkTags                      workAllows             = WorkTags.AllWork;
+        public float                         maleCommonality        = 100f;
+        public float                         femaleCommonality      = 100f;
+        public BackstoryDef                  linkedBackstory;
+		public List<string>                  forcedHediffs = new List<string>();
+        public List<SkillGain>               passions      = new List<SkillGain>();
+        public IntRange                      bioAgeRange;
+        public IntRange                      chronoAgeRange;
+        public List<ThingDefCountRangeClass> forcedItems = new List<ThingDefCountRangeClass>();
 
-		public bool CommonalityApproved(Gender g) => Rand.Range(min: 0, max: 100) < (g == Gender.Female ? this.femaleCommonality : this.maleCommonality);
+        public bool CommonalityApproved(Gender g) => Rand.Range(min: 0, max: 100) < (g == Gender.Female ? this.femaleCommonality : this.maleCommonality);
 
-		public bool Approved(Pawn p) => this.CommonalityApproved(p.gender) &&
-										(this.bioAgeRange == default || (this.bioAgeRange.min < p.ageTracker.AgeBiologicalYears && p.ageTracker.AgeBiologicalYears < this.bioAgeRange.max)) &&
+        public bool Approved(Pawn p) => this.CommonalityApproved(p.gender)                                                                                                                              &&
+										(this.bioAgeRange    == default || (this.bioAgeRange.min    < p.ageTracker.AgeBiologicalYears    && p.ageTracker.AgeBiologicalYears    < this.bioAgeRange.max)) &&
 										(this.chronoAgeRange == default || (this.chronoAgeRange.min < p.ageTracker.AgeChronologicalYears && p.ageTracker.AgeChronologicalYears < this.chronoAgeRange.max));
 
-		public override void ResolveReferences()
-		{
-
+        public override void ResolveReferences()
+        {
+			this.identifier = this.defName;
 			base.ResolveReferences();
 
-
-			if (!this.addToDatabase || BackstoryDatabase.allBackstories.ContainsKey(this.defName) || this.title.NullOrEmpty() || this.spawnCategories.NullOrEmpty()) return;
-
-			this.backstory = new Backstory
-			{
-				slot = this.slot,
-				shuffleable = this.shuffleable,
-				spawnCategories = this.spawnCategories,
-				forcedTraits = this.forcedTraits.NullOrEmpty() ? null : this.forcedTraits.Where(predicate: trait => Rand.Range(min: 0, max: 100) < trait.chance).ToList().ConvertAll(converter: trait => new TraitEntry(trait.defName, trait.degree)),
-				disallowedTraits = this.disallowedTraits.NullOrEmpty() ? null : this.disallowedTraits.Where(predicate: trait => Rand.Range(min: 0, max: 100) < trait.chance).ToList().ConvertAll(converter: trait => new TraitEntry(trait.defName, trait.degree)),
-				workDisables = this.workAllows.NullOrEmpty() ? this.workDisables.NullOrEmpty() ? WorkTags.None : ((Func<WorkTags>)delegate
-																																{
-																																	WorkTags wt = WorkTags.None;
-																																	this.workDisables.ForEach(action: tag => wt |= tag);
-																																	return wt;
-																																})() : ((Func<WorkTags>)delegate
-																																						{
-																																							WorkTags wt = WorkTags.None;
-																																							Enum.GetValues(typeof(WorkTags)).Cast<WorkTags>().Where(predicate: tag => !this.workAllows.Contains(tag)).ToList().ForEach(action: tag => wt |= tag);
-																																							return wt;
-																																						})(),
-				identifier = this.defName,
-				requiredWorkTags = ((Func<WorkTags>)delegate
-													{
-														WorkTags wt = WorkTags.None;
-														this.requiredWorkTags.ForEach(action: tag => wt |= tag);
-														return wt;
-													})()
-			};
+			this.forcedTraits = (this.forcedTraits ??= new List<BackstoryTrait>()).
+								Concat(this.forcedTraitsChance.Where(predicate: trait => Rand.Range(min: 0, max: 100) < trait.chance).ToList().ConvertAll(converter: trait => new BackstoryTrait { def = trait.defName, degree = trait.degree })).ToList();
+			this.disallowedTraits = (this.disallowedTraits ??= new List<BackstoryTrait>()).
+									Concat(this.disallowedTraitsChance.Where(predicate: trait => Rand.Range(min: 0, max: 100) < trait.chance).ToList().ConvertAll(converter: trait => new BackstoryTrait { def = trait.defName, degree = trait.degree })).ToList();
+			this.workDisables = (this.workAllows & WorkTags.AllWork) != 0 ? this.workDisables : ~this.workAllows;
 
 			if (this.bodyTypeGlobal == null && this.bodyTypeFemale == null && this.bodyTypeMale == null)
 				this.bodyTypeGlobal = DefDatabase<BodyTypeDef>.GetRandom();
 
-			Traverse.Create(this.backstory).Field(name: "bodyTypeGlobalResolved").SetValue(this.bodyTypeGlobal);
-			Traverse.Create(this.backstory).Field(name: "bodyTypeFemaleResolved").SetValue(this.bodyTypeFemale);
-			Traverse.Create(this.backstory).Field(name: "bodyTypeMaleResolved").SetValue(this.bodyTypeMale);
-
-			Traverse.Create(this.backstory).Field(nameof(this.skillGains)).SetValue(this.skillGains.ToDictionary(keySelector: i => i.skill.defName, elementSelector: i => i.xp));
-
 			if (!passions.NullOrEmpty())
-				PawnGenerator_GenerateSkills.PASSIONS.Add(this.backstory, this.passions);
-
-			UpdateTranslateableFields(this);
-
-			this.backstory.ResolveReferences();
-			this.backstory.PostLoad();
-
-			this.backstory.identifier = this.defName;
-
-			IEnumerable<string> errors;
-			if (!(errors = this.backstory.ConfigErrors(ignoreNoSpawnCategories: false)).Any())
-				BackstoryDatabase.AddBackstory(this.backstory);
-			else
-				Log.Error(this.defName + " has errors:\n" + string.Join(separator: "\n", errors.ToArray()));
-		}
-
-		internal static void UpdateTranslateableFields(BackstoryDef bs)
-		{
-			if (bs.backstory == null) return;
-
-			bs.backstory.baseDesc = bs.baseDescription.NullOrEmpty() ? "Empty." : bs.baseDescription;
-			bs.backstory.SetTitle(bs.title, bs.titleFemale);
-			bs.backstory.SetTitleShort(bs.titleShort.NullOrEmpty() ? bs.backstory.title : bs.titleShort,
-										bs.titleShortFemale.NullOrEmpty() ? bs.backstory.titleFemale : bs.titleShortFemale);
-		}
-	}*/
+				PawnGenerator_GenerateSkills.PASSIONS.Add(this, this.passions);
+        }
+	}
 }

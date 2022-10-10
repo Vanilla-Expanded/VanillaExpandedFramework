@@ -15,7 +15,7 @@ namespace VFECore
     public static class Patch_PawnGenerator
     {
 
-        /*[HarmonyPatch(typeof(PawnGenerator), "GenerateGearFor")]
+        [HarmonyPatch(typeof(PawnGenerator), "GenerateGearFor")]
         public static class GenerateGearFor
         {
             public static void Postfix(Pawn pawn)
@@ -23,30 +23,28 @@ namespace VFECore
                 // Also generate shield
                 PawnShieldGenerator.TryGenerateShieldFor(pawn);
 
-                pawn.story?.AllBackstories?.Select(selector: bs => DefDatabase<BackstoryDef>.GetNamedSilentFail(bs.identifier)).Where(predicate: bs => bs != null)
-                 .SelectMany(selector: bd => bd.forcedItems).Do(action: tdcrc =>
-                                                                        {
-                                                                            int count = tdcrc.countRange.RandomInRange;
+                pawn.story?.AllBackstories?.OfType<VEBackstoryDef>().SelectMany(selector: bd => bd.forcedItems).Do(action: tdcrc =>
+                                                                                                                           {
+                                                                                                                               int count = tdcrc.countRange.RandomInRange;
 
-                                                                            while (count > 0)
-                                                                            {
-                                                                                Thing thing = ThingMaker.MakeThing(tdcrc.thingDef, GenStuff.RandomStuffFor(tdcrc.thingDef));
-                                                                                thing.stackCount = Mathf.Min(count, tdcrc.thingDef.stackLimit);
-                                                                                count -= thing.stackCount;
-                                                                                pawn.inventory?.TryAddItemNotForSale(thing);
-                                                                            }
-                                                                        });
+                                                                                                                               while (count > 0)
+                                                                                                                               {
+                                                                                                                                   Thing thing = ThingMaker.MakeThing(tdcrc.thingDef, GenStuff.RandomStuffFor(tdcrc.thingDef));
+                                                                                                                                   thing.stackCount = Mathf.Min(count, tdcrc.thingDef.stackLimit);
+                                                                                                                                   count -= thing.stackCount;
+                                                                                                                                   pawn.inventory?.TryAddItemNotForSale(thing);
+                                                                                                                               }
+                                                                                                                           });
             }
 
-        }*/
+        }
 
-        /*[HarmonyPatch(typeof(PawnGenerator), "GenerateInitialHediffs")]
+        [HarmonyPatch(typeof(PawnGenerator), "GenerateInitialHediffs")]
         public static class GenerateInitialHediffs
         {
             public static void Postfix(Pawn pawn)
             {
-                pawn.story?.AllBackstories?.Select(selector: bs => DefDatabase<BackstoryDef>.GetNamedSilentFail(bs.identifier)).Where(predicate: bd => bd != null)
-                 .SelectMany(selector: bd => bd.forcedHediffs).Select(DefDatabase<HediffDef>.GetNamedSilentFail).
+                pawn.story?.AllBackstories?.OfType<VEBackstoryDef>().SelectMany(selector: bd => bd.forcedHediffs).Select(DefDatabase<HediffDef>.GetNamedSilentFail).
                      Do(action: hd =>
                                 {
                                     BodyPartRecord bodyPartRecord = null;
@@ -56,6 +54,6 @@ namespace VFECore
                                     pawn.health.AddHediff(hd, bodyPartRecord);
                                 });
             }
-        }*/
+        }
     }
 }
