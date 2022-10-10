@@ -23,10 +23,14 @@
 	[HarmonyPatch(typeof(PawnBioAndNameGenerator), "FillBackstorySlotShuffled")]
 	public static class PawnBioAndNameGenerator_FillBackstorySlotShuffled
 	{
-		public static bool Prefix(Pawn pawn, BackstorySlot slot, ref BackstoryDef backstory)
+		public static bool Prefix(Pawn pawn, BackstorySlot slot)
 		{
-			VEBackstoryDef bs = (pawn.story.Childhood as VEBackstoryDef);
-			return slot != BackstorySlot.Adulthood || bs?.linkedBackstory == null || pawn.story.Childhood == bs.linkedBackstory;
+			if (slot == BackstorySlot.Adulthood && pawn.story.Childhood is VEBackstoryDef absd && absd.linkedBackstory != null)
+			{
+				pawn.story.Adulthood = absd.linkedBackstory;
+				return false;
+			}
+			return true;
 		}
 
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
