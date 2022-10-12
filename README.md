@@ -1,6 +1,6 @@
 Welcome to the Vanilla Expanded Framework!
 
-![](https://i.imgur.com/bVf30tE.jpg)
+![](https://raw.githubusercontent.com/Vanilla-Expanded/VanillaExpandedFramework/main/About/Preview.png)
 
 The Vanilla Expanded Framework is a code library that adds some shared behaviours for several of the Vanilla Expanded series of mods. We have tried to document everything and to make it as modular as possible, so you can use it as a dependency in your own mods and access all these extra behaviours.
 
