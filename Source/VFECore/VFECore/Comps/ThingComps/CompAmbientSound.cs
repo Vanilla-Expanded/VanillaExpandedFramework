@@ -69,7 +69,7 @@ namespace VFECore
             }
         }
 
-        private void StartSustainer()
+        protected void StartSustainer()
         {
             if (CanStartSustainer() is false)
             {
@@ -91,7 +91,7 @@ namespace VFECore
 
         }
 
-        private void EndSustainer()
+        protected void EndSustainer()
         {
             if (sustainerAmbient != null)
             {
