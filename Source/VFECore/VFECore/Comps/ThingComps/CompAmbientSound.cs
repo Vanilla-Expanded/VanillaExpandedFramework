@@ -8,24 +8,19 @@ namespace VFECore
     public class CompProperties_AmbientSound : CompProperties
     {
         public SoundDef ambientSound;
-
-
         public CompProperties_AmbientSound()
         {
-            this.compClass = typeof(CompAmbientSound);
+            compClass = typeof(CompAmbientSound);
         }
     }
 
     public class CompAmbientSound : ThingComp
     {
         private Sustainer sustainerAmbient;
-
         public CompProperties_AmbientSound Props => base.props as CompProperties_AmbientSound;
-
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-
             if (parent is Pawn)
             {
                 LongEventHandler.ExecuteWhenFinished(delegate
@@ -76,11 +71,18 @@ namespace VFECore
 
         private void StartSustainer()
         {
-            if (sustainerAmbient != null)
+            if (CanStartSustainer() is false)
+            {
                 return;
+            }
 
-            SoundInfo info = SoundInfo.InMap(this.parent);
-            if (this.parent is Pawn pawn)
+            if (sustainerAmbient != null)
+            {
+                return;
+            }
+
+            SoundInfo info = SoundInfo.InMap(parent);
+            if (parent is Pawn pawn)
             {
                 pawn.pather ??= new Pawn_PathFollower(pawn);
                 pawn.stances ??= new Pawn_StanceTracker(pawn);
@@ -96,6 +98,11 @@ namespace VFECore
                 sustainerAmbient.End();
                 sustainerAmbient = null;
             }
+        }
+
+        protected virtual bool CanStartSustainer()
+        {
+            return true;
         }
     }
 }
