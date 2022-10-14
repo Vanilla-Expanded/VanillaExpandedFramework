@@ -588,6 +588,7 @@
     <Compile Include="AnimalBehaviours\Harmony\JobGiver_GetRest_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\Pawn_IsColonistPlayerControlled_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Infocard\ThingDef_SpecialDisplayStats_Patch2.cs" />
+    <Compile Include="AnimalBehaviours\Harmony\MapTemperature_SeasonAcceptableFor_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Pawn_FilthTracker_Notify_EnteredNewCell_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Pawn_MindState_StartFleeingBecauseOfPawnAction_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\QuestNode_GetPawnKind_SetVars_CanHandle_Patch.cs" />
@@ -599,7 +600,6 @@
     <Compile Include="AnimalBehaviours\Harmony\Infocard\ThingDef_SpecialDisplayStats_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\TrainableUtility_TamenessCanDecay_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\VerbProperties_AdjustedCooldown_Patch.cs" />
-    <Compile Include="AnimalBehaviours\Harmony\WildAnimalSpawner_SpawnRandomWildAnimalAt.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_AsexualReproduction.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_AutoPermanentInjury.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_CauseIncident.cs" />
