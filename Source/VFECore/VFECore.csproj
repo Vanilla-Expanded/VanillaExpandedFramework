@@ -673,10 +673,12 @@
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_OverFortyDegrees.cs" />
     <Compile Include="Genes\DefModExtensions\GeneExtension.cs" />
     <Compile Include="Genes\Defs\HediffToBodyparts.cs" />
+    <Compile Include="Genes\GameComponents\GameComponent_GeneGoodies.cs" />
     <Compile Include="Genes\GeneClasses\Gene_AddsHediff.cs" />
     <Compile Include="Genes\GraphicsCache\GraphicsCache.cs" />
     <Compile Include="Genes\Harmony\GeneUIUtility_DrawGeneBasics.cs" />
     <Compile Include="Genes\Harmony\PawnGraphicSet_ResolveAllGraphics.cs" />
+    <Compile Include="Genes\MapComponents\MapComponent_GeneGoodies.cs" />
     <Compile Include="VFECore\VanillaShieldsExpandedPatcher.cs" />
     <Compile Include="SoundTest\VEDebug.cs" />
     <Compile Include="VFECore\DefModExtensions\MechanoidExtension.cs" />
@@ -794,11 +796,11 @@
     <Compile Include="ItemProcessor\FactoryMultiplierClass\FactoryMultiplierClass.cs" />
     <Compile Include="Memes\DefModExtensions\ExtendedMemeProperties.cs" />
     <Compile Include="Memes\Defs\StartingItemsByIdeologyDef.cs" />
-    <Compile Include="Memes\GameComponent\GameComponent_IdeologicalGoodies.cs" />
+    <Compile Include="Memes\GameComponents\GameComponent_IdeologicalGoodies.cs" />
     <Compile Include="Memes\Harmony\Dialog_ChooseMemes_TryAccept.cs" />
     <Compile Include="Memes\Harmony\Dialog_ChooseMemes_GetFirstIncompatibleMemePair_Patch.cs" />
     <Compile Include="Memes\Harmony\Pawn_IdeoTracker_SetIdeo.cs" />
-    <Compile Include="Memes\MapComponent\MapComponent_IdeologicalGoodies.cs" />
+    <Compile Include="Memes\MapComponents\MapComponent_IdeologicalGoodies.cs" />
     <Compile Include="Misc\HireableSystem\Dialog_Hire.cs" />
     <Compile Include="Misc\HireableSystem\EquipmentOffsetConditions.cs" />
     <Compile Include="Misc\HireableSystem\HireableFactionDef.cs" />
