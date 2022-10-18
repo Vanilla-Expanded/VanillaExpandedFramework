@@ -31,7 +31,7 @@ namespace VanillaMemesExpanded
 
                 foreach (StartingItemsByIdeologyDef startingItems in DefDatabase<StartingItemsByIdeologyDef>.AllDefsListForReading)
                 {
-                    if (Current.Game.World.factionManager.OfPlayer.ideos.PrimaryIdeo.HasMeme(startingItems.associatedMeme))
+                    if (Current.Game?.World?.factionManager?.OfPlayer?.ideos?.PrimaryIdeo?.HasMeme(startingItems.associatedMeme)==true)
                     {
                         things.AddRange(startingItems.thingSetMaker.root.Generate());
                     }
@@ -39,26 +39,30 @@ namespace VanillaMemesExpanded
                 }
                 if (things.Count > 0) { DropPodUtility.DropThingsNear(MapGenerator.PlayerStartSpot, map, things, 110); }
 
-                foreach (MemeDef meme in Current.Game.World.factionManager.OfPlayer.ideos.PrimaryIdeo.memes)
+                if (Current.Game?.World?.factionManager?.OfPlayer?.ideos?.PrimaryIdeo?.memes != null)
                 {
-                    ExtendedMemeProperties extendedMemeProperties = meme.GetModExtension<ExtendedMemeProperties>();
-                    if(extendedMemeProperties != null)
+                    foreach (MemeDef meme in Current.Game.World.factionManager.OfPlayer.ideos.PrimaryIdeo.memes)
                     {
-                        if (extendedMemeProperties.factionOpinionOffset != 0)
+                        ExtendedMemeProperties extendedMemeProperties = meme.GetModExtension<ExtendedMemeProperties>();
+                        if (extendedMemeProperties != null)
                         {
-                            var factions = Find.FactionManager.AllFactions;
-                            foreach (var faction in factions)
+                            if (extendedMemeProperties.factionOpinionOffset != 0)
                             {
-                                faction.TryAffectGoodwillWith(Faction.OfPlayer, extendedMemeProperties.factionOpinionOffset, true, true);
+                                var factions = Find.FactionManager.AllFactions;
+                                foreach (var faction in factions)
+                                {
+                                    faction.TryAffectGoodwillWith(Faction.OfPlayer, extendedMemeProperties.factionOpinionOffset, true, true);
+                                }
                             }
+
+
                         }
 
-                       
+
+
                     }
-                   
-
-
                 }
+                
 
                 
 

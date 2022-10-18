@@ -22,6 +22,11 @@ namespace VanillaGenesExpanded
 
         //Reference to a thingsetmaker that makes pawns with this gene start play with some things (only on game start)
         public ThingSetMakerDef thingSetMaker=null;
+
+        //Gender bender
+        public bool forceMale = false;
+        public bool forceFemale = false;
+
     }
 
 }
