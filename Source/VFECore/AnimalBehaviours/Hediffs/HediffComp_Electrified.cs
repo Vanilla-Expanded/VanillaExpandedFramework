@@ -21,7 +21,7 @@ namespace AnimalBehaviours
         public override void CompPostTick(ref float severityAdjustment)
         {
             
-            if (parent.pawn.Map != null && AnimalBehaviours_Settings.flagChargeBatteries)
+            if (parent.pawn.Map != null)
             {
                 tickCounter++;
                 

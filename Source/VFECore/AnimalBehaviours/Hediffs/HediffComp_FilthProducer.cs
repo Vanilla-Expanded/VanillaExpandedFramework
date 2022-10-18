@@ -29,8 +29,7 @@ namespace AnimalBehaviours
         {
             base.CompPostTick(ref severityAdjustment);
 
-            if (AnimalBehaviours_Settings.flagAnimalParticles)
-            {
+           
                 filthProgress++;
                 if (this.filthProgress > Props.ticksToCreateFilth)
                 {
@@ -71,7 +70,7 @@ namespace AnimalBehaviours
                     filthProgress = 0;
                 }
 
-            }
+            
 
 
 

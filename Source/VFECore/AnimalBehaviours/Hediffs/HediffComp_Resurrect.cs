@@ -39,7 +39,7 @@ namespace AnimalBehaviours
 
 
             Map map = this.parent.pawn.Corpse.Map;
-            if (map != null && AnimalBehaviours_Settings.flagResurrection)
+            if (map != null)
             {
 
                 if (resurrectionsLeft > 1)

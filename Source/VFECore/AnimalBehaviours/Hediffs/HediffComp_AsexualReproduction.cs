@@ -70,7 +70,7 @@ namespace AnimalBehaviours
             base.CompPostTick(ref severityAdjustment);
             Pawn pawn = this.parent.pawn as Pawn;
             //Important, without a null map check creatures will reproduce while on caravans, producing errors
-            if (pawn.Map != null && AnimalBehaviours_Settings.flagAsexualReproduction)
+            if (pawn.Map != null)
             {
                 if (this.Props.isGreenGoo)
                 {

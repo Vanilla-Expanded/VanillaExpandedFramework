@@ -30,8 +30,7 @@ namespace AnimalBehaviours
         {
             base.CompPostTick(ref severityAdjustment);
 
-            if (AnimalBehaviours_Settings.flagCorpseDecayingEffect)
-            {
+            
                 tickCounter++;
 
                 //Only check every 2 rare ticks (8 seconds)
@@ -102,7 +101,7 @@ namespace AnimalBehaviours
                     }
                     tickCounter = 0;
                 }
-            }
+            
 
 
 

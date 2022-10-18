@@ -28,8 +28,7 @@ namespace AnimalBehaviours
         public override void CompPostTick(ref float severityAdjustment)
         {
             base.CompPostTick(ref severityAdjustment);
-            if (AnimalBehaviours_Settings.flagEffecters)
-            {
+           
                 tickCounter++;
                 //Only do anything every tickInterval
                 if (tickCounter > Props.tickInterval)
@@ -78,7 +77,7 @@ namespace AnimalBehaviours
                         }
                     }
                     tickCounter = 0;
-                }
+                
             }
 
         }
