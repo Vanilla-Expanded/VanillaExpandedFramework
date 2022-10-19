@@ -3,9 +3,10 @@
 
 
 
-	<VGE_StatsReport_Over40>over 40ºC</VGE_StatsReport_Over40>
-	
+	<VGE_StatsReport_Over40>over 40ºC</VGE_StatsReport_Over40>	
 	<VGE_StatsReport_Below0>below 0ºC</VGE_StatsReport_Below0>
+	<VGE_StatsReport_Armoured>armoured</VGE_StatsReport_Armoured>
+	<VGE_StatsReport_NoSunlight>no sunlight</VGE_StatsReport_NoSunlight>
 
 
 

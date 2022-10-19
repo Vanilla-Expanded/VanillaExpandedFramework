@@ -669,7 +669,9 @@
     <Compile Include="Apparel\Harmony\SkillRecord_Learn_Patch.cs" />
     <Compile Include="Apparel\Harmony\ThingSelectionUtility_SelectableByMapClick_Patch.cs" />
     <Compile Include="Apparel\ModExtensions\ApparelExtension.cs" />
+    <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_Armor.cs" />
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_BelowZero.cs" />
+    <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_NoSunlight.cs" />
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_OverFortyDegrees.cs" />
     <Compile Include="Genes\DefModExtensions\GeneExtension.cs" />
     <Compile Include="Genes\Defs\HediffToBodyparts.cs" />
