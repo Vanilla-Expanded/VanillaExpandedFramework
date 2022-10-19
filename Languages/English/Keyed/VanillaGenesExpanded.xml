@@ -7,6 +7,8 @@
 	<VGE_StatsReport_Below0>below 0ºC</VGE_StatsReport_Below0>
 	<VGE_StatsReport_Armoured>armoured</VGE_StatsReport_Armoured>
 	<VGE_StatsReport_NoSunlight>no sunlight</VGE_StatsReport_NoSunlight>
+	<VGE_StatsReport_Water>on water</VGE_StatsReport_Water>
+	<VGE_StatsReport_NotWater>on dry land</VGE_StatsReport_NotWater>
 
 
 
