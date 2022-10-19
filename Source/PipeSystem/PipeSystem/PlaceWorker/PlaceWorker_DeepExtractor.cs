@@ -19,7 +19,7 @@ namespace PipeSystem
             // Check if any cell is on top of deepchem
             var res = map.deepResourceGrid.ThingDefAt(loc);
             if (res == null || res.defName != comp.deepThing.defName)
-                return (AcceptanceReport)"PipeSystem_CantPlaceHere".Translate(def.label, comp.deepThing.defName);
+                return (AcceptanceReport)"PipeSystem_CantPlaceHere".Translate(def.label, comp.deepThing.label);
 
             // Draw
             cell = loc;
