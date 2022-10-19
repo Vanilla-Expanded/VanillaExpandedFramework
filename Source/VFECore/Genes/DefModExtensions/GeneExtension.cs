@@ -27,6 +27,8 @@ namespace VanillaGenesExpanded
         public bool forceMale = false;
         public bool forceFemale = false;
 
+        public bool noHeadColouring = false;
+
     }
 
 }
