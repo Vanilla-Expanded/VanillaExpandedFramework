@@ -1,14 +1,13 @@
-﻿using System;
-using Verse;
+﻿using Verse;
 
 namespace OPToxic
 {
-	public class OPToxicDefs : DefModExtension
-	{
-		public string OPToxicHediff;
+    public class OPToxicDefs : DefModExtension
+    {
+        public string OPToxicHediff;
 
-		public float OPToxicSeverity;
+        public float OPToxicSeverity;
 
-		public int OPSevUpTickPeriod = 120;
-	}
+        public int OPSevUpTickPeriod = 120;
+    }
 }
