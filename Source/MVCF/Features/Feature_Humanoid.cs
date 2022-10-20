@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using MVCF.Features.PatchSets;
@@ -104,7 +105,10 @@ namespace MVCF.Features
             if (comp?.VerbTracker?.AllVerbs == null) return;
             var manager = __instance?.pawn?.Manager(false);
             if (manager == null) return;
-            foreach (var verb in comp.VerbTracker.AllVerbs.Concat(manager.ExtraVerbsFor(eq))) manager.RemoveVerb(verb);
+            try { foreach (var verb in comp.VerbTracker.AllVerbs.Concat(manager.ExtraVerbsFor(eq))) manager.RemoveVerb(verb); }
+            catch (NullReferenceException) { }
+            
+            
         }
     }
 }
