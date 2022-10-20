@@ -83,7 +83,7 @@ public class VerbComp_Reloadable : VerbComp
     {
         base.Notify_ShotFired();
         ShotsRemaining--;
-        if (Pawn.CurJobDef == JobDefOf.Hunt) Pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+        if (Pawn?.CurJobDef == JobDefOf.Hunt) Pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
     }
 
     public override bool Available() => ShotsRemaining >= (parent.Verb.Bursting ? burstShotsLeft(parent.Verb) : parent.Verb.verbProps.burstShotCount);
