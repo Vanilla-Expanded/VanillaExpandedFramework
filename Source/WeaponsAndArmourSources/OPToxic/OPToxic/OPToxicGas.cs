@@ -61,7 +61,7 @@ namespace OPToxic
                         HediffSet hediffSet = health.hediffSet;
                         hediff = (hediffSet?.GetFirstHediffOfDef(namedSilentFail, false));
                     }
-                    float statValue = pawn.GetStatValue(StatDefOf.ToxicResistance, true);
+                    float statValue = 1-pawn.GetStatValue(StatDefOf.ToxicResistance, true);
                     float num = OPToxicDefGetValue.OPToxicGetSev(Gas.def);
                     if (num < 0.01f)
                     {
