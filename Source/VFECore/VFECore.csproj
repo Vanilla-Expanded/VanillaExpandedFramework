@@ -684,6 +684,7 @@
     <Compile Include="Genes\Harmony\Gene_PostAdd.cs" />
     <Compile Include="Genes\Harmony\PawnGraphicSet_ResolveAllGraphics.cs" />
     <Compile Include="Genes\MapComponents\MapComponent_GeneGoodies.cs" />
+    <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_WorldFactionsUIUtility.cs" />
     <Compile Include="VFECore\VanillaShieldsExpandedPatcher.cs" />
     <Compile Include="SoundTest\VEDebug.cs" />
     <Compile Include="VFECore\DefModExtensions\MechanoidExtension.cs" />
