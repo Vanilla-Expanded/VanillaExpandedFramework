@@ -55,7 +55,7 @@ namespace KCSG
         {
             if (missingSymbols.ContainsKey(symbol))
                 missingSymbols[symbol]++;
-            else
+            else if (!symbol.Contains("VFEPD"))
                 missingSymbols.Add(symbol, 1);
         }
 
