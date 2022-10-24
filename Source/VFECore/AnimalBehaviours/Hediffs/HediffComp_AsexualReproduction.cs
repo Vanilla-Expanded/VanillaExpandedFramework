@@ -139,10 +139,10 @@ namespace AnimalBehaviours
                                     if (Props.endogeneTransfer)
                                     {
                                         List<Gene> listOfEndogenes = progenitor.genes?.Endogenes;
-                                        
-                                        foreach(Gene gene in listOfEndogenes)
+
+                                        foreach (Gene gene in listOfEndogenes)
                                         {
-                                            pawnCreated.genes?.AddGene(gene.def,false);
+                                            pawnCreated.genes?.AddGene(gene.def, false);
                                         }
                                         if (progenitor.genes?.Xenotype != null)
                                         {
@@ -161,7 +161,7 @@ namespace AnimalBehaviours
                                         if (pawnCreated.RaceProps.IsFlesh)
                                         {
                                             pawnCreated.relations.AddDirectRelation(PawnRelationDefOf.Parent, progenitor);
-                                           
+
                                         }
                                         if (progenitor.Spawned)
                                         {
@@ -192,7 +192,7 @@ namespace AnimalBehaviours
 
 
                                 Messages.Message(Props.asexualHatchedMessage.Translate(pawn.LabelIndefinite().CapitalizeFirst()), pawn, MessageTypeDefOf.PositiveEvent, true);
-                                
+
                                 asexualFissionCounter = 0;
                             }
 
@@ -210,17 +210,16 @@ namespace AnimalBehaviours
 
 
 
-        public string GetLabel(){
+        public string GetLabel()
+        {
 
-            //Custom strings to show
-            if (AnimalBehaviours_Settings.flagAsexualReproduction)
-            {
+            
                 Pawn pawn = this.parent.pawn as Pawn;
                 if (this.Props.isGreenGoo)
                 {
-            float totalProgress = ((float)asexualFissionCounter / (float)(ticksInday * reproductionIntervalDays));
-            return customString + totalProgress.ToStringPercent() + " (" + reproductionIntervalDays.ToString() + " days)";
-        }
+                    float totalProgress = ((float)asexualFissionCounter / (float)(ticksInday * reproductionIntervalDays));
+                    return customString + totalProgress.ToStringPercent() + " (" + reproductionIntervalDays.ToString() + " days)";
+                }
 
                 else if ((pawn.Faction == Faction.OfPlayer) && (pawn.ageTracker.CurLifeStage.reproductive))
                 {
@@ -228,8 +227,7 @@ namespace AnimalBehaviours
                     return customString + totalProgress.ToStringPercent() + " (" + reproductionIntervalDays.ToString() + " days)";
                 }
                 else return "";
-            }
-            else return "VFE_AsexualReproductionDisabled".Translate();
+           
 
 
         }

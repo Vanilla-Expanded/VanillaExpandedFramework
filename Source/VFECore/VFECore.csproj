@@ -478,6 +478,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompHediffEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompHediffWhenFleeing.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompHighlyFlammable.cs" />
+    <Compile Include="Genes\Comps\CompHumanHatcher.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompInfecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompInitialAbility.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompInitialHediff.cs" />
@@ -495,6 +496,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_DiseaseEventImmunity.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_GiveThoughtsOnCaravan.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AnimalProductOnCaravan.cs" />
+    <Compile Include="Genes\Comps\Properties\CompProperties_HumanHatcher.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_InitialMentalState.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_NoTamingDecay.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_InitialAbility.cs" />
@@ -600,6 +602,8 @@
     <Compile Include="AnimalBehaviours\Harmony\Infocard\ThingDef_SpecialDisplayStats_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\TrainableUtility_TamenessCanDecay_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\VerbProperties_AdjustedCooldown_Patch.cs" />
+    <Compile Include="Genes\Harmony\Hediff_Pregnant_PostAdd.cs" />
+    <Compile Include="Genes\HediffComps\HediffComp_HumanEggLayer.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_AsexualReproduction.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_AutoPermanentInjury.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_CauseIncident.cs" />
@@ -623,6 +627,7 @@
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_StageBySunlight.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_ThoughtEffecter.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Resurrect.cs" />
+    <Compile Include="Genes\HediffComps\Properties\HediffCompProperties_HumanEggLayer.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_HeatPusher.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_ChangeWeather.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_CauseIncident.cs" />

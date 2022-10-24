@@ -11,7 +11,7 @@ using HarmonyLib;
 namespace VanillaGenesExpanded
 {
     [HarmonyPatch(typeof(PawnGraphicSet), "ResolveAllGraphics")]
-    public static class PawnGraphicSet_ResolveAllGraphics_Patch
+    public static class VanillaGenesExpanded_PawnGraphicSet_ResolveAllGraphics_Patch
     {
         [HarmonyPostfix]
         public static void PostFix(PawnGraphicSet __instance)
