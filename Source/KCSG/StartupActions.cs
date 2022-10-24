@@ -7,7 +7,7 @@ namespace KCSG
     [StaticConstructorOnStartup]
     internal class StartupActions
     {
-        public static bool defCreated = false;
+        public static bool defsCreated = false;
         public static List<ThingDef> stuffs = new List<ThingDef>();
         public static Dictionary<string, int> missingSymbols;
 
@@ -97,7 +97,7 @@ namespace KCSG
         /// </summary>
         public static void CreateSymbols()
         {
-            if (defCreated)
+            if (defsCreated)
                 return;
 
             createdSymbolAmount = 0;
@@ -112,7 +112,7 @@ namespace KCSG
                 CreateSymbolsFor(thingDefs, pawnKindDefs, "vanillaexpanded.vfepropsanddecor");
 
             Debug.Message($"Created {createdSymbolAmount} symbolDefs for vanilla and DLCs");
-            defCreated = true;
+            defsCreated = true;
         }
 
         /// <summary>
@@ -120,14 +120,15 @@ namespace KCSG
         /// </summary>
         private static void AddDef(SymbolDef def)
         {
-            if (!defCreated && DefDatabase<SymbolDef>.DefCount < ushort.MaxValue && DefDatabase<SymbolDef>.GetNamedSilentFail(def.defName) == null)
+            if (!defsCreated && DefDatabase<SymbolDef>.DefCount < ushort.MaxValue)
             {
-                DefDatabase<SymbolDef>.Add(def);
+                if (DefDatabase<SymbolDef>.GetNamedSilentFail(def.defName) == null)
+                    DefDatabase<SymbolDef>.Add(def);
             }
             else
             {
                 Debug.Error("Cannot add more symbolDef. Maximum amount reached.");
-                defCreated = true;
+                defsCreated = true;
             }
         }
 
@@ -293,14 +294,14 @@ namespace KCSG
         /// </summary>
         private static void CreateSymbolsFor(List<ThingDef> thingDefs, List<PawnKindDef> pawnKindDefs, string modId)
         {
-            for (int i = 0; i < thingDefs.Count && !defCreated; i++)
+            for (int i = 0; i < thingDefs.Count && !defsCreated; i++)
             {
                 var thing = thingDefs[i];
                 if (thing.modContentPack?.PackageId == modId)
                     CreateAllSymbolsForDef(thing);
             }
 
-            for (int i = 0; i < pawnKindDefs.Count && !defCreated; i++)
+            for (int i = 0; i < pawnKindDefs.Count && !defsCreated; i++)
             {
                 var kind = pawnKindDefs[i];
                 if (kind.modContentPack?.PackageId == modId)
