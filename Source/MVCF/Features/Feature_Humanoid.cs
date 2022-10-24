@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using MVCF.Features.PatchSets;
@@ -105,6 +104,6 @@ public abstract class Feature_Humanoid : Feature
         if (comp?.VerbTracker?.AllVerbs == null) return;
         var manager = __instance?.pawn?.Manager(false);
         if (manager == null) return;
-        try { foreach (var verb in comp.VerbTracker.AllVerbs.Concat(manager.ExtraVerbsFor(eq))) manager.RemoveVerb(verb); } catch (NullReferenceException) { }
+        foreach (var verb in comp.VerbTracker.AllVerbs.Concat(manager.ExtraVerbsFor(eq))) manager.RemoveVerb(verb);
     }
 }

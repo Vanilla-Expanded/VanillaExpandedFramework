@@ -52,6 +52,9 @@ public class VerbManager : IExposable
     {
         Scribe_References.Look(ref CurrentVerb, "currentVerb");
         Scribe_Collections.Look(ref verbs, "verbs", LookMode.Reference);
+        if (Scribe.mode == LoadSaveMode.ResolvingCrossRefs && verbs != null)
+            if (verbs.RemoveAll(v => v?.Verb == null) > 0)
+                Log.Error("[MVCF] Some verbs were null after loading");
     }
 
     public void Notify_Spawned()
