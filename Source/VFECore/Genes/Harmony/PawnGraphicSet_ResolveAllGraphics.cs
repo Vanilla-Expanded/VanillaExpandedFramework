@@ -14,7 +14,7 @@ namespace VanillaGenesExpanded
         public static void PostFix(PawnGraphicSet __instance)
         {
             Pawn pawn = __instance.pawn;
-            if (ModLister.BiotechInstalled && pawn.RaceProps.Humanlike)
+            if (ModLister.BiotechInstalled && pawn.RaceProps.Humanlike && pawn.genes != null)
             {
                 if (pawn.genes.GenesListForReading.Where(x => x.Active).Any(g => g.def.GetModExtension<GeneExtension>()?.useSkinColorForFur ?? false))
                 {

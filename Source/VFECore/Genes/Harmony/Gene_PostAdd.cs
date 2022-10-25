@@ -9,12 +9,15 @@ namespace VanillaGenesExpanded
     {
         public static void Postfix(Pawn pawn)
         {
-            List<Gene> genes = pawn.genes.GenesListForReading;
-            foreach (Gene gene in genes)
+            if (pawn.genes != null)
             {
-                if (gene.Active)
+                List<Gene> genes = pawn.genes.GenesListForReading;
+                foreach (Gene gene in genes)
                 {
-                    Gene_PostAdd_Patch.ApplyGeneEffects(gene);
+                    if (gene.Active)
+                    {
+                        Gene_PostAdd_Patch.ApplyGeneEffects(gene);
+                    }
                 }
             }
         }
