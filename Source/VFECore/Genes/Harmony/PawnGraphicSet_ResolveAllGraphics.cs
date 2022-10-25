@@ -16,7 +16,7 @@ namespace VanillaGenesExpanded
             Pawn pawn = __instance.pawn;
             if (ModLister.BiotechInstalled && pawn.RaceProps.Humanlike)
             {
-                if (pawn.genes.GenesListForReading.Any(g => g.def.GetModExtension<GeneExtension>()?.useSkinColorForFur ?? false))
+                if (pawn.genes.GenesListForReading.Where(x => x.Active).Any(g => g.def.GetModExtension<GeneExtension>()?.useSkinColorForFur ?? false))
                 {
                     __instance.furCoveredGraphic = GraphicDatabase.Get<Graphic_Multi>(pawn.story.furDef.GetFurBodyGraphicPath(pawn), ShaderUtility.GetSkinShader(pawn.story.SkinColorOverriden), Vector2.one, pawn.story.SkinColor);
                 }
@@ -24,40 +24,43 @@ namespace VanillaGenesExpanded
                 List<Gene> genes = __instance.pawn.genes.GenesListForReading;
                 foreach (Gene gene in genes)
                 {
-                    GeneExtension extension = gene.def.GetModExtension<GeneExtension>();
-                    if (extension != null)
+                    if (gene.Active)
                     {
-                        Color color = pawn.story.SkinColorOverriden
-                                ? (PawnGraphicSet.RottingColorDefault * pawn.story.SkinColor)
-                                : PawnGraphicSet.RottingColorDefault;
-                        if (extension.bodyNakedGraphicPath.NullOrEmpty() is false)
+                        GeneExtension extension = gene.def.GetModExtension<GeneExtension>();
+                        if (extension != null)
                         {
-                            __instance.nakedGraphic = GraphicDatabase.Get<Graphic_Multi>(extension.bodyNakedGraphicPath, ShaderUtility.GetSkinShader(pawn.story.SkinColorOverriden), Vector2.one, pawn.story.SkinColor);
-                            __instance.rottingGraphic = GraphicDatabase.Get<Graphic_Multi>(extension.bodyNakedGraphicPath, ShaderUtility.GetSkinShader(pawn.story.SkinColorOverriden), Vector2.one, color);
-                            if (pawn.style != null && ModsConfig.IdeologyActive && (!ModLister.BiotechInstalled || pawn.genes == null || !pawn.genes.GenesListForReading.Any((Gene x) => x.def.graphicData != null && !x.def.graphicData.tattoosVisible && x.Active)))
+                            Color color = pawn.story.SkinColorOverriden
+                                    ? (PawnGraphicSet.RottingColorDefault * pawn.story.SkinColor)
+                                    : PawnGraphicSet.RottingColorDefault;
+                            if (extension.bodyNakedGraphicPath.NullOrEmpty() is false)
                             {
-                                Color skinColor = pawn.story.SkinColor;
-                                skinColor.a *= 0.8f;
-                                if (pawn.style.BodyTattoo != null && pawn.style.BodyTattoo != TattooDefOf.NoTattoo_Body)
+                                __instance.nakedGraphic = GraphicDatabase.Get<Graphic_Multi>(extension.bodyNakedGraphicPath, ShaderUtility.GetSkinShader(pawn.story.SkinColorOverriden), Vector2.one, pawn.story.SkinColor);
+                                __instance.rottingGraphic = GraphicDatabase.Get<Graphic_Multi>(extension.bodyNakedGraphicPath, ShaderUtility.GetSkinShader(pawn.story.SkinColorOverriden), Vector2.one, color);
+                                if (pawn.style != null && ModsConfig.IdeologyActive && (!ModLister.BiotechInstalled || pawn.genes == null || !pawn.genes.GenesListForReading.Any((Gene x) => x.def.graphicData != null && !x.def.graphicData.tattoosVisible && x.Active)))
                                 {
-                                    __instance.bodyTattooGraphic = GraphicDatabase.Get<Graphic_Multi>(pawn.style.BodyTattoo.texPath, ShaderDatabase.CutoutSkinOverlay, Vector2.one, skinColor, Color.white, null, extension.bodyNakedGraphicPath);
+                                    Color skinColor = pawn.story.SkinColor;
+                                    skinColor.a *= 0.8f;
+                                    if (pawn.style.BodyTattoo != null && pawn.style.BodyTattoo != TattooDefOf.NoTattoo_Body)
+                                    {
+                                        __instance.bodyTattooGraphic = GraphicDatabase.Get<Graphic_Multi>(pawn.style.BodyTattoo.texPath, ShaderDatabase.CutoutSkinOverlay, Vector2.one, skinColor, Color.white, null, extension.bodyNakedGraphicPath);
+                                    }
                                 }
                             }
-                        }
 
-                        if (extension.bodyDessicatedGraphicPath.NullOrEmpty() is false)
-                        {
-                            __instance.dessicatedGraphic = GraphicDatabase.Get<Graphic_Multi>(extension.bodyDessicatedGraphicPath, ShaderDatabase.Cutout);
-                        }
+                            if (extension.bodyDessicatedGraphicPath.NullOrEmpty() is false)
+                            {
+                                __instance.dessicatedGraphic = GraphicDatabase.Get<Graphic_Multi>(extension.bodyDessicatedGraphicPath, ShaderDatabase.Cutout);
+                            }
 
-                        if (extension.headDessicatedGraphicPath.NullOrEmpty() is false)
-                        {
-                            __instance.desiccatedHeadGraphic = GetGraphic(extension.headDessicatedGraphicPath, color,
-                                dessicated: true, pawn.story.SkinColorOverriden);
-                        }
-                        if (extension.skullGraphicPath.NullOrEmpty() is false)
-                        {
-                            __instance.skullGraphic = GetGraphic(extension.skullGraphicPath, Color.white, dessicated: true);
+                            if (extension.headDessicatedGraphicPath.NullOrEmpty() is false)
+                            {
+                                __instance.desiccatedHeadGraphic = GetGraphic(extension.headDessicatedGraphicPath, color,
+                                    dessicated: true, pawn.story.SkinColorOverriden);
+                            }
+                            if (extension.skullGraphicPath.NullOrEmpty() is false)
+                            {
+                                __instance.skullGraphic = GetGraphic(extension.skullGraphicPath, Color.white, dessicated: true);
+                            }
                         }
                     }
                 }

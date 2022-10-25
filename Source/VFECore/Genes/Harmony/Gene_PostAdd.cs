@@ -9,22 +9,25 @@ namespace VanillaGenesExpanded
         [HarmonyPostfix]
         public static void PostFix(Gene __instance)
         {
-            GeneExtension extension = __instance.def.GetModExtension<GeneExtension>();
-            if (extension != null)
+            if (__instance.Active)
             {
-                if (extension.forceFemale == true)
+                GeneExtension extension = __instance.def.GetModExtension<GeneExtension>();
+                if (extension != null)
                 {
-                    __instance.pawn.gender = Gender.Female;
-                }
-                if (extension.forceMale == true)
-                {
-                    __instance.pawn.gender = Gender.Male;
-                }
+                    if (extension.forceFemale == true)
+                    {
+                        __instance.pawn.gender = Gender.Female;
+                    }
+                    if (extension.forceMale == true)
+                    {
+                        __instance.pawn.gender = Gender.Male;
+                    }
 
-                if (extension.forcedBodyType != null)
-                {
-                    __instance.pawn.story.bodyType = extension.forcedBodyType;
-                    __instance.pawn.Drawer.renderer.graphics.SetAllGraphicsDirty();
+                    if (extension.forcedBodyType != null)
+                    {
+                        __instance.pawn.story.bodyType = extension.forcedBodyType;
+                        __instance.pawn.Drawer.renderer.graphics.SetAllGraphicsDirty();
+                    }
                 }
             }
         }
