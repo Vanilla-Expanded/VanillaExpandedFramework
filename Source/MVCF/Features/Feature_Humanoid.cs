@@ -104,6 +104,9 @@ public abstract class Feature_Humanoid : Feature
         if (comp?.VerbTracker?.AllVerbs == null) return;
         var manager = __instance?.pawn?.Manager(false);
         if (manager == null) return;
-        foreach (var verb in comp.VerbTracker.AllVerbs.Concat(manager.ExtraVerbsFor(eq))) manager.RemoveVerb(verb);
+        if (Base.GetFeature<Feature_ExtraEquipmentVerbs>().Enabled)
+            foreach (var verb in comp.VerbTracker.AllVerbs.Concat(manager.ExtraVerbsFor(eq)))
+                manager.RemoveVerb(verb);
+        else manager.RemoveVerb(comp.PrimaryVerb);
     }
 }

@@ -192,6 +192,11 @@ public class VerbManager : IExposable
         if (debugOpts.VerbLogging) Log.Message("Removing " + verb);
         var mv = verbs.Find(m => m.Verb == verb);
         if (debugOpts.VerbLogging) Log.Message("Found ManagedVerb: " + mv);
+        if (mv == null)
+        {
+            Log.Warning($"[MVCF] Not found: {verb}");
+            return;
+        }
 
         mv.Notify_Removed();
         var success = verbs.Remove(mv);
