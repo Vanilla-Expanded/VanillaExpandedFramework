@@ -29,6 +29,10 @@ namespace VanillaGenesExpanded
         public bool forceMale = false;
         public bool forceFemale = false;
 
+        //Makes genes scale body and head
+        public float bodyScaleFactor = 1f;
+        public float headScaleFactor = 1f;
+
         public BodyTypeDef forcedBodyType;
         public string bodyNakedGraphicPath;
         public string bodyDessicatedGraphicPath;
