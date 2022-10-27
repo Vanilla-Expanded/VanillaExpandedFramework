@@ -21,6 +21,11 @@ namespace VanillaGenesExpanded
                     __instance.furCoveredGraphic = GraphicDatabase.Get<Graphic_Multi>(pawn.story.furDef.GetFurBodyGraphicPath(pawn), ShaderUtility.GetSkinShader(pawn.story.SkinColorOverriden), Vector2.one, pawn.story.SkinColor);
                 }
 
+                if (pawn.genes.GenesListForReading.Where(x => x.Active).Any(g => g.def.GetModExtension<GeneExtension>()?.dontColourFur ?? false))
+                {
+                    __instance.furCoveredGraphic = GraphicDatabase.Get<Graphic_Multi>(pawn.story.furDef.GetFurBodyGraphicPath(pawn), ShaderDatabase.Cutout, Vector2.one, Color.white);
+                }
+
                 List<Gene> genes = __instance.pawn.genes.GenesListForReading;
                 foreach (Gene gene in genes)
                 {

@@ -8,7 +8,7 @@ namespace VanillaGenesExpanded
     public class GeneExtension : DefModExtension
     {
 
-        //Custom gene baclgrounds
+        //Custom gene backgrounds
         public string backgroundPathEndogenes;
         public string backgroundPathXenogenes;
 
@@ -19,6 +19,8 @@ namespace VanillaGenesExpanded
 
         //Makes "fur" associated with this gene use the body's colour, instead of the hair
         public bool useSkinColorForFur = false;
+        //Keeps "fur" untinted
+        public bool dontColourFur = false;
 
         //Reference to a thingsetmaker that makes pawns with this gene start play with some things (only on game start)
         public ThingSetMakerDef thingSetMaker = null;
