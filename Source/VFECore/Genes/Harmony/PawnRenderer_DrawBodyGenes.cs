@@ -19,22 +19,22 @@ namespace VanillaGenesExpanded
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             MethodInfo drawOffsetAtMI = typeof(GeneGraphicData).GetMethod(nameof(GeneGraphicData.DrawOffsetAt));
-            MethodInfo postProcessMI =
+            MethodInfo disableScalingMI =
                 typeof(PawnRenderer_DrawBodyGenes_Patch).GetMethod(nameof(PawnRenderer_DrawBodyGenes_Patch.DisableScaling));
             List<CodeInstruction> codes = instructions.ToList();
             int index = codes.FindIndex((x) => x.Calls(drawOffsetAtMI));
             codes.InsertRange(index + 2, new List<CodeInstruction>()
             {
                 new CodeInstruction(OpCodes.Ldloc_3),
-                CodeInstruction.LoadField(typeof(GeneGraphicRecord),nameof(GeneGraphicRecord.sourceGene)),
-                CodeInstruction.LoadField(typeof(Gene),nameof(Gene.def)),
+                CodeInstruction.LoadField(typeof(GeneGraphicRecord), nameof(GeneGraphicRecord.sourceGene)),
+                CodeInstruction.LoadField(typeof(Gene), nameof(Gene.def)),
                 new CodeInstruction(OpCodes.Ldarg_0),
-                CodeInstruction.LoadField(typeof(PawnRenderer),"pawn"),
+                CodeInstruction.LoadField(typeof(PawnRenderer), "pawn"),
                 new CodeInstruction(OpCodes.Ldarg_S,4),
                 new CodeInstruction(OpCodes.Ldloca,1),
                 new CodeInstruction(OpCodes.Ldloc_0),
                 new CodeInstruction(OpCodes.Ldloca_S,5),
-                new CodeInstruction(OpCodes.Call,postProcessMI)
+                new CodeInstruction(OpCodes.Call, disableScalingMI)
             });
             return codes;
         }

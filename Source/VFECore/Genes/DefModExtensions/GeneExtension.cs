@@ -21,6 +21,8 @@ namespace VanillaGenesExpanded
         public bool useSkinColorForFur = false;
         //Keeps "fur" untinted
         public bool dontColourFur = false;
+        //Switches "fur" shader to be CutoutComplex rather than skin shader.
+        public bool useMaskForFur = false;
 
         //Reference to a thingsetmaker that makes pawns with this gene start play with some things (only on game start)
         public ThingSetMakerDef thingSetMaker = null;
