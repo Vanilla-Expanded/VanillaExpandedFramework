@@ -4,4 +4,12 @@
     <MVCF.ToggleUsing>Toggle using {0} automatically</MVCF.ToggleUsing>
     <MVCF.ToggleAuto>Toggle automatic usage</MVCF.ToggleAuto>
     <MVCF.Cooldown>Still on cooldown. {0} left.</MVCF.Cooldown>
+    <MVCF.Setting>Multi-Verb Combat Framework</MVCF.Setting>
+    <MVCF.Settings.Debug>Developer Mode</MVCF.Settings.Debug>
+    <MVCF.Settings.LogLevel>Log level:</MVCF.Settings.LogLevel>
+    <MVCF.Settings.LogLevel.None>None</MVCF.Settings.LogLevel.None>
+    <MVCF.Settings.LogLevel.Important>Important</MVCF.Settings.LogLevel.Important>
+    <MVCF.Settings.LogLevel.Verbose>Verbose</MVCF.Settings.LogLevel.Verbose>
+    <MVCF.Settings.LogLevel.Silly>Silly</MVCF.Settings.LogLevel.Silly>
+    <MVCF.Settings.LogLevel.Tick>Tick</MVCF.Settings.LogLevel.Tick>
 </LanguageData>

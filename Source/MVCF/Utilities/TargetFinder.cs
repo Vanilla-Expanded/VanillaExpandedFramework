@@ -17,13 +17,21 @@ public static class TargetFinder
     {
         if (searchVerb is null)
         {
+            if (__instance.stances?.curStance is Stance_Busy { verb: { } verb })
+            {
+                MVCF.Log($"Giving stance verb {verb} from CurrentEffectiveVerb", LogLevel.Tick);
+                __result = verb;
+                return false;
+            }
+
             var man = __instance.Manager();
             if (!man.HasVerbs || man.SearchVerb == null || !man.SearchVerb.Available()) return true;
-            if (man.debugOpts.VerbLogging) Log.Message("[MVCF] Giving SearchVerb from CurrentEffectiveVerb");
+            MVCF.Log($"Giving SearchVerb {man.SearchVerb} from CurrentEffectiveVerb", LogLevel.Tick);
             __result = man.SearchVerb;
             return false;
         }
 
+        MVCF.Log($"Giving searchVerb {searchVerb} from CurrentEffectiveVerb", LogLevel.Tick);
         __result = searchVerb;
         return false;
     }
@@ -65,6 +73,7 @@ public static class TargetFinder
         float maxDist = 9999f, IntVec3 locus = default, float maxTravelRadiusFromLocus = 3.40282347E+38f, bool canBashDoors = false,
         bool canTakeTargetsCloserThanEffectiveMinRange = true, bool canBashFences = false, bool setCurrent = true, bool canMove = true)
     {
+        MVCF.Log($"Intercepted BestAttackTarget from {searcher} with validator {validator}, and range {minDist}~{maxDist}", LogLevel.Important);
         if (searcher.Thing is Pawn pawn)
         {
             IAttackTarget bestTarget = null;
@@ -83,16 +92,17 @@ public static class TargetFinder
 
                 var target = BestAttackTarget(searcher, verb.Verb, flags, validator, minDistance, maxDistance, locus, maxTravelRadiusFromLocus, canBashDoors,
                     canMove && canTakeTargetsCloserThanEffectiveMinRange, canBashFences);
-                if (man.debugOpts.VerbLogging) Log.Message($"[MVCF] Found target {target} for verb {verb.Verb}");
+                MVCF.Log($"Found target {target} for verb {verb.Verb}");
                 if (target is null) continue;
-                var score = verb.GetScore(pawn, target.Thing, man.debugOpts.ScoreLogging);
+                var score = verb.GetScore(pawn, target.Thing);
+                MVCF.Log($"Score is {score}");
                 if (score <= bestScore) continue;
                 bestScore = score;
                 bestTarget = target;
                 bestVerb = verb.Verb;
             }
 
-            if (man.debugOpts.VerbLogging) Log.Message($"[MVCF] Final target: {bestTarget} with verb {bestVerb} and score {bestScore}");
+            MVCF.Log($"Final target: {bestTarget} with verb {bestVerb} and score {bestScore}", LogLevel.Important);
             if (bestVerb is not null && bestTarget?.Thing is not null && setCurrent) man.CurrentVerb = bestVerb;
             verbUsed = bestVerb;
             return bestTarget;

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MVCF;
 using MVCF.Reloading.Comps;
 using MVCF.VerbComps;
 using Verse;
@@ -15,7 +14,6 @@ public class CompReloadable : ThingComp, VerbComp.IVerbCompProvider
 
     public virtual IEnumerable<VerbCompProperties> GetCompsFor(VerbProperties verbProps)
     {
-        Log.Message($"verbProps.label: {verbProps.label}, Props.VerbLabel: {Props.VerbLabel}, verbProps.IsMeleeAttack: {verbProps.IsMeleeAttack}");
         if (Props.VerbLabel.NullOrEmpty() ? !verbProps.IsMeleeAttack : verbProps.label == Props.VerbLabel)
             yield return new VerbCompProperties_Reloadable
             {
@@ -66,9 +64,9 @@ public class CompProperties_Reloadable : CompProperties
     public override void PostLoadSpecial(ThingDef parent)
     {
         base.PostLoadSpecial(parent);
-        Base.EnabledFeatures.Add("Reloading");
-        Base.EnabledFeatures.Add("VerbComps");
-        Base.EnabledFeatures.Add("ExtraEquipmentVerbs");
+        MVCF.MVCF.EnabledFeatures.Add("Reloading");
+        MVCF.MVCF.EnabledFeatures.Add("VerbComps");
+        MVCF.MVCF.EnabledFeatures.Add("ExtraEquipmentVerbs");
         ref var type = ref TargetVerb(parent).verbClass;
         if (NewVerbClass != null) type = NewVerbClass;
         // PatchSet_ReloadingAuto.RegisterVerb(type, PatchFirstFound);

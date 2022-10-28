@@ -35,9 +35,9 @@ public class VerbWithComps : ManagedVerb
         }
     }
 
-    public override float GetScore(Pawn p, LocalTargetInfo target, bool debug = false)
+    public override float GetScore(Pawn p, LocalTargetInfo target)
     {
-        var score = base.GetScore(p, target, debug);
+        var score = base.GetScore(p, target);
 
         foreach (var comp in AllComps) comp.ModifyScore(p, target, ref score);
 

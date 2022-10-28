@@ -21,7 +21,7 @@ public class Feature_InventoryVerbs : Feature_Humanoid
 
     public static void Notify_ItemRemoved(Pawn_InventoryTracker __instance, Thing item)
     {
-        if (Base.IsIgnoredMod(item?.def?.modContentPack?.Name)) return;
+        if (MVCF.IsIgnoredMod(item?.def?.modContentPack?.Name)) return;
         var man = __instance?.pawn?.Manager(false);
         if (man == null) return;
         var comp = item.TryGetComp<CompVerbsFromInventory>();

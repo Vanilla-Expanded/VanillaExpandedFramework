@@ -1,5 +1,4 @@
-﻿using MVCF;
-using MVCF.Features;
+﻿using MVCF.Features;
 using MVCF.Utilities;
 using Verse;
 using Verse.AI;
@@ -12,7 +11,7 @@ public class JobGiver_SwitchWeapon : ThinkNode_JobGiver
 
     protected override Job TryGiveJob(Pawn pawn)
     {
-        if (Base.GetFeature<Feature_Reloading>().Enabled) TrySwitchWeapon(pawn);
+        if (MVCF.MVCF.GetFeature<Feature_Reloading>().Enabled) TrySwitchWeapon(pawn);
         return null;
     }
 
@@ -24,7 +23,7 @@ public class JobGiver_SwitchWeapon : ThinkNode_JobGiver
                 pawn.inventory.innerContainer.TryAddOrTransfer(oldWeapon, false);
             if (!pawn.IsColonist && pawn.equipment.Primary is { } eq && pawn.equipment.Contains(eq) &&
                 !pawn.equipment.TryDropEquipment(eq, out var result, pawn.Position))
-                Log.Message("Failed to drop " + result);
+                Log.Warning("[MVCF] Failed to drop " + result);
             pawn.inventory.innerContainer.TryTransferToContainer(newWeapon, pawn.equipment.GetDirectlyHeldThings(), 1, false);
         }
     }

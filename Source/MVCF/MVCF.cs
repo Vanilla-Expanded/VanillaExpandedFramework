@@ -4,14 +4,14 @@ using System.Linq;
 using System.Reflection;
 using HarmonyLib;
 using MVCF.Features;
+using UnityEngine;
 using Verse;
 
 namespace MVCF;
 
 [StaticConstructorOnStartup]
-public class Base : Mod
+public class MVCF : Mod
 {
-    public static string SearchLabel;
     private static readonly HashSet<Patch> appliedPatches = new();
     public static bool Prepatcher;
     public static List<Feature> AllFeatures;
@@ -32,15 +32,55 @@ public class Base : Mod
 
     private static Dictionary<Type, Feature> features;
 
-    public Base(ModContentPack content) : base(content)
+    public static bool DebugMode;
+    public static LogLevel LogLevel = LogLevel.Important;
+
+    public MVCF(ModContentPack content) : base(content)
     {
         Harm = new Harmony("legodude17.mvcf");
-        SearchLabel = Harm.Id + Rand.Value;
         Prepatcher = ModLister.HasActiveModWithName("Prepatcher");
-        if (Prepatcher) Log.Message("[MVCF] Prepatcher installed, switching");
+        if (Prepatcher) Verse.Log.Message("[MVCF] Prepatcher installed, switching");
         LongEventHandler.ExecuteWhenFinished(CollectFeatureData);
         AllFeatures = typeof(Feature).AllSubclassesNonAbstract().Select(type => (Feature)Activator.CreateInstance(type)).ToList();
         features = AllFeatures.ToDictionary(f => f.GetType());
+        GetSettings<MVCFSettings>();
+    }
+
+    public override string SettingsCategory() => "MVCF.Setting".Translate();
+
+    public override void DoSettingsWindowContents(Rect inRect)
+    {
+        base.DoSettingsWindowContents(inRect);
+        var listing = new Listing_Standard();
+        listing.Begin(inRect);
+        listing.CheckboxLabeled("MVCF.Settings.Debug".Translate(), ref DebugMode);
+        if (DebugMode)
+        {
+            if (listing.ButtonTextLabeled("MVCF.Settings.LogLevel".Translate(), $"MVCF.Settings.LogLevel.{LogLevel}".Translate()))
+                Find.WindowStack.Add(new FloatMenu(Enum.GetValues(typeof(LogLevel)).Cast<LogLevel>().Select(level => new FloatMenuOption(
+                    $"MVCF.Settings.LogLevel.{level}".Translate(), () => LogLevel = level)).ToList()));
+
+            var features = listing.BeginSection(AllFeatures.Count * 33f);
+            foreach (var feature in AllFeatures)
+            {
+                var enabled = feature.Enabled;
+                features.CheckboxLabeled(feature.Name, ref enabled);
+                if (enabled != feature.Enabled)
+                {
+                    if (enabled) EnableFeature(feature);
+                    else DisableFeature(feature);
+                }
+            }
+
+            listing.EndSection(features);
+        }
+
+        listing.End();
+    }
+
+    public static void Log(string message, LogLevel level = LogLevel.Verbose)
+    {
+        if (DebugMode && level <= LogLevel) Verse.Log.Message($"[MVCF] {message}");
     }
 
     public static Feature GetFeature<T>() where T : Feature => features[typeof(T)];
@@ -53,7 +93,7 @@ public class Base : Mod
 
     public static void CollectFeatureData()
     {
-        Log.Message("[MVCF] Collecting feature data...");
+        Log("Collecting feature data...", LogLevel.Important);
         foreach (var def in DefDatabase<ModDef>.AllDefs)
         {
             if (def.Features != null)
@@ -70,13 +110,13 @@ public class Base : Mod
 
             foreach (var feature in def.ActivateFeatures)
             {
-                Log.Message($"[MVCF] Mod {def.modContentPack.Name} is enabling feature {feature}");
+                Log($"Mod {def.modContentPack.Name} is enabling feature {feature}", LogLevel.Important);
                 EnabledFeatures.Add(feature);
             }
 
             if (def.IgnoreThisMod)
             {
-                Log.Message($"[MVCF] Ignoring {def.modContentPack.Name}");
+                Log($"Ignoring {def.modContentPack.Name}", LogLevel.Important);
                 IgnoredMods.Add(def.modContentPack.Name);
             }
         }
@@ -85,7 +125,7 @@ public class Base : Mod
         {
             foreach (var feature in EnabledFeatures.SelectMany(f => AllFeatures.Where(feature => feature.Name == f)))
             {
-                Log.Message($"[MVCF] Applying patches for feature {feature.Name}");
+                Log($"Applying patches for feature {feature.Name}", LogLevel.Important);
                 EnableFeature(feature);
             }
 
@@ -174,6 +214,25 @@ public class FeatureOpts
     public bool HumanoidVerbs => HediffVerbs || ExtraEquipmentVerbs || ApparelVerbs;
 }
 
+public enum LogLevel
+{
+    None,
+    Important,
+    Verbose,
+    Silly,
+    Tick
+}
+
+public class MVCFSettings : ModSettings
+{
+    public override void ExposeData()
+    {
+        base.ExposeData();
+        Scribe_Values.Look(ref MVCF.DebugMode, "debugMode");
+        Scribe_Values.Look(ref MVCF.LogLevel, "logLevel", LogLevel.Important);
+    }
+}
+
 public abstract class PatchSet
 {
     public abstract IEnumerable<Patch> GetPatches();
@@ -209,7 +268,7 @@ public struct Patch
 
     public void Apply(Harmony harm)
     {
-        // if (Prefs.DevMode) Log.Message($"[MVCF] Patching {this}");
+        MVCF.Log($"Patching {this}", LogLevel.Silly);
         harm.Patch(target,
             prefix is null ? null : new HarmonyMethod(prefix),
             postfix is null ? null : new HarmonyMethod(postfix),
@@ -219,7 +278,7 @@ public struct Patch
 
     public void Unapply(Harmony harm)
     {
-        if (Prefs.DevMode) Log.Message($"[MVCF] Unpatching {this}");
+        if (Prefs.DevMode) Log.Message($"Unpatching {this}");
         if (prefix is not null) harm.Unpatch(target, prefix);
 
         if (postfix is not null) harm.Unpatch(target, postfix);

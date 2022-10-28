@@ -97,14 +97,14 @@ public abstract class Feature_Humanoid : Feature
 
     public static void EquipmentRemoved_Prefix(ThingWithComps eq, Pawn_EquipmentTracker __instance)
     {
-        if (Base.IsIgnoredMod(eq?.def?.modContentPack?.Name)) return;
-        if (Base.ShouldIgnore(eq)) return;
+        if (MVCF.IsIgnoredMod(eq?.def?.modContentPack?.Name)) return;
+        if (MVCF.ShouldIgnore(eq)) return;
         if (DualWieldCompat.Active && eq.IsOffHand()) return;
         var comp = eq.TryGetComp<CompEquippable>();
         if (comp?.VerbTracker?.AllVerbs == null) return;
         var manager = __instance?.pawn?.Manager(false);
         if (manager == null) return;
-        if (Base.GetFeature<Feature_ExtraEquipmentVerbs>().Enabled)
+        if (MVCF.GetFeature<Feature_ExtraEquipmentVerbs>().Enabled)
             foreach (var verb in comp.VerbTracker.AllVerbs.Concat(manager.ExtraVerbsFor(eq)))
                 manager.RemoveVerb(verb);
         else manager.RemoveVerb(comp.PrimaryVerb);

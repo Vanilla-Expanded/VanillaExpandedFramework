@@ -54,7 +54,6 @@ public class VerbComp_Reloadable : VerbComp
 
     public virtual bool CanReloadFrom(Thing ammo)
     {
-        // Log.Message(ammo + " x" + ammo.stackCount);
         if (ammo == null) return false;
         return Props.AmmoFilter.Allows(ammo) && ammo.stackCount >= Props.ItemsPerShot;
     }
@@ -87,30 +86,6 @@ public class VerbComp_Reloadable : VerbComp
     }
 
     public override bool Available() => ShotsRemaining >= (parent.Verb.Bursting ? burstShotsLeft(parent.Verb) : parent.Verb.verbProps.burstShotCount);
-
-    // public override bool PreCastShot()
-    // {
-    //     if (ShotsRemaining >= (parent.Verb.Bursting ? burstShotsLeft(parent.Verb) : parent.Verb.verbProps.burstShotCount)) return true;
-    //     if (ReloadItemInInventory is { } item)
-    //     {
-    //         Pawn.jobs.StartJob(JobGiver_ReloadFromInventory.MakeReloadJob(this, item), JobCondition.InterruptForced, null, true);
-    //         return true;
-    //     }
-    //
-    //     Pawn.jobs.EndCurrentJob(JobCondition.InterruptForced);
-    //     if (NewWeapon is ThingWithComps newWeapon)
-    //     {
-    //         if (Pawn.equipment.Primary is { } oldWeapon)
-    //             Pawn.inventory.innerContainer.TryAddOrTransfer(oldWeapon, false);
-    //         if (!Pawn.IsColonist && parent.Verb.EquipmentSource is { } eq &&
-    //             !Pawn.equipment.TryDropEquipment(eq, out var result, Pawn.Position))
-    //             Log.Message("Failed to drop " + result);
-    //         Pawn.inventory.innerContainer.TryTransferToContainer(newWeapon, Pawn.equipment.GetDirectlyHeldThings(), 1, false);
-    //     }
-    //
-    //     if (!Pawn.IsColonist && (Pawn.equipment.Primary?.def.IsMeleeWeapon ?? true)) Pawn.GetLord()?.CurLordToil?.UpdateAllDuties();
-    //     return false;
-    // }
 }
 
 public class CommandPart_Reloadable : CommandPart
@@ -162,9 +137,9 @@ public class VerbCompProperties_Reloadable : VerbCompProperties
     public override void PostLoadSpecial(VerbProperties verbProps, AdditionalVerbProps additionalProps)
     {
         base.PostLoadSpecial(verbProps, additionalProps);
-        Base.EnabledFeatures.Add("Reloading");
-        Base.EnabledFeatures.Add("VerbComps");
-        Base.EnabledFeatures.Add("ExtraEquipmentVerbs");
+        MVCF.EnabledFeatures.Add("Reloading");
+        MVCF.EnabledFeatures.Add("VerbComps");
+        MVCF.EnabledFeatures.Add("ExtraEquipmentVerbs");
         ref var type = ref verbProps.verbClass;
         if (NewVerbClass != null) type = NewVerbClass;
     }

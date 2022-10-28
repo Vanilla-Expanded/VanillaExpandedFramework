@@ -20,7 +20,6 @@ public class VerbManager : IExposable
     private readonly List<ManagedVerb> tickVerbs = new();
     private readonly List<ManagedVerb> verbs = new();
     public Verb CurrentVerb;
-    public DebugOptions debugOpts;
     public bool HasVerbs;
     public Verb SearchVerb;
     public bool NeedsTicking { get; private set; }
@@ -78,13 +77,11 @@ public class VerbManager : IExposable
     {
         Pawn = pawn;
         NeedsTicking = false;
-        debugOpts.ScoreLogging = false;
-        debugOpts.VerbLogging = false;
         comps.Clear();
         comps.AddRange(pawn.AllComps.OfType<IVerbManagerComp>());
         foreach (var comp in comps) comp.Initialize(this);
-        if (Base.IsIgnoredMod(pawn?.def?.modContentPack?.Name)) return;
-        if (!Base.GetFeature<Feature_RangedAnimals>().Enabled && pawn?.VerbTracker?.AllVerbs != null && pawn.VerbTracker.AllVerbs.Any(v => !v.IsMeleeAttack))
+        if (MVCF.IsIgnoredMod(pawn?.def?.modContentPack?.Name)) return;
+        if (!MVCF.GetFeature<Feature_RangedAnimals>().Enabled && pawn?.VerbTracker?.AllVerbs != null && pawn.VerbTracker.AllVerbs.Any(v => !v.IsMeleeAttack))
             Log.ErrorOnce(
                 $"[MVCF] Found pawn {pawn} with native ranged verbs while that feature is not enabled." +
                 $" Enabling now. This is not recommended. Contact the author of {pawn?.def?.modContentPack?.Name} and ask them to add a MVCF.ModDef.",
@@ -96,21 +93,21 @@ public class VerbManager : IExposable
 
     public void InitializeVerbs()
     {
-        if (Pawn?.VerbTracker?.AllVerbs != null && Base.GetFeature<Feature_RangedAnimals>().Enabled)
+        if (Pawn?.VerbTracker?.AllVerbs != null && MVCF.GetFeature<Feature_RangedAnimals>().Enabled)
             foreach (var verb in Pawn.VerbTracker.AllVerbs)
                 AddVerb(verb, VerbSource.RaceDef);
 
-        if (Pawn?.health?.hediffSet?.hediffs != null && Base.GetFeature<Feature_HediffVerb>().Enabled)
+        if (Pawn?.health?.hediffSet?.hediffs != null && MVCF.GetFeature<Feature_HediffVerb>().Enabled)
             foreach (var hediff in Pawn.health.hediffSet.hediffs)
                 this.AddVerbs(hediff);
 
-        if (Pawn?.apparel?.WornApparel != null && Base.GetFeature<Feature_ApparelVerbs>().Enabled)
+        if (Pawn?.apparel?.WornApparel != null && MVCF.GetFeature<Feature_ApparelVerbs>().Enabled)
             foreach (var apparel in Pawn.apparel.WornApparel)
                 this.AddVerbs(apparel);
 
         if (Pawn?.equipment?.AllEquipmentListForReading != null)
         {
-            if (Base.GetFeature<Feature_ExtraEquipmentVerbs>().Enabled)
+            if (MVCF.GetFeature<Feature_ExtraEquipmentVerbs>().Enabled)
                 foreach (var eq in Pawn.equipment.AllEquipmentListForReading)
                     this.AddVerbs(eq);
             else if (Pawn.equipment.Primary is { } eq) this.AddVerbs(eq);
@@ -119,11 +116,11 @@ public class VerbManager : IExposable
 
     public void AddVerb(Verb verb, VerbSource source)
     {
-        if (debugOpts.VerbLogging) Log.Message($"Adding {verb} from {source}");
+        MVCF.Log($"Adding {verb} from {source}", LogLevel.Important);
 
         if (AllVerbs.Contains(verb))
         {
-            if (debugOpts.VerbLogging) Log.Warning("Added duplicate verb " + verb);
+            Log.Warning("[MVCF] Added duplicate verb " + verb);
             return;
         }
 
@@ -162,8 +159,8 @@ public class VerbManager : IExposable
         if (!target.IsValid || (Pawn.Map != null && !target.Cell.InBounds(Pawn.Map)))
         {
             Log.Error("[MVCF] ChooseVerb given invalid target with pawn " + Pawn + " and target " + target);
-            if (debugOpts.ScoreLogging)
-                Log.Error("(Current job is " + Pawn.CurJob + " with verb " + Pawn.CurJob?.verbToUse + " and target " +
+            if (MVCF.DebugMode)
+                Log.Error("  (Current job is " + Pawn.CurJob + " with verb " + Pawn.CurJob?.verbToUse + " and target " +
                           Pawn.CurJob?.targetA + ")");
             return null;
         }
@@ -172,22 +169,22 @@ public class VerbManager : IExposable
         foreach (var verb in options)
         {
             if (verb.Verb is IVerbScore verbScore && verbScore.ForceUse(Pawn, target)) return verb;
-            var score = verb.GetScore(Pawn, target, debugOpts.ScoreLogging);
-            if (debugOpts.ScoreLogging) Log.Message("Score is " + score + " compared to " + bestScore);
+            var score = verb.GetScore(Pawn, target);
+            MVCF.Log("Score is " + score + " compared to " + bestScore, LogLevel.Silly);
             if (score <= bestScore) continue;
             bestScore = score;
             bestVerb = verb;
         }
 
-        if (debugOpts.ScoreLogging) Log.Message("ChooseVerb returning " + bestVerb);
+        MVCF.Log("ChooseVerb returning " + bestVerb, LogLevel.Important);
         return bestVerb;
     }
 
     public void RemoveVerb(Verb verb)
     {
-        if (debugOpts.VerbLogging) Log.Message("Removing " + verb);
+        MVCF.Log("Removing " + verb, LogLevel.Important);
         var mv = verbs.Find(m => m.Verb == verb);
-        if (debugOpts.VerbLogging) Log.Message("Found ManagedVerb: " + mv);
+        MVCF.Log("Found ManagedVerb: " + mv, LogLevel.Silly);
         if (mv == null)
         {
             Log.Warning($"[MVCF] Not found: {verb}");
@@ -196,7 +193,7 @@ public class VerbManager : IExposable
 
         mv.Notify_Removed();
         var success = verbs.Remove(mv);
-        if (debugOpts.VerbLogging) Log.Message("Succeeded at removing: " + success);
+        MVCF.Log("Succeeded at removing: " + success, LogLevel.Silly);
         if (!success) return;
         if (drawVerbs.Contains(mv)) drawVerbs.Remove(mv);
         if (tickVerbs.Contains(mv) && tickVerbs.Remove(mv) && tickVerbs.Count == 0)
@@ -216,15 +213,15 @@ public class VerbManager : IExposable
 
     public void RecalcSearchVerb()
     {
-        if (debugOpts.VerbLogging) Log.Message("RecalcSearchVerb");
+        MVCF.Log("RecalcSearchVerb", LogLevel.Important);
         var verbsToUse = verbs
             .Where(v => v.Enabled && v.Props is not { canFireIndependently: true } && !v.Verb.IsMeleeAttack)
             .ToList();
-        if (debugOpts.VerbLogging) verbsToUse.ForEach(v => Log.Message("Verb: " + v.Verb));
+        verbsToUse.ForEach(v => MVCF.Log("Verb: " + v.Verb, LogLevel.Silly));
         if (verbsToUse.Count == 0)
         {
             HasVerbs = false;
-            if (debugOpts.VerbLogging) Log.Message("No Verbs");
+            MVCF.Log("No Verbs", LogLevel.Important);
             return;
         }
 

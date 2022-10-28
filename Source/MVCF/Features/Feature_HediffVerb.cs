@@ -40,7 +40,7 @@ public class Feature_HediffVerb : Feature_Humanoid
 
     public static void PostRemoved_Prefix(Hediff __instance)
     {
-        if (Base.IsIgnoredMod(__instance.def?.modContentPack?.Name)) return;
+        if (MVCF.IsIgnoredMod(__instance.def?.modContentPack?.Name)) return;
         var comp = __instance.TryGetComp<HediffComp_VerbGiver>();
         if (comp?.VerbTracker?.AllVerbs == null) return;
         var manager = __instance.pawn.Manager(false);

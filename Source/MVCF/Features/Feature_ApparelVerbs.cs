@@ -28,7 +28,7 @@ public class Feature_ApparelVerbs : Feature_Humanoid
 
     public static void ApparelRemoved_Prefix(Apparel apparel, Pawn_ApparelTracker __instance)
     {
-        if (Base.IsIgnoredMod(apparel?.def?.modContentPack?.Name)) return;
+        if (MVCF.IsIgnoredMod(apparel?.def?.modContentPack?.Name)) return;
         var comp = apparel.TryGetComp<Comp_VerbGiver>();
         if (comp?.VerbTracker?.AllVerbs == null) return;
         comp.Notify_Unworn();

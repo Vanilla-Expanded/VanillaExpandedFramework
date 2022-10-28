@@ -11,7 +11,7 @@ public static class PawnVerbUtility
     {
         if (p == null) return null;
         return
-            // Base.Prepatcher
+            // MVCF.Prepatcher
             // ? PrepatchedVerbManager(p, createIfMissing)
             // : 
             WorldComponent_MVCF.Instance.GetManagerFor(p, createIfMissing);
@@ -30,7 +30,7 @@ public static class PawnVerbUtility
 
     public static void SaveManager(this Pawn p)
     {
-        // if (Base.Prepatcher) PrepatchedSaveManager(p);
+        // if (MVCF.Prepatcher) PrepatchedSaveManager(p);
         // else 
         WorldComponent_MVCF.Instance.SaveManager(p);
     }

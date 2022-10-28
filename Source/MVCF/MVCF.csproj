@@ -60,6 +60,10 @@
       <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\CommandPart.cs" />
@@ -118,7 +122,7 @@
     <Compile Include="Verbs\Verb_SmokePop.cs" />
     <Compile Include="VerbWithComps.cs" />
     <Compile Include="WorldComponent_MVCF.cs" />
-    <Compile Include="Base.cs" />
+    <Compile Include="MVCF.cs" />
     <Compile Include="Commands\Command_ToggleVerbUsage.cs" />
     <Compile Include="Utilities\PawnVerbGizmoUtility.cs" />
     <Compile Include="Utilities\PawnVerbUtility.cs" />

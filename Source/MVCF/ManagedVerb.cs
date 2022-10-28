@@ -65,13 +65,13 @@ public class ManagedVerb : IExposable, ILoadReferenceable
         Props = props;
         loadId = verb.loadID + "_Managed";
         this.Register();
-        if (Props is { draw: true } && !Base.GetFeature<Feature_Drawing>().Enabled)
+        if (Props is { draw: true } && !MVCF.GetFeature<Feature_Drawing>().Enabled)
             Log.Error("[MVCF] Found a verb marked to draw while that feature is not enabled.");
 
-        if (Props is { canFireIndependently: true } && !Base.GetFeature<Feature_IndependentVerbs>().Enabled)
+        if (Props is { canFireIndependently: true } && !MVCF.GetFeature<Feature_IndependentVerbs>().Enabled)
             Log.Error("[MVCF] Found a verb marked to fire independently while that feature is not enabled.");
 
-        if (Props is { separateToggle: false } && !Base.GetFeature<Feature_IntegratedToggle>().Enabled)
+        if (Props is { separateToggle: false } && !MVCF.GetFeature<Feature_IntegratedToggle>().Enabled)
             Log.Error("[MVCF] Found a verb marked for an integrated toggle while that feature is not enabled.");
     }
 
@@ -136,7 +136,7 @@ public class ManagedVerb : IExposable, ILoadReferenceable
 
         if (!Props.canBeToggled) return ToggleType.None;
         if (Props.separateToggle) return ToggleType.Separate;
-        if (Base.GetFeature<Feature_IntegratedToggle>().Enabled) return ToggleType.Integrated;
+        if (MVCF.GetFeature<Feature_IntegratedToggle>().Enabled) return ToggleType.Integrated;
 
         Log.ErrorOnce(
             "[MVCF] " + (Verb.EquipmentSource.LabelShortCap ?? "Hediff verb of " + Verb.caster) +
@@ -145,9 +145,9 @@ public class ManagedVerb : IExposable, ILoadReferenceable
         return ToggleType.Separate;
     }
 
-    public virtual float GetScore(Pawn p, LocalTargetInfo target, bool debug = false)
+    public virtual float GetScore(Pawn p, LocalTargetInfo target)
     {
-        if (debug) Log.Message("Getting score of " + Verb + " with target " + target);
+        MVCF.Log("Getting score of " + Verb + " with target " + target, LogLevel.Silly);
         if (Verb is IVerbScore verbScore) return verbScore.GetScore(p, target);
         var accuracy = 0f;
         if (p.Map != null)
@@ -157,13 +157,12 @@ public class ManagedVerb : IExposable, ILoadReferenceable
 
         var damage = accuracy * Verb.verbProps.burstShotCount * Verb.GetDamage();
         var timeSpent = Verb.verbProps.AdjustedCooldownTicks(Verb, p) + Verb.verbProps.warmupTime.SecondsToTicks();
-        if (debug)
-        {
-            Log.Message("Accuracy: " + accuracy);
-            Log.Message("Damage: " + damage);
-            Log.Message("timeSpent: " + timeSpent);
-            Log.Message("Score of " + Verb + " on target " + target + " is " + damage / timeSpent);
-        }
+
+        MVCF.Log("Accuracy: " + accuracy, LogLevel.Silly);
+        MVCF.Log("Damage: " + damage, LogLevel.Silly);
+        MVCF.Log("timeSpent: " + timeSpent, LogLevel.Silly);
+        MVCF.Log("Score of " + Verb + " on target " + target + " is " + damage / timeSpent, LogLevel.Silly);
+
 
         return damage / timeSpent;
     }
