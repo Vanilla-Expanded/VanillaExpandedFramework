@@ -33,6 +33,15 @@ namespace VanillaGenesExpanded
         public float bodyScaleFactor = 1f;
         public float headScaleFactor = 1f;
 
+        //Disables the scaling for adult and child
+        public bool disableAdultScaling = false;
+        public bool disableChildScaling = false;
+
+        //Allows offsets based on body
+        public GeneBodyOffset bodyOffsetNorth;
+        public GeneBodyOffset bodyOffsetSouth;
+        public GeneBodyOffset bodyOffsetEast;
+
         public BodyTypeDef forcedBodyType;
         public string bodyNakedGraphicPath;
         public string bodyDessicatedGraphicPath;

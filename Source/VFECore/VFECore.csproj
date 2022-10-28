@@ -40,6 +40,9 @@
       <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="SimpleSidearms">
       <HintPath>..\..\..\..\..\..\workshop\content\294100\927155256\v1.3\Assemblies\SimpleSidearms.dll</HintPath>
@@ -604,7 +607,9 @@
     <Compile Include="AnimalBehaviours\Harmony\Infocard\ThingDef_SpecialDisplayStats_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\TrainableUtility_TamenessCanDecay_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\VerbProperties_AdjustedCooldown_Patch.cs" />
+    <Compile Include="Genes\Defs\GeneBodyOffset.cs" />
     <Compile Include="Genes\Harmony\Hediff_Pregnant_PostAdd.cs" />
+    <Compile Include="Genes\Harmony\PawnRenderer_DrawBodyGenes.cs" />
     <Compile Include="Genes\HediffComps\HediffComp_HumanEggLayer.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_AsexualReproduction.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_AutoPermanentInjury.cs" />
