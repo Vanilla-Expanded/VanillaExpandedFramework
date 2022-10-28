@@ -25,8 +25,12 @@ public class VerbComp_Turret : VerbComp_Draw
     public override void CompTick()
     {
         base.CompTick();
-        if (parent is not { Manager: { Pawn: { Spawned: true } } }) return;
+        if (parent is not { Manager.Pawn.Spawned: true }) return;
         if (parent.Verb.Bursting) return;
+
+        if (currentTarget.IsValid && ((currentTarget.HasThing && currentTarget.ThingDestroyed) ||
+                                      (currentTarget.HasThing && currentTarget.Thing is Pawn p && (p.Downed || p.Dead)) ||
+                                      !parent.Verb.CanHitTarget(currentTarget))) currentTarget = LocalTargetInfo.Invalid;
 
         if (cooldownTicksLeft > 0) cooldownTicksLeft--;
         if (cooldownTicksLeft > 0) return;
@@ -38,18 +42,13 @@ public class VerbComp_Turret : VerbComp_Draw
             return;
         }
 
-        if (!currentTarget.IsValid || (currentTarget.HasThing && currentTarget.ThingDestroyed) ||
-            (currentTarget.HasThing && currentTarget.Thing is Pawn p && (p.Downed || p.Dead)) ||
-            !parent.Verb.CanHitTarget(currentTarget))
-        {
-            currentTarget = TryFindNewTarget();
-            TryStartCast();
-        }
-        else if (warmUpTicksLeft == 0)
+        if (!currentTarget.IsValid) currentTarget = TryFindNewTarget();
+
+        if (warmUpTicksLeft == 0)
             TryCast();
         else if (warmUpTicksLeft > 0)
             warmUpTicksLeft--;
-        else
+        else if (currentTarget.IsValid)
             TryStartCast();
     }
 
@@ -66,7 +65,9 @@ public class VerbComp_Turret : VerbComp_Draw
     protected virtual void TryCast()
     {
         warmUpTicksLeft = -1;
-        parent.Verb.castCompleteCallback = () => cooldownTicksLeft = parent.Verb.verbProps.AdjustedCooldownTicks(parent.Verb, parent.Manager.Pawn);
+        parent.Verb.castCompleteCallback = () =>
+            cooldownTicksLeft = parent.Verb.verbProps.AdjustedCooldownTicks(parent.Verb, parent.Manager.Pawn);
+        ;
         var success = parent.Verb.TryStartCastOn(currentTarget);
         if (success && parent.Verb.verbProps.warmupTime > 0) parent.Verb.WarmupComplete();
     }
@@ -93,7 +94,7 @@ public class VerbComp_Turret : VerbComp_Draw
     public override bool SetTarget(LocalTargetInfo target)
     {
         currentTarget = target;
-        if (cooldownTicksLeft <= 0) TryStartCast();
+        if (cooldownTicksLeft <= 0 && warmUpTicksLeft <= 0) TryStartCast();
         return false;
     }
 

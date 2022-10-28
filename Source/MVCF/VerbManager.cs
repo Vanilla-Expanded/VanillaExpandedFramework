@@ -18,15 +18,15 @@ public class VerbManager : IExposable
 
     private readonly List<ManagedVerb> drawVerbs = new();
     private readonly List<ManagedVerb> tickVerbs = new();
+    private readonly List<ManagedVerb> verbs = new();
     public Verb CurrentVerb;
     public DebugOptions debugOpts;
     public bool HasVerbs;
     public Verb SearchVerb;
-    private List<ManagedVerb> verbs = new();
     public bool NeedsTicking { get; private set; }
 
     public IEnumerable<ManagedVerb> CurrentlyUseableRangedVerbs => verbs.Where(v =>
-        !v.Verb.IsMeleeAttack && v.Props is not { canFireIndependently: true } && v.Enabled &&
+        !v.Verb.IsMeleeAttack && !v.Independent && v.Enabled &&
         v.Verb.Available() && (Pawn.IsColonist || v.Props is not { colonistOnly: true }));
 
     public bool ShouldBrawlerUpset => BrawlerHated.Any();
@@ -51,10 +51,6 @@ public class VerbManager : IExposable
     public void ExposeData()
     {
         Scribe_References.Look(ref CurrentVerb, "currentVerb");
-        Scribe_Collections.Look(ref verbs, "verbs", LookMode.Reference);
-        if (Scribe.mode == LoadSaveMode.ResolvingCrossRefs && verbs != null)
-            if (verbs.RemoveAll(v => v?.Verb == null) > 0)
-                Log.Error("[MVCF] Some verbs were null after loading");
     }
 
     public void Notify_Spawned()
@@ -93,7 +89,7 @@ public class VerbManager : IExposable
                 $"[MVCF] Found pawn {pawn} with native ranged verbs while that feature is not enabled." +
                 $" Enabling now. This is not recommended. Contact the author of {pawn?.def?.modContentPack?.Name} and ask them to add a MVCF.ModDef.",
                 pawn?.def?.modContentPack?.Name?.GetHashCode() ?? -1);
-        if (verbs.NullOrEmpty()) InitializeVerbs();
+        InitializeVerbs();
         foreach (var comp in comps) comp.PostInit();
         RecalcSearchVerb();
     }
