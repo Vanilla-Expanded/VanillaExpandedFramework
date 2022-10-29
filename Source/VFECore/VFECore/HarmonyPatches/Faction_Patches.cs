@@ -214,7 +214,7 @@ namespace VFECore
 
                 foreach (var otherSettlement in Find.WorldObjects.SettlementBases)
                 {
-                    options = otherSettlement.Faction.def.GetModExtension<FactionDefExtension>();
+                    options = otherSettlement?.Faction?.def.GetModExtension<FactionDefExtension>();
                     if (options != null)
                     {
                         if (options.minDistanceToOtherSettlements > 0

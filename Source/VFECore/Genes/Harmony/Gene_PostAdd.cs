@@ -32,24 +32,24 @@ namespace VanillaGenesExpanded
                 ApplyGeneEffects(__instance);
             }
         }
-        public static void ApplyGeneEffects(Gene __instance)
+        public static void ApplyGeneEffects(Gene gene)
         {
-            GeneExtension extension = __instance.def.GetModExtension<GeneExtension>();
+            GeneExtension extension = gene.def.GetModExtension<GeneExtension>();
             if (extension != null)
             {
                 if (extension.forceFemale == true)
                 {
-                    __instance.pawn.gender = Gender.Female;
+                    gene.pawn.gender = Gender.Female;
                 }
                 if (extension.forceMale == true)
                 {
-                    __instance.pawn.gender = Gender.Male;
+                    gene.pawn.gender = Gender.Male;
                 }
 
                 if (extension.forcedBodyType != null)
                 {
-                    __instance.pawn.story.bodyType = extension.forcedBodyType;
-                    __instance.pawn.Drawer.renderer.graphics.SetAllGraphicsDirty();
+                    gene.pawn.story.bodyType = extension.forcedBodyType;
+                    gene.pawn.Drawer.renderer.graphics.SetAllGraphicsDirty();
                 }
             }
         }
