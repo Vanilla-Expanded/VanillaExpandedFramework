@@ -85,30 +85,33 @@
             return this.def.Satisfied(this.Hediff);
         }
 
+        private float CalculateStatFactorForPawn(float current, StatModifier statFactor) =>
+            (statFactor.value >= 0)
+                ? current * (this.pawn.GetStatValue(statFactor.stat) * statFactor.value)
+                : current / (this.pawn.GetStatValue(statFactor.stat) * Math.Abs(statFactor.value));
+
         public virtual float GetRangeForPawn() =>
             this.def.targetModes[this.currentTargetingIndex >= 0 ? this.currentTargetingIndex : 0] == AbilityTargetingMode.Self ?
                 0f :
-                this.def.rangeStatFactors.Aggregate(this.def.range, (current, statFactor) => current * (this.pawn.GetStatValue(statFactor.stat) * statFactor.value));
+                this.def.rangeStatFactors.Aggregate(this.def.range, CalculateStatFactorForPawn);
 
         public virtual float GetRadiusForPawn() =>
-            this.def.radiusStatFactors.Aggregate(this.def.radius, (current, statFactor) => current * (this.pawn.GetStatValue(statFactor.stat) * statFactor.value));
+            this.def.radiusStatFactors.Aggregate(this.def.radius, CalculateStatFactorForPawn);
 
         public float GetAdditionalRadius() =>
             this.def.GetModExtension<AbilityExtension_AdditionalRadius>().GetRadiusFor(this.pawn);
 
         public virtual float GetPowerForPawn() =>
-            this.def.powerStatFactors.Aggregate(this.def.power, (current, statFactor) => current * (this.pawn.GetStatValue(statFactor.stat) * statFactor.value));
+            this.def.powerStatFactors.Aggregate(this.def.power, CalculateStatFactorForPawn);
 
         public virtual int GetCastTimeForPawn() =>
-            Mathf.RoundToInt(this.def.castTimeStatFactors.Aggregate((float)this.def.castTime, (current, statFactor) => current * (this.pawn.GetStatValue(statFactor.stat) * statFactor.value)));
+            Mathf.RoundToInt(this.def.castTimeStatFactors.Aggregate((float) this.def.castTime, CalculateStatFactorForPawn));
 
         public virtual int GetCooldownForPawn() =>
-            Mathf.RoundToInt(this.def.cooldownTimeStatFactors.Aggregate((float)this.def.cooldownTime,
-                                                                        (current, statFactor) => current * (this.pawn.GetStatValue(statFactor.stat) * statFactor.value)));
+            Mathf.RoundToInt(this.def.cooldownTimeStatFactors.Aggregate((float)this.def.cooldownTime, CalculateStatFactorForPawn));
 
         public virtual int GetDurationForPawn() =>
-            Mathf.RoundToInt(this.def.durationTimeStatFactors.Aggregate((float)this.def.durationTime,
-                                                                        (current, statFactor) => current * (this.pawn.GetStatValue(statFactor.stat) * statFactor.value)));
+            Mathf.RoundToInt(this.def.durationTimeStatFactors.Aggregate((float)this.def.durationTime, CalculateStatFactorForPawn));
 
         private List<Pair<Effecter, TargetInfo>> maintainedEffecters = new List<Pair<Effecter, TargetInfo>>();
 
