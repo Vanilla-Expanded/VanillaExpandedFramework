@@ -31,7 +31,10 @@ namespace VanillaGenesExpanded
         public bool forceMale = false;
         public bool forceFemale = false;
 
-        //Makes genes scale body and head
+        //Custom blood thingDef
+        public ThingDef customBloodThingDef = null;
+
+        //Makes genes scale body and head (this code is at the moment in Alpha Genes, being tested)
         public float bodyScaleFactor = 1f;
         public float headScaleFactor = 1f;
 

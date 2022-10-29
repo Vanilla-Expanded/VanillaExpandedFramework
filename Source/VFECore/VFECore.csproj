@@ -611,6 +611,7 @@
     <Compile Include="Genes\Harmony\GeneGraphicData_GetGraphics.cs" />
     <Compile Include="Genes\Harmony\Hediff_Pregnant_PostAdd.cs" />
     <Compile Include="Genes\Harmony\PawnRenderer_DrawBodyGenes.cs" />
+    <Compile Include="Genes\Harmony\Pawn_HealthTracker_DropBloodFilth.cs" />
     <Compile Include="Genes\HediffComps\HediffComp_HumanEggLayer.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_AsexualReproduction.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_AutoPermanentInjury.cs" />
