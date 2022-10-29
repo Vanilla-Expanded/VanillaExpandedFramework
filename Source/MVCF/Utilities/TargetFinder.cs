@@ -103,9 +103,12 @@ public static class TargetFinder
             }
 
             MVCF.Log($"Final target: {bestTarget} with verb {bestVerb} and score {bestScore}", LogLevel.Important);
-            if (bestVerb is not null && bestTarget?.Thing is not null && setCurrent) man.CurrentVerb = bestVerb;
-            verbUsed = bestVerb;
-            return bestTarget;
+            if (bestVerb is not null && bestTarget?.Thing is not null)
+            {
+                if (setCurrent) man.CurrentVerb = bestVerb;
+                verbUsed = bestVerb;
+                return bestTarget;
+            }
         }
 
         verbUsed = searcher.CurrentEffectiveVerb;
