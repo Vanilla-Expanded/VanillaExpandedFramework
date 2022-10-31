@@ -71,7 +71,7 @@ public class ManagedVerb : IExposable, ILoadReferenceable
         if (Props is { canFireIndependently: true } && !MVCF.GetFeature<Feature_IndependentVerbs>().Enabled)
             Log.Error("[MVCF] Found a verb marked to fire independently while that feature is not enabled.");
 
-        if (Props is { separateToggle: false } && !MVCF.GetFeature<Feature_IntegratedToggle>().Enabled)
+        if (Props is { separateToggle: false, canBeToggled: true } && !MVCF.GetFeature<Feature_IntegratedToggle>().Enabled)
             Log.Error("[MVCF] Found a verb marked for an integrated toggle while that feature is not enabled.");
     }
 
