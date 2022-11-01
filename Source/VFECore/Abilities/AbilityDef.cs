@@ -13,6 +13,7 @@ namespace VFECore.Abilities
         public Type abilityClass;
         public bool needsTicking;
         public bool showUndrafted;
+        public bool? isPositive;
 
         public HediffWithLevelCombination requiredHediff;
         public TraitDef                   requiredTrait;

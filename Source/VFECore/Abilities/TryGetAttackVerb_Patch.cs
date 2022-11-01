@@ -27,8 +27,9 @@ namespace VFECore.Abilities
 
             if (target != null)
             {
-                if (verbs.Select(ve => new Tuple<Verb, float>(ve, ve.ability.Chance)).AddItem(new Tuple<Verb, float>(__result, 1f))
-                      .TryRandomElementByWeight(t => t.Item2, out Tuple<Verb, float> result))
+                if (verbs.Where(x => x.ability.AICanUseOn(target))
+                    .Select(ve => new Tuple<Verb, float>(ve, ve.ability.Chance)).AddItem(new Tuple<Verb, float>(__result, 1f))
+                    .TryRandomElementByWeight(t => t.Item2, out Tuple<Verb, float> result))
                 {
                     __result = result.Item1;
                 }

@@ -343,6 +343,24 @@
             }
         }
 
+        public virtual bool AICanUseOn(Thing target)
+        {
+            if (def.isPositive.HasValue)
+            {
+                if (target.HostileTo(pawn))
+                {
+                    if (def.isPositive.Value)
+                    {
+                        return false;
+                    }
+                }
+                else if (def.isPositive.Value is false)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
         protected virtual string WorldTargetingLabel(GlobalTargetInfo target)
         {
             return null;
