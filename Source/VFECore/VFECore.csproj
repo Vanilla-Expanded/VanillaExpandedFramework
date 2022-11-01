@@ -410,6 +410,7 @@
     <Compile Include="Abilities\ModExtensions\AbilityExtension_ThoughtOnTarget.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_SocialInteraction.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_WarmupEffecter.cs" />
+    <Compile Include="Abilities\PawnFlyer_MakeFlyer_Patch.cs" />
     <Compile Include="Abilities\PawnGen_Patch.cs" />
     <Compile Include="Abilities\PawnKindAbilityExtension.cs" />
     <Compile Include="Abilities\TryGetAttackVerb_Patch.cs" />

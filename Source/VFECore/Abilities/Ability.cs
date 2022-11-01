@@ -553,26 +553,26 @@
 
         [Obsolete("Use the new method that uses GlobalTargetInfo instead")]
         public virtual void CastEffects(LocalTargetInfo targetInfo) =>
-            this.CastEffects(targetInfo.ToGlobalTargetInfo(this.Caster.Map));
+            this.CastEffects(targetInfo.ToGlobalTargetInfo(this.Caster.MapHeld));
 
         public virtual void CastEffects(params GlobalTargetInfo[] targetInfos)
         {
             if (this.def.castFleck != null)
-                MakeStaticFleck(this.pawn.DrawPos, this.pawn.Map, this.def.castFleck, this.def.castFleckScaleWithRadius ?
+                MakeStaticFleck(this.pawn.DrawPos, this.pawn.MapHeld, this.def.castFleck, this.def.castFleckScaleWithRadius ?
                     this.GetRadiusForPawn() : this.def.castFleckScale, this.def.castFleckSpeed);
 
             if (this.def.fleckOnTarget != null && targetInfos.Any())
             {
                 var vec = this.def.hasAoE ? firstTarget.CenterVector3 :
                     targetInfos[0].Thing != null ? targetInfos[0].Thing.DrawPos : targetInfos[0].Cell.ToVector3();
-                var map = targetInfos[0].Thing != null ? targetInfos[0].Map : this.pawn.Map;
+                var map = targetInfos[0].Thing != null ? targetInfos[0].Map : this.pawn.MapHeld;
                 MakeStaticFleck(vec, map, this.def.fleckOnTarget, this.def.fleckOnTargetScaleWithRadius 
                     ? this.GetRadiusForPawn() : this.def.fleckOnTargetScale, this.def.fleckOnTargetSpeed);
             }
 
             if (this.def.casterHediff != null)
                 this.pawn.health.AddHediff(this.def.casterHediff);
-            this.def.castSound?.PlayOneShot(new TargetInfo(this.pawn.Position, this.pawn.Map));
+            this.def.castSound?.PlayOneShot(new TargetInfo(this.pawn.Position, this.pawn.MapHeld));
         }
 
         public static void MakeStaticFleck(IntVec3 cell, Map map, FleckDef fleckDef, float scale, float speed)
