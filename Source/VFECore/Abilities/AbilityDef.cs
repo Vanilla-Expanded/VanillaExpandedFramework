@@ -29,22 +29,28 @@ namespace VFECore.Abilities
         public float              range            = 0f;
         public float              minRange         = -1f;
         public List<StatModifier> rangeStatFactors = new List<StatModifier>();
+        public List<StatModifier> rangeStatOffsets = new List<StatModifier>();
 
         public float              radius            = 0f;
         public float              minRadius         = -1f;
         public List<StatModifier> radiusStatFactors = new List<StatModifier>();
+        public List<StatModifier> radiusStatOffsets = new List<StatModifier>();
 
         public float              power            = 0f;
         public List<StatModifier> powerStatFactors = new List<StatModifier>();
+        public List<StatModifier> powerStatOffsets = new List<StatModifier>();
 
         public int                castTime            = 0;
         public List<StatModifier> castTimeStatFactors = new List<StatModifier>();
+        public List<StatModifier> castTimeStatOffsets = new List<StatModifier>();
 
         public int                cooldownTime            = 0;
         public List<StatModifier> cooldownTimeStatFactors = new List<StatModifier>();
+        public List<StatModifier> cooldownTimeStatOffsets = new List<StatModifier>();
 
         public int                durationTime            = 0;
         public List<StatModifier> durationTimeStatFactors = new List<StatModifier>();
+        public List<StatModifier> durationTimeStatOffsets = new List<StatModifier>();
 
         public int goodwillImpact = 0;
         public bool applyGoodwillImpactToLodgers = true;

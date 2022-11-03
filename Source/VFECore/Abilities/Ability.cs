@@ -85,33 +85,54 @@
             return this.def.Satisfied(this.Hediff);
         }
 
-        private float CalculateStatFactorForPawn(float current, StatModifier statFactor) =>
+        public virtual float CalculateStatFactorForPawn(float current, StatModifier statFactor) =>
             (statFactor.value >= 0)
                 ? current * (this.pawn.GetStatValue(statFactor.stat) * statFactor.value)
                 : current / (this.pawn.GetStatValue(statFactor.stat) * Math.Abs(statFactor.value));
+        
+        private static readonly HashSet<ToStringStyle> percentageBasedStyles = new HashSet<ToStringStyle>
+        {
+            ToStringStyle.PercentZero,
+            ToStringStyle.PercentOne,
+            ToStringStyle.PercentTwo
+        };
+        
+        public virtual float CalculateStatOffsetForPawn(float current, StatModifier statOffset) =>
+            percentageBasedStyles.Contains(statOffset.stat.toStringStyle)
+                ? current + (this.pawn.GetStatValue(statOffset.stat) - statOffset.stat.defaultBaseValue) *
+                statOffset.value
+                : current + this.pawn.GetStatValue(statOffset.stat) * statOffset.value;
+        
+        public virtual float CalculateModifiedStatForPawn(float current, IEnumerable<StatModifier> statFactors, IEnumerable<StatModifier> statOffsets) =>
+            statOffsets.Aggregate(0f, CalculateStatOffsetForPawn) +
+            statFactors.Aggregate(current, CalculateStatFactorForPawn);
+            
 
         public virtual float GetRangeForPawn() =>
             this.def.targetModes[this.currentTargetingIndex >= 0 ? this.currentTargetingIndex : 0] == AbilityTargetingMode.Self ?
                 0f :
-                this.def.rangeStatFactors.Aggregate(this.def.range, CalculateStatFactorForPawn);
+                CalculateModifiedStatForPawn(this.def.range, this.def.rangeStatFactors, this.def.rangeStatOffsets);
 
         public virtual float GetRadiusForPawn() =>
-            this.def.radiusStatFactors.Aggregate(this.def.radius, CalculateStatFactorForPawn);
+            CalculateModifiedStatForPawn(this.def.radius, this.def.radiusStatFactors, this.def.radiusStatOffsets);
 
         public float GetAdditionalRadius() =>
             this.def.GetModExtension<AbilityExtension_AdditionalRadius>().GetRadiusFor(this.pawn);
 
         public virtual float GetPowerForPawn() =>
-            this.def.powerStatFactors.Aggregate(this.def.power, CalculateStatFactorForPawn);
+            CalculateModifiedStatForPawn(this.def.power, this.def.powerStatFactors, this.def.powerStatOffsets);
 
         public virtual int GetCastTimeForPawn() =>
-            Mathf.RoundToInt(this.def.castTimeStatFactors.Aggregate((float) this.def.castTime, CalculateStatFactorForPawn));
+            Mathf.RoundToInt(CalculateModifiedStatForPawn((float) this.def.castTime, this.def.castTimeStatFactors,
+                this.def.castTimeStatOffsets));
 
         public virtual int GetCooldownForPawn() =>
-            Mathf.RoundToInt(this.def.cooldownTimeStatFactors.Aggregate((float)this.def.cooldownTime, CalculateStatFactorForPawn));
+            Mathf.RoundToInt(CalculateModifiedStatForPawn((float) this.def.cooldownTime,
+                this.def.cooldownTimeStatFactors, this.def.cooldownTimeStatOffsets));
 
         public virtual int GetDurationForPawn() =>
-            Mathf.RoundToInt(this.def.durationTimeStatFactors.Aggregate((float)this.def.durationTime, CalculateStatFactorForPawn));
+            Mathf.RoundToInt(CalculateModifiedStatForPawn((float) this.def.durationTime,
+                this.def.durationTimeStatFactors, this.def.durationTimeStatOffsets));
 
         private List<Pair<Effecter, TargetInfo>> maintainedEffecters = new List<Pair<Effecter, TargetInfo>>();
 
