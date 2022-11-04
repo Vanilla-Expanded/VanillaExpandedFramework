@@ -5,7 +5,7 @@ using System.Reflection.Emit;
 using HarmonyLib;
 using MonoMod.Utils;
 using MVCF.Comps;
-using MVCF.Features.PatchSets;
+using MVCF.ModCompat;
 using MVCF.Utilities;
 using RimWorld;
 using Verse;
@@ -38,12 +38,12 @@ public class Feature_ExtraEquipmentVerbs : Feature_Humanoid
         var rangedVerbs = __instance.AllVerbs.Where(v => !v.IsMeleeAttack).ToList();
         var melee = VerbManager.PreferMelee(__instance.parent);
         if (rangedVerbs.Count <= 1 && !melee && !MVCF.GetFeature<Feature_VerbComps>().Enabled) return true;
-        if (DualWieldCompat.Active && __instance.parent.ParentHolder is Pawn_EquipmentTracker { pawn: Pawn pawn } tracker && tracker.PrimaryEq == __instance &&
+        if (DualWieldCompat.Active && __instance.parent.ParentHolder is Pawn_EquipmentTracker { pawn: { } pawn } tracker && tracker.PrimaryEq == __instance &&
             pawn.HasOffHand()) return true;
         __result = rangedVerbs
             .SelectMany(v => v.GetGizmosForVerb(v.Managed()))
             .OfType<Command>();
-        if (melee)
+        if (__instance.parent.def.IsMeleeWeapon)
             __result = __result.Prepend(createVerbTargetCommand(__instance.verbTracker, __instance.parent,
                 __instance.AllVerbs.First(v => v.verbProps.IsMeleeAttack)));
         return false;

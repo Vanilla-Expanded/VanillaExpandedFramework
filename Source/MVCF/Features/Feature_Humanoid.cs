@@ -2,6 +2,7 @@
 using System.Linq;
 using HarmonyLib;
 using MVCF.Features.PatchSets;
+using MVCF.ModCompat;
 using MVCF.Utilities;
 using RimWorld;
 using UnityEngine;
@@ -33,7 +34,6 @@ public abstract class Feature_Humanoid : Feature
         foreach (var patchSet in base.GetPatchSets()) yield return patchSet;
         yield return new PatchSet_Brawlers();
         yield return new PatchSet_Hunting();
-        if (ModLister.HasActiveModWithName("Dual Wield")) yield return new PatchSet_DualWield();
     }
 
     public static IEnumerable<Gizmo> GetGizmos_Postfix(IEnumerable<Gizmo> __result, Pawn_DraftController __instance)

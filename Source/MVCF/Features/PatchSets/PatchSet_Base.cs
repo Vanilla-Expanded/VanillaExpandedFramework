@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using HarmonyLib;
 using MVCF.Comps;
+using MVCF.ModCompat;
 using MVCF.Utilities;
 using RimWorld;
 using Verse;
@@ -46,6 +47,9 @@ public class PatchSet_Base : PatchSet
         if (mv != null) mv.Enabled = true;
 
         if (mv != null && !mv.SetTarget(target)) return false;
+
+        if (DualWieldCompat.Active && __instance.CasterPawn.GetOffHand() is { } eq && eq.TryGetComp<CompEquippable>().PrimaryVerb is { } verb &&
+            verb == __instance) return true;
 
         MVCF.Log("Changing CurrentVerb of " + __instance.CasterPawn + " to " + __instance, LogLevel.Important);
         man.CurrentVerb = __instance;

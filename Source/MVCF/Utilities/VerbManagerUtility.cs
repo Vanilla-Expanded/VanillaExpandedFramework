@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using MVCF.Comps;
 using MVCF.Features;
-using MVCF.Features.PatchSets;
+using MVCF.ModCompat;
 using RimWorld;
 using Verse;
 
@@ -20,7 +20,7 @@ public static class VerbManagerUtility
         if (MVCF.GetFeature<Feature_ExtraEquipmentVerbs>().Enabled)
             foreach (var verb in comp.VerbTracker.AllVerbs.Concat(man.ExtraVerbsFor(eq)))
                 man.AddVerb(verb, VerbSource.Equipment);
-        else if (eq is { def: { equipmentType: EquipmentType.Primary } })
+        else if (eq is { def.equipmentType: EquipmentType.Primary })
             man.AddVerb(comp.PrimaryVerb, VerbSource.Equipment);
     }
 

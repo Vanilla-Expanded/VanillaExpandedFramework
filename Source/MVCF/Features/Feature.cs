@@ -30,6 +30,7 @@ public abstract class Feature
     {
         yield return new PatchSet_BatteLog();
         yield return new PatchSet_Base();
+        // yield return new PatchSet_Debug();
         if (ModLister.HasActiveModWithName("RunAndGun")) yield return new PatchSet_RunAndGun();
     }
 

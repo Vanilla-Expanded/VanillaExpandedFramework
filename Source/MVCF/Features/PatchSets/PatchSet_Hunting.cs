@@ -26,7 +26,6 @@ public class PatchSet_Hunting : PatchSet
         __result = man.ManagedVerbs.Any(mv =>
             !mv.Verb.IsMeleeAttack && mv.Verb.HarmsHealth() && !mv.Verb.UsesExplosiveProjectiles() &&
             mv.Enabled && mv.Verb.Available());
-        MVCF.Log($"[MVCF] {p} HasHuntingWeapon: {__result}", LogLevel.Tick);
         return false;
     }
 
