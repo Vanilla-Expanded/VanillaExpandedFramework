@@ -13,7 +13,8 @@ namespace VFECore
             if (thing != null && thing.def.GetModExtension<ThingDefExtension>() is ThingDefExtension ext)
             {
                 Map map = thing.Map;
-                if (ext.deepResourcesOnGUI && map.deepResourceGrid.AnyActiveDeepScannersOnMap())
+                if (ext.deepResourcesOnGUI
+                    && ((ext.deepResourcesOnGUIRequireScanner && map.deepResourceGrid.AnyActiveDeepScannersOnMap()) || !ext.deepResourcesOnGUIRequireScanner))
                 {
                     NonPublicMethods.RenderMouseAttachments.Invoke(__instance, null);
                 }

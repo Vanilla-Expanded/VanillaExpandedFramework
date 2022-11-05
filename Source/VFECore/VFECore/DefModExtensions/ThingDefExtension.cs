@@ -1,5 +1,5 @@
-﻿using RimWorld;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -24,6 +24,7 @@ namespace VFECore
         public bool allowDeepDrill = true;
         // For buildings that need to render deep resources mouse attachments
         public bool deepResourcesOnGUI = false;
+        public bool deepResourcesOnGUIRequireScanner = true;
 
         // For skyfallers that can fall into shield fields
         public int shieldDamageIntercepted = -1;
