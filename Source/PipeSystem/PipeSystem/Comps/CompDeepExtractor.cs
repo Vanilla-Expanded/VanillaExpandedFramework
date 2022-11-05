@@ -119,7 +119,10 @@ namespace PipeSystem
 
             if (parent.Spawned)
             {
-                str += "\n" + "PipeSystem_ResourceLeft".Translate(globalCount);
+                if (Props.showDeepCountLeft)
+                {
+                    str += "\n" + "PipeSystem_ResourceLeft".Translate(globalCount);
+                }
                 if (noCapacity)
                 {
                     str += "\n" + Props.noStorageLeftKey.Translate();

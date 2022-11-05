@@ -16,6 +16,7 @@ namespace PipeSystem
         public bool onlyExtractToNet = false;
         public bool onlyExtractToGround = false;
         public bool useDeepCountPerPortion = true;
+        public bool showDeepCountLeft = true;
 
         public override IEnumerable<string> ConfigErrors(ThingDef parentDef)
         {
