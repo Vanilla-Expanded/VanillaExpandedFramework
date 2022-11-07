@@ -31,8 +31,10 @@ namespace VanillaGenesExpanded
         public bool forceMale = false;
         public bool forceFemale = false;
 
-        //Custom blood thingDef
+        //Custom blood thingDef, custom blood icon, custom flood splash effecter
         public ThingDef customBloodThingDef = null;
+        public string customBloodIcon = "";
+        public EffecterDef customBloodEffect = null;
 
         //Makes genes scale body and head (this code is at the moment in Alpha Genes, being tested)
         public float bodyScaleFactor = 1f;
