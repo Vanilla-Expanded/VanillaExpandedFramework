@@ -7,9 +7,23 @@ using RimWorld.Planet;
 using UnityEngine;
 using Verse.AI.Group;
 
-namespace VanillaGenesExpanded
+namespace VFECore
 {
-	public class HediffComp_CustomBlood : HediffComp
+
+    public class HediffCompProperties_CustomBlood : HediffCompProperties
+    {
+        public ThingDef customBloodThingDef = null;
+        public string customBloodIcon = "";
+        public EffecterDef customBloodEffect = null;
+        public FleshTypeDef customWoundsFromFleshtype = null;
+
+        public HediffCompProperties_CustomBlood()
+        {
+            this.compClass = typeof(HediffComp_CustomBlood);
+        }
+    }
+
+    public class HediffComp_CustomBlood : HediffComp
 	{
 
 		public HediffCompProperties_CustomBlood Props => (HediffCompProperties_CustomBlood)props;
@@ -41,19 +55,19 @@ namespace VanillaGenesExpanded
                 
                 if (Props.customBloodThingDef != null)
                 {
-                    StaticCollectionsClass.AddBloodtypeGenePawnToList(parent.pawn, Props.customBloodThingDef);
+                    VanillaGenesExpanded.StaticCollectionsClass.AddBloodtypeGenePawnToList(parent.pawn, Props.customBloodThingDef);
                 }
                 if (Props.customBloodIcon != null)
                 {
-                    StaticCollectionsClass.AddBloodIconGenePawnToList(parent.pawn, Props.customBloodIcon);
+                    VanillaGenesExpanded.StaticCollectionsClass.AddBloodIconGenePawnToList(parent.pawn, Props.customBloodIcon);
                 }
                 if (Props.customBloodEffect != null)
                 {
-                    StaticCollectionsClass.AddBloodEffectGenePawnToList(parent.pawn, Props.customBloodEffect);
+                    VanillaGenesExpanded.StaticCollectionsClass.AddBloodEffectGenePawnToList(parent.pawn, Props.customBloodEffect);
                 }
                 if (Props.customWoundsFromFleshtype != null)
                 {
-                    StaticCollectionsClass.AddWoundsFromFleshtypeGenePawnToList(parent.pawn, Props.customWoundsFromFleshtype);
+                    VanillaGenesExpanded.StaticCollectionsClass.AddWoundsFromFleshtypeGenePawnToList(parent.pawn, Props.customWoundsFromFleshtype);
                 }
             }
         }
@@ -65,19 +79,19 @@ namespace VanillaGenesExpanded
                
                 if (Props.customBloodThingDef != null)
                 {
-                    StaticCollectionsClass.RemoveBloodtypeGenePawnFromList(parent.pawn);
+                    VanillaGenesExpanded.StaticCollectionsClass.RemoveBloodtypeGenePawnFromList(parent.pawn);
                 }
                 if (Props.customBloodIcon != null)
                 {
-                    StaticCollectionsClass.RemoveBloodIconGenePawnFromList(parent.pawn);
+                    VanillaGenesExpanded.StaticCollectionsClass.RemoveBloodIconGenePawnFromList(parent.pawn);
                 }
                 if (Props.customBloodEffect != null)
                 {
-                    StaticCollectionsClass.RemoveBloodEffectGenePawnFromList(parent.pawn);
+                    VanillaGenesExpanded.StaticCollectionsClass.RemoveBloodEffectGenePawnFromList(parent.pawn);
                 }
                 if (Props.customWoundsFromFleshtype != null)
                 {
-                    StaticCollectionsClass.RemoveWoundsFromFleshtypeGenePawnFromList(parent.pawn);
+                    VanillaGenesExpanded.StaticCollectionsClass.RemoveWoundsFromFleshtypeGenePawnFromList(parent.pawn);
                 }
             }
         }
