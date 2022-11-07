@@ -27,6 +27,8 @@ namespace VFECore
 
         public static bool CombatExtended;
 
+        public static bool HumanAlienRace;
+
         static ModCompatibilityCheck()
         {
             var allMods = ModsConfig.ActiveModsInLoadOrder.ToList();
@@ -57,6 +59,8 @@ namespace VFECore
                     WhatTheHack = true;
                 else if (curMod.Name == "Combat Extended")
                     CombatExtended = true;
+                else if (curMod.Name == "Humanoid Alien Races")
+                    HumanAlienRace = true;
             }
         }
     }
