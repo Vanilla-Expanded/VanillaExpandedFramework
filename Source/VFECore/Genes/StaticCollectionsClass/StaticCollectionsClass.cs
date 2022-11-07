@@ -21,6 +21,8 @@ namespace VanillaGenesExpanded
         public static IDictionary<Thing, string> bloodIcon_gene_pawns = new Dictionary<Thing, string>();
         // A list of pawns with custom blood effects
         public static IDictionary<Thing, EffecterDef> bloodEffect_gene_pawns = new Dictionary<Thing, EffecterDef>();
+        // A list of pawns with custom wounds
+        public static IDictionary<Thing, FleshTypeDef> woundsFromFleshtype_gene_pawns = new Dictionary<Thing, FleshTypeDef>();
 
 
         public static void AddBloodtypeGenePawnToList(Thing thing, ThingDef thingDef)
@@ -73,6 +75,24 @@ namespace VanillaGenesExpanded
             if (bloodEffect_gene_pawns.ContainsKey(thing))
             {
                 bloodEffect_gene_pawns.Remove(thing);
+            }
+
+        }
+
+        public static void AddWoundsFromFleshtypeGenePawnToList(Thing thing, FleshTypeDef fleshtype)
+        {
+
+            if (!woundsFromFleshtype_gene_pawns.ContainsKey(thing))
+            {
+                woundsFromFleshtype_gene_pawns[thing] = fleshtype;
+            }
+        }
+
+        public static void RemoveWoundsFromFleshtypeGenePawnFromList(Thing thing)
+        {
+            if (woundsFromFleshtype_gene_pawns.ContainsKey(thing))
+            {
+                woundsFromFleshtype_gene_pawns.Remove(thing);
             }
 
         }

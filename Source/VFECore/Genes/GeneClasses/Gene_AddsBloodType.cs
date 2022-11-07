@@ -48,6 +48,10 @@ namespace VanillaGenesExpanded
                 {
                     StaticCollectionsClass.AddBloodEffectGenePawnToList(pawn, extension.customBloodEffect);
                 }
+                if (extension?.customWoundsFromFleshtype != null)
+                {
+                    StaticCollectionsClass.AddWoundsFromFleshtypeGenePawnToList(pawn, extension.customWoundsFromFleshtype);
+                }
             }
         }
 
@@ -69,6 +73,11 @@ namespace VanillaGenesExpanded
                 if (extension?.customBloodEffect != null)
                 {
                     StaticCollectionsClass.RemoveBloodEffectGenePawnFromList(pawn);
+
+                }
+                if (extension?.customWoundsFromFleshtype != null)
+                {
+                    StaticCollectionsClass.RemoveWoundsFromFleshtypeGenePawnFromList(pawn);
 
                 }
             }
