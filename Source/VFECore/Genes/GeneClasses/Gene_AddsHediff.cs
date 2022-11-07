@@ -39,5 +39,17 @@ namespace VanillaGenesExpanded
 
 
 		}
-	}
+
+        public override void PostRemove()
+        {
+            base.PostRemove();
+			GeneExtension extension = this.def.GetModExtension<GeneExtension>();
+			if (extension?.hediffToWholeBody != null)
+			{
+				pawn.health.RemoveHediff(pawn.health.hediffSet.GetFirstHediffOfDef(extension?.hediffToWholeBody));
+			}
+
+			
+		}
+    }
 }
