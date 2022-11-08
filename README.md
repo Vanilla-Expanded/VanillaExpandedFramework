@@ -25,4 +25,4 @@ Then, you'll need to link the classes you want to use from your mod's XML code. 
 
 # Then what?
    
-It is recommended that you read [our Wiki](https://github.com/AndroidQuazar/VanillaExpandedFramework/wiki) to know how to use all these libraries. Or you can YOLO it.
+It is recommended that you read [our Wiki](https://github.com/Vanilla-Expanded/VanillaExpandedFramework/wiki) to know how to use all these libraries. Or you can YOLO it.
