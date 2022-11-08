@@ -54,9 +54,13 @@ namespace VanillaGenesExpanded
 				{
 					foreach (BodyPartDef bodypart in hediffToBodypart.bodyparts)
 					{
-						if (pawn.health.hediffSet.HasHediff(hediffToBodypart.hediff)) {
+						if (pawn.health.hediffSet?.HasHediff(hediffToBodypart.hediff)==true) {
 							Hediff hediffToRemove = pawn.health.hediffSet.GetFirstHediffOfDef(hediffToBodypart.hediff);
-							pawn.health.RemoveHediff(hediffToRemove);
+							if (hediffToRemove != null)
+							{
+								pawn.health.RemoveHediff(hediffToRemove);
+							}
+							
 						}
 					
 					
