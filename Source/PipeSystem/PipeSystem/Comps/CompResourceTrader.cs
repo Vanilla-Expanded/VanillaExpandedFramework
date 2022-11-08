@@ -21,6 +21,7 @@ namespace PipeSystem
         private CompBreakdownable compBreakdownable;
         private CompRefuelable compRefuelable;
         private CompPowerTrader compPowerTrader;
+        private CompGlower compGlower;
 
         private Vector3 trueCenter;
 
@@ -80,6 +81,7 @@ namespace PipeSystem
             compBreakdownable = parent.TryGetComp<CompBreakdownable>();
             compRefuelable = parent.TryGetComp<CompRefuelable>();
             compPowerTrader = parent.TryGetComp<CompPowerTrader>();
+            compGlower = parent.TryGetComp<CompGlower>();
 
             BaseConsumption = Props.consumptionPerTick;
 
@@ -90,6 +92,10 @@ namespace PipeSystem
 
             // Cache it
             CachedCompResourceTrader.TryAdd(parent);
+            // Light update
+            if (compGlower != null)
+                compGlower.UpdateLit(parent.Map);
+
             base.PostSpawnSetup(respawningAfterLoad);
         }
 
