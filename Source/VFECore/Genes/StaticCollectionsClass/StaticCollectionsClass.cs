@@ -23,6 +23,8 @@ namespace VanillaGenesExpanded
         public static IDictionary<Thing, EffecterDef> bloodEffect_gene_pawns = new Dictionary<Thing, EffecterDef>();
         // A list of pawns with custom wounds
         public static IDictionary<Thing, FleshTypeDef> woundsFromFleshtype_gene_pawns = new Dictionary<Thing, FleshTypeDef>();
+        // A list of pawns with custom disease progression factors
+        public static IDictionary<Thing, float> diseaseProgressionFactor_gene_pawns = new Dictionary<Thing, float>();
 
 
         public static void AddBloodtypeGenePawnToList(Thing thing, ThingDef thingDef)
@@ -93,6 +95,24 @@ namespace VanillaGenesExpanded
             if (woundsFromFleshtype_gene_pawns.ContainsKey(thing))
             {
                 woundsFromFleshtype_gene_pawns.Remove(thing);
+            }
+
+        }
+
+        public static void AddDiseaseProgressionFactorGenePawnToList(Thing thing, float factor)
+        {
+
+            if (!diseaseProgressionFactor_gene_pawns.ContainsKey(thing))
+            {
+                diseaseProgressionFactor_gene_pawns[thing] = factor;
+            }
+        }
+
+        public static void RemoveDiseaseProgressionFactorGenePawnFromList(Thing thing)
+        {
+            if (diseaseProgressionFactor_gene_pawns.ContainsKey(thing))
+            {
+                diseaseProgressionFactor_gene_pawns.Remove(thing);
             }
 
         }
