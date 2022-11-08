@@ -12,16 +12,15 @@ namespace VanillaGenesExpanded
         public static bool Prefix(Pawn_HealthTracker __instance,Pawn ___pawn)
         {
 
-            if (ModLister.BiotechInstalled && ___pawn.RaceProps.Humanlike && ___pawn.genes != null)
+            if (___pawn.RaceProps.Humanlike)
             {
-                if (___pawn.genes.GenesListForReading.Where(x => x.Active).Any(g => g.def.GetModExtension<GeneExtension>()?.customBloodThingDef != null))
+                if (StaticCollectionsClass.bloodtype_gene_pawns.ContainsKey(___pawn))
                 {
-                    ThingDef blood = ___pawn.genes.GenesListForReading.Where(x => x.Active).First(g => g.def.GetModExtension<GeneExtension>()?.customBloodThingDef != null).def.GetModExtension<GeneExtension>()?.customBloodThingDef;
-
+                    ThingDef blood = StaticCollectionsClass.bloodtype_gene_pawns[___pawn];
                     FilthMaker.TryMakeFilth(___pawn.PositionHeld, ___pawn.MapHeld, blood, ___pawn.LabelIndefinite());
                     return false;
-
                 }
+               
             }
             return true;
 

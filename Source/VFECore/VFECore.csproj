@@ -608,9 +608,14 @@
     <Compile Include="AnimalBehaviours\Harmony\Infocard\ThingDef_SpecialDisplayStats_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\TrainableUtility_TamenessCanDecay_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\VerbProperties_AdjustedCooldown_Patch.cs" />
+    <Compile Include="Genes\GeneClasses\Gene_AddsBloodType.cs" />
+    <Compile Include="Genes\Harmony\DamageWorker_AddInjury_ApplyToPawn.cs" />
+    <Compile Include="Genes\Harmony\FleshTypeDef_ChooseWoundOverlay.cs" />
     <Compile Include="Genes\Harmony\GeneGraphicData_GetGraphics.cs" />
+    <Compile Include="Genes\Harmony\HealthCardUtility_DrawHediffRow.cs" />
     <Compile Include="Genes\Harmony\Hediff_Pregnant_PostAdd.cs" />
     <Compile Include="Genes\Harmony\Pawn_HealthTracker_DropBloodFilth.cs" />
+    <Compile Include="VFECore\Comps\HediffComps\HediffComp_CustomBlood.cs" />
     <Compile Include="Genes\HediffComps\HediffComp_HumanEggLayer.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_AsexualReproduction.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_AutoPermanentInjury.cs" />
@@ -699,6 +704,8 @@
     <Compile Include="Genes\Harmony\Gene_PostAdd.cs" />
     <Compile Include="Genes\Harmony\PawnGraphicSet_ResolveAllGraphics.cs" />
     <Compile Include="Genes\MapComponents\MapComponent_GeneGoodies.cs" />
+    <Compile Include="Genes\ReflectionCache\ReflectionCache.cs" />
+    <Compile Include="Genes\StaticCollectionsClass\StaticCollectionsClass.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_WorldFactionsUIUtility.cs" />
     <Compile Include="VFECore\VanillaShieldsExpandedPatcher.cs" />
     <Compile Include="SoundTest\VEDebug.cs" />
