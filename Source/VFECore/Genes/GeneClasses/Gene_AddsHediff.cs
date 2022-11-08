@@ -48,8 +48,26 @@ namespace VanillaGenesExpanded
 			{
 				pawn.health.RemoveHediff(pawn.health.hediffSet.GetFirstHediffOfDef(extension?.hediffToWholeBody));
 			}
+			if (extension?.hediffsToBodyParts != null)
+			{
+				foreach (HediffToBodyparts hediffToBodypart in extension?.hediffsToBodyParts)
+				{
+					foreach (BodyPartDef bodypart in hediffToBodypart.bodyparts)
+					{
+						if (pawn.health.hediffSet.HasHediff(hediffToBodypart.hediff)) {
+							Hediff hediffToRemove = pawn.health.hediffSet.GetFirstHediffOfDef(hediffToBodypart.hediff);
+							pawn.health.RemoveHediff(hediffToRemove);
+						}
+					
+					
+					}
 
-			
-		}
+
+                }
+
+            }
+
+
+        }
     }
 }
