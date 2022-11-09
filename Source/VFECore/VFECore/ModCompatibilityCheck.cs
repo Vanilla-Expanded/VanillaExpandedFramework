@@ -59,7 +59,7 @@ namespace VFECore
                     WhatTheHack = true;
                 else if (curMod.Name == "Combat Extended")
                     CombatExtended = true;
-                else if (curMod.Name == "Humanoid Alien Races")
+                else if (curMod.Name == "Humanoid Alien Races" || curMod.Name == "Humanoid Alien Races ~ Dev")
                     HumanAlienRace = true;
             }
         }

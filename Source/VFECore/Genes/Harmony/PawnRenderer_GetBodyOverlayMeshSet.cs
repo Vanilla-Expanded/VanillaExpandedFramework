@@ -6,6 +6,7 @@ using System.Reflection.Emit;
 using System.Collections.Generic;
 using System;
 using System.Reflection;
+using UnityEngine;
 
 namespace VanillaGenesExpanded
 {
@@ -37,10 +38,10 @@ namespace VanillaGenesExpanded
             foreach (var gene in genes.GenesListForReading)
             {
                 var ext = gene.def.GetModExtension<GeneExtension>();
-                if (ext != null && ext.bodyScaleFactor != 1f)
+                if (ext != null)
                 {
-                    factorX *= ext.bodyScaleFactor;
-                    factorY *= ext.bodyScaleFactor;
+                    factorX *= ext.bodyScaleFactor.x;
+                    factorY *= ext.bodyScaleFactor.y;
                 }
             }
             __result = MeshPool.GetMeshSetForWidth(factorX, factorY);
@@ -55,18 +56,29 @@ namespace VanillaGenesExpanded
 
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            var bodySizeFactor = AccessTools.Field("LifeStageDef:bodySizeFactor");
+            var headOffset = AccessTools.Field("BodyTypeDef:headOffset");
             var pawn = AccessTools.Field("PawnRenderer:pawn");
             var bodyScaleFactor = AccessTools.Method("PawnRenderer_BaseHeadOffsetAt_Patch:LifeStageFactorUpdated");
             var codes = instructions.ToList();
+            bool skip = false;
             for (int i = 0; i < codes.Count; i++)
             {
-                if (codes[i].LoadsField(bodySizeFactor))
+                if (codes[i].LoadsField(headOffset))
                 {
+                    skip = true;
                     yield return codes[i];
                     yield return new CodeInstruction(OpCodes.Ldarg_0);
                     yield return new CodeInstruction(OpCodes.Ldfld, pawn);
                     yield return new CodeInstruction(OpCodes.Call, bodyScaleFactor);
+                }
+                else if(skip && codes[i].opcode == OpCodes.Stloc_0)
+                {
+                    skip = false;
+                    yield return codes[i];
+                }
+                else if(skip)
+                {
+                    //do nothing
                 }
                 else
                 {
@@ -74,21 +86,23 @@ namespace VanillaGenesExpanded
                 }
             }
         }
-        public static float LifeStageFactorUpdated(float factor, Pawn pawn)
+        public static Vector2 LifeStageFactorUpdated(Vector2 offset, Pawn pawn)
         {
             var genes = pawn.genes;
+            offset *= Mathf.Sqrt(pawn.ageTracker.CurLifeStage.bodySizeFactor); 
             if (ModLister.BiotechInstalled && genes != null)
             {
                 foreach (var gene in genes.GenesListForReading)
                 {
                     var ext = gene.def.GetModExtension<GeneExtension>();
-                    if (ext != null && ext.bodyScaleFactor != 1f)
+                    if (ext != null)
                     {
-                        factor *= ext.bodyScaleFactor;
+                        offset.x *= Mathf.Sqrt(ext.bodyScaleFactor.x);//The Sqrt is to match how rimworld method does it
+                        offset.y *= Mathf.Sqrt(ext.bodyScaleFactor.y);
                     }
                 }
             }
-            return factor;
+            return offset;
         }
     }
 }
