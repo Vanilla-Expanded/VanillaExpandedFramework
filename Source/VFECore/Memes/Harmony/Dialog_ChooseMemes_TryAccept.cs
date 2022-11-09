@@ -1,13 +1,7 @@
 ﻿using HarmonyLib;
 using RimWorld;
-using System.Reflection;
 using Verse;
-using System.Reflection.Emit;
 using System.Collections.Generic;
-using UnityEngine;
-using System.Linq;
-using System;
-using Verse.AI;
 
 namespace VanillaMemesExpanded
 {

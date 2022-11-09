@@ -89,9 +89,8 @@ namespace VanillaFurnitureExpanded
                         {
                             newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
                         }
-                        Type typ = typeof(Thing);
-                        FieldInfo type = typ.GetField("graphicInt", BindingFlags.Instance | BindingFlags.NonPublic);
-                        type.SetValue(thingToGrab, newGraphic);
+                        ReflectionCache.graphic(thingToGrab) = newGraphic;
+
 
                     }
                     else if (parent.def.graphicData.graphicClass == typeof(Graphic_Single))
@@ -142,9 +141,8 @@ namespace VanillaFurnitureExpanded
                             newGraphicSingle.data = new GraphicData();
                             newGraphicSingle.data.drawRotated = false;
                         }
-                        Type typ = typeof(Thing);
-                        FieldInfo type = typ.GetField("graphicInt", BindingFlags.Instance | BindingFlags.NonPublic);
-                        type.SetValue(thingToGrab, newGraphicSingle);
+                        ReflectionCache.graphic(thingToGrab) = newGraphicSingle;
+                        
                     }
 
                 }

@@ -7,7 +7,7 @@ namespace AnimalBehaviours
 {
     public class HediffCompProperties_StageByPsylink : HediffCompProperties
     {
-
+         
         
 
         public HediffCompProperties_StageByPsylink()

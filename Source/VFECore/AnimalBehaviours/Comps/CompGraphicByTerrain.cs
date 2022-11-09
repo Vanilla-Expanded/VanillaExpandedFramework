@@ -51,7 +51,8 @@ namespace AnimalBehaviours
             base.PostSpawnSetup(respawningAfterLoad);
             Pawn pawn = this.parent as Pawn;
             animalProductComp = this.parent.TryGetComp<CompAnimalProduct>();
-            Pawn_DrawTracker drawtracker = ((Pawn_DrawTracker)typeof(Pawn).GetField("drawer", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(pawn));
+            Pawn_DrawTracker drawtracker = ReflectionCache.drawer(pawn);
+
            
             if (drawtracker != null)
             {
@@ -113,7 +114,7 @@ namespace AnimalBehaviours
                 Pawn pawn = this.parent as Pawn;
                 if (this.pawn_renderer == null)
                 {
-                    Pawn_DrawTracker drawtracker = ((Pawn_DrawTracker)typeof(Pawn).GetField("drawer", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(pawn));
+                    Pawn_DrawTracker drawtracker = ReflectionCache.drawer(pawn);
                     if (drawtracker != null)
                     {
                         this.pawn_renderer = drawtracker.renderer;

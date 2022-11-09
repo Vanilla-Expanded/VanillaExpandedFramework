@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using Verse;
 using UnityEngine;
 using Verse.Sound;
-using UnityEngine;
 using Verse.Noise;
 
 namespace AnimalBehaviours
