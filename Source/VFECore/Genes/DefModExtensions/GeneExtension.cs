@@ -40,6 +40,9 @@ namespace VanillaGenesExpanded
         //Disease progression factor. Diseases will advance (when not immunized) by this factor
         public float diseaseProgressionFactor = 1f;
 
+        //Caravan carrying factor. Pawns will have their caravan carrying capacity multiplied by this factor
+        public float caravanCarryingFactor = 1f;
+
         //Makes genes scale body and head (this code is at the moment in Alpha Genes, being tested)
         public float bodyScaleFactor = 1f;
         public float headScaleFactor = 1f;
