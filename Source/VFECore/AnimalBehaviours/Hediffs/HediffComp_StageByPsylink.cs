@@ -27,12 +27,14 @@ namespace AnimalBehaviours
             base.CompPostTick(ref severityAdjustment);
 
 
-            if (this.parent.pawn.IsHashIntervalTick(500) && this.parent.pawn.Map != null & ModsConfig.RoyaltyActive)
+            if (this.parent.pawn.IsHashIntervalTick(500) && this.parent.pawn.Map != null && ModsConfig.RoyaltyActive)
             {
 
-                int psyLinkLevel = Pawn.GetPsylinkLevel();
+                float psyLinkLevel = this.parent.pawn.GetPsylinkLevel();
 
                 float severity = psyLinkLevel / 6;
+
+                if (severity == 0) { severity = 0.01f; }
 
                  this.parent.Severity = severity;
             }
