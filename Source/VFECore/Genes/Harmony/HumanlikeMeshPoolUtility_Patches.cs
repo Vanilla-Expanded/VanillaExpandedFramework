@@ -209,9 +209,14 @@ namespace VanillaGenesExpanded
                 {
                     if (ModCompatibilityCheck.HumanAlienRace)
                     {
-                        if (codes[i].Calls(AccessTools.Method("AlienRace.HarmonyPatches:GetHumanlikeBodySetForPawnHelper")) && codes[i - 2].opcode == OpCodes.Call)
+                        if (codes[i].opcode == OpCodes.Box)//Removing HAR Boxes as we will box the vect 2 instead
+                        {
+                            continue;
+                        }
+                        if (codes[i].Calls(AccessTools.Method("AlienRace.HarmonyPatches:GetHumanlikeBodySetForPawnHelper")) && codes[i - 3].opcode == OpCodes.Call)
                         {
                             yield return new CodeInstruction(OpCodes.Call, bodyScaleFactorVect2);
+                            yield return new CodeInstruction(OpCodes.Box,typeof(Vector2));
                             yield return new CodeInstruction(OpCodes.Ldarg_0);
                         }
                         if (codes[i].opcode == OpCodes.Ldc_R4)
@@ -219,6 +224,7 @@ namespace VanillaGenesExpanded
                             yield return codes[i];
                             yield return new CodeInstruction(OpCodes.Ldarg_0);
                             yield return new CodeInstruction(OpCodes.Call, bodyScaleFactorVect2);
+                            yield return new CodeInstruction(OpCodes.Box, typeof(Vector2));
                         }
                         else
                         {
@@ -261,9 +267,14 @@ namespace VanillaGenesExpanded
                 {
                     if (ModCompatibilityCheck.HumanAlienRace)
                     {
+                        if (codes[i].opcode == OpCodes.Box) //Removing HAR Boxes as we will box the vect 2 instead
+                        {
+                            continue;
+                        }
                         if (codes[i].Calls(AccessTools.Method("AlienRace.HarmonyPatches:GetHumanlikeHeadSetForPawnHelper")) && codes[i - 2].opcode == OpCodes.Call)
                         {
                             yield return new CodeInstruction(OpCodes.Call, headScaleVectorFromFactor);
+                            yield return new CodeInstruction(OpCodes.Box, typeof(Vector2));
                             yield return new CodeInstruction(OpCodes.Ldarg_0);
                         }
                         if (codes[i].opcode == OpCodes.Ldc_R4)
@@ -271,6 +282,7 @@ namespace VanillaGenesExpanded
                             yield return codes[i];
                             yield return new CodeInstruction(OpCodes.Ldarg_0);
                             yield return new CodeInstruction(OpCodes.Call, headScaleVectorFromFactor);
+                            yield return new CodeInstruction(OpCodes.Box, typeof(Vector2));
                         }
                         else
                         {
