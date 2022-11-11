@@ -587,7 +587,6 @@
     <Compile Include="AnimalBehaviours\Defs\AnimalsUnaffectedBySelfTameDef.cs" />
     <Compile Include="AnimalBehaviours\Defs\GenericToggleableAnimalDef.cs" />
     <Compile Include="AnimalBehaviours\Enums\BodyClock.cs" />
-    <Compile Include="AnimalBehaviours\Harmony\Draftability\Bill_PawnAllowedToStartAnew_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\FloatMenuMakerMap_AddDraftedOrders_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\ITab_Pawn_Gear_IsVisible.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\PawnComponentsUtility_AddAndRemoveDynamicComponents_Patch.cs" />
@@ -595,7 +594,6 @@
     <Compile Include="AnimalBehaviours\Harmony\Draftability\Pawn_WorkTypeIsDisabled.cs" />
     <Compile Include="AnimalBehaviours\Harmony\IncidentWorker_Disease_PotentialVictims.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Infocard\Dialog_InfoCard_FillCard_Patch.cs" />
-    <Compile Include="AnimalBehaviours\Harmony\Draftability\FloatMenuMakerMap_AddUndraftedOrders_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\FloatMenuMakerMap_CanTakeOrder_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\JobGiver_GetRest_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\Pawn_IsColonistPlayerControlled_Patch.cs" />

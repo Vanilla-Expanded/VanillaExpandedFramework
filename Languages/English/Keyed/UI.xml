@@ -25,5 +25,6 @@ If hired {0} die on duty, you will incur an additional 5% increase to contract p
 	<VEF.Name>Name</VEF.Name>
 	<VEF.Cancel>Cancel</VEF.Cancel>
 	<VEF.AvailableContracts>Available contracts: {0}</VEF.AvailableContracts>
+	<VEF.MechsSection>Mechanoids</VEF.MechsSection>
 
 </LanguageData>

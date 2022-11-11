@@ -15,8 +15,21 @@ using VFEMech;
 
 namespace VFE.Mechanoids
 {
+	[HarmonyPatch(typeof(CaravanUIUtility), "AddPawnsSections")]
+	public static class CaravanUIUtility_AddPawnsSections_Patch
+	{
+		public static void Postfix(TransferableOneWayWidget widget, List<TransferableOneWay> transferables)
+		{
+			if (ModsConfig.BiotechActive is false)
+            {
+                IEnumerable<TransferableOneWay> source = transferables.Where((TransferableOneWay x) => x.ThingDef.category == ThingCategory.Pawn);
+                widget.AddSection("VEF.MechsSection".Translate(), source.Where((TransferableOneWay x) 
+					=> x.AnyThing is Pawn pawn && pawn.RaceProps.IsMechanoid && pawn.Faction == Faction.OfPlayer));
+            }
+        }
+	}
 
-	[HarmonyPatch(typeof(Caravan_NeedsTracker), "TrySatisfyPawnNeeds")]
+    [HarmonyPatch(typeof(Caravan_NeedsTracker), "TrySatisfyPawnNeeds")]
 	public static class TrySatisfyPawnNeeds_Patch
 	{
 		public static void Postfix(Caravan_NeedsTracker __instance, Pawn pawn)
