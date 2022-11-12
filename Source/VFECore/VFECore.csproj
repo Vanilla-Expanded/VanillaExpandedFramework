@@ -610,6 +610,7 @@
     <Compile Include="AnimalBehaviours\Harmony\Infocard\ThingDef_SpecialDisplayStats_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\TrainableUtility_TamenessCanDecay_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\VerbProperties_AdjustedCooldown_Patch.cs" />
+    <Compile Include="Genes\Harmony\Dialog_CreateXenotype_DrawGene.cs" />
     <Compile Include="Genes\Harmony\DamageWorker_AddInjury_ApplyToPawn.cs" />
     <Compile Include="Genes\Harmony\FleshTypeDef_ChooseWoundOverlay.cs" />
     <Compile Include="Genes\Harmony\GeneGraphicData_GetGraphics.cs" />
