@@ -14,24 +14,29 @@ namespace VanillaGenesExpanded
 {
 
 
+    [HarmonyPatch(typeof(JobDriver_Vomit))]
+    [HarmonyPatch("MakeNewToils")]
+    public static class VanillaGenesExpanded_JobDriver_Vomit_MakeNewToils_Patch
+    {
+        public static Pawn curPawn;
+
+        [HarmonyPrefix]
+        public static void StorePawn(JobDriver_Vomit __instance)
+        {
+            curPawn = __instance.pawn;
+           
+        }
+    }
 
 
     [HarmonyPatch]
-
-    public static class VanillaGenesExpanded_JobDriver_Vomit_MakeNewToils_Patch
+    public static class VanillaGenesExpanded_JobDriver_Vomit_MakeNewToils_Transpiler_Patch
     {
-        
 
         static MethodBase TargetMethod()
         {
             MethodBase method = typeof(JobDriver_Vomit).GetMethod("<MakeNewToils>b__4_1", BindingFlags.Instance | BindingFlags.NonPublic);
             return method;
-        }
-
-        public static Pawn curPawn;
-        public static void Prefix(JobDriver_Vomit __instance)
-        {
-            curPawn = __instance.pawn;
         }
 
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
@@ -45,16 +50,17 @@ namespace VanillaGenesExpanded
                 {
                    
                    
-                    yield return new CodeInstruction(OpCodes.Call,AccessTools.Method(typeof(VanillaGenesExpanded_JobDriver_Vomit_MakeNewToils_Patch), nameof(GetVomitFilth)));
+                    yield return new CodeInstruction(OpCodes.Call,AccessTools.Method(typeof(VanillaGenesExpanded_JobDriver_Vomit_MakeNewToils_Transpiler_Patch), nameof(GetVomitFilth)));
                 }else yield return code;
             }
         }
 
         public static ThingDef GetVomitFilth() {
-           
-            if (curPawn != null&&StaticCollectionsClass.vomitType_gene_pawns.ContainsKey(curPawn))
+
+            
+            if (StaticCollectionsClass.vomitType_gene_pawns.ContainsKey(VanillaGenesExpanded_JobDriver_Vomit_MakeNewToils_Patch.curPawn))
             {
-                return StaticCollectionsClass.vomitType_gene_pawns[curPawn];
+                return StaticCollectionsClass.vomitType_gene_pawns[VanillaGenesExpanded_JobDriver_Vomit_MakeNewToils_Patch.curPawn];
             }
             return ThingDefOf.Filth_Vomit;
 

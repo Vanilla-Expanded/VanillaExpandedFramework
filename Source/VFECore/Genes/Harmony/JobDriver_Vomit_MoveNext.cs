@@ -13,19 +13,12 @@ using RimWorld.QuestGen;
 namespace VanillaGenesExpanded
 {
 
-
+   
 
 
     [HarmonyPatch]
-
     public static class VanillaGenesExpanded_JobDriver_Vomit_MoveNext_Patch
     {
-
-
-
-
-
-
 
 
         static MethodBase TargetMethod()
@@ -33,8 +26,7 @@ namespace VanillaGenesExpanded
             MethodBase method = typeof(JobDriver_Vomit).GetNestedType("<MakeNewToils>d__4", BindingFlags.Instance | BindingFlags.NonPublic).GetMethod("MoveNext", BindingFlags.Instance | BindingFlags.NonPublic);
             return method;
         }
-
-       
+  
 
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
         {
@@ -56,11 +48,13 @@ namespace VanillaGenesExpanded
 
         public static EffecterDef GetVomitEffecter()
         {
-            
-           /* if (StaticCollectionsClass.vomitEffect_gene_pawns.ContainsKey(pawn))
+
+           
+            if (StaticCollectionsClass.vomitEffect_gene_pawns.ContainsKey(VanillaGenesExpanded_JobDriver_Vomit_MakeNewToils_Patch.curPawn))
             {
-                return StaticCollectionsClass.vomitEffect_gene_pawns[pawn];
-            }*/
+                return StaticCollectionsClass.vomitEffect_gene_pawns[VanillaGenesExpanded_JobDriver_Vomit_MakeNewToils_Patch.curPawn];
+            }
+           
             return EffecterDefOf.Vomit;
 
         }
