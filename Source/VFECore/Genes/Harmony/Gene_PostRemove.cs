@@ -78,6 +78,15 @@ namespace VanillaGenesExpanded
                     }
 
                 }
+                if (extension.customVomitThingDef != null)
+                {
+                    StaticCollectionsClass.RemoveVomitTypeGenePawnFromList(gene.pawn);
+                }
+
+                if (extension.customVomitEffect != null)
+                {
+                    StaticCollectionsClass.RemoveVomitEffectGenePawnFromList(gene.pawn);
+                }
 
 
             }

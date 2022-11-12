@@ -25,6 +25,7 @@ namespace VanillaGenesExpanded
                 yield return code;
                 if (code.LoadsField(field))
                 {
+           
                     yield return new CodeInstruction(OpCodes.Call,
                         AccessTools.Method(typeof(VanillaGenesExpanded_DamageWorker_AddInjury_ApplyToPawn_Patch), nameof(GetEffecterDef)));
                 }

@@ -37,6 +37,10 @@ namespace VanillaGenesExpanded
         public EffecterDef customBloodEffect = null;
         public FleshTypeDef customWoundsFromFleshtype = null;
 
+        //Custom vomit thingDef, custom vomit effecter
+        public ThingDef customVomitThingDef = null;    
+        public EffecterDef customVomitEffect = null;
+
         //Disease progression factor. Diseases will advance (when not immunized) by this factor
         public float diseaseProgressionFactor = 1f;
 

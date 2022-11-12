@@ -102,6 +102,15 @@ namespace VanillaGenesExpanded
                         }
                     }
                 }
+                if (extension.customVomitThingDef != null)
+                {
+                    StaticCollectionsClass.AddVomitTypeGenePawnToList(gene.pawn, extension.customVomitThingDef);
+                }
+               
+                if (extension.customVomitEffect != null)
+                {
+                    StaticCollectionsClass.AddVomitEffectGenePawnToList(gene.pawn, extension.customVomitEffect);
+                }
 
 
             }

@@ -27,6 +27,10 @@ namespace VanillaGenesExpanded
         public static IDictionary<Thing, float> diseaseProgressionFactor_gene_pawns = new Dictionary<Thing, float>();
         // A list of pawns with custom caravan carrying capacity factors
         public static IDictionary<Thing, float> caravanCarryingFactor_gene_pawns = new Dictionary<Thing, float>();
+        // A list of pawns containing vomit changing genes
+        public static IDictionary<Thing, ThingDef> vomitType_gene_pawns = new Dictionary<Thing, ThingDef>();      
+        // A list of pawns with custom vomit effects
+        public static IDictionary<Thing, EffecterDef> vomitEffect_gene_pawns = new Dictionary<Thing, EffecterDef>();
 
 
         public static void AddBloodtypeGenePawnToList(Thing thing, ThingDef thingDef)
@@ -133,6 +137,44 @@ namespace VanillaGenesExpanded
             if (caravanCarryingFactor_gene_pawns.ContainsKey(thing))
             {
                 caravanCarryingFactor_gene_pawns.Remove(thing);
+            }
+
+        }
+
+        public static void AddVomitTypeGenePawnToList(Thing thing, ThingDef thingDef)
+        {
+
+            if (!vomitType_gene_pawns.ContainsKey(thing))
+            {
+                vomitType_gene_pawns[thing] = thingDef;
+            }
+        }
+
+        public static void RemoveVomitTypeGenePawnFromList(Thing thing)
+        {
+            if (vomitType_gene_pawns.ContainsKey(thing))
+            {
+                vomitType_gene_pawns.Remove(thing);
+            }
+
+        }
+
+       
+
+        public static void AddVomitEffectGenePawnToList(Thing thing, EffecterDef effect)
+        {
+
+            if (!vomitEffect_gene_pawns.ContainsKey(thing))
+            {
+                vomitEffect_gene_pawns[thing] = effect;
+            }
+        }
+
+        public static void RemoveVomitEffectGenePawnFromList(Thing thing)
+        {
+            if (vomitEffect_gene_pawns.ContainsKey(thing))
+            {
+                vomitEffect_gene_pawns.Remove(thing);
             }
 
         }

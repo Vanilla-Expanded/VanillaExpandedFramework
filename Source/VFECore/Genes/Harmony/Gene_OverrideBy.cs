@@ -78,6 +78,15 @@ namespace VanillaGenesExpanded
                     }
 
                 }
+                if (extension.customVomitThingDef != null)
+                {
+                    StaticCollectionsClass.RemoveVomitTypeGenePawnFromList(gene.pawn);
+                }
+
+                if (extension.customVomitEffect != null)
+                {
+                    StaticCollectionsClass.RemoveVomitEffectGenePawnFromList(gene.pawn);
+                }
 
 
             }
@@ -151,6 +160,15 @@ namespace VanillaGenesExpanded
 
                         }
                     }
+                }
+                if (extension.customVomitThingDef != null)
+                {
+                    StaticCollectionsClass.AddVomitTypeGenePawnToList(gene.pawn, extension.customVomitThingDef);
+                }
+
+                if (extension.customVomitEffect != null)
+                {
+                    StaticCollectionsClass.AddVomitEffectGenePawnToList(gene.pawn, extension.customVomitEffect);
                 }
 
 
