@@ -26,7 +26,7 @@ namespace VanillaGenesExpanded
                     StaticCollectionsClass.RemoveBloodtypeGenePawnFromList(gene.pawn);
 
                 }
-                if (extension.customBloodIcon != null)
+                if (extension.customBloodIcon != "")
                 {
                     StaticCollectionsClass.RemoveBloodIconGenePawnFromList(gene.pawn);
 

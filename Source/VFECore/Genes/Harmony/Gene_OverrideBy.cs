@@ -26,7 +26,7 @@ namespace VanillaGenesExpanded
                     StaticCollectionsClass.RemoveBloodtypeGenePawnFromList(gene.pawn);
 
                 }
-                if (extension.customBloodIcon != null)
+                if (extension.customBloodIcon != "")
                 {
                     StaticCollectionsClass.RemoveBloodIconGenePawnFromList(gene.pawn);
 
@@ -115,7 +115,7 @@ namespace VanillaGenesExpanded
                 {
                     StaticCollectionsClass.AddBloodtypeGenePawnToList(gene.pawn, extension.customBloodThingDef);
                 }
-                if (extension.customBloodIcon != null)
+                if (extension.customBloodIcon != "")
                 {
                     StaticCollectionsClass.AddBloodIconGenePawnToList(gene.pawn, extension.customBloodIcon);
                 }

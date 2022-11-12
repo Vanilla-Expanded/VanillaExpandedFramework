@@ -43,12 +43,14 @@ namespace VanillaGenesExpanded
 
         public static Texture2D ChangeIconForThisPawn()
         {
+           
             return ContentFinder<Texture2D>.Get(bloodIcon, true);
         }
         public static bool HasBloodIconChangingGene(Pawn pawn)
         {
             if (StaticCollectionsClass.bloodIcon_gene_pawns.ContainsKey(pawn))
             {
+               
                 bloodIcon = StaticCollectionsClass.bloodIcon_gene_pawns[pawn];
                 return true;
             }

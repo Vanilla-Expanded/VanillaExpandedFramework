@@ -57,7 +57,7 @@ namespace VFECore
                 {
                     VanillaGenesExpanded.StaticCollectionsClass.AddBloodtypeGenePawnToList(parent.pawn, Props.customBloodThingDef);
                 }
-                if (Props.customBloodIcon != null)
+                if (Props.customBloodIcon != "")
                 {
                     VanillaGenesExpanded.StaticCollectionsClass.AddBloodIconGenePawnToList(parent.pawn, Props.customBloodIcon);
                 }
@@ -81,7 +81,7 @@ namespace VFECore
                 {
                     VanillaGenesExpanded.StaticCollectionsClass.RemoveBloodtypeGenePawnFromList(parent.pawn);
                 }
-                if (Props.customBloodIcon != null)
+                if (Props.customBloodIcon != "")
                 {
                     VanillaGenesExpanded.StaticCollectionsClass.RemoveBloodIconGenePawnFromList(parent.pawn);
                 }
