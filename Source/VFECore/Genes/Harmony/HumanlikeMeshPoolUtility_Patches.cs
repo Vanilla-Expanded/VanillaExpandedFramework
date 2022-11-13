@@ -209,7 +209,7 @@ namespace VanillaGenesExpanded
                 {
                     if (ModCompatibilityCheck.HumanAlienRace)
                     {
-                        if (codes[i].opcode == OpCodes.Box)//Removing HAR Boxes as we will box the vect 2 instead
+/*                        if (codes[i].opcode == OpCodes.Box)//Removing HAR Boxes as we will box the vect 2 instead
                         {
                             continue;
                         }
@@ -229,7 +229,8 @@ namespace VanillaGenesExpanded
                         else
                         {
                             yield return codes[i];
-                        }
+                        }*/
+                        yield return codes[i];
                     }
                     else
                     {
@@ -267,7 +268,7 @@ namespace VanillaGenesExpanded
                 {
                     if (ModCompatibilityCheck.HumanAlienRace)
                     {
-                        if (codes[i].opcode == OpCodes.Box) //Removing HAR Boxes as we will box the vect 2 instead
+/*                        if (codes[i].opcode == OpCodes.Box) //Removing HAR Boxes as we will box the vect 2 instead
                         {
                             continue;
                         }
@@ -287,7 +288,8 @@ namespace VanillaGenesExpanded
                         else
                         {
                             yield return codes[i];
-                        }
+                        }*/
+                        yield return codes[i];
                     }
                     else
                     {
@@ -327,7 +329,7 @@ namespace VanillaGenesExpanded
                 {
                     if (ModCompatibilityCheck.HumanAlienRace)
                     {
-                        var helper = AccessTools.Method("AlienRace.HarmonyPatches:GetHumanlikeHairSetForPawnHelper");
+/*                        var helper = AccessTools.Method("AlienRace.HarmonyPatches:GetHumanlikeHairSetForPawnHelper");
                         if (helper != null)
                         {
                             if (codes[i].Calls(helper) && !found)
@@ -336,7 +338,7 @@ namespace VanillaGenesExpanded
                                 codes.Insert(i, new CodeInstruction(OpCodes.Call, headScaleFactorVector));
                                 codes.Insert(i + 1, new CodeInstruction(OpCodes.Ldarg_0));
                             }
-                        }
+                        }*/
                     }
                     else
                     {
@@ -368,7 +370,7 @@ namespace VanillaGenesExpanded
                 {
                     if (ModCompatibilityCheck.HumanAlienRace)
                     {
-                        var helper = AccessTools.Method("AlienRace.HarmonyPatches:GetHumanlikeHairSetForPawnHelper");
+/*                        var helper = AccessTools.Method("AlienRace.HarmonyPatches:GetHumanlikeHairSetForPawnHelper");
                         if (helper != null)
                         {
                             if (codes[i].Calls(helper) && !found)
@@ -377,7 +379,7 @@ namespace VanillaGenesExpanded
                                 codes.Insert(i, new CodeInstruction(OpCodes.Call, headScaleFactorVector));
                                 codes.Insert(i + 1, new CodeInstruction(OpCodes.Ldarg_0));
                             }
-                        }
+                        }*/
                     }
                     else
                     {
