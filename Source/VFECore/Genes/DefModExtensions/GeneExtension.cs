@@ -1,6 +1,7 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
 using Verse;
+using UnityEngine;
 
 namespace VanillaGenesExpanded
 {
@@ -50,9 +51,9 @@ namespace VanillaGenesExpanded
         //Hide gene from appearing on the xenotype creation screen. Useful for special genes that only appear as rewards during gameplay.
         public bool hideGene = false;
 
-        //Makes genes scale body and head (this code is at the moment in Alpha Genes, being tested)
-        public float bodyScaleFactor = 1f;
-        public float headScaleFactor = 1f;
+        //Makes genes scale body and head
+        public Vector2 bodyScaleFactor = new Vector2(1f, 1f);
+        public Vector2 headScaleFactor = new Vector2(1f, 1f);
 
         public BodyTypeDef forcedBodyType;
         public string bodyNakedGraphicPath;
