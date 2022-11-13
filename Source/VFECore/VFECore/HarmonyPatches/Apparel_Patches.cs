@@ -44,19 +44,27 @@ namespace VFECore
         {
             var codes = instructions.ToList();
             var statOffsetFromGearMethod = AccessTools.Method(typeof(StatWorker), nameof(StatWorker.StatOffsetFromGear));
+            var getItemMethod = AccessTools.Method(typeof(List<Apparel>), "get_Item");
             bool found = false;
+            object apparelIdx = 20;
             for (int i = 0; i < codes.Count; i++)
             {
                 yield return codes[i];
-                if (!found && codes[i].opcode == OpCodes.Stloc_0 && codes[i - 1].opcode == OpCodes.Add && codes[i - 2].Calls(statOffsetFromGearMethod))
+                if (found)
+                    continue;
+                if (codes[i].opcode == OpCodes.Ldloc_S && codes[i + 1].Calls(getItemMethod))
+                {
+                    apparelIdx = codes[i].operand;
+                }
+                else if (codes[i].opcode == OpCodes.Stloc_0 && codes[i - 1].opcode == OpCodes.Add && codes[i - 2].Calls(statOffsetFromGearMethod))
                 {
                     found = true;
                     yield return new CodeInstruction(OpCodes.Ldloc_0);
                     yield return new CodeInstruction(OpCodes.Ldloc_1);
                     yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(Pawn), "apparel"));
                     yield return new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(Pawn_ApparelTracker), "get_WornApparel"));
-                    yield return new CodeInstruction(OpCodes.Ldloc_S, 20);
-                    yield return new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(List<Apparel>), "get_Item"));
+                    yield return new CodeInstruction(OpCodes.Ldloc_S, apparelIdx);
+                    yield return new CodeInstruction(OpCodes.Callvirt, getItemMethod);
                     yield return new CodeInstruction(OpCodes.Ldarg_0);
                     yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(StatWorker), "stat"));
                     yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(StatWorker_GetValueUnfinalized_Transpiler), nameof(StatFactorFromGear)));
