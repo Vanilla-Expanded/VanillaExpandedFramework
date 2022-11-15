@@ -37,11 +37,14 @@ namespace VanillaGenesExpanded
             if (genes == null) { return; }
             foreach (var gene in genes.GenesListForReading)
             {
-                var ext = gene.def.GetModExtension<GeneExtension>();
-                if (ext != null)
+                if (gene.Active)
                 {
-                    factorX *= ext.bodyScaleFactor.x;
-                    factorY *= ext.bodyScaleFactor.y;
+                    var ext = gene.def.GetModExtension<GeneExtension>();
+                    if (ext != null)
+                    {
+                        factorX *= ext.bodyScaleFactor.x;
+                        factorY *= ext.bodyScaleFactor.y;
+                    }
                 }
             }
             __result = MeshPool.GetMeshSetForWidth(factorX, factorY);
@@ -94,11 +97,14 @@ namespace VanillaGenesExpanded
             {
                 foreach (var gene in genes.GenesListForReading)
                 {
-                    var ext = gene.def.GetModExtension<GeneExtension>();
-                    if (ext != null)
+                    if (gene.Active)
                     {
-                        offset.x *= Mathf.Sqrt(ext.bodyScaleFactor.x);//The Sqrt is to match how rimworld method does it
-                        offset.y *= Mathf.Sqrt(ext.bodyScaleFactor.y);
+                        var ext = gene.def.GetModExtension<GeneExtension>();
+                        if (ext != null)
+                        {
+                            offset.x *= Mathf.Sqrt(ext.bodyScaleFactor.x);//The Sqrt is to match how rimworld method does it
+                            offset.y *= Mathf.Sqrt(ext.bodyScaleFactor.y);
+                        }
                     }
                 }
             }

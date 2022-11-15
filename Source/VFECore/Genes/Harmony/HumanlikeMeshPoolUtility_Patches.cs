@@ -60,10 +60,13 @@ namespace VanillaGenesExpanded
             {
                 foreach (var gene in genes.GenesListForReading)
                 {
-                    var ext = gene.def.GetModExtension<GeneExtension>();
-                    if (ext != null)
+                    if (gene.Active)
                     {
-                        scaling = new Vector2(scaling.x * ext.bodyScaleFactor.x, scaling.y * ext.bodyScaleFactor.y);
+                        var ext = gene.def.GetModExtension<GeneExtension>();
+                        if (ext != null)
+                        {
+                            scaling = new Vector2(scaling.x * ext.bodyScaleFactor.x, scaling.y * ext.bodyScaleFactor.y);
+                        }
                     }
                 }
             }
@@ -76,13 +79,15 @@ namespace VanillaGenesExpanded
             var genes = pawn.genes;
             if (ModLister.BiotechInstalled && genes != null)
             {
-
                 foreach (var gene in genes.GenesListForReading)
                 {
-                    var ext = gene.def.GetModExtension<GeneExtension>();
-                    if (ext != null)
+                    if (gene.Active)
                     {
-                        headSize = new Vector2(headSize.x * ext.headScaleFactor.x, headSize.y * ext.headScaleFactor.y);
+                        var ext = gene.def.GetModExtension<GeneExtension>();
+                        if (ext != null)
+                        {
+                            headSize = new Vector2(headSize.x * ext.headScaleFactor.x, headSize.y * ext.headScaleFactor.y);
+                        }
                     }
                 }
             }
@@ -95,13 +100,15 @@ namespace VanillaGenesExpanded
             Vector2 scaling = new(headSize, headSize);
             if (ModLister.BiotechInstalled && genes != null)
             {
-
                 foreach (var gene in genes.GenesListForReading)
                 {
-                    var ext = gene.def.GetModExtension<GeneExtension>();
-                    if (ext != null)
+                    if (gene.Active)
                     {
-                        scaling = new Vector2(scaling.x * ext.headScaleFactor.x, scaling.y * ext.headScaleFactor.y);
+                        var ext = gene.def.GetModExtension<GeneExtension>();
+                        if (ext != null)
+                        {
+                            scaling = new Vector2(scaling.x * ext.headScaleFactor.x, scaling.y * ext.headScaleFactor.y);
+                        }
                     }
                 }
             }
@@ -121,10 +128,13 @@ namespace VanillaGenesExpanded
                 }
                 foreach (var gene in genes.GenesListForReading)
                 {
-                    var ext = gene.def.GetModExtension<GeneExtension>();
-                    if (ext != null)
+                    if (gene.Active)
                     {
-                        width = new Vector2(width.x * ext.bodyScaleFactor.x, width.y * ext.bodyScaleFactor.y);
+                        var ext = gene.def.GetModExtension<GeneExtension>();
+                        if (ext != null)
+                        {
+                            width = new Vector2(width.x * ext.bodyScaleFactor.x, width.y * ext.bodyScaleFactor.y);
+                        }
                     }
                 }
             }
@@ -144,10 +154,13 @@ namespace VanillaGenesExpanded
                 }
                 foreach (var gene in genes.GenesListForReading)
                 {
-                    var ext = gene.def.GetModExtension<GeneExtension>();
-                    if (ext != null)
+                    if (gene.Active)
                     {
-                        width = new Vector2(width.x * ext.headScaleFactor.x, width.y * ext.headScaleFactor.y);
+                        var ext = gene.def.GetModExtension<GeneExtension>();
+                        if (ext != null)
+                        {
+                            width = new Vector2(width.x * ext.headScaleFactor.x, width.y * ext.headScaleFactor.y);
+                        }
                     }
                 }
             }
@@ -163,11 +176,14 @@ namespace VanillaGenesExpanded
             {
                 foreach (var gene in genes.GenesListForReading)
                 {
-                    var ext = gene.def.GetModExtension<GeneExtension>();
-                    if (ext != null)
+                    if (gene.Active)
                     {
-                        x *= ext.headScaleFactor.x;
-                        y *= ext.headScaleFactor.y;
+                        var ext = gene.def.GetModExtension<GeneExtension>();
+                        if (ext != null)
+                        {
+                            x *= ext.headScaleFactor.x;
+                            y *= ext.headScaleFactor.y;
+                        }
                     }
                 }
             }
