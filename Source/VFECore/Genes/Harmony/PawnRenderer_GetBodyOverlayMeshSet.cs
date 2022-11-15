@@ -102,8 +102,8 @@ namespace VanillaGenesExpanded
                         var ext = gene.def.GetModExtension<GeneExtension>();
                         if (ext != null)
                         {
-                            offset.x *= Mathf.Sqrt(ext.bodyScaleFactor.x);//The Sqrt is to match how rimworld method does it
-                            offset.y *= Mathf.Sqrt(ext.bodyScaleFactor.y);
+                            offset.x *= ext.headScaleFactor.x;
+                            offset.y *= ext.headScaleFactor.y;
                         }
                     }
                 }
