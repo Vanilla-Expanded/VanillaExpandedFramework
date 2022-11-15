@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using RimWorld;
 using RimWorld.Planet;
 using Verse;
 
@@ -18,20 +17,26 @@ namespace KCSG
                 for (int i = 0; i < worldObjects.Count; i++)
                 {
                     var obj = worldObjects[i];
-                    if (obj.Tile == tile && obj.def.HasModExtension<CustomGenOption>())
+                    // If we found __instance worldObject
+                    if (obj.Tile == tile)
                     {
-                        var ext = obj.def.GetModExtension<CustomGenOption>();
-                        __result = ext.preventBridgeable ? DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_NoBridge") : DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject");
-                        return;
-                    }
-                    else if (obj is Site site)
-                    {
-                        foreach (var step in site.ExtraGenStepDefs)
+                        // If it has the extension, always modify it's MapGeneratorDef
+                        if (obj.def.GetModExtension<CustomGenOption>() is CustomGenOption ext)
                         {
-                            if (step.def.genStep is GenStep_CustomStructureGen csg)
+                            __result = ext.preventBridgeable ? DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_NoBridge") : DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject");
+                            return;
+                        }
+                        // If it don't but is a site, check ExtraGenStepDefs
+                        else if (obj is Site site)
+                        {
+                            foreach (var step in site.ExtraGenStepDefs)
                             {
-                                __result = csg.preventBridgeable ? DefDatabase<MapGeneratorDef>.GetNamed("KCSG_Encounter_NoBridge") : MapGeneratorDefOf.Encounter;
-                                return;
+                                // If one genstep is GenStep_CustomStructureGen and it should prevent bridgeable, return custom MapGeneratorDef
+                                if (step.def.genStep is GenStep_CustomStructureGen csg && csg.preventBridgeable)
+                                {
+                                    __result = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_Encounter_NoBridge");
+                                    return;
+                                }
                             }
                         }
                     }
