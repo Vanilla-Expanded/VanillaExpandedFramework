@@ -48,7 +48,7 @@ namespace VanillaGenesExpanded
         }
         public static bool HasBloodIconChangingGene(Pawn pawn)
         {
-            if (StaticCollectionsClass.bloodIcon_gene_pawns.ContainsKey(pawn))
+            if (pawn!=null&&StaticCollectionsClass.bloodIcon_gene_pawns.ContainsKey(pawn))
             {
                
                 bloodIcon = StaticCollectionsClass.bloodIcon_gene_pawns[pawn];

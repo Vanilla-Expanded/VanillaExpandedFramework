@@ -26,7 +26,7 @@ namespace VanillaGenesExpanded
 
         public static EffecterDef GetEffecterDef(EffecterDef effecterDef, Pawn curPawn)
         {
-            if (StaticCollectionsClass.bloodEffect_gene_pawns.ContainsKey(curPawn))
+            if (curPawn!=null && StaticCollectionsClass.bloodEffect_gene_pawns.ContainsKey(curPawn))
             {
                 return StaticCollectionsClass.bloodEffect_gene_pawns[curPawn];
             }

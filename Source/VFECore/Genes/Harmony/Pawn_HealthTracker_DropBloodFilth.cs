@@ -12,7 +12,7 @@ namespace VanillaGenesExpanded
         public static bool Prefix(Pawn_HealthTracker __instance,Pawn ___pawn)
         {
 
-            if (___pawn.RaceProps.Humanlike)
+            if (___pawn?.RaceProps.Humanlike==true)
             {
                 if (StaticCollectionsClass.bloodtype_gene_pawns.ContainsKey(___pawn))
                 {
