@@ -12,8 +12,14 @@ namespace PipeSystem
     {
         public static void Postfix(ThingWithComps ___parent, ref bool __result)
         {
-            if (CachedCompResourceTrader.cachedCompResourceTrader.ContainsKey(___parent))
-                __result = CachedCompResourceTrader.AllResourceOn(___parent);
+            foreach (var comp in ___parent.GetComps<CompResourceTrader>())
+            {
+                if (comp != null && !comp.ResourceOn)
+                {
+                    __result = false;
+                    return;
+                }
+            }
         }
     }
 }
