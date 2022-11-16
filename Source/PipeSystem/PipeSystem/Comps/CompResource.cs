@@ -91,13 +91,15 @@ namespace PipeSystem
                 return sb.ToString().Trim();
             }
 
-            if (!PipeNet.def.resource.onlyShowStored)
+            var res = Resource;
+            var net = PipeNet;
+            if (res.onlyShowStored)
             {
-                sb.Append($"{"PipeSystem_ExcessStored".Translate(Resource.name)} {((PipeNet.Production - PipeNet.Consumption) / 100) * GenDate.TicksPerDay:##0} {Resource.unit}/d ({PipeNet.Stored:##0} {Resource.unit})");
+                sb.Append($"{"PipeSystem_Stored".Translate(res.name)} {PipeNet.Stored:##0} {res.unit}");
             }
             else
             {
-                sb.Append($"{"PipeSystem_Stored".Translate(Resource.name)} {PipeNet.Stored:##0} {Resource.unit}");
+                sb.Append("PipeSystem_ExcessStored".Translate($"{((net.Production - net.Consumption) / 100 * GenDate.TicksPerDay) + net.ExtractorRawProduction:##0}", $"{net.Stored:##0}", res.unit));
             }
             sb.AppendInNewLine(base.CompInspectStringExtra());
 

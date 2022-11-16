@@ -25,6 +25,8 @@ namespace PipeSystem
         public List<CompRefillWithPipes> refillables = new List<CompRefillWithPipes>();
         // Processor
         public List<CompResourceProcessor> processors = new List<CompResourceProcessor>();
+        // Extractors
+        public List<CompDeepExtractor> extractors = new List<CompDeepExtractor>();
 
         public Map map;
         public BoolGrid networkGrid;
@@ -43,6 +45,17 @@ namespace PipeSystem
         public int NextTick { get; set; }
         public float Consumption { get; private set; }
         public float Production { get; private set; }
+        public float ExtractorRawProduction
+        {
+            get
+            {
+                var prod = 0f;
+                for (int i = 0; i < extractors.Count; i++)
+                    prod += extractors[i].RawProduction;
+
+                return prod;
+            }
+        }
         public float Stored { get; private set; }
         public float MaxGridStorageCapacity { get; internal set; }
         public float AvailableCapacity => MaxGridStorageCapacity - Stored;
@@ -214,6 +227,10 @@ namespace PipeSystem
             {
                 refillables.Add(refuelable);
             }
+            else if (comp is CompDeepExtractor extractor)
+            {
+                extractors.Add(extractor);
+            }
             comp.PipeNet = this;
 
             foreach (var c in comp.parent.OccupiedRect())
@@ -262,6 +279,10 @@ namespace PipeSystem
             else if (comp is CompRefillWithPipes refuelable)
             {
                 refillables.Remove(refuelable);
+            }
+            else if (comp is CompDeepExtractor extractor)
+            {
+                extractors.Remove(extractor);
             }
 
             foreach (var c in comp.parent.OccupiedRect())

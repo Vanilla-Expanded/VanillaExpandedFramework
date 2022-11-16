@@ -18,7 +18,7 @@
   <PipeSystem_ResourceStored>{0} stored:</PipeSystem_ResourceStored>
 
   <PipeSystem_NotConnected>Not connected to {}.</PipeSystem_NotConnected>
-  <PipeSystem_ExcessStored>{0} excess (stored) in network:</PipeSystem_ExcessStored>
+  <PipeSystem_ExcessStored>Net excess/stored in network: {0} {2}/d / {1} {2}</PipeSystem_ExcessStored>
   <PipeSystem_Stored>{0} stored in network:</PipeSystem_Stored>
 
   <PipeSystem_ValveClosed>Valve closed.</PipeSystem_ValveClosed>
