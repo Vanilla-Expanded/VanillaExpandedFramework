@@ -45,7 +45,7 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="SimpleSidearms">
-      <HintPath>F:\SteamLibrary\steamapps\workshop\content\294100\927155256\v1.4\Assemblies\SimpleSidearms.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\workshop\content\294100\927155256\v1.3\Assemblies\SimpleSidearms.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
