@@ -15,9 +15,8 @@ namespace VanillaGenesExpanded
     /// <summary>
     /// Patches to add pawn scaling factors via Genes.
     /// Compat added for HAR by letting HAR methods take priority 
-    /// just modifying the lifestage factor on the stack then let HAR method do the actual vector manipulation
-    /// Only has single factor so can't make wide without tall etc.
-    /// vector2 could be added easily for non HAR compat, HAR compat would need to be revisited to make that work
+    /// Using HumanlikeMeshPoolUtility:HumanlikeBodyWidthForPawn to get initial bodywidth so other modders have a place to patch
+    /// This doesnt apply to HAR compat, might try to add later but first need to see what the final version it looks like
     /// </summary>
 
     public static class HumanlikeMeshPoolUtility_Patches
@@ -115,17 +114,18 @@ namespace VanillaGenesExpanded
             return scaling;
         }
         //Used when HAR is not loaded
-        public static GraphicMeshSet GetUpdatedMeshSet(Pawn pawn)
+        public static GraphicMeshSet GetUpdatedMeshSet(float factor, Pawn pawn)
         {
+            //This is being added for easy compat with other mods. To allow them to a method to patch that will automatically work without transpilers            
+            var bodyWidth = HumanlikeMeshPoolUtility.HumanlikeBodyWidthForPawn(pawn);
             var genes = pawn.genes;
-            Vector2 width = new Vector2(1.5f, 1.5f);
+            if(bodyWidth != factor)
+            {
+                factor = bodyWidth;
+            }
+            Vector2 width = new Vector2(factor, factor);
             if (ModLister.BiotechInstalled && genes != null)
             {
-                var bodyWidth = pawn.ageTracker.CurLifeStage.bodyWidth;//Because I dont want to make 2 methods per head/body to accomodate this
-                if (bodyWidth != null)
-                {
-                    width = new Vector2(bodyWidth.Value, bodyWidth.Value);
-                }
                 foreach (var gene in genes.GenesListForReading)
                 {
                     if (gene.Active)
@@ -140,18 +140,19 @@ namespace VanillaGenesExpanded
             }
             return MeshPool.GetMeshSetForWidth(width.x, width.y);
         }
+
         //Used when HAR is not loaded
-        public static GraphicMeshSet GetUpdatedHeadMeshSet(Pawn pawn)
+        public static GraphicMeshSet GetUpdatedHeadMeshSet(float factor,Pawn pawn)
         {
             var genes = pawn.genes;
-            Vector2 width = new Vector2(1.5f, 1.5f);
+            var bodyWidth = HumanlikeMeshPoolUtility.HumanlikeBodyWidthForPawn(pawn);
+            if (bodyWidth != factor)
+            {
+                factor = bodyWidth;
+            }
+            Vector2 width = new Vector2(factor, factor);
             if (ModLister.BiotechInstalled && genes != null)
             {
-                var bodyWidth = pawn.ageTracker.CurLifeStage.bodyWidth;//Because I dont want to make 2 methods per head/body to accomodate this
-                if (bodyWidth != null)
-                {
-                    width = new Vector2(bodyWidth.Value, bodyWidth.Value);
-                }
                 foreach (var gene in genes.GenesListForReading)
                 {
                     if (gene.Active)
@@ -189,30 +190,10 @@ namespace VanillaGenesExpanded
             }
             return MeshPool.GetMeshSetForWidth(x, y);
         }
-        //This is still only the X factor due to the return of method being float. This method isn't actually used by ludeon at all so I can probably just remove it outright
-        //But will leave just in case some mod is using it
-        [HarmonyPatch(typeof(HumanlikeMeshPoolUtility), "HumanlikeBodyWidthForPawn")]
-        public static class HumanlikeBodyWidthForPawn_Patch
-        {
-            static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-            {
-                var codes = instructions.ToList();
-                for (int i = 0; i < codes.Count; i++)
-                {
-                    if (codes[i].Calls(meshX))
-                    {
-                        yield return new CodeInstruction(OpCodes.Ldarg_0);
-                        yield return new CodeInstruction(OpCodes.Call, bodyScaleFactor);
-                    }
-                    yield return codes[i];
-                    if (codes[i].opcode == OpCodes.Ldc_R4)
-                    {
-                        yield return new CodeInstruction(OpCodes.Ldarg_0);
-                        yield return new CodeInstruction(OpCodes.Call, bodyScaleFactor);
-                    }
-                }
-            }
-        }
+        //removed patch on BodyWidth for pawn due to ludeon not using it and it being only a single factor
+        //This leaves it open to be used by other mods to feed their width into our transpilers to avoid further transpiler fighting between mods
+        //[HarmonyPatch(typeof(HumanlikeMeshPoolUtility), "HumanlikeBodyWidthForPawn")]
+
         [HarmonyPatch(typeof(HumanlikeMeshPoolUtility), "GetHumanlikeBodySetForPawn")]
         [HarmonyAfter("rimworld.erdelf.alien_race.main")]
 
@@ -252,7 +233,6 @@ namespace VanillaGenesExpanded
                     {
                         if (codes[i].Calls(meshX))
                         {
-                            yield return new CodeInstruction(OpCodes.Pop);
                             yield return new CodeInstruction(OpCodes.Ldarg_0);
                             yield return new CodeInstruction(OpCodes.Call, updatedMeshSet); //changed to not call original meshsetforwidth
                         }
@@ -260,6 +240,7 @@ namespace VanillaGenesExpanded
                         {
                             codes[i].opcode = OpCodes.Nop;
                             yield return codes[i];
+                            yield return new CodeInstruction(OpCodes.Ldc_R4, 1.5f);
                             yield return new CodeInstruction(OpCodes.Ldarg_0);
                             yield return new CodeInstruction(OpCodes.Call, updatedMeshSet);
                         }
@@ -310,8 +291,7 @@ namespace VanillaGenesExpanded
                     else
                     {
                         if (codes[i].Calls(meshX))
-                        {
-                            yield return new CodeInstruction(OpCodes.Pop);
+                        {                            
                             yield return new CodeInstruction(OpCodes.Ldarg_0);
                             yield return new CodeInstruction(OpCodes.Call, updatedHeadMeshSet);
                         }
@@ -319,6 +299,7 @@ namespace VanillaGenesExpanded
                         {
                             codes[i].opcode = OpCodes.Nop;
                             yield return codes[i];
+                            yield return new CodeInstruction(OpCodes.Ldc_R4, 1.5f);
                             yield return new CodeInstruction(OpCodes.Ldarg_0);
                             yield return new CodeInstruction(OpCodes.Call, updatedHeadMeshSet);
                         }
