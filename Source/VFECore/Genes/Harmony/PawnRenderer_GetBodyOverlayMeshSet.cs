@@ -1,4 +1,4 @@
-﻿
+using RimWorld;
 using Verse;
 using HarmonyLib;
 using System.Linq;
@@ -56,10 +56,10 @@ namespace VanillaGenesExpanded
 
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            var headOffset = AccessTools.Field("BodyTypeDef:headOffset");
-            var pawn = AccessTools.Field("PawnRenderer:pawn");
-            var bodyScaleFactor = AccessTools.Method("PawnRenderer_BaseHeadOffsetAt_Patch:LifeStageFactorUpdated");
-            var codes = instructions.ToList();
+            FieldInfo headOffset = AccessTools.Field(typeof(BodyTypeDef), nameof(BodyTypeDef.headOffset));
+            FieldInfo pawn = AccessTools.Field(typeof(PawnRenderer), "pawn");
+            MethodInfo bodyScaleFactor = ((Func<Vector2, Pawn, Vector2>)LifeStageFactorUpdated).Method;
+            List<CodeInstruction> codes = instructions.ToList();
             bool skip = false;
             for (int i = 0; i < codes.Count; i++)
             {
