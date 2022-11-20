@@ -59,7 +59,7 @@ namespace VanillaGenesExpanded
             FieldInfo headOffset = AccessTools.Field(typeof(BodyTypeDef), nameof(BodyTypeDef.headOffset));
             FieldInfo pawn = AccessTools.Field(typeof(PawnRenderer), "pawn");
             MethodInfo bodyScaleFactor = ((Func<Vector2, Pawn, Vector2>)LifeStageFactorUpdated).Method;
-            List<CodeInstruction> codes = instructions.ToList();
+            var codes = instructions.ToList();
             bool skip = false;
             for (int i = 0; i < codes.Count; i++)
             {
