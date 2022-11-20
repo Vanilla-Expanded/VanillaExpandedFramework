@@ -56,8 +56,8 @@ namespace VanillaGenesExpanded
 
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            FieldInfo headOffset = AccessTools.Field(typeof(BodyTypeDef), nameof(BodyTypeDef.headOffset));
-            FieldInfo pawn = AccessTools.Field(typeof(PawnRenderer), "pawn");
+            var headOffset = AccessTools.Field(typeof(BodyTypeDef), nameof(BodyTypeDef.headOffset));
+            var pawn = AccessTools.Field(typeof(PawnRenderer), "pawn");
             MethodInfo bodyScaleFactor = ((Func<Vector2, Pawn, Vector2>)LifeStageFactorUpdated).Method;
             var codes = instructions.ToList();
             bool skip = false;
