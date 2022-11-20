@@ -23,15 +23,15 @@ namespace VanillaGenesExpanded
     {
         static MethodInfo meshX = AccessTools.Method(typeof(MeshPool), "GetMeshSetForWidth", new Type[] { typeof(float) });
         static MethodInfo meshXY = AccessTools.Method(typeof(MeshPool), "GetMeshSetForWidth", new Type[] { typeof(float), typeof(float) });
-        static FieldInfo meshPoolHumanLike = AccessTools.Field("MeshPool:humanlikeBodySet");
-        static FieldInfo meshPoolHeadHumanLike = AccessTools.Field("MeshPool:humanlikeHeadSet");
-        static MethodInfo bodyScaleFactor = AccessTools.Method("HumanlikeMeshPoolUtility_Patches:GeneScaleFactor");
-        static MethodInfo bodyScaleFactorVect2 = AccessTools.Method("HumanlikeMeshPoolUtility_Patches:GeneScaleFactorVect2");
-        static MethodInfo headScaleFactorVector = AccessTools.Method("HumanlikeMeshPoolUtility_Patches:headSizeFactorVector");
-        static MethodInfo headScaleVectorFromFactor = AccessTools.Method("HumanlikeMeshPoolUtility_Patches:headSizeVectorFromFactor");
-        static MethodInfo updatedMeshSet = AccessTools.Method("HumanlikeMeshPoolUtility_Patches:GetUpdatedMeshSet");
-        static MethodInfo updatedHeadMeshSet = AccessTools.Method("HumanlikeMeshPoolUtility_Patches:GetUpdatedHeadMeshSet");
-        static MethodInfo updatedMeshSetXY = AccessTools.Method("HumanlikeMeshPoolUtility_Patches:GetUpdatedMeshSetXY");
+        static FieldInfo meshPoolHumanLike = AccessTools.Field(typeof(MeshPool),"humanlikeBodySet");
+        static FieldInfo meshPoolHeadHumanLike = AccessTools.Field(typeof(MeshPool), "humanlikeHeadSet");
+        static MethodInfo bodyScaleFactor = AccessTools.Method(typeof(HumanlikeMeshPoolUtility_Patches),"GeneScaleFactor");
+        static MethodInfo bodyScaleFactorVect2 = AccessTools.Method(typeof(HumanlikeMeshPoolUtility_Patches),"GeneScaleFactorVect2");
+        static MethodInfo headScaleFactorVector = AccessTools.Method(typeof(HumanlikeMeshPoolUtility_Patches),"headSizeFactorVector");
+        static MethodInfo headScaleVectorFromFactor = AccessTools.Method(typeof(HumanlikeMeshPoolUtility_Patches),"headSizeVectorFromFactor");
+        static MethodInfo updatedMeshSet = AccessTools.Method(typeof(HumanlikeMeshPoolUtility_Patches),"GetUpdatedMeshSet");
+        static MethodInfo updatedHeadMeshSet = AccessTools.Method(typeof(HumanlikeMeshPoolUtility_Patches),"GetUpdatedHeadMeshSet");
+        static MethodInfo updatedMeshSetXY = AccessTools.Method(typeof(HumanlikeMeshPoolUtility_Patches),"GetUpdatedMeshSetXY");
 
 
         public static float GeneScaleFactor(float width, Pawn pawn)

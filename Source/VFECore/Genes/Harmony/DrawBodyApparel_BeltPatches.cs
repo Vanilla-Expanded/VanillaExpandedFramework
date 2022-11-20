@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Verse;
+using RimWorld;
 using HarmonyLib;
 
 namespace VanillaGenesExpanded
@@ -12,9 +13,9 @@ namespace VanillaGenesExpanded
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            var pawnField = AccessTools.Field("PawnRenderer:pawn");
-            var geneScale = AccessTools.Method("DrawBodyApparel_BeltPatches:GeneScale");
-            var beltOffset = AccessTools.Method("WornGraphicData:BeltOffsetAt");
+            var pawnField = AccessTools.Field(typeof(PawnRenderer),"pawn");
+            var geneScale = AccessTools.Method(typeof(DrawBodyApparel_BeltPatches),"GeneScale");
+            var beltOffset = AccessTools.Method(typeof(WornGraphicData),"BeltOffsetAt");
             //var beltScale = AccessTools.Method("WornGraphicData:BeltScaleAt"); Do not need to adjust this as it is already scaled via bodymesh
             var codes = instructions.ToList();
             for (int i = 0; i < codes.Count; i++)
