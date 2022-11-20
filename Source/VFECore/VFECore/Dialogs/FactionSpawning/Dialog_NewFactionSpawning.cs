@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using KCSG;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -75,7 +76,7 @@ namespace VFECore
             listing_Standard.Gap(60);
 
             // Options
-            if (factionDef.hidden)
+            if (factionDef.hidden || factionDef.GetModExtension<CustomGenOption>()?.canSpawnSettlements == false)
             {
                 if (listing_Standard.ButtonText("VanillaFactionsExpanded.FactionButtonAdd".Translate())) SpawnWithoutBases();
             }

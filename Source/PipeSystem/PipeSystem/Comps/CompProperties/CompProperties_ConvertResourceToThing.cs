@@ -1,5 +1,5 @@
-﻿using RimWorld;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using RimWorld;
 using Verse;
 
 namespace PipeSystem
@@ -12,7 +12,7 @@ namespace PipeSystem
         }
 
         public int ratio = 1;
-        public int maxOutputStackSize = 10;
+        public int maxOutputStackSize = -1;
         public ThingDef thing;
 
         public override IEnumerable<string> ConfigErrors(ThingDef parentDef)

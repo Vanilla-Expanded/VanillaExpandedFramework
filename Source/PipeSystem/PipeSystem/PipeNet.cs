@@ -485,22 +485,25 @@ namespace PipeSystem
             for (int i = 0; i < convertersReady.Count; i++)
             {
                 var converter = convertersReady[i];
-                // cap to max amount storage can accept
-                int availableWRatio = (int)(available / converter.Props.ratio);
-                int max = converter.MaxCanOutput;
-                int toConvert = max > availableWRatio ? availableWRatio : max;
-                if (toConvert > 0)
+                if (converter.CanOutputNow)
                 {
-                    converter.OutputResource(toConvert);
-                    var toDraw = toConvert * converter.Props.ratio;
-                    used += toDraw;
-                    available -= toDraw;
-                    PipeSystemDebug.Message($"Converted {toDraw} resource for {toConvert}");
-                }
-                // Don't iterate if nothing more is available
-                else
-                {
-                    break;
+                    // Cap to max amount storage can accept
+                    int availableWRatio = (int)(available / converter.Props.ratio);
+                    int max = converter.MaxCanOutput;
+                    int toConvert = max > availableWRatio ? availableWRatio : max;
+                    if (toConvert > 0)
+                    {
+                        converter.OutputResource(toConvert);
+                        var toDraw = toConvert * converter.Props.ratio;
+                        used += toDraw;
+                        available -= toDraw;
+                        PipeSystemDebug.Message($"Converted {toDraw} resource for {toConvert}");
+                    }
+                    // Don't iterate if nothing more is available
+                    else
+                    {
+                        break;
+                    }
                 }
             }
 
