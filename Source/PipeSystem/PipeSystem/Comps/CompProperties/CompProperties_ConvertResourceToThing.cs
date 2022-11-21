@@ -20,7 +20,7 @@ namespace PipeSystem
             foreach (string err in base.ConfigErrors(parentDef))
                 yield return err;
 
-            if (parentDef.thingClass != typeof(Building_Storage))
+            if (!typeof(Building_Storage).IsAssignableFrom(parentDef.thingClass))
                 yield return "Can't use CompProperties_ConvertResourceToThing with a thing that don't have Building_Storage as thingClass.";
             if (parentDef.comps.FindAll(c => c is CompProperties_ConvertResourceToThing).Count > 1)
                 yield return "Can't use multiple CompProperties_ConvertResourceToThing on the same thing.";
