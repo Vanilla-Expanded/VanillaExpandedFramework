@@ -58,7 +58,8 @@ namespace VanillaGenesExpanded
         public static ThingDef GetVomitFilth() {
 
             
-            if (StaticCollectionsClass.vomitType_gene_pawns.ContainsKey(VanillaGenesExpanded_JobDriver_Vomit_MakeNewToils_Patch.curPawn))
+            if (VanillaGenesExpanded_JobDriver_Vomit_MakeNewToils_Patch.curPawn!=null&&
+                StaticCollectionsClass.vomitType_gene_pawns.ContainsKey(VanillaGenesExpanded_JobDriver_Vomit_MakeNewToils_Patch.curPawn))
             {
                 return StaticCollectionsClass.vomitType_gene_pawns[VanillaGenesExpanded_JobDriver_Vomit_MakeNewToils_Patch.curPawn];
             }

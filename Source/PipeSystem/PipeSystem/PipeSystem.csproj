@@ -59,7 +59,7 @@
     <Compile Include="Buildings\Building_ResourceWorkTable_HeatPush.cs" />
     <Compile Include="Buildings\Building_ResourceWorkTable.cs" />
     <Compile Include="Cached\CachedCompResourceStorage.cs" />
-    <Compile Include="Cached\CachedCompResourceTrader.cs" />
+    <Compile Include="Cached\CachedSignals.cs" />
     <Compile Include="Cached\CachedPipeNetManager.cs" />
     <Compile Include="Cached\CachedResourceThings.cs" />
     <Compile Include="Comps\CompConvertToThing.cs" />

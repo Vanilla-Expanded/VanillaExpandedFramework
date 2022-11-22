@@ -20,6 +20,17 @@ namespace PipeSystem
 
         public new CompProperties_DeepExtractor Props => (CompProperties_DeepExtractor)props;
 
+        public float RawProduction
+        {
+            get
+            {
+                if (noCapacity || lumpCells.Count == 0 || (compPower != null && !compPower.PowerOn) || (compFlickable != null && !compFlickable.SwitchIsOn))
+                    return 0;
+
+                return (GenDate.TicksPerDay / Props.ticksPerPortion) * (Props.useDeepCountPerPortion ? Props.deepThing.deepCountPerPortion : 1);
+            }
+        }
+
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);

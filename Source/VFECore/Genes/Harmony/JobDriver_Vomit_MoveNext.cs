@@ -50,7 +50,8 @@ namespace VanillaGenesExpanded
         {
 
            
-            if (StaticCollectionsClass.vomitEffect_gene_pawns.ContainsKey(VanillaGenesExpanded_JobDriver_Vomit_MakeNewToils_Patch.curPawn))
+            if (VanillaGenesExpanded_JobDriver_Vomit_MakeNewToils_Patch.curPawn!=null&&
+                StaticCollectionsClass.vomitEffect_gene_pawns.ContainsKey(VanillaGenesExpanded_JobDriver_Vomit_MakeNewToils_Patch.curPawn))
             {
                 return StaticCollectionsClass.vomitEffect_gene_pawns[VanillaGenesExpanded_JobDriver_Vomit_MakeNewToils_Patch.curPawn];
             }

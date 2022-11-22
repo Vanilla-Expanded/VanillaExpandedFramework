@@ -12,8 +12,7 @@ namespace PipeSystem
     {
         public static void Postfix(string signal, ThingWithComps ___parent, CompGlower __instance)
         {
-            if (CachedCompResourceTrader.cachedCompResourceTrader.ContainsKey(___parent)
-                && CachedCompResourceTrader.IsCompMessage(___parent, signal))
+            if (CachedSignals.IsResourceSignal(signal))
                 __instance.UpdateLit(___parent.Map);
         }
     }

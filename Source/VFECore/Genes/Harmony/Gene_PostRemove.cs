@@ -53,7 +53,15 @@ namespace VanillaGenesExpanded
                 }
                 if (extension?.hediffToWholeBody != null)
                 {
-                    gene.pawn.health.RemoveHediff(gene.pawn.health.hediffSet.GetFirstHediffOfDef(extension?.hediffToWholeBody));
+                    if (gene.pawn.health.hediffSet?.HasHediff(extension?.hediffToWholeBody) == true)
+                    {
+                        Hediff hediffToRemove = gene.pawn.health.hediffSet.GetFirstHediffOfDef(extension?.hediffToWholeBody);
+                        if (hediffToRemove != null)
+                        {
+                            gene.pawn.health.RemoveHediff(hediffToRemove);
+                        }
+
+                    }
                 }
                 if (extension?.hediffsToBodyParts != null)
                 {

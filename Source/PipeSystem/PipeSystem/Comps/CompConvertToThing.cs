@@ -1,6 +1,6 @@
-﻿using RimWorld;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -31,6 +31,8 @@ namespace PipeSystem
             compBreakdownable = parent.GetComp<CompBreakdownable>();
             compPowerTrader = parent.GetComp<CompPowerTrader>();
             compFlickable = parent.GetComp<CompFlickable>();
+
+            maxHeldThingStackSize = Props.maxOutputStackSize != -1 ? Props.maxOutputStackSize : 10;
 
             decrease10 = new Command_Action
             {
@@ -64,6 +66,7 @@ namespace PipeSystem
                 },
                 defaultLabel = "PipeSystem_AugmentStack".Translate(),
                 defaultDesc = "PipeSystem_AugmentStackDesc".Translate(),
+                disabled = Props.maxOutputStackSize != -1 && maxHeldThingStackSize + 1 > Props.maxOutputStackSize,
                 icon = plus
             };
             augment10 = new Command_Action
@@ -74,6 +77,7 @@ namespace PipeSystem
                 },
                 defaultLabel = "PipeSystem_AugmentStackB".Translate(),
                 defaultDesc = "PipeSystem_AugmentStackDescB".Translate(),
+                disabled = Props.maxOutputStackSize != -1 && maxHeldThingStackSize + 10 > Props.maxOutputStackSize,
                 icon = plus
             };
         }
@@ -101,14 +105,24 @@ namespace PipeSystem
                 Thing heldThing = HeldThing;
                 if (heldThing == null)
                 {
+                    if (Props.maxOutputStackSize != -1)
+                        return Props.maxOutputStackSize < Props.thing.stackLimit ? Props.maxOutputStackSize : Props.thing.stackLimit;
+
                     return maxHeldThingStackSize < Props.thing.stackLimit ? maxHeldThingStackSize : Props.thing.stackLimit;
                 }
+
                 if (heldThing.def == Props.thing)
                 {
-                    var max = maxHeldThingStackSize < heldThing.def.stackLimit ? maxHeldThingStackSize : heldThing.def.stackLimit;
+                    int max;
+                    if (Props.maxOutputStackSize != -1)
+                        max = Props.maxOutputStackSize < heldThing.def.stackLimit ? Props.maxOutputStackSize : heldThing.def.stackLimit;
+                    else
+                        max = maxHeldThingStackSize < heldThing.def.stackLimit ? maxHeldThingStackSize : heldThing.def.stackLimit;
+
                     var maxSubCount = max - heldThing.stackCount;
                     return 0 > maxSubCount ? 0 : maxSubCount;
                 }
+
                 return 0;
             }
         }
@@ -133,19 +147,16 @@ namespace PipeSystem
         /// <param name="amount">Amount to spawn</param>
         public void OutputResource(int amount)
         {
-            if (CanOutputNow)
+            var heldThing = HeldThing;
+            if (heldThing != null)
             {
-                var heldThing = HeldThing;
-                if (heldThing != null)
-                {
-                    heldThing.stackCount += amount;
-                }
-                else
-                {
-                    Thing createdThing = ThingMaker.MakeThing(Props.thing);
-                    createdThing.stackCount = amount;
-                    GenSpawn.Spawn(createdThing, parent.Position, parent.Map, WipeMode.VanishOrMoveAside);
-                }
+                heldThing.stackCount += amount;
+            }
+            else
+            {
+                Thing createdThing = ThingMaker.MakeThing(Props.thing);
+                createdThing.stackCount = amount;
+                GenSpawn.Spawn(createdThing, parent.Position, parent.Map, WipeMode.VanishOrMoveAside);
             }
         }
 
@@ -163,10 +174,17 @@ namespace PipeSystem
             {
                 yield return item;
             }
-            yield return decrease10;
-            yield return decrease1;
-            yield return augment1;
-            yield return augment10;
+
+            if (Props.maxOutputStackSize == -1 || Props.maxOutputStackSize > 1)
+            {
+                yield return decrease1;
+                yield return augment1;
+            }
+            if (Props.maxOutputStackSize == -1 || Props.maxOutputStackSize > 10)
+            {
+                yield return decrease10;
+                yield return augment10;
+            }
         }
     }
 }
