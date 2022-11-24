@@ -107,7 +107,7 @@ namespace VanillaGenesExpanded
                     if (extension != null)
                     {
                         offset.x *= extension.headScaleFactor.x;
-                        offset.z /= extension.headScaleFactor.y;
+                        offset.z /= extension.headScaleFactor.y > 1f ? extension.headScaleFactor.y : 1f; //Dont know exactly why but, z offset doesn't need to be adjusted at all for genes making someone smaller, only bigger
                     }
                 }
             }
