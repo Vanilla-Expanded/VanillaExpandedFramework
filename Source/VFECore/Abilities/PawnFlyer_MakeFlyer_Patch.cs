@@ -13,9 +13,9 @@
     [HarmonyPatch(typeof(PawnFlyer), "MakeFlyer")]
     public static class PawnFlyer_MakeFlyer_Patch
     {
-        static FieldInfo jobdef = AccessTools.Field("Job:def");
-        static FieldInfo castJump = AccessTools.Field("JobDefOf:CastJump");
-        static MethodInfo myMethod = AccessTools.Method("PawnFlyer_MakeFlyer_Patch:ShouldEndJob");
+        static FieldInfo jobdef = AccessTools.Field(typeof(Job), nameof(Job.def));
+        static FieldInfo castJump = AccessTools.Field(typeof(JobDefOf), nameof(JobDefOf.CastJump));
+        static MethodInfo myMethod = AccessTools.Method(typeof(PawnFlyer_MakeFlyer_Patch), nameof(PawnFlyer_MakeFlyer_Patch.ShouldEndJob));
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
