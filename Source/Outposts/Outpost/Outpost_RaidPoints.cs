@@ -36,14 +36,13 @@ public partial class Outpost
         get
         {
             var wealth = 0f;
-            foreach (var pawn in AllPawns.Where(x => (x.RaceProps.Humanlike && !x.IsPrisoner) || x.training.CanAssignToTrain(TrainableDefOf.Release).Accepted))
+            foreach (var pawn in AllPawns.Where(x => (x.RaceProps.Humanlike && !x.IsPrisoner) || x.training?.CanAssignToTrain(TrainableDefOf.Release).Accepted == true)) 
             {
                 wealth += WealthWatcher.GetEquipmentApparelAndInventoryWealth(pawn);
                 var marketValue = pawn.MarketValue;
                 if (pawn.IsSlave) marketValue *= 0.75f;
                 wealth += marketValue;
             }
-
             return wealth;
         }
     }
