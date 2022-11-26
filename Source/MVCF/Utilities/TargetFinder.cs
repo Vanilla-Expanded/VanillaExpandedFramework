@@ -15,25 +15,33 @@ public static class TargetFinder
 
     public static bool CurrentEffectiveVerb_Prefix(ref Verb __result, Pawn __instance)
     {
-        if (searchVerb is null)
-        {
-            if (__instance.stances?.curStance is Stance_Busy { verb: { } verb })
-            {
-                MVCF.Log($"Giving stance verb {verb} from CurrentEffectiveVerb", LogLevel.Tick);
-                __result = verb;
-                return false;
-            }
+        if (searchVerb is not null)
+        { 
+            MVCF.Log($"Giving searchVerb {searchVerb} from CurrentEffectiveVerb", LogLevel.Tick);
+            __result = searchVerb;
+            return false;
+        }
 
-            var man = __instance.Manager();
-            if (!man.HasVerbs || man.SearchVerb == null || !man.SearchVerb.Available()) return true;
+		if (__instance.MannedThing() as Building_Turret != null)
+		{
+			return true;
+		}
+
+        if (__instance.stances?.curStance is Stance_Busy { verb: { } verb })
+        {
+            MVCF.Log($"Giving stance verb {verb} from CurrentEffectiveVerb", LogLevel.Tick);
+            __result = verb;
+            return false;
+        }
+
+        var man = __instance.Manager();
+        if (man.HasVerbs && man.SearchVerb is not null && man.SearchVerb.Available()) {
             MVCF.Log($"Giving SearchVerb {man.SearchVerb} from CurrentEffectiveVerb", LogLevel.Tick);
             __result = man.SearchVerb;
             return false;
         }
 
-        MVCF.Log($"Giving searchVerb {searchVerb} from CurrentEffectiveVerb", LogLevel.Tick);
-        __result = searchVerb;
-        return false;
+        return true;
     }
 
     public static IEnumerable<CodeInstruction> AttackTargetTranspiler(IEnumerable<CodeInstruction> instructions) => instructions.MethodReplacer(
