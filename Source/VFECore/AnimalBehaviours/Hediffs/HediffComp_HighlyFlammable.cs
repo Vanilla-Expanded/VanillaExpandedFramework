@@ -24,7 +24,7 @@ namespace AnimalBehaviours
             {
                 Pawn pawn = parent.pawn;
 
-                bool flagIsBurning = (pawn.IsBurning() && !Props.sunlightBurns) || (Props.sunlightBurns && this.parent.pawn.Position.InSunlight(this.parent.pawn.Map));
+                bool flagIsBurning = (pawn.IsBurning() && !Props.sunlightBurns) || (Props.sunlightBurns && this.parent.pawn.Map!=null&&this.parent.pawn.Position.InSunlight(this.parent.pawn.Map));
                 //Only do things if pawn is burning (or in sunlight if sunlightBurns is true)
                 if (pawn.Map != null && flagIsBurning)
                 {
