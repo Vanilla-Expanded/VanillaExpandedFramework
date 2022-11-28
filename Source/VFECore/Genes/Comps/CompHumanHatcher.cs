@@ -231,15 +231,17 @@ namespace VanillaGenesExpanded
             {
 				yield return gizmo;
             }
-			
-
-			Command_Action command_Action = new Command_Action();
-			command_Action.defaultLabel = "DEV: Finish hatching";
-			command_Action.action = delegate
+			if (DebugSettings.ShowDevGizmos)
 			{
-				gestateProgress = 1;
-			};
-			yield return command_Action;
+
+				Command_Action command_Action = new Command_Action();
+				command_Action.defaultLabel = "DEV: Finish hatching";
+				command_Action.action = delegate
+				{
+					gestateProgress = 1;
+				};
+				yield return command_Action;
+			}
 		}
     }
 }
