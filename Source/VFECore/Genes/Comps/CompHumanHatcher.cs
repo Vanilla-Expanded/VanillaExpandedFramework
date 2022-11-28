@@ -132,7 +132,7 @@ namespace VanillaGenesExpanded
 									genesToAdd.Add(gene);
                                 }else
                                 {									
-                                    if (rand.NextDouble() > 0.75f)
+                                    if (rand.NextDouble() > 0.5f)
                                     {
 										genesToAdd.Add(gene);
 									}
@@ -142,7 +142,7 @@ namespace VanillaGenesExpanded
 							{
 								if (!motherGenes.Contains(gene))								
 								{
-									if (rand.NextDouble() > 0.75f)
+									if (rand.NextDouble() > 0.5f)
 									{
                                         if (!genesToAdd.Contains(gene)) { genesToAdd.Add(gene); }										
 									}

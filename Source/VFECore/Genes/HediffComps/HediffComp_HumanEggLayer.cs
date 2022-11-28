@@ -81,6 +81,7 @@ namespace VanillaGenesExpanded
 		{
 			base.CompExposeData();
 			Scribe_Values.Look(ref eggProgress, "eggProgress", 0f);
+			Scribe_Values.Look(ref fertilizationCount, "fertilizationCount", 0);
 			Scribe_Values.Look<int>(ref pregnancyRemovalCounter, "pregnancyRemovalCounter", -1);			
 			Scribe_References.Look(ref fertilizedBy, "fertilizedBy");
 			Scribe_Collections.Look(ref this.motherGenes, nameof(this.motherGenes),LookMode.Reference);
