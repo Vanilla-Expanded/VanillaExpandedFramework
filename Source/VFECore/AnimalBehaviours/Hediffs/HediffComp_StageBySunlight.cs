@@ -26,9 +26,9 @@ namespace AnimalBehaviours
         {
             base.CompPostTick(ref severityAdjustment);
 
-            if (this.parent.pawn.IsHashIntervalTick(500)&& this.parent.pawn.Map!=null)
+            if (this.parent.pawn.IsHashIntervalTick(500))
             {
-                if (this.parent.pawn.Position.InSunlight(this.parent.pawn.Map))
+                if (this.parent.pawn.Map != null && this.parent.pawn.Position.InSunlight(this.parent.pawn.Map))
                 {
                     this.parent.Severity = Props.sunlightStageIndex;
                 }else this.parent.Severity = Props.sunlessStageIndex;
