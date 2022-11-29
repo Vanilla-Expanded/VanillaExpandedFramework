@@ -51,6 +51,9 @@ namespace VanillaGenesExpanded
         //Hide gene from appearing on the xenotype creation screen. Useful for special genes that only appear as rewards during gameplay.
         public bool hideGene = false;
 
+        //Makes this gene cause no skill loss for a given skill.
+        public SkillDef noSkillLoss = null;
+
         //Makes genes scale body and head
         public Vector2 bodyScaleFactor = new Vector2(1f, 1f);
         public Vector2 headScaleFactor = new Vector2(1f, 1f);

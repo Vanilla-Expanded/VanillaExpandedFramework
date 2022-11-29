@@ -112,6 +112,11 @@ namespace VanillaGenesExpanded
                     StaticCollectionsClass.AddVomitEffectGenePawnToList(gene.pawn, extension.customVomitEffect);
                 }
 
+                if (extension.noSkillLoss != null)
+                {
+                    StaticCollectionsClass.AddNoSkillLossGenePawnToList(gene.pawn, extension.noSkillLoss);
+                }
+
 
             }
         }

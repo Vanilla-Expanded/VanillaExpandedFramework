@@ -96,6 +96,11 @@ namespace VanillaGenesExpanded
                     StaticCollectionsClass.RemoveVomitEffectGenePawnFromList(gene.pawn);
                 }
 
+                if (extension.noSkillLoss != null)
+                {
+                    StaticCollectionsClass.RemoveNoSkillLossGenePawnFromList(gene.pawn);
+                }
+
 
             }
         }
@@ -177,6 +182,11 @@ namespace VanillaGenesExpanded
                 if (extension.customVomitEffect != null)
                 {
                     StaticCollectionsClass.AddVomitEffectGenePawnToList(gene.pawn, extension.customVomitEffect);
+                }
+
+                if (extension.noSkillLoss != null)
+                {
+                    StaticCollectionsClass.AddNoSkillLossGenePawnToList(gene.pawn, extension.noSkillLoss);
                 }
 
 

@@ -633,6 +633,7 @@
     <Compile Include="Genes\Harmony\PawnRenderer_GetBodyOverlayMeshSet.cs" />
     <Compile Include="Genes\Harmony\Pawn_HealthTracker_DropBloodFilth.cs" />
     <Compile Include="Genes\Harmony\DrawBodyApparel_BeltPatches.cs" />
+    <Compile Include="Genes\Harmony\SkillRecord_Interval.cs" />
     <Compile Include="VFECore\Comps\HediffComps\HediffComp_CustomBlood.cs" />
     <Compile Include="Genes\HediffComps\HediffComp_HumanEggLayer.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_AsexualReproduction.cs" />

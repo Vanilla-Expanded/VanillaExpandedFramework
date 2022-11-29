@@ -31,6 +31,8 @@ namespace VanillaGenesExpanded
         public static IDictionary<Thing, ThingDef> vomitType_gene_pawns = new Dictionary<Thing, ThingDef>();      
         // A list of pawns with custom vomit effects
         public static IDictionary<Thing, EffecterDef> vomitEffect_gene_pawns = new Dictionary<Thing, EffecterDef>();
+        // A list of pawns with skills that won't be lost over time
+        public static IDictionary<Thing, SkillDef> noSkillLoss_gene_pawns = new Dictionary<Thing, SkillDef>();
 
 
         public static void AddBloodtypeGenePawnToList(Thing thing, ThingDef thingDef)
@@ -175,6 +177,24 @@ namespace VanillaGenesExpanded
             if (vomitEffect_gene_pawns.ContainsKey(thing))
             {
                 vomitEffect_gene_pawns.Remove(thing);
+            }
+
+        }
+
+        public static void AddNoSkillLossGenePawnToList(Thing thing, SkillDef skill)
+        {
+
+            if (!noSkillLoss_gene_pawns.ContainsKey(thing))
+            {
+                noSkillLoss_gene_pawns[thing] = skill;
+            }
+        }
+
+        public static void RemoveNoSkillLossGenePawnFromList(Thing thing)
+        {
+            if (noSkillLoss_gene_pawns.ContainsKey(thing))
+            {
+                noSkillLoss_gene_pawns.Remove(thing);
             }
 
         }
