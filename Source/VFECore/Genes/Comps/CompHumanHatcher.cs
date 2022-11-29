@@ -132,7 +132,7 @@ namespace VanillaGenesExpanded
 									genesToAdd.Add(gene);
                                 }else
                                 {									
-                                    if (rand.NextDouble() > 0.75f)
+                                    if (rand.NextDouble() > 0.5f)
                                     {
 										genesToAdd.Add(gene);
 									}
@@ -142,7 +142,7 @@ namespace VanillaGenesExpanded
 							{
 								if (!motherGenes.Contains(gene))								
 								{
-									if (rand.NextDouble() > 0.75f)
+									if (rand.NextDouble() > 0.5f)
 									{
                                         if (!genesToAdd.Contains(gene)) { genesToAdd.Add(gene); }										
 									}
@@ -231,15 +231,17 @@ namespace VanillaGenesExpanded
             {
 				yield return gizmo;
             }
-			
-
-			Command_Action command_Action = new Command_Action();
-			command_Action.defaultLabel = "DEV: Finish hatching";
-			command_Action.action = delegate
+			if (DebugSettings.ShowDevGizmos)
 			{
-				gestateProgress = 1;
-			};
-			yield return command_Action;
+
+				Command_Action command_Action = new Command_Action();
+				command_Action.defaultLabel = "DEV: Finish hatching";
+				command_Action.action = delegate
+				{
+					gestateProgress = 1;
+				};
+				yield return command_Action;
+			}
 		}
     }
 }
