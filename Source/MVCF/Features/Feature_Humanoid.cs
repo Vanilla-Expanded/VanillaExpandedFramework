@@ -2,7 +2,6 @@
 using System.Linq;
 using HarmonyLib;
 using MVCF.Features.PatchSets;
-using MVCF.ModCompat;
 using MVCF.Utilities;
 using RimWorld;
 using UnityEngine;
@@ -22,11 +21,6 @@ public abstract class Feature_Humanoid : Feature
             AccessTools.Method(GetType(), nameof(GetGizmos_Postfix)));
         yield return Patch.Postfix(AccessTools.Method(typeof(PawnAttackGizmoUtility), "GetAttackGizmos"),
             AccessTools.Method(GetType(), nameof(GetAttackGizmos_Postfix)));
-        var type = typeof(Pawn_EquipmentTracker);
-        yield return Patch.Postfix(AccessTools.Method(type, "Notify_EquipmentAdded"),
-            AccessTools.Method(GetType(), nameof(EquipmentAdded_Postfix)));
-        yield return Patch.Prefix(AccessTools.Method(type, "Notify_EquipmentRemoved"),
-            AccessTools.Method(GetType(), nameof(EquipmentRemoved_Prefix)));
     }
 
     public override IEnumerable<PatchSet> GetPatchSets()
@@ -88,25 +82,5 @@ public abstract class Feature_Humanoid : Feature
                 },
                 hotKey = KeyBindingDefOf.Misc5
             };
-    }
-
-    public static void EquipmentAdded_Postfix(ThingWithComps eq, Pawn_EquipmentTracker __instance)
-    {
-        __instance.pawn.Manager(false)?.AddVerbs(eq);
-    }
-
-    public static void EquipmentRemoved_Prefix(ThingWithComps eq, Pawn_EquipmentTracker __instance)
-    {
-        if (MVCF.IsIgnoredMod(eq?.def?.modContentPack?.Name)) return;
-        if (MVCF.ShouldIgnore(eq)) return;
-        if (DualWieldCompat.Active && eq.IsOffHand()) return;
-        var comp = eq.TryGetComp<CompEquippable>();
-        if (comp?.VerbTracker?.AllVerbs == null) return;
-        var manager = __instance?.pawn?.Manager(false);
-        if (manager == null) return;
-        if (MVCF.GetFeature<Feature_ExtraEquipmentVerbs>().Enabled)
-            foreach (var verb in comp.VerbTracker.AllVerbs.Concat(manager.ExtraVerbsFor(eq)))
-                manager.RemoveVerb(verb);
-        else manager.RemoveVerb(comp.PrimaryVerb);
     }
 }

@@ -89,6 +89,13 @@ public class VerbManager : IExposable
         InitializeVerbs();
         foreach (var comp in comps) comp.PostInit();
         RecalcSearchVerb();
+
+        // Guard against save corruption from stale verb references by clearing out CurrentVerb
+        // if it's no longer wielded by this pawn.
+        if (CurrentVerb != null && !verbs.Any(mv => mv.Verb == CurrentVerb))
+        {
+            CurrentVerb = null;
+        }
     }
 
     public void InitializeVerbs()
@@ -204,6 +211,13 @@ public class VerbManager : IExposable
                 if (!wr.TryGetTarget(out var man)) return true;
                 return man == this;
             });
+        }
+
+        // We may have just removed the cached current verb for this pawn,
+        // so clear it out if that's the case.
+        if (mv.Verb == CurrentVerb)
+        {
+            CurrentVerb = null;
         }
 
         foreach (var comp in comps) comp.PostRemoved(mv);
