@@ -31,5 +31,7 @@ namespace VFECore
         public static StatDef VEF_RangeAttackSpeedFactor;
         public static StatDef VEF_MeleeAttackDamageFactor;
         public static StatDef VEF_RangeAttackDamageFactor;
+
+        public static JoyKindDef Gaming_Cerebral;
     }
 }

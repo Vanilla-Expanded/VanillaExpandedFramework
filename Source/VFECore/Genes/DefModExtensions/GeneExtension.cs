@@ -53,6 +53,8 @@ namespace VanillaGenesExpanded
 
         //Makes this gene cause no skill loss for a given skill.
         public SkillDef noSkillLoss = null;
+        //Makes this gene give the pawn recreation when gaining XP on a given skill.
+        public SkillDef skillRecreation = null;
 
         //Makes genes scale body and head
         public Vector2 bodyScaleFactor = new Vector2(1f, 1f);

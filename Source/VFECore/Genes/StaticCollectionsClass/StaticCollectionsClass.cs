@@ -33,6 +33,8 @@ namespace VanillaGenesExpanded
         public static IDictionary<Thing, EffecterDef> vomitEffect_gene_pawns = new Dictionary<Thing, EffecterDef>();
         // A list of pawns with skills that won't be lost over time
         public static IDictionary<Thing, SkillDef> noSkillLoss_gene_pawns = new Dictionary<Thing, SkillDef>();
+        // A list of pawns with skills that give recreation when gaining XP
+        public static IDictionary<Thing, SkillDef> skillRecreation_gene_pawns = new Dictionary<Thing, SkillDef>();
 
 
         public static void AddBloodtypeGenePawnToList(Thing thing, ThingDef thingDef)
@@ -195,6 +197,24 @@ namespace VanillaGenesExpanded
             if (noSkillLoss_gene_pawns.ContainsKey(thing))
             {
                 noSkillLoss_gene_pawns.Remove(thing);
+            }
+
+        }
+
+        public static void AddSkillRecreationGenePawnToList(Thing thing, SkillDef skill)
+        {
+
+            if (!skillRecreation_gene_pawns.ContainsKey(thing))
+            {
+                skillRecreation_gene_pawns[thing] = skill;
+            }
+        }
+
+        public static void RemoveSkillRecreationGenePawnFromList(Thing thing)
+        {
+            if (skillRecreation_gene_pawns.ContainsKey(thing))
+            {
+                skillRecreation_gene_pawns.Remove(thing);
             }
 
         }

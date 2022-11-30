@@ -100,6 +100,10 @@ namespace VanillaGenesExpanded
                 {
                     StaticCollectionsClass.RemoveNoSkillLossGenePawnFromList(gene.pawn);
                 }
+                if (extension.skillRecreation != null)
+                {
+                    StaticCollectionsClass.RemoveSkillRecreationGenePawnFromList(gene.pawn);
+                }
 
 
             }
