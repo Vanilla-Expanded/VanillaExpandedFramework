@@ -27,6 +27,12 @@ namespace ItemProcessor
         //a "bring ingredients" order. The machine also won't "forget" the set ingredient.
         public bool isSemiAutomaticMachine = false;
 
+        //Can this building only be loaded/unloaded from its interaction spot?
+        //Separate fields for loading/unloading offers flexibility
+        //(e.g. a giant funnel-like building that can be loaded from any nearby cell, but only unloaded from a specific cell)
+        public bool mustLoadFromInteractionSpot = false;
+        public bool mustUnloadFromInteractionSpot = false;
+
         //Can this building automatically drop products on its interaction spot?
         public bool isAutoDropper = false;
 
@@ -39,7 +45,7 @@ namespace ItemProcessor
         //Does this building have the player specify output instead of input?
         public bool isMachineSpecifiesOutput = false;
 
-        //Can this processor be "paused"
+        //Can this processor be "paused"?
         public bool isMachinePausable = false;
 
         //Transfer ingredients: instead of adding the inputs as ingredients, it adds the inputs' ingredients as ingredients. Yeah, confusing...

@@ -1,20 +1,11 @@
-﻿using RimWorld;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using Verse;
-using Verse.Sound;
-using UnityEngine;
-using System.Collections;
+﻿using Verse;
 
 namespace ItemProcessor
 {
     public class CompItemProcessor : ThingComp
     {
-
         //This class registers and de-registers buildings when they are built or destroyed
         //It calls methods in a map extender class, that is always instantiated per map 
-
         public CompProperties_ItemProcessor Props
         {
             get
@@ -22,7 +13,6 @@ namespace ItemProcessor
                 return (CompProperties_ItemProcessor)this.props;
             }
         }
-
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
@@ -51,9 +41,5 @@ namespace ItemProcessor
                 mapComp.RemoveItemProcessorFromMap(this.parent);
             }
         }
-
-
     }
 }
-
-

@@ -35,8 +35,8 @@ namespace ItemProcessor
                 this.job.count = 1;
             });
 
-            yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
-            yield return Toils_General.Wait(240).FailOnDestroyedNullOrForbidden(TargetIndex.A).FailOnCannotTouch(TargetIndex.A, PathEndMode.Touch).WithProgressBarToilDelay(TargetIndex.A, false, -0.5f);
+            yield return Toils_Goto.GotoThing(TargetIndex.A, building_processor.GetComp<CompItemProcessor>()?.Props.mustLoadFromInteractionSpot ?? false ? PathEndMode.InteractionCell : PathEndMode.Touch);
+            yield return Toils_General.Wait(240).FailOnDestroyedNullOrForbidden(TargetIndex.A).FailOnCannotTouch(TargetIndex.A, building_processor.GetComp<CompItemProcessor>()?.Props.mustLoadFromInteractionSpot ?? false ? PathEndMode.InteractionCell : PathEndMode.Touch).WithProgressBarToilDelay(TargetIndex.A, false, -0.5f);
             yield return new Toil
             {
                 initAction = delegate
