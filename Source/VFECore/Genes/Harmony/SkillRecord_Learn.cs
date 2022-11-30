@@ -20,7 +20,7 @@ namespace VanillaGenesExpanded
         {
             if (xp > 0 && StaticCollectionsClass.skillRecreation_gene_pawns.ContainsKey(___pawn) && StaticCollectionsClass.skillRecreation_gene_pawns[___pawn] == sDef)
             {
-                ___pawn.needs?.joy?.GainJoy(0.01f, VFEDefOf.Gaming_Cerebral);
+                ___pawn.needs?.joy?.GainJoy(xp*0.001f, VFEDefOf.Gaming_Cerebral);
             }
 
         }
