@@ -5,6 +5,8 @@ using UnityEngine;
 
 namespace VanillaGenesExpanded
 {
+    using System.Xml;
+    using JetBrains.Annotations;
 
     public class GeneExtension : DefModExtension
     {
@@ -67,6 +69,49 @@ namespace VanillaGenesExpanded
         public string bodyDessicatedGraphicPath;
         public string headDessicatedGraphicPath;
         public string skullGraphicPath;
-    }
 
+
+        // specific rotations
+        public GeneOffsets offsets = new();
+
+        public class GeneOffsets
+        {
+            public Vector3 GetOffset(Pawn pawn, Rot4 rotation) => 
+                this.GetOffset(rotation).GetOffset(pawn.story.bodyType);
+
+            public RotationOffset GetOffset(Rot4 rotation) =>
+                rotation == Rot4.South ? this.south :
+                rotation == Rot4.North ? this.north :
+                rotation == Rot4.East  ? this.east : this.west;
+
+            public RotationOffset south = new();
+            public RotationOffset north = new();
+            public RotationOffset east  = new();
+            public RotationOffset west;
+        }
+
+        public class RotationOffset
+        {
+            public Vector3 GetOffset(BodyTypeDef bodyType)
+            {
+                Vector3 bodyOffset = this.bodyTypes?.FirstOrDefault(predicate: to => to.bodyType == bodyType)?.offset ?? Vector3.zero;
+                return new Vector3(bodyOffset.x, bodyOffset.y, bodyOffset.z);
+            }
+
+            public List<BodyTypeOffset> bodyTypes;
+        }
+
+        public class BodyTypeOffset
+        {
+            public BodyTypeDef bodyType;
+            public Vector3     offset = Vector3.zero;
+
+            [UsedImplicitly]
+            public void LoadDataFromXmlCustom(XmlNode xmlRoot)
+            {
+                DirectXmlCrossRefLoader.RegisterObjectWantsCrossRef(this, nameof(this.bodyType), xmlRoot.Name);
+                this.offset = (Vector3)ParseHelper.FromString(xmlRoot.FirstChild.Value, typeof(Vector3));
+            }
+        }
+    }
 }

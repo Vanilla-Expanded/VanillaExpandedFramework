@@ -19,9 +19,13 @@ namespace VanillaGenesExpanded
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
         {
             var pawnField = AccessTools.Field(typeof(PawnRenderer), "pawn");
-            var codes = codeInstructions.ToList();
-            foreach (var code in codes)
+            MethodInfo geneDrawOffsetAtInfo = AccessTools.Method(typeof(GeneGraphicData), nameof(GeneGraphicData.DrawOffsetAt));
+
+
+            List<CodeInstruction> codes = codeInstructions.ToList();
+            for (int i = 0; i < codes.Count; i++)
             {
+                CodeInstruction code = codes[i];
                 yield return code;
                 if (code.opcode == OpCodes.Stloc_0)
                 {
@@ -30,6 +34,16 @@ namespace VanillaGenesExpanded
                     yield return new CodeInstruction(OpCodes.Ldloc_0);
                     yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(DrawBodyGenes_Patch), nameof(SetBodyScale)));
                     yield return new CodeInstruction(OpCodes.Stloc_0);
+                }
+
+                if (code.Calls(geneDrawOffsetAtInfo))
+                {
+                    yield return new CodeInstruction(OpCodes.Ldloc_3);
+                    yield return CodeInstruction.LoadField(typeof(GeneGraphicRecord), nameof(GeneGraphicRecord.sourceGene));
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Ldfld,   pawnField);
+                    yield return new CodeInstruction(codes[i-1]);
+                    yield return CodeInstruction.Call(typeof(DrawBodyGenes_Patch), nameof(GeneOffset));
                 }
             }
         }
@@ -48,6 +62,14 @@ namespace VanillaGenesExpanded
                 }
             }
             return scale;
+        }
+
+        public static Vector3 GeneOffset(Vector3 offset, Gene gene, Pawn pawn, Rot4 rot)
+        {
+            GeneExtension extension = gene.def.GetModExtension<GeneExtension>();
+            return extension != null ? 
+                       offset + extension.offsets.GetOffset(pawn, rot) : 
+                       offset;
         }
     }
 }
