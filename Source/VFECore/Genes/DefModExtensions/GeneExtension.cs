@@ -77,7 +77,7 @@ namespace VanillaGenesExpanded
         public class GeneOffsets
         {
             public Vector3 GetOffset(Pawn pawn, Rot4 rotation) => 
-                this.GetOffset(rotation).GetOffset(pawn.story.bodyType);
+                this.GetOffset(rotation)?.GetOffset(pawn.story?.bodyType) ?? Vector3.zero;
 
             public RotationOffset GetOffset(Rot4 rotation) =>
                 rotation == Rot4.South ? this.south :
