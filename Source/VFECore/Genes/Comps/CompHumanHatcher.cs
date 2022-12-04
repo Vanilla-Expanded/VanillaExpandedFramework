@@ -172,12 +172,9 @@ namespace VanillaGenesExpanded
 
 		public override bool AllowStackWith(Thing other)
 		{
-			CompHatcher comp = ((ThingWithComps)other).GetComp<CompHatcher>();
-			if (TemperatureDamaged != comp.TemperatureDamaged)
-			{
-				return false;
-			}
-			return base.AllowStackWith(other);
+			
+			return false;
+			
 		}
 
 		public override void PreAbsorbStack(Thing otherStack, int count)
