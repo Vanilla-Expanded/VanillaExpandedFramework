@@ -84,8 +84,8 @@ namespace VanillaGenesExpanded
 			Scribe_Values.Look(ref fertilizationCount, "fertilizationCount", 0);
 			Scribe_Values.Look<int>(ref pregnancyRemovalCounter, "pregnancyRemovalCounter", -1);			
 			Scribe_References.Look(ref fertilizedBy, "fertilizedBy");
-			Scribe_Collections.Look(ref this.motherGenes, nameof(this.motherGenes),LookMode.Reference);
-			Scribe_Collections.Look(ref this.fatherGenes, nameof(this.fatherGenes), LookMode.Reference);
+			Scribe_Collections.Look(ref this.motherGenes, nameof(this.motherGenes),LookMode.Def);
+			Scribe_Collections.Look(ref this.fatherGenes, nameof(this.fatherGenes), LookMode.Def);
 		}
 
         public override void CompPostTick(ref float severityAdjustment)

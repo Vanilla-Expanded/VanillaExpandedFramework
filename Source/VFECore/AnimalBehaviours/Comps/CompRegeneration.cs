@@ -59,14 +59,12 @@ namespace AnimalBehaviours
 
                     if (pawn.health != null)
                     {
-                        IEnumerable<Hediff_Injury> injuriesEnumerable = pawn.health.hediffSet.GetInjuriesTendable();
+                        List<Hediff_Injury> injuries = GetInjuries(pawn);
 
-                        if (injuriesEnumerable != null)
+                        if (injuries.Count > 0)
                         {
-                            Hediff_Injury[] injuries = injuriesEnumerable.ToArray();
 
-                            if (injuries.Any())
-                            {
+                           
                                 if (healAll)
                                 {
                                     foreach (Hediff_Injury injury in injuries)
@@ -80,13 +78,27 @@ namespace AnimalBehaviours
                                     Hediff_Injury injury = injuries.RandomElement();
                                     injury.Severity = injury.Severity - healAmount;
                                 }
-                            }
+                            
                         }
                     }
                     tickCounter = 0;
                 }
             }
             
+        }
+        public List<Hediff_Injury> GetInjuries(Pawn pawn)
+        {
+            List<Hediff_Injury> injuries = new List<Hediff_Injury>();
+            for (int i = 0; i < pawn.health.hediffSet.hediffs.Count; i++)
+            {
+                Hediff_Injury hediff_Injury = pawn.health.hediffSet.hediffs[i] as Hediff_Injury;
+                if (hediff_Injury != null)
+                {
+                    injuries.Add(hediff_Injury);
+                }
+
+            }
+            return injuries;
         }
 
 

@@ -48,8 +48,8 @@ namespace VanillaGenesExpanded
 			Scribe_References.Look(ref hatcheeParent, "hatcheeParent");
 			Scribe_References.Look(ref otherParent, "otherParent");
 			Scribe_References.Look(ref hatcheeFaction, "hatcheeFaction");
-			Scribe_Collections.Look(ref this.motherGenes, nameof(this.motherGenes), LookMode.Reference);
-			Scribe_Collections.Look(ref this.fatherGenes, nameof(this.fatherGenes), LookMode.Reference);
+			Scribe_Collections.Look(ref this.motherGenes, nameof(this.motherGenes), LookMode.Def);
+			Scribe_Collections.Look(ref this.fatherGenes, nameof(this.fatherGenes), LookMode.Def);
 		}
 
 		public override void CompTick()
@@ -172,12 +172,9 @@ namespace VanillaGenesExpanded
 
 		public override bool AllowStackWith(Thing other)
 		{
-			CompHatcher comp = ((ThingWithComps)other).GetComp<CompHatcher>();
-			if (TemperatureDamaged != comp.TemperatureDamaged)
-			{
-				return false;
-			}
-			return base.AllowStackWith(other);
+			
+			return false;
+			
 		}
 
 		public override void PreAbsorbStack(Thing otherStack, int count)
