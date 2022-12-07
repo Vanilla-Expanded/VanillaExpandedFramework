@@ -10,6 +10,7 @@ using Verse;
 namespace MVCF;
 
 [StaticConstructorOnStartup]
+// ReSharper disable once InconsistentNaming
 public class MVCF : Mod
 {
     private static readonly HashSet<Patch> appliedPatches = new();
@@ -17,11 +18,7 @@ public class MVCF : Mod
     public static List<Feature> AllFeatures;
     public static HashSet<string> EnabledFeatures = new();
 
-    [Obsolete] public static FeatureOpts Features = new();
-
     public static Harmony Harm;
-
-    [Obsolete] public static FeatureOpts IgnoredFeatures = new();
 
     public static readonly HashSet<string> IgnoredMods = new()
     {
@@ -57,8 +54,11 @@ public class MVCF : Mod
         if (DebugMode)
         {
             if (listing.ButtonTextLabeled("MVCF.Settings.LogLevel".Translate(), $"MVCF.Settings.LogLevel.{LogLevel}".Translate()))
-                Find.WindowStack.Add(new FloatMenu(Enum.GetValues(typeof(LogLevel)).Cast<LogLevel>().Select(level => new FloatMenuOption(
-                    $"MVCF.Settings.LogLevel.{level}".Translate(), () => LogLevel = level)).ToList()));
+                Find.WindowStack.Add(new FloatMenu(Enum.GetValues(typeof(LogLevel))
+                   .Cast<LogLevel>()
+                   .Select(level => new FloatMenuOption(
+                        $"MVCF.Settings.LogLevel.{level}".Translate(), () => LogLevel = level))
+                   .ToList()));
 
             var features = listing.BeginSection(AllFeatures.Count * 33f);
             foreach (var feature in AllFeatures)
@@ -83,7 +83,7 @@ public class MVCF : Mod
         if (DebugMode && level <= LogLevel) Verse.Log.Message($"[MVCF] {message}");
     }
 
-    public static Feature GetFeature<T>() where T : Feature => features[typeof(T)];
+    public static T GetFeature<T>() where T : Feature => (T)features[typeof(T)];
 
     public static bool ShouldIgnore(Thing thing)
     {
@@ -96,18 +96,6 @@ public class MVCF : Mod
         Log("Collecting feature data...", LogLevel.Important);
         foreach (var def in DefDatabase<ModDef>.AllDefs)
         {
-            if (def.Features != null)
-            {
-                if (def.Features.ApparelVerbs) Features.ApparelVerbs = true;
-                if (def.Features.IndependentFire) Features.IndependentFire = true;
-                if (def.Features.Drawing) Features.Drawing = true;
-                if (def.Features.ExtraEquipmentVerbs) Features.ExtraEquipmentVerbs = true;
-                if (def.Features.HediffVerbs) Features.HediffVerbs = true;
-                if (def.Features.RangedAnimals) Features.RangedAnimals = true;
-                if (def.Features.IntegratedToggle) Features.IntegratedToggle = true;
-                if (def.Features.TickVerbs) Features.TickVerbs = true;
-            }
-
             foreach (var feature in def.ActivateFeatures)
             {
                 Log($"Mod {def.modContentPack.Name} is enabling feature {feature}", LogLevel.Important);
@@ -165,16 +153,15 @@ public class MVCF : Mod
 public class ModDef : Def
 {
     public List<string> ActivateFeatures = new();
-    [Obsolete] public FeatureOpts Features;
-
-    [Obsolete] public FeatureOpts IgnoredFeatures;
 
     public bool IgnoreThisMod;
 
     public override IEnumerable<string> ConfigErrors()
     {
+#pragma warning disable CS0612
         if (Features is not null) yield return "<Features> is deprecated, use <ActivateFeatures>";
         if (IgnoredFeatures is not null) yield return "<IgnoredFeatures> is deprecated";
+#pragma warning restore CS0612
     }
 
     public override void PostLoad()
@@ -182,6 +169,8 @@ public class ModDef : Def
         base.PostLoad();
 
         #region BackCompatability
+
+#pragma warning disable CS0612
 
         if (Features is not null)
         {
@@ -195,8 +184,16 @@ public class ModDef : Def
             if (Features.TickVerbs) ActivateFeatures.Add("TickVerbs");
         }
 
+#pragma warning restore CS0612
+
         #endregion
     }
+
+#pragma warning disable CS0612
+    [Obsolete] public FeatureOpts Features;
+
+    [Obsolete] public FeatureOpts IgnoredFeatures;
+#pragma warning restore CS0612
 }
 
 [Obsolete]
@@ -210,8 +207,6 @@ public class FeatureOpts
     public bool IntegratedToggle;
     public bool RangedAnimals;
     public bool TickVerbs;
-    public bool EnabledAtAll => HediffVerbs || ExtraEquipmentVerbs || ApparelVerbs || RangedAnimals;
-    public bool HumanoidVerbs => HediffVerbs || ExtraEquipmentVerbs || ApparelVerbs;
 }
 
 public enum LogLevel
@@ -284,5 +279,6 @@ public struct Patch
         if (postfix is not null) harm.Unpatch(target, postfix);
 
         if (transpiler is not null) harm.Unpatch(target, transpiler);
+        numPatches--;
     }
 }

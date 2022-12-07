@@ -48,7 +48,8 @@ public class PatchSet_Base : PatchSet
 
         if (mv != null && !mv.SetTarget(target)) return false;
 
-        if (DualWieldCompat.Active && __instance.CasterPawn.GetOffHand() is { } eq && eq.TryGetComp<CompEquippable>().PrimaryVerb is { } verb &&
+        if (DualWieldCompat.Active && __instance.CasterPawn.RaceProps.Humanlike && __instance.CasterPawn.GetOffHand() is { } eq
+         && eq.TryGetComp<CompEquippable>().PrimaryVerb is { } verb &&
             verb == __instance) return true;
 
         MVCF.Log("Changing CurrentVerb of " + __instance.CasterPawn + " to " + __instance, LogLevel.Important);

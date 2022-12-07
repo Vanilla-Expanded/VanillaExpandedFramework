@@ -89,6 +89,9 @@
     <Compile Include="Features\PatchSets\PatchSet_Base.cs" />
     <Compile Include="Features\PatchSets\PatchSet_Brawlers.cs" />
     <Compile Include="Features\PatchSets\PatchSet_Debug.cs" />
+    <Compile Include="Features\PatchSets\PatchSet_DualWield.cs" />
+    <Compile Include="Features\PatchSets\PatchSet_Equipment.cs" />
+    <Compile Include="Features\PatchSets\PatchSet_TargetFinder.cs" />
     <Compile Include="ModCompat\DualWieldCompat.cs" />
     <Compile Include="Features\PatchSets\PatchSet_RunAndGun.cs" />
     <Compile Include="Features\PatchSets\PatchSet_Hunting.cs" />

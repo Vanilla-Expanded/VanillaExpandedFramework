@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using HarmonyLib;
-using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.AI;
@@ -11,44 +8,8 @@ namespace MVCF.Utilities;
 
 public static class TargetFinder
 {
-    private static Verb searchVerb;
+    public static Verb SearchVerb;
 
-    public static bool CurrentEffectiveVerb_Prefix(ref Verb __result, Pawn __instance)
-    {
-        if (searchVerb is not null)
-        {
-            MVCF.Log($"Giving searchVerb {searchVerb} from CurrentEffectiveVerb", LogLevel.Tick);
-            __result = searchVerb;
-            return false;
-        }
-
-        if (__instance.MannedThing() is Building_Turret) return true;
-
-        if (__instance.stances?.curStance is Stance_Busy { verb: { } verb })
-        {
-            MVCF.Log($"Giving stance verb {verb} from CurrentEffectiveVerb", LogLevel.Tick);
-            __result = verb;
-            return false;
-        }
-
-        var man = __instance.Manager();
-        if (man.HasVerbs && man.SearchVerb is not null && man.SearchVerb.Available())
-        {
-            MVCF.Log($"Giving SearchVerb {man.SearchVerb} from CurrentEffectiveVerb", LogLevel.Tick);
-            __result = man.SearchVerb;
-            return false;
-        }
-
-        return true;
-    }
-
-    public static IEnumerable<CodeInstruction> AttackTargetTranspiler(IEnumerable<CodeInstruction> instructions) => instructions.MethodReplacer(
-        AccessTools.Method(typeof(AttackTargetFinder), nameof(AttackTargetFinder.BestAttackTarget)),
-        AccessTools.Method(typeof(TargetFinder), nameof(BestAttackTarget_Replacement)));
-
-    public static IEnumerable<CodeInstruction> BestTargetTranspiler(IEnumerable<CodeInstruction> instructions) => instructions.MethodReplacer(
-        AccessTools.Method(typeof(AttackTargetFinder), nameof(AttackTargetFinder.BestShootTargetFromCurrentPosition)),
-        AccessTools.Method(typeof(TargetFinder), nameof(BestShootTargetFromCurrentPosition_Replacement)));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IAttackTarget BestAttackTarget_Replacement(IAttackTargetSearcher searcher, TargetScanFlags flags, Predicate<Thing> validator = null,
@@ -65,12 +26,12 @@ public static class TargetFinder
         float maxDist = 9999f, IntVec3 locus = default, float maxTravelRadiusFromLocus = 3.40282347E+38f, bool canBashDoors = false,
         bool canTakeTargetsCloserThanEffectiveMinRange = true, bool canBashFences = false)
     {
-        searchVerb = verb;
+        SearchVerb = verb;
         if (verb.IsIncendiary_Ranged()) flags |= TargetScanFlags.NeedNonBurning;
         var target = AttackTargetFinder.BestAttackTarget(searcher, flags, validator, minDist, maxDist, locus, maxTravelRadiusFromLocus, canBashDoors,
             canTakeTargetsCloserThanEffectiveMinRange,
             canBashFences);
-        searchVerb = null;
+        SearchVerb = null;
         return target;
     }
 
@@ -128,16 +89,4 @@ public static class TargetFinder
         float minDistance = 0f,
         float maxDistance = 9999f) =>
         BestAttackTarget(searcher, out _, flags, validator, minDistance, maxDistance, canTakeTargetsCloserThanEffectiveMinRange: false, canMove: false);
-
-    public static IEnumerable<Patch> GetPatches()
-    {
-        yield return Patch.Prefix(AccessTools.PropertyGetter(typeof(Pawn), nameof(Pawn.CurrentEffectiveVerb)),
-            AccessTools.Method(typeof(TargetFinder), nameof(CurrentEffectiveVerb_Prefix)));
-        yield return Patch.Transpiler(AccessTools.Method(typeof(JobGiver_AIFightEnemy), "FindAttackTarget"),
-            AccessTools.Method(typeof(TargetFinder), nameof(AttackTargetTranspiler)));
-        yield return Patch.Transpiler(AccessTools.Method(typeof(JobGiver_ConfigurableHostilityResponse), "TryGetAttackNearbyEnemyJob"),
-            AccessTools.Method(typeof(TargetFinder), nameof(AttackTargetTranspiler)));
-        yield return Patch.Transpiler(AccessTools.Method(typeof(JobDriver_Wait), "CheckForAutoAttack"),
-            AccessTools.Method(typeof(TargetFinder), nameof(BestTargetTranspiler)));
-    }
 }

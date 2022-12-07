@@ -1,3 +1,4 @@
+using MVCF.Features;
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -13,7 +14,7 @@ public class JobGiver_ManhunterRanged : ThinkNode_JobGiver
 
     protected override Job TryGiveJob(Pawn pawn)
     {
-        if (!MVCF.Features.RangedAnimals) return null;
+        if (!MVCF.GetFeature<Feature_RangedAnimals>().Enabled) return null;
         var enemyTarget = pawn.mindState.enemyTarget;
         if (enemyTarget != null && (enemyTarget.Destroyed ||
                                     Find.TickManager.TicksGame - pawn.mindState.lastEngageTargetTick > 400 ||

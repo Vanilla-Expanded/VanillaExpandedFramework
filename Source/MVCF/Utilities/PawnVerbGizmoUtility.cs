@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MVCF.Commands;
 using MVCF.Comps;
+using MVCF.Features;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -53,9 +54,10 @@ public static class PawnVerbGizmoUtility
         {
             gizmo.defaultDesc = FirstNonEmptyString(props?.description, ownerThing.def.LabelCap + ": " +
                                                                         ownerThing
-                                                                            .def?.description?
-                                                                            .Truncate(500, __truncateCache)?
-                                                                            .CapitalizeFirst());
+                                                                           .def?.description?
+                                                                           .Truncate(500, __truncateCache)
+                                                                        ?
+                                                                       .CapitalizeFirst());
             gizmo.icon = verb.Icon(props, ownerThing, false);
         }
         else if (verb.DirectOwner is HediffComp_VerbGiver hediffGiver)
@@ -63,8 +65,8 @@ public static class PawnVerbGizmoUtility
             var hediff = hediffGiver.parent;
             gizmo.defaultDesc = FirstNonEmptyString(props?.description, hediff.def.LabelCap + ": " +
                                                                         hediff.def.description
-                                                                            .Truncate(500, __truncateCache)
-                                                                            .CapitalizeFirst());
+                                                                           .Truncate(500, __truncateCache)
+                                                                           .CapitalizeFirst());
             gizmo.icon = verb.Icon(props, null, false);
         }
 
@@ -95,7 +97,7 @@ public static class PawnVerbGizmoUtility
             if ((props != null && props.separateToggle) ||
                 (verb.CasterIsPawn && verb.CasterPawn.RaceProps.Animal))
                 yield return new Command_ToggleVerbUsage(man);
-            else if (!MVCF.Features.IntegratedToggle)
+            else if (!MVCF.GetFeature<Feature_IntegratedToggle>().Enabled)
             {
                 Log.ErrorOnce(
                     "[MVCF] " + (verb.EquipmentSource.LabelShortCap ?? "Hediff verb of " + verb.caster) +

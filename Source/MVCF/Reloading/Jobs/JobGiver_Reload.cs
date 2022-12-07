@@ -41,13 +41,4 @@ public class JobGiver_Reload : ThinkNode_JobGiver
         var desired = new IntRange(comp.Props.ItemsPerShot, comp.Props.ItemsPerShot * (comp.Props.MaxShots - comp.ShotsRemaining));
         return RefuelWorkGiverUtility.FindEnoughReservableThings(pawn, root, desired, comp.CanReloadFrom);
     }
-
-    public static CompReloadable FindAnyReloadableWeapon(Pawn pawn)
-    {
-        if (pawn?.equipment == null) return null;
-        foreach (var thing in pawn.equipment.AllEquipmentListForReading)
-            if (thing.TryGetComp<CompReloadable>() is CompReloadable comp)
-                return comp;
-        return null;
-    }
 }

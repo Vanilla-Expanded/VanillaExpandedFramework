@@ -20,7 +20,7 @@ public static class DualWieldCompat
         Active = true;
         isOffHand = AccessTools.Method(AccessTools.TypeByName("DualWield.Ext_ThingWithComps"), "IsOffHand").CreateDelegate<Func<ThingWithComps, bool>>();
         tryGetOffHandEquipment = AccessTools.Method(AccessTools.TypeByName("DualWield.Ext_Pawn_EquipmentTracker"), "TryGetOffHandEquipment")
-            .CreateDelegate<TryGetOffHandEquipmentType>();
+           .CreateDelegate<TryGetOffHandEquipmentType>();
     }
 
     public static bool HasOffHand(this Pawn pawn) => tryGetOffHandEquipment(pawn.equipment, out _);
