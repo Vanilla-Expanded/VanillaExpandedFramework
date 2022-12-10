@@ -11,6 +11,12 @@ namespace VanillaFurnitureExpanded
        
         public List<string> randomGraphics;
 
+        public bool disableRandomButton = false;
+
+        public bool disableGraphicChoosingButton = false;
+
+        public bool disableAllButtons = false;
+
        
 
         public CompProperties_RandomBuildingGraphic()

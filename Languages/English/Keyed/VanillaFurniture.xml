@@ -13,17 +13,23 @@
 
 <!-- Random Building Graphics -->
 
-<VFE_ChangeGraphic>Change Graphic</VFE_ChangeGraphic>
+<VFE_ChangeGraphic>Random Graphic</VFE_ChangeGraphic>
 <VFE_ChangeGraphicDesc>Change Graphic of this building randomly between those available</VFE_ChangeGraphicDesc>
+
+<VFE_ChooseGraphic>Choose Graphic</VFE_ChooseGraphic>
+<VFE_ChooseGraphicDesc>Choose Graphic of this building via a menu with all available options</VFE_ChooseGraphicDesc>
+
+<VFE_NoGraphics>This building doesn't have extra random graphics to choose from. Some modder added the comp class to the building without alternative graphics, which is weird</VFE_NoGraphics>
 
 <!-- Random Building Graphics, Options -->
 
-<VFE_RandomOrSequentially>"Change Graphic" button changes graphic randomly (deselect for sequentially)</VFE_RandomOrSequentially>
-<VFE_HideRandomizeButton>Hide the "Change Graphic" button</VFE_HideRandomizeButton>
+<!--<VFE_RandomOrSequentially>"Change Graphic" button changes graphic randomly (deselect for sequentially)</VFE_RandomOrSequentially>-->
+<VFE_HideRandomizeButton>Hide the "Random Graphic" and "Choose Graphic" buttons</VFE_HideRandomizeButton>
+<VFE_RandomBuildingsDontStartRandom>Make random graphics buildings NOT start randomized</VFE_RandomBuildingsDontStartRandom>
 
-	<VFE.SwitchLightColor>Switch light color</VFE.SwitchLightColor>
-	<VFE.SwitchLightColorDesc>Change current light colour.</VFE.SwitchLightColorDesc>
-	<VFE.ChangeColorTo>Change color to {0}</VFE.ChangeColorTo>
-	<VFE.ColorSwitchPowerOff>Power is off. Impossible to switch color.</VFE.ColorSwitchPowerOff>
+<VFE.SwitchLightColor>Switch light color</VFE.SwitchLightColor>
+<VFE.SwitchLightColorDesc>Change current light colour.</VFE.SwitchLightColorDesc>
+<VFE.ChangeColorTo>Change color to {0}</VFE.ChangeColorTo>
+<VFE.ColorSwitchPowerOff>Power is off. Impossible to switch color.</VFE.ColorSwitchPowerOff>
 	
 </LanguageData>

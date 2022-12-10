@@ -141,9 +141,9 @@ namespace VFECore
             list.Gap(12);
             list.Label("Texture Variations:");
             list.Gap(5);
-            list.CheckboxLabeled("VFE_RandomOrSequentially".Translate(), ref settings.isRandomGraphic, null);
+            list.CheckboxLabeled("VFE_RandomBuildingsDontStartRandom".Translate(), ref settings.randomStartsAsRandom, null);
             list.Gap(5);
-            list.CheckboxLabeled("VFE_HideRandomizeButton".Translate(), ref settings.hideRandomizeButton, null);
+            list.CheckboxLabeled("VFE_HideRandomizeButton".Translate(), ref settings.hideRandomizeButtons, null);
             list.GapLine(12);
 
             // General
@@ -300,6 +300,10 @@ namespace VFECore
         public Dictionary<string, bool> toggablePatch = new();
         public bool enableVerboseLogging;
         public bool disableCaching;
+        public bool randomStartsAsRandom = false;
+        public bool hideRandomizeButtons = false;
+
+        //Unused, kept for compat only, remove in 1.5
         public bool isRandomGraphic = true;
         public bool hideRandomizeButton = false;
 
@@ -312,10 +316,15 @@ namespace VFECore
             Scribe_Collections.Look(ref toggablePatch, "toggablePatch", LookMode.Value, LookMode.Value);
             Scribe_Values.Look(ref enableVerboseLogging, "enableVerboseLogging", false);
             Scribe_Values.Look(ref disableCaching, "disableCaching", true);
-            Scribe_Values.Look(ref isRandomGraphic, "isRandomGraphic", true, true);
-            Scribe_Values.Look(ref hideRandomizeButton, "hideRandomizeButton", false, true);
+            Scribe_Values.Look(ref randomStartsAsRandom, "randomStartsAsRandom", false, false);
+            Scribe_Values.Look(ref hideRandomizeButtons, "hideRandomizeButtons", false, true);
             Scribe_Values.Look(ref disableModSourceReport, "disableModSourceReport");
             Scribe_Collections.Look(ref weatherDamagesOptions, "weatherDamagesOptions", LookMode.Value, LookMode.Value);
+
+            //Unused, kept for compat only, remove in 1.5
+            Scribe_Values.Look(ref isRandomGraphic, "isRandomGraphic", true, true);
+            Scribe_Values.Look(ref hideRandomizeButton, "hideRandomizeButton", false, true);
+
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 weatherDamagesOptions ??= new Dictionary<string, bool>();

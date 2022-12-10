@@ -492,6 +492,7 @@
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_StageByPsylink.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_StageByTemperature.cs" />
     <Compile Include="AnimalBehaviours\ReflectionCache\ReflectionCache.cs" />
+    <Compile Include="Furniture\Dialogs\Dialog_ChooseGraphic.cs" />
     <Compile Include="Furniture\ReflectionCache\ReflectionCache.cs" />
     <Compile Include="Genes\Comps\CompHumanHatcher.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompInfecter.cs" />

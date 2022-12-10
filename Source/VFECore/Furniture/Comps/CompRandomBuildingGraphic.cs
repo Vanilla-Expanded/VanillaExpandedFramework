@@ -32,12 +32,12 @@ namespace VanillaFurnitureExpanded
             thingToGrab = parent;
             reloading = true;
             //Using LongEventHandler to avoid having to create a GraphicCache
-            LongEventHandler.ExecuteWhenFinished(ChangeGraphic);
+            LongEventHandler.ExecuteWhenFinished(delegate { ChangeGraphic(true,0); });
 
 
         }
 
-        public void ChangeGraphic()
+        public void ChangeGraphic(bool random, int index)
         {
             try
             {
@@ -49,87 +49,59 @@ namespace VanillaFurnitureExpanded
                 {
                     if (parent.def.graphicData.graphicClass == typeof(Graphic_Multi))
                     {
-                        if (!VFECore.VFEGlobal.settings.isRandomGraphic)
+                        if (!random)
                         {
-                            if (!reloading)
-                            {
-                                int newGraphicPathIndex = Props.randomGraphics.IndexOf(newGraphicPath);
-                                if (newGraphicPathIndex + 1 > Props.randomGraphics.Count - 1)
-                                {
-                                    newGraphicPathIndex = 0;
-                                }
-                                else newGraphicPathIndex++;
-                                newGraphicPath = Props.randomGraphics[newGraphicPathIndex];
-                                newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
-                            }
-                            else
-                            {
-                                if (newGraphicPath == "")
-                                {
-                                    newGraphicPath = Props.randomGraphics[0];
-                                    newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
-                                }
-                                else
-                                {
-                                    newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
-                                }
-                                reloading = false;
-
-                            }
+                            newGraphicPath = Props.randomGraphics[index];
+                            newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
 
 
 
                         }
                         else if (newGraphicPath == "")
                         {
-                            newGraphicPath = Props.randomGraphics.RandomElement();
+                            if (!VFECore.VFEGlobal.settings.randomStartsAsRandom)
+                            {
+                                newGraphicPath = Props.randomGraphics.RandomElement();
+                            }
+                            else
+                            {
+                                newGraphicPath = Props.randomGraphics[0];
+                            }
+                          
                             newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
                         }
                         else
                         {
                             newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
                         }
-                        ReflectionCache.graphic(thingToGrab) = newGraphic;
+                        ReflectionCache.buildingGraphic(thingToGrab) = newGraphic;
 
 
                     }
                     else if (parent.def.graphicData.graphicClass == typeof(Graphic_Single))
                     {
-                        if (!VFECore.VFEGlobal.settings.isRandomGraphic)
+
+                        if (!random)
                         {
-                            if (!reloading)
-                            {
-                                int newGraphicPathIndex = Props.randomGraphics.IndexOf(newGraphicSinglePath);
-                                if (newGraphicPathIndex + 1 > Props.randomGraphics.Count - 1)
-                                {
-                                    newGraphicPathIndex = 0;
-                                }
-                                else newGraphicPathIndex++;
-                                newGraphicSinglePath = Props.randomGraphics[newGraphicPathIndex];
-                                newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
-                            }
-                            else
-                            {
-                                if (newGraphicSinglePath == "")
-                                {
-                                    newGraphicSinglePath = Props.randomGraphics[0];
-                                    newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
-                                }
-                                else
-                                {
-                                    newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
-                                }
-                                reloading = false;
-                            }
-                            
+                            newGraphicSinglePath = Props.randomGraphics[index];
+                            newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
 
 
 
                         }
+                       
                         else
                         if (newGraphicSinglePath == "")
                         {
-                            newGraphicSinglePath = Props.randomGraphics.RandomElement();
+                            if (!VFECore.VFEGlobal.settings.randomStartsAsRandom)
+                            {
+                                newGraphicSinglePath = Props.randomGraphics.RandomElement();
+                            }
+                            else
+                            {
+                                newGraphicSinglePath = Props.randomGraphics[0];
+                            }
+                           
                             newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
                         }
                         else
@@ -141,7 +113,7 @@ namespace VanillaFurnitureExpanded
                             newGraphicSingle.data = new GraphicData();
                             newGraphicSingle.data.drawRotated = false;
                         }
-                        ReflectionCache.graphic(thingToGrab) = newGraphicSingle;
+                        ReflectionCache.buildingGraphic(thingToGrab) = newGraphicSingle;
                         
                     }
 
@@ -160,25 +132,44 @@ namespace VanillaFurnitureExpanded
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
-            if (parent.Faction != null && parent.Faction.IsPlayer && parent.StyleDef == null && !VFECore.VFEGlobal.settings.hideRandomizeButton)
+            if (parent.Faction != null && parent.Faction.IsPlayer && parent.StyleDef == null && !VFECore.VFEGlobal.settings.hideRandomizeButtons && !Props.disableAllButtons)
             {
-                yield return new Command_Action
-                {
-                    defaultLabel = "VFE_ChangeGraphic".Translate(),
-                    defaultDesc = "VFE_ChangeGraphicDesc".Translate(),
+                if (!Props.disableRandomButton) {
 
-                    icon = ContentFinder<Texture2D>.Get("UI/VEF_ChangeGraphic", true),
-                    action = delegate ()
+                    yield return new Command_Action
                     {
-                        if (VFECore.VFEGlobal.settings.isRandomGraphic)
+                        defaultLabel = "VFE_ChangeGraphic".Translate(),
+                        defaultDesc = "VFE_ChangeGraphicDesc".Translate(),
+
+                        icon = ContentFinder<Texture2D>.Get("UI/VEF_ChangeGraphic", true),
+                        action = delegate ()
                         {
+
                             newGraphicPath = "";
                             newGraphicSinglePath = "";
+
+                            LongEventHandler.ExecuteWhenFinished(delegate { ChangeGraphic(true, 0); });
+                            parent.Map.mapDrawer.MapMeshDirty(parent.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
                         }
-                        LongEventHandler.ExecuteWhenFinished(ChangeGraphic);
-                        parent.Map.mapDrawer.MapMeshDirty(parent.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
-                    }
-                };
+                    };
+
+                }
+
+                if (!Props.disableGraphicChoosingButton) {
+                    yield return new Command_Action
+                    {
+                        defaultLabel = "VFE_ChooseGraphic".Translate(),
+                        defaultDesc = "VFE_ChooseGraphicDesc".Translate(),
+
+                        icon = ContentFinder<Texture2D>.Get("UI/VEF_ChooseGraphic", true),
+                        action = delegate ()
+                        {
+                            Dialog_ChooseGraphic window = new Dialog_ChooseGraphic(this.parent, Props.randomGraphics);
+                            Find.WindowStack.Add(window);
+                        }
+                    };
+                }
+                
 
             }
 
