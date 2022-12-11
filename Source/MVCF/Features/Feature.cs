@@ -27,9 +27,10 @@ public abstract class Feature
 
     public virtual IEnumerable<PatchSet> GetPatchSets()
     {
-        yield return new PatchSet_BatteLog();
         yield return new PatchSet_Base();
+        yield return new PatchSet_BatteLog();
         yield return new PatchSet_TargetFinder();
+        yield return new PatchSet_Equipment();
         // yield return new PatchSet_Debug();
         if (ModLister.HasActiveModWithName("RunAndGun")) yield return new PatchSet_RunAndGun();
         if (DualWieldCompat.Active) yield return new PatchSet_DualWield();
