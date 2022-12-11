@@ -30,6 +30,7 @@ namespace VanillaFurnitureExpanded
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             thingToGrab = parent;
+            //Reloading is unused now, kept for compatibility only. Remove in 1.5
             reloading = true;
             //Using LongEventHandler to avoid having to create a GraphicCache
             LongEventHandler.ExecuteWhenFinished(delegate { ChangeGraphic(true,0); });
@@ -59,7 +60,7 @@ namespace VanillaFurnitureExpanded
                         }
                         else if (newGraphicPath == "")
                         {
-                            if (!VFECore.VFEGlobal.settings.randomStartsAsRandom)
+                            if (!VFECore.VFEGlobal.settings.randomStartsAsRandom || Props.startAsRandom)
                             {
                                 newGraphicPath = Props.randomGraphics.RandomElement();
                             }
@@ -93,7 +94,7 @@ namespace VanillaFurnitureExpanded
                         else
                         if (newGraphicSinglePath == "")
                         {
-                            if (!VFECore.VFEGlobal.settings.randomStartsAsRandom)
+                            if (!VFECore.VFEGlobal.settings.randomStartsAsRandom || Props.startAsRandom)
                             {
                                 newGraphicSinglePath = Props.randomGraphics.RandomElement();
                             }
