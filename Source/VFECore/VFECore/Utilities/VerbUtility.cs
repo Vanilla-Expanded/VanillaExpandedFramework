@@ -102,7 +102,17 @@ namespace VFECore
             return null;
         }
 
-        public static float GetVerbRangeMultiplier(this Pawn pawn) => pawn.GetStatValueForPawn(VFEDefOf.VEF_VerbRangeFactor, pawn);
+        public static float GetVerbRangeMultiplier(this Pawn pawn)
+        {
+            try
+            {
+                return pawn.GetStatValueForPawn(VFEDefOf.VEF_VerbRangeFactor, pawn);
+            }
+            catch
+            {
+                return 1f;
+            }
+        }
 
         private static void ModifyVerbRangeBy(Verb verb, float multiplier)
         {

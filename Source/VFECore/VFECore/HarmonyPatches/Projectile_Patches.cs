@@ -26,9 +26,10 @@ namespace VFECore
     })]
     public static class Projectile_Launch_Patch
     {
-        public static void Postfix(Projectile __instance, Thing launcher, Vector3 origin, ref LocalTargetInfo usedTarget, LocalTargetInfo intendedTarget, bool preventFriendlyFire, Thing equipment, ThingDef targetCoverDef)
+        public static void Postfix(Projectile __instance, Thing launcher, Vector3 origin, ref LocalTargetInfo usedTarget, 
+            LocalTargetInfo intendedTarget, bool preventFriendlyFire, Thing equipment, ThingDef targetCoverDef)
         {
-            if (__instance is ExpandableProjectile expandableProjectile && expandableProjectile.def.reachMaxRangeAlways)
+            if (__instance is ExpandableProjectile expandableProjectile && expandableProjectile.def.reachMaxRangeAlways && equipment != null)
             {
                 expandableProjectile.SetDestinationToMax(equipment);
             }
