@@ -60,7 +60,7 @@ namespace VanillaFurnitureExpanded
                         }
                         else if (newGraphicPath == "")
                         {
-                            if (!VFECore.VFEGlobal.settings.randomStartsAsRandom || Props.startAsRandom)
+                            if (!VFECore.VFEGlobal.settings.randomStartsAsRandom && Props.startAsRandom)
                             {
                                 newGraphicPath = Props.randomGraphics.RandomElement();
                             }
@@ -94,7 +94,7 @@ namespace VanillaFurnitureExpanded
                         else
                         if (newGraphicSinglePath == "")
                         {
-                            if (!VFECore.VFEGlobal.settings.randomStartsAsRandom || Props.startAsRandom)
+                            if (!VFECore.VFEGlobal.settings.randomStartsAsRandom && Props.startAsRandom)
                             {
                                 newGraphicSinglePath = Props.randomGraphics.RandomElement();
                             }
