@@ -13,8 +13,8 @@ namespace VanillaGenesExpanded
         
         public static bool Prefix(GeneDef geneDef, ref bool __result)
         {
-            GeneExtension extension = geneDef.GetModExtension<GeneExtension>();
-            if(extension?.hideGene == true)
+            
+            if(StaticCollectionsClass.hidden_genes.Contains(geneDef))
             {
                 __result = false;
                 return false;

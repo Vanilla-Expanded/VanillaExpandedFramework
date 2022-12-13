@@ -8,9 +8,23 @@ using System.Linq;
 
 namespace VanillaGenesExpanded
 {
-
+    [StaticConstructorOnStartup]
     public static class StaticCollectionsClass
     {
+
+        static StaticCollectionsClass() {
+
+            foreach (GeneDef geneDef in DefDatabase<GeneDef>.AllDefsListForReading)
+            {
+                GeneExtension extension = geneDef.GetModExtension<GeneExtension>();
+                if (extension?.hideGene == true)
+                {
+                    hidden_genes.Add(geneDef);
+                }
+            }
+        
+        
+        }
 
         //This static class stores lists of pawns for different things.
 
@@ -35,6 +49,8 @@ namespace VanillaGenesExpanded
         public static IDictionary<Thing, SkillDef> noSkillLoss_gene_pawns = new Dictionary<Thing, SkillDef>();
         // A list of pawns with skills that give recreation when gaining XP
         public static IDictionary<Thing, SkillDef> skillRecreation_gene_pawns = new Dictionary<Thing, SkillDef>();
+        // A list of genes that should be hidden on the xenotype editor
+        public static HashSet<GeneDef> hidden_genes = new HashSet<GeneDef>();
 
 
         public static void AddBloodtypeGenePawnToList(Thing thing, ThingDef thingDef)
