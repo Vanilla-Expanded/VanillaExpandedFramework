@@ -9,9 +9,18 @@ namespace VFECore.Abilities
 {
     public class Ability_Skyfallers : Ability
     {
-        private static readonly AccessTools.FieldRef<World, List<ThingDef>> allNaturalRockDefs =
-            AccessTools.FieldRefAccess<World, List<ThingDef>>("allNaturalRockDefs");
-
+        private static List<ThingDef> allNaturalRockDefs;
+        public static List<ThingDef> AllNaturalRockDefs
+        {
+            get
+            {
+                if (allNaturalRockDefs == null)
+                {
+                    allNaturalRockDefs = DefDatabase<ThingDef>.AllDefs.Where((ThingDef d) => d.IsNonResourceNaturalRock).ToList();
+                }
+                return allNaturalRockDefs;
+            }
+        }
         public override void Cast(params GlobalTargetInfo[] targets)
         {
             base.Cast(targets);
@@ -31,9 +40,8 @@ namespace VFECore.Abilities
 
         protected virtual IEnumerable<Thing> GetContents()
         {
-            Find.World.NaturalRockTypesIn(pawn.Map.Tile); // Force the game to generate the rocks list we are querying
             var rocks = def.GetModExtension<AbilityExtension_Skyfaller>()?.rocks ?? 0;
-            for (var i = 0; i < rocks; i++) yield return ThingMaker.MakeThing(allNaturalRockDefs(Find.World).RandomElement());
+            for (var i = 0; i < rocks; i++) yield return ThingMaker.MakeThing(AllNaturalRockDefs.RandomElement());
         }
     }
 
