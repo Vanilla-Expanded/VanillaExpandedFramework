@@ -239,11 +239,9 @@ namespace VFECore
 
 			firstTime = false;
 		}
-		public override void PostDraw()
-		{
-			base.PostDraw();
-			DrawWornExtras();
-		}
+
+        public bool IsApparel => parent is Apparel;
+        private bool IsBuiltIn => !IsApparel;
 
 		public static HashSet<JobDef> combatJobs = new HashSet<JobDef>
 													{
@@ -272,7 +270,26 @@ namespace VFECore
 
 			return false;
 		}
-		public void DrawWornExtras()
+
+        public override void CompDrawWornExtras()
+        {
+            base.CompDrawWornExtras();
+            if (IsApparel)
+            {
+                Draw();
+            }
+        }
+
+        public override void PostDraw()
+        {
+            base.PostDraw();
+            if (IsBuiltIn)
+            {
+                Draw();
+            }
+        }
+
+        public void Draw()
 		{
 			if (ShieldState == ShieldState.Active)
 			{
