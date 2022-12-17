@@ -340,7 +340,8 @@
                 Find.WorldTargeter.BeginTargeting(gti =>
                                                   {
                                                       if (!this.ValidateTargetTile(gti, true)) return false;
-                                                      if (targetMode == AbilityTargetingMode.Tile)
+                                                      Map map = Find.WorldObjects.MapParentAt(gti.Tile).Map;
+                                                      if (targetMode == AbilityTargetingMode.Tile || map is null)
                                                       {
                                                           this.currentTargets[this.currentTargetingIndex] = gti;
                                                           this.DoTargeting();
@@ -348,7 +349,6 @@
                                                       }
                                                       else
                                                       {
-                                                          Map map = Find.WorldObjects.MapParentAt(gti.Tile).Map;
                                                           this.currentTargets[this.currentTargetingIndex] = new GlobalTargetInfo(map.AllCells.First(), map);
                                                           CameraJumper.TryJump(map.Center, map);
                                                           Find.Targeter.BeginTargeting(this.targetParams, this.OrderForceTarget, this.DrawHighlight,
