@@ -3,6 +3,7 @@ using RimWorld;
 using Verse;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 using System.Reflection.Emit;
 
 namespace VanillaGenesExpanded
@@ -12,6 +13,7 @@ namespace VanillaGenesExpanded
     [HarmonyPatch("DrawGeneBasics")]
     public static class VanillaGenesExpanded_GeneUIUtility_DrawGeneBasics_Patch
     {
+        static Type cachedTextureType = AccessTools.TypeByName("Verse.CachedTexture");
 
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
@@ -45,20 +47,20 @@ namespace VanillaGenesExpanded
             }
         }
 
-        public static CachedTexture ChooseEndogeneBackground(GeneDef gene)
+        public static object ChooseEndogeneBackground(GeneDef gene)
         {
             if (gene.GetModExtension<GeneExtension>()?.backgroundPathEndogenes != null)
             {
-                return new CachedTexture(gene.GetModExtension<GeneExtension>().backgroundPathEndogenes);
+                return Activator.CreateInstance(cachedTextureType, gene.GetModExtension<GeneExtension>().backgroundPathEndogenes);
             }
             else { return GraphicsCache.GeneBackground_Endogene; }
         }
 
-        public static CachedTexture ChooseXenogeneBackground(GeneDef gene)
+        public static object ChooseXenogeneBackground(GeneDef gene)
         {
             if (gene.GetModExtension<GeneExtension>()?.backgroundPathXenogenes != null)
             {
-                return new CachedTexture(gene.GetModExtension<GeneExtension>().backgroundPathXenogenes);
+                return Activator.CreateInstance(cachedTextureType, gene.GetModExtension<GeneExtension>().backgroundPathXenogenes);
             }
             else { return GraphicsCache.GeneBackground_Xenogene; }
         }
