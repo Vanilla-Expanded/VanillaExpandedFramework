@@ -1779,14 +1779,20 @@ namespace ItemProcessor
 
         public override string GetInspectString()
         {
-            // Fon't do anything if minified/missing the comp
+            // Don't do anything if minified/missing the comp
             if (compItemProcessor == null)
             {
                 return base.GetInspectString();
             }
 
-            //This just displays all the above shit in the Inspect box at the bottom left corner of the screen
             string text = base.GetInspectString();
+
+            // Start on a new line if other comps also have their own inspect string output
+            if (text.Length != 0)
+            {
+                text += "\n";
+            }
+
             string incubationTxt = "";
             if (compPowerTrader != null || compFuelable != null)
             {
@@ -1989,7 +1995,6 @@ namespace ItemProcessor
                     incubationTxt += "IP_OverThreshold".Translate(DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).maxTotalOutput);
                 }
             }
-
 
             return text + incubationTxt;
         }
