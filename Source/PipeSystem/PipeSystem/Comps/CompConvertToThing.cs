@@ -25,14 +25,18 @@ namespace PipeSystem
 
         public new CompProperties_ConvertResourceToThing Props => (CompProperties_ConvertResourceToThing)props;
 
+        public override void PostPostMake()
+        {
+            base.PostPostMake();
+            maxHeldThingStackSize = Props.maxOutputStackSize != -1 ? Props.maxOutputStackSize : 10;
+        }
+
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
             compBreakdownable = parent.GetComp<CompBreakdownable>();
             compPowerTrader = parent.GetComp<CompPowerTrader>();
             compFlickable = parent.GetComp<CompFlickable>();
-
-            maxHeldThingStackSize = Props.maxOutputStackSize != -1 ? Props.maxOutputStackSize : 10;
 
             decrease10 = new Command_Action
             {
