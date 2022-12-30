@@ -153,10 +153,7 @@ namespace VanillaFurnitureExpanded
             base.PostSpawnSetup(respawningAfterLoad);
             this.currentColor = Props.colorOptions[currentColorInd];
             this.dirty = true;
-            if (!respawningAfterLoad)
-            {
-                UpdateGlower(currentColorInd, ShouldBeLitNow);
-            }
+            UpdateGlower(currentColorInd, ShouldBeLitNow);
         }
         public override void PostPostMake()
         {
@@ -179,9 +176,10 @@ namespace VanillaFurnitureExpanded
             base.CompTick();
             if (dirty)
             {
-                if (ShouldBeLitNow)
+                bool shouldBeLitNow = ShouldBeLitNow;
+                this.UpdateGlower(currentColorInd, shouldBeLitNow);
+                if (shouldBeLitNow)
                 {
-                    this.UpdateGlower(currentColorInd);
                     this.ChangeGraphic();
                 }
                 else
