@@ -24,6 +24,10 @@ namespace VanillaFurnitureExpanded
 
         public ColorInt glowColor = new ColorInt(255, 255, 255, 0) * 1.45f;
 
+        public bool colorPickerEnabled;
+
+        public bool darklightToggle;
+
         public string colorLabel = "";
     }
     public class CompProperties_GlowerExtended : CompProperties
@@ -43,7 +47,20 @@ namespace VanillaFurnitureExpanded
         public int currentColorInd;
         public CompGlower compGlower;
         private bool dirty;
+        private ColorInt? glowColorOverride;
         public CompProperties_GlowerExtended Props => (CompProperties_GlowerExtended)props;
+
+        public virtual ColorInt GlowColor
+        {
+            get
+            {
+                return glowColorOverride ?? Props.colorOptions[currentColorInd].glowColor;
+            }
+            set
+            {
+                glowColorOverride = value;
+            }
+        }
         public override string TransformLabel(string label)
         {
             if (!(currentColor?.colorLabel).NullOrEmpty())
@@ -187,18 +204,29 @@ namespace VanillaFurnitureExpanded
                 command_Action.icon = ContentFinder<Texture2D>.Get("UI/Gizmo/LampColourSwitch");
                 yield return command_Action;
             }
+
+            foreach (var gizmo in this.compGlower.CompGetGizmosExtra())
+            {
+                yield return gizmo;
+            }
+            if (this.compGlower.GlowColor != this.GlowColor)
+            {
+                this.GlowColor = this.compGlower.GlowColor;
+                UpdateGlower(this.currentColorInd, ShouldBeLitNow);
+            }
+
         }
 
         private void SwitchColor()
         {
             if (this.currentColorInd == Props.colorOptions.Count - 1)
             {
-                this.UpdateGlower(0);
+                this.UpdateGlower(0, ShouldBeLitNow);
                 this.ChangeGraphic();
             }
             else
             {
-                this.UpdateGlower(this.currentColorInd + 1);
+                this.UpdateGlower(this.currentColorInd + 1, ShouldBeLitNow);
                 this.ChangeGraphic();
             }
         }
@@ -207,7 +235,6 @@ namespace VanillaFurnitureExpanded
             if (this.compGlower != null)
             {
                 map.glowGrid?.DeRegisterGlower(this.compGlower);
-                this.compGlower = null;
             }
         }
 
@@ -228,7 +255,7 @@ namespace VanillaFurnitureExpanded
             return dummyDef;
         }
 
-        public void UpdateGlower(int colorOptionInd)
+        public void UpdateGlower(int colorOptionInd, bool enableLight = true)
         {
             RemoveGlower(this.parent.Map);
             var colorOption = Props.colorOptions[colorOptionInd];
@@ -249,13 +276,18 @@ namespace VanillaFurnitureExpanded
             }
             this.compGlower.Initialize(new CompProperties_Glower()
             {
-                glowColor = colorOption.glowColor,
+                glowColor = glowColorOverride ?? colorOption.glowColor,
                 glowRadius = colorOption.glowRadius,
-                overlightRadius = colorOption.overlightRadius
+                overlightRadius = colorOption.overlightRadius,
+                colorPickerEnabled = colorOption.colorPickerEnabled,
+                darklightToggle = colorOption.darklightToggle,
             });
-            Traverse.Create(this.compGlower).Field("glowOnInt").SetValue(true);
-            base.parent.Map.mapDrawer.MapMeshDirty(base.parent.Position, MapMeshFlag.Things);
-            base.parent.Map.glowGrid.RegisterGlower(this.compGlower);
+            if (enableLight)
+            {
+                Traverse.Create(this.compGlower).Field("glowOnInt").SetValue(true);
+                base.parent.Map.mapDrawer.MapMeshDirty(base.parent.Position, MapMeshFlag.Things);
+                base.parent.Map.glowGrid.RegisterGlower(this.compGlower);
+            }
             if (Props.spawnGlowerInFacedCell)
             {
                 dummyThing.DeSpawn();
@@ -307,6 +339,7 @@ namespace VanillaFurnitureExpanded
             base.PostExposeData();
             Scribe_Values.Look(ref currentColorInd, "currentColorInd");
             this.currentColor = Props.colorOptions[currentColorInd];
+            Scribe_Values.Look(ref glowColorOverride, "glowColorOverride");
         }
     }
 }
