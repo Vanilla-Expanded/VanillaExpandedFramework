@@ -153,6 +153,10 @@ namespace VanillaFurnitureExpanded
             base.PostSpawnSetup(respawningAfterLoad);
             this.currentColor = Props.colorOptions[currentColorInd];
             this.dirty = true;
+            if (!respawningAfterLoad)
+            {
+                UpdateGlower(currentColorInd, ShouldBeLitNow);
+            }
         }
         public override void PostPostMake()
         {
@@ -204,17 +208,18 @@ namespace VanillaFurnitureExpanded
                 command_Action.icon = ContentFinder<Texture2D>.Get("UI/Gizmo/LampColourSwitch");
                 yield return command_Action;
             }
-
-            foreach (var gizmo in this.compGlower.CompGetGizmosExtra())
+            if (this.compGlower != null)
             {
-                yield return gizmo;
+                foreach (var gizmo in this.compGlower.CompGetGizmosExtra())
+                {
+                    yield return gizmo;
+                }
+                if (this.compGlower.GlowColor != this.GlowColor)
+                {
+                    this.GlowColor = this.compGlower.GlowColor;
+                    UpdateGlower(this.currentColorInd, ShouldBeLitNow);
+                }
             }
-            if (this.compGlower.GlowColor != this.GlowColor)
-            {
-                this.GlowColor = this.compGlower.GlowColor;
-                UpdateGlower(this.currentColorInd, ShouldBeLitNow);
-            }
-
         }
 
         private void SwitchColor()
