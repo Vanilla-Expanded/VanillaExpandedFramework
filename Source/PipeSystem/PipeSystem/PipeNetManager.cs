@@ -14,6 +14,8 @@ namespace PipeSystem
         private int pipeNetsCount = 0;
         // Valve that link even when off
         public BoolGrid valveGrid;
+        // Net needing the no storage alerts
+        public List<PipeNet> noStorage = new List<PipeNet>();
 
         public PipeNetManager(Map map) : base(map)
         {
@@ -55,6 +57,11 @@ namespace PipeSystem
                 {
                     net.PipeSystemTick();
                     net.NextTick = tick + 100;
+                    // Manage no storage alert
+                    if (net.def.noStorageAlert && net.storages.Count == 0 && !noStorage.Contains(net))
+                    {
+                        noStorage.Add(net);
+                    }
                 }
             }
         }

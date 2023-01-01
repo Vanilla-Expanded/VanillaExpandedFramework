@@ -52,6 +52,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Alert_NoStorage.cs" />
     <Compile Include="AutoLinkRefuelables.cs" />
     <Compile Include="Buildings\Building_Pipe.cs" />
     <Compile Include="Buildings\Building_PipeValve.cs" />

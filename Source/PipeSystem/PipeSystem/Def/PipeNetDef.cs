@@ -20,6 +20,7 @@ namespace PipeSystem
         public List<LinkOption> linkToRefuelables;
 
         public float transferAmount = 100f;
+        public bool noStorageAlert = false;
 
         internal Material offMat; // Off material
 
