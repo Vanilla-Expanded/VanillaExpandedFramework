@@ -642,5 +642,10 @@ namespace PipeSystem
                 }
             }
         }
+
+        public override string ToString()
+        {
+            return $"PipeNet: {def.resource.name} Stored:{Stored} AvailableCapacity:{AvailableCapacity} Consumption:{Consumption} Production:{Production}";
+        }
     }
 }
