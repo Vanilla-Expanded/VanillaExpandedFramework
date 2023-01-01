@@ -58,9 +58,13 @@ namespace PipeSystem
                     net.PipeSystemTick();
                     net.NextTick = tick + 100;
                     // Manage no storage alert
-                    if (net.def.noStorageAlert && net.storages.Count == 0 && !noStorage.Contains(net))
+                    if (net.def.noStorageAlert)
                     {
-                        noStorage.Add(net);
+                        var count = net.storages.Count;
+                        if (count == 0 && !noStorage.Contains(net))
+                            noStorage.Add(net);
+                        else if (count > 0 && noStorage.Contains(net))
+                            noStorage.Remove(net);
                     }
                 }
             }
