@@ -42,9 +42,11 @@ namespace PipeSystem
                 for (int o = 0; o < manager.noStorage.Count; o++)
                 {
                     var net = manager.noStorage[o];
-
-                    list.Add(net.connectors[0].parent);
-                    nets.Add(net);
+                    if (net.connectors.Count > 0)
+                    {
+                        list.Add(net.connectors[0].parent);
+                        nets.Add(net);
+                    }
                 }
             }
 
