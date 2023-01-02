@@ -50,24 +50,18 @@ namespace PipeSystem
         /// <summary>
         /// Ticks methods are only needed for contentRequirePower
         /// </summary>
-        public override void CompTick()
-        {
-            if (ContentCanRot) Tick();
-        }
+        public override void CompTick() => Tick();
 
-        public override void CompTickRare()
-        {
-            if (ContentCanRot) Tick(250);
-        }
+        public override void CompTickRare() => Tick(250);
 
-        public override void CompTickLong()
-        {
-            if (ContentCanRot) Tick(2000);
-        }
+        public override void CompTickLong() => Tick(2000);
 
         private void Tick(int ticks = 1)
         {
-            if (!powerComp.PowerOn)
+            if (!ContentCanRot)
+                return;
+
+            if (!powerComp.PowerOn && amountStored > 0)
             {
                 ticksWithoutPower += ticks;
                 if (ticksWithoutPower > GenDate.TicksPerDay * Props.daysToRotStart)
@@ -260,7 +254,7 @@ namespace PipeSystem
             if (markedForTransfer)
                 sb.AppendInNewLine("PipeSystem_MarkedToTransferContent".Translate());
 
-            if (ContentCanRot && !powerComp.PowerOn)
+            if (ContentCanRot && !powerComp.PowerOn && amountStored > 0)
                 sb.AppendInNewLine("PipeSystem_ContentWillRot".Translate(((int)((GenDate.TicksPerDay * Props.daysToRotStart) - ticksWithoutPower)).ToStringTicksToPeriod()));
 
             sb.AppendInNewLine(base.CompInspectStringExtra());
