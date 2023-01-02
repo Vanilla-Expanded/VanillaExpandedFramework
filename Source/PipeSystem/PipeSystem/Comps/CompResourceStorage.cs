@@ -152,13 +152,11 @@ namespace PipeSystem
                         {
                             PipeNet.markedForTransfer.Add(this);
                             PipeNet.storages.Remove(this);
-                            PipeNet.MaxGridStorageCapacity -= Props.storageCapacity;
                         }
                         else
                         {
                             PipeNet.markedForTransfer.Remove(this);
                             PipeNet.storages.Add(this);
-                            PipeNet.MaxGridStorageCapacity += Props.storageCapacity;
                         }
                     },
                     defaultLabel = "PipeSystem_TransferContent".Translate(),

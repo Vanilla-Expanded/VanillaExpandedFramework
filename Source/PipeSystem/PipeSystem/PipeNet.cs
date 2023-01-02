@@ -57,8 +57,19 @@ namespace PipeSystem
             }
         }
         public float Stored { get; private set; }
-        public float MaxGridStorageCapacity { get; internal set; }
-        public float AvailableCapacity => MaxGridStorageCapacity - Stored;
+        public float AvailableCapacity
+        {
+            get
+            {
+                var available = 0f;
+                for (int i = 0; i < storages.Count; i++)
+                {
+                    available += storages[i].AmountCanAccept;
+                }
+
+                return available;
+            }
+        }
 
         public PipeNet(IEnumerable<CompResource> connectors, Map map, PipeNetDef def)
         {
@@ -67,7 +78,6 @@ namespace PipeSystem
             networkGrid = new BoolGrid(map);
 
             NextTick = Find.TickManager.TicksGame;
-            MaxGridStorageCapacity = 0;
 
             // Register all
             foreach (var connector in connectors)
@@ -208,7 +218,6 @@ namespace PipeSystem
                 else
                 {
                     storages.Add(storage);
-                    MaxGridStorageCapacity += storage.Props.storageCapacity;
                 }
             }
             else if (comp is CompConvertToThing convertToThing)
@@ -262,7 +271,6 @@ namespace PipeSystem
             else if (comp is CompResourceStorage storage)
             {
                 storages.Remove(storage);
-                MaxGridStorageCapacity -= storage.Props.storageCapacity;
             }
             else if (comp is CompConvertToThing convertToThing)
             {
@@ -571,7 +579,7 @@ namespace PipeSystem
             if (resourceStorages.Count == 0)
                 return;
             // Get the amount that can be stored, max amount being the whole grid capacity
-            float toBeStored = Mathf.Min(amount, MaxGridStorageCapacity - Stored);
+            float toBeStored = Mathf.Min(amount, AvailableCapacity);
             // Store it
             int iteration = 0;
             while (toBeStored > 0)
