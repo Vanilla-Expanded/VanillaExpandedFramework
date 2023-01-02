@@ -249,7 +249,7 @@ namespace PipeSystem
         {
             StringBuilder sb = new StringBuilder();
             if (Props.addStorageInfo)
-                sb.AppendInNewLine($"{"PipeSystem_ResourceStored".Translate(Resource.name)} {amountStored:#00} / {Props.storageCapacity:F0} {Resource.unit}"); // Show the amount stored
+                sb.AppendInNewLine($"{"PipeSystem_ResourceStored".Translate(Resource.name)} {amountStored:##0} / {Props.storageCapacity:F0} {Resource.unit}"); // Show the amount stored
 
             if (markedForTransfer)
                 sb.AppendInNewLine("PipeSystem_MarkedToTransferContent".Translate());
