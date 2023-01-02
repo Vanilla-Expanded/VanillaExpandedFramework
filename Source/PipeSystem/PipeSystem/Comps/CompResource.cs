@@ -18,8 +18,8 @@ namespace PipeSystem
         public PipeNetManager PipeNetManager { get; internal set; }
 
         public Sustainer sustainer;
-
         public Graphic_LinkedOverlayPipe graphicLinkedOverlay;
+        public CompPowerTrader powerComp;
 
         /// <summary>
         /// Remove under pipes. Get and set manager. Start sustainer.
@@ -42,6 +42,7 @@ namespace PipeSystem
             });
 
             graphicLinkedOverlay = LinkedPipes.GetOverlayFor(Props.pipeNet);
+            powerComp = parent.TryGetComp<CompPowerTrader>();
         }
 
         /// <summary>

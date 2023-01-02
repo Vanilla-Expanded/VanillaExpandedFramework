@@ -56,4 +56,7 @@
 
   <PipeSystem_NoStorageInNet>No storage connected</PipeSystem_NoStorageInNet>
   <PipeSystem_NoStorageInNetDesc>The following networks are not connected to any storage building, but need one:</PipeSystem_NoStorageInNetDesc>
+
+  <PipeSystem_StorageContentRotted>{0} content rotted away due to a lack of power.</PipeSystem_StorageContentRotted>
+  <PipeSystem_ContentWillRot>Content will rot in {0} due to a lack of power.</PipeSystem_ContentWillRot>
 </LanguageData>

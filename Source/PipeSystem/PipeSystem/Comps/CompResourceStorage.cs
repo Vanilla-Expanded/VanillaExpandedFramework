@@ -20,6 +20,7 @@ namespace PipeSystem
         public float extractResourceAmount;
 
         private float amountStored;
+        private int ticksWithoutPower = 0;
         private bool isBreakdownable;
         private FillableBarRequest request;
         private Command_Action extractGizmo;
@@ -38,7 +39,47 @@ namespace PipeSystem
             {
                 if (isBreakdownable && parent.IsBrokenDown())
                     return 0f;
+                if (Props.contentRequirePower && !powerComp.PowerOn)
+                    return 0f;
                 return Props.storageCapacity - amountStored;
+            }
+        }
+
+        public bool ContentCanRot { get; private set; }
+
+        /// <summary>
+        /// Ticks methods are only needed for contentRequirePower
+        /// </summary>
+        public override void CompTick()
+        {
+            if (ContentCanRot) Tick();
+        }
+
+        public override void CompTickRare()
+        {
+            if (ContentCanRot) Tick(250);
+        }
+
+        public override void CompTickLong()
+        {
+            if (ContentCanRot) Tick(2000);
+        }
+
+        private void Tick(int ticks = 1)
+        {
+            if (!powerComp.PowerOn)
+            {
+                ticksWithoutPower += ticks;
+                if (ticksWithoutPower > GenDate.TicksPerDay * Props.daysToRotStart)
+                {
+                    amountStored = 0;
+                    Messages.Message("PipeSystem_StorageContentRotted".Translate(parent.def.LabelCap), parent, MessageTypeDefOf.NegativeEvent);
+                    ticksWithoutPower = 0;
+                }
+            }
+            else
+            {
+                ticksWithoutPower = 0;
             }
         }
 
@@ -50,6 +91,7 @@ namespace PipeSystem
             base.PostSpawnSetup(respawningAfterLoad);
             CachedCompResourceStorage.Cache(this);
             isBreakdownable = parent.TryGetComp<CompBreakdownable>() != null;
+            ContentCanRot = Props.contentRequirePower && powerComp != null;
             // Fillable bar request
             request = new FillableBarRequest
             {
@@ -149,6 +191,7 @@ namespace PipeSystem
             if (amountStored > Props.storageCapacity) amountStored = Props.storageCapacity;
 
             Scribe_Values.Look(ref amountStored, "storedResource", 0f);
+            Scribe_Values.Look(ref ticksWithoutPower, "tickWithoutPower");
             Scribe_Values.Look(ref markedForExtract, "markedForExtract");
             Scribe_Values.Look(ref markedForTransfer, "markedForTransfer");
             Scribe_Values.Look(ref markedForTransfer, "markedForRefill");
@@ -218,6 +261,9 @@ namespace PipeSystem
 
             if (markedForTransfer)
                 sb.AppendInNewLine("PipeSystem_MarkedToTransferContent".Translate());
+
+            if (ContentCanRot && !powerComp.PowerOn)
+                sb.AppendInNewLine("PipeSystem_ContentWillRot".Translate(((int)((GenDate.TicksPerDay * Props.daysToRotStart) - ticksWithoutPower)).ToStringTicksToPeriod()));
 
             sb.AppendInNewLine(base.CompInspectStringExtra());
             return sb.ToString().TrimEndNewlines();

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using Verse;
 
 namespace PipeSystem
@@ -24,6 +25,18 @@ namespace PipeSystem
         public ExtractOptions extractOptions;
         public RefillOptions refillOptions;
         public DestroyOption destroyOption;
+
+        public bool contentRequirePower = false;
+        public float daysToRotStart = 0.75f;
+
+        public override IEnumerable<string> ConfigErrors(ThingDef parentDef)
+        {
+            foreach (var err in base.ConfigErrors(parentDef))
+                yield return err;
+
+            if (contentRequirePower && parentDef.tickerType == TickerType.Never)
+                yield return $"{parentDef.defName} CompProperties_ResourceStorage is using contentRequirePower and need a ticker type (any)";
+        }
     }
 
     public class ExtractOptions

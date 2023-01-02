@@ -262,7 +262,7 @@ namespace PipeSystem
             else if (comp is CompResourceStorage storage)
             {
                 storages.Remove(storage);
-                MaxGridStorageCapacity -= storage.AmountCanAccept;
+                MaxGridStorageCapacity -= storage.Props.storageCapacity;
             }
             else if (comp is CompConvertToThing convertToThing)
             {
