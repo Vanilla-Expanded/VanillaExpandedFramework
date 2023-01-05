@@ -704,9 +704,9 @@
             var duration = this.GetDurationForPawn();
             if (hediffExtension.durationMultiplier != null)
             {
-                duration = (int)(duration * (hediffExtension.durationMultiplierFromCaster
-                    ? pawn.GetStatValue(hediffExtension.durationMultiplier)
-                    : targetPawn.GetStatValue(hediffExtension.durationMultiplier)));
+                duration = (int)(duration * (hediffExtension.durationMultiplierFromCaster ? 
+                                                 pawn.GetStatValue(hediffExtension.durationMultiplier) : 
+                                                 targetPawn.GetStatValue(hediffExtension.durationMultiplier)));
             }
             return ApplyHediff(targetPawn, hediffExtension.hediff, bodyPart, duration, hediffExtension.severity);
         }
@@ -723,7 +723,7 @@
                 {
                     if (hediffComp is HediffComp_Ability hca)
                         hca.ability = this;
-                    if (hediffComp is HediffComp_Disappears hcd)
+                    if (duration > 0 && hediffComp is HediffComp_Disappears hcd)
                         hcd.ticksToDisappear = duration;
                 }
             targetPawn.health.AddHediff(localHediff);
