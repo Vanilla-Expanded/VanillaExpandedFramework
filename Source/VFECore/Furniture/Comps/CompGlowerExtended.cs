@@ -41,6 +41,10 @@ namespace VanillaFurnitureExpanded
         }
     }
 
+    public class DummyGlower : ThingWithComps
+    {
+        public CompGlowerExtended parentComp;
+    }
     public class CompGlowerExtended : ThingComp
     {
         private ColorOption currentColor;
@@ -212,14 +216,26 @@ namespace VanillaFurnitureExpanded
                 {
                     yield return gizmo;
                 }
-                if (this.compGlower.GlowColor != this.GlowColor)
-                {
-                    this.GlowColor = this.compGlower.GlowColor;
-                    UpdateGlower(this.currentColorInd, ShouldBeLitNow);
-                }
             }
         }
 
+        [HarmonyPatch(typeof(CompGlower), "SetGlowColorInternal")]
+        public static class CompGlower_SetGlowColorInternal_Patch
+        {
+            public static void Postfix(CompGlower __instance, ColorInt? color)
+            {
+                var compGlowerExtended = __instance.parent.GetComp<CompGlowerExtended>();
+                if (compGlowerExtended is null && __instance.parent is DummyGlower dummyGlower)
+                {
+                    compGlowerExtended = dummyGlower.parentComp;
+                }
+                if (compGlowerExtended != null)
+                {
+                    compGlowerExtended.glowColorOverride = color;
+                    compGlowerExtended.UpdateGlower(compGlowerExtended.currentColorInd, compGlowerExtended.ShouldBeLitNow);
+                }
+            }
+        }
         private void SwitchColor()
         {
             if (this.currentColorInd == Props.colorOptions.Count - 1)
@@ -249,7 +265,7 @@ namespace VanillaFurnitureExpanded
                 dummyDef = new ThingDef
                 {
                     defName = "WallLightDummyWorkaround",
-                    thingClass = typeof(ThingWithComps),
+                    thingClass = typeof(DummyGlower),
                     altitudeLayer = AltitudeLayer.FloorEmplacement,
                     rotatable = false,
                     passability = Traversability.Standable,
@@ -265,13 +281,14 @@ namespace VanillaFurnitureExpanded
             this.currentColor = colorOption;
             this.currentColorInd = colorOptionInd;
             this.compGlower = new CompGlower();
-            Thing dummyThing = null;
+            ThingWithComps dummyThing = null;
             if (Props.spawnGlowerInFacedCell)
             {
-                dummyThing = ThingMaker.MakeThing(GetDummyDef());
+                dummyThing = ThingMaker.MakeThing(GetDummyDef()) as ThingWithComps;
+                ((DummyGlower)dummyThing).parentComp = this;
                 var cellGlower = this.parent.Position + base.parent.Rotation.FacingCell;
                 GenSpawn.Spawn(dummyThing, cellGlower, this.parent.Map);
-                this.compGlower.parent = dummyThing as ThingWithComps;
+                this.compGlower.parent = dummyThing;
             }
             else
             {
