@@ -234,6 +234,11 @@ namespace PipeSystem
         }
 
         /// <summary>
+        /// Empty storage
+        /// </summary>
+        public void Empty() => amountStored = 0;
+
+        /// <summary>
         /// Handle breakdown signal
         /// </summary>
         public override void ReceiveCompSignal(string signal)
