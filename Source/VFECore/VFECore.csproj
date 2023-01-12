@@ -949,7 +949,6 @@
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_ThingDef.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_TraderCaravanUtility.cs" />
     <Compile Include="VFECore\HarmonyPatches\Verb_Patches.cs" />
-    <Compile Include="VFECore\HarmonyPatches\SpecificPatches\PickUpAndHaul_Patch.cs" />
     <Compile Include="VFECore\HarmonyPatches\ModCompatibility\RimCities\Patch_Cities_GenCity.cs" />
     <Compile Include="VFECore\HarmonyPatches\ModCompatibility\RPGStyleInventory\Patch_RPG_GearTab.cs" />
     <Compile Include="VFECore\HarmonyPatches\ModCompatibility\RunAndGun\Patch_RunAndGun_Harmony_Verb_TryCastNextBurstShot.cs" />

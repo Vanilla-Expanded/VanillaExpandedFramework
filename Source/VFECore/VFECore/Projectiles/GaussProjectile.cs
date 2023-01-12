@@ -34,13 +34,13 @@ namespace VFECore
 
 		public override void DoDamage(IntVec3 pos)
 		{
-			base.DoDamage(pos);
-			try
+			if (!stopped)
 			{
-				if (pos != this.launcher.Position && this.launcher.Map != null && GenGrid.InBounds(pos, this.launcher.Map))
-				{
-					var list = this.launcher.Map.thingGrid.ThingsListAt(pos);
-					for (int num = list.Count - 1; num >= 0; num--)
+                base.DoDamage(pos);
+                if (pos != this.launcher.Position && this.launcher.Map != null && GenGrid.InBounds(pos, this.launcher.Map))
+                {
+                    var list = this.launcher.Map.thingGrid.ThingsListAt(pos);
+                    for (int num = list.Count - 1; num >= 0; num--)
                     {
                         if (IsDamagable(list[num]) && !altitudeLayersBlackList.Contains(list[num].def.altitudeLayer))
                         {
@@ -50,8 +50,7 @@ namespace VFECore
                         }
                     }
                 }
-			}
-			catch { };
-		}
+            }
+        }
     }
 }

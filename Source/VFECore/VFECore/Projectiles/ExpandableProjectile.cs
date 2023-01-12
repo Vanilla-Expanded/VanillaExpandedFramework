@@ -13,7 +13,7 @@ namespace VFECore
 		private Vector3 prevPosition;
 		private int curProjectileIndex;
 		private int curProjectileFadeOutIndex;
-		private bool stopped;
+		protected bool stopped;
 		private float maxRange;
 		public void SetDestinationToMax(Thing equipment)
 		{
@@ -141,15 +141,19 @@ namespace VFECore
 			}
 		}
 
-		public Vector3 curPosition;
+		public Vector3? curPosition;
 		public Vector3 CurPosition
 		{
 			get
 			{
 				if (stopped)
 				{
-					return curPosition;
-				}
+					if (curPosition.HasValue)
+					{
+                        return curPosition.Value;
+                    }
+					return DrawPos;
+                }
 				else if (this.def.reachMaxRangeAlways)
 				{
 					var origin2 = new Vector3(this.launcher.TrueCenter().x, 0, this.launcher.TrueCenter().z);
@@ -158,12 +162,12 @@ namespace VFECore
 					var distanceDiff = maxRange - distance;
 					if (distanceDiff < 0)
 					{
-						if (!stopped)
-						{
-							StopMotion();
-						}
-						return curPosition;
-					}
+                        if (curPosition.HasValue)
+                        {
+                            return curPosition.Value;
+                        }
+                        return DrawPos;
+                    }
 					else
 					{
 						return this.DrawPos;
@@ -278,7 +282,7 @@ namespace VFECore
 			{
 				stopped = true;
 				curPosition = this.DrawPos;
-				this.destination = this.curPosition;
+				this.destination = this.curPosition.Value;
 			}
 		}
 		public override void Tick()
@@ -289,8 +293,11 @@ namespace VFECore
 				var projectileLine = MakeProjectileLine(StartingPosition, DrawPos, this.Map);
 				foreach (var pos in projectileLine)
 				{
-					DoDamage(pos);
-				}
+					if (this.Destroyed is false)
+					{
+                        DoDamage(pos);
+                    }
+                }
 			}
 			if (!doFinalAnimations && (!IsMoving || pawnMoved))
 			{
@@ -329,32 +336,33 @@ namespace VFECore
 		public List<Thing> hitThings;
 		protected override void Impact(Thing hitThing, bool blockedByShield = false)
 		{
-			if (def.stopWhenHit && !stopped && !customImpact)
+			if (stopped)
 			{
-				StopMotion();
-			}
-			if (hitThings == null) hitThings = new List<Thing>();
+                return;
+            }
+            if (hitThings == null) 
+				hitThings = new List<Thing>();
 			if (this.def.dealsDamageOnce && hitThings.Contains(hitThing))
 			{
 				return;
 			}
-			hitThings.Add(hitThing);
 			Map map = base.Map;
 			IntVec3 position = base.Position;
-			BattleLogEntry_RangedImpact battleLogEntry_RangedImpact;
-			if (equipmentDef == null)
-			{
-				battleLogEntry_RangedImpact = new BattleLogEntry_RangedImpact(launcher, hitThing, intendedTarget.Thing, ThingDef.Named("Gun_Autopistol"), def, targetCoverDef);
-			}
-			else
-			{
-				battleLogEntry_RangedImpact = new BattleLogEntry_RangedImpact(launcher, hitThing, intendedTarget.Thing, equipmentDef, def, targetCoverDef);
-			}
-			Find.BattleLog.Add(battleLogEntry_RangedImpact);
 			this.NotifyImpact(hitThing, map, position);
 			if (hitThing != null && (!def.disableVanillaDamageMethod || customImpact && def.disableVanillaDamageMethod))
 			{
-				DamageInfo dinfo = new DamageInfo(def.projectile.damageDef, this.DamageAmount, base.ArmorPenetration, ExactRotation.eulerAngles.y, launcher, null, equipmentDef, DamageInfo.SourceCategory.ThingOrUnknown, intendedTarget.Thing);
+				hitThings.Add(hitThing);
+                BattleLogEntry_RangedImpact battleLogEntry_RangedImpact;
+                if (equipmentDef == null)
+                {
+                    battleLogEntry_RangedImpact = new BattleLogEntry_RangedImpact(launcher, hitThing, intendedTarget.Thing, ThingDef.Named("Gun_Autopistol"), def, targetCoverDef);
+                }
+                else
+                {
+                    battleLogEntry_RangedImpact = new BattleLogEntry_RangedImpact(launcher, hitThing, intendedTarget.Thing, equipmentDef, def, targetCoverDef);
+                }
+                Find.BattleLog.Add(battleLogEntry_RangedImpact);
+                DamageInfo dinfo = new DamageInfo(def.projectile.damageDef, this.DamageAmount, base.ArmorPenetration, ExactRotation.eulerAngles.y, launcher, null, equipmentDef, DamageInfo.SourceCategory.ThingOrUnknown, intendedTarget.Thing);
 				hitThing.TakeDamage(dinfo).AssociateWithLog(battleLogEntry_RangedImpact);
 				Pawn pawn = hitThing as Pawn;
 				if (pawn != null && pawn.stances != null && pawn.BodySize <= def.projectile.StoppingPower + 0.001f)
@@ -372,16 +380,20 @@ namespace VFECore
 						}
 					}
 				}
-
 				if (this.def.stopWhenHitAt.Contains(hitThing.def.defName))
 				{
 					if (!stopped)
-					{
-						StopMotion();
+                    {
+                        StopMotion();
 					}
 				}
 			}
-		}
+
+            if (hitThing != null && def.stopWhenHit && !stopped)
+            {
+                StopMotion();
+            }
+        }
 
 		private void NotifyImpact(Thing hitThing, Map map, IntVec3 position)
 		{
