@@ -26,5 +26,14 @@ If hired {0} die on duty, you will incur an additional 5% increase to contract p
 	<VEF.Cancel>Cancel</VEF.Cancel>
 	<VEF.AvailableContracts>Available contracts: {0}</VEF.AvailableContracts>
 	<VEF.MechsSection>Mechanoids</VEF.MechsSection>
+	<VEF.DoorLockDefault>Default</VEF.DoorLockDefault>
+    <VEF.DoorLockEveryone>Everyone</VEF.DoorLockEveryone>
+    <VEF.DoorLockOnlyColonistsAndAnimals>Only colonists and animals</VEF.DoorLockOnlyColonistsAndAnimals>
+    <VEF.DoorLockOnlyColonistsAndAnimalsAndFriendlies>Only colonists, animals and friendlies</VEF.DoorLockOnlyColonistsAndAnimalsAndFriendlies>
+    <VEF.DoorLockOnlyDrafted>Only drafted</VEF.DoorLockOnlyDrafted>
+
+	<VEF.DoorLockState>Current door lock policy "{0}"</VEF.DoorLockState>
+	<VEF.DoorLockStateDesc>Click to change current door lock policy.</VEF.DoorLockStateDesc>
+	<VEF.DoorLockStatePowerOff>Power is off. Impossible to change door lock policy.</VEF.DoorLockStatePowerOff>
 
 </LanguageData>
