@@ -23,7 +23,7 @@ namespace VFECore.Abilities
             this.defaultDesc    = ability.GetDescriptionForPawn();
             this.icon           = ability.def.icon;
             this.disabled       = !ability.IsEnabledForPawn(out string reason);
-            this.disabledReason = reason.Colorize(Color.red);
+            this.disabledReason = reason.Colorize(ColorLibrary.RedReadable);
             this.action         = ability.DoAction;
             this.Order          = 10f + (ability.def.requiredHediff?.hediffDef?.index ?? 0) + (ability.def.requiredHediff?.minimumLevel ?? 0);
             this.shrinkable     = true;
@@ -54,9 +54,16 @@ namespace VFECore.Abilities
                 GUI.DrawTexture(position, AutoCastTex);
             }
 
-            if(this.disabled && this.ability.cooldown > Find.TickManager.TicksGame)
-                GUI.DrawTexture(butRect.RightPartPixels(butRect.width * ((float) (this.ability.cooldown - Find.TickManager.TicksGame) / this.ability.GetCooldownForPawn())), CooldownTex);
-            
+            if (this.disabled && this.ability.cooldown > Find.TickManager.TicksGame)
+            {
+                float num = ((float)(this.ability.cooldown - Find.TickManager.TicksGame) / this.ability.GetCooldownForPawn());
+                GUI.DrawTexture(butRect.RightPartPixels(butRect.width * num), CooldownTex);
+                Text.Font = GameFont.Tiny;
+                Text.Anchor = TextAnchor.UpperCenter;
+                Widgets.Label(butRect, (1f - num).ToStringPercent("F0"));
+                Text.Anchor = TextAnchor.UpperLeft;
+            }
+
             if (Mouse.IsOver(butRect))
             {
                 if (this.ability.def.targetModes[0] == AbilityTargetingMode.Self && this.ability.def.targetCount == 1)

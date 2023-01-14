@@ -17,7 +17,6 @@ namespace VanillaGenesExpanded
         }
         public static void RemoveGeneEffects(Gene gene)
         {
-
             GeneExtension extension = gene.def.GetModExtension<GeneExtension>();
             if (extension != null)
             {

@@ -138,10 +138,8 @@
 
         public virtual string GetDescriptionForPawn()
         {
-            StringBuilder sb = new StringBuilder(this.def.description);
-
-            sb.AppendLine();
-
+            var baseDesc = this.def.LabelCap.Colorize(ColoredText.TipSectionTitleColor) + "\n\n" + this.def.description + "\n\n";
+            StringBuilder sb = new StringBuilder(baseDesc);
             float rangeForPawn = this.GetRangeForPawn();
             if (rangeForPawn > 0f && rangeForPawn < 500f)
                 sb.AppendLine($"{"Range".Translate()}: {rangeForPawn}".Colorize(Color.cyan));
@@ -181,7 +179,7 @@
 
             if (this.CanAutoCast) sb.AppendLine((this.AutoCast ? "VFEA.RClickToNoAuto" : "VFEA.RClickToAuto").Translate());
 
-            return sb.ToString();
+            return sb.ToString().TrimEndNewlines();
         }
 
         public bool autoCast;
