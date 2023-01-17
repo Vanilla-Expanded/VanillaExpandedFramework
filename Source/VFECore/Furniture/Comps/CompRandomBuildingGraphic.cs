@@ -38,7 +38,7 @@ namespace VanillaFurnitureExpanded
 
         }
 
-        public void ChangeGraphic(bool random, int index)
+        public void ChangeGraphic(bool random, int index, bool forceRandom = false)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace VanillaFurnitureExpanded
                         }
                         else if (newGraphicPath == "")
                         {
-                            if (!VFECore.VFEGlobal.settings.randomStartsAsRandom && Props.startAsRandom)
+                            if (forceRandom || (!VFECore.VFEGlobal.settings.randomStartsAsRandom && Props.startAsRandom))
                             {
                                 newGraphicPath = Props.randomGraphics.RandomElement();
                             }
@@ -94,7 +94,7 @@ namespace VanillaFurnitureExpanded
                         else
                         if (newGraphicSinglePath == "")
                         {
-                            if (!VFECore.VFEGlobal.settings.randomStartsAsRandom && Props.startAsRandom)
+                            if (forceRandom || (!VFECore.VFEGlobal.settings.randomStartsAsRandom && Props.startAsRandom))
                             {
                                 newGraphicSinglePath = Props.randomGraphics.RandomElement();
                             }
@@ -149,7 +149,7 @@ namespace VanillaFurnitureExpanded
                             newGraphicPath = "";
                             newGraphicSinglePath = "";
 
-                            LongEventHandler.ExecuteWhenFinished(delegate { ChangeGraphic(true, 0); });
+                            LongEventHandler.ExecuteWhenFinished(delegate { ChangeGraphic(true, 0,true); });
                             parent.Map.mapDrawer.MapMeshDirty(parent.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
                         }
                     };

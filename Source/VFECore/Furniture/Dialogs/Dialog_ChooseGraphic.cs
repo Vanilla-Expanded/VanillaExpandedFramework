@@ -11,6 +11,9 @@ namespace VanillaFurnitureExpanded
     public class Dialog_ChooseGraphic : Window
     {
 
+        private static readonly Color borderColor = new Color(0.13f, 0.13f, 0.13f);
+        private static readonly Color fillColor = new Color(0, 0, 0,0.1f);
+
         public Thing thingToChange;
         private Vector2 scrollPosition = new Vector2(0, 0);
         public int columnCount = 4;
@@ -69,8 +72,13 @@ namespace VanillaFurnitureExpanded
                     {
                         availableTexture = availableTexture + "_north";
                     }
-                    Rect rectIcon = new Rect((128 * (i % columnCount)) + 10, (128 * (i / columnCount)), 128f, 128f);
-                    GUI.DrawTexture(rectIcon, ContentFinder<Texture2D>.Get(availableTexture, true), ScaleMode.ScaleToFit, alphaBlend: true, 0f, color, 0f, 0f);
+                    Rect rectIcon = new Rect((128 * (i % columnCount)) + 10* (i % columnCount), viewRect.y+(128 * (i / columnCount)+20 * ((i / columnCount)+1)), 128f, 128f);
+                    
+                    Widgets.DrawBoxSolidWithOutline(rectIcon,fillColor, borderColor, 2);
+                    Rect rectIconInside = rectIcon.ContractedBy(2);
+
+
+                    GUI.DrawTexture(rectIconInside, ContentFinder<Texture2D>.Get(availableTexture, true), ScaleMode.ScaleToFit, alphaBlend: true, 0f, color, 0f, 0f);
                     if (Widgets.ButtonInvisible(rectIcon))
                     {
                         foreach (object obj in Find.Selector.SelectedObjects)
@@ -89,6 +97,9 @@ namespace VanillaFurnitureExpanded
                         thingToChange.DirtyMapMesh(thingToChange.Map);
                         Close();
                     }
+
+                   
+
                     TooltipHandler.TipRegion(rectIcon, buildingGraphics[i]);
 
 
