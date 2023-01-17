@@ -104,6 +104,11 @@ namespace PipeSystem
             }
             sb.AppendInNewLine(base.CompInspectStringExtra());
 
+            if (Prefs.DevMode)
+            {
+                sb.AppendInNewLine(net.ToString());
+            }
+
             return sb.ToString().Trim();
         }
 
