@@ -1254,6 +1254,13 @@ namespace ItemProcessor
                     this.TickRare();
                 }
             }
+            if (processorStage == ProcessorStage.Working && !this.isPaused)
+            {
+                if (compFuelable != null && compFuelable.Props.consumeFuelOnlyWhenUsed)
+                {
+                    compFuelable.Notify_UsedThisTick();
+                }
+            }
         }
 
         public void CheckTheHoppers(string itemToCheckFor, ref int ExpectedAmountXIngredient, ref int CurrentAmountXIngredient,
