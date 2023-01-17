@@ -120,7 +120,7 @@ namespace PipeSystem
             {
                 EndSustainer();
                 cycleOver = true;
-                noCapacity = (int)PipeNet.AvailableCapacity <= 1;
+                noCapacity = PipeNet.storages.Count > 0 && (int)PipeNet.AvailableCapacity <= 1;
             }
         }
 
@@ -156,7 +156,7 @@ namespace PipeSystem
 
             var map = parent.Map;
             // Resource comp is here
-            if (nextResource && !Props.onlyExtractToGround && PipeNet is PipeNet net && net.connectors.Count > 1)
+            if (nextResource && !Props.onlyExtractToGround && PipeNet is PipeNet net && net.storages.Count >= 1)
             {
                 var available = (int)net.AvailableCapacity;
                 noCapacity = available <= 1;
@@ -192,6 +192,7 @@ namespace PipeSystem
                 var t = ThingMaker.MakeThing(resDef);
                 t.stackCount = extractAmount;
                 GenPlace.TryPlaceThing(t, adjCells.RandomElement(), map, ThingPlaceMode.Near);
+                globalCount -= extractAmount;
 
                 if (!cycleOver) cycleOver = true;
             }
