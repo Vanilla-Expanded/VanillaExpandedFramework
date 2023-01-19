@@ -63,6 +63,9 @@ namespace PipeSystem
 
             if (!powerComp.PowerOn && amountStored > 0)
             {
+                if (Props.preventRotInNegativeTemp && parent.Position.GetTemperature(parent.Map) < 0)
+                    return;
+
                 ticksWithoutPower += ticks;
                 if (ticksWithoutPower > GenDate.TicksPerDay * Props.daysToRotStart)
                 {
@@ -259,7 +262,7 @@ namespace PipeSystem
             if (markedForTransfer)
                 sb.AppendInNewLine("PipeSystem_MarkedToTransferContent".Translate());
 
-            if (ContentCanRot && !powerComp.PowerOn && amountStored > 0)
+            if (ContentCanRot && !powerComp.PowerOn && amountStored > 0 && (!Props.preventRotInNegativeTemp || parent.Position.GetTemperature(parent.Map) >= 0))
                 sb.AppendInNewLine("PipeSystem_ContentWillRot".Translate(((int)((GenDate.TicksPerDay * Props.daysToRotStart) - ticksWithoutPower)).ToStringTicksToPeriod()));
 
             sb.AppendInNewLine(base.CompInspectStringExtra());

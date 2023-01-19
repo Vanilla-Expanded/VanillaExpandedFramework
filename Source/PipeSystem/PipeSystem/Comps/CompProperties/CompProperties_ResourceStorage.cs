@@ -27,6 +27,7 @@ namespace PipeSystem
         public DestroyOption destroyOption;
 
         public bool contentRequirePower = false;
+        public bool preventRotInNegativeTemp = true;
         public float daysToRotStart = 0.75f;
 
         public override IEnumerable<string> ConfigErrors(ThingDef parentDef)
