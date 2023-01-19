@@ -24,9 +24,9 @@ public class VerbComp_Reloadable : VerbComp
     public Thing NewWeapon => Pawn?.inventory?.innerContainer?.FirstOrDefault(t => t.def.IsWeapon && t.def.equipmentType == EquipmentType.Primary);
     private Pawn Pawn => parent?.Manager?.Pawn;
 
-    public override void PostExposeData()
+    public override void ExposeData()
     {
-        base.PostExposeData();
+        base.ExposeData();
         Scribe_Values.Look(ref ShotsRemaining, "shotsRemaining");
     }
 
@@ -82,7 +82,7 @@ public class VerbComp_Reloadable : VerbComp
     {
         base.Notify_ShotFired();
         ShotsRemaining--;
-        if (Pawn?.CurJobDef == JobDefOf.Hunt) Pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+        if (Pawn?.CurJobDef == JobDefOf.Hunt) Pawn?.jobs.EndCurrentJob(JobCondition.Incompletable);
     }
 
     public override bool Available() => ShotsRemaining >= (parent.Verb.Bursting ? burstShotsLeft(parent.Verb) : parent.Verb.verbProps.burstShotCount);

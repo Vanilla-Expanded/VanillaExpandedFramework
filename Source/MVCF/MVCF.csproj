@@ -115,6 +115,7 @@
     <Compile Include="Utilities\ManagedVerbUtility.cs" />
     <Compile Include="Utilities\ReloadingUtility.cs" />
     <Compile Include="Utilities\TargetFinder.cs" />
+    <Compile Include="Utilities\VerbCompsUtility.cs" />
     <Compile Include="Utilities\VerbManagerUtility.cs" />
     <Compile Include="VerbComps\VerbComp.cs" />
     <Compile Include="VerbComps\VerbCompProperties.cs" />

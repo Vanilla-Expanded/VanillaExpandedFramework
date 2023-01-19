@@ -57,7 +57,7 @@ public class VerbComp_Turret : VerbComp_Draw
         if (currentTarget == null || !currentTarget.IsValid) return;
         if (parent.Verb.verbProps.warmupTime > 0)
             warmUpTicksLeft = (parent.Verb.verbProps.warmupTime * (parent.Manager?.Pawn?.GetStatValue(StatDefOf.AimingDelayFactor) ?? 1f))
-                .SecondsToTicks();
+               .SecondsToTicks();
         else
             TryCast();
     }
@@ -67,15 +67,15 @@ public class VerbComp_Turret : VerbComp_Draw
         warmUpTicksLeft = -1;
         parent.Verb.castCompleteCallback = () =>
             cooldownTicksLeft = parent.Verb.verbProps.AdjustedCooldownTicks(parent.Verb, parent.Manager.Pawn);
-        ;
         var success = parent.Verb.TryStartCastOn(currentTarget);
         if (success && parent.Verb.verbProps.warmupTime > 0) parent.Verb.WarmupComplete();
     }
 
     public override LocalTargetInfo PointingTarget(Pawn p) => currentTarget;
 
-    public virtual bool CanFire() => parent is { Manager: { Pawn: var pawn } } && !pawn.Dead && !pawn.Downed &&
-                                     !(!parent.Verb.verbProps.violent || pawn.WorkTagIsDisabled(WorkTags.Violent));
+    public virtual bool CanFire() =>
+        parent is { Manager: { Pawn: var pawn } } && !pawn.Dead && !pawn.Downed &&
+        !(!parent.Verb.verbProps.violent || pawn.WorkTagIsDisabled(WorkTags.Violent));
 
     public override void DrawOnAt(Pawn p, Vector3 drawPos)
     {
@@ -102,17 +102,26 @@ public class VerbComp_Turret : VerbComp_Draw
     {
         if (parent is not { Manager: var man }) return LocalTargetInfo.Invalid;
         return TargetFinder.BestAttackTarget(
-                   man.Pawn, parent.Verb,
-                   TargetScanFlags.NeedActiveThreat | TargetScanFlags.NeedLOSToAll |
-                   TargetScanFlags.NeedAutoTargetable,
-                   Props.uniqueTargets
-                       ? new Predicate<Thing>(thing =>
-                           man.Pawn.mindState.enemyTarget != thing &&
-                           man.ManagedVerbs.All(verb =>
-                               verb.Verb.CurrentTarget.Thing != thing &&
-                               verb.TryGetComp<VerbComp_Turret>()?.currentTarget.Thing != thing))
-                       : null, parent.Verb.verbProps.minRange, parent.Verb.verbProps.range, canTakeTargetsCloserThanEffectiveMinRange: false)?.Thing ??
+                       man.Pawn, parent.Verb,
+                       TargetScanFlags.NeedActiveThreat | TargetScanFlags.NeedLOSToAll |
+                       TargetScanFlags.NeedAutoTargetable,
+                       Props.uniqueTargets
+                           ? new Predicate<Thing>(thing =>
+                               man.Pawn.mindState.enemyTarget != thing &&
+                               man.ManagedVerbs.All(verb =>
+                                   verb.Verb.CurrentTarget.Thing != thing &&
+                                   verb.TryGetComp<VerbComp_Turret>()?.currentTarget.Thing != thing))
+                           : null, parent.Verb.verbProps.minRange, parent.Verb.verbProps.range, canTakeTargetsCloserThanEffectiveMinRange: false)
+                 ?.Thing ??
                LocalTargetInfo.Invalid;
+    }
+
+    public override void ExposeData()
+    {
+        base.ExposeData();
+        Scribe_TargetInfo.Look(ref currentTarget, nameof(currentTarget));
+        Scribe_Values.Look(ref warmUpTicksLeft, nameof(warmUpTicksLeft));
+        Scribe_Values.Look(ref cooldownTicksLeft, nameof(cooldownTicksLeft));
     }
 }
 

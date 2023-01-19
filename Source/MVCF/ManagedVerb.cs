@@ -13,19 +13,16 @@ public class ManagedVerb : IExposable, ILoadReferenceable
 {
     public enum ToggleType
     {
-        Separate,
-        Integrated,
-        None
+        Separate, Integrated, None
     }
 
-    public List<VerbComp> AllComps = new();
+    public AdditionalVerbProps Props;
+    public VerbSource Source = VerbSource.None;
+    public Verb Verb;
 
     private bool enabledInt = true;
 
     private string loadId;
-    public AdditionalVerbProps Props;
-    public VerbSource Source = VerbSource.None;
-    public Verb Verb;
 
     public VerbManager Manager { get; set; }
 
@@ -40,24 +37,19 @@ public class ManagedVerb : IExposable, ILoadReferenceable
 
     public virtual bool Independent => false;
 
-    public void ExposeData()
+    public virtual void ExposeData()
     {
         Scribe_Values.Look(ref enabledInt, "enabled");
         Scribe_Values.Look(ref loadId, "loadId");
-        foreach (var comp in AllComps) comp.PostExposeData();
     }
 
     public string GetUniqueLoadID() => loadId;
 
     public virtual bool SetTarget(LocalTargetInfo target) => true;
 
-    public virtual void Notify_Spawned()
-    {
-    }
+    public virtual void Notify_Spawned() { }
 
-    public virtual void Notify_Despawned()
-    {
-    }
+    public virtual void Notify_Despawned() { }
 
     public virtual void Initialize(Verb verb, AdditionalVerbProps props, IEnumerable<VerbCompProperties> additionalComps)
     {
@@ -89,18 +81,14 @@ public class ManagedVerb : IExposable, ILoadReferenceable
 
     public virtual bool Available() => true;
 
-    public virtual void Notify_ProjectileFired()
-    {
-    }
+    public virtual void Notify_ProjectileFired() { }
 
     public virtual IEnumerable<CommandPart> GetCommandParts(Command_VerbTargetExtended command)
     {
         yield break;
     }
 
-    public virtual void ModifyProjectile(ref ThingDef projectile)
-    {
-    }
+    public virtual void ModifyProjectile(ref ThingDef projectile) { }
 
     public bool GetToggleStatus() => enabledInt;
 
@@ -110,13 +98,9 @@ public class ManagedVerb : IExposable, ILoadReferenceable
         Manager?.RecalcSearchVerb();
     }
 
-    public virtual void DrawOn(Pawn p, Vector3 drawPos)
-    {
-    }
+    public virtual void DrawOn(Pawn p, Vector3 drawPos) { }
 
-    public virtual void Tick()
-    {
-    }
+    public virtual void Tick() { }
 
     public virtual IEnumerable<Gizmo> GetGizmos(Thing ownerThing)
     {

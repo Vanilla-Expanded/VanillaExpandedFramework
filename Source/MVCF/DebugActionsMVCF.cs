@@ -18,8 +18,8 @@ public static class DebugActionsMVCF
         foreach (var verb in man.ManagedVerbs)
         {
             Log.Message(
-                $"  {verb.Verb} ({verb.Verb.loadID}, {verb.GetUniqueLoadID()}): {(verb.Enabled ? "Enabled" : "Disabled")}{(verb.AllComps.Any() ? " Comps:" : "")}");
-            foreach (var comp in verb.AllComps) Log.Message($"    {comp}");
+                $"  {verb.Verb} ({verb.Verb.loadID}, {verb.GetUniqueLoadID()}): {(verb.Enabled ? "Enabled" : "Disabled")}{(verb.GetComps().Any() ? " Comps:" : "")}");
+            foreach (var comp in verb.GetComps()) Log.Message($"    {comp}");
         }
     }
 

@@ -211,11 +211,12 @@ public class FeatureOpts
 
 public enum LogLevel
 {
-    None,
-    Important,
-    Verbose,
-    Silly,
-    Tick
+    // ReSharper disable once UnusedMember.Global
+    None = 0,
+    Important = 1,
+    Verbose = 2,
+    Silly = 3,
+    Tick = 4
 }
 
 public class MVCFSettings : ModSettings

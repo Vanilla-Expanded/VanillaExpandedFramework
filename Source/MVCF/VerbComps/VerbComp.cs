@@ -5,7 +5,7 @@ using Verse;
 
 namespace MVCF.VerbComps;
 
-public abstract class VerbComp
+public abstract class VerbComp : IExposable
 {
     public ManagedVerb parent;
     public VerbCompProperties props;
@@ -14,25 +14,15 @@ public abstract class VerbComp
     public virtual bool Independent => false;
     public virtual bool NeedsDrawing => false;
 
-    public virtual void PostExposeData()
-    {
-    }
+    public virtual void ExposeData() { }
 
-    public virtual void DrawOnAt(Pawn p, Vector3 drawPos)
-    {
-    }
+    public virtual void DrawOnAt(Pawn p, Vector3 drawPos) { }
 
-    public virtual void ModifyScore(Pawn p, LocalTargetInfo target, ref float score)
-    {
-    }
+    public virtual void ModifyScore(Pawn p, LocalTargetInfo target, ref float score) { }
 
-    public virtual void Notify_Spawned()
-    {
-    }
+    public virtual void Notify_Spawned() { }
 
-    public virtual void Notify_Despawned()
-    {
-    }
+    public virtual void Notify_Despawned() { }
 
     public virtual bool SetTarget(LocalTargetInfo target) => true;
 
@@ -46,13 +36,9 @@ public abstract class VerbComp
         this.props = props;
     }
 
-    public virtual void CompTick()
-    {
-    }
+    public virtual void CompTick() { }
 
-    public virtual void Notify_ShotFired()
-    {
-    }
+    public virtual void Notify_ShotFired() { }
 
     public virtual bool PreCastShot() => true;
 

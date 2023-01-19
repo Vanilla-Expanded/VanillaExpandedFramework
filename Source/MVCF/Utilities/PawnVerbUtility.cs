@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using RimWorld;
 using Verse;
 
@@ -7,32 +8,27 @@ namespace MVCF.Utilities;
 
 public static class PawnVerbUtility
 {
+    private static readonly ConditionalWeakTable<Pawn, VerbManager> managers = new();
+
     public static VerbManager Manager(this Pawn p, bool createIfMissing = true)
     {
         if (p == null) return null;
-        return
-            // MVCF.Prepatcher
-            // ? PrepatchedVerbManager(p, createIfMissing)
-            // : 
-            WorldComponent_MVCF.Instance.GetManagerFor(p, createIfMissing);
+        if (managers.TryGetValue(p, out var manager) && manager is not null) return manager;
+        if (!createIfMissing) return null;
+        manager = new VerbManager();
+        manager.Initialize(p);
+        managers.Add(p, manager);
+        return manager;
     }
 
-    // private static VerbManager PrepatchedVerbManager(Pawn p, bool createIfMissing = true)
-    // {
-    //     if (p.MVCF_VerbManager == null && createIfMissing)
-    //     {
-    //         p.MVCF_VerbManager = new VerbManager();
-    //         p.MVCF_VerbManager.Initialize(p);
-    //     }
-    //
-    //     return p.MVCF_VerbManager;
-    // }
-
-    public static void SaveManager(this Pawn p)
+    public static void SaveManager(this Pawn pawn)
     {
-        // if (MVCF.Prepatcher) PrepatchedSaveManager(p);
-        // else 
-        WorldComponent_MVCF.Instance.SaveManager(p);
+        if (managers.TryGetValue(pawn, out var man)) managers.Remove(pawn);
+        else man = null;
+        Scribe_Deep.Look(ref man, "MVCF_VerbManager");
+        if (man is null) return;
+        managers.Add(pawn, man);
+        if (Scribe.mode == LoadSaveMode.PostLoadInit) man.Initialize(pawn);
     }
 
 
