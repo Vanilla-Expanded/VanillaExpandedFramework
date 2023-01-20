@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using MVCF.Commands;
 using MVCF.Comps;
 using MVCF.Features;
@@ -116,11 +117,15 @@ public class ManagedVerb : IExposable, ILoadReferenceable
 
     public virtual ToggleType GetToggleType()
     {
-        if (Props == null) return Verb.CasterIsPawn && Verb.CasterPawn.RaceProps.Animal ? ToggleType.Separate : ToggleType.None;
+        var canIntegrated = MVCF.GetFeature<Feature_IntegratedToggle>().Enabled;
+        if (Props == null)
+            return Verb.CasterIsPawn && (Verb.CasterPawn.RaceProps.Animal || Manager.ManagedVerbs.Count(mv => !mv.Verb.IsMeleeAttack && !mv.Independent) > 1)
+                ? canIntegrated ? ToggleType.Integrated : ToggleType.Separate
+                : ToggleType.None;
 
         if (!Props.canBeToggled) return ToggleType.None;
         if (Props.separateToggle) return ToggleType.Separate;
-        if (MVCF.GetFeature<Feature_IntegratedToggle>().Enabled) return ToggleType.Integrated;
+        if (canIntegrated) return ToggleType.Integrated;
 
         Log.ErrorOnce(
             "[MVCF] " + (Verb.EquipmentSource.LabelShortCap ?? "Hediff verb of " + Verb.caster) +

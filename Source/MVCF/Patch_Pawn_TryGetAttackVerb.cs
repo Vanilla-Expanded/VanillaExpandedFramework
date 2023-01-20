@@ -9,7 +9,8 @@ namespace MVCF;
 public class Patch_Pawn_TryGetAttackVerb
 {
     public static Patch GetPatch() =>
-        Patch.Prefix(AccessTools.Method(typeof(Pawn), "TryGetAttackVerb"), AccessTools.Method(typeof(Patch_Pawn_TryGetAttackVerb), nameof(Prefix)));
+        new(AccessTools.Method(typeof(Pawn), "TryGetAttackVerb"), AccessTools.Method(typeof(Patch_Pawn_TryGetAttackVerb), nameof(Prefix)),
+            AccessTools.Method(typeof(Patch_Pawn_TryGetAttackVerb), nameof(Postfix)));
 
     public static Verb AttackVerb(Pawn pawn, Thing target, bool allowManualCastWeapons = false)
     {
@@ -44,5 +45,11 @@ public class Patch_Pawn_TryGetAttackVerb
     {
         __result = AttackVerb(__instance, target, allowManualCastWeapons);
         return __state = __result == null;
+    }
+
+    public static void Postfix(ref Verb __result, bool __state)
+    {
+        // Just in case Vanilla chooses a disabled Verb, make sure it doesn't
+        if (__state && __result != null && !__result.Managed().Enabled) __result = null;
     }
 }
