@@ -68,10 +68,14 @@ namespace HeavyWeapons
                             {
                                 return true;
                             }
-                            if (ap.def.tradeTags?.Contains("HiTechArmor") ?? false)
+                            if (ap.def.tradeTags != null)
                             {
-                                return true;
+                                if (ap.def.tradeTags.Contains("HiTechArmor") || ap.def.tradeTags.Contains("Warcasket"))
+                                {
+                                    return true;
+                                }
                             }
+
                         }
     
                     }
