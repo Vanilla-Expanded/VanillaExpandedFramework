@@ -50,6 +50,6 @@ public class Patch_Pawn_TryGetAttackVerb
     public static void Postfix(ref Verb __result, bool __state)
     {
         // Just in case Vanilla chooses a disabled Verb, make sure it doesn't
-        if (__state && __result != null && !__result.Managed().Enabled) __result = null;
+        if (__state && __result?.Managed(false) is { Enabled: false }) __result = null;
     }
 }
