@@ -51,15 +51,14 @@ public class Feature_IntegratedToggle : Feature
         if (!verb.CasterIsPawn) return false;
         var pawn = verb.CasterPawn;
         if (pawn.Faction != Faction.OfPlayer) return false;
-        var manager = pawn.Manager(false);
         var man = verb.Managed(false);
         if (man == null) return false;
         if (man.GetToggleType() != ManagedVerb.ToggleType.Integrated) return false;
-        if (!pawn.RaceProps.Animal && (man.Props?.canFireIndependently ?? false) && manager.AllVerbs.Count(v => !v.IsMeleeAttack) <= 1) return false;
         var rect = command.TopRightLabel.NullOrEmpty()
             ? butRect.RightPart(0.35f).TopPart(0.35f)
             : butRect
-                .LeftPart(0.35f).TopPart(0.35f);
+               .LeftPart(0.35f)
+               .TopPart(0.35f);
         if (Mouse.IsOver(rect)) TooltipHandler.TipRegion(rect, "MVCF.ToggleAuto".Translate());
 
         if (Widgets.ButtonImage(rect, man.GetToggleStatus() ? Widgets.CheckboxOnTex : Widgets.CheckboxOffTex))

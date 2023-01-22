@@ -119,9 +119,14 @@ public class ManagedVerb : IExposable, ILoadReferenceable
     {
         var canIntegrated = MVCF.GetFeature<Feature_IntegratedToggle>().Enabled;
         if (Props == null)
-            return Verb.CasterIsPawn && (Verb.CasterPawn.RaceProps.Animal || Manager.ManagedVerbs.Count(mv => !mv.Verb.IsMeleeAttack && !mv.Independent) > 1)
+        {
+            if (!Verb.CasterIsPawn) return ToggleType.None;
+            Manager ??= Verb.CasterPawn.Manager();
+            return Verb.CasterPawn.RaceProps.Animal
+                || (Manager?.ManagedVerbs.Count(mv => !mv.Verb.IsMeleeAttack && !mv.Independent) ?? 1) > 1
                 ? canIntegrated ? ToggleType.Integrated : ToggleType.Separate
                 : ToggleType.None;
+        }
 
         if (!Props.canBeToggled) return ToggleType.None;
         if (Props.separateToggle) return ToggleType.Separate;
