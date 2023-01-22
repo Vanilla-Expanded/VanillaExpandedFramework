@@ -60,6 +60,12 @@ namespace PipeSystem
                     // Manage no storage alert
                     if (net.def.noStorageAlert)
                     {
+                        for (int c = 0; c < net.connectors.Count; c++)
+                        {
+                            if (net.connectors[i].parent.Position.Fogged(map))
+                                return;
+                        }
+
                         var count = net.storages.Count;
                         if (count == 0 && !noStorage.Contains(net))
                             noStorage.Add(net);
