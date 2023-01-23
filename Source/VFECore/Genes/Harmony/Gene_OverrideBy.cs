@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
 using Verse;
+using RimWorld;
 
 namespace VanillaGenesExpanded
 {
@@ -115,10 +116,18 @@ namespace VanillaGenesExpanded
                 if (extension.forceFemale == true)
                 {
                     gene.pawn.gender = Gender.Female;
+                    if (gene.pawn.story?.bodyType == BodyTypeDefOf.Male)
+                    {
+                        gene.pawn.story.bodyType = BodyTypeDefOf.Female;
+                    }
                 }
                 if (extension.forceMale == true)
                 {
                     gene.pawn.gender = Gender.Male;
+                    if (gene.pawn.story?.bodyType == BodyTypeDefOf.Female)
+                    {
+                        gene.pawn.story.bodyType = BodyTypeDefOf.Male;
+                    }
                 }
 
                 if (extension.forcedBodyType != null)
