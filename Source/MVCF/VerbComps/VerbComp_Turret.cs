@@ -75,7 +75,7 @@ public class VerbComp_Turret : VerbComp_Draw
 
     public virtual bool CanFire() =>
         parent is { Manager: { Pawn: var pawn } } && !pawn.Dead && !pawn.Downed &&
-        !(!parent.Verb.verbProps.violent || pawn.WorkTagIsDisabled(WorkTags.Violent));
+        !(!parent.Verb.verbProps.violent || pawn.WorkTagIsDisabled(WorkTags.Violent)) && parent.Verb.Available();
 
     public override void DrawOnAt(Pawn p, Vector3 drawPos)
     {
