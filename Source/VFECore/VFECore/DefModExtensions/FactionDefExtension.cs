@@ -40,7 +40,6 @@ namespace VFECore
         public bool spawnOnCoastalTilesOnly;
         public bool neverConnectToRoads;
         public float minDistanceToOtherSettlements;
-        public bool shouldHaveLeader = true;
         public bool excludeFromCommConsole;
         public bool excludeFromQuests;
 
