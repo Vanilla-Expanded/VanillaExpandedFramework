@@ -21,6 +21,8 @@ namespace PipeSystem
 
         public float transferAmount = 100f;
         public bool noStorageAlert = false;
+        public bool foggedNetAlert = false;
+        public List<ThingDef> alertProofDefs = new List<ThingDef>(); // If net is one building, and it's in this list, no alert
 
         internal Material offMat; // Off material
 
