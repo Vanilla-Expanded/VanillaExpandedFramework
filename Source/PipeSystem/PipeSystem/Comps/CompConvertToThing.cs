@@ -141,7 +141,7 @@ namespace PipeSystem
                     if (thingList[i].def == Props.thing)
                         return thingList[i];
                 }
-                return null;
+                return thingList.Count > 1 ? thingList[0] : null;
             }
         }
 
@@ -152,11 +152,11 @@ namespace PipeSystem
         public void OutputResource(int amount)
         {
             var heldThing = HeldThing;
-            if (heldThing != null)
+            if (heldThing.def == Props.thing)
             {
                 heldThing.stackCount += amount;
             }
-            else
+            else if (heldThing == null)
             {
                 Thing createdThing = ThingMaker.MakeThing(Props.thing);
                 createdThing.stackCount = amount;
