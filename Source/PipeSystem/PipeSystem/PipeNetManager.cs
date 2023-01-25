@@ -63,7 +63,11 @@ namespace PipeSystem
                         for (int c = 0; c < net.connectors.Count; c++)
                         {
                             if (net.connectors[c].parent.Position.Fogged(map))
+                            {
+                                if (noStorage.Contains(net))
+                                    noStorage.Remove(net);
                                 return;
+                            }
                         }
 
                         var count = net.storages.Count;
