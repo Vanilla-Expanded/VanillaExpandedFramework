@@ -152,15 +152,15 @@ namespace PipeSystem
         public void OutputResource(int amount)
         {
             var heldThing = HeldThing;
-            if (heldThing.def == Props.thing)
-            {
-                heldThing.stackCount += amount;
-            }
-            else if (heldThing == null)
+            if (heldThing == null)
             {
                 Thing createdThing = ThingMaker.MakeThing(Props.thing);
                 createdThing.stackCount = amount;
                 GenSpawn.Spawn(createdThing, parent.Position, parent.Map, WipeMode.VanishOrMoveAside);
+            }
+            else if (heldThing.def == Props.thing)
+            {
+                heldThing.stackCount += amount;
             }
         }
 
