@@ -492,7 +492,7 @@
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_StageByPsylink.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_StageByTemperature.cs" />
     <Compile Include="AnimalBehaviours\ReflectionCache\ReflectionCache.cs" />
-    <Compile Include="Genes\Harmony\Gene_Active_Patch.cs" />
+    <Compile Include="Genes\Harmony\GeneGendered.cs" />
     <Compile Include="VFECore\Buildings\Building_AutoDoorLockable.cs" />
     <Compile Include="Furniture\Dialogs\Dialog_ChooseGraphic.cs" />
     <Compile Include="Furniture\ReflectionCache\ReflectionCache.cs" />
