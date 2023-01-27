@@ -16,26 +16,6 @@ namespace VFECore
         public VFEGlobal(ModContentPack content) : base(content)
         {
             settings = GetSettings<VFEGlobalSettings>();
-            // Toggable patches
-            foreach (var mod in LoadedModManager.RunningMods)
-            {
-                try
-                {
-                    if (mod.Patches != null)
-                    {
-                        int modPatchesCount = mod.Patches.ToList().FindAll(p => p is PatchOperationToggableSequence pt && pt.ModsFound()).Count;
-                        if (modPatchesCount > 0)
-                        {
-                            ModUsingToggablePatchCount++;
-                            ToggablePatchCount += modPatchesCount;
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(mod.Name + " produced an error with XML patches: " + ex.ToString());
-                }
-            }
         }
 
         public override string SettingsCategory()
@@ -186,11 +166,36 @@ namespace VFECore
 
         // Toggable patches settings
 
-        private readonly int ToggablePatchCount;
-        private readonly int ModUsingToggablePatchCount = 0;
+        private int ToggablePatchCount;
+        private int ModUsingToggablePatchCount = 0;
 
+        private bool initialized;
         private void ToggablePatchesSettings(Rect rect)
         {
+            if (!initialized)
+            {
+                initialized = true;
+                // Toggable patches
+                foreach (var mod in LoadedModManager.RunningMods)
+                {
+                    try
+                    {
+                        if (mod.Patches != null)
+                        {
+                            int modPatchesCount = mod.Patches.ToList().FindAll(p => p is PatchOperationToggableSequence pt && pt.ModsFound()).Count;
+                            if (modPatchesCount > 0)
+                            {
+                                ModUsingToggablePatchCount++;
+                                ToggablePatchCount += modPatchesCount;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(mod.Name + " produced an error with XML patches: " + ex.ToString());
+                    }
+                }
+            }
             var viewRect = new Rect(rect)
             {
                 height = 110f + ((ToggablePatchCount + ModUsingToggablePatchCount) * 32f),

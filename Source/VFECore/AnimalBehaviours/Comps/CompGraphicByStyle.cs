@@ -87,21 +87,20 @@ namespace AnimalBehaviours
                 if (styleFound) {
                     LongEventHandler.ExecuteWhenFinished(delegate
                     {
-                        if (this.pawn_renderer != null)
+                    if (this.pawn_renderer != null)
+                    {
+                        try
                         {
-
-                            try
-                            {
-                                Graphic_Multi nakedGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(Props.newImagePath, ShaderDatabase.Cutout, vector, Color.white);
+                                var data = new GraphicData();
+                                data.shadowData = pawn.ageTracker.CurKindLifeStage.bodyGraphicData.shadowData;
+                                Graphic_Multi nakedGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(Props.newImagePath, 
+                                    ShaderDatabase.Cutout, vector, Color.white, Color.white, data, maskPath: Props.maskPath);
                                 if (Props.changeDesiccatedGraphic)
                                 {
                                     this.pawn_renderer.graphics.dessicatedGraphic = dessicatedGraphic;
-
                                 }
                                 this.pawn_renderer.graphics.ResolveAllGraphics();
                                 this.pawn_renderer.graphics.nakedGraphic = nakedGraphic;
-                                (this.pawn_renderer.graphics.nakedGraphic.data = new GraphicData()).shadowData = pawn.ageTracker.CurKindLifeStage.bodyGraphicData.shadowData;
-
                             }
                             catch (NullReferenceException) { }
                         }
