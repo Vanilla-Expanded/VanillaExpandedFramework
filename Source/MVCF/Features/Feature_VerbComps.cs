@@ -33,7 +33,8 @@ public class Feature_VerbComps : Feature_Humanoid
             if (method is not null && method.IsDeclaredMember()) yield return Patch.Postfix(method, info2);
         }
 
-        yield return Patch.Transpiler(AccessTools.Method(typeof(Verb), "TryCastNextBurstShot"),
+        yield return new Patch(AccessTools.Method(typeof(Verb), "TryCastNextBurstShot"),
+            postfix: AccessTools.Method(GetType(), nameof(TryCastNextBurstShot_Postfix)), transpiler:
             AccessTools.Method(GetType(), nameof(TryCastNextBurstShot_Transpiler)));
     }
 
@@ -68,19 +69,11 @@ public class Feature_VerbComps : Feature_Humanoid
             new CodeInstruction(OpCodes.Pop).WithLabels(label4),
             new CodeInstruction(OpCodes.Nop).WithLabels(label5)
         });
-        var info2 = AccessTools.PropertyGetter(typeof(Verb), nameof(Verb.CasterIsPawn));
-        var idx = list.FindIndex(ins => ins.Calls(info2)) - 1;
-        var label = generator.DefineLabel();
-        list.InsertRange(idx, new[]
-        {
-            new CodeInstruction(OpCodes.Ldarg_0).WithLabels(list[idx].ExtractLabels()),
-            new CodeInstruction(OpCodes.Ldc_I4_0),
-            CodeInstruction.Call(typeof(ManagedVerbUtility), nameof(ManagedVerbUtility.Managed)),
-            new CodeInstruction(OpCodes.Dup),
-            new CodeInstruction(OpCodes.Brfalse, label),
-            new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(ManagedVerb), nameof(ManagedVerb.Notify_ProjectileFired))),
-            new CodeInstruction(OpCodes.Pop).WithLabels(label)
-        });
         return list;
+    }
+
+    public static void TryCastNextBurstShot_Postfix(Verb __instance)
+    {
+        __instance.Managed(false).Notify_ProjectileFired();
     }
 }

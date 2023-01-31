@@ -25,15 +25,20 @@ public class VerbWithComps : ManagedVerb
     {
         base.Initialize(verb, props, additionalComps);
         var newComps = (props?.comps ?? Enumerable.Empty<VerbCompProperties>()).Concat(additionalComps ?? Enumerable.Empty<VerbCompProperties>()).ToList();
-        var oldTypes = comps.Select(c => c.GetType()).ToList();
-        var newTypes = newComps.Select(c => c.compClass).ToList();
-        GenDebug.LogList(oldTypes);
-        Log.Message("---- VS ----");
-        GenDebug.LogList(newTypes);
-        if (!newTypes.SequenceEqual(oldTypes))
+
+        if (comps.Any())
         {
-            Log.Warning("[MVCF] VerbWithComps: comps list changed, replacing.");
-            comps.Clear();
+            var oldTypes = comps.Select(c => c.GetType()).ToList();
+            var newTypes = newComps.Select(c => c.compClass).ToList();
+
+            MVCF.Log(oldTypes.Select(t => t.FullName).ToLineList("  - "), LogLevel.Silly);
+            MVCF.Log("---- VS ----", LogLevel.Silly);
+            MVCF.Log(newTypes.Select(t => t.FullName).ToLineList("  - "), LogLevel.Silly);
+            if (!newTypes.SequenceEqual(oldTypes))
+            {
+                Log.Warning($"[MVCF] VerbWithComps: comps list changed, replacing. verb={verb}");
+                comps.Clear();
+            }
         }
 
         var lastIndex = 0;
