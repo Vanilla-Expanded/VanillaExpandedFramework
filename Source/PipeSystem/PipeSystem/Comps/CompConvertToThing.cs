@@ -135,13 +135,20 @@ namespace PipeSystem
         {
             get
             {
-                List<Thing> thingList = parent.Map.thingGrid.ThingsListAt(parent.Position);
+                var thingList = parent.Map.thingGrid.ThingsListAt(parent.Position);
+                var itemList = new List<Thing>();
+
                 for (int i = 0; i < thingList.Count; i++)
                 {
-                    if (thingList[i].def == Props.thing)
-                        return thingList[i];
+                    var thing = thingList[i];
+                    if (thing.def == Props.thing)
+                        return thing;
+
+                    if (thing.def.category == ThingCategory.Item)
+                        itemList.Add(thing);
                 }
-                return thingList.Count > 1 ? thingList[0] : null;
+
+                return itemList.Count >= 1 ? itemList[0] : null;
             }
         }
 
