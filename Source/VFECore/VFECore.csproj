@@ -493,6 +493,8 @@
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_StageByTemperature.cs" />
     <Compile Include="AnimalBehaviours\ReflectionCache\ReflectionCache.cs" />
     <Compile Include="Genes\Harmony\GeneGendered.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Building_TurretGun_Patches.cs" />
+    <Compile Include="VFECore\Verbs\Verb_ShootCone.cs" />
     <Compile Include="VFECore\Buildings\Building_AutoDoorLockable.cs" />
     <Compile Include="Furniture\Dialogs\Dialog_ChooseGraphic.cs" />
     <Compile Include="Furniture\ReflectionCache\ReflectionCache.cs" />
@@ -1005,9 +1007,7 @@
     <Compile Include="VFECore\WeatherOverlays\WeatherOverlay_Custom.cs" />
     <Compile Include="VFECore\WeatherOverlays\WeatherOverlay_CustomTwo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="VFECore\Verbs\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <PackageReference Include="Lib.Harmony">
       <Version>2.2.2</Version>
