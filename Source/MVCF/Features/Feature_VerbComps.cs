@@ -74,6 +74,6 @@ public class Feature_VerbComps : Feature_Humanoid
 
     public static void TryCastNextBurstShot_Postfix(Verb __instance)
     {
-        __instance.Managed(false).Notify_ProjectileFired();
+        __instance?.Managed(false)?.Notify_ProjectileFired();
     }
 }
