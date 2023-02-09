@@ -144,6 +144,7 @@ public class ManagedVerb : IExposable, ILoadReferenceable
         MVCF.Log("Getting score of " + Verb + " with target " + target, LogLevel.Silly);
         if (Verb is IVerbScore verbScore) return verbScore.GetScore(p, target);
         var accuracy = 0f;
+        if (target.HasThing && !target.Thing.Spawned) target = target.Thing.PositionHeld;
         if (p.Map != null)
             accuracy = ShotReport.HitReportFor(p, Verb, target).TotalEstimatedHitChance;
         else if (Verb.TryFindShootLineFromTo(p.Position, target, out var line))
