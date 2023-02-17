@@ -493,6 +493,7 @@
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_StageByTemperature.cs" />
     <Compile Include="AnimalBehaviours\ReflectionCache\ReflectionCache.cs" />
     <Compile Include="Genes\Harmony\GeneGendered.cs" />
+    <Compile Include="Genes\Harmony\HediffComp_Immunizable_SeverityFactorFromHediffs.cs" />
     <Compile Include="Memes\Harmony\Ideo_ExposeData.cs" />
     <Compile Include="VFECore\HarmonyPatches\Building_TurretGun_Patches.cs" />
     <Compile Include="VFECore\Verbs\Verb_ShootCone.cs" />
