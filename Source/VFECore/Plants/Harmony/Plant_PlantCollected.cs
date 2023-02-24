@@ -23,36 +23,44 @@ namespace VanillaPlantsExpanded
 
             if (extension!=null)
             {
+                if (__instance.CanYieldNow()) {
 
-                float statValue = by.GetStatValue(StatDefOf.PlantHarvestYield);
-                if (!(by.RaceProps.Humanlike && !__instance.Blighted && __instance.CanYieldNow() && Rand.Value > statValue))
-                {
+                    float statValue = by.GetStatValue(StatDefOf.PlantHarvestYield);
 
-                    int num = extension.outPutAmount;
-                    if (statValue > 1f)
+                    if (by.RaceProps.Humanlike && !__instance.Blighted && Rand.Value < statValue)
                     {
-                        num = GenMath.RoundRandom((float)num * statValue * __instance.Growth);
+                     
+                        int num = (int)(extension.outPutAmount * __instance.Growth);
+                        if (statValue > 1f)
+                        {
+                            num = GenMath.RoundRandom((float)num * statValue);
+                        }
+                        if (num > 0)
+                        {
+                            Thing thing;
+                            if (extension.randomOutput)
+                            {
+                                thing = ThingMaker.MakeThing(extension.randomSecondaryOutput.RandomElement());
+                            }
+                            else
+                            {
+                                thing = ThingMaker.MakeThing(extension.secondaryOutput);
+                            }
+                            thing.stackCount = num;
+                            if (by.Faction != Faction.OfPlayer)
+                            {
+                                thing.SetForbidden(value: true);
+                            }
+                            GenPlace.TryPlaceThing(thing, by.Position, by.Map, ThingPlaceMode.Near);
+                        }
                     }
-                    if (num > 0)
-                    {
-                        Thing thing;
-                        if (extension.randomOutput)
-                        {
-                            thing = ThingMaker.MakeThing(extension.randomSecondaryOutput.RandomElement());
-                        }
-                        else
-                        {
-                            thing = ThingMaker.MakeThing(extension.secondaryOutput);
-                        }
-                        thing.stackCount = num;
-                        if (by.Faction != Faction.OfPlayer)
-                        {
-                            thing.SetForbidden(value: true);
-                        }
-                        GenPlace.TryPlaceThing(thing, by.Position, by.Map, ThingPlaceMode.Near);
-                    }
+
+                   
+
 
                 }
+
+               
 
             }
             

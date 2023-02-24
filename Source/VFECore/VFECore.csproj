@@ -487,6 +487,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompHediffEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompHediffWhenFleeing.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompHighlyFlammable.cs" />
+    <Compile Include="AnimalBehaviours\Harmony\Draftability\SchoolUtility_CanTeachNow.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_StageByPsylink.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_StageByTemperature.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_StageByPsylink.cs" />
