@@ -7,7 +7,7 @@ namespace VFECore.UItils
     {
         public static string ToStringTicksToPeriodSpecific(this int ticks)
         {
-            return ticks >= 2500 ? ticks.ToStringTicksToPeriod() : (ticks.TicksToSeconds() + "LetterSecond".Translate());
+            return ticks >= 2500 ? ticks.ToStringTicksToPeriod() : (ticks.TicksToSeconds().ToStringDecimalIfSmall() + "LetterSecond".Translate());
         }
     }
 }
