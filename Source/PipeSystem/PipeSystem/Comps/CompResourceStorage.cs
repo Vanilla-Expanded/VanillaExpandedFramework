@@ -189,7 +189,7 @@ namespace PipeSystem
             Scribe_Values.Look(ref ticksWithoutPower, "tickWithoutPower");
             Scribe_Values.Look(ref markedForExtract, "markedForExtract");
             Scribe_Values.Look(ref markedForTransfer, "markedForTransfer");
-            Scribe_Values.Look(ref markedForTransfer, "markedForRefill");
+            Scribe_Values.Look(ref markedForRefill, "markedForRefill");
             base.PostExposeData();
         }
 
