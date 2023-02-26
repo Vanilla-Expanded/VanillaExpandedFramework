@@ -6,4 +6,6 @@
     <KCSG.AllowFoggedPosition>Allow fogged position</KCSG.AllowFoggedPosition>
     <KCSG.SpawnPartOfEnnemyFaction>Spawn part of ennemy faction</KCSG.SpawnPartOfEnnemyFaction>
     <KCSG.Mapcontains>Map contains</KCSG.Mapcontains>
+    <KCSG.Enter>Enter {0}</KCSG.Enter>
+    <KCSG.CantEnter>Cannot enter {0}</KCSG.CantEnter>
 </LanguageData>

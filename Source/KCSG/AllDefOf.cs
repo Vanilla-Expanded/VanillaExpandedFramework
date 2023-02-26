@@ -13,5 +13,9 @@ namespace KCSG
         public static GenStepDef Terrain;
 
         public static GenStepDef KCSG_TerrainNoPatches;
+
+        public static JobDef KCSG_GoToPassage;
+
+        public static WorldObjectDef KCSG_UndergroundRoom;
     }
 }
