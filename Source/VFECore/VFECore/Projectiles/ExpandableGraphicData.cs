@@ -80,8 +80,8 @@ namespace VFECore
 				else
 				{
 					Log.Error("Error loading materials by this path: " + texPath);
-				}
-				loadedMaterials[texPath] = cachedMaterials;
+                }
+                loadedMaterials[texPath] = cachedMaterials;
 			}
 			else
             {
@@ -112,22 +112,22 @@ namespace VFECore
 
 		public List<string> LoadAllFiles(string folderPath)
 		{
-			var list = new List<string>();
+			if (folderPath.EndsWith("/") is false)
+			{
+                folderPath += "/";
+            }
+            var list = new List<string>();
 			foreach (ModContentPack mod in LoadedModManager.RunningModsListForReading)
 			{
-				foreach (var f in ModContentPack.GetAllFilesForMod(mod, "Textures/" + folderPath))
+				foreach (var content in mod.GetContentHolder<Texture2D>().contentList)
 				{
-					var path = f.Value.FullName;
-					if (path.EndsWith(".png"))
+					if (content.Key.Contains(folderPath))
 					{
-						path = path.Replace("\\", "/");
-						path = path.Substring(path.IndexOf("/Textures/") + 10);
-						path = path.Replace(".png", "");
-						list.Add(path);
+						list.Add(content.Key);
 					}
-				}
-			}
-			return list;
+                }
+            }
+            return list;
 		}
 	}
 }
