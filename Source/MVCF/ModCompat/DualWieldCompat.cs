@@ -10,6 +10,7 @@ public static class DualWieldCompat
 {
     public static bool Active; // ReSharper disable InconsistentNaming
     private static readonly Func<ThingWithComps, bool> isOffHand;
+    public static bool DoNullCheck => Active && mode == Mode.DualWield;
 
     private static readonly TryGetOffHandEquipmentType tryGetOffHandEquipment;
     private static readonly Func<Thing, bool> isOffHandedWeapon;
