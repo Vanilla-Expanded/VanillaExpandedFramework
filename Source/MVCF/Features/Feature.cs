@@ -33,7 +33,7 @@ public abstract class Feature
         yield return new PatchSet_Equipment();
         // yield return new PatchSet_Debug();
         if (ModLister.HasActiveModWithName("RunAndGun")) yield return new PatchSet_RunAndGun();
-        if (DualWieldCompat.Active) yield return new PatchSet_DualWield();
+        if (DualWieldCompat.DoNullCheck) yield return new PatchSet_DualWield();
     }
 
     public static void PostExposeDataPawn(Pawn __instance)
