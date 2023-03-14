@@ -1,7 +1,7 @@
-﻿using RimWorld;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -130,6 +130,7 @@ namespace VFECore
             list.Gap(12);
             list.CheckboxLabeled("Disable Texture Caching", ref settings.disableCaching, "Warning: Enabling this might cause performance issues.");
             list.CheckboxLabeled("VEF.DisableModSourceReport".Translate(), ref settings.disableModSourceReport);
+            list.CheckboxLabeled("Enable PipeSystem no storage alert", ref settings.enablePipeSystemNoStorageAlert);
 
             list.End();
         }
@@ -307,6 +308,7 @@ namespace VFECore
         public bool disableCaching;
         public bool randomStartsAsRandom = false;
         public bool hideRandomizeButtons = false;
+        public bool enablePipeSystemNoStorageAlert = true;
 
         //Unused, kept for compat only, remove in 1.5
         public bool isRandomGraphic = true;
@@ -324,6 +326,7 @@ namespace VFECore
             Scribe_Values.Look(ref randomStartsAsRandom, "randomStartsAsRandom", false, false);
             Scribe_Values.Look(ref hideRandomizeButtons, "hideRandomizeButtons", false, true);
             Scribe_Values.Look(ref disableModSourceReport, "disableModSourceReport");
+            Scribe_Values.Look(ref enablePipeSystemNoStorageAlert, "enablePipeSystemNoStorageAlert", true);
             Scribe_Collections.Look(ref weatherDamagesOptions, "weatherDamagesOptions", LookMode.Value, LookMode.Value);
 
             //Unused, kept for compat only, remove in 1.5

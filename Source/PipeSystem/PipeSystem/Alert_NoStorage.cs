@@ -68,6 +68,6 @@ namespace PipeSystem
             return report.ToString().TrimEndNewlines();
         }
 
-        public override AlertReport GetReport() => AlertReport.CulpritsAre(ThingsList(out _));
+        public override AlertReport GetReport() => VFECore.VFEGlobal.settings.enablePipeSystemNoStorageAlert ? AlertReport.CulpritsAre(ThingsList(out _)) : AlertReport.Inactive;
     }
 }
