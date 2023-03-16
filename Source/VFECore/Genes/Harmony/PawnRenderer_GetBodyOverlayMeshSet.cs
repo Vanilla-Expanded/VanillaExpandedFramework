@@ -94,7 +94,7 @@ namespace VanillaGenesExpanded
         {
             var genes = pawn.genes;
             offset *= Mathf.Sqrt(pawn.ageTracker.CurLifeStage.bodySizeFactor);
-            if (ModLister.BiotechInstalled && genes != null)
+            if (ModsConfig.BiotechActive && genes != null)
             {
                 foreach (var gene in genes.GenesListForReading)
                 {

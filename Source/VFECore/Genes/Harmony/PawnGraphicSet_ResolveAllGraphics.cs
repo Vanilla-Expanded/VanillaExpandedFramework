@@ -14,7 +14,7 @@ namespace VanillaGenesExpanded
         public static void PostFix(PawnGraphicSet __instance)
         {
             Pawn pawn = __instance.pawn;
-            if (ModLister.BiotechInstalled && pawn?.RaceProps?.Humanlike == true && pawn?.genes != null)
+            if (ModsConfig.BiotechActive && pawn?.RaceProps?.Humanlike == true && pawn?.genes != null)
             {
                 if (pawn.genes.GenesListForReading.Where(x => x.Active).Any(g => g.def.GetModExtension<GeneExtension>()?.useMaskForFur ?? false))
                 {
@@ -53,7 +53,7 @@ namespace VanillaGenesExpanded
                             {
                                 __instance.nakedGraphic = GraphicDatabase.Get<Graphic_Multi>(extension.bodyNakedGraphicPath, ShaderUtility.GetSkinShader(pawn.story.SkinColorOverriden), Vector2.one, pawn.story.SkinColor);
                                 __instance.rottingGraphic = GraphicDatabase.Get<Graphic_Multi>(extension.bodyNakedGraphicPath, ShaderUtility.GetSkinShader(pawn.story.SkinColorOverriden), Vector2.one, color);
-                                if (pawn.style != null && ModsConfig.IdeologyActive && (!ModLister.BiotechInstalled || pawn.genes == null || !pawn.genes.GenesListForReading.Any((Gene x) => x.def.graphicData != null && !x.def.graphicData.tattoosVisible && x.Active)))
+                                if (pawn.style != null && ModsConfig.IdeologyActive && (!ModsConfig.BiotechActive || pawn.genes == null || !pawn.genes.GenesListForReading.Any((Gene x) => x.def.graphicData != null && !x.def.graphicData.tattoosVisible && x.Active)))
                                 {
                                     Color skinColor = pawn.story.SkinColor;
                                     skinColor.a *= 0.8f;

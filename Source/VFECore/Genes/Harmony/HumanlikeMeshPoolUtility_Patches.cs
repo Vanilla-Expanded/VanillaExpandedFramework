@@ -37,7 +37,7 @@ namespace VanillaGenesExpanded
         public static float GeneScaleFactor(float width, Pawn pawn)
         {
             var genes = pawn.genes;
-            if (ModLister.BiotechInstalled && genes != null)
+            if (ModsConfig.BiotechActive && genes != null)
             {
                 foreach (var gene in genes.GenesListForReading)
                 {
@@ -55,7 +55,7 @@ namespace VanillaGenesExpanded
         {
             var genes = pawn.genes;
             Vector2 scaling = new(width, width);
-            if (ModLister.BiotechInstalled && genes != null)
+            if (ModsConfig.BiotechActive && genes != null)
             {
                 foreach (var gene in genes.GenesListForReading)
                 {
@@ -76,7 +76,7 @@ namespace VanillaGenesExpanded
         public static Vector2 headSizeFactorVector(Vector2 headSize, Pawn pawn)
         {
             var genes = pawn.genes;
-            if (ModLister.BiotechInstalled && genes != null)
+            if (ModsConfig.BiotechActive && genes != null)
             {
                 foreach (var gene in genes.GenesListForReading)
                 {
@@ -97,7 +97,7 @@ namespace VanillaGenesExpanded
         {
             var genes = pawn.genes;
             Vector2 scaling = new(headSize, headSize);
-            if (ModLister.BiotechInstalled && genes != null)
+            if (ModsConfig.BiotechActive && genes != null)
             {
                 foreach (var gene in genes.GenesListForReading)
                 {
@@ -124,7 +124,7 @@ namespace VanillaGenesExpanded
                 factor = bodyWidth;
             }
             Vector2 width = new Vector2(factor, factor);
-            if (ModLister.BiotechInstalled && genes != null)
+            if (ModsConfig.BiotechActive && genes != null)
             {
                 foreach (var gene in genes.GenesListForReading)
                 {
@@ -151,7 +151,7 @@ namespace VanillaGenesExpanded
                 factor = bodyWidth;
             }
             Vector2 width = new Vector2(factor, factor);
-            if (ModLister.BiotechInstalled && genes != null)
+            if (ModsConfig.BiotechActive && genes != null)
             {
                 foreach (var gene in genes.GenesListForReading)
                 {
@@ -173,7 +173,7 @@ namespace VanillaGenesExpanded
         {
             var genes = pawn.genes;
 
-            if (ModLister.BiotechInstalled && genes != null)
+            if (ModsConfig.BiotechActive && genes != null)
             {
                 foreach (var gene in genes.GenesListForReading)
                 {

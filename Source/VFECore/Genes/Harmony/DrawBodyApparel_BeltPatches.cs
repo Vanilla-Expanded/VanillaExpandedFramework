@@ -36,7 +36,7 @@ namespace VanillaGenesExpanded
         public static Vector2 GeneScale(Vector2 scale, Pawn pawn)
         {
             var genes = pawn.genes;
-            if (ModLister.BiotechInstalled && genes != null)
+            if (ModsConfig.BiotechActive && genes != null)
             {
                 foreach (var gene in genes.GenesListForReading)
                 {
