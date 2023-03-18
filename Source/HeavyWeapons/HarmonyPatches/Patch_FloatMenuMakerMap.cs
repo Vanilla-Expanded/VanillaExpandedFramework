@@ -62,12 +62,12 @@ namespace HeavyWeapons
                 {
                     foreach (var ap in pawn.apparel.WornApparel)
                     {
+                        if (options.supportedArmors?.Contains(ap.def.defName) ?? false)
+                        {
+                            return true;
+                        }
                         if (ap.def.apparel?.bodyPartGroups?.Contains(BodyPartGroupDefOf.Torso) ?? false)
                         {
-                            if (options.supportedArmors?.Contains(ap.def.defName) ?? false)
-                            {
-                                return true;
-                            }
                             if (ap.def.tradeTags != null)
                             {
                                 if (ap.def.tradeTags.Contains("HiTechArmor") || ap.def.tradeTags.Contains("Warcasket"))
