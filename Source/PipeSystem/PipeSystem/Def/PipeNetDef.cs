@@ -62,6 +62,7 @@ namespace PipeSystem
     public class DeconstructOption
     {
         public string deconstructIconPath;
+        public Color overrideColor;
         public DesignationCategoryDef designationCategoryDef;
     }
 
