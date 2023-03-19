@@ -26,8 +26,6 @@ namespace PipeSystem
             }
             else
             {
-                Log.Message($"Designator_DeconstructPipe - creating color-shifted icon for {pipeNetDef.defName}");
-
                 var shader = Shader.Find(pipeNetDef.designator.shaderPath);
                 if (shader == null)
                 {
@@ -42,7 +40,6 @@ namespace PipeSystem
                 // TODO: This checks specific, hardcoded shaders. It probably won't support fancy custom ones. It does work for CutoutComplex
                 if (ShaderUtility.SupportsMaskTex(shader))
                 {
-                    Log.Message($"Designator_DeconstructPipe - complex shader requested '{pipeNetDef.designator.shaderPath}' Mask Path: {pipeNet.designator.maskTexturePath} /// color2: {pipeNet.designator.colorTwo}");
                     var maskTexture = ContentFinder<Texture2D>.Get(pipeNet.designator.maskTexturePath);
                     mat.SetTexture(ShaderPropertyIDs.MaskTex, maskTexture);
                     mat.SetColor(ShaderPropertyIDs.ColorTwo, pipeNetDef.designator.colorTwo);
