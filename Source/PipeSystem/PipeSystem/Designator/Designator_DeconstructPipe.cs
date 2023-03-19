@@ -17,15 +17,37 @@ namespace PipeSystem
             pipeNetDef = pipeNet;
             defaultLabel = "PipeSystem_DeconstructLabel".Translate(pipeNet.resource.name);
             defaultDesc = "PipeSystem_DeconstructDesc".Translate(pipeNet.resource.name);
+            hotKey = null;
+
             var baseTexture = ContentFinder<Texture2D>.Get(pipeNet.designator.deconstructIconPath);
-            if (pipeNetDef.designator.overrideColor.Equals(Color.clear))
+            if (string.IsNullOrEmpty(pipeNetDef.designator.shaderPath))
             {
                 icon = baseTexture;
             }
             else
             {
                 Log.Message($"Designator_DeconstructPipe - creating color-shifted icon for {pipeNetDef.defName}");
-                var mat = MaterialPool.MatFrom(pipeNetDef.designator.deconstructIconPath, Shader.Find("Sprites/Default"), pipeNetDef.designator.overrideColor);
+
+                var shader = Shader.Find(pipeNetDef.designator.shaderPath);
+                if (shader == null)
+                {
+                    Log.Warning($"Designator_DeconstructPipe - invalid shader path {pipeNetDef.designator.shaderPath} - falling back to stock icon");
+                    icon = baseTexture;
+                    return;
+                }
+
+                var mat = MaterialPool.MatFrom(pipeNetDef.designator.deconstructIconPath, shader);
+                mat.SetColor(ShaderPropertyIDs.Color, pipeNetDef.designator.color);
+
+                // TODO: This checks specific, hardcoded shaders. It probably won't support fancy custom ones. It does work for CutoutComplex
+                if (ShaderUtility.SupportsMaskTex(shader))
+                {
+                    Log.Message($"Designator_DeconstructPipe - complex shader requested '{pipeNetDef.designator.shaderPath}' Mask Path: {pipeNet.designator.maskTexturePath} /// color2: {pipeNet.designator.colorTwo}");
+                    var maskTexture = ContentFinder<Texture2D>.Get(pipeNet.designator.maskTexturePath);
+                    mat.SetTexture(ShaderPropertyIDs.MaskTex, maskTexture);
+                    mat.SetColor(ShaderPropertyIDs.ColorTwo, pipeNetDef.designator.colorTwo);
+                }
+
                 var renderTexture = RenderTexture.GetTemporary(baseTexture.width, baseTexture.height);
 
                 Graphics.Blit(baseTexture, renderTexture, mat);
@@ -39,7 +61,6 @@ namespace PipeSystem
                 RenderTexture.ReleaseTemporary(renderTexture);
 
             }
-            hotKey = null;
         }
 
         public override AcceptanceReport CanDesignateThing(Thing t)

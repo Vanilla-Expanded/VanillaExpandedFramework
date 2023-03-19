@@ -62,7 +62,10 @@ namespace PipeSystem
     public class DeconstructOption
     {
         public string deconstructIconPath;
-        public Color overrideColor;
+        public string shaderPath;
+        public string maskTexturePath;
+        public Color color;
+        public Color colorTwo;
         public DesignationCategoryDef designationCategoryDef;
     }
 
