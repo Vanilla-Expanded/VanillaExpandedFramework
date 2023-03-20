@@ -493,6 +493,15 @@
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_StageByPsylink.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_StageByTemperature.cs" />
     <Compile Include="AnimalBehaviours\ReflectionCache\ReflectionCache.cs" />
+    <Compile Include="DoorTeleporter\CaravanArrivalAction_UseDoorTeleporter.cs" />
+    <Compile Include="DoorTeleporter\Dialog_RenameDoorTeleporter.cs" />
+    <Compile Include="DoorTeleporter\DistortedMaterialsPool.cs" />
+    <Compile Include="DoorTeleporter\DoorTeleporter.cs" />
+    <Compile Include="DoorTeleporter\DoorTeleporterExtension.cs" />
+    <Compile Include="DoorTeleporter\DoorTeleporterMaterials.cs" />
+    <Compile Include="DoorTeleporter\WorldComponent_DoorTeleporterManager.cs" />
+    <Compile Include="DoorTeleporter\DoorTeleporterPatches.cs" />
+    <Compile Include="DoorTeleporter\JobDriver_UseDoorTeleporter.cs" />
     <Compile Include="Genes\Harmony\GeneGendered.cs" />
     <Compile Include="Genes\Harmony\HediffComp_Immunizable_SeverityFactorFromHediffs.cs" />
     <Compile Include="Memes\Harmony\Ideo_ExposeData.cs" />

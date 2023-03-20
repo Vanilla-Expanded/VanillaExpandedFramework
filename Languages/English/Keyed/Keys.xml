@@ -52,4 +52,7 @@
 	<VWEL_ToggleHotshotDesc>Shots fired when standing still warm-up the weapon allowing for increased firing speed. Overheating can lead to detonation.</VWEL_ToggleHotshotDesc>
 
 	<VFE_DeepDrillNo>Deep drill cannot be used with {0}.</VFE_DeepDrillNo>
+	
+    <VEF.TeleportTo>Teleport to {0}</VEF.TeleportTo>
+
 </LanguageData>

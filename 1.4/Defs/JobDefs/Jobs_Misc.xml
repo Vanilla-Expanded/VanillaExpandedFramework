@@ -30,4 +30,13 @@
 		<driverClass>KCSG.UndergroundRoom.JobDriver_InteractWithPassage</driverClass>
 		<reportString>entering TargetA.</reportString>
 	</JobDef>
+	
+    <JobDef>
+        <defName>VEF_UseDoorTeleporter</defName>
+        <driverClass>VFECore.JobDriver_UseDoorTeleporter</driverClass>
+        <reportString>using TargetA to teleport to TargetB</reportString>
+        <casualInterruptible>false</casualInterruptible>
+        <allowOpportunisticPrefix>false</allowOpportunisticPrefix>
+    </JobDef>
+
 </Defs>
