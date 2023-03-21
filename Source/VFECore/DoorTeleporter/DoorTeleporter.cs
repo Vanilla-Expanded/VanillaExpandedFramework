@@ -1,6 +1,7 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.AI;
@@ -140,6 +141,14 @@ namespace VFECore
                     action = () => Find.WindowStack.Add(new Dialog_RenameDoorTeleporter(this))
                 };
             }
+        }
+
+        public override string GetInspectString()
+        {
+            var str = base.GetInspectString();
+            var sb = str.Any() ? new StringBuilder(str + "\n") : new StringBuilder();
+            sb.AppendLine("VEF.Name".Translate(Name));
+            return sb.ToString().TrimEndNewlines();
         }
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn selPawn)
