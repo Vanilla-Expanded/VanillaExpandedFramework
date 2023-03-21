@@ -147,7 +147,7 @@ namespace VFECore
         {
             var str = base.GetInspectString();
             var sb = str.Any() ? new StringBuilder(str + "\n") : new StringBuilder();
-            sb.AppendLine("VEF.Name".Translate(Name));
+            sb.AppendLine("VEF.Name".Translate() + ": " + Name);
             return sb.ToString().TrimEndNewlines();
         }
 

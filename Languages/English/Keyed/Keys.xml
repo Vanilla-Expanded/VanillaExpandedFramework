@@ -54,5 +54,4 @@
 	<VFE_DeepDrillNo>Deep drill cannot be used with {0}.</VFE_DeepDrillNo>
 	
     <VEF.TeleportTo>Teleport to {0}</VEF.TeleportTo>
-	<VEF.Name>Name: {0}</VEF.Name>
 </LanguageData>
