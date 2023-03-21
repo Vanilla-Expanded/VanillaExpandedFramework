@@ -87,7 +87,6 @@ namespace VFECore
             if (extension.renameIconPath.NullOrEmpty() is false)
             {
                 RenameIcon = ContentFinder<Texture2D>.Get(extension.renameIconPath);
-                Log.Message("RenameIcon: " + RenameIcon);
             }
             MainMat = MaterialPool.MatFrom(extension.mainMatPath, ShaderDatabase.TransparentPostLight);
             DistortionMat = DistortedMaterialsPool.DistortedMaterial(extension.distortionMatPath, extension.distortionMaskPath, 0.02f, 1.1f);

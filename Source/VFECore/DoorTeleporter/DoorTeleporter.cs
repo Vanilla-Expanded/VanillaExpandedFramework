@@ -1,6 +1,8 @@
-﻿using RimWorld;
+﻿using HarmonyLib;
+using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using UnityEngine;
 using Verse;
@@ -151,20 +153,73 @@ namespace VFECore
             return sb.ToString().TrimEndNewlines();
         }
 
+
+        [HarmonyPatch(typeof(JobGiver_AIFollowPawn), "TryGiveJob")]
+        public static class JobGiver_AIFollowPawn_TryGiveJob_Patch
+        {
+            private static MethodInfo GetFolloweeInfo = AccessTools.Method(typeof(JobGiver_AIFollowPawn), "GetFollowee");
+            public static void Postfix(JobGiver_AIFollowPawn __instance, Pawn pawn, ref Job __result)
+            {
+                if (__result != null && pawn.CurJobDef == VFEDefOf.VEF_UseDoorTeleporter)
+                {
+                    __result = JobMaker.MakeJob(VFEDefOf.VEF_UseDoorTeleporter, pawn.CurJob.targetA);
+                    __result.globalTarget = pawn.CurJob.globalTarget;
+                }
+                if (__result is null)
+                {
+                    var followee = GetFolloweeInfo.Invoke(__instance, new object[] { pawn }) as Pawn;
+                    if (followee != null)
+                    {
+                        if (followee.Map != pawn.Map)
+                        {
+                            var doorTeleportersPawn = WorldComponent_DoorTeleporterManager.Instance.DoorTeleporters
+                                .Where(x => x.Map == pawn.Map && pawn.CanReach(x, PathEndMode.OnCell, Danger.Deadly))
+                                .OrderBy(x => x.Position.DistanceTo(pawn.Position)).FirstOrDefault();
+                            if (doorTeleportersPawn != null)
+                            {
+                                var doorTeleportersFollowee = WorldComponent_DoorTeleporterManager.Instance.DoorTeleporters
+                                .Where(x => x.Map == followee.Map && followee.CanReach(x, PathEndMode.OnCell, Danger.Deadly))
+                                .OrderBy(x => x.Position.DistanceTo(followee.Position)).FirstOrDefault();
+                                if (doorTeleportersFollowee != null)
+                                {
+                                    __result = JobMaker.MakeJob(VFEDefOf.VEF_UseDoorTeleporter, doorTeleportersPawn);
+                                    __result.globalTarget = doorTeleportersFollowee;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn selPawn)
         {
             foreach (FloatMenuOption option in base.GetFloatMenuOptions(selPawn)) yield return option;
-
-            foreach (DoorTeleporter doorTeleporter in WorldComponent_DoorTeleporterManager.Instance.DoorTeleporters.Except(this))
+            if (!selPawn.CanReach(this, PathEndMode.OnCell, Danger.Deadly))
             {
-                yield return new FloatMenuOption("VEF.TeleportTo".Translate(doorTeleporter.Name), () =>
-                {
-                    Job job = JobMaker.MakeJob(VFEDefOf.VEF_UseDoorTeleporter, this);
-                    job.globalTarget = doorTeleporter;
-                    selPawn.jobs.StartJob(job, JobCondition.InterruptForced, canReturnCurJobToPool: true);
-                });
+                yield return new FloatMenuOption("CannotUseReason".Translate("NoPath".Translate().CapitalizeFirst()), null);
             }
-
+            else
+            {
+                foreach (DoorTeleporter doorTeleporter in WorldComponent_DoorTeleporterManager.Instance.DoorTeleporters.Except(this))
+                {
+                    yield return new FloatMenuOption("VEF.TeleportTo".Translate(doorTeleporter.Name), () =>
+                    {
+                        Job job = JobMaker.MakeJob(VFEDefOf.VEF_UseDoorTeleporter, this);
+                        job.globalTarget = doorTeleporter;
+                        selPawn.jobs.StartJob(job, JobCondition.InterruptForced, canReturnCurJobToPool: true);
+                        foreach (var otherPawn in selPawn.Map.mapPawns.AllPawnsSpawned)
+                        {
+                            if (otherPawn.CurJobDef == JobDefOf.FollowClose && otherPawn.CurJob.targetA.Pawn == selPawn)
+                            {
+                                Job job2 = JobMaker.MakeJob(VFEDefOf.VEF_UseDoorTeleporter, this);
+                                job2.globalTarget = doorTeleporter;
+                                var result = otherPawn.jobs.TryTakeOrderedJob(job2);
+                            }
+                        }
+                    });
+                }
+            }
         }
 
         public override void ExposeData()
