@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -11,19 +12,20 @@ namespace VFECore.Shields
     {
         public HediffCompProperties_Shield Props => props as HediffCompProperties_Shield;
 
-        public  float     energy;
-        public  bool      useEnergy;
-        private int       ticksTillReset;
-        private Sustainer sustainer;
-        private Vector3   impactAngleVect;
+        public    float     energy;
+        public    bool      useEnergy;
+        protected int       ticksTillReset;
+        protected Sustainer sustainer;
+        protected Vector3   impactAngleVect;
 
         public virtual bool ShieldActive => energy > 0 || !useEnergy;
 
         public override void DrawAt(Vector3 drawPos)
         {
             drawPos.y = AltitudeLayer.MoteOverhead.AltitudeFor();
+            drawPos += Props.graphic.drawOffset;
             Graphics.DrawMesh(MeshPool.plane10,
-                Matrix4x4.TRS(drawPos, Quaternion.AngleAxis(Rand.Range(0, 360), Vector3.up),
+                Matrix4x4.TRS(drawPos, Quaternion.AngleAxis(Props.doRandomRotation ? Rand.Range(0, 360) : 0f, Vector3.up),
                     new Vector3(Props.graphic.drawSize.x, 1f, Props.graphic.drawSize.y)),
                 Graphic.MatSingleFor(Pawn), 0);
         }
@@ -41,7 +43,7 @@ namespace VFECore.Shields
                 energy = -1f;
         }
 
-        public void PreApplyDamage(ref DamageInfo dinfo, ref bool absorbed)
+        public virtual void PreApplyDamage(ref DamageInfo dinfo, ref bool absorbed)
         {
             if (absorbed) return;
             if (ShieldActive)
@@ -183,6 +185,17 @@ namespace VFECore.Shields
             Props.soundEnded?.PlayOneShot(Pawn);
             base.CompPostPostRemoved();
         }
+
+        public virtual bool AllowVerbCast(Verb verb)
+        {
+            return Props.cannotUseAttackType switch
+            {
+                AttackType.Melee  => verb is Verb_MeleeAttack,
+                AttackType.Ranged => verb is Verb_LaunchProjectile,
+                AttackType.Both   => false,
+                _                 => true
+            };
+        }
     }
 
     public class HediffCompProperties_Shield : HediffCompProperties_Draw
@@ -214,6 +227,8 @@ namespace VFECore.Shields
         public DamageDef  damageType;
         public int        damageAmount     = -1;
         public float      armorPenetration = -1f;
+
+        public bool doRandomRotation = true;
 
         public override void ResolveReferences(HediffDef parent)
         {

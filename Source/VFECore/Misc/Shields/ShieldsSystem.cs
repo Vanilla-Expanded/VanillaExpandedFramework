@@ -29,6 +29,7 @@ namespace VFECore.Shields
             shieldPatchesApplied = true;
             VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(ThingWithComps), nameof(ThingWithComps.PreApplyDamage)),
                 postfix: nameof(PostPreApplyDamage).MyMethod());
+            VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(Verb), nameof(Verb.CanHitTarget)), postfix: nameof(PawnPostDrawAt).MyMethod());
         }
 
         public static void OnPawnSpawn(Pawn __instance)
@@ -57,6 +58,16 @@ namespace VFECore.Shields
                 shield.PreApplyDamage(ref dinfo, ref absorbed);
                 if (absorbed) break;
             }
+        }
+
+        public static void CanHitTargetFrom_Postfix(Verb __instance, ref bool __result)
+        {
+            if (__result && __instance.CasterIsPawn && __instance.CasterPawn is {} pawn
+             && pawn.health.hediffSet.hediffs.OfType<HediffWithComps>()
+                   .SelectMany(hediff => hediff.comps)
+                   .OfType<HediffComp_Shield>()
+                   .Any(shield => !shield.AllowVerbCast(__instance)))
+                __result = false;
         }
     }
 }
