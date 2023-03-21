@@ -29,7 +29,7 @@ namespace VFECore.Shields
             shieldPatchesApplied = true;
             VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(ThingWithComps), nameof(ThingWithComps.PreApplyDamage)),
                 postfix: nameof(PostPreApplyDamage).MyMethod());
-            VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(Verb), nameof(Verb.CanHitTarget)), postfix: nameof(PawnPostDrawAt).MyMethod());
+            VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(Verb), nameof(Verb.CanHitTarget)), postfix: nameof(CanHitTargetFrom_Postfix).MyMethod());
         }
 
         public static void OnPawnSpawn(Pawn __instance)
