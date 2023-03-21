@@ -65,9 +65,12 @@ namespace VFECore
             }
         }
 
-        protected virtual void PlaySustainer(SoundDef sustainer)
+        protected virtual void PlaySustainer(SoundDef soundDef)
         {
-            this.sustainer ??= sustainer.TrySpawnSustainer(this);
+            if (this.sustainer == null || this.sustainer.Ended)
+            {
+                this.sustainer = soundDef.TrySpawnSustainer(this);
+            }
             this.sustainer.Maintain();
         }
 
