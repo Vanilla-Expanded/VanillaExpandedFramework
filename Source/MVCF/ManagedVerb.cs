@@ -56,7 +56,7 @@ public class ManagedVerb : IExposable, ILoadReferenceable
     {
         Verb = verb;
         Props = props;
-        loadId = verb.loadID + "_Managed";
+        loadId = $"{verb.loadID}_Managed";
         this.Register();
         if (Props is { draw: true } && !MVCF.GetFeature<Feature_Drawing>().Enabled)
             Log.Error("[MVCF] Found a verb marked to draw while that feature is not enabled.");
@@ -133,15 +133,14 @@ public class ManagedVerb : IExposable, ILoadReferenceable
         if (canIntegrated) return ToggleType.Integrated;
 
         Log.ErrorOnce(
-            "[MVCF] " + (Verb.EquipmentSource.LabelShortCap ?? "Hediff verb of " + Verb.caster) +
-            " wants an integrated toggle but that feature is not enabled. Using seperate toggle.",
+            $"[MVCF] {Verb.EquipmentSource.LabelShortCap ?? $"Hediff verb of {Verb.caster}"} wants an integrated toggle but that feature is not enabled. Using seperate toggle.",
             Verb.GetHashCode());
         return ToggleType.Separate;
     }
 
     public virtual float GetScore(Pawn p, LocalTargetInfo target)
     {
-        MVCF.Log("Getting score of " + Verb + " with target " + target, LogLevel.Silly);
+        MVCF.LogFormat($"Getting score of {Verb} with target {target}", LogLevel.Silly);
         if (Verb is IVerbScore verbScore) return verbScore.GetScore(p, target);
         var accuracy = 0f;
         if (target.HasThing && !target.Thing.Spawned) target = target.Thing.PositionHeld;
@@ -153,10 +152,10 @@ public class ManagedVerb : IExposable, ILoadReferenceable
         var damage = accuracy * Verb.verbProps.burstShotCount * Verb.GetDamage();
         var timeSpent = Verb.verbProps.AdjustedCooldownTicks(Verb, p) + Verb.verbProps.warmupTime.SecondsToTicks();
 
-        MVCF.Log("Accuracy: " + accuracy, LogLevel.Silly);
-        MVCF.Log("Damage: " + damage, LogLevel.Silly);
-        MVCF.Log("timeSpent: " + timeSpent, LogLevel.Silly);
-        MVCF.Log("Score of " + Verb + " on target " + target + " is " + damage / timeSpent, LogLevel.Silly);
+        MVCF.LogFormat($"Accuracy: {accuracy}", LogLevel.Silly);
+        MVCF.LogFormat($"Damage: {damage}", LogLevel.Silly);
+        MVCF.LogFormat($"timeSpent: {timeSpent}", LogLevel.Silly);
+        MVCF.LogFormat($"Score of {Verb} on target {target} is {damage / timeSpent}", LogLevel.Silly);
 
 
         return damage / timeSpent;

@@ -13,7 +13,7 @@ public class PatchSet_TargetFinder : PatchSet
     {
         if (TargetFinder.SearchVerb is not null)
         {
-            MVCF.Log($"Giving SearchVerb {TargetFinder.SearchVerb} from CurrentEffectiveVerb", LogLevel.Tick);
+            MVCF.LogFormat($"Giving SearchVerb {TargetFinder.SearchVerb} from CurrentEffectiveVerb", LogLevel.Tick);
             __result = TargetFinder.SearchVerb;
             return false;
         }
@@ -22,7 +22,7 @@ public class PatchSet_TargetFinder : PatchSet
 
         if (__instance.stances?.curStance is Stance_Busy { verb: { } verb })
         {
-            MVCF.Log($"Giving stance verb {verb} from CurrentEffectiveVerb", LogLevel.Tick);
+            MVCF.LogFormat($"Giving stance verb {verb} from CurrentEffectiveVerb", LogLevel.Tick);
             __result = verb;
             return false;
         }
@@ -30,7 +30,7 @@ public class PatchSet_TargetFinder : PatchSet
         var man = __instance.Manager();
         if (man.HasVerbs && man.SearchVerb is not null && man.SearchVerb.Available())
         {
-            MVCF.Log($"Giving SearchVerb {man.SearchVerb} from CurrentEffectiveVerb", LogLevel.Tick);
+            MVCF.LogFormat($"Giving SearchVerb {man.SearchVerb} from CurrentEffectiveVerb", LogLevel.Tick);
             __result = man.SearchVerb;
             return false;
         }

@@ -24,24 +24,27 @@ public class VerbManager : IExposable
     public Verb SearchVerb;
     public bool NeedsTicking { get; private set; }
 
-    public IEnumerable<ManagedVerb> CurrentlyUseableRangedVerbs => verbs.Where(v =>
-        !v.Verb.IsMeleeAttack && !v.Independent && v.Enabled &&
-        v.Verb.Available() && (Pawn.IsColonist || v.Props is not { colonistOnly: true }));
+    public IEnumerable<ManagedVerb> CurrentlyUseableRangedVerbs =>
+        verbs.Where(v =>
+            !v.Verb.IsMeleeAttack && !v.Independent && v.Enabled &&
+            v.Verb.Available() && (Pawn.IsColonist || v.Props is not { colonistOnly: true }));
 
     public bool ShouldBrawlerUpset => BrawlerHated.Any();
 
-    public IEnumerable<Verb> BrawlerTolerates => ManagedVerbs.Where(mv => mv.Props is { brawlerCaresAbout: false }).Select(mv => mv.Verb).Concat(
-        PreferMelee(Pawn.equipment.Primary)
-            ? Pawn.equipment.PrimaryEq?.AllVerbs.Where(v => !v.IsMeleeAttack) ?? new List<Verb>()
-            : new List<Verb>());
+    public IEnumerable<Verb> BrawlerTolerates =>
+        ManagedVerbs.Where(mv => mv.Props is { brawlerCaresAbout: false })
+           .Select(mv => mv.Verb)
+           .Concat(
+                PreferMelee(Pawn.equipment.Primary)
+                    ? Pawn.equipment.PrimaryEq?.AllVerbs.Where(v => !v.IsMeleeAttack) ?? new List<Verb>()
+                    : new List<Verb>());
 
     public IEnumerable<Verb> BrawlerHated => AllRangedVerbs.Except(BrawlerTolerates);
 
     public IEnumerable<Verb> AllVerbs => verbs.Select(mv => mv.Verb);
     public IEnumerable<Verb> AllRangedVerbs => verbs.Select(mv => mv.Verb).Where(verb => !verb.IsMeleeAttack);
 
-    public IEnumerable<Verb> AllRangedVerbsNoEquipment =>
-        verbs.Where(mv => mv.Source != VerbSource.Equipment).Select(mv => mv.Verb);
+    public IEnumerable<Verb> AllRangedVerbsNoEquipment => verbs.Where(mv => mv.Source != VerbSource.Equipment).Select(mv => mv.Verb);
 
     public IEnumerable<ManagedVerb> ManagedVerbs => verbs;
 
@@ -92,10 +95,7 @@ public class VerbManager : IExposable
 
         // Guard against save corruption from stale verb references by clearing out CurrentVerb
         // if it's no longer wielded by this pawn.
-        if (CurrentVerb != null && !verbs.Any(mv => mv.Verb == CurrentVerb))
-        {
-            CurrentVerb = null;
-        }
+        if (CurrentVerb != null && !verbs.Any(mv => mv.Verb == CurrentVerb)) CurrentVerb = null;
     }
 
     public void InitializeVerbs()
@@ -123,7 +123,7 @@ public class VerbManager : IExposable
 
     public void AddVerb(Verb verb, VerbSource source)
     {
-        MVCF.Log($"Adding {verb} from {source}", LogLevel.Important);
+        MVCF.LogFormat($"Adding {verb} from {source}", LogLevel.Important);
 
         if (AllVerbs.Contains(verb))
         {
@@ -165,10 +165,9 @@ public class VerbManager : IExposable
 
         if (!target.IsValid || (Pawn.Map != null && !target.Cell.InBounds(Pawn.Map)))
         {
-            Log.Error("[MVCF] ChooseVerb given invalid target with pawn " + Pawn + " and target " + target);
+            Log.Error($"[MVCF] ChooseVerb given invalid target with pawn {Pawn} and target {target}");
             if (MVCF.DebugMode)
-                Log.Error("  (Current job is " + Pawn.CurJob + " with verb " + Pawn.CurJob?.verbToUse + " and target " +
-                          Pawn.CurJob?.targetA + ")");
+                Log.Error($"  (Current job is {Pawn.CurJob} with verb {Pawn.CurJob?.verbToUse} and target {Pawn.CurJob?.targetA})");
             return null;
         }
 
@@ -177,21 +176,21 @@ public class VerbManager : IExposable
         {
             if (verb.Verb is IVerbScore verbScore && verbScore.ForceUse(Pawn, target)) return verb;
             var score = verb.GetScore(Pawn, target);
-            MVCF.Log("Score is " + score + " compared to " + bestScore, LogLevel.Silly);
+            MVCF.LogFormat($"Score is {score} compared to {bestScore}", LogLevel.Silly);
             if (score <= bestScore) continue;
             bestScore = score;
             bestVerb = verb;
         }
 
-        MVCF.Log("ChooseVerb returning " + bestVerb, LogLevel.Important);
+        MVCF.LogFormat($"ChooseVerb returning {bestVerb}", LogLevel.Important);
         return bestVerb;
     }
 
     public void RemoveVerb(Verb verb)
     {
-        MVCF.Log("Removing " + verb, LogLevel.Important);
+        MVCF.LogFormat($"Removing {verb}", LogLevel.Important);
         var mv = verbs.Find(m => m.Verb == verb);
-        MVCF.Log("Found ManagedVerb: " + mv, LogLevel.Silly);
+        MVCF.LogFormat($"Found ManagedVerb: {mv}", LogLevel.Silly);
         if (mv == null)
         {
             Log.Warning($"[MVCF] Not found: {verb}");
@@ -200,7 +199,7 @@ public class VerbManager : IExposable
 
         mv.Notify_Removed();
         var success = verbs.Remove(mv);
-        MVCF.Log("Succeeded at removing: " + success, LogLevel.Silly);
+        MVCF.LogFormat($"Succeeded at removing: {success}", LogLevel.Silly);
         if (!success) return;
         if (drawVerbs.Contains(mv)) drawVerbs.Remove(mv);
         if (tickVerbs.Contains(mv) && tickVerbs.Remove(mv) && tickVerbs.Count == 0)
@@ -215,10 +214,7 @@ public class VerbManager : IExposable
 
         // We may have just removed the cached current verb for this pawn,
         // so clear it out if that's the case.
-        if (mv.Verb == CurrentVerb)
-        {
-            CurrentVerb = null;
-        }
+        if (mv.Verb == CurrentVerb) CurrentVerb = null;
 
         foreach (var comp in comps) comp.PostRemoved(mv);
 
@@ -229,18 +225,20 @@ public class VerbManager : IExposable
     {
         MVCF.Log("RecalcSearchVerb", LogLevel.Important);
         var verbsToUse = verbs
-            .Where(v => v.Enabled && v.Props is not { canFireIndependently: true } && !v.Verb.IsMeleeAttack)
-            .ToList();
+           .Where(v => v.Enabled && v.Props is not { canFireIndependently: true } && !v.Verb.IsMeleeAttack)
+           .ToList();
         verbsToUse.ForEach(v => MVCF.Log("Verb: " + v.Verb, LogLevel.Silly));
         if (verbsToUse.Count == 0)
         {
             HasVerbs = false;
+            SearchVerb = null;
             MVCF.Log("No Verbs", LogLevel.Important);
             return;
         }
 
         HasVerbs = true;
         SearchVerb = verbsToUse.MaxBy(verb => verb.Verb.verbProps.range)?.Verb;
+        MVCF.LogFormat($"SearchVerb is now {SearchVerb}", LogLevel.Important);
     }
 
     public void DrawAt(Vector3 drawPos)
@@ -294,22 +292,16 @@ public abstract class VerbManagerComp : ThingComp, IVerbManagerComp
         return false;
     }
 
-    public virtual void PostInit()
-    {
-    }
+    public virtual void PostInit() { }
 
     public void Initialize(VerbManager parent)
     {
         Manager = parent;
     }
 
-    public virtual void PostAdded(ManagedVerb verb)
-    {
-    }
+    public virtual void PostAdded(ManagedVerb verb) { }
 
-    public virtual void PostRemoved(ManagedVerb verb)
-    {
-    }
+    public virtual void PostRemoved(ManagedVerb verb) { }
 
     public virtual IEnumerable<Verb> ExtraVerbsFor(ThingWithComps eq)
     {

@@ -83,6 +83,11 @@ public class MVCF : Mod
         if (DebugMode && level <= LogLevel) Verse.Log.Message($"[MVCF] {message}");
     }
 
+    public static void LogFormat(FormattableString message, LogLevel level = LogLevel.Verbose)
+    {
+        if (DebugMode && level <= LogLevel) Verse.Log.Message($"[MVCF] {message}");
+    }
+
     public static T GetFeature<T>() where T : Feature => (T)features[typeof(T)];
 
     public static bool ShouldIgnore(Thing thing)
@@ -98,13 +103,13 @@ public class MVCF : Mod
         {
             foreach (var feature in def.ActivateFeatures)
             {
-                Log($"Mod {def.modContentPack.Name} is enabling feature {feature}", LogLevel.Important);
+                LogFormat($"Mod {def.modContentPack.Name} is enabling feature {feature}", LogLevel.Important);
                 EnabledFeatures.Add(feature);
             }
 
             if (def.IgnoreThisMod)
             {
-                Log($"Ignoring {def.modContentPack.Name}", LogLevel.Important);
+                LogFormat($"Ignoring {def.modContentPack.Name}", LogLevel.Important);
                 IgnoredMods.Add(def.modContentPack.Name);
             }
         }
@@ -113,7 +118,7 @@ public class MVCF : Mod
         {
             foreach (var feature in EnabledFeatures.SelectMany(f => AllFeatures.Where(feature => feature.Name == f)))
             {
-                Log($"Applying patches for feature {feature.Name}", LogLevel.Important);
+                LogFormat($"Applying patches for feature {feature.Name}", LogLevel.Important);
                 EnableFeature(feature);
             }
 
@@ -264,7 +269,7 @@ public struct Patch
 
     public void Apply(Harmony harm)
     {
-        MVCF.Log($"Patching {this}", LogLevel.Silly);
+        MVCF.LogFormat($"Patching {this}", LogLevel.Silly);
         harm.Patch(target,
             prefix is null ? null : new HarmonyMethod(prefix),
             postfix is null ? null : new HarmonyMethod(postfix),

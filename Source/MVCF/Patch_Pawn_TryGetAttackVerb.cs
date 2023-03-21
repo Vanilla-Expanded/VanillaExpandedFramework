@@ -17,7 +17,7 @@ public class Patch_Pawn_TryGetAttackVerb
         var manager = pawn.Manager();
         var job = pawn.CurJob;
 
-        MVCF.Log($"AttackVerb of {pawn} on target {target} with job {job} that has target {job?.targetA} and CurrentVerb {manager.CurrentVerb}",
+        MVCF.LogFormat($"AttackVerb of {pawn} on target {target} with job {job} that has target {job?.targetA} and CurrentVerb {manager.CurrentVerb}",
             LogLevel.Important);
 
         if (manager.CurrentVerb != null && manager.CurrentVerb.Available() &&
@@ -31,12 +31,14 @@ public class Patch_Pawn_TryGetAttackVerb
             verbs = verbs.Where(v => !v.Verb.verbProps.onlyManualCast);
 
         var verbsToUse = verbs.ToList();
-
-        if (verbsToUse.Count == 0) return null;
-
         var usedTarget = target ?? job?.targetA ?? LocalTargetInfo.Invalid;
-        MVCF.Log($"Getting best verb for target {target} or {job?.targetA} which is {usedTarget}", LogLevel.Important);
+
+        MVCF.LogFormat($"Getting best verb for target {target} or {job?.targetA} which is {usedTarget} from {verbsToUse.Count} choices", LogLevel.Important);
+
         if (!usedTarget.IsValid || !usedTarget.Cell.InBounds(pawn.Map)) return null;
+        if (verbsToUse.Count == 0) return null;
+        if (verbsToUse.Count == 1) return verbsToUse[0].Verb;
+
         return pawn.BestVerbForTarget(usedTarget, verbsToUse);
     }
 
