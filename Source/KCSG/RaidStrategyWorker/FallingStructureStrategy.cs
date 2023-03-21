@@ -13,8 +13,10 @@ namespace KCSG
         /// </summary>
         public override bool CanUseWith(IncidentParms parms, PawnGroupKindDef groupKind)
         {
-            GenOption.fExt = def.GetModExtension<FallingStructure>();
+            if (!base.CanUseWith(parms, groupKind))
+                return false;
 
+            GenOption.fExt = def.GetModExtension<FallingStructure>();
             if (!GenOption.fExt.canBeUsedBy.Contains(parms.faction.def))
                 return false;
 
@@ -22,27 +24,26 @@ namespace KCSG
                 return false;
 
             GenOption.fDef = GenUtils.ChooseStructureLayoutFrom(GenOption.fExt.structures, parms);
-
             if (GenOption.fDef == null)
                 return false;
 
-            return base.CanUseWith(parms, groupKind) && FindRect((Map)parms.target, GenOption.fDef.size, GenOption.fDef.size) != IntVec3.Invalid;
+            return true;
         }
 
         /// <summary>
         /// Find a valid spawn rect on the map
         /// </summary>
-        public IntVec3 FindRect(Map map, int height, int width)
+        public IntVec3 FindRectCenter(Map map, int height, int width, int max, int tries = 100)
         {
-            int edgeDist = Math.Max(width, height);
-            for (int t = 0; t < 100; t++)
+            CellRect rect = new CellRect();
+            for (int i = 0; i < tries; i++)
             {
-                CellRect rect = CellRect.CenteredOn(CellFinder.RandomNotEdgeCell(edgeDist, map), width, height);
+                rect = CellRect.CenteredOn(CellFinder.RandomNotEdgeCell(max, map), width, height);
+                var valid = true;
 
-                bool valid = true;
-                foreach (var i in rect.Cells)
+                foreach (var cell in rect.Cells)
                 {
-                    if (!i.Walkable(map) || !i.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Medium))
+                    if (!cell.Impassable(map) || (cell.GetTerrain(map) is TerrainDef def && def.IsWater))
                     {
                         valid = false;
                         break;
@@ -53,7 +54,8 @@ namespace KCSG
                     return rect.CenterCell;
             }
 
-            return IntVec3.Invalid;
+            Log.Warning($"FallingStructureStrategy: FindRectCenter fallback");
+            return rect.CenterCell;
         }
 
         /// <summary>
@@ -61,12 +63,12 @@ namespace KCSG
         /// </summary>
         public override List<Pawn> SpawnThreats(IncidentParms parms)
         {
-            var cellRect = CellRect.CenteredOn(parms.spawnCenter, GenOption.fDef.size, GenOption.fDef.size);
+            var cellRect = CellRect.CenteredOn(parms.spawnCenter, (int)GenOption.fDef.sizes.x, (int)GenOption.fDef.sizes.y);
 
             var allSymbList = new List<string>();
             Map map = (Map)parms.target;
 
-            for (int i = 0; i < GenOption.fDef.layouts[0].Count; i++)
+            for (int i = 0; i < GenOption.fDef.sizes.y; i++)
             {
                 var str = GenOption.fDef.layouts[0][i];
                 var split = str.Split(',');

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using UnityEngine;
 using Verse;
 
 namespace KCSG
@@ -33,6 +34,7 @@ namespace KCSG
 
         // Values used regularly in gen:
         internal int size;
+        internal Vector2 sizes;
         internal int gridCount;
         internal List<SymbolDef[,]> _layouts = new List<SymbolDef[,]>();
         internal TerrainDef[,] _terrainGrid;
@@ -51,6 +53,7 @@ namespace KCSG
             var height = layouts[0].Count;
             var width = layouts[0][0].Split(',').Count();
             size = Math.Max(height, width);
+            sizes = new Vector2(width, height);
             gridCount = size * size;
 
             // Resolve
