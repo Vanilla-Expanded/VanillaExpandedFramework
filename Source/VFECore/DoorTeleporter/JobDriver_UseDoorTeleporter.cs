@@ -9,7 +9,6 @@ namespace VFECore
     public class JobDriver_UseDoorTeleporter : JobDriver
     {
         public IntVec3 targetCell;
-        public Effecter destEffecter;
         public DoorTeleporter Origin => this.job.targetA.Thing as DoorTeleporter;
         public DoorTeleporter Dest => this.job.globalTarget.Thing as DoorTeleporter;
         public override bool TryMakePreToilReservations(bool errorOnFailed) => true;
@@ -27,7 +26,6 @@ namespace VFECore
             {
                 Origin.DoTeleportEffects(this.pawn, this.ticksLeftThisToil, this.job.globalTarget.Map, ref targetCell, Dest);
             });
-            wait.AddFinishAction(() => { this.destEffecter?.Cleanup(); });
             yield return wait;
             yield return Toils_General.DoAtomic(() =>
             {
