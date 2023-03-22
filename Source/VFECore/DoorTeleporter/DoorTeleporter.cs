@@ -110,14 +110,17 @@ namespace VFECore
                 carriedThing.DeSpawn();
                 GenSpawn.Spawn(carriedThing, cellTarget, mapTarget);
             }
-            bool drafted = pawn.Drafted;
+            bool drafted = pawn.drafter != null && pawn.Drafted;
             bool selected = Find.Selector.IsSelected(pawn);
             pawn.teleporting = true;
             pawn.ClearAllReservations(false);
             pawn.ExitMap(false, Rot4.Invalid);
             pawn.teleporting = false;
             GenSpawn.Spawn(pawn, cellTarget, mapTarget);
-            pawn.drafter.Drafted = drafted;
+            if (pawn.drafter != null)
+            {
+                pawn.drafter.Drafted = drafted;
+            }
             if (selected) Find.Selector.Select(pawn);
             teleportEffecters.Remove(pawn);
         }
