@@ -25,22 +25,13 @@ namespace VFECore
             Toil wait = Toils_General.Wait(16, TargetIndex.A).WithProgressBarToilDelay(TargetIndex.A).WithEffect(EffecterDefOf.Skip_Entry, TargetIndex.A);
             wait.AddPreTickAction(() =>
             {
-                Origin.DoTeleportEffects(this);
+                Origin.DoTeleportEffects(this.pawn, this.ticksLeftThisToil, this.job.globalTarget.Map, ref targetCell, Dest);
             });
             wait.AddFinishAction(() => { this.destEffecter?.Cleanup(); });
             yield return wait;
             yield return Toils_General.DoAtomic(() =>
             {
-                Pawn localPawn = this.pawn;
-                IntVec3 cell = this.targetCell;
-                Map map = this.job.globalTarget.Map;
-                bool drafted = localPawn.Drafted;
-                localPawn.teleporting = true;
-                localPawn.ClearAllReservations(false);
-                localPawn.ExitMap(false, Rot4.Invalid);
-                localPawn.teleporting = false;
-                GenSpawn.Spawn(localPawn, cell, map);
-                localPawn.drafter.Drafted = drafted;
+                Origin.TeleportPawn(pawn, this.job.globalTarget.Map, this.targetCell);
             });
         }
 

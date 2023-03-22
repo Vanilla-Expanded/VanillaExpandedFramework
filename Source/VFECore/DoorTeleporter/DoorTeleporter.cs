@@ -94,9 +94,32 @@ namespace VFECore
             Object.Destroy(this.backgroundMat);
         }
 
-        public virtual void DoTeleportEffects(JobDriver_UseDoorTeleporter jobDriver)
+        public static Dictionary<Pawn, Effecter> teleportEffecters = new Dictionary<Pawn, Effecter>();
+        public virtual void DoTeleportEffects(Pawn pawn, int ticksLeftThisToil,
+            Map targetMap, ref IntVec3 targetCell, DoorTeleporter dest)
         {
 
+        }
+
+        public virtual void TeleportPawn(Pawn pawn, Map mapTarget, IntVec3 cellTarget)
+        {
+            var carriedThing = pawn.carryTracker.CarriedThing;
+            if (carriedThing != null)
+            {
+                pawn.carryTracker.TryDropCarriedThing(pawn.Position, ThingPlaceMode.Near, out carriedThing);
+                carriedThing.DeSpawn();
+                GenSpawn.Spawn(carriedThing, cellTarget, mapTarget);
+            }
+            bool drafted = pawn.Drafted;
+            bool selected = Find.Selector.IsSelected(pawn);
+            pawn.teleporting = true;
+            pawn.ClearAllReservations(false);
+            pawn.ExitMap(false, Rot4.Invalid);
+            pawn.teleporting = false;
+            GenSpawn.Spawn(pawn, cellTarget, mapTarget);
+            pawn.drafter.Drafted = drafted;
+            if (selected) Find.Selector.Select(pawn);
+            teleportEffecters.Remove(pawn);
         }
 
         public override void DrawAt(Vector3 drawLoc, bool flip = false)
