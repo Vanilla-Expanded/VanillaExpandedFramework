@@ -94,35 +94,43 @@ namespace VFECore
             Object.Destroy(this.backgroundMat);
         }
 
-        public Dictionary<Pawn, Effecter> teleportEffecters = new Dictionary<Pawn, Effecter>();
-        public virtual void DoTeleportEffects(Pawn pawn, int ticksLeftThisToil,
+        public Dictionary<Thing, Effecter> teleportEffecters = new Dictionary<Thing, Effecter>();
+        public virtual void DoTeleportEffects(Thing thing, int ticksLeftThisToil,
             Map targetMap, ref IntVec3 targetCell, DoorTeleporter dest)
         {
 
         }
 
-        public virtual void TeleportPawn(Pawn pawn, Map mapTarget, IntVec3 cellTarget)
+        public virtual void Teleport(Thing thing, Map mapTarget, IntVec3 cellTarget)
         {
-            var carriedThing = pawn.carryTracker.CarriedThing;
-            if (carriedThing != null)
+            if (thing is Pawn pawn)
             {
-                pawn.carryTracker.TryDropCarriedThing(pawn.Position, ThingPlaceMode.Near, out carriedThing);
-                carriedThing.DeSpawn();
-                GenSpawn.Spawn(carriedThing, cellTarget, mapTarget);
+                var carriedThing = pawn.carryTracker.CarriedThing;
+                if (carriedThing != null)
+                {
+                    pawn.carryTracker.TryDropCarriedThing(pawn.Position, ThingPlaceMode.Near, out carriedThing);
+                    carriedThing.DeSpawn();
+                    GenSpawn.Spawn(carriedThing, cellTarget, mapTarget);
+                }
+                bool drafted = pawn.drafter != null && pawn.Drafted;
+                bool selected = Find.Selector.IsSelected(pawn);
+                pawn.teleporting = true;
+                pawn.ClearAllReservations(false);
+                pawn.ExitMap(false, Rot4.Invalid);
+                pawn.teleporting = false;
+                GenSpawn.Spawn(pawn, cellTarget, mapTarget);
+                if (pawn.drafter != null)
+                {
+                    pawn.drafter.Drafted = drafted;
+                }
+                if (selected) Find.Selector.Select(pawn);
             }
-            bool drafted = pawn.drafter != null && pawn.Drafted;
-            bool selected = Find.Selector.IsSelected(pawn);
-            pawn.teleporting = true;
-            pawn.ClearAllReservations(false);
-            pawn.ExitMap(false, Rot4.Invalid);
-            pawn.teleporting = false;
-            GenSpawn.Spawn(pawn, cellTarget, mapTarget);
-            if (pawn.drafter != null)
+            else
             {
-                pawn.drafter.Drafted = drafted;
+                thing.DeSpawn();
+                GenSpawn.Spawn(thing, cellTarget, mapTarget);
             }
-            if (selected) Find.Selector.Select(pawn);
-            teleportEffecters.Remove(pawn);
+            teleportEffecters.Remove(thing);
         }
 
         public override void DrawAt(Vector3 drawLoc, bool flip = false)

@@ -29,7 +29,7 @@ namespace VFECore
             yield return wait;
             yield return Toils_General.DoAtomic(() =>
             {
-                Origin.TeleportPawn(pawn, this.job.globalTarget.Map, this.targetCell);
+                Origin.Teleport(pawn, this.job.globalTarget.Map, this.targetCell);
             });
         }
 
