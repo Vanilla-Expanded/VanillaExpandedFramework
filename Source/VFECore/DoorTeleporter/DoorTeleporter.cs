@@ -94,7 +94,7 @@ namespace VFECore
             Object.Destroy(this.backgroundMat);
         }
 
-        public static Dictionary<Pawn, Effecter> teleportEffecters = new Dictionary<Pawn, Effecter>();
+        public Dictionary<Pawn, Effecter> teleportEffecters = new Dictionary<Pawn, Effecter>();
         public virtual void DoTeleportEffects(Pawn pawn, int ticksLeftThisToil,
             Map targetMap, ref IntVec3 targetCell, DoorTeleporter dest)
         {
