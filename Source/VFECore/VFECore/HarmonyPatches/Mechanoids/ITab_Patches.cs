@@ -21,6 +21,11 @@ namespace VFE.Mechanoids.HarmonyPatches
         public delegate Pawn PawnToShowInfoAbout(ITab_Pawn_Character __instance);
         public static readonly PawnToShowInfoAbout pawnToShowInfoAbout = AccessTools.MethodDelegate<PawnToShowInfoAbout>
             (AccessTools.Method(typeof(ITab_Pawn_Character), "get_PawnToShowInfoAbout"));
+        static bool Prepare()
+        {
+            return VFECore.ModCompatibilityCheck.VFEMechanoids;
+        }
+        
         public static void Postfix(ITab_Pawn_Character __instance, ref bool __result)
         {
             Pawn pawn = pawnToShowInfoAbout(__instance);
@@ -33,6 +38,10 @@ namespace VFE.Mechanoids.HarmonyPatches
     public static class ITab_Pawn_Gear_Patch
     {
         public static bool drawingThingRow;
+        static bool Prepare()
+        {
+            return VFECore.ModCompatibilityCheck.VFEMechanoids;
+        }
         public static void Prefix()
         {
             drawingThingRow = true;
@@ -49,6 +58,10 @@ namespace VFE.Mechanoids.HarmonyPatches
         public delegate Pawn PawnToShowInfoAbout(ITab_Pawn_Gear __instance);
         public static readonly PawnToShowInfoAbout pawnToShowInfoAbout = AccessTools.MethodDelegate<PawnToShowInfoAbout>
             (AccessTools.Method(typeof(ITab_Pawn_Gear), "get_SelPawnForGear"));
+        static bool Prepare()
+        {
+            return VFECore.ModCompatibilityCheck.VFEMechanoids;
+        }
         public static void Postfix(ITab_Pawn_Gear __instance, ref bool __result)
         {
             if (ITab_Pawn_Gear_Patch.drawingThingRow)

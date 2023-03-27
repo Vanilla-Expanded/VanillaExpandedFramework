@@ -28,39 +28,42 @@ namespace VFECore
         public static bool CombatExtended;
 
         public static bool HumanAlienRace;
+        public static bool VFEMechanoids;
 
         static ModCompatibilityCheck()
         {
             var allMods = ModsConfig.ActiveModsInLoadOrder.ToList();
-            for (var i = 0; i < allMods.Count; i++)
+            for (var i = allMods.Count; i-- > 0;)
             {
-                var curMod = allMods[i];
+                var curModName = allMods[i].Name;
 
-                if (curMod.Name == "Dual Wield")
+                if (curModName == "Dual Wield")
                     DualWield = true;
-                else if (curMod.Name == "Facial Stuff 1.1")
+                else if (curModName == "Facial Stuff 1.1")
                     FacialStuff = true;
-                else if (curMod.Name == "Research Tree")
+                else if (curModName == "Research Tree")
                     ResearchTree = true;
-                else if (curMod.Name == "ResearchPal")
+                else if (curModName == "ResearchPal")
                     ResearchPal = true;
-                else if (curMod.Name == "RimCities")
+                else if (curModName == "RimCities")
                     RimCities = true;
-                else if (curMod.Name == "RPG Style Inventory Revamped")
+                else if (curModName == "RPG Style Inventory Revamped")
                     RPGStyleInventoryRevamped = true;
                 // Uncomment this once RPG Style Inventory updates to 1.3:
                 // else if (curMod.Name == "RPG Style Inventory")
                 //     RPGStyleInventory = true;
-                else if (curMod.Name == "RunAndGun")
+                else if (curModName == "RunAndGun")
                     RunAndGun = true;
-                else if (curMod.Name == "Faction Discovery")
+                else if (curModName == "Faction Discovery")
                     FactionDiscovery = true;
-                else if (curMod.Name == "What the hack?!")
+                else if (curModName == "What the hack?!")
                     WhatTheHack = true;
-                else if (curMod.Name == "Combat Extended")
+                else if (curModName == "Combat Extended")
                     CombatExtended = true;
-                else if (curMod.Name == "Humanoid Alien Races" || curMod.Name == "Humanoid Alien Races ~ Dev")
+                else if (curModName == "Humanoid Alien Races" || curModName == "Humanoid Alien Races ~ Dev")
                     HumanAlienRace = true;
+                else if (curModName == "Vanilla Factions Expanded - Mechanoids")
+                    VFEMechanoids = true;
             }
         }
     }

@@ -1162,7 +1162,7 @@ namespace ItemProcessor
                     }
                     else
                     {
-                        if (this.def.defName.Contains("VFEM_")&&ModLister.HasActiveModWithName("Vanilla Factions Expanded - Mechanoids") ) {
+                        if (this.def.defName.Contains("VFEM_") && VFECore.ModCompatibilityCheck.VFEMechanoids ) {
                             try
                             {
                                 ((Action)(() =>

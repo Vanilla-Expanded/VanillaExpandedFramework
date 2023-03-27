@@ -14,6 +14,10 @@ namespace VFE.Mechanoids.HarmonyPatches
     [HarmonyPatch(typeof(JobGiver_Work), "PawnCanUseWorkGiver")]
     public static class MechanoidsAreCapable
     {
+        static bool Prepare()
+        {
+            return VFECore.ModCompatibilityCheck.VFEMechanoids;
+        }
         public static void Postfix(ref bool __result, Pawn pawn, WorkGiver giver)
         {
             if (pawn is Machine && CompMachine.cachedMachinesPawns.TryGetValue(pawn, out CompMachine comp))

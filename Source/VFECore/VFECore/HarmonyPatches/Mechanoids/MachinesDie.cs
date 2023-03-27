@@ -13,6 +13,10 @@ namespace VFE.Mechanoids.HarmonyPatches
     [HarmonyPatch(typeof(Pawn), "Kill")]
     public static class MachinesDie
     {
+        static bool Prepare()
+        {
+            return VFECore.ModCompatibilityCheck.VFEMechanoids;
+        }
         public static void Postfix(Pawn __instance)
         {
             if (__instance is Machine && __instance.Faction == Faction.OfPlayer && __instance.def.butcherProducts != null)

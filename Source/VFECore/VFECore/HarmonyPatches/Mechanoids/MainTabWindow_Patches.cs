@@ -10,6 +10,10 @@ namespace VFE.Mechanoids.HarmonyPatches
 	[HarmonyPatch(typeof(MainTabWindow_Inspect), nameof(MainTabWindow_Inspect.DoInspectPaneButtons))]
 	public static class MainTabWindow_Inspect_Renaming
 	{
+		static bool Prepare()
+        {
+            return VFECore.ModCompatibilityCheck.VFEMechanoids;
+        }
 		/// Show a rename button in the inspect pane when a single drone is selected.
 		public static void Postfix(Rect rect, ref float lineEndWidth)
 		{

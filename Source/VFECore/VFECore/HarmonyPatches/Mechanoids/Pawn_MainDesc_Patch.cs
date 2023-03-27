@@ -6,6 +6,10 @@ namespace VFE.Mechanoids.HarmonyPatches
     [HarmonyPatch(typeof(Pawn), nameof(Pawn.MainDesc))]
     public static class Pawn_MainDesc_Patch 
     {
+        static bool Prepare()
+        {
+            return VFECore.ModCompatibilityCheck.VFEMechanoids;
+        }
         public static void Postfix(ref string __result)
         {
             var substringToRemove = " ";
