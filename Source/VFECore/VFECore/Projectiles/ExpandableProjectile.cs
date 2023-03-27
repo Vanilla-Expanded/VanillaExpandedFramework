@@ -198,10 +198,16 @@ namespace VFECore
 				startingPositionOffsetMirrored.x = -startingPositionOffsetMirrored.x;
 				pos += Quaternion.Euler(0, (startingPosition - currentPos).AngleFlat(), 0) * startingPositionOffsetMirrored;
 			}
-
-			else
+			else if (this.launcher.Rotation == Rot4.East)
 			{
 				pos += Quaternion.Euler(0, (startingPosition - currentPos).AngleFlat(), 0) * def.startingPositionOffset;
+			}
+
+			else if (this.launcher.Rotation == Rot4.South || this.launcher.Rotation == Rot4.North)
+			{
+				Vector3 startingPositionOffsetForSouth = this.def.startingPositionOffset;
+				startingPositionOffsetForSouth.x = 0;
+				pos += Quaternion.Euler(0, (startingPosition - currentPos).AngleFlat(), 0) * startingPositionOffsetForSouth;
 
 			}
 
