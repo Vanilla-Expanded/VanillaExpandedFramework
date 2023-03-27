@@ -63,7 +63,7 @@ namespace VanillaWeaponsExpandedLaser
 
             ThingWithComps owner = IsWorn ? GetWearer : parent;
             bool flag = Find.Selector.SingleSelectedThing == GetWearer;
-            if (flag && GetWearer.Drafted && GetWearer.IsColonist)
+            if (flag && GetWearer.Drafted && (GetWearer.IsColonist||GetWearer.IsColonyMech))
             {
 
                 int num = 700000101;
