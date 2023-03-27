@@ -24,8 +24,9 @@ namespace VFECore
 		public bool disableVanillaDamageMethod;
 		public bool dealsDamageOnce;
 		public bool reachMaxRangeAlways;
-		public bool stopWhenHit = true;
-		public List<string> stopWhenHitAt = new List<string>();
+        public bool stopWhenHit = true;
+        public float stopAtBuildingWithCover = 1f;
+        public List<string> stopWhenHitAt = new List<string>();
 		protected override void ResolveIcon()
 		{
 			base.ResolveIcon();

@@ -381,6 +381,7 @@ namespace VFECore
 						}
 					}
 				}
+
 				if (this.def.stopWhenHitAt.Contains(hitThing.def.defName))
 				{
 					if (!stopped)
@@ -392,7 +393,10 @@ namespace VFECore
 
             if (hitThing != null && def.stopWhenHit && !stopped)
             {
-                StopMotion();
+				if (def.stopAtBuildingWithCover <= 0 || hitThing.def.fillPercent >= def.stopAtBuildingWithCover)
+				{
+                    StopMotion();
+                }
             }
         }
 
