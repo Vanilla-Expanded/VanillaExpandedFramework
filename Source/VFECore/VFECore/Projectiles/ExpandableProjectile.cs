@@ -11,8 +11,8 @@ namespace VFECore
 		private int curDuration;
 		private Vector3 startingPosition;
 		private Vector3 prevPosition;
-		private int curProjectileIndex;
-		private int curProjectileFadeOutIndex;
+		private int curProjectileIndex=0;
+		private int curProjectileFadeOutIndex=0;
 		protected bool stopped;
 		private float maxRange;
 		public void SetDestinationToMax(Thing equipment)
@@ -73,9 +73,10 @@ namespace VFECore
 					var material = this.def.graphicData.Materials[curProjectileIndex];
 					if (prevTick != Find.TickManager.TicksAbs && Find.TickManager.TicksAbs - this.TickFrameRate >= prevTick)
 					{
-						if (curProjectileIndex == this.def.graphicData.Materials.Length - 1)
-							curProjectileIndex = 0;
-						else curProjectileIndex++;
+						if (this.def.graphicData.Materials.Length - 1 != curProjectileIndex)
+						{
+							curProjectileIndex++;
+						}						
 						prevTick = Find.TickManager.TicksAbs;
 					}
 					return material;
