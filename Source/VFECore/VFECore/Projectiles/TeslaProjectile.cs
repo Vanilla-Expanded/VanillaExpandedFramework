@@ -117,7 +117,7 @@ namespace VFEMech
                 Find.BattleLog.Add(battleLogEntry_RangedImpact);
                 var dinfo = GetDamageInfo(hitThing);
                 hitThing.TakeDamage(dinfo).AssociateWithLog(battleLogEntry_RangedImpact);
-                if (Props.addFire && hitThing.TryGetComp<CompAttachBase>() != null)
+                if (Props.addFire && hitThing.TryGetComp<CompAttachBase>() != null && hitThing.Map!=null)
                 {
                     var fire = (Fire)GenSpawn.Spawn(ThingDefOf.Fire, hitThing.Position, hitThing.Map);
                     fire.AttachTo(hitThing);
