@@ -51,9 +51,9 @@ public abstract class VerbComp : IExposable
         yield break;
     }
 
-    public virtual Command_VerbTargetExtended OverrideTargetCommand(Command_VerbTargetExtended old) => null;
+    public virtual Command OverrideTargetCommand(Command old) => null;
 
-    public virtual Command_ToggleVerbUsage OverrideToggleCommand(Command_ToggleVerbUsage old) => null;
+    public virtual Command OverrideToggleCommand(Command old) => null;
 
     public interface IVerbCompProvider
     {

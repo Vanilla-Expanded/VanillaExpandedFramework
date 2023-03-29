@@ -111,9 +111,9 @@ public class ManagedVerb : IExposable, ILoadReferenceable
             yield return GetToggleCommand(ownerThing);
     }
 
-    protected virtual Command_ToggleVerbUsage GetToggleCommand(Thing ownerThing) => new(this);
+    protected virtual Command GetToggleCommand(Thing ownerThing) => new Command_ToggleVerbUsage(this);
 
-    protected virtual Command_VerbTargetExtended GetTargetCommand(Thing ownerThing) => new(this, ownerThing);
+    protected virtual Command GetTargetCommand(Thing ownerThing) => new Command_VerbTargetExtended(this, ownerThing);
 
     public virtual ToggleType GetToggleType()
     {

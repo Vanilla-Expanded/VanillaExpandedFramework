@@ -111,7 +111,7 @@ public class VerbWithComps : ManagedVerb
         return flag;
     }
 
-    protected override Command_ToggleVerbUsage GetToggleCommand(Thing ownerThing)
+    protected override Command GetToggleCommand(Thing ownerThing)
     {
         var command = base.GetToggleCommand(ownerThing);
         // ReSharper disable once ForCanBeConvertedToForeach
@@ -127,7 +127,7 @@ public class VerbWithComps : ManagedVerb
     public override IEnumerable<CommandPart> GetCommandParts(Command_VerbTargetExtended command) =>
         base.GetCommandParts(command).Concat(comps.SelectMany(comp => comp.GetCommandParts(command)));
 
-    protected override Command_VerbTargetExtended GetTargetCommand(Thing ownerThing)
+    protected override Command GetTargetCommand(Thing ownerThing)
     {
         var command = base.GetTargetCommand(ownerThing);
         // ReSharper disable once ForCanBeConvertedToForeach
