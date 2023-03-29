@@ -41,8 +41,10 @@ public class Feature_ExtraEquipmentVerbs : Feature_Humanoid
         if (DualWieldCompat.Active && __instance.parent.ParentHolder is Pawn_EquipmentTracker { pawn: { } pawn } tracker && tracker.PrimaryEq == __instance &&
             pawn.HasOffHand()) return true;
         __result = rangedVerbs
-            .SelectMany(v => v.GetGizmosForVerb(v.Managed()))
-            .OfType<Command>();
+           .Select(v => v.GetGizmosForVerb(v.Managed()))
+           .OrderBy(cs => cs.Any(c => c is Command_VerbTarget))
+           .SelectMany(cs => cs)
+           .OfType<Command>();
         if (__instance.parent.def.IsMeleeWeapon)
             __result = __result.Prepend(createVerbTargetCommand(__instance.verbTracker, __instance.parent,
                 __instance.AllVerbs.First(v => v.verbProps.IsMeleeAttack)));
