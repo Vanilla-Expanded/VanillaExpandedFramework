@@ -42,7 +42,7 @@ public class Feature_ExtraEquipmentVerbs : Feature_Humanoid
             pawn.HasOffHand()) return true;
         __result = rangedVerbs
            .Select(v => v.GetGizmosForVerb(v.Managed()))
-           .OrderBy(cs => cs.Any(c => c is Command_VerbTarget))
+           .OrderByDescending(cs => cs.Any(c => c is Command_VerbTarget))
            .SelectMany(cs => cs)
            .OfType<Command>();
         if (__instance.parent.def.IsMeleeWeapon)
