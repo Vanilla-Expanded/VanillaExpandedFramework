@@ -14,7 +14,6 @@ namespace MVCF;
 public class MVCF : Mod
 {
     private static readonly HashSet<Patch> appliedPatches = new();
-    public static bool Prepatcher;
     public static List<Feature> AllFeatures;
     public static HashSet<string> EnabledFeatures = new();
 
@@ -35,8 +34,6 @@ public class MVCF : Mod
     public MVCF(ModContentPack content) : base(content)
     {
         Harm = new Harmony("legodude17.mvcf");
-        Prepatcher = ModLister.HasActiveModWithName("Prepatcher");
-        if (Prepatcher) Verse.Log.Message("[MVCF] Prepatcher installed, switching");
         LongEventHandler.ExecuteWhenFinished(CollectFeatureData);
         AllFeatures = typeof(Feature).AllSubclassesNonAbstract().Select(type => (Feature)Activator.CreateInstance(type)).ToList();
         features = AllFeatures.ToDictionary(f => f.GetType());
