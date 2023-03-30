@@ -21,6 +21,8 @@ namespace AnimalBehaviours
         public int customAmountToDigIfRocksOrBricks = 1;
         //Is the result a corpse? If so, spawn a pawn, and kill it
         public bool resultIsCorpse = false;
+        //Flag to only dig if the terrain is polluted
+        public bool onlyDigIfPolluted = false;
 
         public CompProperties_DigPeriodically()
         {
