@@ -59,34 +59,40 @@ namespace AnimalBehaviours
 
                     if (pawn.health != null)
                     {
-                        List<Hediff_Injury> injuries = GetInjuries(pawn);
+
+
+                        List<Hediff_Injury> injuries = GetInjuries(pawn,Props.bodypart);
 
                         if (injuries.Count > 0)
                         {
 
-                           
-                                if (healAll)
+
+                            if (healAll)
+                            {
+                                foreach (Hediff_Injury injury in injuries)
                                 {
-                                    foreach (Hediff_Injury injury in injuries)
-                                    {
-                                        injury.Severity = injury.Severity - healAmount;
-                                        break;
-                                    }
-                                }
-                                else
-                                {
-                                    Hediff_Injury injury = injuries.RandomElement();
                                     injury.Severity = injury.Severity - healAmount;
+                                    break;
                                 }
-                            
+                            }
+                            else
+                            {
+                                Hediff_Injury injury = injuries.RandomElement();
+                                injury.Severity = injury.Severity - healAmount;
+                            }
+
                         }
+
+
+
+
                     }
                     tickCounter = 0;
                 }
             }
-            
+
         }
-        public List<Hediff_Injury> GetInjuries(Pawn pawn)
+        public List<Hediff_Injury> GetInjuries(Pawn pawn, BodyPartDef bodypart)
         {
             List<Hediff_Injury> injuries = new List<Hediff_Injury>();
             for (int i = 0; i < pawn.health.hediffSet.hediffs.Count; i++)
@@ -94,12 +100,22 @@ namespace AnimalBehaviours
                 Hediff_Injury hediff_Injury = pawn.health.hediffSet.hediffs[i] as Hediff_Injury;
                 if (hediff_Injury != null)
                 {
-                    injuries.Add(hediff_Injury);
+                    if (bodypart != null)
+                    {
+                        if (hediff_Injury.Part.def == bodypart) { injuries.Add(hediff_Injury); }
+                    }
+                    else { 
+                        injuries.Add(hediff_Injury);
+                    }
+
+                    
                 }
 
             }
             return injuries;
         }
+
+       
 
 
     }
