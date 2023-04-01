@@ -1795,10 +1795,13 @@ namespace ItemProcessor
             string text = base.GetInspectString();
 
             // Start on a new line if other comps also have their own inspect string output
-            if (text.Length != 0)
+
+            // For some reason this shit caused a red error about an empty line in 1.4.3682
+
+            /*if (text.Length != 0)
             {
                 text += "\n";
-            }
+            }*/
 
             string incubationTxt = "";
             if (compPowerTrader != null || compFuelable != null)
