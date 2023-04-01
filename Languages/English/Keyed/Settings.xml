@@ -5,26 +5,26 @@
     <CSGTitle>Custom structure generation:</CSGTitle>
     <CSGLog>Enable structure generation debugging log: </CSGLog>
 
-    <!-- Toggable patches -->
-    <TPTitle>Toggable patches</TPTitle>
+    <!-- Toggleable patches -->
+    <TPTitle>Toggleable patches</TPTitle>
     <NeedRestart>All settings need a restart to be applied</NeedRestart>
     <XPatchFound>{0} patches found</XPatchFound>
 
-	<!-- Weather damages -->
-	<VEF.WeatherDamages>Weather damages</VEF.WeatherDamages>
-	<VEF.EnableWeatherDamage>{0}</VEF.EnableWeatherDamage>
+    <!-- Weather damages -->
+    <VEF.WeatherDamages>Weather damages</VEF.WeatherDamages>
+    <VEF.EnableWeatherDamage>{0}</VEF.EnableWeatherDamage>
     <!-- Faction Discovery -->
     <FDTitle>Faction Discovery</FDTitle>
     <NeedToBeInGame>You first need to load a save</NeedToBeInGame>
     <AskForPopUp>Add faction(s)</AskForPopUp>
     <AskForPopUpExplained>Click this to be asked for each faction if you want it to be added to your game</AskForPopUpExplained>
     <CanAddXFaction>{0} faction(s) can be added to your current save</CanAddXFaction>
-	
-	<VEF.DisableModSourceReport>Disable mod source reports</VEF.DisableModSourceReport>
-	
-	<VEF.Shields.Search>Search: </VEF.Shields.Search>
-	<VEF.Shields.ResetModSettingsToDefault>Reset mod settings to default</VEF.Shields.ResetModSettingsToDefault>
-	<VEF.Shields.ExplanationTitle>Set weapons to be usable or not usable with shields.</VEF.Shields.ExplanationTitle>
-	<VEF.Shields.ShowMeleeWeapons>Show melee weapons</VEF.Shields.ShowMeleeWeapons>
-	<VEF.Shields.ShowRangeWeapons>Show range weapons</VEF.Shields.ShowRangeWeapons>
+
+    <VEF.DisableModSourceReport>Disable mod source reports</VEF.DisableModSourceReport>
+
+    <VEF.Shields.Search>Search: </VEF.Shields.Search>
+    <VEF.Shields.ResetModSettingsToDefault>Reset mod settings to default</VEF.Shields.ResetModSettingsToDefault>
+    <VEF.Shields.ExplanationTitle>Set weapons to be usable or not usable with shields.</VEF.Shields.ExplanationTitle>
+    <VEF.Shields.ShowMeleeWeapons>Show melee weapons</VEF.Shields.ShowMeleeWeapons>
+    <VEF.Shields.ShowRangeWeapons>Show range weapons</VEF.Shields.ShowRangeWeapons>
 </LanguageData>

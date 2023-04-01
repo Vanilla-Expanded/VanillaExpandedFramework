@@ -20,7 +20,7 @@ namespace VFECore
 
         public override string SettingsCategory()
         {
-            return "Vanilla Framework Expanded";
+            return "Vanilla Expanded Framework";
         }
 
         private int PageIndex = 0;
