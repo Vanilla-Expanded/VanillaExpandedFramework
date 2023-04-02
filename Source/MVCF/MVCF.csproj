@@ -88,6 +88,7 @@
     <Compile Include="Features\Feature_Reloading.cs" />
     <Compile Include="Features\Feature_VerbComps.cs" />
     <Compile Include="PatchSets\PatchSet_Animals.cs" />
+    <Compile Include="PatchSets\PatchSet_Stats.cs" />
     <Compile Include="PatchSets\Trackers\PatchSet_Apparel.cs" />
     <Compile Include="PatchSets\PatchSet_Base.cs" />
     <Compile Include="PatchSets\PatchSet_Drawing.cs" />
@@ -133,6 +134,7 @@
     <Compile Include="Utilities\TargetFinder.cs" />
     <Compile Include="Utilities\VerbCompsUtility.cs" />
     <Compile Include="Utilities\VerbManagerUtility.cs" />
+    <Compile Include="Utilities\VerbStatsUtility.cs" />
     <Compile Include="VerbComps\VerbComp.cs" />
     <Compile Include="VerbComps\VerbCompProperties.cs" />
     <Compile Include="Reloading\Comps\VerbComp_Reloadable.cs" />
