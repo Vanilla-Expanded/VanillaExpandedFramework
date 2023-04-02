@@ -68,7 +68,7 @@ public static class PawnVerbUtility
         var job = pawn.CurJob;
 
         MVCF.LogFormat($"AttackVerb of {pawn} on target {target} with job {job} that has target {job?.targetA} and CurrentVerb {manager.CurrentVerb}",
-            LogLevel.Important);
+            LogLevel.Info);
 
         if (manager.CurrentVerb != null && manager.CurrentVerb.Available() &&
             (target == null || manager.CurrentVerb.CanHitTarget(target)) &&
@@ -83,7 +83,7 @@ public static class PawnVerbUtility
         var verbsToUse = verbs.ToList();
         var usedTarget = target ?? job?.targetA ?? LocalTargetInfo.Invalid;
 
-        MVCF.LogFormat($"Getting best verb for target {target} or {job?.targetA} which is {usedTarget} from {verbsToUse.Count} choices", LogLevel.Important);
+        MVCF.LogFormat($"Getting best verb for target {target} or {job?.targetA} which is {usedTarget} from {verbsToUse.Count} choices", LogLevel.Info);
 
         if (!usedTarget.IsValid || !usedTarget.Cell.InBounds(pawn.Map)) return null;
         return verbsToUse.Count switch
