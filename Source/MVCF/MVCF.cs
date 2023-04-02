@@ -77,12 +77,12 @@ public class MVCF : Mod
 
     public static void Log(string message, LogLevel level = LogLevel.Verbose)
     {
-        if (DebugMode && level <= LogLevel) Verse.Log.Message($"[MVCF] {message}");
+        if (DebugMode && level <= LogLevel) Verse.Log.Message("[MVCF] " + message);
     }
 
     public static void LogFormat(FormattableString message, LogLevel level = LogLevel.Verbose)
     {
-        if (DebugMode && level <= LogLevel) Verse.Log.Message($"[MVCF] {message}");
+        if (DebugMode && level <= LogLevel) Verse.Log.Message("[MVCF] " + message);
     }
 
     public static T GetFeature<T>() where T : Feature => (T)features[typeof(T)];
