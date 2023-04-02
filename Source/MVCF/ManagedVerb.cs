@@ -57,7 +57,6 @@ public class ManagedVerb : IExposable, ILoadReferenceable
         Verb = verb;
         Props = props;
         loadId = $"{verb.loadID}_Managed";
-        this.Register();
         if (Props is { draw: true } && !MVCF.GetFeature<Feature_Drawing>().Enabled)
             Log.Error("[MVCF] Found a verb marked to draw while that feature is not enabled.");
 

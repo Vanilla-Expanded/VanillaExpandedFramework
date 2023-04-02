@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using MVCF.Comps;
+using MVCF.VerbComps;
 using Prepatcher;
 using Verse;
 
@@ -43,9 +46,41 @@ public static class ManagedVerbUtility
         managedVerbForVerbs.Add(verb, mv);
     }
 
-    public static void Register(this ManagedVerb mv)
+    public static void InitializeManaged(this Verb verb, VerbTracker tracker)
     {
-        mv.Verb.ManagedVerb() = mv;
+        AdditionalVerbProps props;
+        IEnumerable<VerbCompProperties> additionalComps;
+        switch (tracker.directOwner)
+        {
+            case CompEquippable comp:
+                props = comp.props is CompProperties_VerbProps compProps
+                    ? compProps.PropsFor(verb)
+                    : comp.parent.TryGetComp<Comp_VerbProps>()?.Props?.PropsFor(verb);
+                additionalComps = comp.parent.AllComps.OfType<VerbComp.IVerbCompProvider>().SelectMany(p => p.GetCompsFor(verb.verbProps));
+                break;
+            case HediffComp_VerbGiver comp:
+                props = (comp as HediffComp_ExtendedVerbGiver)?.PropsFor(verb);
+                additionalComps = comp.parent.comps.OfType<VerbComp.IVerbCompProvider>().SelectMany(p => p.GetCompsFor(verb.verbProps));
+                break;
+            case Comp_VerbGiver comp:
+                props = comp.PropsFor(verb);
+                additionalComps = comp.parent.AllComps.OfType<VerbComp.IVerbCompProvider>().SelectMany(p => p.GetCompsFor(verb.verbProps));
+                break;
+            case Pawn pawn:
+                props = pawn.TryGetComp<Comp_VerbProps>()?.PropsFor(verb);
+                additionalComps = pawn.AllComps.OfType<VerbComp.IVerbCompProvider>().SelectMany(p => p.GetCompsFor(verb.verbProps));
+                break;
+            case CompVerbsFromInventory comp:
+                props = comp.PropsFor(verb);
+                additionalComps = comp.parent.AllComps.OfType<VerbComp.IVerbCompProvider>().SelectMany(p => p.GetCompsFor(verb.verbProps));
+                break;
+            default: return;
+        }
+
+        var comps = additionalComps.ToList();
+        var mv = verb.Managed(false) ?? props.CreateManaged(!((props is null || props.comps.NullOrEmpty()) && comps.NullOrEmpty()));
+        mv.Initialize(verb, props, comps);
+        verb.ManagedVerb() = mv;
     }
 
     public static ManagedVerb Managed(this Verb verb, bool warnOnFailed = true)

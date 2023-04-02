@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using MVCF.Comps;
 using MVCF.Features;
 using MVCF.Utilities;
 using RimWorld;
@@ -11,9 +10,6 @@ namespace MVCF;
 
 public class VerbManager : IExposable
 {
-    private static readonly Dictionary<ThingWithComps, bool> preferMeleeCache =
-        new();
-
     private readonly List<IVerbManagerComp> comps = new();
 
     private readonly List<ManagedVerb> drawVerbs = new();
@@ -35,7 +31,7 @@ public class VerbManager : IExposable
         ManagedVerbs.Where(mv => mv.Props is { brawlerCaresAbout: false })
            .Select(mv => mv.Verb)
            .Concat(
-                PreferMelee(Pawn.equipment.Primary)
+                Pawn.equipment.Primary.PrefersMelee()
                     ? Pawn.equipment.PrimaryEq?.AllVerbs.Where(v => !v.IsMeleeAttack) ?? new List<Verb>()
                     : new List<Verb>());
 
@@ -63,17 +59,6 @@ public class VerbManager : IExposable
     public void Notify_Despawned()
     {
         foreach (var verb in verbs) verb.Notify_Despawned();
-    }
-
-    public static bool PreferMelee(ThingWithComps eq)
-    {
-        if (eq == null) return false;
-        if (preferMeleeCache.TryGetValue(eq, out var res)) return res;
-
-        res = (eq.TryGetComp<CompEquippable>()?.props as CompProperties_VerbProps ??
-               eq.TryGetComp<Comp_VerbProps>()?.Props)?.ConsiderMelee ?? false;
-        preferMeleeCache.Add(eq, res);
-        return res;
     }
 
     public void Initialize(Pawn pawn)
