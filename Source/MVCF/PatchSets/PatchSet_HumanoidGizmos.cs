@@ -46,15 +46,12 @@ public class PatchSet_HumanoidGizmos : PatchSet
 
         var man = pawn.Manager();
 
-        if (man.ManagedVerbs.Count(mv =>
-                mv.Enabled && !mv.Verb.IsMeleeAttack && mv.Props is not { canFireIndependently: true }) >= 2)
+        if (man.ManagedVerbs.Count(mv => mv.Enabled && !mv.Verb.IsMeleeAttack && mv.Props is not { canFireIndependently: true }) >= 2)
             yield return pawn.GetMainAttackGizmoForPawn();
 
         foreach (var gizmo in from verb in man.ManagedVerbs
-                 where verb.Source is VerbSource.Hediff or VerbSource.RaceDef &&
-                       verb.Verb.verbProps.hasStandardCommand
-                 from gizmo in verb.Verb
-                    .GetGizmosForVerb(verb)
+                 where verb.Source is VerbSource.Hediff or VerbSource.RaceDef && verb.Verb.verbProps.hasStandardCommand
+                 from gizmo in verb.Verb.GetGizmosForVerb(verb)
                  select gizmo)
             yield return gizmo;
 
