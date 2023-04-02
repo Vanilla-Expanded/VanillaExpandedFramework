@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection.Emit;
 using HarmonyLib;
 using MVCF.Comps;
+using MVCF.Utilities;
 using RimWorld;
 using Verse;
 
@@ -28,7 +29,7 @@ public class PatchSet_PreferMelee : PatchSet
             new CodeInstruction(OpCodes.Ldarg_1),
             new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(Pawn), "equipment")),
             new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(Pawn_EquipmentTracker), "get_Primary")),
-            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(VerbManager), "PreferMelee")),
+            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(MeleeVerbUtility), nameof(MeleeVerbUtility.PrefersMelee))),
             new CodeInstruction(OpCodes.Brtrue, label)
         });
         return list;
