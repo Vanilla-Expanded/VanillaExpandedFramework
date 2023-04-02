@@ -61,6 +61,38 @@ public static class PawnVerbUtility
                 return 1;
         }
     }
+
+    public static Verb GetAttackVerb(this Pawn pawn, Thing target, bool allowManualCastWeapons = false)
+    {
+        var manager = pawn.Manager();
+        var job = pawn.CurJob;
+
+        MVCF.LogFormat($"AttackVerb of {pawn} on target {target} with job {job} that has target {job?.targetA} and CurrentVerb {manager.CurrentVerb}",
+            LogLevel.Important);
+
+        if (manager.CurrentVerb != null && manager.CurrentVerb.Available() &&
+            (target == null || manager.CurrentVerb.CanHitTarget(target)) &&
+            (job is not { targetA: { IsValid: true, Cell: var cell } } || cell == pawn.Position || !cell.InBounds(pawn.Map) ||
+             manager.CurrentVerb.CanHitTarget(job.targetA)))
+            return manager.CurrentVerb;
+
+        var verbs = manager.CurrentlyUseableRangedVerbs;
+        if (!allowManualCastWeapons && job != null && job.def == JobDefOf.Wait_Combat)
+            verbs = verbs.Where(v => !v.Verb.verbProps.onlyManualCast);
+
+        var verbsToUse = verbs.ToList();
+        var usedTarget = target ?? job?.targetA ?? LocalTargetInfo.Invalid;
+
+        MVCF.LogFormat($"Getting best verb for target {target} or {job?.targetA} which is {usedTarget} from {verbsToUse.Count} choices", LogLevel.Important);
+
+        if (!usedTarget.IsValid || !usedTarget.Cell.InBounds(pawn.Map)) return null;
+        return verbsToUse.Count switch
+        {
+            0 => null,
+            1 => verbsToUse[0].Verb,
+            _ => pawn.BestVerbForTarget(usedTarget, verbsToUse)
+        };
+    }
 }
 
 public interface IVerbScore

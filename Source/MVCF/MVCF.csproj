@@ -86,11 +86,23 @@
     <Compile Include="Features\Feature_RangedAnimals.cs" />
     <Compile Include="Features\Feature_Reloading.cs" />
     <Compile Include="Features\Feature_VerbComps.cs" />
+    <Compile Include="PatchSets\PatchSet_Animals.cs" />
+    <Compile Include="PatchSets\PatchSet_Apparel.cs" />
     <Compile Include="PatchSets\PatchSet_Base.cs" />
+    <Compile Include="PatchSets\PatchSet_Drawing.cs" />
+    <Compile Include="PatchSets\PatchSet_ExtraEquipment.cs" />
+    <Compile Include="PatchSets\PatchSet_Hediffs.cs" />
+    <Compile Include="PatchSets\PatchSet_HumanoidGizmos.cs" />
+    <Compile Include="PatchSets\PatchSet_IndependentVerbs.cs" />
+    <Compile Include="PatchSets\PatchSet_IntegratedToggle.cs" />
+    <Compile Include="PatchSets\PatchSet_Inventory.cs" />
+    <Compile Include="PatchSets\PatchSet_PreferMelee.cs" />
+    <Compile Include="PatchSets\PatchSet_MultiVerb.cs" />
     <Compile Include="PatchSets\PatchSet_Brawlers.cs" />
     <Compile Include="PatchSets\PatchSet_Debug.cs" />
     <Compile Include="PatchSets\PatchSet_DualWield.cs" />
     <Compile Include="PatchSets\PatchSet_Equipment.cs" />
+    <Compile Include="PatchSets\PatchSet_Reloading.cs" />
     <Compile Include="PatchSets\PatchSet_TargetFinder.cs" />
     <Compile Include="ModCompat\DualWieldCompat.cs" />
     <Compile Include="PatchSets\PatchSet_RunAndGun.cs" />
@@ -98,6 +110,7 @@
     <Compile Include="PatchSets\PatchSet_BatteLog.cs" />
     <Compile Include="JobGiver_ManhunterRanged.cs" />
     <Compile Include="ManagedVerb.cs" />
+    <Compile Include="PatchSets\PatchSet_VerbComps.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reloading\Comps\CompChangeableAmmo.cs" />
     <Compile Include="Reloading\Comps\CompReloadable.cs" />
@@ -111,8 +124,10 @@
     <Compile Include="Reloading\Jobs\JobGiver_ReloadFromInventory.cs" />
     <Compile Include="Reloading\Jobs\JobGiver_SwitchWeapon.cs" />
     <Compile Include="Reloading\ReloadingDefOf.cs" />
+    <Compile Include="Utilities\DrawUtility.cs" />
     <Compile Include="Utilities\FloatMenuUtility.cs" />
     <Compile Include="Utilities\ManagedVerbUtility.cs" />
+    <Compile Include="Utilities\MeleeVerbUtility.cs" />
     <Compile Include="Utilities\ReloadingUtility.cs" />
     <Compile Include="Utilities\TargetFinder.cs" />
     <Compile Include="Utilities\VerbCompsUtility.cs" />
@@ -132,7 +147,6 @@
     <Compile Include="Utilities\PawnVerbGizmoUtility.cs" />
     <Compile Include="Utilities\PawnVerbUtility.cs" />
     <Compile Include="Comps\Comp_VerbGiver.cs" />
-    <Compile Include="Patch_Pawn_TryGetAttackVerb.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Zetrith.Prepatcher">
