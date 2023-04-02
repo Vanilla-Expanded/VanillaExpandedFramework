@@ -6,7 +6,7 @@ using RimWorld;
 using Verse;
 using Verse.AI;
 
-namespace MVCF.Features.PatchSets;
+namespace MVCF.PatchSets;
 
 public class PatchSet_Hunting : PatchSet
 {
