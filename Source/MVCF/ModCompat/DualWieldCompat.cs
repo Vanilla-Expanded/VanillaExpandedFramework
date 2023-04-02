@@ -34,6 +34,7 @@ public static class DualWieldCompat
 
         if (ModLister.HasActiveModWithName("Tacticowl (temporary beta)") || ModLister.HasActiveModWithName("Tacticowl"))
         {
+            Log.Message("[MVCF] Activating Tacticowl compatibility...");
             Active = true;
             mode = Mode.Tacticowl;
             isOffHandedWeapon = AccessTools.Method(AccessTools.TypeByName("Tacticowl.DualWieldExtensions"), "IsOffHandedWeapon")
