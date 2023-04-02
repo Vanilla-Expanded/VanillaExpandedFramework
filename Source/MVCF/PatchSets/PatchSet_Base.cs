@@ -8,7 +8,7 @@ using MVCF.Utilities;
 using RimWorld;
 using Verse;
 
-namespace MVCF.Features.PatchSets;
+namespace MVCF.PatchSets;
 
 public class PatchSet_Base : PatchSet
 {

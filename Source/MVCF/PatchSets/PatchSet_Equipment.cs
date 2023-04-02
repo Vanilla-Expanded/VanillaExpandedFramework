@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
+using MVCF.Features;
 using MVCF.ModCompat;
 using MVCF.Utilities;
 using Verse;
 
-namespace MVCF.Features.PatchSets;
+namespace MVCF.PatchSets;
 
 public class PatchSet_Equipment : PatchSet
 {

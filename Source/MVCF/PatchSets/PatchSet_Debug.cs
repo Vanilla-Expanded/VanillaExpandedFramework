@@ -4,7 +4,7 @@ using System.Reflection;
 using HarmonyLib;
 using RimWorld;
 
-namespace MVCF.Features.PatchSets;
+namespace MVCF.PatchSets;
 
 public class PatchSet_Debug : PatchSet
 {
@@ -39,6 +39,5 @@ public class PatchSet_Debug : PatchSet
                  $" -> void ({(__runOriginal ? "original ran" : "original was skipped")})");
     }
 
-    private static string FullName(MethodBase method) =>
-        $"{method.DeclaringType?.Namespace}.{method.DeclaringType?.Name}.{method.Name}";
+    private static string FullName(MethodBase method) => $"{method.DeclaringType?.Namespace}.{method.DeclaringType?.Name}.{method.Name}";
 }

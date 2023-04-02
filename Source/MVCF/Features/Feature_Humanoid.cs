@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
-using MVCF.Features.PatchSets;
+using MVCF.PatchSets;
 using MVCF.Utilities;
 using RimWorld;
 using UnityEngine;
@@ -35,7 +35,7 @@ public abstract class Feature_Humanoid : Feature
         foreach (var gizmo in __result) yield return gizmo;
 
         if (!__instance.Drafted || (__instance.pawn.equipment.Primary != null && __instance.pawn.equipment
-                .Primary.def.IsRangedWeapon) || !__instance.pawn.Manager().AllRangedVerbsNoEquipment.Any())
+               .Primary.def.IsRangedWeapon) || !__instance.pawn.Manager().AllRangedVerbsNoEquipment.Any())
             yield break;
 
         yield return new Command_Toggle
@@ -64,7 +64,7 @@ public abstract class Feature_Humanoid : Feature
                  where verb.Source is VerbSource.Hediff or VerbSource.RaceDef &&
                        verb.Verb.verbProps.hasStandardCommand
                  from gizmo in verb.Verb
-                     .GetGizmosForVerb(verb)
+                    .GetGizmosForVerb(verb)
                  select gizmo)
             yield return gizmo;
 

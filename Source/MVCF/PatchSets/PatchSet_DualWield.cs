@@ -2,7 +2,7 @@
 using System.Reflection.Emit;
 using HarmonyLib;
 
-namespace MVCF.Features.PatchSets;
+namespace MVCF.PatchSets;
 
 public class PatchSet_DualWield : PatchSet
 {
