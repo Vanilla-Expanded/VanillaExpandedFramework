@@ -6,7 +6,7 @@ using MVCF.Utilities;
 using RimWorld;
 using Verse;
 
-namespace MVCF.PatchSets;
+namespace MVCF.PatchSets.Trackers;
 
 public class PatchSet_Apparel : PatchSet
 {
