@@ -25,20 +25,9 @@ public class VerbManager : IExposable
             !v.Verb.IsMeleeAttack && !v.Independent && v.Enabled &&
             v.Verb.Available() && (Pawn.IsColonist || v.Props is not { colonistOnly: true }));
 
-    public bool ShouldBrawlerUpset => BrawlerHated.Any();
-
-    public IEnumerable<Verb> BrawlerTolerates =>
-        ManagedVerbs.Where(mv => mv.Props is { brawlerCaresAbout: false })
-           .Select(mv => mv.Verb)
-           .Concat(
-                Pawn.equipment.Primary.PrefersMelee()
-                    ? Pawn.equipment.PrimaryEq?.AllVerbs.Where(v => !v.IsMeleeAttack) ?? new List<Verb>()
-                    : new List<Verb>());
-
-    public IEnumerable<Verb> BrawlerHated => AllRangedVerbs.Except(BrawlerTolerates);
+    public bool ShouldBrawlerUpset => verbs.Any(PawnVerbUtility.BrawlerUpsetBy);
 
     public IEnumerable<Verb> AllVerbs => verbs.Select(mv => mv.Verb);
-    public IEnumerable<Verb> AllRangedVerbs => verbs.Select(mv => mv.Verb).Where(verb => !verb.IsMeleeAttack);
 
     public IEnumerable<Verb> AllRangedVerbsNoEquipment => verbs.Where(mv => mv.Source != VerbSource.Equipment).Select(mv => mv.Verb);
 
@@ -50,6 +39,7 @@ public class VerbManager : IExposable
     {
         Scribe_References.Look(ref CurrentVerb, "currentVerb");
     }
+
 
     public void Notify_Spawned()
     {
