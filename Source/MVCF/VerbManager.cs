@@ -98,7 +98,7 @@ public class VerbManager : IExposable
 
     public void AddVerb(Verb verb, VerbSource source)
     {
-        MVCF.LogFormat($"Adding {verb} from {source}", LogLevel.Important);
+        MVCF.LogFormat($"Adding {verb} from {source}", LogLevel.Info);
 
         if (AllVerbs.Contains(verb))
         {
@@ -157,13 +157,13 @@ public class VerbManager : IExposable
             bestVerb = verb;
         }
 
-        MVCF.LogFormat($"ChooseVerb returning {bestVerb}", LogLevel.Important);
+        MVCF.LogFormat($"ChooseVerb returning {bestVerb}", LogLevel.Info);
         return bestVerb;
     }
 
     public void RemoveVerb(Verb verb)
     {
-        MVCF.LogFormat($"Removing {verb}", LogLevel.Important);
+        MVCF.LogFormat($"Removing {verb}", LogLevel.Info);
         var mv = verbs.Find(m => m.Verb == verb);
         MVCF.LogFormat($"Found ManagedVerb: {mv}", LogLevel.Silly);
         if (mv == null)
@@ -198,7 +198,7 @@ public class VerbManager : IExposable
 
     public void RecalcSearchVerb()
     {
-        MVCF.Log("RecalcSearchVerb", LogLevel.Important);
+        MVCF.Log("RecalcSearchVerb", LogLevel.Info);
         var verbsToUse = verbs
            .Where(v => v.Enabled && v.Props is not { canFireIndependently: true } && !v.Verb.IsMeleeAttack)
            .ToList();
@@ -207,13 +207,13 @@ public class VerbManager : IExposable
         {
             HasVerbs = false;
             SearchVerb = null;
-            MVCF.Log("No Verbs", LogLevel.Important);
+            MVCF.Log("No Verbs", LogLevel.Info);
             return;
         }
 
         HasVerbs = true;
         SearchVerb = verbsToUse.MaxBy(verb => verb.Verb.verbProps.range)?.Verb;
-        MVCF.LogFormat($"SearchVerb is now {SearchVerb}", LogLevel.Important);
+        MVCF.LogFormat($"SearchVerb is now {SearchVerb}", LogLevel.Info);
     }
 
     public void DrawAt(Vector3 drawPos)

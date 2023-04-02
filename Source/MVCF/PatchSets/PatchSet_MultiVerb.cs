@@ -56,7 +56,7 @@ public class PatchSet_MultiVerb : PatchSet
          && eq.TryGetComp<CompEquippable>().PrimaryVerb is { } verb &&
             verb == __instance) return true;
 
-        MVCF.LogFormat($"Changing CurrentVerb of {__instance.CasterPawn} to {__instance}", LogLevel.Important);
+        MVCF.LogFormat($"Changing CurrentVerb of {__instance.CasterPawn} to {__instance}", LogLevel.Info);
         man.CurrentVerb = __instance;
 
         return true;

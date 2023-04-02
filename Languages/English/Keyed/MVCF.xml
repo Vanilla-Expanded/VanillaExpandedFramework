@@ -9,6 +9,7 @@
     <MVCF.Settings.LogLevel>Log level:</MVCF.Settings.LogLevel>
     <MVCF.Settings.LogLevel.None>None</MVCF.Settings.LogLevel.None>
     <MVCF.Settings.LogLevel.Important>Important</MVCF.Settings.LogLevel.Important>
+    <MVCF.Settings.LogLevel.Info>Info</MVCF.Settings.LogLevel.Info>
     <MVCF.Settings.LogLevel.Verbose>Verbose</MVCF.Settings.LogLevel.Verbose>
     <MVCF.Settings.LogLevel.Silly>Silly</MVCF.Settings.LogLevel.Silly>
     <MVCF.Settings.LogLevel.Tick>Tick</MVCF.Settings.LogLevel.Tick>

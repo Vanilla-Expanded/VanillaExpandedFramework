@@ -40,7 +40,7 @@ public static class TargetFinder
         float maxDist = 9999f, IntVec3 locus = default, float maxTravelRadiusFromLocus = 3.40282347E+38f, bool canBashDoors = false,
         bool canTakeTargetsCloserThanEffectiveMinRange = true, bool canBashFences = false, bool setCurrent = true, bool canMove = true)
     {
-        MVCF.LogFormat($"Intercepted BestAttackTarget from {searcher} with validator {validator}, and range {minDist}~{maxDist}", LogLevel.Important);
+        MVCF.LogFormat($"Intercepted BestAttackTarget from {searcher} with validator {validator}, and range {minDist}~{maxDist}", LogLevel.Info);
         if (searcher.Thing is Pawn pawn)
         {
             IAttackTarget bestTarget = null;
@@ -69,7 +69,7 @@ public static class TargetFinder
                 bestVerb = verb.Verb;
             }
 
-            MVCF.LogFormat($"Final target: {bestTarget} with verb {bestVerb} and score {bestScore}", LogLevel.Important);
+            MVCF.LogFormat($"Final target: {bestTarget} with verb {bestVerb} and score {bestScore}", LogLevel.Info);
             if (bestVerb is not null && bestTarget?.Thing is not null)
             {
                 if (setCurrent) man.CurrentVerb = bestVerb;
