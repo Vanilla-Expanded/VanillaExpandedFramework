@@ -3,7 +3,7 @@ using MVCF.PatchSets;
 
 namespace MVCF.Features;
 
-public abstract class Feature_Humanoid : Feature
+public abstract class Feature_Humanoid : Feature_MultiVerb
 {
     public override IEnumerable<PatchSet> GetPatchSets()
     {
