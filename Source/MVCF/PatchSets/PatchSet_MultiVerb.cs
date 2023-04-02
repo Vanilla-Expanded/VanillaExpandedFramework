@@ -30,6 +30,7 @@ public class PatchSet_MultiVerb : PatchSet
         yield return Patch.Prefix(AccessTools.Method(typeof(Targeter), "GetTargetingVerb"), AccessTools.Method(GetType(), nameof(Prefix_GetTargetingVerb)));
     }
 
+
     public static bool Prefix_GetTargetingVerb(Pawn pawn, Targeter __instance, ref Verb __result)
     {
         if (pawn.Manager(false) is not { } man) return true;

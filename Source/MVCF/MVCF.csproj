@@ -83,25 +83,26 @@
     <Compile Include="Features\Feature_IndependentVerbs.cs" />
     <Compile Include="Features\Feature_IntegratedToggle.cs" />
     <Compile Include="Features\Feature_InventoryVerbs.cs" />
+    <Compile Include="Features\Feature_MultiVerb.cs" />
     <Compile Include="Features\Feature_RangedAnimals.cs" />
     <Compile Include="Features\Feature_Reloading.cs" />
     <Compile Include="Features\Feature_VerbComps.cs" />
     <Compile Include="PatchSets\PatchSet_Animals.cs" />
-    <Compile Include="PatchSets\PatchSet_Apparel.cs" />
+    <Compile Include="PatchSets\Trackers\PatchSet_Apparel.cs" />
     <Compile Include="PatchSets\PatchSet_Base.cs" />
     <Compile Include="PatchSets\PatchSet_Drawing.cs" />
     <Compile Include="PatchSets\PatchSet_ExtraEquipment.cs" />
-    <Compile Include="PatchSets\PatchSet_Hediffs.cs" />
+    <Compile Include="PatchSets\Trackers\PatchSet_Hediffs.cs" />
     <Compile Include="PatchSets\PatchSet_HumanoidGizmos.cs" />
     <Compile Include="PatchSets\PatchSet_IndependentVerbs.cs" />
     <Compile Include="PatchSets\PatchSet_IntegratedToggle.cs" />
-    <Compile Include="PatchSets\PatchSet_Inventory.cs" />
+    <Compile Include="PatchSets\Trackers\PatchSet_Inventory.cs" />
     <Compile Include="PatchSets\PatchSet_PreferMelee.cs" />
     <Compile Include="PatchSets\PatchSet_MultiVerb.cs" />
     <Compile Include="PatchSets\PatchSet_Brawlers.cs" />
     <Compile Include="PatchSets\PatchSet_Debug.cs" />
     <Compile Include="PatchSets\PatchSet_DualWield.cs" />
-    <Compile Include="PatchSets\PatchSet_Equipment.cs" />
+    <Compile Include="PatchSets\Trackers\PatchSet_Equipment.cs" />
     <Compile Include="PatchSets\PatchSet_Reloading.cs" />
     <Compile Include="PatchSets\PatchSet_TargetFinder.cs" />
     <Compile Include="ModCompat\DualWieldCompat.cs" />
@@ -153,6 +154,7 @@
       <Version>1.1.1</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
          Other similar extension points exist, see Microsoft.Common.targets.

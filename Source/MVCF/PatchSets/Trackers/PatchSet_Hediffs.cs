@@ -4,7 +4,7 @@ using HarmonyLib;
 using MVCF.Utilities;
 using Verse;
 
-namespace MVCF.PatchSets;
+namespace MVCF.PatchSets.Trackers;
 
 public class PatchSet_Hediffs : PatchSet
 {

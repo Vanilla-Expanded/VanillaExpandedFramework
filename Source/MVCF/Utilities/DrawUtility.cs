@@ -20,9 +20,7 @@ public static class DrawUtility
         if (man.GetToggleType() != ManagedVerb.ToggleType.Integrated) return false;
         var rect = command.TopRightLabel.NullOrEmpty()
             ? butRect.RightPart(0.35f).TopPart(0.35f)
-            : butRect
-               .LeftPart(0.35f)
-               .TopPart(0.35f);
+            : butRect.LeftPart(0.35f).TopPart(0.35f);
         if (Mouse.IsOver(rect)) TooltipHandler.TipRegion(rect, "MVCF.ToggleAuto".Translate());
 
         if (Widgets.ButtonImage(rect, man.GetToggleStatus() ? Widgets.CheckboxOnTex : Widgets.CheckboxOffTex))
