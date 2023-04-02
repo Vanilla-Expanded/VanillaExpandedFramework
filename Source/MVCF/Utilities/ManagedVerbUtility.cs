@@ -37,13 +37,9 @@ public static class ManagedVerbUtility
         return mv;
     }
 
-
     public static void SaveManaged(this Verb verb)
     {
-        if (managedVerbForVerbs.TryGetValue(verb, out var mv)) managedVerbForVerbs.Remove(verb);
-        else mv = null;
-        Scribe_Deep.Look(ref mv, "MVCF_ManagedVerb");
-        managedVerbForVerbs.Add(verb, mv);
+        Scribe_Deep.Look(ref verb.ManagedVerb(), "MVCF_ManagedVerb");
     }
 
     public static void InitializeManaged(this Verb verb, VerbTracker tracker)
