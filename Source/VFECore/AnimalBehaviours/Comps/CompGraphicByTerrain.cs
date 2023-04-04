@@ -212,7 +212,7 @@ namespace AnimalBehaviours
 
 
 
-                if (Props.terrains.Contains(pawn.Position.GetTerrain(pawn.Map).defName))
+                if (Props.terrains?.Contains(pawn.Position.GetTerrain(pawn.Map).defName)==true)
                 {
                     int indexTerrain = Props.terrains.IndexOf(pawn.Position.GetTerrain(pawn.Map).defName);
                                       
