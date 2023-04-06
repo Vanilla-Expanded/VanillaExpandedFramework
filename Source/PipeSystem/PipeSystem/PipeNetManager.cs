@@ -57,37 +57,6 @@ namespace PipeSystem
                 {
                     net.PipeSystemTick();
                     net.NextTick = tick + 100;
-                    // Manage no storage alert
-                    if (net.def.noStorageAlert)
-                    {
-                        var cCount = net.connectors.Count;
-                        // Single building net and in alert proof list
-                        if (cCount == 1 && net.def.alertProofDefs.Contains(net.connectors[0].parent.def))
-                        {
-                            if (noStorage.Contains(net))
-                                noStorage.Remove(net);
-                            return;
-                        }
-                        // Check if any connector is fogged, it any is: no alert
-                        if (!net.def.foggedNetAlert)
-                        {
-                            for (int c = 0; c < cCount; c++)
-                            {
-                                if (net.connectors[c].parent.Position.Fogged(map))
-                                {
-                                    if (noStorage.Contains(net))
-                                        noStorage.Remove(net);
-                                    return;
-                                }
-                            }
-                        }
-                        // Count storage
-                        var count = net.storages.Count;
-                        if (count == 0 && !noStorage.Contains(net))
-                            noStorage.Add(net);
-                        else if (count > 0 && noStorage.Contains(net))
-                            noStorage.Remove(net);
-                    }
                 }
             }
         }
