@@ -26,7 +26,6 @@ namespace PipeSystem
 
         public override void CompTick()
         {
-            base.CompTick();
             int ticksGame = Find.TickManager.TicksGame;
             if (atTick < ticksGame)
             {
@@ -37,7 +36,6 @@ namespace PipeSystem
 
         public override void CompTickRare()
         {
-            base.CompTickRare();
             int ticksGame = Find.TickManager.TicksGame;
             if (atTick < ticksGame)
             {
@@ -48,7 +46,6 @@ namespace PipeSystem
 
         public override void CompTickLong()
         {
-            base.CompTickLong();
             int ticksGame = Find.TickManager.TicksGame;
             if (atTick < ticksGame)
             {
@@ -61,17 +58,18 @@ namespace PipeSystem
         {
             if (parent.HitPoints < hitPointToStart)
             {
-                Map map = parent.Map;
-                IntVec3 pos = parent.Position;
+                var map = parent.Map;
+                var pos = parent.Position;
+
                 if (Props.amountToDraw > 0 && compResource.PipeNet is PipeNet p && p.Stored > Props.amountToDraw)
                 {
                     p.DrawAmongStorage(Props.amountToDraw, p.storages);
 
-                    if (createFilth)
+                    if (createFilth && pos.Walkable(map))
                     {
                         ThingDef filth = Props.chooseFilthFrom.RandomElement();
-                        RCellFinder.TryFindRandomCellNearWith(pos, i => i.Walkable(map) && FilthMaker.CanMakeFilth(i, map, filth), map, out IntVec3 cell, 0, Props.filthMaxSpawnRadius);
-                        FilthMaker.TryMakeFilth(cell, map, filth, Props.filthAmountPerSpawn);
+                        if (RCellFinder.TryFindRandomCellNearWith(pos, i => i.Walkable(map) && FilthMaker.CanMakeFilth(i, map, filth), map, out IntVec3 cell, 1, Props.filthMaxSpawnRadius))
+                            FilthMaker.TryMakeFilth(cell, map, filth, Props.filthAmountPerSpawn);
                     }
                 }
 
