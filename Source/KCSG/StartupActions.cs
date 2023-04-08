@@ -9,7 +9,7 @@ namespace KCSG
     {
         public static bool defsCreated = false;
         public static List<ThingDef> stuffs = new List<ThingDef>();
-        public static Dictionary<string, int> missingSymbols;
+        public static Dictionary<string, Dictionary<string, int>> missingSymbols;
 
         private static int createdSymbolAmount;
 
@@ -28,20 +28,21 @@ namespace KCSG
             }
 
             // Resolve all layouts, for faster gen time
-            missingSymbols = new Dictionary<string, int>();
+            missingSymbols = new Dictionary<string, Dictionary<string, int>>();
 
             var layouts = DefDatabase<StructureLayoutDef>.AllDefsListForReading;
             for (int i = 0; i < layouts.Count; i++)
                 layouts[i].ResolveLayouts();
 
             // Output list of missing symbols
-            if (debug)
+            foreach (var missing in missingSymbols)
             {
-                foreach (var m in missingSymbols)
+                Log.Warning($"[KCSG] {missing.Key} contains {missing.Value.Count} missing symbols.");
+                foreach (var m in missing.Value)
                 {
-                    Debug.Message($"Missing symbol: {m.Key} ({m.Value})");
+                    Debug.Message($"Missing symbol: {m.Key} (needed {m.Value} times)");
                 }
-            }
+            }            
             // Cache layout per tag
             SettlementGenUtils.BuildingPlacement.CacheTags();
             // Make new map generators, used with preventBridgeable
@@ -51,12 +52,24 @@ namespace KCSG
         /// <summary>
         /// Add missing symbol to dic, for verbose
         /// </summary>
-        public static void AddToMissing(string symbol)
+        public static void AddToMissing(string modName, string symbol)
         {
-            if (missingSymbols.ContainsKey(symbol))
-                missingSymbols[symbol]++;
+            if (missingSymbols.ContainsKey(modName))
+            {
+                if (missingSymbols[modName].ContainsKey(symbol))
+                {
+                    missingSymbols[modName][symbol]++;
+                }
+                else if (!symbol.Contains("VFEPD"))
+                {
+                    missingSymbols[modName].Add(symbol, 1);
+                }
+            }
             else if (!symbol.Contains("VFEPD"))
-                missingSymbols.Add(symbol, 1);
+            {
+                missingSymbols.Add(modName, new Dictionary<string, int>());
+                missingSymbols[modName].Add(symbol, 1);
+            }
         }
 
         /// <summary>
@@ -104,9 +117,8 @@ namespace KCSG
             var thingDefs = DefDatabase<ThingDef>.AllDefsListForReading;
             var pawnKindDefs = DefDatabase<PawnKindDef>.AllDefsListForReading;
 
-            CreateSymbolsFor(thingDefs, pawnKindDefs, "ludeon.rimworld");
-            CreateSymbolsFor(thingDefs, pawnKindDefs, "ludeon.rimworld.royalty");
-            CreateSymbolsFor(thingDefs, pawnKindDefs, "ludeon.rimworld.ideology");
+            foreach (string id in ModContentPack.ProductPackageIDs)
+                CreateSymbolsFor(thingDefs, pawnKindDefs, id);
 
             if (ModLister.GetActiveModWithIdentifier("vanillaexpanded.vfepropsanddecor") != null)
                 CreateSymbolsFor(thingDefs, pawnKindDefs, "vanillaexpanded.vfepropsanddecor");

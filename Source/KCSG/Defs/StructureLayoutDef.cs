@@ -182,7 +182,7 @@ namespace KCSG
                                     _layouts[l][h, w] = def;
 
                                     if (def == null)
-                                        StartupActions.AddToMissing($"{modName} {symbol}");
+                                        StartupActions.AddToMissing(modName, symbol);
                                     else if (def.isSlave)
                                         IsForSlaves = true;
                                 }
