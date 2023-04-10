@@ -43,6 +43,10 @@ namespace AnimalBehaviours
                 Pawn pawn = parent as Pawn;
                 if (pawn != null)
                 {
+                    if (Props.goWild)
+                    {
+                        parent.SetFaction(null, null);
+                    }
                     //if goesManhunter is false, the creature is just returned to the wild, no faction
                     if (!Props.goesManhunter)
                     {

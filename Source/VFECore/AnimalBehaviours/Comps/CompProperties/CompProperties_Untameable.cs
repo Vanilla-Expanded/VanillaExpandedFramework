@@ -15,6 +15,10 @@ namespace AnimalBehaviours
 
         public string factionToReturnTo = "";
 
+        //If true their faction will be reset
+
+        public bool goWild = false;
+
         //If true and factionToReturnTo not set, the creature will go manhunter if tamed
 
         public bool goesManhunter = true;
