@@ -338,7 +338,7 @@
                 Find.WorldTargeter.BeginTargeting(gti =>
                                                   {
                                                       if (!this.ValidateTargetTile(gti, true)) return false;
-                                                      Map map = Find.WorldObjects.MapParentAt(gti.Tile).Map;
+                                                      Map map = Find.WorldObjects.MapParentAt(gti.Tile)?.Map;
                                                       if (targetMode == AbilityTargetingMode.Tile || map is null)
                                                       {
                                                           this.currentTargets[this.currentTargetingIndex] = gti;
