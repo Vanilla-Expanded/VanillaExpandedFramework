@@ -16,7 +16,7 @@ namespace AnimalBehaviours
 				return null;
 			}
 			IntVec3 c = RCellFinder.RandomWanderDestFor(pawn, pawn.Position, 5f, null, Danger.Some);
-			return JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("VEF_LayExplodingEgg"), c);
+			return JobMaker.MakeJob(InternalDefOf.VEF_LayExplodingEgg, c);
 		}
 
 		private const float LayRadius = 5f;

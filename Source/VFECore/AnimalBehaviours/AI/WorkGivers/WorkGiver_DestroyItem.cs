@@ -53,7 +53,7 @@ namespace AnimalBehaviours
 
         public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
-            return new Job(DefDatabase<JobDef>.GetNamed("VEF_DestroyItem", true), t);
+            return new Job(InternalDefOf.VEF_DestroyItem, t);
         }
     }
 }

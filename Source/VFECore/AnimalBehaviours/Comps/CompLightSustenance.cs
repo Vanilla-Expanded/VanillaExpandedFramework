@@ -37,8 +37,8 @@ namespace AnimalBehaviours
             {
                 if (addHediffOnce)
                 {
-                    pawn.health.AddHediff(HediffDef.Named("VEF_LightSustenance"));
-                    Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(HediffDef.Named("VEF_LightSustenance"), false);
+                    pawn.health.AddHediff(InternalDefOf.VEF_LightSustenance);
+                    Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(InternalDefOf.VEF_LightSustenance, false);
                     hediff.Severity = 0.2f;
                     addHediffOnce = false;
                 }
@@ -48,7 +48,7 @@ namespace AnimalBehaviours
                 if (num >= growOptimalGlow)
                 {
 
-                    Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(HediffDef.Named("VEF_LightSustenance"), false);
+                    Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(InternalDefOf.VEF_LightSustenance, false);
 
                     if ((hediff != null) && hediff.Severity > 0f)
                     {
@@ -58,7 +58,7 @@ namespace AnimalBehaviours
                 }
                 else
                 {
-                    Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(HediffDef.Named("VEF_LightSustenance"), false);
+                    Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(InternalDefOf.VEF_LightSustenance, false);
 
                     if ((hediff != null) && hediff.Severity < 1f)
                     {

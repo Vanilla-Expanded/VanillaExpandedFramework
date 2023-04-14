@@ -89,7 +89,7 @@ namespace AnimalBehaviours
             if (thing != null && pawn.Map.reservationManager.CanReserve(pawn, thing, 1))
             {
                 //float nutrition = 1f;
-                Job job3 = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("VEF_IngestWeird", true), thing);
+                Job job3 = JobMaker.MakeJob(InternalDefOf.VEF_IngestWeird, thing);
                 job3.count = 1;// FoodUtility.WillIngestStackCountOf(pawn, thingDef, nutrition);
                 return job3;
             }
