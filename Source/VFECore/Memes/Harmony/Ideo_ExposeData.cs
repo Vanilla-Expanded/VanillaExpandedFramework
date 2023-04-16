@@ -52,7 +52,8 @@ namespace VanillaMemesExpanded
         }
         public static void CheckIfCanAdd(Ideo ideo, Precept precept, bool init = false, FactionDef generatingFor = null, RitualPatternDef ritualPatternBase = null)
         {
-            if (ideo.foundation.CanAdd(precept.def))//Can Add filters things that shouldnt be added for memes and such
+            // ideo.foundation will be null if the user does not have Ideology
+            if (ideo.foundation == null || ideo.foundation.CanAdd(precept.def))//Can Add filters things that shouldnt be added for memes and such
             {
                 if (precept.def.canGenerateAsSpecialPrecept)
                 {
