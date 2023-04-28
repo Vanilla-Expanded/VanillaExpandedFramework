@@ -40,13 +40,13 @@ namespace VFECore
             Widgets.DrawMenuSection(mainRect);
             var tabs = new List<TabRecord>
             {
-                new TabRecord("GeneralTitle".Translate(), () =>
+                new TabRecord("VEF_GeneralTitle".Translate(), () =>
                 {
                     PageIndex = 0;
                     WriteSettings();
 
                 }, PageIndex == 0),
-                new TabRecord("TPTitle".Translate(), () =>
+                new TabRecord("VEF_TPTitle".Translate(), () =>
                 {
                     PageIndex = 1;
                     WriteSettings();
@@ -86,7 +86,7 @@ namespace VFECore
             list.Begin(rect);
 
             Text.Font = GameFont.Small;
-            list.Label("Faction Discovery");
+            list.Label("VEF_FactionDiscovery".Translate());
             if (Current.Game != null)
             {
                 FactionCanBeAddedCount = DefDatabase<FactionDef>.AllDefs.Where(ValidatorAnyFactionLeft).Count();
@@ -112,14 +112,14 @@ namespace VFECore
 
             // KCSG
             list.Gap(12);
-            list.Label("Custom Structure Generation :");
+            list.Label("VEF_CustomStructureGeneration".Translate());
             list.Gap(5);
-            list.CheckboxLabeled("Verbose logging", ref settings.enableVerboseLogging);
+            list.CheckboxLabeled("VEF_VerboseLogging".Translate(), ref settings.enableVerboseLogging);
             list.GapLine(12);
 
             // Texture Variations
             list.Gap(12);
-            list.Label("Texture Variations:");
+            list.Label("VEF_TextureVariations".Translate());
             list.Gap(5);
             list.CheckboxLabeled("VFE_RandomBuildingsDontStartRandom".Translate(), ref settings.randomStartsAsRandom, null);
             list.Gap(5);
@@ -128,12 +128,15 @@ namespace VFECore
 
             // General
             list.Gap(12);
-            list.CheckboxLabeled("Disable Texture Caching", ref settings.disableCaching, "Warning: Enabling this might cause performance issues.");
+            list.CheckboxLabeled("VEF_DisableTextureCaching".Translate(), ref settings.disableCaching, "Warning: Enabling this might cause performance issues.");
             list.CheckboxLabeled("VEF.DisableModSourceReport".Translate(), ref settings.disableModSourceReport);
-            list.CheckboxLabeled("Enable PipeSystem no storage alert", ref settings.enablePipeSystemNoStorageAlert);
+            list.CheckboxLabeled("VEF_EnablePipeSystemNoStorageAlert".Translate(), ref settings.enablePipeSystemNoStorageAlert);
+           
 
             list.End();
         }
+
+       
 
         private bool ValidatorAnyFactionLeft(FactionDef faction)
         {
@@ -309,7 +312,7 @@ namespace VFECore
         public bool randomStartsAsRandom = false;
         public bool hideRandomizeButtons = false;
         public bool enablePipeSystemNoStorageAlert = true;
-
+       
         //Unused, kept for compat only, remove in 1.5
         public bool isRandomGraphic = true;
         public bool hideRandomizeButton = false;
@@ -328,6 +331,7 @@ namespace VFECore
             Scribe_Values.Look(ref disableModSourceReport, "disableModSourceReport");
             Scribe_Values.Look(ref enablePipeSystemNoStorageAlert, "enablePipeSystemNoStorageAlert", true);
             Scribe_Collections.Look(ref weatherDamagesOptions, "weatherDamagesOptions", LookMode.Value, LookMode.Value);
+           
 
             //Unused, kept for compat only, remove in 1.5
             Scribe_Values.Look(ref isRandomGraphic, "isRandomGraphic", true, true);

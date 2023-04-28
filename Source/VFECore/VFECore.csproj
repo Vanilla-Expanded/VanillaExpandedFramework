@@ -1019,6 +1019,8 @@
     <Compile Include="VFECore\WorkGivers\WorkGiver_RepairMachine.cs" />
     <Compile Include="VFECore\WeatherOverlays\WeatherOverlay_Custom.cs" />
     <Compile Include="VFECore\WeatherOverlays\WeatherOverlay_CustomTwo.cs" />
+    <Compile Include="Weapons\Defs\ToolsUsableByNonViolentPawnsDef.cs" />
+    <Compile Include="Weapons\Harmony\FloatMenuMakerMap_AddHumanlikeOrders.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

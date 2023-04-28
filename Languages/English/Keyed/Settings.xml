@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LanguageData>
-    <GeneralTitle>General</GeneralTitle>
+    <VEF_GeneralTitle>General</VEF_GeneralTitle>
     <!-- CSG -->
     <CSGTitle>Custom structure generation:</CSGTitle>
     <CSGLog>Enable structure generation debugging log: </CSGLog>
 
     <!-- Toggleable patches -->
-    <TPTitle>Toggleable patches</TPTitle>
+    <VEF_TPTitle>Toggleable patches</VEF_TPTitle>
     <NeedRestart>All settings need a restart to be applied</NeedRestart>
     <XPatchFound>{0} patches found</XPatchFound>
 
@@ -27,4 +27,18 @@
     <VEF.Shields.ExplanationTitle>Set weapons to be usable or not usable with shields.</VEF.Shields.ExplanationTitle>
     <VEF.Shields.ShowMeleeWeapons>Show melee weapons</VEF.Shields.ShowMeleeWeapons>
     <VEF.Shields.ShowRangeWeapons>Show range weapons</VEF.Shields.ShowRangeWeapons>
+	
+	<VEF_DisableTextureCaching>Disable Texture Caching</VEF_DisableTextureCaching>
+	<VEF_EnablePipeSystemNoStorageAlert>Enable PipeSystem no storage alert</VEF_EnablePipeSystemNoStorageAlert>
+	<VEF_FactionDiscovery>Faction Discovery</VEF_FactionDiscovery>
+	<VEF_CustomStructureGeneration>Custom Structure Generation:</VEF_CustomStructureGeneration>
+	<VEF_TextureVariations>Texture Variations:</VEF_TextureVariations>
+	<VEF_VerboseLogging>Verbose logging</VEF_VerboseLogging>
+	<VEF_UnforbidMinedOres>Unforbid mined ores</VEF_UnforbidMinedOres>
+	<VEF_Never>Never</VEF_Never>
+	<VEF_HomeArea>Home Area</VEF_HomeArea>
+	<VEF_Always>Always</VEF_Always>
+	<VEF_NeverDesc>Never unforbid mined ores (this is how the base game works for non-human pawns, such as animals and mechs)</VEF_NeverDesc>
+	<VEF_HomeAreaDesc>Ores mined by pawns are only unforbidden if mined in the home area</VEF_HomeAreaDesc>
+	<VEF_AlwaysDesc>Ores mined by pawns are always unforbidden</VEF_AlwaysDesc>
 </LanguageData>
