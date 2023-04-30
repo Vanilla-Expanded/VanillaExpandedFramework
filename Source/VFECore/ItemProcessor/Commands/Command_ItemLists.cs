@@ -356,7 +356,7 @@ namespace ItemProcessor
 
         public Map map;
         public Building_ItemProcessor building;
-        public List<Thing> things;
+        
 
 
 
@@ -438,7 +438,7 @@ namespace ItemProcessor
                     {
                         list.Add(new FloatMenuOption("IP_InsertVariable".Translate(ThingCategoryDef.Named(item).LabelCap), delegate
                         {
-                            if (building.processorStage <= ProcessorStage.ExpectingIngredients) { this.TryInsertFirstThing(item); }
+                            if (building.processorStage <= ProcessorStage.ExpectingIngredients) { this.TryInsertFirstThing(true,item); }
                         }, MenuOptionPriority.Default, null, null, 29f, null, null));
 
                     }
@@ -446,16 +446,10 @@ namespace ItemProcessor
                     {
                         list.Add(new FloatMenuOption("IP_InsertVariable".Translate(ThingDef.Named(item).LabelCap), delegate
                         {
-                            things = map.listerThings.ThingsOfDef(DefDatabase<ThingDef>.GetNamed(item, true));
-                            if (things.Count > 0)
-                            {
-                                if (building.processorStage <= ProcessorStage.ExpectingIngredients) { this.TryInsertFirstThing(); }
+                            
+                                if (building.processorStage <= ProcessorStage.ExpectingIngredients) { this.TryInsertFirstThing(false, item); }
 
-                            }
-                            else
-                            {
-                                Messages.Message("IP_CantFindThing".Translate(ThingDef.Named(item).LabelCap), null, MessageTypeDefOf.NegativeEvent, true);
-                            }
+                           
 
                         }, MenuOptionPriority.Default, null, null, 29f, null, null));
                     }
@@ -467,7 +461,7 @@ namespace ItemProcessor
             Find.WindowStack.Add(new FloatMenu(list));
         }
 
-        private void TryInsertFirstThing(string item = "")
+        private void TryInsertFirstThing(bool category,string item = "")
         {
 
             List<object> selectedObjects = Find.Selector.SelectedObjects;
@@ -477,14 +471,14 @@ namespace ItemProcessor
                 if (processor != null)
                 {
 
-                    if (item != "")
+                    if (category)
                     {
                         processor.firstCategory = ThingCategoryDef.Named(item).defName;
                         processor.firstItem = processor.firstCategory;
                     }
                     else
                     {
-                        processor.firstItem = things.RandomElement().def.defName;
+                        processor.firstItem = item;
                     }
                     if (processor.compItemProcessor.Props.isSemiAutomaticMachine)
                     {
@@ -602,7 +596,7 @@ namespace ItemProcessor
                     {
                         list.Add(new FloatMenuOption("IP_InsertVariable".Translate(ThingCategoryDef.Named(item).LabelCap), delegate
                         {
-                            if (building.processorStage <= ProcessorStage.ExpectingIngredients) { this.TryInsertSecondThing(item); }
+                            if (building.processorStage <= ProcessorStage.ExpectingIngredients) { this.TryInsertSecondThing(true,item); }
                         }, MenuOptionPriority.Default, null, null, 29f, null, null));
 
                     }
@@ -610,16 +604,9 @@ namespace ItemProcessor
                     {
                         list.Add(new FloatMenuOption("IP_InsertVariable".Translate(ThingDef.Named(item).LabelCap), delegate
                         {
-                            things = map.listerThings.ThingsOfDef(DefDatabase<ThingDef>.GetNamed(item, true));
-                            if (things.Count > 0)
-                            {
-
-                                if (building.processorStage <= ProcessorStage.ExpectingIngredients) { this.TryInsertSecondThing(); }
-                            }
-                            else
-                            {
-                                Messages.Message("IP_CantFindThing".Translate(ThingDef.Named(item).LabelCap), null, MessageTypeDefOf.NegativeEvent, true);
-                            }
+                            
+                                if (building.processorStage <= ProcessorStage.ExpectingIngredients) { this.TryInsertSecondThing(false,item); }
+                           
 
                         }, MenuOptionPriority.Default, null, null, 29f, null, null));
                     }
@@ -630,7 +617,7 @@ namespace ItemProcessor
         }
 
 
-        private void TryInsertSecondThing(string item = "")
+        private void TryInsertSecondThing(bool category, string item = "")
         {
 
             List<object> selectedObjects = Find.Selector.SelectedObjects;
@@ -639,14 +626,14 @@ namespace ItemProcessor
                 Building_ItemProcessor processor = selectedObject as Building_ItemProcessor;
                 if (processor != null)
                 {
-                    if (item != "")
+                    if (category)
                     {
                         processor.secondCategory = ThingCategoryDef.Named(item).defName;
                         processor.secondItem = processor.secondCategory;
                     }
                     else
                     {
-                        processor.secondItem = things.RandomElement().def.defName;
+                        processor.secondItem = item;
                     }
                     if (processor.compItemProcessor.Props.isSemiAutomaticMachine)
                     {
@@ -756,7 +743,7 @@ namespace ItemProcessor
                     {
                         list.Add(new FloatMenuOption("IP_InsertVariable".Translate(ThingCategoryDef.Named(item).LabelCap), delegate
                         {
-                            if (building.processorStage <= ProcessorStage.ExpectingIngredients) { this.TryInsertThirdThing(item); }
+                            if (building.processorStage <= ProcessorStage.ExpectingIngredients) { this.TryInsertThirdThing(true,item); }
                         }, MenuOptionPriority.Default, null, null, 29f, null, null));
 
                     }
@@ -764,16 +751,9 @@ namespace ItemProcessor
                     {
                         list.Add(new FloatMenuOption("IP_InsertVariable".Translate(ThingDef.Named(item).LabelCap), delegate
                         {
-                            things = map.listerThings.ThingsOfDef(DefDatabase<ThingDef>.GetNamed(item, true));
-                            if (things.Count > 0)
-                            {
-
-                                if (building.processorStage <= ProcessorStage.ExpectingIngredients) { this.TryInsertThirdThing(); }
-                            }
-                            else
-                            {
-                                Messages.Message("IP_CantFindThing".Translate(ThingDef.Named(item).LabelCap), null, MessageTypeDefOf.NegativeEvent, true);
-                            }
+                           
+                                if (building.processorStage <= ProcessorStage.ExpectingIngredients) { this.TryInsertThirdThing(false,item); }
+                           
 
                         }, MenuOptionPriority.Default, null, null, 29f, null, null));
                     }
@@ -783,7 +763,7 @@ namespace ItemProcessor
         }
 
 
-        private void TryInsertThirdThing(string item = "")
+        private void TryInsertThirdThing(bool category, string item = "")
         {
             List<object> selectedObjects = Find.Selector.SelectedObjects;
             foreach (object selectedObject in selectedObjects)
@@ -791,14 +771,14 @@ namespace ItemProcessor
                 Building_ItemProcessor processor = selectedObject as Building_ItemProcessor;
                 if (processor != null)
                 {
-                    if (item != "")
+                    if (category)
                     {
                         processor.thirdCategory = ThingCategoryDef.Named(item).defName;
                         processor.thirdItem = processor.thirdCategory;
                     }
                     else
                     {
-                        processor.thirdItem = things.RandomElement().def.defName;
+                        processor.thirdItem = item;
                     }
                     if (processor.compItemProcessor.Props.isSemiAutomaticMachine)
                     {
@@ -907,7 +887,7 @@ namespace ItemProcessor
                     {
                         list.Add(new FloatMenuOption("IP_InsertVariable".Translate(ThingCategoryDef.Named(item).LabelCap), delegate
                         {
-                            if (building.processorStage <= ProcessorStage.ExpectingIngredients) { this.TryInsertFourthThing(item); }
+                            if (building.processorStage <= ProcessorStage.ExpectingIngredients) { this.TryInsertFourthThing(true,item); }
                         }, MenuOptionPriority.Default, null, null, 29f, null, null));
 
                     }
@@ -915,16 +895,9 @@ namespace ItemProcessor
                     {
                         list.Add(new FloatMenuOption("IP_InsertVariable".Translate(ThingDef.Named(item).LabelCap), delegate
                         {
-                            things = map.listerThings.ThingsOfDef(DefDatabase<ThingDef>.GetNamed(item, true));
-                            if (things.Count > 0)
-                            {
-
-                                if (building.processorStage <= ProcessorStage.ExpectingIngredients) { this.TryInsertFourthThing(); }
-                            }
-                            else
-                            {
-                                Messages.Message("IP_CantFindThing".Translate(ThingDef.Named(item).LabelCap), null, MessageTypeDefOf.NegativeEvent, true);
-                            }
+                            
+                                if (building.processorStage <= ProcessorStage.ExpectingIngredients) { this.TryInsertFourthThing(false,item); }
+                           
 
                         }, MenuOptionPriority.Default, null, null, 29f, null, null));
                     }
@@ -934,7 +907,7 @@ namespace ItemProcessor
         }
 
 
-        private void TryInsertFourthThing(string item = "")
+        private void TryInsertFourthThing(bool category, string item = "")
         {
             List<object> selectedObjects = Find.Selector.SelectedObjects;
             foreach (object selectedObject in selectedObjects)
@@ -942,14 +915,14 @@ namespace ItemProcessor
                 Building_ItemProcessor processor = selectedObject as Building_ItemProcessor;
                 if (processor != null)
                 {
-                    if (item != "")
+                    if (category)
                     {
                         processor.fourthCategory = ThingCategoryDef.Named(item).defName;
                         processor.fourthItem = processor.fourthCategory;
                     }
                     else
                     {
-                        processor.fourthItem = things.RandomElement().def.defName;
+                        processor.fourthItem = item;
                     }
                     if (processor.compItemProcessor.Props.isSemiAutomaticMachine)
                     {
