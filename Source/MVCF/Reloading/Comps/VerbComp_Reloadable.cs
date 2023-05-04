@@ -128,15 +128,15 @@ public class VerbCompProperties_Reloadable : VerbCompProperties
     public float ReloadTimePerShot;
     public bool StartLoaded = true;
 
-    public override void ResolveReferences()
+    public override void ResolveReferences(Def parentDef)
     {
-        base.ResolveReferences();
+        base.ResolveReferences(parentDef);
         AmmoFilter.ResolveReferences();
     }
 
-    public override void PostLoadSpecial(VerbProperties verbProps, AdditionalVerbProps additionalProps)
+    public override void PostLoadSpecial(VerbProperties verbProps, AdditionalVerbProps additionalProps, Def parentDef)
     {
-        base.PostLoadSpecial(verbProps, additionalProps);
+        base.PostLoadSpecial(verbProps, additionalProps, parentDef);
         MVCF.EnabledFeatures.Add("Reloading");
         MVCF.EnabledFeatures.Add("VerbComps");
         MVCF.EnabledFeatures.Add("ExtraEquipmentVerbs");

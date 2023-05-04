@@ -152,10 +152,10 @@ public class VerbCompProperties_Draw : VerbCompProperties
     public FloatRange idleRotationAngle;
     public IntRange idleRotationTicks;
     public bool onlyWhenDrafted;
-    private Dictionary<string, Dictionary<BodyTypeDef, DrawPosition>> positions;
-    private Dictionary<string, Dictionary<BodyTypeDef, Scaling>> scale;
     public List<Scaling> scalings;
     public List<DrawPosition> specificPositions;
+    private Dictionary<string, Dictionary<BodyTypeDef, DrawPosition>> positions;
+    private Dictionary<string, Dictionary<BodyTypeDef, Scaling>> scale;
     public Graphic Graphic { get; private set; }
 
     public Vector3 DrawPos(Pawn pawn, Vector3 drawPos, Rot4 rot)
@@ -181,9 +181,9 @@ public class VerbCompProperties_Draw : VerbCompProperties
         return s?.scaling ?? (drawScale == 0 ? 1f : drawScale);
     }
 
-    public override void PostLoadSpecial(VerbProperties verbProps, AdditionalVerbProps additionalProps)
+    public override void PostLoadSpecial(VerbProperties verbProps, AdditionalVerbProps additionalProps, Def parentDef)
     {
-        base.PostLoadSpecial(verbProps, additionalProps);
+        base.PostLoadSpecial(verbProps, additionalProps, parentDef);
         if (graphic != null)
         {
             Graphic = graphic.Graphic;
@@ -226,11 +226,12 @@ public class DrawPosition
     public Vector2 Right = PLACEHOLDER;
     public Vector2 Up = PLACEHOLDER;
 
-    public static DrawPosition Zero => new()
-    {
-        defName = "",
-        Default = Vector2.zero
-    };
+    public static DrawPosition Zero =>
+        new()
+        {
+            defName = "",
+            Default = Vector2.zero
+        };
 
     public Vector3 ForRot(Rot4 rot)
     {

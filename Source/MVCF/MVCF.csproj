@@ -88,6 +88,7 @@
     <Compile Include="Features\Feature_Reloading.cs" />
     <Compile Include="Features\Feature_VerbComps.cs" />
     <Compile Include="PatchSets\PatchSet_Animals.cs" />
+    <Compile Include="PatchSets\PatchSet_InfoCard.cs" />
     <Compile Include="PatchSets\PatchSet_Stats.cs" />
     <Compile Include="PatchSets\Trackers\PatchSet_Apparel.cs" />
     <Compile Include="PatchSets\PatchSet_Base.cs" />

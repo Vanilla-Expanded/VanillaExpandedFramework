@@ -45,23 +45,6 @@ public static class PawnVerbUtility
     public static Verb BestVerbForTarget(this Pawn p, LocalTargetInfo target, IEnumerable<ManagedVerb> verbs) =>
         p.Manager().ChooseVerb(target, verbs.ToList())?.Verb;
 
-    public static int GetDamage(this Verb verb)
-    {
-        switch (verb)
-        {
-            case Verb_LaunchProjectile launch:
-                return launch.Projectile.projectile.GetDamageAmount(1f);
-            case Verb_Bombardment _:
-            case Verb_PowerBeam _:
-            case Verb_MechCluster _:
-                return int.MaxValue;
-            case Verb_CastAbility cast:
-                return cast.ability.EffectComps.Count * 100;
-            default:
-                return 1;
-        }
-    }
-
     public static Verb GetAttackVerb(this Pawn pawn, Thing target, bool allowManualCastWeapons = false)
     {
         var manager = pawn.Manager();

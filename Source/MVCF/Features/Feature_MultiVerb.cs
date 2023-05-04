@@ -15,5 +15,6 @@ public abstract class Feature_MultiVerb : Feature
         yield return new PatchSet_TargetFinder();
         yield return new PatchSet_Equipment();
         yield return new PatchSet_Stats();
+        yield return new PatchSet_InfoCard();
     }
 }
