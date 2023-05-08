@@ -20,6 +20,7 @@ public class PatchSet_Reloading : PatchSet
         yield return Patch.Postfix(AccessTools.Method(typeof(PawnInventoryGenerator), "GenerateInventoryFor"),
             AccessTools.Method(GetType(), nameof(PostGenerate)));
         yield return Patch.Prefix(AccessTools.Method(typeof(JobGiver_AIFightEnemy), "TryGiveJob"), AccessTools.Method(GetType(), nameof(PreTryGiveJob)));
+        yield return Patch.Prefix(AccessTools.Method(typeof(JobDriver_Wait), "CheckForAutoAttack"), AccessTools.Method(GetType(), nameof(PreCheckAutoAttack)));
     }
 
     public static void PostGenerate(Pawn p, PawnGenerationRequest request)
@@ -82,6 +83,22 @@ public class PatchSet_Reloading : PatchSet
         }
 
         JobGiver_SwitchWeapon.TrySwitchWeapon(pawn);
+        return true;
+    }
+
+    public static bool PreCheckAutoAttack(JobDriver_Wait __instance)
+    {
+        if (__instance.pawn.Downed) return true;
+        if (__instance.pawn.stances.FullBodyBusy) return true;
+        if (__instance.pawn.IsCarryingPawn()) return true;
+
+        var comp = __instance.pawn.AllReloadComps().FirstOrDefault(r => r.AutoReload && r.NeedsReload() && r.ReloadItemInInventory != null);
+        if (comp != null)
+        {
+            __instance.pawn.jobs.TryTakeOrderedJob(JobGiver_ReloadFromInventory.MakeReloadJob(comp, comp.ReloadItemInInventory), JobTag.DraftedOrder);
+            return false;
+        }
+
         return true;
     }
 }

@@ -62,6 +62,8 @@ public class Command_VerbTargetExtended : Command_VerbTarget
         for (var i = 0; i < parts.Count; i++) parts[i].PostInit();
     }
 
+    public IEnumerable<CommandPart> Parts => parts;
+
     public override string TopRightLabel => topRightLabel;
     public override IEnumerable<FloatMenuOption> RightClickFloatMenuOptions => parts.SelectMany(part => part.GetRightClickOptions());
 

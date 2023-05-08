@@ -13,4 +13,5 @@
     <MVCF.Settings.LogLevel.Verbose>Verbose</MVCF.Settings.LogLevel.Verbose>
     <MVCF.Settings.LogLevel.Silly>Silly</MVCF.Settings.LogLevel.Silly>
     <MVCF.Settings.LogLevel.Tick>Tick</MVCF.Settings.LogLevel.Tick>
+    <MVCF.ToggleAutoReload>Toggle automatic reloading while drafted</MVCF.ToggleAutoReload>
 </LanguageData>

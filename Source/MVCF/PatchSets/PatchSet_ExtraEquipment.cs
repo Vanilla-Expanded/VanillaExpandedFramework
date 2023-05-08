@@ -27,8 +27,7 @@ public class PatchSet_ExtraEquipment : PatchSet
         var melee = __instance.parent.PrefersMelee();
         if (rangedVerbs.Count <= 1 && !melee && !MVCF.GetFeature<Feature_VerbComps>().Enabled) return true;
         if (DualWieldCompat.Active && __instance.parent.ParentHolder is Pawn_EquipmentTracker { pawn: { } pawn } tracker && tracker.PrimaryEq == __instance
-          &&
-            pawn.HasOffHand()) return true;
+         && pawn.HasOffHand()) return true;
         __result = rangedVerbs
            .Select(v => v.GetGizmosForVerb(v.Managed()))
            .OrderByDescending(cs => cs.Any(c => c is Command_VerbTarget))

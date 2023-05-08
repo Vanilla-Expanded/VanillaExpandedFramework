@@ -8,33 +8,33 @@ namespace MVCF.Reloading.Comps;
 
 public class VerbComp_Reloadable_ChangeableAmmo : VerbComp_Reloadable, IThingHolder
 {
-    private readonly ThingOwner<Thing> loadedAmmo = new();
+    public readonly ThingOwner<Thing> LoadedAmmo = new();
 
-    private Thing nextAmmoItem;
+    public Thing NextAmmoItem;
 
-    public virtual IEnumerable<Pair<ThingDef, Action>> AmmoOptions => loadedAmmo.Select(t => new Pair<ThingDef, Action>(t.def, () => { nextAmmoItem = t; }));
+    public virtual IEnumerable<Pair<ThingDef, Action>> AmmoOptions => LoadedAmmo.Select(t => new Pair<ThingDef, Action>(t.def, () => { NextAmmoItem = t; }));
 
     public void GetChildHolders(List<IThingHolder> outChildren)
     {
-        ThingOwnerUtility.AppendThingHoldersFromThings(outChildren, loadedAmmo);
+        ThingOwnerUtility.AppendThingHoldersFromThings(outChildren, LoadedAmmo);
     }
 
-    public ThingOwner GetDirectlyHeldThings() => loadedAmmo;
+    public ThingOwner GetDirectlyHeldThings() => LoadedAmmo;
     public IThingHolder ParentHolder => null;
-    public override ThingDef ProjectileOverride(ThingDef oldProjectile) => nextAmmoItem?.def.projectileWhenLoaded;
+    public override ThingDef ProjectileOverride(ThingDef oldProjectile) => NextAmmoItem?.def.projectileWhenLoaded;
 
     public override void ExposeData()
     {
         base.ExposeData();
-        loadedAmmo.ExposeData();
-        Scribe_References.Look(ref nextAmmoItem, "nextLoadedItem");
+        LoadedAmmo.ExposeData();
+        Scribe_References.Look(ref NextAmmoItem, "nextLoadedItem");
     }
 
     public override Thing Reload(Thing ammo)
     {
         var t = base.Reload(ammo);
-        loadedAmmo.TryAddOrTransfer(t);
-        nextAmmoItem ??= t;
+        LoadedAmmo.TryAddOrTransfer(t);
+        NextAmmoItem ??= t;
         return null;
     }
 
@@ -47,19 +47,19 @@ public class VerbComp_Reloadable_ChangeableAmmo : VerbComp_Reloadable, IThingHol
     public override void Notify_ShotFired()
     {
         base.Notify_ShotFired();
-        nextAmmoItem.stackCount--;
-        if (nextAmmoItem.stackCount == 0)
+        NextAmmoItem.stackCount--;
+        if (NextAmmoItem.stackCount == 0)
         {
-            loadedAmmo.Remove(nextAmmoItem);
-            nextAmmoItem.Destroy();
-            nextAmmoItem = loadedAmmo.FirstOrFallback();
+            LoadedAmmo.Remove(NextAmmoItem);
+            NextAmmoItem.Destroy();
+            NextAmmoItem = LoadedAmmo.FirstOrFallback();
         }
     }
 
     public override void Unload()
     {
-        loadedAmmo.TryDropAll(parent.Verb.caster.Position, parent.Verb.caster.Map, ThingPlaceMode.Near);
-        nextAmmoItem = null;
+        LoadedAmmo.TryDropAll(parent.Verb.caster.Position, parent.Verb.caster.Map, ThingPlaceMode.Near);
+        NextAmmoItem = null;
         ShotsRemaining = 0;
     }
 }
