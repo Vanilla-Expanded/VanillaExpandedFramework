@@ -8,5 +8,5 @@ public class Feature_Reloading : Feature_VerbComps
 {
     public override string Name => "Reloading";
 
-    public override IEnumerable<PatchSet> GetPatchSets() => base.GetPatchSets().Append(new PatchSet_Reloading());
+    public override IEnumerable<PatchSet> GetPatchSets() => base.GetPatchSets().Append(new PatchSet_Reloading()).Append(new PatchSet_IntegratedToggle());
 }

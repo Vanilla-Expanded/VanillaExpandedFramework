@@ -17,6 +17,7 @@ namespace MVCF.Reloading.Comps;
 public class VerbComp_Reloadable : VerbComp
 {
     private static readonly AccessTools.FieldRef<Verb, int> burstShotsLeft = AccessTools.FieldRefAccess<Verb, int>("burstShotsLeft");
+    public bool AutoReload;
     public int ShotsRemaining;
     public VerbCompProperties_Reloadable Props => props as VerbCompProperties_Reloadable;
 
@@ -28,6 +29,7 @@ public class VerbComp_Reloadable : VerbComp
     {
         base.ExposeData();
         Scribe_Values.Look(ref ShotsRemaining, "shotsRemaining");
+        Scribe_Values.Look(ref AutoReload, "autoReload");
     }
 
     public override IEnumerable<CommandPart> GetCommandParts(Command_VerbTargetExtended command)
@@ -114,6 +116,19 @@ public class CommandPart_Reloadable : CommandPart
                          new FloatMenuOption(pair.First.LabelCap, pair.Second)))
                 yield return option;
     }
+
+    public override bool DrawExtraGUIButtons(Rect rect, ref int buttonCount)
+    {
+        buttonCount++;
+        if (Mouse.IsOver(rect)) TooltipHandler.TipRegion(rect, "MVCF.ToggleAutoReload".Translate());
+        if (Widgets.ButtonImage(rect, Reloadable.AutoReload ? Widgets.CheckboxOnTex : Widgets.CheckboxOffTex))
+        {
+            Reloadable.AutoReload = !Reloadable.AutoReload;
+            return true;
+        }
+
+        return false;
+    }
 }
 
 public class VerbCompProperties_Reloadable : VerbCompProperties
@@ -140,7 +155,6 @@ public class VerbCompProperties_Reloadable : VerbCompProperties
         MVCF.EnabledFeatures.Add("Reloading");
         MVCF.EnabledFeatures.Add("VerbComps");
         MVCF.EnabledFeatures.Add("ExtraEquipmentVerbs");
-        ref var type = ref verbProps.verbClass;
-        if (NewVerbClass != null) type = NewVerbClass;
+        if (NewVerbClass != null) verbProps.verbClass = NewVerbClass;
     }
 }
