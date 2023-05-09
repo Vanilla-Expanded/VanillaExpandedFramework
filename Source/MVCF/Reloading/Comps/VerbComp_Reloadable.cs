@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 using HarmonyLib;
 using MVCF.Commands;
 using MVCF.Comps;
@@ -135,6 +136,7 @@ public class VerbCompProperties_Reloadable : VerbCompProperties
 {
     public ThingFilter AmmoFilter;
     public List<ThingDefCountRangeClass> GenerateAmmo;
+    public List<ThingCategoryCountRangeClass> GenerateAmmoCategories;
     public bool GenerateBackupWeapon;
     public int ItemsPerShot;
     public int MaxShots;
@@ -156,5 +158,23 @@ public class VerbCompProperties_Reloadable : VerbCompProperties
         MVCF.EnabledFeatures.Add("VerbComps");
         MVCF.EnabledFeatures.Add("ExtraEquipmentVerbs");
         if (NewVerbClass != null) verbProps.verbClass = NewVerbClass;
+    }
+}
+
+public class ThingCategoryCountRangeClass
+{
+    public ThingCategoryDef Category;
+    public IntRange Range;
+
+    public void LoadDataFromXmlCustom(XmlNode xmlRoot)
+    {
+        if (xmlRoot.ChildNodes.Count != 1)
+        {
+            Log.Error("Misconfigured ThingCategoryCountRangeClass: " + xmlRoot.OuterXml);
+            return;
+        }
+
+        DirectXmlCrossRefLoader.RegisterObjectWantsCrossRef(this, "Category", xmlRoot.Name);
+        Range = ParseHelper.FromString<IntRange>(xmlRoot.FirstChild.Value);
     }
 }

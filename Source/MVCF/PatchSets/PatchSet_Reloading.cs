@@ -28,12 +28,21 @@ public class PatchSet_Reloading : PatchSet
         foreach (var reloadable in p.AllReloadComps())
         {
             if (reloadable.Props.GenerateAmmo != null)
-                foreach (var thingDefCountRange in reloadable.Props.GenerateAmmo)
+                foreach (var thingDefRange in reloadable.Props.GenerateAmmo)
                 {
-                    var ammo = ThingMaker.MakeThing(thingDefCountRange.thingDef);
-                    ammo.stackCount = thingDefCountRange.countRange.RandomInRange;
+                    var ammo = ThingMaker.MakeThing(thingDefRange.thingDef);
+                    ammo.stackCount = thingDefRange.countRange.RandomInRange;
                     p.inventory?.innerContainer.TryAdd(ammo);
                 }
+
+            if (reloadable.Props.GenerateAmmoCategories != null)
+                foreach (var thingCategoryRange in reloadable.Props.GenerateAmmoCategories)
+                    if (thingCategoryRange.Category.childThingDefs.TryRandomElement(out var thingDef))
+                    {
+                        var ammo = ThingMaker.MakeThing(thingDef);
+                        ammo.stackCount = thingCategoryRange.Range.RandomInRange;
+                        p.inventory?.innerContainer.TryAdd(ammo);
+                    }
 
             if (reloadable.Props.GenerateBackupWeapon)
             {
