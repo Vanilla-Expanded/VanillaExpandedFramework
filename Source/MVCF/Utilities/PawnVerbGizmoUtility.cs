@@ -132,7 +132,7 @@ public static class PawnVerbGizmoUtility
             gizmo.Disable("CannotOrderNonControlled".Translate());
         if (pawn.WorkTagIsDisabled(WorkTags.Violent))
             gizmo.Disable("IsIncapableOfViolence".Translate((NamedArgument)pawn.LabelShort, (NamedArgument)pawn));
-        else if (!pawn.drafter.Drafted)
+        else if (!pawn.Drafted)
             gizmo.Disable("IsNotDrafted".Translate((NamedArgument)pawn.LabelShort, (NamedArgument)pawn));
 
         return gizmo;
