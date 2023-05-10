@@ -81,9 +81,3 @@ public static class PawnVerbUtility
         !mv.Verb.IsMeleeAttack && mv.Props is not { brawlerCaresAbout: false }
                                && !(mv.Source == VerbSource.Equipment && mv.Verb.EquipmentSource.PrefersMelee());
 }
-
-public interface IVerbScore
-{
-    float GetScore(Pawn pawn, LocalTargetInfo target);
-    bool ForceUse(Pawn pawn, LocalTargetInfo target);
-}

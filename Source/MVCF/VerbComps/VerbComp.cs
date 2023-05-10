@@ -20,6 +20,8 @@ public abstract class VerbComp : IExposable
 
     public virtual void ModifyScore(Pawn p, LocalTargetInfo target, ref float score) { }
 
+    public virtual bool ForceUse(Pawn p, LocalTargetInfo target) => false;
+
     public virtual void Notify_Spawned() { }
 
     public virtual void Notify_Despawned() { }

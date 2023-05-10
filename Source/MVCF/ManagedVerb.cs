@@ -140,7 +140,6 @@ public class ManagedVerb : IExposable, ILoadReferenceable
     public virtual float GetScore(Pawn p, LocalTargetInfo target)
     {
         MVCF.LogFormat($"Getting score of {Verb} with target {target}", LogLevel.Silly);
-        if (Verb is IVerbScore verbScore) return verbScore.GetScore(p, target);
         var accuracy = 0f;
         if (target.HasThing && !target.Thing.Spawned) target = target.Thing.PositionHeld;
         if (p.Map != null)
@@ -156,9 +155,10 @@ public class ManagedVerb : IExposable, ILoadReferenceable
         MVCF.LogFormat($"timeSpent: {timeSpent}", LogLevel.Silly);
         MVCF.LogFormat($"Score of {Verb} on target {target} is {damage / timeSpent}", LogLevel.Silly);
 
-
         return damage / timeSpent;
     }
+
+    public virtual bool ForceUse(Pawn pawn, LocalTargetInfo target) => false;
 
     public virtual bool PreCastShot() => true;
 }

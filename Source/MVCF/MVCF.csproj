@@ -141,6 +141,7 @@
     <Compile Include="Reloading\Comps\VerbComp_Reloadable.cs" />
     <Compile Include="VerbComps\VerbComp_Cooldown.cs" />
     <Compile Include="VerbComps\VerbComp_Draw.cs" />
+    <Compile Include="VerbComps\VerbComp_ForceUse.cs" />
     <Compile Include="VerbComps\VerbComp_Turret.cs" />
     <Compile Include="VerbManager.cs" />
     <Compile Include="Verbs\Verb_SmokePop.cs" />

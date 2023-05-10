@@ -69,6 +69,8 @@ public class VerbWithComps : ManagedVerb
         return score;
     }
 
+    public override bool ForceUse(Pawn pawn, LocalTargetInfo target) => base.ForceUse(pawn, target) || comps.Any(comp => comp.ForceUse(pawn, target));
+
     public override bool SetTarget(LocalTargetInfo target)
     {
         return !comps.Any(comp => !comp.SetTarget(target)) && base.SetTarget(target);
