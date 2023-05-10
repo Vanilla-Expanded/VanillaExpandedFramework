@@ -149,7 +149,7 @@ public class VerbManager : IExposable
         var bestScore = 0f;
         foreach (var verb in options)
         {
-            if (verb.Verb is IVerbScore verbScore && verbScore.ForceUse(Pawn, target)) return verb;
+            if (verb.ForceUse(Pawn, target)) return verb;
             var score = verb.GetScore(Pawn, target);
             MVCF.LogFormat($"Score is {score} compared to {bestScore}", LogLevel.Silly);
             if (score <= bestScore) continue;

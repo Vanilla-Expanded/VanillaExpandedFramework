@@ -28,9 +28,9 @@ public class VerbComp_Turret : VerbComp_Draw
         if (parent is not { Manager.Pawn.Spawned: true }) return;
         if (parent.Verb.Bursting) return;
 
-        if (currentTarget.IsValid && ((currentTarget.HasThing && currentTarget.ThingDestroyed) ||
-                                      (currentTarget.HasThing && currentTarget.Thing is Pawn p && (p.Downed || p.Dead)) ||
-                                      !parent.Verb.CanHitTarget(currentTarget))) currentTarget = LocalTargetInfo.Invalid;
+        if (currentTarget.IsValid && (currentTarget is { HasThing: true, ThingDestroyed: true }
+                                   || (currentTarget is { HasThing: true, Thing: Pawn p } && (p.Downed || p.Dead))
+                                   || !parent.Verb.CanHitTarget(currentTarget))) currentTarget = LocalTargetInfo.Invalid;
 
         if (cooldownTicksLeft > 0) cooldownTicksLeft--;
         if (cooldownTicksLeft > 0) return;
