@@ -25,7 +25,8 @@ public class PatchSet_HumanoidGizmos : PatchSet
         foreach (var gizmo in __result) yield return gizmo;
 
         if (!__instance.Drafted || (__instance.pawn.equipment.Primary != null && __instance.pawn.equipment
-               .Primary.def.IsRangedWeapon) || !__instance.pawn.Manager().AllRangedVerbsNoEquipment.Any())
+                                      .Primary.def.IsRangedWeapon)
+                                || !__instance.pawn.Manager().ManagedVerbs.Where(mv => mv.Source != VerbSource.Equipment).Select(mv => mv.Verb).Any())
             yield break;
 
         yield return new Command_Toggle
