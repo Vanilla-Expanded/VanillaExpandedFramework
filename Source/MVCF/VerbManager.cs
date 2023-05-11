@@ -25,11 +25,9 @@ public class VerbManager : IExposable
             !v.Verb.IsMeleeAttack && !v.Independent && v.Enabled &&
             v.Verb.Available() && (Pawn.IsColonist || v.Props is not { colonistOnly: true }));
 
-    public bool ShouldBrawlerUpset => verbs.Any(PawnVerbUtility.BrawlerUpsetBy);
+    public bool ShouldBrawlerUpset => verbs.Any(MeleeVerbUtility.BrawlerUpsetBy);
 
     public IEnumerable<Verb> AllVerbs => verbs.Select(mv => mv.Verb);
-
-    public IEnumerable<Verb> AllRangedVerbsNoEquipment => verbs.Where(mv => mv.Source != VerbSource.Equipment).Select(mv => mv.Verb);
 
     public IEnumerable<ManagedVerb> ManagedVerbs => verbs;
 
@@ -100,13 +98,13 @@ public class VerbManager : IExposable
     {
         MVCF.LogFormat($"Adding {verb} from {source}", LogLevel.Info);
 
-        if (AllVerbs.Contains(verb))
+        var mv = verb.Managed();
+
+        if (verbs.Contains(mv))
         {
             Log.Warning("[MVCF] Added duplicate verb " + verb);
             return;
         }
-
-        var mv = verb.Managed();
 
         mv.Notify_Added(this, source);
 

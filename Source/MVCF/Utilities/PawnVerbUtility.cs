@@ -76,8 +76,4 @@ public static class PawnVerbUtility
             _ => pawn.BestVerbForTarget(usedTarget, verbsToUse)
         };
     }
-
-    public static bool BrawlerUpsetBy(this ManagedVerb mv) =>
-        !mv.Verb.IsMeleeAttack && mv.Props is not { brawlerCaresAbout: false }
-                               && !(mv.Source == VerbSource.Equipment && mv.Verb.EquipmentSource.PrefersMelee());
 }

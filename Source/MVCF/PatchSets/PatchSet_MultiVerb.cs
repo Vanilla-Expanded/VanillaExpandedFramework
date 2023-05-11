@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using HarmonyLib;
 using MVCF.Comps;
 using MVCF.ModCompat;
@@ -12,8 +11,6 @@ namespace MVCF.PatchSets;
 
 public class PatchSet_MultiVerb : PatchSet
 {
-    private static readonly MethodInfo UsableVerbMI = AccessTools.Method(typeof(BreachingUtility), "UsableVerb");
-
     public override IEnumerable<Patch> GetPatches()
     {
         yield return new Patch(AccessTools.Method(typeof(Pawn), "TryGetAttackVerb"),
@@ -29,7 +26,6 @@ public class PatchSet_MultiVerb : PatchSet
             AccessTools.Method(GetType(), nameof(CanApplyWeaponFactor)));
         yield return Patch.Prefix(AccessTools.Method(typeof(Targeter), "GetTargetingVerb"), AccessTools.Method(GetType(), nameof(Prefix_GetTargetingVerb)));
     }
-
 
     public static bool Prefix_GetTargetingVerb(Pawn pawn, Targeter __instance, ref Verb __result)
     {
@@ -97,8 +93,8 @@ public class PatchSet_MultiVerb : PatchSet
 
     public static void FindVerbToUseForBreaching(ref Verb __result, Pawn pawn)
     {
-        if (__result == null && pawn.Manager() is VerbManager man)
-            __result = man.AllVerbs.FirstOrDefault(v => (bool)UsableVerbMI.Invoke(null, new object[] { v }) && v.verbProps.ai_IsBuildingDestroyer);
+        if (__result == null && pawn.Manager() is { } man)
+            __result = man.AllVerbs.FirstOrDefault(v => v.Available() && v.HarmsHealth() && v.verbProps.ai_IsBuildingDestroyer);
     }
 
     public static bool TryGetAttackVerb_Prefix(ref Verb __result, Pawn __instance, Thing target,
