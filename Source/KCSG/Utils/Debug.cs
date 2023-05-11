@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
+using RimWorld.BaseGen;
 using Verse;
 
 namespace KCSG
@@ -21,7 +22,7 @@ namespace KCSG
         }
 
         [DebugAction("KCSG", "Quickspawn structure...", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
-        private static void QuickspawnStructure()
+        public static void QuickspawnStructure()
         {
             if (DefDatabase<StructureLayoutDef>.AllDefs.Count() > 0)
             {
@@ -50,7 +51,7 @@ namespace KCSG
         }
 
         [DebugAction("KCSG", "Quickspawn temp structure...", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
-        private static void QuickspawnTempStructure()
+        public static void QuickspawnTempStructure()
         {
             if (Dialog_ExportWindow.exportedLayouts.Count > 0)
             {
@@ -80,7 +81,7 @@ namespace KCSG
         }
 
         [DebugAction("KCSG", "Quickspawn symbol...", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
-        private static void QuickspawnSymbol()
+        public static void QuickspawnSymbol()
         {
             if (DefDatabase<SymbolDef>.AllDefs.Count() > 0)
             {
@@ -105,7 +106,7 @@ namespace KCSG
         }
 
         [DebugAction("KCSG", "Quickspawn temp symbol...", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
-        private static void QuickspawnTempSymbol()
+        public static void QuickspawnTempSymbol()
         {
             if (Dialog_ExportWindow.exportedSymbolsDef.Count > 0)
             {
@@ -130,7 +131,7 @@ namespace KCSG
         }
 
         [DebugAction("KCSG", "Destroy all hostile pawns", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
-        private static void RemoveAllHostilePawns()
+        public static void RemoveAllHostilePawns()
         {
             foreach (Pawn pawn in Find.CurrentMap.mapPawns.AllPawnsSpawned.ToList())
             {
@@ -139,7 +140,7 @@ namespace KCSG
         }
 
         [DebugAction("KCSG", "Destroy all pawns", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
-        private static void RemoveAllPawns()
+        public static void RemoveAllPawns()
         {
             foreach (Pawn pawn in Find.CurrentMap.mapPawns.AllPawnsSpawned.ToList())
             {
@@ -148,7 +149,7 @@ namespace KCSG
         }
 
         [DebugAction("KCSG", "Spawn roof...", false, false, allowedGameStates = AllowedGameStates.PlayingOnMap)]
-        private static void SpawnRoof()
+        public static void SpawnRoof()
         {
             List<DebugMenuOption> debugMenuOptionList = new List<DebugMenuOption>
             {
@@ -201,8 +202,9 @@ namespace KCSG
 
             Find.WindowStack.Add(new Dialog_DebugOptionListLister(debugMenuOptionList));
         }
+
         [DebugAction("KCSG", "Spawn rocks...", false, false, allowedGameStates = AllowedGameStates.PlayingOnMap)]
-        private static void SpawnRocks()
+        public static void SpawnRocks()
         {
             List<DebugMenuOption> debugMenuOptionList = new List<DebugMenuOption>();
             var rocks = DefDatabase<ThingDef>.AllDefsListForReading.FindAll(t => t.category == ThingCategory.Building && t.building.isNaturalRock);
@@ -230,6 +232,46 @@ namespace KCSG
             }
 
             Find.WindowStack.Add(new Dialog_DebugOptionListLister(debugMenuOptionList));
+        }
+
+        [DebugAction("KCSG", "Generate settement (rect)", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        public static List<DebugActionNode> GenerateSettement()
+        {
+            var list = new List<DebugActionNode>();
+            var defs = DefDatabase<SettlementLayoutDef>.AllDefs;
+
+            if (defs.Any())
+            {
+                foreach (SettlementLayoutDef def in defs)
+                {
+                    list.Add(new DebugActionNode(def.defName)
+                    {
+                        action = delegate
+                        {
+                            DebugToolsGeneral.GenericRectTool(def.defName, (CellRect rect) =>
+                            {
+                                var map = Find.CurrentMap;
+                                BaseGen.globalSettings.map = map;
+                                var rp = new ResolveParams
+                                {
+                                    faction = map.ParentFaction,
+                                    rect = rect
+                                };
+                                GenOption.sld = def;
+                                GenOption.mineables = new Dictionary<IntVec3, Mineable>();
+                                foreach (var cell in rect)
+                                {
+                                    if (cell.InBounds(map))
+                                        GenOption.mineables.Add(cell, cell.GetFirstMineable(map));
+                                }
+                                SettlementGenUtils.Generate(rp, map, def);
+                            });
+                        }
+                    });
+                }
+            }
+
+            return list;
         }
     }
 }
