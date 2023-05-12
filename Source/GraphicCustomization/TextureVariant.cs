@@ -15,6 +15,7 @@ namespace GraphicCustomization
         public string texture;
         public string outline;
         public TextureVariantOverride textureVariantOverride;
+        public float chanceOverride = 1f;
 
         public bool Equals(TextureVariant other)
         {

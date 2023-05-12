@@ -69,7 +69,7 @@ namespace GraphicCustomization
             var randomizedVariants = new Dictionary<string, TextureVariant>();
             foreach (var graphicPart in Props.graphics)
             {
-                randomizedVariants[graphicPart.name] = graphicPart.texVariants.RandomElement();
+                randomizedVariants[graphicPart.name] = graphicPart.texVariants.RandomElementByWeight((TextureVariant x) => x.chanceOverride);
             }
 
             List<TextureVariant> variantsToReplace = new List<TextureVariant>();
