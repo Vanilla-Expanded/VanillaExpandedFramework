@@ -23,7 +23,7 @@ namespace KCSG
 
         public override void Generate(Map map, GenStepParams parms)
         {
-            GenOption.ext = new CustomGenOption
+            GenOption.customGenExt = new CustomGenOption
             {
                 symbolResolvers = symbolResolvers,
                 filthTypes = filthTypes,
@@ -38,7 +38,7 @@ namespace KCSG
             GenUtils.PreClean(layoutDef, map, cellRect, fullClear);
             GenUtils.GenerateLayout(layoutDef, cellRect, map);
 
-            if (GenOption.ext.symbolResolvers?.Count > 0)
+            if (GenOption.customGenExt.symbolResolvers?.Count > 0)
             {
                 Debug.Message("GenStep_CustomStructureGen - Additional symbol resolvers");
                 BaseGen.symbolStack.Push("kcsg_runresolvers", new ResolveParams

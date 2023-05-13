@@ -81,7 +81,7 @@ namespace KCSG
                         }
                     }
                 }
-                else if (symbol.thingDef.category == ThingCategory.Pawn && GenOption.ext?.symbolResolvers == null)
+                else if (symbol.thingDef.category == ThingCategory.Pawn && GenOption.customGenExt?.symbolResolvers == null)
                 {
                     GenSpawn.Spawn(symbol.thingDef, cell, map, WipeMode.VanishOrMoveAside);
                 }
@@ -94,7 +94,7 @@ namespace KCSG
                     GenerateBuildingAt(map, cell, symbol, layout, faction, wallForRoom);
 
                     // Generating settlement, we want to keep tracks of doors
-                    if (GenOption.ext != null && !GenOption.ext.UsingSingleLayout && symbol.thingDef.altitudeLayer == AltitudeLayer.DoorMoveable)
+                    if (GenOption.customGenExt != null && !GenOption.customGenExt.UsingSingleLayout && symbol.thingDef.altitudeLayer == AltitudeLayer.DoorMoveable)
                     {
                         doors?.Add(cell);
                     }
@@ -323,23 +323,23 @@ namespace KCSG
             }
             // Try to fill shelves
             if (thing is Building_Storage storage
-                && GenOption.sld != null
-                && GenOption.sld.stockpileOptions.fillStorageBuildings
-                && !GenOption.sld.stockpileOptions.fillWithDefs.NullOrEmpty())
+                && GenOption.settlementLayout != null
+                && GenOption.settlementLayout.stockpileOptions.fillStorageBuildings
+                && !GenOption.settlementLayout.stockpileOptions.fillWithDefs.NullOrEmpty())
             {
-                var marketValue = GenOption.sld.stockpileOptions.RefMarketValue;
+                var marketValue = GenOption.settlementLayout.stockpileOptions.RefMarketValue;
                 foreach (var storageCell in storage.AllSlotCells())
                 {
                     var otherThing = storageCell.GetFirstItem(map);
-                    if (Rand.Value < GenOption.sld.stockpileOptions.fillChance && GenOption.sld.stockpileOptions.replaceOtherThings || otherThing == null)
+                    if (Rand.Value < GenOption.settlementLayout.stockpileOptions.fillChance && GenOption.settlementLayout.stockpileOptions.replaceOtherThings || otherThing == null)
                     {
-                        if (GenOption.sld.stockpileOptions.replaceOtherThings && otherThing.Spawned)
+                        if (GenOption.settlementLayout.stockpileOptions.replaceOtherThings && otherThing.Spawned)
                             otherThing.DeSpawn();
 
-                        var thingDef = GenOption.sld.stockpileOptions.fillWithDefs.RandomElementByWeight(t => marketValue - t.BaseMarketValue);
+                        var thingDef = GenOption.settlementLayout.stockpileOptions.fillWithDefs.RandomElementByWeight(t => marketValue - t.BaseMarketValue);
                         var item = ThingMaker.MakeThing(thingDef, thingDef.stuffCategories?.Count > 0 ? GenStuff.RandomStuffFor(thingDef) : null);
 
-                        if (item.MarketValue <= GenOption.sld.stockpileOptions.maxValueStackIncrease)
+                        if (item.MarketValue <= GenOption.settlementLayout.stockpileOptions.maxValueStackIncrease)
                             item.stackCount = Mathf.Clamp(Rand.RangeInclusive(1, thingDef.stackLimit), 1, 90);
 
                         item.TryGetComp<CompQuality>()?.SetQuality(QualityUtility.GenerateQualityBaseGen(), ArtGenerationContext.Outsider);
@@ -390,7 +390,7 @@ namespace KCSG
             if (rot)
             {
                 corpse.timeOfDeath = Mathf.Max(Find.TickManager.TicksGame - 120000, 0);
-                GenOption.corpseToRot.Add(corpse);
+                GenOption.corpsesToRot.Add(corpse);
             }
 
             return corpse;

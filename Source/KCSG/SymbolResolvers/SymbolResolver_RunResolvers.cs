@@ -6,11 +6,11 @@ namespace KCSG
     {
         public override void Resolve(ResolveParams rp)
         {
-            if (GenOption.ext.symbolResolvers?.Count > 0)
+            if (GenOption.customGenExt.symbolResolvers?.Count > 0)
             {
-                for (int i = 0; i < GenOption.ext.symbolResolvers.Count; i++)
+                for (int i = 0; i < GenOption.customGenExt.symbolResolvers.Count; i++)
                 {
-                    BaseGen.symbolStack.Push(GenOption.ext.symbolResolvers[i], rp, null);
+                    BaseGen.symbolStack.Push(GenOption.customGenExt.symbolResolvers[i], rp, null);
                 }
             }
         }

@@ -21,27 +21,27 @@ namespace KCSG
 
         public static void Generate(IntVec3 loc, Map map, CustomGenOption ext)
         {
-            GenOption.ext = ext;
+            GenOption.customGenExt = ext;
 
-            if (GenOption.ext.UsingSingleLayout)
+            if (GenOption.customGenExt.UsingSingleLayout)
             {
-                GenOption.structureLayoutDef = GenUtils.ChooseStructureLayoutFrom(GenOption.ext.chooseFromlayouts);
+                GenOption.structureLayout = GenUtils.ChooseStructureLayoutFrom(GenOption.customGenExt.chooseFromlayouts);
             }
             else
             {
-                GenOption.sld = GenOption.ext.chooseFromSettlements.RandomElement();
+                GenOption.settlementLayout = GenOption.customGenExt.chooseFromSettlements.RandomElement();
             }
 
             // Get faction
             Faction faction = map.ParentFaction == null || map.ParentFaction == Faction.OfPlayer ? Find.FactionManager.RandomEnemyFaction() : map.ParentFaction;
 
             // Get settlement size
-            int width = GenOption.ext.UsingSingleLayout ? GenOption.structureLayoutDef.size : GenOption.sld.settlementSize.x;
-            int height = GenOption.ext.UsingSingleLayout ? GenOption.structureLayoutDef.size : GenOption.sld.settlementSize.z;
+            int width = GenOption.customGenExt.UsingSingleLayout ? GenOption.structureLayout.size : GenOption.settlementLayout.settlementSize.x;
+            int height = GenOption.customGenExt.UsingSingleLayout ? GenOption.structureLayout.size : GenOption.settlementLayout.settlementSize.z;
 
             // Get spawn position
             IntVec3 spawn = loc;
-            if (GenOption.ext.tryFindFreeArea)
+            if (GenOption.customGenExt.tryFindFreeArea)
             {
                 if (!RCellFinder.TryFindRandomCellNearTheCenterOfTheMapWith(i => RectFreeValidator(CellRect.CenteredOn(i, width, height), map), map, out spawn))
                     Log.Warning($"[KCSG] Trying to find free spawn area failed");
@@ -54,14 +54,14 @@ namespace KCSG
             GenOption.GetAllMineableIn(rect, map);
             // Pre-gen clean
             if (ext.preGenClear)
-                GenUtils.PreClean(GenOption.structureLayoutDef, map, rect, ext.fullClear);
+                GenUtils.PreClean(GenOption.structureLayout, map, rect, ext.fullClear);
 
             // Push symbolresolver
             ResolveParams rp = default;
             rp.faction = faction;
             rp.rect = rect;
             BaseGen.globalSettings.map = map;
-            BaseGen.symbolStack.Push(GenOption.ext.symbolResolver ?? "kcsg_settlement", rp, null);
+            BaseGen.symbolStack.Push(GenOption.customGenExt.symbolResolver ?? "kcsg_settlement", rp, null);
             BaseGen.Generate();
         }
 

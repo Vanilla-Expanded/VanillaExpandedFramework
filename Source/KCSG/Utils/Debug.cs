@@ -247,7 +247,7 @@ namespace KCSG
                                     faction = map.ParentFaction,
                                     rect = rect
                                 };
-                                GenOption.sld = def;
+                                GenOption.settlementLayout = def;
                                 GenOption.GetAllMineableIn(rect, map);
                                 SettlementGenUtils.Generate(rp, map, def);
                             });

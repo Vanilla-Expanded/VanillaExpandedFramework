@@ -13,7 +13,7 @@ namespace KCSG
             Map map = BaseGen.globalSettings.map;
             rp.faction = rp.faction ?? Find.FactionManager.RandomEnemyFaction(false, false, true, TechLevel.Undefined);
 
-            if (GenOption.ext.UsingSingleLayout)
+            if (GenOption.customGenExt.UsingSingleLayout)
             {
                 // Add hostile pawns
                 AddHostilePawnGroup(rp.faction, map, rp, PawnGroupKindDefOf.Settlement);
@@ -23,7 +23,7 @@ namespace KCSG
             else
             {
                 // Add hostile pawns
-                AddHostilePawnGroup(rp.faction, map, rp, GenOption.sld.defenseOptions.groupKindDef);
+                AddHostilePawnGroup(rp.faction, map, rp, GenOption.settlementLayout.defenseOptions.groupKindDef);
 
                 // Props scatterer
                 BaseGen.symbolStack.Push("kcsg_scatterpropsaround", rp, null);
@@ -35,7 +35,7 @@ namespace KCSG
                 BaseGen.symbolStack.Push("kcsg_generateroad", rp, null);
 
                 // Add settlement defense
-                if (GenOption.sld.defenseOptions.addEdgeDefense)
+                if (GenOption.settlementLayout.defenseOptions.addEdgeDefense)
                 {
                     int dWidth = Rand.Bool ? 2 : 4;
                     ResolveParams edgeParms = rp;
@@ -50,7 +50,7 @@ namespace KCSG
                 BaseGen.symbolStack.Push("kcsg_runresolvers", rp, null);
 
                 // Start gen
-                SettlementGenUtils.Generate(rp, map, GenOption.sld);
+                SettlementGenUtils.Generate(rp, map, GenOption.settlementLayout);
             }
         }
 
@@ -80,7 +80,7 @@ namespace KCSG
                     seed = parms.settlementPawnGroupSeed
                 };
             }
-            if (GenOption.sld != null) rp.pawnGroupMakerParams.points *= GenOption.sld.defenseOptions.pawnGroupMultiplier;
+            if (GenOption.settlementLayout != null) rp.pawnGroupMakerParams.points *= GenOption.settlementLayout.defenseOptions.pawnGroupMultiplier;
 
             BaseGen.symbolStack.Push("pawnGroup", rp, null);
         }

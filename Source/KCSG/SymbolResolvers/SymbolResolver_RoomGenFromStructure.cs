@@ -12,10 +12,10 @@ namespace KCSG
             Map map = BaseGen.globalSettings.map;
 
             GenOption.GetAllMineableIn(rp.rect, map);
-            GenUtils.GenerateLayout(GenOption.structureLayoutDef, rp.rect, map);
+            GenUtils.GenerateLayout(GenOption.structureLayout, rp.rect, map);
 
             // Clear fog in rect if wanted
-            if (GenOption.ext.clearFogInRect)
+            if (GenOption.customGenExt.clearFogInRect)
             {
                 foreach (var c in rp.rect)
                 {

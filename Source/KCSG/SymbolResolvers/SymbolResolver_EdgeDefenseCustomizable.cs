@@ -16,7 +16,7 @@ namespace KCSG
                 return;
 
             Map map = BaseGen.globalSettings.map;
-            var defenseOptions = GenOption.sld.defenseOptions;
+            var defenseOptions = GenOption.settlementLayout.defenseOptions;
 
             int width = rp.edgeDefenseWidth ?? (!rp.edgeDefenseMortarsCount.HasValue || rp.edgeDefenseMortarsCount.Value <= 0 ? (Rand.Bool ? 2 : 4) : 4);
             width = Mathf.Clamp(width, 1, Mathf.Min(rp.rect.Width, rp.rect.Height) / 2);

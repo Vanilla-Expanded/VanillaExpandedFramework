@@ -21,11 +21,15 @@ namespace KCSG
         public static CellType[][] grid;
         public static IntVec3 size;
 
+        public static List<IntVec3> usedSpots;
+
         public static List<TerrainDef> mapRoad;
         public static List<IntVec3> doors;
 
         public static DateTime startTime;
         public static int seed;
+
+        public static ThingDef generalWallStuff;
 
         /// <summary>
         /// Generate settlement
@@ -81,7 +85,7 @@ namespace KCSG
 
                     if (GenOption.PropsOptions.addMainRoadProps && road != null)
                     {
-                        GenOption.usedSpots = new List<IntVec3>();
+                        usedSpots = new List<IntVec3>();
                         SpawnMainRoadProps(road);
                     }
 
@@ -114,7 +118,7 @@ namespace KCSG
             Debug.Message($"Sampling time: {(DateTime.Now - samplingStart).TotalMilliseconds}ms. Vects count: {vects?.Count}");
 
             if (sld.stuffableOptions.generalWallStuff)
-                GenOption.generalWallStuff = RandomWallStuffByWeight(ThingDefOf.Wall);
+                generalWallStuff = RandomWallStuffByWeight(ThingDefOf.Wall);
 
             // Place and choose buildings.
             if (vects != null && vects.Count > 1)
@@ -132,8 +136,8 @@ namespace KCSG
         {
             var option = GenOption.StuffableOptions;
 
-            if (option.generalWallStuff && GenOption.generalWallStuff != null)
-                return GenOption.generalWallStuff;
+            if (option.generalWallStuff && generalWallStuff != null)
+                return generalWallStuff;
 
             if (option.allowedWallStuff.Count > 0)
             {
@@ -310,7 +314,7 @@ namespace KCSG
                 IntVec3 last = i - 1 > 0 ? road[i - 1] : curr;
 
                 if (Rand.Chance(GenOption.PropsOptions.mainRoadPropsChance)
-                    && !NearUsedSpot(GenOption.usedSpots, curr, GenOption.PropsOptions.mainRoadMinDistance))
+                    && !NearUsedSpot(usedSpots, curr, GenOption.PropsOptions.mainRoadMinDistance))
                 {
                     var rot = last.x != curr.x ? Rot4.East : Rot4.North;
                     var thingDef = GenOption.PropsOptions.RandomMainRoadProps();
@@ -323,7 +327,7 @@ namespace KCSG
                         else
                             GenSpawn.Spawn(thing, curr, map);
 
-                        GenOption.usedSpots.Add(curr);
+                        usedSpots.Add(curr);
                     }
                 }
             }
@@ -338,8 +342,8 @@ namespace KCSG
             if (road.NullOrEmpty())
                 return;
 
-            if (GenOption.usedSpots == null)
-                GenOption.usedSpots = new List<IntVec3>();
+            if (usedSpots == null)
+                usedSpots = new List<IntVec3>();
 
             var map = BaseGen.globalSettings.map;
             for (int i = 0; i < road.Count; i++)
@@ -359,7 +363,7 @@ namespace KCSG
                     {
                         if (grid[c.z][c.x] == CellType.Used)
                             continue;
-                        if (NearUsedSpot(GenOption.usedSpots, c, GenOption.PropsOptions.linkRoadMinDistance))
+                        if (NearUsedSpot(usedSpots, c, GenOption.PropsOptions.linkRoadMinDistance))
                             continue;
 
                         var rect = new CellRect(c.x, c.z, thingDef.size.x, thingDef.size.z);
@@ -380,7 +384,7 @@ namespace KCSG
                         else
                             GenSpawn.Spawn(thing, matchingCells.RandomElement(), map);
 
-                        GenOption.usedSpots.Add(cell);
+                        usedSpots.Add(cell);
                     }
                 }
             }

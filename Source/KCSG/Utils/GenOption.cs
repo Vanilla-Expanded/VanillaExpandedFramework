@@ -7,36 +7,22 @@ namespace KCSG
 {
     public class GenOption
     {
-        public static CustomGenOption ext;
-        public static SettlementLayoutDef sld;
-        public static StructureLayoutDef structureLayoutDef;
-
-        public static ThingDef generalWallStuff;
-        public static List<IntVec3> usedSpots;
-
+        public static CustomGenOption customGenExt;
+        public static SettlementLayoutDef settlementLayout;
+        public static StructureLayoutDef structureLayout;
         // Falling structures
-        public static FallingStructure fExt;
-        public static StructureLayoutDef fDef;
-
+        public static FallingStructure fallingExt;
+        public static StructureLayoutDef fallingLayout;
         // List of corpses to rot
-        public static List<Corpse> corpseToRot = new List<Corpse>();
+        public static List<Corpse> corpsesToRot = new List<Corpse>();
 
         private static Dictionary<IntVec3, Mineable> mineables;
 
-        public static StuffableOptions StuffableOptions
-        {
-            get
-            {
-                if (sld != null)
-                    return sld.stuffableOptions;
+        public static StuffableOptions StuffableOptions => settlementLayout?.stuffableOptions;
 
-                return null;
-            }
-        }
+        public static RoadOptions RoadOptions => settlementLayout.roadOptions;
 
-        public static RoadOptions RoadOptions => sld.roadOptions;
-
-        public static PropsOptions PropsOptions => sld.propsOptions;
+        public static PropsOptions PropsOptions => settlementLayout.propsOptions;
 
         /// <summary>
         /// Fill the mineable list from all mineable in rect of map
@@ -86,13 +72,13 @@ namespace KCSG
         /// </summary>
         public static void RotAllThing()
         {
-            for (int i = 0; i < corpseToRot.Count; i++)
+            for (int i = 0; i < corpsesToRot.Count; i++)
             {
-                var corpse = corpseToRot[i];
+                var corpse = corpsesToRot[i];
                 corpse.timeOfDeath = Mathf.Max(Find.TickManager.TicksGame - 60000 * Rand.RangeInclusive(5, 15), 0);
                 corpse.TryGetComp<CompRottable>()?.RotImmediately();
             }
-            corpseToRot.Clear();
+            corpsesToRot.Clear();
         }
     }
 }

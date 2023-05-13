@@ -16,15 +16,15 @@ namespace KCSG
             if (!base.CanUseWith(parms, groupKind))
                 return false;
 
-            GenOption.fExt = def.GetModExtension<FallingStructure>();
-            if (!GenOption.fExt.canBeUsedBy.Contains(parms.faction.def))
+            GenOption.fallingExt = def.GetModExtension<FallingStructure>();
+            if (!GenOption.fallingExt.canBeUsedBy.Contains(parms.faction.def))
                 return false;
 
-            if (GenOption.fExt.needToHaveSettlements && !Find.World.worldObjects.Settlements.FindAll(s => s.Faction == parms.faction).Any())
+            if (GenOption.fallingExt.needToHaveSettlements && !Find.World.worldObjects.Settlements.FindAll(s => s.Faction == parms.faction).Any())
                 return false;
 
-            GenOption.fDef = GenUtils.ChooseStructureLayoutFrom(GenOption.fExt.structures, parms);
-            if (GenOption.fDef == null)
+            GenOption.fallingLayout = GenUtils.ChooseStructureLayoutFrom(GenOption.fallingExt.structures, parms);
+            if (GenOption.fallingLayout == null)
                 return false;
 
             return true;
@@ -63,14 +63,14 @@ namespace KCSG
         /// </summary>
         public override List<Pawn> SpawnThreats(IncidentParms parms)
         {
-            var cellRect = CellRect.CenteredOn(parms.spawnCenter, (int)GenOption.fDef.sizes.x, (int)GenOption.fDef.sizes.y);
+            var cellRect = CellRect.CenteredOn(parms.spawnCenter, (int)GenOption.fallingLayout.sizes.x, (int)GenOption.fallingLayout.sizes.y);
 
             var allSymbList = new List<string>();
             Map map = (Map)parms.target;
 
-            for (int i = 0; i < GenOption.fDef.sizes.y; i++)
+            for (int i = 0; i < GenOption.fallingLayout.sizes.y; i++)
             {
-                var str = GenOption.fDef.layouts[0][i];
+                var str = GenOption.fallingLayout.layouts[0][i];
                 var split = str.Split(',');
                 for (int s = 0; s < split.Count(); s++)
                 {
@@ -91,7 +91,7 @@ namespace KCSG
                     if (temp.thingDef == null)
                         continue;
 
-                    if (GenOption.fExt.thingsToSpawnInDropPod.Contains(temp.thingDef))
+                    if (GenOption.fallingExt.thingsToSpawnInDropPod.Contains(temp.thingDef))
                     {
                         var thing = ThingMaker.MakeThing(temp.thingDef, temp.stuffDef ?? GenStuff.RandomStuffFor(temp.thingDef));
                         thing.SetFactionDirect(parms.faction);
@@ -109,14 +109,14 @@ namespace KCSG
                         var thing = ThingMaker.MakeThing(temp.thingDef, temp.stuffDef ?? GenStuff.RandomStuffFor(temp.thingDef));
                         thing.SetFactionDirect(parms.faction);
 
-                        if (!GenOption.fExt.spawnDormantWhenPossible && thing.TryGetComp<CompCanBeDormant>() is CompCanBeDormant ccbd && ccbd != null)
+                        if (!GenOption.fallingExt.spawnDormantWhenPossible && thing.TryGetComp<CompCanBeDormant>() is CompCanBeDormant ccbd && ccbd != null)
                         {
                             ccbd.wakeUpOnTick = Find.TickManager.TicksGame + 150;
                         }
 
                         ThingDef def = new ThingDef
                         {
-                            thingClass = GenOption.fExt.skyfaller,
+                            thingClass = GenOption.fallingExt.skyfaller,
                             category = ThingCategory.Ethereal,
                             useHitPoints = false,
 
@@ -166,7 +166,7 @@ namespace KCSG
             }
 
             IncidentParms nParms = parms;
-            RCellFinder.TryFindRandomCellNearWith(parms.spawnCenter, i => i.Walkable(map), map, out nParms.spawnCenter, Math.Min(GenOption.fDef.size, GenOption.fDef.size));
+            RCellFinder.TryFindRandomCellNearWith(parms.spawnCenter, i => i.Walkable(map), map, out nParms.spawnCenter, Math.Min(GenOption.fallingLayout.size, GenOption.fallingLayout.size));
 
             return base.SpawnThreats(nParms);
         }
