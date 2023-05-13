@@ -62,10 +62,8 @@ namespace KCSG
                         }, map);
 
 
-                        CellRect spawnRect = CellRect.CenteredOn(spawnPos, size, size);
-                        GenOption.mineables = new Dictionary<IntVec3, Mineable>();
-                        foreach (var cell in spawnRect)
-                            GenOption.mineables.Add(cell, cell.GetFirstMineable(map));
+                        var spawnRect = CellRect.CenteredOn(spawnPos, size, size);
+                        GenOption.GetAllMineableIn(spawnRect, map);
                         GenUtils.GenerateLayout(layout, spawnRect, map);
                     }
 

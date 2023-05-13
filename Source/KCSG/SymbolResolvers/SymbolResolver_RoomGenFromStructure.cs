@@ -11,10 +11,7 @@ namespace KCSG
         {
             Map map = BaseGen.globalSettings.map;
 
-            GenOption.mineables = new Dictionary<IntVec3, Mineable>();
-            foreach (var cell in rp.rect)
-                GenOption.mineables.Add(cell, cell.GetFirstMineable(map));
-
+            GenOption.GetAllMineableIn(rp.rect, map);
             GenUtils.GenerateLayout(GenOption.structureLayoutDef, rp.rect, map);
 
             // Clear fog in rect if wanted

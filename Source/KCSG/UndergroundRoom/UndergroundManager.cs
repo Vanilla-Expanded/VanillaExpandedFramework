@@ -40,10 +40,7 @@ namespace KCSG.UndergroundRoom
                     {
                         var cellRect = CellRect.CenteredOn(map.Center, layout.size, layout.size);
 
-                        GenOption.mineables = new Dictionary<IntVec3, Mineable>();
-                        foreach (var cell in cellRect)
-                            GenOption.mineables.Add(cell, cell.GetFirstMineable(map));
-
+                        GenOption.GetAllMineableIn(cellRect, map);
                         GenUtils.GenerateLayout(layout, cellRect, map);
 
                         foreach (var cell in cellRect)

@@ -114,9 +114,7 @@ namespace KCSG
             if (preGenClear)
                 GenUtils.PreClean(layoutDef, map, cellRect, fullClear);
 
-            GenOption.mineables = new Dictionary<IntVec3, Mineable>();
-            foreach (var cell in cellRect)
-                GenOption.mineables.Add(cell, cell.GetFirstMineable(map));
+            GenOption.GetAllMineableIn(cellRect, map);
 
             GenUtils.GenerateLayout(layoutDef, cellRect, map);
 

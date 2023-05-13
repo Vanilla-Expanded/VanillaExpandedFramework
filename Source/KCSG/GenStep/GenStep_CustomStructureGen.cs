@@ -33,11 +33,8 @@ namespace KCSG
 
             StructureLayoutDef layoutDef = structureLayoutDefs.RandomElement();
 
-            CellRect cellRect = CellRect.CenteredOn(map.Center, layoutDef.size, layoutDef.size);
-            GenOption.mineables = new Dictionary<IntVec3, Mineable>();
-            foreach (var cell in cellRect)
-                GenOption.mineables.Add(cell, cell.GetFirstMineable(map));
-
+            var cellRect = CellRect.CenteredOn(map.Center, layoutDef.size, layoutDef.size);
+            GenOption.GetAllMineableIn(cellRect, map);
             GenUtils.PreClean(layoutDef, map, cellRect, fullClear);
             GenUtils.GenerateLayout(layoutDef, cellRect, map);
 

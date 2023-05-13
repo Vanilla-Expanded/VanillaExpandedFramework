@@ -87,7 +87,7 @@ namespace KCSG
                 }
                 else
                 {
-                    if (GenOption.mineables[cell] != null && symbol.thingDef.designationCategory == DesignationCategoryDefOf.Security)
+                    if (GenOption.GetMineableAt(cell) != null && symbol.thingDef.designationCategory == DesignationCategoryDefOf.Security)
                     {
                         return;
                     }

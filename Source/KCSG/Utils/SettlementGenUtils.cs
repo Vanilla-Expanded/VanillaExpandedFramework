@@ -56,7 +56,7 @@ namespace KCSG
                 TerrainDef t = map.terrainGrid.TerrainAt(cell);
                 if ((mapRoad != null && mapRoad.Contains(t))
                     || (sld.avoidBridgeable && t.affordances.Contains(TerrainAffordanceDefOf.Bridgeable))
-                    || (sld.avoidMountains && GenOption.mineables[cell] != null))
+                    || (sld.avoidMountains && GenOption.GetMineableAt(cell) != null))
                 {
                     grid[cell.z][cell.x] = CellType.Used;
                 }
@@ -220,14 +220,7 @@ namespace KCSG
         /// </summary>
         public static void SetTerrainAt(IntVec3 c, Map map, TerrainDef roadDef)
         {
-            if (GenOption.mineables.ContainsKey(c))
-            {
-                GenOption.DespawnMineableAt(c);
-            }
-            else
-            {
-                c.GetFirstMineable(map)?.DeSpawn();
-            }
+            GenOption.DespawnMineableAt(c);
 
             if (map.terrainGrid.TerrainAt(c) is TerrainDef terrainDef)
             {
@@ -1717,7 +1710,7 @@ namespace KCSG
 
                     if (InBound(vec))
                     {
-                        var mineable = GenOption.mineables.ContainsKey(vec) ? GenOption.mineables[vec] : vec.GetFirstMineable(map);
+                        var mineable = GenOption.GetMineableAt(vec);
                         if ((pathGrid.WalkableFast(vec) || mineable != null))
                         {
                             loc.SetDistance(target.X, target.Y);

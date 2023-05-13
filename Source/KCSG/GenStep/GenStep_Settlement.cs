@@ -51,10 +51,7 @@ namespace KCSG
             CellRect rect = CellRect.CenteredOn(spawn, width, height);
             rect.ClipInsideMap(map);
 
-            GenOption.mineables = new Dictionary<IntVec3, Mineable>();
-            foreach (var cell in rect)
-                GenOption.mineables.Add(cell, cell.GetFirstMineable(map));
-
+            GenOption.GetAllMineableIn(rect, map);
             // Pre-gen clean
             if (ext.preGenClear)
                 GenUtils.PreClean(GenOption.structureLayoutDef, map, rect, ext.fullClear);
