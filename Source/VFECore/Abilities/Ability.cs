@@ -123,7 +123,9 @@
         {
             float power = CalculateModifiedStatForPawn(this.def.power, this.def.powerStatFactors, this.def.powerStatOffsets);
             var multiplier = this.def.GetModExtension<AbilityExtension_RandomPowerMultiplier>();
-            return multiplier == null ? power : Rand.Range(power * multiplier.min, power * multiplier.max);
+            if (multiplier == null) return power;
+            FloatRange range = multiplier.range;
+            return power * Rand.Range(range.min, range.max);
         }
 
         public virtual int GetCastTimeForPawn() =>
@@ -150,9 +152,8 @@
             if (multiplier == null)
                 return $"{"VFEA.AbilityStatsPower".Translate()}: {power}".Colorize(Color.cyan);
 
-            float minPower = power * multiplier.min;
-            float maxPower = power * multiplier.max;
-            return $"{"VFEA.AbilityStatsPower".Translate()}: {minPower}-{maxPower}".Colorize(Color.cyan);
+            FloatRange range = multiplier.range;
+            return $"{"VFEA.AbilityStatsPower".Translate()}: {range.min}-{range.max}".Colorize(Color.cyan);
         }
 
         public virtual string GetDescriptionForPawn()
@@ -170,7 +171,7 @@
             if (this.def.minRadius > 0f)
                 sb.AppendLine($"{"VFEA.MinRadius".Translate()}: {this.def.minRadius}".Colorize(Color.cyan));
             string powerForPawnDescription = this.GetPowerForPawnDescription();
-            if (powerForPawnDescription.Length > 0)
+            if (powerForPawnDescription.NullOrEmpty())
                 sb.AppendLine(powerForPawnDescription);
             int castTimeForPawn = this.GetCastTimeForPawn();
             if (castTimeForPawn > 0)

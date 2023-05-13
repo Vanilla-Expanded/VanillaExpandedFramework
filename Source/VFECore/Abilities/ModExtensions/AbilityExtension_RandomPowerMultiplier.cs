@@ -4,9 +4,15 @@ namespace VFECore.Abilities;
 
 /// power (after stat offsets) becomes a random number within a range.
 ///
-/// The formula used is Rand.Range(power * min, power * max)
+/// The formula used is power * Rand.Range(range.min, range.max)
+/// Example XML:
+/// <li Class="VFECore.Abilities.AbilityExtension_RandomPowerMultiplier">
+///   <range>
+///     <min>0.5 </min>
+///     <!-- Because max is not provided, it defaults to 1f -->
+///   </range>
+/// </li>
 public class AbilityExtension_RandomPowerMultiplier : DefModExtension
 {
-    public float min = 1f;  // Must be <= max
-    public float max = 1f;  // Must be >= min
+    public FloatRange range = FloatRange.One;
 }
