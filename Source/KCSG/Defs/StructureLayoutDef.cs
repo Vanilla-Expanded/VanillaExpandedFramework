@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -9,11 +10,9 @@ namespace KCSG
 {
     public class StructureLayoutDef : Def
     {
-        internal bool RequiredModLoaded { get; private set; }
-        internal bool IsForSlaves { get; private set; }
-
         public List<List<string>> layouts = new List<List<string>>();
         public List<string> terrainGrid = new List<string>();
+        public List<string> terrainColorGrid = new List<string>();
         public List<string> roofGrid = new List<string>();
 
         public bool isStorage = false;
@@ -38,7 +37,12 @@ namespace KCSG
         internal int gridCount;
         internal List<SymbolDef[,]> _layouts = new List<SymbolDef[,]>();
         internal TerrainDef[,] _terrainGrid;
+        internal ColorDef[,] _terrainColorGrid;
         internal string[,] _roofGrid;
+
+        internal bool RequiredModLoaded { get; private set; }
+
+        internal bool IsForSlaves { get; private set; }
 
         /// <summary>
         /// Resolve layout infos
@@ -89,7 +93,6 @@ namespace KCSG
                 return;
 
             _terrainGrid = new TerrainDef[size, size];
-
             for (int h = 0; h < size; h++)
             {
                 if (h < tCount)
@@ -109,6 +112,33 @@ namespace KCSG
                 {
                     for (int w = 0; w < size; w++)
                         _terrainGrid[h, w] = null;
+                }
+            }
+
+            var tcCount = terrainColorGrid.Count;
+            if (tcCount == 0)
+                return;
+
+            _terrainColorGrid = new ColorDef[size, size];
+            for (int i = 0; i < size; i++)
+            {
+                if (i < tcCount)
+                {
+                    var colorLine = terrainColorGrid[i].Split(',');
+                    var colorLineCount = colorLine.Length;
+
+                    for (int w = 0; w < size; w++)
+                    {
+                        if (w < colorLineCount)
+                            _terrainColorGrid[i, w] = DefDatabase<ColorDef>.GetNamedSilentFail(colorLine[w]);
+                        else
+                            _terrainColorGrid[i, w] = null;
+                    }
+                }
+                else
+                {
+                    for (int w = 0; w < size; w++)
+                        _terrainColorGrid[i, w] = null;
                 }
             }
         }
@@ -245,6 +275,16 @@ namespace KCSG
             {
                 var l = new XElement("terrainGrid", null);
                 foreach (var str in terrainGrid)
+                {
+                    l.Add(new XElement("li", str));
+                }
+                layoutDef.Add(l);
+            }
+
+            if (!terrainColorGrid.NullOrEmpty())
+            {
+                var l = new XElement("terrainColorGrid", null);
+                foreach (var str in terrainColorGrid)
                 {
                     l.Add(new XElement("li", str));
                 }

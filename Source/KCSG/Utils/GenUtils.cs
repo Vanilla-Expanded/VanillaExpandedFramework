@@ -522,6 +522,7 @@ namespace KCSG
             if (layout._terrainGrid == null || layout._terrainGrid.Length == 0)
                 return;
 
+            var useColorGrid = layout._terrainColorGrid != null && layout._terrainColorGrid.Length > 0;
             var cells = rect.Cells.ToList();
             for (int h = 0; h < layout.size; h++)
             {
@@ -542,6 +543,9 @@ namespace KCSG
                         GenOption.DespawnMineableAt(cell);
                         map.terrainGrid.SetTerrain(cell, terrain);
                     }
+
+                    if (useColorGrid)
+                        map.terrainGrid.SetTerrainColor(cell, layout._terrainColorGrid[h, w]);
                 }
             }
         }

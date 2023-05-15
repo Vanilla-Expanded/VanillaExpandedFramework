@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using Verse;
@@ -26,6 +27,7 @@ namespace KCSG
                 needRoofClearance = Dialog_ExportWindow.needRoofClearance,
                 tags = Dialog_ExportWindow.tags.ToList(),
                 terrainGrid = CreateTerrainlayout(area, map),
+                terrainColorGrid = CreateTerrainColorLayout(area, map),
                 roofGrid = CreateRoofGrid(area, map),
                 modRequirements = GetNeededMods(),
                 spawnAtPos = new List<Pos>(),
@@ -206,6 +208,49 @@ namespace KCSG
                     else
                     {
                         AddToString(ref temp, terrain.defName, x, hw.x);
+                        add = true;
+                    }
+
+                    cell.x++;
+                }
+
+                cell.x -= hw.x;
+                cell.z++;
+
+                ll.Add(temp);
+            }
+
+            if (add)
+                return ll;
+
+            return new List<string>();
+        }
+
+        /// <summary>
+        /// Create layout for terrains color
+        /// </summary>
+        private static List<string> CreateTerrainColorLayout(Area area, Map map)
+        {
+            var cellExport = Dialog_ExportWindow.cells;
+            var ll = new List<string>();
+            var hw = EdgeFromList(cellExport);
+            var active = area?.ActiveCells;
+            var add = false;
+
+            var cell = cellExport.First();
+            for (int z = 0; z < hw.z; z++)
+            {
+                string temp = "";
+                for (int x = 0; x < hw.x; x++)
+                {
+                    var color = map.terrainGrid.ColorAt(cell);
+                    if (color == null || (area != null && !active.Contains(cell)))
+                    {
+                        AddToString(ref temp, ".", x, hw.x);
+                    }
+                    else
+                    {
+                        AddToString(ref temp, color.defName, x, hw.x);
                         add = true;
                     }
 

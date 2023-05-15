@@ -42,7 +42,7 @@ namespace KCSG
                 {
                     Debug.Message($"Missing symbol: {m.Key} (needed {m.Value} times)");
                 }
-            }            
+            }
             // Cache layout per tag
             SettlementGenUtils.BuildingPlacement.CacheTags();
             // Make new map generators, used with preventBridgeable
