@@ -223,6 +223,11 @@ namespace KCSG
             {
                 thing.SetStyleDef(p.GetStyleFor(thing.def));
             }
+            // Try coloring it
+            if (thing.def.building != null && thing.def.building.paintable && symbol.colorDef != null && thing is Building building)
+            {
+                building.ChangePaint(symbol.colorDef);
+            }
             // Try to refuel if applicable
             CompRefuelable refuelable = thing.TryGetComp<CompRefuelable>();
             refuelable?.Refuel(refuelable.Props.fuelCapacity);

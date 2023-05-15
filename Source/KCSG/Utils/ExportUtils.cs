@@ -118,23 +118,38 @@ namespace KCSG
                             SymbolDef symbolDef;
                             if (thing.Stuff != null)
                             {
-                                symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.thingDef == thing.def
-                                                                                                   && s.stuffDef == thing.Stuff
-                                                                                                   && (thing.def.rotatable == false || s.rotation == thing.Rotation));
+                                if (thing is Building building && building.PaintColorDef is ColorDef colorDef)
+                                {
+                                    symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.thingDef == thing.def
+                                                                                                       && s.stuffDef == thing.Stuff
+                                                                                                       && s.colorDef == colorDef
+                                                                                                       && (thing.def.rotatable == false || s.rotation == thing.Rotation));
+                                }
+                                else
+                                {
+                                    symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.thingDef == thing.def
+                                                                                                       && s.stuffDef == thing.Stuff
+                                                                                                       && (thing.def.rotatable == false || s.rotation == thing.Rotation));
+                                }
                             }
                             else
                             {
-                                symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.thingDef == thing.def
-                                                                                                   && (thing.def.rotatable == false || s.rotation == thing.Rotation));
+                                if (thing is Building building && building.PaintColorDef is ColorDef colorDef)
+                                {
+                                    symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.thingDef == thing.def
+                                                                                                       && s.colorDef == colorDef
+                                                                                                       && (thing.def.rotatable == false || s.rotation == thing.Rotation));
+                                }
+                                else
+                                {
+                                    symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.thingDef == thing.def
+                                                                                                       && (thing.def.rotatable == false || s.rotation == thing.Rotation));
+                                }
                             }
 
                             if (symbolDef == null)
                             {
-                                string symbolString = thing.def.defName;
-                                if (thing.Stuff != null) symbolString += "_" + thing.Stuff.defName;
-                                if (thing.def.rotatable && thing.def.category != ThingCategory.Plant) symbolString += "_" + StartupActions.Rot4ToStringEnglish(thing.Rotation);
-
-                                AddToString(ref temp, symbolString, x, hw.x);
+                                AddToString(ref temp, GetSymbolNameFor(thing), x, hw.x);
                             }
                             else
                             {
@@ -586,14 +601,7 @@ namespace KCSG
         /// </summary>
         private static SymbolDef CreateThingSymbol(Thing thing)
         {
-            var defName = thing.def.defName;
-
-            if (thing.Stuff != null)
-                defName += "_" + thing.Stuff.defName;
-
-            if (thing.def.rotatable && thing.def.category != ThingCategory.Plant && !thing.def.IsFilth)
-                defName += "_" + StartupActions.Rot4ToStringEnglish(thing.Rotation);
-
+            var defName = GetSymbolNameFor(thing);
             if (!Dialog_ExportWindow.exportedSymbolsName.Contains(defName)
                 && !DefDatabase<SymbolDef>.AllDefsListForReading.FindAll(s => s.defName == defName).Any())
             {
@@ -606,8 +614,11 @@ namespace KCSG
                 if (thing.Stuff != null)
                     symbol.stuff = thing.Stuff.defName;
 
-                if (thing.def.rotatable && thing.def.category != ThingCategory.Plant)
+                if (thing.def.rotatable && thing.def.category != ThingCategory.Plant && !thing.def.IsFilth)
                     symbol.rotation = thing.Rotation;
+
+                if (thing is Building building && building.PaintColorDef is ColorDef colorDef)
+                    symbol.color = colorDef.defName;
 
                 symbol.ResolveReferences();
                 Dialog_ExportWindow.exportedSymbolsName.Add(defName);
@@ -617,6 +628,27 @@ namespace KCSG
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Create symbol defName from thing
+        /// </summary>
+        /// <param name="thing">Thing</param>
+        /// <returns>string</returns>
+        private static string GetSymbolNameFor(Thing thing)
+        {
+            string symbolString = thing.def.defName;
+
+            if (thing.Stuff != null)
+                symbolString += "_" + thing.Stuff.defName;
+
+            if (thing is Building building && building.PaintColorDef is ColorDef colorDef)
+                symbolString += "_" + colorDef.LabelCap.Replace(" ", "");
+
+            if (thing.def.rotatable && thing.def.category != ThingCategory.Plant)
+                symbolString += "_" + StartupActions.Rot4ToStringEnglish(thing.Rotation);
+
+            return symbolString;
         }
     }
 }

@@ -10,13 +10,17 @@ namespace KCSG
         public bool spawnPartOfFaction = true;
 
         // Building & item basic infos
-        public ThingDef thingDef = null;
         public string thing = null;
+        internal ThingDef thingDef = null;
+        public int maxStackSize = -1;
+
         public ThingDef replacementDef = null;
 
-        public ThingDef stuffDef = null;
         public string stuff = null;
-        public int maxStackSize = -1;
+        internal ThingDef stuffDef = null;
+
+        public string color = null;
+        internal ColorDef colorDef = null;
 
         // Building info
         public Rot4 rotation = Rot4.North;
@@ -36,7 +40,7 @@ namespace KCSG
 
         // Pawn
         public string pawnKindDef = null;
-        public PawnKindDef pawnKindDefNS = null;
+        internal PawnKindDef pawnKindDefNS = null;
         public bool isSlave = false;
         public FactionDef faction;
         public int numberToSpawn = 1;
@@ -59,6 +63,9 @@ namespace KCSG
 
             if (stuff != null)
                 stuffDef = DefDatabase<ThingDef>.GetNamed(stuff, Debug.Enabled);
+
+            if (color != null)
+                colorDef = DefDatabase<ColorDef>.GetNamed(color, Debug.Enabled);
 
             if (pawnKindDef != null)
                 pawnKindDefNS = DefDatabase<PawnKindDef>.GetNamed(pawnKindDef, Debug.Enabled);
@@ -83,6 +90,9 @@ namespace KCSG
 
             if (stuff != null)
                 layoutDef.Add(new XElement("stuff", stuff));
+
+            if (color != null)
+                layoutDef.Add(new XElement("color", color));
 
             if (pawnKindDef != null)
                 layoutDef.Add(new XElement("pawnKindDef", pawnKindDef));
