@@ -104,7 +104,8 @@ public class ManagedVerb : IExposable, ILoadReferenceable
 
     public virtual IEnumerable<Gizmo> GetGizmos(Thing ownerThing)
     {
-        yield return GetTargetCommand(ownerThing);
+        if (Verb.verbProps.hasStandardCommand)
+            yield return GetTargetCommand(ownerThing);
 
         if (GetToggleType() == ToggleType.Separate)
             yield return GetToggleCommand(ownerThing);

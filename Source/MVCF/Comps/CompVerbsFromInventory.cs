@@ -27,7 +27,7 @@ public class CompVerbsFromInventory : ThingComp, IVerbOwner
         Scribe_Deep.Look(ref verbTracker, "inventoryVerbTracker", this);
         if (Scribe.mode != LoadSaveMode.PostLoadInit) return;
         verbTracker ??= new VerbTracker(this);
-        if (parent?.holdingOwner?.Owner is not Pawn_ApparelTracker tracker) return;
+        if (parent?.holdingOwner?.Owner is not Pawn_InventoryTracker tracker) return;
         foreach (var verb in verbTracker.AllVerbs)
             verb.caster = tracker.pawn;
     }
