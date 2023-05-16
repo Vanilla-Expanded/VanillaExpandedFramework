@@ -151,20 +151,18 @@ namespace PipeSystem
         /// </summary>
         public override void CompTick()
         {
+            // Check if we have enough resources
+            if (storage >= ChoosedResult.countNeeded)
+                enoughResource = true;
+            else
+                enoughResource = false;
+            // Check if processor should produce this tick
             int tick = Find.TickManager.TicksGame;
             if (tick >= nextProcessTick)
             {
-                if (storage >= ChoosedResult.countNeeded
-                    && (flickable == null || flickable.SwitchIsOn)
-                    && (compPower == null || compPower.PowerOn))
-                {
+                if (enoughResource && (flickable == null || flickable.SwitchIsOn) && (compPower == null || compPower.PowerOn))
                     SpawnOrPushToNet();
-                    enoughResource = true;
-                }
-                else if (storage == 0)
-                {
-                    enoughResource = false;
-                }
+
                 nextProcessTick = tick + ChoosedResult.eachTicks;
             }
             // Sound
