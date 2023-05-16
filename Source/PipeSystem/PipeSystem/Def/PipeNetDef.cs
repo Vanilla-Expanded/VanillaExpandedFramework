@@ -19,7 +19,8 @@ namespace PipeSystem
 
         public List<LinkOption> linkToRefuelables;
 
-        public float transferAmount = 100f;
+        public float transferAmount = 100f; // Used for tank marked for transfer
+        public float convertAmount = -1f; // Maximum converted at once by CompThingToResource
         public bool noStorageAlert = false;
         public bool foggedNetAlert = false;
         public List<ThingDef> alertProofDefs = new List<ThingDef>(); // If net is one building, and it's in this list, no alert

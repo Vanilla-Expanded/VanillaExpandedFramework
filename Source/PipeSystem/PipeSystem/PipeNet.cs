@@ -536,7 +536,13 @@ namespace PipeSystem
                     {
                         // Get the resource we can add to the net
                         var resourceToAdd = heldThing.stackCount / converter.Props.ratio;
-                        var resourceCanAdd = resourceToAdd > AvailableCapacity ? AvailableCapacity : resourceToAdd;
+
+                        float resourceCanAdd;
+                        if (def.convertAmount > 0)
+                            resourceCanAdd = Mathf.Min(resourceToAdd, AvailableCapacity, def.convertAmount);
+                        else
+                            resourceCanAdd = Mathf.Min(resourceToAdd, AvailableCapacity);
+
                         if (resourceCanAdd > 0)
                         {
                             // Add it
