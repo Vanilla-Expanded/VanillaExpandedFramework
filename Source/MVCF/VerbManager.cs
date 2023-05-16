@@ -31,6 +31,10 @@ public class VerbManager : IExposable
 
     public IEnumerable<ManagedVerb> ManagedVerbs => verbs;
 
+    public IEnumerable<Verb> AdditionalMeleeVerbs =>
+        verbs.Where(verb => verb.Verb.IsMeleeAttack && verb.Source is VerbSource.Apparel or VerbSource.Inventory && verb.Verb.IsStillUsableBy(Pawn))
+           .Select(verb => verb.Verb);
+
     public Pawn Pawn { get; private set; }
 
     public void ExposeData()

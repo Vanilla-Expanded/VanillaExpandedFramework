@@ -23,4 +23,10 @@ public static class MeleeVerbUtility
         preferMeleeCache.Add(eq, res);
         return res;
     }
+
+    public static void AddAdditionalMeleeVerbs(this Pawn pawn, List<Verb> verbs)
+    {
+        verbs.AddRange(pawn.Manager().AdditionalMeleeVerbs);
+        GenDebug.LogList(verbs);
+    }
 }
