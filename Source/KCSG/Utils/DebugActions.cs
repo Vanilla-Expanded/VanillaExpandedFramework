@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using RimWorld;
 using RimWorld.BaseGen;
 using Verse;
@@ -146,7 +147,6 @@ namespace KCSG
 
             foreach (var pawn in pawns)
                 pawn.Destroy(DestroyMode.KillFinalize);
-            }
         }
 
         [DebugAction("KCSG", "Destroy all pawns", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
@@ -154,38 +154,30 @@ namespace KCSG
         {
             foreach (var pawn in Find.CurrentMap.mapPawns.AllPawnsSpawned.ToList())
                 pawn.Destroy(DestroyMode.KillFinalize);
-            }
         }
 
-        [DebugAction("KCSG", "Spawn rocks...", false, false, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        [DebugAction("KCSG", "Spawn rocks (rect)", false, false, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         public static void SpawnRocks()
         {
-            List<DebugMenuOption> debugMenuOptionList = new List<DebugMenuOption>();
+            var list = new List<DebugMenuOption>();
             var rocks = DefDatabase<ThingDef>.AllDefsListForReading.FindAll(t => t.category == ThingCategory.Building && t.building.isNaturalRock);
+            var map = Find.CurrentMap;
+
             foreach (var rock in rocks)
             {
-                var name = rock.LabelCap;
-                debugMenuOptionList.Add(new DebugMenuOption($"{name} 1*1", DebugMenuOptionMode.Tool, () =>
+                list.Add(new DebugMenuOption(rock.LabelCap, DebugMenuOptionMode.Tool, () =>
                 {
-                    GenSpawn.Spawn(rock, UI.MouseCell(), Find.CurrentMap);
-                }));
-                debugMenuOptionList.Add(new DebugMenuOption($"{name} 3*3", DebugMenuOptionMode.Tool, () =>
-                {
-                    foreach (IntVec3 cell in CellRect.CenteredOn(UI.MouseCell(), 1).ClipInsideMap(Find.CurrentMap))
+                    DebugToolsGeneral.GenericRectTool(rock.LabelCap, rect =>
                     {
-                        GenSpawn.Spawn(rock, cell, Find.CurrentMap);
-                    }
-                }));
-                debugMenuOptionList.Add(new DebugMenuOption($"{name} 5*5", DebugMenuOptionMode.Tool, () =>
-                {
-                    foreach (IntVec3 cell in CellRect.CenteredOn(UI.MouseCell(), 2).ClipInsideMap(Find.CurrentMap))
-                    {
-                        GenSpawn.Spawn(rock, cell, Find.CurrentMap);
-                    }
+                        foreach (var cell in rect)
+                        {
+                            GenSpawn.Spawn(rock, cell, map);
+                        }
+                    });
                 }));
             }
 
-            Find.WindowStack.Add(new Dialog_DebugOptionListLister(debugMenuOptionList));
+            Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
         }
     }
 }
