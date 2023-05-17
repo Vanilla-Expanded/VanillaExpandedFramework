@@ -148,10 +148,10 @@ namespace KCSG
                     }
                 }
 
-                IntVec3 center = map.Center;
-                Pos offset = layoutDef.spawnAtPos.RandomElement();
+                var center = map.Center;
+                var offset = layoutDef.spawnAt.RandomElement();
                 center.x += offset.x;
-                center.y += offset.y;
+                center.y += offset.z;
                 Debug.Message($"Spawning pawns and stuff at {center}");
                 DropThingGroupsAt(center, map, thingsGroups, instaDrop: (Find.GameInitData.QuickStarted || method != PlayerPawnsArriveMethod.DropPods), leaveSlag: true, allowFogged: false);
             }

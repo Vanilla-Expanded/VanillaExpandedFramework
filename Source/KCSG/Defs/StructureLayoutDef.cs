@@ -28,8 +28,7 @@ namespace KCSG
         public List<string> modRequirements = new List<string>();
 
         // Spawn position
-        public List<string> spawnAt = new List<string>();
-        public List<Pos> spawnAtPos = new List<Pos>();
+        public List<IntVec2> spawnAt = new List<IntVec2>();
 
         // Values used regularly in gen:
         internal int size;
@@ -49,10 +48,6 @@ namespace KCSG
         /// </summary>
         public void ResolveLayouts()
         {
-            // Read pos from strings
-            foreach (string sPos in spawnAt)
-                spawnAtPos.Add(Pos.FromString(sPos));
-
             // Make it a even rect
             var height = layouts[0].Count;
             var width = layouts[0][0].Split(',').Count();

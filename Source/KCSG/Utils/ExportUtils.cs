@@ -30,8 +30,7 @@ namespace KCSG
                 terrainColorGrid = CreateTerrainColorLayout(area, map),
                 roofGrid = CreateRoofGrid(area, map),
                 modRequirements = GetNeededMods(),
-                spawnAtPos = new List<Pos>(),
-                spawnAt = new List<string>(),
+                spawnAt = new List<IntVec2>(),
                 _layouts = new List<SymbolDef[,]>()
             };
 
