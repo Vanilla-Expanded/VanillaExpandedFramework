@@ -175,7 +175,7 @@ namespace KCSG
                         output += exportedSymbolsDef[i].ToXMLString() + "\n\n";
                     }
 
-                    GUIUtility.systemCopyBuffer = output;
+                    GUIUtility.systemCopyBuffer = output.TrimEndNewlines();
                     Messages.Message($"Copied {count} symbols to clipboard.", MessageTypeDefOf.TaskCompletion);
                 }
                 else
