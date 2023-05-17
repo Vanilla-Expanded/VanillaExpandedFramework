@@ -138,20 +138,21 @@ namespace KCSG
             Find.WindowStack.Add(new Dialog_DebugOptionListLister(mainList));
         }
 
-        [DebugAction("KCSG", "Destroy all hostile pawns", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
-        public static void RemoveAllHostilePawns()
+        [DebugAction("KCSG", "Destroy hostile pawns", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        public static void DestroyHostilePawns()
         {
-            foreach (Pawn pawn in Find.CurrentMap.mapPawns.AllPawnsSpawned.ToList())
-            {
-                if (pawn.Faction != Faction.OfPlayer) pawn.Destroy(DestroyMode.KillFinalize);
+            var pawns = Find.CurrentMap.mapPawns.AllPawnsSpawned.ToList();
+            pawns.RemoveAll(p => p.Faction == null || p.Faction == Faction.OfPlayer || !p.Faction.HostileTo(Faction.OfPlayer));
+
+            foreach (var pawn in pawns)
+                pawn.Destroy(DestroyMode.KillFinalize);
             }
         }
 
         [DebugAction("KCSG", "Destroy all pawns", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         public static void RemoveAllPawns()
         {
-            foreach (Pawn pawn in Find.CurrentMap.mapPawns.AllPawnsSpawned.ToList())
-            {
+            foreach (var pawn in Find.CurrentMap.mapPawns.AllPawnsSpawned.ToList())
                 pawn.Destroy(DestroyMode.KillFinalize);
             }
         }
