@@ -156,61 +156,6 @@ namespace KCSG
             }
         }
 
-        [DebugAction("KCSG", "Spawn roof...", false, false, allowedGameStates = AllowedGameStates.PlayingOnMap)]
-        public static void SpawnRoof()
-        {
-            List<DebugMenuOption> debugMenuOptionList = new List<DebugMenuOption>
-            {
-                // Constructed
-                new DebugMenuOption($"{RoofDefOf.RoofConstructed.defName} 1*1", DebugMenuOptionMode.Tool, () =>
-                {
-                    Find.CurrentMap.roofGrid.SetRoof(UI.MouseCell(), RoofDefOf.RoofConstructed);
-                }),
-                new DebugMenuOption($"{RoofDefOf.RoofConstructed.defName} 3*3", DebugMenuOptionMode.Tool, () =>
-                {
-                    foreach (IntVec3 c in CellRect.CenteredOn(UI.MouseCell(), 1))
-                        Find.CurrentMap.roofGrid.SetRoof(c, RoofDefOf.RoofConstructed);
-                }),
-                new DebugMenuOption($"{RoofDefOf.RoofConstructed.defName} 9*9", DebugMenuOptionMode.Tool, () =>
-                {
-                    foreach (IntVec3 c in CellRect.CenteredOn(UI.MouseCell(), 4))
-                        Find.CurrentMap.roofGrid.SetRoof(c, RoofDefOf.RoofConstructed);
-                }),
-                // Thin
-                new DebugMenuOption($"{RoofDefOf.RoofRockThin.defName} 1*1", DebugMenuOptionMode.Tool, () =>
-                {
-                    Find.CurrentMap.roofGrid.SetRoof(UI.MouseCell(), RoofDefOf.RoofRockThin);
-                }),
-                new DebugMenuOption($"{RoofDefOf.RoofRockThin.defName} 3*3", DebugMenuOptionMode.Tool, () =>
-                {
-                    foreach (IntVec3 c in CellRect.CenteredOn(UI.MouseCell(), 1))
-                        Find.CurrentMap.roofGrid.SetRoof(c, RoofDefOf.RoofRockThin);
-                }),
-                 new DebugMenuOption($"{RoofDefOf.RoofRockThin.defName} 9*9", DebugMenuOptionMode.Tool, () =>
-                {
-                    foreach (IntVec3 c in CellRect.CenteredOn(UI.MouseCell(), 4))
-                        Find.CurrentMap.roofGrid.SetRoof(c, RoofDefOf.RoofRockThin);
-                }),
-                // Thick
-                new DebugMenuOption($"{RoofDefOf.RoofRockThick.defName} 1*1", DebugMenuOptionMode.Tool, () =>
-                {
-                    Find.CurrentMap.roofGrid.SetRoof(UI.MouseCell(), RoofDefOf.RoofRockThick);
-                }),
-                new DebugMenuOption($"{RoofDefOf.RoofRockThick.defName} 3*3", DebugMenuOptionMode.Tool, () =>
-                {
-                    foreach (IntVec3 c in CellRect.CenteredOn(UI.MouseCell(), 1))
-                        Find.CurrentMap.roofGrid.SetRoof(c, RoofDefOf.RoofRockThick);
-                }),
-                new DebugMenuOption($"{RoofDefOf.RoofRockThick.defName} 9*9", DebugMenuOptionMode.Tool, () =>
-                {
-                    foreach (IntVec3 c in CellRect.CenteredOn(UI.MouseCell(), 4))
-                        Find.CurrentMap.roofGrid.SetRoof(c, RoofDefOf.RoofRockThick);
-                })
-            };
-
-            Find.WindowStack.Add(new Dialog_DebugOptionListLister(debugMenuOptionList));
-        }
-
         [DebugAction("KCSG", "Spawn rocks...", false, false, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         public static void SpawnRocks()
         {
