@@ -165,7 +165,7 @@ namespace KCSG
 
             foreach (var rock in rocks)
             {
-                list.Add(new DebugMenuOption(rock.LabelCap, DebugMenuOptionMode.Tool, () =>
+                list.Add(new DebugMenuOption(rock.LabelCap, DebugMenuOptionMode.Action, () =>
                 {
                     DebugToolsGeneral.GenericRectTool(rock.LabelCap, rect =>
                     {
