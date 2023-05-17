@@ -25,7 +25,7 @@ namespace KCSG
 
             if (GenOption.customGenExt.UsingSingleLayout)
             {
-                GenOption.structureLayout = GenUtils.ChooseStructureLayoutFrom(GenOption.customGenExt.chooseFromlayouts);
+                GenOption.structureLayout = RandomUtils.RandomLayoutFrom(GenOption.customGenExt.chooseFromlayouts);
             }
             else
             {

@@ -4,7 +4,6 @@ using System.Linq;
 using RimWorld;
 using RimWorld.BaseGen;
 using Verse;
-using Random = System.Random;
 
 namespace KCSG
 {
@@ -118,7 +117,7 @@ namespace KCSG
             Debug.Message($"Sampling time: {(DateTime.Now - samplingStart).TotalMilliseconds}ms. Vects count: {vects?.Count}");
 
             if (sld.stuffableOptions.generalWallStuff)
-                generalWallStuff = RandomWallStuffByWeight(ThingDefOf.Wall);
+                generalWallStuff = RandomUtils.RandomWallStuffWeighted(ThingDefOf.Wall);
 
             // Place and choose buildings.
             if (vects != null && vects.Count > 1)
@@ -127,79 +126,6 @@ namespace KCSG
                 BuildingPlacement.Run(vects, sld, rp);
                 Debug.Message($"Building time: {(DateTime.Now - buildingStart).TotalMilliseconds}ms. Doors count: {doors.Count}");
             }
-        }
-
-        /// <summary>
-        /// Get random stuff for wall
-        /// </summary>
-        public static ThingDef RandomWallStuffByWeight(ThingDef thingDef)
-        {
-            var option = GenOption.StuffableOptions;
-
-            if (option.generalWallStuff && generalWallStuff != null)
-                return generalWallStuff;
-
-            if (option.allowedWallStuff.Count > 0)
-            {
-                return RandomStuffFromFor(option.allowedWallStuff, thingDef);
-            }
-
-            if (option.disallowedWallStuff.Count > 0)
-            {
-                var from = StartupActions.stuffs.FindAll(t => !option.disallowedWallStuff.Contains(t));
-                return RandomStuffFromFor(from, thingDef);
-            }
-
-            return RandomStuffFromFor(StartupActions.stuffs, thingDef);
-        }
-
-        /// <summary>
-        /// Get random stuff for wall, from symbol
-        /// </summary>
-        public static ThingDef RandomWallStuffByWeight(SymbolDef symbol)
-        {
-            if (GenOption.StuffableOptions != null && GenOption.StuffableOptions.randomizeWall && symbol.thingDef.MadeFromStuff)
-                return RandomWallStuffByWeight(symbol.thingDef);
-
-            return symbol.stuffDef;
-        }
-
-        /// <summary>
-        /// Get random stuff for furniture
-        /// </summary>
-        public static ThingDef RandomFurnitureStuffByWeight(SymbolDef symbol)
-        {
-            if (!symbol.thingDef.MadeFromStuff)
-                return null;
-
-            var option = GenOption.StuffableOptions;
-
-            if (option != null && option.randomizeFurniture && !option.excludedFunitureDefs.Contains(symbol.thingDef))
-            {
-                if (option.allowedFurnitureStuff.Count > 0)
-                {
-                    return RandomStuffFromFor(option.allowedFurnitureStuff, symbol.thingDef);
-                }
-
-                if (option.disallowedFurnitureStuff.Count > 0)
-                {
-                    var from = StartupActions.stuffs.FindAll(t => !option.disallowedFurnitureStuff.Contains(t));
-                    return RandomStuffFromFor(from, symbol.thingDef);
-                }
-
-                return RandomStuffFromFor(StartupActions.stuffs, symbol.thingDef);
-            }
-
-            return symbol.stuffDef ?? symbol.thingDef.defaultStuff ?? ThingDefOf.WoodLog;
-        }
-
-        /// <summary>
-        /// Get stuff by commonality from list, matching thingDef requirement
-        /// </summary>
-        public static ThingDef RandomStuffFromFor(List<ThingDef> from, ThingDef thingDef)
-        {
-            return from.FindAll(t => thingDef.stuffCategories.Find(c => t.stuffProps.categories.Contains(c)) != null)
-                .RandomElementByWeight(t => t.stuffProps.commonality);
         }
 
         /// <summary>
@@ -331,7 +257,6 @@ namespace KCSG
                     }
                 }
             }
-
         }
 
         /// <summary>
@@ -420,13 +345,13 @@ namespace KCSG
         {
             /**
              * Poisson Disk Sampling
-             * 
+             *
              * Based from java source by Herman Tulleken
              * http://www.luma.co.za/labs/2008/02/27/poisson-disk-sampling/
-             * 
+             *
              * The algorithm is from the "Fast Poisson Disk Sampling in Arbitrary Dimensions" paper by Robert Bridson
              * http://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph07-poissondisk.pdf
-             * 
+             *
              **/
 
             public const int DefaultPointsPerIteration = 30;
@@ -474,7 +399,7 @@ namespace KCSG
                 return points;
             }
 
-            static void AddFirstPoint(CellRect rect, IntVec3 topLeft)
+            private static void AddFirstPoint(CellRect rect, IntVec3 topLeft)
             {
                 while (true)
                 {
@@ -497,7 +422,7 @@ namespace KCSG
                 }
             }
 
-            static bool AddNextPoint(CellRect rect, IntVec3 point, float minimumDistance)
+            private static bool AddNextPoint(CellRect rect, IntVec3 point, float minimumDistance)
             {
                 var q = GenerateRandomAround(point, minimumDistance, random);
 
@@ -529,7 +454,7 @@ namespace KCSG
                 return false;
             }
 
-            static IntVec3 GenerateRandomAround(IntVec3 center, float minimumDistance, Random random)
+            private static IntVec3 GenerateRandomAround(IntVec3 center, float minimumDistance, Random random)
             {
                 var d = random.NextDouble();
                 var radius = minimumDistance + minimumDistance * d;
@@ -543,7 +468,7 @@ namespace KCSG
                 return new IntVec3(center.x + newX, 0, center.z + newZ);
             }
 
-            static float DistanceSquared(IntVec3 intVec3, IntVec3 other)
+            private static float DistanceSquared(IntVec3 intVec3, IntVec3 other)
             {
                 float x = intVec3.x - other.x;
                 float y = intVec3.z - other.z;
@@ -703,7 +628,7 @@ namespace KCSG
                 // Generate center building
                 if (!sld.centerBuildings.centralBuildingTags.NullOrEmpty())
                 {
-                    var layout = GenUtils.ChooseStructureLayoutFrom(structuresTagsCache[sld.centerBuildings.centralBuildingTags.RandomElement()]);
+                    var layout = RandomUtils.RandomLayoutFrom(structuresTagsCache[sld.centerBuildings.centralBuildingTags.RandomElement()]);
                     var cellRect = CellRect.CenteredOn(rect.CenterCell, layout.size, layout.size);
 
                     foreach (var cell in cellRect)
@@ -1020,7 +945,7 @@ namespace KCSG
              * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
              * copies of the Software, and to permit persons to whom the Software is
              * furnished to do so, subject to the following conditions:
-             * 
+             *
              * The above copyright notice and this permission notice shall be included in all
              * copies or substantial portions of the Software.
              *

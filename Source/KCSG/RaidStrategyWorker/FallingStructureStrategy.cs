@@ -23,7 +23,7 @@ namespace KCSG
             if (GenOption.fallingExt.needToHaveSettlements && !Find.World.worldObjects.Settlements.FindAll(s => s.Faction == parms.faction).Any())
                 return false;
 
-            GenOption.fallingLayout = GenUtils.ChooseStructureLayoutFrom(GenOption.fallingExt.structures, parms);
+            GenOption.fallingLayout = RandomUtils.RandomLayoutFrom(GenOption.fallingExt.structures, parms);
             if (GenOption.fallingLayout == null)
                 return false;
 

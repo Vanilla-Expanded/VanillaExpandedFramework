@@ -6,7 +6,6 @@ using RimWorld.BaseGen;
 using UnityEngine;
 using Verse;
 using Verse.AI.Group;
-using static KCSG.SettlementGenUtils;
 
 namespace KCSG
 {
@@ -19,7 +18,7 @@ namespace KCSG
         {
             ThingDef wallForRoom = null;
             if (GenOption.StuffableOptions != null && GenOption.StuffableOptions.randomizeWall)
-                wallForRoom = RandomWallStuffByWeight(ThingDefOf.Wall);
+                wallForRoom = RandomUtils.RandomWallStuffWeighted(ThingDefOf.Wall);
 
             for (int index = 0; index < layout.layouts.Count; index++)
             {
@@ -96,7 +95,7 @@ namespace KCSG
                     // Generating settlement, we want to keep tracks of doors
                     if (GenOption.customGenExt != null && !GenOption.customGenExt.UsingSingleLayout && symbol.thingDef.altitudeLayer == AltitudeLayer.DoorMoveable)
                     {
-                        doors?.Add(cell);
+                        SettlementGenUtils.doors?.Add(cell);
                     }
                 }
             }
@@ -209,11 +208,11 @@ namespace KCSG
             Thing thing;
             if (symbol.thingDef.defName.ToLower().Contains("wall"))
             {
-                thing = ThingMaker.MakeThing(symbol.thingDef, symbol.thingDef.MadeFromStuff ? wallStuff ?? RandomWallStuffByWeight(symbol) : null);
+                thing = ThingMaker.MakeThing(symbol.thingDef, symbol.thingDef.MadeFromStuff ? wallStuff ?? RandomUtils.RandomWallStuffWeighted(symbol) : null);
             }
             else
             {
-                thing = ThingMaker.MakeThing(symbol.thingDef, RandomFurnitureStuffByWeight(symbol));
+                thing = ThingMaker.MakeThing(symbol.thingDef, RandomUtils.RandomFurnitureStuffWeighted(symbol));
             }
             // Sanity check
             if (thing == null)
@@ -628,38 +627,6 @@ namespace KCSG
             // Clean roof
             if (fullClean)
                 map.roofGrid.SetRoof(c, null);
-        }
-
-        /// <summary>
-        /// Choose a random layout that match requirement(s) from a list.
-        /// </summary>
-        public static StructureLayoutDef ChooseStructureLayoutFrom(List<StructureLayoutDef> list)
-        {
-            List<StructureLayoutDef> choices = new List<StructureLayoutDef>();
-            for (int i = 0; i < list.Count; i++)
-            {
-                var layout = list[i];
-                if (layout.RequiredModLoaded)
-                {
-                    choices.Add(layout);
-                }
-            }
-            return choices.RandomElement();
-        }
-
-        /// <summary>
-        /// Choose a random structure from a list.
-        /// </summary>
-        public static StructureLayoutDef ChooseStructureLayoutFrom(List<LayoutCommonality> list, IncidentParms parms)
-        {
-            var choices = new List<LayoutCommonality>();
-            for (int i = 0; i < list.Count; i++)
-            {
-                var lComm = list[i];
-                if (lComm.layout.RequiredModLoaded)
-                    choices.Add(lComm);
-            }
-            return choices.RandomElementByWeight(l => l.commonality * parms.points).layout;
         }
     }
 }
