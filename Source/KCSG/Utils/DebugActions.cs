@@ -135,6 +135,26 @@ namespace KCSG
                     Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
                 }));
             }
+            // Quickspawn tiled structure
+            if (DefDatabase<TiledStructureDef>.AllDefsListForReading is List<TiledStructureDef> tsDefs && !tsDefs.NullOrEmpty())
+            {
+                mainList.Add(new DebugMenuOption("Tiled structure...", DebugMenuOptionMode.Action, () =>
+                {
+                    List<DebugMenuOption> list = new List<DebugMenuOption>();
+                    foreach (var def in tsDefs)
+                    {
+                        list.Add(new DebugMenuOption(def.defName, DebugMenuOptionMode.Tool, () =>
+                        {
+                            var map = Find.CurrentMap;
+                            if (UI.MouseCell().InBounds(map))
+                            {
+                                TileUtils.Generate(def, UI.MouseCell(), map);
+                            }
+                        }));
+                    }
+                    Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
+                }));
+            }
 
             Find.WindowStack.Add(new Dialog_DebugOptionListLister(mainList));
         }

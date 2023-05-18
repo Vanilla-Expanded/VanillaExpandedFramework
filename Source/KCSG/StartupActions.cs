@@ -43,8 +43,9 @@ namespace KCSG
                     Debug.Message($"Missing symbol: {m.Key} (needed {m.Value} times)");
                 }
             }
-            // Cache layout per tag
+            // Cache things
             SettlementGenUtils.BuildingPlacement.CacheTags();
+            TileUtils.CacheTags();
             // Make new map generators, used with preventBridgeable
             CreateMapGeneratorDefs();
         }

@@ -129,6 +129,7 @@
     <Compile Include="SymbolResolvers\SymbolResolver_Settlement.cs" />
     <Compile Include="Utils\RandomUtils.cs" />
     <Compile Include="Utils\SymbolUtils.cs" />
+    <Compile Include="Utils\TileUtils.cs" />
     <Compile Include="Utils\XMLStruct\LayoutCommonality.cs" />
     <Compile Include="Utils\SettlementGenUtils.cs" />
     <Compile Include="WorldGenSteps\WorldGenStep_SpawnWorldObjects.cs" />
