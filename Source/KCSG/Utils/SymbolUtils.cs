@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using RimWorld;
 using RimWorld.BaseGen;
 using UnityEngine;
@@ -9,53 +8,12 @@ using Verse.AI.Group;
 
 namespace KCSG
 {
-    public class GenUtils
+    public static class SymbolUtils
     {
-        /// <summary>
-        /// Generate layoutDef in rect
-        /// </summary>
-        public static void GenerateLayout(StructureLayoutDef layout, CellRect rect, Map map)
-        {
-            ThingDef wallForRoom = null;
-            if (GenOption.StuffableOptions != null && GenOption.StuffableOptions.randomizeWall)
-                wallForRoom = RandomUtils.RandomWallStuffWeighted(ThingDefOf.Wall);
-
-            for (int index = 0; index < layout.layouts.Count; index++)
-            {
-                GenerateRoomFromLayout(layout, index, rect, map, wallForRoom);
-            }
-            GenerateTerrainGrid(layout, rect, map);
-            GenerateRoofGrid(layout, rect, map);
-        }
-
-        /// <summary>
-        /// Entry method to generate a structure from a StructureLayoutDef
-        /// </summary>
-        private static void GenerateRoomFromLayout(StructureLayoutDef layout, int index, CellRect rect, Map map, ThingDef wallForRoom = null)
-        {
-            Faction faction = map.ParentFaction;
-
-            var cells = rect.Cells.ToList();
-
-            for (int h = 0; h < layout.size; h++)
-            {
-                for (int w = 0; w < layout.size; w++)
-                {
-                    var cell = cells[(h * layout.size) + w];
-                    var symbol = layout._layouts[index][h, w];
-
-                    if (cell.InBounds(map) && symbol != null)
-                    {
-                        GenerateSymbol(symbol, layout, map, cell, faction, wallForRoom);
-                    }
-                }
-            }
-        }
-
         /// <summary>
         /// Generate symbol at cell
         /// </summary>
-        public static void GenerateSymbol(SymbolDef symbol, StructureLayoutDef layout, Map map, IntVec3 cell, Faction faction, ThingDef wallForRoom)
+        public static void Generate(this SymbolDef symbol, StructureLayoutDef layout, Map map, IntVec3 cell, Faction faction, ThingDef wallForRoom)
         {
             if (symbol.pawnKindDefNS != null)
             {
@@ -106,26 +64,27 @@ namespace KCSG
         /// </summary>
         private static void GeneratePawnAt(Map map, IntVec3 cell, SymbolDef symbol)
         {
-            var factionManager = Find.FactionManager;
-            var parentFaction = map.ParentFaction;
-            var symbolFaction = symbol.faction != null ? factionManager.FirstFactionOfDef(symbol.faction) : null;
-            var slaveFaction = parentFaction != null ? factionManager.AllFactionsListForReading.FindAll(f => parentFaction.HostileTo(f) && f != Faction.OfPlayer).RandomElement() : factionManager.AllFactionsListForReading.Find(f => f != Faction.OfPlayer && f != parentFaction);
+            var manager = Find.FactionManager;
+            var mapFac = map.ParentFaction;
+
+            var symbolFac = symbol.faction != null ? manager.FirstFactionOfDef(symbol.faction) : null;
+            var slaveFac = mapFac == null ? RandomUtils.RandomNonColonyFaction() : mapFac.RandomNonColonyEnnemy();
+
+            var request = new PawnGenerationRequest(symbol.pawnKindDefNS, symbol.isSlave ? slaveFac : (symbol.spawnPartOfFaction ? mapFac : symbolFac), mustBeCapableOfViolence: true);
+
             var pawns = new List<Pawn>();
-
-            var request = new PawnGenerationRequest(symbol.pawnKindDefNS, symbol.isSlave ? slaveFaction : (symbol.spawnPartOfFaction ? parentFaction : symbolFaction), mustBeCapableOfViolence: true);
-
             for (int i = 0; i < symbol.numberToSpawn; i++)
             {
-                Pawn pawn = PawnGenerator.GeneratePawn(request);
+                var pawn = PawnGenerator.GeneratePawn(request);
                 if (pawn == null)
                 {
                     Debug.Error("Null pawn in GeneratePawnAt");
                     continue;
                 }
 
-                if (symbol.isSlave && parentFaction != null)
+                if (symbol.isSlave && mapFac != null)
                 {
-                    pawn.guest.SetGuestStatus(parentFaction, GuestStatus.Prisoner);
+                    pawn.guest.SetGuestStatus(mapFac, GuestStatus.Prisoner);
                 }
 
                 if (symbol.spawnDead)
@@ -151,8 +110,52 @@ namespace KCSG
 
             if (symbol.defendSpawnPoint)
             {
-                Lord lord = LordMaker.MakeNewLord(parentFaction, new LordJob_DefendPoint(cell, 3f, addFleeToil: false), map, pawns);
+                Lord lord = LordMaker.MakeNewLord(mapFac, new LordJob_DefendPoint(cell, 3f, addFleeToil: false), map, pawns);
             }
+        }
+
+        /// <summary>
+        /// Prepare corpse spawn
+        /// </summary>
+        private static Corpse PreparePawnCorpse(Pawn pawn, bool rot)
+        {
+            // Random damage to worn apparels
+            if (pawn.apparel != null)
+            {
+                var apparels = pawn.apparel.WornApparel;
+                for (int a = 0; a < apparels.Count; a++)
+                {
+                    var apparel = apparels[a];
+                    apparel.HitPoints = Rand.Range(1, (int)(apparel.MaxHitPoints * 0.75));
+                }
+            }
+            // Random damage to equipement
+            if (pawn.equipment != null && pawn.equipment.Primary is ThingWithComps p)
+            {
+                p.HitPoints = Rand.Range(1, (int)(p.MaxHitPoints * 0.75));
+            }
+            // Remove all rottable things (food...)
+            if (pawn.inventory != null)
+            {
+                var inv = pawn.inventory.GetDirectlyHeldThings();
+                foreach (var item in inv)
+                {
+                    if (item.TryGetComp<CompRottable>() != null)
+                    {
+                        inv.Remove(item);
+                    }
+                }
+            }
+
+            pawn.Kill(null);
+            var corpse = pawn.Corpse;
+            if (rot)
+            {
+                corpse.timeOfDeath = Mathf.Max(Find.TickManager.TicksGame - 120000, 0);
+                GenOption.corpsesToRot.Add(corpse);
+            }
+
+            return corpse;
         }
 
         /// <summary>
@@ -160,19 +163,9 @@ namespace KCSG
         /// </summary>
         private static void GenerateItemAt(Map map, IntVec3 cell, SymbolDef symbol)
         {
-            Thing thing = ThingMaker.MakeThing(symbol.thingDef, symbol.stuffDef ?? (symbol.thingDef.stuffCategories?.Count > 0 ? GenStuff.RandomStuffFor(symbol.thingDef) : null));
-
-            if (symbol.maxStackSize != -1)
-            {
-                thing.stackCount = Rand.RangeInclusive(1, symbol.maxStackSize);
-            }
-            else
-            {
-                thing.stackCount = Mathf.Clamp(Rand.RangeInclusive(1, symbol.thingDef.stackLimit), 1, 75);
-            }
-
+            var thing = ThingMaker.MakeThing(symbol.thingDef, symbol.stuffDef ?? (symbol.thingDef.stuffCategories?.Count > 0 ? GenStuff.RandomStuffFor(symbol.thingDef) : null));
+            thing.stackCount = symbol.maxStackSize != -1 ? Rand.RangeInclusive(1, symbol.maxStackSize) : Mathf.Clamp(Rand.RangeInclusive(1, symbol.thingDef.stackLimit), 1, 75);
             thing.TryGetComp<CompQuality>()?.SetQuality(QualityUtility.GenerateQualityBaseGen(), ArtGenerationContext.Outsider);
-
             GenPlace.TryPlaceThing(thing, cell, map, ThingPlaceMode.Direct);
             thing.SetForbidden(true, false);
         }
@@ -358,46 +351,21 @@ namespace KCSG
         }
 
         /// <summary>
-        /// Prepare corpse spawn
+        /// Generate pawn to be put inside container (casked, tomb...)
         /// </summary>
-        private static Corpse PreparePawnCorpse(Pawn pawn, bool rot)
+        private static Pawn GeneratePawnForContainer(SymbolDef temp, Map map)
         {
-            if (pawn.apparel != null)
+            var faction = temp.spawnPartOfFaction ? map.ParentFaction : null;
+            if (temp.containPawnKindForPlayerAnyOf.Count > 0 && faction == Faction.OfPlayer)
             {
-                var apparels = pawn.apparel.WornApparel;
-                for (int a = 0; a < apparels.Count; a++)
-                {
-                    var apparel = apparels[a];
-                    apparel.HitPoints = Rand.Range(1, (int)(apparel.MaxHitPoints * 0.75));
-                }
+                return PawnGenerator.GeneratePawn(new PawnGenerationRequest(temp.containPawnKindForPlayerAnyOf.RandomElement(), faction, forceGenerateNewPawn: true));
+            }
+            else if (temp.containPawnKindAnyOf.Count > 0)
+            {
+                return PawnGenerator.GeneratePawn(new PawnGenerationRequest(temp.containPawnKindAnyOf.RandomElement(), faction, forceGenerateNewPawn: true));
             }
 
-            if (pawn.inventory != null)
-            {
-                var inv = pawn.inventory.GetDirectlyHeldThings();
-                foreach (var item in inv)
-                {
-                    if (item.TryGetComp<CompRottable>() != null)
-                    {
-                        inv.Remove(item);
-                    }
-                }
-            }
-
-            if (pawn.equipment != null && pawn.equipment.Primary is ThingWithComps p)
-            {
-                p.HitPoints = Rand.Range(1, (int)(p.MaxHitPoints * 0.75));
-            }
-
-            pawn.Kill(null);
-            var corpse = pawn.Corpse;
-            if (rot)
-            {
-                corpse.timeOfDeath = Mathf.Max(Find.TickManager.TicksGame - 120000, 0);
-                GenOption.corpsesToRot.Add(corpse);
-            }
-
-            return corpse;
+            return PawnGenerator.GeneratePawn(new PawnGenerationRequest(faction != null ? faction.RandomPawnKind() : PawnKindDefOf.Villager, faction, forceGenerateNewPawn: true));
         }
 
         /// <summary>
@@ -436,197 +404,6 @@ namespace KCSG
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// Generate pawn to be put inside container (casked, tomb...)
-        /// </summary>
-        private static Pawn GeneratePawnForContainer(SymbolDef temp, Map map)
-        {
-            Faction faction = temp.spawnPartOfFaction ? map.ParentFaction : null;
-            if (temp.containPawnKindForPlayerAnyOf.Count > 0 && faction == Faction.OfPlayer)
-            {
-                return PawnGenerator.GeneratePawn(new PawnGenerationRequest(temp.containPawnKindForPlayerAnyOf.RandomElement(), faction, forceGenerateNewPawn: true));
-            }
-            else if (temp.containPawnKindAnyOf.Count > 0)
-            {
-                return PawnGenerator.GeneratePawn(new PawnGenerationRequest(temp.containPawnKindAnyOf.RandomElement(), faction, forceGenerateNewPawn: true));
-            }
-
-            return PawnGenerator.GeneratePawn(new PawnGenerationRequest(faction != null ? faction.RandomPawnKind() : PawnKindDefOf.Villager, faction, forceGenerateNewPawn: true));
-        }
-
-        /// <summary>
-        /// Generate roof from layout resolved roof grid
-        /// </summary>
-        private static void GenerateRoofGrid(StructureLayoutDef layout, CellRect rect, Map map)
-        {
-            if (layout._roofGrid != null && layout._roofGrid.Length > 0)
-            {
-                var cells = rect.Cells.ToList();
-                for (int h = 0; h < layout.size; h++)
-                {
-                    for (int w = 0; w < layout.size; w++)
-                    {
-                        var cell = cells[(h * layout.size) + w];
-                        var roof = layout._roofGrid[h, w];
-
-                        if (cell.InBounds(map) && roof != null)
-                        {
-                            if (roof == "0" && layout.forceGenerateRoof)
-                            {
-                                map.roofGrid.SetRoof(cell, null);
-                                continue;
-                            }
-
-                            var currentRoof = cell.GetRoof(map);
-                            if (roof == "1" && (layout.forceGenerateRoof || currentRoof == null))
-                            {
-                                map.roofGrid.SetRoof(cell, RoofDefOf.RoofConstructed);
-                                ClearInterferesWithRoof(cell, map);
-                                continue;
-                            }
-
-                            if (roof == "2" && (layout.forceGenerateRoof || currentRoof == null || currentRoof == RoofDefOf.RoofConstructed))
-                            {
-                                map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThin);
-                                ClearInterferesWithRoof(cell, map);
-                                continue;
-                            }
-
-                            if (roof == "3")
-                            {
-                                map.roofGrid.SetRoof(cell, RoofDefOf.RoofRockThick);
-                                ClearInterferesWithRoof(cell, map);
-                                continue;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Despawn everything that block/interfer with roofs
-        /// </summary>
-        private static void ClearInterferesWithRoof(IntVec3 cell, Map map)
-        {
-            var t = cell.GetPlant(map);
-            if (t != null && t.def.plant != null && t.def.plant.interferesWithRoof)
-                t.DeSpawn();
-
-            GenOption.DespawnMineableAt(cell);
-        }
-
-        /// <summary>
-        /// Generate terrain grid from layout
-        /// </summary>
-        private static void GenerateTerrainGrid(StructureLayoutDef layout, CellRect rect, Map map)
-        {
-            if (layout._terrainGrid == null || layout._terrainGrid.Length == 0)
-                return;
-
-            var useColorGrid = layout._terrainColorGrid != null && layout._terrainColorGrid.Length > 0;
-            var cells = rect.Cells.ToList();
-            for (int h = 0; h < layout.size; h++)
-            {
-                for (int w = 0; w < layout.size; w++)
-                {
-                    var cell = cells[(h * layout.size) + w];
-                    var terrain = layout._terrainGrid[h, w];
-
-                    if (terrain == null || !cell.InBounds(map))
-                        continue;
-
-                    if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
-                    {
-                        map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
-                    }
-                    else
-                    {
-                        GenOption.DespawnMineableAt(cell);
-                        map.terrainGrid.SetTerrain(cell, terrain);
-                    }
-
-                    if (useColorGrid)
-                        map.terrainGrid.SetTerrainColor(cell, layout._terrainColorGrid[h, w]);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Clean structure spawn rect. Full clean remove everything but player/map pawns.
-        /// Normal clean remove filth, non-natural buildings and stone chunks
-        /// </summary>
-        public static void PreClean(StructureLayoutDef layout, Map map, CellRect rect, bool fullClean)
-        {
-            Debug.Message($"Pre-generation map clean. Fullclean {fullClean}");
-            var mapFaction = map.ParentFaction;
-            var player = Faction.OfPlayer;
-
-            if (layout == null || layout._roofGrid == null || layout._roofGrid.Length == 0)
-            {
-                foreach (IntVec3 c in rect)
-                    CleanAt(c, map, fullClean, mapFaction, player);
-            }
-            else
-            {
-                var cells = rect.Cells.ToList();
-                for (int h = 0; h < layout.size; h++)
-                {
-                    for (int w = 0; w < layout.size; w++)
-                    {
-                        var cell = cells[(h * layout.size) + w];
-                        var roof = layout._roofGrid[h, w];
-
-                        if (cell.InBounds(map) && roof != ".")
-                            CleanAt(cell, map, fullClean, mapFaction, player);
-                    }
-                }
-            }
-
-            map.roofGrid.RoofGridUpdate();
-        }
-
-        /// <summary>
-        /// Clean at a cell. Terrain & things
-        /// </summary>
-        private static void CleanAt(IntVec3 c, Map map, bool fullClean, Faction mapFaction, Faction player)
-        {
-            // Clean things
-            var things = c.GetThingList(map);
-
-            for (int i = 0; i < things.Count; i++)
-            {
-                if (things[i] is Thing thing && thing.Spawned)
-                {
-                    if (thing is Pawn p && p.Faction != mapFaction && p.Faction != player)
-                    {
-                        thing.DeSpawn();
-                    }
-                    else if (fullClean && thing.def.category != ThingCategory.Plant)
-                    {
-                        thing.DeSpawn();
-                    }
-                    // Clear filth, buildings, stone chunks
-                    else if (thing.def.category == ThingCategory.Filth ||
-                             (thing.def.category == ThingCategory.Building && !thing.def.building.isNaturalRock) ||
-                             (thing.def.thingCategories != null && thing.def.thingCategories.Contains(ThingCategoryDefOf.StoneChunks)))
-                    {
-                        thing.DeSpawn();
-                    }
-                }
-            }
-
-            // Clean terrain
-            if (map.terrainGrid.UnderTerrainAt(c) is TerrainDef terrain && terrain != null)
-            {
-                map.terrainGrid.SetTerrain(c, terrain);
-            }
-
-            // Clean roof
-            if (fullClean)
-                map.roofGrid.SetRoof(c, null);
         }
     }
 }

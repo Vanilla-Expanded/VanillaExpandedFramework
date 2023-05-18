@@ -54,7 +54,7 @@ namespace KCSG
             GenOption.GetAllMineableIn(rect, map);
             // Pre-gen clean
             if (ext.preGenClear)
-                GenUtils.PreClean(GenOption.structureLayout, map, rect, ext.fullClear);
+                LayoutUtils.CleanRect(GenOption.structureLayout, map, rect, ext.fullClear);
 
             // Push symbolresolver
             ResolveParams rp = default;

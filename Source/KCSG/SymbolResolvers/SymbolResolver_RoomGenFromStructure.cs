@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using RimWorld;
-using RimWorld.BaseGen;
+﻿using RimWorld.BaseGen;
 using Verse;
 
 namespace KCSG
@@ -12,7 +10,7 @@ namespace KCSG
             Map map = BaseGen.globalSettings.map;
 
             GenOption.GetAllMineableIn(rp.rect, map);
-            GenUtils.GenerateLayout(GenOption.structureLayout, rp.rect, map);
+            GenOption.structureLayout.Generate(rp.rect, map);
 
             // Clear fog in rect if wanted
             if (GenOption.customGenExt.clearFogInRect)

@@ -634,7 +634,7 @@ namespace KCSG
                     foreach (var cell in cellRect)
                         grid[cell.z][cell.x] = CellType.Used;
 
-                    GenUtils.GenerateLayout(layout, cellRect, BaseGen.globalSettings.map);
+                    layout.Generate(cellRect, BaseGen.globalSettings.map);
                     usedLayoutDefs.Add(layout);
                 }
                 // Generate other buildings
@@ -692,7 +692,7 @@ namespace KCSG
                             }
 
                             CellRect rect = new CellRect(vec.x, vec.z, layoutDef.size, layoutDef.size);
-                            GenUtils.GenerateLayout(layoutDef, rect, BaseGen.globalSettings.map);
+                            layoutDef.Generate(rect, BaseGen.globalSettings.map);
 
                             if (layoutDef.isStorage)
                             {

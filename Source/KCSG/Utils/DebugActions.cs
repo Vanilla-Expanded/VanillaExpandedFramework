@@ -29,8 +29,8 @@ namespace KCSG
                             {
                                 var cellRect = CellRect.CenteredOn(UI.MouseCell(), layoutDef.size, layoutDef.size);
                                 GenOption.GetAllMineableIn(cellRect, map);
-                                GenUtils.PreClean(layoutDef, map, cellRect, true);
-                                GenUtils.GenerateLayout(layoutDef, cellRect, map);
+                                LayoutUtils.CleanRect(layoutDef, map, cellRect, true);
+                                layoutDef.Generate(cellRect, map);
                             }
                         }));
                     }
@@ -53,8 +53,8 @@ namespace KCSG
                             {
                                 var cellRect = CellRect.CenteredOn(UI.MouseCell(), layoutDef.size, layoutDef.size);
                                 GenOption.GetAllMineableIn(cellRect, map);
-                                GenUtils.PreClean(layoutDef, map, cellRect, true);
-                                GenUtils.GenerateLayout(layoutDef, cellRect, map);
+                                LayoutUtils.CleanRect(layoutDef, map, cellRect, true);
+                                layoutDef.Generate(cellRect, map);
                             }
                         }));
                     }
@@ -76,7 +76,7 @@ namespace KCSG
                                 var map = Find.CurrentMap;
                                 if (UI.MouseCell().InBounds(map))
                                 {
-                                    GenUtils.GenerateSymbol(sym, null, map, UI.MouseCell(), map.ParentFaction, null);
+                                    sym.Generate(null, map, UI.MouseCell(), map.ParentFaction, null);
                                 }
                             }));
                         }
@@ -99,7 +99,7 @@ namespace KCSG
                                 var map = Find.CurrentMap;
                                 if (UI.MouseCell().InBounds(map))
                                 {
-                                    GenUtils.GenerateSymbol(sym, null, map, UI.MouseCell(), map.ParentFaction, null);
+                                    sym.Generate(null, map, UI.MouseCell(), map.ParentFaction, null);
                                 }
                             }));
                         }

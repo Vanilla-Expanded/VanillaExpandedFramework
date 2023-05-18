@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RimWorld;
 using Verse;
 
@@ -10,6 +7,69 @@ namespace KCSG
 {
     public static class RandomUtils
     {
+        /// <summary>
+        /// Return random non-colony ennemy faction of *faction*. Fallback to random faction.
+        /// </summary>
+        /// <param name="faction"></param>
+        /// <param name="allowHidden"></param>
+        /// <param name="allowDefeated"></param>
+        /// <param name="allowNonHumanlike"></param>
+        /// <param name="minTechLevel"></param>
+        /// <returns>Faction</returns>
+        public static Faction RandomNonColonyEnnemy(this Faction faction, bool allowHidden = false, bool allowDefeated = false, bool allowNonHumanlike = true, TechLevel minTechLevel = TechLevel.Undefined)
+        {
+            var manager = Find.FactionManager;
+            if (faction == null || manager == null)
+                return null;
+
+            var all = manager.GetFactions(allowHidden, allowDefeated, allowNonHumanlike, minTechLevel).ToList();
+            if (all.NullOrEmpty())
+                return null;
+
+            var player = Faction.OfPlayer;
+            var list = new List<Faction>();
+
+            for (int i = 0; i < all.Count; i++)
+            {
+                var fac = all[i];
+                if (fac != player && fac.HostileTo(faction))
+                    list.Add(fac);
+            }
+
+            return list.RandomElement();
+        }
+
+        /// <summary>
+        /// Return random non colony faction following parameters
+        /// </summary>
+        /// <param name="allowHidden"></param>
+        /// <param name="allowDefeated"></param>
+        /// <param name="allowNonHumanlike"></param>
+        /// <param name="minTechLevel"></param>
+        /// <returns>Faction</returns>
+        public static Faction RandomNonColonyFaction(bool allowHidden = false, bool allowDefeated = false, bool allowNonHumanlike = true, TechLevel minTechLevel = TechLevel.Undefined)
+        {
+            var manager = Find.FactionManager;
+            if (manager == null)
+                return null;
+
+            var all = manager.GetFactions(allowHidden, allowDefeated, allowNonHumanlike, minTechLevel).ToList();
+            if (all.NullOrEmpty())
+                return null;
+
+            var player = Faction.OfPlayer;
+            var list = new List<Faction>();
+
+            for (int i = 0; i < all.Count; i++)
+            {
+                var fac = all[i];
+                if (fac != player)
+                    list.Add(fac);
+            }
+
+            return list.RandomElement();
+        }
+
         /// <summary>
         /// Get random stuff for thingDef
         /// </summary>

@@ -41,7 +41,7 @@ namespace KCSG.UndergroundRoom
                         var cellRect = CellRect.CenteredOn(map.Center, layout.size, layout.size);
 
                         GenOption.GetAllMineableIn(cellRect, map);
-                        GenUtils.GenerateLayout(layout, cellRect, map);
+                        layout.Generate(cellRect, map);
 
                         foreach (var cell in cellRect)
                         {

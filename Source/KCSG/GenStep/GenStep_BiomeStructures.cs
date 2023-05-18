@@ -64,7 +64,7 @@ namespace KCSG
 
                         var spawnRect = CellRect.CenteredOn(spawnPos, size, size);
                         GenOption.GetAllMineableIn(spawnRect, map);
-                        GenUtils.GenerateLayout(layout, spawnRect, map);
+                        layout.Generate(spawnRect, map);
                     }
 
                     if (ext.postGenerateOre)

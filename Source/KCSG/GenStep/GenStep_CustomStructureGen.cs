@@ -35,8 +35,8 @@ namespace KCSG
 
             var cellRect = CellRect.CenteredOn(map.Center, layoutDef.size, layoutDef.size);
             GenOption.GetAllMineableIn(cellRect, map);
-            GenUtils.PreClean(layoutDef, map, cellRect, fullClear);
-            GenUtils.GenerateLayout(layoutDef, cellRect, map);
+            LayoutUtils.CleanRect(layoutDef, map, cellRect, fullClear);
+            layoutDef.Generate(cellRect, map);
 
             if (GenOption.customGenExt.symbolResolvers?.Count > 0)
             {

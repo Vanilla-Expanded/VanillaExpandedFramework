@@ -16,9 +16,6 @@ namespace KCSG
                 Log.Message($"<color=orange>[KCSG]</color> {message}");
         }
 
-        public static void Error(string message, string mod = "")
-        {
-            Log.Error($"[KCSG] {(mod != "" ? "[" + mod + "] " : "")}{message}");
-        }
+        public static void Error(string message) => Log.Error($"[KCSG] {message}");
     }
 }

@@ -112,11 +112,11 @@ namespace KCSG
             CellRect cellRect = CreateCellRect(map, layoutDef.size, layoutDef.size);
 
             if (preGenClear)
-                GenUtils.PreClean(layoutDef, map, cellRect, fullClear);
+                LayoutUtils.CleanRect(layoutDef, map, cellRect, fullClear);
 
             GenOption.GetAllMineableIn(cellRect, map);
 
-            GenUtils.GenerateLayout(layoutDef, cellRect, map);
+            layoutDef.Generate(cellRect, map);
 
             if (spawnTheStartingPawn && Find.GameInitData != null)
             {
