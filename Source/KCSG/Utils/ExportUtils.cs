@@ -25,6 +25,7 @@ namespace KCSG
                 spawnConduits = Dialog_ExportWindow.spawnConduits,
                 forceGenerateRoof = Dialog_ExportWindow.forceGenerateRoof,
                 needRoofClearance = Dialog_ExportWindow.needRoofClearance,
+                randomizeWallStuffAtGen = Dialog_ExportWindow.randomizeWallStuffAtGen,
                 tags = Dialog_ExportWindow.tags.ToList(),
                 terrainGrid = CreateTerrainlayout(area, map),
                 terrainColorGrid = CreateTerrainColorLayout(area, map),

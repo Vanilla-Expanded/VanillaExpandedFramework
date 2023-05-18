@@ -14,7 +14,7 @@ namespace KCSG
         {
             // Get random wall stuff if randomizeWall is set to true
             ThingDef wallForRoom = null;
-            if (GenOption.StuffableOptions != null && GenOption.StuffableOptions.randomizeWall)
+            if (layout.randomizeWallStuffAtGen || (GenOption.StuffableOptions != null && GenOption.StuffableOptions.randomizeWall))
                 wallForRoom = RandomUtils.RandomWallStuffWeighted(ThingDefOf.Wall);
             // Generate all layouts
             var faction = map.ParentFaction;

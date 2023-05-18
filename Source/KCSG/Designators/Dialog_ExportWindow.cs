@@ -28,6 +28,7 @@ namespace KCSG
         public static bool spawnConduits = false;
         public static bool forceGenerateRoof = false;
         public static bool isStorage = false;
+        public static bool randomizeWallStuffAtGen = false;
 
         private readonly Area area;
         private readonly Map map;
@@ -55,7 +56,7 @@ namespace KCSG
             exportedSymbolsDef = ExportUtils.CreateSymbolIfNeeded(area);
         }
 
-        public override Vector2 InitialSize => new Vector2(610f, 520f);
+        public override Vector2 InitialSize => new Vector2(650f, 520f);
 
         public override void DoWindowContents(Rect inRect)
         {
@@ -100,6 +101,9 @@ namespace KCSG
             lst.Gap(5);
 
             lst.CheckboxLabeled("Need roof clearance:", ref needRoofClearance, "Need to be placed in a rect free of roofs");
+            lst.Gap(5);
+
+            lst.CheckboxLabeled("Randomize wall stuff:", ref randomizeWallStuffAtGen, "Randomize wall stuff at generation");
             lst.GapLine();
 
             lst.Label("Structure tags:", tooltip: "Tags are used with SettlementLayoutDef");

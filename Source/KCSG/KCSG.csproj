@@ -71,6 +71,7 @@
     <Compile Include="DefModExtensions\BiomeStructGenExtension.cs" />
     <Compile Include="DefModExtensions\FallingStructure.cs" />
     <Compile Include="DefModExtensions\SpawnAtWorldGen.cs" />
+    <Compile Include="Defs\TiledSettlementDef.cs" />
     <Compile Include="GenStep\GenStep_BiomeStructures.cs" />
     <Compile Include="GenStep\GenStep_Settlement.cs" />
     <Compile Include="GenStep\GenStep_TerrainNoPatches.cs" />

@@ -20,6 +20,7 @@ namespace KCSG
         public bool forceGenerateRoof = false;
         public bool needRoofClearance = false;
         public bool randomRotation = false;
+        public bool randomizeWallStuffAtGen = false;
 
         // Settings for SettlementDef
         public List<string> tags = new List<string>();
@@ -291,6 +292,9 @@ namespace KCSG
 
             if (needRoofClearance)
                 layoutDef.Add(new XElement("needRoofClearance", needRoofClearance));
+
+            if (randomizeWallStuffAtGen)
+                layoutDef.Add(new XElement("randomizeWallStuffAtGen", randomizeWallStuffAtGen));
 
             if (!tags.NullOrEmpty())
             {
