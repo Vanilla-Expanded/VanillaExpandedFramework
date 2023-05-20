@@ -21,6 +21,9 @@ namespace AnimalBehaviours
         // A list of hovering animals for CompProperties_Floating
         public static HashSet<Thing> floating_animals = new HashSet<Thing>();
 
+        // A list of waterstriding pawns (no terrain costs, but only in water)
+        public static HashSet<Thing> waterstriding_pawns = new HashSet<Thing>();
+
         // A list of animals that don't flee for combat for CompProperties_DoesntFlee
         public static HashSet<Thing> nofleeing_animals = new HashSet<Thing>();
 
@@ -179,6 +182,24 @@ namespace AnimalBehaviours
             if (floating_animals.Contains(thing))
             {
                 floating_animals.Remove(thing);
+            }
+
+        }
+
+        public static void AddWaterstridingPawnToList(Thing thing)
+        {
+
+            if (!waterstriding_pawns.Contains(thing))
+            {
+                waterstriding_pawns.Add(thing);
+            }
+        }
+
+        public static void RemoveWaterstridingPawnFromList(Thing thing)
+        {
+            if (waterstriding_pawns.Contains(thing))
+            {
+                waterstriding_pawns.Remove(thing);
             }
 
         }

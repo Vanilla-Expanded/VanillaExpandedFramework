@@ -42,7 +42,7 @@
 	<VCE_BuildPeriodicallyOption>Allow animals building things (for example, beavers building dams)</VCE_BuildPeriodicallyOption>	
 	<VCE_ChargeBatteriesOption>Allow animals recharging nearby batteries or refueling</VCE_ChargeBatteriesOption>
 	<VCE_ExplodingEggsOption>Allow animals' eggs that explode (such as dragons')</VCE_ExplodingEggsOption>
-	<VCE_HoveringOption>Allow animals "hovering", ignoring terrain movement costs</VCE_HoveringOption>
+	<VCE_HoveringOption>Allow animals "hovering", ignoring terrain movement costs and waterstriding</VCE_HoveringOption>
 	<VCE_GraphicChangingOption>Allow animals changing graphics (for example, Chameleon Yak)</VCE_GraphicChangingOption>
 	<VCE_EffecterOption>Allows animals causing hediffs, mental states or thoughts</VCE_EffecterOption>
 	<VCE_RegenerationOption>Allow health regeneration (active and passive)</VCE_RegenerationOption>
