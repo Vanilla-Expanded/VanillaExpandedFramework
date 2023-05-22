@@ -54,12 +54,16 @@ namespace KCSG
                 if (Math.Abs(cell.z - center.z) % def.maxSize != 0) continue;
                 usableCenters.Add(cell);
             }
-            // First tile always in center
-            var centerTile = def.centerTileDefs.NullOrEmpty() ? def.allowedTileDefs.RandomElement() : def.centerTileDefs.RandomElement();
-            GenerateTileIn(CellRect.CenteredOn(center, def.maxSize, def.maxSize), map, centerTile);
-            usableCenters.Remove(center);
+            // Tile in center
+            var tilesNumber = def.tilesNumber;
+            if (!def.centerTileDefs.NullOrEmpty())
+            {
+                GenerateTileIn(CellRect.CenteredOn(center, def.maxSize, def.maxSize), map, def.centerTileDefs.RandomElement());
+                usableCenters.Remove(center);
+                tilesNumber--;
+            }
             // Generate other tiles
-            for (int i = 0; i < def.tilesNumber - 1; i++)
+            for (int i = 0; i < tilesNumber; i++)
             {
                 var rCell = usableCenters.RandomElement();
                 GenerateTileIn(CellRect.CenteredOn(rCell, def.maxSize, def.maxSize), map, def.allowedTileDefs.RandomElement());
