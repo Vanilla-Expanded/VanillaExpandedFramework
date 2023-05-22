@@ -54,11 +54,13 @@ namespace KCSG
                 if (Math.Abs(cell.z - center.z) % def.maxSize != 0) continue;
                 usableCenters.Add(cell);
             }
+            // Keep track of used structureLayout
+            var usedLayouts = new List<StructureLayoutDef>();
             // Tile in center
             var tilesNumber = def.tilesNumber;
             if (!def.centerTileDefs.NullOrEmpty())
             {
-                GenerateTileIn(CellRect.CenteredOn(center, def.maxSize, def.maxSize), map, def.centerTileDefs.RandomElement());
+                GenerateTileIn(CellRect.CenteredOn(center, def.maxSize, def.maxSize), map, def.centerTileDefs.RandomElement(), ref usedLayouts);
                 usableCenters.Remove(center);
                 tilesNumber--;
             }
@@ -66,7 +68,7 @@ namespace KCSG
             for (int i = 0; i < tilesNumber; i++)
             {
                 var rCell = usableCenters.RandomElement();
-                GenerateTileIn(CellRect.CenteredOn(rCell, def.maxSize, def.maxSize), map, def.allowedTileDefs.RandomElement());
+                GenerateTileIn(CellRect.CenteredOn(rCell, def.maxSize, def.maxSize), map, def.allowedTileDefs.RandomElement(), ref usedLayouts);
                 usableCenters.Remove(rCell);
             }
         }
@@ -77,10 +79,21 @@ namespace KCSG
         /// <param name="cellRect"></param>
         /// <param name="map"></param>
         /// <param name="tileDef"></param>
-        private static void GenerateTileIn(CellRect cellRect, Map map, TileDef tileDef)
+        private static void GenerateTileIn(CellRect cellRect, Map map, TileDef tileDef, ref List<StructureLayoutDef> usedLayouts)
         {
+            // Get not yet used layouts
+            var layoutPool = new List<StructureLayoutDef>();
+            for (int i = 0; i < tileDef.tileLayouts.Count; i++)
+            {
+                var layout = tileDef.tileLayouts[i];
+                if (!usedLayouts.Contains(layout))
+                    layoutPool.Add(layout);
+            }
+            // Random choice
+            var layoutDef = layoutPool.Count > 0 ? layoutPool.RandomElement() : tileDef.tileLayouts.RandomElement();
+            usedLayouts.Add(layoutDef);
+            // Generate
             GenOption.GetAllMineableIn(cellRect, map);
-            var layoutDef = tileDef.tileLayouts.RandomElement();
             LayoutUtils.CleanRect(layoutDef, map, cellRect, true);
             layoutDef.Generate(cellRect, map);
         }
