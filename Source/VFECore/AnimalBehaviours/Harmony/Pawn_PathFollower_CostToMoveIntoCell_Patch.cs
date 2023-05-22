@@ -14,7 +14,7 @@ using RimWorld.Planet;
 
 namespace AnimalBehaviours
 {
-  
+
 
     /*This Harmony Postfix changes terrain calculation for floating creatures*/
 
@@ -29,9 +29,12 @@ namespace AnimalBehaviours
 
         {
 
-            if ((pawn.Map != null) && AnimalBehaviours_Settings.flagHovering && (AnimalCollectionClass.floating_animals.Contains(pawn)))
+            if ((pawn.Map != null) && AnimalBehaviours_Settings.flagHovering)
             {
-                
+
+                if (AnimalCollectionClass.floating_animals.Contains(pawn))
+                {
+                    TerrainDef terrainDef = pawn.Map.terrainGrid.TerrainAt(c);
                     int num;
                     if (c.x == pawn.Position.x || c.z == pawn.Position.z)
                     {
@@ -41,7 +44,6 @@ namespace AnimalBehaviours
                     {
                         num = pawn.TicksPerMoveDiagonal;
                     }
-                    TerrainDef terrainDef = pawn.Map.terrainGrid.TerrainAt(c);
                     if (terrainDef == null)
                     {
                         num = 10000;
@@ -58,29 +60,33 @@ namespace AnimalBehaviours
                         {
                             num = 10000;
                         }
-
-                       
                     }
-
                     __result = num;
+                }
+                if (AnimalCollectionClass.waterstriding_pawns.Contains(pawn))
+                {
+                    TerrainDef terrainDef = pawn.Map.terrainGrid.TerrainAt(c);
+                    if (terrainDef.IsWater) {
+                        int num;
+                        if (c.x == pawn.Position.x || c.z == pawn.Position.z)
+                        {
+                            num = pawn.TicksPerMoveCardinal;
+                        }
+                        else
+                        {
+                            num = pawn.TicksPerMoveDiagonal;
+                        }
 
+                        __result = num;
+                    }
+                    
                 }
 
-            
-
-
+            }
 
 
         }
     }
-
-
-
-
-
-
-
-
 
 
 
