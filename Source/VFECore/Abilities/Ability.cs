@@ -123,9 +123,7 @@
         {
             float power = CalculateModifiedStatForPawn(this.def.power, this.def.powerStatFactors, this.def.powerStatOffsets);
             var multiplier = this.def.GetModExtension<AbilityExtension_RandomPowerMultiplier>();
-            if (multiplier == null) return power;
-            FloatRange range = multiplier.range;
-            return power * Rand.Range(range.min, range.max);
+            return multiplier != null ? power * multiplier.range.RandomInRange : power;
         }
 
         public virtual int GetCastTimeForPawn() =>
