@@ -55,7 +55,10 @@ namespace VFECore
             return source.Where(item => !toExclude.Contains(item));
         }
 
-        public static IEnumerable<ThingDef> PossibleRockTypesFor(this BiomeDef biome, World world) =>
-            allNaturalRockDefs(world).Exclude(biome.DisallowedRocksFor());
+        public static IEnumerable<ThingDef> PossibleRockTypesFor(this BiomeDef biome, World world)
+        {
+            allNaturalRockDefs(world) ??= DefDatabase<ThingDef>.AllDefs.Where(d => d.IsNonResourceNaturalRock).ToList();
+            return allNaturalRockDefs(world).Exclude(biome.DisallowedRocksFor());
+        }
     }
 }
