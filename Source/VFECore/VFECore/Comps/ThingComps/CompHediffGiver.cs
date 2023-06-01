@@ -30,52 +30,47 @@ namespace VFECore
             }
         }
 
-        private int nextTest = 0;
-
-        public override void PostExposeData()
-        {
-            Scribe_Values.Look(ref nextTest, "nextTest");
-            base.PostExposeData();
-        }
-
-        public override void PostPostMake()
-        {
-            nextTest = Find.TickManager.TicksGame + Props.tickRate;
-            base.PostPostMake();
-        }
-
         public override void CompTick()
         {
             base.CompTick();
 
-            if (Find.TickManager.TicksGame == nextTest)
+            if (!parent.IsHashIntervalTick(Props.tickRate) || !parent.Spawned)
             {
-                foreach (var thing in GenRadial.RadialDistinctThingsAround(parent.Position, parent.Map, Props.radius, true))
-                {
-                    if (thing is Pawn pawn)
-                    {
-                        float adjustedSeverity = Props.severityIncrease;
-                        if (!Props.stats.NullOrEmpty())
-                        {
-                            foreach (StatDef stat in Props.stats)
-                            {
-                                adjustedSeverity *= pawn.GetStatValue(stat);
-                            }
-                        }
+                return;
+            }
 
-                        if (pawn.health.hediffSet.HasHediff(Props.hediffDef) && adjustedSeverity > 0f)
-                        {
-                            pawn.health.hediffSet.GetFirstHediffOfDef(Props.hediffDef).Severity += adjustedSeverity;
-                        }
-                        else if (adjustedSeverity > 0f)
-                        {
-                            Hediff hediff = HediffMaker.MakeHediff(Props.hediffDef, pawn);
-                            hediff.Severity = adjustedSeverity;
-                            pawn.health.AddHediff(hediff);
-                        }
+            List<Pawn> pawnList = parent.Map.mapPawns.AllPawnsSpawned;
+
+            for (int i = pawnList.Count - 1; i >= 0; i--)
+            {
+                Pawn pawn = pawnList[i];
+
+                if (pawn.Position.DistanceToSquared(parent.Position) > Props.radius * Props.radius)
+                {
+                    continue;
+                }
+
+                float adjustedSeverity = Props.severityIncrease;
+
+                if (!Props.stats.NullOrEmpty())
+                {
+                    for (int j = 0; j < Props.stats.Count; j++)
+                    {
+                        adjustedSeverity *= pawn.GetStatValue(Props.stats[j]);
                     }
                 }
-                nextTest += Props.tickRate;
+
+                Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(Props.hediffDef);
+
+                if (hediff != null)
+                {
+                    hediff.Severity += adjustedSeverity;
+                    continue;
+                }
+
+                hediff = HediffMaker.MakeHediff(Props.hediffDef, pawn);
+                hediff.Severity = adjustedSeverity;
+                pawn.health.AddHediff(hediff);
             }
         }
     }

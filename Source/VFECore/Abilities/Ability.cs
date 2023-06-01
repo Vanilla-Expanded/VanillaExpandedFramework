@@ -119,8 +119,12 @@
         public float GetAdditionalRadius() =>
             this.def.GetModExtension<AbilityExtension_AdditionalRadius>().GetRadiusFor(this.pawn);
 
-        public virtual float GetPowerForPawn() =>
-            CalculateModifiedStatForPawn(this.def.power, this.def.powerStatFactors, this.def.powerStatOffsets);
+        public virtual float GetPowerForPawn()
+        {
+            float power = CalculateModifiedStatForPawn(this.def.power, this.def.powerStatFactors, this.def.powerStatOffsets);
+            var multiplier = this.def.GetModExtension<AbilityExtension_RandomPowerMultiplier>();
+            return multiplier != null ? power * multiplier.range.RandomInRange : power;
+        }
 
         public virtual int GetCastTimeForPawn() =>
             Mathf.RoundToInt(CalculateModifiedStatForPawn((float) this.def.castTime, this.def.castTimeStatFactors,
@@ -136,6 +140,20 @@
 
         private List<Pair<Effecter, TargetInfo>> maintainedEffecters = new List<Pair<Effecter, TargetInfo>>();
 
+        public virtual string GetPowerForPawnDescription()
+        {
+            float power = CalculateModifiedStatForPawn(this.def.power, this.def.powerStatFactors, this.def.powerStatOffsets);
+            if (power == 0)
+                return "";
+
+            var multiplier = this.def.GetModExtension<AbilityExtension_RandomPowerMultiplier>();
+            if (multiplier == null)
+                return $"{"VFEA.AbilityStatsPower".Translate()}: {power}".Colorize(Color.cyan);
+
+            FloatRange range = multiplier.range;
+            return $"{"VFEA.AbilityStatsPower".Translate()}: {range.min}-{range.max}".Colorize(Color.cyan);
+        }
+
         public virtual string GetDescriptionForPawn()
         {
             var baseDesc = this.def.LabelCap.Colorize(ColoredText.TipSectionTitleColor) + "\n\n" + this.def.description + "\n\n";
@@ -150,9 +168,9 @@
                 sb.AppendLine($"{"radius".Translate().CapitalizeFirst()}: {radiusForPawn}".Colorize(Color.cyan));
             if (this.def.minRadius > 0f)
                 sb.AppendLine($"{"VFEA.MinRadius".Translate()}: {this.def.minRadius}".Colorize(Color.cyan));
-            float powerForPawn = this.GetPowerForPawn();
-            if (powerForPawn > 0f)
-                sb.AppendLine($"{"VFEA.AbilityStatsPower".Translate()}: {powerForPawn}".Colorize(Color.cyan));
+            string powerForPawnDescription = this.GetPowerForPawnDescription();
+            if (powerForPawnDescription.NullOrEmpty())
+                sb.AppendLine(powerForPawnDescription);
             int castTimeForPawn = this.GetCastTimeForPawn();
             if (castTimeForPawn > 0)
                 sb.AppendLine($"{"AbilityCastingTime".Translate()}: {castTimeForPawn.ToStringTicksToPeriodSpecific()}".Colorize(Color.cyan));
