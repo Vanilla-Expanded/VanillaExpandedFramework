@@ -44,6 +44,8 @@ namespace KCSG
 
         internal bool IsForSlaves { get; private set; }
 
+        public int Size { get => size; }
+
         /// <summary>
         /// Resolve layout infos
         /// </summary>
