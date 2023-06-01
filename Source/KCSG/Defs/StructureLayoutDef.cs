@@ -46,6 +46,8 @@ namespace KCSG
 
         public int Size { get => size; }
 
+        public Vector2 Sizes { get => sizes; }
+
         /// <summary>
         /// Resolve layout infos
         /// </summary>
