@@ -156,11 +156,14 @@ namespace KCSG
             }
             else
             {
-                for (int h = 0; h < layout.size; h++)
+                var width = rect.Width;
+                var height = rect.Height;
+
+                for (int h = 0; h < height; h++)
                 {
-                    for (int w = 0; w < layout.size; w++)
+                    for (int w = 0; w < width; w++)
                     {
-                        var cell = cells[(h * layout.size) + w];
+                        var cell = cells[(h * width) + w];
                         var roof = layout._roofGrid[h, w];
 
                         if (cell.InBounds(map) && roof != ".")
