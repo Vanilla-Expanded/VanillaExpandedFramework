@@ -115,36 +115,35 @@ namespace KCSG
                         // Make sure we don't add big building multiple times/add them on the right cell
                         else if (!symbolBlacklist.Contains(thing.def.defName) && !addedThings.Contains(thing) && thing.Position == cell)
                         {
-                            SymbolDef symbolDef;
-                            if (thing.Stuff != null)
+                            var allSymbols = DefDatabase<SymbolDef>.AllDefsListForReading;
+
+                            SymbolDef symbolDef = null;
+                            // Get stuff
+                            ThingDef stuff = thing.Stuff;
+                            // Get color
+                            ColorDef colorDef = null;
+                            if (thing is Building building && building.PaintColorDef is ColorDef c)
+                                colorDef = c;
+                            // Get style
+                            StyleCategoryDef styleCategoryDef = null;
+                            if (thing.StyleDef is ThingStyleDef styleDef)
+                                styleCategoryDef = styleDef.Category;
+
+                            for (int i = 0; i < allSymbols.Count; i++)
                             {
-                                if (thing is Building building && building.PaintColorDef is ColorDef colorDef)
-                                {
-                                    symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.thingDef == thing.def
-                                                                                                       && s.stuffDef == thing.Stuff
-                                                                                                       && s.colorDef == colorDef
-                                                                                                       && (thing.def.rotatable == false || s.rotation == thing.Rotation));
-                                }
-                                else
-                                {
-                                    symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.thingDef == thing.def
-                                                                                                       && s.stuffDef == thing.Stuff
-                                                                                                       && (thing.def.rotatable == false || s.rotation == thing.Rotation));
-                                }
-                            }
-                            else
-                            {
-                                if (thing is Building building && building.PaintColorDef is ColorDef colorDef)
-                                {
-                                    symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.thingDef == thing.def
-                                                                                                       && s.colorDef == colorDef
-                                                                                                       && (thing.def.rotatable == false || s.rotation == thing.Rotation));
-                                }
-                                else
-                                {
-                                    symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.thingDef == thing.def
-                                                                                                       && (thing.def.rotatable == false || s.rotation == thing.Rotation));
-                                }
+                                var symb = allSymbols[i];
+                                if (symb.thingDef != thing.def)
+                                    continue;
+                                if (thing.def.rotatable && symb.rotation != thing.Rotation)
+                                    continue;
+                                if (stuff != null && symb.stuffDef != stuff)
+                                    continue;
+                                if (colorDef != null && symb.colorDef != colorDef)
+                                    continue;
+                                if (styleCategoryDef != null && symb.styleCategoryDef != styleCategoryDef)
+                                    continue;
+
+                                symbolDef = symb;
                             }
 
                             if (symbolDef == null)
@@ -620,6 +619,9 @@ namespace KCSG
                 if (thing is Building building && building.PaintColorDef is ColorDef colorDef)
                     symbol.color = colorDef.defName;
 
+                if (thing.StyleDef is ThingStyleDef styleDef)
+                    symbol.styleCategory = styleDef.Category.defName;
+
                 symbol.ResolveReferences();
                 Dialog_ExportWindow.exportedSymbolsName.Add(defName);
                 DefDatabase<SymbolDef>.Add(symbol);
@@ -644,6 +646,9 @@ namespace KCSG
 
             if (thing is Building building && building.PaintColorDef is ColorDef colorDef)
                 symbolString += "_" + colorDef.LabelCap.Replace(" ", "");
+
+            if (thing.StyleDef is ThingStyleDef styleDef)
+                symbolString += "_" + styleDef.Category.LabelCap;
 
             if (thing.def.rotatable && thing.def.category != ThingCategory.Plant)
                 symbolString += "_" + StartupActions.Rot4ToStringEnglish(thing.Rotation);

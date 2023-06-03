@@ -346,6 +346,11 @@ namespace KCSG
                     }
                 }
             }
+            // Handle styling
+            if (symbol.styleCategoryDef != null && symbol.styleCategoryDef.GetStyleForThingDef(thing.def) is ThingStyleDef styleDef)
+            {
+                thing.SetStyleDef(styleDef);
+            }
             // Handle mortar and mortar pawns
             SpawnMortar(thing, faction, map);
         }

@@ -22,6 +22,9 @@ namespace KCSG
         public string color = null;
         internal ColorDef colorDef = null;
 
+        public string styleCategory = null;
+        internal StyleCategoryDef styleCategoryDef = null;
+
         // Building info
         public Rot4 rotation = Rot4.North;
 
@@ -67,6 +70,9 @@ namespace KCSG
             if (color != null)
                 colorDef = DefDatabase<ColorDef>.GetNamed(color, Debug.Enabled);
 
+            if (styleCategory != null)
+                styleCategoryDef = DefDatabase<StyleCategoryDef>.GetNamed(styleCategory, Debug.Enabled);
+
             if (pawnKindDef != null)
                 pawnKindDefNS = DefDatabase<PawnKindDef>.GetNamed(pawnKindDef, Debug.Enabled);
 
@@ -93,6 +99,9 @@ namespace KCSG
 
             if (color != null)
                 layoutDef.Add(new XElement("color", color));
+
+            if (styleCategory != null)
+                layoutDef.Add(new XElement("styleCategory", styleCategory));
 
             if (pawnKindDef != null)
                 layoutDef.Add(new XElement("pawnKindDef", pawnKindDef));
