@@ -158,6 +158,8 @@ public class ModDef : Def
 
     public bool IgnoreThisMod;
 
+    #region BackCompatability
+
     public override IEnumerable<string> ConfigErrors()
     {
 #pragma warning disable CS0612
@@ -169,8 +171,6 @@ public class ModDef : Def
     public override void PostLoad()
     {
         base.PostLoad();
-
-        #region BackCompatability
 
 #pragma warning disable CS0612
 
@@ -187,8 +187,6 @@ public class ModDef : Def
         }
 
 #pragma warning restore CS0612
-
-        #endregion
     }
 
 #pragma warning disable CS0612
@@ -196,6 +194,8 @@ public class ModDef : Def
 
     [Obsolete] public FeatureOpts IgnoredFeatures;
 #pragma warning restore CS0612
+
+    #endregion
 }
 
 [Obsolete]
@@ -237,7 +237,7 @@ public abstract class PatchSet
     public abstract IEnumerable<Patch> GetPatches();
 }
 
-public struct Patch
+public readonly struct Patch
 {
     private static int numPatches;
     private readonly MethodBase target;
