@@ -54,7 +54,7 @@ public class AdditionalVerbProps
 
         if (parentDef is ThingDef thingDef)
         {
-            var matches = thingDef.Verbs.Count(vb => vb.label == label) + thingDef.tools.Count(tool => tool.label == label);
+            var matches = thingDef.Verbs?.Count(vb => vb?.label == label) + thingDef.tools?.Count(tool => tool?.label == label);
             if (matches == 0) yield return $"Could not find verb on parent with label \"{label}\"";
             if (matches > 1)
                 yield return $"Found too many verbs on parent with label \"{label}\". Expected 1, found {matches}";
@@ -67,7 +67,7 @@ public class AdditionalVerbProps
         {
             if (hediffDef.comps.OfType<HediffCompProperties_VerbGiver>().FirstOrDefault() is { } verbGiver)
             {
-                var matches = verbGiver.verbs.Count(vb => vb.label == label) + verbGiver.tools.Count(tool => tool.label == label);
+                var matches = verbGiver.verbs?.Count(vb => vb?.label == label) + verbGiver.tools?.Count(tool => tool?.label == label);
                 if (matches == 0) yield return $"Could not find verb on parent with label \"{label}\"";
                 if (matches > 1)
                     yield return $"Found too many verbs on parent with label \"{label}\". Expected 1, found {matches}";
