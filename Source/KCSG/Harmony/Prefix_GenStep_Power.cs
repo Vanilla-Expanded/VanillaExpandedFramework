@@ -12,14 +12,11 @@ namespace KCSG
         [HarmonyPrefix]
         public static bool Prefix(Map map)
         {
-            if (map.ParentFaction != null && map.ParentFaction.def.HasModExtension<CustomGenOption>())
+            if (Find.World.worldObjects.AnySettlementAt(map.Tile) && map.ParentFaction is Faction faction && faction.def.HasModExtension<CustomGenOption>())
             {
                 return false;
             }
-            else
-            {
-                return true;
-            }
+            return true;
         }
     }
 }
