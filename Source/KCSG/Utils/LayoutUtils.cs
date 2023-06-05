@@ -21,11 +21,11 @@ namespace KCSG
             var cells = rect.Cells.ToList();
             for (int index = 0; index < layout.layouts.Count; index++)
             {
-                for (int h = 0; h < layout.size; h++)
+                for (int h = 0; h < layout.sizes.z; h++)
                 {
-                    for (int w = 0; w < layout.size; w++)
+                    for (int w = 0; w < layout.sizes.x; w++)
                     {
-                        var cell = cells[(h * layout.size) + w];
+                        var cell = cells[(h * layout.sizes.x) + w];
                         var symbol = layout._layouts[index][h, w];
 
                         if (cell.InBounds(map) && symbol != null)
@@ -46,11 +46,11 @@ namespace KCSG
         {
             if (layout._roofGrid != null && layout._roofGrid.Length > 0)
             {
-                for (int h = 0; h < layout.size; h++)
+                for (int h = 0; h < layout.sizes.z; h++)
                 {
-                    for (int w = 0; w < layout.size; w++)
+                    for (int w = 0; w < layout.sizes.x; w++)
                     {
-                        var cell = cells[(h * layout.size) + w];
+                        var cell = cells[(h * layout.sizes.x) + w];
                         var roof = layout._roofGrid[h, w];
 
                         if (cell.InBounds(map) && roof != null)
@@ -109,11 +109,11 @@ namespace KCSG
                 return;
 
             var useColorGrid = layout._terrainColorGrid != null && layout._terrainColorGrid.Length > 0;
-            for (int h = 0; h < layout.size; h++)
+            for (int h = 0; h < layout.sizes.z; h++)
             {
-                for (int w = 0; w < layout.size; w++)
+                for (int w = 0; w < layout.sizes.x; w++)
                 {
-                    var cell = cells[(h * layout.size) + w];
+                    var cell = cells[(h * layout.sizes.x) + w];
                     var terrain = layout._terrainGrid[h, w];
 
                     if (terrain == null || !cell.InBounds(map))

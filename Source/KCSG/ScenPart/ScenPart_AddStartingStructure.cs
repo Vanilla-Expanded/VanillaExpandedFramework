@@ -109,7 +109,7 @@ namespace KCSG
                 layoutDef = chooseFrom.RandomElement();
             }
 
-            CellRect cellRect = CreateCellRect(map, layoutDef.size, layoutDef.size);
+            CellRect cellRect = CreateCellRect(map, layoutDef.sizes.z, layoutDef.sizes.x);
 
             if (preGenClear)
                 LayoutUtils.CleanRect(layoutDef, map, cellRect, fullClear);

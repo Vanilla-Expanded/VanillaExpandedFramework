@@ -59,8 +59,8 @@ namespace KCSG
                 for (int j = 0; j < tile.tileLayouts.Count; j++)
                 {
                     var layout = tile.tileLayouts[j];
-                    if (layout.size > size)
-                        size = layout.size;
+                    if (layout.maxSize > size)
+                        size = layout.maxSize;
                 }
             }
 

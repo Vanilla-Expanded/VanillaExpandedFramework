@@ -27,7 +27,7 @@ namespace KCSG
                             var map = Find.CurrentMap;
                             if (UI.MouseCell().InBounds(map))
                             {
-                                var cellRect = CellRect.CenteredOn(UI.MouseCell(), layoutDef.size, layoutDef.size);
+                                var cellRect = CellRect.CenteredOn(UI.MouseCell(), layoutDef.sizes.x, layoutDef.sizes.z);
                                 GenOption.GetAllMineableIn(cellRect, map);
                                 LayoutUtils.CleanRect(layoutDef, map, cellRect, true);
                                 layoutDef.Generate(cellRect, map);
@@ -51,7 +51,7 @@ namespace KCSG
                             var map = Find.CurrentMap;
                             if (UI.MouseCell().InBounds(map))
                             {
-                                var cellRect = CellRect.CenteredOn(UI.MouseCell(), layoutDef.size, layoutDef.size);
+                                var cellRect = CellRect.CenteredOn(UI.MouseCell(), layoutDef.sizes.x, layoutDef.sizes.z);
                                 GenOption.GetAllMineableIn(cellRect, map);
                                 LayoutUtils.CleanRect(layoutDef, map, cellRect, true);
                                 layoutDef.Generate(cellRect, map);

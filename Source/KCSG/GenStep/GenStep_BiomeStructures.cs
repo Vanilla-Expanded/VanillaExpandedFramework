@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Security.Policy;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
@@ -30,11 +31,10 @@ namespace KCSG
                     for (int i = 0; i < spawnCount; i++)
                     {
                         StructureLayoutDef layout = ext.structures.RandomElementByWeight(l => l.commonality).layout;
-                        int size = layout.size;
 
                         IntVec3 spawnPos = CellFinderLoose.RandomCellWith((c) =>
                         {
-                            CellRect rect = CellRect.CenteredOn(c, size + ext.clearCellRadiusAround, size + ext.clearCellRadiusAround);
+                            CellRect rect = CellRect.CenteredOn(c, layout.sizes.x + ext.clearCellRadiusAround, layout.sizes.z + ext.clearCellRadiusAround);
 
                             if (!rect.InBounds(map))
                             {
@@ -62,7 +62,7 @@ namespace KCSG
                         }, map);
 
 
-                        var spawnRect = CellRect.CenteredOn(spawnPos, size, size);
+                        var spawnRect = CellRect.CenteredOn(spawnPos, layout.sizes.x, layout.sizes.z);
                         GenOption.GetAllMineableIn(spawnRect, map);
                         layout.Generate(spawnRect, map);
                     }

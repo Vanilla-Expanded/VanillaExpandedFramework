@@ -63,12 +63,12 @@ namespace KCSG
         /// </summary>
         public override List<Pawn> SpawnThreats(IncidentParms parms)
         {
-            var cellRect = CellRect.CenteredOn(parms.spawnCenter, (int)GenOption.fallingLayout.sizes.x, (int)GenOption.fallingLayout.sizes.y);
+            var cellRect = CellRect.CenteredOn(parms.spawnCenter, GenOption.fallingLayout.sizes.x, GenOption.fallingLayout.sizes.z);
 
             var allSymbList = new List<string>();
             Map map = (Map)parms.target;
 
-            for (int i = 0; i < GenOption.fallingLayout.sizes.y; i++)
+            for (int i = 0; i < GenOption.fallingLayout.sizes.z; i++)
             {
                 var str = GenOption.fallingLayout.layouts[0][i];
                 var split = str.Split(',');
@@ -166,7 +166,7 @@ namespace KCSG
             }
 
             IncidentParms nParms = parms;
-            RCellFinder.TryFindRandomCellNearWith(parms.spawnCenter, i => i.Walkable(map), map, out nParms.spawnCenter, Math.Min(GenOption.fallingLayout.size, GenOption.fallingLayout.size));
+            RCellFinder.TryFindRandomCellNearWith(parms.spawnCenter, i => i.Walkable(map), map, out nParms.spawnCenter, Math.Min(GenOption.fallingLayout.sizes.x, GenOption.fallingLayout.sizes.z));
 
             return base.SpawnThreats(nParms);
         }

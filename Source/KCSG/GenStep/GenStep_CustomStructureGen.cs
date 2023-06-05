@@ -33,7 +33,7 @@ namespace KCSG
 
             StructureLayoutDef layoutDef = structureLayoutDefs.RandomElement();
 
-            var cellRect = CellRect.CenteredOn(map.Center, layoutDef.size, layoutDef.size);
+            var cellRect = CellRect.CenteredOn(map.Center, layoutDef.sizes.x, layoutDef.sizes.z);
             GenOption.GetAllMineableIn(cellRect, map);
             LayoutUtils.CleanRect(layoutDef, map, cellRect, fullClear);
             layoutDef.Generate(cellRect, map);

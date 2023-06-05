@@ -32,9 +32,9 @@ namespace KCSG
         public List<IntVec2> spawnAt = new List<IntVec2>();
 
         // Values used regularly in gen:
-        internal int size;
-        internal Vector2 sizes;
-        internal int gridCount;
+        internal int maxSize;
+        internal IntVec2 sizes;
+        // internal int gridCount;
         internal List<SymbolDef[,]> _layouts = new List<SymbolDef[,]>();
         internal TerrainDef[,] _terrainGrid;
         internal ColorDef[,] _terrainColorGrid;
@@ -44,9 +44,9 @@ namespace KCSG
 
         internal bool IsForSlaves { get; private set; }
 
-        public int Size { get => size; }
+        public int MaxSize { get => maxSize; }
 
-        public Vector2 Sizes { get => sizes; }
+        public IntVec2 Sizes { get => sizes; }
 
         /// <summary>
         /// Resolve layout infos
@@ -56,9 +56,9 @@ namespace KCSG
             // Make it a even rect
             var height = layouts[0].Count;
             var width = layouts[0][0].Split(',').Count();
-            size = Math.Max(height, width);
-            sizes = new Vector2(width, height);
-            gridCount = size * size;
+            maxSize = Math.Max(height, width);
+            sizes = new IntVec2(width, height);
+            // gridCount = size * size;
 
             // Resolve
             ResolveModRequirements();
@@ -92,15 +92,15 @@ namespace KCSG
             if (tCount == 0)
                 return;
 
-            _terrainGrid = new TerrainDef[size, size];
-            for (int h = 0; h < size; h++)
+            _terrainGrid = new TerrainDef[sizes.z, sizes.x];
+            for (int h = 0; h < sizes.z; h++)
             {
                 if (h < tCount)
                 {
                     var tLine = terrainGrid[h].Split(',');
                     var tLineCount = tLine.Length;
 
-                    for (int w = 0; w < size; w++)
+                    for (int w = 0; w < sizes.x; w++)
                     {
                         if (w < tLineCount)
                             _terrainGrid[h, w] = DefDatabase<TerrainDef>.GetNamedSilentFail(tLine[w]);
@@ -110,7 +110,7 @@ namespace KCSG
                 }
                 else
                 {
-                    for (int w = 0; w < size; w++)
+                    for (int w = 0; w < sizes.x; w++)
                         _terrainGrid[h, w] = null;
                 }
             }
@@ -119,15 +119,15 @@ namespace KCSG
             if (tcCount == 0)
                 return;
 
-            _terrainColorGrid = new ColorDef[size, size];
-            for (int i = 0; i < size; i++)
+            _terrainColorGrid = new ColorDef[sizes.z, sizes.x];
+            for (int i = 0; i < sizes.z; i++)
             {
                 if (i < tcCount)
                 {
                     var colorLine = terrainColorGrid[i].Split(',');
                     var colorLineCount = colorLine.Length;
 
-                    for (int w = 0; w < size; w++)
+                    for (int w = 0; w < sizes.x; w++)
                     {
                         if (w < colorLineCount)
                             _terrainColorGrid[i, w] = DefDatabase<ColorDef>.GetNamedSilentFail(colorLine[w]);
@@ -137,7 +137,7 @@ namespace KCSG
                 }
                 else
                 {
-                    for (int w = 0; w < size; w++)
+                    for (int w = 0; w < sizes.x; w++)
                         _terrainColorGrid[i, w] = null;
                 }
             }
@@ -152,16 +152,16 @@ namespace KCSG
             if (rCount == 0)
                 return;
 
-            _roofGrid = new string[size, size];
+            _roofGrid = new string[sizes.z, sizes.x];
 
-            for (int h = 0; h < size; h++)
+            for (int h = 0; h < sizes.z; h++)
             {
                 if (h < rCount)
                 {
                     var rLine = roofGrid[h].Split(',');
                     var rLineCount = rLine.Length;
 
-                    for (int w = 0; w < size; w++)
+                    for (int w = 0; w < sizes.x; w++)
                     {
                         if (w < rLineCount)
                             _roofGrid[h, w] = rLine[w];
@@ -171,7 +171,7 @@ namespace KCSG
                 }
                 else
                 {
-                    for (int w = 0; w < size; w++)
+                    for (int w = 0; w < sizes.x; w++)
                         _roofGrid[h, w] = ".";
                 }
             }
@@ -188,16 +188,16 @@ namespace KCSG
             {
                 var layout = layouts[l];
                 var lCount = layout.Count;
-                _layouts.Add(new SymbolDef[size, size]);
+                _layouts.Add(new SymbolDef[sizes.z, sizes.x]);
 
-                for (int h = 0; h < size; h++)
+                for (int h = 0; h < sizes.z; h++)
                 {
                     if (h < lCount)
                     {
                         var symbols = layout[h].Split(',');
                         var symbolsCount = symbols.Length;
 
-                        for (int w = 0; w < size; w++)
+                        for (int w = 0; w < sizes.x; w++)
                         {
                             if (w < symbolsCount)
                             {
@@ -225,7 +225,7 @@ namespace KCSG
                     }
                     else
                     {
-                        for (int w = 0; w < size; w++)
+                        for (int w = 0; w < sizes.x; w++)
                             _layouts[l][h, w] = null;
                     }
                 }

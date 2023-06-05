@@ -33,12 +33,12 @@ namespace KCSG.UndergroundRoom
                     mapsParent.Add(passage, mapParent);
 
                     var layout = passage.Props.mapLayouts.RandomElement();
-                    var mapSize = new IntVec3(layout.size, 1, layout.size);
+                    var mapSize = new IntVec3(layout.sizes.x, 1, layout.sizes.z);
 
                     var map = MapGenerator.GenerateMap(mapSize, mapParent, mapParent.MapGeneratorDef);
                     LongEventHandler.ExecuteWhenFinished(() =>
                     {
-                        var cellRect = CellRect.CenteredOn(map.Center, layout.size, layout.size);
+                        var cellRect = CellRect.CenteredOn(map.Center, layout.sizes.x, layout.sizes.z);
 
                         GenOption.GetAllMineableIn(cellRect, map);
                         layout.Generate(cellRect, map);
