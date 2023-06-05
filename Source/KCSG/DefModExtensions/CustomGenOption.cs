@@ -2,6 +2,7 @@
 using RimWorld.BaseGen;
 using RimWorld;
 using Verse;
+using System.Linq;
 
 namespace KCSG
 {
@@ -31,6 +32,8 @@ namespace KCSG
         public List<ThingDef> filthTypes = new List<ThingDef>();
         public float scatterChance = 0.4f;
 
+        public bool scaleWithQuest = false;
+
         public override IEnumerable<string> ConfigErrors()
         {
             foreach (var error in base.ConfigErrors())
@@ -49,7 +52,8 @@ namespace KCSG
             // Tiled
             if (UsingTiledStructure)
             {
-                TileUtils.Generate(tiledStructures.RandomElement(), loc, map);
+                var quest = Find.QuestManager.QuestsListForReading.Find(q => q.QuestSelectTargets.Any(t => t.Map == map));
+                TileUtils.Generate(tiledStructures.RandomElement(), loc, map, quest);
                 return;
             }
             // Single/Settlement

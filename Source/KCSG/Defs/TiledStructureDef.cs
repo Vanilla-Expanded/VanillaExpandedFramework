@@ -7,6 +7,7 @@ namespace KCSG
     public class TiledStructureDef : Def
     {
         public int tilesNumber = 4;
+        public IntRange tilesNumberRange = new IntRange(1, 4);
         public int maxDistanceFromCenter = 1;
 
         public List<string> centerTileTags = new List<string>();

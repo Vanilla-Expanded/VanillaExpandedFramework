@@ -42,7 +42,8 @@ namespace KCSG
         /// <param name="def"></param>
         /// <param name="center"></param>
         /// <param name="map"></param>
-        public static void Generate(this TiledStructureDef def, IntVec3 center, Map map)
+        /// <param name="quest"></param>
+        public static void Generate(this TiledStructureDef def, IntVec3 center, Map map, Quest quest = null)
         {
             // Get usables centers
             var usableCenters = new List<IntVec3>();
@@ -58,6 +59,9 @@ namespace KCSG
             var usedLayouts = new List<StructureLayoutDef>();
             // Tile in center
             var tilesNumber = def.tilesNumber;
+            if (quest != null)
+                tilesNumber = def.tilesNumberRange.Lerped(quest.challengeRating);
+
             if (!def.centerTileDefs.NullOrEmpty())
             {
                 GenerateTileIn(CellRect.CenteredOn(center, def.maxSize, def.maxSize), map, def.centerTileDefs.RandomElement(), ref usedLayouts);
