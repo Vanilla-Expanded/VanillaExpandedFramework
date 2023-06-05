@@ -22,26 +22,32 @@ namespace KCSG
         public static void Generate(IntVec3 loc, Map map, CustomGenOption ext)
         {
             GenOption.customGenExt = ext;
-
-            if (GenOption.customGenExt.UsingSingleLayout)
+            // Tiled
+            if (ext.UsingTiledStructure)
             {
-                GenOption.structureLayout = RandomUtils.RandomLayoutFrom(GenOption.customGenExt.chooseFromlayouts);
+                TileUtils.Generate(ext.tiledStructures.RandomElement(), loc, map);
+                return;
+            }
+            // Single/Settlement
+            if (ext.UsingSingleLayout)
+            {
+                GenOption.structureLayout = RandomUtils.RandomLayoutFrom(ext.chooseFromlayouts);
             }
             else
             {
-                GenOption.settlementLayout = GenOption.customGenExt.chooseFromSettlements.RandomElement();
+                GenOption.settlementLayout = ext.chooseFromSettlements.RandomElement();
             }
 
             // Get faction
             Faction faction = map.ParentFaction == null || map.ParentFaction == Faction.OfPlayer ? Find.FactionManager.RandomEnemyFaction() : map.ParentFaction;
 
             // Get settlement size
-            int width = GenOption.customGenExt.UsingSingleLayout ? GenOption.structureLayout.sizes.x : GenOption.settlementLayout.settlementSize.x;
-            int height = GenOption.customGenExt.UsingSingleLayout ? GenOption.structureLayout.sizes.z : GenOption.settlementLayout.settlementSize.z;
+            int width = ext.UsingSingleLayout ? GenOption.structureLayout.sizes.x : GenOption.settlementLayout.settlementSize.x;
+            int height = ext.UsingSingleLayout ? GenOption.structureLayout.sizes.z : GenOption.settlementLayout.settlementSize.z;
 
             // Get spawn position
             IntVec3 spawn = loc;
-            if (GenOption.customGenExt.tryFindFreeArea)
+            if (ext.tryFindFreeArea)
             {
                 if (!RCellFinder.TryFindRandomCellNearTheCenterOfTheMapWith(i => RectFreeValidator(CellRect.CenteredOn(i, width, height), map), map, out spawn))
                     Log.Warning($"[KCSG] Trying to find free spawn area failed");
@@ -61,7 +67,7 @@ namespace KCSG
             rp.faction = faction;
             rp.rect = rect;
             BaseGen.globalSettings.map = map;
-            BaseGen.symbolStack.Push(GenOption.customGenExt.symbolResolver ?? "kcsg_settlement", rp, null);
+            BaseGen.symbolStack.Push(ext.symbolResolver ?? "kcsg_settlement", rp, null);
             BaseGen.Generate();
         }
 

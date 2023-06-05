@@ -5,6 +5,7 @@ namespace KCSG
 {
     public class CustomGenOption : DefModExtension
     {
+        public bool UsingTiledStructure => tiledStructures.Count > 0;
         public bool UsingSingleLayout => chooseFromlayouts.Count > 0;
 
         /* Nomadic faction */
@@ -13,6 +14,7 @@ namespace KCSG
         /* Structure generation */
         public List<StructureLayoutDef> chooseFromlayouts = new List<StructureLayoutDef>();
         public List<SettlementLayoutDef> chooseFromSettlements = new List<SettlementLayoutDef>();
+        public List<TiledStructureDef> tiledStructures = new List<TiledStructureDef>();
 
         public string symbolResolver = null;
 
