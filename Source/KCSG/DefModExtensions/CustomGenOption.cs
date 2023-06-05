@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using RimWorld.BaseGen;
+using RimWorld;
 using Verse;
 
 namespace KCSG
@@ -39,6 +41,69 @@ namespace KCSG
                 if (filthTypes[i].category != ThingCategory.Filth)
                     yield return $"{filthTypes[i].defName} in filthTypes, but isn't in category Filth.";
             }
+        }
+
+        public void Generate(IntVec3 loc, Map map)
+        {
+            GenOption.customGenExt = this;
+            // Tiled
+            if (UsingTiledStructure)
+            {
+                TileUtils.Generate(tiledStructures.RandomElement(), loc, map);
+                return;
+            }
+            // Single/Settlement
+            bool single = UsingSingleLayout;
+            if (single)
+            {
+                GenOption.structureLayout = RandomUtils.RandomLayoutFrom(chooseFromlayouts);
+            }
+            else
+            {
+                GenOption.settlementLayout = chooseFromSettlements.RandomElement();
+            }
+
+            // Get faction
+            Faction faction = map.ParentFaction == null || map.ParentFaction == Faction.OfPlayer ? Find.FactionManager.RandomEnemyFaction() : map.ParentFaction;
+
+            // Get settlement size
+            int width = single ? GenOption.structureLayout.sizes.x : GenOption.settlementLayout.settlementSize.x;
+            int height = single ? GenOption.structureLayout.sizes.z : GenOption.settlementLayout.settlementSize.z;
+
+            // Get spawn position
+            IntVec3 spawn = loc;
+            if (tryFindFreeArea)
+            {
+                if (!RCellFinder.TryFindRandomCellNearTheCenterOfTheMapWith(i => RectFreeValidator(CellRect.CenteredOn(i, width, height), map), map, out spawn))
+                    Log.Warning($"[KCSG] Trying to find free spawn area failed");
+            }
+
+            // Create rect
+            CellRect rect = CellRect.CenteredOn(spawn, width, height);
+            rect.ClipInsideMap(map);
+
+            GenOption.GetAllMineableIn(rect, map);
+            // Pre-gen clean
+            if (preGenClear)
+                LayoutUtils.CleanRect(GenOption.structureLayout, map, rect, fullClear);
+
+            // Push symbolresolver
+            ResolveParams rp = default;
+            rp.faction = faction;
+            rp.rect = rect;
+            BaseGen.globalSettings.map = map;
+            BaseGen.symbolStack.Push(symbolResolver ?? "kcsg_settlement", rp, null);
+            BaseGen.Generate();
+        }
+
+        private bool RectFreeValidator(CellRect rect, Map map)
+        {
+            foreach (var cell in rect)
+            {
+                if (!cell.Walkable(map) || cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Bridgeable))
+                    return false;
+            }
+            return true;
         }
     }
 }

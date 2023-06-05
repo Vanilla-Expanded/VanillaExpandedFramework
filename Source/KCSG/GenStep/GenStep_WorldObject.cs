@@ -10,7 +10,7 @@ namespace KCSG
 
         protected override void ScatterAt(IntVec3 loc, Map map, GenStepParams parms, int count = 1)
         {
-            GenStep_Settlement.Generate(loc, map, map.Parent.def.GetModExtension<CustomGenOption>());
+            map.Parent.def.GetModExtension<CustomGenOption>().Generate(loc, map);
         }
     }
 }
