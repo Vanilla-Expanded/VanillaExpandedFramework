@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
 using RimWorld.BaseGen;
+using UnityEngine;
 using Verse;
 
 namespace KCSG
@@ -12,6 +14,7 @@ namespace KCSG
         public bool preventBridgeable = false;
 
         public List<StructureLayoutDef> structureLayoutDefs = new List<StructureLayoutDef>();
+        public List<TiledStructureDef> tiledStructures = new List<TiledStructureDef>();
 
         public List<string> symbolResolvers = new List<string>();
 
@@ -31,6 +34,14 @@ namespace KCSG
                 scatterChance = scatterChance,
             };
 
+            // Tiled
+            if (!tiledStructures.NullOrEmpty())
+            {
+                var quest = Find.QuestManager.QuestsListForReading.Find(q => q.QuestSelectTargets.Any(t => t.Map == map));
+                TileUtils.Generate(tiledStructures.RandomElement(), map.Center, map, quest);
+                return;
+            }
+            // Normal
             StructureLayoutDef layoutDef = structureLayoutDefs.RandomElement();
 
             var cellRect = CellRect.CenteredOn(map.Center, layoutDef.sizes.x, layoutDef.sizes.z);
