@@ -43,7 +43,7 @@ public class VerbComp_Switch : VerbComp
                 comp.parent.Enabled = false;
             }
 
-        if (parent.Manager.Pawn.stances.curStance is Stance_Warmup { } stance) stance.Interrupt();
+        if (parent.Manager.Pawn.stances.curStance is Stance_Warmup stance) stance.Interrupt();
     }
 
     public override void ModifyScore(Pawn p, LocalTargetInfo target, ref float score)
