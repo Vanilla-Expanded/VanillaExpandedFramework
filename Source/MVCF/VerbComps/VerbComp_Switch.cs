@@ -21,13 +21,15 @@ public class VerbComp_Switch : VerbComp
     public override Command OverrideTargetCommand(Command old)
     {
         if (enabled) return old;
-        return new Command_Action
+        var newCommand = new Command_Action
         {
             defaultLabel = Label,
             defaultDesc = "VFED.SwitchTo".Translate(Label),
             icon = Props.SwitchIcon,
             action = Enable
         };
+        if (old.disabled) newCommand.Disable(old.disabledReason);
+        return newCommand;
     }
 
     public void Enable()
