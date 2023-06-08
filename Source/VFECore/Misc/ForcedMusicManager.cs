@@ -44,6 +44,7 @@ public class ForcedMusicManager : GameComponent
         else if (priority == Instance.currentPriority) Instance.forcedSongs.Add(def);
         else if (priority > Instance.currentPriority)
         {
+            Find.MusicManagerPlay.ForceFadeoutAndSilenceFor(1f, 5f);
             Instance.prioritySongs.Add(Instance.currentPriority, new ForcedSongsBox(Instance.forcedSongs));
             Instance.forcedSongs = new HashSet<SongDef> { def };
             Instance.currentPriority = priority;
