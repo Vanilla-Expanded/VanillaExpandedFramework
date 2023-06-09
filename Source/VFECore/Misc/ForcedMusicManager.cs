@@ -9,9 +9,9 @@ namespace VFECore;
 
 public class ForcedMusicManager : GameComponent
 {
-    private static readonly AccessTools.FieldRef<MusicManagerPlay, SongDef> currentSong       = AccessTools.FieldRefAccess<MusicManagerPlay, SongDef>("lastStartedSong");
-    private static readonly AccessTools.FieldRef<MusicManagerPlay, bool>    ignorePrefsVolume = AccessTools.FieldRefAccess<MusicManagerPlay, bool>("ignorePrefsVolumeThisSong");
-    private static readonly AccessTools.FieldRef<MusicManagerPlay, bool>    songWasForced     = AccessTools.FieldRefAccess<MusicManagerPlay, bool>("songWasForced");
+    private static readonly AccessTools.FieldRef<MusicManagerPlay, SongDef> currentSong = AccessTools.FieldRefAccess<MusicManagerPlay, SongDef>("lastStartedSong");
+    private static readonly AccessTools.FieldRef<MusicManagerPlay, bool> ignorePrefsVolume = AccessTools.FieldRefAccess<MusicManagerPlay, bool>("ignorePrefsVolumeThisSong");
+    private static readonly AccessTools.FieldRef<MusicManagerPlay, bool> songWasForced = AccessTools.FieldRefAccess<MusicManagerPlay, bool>("songWasForced");
     private static bool patchesApplied;
 
     private int currentPriority = -1;
@@ -37,14 +37,14 @@ public class ForcedMusicManager : GameComponent
     {
         if (Instance.forcedSongs.Count == 0)
         {
-            Find.MusicManagerPlay.ForceFadeoutAndSilenceFor(1f, 5f);
+            ForceStopMusic();
             Instance.forcedSongs.Add(def);
             Instance.currentPriority = priority;
         }
         else if (priority == Instance.currentPriority) Instance.forcedSongs.Add(def);
         else if (priority > Instance.currentPriority)
         {
-            Find.MusicManagerPlay.ForceFadeoutAndSilenceFor(1f, 5f);
+            ForceStopMusic();
             Instance.prioritySongs.Add(Instance.currentPriority, new ForcedSongsBox(Instance.forcedSongs));
             Instance.forcedSongs = new HashSet<SongDef> { def };
             Instance.currentPriority = priority;
@@ -61,23 +61,27 @@ public class ForcedMusicManager : GameComponent
     {
         if (Instance.forcedSongs.Remove(def))
         {
-            if (currentSong(Find.MusicManagerPlay) == def) Find.MusicManagerPlay.ForceFadeoutAndSilenceFor(3f, 1f);
+            if (currentSong(Find.MusicManagerPlay) == def) ForceStopMusic();
             if (Instance.forcedSongs.Count == 0)
-            {
                 if (Instance.prioritySongs.Any())
                 {
-                    var (priority, songs) = Instance.prioritySongs.MaxBy(kv => kv.Key);
+                    var (priority, songs)    = Instance.prioritySongs.MaxBy(kv => kv.Key);
                     Instance.currentPriority = priority;
-                    Instance.forcedSongs = songs.forcedSongs;
+                    Instance.forcedSongs     = songs.forcedSongs;
                     Instance.prioritySongs.Remove(priority);
                 }
                 else Instance.currentPriority = -1;
-            }
         }
 
         foreach (var (_, (songs, _)) in Instance.prioritySongs) songs.Remove(def);
 
         Instance.prioritySongs.RemoveAll(kv => kv.Value.forcedSongs.Count == 0);
+    }
+
+    private static void ForceStopMusic()
+    {
+        songWasForced(Find.MusicManagerPlay) = false;
+        Find.MusicManagerPlay.ForceFadeoutAndSilenceFor(1f, 1f);
     }
 
     public static bool ChooseNextSong_Prefix(ref SongDef __result, MusicManagerPlay __instance)
@@ -177,5 +181,14 @@ public class QuestPart_ForcedMusic : QuestPart
         if (signal.tag == inSignalDisable)
             foreach (var def in possibleSongs)
                 ForcedMusicManager.EndSong(def);
+    }
+
+    public override void ExposeData()
+    {
+        base.ExposeData();
+        Scribe_Values.Look(ref inSignalEnable, nameof(inSignalEnable));
+        Scribe_Values.Look(ref inSignalDisable, nameof(inSignalDisable));
+        Scribe_Values.Look(ref priority, nameof(priority));
+        Scribe_Collections.Look(ref possibleSongs, nameof(possibleSongs), LookMode.Def);
     }
 }
