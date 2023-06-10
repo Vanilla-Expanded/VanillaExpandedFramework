@@ -37,8 +37,7 @@ namespace KCSG
             // Tiled
             if (!tiledStructures.NullOrEmpty())
             {
-                var quest = Find.QuestManager.QuestsListForReading.Find(q => q.QuestSelectTargets.Any(t => t.Map == map));
-                TileUtils.Generate(tiledStructures.RandomElement(), map.Center, map, quest);
+                TileUtils.Generate(tiledStructures.RandomElement(), map.Center, map, CustomGenOption.GetRelatedQuest(map));
                 return;
             }
             // Normal

@@ -52,8 +52,7 @@ namespace KCSG
             // Tiled
             if (UsingTiledStructure)
             {
-                var quest = Find.QuestManager.QuestsListForReading.Find(q => q.QuestSelectTargets.Any(t => t.Map == map));
-                TileUtils.Generate(tiledStructures.RandomElement(), loc, map, quest);
+                TileUtils.Generate(tiledStructures.RandomElement(), loc, map, GetRelatedQuest(map));
                 return;
             }
             // Single/Settlement
@@ -108,6 +107,21 @@ namespace KCSG
                     return false;
             }
             return true;
+        }
+
+        public static Quest GetRelatedQuest(Map map)
+        {
+            var quests = Find.QuestManager.QuestsListForReading;
+            for (int j = 0; j < quests.Count; j++)
+            {
+                var quest = quests[j];
+                if (!quest.hidden && !quest.Historical && !quest.dismissed && quest.QuestLookTargets.Contains(map.Parent))
+                {
+                    return quest;
+                }
+            }
+
+            return null;
         }
     }
 }

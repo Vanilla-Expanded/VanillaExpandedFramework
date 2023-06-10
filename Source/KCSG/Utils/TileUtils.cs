@@ -36,7 +36,7 @@ namespace KCSG
             // Get amount of tiles
             var tilesNumber = def.tilesNumber;
             if (quest != null)
-                tilesNumber = def.tilesNumberRange.Lerped(quest.challengeRating);
+                tilesNumber = def.tilesNumberRange.Lerped(quest.challengeRating / 4);
             // Tile in center
             if (!def.centerTileDefs.NullOrEmpty())
             {
