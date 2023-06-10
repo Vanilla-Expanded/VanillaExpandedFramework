@@ -154,58 +154,68 @@ namespace VFECore
         {
             if (RandomSettlementTileFor_Patch.factionToCheck != null && __result > 0)
             {
-                var options = RandomSettlementTileFor_Patch.factionToCheck.def.GetModExtension<FactionDefExtension>();
-                if (options != null)
+                var modExtensions = RandomSettlementTileFor_Patch.factionToCheck.def.modExtensions?.OfType<FactionDefExtension>().ToList();
+                if (modExtensions != null)
                 {
-                    Tile tile = Find.WorldGrid[x];
-                    if ((options.disallowedBiomes?.Any() ?? false) && options.disallowedBiomes.Contains(tile.biome))
+                    foreach (var options in modExtensions)
                     {
-                        //Log.Message(RandomSettlementTileFor_Patch.factionToCheck.def + " can't settle in " + tile.biome + ", disallowed biomes: " + String.Join(", ", options.disallowedBiomes));
-                        __result = 0f;
-                        return;
-                    }
-                    else if ((options.allowedBiomes?.Any() ?? false) && !options.allowedBiomes.Contains(tile.biome))
-                    {
-                        //Log.Message(RandomSettlementTileFor_Patch.factionToCheck.def + " can't settle in " + tile.biome + ", allowed biomes: " + String.Join(", ", options.allowedBiomes));
-                        __result = 0f;
-                        return;
-                    }
-
-                    if ((options.requiredHillLevels?.Any() ?? false) && !options.requiredHillLevels.Contains(tile.hilliness))
-                    {
-                        //Log.Message(RandomSettlementTileFor_Patch.factionToCheck.def + " can't settle in " + tile.biome + ", allowed hill levels: " + String.Join(", ", options.requiredHillLevels));
-                        __result = 0f;
-                        return;
-                    }
-
-                    if (options.spawnOnCoastalTilesOnly)
-                    {
-                        Rot4 rot = Find.World.CoastDirectionAt(x);
-                        if (!rot.IsValid)
+                        Tile tile = Find.WorldGrid[x];
+                        if ((options.disallowedBiomes?.Any() ?? false) && options.disallowedBiomes.Contains(tile.biome))
                         {
-                            //Log.Message(RandomSettlementTileFor_Patch.factionToCheck.def + " can't settle in " + tile.biome + ", only coastal tiles allowed");
+                            //Log.Message(RandomSettlementTileFor_Patch.factionToCheck.def + " can't settle in " + tile.biome + ", disallowed biomes: " + String.Join(", ", options.disallowedBiomes));
+                            __result = 0f;
+                            return;
+                        }
+                        else if ((options.allowedBiomes?.Any() ?? false) && !options.allowedBiomes.Contains(tile.biome))
+                        {
+                            //Log.Message(RandomSettlementTileFor_Patch.factionToCheck.def + " can't settle in " + tile.biome + ", allowed biomes: " + String.Join(", ", options.allowedBiomes));
+                            __result = 0f;
+                            return;
+                        }
+
+                        if ((options.requiredHillLevels?.Any() ?? false) && !options.requiredHillLevels.Contains(tile.hilliness))
+                        {
+                            //Log.Message(RandomSettlementTileFor_Patch.factionToCheck.def + " can't settle in " + tile.biome + ", allowed hill levels: " + String.Join(", ", options.requiredHillLevels));
+                            __result = 0f;
+                            return;
+                        }
+
+                        if (options.spawnOnCoastalTilesOnly)
+                        {
+                            Rot4 rot = Find.World.CoastDirectionAt(x);
+                            if (!rot.IsValid)
+                            {
+                                //Log.Message(RandomSettlementTileFor_Patch.factionToCheck.def + " can't settle in " + tile.biome + ", only coastal tiles allowed");
+                                __result = 0f;
+                                return;
+                            }
+                        }
+                        if (options.minDistanceToOtherSettlements > 0 && Find.WorldObjects.SettlementBases.Any(other =>
+                            Find.WorldGrid.ApproxDistanceInTiles(other.Tile, x) < options.minDistanceToOtherSettlements))
+                        {
                             __result = 0f;
                             return;
                         }
                     }
-                    if (options.minDistanceToOtherSettlements > 0 && Find.WorldObjects.SettlementBases.Any(other =>
-                        Find.WorldGrid.ApproxDistanceInTiles(other.Tile, x) < options.minDistanceToOtherSettlements))
-                    {
-                        __result = 0f;
-                        return;
-                    }
                 }
+
 
                 foreach (var otherSettlement in Find.WorldObjects.SettlementBases)
                 {
-                    options = otherSettlement?.Faction?.def.GetModExtension<FactionDefExtension>();
-                    if (options != null)
+                    modExtensions = otherSettlement?.Faction?.def.modExtensions?.OfType<FactionDefExtension>().ToList();
+                    if (modExtensions != null)
                     {
-                        if (options.minDistanceToOtherSettlements > 0
-                            && Find.WorldGrid.ApproxDistanceInTiles(otherSettlement.Tile, x) < options.minDistanceToOtherSettlements)
+                        foreach (var options in modExtensions)
                         {
-                            __result = 0f;
-                            return;
+                            if (options != null)
+                            {
+                                if (options.minDistanceToOtherSettlements > 0
+                                    && Find.WorldGrid.ApproxDistanceInTiles(otherSettlement.Tile, x) < options.minDistanceToOtherSettlements)
+                                {
+                                    __result = 0f;
+                                    return;
+                                }
+                            }
                         }
                     }
                 }

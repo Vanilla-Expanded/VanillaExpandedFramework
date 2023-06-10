@@ -575,6 +575,50 @@ namespace VFECore
         }
     }
 
+    [HarmonyPatch(typeof(PawnRenderer), "DrawHeadHair")]
+    public static class PawnRenderer_DrawHeadHair_Patch
+    {
+        public static Dictionary<Pawn, bool> hatsWithHideHeadsDrawn = new Dictionary<Pawn, bool>();
+
+        [HarmonyPriority(int.MinValue)]
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
+        {
+            var codes = codeInstructions.ToList();
+            bool found = false;
+            MethodInfo get_IdeologyActive = AccessTools.Property(typeof(ModsConfig), "IdeologyActive").GetGetMethod();
+            var pawnField = AccessTools.Field(typeof(PawnRenderer), "pawn");
+            foreach (var code in codes)
+            {
+                if (!found)
+                {
+                    if (code.Calls(get_IdeologyActive))
+                    {
+                        yield return new CodeInstruction(OpCodes.Ldarg_0);
+                        yield return new CodeInstruction(OpCodes.Ldfld, pawnField);
+                        yield return new CodeInstruction(OpCodes.Ldloc_1);
+                        yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(PawnRenderer_DrawHeadHair_Patch), "RegisterDrawHat"));
+                        found = true;
+                    }
+                }
+                yield return code;
+            }
+        }
+    
+        public static void RegisterDrawHat(Pawn pawn, List<ApparelGraphicRecord> list)
+        {
+            if (list.Any(x => x.sourceApparel.def.GetModExtension<ApparelDrawPosExtension>()?.hideHead ?? false))
+            {
+
+                hatsWithHideHeadsDrawn[pawn] = true;
+            }
+            else
+            {
+                hatsWithHideHeadsDrawn[pawn] = false;
+            }
+        }
+    }
+
+
     [HarmonyPatch(typeof(PawnGraphicSet), "HairMatAt")]
     public static class PawnGraphicSet_HairMatAt_Patch
     {
@@ -591,8 +635,14 @@ namespace VFECore
             }
             if (pawn.apparel.AnyApparel)
             {
-                if (pawn.apparel.WornApparel.Any(x => x.def.GetModExtension<ApparelDrawPosExtension>()?.hideHead ?? false))
+                var headgear = pawn.apparel.WornApparel
+                    .FirstOrDefault(x => x.def.GetModExtension<ApparelDrawPosExtension>()?.hideHead ?? false);
+                if (headgear != null)
                 {
+                    if (PawnRenderer_DrawHeadHair_Patch.hatsWithHideHeadsDrawn.TryGetValue(pawn, out var value) && !value)
+                    {
+                        return true;
+                    }
                     return false;
                 }
             }
