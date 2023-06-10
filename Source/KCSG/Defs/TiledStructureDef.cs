@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Verse;
 
 namespace KCSG
@@ -10,39 +11,33 @@ namespace KCSG
         public IntRange tilesNumberRange = new IntRange(1, 4);
         public int maxDistanceFromCenter = 1;
 
-        public List<string> centerTileTags = new List<string>();
-        public List<string> allowedTileTags = new List<string>();
+        public List<TileDef> centerTileDefs = new List<TileDef>();
+        public List<TileTagOtion> allowedTileDefs = new List<TileTagOtion>();
 
-        internal List<TileDef> centerTileDefs;
-        internal List<TileDef> allowedTileDefs;
+        internal Dictionary<IntVec2, TileDef> _allowedTileDefs;
+        internal Dictionary<IntVec2, TileDef> _requiredTileDefs;
 
         internal int maxSize;
 
         public void Resolve()
         {
-            // Get all center tiles
-            centerTileDefs = new List<TileDef>();
-            for (int i = 0; i < centerTileTags.Count; i++)
+            // Get all allowed/required tiles
+            _allowedTileDefs = new Dictionary<IntVec2, TileDef>();
+            _requiredTileDefs = new Dictionary<IntVec2, TileDef>();
+
+            var allowedAll = new List<TileDef>();
+            for (int i = 0; i < allowedTileDefs.Count; i++)
             {
-                var tag = centerTileTags[i];
-                if (TileUtils.tilesTagCache.ContainsKey(tag))
-                {
-                    centerTileDefs.AddRange(TileUtils.tilesTagCache[tag]);
-                }
-            }
-            // Get all allowed tiles
-            allowedTileDefs = new List<TileDef>();
-            for (int i = 0; i < allowedTileTags.Count; i++)
-            {
-                var tag = allowedTileTags[i];
-                if (TileUtils.tilesTagCache.ContainsKey(tag))
-                {
-                    allowedTileDefs.AddRange(TileUtils.tilesTagCache[tag]);
-                }
+                var opt = allowedTileDefs[i];
+                if (opt.count.x > 0)
+                    _requiredTileDefs.Add(opt.count, opt.def);
+
+                _allowedTileDefs.Add(opt.count, opt.def);
+                allowedAll.Add(opt.def);
             }
             // Set maxSize
             var centerMax = GetBiggestTileSize(centerTileDefs);
-            var allowedMax = GetBiggestTileSize(allowedTileDefs);
+            var allowedMax = GetBiggestTileSize(allowedAll);
             maxSize = Math.Max(allowedMax, centerMax);
         }
 
@@ -69,9 +64,14 @@ namespace KCSG
         }
     }
 
+    public class TileTagOtion
+    {
+        public TileDef def;
+        public IntVec2 count = new IntVec2(0, 0);
+    }
+
     public class TileDef : Def
     {
-        public string tag;
         public List<StructureLayoutDef> tileLayouts;
     }
 }

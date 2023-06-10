@@ -11,31 +11,6 @@ namespace KCSG
 {
     public static class TileUtils
     {
-        public static readonly Dictionary<string, List<TileDef>> tilesTagCache = new Dictionary<string, List<TileDef>>();
-
-        /// <summary>
-        /// Cache all structure in a dict per tag
-        /// </summary>
-        public static void CacheTags()
-        {
-            if (tilesTagCache.NullOrEmpty())
-            {
-                var tileDefs = DefDatabase<TileDef>.AllDefsListForReading;
-                for (int i = 0; i < tileDefs.Count; i++)
-                {
-                    var tile = tileDefs[i];
-                    if (tilesTagCache.ContainsKey(tile.tag))
-                    {
-                        tilesTagCache[tile.tag].Add(tile);
-                    }
-                    else
-                    {
-                        tilesTagCache.Add(tile.tag, new List<TileDef> { tile });
-                    }
-                }
-            }
-        }
-
         /// <summary>
         /// Generate structures on map from TiledStructureDef
         /// </summary>
@@ -56,25 +31,68 @@ namespace KCSG
                 usableCenters.Add(cell);
             }
             // Keep track of used structureLayout
+            var usedTileDefs = new Dictionary<TileDef, int>();
             var usedLayouts = new List<StructureLayoutDef>();
-            // Tile in center
+            // Get amount of tiles
             var tilesNumber = def.tilesNumber;
             if (quest != null)
                 tilesNumber = def.tilesNumberRange.Lerped(quest.challengeRating);
-
+            // Tile in center
             if (!def.centerTileDefs.NullOrEmpty())
             {
                 GenerateTileIn(CellRect.CenteredOn(center, def.maxSize, def.maxSize), map, def.centerTileDefs.RandomElement(), ref usedLayouts);
                 usableCenters.Remove(center);
                 tilesNumber--;
             }
+            // Required tile(s)
+            foreach (var req in def._requiredTileDefs)
+            {
+                var tile = req.Value;
+                for (int i = 0; i < req.Key.x; i++) // Spawn min amount
+                {
+                    var rCell = usableCenters.RandomElement();
+                    GenerateTileIn(CellRect.CenteredOn(rCell, def.maxSize, def.maxSize), map, tile, ref usedLayouts);
+                    AddToDict(tile, ref usedTileDefs);
+                    usableCenters.Remove(rCell);
+                    tilesNumber--;
+                }
+            }
             // Generate other tiles
             for (int i = 0; i < tilesNumber; i++)
             {
                 var rCell = usableCenters.RandomElement();
-                GenerateTileIn(CellRect.CenteredOn(rCell, def.maxSize, def.maxSize), map, def.allowedTileDefs.RandomElement(), ref usedLayouts);
+                GenerateTileIn(CellRect.CenteredOn(rCell, def.maxSize, def.maxSize), map, GetRandomTileDefFrom(def._allowedTileDefs, ref usedTileDefs), ref usedLayouts);
                 usableCenters.Remove(rCell);
             }
+        }
+
+        private static TileDef GetRandomTileDefFrom(Dictionary<IntVec2, TileDef> tileDefs, ref Dictionary<TileDef, int> usedTileDefs)
+        {
+            // Get usable tiles
+            var pool = new List<TileDef>();
+            foreach (var pair in tileDefs)
+            {
+                var max = pair.Key.z;
+                var tileDef = pair.Value;
+                if (max > 0 && usedTileDefs.TryGetValue(tileDef) is int spawnedCount && spawnedCount >= max)
+                    continue;
+
+                pool.Add(tileDef);
+            }
+            // Choose random
+            var choosedTile = pool.RandomElement();
+            // Add it to used
+            AddToDict(choosedTile, ref usedTileDefs);
+
+            return choosedTile;
+        }
+
+        private static void AddToDict<T>(T el, ref Dictionary<T, int> dict)
+        {
+            if (dict.ContainsKey(el))
+                dict[el]++;
+            else
+                dict.Add(el, 1);
         }
 
         /// <summary>

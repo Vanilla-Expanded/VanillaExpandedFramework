@@ -45,7 +45,6 @@ namespace KCSG
             }
             // Cache things
             SettlementGenUtils.BuildingPlacement.CacheTags();
-            TileUtils.CacheTags();
             // Resolve tiles
             var tiledStruct = DefDatabase<TiledStructureDef>.AllDefsListForReading;
             for (int i = 0; i < tiledStruct.Count; i++)
