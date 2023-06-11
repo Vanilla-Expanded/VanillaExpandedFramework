@@ -52,7 +52,7 @@ namespace KCSG
             // Tiled
             if (UsingTiledStructure)
             {
-                TileUtils.Generate(tiledStructures.RandomElement(), loc, map, GetRelatedQuest(map));
+                TileUtils.Generate(tiledStructures.RandomElement(), loc, map, scaleWithQuest ? GetRelatedQuest(map) : null);
                 return;
             }
             // Single/Settlement

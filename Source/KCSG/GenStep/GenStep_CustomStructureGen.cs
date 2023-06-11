@@ -22,6 +22,8 @@ namespace KCSG
         public List<ThingDef> filthTypes = new List<ThingDef>();
         public float scatterChance = 0.4f;
 
+        public bool scaleWithQuest = false;
+
         public override int SeedPart => 916595355;
 
         public override void Generate(Map map, GenStepParams parms)
@@ -37,7 +39,7 @@ namespace KCSG
             // Tiled
             if (!tiledStructures.NullOrEmpty())
             {
-                TileUtils.Generate(tiledStructures.RandomElement(), map.Center, map, CustomGenOption.GetRelatedQuest(map));
+                TileUtils.Generate(tiledStructures.RandomElement(), map.Center, map, scaleWithQuest ? CustomGenOption.GetRelatedQuest(map) : null);
                 return;
             }
             // Normal
