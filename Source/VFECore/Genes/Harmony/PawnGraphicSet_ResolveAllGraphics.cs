@@ -16,29 +16,8 @@ namespace VanillaGenesExpanded
             Pawn pawn = __instance.pawn;
             if (ModsConfig.BiotechActive && pawn?.RaceProps?.Humanlike == true && pawn?.genes != null)
             {
-                if (pawn.genes.GenesListForReading.Where(x => x.Active).Any(g => g.def.GetModExtension<GeneExtension>()?.useMaskForFur ?? false))
-                {
-                    __instance.furCoveredGraphic = pawn.genes.GenesListForReading.Where(x => x.Active).Any(g => g.def.GetModExtension<GeneExtension>()?.useSkinColorForFur ?? false) ? 
-                                                       GraphicDatabase.Get<Graphic_Multi>(pawn.story.furDef.GetFurBodyGraphicPath(pawn), ShaderDatabase.CutoutComplex, Vector2.one, pawn.story.SkinColor) : 
-                                                       GraphicDatabase.Get<Graphic_Multi>(pawn.story.furDef.GetFurBodyGraphicPath(pawn), ShaderDatabase.CutoutSkinOverlay, Vector2.one, pawn.story.HairColor);
-                    __instance.headGraphic = __instance.headGraphic.GetCopy(__instance.headGraphic.drawSize, ShaderDatabase.CutoutComplex);
-                }
-                else
-                {
-                    if (pawn.genes.GenesListForReading.Where(x => x.Active).Any(g => g.def.GetModExtension<GeneExtension>()?.useSkinColorForFur ?? false))
-                        __instance.furCoveredGraphic = GraphicDatabase.Get<Graphic_Multi>(pawn.story.furDef.GetFurBodyGraphicPath(pawn), ShaderUtility.GetSkinShader(pawn.story.SkinColorOverriden), Vector2.one, pawn.story.SkinColor);
-                }
-
-                if (pawn.genes.GenesListForReading.Where(x => x.Active).Any(g => g.def.GetModExtension<GeneExtension>()?.dontColourFur ?? false))
-                {
-                    __instance.furCoveredGraphic = GraphicDatabase.Get<Graphic_Multi>(pawn.story.furDef.GetFurBodyGraphicPath(pawn), ShaderDatabase.Cutout, Vector2.one, Color.white);
-                }
-                if (pawn.genes.GenesListForReading.Where(x => x.Active).Any(g => g.def.GetModExtension<GeneExtension>()?.furHidesBody ?? false))
-                {
-                    __instance.nakedGraphic= GraphicDatabase.Get<Graphic_Multi>("UI/EmptyImage", ShaderUtility.GetSkinShader(pawn.story.SkinColorOverriden), Vector2.one, pawn.story.SkinColor); ;
-                }
-
-                List<Gene> genes = __instance.pawn.genes.GenesListForReading;
+               
+                List<Gene> genes = pawn.genes.GenesListForReading;
                 foreach (Gene gene in genes)
                 {
                     if (gene.Active)
@@ -49,6 +28,29 @@ namespace VanillaGenesExpanded
                             Color color = pawn.story.SkinColorOverriden
                                     ? (PawnGraphicSet.RottingColorDefault * pawn.story.SkinColor)
                                     : PawnGraphicSet.RottingColorDefault;
+
+                            if (extension.useMaskForFur)
+                            {
+                                __instance.furCoveredGraphic = pawn.genes.GenesListForReading.Where(x => x.Active).Any(g => g.def.GetModExtension<GeneExtension>()?.useSkinColorForFur ?? false) ?
+                                                                                       GraphicDatabase.Get<Graphic_Multi>(pawn.story.furDef.GetFurBodyGraphicPath(pawn), ShaderDatabase.CutoutComplex, Vector2.one, pawn.story.SkinColor) :
+                                                                                       GraphicDatabase.Get<Graphic_Multi>(pawn.story.furDef.GetFurBodyGraphicPath(pawn), ShaderDatabase.CutoutSkinOverlay, Vector2.one, pawn.story.HairColor);
+                                __instance.headGraphic = __instance.headGraphic.GetCopy(__instance.headGraphic.drawSize, ShaderDatabase.CutoutComplex);
+                            } else if (extension.useSkinColorForFur)
+                            {
+                                __instance.furCoveredGraphic = GraphicDatabase.Get<Graphic_Multi>(pawn.story.furDef.GetFurBodyGraphicPath(pawn), ShaderUtility.GetSkinShader(pawn.story.SkinColorOverriden), Vector2.one, pawn.story.SkinColor);
+
+                            }
+                            if (extension.dontColourFur)
+                            {
+                                __instance.furCoveredGraphic = GraphicDatabase.Get<Graphic_Multi>(pawn.story.furDef.GetFurBodyGraphicPath(pawn), ShaderDatabase.Cutout, Vector2.one, Color.white);
+                            }
+                            if (extension.furHidesBody)
+                            {
+                                __instance.nakedGraphic = GraphicDatabase.Get<Graphic_Multi>("UI/EmptyImage", ShaderUtility.GetSkinShader(pawn.story.SkinColorOverriden), Vector2.one, pawn.story.SkinColor); ;
+                            }
+
+
+
                             if (extension.bodyNakedGraphicPath.NullOrEmpty() is false)
                             {
                                 __instance.nakedGraphic = GraphicDatabase.Get<Graphic_Multi>(extension.bodyNakedGraphicPath, ShaderUtility.GetSkinShader(pawn.story.SkinColorOverriden), Vector2.one, pawn.story.SkinColor);
