@@ -10,7 +10,7 @@ namespace VanillaGenesExpanded
     {
         public static void Postfix(Gene __instance)
         {
-            if (PawnGenerator.IsBeingGenerated(__instance.pawn) is false && __instance.Active && __instance.pawn!=null)
+            if (__instance.pawn != null && PawnGenerator.IsBeingGenerated(__instance.pawn) is false && __instance.Active)
             {
                 ApplyGeneEffects(__instance);
             }
