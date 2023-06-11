@@ -30,9 +30,10 @@ namespace KCSG
                 if (Math.Abs(cell.z - center.z) % def.maxSize != 0) continue;
                 usableCenters.Add(cell);
             }
-            // Keep track of used structureLayout
+            // Keep track of used things
             var usedTileDefs = new Dictionary<TileDef, int>();
             var usedLayouts = new List<StructureLayoutDef>();
+            var usedCenters = new List<IntVec3>();
             // Get amount of tiles
             var tilesNumber = def.tilesNumber;
             if (quest != null)
@@ -42,6 +43,7 @@ namespace KCSG
             {
                 GenerateTileIn(CellRect.CenteredOn(center, def.maxSize, def.maxSize), map, def.centerTileDefs.RandomElement(), ref usedLayouts);
                 usableCenters.Remove(center);
+                usedCenters.Add(center);
                 tilesNumber--;
             }
             // Required tile(s)
@@ -50,19 +52,17 @@ namespace KCSG
                 var tile = req.Value;
                 for (int i = 0; i < req.Key.x; i++) // Spawn min amount
                 {
-                    var rCell = usableCenters.RandomElement();
-                    GenerateTileIn(CellRect.CenteredOn(rCell, def.maxSize, def.maxSize), map, tile, ref usedLayouts);
+                    GetAdjacentIntvec3(def, ref usedCenters, ref usableCenters, out IntVec3 cell);
+                    GenerateTileIn(CellRect.CenteredOn(cell, def.maxSize, def.maxSize), map, tile, ref usedLayouts);
                     AddToDict(tile, ref usedTileDefs);
-                    usableCenters.Remove(rCell);
                     tilesNumber--;
                 }
             }
             // Generate other tiles
             for (int i = 0; i < tilesNumber; i++)
             {
-                var rCell = usableCenters.RandomElement();
-                GenerateTileIn(CellRect.CenteredOn(rCell, def.maxSize, def.maxSize), map, GetRandomTileDefFrom(def._allowedTileDefs, ref usedTileDefs), ref usedLayouts);
-                usableCenters.Remove(rCell);
+                GetAdjacentIntvec3(def, ref usedCenters, ref usableCenters, out IntVec3 cell);
+                GenerateTileIn(CellRect.CenteredOn(cell, def.maxSize, def.maxSize), map, GetRandomTileDefFrom(def._allowedTileDefs, ref usedTileDefs), ref usedLayouts);
             }
         }
 
@@ -93,6 +93,30 @@ namespace KCSG
                 dict[el]++;
             else
                 dict.Add(el, 1);
+        }
+
+        private static void GetAdjacentIntvec3(TiledStructureDef def, ref List<IntVec3> used, ref List<IntVec3> left, out IntVec3 cell)
+        {
+            if (def.placeTileAdjacent && used.Count > 0)
+            {
+                var pool = new List<IntVec3>();
+                for (int i = 0; i < left.Count; i++)
+                {
+                    var c = left[i];
+                    if (used.Any(ce => (ce.x == c.x && Math.Abs(ce.z - c.z) == def.maxSize) || (ce.z == c.z && Math.Abs(ce.x - c.x) == def.maxSize)))
+                    {
+                        pool.Add(c);
+                    }
+                }
+                cell = pool.RandomElement();
+            }
+            else
+            {
+                cell = left.RandomElement();
+            }
+
+            left.Remove(cell);
+            used.Add(cell);
         }
 
         /// <summary>

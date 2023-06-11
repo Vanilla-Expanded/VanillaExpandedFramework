@@ -10,6 +10,7 @@ namespace KCSG
         public int tilesNumber = 4;
         public IntRange tilesNumberRange = new IntRange(1, 4);
         public int maxDistanceFromCenter = 1;
+        public bool placeTileAdjacent = true;
 
         public List<TileDef> centerTileDefs = new List<TileDef>();
         public List<TileTagOtion> allowedTileDefs = new List<TileTagOtion>();
