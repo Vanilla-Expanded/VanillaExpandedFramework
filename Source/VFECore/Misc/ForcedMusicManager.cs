@@ -10,7 +10,6 @@ namespace VFECore;
 public class ForcedMusicManager : GameComponent
 {
     private static readonly AccessTools.FieldRef<MusicManagerPlay, SongDef> currentSong = AccessTools.FieldRefAccess<MusicManagerPlay, SongDef>("lastStartedSong");
-    private static readonly AccessTools.FieldRef<MusicManagerPlay, bool> ignorePrefsVolume = AccessTools.FieldRefAccess<MusicManagerPlay, bool>("ignorePrefsVolumeThisSong");
     private static readonly AccessTools.FieldRef<MusicManagerPlay, bool> songWasForced = AccessTools.FieldRefAccess<MusicManagerPlay, bool>("songWasForced");
     private static bool patchesApplied;
 
@@ -89,7 +88,6 @@ public class ForcedMusicManager : GameComponent
         if (Instance.forcedSongs.TryRandomElement(out var song))
         {
             __result = song;
-            ignorePrefsVolume(__instance) = true;
             songWasForced(__instance) = true;
             return false;
         }
