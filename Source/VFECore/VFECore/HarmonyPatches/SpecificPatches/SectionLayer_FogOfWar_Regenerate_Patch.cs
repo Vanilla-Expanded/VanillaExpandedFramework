@@ -1,45 +1,54 @@
-﻿using System.Collections.Generic;
+﻿using HarmonyLib;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
-using HarmonyLib;
 using UnityEngine;
 using Verse;
 
 namespace VFECore
 {
-    [HarmonyPatch(typeof(SectionLayer_FogOfWar), nameof(SectionLayer_FogOfWar.Regenerate))]
+    [HarmonyPatch]
     public static class SectionLayer_FogOfWar_Regenerate_Patch
     {
-        private static readonly Dictionary<Map, Color?> cache = new Dictionary<Map, Color?>();
+        private static readonly Dictionary<Map, Material> cache = new();
 
+        [HarmonyPatch(typeof(SectionLayer_FogOfWar), nameof(SectionLayer_FogOfWar.Regenerate))]
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            var codes = instructions.ToList();
-            var info  = AccessTools.Constructor(typeof(Color32), new[] {typeof(byte), typeof(byte), typeof(byte), typeof(byte)});
-            var idx   = codes.FindIndex(ins => ins.opcode == OpCodes.Newobj && ins.OperandIs(info));
-            codes.InsertRange(idx + 1, new[]
+            var info = AccessTools.Field(typeof(MatBases), nameof(MatBases.FogOfWar));
+            foreach (var instruction in instructions)
             {
-                new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(SectionLayer), "section")),
-                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(Section),      "map")),
-                CodeInstruction.Call(typeof(SectionLayer_FogOfWar_Regenerate_Patch), nameof(GetFogColorFor))
-            });
-            return codes;
+                if (instruction.LoadsField(info))
+                {
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(SectionLayer), "section"));
+                    yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(Section),      "map"));
+                    yield return CodeInstruction.Call(typeof(SectionLayer_FogOfWar_Regenerate_Patch), nameof(GetFogMat));
+                } else yield return instruction;
+            }
         }
 
-        public static Color32 GetFogColorFor(Color32 oldColor, Map map)
+        [HarmonyPatch(typeof(MapDeiniter), nameof(MapDeiniter.Deinit_NewTemp))]
+        [HarmonyPrefix]
+        public static void ClearCache(Map __instance)
         {
-            if (!cache.TryGetValue(map, out var newColor)) newColor = map.Biome.GetModExtension<BiomeExtension>()?.fogColor;
-
-            if (newColor is Color fogColor)
+            if (cache.TryGetValue(__instance, out var mat))
             {
-                oldColor.r = (byte) (fogColor.r * oldColor.r);
-                oldColor.g = (byte) (fogColor.g * oldColor.g);
-                oldColor.b = (byte) (fogColor.b * oldColor.b);
+                Object.Destroy(mat);
+                cache.Remove(__instance);
             }
+        }
 
-            return oldColor;
+        public static Material GetFogMat(Map map)
+        {
+            if (cache.TryGetValue(map, out var mat)) return mat;
+            var color = map.Biome.GetModExtension<BiomeExtension>()?.fogColor;
+            mat = new Material(MatBases.FogOfWar);
+            if (color.HasValue)
+                mat.color = color.Value;
+            cache.Add(map, mat);
+            return mat;
         }
     }
 }
