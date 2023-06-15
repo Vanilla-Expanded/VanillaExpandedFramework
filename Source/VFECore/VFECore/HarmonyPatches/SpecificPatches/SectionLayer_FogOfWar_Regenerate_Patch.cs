@@ -31,12 +31,12 @@ namespace VFECore
 
         [HarmonyPatch(typeof(MapDeiniter), nameof(MapDeiniter.Deinit_NewTemp))]
         [HarmonyPrefix]
-        public static void ClearCache(Map __instance)
+        public static void ClearCache(Map map)
         {
-            if (cache.TryGetValue(__instance, out var mat))
+            if (map != null && cache.TryGetValue(map, out var mat))
             {
                 Object.Destroy(mat);
-                cache.Remove(__instance);
+                cache.Remove(map);
             }
         }
 
