@@ -78,9 +78,6 @@ public class PatchSet_MultiVerb : PatchSet
             case Pawn pawn:
                 __result = pawn;
                 return false;
-            case VerbManager vm:
-                __result = vm.Pawn;
-                return false;
         }
 
         return true;

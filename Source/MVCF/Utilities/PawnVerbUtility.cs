@@ -60,7 +60,7 @@ public static class PawnVerbUtility
             return manager.CurrentVerb;
 
         var verbs = manager.CurrentlyUseableRangedVerbs;
-        if (!allowManualCastWeapons && job != null && job.def == JobDefOf.Wait_Combat)
+        if (!allowManualCastWeapons && job != null && (job.def == JobDefOf.Wait_Combat || (manager.CurrentVerb != null && job.def == JobDefOf.AttackStatic)))
             verbs = verbs.Where(v => !v.Verb.verbProps.onlyManualCast);
 
         var verbsToUse = verbs.ToList();

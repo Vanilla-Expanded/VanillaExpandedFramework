@@ -12,6 +12,7 @@ public class VerbComp_Turret : VerbComp_Draw
 {
     private int cooldownTicksLeft;
     private LocalTargetInfo currentTarget = LocalTargetInfo.Invalid;
+    private bool targetWasForced;
     private int warmUpTicksLeft;
 
     public override bool NeedsTicking => true;
@@ -30,26 +31,32 @@ public class VerbComp_Turret : VerbComp_Draw
 
         if (currentTarget.IsValid && (currentTarget is { HasThing: true, ThingDestroyed: true }
                                    || (currentTarget is { HasThing: true, Thing: Pawn p } && (p.Downed || p.Dead))
-                                   || !parent.Verb.CanHitTarget(currentTarget))) currentTarget = LocalTargetInfo.Invalid;
+                                   || !parent.Verb.CanHitTarget(currentTarget)))
+        {
+            currentTarget = LocalTargetInfo.Invalid;
+            targetWasForced = false;
+        }
 
         if (cooldownTicksLeft > 0) cooldownTicksLeft--;
         if (cooldownTicksLeft > 0) return;
 
         if (!parent.Enabled || !CanFire())
         {
-            if (currentTarget.IsValid) currentTarget = LocalTargetInfo.Invalid;
+            if (currentTarget.IsValid)
+            {
+                currentTarget = LocalTargetInfo.Invalid;
+                targetWasForced = false;
+            }
+
             if (warmUpTicksLeft > 0) warmUpTicksLeft = 0;
             return;
         }
 
         if (!currentTarget.IsValid) currentTarget = TryFindNewTarget();
 
-        if (warmUpTicksLeft == 0)
-            TryCast();
-        else if (warmUpTicksLeft > 0)
-            warmUpTicksLeft--;
-        else if (currentTarget.IsValid)
-            TryStartCast();
+        if (warmUpTicksLeft == 0) TryCast();
+        else if (warmUpTicksLeft > 0) warmUpTicksLeft--;
+        else if (currentTarget.IsValid) TryStartCast();
     }
 
     protected virtual void TryStartCast()
@@ -74,12 +81,13 @@ public class VerbComp_Turret : VerbComp_Draw
     public override LocalTargetInfo PointingTarget(Pawn p) => currentTarget;
 
     public virtual bool CanFire() =>
-        parent is { Manager: { Pawn: var pawn } } && !pawn.Dead && !pawn.Downed &&
-        !(!parent.Verb.verbProps.violent || pawn.WorkTagIsDisabled(WorkTags.Violent)) && parent.Verb.Available();
+        parent is { Manager.Pawn: var pawn } && !pawn.Dead && !pawn.Downed
+     && (!parent.Verb.verbProps.onlyManualCast || targetWasForced)
+     && !(!parent.Verb.verbProps.violent || pawn.WorkTagIsDisabled(WorkTags.Violent))
+     && parent.Verb.IsStillUsableBy(pawn);
 
     public override void DrawOnAt(Pawn p, Vector3 drawPos)
     {
-        if (Props.invisible) return;
         base.DrawOnAt(p, drawPos);
         if (Find.Selector.IsSelected(p) && Target.IsValid)
         {
@@ -91,9 +99,12 @@ public class VerbComp_Turret : VerbComp_Draw
         }
     }
 
+    public override bool ShouldDraw(Pawn pawn) => !Props.invisible && base.ShouldDraw(pawn);
+
     public override bool SetTarget(LocalTargetInfo target)
     {
         currentTarget = target;
+        targetWasForced = true;
         if (cooldownTicksLeft <= 0 && warmUpTicksLeft <= 0) TryStartCast();
         return false;
     }
@@ -122,6 +133,7 @@ public class VerbComp_Turret : VerbComp_Draw
         Scribe_TargetInfo.Look(ref currentTarget, nameof(currentTarget));
         Scribe_Values.Look(ref warmUpTicksLeft, nameof(warmUpTicksLeft));
         Scribe_Values.Look(ref cooldownTicksLeft, nameof(cooldownTicksLeft));
+        Scribe_Values.Look(ref targetWasForced, nameof(targetWasForced));
     }
 }
 

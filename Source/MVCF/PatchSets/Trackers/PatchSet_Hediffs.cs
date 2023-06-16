@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using HarmonyLib;
 using MVCF.Utilities;
 using Verse;
@@ -12,14 +13,12 @@ public class PatchSet_Hediffs : PatchSet
     {
         yield return Patch.Prefix(AccessTools.Method(typeof(VerbProperties), nameof(VerbProperties.GetForceMissFactorFor)),
             AccessTools.Method(GetType(), nameof(GetForceMissFactorFor_Prefix)));
-        yield return Patch.Postfix(AccessTools.Method(typeof(Pawn_HealthTracker), "AddHediff", new[]
-            {
-                typeof(Hediff), typeof(BodyPartRecord), typeof(DamageInfo),
-                typeof(DamageWorker.DamageResult)
-            }),
+        yield return Patch.Postfix(
+            AccessTools.Method(typeof(Pawn_HealthTracker), "AddHediff",
+                new[] { typeof(Hediff), typeof(BodyPartRecord), typeof(DamageInfo), typeof(DamageWorker.DamageResult) }),
             AccessTools.Method(GetType(), nameof(AddHediff_Postfix)));
-        yield return Patch.Prefix(AccessTools.Method(typeof(Hediff), "PostRemoved"),
-            AccessTools.Method(GetType(), nameof(PostRemoved_Prefix)));
+        yield return Patch.Prefix(AccessTools.Method(typeof(Hediff), "PostRemoved"), AccessTools.Method(GetType(), nameof(PostRemoved_Prefix)));
+        yield return Patch.Transpiler(AccessTools.Method(typeof(Verb_ShootBeam), "ApplyDamage"), AccessTools.Method(GetType(), nameof(FixBeamVerb)));
     }
 
     public static bool GetForceMissFactorFor_Prefix(ref float __result, Thing equipment)
@@ -42,5 +41,24 @@ public class PatchSet_Hediffs : PatchSet
         var manager = __instance.pawn.Manager(false);
         if (manager == null) return;
         foreach (var verb in comp.VerbTracker.AllVerbs.Concat(manager.ExtraVerbsFor(__instance))) manager.RemoveVerb(verb);
+    }
+
+    public static IEnumerable<CodeInstruction> FixBeamVerb(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+    {
+        var codes = instructions.ToList();
+        var info = AccessTools.PropertyGetter(typeof(Verb), nameof(Verb.EquipmentSource));
+        for (var i = 0; i < codes.Count; i++)
+        {
+            var instruction = codes[i];
+            yield return instruction;
+            if (instruction.Calls(info))
+            {
+                var label = generator.DefineLabel();
+                yield return new CodeInstruction(OpCodes.Dup);
+                yield return new CodeInstruction(OpCodes.Brfalse, label);
+                yield return codes[++i];
+                yield return new CodeInstruction(OpCodes.Castclass, typeof(ThingDef)).WithLabels(label);
+            }
+        }
     }
 }
