@@ -33,7 +33,7 @@ namespace VFECore
         [HarmonyPrefix]
         public static void ClearCache(Map map)
         {
-            if (map != null && cache.TryGetValue(map, out var mat))
+            if (map != null && cache.TryGetValue(map, out var mat) && mat != null)
             {
                 Object.Destroy(mat);
                 cache.Remove(map);
@@ -42,13 +42,19 @@ namespace VFECore
 
         public static Material GetFogMat(Map map)
         {
-            if (cache.TryGetValue(map, out var mat)) return mat;
+            if (cache.TryGetValue(map, out var mat)) return mat ?? MatBases.FogOfWar;
             var color = map.Biome.GetModExtension<BiomeExtension>()?.fogColor;
-            mat = new Material(MatBases.FogOfWar);
             if (color.HasValue)
+            {
+                mat       = new Material(MatBases.FogOfWar);
                 mat.color = color.Value;
-            cache.Add(map, mat);
-            return mat;
+                cache.Add(map, mat);
+                return mat;
+            } else
+            {
+                cache.Add(map, null);
+                return MatBases.FogOfWar;
+            }
         }
     }
 }
