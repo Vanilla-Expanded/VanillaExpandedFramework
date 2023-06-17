@@ -8,8 +8,8 @@
 	public class AbilityExtension_AbilityMod : DefModExtension
 	{
 		[Unsaved] public AbilityDef abilityDef;
-
-		public virtual bool IsEnabledForPawn(Ability ability, out string reason)
+		public virtual bool ShowGizmoOnPawn(Pawn pawn) => true;
+        public virtual bool IsEnabledForPawn(Ability ability, out string reason)
 		{
 			reason = string.Empty;
 			return true;

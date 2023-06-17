@@ -61,7 +61,7 @@
         public virtual bool ShowGizmoOnPawn() =>
             this.pawn != null && (this.pawn.IsColonistPlayerControlled && (this.def.showUndrafted || this.pawn.Drafted) ||
                                   this.pawn.IsCaravanMember() && this.pawn.IsColonist && !this.pawn.IsPrisoner &&
-                                  !this.pawn.Downed);
+                                  !this.pawn.Downed) && this.AbilityModExtensions.All(x => x.ShowGizmoOnPawn(pawn));
 
         public virtual bool IsEnabledForPawn(out string reason)
         {
