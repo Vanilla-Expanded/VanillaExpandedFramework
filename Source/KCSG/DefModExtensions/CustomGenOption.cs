@@ -117,10 +117,11 @@ namespace KCSG
                 var quest = quests[j];
                 if (!quest.hidden && !quest.Historical && !quest.dismissed && quest.QuestLookTargets.Contains(map.Parent))
                 {
+                    Debug.Message($"Found {quest} related to {map}");
                     return quest;
                 }
             }
-
+            Debug.Message($"Didn't find any quest related to {map}");
             return null;
         }
     }
