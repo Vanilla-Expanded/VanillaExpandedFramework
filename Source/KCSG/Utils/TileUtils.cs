@@ -49,8 +49,8 @@ namespace KCSG
             // Required tile(s)
             foreach (var req in def._requiredTileDefs)
             {
-                var tile = req.Value;
-                for (int i = 0; i < req.Key.x; i++) // Spawn min amount
+                var tile = req.Key;
+                for (int i = 0; i < req.Value.x; i++) // Spawn min amount
                 {
                     GetAdjacentIntvec3(def, ref usedCenters, ref usableCenters, out IntVec3 cell);
                     GenerateTileIn(CellRect.CenteredOn(cell, def.maxSize, def.maxSize), map, tile, ref usedLayouts);
@@ -66,14 +66,14 @@ namespace KCSG
             }
         }
 
-        private static TileDef GetRandomTileDefFrom(Dictionary<IntVec2, TileDef> tileDefs, ref Dictionary<TileDef, int> usedTileDefs)
+        private static TileDef GetRandomTileDefFrom(Dictionary<TileDef, IntVec2> tileDefs, ref Dictionary<TileDef, int> usedTileDefs)
         {
             // Get usable tiles
             var pool = new List<TileDef>();
             foreach (var pair in tileDefs)
             {
-                var max = pair.Key.z;
-                var tileDef = pair.Value;
+                var max = pair.Value.z;
+                var tileDef = pair.Key;
                 if (max > 0 && usedTileDefs.TryGetValue(tileDef) is int spawnedCount && spawnedCount >= max)
                     continue;
 

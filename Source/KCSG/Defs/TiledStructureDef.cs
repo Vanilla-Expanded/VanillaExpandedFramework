@@ -15,25 +15,25 @@ namespace KCSG
         public List<TileDef> centerTileDefs = new List<TileDef>();
         public List<TileTagOtion> allowedTileDefs = new List<TileTagOtion>();
 
-        internal Dictionary<IntVec2, TileDef> _allowedTileDefs;
-        internal Dictionary<IntVec2, TileDef> _requiredTileDefs;
+        internal Dictionary<TileDef, IntVec2> _allowedTileDefs;
+        internal Dictionary<TileDef, IntVec2> _requiredTileDefs;
 
         internal int maxSize;
 
         public void Resolve()
         {
             // Get all allowed/required tiles
-            _allowedTileDefs = new Dictionary<IntVec2, TileDef>();
-            _requiredTileDefs = new Dictionary<IntVec2, TileDef>();
+            _allowedTileDefs = new Dictionary<TileDef, IntVec2>();
+            _requiredTileDefs = new Dictionary<TileDef, IntVec2>();
 
             var allowedAll = new List<TileDef>();
             for (int i = 0; i < allowedTileDefs.Count; i++)
             {
                 var opt = allowedTileDefs[i];
                 if (opt.count.x > 0)
-                    _requiredTileDefs.Add(opt.count, opt.def);
+                    _requiredTileDefs.Add(opt.def, opt.count);
 
-                _allowedTileDefs.Add(opt.count, opt.def);
+                _allowedTileDefs.Add(opt.def, opt.count);
                 allowedAll.Add(opt.def);
             }
             // Set maxSize
