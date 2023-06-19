@@ -151,7 +151,7 @@
                 return $"{"VFEA.AbilityStatsPower".Translate()}: {power}".Colorize(Color.cyan);
 
             FloatRange range = multiplier.range;
-            return $"{"VFEA.AbilityStatsPower".Translate()}: {range.min}-{range.max}".Colorize(Color.cyan);
+            return $"{"VFEA.AbilityStatsPower".Translate()}: {power * range.min}-{power * range.max}".Colorize(Color.cyan);
         }
 
         public virtual string GetDescriptionForPawn()
@@ -169,7 +169,7 @@
             if (this.def.minRadius > 0f)
                 sb.AppendLine($"{"VFEA.MinRadius".Translate()}: {this.def.minRadius}".Colorize(Color.cyan));
             string powerForPawnDescription = this.GetPowerForPawnDescription();
-            if (powerForPawnDescription.NullOrEmpty())
+            if (!powerForPawnDescription.NullOrEmpty())
                 sb.AppendLine(powerForPawnDescription);
             int castTimeForPawn = this.GetCastTimeForPawn();
             if (castTimeForPawn > 0)
