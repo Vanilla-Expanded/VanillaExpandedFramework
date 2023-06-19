@@ -47,16 +47,21 @@ namespace KCSG
                 tilesNumber--;
             }
             // Required tile(s)
+            var requiredTiles = new List<TileDef>();
             foreach (var req in def._requiredTileDefs)
             {
                 var tile = req.Key;
-                for (int i = 0; i < req.Value.x; i++) // Spawn min amount
-                {
-                    GetAdjacentIntvec3(def, ref usedCenters, ref usableCenters, out IntVec3 cell);
-                    GenerateTileIn(CellRect.CenteredOn(cell, def.maxSize, def.maxSize), map, tile, ref usedLayouts);
-                    AddToDict(tile, ref usedTileDefs);
-                    tilesNumber--;
-                }
+                for (int i = 0; i < req.Value.x; i++)
+                    requiredTiles.Add(tile);
+            }
+            requiredTiles.Shuffle();
+            for (int i = 0; i < requiredTiles.Count; i++)
+            {
+                var tile = requiredTiles[i];
+                GetAdjacentIntvec3(def, ref usedCenters, ref usableCenters, out IntVec3 cell);
+                GenerateTileIn(CellRect.CenteredOn(cell, def.maxSize, def.maxSize), map, tile, ref usedLayouts);
+                AddToDict(tile, ref usedTileDefs);
+                tilesNumber--;
             }
             // Generate other tiles
             for (int i = 0; i < tilesNumber; i++)
