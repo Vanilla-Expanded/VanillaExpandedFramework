@@ -22,12 +22,12 @@ namespace KCSG
         {
             // Get usables centers
             var usableCenters = new List<IntVec3>();
-            var possibleCells = CellRect.CenteredOn(center, (def.maxSize / 2) + (def.maxSize * def.maxDistanceFromCenter));
+            var possibleCells = CellRect.CenteredOn(center, ((def.maxSize + def.rectSizeIncrease) / 2) + ((def.maxSize + def.rectSizeIncrease) * def.maxDistanceFromCenter));
             foreach (var cell in possibleCells)
             {
                 if (!cell.InBounds(map)) continue;
-                if (Math.Abs(cell.x - center.x) % def.maxSize != 0) continue;
-                if (Math.Abs(cell.z - center.z) % def.maxSize != 0) continue;
+                if (Math.Abs(cell.x - center.x) % (def.maxSize + def.rectSizeIncrease) != 0) continue;
+                if (Math.Abs(cell.z - center.z) % (def.maxSize + def.rectSizeIncrease) != 0) continue;
                 usableCenters.Add(cell);
             }
             // Keep track of used things
@@ -108,7 +108,7 @@ namespace KCSG
                 for (int i = 0; i < left.Count; i++)
                 {
                     var c = left[i];
-                    if (used.Any(ce => (ce.x == c.x && Math.Abs(ce.z - c.z) == def.maxSize) || (ce.z == c.z && Math.Abs(ce.x - c.x) == def.maxSize)))
+                    if (used.Any(ce => (ce.x == c.x && Math.Abs(ce.z - c.z) == (def.maxSize + def.rectSizeIncrease)) || (ce.z == c.z && Math.Abs(ce.x - c.x) == (def.maxSize + def.rectSizeIncrease))))
                     {
                         pool.Add(c);
                     }
