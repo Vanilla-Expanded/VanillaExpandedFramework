@@ -25,7 +25,7 @@ public class Command_VerbTargetExtended : Command_VerbTarget
         verb = mv.Verb;
         owner = ownerThing;
         parts = mv.GetCommandParts(this).ToList();
-        if (ownerThing != null)
+        if (ownerThing?.def != null)
         {
             defaultDesc = PawnVerbGizmoUtility.FirstNonEmptyString(mv.Props?.description, ownerThing.def.LabelCap + ": " +
                                                                                           ownerThing
@@ -48,8 +48,8 @@ public class Command_VerbTargetExtended : Command_VerbTarget
         defaultLabel = verb.Label(mv.Props);
 
         for (var i = 0; i < parts.Count; i++) parts[i].ModifyInfo(ref defaultLabel, ref topRightLabel, ref defaultDesc, ref icon);
-
-        if (verb.Caster.Faction != Faction.OfPlayer)
+        
+        if (verb.Caster?.Faction != Faction.OfPlayer)
             Disable("CannotOrderNonControlled".Translate());
         else if (verb.CasterIsPawn && verb.verbProps.violent && verb.CasterPawn.WorkTagIsDisabled(WorkTags.Violent))
             Disable("IsIncapableOfViolence".Translate(verb.CasterPawn.LabelShort,

@@ -158,6 +158,12 @@ public class ModDef : Def
 
     public bool IgnoreThisMod;
 
+    public ModDef()
+    {
+        label ??= defName;
+        description ??= label;
+    }
+
     #region BackCompatability
 
     public override IEnumerable<string> ConfigErrors()
