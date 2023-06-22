@@ -84,7 +84,7 @@ public class CompProperties_VerbProps : CompProperties
 
     public AdditionalVerbProps PropsFor(Verb verb)
     {
-        var label = verb.verbProps.label ?? verb.tool.label;
+        var label = verb.verbProps.label ?? verb.tool?.label;
         return string.IsNullOrEmpty(label) ? null : verbProps?.FirstOrDefault(prop => prop.label == label);
     }
 
