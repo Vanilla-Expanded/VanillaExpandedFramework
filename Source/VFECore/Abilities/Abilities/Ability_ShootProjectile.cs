@@ -40,16 +40,21 @@
         public ThingDef projectile;
     }
 
-    public class Ability_ShootProjectile_Snow : Ability_ShootProjectile
+    public class Ability_ShootProjectile_Snow_Def : AbilityDef
     {
         public float snowRadius = 3f;
         public float snowDepth = 1f;
+    }
+
+    public class Ability_ShootProjectile_Snow : Ability_ShootProjectile
+    {
         public override void TargetEffects(params GlobalTargetInfo[] targetInfos)
         {
             base.TargetEffects(targetInfos);
+            var snowDef = (Ability_ShootProjectile_Snow_Def)this.def;
             foreach (GlobalTargetInfo targetInfo in targetInfos)
             {
-                SnowUtility.AddSnowRadial(targetInfo.Cell, this.pawn.Map, this.snowRadius, this.snowDepth);
+                SnowUtility.AddSnowRadial(targetInfo.Cell, this.pawn.Map, snowDef.snowRadius, snowDef.snowDepth);
             }
         }
     }
