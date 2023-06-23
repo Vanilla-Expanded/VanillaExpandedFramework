@@ -69,21 +69,26 @@ namespace VFECore.Abilities
 
             if (this.def.projectile.explosionRadius > 0)
             {
-                if (this.def.projectile.explosionEffect != null)
-                {
-                    Effecter effecter = this.def.projectile.explosionEffect.Spawn();
-                    effecter.Trigger(new TargetInfo(this.Position, map), new TargetInfo(this.Position, map));
-                    effecter.Cleanup();
-                }
-                GenExplosion.DoExplosion(this.Position, map, this.def.projectile.explosionRadius, this.def.projectile.damageDef, this.launcher, Mathf.RoundToInt(power), float.MaxValue,
-                                         this.def.projectile.soundExplode, this.equipmentDef, this.def, this.intendedTarget.Thing, this.def.projectile.postExplosionSpawnThingDef,
-                                         this.def.projectile.postExplosionSpawnChance, this.def.projectile.postExplosionSpawnThingCount,
-                                         preExplosionSpawnThingDef: this.def.projectile.preExplosionSpawnThingDef, preExplosionSpawnChance: this.def.projectile.preExplosionSpawnChance,
-                                         preExplosionSpawnThingCount: this.def.projectile.preExplosionSpawnThingCount,
-                                         applyDamageToExplosionCellsNeighbors: this.def.projectile.applyDamageToExplosionCellsNeighbors,
-                                         chanceToStartFire: this.def.projectile.explosionChanceToStartFire, damageFalloff: this.def.projectile.explosionDamageFalloff,
-                                         direction: this.origin.AngleToFlat(this.destination));
+                DoExplosion(map, power);
             }
+        }
+
+        protected virtual void DoExplosion(Map map, float power)
+        {
+            if (this.def.projectile.explosionEffect != null)
+            {
+                Effecter effecter = this.def.projectile.explosionEffect.Spawn();
+                effecter.Trigger(new TargetInfo(this.Position, map), new TargetInfo(this.Position, map));
+                effecter.Cleanup();
+            }
+            GenExplosion.DoExplosion(this.Position, map, this.def.projectile.explosionRadius, this.def.projectile.damageDef, this.launcher, Mathf.RoundToInt(power), float.MaxValue,
+                this.def.projectile.soundExplode, this.equipmentDef, this.def, this.intendedTarget.Thing, this.def.projectile.postExplosionSpawnThingDef,
+                this.def.projectile.postExplosionSpawnChance, this.def.projectile.postExplosionSpawnThingCount,
+                preExplosionSpawnThingDef: this.def.projectile.preExplosionSpawnThingDef, preExplosionSpawnChance: this.def.projectile.preExplosionSpawnChance,
+                preExplosionSpawnThingCount: this.def.projectile.preExplosionSpawnThingCount,
+                applyDamageToExplosionCellsNeighbors: this.def.projectile.applyDamageToExplosionCellsNeighbors,
+                chanceToStartFire: this.def.projectile.explosionChanceToStartFire, damageFalloff: this.def.projectile.explosionDamageFalloff,
+                direction: this.origin.AngleToFlat(this.destination));
         }
     }
 }
