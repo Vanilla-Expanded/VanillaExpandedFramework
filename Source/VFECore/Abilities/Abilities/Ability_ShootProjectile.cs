@@ -42,12 +42,14 @@
 
     public class Ability_ShootProjectile_Snow : Ability_ShootProjectile
     {
+        public float snowRadius = 3f;
+        public float snowDepth = 1f;
         public override void TargetEffects(params GlobalTargetInfo[] targetInfos)
         {
             base.TargetEffects(targetInfos);
             foreach (GlobalTargetInfo targetInfo in targetInfos)
             {
-                SnowUtility.AddSnowRadial(targetInfo.Cell, this.pawn.Map, 3f, 1f);
+                SnowUtility.AddSnowRadial(targetInfo.Cell, this.pawn.Map, this.snowRadius, this.snowDepth);
             }
         }
     }
