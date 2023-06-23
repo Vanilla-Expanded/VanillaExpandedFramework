@@ -40,14 +40,21 @@
         public ThingDef projectile;
     }
 
+    public class AbilityExtension_ShootProjectile_Snow : DefModExtension
+    {
+        public float radius = 3f;
+        public float depth = 1f;
+    }
+
     public class Ability_ShootProjectile_Snow : Ability_ShootProjectile
     {
         public override void TargetEffects(params GlobalTargetInfo[] targetInfos)
         {
             base.TargetEffects(targetInfos);
+            var snow = this.def.GetModExtension<AbilityExtension_ShootProjectile_Snow>();
             foreach (GlobalTargetInfo targetInfo in targetInfos)
             {
-                SnowUtility.AddSnowRadial(targetInfo.Cell, this.pawn.Map, 3f, 1f);
+                SnowUtility.AddSnowRadial(targetInfo.Cell, this.pawn.Map, snow?.radius ?? 3f, snow?.depth ?? 1f);
             }
         }
     }
