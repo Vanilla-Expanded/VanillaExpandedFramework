@@ -52,7 +52,7 @@ public class ManagedVerb : IExposable, ILoadReferenceable
 
     public virtual void Notify_Despawned() { }
 
-    public virtual void Initialize(Verb verb, AdditionalVerbProps props, IEnumerable<VerbCompProperties> additionalComps)
+    public virtual void Initialize(Verb verb, AdditionalVerbProps props, bool fromLoad, IEnumerable<VerbCompProperties> additionalComps)
     {
         Verb = verb;
         Props = props;

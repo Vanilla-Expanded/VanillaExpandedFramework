@@ -75,7 +75,7 @@ public static class ManagedVerbUtility
 
         var comps = additionalComps.ToList();
         var mv = verb.Managed(false) ?? props.CreateManaged(!((props is null || props.comps.NullOrEmpty()) && comps.NullOrEmpty()));
-        mv.Initialize(verb, props, comps);
+        mv.Initialize(verb, props, Scribe.mode is LoadSaveMode.ResolvingCrossRefs or LoadSaveMode.PostLoadInit, comps);
         verb.ManagedVerb() = mv;
     }
 

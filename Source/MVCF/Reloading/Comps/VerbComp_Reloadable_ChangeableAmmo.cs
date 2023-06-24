@@ -49,10 +49,10 @@ public class VerbComp_Reloadable_ChangeableAmmo : VerbComp_Reloadable, IThingHol
         return null;
     }
 
-    public override void Initialize(VerbCompProperties props)
+    public override void Initialize(VerbCompProperties props, bool fromLoad)
     {
-        base.Initialize(props);
-        ShotsRemaining = 0;
+        base.Initialize(props, fromLoad);
+        if (!fromLoad) ShotsRemaining = 0;
     }
 
     public override void Notify_ShotFired()

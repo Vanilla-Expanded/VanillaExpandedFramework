@@ -30,7 +30,7 @@ public static class PawnVerbUtility
         if (manager is not null) return manager;
         if (!createIfMissing) return null;
         manager = new VerbManager();
-        manager.Initialize(p);
+        manager.Initialize(p, false);
         return manager;
     }
 
@@ -39,7 +39,7 @@ public static class PawnVerbUtility
         ref var manager = ref pawn.VerbManager();
         Scribe_Deep.Look(ref manager, "MVCF_VerbManager");
         if (manager is null) return;
-        if (Scribe.mode == LoadSaveMode.PostLoadInit) manager.Initialize(pawn);
+        if (Scribe.mode == LoadSaveMode.PostLoadInit) manager.Initialize(pawn, true);
     }
 
     public static Verb BestVerbForTarget(this Pawn p, LocalTargetInfo target, IEnumerable<ManagedVerb> verbs) =>

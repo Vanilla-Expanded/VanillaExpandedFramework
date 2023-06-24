@@ -12,10 +12,10 @@ public class VerbComp_Switch : VerbComp
     private string Label => parent.Verb.Label(parent.Props);
     public override bool Available() => base.Available() && enabled;
 
-    public override void Initialize(VerbCompProperties props)
+    public override void Initialize(VerbCompProperties props, bool fromLoad)
     {
-        base.Initialize(props);
-        parent.Enabled = enabled = Props.startEnabled;
+        base.Initialize(props, fromLoad);
+        if (!fromLoad) parent.Enabled = enabled = Props.startEnabled;
     }
 
     public override Command OverrideTargetCommand(Command old)

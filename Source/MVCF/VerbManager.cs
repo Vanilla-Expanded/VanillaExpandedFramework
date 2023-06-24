@@ -53,7 +53,7 @@ public class VerbManager : IExposable
         foreach (var verb in verbs) verb.Notify_Despawned();
     }
 
-    public void Initialize(Pawn pawn)
+    public void Initialize(Pawn pawn, bool fromLoad)
     {
         Pawn = pawn;
         NeedsTicking = false;

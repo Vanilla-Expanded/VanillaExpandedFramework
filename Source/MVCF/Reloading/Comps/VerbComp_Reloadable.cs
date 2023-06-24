@@ -75,10 +75,10 @@ public class VerbComp_Reloadable : VerbComp
         if (curTick == ticksTillDone - 2f.SecondsToTicks()) Props.ReloadSound?.PlayOneShot(parent.Verb.caster);
     }
 
-    public override void Initialize(VerbCompProperties props)
+    public override void Initialize(VerbCompProperties props, bool fromLoad)
     {
-        base.Initialize(props);
-        ShotsRemaining = Props.StartLoaded ? Props.MaxShots : 0;
+        base.Initialize(props, fromLoad);
+        if (!fromLoad) ShotsRemaining = Props.StartLoaded ? Props.ItemsPerShot : 0;
     }
 
     public override void Notify_ShotFired()

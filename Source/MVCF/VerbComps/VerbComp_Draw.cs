@@ -22,9 +22,9 @@ public class VerbComp_Draw : VerbComp
 
     public override bool NeedsDrawing => true;
 
-    public override void Initialize(VerbCompProperties props)
+    public override void Initialize(VerbCompProperties props, bool fromLoad)
     {
-        base.Initialize(props);
+        base.Initialize(props, fromLoad);
         if (Props.idleRotation)
         {
             ticksTillTurn = Props.idleRotationTicks.RandomInRange;
