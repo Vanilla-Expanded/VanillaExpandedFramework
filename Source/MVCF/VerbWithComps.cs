@@ -21,9 +21,9 @@ public class VerbWithComps : ManagedVerb
     public override bool Independent => base.Independent || comps.Any(comp => comp.Independent);
     public IEnumerable<VerbComp> GetComps() => comps;
 
-    public override void Initialize(Verb verb, AdditionalVerbProps props, IEnumerable<VerbCompProperties> additionalComps)
+    public override void Initialize(Verb verb, AdditionalVerbProps props, bool fromLoad, IEnumerable<VerbCompProperties> additionalComps)
     {
-        base.Initialize(verb, props, additionalComps);
+        base.Initialize(verb, props, fromLoad, additionalComps);
         var newComps = (props?.comps ?? Enumerable.Empty<VerbCompProperties>()).Concat(additionalComps ?? Enumerable.Empty<VerbCompProperties>()).ToList();
 
         if (comps.Any())
@@ -54,7 +54,7 @@ public class VerbWithComps : ManagedVerb
                 lastIndex = comps.IndexOf(comp);
 
             comp.parent = this;
-            comp.Initialize(compProps);
+            comp.Initialize(compProps, fromLoad);
             if (comp.NeedsDrawing) drawComps.Add(comp);
             if (comp.NeedsTicking) tickComps.Add(comp);
         }

@@ -33,7 +33,7 @@ public abstract class VerbComp : IExposable
         yield break;
     }
 
-    public virtual void Initialize(VerbCompProperties props)
+    public virtual void Initialize(VerbCompProperties props, bool fromLoad)
     {
         this.props = props;
     }

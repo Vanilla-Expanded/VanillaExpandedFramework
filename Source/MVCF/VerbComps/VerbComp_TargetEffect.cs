@@ -27,9 +27,9 @@ public class VerbComp_TargetEffect : VerbComp
         return true;
     }
 
-    public override void Initialize(VerbCompProperties props)
+    public override void Initialize(VerbCompProperties props, bool fromLoad)
     {
-        base.Initialize(props);
+        base.Initialize(props, fromLoad);
         comps = new List<CompTargetEffect>();
         foreach (var targetEffect in Props.targetEffects)
         {
