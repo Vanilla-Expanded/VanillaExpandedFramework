@@ -4,6 +4,7 @@ using System.Reflection.Emit;
 using HarmonyLib;
 using MVCF.Utilities;
 using Verse;
+using Verse.AI;
 
 namespace MVCF.PatchSets.Trackers;
 
@@ -19,6 +20,8 @@ public class PatchSet_Hediffs : PatchSet
             AccessTools.Method(GetType(), nameof(AddHediff_Postfix)));
         yield return Patch.Prefix(AccessTools.Method(typeof(Hediff), "PostRemoved"), AccessTools.Method(GetType(), nameof(PostRemoved_Prefix)));
         yield return Patch.Transpiler(AccessTools.Method(typeof(Verb_ShootBeam), "ApplyDamage"), AccessTools.Method(GetType(), nameof(FixBeamVerb)));
+        yield return Patch.Transpiler(AccessTools.Method(typeof(Verb_CastTargetEffect), "TryCastShot"),
+            AccessTools.Method(GetType(), nameof(FixTargetEffectVerb)));
     }
 
     public static bool GetForceMissFactorFor_Prefix(ref float __result, Thing equipment)
@@ -58,6 +61,25 @@ public class PatchSet_Hediffs : PatchSet
                 yield return new CodeInstruction(OpCodes.Brfalse, label);
                 yield return codes[++i];
                 yield return new CodeInstruction(OpCodes.Castclass, typeof(ThingDef)).WithLabels(label);
+            }
+        }
+    }
+
+    public static IEnumerable<CodeInstruction> FixTargetEffectVerb(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+    {
+        var codes = instructions.ToList();
+        var info = AccessTools.PropertyGetter(typeof(Verb), nameof(Verb.EquipmentSource));
+        foreach (var instruction in codes)
+        {
+            yield return instruction;
+            if (instruction.Calls(info))
+            {
+                var label = generator.DefineLabel();
+                yield return new CodeInstruction(OpCodes.Dup);
+                yield return new CodeInstruction(OpCodes.Brtrue, label);
+                yield return new CodeInstruction(OpCodes.Pop);
+                yield return new CodeInstruction(OpCodes.Ldc_I4_1);
+                yield return new CodeInstruction(OpCodes.Nop).WithLabels(label);
             }
         }
     }

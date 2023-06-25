@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using RimWorld;
 using Verse;
+using Verse.AI;
 
 namespace MVCF.Utilities;
 
@@ -36,17 +37,28 @@ public static class VerbStatsUtility
         return null;
     }
 
-    public static float? GetBaseValue(VerbProperties props, StatDef stat, ThingDef equipmentDef) =>
-        equipmentDef.Verbs.Count > 1 ? props.GetStatValue(stat) : null;
+    public static float? GetBaseValue(VerbProperties props, StatDef stat, ThingDef equipmentDef)
+    {
+        if (equipmentDef.Verbs.Count > 1)
+        {
+            var baseValue = props.GetStatValue(stat);
+            if (baseValue.HasValue && (baseValue < stat.minValue || baseValue > stat.maxValue))
+                return stat.defaultBaseValue;
+            return baseValue;
+        }
+
+        return null;
+    }
 
     public static int GetDamage(this Verb verb)
     {
         return verb switch
         {
             Verb_LaunchProjectile launch => launch.Projectile.projectile.GetDamageAmount(1f),
-            Verb_Bombardment _ => int.MaxValue,
-            Verb_PowerBeam _ => int.MaxValue,
-            Verb_MechCluster _ => int.MaxValue,
+            Verb_Bombardment => int.MaxValue,
+            Verb_PowerBeam => int.MaxValue,
+            Verb_MechCluster => int.MaxValue,
+            Verb_CastTargetEffect => int.MaxValue,
             Verb_CastAbility cast => cast.ability.EffectComps.Count * 100,
             Verb_ShootBeam beam => beam.verbProps.beamDamageDef.defaultDamage,
             _ => 1

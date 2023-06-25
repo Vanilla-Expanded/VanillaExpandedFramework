@@ -21,7 +21,6 @@ public class VerbComp_TargetEffect : VerbComp
             if (casterPawn == null || thing == null) return false;
             foreach (var comp in comps) comp.DoEffectOn(casterPawn, thing);
             verb.ReloadableCompSource?.UsedOnce();
-            return false;
         }
 
         return true;
@@ -43,7 +42,7 @@ public class VerbComp_TargetEffect : VerbComp
             }
             catch (Exception arg)
             {
-                Log.Error("Could not instantiate or initialize a TargetEffect: " + arg);
+                Log.Error("[MVCF] VerbComp_TargetEffect could not instantiate or initialize a TargetEffect: " + arg);
                 comps.Remove(comp);
             }
         }
