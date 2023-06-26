@@ -20,6 +20,7 @@ namespace KCSG
         /// <param name="quest"></param>
         public static void Generate(this TiledStructureDef def, IntVec3 center, Map map, Quest quest = null)
         {
+            GenOption.tiledCenters = new Dictionary<TileDef, IntVec3>();
             // Get usables centers
             var usableCenters = new List<IntVec3>();
             var possibleCells = CellRect.CenteredOn(center, ((def.maxSize + def.rectSizeIncrease) / 2) + ((def.maxSize + def.rectSizeIncrease) * def.maxDistanceFromCenter));
@@ -147,6 +148,8 @@ namespace KCSG
             GenOption.GetAllMineableIn(cellRect, map);
             LayoutUtils.CleanRect(layoutDef, map, cellRect, true);
             layoutDef.Generate(cellRect, map);
+
+            GenOption.tiledCenters.Add(tileDef, cellRect.CenterCell);
         }
     }
 }
