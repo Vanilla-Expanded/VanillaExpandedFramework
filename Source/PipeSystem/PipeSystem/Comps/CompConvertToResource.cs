@@ -44,7 +44,7 @@ namespace PipeSystem
                         {
                             if (thingList[i].def == categoryList[j])
                             {
-                                Log.Message("Eating " + thingList[i].ToString() + " from category " + Props.category.ToString());
+                                //Log.Message("Eating " + thingList[i].ToString() + " from category " + Props.category.ToString());
                                 return thingList[i];
                             }
                         }

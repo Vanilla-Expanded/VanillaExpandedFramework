@@ -27,7 +27,7 @@ namespace PipeSystem
             if (thing == null & category == null)
                 yield return "Can't use CompProperties_ConvertThingToResource with a null thing or category.";
             if (thing != null & category != null)
-                yield return "Can't use both thing and category on the same thing.";
+                yield return "Can't use both thing and category on the same CompProperties_ConvertThingToResource.";
         }
     }
 }
