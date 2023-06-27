@@ -16,7 +16,7 @@ namespace KCSG
         // List of corpses to rot
         public static List<Corpse> corpsesToRot = new List<Corpse>();
         // List of tileDef and their center
-        public static Dictionary<IntVec3, TileDef> tiledCenters = new Dictionary<IntVec3, TileDef>();
+        public static Dictionary<CellRect, TileDef> tiledRects = new Dictionary<CellRect, TileDef>();
 
         private static Dictionary<IntVec3, Mineable> mineables;
 
