@@ -34,10 +34,29 @@ namespace PipeSystem
             get
             {
                 List<Thing> thingList = parent.Map.thingGrid.ThingsListAt(parent.Position);
-                for (int i = 0; i < thingList.Count; i++)
+
+                if (Props.category != null)
                 {
-                    if (thingList[i].def == Props.thing)
-                        return thingList[i];
+                    List<ThingDef> categoryList = Props.category.childThingDefs;
+                    for (int j = 0; j < categoryList.Count; j++)
+                    {
+                        for (int i = 0; i < thingList.Count; i++)
+                        {
+                            if (thingList[i].def == categoryList[j])
+                            {
+                                //Log.Message("Eating " + thingList[i].ToString() + " from category " + Props.category.ToString());
+                                return thingList[i];
+                            }
+                        }
+                    }
+                }
+                else if (Props.thing != null)
+                {
+                    for (int i = 0; i < thingList.Count; i++)
+                    {
+                        if (thingList[i].def == Props.thing)
+                            return thingList[i];
+                    }
                 }
                 return null;
             }

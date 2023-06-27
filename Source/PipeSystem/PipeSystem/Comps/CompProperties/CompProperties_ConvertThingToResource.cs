@@ -13,6 +13,7 @@ namespace PipeSystem
 
         public int ratio = 1;
         public ThingDef thing;
+        public ThingCategoryDef category;
 
         public override IEnumerable<string> ConfigErrors(ThingDef parentDef)
         {
@@ -23,8 +24,10 @@ namespace PipeSystem
                 yield return "Can't use CompProperties_ConvertThingToResource with a thing that don't have Building_Storage as thingClass.";
             if (parentDef.comps.FindAll(c => c is CompProperties_ConvertThingToResource).Count > 1)
                 yield return "Can't use multiple CompProperties_ConvertThingToResource on the same thing.";
-            if (thing == null)
-                yield return "Can't use CompProperties_ConvertThingToResource with a null thing.";
+            if (thing == null & category == null)
+                yield return "Can't use CompProperties_ConvertThingToResource with a null thing or category.";
+            if (thing != null & category != null)
+                yield return "Can't use both thing and category on the same CompProperties_ConvertThingToResource.";
         }
     }
 }
