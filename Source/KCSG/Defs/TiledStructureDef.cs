@@ -11,6 +11,7 @@ namespace KCSG
         public IntRange tilesNumberRange = new IntRange(1, 4);
         public int maxDistanceFromCenter = 1;
         public int rectSizeIncrease = 0;
+        public TerrainDef increaseTerrainDef = null;
         public bool placeTileAdjacent = true;
 
         public List<TileDef> centerTileDefs = new List<TileDef>();
