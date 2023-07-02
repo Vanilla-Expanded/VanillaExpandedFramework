@@ -1,4 +1,6 @@
-﻿using RimWorld;
+﻿using HarmonyLib;
+using KTrie;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,6 +9,7 @@ using System.Runtime.Remoting.Messaging;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
+using static HarmonyLib.AccessTools;
 
 namespace VFECore
 {
@@ -110,24 +113,26 @@ namespace VFECore
 			}
 		}
 
-		public List<string> LoadAllFiles(string folderPath)
+        private static readonly FieldRef<ModContentHolder<Texture2D>, StringTrieSet> contentListTrieRef =
+    AccessTools.FieldRefAccess<ModContentHolder<Texture2D>, StringTrieSet>("contentListTrie");
+        public List<string> LoadAllFiles(string folderPath)
 		{
-			if (folderPath.EndsWith("/") is false)
-			{
-                folderPath += "/";
+            var paths = new List<string>();
+            var mods = LoadedModManager.RunningModsListForReading;
+            var count = mods.Count;
+
+            for (var i = 0; i < count; i++)
+            {
+                var contentListTrie = contentListTrieRef.Invoke(mods[i].GetContentHolder<Texture2D>());
+
+                var prefix = !folderPath.NullOrEmpty() && folderPath![folderPath.Length - 1] == '/'
+                    ? folderPath
+                    : folderPath + '/';
+
+                foreach (var path in contentListTrie.GetByPrefix(prefix))
+                    paths.Add(path);
             }
-            var list = new List<string>();
-			foreach (ModContentPack mod in LoadedModManager.RunningModsListForReading)
-			{
-				foreach (var content in mod.GetContentHolder<Texture2D>().contentList)
-				{
-					if (content.Key.Contains(folderPath))
-					{
-						list.Add(content.Key);
-					}
-                }
-            }
-            return list;
-		}
+            return paths;
+        }
 	}
 }
