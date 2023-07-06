@@ -63,24 +63,5 @@ namespace PipeSystem
         }
 
         public int MaxCanInput => (int)PipeNet.AvailableCapacity;
-
-        public override void CompTick()
-        {
-            base.CompTick();
-            if (parent.IsHashIntervalTick(250))
-                CompTickRare();
-        }
-
-        public override void CompTickRare()
-        {
-            base.CompTickRare();
-            var heldThing = HeldThing;
-            if (CanInputNow && heldThing != null)
-            {
-                var resourceToAdd = heldThing.stackCount / Props.ratio;
-                PipeNet.DistributeAmongStorage(resourceToAdd, out _);
-                heldThing.DeSpawn();
-            }
-        }
     }
 }

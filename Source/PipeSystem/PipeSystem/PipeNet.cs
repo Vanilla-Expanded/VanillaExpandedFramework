@@ -18,9 +18,9 @@ namespace PipeSystem
         // Storages
         public List<CompResourceStorage> storages = new List<CompResourceStorage>();
         // Converters to things
-        public List<CompConvertToThing> converters = new List<CompConvertToThing>();
+        public List<CompConvertToThing> thingConverters = new List<CompConvertToThing>();
         // Converters to resource
-        public List<CompConvertToResource> convertersB = new List<CompConvertToResource>();
+        public List<CompConvertToResource> resourceConverters = new List<CompConvertToResource>();
         // All refillables compRefuelable/ItemProcessor
         public List<CompRefillWithPipes> refillables = new List<CompRefillWithPipes>();
         // Processor
@@ -222,11 +222,11 @@ namespace PipeSystem
             }
             else if (comp is CompConvertToThing convertToThing)
             {
-                converters.Add(convertToThing);
+                thingConverters.Add(convertToThing);
             }
             else if (comp is CompConvertToResource toResource)
             {
-                convertersB.Add(toResource);
+                resourceConverters.Add(toResource);
             }
             else if (comp is CompResourceProcessor processor)
             {
@@ -274,11 +274,11 @@ namespace PipeSystem
             }
             else if (comp is CompConvertToThing convertToThing)
             {
-                converters.Remove(convertToThing);
+                thingConverters.Remove(convertToThing);
             }
             else if (comp is CompConvertToResource toResource)
             {
-                convertersB.Remove(toResource);
+                resourceConverters.Remove(toResource);
             }
             else if (comp is CompResourceProcessor processor)
             {
@@ -472,14 +472,14 @@ namespace PipeSystem
         internal float DistributeAmongConverters(float available)
         {
             float used = 0;
-            if (!converters.Any() || available <= 0)
+            if (!thingConverters.Any() || available <= 0)
                 return used;
 
             // Get all converter ready
             var convertersReady = new List<CompConvertToThing>();
-            for (int i = 0; i < converters.Count; i++)
+            for (int i = 0; i < thingConverters.Count; i++)
             {
-                var converter = converters[i];
+                var converter = thingConverters[i];
                 if (converter.CanOutputNow && converter.MaxCanOutput > 0)
                 {
                     convertersReady.Add(converter);
@@ -496,13 +496,13 @@ namespace PipeSystem
                 if (converter.CanOutputNow)
                 {
                     // Cap to max amount storage can accept
-                    int availableWRatio = (int)(available / converter.Props.ratio);
+                    int availableWRatio = (int)(available * converter.Props.ratio);
                     int max = converter.MaxCanOutput;
                     int toConvert = max > availableWRatio ? availableWRatio : max;
                     if (toConvert > 0)
                     {
                         converter.OutputResource(toConvert);
-                        var toDraw = toConvert * converter.Props.ratio;
+                        var toDraw = toConvert / converter.Props.ratio;
                         used += toDraw;
                         available -= toDraw;
                         PipeSystemDebug.Message($"Converted {toDraw} resource for {toConvert}");
@@ -524,9 +524,9 @@ namespace PipeSystem
         /// </summary>
         internal void GetFromConverters()
         {
-            for (int i = 0; i < convertersB.Count; i++)
+            for (int i = 0; i < resourceConverters.Count; i++)
             {
-                var converter = convertersB[i];
+                var converter = resourceConverters[i];
                 // Verify others comps
                 if (converter.CanInputNow)
                 {
@@ -535,7 +535,7 @@ namespace PipeSystem
                     if (heldThing != null)
                     {
                         // Get the resource we can add to the net
-                        var resourceToAdd = heldThing.stackCount / converter.Props.ratio;
+                        var resourceToAdd = heldThing.stackCount * converter.Props.ratio;
 
                         float resourceCanAdd;
                         if (def.convertAmount > 0)
@@ -554,7 +554,7 @@ namespace PipeSystem
                             }
                             else
                             {
-                                heldThing.stackCount -= (int)(resourceCanAdd * converter.Props.ratio);
+                                heldThing.stackCount -= (int)(resourceCanAdd / converter.Props.ratio);
                                 // We did not use all converter thing, no need to iterate over the other ones
                                 return;
                             }

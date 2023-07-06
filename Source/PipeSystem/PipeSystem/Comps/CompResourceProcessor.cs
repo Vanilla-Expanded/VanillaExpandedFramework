@@ -271,13 +271,13 @@ namespace PipeSystem
                     storage = 0;
                 }
                 // No storage but converters?
-                else if (net.converters.Count > 0)
+                else if (net.thingConverters.Count > 0)
                 {
                     var outCap = 0;
                     // Convert it, if some left keep it inside here
-                    for (int i = 0; i < net.converters.Count; i++)
+                    for (int i = 0; i < net.thingConverters.Count; i++)
                     {
-                        var converter = net.converters[i];
+                        var converter = net.thingConverters[i];
                         if (converter.CanOutputNow)
                         {
                             outCap += converter.MaxCanOutput;
