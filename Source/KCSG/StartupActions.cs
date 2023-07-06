@@ -58,6 +58,12 @@ namespace KCSG
         /// </summary>
         public static void AddToMissing(string modName, string symbol)
         {
+            if (modName == null)
+            {
+                Debug.Message($"Null modName for {symbol}");
+                return;
+            }
+
             if (missingSymbols.ContainsKey(modName))
             {
                 if (missingSymbols[modName].ContainsKey(symbol))
