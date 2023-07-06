@@ -383,7 +383,7 @@ namespace PipeSystem
             else if (storages.Count > 0)
             {
                 // Store it
-                DistributeAmongStorage(usable);
+                DistributeAmongStorage(usable, out _);
                 // Get other inputs
                 GetFromConverters();
                 // Distribute using the whole storage
@@ -414,7 +414,7 @@ namespace PipeSystem
                 float willTransfer = toTransfer > def.transferAmount ? def.transferAmount : toTransfer;
                 // Draw from marked and distribute to others
                 DrawAmongStorage(willTransfer, markedForTransfer);
-                DistributeAmongStorage(willTransfer);
+                DistributeAmongStorage(willTransfer, out _);
             }
         }
 
@@ -546,7 +546,7 @@ namespace PipeSystem
                         if (resourceCanAdd > 0)
                         {
                             // Add it
-                            DistributeAmongStorage(resourceCanAdd);
+                            DistributeAmongStorage(resourceCanAdd, out _);
                             // Change heldthing stacksize, or despawn it
                             if (resourceToAdd == resourceCanAdd)
                             {
@@ -564,13 +564,16 @@ namespace PipeSystem
             }
         }
 
+        [Obsolete]
+        public void DistributeAmongStorage(float amount) => DistributeAmongStorage(amount, out _);
 
         /// <summary>
         /// Add resource to storage.
         /// </summary>
         /// <param name="amount">Amount to add</param>
-        public void DistributeAmongStorage(float amount)
+        public void DistributeAmongStorage(float amount, out float stored)
         {
+            stored = 0;
             if (amount <= 0 || !storages.Any())
                 return;
             // Get all storage that can accept resources
@@ -610,6 +613,7 @@ namespace PipeSystem
                     toBeStored -= toStore;
                 }
             }
+            stored = toBeStored;
         }
 
         /// <summary>

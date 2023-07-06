@@ -267,7 +267,7 @@ namespace PipeSystem
                 if (net.AvailableCapacity > count)
                 {
                     // Store it
-                    net.DistributeAmongStorage(count);
+                    net.DistributeAmongStorage(count, out _);
                     storage = 0;
                 }
                 // No storage but converters?

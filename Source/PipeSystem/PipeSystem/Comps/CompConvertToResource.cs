@@ -78,7 +78,7 @@ namespace PipeSystem
             if (CanInputNow && heldThing != null)
             {
                 var resourceToAdd = heldThing.stackCount / Props.ratio;
-                PipeNet.DistributeAmongStorage(resourceToAdd);
+                PipeNet.DistributeAmongStorage(resourceToAdd, out _);
                 heldThing.DeSpawn();
             }
         }

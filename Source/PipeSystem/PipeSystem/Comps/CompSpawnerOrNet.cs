@@ -114,7 +114,7 @@ namespace PipeSystem
             var net = compResource.PipeNet;
             if (net.AvailableCapacity >= Props.spawnCount)
             {
-                net.DistributeAmongStorage(Props.spawnCount);
+                net.DistributeAmongStorage(Props.spawnCount, out _);
 
                 if (Props.showMessageIfOwned && parent.Faction == Faction.OfPlayer)
                     Messages.Message("MessageCompSpawnerSpawnedItem".Translate(Props.thingToSpawn.LabelCap), parent, MessageTypeDefOf.PositiveEvent);

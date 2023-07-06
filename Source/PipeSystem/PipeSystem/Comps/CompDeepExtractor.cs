@@ -168,7 +168,7 @@ namespace PipeSystem
                     var extractAmount = min > available ? available : min;
 
                     parent.Map.deepResourceGrid.SetAt(cell, resDef, count - extractAmount);
-                    net.DistributeAmongStorage(extractAmount);
+                    net.DistributeAmongStorage(extractAmount, out _);
                     globalCount -= extractAmount;
                     StartSustainer();
 
