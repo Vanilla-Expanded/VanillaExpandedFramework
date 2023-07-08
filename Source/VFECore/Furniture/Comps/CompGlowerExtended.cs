@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using PipeSystem;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -125,6 +126,10 @@ namespace VanillaFurnitureExpanded
                 if ((building_Crate = parent as Building_Crate) != null && !building_Crate.HasAnyContents)
                 {
                     return false;
+                }
+                foreach (var comp in parent.GetComps<CompResourceTrader>())
+                {
+                    if (comp != null && !comp.ResourceOn) return false;
                 }
                 return true;
             }
@@ -352,6 +357,9 @@ namespace VanillaFurnitureExpanded
                     UpdateLit();
                     break;
             }
+
+            if (CachedSignals.IsResourceSignal(signal))
+                UpdateLit();
         }
 
         public override void PostExposeData()

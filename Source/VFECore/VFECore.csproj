@@ -48,6 +48,11 @@
       <HintPath>..\..\1.4\Assemblies\KCSG.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="PipeSystem, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\1.4\Assemblies\PipeSystem.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="SimpleSidearms">
       <HintPath>..\..\..\..\..\..\workshop\content\294100\927155256\v1.3\Assemblies\SimpleSidearms.dll</HintPath>
