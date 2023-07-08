@@ -90,6 +90,8 @@
     <Compile Include="Comps\CompSpillWhenDamaged.cs" />
     <Compile Include="Comps\CompConvertToResource.cs" />
     <Compile Include="Graphic\IconOverlay.cs" />
+    <Compile Include="Harmony\CompGlowerExtended\ReceiveCompSignal_Postfix.cs" />
+    <Compile Include="Harmony\CompGlowerExtended\ShouldBeLitNow_Postfix.cs" />
     <Compile Include="Harmony\CompGlower\ReceiveCompSignal_Postfix.cs" />
     <Compile Include="Harmony\CompGlower\ShouldBeLitNow_Postfix.cs" />
     <Compile Include="Harmony\Designator_Install_Patch.cs" />
