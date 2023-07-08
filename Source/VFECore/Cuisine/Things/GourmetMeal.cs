@@ -1,32 +1,25 @@
-﻿using RimWorld;
-using Verse;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using RimWorld;
+using UnityEngine;
+
+using Verse;
+using static HarmonyLib.Code;
 
 namespace VanillaCookingExpanded
 {
-    public class CompStackByCondiments : ThingComp
+    public class GourmetMeal : ThingWithComps
     {
-
-        //A comp class to make items only stack if their ingredients lists are the same
-
-        //Used for example in Vanilla Cooking Expanded gourmet meals to avoid condiment abuse
-
-        public CompProperties_StackByCondiments Props
+        public override bool CanStackWith(Thing other)
         {
-            get
-            {
-                return (CompProperties_StackByCondiments)this.props;
-            }
-        }
-
-
-        public override bool AllowStackWith(Thing other)
-        {
-
-            if (other.TryGetComp<CompIngredients>() != null)
+            
+            if (other.def == this.def && other.TryGetComp<CompIngredients>() != null && this.TryGetComp<CompIngredients>() != null && other as GourmetMeal != null)
             {
                 List<ThingDef> listingredients1 = other.TryGetComp<CompIngredients>().ingredients;
-                List<ThingDef> listingredients2 = this.parent.TryGetComp<CompIngredients>().ingredients;
+                List<ThingDef> listingredients2 = this.TryGetComp<CompIngredients>().ingredients;
 
                 string flagIngredientFoundOnSource = "";
                 string flagIngredientFoundOnTarget = "";
@@ -38,7 +31,7 @@ namespace VanillaCookingExpanded
                     {
                         foreach (string tag in ingredient.ingredient.mergeCompatibilityTags)
                         {
-                            if (tag == Props.condimentTagToCheck)
+                            if (tag == "Condiments")
                             {
                                 flagIngredientFoundOnSource = ingredient.defName;
                             }
@@ -51,7 +44,7 @@ namespace VanillaCookingExpanded
                     {
                         foreach (string tag2 in ingredient2.ingredient.mergeCompatibilityTags)
                         {
-                            if (tag2 == Props.condimentTagToCheck)
+                            if (tag2 == "Condiments")
                             {
                                 flagIngredientFoundOnTarget = ingredient2.defName;
                             }
@@ -59,25 +52,19 @@ namespace VanillaCookingExpanded
                     }
                 }
 
-                if ((flagIngredientFoundOnSource == flagIngredientFoundOnTarget)|| flagIngredientFoundOnSource=="" || flagIngredientFoundOnTarget == "")
+                if ((flagIngredientFoundOnSource == flagIngredientFoundOnTarget) || flagIngredientFoundOnSource == "" || flagIngredientFoundOnTarget == "")
                 {
                     return true;
                 }
-                
+
                 else return false;
 
 
-               
+
 
             }
-
-
-
-            return base.AllowStackWith(other);
+            return base.CanStackWith(other);
         }
-
-        
-
 
     }
 }

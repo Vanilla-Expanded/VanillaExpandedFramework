@@ -497,6 +497,7 @@
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_StageByPsylink.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_StageByTemperature.cs" />
     <Compile Include="AnimalBehaviours\ReflectionCache\ReflectionCache.cs" />
+    <Compile Include="Cuisine\Things\GourmetMeal.cs" />
     <Compile Include="DoorTeleporter\CaravanArrivalAction_UseDoorTeleporter.cs" />
     <Compile Include="DoorTeleporter\Dialog_RenameDoorTeleporter.cs" />
     <Compile Include="DoorTeleporter\DistortedMaterialsPool.cs" />
@@ -881,10 +882,8 @@
     <Compile Include="VFECore\Buildings\Building_MechTurretGun.cs" />
     <Compile Include="Cuisine\Comps\CompMaturingAlcohol.cs" />
     <Compile Include="Cuisine\Comps\CompProperties\CompProperties_MaturingAlcohol.cs" />
-    <Compile Include="Cuisine\Comps\CompProperties\CompProperties_StackByCondiments.cs" />
     <Compile Include="Cuisine\Comps\CompProperties\CompProperties_StackByQuality.cs" />
     <Compile Include="Cuisine\Comps\CompProperties\CompProperties_TempTransforms.cs" />
-    <Compile Include="Cuisine\Comps\CompStackByCondiments.cs" />
     <Compile Include="Cuisine\Comps\CompStackByQuality.cs" />
     <Compile Include="Cuisine\Comps\CompTempTransforms.cs" />
     <Compile Include="Cuisine\DefModExtensions\Thought_Hediff_Extension.cs" />
