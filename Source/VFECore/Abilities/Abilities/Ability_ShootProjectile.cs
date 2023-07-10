@@ -21,9 +21,9 @@
                 abilityProjectile.ability = this;
             }
             if (target.HasThing)
-                projectile?.Launch(this.pawn, this.pawn.DrawPos, target.Thing, target.Thing, ProjectileHitFlags.IntendedTarget);
+                projectile?.Launch(this.pawn, this.pawn.DrawPos, target.Thing, target.Thing, ProjectileHitFlags.All);
             else
-                projectile?.Launch(this.pawn, this.pawn.DrawPos, target.Cell, target.Cell, ProjectileHitFlags.IntendedTarget);
+                projectile?.Launch(this.pawn, this.pawn.DrawPos, target.Cell, target.Cell, ProjectileHitFlags.All);
             return projectile;
         }
 
