@@ -15,15 +15,16 @@
         }
         protected virtual Projectile ShootProjectile(GlobalTargetInfo target)
         {
-            Projectile projectile = GenSpawn.Spawn(this.def.GetModExtension<AbilityExtension_Projectile>().projectile, this.pawn.Position, this.pawn.Map) as Projectile;
+            var extension = this.def.GetModExtension<AbilityExtension_Projectile>();
+            Projectile projectile = GenSpawn.Spawn(extension.projectile, this.pawn.Position, this.pawn.Map) as Projectile;
             if (projectile is AbilityProjectile abilityProjectile)
             {
                 abilityProjectile.ability = this;
             }
             if (target.HasThing)
-                projectile?.Launch(this.pawn, this.pawn.DrawPos, target.Thing, target.Thing, ProjectileHitFlags.All);
+                projectile?.Launch(this.pawn, this.pawn.DrawPos, target.Thing, target.Thing, extension.hitFlags);
             else
-                projectile?.Launch(this.pawn, this.pawn.DrawPos, target.Cell, target.Cell, ProjectileHitFlags.All);
+                projectile?.Launch(this.pawn, this.pawn.DrawPos, target.Cell, target.Cell, extension.hitFlags);
             return projectile;
         }
 
@@ -38,6 +39,7 @@
     public class AbilityExtension_Projectile : DefModExtension
     {
         public ThingDef projectile;
+        public ProjectileHitFlags hitFlags = ProjectileHitFlags.IntendedTarget;
     }
 
     public class AbilityExtension_ShootProjectile_Snow : DefModExtension
