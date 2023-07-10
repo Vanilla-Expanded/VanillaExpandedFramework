@@ -49,11 +49,15 @@ namespace VFECore
         public static void SetDestination(this Projectile projectile, Vector3 destination)
         {
             var projDestination = ((Vector3)NonPublicFields.Projectile_destination.GetValue(projectile));
-            if (Vector3.Distance(projDestination.Yto0(), destination.Yto0()) >= 0.1f)
+            float distanceBetweenDestinations = Vector3.Distance(projDestination.Yto0(), destination.Yto0());
+            if (distanceBetweenDestinations >= 0.1f)
             {
-                NonPublicFields.Projectile_origin.SetValue(projectile, projectile.ExactPosition);
-                NonPublicFields.Projectile_destination.SetValue(projectile, Vector3.RotateTowards(projDestination, destination, 1, 9999999));
-                NonPublicFields.Projectile_ticksToImpact.SetValue(projectile, Mathf.CeilToInt((float)NonPublicProperties.Projectile_get_StartingTicksToImpact(projectile)));
+                Vector3 origin = (Vector3)NonPublicFields.Projectile_origin.GetValue(projectile);
+                Vector3 newPos = new Vector3(projectile.ExactPosition.x, origin.y, projectile.ExactPosition.z);
+                NonPublicFields.Projectile_origin.SetValue(projectile, newPos);
+                NonPublicFields.Projectile_destination.SetValue(projectile, destination);
+                NonPublicFields.Projectile_ticksToImpact.SetValue(projectile, 
+                    Mathf.CeilToInt((float)NonPublicProperties.Projectile_get_StartingTicksToImpact(projectile) - 1));
             }
         }
         public static bool IsHomingProjectile(this Projectile projectile, out CompHomingProjectile comp)
