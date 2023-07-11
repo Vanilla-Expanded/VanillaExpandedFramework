@@ -15,22 +15,11 @@ namespace AnimalBehaviours
 
 
 
-
-    [HarmonyPatch]
    
+    [HarmonyPatch]  
     public static class VanillaExpandedFramework_QuestNode_GetPawnKind_SetVars_CanHandle_Patch
     {
-        static HashSet<PawnKindDef> animalListResult = new HashSet<PawnKindDef>();
-
-        static VanillaExpandedFramework_QuestNode_GetPawnKind_SetVars_CanHandle_Patch()
-        {
-
-            HashSet<AnimalsDisabledFromQuestsDef> allUnaffectedLists = DefDatabase<AnimalsDisabledFromQuestsDef>.AllDefsListForReading.ToHashSet();
-            foreach (AnimalsDisabledFromQuestsDef individualList in allUnaffectedLists)
-            {
-                animalListResult.AddRange(individualList.disabledFromQuestsPawns);
-            }
-        }
+        
 
 
         static MethodBase TargetMethod()
@@ -41,10 +30,11 @@ namespace AnimalBehaviours
 
         public static void Postfix(PawnKindDef animal, ref bool __result)
         {
+
             
-           
-                if (animalListResult.Contains(animal))
+                if (AnimalCollectionClass.questDisabledAnimals.Contains(animal))
                 {
+                   
                     __result = false;
                 }
             

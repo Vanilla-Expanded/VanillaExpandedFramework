@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace AnimalBehaviours
 {
-
+    [StaticConstructorOnStartup]
     public static class AnimalCollectionClass
     {
 
@@ -47,6 +47,10 @@ namespace AnimalBehaviours
 
         // A list of Salamander graphic paths    
         public static IDictionary<Thing, string> salamander_graphics = new Dictionary<Thing, string>();
+
+        // A list of animals disabled from quests. Loaded once from XML lists in this class' constructor
+        public static HashSet<PawnKindDef> questDisabledAnimals = new HashSet<PawnKindDef>();
+
 
 
         // An integer with the current number of animal control hubs built
@@ -295,6 +299,17 @@ namespace AnimalBehaviours
                 numberOfAnimalControlHubsBuilt--;
             }
 
+        }
+
+
+        static AnimalCollectionClass()
+        {
+            
+            HashSet<AnimalsDisabledFromQuestsDef> allUnaffectedLists = DefDatabase<AnimalsDisabledFromQuestsDef>.AllDefsListForReading.ToHashSet();
+            foreach (AnimalsDisabledFromQuestsDef individualList in allUnaffectedLists)
+            {
+                questDisabledAnimals.AddRange(individualList.disabledFromQuestsPawns);
+            }
         }
 
 
