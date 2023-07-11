@@ -33,41 +33,49 @@ namespace VanillaCookingExpanded
             if (!added)
             {
 
-                //First, we use the hediff field of the Thought XML to add that hediff
-                if (this.def.hediff != null) { this.pawn.health.AddHediff(this.def.hediff); }
-                //And if we want to add more hediffs, we can add up to two more. This could be extended to any number using
-                //a simple list
-                if (this.def.HasModExtension<Thought_Hediff_Extension>())
+                if (!ThoughtUtility.ThoughtNullified(pawn, def))
                 {
-                    Thought_Hediff_Extension extension = this.def.GetModExtension<Thought_Hediff_Extension>();
-                    if (extension.hediffToAffect != null)
+                    //First, we use the hediff field of the Thought XML to add that hediff
+                    if (this.def.hediff != null)
                     {
-                        BodyPartRecord part = this.pawn.RaceProps.body.GetPartsWithDef(extension.partToAffect).FirstOrDefault();
-                        
+                        this.pawn.health.AddHediff(this.def.hediff);
+                    }
+                    //And if we want to add more hediffs, we can add up to two more. This could be extended to any number using
+                    //a simple list
+                    if (this.def.HasModExtension<Thought_Hediff_Extension>())
+                    {
+                        Thought_Hediff_Extension extension = this.def.GetModExtension<Thought_Hediff_Extension>();
+                        if (extension.hediffToAffect != null)
+                        {
+                            BodyPartRecord part = this.pawn.RaceProps.body.GetPartsWithDef(extension.partToAffect).FirstOrDefault();
+
                             this.pawn.health.AddHediff(extension.hediffToAffect, part);
                             pawn.health.hediffSet.GetFirstHediffOfDef(extension.hediffToAffect, false).Severity += extension.percentage;
-                        
-                    }
-                                
-                    if (extension.secondHediffToAffect != null)
-                    {
-                        BodyPartRecord part2 = this.pawn.RaceProps.body.GetPartsWithDef(extension.secondPartToAffect).FirstOrDefault();
-                        
+
+                        }
+
+                        if (extension.secondHediffToAffect != null)
+                        {
+                            BodyPartRecord part2 = this.pawn.RaceProps.body.GetPartsWithDef(extension.secondPartToAffect).FirstOrDefault();
+
                             this.pawn.health.AddHediff(extension.secondHediffToAffect, part2);
                             pawn.health.hediffSet.GetFirstHediffOfDef(extension.secondHediffToAffect, false).Severity += extension.secondPercentage;
-                        
+
+
+                        }
+                        if (extension.increaseJoy)
+                        {
+                            pawn.needs.joy.GainJoy(extension.extraJoy, JoyKindDefOf.Gluttonous);
+
+                        }
+
+
+
 
                     }
-                    if (extension.increaseJoy)
-                    {
-                        pawn.needs.joy.GainJoy(extension.extraJoy,JoyKindDefOf.Gluttonous);
-
-                    }
-
-                   
-
-
                 }
+
+                
 
 
 
