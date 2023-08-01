@@ -10,20 +10,25 @@ namespace MVCF.Utilities;
 public static class VerbStatsUtility
 {
     public static float? ForceBaseValue;
+    public static StatDef StatForForcedBase;
 
     public static float GetStatValueWithBase(this Thing thing, StatDef stat, float? baseValue, bool applyPostProcess = true)
     {
         ForceBaseValue = baseValue;
+        StatForForcedBase = stat;
         var result = thing.GetStatValue(stat, applyPostProcess);
         ForceBaseValue = null;
+        StatForForcedBase = null;
         return result;
     }
 
     public static float GetStatValueAbstractWithBase(this BuildableDef def, StatDef stat, float? baseValue, ThingDef stuff = null)
     {
         ForceBaseValue = baseValue;
+        StatForForcedBase = stat;
         var result = def.GetStatValueAbstract(stat, stuff);
         ForceBaseValue = null;
+        StatForForcedBase = null;
         return result;
     }
 
@@ -41,9 +46,16 @@ public static class VerbStatsUtility
     {
         if (equipmentDef.Verbs.Count > 1)
         {
+            Log.Message($"Getting {stat} from {equipmentDef} and {props}");
             var baseValue = props.GetStatValue(stat);
+            Log.Message($"Got {baseValue}");
             if (baseValue.HasValue && (baseValue < stat.minValue || baseValue > stat.maxValue))
+            {
+                Log.Message("Outside valid range");
                 return stat.defaultBaseValue;
+            }
+
+            Log.Message("Returning");
             return baseValue;
         }
 
@@ -65,7 +77,7 @@ public static class VerbStatsUtility
         };
     }
 
-    public static IEnumerable<StatDrawEntry> DisplayStatsForVerbs(List<VerbProperties> verbs, StatCategoryDef category, StatRequest req)
+    public static IEnumerable<StatDrawEntry> DisplayStatsForVerbs(List<VerbProperties> verbs, StatCategoryDef category, StatRequest req, ThingDef parent)
     {
         string VerbLabel(VerbProperties verb) => verb.label;
 
@@ -146,6 +158,18 @@ public static class VerbStatsUtility
             yield return forcedMissRadius;
             if (directHitChance != null) yield return directHitChance;
         }
+
+        var cooldownTime = verbs.CreateAverageStat(StatDefOf.RangedWeapon_Cooldown, parent, category);
+        if (cooldownTime != null) yield return cooldownTime;
+
+        var accuracyTouch = verbs.CreateAverageStat(StatDefOf.AccuracyTouch, parent, category);
+        if (accuracyTouch != null) yield return accuracyTouch;
+        var accuracyShort = verbs.CreateAverageStat(StatDefOf.AccuracyShort, parent, category);
+        if (accuracyShort != null) yield return accuracyShort;
+        var accuracyMedium = verbs.CreateAverageStat(StatDefOf.AccuracyMedium, parent, category);
+        if (accuracyMedium != null) yield return accuracyMedium;
+        var accuracyLong = verbs.CreateAverageStat(StatDefOf.AccuracyLong, parent, category);
+        if (accuracyLong != null) yield return accuracyLong;
     }
 
     public static StatDrawEntry CreateAverageStat<T>(this List<T> items, StatCategoryDef category, string label, string explanationHeader,
@@ -218,6 +242,45 @@ public static class VerbStatsUtility
         var valueString = average.ToString(format);
         builder.AppendLine("StatsReport_FinalValue".Translate() + ": " + valueString);
         return total != 0 ? new StatDrawEntry(category, label, valueString, builder.ToString(), displayPriorityInCategory) : null;
+    }
+
+
+    public static StatDrawEntry CreateAverageStat(this List<VerbProperties> items, StatDef stat, ThingDef parent, StatCategoryDef category)
+    {
+        var builder = new StringBuilder();
+        builder.AppendLine(stat.description);
+        builder.AppendLine();
+        var total = 0f;
+        var validCount = 0;
+        foreach (var item in items)
+        {
+            var innerBuilder = new StringBuilder();
+            ForceBaseValue = item.GetStatValue(stat);
+            StatForForcedBase = stat;
+            var value = parent.GetStatValueAbstract(stat);
+            innerBuilder.Append(stat.Worker.GetExplanationFull(StatRequest.For(parent, null), stat.toStringNumberSense, value));
+            ForceBaseValue = null;
+            StatForForcedBase = null;
+            if (value <= 0) continue;
+            validCount++;
+            builder.AppendLine(item.label);
+            total += value;
+            var innerText = innerBuilder.ToString();
+            if (!innerText.Contains("StatsReport_FinalValue".Translate()))
+            {
+                innerBuilder.AppendInNewLine("StatsReport_FinalValue".Translate() + ": " + stat.Worker.ValueToString(value, true));
+                builder.AppendIndented(innerBuilder.ToString());
+            }
+            else builder.AppendIndented(innerText);
+
+            builder.AppendLine();
+            builder.AppendLine();
+        }
+
+        var average = total / validCount;
+        var valueString = stat.Worker.ValueToString(average, true);
+        builder.AppendLine("StatsReport_FinalValue".Translate() + ": " + valueString);
+        return total != 0 ? new StatDrawEntry(category, stat.LabelCap, valueString, builder.ToString(), stat.displayPriorityInCategory) : null;
     }
 
     public static StringBuilder AppendIndented(this StringBuilder sb, string textBlock)

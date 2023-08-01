@@ -21,6 +21,6 @@ public class PatchSet_InfoCard : PatchSet
         var category = __instance.category == ThingCategory.Pawn ? StatCategoryDefOf.PawnCombat : StatCategoryDefOf.Weapon_Ranged;
         return ___verbs is not { Count: > 1 }
             ? entries
-            : entries.Where(entry => entry.category != category).Concat(VerbStatsUtility.DisplayStatsForVerbs(___verbs, category, req));
+            : entries.Where(entry => entry.category != category).Concat(VerbStatsUtility.DisplayStatsForVerbs(___verbs, category, req, __instance));
     }
 }
