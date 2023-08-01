@@ -25,8 +25,9 @@ public class PatchSet_Stats : PatchSet
             AccessTools.Method(GetType(), nameof(AccuracyTranspiler)));
     }
 
-    public static bool GetBaseValue_Prefix(ref float __result)
+    public static bool GetBaseValue_Prefix(ref float __result, StatDef ___stat)
     {
+        if (VerbStatsUtility.StatForForcedBase == null || VerbStatsUtility.StatForForcedBase != ___stat) return true;
         if (VerbStatsUtility.ForceBaseValue is not { } val) return true;
         __result = val;
         return false;
