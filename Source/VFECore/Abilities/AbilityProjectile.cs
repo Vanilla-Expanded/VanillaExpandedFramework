@@ -23,7 +23,14 @@ namespace VFECore.Abilities
             Find.BattleLog.Add(battleLogEntryRangedImpact);
 
             this.ability.TargetEffects(new GlobalTargetInfo(this.Position, this.Map));
-
+            var extension = this.ability.def.GetModExtension<AbilityExtension_Projectile>();
+            if (extension != null)
+            {
+                if (extension.soundOnImpact != null)
+                {
+                    extension.soundOnImpact.PlayOneShot(this);
+                }
+            }
             float power = this.ability.GetPowerForPawn();
 
             if (hitThing != null)

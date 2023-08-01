@@ -39,6 +39,7 @@
     public class AbilityExtension_Projectile : DefModExtension
     {
         public ThingDef projectile;
+        public SoundDef soundOnImpact;
         public ProjectileHitFlags hitFlags = ProjectileHitFlags.IntendedTarget;
     }
 
