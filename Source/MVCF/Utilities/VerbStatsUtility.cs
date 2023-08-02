@@ -46,16 +46,9 @@ public static class VerbStatsUtility
     {
         if (equipmentDef.Verbs.Count > 1)
         {
-            Log.Message($"Getting {stat} from {equipmentDef} and {props}");
             var baseValue = props.GetStatValue(stat);
-            Log.Message($"Got {baseValue}");
-            if (baseValue.HasValue && (baseValue < stat.minValue || baseValue > stat.maxValue))
-            {
-                Log.Message("Outside valid range");
-                return stat.defaultBaseValue;
-            }
+            if (baseValue.HasValue && (baseValue < stat.minValue || baseValue > stat.maxValue)) return stat.defaultBaseValue;
 
-            Log.Message("Returning");
             return baseValue;
         }
 
