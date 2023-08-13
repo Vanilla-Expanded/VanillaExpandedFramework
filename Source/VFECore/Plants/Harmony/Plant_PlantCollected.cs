@@ -27,7 +27,7 @@ namespace VanillaPlantsExpanded
 
                     float statValue = by.GetStatValue(StatDefOf.PlantHarvestYield);
 
-                    if (by.RaceProps.Humanlike && !__instance.Blighted && Rand.Value < statValue)
+                    if ((by.RaceProps.Humanlike||by.RaceProps.IsMechanoid) && !__instance.Blighted && Rand.Value < statValue)
                     {
                      
                         int num = (int)(extension.outPutAmount * __instance.Growth);
