@@ -21,14 +21,14 @@ namespace AnimalBehaviours
             }
         }
 
-
-       
-
+        private int ticksUntilSpawn;
 
 
-
-
-		private int ticksUntilSpawn;
+        public override void CompPostMake()
+        {
+            base.CompPostMake();
+			ticksUntilSpawn = PropsSpawner.initialSpawnWait;
+        }
 
         
 

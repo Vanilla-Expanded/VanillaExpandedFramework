@@ -14,6 +14,8 @@ namespace AnimalBehaviours
 
 		public int spawnCount = 1;
 
+		public int initialSpawnWait = 10000;
+
 		public IntRange spawnIntervalRange = new IntRange(100, 100);
 
 		public int spawnMaxAdjacent = -1;
