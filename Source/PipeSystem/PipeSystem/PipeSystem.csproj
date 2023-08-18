@@ -89,7 +89,6 @@
     <Compile Include="Comps\CompSpawnerOrNet.cs" />
     <Compile Include="Comps\CompSpillWhenDamaged.cs" />
     <Compile Include="Comps\CompConvertToResource.cs" />
-    <Compile Include="Graphic\IconOverlay.cs" />
     <Compile Include="Harmony\CompGlower\ReceiveCompSignal_Postfix.cs" />
     <Compile Include="Harmony\CompGlower\ShouldBeLitNow_Postfix.cs" />
     <Compile Include="Harmony\Designator_Install_Patch.cs" />
@@ -102,6 +101,7 @@
     <Compile Include="Jobs\WorkGiver_DrainFromMarkedStorage.cs" />
     <Compile Include="Jobs\WorkGiver_RefillStorage.cs" />
     <Compile Include="NetGridUtility.cs" />
+    <Compile Include="PipeNetOverlayDrawer.cs" />
     <Compile Include="PipeSystemDebug\PipeSystemDebug.cs" />
     <Compile Include="Designator\Designator_DeconstructPipe.cs" />
     <Compile Include="Harmony\ResolvedAllowedDesignators_Patch.cs" />

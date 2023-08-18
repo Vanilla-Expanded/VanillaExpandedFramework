@@ -27,6 +27,8 @@ namespace PipeSystem
         private Command_Action transferGizmo;
         private Command_Toggle refillGizmo;
 
+        private PipeNetOverlayDrawer pipeNetOverlayDrawer;
+
         private static readonly Texture2D transferIcon = ContentFinder<Texture2D>.Get("UI/TransferStorageContent");
 
         public new CompProperties_ResourceStorage Props => (CompProperties_ResourceStorage)props;
@@ -89,6 +91,8 @@ namespace PipeSystem
             CachedCompResourceStorage.Cache(this);
             isBreakdownable = parent.TryGetComp<CompBreakdownable>() != null;
             ContentCanRot = Props.contentRequirePower && powerComp != null;
+
+            pipeNetOverlayDrawer = parent.Map.GetComponent<PipeNetOverlayDrawer>();
             // Fillable bar request
             request = new FillableBarRequest
             {
@@ -155,11 +159,13 @@ namespace PipeSystem
                             PipeNet.markedForTransfer.Remove(this);
                             PipeNet.storages.Add(this);
                         }
+                        pipeNetOverlayDrawer?.ToggleStatic(parent, MaterialCreator.transferMat, markedForTransfer);
                     },
                     defaultLabel = "PipeSystem_TransferContent".Translate(),
                     defaultDesc = "PipeSystem_TransferContentDesc".Translate(),
                     icon = transferIcon
                 };
+                pipeNetOverlayDrawer?.ToggleStatic(parent, MaterialCreator.transferMat, markedForTransfer);
             }
         }
 
@@ -174,8 +180,6 @@ namespace PipeSystem
                 request.fillPercent = AmountStoredPct;
                 DrawFillableBar(request);
             }
-            if (markedForTransfer)
-                IconOverlay.Render(MaterialCreator.transferMat, request.center, MeshPool.plane08);
         }
 
         /// <summary>

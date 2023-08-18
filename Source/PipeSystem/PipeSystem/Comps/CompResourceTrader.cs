@@ -22,7 +22,7 @@ namespace PipeSystem
         private CompRefuelable compRefuelable;
         private CompPowerTrader compPowerTrader;
 
-        private Vector3 trueCenter;
+        private PipeNetOverlayDrawer pipeNetOverlayDrawer;
 
         public string OnSignal => $"Resource{Resource.name}TurnedOn";
         public string OffSignal => $"Resource{Resource.name}TurnedOff";
@@ -70,6 +70,7 @@ namespace PipeSystem
                     parent.BroadcastCompSignal(OffSignal);
                     EndSustainerIfActive();
                 }
+                pipeNetOverlayDrawer?.TogglePulsing(parent, Props.pipeNet.offMat, !resourceOnInt);
             }
         }
 
@@ -83,7 +84,8 @@ namespace PipeSystem
 
             BaseConsumption = Props.consumptionPerTick;
 
-            trueCenter = parent.TrueCenter();
+            pipeNetOverlayDrawer = parent.Map.GetComponent<PipeNetOverlayDrawer>();
+            pipeNetOverlayDrawer?.TogglePulsing(parent, Props.pipeNet.offMat, !resourceOnInt);
 
             if (ResourceOn)
                 LongEventHandler.ExecuteWhenFinished(() => StartSustainerIfInactive());
@@ -200,10 +202,8 @@ namespace PipeSystem
             if (signal == OffSignal)
                 ResourceOn = false;
 
-            if (Consumption > 0f)
+            if (Consumption != 0f)
                 PipeNet.receiversDirty = true;
-            else if (Consumption < 0f)
-                PipeNet.producersDirty = true;
         }
 
         /// <summary>
@@ -218,13 +218,6 @@ namespace PipeSystem
                 && (compBreakdownable == null || !compBreakdownable.BrokenDown)
                 && (compRefuelable == null || compRefuelable.HasFuel)
                 && (compPowerTrader == null || compPowerTrader.PowerOn);
-        }
-
-        public override void PostDraw()
-        {
-            base.PostDraw();
-            if (!resourceOnInt && Props.consumptionPerTick > 0)
-                IconOverlay.RenderPusling(parent, Props.pipeNet.offMat, trueCenter, MeshPool.plane08);
         }
 
         /// <summary>

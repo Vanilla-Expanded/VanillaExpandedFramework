@@ -37,10 +37,10 @@ namespace PipeSystem
 
         // Initialized post spawn:
         private List<IntVec3> adjCells;
-        private Vector3 trueCenter;
         private bool canPushToNet;
         private bool canCreateItems;
         private Command_Action chooseOuputGizmo;
+        private PipeNetOverlayDrawer pipeNetOverlayDrawer;
 
         /// <summary>
         /// Should work? We check flickable comp, power comp, make sure we can process and there is enough resources
@@ -82,8 +82,8 @@ namespace PipeSystem
             compPower = parent.GetComp<CompPowerTrader>();
             // Get adjacent cells for spawning
             adjCells = GenAdj.CellsAdjacent8Way(parent).ToList();
-            // Get center for pusling icon
-            trueCenter = parent.TrueCenter();
+
+            pipeNetOverlayDrawer = parent.Map.GetComponent<PipeNetOverlayDrawer>();
 
             if (Props.results.Count > 1)
             {
@@ -156,6 +156,7 @@ namespace PipeSystem
                 enoughResource = true;
             else
                 enoughResource = false;
+            pipeNetOverlayDrawer?.TogglePulsing(parent, Props.pipeNet.offMat, enoughResource);
             // Check if processor should produce this tick
             int tick = Find.TickManager.TicksGame;
             if (tick >= nextProcessTick)
@@ -209,16 +210,6 @@ namespace PipeSystem
             }
 
             return sb.ToString().Trim();
-        }
-
-        /// <summary>
-        /// If we don't have enough resource, show the pusling off icon
-        /// </summary>
-        public override void PostDraw()
-        {
-            base.PostDraw();
-            if (!enoughResource && Props.pipeNet.offMat != null)
-                IconOverlay.RenderPusling(parent, Props.pipeNet.offMat, trueCenter, MeshPool.plane08);
         }
 
         /// <summary>
