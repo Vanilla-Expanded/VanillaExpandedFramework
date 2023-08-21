@@ -58,6 +58,10 @@ namespace PipeSystem
 
         public override void CompTickLong() => Tick(2000);
 
+        /// <summary>
+        /// Tick storage if contentRequirePower set to true
+        /// </summary>
+        /// <param name="ticks">Number of tick(s) passed</param>
         private void Tick(int ticks = 1)
         {
             if (!ContentCanRot)
@@ -136,7 +140,10 @@ namespace PipeSystem
                     defaultDesc = "PipeSystem_AllowManualRefillDesc".Translate(),
                     icon = TexCommand.ForbidOff
                 };
+                // Loading save, marked for refill: update refillables
+                if (markedForRefill) PipeNetManager.UpdateRefillableWith(parent);
             }
+            // Always refill: update refillables
             else if (Props.refillOptions != null && Props.refillOptions.alwaysRefill)
             {
                 PipeNetManager.UpdateRefillableWith(parent);
@@ -197,6 +204,9 @@ namespace PipeSystem
             base.PostExposeData();
         }
 
+        /// <summary>
+        /// Apply destroy option(s)
+        /// </summary>
         public override void PostDestroy(DestroyMode mode, Map previousMap)
         {
             if (Props.destroyOption != null)
@@ -208,6 +218,7 @@ namespace PipeSystem
                     FilthMaker.TryMakeFilth(CellFinder.StandableCellNear(pos, previousMap, Props.destroyOption.maxRadius), previousMap, Props.destroyOption.filth);
                 }
             }
+            base.PostDestroy(mode, previousMap);
         }
 
         /// <summary>
