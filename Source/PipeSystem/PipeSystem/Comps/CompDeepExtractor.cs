@@ -18,6 +18,9 @@ namespace PipeSystem
 
         private int globalCount = 0;
 
+        private float rawProductionPerDay;
+        private float rawProductionPerTick;
+
         public new CompProperties_DeepExtractor Props => (CompProperties_DeepExtractor)props;
 
         public float RawProduction
@@ -27,10 +30,16 @@ namespace PipeSystem
                 if (noCapacity || lumpCells.Count == 0 || (compPower != null && !compPower.PowerOn) || (compFlickable != null && !compFlickable.SwitchIsOn))
                     return 0;
 
-                return (GenDate.TicksPerDay / Props.ticksPerPortion) * (Props.useDeepCountPerPortion ? Props.deepThing.deepCountPerPortion : 1);
+                return rawProductionPerDay;
             }
         }
 
+        public float RawProductionPerTick => rawProductionPerTick;
+
+        /// <summary>
+        /// Get comps, cache adjacent cells used in item spawning, calculate raw production per day/tick, get all deep cells
+        /// </summary>
+        /// <param name="respawningAfterLoad"></param>
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
@@ -39,6 +48,10 @@ namespace PipeSystem
             compFlickable = parent.GetComp<CompFlickable>();
 
             adjCells = GenAdj.CellsAdjacent8Way(parent).ToList();
+
+            rawProductionPerDay = (GenDate.TicksPerDay / Props.ticksPerPortion) * (Props.useDeepCountPerPortion ? Props.deepThing.deepCountPerPortion : 1);
+            rawProductionPerTick = rawProductionPerDay / GenDate.TicksPerDay;
+
             // Get the cells
             lumpCells = new List<IntVec3>();
             var treated = new HashSet<IntVec3>();
@@ -77,6 +90,10 @@ namespace PipeSystem
             });
         }
 
+        /// <summary>
+        /// Stop cycle, reset next production tick
+        /// </summary>
+        /// <param name="map"></param>
         public override void PostDeSpawn(Map map)
         {
             base.PostDeSpawn(map);
@@ -84,6 +101,9 @@ namespace PipeSystem
             cycleOver = true;
         }
 
+        /// <summary>
+        /// Save production tick, cycle, capacity reached
+        /// </summary>
         public override void PostExposeData()
         {
             base.PostExposeData();
@@ -92,6 +112,9 @@ namespace PipeSystem
             Scribe_Values.Look(ref cycleOver, "cycleOver", true);
         }
 
+        /// <summary>
+        /// Manage production, sustainer, cycle
+        /// </summary>
         public override void CompTick()
         {
             base.CompTick();
@@ -124,28 +147,9 @@ namespace PipeSystem
             }
         }
 
-        public override string CompInspectStringExtra()
-        {
-            var str = base.CompInspectStringExtra();
-
-            if (parent.Spawned)
-            {
-                if (Props.showDeepCountLeft)
-                {
-                    str += "\n" + "PipeSystem_ResourceLeft".Translate(globalCount);
-                }
-                if (noCapacity)
-                {
-                    str += "\n" + Props.noStorageLeftKey.Translate();
-                }
-                if (lumpCells.Count == 0)
-                {
-                    str += "\n" + "DeepDrillNoResources".Translate();
-                }
-            }
-            return str;
-        }
-
+        /// <summary>
+        /// Spawn resource or push it into the net
+        /// </summary>
         private void TryProducePortion()
         {
             // Get resource
@@ -200,6 +204,13 @@ namespace PipeSystem
             lumpCells.RemoveAll(c => map.deepResourceGrid.ThingDefAt(c) == null);
         }
 
+        /// <summary>
+        /// Check first cell of lumpCells for any matching resource. Remove cell from the list if empty.
+        /// </summary>
+        /// <param name="resDef">Resource ThingDef</param>
+        /// <param name="countPresent">Resource count</param>
+        /// <param name="cell">Resource cell</param>
+        /// <returns>Found resource ?</returns>
         private bool GetNextResource(out ThingDef resDef, out int countPresent, out IntVec3 cell)
         {
             var map = parent.Map;
@@ -227,6 +238,31 @@ namespace PipeSystem
             countPresent = 0;
             cell = IntVec3.Invalid;
             return false;
+        }
+
+        /// <summary>
+        /// Show deepcount left, capacity and if there is no deep resource
+        /// </summary>
+        /// <returns>Info string</returns>
+        public override string CompInspectStringExtra()
+        {
+            var str = base.CompInspectStringExtra();
+            if (parent.Spawned)
+            {
+                if (Props.showDeepCountLeft)
+                {
+                    str += "\n" + "PipeSystem_ResourceLeft".Translate(globalCount);
+                }
+                if (noCapacity)
+                {
+                    str += "\n" + Props.noStorageLeftKey.Translate();
+                }
+                if (lumpCells.Count == 0)
+                {
+                    str += "\n" + "DeepDrillNoResources".Translate();
+                }
+            }
+            return str;
         }
     }
 }
