@@ -5,8 +5,13 @@ namespace PipeSystem
 {
     public static class CachedPipeNetManager
     {
-        public static Dictionary<int, PipeNetManager> managerCache = new Dictionary<int, PipeNetManager>();
+        private static readonly Dictionary<int, PipeNetManager> managerCache = new Dictionary<int, PipeNetManager>();
 
+        /// <summary>
+        /// Get the PipeNetManager of a map
+        /// </summary>
+        /// <param name="map">Map from wich we want the manager</param>
+        /// <returns>PipeNetManager</returns>
         public static PipeNetManager GetFor(Map map)
         {
             if (!managerCache.ContainsKey(map.uniqueID))
@@ -18,5 +23,10 @@ namespace PipeSystem
 
             return managerCache[map.uniqueID];
         }
+
+        /// <summary>
+        /// Clear dictionnary
+        /// </summary>
+        public static void Clear() => managerCache.Clear();
     }
 }

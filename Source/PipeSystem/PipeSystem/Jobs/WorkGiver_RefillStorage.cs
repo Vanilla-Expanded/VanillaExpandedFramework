@@ -7,9 +7,7 @@ namespace PipeSystem
 {
     internal class WorkGiver_RefillStorage : WorkGiver_Scanner
     {
-        public override PathEndMode PathEndMode => PathEndMode.Touch;
-
-        public override Danger MaxPathDanger(Pawn pawn) => Danger.Some;
+        public override Danger MaxPathDanger(Pawn pawn) => Danger.Deadly;
 
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn) => CachedPipeNetManager.GetFor(pawn.Map).wantRefill;
 

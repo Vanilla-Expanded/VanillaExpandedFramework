@@ -96,6 +96,7 @@
     <Compile Include="Graphic\Graphic_LinkedOverlayPipe.cs" />
     <Compile Include="Harmony\Designator_Build_Patch.cs" />
     <Compile Include="Graphic\LinkedPipes.cs" />
+    <Compile Include="Harmony\Game_ClearCaches.cs" />
     <Compile Include="Jobs\JobDriver_DrainFromMarkedStorage.cs" />
     <Compile Include="Jobs\JobDriver_FillStorage.cs" />
     <Compile Include="Jobs\WorkGiver_DrainFromMarkedStorage.cs" />
