@@ -156,7 +156,7 @@ namespace PipeSystem
                 enoughResource = true;
             else
                 enoughResource = false;
-            pipeNetOverlayDrawer?.TogglePulsing(parent, Props.pipeNet.offMat, enoughResource);
+            pipeNetOverlayDrawer?.TogglePulsing(parent, Props.pipeNet.offMat, !enoughResource);
             // Check if processor should produce this tick
             int tick = Find.TickManager.TicksGame;
             if (tick >= nextProcessTick)
