@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
@@ -21,17 +18,14 @@ namespace PipeSystem
 
         public void TogglePulsing(Thing thing, Material mat, bool val)
         {
-            Log.Message($"Try TogglePulsing {val}");
             var isInDic = pulsingRender.ContainsKey(thing);
             if (val && !isInDic)
             {
                 pulsingRender.Add(thing, mat);
-                Log.Message($"TogglePulsing adding {thing}");
             }
             else if (!val && isInDic)
             {
                 pulsingRender.Remove(thing);
-                Log.Message($"TogglePulsing removing {thing}");
             }
         }
 
