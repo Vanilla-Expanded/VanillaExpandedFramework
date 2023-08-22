@@ -18,6 +18,9 @@ namespace PipeSystem
 
         public void TogglePulsing(Thing thing, Material mat, bool val)
         {
+            if (mat == null)
+                return;
+
             var isInDic = pulsingRender.ContainsKey(thing);
             if (val && !isInDic)
             {
@@ -31,6 +34,9 @@ namespace PipeSystem
 
         public void ToggleStatic(Thing thing, Material mat, bool val)
         {
+            if (mat == null)
+                return;
+
             var vec = thing.TrueCenter();
             var isInDic = staticRender.ContainsKey(vec);
             if (val && !isInDic)
