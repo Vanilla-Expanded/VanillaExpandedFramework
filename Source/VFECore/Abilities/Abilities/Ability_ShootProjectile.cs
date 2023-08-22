@@ -1,6 +1,9 @@
 ﻿namespace VFECore.Abilities
 {
+    using RimWorld;
     using RimWorld.Planet;
+    using System.Collections.Generic;
+    using UnityEngine;
     using Verse;
 
     public class Ability_ShootProjectile : Ability
@@ -21,12 +24,41 @@
             {
                 abilityProjectile.ability = this;
             }
-            if (target.HasThing)
-                projectile?.Launch(this.pawn, this.pawn.DrawPos, target.Thing, target.Thing, extension.hitFlags);
+            var accuracy = this.CalculateModifiedStatForPawn(1f, extension.accuracyStatFactors, extension.accuracyStatOffsets);
+            if (Rand.Chance(accuracy))
+            {
+                if (target.HasThing)
+                    projectile?.Launch(this.pawn, this.pawn.DrawPos, target.Thing, target.Thing, extension.hitFlags);
+                else
+                    projectile?.Launch(this.pawn, this.pawn.DrawPos, target.Cell, target.Cell, extension.hitFlags);
+            }
             else
-                projectile?.Launch(this.pawn, this.pawn.DrawPos, target.Cell, target.Cell, extension.hitFlags);
+            {
+                ProjectileHitFlags projectileHitFlags = ProjectileHitFlags.NonTargetWorld;
+                var cell = ChangeDestToMissWild(this.pawn.Position, target.Cell, accuracy);
+                projectile?.Launch(this.pawn, this.pawn.DrawPos, cell, cell, projectileHitFlags);
+            }
             return projectile;
         }
+
+        public IntVec3 ChangeDestToMissWild(IntVec3 dest, IntVec3 source, float aimOnChance)
+        {
+            float num = ShootTuning.MissDistanceFromAimOnChanceCurves.Evaluate(aimOnChance, Rand.Value);
+            if (num < 0f)
+            {
+                Log.ErrorOnce("Attempted to wild-miss less than zero tiles away", 94302089);
+            }
+            IntVec3 intVec;
+            do
+            {
+                Vector2 unitVector = Rand.UnitVector2;
+                Vector3 vector = new Vector3(unitVector.x * num, 0f, unitVector.y * num);
+                intVec = (dest.ToVector3Shifted() + vector).ToIntVec3();
+            }
+            while (Vector3.Dot((dest - source).ToVector3(), (intVec - source).ToVector3()) < 0f);
+            return intVec;
+        }
+
 
         public override void CheckCastEffects(GlobalTargetInfo[] targetInfos, out bool cast, out bool target, out bool hediffApply)
         {
@@ -41,6 +73,8 @@
         public ThingDef projectile;
         public SoundDef soundOnImpact;
         public ProjectileHitFlags hitFlags = ProjectileHitFlags.IntendedTarget;
+        public List<StatModifier> accuracyStatFactors = new List<StatModifier>();
+        public List<StatModifier> accuracyStatOffsets = new List<StatModifier>();
     }
 
     public class AbilityExtension_ShootProjectile_Snow : DefModExtension
