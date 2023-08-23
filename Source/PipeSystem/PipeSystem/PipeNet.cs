@@ -496,13 +496,13 @@ namespace PipeSystem
                 if (converter.CanOutputNow)
                 {
                     // Cap to max amount storage can accept
-                    int availableWRatio = (int)(available * converter.Props.ratio);
+                    int availableWRatio = (int)(available / converter.Props.ratio);
                     int max = converter.MaxCanOutput;
                     int toConvert = max > availableWRatio ? availableWRatio : max;
                     if (toConvert > 0)
                     {
                         converter.OutputResource(toConvert);
-                        var toDraw = toConvert / converter.Props.ratio;
+                        var toDraw = toConvert * converter.Props.ratio;
                         used += toDraw;
                         available -= toDraw;
                         PipeSystemDebug.Message($"Converted {toDraw} resource for {toConvert}");
