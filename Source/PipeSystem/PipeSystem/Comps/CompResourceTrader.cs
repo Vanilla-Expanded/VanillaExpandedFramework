@@ -74,6 +74,9 @@ namespace PipeSystem
             }
         }
 
+        /// <summary>
+        /// Get comps, mapComp, setup overlay and sustainer
+        /// </summary>
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             compFlickable = parent.TryGetComp<CompFlickable>();
@@ -93,18 +96,28 @@ namespace PipeSystem
             base.PostSpawnSetup(respawningAfterLoad);
         }
 
+        /// <summary>
+        /// Stop sustainer, toggle off overlay
+        /// </summary>
         public override void PostDeSpawn(Map map)
         {
             base.PostDeSpawn(map);
+            pipeNetOverlayDrawer?.TogglePulsing(parent, Props.pipeNet.offMat, false);
             EndSustainerIfActive();
         }
 
+        /// <summary>
+        /// Save state
+        /// </summary>
         public override void PostExposeData()
         {
             base.PostExposeData();
             Scribe_Values.Look(ref resourceOnInt, "resourceOn", true);
         }
 
+        /// <summary>
+        /// Show consumption or output
+        /// </summary>
         public override string CompInspectStringExtra()
         {
             StringBuilder sb = new StringBuilder();

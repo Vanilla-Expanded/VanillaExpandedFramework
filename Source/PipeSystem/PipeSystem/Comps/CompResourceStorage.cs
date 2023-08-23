@@ -177,6 +177,15 @@ namespace PipeSystem
         }
 
         /// <summary>
+        /// Toggle off overlay
+        /// </summary>
+        public override void PostDeSpawn(Map map)
+        {
+            base.PostDeSpawn(map);
+            pipeNetOverlayDrawer?.ToggleStatic(parent, MaterialCreator.transferMat, false);
+        }
+
+        /// <summary>
         /// Draw the fillable bar
         /// </summary>
         public override void PostDraw()
