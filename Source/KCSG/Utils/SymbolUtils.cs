@@ -384,10 +384,10 @@ namespace KCSG
 
             if (thing?.def?.building?.buildingTags?.Count > 0)
             {
-                if (thing.def.building.IsMortar && thing.def.building.buildingTags.Contains("Artillery_MannedMortar") && thing.def.HasComp(typeof(CompMannable)) && faction != null)
+                if (thing.def.building.IsMortar && thing.def.building.buildingTags.Contains("Artillery_MannedMortar") && thing.def.HasComp(typeof(CompMannable)) && faction != null && faction.RandomPawnKind() is PawnKindDef pawnKind)
                 {
                     // Spawn pawn
-                    var request = new PawnGenerationRequest(faction.RandomPawnKind(), faction, PawnGenerationContext.NonPlayer, map.Tile, mustBeCapableOfViolence: true, inhabitant: true);
+                    var request = new PawnGenerationRequest(pawnKind, faction, PawnGenerationContext.NonPlayer, map.Tile, mustBeCapableOfViolence: true, inhabitant: true);
                     var pawn = PawnGenerator.GeneratePawn(request);
                     var job = JobMaker.MakeJob(JobDefOf.ManTurret, thing);
                     job.expiryInterval = 20000;
