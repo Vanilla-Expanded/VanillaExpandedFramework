@@ -56,6 +56,12 @@ namespace KCSG
 
         private void AddHostilePawnGroup(Faction faction, Map map, ResolveParams parms, PawnGroupKindDef pawnGroup)
         {
+            if (faction.def.pawnGroupMakers == null)
+            {
+                Debug.Message($"Skipping AddHostilePawnGroup for {faction}");
+                return;
+            }
+
             Lord singlePawnLord;
             if (faction.def.pawnGroupMakers.Any(pgm => pgm.options.Any(k => !k.kind.RaceProps.EatsFood)))
                 singlePawnLord = parms.singlePawnLord ?? LordMaker.MakeNewLord(faction, new LordJob_DefendBaseNoEat(faction, parms.rect.CenterCell), map, null);
