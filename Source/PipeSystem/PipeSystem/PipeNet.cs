@@ -607,13 +607,13 @@ namespace PipeSystem
                     // cap amountInEach to amount storage can accept
                     float toStore = Mathf.Min(storage.AmountCanAccept, amountInEach);
                     storage.AddResource(toStore);
+                    stored += toStore;
                     // If full delete for the next iteration
                     if (storage.AmountCanAccept == 0) resourceStorages.Remove(storage);
                     // update toBeStored
                     toBeStored -= toStore;
                 }
             }
-            stored = toBeStored;
         }
 
         /// <summary>
