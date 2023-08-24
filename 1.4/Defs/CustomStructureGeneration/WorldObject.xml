@@ -6,6 +6,7 @@
     <description>An underground room.</description>
     <worldObjectClass>MapParent</worldObjectClass>
     <texture>UI/CSG/IConduit</texture>
+    <selectable>false</selectable>
     <mapGenerator>KCSG_Underground</mapGenerator>
   </WorldObjectDef>
 
