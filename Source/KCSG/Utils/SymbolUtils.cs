@@ -387,14 +387,17 @@ namespace KCSG
                 if (thing.def.building.IsMortar && thing.def.building.buildingTags.Contains("Artillery_MannedMortar") && thing.def.HasComp(typeof(CompMannable)) && faction != null && faction.RandomPawnKind() is PawnKindDef pawnKind)
                 {
                     // Spawn pawn
-                    var request = new PawnGenerationRequest(pawnKind, faction, PawnGenerationContext.NonPlayer, map.Tile, mustBeCapableOfViolence: true, inhabitant: true);
-                    var pawn = PawnGenerator.GeneratePawn(request);
-                    var job = JobMaker.MakeJob(JobDefOf.ManTurret, thing);
-                    job.expiryInterval = 20000;
-                    job.expireRequiresEnemiesNearby = true;
+                    var request = new PawnGenerationRequest(pawnKind, faction, PawnGenerationContext.NonPlayer, map.Tile, forceGenerateNewPawn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: true, 1f, forceAddFreeWarmLayerIfNeeded: false, allowGay: true, allowPregnant: false, allowFood: true, allowAddictions: true, inhabitant: true);
+                    var singlePawnLord = LordMaker.MakeNewLord(faction, new LordJob_ManTurrets(), map);
+                    var rpPawn = new ResolveParams
+                    {
+                        faction = faction,
+                        singlePawnGenerationRequest = request,
+                        rect = CellRect.SingleCell(thing.InteractionCell),
+                        singlePawnLord = singlePawnLord
+                    };
+                    BaseGen.symbolStack.Push("pawn", rpPawn);
 
-                    GenSpawn.Spawn(pawn, thing.InteractionCell, map);
-                    pawn.jobs.TryTakeOrderedJob(job);
                     // Spawn shells
                     ThingDef shellDef = TurretGunUtility.TryFindRandomShellDef(thing.def, false, true, true, faction.def.techLevel, false, 250f);
                     if (shellDef != null)
