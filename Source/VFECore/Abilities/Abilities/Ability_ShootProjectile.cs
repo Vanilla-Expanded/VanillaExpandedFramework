@@ -19,7 +19,10 @@
         protected virtual Projectile ShootProjectile(GlobalTargetInfo target)
         {
             var extension = this.def.GetModExtension<AbilityExtension_Projectile>();
-            Projectile projectile = GenSpawn.Spawn(extension.projectile, this.pawn.Position, this.pawn.Map) as Projectile;
+            var origin = pawn.DrawPosHeld ?? pawn.PositionHeld.ToVector3Shifted();
+            var source = this.pawn.PositionHeld; 
+            
+            Projectile projectile = GenSpawn.Spawn(extension.projectile, source, this.pawn.MapHeld) as Projectile;
             if (projectile is AbilityProjectile abilityProjectile)
             {
                 abilityProjectile.ability = this;
@@ -28,15 +31,15 @@
             if (Rand.Chance(accuracy))
             {
                 if (target.HasThing)
-                    projectile?.Launch(this.pawn, this.pawn.DrawPos, target.Thing, target.Thing, extension.hitFlags);
+                    projectile?.Launch(this.pawn, origin, target.Thing, target.Thing, extension.hitFlags);
                 else
-                    projectile?.Launch(this.pawn, this.pawn.DrawPos, target.Cell, target.Cell, extension.hitFlags);
+                    projectile?.Launch(this.pawn, origin, target.Cell, target.Cell, extension.hitFlags);
             }
             else
             {
                 ProjectileHitFlags projectileHitFlags = ProjectileHitFlags.NonTargetWorld;
-                var cell = ChangeDestToMissWild(this.pawn.Position, target.Cell, accuracy);
-                projectile?.Launch(this.pawn, this.pawn.DrawPos, cell, cell, projectileHitFlags);
+                var cell = ChangeDestToMissWild(target.Cell, source,  accuracy);
+                projectile?.Launch(this.pawn, origin, cell, cell, projectileHitFlags);
             }
             return projectile;
         }
