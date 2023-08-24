@@ -10,7 +10,7 @@ public class Comp_VerbGiver : ThingComp, IVerbOwner
 {
     private VerbTracker verbTracker;
 
-    public Comp_VerbGiver() => verbTracker = new VerbTracker(this);
+    public Comp_VerbGiver() => verbTracker = new(this);
 
     public CompProperties_VerbGiver Props => (CompProperties_VerbGiver)props;
 
@@ -33,7 +33,7 @@ public class Comp_VerbGiver : ThingComp, IVerbOwner
         base.PostExposeData();
         Scribe_Deep.Look(ref verbTracker, "verbTracker", this);
         if (Scribe.mode != LoadSaveMode.PostLoadInit) return;
-        verbTracker ??= new VerbTracker(this);
+        verbTracker ??= new(this);
         if (parent?.holdingOwner?.Owner is not Pawn_ApparelTracker tracker) return;
         foreach (var verb in verbTracker.AllVerbs) verb.caster = tracker.pawn;
     }

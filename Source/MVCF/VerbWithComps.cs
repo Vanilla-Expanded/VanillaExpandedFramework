@@ -168,6 +168,6 @@ public class VerbWithComps : ManagedVerb
     {
         base.ExposeData();
         Scribe_Collections.Look(ref comps, nameof(comps), LookMode.Deep);
-        comps ??= new List<VerbComp>();
+        comps ??= new();
     }
 }

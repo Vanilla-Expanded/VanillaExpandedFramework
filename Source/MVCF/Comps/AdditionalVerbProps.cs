@@ -88,6 +88,8 @@ public class AdditionalVerbProps
             yield return error;
     }
 
+    public T GetCompProps<T>() where T : VerbCompProperties => comps.OfType<T>().FirstOrDefault();
+
     public virtual void ResolveReferences(Def parentDef)
     {
         foreach (var comp in comps) comp.ResolveReferences(parentDef);

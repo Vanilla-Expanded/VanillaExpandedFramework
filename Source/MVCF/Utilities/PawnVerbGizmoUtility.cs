@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using MVCF.Commands;
 using MVCF.Comps;
-using MVCF.Features;
+using MVCF.VerbComps;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -16,7 +15,6 @@ public static class PawnVerbGizmoUtility
     public static IEnumerable<Gizmo> GetGizmosForVerb(this Verb verb, ManagedVerb man = null)
     {
         var props = man?.Props;
-
         Thing ownerThing = null;
         switch (verb.DirectOwner)
         {
@@ -44,6 +42,8 @@ public static class PawnVerbGizmoUtility
             foreach (var gizmo1 in man.GetGizmos(ownerThing)) yield return gizmo1;
             yield break;
         }
+
+        if (!verb.verbProps.hasStandardCommand) yield break;
 
         Command gizmo;
         var command = new Command_VerbTarget { verb = verb };
@@ -78,34 +78,14 @@ public static class PawnVerbGizmoUtility
         else if (verb.CasterIsPawn)
         {
             if (verb.verbProps.violent && verb.CasterPawn.WorkTagIsDisabled(WorkTags.Violent))
-                gizmo.Disable("IsIncapableOfViolence".Translate(verb.CasterPawn.LabelShort,
-                    verb.CasterPawn));
-            else if (verb.CasterPawn.drafter != null && !verb.CasterPawn.drafter.Drafted &&
-                     !(props != null && props.canFireIndependently))
-                gizmo.Disable("IsNotDrafted".Translate(verb.CasterPawn.LabelShort,
-                    verb.CasterPawn));
-            else if (verb.CasterPawn.InMentalState && !(props != null && props.canFireIndependently))
+                gizmo.Disable("IsIncapableOfViolence".Translate(verb.CasterPawn.LabelShort, verb.CasterPawn));
+            else if (verb.CasterPawn.drafter is { Drafted: false } && props?.GetCompProps<VerbCompProperties_Turret>() == null)
+                gizmo.Disable("IsNotDrafted".Translate(verb.CasterPawn.LabelShort, verb.CasterPawn));
+            else if (verb.CasterPawn.InMentalState && props?.GetCompProps<VerbCompProperties_Turret>() == null)
                 gizmo.Disable("CannotOrderNonControlled".Translate());
         }
 
         yield return gizmo;
-
-
-        if ((props != null && props.canBeToggled && man != null && verb.caster.Faction == Faction.OfPlayer) ||
-            (verb.CasterIsPawn && verb.CasterPawn.RaceProps.Animal))
-        {
-            if ((props != null && props.separateToggle) ||
-                (verb.CasterIsPawn && verb.CasterPawn.RaceProps.Animal))
-                yield return new Command_ToggleVerbUsage(man);
-            else if (!MVCF.GetFeature<Feature_IntegratedToggle>().Enabled)
-            {
-                Log.ErrorOnce(
-                    "[MVCF] " + (verb.EquipmentSource.LabelShortCap ?? "Hediff verb of " + verb.caster) +
-                    " wants an integrated toggle but that feature is not enabled. Using seperate toggle.",
-                    verb.GetHashCode());
-                yield return new Command_ToggleVerbUsage(man);
-            }
-        }
     }
 
     public static Gizmo GetMainAttackGizmoForPawn(this Pawn pawn)

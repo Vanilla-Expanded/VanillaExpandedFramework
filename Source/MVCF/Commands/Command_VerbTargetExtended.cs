@@ -83,7 +83,7 @@ public class Command_VerbTargetExtended : Command_VerbTarget
     {
         if (other is Command_VerbTargetExtended command)
         {
-            groupedVerbs ??= new List<ManagedVerb>();
+            groupedVerbs ??= new();
             groupedVerbs.Add(command.managedVerb);
             if (command.groupedVerbs is not null) groupedVerbs.AddRange(command.groupedVerbs);
         }
