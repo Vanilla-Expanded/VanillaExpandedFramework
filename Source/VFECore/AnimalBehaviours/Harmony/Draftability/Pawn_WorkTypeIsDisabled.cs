@@ -20,7 +20,8 @@ namespace AnimalBehaviours
         [HarmonyPostfix]
         static void RemoveTendFromAnimals(WorkTypeDef w, Pawn __instance, ref bool __result)
         {
-            if (w == WorkTypeDefOf.Doctor && AnimalCollectionClass.draftable_animals.Contains(__instance) && !(__instance is Machine))
+            if (w == WorkTypeDefOf.Doctor && AnimalCollectionClass.draftable_animals.Contains(__instance) 
+                && !(__instance is Machine) && __instance.RaceProps.IsMechanoid is false)
             {
                 __result = true;
             }
