@@ -16,6 +16,7 @@ namespace KCSG
 
         public ThingDef replacementDef = null;
 
+        public bool randomizeStuff = false;
         public string stuff = null;
         internal ThingDef stuffDef = null;
 

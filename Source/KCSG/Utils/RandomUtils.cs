@@ -129,6 +129,9 @@ namespace KCSG
                 return RandomStuffFromFor(StartupActions.stuffs, symbol.thingDef);
             }
 
+            if (symbol.randomizeStuff)
+                return RandomStuffFromFor(StartupActions.stuffs, symbol.thingDef);
+
             return symbol.stuffDef ?? symbol.thingDef.defaultStuff ?? ThingDefOf.WoodLog;
         }
 
