@@ -2,23 +2,36 @@
 using RimWorld;
 using Verse;
 
-namespace MVCF.Comps
-{
-    public class CompRandomVerbs : VerbManagerComp
-    {
-        public override bool ChooseVerb(LocalTargetInfo target, List<ManagedVerb> verbs, out ManagedVerb verb)
-        {
-            Rand.PushState(Manager.Pawn.HashOffset() ^ (GenTicks.TicksGame / GenDate.TicksPerHour));
-            verb = null;
-            var result = Rand.Chance((props as CompProperties_RandomVerbs)?.meleeChance ?? 0f) || verbs.TryRandomElementByWeight(v => v.Verb.verbProps.commonality, out verb);
-            Rand.PopState();
-            return result;
-        }
-    }
+namespace MVCF.Comps;
 
-    public class CompProperties_RandomVerbs : CompProperties
+public class CompRandomVerbs : VerbManagerComp
+{
+    public override bool ChooseVerb(Dictionary<ManagedVerb, LocalTargetInfo> options, out ManagedVerb verb)
     {
-        public float meleeChance;
-        public CompProperties_RandomVerbs() => compClass = typeof(CompRandomVerbs);
+        Rand.PushState(Manager.Pawn.HashOffset() ^ (GenTicks.TicksGame / GenDate.TicksPerHour));
+        try
+        {
+            if (Rand.Chance((props as CompProperties_RandomVerbs)?.meleeChance ?? 0f))
+            {
+                verb = null;
+                return true;
+            }
+
+            if (options.TryRandomElementByWeight(kv => kv.Key.Verb.verbProps.commonality, out var result))
+            {
+                verb = result.Key;
+                return true;
+            }
+
+            verb = null;
+            return false;
+        }
+        finally { Rand.PopState(); }
     }
+}
+
+public class CompProperties_RandomVerbs : CompProperties
+{
+    public float meleeChance;
+    public CompProperties_RandomVerbs() => compClass = typeof(CompRandomVerbs);
 }

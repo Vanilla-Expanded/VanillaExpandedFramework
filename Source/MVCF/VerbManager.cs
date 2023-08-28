@@ -122,7 +122,7 @@ public class VerbManager : IExposable
             if (tickVerbs.Count == 0)
             {
                 NeedsTicking = true;
-                WorldComponent_MVCF.Instance.TickManagers.Add(new System.WeakReference<VerbManager>(this));
+                WorldComponent_MVCF.Instance.TickManagers.Add(new(this));
             }
 
             tickVerbs.Add(mv);
@@ -133,24 +133,24 @@ public class VerbManager : IExposable
         RecalcSearchVerb();
     }
 
-    public ManagedVerb ChooseVerb(LocalTargetInfo target, List<ManagedVerb> options)
+    public ManagedVerb ChooseVerb(Dictionary<ManagedVerb, LocalTargetInfo> options)
     {
         ManagedVerb bestVerb = null;
         foreach (var comp in comps)
-            if (comp.ChooseVerb(target, options, out bestVerb))
+            if (comp.ChooseVerb(options, out bestVerb))
                 return bestVerb;
 
-        if (!target.IsValid || (Pawn.Map != null && !target.Cell.InBounds(Pawn.Map)))
-        {
-            Log.Error($"[MVCF] ChooseVerb given invalid target with pawn {Pawn} and target {target}");
-            if (MVCF.DebugMode)
-                Log.Error($"  (Current job is {Pawn.CurJob} with verb {Pawn.CurJob?.verbToUse} and target {Pawn.CurJob?.targetA})");
-            return null;
-        }
-
         var bestScore = 0f;
-        foreach (var verb in options)
+        foreach (var (verb, target) in options)
         {
+            if (!target.IsValid || (Pawn.Map != null && !target.Cell.InBounds(Pawn.Map)))
+            {
+                Log.Error($"[MVCF] ChooseVerb given invalid target with pawn {Pawn} and target {target}");
+                if (MVCF.DebugMode)
+                    Log.Error($"  (Current job is {Pawn.CurJob} with verb {Pawn.CurJob?.verbToUse} and target {Pawn.CurJob?.targetA})");
+                continue;
+            }
+
             if (verb.ForceUse(Pawn, target)) return verb;
             var score = verb.GetScore(Pawn, target);
             MVCF.LogFormat($"Score is {score} compared to {bestScore}", LogLevel.Silly);
@@ -248,7 +248,7 @@ public enum VerbSource
 
 public interface IVerbManagerComp
 {
-    bool ChooseVerb(LocalTargetInfo target, List<ManagedVerb> verbs, out ManagedVerb verb);
+    bool ChooseVerb(Dictionary<ManagedVerb, LocalTargetInfo> options, out ManagedVerb verb);
     void PostInit();
     void Initialize(VerbManager parent);
     void PostAdded(ManagedVerb verb);
@@ -263,7 +263,7 @@ public abstract class VerbManagerComp : ThingComp, IVerbManagerComp
 {
     public VerbManager Manager;
 
-    public virtual bool ChooseVerb(LocalTargetInfo target, List<ManagedVerb> verbs, out ManagedVerb verb)
+    public virtual bool ChooseVerb(Dictionary<ManagedVerb, LocalTargetInfo> options, out ManagedVerb verb)
     {
         verb = null;
         return false;

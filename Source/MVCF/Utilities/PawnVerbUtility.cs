@@ -16,7 +16,7 @@ public static class PawnVerbUtility
     {
         if (!managers.TryGetValue(pawn, out var box))
         {
-            box = new StrongBox<VerbManager>();
+            box = new();
             managers.Add(pawn, box);
         }
 
@@ -29,7 +29,7 @@ public static class PawnVerbUtility
         ref var manager = ref p.VerbManager();
         if (manager is not null) return manager;
         if (!createIfMissing) return null;
-        manager = new VerbManager();
+        manager = new();
         manager.Initialize(p, false);
         return manager;
     }
@@ -43,7 +43,7 @@ public static class PawnVerbUtility
     }
 
     public static Verb BestVerbForTarget(this Pawn p, LocalTargetInfo target, IEnumerable<ManagedVerb> verbs) =>
-        p.Manager().ChooseVerb(target, verbs.ToList())?.Verb;
+        p.Manager().ChooseVerb(verbs.ToDictionary(v => v, _ => target))?.Verb;
 
     public static Verb GetAttackVerb(this Pawn pawn, Thing target, bool allowManualCastWeapons = false)
     {

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using Verse;
@@ -9,6 +11,8 @@ namespace MVCF.Utilities;
 public static class TargetFinder
 {
     public static Verb SearchVerb;
+
+    private static readonly Dictionary<ManagedVerb, IAttackTarget> foundTargets = new();
 
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -43,10 +47,8 @@ public static class TargetFinder
         MVCF.LogFormat($"Intercepted BestAttackTarget from {searcher} with validator {validator}, and range {minDist}~{maxDist}", LogLevel.Info);
         if (searcher.Thing is Pawn pawn)
         {
-            IAttackTarget bestTarget = null;
             var man = pawn.Manager();
-            var bestScore = 0f;
-            Verb bestVerb = null;
+            foundTargets.Clear();
             foreach (var verb in man.CurrentlyUseableRangedVerbs)
             {
                 var maxDistance = maxDist;
@@ -61,21 +63,16 @@ public static class TargetFinder
                     canMove && canTakeTargetsCloserThanEffectiveMinRange, canBashFences);
                 MVCF.LogFormat($"Found target {target} for verb {verb.Verb}");
                 if (target is null) continue;
-                var score = verb.GetScore(pawn, target.Thing);
-                MVCF.LogFormat($"Score is {score}");
-                if (score <= bestScore) continue;
-                bestScore = score;
-                bestTarget = target;
-                bestVerb = verb.Verb;
+                foundTargets.Add(verb, target);
             }
 
-            MVCF.LogFormat($"Final target: {bestTarget} with verb {bestVerb} and score {bestScore}", LogLevel.Info);
-            if (bestVerb is not null && bestTarget?.Thing is not null)
-            {
-                if (setCurrent) man.CurrentVerb = bestVerb;
-                verbUsed = bestVerb;
-                return bestTarget;
-            }
+            var chosenVerb = man.ChooseVerb(foundTargets.ToDictionary(kv => kv.Key, kv => new LocalTargetInfo(kv.Value.Thing)));
+            var finalTarget = foundTargets[chosenVerb];
+            foundTargets.Clear();
+            MVCF.LogFormat($"Chose verb {chosenVerb.Verb} (managed {chosenVerb}) with target {finalTarget}");
+            verbUsed = chosenVerb.Verb;
+            if (setCurrent) man.CurrentVerb = verbUsed;
+            return finalTarget;
         }
 
         verbUsed = searcher.CurrentEffectiveVerb;
