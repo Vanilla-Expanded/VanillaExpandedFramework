@@ -59,7 +59,7 @@ namespace VanillaWeaponsExpandedLaser
             dir.y = 0;
 
             Vector3 a = origin + dir * (defWeapon == null ? 0.9f : defWeapon.barrelLength);
-            Vector3 b = shielded ? hitThing.TrueCenter() - dir.RotatedBy(Rand.Range(-22.5f,22.5f)) * 0.8f : destination;
+            Vector3 b = shielded && hitThing != null ? hitThing.TrueCenter() - dir.RotatedBy(Rand.Range(-22.5f,22.5f)) * 0.8f : destination;
             a.y = b.y = def.Altitude;
 
             SpawnBeam(a, b);
