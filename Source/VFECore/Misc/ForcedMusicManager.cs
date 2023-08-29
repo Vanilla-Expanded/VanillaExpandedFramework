@@ -19,10 +19,7 @@ public class ForcedMusicManager : GameComponent
 
     public static ForcedMusicManager Instance;
 
-    public ForcedMusicManager(Game game)
-    {
-        Instance = this;
-    }
+    public ForcedMusicManager(Game game) => Instance = this;
 
     public static void ApplyPatches()
     {
@@ -133,6 +130,15 @@ public class ForcedMusicManager : GameComponent
             item = forcedSongs;
             length = forcedSongs.Count;
         }
+    }
+
+    [DebugAction("Music", "End forced music")]
+    public static void StopAll()
+    {
+        Instance.currentPriority = -1;
+        Instance.forcedSongs.Clear();
+        Instance.prioritySongs.Clear();
+        ForceStopMusic();
     }
 }
 
