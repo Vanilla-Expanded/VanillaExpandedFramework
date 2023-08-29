@@ -67,10 +67,11 @@ public static class TargetFinder
             }
 
             var chosenVerb = man.ChooseVerb(foundTargets.ToDictionary(kv => kv.Key, kv => new LocalTargetInfo(kv.Value.Thing)));
+            verbUsed = chosenVerb?.Verb;
+            if (chosenVerb is null) return null;
             var finalTarget = foundTargets[chosenVerb];
             foundTargets.Clear();
             MVCF.LogFormat($"Chose verb {chosenVerb.Verb} (managed {chosenVerb}) with target {finalTarget}");
-            verbUsed = chosenVerb.Verb;
             if (setCurrent) man.CurrentVerb = verbUsed;
             return finalTarget;
         }
