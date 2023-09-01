@@ -78,7 +78,7 @@ public class VerbComp_Reloadable : VerbComp
     public override void Initialize(VerbCompProperties props, bool fromLoad)
     {
         base.Initialize(props, fromLoad);
-        if (!fromLoad) ShotsRemaining = Props.StartLoaded ? Props.ItemsPerShot : 0;
+        if (!fromLoad) ShotsRemaining = Props.StartLoaded ? Props.MaxShots : 0;
     }
 
     public override void Notify_ShotFired()
