@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.AI;
@@ -47,7 +49,12 @@ public static class TargetFinder
             var man = pawn.Manager();
             var bestScore = 0f;
             Verb bestVerb = null;
-            foreach (var verb in man.CurrentlyUseableRangedVerbs)
+            var possibleVerbs = man.CurrentlyUseableRangedVerbs;
+            var job = pawn.CurJob;
+            if (pawn.IsColonist && job != null && (job.def == JobDefOf.Wait_Combat || (man.CurrentVerb != null && job.def == JobDefOf.AttackStatic)))
+                possibleVerbs = possibleVerbs.Where(v => !v.Verb.verbProps.onlyManualCast);
+
+            foreach (var verb in possibleVerbs)
             {
                 var maxDistance = maxDist;
                 var minDistance = minDist;
