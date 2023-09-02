@@ -72,6 +72,7 @@ namespace VanillaGenesExpanded
         public string headDessicatedGraphicPath;
         public string skullGraphicPath;
 
+        public List<GeneDef> applySkinColorWithGenes;
 
         // specific rotations
         public GeneOffsets offsets = new();
