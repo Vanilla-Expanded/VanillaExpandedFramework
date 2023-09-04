@@ -121,17 +121,8 @@ namespace VFECore
                 return;
             }
             int spawnCounter = 0;
-            foreach (ObjectSpawnsDef element in DefDatabase<ObjectSpawnsDef>.AllDefs.Where(element => element.allowedBiomes.Contains(map.Biome)))
+            foreach (ObjectSpawnsDef element in DefDatabase<ObjectSpawnsDef>.AllDefs.Where(element => CanSpawnAt(map, element)))
             {
-                if (element.thingDef is null && element.pawnKindDef is null)
-                {
-                    Log.Error("[VEF] ObjectSpawnsDef " + element.defName + " contain null thing / pawnkind def. It will not work.");
-                    continue;
-                }
-                if (element.spawnOnlyInPlayerMaps && !map.IsPlayerHome)
-                {
-                    continue;
-                }
                 IEnumerable<IntVec3> tmpTerrain = map.AllCells.InRandomOrder();
                 if (spawnCounter == 0)
                 {
@@ -143,8 +134,17 @@ namespace VFECore
                     if (canSpawn)
                     {
                         var faction = element.factionDef != null ? Find.FactionManager.FirstFactionOfDef(element.factionDef) : null;
-                        Thing thing = element.thingDef != null ? ThingMaker.MakeThing(element.thingDef, null) : PawnGenerator.GeneratePawn(element.pawnKindDef, faction);
-                        if (faction != null && !(thing is Pawn))
+                        Thing thing;
+                        if (element.pawnKindDef != null)
+                        {
+                            thing = PawnGenerator.GeneratePawn(element.pawnKindDef, faction);
+                        }
+                        else
+                        {
+                            var thingDef = GetThingDefToSpawn(element);
+                            thing = ThingMaker.MakeThing(thingDef, GenStuff.RandomStuffFor(thingDef));
+                        }
+                        if (faction != null && !(thing is Pawn) && thing.def.CanHaveFaction)
                         {
                             thing.SetFaction(faction);
                         }
@@ -189,6 +189,40 @@ namespace VFECore
                     }
                 }
             }
+        }
+
+        private static ThingDef GetThingDefToSpawn(ObjectSpawnsDef element)
+        {
+            if (element.thingDef != null)
+            {
+                return element.thingDef;
+            }
+            else if (element.thingDefs != null)
+            {
+                return element.thingDefs.RandomElementByWeight(x => x.weight).thingDef;
+            }
+            else if (element.category != null)
+            {
+                return element.category.childThingDefs.RandomElement();
+            }
+            throw new Exception("[ObjectSpawnsDef] " + element.defName + " couldn't pick a thingDef to spawn, it shouldn't happen");
+        }
+
+        private static bool CanSpawnAt(Map map, ObjectSpawnsDef element)
+        {
+            if (element.spawnOnlyInPlayerMaps && !map.IsPlayerHome)
+            {
+                return false;
+            }
+            if (element.allowedBiomes != null && element.allowedBiomes.Contains(map.Biome) is false)
+            {
+                return false;
+            }
+            if (element.allowedRoads != null && element.allowedRoads.Any(road => map.TileInfo.Roads.Any(x => x.road == road)) is false)
+            {
+                return false;
+            }
+            return true;
         }
 
         public static bool OutOfCenter(IntVec3 c, Map map, int centerDist)

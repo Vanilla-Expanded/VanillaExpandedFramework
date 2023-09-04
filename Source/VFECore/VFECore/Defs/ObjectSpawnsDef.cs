@@ -9,6 +9,9 @@ namespace VFECore
     public class ObjectSpawnsDef : Def
     {
         public ThingDef thingDef;
+        public List<ThingOption> thingDefs;
+        public ThingCategoryDef category;
+
         public PawnKindDef pawnKindDef;
         public FactionDef factionDef;
 
@@ -18,20 +21,9 @@ namespace VFECore
         public List<string> allowedTerrains;
         public List<string> disallowedTerrainTags;
         public List<BiomeDef> allowedBiomes;
+        public List<RoadDef> allowedRoads;
         public bool findCellsOutsideColony = false;
         public bool spawnOnlyInPlayerMaps = false;
         public bool randomRotation;
-
-        public override IEnumerable<string> ConfigErrors()
-        {
-            foreach (string error in base.ConfigErrors())
-            {
-                yield return error;
-            }
-            if (thingDef is null && pawnKindDef is null)
-            {
-                yield return "[VEF] ObjectSpawnsDef " + defName + " contain null thing/pawnkind def. It will not work.";
-            }
-        }
     }
 }
