@@ -17,6 +17,10 @@ public class ForcedMusicManager : GameComponent
     private HashSet<SongDef> forcedSongs = new();
     private Dictionary<int, ForcedSongsBox> prioritySongs = new();
 
+    public int Priority => currentPriority;
+    public IEnumerable<SongDef> Songs => forcedSongs;
+    public IReadOnlyDictionary<int, ForcedSongsBox> AllSongs => prioritySongs;
+
     public static ForcedMusicManager Instance;
 
     public ForcedMusicManager(Game game) => Instance = this;
@@ -110,15 +114,12 @@ public class ForcedMusicManager : GameComponent
         Scribe_Collections.Look(ref prioritySongs, nameof(prioritySongs), LookMode.Value, LookMode.Deep);
     }
 
-    private class ForcedSongsBox : IExposable
+    public class ForcedSongsBox : IExposable
     {
         public HashSet<SongDef> forcedSongs;
 
         public ForcedSongsBox() { }
-        public ForcedSongsBox(HashSet<SongDef> forcedSongs)
-        {
-            this.forcedSongs = forcedSongs;
-        }
+        public ForcedSongsBox(HashSet<SongDef> forcedSongs) => this.forcedSongs = forcedSongs;
 
         public void ExposeData()
         {
