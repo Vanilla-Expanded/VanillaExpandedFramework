@@ -47,8 +47,16 @@ namespace VFECore
     {
         public static void Postfix(Map __result)
         {
-            DoMapSpawns(__result);
+            try
+            {
+                DoMapSpawns(__result);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("[VEF] Error in MapGenerator_GenerateMap_Patch: " + ex.ToString());
+            }
         }
+
         public static bool CanSpawnAt(IntVec3 c, Map map, ObjectSpawnsDef element)
         {
             if (!element.allowOnChunks)
@@ -133,7 +141,8 @@ namespace VFECore
                     bool canSpawn = CanSpawnAt(c, map, element);
                     if (canSpawn)
                     {
-                        var faction = element.factionDef != null ? Find.FactionManager.FirstFactionOfDef(element.factionDef) : null;
+                        var faction = element.factionDef != null ? Find.FactionManager.FirstFactionOfDef(element.factionDef) 
+                            : null;
                         Thing thing;
                         if (element.pawnKindDef != null)
                         {
@@ -142,7 +151,19 @@ namespace VFECore
                         else
                         {
                             var thingDef = GetThingDefToSpawn(element);
-                            thing = ThingMaker.MakeThing(thingDef, GenStuff.RandomStuffFor(thingDef));
+                            if (thingDef is null)
+                            {
+                                break;
+                            }
+                            try
+                            {
+                                thing = ThingMaker.MakeThing(thingDef, GenStuff.RandomStuffFor(thingDef));
+                            }
+                            catch (Exception e)
+                            {
+                                Log.Error("Error making: " + thingDef);
+                                break;
+                            }
                         }
                         if (faction != null && !(thing is Pawn) && thing.def.CanHaveFaction)
                         {
@@ -197,7 +218,7 @@ namespace VFECore
             {
                 return element.thingDef;
             }
-            else if (element.thingDefs != null)
+            else if (element.thingDefs.NullOrEmpty() is false)
             {
                 return element.thingDefs.RandomElementByWeight(x => x.weight).thingDef;
             }
@@ -205,7 +226,7 @@ namespace VFECore
             {
                 return element.category.childThingDefs.RandomElement();
             }
-            throw new Exception("[ObjectSpawnsDef] " + element.defName + " couldn't pick a thingDef to spawn, it shouldn't happen");
+            return null;
         }
 
         private static bool CanSpawnAt(Map map, ObjectSpawnsDef element)
