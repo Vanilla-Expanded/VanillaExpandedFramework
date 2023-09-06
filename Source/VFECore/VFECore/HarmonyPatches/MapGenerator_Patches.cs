@@ -47,14 +47,17 @@ namespace VFECore
     {
         public static void Postfix(Map __result)
         {
-            try
+            LongEventHandler.ExecuteWhenFinished(delegate
             {
-                DoMapSpawns(__result);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("[VEF] Error in MapGenerator_GenerateMap_Patch: " + ex.ToString());
-            }
+                try
+                {
+                    DoMapSpawns(__result);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error("[VEF] Error in MapGenerator_GenerateMap_Patch: " + ex.ToString());
+                }
+            });
         }
 
         public static bool CanSpawnAt(IntVec3 c, Map map, ObjectSpawnsDef element)
@@ -194,9 +197,9 @@ namespace VFECore
                                         GenSpawn.Spawn(thing, c, map);
                                     }
                                 }
-                                catch (Exception)
+                                catch (Exception ex)
                                 {
-                                    Log.Error("Exception spawning thing " + thing);
+                                    Log.Error("Exception spawning thing " + thing + " - " + ex.ToString());
                                 }
                                 spawnCounter--;
                             }
