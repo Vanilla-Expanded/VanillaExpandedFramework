@@ -47,6 +47,8 @@ namespace VanillaGenesExpanded
         public static IDictionary<Thing, EffecterDef> vomitEffect_gene_pawns = new Dictionary<Thing, EffecterDef>();
         // A list of pawns with skills that won't be lost over time
         public static IDictionary<Thing, SkillDef> noSkillLoss_gene_pawns = new Dictionary<Thing, SkillDef>();
+        // A list of pawns with a skill loss multiplier
+        public static IDictionary<Thing, float> skillLossMultiplier_gene_pawns = new Dictionary<Thing, float>();
         // A list of pawns with skills that give recreation when gaining XP
         public static IDictionary<Thing, SkillDef> skillRecreation_gene_pawns = new Dictionary<Thing, SkillDef>();
         // A list of genes that should be hidden on the xenotype editor
@@ -213,6 +215,24 @@ namespace VanillaGenesExpanded
             if (noSkillLoss_gene_pawns.ContainsKey(thing))
             {
                 noSkillLoss_gene_pawns.Remove(thing);
+            }
+
+        }
+
+        public static void AddSkillLossMultiplierGenePawnToList(Thing thing, float multiplier)
+        {
+
+            if (!skillLossMultiplier_gene_pawns.ContainsKey(thing))
+            {
+                skillLossMultiplier_gene_pawns[thing] = multiplier;
+            }
+        }
+
+        public static void RemoveSkillLossMultiplierGenePawnFromList(Thing thing)
+        {
+            if (skillLossMultiplier_gene_pawns.ContainsKey(thing))
+            {
+                skillLossMultiplier_gene_pawns.Remove(thing);
             }
 
         }

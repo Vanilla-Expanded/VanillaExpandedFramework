@@ -60,6 +60,10 @@ namespace VanillaGenesExpanded
                 {
                     StaticCollectionsClass.AddSkillRecreationGenePawnToList(gene.pawn, extension.skillRecreation);
                 }
+                if (extension.globalSkillLossMultiplier != 1f)
+                {
+                    StaticCollectionsClass.AddSkillLossMultiplierGenePawnToList(gene.pawn, extension.globalSkillLossMultiplier);
+                }
 
 
             }
