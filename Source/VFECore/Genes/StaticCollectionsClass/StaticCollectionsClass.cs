@@ -49,6 +49,8 @@ namespace VanillaGenesExpanded
         public static IDictionary<Thing, SkillDef> noSkillLoss_gene_pawns = new Dictionary<Thing, SkillDef>();
         // A list of pawns with a skill loss multiplier
         public static IDictionary<Thing, float> skillLossMultiplier_gene_pawns = new Dictionary<Thing, float>();
+        // A list of pawns with skilldegradation
+        public static HashSet<Pawn> skillDegradation_gene_pawns = new HashSet<Pawn>();
         // A list of pawns with skills that give recreation when gaining XP
         public static IDictionary<Thing, SkillDef> skillRecreation_gene_pawns = new Dictionary<Thing, SkillDef>();
         // A list of genes that should be hidden on the xenotype editor
@@ -233,6 +235,24 @@ namespace VanillaGenesExpanded
             if (skillLossMultiplier_gene_pawns.ContainsKey(thing))
             {
                 skillLossMultiplier_gene_pawns.Remove(thing);
+            }
+
+        }
+
+        public static void AddSkillDegradationGenePawnToList(Pawn pawn)
+        {
+
+            if (!skillDegradation_gene_pawns.Contains(pawn))
+            {
+                skillDegradation_gene_pawns.Add(pawn);
+            }
+        }
+
+        public static void RemoveSkillDegradationGenePawnFromList(Pawn pawn)
+        {
+            if (skillDegradation_gene_pawns.Contains(pawn))
+            {
+                skillDegradation_gene_pawns.Remove(pawn);
             }
 
         }

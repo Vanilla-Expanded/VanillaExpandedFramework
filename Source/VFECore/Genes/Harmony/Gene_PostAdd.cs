@@ -133,6 +133,10 @@ namespace VanillaGenesExpanded
                 {
                     StaticCollectionsClass.AddSkillLossMultiplierGenePawnToList(gene.pawn, extension.globalSkillLossMultiplier);
                 }
+                if (extension.skillDegradation != false)
+                {
+                    StaticCollectionsClass.AddSkillDegradationGenePawnToList(gene.pawn);
+                }
 
 
             }

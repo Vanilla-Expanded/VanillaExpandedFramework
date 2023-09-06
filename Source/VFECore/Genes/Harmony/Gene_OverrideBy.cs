@@ -108,6 +108,10 @@ namespace VanillaGenesExpanded
                 {
                     StaticCollectionsClass.RemoveSkillLossMultiplierGenePawnFromList(gene.pawn);
                 }
+                if (extension.skillDegradation != false)
+                {
+                    StaticCollectionsClass.RemoveSkillDegradationGenePawnFromList(gene.pawn);
+                }
 
 
             }
@@ -211,6 +215,10 @@ namespace VanillaGenesExpanded
                 if (extension.globalSkillLossMultiplier != 1f)
                 {
                     StaticCollectionsClass.AddSkillLossMultiplierGenePawnToList(gene.pawn, extension.globalSkillLossMultiplier);
+                }
+                if (extension.skillDegradation != false)
+                {
+                    StaticCollectionsClass.AddSkillDegradationGenePawnToList(gene.pawn);
                 }
 
 

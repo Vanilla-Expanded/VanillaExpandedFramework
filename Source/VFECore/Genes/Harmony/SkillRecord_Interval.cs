@@ -21,8 +21,22 @@ namespace VanillaGenesExpanded
             }
             return true;
         }
+
+        [HarmonyPostfix]
+        public static void Postfix(Pawn ___pawn, SkillRecord __instance)
+        {
+            if (StaticCollectionsClass.skillDegradation_gene_pawns.Contains(___pawn))
+            {
+                if (__instance.levelInt < 10)
+                {
+                    __instance.Learn(-0.1f);
+                }
+            }
+            
+        }
     }
 
+    
 
     [HarmonyPatch]
     public static class VanillaGenesExpanded_SkillRecord_Interval_Transpiler_Patch

@@ -63,6 +63,8 @@ namespace VanillaGenesExpanded
         public SkillDef skillRecreation = null;
         //Makes this gene multiply skill loss of all skills by this factor
         public float globalSkillLossMultiplier = 1f;
+        //Makes this gene make pawns lose skill when below 10
+        public bool skillDegradation = false;
 
         //Makes genes scale body and head
         public Vector2 bodyScaleFactor = new Vector2(1f, 1f);
