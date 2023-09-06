@@ -239,7 +239,8 @@ namespace VFECore
             {
                 return false;
             }
-            if (element.allowedRoads != null && map.TileInfo?.Roads != null && element.allowedRoads.Any(road => map.TileInfo.Roads.Any(x => x.road == road)) is false)
+            if (element.allowedRoads != null && (map.TileInfo?.Roads is null 
+                || element.allowedRoads.Any(road => map.TileInfo.Roads.Any(x => x.road == road)) is false))
             {
                 return false;
             }
