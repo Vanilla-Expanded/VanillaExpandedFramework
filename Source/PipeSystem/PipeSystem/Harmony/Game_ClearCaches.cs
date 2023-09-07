@@ -12,8 +12,12 @@ namespace PipeSystem
     {
         public static void Postfix()
         {
+            // Clear cached thing comps
             CachedCompResourceStorage.Clear();
+            CachedCompAdvancedProcessor.Clear();
+            // Clear cached map comps
             CachedPipeNetManager.Clear();
+            CachedAdvancedProcessorsManager.Clear();
         }
     }
 }

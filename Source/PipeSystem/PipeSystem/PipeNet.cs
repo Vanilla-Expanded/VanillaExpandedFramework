@@ -43,8 +43,11 @@ namespace PipeSystem
         private readonly List<CompResourceTrader> producersOff = new List<CompResourceTrader>();
 
         public int NextTick { get; set; }
+
         public float Consumption { get; private set; }
+
         public float Production { get; private set; }
+
         public float ExtractorRawProduction
         {
             get
@@ -56,7 +59,9 @@ namespace PipeSystem
                 return prod;
             }
         }
+
         public float Stored { get; private set; }
+
         public float AvailableCapacity
         {
             get
@@ -68,6 +73,35 @@ namespace PipeSystem
                 }
 
                 return available;
+            }
+        }
+
+        public float ThingConvertersMaxOutput
+        {
+            get
+            {
+                var convertersCapacity = 0;
+                for (int i = 0; i < thingConverters.Count; i++)
+                {
+                    var converter = thingConverters[i];
+                    if (converter.CanOutputNow)
+                        convertersCapacity += converter.MaxCanOutput;
+                }
+                return convertersCapacity;
+            }
+        }
+
+        public float RefillableAmount
+        {
+            get
+            {
+                var refillableAmount = 0f;
+                for (int i = 0; i < refillables.Count; i++)
+                {
+                    var refillable = refillables[i];
+                    refillableAmount += (refillable.compRefuelable.TargetFuelLevel - refillable.compRefuelable.Fuel) * refillable.Props.ratio;
+                }
+                return refillableAmount;
             }
         }
 

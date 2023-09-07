@@ -45,6 +45,14 @@
       <HintPath>..\..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>..\..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>..\..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="VFECore, Version=1.1.7.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\1.4\Assemblies\VFECore.dll</HintPath>
@@ -52,6 +60,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Comps\Map\AdvancedProcessorsManager.cs" />
     <Compile Include="Alert_NoStorage.cs" />
     <Compile Include="AutoLinkRefuelables.cs" />
     <Compile Include="Buildings\Building_Pipe.cs" />
@@ -59,16 +68,20 @@
     <Compile Include="Buildings\Building_ResourceHeater.cs" />
     <Compile Include="Buildings\Building_ResourceWorkTable_HeatPush.cs" />
     <Compile Include="Buildings\Building_ResourceWorkTable.cs" />
+    <Compile Include="Cached\CachedAdvancedProcessorsManager.cs" />
+    <Compile Include="Cached\CachedCompAdvancedProcessor.cs" />
     <Compile Include="Cached\CachedCompResourceStorage.cs" />
     <Compile Include="Cached\CachedSignals.cs" />
     <Compile Include="Cached\CachedPipeNetManager.cs" />
     <Compile Include="Cached\CachedResourceThings.cs" />
+    <Compile Include="Comps\CompAdvancedResourceProcessor.cs" />
     <Compile Include="Comps\CompConvertToThing.cs" />
     <Compile Include="Comps\CompDeepExtractor.cs" />
     <Compile Include="Comps\CompExplosiveContent.cs" />
     <Compile Include="Comps\CompHeatPusherNeedResource.cs" />
     <Compile Include="Comps\CompPipeValve.cs" />
     <Compile Include="Comps\CompPowerPlantNeedResource.cs" />
+    <Compile Include="Comps\CompProperties\CompProperties_AdvancedResourceProcessor.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_ConvertResourceToThing.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_ConvertThingToResource.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_DeepExtractor.cs" />
@@ -89,6 +102,10 @@
     <Compile Include="Comps\CompSpawnerOrNet.cs" />
     <Compile Include="Comps\CompSpillWhenDamaged.cs" />
     <Compile Include="Comps\CompConvertToResource.cs" />
+    <Compile Include="Def\ProcessDef.cs" />
+    <Compile Include="Utility\Process.cs" />
+    <Compile Include="Utility\ProcessStack.cs" />
+    <Compile Include="ITab\ITab_Processor.cs" />
     <Compile Include="Harmony\CompGlower\ReceiveCompSignal_Postfix.cs" />
     <Compile Include="Harmony\CompGlower\ShouldBeLitNow_Postfix.cs" />
     <Compile Include="Harmony\Designator_Install_Patch.cs" />
@@ -97,10 +114,14 @@
     <Compile Include="Harmony\Designator_Build_Patch.cs" />
     <Compile Include="Graphic\LinkedPipes.cs" />
     <Compile Include="Harmony\Game_ClearCaches.cs" />
+    <Compile Include="Jobs\JobDriver_BringToProcessor.cs" />
     <Compile Include="Jobs\JobDriver_DrainFromMarkedStorage.cs" />
+    <Compile Include="Jobs\JobDriver_PickUpProcessor.cs" />
     <Compile Include="Jobs\JobDriver_FillStorage.cs" />
+    <Compile Include="Jobs\WorkGiver_BringToProcessor.cs" />
     <Compile Include="Jobs\WorkGiver_DrainFromMarkedStorage.cs" />
     <Compile Include="Jobs\WorkGiver_RefillStorage.cs" />
+    <Compile Include="Jobs\WorkGiver_PickUpProcessor.cs" />
     <Compile Include="NetGridUtility.cs" />
     <Compile Include="PipeNetOverlayDrawer.cs" />
     <Compile Include="PipeSystemDebug\PipeSystemDebug.cs" />
@@ -116,6 +137,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Graphic\SectionLayer_Resource.cs" />
     <Compile Include="PSDefOf.cs" />
+    <Compile Include="Utility\ThingAndResourceOwner.cs" />
+    <Compile Include="Utility\ProcessUtility.cs" />
+    <Compile Include="Utility\ProcessIDsManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Lib.Harmony" ExcludeAssets="Runtime">

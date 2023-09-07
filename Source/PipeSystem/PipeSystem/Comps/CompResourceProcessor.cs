@@ -56,7 +56,7 @@ namespace PipeSystem
         /// <summary>
         /// The current choosed processing result
         /// </summary>
-        public Result ChoosedResult { get => Props.results[resultIndex]; }
+        public CompProperties_ResourceProcessor.Result ChoosedResult { get => Props.results[resultIndex]; }
 
         /// <summary>
         /// Set-up vars

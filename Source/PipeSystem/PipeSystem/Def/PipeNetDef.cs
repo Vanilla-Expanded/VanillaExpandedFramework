@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -26,6 +27,8 @@ namespace PipeSystem
         public List<ThingDef> alertProofDefs = new List<ThingDef>(); // If net is one building, and it's in this list, no alert
 
         internal Material offMat; // Off material
+        internal Texture2D uiIcon; // Resource icon from resource.uiIconPath
+        internal string loweredName; // Resource name lowered
 
         public override IEnumerable<string> ConfigErrors()
         {
@@ -42,6 +45,30 @@ namespace PipeSystem
 
             return errors;
         }
+
+        /// <summary>
+        /// loweredName
+        /// </summary>
+        public override void ResolveReferences()
+        {
+            base.ResolveReferences();
+            loweredName = resource.name.ToLower();
+        }
+
+        /// <summary>
+        /// Get ui icon as Texture2D
+        /// </summary>
+        public override void PostLoad()
+        {
+            if (resource.uiIconPath != null)
+            {
+                LongEventHandler.ExecuteWhenFinished(delegate
+                {
+                    uiIcon = ContentFinder<Texture2D>.Get(resource.uiIconPath);
+                });
+            }
+            base.PostLoad();
+        }
     }
 
     /// <summary>
@@ -55,6 +82,8 @@ namespace PipeSystem
 
         public bool onlyShowStored = false;
         public string offTexPath;
+
+        public string uiIconPath;
     }
 
     /// <summary>

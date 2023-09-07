@@ -7,8 +7,10 @@
     <workType>Hauling</workType>
     <verb>drain out of storage</verb>
     <gerund>draining out of storage</gerund>
-    <canBeDoneWhileDrafted>true</canBeDoneWhileDrafted>
-    <priorityInType>510</priorityInType>
+    <priorityInType>100</priorityInType>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
   </WorkGiverDef>
 
   <WorkGiverDef>
@@ -18,7 +20,35 @@
     <workType>Hauling</workType>
     <verb>fill storage</verb>
     <gerund>filling storage</gerund>
-    <canBeDoneWhileDrafted>false</canBeDoneWhileDrafted>
-    <priorityInType>510</priorityInType>
+    <priorityInType>99</priorityInType>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>PS_PickUpProcessor</defName>
+    <label>pick up result from processor</label>
+    <giverClass>PipeSystem.WorkGiver_PickUpProcessor</giverClass>
+    <workType>Hauling</workType>
+    <verb>pick up result</verb>
+    <gerund>picking up result</gerund>
+    <priorityInType>98</priorityInType>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>PS_BringToProcessor</defName>
+    <label>bring ingredient to processor</label>
+    <giverClass>PipeSystem.WorkGiver_BringToProcessor</giverClass>
+    <workType>Hauling</workType>
+    <verb>bring ingredient</verb>
+    <gerund>bringing ingredient</gerund>
+    <priorityInType>97</priorityInType>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
   </WorkGiverDef>
 </Defs>

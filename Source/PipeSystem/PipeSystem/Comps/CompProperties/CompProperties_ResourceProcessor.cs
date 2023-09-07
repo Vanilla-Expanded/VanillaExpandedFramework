@@ -29,22 +29,22 @@ namespace PipeSystem
             if (notWorkingKey == null)
                 yield return $"CompProperties_ResourceProcessor of {parentDef.defName} cannot have null <notWorkingKey>";
         }
-    }
 
-    /// <summary>
-    /// Result class, contain every information needed to produce stuff
-    /// </summary>
-    public class Result
-    {
-        // Produce each ticks: Default to 600 ticks (10 sec)
-        public int eachTicks = 600;
-        // Amount needed to produce result
-        public int countNeeded;
-        // Result as a thing
-        public ThingDef thing;
-        public int thingCount;
-        // Result as a piped resource
-        public PipeNetDef net;
-        public int netCount;
+        /// <summary>
+        /// Result class, contain every information needed to produce stuff
+        /// </summary>
+        public class Result
+        {
+            // Produce each ticks: Default to 600 ticks (10 sec)
+            public int eachTicks = 600;
+            // Amount needed to produce result
+            public int countNeeded;
+            // Result as a thing
+            public ThingDef thing;
+            public int thingCount;
+            // Result as a piped resource
+            public PipeNetDef net;
+            public int netCount;
+        }
     }
 }

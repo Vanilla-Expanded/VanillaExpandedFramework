@@ -13,4 +13,18 @@
     <reportString>filling TargetA.</reportString>
     <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
   </JobDef>
+
+  <JobDef>
+    <defName>PS_PickUpProcessor</defName>
+    <driverClass>PipeSystem.JobDriver_PickUpProcessor</driverClass>
+    <reportString>picking up from TargetA.</reportString>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
+
+  <JobDef>
+    <defName>PS_BringToProcessor</defName>
+    <driverClass>PipeSystem.JobDriver_BringToProcessor</driverClass>
+    <reportString>bringing TargetB to TargetA.</reportString>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
 </Defs>
