@@ -162,7 +162,8 @@ public class QuestNode_ForceMusic : QuestNode
             inSignalEnable = QuestGenUtility.HardcodedSignalWithQuestID(inSignalEnable.GetValue(slate)) ?? slate.Get<string>("inSignal"),
             inSignalDisable = QuestGenUtility.HardcodedSignalWithQuestID(inSignalDisable.GetValue(slate)),
             possibleSongs = possibleSongs.GetValue(slate),
-            priority = priority.GetValue(slate)
+            priority = priority.GetValue(slate),
+            signalListenMode = QuestPart.SignalListenMode.Always
         });
     }
 
