@@ -39,7 +39,7 @@ namespace PipeSystem
             foreach (var error in base.ConfigErrors(parentDef))
                 yield return error;
 
-            if (!parentDef.inspectorTabs.Contains(typeof(ITab_Processor)))
+            if (!parentDef.inspectorTabs.NullOrEmpty() && !parentDef.inspectorTabs.Contains(typeof(ITab_Processor)))
                 yield return $"CompProperties_AdvancedResourceProcessor of {parentDef.defName} need ITab_Processor";
 
             if (!(parentDef.tickerType == TickerType.Rare || parentDef.tickerType == TickerType.Normal))
