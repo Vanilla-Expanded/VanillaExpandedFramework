@@ -228,7 +228,8 @@ namespace PipeSystem
             if (MissingIngredients)
                 return;
             // We are active for ticks
-            tickLeft -= ticks;
+            if (tickLeft > 0)
+                tickLeft -= ticks;
             // Set progress (for the bar)
             progress = 1f - (tickLeft / (float)def.ticks);
             // Check if processor should produce this tick
