@@ -176,7 +176,7 @@ public class QuestPart_ForcedMusic : QuestPart
     public string inSignalDisable;
     public List<SongDef> possibleSongs;
     public int priority;
-
+    
     public override void Notify_QuestSignalReceived(Signal signal)
     {
         base.Notify_QuestSignalReceived(signal);
@@ -187,6 +187,13 @@ public class QuestPart_ForcedMusic : QuestPart
         if (signal.tag == inSignalDisable)
             foreach (var def in possibleSongs)
                 ForcedMusicManager.EndSong(def);
+    }
+
+    public override void Cleanup()
+    {
+        base.Cleanup();
+        foreach (var def in possibleSongs)
+            ForcedMusicManager.EndSong(def);
     }
 
     public override void ExposeData()
