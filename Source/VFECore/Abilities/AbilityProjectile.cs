@@ -97,5 +97,22 @@ namespace VFECore.Abilities
                 chanceToStartFire: this.def.projectile.explosionChanceToStartFire, damageFalloff: this.def.projectile.explosionDamageFalloff,
                 direction: this.origin.AngleToFlat(this.destination));
         }
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_References.Look(ref ability, nameof(ability));
+        }
+    }
+
+    public class CompAbilityProjectile : ThingComp
+    {
+        public Ability ability;
+
+        public override void PostExposeData()
+        {
+            base.PostExposeData();
+            Scribe_References.Look(ref ability, nameof(ability));
+        }
     }
 }

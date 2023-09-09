@@ -27,11 +27,13 @@ namespace VFECore.Abilities
         public List<TargetingParameters>   targetingParametersList = new List<TargetingParameters>();
 
         public float              range            = 0f;
+        public float              maxRange         = float.MaxValue; // Refers to the maximum amount range can be. After that, stat factors and offsets no longer apply
         public float              minRange         = -1f;
         public List<StatModifier> rangeStatFactors = new List<StatModifier>();
         public List<StatModifier> rangeStatOffsets = new List<StatModifier>();
 
         public float              radius            = 0f;
+        public float              maxRadius         = float.MaxValue; // Refers to the maximum amount radius can be. After that, stat factors and offsets no longer apply
         public float              minRadius         = -1f;
         public List<StatModifier> radiusStatFactors = new List<StatModifier>();
         public List<StatModifier> radiusStatOffsets = new List<StatModifier>();

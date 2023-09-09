@@ -111,10 +111,10 @@
         public virtual float GetRangeForPawn() =>
             this.def.targetModes[this.currentTargetingIndex >= 0 ? this.currentTargetingIndex : 0] == AbilityTargetingMode.Self ?
                 0f :
-                CalculateModifiedStatForPawn(this.def.range, this.def.rangeStatFactors, this.def.rangeStatOffsets);
+                Mathf.Min(CalculateModifiedStatForPawn(this.def.range, this.def.rangeStatFactors, this.def.rangeStatOffsets), def.maxRange);
 
         public virtual float GetRadiusForPawn() =>
-            CalculateModifiedStatForPawn(this.def.radius, this.def.radiusStatFactors, this.def.radiusStatOffsets);
+            Mathf.Min(CalculateModifiedStatForPawn(this.def.radius, this.def.radiusStatFactors, this.def.radiusStatOffsets), def.maxRadius);
 
         public float GetAdditionalRadius() =>
             this.def.GetModExtension<AbilityExtension_AdditionalRadius>().GetRadiusFor(this.pawn);

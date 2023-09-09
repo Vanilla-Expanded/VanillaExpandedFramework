@@ -27,6 +27,30 @@
             {
                 abilityProjectile.ability = this;
             }
+            if (projectile?.TryGetComp<CompAbilityProjectile>() is {} compAbilityProjectile)
+            {
+                compAbilityProjectile.ability = this;
+            }
+
+            if (extension.forcedMissRadius > 0.5f)
+            {
+                float forcedMissRadius   = extension.forcedMissRadius;
+                float adjustedForcedMiss = VerbUtility.CalculateAdjustedForcedMiss(forcedMissRadius, target.Cell - Caster.Position);
+                if (adjustedForcedMiss > 0.5f)
+                {
+
+                    int     max              = GenRadial.NumCellsInRadius(forcedMissRadius);
+                    IntVec3 forcedMissTarget = target.Cell + GenRadial.RadialPattern[Rand.Range(0, max)];
+                    if (forcedMissTarget != target.Cell)
+                    {
+                        ProjectileHitFlags projectileHitFlags = ProjectileHitFlags.NonTargetWorld;
+                        if (Rand.Chance(0.5f)) { projectileHitFlags = ProjectileHitFlags.All; }
+
+                        projectile?.Launch(pawn, origin, forcedMissTarget, target.HasThing ? target.Thing : target.Cell, projectileHitFlags);
+                        return projectile;
+                    }
+                }
+            }
             var accuracy = this.CalculateModifiedStatForPawn(1f, extension.accuracyStatFactors, extension.accuracyStatOffsets);
             if (Rand.Chance(accuracy))
             {
@@ -75,6 +99,7 @@
     {
         public ThingDef projectile;
         public SoundDef soundOnImpact;
+        public float forcedMissRadius;
         public ProjectileHitFlags hitFlags = ProjectileHitFlags.IntendedTarget;
         public List<StatModifier> accuracyStatFactors = new List<StatModifier>();
         public List<StatModifier> accuracyStatOffsets = new List<StatModifier>();

@@ -27,7 +27,7 @@ namespace VFEMech
     {
         public int curLifetime;
         protected int numBounces;
-        private List<TeslaProjectile> allProjectiles = new List<TeslaProjectile>();
+        protected List<TeslaProjectile> allProjectiles = new List<TeslaProjectile>();
         protected List<Thing> prevTargets = new List<Thing>();
         private Thing holder;
         private Thing mainLauncher;
@@ -129,7 +129,7 @@ namespace VFEMech
 
                 Props.impactSound?.PlayOneShot(hitThing);
                 RegisterHit(hitThing);
-                if (numBounces < Props.maxBounceCount)
+                if (numBounces < MaxBounceCount)
                 {
                     var target = NextTarget(hitThing);
                     if (target != null)
@@ -140,6 +140,8 @@ namespace VFEMech
                 shotAnything = true;
             }
         }
+
+        protected virtual int MaxBounceCount => Props.maxBounceCount;
 
         public static bool wasDeflected;
         private void RegisterHit(Thing hitThing)
