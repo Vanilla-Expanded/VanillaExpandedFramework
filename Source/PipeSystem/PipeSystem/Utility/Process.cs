@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
-using static HarmonyLib.Code;
 
 namespace PipeSystem
 {
@@ -376,7 +372,6 @@ namespace PipeSystem
                         return false;
                     // We found some, modifying stack size
                     thing.stackCount += def.count;
-                    ResetProcess();
                     return true;
                 }
                 else
@@ -388,7 +383,6 @@ namespace PipeSystem
                         return false;
 
                     outThing = thing;
-                    ResetProcess();
                     return true;
                 }
             }
