@@ -70,4 +70,5 @@
   <PipeSystem_Processes>Processes</PipeSystem_Processes>
   <PipeSystem_AddProcess>Add process</PipeSystem_AddProcess>
   <PipeSystem_CancelCurrentProcess>Cancel current process</PipeSystem_CancelCurrentProcess>
+  <PipeSystem_OutputOnGround>Output on ground</PipeSystem_OutputOnGround>
 </LanguageData>

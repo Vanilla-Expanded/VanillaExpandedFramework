@@ -29,6 +29,11 @@ namespace PipeSystem
                 Find.WindowStack.Add(new FloatMenu(comp.ProcessesOptions));
             }
             UIHighlighter.HighlightOpportunity(processButton, "PipeSystem_AddProcess");
+            var settingsButton = new Rect(rect.width - 24f - 16f, 2.5f, 24f, 24f);
+            if (Widgets.ButtonImage(settingsButton, TexButton.OpenDebugActionsMenu))
+            {
+                Find.WindowStack.Add(new FloatMenu(comp.Settings));
+            }
             // Draw current process
             comp.ProcessStack?.FirstCanDo?.DoSimpleProgressInterface(new Rect(0f, 35f, rect.width - 16f, 24f));
             // Draw processes

@@ -331,7 +331,8 @@ namespace PipeSystem
                 }
             }
             // If can't go into net and should/can spawn
-            if (spawning && def.thing != null)
+            // Bypass ground setting if thing can't be put in net
+            if (spawning && def.thing != null && (advancedProcessor.outputOnGround || def.pipeNet == null))
             {
                 var map = parent.Map;
                 // Try spawning at spawnPos

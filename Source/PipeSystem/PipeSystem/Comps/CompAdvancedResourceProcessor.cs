@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using RimWorld;
 using UnityEngine;
@@ -21,12 +23,15 @@ namespace PipeSystem
         private CompPowerTrader compPower;
         private CompRefuelable compRefuelable;
 
-        private Vector3 itemDrawPos;                            // Drawing item position
+        private Vector3 itemDrawPos;                            // Drawing gizmo position
         private Material barFilledCachedMat;                    // Cached progress bar material
         private GenDraw.FillableBarRequest fillableBarRequest;  // FillableBarRequest cache
 
         private List<FloatMenuOption> processesOptions;         // List of processes
         private ProcessStack processStack = new ProcessStack(); // Process stack
+
+        private List<FloatMenuOption> settingsOptions;          // List of settings
+        internal bool outputOnGround = false;                   // Should output on ground
 
         public CompProperties_AdvancedResourceProcessor Props => (CompProperties_AdvancedResourceProcessor)props;
 
@@ -97,6 +102,29 @@ namespace PipeSystem
             }
         }
 
+        /// <summary>
+        /// Settings
+        /// </summary>
+        public List<FloatMenuOption> Settings
+        {
+            get
+            {
+                if (settingsOptions == null)
+                {
+                    settingsOptions = new List<FloatMenuOption>
+                    {
+                        new FloatMenuOption("PipeSystem_OutputOnGround".Translate(), () => outputOnGround = !outputOnGround, extraPartWidth: 24f, extraPartOnGUI: (Rect rect) =>
+                        {
+                            var tex = outputOnGround ? Widgets.CheckboxOnTex : Widgets.CheckboxOffTex;
+                            GUI.DrawTexture(new Rect(rect.x + 6f, rect.y + 3f, 24f, 24f), tex);
+                            return false;
+                        })
+                    };
+                }
+                return settingsOptions;
+            }
+        }
+
         public bool PickupReady => Process.PickUpReady;
 
         /// <summary>
@@ -158,6 +186,8 @@ namespace PipeSystem
         public override void PostExposeData()
         {
             Scribe_Deep.Look(ref processStack, "processStack");
+
+            Scribe_Values.Look(ref outputOnGround, "outputOnGround");
         }
 
         /// <summary>
@@ -216,6 +246,21 @@ namespace PipeSystem
                 fillableBarRequest.filledMat = BarFilledMat;
                 GenDraw.DrawFillableBar(fillableBarRequest);
             }
+        }
+
+        /// <summary>
+        /// Add debug gizmos
+        /// </summary>
+        public override IEnumerable<Gizmo> CompGetGizmosExtra()
+        {
+            foreach (var gizmo in base.CompGetGizmosExtra())
+                yield return gizmo;
+
+            yield return new Command_Action
+            {
+                defaultLabel = "Finish in 10 ticks",
+                action = () => Process.Tick(Process.TickLeft - 10)
+            };
         }
     }
 }
