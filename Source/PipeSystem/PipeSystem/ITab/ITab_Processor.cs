@@ -1,4 +1,6 @@
-﻿using RimWorld;
+﻿using System.Security.Cryptography;
+using System;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -35,7 +37,18 @@ namespace PipeSystem
                 Find.WindowStack.Add(new FloatMenu(comp.Settings));
             }
             // Draw current process
-            comp.ProcessStack?.FirstCanDo?.DoSimpleProgressInterface(new Rect(0f, 35f, rect.width - 16f, 24f));
+            if (comp.ProcessStack?.FirstCanDo is Process pr)
+            {
+                pr.DoSimpleProgressInterface(new Rect(0f, 35f, rect.width - 16f, 24f));
+            }
+            else
+            {
+                var noProcessRect = new Rect(0f, 35f, rect.width - 16f, 24f);
+                Widgets.DrawHighlight(noProcessRect);
+                Text.Anchor = TextAnchor.MiddleCenter;
+                Widgets.Label(noProcessRect, "PipeSystem_NoProcess".Translate());
+                Text.Anchor = TextAnchor.UpperLeft;
+            }
             // Draw processes
             Text.Anchor = TextAnchor.UpperLeft;
             GUI.color = Color.white;
