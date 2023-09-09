@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
-using RimWorld;
+﻿using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -13,7 +7,6 @@ namespace PipeSystem
     public class ITab_Processor : ITab
     {
         private static readonly Vector2 WinSize = new Vector2(420f, 480f);
-        private static Color WindowBGBorderColor;
 
         private float viewHeight = 1000f;
         private Vector2 scrollPosition;
@@ -22,7 +15,6 @@ namespace PipeSystem
         {
             size = WinSize;
             labelKey = "PipeSystem_Processes";
-            WindowBGBorderColor = new ColorInt(97, 108, 122).ToColor;
         }
 
         protected override void FillTab()
@@ -38,11 +30,11 @@ namespace PipeSystem
             }
             UIHighlighter.HighlightOpportunity(processButton, "PipeSystem_AddProcess");
             // Draw current process
-            comp.ProcessStack?.FirstCanDo?.DoSimpleProgressInterface(new Rect(156f, 2.5f, rect.width - 150f - 6f - 16f, 24f));
+            comp.ProcessStack?.FirstCanDo?.DoSimpleProgressInterface(new Rect(0f, 35f, rect.width - 16f, 24f));
             // Draw processes
             Text.Anchor = TextAnchor.UpperLeft;
             GUI.color = Color.white;
-            var outRect = new Rect(0f, 35f, rect.width, rect.height - 35f - 6f);
+            var outRect = new Rect(0f, 65f, rect.width, rect.height - 35f - 24f - 6f - 6f);
             var viewRect = new Rect(0f, 0f, outRect.width - 16f, viewHeight);
             Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
             var processes = comp.ProcessStack.Processes;
