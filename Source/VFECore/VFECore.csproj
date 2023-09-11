@@ -495,9 +495,13 @@
     <Compile Include="AnimalBehaviours\Comps\CompHighlyFlammable.cs" />
     <Compile Include="AnimalBehaviours\DefOfs\InternalDefOf.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\SchoolUtility_CanTeachNow.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\HediffComp_GasProducer.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Polluter.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_StageByPsylink.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_StageByTemperature.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Waterstriding.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_GasProducer.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Polluter.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Waterstriding.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_StageByPsylink.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_StageByTemperature.cs" />
