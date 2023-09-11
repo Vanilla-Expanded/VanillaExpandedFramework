@@ -52,5 +52,18 @@ namespace VFECore
                 }
             }
         }
+
+        public override bool IsDamagable(Thing t)
+        {
+            if (t is Pawn pawn && launcher != null && pawn.Faction != null && launcher.Faction != null 
+                && !pawn.Faction.HostileTo(launcher.Faction))
+            {
+                if (Rand.Chance(Find.Storyteller.difficulty.friendlyFireChanceFactor) is false)
+                {
+                    return false;
+                }
+            }
+            return base.IsDamagable(t);
+        }
     }
 }
