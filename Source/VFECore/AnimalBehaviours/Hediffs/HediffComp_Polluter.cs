@@ -29,7 +29,7 @@ namespace AnimalBehaviours
 
             if (this.parent.pawn.IsHashIntervalTick(Props.timer) && this.parent.pawn.Map != null)
             {
-                PollutionUtility.GrowPollutionAt(this.parent.pawn.Position, this.parent.pawn.Map, Props.amount);
+                PollutionUtility.GrowPollutionAt(this.parent.pawn.Position, this.parent.pawn.Map, Props.amount,null,true);
             }
 
         }
