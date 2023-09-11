@@ -55,10 +55,17 @@ namespace VFECore
 
         public override bool IsDamagable(Thing t)
         {
-            if (t is Pawn pawn && launcher != null && pawn.Faction != null && launcher.Faction != null 
-                && !pawn.Faction.HostileTo(launcher.Faction))
+            if (t is Pawn pawn)
             {
-                if (Rand.Chance(Find.Storyteller.difficulty.friendlyFireChanceFactor) is false)
+                if (launcher != null && pawn.Faction != null && launcher.Faction != null 
+                    && !pawn.Faction.HostileTo(launcher.Faction))
+                {
+                    if (Rand.Chance(Find.Storyteller.difficulty.friendlyFireChanceFactor) is false)
+                    {
+                        return false;
+                    }
+                }
+                if (pawn.GetPosture() != PawnPosture.Standing && this.intendedTarget.Thing != pawn)
                 {
                     return false;
                 }
