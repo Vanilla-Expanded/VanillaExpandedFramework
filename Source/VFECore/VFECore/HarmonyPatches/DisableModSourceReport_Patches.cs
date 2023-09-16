@@ -20,6 +20,19 @@ namespace VFECore
         }
     }
 
+    [HarmonyPatch(typeof(TransferableUIUtility), "ContentSourceDescription")]
+    public static class TransferableUIUtility_ContentSourceDescription_Patch
+    {
+        public static bool Prefix()
+        {
+            if (VFEGlobal.settings.disableModSourceReport)
+            {
+                return false;
+            }
+            return true;
+        }
+    }
+
     [HarmonyPatch(typeof(Def), "SpecialDisplayStats")]
     public static class Def_SpecialDisplayStats_Patch
     {
