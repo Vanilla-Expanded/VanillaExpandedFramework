@@ -167,4 +167,96 @@ namespace VFECore
             }
         }
     }
+
+    [HarmonyPatch(typeof(Frame), "CompleteConstruction")]
+    public static class Frame_CompleteConstruction_Patch
+    {
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
+        {
+            var constructionField = AccessTools.Field(typeof(SkillDefOf), nameof(SkillDefOf.Construction));
+            var interceptSkillInfo = AccessTools.Method(typeof(Frame_CompleteConstruction_Patch), "InterceptSkill");
+            foreach (CodeInstruction instruction in codeInstructions)
+            {
+                yield return instruction;
+                if (instruction.LoadsField(constructionField))
+                {
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Call, interceptSkillInfo);
+                }
+            }
+        }
+
+        public static SkillDef InterceptSkill(SkillDef skillDef, Frame frame)
+        {
+            var extension = frame.def.entityDefToBuild?.GetModExtension<ThingDefExtension>();
+            if (extension?.constructionSkillRequirement != null)
+            {
+                return extension.constructionSkillRequirement.skill;
+            }
+            return skillDef;
+        }
+    }
+
+    [HarmonyPatch(typeof(JobDriver_ConstructFinishFrame), "MakeNewToils")]
+    public static class JobDriver_ConstructFinishFrame_MakeNewToils_Patch
+    {
+        public static IEnumerable<Toil> Postfix(IEnumerable<Toil> __result, JobDriver_ConstructFinishFrame __instance)
+        {
+            foreach (var toil in __result)
+            {
+                yield return toil;
+                if (toil.debugName == "MakeNewToils" && toil.activeSkill != null)
+                {
+                    toil.activeSkill = delegate 
+                    {
+                        var frame = __instance.job.GetTarget(TargetIndex.A).Thing;
+                        var extension = frame?.def.entityDefToBuild?.GetModExtension<ThingDefExtension>();
+                        if (extension?.constructionSkillRequirement != null)
+                        {
+                            return extension.constructionSkillRequirement.skill;
+                        }
+                        return SkillDefOf.Construction;
+                    };
+                }
+            }
+        }
+    }
+
+    [HarmonyPatch]
+    public static class JobDriver_ConstructFinishFrame_MakeNewToils_TickAction_Patch
+    {
+        [HarmonyTargetMethod]
+        public static MethodBase TargetMethod()
+        {
+            return typeof(JobDriver_ConstructFinishFrame).GetNestedTypes(AccessTools.all).SelectMany(x => x.GetMethods(AccessTools.all)
+                            .Where(x => x.Name.Contains("<MakeNewToils>") && x.ReturnType == typeof(void))).ToList()[1];
+        }
+
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions, MethodBase method)
+        {
+            var constructionField = AccessTools.Field(typeof(SkillDefOf), nameof(SkillDefOf.Construction));
+            var interceptSkillInfo = AccessTools.Method(typeof(JobDriver_ConstructFinishFrame_MakeNewToils_TickAction_Patch),
+                "InterceptSkill");
+            foreach (CodeInstruction instruction in codeInstructions)
+            {
+                yield return instruction;
+                if (instruction.LoadsField(constructionField))
+                {
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Ldfld, method.DeclaringType.GetField("<>4__this"));
+                    yield return new CodeInstruction(OpCodes.Call, interceptSkillInfo);
+                }
+            }
+        }
+
+        public static SkillDef InterceptSkill(SkillDef skillDef, JobDriver_ConstructFinishFrame jobDriver)
+        {
+            var extension = jobDriver.job.targetA.Thing.def.entityDefToBuild?.GetModExtension<ThingDefExtension>();
+            if (extension?.constructionSkillRequirement != null)
+            {
+                return extension.constructionSkillRequirement.skill;
+            }
+            return skillDef;
+        }
+    }
 }
