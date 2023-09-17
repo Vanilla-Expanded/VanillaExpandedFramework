@@ -1028,6 +1028,7 @@
     <Compile Include="VFECore\Utilities\ApparelUtility.cs" />
     <Compile Include="VFECore\VFECore.cs" />
     <Compile Include="VFECore\WeatherOverlays\WeatherOverlay_Effects.cs" />
+    <Compile Include="VFECore\WorkGivers\WorkGiver_ConstructWithSkill.cs" />
     <Compile Include="VFECore\WorkGivers\WorkGiver_AttachTurret.cs" />
     <Compile Include="VFECore\WorkGivers\WorkGiver_RepairMachine.cs" />
     <Compile Include="VFECore\WeatherOverlays\WeatherOverlay_Custom.cs" />

@@ -196,15 +196,15 @@ namespace VFECore
             {
                 yield return r;
             }
-            var extension = __instance.GetModExtension<ApparelExtension>();
-            if (extension != null && !extension.equippedStatFactors.NullOrEmpty())
+            var apparelExtension = __instance.GetModExtension<ApparelExtension>();
+            if (apparelExtension != null && !apparelExtension.equippedStatFactors.NullOrEmpty())
             {
-                if (!extension.equippedStatFactors.NullOrEmpty())
+                if (!apparelExtension.equippedStatFactors.NullOrEmpty())
                 {
-                    for (int k = 0; k < extension.equippedStatFactors.Count; k++)
+                    for (int k = 0; k < apparelExtension.equippedStatFactors.Count; k++)
                     {
-                        var stat = extension.equippedStatFactors[k].stat;
-                        float num3 = extension.equippedStatFactors[k].value;
+                        var stat = apparelExtension.equippedStatFactors[k].stat;
+                        float num3 = apparelExtension.equippedStatFactors[k].value;
                         var stringBuilder5 = new StringBuilder(stat.description);
                         if (req.HasThing && stat.Worker != null)
                         {
@@ -227,9 +227,18 @@ namespace VFECore
                             stringBuilder5.AppendLine();
                             stringBuilder5.AppendLine("StatsReport_FinalValue".Translate() + ": " + stat.ValueToString(num3, ToStringNumberSense.Factor, !stat.formatString.NullOrEmpty()));
                         }
-                        yield return new StatDrawEntry(VFEDefOf.VFE_EquippedStatFactors, extension.equippedStatFactors[k].stat, num3, StatRequest.ForEmpty(), ToStringNumberSense.Factor, null, forceUnfinalizedMode: true).SetReportText(stringBuilder5.ToString());
+                        yield return new StatDrawEntry(VFEDefOf.VFE_EquippedStatFactors, apparelExtension.equippedStatFactors[k].stat, num3, StatRequest.ForEmpty(), ToStringNumberSense.Factor, null, forceUnfinalizedMode: true).SetReportText(stringBuilder5.ToString());
                     }
                 }
+            }
+
+            var thingExtension = __instance.GetModExtension<ThingDefExtension>();
+            if (thingExtension?.constructionSkillRequirement != null)
+            {
+                yield return new StatDrawEntry(StatCategoryDefOf.Basics,
+                    "SkillRequiredToBuild".Translate(thingExtension.constructionSkillRequirement.skill.LabelCap),
+                    thingExtension.constructionSkillRequirement.level.ToString(),
+                    "SkillRequiredToBuildExplanation".Translate(thingExtension.constructionSkillRequirement.skill.LabelCap), 1100);
             }
         }
     }

@@ -31,6 +31,7 @@ namespace VFECore
 
         public bool destroyCorpse;
 
+        public ConstructionSkillRequirement constructionSkillRequirement;
     }
 
     public class WeaponDrawOffsets
