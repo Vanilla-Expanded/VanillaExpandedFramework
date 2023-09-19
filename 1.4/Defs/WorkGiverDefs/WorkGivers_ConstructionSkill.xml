@@ -21,7 +21,7 @@
 	<WorkGiverDef ParentName="VEF_ArtWorkGiverBase">
 		<defName>VEF_Art_ConstructDeliverResourcesToFrames</defName>
 		<label>deliver resources to frames</label>
-		<giverClass>WorkGiver_ConstructDeliverResourcesToFrames</giverClass>
+		<giverClass>VFECore.WorkGiver_ConstructionSkill_DeliverResourcesToFrames</giverClass>
 		<priorityInType>70</priorityInType>
 	</WorkGiverDef>
 

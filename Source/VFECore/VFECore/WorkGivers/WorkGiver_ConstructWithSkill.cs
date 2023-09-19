@@ -49,10 +49,14 @@ namespace VFECore
     {
         public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
+            var extension = t.def?.entityDefToBuild?.GetModExtension<ThingDefExtension>();
+            if (extension is null)
+            {
+                return null;
+            }
             var job = base.JobOnThing(pawn, t, forced);
             if (job != null && job.def == JobDefOf.PlaceNoCostFrame)
             {
-                var extension = t.def.entityDefToBuild.GetModExtension<ThingDefExtension>();
                 if (extension.constructionSkillRequirement.reportStringOverride.NullOrEmpty() is false)
                 {
                     job.reportStringOverride = extension.constructionSkillRequirement.reportStringOverride;
@@ -62,14 +66,31 @@ namespace VFECore
         }
     }
 
+    public class WorkGiver_ConstructionSkill_DeliverResourcesToFrames : WorkGiver_ConstructDeliverResourcesToFrames
+    {
+        public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
+        {
+            var extension = t.def?.entityDefToBuild?.GetModExtension<ThingDefExtension>();
+            if (extension is null)
+            {
+                return null;
+            }
+            return base.JobOnThing(pawn, t, forced);
+        }
+    }
+
     public class WorkGiver_ConstructionSkill_FinishFrames : WorkGiver_ConstructFinishFrames
     {
         public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
+            var extension = t.def?.entityDefToBuild?.GetModExtension<ThingDefExtension>();
+            if (extension is null) 
+            {
+                return null;
+            }
             var job = base.JobOnThing(pawn, t, forced);
             if (job != null)
             {
-                var extension = t.def.entityDefToBuild.GetModExtension<ThingDefExtension>();
                 if (extension.constructionSkillRequirement.reportStringOverride.NullOrEmpty() is false)
                 {
                     job.reportStringOverride = extension.constructionSkillRequirement.reportStringOverride;
