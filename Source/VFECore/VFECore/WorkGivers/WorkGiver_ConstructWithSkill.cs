@@ -106,12 +106,9 @@ namespace VFECore
         public static void Prefix(Thing t, Pawn pawn, ref WorkTypeDef workType, bool forced = false)
         {
             var extenstion = t.def.entityDefToBuild?.GetModExtension<ThingDefExtension>();
-            if (extenstion != null)
+            if (extenstion?.constructionSkillRequirement != null)
             {
-                if (extenstion.constructionSkillRequirement != null)
-                {
-                    workType = extenstion.constructionSkillRequirement.workType;
-                }
+                workType = extenstion.constructionSkillRequirement.workType;
             }
         }
     }
@@ -122,20 +119,17 @@ namespace VFECore
         public static bool Prefix(ref bool __result, Thing t, Pawn p, ref bool checkSkills, bool forced)
         {
             var extenstion = t.def.entityDefToBuild?.GetModExtension<ThingDefExtension>();
-            if (extenstion != null)
+            if (extenstion?.constructionSkillRequirement != null)
             {
-                if (extenstion.constructionSkillRequirement != null)
+                if (p.skills != null)
                 {
-                    if (p.skills != null)
+                    if (p.skills.GetSkill(extenstion.constructionSkillRequirement.skill).Level
+                        < extenstion.constructionSkillRequirement.level)
                     {
-                        if (p.skills.GetSkill(extenstion.constructionSkillRequirement.skill).Level
-                            < extenstion.constructionSkillRequirement.level)
-                        {
-                            JobFailReason.Is("SkillTooLowForConstruction".Translate()
-                                .Formatted(extenstion.constructionSkillRequirement.skill.LabelCap));
-                            __result = false;
-                            return false;
-                        }
+                        JobFailReason.Is("SkillTooLowForConstruction".Translate()
+                            .Formatted(extenstion.constructionSkillRequirement.skill.LabelCap));
+                        __result = false;
+                        return false;
                     }
                 }
             }
