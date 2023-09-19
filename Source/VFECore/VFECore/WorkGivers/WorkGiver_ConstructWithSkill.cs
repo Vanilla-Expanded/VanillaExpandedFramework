@@ -50,7 +50,7 @@ namespace VFECore
         public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
             var extension = t.def?.entityDefToBuild?.GetModExtension<ThingDefExtension>();
-            if (extension is null)
+            if (extension?.constructionSkillRequirement is null)
             {
                 return null;
             }
@@ -71,7 +71,7 @@ namespace VFECore
         public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
             var extension = t.def?.entityDefToBuild?.GetModExtension<ThingDefExtension>();
-            if (extension is null)
+            if (extension?.constructionSkillRequirement is null)
             {
                 return null;
             }
@@ -84,7 +84,7 @@ namespace VFECore
         public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
             var extension = t.def?.entityDefToBuild?.GetModExtension<ThingDefExtension>();
-            if (extension is null) 
+            if (extension?.constructionSkillRequirement is null)
             {
                 return null;
             }
