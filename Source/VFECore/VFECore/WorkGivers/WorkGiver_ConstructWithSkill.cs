@@ -33,10 +33,10 @@ namespace VFECore
 
         public static bool Prefix(WorkGiver __instance, Pawn pawn, Thing t)
         {
-            var extension = t?.def?.entityDefToBuild.GetModExtension<ThingDefExtension>();
+            var extension = t?.def?.entityDefToBuild?.GetModExtension<ThingDefExtension>();
             if (extension?.constructionSkillRequirement != null) 
             {
-                if (__instance.def.workType != extension.constructionSkillRequirement.workType)
+                if (__instance.def?.workType != null && __instance.def.workType != extension.constructionSkillRequirement.workType)
                 {
                     return false;
                 }
@@ -105,7 +105,7 @@ namespace VFECore
     {
         public static void Prefix(Thing t, Pawn pawn, ref WorkTypeDef workType, bool forced = false)
         {
-            var extenstion = t.def.entityDefToBuild?.GetModExtension<ThingDefExtension>();
+            var extenstion = t?.def?.entityDefToBuild?.GetModExtension<ThingDefExtension>();
             if (extenstion?.constructionSkillRequirement != null)
             {
                 workType = extenstion.constructionSkillRequirement.workType;
@@ -118,7 +118,7 @@ namespace VFECore
     {
         public static bool Prefix(ref bool __result, Thing t, Pawn p, ref bool checkSkills, bool forced)
         {
-            var extenstion = t.def.entityDefToBuild?.GetModExtension<ThingDefExtension>();
+            var extenstion = t?.def?.entityDefToBuild?.GetModExtension<ThingDefExtension>();
             if (extenstion?.constructionSkillRequirement != null)
             {
                 if (p.skills != null)
@@ -203,7 +203,7 @@ namespace VFECore
 
         public static SkillDef InterceptSkill(SkillDef skillDef, Frame frame)
         {
-            var extension = frame.def.entityDefToBuild?.GetModExtension<ThingDefExtension>();
+            var extension = frame?.def?.entityDefToBuild?.GetModExtension<ThingDefExtension>();
             if (extension?.constructionSkillRequirement != null)
             {
                 return extension.constructionSkillRequirement.skill;
@@ -225,7 +225,7 @@ namespace VFECore
                     toil.activeSkill = delegate 
                     {
                         var frame = __instance.job.GetTarget(TargetIndex.A).Thing;
-                        var extension = frame?.def.entityDefToBuild?.GetModExtension<ThingDefExtension>();
+                        var extension = frame?.def?.entityDefToBuild?.GetModExtension<ThingDefExtension>();
                         if (extension?.constructionSkillRequirement != null)
                         {
                             return extension.constructionSkillRequirement.skill;
@@ -266,7 +266,7 @@ namespace VFECore
 
         public static SkillDef InterceptSkill(SkillDef skillDef, JobDriver_ConstructFinishFrame jobDriver)
         {
-            var extension = jobDriver.job.targetA.Thing.def.entityDefToBuild?.GetModExtension<ThingDefExtension>();
+            var extension = jobDriver.job.targetA.Thing?.def?.entityDefToBuild?.GetModExtension<ThingDefExtension>();
             if (extension?.constructionSkillRequirement != null)
             {
                 return extension.constructionSkillRequirement.skill;
