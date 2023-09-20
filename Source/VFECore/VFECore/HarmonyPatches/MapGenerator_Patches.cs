@@ -122,6 +122,11 @@ namespace VFECore
                 }
             }
 
+            if (c.GetThingList(map).Any(x => x is not Filth))
+            {
+                return false;
+            }
+
             return true;
         }
         public static void DoMapSpawns(Map map)
@@ -247,6 +252,7 @@ namespace VFECore
             {
                 return false;
             }
+
             return true;
         }
 
