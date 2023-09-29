@@ -30,7 +30,7 @@ namespace PipeSystem
             toil.initAction = delegate
             {
                 CachedAdvancedProcessorsManager.GetFor(Map).PickupDone(comp);
-                comp.Process.SpawnOrPushToNet(pawn.Position, out Thing outThing);
+                comp.Process.SpawnOrPushToNet(pawn.Position, out Thing outThing, pawn);
                 if (outThing != null)
                 {
                     var currentPriority = StoreUtility.CurrentStoragePriorityOf(outThing);

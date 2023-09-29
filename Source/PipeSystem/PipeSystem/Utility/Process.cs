@@ -297,7 +297,8 @@ namespace PipeSystem
         /// </summary>
         /// <param name="spawnPos">Spawning position if needed</param>
         /// <param name="outThing">Null if pushed to net</param>
-        public void SpawnOrPushToNet(IntVec3 spawnPos, out Thing outThing)
+        /// <param name="extractor">Pawn extracint result</param>
+        public void SpawnOrPushToNet(IntVec3 spawnPos, out Thing outThing, Pawn extractor = null)
         {
             // Thing created, in case it's not pushed to net
             outThing = null;
@@ -329,7 +330,7 @@ namespace PipeSystem
             }
             // If can't go into net and should/can spawn
             // Bypass ground setting if thing can't be put in net
-            if (spawning && def.thing != null && (advancedProcessor.outputOnGround || def.pipeNet == null))
+            if (spawning && def.thing != null && (extractor != null || advancedProcessor.outputOnGround || def.pipeNet == null))
             {
                 var map = parent.Map;
                 // Try spawning at spawnPos

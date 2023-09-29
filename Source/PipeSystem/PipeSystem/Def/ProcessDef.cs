@@ -22,6 +22,7 @@ namespace PipeSystem
         public Color lowProgressColor = new Color(0.4f, 0.27f, 0.22f);  // Bar color low progress
 
         public bool autoExtract = true;                                 // Auto extract
+        public bool manualExtractAllowNet = true;                       // When pawn manually extract, result will try to go in net first
         public int extractTicks = 800;                                  // Manual extract ticks needed
 
         /// <summary>
