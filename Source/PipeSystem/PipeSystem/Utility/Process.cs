@@ -405,6 +405,8 @@ namespace PipeSystem
                 pickUpReady = false;
                 progress = 0;
 
+                if (targetCount - processCount == 0) targetCount++;
+
                 processCount++;
                 advancedProcessor.ProcessStack.Notify_ProcessEnded();
             }
