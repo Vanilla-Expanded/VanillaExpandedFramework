@@ -256,11 +256,14 @@ namespace PipeSystem
             foreach (var gizmo in base.CompGetGizmosExtra())
                 yield return gizmo;
 
-            yield return new Command_Action
+            if (Prefs.DevMode)
             {
-                defaultLabel = "Finish in 10 ticks",
-                action = () => Process.Tick(Process.TickLeft - 10)
-            };
+                yield return new Command_Action
+                {
+                    defaultLabel = "Finish in 10 ticks",
+                    action = () => Process.Tick(Process.TickLeft - 10)
+                };
+            }
         }
     }
 }
