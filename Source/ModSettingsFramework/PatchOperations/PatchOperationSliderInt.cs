@@ -11,17 +11,11 @@ namespace ModSettingsFramework
 
         public override void DoSettings(ModSettingsContainer container, Listing_Standard list)
         {
-            var value = (int)container.PatchOperationValue(id, defaultValue);
-            value = (int)list.SliderLabeled(label + ": " + value, value, range.TrueMin,
-                range.TrueMax, tooltip: tooltip);
+            var value = container.PatchOperationValue(id, defaultValue);
+            DoSlider(list, label + ": " + value, ref value, value.ToString(), range.TrueMin, range.TrueMax, tooltip);
             container.patchOperationValues[id] = value;
-            list.Gap(5);
         }
 
-        public override int SettingsHeight()
-        {
-            return 29;
-        }
         public override bool ApplyWorker(XmlDocument xml)
         {
             if (CanRun())

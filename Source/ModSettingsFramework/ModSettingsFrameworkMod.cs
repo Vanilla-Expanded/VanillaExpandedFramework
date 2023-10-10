@@ -100,7 +100,10 @@ namespace ModSettingsFramework
         {
             if (modPackOverride != null)
             {
-                return modPackOverride.Name;
+                if (modPackOverride.Patches.OfType<PatchOperationModSettings>().Any(x => x.CanRun()))
+                {
+                    return modPackOverride.Name;
+                }
             }
             return null;
         }

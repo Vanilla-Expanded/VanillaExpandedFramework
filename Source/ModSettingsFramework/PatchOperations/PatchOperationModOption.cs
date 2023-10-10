@@ -13,14 +13,8 @@ namespace ModSettingsFramework
         public override void DoSettings(ModSettingsContainer container, Listing_Standard list)
         {
             var value = container.PatchOperationEnabled(id, defaultValue);
-            list.CheckboxLabeled(label, ref value, tooltip);
+            this.DoCheckbox(list, label, ref value, tooltip);
             container.patchOperationStates[id] = value;
-            list.Gap(5);
-        }
-
-        public override int SettingsHeight()
-        {
-            return 29;
         }
         public override bool ApplyWorker(XmlDocument xml)
         {

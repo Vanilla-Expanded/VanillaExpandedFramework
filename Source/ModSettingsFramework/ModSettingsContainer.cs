@@ -65,6 +65,7 @@ namespace ModSettingsFramework
                     section.GapLine(8);
                     foreach (var patch in patchesInCategory)
                     {
+                        patch.scrollHeight = 0;
                         patch.DoSettings(this, section);
                         if (patch is PatchOperationWorker worker)
                         {
@@ -81,6 +82,7 @@ namespace ModSettingsFramework
             }
             foreach (var patch in curPatches.OrderBy(x => x.order))
             {
+                patch.scrollHeight = 0;
                 patch.DoSettings(this, listingStandard);
                 scrollHeight += patch.SettingsHeight();
             }
