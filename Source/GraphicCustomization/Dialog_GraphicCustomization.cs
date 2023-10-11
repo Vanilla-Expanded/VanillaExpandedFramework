@@ -59,9 +59,10 @@ namespace GraphicCustomization
             Rect outerRect = new Rect(inRect.x, titleRect.yMax + 30, inRect.width, 350);
             Rect viewArea = new Rect(inRect.x, outerRect.y, inRect.width - 16, height);
             Rect itemTextureRect = new Rect(inRect.x + 10, viewArea.y, 250, 250);
-            
+
+            DrawItem(itemTextureRect);
             Widgets.BeginScrollView(outerRect, ref scrollPosition, viewArea, true);
-            DrawArea(itemTextureRect);
+            DrawCustomizationArea(itemTextureRect);
             Widgets.EndScrollView();
 
             var cancelRect = new Rect((inRect.width / 2f) - 155, inRect.height - 32, 150, 32);
@@ -82,6 +83,22 @@ namespace GraphicCustomization
             });
         }
 
+        private void DrawItem(Rect itemTextureRect)
+        {
+            Widgets.DrawMenuSection(itemTextureRect);
+
+            GUI.color = this.comp.parent.DrawColor;
+            GUI.DrawTexture(itemTextureRect.ContractedBy(15f), currentTexture);
+            GUI.color = Color.white;
+
+            Widgets.InfoCardButton(itemTextureRect.xMax - 60, itemTextureRect.yMax - 30, this.comp.parent);
+            var randomizeRect = new Rect(itemTextureRect.xMax - 30, itemTextureRect.yMax - 30, 24, 24);
+            if (Widgets.ButtonImage(randomizeRect, RandomizeIcon))
+            {
+                Randomize();
+            }
+        }
+
         public Rect DrawTitle(ref Rect inRect)
         {
             var titleRect = new Rect(inRect.x, inRect.y, inRect.width, 40);
@@ -100,21 +117,8 @@ namespace GraphicCustomization
             }
         }
 
-        protected virtual void DrawArea(Rect itemTextureRect)
+        protected virtual void DrawCustomizationArea(Rect itemTextureRect)
         {
-            Widgets.DrawMenuSection(itemTextureRect);
-
-            GUI.color = this.comp.parent.DrawColor;
-            GUI.DrawTexture(itemTextureRect.ContractedBy(15f), currentTexture);
-            GUI.color = Color.white;
-
-            Widgets.InfoCardButton(itemTextureRect.xMax - 60, itemTextureRect.yMax - 30, this.comp.parent);
-            var randomizeRect = new Rect(itemTextureRect.xMax - 30, itemTextureRect.yMax - 30, 24, 24);
-            if (Widgets.ButtonImage(randomizeRect, RandomizeIcon))
-            {
-                Randomize();
-            }
-
             var position = new Vector2(itemTextureRect.xMax + 25, itemTextureRect.y);
             if (compGeneratedName != null)
             {
