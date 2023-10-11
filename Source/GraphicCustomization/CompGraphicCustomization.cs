@@ -104,6 +104,7 @@ namespace GraphicCustomization
         public Graphic_Single GetGraphic(GraphicRequest req)
         {
             var graphic = new Graphic_Single();
+            graphic.Init(req);
             MaterialRequest req2 = default(MaterialRequest);
             req2.mainTex = Texture;
             req2.shader = req.shader;
