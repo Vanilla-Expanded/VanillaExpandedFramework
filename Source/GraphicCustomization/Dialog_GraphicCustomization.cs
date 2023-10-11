@@ -54,7 +54,6 @@ namespace GraphicCustomization
         public override void DoWindowContents(Rect inRect)
         {
             Rect titleRect = DrawTitle(ref inRect);
-
             var height = GetScrollHeight();
             Rect outerRect = new Rect(inRect.x, titleRect.yMax + 30, inRect.width, 350);
             Rect viewArea = new Rect(inRect.x, outerRect.y, inRect.width - 16, height);
@@ -83,7 +82,7 @@ namespace GraphicCustomization
             });
         }
 
-        private void DrawItem(Rect itemTextureRect)
+        protected void DrawItem(Rect itemTextureRect)
         {
             Widgets.DrawMenuSection(itemTextureRect);
 
