@@ -66,6 +66,9 @@ namespace VanillaGenesExpanded
         //Makes this gene make pawns lose skill when below 10
         public bool skillDegradation = false;
 
+        //Makes pregancies advance faster or slower
+        public float pregnancySpeedFactor = 1f;
+
         //Makes genes scale body and head
         public Vector2 bodyScaleFactor = new Vector2(1f, 1f);
         public Vector2 headScaleFactor = new Vector2(1f, 1f);

@@ -112,6 +112,10 @@ namespace VanillaGenesExpanded
                 {
                     StaticCollectionsClass.RemoveSkillDegradationGenePawnFromList(gene.pawn);
                 }
+                if (extension.pregnancySpeedFactor != 1f)
+                {
+                    StaticCollectionsClass.RemovePregnancySpeedFactorGenePawnFromList(gene.pawn);
+                }
 
 
             }

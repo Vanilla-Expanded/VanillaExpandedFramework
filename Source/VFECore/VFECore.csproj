@@ -525,6 +525,8 @@
     <Compile Include="Genes\Harmony\GeneGendered.cs" />
     <Compile Include="Genes\Harmony\HediffComp_Immunizable_SeverityFactorFromHediffs.cs" />
     <Compile Include="Genes\Harmony\GeneGraphicData_GetColorFor_Patch.cs" />
+    <Compile Include="Genes\Harmony\HediffComp_PregnantHuman_CompTipStringExtra.cs" />
+    <Compile Include="Genes\Harmony\PawnUtility_BodyResourceGrowthSpeed.cs" />
     <Compile Include="Memes\Harmony\Ideo_ExposeData.cs" />
     <Compile Include="Misc\ForcedMusicManager.cs" />
     <Compile Include="VFECore\HarmonyPatches\Building_TurretGun_Patches.cs" />

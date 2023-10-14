@@ -26,6 +26,8 @@
 	<VGE_EggHatchedLabel>{0} hatched!</VGE_EggHatchedLabel>
 	
 	<VGE_Male_Egg>Males don't lay eggs</VGE_Male_Egg>
+	
+	<VGE_PregnancyFactor>Pregnancy factor gene: {0} gestation speed</VGE_PregnancyFactor>
 
 
 

@@ -55,6 +55,8 @@ namespace VanillaGenesExpanded
         public static IDictionary<Thing, SkillDef> skillRecreation_gene_pawns = new Dictionary<Thing, SkillDef>();
         // A list of genes that should be hidden on the xenotype editor
         public static HashSet<GeneDef> hidden_genes = new HashSet<GeneDef>();
+        // A list of pawns with pregnancy speed modifiers
+        public static IDictionary<Thing, float> pregnancySpeedFactor_gene_pawns = new Dictionary<Thing, float>();
 
 
         public static void AddBloodtypeGenePawnToList(Thing thing, ThingDef thingDef)
@@ -143,6 +145,24 @@ namespace VanillaGenesExpanded
             if (diseaseProgressionFactor_gene_pawns.ContainsKey(thing))
             {
                 diseaseProgressionFactor_gene_pawns.Remove(thing);
+            }
+
+        }
+
+        public static void AddPregnancySpeedFactorGenePawnToList(Thing thing, float factor)
+        {
+
+            if (!pregnancySpeedFactor_gene_pawns.ContainsKey(thing))
+            {
+                pregnancySpeedFactor_gene_pawns[thing] = factor;
+            }
+        }
+
+        public static void RemovePregnancySpeedFactorGenePawnFromList(Thing thing)
+        {
+            if (pregnancySpeedFactor_gene_pawns.ContainsKey(thing))
+            {
+                pregnancySpeedFactor_gene_pawns.Remove(thing);
             }
 
         }
