@@ -530,6 +530,7 @@
     <Compile Include="Memes\Harmony\Ideo_ExposeData.cs" />
     <Compile Include="Misc\ForcedMusicManager.cs" />
     <Compile Include="VFECore\HarmonyPatches\Building_TurretGun_Patches.cs" />
+    <Compile Include="VFECore\HarmonyPatches\SpecificPatches\BackstoryDef_BodyTypeFor_Patch.cs" />
     <Compile Include="VFECore\Verbs\Verb_ShootCone.cs" />
     <Compile Include="VFECore\Buildings\Building_AutoDoorLockable.cs" />
     <Compile Include="Furniture\Dialogs\Dialog_ChooseGraphic.cs" />
