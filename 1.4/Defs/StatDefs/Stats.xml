@@ -53,7 +53,7 @@
     <defName>VEF_EnergyShieldEnergyMaxFactor</defName>
     <label>Shield max energy factor</label>
     <description>Factor of the maximum shield energy that the user can boost through various means.</description>
-	<category>PawnCombat</category>
+		<category>PawnCombat</category>
     <minValue>0</minValue>
 	<defaultBaseValue>1</defaultBaseValue>
     <toStringStyle>PercentZero</toStringStyle>
@@ -136,7 +136,7 @@
         <defName>VEF_EnergyShieldEnergyMaxPawn</defName>
         <label>shield max energy</label>
         <description>The maximum energy a shield generator can have at one time. More energy absorbs more damage.</description>
-        <category>Building</category>
+	<category>PawnCombat</category>
         <minValue>0</minValue>
         <toStringStyle>PercentZero</toStringStyle>
         <showIfUndefined>false</showIfUndefined>
@@ -146,7 +146,7 @@
         <defName>VEF_EnergyShieldRechargeRatePawn</defName>
         <label>shield recharge rate</label>
         <description>The rate at which a shield gains energy as long as it is not broken.</description>
-        <category>Building</category>
+	<category>PawnCombat</category>
         <minValue>0</minValue>
         <defaultBaseValue>0.45</defaultBaseValue>
         <toStringStyle>PercentZero</toStringStyle>
@@ -158,7 +158,7 @@
         <defName>VEF_EnergyShieldRadiusPawn</defName>
         <label>shield radius</label>
         <description>The area covered when the energy shield is active.</description>
-        <category>Building</category>
+	<category>PawnCombat</category>
         <defaultBaseValue>3</defaultBaseValue>
         <minValue>0</minValue>
         <toStringStyle>FloatOne</toStringStyle>

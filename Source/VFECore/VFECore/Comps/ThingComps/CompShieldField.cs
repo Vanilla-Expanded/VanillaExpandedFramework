@@ -48,6 +48,7 @@ namespace VFECore
     }
     public class CompProperties_ShieldField : CompProperties
     {
+        public bool activeAlways;
         public float initialEnergyPercentage;
         public int rechargeTicksWhenDepleted;
         public float shortCircuitChancePerEnergyLost;
@@ -68,6 +69,7 @@ namespace VFECore
         public string toggleIconPath = "UI/ToggleIcon";
         public string toggleLabelKey;
         public string toggleDescKey;
+        public EffecterDef reactivateEffect;
         public CompProperties_ShieldField()
         {
             this.compClass = typeof(CompShieldField);
@@ -99,17 +101,6 @@ namespace VFECore
         private int shieldBuffer = 0;
         private int ticksToRecharge;
         private bool toggleIsActive = true;
-        public Faction HostFaction
-        {
-            get
-            {
-                if (this.parent is Apparel apparel)
-                {
-                    return apparel.Wearer?.Faction;
-                }
-                return this.parent.Faction;
-            }
-        }
 
         public Thing HostThing
         {
@@ -122,6 +113,9 @@ namespace VFECore
                 return this.parent;
             }
         }
+
+        public Faction HostFaction => HostThing.Faction;
+
         public bool Indestructible => Props.shieldEnergyMaxStat is null;
 
         public static Dictionary<Map, List<CompShieldField>> listerShieldGensByMaps = new Dictionary<Map, List<CompShieldField>>();
@@ -200,7 +194,7 @@ namespace VFECore
         }
 
         private bool CanFunction => (!Props.toggleable || toggleIsActive) && (PowerTraderComp == null || PowerTraderComp.PowerOn) && !parent.IsBrokenDown();
-        private float CurMaxEnergy => MaxEnergy * (active ? 1 : Props.initialEnergyPercentage);
+        private float CurMaxEnergy => MaxEnergy * Props.initialEnergyPercentage;
         private CompPowerTrader PowerTraderComp
         {
             get
@@ -256,10 +250,29 @@ namespace VFECore
             base.PostDeSpawn(map);
         }
 
+        public bool IsApparel => parent is Apparel;
+        private bool IsBuiltIn => !IsApparel;
+
+        public override void CompDrawWornExtras()
+        {
+            base.CompDrawWornExtras();
+            if (IsApparel)
+            {
+                Draw();
+            }
+        }
+
         public override void PostDraw()
         {
             base.PostDraw();
-            // Draw shield bubble
+            if (IsBuiltIn)
+            {
+                Draw();
+            }
+        }
+
+        private void Draw()
+        {
             if (active && (Energy > 0 || Indestructible))
             {
                 float size = ShieldRadius * 2;
@@ -462,6 +475,8 @@ namespace VFECore
             return !CanFunction;
         }
 
+        public bool ReactivatedThisTick => Find.TickManager.TicksGame - lastAbsorbDamageTick == Props.cooldownTicks;
+
         private Sustainer sustainer;
         public override void CompTick()
         {
@@ -472,6 +487,13 @@ namespace VFECore
             {
                 this.lastTimeDisabled = Find.TickManager.TicksGame;
                 this.lastTimeActivated = 0;
+            }
+
+            if (ReactivatedThisTick && Props.reactivateEffect != null)
+            {
+                Effecter effecter = new Effecter(Props.reactivateEffect);
+                effecter.Trigger(parent, TargetInfo.Invalid);
+                effecter.Cleanup();
             }
             if (CanFunction)
             {
@@ -485,9 +507,10 @@ namespace VFECore
                             Energy = MaxEnergy * Props.initialEnergyPercentage;
                     }
                     else
+                    {
                         Energy += EnergyGainPerTick;
+                    }
                 }
-
 
                 // If shield is active
                 if (active)
@@ -620,7 +643,7 @@ namespace VFECore
             if (!Props.manualActivation)
             {
                 active = this.HostThing.Map != null && CanFunction &&
-                (
+                (Props.activeAlways ||
                 GenHostility.AnyHostileActiveThreatTo(HostThing.Map, HostFaction) ||
                 HostThing.Map.listerThings.ThingsOfDef(RimWorld.ThingDefOf.Tornado).Any() ||
                 HostThing.Map.listerThings.ThingsOfDef(RimWorld.ThingDefOf.DropPodIncoming).Any() || shieldBuffer > 0);
@@ -776,7 +799,7 @@ namespace VFECore
                 Widgets.Label(rect2, shieldGenerator.parent.LabelCap);
                 Rect rect3 = rect;
                 rect3.yMin = overRect.height / 2f;
-                float displayEnergy = shieldGenerator.active ? shieldGenerator.Energy : 0;
+                float displayEnergy = shieldGenerator.Energy;
                 float fillPercent = displayEnergy / shieldGenerator.MaxEnergy;
                 Widgets.FillableBar(rect3, fillPercent, FullShieldBarTex, EmptyShieldBarTex, false);
                 Text.Font = GameFont.Small;
