@@ -94,7 +94,7 @@ namespace KCSG
                     if (GenOption.fallingExt.thingsToSpawnInDropPod.Contains(temp.thingDef))
                     {
                         var thing = ThingMaker.MakeThing(temp.thingDef, temp.stuffDef ?? GenStuff.RandomStuffFor(temp.thingDef));
-                        thing.SetFactionDirect(parms.faction);
+                        thing.SetFaction(parms.faction);
 
                         var info = new ActiveDropPodInfo
                         {
@@ -107,7 +107,7 @@ namespace KCSG
                     else
                     {
                         var thing = ThingMaker.MakeThing(temp.thingDef, temp.stuffDef ?? GenStuff.RandomStuffFor(temp.thingDef));
-                        thing.SetFactionDirect(parms.faction);
+                        thing.SetFaction(parms.faction);
 
                         if (!GenOption.fallingExt.spawnDormantWhenPossible && thing.TryGetComp<CompCanBeDormant>() is CompCanBeDormant ccbd && ccbd != null)
                         {

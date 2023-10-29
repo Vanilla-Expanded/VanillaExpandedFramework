@@ -70,7 +70,7 @@ namespace KCSG
                     }, map, out IntVec3 cell))
                     {
                         Thing thing = ThingMaker.MakeThing(prop, faction != null ? BaseGenUtility.CheapStuffFor(prop, faction) : GenStuff.DefaultStuffFor(prop));
-                        thing.SetFactionDirect(map.ParentFaction);
+                        thing.SetFaction(map.ParentFaction);
 
                         if (thing is Building_Casket casket)
                         {

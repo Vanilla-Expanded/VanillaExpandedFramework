@@ -137,7 +137,7 @@ namespace KCSG
                 {
                     if (thing.def.CanHaveFaction)
                     {
-                        thing.SetFactionDirect(Faction.OfPlayer);
+                        thing.SetFaction(Faction.OfPlayer);
                     }
 
                     thingsGroups[index].Add(thing);

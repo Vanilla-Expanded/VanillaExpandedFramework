@@ -301,7 +301,7 @@ namespace KCSG
             // Set the faction if applicable
             if (symbol.spawnPartOfFaction && faction != null && thing.def.CanHaveFaction)
             {
-                thing.SetFactionDirect(faction);
+                thing.SetFaction(faction);
             }
             // Set bed for slave
             if (thing is Building_Bed bed && layout.IsForSlaves)
@@ -314,7 +314,7 @@ namespace KCSG
                 Thing c = ThingMaker.MakeThing(AllDefOf.KCSG_PowerConduit);
                 if (faction != null)
                 {
-                    c.SetFactionDirect(faction);
+                    c.SetFaction(faction);
                 }
                 GenSpawn.Spawn(c, cell, map, WipeMode.FullRefund);
             }
