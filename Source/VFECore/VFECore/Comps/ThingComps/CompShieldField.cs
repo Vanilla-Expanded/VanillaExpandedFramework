@@ -79,6 +79,7 @@ namespace VFECore
     [StaticConstructorOnStartup]
     public class CompShieldField : ThingComp, PawnGizmoProvider
     {
+        public bool initialized;
         public bool active;
         public Dictionary<Thing, int> affectedThings = new Dictionary<Thing, int>();
         public HashSet<IntVec3> coveredCells;
@@ -134,7 +135,7 @@ namespace VFECore
             get => energy;
             set
             {
-                energy = Mathf.Clamp(value, 0, CurMaxEnergy);
+                energy = Mathf.Clamp(value, 0, MaxEnergy);
                 if (energy == 0)
                     Notify_EnergyDepleted();
             }
@@ -194,7 +195,6 @@ namespace VFECore
         }
 
         private bool CanFunction => (!Props.toggleable || toggleIsActive) && (PowerTraderComp == null || PowerTraderComp.PowerOn) && !parent.IsBrokenDown();
-        private float CurMaxEnergy => MaxEnergy * Props.initialEnergyPercentage;
         private CompPowerTrader PowerTraderComp
         {
             get
@@ -313,6 +313,7 @@ namespace VFECore
             Scribe_Values.Look(ref lastTimeDisabled, "lastTimeDisabled");
             Scribe_Values.Look(ref lastTimeDisarmed, "lastTimeDisarmed");
             Scribe_Values.Look(ref toggleIsActive, "toggleIsActive", true);
+            Scribe_Values.Look(ref initialized, "initialized");
         }
 
         public bool CanActivateShield()
@@ -446,6 +447,11 @@ namespace VFECore
                 UpdateShieldCoverage();
             }
 
+            if (initialized is false)
+            {
+                energy = MaxEnergy * Props.initialEnergyPercentage;
+                initialized = true;
+            }
         }
 
         private void UpdateShieldCoverage()
@@ -504,7 +510,12 @@ namespace VFECore
                     {
                         ticksToRecharge--;
                         if (ticksToRecharge == 0)
-                            Energy = MaxEnergy * Props.initialEnergyPercentage;
+                        {
+                            if (Props.rechargeRateStat is null)
+                            {
+                                Energy = MaxEnergy;
+                            }
+                        }
                     }
                     else
                     {
