@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Emit;
@@ -18,10 +19,19 @@ namespace PipeSystem
 
         private static readonly Material BarUnfilledMat = SolidColorMaterials.SimpleSolidColorMaterial(new Color(0.3f, 0.3f, 0.3f));
 
+        private static readonly Material WasteBarFilledMat = SolidColorMaterials.SimpleSolidColorMaterial(new Color(0.9f, 0.85f, 0.2f));
+        private static readonly Material WasteBarUnfilledMat = SolidColorMaterials.SimpleSolidColorMaterial(new Color(0.3f, 0.3f, 0.3f, 1f));
+
         // Other comps we run check on
         private CompFlickable flickable;
         private CompPowerTrader compPower;
         private CompRefuelable compRefuelable;
+        private CompWasteProducer wasteProducer;
+        private CompThingContainer container;
+
+        private bool shouldProduceWastePack = false;            // Can and should produce wastepack?
+        private float wasteProduced = 0;
+        private GenDraw.FillableBarRequest fillableWasteBar;    // FillableBarRequest cache
 
         private Vector3 itemDrawPos;                            // Drawing gizmo position
         private Material barFilledCachedMat;                    // Cached progress bar material
@@ -127,6 +137,35 @@ namespace PipeSystem
 
         public bool PickupReady => Process.PickUpReady;
 
+        public CompWasteProducer WasteProducer
+        {
+            get
+            {
+                if (wasteProducer == null)
+                {
+                    wasteProducer = parent.GetComp<CompWasteProducer>();
+                }
+                return wasteProducer;
+            }
+        }
+
+        public CompThingContainer Container
+        {
+            get
+            {
+                if (container == null)
+                {
+                    container = parent.GetComp<CompThingContainer>();
+                }
+                return container;
+            }
+        }
+
+        private int WasteProducedPerCycle => Container.Props.stackLimit;
+
+        private float WasteProducedPercentFull => container.Full ? 1f : wasteProduced / (float)WasteProducedPerCycle;
+
+
         /// <summary>
         /// Setup comps, gizmo, pre result setup
         /// </summary>
@@ -153,6 +192,22 @@ namespace PipeSystem
                     rotation = Rot4.North
                 };
             }
+            if (Props.showWastepackBar)
+            {
+                var drawPos = parent.TrueCenter() + Props.wastepackBarOffset;
+                drawPos.y += 3f / 74f;
+                drawPos.z += 0.25f;
+
+                fillableWasteBar = new GenDraw.FillableBarRequest
+                {
+                    center = drawPos,
+                    size = BarSize,
+                    unfilledMat = WasteBarUnfilledMat,
+                    filledMat = WasteBarFilledMat,
+                    margin = 0.1f,
+                    rotation = Rot4.North
+                };
+            }
             if (Props.showResultItem)
             {
                 itemDrawPos = parent.TrueCenter();
@@ -164,6 +219,8 @@ namespace PipeSystem
             {
                 process.PostSpawnSetup();
             }
+
+            shouldProduceWastePack = Props.processes.Any(p => p.wastePackToProduce > 0) && ModsConfig.BiotechActive;
         }
 
         /// <summary>
@@ -188,40 +245,31 @@ namespace PipeSystem
             Scribe_Deep.Look(ref processStack, "processStack");
 
             Scribe_Values.Look(ref outputOnGround, "outputOnGround");
+            Scribe_Values.Look(ref wasteProduced, "wasteProduced");
         }
 
         /// <summary>
         /// Call CompTickRare every 250 ticks
         /// </summary>
-        public override void CompTick()
-        {
-            if (parent.IsHashIntervalTick(100) && AllCompsOn)
-            {
-                Process?.Tick(100);
-                barFilledCachedMat = null;
-            }
-        }
+        public override void CompTick() => Tick(100);
 
         /// <summary>
         /// Tick process
         /// </summary>
-        public override void CompTickRare()
-        {
-            if (AllCompsOn)
-            {
-                Process?.Tick(GenTicks.TickRareInterval);
-                barFilledCachedMat = null;
-            }
-        }
+        public override void CompTickRare() => Tick(GenTicks.TickRareInterval);
 
         /// <summary>
         /// Tick process
         /// </summary>
-        public override void CompTickLong()
+        public override void CompTickLong() => Tick(GenTicks.TickLongInterval);
+
+        private void Tick(int ticks)
         {
             if (AllCompsOn)
             {
-                Process?.Tick(GenTicks.TickLongInterval);
+                // Wastepack stop check
+                if (Props.stopWhenWastepackFull && Container.Full) return;
+                Process?.Tick(ticks);
                 barFilledCachedMat = null;
             }
         }
@@ -231,6 +279,12 @@ namespace PipeSystem
         /// </summary>
         public override void PostDraw()
         {
+            if (Props.showWastepackBar)
+            {
+                fillableWasteBar.fillPercent = WasteProducedPercentFull;
+                GenDraw.DrawFillableBar(fillableWasteBar);
+            }
+
             if (Process == null)
                 return;
 
@@ -263,6 +317,41 @@ namespace PipeSystem
                     defaultLabel = "Finish in 10 ticks",
                     action = () => Process.Tick(Process.TickLeft - 10)
                 };
+                yield return new Command_Action
+                {
+                    defaultLabel = "Empty wastepack(s)",
+                    action = () => container.innerContainer.Clear()
+                };
+            }
+        }
+
+        /// <summary>
+        /// Add wastepack info in inspect string
+        /// </summary>
+        public override string CompInspectStringExtra()
+        {
+            var sb = new StringBuilder();
+            sb.Append(base.CompInspectStringExtra());
+            sb.AppendLineIfNotEmpty();
+            if (shouldProduceWastePack)
+                sb.Append("WasteLevel".Translate() + ": " + WasteProducedPercentFull.ToStringPercent());
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Add amount to wasteProduced
+        /// </summary>
+        /// <param name="amount"></param>
+        public void ProduceWastepack(int amount)
+        {
+            if (!container.Full && ModsConfig.BiotechActive)
+            {
+                wasteProduced += amount;
+                if (wasteProduced >= WasteProducedPerCycle && !Container.innerContainer.Any)
+                {
+                    wasteProduced = 0f;
+                    WasteProducer.ProduceWaste(WasteProducedPerCycle);
+                }
             }
         }
     }

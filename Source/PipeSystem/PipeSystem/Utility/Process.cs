@@ -405,8 +405,10 @@ namespace PipeSystem
                 tickLeft = def.ticks;
                 pickUpReady = false;
                 progress = 0;
-
+                // Prevent going into negative
                 if (targetCount - processCount == 0) targetCount++;
+                // Create wastepack
+                advancedProcessor.ProduceWastepack(Def.wastePackToProduce);
 
                 processCount++;
                 advancedProcessor.ProcessStack.Notify_ProcessEnded();

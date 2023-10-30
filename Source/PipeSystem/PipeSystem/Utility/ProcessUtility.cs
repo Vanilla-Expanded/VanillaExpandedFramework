@@ -116,6 +116,12 @@ namespace PipeSystem
                 processTooltip.Gap(4f, 0f);
                 processTooltip.Label("PipeSystem_OutputToNet".Translate(processDef.pipeNet.loweredName), draw);
             }
+
+            if (processDef.wastePackToProduce > 0 && ModsConfig.BiotechActive)
+            {
+                processTooltip.Newline();
+                DisplayIngredientIconRow(new List<TextureAndColor>() { ToTextureAndColor(ThingDefOf.Wastepack) }, draw, processDef.wastePackToProduce);
+            }
             // Expand window
             processTooltip.Expand(4f, 4f);
         }

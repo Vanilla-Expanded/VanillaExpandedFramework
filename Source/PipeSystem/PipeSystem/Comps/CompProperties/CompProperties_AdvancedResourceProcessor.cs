@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -24,6 +25,10 @@ namespace PipeSystem
         // Progress bar
         public bool showProgressBar = true;
         public Vector3 progressBarOffset = Vector3.zero;
+        // Wastepack bar
+        public bool showWastepackBar = true;
+        public Vector3 wastepackBarOffset = Vector3.zero;
+        public bool stopWhenWastepackFull = false;
         // Result icon
         public bool showResultItem = false;
         public Vector3 resultItemOffset = Vector3.zero;
@@ -53,6 +58,9 @@ namespace PipeSystem
 
             if (showProgressBar && parentDef.drawerType != DrawerType.MapMeshAndRealTime)
                 yield return $"CompProperties_AdvancedResourceProcessor of {parentDef.defName} with showProgressBar true need MapMeshAndRealTime";
+
+            if (processes.Any(p => p.wastePackToProduce > 0) && !parentDef.HasSingleOrMultipleInteractionCells && parentDef.GetCompProperties<CompProperties_WasteProducer>() == null && parentDef.GetCompProperties<CompProperties_ThingContainer>() == null)
+                yield return $"CompProperties_AdvancedResourceProcessor of {parentDef.defName} need interaction cell & CompProperties_WasteProducer & CompProperties_ThingContainer to be able to use <wastePackToProduce>";
 
             for (int i = 0; i < processes.Count; i++)
             {
