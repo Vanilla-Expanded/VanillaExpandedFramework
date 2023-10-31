@@ -35,6 +35,8 @@ namespace PipeSystem
         public Vector3 resultItemSize = new Vector3(0.5f, 1, 0.5f);
         // Time required to put item inside processor
         public int ticksToFill = 200;
+        // Heat push
+        public bool heatPushWhileWorking = false;
 
         /// <summary>
         /// Config errors handling. Empty processes? Null translation key? Missing comps?
@@ -56,8 +58,11 @@ namespace PipeSystem
             if (notWorkingKey == null)
                 yield return $"CompProperties_AdvancedResourceProcessor of {parentDef.defName} cannot have null <notWorkingKey>";
 
-            if (showProgressBar && parentDef.drawerType != DrawerType.MapMeshAndRealTime)
+            if ((showProgressBar || showWastepackBar) && parentDef.drawerType != DrawerType.MapMeshAndRealTime)
                 yield return $"CompProperties_AdvancedResourceProcessor of {parentDef.defName} with showProgressBar true need MapMeshAndRealTime";
+
+            if (heatPushWhileWorking && (parentDef.building == null || parentDef.building.heatPerTickWhileWorking <= 0f))
+                yield return $"CompProperties_AdvancedResourceProcessor need building.heatPerTickWhileWorking to be more than 0";
 
             if (processes.Any(p => p.wastePackToProduce > 0) && !parentDef.HasSingleOrMultipleInteractionCells && parentDef.GetCompProperties<CompProperties_WasteProducer>() == null && parentDef.GetCompProperties<CompProperties_ThingContainer>() == null)
                 yield return $"CompProperties_AdvancedResourceProcessor of {parentDef.defName} need interaction cell & CompProperties_WasteProducer & CompProperties_ThingContainer to be able to use <wastePackToProduce>";
