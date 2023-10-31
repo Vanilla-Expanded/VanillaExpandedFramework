@@ -264,9 +264,13 @@ namespace PipeSystem
         }
 
         /// <summary>
-        /// Call CompTickRare every 250 ticks
+        /// Tick process every 100 ticks
         /// </summary>
-        public override void CompTick() => Tick(100);
+        public override void CompTick()
+        {
+            if (parent.IsHashIntervalTick(100))
+                Tick(100);
+        }
 
         /// <summary>
         /// Tick process
