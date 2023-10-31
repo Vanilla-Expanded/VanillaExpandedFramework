@@ -87,25 +87,24 @@ namespace PipeSystem
         {
             get
             {
-                if (processesOptions == null)
+                processesOptions = new List<FloatMenuOption>();
+                for (int i = 0; i < Props.processes.Count; i++)
                 {
-                    processesOptions = new List<FloatMenuOption>();
-                    for (int i = 0; i < Props.processes.Count; i++)
+                    var process = Props.processes[i];
+                    if (process.researchPrerequisites != null && process.researchPrerequisites.Any(p => !p.IsFinished)) continue;
+
+                    var name = process.thing != null ? process.thing.LabelCap.ToStringSafe() : process.pipeNet.resource.name;
+                    var label = "PipeSystem_MakeProcess".Translate(name);
+                    if (process.count > 1)
                     {
-                        var process = Props.processes[i];
-                        var name = process.thing != null ? process.thing.LabelCap.ToStringSafe() : process.pipeNet.resource.name;
-                        var label = "PipeSystem_MakeProcess".Translate(name);
-                        if (process.count > 1)
-                        {
-                            label += " x" + process.count;
-                        }
-                        processesOptions.Add(new FloatMenuOption(label, () => processStack.AddProcess(process, parent),
-                                                                 process.thing, null, false, MenuOptionPriority.Default,
-                                                                 (Rect rect) => process.DoProcessInfoWindow(i, rect),
-                                                                 null, 29f,
-                                                                 (Rect rect) => process.thing != null && Widgets.InfoCardButton(rect.x + 5f, rect.y + (rect.height - 24f) / 2f, process.thing),
-                                                                 null, true));
+                        label += " x" + process.count;
                     }
+                    processesOptions.Add(new FloatMenuOption(label, () => processStack.AddProcess(process, parent),
+                                                             process.thing, null, false, MenuOptionPriority.Default,
+                                                             (Rect rect) => process.DoProcessInfoWindow(i, rect),
+                                                             null, 29f,
+                                                             (Rect rect) => process.thing != null && Widgets.InfoCardButton(rect.x + 5f, rect.y + (rect.height - 24f) / 2f, process.thing),
+                                                             null, true));
                 }
 
                 return processesOptions;

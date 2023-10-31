@@ -14,6 +14,7 @@ namespace PipeSystem
         public bool destroyIngredientsDirectly = false;                 // Destroy ingredients as soon as inside processor
         public int ticks = 600;                                         // Produce each X tick(s): Default to 600 ticks (10 sec)
         public int wastePackToProduce = 0;                              // Number of wastepack to produce when process end
+        public List<ResearchProjectDef> researchPrerequisites;          // Research required to unlock the process
         // TODO: Multiple results
         public ThingDef thing;                                          // Result as a thing
         public PipeNetDef pipeNet;                                      // Result as a piped resource

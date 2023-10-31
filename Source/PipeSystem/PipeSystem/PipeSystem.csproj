@@ -103,6 +103,8 @@
     <Compile Include="Comps\CompSpillWhenDamaged.cs" />
     <Compile Include="Comps\CompConvertToResource.cs" />
     <Compile Include="Def\ProcessDef.cs" />
+    <Compile Include="Harmony\ResearchProjectDef_UnlockedDefs_Patch.cs" />
+    <Compile Include="Harmony\Widgets_DefIcon_Patch.cs" />
     <Compile Include="Utility\Process.cs" />
     <Compile Include="Utility\ProcessStack.cs" />
     <Compile Include="ITab\ITab_Processor.cs" />
