@@ -13,6 +13,7 @@ namespace PipeSystem
 
         public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
+            // TODO: Multiple pawns reservation
             if (t.IsBurning() || t.IsForbidden(pawn) || !pawn.CanReserve(t, 1, -1, null, forced) || t.Faction != pawn.Faction || pawn.Map.designationManager.DesignationOn(t, DesignationDefOf.Deconstruct) != null)
                 return false;
 
@@ -20,7 +21,8 @@ namespace PipeSystem
             if (comp == null || comp.Process == null)
                 return false;
 
-            if (FindIngredient(pawn, comp) == null)
+            var firstMissing = comp.FirstIngredientMissing;
+            if (firstMissing == null || FindIngredient(pawn, comp, firstMissing) == null)
                 return false;
 
             return true;
@@ -28,24 +30,12 @@ namespace PipeSystem
 
         public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
-            return JobMaker.MakeJob(PSDefOf.PS_BringToProcessor, t, FindIngredient(pawn, CachedCompAdvancedProcessor.GetFor(t)));
+            var comp = CachedCompAdvancedProcessor.GetFor(t);
+            return JobMaker.MakeJob(PSDefOf.PS_BringToProcessor, t, FindIngredient(pawn, comp, comp.FirstIngredientMissing));
         }
 
-        private Thing FindIngredient(Pawn pawn, CompAdvancedResourceProcessor comp)
+        private Thing FindIngredient(Pawn pawn, CompAdvancedResourceProcessor comp, ThingDef firstMissing)
         {
-            ThingDef firstMissing = null;
-
-            var ingredientsOwners = comp.Process.IngredientsOwners;
-            for (int i = 0; i < ingredientsOwners.Count; i++)
-            {
-                var ingredientOwner = ingredientsOwners[i];
-                if (ingredientOwner.Require && !ingredientOwner.BeingFilled && ingredientOwner.ThingDef != null)
-                {
-                    firstMissing = ingredientOwner.ThingDef;
-                    break;
-                }
-            }
-
             if (firstMissing == null)
             {
                 Log.Warning($"Tried to find ingredient for {comp.parent} but none is required.");

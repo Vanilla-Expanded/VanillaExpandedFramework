@@ -165,6 +165,22 @@ namespace PipeSystem
 
         private float WasteProducedPercentFull => container.Full ? 1f : wasteProduced / (float)WasteProducedPerCycle;
 
+        public ThingDef FirstIngredientMissing
+        {
+            get
+            {
+                var ingredientsOwners = Process.IngredientsOwners;
+                for (int i = 0; i < ingredientsOwners.Count; i++)
+                {
+                    var ingredientOwner = ingredientsOwners[i];
+                    if (ingredientOwner.Require && !ingredientOwner.BeingFilled && ingredientOwner.ThingDef != null)
+                    {
+                        return ingredientOwner.ThingDef;
+                    }
+                }
+                return null;
+            }
+        }
 
         /// <summary>
         /// Setup comps, gizmo, pre result setup
