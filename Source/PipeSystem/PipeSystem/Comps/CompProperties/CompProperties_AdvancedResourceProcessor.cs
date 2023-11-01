@@ -47,32 +47,32 @@ namespace PipeSystem
                 yield return error;
 
             if (!parentDef.inspectorTabs.NullOrEmpty() && !parentDef.inspectorTabs.Contains(typeof(ITab_Processor)))
-                yield return $"CompProperties_AdvancedResourceProcessor of {parentDef.defName} need ITab_Processor";
+                yield return $"CompProperties_AdvancedResourceProcessor parent need ITab_Processor";
 
             if (!(parentDef.tickerType == TickerType.Rare || parentDef.tickerType == TickerType.Normal))
-                yield return $"CompProperties_AdvancedResourceProcessor of {parentDef.defName} need tickerType rare or normal";
+                yield return $"CompProperties_AdvancedResourceProcessor parent need tickerType long, rare or normal";
 
             if (processes.NullOrEmpty())
-                yield return $"CompProperties_AdvancedResourceProcessor of {parentDef.defName} cannot have empty or null <processes>";
+                yield return $"CompProperties_AdvancedResourceProcessor cannot have empty or null <processes>";
 
             if (notWorkingKey == null)
-                yield return $"CompProperties_AdvancedResourceProcessor of {parentDef.defName} cannot have null <notWorkingKey>";
+                yield return $"CompProperties_AdvancedResourceProcessor cannot have null <notWorkingKey>";
 
             if ((showProgressBar || showWastepackBar) && parentDef.drawerType != DrawerType.MapMeshAndRealTime)
-                yield return $"CompProperties_AdvancedResourceProcessor of {parentDef.defName} with showProgressBar true need MapMeshAndRealTime";
+                yield return $"CompProperties_AdvancedResourceProcessor with showProgressBar true need MapMeshAndRealTime drawerType";
 
             if (heatPushWhileWorking && (parentDef.building == null || parentDef.building.heatPerTickWhileWorking <= 0f))
-                yield return $"CompProperties_AdvancedResourceProcessor need building.heatPerTickWhileWorking to be more than 0";
+                yield return $"CompProperties_AdvancedResourceProcessor parent need building.heatPerTickWhileWorking to be more than 0";
 
             if (processes.Any(p => p.wastePackToProduce > 0) && !parentDef.HasSingleOrMultipleInteractionCells && parentDef.GetCompProperties<CompProperties_WasteProducer>() == null && parentDef.GetCompProperties<CompProperties_ThingContainer>() == null)
-                yield return $"CompProperties_AdvancedResourceProcessor of {parentDef.defName} need interaction cell & CompProperties_WasteProducer & CompProperties_ThingContainer to be able to use <wastePackToProduce>";
+                yield return $"CompProperties_AdvancedResourceProcessor need interaction cell & CompProperties_WasteProducer & CompProperties_ThingContainer to be able to use <wastePackToProduce>";
 
             for (int i = 0; i < processes.Count; i++)
             {
                 var result = processes[i];
                 if (result.ingredients.NullOrEmpty())
                 {
-                    yield return $"Result {i + 1} of {parentDef.defName} cannot have empty or null <ingredients>";
+                    yield return $"Result {i + 1} cannot have empty or null <ingredients>";
                     continue;
                 }
 
