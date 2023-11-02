@@ -434,53 +434,62 @@ namespace PipeSystem
         }
 
         /// <summary>
-        /// Reset all thingAndResourceOwner
+        /// Reset ingredients owners
         /// </summary>
-        /// <param name="finished"></param>
-        /// <param name="map">Map, used in postdespawn</param>
-        public void ResetProcess(bool finished = true, Map map = null)
+        /// <param name="finished">Process finished normaly?</param>
+        public void ResetOwners(bool finished)
         {
-            if (finished)
+            if (!finished && !def.destroyIngredientsDirectly && !(def.destroyIngredientsOnStart && tickLeft < def.ticks))
             {
+                // Refund ingredients
                 for (int i = 0; i < ingredientsOwners.Count; i++)
-                    ingredientsOwners[i].Reset();
-
-                tickLeft = def.ticks;
-                pickUpReady = false;
-                progress = 0;
-                // Prevent going into negative
-                if (targetCount - processCount == 0) targetCount++;
-                // Create wastepack
-                advancedProcessor.ProduceWastepack(Def.wastePackToProduce);
-
-                processCount++;
-                advancedProcessor.ProcessStack.Notify_ProcessEnded();
+                {
+                    var owner = ingredientsOwners[i];
+                    var linkedComp = compResources[i];
+                    // Refund in net if possible
+                    if (linkedComp != null && linkedComp.PipeNet is PipeNet net && net.AvailableCapacity >= owner.Count)
+                    {
+                        net.DistributeAmongStorage(owner.Count, out _);
+                    }
+                    // Refund as item
+                    else if (owner.ThingDef is ThingDef def)
+                    {
+                        var thing = ThingMaker.MakeThing(def);
+                        thing.stackCount = owner.Count;
+                        GenPlace.TryPlaceThing(thing, adjCells.RandomElement(), parent.Map, ThingPlaceMode.Near);
+                    }
+                    // Reset owner
+                    owner.Reset();
+                }
             }
             else
             {
-                pickUpReady = false;
-                progress = 0;
-
-                if (!def.destroyIngredientsDirectly && !(def.destroyIngredientsOnStart && tickLeft < def.ticks))
-                {
-                    for (int i = 0; i < ingredientsOwners.Count; i++)
-                    {
-                        var owner = ingredientsOwners[i];
-                        var linkedComp = compResources[i];
-
-                        if (linkedComp != null && linkedComp.PipeNet is PipeNet net && net.AvailableCapacity >= owner.Count)
-                        {
-                            net.DistributeAmongStorage(owner.Count, out _);
-                        }
-                        else if (owner.ThingDef is ThingDef def)
-                        {
-                            var thing = ThingMaker.MakeThing(def);
-                            thing.stackCount = owner.Count;
-                            GenPlace.TryPlaceThing(thing, adjCells.RandomElement(), map ?? parent.Map, ThingPlaceMode.Near);
-                        }
-                    }
-                }
+                // No refund
+                for (int i = 0; i < ingredientsOwners.Count; i++)
+                    ingredientsOwners[i].Reset();
             }
+        }
+
+        /// <summary>
+        /// Reset all thingAndResourceOwner
+        /// </summary>
+        /// <param name="finished">Process finished normaly?</param>
+        public void ResetProcess(bool finished = true)
+        {
+            ResetOwners(finished);  // Reset ingredients owners
+            tickLeft = def.ticks;   // Reset ticks
+            pickUpReady = false;    // Reset pickup status
+            ruinedPercent = 0;      // Reset ruining status
+            progress = 0;           // Reset progress
+            // If finished normaly, increment process count, produce wastepack
+            if (finished)
+            {
+                if (targetCount - processCount == 0) targetCount++;         // Prevent going into negative
+                advancedProcessor.ProduceWastepack(Def.wastePackToProduce); // Create wastepack
+                processCount++;                                             // Increment process count
+            }
+            // Notify process ended to the stack
+            advancedProcessor.ProcessStack.Notify_ProcessEnded();
         }
 
         /// <summary>

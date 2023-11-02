@@ -245,7 +245,7 @@ namespace PipeSystem
         {
             foreach (var process in processStack)
             {
-                process.ResetProcess(false, map);
+                process.ResetProcess(false);
             }
             var manager = CachedAdvancedProcessorsManager.GetFor(map);
             manager.PickupDone(this);
@@ -264,7 +264,7 @@ namespace PipeSystem
         }
 
         /// <summary>
-        /// Tick process every 100 ticks
+        /// Tick 100 ticks
         /// </summary>
         public override void CompTick()
         {
@@ -273,15 +273,19 @@ namespace PipeSystem
         }
 
         /// <summary>
-        /// Tick process
+        /// Tick 250 ticks
         /// </summary>
         public override void CompTickRare() => Tick(GenTicks.TickRareInterval);
 
         /// <summary>
-        /// Tick process
+        /// Tick 2000 ticks
         /// </summary>
         public override void CompTickLong() => Tick(GenTicks.TickLongInterval);
 
+        /// <summary>
+        /// Tick process, heat push
+        /// </summary>
+        /// <param name="ticks">Number of ticks that passed</param>
         private void Tick(int ticks)
         {
             if (AllCompsOn)
