@@ -162,7 +162,7 @@ namespace PipeSystem
 
         private int WasteProducedPerCycle => Container.Props.stackLimit;
 
-        private float WasteProducedPercentFull => container.Full ? 1f : wasteProduced / (float)WasteProducedPerCycle;
+        private float WasteProducedPercentFull => Container.Full ? 1f : wasteProduced / WasteProducedPerCycle;
 
         public ThingDef FirstIngredientMissing
         {
@@ -307,7 +307,7 @@ namespace PipeSystem
         /// </summary>
         public override void PostDraw()
         {
-            if (Props.showWastepackBar)
+            if (shouldProduceWastePack && Props.showWastepackBar)
             {
                 fillableWasteBar.fillPercent = WasteProducedPercentFull;
                 GenDraw.DrawFillableBar(fillableWasteBar);
@@ -348,7 +348,7 @@ namespace PipeSystem
                 yield return new Command_Action
                 {
                     defaultLabel = "Empty wastepack(s)",
-                    action = () => container.innerContainer.Clear()
+                    action = () => Container.innerContainer.Clear()
                 };
             }
         }
@@ -390,7 +390,7 @@ namespace PipeSystem
         /// <param name="amount"></param>
         public void ProduceWastepack(int amount)
         {
-            if (!container.Full && ModsConfig.BiotechActive)
+            if (!Container.Full && ModsConfig.BiotechActive)
             {
                 wasteProduced += amount;
                 if (wasteProduced >= WasteProducedPerCycle && !Container.innerContainer.Any)
