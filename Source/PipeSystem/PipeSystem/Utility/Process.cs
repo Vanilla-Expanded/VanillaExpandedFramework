@@ -149,7 +149,7 @@ namespace PipeSystem
             progress = 0f;
             ruinedPercent = 0f;
             var map = parent.Map;
-            id = $"Process_{parent.Map.uniqueID}_{def.defName}_{CachedAdvancedProcessorsManager.GetFor(map).ProcessIDsManager.GetNextPlanetID(map)}";
+            id = $"Process_{parent.Map.uniqueID}_{def.defName}_{CachedAdvancedProcessorsManager.GetFor(map).ProcessIDsManager.GetNextProcessID(map)}";
             spawning = true;
         }
 

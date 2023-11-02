@@ -10,14 +10,14 @@ namespace PipeSystem
 
         public void ExposeData()
         {
-            Scribe_Values.Look(ref nextProcessID, "nextPlanetID", 0);
+            Scribe_Values.Look(ref nextProcessID, "nextProcessID", 0);
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
                 wasLoaded = true;
             }
         }
 
-        public int GetNextPlanetID(Map map) => GetNextID(map, ref nextProcessID);
+        public int GetNextProcessID(Map map) => GetNextID(map, ref nextProcessID);
 
         private static int GetNextID(Map map, ref int nextID)
         {
