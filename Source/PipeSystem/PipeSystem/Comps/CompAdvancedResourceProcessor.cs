@@ -354,12 +354,30 @@ namespace PipeSystem
         /// </summary>
         public override string CompInspectStringExtra()
         {
+            var process = Process;
+            if (process == null) return null;
+
             var sb = new StringBuilder();
-            sb.Append(base.CompInspectStringExtra());
-            sb.AppendLineIfNotEmpty();
+            if (process.RuinedByTemp)
+                sb.AppendLine("RuinedByTemperature".Translate());
+
+            if (process.RuinedPercent > 0f)
+            {
+                var ambient = parent.AmbientTemperature;
+                if (ambient > process.Def.maxSafeTemperature)
+                {
+                    sb.AppendLine("Overheating".Translate() + ": " + process.RuinedPercent.ToStringPercent());
+                }
+                else if (ambient < process.Def.minSafeTemperature)
+                {
+                    sb.AppendLine("Freezing".Translate() + ": " + process.RuinedPercent.ToStringPercent());
+                }
+            }
+
             if (shouldProduceWastePack)
                 sb.Append("WasteLevel".Translate() + ": " + WasteProducedPercentFull.ToStringPercent());
-            return sb.ToString();
+
+            return sb.ToString().TrimEndNewlines();
         }
 
         /// <summary>

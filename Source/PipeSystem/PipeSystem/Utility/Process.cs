@@ -21,6 +21,7 @@ namespace PipeSystem
 
         private int targetCount;                                // Number of time this process should repeat
         private int processCount;                               // Number of time this process repeated
+        private float ruinedPercent;                            // Ruining (due to temp) percent
 
         private string id;                                      // Process ID
 
@@ -125,11 +126,17 @@ namespace PipeSystem
             }
         }
 
+        /// <summary>
+        /// Ruined
+        /// </summary>
+        public bool RuinedByTemp => ruinedPercent >= 1f;
+
         public ProcessDef Def => def;
         public bool PickUpReady => pickUpReady;
         public float Progress => progress;
         public int TickLeft => tickLeft;
         public List<ThingAndResourceOwner> IngredientsOwners => ingredientsOwners;
+        public float RuinedPercent => ruinedPercent;
 
         public Process()
         { }
@@ -140,6 +147,7 @@ namespace PipeSystem
             def = processDef;
             tickLeft = processDef.ticks;
             progress = 0f;
+            ruinedPercent = 0f;
             var map = parent.Map;
             id = $"Process_{parent.Map.uniqueID}_{def.defName}_{CachedAdvancedProcessorsManager.GetFor(map).ProcessIDsManager.GetNextPlanetID(map)}";
             spawning = true;
@@ -160,6 +168,7 @@ namespace PipeSystem
             Scribe_Values.Look(ref targetCount, "targetCount");
             Scribe_Values.Look(ref pickUpReady, "pickUpReady");
             Scribe_Values.Look(ref processCount, "processCount");
+            Scribe_Values.Look(ref ruinedPercent, "ruinedPercent", 0f);
 
             Scribe_References.Look(ref parent, "parent");
 
@@ -200,6 +209,37 @@ namespace PipeSystem
         }
 
         /// <summary>
+        /// Manage the temperature ruining mechanic
+        /// </summary>
+        /// <param name="ticks">Number of ticks that passed</param>
+        public void TryRuin(int ticks)
+        {
+            if (def.temperatureRuinable)
+            {
+                var ambient = parent.AmbientTemperature;
+                if (ambient > def.maxSafeTemperature)
+                {
+                    ruinedPercent += (ambient - def.maxSafeTemperature) * def.progressPerDegreePerTick * ticks;
+                }
+                else if (ambient < def.minSafeTemperature)
+                {
+                    ruinedPercent -= (ambient - def.minSafeTemperature) * def.progressPerDegreePerTick * ticks;
+                }
+
+                if (ruinedPercent >= 1f)
+                {
+                    ruinedPercent = 1f;
+                    // TODO: Alert
+                    ResetProcess(false);
+                }
+                else if (ruinedPercent < 0f)
+                {
+                    ruinedPercent = 0f;
+                }
+            }
+        }
+
+        /// <summary>
         /// Manage ingredientsOwners, ticksLeft and process result
         /// </summary>
         /// <param name="ticks">ticks passed</param>
@@ -224,8 +264,11 @@ namespace PipeSystem
             if (MissingIngredients)
                 return;
             // We are active for ticks
-            if (tickLeft > 0)
+            if (tickLeft > 0 && !RuinedByTemp)
+            {
+                TryRuin(ticks);
                 tickLeft -= ticks;
+            }
             // Set progress (for the bar)
             progress = 1f - (tickLeft / (float)def.ticks);
             // Check if processor should produce this tick

@@ -27,6 +27,11 @@ namespace PipeSystem
         public bool manualExtractAllowNet = true;                       // When pawn manually extract, result will try to go in net first
         public int extractTicks = 800;                                  // Manual extract ticks needed
 
+        public bool temperatureRuinable = false;                        // Can be ruined by wrong temperature
+        public float minSafeTemperature;                                // Minimum safe temperature
+        public float maxSafeTemperature = 100f;                         // Maximum safe temperature
+        public float progressPerDegreePerTick = 1E-05f;                 // Ruining due to incorrect temp progress per tick
+
         /// <summary>
         /// Ingredient: can be pipeNet or thingDef and a count
         /// </summary>
