@@ -14,6 +14,7 @@ namespace VanillaGenesExpanded
         //Custom gene backgrounds
         public string backgroundPathEndogenes;
         public string backgroundPathXenogenes;
+        public string backgroundPathArchite;
 
         //Applies hediffs to existing body parts when the gene is acquired
         public List<HediffToBodyparts> hediffsToBodyParts;

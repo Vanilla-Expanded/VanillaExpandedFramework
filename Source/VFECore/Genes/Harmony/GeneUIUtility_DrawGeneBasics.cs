@@ -22,6 +22,8 @@ namespace VanillaGenesExpanded
 
             var loadsFieldTwo = AccessTools.Field(typeof(GeneUIUtility), "GeneBackground_Xenogene");
 
+            var loadsFieldArchite = AccessTools.Field(typeof(GeneUIUtility), "GeneBackground_Archite");
+
             var codes = instructions.ToList();
 
             for (var i = 0; i < codes.Count; i++)
@@ -38,6 +40,12 @@ namespace VanillaGenesExpanded
                 {
                     yield return new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(codes[i]);
                     yield return new CodeInstruction(OpCodes.Call, typeof(VanillaGenesExpanded_GeneUIUtility_DrawGeneBasics_Patch).GetMethod("ChooseXenogeneBackground"));
+                }
+
+                else if (codes[i].opcode == OpCodes.Ldsfld && codes[i].LoadsField(loadsFieldArchite))
+                {
+                    yield return new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(codes[i]);
+                    yield return new CodeInstruction(OpCodes.Call, typeof(VanillaGenesExpanded_GeneUIUtility_DrawGeneBasics_Patch).GetMethod("ChooseArchiteBackground"));
                 }
 
                 else
@@ -63,6 +71,15 @@ namespace VanillaGenesExpanded
                 return Activator.CreateInstance(cachedTextureType, gene.GetModExtension<GeneExtension>().backgroundPathXenogenes);
             }
             else { return GraphicsCache.GeneBackground_Xenogene; }
+        }
+
+        public static object ChooseArchiteBackground(GeneDef gene)
+        {
+            if (gene.GetModExtension<GeneExtension>()?.backgroundPathArchite != null)
+            {
+                return Activator.CreateInstance(cachedTextureType, gene.GetModExtension<GeneExtension>().backgroundPathArchite);
+            }
+            else { return GraphicsCache.GeneBackground_Archite; }
         }
     }
 }

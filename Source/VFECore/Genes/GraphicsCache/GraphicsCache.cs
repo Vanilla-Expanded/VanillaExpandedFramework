@@ -13,5 +13,6 @@ namespace VanillaGenesExpanded
        
         public static readonly object GeneBackground_Xenogene = Activator.CreateInstance(cachedTextureType, "UI/Icons/Genes/GeneBackground_Xenogene");
         public static readonly object GeneBackground_Endogene = Activator.CreateInstance(cachedTextureType, "UI/Icons/Genes/GeneBackground_Endogene");
+        public static readonly object GeneBackground_Archite = Activator.CreateInstance(cachedTextureType, "UI/Icons/Genes/GeneBackground_ArchiteGene");
     }
 }
