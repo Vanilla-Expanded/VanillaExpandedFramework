@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using UnityEngine;
@@ -9,7 +10,7 @@ namespace VFECore
 	public class ExpandableProjectile : Bullet
 	{
 		private int curDuration;
-		private Vector3 startingPosition;
+		public Vector3 startingPosition;
 		private Vector3 prevPosition;
 		private int curProjectileIndex=0;
 		private int curProjectileFadeOutIndex=0;
@@ -17,22 +18,47 @@ namespace VFECore
 		private float maxRange;
 		public void SetDestinationToMax(Thing equipment)
 		{
-			maxRange = equipment.TryGetComp<CompEquippable>().PrimaryVerb.verbProps.range;
-			var origin2 = new Vector3(this.launcher.TrueCenter().x, 0, this.launcher.TrueCenter().z);
+			this.maxRange = Mathf.Min(Mathf.Max(Map.Size.x, Map.Size.z), GetMaxRange(equipment));
+            var origin2 = new Vector3(this.origin.x, 0, this.origin.z);
 			var destination2 = new Vector3(destination.x, 0, destination.z);
 			var distance = Vector3.Distance(origin2, destination2);
-			var distanceDiff = maxRange - distance;
+			var distanceDiffMax = maxRange - distance;
 			var normalized = (destination2 - origin2).normalized;
-			this.destination += normalized * distanceDiff;
-			var cell = this.destination.ToIntVec3();
-			if (!cell.InBounds(this.Map))
+			var distanceDiff = 1;
+            while (true)
 			{
-				var nearestCell = CellRect.WholeMap(this.Map).EdgeCells.OrderBy(x => x.DistanceTo(cell)).First();
-				this.destination = nearestCell.ToVector3();
-			}
+				if (distanceDiff >= distanceDiffMax)
+                {
+                    this.destination += normalized * distanceDiff;
+                    break;
+				}
+				var newCell = (this.destination + (normalized * distanceDiff)).ToIntVec3();
+				if (newCell.InBounds(Map) is false)
+				{
+                    this.destination += normalized * (distanceDiff - 1);
+                    break;
+                }
+				distanceDiff += 1;
+            }
 			this.ticksToImpact = Mathf.CeilToInt(StartingTicksToImpact);
 		}
-		public new virtual int DamageAmount
+
+        private float GetMaxRange(Thing equipment)
+        {
+            if (VehicleFramework_Turret_Patch.currentFiringVehicleTurret is not null)
+            {
+				return (float)(VehicleFramework_Turret_Patch.maxRangeInfo
+					.Invoke(VehicleFramework_Turret_Patch.currentFiringVehicleTurret, null));
+            }
+			var comp = equipment.TryGetComp<CompEquippable>();
+			if (comp != null)
+			{
+                return comp.PrimaryVerb.verbProps.range;
+            }
+			throw new Exception("[VEF] Couldn't determine max range for " + this.Label);
+        }
+
+        public new virtual int DamageAmount
 		{
 			get
 			{
@@ -56,7 +82,7 @@ namespace VFECore
 			base.SpawnSetup(map, respawningAfterLoad);
 			if (!respawningAfterLoad)
 			{
-				startingPosition = this.Position.ToVector3Shifted();
+                startingPosition = this.Position.ToVector3Shifted(); 
 				startingPosition.y = 0;
 			}
 		}
@@ -118,12 +144,29 @@ namespace VFECore
 			}
 		}
 
+
+		public bool LauncherIsVehicle
+		{
+			get
+			{
+                if (VehicleFramework_Turret_Patch.VFLoaded && VehicleFramework_Turret_Patch.VehicleType.IsAssignableFrom(this.launcher.GetType()))
+                {
+					return true;
+                }
+				return false;
+            }
+		}
+
 		public bool pawnMoved;
 		public Vector3 StartingPosition
 		{
 			get
 			{
-				if (!(this.launcher is Pawn))
+				if (LauncherIsVehicle)
+				{
+                    return this.startingPosition;
+                }
+                if (!(this.launcher is Pawn))
 				{
 					this.startingPosition = this.launcher.OccupiedRect().CenterVector3;
 				}
@@ -137,8 +180,8 @@ namespace VFECore
 					{
 						this.startingPosition = pawn.OccupiedRect().CenterVector3;
 					}
-				}
-				return this.startingPosition;
+                }
+                return this.startingPosition;
 			}
 		}
 
@@ -181,109 +224,132 @@ namespace VFECore
 			}
 		}
 		public void DrawProjectile()
-		{
-			var currentPos = CurPosition;
-			currentPos.y = 0;
-			var startingPosition = StartingPosition;
-			startingPosition.y = 0;
-			var destination = new Vector3(this.destination.x, this.destination.y, this.destination.z);
-			destination.y = 0;
+        {
+            var currentPos = CurPosition;
+            currentPos.y = 0;
+            var startingPosition = StartingPosition;
+            startingPosition.y = 0;
+            var destination = new Vector3(this.destination.x, this.destination.y, this.destination.z);
+            destination.y = 0;
 
-			Quaternion quat = Quaternion.LookRotation(currentPos - startingPosition);
-			Vector3 pos = (startingPosition + currentPos) / 2f;
-			pos.y = 10;
-			if (this.launcher.Rotation == Rot4.West)
-			{
-				Vector3 startingPositionOffsetMirrored = this.def.startingPositionOffset;
-				startingPositionOffsetMirrored.x = -startingPositionOffsetMirrored.x;
-				pos += Quaternion.Euler(0, (startingPosition - currentPos).AngleFlat(), 0) * startingPositionOffsetMirrored;
-			}
-			else if (this.launcher.Rotation == Rot4.East)
-			{
-				pos += Quaternion.Euler(0, (startingPosition - currentPos).AngleFlat(), 0) * def.startingPositionOffset;
-			}
+            Quaternion quat = Quaternion.LookRotation(currentPos - startingPosition);
+            Vector3 pos = (startingPosition + currentPos) / 2f;
+            pos.y = 10;
+            pos = AdjustPos(currentPos, startingPosition, pos);
 
-			else if (this.launcher.Rotation == Rot4.South || this.launcher.Rotation == Rot4.North)
-			{
-				Vector3 startingPositionOffsetForSouth = this.def.startingPositionOffset;
-				startingPositionOffsetForSouth.x = 0;
-				pos += Quaternion.Euler(0, (startingPosition - currentPos).AngleFlat(), 0) * startingPositionOffsetForSouth;
+            var distance = Vector3.Distance(startingPosition, currentPos) * def.totalSizeScale;
+            var distanceToTarget = Vector3.Distance(startingPosition, destination);
+            var widthFactor = distance / distanceToTarget;
 
-			}
+            var vec = new Vector3(distance * def.widthScaleFactor * widthFactor, 0f, distance * def.heightScaleFactor);
+            Matrix4x4 matrix = default(Matrix4x4);
+            matrix.SetTRS(pos, quat, vec);
+            Graphics.DrawMesh(MeshPool.plane10, matrix, ProjectileMat, 0);
+        }
 
-			var distance = Vector3.Distance(startingPosition, currentPos) * def.totalSizeScale;
-			var distanceToTarget = Vector3.Distance(startingPosition, destination);
-			var widthFactor = distance / distanceToTarget;
+        private Vector3 AdjustPos(Vector3 currentPos, Vector3 startingPosition, Vector3 pos)
+        {
+            if (this.launcher is Pawn)
+            {
+                if (LauncherIsVehicle is false)
+                {
+                    if (this.launcher.Rotation == Rot4.West)
+                    {
+                        Vector3 startingPositionOffsetMirrored = this.def.startingPositionOffset;
+                        startingPositionOffsetMirrored.x = -startingPositionOffsetMirrored.x;
+                        pos += Quaternion.Euler(0, (startingPosition - currentPos).AngleFlat(), 0) * startingPositionOffsetMirrored;
+                    }
+                    else if (this.launcher.Rotation == Rot4.East)
+                    {
+                        pos += Quaternion.Euler(0, (startingPosition - currentPos).AngleFlat(), 0) * def.startingPositionOffset;
+                    }
 
-			var vec = new Vector3(distance * def.widthScaleFactor * widthFactor, 0f, distance * def.heightScaleFactor);
-			Matrix4x4 matrix = default(Matrix4x4);
-			matrix.SetTRS(pos, quat, vec);
-			Graphics.DrawMesh(MeshPool.plane10, matrix, ProjectileMat, 0);
-		}
+                    else if (this.launcher.Rotation == Rot4.South || this.launcher.Rotation == Rot4.North)
+                    {
+                        Vector3 startingPositionOffsetForSouth = this.def.startingPositionOffset;
+                        startingPositionOffsetForSouth.x = 0;
+                        pos += Quaternion.Euler(0, (startingPosition - currentPos).AngleFlat(), 0) * startingPositionOffsetForSouth;
+                    }
+                }
+            }
+            else
+            {
+                pos += Quaternion.Euler(0, (startingPosition - currentPos).AngleFlat(), 0) * def.startingPositionOffset;
+            }
 
-		public HashSet<IntVec3> MakeProjectileLine(Vector3 start, Vector3 end, Map map)
-		{
-			var resultingLine = new ShootLine(start.ToIntVec3(), end.ToIntVec3());
-			var points = resultingLine.Points();
-			HashSet<IntVec3> positions = new HashSet<IntVec3>();
+            return pos;
+        }
 
-			var currentPos = CurPosition;
-			currentPos.y = 0;
-			var startingPosition = StartingPosition;
-			startingPosition.y = 0;
-			var destination = new Vector3(currentPos.x, currentPos.y, currentPos.z);
+        public HashSet<IntVec3> MakeProjectileLine(Vector3 start, Vector3 end, Map map)
+        {
+            var resultingLine = new ShootLine(start.ToIntVec3(), end.ToIntVec3());
+            var points = resultingLine.Points();
+            var currentPos = CurPosition;
+            currentPos.y = 0;
+            var startingPosition = StartingPosition;
+            startingPosition.y = 0;
+            Vector3 pos = (startingPosition + currentPos) / 2f;
+            pos.y = 10;
+			pos = AdjustPos(currentPos, startingPosition, pos);
 
-			Vector3 pos = (startingPosition + currentPos) / 2f;
-			pos.y = 10;
-			if (this.launcher.Rotation == Rot4.West)
-			{
-				Vector3 startingPositionOffsetMirrored = this.def.startingPositionOffset;
-				startingPositionOffsetMirrored.x = -startingPositionOffsetMirrored.x;
-				pos += Quaternion.Euler(0, (startingPosition - currentPos).AngleFlat(), 0) * startingPositionOffsetMirrored;
+            var distance = Vector3.Distance(startingPosition, currentPos) * this.def.totalSizeScale;
+            var distanceToTarget = Vector3.Distance(startingPosition, currentPos);
+            var widthFactor = distance / distanceToTarget;
 
+            var width = distance * this.def.widthScaleFactor * widthFactor;
+            var height = distance * this.def.heightScaleFactor;
+            var centerOfLine = pos.ToIntVec3();
+            var startPosition = StartingPosition.ToIntVec3();
+            var endPosition = this.CurPosition.ToIntVec3();
 
-			}
-			else
-			{
-				pos += Quaternion.Euler(0, (startingPosition - currentPos).AngleFlat(), 0) * this.def.startingPositionOffset;
+            return GetCellsToDamage(start, points, width, height, centerOfLine, startPosition, endPosition);
+        }
 
-			}
+        protected virtual HashSet<IntVec3> GetCellsToDamage(Vector3 start, IEnumerable<IntVec3> points, float width, float height, IntVec3 centerOfLine, IntVec3 startPosition, IntVec3 endPosition)
+        {
+            HashSet<IntVec3> positions = new HashSet<IntVec3>();
+            if (points.Any())
+            {
+                foreach (var cell in GenRadial.RadialCellsAround(start.ToIntVec3(), height, true))
+                {
+                    if (startPosition.DistanceTo(cell) > def.minDistanceToAffect)
+                    {
+                        var distanceFromStartToEnd = startPosition.DistanceToSquared(endPosition);
+                        var distanceFromCellToEnd = cell.DistanceToSquared(endPosition);
+                        int distanceFromCenterToEnd = centerOfLine.DistanceToSquared(endPosition);
+                        if (distanceFromCenterToEnd >= distanceFromCellToEnd)
+                        //if (distanceFromStartToEnd >= distanceFromCellToEnd)
+                        {
+                            var nearestCell = points.MinBy(x => x.DistanceToSquared(cell));
+                            var widthToHeightRatio = (width / height);
+                            if (widthToHeightRatio * def.arcSize > nearestCell.DistanceToSquared(cell))
+                            {
+                                positions.Add(cell);
+                                if (def.debugMode)
+                                {
+                                    Map.debugDrawer.FlashCell(cell, 0.5f);
+                                }
+                            }
+                        }
+                    }
+                }
+                foreach (var cell in points)
+                {
+                    var startCellDistance = startPosition.DistanceTo(cell);
+                    if (startCellDistance > def.minDistanceToAffect && startCellDistance <= startPosition.DistanceTo(endPosition))
+                    {
+                        if (def.debugMode)
+                        {
+                            Map.debugDrawer.FlashCell(cell, 0.5f);
+                        }
+                        positions.Add(cell);
+                    }
+                }
+            }
+            return positions;
+        }
 
-			var distance = Vector3.Distance(startingPosition, currentPos) * this.def.totalSizeScale;
-			var distanceToTarget = Vector3.Distance(startingPosition, currentPos);
-			var widthFactor = distance / distanceToTarget;
-
-			var width = distance * this.def.widthScaleFactor * widthFactor;
-			var height = distance * this.def.heightScaleFactor;
-			var centerOfLine = pos.ToIntVec3();
-			var startPosition = StartingPosition.ToIntVec3();
-			var endPosition = this.CurPosition.ToIntVec3();
-			if (points.Any())
-			{
-				foreach (var cell in GenRadial.RadialCellsAround(start.ToIntVec3(), height, true))
-				{
-					if (centerOfLine.DistanceToSquared(endPosition) >= cell.DistanceToSquared(endPosition) && startPosition.DistanceTo(cell) > def.minDistanceToAffect)
-					{
-						var nearestCell = points.MinBy(x => x.DistanceToSquared(cell));
-						if ((width / height) * 2.5f > nearestCell.DistanceToSquared(cell))
-						{
-							positions.Add(cell);
-						}
-					}
-				}
-				foreach (var cell in points)
-				{
-					var startCellDistance = startPosition.DistanceTo(cell);
-					if (startCellDistance > def.minDistanceToAffect && startCellDistance <= startPosition.DistanceTo(endPosition))
-					{
-						positions.Add(cell);
-					}
-				}
-			}
-			return positions;
-		}
-
-		private void StopMotion()
+        private void StopMotion()
 		{
 			if (!stopped)
 			{
@@ -333,9 +399,9 @@ namespace VFECore
 		{
 			return t.def != this.def && t != this.launcher && (t.def.useHitPoints || t is Pawn);
 		}
+
 		public virtual void DoDamage(IntVec3 pos)
 		{
-
 		}
 
 		protected bool customImpact;

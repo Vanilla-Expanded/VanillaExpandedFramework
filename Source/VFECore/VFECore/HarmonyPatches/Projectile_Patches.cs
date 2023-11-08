@@ -13,6 +13,49 @@ using System.Reflection;
 
 namespace VFECore
 {
+    [HarmonyPatch]
+    public static class VehicleFramework_Turret_Patch
+    {
+        public static bool VFLoaded = ModsConfig.IsActive("SmashPhil.VehicleFramework");
+        public static MethodInfo targetMethod;
+        public static MethodInfo maxRangeInfo;
+        public static MethodInfo turretLocation;
+        public static MethodInfo turretRotation;
+        public static FieldInfo aimPieOffset;
+        public static Type VehicleType = AccessTools.TypeByName("Vehicles.VehiclePawn");
+        public static bool Prepare()
+        {
+            if (VFLoaded)
+            {
+                targetMethod = AccessTools.Method("Vehicles.VehicleTurret:FireTurret");
+                maxRangeInfo = AccessTools.PropertyGetter("Vehicles.VehicleTurret:MaxRange");
+                turretLocation = AccessTools.PropertyGetter("Vehicles.VehicleTurret:TurretLocation");
+                turretRotation = AccessTools.PropertyGetter("Vehicles.VehicleTurret:TurretRotation");
+                aimPieOffset = AccessTools.Field("Vehicles.VehicleTurret:aimPieOffset");
+                if (targetMethod is not null && maxRangeInfo is not null && turretLocation is not null 
+                    && turretRotation is not null && aimPieOffset is not null)
+                {
+                    return true;
+                }
+                Log.Error("[VEF] Failed to patch VehicleFramework, vehicle turrets will not work with some expendable projectiles");
+            }
+            return false;
+        }
+
+        public static MethodBase TargetMethod() => targetMethod;
+
+        public static object currentFiringVehicleTurret;
+
+        public static void Prefix(object __instance)
+        {
+            currentFiringVehicleTurret = __instance;
+        }
+
+        public static void Postfix()
+        {
+            currentFiringVehicleTurret = null;
+        }
+    }
     [HarmonyPatch(typeof(Projectile), "Launch", new Type[]
     {
         typeof(Thing),
@@ -26,12 +69,27 @@ namespace VFECore
     })]
     public static class Projectile_Launch_Patch
     {
+
         public static void Postfix(Projectile __instance, Thing launcher, Vector3 origin, ref LocalTargetInfo usedTarget, 
             LocalTargetInfo intendedTarget, bool preventFriendlyFire, Thing equipment, ThingDef targetCoverDef)
         {
-            if (__instance is ExpandableProjectile expandableProjectile && expandableProjectile.def.reachMaxRangeAlways && equipment != null)
+            if (__instance is ExpandableProjectile expandableProjectile)
             {
-                expandableProjectile.SetDestinationToMax(equipment);
+                if (VehicleFramework_Turret_Patch.VFLoaded && VehicleFramework_Turret_Patch.currentFiringVehicleTurret is not null)
+                {
+                    var turretLocation = (Vector3)VehicleFramework_Turret_Patch.turretLocation
+                        .Invoke(VehicleFramework_Turret_Patch.currentFiringVehicleTurret, null);
+                    var turretRotation = (float)VehicleFramework_Turret_Patch.turretRotation
+                        .Invoke(VehicleFramework_Turret_Patch.currentFiringVehicleTurret, null);
+                    var aimPieOffset = (Vector2)VehicleFramework_Turret_Patch.aimPieOffset
+                        .GetValue(VehicleFramework_Turret_Patch.currentFiringVehicleTurret);
+                    expandableProjectile.startingPosition = turretLocation 
+                        + (new Vector3(aimPieOffset.x, Altitudes.AltInc, aimPieOffset.y).RotatedBy(turretRotation));
+                }
+                if (expandableProjectile.def.reachMaxRangeAlways && equipment != null)
+                {
+                    expandableProjectile.SetDestinationToMax(equipment);
+                }
             }
             else if (__instance.IsHomingProjectile(out var comp))
             {
@@ -45,7 +103,8 @@ namespace VFECore
                 __instance.SetDestination(__instance.intendedTarget.CenterVector3);
             }
         }
-    
+
+
         public static void SetDestination(this Projectile projectile, Vector3 destination)
         {
             var projDestination = ((Vector3)NonPublicFields.Projectile_destination.GetValue(projectile));

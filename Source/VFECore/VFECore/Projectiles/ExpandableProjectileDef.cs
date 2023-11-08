@@ -25,7 +25,9 @@ namespace VFECore
 		public bool dealsDamageOnce;
 		public bool reachMaxRangeAlways;
         public bool stopWhenHit = true;
+		public float arcSize = 2.5f;
         public float stopAtBuildingWithCover = 1f;
+		public bool debugMode;
         public List<string> stopWhenHitAt = new List<string>();
 		protected override void ResolveIcon()
 		{
