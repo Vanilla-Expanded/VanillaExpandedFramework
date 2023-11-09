@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
+using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
 
 namespace VFECore
 {
-	public class ExpandableProjectile : Bullet
+    public class ExpandableProjectile : Bullet
 	{
 		private int curDuration;
 		public Vector3 startingPosition;
@@ -35,8 +37,8 @@ namespace VFECore
 				var newCell = (this.destination + (normalized * distanceDiff)).ToIntVec3();
 				if (newCell.InBounds(Map) is false)
 				{
-                    this.destination += normalized * (distanceDiff - 1);
-                    break;
+                    this.destination += normalized * (distanceDiff + 10); // goes over map edge by like 10 cells just to not cut off projectile too early
+					break;
                 }
 				distanceDiff += 1;
             }
@@ -317,8 +319,7 @@ namespace VFECore
                         var distanceFromStartToEnd = startPosition.DistanceToSquared(endPosition);
                         var distanceFromCellToEnd = cell.DistanceToSquared(endPosition);
                         int distanceFromCenterToEnd = centerOfLine.DistanceToSquared(endPosition);
-                        if (distanceFromCenterToEnd >= distanceFromCellToEnd)
-                        //if (distanceFromStartToEnd >= distanceFromCellToEnd)
+                        if (def.wideAtStart ? distanceFromStartToEnd >= distanceFromCellToEnd : distanceFromCenterToEnd >= distanceFromCellToEnd)
                         {
                             var nearestCell = points.MinBy(x => x.DistanceToSquared(cell));
                             var widthToHeightRatio = (width / height);
@@ -400,7 +401,33 @@ namespace VFECore
 			return t.def != this.def && t != this.launcher && (t.def.useHitPoints || t is Pawn);
 		}
 
-		public virtual void DoDamage(IntVec3 pos)
+        public override Vector3 ExactPosition
+		{
+			get
+			{
+				var value = base.ExactPosition;
+				if (value.InBounds(Map) is false)
+				{
+                    var origin2 = new Vector3(this.origin.x, 0, this.origin.z);
+                    var destination2 = new Vector3(value.x, 0, value.z);
+                    var normalized = (destination2 - origin2).normalized;
+                    var distanceDiff = 0.1f;
+                    while (true)
+                    {
+                        var newValue = (value - (normalized * distanceDiff));
+                        if (newValue.InBounds(Map))
+                        {
+							value = newValue;
+                            break;
+                        }
+                        distanceDiff += 0.1f;
+                    }
+                }
+                return value;
+            }
+		}
+
+        public virtual void DoDamage(IntVec3 pos)
 		{
 		}
 

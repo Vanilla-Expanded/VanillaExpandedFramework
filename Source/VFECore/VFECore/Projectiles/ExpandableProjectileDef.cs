@@ -28,6 +28,7 @@ namespace VFECore
 		public float arcSize = 2.5f;
         public float stopAtBuildingWithCover = 1f;
 		public bool debugMode;
+		public bool wideAtStart;
         public List<string> stopWhenHitAt = new List<string>();
 		protected override void ResolveIcon()
 		{
