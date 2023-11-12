@@ -433,24 +433,37 @@ namespace VFECore
 
         public void Initialize()
         {
-            if (HostThing.Map != null)
+            if (this.parent != null)
             {
-                if (!listerShieldGensByMaps.TryGetValue(HostThing.Map, out var list))
+                if (this.Props is null)
                 {
-                    listerShieldGensByMaps[HostThing.Map] = list = new List<CompShieldField>();
+                    var modName = this.parent.def.modContentPack?.Name;
+                    var errorMessage = this.parent.def + " has " + this.GetType() + " but lacks CompProperties_ShieldField properties. It must be set in XML in order to work.";
+                    if (modName.NullOrEmpty() is false)
+                    {
+                        errorMessage += " Report about it to " + modName + " author";
+                    }
+                    Log.Error(errorMessage);
                 }
-                if (!list.Contains(this))
+                if (HostThing.Map != null)
                 {
-                    list.Add(this);
+                    if (!listerShieldGensByMaps.TryGetValue(HostThing.Map, out var list))
+                    {
+                        listerShieldGensByMaps[HostThing.Map] = list = new List<CompShieldField>();
+                    }
+                    if (!list.Contains(this))
+                    {
+                        list.Add(this);
+                    }
+
+                    UpdateShieldCoverage();
                 }
 
-                UpdateShieldCoverage();
-            }
-
-            if (initialized is false)
-            {
-                energy = MaxEnergy * Props.initialEnergyPercentage;
-                initialized = true;
+                if (initialized is false)
+                {
+                    energy = MaxEnergy * Props.initialEnergyPercentage;
+                    initialized = true;
+                }
             }
         }
 
