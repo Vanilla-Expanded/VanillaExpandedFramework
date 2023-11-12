@@ -529,6 +529,15 @@
     <Compile Include="Genes\Harmony\PawnUtility_BodyResourceGrowthSpeed.cs" />
     <Compile Include="Memes\Harmony\Ideo_ExposeData.cs" />
     <Compile Include="Misc\ForcedMusicManager.cs" />
+    <Compile Include="VFECore\PregnancyApproaches\JobDriver_Lovin_FinishAction_Vanilla.cs" />
+    <Compile Include="VFECore\PregnancyApproaches\PregnancyApproachWorker.cs" />
+    <Compile Include="VFECore\PregnancyApproaches\JobDriver_Lovin_Patch.cs" />
+    <Compile Include="VFECore\PregnancyApproaches\Pawn_RelationsTracker_ExposeData_Patch.cs" />
+    <Compile Include="VFECore\PregnancyApproaches\Pawn_RelationsTracker_SetPregnancyApproach_Patch.cs" />
+    <Compile Include="VFECore\PregnancyApproaches\PregnancyApproachData.cs" />
+    <Compile Include="VFECore\PregnancyApproaches\PregnancyUtility_PregnancyChanceForPartners_Patch.cs" />
+    <Compile Include="VFECore\PregnancyApproaches\SocialCardUtility_DrawPregnancyApproach_Patch.cs" />
+    <Compile Include="VFECore\PregnancyApproaches\PregnancyApproachDef.cs" />
     <Compile Include="VFECore\Projectiles\ExpandableBullet.cs" />
     <Compile Include="VFECore\HarmonyPatches\Building_TurretGun_Patches.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\BackstoryDef_BodyTypeFor_Patch.cs" />
