@@ -274,4 +274,33 @@ namespace VFECore
             return skillDef;
         }
     }
+
+    [HarmonyPatch]
+    public static class QualityBuilder_WorkGiver_ConstructFinishFrames_Patch
+    {
+        public static MethodBase targetMethod;
+
+        public static bool Prepare()
+        {
+            var type = AccessTools.TypeByName("QualityBuilder._WorkGiver_ConstructFinishFrames");
+            if (type != null)
+            {
+                targetMethod = AccessTools.Method(type, "Postfix");
+                return targetMethod != null;
+            }
+            return false;
+        }
+
+        public static MethodBase TargetMethod() => targetMethod;
+
+        public static bool Prefix(Job __0)
+        {
+            if (__0?.workGiverDef?.giverClass != null && typeof(WorkGiver_ConstructionSkill_FinishFrames)
+                .IsAssignableFrom(__0.workGiverDef.giverClass))
+            {
+                return false;
+            }
+            return true;
+        }
+    }
 }
