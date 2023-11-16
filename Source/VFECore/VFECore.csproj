@@ -516,6 +516,7 @@
     <Compile Include="DoorTeleporter\WorldComponent_DoorTeleporterManager.cs" />
     <Compile Include="DoorTeleporter\DoorTeleporterPatches.cs" />
     <Compile Include="DoorTeleporter\JobDriver_UseDoorTeleporter.cs" />
+    <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_InColonyMap.cs" />
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_InPollution.cs" />
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_InPain.cs" />
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_Darkness.cs" />

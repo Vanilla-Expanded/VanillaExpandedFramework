@@ -15,6 +15,7 @@
 	<VGE_StatsReport_InDarkness>below 50% lit</VGE_StatsReport_InDarkness>
 	<VGE_StatsReport_InPain>in pain</VGE_StatsReport_InPain>
 	<VGE_StatsReport_InPollution>in polluted terrain</VGE_StatsReport_InPollution>
+	<VGE_StatsReport_ColonyMap>on colony map</VGE_StatsReport_ColonyMap>
 	
 	<VGE_EggPregnancy>{0}'s eggs have been fertilized! The egglaying process will continue until a fertile egg is laid.</VGE_EggPregnancy>
 	<VGE_EggPregnancyLabel>{0} fertilized!</VGE_EggPregnancyLabel>
