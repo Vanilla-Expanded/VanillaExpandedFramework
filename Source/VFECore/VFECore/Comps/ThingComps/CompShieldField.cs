@@ -461,7 +461,10 @@ namespace VFECore
 
                 if (initialized is false)
                 {
-                    energy = MaxEnergy * Props.initialEnergyPercentage;
+                    if (Indestructible is false)
+                    {
+                        energy = MaxEnergy * Props.initialEnergyPercentage;
+                    }
                     initialized = true;
                 }
             }
