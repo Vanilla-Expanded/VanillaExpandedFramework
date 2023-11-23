@@ -23,6 +23,8 @@ namespace VanillaGenesExpanded
 
         //Makes "fur" associated with this gene use the body's colour, instead of the hair
         public bool useSkinColorForFur = false;
+        //Makes "fur" associated with this gene use the body's and hair's colours
+        public bool useSkinAndHairColorsForFur = false;
         //Keeps "fur" untinted
         public bool dontColourFur = false;
         //Switches "fur" shader to be CutoutComplex rather than skin shader.

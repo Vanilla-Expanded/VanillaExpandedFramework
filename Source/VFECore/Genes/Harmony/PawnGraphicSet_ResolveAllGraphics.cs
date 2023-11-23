@@ -35,12 +35,17 @@ namespace VanillaGenesExpanded
                                                                                        GraphicDatabase.Get<Graphic_Multi>(pawn.story.furDef.GetFurBodyGraphicPath(pawn), ShaderDatabase.CutoutComplex, Vector2.one, pawn.story.SkinColor) :
                                                                                        GraphicDatabase.Get<Graphic_Multi>(pawn.story.furDef.GetFurBodyGraphicPath(pawn), ShaderDatabase.CutoutSkinOverlay, Vector2.one, pawn.story.HairColor);
                                 __instance.headGraphic = __instance.headGraphic.GetCopy(__instance.headGraphic.drawSize, ShaderDatabase.CutoutComplex);
-                            } else if (extension.useSkinColorForFur)
+                            } 
+                            else if (extension.useSkinColorForFur)
                             {
                                 __instance.furCoveredGraphic = GraphicDatabase.Get<Graphic_Multi>(pawn.story.furDef.GetFurBodyGraphicPath(pawn), ShaderUtility.GetSkinShader(pawn.story.SkinColorOverriden), Vector2.one, pawn.story.SkinColor);
 
                             }
-                            if (extension.dontColourFur)
+                            else if (extension.useSkinAndHairColorsForFur)
+                            {
+                                __instance.furCoveredGraphic = GraphicDatabase.Get<Graphic_Multi>(pawn.story.furDef.GetFurBodyGraphicPath(pawn), ShaderDatabase.CutoutComplex, Vector2.one, pawn.story.SkinColor, pawn.story.HairColor);
+                            }
+                            else if (extension.dontColourFur)
                             {
                                 __instance.furCoveredGraphic = GraphicDatabase.Get<Graphic_Multi>(pawn.story.furDef.GetFurBodyGraphicPath(pawn), ShaderDatabase.Cutout, Vector2.one, Color.white);
                             }
