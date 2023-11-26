@@ -40,7 +40,7 @@ namespace VanillaGenesExpanded
         public bool forceFemale = false;
 
         // Gene will be active for a given gender only
-        public Gender? forGenderOnly;
+        public Gender forGenderOnly;
 
         //Custom blood thingDef, custom blood icon, custom flood splash effecter, custom wounds from a fleshtype
         public ThingDef customBloodThingDef = null;

@@ -6,17 +6,15 @@ namespace VanillaGenesExpanded
 {
     public class GeneGendered : Gene
     {
+        private GeneExtension _extension;
+        public GeneExtension Extension => _extension ??= def.GetModExtension<GeneExtension>();
         public override bool Active
         {
             get
             {
-                var extension = def.GetModExtension<GeneExtension>();
-                if (extension != null)
+                if (pawn.gender != Extension.forGenderOnly)
                 {
-                    if (extension.forGenderOnly.HasValue && pawn.gender != extension.forGenderOnly.Value)
-                    {
-                        return false;
-                    }
+                    return false;
                 }
                 return base.Active;
             }

@@ -32,6 +32,7 @@
 	
 	<VGE_PregnancyFactor>Pregnancy factor gene: {0} gestation speed</VGE_PregnancyFactor>
 
+	<VGE_ForGenderOnly>{0} only gene.</VGE_ForGenderOnly>
 
 
 </LanguageData>

@@ -526,6 +526,7 @@
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_Indoors.cs" />
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_Outdoors.cs" />
     <Compile Include="Genes\Harmony\GeneGendered.cs" />
+    <Compile Include="Genes\Harmony\GeneUIUtility_DrawGene_Patch.cs" />
     <Compile Include="Genes\Harmony\HediffComp_Immunizable_SeverityFactorFromHediffs.cs" />
     <Compile Include="Genes\Harmony\GeneGraphicData_GetColorFor_Patch.cs" />
     <Compile Include="Genes\Harmony\HediffComp_PregnantHuman_CompTipStringExtra.cs" />
