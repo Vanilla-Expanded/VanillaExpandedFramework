@@ -15,6 +15,7 @@ namespace VFECore
         public GeneDef requiredGene;
         public bool requireDifferentGender = true;
         public float lovinDurationMultiplier = 1f;
+        public bool requireFertility;
         private Type workerClass = typeof(PregnancyApproachWorker);
         private PregnancyApproachWorker worker;
 

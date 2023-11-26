@@ -79,7 +79,14 @@ namespace VFECore
             {
                 List<FloatMenuOption> list = new List<FloatMenuOption>();
                 AddPregnancyApproachOptions(otherPawn, selPawnForSocialInfo, list);
-                Find.WindowStack.Add(new FloatMenu(list));
+                if (list.Any())
+                {
+                    Find.WindowStack.Add(new FloatMenu(list));
+                }
+                else
+                {
+                    Messages.Message(message, targets, messageTypeDef, historical: historical);
+                }
             }
             else
             {
@@ -136,14 +143,17 @@ namespace VFECore
                     }, def.icon.Texture, Color.white));
                 }
             }
-            var data = selPawnForSocialInfo.relations.GetAdditionalPregnancyApproachData();
-            if (data.partners.TryGetValue(otherPawn, out var pregnancyApporachDef))
+            if (list.Any(x => x.Label == PregnancyApproach.Normal.GetDescription()) is false)
             {
-                list.Add(new FloatMenuOption(pregnancyApporachDef.cancelLabel, delegate
+                var data = selPawnForSocialInfo.relations.GetAdditionalPregnancyApproachData();
+                if (data.partners.TryGetValue(otherPawn, out var pregnancyApporachDef))
                 {
-                    selPawnForSocialInfo.relations.GetAdditionalPregnancyApproachData().partners.Remove(otherPawn);
-                    otherPawn.relations.GetAdditionalPregnancyApproachData().partners.Remove(selPawnForSocialInfo);
-                }, pregnancyApporachDef.icon.Texture, Color.white));
+                    list.Add(new FloatMenuOption(pregnancyApporachDef.cancelLabel, delegate
+                    {
+                        selPawnForSocialInfo.relations.GetAdditionalPregnancyApproachData().partners.Remove(otherPawn);
+                        otherPawn.relations.GetAdditionalPregnancyApproachData().partners.Remove(selPawnForSocialInfo);
+                    }, pregnancyApporachDef.icon.Texture, Color.white));
+                }
             }
         }
 
@@ -159,6 +169,13 @@ namespace VFECore
             if (def.requiredGene != null)
             {
                 if (selPawnForSocialInfo.genes.HasGene(def.requiredGene) is false && otherPawn.genes.HasGene(def.requiredGene) is false)
+                {
+                    return false;
+                }
+            }
+            if (def.requireFertility)
+            {
+                if (selPawnForSocialInfo.Sterile() || otherPawn.Sterile())
                 {
                     return false;
                 }
