@@ -780,4 +780,20 @@ namespace VFECore
             }
         }
     }
+
+    [HarmonyPatch(typeof(PawnGraphicSet), "CalculateHairMats")]
+    public static class PawnGraphicSet_CalculateHairMats_Patch
+    {
+        public static void Postfix(PawnGraphicSet __instance)
+        {
+            var hairExtension = __instance.pawn?.story?.hairDef?.GetModExtension<HairExtension>();
+            if (hairExtension != null)
+            {
+                if (hairExtension.usesMask)
+                {
+                    __instance.hairGraphic = GraphicDatabase.Get<Graphic_Multi>(__instance.pawn.story.hairDef.texPath, ShaderDatabase.CutoutComplex, Vector2.one, __instance.pawn.story.HairColor);
+                } 
+            }
+        }
+    }
 }
