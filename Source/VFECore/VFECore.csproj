@@ -507,7 +507,6 @@
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_StageByTemperature.cs" />
     <Compile Include="AnimalBehaviours\ReflectionCache\ReflectionCache.cs" />
     <Compile Include="Cuisine\Things\GourmetMeal.cs" />
-    <Compile Include="VFECore\DefModExtensions\HairExtension.cs" />
     <Compile Include="DoorTeleporter\CaravanArrivalAction_UseDoorTeleporter.cs" />
     <Compile Include="DoorTeleporter\Dialog_RenameDoorTeleporter.cs" />
     <Compile Include="DoorTeleporter\DistortedMaterialsPool.cs" />

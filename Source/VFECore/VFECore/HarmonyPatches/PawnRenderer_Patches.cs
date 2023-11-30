@@ -786,13 +786,10 @@ namespace VFECore
     {
         public static void Postfix(PawnGraphicSet __instance)
         {
-            var hairExtension = __instance.pawn?.story?.hairDef?.GetModExtension<HairExtension>();
-            if (hairExtension != null)
+            var hair = __instance.pawn?.story?.hairDef;
+            if (hair != null && ContentFinder<Texture2D>.Get(hair.texPath + "_northm", reportFailure: false) != null)
             {
-                if (hairExtension.usesMask)
-                {
-                    __instance.hairGraphic = GraphicDatabase.Get<Graphic_Multi>(__instance.pawn.story.hairDef.texPath, ShaderDatabase.CutoutComplex, Vector2.one, __instance.pawn.story.HairColor);
-                } 
+                __instance.hairGraphic = GraphicDatabase.Get<Graphic_Multi>(hair.texPath, ShaderDatabase.CutoutComplex, Vector2.one, __instance.pawn.story.HairColor);
             }
         }
     }
