@@ -52,49 +52,50 @@ namespace VFECore.Misc
 
             if (daysAmount > 0 && hireData.Any(kvp => kvp.Value.First > 0))
             {
-                var pawns = new List<Pawn>();
+                List<Pawn> pawns = new();
 
-                var remainingCost = Mathf.RoundToInt(CostFinal);
+                int remainingCost = Mathf.RoundToInt(CostFinal);
 
-                var silverList = targetMap.listerThings.ThingsOfDef(ThingDefOf.Silver)
-                                       .Where(x => !x.Position.Fogged(x.Map) && (targetMap.areaManager.Home[x.Position] || x.IsInAnyStorage())).ToList();
+                List<Thing> silverList = targetMap.listerThings.ThingsOfDef(ThingDefOf.Silver)
+                                                  .Where(x => !x.Position.Fogged(x.Map) && (targetMap.areaManager.Home[x.Position] || x.IsInAnyStorage())).ToList();
                 while (remainingCost > 0)
                 {
-                    var silver = silverList.First(t => t.stackCount > 0);
-                    var num    = Mathf.Min(remainingCost, silver.stackCount);
+                    Thing silver = silverList.First(t => t.stackCount > 0);
+                    int num    = Mathf.Min(remainingCost, silver.stackCount);
                     silver.SplitOff(num).Destroy();
                     remainingCost -= num;
                 }
 
-                if (!RCellFinder.TryFindRandomPawnEntryCell(out var cell, targetMap, 1f))
-                    cell = CellFinder.RandomEdgeCell(targetMap);
+                //if (!RCellFinder.TryFindRandomPawnEntryCell(out var cell, targetMap, 1f))
+                    //cell = CellFinder.RandomEdgeCell(targetMap);
 
-                foreach (var kvp in hireData)
-                    for (var i = 0; i < kvp.Value.First; i++)
+                foreach (KeyValuePair<PawnKindDef, Pair<int, string>> kvp in hireData)
+                    for (int i = 0; i < kvp.Value.First; i++)
                     {
-                        var flag = kvp.Key.ignoreFactionApparelStuffRequirements;
+
+                        bool flag = kvp.Key.ignoreFactionApparelStuffRequirements;
                         kvp.Key.ignoreFactionApparelStuffRequirements = true;
-                        var pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(kvp.Key, mustBeCapableOfViolence: true, faction: Faction.OfPlayer,
-                                                                                        forbidAnyTitle: true, fixedIdeo: curFaction.referencedFaction is null
-                                                                                                                             ? hiredIdeo ??
-                                                                                                                               (hiredIdeo =
-                                                                                                                                    IdeoGenerator
-                                                                                                                                    .GenerateIdeo(new IdeoGenerationParms(Faction.OfPlayer.def,
-                                                                                                                                            classic: true)))
-                                                                                                                             : Find.World.factionManager.FirstFactionOfDef(curFaction.referencedFaction)
-                                                                                                                                .ideos.GetRandomIdeoForNewPawn()));
+
+
+                        Pawn pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(kvp.Key, mustBeCapableOfViolence: true, faction: Faction.OfPlayer,
+                                                                                         forbidAnyTitle: true, fixedIdeo: curFaction.referencedFaction is null || Find.World.factionManager.FirstFactionOfDef(curFaction.referencedFaction) is not {} refFaction ? 
+                                                                                                                              hiredIdeo ??= IdeoGenerator.GenerateIdeo(
+                                                                                                                               new IdeoGenerationParms(Faction.OfPlayer.def, classic: true)) : 
+                                                                                                                              refFaction.ideos.GetRandomIdeoForNewPawn()));
+                        
                         kvp.Key.ignoreFactionApparelStuffRequirements = flag;
                         pawn.playerSettings.hostilityResponse         = HostilityResponseMode.Attack;
                         pawns.Add(pawn);
-                        var loc = DropCellFinder.TryFindSafeLandingSpotCloseToColony(targetMap, IntVec2.Two);
+                        
+                        IntVec3 loc = DropCellFinder.TryFindSafeLandingSpotCloseToColony(targetMap, IntVec2.Two);
 
-                        var activeDropPodInfo = new ActiveDropPodInfo();
+                        ActiveDropPodInfo activeDropPodInfo = new ActiveDropPodInfo();
                         activeDropPodInfo.innerContainer.TryAdd(pawn, 1);
                         activeDropPodInfo.openDelay                     = 60;
                         activeDropPodInfo.leaveSlag                     = false;
                         activeDropPodInfo.despawnPodBeforeSpawningThing = true;
                         activeDropPodInfo.spawnWipeMode                 = WipeMode.Vanish;
-                        DropPodUtility.MakeDropPodAt(loc, targetMap, activeDropPodInfo);
+                        DropPodUtility.MakeDropPodAt(loc, this.targetMap, activeDropPodInfo);
                     }
 
                 Find.World.GetComponent<HiringContractTracker>().SetNewContract(daysAmount, pawns, hireable, curFaction, CostFinal);
@@ -183,12 +184,12 @@ namespace VFECore.Misc
             Widgets.DrawTextureFitted(iconRect, def.Texture, 1f);
             GUI.color = Color.white;
             var highlight = true;
-            foreach (var kind in def.pawnKinds)
+            foreach (PawnKindDef kind in def.pawnKinds)
             {
                 nameRect.y  += 20f;
                 valueRect.y += 20f;
                 numRect.y   += 20f;
-                var fullRect = new Rect(nameRect.x - 4f, nameRect.y, nameRect.width + valueRect.width + numRect.width, 20f);
+                Rect fullRect = new Rect(nameRect.x - 4f, nameRect.y, nameRect.width + valueRect.width + numRect.width, 20f);
                 if (highlight) Widgets.DrawHighlight(fullRect);
                 highlight   = !highlight;
                 Text.Anchor = TextAnchor.MiddleLeft;
