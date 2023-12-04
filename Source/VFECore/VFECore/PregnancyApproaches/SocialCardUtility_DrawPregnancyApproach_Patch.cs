@@ -69,24 +69,11 @@ namespace VFECore
 
         public static void InterceptMessage(string message, LookTargets targets, MessageTypeDef messageTypeDef, bool historical, Pawn selPawnForSocialInfo, Pawn otherPawn)
         {
-            var pawn = selPawnForSocialInfo;
-            var pawn2 = otherPawn;
-            bool flag = pawn.GetStatValue(StatDefOf.Fertility) <= 0f;
-            bool flag2 = pawn2.GetStatValue(StatDefOf.Fertility) <= 0f;
-            bool flag5 = pawn2.Sterile() && PregnancyUtility.GetPregnancyHediff(pawn2) == null;
-            bool flag6 = pawn.Sterile();
-            if (flag && flag2 || flag != flag2 || flag6 && flag5 || flag6 != flag5)
+            List<FloatMenuOption> list = new List<FloatMenuOption>();
+            AddPregnancyApproachOptions(otherPawn, selPawnForSocialInfo, list);
+            if (list.Any())
             {
-                List<FloatMenuOption> list = new List<FloatMenuOption>();
-                AddPregnancyApproachOptions(otherPawn, selPawnForSocialInfo, list);
-                if (list.Any())
-                {
-                    Find.WindowStack.Add(new FloatMenu(list));
-                }
-                else
-                {
-                    Messages.Message(message, targets, messageTypeDef, historical: historical);
-                }
+                Find.WindowStack.Add(new FloatMenu(list));
             }
             else
             {
@@ -108,20 +95,10 @@ namespace VFECore
 
         public static Texture2D InterceptTexture(Texture2D texture, Pawn otherPawn, Pawn selPawnForSocialInfo)
         {
-            var pawn = selPawnForSocialInfo;
-            var pawn2 = otherPawn;
-            bool flag = pawn.GetStatValue(StatDefOf.Fertility) <= 0f;
-            bool flag2 = pawn2.GetStatValue(StatDefOf.Fertility) <= 0f;
-            bool flag5 = pawn2.Sterile() && PregnancyUtility.GetPregnancyHediff(pawn2) == null;
-            bool flag6 = pawn.Sterile();
-            if (flag && flag2 || flag != flag2 || flag6 && flag5 || flag6 != flag5)
+            if (DefDatabase<PregnancyApproachDef>.AllDefs.Any(def => PawnsSatisfyPregnancyApproachRequirements(def, otherPawn, selPawnForSocialInfo)))
             {
-                if (DefDatabase<PregnancyApproachDef>.AllDefs.Any(def => PawnsSatisfyPregnancyApproachRequirements(def, otherPawn, selPawnForSocialInfo)))
-                {
-                    GUI.color = Color.white;
-                }
+                GUI.color = Color.white;
             }
-
             var data = selPawnForSocialInfo.relations.GetAdditionalPregnancyApproachData();
             if (data.partners.TryGetValue(otherPawn, out var def))
             {

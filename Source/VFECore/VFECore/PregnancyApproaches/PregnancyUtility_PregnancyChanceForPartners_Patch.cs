@@ -17,18 +17,21 @@ namespace VFECore
 
         public static void Postfix(Pawn woman, Pawn man, ref float __result)
         {
-            var data = woman.relations.GetAdditionalPregnancyApproachData();
-            if (data.partners.TryGetValue(man, out var def))
+            if (woman.gender != man.gender)
             {
-                if (def.pregnancyChanceForPartners.HasValue)
+                var data = woman.relations.GetAdditionalPregnancyApproachData();
+                if (data.partners.TryGetValue(man, out var def))
                 {
-                    __result = def.pregnancyChanceForPartners.Value;
-                }
-                else if (def.pregnancyChanceFactorBase.HasValue)
-                {
-                    float num = (float)pregnancyChanceForPartnersWithoutPregnancyApproachInfo.Invoke(null, new [] { woman, man });
-                    float pregnancyChanceFactor = def.pregnancyChanceFactorBase.Value;
-                    __result = num * pregnancyChanceFactor;
+                    if (def.pregnancyChanceForPartners.HasValue)
+                    {
+                        __result = def.pregnancyChanceForPartners.Value;
+                    }
+                    else if (def.pregnancyChanceFactorBase.HasValue)
+                    {
+                        float num = (float)pregnancyChanceForPartnersWithoutPregnancyApproachInfo.Invoke(null, new[] { woman, man });
+                        float pregnancyChanceFactor = def.pregnancyChanceFactorBase.Value;
+                        __result = num * pregnancyChanceFactor;
+                    }
                 }
             }
         }
