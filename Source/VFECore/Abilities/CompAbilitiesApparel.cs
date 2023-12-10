@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using RimWorld;
     using Verse;
 
@@ -11,7 +12,7 @@
 
         private Pawn pawn;
         private Pawn Pawn => (this.parent as Apparel)?.Wearer;
-
+        private List<Ability> abilitiesToTick = new List<Ability>();
         private List<Abilities.Ability> givenAbilities = new List<Abilities.Ability>();
         public List<Abilities.Ability> GivenAbilities => givenAbilities;
 
@@ -26,6 +27,10 @@
                 ability.holder = this.parent;
                 ability.Init();
                 this.givenAbilities.Add(ability);
+                if (ability.def.needsTicking)
+                {
+                    this.abilitiesToTick.Add(ability);
+                }
             }
         }
 
@@ -65,6 +70,20 @@
                 {
                     ability.holder = this.parent;
                 }
+                if (this.givenAbilities?.Any() ?? false)
+                {
+                    this.abilitiesToTick = this.givenAbilities.Where(x => x.def.needsTicking).ToList();
+                }
+            }
+        }
+
+        public override void CompTick()
+        {
+            base.CompTick();
+            int abilitiesToTickCount = this.abilitiesToTick.Count;
+            for (var i = 0; i < abilitiesToTickCount; i++)
+            {
+                this.abilitiesToTick[i].Tick();
             }
         }
     }
