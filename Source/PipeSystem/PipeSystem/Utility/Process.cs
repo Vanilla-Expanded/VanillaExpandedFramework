@@ -32,6 +32,8 @@ namespace PipeSystem
         private AdvancedProcessorsManager advancedProcessorsManager;
         private CompAdvancedResourceProcessor advancedProcessor;
 
+        public bool IsRunning => ShouldDoNow() && !MissingIngredients;
+
         /// <summary>
         /// Any missing ingredients? Loop over ingredientsOwners.
         /// </summary>
@@ -654,12 +656,6 @@ namespace PipeSystem
                 SoundDefOf.Click.PlayOneShotOnCamera();
             }
             TooltipHandler.TipRegionByKey(deleteRect, "PipeSystem_CancelCurrentProcess");
-        }
-
-
-        public bool IsRunning()
-        {
-            return !suspended;
         }
     }
 }
