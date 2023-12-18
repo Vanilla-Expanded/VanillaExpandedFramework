@@ -343,12 +343,12 @@ namespace PipeSystem
                 yield return new Command_Action
                 {
                     defaultLabel = "Finish in 10 ticks",
-                    action = () => Process.Tick(Process.TickLeft - 10)
+                    action = () => Process?.Tick(Process.TickLeft - 10)
                 };
                 yield return new Command_Action
                 {
                     defaultLabel = "Empty wastepack(s)",
-                    action = () => Container.innerContainer.Clear()
+                    action = () => Container?.innerContainer.Clear()
                 };
             }
         }
@@ -390,7 +390,7 @@ namespace PipeSystem
         /// <param name="amount"></param>
         public void ProduceWastepack(int amount)
         {
-            if (!Container.Full && ModsConfig.BiotechActive)
+            if (Container?.Full ==false && ModsConfig.BiotechActive)
             {
                 wasteProduced += amount;
                 if (wasteProduced >= WasteProducedPerCycle && !Container.innerContainer.Any)

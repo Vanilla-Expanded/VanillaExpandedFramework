@@ -551,7 +551,7 @@ namespace PipeSystem
             }
             GUI.color = color;
             // Process label
-            Widgets.Label(new Rect(28f, 0f, rect.width - 48f - 20f, rect.height + 5f), def.label);
+            Widgets.Label(new Rect(28f, 0f, rect.width - 48f - 20f, rect.height + 5f), def.LabelCap);
             // Config
             var baseRect = rect.AtZero();
             GUI.color = new Color(1f, 1f, 1f, 0.65f);
