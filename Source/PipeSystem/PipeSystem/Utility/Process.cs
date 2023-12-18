@@ -655,5 +655,11 @@ namespace PipeSystem
             }
             TooltipHandler.TipRegionByKey(deleteRect, "PipeSystem_CancelCurrentProcess");
         }
+
+
+        public bool IsRunning()
+        {
+            return !suspended;
+        }
     }
 }
