@@ -252,16 +252,40 @@ namespace VFECore
             var constructionField = AccessTools.Field(typeof(SkillDefOf), nameof(SkillDefOf.Construction));
             var interceptSkillInfo = AccessTools.Method(typeof(JobDriver_ConstructFinishFrame_MakeNewToils_TickAction_Patch),
                 "InterceptSkill");
-            foreach (CodeInstruction instruction in codeInstructions)
+            var shouldSkipCheckInfo = AccessTools.Method(typeof(JobDriver_ConstructFinishFrame_MakeNewToils_TickAction_Patch),
+    "ShouldSkipCheck");
+            var thisField = method.DeclaringType.GetField("<>4__this");
+            var codes = codeInstructions.ToList();
+            bool patched = false;
+            for (var i = 0; i < codes.Count; i++)
             {
-                yield return instruction;
-                if (instruction.LoadsField(constructionField))
+                var code = codes[i];
+                yield return code;
+                if (code.LoadsField(constructionField))
                 {
                     yield return new CodeInstruction(OpCodes.Ldarg_0);
-                    yield return new CodeInstruction(OpCodes.Ldfld, method.DeclaringType.GetField("<>4__this"));
+                    yield return new CodeInstruction(OpCodes.Ldfld, thisField);
                     yield return new CodeInstruction(OpCodes.Call, interceptSkillInfo);
                 }
+                if (patched is false && code.opcode == OpCodes.Bge_Un_S)
+                {
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Ldfld, thisField);
+                    yield return new CodeInstruction(OpCodes.Call, shouldSkipCheckInfo);
+                    yield return new CodeInstruction(OpCodes.Brtrue_S, code.operand);
+                    patched = true;
+                }
             }
+        }
+
+        public static bool ShouldSkipCheck(JobDriver_ConstructFinishFrame jobDriver)
+        {
+            var extension = jobDriver.job.targetA.Thing?.def?.entityDefToBuild?.GetModExtension<ThingDefExtension>();
+            if (extension?.constructionSkillRequirement != null)
+            {
+                return true;
+            }
+            return false;
         }
 
         public static SkillDef InterceptSkill(SkillDef skillDef, JobDriver_ConstructFinishFrame jobDriver)
