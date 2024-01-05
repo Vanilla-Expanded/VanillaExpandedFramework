@@ -76,6 +76,9 @@ namespace VanillaGenesExpanded
         public Vector2 bodyScaleFactor = new Vector2(1f, 1f);
         public Vector2 headScaleFactor = new Vector2(1f, 1f);
 
+        //Makes genes scale body per lifestages, only works for gene graphics currently
+        public Dictionary<LifeStageDef, Vector2> bodyScaleFactorsPerLifestages;
+
         public BodyTypeDef forcedBodyType;
         public string bodyNakedGraphicPath;
         public string bodyDessicatedGraphicPath;

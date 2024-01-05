@@ -58,6 +58,11 @@ namespace VanillaGenesExpanded
                     if (extension != null)
                     {
                         scale *= extension.bodyScaleFactor;
+                        if (extension.bodyScaleFactorsPerLifestages != null 
+                            && extension.bodyScaleFactorsPerLifestages.TryGetValue(pawn.ageTracker.CurLifeStage, out var lifestageScale))
+                        {
+                            scale *= lifestageScale;
+                        }
                     }
                 }
             }
