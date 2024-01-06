@@ -27,7 +27,7 @@ namespace VanillaGenesExpanded
                     }
                 }
 
-                if (extension.forcedBodyType != null)
+                if (extension.forcedBodyType != null && gene.pawn.DevelopmentalStage.Adult())
                 {
                     gene.pawn.story.bodyType = extension.forcedBodyType;
                     gene.pawn.Drawer.renderer.graphics.SetAllGraphicsDirty();
