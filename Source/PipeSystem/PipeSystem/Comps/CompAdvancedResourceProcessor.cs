@@ -107,6 +107,11 @@ namespace PipeSystem
                                                              null, true));
                 }
 
+                if (processesOptions.Count == 0)
+                {
+                    processesOptions.Add(new FloatMenuOption("PipeSystem_NoProcessAvailable".Translate(), () => { }));
+                }
+
                 return processesOptions;
             }
         }

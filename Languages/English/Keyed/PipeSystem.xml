@@ -72,5 +72,6 @@
   <PipeSystem_CancelCurrentProcess>Cancel current process</PipeSystem_CancelCurrentProcess>
   <PipeSystem_OutputOnGround>Can output on ground</PipeSystem_OutputOnGround>
   <PipeSystem_NoProcess>No current process</PipeSystem_NoProcess>
+  <PipeSystem_NoProcessAvailable>No process available</PipeSystem_NoProcessAvailable>
   <PipeSystem_Product>Product</PipeSystem_Product>
 </LanguageData>
