@@ -64,7 +64,7 @@
 
   <PipeSystem_NothingToPickUp>Nothing to pick-up</PipeSystem_NothingToPickUp>
   <PipeSystem_MakeProcess>Make {0}</PipeSystem_MakeProcess>
-  <PipeSystem_OutputToNet>Output to {0} net</PipeSystem_OutputToNet>
+  <PipeSystem_OutputToNet>{0} to net</PipeSystem_OutputToNet>
   <PipeSystem_OrNet>or {0} net</PipeSystem_OrNet>
   <PipeSystem_XFromNet>{0} from net</PipeSystem_XFromNet>
   <PipeSystem_Processes>Processes</PipeSystem_Processes>
@@ -72,4 +72,5 @@
   <PipeSystem_CancelCurrentProcess>Cancel current process</PipeSystem_CancelCurrentProcess>
   <PipeSystem_OutputOnGround>Can output on ground</PipeSystem_OutputOnGround>
   <PipeSystem_NoProcess>No current process</PipeSystem_NoProcess>
+  <PipeSystem_Product>Product</PipeSystem_Product>
 </LanguageData>

@@ -70,12 +70,6 @@ namespace PipeSystem
             for (int i = 0; i < processes.Count; i++)
             {
                 var result = processes[i];
-                if (result.ingredients.NullOrEmpty())
-                {
-                    yield return $"Result {i + 1} cannot have empty or null <ingredients>";
-                    continue;
-                }
-
                 for (int o = 0; o < result.ingredients.Count; o++)
                 {
                     var requirement = result.ingredients[o];
@@ -100,21 +94,25 @@ namespace PipeSystem
                     }
                 }
 
-                if (result.pipeNet != null)
+                for (int j = 0; j < result.results.Count; j++)
                 {
-                    var foundResultComp = false;
-                    for (int j = 0; j < parentDef.comps.Count; j++)
+                    var r = result.results[j];
+                    if (r.pipeNet != null)
                     {
-                        var comp = parentDef.comps[j];
-                        if (comp is CompProperties_Resource resource && resource.pipeNet == result.pipeNet)
+                        var foundResultComp = false;
+                        for (int k = 0; k < parentDef.comps.Count; k++)
                         {
-                            foundResultComp = true;
-                            break;
+                            var comp = parentDef.comps[k];
+                            if (comp is CompProperties_Resource resource && resource.pipeNet == r.pipeNet)
+                            {
+                                foundResultComp = true;
+                                break;
+                            }
                         }
-                    }
 
-                    if (!foundResultComp)
-                        yield return $"{parentDef.defName} require a CompProperties_Resource with pipeNet: {result.pipeNet.defName}";
+                        if (!foundResultComp)
+                            yield return $"{parentDef.defName} require a CompProperties_Resource with pipeNet: {r.pipeNet.defName}";
+                    }
                 }
             }
         }

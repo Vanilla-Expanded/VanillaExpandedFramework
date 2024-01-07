@@ -93,17 +93,17 @@ namespace PipeSystem
                     var process = Props.processes[i];
                     if (process.researchPrerequisites != null && process.researchPrerequisites.Any(p => !p.IsFinished)) continue;
 
-                    var name = process.thing != null ? process.thing.LabelCap.ToStringSafe() : process.pipeNet.resource.name;
+                    var name = process.results[0].thing != null ? process.results[0].thing.LabelCap.ToStringSafe() : process.results[0].pipeNet.resource.name;
                     var label = "PipeSystem_MakeProcess".Translate(name);
-                    if (process.count > 1)
+                    if (process.results[0].count > 1)
                     {
-                        label += " x" + process.count;
+                        label += " x" + process.results[0].count;
                     }
                     processesOptions.Add(new FloatMenuOption(label, () => processStack.AddProcess(process, parent),
-                                                             process.thing, null, false, MenuOptionPriority.Default,
+                                                             process.results[0].thing, null, false, MenuOptionPriority.Default,
                                                              (Rect rect) => process.DoProcessInfoWindow(i, rect),
                                                              null, 29f,
-                                                             (Rect rect) => process.thing != null && Widgets.InfoCardButton(rect.x + 5f, rect.y + (rect.height - 24f) / 2f, process.thing),
+                                                             (Rect rect) => process.results[0].thing != null && Widgets.InfoCardButton(rect.x + 5f, rect.y + (rect.height - 24f) / 2f, process.results[0].thing),
                                                              null, true));
                 }
 
@@ -316,11 +316,11 @@ namespace PipeSystem
             if (Process == null)
                 return;
 
-            if (Props.showResultItem && ProcessDef.thing != null)
+            if (Props.showResultItem && ProcessDef.results[0].thing != null)
             {
                 var matrix = default(Matrix4x4);
                 matrix.SetTRS(itemDrawPos, Quaternion.identity, Props.resultItemSize);
-                Graphics.DrawMesh(MeshPool.plane10, matrix, ProcessDef.thing.graphic.MatNorth, 0);
+                Graphics.DrawMesh(MeshPool.plane10, matrix, ProcessDef.results[0].thing.graphic.MatNorth, 0);
             }
             if (Props.showProgressBar)
             {
@@ -390,7 +390,7 @@ namespace PipeSystem
         /// <param name="amount"></param>
         public void ProduceWastepack(int amount)
         {
-            if (Container?.Full ==false && ModsConfig.BiotechActive)
+            if (Container?.Full == false && ModsConfig.BiotechActive)
             {
                 wasteProduced += amount;
                 if (wasteProduced >= WasteProducedPerCycle && !Container.innerContainer.Any)

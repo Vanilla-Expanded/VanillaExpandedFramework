@@ -89,37 +89,42 @@ namespace PipeSystem
                 processTooltip.Newline();
             }
 
-            processTooltip.Label("Products".Translate() + ": ", draw);
+            var resultCount = processDef.results.Count;
+            processTooltip.Label((resultCount > 1 ? "Products" : "PipeSystem_Product").Translate() + ": ", draw);
             processTooltip.Newline();
-            // Draw thing product
-            if (processDef.thing != null)
+            // Draw products
+            for (int i = 0; i < resultCount; i++)
             {
-                DisplayIngredientIconRow(new List<TextureAndColor>() { ToTextureAndColor(processDef.thing) }, draw, processDef.count);
-                // Add or X net if can output to net
-                if (processDef.pipeNet != null)
+                var result = processDef.results[i];
+                if (result.thing != null)
                 {
+                    DisplayIngredientIconRow(new List<TextureAndColor>() { ToTextureAndColor(result.thing) }, draw, result.count);
+                    // Add or X net if can output to net
+                    if (result.pipeNet != null)
+                    {
+                        processTooltip.Gap(4f, 0f);
+                        Text.Anchor = TextAnchor.MiddleLeft;
+                        processTooltip.Label("PipeSystem_OrNet".Translate(result.pipeNet.loweredName), draw);
+                        Text.Anchor = TextAnchor.UpperLeft;
+                    }
+                }
+                else
+                {
+                    processTooltip.Gap(8f, 0f);
+                    processTooltip.Label(result.count + "x ", draw);
+                    // Draw net ui icon if any
+                    if (result.pipeNet.uiIcon != null)
+                    {
+                        processTooltip.Icon(result.pipeNet.uiIcon, Color.white, Text.LineHeightOf(GameFont.Small), draw);
+                    }
                     processTooltip.Gap(4f, 0f);
-                    Text.Anchor = TextAnchor.MiddleLeft;
-                    processTooltip.Label("PipeSystem_OrNet".Translate(processDef.pipeNet.loweredName), draw);
-                    Text.Anchor = TextAnchor.UpperLeft;
+                    processTooltip.Label("PipeSystem_OutputToNet".Translate(result.pipeNet.loweredName), draw);
                 }
-            }
-            else
-            {
-                processTooltip.Gap(8f, 0f);
-                processTooltip.Label(processDef.count + "x ", draw);
-                // Draw net ui icon if any
-                if (processDef.pipeNet.uiIcon != null)
-                {
-                    processTooltip.Icon(processDef.pipeNet.uiIcon, Color.white, Text.LineHeightOf(GameFont.Small), draw);
-                }
-                processTooltip.Gap(4f, 0f);
-                processTooltip.Label("PipeSystem_OutputToNet".Translate(processDef.pipeNet.loweredName), draw);
+                processTooltip.Newline();
             }
 
             if (processDef.wastePackToProduce > 0 && ModsConfig.BiotechActive)
             {
-                processTooltip.Newline();
                 DisplayIngredientIconRow(new List<TextureAndColor>() { ToTextureAndColor(ThingDefOf.Wastepack) }, draw, processDef.wastePackToProduce);
             }
             // Expand window
