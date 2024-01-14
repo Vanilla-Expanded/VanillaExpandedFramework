@@ -7,7 +7,7 @@ namespace VFECore
 {
     internal class WeatherOverlay_Effects : SkyOverlay
     {
-        public int nextDamageTick;
+        public Dictionary<Map, int> nextDamageTickForMap = new();
         public override void TickOverlay(Map map)
         {
             base.TickOverlay(map);
@@ -20,14 +20,16 @@ namespace VFECore
             {
                 if (options.activeOnWeatherPerceived is null || map.weatherManager.CurWeatherPerceived == options.activeOnWeatherPerceived)
                 {
+                    // If not in dictionary will fallback to default(int) - 0
+                    nextDamageTickForMap.TryGetValue(map, out var nextDamageTick);
                     if (nextDamageTick == 0 || (Find.TickManager.TicksGame - nextDamageTick) > options.ticksInterval.max)
                     {
-                        nextDamageTick = NextDamageTick(options);
+                        nextDamageTickForMap[map] = nextDamageTick = NextDamageTick(options);
                     }
                     if (Find.TickManager.TicksGame > nextDamageTick)
                     {
                         DoDamage(options, map);
-                        nextDamageTick = NextDamageTick(options);
+                        nextDamageTickForMap[map] = NextDamageTick(options);
                     }
                 }
             }
