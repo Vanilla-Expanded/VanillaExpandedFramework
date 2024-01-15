@@ -198,17 +198,6 @@ namespace VFECore
 			Scribe_Values.Look(ref lastKeepDisplayTick, "lastKeepDisplayTick", 0);
 		}
 
-        public override string CompInspectStringExtra()
-        {
-			StringBuilder sb = new StringBuilder(base.CompInspectStringExtra());
-			if (Prefs.DevMode)
-            {
-				sb.AppendLine("EnergyMax: " + EnergyMax);
-				sb.AppendLine("EnergyGainPerTick: " + EnergyGainPerTick);
-				sb.AppendLine("Energy: " + Energy);
-			}
-			return sb.ToString().TrimEndNewlines();
-		}
         public override void CompTick()
 		{
 			base.CompTick();
@@ -432,8 +421,8 @@ namespace VFECore
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
-            if (typeof(Abilities.CompAbilities).IsAssignableFrom(this.Props.compClass) is false 
-				&& Find.Selector.SingleSelectedThing == this.Pawn && this.Pawn.Faction == Faction.OfPlayer)
+            if (typeof(Abilities.CompAbilities).IsAssignableFrom(this.Props.compClass) is false && this.Pawn != null
+                && Find.Selector.SingleSelectedThing == this.Pawn && this.Pawn.Faction == Faction.OfPlayer)
             {
                 Gizmo_EnergyCompShieldStatus gizmo_EnergyShieldStatus = new Gizmo_EnergyCompShieldStatus();
                 gizmo_EnergyShieldStatus.shield = this;
@@ -442,7 +431,7 @@ namespace VFECore
         }
         public override IEnumerable<Gizmo> CompGetWornGizmosExtra()
 		{
-            if (Find.Selector.SingleSelectedThing == this.Pawn && this.Pawn.IsColonistPlayerControlled)
+            if (this.Pawn != null && Find.Selector.SingleSelectedThing == this.Pawn && this.Pawn.IsColonistPlayerControlled)
             {
                 Gizmo_EnergyCompShieldStatus gizmo_EnergyShieldStatus = new Gizmo_EnergyCompShieldStatus();
                 gizmo_EnergyShieldStatus.shield = this;
