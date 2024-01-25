@@ -389,7 +389,7 @@ namespace PipeSystem
                     // If invalid or couldn't, find an adj cell
                     for (int j = 0; j < adjCells.Count; j++)
                     {
-                        if (SpawnResultAt(result, adjCells[j], map, ref outThings)) { continue; }
+                        if (SpawnResultAt(result, adjCells[j], map, ref outThings)) { break; }
                     }
                 }
             }
