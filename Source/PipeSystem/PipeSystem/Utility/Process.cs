@@ -383,7 +383,7 @@ namespace PipeSystem
                 {
                     var map = parent.Map;
                     // If defined outputCellOffset
-                    if (result.outputCellOffset != IntVec3.Invalid && SpawnResultAt(result, parent.Position + result.outputCellOffset, map, ref outThings)) { continue; }
+                    if (result.outputCellOffset != IntVec3.Invalid && SpawnResultAt(result, parent.Position + (result.outputCellOffset.RotatedBy(parent.Rotation)), map, ref outThings)) { continue; }
                     // Try spawning at spawnPos
                     if (spawnPos != IntVec3.Invalid && SpawnResultAt(result, spawnPos, map, ref outThings)) { continue; }
                     // If invalid or couldn't, find an adj cell
