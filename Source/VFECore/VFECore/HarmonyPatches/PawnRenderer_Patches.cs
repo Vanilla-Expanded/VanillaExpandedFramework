@@ -31,12 +31,30 @@ namespace VFECore
         public Vector3? drawPosWestOffset;
         public Vector3? drawPosEastOffset;
 
+        public float? yLayerNorthOverride;
+        public float? yLayerSouthOverride;
+        public float? yLayerWestOverride;
+        public float? yLayerEastOverride;
+
         public Vector2? drawSize;
         public Vector2? drawNorthSize;
         public Vector2? drawSouthSize;
         public Vector2? drawWestSize;
         public Vector2? drawEastSize;
         public Vector3 GetDrawPosOffset(Rot4 rot, Vector3 loc)
+        {
+            loc = GetDrawPosOffsetInt(rot, loc);
+            switch (rot.AsByte)
+            {
+                case 0: if (yLayerNorthOverride.HasValue) { loc.y = yLayerNorthOverride.Value; } break;
+                case 1: if (yLayerEastOverride.HasValue) { loc.y = yLayerEastOverride.Value; } break;
+                case 2: if (yLayerSouthOverride.HasValue) { loc.y = yLayerSouthOverride.Value; } break;
+                case 3: if (yLayerWestOverride.HasValue) { loc.y = yLayerWestOverride.Value; } break;
+            }
+            return loc;
+        }
+
+        private Vector3 GetDrawPosOffsetInt(Rot4 rot, Vector3 loc)
         {
             switch (rot.AsByte)
             {
@@ -49,7 +67,6 @@ namespace VFECore
             {
                 return loc + drawPosOffset.Value;
             }
-
             return loc;
         }
 
