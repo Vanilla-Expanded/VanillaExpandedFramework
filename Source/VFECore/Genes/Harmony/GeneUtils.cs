@@ -11,6 +11,7 @@ namespace VanillaGenesExpanded
             try
             {
                 if (gene?.pawn is null) return;
+                if (Scribe.mode == LoadSaveMode.LoadingVars || Scribe.mode == LoadSaveMode.ResolvingCrossRefs) return;
                 GeneExtension extension = gene.def.GetModExtension<GeneExtension>();
                 if (extension != null)
                 {
@@ -128,6 +129,7 @@ namespace VanillaGenesExpanded
             try
             {
                 if (gene?.pawn is null) return;
+                if (Scribe.mode == LoadSaveMode.LoadingVars || Scribe.mode == LoadSaveMode.ResolvingCrossRefs) return;
                 GeneExtension extension = gene.def.GetModExtension<GeneExtension>();
                 if (extension != null)
                 {
