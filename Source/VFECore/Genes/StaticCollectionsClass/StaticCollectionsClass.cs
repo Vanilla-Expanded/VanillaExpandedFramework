@@ -30,6 +30,8 @@ namespace VanillaGenesExpanded
 
         // A list of pawns containing meat changing genes
         public static IDictionary<Thing, ThingDef> meat_gene_pawns = new Dictionary<Thing, ThingDef>();
+        // A list of pawns containing leather changing genes
+        public static IDictionary<Thing, ThingDef> leather_gene_pawns = new Dictionary<Thing, ThingDef>();
         // A list of pawns containing blood changing genes
         public static IDictionary<Thing, ThingDef> bloodtype_gene_pawns = new Dictionary<Thing, ThingDef>();
         // A list of pawns with custom blood icons
@@ -74,6 +76,23 @@ namespace VanillaGenesExpanded
             if (meat_gene_pawns.ContainsKey(thing))
             {
                 meat_gene_pawns.Remove(thing);
+            }
+
+        }
+        public static void AddLeatherGenePawnToList(Thing thing, ThingDef thingDef)
+        {
+
+            if (!leather_gene_pawns.ContainsKey(thing))
+            {
+                leather_gene_pawns[thing] = thingDef;
+            }
+        }
+
+        public static void RemoveLeatherGenePawnFromList(Thing thing)
+        {
+            if (leather_gene_pawns.ContainsKey(thing))
+            {
+                leather_gene_pawns.Remove(thing);
             }
 
         }

@@ -26,5 +26,6 @@ namespace VFECore
         public static StatDef VEF_RangeAttackDamageFactor;
         public static JoyKindDef Gaming_Cerebral;
         public static JobDef VEF_UseDoorTeleporter;
+        public static ThingDef Leather_Human;
     }
 }

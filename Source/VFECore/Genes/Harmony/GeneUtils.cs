@@ -90,6 +90,10 @@ namespace VanillaGenesExpanded
                     {
                         StaticCollectionsClass.AddMeatGenePawnToList(gene.pawn, extension.customMeatThingDef);
                     }
+                    if (extension.customLeatherThingDef != null)
+                    {
+                        StaticCollectionsClass.AddLeatherGenePawnToList(gene.pawn, extension.customLeatherThingDef);
+                    }
                     if (extension.customVomitThingDef != null)
                     {
                         StaticCollectionsClass.AddVomitTypeGenePawnToList(gene.pawn, extension.customVomitThingDef);
@@ -205,6 +209,10 @@ namespace VanillaGenesExpanded
                     if (extension.customMeatThingDef != null)
                     {
                         StaticCollectionsClass.RemoveMeatGenePawnFromList(gene.pawn);
+                    }
+                    if (extension.customLeatherThingDef != null)
+                    {
+                        StaticCollectionsClass.RemoveLeatherGenePawnFromList(gene.pawn);
                     }
                     if (extension.customVomitThingDef != null)
                     {
