@@ -50,6 +50,8 @@ namespace VanillaGenesExpanded
         //Custom vomit thingDef, custom vomit effecter
         public ThingDef customVomitThingDef = null;    
         public EffecterDef customVomitEffect = null;
+        //Custom meat thingDef when butchered. Looks like meat is back on the menu, boys!
+        public ThingDef customMeatThingDef = null;
 
         //Disease progression factor. Diseases will advance (when not immunized) by this factor
         public float diseaseProgressionFactor = 1f;

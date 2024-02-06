@@ -533,6 +533,7 @@
     <Compile Include="Genes\Harmony\HediffComp_PregnantHuman_CompTipStringExtra.cs" />
     <Compile Include="Genes\Harmony\LifeStageWorker_Notify_LifeStageStarted_Patch.cs" />
     <Compile Include="Genes\Harmony\PawnUtility_BodyResourceGrowthSpeed.cs" />
+    <Compile Include="Genes\Harmony\Pawn_ButcherProducts.cs" />
     <Compile Include="Memes\Harmony\Ideo_ExposeData.cs" />
     <Compile Include="Misc\ForcedMusicManager.cs" />
     <Compile Include="VFECore\PregnancyApproaches\JobDriver_Lovin_FinishAction_Vanilla.cs" />

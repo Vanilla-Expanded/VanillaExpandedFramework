@@ -28,7 +28,8 @@ namespace VanillaGenesExpanded
 
         //This static class stores lists of pawns for different things.
 
-
+        // A list of pawns containing meat changing genes
+        public static IDictionary<Thing, ThingDef> meat_gene_pawns = new Dictionary<Thing, ThingDef>();
         // A list of pawns containing blood changing genes
         public static IDictionary<Thing, ThingDef> bloodtype_gene_pawns = new Dictionary<Thing, ThingDef>();
         // A list of pawns with custom blood icons
@@ -58,6 +59,24 @@ namespace VanillaGenesExpanded
         // A list of pawns with pregnancy speed modifiers
         public static IDictionary<Thing, float> pregnancySpeedFactor_gene_pawns = new Dictionary<Thing, float>();
 
+
+        public static void AddMeatGenePawnToList(Thing thing, ThingDef thingDef)
+        {
+
+            if (!meat_gene_pawns.ContainsKey(thing))
+            {
+                meat_gene_pawns[thing] = thingDef;
+            }
+        }
+
+        public static void RemoveMeatGenePawnFromList(Thing thing)
+        {
+            if (meat_gene_pawns.ContainsKey(thing))
+            {
+                meat_gene_pawns.Remove(thing);
+            }
+
+        }
 
         public static void AddBloodtypeGenePawnToList(Thing thing, ThingDef thingDef)
         {
