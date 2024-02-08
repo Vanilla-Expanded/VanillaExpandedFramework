@@ -34,22 +34,17 @@ namespace VFECore
                 // Check if the cache has timed out
                 if (data.Timer.AnyTimeout())
                 {
-                    // Send log message if the cache has timed out
-                    Log.Message($"Cache for {key} has timed out. Regenerating cache.");
-
                     data.RegenerateCache();
                     data.Timer.ResetTimers();
                     return data;
                 }
                 else
                 {
-                    Log.Message($"Cache for {key} has not timed out. Returning cached data.");
                     return data;
                 }
             }
             else
             {
-                Log.Message($"Cache for {key} does not exist. Creating new cache.");
                 V newData = (V)Activator.CreateInstance(typeof(V), key);
                 newData.RegenerateCache();
                 Cache.Add(key, newData);
