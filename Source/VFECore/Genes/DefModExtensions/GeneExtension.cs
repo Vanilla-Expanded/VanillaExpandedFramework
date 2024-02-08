@@ -80,6 +80,9 @@ namespace VanillaGenesExpanded
         public Vector2 bodyScaleFactor = new Vector2(1f, 1f);
         public Vector2 headScaleFactor = new Vector2(1f, 1f);
 
+        // Size by age
+        public SizeByAge sizeByAge = null;
+
         //Makes genes scale body per lifestages, only works for gene graphics currently
         public Dictionary<LifeStageDef, Vector2> bodyScaleFactorsPerLifestages;
 
@@ -143,6 +146,21 @@ namespace VanillaGenesExpanded
             {
                 DirectXmlCrossRefLoader.RegisterObjectWantsCrossRef(this, nameof(this.bodyType), xmlRoot.Name);
                 this.offset = (Vector3)ParseHelper.FromString(xmlRoot.FirstChild.Value, typeof(Vector3));
+            }
+        }
+
+        public class SizeByAge
+        {
+            // Size of the pawn at the bottom of the range.
+            public float minOffset = 0;
+            // Size of the pawn at the top of the range.
+            public float maxOffset = 0;
+            // The float range
+            public FloatRange range = new(0, 0);
+
+            public float GetSize(float age)
+            {
+                return Mathf.Lerp(minOffset, maxOffset, range.InverseLerpThroughRange(age));
             }
         }
     }

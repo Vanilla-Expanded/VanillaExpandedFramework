@@ -442,6 +442,10 @@
     <Compile Include="ActiveTerrain\SpecialTerrain.cs" />
     <Compile Include="ActiveTerrain\SpecialTerrainList.cs" />
     <Compile Include="ActiveTerrain\ThingComps.cs" />
+    <Compile Include="AestheticScaling\ScaleCache.cs" />
+    <Compile Include="Genes\Harmony\Patch_BodySize.cs" />
+    <Compile Include="VFECore\Utilities\CacheTimer.cs" />
+    <Compile Include="AestheticScaling\SizeData.cs" />
     <Compile Include="AnimalBehaviours\AI\JobDrivers\JobDriver_AnimalResource.cs" />
     <Compile Include="AnimalBehaviours\AI\JobDrivers\JobDriver_AutoNutrition.cs" />
     <Compile Include="AnimalBehaviours\AI\JobDrivers\JobDriver_DestroyItem.cs" />
@@ -528,6 +532,8 @@
     <Compile Include="Genes\Harmony\GeneGendered.cs" />
     <Compile Include="Genes\Harmony\GeneUIUtility_DrawGene_Patch.cs" />
     <Compile Include="Genes\Harmony\GeneUtils.cs" />
+    <Compile Include="Genes\Harmony\Patch_FoodCapacity.cs" />
+    <Compile Include="Genes\Harmony\Patch_HealthScale.cs" />
     <Compile Include="Genes\Harmony\HediffComp_Immunizable_SeverityFactorFromHediffs.cs" />
     <Compile Include="Genes\Harmony\GeneGraphicData_GetColorFor_Patch.cs" />
     <Compile Include="Genes\Harmony\HediffComp_PregnantHuman_CompTipStringExtra.cs" />
@@ -536,6 +542,7 @@
     <Compile Include="Genes\Harmony\Pawn_ButcherProducts.cs" />
     <Compile Include="Memes\Harmony\Ideo_ExposeData.cs" />
     <Compile Include="Misc\ForcedMusicManager.cs" />
+    <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_RenderPawnAt.cs" />
     <Compile Include="VFECore\PregnancyApproaches\JobDriver_Lovin_FinishAction_Vanilla.cs" />
     <Compile Include="VFECore\PregnancyApproaches\PregnancyApproachWorker.cs" />
     <Compile Include="VFECore\PregnancyApproaches\JobDriver_Lovin_Patch.cs" />
@@ -1062,7 +1069,6 @@
     <Compile Include="Weapons\Defs\ToolsUsableByNonViolentPawnsDef.cs" />
     <Compile Include="Weapons\Harmony\FloatMenuMakerMap_AddHumanlikeOrders.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <PackageReference Include="Lib.Harmony">
       <Version>2.2.2</Version>

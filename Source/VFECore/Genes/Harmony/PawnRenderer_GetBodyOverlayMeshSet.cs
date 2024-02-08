@@ -8,6 +8,8 @@ using RimWorld;
 using System;
 using System.Reflection;
 using UnityEngine;
+using VFECore;
+using Verse.Noise;
 
 namespace VanillaGenesExpanded
 {
@@ -47,6 +49,11 @@ namespace VanillaGenesExpanded
                         factorY *= ext.bodyScaleFactor.y;
                     }
                 }
+            }
+            if (ScaleCache.GetScaleCache(___pawn) is SizeData data)
+            {
+                factorX *= data.bodyRenderSize;
+                factorY *= data.bodyRenderSize;
             }
             __result = MeshPool.GetMeshSetForWidth(factorX, factorY);
 
@@ -108,6 +115,10 @@ namespace VanillaGenesExpanded
                         }
                     }
                 }
+            }
+            if (ScaleCache.GetScaleCache(pawn) is SizeData data)
+            {
+                offset *= data.headRenderSize;
             }
             return offset;
         }

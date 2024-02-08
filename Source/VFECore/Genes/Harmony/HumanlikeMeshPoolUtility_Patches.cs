@@ -8,6 +8,7 @@ using UnityEngine;
 using VFECore;
 using RimWorld;
 using Verse;
+using Verse.Noise;
 
 
 namespace VanillaGenesExpanded
@@ -69,6 +70,10 @@ namespace VanillaGenesExpanded
                     }
                 }
             }
+            if (ScaleCache.GetScaleCache(pawn) is SizeData data)
+            {
+                scaling *= data.bodyRenderSize;
+            }
             return scaling;
         }
 
@@ -90,6 +95,10 @@ namespace VanillaGenesExpanded
                     }
                 }
             }
+            if (ScaleCache.GetScaleCache(pawn) is SizeData data)
+            {
+                headSize *= data.headRenderSize;
+            }
             return headSize;
         }
         //Used when HAR is loaded
@@ -110,6 +119,10 @@ namespace VanillaGenesExpanded
                         }
                     }
                 }
+            }
+            if (ScaleCache.GetScaleCache(pawn) is SizeData data)
+            {
+                headSize *= data.headRenderSize;
             }
             return scaling;
         }
@@ -138,6 +151,11 @@ namespace VanillaGenesExpanded
                     }
                 }
             }
+            if (ScaleCache.GetScaleCache(pawn) is SizeData data)
+            {
+                width *= data.bodyRenderSize;
+            }
+
             return MeshPool.GetMeshSetForWidth(width.x, width.y);
         }
 
@@ -165,6 +183,10 @@ namespace VanillaGenesExpanded
                     }
                 }
             }
+            if (ScaleCache.GetScaleCache(pawn) is SizeData data)
+            {
+                width *= data.headRenderSize;
+            }
             return MeshPool.GetMeshSetForWidth(width.x, width.y);
         }
         //Used when HAR is not loaded
@@ -187,6 +209,11 @@ namespace VanillaGenesExpanded
                         }
                     }
                 }
+            }
+            if (ScaleCache.GetScaleCache(pawn) is SizeData data)
+            {
+                x *= data.headRenderSize;
+                y *= data.headRenderSize;
             }
             return MeshPool.GetMeshSetForWidth(x, y);
         }

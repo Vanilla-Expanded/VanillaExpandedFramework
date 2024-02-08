@@ -5,6 +5,7 @@ using UnityEngine;
 using Verse;
 using RimWorld;
 using HarmonyLib;
+using VFECore;
 
 namespace VanillaGenesExpanded
 {    
@@ -48,6 +49,10 @@ namespace VanillaGenesExpanded
                             scale *= ext.bodyScaleFactor;
                         }
                     }
+                }
+                if (ScaleCache.GetScaleCache(pawn) is SizeData data)
+                {
+                    scale *= data.bodyRenderSize;
                 }
             }
             return scale;

@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using RimWorld;
 using UnityEngine;
+using VFECore;
 
 namespace VanillaGenesExpanded
 {
@@ -94,6 +95,10 @@ namespace VanillaGenesExpanded
                     }
                 }
             }
+            if (ScaleCache.GetScaleCache(pawn) is SizeData data)
+            {
+                scale *= data.headRenderSize;
+            }
             return scale;
         }
 
@@ -110,6 +115,11 @@ namespace VanillaGenesExpanded
                         offset.z /= extension.headScaleFactor.y > 1f ? extension.headScaleFactor.y : 1f; //Dont know exactly why but, z offset doesn't need to be adjusted at all for genes making someone smaller, only bigger
                     }
                 }
+            }
+            if (ScaleCache.GetScaleCache(pawn) is SizeData data)
+            {
+                offset.x *= data.headRenderSize;
+                offset.z /= data.headRenderSize > 1f ? data.headRenderSize : 1f;
             }
             return offset;
         }
