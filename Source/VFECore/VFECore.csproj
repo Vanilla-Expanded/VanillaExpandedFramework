@@ -444,6 +444,8 @@
     <Compile Include="ActiveTerrain\ThingComps.cs" />
     <Compile Include="AestheticScaling\ScaleCache.cs" />
     <Compile Include="Genes\Harmony\Patch_BodySize.cs" />
+    <Compile Include="Genes\Harmony\Patch_ThoughtWorker_NeedFood.cs" />
+    <Compile Include="VFECore\HarmonyPatches\MentaBreakWorker_Patches.cs" />
     <Compile Include="VFECore\Utilities\CacheTimer.cs" />
     <Compile Include="AestheticScaling\SizeData.cs" />
     <Compile Include="AnimalBehaviours\AI\JobDrivers\JobDriver_AnimalResource.cs" />

@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace VanillaGenesExpanded
 {
+    using System.Linq;
     using System.Xml;
     using JetBrains.Annotations;
 
@@ -75,6 +76,11 @@ namespace VanillaGenesExpanded
 
         //Makes pregancies advance faster or slower
         public float pregnancySpeedFactor = 1f;
+
+        // Makes pawns with this gene have a higher chance of getting food-binge mental break.
+        public float foodBingeMentalBreakSelectionChanceFactor = 1;
+
+        public bool doubleNegativeFoodThought = false;
 
         //Makes genes scale body and head
         public Vector2 bodyScaleFactor = new Vector2(1f, 1f);
@@ -162,6 +168,19 @@ namespace VanillaGenesExpanded
             {
                 return Mathf.Lerp(minOffset, maxOffset, range.InverseLerpThroughRange(age));
             }
+        }
+    }
+
+    public static class GeneExtensionMethods
+    {
+        public static List<GeneExtension> GetActiveGeneExtensions(this Pawn_GeneTracker geneTracker)
+        {
+            var gExtensions = geneTracker?.GenesListForReading?
+                .Select(gene => gene.def.GetModExtension<GeneExtension>())
+                .Where(extension => extension != null)
+                .ToList();
+            if (gExtensions == null) return new List<GeneExtension>();
+            else return gExtensions;
         }
     }
 }

@@ -133,8 +133,8 @@ namespace VFECore
             float prevBodySize = sizeFromAge * baseSize;
             float postBodySize = prevBodySize + bodySizeOffset;
             float percentChange = postBodySize / prevBodySize;
-            float quadratic = Mathf.Pow(percentChange, 2) - 1; ;
-            float cubic = Mathf.Pow(percentChange, 3) - 1;
+            float quadratic = Mathf.Pow(percentChange, 2);
+            float cubic = Mathf.Pow(percentChange, 3);
 
             // Ensure we don't get negative values.
             percentChange = Mathf.Max(percentChange, 0.04f);
@@ -237,7 +237,7 @@ namespace VFECore
                 roughylLinear = (percentChange - 1) * 0.8f + 1; // Nerf scaling a bit, large pawns are tanky enough already.
             }
             if (roughylLinear > quad) { quad = roughylLinear; } // Make sure small creatures don't get absolutely unreasonably low health.
-            return Mathf.Lerp(roughylLinear, quad, 0.18f);
+            return Mathf.Lerp(roughylLinear, (quad-1), 0.18f);
         }
     }
 }

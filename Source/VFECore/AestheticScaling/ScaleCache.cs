@@ -14,10 +14,14 @@ namespace VFECore
     {
         public static SizeData GetScaleCache(Pawn pawn)
         {
-            if (pawn == null || !pawn.RaceProps.Humanlike || (Scribe.mode != LoadSaveMode.Inactive))
-                return null;
-
-            return GetCache(pawn);
+            if (pawn?.RaceProps.Humanlike == true
+                // If the needs are null (and it isn't a corpse) then we don't want to generate data for it.
+                // It typically means the pawn isn't fully initialized yet or otherwise unsuitable.
+                && (pawn.needs != null || pawn.Dead)) 
+            {
+                return GetCache(pawn);
+            }
+            return null;
         }
     }
 

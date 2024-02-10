@@ -122,7 +122,7 @@ namespace VanillaGenesExpanded
             }
             if (ScaleCache.GetScaleCache(pawn) is SizeData data)
             {
-                headSize *= data.headRenderSize;
+                scaling *= data.headRenderSize;
             }
             return scaling;
         }
@@ -233,7 +233,7 @@ namespace VanillaGenesExpanded
                 {
                     if (ModCompatibilityCheck.HumanAlienRace)
                     {
-/*                        if (codes[i].opcode == OpCodes.Box)//Removing HAR Boxes as we will box the vect 2 instead
+                        if (codes[i].opcode == OpCodes.Box)
                         {
                             continue;
                         }
@@ -243,18 +243,15 @@ namespace VanillaGenesExpanded
                             yield return new CodeInstruction(OpCodes.Box, typeof(Vector2));
                             yield return new CodeInstruction(OpCodes.Ldarg_0);
                         }
+
+                        yield return codes[i];
+
                         if (codes[i].opcode == OpCodes.Ldc_R4)
                         {
-                            yield return codes[i];
                             yield return new CodeInstruction(OpCodes.Ldarg_0);
                             yield return new CodeInstruction(OpCodes.Call, bodyScaleFactorVect2);
                             yield return new CodeInstruction(OpCodes.Box, typeof(Vector2));
                         }
-                        else
-                        {
-                            yield return codes[i];
-                        }*/
-                        yield return codes[i];
                     }
                     else
                     {
@@ -292,7 +289,7 @@ namespace VanillaGenesExpanded
                 {
                     if (ModCompatibilityCheck.HumanAlienRace)
                     {
-/*                        if (codes[i].opcode == OpCodes.Box) //Removing HAR Boxes as we will box the vect 2 instead
+                        if (codes[i].opcode == OpCodes.Box)
                         {
                             continue;
                         }
@@ -302,18 +299,15 @@ namespace VanillaGenesExpanded
                             yield return new CodeInstruction(OpCodes.Box, typeof(Vector2));
                             yield return new CodeInstruction(OpCodes.Ldarg_0);
                         }
+
+                        yield return codes[i];
+
                         if (codes[i].opcode == OpCodes.Ldc_R4)
                         {
-                            yield return codes[i];
                             yield return new CodeInstruction(OpCodes.Ldarg_0);
                             yield return new CodeInstruction(OpCodes.Call, headScaleVectorFromFactor);
                             yield return new CodeInstruction(OpCodes.Box, typeof(Vector2));
                         }
-                        else
-                        {
-                            yield return codes[i];
-                        }*/
-                        yield return codes[i];
                     }
                     else
                     {
@@ -353,7 +347,7 @@ namespace VanillaGenesExpanded
                 {
                     if (ModCompatibilityCheck.HumanAlienRace)
                     {
-/*                        var helper = AccessTools.Method("AlienRace.HarmonyPatches:GetHumanlikeHairSetForPawnHelper");
+                        var helper = AccessTools.Method("AlienRace.HarmonyPatches:GetHumanlikeHairSetForPawnHelper");
                         if (helper != null)
                         {
                             if (codes[i].Calls(helper) && !found)
@@ -362,7 +356,7 @@ namespace VanillaGenesExpanded
                                 codes.Insert(i, new CodeInstruction(OpCodes.Call, headScaleFactorVector));
                                 codes.Insert(i + 1, new CodeInstruction(OpCodes.Ldarg_0));
                             }
-                        }*/
+                        }
                     }
                     else
                     {
@@ -394,7 +388,7 @@ namespace VanillaGenesExpanded
                 {
                     if (ModCompatibilityCheck.HumanAlienRace)
                     {
-/*                        var helper = AccessTools.Method("AlienRace.HarmonyPatches:GetHumanlikeHairSetForPawnHelper");
+                        var helper = AccessTools.Method("AlienRace.HarmonyPatches:GetHumanlikeHairSetForPawnHelper");
                         if (helper != null)
                         {
                             if (codes[i].Calls(helper) && !found)
@@ -403,7 +397,7 @@ namespace VanillaGenesExpanded
                                 codes.Insert(i, new CodeInstruction(OpCodes.Call, headScaleFactorVector));
                                 codes.Insert(i + 1, new CodeInstruction(OpCodes.Ldarg_0));
                             }
-                        }*/
+                        }
                     }
                     else
                     {

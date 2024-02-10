@@ -27,5 +27,6 @@ namespace VFECore
         public static JoyKindDef Gaming_Cerebral;
         public static JobDef VEF_UseDoorTeleporter;
         public static ThingDef Leather_Human;
+        public static MentalStateDef Binging_Food;
     }
 }
