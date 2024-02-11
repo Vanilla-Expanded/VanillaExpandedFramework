@@ -398,40 +398,44 @@ namespace VFECore
     {
         public static void Postfix(Pawn ___pawn, Apparel ap)
         {
-            if (___pawn != null)
+            if (!Pawn_ApparelTracker_Wear_Patch.doNotRunTraitsPatch)
             {
-                var extension = ap?.def.GetModExtension<ApparelExtension>();
-                if (extension != null)
+                if (___pawn != null)
                 {
-                    if (___pawn.story?.traits != null)
+                    var extension = ap?.def.GetModExtension<ApparelExtension>();
+                    if (extension != null)
                     {
                         if (___pawn.story?.traits != null)
                         {
-                            if (extension.traitsOnEquip != null)
+                            if (___pawn.story?.traits != null)
                             {
-                                foreach (var traitDef in extension.traitsOnEquip)
+                                if (extension.traitsOnEquip != null)
                                 {
-                                    var trait = ___pawn.story.traits.GetTrait(traitDef);
-                                    if (trait != null)
+                                    foreach (var traitDef in extension.traitsOnEquip)
                                     {
-                                        ___pawn.story.traits.RemoveTrait(trait);
+                                        var trait = ___pawn.story.traits.GetTrait(traitDef);
+                                        if (trait != null)
+                                        {
+                                            ___pawn.story.traits.RemoveTrait(trait);
+                                        }
                                     }
                                 }
-                            }
-                            if (extension.traitsOnUnequip != null)
-                            {
-                                foreach (var traitDef in extension.traitsOnUnequip)
+
+                                if (extension.traitsOnUnequip != null)
                                 {
-                                    if (!___pawn.story.traits.HasTrait(traitDef))
+                                    foreach (var traitDef in extension.traitsOnUnequip)
                                     {
-                                        var trait = new Trait(traitDef);
-                                        ___pawn.story.traits.GainTrait(trait);
+                                        if (!___pawn.story.traits.HasTrait(traitDef))
+                                        {
+                                            var trait = new Trait(traitDef);
+                                            ___pawn.story.traits.GainTrait(trait);
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
 
+                    }
                 }
             }
         }
