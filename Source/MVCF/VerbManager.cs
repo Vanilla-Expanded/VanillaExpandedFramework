@@ -100,6 +100,12 @@ public class VerbManager : IExposable
 
     public void AddVerb(Verb verb, VerbSource source)
     {
+        if (Pawn == null)
+        {
+            MVCF.LogFormat($"Refusing to add {verb} from {source} before initialization.", LogLevel.Important);
+            return;
+        }
+
         MVCF.LogFormat($"Adding {verb} from {source}", LogLevel.Info);
 
         var mv = verb.Managed();
@@ -114,15 +120,14 @@ public class VerbManager : IExposable
 
         if (Pawn.Spawned) mv.Notify_Spawned();
 
-        if (mv.NeedsDrawing)
-            drawVerbs.Add(mv);
+        if (mv.NeedsDrawing) drawVerbs.Add(mv);
 
         if (mv.NeedsTicking)
         {
             if (tickVerbs.Count == 0)
             {
                 NeedsTicking = true;
-                WorldComponent_MVCF.Instance.TickManagers.Add(new System.WeakReference<VerbManager>(this));
+                WorldComponent_MVCF.Instance.TickManagers.Add(new(this));
             }
 
             tickVerbs.Add(mv);
@@ -130,6 +135,7 @@ public class VerbManager : IExposable
 
         verbs.Add(mv);
         foreach (var comp in comps) comp.PostAdded(mv);
+
         RecalcSearchVerb();
     }
 
