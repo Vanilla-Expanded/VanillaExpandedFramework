@@ -49,7 +49,7 @@ namespace VanillaGenesExpanded
         public EffecterDef customBloodEffect = null;
         public FleshTypeDef customWoundsFromFleshtype = null;
         //Custom vomit thingDef, custom vomit effecter
-        public ThingDef customVomitThingDef = null;    
+        public ThingDef customVomitThingDef = null;
         public EffecterDef customVomitEffect = null;
         //Custom meat thingDef when butchered. Looks like meat is back on the menu, boys!
         public ThingDef customMeatThingDef = null;
@@ -164,9 +164,10 @@ namespace VanillaGenesExpanded
             // The float range
             public FloatRange range = new(0, 0);
 
-            public float GetSize(float age)
+            public float GetSize(float? age)
             {
-                return Mathf.Lerp(minOffset, maxOffset, range.InverseLerpThroughRange(age));
+                if (age == null) return 0;
+                return Mathf.Lerp(minOffset, maxOffset, range.InverseLerpThroughRange(age.Value));
             }
         }
     }
