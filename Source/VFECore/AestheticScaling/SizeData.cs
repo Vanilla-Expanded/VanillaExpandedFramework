@@ -107,7 +107,7 @@ namespace VFECore
 
             float headScaleStat = pawn.GetStatValue(VFEDefOf.VEF_HeadSize_Cosmetic);
 
-            var renderOffsetVal = pawn.GetStatValue(VFEDefOf.VEF_HeadSize_Cosmetic);
+            var renderOffsetVal = pawn.GetStatValue(VFEDefOf.VEF_PawnRenderPosOffset);
 
             // Set Values
             this.totalSize = totalSize;
@@ -210,7 +210,7 @@ namespace VFECore
         {
             var factor = bodyRenderSize;
             var originalFactor = factor;
-            if (factor < 1) { factor = 1; }
+            if (factor <= 1.0001) { factor = 1; }
 
             // Will be null early in the load-step.
             float bodyGraphicsScale = pawn?.story?.bodyType?.bodyGraphicScale.y == null ? 1 : pawn.story.bodyType.bodyGraphicScale.y;

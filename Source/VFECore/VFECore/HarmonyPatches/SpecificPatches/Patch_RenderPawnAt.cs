@@ -10,14 +10,14 @@ using Verse;
 
 namespace VFECore
 {
-    [HarmonyPatch(typeof(PawnRenderer), nameof(PawnRenderer.RenderPawnAt))]
+    [HarmonyPatch(typeof(Pawn), nameof(Pawn.DrawAt))]
     public static class Patch_RenderPawnAt_2
     {
         [HarmonyPrefix]
-        public static void RenderPawnAt_Prefix(ref Vector3 drawLoc, Pawn ___pawn)
+        public static void DrawAt_Prefix(ref Vector3 drawLoc, Pawn __instance)
         {
-            if (___pawn.GetPosture() == PawnPosture.Standing &&
-                ScaleCache.GetScaleCache(___pawn) is SizeData data)
+            if (__instance.GetPosture() == PawnPosture.Standing &&
+                ScaleCache.GetScaleCache(__instance) is SizeData data)
             {
                 drawLoc.z += data.renderPosOffset;
             }
