@@ -19,6 +19,7 @@ namespace VFECore
         public CacheTimer Timer { get; set; } = new();
         public Pawn pawn;
         public float totalSize;
+        public float bodySizeOffset;
 
         // Change to size in...
         public float percentChange;
@@ -50,19 +51,16 @@ namespace VFECore
             float baseSize = pawn.RaceProps.baseBodySize;
             float previousTotalSize = sizeFromAge * baseSize;
 
-            StatDef statOffsetDef = StatDef.Named("VEF_BodySize_Offset");
-            float sizeOffset = pawn.GetStatValue(statOffsetDef);
+            float sizeOffset = pawn.GetStatValue(VFEDefOf.VEF_BodySize_Offset);
 
-            StatDef statCosmeticOffsetDef = StatDef.Named("VEF_CosmeticBodySize_Offset");
-            float cosmeticSizeOffset = pawn.GetStatValue(statCosmeticOffsetDef);
+            float cosmeticSizeOffset = pawn.GetStatValue(VFEDefOf.VEF_CosmeticBodySize_Offset);
 
-            float offsetFromSizeByAge = geneExts.Where(x=>x.sizeByAge != null).Sum(x=>x.sizeByAge.GetSize(pawn.ageTracker.AgeBiologicalYearsFloat));
+            float offsetFromSizeByAge = geneExts.Where(x=>x.sizeByAge != null).Sum(x=>x.sizeByAge.GetSize(pawn?.ageTracker?.AgeBiologicalYearsFloat));
             sizeOffset+= offsetFromSizeByAge;
 
             cosmeticSizeOffset += sizeOffset;
 
-            StatDef statMultDef = StatDef.Named("VEF_BodySize_Multiplier");
-            float sizeMultiplier = pawn.GetStatValue(statMultDef);
+            float sizeMultiplier = pawn.GetStatValue(VFEDefOf.VEF_BodySize_Multiplier);
 
             // Calculate the offset.
             float bodySizeOffset = ((baseSize + sizeOffset) * sizeMultiplier * sizeFromAge) - previousTotalSize;
@@ -107,17 +105,16 @@ namespace VFECore
             (float percentChange, float quadraticChange, float cubicChange) = GetPercentChange(bodySizeOffset, pawn);
             (float percentChangeCosmetic, float _, float _) = GetPercentChange(bodySizeCosmeticOffset, pawn);
 
-            StatDef statHeadSizeDef = StatDef.Named("VEF_HeadSize_Cosmetic");
-            float headScaleStat = pawn.GetStatValue(statHeadSizeDef);
+            float headScaleStat = pawn.GetStatValue(VFEDefOf.VEF_HeadSize_Cosmetic);
 
-            StatDef renderOffsetDef = StatDef.Named("VEF_PawnRenderPosOffset");
-            var renderOffsetVal = pawn.GetStatValue(renderOffsetDef);
+            var renderOffsetVal = pawn.GetStatValue(VFEDefOf.VEF_HeadSize_Cosmetic);
 
             // Set Values
             this.totalSize = totalSize;
             this.percentChange = percentChange;
             this.quadraticChange = quadraticChange;
             this.cubicChange = cubicChange;
+            this.bodySizeOffset = bodySizeOffset;
             bodyRenderSize = GetBodyRenderSize(percentChangeCosmetic);
             headRenderSize = GetHeadRenderSize(percentChangeCosmetic) * headScaleStat;
             renderPosOffset = GetYPositionOffset(bodyRenderSize, renderOffsetVal);
@@ -133,8 +130,8 @@ namespace VFECore
             float prevBodySize = sizeFromAge * baseSize;
             float postBodySize = prevBodySize + bodySizeOffset;
             float percentChange = postBodySize / prevBodySize;
-            float quadratic = Mathf.Pow(percentChange, 2);
-            float cubic = Mathf.Pow(percentChange, 3);
+            float quadratic = Mathf.Pow(postBodySize, 2) - Mathf.Pow(prevBodySize, 2);
+            float cubic = Mathf.Pow(postBodySize, 3) - Mathf.Pow(prevBodySize, 3);
 
             // Ensure we don't get negative values.
             percentChange = Mathf.Max(percentChange, 0.04f);
@@ -222,11 +219,9 @@ namespace VFECore
         }
 
         /// <summary>
-        /// This method is mostly just a bunch of fudged numbers to get scale values that are somewhat in line with the vanilla animals of a given size.
+        /// Calculates the health based on some fudged math. Technically it should probably be the cubic change, but that makes large creatures tank antigrain warheads.
         /// 
-        /// Or so I hope, it was ages since I did this math. 
-        /// 
-        /// Cached the math because HeathScale gets called an ungodly amount of times.
+        /// Cached the math because HeathScale gets called a lot.
         /// </summary>
         private static float CalculateHealthMultiplier(float percentChange, float quadraticChange)
         {
@@ -237,7 +232,7 @@ namespace VFECore
                 roughylLinear = (percentChange - 1) * 0.8f + 1; // Nerf scaling a bit, large pawns are tanky enough already.
             }
             if (roughylLinear > quad) { quad = roughylLinear; } // Make sure small creatures don't get absolutely unreasonably low health.
-            return Mathf.Lerp(roughylLinear, (quad-1), 0.18f);
+            return Mathf.Lerp(roughylLinear, quad, 0.55f);
         }
     }
 }

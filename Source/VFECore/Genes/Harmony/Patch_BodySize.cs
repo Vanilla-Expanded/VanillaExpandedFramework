@@ -16,7 +16,12 @@ namespace VanillaGenesExpanded
         {
             if (ScaleCache.GetScaleCache(__instance) is SizeData data)
             {
-                __result = data.totalSize;
+                __result += data.bodySizeOffset;
+
+                if (__result < 0.05f)
+                {
+                    __result = 0.05f;
+                }
             }
         }
     }
