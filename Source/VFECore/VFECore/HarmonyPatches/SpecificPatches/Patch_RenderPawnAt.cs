@@ -10,7 +10,7 @@ using Verse;
 
 namespace VFECore
 {
-    [HarmonyPatch(typeof(Pawn), nameof(Pawn.DrawAt))]
+    [HarmonyPatch(typeof(Pawn_DrawTracker), nameof(Pawn_DrawTracker.DrawPos), MethodType.Getter)]
     public static class Patch_RenderPawnAt_2
     {
         [HarmonyPrefix]
