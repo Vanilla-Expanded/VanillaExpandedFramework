@@ -12,9 +12,49 @@ using Verse.Noise;
 
 namespace VFECore
 {
-    public class SizeData : ICacheable
+    /// <summary>
+    /// Fallback class for the SizeData in case something forgets to call forceRefresh and we end up with out of date data for a long time.
+    /// </summary>
+    public class CachedPawnDataSlowUpdate : GameComponent
     {
-        public static Dictionary<Pawn, SizeData> cache = new();
+        //public Queue<Pawn> refreshQueue = new Queue<Pawn>();
+        public List<Pawn> pawnsToRefresh = new List<Pawn>();
+
+        public CachedPawnDataSlowUpdate(Game game) { }
+
+        public override void GameComponentTick()
+        {
+            base.GameComponentTick();
+            if (pawnsToRefresh.Count == 0)
+            {
+                foreach (var cache in PawnDataCache.Cache.Values)
+                {
+                    if (cache.pawn != null)
+                        pawnsToRefresh.Add(cache.pawn);
+                }
+            }
+            else
+            {
+                int ticksGames = Find.TickManager.TicksGame;
+                // If the queue is not empty, dequeue the first cache and refresh it.
+                //var cachedPawn = refreshQueue.Dequeue();
+                for (int i = pawnsToRefresh.Count - 1; i >= 0; i--)
+                {
+                    var cachedPawn = pawnsToRefresh[i];
+                    if (cachedPawn != null && (ticksGames + cachedPawn.HashOffset()) % 1000 == 0)
+                    {
+                        PawnDataCache.GetPawnDataCache(cachedPawn, forceRefresh: true);
+                        // Remove the pawn from the list.
+                        pawnsToRefresh.RemoveAt(i);
+                    }
+                }
+            }
+        }
+    }
+
+    public class CachedPawnData : ICacheable
+    {
+        public static Dictionary<Pawn, CachedPawnData> cache = new();
 
         public CacheTimer Timer { get; set; } = new();
         public Pawn pawn;
@@ -34,7 +74,10 @@ namespace VFECore
         // Health data.
         public float healthMultiplier;
 
-        public SizeData(Pawn pawn)
+        // Food
+        public float foodCapacityMult;
+
+        public CachedPawnData(Pawn pawn)
         {
             this.pawn = pawn;
         }
@@ -116,10 +159,13 @@ namespace VFECore
             this.cubicChange = cubicChange;
             this.bodySizeOffset = bodySizeOffset;
             bodyRenderSize = GetBodyRenderSize(percentChangeCosmetic);
-            headRenderSize = GetHeadRenderSize(percentChangeCosmetic) * headScaleStat;
+            headRenderSize = GetHeadRenderSize(bodyRenderSize) * headScaleStat;
             renderPosOffset = GetYPositionOffset(bodyRenderSize, renderOffsetVal);
 
             healthMultiplier = CalculateHealthMultiplier(percentChange, quadraticChange);
+
+            // Other cached data
+            foodCapacityMult = pawn.GetStatValue(VFEDefOf.VEF_FoodCapacityMultiplier);
         }
 
         private static (float, float, float) GetPercentChange(float bodySizeOffset, Pawn pawn)

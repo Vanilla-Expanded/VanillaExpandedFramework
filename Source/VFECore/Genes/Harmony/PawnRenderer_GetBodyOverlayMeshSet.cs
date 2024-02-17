@@ -50,7 +50,7 @@ namespace VanillaGenesExpanded
                     }
                 }
             }
-            if (ScaleCache.GetScaleCache(___pawn) is SizeData data)
+            if (PawnDataCache.GetPawnDataCache(___pawn) is CachedPawnData data)
             {
                 factorX *= data.bodyRenderSize;
                 factorY *= data.bodyRenderSize;
@@ -116,7 +116,7 @@ namespace VanillaGenesExpanded
                     }
                 }
             }
-            if (ScaleCache.GetScaleCache(pawn) is SizeData data)
+            if (PawnDataCache.GetPawnDataCache(pawn) is CachedPawnData data)
             {
                 offset *= data.headRenderSize;
             }

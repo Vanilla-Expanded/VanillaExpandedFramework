@@ -1,26 +1,52 @@
 ﻿using HarmonyLib;
 using RimWorld;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 
 namespace VFECore
 {
     [HarmonyPatch(typeof(Pawn_DrawTracker), nameof(Pawn_DrawTracker.DrawPos), MethodType.Getter)]
-    public static class Patch_RenderPawnAt_2
+    public static class Pawn_DrawTracker_Patch
     {
-        [HarmonyPrefix]
-        public static void DrawAt_Prefix(ref Vector3 drawLoc, Pawn __instance)
+        public static bool skipOffset = false;
+        [HarmonyPostfix]
+        public static void Postfix(ref Vector3 __result, Pawn ___pawn)
         {
-            if (__instance.GetPosture() == PawnPosture.Standing &&
-                ScaleCache.GetScaleCache(__instance) is SizeData data)
+            if (!skipOffset
+                && PawnDataCache.GetPawnDataCache(___pawn) is CachedPawnData data
+                && ___pawn.GetPosture() == PawnPosture.Standing
+                )
             {
-                drawLoc.z += data.renderPosOffset;
+                __result.z += data.renderPosOffset;
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(SelectionDrawer), nameof(SelectionDrawer.DrawSelectionBracketFor))]
+    public static class SelectionDrawer_DrawSelection_Patch
+    {
+        public static void Prefix(object obj)
+        {
+            Pawn_DrawTracker_Patch.skipOffset = true;
+        }
+
+        public static void Postfix(object obj)
+        {
+            Pawn_DrawTracker_Patch.skipOffset = false;
+        }
+    }
+
+    [HarmonyPatch(typeof(PawnUIOverlay), nameof(PawnUIOverlay.DrawPawnGUIOverlay))]
+    public static class PawnUIOverlay_DrawSelection_Patch
+    {
+        public static void Prefix()
+        {
+            Pawn_DrawTracker_Patch.skipOffset = true;
+        }
+
+        public static void Postfix()
+        {
+            Pawn_DrawTracker_Patch.skipOffset = false;
         }
     }
 }

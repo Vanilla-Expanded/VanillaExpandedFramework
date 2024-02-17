@@ -14,7 +14,7 @@ namespace VanillaGenesExpanded
     {
         public static void Postfix(ref float __result, Pawn __instance)
         {
-            if (ScaleCache.GetScaleCache(__instance) is SizeData data)
+            if (PawnDataCache.GetPawnDataCache(__instance) is CachedPawnData data)
             {
                 __result += data.bodySizeOffset;
 

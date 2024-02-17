@@ -25,14 +25,14 @@ namespace VFECore
     {
         public static Dictionary<T, V> Cache { get; set; } = new();
 
-        public static V GetCache(T key)
+        public static V GetCache(T key, bool forceRefresh = false, bool regenerateIfTimer = false)
         {
             if (key == null)
                 return default;
             if (Cache.TryGetValue(key, out V data))
             {
                 // Check if the cache has timed out
-                if (data.Timer.AnyTimeout())
+                if (forceRefresh || regenerateIfTimer && data.Timer.AnyTimeout())
                 {
                     data.RegenerateCache();
                     data.Timer.ResetTimers();

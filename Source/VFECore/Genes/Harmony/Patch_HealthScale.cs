@@ -20,7 +20,7 @@ namespace VanillaGenesExpanded
         [HarmonyPostfix]
         public static void HealthScale_Postfix(ref float __result, Pawn __instance)
         {
-            if(ScaleCache.GetScaleCache(__instance) is SizeData data)
+            if(PawnDataCache.GetPawnDataCache(__instance) is CachedPawnData data)
             {
                 __result *= data.healthMultiplier;
             }

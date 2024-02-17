@@ -95,7 +95,7 @@ namespace VanillaGenesExpanded
                     }
                 }
             }
-            if (ScaleCache.GetScaleCache(pawn) is SizeData data)
+            if (PawnDataCache.GetPawnDataCache(pawn) is CachedPawnData data)
             {
                 scale *= data.headRenderSize;
             }
@@ -116,7 +116,7 @@ namespace VanillaGenesExpanded
                     }
                 }
             }
-            if (ScaleCache.GetScaleCache(pawn) is SizeData data)
+            if (PawnDataCache.GetPawnDataCache(pawn) is CachedPawnData data)
             {
                 offset.x *= data.headRenderSize;
                 offset.z /= data.headRenderSize > 1f ? data.headRenderSize : 1f;

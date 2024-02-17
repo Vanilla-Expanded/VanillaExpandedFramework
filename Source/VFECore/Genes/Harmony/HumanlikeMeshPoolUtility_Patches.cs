@@ -70,7 +70,7 @@ namespace VanillaGenesExpanded
                     }
                 }
             }
-            if (ScaleCache.GetScaleCache(pawn) is SizeData data)
+            if (PawnDataCache.GetPawnDataCache(pawn) is CachedPawnData data)
             {
                 scaling *= data.bodyRenderSize;
             }
@@ -95,7 +95,7 @@ namespace VanillaGenesExpanded
                     }
                 }
             }
-            if (ScaleCache.GetScaleCache(pawn) is SizeData data)
+            if (PawnDataCache.GetPawnDataCache(pawn) is CachedPawnData data)
             {
                 headSize *= data.headRenderSize;
             }
@@ -120,7 +120,7 @@ namespace VanillaGenesExpanded
                     }
                 }
             }
-            if (ScaleCache.GetScaleCache(pawn) is SizeData data)
+            if (PawnDataCache.GetPawnDataCache(pawn) is CachedPawnData data)
             {
                 scaling *= data.headRenderSize;
             }
@@ -151,7 +151,7 @@ namespace VanillaGenesExpanded
                     }
                 }
             }
-            if (ScaleCache.GetScaleCache(pawn) is SizeData data)
+            if (PawnDataCache.GetPawnDataCache(pawn) is CachedPawnData data)
             {
                 width *= data.bodyRenderSize;
             }
@@ -183,7 +183,7 @@ namespace VanillaGenesExpanded
                     }
                 }
             }
-            if (ScaleCache.GetScaleCache(pawn) is SizeData data)
+            if (PawnDataCache.GetPawnDataCache(pawn) is CachedPawnData data)
             {
                 width *= data.headRenderSize;
             }
@@ -210,7 +210,7 @@ namespace VanillaGenesExpanded
                     }
                 }
             }
-            if (ScaleCache.GetScaleCache(pawn) is SizeData data)
+            if (PawnDataCache.GetPawnDataCache(pawn) is CachedPawnData data)
             {
                 x *= data.headRenderSize;
                 y *= data.headRenderSize;

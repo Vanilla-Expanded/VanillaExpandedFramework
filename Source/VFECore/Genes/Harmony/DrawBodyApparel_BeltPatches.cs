@@ -50,7 +50,7 @@ namespace VanillaGenesExpanded
                         }
                     }
                 }
-                if (ScaleCache.GetScaleCache(pawn) is SizeData data)
+                if (PawnDataCache.GetPawnDataCache(pawn) is CachedPawnData data)
                 {
                     scale *= data.bodyRenderSize;
                 }
