@@ -39,7 +39,10 @@ namespace HeavyWeapons
 					if (this.EquipmentSource.HitPoints <= 0)
                     {
 						this.EquipmentSource.Destroy();
-                        CasterPawn.jobs.StopAll();
+						if (CasterIsPawn)
+						{
+                            CasterPawn.jobs.StopAll();
+                        }
                     }
                 }
 			}
