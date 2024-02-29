@@ -13,11 +13,14 @@ namespace VFECore.Abilities
 
         public Pawn    pawn;
         public Ability ability;
+        
+        private bool shrunk;
 
         public Command_Ability(Pawn pawn, Ability ability) : base()
         {
             this.pawn    = pawn;
             this.ability = ability;
+            this.shrunk  = false;
 
             this.defaultLabel   = ability.def.LabelCap;
             this.defaultDesc    = ability.GetDescriptionForPawn();
@@ -38,12 +41,12 @@ namespace VFECore.Abilities
         public override bool GroupsWith(Gizmo other) => 
             other is Command_Ability ca && ca.ability.def == this.ability.def;
 
+        public override string Desc =>
+            this.shrunk ? $"{ability.def.LabelCap}\n\n{base.Desc}" : base.Desc;
+
         protected override GizmoResult GizmoOnGUIInt(Rect butRect, GizmoRenderParms parms)
         {
-            if (parms.shrunk)
-            {
-                this.defaultDesc = $"{ability.def.LabelCap}\n\n{this.defaultDesc}";
-            }
+            this.shrunk = params.shrunk;
 
             GizmoResult result = base.GizmoOnGUIInt(butRect, parms);
 
