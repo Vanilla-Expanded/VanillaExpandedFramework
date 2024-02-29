@@ -128,7 +128,7 @@ namespace VanillaGenesExpanded
             }
             catch (Exception ex)
             {
-                Log.Error("[VEF] Error in GeneUtils.ApplyGeneEffects: " + ex);
+                Log.Error($"[VEF] Error in GeneUtils.ApplyGeneEffects for gene {gene?.def?.defName.ToStringSafe()}: {ex}");
             }
         }
 
@@ -248,7 +248,7 @@ namespace VanillaGenesExpanded
             }
             catch (Exception ex)
             {
-                Log.Error("[VEF] Error in GeneUtils.RemoveGeneEffects: " + ex);
+                Log.Error($"[VEF] Error in GeneUtils.RemoveGeneEffects for gene {gene?.def?.defName.ToStringSafe()}: {ex}");
             }
         }
     }
