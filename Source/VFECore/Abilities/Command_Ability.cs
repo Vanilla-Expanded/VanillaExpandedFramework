@@ -46,7 +46,7 @@ namespace VFECore.Abilities
 
         protected override GizmoResult GizmoOnGUIInt(Rect butRect, GizmoRenderParms parms)
         {
-            this.shrunk = params.shrunk;
+            this.shrunk = parms.shrunk;
 
             GizmoResult result = base.GizmoOnGUIInt(butRect, parms);
 
