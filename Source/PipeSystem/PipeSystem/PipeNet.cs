@@ -105,21 +105,6 @@ namespace PipeSystem
             }
         }
 
-        public PipeNet(IEnumerable<CompResource> connectors, Map map, PipeNetDef def)
-        {
-            this.map = map;
-            this.def = def;
-            networkGrid = new BoolGrid(map);
-
-            NextTick = Find.TickManager.TicksGame;
-
-            // Register all
-            foreach (var connector in connectors)
-            {
-                RegisterComp(connector);
-            }
-        }
-
         /// <summary>
         /// Loop on all receivers, sort them in receiversOn and receiversOff.
         /// Update Consumption. This is called when receiversDirty is true.

@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -12,6 +12,8 @@ namespace PipeSystem
     /// </summary>
     public class PipeNetDef : Def
     {
+        public Type pipeNetClass = typeof(PipeNet);
+        
         public Resource resource; // The resource used for this net.
         public List<ThingDef> pipeDefs; // The pipes used for this net.
 

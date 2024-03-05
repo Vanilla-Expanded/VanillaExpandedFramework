@@ -122,7 +122,7 @@ namespace PipeSystem
             // If no PipeNet are adjacent, we create a new one
             if (foundNets.Count == 0)
             {
-                pipeNets.Add(new PipeNet(new List<CompResource> { comp }, map, comp.Props.pipeNet));
+                pipeNets.Add(PipeNetMaker.MakePipeNet(new List<CompResource> { comp }, map, comp.Props.pipeNet));
                 pipeNetsCount++;
                 PipeSystemDebug.Message($"Creating new net");
             }
@@ -245,12 +245,12 @@ namespace PipeSystem
                     }
                 }
                 // Return the new network
-                return new PipeNet(newNet, map, rootComp.Props.pipeNet);
+                return PipeNetMaker.MakePipeNet(newNet, map, rootComp.Props.pipeNet);
             }
             else
             {
                 treated.Add(rootComp);
-                return new PipeNet(new List<CompResource> { rootComp }, map, rootComp.Props.pipeNet);
+                return PipeNetMaker.MakePipeNet(new List<CompResource> { rootComp }, map, rootComp.Props.pipeNet);
             }
         }
 
