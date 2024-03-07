@@ -38,9 +38,9 @@ namespace PipeSystem
         internal List<CompResourceStorage> markedForTransfer = new List<CompResourceStorage>();
 
         private readonly List<CompResourceTrader> receiversOn = new List<CompResourceTrader>();
-        private readonly List<CompResourceTrader> receiversOff = new List<CompResourceTrader>();
+        public readonly List<CompResourceTrader> receiversOff = new List<CompResourceTrader>();
         private readonly List<CompResourceTrader> producersOn = new List<CompResourceTrader>();
-        private readonly List<CompResourceTrader> producersOff = new List<CompResourceTrader>();
+        public readonly List<CompResourceTrader> producersOff = new List<CompResourceTrader>();
 
         public int NextTick { get; set; }
 
@@ -109,7 +109,7 @@ namespace PipeSystem
         /// Loop on all receivers, sort them in receiversOn and receiversOff.
         /// Update Consumption. This is called when receiversDirty is true.
         /// </summary>
-        private bool ReceiversDirty()
+        public bool ReceiversDirty()
         {
             var nextTickDirty = false;
             PipeSystemDebug.Message("Receivers dirty");
@@ -152,7 +152,7 @@ namespace PipeSystem
         /// Loop on all producers, sort them in producersOn and producersOff.
         /// Update Production. This is called when producersDirty is true.
         /// </summary>
-        private void ProducersDirty()
+        public void ProducersDirty()
         {
             PipeSystemDebug.Message("Producers dirty");
             producersOn.Clear();

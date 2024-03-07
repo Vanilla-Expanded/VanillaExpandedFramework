@@ -216,7 +216,10 @@ namespace PipeSystem
                 ResourceOn = false;
 
             if (Consumption != 0f)
+            {
                 PipeNet.receiversDirty = true;
+                PipeNet.producersDirty = true;
+            }
         }
 
         /// <summary>
