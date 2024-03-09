@@ -1,0 +1,29 @@
+<Patch>
+ <Operation Class="PatchOperationReplace">
+    <xpath>Defs/ThingDef[@Name="MealBaseIngredientless"]/ingestible/maxNumToIngestAtOnce</xpath>
+    <value>
+      <maxNumToIngestAtOnce>20</maxNumToIngestAtOnce>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationReplace">
+    <xpath>Defs/ThingDef[defName="Chocolate"]/ingestible/maxNumToIngestAtOnce</xpath>
+    <value>
+      <maxNumToIngestAtOnce>20</maxNumToIngestAtOnce>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/ThingDef[@Name="PlantFoodRawBase"]/ingestible</xpath>
+    <value>
+      <maxNumToIngestAtOnce>400</maxNumToIngestAtOnce>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/ThingDef[defName="Pemmican"]/ingestible</xpath>
+    <value>
+      <maxNumToIngestAtOnce>400</maxNumToIngestAtOnce>
+    </value>
+  </Operation>
+</Patch>
