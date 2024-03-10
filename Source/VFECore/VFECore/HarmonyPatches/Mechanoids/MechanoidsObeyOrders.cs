@@ -35,6 +35,10 @@ namespace VFE.Mechanoids.HarmonyPatches
 	[HarmonyPatch(typeof(MechanitorUtility), "InMechanitorCommandRange")]
 	public static class MechanitorUtility_InMechanitorCommandRange_Patch
 	{
+		static bool Prepare()
+        {
+            return VFECore.ModCompatibilityCheck.VFEMechanoids;
+        }
 		public static void Postfix(Pawn mech, ref bool __result)
 		{
 			if (mech is Machine)
@@ -47,6 +51,10 @@ namespace VFE.Mechanoids.HarmonyPatches
 	[HarmonyPatch(typeof(FloatMenuMakerMap), "CanTakeOrder")]
 	public static class MechanoidsObeyOrders
 	{
+		static bool Prepare()
+        {
+            return VFECore.ModCompatibilityCheck.VFEMechanoids;
+        }
 		public static void Postfix(Pawn pawn, ref bool __result)
 		{
 			if (!__result && pawn.drafter != null && pawn is Machine && pawn.Faction != null && pawn.Faction.IsPlayer)
@@ -59,6 +67,10 @@ namespace VFE.Mechanoids.HarmonyPatches
 	[HarmonyPatch(typeof(Selector), "SelectInsideDragBox")]
 	public static class Selector_SelectInsideDragBox_Patch
 	{
+		static bool Prepare()
+        {
+            return VFECore.ModCompatibilityCheck.VFEMechanoids;
+        }
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
 		{
 			var codes = codeInstructions.ToList();
@@ -99,6 +111,10 @@ namespace VFE.Mechanoids.HarmonyPatches
 	[HarmonyPatch(typeof(Selector), "SelectAllMatchingObjectUnderMouseOnScreen")]
 	public static class Selector_SelectAllMatchingObjectUnderMouseOnScreen_Patch
 	{
+		static bool Prepare()
+        {
+            return VFECore.ModCompatibilityCheck.VFEMechanoids;
+        }
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
 		{
 			var codes = codeInstructions.ToList();
@@ -143,6 +159,10 @@ namespace VFE.Mechanoids.HarmonyPatches
 	[HarmonyPatch(typeof(FloatMenuMakerMap), "AddDraftedOrders")]
 	public static class AddDraftedOrders_Patch
 	{
+		static bool Prepare()
+        {
+            return VFECore.ModCompatibilityCheck.VFEMechanoids;
+        }
 		public static bool Prefix(Vector3 clickPos, Pawn pawn, List<FloatMenuOption> opts)
 		{
 			if (pawn is Machine && pawn.needs.TryGetNeed<Need_Power>() is Need_Power need && need.CurLevel <= 0f)
@@ -160,7 +180,7 @@ namespace VFE.Mechanoids.HarmonyPatches
 		static SimpleSidearmsPatch()
 		{
 			SimpleSidearmsActive = ModsConfig.IsActive("PeteTimesSix.SimpleSidearms");
-			if (SimpleSidearmsActive)
+			if (SimpleSidearmsActive && VFECore.ModCompatibilityCheck.VFEMechanoids)
 			{
 				var type = AccessTools.TypeByName("PeteTimesSix.SimpleSidearms.Extensions");
 				if (type != null)
@@ -247,6 +267,10 @@ namespace VFE.Mechanoids.HarmonyPatches
 	[HarmonyPatch(typeof(FloatMenuMakerMap), "ChoicesAtFor")]
 	public static class FloatMenuMakerMap_ChoicesAtFor_Patch
 	{
+		static bool Prepare()
+        {
+            return VFECore.ModCompatibilityCheck.VFEMechanoids;
+        }
 		public static void Postfix(ref List<FloatMenuOption> __result, Vector3 clickPos, Pawn pawn, bool suppressAutoTakeableGoto = false)
 		{
 			if (!pawn.RaceProps.Humanlike)
@@ -392,6 +416,10 @@ namespace VFE.Mechanoids.HarmonyPatches
 	[HarmonyPatch(typeof(WanderUtility), "GetColonyWanderRoot")]
 	public static class GetColonyWanderRoot_Patch
 	{
+		static bool Prepare()
+        {
+            return VFECore.ModCompatibilityCheck.VFEMechanoids;
+        }
 		public static void Postfix(ref IntVec3 __result, Pawn pawn)
 		{
 			try

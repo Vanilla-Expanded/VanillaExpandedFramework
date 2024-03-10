@@ -13,7 +13,10 @@ namespace VFE.Mechanoids.HarmonyPatches
     [HarmonyPatch(typeof(PawnRenderer), "CarryWeaponOpenly")]
     public static class MobileTurretsShowTurrets
     {
-
+        static bool Prepare()
+        {
+            return VFECore.ModCompatibilityCheck.VFEMechanoids;
+        }
         public static void Postfix(PawnRenderer __instance, ref bool __result)
         {
             if (CompMachine.cachedMachines.TryGetValue(__instance, out CompMachine value) && (value.turretAttached != null || value.Props.violent))

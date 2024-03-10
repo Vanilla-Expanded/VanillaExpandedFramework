@@ -16,6 +16,10 @@ namespace VFE.Mechanoids.HarmonyPatches
         {
             return typeof(JobDriver_Flee).GetMethods(AccessTools.all).First(x => x.Name.Contains("<MakeNewToils>"));
         }
+        static bool Prepare()
+        {
+            return VFECore.ModCompatibilityCheck.VFEMechanoids;
+        }
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();

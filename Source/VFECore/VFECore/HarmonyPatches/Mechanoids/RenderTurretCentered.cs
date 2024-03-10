@@ -24,6 +24,10 @@ namespace VFE.Mechanoids.HarmonyPatches
         static Vector3 east = new Vector3(0.2f, 0f, -0.22f);
         static Vector3 west = new Vector3(-0.2f, 0, -0.22f);
 
+        static bool Prepare()
+        {
+            return VFECore.ModCompatibilityCheck.VFEMechanoids;
+        }
         public static bool Prefix(PawnRenderer __instance)
         {
             if (CompMachine.cachedMachines.TryGetValue(__instance, out CompMachine compMachine))

@@ -215,7 +215,7 @@ namespace VanillaFurnitureExpanded
 
         private void ResetCountdown()
         {
-            if (ModLister.HasActiveModWithName("Vanilla Factions Expanded - Mechanoids"))
+            if (VFECore.ModCompatibilityCheck.VFEMechanoids)
             {
                 try
                 {
