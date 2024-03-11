@@ -1,5 +1,5 @@
 <Patch>
- <Operation Class="PatchOperationReplace">
+  <Operation Class="PatchOperationReplace">
     <xpath>Defs/ThingDef[@Name="MealBaseIngredientless"]/ingestible/maxNumToIngestAtOnce</xpath>
     <value>
       <maxNumToIngestAtOnce>20</maxNumToIngestAtOnce>
@@ -13,15 +13,33 @@
     </value>
   </Operation>
 
+  <!--Ensure we're not adding a new one if it already exists.-->
   <Operation Class="PatchOperationAdd">
-    <xpath>Defs/ThingDef[@Name="PlantFoodRawBase"]/ingestible</xpath>
+    <success>Always</success>
+    <xpath>Defs/ThingDef[@Name="PlantFoodRawBase"]/ingestible[not(maxNumToIngestAtOnce)]</xpath>
+    <value>
+      <maxNumToIngestAtOnce />
+    </value>
+  </Operation>
+
+  <!--But still always write our values in there...-->
+  <Operation Class="PatchOperationReplace">
+    <xpath>Defs/ThingDef[@Name="PlantFoodRawBase"]/ingestible/maxNumToIngestAtOnce</xpath>
     <value>
       <maxNumToIngestAtOnce>400</maxNumToIngestAtOnce>
     </value>
   </Operation>
 
   <Operation Class="PatchOperationAdd">
-    <xpath>Defs/ThingDef[defName="Pemmican"]/ingestible</xpath>
+    <success>Always</success>
+    <xpath>Defs/ThingDef[defName="Pemmican"]/ingestible[not(maxNumToIngestAtOnce)]</xpath>
+    <value>
+      <maxNumToIngestAtOnce />
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationReplace">
+    <xpath>Defs/ThingDef[defName="Pemmican"]/ingestible/maxNumToIngestAtOnce</xpath>
     <value>
       <maxNumToIngestAtOnce>400</maxNumToIngestAtOnce>
     </value>
