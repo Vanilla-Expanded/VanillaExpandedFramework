@@ -13,7 +13,7 @@ using VFEMech;
 
 namespace VFE.Mechanoids.HarmonyPatches
 {
-    [HarmonyPatch(typeof(PawnRenderer), "DrawEquipmentAiming")]
+    [HarmonyPatch(typeof(PawnRenderUtility), "DrawEquipmentAiming")]
     public static class RenderTurretCentered
     {
         static bool replaced = false;
@@ -26,7 +26,7 @@ namespace VFE.Mechanoids.HarmonyPatches
 
         public static bool Prefix(PawnRenderer __instance)
         {
-            if (CompMachine.cachedMachines.TryGetValue(__instance, out CompMachine compMachine))
+            if (__instance != null && CompMachine.cachedMachines?.TryGetValue(__instance, out CompMachine compMachine) != null)
             {
                 if (compMachine != null)
                 {

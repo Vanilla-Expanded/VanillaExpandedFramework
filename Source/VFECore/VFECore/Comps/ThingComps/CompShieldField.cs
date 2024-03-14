@@ -194,7 +194,9 @@ namespace VFECore
             }
         }
 
-        private bool CanFunction => (!Props.toggleable || toggleIsActive) && (PowerTraderComp == null || PowerTraderComp.PowerOn) && !parent.IsBrokenDown();
+        private bool CanFunction => (!Props.toggleable || toggleIsActive) && (PowerTraderComp == null
+            || PowerTraderComp.PowerOn) && !parent.IsBrokenDown() && HostThing is not Apparel;
+        
         private CompPowerTrader PowerTraderComp
         {
             get
@@ -670,7 +672,7 @@ namespace VFECore
             {
                 active = this.HostThing.Map != null && CanFunction &&
                 (Props.activeAlways ||
-                GenHostility.AnyHostileActiveThreatTo(HostThing.Map, HostFaction) ||
+                HostFaction != null && GenHostility.AnyHostileActiveThreatTo(HostThing.Map, HostFaction) ||
                 HostThing.Map.listerThings.ThingsOfDef(VFEDefOf.Tornado).Any() ||
                 HostThing.Map.listerThings.ThingsOfDef(RimWorld.ThingDefOf.DropPodIncoming).Any() || shieldBuffer > 0);
             }

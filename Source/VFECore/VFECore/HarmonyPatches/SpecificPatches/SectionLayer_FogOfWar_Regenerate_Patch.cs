@@ -29,7 +29,7 @@ namespace VFECore
             }
         }
 
-        [HarmonyPatch(typeof(MapDeiniter), nameof(MapDeiniter.Deinit_NewTemp))]
+        [HarmonyPatch(typeof(MapDeiniter), nameof(MapDeiniter.Deinit))]
         [HarmonyPrefix]
         public static void ClearCache(Map map)
         {
