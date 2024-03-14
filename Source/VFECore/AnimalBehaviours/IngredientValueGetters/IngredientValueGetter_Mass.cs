@@ -1,4 +1,5 @@
 ﻿
+using RimWorld;
 using Verse;
 namespace AnimalBehaviours
 {

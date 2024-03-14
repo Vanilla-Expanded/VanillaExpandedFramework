@@ -56,7 +56,7 @@ namespace AnimalBehaviours
                                 //Regenerate wounds
                                 if (pawn.health != null)
                                 {
-                                    IEnumerable<Hediff_Injury> injuriesEnumerable = pawn.health.hediffSet.GetInjuriesTendable();
+                                    IEnumerable<Hediff_Injury> injuriesEnumerable = pawn.health.hediffSet.GetHediffsTendable().OfType<Hediff_Injury>();
 
                                     if (injuriesEnumerable != null)
                                     {

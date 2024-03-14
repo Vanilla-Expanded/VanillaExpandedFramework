@@ -12,9 +12,9 @@ namespace VFEMech
 {
     public class Building_MechTurretGun : Building_TurretGun
     {
-        public override void Draw()
+        protected override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
-            base.Draw();
+            base.DrawAt(drawLoc, flip);
             if (this.TargetCurrentlyAimingAt.IsValid && (!this.TargetCurrentlyAimingAt.HasThing || this.TargetCurrentlyAimingAt.Thing.Spawned))
             {
                 Vector3 b = (!this.TargetCurrentlyAimingAt.HasThing) ? this.TargetCurrentlyAimingAt.Cell.ToVector3Shifted() : this.TargetCurrentlyAimingAt.Thing.TrueCenter();

@@ -313,10 +313,7 @@ namespace VFECore
         public bool hideRandomizeButtons = false;
         public bool enablePipeSystemNoStorageAlert = true;
        
-        //Unused, kept for compat only, remove in 1.5
-        public bool isRandomGraphic = true;
-        public bool hideRandomizeButton = false;
-
+        
 
         public Dictionary<string, bool> weatherDamagesOptions = new();
         public bool disableModSourceReport;
@@ -333,9 +330,7 @@ namespace VFECore
             Scribe_Collections.Look(ref weatherDamagesOptions, "weatherDamagesOptions", LookMode.Value, LookMode.Value);
            
 
-            //Unused, kept for compat only, remove in 1.5
-            Scribe_Values.Look(ref isRandomGraphic, "isRandomGraphic", true, true);
-            Scribe_Values.Look(ref hideRandomizeButton, "hideRandomizeButton", false, true);
+           
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {

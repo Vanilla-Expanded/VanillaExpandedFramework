@@ -25,7 +25,7 @@ namespace AnimalBehaviours
     {
 
         [HarmonyPostfix]
-        public static void DisablePathCostForFloatingCreatures(Pawn pawn, IntVec3 c, ref int __result)
+        public static void DisablePathCostForFloatingCreatures(Pawn pawn, IntVec3 c, ref float __result)
 
         {
 
@@ -35,7 +35,7 @@ namespace AnimalBehaviours
                 if (AnimalCollectionClass.floating_animals.Contains(pawn))
                 {
                     TerrainDef terrainDef = pawn.Map.terrainGrid.TerrainAt(c);
-                    int num;
+                    float num;
                     if (c.x == pawn.Position.x || c.z == pawn.Position.z)
                     {
                         num = pawn.TicksPerMoveCardinal;
@@ -67,7 +67,7 @@ namespace AnimalBehaviours
                 {
                     TerrainDef terrainDef = pawn.Map.terrainGrid.TerrainAt(c);
                     if (terrainDef.IsWater) {
-                        int num;
+                        float num;
                         if (c.x == pawn.Position.x || c.z == pawn.Position.z)
                         {
                             num = pawn.TicksPerMoveCardinal;

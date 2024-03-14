@@ -20,7 +20,7 @@ namespace AnimalBehaviours
         [HarmonyPrefix]
         public static bool SkipIfAnimal(Pawn pawn)
 
-        {          
+        {
 
             if (AnimalCollectionClass.draftable_animals.Contains(pawn))
             {

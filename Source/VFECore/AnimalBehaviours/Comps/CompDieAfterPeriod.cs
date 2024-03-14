@@ -1,6 +1,7 @@
 ﻿using RimWorld;
 using Verse;
 using Verse.Sound;
+using VFECore;
 
 namespace AnimalBehaviours
 
@@ -41,10 +42,10 @@ namespace AnimalBehaviours
                         for (int i = 0; i < 20; i++)
                         {
                             IntVec3 c;
-                            CellFinder.TryFindRandomReachableCellNear(this.parent.Position, this.parent.Map, 2, TraverseParms.For(TraverseMode.NoPassClosedDoors, Danger.Deadly, false), null, null, out c);
+                            CellFinder.TryFindRandomReachableNearbyCell(this.parent.Position, this.parent.Map, 2, TraverseParms.For(TraverseMode.NoPassClosedDoors, Danger.Deadly, false), null, null, out c);
                             FilthMaker.TryMakeFilth(c, this.parent.Map, ThingDef.Named(Props.effectFilth));
                         }
-                        SoundDefOf.Hive_Spawn.PlayOneShot(new TargetInfo(this.parent.Position, this.parent.Map, false));
+                        VFEDefOf.Hive_Spawn.PlayOneShot(new TargetInfo(this.parent.Position, this.parent.Map, false));
                     }
                     if (Props.justVanish)
                     {

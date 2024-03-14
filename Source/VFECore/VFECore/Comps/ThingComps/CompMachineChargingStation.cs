@@ -109,7 +109,7 @@ namespace VFE.Mechanoids
 
             if (myPawn.playerSettings != null)
             {
-                myPawn.playerSettings.AreaRestriction = allowedArea;
+                myPawn.playerSettings.AreaRestrictionInPawnCurrentMap = allowedArea;
             }
             wantsRespawn = false;
         }
@@ -233,7 +233,7 @@ namespace VFE.Mechanoids
                                     comp.allowedArea = area;
                                     if (comp.myPawn != null && !comp.myPawn.Dead)
                                     {
-                                        comp.myPawn.playerSettings.AreaRestriction = area;
+                                        comp.myPawn.playerSettings.AreaRestrictionInPawnCurrentMap = area;
                                     }
                                 }
                             }

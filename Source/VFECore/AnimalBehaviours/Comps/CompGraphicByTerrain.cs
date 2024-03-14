@@ -15,11 +15,12 @@ namespace AnimalBehaviours
     public class CompGraphicByTerrain : ThingComp
     {
 
-        private PawnRenderer pawn_renderer;
         public Graphic dessicatedGraphic;
         public int changeGraphicsCounter = 0;
         public string terrainName = "";
         public CompAnimalProduct animalProductComp;
+        public string currentName = "";
+        public int indexTerrain;
 
         public override void PostExposeData()
         {
@@ -51,16 +52,7 @@ namespace AnimalBehaviours
             base.PostSpawnSetup(respawningAfterLoad);
             Pawn pawn = this.parent as Pawn;
             animalProductComp = this.parent.TryGetComp<CompAnimalProduct>();
-            Pawn_DrawTracker drawtracker = ReflectionCache.drawer(pawn);
 
-           
-            if (drawtracker != null)
-            {
-                this.pawn_renderer = drawtracker.renderer;
-            }
-            GraphicData dessicatedgraphicdata = new GraphicData();
-            dessicatedgraphicdata.texPath = Props.dessicatedTxt;
-            dessicatedGraphic = dessicatedgraphicdata.Graphic;
             this.ChangeTheGraphics();
 
         }
@@ -103,24 +95,15 @@ namespace AnimalBehaviours
                     pawn.health.RemoveHediff(hediff);
                 }
             }
-        } 
+        }
 
 
         public void ChangeTheGraphics()
         {
-            string currentName = "";
+
             if (this.parent.Map != null && AnimalBehaviours_Settings.flagGraphicChanging)
             {
                 Pawn pawn = this.parent as Pawn;
-                if (this.pawn_renderer == null)
-                {
-                    Pawn_DrawTracker drawtracker = ReflectionCache.drawer(pawn);
-                    if (drawtracker != null)
-                    {
-                        this.pawn_renderer = drawtracker.renderer;
-                    }
-
-                }
 
                 Vector2 vector = pawn.ageTracker.CurKindLifeStage.bodyGraphicData.drawSize;
                 if (Props.waterOverride && this.parent.Position.GetTerrain(this.parent.Map).IsWater)
@@ -128,26 +111,12 @@ namespace AnimalBehaviours
                     currentName = "Water";
                     if (this.terrainName != currentName)
                     {
-                        LongEventHandler.ExecuteWhenFinished(delegate
-                        {
-                            if (this.pawn_renderer != null)
-                            {
-                                try
-                                {
-                                    Graphic_Multi nakedGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(pawn.ageTracker.CurKindLifeStage.bodyGraphicData.texPath + Props.waterSuffix, ShaderDatabase.Cutout, vector, Color.white);
-                                    this.pawn_renderer.graphics.dessicatedGraphic = dessicatedGraphic;
-                                    this.pawn_renderer.graphics.ResolveAllGraphics();
-                                    this.pawn_renderer.graphics.nakedGraphic = nakedGraphic;
-                                    (this.pawn_renderer.graphics.nakedGraphic.data = new GraphicData()).shadowData = pawn.ageTracker.CurKindLifeStage.bodyGraphicData.shadowData;
-                                    this.terrainName = pawn.Position.GetTerrain(pawn.Map).defName;
-                                    RemoveHediffs(pawn);
-                                    if (Props.waterHediffToApply != "") { pawn.health.AddHediff(DefDatabase<HediffDef>.GetNamed(Props.waterHediffToApply)); }
-                                    if (Props.provideSeasonalItems && animalProductComp != null) { animalProductComp.seasonalItemIndex = Props.waterSeasonalItemsIndex; }
-                                }
-                                catch (NullReferenceException) { }
-                            }
 
-                        });
+                        this.terrainName = pawn.Position.GetTerrain(pawn.Map).defName;
+                        RemoveHediffs(pawn);
+                        if (Props.waterHediffToApply != "") { pawn.health.AddHediff(DefDatabase<HediffDef>.GetNamed(Props.waterHediffToApply)); }
+                        if (Props.provideSeasonalItems && animalProductComp != null) { animalProductComp.seasonalItemIndex = Props.waterSeasonalItemsIndex; }
+                        pawn.Drawer.renderer.SetAllGraphicsDirty();
 
                     }
                 }
@@ -157,92 +126,44 @@ namespace AnimalBehaviours
                     currentName = "Cold";
                     if (this.terrainName != currentName)
                     {
-                        LongEventHandler.ExecuteWhenFinished(delegate
-                        {
-                            if (this.pawn_renderer != null)
-                            {
-                                try
-                                {
-                                    Graphic_Multi nakedGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(pawn.ageTracker.CurKindLifeStage.bodyGraphicData.texPath + Props.lowTemperatureSuffix, ShaderDatabase.Cutout, vector, Color.white);
-                                    this.pawn_renderer.graphics.dessicatedGraphic = dessicatedGraphic;
-                                    this.pawn_renderer.graphics.ResolveAllGraphics();
-                                    this.pawn_renderer.graphics.nakedGraphic = nakedGraphic;
-                                    (this.pawn_renderer.graphics.nakedGraphic.data = new GraphicData()).shadowData = pawn.ageTracker.CurKindLifeStage.bodyGraphicData.shadowData;
-                                    this.terrainName = pawn.Position.GetTerrain(pawn.Map).defName;
-                                    RemoveHediffs(pawn);
-                                    if (Props.lowTemperatureHediffToApply != "") { pawn.health.AddHediff(DefDatabase<HediffDef>.GetNamed(Props.lowTemperatureHediffToApply)); }
-                                    if (Props.provideSeasonalItems && animalProductComp != null) { animalProductComp.seasonalItemIndex = Props.lowTemperatureSeasonalItemsIndex; }
-                                }
-                                catch (NullReferenceException) { }
-                            }
-
-                        });
+                        this.terrainName = pawn.Position.GetTerrain(pawn.Map).defName;
+                        RemoveHediffs(pawn);
+                        if (Props.lowTemperatureHediffToApply != "") { pawn.health.AddHediff(DefDatabase<HediffDef>.GetNamed(Props.lowTemperatureHediffToApply)); }
+                        if (Props.provideSeasonalItems && animalProductComp != null) { animalProductComp.seasonalItemIndex = Props.lowTemperatureSeasonalItemsIndex; }
+                        pawn.Drawer.renderer.SetAllGraphicsDirty();
 
                     }
-                } else if (Props.snowOverride && this.parent.Position.GetSnowDepth(this.parent.Map) > 0)
+                }
+                else if (Props.snowOverride && this.parent.Position.GetSnowDepth(this.parent.Map) > 0)
                 {
                     currentName = "Snowy";
                     if (this.terrainName != currentName)
                     {
-                        LongEventHandler.ExecuteWhenFinished(delegate
-                        {
-                            if (this.pawn_renderer != null)
-                            {
-                                try
-                                {
-                                    Graphic_Multi nakedGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(pawn.ageTracker.CurKindLifeStage.bodyGraphicData.texPath + Props.snowySuffix, ShaderDatabase.Cutout, vector, Color.white);
-                                    this.pawn_renderer.graphics.dessicatedGraphic = dessicatedGraphic;
-                                    this.pawn_renderer.graphics.ResolveAllGraphics();
-                                    this.pawn_renderer.graphics.nakedGraphic = nakedGraphic;
-                                    (this.pawn_renderer.graphics.nakedGraphic.data = new GraphicData()).shadowData = pawn.ageTracker.CurKindLifeStage.bodyGraphicData.shadowData;
-                                    this.terrainName = pawn.Position.GetTerrain(pawn.Map).defName;
-                                    RemoveHediffs(pawn);
-                                    if (Props.snowyHediffToApply != "") { pawn.health.AddHediff(DefDatabase<HediffDef>.GetNamed(Props.snowyHediffToApply)); }
-                                    if (Props.provideSeasonalItems && animalProductComp != null) { animalProductComp.seasonalItemIndex = Props.snowySeasonalItemsIndex; }
-
-                                }
-                                catch (NullReferenceException) { }
-                            }
-
-                        });
+                        this.terrainName = pawn.Position.GetTerrain(pawn.Map).defName;
+                        RemoveHediffs(pawn);
+                        if (Props.snowyHediffToApply != "") { pawn.health.AddHediff(DefDatabase<HediffDef>.GetNamed(Props.snowyHediffToApply)); }
+                        if (Props.provideSeasonalItems && animalProductComp != null) { animalProductComp.seasonalItemIndex = Props.snowySeasonalItemsIndex; }
+                        pawn.Drawer.renderer.SetAllGraphicsDirty();
 
                     }
                 }
                 else
 
-
-
-                if (Props.terrains?.Contains(pawn.Position.GetTerrain(pawn.Map).defName)==true)
+                if (Props.terrains?.Contains(pawn.Position.GetTerrain(pawn.Map).defName) == true)
                 {
-                    int indexTerrain = Props.terrains.IndexOf(pawn.Position.GetTerrain(pawn.Map).defName);
-                                      
+                    indexTerrain = Props.terrains.IndexOf(pawn.Position.GetTerrain(pawn.Map).defName);
+
                     currentName = pawn.Position.GetTerrain(pawn.Map).defName;
                     if (this.terrainName != currentName)
                     {
-                        LongEventHandler.ExecuteWhenFinished(delegate
+                        this.terrainName = pawn.Position.GetTerrain(pawn.Map).defName;
+                        RemoveHediffs(pawn);
+                        if (Props.hediffToApply != null)
                         {
-                            if (this.pawn_renderer != null)
-                            {
-                                try
-                                {
-                                    Graphic_Multi nakedGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(pawn.ageTracker.CurKindLifeStage.bodyGraphicData.texPath + Props.suffix[indexTerrain], ShaderDatabase.Cutout, vector, Color.white);
-                                    this.pawn_renderer.graphics.dessicatedGraphic = dessicatedGraphic;
-                                    this.pawn_renderer.graphics.ResolveAllGraphics();
-                                    this.pawn_renderer.graphics.nakedGraphic = nakedGraphic;
-                                    (this.pawn_renderer.graphics.nakedGraphic.data = new GraphicData()).shadowData = pawn.ageTracker.CurKindLifeStage.bodyGraphicData.shadowData;
-                                    this.terrainName = pawn.Position.GetTerrain(pawn.Map).defName;
-                                    RemoveHediffs(pawn);
-                                    if (Props.hediffToApply != null)
-                                    {                                      
-                                        pawn.health.AddHediff(DefDatabase<HediffDef>.GetNamed(Props.hediffToApply[indexTerrain]));
-                                    }
-                                    if (Props.provideSeasonalItems && animalProductComp != null) { animalProductComp.seasonalItemIndex = Props.seasonalItemsIndexes[indexTerrain]; }
-
-                                }
-                                catch (NullReferenceException) { }
-                            }
-
-                        });
+                            pawn.health.AddHediff(DefDatabase<HediffDef>.GetNamed(Props.hediffToApply[indexTerrain]));
+                        }
+                        if (Props.provideSeasonalItems && animalProductComp != null) { animalProductComp.seasonalItemIndex = Props.seasonalItemsIndexes[indexTerrain]; }
+                        pawn.Drawer.renderer.SetAllGraphicsDirty();
 
                     }
                 }
@@ -251,26 +172,11 @@ namespace AnimalBehaviours
                     currentName = "Normal";
                     if (this.terrainName != currentName)
                     {
-                        LongEventHandler.ExecuteWhenFinished(delegate
-                        {
-                            if (this.pawn_renderer != null)
-                            {
-                                try
-                                {
-                                    Graphic_Multi nakedGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(pawn.ageTracker.CurKindLifeStage.bodyGraphicData.texPath, ShaderDatabase.Cutout, vector, Color.white);
-                                    this.pawn_renderer.graphics.nakedGraphic = nakedGraphic;
-                                    this.pawn_renderer.graphics.dessicatedGraphic = dessicatedGraphic;
-                                    this.pawn_renderer.graphics.ResolveAllGraphics();
-                                    (this.pawn_renderer.graphics.nakedGraphic.data = new GraphicData()).shadowData = pawn.ageTracker.CurKindLifeStage.bodyGraphicData.shadowData;
-                                    this.terrainName = "Normal";
-                                    RemoveHediffs(pawn);
-                                    if (Props.provideSeasonalItems && animalProductComp != null) { animalProductComp.seasonalItemIndex = 0; }
+                        this.terrainName = "Normal";
+                        RemoveHediffs(pawn);
+                        if (Props.provideSeasonalItems && animalProductComp != null) { animalProductComp.seasonalItemIndex = 0; }
+                        pawn.Drawer.renderer.SetAllGraphicsDirty();
 
-                                }
-                                catch (NullReferenceException) { }
-                            }
-
-                        });
                     }
                 }
             }

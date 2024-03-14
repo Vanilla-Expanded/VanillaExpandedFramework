@@ -73,7 +73,7 @@ namespace AnimalBehaviours
                             {
                                 if (pawn.playerSettings != null && this.hatcheeParent.playerSettings != null && this.hatcheeParent.Faction == this.hatcheeFaction)
                                 {
-                                    pawn.playerSettings.AreaRestriction = this.hatcheeParent.playerSettings.AreaRestriction;
+                                    pawn.playerSettings.AreaRestrictionInPawnCurrentMap = this.hatcheeParent.playerSettings.AreaRestrictionInPawnCurrentMap;
                                 }
                                 if (pawn.RaceProps.IsFlesh)
                                 {
@@ -87,7 +87,7 @@ namespace AnimalBehaviours
                             if (parent.Map != null)
                             {
                                 List<Thing> ignoredThings = new List<Thing>();
-                                List<Pawn> allPawnsSpawned = pawn.Map.mapPawns.AllPawnsSpawned;
+                                IReadOnlyList<Pawn> allPawnsSpawned = pawn.Map.mapPawns.AllPawnsSpawned;
 
                                 for (int k = 0; k < allPawnsSpawned.Count; k++)
                                 {

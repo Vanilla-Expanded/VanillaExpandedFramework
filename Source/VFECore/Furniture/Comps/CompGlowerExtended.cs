@@ -203,7 +203,7 @@ namespace VanillaFurnitureExpanded
             if (base.parent.Faction == Faction.OfPlayer && this.Props.colorOptions.Count > 1)
             {
                 Command_Action command_Action = new Command_Action();
-                command_Action.disabled = !ShouldBeLitNow;
+                command_Action.Disabled = !ShouldBeLitNow;
                 command_Action.disabledReason = "VFE.ColorSwitchPowerOff".Translate();
                 command_Action.action = delegate
                 {
@@ -310,7 +310,7 @@ namespace VanillaFurnitureExpanded
             if (enableLight)
             {
                 Traverse.Create(this.compGlower).Field("glowOnInt").SetValue(true);
-                base.parent.Map.mapDrawer.MapMeshDirty(base.parent.Position, MapMeshFlag.Things);
+                base.parent.Map.mapDrawer.MapMeshDirty(base.parent.Position, MapMeshFlagDefOf.Things);
                 base.parent.Map.glowGrid.RegisterGlower(this.compGlower);
             }
             if (Props.spawnGlowerInFacedCell)
@@ -334,7 +334,7 @@ namespace VanillaFurnitureExpanded
 
                 var newGraphic = graphicData.GraphicColoredFor(this.parent);
                 Traverse.Create(this.parent).Field("graphicInt").SetValue(newGraphic);
-                base.parent.Map.mapDrawer.MapMeshDirty(this.parent.Position, MapMeshFlag.Things);
+                base.parent.Map.mapDrawer.MapMeshDirty(this.parent.Position, MapMeshFlagDefOf.Things);
             }
         }
 

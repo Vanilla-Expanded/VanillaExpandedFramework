@@ -17,11 +17,11 @@ namespace AnimalBehaviours
             }
         }
 
-       
 
-        public override void Notify_PawnDied()
+
+        public override void Notify_PawnDied(DamageInfo? dinfo, Hediff culprit = null)
         {
-           
+
             GenExplosion.DoExplosion(this.parent.pawn.Corpse.Position, this.parent.pawn.Corpse.Map, Props.explosionForce, Props.damageDef, this.parent.pawn.Corpse, -1, -1, null, null, null, null, null, 0f, 1, null, false, null, 0f, 1);
 
 

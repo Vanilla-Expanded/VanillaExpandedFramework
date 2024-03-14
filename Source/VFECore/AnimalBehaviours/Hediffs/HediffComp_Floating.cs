@@ -41,7 +41,7 @@ namespace AnimalBehaviours
            
         }
 
-        public override void Notify_PawnDied()
+        public override void Notify_PawnDied(DamageInfo? dinfo, Hediff culprit = null)
         {
             AnimalCollectionClass.RemoveFloatingAnimalFromList(this.parent.pawn);
             

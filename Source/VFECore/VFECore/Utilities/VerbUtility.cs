@@ -71,15 +71,14 @@ namespace VFECore
         private static List<Verb> AllVerbsFrom(ThingWithComps thingWithComps)
         {
             var allVerbs = new List<Verb>();
-            var compReloadable = thingWithComps.GetComp<CompReloadable>();
-            if (compReloadable != null)
-                foreach (var verb in compReloadable.AllVerbs)
-                    allVerbs.Add(verb);
-            var compEquippable = thingWithComps.GetComp<CompEquippable>();
-            if (compEquippable != null)
-                foreach (var verb in compEquippable.AllVerbs)
-                    allVerbs.Add(verb);
-
+            foreach (var comp in thingWithComps.AllComps)
+            {
+                if (comp is IVerbOwner verbOwner)
+                {
+                    foreach (var verb in verbOwner.VerbTracker.AllVerbs)
+                        allVerbs.Add(verb);
+                }
+            }
             allVerbs = allVerbs.Distinct().ToList();
             return allVerbs;
         }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Verse;
+using VFECore;
 
 namespace AnimalBehaviours
 {
@@ -36,7 +37,7 @@ namespace AnimalBehaviours
 
                         if(!Props.onlyDigIfPolluted || (Props.onlyDigIfPolluted && pawn.Position.IsPolluted(pawn.Map)))
                         {
-                            if (pawn.Position.GetTerrain(pawn.Map).affordances.Contains(TerrainAffordanceDefOf.Diggable))
+                            if (pawn.Position.GetTerrain(pawn.Map).affordances.Contains(VFEDefOf.Diggable))
                             {
                                 string thingToDig = "";
                                 int amount = 1;

@@ -309,11 +309,13 @@ namespace VFECore
 			}
 		}
 
-        public override void PostPreApplyDamage(DamageInfo dinfo, out bool absorbed)
-		{
-			base.PostPreApplyDamage(dinfo, out absorbed);
-			AbsorbingDamage(dinfo, out absorbed);
-		}
+
+        public override void PostPreApplyDamage(ref DamageInfo dinfo, out bool absorbed)
+        {
+            base.PostPreApplyDamage(ref dinfo, out absorbed);
+            AbsorbingDamage(dinfo, out absorbed);
+        }
+
 		public bool AbsorbingDamage(DamageInfo dinfo, out bool absorbed)
 		{
 			if (ShieldState != ShieldState.Active)
@@ -381,7 +383,7 @@ namespace VFECore
 				if (Props.brokenSound != null)
 					Props.brokenSound.PlayOneShot(new TargetInfo(this.Pawn.Position, this.Pawn.Map));
 				else
-					SoundDefOf.EnergyShield_Broken.PlayOneShot(new TargetInfo(this.Pawn.Position, this.Pawn.Map));
+                    VFEDefOf.EnergyShield_Broken.PlayOneShot(new TargetInfo(this.Pawn.Position, this.Pawn.Map));
 				
 				FleckMaker.Static(this.Pawn.TrueCenter(), this.Pawn.Map, FleckDefOf.ExplosionFlash, 12f);
 				for (int i = 0; i < 6; i++)

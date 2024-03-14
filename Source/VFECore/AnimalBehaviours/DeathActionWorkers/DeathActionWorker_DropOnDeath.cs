@@ -1,5 +1,6 @@
 ﻿using System;
 using Verse;
+using Verse.AI.Group;
 
 namespace AnimalBehaviours
 {
@@ -8,10 +9,10 @@ namespace AnimalBehaviours
 
 		System.Random rand = new System.Random();
 
-		public override void PawnDied(Corpse corpse)
-		{
-			CompDropOnDeath comp = corpse.InnerPawn.TryGetComp<CompDropOnDeath>();
-			if (comp != null)
+        public override void PawnDied(Corpse corpse, Lord prevLord)
+        {
+            CompDropOnDeath comp = corpse.InnerPawn.TryGetComp<CompDropOnDeath>();
+            if (comp != null)
             {
 
 
@@ -53,7 +54,6 @@ namespace AnimalBehaviours
 
 
             }
-
-		}
+        }
 	}
 }

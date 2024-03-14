@@ -85,7 +85,7 @@ namespace AnimalBehaviours
                 for (int i = 0; i < 20; i++)
                 {
                     IntVec3 c;
-                    CellFinder.TryFindRandomReachableCellNear(this.Position, this.Map, 2, TraverseParms.For(TraverseMode.NoPassClosedDoors, Danger.Deadly, false), null, null, out c);
+                    CellFinder.TryFindRandomReachableNearbyCell(this.Position, this.Map, 2, TraverseParms.For(TraverseMode.NoPassClosedDoors, Danger.Deadly, false), null, null, out c);
                     FilthMaker.TryMakeFilth(c, this.Map, Comp.Props.filthToMake);
 
                 }
@@ -106,7 +106,7 @@ namespace AnimalBehaviours
                 for (int i = 0; i < 20; i++)
                 {
                     IntVec3 c;
-                    CellFinder.TryFindRandomReachableCellNear(this.Position, this.Map, 2, TraverseParms.For(TraverseMode.NoPassClosedDoors, Danger.Deadly, false), null, null, out c);
+                    CellFinder.TryFindRandomReachableNearbyCell(this.Position, this.Map, 2, TraverseParms.For(TraverseMode.NoPassClosedDoors, Danger.Deadly, false), null, null, out c);
                     FilthMaker.TryMakeFilth(c, this.Map, Comp.Props.filthToMake);
 
                 }

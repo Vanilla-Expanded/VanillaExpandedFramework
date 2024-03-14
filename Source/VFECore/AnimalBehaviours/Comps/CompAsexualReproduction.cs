@@ -157,5 +157,23 @@ namespace AnimalBehaviours
 
 
         }
+        public override IEnumerable<Gizmo> CompGetGizmosExtra()
+        {
+            if (!DebugSettings.ShowDevGizmos || this.parent.Faction != Faction.OfPlayer)
+            {
+                yield break;
+            }
+
+            yield return new Command_Action
+            {
+                defaultLabel = "DEV: Reproduce now",
+                defaultDesc = "Set asexual reproduction to trigger now",
+                action = delegate
+                {
+                    asexualFissionCounter = ticksInday * reproductionIntervalDays;
+                },
+
+            };
+        }
     }
 }

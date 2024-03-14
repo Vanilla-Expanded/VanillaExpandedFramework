@@ -38,7 +38,7 @@ namespace AnimalBehaviours
                     hediff.Severity = 0.2f;
                     addHediffOnce = false;
                 }
-                float num = pawn.Map.glowGrid.GameGlowAt(pawn.Position, false);
+                float num = pawn.Map.glowGrid.GroundGlowAt(pawn.Position, false);
 
 
                 if (num >= growOptimalGlow)

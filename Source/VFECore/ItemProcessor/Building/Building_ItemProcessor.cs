@@ -188,14 +188,14 @@ namespace ItemProcessor
             Scribe_Values.Look<string>(ref this.fourthCategory, "fourthCategory", "", false);
             Scribe_Values.Look<string>(ref this.firstItemSwallowedForButchery, "firstItemSwallowedForButchery", "", false);
 
-            Scribe_Collections.Look<ThingDef>(ref this.ingredients, true, "ingredients");
+            Scribe_Collections.Look<ThingDef>(ref this.ingredients, "ingredients");
             Scribe_Values.Look<int>(ref this.progressCounter, "progressCounter", 0, false);
             Scribe_Values.Look<int>(ref this.noPowerDestructionCounter, "noPowerDestructionCounter", 0, false);
             Scribe_Values.Look<int>(ref this.noGoodLightDestructionCounter, "noGoodLightDestructionCounter", 0, false);
             Scribe_Values.Look<int>(ref this.noGoodWeatherDestructionCounter, "noGoodWeatherDestructionCounter", 0, false);
             Scribe_Values.Look<int>(ref this.noGoodTempDestructionCounter, "noGoodTempDestructionCounter", 0, false);
             Scribe_Values.Look<string>(ref this.productToTurnInto, "productToTurnInto", "", false);
-            Scribe_Collections.Look<string>(ref this.productsToTurnInto, true, "productsToTurnInto");
+            Scribe_Collections.Look<string>(ref this.productsToTurnInto, "productsToTurnInto");
             Scribe_Values.Look<int>(ref this.amount, "amount", 0, false);
             Scribe_Values.Look<float>(ref this.days, "days", 0, false);
             Scribe_Values.Look<int>(ref this.CurrentAmountFirstIngredient, "CurrentAmountFirstIngredient", 0, false);
@@ -253,21 +253,21 @@ namespace ItemProcessor
         {
             //Remove ingredients from the first ingredient container. Call MapMeshDirty so the building graphic changes (if needed)
             this.innerContainerFirst?.TryDropAll(this.InteractionCell, base.Map, ThingPlaceMode.Near, null, null);
-            base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+            base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.Buildings);
 
         }
         public virtual void EjectContentsSecond()
         {
             //Remove ingredients from the second ingredient container. Call MapMeshDirty so the building graphic changes (if needed)
             this.innerContainerSecond?.TryDropAll(this.InteractionCell, base.Map, ThingPlaceMode.Near, null, null);
-            base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+            base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.Buildings);
 
         }
         public virtual void EjectContentsThird()
         {
             //Remove ingredients from the third ingredient container. Call MapMeshDirty so the building graphic changes (if needed)
             this.innerContainerThird?.TryDropAll(this.InteractionCell, base.Map, ThingPlaceMode.Near, null, null);
-            base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+            base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.Buildings);
 
         }
 
@@ -276,7 +276,7 @@ namespace ItemProcessor
             //Remove ingredients from the third ingredient container. Call MapMeshDirty so the building graphic changes (if needed)
 
             this.innerContainerFourth?.TryDropAll(this.InteractionCell, base.Map, ThingPlaceMode.Near, null, null);
-            base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+            base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.Buildings);
 
         }
 
@@ -356,7 +356,7 @@ namespace ItemProcessor
 
 
             }
-            base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+            base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.Buildings);
 
         }
 
@@ -415,7 +415,7 @@ namespace ItemProcessor
                     Thing newThing = thing.SplitOff(Count);
                     this.innerContainerFirst.TryAdd(newThing, true);
                 }
-                base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+                base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.Buildings);
                 flag = true;
             }
             else
@@ -429,7 +429,7 @@ namespace ItemProcessor
                     Thing newThing = thing.SplitOff(Count);
                     flag = this.innerContainerFirst.TryAdd(newThing, true);
                 }
-                base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+                base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.Buildings);
             }
             if (compItemProcessor.Props.isCategoryBuilding || (thisRecipe != null && DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe))
             {
@@ -439,7 +439,7 @@ namespace ItemProcessor
             {
                 if (thing.Faction != null && thing.Faction.IsPlayer)
                 {
-                    base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+                    base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.Buildings);
                 }
                 result = true;
             }
@@ -468,7 +468,7 @@ namespace ItemProcessor
                     Thing newThing = thing.SplitOff(Count);
                     this.innerContainerSecond.TryAdd(newThing, true);
                 }
-                base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+                base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.Buildings);
                 flag = true;
             }
             else
@@ -482,7 +482,7 @@ namespace ItemProcessor
                     Thing newThing = thing.SplitOff(Count);
                     flag = this.innerContainerSecond.TryAdd(newThing, true);
                 }
-                base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+                base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.Buildings);
             }
             if (compItemProcessor.Props.isCategoryBuilding || (thisRecipe != null && DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe))
             {
@@ -492,7 +492,7 @@ namespace ItemProcessor
             {
                 if (thing.Faction != null && thing.Faction.IsPlayer)
                 {
-                    base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+                    base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.Buildings);
                 }
                 result = true;
             }
@@ -522,7 +522,7 @@ namespace ItemProcessor
                     Thing newThing = thing.SplitOff(Count);
                     this.innerContainerThird.TryAdd(newThing, true);
                 }
-                base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+                base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.Buildings);
                 flag = true;
             }
             else
@@ -536,7 +536,7 @@ namespace ItemProcessor
                     Thing newThing = thing.SplitOff(Count);
                     flag = this.innerContainerThird.TryAdd(newThing, true);
                 }
-                base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+                base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.Buildings);
             }
             if (compItemProcessor.Props.isCategoryBuilding || (thisRecipe != null && DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe))
             {
@@ -546,7 +546,7 @@ namespace ItemProcessor
             {
                 if (thing.Faction != null && thing.Faction.IsPlayer)
                 {
-                    base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+                    base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.Buildings);
                 }
                 result = true;
             }
@@ -576,7 +576,7 @@ namespace ItemProcessor
                     Thing newThing = thing.SplitOff(Count);
                     this.innerContainerFourth.TryAdd(newThing, true);
                 }
-                base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+                base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.Buildings);
                 flag = true;
             }
             else
@@ -590,7 +590,7 @@ namespace ItemProcessor
                     Thing newThing = thing.SplitOff(Count);
                     flag = this.innerContainerFourth.TryAdd(newThing, true);
                 }
-                base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+                base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.Buildings);
             }
             if (compItemProcessor.Props.isCategoryBuilding || (thisRecipe != null && DefDatabase<CombinationDef>.GetNamedSilentFail(this.thisRecipe).isCategoryRecipe))
             {
@@ -600,7 +600,7 @@ namespace ItemProcessor
             {
                 if (thing.Faction != null && thing.Faction.IsPlayer)
                 {
-                    base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+                    base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.Buildings);
                 }
                 result = true;
             }
@@ -760,7 +760,7 @@ namespace ItemProcessor
                         //Stops working counters, and sets building to Finished so the product can be removed by a colonist
                         progressCounter = 0;
                         processorStage = ProcessorStage.Finished;
-                        base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+                        base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.Buildings);
                     };
                     if (productsToTurnInto != null && productsToTurnInto.Count > 0)
                     {
@@ -914,7 +914,7 @@ namespace ItemProcessor
 
             else if (compItemProcessor.Props.isLightDependingMachine)
             {
-                float num = base.Map.glowGrid.GameGlowAt(base.Position, false);
+                float num = base.Map.glowGrid.GroundGlowAt(base.Position, false);
                 if ((num > compItemProcessor.Props.maxLight) || (num < compItemProcessor.Props.minLight))
                 {
                     Messages.Message("IP_LightDestroysWarning".Translate(this.def.LabelCap), this, MessageTypeDefOf.NegativeEvent, true);
@@ -1162,7 +1162,7 @@ namespace ItemProcessor
                     }
                     else
                     {
-                        if (this.def.defName.Contains("VFEM_")&&ModLister.HasActiveModWithName("Vanilla Factions Expanded - Mechanoids") ) {
+                        /*if (this.def.defName.Contains("VFEM_")&&ModLister.HasActiveModWithName("Vanilla Factions Expanded - Mechanoids") ) {
                             try
                             {
                                 ((Action)(() =>
@@ -1178,9 +1178,9 @@ namespace ItemProcessor
 
                         }
                         else
-                        {
+                        {*/
                             this.days = thisCombinationRecipe.singleTimeIfNotQualityIncreasing;
-                        }
+                        //}
 
                     }
                     //Reset ingredient counter (this is probably not necessary cause ResetEverything does it, but oh well
@@ -1225,7 +1225,7 @@ namespace ItemProcessor
                         DestroyIngredients();
                     }
                     //Call MapMeshDirty so the building graphic changes(if needed)
-                    base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+                    base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.Buildings);
                 }
                 else
                 {
@@ -1460,7 +1460,7 @@ namespace ItemProcessor
 
                 if (compItemProcessor.Props.isLightDependingMachine)
                 {
-                    float num = base.Map.glowGrid.GameGlowAt(base.Position, false);
+                    float num = base.Map.glowGrid.GroundGlowAt(base.Position, false);
                     if ((num > compItemProcessor.Props.maxLight) || (num < compItemProcessor.Props.minLight))
                     {
                         if (!onlySendLightWarningMessageOnce)
@@ -1778,7 +1778,7 @@ namespace ItemProcessor
                 progressCounter = 0;
                 //This ProcessorStage.Finished enables the WorkGiver_RemoveProduct scanner, which does the same as above, but with a pawn extracting the product
                 processorStage = ProcessorStage.Finished;
-                base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+                base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.Buildings);
             }
 
 
@@ -2011,7 +2011,7 @@ namespace ItemProcessor
 
         public override Graphic Graphic
         {
-            //This changes the graphic of the building. Runs very seldom unless called by  base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+            //This changes the graphic of the building. Runs very seldom unless called by  base.Map.mapDrawer.MapMeshDirty(base.Position, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.Buildings);
             get
             {
                 if (compItemProcessor == null)
@@ -2124,9 +2124,9 @@ namespace ItemProcessor
 
         //A draw method for the progress bar
 
-        public override void Draw()
+        protected override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
-            base.Draw();
+            base.DrawAt(drawLoc, flip);
 
             if (compItemProcessor.Props.showProgressBar)
             {

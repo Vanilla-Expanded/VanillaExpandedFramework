@@ -6,6 +6,7 @@ using Verse;
 using UnityEngine;
 using Verse.AI;
 using RimWorld.Planet;
+using VFECore;
 
 namespace AnimalBehaviours
 {
@@ -41,7 +42,7 @@ namespace AnimalBehaviours
             Pawn pawn = this.parent as Pawn;
             if (Props.needsDiggableTerrain)
             {
-                if (pawn.Position.GetTerrain(pawn.Map).affordances.Contains(TerrainAffordanceDefOf.Diggable))
+                if (pawn.Position.GetTerrain(pawn.Map).affordances.Contains(VFEDefOf.Diggable))
                 {
                     ChangeDef(pawn);
                 }else { 

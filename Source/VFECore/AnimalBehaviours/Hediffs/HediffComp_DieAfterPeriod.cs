@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Verse.Sound;
 using UnityEngine;
+using VFECore;
 
 namespace AnimalBehaviours
 {
@@ -46,10 +47,10 @@ namespace AnimalBehaviours
                         for (int i = 0; i < 20; i++)
                         {
                             IntVec3 c;
-                            CellFinder.TryFindRandomReachableCellNear(this.parent.pawn.Position, this.parent.pawn.Map, 2, TraverseParms.For(TraverseMode.NoPassClosedDoors, Danger.Deadly, false), null, null, out c);
+                            CellFinder.TryFindRandomReachableNearbyCell(this.parent.pawn.Position, this.parent.pawn.Map, 2, TraverseParms.For(TraverseMode.NoPassClosedDoors, Danger.Deadly, false), null, null, out c);
                             FilthMaker.TryMakeFilth(c, this.parent.pawn.Map, ThingDef.Named(Props.effectFilth));
                         }
-                        SoundDefOf.Hive_Spawn.PlayOneShot(new TargetInfo(this.parent.pawn.Position, this.parent.pawn.Map, false));
+                        VFEDefOf.Hive_Spawn.PlayOneShot(new TargetInfo(this.parent.pawn.Position, this.parent.pawn.Map, false));
                     }
                     if (Props.justVanish)
                     {

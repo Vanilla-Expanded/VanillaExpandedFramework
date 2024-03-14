@@ -18,10 +18,6 @@ namespace AnimalBehaviours
         public List<string> suffix = null;              
         public List<string> hediffToApply = null;
 
-        //In case you need a specific desiccated graphic
-
-        public string dessicatedTxt = "";
-
         //This will ignore the terrain and just check if "IsWater"
 
         public bool waterOverride = false;

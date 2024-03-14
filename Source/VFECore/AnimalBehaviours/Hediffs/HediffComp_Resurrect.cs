@@ -34,7 +34,7 @@ namespace AnimalBehaviours
             resurrectionsLeft = Props.livesLeft;
         }
 
-        public override void Notify_PawnDied()
+        public override void Notify_PawnDied(DamageInfo? dinfo, Hediff culprit = null)
         {
 
 
@@ -46,7 +46,7 @@ namespace AnimalBehaviours
                 {
                     SoundDefOf.PsychicPulseGlobal.PlayOneShot(new TargetInfo(this.parent.pawn.Corpse.Position, this.parent.pawn.Corpse.Map, false));
                     FleckMaker.AttachedOverlay(this.parent.pawn, DefDatabase<FleckDef>.GetNamed("PsycastPsychicEffect"), Vector3.zero, 1f, -1f);
-                    ResurrectionUtility.Resurrect(this.parent.pawn.Corpse.InnerPawn);
+                    ResurrectionUtility.TryResurrect(this.parent.pawn.Corpse.InnerPawn);
                     resurrectionsLeft--;
                 }
 

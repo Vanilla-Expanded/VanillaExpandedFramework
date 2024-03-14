@@ -15,7 +15,7 @@ namespace AnimalBehaviours
                 
                 if (!pawn.Dead)
                 {
-                    pawn.mindState.mentalStateHandler.TryStartMentalState(MentalStateDefOf.Berserk, null, true, false, null, false);
+                    pawn.mindState.mentalStateHandler.TryStartMentalState(MentalStateDefOf.Berserk, null, true, false, false,null, false);
                 }
             }
 

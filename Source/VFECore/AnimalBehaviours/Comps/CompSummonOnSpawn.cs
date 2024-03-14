@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Verse;
 using Verse.Sound;
-
+using VFECore;
 
 namespace AnimalBehaviours
 {
@@ -41,10 +41,10 @@ namespace AnimalBehaviours
                         GenSpawn.Spawn(pawn, CellFinder.RandomClosewalkCellNear(parent.Position, parent.Map, 3, null), parent.Map, WipeMode.Vanish);
                         if (Props.summonsAreManhunters)
                         {
-                            pawn.mindState.mentalStateHandler.TryStartMentalState(DefDatabase<MentalStateDef>.GetNamed("ManhunterPermanent", true), null, true, false, null, false);
+                            pawn.mindState.mentalStateHandler.TryStartMentalState(DefDatabase<MentalStateDef>.GetNamed("ManhunterPermanent", true), null, true, false, false,null, false);
                         }
                     }
-                    SoundDefOf.Hive_Spawn.PlayOneShot(new TargetInfo(this.parent.Position, this.parent.Map, false));
+                    VFEDefOf.Hive_Spawn.PlayOneShot(new TargetInfo(this.parent.Position, this.parent.Map, false));
                     summonOnce = false;
                 }
             }

@@ -13,6 +13,7 @@
     using Verse.AI;
     using Verse.Sound;
     using UItils;
+    using LudeonTK;
 
     public abstract class Ability : IExposable, ILoadReferenceable, ITargetingSource
     {

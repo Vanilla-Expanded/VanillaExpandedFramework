@@ -100,7 +100,8 @@ namespace VFECore
         }
     }
 
-    [HarmonyPatch(typeof(GenConstruct), "CanConstruct", new Type[] { typeof(Thing), typeof(Pawn), typeof(WorkTypeDef), typeof(bool) })]
+    [HarmonyPatch(typeof(GenConstruct), "CanConstruct", new Type[] { typeof(Thing), typeof(Pawn), typeof(WorkTypeDef), 
+        typeof(bool), typeof(JobDef) })]
     public static class GenConstruct_CanConstruct_Patch
     {
         public static void Prefix(Thing t, Pawn pawn, ref WorkTypeDef workType, bool forced = false)
@@ -112,8 +113,7 @@ namespace VFECore
             }
         }
     }
-    
-    [HarmonyPatch(typeof(GenConstruct), "CanConstruct", new Type[] { typeof(Thing), typeof(Pawn), typeof(bool), typeof(bool) })]
+    [HarmonyPatch(typeof(GenConstruct), "CanConstruct", new Type[] { typeof(Thing), typeof(Pawn), typeof(bool), typeof(bool), typeof(JobDef) })]
     public static class GenConstruct_CanConstruct_Patch2
     {
         public static bool Prefix(ref bool __result, Thing t, Pawn p, ref bool checkSkills, bool forced)

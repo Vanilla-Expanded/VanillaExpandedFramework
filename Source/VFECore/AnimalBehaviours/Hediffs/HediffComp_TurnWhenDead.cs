@@ -2,6 +2,7 @@
 using Verse;
 using Verse.Sound;
 using System;
+using VFECore;
 
 namespace AnimalBehaviours
 {
@@ -17,9 +18,9 @@ namespace AnimalBehaviours
             }
         }
 
-        public override void Notify_PawnDied()
+        public override void Notify_PawnDied(DamageInfo? dinfo, Hediff culprit = null)
         {
-            
+
             float severityToTurn = Props.severityToTurn;
 
             Map map = this.parent.pawn.Corpse.Map;
@@ -43,7 +44,7 @@ namespace AnimalBehaviours
                     }
                     if (Props.isHostile)
                     {
-                        pawn.mindState.mentalStateHandler.TryStartMentalState(DefDatabase<MentalStateDef>.GetNamed("ManhunterPermanent", true), null, true, false, null, false);
+                        pawn.mindState.mentalStateHandler.TryStartMentalState(DefDatabase<MentalStateDef>.GetNamed("ManhunterPermanent", true), null, true, false);
                     }
 
                 }
@@ -51,14 +52,14 @@ namespace AnimalBehaviours
                 for (int i = 0; i < 20; i++)
                 {
                     IntVec3 c;
-                    CellFinder.TryFindRandomReachableCellNear(this.parent.pawn.Corpse.Position, map, 2, TraverseParms.For(TraverseMode.NoPassClosedDoors, Danger.Deadly, false), null, null, out c);
+                    CellFinder.TryFindRandomReachableNearbyCell(this.parent.pawn.Corpse.Position, map, 2, TraverseParms.For(TraverseMode.NoPassClosedDoors, Danger.Deadly, false), null, null, out c);
 
                     FilthMaker.TryMakeFilth(c, this.parent.pawn.Corpse.Map, ThingDefOf.Filth_Blood);
 
                 }
 
 
-                SoundDefOf.Hive_Spawn.PlayOneShot(new TargetInfo(this.parent.pawn.Corpse.Position, map, false));
+                VFEDefOf.Hive_Spawn.PlayOneShot(new TargetInfo(this.parent.pawn.Corpse.Position, map, false));
                 this.parent.pawn.Corpse.Destroy();
 
             }

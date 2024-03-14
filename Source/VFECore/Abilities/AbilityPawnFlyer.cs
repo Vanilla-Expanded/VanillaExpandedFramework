@@ -42,9 +42,10 @@
             base.Tick();
         }
 
-        public override void DrawAt(Vector3 drawLoc, bool flip = false)
+        public override void DynamicDrawPhaseAt(DrawPhase phase, Vector3 drawLoc, bool flip = false)
         {
-            this.FlyingPawn.Drawer.renderer.RenderPawnAt(this.position, this.direction);
+            this.FlyingPawn.Rotation = this.Rotation = this.direction;
+            base.DynamicDrawPhaseAt(phase, this.position, flip);
         }
 
         protected override void RespawnPawn()

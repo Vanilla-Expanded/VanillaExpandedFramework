@@ -36,7 +36,7 @@ namespace AnimalBehaviours
 
         }
 
-        public override void Notify_PawnDied()
+        public override void Notify_PawnDied(DamageInfo? dinfo, Hediff culprit = null)
         {
             AnimalCollectionClass.RemoveLastStandAnimalFromList(this.parent.pawn);
 

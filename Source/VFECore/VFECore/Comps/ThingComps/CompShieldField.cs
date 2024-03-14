@@ -194,8 +194,7 @@ namespace VFECore
             }
         }
 
-        private bool CanFunction => (!Props.toggleable || toggleIsActive) && (PowerTraderComp == null 
-            || PowerTraderComp.PowerOn) && !parent.IsBrokenDown() && HostThing is not Apparel;
+        private bool CanFunction => (!Props.toggleable || toggleIsActive) && (PowerTraderComp == null || PowerTraderComp.PowerOn) && !parent.IsBrokenDown();
         private CompPowerTrader PowerTraderComp
         {
             get
@@ -360,7 +359,7 @@ namespace VFECore
                             this.lastTimeDisabled = 0;
                             this.active = true;
                         },
-                        disabled = ManuallyActivated || !CanActivateShield()
+                        Disabled = ManuallyActivated || !CanActivateShield()
                     };
                 }
             }
@@ -384,9 +383,8 @@ namespace VFECore
             return inspectBuilder.ToString().TrimEndNewlines();
         }
 
-        public override void PostPreApplyDamage(DamageInfo dinfo, out bool absorbed)
-        {
-            // EMP - direct
+        public override void PostPreApplyDamage(ref DamageInfo dinfo, out bool absorbed)
+        {            // EMP - direct
             if (dinfo.Def == DamageDefOf.EMP && !Indestructible)
             {
                 if (Props.disarmedByEmpForTicks != -1)
@@ -398,7 +396,7 @@ namespace VFECore
                     Energy = 0;
                 }
             }
-            base.PostPreApplyDamage(dinfo, out absorbed);
+            base.PostPreApplyDamage(ref dinfo, out absorbed);
         }
 
         [HarmonyPatch(typeof(Pawn), "SpawnSetup")]
@@ -579,7 +577,7 @@ namespace VFECore
             Vector3 center;
             if (active)
             {
-                SoundDefOf.EnergyShield_Broken.PlayOneShot(new TargetInfo(HostThing));
+                VFEDefOf.EnergyShield_Broken.PlayOneShot(new TargetInfo(HostThing));
                 int num = Mathf.CeilToInt(ShieldRadius * 2f);
                 fTheta = (float)Math.PI * 2f / (float)num;
                 center = HostThing.TrueCenter();
@@ -642,7 +640,7 @@ namespace VFECore
         }
         private void Notify_EnergyDepleted()
         {
-            SoundDefOf.EnergyShield_Broken.PlayOneShot(new TargetInfo(HostThing.Position, HostThing.Map));
+            VFEDefOf.EnergyShield_Broken.PlayOneShot(new TargetInfo(HostThing.Position, HostThing.Map));
             FleckMaker.Static(HostThing.TrueCenter(), HostThing.Map, FleckDefOf.ExplosionFlash, 12);
             for (int i = 0; i < 6; i++)
             {
@@ -672,8 +670,8 @@ namespace VFECore
             {
                 active = this.HostThing.Map != null && CanFunction &&
                 (Props.activeAlways ||
-                HostFaction != null && GenHostility.AnyHostileActiveThreatTo(HostThing.Map, HostFaction) ||
-                HostThing.Map.listerThings.ThingsOfDef(RimWorld.ThingDefOf.Tornado).Any() ||
+                GenHostility.AnyHostileActiveThreatTo(HostThing.Map, HostFaction) ||
+                HostThing.Map.listerThings.ThingsOfDef(VFEDefOf.Tornado).Any() ||
                 HostThing.Map.listerThings.ThingsOfDef(RimWorld.ThingDefOf.DropPodIncoming).Any() || shieldBuffer > 0);
             }
             if (active)
@@ -683,7 +681,7 @@ namespace VFECore
             if (HostThing.Map != null)
             {
                 if ((GenHostility.AnyHostileActiveThreatTo(HostThing.Map, HostFaction)
-                    || HostThing.Map.listerThings.ThingsOfDef(RimWorld.ThingDefOf.Tornado).Any()
+                    || HostThing.Map.listerThings.ThingsOfDef(VFEDefOf.Tornado).Any()
                     || HostThing.Map.listerThings.ThingsOfDef(RimWorld.ThingDefOf.DropPodIncoming).Any()) && shieldBuffer < 15)
                     shieldBuffer = 15;
                 else
@@ -733,7 +731,7 @@ namespace VFECore
                             this.lastTimeDisabled = 0;
                             this.active = true;
                         },
-                        disabled = ManuallyActivated || !CanActivateShield()
+                        Disabled = ManuallyActivated || !CanActivateShield()
                     };
                 }
             }

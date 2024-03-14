@@ -20,7 +20,7 @@ namespace AnimalBehaviours
 			{
 				return null;
 			}
-			List<Pawn> allPawnsSpawned = pawn.Map.mapPawns.AllPawnsSpawned;
+			IReadOnlyList<Pawn> allPawnsSpawned = pawn.Map.mapPawns.AllPawnsSpawned;
 			for (int i = 0; i < allPawnsSpawned.Count; i++)
 			{
 				

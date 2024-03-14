@@ -70,7 +70,7 @@ public class BeamProjectile : Projectile_Explosive
             drawerType       = DrawerType.RealtimeOnly
         };
 
-    public override void Draw() { }
+    protected override void DrawAt(Vector3 drawLoc, bool flip = false) { }
 
     protected override void Impact(Thing hitThing, bool blockedByShield = false)
     {
@@ -133,7 +133,7 @@ public class BeamDraw : ThingWithComps
         if (ticksRemaining <= 0) Destroy();
     }
 
-    public override void Draw()
+    protected override void DrawAt(Vector3 drawLoc, bool flip = false)
     {
         Graphics.DrawMesh(MeshPool.plane10, drawMatrix,
             FadedMaterialPool.FadedVersionOf(material, (float)ticksRemaining / projectileExt.beamLifetimeTicks), 0);
