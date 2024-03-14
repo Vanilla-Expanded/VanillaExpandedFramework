@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using HarmonyLib;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -7,6 +8,7 @@ namespace PipeSystem
     public class Building_ResourceHeater : Building_TempControl
     {
         public CompResourceTrader compResourceTrader;
+
 
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {

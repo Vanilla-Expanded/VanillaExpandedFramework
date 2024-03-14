@@ -56,7 +56,7 @@ namespace VanillaWeaponsExpandedLaser
                                             select x).ToList<Texture2D>();
                     if (list.NullOrEmpty<Texture2D>())
                     {
-                        Log.Error("Collection cannot init: No textures found at path " + textures[i], false);
+                        Log.Error("Collection cannot init: No textures found at path " + textures[i]);
                     }
                     for (int ii = 0; ii < list.Count; ii++)
                     {

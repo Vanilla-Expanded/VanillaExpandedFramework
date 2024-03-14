@@ -280,6 +280,7 @@ namespace Outposts
         public static DutyDef VEF_DropAllInInventory;
         public static ResearchProjectDef TransportPod;
         public static IncidentDef VEF_OutpostAttacked;
+        public static DifficultyDef Peaceful;
     }
 
     public enum DeliveryMethod

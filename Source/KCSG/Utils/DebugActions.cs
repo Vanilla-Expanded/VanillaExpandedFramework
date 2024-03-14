@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using RimWorld;
 using RimWorld.BaseGen;
 using Verse;
+using LudeonTK;
 
 namespace KCSG
 {

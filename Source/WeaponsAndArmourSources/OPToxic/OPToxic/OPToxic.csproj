@@ -17,7 +17,7 @@
     <DebugSymbols>false</DebugSymbols>
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\1.4\Assemblies\</OutputPath>
+    <OutputPath>..\..\..\..\1.5\Assemblies\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -32,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="DamageWorker_OPToxic.cs" />
+    <Compile Include="DefOfs\InternalDefOf.cs" />
     <Compile Include="OPBeamDefGetValue.cs" />
     <Compile Include="OPBeamDefs.cs" />
     <Compile Include="OPBombardment.cs" />

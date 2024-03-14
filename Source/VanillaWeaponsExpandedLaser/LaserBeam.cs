@@ -10,10 +10,7 @@ namespace VanillaWeaponsExpandedLaser
     public class LaserBeam : Bullet
     {
         new LaserBeamDef def => base.def as LaserBeamDef;
-        public override void Draw()
-        {
-
-        }
+        
 
         void TriggerEffect(EffecterDef effect, Vector3 position)
         {
@@ -51,7 +48,7 @@ namespace VanillaWeaponsExpandedLaser
             }
         }
 
-        public override void Impact(Thing hitThing, bool blockedByShield = false)
+        protected override void Impact(Thing hitThing, bool blockedByShield = false)
         {
             bool shielded = hitThing.IsShielded() && def.IsWeakToShields || blockedByShield;
             LaserGunDef defWeapon = equipmentDef as LaserGunDef;
@@ -90,7 +87,7 @@ namespace VanillaWeaponsExpandedLaser
                 bool flag2 = this.def.causefireChance > 0f && Rand.Chance(this.def.causefireChance);
                 if (flag2)
                 {
-                    FireUtility.TryStartFireIn(destination.ToIntVec3(), this.launcher.Map, 0.05f);
+                    FireUtility.TryStartFireIn(destination.ToIntVec3(), this.launcher.Map, 0.05f,null);
                 }
             }
             else
@@ -109,7 +106,7 @@ namespace VanillaWeaponsExpandedLaser
                 bool flag2 = this.def.causefireChance>0f && Rand.Range(0f, 1f) > this.def.causefireChance;
                 if (flag2)
                 {
-                    hitThing.TryAttachFire(0.05f);
+                    hitThing.TryAttachFire(0.05f,null);
                 }
                 TriggerEffect(def.explosionEffect, ExactPosition);
             }

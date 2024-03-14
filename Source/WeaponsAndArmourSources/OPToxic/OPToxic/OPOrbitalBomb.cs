@@ -38,7 +38,7 @@ namespace OPToxic
                     OPBombardment opbombardment = (OPBombardment)GenSpawn.Spawn(DefDatabase<ThingDef>.GetNamed("OPBombardment", true), position, map, WipeMode.Vanish);
                     opbombardment.duration = 120;
                     opbombardment.instigator = this;
-                    opbombardment.weaponDef = ThingDefOf.OrbitalTargeterBombardment;
+                    opbombardment.weaponDef = InternalDefOf.OrbitalTargeterBombardment;
                     opbombardment.StartStrike();
                     if (!this.DestroyedOrNull())
                     {

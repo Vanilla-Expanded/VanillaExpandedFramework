@@ -7,12 +7,15 @@ namespace VanillaStorytellersExpanded
 {
 	public static class Patch_CompUseEffect_FinishRandomResearchProject
 	{
-		[HarmonyPatch(typeof(CompUseEffect_FinishRandomResearchProject), "DoEffect")]
+
+
+        [HarmonyPatch(typeof(CompUseEffect_FinishRandomResearchProject), "DoEffect")]
 		public static class DoEffect
 		{
-			public static void Postfix(CompUseEffect_FinishRandomResearchProject __instance, Pawn usedBy)
+
+            public static void Postfix(CompUseEffect_FinishRandomResearchProject __instance, Pawn usedBy)
 			{
-				if (Find.ResearchManager.currentProj == null && CustomStorytellerUtility.AllowedResearchProjectDefs().All((ResearchProjectDef r) => r.IsFinished)
+				if (Find.ResearchManager.GetProject() == null && CustomStorytellerUtility.AllowedResearchProjectDefs().All((ResearchProjectDef r) => r.IsFinished)
 					&& CustomStorytellerUtility.TryGetRandomUnfinishedResearchProject(out ResearchProjectDef research))
 				{
 					NonPublicMethods.CompUseEffect_FinishRandomResearchProject_FinishInstantly(__instance, research, usedBy);
@@ -23,12 +26,12 @@ namespace VanillaStorytellersExpanded
 		[HarmonyPatch(typeof(CompUseEffect_FinishRandomResearchProject), "CanBeUsedBy")]
 		public static class CanBeUsedBy
 		{
-			public static void Postfix(CompUseEffect_FinishRandomResearchProject __instance, Pawn p, ref string failReason, ref bool __result)
+			public static void Postfix(CompUseEffect_FinishRandomResearchProject __instance, Pawn p,  ref AcceptanceReport __result)
 			{
-				if (Find.ResearchManager.currentProj == null && CustomStorytellerUtility.AllowedResearchProjectDefs().All((ResearchProjectDef r) => r.IsFinished)
+				if (Find.ResearchManager.GetProject() == null && CustomStorytellerUtility.AllowedResearchProjectDefs().All((ResearchProjectDef r) => r.IsFinished)
 					&& CustomStorytellerUtility.TryGetRandomUnfinishedResearchProject(out ResearchProjectDef _))
 				{
-					failReason = null;
+					
 					__result = true;
 				}
 			}

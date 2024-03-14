@@ -24,7 +24,7 @@ namespace Outposts
             {
                 if (Find.WorldObjects.AllWorldObjects.OfType<Outpost>().Any())
                 {
-                    if (Current.Game.storyteller.difficultyDef != DifficultyDefOf.Peaceful)
+                    if (Current.Game.storyteller.difficultyDef != Outposts_DefOf.Peaceful)
                     {
                         if (tickCounter > ticksToNextAssault)
                         {                       

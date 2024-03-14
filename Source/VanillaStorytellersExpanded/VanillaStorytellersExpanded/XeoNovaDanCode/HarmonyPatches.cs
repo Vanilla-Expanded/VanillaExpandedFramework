@@ -23,7 +23,7 @@ namespace VanillaStorytellersExpanded
 				}
 				else
 				{
-					Log.Error("Could not find type FluffyResearchTree.ResearchNode in Research Tree", false);
+					Log.Error("Could not find type FluffyResearchTree.ResearchNode in Research Tree");
 				}
 			}
 			if (ModCompatibilityCheck.ResearchPal)
@@ -37,7 +37,7 @@ namespace VanillaStorytellersExpanded
 				}
 				else
 				{
-					Log.Error("Could not find type ResearchPal.ResearchNode in ResearchPal", false);
+					Log.Error("Could not find type ResearchPal.ResearchNode in ResearchPal");
 				}
 			}
 			if (ModCompatibilityCheck.RimCities)

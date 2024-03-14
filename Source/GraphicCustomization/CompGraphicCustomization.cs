@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using RimWorld;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Verse;
@@ -151,7 +152,7 @@ namespace GraphicCustomization
             this.parent.graphicInt = graphicInt;
             if (this.parent.Spawned)
             {
-                this.parent.Map.mapDrawer.MapMeshDirty(this.parent.Position, MapMeshFlag.Things);
+                this.parent.Map.mapDrawer.MapMeshDirty(this.parent.Position, MapMeshFlagDefOf.Things);
             }
         }
         public override void PostExposeData()

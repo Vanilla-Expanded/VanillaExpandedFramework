@@ -7,6 +7,7 @@ using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
 using Verse;
+using LudeonTK;
 
 namespace Outposts
 {
@@ -108,7 +109,7 @@ namespace Outposts
             if (map.Parent is Outpost parent)
             {
                 parent.MapClearAndReset();
-                Current.Game.DeinitAndRemoveMap(map);
+                Current.Game.DeinitAndRemoveMap(map,false);
             }
             if (map.Parent.def.defName == "VOE_AmbushedRaid") //Just cant easily force end this one the same way.
             {
@@ -148,19 +149,16 @@ namespace Outposts
         }
     }
 
-    public class Dialog_RenameOutpost : Dialog_Rename
+    public class Dialog_RenameOutpost : Dialog_Rename<Outpost>
     {
         private readonly Outpost outpost;
 
-        public Dialog_RenameOutpost(Outpost outpost)
+        public Dialog_RenameOutpost(Outpost outpost) : base(outpost)
         {
             this.outpost = outpost;
             curName = outpost.Name;
         }
 
-        protected override void SetName(string name)
-        {
-            outpost.Name = name;
-        }
+       
     }
 }

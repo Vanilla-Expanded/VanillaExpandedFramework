@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using HarmonyLib;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -8,9 +9,11 @@ namespace KCSG
     {
         public Rot4 rot = Rot4.Invalid;
 
+
+
         private bool once = false;
 
-        public override void DrawAt(Vector3 drawLoc, bool flip = false)
+        protected override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
             Thing thingForGraphic = GetThingForGraphic();
             float num = 0f;
@@ -99,6 +102,7 @@ namespace KCSG
                 if (compDormant != null)
                 {
                     compDormant.wokeUpTick = Find.TickManager.TicksGame + delayTicks;
+                    
                 }
                 GenPlace.TryPlaceThing(innerContainer[i], Position, Map, ThingPlaceMode.Direct, delegate (Thing thing, int count)
                 {

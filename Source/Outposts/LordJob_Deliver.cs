@@ -97,7 +97,7 @@ namespace Outposts
 
         private IntVec3 FindDropSpot(Pawn pawn)
         {
-            if (CellFinder.TryFindRandomReachableCellNear(pawn.Position, pawn.Map, 12.9f * 2f, TraverseParms.For(pawn),
+            if (CellFinder.TryFindRandomReachableCellNearPosition(pawn.Position, pawn.Position, pawn.Map, 12.9f * 2f, TraverseParms.For(pawn),
                 x => x.Walkable(pawn.Map) &&
                      GenRadial.RadialCellsAround(x, 12.9f, true).Count(c =>
                          c.Walkable(pawn.Map) && !c.GetThingList(pawn.Map).Any(t => t.def.saveCompressible || t.def.category == ThingCategory.Item)) >=

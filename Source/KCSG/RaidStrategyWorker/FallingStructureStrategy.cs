@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using HarmonyLib;
 using RimWorld;
 using Verse;
 
@@ -8,6 +9,8 @@ namespace KCSG
 {
     internal class FallingStructureStrategy : RaidStrategyWorker_ImmediateAttack
     {
+
+
         /// <summary>
         /// Check if map and faction are valid for falling structure
         /// </summary>
@@ -112,6 +115,8 @@ namespace KCSG
                         if (!GenOption.fallingExt.spawnDormantWhenPossible && thing.TryGetComp<CompCanBeDormant>() is CompCanBeDormant ccbd && ccbd != null)
                         {
                             ccbd.wakeUpOnTick = Find.TickManager.TicksGame + 150;
+                           
+                            ccbd.WakeUpWithDelay();
                         }
 
                         ThingDef def = new ThingDef

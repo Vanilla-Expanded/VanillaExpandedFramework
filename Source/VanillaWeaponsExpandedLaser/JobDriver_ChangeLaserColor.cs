@@ -23,7 +23,7 @@ namespace VanillaWeaponsExpandedLaser
             return pawn.Reserve(Gun, job, 1, -1, null, errorOnFailed) && pawn.Reserve(Prism, job, 1, -1, null, errorOnFailed);
         }
 
-        public override IEnumerable<Toil> MakeNewToils()
+        protected override IEnumerable<Toil> MakeNewToils()
         {
             this.FailOnDespawnedNullOrForbidden(TargetIndex.A);
             yield return Toils_Goto.GotoThing(TargetIndex.B, PathEndMode.Touch).FailOnDespawnedNullOrForbidden(TargetIndex.B).FailOnSomeonePhysicallyInteracting(TargetIndex.B);

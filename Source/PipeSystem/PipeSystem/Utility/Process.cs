@@ -383,7 +383,7 @@ namespace PipeSystem
                 {
                     var map = parent.Map;
                     // If defined outputCellOffset
-                    if (result.outputCellOffset != IntVec3.Invalid && SpawnResultAt(result, parent.Position + (result.outputCellOffset.RotatedBy(parent.Rotation)), map, ref outThings)) { continue; }
+                    if (result.outputCellOffset != IntVec3.Invalid && SpawnResultAt(result, parent.Position+(result.outputCellOffset.RotatedBy(parent.Rotation)), map, ref outThings)) { continue; }
                     // Try spawning at spawnPos
                     if (spawnPos != IntVec3.Invalid && SpawnResultAt(result, spawnPos, map, ref outThings)) { continue; }
                     // If invalid or couldn't, find an adj cell
@@ -622,7 +622,7 @@ namespace PipeSystem
             }
             // Delete process
             var deleteRect = new Rect(rect.width - 24f, 0f, 24f, 24f);
-            if (Widgets.ButtonImage(deleteRect, TexButton.DeleteX, color, color * GenUI.SubtleMouseoverColor))
+            if (Widgets.ButtonImage(deleteRect, TexButton.Delete, color, color * GenUI.SubtleMouseoverColor))
             {
                 stack.Delete(this);
                 SoundDefOf.Click.PlayOneShotOnCamera();
@@ -669,7 +669,7 @@ namespace PipeSystem
             Text.Anchor = TextAnchor.UpperLeft;
             // TODO: Hover show missing/meet requirements
             var deleteRect = new Rect(rect.x + rect.width - 24f, rect.y, 24f, 24f);
-            if (Widgets.ButtonImage(deleteRect, TexButton.DeleteX, Color.white, Color.white * GenUI.SubtleMouseoverColor))
+            if (Widgets.ButtonImage(deleteRect, TexButton.Delete, Color.white, Color.white * GenUI.SubtleMouseoverColor))
             {
                 ResetProcess(false);
                 advancedProcessor.ProcessStack.Delete(this);
