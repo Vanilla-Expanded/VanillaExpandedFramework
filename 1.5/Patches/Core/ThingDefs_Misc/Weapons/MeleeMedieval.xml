@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+    <!-- Patch appropriate weapons to be usable with shields -->
+    <Operation Class="PatchOperationAddModExtension">
+        <xpath>/Defs/ThingDef[defName="MeleeWeapon_Mace"]</xpath>
+        <value>
+            <li Class="VFECore.ThingDefExtension">
+                <usableWithShields>true</usableWithShields>
+            </li>
+        </value>
+    </Operation>
+
+    <Operation Class="PatchOperationAddModExtension">
+        <xpath>/Defs/ThingDef[defName="MeleeWeapon_Gladius"]</xpath>
+        <value>
+            <li Class="VFECore.ThingDefExtension">
+                <usableWithShields>true</usableWithShields>
+            </li>
+        </value>
+    </Operation>
+	
+
+    <Operation Class="PatchOperationAddModExtension">
+        <xpath>/Defs/ThingDef[defName="MeleeWeapon_Spear"]</xpath>
+        <value>
+            <li Class="VFECore.ThingDefExtension">
+                <usableWithShields>true</usableWithShields>
+            </li>
+        </value>
+    </Operation>
+	
+  <Operation Class="PatchOperationFindMod">
+    <mods>
+      <li>Royalty</li>
+    </mods>
+
+    <match Class="PatchOperationAddModExtension">
+        <xpath>/Defs/ThingDef[defName="MeleeWeapon_Axe"]</xpath>
+        <value>
+            <li Class="VFECore.ThingDefExtension">
+                <usableWithShields>true</usableWithShields>
+            </li>
+        </value>
+    </match>
+  </Operation>
+
+</Patch>

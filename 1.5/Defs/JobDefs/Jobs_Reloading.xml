@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+    <JobDef>
+        <defName>BetterReload</defName>
+        <driverClass>Reloading.JobDriver_Reload</driverClass>
+        <reportString>reloading TargetA.</reportString>
+        <suspendable>false</suspendable>
+        <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+    </JobDef>
+    <JobDef>
+        <defName>ReloadFromInventory</defName>
+        <driverClass>Reloading.JobDriver_ReloadFromInventory</driverClass>
+        <reportString>reloading TargetA.</reportString>
+        <suspendable>false</suspendable>
+        <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+    </JobDef>
+    <JobDef>
+        <defName>Unload</defName>
+        <driverClass>Reloading.JobDriver_Unload</driverClass>
+        <reportString>unloading TargetA.</reportString>
+        <suspendable>false</suspendable>
+        <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+    </JobDef>
+</Defs>

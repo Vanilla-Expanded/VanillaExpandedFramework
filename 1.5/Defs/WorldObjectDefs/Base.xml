@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+    <WorldObjectDef Name="OutpostBase" Abstract="True">
+        <useDynamicDrawer>false</useDynamicDrawer>
+        <expandingIcon>true</expandingIcon>
+        <expandingIconPriority>100</expandingIconPriority>
+        <expandMore>false</expandMore>
+        <worldObjectClass>Outposts.Outpost</worldObjectClass>
+        <texture>World/WorldObjects/Sites/Outpost</texture>
+        <inspectorTabs>
+            <li>Outposts.WITab_Outpost_Items</li>
+            <li>Outposts.WITab_Outpost_Gear</li>
+            <li>Outposts.WITab_Outpost_Health</li>
+            <li>Outposts.WITab_Outpost_Needs</li>
+        </inspectorTabs>
+    </WorldObjectDef>
+</Defs>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Patch>
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/ThingDef[defName="DeepDrill"]/placeWorkers</xpath>
+    <value>
+      <li>VFECore.PlaceWorker_DeepDrillLimitation</li>
+    </value>
+  </Operation>
+</Patch>

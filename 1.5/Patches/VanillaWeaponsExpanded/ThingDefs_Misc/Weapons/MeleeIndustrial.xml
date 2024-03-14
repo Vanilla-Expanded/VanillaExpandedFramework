@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+    <Operation Class="PatchOperationFindMod">
+        <mods>
+            <li>Vanilla Weapons Expanded</li>
+        </mods>
+        <match Class="PatchOperationSequence">
+            <success>Always</success>
+            <operations>
+
+                <!-- Patch appropriate weapons to be usable with shields -->
+                <li Class="PatchOperationAddModExtension">
+                    <xpath>/Defs/ThingDef[defName="VWE_MeleeWeapon_Shovel"]</xpath>
+                    <value>
+                        <li Class="VFECore.ThingDefExtension">
+                            <usableWithShields>true</usableWithShields>
+                        </li>
+                    </value>
+                </li>
+
+                <li Class="PatchOperationAddModExtension">
+                    <xpath>/Defs/ThingDef[defName="VWE_MeleeWeapon_Baton"]</xpath>
+                    <value>
+                        <li Class="VFECore.ThingDefExtension">
+                            <usableWithShields>true</usableWithShields>
+                        </li>
+                    </value>
+                </li>
+
+                <li Class="PatchOperationAddModExtension">
+                    <xpath>/Defs/ThingDef[defName="VWE_MeleeWeapon_CombatKnife"]</xpath>
+                    <value>
+                        <li Class="VFECore.ThingDefExtension">
+                            <usableWithShields>true</usableWithShields>
+                        </li>
+                    </value>
+                </li>
+
+                <li Class="PatchOperationAddModExtension">
+                    <xpath>/Defs/ThingDef[defName="VWE_MeleeWeapon_Wrench"]</xpath>
+                    <value>
+                        <li Class="VFECore.ThingDefExtension">
+                            <usableWithShields>true</usableWithShields>
+                        </li>
+                    </value>
+                </li>
+
+                <li Class="PatchOperationAddModExtension">
+                    <xpath>/Defs/ThingDef[defName="VWE_MeleeWeapon_Cleaver"]</xpath>
+                    <value>
+                        <li Class="VFECore.ThingDefExtension">
+                            <usableWithShields>true</usableWithShields>
+                        </li>
+                    </value>
+                </li>
+
+                <li Class="PatchOperationAddModExtension">
+                    <xpath>/Defs/ThingDef[defName="VWE_MeleeWeapon_Scalpel"]</xpath>
+                    <value>
+                        <li Class="VFECore.ThingDefExtension">
+                            <usableWithShields>true</usableWithShields>
+                        </li>
+                    </value>
+                </li>
+
+            </operations>
+        </match>
+    </Operation>
+
+</Patch>

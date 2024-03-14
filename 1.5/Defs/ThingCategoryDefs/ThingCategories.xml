@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <ThingCategoryDef>
+        <defName>VFEC_Shields</defName>
+        <label>shields</label>
+        <parent>Apparel</parent>
+    </ThingCategoryDef>
+
+</Defs>
