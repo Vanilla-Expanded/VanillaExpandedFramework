@@ -18,7 +18,7 @@
     <DebugSymbols>false</DebugSymbols>
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\1.4\Assemblies\</OutputPath>
+    <OutputPath>..\..\1.5\Assemblies\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -443,7 +443,6 @@
     <Compile Include="ActiveTerrain\SpecialTerrainList.cs" />
     <Compile Include="ActiveTerrain\ThingComps.cs" />
     <Compile Include="AestheticScaling\PawnDataCache.cs" />
-    <Compile Include="AnimalBehaviours\Harmony\Draftability\FloatMenuMakerMap_AddJobGiverWorkOrders.cs" />
     <Compile Include="Genes\Harmony\Patch_BodySize.cs" />
     <Compile Include="Genes\Harmony\Patch_GenesChanged.cs" />
     <Compile Include="Genes\Harmony\Patch_ThoughtWorker_NeedFood.cs" />
@@ -502,6 +501,7 @@
     <Compile Include="AnimalBehaviours\Comps\CompHediffWhenFleeing.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompHighlyFlammable.cs" />
     <Compile Include="AnimalBehaviours\DefOfs\InternalDefOf.cs" />
+    <Compile Include="AnimalBehaviours\Harmony\Draftability\FloatMenuMakerMap_AddJobGiverWorkOrders.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\SchoolUtility_CanTeachNow.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_GasProducer.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Polluter.cs" />
@@ -513,6 +513,8 @@
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Waterstriding.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_StageByPsylink.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_StageByTemperature.cs" />
+    <Compile Include="AnimalBehaviours\PawnRenderNodes\PawnRenderNode_GraphicByStyle.cs" />
+    <Compile Include="AnimalBehaviours\PawnRenderNodes\PawnRenderNode_GraphicByTerrain.cs" />
     <Compile Include="AnimalBehaviours\ReflectionCache\ReflectionCache.cs" />
     <Compile Include="Cuisine\Things\GourmetMeal.cs" />
     <Compile Include="DoorTeleporter\CaravanArrivalAction_UseDoorTeleporter.cs" />
@@ -524,6 +526,7 @@
     <Compile Include="DoorTeleporter\WorldComponent_DoorTeleporterManager.cs" />
     <Compile Include="DoorTeleporter\DoorTeleporterPatches.cs" />
     <Compile Include="DoorTeleporter\JobDriver_UseDoorTeleporter.cs" />
+    <Compile Include="Furniture\DefOfs\InternalDefOf.cs" />
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_AnyLightSensitivity.cs" />
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_OutsideColonyMap.cs" />
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_InColonyMap.cs" />
@@ -539,11 +542,14 @@
     <Compile Include="Genes\Harmony\Patch_FoodCapacity.cs" />
     <Compile Include="Genes\Harmony\Patch_HealthScale.cs" />
     <Compile Include="Genes\Harmony\HediffComp_Immunizable_SeverityFactorFromHediffs.cs" />
-    <Compile Include="Genes\Harmony\GeneGraphicData_GetColorFor_Patch.cs" />
+    <Compile Include="Genes\Harmony\PawnRenderNode_Body_GraphicFor_Patch.cs" />
+    <Compile Include="Genes\Harmony\PawnRenderNode_ColorFor_Patch.cs" />
     <Compile Include="Genes\Harmony\HediffComp_PregnantHuman_CompTipStringExtra.cs" />
     <Compile Include="Genes\Harmony\LifeStageWorker_Notify_LifeStageStarted_Patch.cs" />
+    <Compile Include="Genes\Harmony\PawnRenderNode_Head_GraphicFor_Patch.cs" />
     <Compile Include="Genes\Harmony\PawnUtility_BodyResourceGrowthSpeed.cs" />
     <Compile Include="Genes\Harmony\Pawn_ButcherProducts.cs" />
+    <Compile Include="Genes\Harmony\TattooDef_GraphicFor_Patch.cs" />
     <Compile Include="Memes\Harmony\Ideo_ExposeData.cs" />
     <Compile Include="Misc\ForcedMusicManager.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_RenderPawnAt.cs" />
@@ -662,7 +668,6 @@
     <Compile Include="AnimalBehaviours\Defs\AnimalsUnaffectedBySelfTameDef.cs" />
     <Compile Include="AnimalBehaviours\Defs\GenericToggleableAnimalDef.cs" />
     <Compile Include="AnimalBehaviours\Enums\BodyClock.cs" />
-    <Compile Include="AnimalBehaviours\Harmony\Draftability\FloatMenuMakerMap_AddDraftedOrders_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\ITab_Pawn_Gear_IsVisible.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\PawnComponentsUtility_AddAndRemoveDynamicComponents_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\Pawn_GetGizmos_Patch.cs" />
@@ -687,10 +692,10 @@
     <Compile Include="AnimalBehaviours\Harmony\VerbProperties_AdjustedCooldown_Patch.cs" />
     <Compile Include="Genes\Harmony\Dialog_CreateXenotype_DrawGene.cs" />
     <Compile Include="Genes\Harmony\DamageWorker_AddInjury_ApplyToPawn.cs" />
+    <Compile Include="Genes\Harmony\PawnRenderNodeWorker_ScaleFor_Patch.cs" />
     <Compile Include="Genes\Harmony\DrawBodyGenes_Patch.cs" />
     <Compile Include="Genes\Harmony\DrawGeneEyes_Patch.cs" />
     <Compile Include="Genes\Harmony\FleshTypeDef_ChooseWoundOverlay.cs" />
-    <Compile Include="Genes\Harmony\GeneGraphicData_GetGraphics.cs" />
     <Compile Include="Genes\Harmony\Gene_ExposeData.cs" />
     <Compile Include="Genes\Harmony\Gene_OverrideBy.cs" />
     <Compile Include="Genes\Harmony\Gene_PostRemove.cs" />
@@ -791,7 +796,7 @@
     <Compile Include="Genes\GraphicsCache\GraphicsCache.cs" />
     <Compile Include="Genes\Harmony\GeneUIUtility_DrawGeneBasics.cs" />
     <Compile Include="Genes\Harmony\Gene_PostAdd.cs" />
-    <Compile Include="Genes\Harmony\PawnGraphicSet_ResolveAllGraphics.cs" />
+    <Compile Include="Genes\Harmony\PawnRenderNode_Fur_GraphicFor_Patch.cs" />
     <Compile Include="Genes\MapComponents\MapComponent_GeneGoodies.cs" />
     <Compile Include="Genes\ReflectionCache\ReflectionCache.cs" />
     <Compile Include="Genes\StaticCollectionsClass\StaticCollectionsClass.cs" />
