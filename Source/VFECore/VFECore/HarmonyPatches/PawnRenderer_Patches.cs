@@ -110,6 +110,7 @@ namespace VFECore
         public static Dictionary<Vector2, GraphicMeshSet> newPlanes = new();
     }
 
+    /* TODO: Revisit later
     [HarmonyPatch]
     public static class Patch_DrawHeadHair_DrawApparel_Transpiler
     {
@@ -810,4 +811,5 @@ namespace VFECore
             }
         }
     }
+    */
 }

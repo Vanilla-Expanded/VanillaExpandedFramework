@@ -1,5 +1,7 @@
 ﻿using RimWorld;
 using System;
+using System.Linq;
+using UnityEngine;
 using Verse;
 
 namespace VanillaGenesExpanded
@@ -250,6 +252,63 @@ namespace VanillaGenesExpanded
             {
                 Log.Error($"[VEF] Error in GeneUtils.RemoveGeneEffects for gene {gene?.def?.defName.ToStringSafe()}: {ex}");
             }
+        }
+
+        public static Vector3 SetBodyScale(Pawn pawn, Vector3 scale)
+        {
+            foreach (var g in pawn.genes.GenesListForReading.Where(x => x.Active))
+            {
+                if (g.Active)
+                {
+                    var extension = g.def.GetModExtension<GeneExtension>();
+                    if (extension != null)
+                    {
+                        scale = new Vector3(scale.x * extension.bodyScaleFactor.x, 1, scale.z * extension.bodyScaleFactor.y);
+                    }
+                }
+            }
+            return scale;
+        }
+
+        public static Vector3 SetHeadScale(Pawn pawn, Vector3 scale)
+        {
+            foreach (var g in pawn.genes.GenesListForReading.Where(x => x.Active))
+            {
+                if (g.Active)
+                {
+                    var extension = g.def.GetModExtension<GeneExtension>();
+                    if (extension != null)
+                    {
+                        scale = new Vector3(scale.x * extension.headScaleFactor.x, 1, scale.z * extension.headScaleFactor.y);
+                    }
+                }
+            }
+            return scale;
+        }
+
+        public static Vector3 SetGeneScale(Pawn pawn, Vector3 scale, Gene gene)
+        {
+            if (gene.Active)
+            {
+                var extension = gene.def.GetModExtension<GeneExtension>();
+                if (extension != null)
+                {
+                    if (extension.bodyScaleFactorsPerLifestages != null
+                            && extension.bodyScaleFactorsPerLifestages.TryGetValue(pawn.ageTracker.CurLifeStage, out var lifestageScale))
+                    {
+                        scale = new Vector3(scale.x * lifestageScale.x, 1, scale.z * lifestageScale.y);
+                    }
+                }
+            }
+            return scale;
+        }
+
+        public static Vector3 GeneOffset(Vector3 offset, Gene gene, Pawn pawn, Rot4 rot)
+        {
+            GeneExtension extension = gene.def.GetModExtension<GeneExtension>();
+            return extension != null ?
+                       offset + extension.offsets.GetOffset(pawn, rot) :
+                       offset;
         }
     }
 }
