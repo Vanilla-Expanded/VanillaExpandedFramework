@@ -224,10 +224,10 @@ public class VerbManager : IExposable
         MVCF.LogFormat($"SearchVerb is now {SearchVerb}", LogLevel.Info);
     }
 
-    public void DrawAt(Vector3 drawPos)
+    public void DrawVerbs(Pawn pawn, Vector3 drawPos, Rot4 facing, PawnRenderFlags flags)
     {
         // ReSharper disable once ForCanBeConvertedToForeach
-        for (var i = 0; i < drawVerbs.Count; i++) drawVerbs[i].DrawOn(Pawn, drawPos);
+        for (var i = 0; i < drawVerbs.Count; i++) drawVerbs[i].DrawOn(pawn, drawPos, facing, flags);
     }
 
     public void Tick()

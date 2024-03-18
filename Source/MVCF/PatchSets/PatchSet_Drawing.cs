@@ -10,11 +10,12 @@ public class PatchSet_Drawing : PatchSet
 {
     public override IEnumerable<Patch> GetPatches()
     {
-        yield return Patch.Postfix(AccessTools.Method(typeof(Pawn), "DrawAt"), AccessTools.Method(GetType(), nameof(Postfix_Pawn_DrawAt)));
+        yield return Patch.Postfix(AccessTools.Method(typeof(PawnRenderUtility), nameof(PawnRenderUtility.DrawEquipmentAndApparelExtras)),
+            AccessTools.Method(GetType(), nameof(DrawVerbExtras)));
     }
 
-    public static void Postfix_Pawn_DrawAt(Pawn __instance, Vector3 drawLoc, bool flip = false)
+    public static void DrawVerbExtras(Pawn pawn, Vector3 drawPos, Rot4 facing, PawnRenderFlags flags)
     {
-        __instance.Manager(false)?.DrawAt(drawLoc);
+        pawn.Manager(false)?.DrawVerbs(pawn, drawPos, facing, flags);
     }
 }
