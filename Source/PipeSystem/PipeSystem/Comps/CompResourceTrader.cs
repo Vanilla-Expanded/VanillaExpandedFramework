@@ -227,7 +227,7 @@ namespace PipeSystem
         /// resource production can be enabled.
         /// </summary>
         /// <returns></returns>
-        public bool CanBeOn()
+        public virtual bool CanBeOn()
         {
             return (compFlickable == null || compFlickable.SwitchIsOn)
                 && (compSchedule == null || compSchedule.Allowed)
