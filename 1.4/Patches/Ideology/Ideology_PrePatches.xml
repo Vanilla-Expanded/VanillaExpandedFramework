@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Patch>
+  <Operation Class="PatchOperationReplace">
+    <xpath>Defs/PreceptDef[defName="IdeoBuilding"]/buildingRoomRequirements/li[@Class="RoomRequirement_ThingCount"][thingDef="Column"]</xpath>
+    <value>
+      <li Class="RoomRequirement_ThingAnyOfCount">
+        <things>
+          <li>Column</li>
+        </things>
+        <count>4</count>
+      </li>
+    </value>
+  </Operation>
+</Patch>
