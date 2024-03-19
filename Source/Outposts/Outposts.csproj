@@ -67,12 +67,10 @@
     <Compile Include="Dialogs\Dialog_GiveItems.cs" />
     <Compile Include="Dialogs\Dialog_TakeItems.cs" />
     <Compile Include="HarmonyPatches.cs" />
-    <Compile Include="IncidentWorker_OutpostAttacked.cs" />
     <Compile Include="LordJob_Deliver.cs" />
     <Compile Include="Outpost\Outpost.cs" />
     <Compile Include="OutpostExtension.cs" />
     <Compile Include="OutpostsMod.cs" />
-    <Compile Include="Outpost\Outpost_Attacks.cs" />
     <Compile Include="Outpost\Outpost_ChooseResult.cs" />
     <Compile Include="Outpost\Outpost_Deliveries.cs" />
     <Compile Include="Outpost\Outpost_Needs.cs" />
@@ -85,7 +83,6 @@
     <Compile Include="WITabs\WITab_Outpost_Health.cs" />
     <Compile Include="WITabs\WITab_Outpost_Items.cs" />
     <Compile Include="WITabs\WITab_Outpost_Needs.cs" />
-    <Compile Include="WorldComponent_OutpostAttacked.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Lib.Harmony">
