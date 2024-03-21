@@ -23,8 +23,8 @@ public class BeamProjectile : Projectile_Explosive
     {
         DRAWERS               = new();
         takenHashesPerDeftype = (Dictionary<Type, HashSet<ushort>>)AccessTools.Field(typeof(ShortHashGiver), "takenHashesPerDeftype").GetValue(null);
-        giveShortHash =
-            AccessTools.Method(typeof(ShortHashGiver), "GiveShortHash").CreateDelegate<Action<Def, Type, HashSet<ushort>>>();
+        giveShortHash = (Action<Def, Type, HashSet<ushort>>)
+            AccessTools.Method(typeof(ShortHashGiver), "GiveShortHash").CreateDelegate(typeof(Action<Def, Type, HashSet<ushort>>));
         foreach (var thingDef in DefDatabase<ThingDef>.AllDefs)
             if (thingDef.thingClass != null && typeof(BeamProjectile).IsAssignableFrom(thingDef.thingClass))
             {

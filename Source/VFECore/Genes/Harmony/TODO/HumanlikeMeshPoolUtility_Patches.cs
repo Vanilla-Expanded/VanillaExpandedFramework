@@ -19,7 +19,9 @@ namespace VanillaGenesExpanded
     /// Using HumanlikeMeshPoolUtility:HumanlikeBodyWidthForPawn to get initial bodywidth so other modders have a place to patch
     /// This doesnt apply to HAR compat, might try to add later but first need to see what the final version it looks like
     /// </summary>
+//TODO: Fix for 1.5
 
+/*
     public static class HumanlikeMeshPoolUtility_Patches
     {
         static MethodInfo meshX = AccessTools.Method(typeof(MeshPool), "GetMeshSetForWidth", new Type[] { typeof(float) });
@@ -415,5 +417,5 @@ namespace VanillaGenesExpanded
                     yield return code;
             }
         }
-    }
+    }*/
 }

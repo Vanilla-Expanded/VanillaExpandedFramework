@@ -13,7 +13,9 @@ namespace VanillaGenesExpanded
     [HarmonyPatch]
     public static class DrawBodyGenes_Patch
     {
-        public static MethodBase TargetMethod()
+       //TODO: Fix for 1.5
+
+      /*  public static MethodBase TargetMethod()
         {
             return AccessTools.Method(typeof(PawnRenderer), "DrawBodyGenes");
         }
@@ -81,6 +83,6 @@ namespace VanillaGenesExpanded
             return extension != null ? 
                        offset + extension.offsets.GetOffset(pawn, rot) : 
                        offset;
-        }
+        }*/
     }
 }

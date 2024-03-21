@@ -10,7 +10,9 @@ using VFECore;
 
 namespace VanillaGenesExpanded
 {
+    //TODO: Fix for 1.5
 
+/*
     [HarmonyPatch]
     public static class DrawGeneEyes_Patch
     {
@@ -123,5 +125,5 @@ namespace VanillaGenesExpanded
             }
             return offset;
         }
-    }
+    }*/
 }

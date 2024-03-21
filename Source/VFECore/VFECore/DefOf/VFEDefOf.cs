@@ -31,5 +31,12 @@ namespace VFECore
         public static TerrainAffordanceDef Diggable;
         public static BodyPartDef Brain;
         public static ThingDef Leather_Human;
+        public static MentalStateDef Binging_Food;
+        public static StatDef VEF_BodySize_Offset;
+        public static StatDef VEF_CosmeticBodySize_Offset;
+        public static StatDef VEF_BodySize_Multiplier;
+        public static StatDef VEF_HeadSize_Cosmetic;
+        public static StatDef VEF_PawnRenderPosOffset;
+        public static StatDef VEF_FoodCapacityMultiplier;
     }
 }
