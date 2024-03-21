@@ -8,7 +8,10 @@ using HarmonyLib;
 using VFECore;
 
 namespace VanillaGenesExpanded
-{    
+{
+    //TODO: Fix for 1.5
+
+/*
     [HarmonyPatch(typeof(PawnRenderer), "DrawBodyApparel")]
     public static class DrawBodyApparel_BeltPatches
     {
@@ -57,5 +60,5 @@ namespace VanillaGenesExpanded
             }
             return scale;
         }
-    }
+    }*/
 }
