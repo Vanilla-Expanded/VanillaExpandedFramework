@@ -725,21 +725,20 @@ namespace VFECore
                 }
             }
         }
-    }
+    }*/
 
-    [HarmonyPatch(typeof(PawnRenderer), nameof(PawnRenderer.DrawEquipmentAiming))]
+    [HarmonyPatch(typeof(PawnRenderUtility), nameof(PawnRenderUtility.DrawEquipmentAiming))]
     public static class PawnRenderer_DrawEquipmentAiming_Patch
     {
-        [HarmonyDelegate(typeof(PawnRenderer), "CarryWeaponOpenly")]
-        public delegate bool CarryWeaponOpenly();
         [HarmonyPriority(Priority.First)]
-        public static void Prefix(PawnRenderer __instance, Pawn ___pawn, Thing eq, ref Vector3 drawLoc, ref float aimAngle, CarryWeaponOpenly carryWeaponOpenly)
+        public static void Prefix(Thing eq, ref Vector3 drawLoc, ref float aimAngle)
         {
             var thingDefExtension = eq.def.GetModExtension<ThingDefExtension>();
 
-            if (thingDefExtension != null && carryWeaponOpenly())
+            Pawn pawn = eq.GetPawnAsHolder();
+
+            if (thingDefExtension != null && PawnRenderUtility.CarryWeaponOpenly(pawn))
             {
-                var pawn = ___pawn;
                 var pawnRot = pawn.Rotation;
 
                 // Weapon draw offsets that apply at all times (i.e. carrying weapons while working, drafted, attacking)
@@ -772,7 +771,7 @@ namespace VFECore
                 // Useful for things like holding a pike/halberd while standing at attention
                 //
                 // Note: These offsets add on to anything in weaponCarryDrawOffsets
-                if (thingDefExtension.weaponDraftedDrawOffsets != null && !___pawn.stances.curStance.StanceBusy)
+                if (thingDefExtension.weaponDraftedDrawOffsets != null && !pawn.stances.curStance.StanceBusy)
                 {
                     if (pawnRot == Rot4.South)
                     {
@@ -799,6 +798,7 @@ namespace VFECore
         }
     }
 
+    /* TODO: Revisit later
     [HarmonyPatch(typeof(PawnGraphicSet), "CalculateHairMats")]
     public static class PawnGraphicSet_CalculateHairMats_Patch
     {
