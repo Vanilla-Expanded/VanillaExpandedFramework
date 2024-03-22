@@ -91,7 +91,7 @@ namespace ModSettingsFramework
             Rect sliderRect = rect.RightPart(.60f).Rounded();
             Widgets.Label(rect, label);
             scrollHeight += rect.height;
-            value = Widgets.HorizontalSlider_NewTemp(sliderRect, (float)value, min, max, true, valueLabel);
+            value = Widgets.HorizontalSlider(sliderRect, (float)value, min, max, true, valueLabel);
             value = (float)Math.Round(value, roundToDecimalPlaces);
             listingStandard.Gap(5);
             scrollHeight += 5;
@@ -104,7 +104,7 @@ namespace ModSettingsFramework
             Rect sliderRect = rect.RightPart(.60f).Rounded();
             Widgets.Label(rect, label);
             scrollHeight += rect.height;
-            value = (int)Widgets.HorizontalSlider_NewTemp(sliderRect, value, min, max, true, valueLabel);
+            value = (int)Widgets.HorizontalSlider(sliderRect, value, min, max, true, valueLabel);
             listingStandard.Gap(5);
             scrollHeight += 5;
             ShowExplanation(listingStandard, explanation, rect.LeftPart(0.4f));
