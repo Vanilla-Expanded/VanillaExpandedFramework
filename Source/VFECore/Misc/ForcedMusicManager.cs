@@ -10,7 +10,7 @@ namespace VFECore;
 
 public class ForcedMusicManager : GameComponent
 {
-    private static readonly AccessTools.FieldRef<MusicManagerPlay, SongDef> currentSong = AccessTools.FieldRefAccess<MusicManagerPlay, SongDef>("lastStartedSong");
+    private static readonly AccessTools.FieldRef<MusicManagerPlay, SongDef> currentSong = AccessTools.FieldRefAccess<MusicManagerPlay, SongDef>("currentSong");
     private static readonly AccessTools.FieldRef<MusicManagerPlay, bool> songWasForced = AccessTools.FieldRefAccess<MusicManagerPlay, bool>("songWasForced");
     private static bool patchesApplied;
 
