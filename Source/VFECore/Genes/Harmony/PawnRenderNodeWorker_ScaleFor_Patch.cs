@@ -24,7 +24,8 @@ namespace VanillaGenesExpanded
 
             if (node.gene != null)
             {
-                __result = GeneUtils.SetGeneScale(pawn, __result, node.gene);
+                // Commented out because scale on genes is already inherited from the body/head in 1.5 RimWorld.
+                //__result = GeneUtils.SetGeneScale(pawn, __result, node.gene);
             }
         }
     }

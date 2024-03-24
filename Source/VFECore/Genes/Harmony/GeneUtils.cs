@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 using Verse;
+using VFECore;
 
 namespace VanillaGenesExpanded
 {
@@ -268,6 +269,10 @@ namespace VanillaGenesExpanded
                     }
                 }
             }
+            if (PawnDataCache.GetPawnDataCache(pawn) is CachedPawnData data)
+            {
+                scale *= data.bodyRenderSize;
+            }
             return scale;
         }
 
@@ -283,6 +288,10 @@ namespace VanillaGenesExpanded
                         scale = new Vector3(scale.x * extension.headScaleFactor.x, 1, scale.z * extension.headScaleFactor.y);
                     }
                 }
+            }
+            if (PawnDataCache.GetPawnDataCache(pawn) is CachedPawnData data)
+            {
+                scale *= data.headRenderSize;
             }
             return scale;
         }
@@ -300,6 +309,10 @@ namespace VanillaGenesExpanded
                         scale = new Vector3(scale.x * lifestageScale.x, 1, scale.z * lifestageScale.y);
                     }
                 }
+            }
+            if (PawnDataCache.GetPawnDataCache(pawn) is CachedPawnData data)
+            {
+                scale *= data.bodyRenderSize;
             }
             return scale;
         }
