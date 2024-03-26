@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Emit;
 using HarmonyLib;
 using MVCF.Commands;
 using MVCF.Utilities;
@@ -18,9 +17,6 @@ public class PatchSet_Animals : PatchSet
     {
         yield return Patch.Postfix(AccessTools.Method(typeof(Pawn), "GetGizmos"),
             AccessTools.Method(GetType(), nameof(Pawn_GetGizmos_Postfix)));
-
-        yield return Patch.Transpiler(AccessTools.Method(typeof(JobDriver_Wait), "CheckForAutoAttack"),
-            AccessTools.Method(GetType(), nameof(Transpiler_JobDriver_Wait_CheckForAutoAttack)));
     }
 
     public static IEnumerable<Gizmo> Pawn_GetGizmos_Postfix(IEnumerable<Gizmo> __result, Pawn __instance)
@@ -51,17 +47,5 @@ public class PatchSet_Animals : PatchSet
                     yield return gizmo;
             else
                 yield return new Command_ToggleVerbUsage(mv);
-    }
-
-    public static IEnumerable<CodeInstruction> Transpiler_JobDriver_Wait_CheckForAutoAttack(
-        IEnumerable<CodeInstruction> instructions)
-    {
-        var list = instructions.ToList();
-        var method = AccessTools.Method(typeof(Thing), "get_Faction");
-        var idx = list.FindLastIndex(ins => ins.Calls(method));
-        var idx1 = list.FindLastIndex(idx, ins => ins.opcode == OpCodes.Ldarg_0);
-        var idx2 = list.FindIndex(idx, ins => ins.opcode == OpCodes.Brfalse);
-        list.RemoveRange(idx1, idx2 - idx1 + 1);
-        return list;
     }
 }

@@ -134,6 +134,7 @@
     <Compile Include="Utilities\FloatMenuUtility.cs" />
     <Compile Include="Utilities\ManagedVerbUtility.cs" />
     <Compile Include="Utilities\MeleeVerbUtility.cs" />
+    <Compile Include="Utilities\PatchUtility.cs" />
     <Compile Include="Utilities\ReloadingUtility.cs" />
     <Compile Include="Utilities\TargetFinder.cs" />
     <Compile Include="Utilities\VerbCompsUtility.cs" />
