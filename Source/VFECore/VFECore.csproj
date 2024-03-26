@@ -447,6 +447,7 @@
     <Compile Include="Genes\Harmony\Patch_GenesChanged.cs" />
     <Compile Include="Genes\Harmony\Patch_ThoughtWorker_NeedFood.cs" />
     <Compile Include="VFECore\HarmonyPatches\MentaBreakWorker_Patches.cs" />
+    <Compile Include="VFECore\HarmonyPatches\Test.cs" />
     <Compile Include="VFECore\Utilities\CacheTimer.cs" />
     <Compile Include="AestheticScaling\CachedPawnData.cs" />
     <Compile Include="AnimalBehaviours\AI\JobDrivers\JobDriver_AnimalResource.cs" />
