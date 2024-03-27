@@ -45,12 +45,12 @@
     </Reference>
     <Reference Include="KCSG, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\1.4\Assemblies\KCSG.dll</HintPath>
+      <HintPath>..\..\1.5\Assemblies\KCSG.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PipeSystem, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\1.4\Assemblies\PipeSystem.dll</HintPath>
+      <HintPath>..\..\1.5\Assemblies\PipeSystem.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
@@ -373,10 +373,6 @@
     <Reference Include="UnityEngine.XRModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.XRModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="VFEM">
-      <HintPath>References\VFEM.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
