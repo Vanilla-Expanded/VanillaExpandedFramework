@@ -232,6 +232,17 @@
 		<minValue>-99</minValue>
 	</StatDef>
 
+	<StatDef>
+		<defName>VEF_GrowthPointMultiplier</defName>
+		<label>growth point multiplier</label>
+		<description>Increases the amount of growth points accumulated by children when learning</description>
+		<alwaysHide>true</alwaysHide>
+		<category>BasicsNonPawnImportant</category>
+		<toStringStyle>FloatOne</toStringStyle>
+		<defaultBaseValue>1.0</defaultBaseValue>
+		<minValue>0</minValue>
+	</StatDef>
+
 	<!-- Rendering -->
 
 	<!--These are hidden StatDefs used to modify the size of any pawn. Note that size has a falloff upwards,

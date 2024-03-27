@@ -77,6 +77,9 @@ namespace VFECore
         // Food
         public float foodCapacityMult;
 
+        // Children "Learning" point accumulation.
+        public float growthPointMultiplier;
+
         public CachedPawnData(Pawn pawn)
         {
             this.pawn = pawn;
@@ -166,6 +169,7 @@ namespace VFECore
 
             // Other cached data
             foodCapacityMult = pawn.GetStatValue(VFEDefOf.VEF_FoodCapacityMultiplier);
+            growthPointMultiplier = pawn.GetStatValue(VFEDefOf.VEF_GrowthPointMultiplier);
         }
 
         private static (float, float, float) GetPercentChange(float bodySizeOffset, Pawn pawn)

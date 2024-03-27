@@ -443,9 +443,11 @@
     <Compile Include="ActiveTerrain\SpecialTerrainList.cs" />
     <Compile Include="ActiveTerrain\ThingComps.cs" />
     <Compile Include="AestheticScaling\PawnDataCache.cs" />
+    <Compile Include="Genes\Harmony\AdjustHeadPosition.cs" />
     <Compile Include="Genes\Harmony\Patch_BodySize.cs" />
     <Compile Include="Genes\Harmony\Patch_GenesChanged.cs" />
     <Compile Include="Genes\Harmony\Patch_ThoughtWorker_NeedFood.cs" />
+    <Compile Include="Genes\Harmony\Path_ChildrenLearning.cs" />
     <Compile Include="VFECore\HarmonyPatches\MentaBreakWorker_Patches.cs" />
     <Compile Include="VFECore\Utilities\CacheTimer.cs" />
     <Compile Include="AestheticScaling\CachedPawnData.cs" />

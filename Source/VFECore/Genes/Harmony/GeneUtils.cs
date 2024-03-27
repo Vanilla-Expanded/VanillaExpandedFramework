@@ -265,7 +265,8 @@ namespace VanillaGenesExpanded
                     var extension = g.def.GetModExtension<GeneExtension>();
                     if (extension != null)
                     {
-                        scale = new Vector3(scale.x * extension.bodyScaleFactor.x, 1, scale.z * extension.bodyScaleFactor.y);
+                        scale.x *= extension.bodyScaleFactor.x;
+                        scale.z *= extension.bodyScaleFactor.y;
                     }
                 }
             }
@@ -285,7 +286,8 @@ namespace VanillaGenesExpanded
                     var extension = g.def.GetModExtension<GeneExtension>();
                     if (extension != null)
                     {
-                        scale = new Vector3(scale.x * extension.headScaleFactor.x, 1, scale.z * extension.headScaleFactor.y);
+                        scale.x *= extension.headScaleFactor.x;
+                        scale.z *= extension.headScaleFactor.y;
                     }
                 }
             }
