@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  
+  <MentalStateDef ParentName="BaseMentalState">
+    <defName>VEF_XenophobicRage</defName>
+    <stateClass>AnimalBehaviours.MentalState_XenophobicRage</stateClass>
+    <workerClass>AnimalBehaviours.MentalStateWorker_XenophobicRage</workerClass>
+    <label>xenophobic rage</label>
+    <category>Aggro</category>
+    <blockInteractionInitiationExcept>
+      <li>Insult</li>
+    </blockInteractionInitiationExcept>
+    <blockInteractionRecipientExcept>
+      <li>Insult</li>
+    </blockInteractionRecipientExcept>
+    <blockRandomInteraction>true</blockRandomInteraction>
+    <colonistsOnly>true</colonistsOnly>
+    <minTicksBeforeRecovery>100000</minTicksBeforeRecovery>
+    <maxTicksBeforeRecovery>100000</maxTicksBeforeRecovery>
+    <recoverFromSleep>true</recoverFromSleep>
+    <nameColor>(0.9,0.2,0.5)</nameColor>
+    <moodRecoveryThought>Catharsis</moodRecoveryThought>
+    <blockNormalThoughts>true</blockNormalThoughts>
+    <recoveryMessage>{0} is no longer in a xenophobic rage.</recoveryMessage>
+    <beginLetter>{0} has flown into a xenophobic rage.\n\n[PAWN_pronoun] has decided to kill {1}.</beginLetter>
+    <beginLetterDef>ThreatSmall</beginLetterDef>
+    <baseInspectLine>Mental state: Xenophobic rage</baseInspectLine>
+    <allowBeatfire>true</allowBeatfire>
+  </MentalStateDef>
+
+
+</Defs>

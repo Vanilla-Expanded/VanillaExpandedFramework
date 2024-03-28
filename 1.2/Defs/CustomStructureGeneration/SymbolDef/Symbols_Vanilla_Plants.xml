@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+  <KCSG.SymbolDef>
+    <defName>Plant_Potato</defName>
+    <thing>Plant_Potato</thing>
+    <plantGrowth>0.8</plantGrowth>
+    <symbol>Plant_Potato</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Plant_Corn</defName>
+    <thing>Plant_Corn</thing>
+    <plantGrowth>0.8</plantGrowth>
+    <symbol>Plant_Corn</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Plant_Haygrass</defName>
+    <thing>Plant_Haygrass</thing>
+    <plantGrowth>0.8</plantGrowth>
+    <symbol>Plant_Haygrass</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Plant_Daylily</defName>
+    <thing>Plant_Daylily</thing>
+    <plantGrowth>0.8</plantGrowth>
+    <symbol>Plant_Daylily</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Plant_Strawberry</defName>
+    <thing>Plant_Strawberry</thing>
+    <plantGrowth>0.8</plantGrowth>
+    <symbol>Plant_Strawberry</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Plant_Grass</defName>
+    <thing>Plant_Grass</thing>
+    <plantGrowth>1</plantGrowth>
+    <symbol>Plant_Grass</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Plant_TallGrass</defName>
+    <thing>Plant_TallGrass</thing>
+    <plantGrowth>1</plantGrowth>
+    <symbol>Plant_TallGrass</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Plant_Dandelion</defName>
+    <thing>Plant_Dandelion</thing>
+    <plantGrowth>1</plantGrowth>
+    <symbol>Plant_Dandelion</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Plant_Bush</defName>
+    <thing>Plant_Bush</thing>
+    <plantGrowth>1</plantGrowth>
+    <symbol>Plant_Bush</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Plant_TreePoplar</defName>
+    <thing>Plant_TreePoplar</thing>
+    <plantGrowth>1</plantGrowth>
+    <symbol>Plant_TreePoplar</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Plant_Berry</defName>
+    <thing>Plant_Berry</thing>
+    <plantGrowth>1</plantGrowth>
+    <symbol>Plant_Berry</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Plant_TreeOak</defName>
+    <thing>Plant_TreeOak</thing>
+    <plantGrowth>1</plantGrowth>
+    <symbol>Plant_TreeOak</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Plant_Brambles</defName>
+    <thing>Plant_Brambles</thing>
+    <plantGrowth>1</plantGrowth>
+    <symbol>Plant_Brambles</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Plant_Hops</defName>
+    <thing>Plant_Hops</thing>
+    <plantGrowth>1</plantGrowth>
+    <symbol>Plant_Hops</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Plant_Smokeleaf</defName>
+    <thing>Plant_Smokeleaf</thing>
+    <plantGrowth>1</plantGrowth>
+    <symbol>Plant_Smokeleaf</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Plant_Moss</defName>
+    <thing>Plant_Moss</thing>
+    <plantGrowth>0.6385683</plantGrowth>
+    <symbol>Plant_Moss</symbol>
+  </KCSG.SymbolDef>
+</Defs>

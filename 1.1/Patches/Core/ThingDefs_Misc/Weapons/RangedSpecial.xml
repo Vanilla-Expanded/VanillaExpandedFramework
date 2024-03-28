@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+    <!-- Patch appropriate weapons to be usable with shields -->
+    <Operation Class="PatchOperationAddModExtension">
+        <xpath>/Defs/ThingDef[@Name="OrbitalWeaponBase"]</xpath>
+        <value>
+            <li Class="VFECore.ThingDefExtension">
+                <usableWithShields>true</usableWithShields>
+            </li>
+        </value>
+    </Operation>
+
+</Patch>

@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<HediffDef>
+		<defName>VEF_AcidBuildup</defName>
+		<hediffClass>AnimalBehaviours.Hediff_AcidBuildup</hediffClass>
+		<defaultLabelColor>(0.7, 1.0, 0.7)</defaultLabelColor>
+		<label>acid burn</label>
+		<lethalSeverity>1</lethalSeverity>
+		<makesSickThought>true</makesSickThought>
+		<description>A splash of acid that continues to cause burn wounds for quite some time after the initial attack.</description>
+		<comps>
+			<li Class="HediffCompProperties_Immunizable">
+				<severityPerDayNotImmune>-4</severityPerDayNotImmune>
+			</li>
+		</comps>
+		<stages>
+			<li>
+				<label>minor, receiving burns</label>
+				<minSeverity>0</minSeverity>
+				<capMods>
+					<li>
+						<capacity>Consciousness</capacity>
+						<offset>-0.10</offset>
+					</li>
+				</capMods>
+			</li>
+			<li>
+				<label>moderate, receiving burns</label>
+				<minSeverity>0.40</minSeverity>
+				<vomitMtbDays>5</vomitMtbDays>
+				<capMods>
+					<li>
+						<capacity>Consciousness</capacity>
+						<offset>-0.15</offset>
+					</li>
+				</capMods>
+			</li>
+			<li>
+				<label>serious, receiving burns</label>
+				<minSeverity>0.60</minSeverity>
+				<vomitMtbDays>1</vomitMtbDays>
+				<capMods>
+					<li>
+						<capacity>Consciousness</capacity>
+						<offset>-0.4</offset>
+					</li>
+				</capMods>
+			</li>
+		</stages>
+	</HediffDef>
+	
+	<HediffDef ParentName="InjuryBase">
+		<defName>VEF_AcidBurn</defName>
+		<label>acid burn</label>
+		<labelNoun>an acid burn</labelNoun>
+		<description>An acid burn.</description>
+		<comps>
+			<li Class="HediffCompProperties_TendDuration">
+				<labelTendedWell>bandaged</labelTendedWell>
+				<labelTendedWellInner>tended</labelTendedWellInner>
+				<labelSolidTendedWell>tended</labelSolidTendedWell>
+			</li>
+			<li Class="HediffCompProperties_Infecter">
+				<infectionChance>0.30</infectionChance>
+			</li>
+			<li Class="HediffCompProperties_GetsPermanent">
+				<permanentLabel>acid burn scar</permanentLabel>
+			</li>
+		</comps>
+		<injuryProps>
+			<painPerSeverity>0.01875</painPerSeverity>
+			<averagePainPerSeverityPermanent>0.00625</averagePainPerSeverityPermanent>
+			<canMerge>true</canMerge>
+			<destroyedLabel>Corroded</destroyedLabel>
+			<destroyedOutLabel>Corroded</destroyedOutLabel>
+		</injuryProps>
+	</HediffDef>
+	
+	<HediffDef>
+		<defName>VEF_LightSustenance</defName>
+		<description>This creature feeds on sunlight. Inadequate levels of light will kill it.</description>
+		<hediffClass>HediffWithComps</hediffClass>
+		<defaultLabelColor>(0.7, 1.0, 0.7)</defaultLabelColor>
+		<label>level of sunlight</label>
+		<lethalSeverity>1</lethalSeverity>
+		<makesSickThought>false</makesSickThought>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<minSeverity>0.01</minSeverity>
+		<comps>
+			<li Class="HediffCompProperties_Immunizable">
+				<severityPerDayNotImmune>-0.08</severityPerDayNotImmune>
+			</li>
+		</comps>
+		<stages>
+			<li>
+				<label>adequate light</label>
+				<minSeverity>0</minSeverity>
+			</li>
+			<li>
+				<label>poor light levels</label>
+				<minSeverity>0.2</minSeverity>
+			</li>
+			<li>
+				<label>very low light levels</label>
+				<minSeverity>0.40</minSeverity>
+			</li>
+			<li>
+				<label>lack of sunlight</label>
+				<minSeverity>0.60</minSeverity>
+			</li>
+			<li>
+				<label>extreme lack of sustenance</label>
+				<minSeverity>0.80</minSeverity>
+			</li>
+		</stages>
+	</HediffDef>
+</Defs>

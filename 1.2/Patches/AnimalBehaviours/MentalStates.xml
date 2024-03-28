@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Patch>
+	<Operation Class="PatchOperationSequence">
+		<success>Normal</success>
+		<operations>
+			<li Class="PatchOperationAdd">
+				<xpath>/Defs/ThinkTreeDef[defName = "MentalStateNonCritical"]/thinkRoot/subNodes</xpath>
+				<value>
+					<!-- Xenophobic rage -->
+					<li Class="ThinkNode_ConditionalMentalState">
+						<state>VEF_XenophobicRage</state>
+						<subNodes>
+							<li Class="AnimalBehaviours.JobGiver_XenophobicRage" />
+							<li Class="ThinkNode_PrioritySorter">
+								<subNodes>
+									<li Class="JobGiver_GetFood">
+										<maxLevelPercentage>0.05</maxLevelPercentage>
+									</li>
+									<li Class="JobGiver_GetRest">
+										<maxLevelPercentage>0.15</maxLevelPercentage>
+									</li>
+								</subNodes>
+							</li>
+							<li Class="JobGiver_WanderColony" />
+						</subNodes>
+					</li>
+				</value>
+			</li>
+		</operations>
+	</Operation>
+</Patch>

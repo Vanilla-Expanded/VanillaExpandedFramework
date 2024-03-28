@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <!-- ============================== Big threats ==============================-->
+  
+  <IncidentDef>
+    <defName>VSE_Reinforcements</defName>
+    <label>reinforcements</label>
+    <targetTags>
+      <li>Map_PlayerHome</li>
+    </targetTags>
+    <workerClass>VanillaStorytellersExpanded.IncidentWorker_Reinforcements</workerClass>
+    <baseChance>0</baseChance>
+    <category>ThreatBig</category>
+    <pointsScaleable>true</pointsScaleable>
+    <tale>Raid</tale>
+  </IncidentDef>
+
+</Defs>

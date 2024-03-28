@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+    <ScenPartDef>
+        <defName>VFEC_ForcedFactionGoodwill</defName>
+        <label>forced faction relations</label>
+        <scenPartClass>VFECore.ScenPart_ForcedFactionGoodwill</scenPartClass>
+        <category>Misc</category>
+        <selectionWeight>1.0</selectionWeight>
+        <summaryPriority>340</summaryPriority>
+    </ScenPartDef>
+
+</Defs>

@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+	<KCSG.SymbolDef>
+		<defName>Autodoor_Silver</defName>
+		<thing>Autodoor</thing>
+		<stuff>Silver</stuff>
+		<symbol>Autodoor_Silver</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Door_Silver</defName>
+		<thing>Door</thing>
+		<stuff>Silver</stuff>
+		<symbol>Door_Silver</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Column_Silver</defName>
+		<thing>Column</thing>
+		<stuff>Silver</stuff>
+		<symbol>Column_Silver</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Wall_Silver</defName>
+		<thing>Wall</thing>
+		<stuff>Silver</stuff>
+		<symbol>Wall_Silver</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Autodoor_Gold</defName>
+		<thing>Autodoor</thing>
+		<stuff>Gold</stuff>
+		<symbol>Autodoor_Gold</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Door_Gold</defName>
+		<thing>Door</thing>
+		<stuff>Gold</stuff>
+		<symbol>Door_Gold</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Column_Gold</defName>
+		<thing>Column</thing>
+		<stuff>Gold</stuff>
+		<symbol>Column_Gold</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Wall_Gold</defName>
+		<thing>Wall</thing>
+		<stuff>Gold</stuff>
+		<symbol>Wall_Gold</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Autodoor_Steel</defName>
+		<thing>Autodoor</thing>
+		<stuff>Steel</stuff>
+		<symbol>Autodoor_Steel</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Door_Steel</defName>
+		<thing>Door</thing>
+		<stuff>Steel</stuff>
+		<symbol>Door_Steel</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Column_Steel</defName>
+		<thing>Column</thing>
+		<stuff>Steel</stuff>
+		<symbol>Column_Steel</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Wall_Steel</defName>
+		<thing>Wall</thing>
+		<stuff>Steel</stuff>
+		<symbol>Wall_Steel</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Autodoor_Plasteel</defName>
+		<thing>Autodoor</thing>
+		<stuff>Plasteel</stuff>
+		<symbol>Autodoor_Plasteel</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Door_Plasteel</defName>
+		<thing>Door</thing>
+		<stuff>Plasteel</stuff>
+		<symbol>Door_Plasteel</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Column_Plasteel</defName>
+		<thing>Column</thing>
+		<stuff>Plasteel</stuff>
+		<symbol>Column_Plasteel</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Wall_Plasteel</defName>
+		<thing>Wall</thing>
+		<stuff>Plasteel</stuff>
+		<symbol>Wall_Plasteel</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Autodoor_WoodLog</defName>
+		<thing>Autodoor</thing>
+		<stuff>WoodLog</stuff>
+		<symbol>Autodoor_WoodLog</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Door_WoodLog</defName>
+		<thing>Door</thing>
+		<stuff>WoodLog</stuff>
+		<symbol>Door_WoodLog</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Column_WoodLog</defName>
+		<thing>Column</thing>
+		<stuff>WoodLog</stuff>
+		<symbol>Column_WoodLog</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Wall_WoodLog</defName>
+		<thing>Wall</thing>
+		<stuff>WoodLog</stuff>
+		<symbol>Wall_WoodLog</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Autodoor_Uranium</defName>
+		<thing>Autodoor</thing>
+		<stuff>Uranium</stuff>
+		<symbol>Autodoor_Uranium</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Door_Uranium</defName>
+		<thing>Door</thing>
+		<stuff>Uranium</stuff>
+		<symbol>Door_Uranium</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Column_Uranium</defName>
+		<thing>Column</thing>
+		<stuff>Uranium</stuff>
+		<symbol>Column_Uranium</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Wall_Uranium</defName>
+		<thing>Wall</thing>
+		<stuff>Uranium</stuff>
+		<symbol>Wall_Uranium</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Autodoor_Jade</defName>
+		<thing>Autodoor</thing>
+		<stuff>Jade</stuff>
+		<symbol>Autodoor_Jade</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Door_Jade</defName>
+		<thing>Door</thing>
+		<stuff>Jade</stuff>
+		<symbol>Door_Jade</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Column_Jade</defName>
+		<thing>Column</thing>
+		<stuff>Jade</stuff>
+		<symbol>Column_Jade</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Wall_Jade</defName>
+		<thing>Wall</thing>
+		<stuff>Jade</stuff>
+		<symbol>Wall_Jade</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Autodoor_BlocksSandstone</defName>
+		<thing>Autodoor</thing>
+		<stuff>BlocksSandstone</stuff>
+		<symbol>Autodoor_BlocksSandstone</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Door_BlocksSandstone</defName>
+		<thing>Door</thing>
+		<stuff>BlocksSandstone</stuff>
+		<symbol>Door_BlocksSandstone</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Column_BlocksSandstone</defName>
+		<thing>Column</thing>
+		<stuff>BlocksSandstone</stuff>
+		<symbol>Column_BlocksSandstone</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Wall_BlocksSandstone</defName>
+		<thing>Wall</thing>
+		<stuff>BlocksSandstone</stuff>
+		<symbol>Wall_BlocksSandstone</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Autodoor_BlocksGranite</defName>
+		<thing>Autodoor</thing>
+		<stuff>BlocksGranite</stuff>
+		<symbol>Autodoor_BlocksGranite</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Door_BlocksGranite</defName>
+		<thing>Door</thing>
+		<stuff>BlocksGranite</stuff>
+		<symbol>Door_BlocksGranite</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Column_BlocksGranite</defName>
+		<thing>Column</thing>
+		<stuff>BlocksGranite</stuff>
+		<symbol>Column_BlocksGranite</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Wall_BlocksGranite</defName>
+		<thing>Wall</thing>
+		<stuff>BlocksGranite</stuff>
+		<symbol>Wall_BlocksGranite</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Autodoor_BlocksLimestone</defName>
+		<thing>Autodoor</thing>
+		<stuff>BlocksLimestone</stuff>
+		<symbol>Autodoor_BlocksLimestone</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Door_BlocksLimestone</defName>
+		<thing>Door</thing>
+		<stuff>BlocksLimestone</stuff>
+		<symbol>Door_BlocksLimestone</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Column_BlocksLimestone</defName>
+		<thing>Column</thing>
+		<stuff>BlocksLimestone</stuff>
+		<symbol>Column_BlocksLimestone</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Wall_BlocksLimestone</defName>
+		<thing>Wall</thing>
+		<stuff>BlocksLimestone</stuff>
+		<symbol>Wall_BlocksLimestone</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Autodoor_BlocksSlate</defName>
+		<thing>Autodoor</thing>
+		<stuff>BlocksSlate</stuff>
+		<symbol>Autodoor_BlocksSlate</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Door_BlocksSlate</defName>
+		<thing>Door</thing>
+		<stuff>BlocksSlate</stuff>
+		<symbol>Door_BlocksSlate</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Column_BlocksSlate</defName>
+		<thing>Column</thing>
+		<stuff>BlocksSlate</stuff>
+		<symbol>Column_BlocksSlate</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Wall_BlocksSlate</defName>
+		<thing>Wall</thing>
+		<stuff>BlocksSlate</stuff>
+		<symbol>Wall_BlocksSlate</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Autodoor_BlocksMarble</defName>
+		<thing>Autodoor</thing>
+		<stuff>BlocksMarble</stuff>
+		<symbol>Autodoor_BlocksMarble</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Door_BlocksMarble</defName>
+		<thing>Door</thing>
+		<stuff>BlocksMarble</stuff>
+		<symbol>Door_BlocksMarble</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Column_BlocksMarble</defName>
+		<thing>Column</thing>
+		<stuff>BlocksMarble</stuff>
+		<symbol>Column_BlocksMarble</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Wall_BlocksMarble</defName>
+		<thing>Wall</thing>
+		<stuff>BlocksMarble</stuff>
+		<symbol>Wall_BlocksMarble</symbol>
+	</KCSG.SymbolDef>
+
+
+	<KCSG.SymbolDef>
+		<defName>Bridge</defName>
+		<isTerrain>true</isTerrain>
+		<terrain>Bridge</terrain>
+		<symbol>Bridge</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>AncientConcreteBarrier_North</defName>
+		<thing>AncientConcreteBarrier</thing>
+		<rotation>North</rotation>
+		<symbol>AncientConcreteBarrier_North</symbol>
+	</KCSG.SymbolDef>
+
+	<!-- Natural -->
+
+	<KCSG.SymbolDef>
+		<defName>Slate</defName>
+		<thing>Slate</thing>
+		<symbol>Slate</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>Granite</defName>
+		<thing>Granite</thing>
+		<symbol>Granite</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>MineableSteel</defName>
+		<thing>MineableSteel</thing>
+		<symbol>MineableSteel</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>Sandstone</defName>
+		<thing>Sandstone</thing>
+		<symbol>Sandstone</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>MineableUranium</defName>
+		<thing>MineableUranium</thing>
+		<symbol>MineableUranium</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>MineableSilver</defName>
+		<thing>MineableSilver</thing>
+		<symbol>MineableSilver</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>Limestone</defName>
+		<thing>Limestone</thing>
+		<symbol>Limestone</symbol>
+	</KCSG.SymbolDef>
+
+	<KCSG.SymbolDef>
+		<defName>CollapsedRocks_North</defName>
+		<thing>CollapsedRocks</thing>
+		<rotation>North</rotation>
+		<symbol>CollapsedRocks_North</symbol>
+	</KCSG.SymbolDef>
+</Defs>

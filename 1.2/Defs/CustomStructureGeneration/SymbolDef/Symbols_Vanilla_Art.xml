@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+    <KCSG.SymbolDef>
+        <defName>SculptureLarge_Plasteel</defName>
+        <thing>SculptureLarge</thing>
+        <stuff>Plasteel</stuff>
+        <symbol>SculptureLarge_Plasteel</symbol>
+    </KCSG.SymbolDef>
+
+    <KCSG.SymbolDef>
+        <defName>SculptureLarge_WoodLog</defName>
+        <thing>SculptureLarge</thing>
+        <stuff>WoodLog</stuff>
+        <symbol>SculptureLarge_WoodLog</symbol>
+    </KCSG.SymbolDef>
+
+    <KCSG.SymbolDef>
+        <defName>SteleLarge_BlocksLimestone</defName>
+        <thing>SteleLarge</thing>
+        <stuff>BlocksLimestone</stuff>
+        <symbol>SteleLarge_BlocksLimestone</symbol>
+    </KCSG.SymbolDef>
+
+    <KCSG.SymbolDef>
+        <defName>SculptureSmall_BlocksMarble</defName>
+        <thing>SculptureSmall</thing>
+        <stuff>BlocksMarble</stuff>
+        <symbol>SculptureSmall_BlocksMarble</symbol>
+    </KCSG.SymbolDef>
+
+    <KCSG.SymbolDef>
+        <defName>SculptureSmall_BlocksSlate</defName>
+        <thing>SculptureSmall</thing>
+        <stuff>BlocksSlate</stuff>
+        <symbol>SculptureSmall_BlocksSlate</symbol>
+    </KCSG.SymbolDef>
+
+    <KCSG.SymbolDef>
+        <defName>SculptureSmall_Steel</defName>
+        <thing>SculptureSmall</thing>
+        <stuff>Steel</stuff>
+        <symbol>SculptureSmall_Steel</symbol>
+    </KCSG.SymbolDef>
+
+    <KCSG.SymbolDef>
+        <defName>SculptureSmall_WoodLog</defName>
+        <thing>SculptureSmall</thing>
+        <stuff>WoodLog</stuff>
+        <symbol>SculptureSmall_WoodLog</symbol>
+    </KCSG.SymbolDef>
+
+    <KCSG.SymbolDef>
+        <defName>SculptureLarge_BlocksSandstone</defName>
+        <thing>SculptureLarge</thing>
+        <stuff>BlocksSandstone</stuff>
+        <symbol>SculptureLarge_BlocksSandstone</symbol>
+    </KCSG.SymbolDef>
+
+    <KCSG.SymbolDef>
+        <defName>SculptureSmall_Plasteel</defName>
+        <thing>SculptureSmall</thing>
+        <stuff>Plasteel</stuff>
+        <symbol>SculptureSmall_Plasteel</symbol>
+    </KCSG.SymbolDef>
+
+    <KCSG.SymbolDef>
+        <defName>SculptureSmall_Gold</defName>
+        <thing>SculptureSmall</thing>
+        <stuff>Gold</stuff>
+        <symbol>SculptureSmall_Gold</symbol>
+    </KCSG.SymbolDef>
+
+    <KCSG.SymbolDef>
+        <defName>SculptureSmall_BlocksLimestone</defName>
+        <thing>SculptureSmall</thing>
+        <stuff>BlocksLimestone</stuff>
+        <symbol>SculptureSmall_BlocksLimestone</symbol>
+    </KCSG.SymbolDef>
+
+    <KCSG.SymbolDef>
+        <defName>SculptureLarge_Uranium</defName>
+        <thing>SculptureLarge</thing>
+        <stuff>Uranium</stuff>
+        <symbol>SculptureLarge_Uranium</symbol>
+    </KCSG.SymbolDef>
+
+    <KCSG.SymbolDef>
+        <defName>SculptureLarge_Gold</defName>
+        <thing>SculptureLarge</thing>
+        <stuff>Gold</stuff>
+        <symbol>SculptureLarge_Gold</symbol>
+    </KCSG.SymbolDef>
+</Defs>

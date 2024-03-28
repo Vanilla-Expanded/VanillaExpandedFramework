@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+    <JobDef>
+        <defName>VFEC_EquipShield</defName>
+        <driverClass>VFECore.JobDriver_EquipShield</driverClass>
+        <reportString>equipping TargetA.</reportString>
+        <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+    </JobDef>
+
+</Defs>

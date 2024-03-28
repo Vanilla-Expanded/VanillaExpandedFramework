@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+  <KCSG.SymbolDef>
+    <defName>Item_RawCorn</defName>
+    <thing>RawCorn</thing>
+    <isItem>true</isItem>
+    <stackCount>1~75</stackCount>
+    <symbol>Item_RawCorn</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_Hay</defName>
+    <thing>Hay</thing>
+    <isItem>true</isItem>
+    <stackCount>1~200</stackCount>
+    <symbol>Item_Hay</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_Meat_Muffalo</defName>
+    <thing>Meat_Muffalo</thing>
+    <isItem>true</isItem>
+    <stackCount>1~75</stackCount>
+    <symbol>Item_Meat_Muffalo</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_MealSimple</defName>
+    <thing>MealSimple</thing>
+    <isItem>true</isItem>
+    <stackCount>1~10</stackCount>
+    <symbol>Item_MealSimple</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_Leather_Bluefur</defName>
+    <thing>Leather_Bluefur</thing>
+    <isItem>true</isItem>
+    <stackCount>1~75</stackCount>
+    <symbol>Item_Leather_Bluefur</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_Pemmican</defName>
+    <thing>Pemmican</thing>
+    <isItem>true</isItem>
+    <stackCount>1~75</stackCount>
+    <symbol>Item_Pemmican</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_ChunkSandstone</defName>
+    <thing>ChunkSandstone</thing>
+    <isItem>true</isItem>
+    <stackCount>1~1</stackCount>
+    <symbol>Item_ChunkSandstone</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_ChunkSlate</defName>
+    <thing>ChunkSlate</thing>
+    <isItem>true</isItem>
+    <stackCount>1~1</stackCount>
+    <symbol>Item_ChunkSlate</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_Beer</defName>
+    <thing>Beer</thing>
+    <isItem>true</isItem>
+    <stackCount>1~25</stackCount>
+    <symbol>Item_Beer</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_BlocksLimestone</defName>
+    <thing>BlocksLimestone</thing>
+    <isItem>true</isItem>
+    <stackCount>1~75</stackCount>
+    <symbol>Item_BlocksLimestone</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_BlocksMarble</defName>
+    <thing>BlocksMarble</thing>
+    <isItem>true</isItem>
+    <stackCount>1~75</stackCount>
+    <symbol>Item_BlocksMarble</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_ChunkMarble</defName>
+    <thing>ChunkMarble</thing>
+    <isItem>true</isItem>
+    <stackCount>1~1</stackCount>
+    <symbol>Item_ChunkMarble</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_ChunkLimestone</defName>
+    <thing>ChunkLimestone</thing>
+    <isItem>true</isItem>
+    <stackCount>1~1</stackCount>
+    <symbol>Item_ChunkLimestone</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_WoodLog</defName>
+    <thing>WoodLog</thing>
+    <isItem>true</isItem>
+    <stackCount>1~75</stackCount>
+    <symbol>Item_WoodLog</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_BlocksSlate</defName>
+    <thing>BlocksSlate</thing>
+    <isItem>true</isItem>
+    <stackCount>1~75</stackCount>
+    <symbol>Item_BlocksSlate</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_BlocksSandstone</defName>
+    <thing>BlocksSandstone</thing>
+    <isItem>true</isItem>
+    <stackCount>1~75</stackCount>
+    <symbol>Item_BlocksSandstone</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_Steel</defName>
+    <thing>Steel</thing>
+    <isItem>true</isItem>
+    <stackCount>1~75</stackCount>
+    <symbol>Item_Steel</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_Silver</defName>
+    <thing>Silver</thing>
+    <isItem>true</isItem>
+    <stackCount>1~500</stackCount>
+    <symbol>Item_Silver</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_Plasteel</defName>
+    <thing>Plasteel</thing>
+    <isItem>true</isItem>
+    <stackCount>1~75</stackCount>
+    <symbol>Item_Plasteel</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_Uranium</defName>
+    <thing>Uranium</thing>
+    <isItem>true</isItem>
+    <stackCount>1~75</stackCount>
+    <symbol>Item_Uranium</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_BlocksGranite</defName>
+    <thing>BlocksGranite</thing>
+    <isItem>true</isItem>
+    <stackCount>1~75</stackCount>
+    <symbol>Item_BlocksGranite</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_WoolSheep</defName>
+    <thing>WoolSheep</thing>
+    <isItem>true</isItem>
+    <stackCount>1~100</stackCount>
+    <symbol>Item_WoolSheep</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_Cloth</defName>
+    <thing>Cloth</thing>
+    <isItem>true</isItem>
+    <stackCount>1~75</stackCount>
+    <symbol>Item_Cloth</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_RawBerries</defName>
+    <thing>RawBerries</thing>
+    <isItem>true</isItem>
+    <stackCount>1~75</stackCount>
+    <symbol>Item_RawBerries</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_SmokeleafJoint</defName>
+    <thing>SmokeleafJoint</thing>
+    <isItem>true</isItem>
+    <stackCount>1~150</stackCount>
+    <symbol>Item_SmokeleafJoint</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_MedicineHerbal</defName>
+    <thing>MedicineHerbal</thing>
+    <isItem>true</isItem>
+    <stackCount>1~25</stackCount>
+    <symbol>Item_MedicineHerbal</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_ChunkGranite</defName>
+    <thing>ChunkGranite</thing>
+    <isItem>true</isItem>
+    <stackCount>1~1</stackCount>
+    <symbol>Item_ChunkGranite</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_Gold</defName>
+    <thing>Gold</thing>
+    <isItem>true</isItem>
+    <stackCount>1~500</stackCount>
+    <symbol>Item_Gold</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_Leather_Light</defName>
+    <thing>Leather_Light</thing>
+    <isItem>true</isItem>
+    <stackCount>1~75</stackCount>
+    <symbol>Item_Leather_Light</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_Jade</defName>
+    <thing>Jade</thing>
+    <isItem>true</isItem>
+    <stackCount>1~75</stackCount>
+    <symbol>Item_Jade</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_ChunkSlagSteel</defName>
+    <thing>ChunkSlagSteel</thing>
+    <isItem>true</isItem>
+    <stackCount>1~1</stackCount>
+    <symbol>Item_ChunkSlagSteel</symbol>
+  </KCSG.SymbolDef>
+
+  <KCSG.SymbolDef>
+    <defName>Item_ComponentIndustrial</defName>
+    <thing>ComponentIndustrial</thing>
+    <isItem>true</isItem>
+    <stackCount>1~50</stackCount>
+    <symbol>Item_ComponentIndustrial</symbol>
+  </KCSG.SymbolDef>
+
+  <!-- With Quality-->
+
+  <KCSG.SymbolDef>
+    <defName>Item_MeleeWeapon_LongSword</defName>
+    <thing>MeleeWeapon_LongSword</thing>
+    <isItem>true</isItem>
+    <stackCount>1~1</stackCount>
+    <symbol>Item_MeleeWeapon_LongSword</symbol>
+  </KCSG.SymbolDef>
+</Defs>
