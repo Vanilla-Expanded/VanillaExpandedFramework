@@ -42,8 +42,6 @@ namespace VanillaGenesExpanded
         public static IDictionary<Thing, FleshTypeDef> woundsFromFleshtype_gene_pawns = new Dictionary<Thing, FleshTypeDef>();
         // A list of pawns with custom disease progression factors
         public static IDictionary<Thing, float> diseaseProgressionFactor_gene_pawns = new Dictionary<Thing, float>();
-        // A list of pawns with custom caravan carrying capacity factors
-        public static IDictionary<Thing, float> caravanCarryingFactor_gene_pawns = new Dictionary<Thing, float>();
         // A list of pawns containing vomit changing genes
         public static IDictionary<Thing, ThingDef> vomitType_gene_pawns = new Dictionary<Thing, ThingDef>();      
         // A list of pawns with custom vomit effects
@@ -202,25 +200,6 @@ namespace VanillaGenesExpanded
             {
                 pregnancySpeedFactor_gene_pawns.Remove(thing);
             }
-
-        }
-
-        public static void AddCaravanCarryingFactorGenePawnToList(Thing thing, float factor)
-        {
-
-            if (!caravanCarryingFactor_gene_pawns.ContainsKey(thing))
-            {
-                caravanCarryingFactor_gene_pawns[thing] = factor;
-            }
-        }
-
-        public static void RemoveCaravanCarryingFactorGenePawnFromList(Thing thing)
-        {
-            if (caravanCarryingFactor_gene_pawns.ContainsKey(thing))
-            {
-                caravanCarryingFactor_gene_pawns.Remove(thing);
-            }
-
         }
 
         public static void AddVomitTypeGenePawnToList(Thing thing, ThingDef thingDef)

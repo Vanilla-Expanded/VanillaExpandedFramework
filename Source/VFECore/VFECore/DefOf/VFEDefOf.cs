@@ -39,5 +39,6 @@ namespace VFECore
         public static StatDef VEF_PawnRenderPosOffset;
         public static StatDef VEF_FoodCapacityMultiplier;
         public static StatDef VEF_GrowthPointMultiplier;
+        public static StatDef VEF_MassCarryCapacity;
     }
 }

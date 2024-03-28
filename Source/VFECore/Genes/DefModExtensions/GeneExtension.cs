@@ -59,9 +59,6 @@ namespace VanillaGenesExpanded
         //Disease progression factor. Diseases will advance (when not immunized) by this factor
         public float diseaseProgressionFactor = 1f;
 
-        //Caravan carrying factor. Pawns will have their caravan carrying capacity multiplied by this factor
-        public float caravanCarryingFactor = 1f;
-
         //Hide gene from appearing on the xenotype creation screen. Useful for special genes that only appear as rewards during gameplay.
         public bool hideGene = false;
 

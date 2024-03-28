@@ -58,10 +58,7 @@ namespace VanillaGenesExpanded
                     {
                         StaticCollectionsClass.AddWoundsFromFleshtypeGenePawnToList(gene.pawn, extension.customWoundsFromFleshtype);
                     }
-                    if (extension.caravanCarryingFactor != 1f)
-                    {
-                        StaticCollectionsClass.AddCaravanCarryingFactorGenePawnToList(gene.pawn, extension.caravanCarryingFactor);
-                    }
+
                     if (extension.diseaseProgressionFactor != 1f)
                     {
                         StaticCollectionsClass.AddDiseaseProgressionFactorGenePawnToList(gene.pawn, extension.diseaseProgressionFactor);
@@ -168,11 +165,6 @@ namespace VanillaGenesExpanded
                     if (extension.diseaseProgressionFactor != 1f)
                     {
                         StaticCollectionsClass.RemoveDiseaseProgressionFactorGenePawnFromList(gene.pawn);
-
-                    }
-                    if (extension.caravanCarryingFactor != 1f)
-                    {
-                        StaticCollectionsClass.RemoveCaravanCarryingFactorGenePawnFromList(gene.pawn);
 
                     }
                     if (extension?.hediffToWholeBody != null)

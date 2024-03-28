@@ -681,7 +681,6 @@
     <Compile Include="AnimalBehaviours\Harmony\Pawn_MindState_StartFleeingBecauseOfPawnAction_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\QuestNode_GetPawnKind_SetVars_CanHandle_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\JobGiver_GetFood_TryGiveJob_Patch.cs" />
-    <Compile Include="AnimalBehaviours\Harmony\MassUtility_Capacity_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\PawnUtility_Mated_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Pawn_PathFollower_CostToMoveIntoCell_Patch.cs" />
     <Compile Include="AnimalBehaviours\Harmony\IncidentWorker_SelfTame_Candidates_Patch.cs" />
@@ -702,7 +701,6 @@
     <Compile Include="Genes\Harmony\TODO\HumanlikeMeshPoolUtility_Patches.cs" />
     <Compile Include="Genes\Harmony\JobDriver_Vomit_MakeNewToils.cs" />
     <Compile Include="Genes\Harmony\JobDriver_Vomit_MoveNext.cs" />
-    <Compile Include="Genes\Harmony\MassUtility_Capacity.cs" />
     <Compile Include="Genes\Harmony\TODO\PawnRenderer_GetBodyOverlayMeshSet.cs" />
     <Compile Include="Genes\Harmony\Pawn_HealthTracker_DropBloodFilth.cs" />
     <Compile Include="Genes\Harmony\TODO\DrawBodyApparel_BeltPatches.cs" />
