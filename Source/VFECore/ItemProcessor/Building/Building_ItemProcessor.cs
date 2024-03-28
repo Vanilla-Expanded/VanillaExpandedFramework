@@ -1,4 +1,4 @@
-﻿
+
 
 using Verse;
 using RimWorld;
@@ -1896,12 +1896,12 @@ namespace ItemProcessor
                 {
                     if (productsToTurnInto != null && productsToTurnInto.Count > 0)
                     {
-                        incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productsToTurnInto[0]).LabelCap, qualityNow.ToString(), ((int)(ticksPerDay * this.awfulQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
+                        incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productsToTurnInto[0]).LabelCap, qualityNow.GetLabel().CapitalizeFirst(), ((int)(ticksPerDay * this.awfulQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
 
                     }
                     else
                     {
-                        incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productToTurnInto).LabelCap, qualityNow.ToString(), ((int)(ticksPerDay * this.awfulQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
+                        incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productToTurnInto).LabelCap, qualityNow.GetLabel().CapitalizeFirst(), ((int)(ticksPerDay * this.awfulQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
 
                     }
                 }
@@ -1916,22 +1916,22 @@ namespace ItemProcessor
                         switch (qualityNow)
                         {
                             case QualityCategory.Awful:
-                                incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productsToTurnInto[1]).LabelCap, QualityCategory.Poor.ToString(), ((int)(ticksPerDay * this.poorQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
+                                incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productsToTurnInto[1]).LabelCap, QualityCategory.Poor.GetLabel().CapitalizeFirst(), ((int)(ticksPerDay * this.poorQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
                                 break;
                             case QualityCategory.Poor:
-                                incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productsToTurnInto[2]).LabelCap, QualityCategory.Normal.ToString(), ((int)(ticksPerDay * this.normalQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
+                                incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productsToTurnInto[2]).LabelCap, QualityCategory.Normal.GetLabel().CapitalizeFirst(), ((int)(ticksPerDay * this.normalQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
                                 break;
                             case QualityCategory.Normal:
-                                incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productsToTurnInto[3]).LabelCap, QualityCategory.Good.ToString(), ((int)(ticksPerDay * this.goodQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
+                                incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productsToTurnInto[3]).LabelCap, QualityCategory.Good.GetLabel().CapitalizeFirst(), ((int)(ticksPerDay * this.goodQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
                                 break;
                             case QualityCategory.Good:
-                                incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productsToTurnInto[4]).LabelCap, QualityCategory.Excellent.ToString(), ((int)(ticksPerDay * this.excellentQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
+                                incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productsToTurnInto[4]).LabelCap, QualityCategory.Excellent.GetLabel().CapitalizeFirst(), ((int)(ticksPerDay * this.excellentQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
                                 break;
                             case QualityCategory.Excellent:
-                                incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productsToTurnInto[5]).LabelCap, QualityCategory.Masterwork.ToString(), ((int)(ticksPerDay * this.masterworkQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
+                                incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productsToTurnInto[5]).LabelCap, QualityCategory.Masterwork.GetLabel().CapitalizeFirst(), ((int)(ticksPerDay * this.masterworkQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
                                 break;
                             case QualityCategory.Masterwork:
-                                incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productsToTurnInto[6]).LabelCap, QualityCategory.Legendary.ToString(), ((int)(ticksPerDay * this.legendaryQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
+                                incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productsToTurnInto[6]).LabelCap, QualityCategory.Legendary.GetLabel().CapitalizeFirst(), ((int)(ticksPerDay * this.legendaryQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
                                 break;
                         }
 
@@ -1942,22 +1942,22 @@ namespace ItemProcessor
                         switch (qualityNow)
                         {
                             case QualityCategory.Awful:
-                                incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productToTurnInto).LabelCap, QualityCategory.Poor.ToString(), ((int)(ticksPerDay * this.poorQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
+                                incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productToTurnInto).LabelCap, QualityCategory.Poor.GetLabel().CapitalizeFirst(), ((int)(ticksPerDay * this.poorQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
                                 break;
                             case QualityCategory.Poor:
-                                incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productToTurnInto).LabelCap, QualityCategory.Normal.ToString(), ((int)(ticksPerDay * this.normalQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
+                                incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productToTurnInto).LabelCap, QualityCategory.Normal.GetLabel().CapitalizeFirst(), ((int)(ticksPerDay * this.normalQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
                                 break;
                             case QualityCategory.Normal:
-                                incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productToTurnInto).LabelCap, QualityCategory.Good.ToString(), ((int)(ticksPerDay * this.goodQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
+                                incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productToTurnInto).LabelCap, QualityCategory.Good.GetLabel().CapitalizeFirst(), ((int)(ticksPerDay * this.goodQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
                                 break;
                             case QualityCategory.Good:
-                                incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productToTurnInto).LabelCap, QualityCategory.Excellent.ToString(), ((int)(ticksPerDay * this.excellentQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
+                                incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productToTurnInto).LabelCap, QualityCategory.Excellent.GetLabel().CapitalizeFirst(), ((int)(ticksPerDay * this.excellentQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
                                 break;
                             case QualityCategory.Excellent:
-                                incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productToTurnInto).LabelCap, QualityCategory.Masterwork.ToString(), ((int)(ticksPerDay * this.masterworkQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
+                                incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productToTurnInto).LabelCap, QualityCategory.Masterwork.GetLabel().CapitalizeFirst(), ((int)(ticksPerDay * this.masterworkQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
                                 break;
                             case QualityCategory.Masterwork:
-                                incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productToTurnInto).LabelCap, QualityCategory.Legendary.ToString(), ((int)(ticksPerDay * this.legendaryQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
+                                incubationTxt += "\n" + "IP_ProcessingInProgress".Translate(this.def.LabelCap, productOrCategoryName, ThingDef.Named(productToTurnInto).LabelCap, QualityCategory.Legendary.GetLabel().CapitalizeFirst(), ((int)(ticksPerDay * this.legendaryQualityAgeDaysThreshold) - (progressCounter * 250)).ToStringTicksToPeriod(true, false, true, true));
                                 break;
                         }
                     }
@@ -1965,7 +1965,7 @@ namespace ItemProcessor
                 }
                 if (qualityEstablished)
                 {
-                    incubationTxt += "\n" + "IP_QualityAutoEstablished".Translate(qualityRequested.ToString());
+                    incubationTxt += "\n" + "IP_QualityAutoEstablished".Translate(qualityRequested.GetLabel().CapitalizeFirst());
                 }
             }
             else if (processorStage == ProcessorStage.Working && !usingQualityIncreasing)
