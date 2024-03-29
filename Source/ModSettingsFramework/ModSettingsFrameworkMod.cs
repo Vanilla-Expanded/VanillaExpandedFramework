@@ -100,8 +100,20 @@ namespace ModSettingsFramework
         {
             if (modPackOverride != null)
             {
-                if (modPackOverride.Patches.OfType<PatchOperationModSettings>().Any(x => x.CanRun()))
+                var patches = modPackOverride.Patches.OfType<PatchOperationModSettings>().Where(x => x.CanRun()).ToList();
+                if (patches.Any())
                 {
+                    foreach (var patch in patches)
+                    {
+                        if (patch.category.NullOrEmpty() is false)
+                        {
+                            var category = DefDatabase<ModOptionCategoryDef>.GetNamedSilentFail(patch.category);
+                            if (category != null && category.modSettingsName.NullOrEmpty() is false)
+                            {
+                                return category.modSettingsName;
+                            }
+                        }
+                    }
                     return modPackOverride.Name;
                 }
             }

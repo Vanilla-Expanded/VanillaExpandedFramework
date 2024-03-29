@@ -16,6 +16,7 @@ namespace ModSettingsFramework
         public string tooltip;
         public bool showTooltipAsTinyText;
         public string modPackageSettingsID;
+
         public int roundToDecimalPlaces = 2;
 
         public ModSettingsContainer SettingsContainer
