@@ -15,23 +15,30 @@ namespace ModSettingsFramework
         public string label;
         public string tooltip;
         public bool showTooltipAsTinyText;
+        public int roundToDecimalPlaces = 2;
         public string modPackageSettingsID;
 
-        public int roundToDecimalPlaces = 2;
+        public bool MatchesModPackageID(string packageID)
+        {
+            if (category.NullOrEmpty() is false)
+            {
+                var categoryDef = DefDatabase<ModOptionCategoryDef>.GetNamedSilentFail(category);
+                if (categoryDef != null && categoryDef.modPackageSettingsID.NullOrEmpty() is false)
+                {
+                    return packageID.ToLower() == categoryDef.modPackageSettingsID.ToLower();
+                }
+            }
+            if (modPackageSettingsID.NullOrEmpty() is false)
+            {
+                return packageID.ToLower() == modPackageSettingsID.ToLower();
+            }
+            return false;
+        }
 
         public ModSettingsContainer SettingsContainer
         {
             get
             {
-                if (modPackageSettingsID.NullOrEmpty() is false)
-                {
-                    var modHandle = LoadedModManager.RunningMods.FirstOrDefault(x => x.PackageIdPlayerFacing.ToLower() 
-                    == modPackageSettingsID.ToLower());
-                    if (modHandle != null)
-                    {
-                        return ModSettingsFrameworkSettings.GetModSettingsContainer(modHandle);
-                    }
-                }
                 foreach (var runningMod in LoadedModManager.RunningMods)
                 {
                     if (runningMod.Patches.Contains(this))

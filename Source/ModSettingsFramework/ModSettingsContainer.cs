@@ -39,9 +39,34 @@ namespace ModSettingsFramework
         private Vector2 scrollPosition = Vector2.zero;
         private float scrollHeight;
 
-        private List<PatchOperationModSettings> _patchOperationMods;
-        public List<PatchOperationModSettings> PatchOperationModSettings => _patchOperationMods ??= LoadedModManager.RunningMods.SelectMany(x => x.Patches.OfType<PatchOperationModSettings>())
-                        .Where(x => x.SettingsContainer == this && x.CanRun()).ToList();
+        private List<(ModSettingsContainer container, PatchOperationModSettings patch)> _patchOperationMods;
+        public List<(ModSettingsContainer container, PatchOperationModSettings patch)> PatchOperationModSettings
+        {
+            get
+            {
+                if (_patchOperationMods is null)
+                {
+                    _patchOperationMods = new List<(ModSettingsContainer container, PatchOperationModSettings patch)>();
+                    foreach (var mod in LoadedModManager.RunningMods)
+                    {
+                        var patches = mod.Patches.OfType<PatchOperationModSettings>();
+                        foreach (var patch in patches)
+                        {
+                            if (patch.SettingsContainer == this)
+                            {
+                                _patchOperationMods.Add((this, patch));
+                            }
+                            else if (patch.MatchesModPackageID(packageID))
+                            {
+                                _patchOperationMods.Add((patch.SettingsContainer, patch));
+                            }
+                        }
+                    }
+                }
+                return _patchOperationMods;
+            }
+        }
+
         public void DoSettingsWindowContents(Rect inRect)
         {
             var listingStandard = new Listing_Standard();
@@ -54,10 +79,10 @@ namespace ModSettingsFramework
             var curPatches = PatchOperationModSettings.ListFullCopy();
             foreach (var category in DefDatabase<ModOptionCategoryDef>.AllDefs.OrderBy(x => x.order))
             {
-                var patchesInCategory = curPatches.Where(x => x.category == category.defName).OrderBy(x => x.order).ToList();
+                var patchesInCategory = curPatches.Where(x => x.patch.category == category.defName).OrderBy(x => x.patch.order).ToList();
                 if (patchesInCategory.Any())
                 {
-                    var height = patchesInCategory.Sum(x => x.SettingsHeight());
+                    var height = patchesInCategory.Sum(x => x.patch.SettingsHeight());
                     var sectionSize = height + 24 + 8;
                     scrollHeight += sectionSize + 12 + 6;
                     var section = listingStandard.BeginSection(sectionSize);
@@ -65,9 +90,9 @@ namespace ModSettingsFramework
                     section.GapLine(8);
                     foreach (var patch in patchesInCategory)
                     {
-                        patch.scrollHeight = 0;
-                        patch.DoSettings(this, section);
-                        if (patch is PatchOperationWorker worker)
+                        patch.patch.scrollHeight = 0;
+                        patch.patch.DoSettings(patch.container, section);
+                        if (patch.patch is PatchOperationWorker worker)
                         {
                             worker.CopyValues();
                         }
@@ -80,11 +105,11 @@ namespace ModSettingsFramework
                     }
                 }
             }
-            foreach (var patch in curPatches.OrderBy(x => x.order))
+            foreach (var patch in curPatches.OrderBy(x => x.patch.order))
             {
-                patch.scrollHeight = 0;
-                patch.DoSettings(this, listingStandard);
-                scrollHeight += patch.SettingsHeight();
+                patch.patch.scrollHeight = 0;
+                patch.patch.DoSettings(patch.container, listingStandard);
+                scrollHeight += patch.patch.SettingsHeight();
             }
 
             listingStandard.End();
@@ -105,8 +130,7 @@ namespace ModSettingsFramework
                 {
                     foreach (var worker in mod.Patches.OfType<PatchOperationWorker>())
                     {
-                        if (worker.modPackageSettingsID != null && worker.modPackageSettingsID.ToLower() == packageID.ToLower()
-                            || mod.PackageIdPlayerFacing.ToLower() == packageID.ToLower())
+                        if (mod.PackageIdPlayerFacing.ToLower() == packageID.ToLower())
                         {
                             var type = worker.GetType().FullName;
                             if (patchWorkers.TryGetValue(type, out var matchingSavedWorker) && matchingSavedWorker != null)
