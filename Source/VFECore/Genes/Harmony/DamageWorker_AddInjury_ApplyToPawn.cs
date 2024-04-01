@@ -7,7 +7,9 @@ using Verse;
 
 namespace VanillaGenesExpanded
 {
-    [HarmonyPatch(typeof(DamageWorker_AddInjury), "ApplyToPawn")]
+    //TODO: This is popping up an error on 1.5 and I have no idea why
+
+    /*[HarmonyPatch(typeof(DamageWorker_AddInjury), "ApplyToPawn")]
     public static class VanillaGenesExpanded_DamageWorker_AddInjury_ApplyToPawn_Patch
     {
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
@@ -28,9 +30,11 @@ namespace VanillaGenesExpanded
         {
             if (curPawn!=null && StaticCollectionsClass.bloodEffect_gene_pawns.ContainsKey(curPawn))
             {
-                return StaticCollectionsClass.bloodEffect_gene_pawns[curPawn];
+                
+                    return StaticCollectionsClass.bloodEffect_gene_pawns[curPawn];
+                
             }
             return effecterDef;
         }
-    }
+    }*/
 }
