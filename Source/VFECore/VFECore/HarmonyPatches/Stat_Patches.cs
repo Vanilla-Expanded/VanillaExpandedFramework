@@ -11,7 +11,6 @@ namespace VFECore
         public static bool includeVanillaMassCapacityCalculation = true;
         public override void FinalizeValue(StatRequest req, ref float val, bool applyPostProcess)
         {
-            base.FinalizeValue(req, ref val, applyPostProcess);
             var pawn = req.Thing as Pawn;
             if (pawn != null)
             {
@@ -22,6 +21,7 @@ namespace VFECore
                     MassUtility_Capacity_Patch.includeStatWorkerResult = true;
                 }
             }
+            base.FinalizeValue(req, ref val, applyPostProcess);
         }
 
         public override string GetExplanationUnfinalized(StatRequest req, ToStringNumberSense numberSense)
