@@ -8,6 +8,7 @@
     <collideWithPawns>true</collideWithPawns>
     <playerInterruptible>false</playerInterruptible>
     <suspendable>false</suspendable>
+    <carryThingAfterJob>true</carryThingAfterJob>
   </JobDef>
 
 
@@ -15,6 +16,7 @@
     <defName>VFEA_UseAbility</defName>
     <driverClass>VFECore.Abilities.JobDriver_CastAbilityOnce</driverClass>
     <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+    <carryThingAfterJob>true</carryThingAfterJob>
   </JobDef>
   
 
@@ -22,12 +24,14 @@
     <defName>VFEA_GotoTargetAndUseAbility</defName>
     <driverClass>VFECore.Abilities.JobDriver_GotoTargetAndCastAbilityOnce</driverClass>
     <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+    <carryThingAfterJob>true</carryThingAfterJob>
   </JobDef>
   
   <JobDef>
   	<defName>VFEA_StandAndFaceTarget</defName>
   	<driverClass>VFECore.Abilities.JobDriver_StandAndFaceTarget</driverClass>
   	<reportString>standing.</reportString>
+    <carryThingAfterJob>true</carryThingAfterJob>
   </JobDef>
 
   <ThingDef ParentName="PawnFlyerBase">
