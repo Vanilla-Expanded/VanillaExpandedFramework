@@ -3,58 +3,51 @@ using RimWorld;
 using HarmonyLib;
 using System;
 using System.Text;
+using System.Collections.Generic;
+using System.Reflection.Emit;
+using System.Reflection;
 
 namespace VFECore
 {
-    public class StatWorker_CaravanMassCarryCapacity : StatWorker
+    [HarmonyPatch(typeof(StatWorker), "GetBaseValueFor")]
+    public static class StatWorker_GetBaseValueFor_Patch
     {
-        public static bool includeVanillaMassCapacityCalculation = true;
-        public override void FinalizeValue(StatRequest req, ref float val, bool applyPostProcess)
+        public static void Postfix(StatDef ___stat, StatRequest request, ref float __result)
         {
-            var pawn = req.Thing as Pawn;
-            if (pawn != null)
+            if (___stat == VFEDefOf.VEF_MassCarryCapacity && request.Thing is Pawn pawn)
             {
-                if (includeVanillaMassCapacityCalculation)
-                {
-                    MassUtility_Capacity_Patch.includeStatWorkerResult = false;
-                    val += MassUtility.Capacity(pawn); 
-                    MassUtility_Capacity_Patch.includeStatWorkerResult = true;
-                }
+                MassUtility_Capacity_Patch.includeStatWorkerResult = false;
+                __result += MassUtility.Capacity(pawn);
+                MassUtility_Capacity_Patch.includeStatWorkerResult = true;
             }
-            base.FinalizeValue(req, ref val, applyPostProcess);
-        }
-
-        public override string GetExplanationUnfinalized(StatRequest req, ToStringNumberSense numberSense)
-        {
-            var sb = new StringBuilder(base.GetExplanationUnfinalized(req, numberSense));
-            var pawn = req.Thing as Pawn;
-            if (includeVanillaMassCapacityCalculation && pawn != null)
-            {
-                MassUtility_Capacity_Patch.includeStatWorkerExplanation = false;
-                MassUtility.Capacity(pawn, sb);
-                MassUtility_Capacity_Patch.includeStatWorkerExplanation = true;
-            }
-            return sb.ToString().TrimEndNewlines();
         }
     }
 
     [HarmonyPatch(typeof(MassUtility), nameof(MassUtility.Capacity))]
     public static class MassUtility_Capacity_Patch
     {
-        public static bool includeStatWorkerExplanation = true;
         public static bool includeStatWorkerResult = true;
-        public static void Postfix(Pawn p, StringBuilder explanation, ref float __result)
+        public static MethodInfo SetCarryCapacityInfo = AccessTools.Method(typeof(MassUtility_Capacity_Patch), "SetCarryCapacity");
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
         {
-            StatWorker_CaravanMassCarryCapacity.includeVanillaMassCapacityCalculation = false;
+            foreach (var code in codeInstructions)
+            {
+                yield return code;
+                if (code.opcode == OpCodes.Stloc_0)
+                {
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Ldloca_S, 0);
+                    yield return new CodeInstruction(OpCodes.Call, SetCarryCapacityInfo);
+                }
+            }
+        }
+
+        public static void SetCarryCapacity(Pawn p, ref float __result)
+        {
             if (includeStatWorkerResult)
             {
-                __result += p.GetStatValue(VFEDefOf.VEF_MassCarryCapacity);
+                __result = p.GetStatValue(VFEDefOf.VEF_MassCarryCapacity);
             }
-            if (includeStatWorkerExplanation)
-            {
-                explanation?.AppendInNewLine(VFEDefOf.VEF_MassCarryCapacity.Worker.GetExplanationFull(StatRequest.For(p), ToStringNumberSense.Offset, __result));
-            }
-            StatWorker_CaravanMassCarryCapacity.includeVanillaMassCapacityCalculation = true;
         }
     }
 

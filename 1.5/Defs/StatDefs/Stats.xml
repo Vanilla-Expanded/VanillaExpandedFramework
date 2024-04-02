@@ -316,7 +316,6 @@
 	<StatDef>
 		<defName>VEF_MassCarryCapacity</defName>
 		<label>Mass carry capacity</label>
-		<workerClass>VFECore.StatWorker_CaravanMassCarryCapacity</workerClass>
 		<description>Total mass carrying capacity of the pawn in caravans.</description>
 		<category>BasicsPawn</category>
 		<defaultBaseValue>0</defaultBaseValue>
