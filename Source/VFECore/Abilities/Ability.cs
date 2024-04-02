@@ -442,7 +442,7 @@
             ModifyTargets(ref targets);
             comp.currentlyCastingTargets = targets;
             if (this.pawn.IsCaravanMember()) this.Cast(targets);
-            else this.pawn.jobs.StartJob(job, JobCondition.InterruptForced);
+            else this.pawn.jobs.StartJob(job, JobCondition.InterruptForced, keepCarryingThingOverride: def.keepCarryingThing);
         }
 
         protected bool currentAoETargeting;

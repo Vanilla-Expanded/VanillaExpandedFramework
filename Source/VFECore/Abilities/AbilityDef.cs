@@ -14,6 +14,7 @@ namespace VFECore.Abilities
         public bool needsTicking;
         public bool showUndrafted;
         public bool? isPositive;
+        public bool? keepCarryingThing;
 
         public HediffWithLevelCombination requiredHediff;
         public TraitDef                   requiredTrait;
