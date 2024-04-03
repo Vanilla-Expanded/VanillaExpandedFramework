@@ -11,7 +11,7 @@ namespace VanillaGenesExpanded
     {
         public static MethodInfo TryChangeBloodSmearInfo = AccessTools.Method(typeof(VanillaGenesExpanded_Pawn_HealthTracker_DropBloodSmear_Patch),
             nameof(TryChangeBloodSmear));
-        [HarmonyDebug]
+
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
         {
             foreach (var code in codeInstructions)
