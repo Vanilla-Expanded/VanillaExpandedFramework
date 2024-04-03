@@ -32,10 +32,8 @@ namespace VanillaGenesExpanded
         {
             if (StaticCollectionsClass.bloodsmear_gene_pawns.TryGetValue(pawn, out var customBlood))
             {
-                Log.Message("Changing: " + customBlood + " for " + pawn);
                 return customBlood;
             }
-            Log.Message("Keeping: " + thingDef + " for " + pawn);
             return thingDef;
         }
     }
