@@ -46,6 +46,10 @@ namespace VanillaGenesExpanded
                     {
                         StaticCollectionsClass.AddBloodtypeGenePawnToList(gene.pawn, extension.customBloodThingDef);
                     }
+                    if (extension.customBloodSmearThingDef != null)
+                    {
+                        StaticCollectionsClass.AddBloodSmearGenePawnToList(gene.pawn, extension.customBloodSmearThingDef);
+                    }
                     if (extension.customBloodIcon != "")
                     {
                         StaticCollectionsClass.AddBloodIconGenePawnToList(gene.pawn, extension.customBloodIcon);
@@ -145,7 +149,10 @@ namespace VanillaGenesExpanded
                     if (extension.customBloodThingDef != null)
                     {
                         StaticCollectionsClass.RemoveBloodtypeGenePawnFromList(gene.pawn);
-
+                    }
+                    if (extension.customBloodSmearThingDef != null)
+                    {
+                        StaticCollectionsClass.RemoveBloodSmearGenePawnFromList(gene.pawn);
                     }
                     if (extension.customBloodIcon != "")
                     {

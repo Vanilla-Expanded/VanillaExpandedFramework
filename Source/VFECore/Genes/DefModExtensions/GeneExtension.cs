@@ -48,6 +48,8 @@ namespace VanillaGenesExpanded
         public string customBloodIcon = "";
         public EffecterDef customBloodEffect = null;
         public FleshTypeDef customWoundsFromFleshtype = null;
+        public ThingDef customBloodSmearThingDef = null;
+
         //Custom vomit thingDef, custom vomit effecter
         public ThingDef customVomitThingDef = null;
         public EffecterDef customVomitEffect = null;

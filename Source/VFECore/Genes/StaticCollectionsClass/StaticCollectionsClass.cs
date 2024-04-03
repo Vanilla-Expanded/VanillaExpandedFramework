@@ -34,6 +34,8 @@ namespace VanillaGenesExpanded
         public static IDictionary<Thing, ThingDef> leather_gene_pawns = new Dictionary<Thing, ThingDef>();
         // A list of pawns containing blood changing genes
         public static IDictionary<Thing, ThingDef> bloodtype_gene_pawns = new Dictionary<Thing, ThingDef>();
+        public static IDictionary<Thing, ThingDef> bloodsmear_gene_pawns = new Dictionary<Thing, ThingDef>();
+
         // A list of pawns with custom blood icons
         public static IDictionary<Thing, string> bloodIcon_gene_pawns = new Dictionary<Thing, string>();
         // A list of pawns with custom blood effects
@@ -111,6 +113,22 @@ namespace VanillaGenesExpanded
                 bloodtype_gene_pawns.Remove(thing);
             }
 
+        }
+
+        public static void AddBloodSmearGenePawnToList(Thing thing, ThingDef thingDef)
+        {
+            if (!bloodsmear_gene_pawns.ContainsKey(thing))
+            {
+                bloodsmear_gene_pawns[thing] = thingDef;
+            }
+        }
+
+        public static void RemoveBloodSmearGenePawnFromList(Thing thing)
+        {
+            if (bloodsmear_gene_pawns.ContainsKey(thing))
+            {
+                bloodsmear_gene_pawns.Remove(thing);
+            }
         }
 
         public static void AddBloodIconGenePawnToList(Thing thing, string icon)
