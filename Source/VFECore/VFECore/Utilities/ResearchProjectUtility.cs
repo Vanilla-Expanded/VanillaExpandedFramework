@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using RimWorld;
+using System.Linq;
 using Verse;
 using Verse.Grammar;
 
@@ -15,9 +16,20 @@ namespace VFECore
                 {
                     if (def.generalRules == null)
                     {
-                        def.generalRules = Traverse.Create(VFEDefOf.VEF_Description_Schematic_Defaults).Field<RulePack>("rulePack").Value;
+                        var rulepack = Traverse.Create(VFEDefOf.VEF_Description_Schematic_Defaults).Field<RulePack>("rulePack").Value;
+                        def.generalRules = rulepack;
                     }
                 }
+            }
+
+            var veTab = DefDatabase<ResearchTabDef>.GetNamedSilentFail("VanillaExpanded");
+            if (veTab != null)
+            {
+                ThingDefOf.Schematic.GetCompProperties<CompProperties_Book>().doers.OfType<BookOutcomeProperties_GainResearch>().FirstOrDefault()?.tabs.Add
+                    (new BookOutcomeProperties_GainResearch.BookTabItem
+                    {
+                        tab = veTab
+                    });
             }
         }
     }
