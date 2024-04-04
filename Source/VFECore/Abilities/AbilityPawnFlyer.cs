@@ -18,6 +18,7 @@
             = AccessTools.FieldRefAccess<float>(typeof(PawnFlyer), "effectiveHeight");
 
         public Ability ability;
+        public bool selectOnSpawn = false;
 
         public ref IntVec3 DestinationCell => ref DestCellField(this);
 
@@ -40,6 +41,26 @@
         /// </summary>
         /// <returns>true if the vanilla RecomputePosition method should be cancelled, or false if it should run normally.</returns>
         protected internal virtual bool CustomRecomputePosition() => false;
+
+        /// <summary>
+        /// Used to check if the pawn should be re-selected when spawning a new flyer.
+        /// The flyer is not yet initialized at this point, with only its constructor being called.
+        /// </summary>
+        /// <param name="target">The pawn for which this flyer is being created for.</param>
+        /// <returns>True if the pawn should be automatically reselected, false otherwise.</returns>
+        protected internal virtual bool AutoSelectPawn(Pawn target) => true;
+
+        public override void SpawnSetup(Map map, bool respawningAfterLoad)
+        {
+            base.SpawnSetup(map, respawningAfterLoad);
+
+            if (selectOnSpawn)
+            {
+                selectOnSpawn = false;
+                // Select the flying thing (pawn), with the flyer itself as fallback
+                Find.Selector.Select(FlyingThing ?? this);
+            }
+        }
 
         protected override void RespawnPawn()
         {
