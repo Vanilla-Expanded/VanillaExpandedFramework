@@ -13,7 +13,7 @@ namespace VFECore
     public interface ICacheable
     {
         CacheTimer Timer { get; set; }
-        void RegenerateCache();
+        bool RegenerateCache();
     }
 
     /// <summary>
@@ -46,8 +46,11 @@ namespace VFECore
             else
             {
                 V newData = (V)Activator.CreateInstance(typeof(V), key);
-                newData.RegenerateCache();
-                Cache.Add(key, newData);
+                // If the cache is valid and was successfully regenerated add Dictionary. Otherwise just return a class with the default values.
+                if (newData.RegenerateCache()) 
+                {
+                    Cache.Add(key, newData);
+                }
                 return newData;
             }
         }

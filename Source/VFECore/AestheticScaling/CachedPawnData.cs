@@ -54,39 +54,43 @@ namespace VFECore
 
     public class CachedPawnData : ICacheable
     {
+        public static bool cacheCanBeRecalculated = true;
+
         public static Dictionary<Pawn, CachedPawnData> cache = new();
 
         public CacheTimer Timer { get; set; } = new();
-        public Pawn pawn;
-        public float totalSize;
-        public float bodySizeOffset;
+        public Pawn pawn = null;
+        public float totalSize = 1;
+        public float bodySizeOffset = 0;
 
         // Change to size in...
-        public float percentChange;
-        public float quadraticChange;
-        public float cubicChange;  // Unused.
+        public float percentChange = 1;
+        public float quadraticChange = 1;
+        public float cubicChange = 1;  // Unused.
 
         // Rendering data.
-        public float bodyRenderSize;
-        public float headRenderSize;
-        public float renderPosOffset;
+        public float bodyRenderSize = 1;
+        public float headRenderSize = 1;
+        public float renderPosOffset = 0;
 
         // Health data.
-        public float healthMultiplier;
+        public float healthMultiplier = 1;
 
         // Food
-        public float foodCapacityMult;
+        public float foodCapacityMult = 1;
 
         // Children "Learning" point accumulation.
-        public float growthPointMultiplier;
+        public float growthPointMultiplier = 1;
 
         public CachedPawnData(Pawn pawn)
         {
             this.pawn = pawn;
         }
 
-        public void RegenerateCache()
+        public bool RegenerateCache()
         {
+            if (!cacheCanBeRecalculated) return false;
+
             List<Gene> genes = pawn.genes == null ? new List<Gene>() : pawn.genes.GenesListForReading;
             List<GeneExtension> geneExts = genes.Where(x => x.Active && x.def.modExtensions != null && x.def.modExtensions
                                                 .Any(y => y.GetType() == typeof(GeneExtension)))
@@ -170,6 +174,7 @@ namespace VFECore
             // Other cached data
             foodCapacityMult = pawn.GetStatValue(VFEDefOf.VEF_FoodCapacityMultiplier);
             growthPointMultiplier = pawn.GetStatValue(VFEDefOf.VEF_GrowthPointMultiplier);
+            return true;
         }
 
         private static (float, float, float) GetPercentChange(float bodySizeOffset, Pawn pawn)
