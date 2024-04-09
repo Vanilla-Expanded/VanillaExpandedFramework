@@ -14,7 +14,6 @@ namespace VanillaStorytellersExpanded
 
 		private static readonly StorytellerDefExtension DefaultValues = new StorytellerDefExtension();
 
-		public TechLevelRange allowedTechLevels = TechLevelRange.All;
 		public RaidRestlessness raidRestlessness;
 		public StorytellerThreat storytellerThreat;
 		public IncidentSpawnOptions incidentSpawnOptions;

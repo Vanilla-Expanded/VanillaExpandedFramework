@@ -310,21 +310,10 @@
     <Compile Include="Incidents\IncidentWorker_Reinforcements.cs" />
     <Compile Include="VSEDefOf.cs" />
     <Compile Include="Misc\ThoughtWorker_RaidRestlessness.cs" />
-    <Compile Include="XeoNovaDanCode\CustomStorytellerUtility.cs" />
-    <Compile Include="XeoNovaDanCode\HarmonyPatches.cs" />
-    <Compile Include="XeoNovaDanCode\ModCompatibilityCheck.cs" />
-    <Compile Include="XeoNovaDanCode\NonPublicFields.cs" />
-    <Compile Include="XeoNovaDanCode\NonPublicMethods.cs" />
-    <Compile Include="XeoNovaDanCode\Patch_Cities_WorldGenStep_Cities.cs" />
-    <Compile Include="XeoNovaDanCode\Patch_CompUseEffect_FinishRandomResearchProject.cs" />
-    <Compile Include="XeoNovaDanCode\Patch_FactionGenerator.cs" />
-    <Compile Include="XeoNovaDanCode\Patch_FluffyResearchTree_ResearchNode.cs" />
-    <Compile Include="XeoNovaDanCode\Patch_MainTabWindow_Research.cs" />
-    <Compile Include="XeoNovaDanCode\Patch_ResearchProjectDef.cs" />
+    <Compile Include="HarmonyPatches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Misc\StorytellerDefExtension.cs" />
-    <Compile Include="XeoNovaDanCode\TechLevelRange.cs" />
-    <Compile Include="XeoNovaDanCode\VanillaStorytellersExpanded.cs" />
+    <Compile Include="VanillaStorytellersExpanded.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Lib.Harmony" Version="2.0.4" ExcludeAssets="runtime">

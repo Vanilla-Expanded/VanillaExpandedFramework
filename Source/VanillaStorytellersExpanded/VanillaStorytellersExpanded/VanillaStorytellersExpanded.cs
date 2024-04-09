@@ -11,7 +11,6 @@ namespace VanillaStorytellersExpanded
 		public VanillaStorytellersExpanded(ModContentPack content) : base(content)
 		{
 			VanillaStorytellersExpanded.harmonyInstance = new Harmony("OskarPotocki.VanillaStorytellersExpanded");
-			ParseHelper.Parsers<TechLevelRange>.Register((string s) => TechLevelRange.FromString(s));
 		}
 
 		// Token: 0x04000050 RID: 80
