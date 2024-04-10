@@ -11,6 +11,7 @@ namespace VanillaGenesExpanded
 
     public class GeneExtension : DefModExtension
     {
+        public bool renderCacheOff = false;
 
         //Custom gene backgrounds
         public string backgroundPathEndogenes;

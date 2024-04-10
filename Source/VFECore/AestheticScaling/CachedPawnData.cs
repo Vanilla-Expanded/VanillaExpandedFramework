@@ -69,6 +69,7 @@ namespace VFECore
         public float cubicChange = 1;  // Unused.
 
         // Rendering data.
+        public bool renderCacheOff = false;
         public float bodyRenderSize = 1;
         public float headRenderSize = 1;
         public float renderPosOffset = 0;
@@ -168,6 +169,7 @@ namespace VFECore
             bodyRenderSize = GetBodyRenderSize(percentChangeCosmetic);
             headRenderSize = GetHeadRenderSize(bodyRenderSize) * headScaleStat;
             renderPosOffset = GetYPositionOffset(bodyRenderSize, renderOffsetVal);
+            renderCacheOff = geneExts.Any(x => x.renderCacheOff);
 
             healthMultiplier = CalculateHealthMultiplier(percentChange, quadraticChange);
 
