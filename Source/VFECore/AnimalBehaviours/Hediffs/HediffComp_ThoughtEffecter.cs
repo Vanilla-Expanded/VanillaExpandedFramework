@@ -41,7 +41,7 @@ namespace AnimalBehaviours
                         {
                             Pawn pawn = thing as Pawn;
                             //It won't affect animals, cause they don't have Thoughts, or mechanoids, or itself
-                            if (pawn != null && !pawn.AnimalOrWildMan() && pawn.RaceProps.IsFlesh && pawn != this.parent.pawn)
+                            if (pawn != null && pawn.needs?.mood?.thoughts != null && !pawn.AnimalOrWildMan() && pawn.RaceProps.IsFlesh && pawn != this.parent.pawn)
                             {
                                 //Only work on not dead, not downed, not psychically immune pawns
                                 if (!pawn.Dead && !pawn.Downed && pawn.GetStatValue(StatDefOf.PsychicSensitivity, true) > 0f)
