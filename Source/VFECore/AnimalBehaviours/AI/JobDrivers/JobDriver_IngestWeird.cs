@@ -288,7 +288,7 @@ namespace AnimalBehaviours
                                 {
                                     PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDef.Named(comp.Props.defToFissionTo), actor.Faction, PawnGenerationContext.NonPlayer, -1, true, true, false, false, true, 1f, false, false, true, true, false, false);
                                     Pawn newPawn = PawnGenerator.GeneratePawn(request);
-                                    newPawn.playerSettings.AreaRestriction = actor.playerSettings.AreaRestriction;
+                                    newPawn.playerSettings.AreaRestrictionInPawnCurrentMap = actor.playerSettings.AreaRestrictionInPawnCurrentMap;
                                     newPawn.relations.AddDirectRelation(PawnRelationDefOf.Parent, actor);
                                     GenSpawn.Spawn(newPawn, actor.Position, actor.Map, WipeMode.Vanish);
 
@@ -318,9 +318,9 @@ namespace AnimalBehaviours
                             {
                                 newPawn.foodRestriction = actor.foodRestriction;
                             }
-                            if (actor.playerSettings!=null && actor.playerSettings.AreaRestriction != null)
+                            if (actor.playerSettings!=null && actor.playerSettings.AreaRestrictionInPawnCurrentMap != null)
                             {
-                                newPawn.playerSettings.AreaRestriction = actor.playerSettings.AreaRestriction;
+                                newPawn.playerSettings.AreaRestrictionInPawnCurrentMap = actor.playerSettings.AreaRestrictionInPawnCurrentMap;
                             }
 
                            

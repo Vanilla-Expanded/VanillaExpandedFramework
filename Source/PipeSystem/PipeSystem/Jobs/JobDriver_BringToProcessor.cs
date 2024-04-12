@@ -25,7 +25,8 @@ namespace PipeSystem
             this.FailOnDespawnedNullOrForbidden(TargetIndex.A);
             this.FailOnBurningImmobile(TargetIndex.A);
 
-            AddEndCondition(() => Comp.Process.GetOwnerFor(Ingredient.def).Require ? JobCondition.Ongoing : JobCondition.Succeeded);
+            AddEndCondition(() => Comp.Process != null && Comp.Process.ShouldDoNow() ? JobCondition.Ongoing : JobCondition.Incompletable);
+            AddEndCondition(() => Comp.Process != null && Comp.Process.GetOwnerFor(Ingredient.def).Require ? JobCondition.Ongoing : JobCondition.Succeeded);
             yield return Toils_General.DoAtomic(delegate
             {
                 var owner = Comp.Process.GetOwnerFor(Ingredient.def);

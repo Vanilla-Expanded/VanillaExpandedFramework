@@ -29,7 +29,7 @@ namespace Outposts
                     defaultLabel = "Outposts.Commands.Create.Label".Translate(),
                     defaultDesc = "Outposts.Commands.Create.Desc".Translate(),
                     icon = TexOutposts.CreateTex,
-                    disabled = true,
+                    Disabled = true,
                     disabledReason = "Outposts.TooClose".Translate()
                 };
             else

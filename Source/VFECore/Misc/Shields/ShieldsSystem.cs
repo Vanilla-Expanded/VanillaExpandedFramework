@@ -20,7 +20,7 @@ namespace VFECore.Shields
             drawPatchesApplied = true;
             VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(Pawn), nameof(Pawn.SpawnSetup)), postfix: nameof(OnPawnSpawn).MyMethod());
             VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(Pawn), nameof(Pawn.DeSpawn)),    postfix: nameof(OnPawnDespawn).MyMethod());
-            VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(Pawn), nameof(Pawn.DrawAt)),     postfix: nameof(PawnPostDrawAt).MyMethod());
+            VFECore.harmonyInstance.Patch(AccessTools.Method(typeof(Pawn), "DrawAt"),     postfix: nameof(PawnPostDrawAt).MyMethod());
         }
 
         public static void ApplyShieldPatches()

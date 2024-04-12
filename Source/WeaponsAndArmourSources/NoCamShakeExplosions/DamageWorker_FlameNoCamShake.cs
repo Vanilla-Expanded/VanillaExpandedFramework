@@ -17,7 +17,7 @@ namespace NoCamShakeExplosions
             DamageResult damageResult = base.Apply(dinfo, victim);
             if (!damageResult.deflected && !dinfo.InstantPermanentInjury)
             {
-                victim.TryAttachFire(Rand.Range(0.15f, 0.25f));
+                victim.TryAttachFire(Rand.Range(0.15f, 0.25f),null);
             }
             if (victim.Destroyed && map != null && pawn == null)
             {
@@ -25,9 +25,9 @@ namespace NoCamShakeExplosions
                 {
                     FilthMaker.TryMakeFilth(c, map, ThingDefOf.Filth_Ash, 1, FilthSourceFlags.None);
                 }
-                if (victim is Plant plant && victim.def.plant.IsTree && victim.def != ThingDefOf.BurnedTree)
+                if (victim is Plant plant && victim.def.plant.IsTree && victim.def != InternalDefOf.BurnedTree)
                 {
-                    DeadPlant deadPlant = (DeadPlant)GenSpawn.Spawn(ThingDefOf.BurnedTree, victim.Position, map, WipeMode.Vanish);
+                    DeadPlant deadPlant = (DeadPlant)GenSpawn.Spawn(InternalDefOf.BurnedTree, victim.Position, map, WipeMode.Vanish);
                     deadPlant.Growth = plant.Growth;
                 }
             }
@@ -39,7 +39,7 @@ namespace NoCamShakeExplosions
             base.ExplosionAffectCell(explosion, c, damagedThings, ignoredThings, canThrowMotes);
             if (this.def == DamageDefOf.Flame && Rand.Chance(FireUtility.ChanceToStartFireIn(c, explosion.Map)))
             {
-                FireUtility.TryStartFireIn(c, explosion.Map, Rand.Range(0.2f, 0.6f));
+                FireUtility.TryStartFireIn(c, explosion.Map, Rand.Range(0.2f, 0.6f),null);
             }
         }
 

@@ -33,7 +33,7 @@ public class MVCF : Mod
 
     public MVCF(ModContentPack content) : base(content)
     {
-        Harm = new Harmony("legodude17.mvcf");
+        Harm = new("legodude17.mvcf");
         LongEventHandler.ExecuteWhenFinished(CollectFeatureData);
         AllFeatures = typeof(Feature).AllSubclassesNonAbstract().Select(type => (Feature)Activator.CreateInstance(type)).ToList();
         features = AllFeatures.ToDictionary(f => f.GetType());
@@ -273,12 +273,16 @@ public readonly struct Patch
 
     public void Apply(Harmony harm)
     {
-        MVCF.LogFormat($"Patching {this}", LogLevel.Silly);
-        harm.Patch(target,
-            prefix is null ? null : new HarmonyMethod(prefix),
-            postfix is null ? null : new HarmonyMethod(postfix),
-            transpiler is null ? null : new HarmonyMethod(transpiler));
-        numPatches++;
+        try
+        {
+            MVCF.LogFormat($"Patching {this}", LogLevel.Silly);
+            harm.Patch(target,
+                prefix is null ? null : new HarmonyMethod(prefix),
+                postfix is null ? null : new HarmonyMethod(postfix),
+                transpiler is null ? null : new HarmonyMethod(transpiler));
+            numPatches++;
+        }
+        catch (Exception e) { Log.Error($"MVCF: Exception patching {this}: {e}"); }
     }
 
     public void Unapply(Harmony harm)

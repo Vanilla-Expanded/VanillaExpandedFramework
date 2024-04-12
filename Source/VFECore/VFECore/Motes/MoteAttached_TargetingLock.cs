@@ -37,7 +37,7 @@ namespace VFECore
 
     public class MoteAttached_TargetingLockFixed : MoteAttached_TargetingLock
     {
-        public override void DrawAt(Vector3 drawLoc, bool flip = false)
+        protected override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
             DrawTargetingLock(0.2f);
         }
@@ -45,7 +45,7 @@ namespace VFECore
 
     public class MoteAttached_TargetingLockDynamic : MoteAttached_TargetingLock
     {
-        public override void DrawAt(Vector3 drawLoc, bool flip = false)
+        protected override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
             // we skip it, DrawTargetingLock gets called by a harmony patch
         }

@@ -17,7 +17,7 @@
     <DebugSymbols>false</DebugSymbols>
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\1.4\Assemblies\</OutputPath>
+    <OutputPath>..\..\1.5\Assemblies\</OutputPath>
     <DefineConstants>
     </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -134,6 +134,7 @@
     <Compile Include="Utilities\FloatMenuUtility.cs" />
     <Compile Include="Utilities\ManagedVerbUtility.cs" />
     <Compile Include="Utilities\MeleeVerbUtility.cs" />
+    <Compile Include="Utilities\PatchUtility.cs" />
     <Compile Include="Utilities\ReloadingUtility.cs" />
     <Compile Include="Utilities\TargetFinder.cs" />
     <Compile Include="Utilities\VerbCompsUtility.cs" />

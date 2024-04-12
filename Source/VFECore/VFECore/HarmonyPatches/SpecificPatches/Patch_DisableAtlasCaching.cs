@@ -14,7 +14,7 @@ namespace VFECore
     using UnityEngine;
     using Verse;
 
-
+    /* disabled for now
     [HarmonyPatch(typeof(PawnRenderer), nameof(PawnRenderer.RenderPawnAt))]
     public static class Patch_RenderPawnAt
     {
@@ -68,4 +68,5 @@ namespace VFECore
             return __result;
         }
     }
+    */
 }

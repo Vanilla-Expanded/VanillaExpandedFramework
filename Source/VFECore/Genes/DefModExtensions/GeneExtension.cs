@@ -5,11 +5,13 @@ using UnityEngine;
 
 namespace VanillaGenesExpanded
 {
+    using System.Linq;
     using System.Xml;
     using JetBrains.Annotations;
 
     public class GeneExtension : DefModExtension
     {
+        public bool renderCacheOff = false;
 
         //Custom gene backgrounds
         public string backgroundPathEndogenes;
@@ -47,15 +49,18 @@ namespace VanillaGenesExpanded
         public string customBloodIcon = "";
         public EffecterDef customBloodEffect = null;
         public FleshTypeDef customWoundsFromFleshtype = null;
+        public ThingDef customBloodSmearThingDef = null;
+
         //Custom vomit thingDef, custom vomit effecter
-        public ThingDef customVomitThingDef = null;    
+        public ThingDef customVomitThingDef = null;
         public EffecterDef customVomitEffect = null;
+        //Custom meat thingDef when butchered. Looks like meat is back on the menu, boys!
+        public ThingDef customMeatThingDef = null;
+        //Custom leather thingDef when butchered
+        public ThingDef customLeatherThingDef = null;
 
         //Disease progression factor. Diseases will advance (when not immunized) by this factor
         public float diseaseProgressionFactor = 1f;
-
-        //Caravan carrying factor. Pawns will have their caravan carrying capacity multiplied by this factor
-        public float caravanCarryingFactor = 1f;
 
         //Hide gene from appearing on the xenotype creation screen. Useful for special genes that only appear as rewards during gameplay.
         public bool hideGene = false;
@@ -72,9 +77,20 @@ namespace VanillaGenesExpanded
         //Makes pregancies advance faster or slower
         public float pregnancySpeedFactor = 1f;
 
+        // Makes pawns with this gene have a higher chance of getting food-binge mental break.
+        public float foodBingeMentalBreakSelectionChanceFactor = 1;
+
+        public bool doubleNegativeFoodThought = false;
+
         //Makes genes scale body and head
         public Vector2 bodyScaleFactor = new Vector2(1f, 1f);
         public Vector2 headScaleFactor = new Vector2(1f, 1f);
+
+        // Size by age
+        public SizeByAge sizeByAge = null;
+
+        //Makes genes scale body per lifestages, only works for gene graphics currently
+        public Dictionary<LifeStageDef, Vector2> bodyScaleFactorsPerLifestages;
 
         public BodyTypeDef forcedBodyType;
         public string bodyNakedGraphicPath;
@@ -137,6 +153,35 @@ namespace VanillaGenesExpanded
                 DirectXmlCrossRefLoader.RegisterObjectWantsCrossRef(this, nameof(this.bodyType), xmlRoot.Name);
                 this.offset = (Vector3)ParseHelper.FromString(xmlRoot.FirstChild.Value, typeof(Vector3));
             }
+        }
+
+        public class SizeByAge
+        {
+            // Size of the pawn at the bottom of the range.
+            public float minOffset = 0;
+            // Size of the pawn at the top of the range.
+            public float maxOffset = 0;
+            // The float range
+            public FloatRange range = new(0, 0);
+
+            public float GetSize(float? age)
+            {
+                if (age == null) return 0;
+                return Mathf.Lerp(minOffset, maxOffset, range.InverseLerpThroughRange(age.Value));
+            }
+        }
+    }
+
+    public static class GeneExtensionMethods
+    {
+        public static List<GeneExtension> GetActiveGeneExtensions(this Pawn_GeneTracker geneTracker)
+        {
+            var gExtensions = geneTracker?.GenesListForReading?
+                .Select(gene => gene.def.GetModExtension<GeneExtension>())
+                .Where(extension => extension != null)
+                .ToList();
+            if (gExtensions == null) return new List<GeneExtension>();
+            else return gExtensions;
         }
     }
 }

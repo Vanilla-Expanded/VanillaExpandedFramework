@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using UnityEngine;
@@ -26,11 +27,13 @@ namespace PipeSystem
         private string id;                                      // Process ID
 
         private List<IntVec3> adjCells;
-        private CompResource compResource;
-        private List<CompResource> compResources;
+        private List<CompResource> resultsCompResources;
+        private List<CompResource> ingredientsCompResources;
         private List<FloatMenuOption> options;
         private AdvancedProcessorsManager advancedProcessorsManager;
         private CompAdvancedResourceProcessor advancedProcessor;
+
+        public bool IsRunning => ShouldDoNow() && !MissingIngredients;
 
         /// <summary>
         /// Any missing ingredients? Loop over ingredientsOwners.
@@ -252,7 +255,7 @@ namespace PipeSystem
                 if (!owner.Require)
                     continue;
 
-                var associatedComp = compResources[i];
+                var associatedComp = ingredientsCompResources[i];
                 if (owner.PipeNetDef != null && associatedComp != null)
                 {
                     owner.AddFromNet(associatedComp.PipeNet);
@@ -291,17 +294,22 @@ namespace PipeSystem
         /// </summary>
         public void PostSpawnSetup()
         {
-            // Get the result compResource
+            // Get the result(s) resultsCompResources(s)
             var comps = parent.GetComps<CompResource>().ToList();
-            if (def.pipeNet != null)
+            resultsCompResources = new List<CompResource>();
+            for (int i = 0; i < def.results.Count; i++)
             {
-                for (int i = 0; i < comps.Count; i++)
+                var result = def.results[i];
+                if (result.pipeNet != null)
                 {
-                    var comp = comps[i];
-                    if (comp.Props.pipeNet == def.pipeNet)
+                    for (int j = 0; j < comps.Count; j++)
                     {
-                        compResource = comp;
-                        break;
+                        var comp = comps[j];
+                        if (comp.Props.pipeNet == result.pipeNet)
+                        {
+                            resultsCompResources.Add(comp);
+                            break;
+                        }
                     }
                 }
             }
@@ -310,7 +318,7 @@ namespace PipeSystem
             // Get processor comp
             advancedProcessor = CachedCompAdvancedProcessor.GetFor(parent);
             // Get others comps
-            compResources = new List<CompResource>();
+            ingredientsCompResources = new List<CompResource>();
             for (int i = 0; i < def.ingredients.Count; i++)
             {
                 var requirement = def.ingredients[i];
@@ -321,14 +329,14 @@ namespace PipeSystem
                         var comp = comps[j];
                         if (comp.Props.pipeNet == requirement.pipeNet)
                         {
-                            compResources.Add(comp);
+                            ingredientsCompResources.Add(comp);
                             break;
                         }
                     }
                 }
                 else
                 {
-                    compResources.Add(null);
+                    ingredientsCompResources.Add(null);
                 }
             }
             // Get adjacent cells for spawning
@@ -339,90 +347,105 @@ namespace PipeSystem
         /// Create and spawn thing, or increase existing thing stacksize, or push to net
         /// </summary>
         /// <param name="spawnPos">Spawning position if needed</param>
-        /// <param name="outThing">Null if pushed to net</param>
+        /// <param name="outThings">Empty if pushed to net</param>
         /// <param name="extractor">Pawn extracint result</param>
-        public void SpawnOrPushToNet(IntVec3 spawnPos, out Thing outThing, Pawn extractor = null)
+        public void SpawnOrPushToNet(IntVec3 spawnPos, out List<Thing> outThings, Pawn extractor = null)
         {
             // Thing created, in case it's not pushed to net
-            outThing = null;
-            // If it can directly go into the net
-            if (def.pipeNet != null && compResource != null && compResource.PipeNet is PipeNet net && net.connectors.Count > 1)
+            outThings = new List<Thing>();
+            for (int i = 0; i < def.results.Count; i++)
             {
-                var count = def.count;
-                // Available storage, store it
-                if (net.AvailableCapacity > count)
+                var result = def.results[i];
+                var resComp = resultsCompResources.Find(c => c.Props.pipeNet == result.pipeNet);
+                // If it can directly go into the net
+                if (result.pipeNet != null && resComp != null && resComp.PipeNet is PipeNet net && net.connectors.Count > 1)
                 {
-                    net.DistributeAmongStorage(count, out _);
-                    ResetProcess();
-                    return;
-                }
-                // No storage but converters
-                if (net.ThingConvertersMaxOutput >= count)
-                {
-                    net.DistributeAmongConverters(count);
-                    ResetProcess();
-                    return;
-                }
-                // No storage/converter, try refuel connected things
-                if (net.RefillableAmount >= count)
-                {
-                    net.DistributeAmongRefillables(count);
-                    ResetProcess();
-                    return;
-                }
-            }
-            // If can't go into net and should/can spawn
-            // Bypass ground setting if thing can't be put in net
-            if (spawning && def.thing != null && (extractor != null || advancedProcessor.outputOnGround || def.pipeNet == null))
-            {
-                var map = parent.Map;
-                // Try spawning at spawnPos
-                if (spawnPos != IntVec3.Invalid && TrySpawnAtCell(spawnPos, map, out outThing))
-                {
-                    ResetProcess();
-                    return;
-                }
-                // If invalid or couldn't, find an adj cell
-                for (int i = 0; i < adjCells.Count; i++)
-                {
-                    if (TrySpawnAtCell(adjCells[i], map, out outThing))
+                    var count = result.count;
+                    // Available storage, store it
+                    if (net.AvailableCapacity > count)
                     {
-                        ResetProcess();
-                        return;
+                        net.DistributeAmongStorage(count, out _);
+                    }
+                    // No storage but converters
+                    else if (net.ThingConvertersMaxOutput >= count)
+                    {
+                        net.DistributeAmongConverters(count);
+                    }
+                    // No storage/converter, try refuel connected things
+                    else if (net.RefillableAmount >= count)
+                    {
+                        net.DistributeAmongRefillables(count);
+                    }
+                }
+                // If can't go into net and should/can spawn
+                // Bypass ground setting if thing can't be put in net
+                else if (spawning && result.thing != null && (extractor != null || advancedProcessor.outputOnGround || result.pipeNet == null))
+                {
+                    var map = parent.Map;
+                    // If defined outputCellOffset
+                    if (result.outputCellOffset != IntVec3.Invalid && SpawnResultAt(result, parent.Position+(result.outputCellOffset.RotatedBy(parent.Rotation)), map, ref outThings)) { continue; }
+                    // Try spawning at spawnPos
+                    if (spawnPos != IntVec3.Invalid && SpawnResultAt(result, spawnPos, map, ref outThings)) { continue; }
+                    // If invalid or couldn't, find an adj cell
+                    for (int j = 0; j < adjCells.Count; j++)
+                    {
+                        if (SpawnResultAt(result, adjCells[j], map, ref outThings)) { break; }
                     }
                 }
             }
+            ResetProcess();
+        }
+
+        /// <summary>
+        /// Spawn result at cell
+        /// </summary>
+        /// <param name="result">Result to spawn</param>
+        /// <param name="cell">Cell to spawn at</param>
+        /// <param name="map">Map to spawn in</param>
+        /// <param name="outThings">List of results things</param>
+        /// <returns>True if spawned, false otherwise</returns>
+        private bool SpawnResultAt(ProcessDef.Result result, IntVec3 cell, Map map, ref List<Thing> outThings)
+        {
+            if (TrySpawnAtCell(result, cell, map, out Thing outThing))
+            {
+                outThings.Add(outThing);
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
         /// Try spawn result as item on cell. 
         /// </summary>
+        /// <param name="result">ProcessDef result</param>
         /// <param name="cell">Spawn cell</param>
         /// <param name="map">Map</param>
         /// <param name="outThing">Thing spawned or null</param>
         /// <returns>True if spawned, false if not</returns>
-        private bool TrySpawnAtCell(IntVec3 cell, Map map, out Thing outThing)
+        private bool TrySpawnAtCell(ProcessDef.Result result, IntVec3 cell, Map map, out Thing outThing)
         {
             outThing = null;
 
             if (cell.Walkable(map))
             {
                 // Try find thing of the same def
-                var thing = cell.GetFirstThing(map, def.thing);
+                var thing = cell.GetFirstThing(map, result.thing);
                 if (thing != null)
                 {
                     // If adding would go past stack limit
-                    if ((thing.stackCount + def.count) > thing.def.stackLimit)
+                    if ((thing.stackCount + result.count) > thing.def.stackLimit)
                         return false;
                     // We found some, modifying stack size
-                    thing.stackCount += def.count;
+                    thing.stackCount += result.count;
+
+                    outThing = thing;
                     return true;
                 }
                 else
                 {
                     // We didn't find any, creating thing
-                    thing = ThingMaker.MakeThing(def.thing);
-                    thing.stackCount = def.count;
+                    thing = ThingMaker.MakeThing(result.thing);
+                    thing.stackCount = result.count;
                     if (!GenPlace.TryPlaceThing(thing, cell, map, ThingPlaceMode.Near))
                         return false;
 
@@ -445,7 +468,7 @@ namespace PipeSystem
                 for (int i = 0; i < ingredientsOwners.Count; i++)
                 {
                     var owner = ingredientsOwners[i];
-                    var linkedComp = compResources[i];
+                    var linkedComp = ingredientsCompResources[i];
                     // Refund in net if possible
                     if (linkedComp != null && linkedComp.PipeNet is PipeNet net && net.AvailableCapacity >= owner.Count)
                     {
@@ -599,7 +622,7 @@ namespace PipeSystem
             }
             // Delete process
             var deleteRect = new Rect(rect.width - 24f, 0f, 24f, 24f);
-            if (Widgets.ButtonImage(deleteRect, TexButton.DeleteX, color, color * GenUI.SubtleMouseoverColor))
+            if (Widgets.ButtonImage(deleteRect, TexButton.Delete, color, color * GenUI.SubtleMouseoverColor))
             {
                 stack.Delete(this);
                 SoundDefOf.Click.PlayOneShotOnCamera();
@@ -644,9 +667,9 @@ namespace PipeSystem
             var labelRect = new Rect(rect.x + 6f, rect.y, rect.width - 30f, 24f);
             Widgets.Label(labelRect, $"{def.LabelCap} ({Progress.ToStringPercent()})");
             Text.Anchor = TextAnchor.UpperLeft;
-
+            // TODO: Hover show missing/meet requirements
             var deleteRect = new Rect(rect.x + rect.width - 24f, rect.y, 24f, 24f);
-            if (Widgets.ButtonImage(deleteRect, TexButton.DeleteX, Color.white, Color.white * GenUI.SubtleMouseoverColor))
+            if (Widgets.ButtonImage(deleteRect, TexButton.Delete, Color.white, Color.white * GenUI.SubtleMouseoverColor))
             {
                 ResetProcess(false);
                 advancedProcessor.ProcessStack.Delete(this);
@@ -654,12 +677,6 @@ namespace PipeSystem
                 SoundDefOf.Click.PlayOneShotOnCamera();
             }
             TooltipHandler.TipRegionByKey(deleteRect, "PipeSystem_CancelCurrentProcess");
-        }
-
-
-        public bool IsRunning()
-        {
-            return !suspended;
         }
     }
 }

@@ -36,7 +36,7 @@ namespace VanillaGenesExpanded
                     yield return new CodeInstruction(OpCodes.Brfalse_S, label);
                     yield return new CodeInstruction(OpCodes.Ldloc_S, 12);
                     yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(VanillaGenesExpanded_HealthCardUtility_DrawHediffRow_Patch), "ChangeIconForThisPawn", null, null));
-                    yield return new CodeInstruction(OpCodes.Stfld, AccessTools.Field(typeof(HealthCardUtility).GetNestedTypes(AccessTools.all).First(x => x.Name.Contains("c__DisplayClass31_1")), "bleedingIcon"));
+                    yield return new CodeInstruction(OpCodes.Stfld, AccessTools.Field(typeof(HealthCardUtility).GetNestedTypes(AccessTools.all).First(x => x.Name.Contains("c__DisplayClass32_1")), "bleedingIcon"));
                 }
             }
         }

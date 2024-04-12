@@ -37,28 +37,28 @@
 		<displayPriorityInCategory>4050</displayPriorityInCategory>
 	</StatDef>
 
-  <StatDef>
-    <defName>VEF_EnergyShieldEnergyMaxOffset</defName>
-    <label>Shield max energy offset</label>
-    <description>Offset of the maximum shield energy that the user can boost through various means.</description>
-	<category>PawnCombat</category>
-    <minValue>0</minValue>
-    <defaultBaseValue>0</defaultBaseValue>
-    <toStringStyle>FloatOne</toStringStyle>
-    <hideAtValue>0</hideAtValue>
-	<displayPriorityInCategory>4050</displayPriorityInCategory>
-  </StatDef>
-  
-  <StatDef>
-    <defName>VEF_EnergyShieldEnergyMaxFactor</defName>
-    <label>Shield max energy factor</label>
-    <description>Factor of the maximum shield energy that the user can boost through various means.</description>
+	<StatDef>
+		<defName>VEF_EnergyShieldEnergyMaxOffset</defName>
+		<label>Shield max energy offset</label>
+		<description>Offset of the maximum shield energy that the user can boost through various means.</description>
 		<category>PawnCombat</category>
-    <minValue>0</minValue>
-	<defaultBaseValue>1</defaultBaseValue>
-    <toStringStyle>PercentZero</toStringStyle>
-	<displayPriorityInCategory>4050</displayPriorityInCategory>
-  </StatDef>
+		<minValue>0</minValue>
+		<defaultBaseValue>0</defaultBaseValue>
+		<toStringStyle>FloatOne</toStringStyle>
+		<hideAtValue>0</hideAtValue>
+		<displayPriorityInCategory>4050</displayPriorityInCategory>
+	</StatDef>
+
+	<StatDef>
+		<defName>VEF_EnergyShieldEnergyMaxFactor</defName>
+		<label>Shield max energy factor</label>
+		<description>Factor of the maximum shield energy that the user can boost through various means.</description>
+		<category>PawnCombat</category>
+		<minValue>0</minValue>
+		<defaultBaseValue>1</defaultBaseValue>
+		<toStringStyle>PercentZero</toStringStyle>
+		<displayPriorityInCategory>4050</displayPriorityInCategory>
+	</StatDef>
 
 
 	<StatDef>
@@ -82,7 +82,7 @@
 			</li>
 		</parts>
 	</StatDef>
-	
+
 	<StatDef>
 		<defName>VEF_EnergyShieldRechargeRateApparel</defName>
 		<label>shield recharge rate</label>
@@ -106,7 +106,7 @@
 			</li>
 		</parts>
 	</StatDef>
-	
+
 	<StatDef>
 		<defName>VEF_EnergyShieldRadiusApparel</defName>
 		<label>shield radius</label>
@@ -132,91 +132,174 @@
 	</StatDef>
 
 
-    <StatDef>
-        <defName>VEF_EnergyShieldEnergyMaxPawn</defName>
-        <label>shield max energy</label>
-        <description>The maximum energy a shield generator can have at one time. More energy absorbs more damage.</description>
-	<category>PawnCombat</category>
-        <minValue>0</minValue>
-        <toStringStyle>PercentZero</toStringStyle>
-        <showIfUndefined>false</showIfUndefined>
-    </StatDef>
+	<StatDef>
+		<defName>VEF_EnergyShieldEnergyMaxPawn</defName>
+		<label>shield max energy</label>
+		<description>The maximum energy a shield generator can have at one time. More energy absorbs more damage.</description>
+		<category>PawnCombat</category>
+		<minValue>0</minValue>
+		<toStringStyle>PercentZero</toStringStyle>
+		<showIfUndefined>false</showIfUndefined>
+	</StatDef>
 
-    <StatDef>
-        <defName>VEF_EnergyShieldRechargeRatePawn</defName>
-        <label>shield recharge rate</label>
-        <description>The rate at which a shield gains energy as long as it is not broken.</description>
-	<category>PawnCombat</category>
-        <minValue>0</minValue>
-        <defaultBaseValue>0.45</defaultBaseValue>
-        <toStringStyle>PercentZero</toStringStyle>
-        <formatString>{0}/s</formatString>
-        <showIfUndefined>false</showIfUndefined>
-    </StatDef>
+	<StatDef>
+		<defName>VEF_EnergyShieldRechargeRatePawn</defName>
+		<label>shield recharge rate</label>
+		<description>The rate at which a shield gains energy as long as it is not broken.</description>
+		<category>PawnCombat</category>
+		<minValue>0</minValue>
+		<defaultBaseValue>0.45</defaultBaseValue>
+		<toStringStyle>PercentZero</toStringStyle>
+		<formatString>{0}/s</formatString>
+		<showIfUndefined>false</showIfUndefined>
+	</StatDef>
 
-    <StatDef>
-        <defName>VEF_EnergyShieldRadiusPawn</defName>
-        <label>shield radius</label>
-        <description>The area covered when the energy shield is active.</description>
-	<category>PawnCombat</category>
-        <defaultBaseValue>3</defaultBaseValue>
-        <minValue>0</minValue>
-        <toStringStyle>FloatOne</toStringStyle>
-        <formatString>{0} c</formatString>
-        <showIfUndefined>false</showIfUndefined>
-    </StatDef>
+	<StatDef>
+		<defName>VEF_EnergyShieldRadiusPawn</defName>
+		<label>shield radius</label>
+		<description>The area covered when the energy shield is active.</description>
+		<category>PawnCombat</category>
+		<defaultBaseValue>3</defaultBaseValue>
+		<minValue>0</minValue>
+		<toStringStyle>FloatOne</toStringStyle>
+		<formatString>{0} c</formatString>
+		<showIfUndefined>false</showIfUndefined>
+	</StatDef>
 
-    <StatDef>
-        <defName>VEF_MeleeAttackSpeedFactor</defName>
-        <label>melee attack speed factor</label>
-        <description>A multiplier on melee attack speed.</description>
+	<StatDef>
+		<defName>VEF_MeleeAttackSpeedFactor</defName>
+		<label>melee attack speed factor</label>
+		<description>A multiplier on melee attack speed.</description>
 		<category>PawnCombat</category>
-        <minValue>0</minValue>
-        <hideAtValue>1</hideAtValue>
-        <defaultBaseValue>1</defaultBaseValue>
-        <toStringStyle>PercentZero</toStringStyle>
-        <displayPriorityInCategory>3400</displayPriorityInCategory>
-    </StatDef>
-	
-    <StatDef>
-        <defName>VEF_RangeAttackSpeedFactor</defName>
-        <label>range attack speed factor</label>
-        <description>A multiplier on range attack speed.</description>
+		<minValue>0</minValue>
+		<hideAtValue>1</hideAtValue>
+		<defaultBaseValue>1</defaultBaseValue>
+		<toStringStyle>PercentZero</toStringStyle>
+		<displayPriorityInCategory>3400</displayPriorityInCategory>
+	</StatDef>
+
+	<StatDef>
+		<defName>VEF_RangeAttackSpeedFactor</defName>
+		<label>range attack speed factor</label>
+		<description>A multiplier on range attack speed.</description>
 		<category>PawnCombat</category>
-        <minValue>0</minValue>
-        <hideAtValue>1</hideAtValue>
-        <defaultBaseValue>1</defaultBaseValue>
-        <toStringStyle>PercentZero</toStringStyle>
-        <displayPriorityInCategory>3400</displayPriorityInCategory>
-    </StatDef>
-	
-    <StatDef>
-        <defName>VEF_MeleeAttackDamageFactor</defName>
-        <label>melee attack damage factor</label>
-        <description>A multiplier on melee attack damage.</description>
+		<minValue>0</minValue>
+		<hideAtValue>1</hideAtValue>
+		<defaultBaseValue>1</defaultBaseValue>
+		<toStringStyle>PercentZero</toStringStyle>
+		<displayPriorityInCategory>3400</displayPriorityInCategory>
+	</StatDef>
+
+	<StatDef>
+		<defName>VEF_MeleeAttackDamageFactor</defName>
+		<label>melee attack damage factor</label>
+		<description>A multiplier on melee attack damage.</description>
 		<category>PawnCombat</category>
-        <minValue>0</minValue>
-        <hideAtValue>1</hideAtValue>
-        <defaultBaseValue>1</defaultBaseValue>
-        <toStringStyle>PercentZero</toStringStyle>
-        <displayPriorityInCategory>3400</displayPriorityInCategory>
-    </StatDef>
-	
-    <StatDef>
-        <defName>VEF_RangeAttackDamageFactor</defName>
-        <label>range attack damage factor</label>
-        <description>A multiplier on range attack damage.</description>
+		<minValue>0</minValue>
+		<hideAtValue>1</hideAtValue>
+		<defaultBaseValue>1</defaultBaseValue>
+		<toStringStyle>PercentZero</toStringStyle>
+		<displayPriorityInCategory>3400</displayPriorityInCategory>
+	</StatDef>
+
+	<StatDef>
+		<defName>VEF_RangeAttackDamageFactor</defName>
+		<label>range attack damage factor</label>
+		<description>A multiplier on range attack damage.</description>
 		<category>PawnCombat</category>
-        <minValue>0</minValue>
-        <hideAtValue>1</hideAtValue>
-        <defaultBaseValue>1</defaultBaseValue>
-        <toStringStyle>PercentZero</toStringStyle>
-        <displayPriorityInCategory>3400</displayPriorityInCategory>
-    </StatDef>
-	
+		<minValue>0</minValue>
+		<hideAtValue>1</hideAtValue>
+		<defaultBaseValue>1</defaultBaseValue>
+		<toStringStyle>PercentZero</toStringStyle>
+		<displayPriorityInCategory>3400</displayPriorityInCategory>
+	</StatDef>
+
 	<StatCategoryDef>
 		<defName>VFE_EquippedStatFactors</defName>
 		<label>Factors when equipped</label>
 		<displayOrder>71</displayOrder>
 	</StatCategoryDef>
+
+	<StatDef>
+		<!--  -->
+		<defName>VEF_FoodCapacityMultiplier</defName>
+		<label>body food capacity multiplier</label>
+		<description>Increases the size of the pawn's hunger bar. This does not affect hunger</description>
+		<alwaysHide>true</alwaysHide>
+		<category>BasicsNonPawnImportant</category>
+		<toStringStyle>FloatOne</toStringStyle>
+		<defaultBaseValue>1.0</defaultBaseValue>
+		<minValue>-99</minValue>
+	</StatDef>
+
+	<!-- Rendering -->
+
+	<!--These are hidden StatDefs used to modify the size of any pawn. Note that size has a falloff upwards,
+		while downwards will 'chibify' the character.
+		As of writing 2024-02-08 does NOT affect animals, but we could if we want.-->
+
+	<StatDef>
+		<!-- Used to modify a pawn based on their current size.
+					E.g. +1 for a size 1.0 human would rougly double size. +1 for a size 4 Thumbo would increase it by ~25%-->
+		<defName>VEF_BodySize_Offset</defName>
+		<label>body size offset</label>
+		<description>Increases the size of the pawn relative to their current size</description>
+		<alwaysHide>true</alwaysHide>
+		<category>BasicsPawn</category>
+		<toStringStyle>FloatOne</toStringStyle>
+		<defaultBaseValue>0.0</defaultBaseValue>
+		<minValue>-99</minValue>
+	</StatDef>
+	<StatDef>
+		<!--Roughly multiplies size.-->
+		<defName>VEF_BodySize_Multiplier</defName>
+		<label>body size multiplier</label>
+		<description>Increases the size of the pawn by a multiple of their current size</description>
+		<alwaysHide>true</alwaysHide>
+		<category>BasicsPawn</category>
+		<toStringStyle>PercentZero</toStringStyle>
+		<defaultBaseValue>1.0</defaultBaseValue>
+		<minValue>-99</minValue>
+	</StatDef>
+	<StatDef>
+		<defName>VEF_CosmeticBodySize_Offset</defName>
+		<label>cosmetic body size offset</label>
+		<description>Increases the size of the pawn relative to their current size</description>
+		<alwaysHide>true</alwaysHide>
+		<category>BasicsPawn</category>
+		<toStringStyle>FloatOne</toStringStyle>
+		<defaultBaseValue>0.0</defaultBaseValue>
+		<minValue>-99</minValue>
+	</StatDef>
+	<StatDef>
+		<defName>VEF_CosmeticBodySize_Multiplier</defName>
+		<label>cosmetic body size multiplier</label>
+		<description>Increases the size of the pawn by a multiple of their current size</description>
+		<alwaysHide>true</alwaysHide>
+		<category>BasicsPawn</category>
+		<toStringStyle>PercentZero</toStringStyle>
+		<defaultBaseValue>1.0</defaultBaseValue>
+		<minValue>-99</minValue>
+	</StatDef>
+	<StatDef>
+		<!--Scales the character's head on the rendering step. Note that scaled down pawns already get larger heads and scaled up slghtly smaller-->
+		<defName>VEF_HeadSize_Cosmetic</defName>
+		<label>head size multiplier</label>
+		<alwaysHide>true</alwaysHide>
+		<category>BasicsPawn</category>
+		<minValue>0.05</minValue>
+		<toStringStyle>PercentZero</toStringStyle>
+		<defaultBaseValue>1.0</defaultBaseValue>
+	</StatDef>
+	<StatDef>
+		<!-- Moves the pawn up or down in rendering terms-->
+		<defName>VEF_PawnRenderPosOffset</defName>
+		<label>pawn render offset</label>
+		<description>Modifies the pawn's rendered position in y-axis.</description>
+		<alwaysHide>true</alwaysHide>
+		<category>BasicsPawn</category>
+		<toStringStyle>FloatOne</toStringStyle>
+		<defaultBaseValue>0.0</defaultBaseValue>
+		<minValue>-99</minValue>
+	</StatDef>
 </Defs>

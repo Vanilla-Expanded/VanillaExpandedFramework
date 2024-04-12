@@ -6,6 +6,7 @@ using Verse;
 using Verse.Sound;
 using UnityEngine;
 using System.Collections;
+using VFECore;
 
 namespace AnimalBehaviours
 {
@@ -52,11 +53,11 @@ namespace AnimalBehaviours
                     for (int i = 0; i < 20; i++)
                     {
                         IntVec3 c;
-                        CellFinder.TryFindRandomReachableCellNear(this.parent.Position, this.parent.Map, 2, TraverseParms.For(TraverseMode.NoPassClosedDoors, Danger.Deadly, false), null, null, out c);
+                        CellFinder.TryFindRandomReachableNearbyCell(this.parent.Position, this.parent.Map, 2, TraverseParms.For(TraverseMode.NoPassClosedDoors, Danger.Deadly, false), null, null, out c);
                         FilthMaker.TryMakeFilth(c, this.parent.Map, ThingDefOf.Filth_AmnioticFluid);
                     }
                     //Play insect spawn sound effect
-                    SoundDefOf.Hive_Spawn.PlayOneShot(new TargetInfo(this.parent.Position, this.parent.Map, false));
+                    VFEDefOf.Hive_Spawn.PlayOneShot(new TargetInfo(this.parent.Position, this.parent.Map, false));
                     //Destroy the parent
                     this.parent.Destroy();
                 }

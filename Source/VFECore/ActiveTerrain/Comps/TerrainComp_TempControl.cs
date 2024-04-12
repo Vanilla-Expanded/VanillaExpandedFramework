@@ -42,7 +42,7 @@ namespace VFECore
         {
             get
             {
-                return HeaterToConformTo?.targetTemperature ?? 21;
+                return HeaterToConformTo?.TargetTemperature ?? 21;
             }
         }
         protected override float PushAmount

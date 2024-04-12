@@ -78,7 +78,7 @@ namespace OPToxic
             int num = OPBombDefGetValue.OPBombGetImpactRadius(def) + 2;
             FireUtility.TryStartFireIn((from x in GenRadial.RadialCellsAround(Position, num, true)
                                         where x.InBounds(Map)
-                                        select x).RandomElementByWeight((IntVec3 x) => DistanceChanceFactor.Evaluate(x.DistanceTo(Position))), Map, Rand.Range(0.1f, 0.925f));
+                                        select x).RandomElementByWeight((IntVec3 x) => DistanceChanceFactor.Evaluate(x.DistanceTo(Position))), Map, Rand.Range(0.1f, 0.925f),null);
         }
 
         private const int ImpactAreaRadius = 12;

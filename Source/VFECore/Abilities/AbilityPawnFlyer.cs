@@ -1,59 +1,72 @@
 ﻿namespace VFECore.Abilities
 {
-    using System.Collections;
-    using System.Collections.Generic;
     using HarmonyLib;
     using RimWorld;
     using RimWorld.Planet;
     using UnityEngine;
     using Verse;
-    using Verse.Sound;
 
     public class AbilityPawnFlyer : PawnFlyer
     {
-        public Abilities.Ability ability;
+        private static readonly AccessTools.FieldRef<PawnFlyer, IntVec3> DestCellField
+            = AccessTools.FieldRefAccess<IntVec3>(typeof(PawnFlyer), "destCell");
+        private static readonly AccessTools.FieldRef<PawnFlyer, Vector3> EffectivePosField
+            = AccessTools.FieldRefAccess<Vector3>(typeof(PawnFlyer), "effectivePos");
+        private static readonly AccessTools.FieldRef<PawnFlyer, Vector3> GroundPosField
+            = AccessTools.FieldRefAccess<Vector3>(typeof(PawnFlyer), "groundPos");
+        private static readonly AccessTools.FieldRef<PawnFlyer, float> EffectiveHeightField
+            = AccessTools.FieldRefAccess<float>(typeof(PawnFlyer), "effectiveHeight");
 
-        protected Vector3 position;
-        public    Vector3 target;
+        public Ability ability;
+        public bool selectOnSpawn = false;
 
-        public Rot4 direction;
+        public ref IntVec3 DestinationCell => ref DestCellField(this);
+
+        /// <summary>
+        /// Used as the position of the flying pawn and the pawn/thing they are carrying.
+        /// </summary>
+        public ref Vector3 EffectivePos => ref EffectivePosField(this);
+        /// <summary>
+        /// Used as the position of the flying pawn's shadow.
+        /// </summary>
+        public ref Vector3 GroundPos => ref GroundPosField(this);
+        /// <summary>
+        /// Used as the size of the flying pawn's shadow (clamped to 0-1, bigger value means smaller shadow).
+        /// </summary>
+        public ref float EffectiveHeight => ref EffectiveHeightField(this);
+
+        /// <summary>
+        /// Used to replace vanilla position calculation.
+        /// Use <see cref="EffectivePos"/>, <see cref="GroundPos"/>, and <see cref="EffectiveHeight"/> to achieve this.
+        /// </summary>
+        /// <returns>true if the vanilla RecomputePosition method should be cancelled, or false if it should run normally.</returns>
+        protected internal virtual bool CustomRecomputePosition() => false;
+
+        /// <summary>
+        /// Used to check if the pawn should be re-selected when spawning a new flyer.
+        /// The flyer is not yet initialized at this point, with only its constructor being called.
+        /// </summary>
+        /// <param name="target">The pawn for which this flyer is being created for.</param>
+        /// <returns>True if the pawn should be automatically reselected, false otherwise.</returns>
+        protected internal virtual bool AutoSelectPawn(Pawn target) => true;
 
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
-            this.direction = this.startVec.x > this.target.ToIntVec3().x ? Rot4.West :
-                             this.startVec.x < this.target.ToIntVec3().x ? Rot4.East :
-                             this.startVec.y < this.target.ToIntVec3().y ? Rot4.North :
-                                                                           Rot4.South;
-            float progress = (float)this.ticksFlying / (float)this.ticksFlightTime;
-            this.position = Vector3.Lerp(this.startVec, this.target, progress) + new Vector3(0f, 0f, 2f) * GenMath.InverseParabola(progress);
-        }
 
-        public override void Tick()
-        {
-            float progress = (float) this.ticksFlying / (float) this.ticksFlightTime;
-            this.position = Vector3.Lerp(this.startVec, this.target, progress) + new Vector3(0f, 0f, 2f) * GenMath.InverseParabola(progress);
-
-
-            IList value = Traverse.Create(this.FlyingPawn.Drawer.renderer).Field("effecters").Field("pairs").GetValue() as IList;
-            foreach (object o in value)
-                Traverse.Create(o).Field("effecter").GetValue<Effecter>().EffectTick(new TargetInfo(this.position.ToIntVec3(), this.Map), TargetInfo.Invalid);
-
-            base.Tick();
-        }
-
-        public override void DrawAt(Vector3 drawLoc, bool flip = false)
-        {
-            this.FlyingPawn.Drawer.renderer.RenderPawnAt(this.position, this.direction);
+            if (selectOnSpawn)
+            {
+                selectOnSpawn = false;
+                // Select the flying thing (pawn), with the flyer itself as fallback
+                Find.Selector.Select(FlyingThing ?? this);
+            }
         }
 
         protected override void RespawnPawn()
         {
-            this.Position = this.target.ToIntVec3();
-            LandingEffects();
             Pawn pawn = this.FlyingPawn;
             base.RespawnPawn();
-            if (this.ability != null)
+            if (pawn != null && this.ability != null)
             {
                 this.ability.ApplyHediffs(new GlobalTargetInfo(pawn));
 
@@ -66,19 +79,10 @@
             }
         }
 
-        protected virtual void LandingEffects()
-        {
-            if (soundLanding != null)
-            {
-                soundLanding.PlayOneShot(new TargetInfo(base.Position, base.Map));
-            }
-        }
-
         public override void ExposeData()
         {
             base.ExposeData();
             Scribe_References.Look(ref this.ability, nameof(this.ability));
-            Scribe_Values.Look(ref this.direction, nameof(this.direction));
         }
     }
 }

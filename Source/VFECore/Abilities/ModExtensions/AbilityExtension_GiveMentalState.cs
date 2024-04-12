@@ -41,7 +41,7 @@
 
         public static void TryGiveMentalStateWithDuration(MentalStateDef def, Pawn p, Ability ability, StatDef multiplierStat, bool durationScalesWithCaster, bool causedByPsycast)
         {
-            if (p.mindState.mentalStateHandler.TryStartMentalState(def, null, true, false, null, false,
+            if (p.mindState.mentalStateHandler.TryStartMentalState(def, null, true, false, false ,null, false,
                                                                    false, causedByPsycast))
             {
                 float num                       = ability.GetDurationForPawn();

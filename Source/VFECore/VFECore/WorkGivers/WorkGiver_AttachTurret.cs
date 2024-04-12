@@ -33,7 +33,7 @@ namespace VFE.Mechanoids.AI.WorkGivers
             List<ThingDefCountClass> products = comp.turretToInstall.costList;
             foreach (ThingDefCountClass thingNeeded in products)
             {
-                if (!pawn.Map.itemAvailability.ThingsAvailableAnywhere(thingNeeded, pawn))
+                if (!pawn.Map.itemAvailability.ThingsAvailableAnywhere(thingNeeded.thingDef,thingNeeded.count, pawn))
                 {
                     JobFailReason.Is("VFEMechNoResources".Translate());
                     return false;

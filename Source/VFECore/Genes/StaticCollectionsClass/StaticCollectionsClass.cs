@@ -28,9 +28,14 @@ namespace VanillaGenesExpanded
 
         //This static class stores lists of pawns for different things.
 
-
+        // A list of pawns containing meat changing genes
+        public static IDictionary<Thing, ThingDef> meat_gene_pawns = new Dictionary<Thing, ThingDef>();
+        // A list of pawns containing leather changing genes
+        public static IDictionary<Thing, ThingDef> leather_gene_pawns = new Dictionary<Thing, ThingDef>();
         // A list of pawns containing blood changing genes
         public static IDictionary<Thing, ThingDef> bloodtype_gene_pawns = new Dictionary<Thing, ThingDef>();
+        public static IDictionary<Thing, ThingDef> bloodsmear_gene_pawns = new Dictionary<Thing, ThingDef>();
+
         // A list of pawns with custom blood icons
         public static IDictionary<Thing, string> bloodIcon_gene_pawns = new Dictionary<Thing, string>();
         // A list of pawns with custom blood effects
@@ -39,8 +44,6 @@ namespace VanillaGenesExpanded
         public static IDictionary<Thing, FleshTypeDef> woundsFromFleshtype_gene_pawns = new Dictionary<Thing, FleshTypeDef>();
         // A list of pawns with custom disease progression factors
         public static IDictionary<Thing, float> diseaseProgressionFactor_gene_pawns = new Dictionary<Thing, float>();
-        // A list of pawns with custom caravan carrying capacity factors
-        public static IDictionary<Thing, float> caravanCarryingFactor_gene_pawns = new Dictionary<Thing, float>();
         // A list of pawns containing vomit changing genes
         public static IDictionary<Thing, ThingDef> vomitType_gene_pawns = new Dictionary<Thing, ThingDef>();      
         // A list of pawns with custom vomit effects
@@ -59,6 +62,41 @@ namespace VanillaGenesExpanded
         public static IDictionary<Thing, float> pregnancySpeedFactor_gene_pawns = new Dictionary<Thing, float>();
 
 
+        public static void AddMeatGenePawnToList(Thing thing, ThingDef thingDef)
+        {
+
+            if (!meat_gene_pawns.ContainsKey(thing))
+            {
+                meat_gene_pawns[thing] = thingDef;
+            }
+        }
+
+        public static void RemoveMeatGenePawnFromList(Thing thing)
+        {
+            if (meat_gene_pawns.ContainsKey(thing))
+            {
+                meat_gene_pawns.Remove(thing);
+            }
+
+        }
+        public static void AddLeatherGenePawnToList(Thing thing, ThingDef thingDef)
+        {
+
+            if (!leather_gene_pawns.ContainsKey(thing))
+            {
+                leather_gene_pawns[thing] = thingDef;
+            }
+        }
+
+        public static void RemoveLeatherGenePawnFromList(Thing thing)
+        {
+            if (leather_gene_pawns.ContainsKey(thing))
+            {
+                leather_gene_pawns.Remove(thing);
+            }
+
+        }
+
         public static void AddBloodtypeGenePawnToList(Thing thing, ThingDef thingDef)
         {
 
@@ -75,6 +113,22 @@ namespace VanillaGenesExpanded
                 bloodtype_gene_pawns.Remove(thing);
             }
 
+        }
+
+        public static void AddBloodSmearGenePawnToList(Thing thing, ThingDef thingDef)
+        {
+            if (!bloodsmear_gene_pawns.ContainsKey(thing))
+            {
+                bloodsmear_gene_pawns[thing] = thingDef;
+            }
+        }
+
+        public static void RemoveBloodSmearGenePawnFromList(Thing thing)
+        {
+            if (bloodsmear_gene_pawns.ContainsKey(thing))
+            {
+                bloodsmear_gene_pawns.Remove(thing);
+            }
         }
 
         public static void AddBloodIconGenePawnToList(Thing thing, string icon)
@@ -164,25 +218,6 @@ namespace VanillaGenesExpanded
             {
                 pregnancySpeedFactor_gene_pawns.Remove(thing);
             }
-
-        }
-
-        public static void AddCaravanCarryingFactorGenePawnToList(Thing thing, float factor)
-        {
-
-            if (!caravanCarryingFactor_gene_pawns.ContainsKey(thing))
-            {
-                caravanCarryingFactor_gene_pawns[thing] = factor;
-            }
-        }
-
-        public static void RemoveCaravanCarryingFactorGenePawnFromList(Thing thing)
-        {
-            if (caravanCarryingFactor_gene_pawns.ContainsKey(thing))
-            {
-                caravanCarryingFactor_gene_pawns.Remove(thing);
-            }
-
         }
 
         public static void AddVomitTypeGenePawnToList(Thing thing, ThingDef thingDef)

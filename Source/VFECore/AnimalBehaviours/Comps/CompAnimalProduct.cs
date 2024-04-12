@@ -1,5 +1,6 @@
 ﻿using RimWorld;
 using RimWorld.Planet;
+using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 
@@ -99,6 +100,25 @@ namespace AnimalBehaviours
                 return Translator.Translate(this.Props.customResourceString) + ": " + base.Fullness.ToStringPercent();
             }
             else return Translator.Translate("ResourceGrowth") + ": " + base.Fullness.ToStringPercent();
+        }
+
+        public override IEnumerable<Gizmo> CompGetGizmosExtra()
+        {
+            if (!DebugSettings.ShowDevGizmos || this.parent.Faction != Faction.OfPlayer)
+            {
+                yield break;
+            }
+
+            yield return new Command_Action
+            {
+                defaultLabel = "DEV: Set to produce now",
+                defaultDesc = "Sets animal products to be ready to be gathered now",
+                action = delegate
+                {
+                    this.fullness = 1f;
+                },
+
+            };
         }
 
         public void InformGathered(Pawn doer)

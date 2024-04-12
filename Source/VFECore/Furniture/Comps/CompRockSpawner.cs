@@ -215,7 +215,7 @@ namespace VanillaFurnitureExpanded
 
         private void ResetCountdown()
         {
-            if (ModLister.HasActiveModWithName("Vanilla Factions Expanded - Mechanoids"))
+            /*if (ModLister.HasActiveModWithName("Vanilla Factions Expanded - Mechanoids"))
             {
                 try
                 {
@@ -229,9 +229,9 @@ namespace VanillaFurnitureExpanded
                 catch (TypeLoadException) { }
             }
             else
-            {
+            {*/
                 this.ticksUntilSpawn = this.PropsSpawner.spawnIntervalRange.RandomInRange;
-            }
+            //}
 
         }
 

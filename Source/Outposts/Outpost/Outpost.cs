@@ -7,7 +7,7 @@ using Verse;
 
 namespace Outposts
 {
-    public partial class Outpost : MapParent
+    public partial class Outpost : MapParent, IRenameable
     {
         private Material cachedMat;
 
@@ -39,6 +39,22 @@ namespace Outposts
 
         public float raidPoints;
         public Faction raidFaction;
+
+        public string RenamableLabel
+        {
+            get
+            {
+                return Name ?? BaseLabel;
+            }
+            set
+            {
+                Name = value;
+            }
+        }
+
+        public string BaseLabel => this.def.label;
+
+        public string InspectLabel => RenamableLabel;
 
         public override Material Material
         {
@@ -341,7 +357,7 @@ namespace Outposts
                 defaultLabel = "Outposts.Commands.Remove.Label".Translate(),
                 defaultDesc = "Outposts.Commands.Remove.Desc".Translate(),
                 icon = TexOutposts.RemoveTex,
-                disabled = occupants.Count == 1,
+                Disabled = occupants.Count == 1,
                 disabledReason = "Outposts.Command.Remove.Only1".Translate()
             };
             if (OutpostsMod.Settings.DeliveryMethod != DeliveryMethod.Store && !ProductionString().NullOrEmpty())

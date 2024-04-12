@@ -57,8 +57,8 @@ public class PatchSet_Hediffs : PatchSet
             if (instruction.Calls(info))
             {
                 var label = generator.DefineLabel();
-                yield return new CodeInstruction(OpCodes.Dup);
-                yield return new CodeInstruction(OpCodes.Brfalse, label);
+                yield return new(OpCodes.Dup);
+                yield return new(OpCodes.Brfalse, label);
                 yield return codes[++i];
                 yield return new CodeInstruction(OpCodes.Castclass, typeof(ThingDef)).WithLabels(label);
             }
@@ -75,10 +75,10 @@ public class PatchSet_Hediffs : PatchSet
             if (instruction.Calls(info))
             {
                 var label = generator.DefineLabel();
-                yield return new CodeInstruction(OpCodes.Dup);
-                yield return new CodeInstruction(OpCodes.Brtrue, label);
-                yield return new CodeInstruction(OpCodes.Pop);
-                yield return new CodeInstruction(OpCodes.Ldc_I4_1);
+                yield return new(OpCodes.Dup);
+                yield return new(OpCodes.Brtrue, label);
+                yield return new(OpCodes.Pop);
+                yield return new(OpCodes.Ldc_I4_1);
                 yield return new CodeInstruction(OpCodes.Nop).WithLabels(label);
             }
         }

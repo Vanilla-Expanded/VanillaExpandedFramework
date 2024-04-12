@@ -273,60 +273,6 @@ namespace VFECore
         }
     }
 
-    [HarmonyPatch(typeof(MassUtility), nameof(MassUtility.Capacity))]
-    public static class MassUtility_Capacity_Patch
-    {
-        private static float GetMutiplierForQuality(QualityCategory cat)
-        {
-            switch (cat)
-            {
-                case QualityCategory.Awful:
-                    return 0.5f;
-                case QualityCategory.Poor:
-                    return 0.8f;
-                case QualityCategory.Normal:
-                    return 1f;
-                case QualityCategory.Good:
-                    return 1.2f;
-                case QualityCategory.Excellent:
-                    return 1.5f;
-                case QualityCategory.Masterwork:
-                    return 1.7f;
-                case QualityCategory.Legendary:
-                    return 2f;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(cat), cat, null);
-            }
-        }
-
-        public static void Postfix(Pawn p, StringBuilder explanation, ref float __result)
-        {
-            if (p?.apparel?.WornApparel.NullOrEmpty() ?? true)
-            {
-                return;
-            }
-
-            foreach (var apparel in p.apparel.WornApparel)
-            {
-                var modExtension = apparel.def.GetModExtension<ApparelExtension>();
-                if (modExtension != null && modExtension.carryingCapacity != -1f)
-                {
-                    if (apparel.TryGetQuality(out var cat))
-                    {
-                        __result += modExtension.carryingCapacity * GetMutiplierForQuality(cat);
-                        explanation?.AppendLine(
-                            $"{apparel.LabelCapNoCount}: +{modExtension.carryingCapacity} * {GetMutiplierForQuality(cat)} ({cat.GetLabel()})");
-                    }
-                    else
-                    {
-                        __result += modExtension.carryingCapacity;
-                        explanation?.AppendLine($"{apparel.LabelCapNoCount}: +{modExtension.carryingCapacity}");
-                    }
-                }
-            }
-        }
-    }
-
     [HarmonyPatch(typeof(Pawn_ApparelTracker), "TryDrop")]
     [HarmonyPatch(new Type[]
 {
@@ -398,40 +344,44 @@ namespace VFECore
     {
         public static void Postfix(Pawn ___pawn, Apparel ap)
         {
-            if (___pawn != null)
+            if (!Pawn_ApparelTracker_Wear_Patch.doNotRunTraitsPatch)
             {
-                var extension = ap?.def.GetModExtension<ApparelExtension>();
-                if (extension != null)
+                if (___pawn != null)
                 {
-                    if (___pawn.story?.traits != null)
+                    var extension = ap?.def.GetModExtension<ApparelExtension>();
+                    if (extension != null)
                     {
                         if (___pawn.story?.traits != null)
                         {
-                            if (extension.traitsOnEquip != null)
+                            if (___pawn.story?.traits != null)
                             {
-                                foreach (var traitDef in extension.traitsOnEquip)
+                                if (extension.traitsOnEquip != null)
                                 {
-                                    var trait = ___pawn.story.traits.GetTrait(traitDef);
-                                    if (trait != null)
+                                    foreach (var traitDef in extension.traitsOnEquip)
                                     {
-                                        ___pawn.story.traits.RemoveTrait(trait);
+                                        var trait = ___pawn.story.traits.GetTrait(traitDef);
+                                        if (trait != null)
+                                        {
+                                            ___pawn.story.traits.RemoveTrait(trait);
+                                        }
                                     }
                                 }
-                            }
-                            if (extension.traitsOnUnequip != null)
-                            {
-                                foreach (var traitDef in extension.traitsOnUnequip)
+
+                                if (extension.traitsOnUnequip != null)
                                 {
-                                    if (!___pawn.story.traits.HasTrait(traitDef))
+                                    foreach (var traitDef in extension.traitsOnUnequip)
                                     {
-                                        var trait = new Trait(traitDef);
-                                        ___pawn.story.traits.GainTrait(trait);
+                                        if (!___pawn.story.traits.HasTrait(traitDef))
+                                        {
+                                            var trait = new Trait(traitDef);
+                                            ___pawn.story.traits.GainTrait(trait);
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
 
+                    }
                 }
             }
         }

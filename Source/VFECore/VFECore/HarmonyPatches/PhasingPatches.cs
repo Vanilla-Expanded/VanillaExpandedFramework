@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -11,7 +12,7 @@ namespace VFECore
 {
     public static class PhasingPatches
     {
-        private static readonly MethodInfo FloodUnfogAdjMI = AccessTools.Method(typeof(FogGrid), "FloodUnfogAdjacent");
+        private static readonly MethodInfo FloodUnfogAdjMI = AccessTools.Method(typeof(FogGrid), "FloodUnfogAdjacent", new Type[] { typeof(IntVec3), typeof(bool) });
 
         private static Pawn patherPawn;
         public static void Do(Harmony harm)

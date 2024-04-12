@@ -11,26 +11,6 @@ using HarmonyLib;
 
 namespace VFECore
 {
-
-    public static class Patch_Pawn
-    {
-
-        [HarmonyPatch(typeof(Pawn), nameof(Pawn.SetFaction))]
-        public static class SetFaction
-        {
-
-            public static void Postfix(Pawn __instance, Faction newFaction)
-            {
-                // Re-resolve pack animal graphics
-                if (__instance.RaceProps.packAnimal)
-                {
-                    __instance.Drawer?.renderer?.graphics?.ResolveAllGraphics();
-                }
-            }
-
-        }
-    }
-
     [HarmonyPatch(typeof(Pawn_InteractionsTracker), "TryInteractWith")]
     public static class TryInteractWith_Patch
     {

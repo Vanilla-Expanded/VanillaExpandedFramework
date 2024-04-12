@@ -1,7 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -13,6 +10,8 @@ namespace VanillaFurnitureExpanded
 
         private static readonly Color borderColor = new Color(0.13f, 0.13f, 0.13f);
         private static readonly Color fillColor = new Color(0, 0, 0,0.1f);
+
+        public static List<ThingDef> ThingsWithSouthOrientation = new List<ThingDef>() { ThingDefOf.DiningChair,InternalDefOf.Dresser,InternalDefOf.Armchair, InternalDefOf.Shelf};
 
         public Thing thingToChange;
         private Vector2 scrollPosition = new Vector2(0, 0);
@@ -70,6 +69,11 @@ namespace VanillaFurnitureExpanded
                     string availableTexture = buildingGraphics[i];
                     if (thingToChange.def.graphicData.graphicClass == typeof(Graphic_Multi))
                     {
+                        if (ThingsWithSouthOrientation.Contains(thingToChange.def))
+                        {
+                            availableTexture = availableTexture + "_south";
+                        }
+                        else
                         availableTexture = availableTexture + "_north";
                     }
                     Rect rectIcon = new Rect((128 * (i % columnCount)) + 10* (i % columnCount), viewRect.y+(128 * (i / columnCount)+20 * ((i / columnCount)+1)), 128f, 128f);

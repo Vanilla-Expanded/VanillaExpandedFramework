@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+<WorkGiverDef>
+		<defName>IP_InsertFirstIngredient</defName>
+		<label>bringing ingredient</label>
+		<giverClass>ItemProcessor.WorkGiver_InsertProcessorFirst</giverClass>
+		<workType>Hauling</workType>
+		<verb>bring ingredient to</verb>
+		<gerund>bringing ingredient to</gerund>
+		<priorityInType>20</priorityInType>
+		<requiredCapacities>
+			<li>Manipulation</li>
+		</requiredCapacities>
+	</WorkGiverDef>
+	
+	<WorkGiverDef>
+		<defName>IP_InsertSecondIngredient</defName>
+		<label>bringing ingredient</label>
+		<giverClass>ItemProcessor.WorkGiver_InsertProcessorSecond</giverClass>
+		<workType>Hauling</workType>
+		<verb>bring ingredient to</verb>
+		<gerund>bringing ingredient to</gerund>
+		<priorityInType>20</priorityInType>
+		<requiredCapacities>
+			<li>Manipulation</li>
+		</requiredCapacities>
+	</WorkGiverDef>
+	
+	<WorkGiverDef>
+		<defName>IP_InsertThirdIngredient</defName>
+		<label>bringing ingredient</label>
+		<giverClass>ItemProcessor.WorkGiver_InsertProcessorThird</giverClass>
+		<workType>Hauling</workType>
+		<verb>bring ingredient to</verb>
+		<gerund>bringing ingredient to</gerund>
+		<priorityInType>20</priorityInType>
+		<requiredCapacities>
+			<li>Manipulation</li>
+		</requiredCapacities>
+	</WorkGiverDef>
+
+
+	<WorkGiverDef>
+		<defName>IP_RemoveProduct</defName>
+		<label>removing finished product</label>
+		<giverClass>ItemProcessor.WorkGiver_RemoveProduct</giverClass>
+		<workType>Hauling</workType>
+		<verb>remove finished product from</verb>
+		<gerund>removing finished product from</gerund>
+		<priorityInType>20</priorityInType>
+		<requiredCapacities>
+			<li>Manipulation</li>
+		</requiredCapacities>
+	</WorkGiverDef>
+	
+
+	
+
+
+
+
+
+
+</Defs>

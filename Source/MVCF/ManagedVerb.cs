@@ -98,7 +98,7 @@ public class ManagedVerb : IExposable, ILoadReferenceable
         Manager?.RecalcSearchVerb();
     }
 
-    public virtual void DrawOn(Pawn p, Vector3 drawPos) { }
+    public virtual void DrawOn(Pawn pawn, Vector3 drawPos, Rot4 facing, PawnRenderFlags flags) { }
 
     public virtual void Tick() { }
 

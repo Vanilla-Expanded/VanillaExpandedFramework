@@ -12,9 +12,9 @@ namespace VFECore
 
         static Startup()
         {
-            // Cache setters
             PawnShieldGenerator.Reset();
             ScenPartUtility.SetCache();
+            ResearchProjectUtility.AutoAssignRules();
         }
     }
 }

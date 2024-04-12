@@ -33,6 +33,17 @@
                 {
                     //do nothing or nop
                 }
+                else if (codes[i].opcode == OpCodes.Stloc_0)
+                {
+                    // We check for Stloc_0, as the flyer is only assigned to it once in the code
+                    yield return codes[i];
+                    // Load the flyer
+                    yield return CodeInstruction.LoadLocal(0);
+                    // Load the pawn
+                    yield return CodeInstruction.LoadArgument(1);
+                    // Call our method
+                    yield return CodeInstruction.Call(typeof(PawnFlyer_MakeFlyer_Patch), nameof(SetSelectOnSpawn));
+                }
                 else
                 {
                     yield return codes[i];
@@ -46,6 +57,11 @@
                 return true;
             }
             return false;
+        }
+        public static void SetSelectOnSpawn(PawnFlyer flyer, Pawn pawn)
+        {
+            if (flyer is AbilityPawnFlyer abilityFlyer && Find.Selector.IsSelected(pawn) && abilityFlyer.AutoSelectPawn(pawn))
+                abilityFlyer.selectOnSpawn = true;
         }
     }
 }

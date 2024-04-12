@@ -13,6 +13,7 @@
     using Verse.AI;
     using Verse.Sound;
     using UItils;
+    using LudeonTK;
 
     public abstract class Ability : IExposable, ILoadReferenceable, ITargetingSource
     {
@@ -441,7 +442,7 @@
             ModifyTargets(ref targets);
             comp.currentlyCastingTargets = targets;
             if (this.pawn.IsCaravanMember()) this.Cast(targets);
-            else this.pawn.jobs.StartJob(job, JobCondition.InterruptForced);
+            else this.pawn.jobs.StartJob(job, JobCondition.InterruptForced, keepCarryingThingOverride: def.keepCarryingThing);
         }
 
         protected bool currentAoETargeting;

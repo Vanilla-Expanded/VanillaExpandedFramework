@@ -17,7 +17,7 @@ namespace PipeSystem
             base.PostSpawnSetup(respawningAfterLoad);
         }
 
-        protected override bool ShouldPushHeatNow
+        public override bool ShouldPushHeatNow
         {
             get
             {

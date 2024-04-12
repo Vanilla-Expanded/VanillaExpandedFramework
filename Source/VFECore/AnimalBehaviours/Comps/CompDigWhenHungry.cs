@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Verse;
+using VFECore;
 
 namespace AnimalBehaviours
 {
@@ -28,7 +29,7 @@ namespace AnimalBehaviours
                 ((pawn.needs.food.CurLevelPercentage < pawn.needs.food.PercentageThreshHungry) ||
                 (Props.digAnywayEveryXTicks && this.parent.IsHashIntervalTick(Props.timeToDigForced))))
             {
-                if (pawn.Position.GetTerrain(pawn.Map).affordances.Contains(TerrainAffordanceDefOf.Diggable))
+                if (pawn.Position.GetTerrain(pawn.Map).affordances.Contains(VFEDefOf.Diggable))
                 {
                     if (stopdiggingcounter <= 0)
                     {

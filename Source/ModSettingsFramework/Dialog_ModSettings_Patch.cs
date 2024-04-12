@@ -18,13 +18,18 @@ namespace ModSettingsFramework
                 if (Widgets.ButtonText(new Rect(inRect.width - 180, 0f, 150f, 35), "Reset".Translate()))
                 {
                     SoundDefOf.Tick_Tiny.PlayOneShotOnCamera();
-                    var container = ModSettingsFrameworkSettings.GetModSettingsContainer(modSettings.modPackOverride.PackageIdPlayerFacing);
-                    container.patchOperationStates.Clear();
-                    container.patchOperationValues.Clear();
-                    container.patchWorkers.Clear();
-                    foreach (var patchWorker in modSettings.modPackOverride.Patches.OfType<PatchOperationWorker>())
+                    var container = ModSettingsFrameworkSettings
+                        .GetModSettingsContainer(modSettings.modPackOverride.PackageIdPlayerFacing);
+                    var patches = container.PatchOperationModSettings;
+                    foreach (var patch in patches)
                     {
-                        patchWorker.Reset();
+                        var patchContainer = patch.container;
+                        patchContainer.patchOperationStates.Remove(patch.patch.id);
+                        patchContainer.patchOperationValues.Remove(patch.patch.id);
+                        if (patch.patch is PatchOperationWorker patchWorker)
+                        {
+                            patchWorker.Reset();
+                        }
                     }
                 }
                 Text.Font = GameFont.Tiny;

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace PipeSystem
@@ -12,7 +13,7 @@ namespace PipeSystem
         public SectionLayer_Resource(Section section) : base(section)
         {
             requireAddToMapMesh = false;
-            relevantChangeTypes = MapMeshFlag.Buildings | (MapMeshFlag)455;
+            relevantChangeTypes = MapMeshFlagDefOf.Buildings | 455;
         }
 
         private static int lastFrameDraw;
@@ -25,7 +26,7 @@ namespace PipeSystem
             if (pipeNetDef != pipeNet)
             {
                 pipeNet = pipeNetDef;
-                Find.CurrentMap.mapDrawer.WholeMapChanged((MapMeshFlag)455);
+                Find.CurrentMap.mapDrawer.WholeMapChanged(455);
                 PipeSystemDebug.Message("Regenerated MapMeshFlag 455 for SectionLayer_Resource.");
             }
             lastFrameDraw = Time.frameCount;

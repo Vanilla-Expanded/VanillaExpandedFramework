@@ -39,7 +39,7 @@ namespace AnimalBehaviours
                         if (pawn != null && pawn.IsColonist && !Props.AcceptedDefnames.Contains(pawn.def.defName))
                         {
                             
-                            thisPawn.mindState.mentalStateHandler.TryStartMentalState(DefDatabase<MentalStateDef>.GetNamed("VEF_XenophobicRage", true), null, true, false, null, false);
+                            thisPawn.mindState.mentalStateHandler.TryStartMentalState(DefDatabase<MentalStateDef>.GetNamed("VEF_XenophobicRage", true), null, true, false, false,null, false);
                            
                         }
                     }

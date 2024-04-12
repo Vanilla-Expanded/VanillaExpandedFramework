@@ -39,7 +39,7 @@ namespace VFECore
                 return;
             }
 
-            List<Pawn> pawnList = parent.Map.mapPawns.AllPawnsSpawned;
+            IReadOnlyList<Pawn> pawnList = parent.Map.mapPawns.AllPawnsSpawned;
 
             for (int i = pawnList.Count - 1; i >= 0; i--)
             {

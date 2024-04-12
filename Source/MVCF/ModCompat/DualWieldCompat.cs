@@ -1,6 +1,6 @@
 ﻿using System;
 using HarmonyLib;
-using MonoMod.Utils;
+using MVCF.Utilities;
 using Verse;
 
 namespace MVCF.ModCompat;

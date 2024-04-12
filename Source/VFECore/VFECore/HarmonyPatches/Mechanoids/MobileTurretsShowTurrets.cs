@@ -10,13 +10,13 @@ using Verse;
 
 namespace VFE.Mechanoids.HarmonyPatches
 {
-    [HarmonyPatch(typeof(PawnRenderer), "CarryWeaponOpenly")]
+    [HarmonyPatch(typeof(PawnRenderUtility), "CarryWeaponOpenly")]
     public static class MobileTurretsShowTurrets
     {
 
         public static void Postfix(PawnRenderer __instance, ref bool __result)
         {
-            if (CompMachine.cachedMachines.TryGetValue(__instance, out CompMachine value) && (value.turretAttached != null || value.Props.violent))
+            if (__instance!=null && CompMachine.cachedMachines?.TryGetValue(__instance, out CompMachine value)!=null && (value?.turretAttached != null || value.Props?.violent==true))
             {
                 __result = true;
             }

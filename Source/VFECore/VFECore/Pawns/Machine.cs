@@ -11,7 +11,7 @@ using VFE.Mechanoids.Needs;
 
 namespace VFEMech
 {
-    public class Machine : Pawn
+    public class Machine : Pawn, IRenameable
     {
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
@@ -40,5 +40,23 @@ namespace VFEMech
                 this.Kill(dinfo);
             }
         }
+
+        public string MachineName { get; set; }
+
+        public string RenamableLabel
+        {
+            get
+            {
+                return MachineName ?? BaseLabel;
+            }
+            set
+            {
+                MachineName = value;
+            }
+        }
+
+        public string BaseLabel => this.def.label;
+
+        public string InspectLabel => RenamableLabel;
     }
 }

@@ -38,7 +38,7 @@ namespace VFECore
             RemoveThings();
         }
 
-        public override void Notify_PawnDied()
+        public override void Notify_PawnDied(DamageInfo? dinfo, Hediff culprit = null)
         {
             RemoveThings();
         }

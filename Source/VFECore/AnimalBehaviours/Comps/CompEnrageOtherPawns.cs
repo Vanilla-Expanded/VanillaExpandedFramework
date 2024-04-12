@@ -38,7 +38,7 @@ namespace AnimalBehaviours
                         where Props.pawnkinddefsToAffect.Contains(x.kindDef) select x).ToList();
                         foreach(Pawn pawnaffected in pawnsaffected)
                         {
-                            pawnaffected.mindState.mentalStateHandler.TryStartMentalState(MentalStateDefOf.Manhunter, null, false, false, null, false, false, false);
+                            pawnaffected.mindState.mentalStateHandler.TryStartMentalState(MentalStateDefOf.Manhunter, null, false, false, false,null, false, false, false);
                         }
                     }
 

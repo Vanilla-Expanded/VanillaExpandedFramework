@@ -156,7 +156,7 @@ namespace AnimalBehaviours
                                     {
                                         if (pawnCreated.playerSettings != null && progenitor.playerSettings != null)
                                         {
-                                            pawnCreated.playerSettings.AreaRestriction = progenitor.playerSettings.AreaRestriction;
+                                            pawnCreated.playerSettings.AreaRestrictionInPawnCurrentMap = progenitor.playerSettings.AreaRestrictionInPawnCurrentMap;
                                         }
                                         if (pawnCreated.RaceProps.IsFlesh)
                                         {

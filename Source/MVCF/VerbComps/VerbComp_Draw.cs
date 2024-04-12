@@ -34,13 +34,13 @@ public class VerbComp_Draw : VerbComp
 
     public virtual float Scale(Pawn pawn) => Props.Scale(pawn) * pawn.BodySize;
 
-    public override void DrawOnAt(Pawn p, Vector3 drawPos)
+    public override void CompDrawOn(Pawn pawn, Vector3 drawPos, Rot4 facing, PawnRenderFlags flags)
     {
-        base.DrawOnAt(p, drawPos);
-        if (!ShouldDraw(p)) return;
-        drawPos.y += 0.0367346928f;
-        var target = PointingTarget(p);
-        DrawPointingAt(DrawPos(target, p, drawPos), DrawAngle(target, p, drawPos), Scale(p));
+        base.CompDrawOn(pawn, drawPos, facing, flags);
+        if (!ShouldDraw(pawn)) return;
+        if (facing == Rot4.North) drawPos = drawPos.WithYOffset(PawnRenderUtility.AltitudeForLayer(90));
+        var target = PointingTarget(pawn);
+        DrawPointingAt(DrawPos(target, pawn, drawPos, facing), DrawAngle(target, pawn, drawPos, facing), Scale(pawn));
     }
 
     public override void CompTick()
@@ -55,7 +55,7 @@ public class VerbComp_Draw : VerbComp
         if (!Mathf.Approximately(idleRotationOffset, idleRotationOffsetTarget)) idleRotationOffset += Mathf.Sign(idleRotationOffsetTarget) * 0.1f;
     }
 
-    public virtual float DrawAngle(LocalTargetInfo target, Pawn p, Vector3 drawPos)
+    public virtual float DrawAngle(LocalTargetInfo target, Pawn p, Vector3 drawPos, Rot4 facing)
     {
         if (target != null && target.IsValid)
         {
@@ -66,35 +66,37 @@ public class VerbComp_Draw : VerbComp
 
         if (Props.drawAsEquipment)
         {
-            if (p.Rotation == Rot4.South) return 143f;
+            if (facing == Rot4.South) return 143f;
 
-            if (p.Rotation == Rot4.North) return 143f;
+            if (facing == Rot4.North) return 143f;
 
-            if (p.Rotation == Rot4.East) return 143f;
+            if (facing == Rot4.East) return 143f;
 
-            if (p.Rotation == Rot4.West) return 217f;
+            if (facing == Rot4.West) return 217f;
         }
 
-        return p.Rotation.AsAngle + idleRotationOffset;
+        return facing.AsAngle + idleRotationOffset;
     }
 
-    public virtual Vector3 DrawPos(LocalTargetInfo target, Pawn p, Vector3 drawPos)
+    public virtual Vector3 DrawPos(LocalTargetInfo target, Pawn p, Vector3 drawPos, Rot4 facing)
     {
         if (Props.drawAsEquipment)
         {
             if (target != null && target.IsValid)
-                return drawPos + EquipPointOffset.RotatedBy(DrawAngle(target, p, drawPos));
+                return drawPos + EquipPointOffset.RotatedBy(DrawAngle(target, p, drawPos, facing));
 
-            if (p.Rotation == Rot4.South) return drawPos + SouthEquipOffset;
+            var equipmentDrawDistanceFactor = p.ageTracker.CurLifeStage.equipmentDrawDistanceFactor;
 
-            if (p.Rotation == Rot4.North) return drawPos + NorthEquipOffset;
+            if (facing == Rot4.South) return drawPos + SouthEquipOffset * equipmentDrawDistanceFactor;
 
-            if (p.Rotation == Rot4.East) return drawPos + EastEquipOffset;
+            if (facing == Rot4.North) return drawPos + NorthEquipOffset * equipmentDrawDistanceFactor;
 
-            if (p.Rotation == Rot4.West) return drawPos + WestEquipOffset;
+            if (facing == Rot4.East) return drawPos + EastEquipOffset * equipmentDrawDistanceFactor;
+
+            if (facing == Rot4.West) return drawPos + WestEquipOffset * equipmentDrawDistanceFactor;
         }
 
-        return Props.DrawPos(p, drawPos, p.Rotation);
+        return Props.DrawPos(p, drawPos, facing);
     }
 
     public virtual LocalTargetInfo PointingTarget(Pawn p)
@@ -195,25 +197,25 @@ public class VerbCompProperties_Draw : VerbCompProperties
 
         if (positions == null)
         {
-            positions = new Dictionary<string, Dictionary<BodyTypeDef, DrawPosition>>();
+            positions = new();
             if (specificPositions != null)
                 foreach (var pos in specificPositions)
                     if (!positions.ContainsKey(pos.defName))
-                        positions.Add(pos.defName, new Dictionary<BodyTypeDef, DrawPosition> { { pos.BodyType, pos } });
+                        positions.Add(pos.defName, new() { { pos.BodyType, pos } });
                     else
                         positions[pos.defName].Add(pos.BodyType, pos);
         }
 
         if (scale == null)
         {
-            scale = new Dictionary<string, Dictionary<BodyTypeDef, Scaling>>();
+            scale = new();
             if (scalings != null)
                 foreach (var scaling in scalings)
                     if (scale.ContainsKey(scaling.defName))
                         scale[scaling.defName].Add(scaling.BodyType, scaling);
                     else
                         scale.Add(scaling.defName,
-                            new Dictionary<BodyTypeDef, Scaling> { { scaling.BodyType, scaling } });
+                            new() { { scaling.BodyType, scaling } });
         }
     }
 }
@@ -260,7 +262,7 @@ public class DrawPosition
 
         if (double.IsPositiveInfinity(vec.x)) vec = Default;
         if (double.IsPositiveInfinity(vec.x)) vec = Vector2.zero;
-        return new Vector3(vec.x, 0, vec.y);
+        return new(vec.x, 0, vec.y);
     }
 }
 

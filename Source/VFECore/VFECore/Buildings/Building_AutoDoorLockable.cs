@@ -55,9 +55,9 @@ namespace VFECore
                 }
             }
         }
-        public override void Draw()
+        protected override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
-            base.Draw();
+            base.DrawAt(drawLoc, flip);
             if (!this.Open)
             {
                 var num = Mathf.Clamp01((float)ticksSinceOpen / (float)TicksToOpenNow);
@@ -91,7 +91,7 @@ namespace VFECore
             };
             command.defaultLabel = "VEF.DoorLockState".Translate(doorStates[curDoorAccess]);
             command.defaultDesc = "VEF.DoorLockStateDesc".Translate();
-            command.disabled = !this.powerComp.PowerOn;
+            command.Disabled = !this.powerComp.PowerOn;
             command.disabledReason = "VEF.DoorLockStatePowerOff".Translate();
             command.icon = DoorStateButton;
             yield return command;

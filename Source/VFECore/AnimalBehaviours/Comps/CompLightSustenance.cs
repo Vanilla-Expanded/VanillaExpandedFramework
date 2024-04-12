@@ -42,7 +42,7 @@ namespace AnimalBehaviours
                     hediff.Severity = 0.2f;
                     addHediffOnce = false;
                 }
-                float num = this.parent.Map.glowGrid.GameGlowAt(this.parent.Position, false);
+                float num = this.parent.Map.glowGrid.GroundGlowAt(this.parent.Position, false);
                
 
                 if (num >= growOptimalGlow)

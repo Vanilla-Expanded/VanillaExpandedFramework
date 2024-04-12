@@ -309,7 +309,7 @@ namespace PipeSystem
 
             if (extractGizmo != null)
             {
-                extractGizmo.disabled = AmountStored < extractResourceAmount;
+                extractGizmo.Disabled = AmountStored < extractResourceAmount;
                 yield return extractGizmo;
             }
 

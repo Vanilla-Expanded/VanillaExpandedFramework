@@ -48,7 +48,7 @@ namespace VFECore
                 return;
             }
             currentlyOn = shouldBeLitNow;
-            parent.Map.mapDrawer.MapMeshDirty(parent.Position, MapMeshFlag.Things);
+            parent.Map.mapDrawer.MapMeshDirty(parent.Position, MapMeshFlagDefOf.Things);
             //Ternary logic statement.
             (currentlyOn ? (Action<CompGlower>)parent.Map.glowGrid.RegisterGlower : parent.Map.glowGrid.DeRegisterGlower)(AsThingComp);
         }

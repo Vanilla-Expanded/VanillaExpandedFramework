@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
@@ -100,9 +101,36 @@ namespace ModSettingsFramework
         {
             if (modPackOverride != null)
             {
-                if (modPackOverride.Patches.OfType<PatchOperationModSettings>().Any(x => x.CanRun()))
+                var patches = modPackOverride.Patches.OfType<PatchOperationModSettings>().Where(x => x.CanRun()).ToList();
+                if (patches.Any())
                 {
-                    return modPackOverride.Name;
+                    var workingPatches = new List<PatchOperationModSettings>();
+                    foreach (var patch in patches)
+                    {
+                        if (patch.category.NullOrEmpty() is false)
+                        {
+                            var category = DefDatabase<ModOptionCategoryDef>.GetNamedSilentFail(patch.category);
+                            if (category != null && category.modPackageSettingsID.NullOrEmpty() is false 
+                                && category.modPackageSettingsID?.ToLower() != modPackOverride.PackageIdPlayerFacing.ToLower())
+                            {
+                                continue;
+                            }
+                            if (patch.modPackageSettingsID.NullOrEmpty() is false 
+                                && patch.modPackageSettingsID?.ToLower() != modPackOverride.PackageIdPlayerFacing.ToLower())
+                            {
+                                continue;
+                            }
+                            if (category != null && category.modSettingsName.NullOrEmpty() is false)
+                            {
+                                return category.modSettingsName;
+                            }
+                        }
+                        workingPatches.Add(patch);
+                    }
+                    if (workingPatches.Any())
+                    {
+                        return modPackOverride.Name;
+                    }
                 }
             }
             return null;

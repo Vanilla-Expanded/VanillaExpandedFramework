@@ -34,7 +34,12 @@
             base.PostSpawnSetup(respawningAfterLoad);
             if(this.learnedAbilities == null)
                 this.learnedAbilities = new List<Abilities.Ability>();
+            this.ticksToReset = int.MaxValue;
+        }
 
+        public override void PostPostMake()
+        {
+            base.PostPostMake();
             this.ticksToReset = int.MaxValue;
         }
 

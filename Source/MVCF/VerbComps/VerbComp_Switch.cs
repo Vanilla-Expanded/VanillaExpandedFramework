@@ -28,7 +28,7 @@ public class VerbComp_Switch : VerbComp
             icon = Props.SwitchIcon,
             action = Enable
         };
-        if (old.disabled) newCommand.Disable(old.disabledReason);
+        if (old.Disabled) newCommand.Disable(old.disabledReason);
         return newCommand;
     }
 

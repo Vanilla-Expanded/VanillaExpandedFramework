@@ -33,7 +33,7 @@ namespace AnimalBehaviours
         {
 
             base.PostSpawnSetup(respawningAfterLoad);
-            List<Pawn> pawnList = parent.Map.mapPawns.AllPawnsSpawned;
+            IReadOnlyList<Pawn> pawnList = parent.Map.mapPawns.AllPawnsSpawned;
             
             foreach(Pawn pawn in pawnList)
             {

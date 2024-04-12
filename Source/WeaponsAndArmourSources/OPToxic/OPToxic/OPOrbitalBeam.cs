@@ -38,7 +38,7 @@ namespace OPToxic
                     OPPowerBeam oppowerBeam = (OPPowerBeam)GenSpawn.Spawn(DefDatabase<ThingDef>.GetNamed("OPPowerBeam", true), position, map, WipeMode.Vanish);
                     oppowerBeam.duration = 120;
                     oppowerBeam.instigator = this;
-                    oppowerBeam.weaponDef = ThingDefOf.OrbitalTargeterPowerBeam;
+                    oppowerBeam.weaponDef = InternalDefOf.OrbitalTargeterPowerBeam;
                     oppowerBeam.StartStrike();
                     if (!this.DestroyedOrNull())
                     {

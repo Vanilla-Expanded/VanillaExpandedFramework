@@ -28,7 +28,7 @@ namespace VanillaStorytellersExpanded
                 {
                     VanillaStorytellersExpanded.harmonyInstance.Patch(method, null, new HarmonyMethod(postfix));
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     Log.Error("Error patching " + cur + " - " + method);
                 }
@@ -186,7 +186,7 @@ namespace VanillaStorytellersExpanded
                     }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception) 
             {
             };
         }

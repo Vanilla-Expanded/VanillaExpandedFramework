@@ -4,6 +4,7 @@
     using RimWorld.Planet;
     using Verse;
     using Verse.AI;
+    using static UnityEngine.GridBrushBase;
 
     public class JobDriver_CastAbilityOnce : JobDriver
     {
@@ -75,7 +76,11 @@
                             };
             yield return castToil;
 
-            this.AddFinishAction(() => comp.currentlyCasting.EndCastJob());
+           
+            this.AddFinishAction(delegate
+            {
+                comp.currentlyCasting.EndCastJob();
+            });
         }
     }
 }

@@ -17,5 +17,7 @@ namespace KCSG
         public static JobDef KCSG_GoToPassage;
 
         public static WorldObjectDef KCSG_UndergroundRoom;
+
+        public static DesignationCategoryDef Security;
     }
 }

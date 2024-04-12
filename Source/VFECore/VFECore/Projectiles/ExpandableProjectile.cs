@@ -125,10 +125,10 @@ namespace VFECore
 			}
 		}
 
-		public override void Draw()
-		{
-			DrawProjectile();
-		}
+        protected override void DrawAt(Vector3 drawLoc, bool flip = false)
+        {
+            DrawProjectile();
+        }
 
 		public int TickFrameRate
 		{

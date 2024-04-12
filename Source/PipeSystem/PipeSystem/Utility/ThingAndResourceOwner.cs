@@ -41,6 +41,7 @@ namespace PipeSystem
         public void ExposeData()
         {
             Scribe_Values.Look(ref wantedCount, "wantedCount");
+            Scribe_Values.Look(ref count, "count");
             Scribe_Values.Look(ref beingFilled, "beingFilled");
             Scribe_Defs.Look(ref pipeNetDef, "pipeNetDef");
             Scribe_Defs.Look(ref thingDef, "thingDef");

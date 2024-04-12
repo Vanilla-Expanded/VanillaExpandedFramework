@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+    <Operation Class="PatchOperationInsert">
+        <xpath>/Defs/ThinkTreeDef[defName="MainColonistBehaviorCore"]/thinkRoot/subNodes/li/subNodes/li[@Class="JobGiver_Reload"]</xpath>
+        <value>
+            <li Class="Reloading.JobGiver_Reload" />
+        </value>
+    </Operation>
+    <Operation Class="PatchOperationInsert">
+        <order>Prepend</order>
+        <xpath>/Defs/DutyDef/thinkNode/subNodes/li[@Class="JobGiver_AIFightEnemies"]</xpath>
+        <value>
+            <li Class="Reloading.JobGiver_ReloadFromInventory" />
+        </value>
+    </Operation>
+</Patch>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using Verse;
+using RimWorld;
 
 
 namespace VanillaFurnitureExpanded
@@ -17,8 +18,7 @@ namespace VanillaFurnitureExpanded
         public Graphic_Single newGraphicSingle;
         public string newGraphicPath = "";
         public string newGraphicSinglePath = "";
-        public bool reloading = false;
-
+      
         public CompProperties_RandomBuildingGraphic Props
         {
             get
@@ -30,8 +30,7 @@ namespace VanillaFurnitureExpanded
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             thingToGrab = parent;
-            //Reloading is unused now, kept for compatibility only. Remove in 1.5
-            reloading = true;
+           
             //Using LongEventHandler to avoid having to create a GraphicCache
             LongEventHandler.ExecuteWhenFinished(delegate { ChangeGraphic(true,0); });
 
@@ -127,8 +126,7 @@ namespace VanillaFurnitureExpanded
         {
             Scribe_Values.Look<string>(ref newGraphicPath, "newGraphicPath");
             Scribe_Values.Look<string>(ref newGraphicSinglePath, "newGraphicSinglePath");
-            Scribe_Values.Look<bool>(ref reloading, "reloading", false);
-
+           
         }
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
@@ -150,7 +148,7 @@ namespace VanillaFurnitureExpanded
                             newGraphicSinglePath = "";
 
                             LongEventHandler.ExecuteWhenFinished(delegate { ChangeGraphic(true, 0,true); });
-                            parent.Map.mapDrawer.MapMeshDirty(parent.Position, MapMeshFlag.Things | MapMeshFlag.Buildings);
+                            parent.Map.mapDrawer.MapMeshDirty(parent.Position, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.Buildings);
                         }
                     };
 

@@ -15,7 +15,7 @@ namespace PipeSystem
         {
             if (def is ProcessDef process)
             {
-                Widgets.ThingIcon(rect, process.thing, stuffDef, thingStyleDef, scale, color, graphicIndexOverride);
+                Widgets.ThingIcon(rect, process.results[0].thing, stuffDef, thingStyleDef, scale, color, graphicIndexOverride);
                 return false;
             }
             return true; // Continue

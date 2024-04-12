@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+    <ThingDef ParentName="PowerConduit">
+        <defName>KCSG_PowerConduit</defName>
+        <label>power conduit</label>
+        <description>A burried bundle of electrical cables for moving power around.</description>
+        <graphicData>
+            <texPath>UI/CSG/IConduit</texPath>
+        </graphicData>
+        <designationCategory Inherit="False" />
+    </ThingDef>
+</Defs>

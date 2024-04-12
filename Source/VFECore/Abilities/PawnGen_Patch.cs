@@ -26,7 +26,7 @@ namespace VFECore.Abilities
                 {
                     Hediff_Abilities implant = __result.health?.hediffSet?.GetFirstHediffOfDef(abilityExtension.implantDef) as Hediff_Abilities ??
                                                HediffMaker.MakeHediff(abilityExtension.implantDef, __result,
-                                                                      __result.RaceProps?.body?.GetPartsWithDef(BodyPartDefOf.Brain).FirstOrFallback()) as Hediff_Abilities;
+                                                                      __result.RaceProps?.body?.GetPartsWithDef(VFEDefOf.Brain).FirstOrFallback()) as Hediff_Abilities;
                     if (implant != null)
                     {
                         implant.giveRandomAbilities = abilityExtension.giveRandomAbilities;

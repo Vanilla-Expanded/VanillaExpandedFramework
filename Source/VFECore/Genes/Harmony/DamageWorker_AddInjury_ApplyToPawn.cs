@@ -15,13 +15,18 @@ namespace VanillaGenesExpanded
             var damageEffecterField = AccessTools.Field(typeof(FleshTypeDef), nameof(FleshTypeDef.damageEffecter));
             var getEffecterDef = AccessTools.Method(typeof(VanillaGenesExpanded_DamageWorker_AddInjury_ApplyToPawn_Patch), nameof(GetEffecterDef));
 
-            return new CodeMatcher(codeInstructions)
-                .SearchForward(instr => instr.LoadsField(damageEffecterField))
-                .Insert(
-                    new CodeInstruction(OpCodes.Ldarg_2), // pawn
-                    new CodeInstruction(OpCodes.Call, getEffecterDef)
-                )
-                .InstructionEnumeration();
+            foreach (var codeInstruction in codeInstructions)
+            {
+                yield return codeInstruction;
+                if (codeInstruction.opcode == OpCodes.Stloc_S 
+                    && codeInstruction.operand is LocalBuilder lb && lb.LocalIndex == 11)
+                {
+                    yield return new CodeInstruction(OpCodes.Ldloc_S, 11);
+                    yield return new CodeInstruction(OpCodes.Ldarg_2);
+                    yield return new CodeInstruction(OpCodes.Call, getEffecterDef);
+                    yield return new CodeInstruction(OpCodes.Stloc_S, 11);
+                }
+            }
         }
 
         public static EffecterDef GetEffecterDef(EffecterDef effecterDef, Pawn curPawn)

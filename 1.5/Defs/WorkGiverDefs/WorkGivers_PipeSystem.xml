@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <WorkGiverDef>
+    <defName>PS_DrainOutOfStorage</defName>
+    <label>drain out of storage</label>
+    <giverClass>PipeSystem.WorkGiver_DrainFromMarkedStorage</giverClass>
+    <workType>Hauling</workType>
+    <verb>drain out of storage</verb>
+    <gerund>draining out of storage</gerund>
+    <priorityInType>100</priorityInType>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>PS_FillStorage</defName>
+    <label>fill storage</label>
+    <giverClass>PipeSystem.WorkGiver_RefillStorage</giverClass>
+    <workType>Hauling</workType>
+    <verb>fill storage</verb>
+    <gerund>filling storage</gerund>
+    <priorityInType>99</priorityInType>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>PS_PickUpProcessor</defName>
+    <label>pick up result from processor</label>
+    <giverClass>PipeSystem.WorkGiver_PickUpProcessor</giverClass>
+    <workType>Hauling</workType>
+    <verb>pick up result</verb>
+    <gerund>picking up result</gerund>
+    <priorityInType>98</priorityInType>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>PS_BringToProcessor</defName>
+    <label>bring ingredient to processor</label>
+    <giverClass>PipeSystem.WorkGiver_BringToProcessor</giverClass>
+    <workType>Hauling</workType>
+    <verb>bring ingredient</verb>
+    <gerund>bringing ingredient</gerund>
+    <priorityInType>97</priorityInType>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+</Defs>

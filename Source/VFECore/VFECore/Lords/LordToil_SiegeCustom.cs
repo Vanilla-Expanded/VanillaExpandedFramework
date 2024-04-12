@@ -79,7 +79,7 @@ namespace VFECore
             {
                 var blueprint_Build = placedBlueprints[i];
                 Data.blueprints.Add(blueprint_Build);
-                using (List<ThingDefCountClass>.Enumerator enumerator2 = blueprint_Build.MaterialsNeeded().GetEnumerator())
+                using (List<ThingDefCountClass>.Enumerator enumerator2 = blueprint_Build.TotalMaterialCost().GetEnumerator())
                 {
                     while (enumerator2.MoveNext())
                     {

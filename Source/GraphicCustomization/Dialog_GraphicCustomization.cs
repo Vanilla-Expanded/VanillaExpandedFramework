@@ -41,7 +41,7 @@ namespace GraphicCustomization
             compGeneratedName = this.comp.parent.GetComp<CompGeneratedNames>();
             if (compGeneratedName != null)
             {
-                currentName = compGeneratedName.name;
+                currentName = compGeneratedName.Name;
             }
         }
 

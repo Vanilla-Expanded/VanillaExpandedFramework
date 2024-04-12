@@ -16,7 +16,7 @@ public abstract class VerbComp : IExposable
 
     public virtual void ExposeData() { }
 
-    public virtual void DrawOnAt(Pawn p, Vector3 drawPos) { }
+    public virtual void CompDrawOn(Pawn pawn, Vector3 drawPos, Rot4 facing, PawnRenderFlags flags) { }
 
     public virtual void ModifyScore(Pawn p, LocalTargetInfo target, ref float score) { }
 

@@ -15,7 +15,7 @@ namespace VanillaGenesExpanded
             }
             if (req.HasThing && req.Thing.Spawned)
             {
-                return req.Thing.Map.glowGrid.GameGlowAt(req.Thing.Position)>=0.5f;
+                return req.Thing.Map.glowGrid.GroundGlowAt(req.Thing.Position)>=0.5f;
             }
             return false;
         }

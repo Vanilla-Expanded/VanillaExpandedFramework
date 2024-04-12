@@ -15,10 +15,8 @@ namespace PipeSystem
         public int ticks = 600;                                         // Produce each X tick(s): Default to 600 ticks (10 sec)
         public int wastePackToProduce = 0;                              // Number of wastepack to produce when process end
         public List<ResearchProjectDef> researchPrerequisites;          // Research required to unlock the process
-        // TODO: Multiple results
-        public ThingDef thing;                                          // Result as a thing
-        public PipeNetDef pipeNet;                                      // Result as a piped resource
-        public int count;                                               // Count to produce
+
+        public List<Result> results = new List<Result>();
 
         public Color finishedColor = new Color(0.9f, 0.85f, 0.2f);      // Bar color when finished
         public Color lowProgressColor = new Color(0.4f, 0.27f, 0.22f);  // Bar color low progress
@@ -42,6 +40,35 @@ namespace PipeSystem
             public ThingDef thing;
             // Amount needed to produce result
             public int countNeeded;
+        }
+
+        /// <summary>
+        /// Ingredient: can be pipeNet or thingDef and a count
+        /// </summary>
+        public class Result
+        {
+            public PipeNetDef pipeNet;                          // Result as a piped resource
+            public ThingDef thing;                              // Result as a thing
+            public int count;                                   // Count to produce
+            public IntVec3 outputCellOffset = IntVec3.Invalid;  // Result cell output (offset based on center)
+        }
+
+        public override IEnumerable<string> ConfigErrors()
+        {
+            foreach (var error in base.ConfigErrors())
+                yield return error;
+
+            if (ingredients.NullOrEmpty())
+                yield return $"ProcessDef cannot have empty or null <ingredients>";
+            if (results.NullOrEmpty())
+                yield return $"ProcessDef cannot have empty or null <results>";
+
+            for (int i = 0; i < results.Count; i++)
+            {
+                var result = results[i];
+                if (result.pipeNet != null && result.thing == null && result.outputCellOffset != IntVec3.Invalid)
+                    yield return $"ProcessDef result ({i}) <outputCellOffset> does not apply to net result";
+            }
         }
     }
 }

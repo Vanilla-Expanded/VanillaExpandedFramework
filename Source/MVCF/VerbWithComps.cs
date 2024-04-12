@@ -86,11 +86,11 @@ public class VerbWithComps : ManagedVerb
         foreach (var comp in comps) comp.Notify_Despawned();
     }
 
-    public override void DrawOn(Pawn p, Vector3 drawPos)
+    public override void DrawOn(Pawn pawn, Vector3 drawPos, Rot4 facing, PawnRenderFlags flags)
     {
-        base.DrawOn(p, drawPos);
+        base.DrawOn(pawn, drawPos, facing, flags);
         // ReSharper disable once ForCanBeConvertedToForeach
-        for (var i = 0; i < drawComps.Count; i++) drawComps[i].DrawOnAt(p, drawPos);
+        for (var i = 0; i < drawComps.Count; i++) drawComps[i].CompDrawOn(pawn, drawPos, facing, flags);
     }
 
     public override bool Available() => base.Available() && comps.All(comp => comp.Available());

@@ -167,7 +167,7 @@ namespace VFECore
                             {
                                 thing = ThingMaker.MakeThing(thingDef, GenStuff.RandomStuffFor(thingDef));
                             }
-                            catch (Exception e)
+                            catch (Exception)
                             {
                                 Log.Error("Error making: " + thingDef);
                                 break;

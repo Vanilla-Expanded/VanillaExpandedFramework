@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <WorldObjectDef>
+    <defName>KCSG_UndergroundRoom</defName>
+    <label>underground room</label>
+    <description>An underground room.</description>
+    <worldObjectClass>MapParent</worldObjectClass>
+    <texture>UI/CSG/IConduit</texture>
+    <selectable>false</selectable>
+    <mapGenerator>KCSG_Underground</mapGenerator>
+  </WorldObjectDef>
+
+  <MapGeneratorDef>
+    <defName>KCSG_Underground</defName>
+    <genSteps>
+      <li>ElevationFertility</li>
+      <li>Terrain</li>
+      <li>FindPlayerStartSpot</li>
+      <li>Fog</li>
+    </genSteps>
+  </MapGeneratorDef>
+</Defs>

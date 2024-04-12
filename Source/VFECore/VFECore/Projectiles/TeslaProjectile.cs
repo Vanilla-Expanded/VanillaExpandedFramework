@@ -189,7 +189,8 @@ namespace VFEMech
                 return null;
             }
         }
-        public override void Draw()
+
+        protected override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
             var vec1 = Holder.TrueCenter();
             var vec2 = this.DrawPos;
@@ -204,6 +205,7 @@ namespace VFEMech
                 Matrix4x4.TRS(vec2 + (vec1 - vec2) / 2, Quaternion.AngleAxis(vec1.AngleToFlat(vec2) + 90f, Vector3.up), new Vector3(1f, 1f, (vec1 - vec2).magnitude)),
                 Graphic.MatSingle, 0);
         }
+
         public void FireAt(Thing target)
         {
             var projectile = (TeslaProjectile)GenSpawn.Spawn(this.def, Position, Map);

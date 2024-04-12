@@ -49,7 +49,7 @@ namespace VanillaStorytellersExpanded
                         }
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
 
                 }

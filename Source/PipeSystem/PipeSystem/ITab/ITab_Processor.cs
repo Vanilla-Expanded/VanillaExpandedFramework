@@ -24,13 +24,14 @@ namespace PipeSystem
             var comp = CachedCompAdvancedProcessor.GetFor(SelThing);
             var rect = new Rect(0f, 0f, WinSize.x, WinSize.y).ContractedBy(10f);
             Widgets.BeginGroup(rect);
-            // Add def button
+            // Add process button
             var processButton = new Rect(0f, 0f, 150f, 29f);
             if (Widgets.ButtonText(processButton, "PipeSystem_AddProcess".Translate()))
             {
                 Find.WindowStack.Add(new FloatMenu(comp.ProcessesOptions));
             }
             UIHighlighter.HighlightOpportunity(processButton, "PipeSystem_AddProcess");
+            // Add setting button
             var settingsButton = new Rect(rect.width - 24f - 16f, 2.5f, 24f, 24f);
             if (Widgets.ButtonImage(settingsButton, TexButton.OpenDebugActionsMenu))
             {

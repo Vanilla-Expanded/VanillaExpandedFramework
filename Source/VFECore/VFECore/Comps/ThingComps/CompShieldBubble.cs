@@ -198,17 +198,6 @@ namespace VFECore
 			Scribe_Values.Look(ref lastKeepDisplayTick, "lastKeepDisplayTick", 0);
 		}
 
-        public override string CompInspectStringExtra()
-        {
-			StringBuilder sb = new StringBuilder(base.CompInspectStringExtra());
-			if (Prefs.DevMode)
-            {
-				sb.AppendLine("EnergyMax: " + EnergyMax);
-				sb.AppendLine("EnergyGainPerTick: " + EnergyGainPerTick);
-				sb.AppendLine("Energy: " + Energy);
-			}
-			return sb.ToString().TrimEndNewlines();
-		}
         public override void CompTick()
 		{
 			base.CompTick();
@@ -320,11 +309,13 @@ namespace VFECore
 			}
 		}
 
-        public override void PostPreApplyDamage(DamageInfo dinfo, out bool absorbed)
-		{
-			base.PostPreApplyDamage(dinfo, out absorbed);
-			AbsorbingDamage(dinfo, out absorbed);
-		}
+
+        public override void PostPreApplyDamage(ref DamageInfo dinfo, out bool absorbed)
+        {
+            base.PostPreApplyDamage(ref dinfo, out absorbed);
+            AbsorbingDamage(dinfo, out absorbed);
+        }
+
 		public bool AbsorbingDamage(DamageInfo dinfo, out bool absorbed)
 		{
 			if (ShieldState != ShieldState.Active)
@@ -392,7 +383,7 @@ namespace VFECore
 				if (Props.brokenSound != null)
 					Props.brokenSound.PlayOneShot(new TargetInfo(this.Pawn.Position, this.Pawn.Map));
 				else
-					SoundDefOf.EnergyShield_Broken.PlayOneShot(new TargetInfo(this.Pawn.Position, this.Pawn.Map));
+                    VFEDefOf.EnergyShield_Broken.PlayOneShot(new TargetInfo(this.Pawn.Position, this.Pawn.Map));
 				
 				FleckMaker.Static(this.Pawn.TrueCenter(), this.Pawn.Map, FleckDefOf.ExplosionFlash, 12f);
 				for (int i = 0; i < 6; i++)
@@ -432,8 +423,8 @@ namespace VFECore
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
-            if (typeof(Abilities.CompAbilities).IsAssignableFrom(this.Props.compClass) is false 
-				&& Find.Selector.SingleSelectedThing == this.Pawn && this.Pawn.Faction == Faction.OfPlayer)
+            if (typeof(Abilities.CompAbilities).IsAssignableFrom(this.Props.compClass) is false && this.Pawn != null
+                && Find.Selector.SingleSelectedThing == this.Pawn && this.Pawn.Faction == Faction.OfPlayer)
             {
                 Gizmo_EnergyCompShieldStatus gizmo_EnergyShieldStatus = new Gizmo_EnergyCompShieldStatus();
                 gizmo_EnergyShieldStatus.shield = this;
@@ -442,7 +433,7 @@ namespace VFECore
         }
         public override IEnumerable<Gizmo> CompGetWornGizmosExtra()
 		{
-            if (Find.Selector.SingleSelectedThing == this.Pawn && this.Pawn.IsColonistPlayerControlled)
+            if (this.Pawn != null && Find.Selector.SingleSelectedThing == this.Pawn && this.Pawn.IsColonistPlayerControlled)
             {
                 Gizmo_EnergyCompShieldStatus gizmo_EnergyShieldStatus = new Gizmo_EnergyCompShieldStatus();
                 gizmo_EnergyShieldStatus.shield = this;

@@ -31,13 +31,12 @@
             }
         }
 
-        public override bool CanBeUsedBy(Pawn p, out string failReason)
+        public override AcceptanceReport CanBeUsedBy(Pawn p)
         {
-            if (!base.CanBeUsedBy(p, out failReason))
+            if (!base.CanBeUsedBy(p))
                 return false;
 
             CompAbilities comp = p.GetComp<CompAbilities>();
-
             return comp != null;
         }
     }

@@ -80,7 +80,7 @@ namespace VFECore.Misc
                         Pawn pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(kvp.Key, mustBeCapableOfViolence: true, faction: Faction.OfPlayer,
                                                                                          forbidAnyTitle: true, fixedIdeo: curFaction.referencedFaction is null || Find.World.factionManager.FirstFactionOfDef(curFaction.referencedFaction) is not {} refFaction ? 
                                                                                                                               hiredIdeo ??= IdeoGenerator.GenerateIdeo(
-                                                                                                                               new IdeoGenerationParms(Faction.OfPlayer.def, classic: true)) : 
+                                                                                                                               new IdeoGenerationParms(Faction.OfPlayer.def, classicExtra: true)) : 
                                                                                                                               refFaction.ideos.GetRandomIdeoForNewPawn()));
                         
                         kvp.Key.ignoreFactionApparelStuffRequirements = flag;

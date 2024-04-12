@@ -52,15 +52,15 @@ namespace PipeSystem
             {
                 // Unregister it, and make our MapMeshFlag dirty at this pos
                 PipeNetManager.UnregisterConnector(this);
-                map.mapDrawer.MapMeshDirty(root, MapMeshFlag.Things, true, false);
-                map.mapDrawer.MapMeshDirty(root, (MapMeshFlag)455, true, false);
+                map.mapDrawer.MapMeshDirty(root, MapMeshFlagDefOf.Things, true, false);
+                map.mapDrawer.MapMeshDirty(root, 455, true, false);
             }
             if (signal == CompFlickable.FlickedOnSignal)
             {
                 // Register it, and make our MapMeshFlag dirty at this pos
                 PipeNetManager.RegisterConnector(this);
-                map.mapDrawer.MapMeshDirty(root, MapMeshFlag.Things, true, false);
-                map.mapDrawer.MapMeshDirty(root, (MapMeshFlag)455, true, false);
+                map.mapDrawer.MapMeshDirty(root, MapMeshFlagDefOf.Things, true, false);
+                map.mapDrawer.MapMeshDirty(root, 455, true, false);
             }
             base.ReceiveCompSignal(signal);
         }

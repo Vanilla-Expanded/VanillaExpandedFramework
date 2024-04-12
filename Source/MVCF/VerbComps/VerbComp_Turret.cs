@@ -86,15 +86,15 @@ public class VerbComp_Turret : VerbComp_Draw
      && !(!parent.Verb.verbProps.violent || pawn.WorkTagIsDisabled(WorkTags.Violent))
      && parent.Verb.IsStillUsableBy(pawn);
 
-    public override void DrawOnAt(Pawn p, Vector3 drawPos)
+    public override void CompDrawOn(Pawn pawn, Vector3 drawPos, Rot4 facing, PawnRenderFlags flags)
     {
-        base.DrawOnAt(p, drawPos);
-        if (Find.Selector.IsSelected(p) && Target.IsValid)
+        base.CompDrawOn(pawn, drawPos, facing, flags);
+        if (Find.Selector.IsSelected(pawn) && Target.IsValid)
         {
             if (warmUpTicksLeft > 0)
-                GenDraw.DrawAimPie(p, Target, warmUpTicksLeft, 0.2f);
+                GenDraw.DrawAimPie(pawn, Target, warmUpTicksLeft, 0.2f);
             if (cooldownTicksLeft > 0)
-                GenDraw.DrawCooldownCircle(p.DrawPos, cooldownTicksLeft * 0.002f);
+                GenDraw.DrawCooldownCircle(drawPos, cooldownTicksLeft * 0.002f);
             GenDraw.DrawLineBetween(drawPos, Target.HasThing ? Target.Thing.DrawPos : Target.Cell.ToVector3());
         }
     }

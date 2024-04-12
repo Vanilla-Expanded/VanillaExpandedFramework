@@ -12,7 +12,7 @@ using Verse.Sound;
 namespace VFECore
 {
     [StaticConstructorOnStartup]
-    public class DoorTeleporter : ThingWithComps
+    public class DoorTeleporter : ThingWithComps, IRenameable
     {
         public Material backgroundMat;
         public RenderTexture background1;
@@ -22,6 +22,22 @@ namespace VFECore
         public Vector2 backgroundOffset;
         public Sustainer sustainer;
         public string Name { get; set; }
+
+        public string RenamableLabel
+        {
+            get
+            {
+                return Name ?? BaseLabel;
+            }
+            set
+            {
+                Name = value;
+            }
+        }
+
+        public string BaseLabel => this.def.label;
+
+        public string InspectLabel => RenamableLabel;
 
         public static Dictionary<ThingDef, DoorTeleporterMaterials> doorTeleporterMaterials = new();
         static DoorTeleporter()
@@ -133,7 +149,7 @@ namespace VFECore
             teleportEffecters.Remove(thing);
         }
 
-        public override void DrawAt(Vector3 drawLoc, bool flip = false)
+        protected override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
             var doorMaterials = doorTeleporterMaterials[def];
             var drawSize = new Vector3(this.def.size.x, 1, this.def.size.z);

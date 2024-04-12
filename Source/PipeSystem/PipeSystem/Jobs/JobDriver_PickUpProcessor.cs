@@ -30,9 +30,10 @@ namespace PipeSystem
             toil.initAction = delegate
             {
                 CachedAdvancedProcessorsManager.GetFor(Map).PickupDone(comp);
-                comp.Process.SpawnOrPushToNet(pawn.Position, out Thing outThing, pawn);
-                if (outThing != null)
+                comp.Process.SpawnOrPushToNet(pawn.Position, out List<Thing> outThings, pawn);
+                if (!outThings.NullOrEmpty())
                 {
+                    var outThing = outThings[0];
                     var currentPriority = StoreUtility.CurrentStoragePriorityOf(outThing);
                     if (StoreUtility.TryFindBestBetterStoreCellFor(outThing, pawn, Map, currentPriority, pawn.Faction, out var foundCell))
                     {

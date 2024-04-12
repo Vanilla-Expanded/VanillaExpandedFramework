@@ -49,7 +49,7 @@ namespace OPToxic
             IntVec3 c = (from x in GenRadial.RadialCellsAround(Position, EffRadius, true)
                          where x.InBounds(Map)
                          select x).RandomElementByWeight((IntVec3 x) => 1f - Mathf.Min(x.DistanceTo(Position) / EffRadius, 1f) + 0.05f);
-            FireUtility.TryStartFireIn(c, Map, Rand.Range(0.1f, 0.5f));
+            FireUtility.TryStartFireIn(c, Map, Rand.Range(0.1f, 0.5f),null);
             tmpThings.Clear();
             tmpThings.AddRange(c.GetThingList(Map));
             for (int i = 0; i < tmpThings.Count; i++)
