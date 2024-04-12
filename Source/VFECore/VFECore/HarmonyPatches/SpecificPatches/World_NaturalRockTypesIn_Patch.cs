@@ -12,7 +12,9 @@ namespace VFECore
         [HarmonyPostfix]
         public static IEnumerable<ThingDef> Postfix(IEnumerable<ThingDef> rocks, int tile, World __instance)
         {
-            var biome = __instance.grid[tile].biome;
+            var tileInfo = __instance.grid[tile];
+            if (tileInfo is null) return rocks;
+            var biome = tileInfo.biome;
             var list  = rocks.ToList();
             Rand.PushState(tile);
             var num   = Rand.RangeInclusive(2, 3);
