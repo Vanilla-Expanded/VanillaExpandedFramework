@@ -100,7 +100,6 @@ namespace VanillaGenesExpanded
 
         public List<GeneDef> applySkinColorWithGenes;
 
-        public ShaderTypeDef forceHeadShader;
         public class SizeByAge
         {
             // Size of the pawn at the bottom of the range.

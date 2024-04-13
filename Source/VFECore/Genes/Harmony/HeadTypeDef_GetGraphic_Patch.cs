@@ -19,7 +19,7 @@ namespace VanillaGenesExpanded
                 if (codes[i].opcode == OpCodes.Stloc_0)
                 {
                     yield return new CodeInstruction(OpCodes.Ldloc_0);
-                    yield return new CodeInstruction(OpCodes.Ldarg_1);
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
                     yield return new CodeInstruction(OpCodes.Call,
                         AccessTools.Method(typeof(HeadTypeDef_GetGraphic_Patch), nameof(TryChangeShader)));
                     yield return new CodeInstruction(OpCodes.Stloc_0);
@@ -27,22 +27,12 @@ namespace VanillaGenesExpanded
             }
         }
 
-        public static Shader TryChangeShader(Shader shader, Pawn pawn)
+        public static Shader TryChangeShader(Shader shader, HeadTypeDef def)
         {
-            if (ModsConfig.BiotechActive && pawn?.RaceProps?.Humanlike == true && pawn?.genes != null)
+            var extension = def.GetModExtension<HeadExtension>();
+            if (extension?.forcedHeadShader != null)
             {
-                List<Gene> genes = pawn.genes.GenesListForReading;
-                foreach (Gene gene in genes)
-                {
-                    if (gene.Active)
-                    {
-                        var extension = gene.def.GetModExtension<GeneExtension>();
-                        if (extension?.forceHeadShader != null)
-                        {
-                            return extension.forceHeadShader.Shader;
-                        }
-                    }
-                }
+                return extension.forcedHeadShader.Shader;
             }
             return shader;
         }
