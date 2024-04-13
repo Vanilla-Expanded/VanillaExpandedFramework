@@ -100,61 +100,7 @@ namespace VanillaGenesExpanded
 
         public List<GeneDef> applySkinColorWithGenes;
 
-        // specific rotations
-        public GeneOffsets offsets = new();
-
-        public class GeneOffsets
-        {
-            public Vector3 GetOffset(Pawn pawn, Rot4 rotation)
-            {
-                Vector3 vector3 = this.GetOffset(rotation)?.GetOffset(pawn.story?.bodyType) ?? Vector3.zero;
-
-                if (rotation == Rot4.East)
-                    vector3.x = -vector3.x;
-                else if (rotation == Rot4.North && this.layerInvert)
-                    vector3.y = -vector3.y;
-
-                return vector3;
-            }
-
-            public RotationOffset GetOffset(Rot4 rotation) =>
-                rotation == Rot4.South ? this.south :
-                rotation == Rot4.North ? this.north :
-                rotation == Rot4.East  ? this.east ?? this.west : 
-                                         this.west;
-
-            public RotationOffset south = new();
-            public RotationOffset north = new();
-            public RotationOffset east  = new();
-            public RotationOffset west;
-
-            public bool layerInvert = true;
-        }
-
-        public class RotationOffset
-        {
-            public Vector3 GetOffset(BodyTypeDef bodyType)
-            {
-                Vector3 bodyOffset = this.bodyTypes?.FirstOrDefault(predicate: to => to.bodyType == bodyType)?.offset ?? Vector3.zero;
-                return new Vector3(bodyOffset.x, bodyOffset.y, bodyOffset.z);
-            }
-
-            public List<BodyTypeOffset> bodyTypes;
-        }
-
-        public class BodyTypeOffset
-        {
-            public BodyTypeDef bodyType;
-            public Vector3     offset = Vector3.zero;
-
-            [UsedImplicitly]
-            public void LoadDataFromXmlCustom(XmlNode xmlRoot)
-            {
-                DirectXmlCrossRefLoader.RegisterObjectWantsCrossRef(this, nameof(this.bodyType), xmlRoot.Name);
-                this.offset = (Vector3)ParseHelper.FromString(xmlRoot.FirstChild.Value, typeof(Vector3));
-            }
-        }
-
+        public ShaderTypeDef forceHeadShader;
         public class SizeByAge
         {
             // Size of the pawn at the bottom of the range.

@@ -317,13 +317,5 @@ namespace VanillaGenesExpanded
             }
             return scale;
         }
-
-        public static Vector3 GeneOffset(Vector3 offset, Gene gene, Pawn pawn, Rot4 rot)
-        {
-            GeneExtension extension = gene.def.GetModExtension<GeneExtension>();
-            return extension != null ?
-                       offset + extension.offsets.GetOffset(pawn, rot) :
-                       offset;
-        }
     }
 }

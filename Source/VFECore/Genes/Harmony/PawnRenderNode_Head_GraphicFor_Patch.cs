@@ -26,6 +26,7 @@ namespace VanillaGenesExpanded
                                 {
                                     Shader skinShader = ShaderUtility.GetSkinShader(pawn);
                                     __result = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(extension.headDessicatedGraphicPath, skinShader, Vector2.one, Color.white);
+                                    return;
                                 }
                             }
                         }
