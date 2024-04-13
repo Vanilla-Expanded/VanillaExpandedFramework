@@ -445,7 +445,7 @@
     <Compile Include="Genes\Harmony\Patch_GenesChanged.cs" />
     <Compile Include="Genes\Harmony\Patch_ThoughtWorker_NeedFood.cs" />
     <Compile Include="Genes\Harmony\Path_ChildrenLearning.cs" />
-    <Compile Include="Genes\Harmony\PawnRenderNode_ShaderFor_Patch.cs" />
+    <Compile Include="Genes\Harmony\HeadTypeDef_GetGraphic_Patch.cs" />
     <Compile Include="Genes\Harmony\Pawn_HealthTracker_DropBloodSmear_Patch.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_ParallelGetPreRenderResults.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_Pawn_NeedsTracker.cs" />
