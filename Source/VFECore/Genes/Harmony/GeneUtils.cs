@@ -283,7 +283,7 @@ namespace VanillaGenesExpanded
                     if (extension.bodyScaleFactorsPerLifestages != null
                             && extension.bodyScaleFactorsPerLifestages.TryGetValue(pawn.ageTracker.CurLifeStage, out var lifestageScale))
                     {
-                        scale = new Vector3(scale.x * lifestageScale.x, 1, scale.z * lifestageScale.y);
+                        scale = new Vector3(scale.x * lifestageScale.x, scale.y, scale.z * lifestageScale.y);
                     }
                 }
             }
