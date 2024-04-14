@@ -60,7 +60,7 @@ namespace AnimalBehaviours
                                     }
                                     else
                                     {
-                                        bool wellbeingAffectedFlag = thisPawn.needs.food.Starving || (thisPawn.health.hediffSet.PainTotal > 0);
+                                        bool wellbeingAffectedFlag = thisPawn.needs?.food?.Starving ==true || (thisPawn.health.hediffSet.PainTotal > 0);
                                         if (wellbeingAffectedFlag)
                                         {
                                             pawn.needs.mood.thoughts.memories.RemoveMemoriesOfDef(ThoughtDef.Named(Props.thoughtDef));

@@ -73,7 +73,7 @@ namespace AnimalBehaviours
 
             yield return chew;
             yield return FinalizeIngestAnything(this.pawn, TargetIndex.A, comp);
-            yield return Toils_Jump.JumpIf(chew, () => this.job.GetTarget(TargetIndex.A).Thing is Corpse && this.pawn.needs.food.CurLevelPercentage < 0.9f);
+            yield return Toils_Jump.JumpIf(chew, () => this.job.GetTarget(TargetIndex.A).Thing is Corpse && this.pawn.needs?.food?.CurLevelPercentage < 0.9f);
             yield break;
 
         }

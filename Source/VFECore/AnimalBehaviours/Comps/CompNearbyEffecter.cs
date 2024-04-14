@@ -53,7 +53,12 @@ namespace AnimalBehaviours
                                         }
                                         if (Props.feedCauser)
                                         {
-                                            pawn.needs.food.CurLevel += Props.nutritionGained;
+                                            if (pawn?.needs?.food != null)
+                                            {
+                                                pawn.needs.food.CurLevel += Props.nutritionGained;
+
+                                            }
+                                          
 
                                         }
                                         current2.Destroy();

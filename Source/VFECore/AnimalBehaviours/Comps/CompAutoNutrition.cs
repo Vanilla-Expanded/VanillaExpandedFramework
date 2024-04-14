@@ -28,7 +28,7 @@ namespace AnimalBehaviours
             {
                 Pawn pawn = this.parent as Pawn;
                
-                if ((this.parent.Map != null) && (pawn.needs.food.CurLevelPercentage < 0.5f) && (pawn.Awake()))
+                if ((this.parent.Map != null) && (pawn.needs?.food?.CurLevelPercentage < 0.5f) && (pawn.Awake()))
                 {
                    
                     Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("VEF_AutoNutrition", true), this.parent);

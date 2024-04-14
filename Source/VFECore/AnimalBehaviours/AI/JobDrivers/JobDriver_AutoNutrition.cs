@@ -29,7 +29,10 @@ namespace AnimalBehaviours
 
             yield return Toils_General.Do(delegate
             {
-                this.pawn.needs.food.CurLevel += 1;
+                if (this.pawn?.needs?.food != null) {
+                    this.pawn.needs.food.CurLevel += 1;
+                }
+                
 
             });
         }
