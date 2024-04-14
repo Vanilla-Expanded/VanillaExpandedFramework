@@ -87,10 +87,22 @@ namespace ModSettingsFramework
         protected void DoCheckbox(Listing_Standard listingStandard, string optionLabel, ref bool field, string explanation)
         {
             Rect rect = new Rect(listingStandard.curX, listingStandard.curY, listingStandard.ColumnWidth, Text.LineHeight);
-            listingStandard.CheckboxLabeled(optionLabel, ref field);
+            CheckboxLabeled(listingStandard, optionLabel, ref field);
             ShowExplanation(listingStandard, explanation, rect);
             listingStandard.Gap(5);
             scrollHeight += 29;
+        }
+
+        public static int lineNumber = 0;
+
+        protected void CheckboxLabeled(Listing_Standard listingStandard, string optionLabel, ref bool field)
+        {
+            Rect rect = new Rect(listingStandard.curX, listingStandard.curY, listingStandard.ColumnWidth, Text.LineHeight);
+            lineNumber++;
+            if (lineNumber % 2 != 0)
+                Widgets.DrawLightHighlight(rect);
+            Widgets.DrawHighlightIfMouseover(rect);
+            listingStandard.CheckboxLabeled(optionLabel, ref field);
         }
 
         protected void DoSlider(Listing_Standard listingStandard, string label, ref float value, string valueLabel, float min, float max, string explanation)
