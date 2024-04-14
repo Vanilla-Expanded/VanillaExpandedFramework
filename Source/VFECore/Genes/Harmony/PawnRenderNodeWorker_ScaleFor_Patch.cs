@@ -16,16 +16,14 @@ namespace VanillaGenesExpanded
             if (node is PawnRenderNode_Body)
             {
                 __result = GeneUtils.SetBodyScale(pawn, __result);
+                if (node.gene != null)
+                {
+                    __result = GeneUtils.SetGeneScale(pawn, __result, node.gene);
+                }
             }
             else if (node is PawnRenderNode_Head)
             {
                 __result = GeneUtils.SetHeadScale(pawn, __result);
-            }
-
-            if (node.gene != null)
-            {
-                // Commented out because scale on genes is already inherited from the body/head in 1.5 RimWorld.
-                //__result = GeneUtils.SetGeneScale(pawn, __result, node.gene);
             }
         }
     }

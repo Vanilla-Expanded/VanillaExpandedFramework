@@ -82,10 +82,6 @@ namespace VanillaGenesExpanded
 
         public bool doubleNegativeFoodThought = false;
 
-        //Makes genes scale body and head
-        public Vector2 bodyScaleFactor = new Vector2(1f, 1f);
-        public Vector2 headScaleFactor = new Vector2(1f, 1f);
-
         // Size by age
         public SizeByAge sizeByAge = null;
 

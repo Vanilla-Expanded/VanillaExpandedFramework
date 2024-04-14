@@ -1,6 +1,0 @@
-﻿using Verse;
-
-namespace VanillaGenesExpanded
-{
-
-}

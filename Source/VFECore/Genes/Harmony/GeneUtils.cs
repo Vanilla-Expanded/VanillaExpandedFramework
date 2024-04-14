@@ -257,18 +257,6 @@ namespace VanillaGenesExpanded
 
         public static Vector3 SetBodyScale(Pawn pawn, Vector3 scale)
         {
-            foreach (var g in pawn.genes.GenesListForReading.Where(x => x.Active))
-            {
-                if (g.Active)
-                {
-                    var extension = g.def.GetModExtension<GeneExtension>();
-                    if (extension != null)
-                    {
-                        scale.x *= extension.bodyScaleFactor.x;
-                        scale.z *= extension.bodyScaleFactor.y;
-                    }
-                }
-            }
             if (PawnDataCache.GetPawnDataCache(pawn) is CachedPawnData data)
             {
                 scale *= data.bodyRenderSize;
@@ -278,18 +266,6 @@ namespace VanillaGenesExpanded
 
         public static Vector3 SetHeadScale(Pawn pawn, Vector3 scale)
         {
-            foreach (var g in pawn.genes.GenesListForReading.Where(x => x.Active))
-            {
-                if (g.Active)
-                {
-                    var extension = g.def.GetModExtension<GeneExtension>();
-                    if (extension != null)
-                    {
-                        scale.x *= extension.headScaleFactor.x;
-                        scale.z *= extension.headScaleFactor.y;
-                    }
-                }
-            }
             if (PawnDataCache.GetPawnDataCache(pawn) is CachedPawnData data)
             {
                 scale *= data.headRenderSize;
@@ -310,10 +286,6 @@ namespace VanillaGenesExpanded
                         scale = new Vector3(scale.x * lifestageScale.x, 1, scale.z * lifestageScale.y);
                     }
                 }
-            }
-            if (PawnDataCache.GetPawnDataCache(pawn) is CachedPawnData data)
-            {
-                scale *= data.bodyRenderSize;
             }
             return scale;
         }
