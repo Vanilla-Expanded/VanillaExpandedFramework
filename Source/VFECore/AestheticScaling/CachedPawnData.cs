@@ -112,11 +112,13 @@ namespace VFECore
             cosmeticSizeOffset += sizeOffset;
 
             float sizeMultiplier = pawn.GetStatValue(VFEDefOf.VEF_BodySize_Multiplier);
+            float cosmeticMultiplier = pawn.GetStatValue(VFEDefOf.VEF_CosmeticBodySize_Multiplier);
+            float totalCosmeticMultiplier = sizeMultiplier + cosmeticMultiplier - 1; 
 
             // Calculate the offset.
             float bodySizeOffset = ((baseSize + sizeOffset) * sizeMultiplier * sizeFromAge) - previousTotalSize;
 
-            float bodySizeCosmeticOffset = ((baseSize + cosmeticSizeOffset) * sizeMultiplier * sizeFromAge) - previousTotalSize;
+            float bodySizeCosmeticOffset = ((baseSize + cosmeticSizeOffset) * totalCosmeticMultiplier * sizeFromAge) - previousTotalSize;
 
             // Get total size
             float totalSize = bodySizeOffset + previousTotalSize;
