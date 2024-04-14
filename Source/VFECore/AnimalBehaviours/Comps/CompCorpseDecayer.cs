@@ -59,7 +59,11 @@ namespace AnimalBehaviours
                                             {
                                                 //Damage the corpse, and feed the animal
                                                 corpse.HitPoints -= 5;
-                                                pawn.needs.food.CurLevel += Props.nutritionGained;
+                                                if(pawn?.needs?.food != null)
+                                                {
+                                                    pawn.needs.food.CurLevel += Props.nutritionGained;
+
+                                                }
 
                                                 //This is for achievements
                                                 if (ModLister.HasActiveModWithName("Alpha Animals")&&(pawn.Faction == Faction.OfPlayer) && (corpse.InnerPawn.def.race.Humanlike))

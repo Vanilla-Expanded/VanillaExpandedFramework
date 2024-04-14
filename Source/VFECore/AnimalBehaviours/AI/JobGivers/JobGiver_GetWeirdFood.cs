@@ -27,7 +27,7 @@ namespace AnimalBehaviours
 
         public override float GetPriority(Pawn pawn)
         {
-            Need_Food food = pawn.needs.food;
+            Need_Food food = pawn?.needs?.food;
             if (food == null)
             {
                 return 0f;
@@ -53,7 +53,7 @@ namespace AnimalBehaviours
 
         protected override Job TryGiveJob(Pawn pawn)
         {
-            Need_Food food = pawn.needs.food;
+            Need_Food food = pawn?.needs?.food;
             if (food == null || food.CurCategory < this.minCategory || food.CurLevelPercentage > this.maxLevelPercentage)
             {
                 return null;
@@ -95,7 +95,7 @@ namespace AnimalBehaviours
             }
             else
             {
-                if ((pawn.Map != null) && comp.Props.digThingIfMapEmpty && (pawn.needs.food.CurLevelPercentage < pawn.needs.food.PercentageThreshHungry) && (pawn.Awake()))
+                if ((pawn.Map != null) && comp.Props.digThingIfMapEmpty && (pawn.needs?.food?.CurLevelPercentage < pawn.needs?.food?.PercentageThreshHungry) && (pawn.Awake()))
                 {
 
 
