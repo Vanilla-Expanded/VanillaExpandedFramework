@@ -243,6 +243,10 @@ namespace VFECore
             {
                 return false;
             }
+            if (element.allowSpawningOnPocketMaps is false && map.IsPocketMap)
+            {
+                return false;
+            }
             if (element.allowedBiomes != null && element.allowedBiomes.Contains(map.Biome) is false)
             {
                 return false;

@@ -25,5 +25,6 @@ namespace VFECore
         public bool findCellsOutsideColony = false;
         public bool spawnOnlyInPlayerMaps = false;
         public bool randomRotation;
+        public bool allowSpawningOnPocketMaps = false;
     }
 }
