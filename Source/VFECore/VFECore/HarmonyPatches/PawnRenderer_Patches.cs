@@ -227,6 +227,52 @@ namespace VFECore
         }
     }
 
+    [HarmonyPatch(typeof(PawnRenderNodeWorker_Apparel_Head), "CanDrawNow")]
+    public static class PawnRenderNodeWorker_Apparel_Head_CanDrawNow_Patch
+    {
+        public static void Prefix(PawnDrawParms parms, out bool __state)
+        {
+            __state = Prefs.HatsOnlyOnMap;
+            if (parms.pawn.apparel.AnyApparel)
+            {
+                var headgear = parms.pawn.apparel.WornApparel
+                    .FirstOrDefault(x => x.def.GetModExtension<ApparelDrawPosExtension>()?.hideHead ?? false);
+                if (headgear != null)
+                {
+                    Prefs.HatsOnlyOnMap = false;
+                }
+            }
+        }
+
+        public static void Postfix(bool __state)
+        {
+            Prefs.HatsOnlyOnMap = __state;
+        }
+    }
+
+    [HarmonyPatch(typeof(PawnRenderNodeWorker_Apparel_Head), "HeadgearVisible")]
+    public static class PawnRenderNodeWorker_Apparel_Head_HeadgearVisible_Patch
+    {
+        public static void Prefix(PawnDrawParms parms, out bool __state)
+        {
+            __state = Prefs.HatsOnlyOnMap;
+            if (parms.pawn.apparel.AnyApparel)
+            {
+                var headgear = parms.pawn.apparel.WornApparel
+                    .FirstOrDefault(x => x.def.GetModExtension<ApparelDrawPosExtension>()?.hideHead ?? false);
+                if (headgear != null)
+                {
+                    Prefs.HatsOnlyOnMap = false;
+                }
+            }
+        }
+
+        public static void Postfix(bool __state)
+        {
+            Prefs.HatsOnlyOnMap = __state;
+        }
+    }
+
     [HarmonyPatch(typeof(HeadTypeDef), "GetGraphic")]
     public static class HeadTypeDef_GetGraphic_Patch
     {
