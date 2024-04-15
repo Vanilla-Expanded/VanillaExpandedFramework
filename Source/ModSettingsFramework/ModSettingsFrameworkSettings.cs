@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Verse;
@@ -7,13 +8,25 @@ namespace ModSettingsFramework
 {
     public class ModSettingsFrameworkSettings : ModSettings
     {
+        class LoadingContext : IDisposable
+        {
+            public LoadingContext() => Log_Error_Patch.suppressErrorMessages = true;
+            public void Dispose() => Log_Error_Patch.suppressErrorMessages = false;
+        }
+
         public static Dictionary<string, ModSettingsContainer> modSettingsPerModId = new Dictionary<string, ModSettingsContainer>();
         public override void ExposeData()
         {
             base.ExposeData();
-            Log_Error_Patch.suppressErrorMessages = true;
-            Scribe_Collections.Look(ref modSettingsPerModId, "modSettingsPerModId", LookMode.Value, LookMode.Deep); 
-            Log_Error_Patch.suppressErrorMessages = false;
+            
+            using (var context = new LoadingContext()) {
+                try {
+                    Scribe_Collections.Look(ref modSettingsPerModId, "modSettingsPerModId", LookMode.Value, LookMode.Deep); 
+                } catch (Exception) {
+                    context.Dispose(); // cancel error suppression before exception handling
+                    throw;
+                }
+            }
         }
 
         public static ModSettingsContainer GetModSettingsContainer(string packageID)
