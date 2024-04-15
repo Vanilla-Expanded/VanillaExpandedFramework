@@ -67,6 +67,10 @@ namespace PipeSystem
                 action = delegate
                 {
                     maxHeldThingStackSize++;
+                    if(HeldThing.stackCount< maxHeldThingStackSize)
+                    {
+                        maxHeldThingStackSize = HeldThing.stackCount;
+                    }
                 },
                 defaultLabel = "PipeSystem_AugmentStack".Translate(),
                 defaultDesc = "PipeSystem_AugmentStackDesc".Translate(),
@@ -78,6 +82,10 @@ namespace PipeSystem
                 action = delegate
                 {
                     maxHeldThingStackSize += 10;
+                    if (HeldThing.stackCount < maxHeldThingStackSize)
+                    {
+                        maxHeldThingStackSize = HeldThing.stackCount;
+                    }
                 },
                 defaultLabel = "PipeSystem_AugmentStackB".Translate(),
                 defaultDesc = "PipeSystem_AugmentStackDescB".Translate(),
@@ -110,7 +118,7 @@ namespace PipeSystem
                 if (heldThing == null)
                 {
                     if (Props.maxOutputStackSize != -1)
-                        return Props.maxOutputStackSize < Props.thing.stackLimit ? Props.maxOutputStackSize : Props.thing.stackLimit;
+                        return Props.maxOutputStackSize < Props.thing.stackLimit ? maxHeldThingStackSize : Props.thing.stackLimit;
 
                     return maxHeldThingStackSize < Props.thing.stackLimit ? maxHeldThingStackSize : Props.thing.stackLimit;
                 }
@@ -119,7 +127,7 @@ namespace PipeSystem
                 {
                     int max;
                     if (Props.maxOutputStackSize != -1)
-                        max = Props.maxOutputStackSize < heldThing.def.stackLimit ? Props.maxOutputStackSize : heldThing.def.stackLimit;
+                        max = Props.maxOutputStackSize < heldThing.def.stackLimit ? maxHeldThingStackSize : heldThing.def.stackLimit;
                     else
                         max = maxHeldThingStackSize < heldThing.def.stackLimit ? maxHeldThingStackSize : heldThing.def.stackLimit;
 
