@@ -78,6 +78,11 @@ namespace KCSG
         public override void ExposeData()
         {
             base.ExposeData();
+            Scribe_Values.Look(ref spawnConduits, "spawnConduits");
+            Scribe_Values.Look(ref preGenClear, "preGenClear");
+            Scribe_Values.Look(ref fullClear, "fullClear");
+            Scribe_Values.Look(ref clearFogInRect, "clearFogInRect");
+            Scribe_Values.Look(ref spawnTheStartingPawn, "spawnTheStartingPawn");
             Scribe_Values.Look(ref structureLabel, "structureLabel");
             Scribe_Values.Look(ref nearMapCenter, "nearMapCenter");
             Scribe_Values.Look(ref allowFoggedPosition, "allowFoggedPosition");
