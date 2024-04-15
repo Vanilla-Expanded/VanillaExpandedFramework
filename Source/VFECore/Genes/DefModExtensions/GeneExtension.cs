@@ -96,6 +96,20 @@ namespace VanillaGenesExpanded
 
         public List<GeneDef> applySkinColorWithGenes;
 
+        public float? bodyScaleFactor, headScaleFactor;
+
+        public override IEnumerable<string> ConfigErrors()
+        {
+            if (bodyScaleFactor.HasValue)
+            {
+                yield return "GeneExtension.bodyScaleFactor is obsoleted and unused, use StatDef VEF_CosmeticBodySize_Multiplier instead.";
+            }
+            if (headScaleFactor.HasValue)
+            {
+                yield return "GeneExtension.headScaleFactor is obsoleted and unused, use StatDef VEF_CosmeticBodySize_Multiplier instead.";
+            }
+        }
+
         public class SizeByAge
         {
             // Size of the pawn at the bottom of the range.
