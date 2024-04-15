@@ -18,8 +18,6 @@ namespace VanillaGenesExpanded
         {
             if (PawnDataCache.GetPawnDataCache(___pawn) is CachedPawnData data)
             {
-                //float hungerCapStat = ___pawn.GetStatValue(StatDef.Named("VEF_FoodCapacityMultiplier"), cacheStaleAfterTicks: 100);
-
                 __result *= data.percentChange * data.foodCapacityMult;
             }
         }

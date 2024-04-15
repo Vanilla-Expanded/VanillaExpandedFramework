@@ -90,94 +90,110 @@ namespace VFECore
 
         public bool RegenerateCache()
         {
-            if (!cacheCanBeRecalculated) return false;
+            if (!cacheCanBeRecalculated || pawn == null) return false;
 
-            List<Gene> genes = pawn.genes == null ? new List<Gene>() : pawn.genes.GenesListForReading;
-            List<GeneExtension> geneExts = genes.Where(x => x.Active && x.def.modExtensions != null && x.def.modExtensions
-                                                .Any(y => y.GetType() == typeof(GeneExtension)))
-                                                .Select(x => x.def.GetModExtension<GeneExtension>()).ToList();
+            if (Scribe.mode == LoadSaveMode.LoadingVars) return false;
 
-            var dStage = pawn.DevelopmentalStage;
-            float sizeFromAge = pawn.ageTracker.CurLifeStage.bodySizeFactor;
-            float baseSize = pawn.RaceProps.baseBodySize;
-            float previousTotalSize = sizeFromAge * baseSize;
+            // If the needs are null (and the pawn is not just suffering a case of "dead") skip the cache generation.
+            // It typically means the pawn isn't fully initialized yet or otherwise unsuitable.
+            // Afaik. we don't have any creatures with null needs using this system.
+            if (pawn.needs == null && !pawn.Dead) return false;
 
-            float sizeOffset = pawn.GetStatValue(VFEDefOf.VEF_BodySize_Offset);
-
-            float cosmeticSizeOffset = pawn.GetStatValue(VFEDefOf.VEF_CosmeticBodySize_Offset);
-
-            float offsetFromSizeByAge = geneExts.Where(x => x.sizeByAge != null).Sum(x => x.sizeByAge.GetSize(pawn?.ageTracker?.AgeBiologicalYearsFloat));
-            sizeOffset += offsetFromSizeByAge;
-
-            cosmeticSizeOffset += sizeOffset;
-
-            float sizeMultiplier = pawn.GetStatValue(VFEDefOf.VEF_BodySize_Multiplier);
-            float cosmeticMultiplier = pawn.GetStatValue(VFEDefOf.VEF_CosmeticBodySize_Multiplier);
-            float totalCosmeticMultiplier = sizeMultiplier + cosmeticMultiplier - 1; 
-
-            // Calculate the offset.
-            float bodySizeOffset = ((baseSize + sizeOffset) * sizeMultiplier * sizeFromAge) - previousTotalSize;
-
-            float bodySizeCosmeticOffset = ((baseSize + cosmeticSizeOffset) * totalCosmeticMultiplier * sizeFromAge) - previousTotalSize;
-
-            // Get total size
-            float totalSize = bodySizeOffset + previousTotalSize;
-            //float totalCosmeticSize = bodySizeCosmeticOffset + previousTotalSize;
-
-            // Clamp total size based on developmental stage. These are based around the notion of functional scale, not cosmetic scale, 
-            // but it feels like reasonable to clamp there anyway.
-
-            // Prevent babies from being too large for cribs, or too smol in general.
-            if (dStage < DevelopmentalStage.Child)
+            try
             {
-                totalSize = Mathf.Clamp(totalSize, 0.05f, 0.24f);
-            }
-            else if (totalSize < 0.10) totalSize = 0.10f;
+                cacheCanBeRecalculated = false;  // Prevent recursion. Just to be safe.
 
-            ////////////////////////////////// 
-            // Clamp Offset to avoid extremes
-            if (totalSize < 0.05f && dStage < DevelopmentalStage.Child)
+                List<Gene> genes = pawn.genes == null ? new List<Gene>() : pawn.genes.GenesListForReading;
+                List<GeneExtension> geneExts = genes.Where(x => x.Active && x.def.modExtensions != null && x.def.modExtensions
+                                                    .Any(y => y.GetType() == typeof(GeneExtension)))
+                                                    .Select(x => x.def.GetModExtension<GeneExtension>()).ToList();
+
+                var dStage = pawn.DevelopmentalStage;
+                float sizeFromAge = pawn.ageTracker.CurLifeStage.bodySizeFactor;
+                float baseSize = pawn.RaceProps.baseBodySize;
+                float previousTotalSize = sizeFromAge * baseSize;
+
+                float sizeOffset = pawn.GetStatValue(VFEDefOf.VEF_BodySize_Offset);
+
+                float cosmeticSizeOffset = pawn.GetStatValue(VFEDefOf.VEF_CosmeticBodySize_Offset);
+
+                float offsetFromSizeByAge = geneExts.Where(x => x.sizeByAge != null).Sum(x => x.sizeByAge.GetSize(pawn?.ageTracker?.AgeBiologicalYearsFloat));
+                sizeOffset += offsetFromSizeByAge;
+
+                cosmeticSizeOffset += sizeOffset;
+
+                float sizeMultiplier = pawn.GetStatValue(VFEDefOf.VEF_BodySize_Multiplier);
+                float cosmeticMultiplier = pawn.GetStatValue(VFEDefOf.VEF_CosmeticBodySize_Multiplier);
+                float totalCosmeticMultiplier = sizeMultiplier + cosmeticMultiplier - 1;
+
+                // Calculate the offset.
+                float bodySizeOffset = ((baseSize + sizeOffset) * sizeMultiplier * sizeFromAge) - previousTotalSize;
+
+                float bodySizeCosmeticOffset = ((baseSize + cosmeticSizeOffset) * totalCosmeticMultiplier * sizeFromAge) - previousTotalSize;
+
+                // Get total size
+                float totalSize = bodySizeOffset + previousTotalSize;
+                //float totalCosmeticSize = bodySizeCosmeticOffset + previousTotalSize;
+
+                // Clamp total size based on developmental stage. These are based around the notion of functional scale, not cosmetic scale, 
+                // but it feels like reasonable to clamp there anyway.
+
+                // Prevent babies from being too large for cribs, or too smol in general.
+                if (dStage < DevelopmentalStage.Child)
+                {
+                    totalSize = Mathf.Clamp(totalSize, 0.05f, 0.24f);
+                }
+                else if (totalSize < 0.10) totalSize = 0.10f;
+
+                ////////////////////////////////// 
+                // Clamp Offset to avoid extremes
+                if (totalSize < 0.05f && dStage < DevelopmentalStage.Child)
+                {
+                    bodySizeOffset = -(previousTotalSize - 0.05f);
+                }
+                // Don't permit babies too large to fit in cribs (0.25)
+                else if (totalSize > 0.24f && dStage < DevelopmentalStage.Child && pawn.RaceProps.Humanlike)
+                {
+                    bodySizeOffset = -(previousTotalSize - 0.24f);
+                }
+                else if (totalSize < 0.10f && dStage == DevelopmentalStage.Child)
+                {
+                    bodySizeOffset = -(previousTotalSize - 0.10f);
+                }
+                // If adult basically limit size to 0.10
+                else if (totalSize < 0.10f && dStage > DevelopmentalStage.Child && pawn.RaceProps.Humanlike)
+                {
+                    bodySizeOffset = -(previousTotalSize - 0.10f);
+                }
+
+                (float percentChange, float quadraticChange, float cubicChange) = GetPercentChange(bodySizeOffset, pawn);
+                (float percentChangeCosmetic, float _, float _) = GetPercentChange(bodySizeCosmeticOffset, pawn);
+
+                float headScaleStat = pawn.GetStatValue(VFEDefOf.VEF_HeadSize_Cosmetic);
+
+                var renderOffsetVal = pawn.GetStatValue(VFEDefOf.VEF_PawnRenderPosOffset);
+
+                // Set Values
+                this.totalSize = totalSize;
+                this.percentChange = percentChange;
+                this.quadraticChange = quadraticChange;
+                this.cubicChange = cubicChange;
+                this.bodySizeOffset = bodySizeOffset;
+                bodyRenderSize = GetBodyRenderSize(percentChangeCosmetic);
+                headRenderSize = GetHeadRenderSize(bodyRenderSize) * headScaleStat;
+                renderPosOffset = GetYPositionOffset(bodyRenderSize, renderOffsetVal);
+                renderCacheOff = geneExts.Any(x => x.renderCacheOff);
+
+                healthMultiplier = CalculateHealthMultiplier(percentChange, quadraticChange);
+
+                // Other cached data
+                foodCapacityMult = pawn.GetStatValue(VFEDefOf.VEF_FoodCapacityMultiplier);
+                growthPointMultiplier = pawn.GetStatValue(VFEDefOf.VEF_GrowthPointMultiplier);
+            }
+            finally
             {
-                bodySizeOffset = -(previousTotalSize - 0.05f);
+                cacheCanBeRecalculated = true;
             }
-            // Don't permit babies too large to fit in cribs (0.25)
-            else if (totalSize > 0.24f && dStage < DevelopmentalStage.Child && pawn.RaceProps.Humanlike)
-            {
-                bodySizeOffset = -(previousTotalSize - 0.24f);
-            }
-            else if (totalSize < 0.10f && dStage == DevelopmentalStage.Child)
-            {
-                bodySizeOffset = -(previousTotalSize - 0.10f);
-            }
-            // If adult basically limit size to 0.10
-            else if (totalSize < 0.10f && dStage > DevelopmentalStage.Child && pawn.RaceProps.Humanlike)
-            {
-                bodySizeOffset = -(previousTotalSize - 0.10f);
-            }
-
-            (float percentChange, float quadraticChange, float cubicChange) = GetPercentChange(bodySizeOffset, pawn);
-            (float percentChangeCosmetic, float _, float _) = GetPercentChange(bodySizeCosmeticOffset, pawn);
-
-            float headScaleStat = pawn.GetStatValue(VFEDefOf.VEF_HeadSize_Cosmetic);
-
-            var renderOffsetVal = pawn.GetStatValue(VFEDefOf.VEF_PawnRenderPosOffset);
-
-            // Set Values
-            this.totalSize = totalSize;
-            this.percentChange = percentChange;
-            this.quadraticChange = quadraticChange;
-            this.cubicChange = cubicChange;
-            this.bodySizeOffset = bodySizeOffset;
-            bodyRenderSize = GetBodyRenderSize(percentChangeCosmetic);
-            headRenderSize = GetHeadRenderSize(bodyRenderSize) * headScaleStat;
-            renderPosOffset = GetYPositionOffset(bodyRenderSize, renderOffsetVal);
-            renderCacheOff = geneExts.Any(x => x.renderCacheOff);
-
-            healthMultiplier = CalculateHealthMultiplier(percentChange, quadraticChange);
-
-            // Other cached data
-            foodCapacityMult = pawn.GetStatValue(VFEDefOf.VEF_FoodCapacityMultiplier);
-            growthPointMultiplier = pawn.GetStatValue(VFEDefOf.VEF_GrowthPointMultiplier);
             return true;
         }
 
