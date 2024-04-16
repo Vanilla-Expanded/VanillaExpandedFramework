@@ -10,19 +10,28 @@ namespace ModSettingsFramework
     {
         class LoadingContext : IDisposable
         {
-            public LoadingContext() => Log_Error_Patch.suppressErrorMessages = true;
-            public void Dispose() => Log_Error_Patch.suppressErrorMessages = false;
+            public LoadingContext()
+            {
+                Log_Error_Patch.suppressErrorMessages = true;
+            }
+            public void Dispose()
+            {
+                Log_Error_Patch.suppressErrorMessages = false;
+            }
         }
 
         public static Dictionary<string, ModSettingsContainer> modSettingsPerModId = new Dictionary<string, ModSettingsContainer>();
         public override void ExposeData()
         {
             base.ExposeData();
-            
-            using (var context = new LoadingContext()) {
-                try {
+            using (var context = new LoadingContext()) 
+            {
+                try 
+                {
                     Scribe_Collections.Look(ref modSettingsPerModId, "modSettingsPerModId", LookMode.Value, LookMode.Deep); 
-                } catch (Exception) {
+                } 
+                catch (Exception) 
+                {
                     context.Dispose(); // cancel error suppression before exception handling
                     throw;
                 }
