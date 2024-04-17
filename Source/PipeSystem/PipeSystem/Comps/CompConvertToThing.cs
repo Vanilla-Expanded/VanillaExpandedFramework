@@ -67,7 +67,7 @@ namespace PipeSystem
                 action = delegate
                 {
                     maxHeldThingStackSize++;
-                    if(HeldThing?.stackCount< maxHeldThingStackSize)
+                    if(HeldThing!=null && HeldThing.stackCount< maxHeldThingStackSize)
                     {
                         maxHeldThingStackSize = HeldThing.stackCount;
                     }
@@ -82,7 +82,7 @@ namespace PipeSystem
                 action = delegate
                 {
                     maxHeldThingStackSize += 10;
-                    if (HeldThing?.stackCount < maxHeldThingStackSize)
+                    if (HeldThing != null&&HeldThing.stackCount < maxHeldThingStackSize)
                     {
                         maxHeldThingStackSize = HeldThing.stackCount;
                     }
