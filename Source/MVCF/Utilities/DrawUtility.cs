@@ -32,7 +32,7 @@ public static class DrawUtility
         if (parms.shrunk) return false;
         if (command is not Command_VerbTarget gizmo) return false;
         var verb = gizmo.verb;
-        if (!verb.CasterIsPawn) return false;
+        if (verb == null || !verb.CasterIsPawn) return false;
         var pawn = verb.CasterPawn;
         if (pawn.Faction != Faction.OfPlayer) return false;
         var man = verb.Managed(false);
