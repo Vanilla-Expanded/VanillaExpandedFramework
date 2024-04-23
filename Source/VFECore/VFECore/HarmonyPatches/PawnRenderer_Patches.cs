@@ -253,23 +253,34 @@ namespace VFECore
     [HarmonyPatch(typeof(PawnRenderNodeWorker_Apparel_Head), "HeadgearVisible")]
     public static class PawnRenderNodeWorker_Apparel_Head_HeadgearVisible_Patch
     {
-        public static void Prefix(PawnDrawParms parms, out bool __state)
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
         {
-            __state = Prefs.HatsOnlyOnMap;
-            if (parms.pawn.apparel.AnyApparel)
+            var get_HatsOnlyOnMap = AccessTools.PropertyGetter(typeof(Prefs), nameof(Prefs.HatsOnlyOnMap));
+            foreach ( var codeInstruction in codeInstructions )
+            {
+                yield return codeInstruction;
+                if (codeInstruction.Calls(get_HatsOnlyOnMap))
+                {
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Call,
+                        AccessTools.Method(typeof(PawnRenderNodeWorker_Apparel_Head_HeadgearVisible_Patch), 
+                        "TryOverrideHatsOnlyOnMap"));
+                }
+            }
+        }
+
+        public static bool TryOverrideHatsOnlyOnMap(bool result, PawnDrawParms parms)
+        {
+            if (result is true && parms.pawn.apparel.AnyApparel)
             {
                 var headgear = parms.pawn.apparel.WornApparel
                     .FirstOrDefault(x => x.def.GetModExtension<ApparelDrawPosExtension>()?.hideHead ?? false);
                 if (headgear != null)
                 {
-                    Prefs.HatsOnlyOnMap = false;
+                    return false;
                 }
             }
-        }
-
-        public static void Postfix(bool __state)
-        {
-            Prefs.HatsOnlyOnMap = __state;
+            return result;
         }
     }
 
