@@ -12,18 +12,22 @@ namespace AnimalBehaviours
         protected override void ApplySpecialEffectsToPart(Pawn pawn, float totalDamage, DamageInfo dinfo, DamageWorker.DamageResult result)
         {
             base.ApplySpecialEffectsToPart(pawn, totalDamage, dinfo, result);
-            Random random = new Random();
-            CompInfecter comp = dinfo.Instigator?.TryGetComp<CompInfecter>();
-            Hediff hediff = pawn?.health?.hediffSet?.GetFirstHediffOfDef(HediffDefOf.WoundInfection);
+            if (!pawn.IsGhoul) {
+                Random random = new Random();
+                CompInfecter comp = dinfo.Instigator?.TryGetComp<CompInfecter>();
+                Hediff hediff = pawn?.health?.hediffSet?.GetFirstHediffOfDef(HediffDefOf.WoundInfection);
 
-            if (hediff != null && comp?.Props.worsenExistingInfection==true)
-            {
-                pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.WoundInfection, false).Severity += comp.Props.severityToAdd;
+                if (hediff != null && comp?.Props.worsenExistingInfection == true)
+                {
+                    pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.WoundInfection, false).Severity += comp.Props.severityToAdd;
+                }
+                else if (pawn.GetStatValue(StatDefOf.ToxicResistance, true) < 1f && random.NextDouble() > ((float)(100 - comp.GetChance) / 100))
+                {
+                    pawn.health.AddHediff(HediffDefOf.WoundInfection, dinfo.HitPart, null, null);
+                }
+
             }
-            else if (pawn.GetStatValue(StatDefOf.ToxicResistance, true) < 1f && random.NextDouble() > ((float)(100 - comp.GetChance) / 100))
-            {
-                pawn.health.AddHediff(HediffDefOf.WoundInfection, dinfo.HitPart, null, null);
-            }
+            
         }
     }
 }
