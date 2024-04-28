@@ -41,6 +41,10 @@ namespace AnimalBehaviours
         public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
             Pawn pawn2 = t as Pawn;
+            if (pawn.RaceProps.IsMechanoid)
+            {
+                return false;
+            }
             if (pawn2 == null || !(pawn2.RaceProps.Animal|| pawn2.RaceProps.IsMechanoid))
             {
                 return false;
