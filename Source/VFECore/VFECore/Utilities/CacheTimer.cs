@@ -1,5 +1,6 @@
 ﻿using RimWorld;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +24,7 @@ namespace VFECore
     /// <typeparam name="V">A class whcih implements the ICachable Interface</typeparam>
     public abstract class DictCache<T, V> where V : ICacheable
     {
-        public static Dictionary<T, V> Cache { get; set; } = new();
+        public static ConcurrentDictionary<T, V> Cache { get; set; } = new();
 
         public static V GetCache(T key, bool forceRefresh = false, bool regenerateIfTimer = false)
         {
@@ -49,7 +50,7 @@ namespace VFECore
                 // If the cache is valid and was successfully regenerated add Dictionary. Otherwise just return a class with the default values.
                 if (newData.RegenerateCache()) 
                 {
-                    Cache.Add(key, newData);
+                    Cache.TryAdd(key, newData);
                 }
                 return newData;
             }
