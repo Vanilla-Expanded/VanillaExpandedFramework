@@ -32,7 +32,7 @@ namespace VFECore
                         pawnsToRefresh.Enqueue(cache.pawn);
                 }
             }
-            else if (Find.TickManager.TicksGame is int ticksGame && ticksGame % 50 == 0)
+            else if (Find.TickManager.TicksGame % 25 == 0)
             {
                 var cachedPawn = pawnsToRefresh.Dequeue();
                 PawnDataCache.GetPawnDataCache(cachedPawn, forceRefresh: true);
