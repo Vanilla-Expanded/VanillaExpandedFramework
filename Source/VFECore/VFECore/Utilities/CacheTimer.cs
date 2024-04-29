@@ -26,7 +26,7 @@ namespace VFECore
     {
         public static ConcurrentDictionary<T, V> Cache { get; set; } = new();
 
-        public static V GetCache(T key, bool forceRefresh = false, bool regenerateIfTimer = false)
+        public static V GetCache(T key, bool forceRefresh = false, bool regenerateIfTimer = false, bool canRefresh = true)
         {
             if (key == null)
                 return default;
@@ -48,7 +48,7 @@ namespace VFECore
             {
                 V newData = (V)Activator.CreateInstance(typeof(V), key);
                 // If the cache is valid and was successfully regenerated add Dictionary. Otherwise just return a class with the default values.
-                if (newData.RegenerateCache()) 
+                if (canRefresh && newData.RegenerateCache()) 
                 {
                     Cache.TryAdd(key, newData);
                 }

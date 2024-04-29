@@ -17,8 +17,7 @@ namespace VFECore
     /// </summary>
     public class CachedPawnDataSlowUpdate : GameComponent
     {
-        //public Queue<Pawn> refreshQueue = new Queue<Pawn>();
-        public List<Pawn> pawnsToRefresh = new List<Pawn>();
+        public Queue<Pawn> pawnsToRefresh = new Queue<Pawn>();
 
         public CachedPawnDataSlowUpdate(Game game) { }
 
@@ -30,24 +29,13 @@ namespace VFECore
                 foreach (var cache in PawnDataCache.Cache.Values)
                 {
                     if (cache.pawn != null)
-                        pawnsToRefresh.Add(cache.pawn);
+                        pawnsToRefresh.Enqueue(cache.pawn);
                 }
             }
-            else
+            else if (Find.TickManager.TicksGame is int ticksGame && ticksGame % 50 == 0)
             {
-                int ticksGames = Find.TickManager.TicksGame;
-                // If the queue is not empty, dequeue the first cache and refresh it.
-                //var cachedPawn = refreshQueue.Dequeue();
-                for (int i = pawnsToRefresh.Count - 1; i >= 0; i--)
-                {
-                    var cachedPawn = pawnsToRefresh[i];
-                    if (cachedPawn != null && (ticksGames + cachedPawn.HashOffset()) % 1000 == 0)
-                    {
-                        PawnDataCache.GetPawnDataCache(cachedPawn, forceRefresh: true);
-                        // Remove the pawn from the list.
-                        pawnsToRefresh.RemoveAt(i);
-                    }
-                }
+                var cachedPawn = pawnsToRefresh.Dequeue();
+                PawnDataCache.GetPawnDataCache(cachedPawn, forceRefresh: true);
             }
         }
     }
@@ -90,6 +78,7 @@ namespace VFECore
 
         public bool RegenerateCache()
         {
+
             if (!cacheCanBeRecalculated || pawn == null) return false;
 
             if (Scribe.mode == LoadSaveMode.LoadingVars) return false;
@@ -195,6 +184,7 @@ namespace VFECore
                 cacheCanBeRecalculated = true;
             }
             return true;
+
         }
 
         private static (float, float, float) GetPercentChange(float bodySizeOffset, Pawn pawn)

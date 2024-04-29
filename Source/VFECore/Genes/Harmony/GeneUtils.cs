@@ -257,7 +257,7 @@ namespace VanillaGenesExpanded
 
         public static Vector3 SetBodyScale(Pawn pawn, Vector3 scale)
         {
-            if (PawnDataCache.GetPawnDataCache(pawn) is CachedPawnData data)
+            if (PawnDataCache.GetPawnDataCache(pawn, canRefresh: false) is CachedPawnData data)
             {
                 scale *= data.bodyRenderSize;
             }
@@ -266,7 +266,7 @@ namespace VanillaGenesExpanded
 
         public static Vector3 SetHeadScale(Pawn pawn, Vector3 scale)
         {
-            if (PawnDataCache.GetPawnDataCache(pawn) is CachedPawnData data)
+            if (PawnDataCache.GetPawnDataCache(pawn, canRefresh: false) is CachedPawnData data)
             {
                 scale *= data.headRenderSize;
             }

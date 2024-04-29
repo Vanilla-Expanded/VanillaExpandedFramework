@@ -20,7 +20,7 @@ namespace VFECore
             if (pawn != null)
             {
 
-                if (PawnDataCache.GetPawnDataCache(pawn) is CachedPawnData data)
+                if (PawnDataCache.GetPawnDataCache(pawn, canRefresh:false) is CachedPawnData data)
                 {
                     var bodySize = data.bodyRenderSize;
                     var headSize = data.headRenderSize;

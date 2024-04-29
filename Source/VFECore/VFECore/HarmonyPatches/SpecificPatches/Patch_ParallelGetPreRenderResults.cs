@@ -23,7 +23,7 @@ namespace VFECore
             {
                 // For the sake of testing:
                 disableCache = VFEGlobal.settings.disableCaching;
-                if (PawnDataCache.GetPawnDataCache(___pawn) is CachedPawnData data)
+                if (PawnDataCache.GetPawnDataCache(___pawn, canRefresh: false) is CachedPawnData data)
                 {
                     if (data.bodySizeOffset > 0 || data.percentChange > 1 || data.renderCacheOff)
                     {

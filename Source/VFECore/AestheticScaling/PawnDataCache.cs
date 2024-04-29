@@ -12,14 +12,14 @@ namespace VFECore
 {
     public class PawnDataCache : DictCache<Pawn, CachedPawnData>
     {
-        public static CachedPawnData GetPawnDataCache(Pawn pawn, bool forceRefresh=false)
+        public static CachedPawnData GetPawnDataCache(Pawn pawn, bool forceRefresh=false, bool canRefresh = true)
         {
             if (pawn?.RaceProps.Humanlike == true
                 // If the needs are null (and it isn't a corpse) then we don't want to generate data for it.
                 // It typically means the pawn isn't fully initialized yet or otherwise unsuitable.
                 && (pawn.needs != null || pawn.Dead)) 
             {
-                return GetCache(pawn, forceRefresh: forceRefresh);
+                return GetCache(pawn, forceRefresh: forceRefresh, canRefresh: canRefresh);
             }
             return null;
         }

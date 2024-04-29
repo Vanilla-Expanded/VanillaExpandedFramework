@@ -13,7 +13,7 @@ namespace VFECore
         public static void Postfix(ref Vector3 __result, Pawn ___pawn)
         {
             if (!skipOffset
-                && PawnDataCache.GetPawnDataCache(___pawn) is CachedPawnData data
+                && PawnDataCache.GetPawnDataCache(___pawn, canRefresh: false) is CachedPawnData data
                 && ___pawn.GetPosture() == PawnPosture.Standing
                 )
             {
