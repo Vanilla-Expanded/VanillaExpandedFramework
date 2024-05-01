@@ -65,7 +65,7 @@ namespace VanillaCookingExpanded
                         }
                         if (extension.increaseJoy)
                         {
-                            pawn.needs.joy.GainJoy(extension.extraJoy, JoyKindDefOf.Gluttonous);
+                            pawn.needs?.joy?.GainJoy(extension.extraJoy, JoyKindDefOf.Gluttonous);
 
                         }
 
