@@ -34,13 +34,15 @@ namespace AnimalBehaviours
                 yield return g;
             }
 
-            if (abilityUser && pawn.abilities != null)
+            //This is no longer necessary in 1.5
+
+            /*if (abilityUser && pawn.abilities != null)
             {
                 foreach (Gizmo gizmoAbility in pawn.abilities.GetGizmos())
                 {
                     yield return gizmoAbility;
                 }
-            }
+            }*/
 
             if (SimpleSidearmsPatch.SimpleSidearmsActive && __instance is Machine)
             {

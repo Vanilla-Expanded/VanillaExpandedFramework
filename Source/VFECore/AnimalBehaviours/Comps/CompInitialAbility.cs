@@ -33,7 +33,10 @@ namespace AnimalBehaviours
             {
                 Pawn pawn = this.parent as Pawn;
 
-                pawn.abilities = new Pawn_AbilityTracker(pawn);
+                if(pawn.abilities is null)
+                {
+                    pawn.abilities = new Pawn_AbilityTracker(pawn);
+                }
 
                 pawn.abilities.GainAbility(Props.initialAbility);
 
