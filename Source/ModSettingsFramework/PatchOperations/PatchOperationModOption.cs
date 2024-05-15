@@ -23,12 +23,15 @@ namespace ModSettingsFramework
                 var container = SettingsContainer;
                 if (container != null && container.PatchOperationEnabled(id, defaultValue))
                 {
-                    foreach (PatchOperation operation in operations)
+                    if (operations != null)
                     {
-                        if (!operation.Apply(xml))
+                        foreach (PatchOperation operation in operations)
                         {
-                            lastFailedOperation = operation;
-                            return false;
+                            if (!operation.Apply(xml))
+                            {
+                                lastFailedOperation = operation;
+                                return false;
+                            }
                         }
                     }
                     return true;

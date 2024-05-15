@@ -70,6 +70,7 @@
     <Compile Include="LoadedModManager_ApplyPatches_Patch.cs" />
     <Compile Include="LoadedModManager_ModHandles_Patch.cs" />
     <Compile Include="Log_Error_Patch.cs" />
+    <Compile Include="ModContentPack_LoadPatches_Patch.cs" />
     <Compile Include="ModOptionCategoryDef.cs" />
     <Compile Include="ModSettingsContainer.cs" />
     <Compile Include="ModSettingsFrameworkMod.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="PatchOperations\PatchOperationSliderInt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Utils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

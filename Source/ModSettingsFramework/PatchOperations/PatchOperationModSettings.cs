@@ -17,6 +17,7 @@ namespace ModSettingsFramework
         public bool showTooltipAsTinyText;
         public int roundToDecimalPlaces = 2;
         public string modPackageSettingsID;
+        public ModContentPack modContentPack;
 
         public bool MatchesModPackageID(string packageID)
         {
@@ -39,13 +40,23 @@ namespace ModSettingsFramework
         {
             get
             {
-                foreach (var runningMod in LoadedModManager.RunningMods)
+                if (modContentPack == null)
                 {
-                    if (runningMod.Patches.Contains(this))
+                    Log.Message("Optimize it");
+                    foreach (var runningMod in LoadedModManager.RunningMods)
                     {
-                        var container = ModSettingsFrameworkSettings.GetModSettingsContainer(runningMod);
-                        return container;
+                        if (runningMod.Patches.Contains(this))
+                        {
+                            modContentPack = runningMod;
+                            var container = ModSettingsFrameworkSettings.GetModSettingsContainer(runningMod);
+                            return container;
+                        }
                     }
+                }
+                else
+                {
+                    var container = ModSettingsFrameworkSettings.GetModSettingsContainer(modContentPack);
+                    return container;
                 }
                 return null;
             }
