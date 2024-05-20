@@ -34,15 +34,37 @@ namespace AnimalBehaviours
                 yield return g;
             }
 
-            //This is no longer necessary in 1.5
 
-            /*if (abilityUser && pawn.abilities != null)
+
+            if (abilityUser && !isDraftableAnimal && pawn.abilities != null)
             {
-                foreach (Gizmo gizmoAbility in pawn.abilities.GetGizmos())
+
+                if (!DebugSettings.godMode || (DebugSettings.godMode && !DebugSettings.ShowDevGizmos))
                 {
-                    yield return gizmoAbility;
+
+                    foreach (Ability a in pawn.abilities.AllAbilitiesForReading)
+                    {
+
+                        bool visibleSecondary = (pawn.Drafted || a.def.displayGizmoWhileUndrafted) && a.GizmosVisible();
+
+                        foreach (Command gizmo in a.GetGizmos())
+                        {
+                            Command_Ability command_Ability;
+                            if ((command_Ability = (gizmo as Command_Ability)) != null)
+                            {
+                                command_Ability.devGizmo = (!visibleSecondary && DebugSettings.ShowDevGizmos);
+                            }
+                            yield return gizmo;
+                        }
+
+
+                        foreach (Gizmo item in a.GetGizmosExtra())
+                        {
+                            yield return item;
+                        }
+                    }
                 }
-            }*/
+            }
 
             if (SimpleSidearmsPatch.SimpleSidearmsActive && __instance is Machine)
             {
