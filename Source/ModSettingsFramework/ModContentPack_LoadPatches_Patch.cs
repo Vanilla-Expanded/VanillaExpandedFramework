@@ -7,20 +7,28 @@ namespace ModSettingsFramework
     [HarmonyPatch(typeof(ModContentPack), "LoadPatches")]
     public static class ModContentPack_LoadPatches_Patch
     {
-        public static List<PatchOperationWorker> allWorkers = new();
-
+        public static Dictionary<ModContentPack, List<PatchOperationModSettings>> allPatches = new();
         public static void Postfix(ModContentPack __instance)
         {
             if (__instance.patches != null)
             {
+                allPatches[__instance] = new List<PatchOperationModSettings> ();
                 foreach (var patch in  __instance.patches)
                 {
                     if (patch is PatchOperationModSettings modSettings)
                     {
                         modSettings.modContentPack = __instance;
-                        if (patch is PatchOperationWorker worker)
+                        allPatches[__instance].Add(modSettings);
+                        if (patch is PatchOperationWorker patchWorker)
                         {
-                            allWorkers.Add(worker);
+                            if (patchWorker.SettingsContainer.patchWorkers.TryGetValue(patch.GetType().FullName, out var worker))
+                            {
+                                patchWorker.CopyFrom(worker);
+                            }
+                            else
+                            {
+                                patchWorker.Init();
+                            }
                         }
                     }
                 }

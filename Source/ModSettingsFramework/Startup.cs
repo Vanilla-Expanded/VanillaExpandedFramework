@@ -10,19 +10,9 @@ namespace ModSettingsFramework
     {
         static Startup()
         {
-            foreach (var patch in ModContentPack_LoadPatches_Patch.allWorkers.ToList())
+            foreach (var patch in ModContentPack_LoadPatches_Patch.allPatches.Values.SelectMany(x => x).OfType<PatchOperationWorker>().ToList())
             {
-                var modSettings = patch.SettingsContainer;
-                if (modSettings.patchWorkers.TryGetValue(patch.GetType().FullName, out var worker))
-                {
-                    patch.CopyFrom(worker);
-                    patch.ApplySettings();
-                }
-                else
-                {
-                    patch.Init();
-                    patch.ApplySettings();
-                }
+                patch.ApplySettings();
             }
         }
     }

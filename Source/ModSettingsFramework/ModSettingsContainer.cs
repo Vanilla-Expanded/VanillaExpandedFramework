@@ -47,19 +47,15 @@ namespace ModSettingsFramework
                 if (_patchOperationMods is null)
                 {
                     _patchOperationMods = new List<(ModSettingsContainer container, PatchOperationModSettings patch)>();
-                    foreach (var mod in LoadedModManager.RunningMods)
+                    foreach (var patch in ModContentPack_LoadPatches_Patch.allPatches.Values.SelectMany(x => x))
                     {
-                        var patches = mod.Patches.OfType<PatchOperationModSettings>();
-                        foreach (var patch in patches)
+                        if (patch.SettingsContainer == this)
                         {
-                            if (patch.SettingsContainer == this)
-                            {
-                                _patchOperationMods.Add((this, patch));
-                            }
-                            else if (patch.MatchesModPackageID(packageID))
-                            {
-                                _patchOperationMods.Add((patch.SettingsContainer, patch));
-                            }
+                            _patchOperationMods.Add((this, patch));
+                        }
+                        else if (patch.MatchesModPackageID(packageID))
+                        {
+                            _patchOperationMods.Add((patch.SettingsContainer, patch));
                         }
                     }
                 }

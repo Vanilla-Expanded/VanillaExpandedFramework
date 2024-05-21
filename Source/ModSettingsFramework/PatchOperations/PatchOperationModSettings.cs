@@ -42,21 +42,18 @@ namespace ModSettingsFramework
             {
                 if (modContentPack == null)
                 {
-                    Log.Message("Optimize it");
                     foreach (var runningMod in LoadedModManager.RunningMods)
                     {
                         if (runningMod.Patches.Contains(this))
                         {
                             modContentPack = runningMod;
-                            var container = ModSettingsFrameworkSettings.GetModSettingsContainer(runningMod);
-                            return container;
+                            return ModSettingsFrameworkSettings.GetModSettingsContainer(runningMod);
                         }
                     }
                 }
                 else
                 {
-                    var container = ModSettingsFrameworkSettings.GetModSettingsContainer(modContentPack);
-                    return container;
+                    return ModSettingsFrameworkSettings.GetModSettingsContainer(modContentPack);
                 }
                 return null;
             }
