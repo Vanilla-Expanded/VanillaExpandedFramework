@@ -7,6 +7,8 @@ namespace AnimalBehaviours
     public class CompProperties_AnimalProduct : CompProperties
     {
 
+        public bool hideDisplayOnWildAnimals = false;
+
         //CompAnimalProduct builds upon both CompMilkable and CompShearable, with many more configuration options
 
         public int gatheringIntervalDays = 1;

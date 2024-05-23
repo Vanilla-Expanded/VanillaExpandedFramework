@@ -95,6 +95,10 @@ namespace AnimalBehaviours
             {
                 return null;
             }
+            if (Props.hideDisplayOnWildAnimals && this.parent?.Faction != Faction.OfPlayerSilentFail)
+            {
+                return null;
+            }
             if (!this.Props.customResourceString.NullOrEmpty())
             {
                 return Translator.Translate(this.Props.customResourceString) + ": " + base.Fullness.ToStringPercent();
