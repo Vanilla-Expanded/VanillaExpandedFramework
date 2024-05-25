@@ -4,6 +4,7 @@ using HarmonyLib;
 using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
+using Verse.Noise;
 
 namespace VanillaGenesExpanded
 {
@@ -13,17 +14,24 @@ namespace VanillaGenesExpanded
         public static void Postfix(ref Vector3 __result, PawnRenderNode node, PawnDrawParms parms)
         {
             var pawn = parms.pawn;
-            if (node is PawnRenderNode_Body)
+            if (pawn?.RaceProps?.Humanlike == true)
             {
-                __result = GeneUtils.SetBodyScale(pawn, __result);
-                if (node.gene != null)
+                if (node is PawnRenderNode_Body)
                 {
-                    __result = GeneUtils.SetGeneScale(pawn, __result, node.gene);
+                    __result = GeneUtils.SetBodyScale(pawn, __result);
+                    if (node.gene != null)
+                    {
+                        __result = GeneUtils.SetGeneScale(pawn, __result, node.gene);
+                    }
+                }
+                else if (node is PawnRenderNode_Head)
+                {
+                    __result = GeneUtils.SetHeadScale(pawn, __result);
                 }
             }
-            else if (node is PawnRenderNode_Head)
+            else
             {
-                __result = GeneUtils.SetHeadScale(pawn, __result);
+                __result = GeneUtils.SetBodyScale(pawn, __result);
             }
         }
     }
