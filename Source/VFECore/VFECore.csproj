@@ -440,6 +440,8 @@
     <Compile Include="ActiveTerrain\SpecialTerrainList.cs" />
     <Compile Include="ActiveTerrain\ThingComps.cs" />
     <Compile Include="AestheticScaling\PawnDataCache.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompHediffAfterHealthLoss.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_HediffAfterHealthLoss.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Ability.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Ability.cs" />
     <Compile Include="DefModExtensions\HeadExtension.cs" />
