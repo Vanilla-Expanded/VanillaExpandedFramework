@@ -42,7 +42,7 @@
         protected override IEnumerable<Toil> MakeNewToils()
         {
             this.FailOnDespawnedOrNull(TargetIndex.A);
-
+            this.job.playerForced = true;
 
             //yield return Toils_Combat.GotoCastPosition(TargetIndex.A);
 
@@ -65,6 +65,7 @@
                             {
                                 initAction = () =>
                                              {
+                                                 this.job.playerForced = !this.pawn.Drafted;
                                                  GlobalTargetInfo[] targets = comp.currentlyCastingTargets;
                                                  if (targets.Length == 1 && targets[0].Map == this.pawn.Map)
                                                      comp.currentlyCasting.Cast(targets[0].Thing != null ? new LocalTargetInfo(targets[0].Thing) : new LocalTargetInfo(targets[0].Cell));

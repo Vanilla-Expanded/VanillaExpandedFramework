@@ -3,6 +3,7 @@
 namespace VFECore.Abilities
 {
     using Verse;
+    using Verse.AI;
 
     public class Verb_CastAbility : Verb
     {
@@ -35,6 +36,7 @@ namespace VFECore.Abilities
             if (base.TryStartCastOn(castTarg, destTarg, surpriseAttack, canHitNonTargetPawns, preventFriendlyFire))
             {
                 StartAbilityJob(castTarg, destTarg);
+                return true;
             }
             return false;
         }
