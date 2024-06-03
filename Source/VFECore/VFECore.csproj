@@ -447,6 +447,8 @@
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Ability.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Ability.cs" />
     <Compile Include="DefModExtensions\HeadExtension.cs" />
+    <Compile Include="Furniture\Harmony\GenConstruct_BlocksConstruction_Patch.cs" />
+    <Compile Include="Furniture\Harmony\GenConstruct_CanConstruct_Patch.cs" />
     <Compile Include="Genes\Harmony\Patch_BaseHeadOffsetAt.cs" />
     <Compile Include="Genes\Harmony\Patch_BodySize.cs" />
     <Compile Include="Genes\Harmony\Patch_GenesChanged.cs" />
@@ -901,7 +903,7 @@
     <Compile Include="Furniture\Comps\CompSpawnOtherBuildingWhenPowered.cs" />
     <Compile Include="Furniture\DefModExtensions\ShowBlueprintExtension.cs" />
     <Compile Include="Furniture\Defs\ConfigurableSpawnerDef.cs" />
-    <Compile Include="Furniture\Harmony\Building_Destroy.cs" />
+    <Compile Include="Furniture\Harmony\Building_Destroy_Patch.cs" />
     <Compile Include="Furniture\Harmony\GhostUtility_GhostGraphicFor_Patch.cs" />
     <Compile Include="Furniture\Options\VanillaFurnitureExpanded_SetingsController.cs" />
     <Compile Include="Furniture\Options\VanillaFurnitureExpanded_Settings.cs" />
