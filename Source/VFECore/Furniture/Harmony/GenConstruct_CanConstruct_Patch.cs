@@ -22,12 +22,10 @@ namespace VanillaFurnitureExpanded
                             var edifice = t.Position.GetEdifice(t.Map);
                             if (edifice != null && edifice is not Frame && ((edifice?.def.defName.ToLower().Contains("wall") ?? false) || edifice.def.IsSmoothed))
                             {
-                                Log.Message("Shouldn't block " + t + " - " + edifice);
                             }
                             else
                             {
                                 __result = false;
-                                Log.Message("blocking " + t);
                             }
                         }
                     }
