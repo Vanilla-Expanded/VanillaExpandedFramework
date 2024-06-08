@@ -10,6 +10,7 @@ using System.Diagnostics;
 using Verse.Sound;
 
 using System.Reflection;
+using System.Text;
 
 namespace ItemProcessor
 {
@@ -1792,16 +1793,12 @@ namespace ItemProcessor
                 return base.GetInspectString();
             }
 
-            string text = base.GetInspectString();
-
-            // Start on a new line if other comps also have their own inspect string output
-
-            // For some reason this shit caused a red error about an empty line in 1.4.3682
-
-            /*if (text.Length != 0)
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append(base.GetInspectString());
+            if (stringBuilder.Length != 0)
             {
-                text += "\n";
-            }*/
+                stringBuilder.AppendLine();
+            }
 
             string incubationTxt = "";
             if (compPowerTrader != null || compFuelable != null)
@@ -2006,7 +2003,9 @@ namespace ItemProcessor
                 }
             }
 
-            return text + incubationTxt;
+            stringBuilder.Append(incubationTxt);
+
+            return stringBuilder.ToString();
         }
 
         public override Graphic Graphic
