@@ -14,7 +14,7 @@ namespace VanillaFurnitureExpanded
 			if (adjacementCell.InBounds(map))
 			{
 				var adjacementEdifice = adjacementCell.GetEdifice(map);
-				if (adjacementEdifice != null && ((adjacementEdifice?.def.defName.ToLower().Contains("wall") ?? false) || adjacementEdifice.def.IsSmoothed))
+				if (adjacementEdifice != null && adjacementEdifice.def.IsWall())
 				{
 					return false;
 				}
@@ -22,7 +22,7 @@ namespace VanillaFurnitureExpanded
 			if (loc.InBounds(map))
 			{
 				var edifice = loc.GetEdifice(map);
-				if (edifice != null && ((edifice?.def.defName.ToLower().Contains("wall") ?? false) || edifice.def.IsSmoothed))
+				if (edifice != null && edifice.def.IsWall())
 				{
 					return true;
 				}

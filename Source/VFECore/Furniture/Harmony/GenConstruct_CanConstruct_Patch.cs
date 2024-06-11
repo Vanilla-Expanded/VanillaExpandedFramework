@@ -20,7 +20,7 @@ namespace VanillaFurnitureExpanded
                         if (t.Position.InBounds(t.Map))
                         {
                             var edifice = t.Position.GetEdifice(t.Map);
-                            if (edifice != null && edifice is not Frame && ((edifice?.def.defName.ToLower().Contains("wall") ?? false) || edifice.def.IsSmoothed))
+                            if (edifice != null && edifice is not Frame && edifice.def.IsWall())
                             {
                             }
                             else
