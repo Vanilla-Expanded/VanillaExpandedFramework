@@ -79,11 +79,14 @@ namespace ModSettingsFramework
                 if (patchesInCategory.Any())
                 {
                     var height = patchesInCategory.Sum(x => x.patch.SettingsHeight());
-                    var sectionSize = height + 24 + 8;
+                    var gapLine = 8;
+                    var gapAfterLine = 6f;
+                    var sectionSize = height + 24 + gapLine + gapAfterLine;
                     scrollHeight += sectionSize + 12 + 6;
                     var section = listingStandard.BeginSection(sectionSize);
                     section.Label(category.label);
-                    section.GapLine(8);
+                    section.GapLine(gapLine);
+                    section.Gap(gapAfterLine);
                     foreach (var patch in patchesInCategory)
                     {
                         patch.patch.scrollHeight = 0;

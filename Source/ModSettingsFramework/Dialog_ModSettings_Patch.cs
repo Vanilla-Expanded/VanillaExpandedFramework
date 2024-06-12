@@ -23,12 +23,19 @@ namespace ModSettingsFramework
                     var patches = container.PatchOperationModSettings;
                     foreach (var patch in patches)
                     {
-                        var patchContainer = patch.container;
-                        patchContainer.patchOperationStates.Remove(patch.patch.id);
-                        patchContainer.patchOperationValues.Remove(patch.patch.id);
+                        if (patch.patch.id != null)
+                        {
+                            var patchContainer = patch.container;
+                            patchContainer.patchOperationStates.Remove(patch.patch.id);
+                            patchContainer.patchOperationValues.Remove(patch.patch.id);
+                        }
                         if (patch.patch is PatchOperationWorker patchWorker)
                         {
                             patchWorker.Reset();
+                        }
+                        if (patch.patch is PatchOperationRadioButtons patchRadioButtons)
+                        {
+                            patchRadioButtons.Reset();
                         }
                     }
                 }

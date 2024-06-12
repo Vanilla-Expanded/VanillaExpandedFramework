@@ -138,6 +138,13 @@ namespace ModSettingsFramework
             ShowExplanation(listingStandard, explanation, rect.LeftPart(0.4f));
         }
 
+        protected void DoLabel(Listing_Standard listingStandard, string label, string explanation)
+        {
+            var rect = listingStandard.Label(label);
+            scrollHeight += rect.height;
+            ShowExplanation(listingStandard, explanation, rect);
+        }
+
         protected void DoExplanation(Listing_Standard listingStandard, string explanation)
         {
             Text.Font = GameFont.Tiny;
@@ -146,6 +153,14 @@ namespace ModSettingsFramework
             scrollHeight += rect.height;
             Text.Font = GameFont.Small;
             GUI.color = Color.white;
+            listingStandard.Gap(5);
+            scrollHeight += 5;
+        }
+
+        protected void DoRadioButton(Listing_Standard listingStandard, string explanation)
+        {
+            var rect = listingStandard.Label(explanation);
+            scrollHeight += rect.height;
             listingStandard.Gap(5);
             scrollHeight += 5;
         }
