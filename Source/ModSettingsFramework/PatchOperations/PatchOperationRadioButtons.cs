@@ -15,7 +15,7 @@ namespace ModSettingsFramework
             var firstActive = options.FirstOrDefault(x => container.PatchOperationEnabled(x.id, x.defaultValue)).id;
             foreach (var option in options)
             {
-                if (DoRadioButton(list, option.label, option.id == firstActive, 15f, 0, tooltip, null, false))
+                if (DoRadioButton(list, option.label, option.id == firstActive, 15f, 0, option.tooltip, null, false))
                 {
                     container.patchOperationStates[option.id] = true;
                     foreach (var option2 in options)
