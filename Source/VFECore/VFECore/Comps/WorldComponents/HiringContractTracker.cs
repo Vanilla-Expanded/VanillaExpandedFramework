@@ -65,7 +65,8 @@ namespace VFECore
             for (int index = pawns.Count - 1; index >= 0; index--)
             {
                 Pawn pawn = pawns[index];
-                if (pawn == null || pawn.Dead || Faction.OfPlayer.kidnapped.KidnappedPawnsListForReading.Contains(pawn))
+                
+                if (pawn == null || pawn.Dead || Find.FactionManager.AllFactionsListForReading.Any(f => f.kidnapped.KidnappedPawnsListForReading.Contains(pawn)))
                 {
                     deadPeople++;
                     this.pawns.Remove(pawn);
