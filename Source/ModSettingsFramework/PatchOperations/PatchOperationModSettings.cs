@@ -35,29 +35,37 @@ namespace ModSettingsFramework
             }
             return false;
         }
-
+        private ModSettingsContainer settingContainerCached;
         public ModSettingsContainer SettingsContainer
         {
             get
             {
-                if (modContentPack == null)
+                if (settingContainerCached is null)
                 {
-                    foreach (var runningMod in LoadedModManager.RunningMods)
+                    if (modContentPack == null)
                     {
-                        if (runningMod.Patches.Contains(this))
+                        foreach (var runningMod in LoadedModManager.RunningMods)
                         {
-                            modContentPack = runningMod;
-                            return ModSettingsFrameworkSettings.GetModSettingsContainer(runningMod);
+                            if (runningMod.Patches.Contains(this))
+                            {
+                                modContentPack = runningMod;
+                                return settingContainerCached ??= ModSettingsFrameworkSettings.GetModSettingsContainer(runningMod);
+                            }
                         }
                     }
+                    else
+                    {
+                        return settingContainerCached ??= ModSettingsFrameworkSettings.GetModSettingsContainer(modContentPack);
+                    }
                 }
-                else
-                {
-                    return ModSettingsFrameworkSettings.GetModSettingsContainer(modContentPack);
-                }
-                return null;
+                return settingContainerCached;
+            }
+            set
+            {
+                settingContainerCached = value;
             }
         }
+
         public abstract void DoSettings(ModSettingsContainer container, Listing_Standard list);
         public virtual int SettingsHeight() => (int)scrollHeight;
         public bool CanRun()

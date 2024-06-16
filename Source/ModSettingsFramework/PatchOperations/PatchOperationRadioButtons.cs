@@ -59,12 +59,12 @@ namespace ModSettingsFramework
         {
             if (CanRun())
             {
-                var container = SettingsContainer;
                 foreach (var option in options)
                 {
-                    if (container != null && container.PatchOperationEnabled(option.id, option.defaultValue))
+                    option.SettingsContainer = SettingsContainer;
+                    if (SettingsContainer.PatchOperationEnabled(option.id, option.defaultValue))
                     {
-                        return option.Apply(xml);
+                        option.Apply(xml);
                     }
                 }
             }
