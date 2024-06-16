@@ -18,11 +18,11 @@ namespace VFECore.Misc
 
         [Unsaved] private Texture2D texture;
 
-        public Color Color => referencedFaction is null
-            ? color
-            : (cachedColor ??
-               (cachedColor = Find.World.factionManager.FirstFactionOfDef(referencedFaction).Color)).Value;
+        public Color Color =>
+            this.referencedFaction is null ? 
+                this.color : 
+                this.cachedColor ??= Find.World.factionManager.FirstFactionOfDef(this.referencedFaction)?.Color ?? this.color;
 
-        public Texture2D Texture => texture ?? (texture = ContentFinder<Texture2D>.Get(texPath));
+        public Texture2D Texture => this.texture ??= ContentFinder<Texture2D>.Get(this.texPath);
     }
 }
