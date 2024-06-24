@@ -19,21 +19,20 @@ namespace AnimalBehaviours
 
         public override void CompPostTick(ref float severityAdjustment)
         {
-            tickCounter++;
-            if (tickCounter > Props.checkingInterval)
-            {             
+            tickCounter--;
+            if (tickCounter < 0)
+            {
+                if (this.parent.pawn.drafter == null) { this.parent.pawn.drafter = new Pawn_DraftController(this.parent.pawn); }
+                if (this.parent.pawn.equipment == null) { this.parent.pawn.equipment = new Pawn_EquipmentTracker(this.parent.pawn); }
                 AnimalCollectionClass.AddDraftableAnimalToList(this.parent.pawn);
-                if (Props.makeNonFleeingToo)
-                {
-                    AnimalCollectionClass.AddNotFleeingAnimalToList(this.parent.pawn);
-                }
-                tickCounter = 0;
+                tickCounter = Props.checkingInterval;
             }
         }
 
         public override void CompPostPostAdd(DamageInfo? dinfo)
         {
-         
+            if (this.parent.pawn.drafter == null) { this.parent.pawn.drafter = new Pawn_DraftController(this.parent.pawn); }
+            if (this.parent.pawn.equipment == null) { this.parent.pawn.equipment = new Pawn_EquipmentTracker(this.parent.pawn); }
             AnimalCollectionClass.AddDraftableAnimalToList(this.parent.pawn);
             if (Props.makeNonFleeingToo)
             {

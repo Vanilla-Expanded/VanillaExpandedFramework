@@ -78,8 +78,10 @@ namespace AnimalBehaviours
                 }
             }
 
+           
             if (!alreadyHasVanillaDraftButton && isDraftableAnimal && pawn.drafter != null)
             {
+             
                 Command_Toggle drafting_command = new Command_Toggle();
                 drafting_command.toggleAction = delegate
                 {
