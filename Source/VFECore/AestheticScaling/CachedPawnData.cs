@@ -158,6 +158,13 @@ namespace VFECore
                 (float percentChange, float quadraticChange, float cubicChange) = GetPercentChange(bodySizeOffset, pawn);
                 (float percentChangeCosmetic, float _, float _) = GetPercentChange(bodySizeCosmeticOffset, pawn);
 
+                if (!pawn.RaceProps.Humanlike)
+                {
+                    // Because of how we scale animals in the ELSE-statement the scaling of animals/Mechs gets run twice.
+                    // Checking their node explicitly risks missing cases where someone uses another node.
+                    percentChangeCosmetic = Mathf.Sqrt(percentChangeCosmetic);
+                }
+
                 float headScaleStat = pawn.GetStatValue(VFEDefOf.VEF_HeadSize_Cosmetic);
 
                 var renderOffsetVal = pawn.GetStatValue(VFEDefOf.VEF_PawnRenderPosOffset);
