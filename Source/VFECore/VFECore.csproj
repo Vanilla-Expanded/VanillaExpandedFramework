@@ -442,6 +442,8 @@
     <Compile Include="AestheticScaling\PawnDataCache.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompHediffAfterHealthLoss.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_HediffAfterHealthLoss.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_TriggerAbilityOnDamage.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompTriggerAbilityOnDamage.cs" />
     <Compile Include="AnimalBehaviours\DeathActionWorkers\DeathActionWorker_ConfigurableExplosion.cs" />
     <Compile Include="AnimalBehaviours\DeathActionWorkers\Properties\DeathActionProperties_ConfigurableExplosion.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Ability.cs" />
