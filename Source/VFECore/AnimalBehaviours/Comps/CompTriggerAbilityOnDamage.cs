@@ -27,7 +27,7 @@ namespace AnimalBehaviours
                 Ability ability = pawn.abilities?.GetAbility(Props.ability);
                 if (ability != null && !ability.OnCooldown)
                 {
-                    ability.QueueCastingJob(dinfo.Instigator, dinfo.Instigator);
+                    ability.QueueCastingJob(dinfo.Instigator, dinfo.Instigator.Position);
                   
 
                 }
