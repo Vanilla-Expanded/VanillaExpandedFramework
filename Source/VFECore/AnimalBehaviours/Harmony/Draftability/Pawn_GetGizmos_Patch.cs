@@ -16,32 +16,30 @@ namespace AnimalBehaviours
     {
         IEnumerable<Gizmo> GetGizmos();
     }
+
     [HarmonyPatch(typeof(Pawn), "GetGizmos")]
     public static class Pawn_GetGizmos_Patch
     {
+        public static string toggleCache = "CommandToggleDraftDesc".Translate().ToString();
+
         public static IEnumerable<Gizmo> Postfix(IEnumerable<Gizmo> __result, Pawn __instance)
         {
             var pawn = __instance;
             bool isDraftableAnimal = pawn.IsDraftableControllableAnimal();
-            bool abilityUser = pawn.IsAbilityUserAnimal();
             bool alreadyHasVanillaDraftButton = false;
             foreach (var g in __result)
             {
-                if (g is Command_Toggle command && command.defaultDesc == "CommandToggleDraftDesc".Translate())
+                if (g is Command_Toggle command && command.defaultDesc == toggleCache)
                 {
                     alreadyHasVanillaDraftButton = true;
                 }
                 yield return g;
             }
 
-
-
-            if (abilityUser && !isDraftableAnimal && pawn.abilities != null)
+            if (pawn.abilities != null && !isDraftableAnimal && pawn.IsAbilityUserAnimal())
             {
-
                 if (!DebugSettings.godMode || (DebugSettings.godMode && !DebugSettings.ShowDevGizmos))
                 {
-
                     foreach (Ability a in pawn.abilities.AllAbilitiesForReading)
                     {
 
@@ -81,7 +79,6 @@ namespace AnimalBehaviours
            
             if (!alreadyHasVanillaDraftButton && isDraftableAnimal && pawn.drafter != null)
             {
-             
                 Command_Toggle drafting_command = new Command_Toggle();
                 drafting_command.toggleAction = delegate
                 {
