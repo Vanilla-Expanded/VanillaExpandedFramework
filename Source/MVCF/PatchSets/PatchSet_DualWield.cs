@@ -8,7 +8,7 @@ public class PatchSet_DualWield : PatchSet
 {
     public override IEnumerable<Patch> GetPatches()
     {
-        yield return Patch.Transpiler(AccessTools.Method(AccessTools.TypeByName("DualWield.Harmony.PawnRenderer_RenderPawnAt"), "Postfix"),
+        yield return Patch.Transpiler(AccessTools.Method(AccessTools.TypeByName("DualWield.HarmonyInstance.PawnRenderer_RenderPawnAt"), "Postfix"),
             AccessTools.Method(GetType(), nameof(AddNullCheck)));
     }
 
