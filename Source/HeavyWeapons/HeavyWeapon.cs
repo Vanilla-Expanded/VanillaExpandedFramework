@@ -12,6 +12,7 @@ namespace HeavyWeapons
     {
         public List<string> supportedTraits;
         public List<string> supportedArmors;
+        public List<string> supportedGenes;
         public string disableOptionLabelKey;
         public int weaponHitPointsDeductionOnShot;
         public bool isHeavy;

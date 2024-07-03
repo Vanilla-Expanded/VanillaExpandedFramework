@@ -58,6 +58,17 @@ namespace HeavyWeapons
                         return true;
                     }
                 }
+                if (pawn.genes != null && options.supportedGenes != null)
+                {
+                    foreach (string gene in options.supportedGenes)
+                    {
+                        if(pawn.genes.HasActiveGene(DefDatabase <GeneDef>.GetNamedSilentFail(gene)))
+                        {
+                            return true;
+                        }
+                    }
+                    
+                }
                 if (pawn.apparel.WornApparel != null)
                 {
                     foreach (var ap in pawn.apparel.WornApparel)
