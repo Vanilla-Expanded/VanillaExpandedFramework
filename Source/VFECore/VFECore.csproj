@@ -449,9 +449,11 @@
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Ability.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_ExplodeOnDamage.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_ExplodeOnFire.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\HediffComp_StageByHealth.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_ExplodeOnDamage.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_ExplodeOnFire.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Ability.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_StageByHealth.cs" />
     <Compile Include="DefModExtensions\HeadExtension.cs" />
     <Compile Include="Furniture\Harmony\GenConstruct_BlocksConstruction_Patch.cs" />
     <Compile Include="Furniture\Harmony\GenConstruct_CanConstruct_Patch.cs" />
