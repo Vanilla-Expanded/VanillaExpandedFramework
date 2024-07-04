@@ -21,7 +21,7 @@ namespace AnimalBehaviours
         {
             base.Notify_PawnPostApplyDamage(dinfo, totalDamageDealt);
 
-            if(dinfo.Amount >= Props.minDamageToExplode && this.parent.pawn.Map!=null)
+            if(totalDamageDealt >= Props.minDamageToExplode && this.parent.pawn.Map!=null)
             {
                 GenExplosion.DoExplosion(this.parent.pawn.Position, this.parent.pawn.Map, Props.radius, Props.damageType, this.parent.pawn, Props.damageAmount, -1, Props.sound, 
                     null, null, null, Props.spawnThingDef, Props.spawnThingChance, 1, null, false, null, 0f, 1);
