@@ -21,7 +21,7 @@ namespace AnimalBehaviours
            
             Pawn pawn = this.parent as Pawn;
           
-            if (pawn != null && totalDamageDealt >= Props.minDamageToTrigger)
+            if (pawn != null && totalDamageDealt >= Props.minDamageToTrigger && dinfo.Instigator!=null)
             {
             
                 Ability ability = pawn.abilities?.GetAbility(Props.ability);
