@@ -459,6 +459,8 @@
     <Compile Include="DefModExtensions\HeadExtension.cs" />
     <Compile Include="Furniture\Harmony\GenConstruct_BlocksConstruction_Patch.cs" />
     <Compile Include="Furniture\Harmony\GenConstruct_CanConstruct_Patch.cs" />
+    <Compile Include="Genes\Gene Classes\Gene_Shambler.cs" />
+    <Compile Include="Genes\Gene Classes\Gene_Ghoul.cs" />
     <Compile Include="Genes\Harmony\Patch_BaseHeadOffsetAt.cs" />
     <Compile Include="Genes\Harmony\Patch_BodySize.cs" />
     <Compile Include="Genes\Harmony\Patch_GenesChanged.cs" />
@@ -558,7 +560,7 @@
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_InLight.cs" />
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_Indoors.cs" />
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_Outdoors.cs" />
-    <Compile Include="Genes\Harmony\GeneGendered.cs" />
+    <Compile Include="Genes\Gene Classes\GeneGendered.cs" />
     <Compile Include="Genes\Harmony\GeneUIUtility_DrawGene_Patch.cs" />
     <Compile Include="Genes\Harmony\GeneUtils.cs" />
     <Compile Include="Genes\Harmony\Patch_FoodCapacity.cs" />
