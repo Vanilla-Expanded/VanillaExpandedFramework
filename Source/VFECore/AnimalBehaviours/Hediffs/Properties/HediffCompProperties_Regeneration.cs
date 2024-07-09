@@ -11,6 +11,7 @@ namespace AnimalBehaviours
         public int rateInTicks = 1000;
         public float healAmount = 0.1f;
         public bool healAll = true;
+        public bool needsSun = false;
 
         public HediffCompProperties_Regeneration()
         {
