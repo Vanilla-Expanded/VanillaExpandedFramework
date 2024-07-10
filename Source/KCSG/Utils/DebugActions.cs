@@ -10,20 +10,18 @@ namespace KCSG
 {
     public static class DebugActions
     {
-        [DebugAction("KCSG", "Quickspawn...", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
-        public static void Quickspawn()
+        [DebugAction("KCSG", "Quickspawn structure", false, false, false, false, 0, false, allowedGameStates = AllowedGameStates.PlayingOnMap, displayPriority = 1000)]
+        private static List<DebugActionNode> SpawnStructure()
         {
-            var mainList = new List<DebugMenuOption>();
+            List<DebugActionNode> list = new List<DebugActionNode>();
 
-            // Quickspawn structure
             if (DefDatabase<StructureLayoutDef>.AllDefsListForReading is List<StructureLayoutDef> slDefs && !slDefs.NullOrEmpty())
             {
-                mainList.Add(new DebugMenuOption("Structure...", DebugMenuOptionMode.Action, () =>
-                {
-                    List<DebugMenuOption> list = new List<DebugMenuOption>();
+               
+                    
                     foreach (var layoutDef in slDefs)
                     {
-                        list.Add(new DebugMenuOption(layoutDef.defName, DebugMenuOptionMode.Tool, () =>
+                        list.Add(new DebugActionNode(layoutDef.defName, DebugActionType.ToolMap, () =>
                         {
                             var map = Find.CurrentMap;
                             if (UI.MouseCell().InBounds(map))
@@ -35,9 +33,20 @@ namespace KCSG
                             }
                         }));
                     }
-                    Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
-                }));
+                   
+                
             }
+
+            return list;
+        }
+
+
+        [DebugAction("KCSG", "Quickspawn...", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        public static void Quickspawn()
+        {
+            var mainList = new List<DebugMenuOption>();
+
+           
             // Quickspawn temp structure
             if (Dialog_ExportWindow.exportedLayouts.Count > 0)
             {
