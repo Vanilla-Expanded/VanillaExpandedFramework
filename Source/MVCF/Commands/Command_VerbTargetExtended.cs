@@ -69,7 +69,7 @@ public class Command_VerbTargetExtended : Command_VerbTarget
 
     public override bool GroupsWith(Gizmo other)
     {
-        if (other is Command_VerbTargetExtended { managedVerb: { } mv })
+        if (other is Command_VerbTargetExtended { managedVerb: { } mv } && managedVerb.Props.label != mv.Props.label)
         {
             // Do not merge verbs on the same pawn, so that you can have multiple hediffs providing the same verbs that you can target separately
             if (mv is { Manager.Pawn: { } pawn1 } && managedVerb is { Manager.Pawn: { } pawn2 } && pawn1 == pawn2) return false;
