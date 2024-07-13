@@ -12,6 +12,7 @@ namespace AnimalBehaviours
         public float healAmount = 0.1f;
         public bool healAll = true;
         public bool needsSun = false;
+        public bool needsWater = false;
 
         public HediffCompProperties_Regeneration()
         {

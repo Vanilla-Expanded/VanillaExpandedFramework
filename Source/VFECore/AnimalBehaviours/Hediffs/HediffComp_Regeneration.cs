@@ -43,20 +43,24 @@ namespace AnimalBehaviours
 
                         if (!Props.needsSun || Props.needsSun && pawn.Map != null && pawn.Position.InSunlight(pawn.Map))
                         {
-                            if (Props.healAll)
+                            if (!Props.needsWater || Props.needsWater && pawn.Map != null && pawn.Position.GetTerrain(pawn.Map).IsWater)
                             {
-                                foreach (Hediff_Injury injury in injuries)
-                                {
-                                    injury.Severity = injury.Severity - Props.healAmount;
-                                    break;
-                                }
-                            }
-                            else
-                            {
-                                Hediff_Injury injury = injuries.RandomElement();
-                                injury.Severity = injury.Severity - Props.healAmount;
-                            }
 
+                                if (Props.healAll)
+                                {
+                                    foreach (Hediff_Injury injury in injuries)
+                                    {
+                                        injury.Severity = injury.Severity - Props.healAmount;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    Hediff_Injury injury = injuries.RandomElement();
+                                    injury.Severity = injury.Severity - Props.healAmount;
+                                }
+
+                            }
                         }
 
 
