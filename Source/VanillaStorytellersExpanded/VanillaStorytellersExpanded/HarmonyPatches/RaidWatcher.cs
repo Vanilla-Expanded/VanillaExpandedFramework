@@ -217,7 +217,7 @@ namespace VanillaStorytellersExpanded
     {
         public static bool Prefix(FiringIncident fi)
         {
-            if (fi.def == null)
+            if (fi?.def == null)
             {
                 return false;
             }
