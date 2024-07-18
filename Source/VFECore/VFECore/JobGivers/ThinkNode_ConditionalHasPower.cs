@@ -16,7 +16,7 @@ namespace VFEMech
 	{
 		protected override bool Satisfied(Pawn pawn)
 		{
-			return pawn.needs.TryGetNeed<Need_Power>().CurLevel > 0;
+			return pawn.needs?.TryGetNeed<Need_Power>()?.CurLevel > 0;
 		}
 	}
 }
