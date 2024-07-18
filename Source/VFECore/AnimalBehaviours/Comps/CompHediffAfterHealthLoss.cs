@@ -10,7 +10,7 @@ namespace AnimalBehaviours
 {
     public class CompHediffAfterHealthLoss : ThingComp
     {
-        public bool addHediffOnce = false;
+
 
         public CompProperties_HediffAfterHealthLoss Props
         {
@@ -23,39 +23,48 @@ namespace AnimalBehaviours
         public override void PostExposeData()
         {
             base.PostExposeData();
-            Scribe_Values.Look<bool>(ref this.addHediffOnce, "addHediffOnce", false, false);
+
 
         }
 
         public override void CompTick()
         {
             base.CompTick();
-          
-            if(!addHediffOnce)
+
+
+
+            if (this.parent.IsHashIntervalTick(Props.tickInterval))
             {
-                //Only check things every tickInterval
-                if (this.parent.IsHashIntervalTick(Props.tickInterval))
+                Pawn thisPawn = this.parent as Pawn;
+                if (thisPawn != null && thisPawn.Map != null && !thisPawn.Dead && !thisPawn.Downed)
                 {
-                    Pawn thisPawn = this.parent as Pawn;
-                    if (thisPawn != null && thisPawn.Map != null && !thisPawn.Dead && !thisPawn.Downed)
+                    
+                    if (thisPawn.health.summaryHealth.SummaryHealthPercent < ((float)(Props.healthPercent) / 100))
                     {
-                        //If pawn's health reaches a threshold
-                        if (thisPawn.health.summaryHealth.SummaryHealthPercent < ((float)(Props.healthPercent) / 100))
+                        if (!thisPawn.health.hediffSet.HasHediff(Props.hediff))
                         {
-                            //apply hediff
                             thisPawn.health.AddHediff(Props.hediff, thisPawn.health.hediffSet.GetBodyPartRecord(Props.bodyPart));
-                            thisPawn.health.hediffSet.GetFirstHediffOfDef(Props.hediff).Severity = Props.severity;
-                            //this line resets the PawnRenderNodes to apply a graphic change
-                            thisPawn.Drawer.renderer.SetAllGraphicsDirty();
-                            addHediffOnce = true;
                         }
+                        thisPawn.health.hediffSet.GetFirstHediffOfDef(Props.hediff).Severity = Props.severity;
+                        //this line resets the PawnRenderNodes to apply a graphic change
+                        thisPawn.Drawer.renderer.SetAllGraphicsDirty();
                     }
-
+                    else
+                    {
+                        if (thisPawn.health.hediffSet.HasHediff(Props.hediff))
+                        {
+                            thisPawn.health.RemoveHediff(thisPawn.health.hediffSet.GetFirstHediffOfDef(Props.hediff));
+                            thisPawn.Drawer.renderer.SetAllGraphicsDirty();
+                        }
+                        
+                    }
                 }
-            }
 
-            
+            }
         }
+
+
     }
 }
+
 
