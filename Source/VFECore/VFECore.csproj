@@ -471,6 +471,7 @@
     <Compile Include="Genes\Harmony\Pawn_HealthTracker_DropBloodSmear_Patch.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_ParallelGetPreRenderResults.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_Pawn_NeedsTracker.cs" />
+    <Compile Include="VFECore\Projectiles\Projectile_Shrapnel.cs" />
     <Compile Include="VFECore\Utilities\ResearchProjectUtility.cs" />
     <Compile Include="VFECore\HarmonyPatches\MentaBreakWorker_Patches.cs" />
     <Compile Include="VFECore\Utilities\CacheTimer.cs" />
