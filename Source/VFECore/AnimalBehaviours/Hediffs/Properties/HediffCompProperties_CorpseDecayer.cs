@@ -16,6 +16,10 @@ namespace AnimalBehaviours
         public float nutritionGained = 0.2f;
         public string corpseSound = "";
 
+        public bool causeThoughtNearby = false;
+        public int radiusForThought;
+        public ThoughtDef thought;
+
         public HediffCompProperties_CorpseDecayer()
         {
             this.compClass = typeof(HediffComp_CorpseDecayer);
