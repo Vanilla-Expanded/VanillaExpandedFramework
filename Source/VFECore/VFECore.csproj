@@ -440,10 +440,14 @@
     <Compile Include="ActiveTerrain\SpecialTerrainList.cs" />
     <Compile Include="ActiveTerrain\ThingComps.cs" />
     <Compile Include="AestheticScaling\PawnDataCache.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompAttachEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompHediffAfterHealthLoss.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompMakeOtherPawnsFlee.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompMoteReleaser.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_AttachEffecter.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_MakeOtherPawnsFlee.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_HediffAfterHealthLoss.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_MoteReleaser.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_TriggerAbilityOnDamage.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompTriggerAbilityOnDamage.cs" />
     <Compile Include="AnimalBehaviours\DeathActionWorkers\DeathActionWorker_ConfigurableExplosion.cs" />
