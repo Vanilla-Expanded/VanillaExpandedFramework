@@ -119,15 +119,15 @@ namespace KCSG
                     if (terrain == null || !cell.InBounds(map))
                         continue;
 
-                    if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
-                    {
-                        map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
-                    }
-                    else
-                    {
+                    //if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
+                    //{
+                    //    map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
+                    //}
+                    //else
+                    //{
                         GenOption.DespawnMineableAt(cell);
                         map.terrainGrid.SetTerrain(cell, terrain);
-                    }
+                    //}
 
                     if (useColorGrid)
                         map.terrainGrid.SetTerrainColor(cell, layout._terrainColorGrid[h, w]);
