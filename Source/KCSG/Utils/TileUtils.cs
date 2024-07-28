@@ -145,9 +145,9 @@ namespace KCSG
                 for (int j = 0; j < cells.Count; j++)
                 {
                     var c = cells[j];
-                    if (map.terrainGrid.TerrainAt(c).affordances.Contains(TerrainAffordanceDefOf.Bridgeable))
-                        map.terrainGrid.SetTerrain(c, TerrainDefOf.Bridge);
-                    else
+                    //if (map.terrainGrid.TerrainAt(c).affordances.Contains(TerrainAffordanceDefOf.Bridgeable))
+                    //    map.terrainGrid.SetTerrain(c, TerrainDefOf.Bridge);
+                    //else
                         map.terrainGrid.SetTerrain(c, def.increaseTerrainDef);
                 }
             }

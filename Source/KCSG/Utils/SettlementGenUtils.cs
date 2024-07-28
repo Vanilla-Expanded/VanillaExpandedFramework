@@ -156,9 +156,9 @@ namespace KCSG
             {
                 if (!terrainDef.BuildableByPlayer)
                 {
-                    if (terrainDef.affordances.Contains(TerrainAffordanceDefOf.Bridgeable))
-                        map.terrainGrid.SetTerrain(c, TerrainDefOf.Bridge);
-                    else
+                    //if (terrainDef.affordances.Contains(TerrainAffordanceDefOf.Bridgeable))
+                    //    map.terrainGrid.SetTerrain(c, TerrainDefOf.Bridge);
+                    //else
                         map.terrainGrid.SetTerrain(c, roadDef);
                 }
             }

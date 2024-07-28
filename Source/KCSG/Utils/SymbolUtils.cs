@@ -291,10 +291,10 @@ namespace KCSG
                     }
                 }
                 // else spawn bridge
-                else
-                {
-                    map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
-                }
+                //else
+                //{
+                //    map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
+                //}
             }
             // Spawn the thing
             GenSpawn.Spawn(thing, cell, map, symbol.rotation, WipeMode.VanishOrMoveAside);

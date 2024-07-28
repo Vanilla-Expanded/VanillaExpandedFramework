@@ -115,10 +115,8 @@ namespace KCSG
                 {
                     var cell = cells[(h * layout.sizes.x) + w];
                     var terrain = layout._terrainGrid[h, w];
-
                     if (terrain == null || !cell.InBounds(map))
                         continue;
-
                     //if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
                     //{
                     //    map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
