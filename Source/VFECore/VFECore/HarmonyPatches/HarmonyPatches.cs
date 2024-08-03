@@ -27,12 +27,12 @@ namespace VFECore
             // Dual Wield
             if (ModCompatibilityCheck.DualWield)
             {
-                var addHumanlikeOrdersPatch = GenTypes.GetTypeInAnyAssembly("DualWield.Harmony.FloatMenuMakerMap_AddHumanlikeOrders", "DualWield.Harmony");
+                var addHumanlikeOrdersPatch = GenTypes.GetTypeInAnyAssembly("DualWield.HarmonyInstance.FloatMenuMakerMap_AddHumanlikeOrders", "DualWield.HarmonyInstance");
                 if (addHumanlikeOrdersPatch != null)
                     VFECore.harmonyInstance.Patch(AccessTools.Method(addHumanlikeOrdersPatch, "Postfix"),
                         transpiler: new HarmonyMethod(typeof(Patch_DualWield_Harmony_FloatMenuMakerMap_AddHumanlikeOrders.manual_Postfix), "Transpiler"));
                 else
-                    Log.Error("Could not find type DualWield.Harmony.FloatMenuMakerMap_AddHumanlikeOrders in Dual Wield");
+                    Log.Error("Could not find type DualWield.HarmonyInstance.FloatMenuMakerMap_AddHumanlikeOrders in Dual Wield");
 
                 // Taranchuk: no idea how to handle this
                 //var extEquipmentTracker = GenTypes.GetTypeInAnyAssembly("DualWield.Ext_Pawn_EquipmentTracker", "DualWield");

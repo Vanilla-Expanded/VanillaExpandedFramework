@@ -22,7 +22,7 @@ namespace VFECore
             public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
                 #if DEBUG
-                    Log.Message("DualWield.Harmony.FloatMenuMakerMap_AddHumanlikeOrders.manual_Postfix transpiler start (1 match todo)");
+                    Log.Message("DualWield.HarmonyInstance.FloatMenuMakerMap_AddHumanlikeOrders.manual_Postfix transpiler start (1 match todo)");
                 #endif
 
 
