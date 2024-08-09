@@ -274,6 +274,7 @@ namespace VanillaFurnitureExpanded
                     altitudeLayer = AltitudeLayer.FloorEmplacement,
                     rotatable = false,
                     passability = Traversability.Standable,
+                    category = ThingCategory.Building
                 };
             }
             return dummyDef;
@@ -293,6 +294,10 @@ namespace VanillaFurnitureExpanded
                 ((DummyGlower)dummyThing).parentComp = this;
                 var cellGlower = this.parent.Position + base.parent.Rotation.FacingCell;
                 GenSpawn.Spawn(dummyThing, cellGlower, this.parent.Map);
+                if (parent.Faction != null)
+                {
+                    dummyThing.SetFaction(parent.Faction);
+                }
                 this.compGlower.parent = dummyThing;
             }
             else
