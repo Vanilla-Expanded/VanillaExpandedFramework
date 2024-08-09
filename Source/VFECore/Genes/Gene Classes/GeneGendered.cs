@@ -12,7 +12,8 @@ namespace VanillaGenesExpanded
         {
             get
             {
-                if (pawn.gender != Extension.forGenderOnly)
+                var extension = Extension;
+                if (extension != null && pawn.gender != Extension.forGenderOnly)
                 {
                     return false;
                 }
