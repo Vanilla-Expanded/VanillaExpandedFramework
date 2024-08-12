@@ -10,7 +10,7 @@ namespace VFECore
     {
         public override DamageResult Apply(DamageInfo dinfo, Thing thing)
         {
-            if (dinfo.Instigator != null)
+            if (dinfo.Instigator != null && thing is Pawn)
             {
                 var extension = this.def.GetModExtension<DamageExtension>();
                 TryToKnockBack(dinfo.Instigator, thing, extension.pushBackDistance.RandomInRange, extension);
