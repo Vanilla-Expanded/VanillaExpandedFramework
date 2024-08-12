@@ -440,4 +440,30 @@ namespace VFECore
             }
         }
     }
+
+    [HarmonyPatch(typeof(TraitSet), "GainTrait")]
+    public static class TraitSet_GainTrait_Patch
+    {
+        public static bool Prefix(Pawn ___pawn, Trait trait)
+        {
+            var traitExtension = trait?.def?.GetModExtension<TraitExtension>();
+            if (traitExtension != null && traitExtension.apparelExclusiveTrait)
+            {
+                var apparels = ___pawn.apparel?.WornApparel;
+                if (apparels != null)
+                {
+                    foreach (var apparel in apparels)
+                    {
+                        var apparelExtension = apparel.def.GetModExtension<ApparelExtension>();
+                        if (apparelExtension != null && apparelExtension.traitsOnEquip.Contains(trait.def))
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            return true;
+        }
+    }
 }
