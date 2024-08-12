@@ -795,14 +795,17 @@
             {
                 return true;
             }
-
+            if (this.def.worldTargeting)
+            {
+                return true;
+            }
             var distance = target.Cell.DistanceTo(this.pawn.Position);
-            if (target.IsValid && (this.def.worldTargeting || (distance < this.GetRangeForPawn() && distance > this.def.minRange)))
+            if (target.IsValid && distance < this.GetRangeForPawn() && distance > this.def.minRange)
             {
                 if ((this.targetParams.canTargetLocations && this.targetParams.CanTarget(new TargetInfo(target.Cell, this.Caster.Map))) ||
                     this.targetParams.CanTarget(target.ToTargetInfo(this.Caster.Map)))
                 {
-                    if (!sightCheck || this.def.worldTargeting)
+                    if (!sightCheck)
                         return true;
 
                     if (GenSight.LineOfSight(this.pawn.Position, target.Cell, this.pawn.Map))
