@@ -802,7 +802,7 @@
                 if ((this.targetParams.canTargetLocations && this.targetParams.CanTarget(new TargetInfo(target.Cell, this.Caster.Map))) ||
                     this.targetParams.CanTarget(target.ToTargetInfo(this.Caster.Map)))
                 {
-                    if (!sightCheck)
+                    if (!sightCheck || this.def.worldTargeting)
                         return true;
 
                     if (GenSight.LineOfSight(this.pawn.Position, target.Cell, this.pawn.Map))
