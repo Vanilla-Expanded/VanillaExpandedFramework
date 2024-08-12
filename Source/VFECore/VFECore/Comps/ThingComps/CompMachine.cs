@@ -20,7 +20,6 @@ namespace VFE.Mechanoids
         public float turretAngle = 0f; //Purely cosmetic, don't need to save it
         public float turretAnglePerFrame = 0.1f;
 
-        public static Dictionary<PawnRenderer, CompMachine> cachedMachines = new Dictionary<PawnRenderer, CompMachine>();
         public static Dictionary<CompMachine, Pawn> cachedPawns = new Dictionary<CompMachine, Pawn>();
         public static Dictionary<Pawn, CompMachine> cachedMachinesPawns = new Dictionary<Pawn, CompMachine>();
         public override void OnBuildingDestroyed(CompPawnDependsOn compPawnDependsOn)
@@ -88,7 +87,6 @@ namespace VFE.Mechanoids
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-            cachedMachines.Add(((Pawn)parent).Drawer.renderer, this);
             cachedPawns.Add(this, (Pawn)parent);
             cachedMachinesPawns.Add((Pawn)parent, this);
         }
@@ -96,7 +94,6 @@ namespace VFE.Mechanoids
         public override void PostDeSpawn(Map map)
         {
             base.PostDeSpawn(map);
-            cachedMachines.Remove(((Pawn)parent).Drawer.renderer);
             cachedPawns.Remove(this);
             cachedMachinesPawns.Remove((Pawn)parent);
         }
@@ -104,7 +101,6 @@ namespace VFE.Mechanoids
         public override void PostDestroy(DestroyMode mode, Map previousMap)
         {
             base.PostDestroy(mode, previousMap);
-            cachedMachines.Remove(((Pawn)parent).Drawer.renderer);
             cachedPawns.Remove(this);
             cachedMachinesPawns.Remove((Pawn)parent);
         }
