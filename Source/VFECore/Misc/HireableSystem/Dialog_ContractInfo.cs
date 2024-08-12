@@ -46,12 +46,13 @@ namespace VFECore.Misc
             Widgets.Label(pawnsRect.TakeTopPart(20f), "VEF.PawnsList".Translate());
             Widgets.DrawMenuSection(pawnsRect);
             pawnsRect = pawnsRect.ContractedBy(5f);
-            var viewRect = new Rect(0, 0, pawnsRect.width - 20f, contract.pawns.Count * 40f);
+            var pawns = contract.pawns.Where(x => x is not null).ToList();
+            var viewRect = new Rect(0, 0, pawnsRect.width - 20f, pawns.Count * 40f);
             Widgets.BeginScrollView(pawnsRect, ref pawnsScrollPos, viewRect);
-            foreach (var pawn in contract.pawns)
+            foreach (var pawn in pawns)
             {
                 var pawnRect = viewRect.TakeTopPart(33f);
-                if (pawn != contract.pawns.Last()) Widgets.DrawLineHorizontal(pawnRect.x, pawnRect.yMax, pawnRect.width);
+                if (pawn != pawns.Last()) Widgets.DrawLineHorizontal(pawnRect.x, pawnRect.yMax, pawnRect.width);
                 Widgets.DrawHighlightIfMouseover(pawnRect);
                 if (Widgets.ButtonInvisible(pawnRect))
                 {
