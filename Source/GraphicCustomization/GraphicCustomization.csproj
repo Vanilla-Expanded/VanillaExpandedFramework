@@ -304,6 +304,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TextureUtils.cs" />
     <Compile Include="TextureVariant.cs" />
+    <Compile Include="Thing_DefaultGraphic_Patch.cs" />
+    <Compile Include="VerbTracker_CreateVerbTargetCommand_Patch.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Krafs.Publicizer">

@@ -11,6 +11,7 @@ using Verse.Sound;
 
 using System.Reflection;
 using System.Text;
+using HarmonyLib;
 
 namespace ItemProcessor
 {
@@ -1163,13 +1164,17 @@ namespace ItemProcessor
                     }
                     else
                     {
-                        /*if (this.def.defName.Contains("VFEM_")&&ModLister.HasActiveModWithName("Vanilla Factions Expanded - Mechanoids") ) {
+                        if (this.def.defName.Contains("VFEM_") &&ModLister.HasActiveModWithName("Vanilla Factions Expanded - Mechanoids") ) {
                             try
                             {
                                 ((Action)(() =>
                                 {
-                                    VFEM.MechShipsSettings settings = VFEM.MechShipsMod.settings;
-                                    float multiplier = settings.VFEM_factorySpeedMultiplier;
+                                    var type = AccessTools.TypeByName("MechShipsMod");
+                                    var mod = LoadedModManager.GetMod(type);
+                                    var settings = type.GetField("settings").GetValue(mod);
+                                    var settingsType = AccessTools.TypeByName("VFEM.MechShipsSettings");
+                                    float multiplier = (float)settingsType.GetField("VFEM_factorySpeedMultiplier").GetValue(settings);
+                                    Log.Message("multiplier: " + multiplier);
                                     this.days = thisCombinationRecipe.singleTimeIfNotQualityIncreasing * multiplier * FactoryMultiplierClass.FactoryPreceptMultiplier;
                                 }))();
                             }
@@ -1179,9 +1184,9 @@ namespace ItemProcessor
 
                         }
                         else
-                        {*/
+                        {
                             this.days = thisCombinationRecipe.singleTimeIfNotQualityIncreasing;
-                        //}
+                        }
 
                     }
                     //Reset ingredient counter (this is probably not necessary cause ResetEverything does it, but oh well
