@@ -775,14 +775,14 @@ namespace VFECore
         }
 
         //---added--- inspired by Frontier Security's method (distributed under an open-source non-profit license)
-        public static bool CheckPodHostility(DropPodIncoming dropPod)  //this is me. Didn't want to zap trader deliveries or allies
+        public static bool CheckPodHostility(CompShieldField shield, DropPodIncoming dropPod)  //this is me. Didn't want to zap trader deliveries or allies
         {
             var innerContainer = dropPod.Contents.innerContainer;
             for (int i = 0; i < innerContainer.Count; i++)
             {
                 if (innerContainer[i] is Pawn pawn)
                 {
-                    if (GenHostility.IsActiveThreatToPlayer(pawn) || pawn.RaceProps.IsMechanoid)
+                    if (pawn.HostileTo(shield.parent.Faction))
                     {
                         return true;
                     }
@@ -875,7 +875,6 @@ namespace VFECore
             }
         }
     }
-
     [HarmonyPatch(typeof(Skyfaller), nameof(Skyfaller.Tick))]
     public static class Patch_Tick
     {
@@ -886,19 +885,18 @@ namespace VFECore
                 var thingDefExtension = __instance.def.GetModExtension<ThingDefExtension>();
                 if (thingDefExtension != null)
                 {
-                    ShieldGeneratorUtility.CheckIntercept(__instance, __instance.Map, thingDefExtension.shieldDamageIntercepted, 
-                        DamageDefOf.Blunt, () => __instance.OccupiedRect().Cells, () => 
-                        thingDefExtension.shieldDamageIntercepted > -1 && (__instance is not DropPodIncoming dropPodIncoming
-                        || ShieldGeneratorUtility.CheckPodHostility(dropPodIncoming)),
-                    postIntercept: s =>
-                    {
-                        if (s.Energy > 0)
+                    ShieldGeneratorUtility.CheckIntercept(__instance, __instance.Map, thingDefExtension.shieldDamageIntercepted, DamageDefOf.Blunt,
+                            () => __instance.OccupiedRect().Cells,
+                            () => thingDefExtension.shieldDamageIntercepted > -1,
+                        preIntercept: (CompShieldField x) => __instance is not DropPodIncoming dropPodIncoming
+                            || ShieldGeneratorUtility.CheckPodHostility(x, dropPodIncoming),
+                        postIntercept: s =>
                         {
-                            switch (__instance)
+                            if (s.Energy > 0)
                             {
-                                case DropPodIncoming dropPod:
-                                    if (ShieldGeneratorUtility.CheckPodHostility(dropPod))
-                                    {
+                                switch (__instance)
+                                {
+                                    case DropPodIncoming dropPod:
                                         var innerContainer = dropPod.Contents.innerContainer;
                                         for (int i = 0; i < innerContainer.Count; i++)
                                         {
@@ -908,18 +906,16 @@ namespace VFECore
                                         }
                                         dropPod.Destroy();
                                         return;
-                                    }
-                                    return;
-                                case FlyShipLeaving _:
-                                    return;
-                                default:
-                                    {
-                                        __instance.Destroy();
+                                    case FlyShipLeaving _:
                                         return;
-                                    }
+                                    default:
+                                        {
+                                            __instance.Destroy();
+                                            return;
+                                        }
+                                }
                             }
-                        }
-                    });
+                        });
                 }
 
             }
