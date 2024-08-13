@@ -886,7 +886,10 @@ namespace VFECore
                 var thingDefExtension = __instance.def.GetModExtension<ThingDefExtension>();
                 if (thingDefExtension != null)
                 {
-                    ShieldGeneratorUtility.CheckIntercept(__instance, __instance.Map, thingDefExtension.shieldDamageIntercepted, DamageDefOf.Blunt, () => __instance.OccupiedRect().Cells, () => thingDefExtension.shieldDamageIntercepted > -1,
+                    ShieldGeneratorUtility.CheckIntercept(__instance, __instance.Map, thingDefExtension.shieldDamageIntercepted, 
+                        DamageDefOf.Blunt, () => __instance.OccupiedRect().Cells, () => 
+                        thingDefExtension.shieldDamageIntercepted > -1 && (__instance is not DropPodIncoming dropPodIncoming
+                        || ShieldGeneratorUtility.CheckPodHostility(dropPodIncoming)),
                     postIntercept: s =>
                     {
                         if (s.Energy > 0)
@@ -907,11 +910,13 @@ namespace VFECore
                                         return;
                                     }
                                     return;
-                                /*case DropPodLeaving _:
-                                    return;*/
-                                default:
-                                    __instance.Destroy();
+                                case FlyShipLeaving _:
                                     return;
+                                default:
+                                    {
+                                        __instance.Destroy();
+                                        return;
+                                    }
                             }
                         }
                     });
