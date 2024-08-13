@@ -31,6 +31,7 @@ public class PatchSet_MultiVerb : PatchSet
     {
         if (pawn.Manager(false) is not { } man) return true;
         __result = man.AllVerbs.FirstOrDefault(verb => verb.verbProps == __instance.targetingSource.GetVerb.verbProps);
+        if (__result is null) return true;
         return false;
     }
 
