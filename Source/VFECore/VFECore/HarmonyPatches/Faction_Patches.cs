@@ -152,12 +152,12 @@ namespace VFECore
 
         public static void Postfix(ref float __result, int x)
         {
-            if (RandomSettlementTileFor_Patch.factionToCheck != null && __result > 0)
+            if (RandomSettlementTileFor_Patch.factionToCheck?.def?.modExtensions != null && __result > 0)
             {
-                var modExtensions = RandomSettlementTileFor_Patch.factionToCheck.def.modExtensions?.OfType<FactionDefExtension>().ToList();
+                var modExtensions = RandomSettlementTileFor_Patch.factionToCheck.def.modExtensions;
                 if (modExtensions != null)
                 {
-                    foreach (var options in modExtensions)
+                    foreach (var options in modExtensions.OfType<FactionDefExtension>())
                     {
                         Tile tile = Find.WorldGrid[x];
                         if ((options.disallowedBiomes?.Any() ?? false) && options.disallowedBiomes.Contains(tile.biome))
@@ -202,10 +202,10 @@ namespace VFECore
 
                 foreach (var otherSettlement in Find.WorldObjects.SettlementBases)
                 {
-                    modExtensions = otherSettlement?.Faction?.def.modExtensions?.OfType<FactionDefExtension>().ToList();
+                    modExtensions = otherSettlement?.Faction?.def?.modExtensions;
                     if (modExtensions != null)
                     {
-                        foreach (var options in modExtensions)
+                        foreach (var options in modExtensions.OfType<FactionDefExtension>())
                         {
                             if (options != null)
                             {
