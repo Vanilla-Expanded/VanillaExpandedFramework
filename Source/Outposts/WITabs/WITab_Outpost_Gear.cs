@@ -36,7 +36,7 @@ namespace Outposts
 
         private List<Pawn> Pawns => SelOutpost.AllPawns.Where(p => p.apparel is not null && p.equipment is not null && p.health is not null && p.guest is not null).ToList();
 
-        protected override void UpdateSize()
+        public override void UpdateSize()
         {
             base.UpdateSize();
             leftPaneWidth = 469f;
@@ -456,7 +456,7 @@ namespace Outposts
             }
         }
 
-        protected override void ExtraOnGUI()
+        public override void ExtraOnGUI()
         {
             base.ExtraOnGUI();
             if (draggedItem != null)
@@ -496,7 +496,7 @@ namespace Outposts
             Widgets.EndScrollView();
         }
 
-        protected override void FillTab()
+        public override void FillTab()
         {
             allThings ??= new List<Thing>(SelOutpost.Things.Count());
             allThings.Clear();

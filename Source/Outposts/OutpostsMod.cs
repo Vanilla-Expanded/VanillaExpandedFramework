@@ -93,14 +93,6 @@ public class OutpostsMod : Mod
                .Select(method => new FloatMenuOption(
                     $"Outposts.Settings.DeliveryMethod.{method}".Translate(), () => Settings.DeliveryMethod = method))
                .ToList()));
-        listing.CheckboxLabeled("Outposts.Settings.DoRaids".Translate(), ref Settings.DoRaids);
-        listing.Label("Outposts.Settings.RaidFrequency".Translate());
-        listing.Label(
-            $"{Settings.raidTimeInterval.min.ToStringTicksToPeriodVerbose(false)} - {Settings.raidTimeInterval.max.ToStringTicksToPeriodVerbose(false)}");
-        listing.IntRange(ref Settings.raidTimeInterval, GenDate.TicksPerDay, GenDate.TicksPerYear * 2);
-        listing.Label("Outposts.Settings.RaidDifficulty".Translate(Settings.RaidDifficultyMultiplier.ToStringPercent()));
-        Settings.RaidDifficultyMultiplier = listing.Slider(Settings.RaidDifficultyMultiplier, 0.01f, 10f);
-
         listing.GapLine();
 
         static void DoSetting(Listing_Standard listing, OutpostsSettings.OutpostSettings settings, FieldInfo info, object obj = null)
@@ -217,10 +209,7 @@ public class PostToSetingsAttribute : Attribute
 public class OutpostsSettings : ModSettings
 {
     public DeliveryMethod DeliveryMethod = DeliveryMethod.Teleport;
-    public bool DoRaids = true;
     public float ProductionMultiplier = 1f;
-    public float RaidDifficultyMultiplier = 1f;
-    public IntRange raidTimeInterval = new(GenDate.TicksPerQuadrum / 2, GenDate.TicksPerQuadrum);
     public Dictionary<string, OutpostSettings> SettingsPerOutpost = new();
     public float TimeMultiplier = 1f;
 
@@ -239,14 +228,6 @@ public class OutpostsSettings : ModSettings
         Scribe_Values.Look(ref TimeMultiplier, "timeMultiplier", 1f);
         Scribe_Values.Look(ref DeliveryMethod, "deliveryMethod");
         Scribe_Collections.Look(ref SettingsPerOutpost, "settingsPerOutpost", LookMode.Value, LookMode.Deep);
-        Scribe_Values.Look(ref DoRaids, "doRaids", true);
-        Scribe_Values.Look(ref RaidDifficultyMultiplier, "RaidDifficultyMultiplier", 1f);
-
-        var RaidMinDays = raidTimeInterval.min;
-        var RaidMaxDays = raidTimeInterval.max;
-        Scribe_Values.Look(ref RaidMinDays, "RaidMinDays", 600000);
-        Scribe_Values.Look(ref RaidMaxDays, "RaidMaxDays", 1800000);
-        raidTimeInterval = new(RaidMinDays, RaidMaxDays);
     }
 
     public class OutpostSettings : IExposable

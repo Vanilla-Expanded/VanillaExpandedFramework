@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-    <Outposts.Settings.Title>Vanilla Expanded Framework - Outposts</Outposts.Settings.Title>
+    <Outposts.Settings.Title>VE Framework - Outposts</Outposts.Settings.Title>
     <Outposts.Settings.Multiplier.Production>Gloabal Production Multiplier: {0}</Outposts.Settings.Multiplier.Production>
     <Outposts.Settings.Multiplier.Time>Global Time Multiplier: {0}</Outposts.Settings.Multiplier.Time>
 	<Outposts.Settings.RaidDifficulty>Global Raid Difficulty Multiplier: {0}</Outposts.Settings.RaidDifficulty>

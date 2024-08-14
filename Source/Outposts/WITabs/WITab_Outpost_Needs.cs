@@ -38,7 +38,7 @@ namespace Outposts
             specificNeedsTabForPawn = null;
         }
 
-        protected override void UpdateSize()
+        public override void UpdateSize()
         {
             EnsureSpecificNeedsTabForPawnValid();
             base.UpdateSize();
@@ -54,7 +54,7 @@ namespace Outposts
             size.y = Mathf.Max(size.y, NeedsCardUtility.FullSize.y);
         }
 
-        protected override void ExtraOnGUI()
+        public override void ExtraOnGUI()
         {
             EnsureSpecificNeedsTabForPawnValid();
             base.ExtraOnGUI();
@@ -81,7 +81,7 @@ namespace Outposts
             if (specificNeedsTabForPawn != null && (specificNeedsTabForPawn.Destroyed || !SelOutpost.Has(specificNeedsTabForPawn))) specificNeedsTabForPawn = null;
         }
 
-        protected override void FillTab()
+        public override void FillTab()
         {
             EnsureSpecificNeedsTabForPawnValid();
             DoRows(size, Pawns);

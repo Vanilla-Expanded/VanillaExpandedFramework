@@ -53,7 +53,7 @@ namespace Outposts
             }
         }
 
-        protected override void FillTab()
+        public override void FillTab()
         {
             EnsureSpecificHealthTabForPawnValid();
             Text.Font = GameFont.Small;
@@ -68,7 +68,7 @@ namespace Outposts
             Widgets.EndScrollView();
         }
 
-        protected override void UpdateSize()
+        public override void UpdateSize()
         {
             EnsureSpecificHealthTabForPawnValid();
             base.UpdateSize();
@@ -83,7 +83,7 @@ namespace Outposts
             compactMode = false;
         }
 
-        protected override void ExtraOnGUI()
+        public override void ExtraOnGUI()
         {
             EnsureSpecificHealthTabForPawnValid();
             base.ExtraOnGUI();

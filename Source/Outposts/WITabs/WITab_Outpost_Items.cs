@@ -26,14 +26,14 @@ namespace Outposts
 
         public Outpost SelOutpost => SelObject as Outpost;
 
-        protected override void UpdateSize()
+        public override void UpdateSize()
         {
             base.UpdateSize();
             CheckCacheItems();
             size = CaravanItemsTabUtility.GetSize(cachedItems, PaneTopY) - new Vector2(0f, 25f);
         }
 
-        protected override void FillTab()
+        public override void FillTab()
         {
             CheckCreateSorters();
             var rect = new Rect(0f, 0f, size.x, size.y);

@@ -24,7 +24,7 @@ namespace Outposts
 
         public override Vector2 InitialSize => new(1024f, UI.screenHeight - 100f);
 
-        protected override float Margin => 17f;
+        public override float Margin => 17f;
 
         public override void DoWindowContents(Rect inRect)
         {
