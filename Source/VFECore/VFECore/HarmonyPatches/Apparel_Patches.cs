@@ -455,7 +455,7 @@ namespace VFECore
                     foreach (var apparel in apparels)
                     {
                         var apparelExtension = apparel.def.GetModExtension<ApparelExtension>();
-                        if (apparelExtension != null && apparelExtension.traitsOnEquip.Contains(trait.def))
+                        if (apparelExtension?.traitsOnEquip != null && apparelExtension.traitsOnEquip.Contains(trait.def))
                         {
                             return true;
                         }
