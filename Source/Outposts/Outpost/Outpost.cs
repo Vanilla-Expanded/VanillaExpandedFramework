@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using HarmonyLib;
@@ -134,7 +135,14 @@ namespace Outposts
             Scribe_References.Look(ref raidFaction, "raidFaction");
             Scribe_Values.Look(ref raidPoints, "raidPoints");
             Scribe_References.Look(ref deliveryMap, "deliveryMap");
-            RecachePawnTraits();
+            try
+            {
+                RecachePawnTraits();
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error recaching pawn traits in " + this.Label + " - " + e.ToString());
+            }
         }
 
         public override IEnumerable<FloatMenuOption> GetTransportPodsFloatMenuOptions(IEnumerable<IThingHolder> pods, CompLaunchable representative) =>
