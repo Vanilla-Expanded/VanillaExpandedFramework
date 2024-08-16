@@ -34,7 +34,6 @@ public static class Utils
 
     public static IEnumerable<Thing> Make(this ThingDef thingDef, int count, ThingDef stuff = null)
     {
-        count = Mathf.RoundToInt(count * OutpostsMod.Settings.ProductionMultiplier);
         while (count > thingDef.stackLimit)
         {
             var temp = ThingMaker.MakeThing(thingDef, stuff);
