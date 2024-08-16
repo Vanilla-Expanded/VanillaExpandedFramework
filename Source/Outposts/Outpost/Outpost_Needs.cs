@@ -37,6 +37,18 @@ public partial class Outpost
             var thing = ThingMaker.MakeThing(ProvidedFood);
             if (thing.IngestibleNow && pawn.RaceProps.CanEverEat(thing)) food.CurLevel += thing.Ingested(pawn, food.NutritionWanted);
         }
+
+        if (pawn.needs != null && pawn.IsHashIntervalTick(300))
+        {
+            foreach (var need in pawn.needs.needs)
+            {
+                if (need is Need_Chemical or Need_Chemical_Any)
+                {
+                    need.CurLevel = need.MaxLevel;
+                }
+            }
+        }
+
     }
 
     //Profiled with 7 outposts 62 pawns
@@ -56,14 +68,21 @@ public partial class Outpost
         for (var index = health.hediffSet.hediffs.Count - 1; index >= 0; index--)
         {
             var hediff = health.hediffSet.hediffs[index];
-            try
+            if (hediff is Hediff_ChemicalDependency or Hediff_Addiction)
             {
-                hediff.Tick();
-                hediff.PostTick();
+                hediff.Severity = 0;
             }
-            catch
+            else
             {
-                health.RemoveHediff(hediff);
+                try
+                {
+                    hediff.Tick();
+                    hediff.PostTick();
+                }
+                catch
+                {
+                    health.RemoveHediff(hediff);
+                }
             }
 
             if (pawn.Dead) return;
