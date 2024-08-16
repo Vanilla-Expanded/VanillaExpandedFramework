@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
@@ -220,9 +223,16 @@ namespace Outposts
                 AddPawn(pawn);
             }
         }
-
+        public static Type VehiclePawnType = AccessTools.TypeByName("Vehicles.VehiclePawn");
+        public static MethodInfo VehicleRemoveAllPawns;
         public bool AddPawn(Pawn pawn)
         {
+            if (VehiclePawnType != null && VehiclePawnType.IsAssignableFrom(pawn.GetType()))
+            {
+                VehicleRemoveAllPawns ??= AccessTools.Method(VehiclePawnType, "RemoveAllPawns");
+                VehicleRemoveAllPawns.Invoke(pawn, null);
+                return false;
+            }
             if (!Ext.CanAddPawn(pawn, out _)) return false;
             var caravan = pawn.GetCaravan();
             if (caravan != null)
@@ -273,12 +283,14 @@ namespace Outposts
                         if (!costs.Any()) costPaid = true;
                     }
 
-                    caravan.Destroy();
+                    if (caravan.Destroyed is false)
+                    {
+                        caravan.Destroy();
+                    }
                 }
             }
 
             pawn.holdingOwner?.Remove(pawn);
-
             if (Find.WorldPawns.Contains(pawn)) Find.WorldPawns.RemovePawn(pawn);
             if (!occupants.Contains(pawn)) occupants.Add(pawn);
             RecachePawnTraits();
@@ -351,7 +363,7 @@ namespace Outposts
             yield return new Command_Action
             {
                 action = () => Find.WindowStack.Add(new FloatMenu(occupants.Select(p =>
-                        new FloatMenuOption(p.Name.ToStringFull.CapitalizeFirst(),
+                        new FloatMenuOption((p.Name?.ToStringFull ?? p.Label).CapitalizeFirst(),
                             () => { CaravanMaker.MakeCaravan(Gen.YieldSingle(RemovePawn(p)), p.Faction, Tile, true); }))
                     .ToList())),
                 defaultLabel = "Outposts.Commands.Remove.Label".Translate(),
