@@ -42,7 +42,7 @@ namespace VanillaFurnitureExpanded
         }
     }
 
-    public class DummyGlower : ThingWithComps
+    public class DummyGlower : Building
     {
         public CompGlowerExtended parentComp;
     }
@@ -274,7 +274,11 @@ namespace VanillaFurnitureExpanded
                     altitudeLayer = AltitudeLayer.FloorEmplacement,
                     rotatable = false,
                     passability = Traversability.Standable,
-                    category = ThingCategory.Building
+                    category = ThingCategory.Building,
+                    building = new BuildingProperties
+                    {
+                        isEdifice = false
+                    }
                 };
             }
             return dummyDef;
