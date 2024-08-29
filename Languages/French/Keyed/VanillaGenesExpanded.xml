@@ -6,15 +6,15 @@
 	<VGE_StatsReport_Over40>supérieur à 40ºC</VGE_StatsReport_Over40>	
 	<VGE_StatsReport_Below0>inférieur à 0ºC</VGE_StatsReport_Below0>
 	<VGE_StatsReport_Armoured>blindé</VGE_StatsReport_Armoured>
-	<VGE_StatsReport_NoSunlight>pas de lumière du soleil</VGE_StatsReport_NoSunlight>
+	<VGE_StatsReport_NoSunlight>sans lumière du soleil</VGE_StatsReport_NoSunlight>
 	<VGE_StatsReport_Water>sur l'eau</VGE_StatsReport_Water>
-	<VGE_StatsReport_NotWater>sur sol sec</VGE_StatsReport_NotWater>
+	<VGE_StatsReport_NotWater>sur un sol sec</VGE_StatsReport_NotWater>
 	<VGE_StatsReport_Outside>dehors</VGE_StatsReport_Outside>
 	<VGE_StatsReport_Inside>à l'intérieur</VGE_StatsReport_Inside>
-	<VGE_StatsReport_InLight>éclairé au dessus de 50%</VGE_StatsReport_InLight>
-	<VGE_StatsReport_InDarkness>éclairé en dessous de 50%</VGE_StatsReport_InDarkness>
-	<VGE_StatsReport_InPain>souffre</VGE_StatsReport_InPain>
-	<VGE_StatsReport_InPollution>dans un terrain pollué</VGE_StatsReport_InPollution>
+	<VGE_StatsReport_InLight>éclairage au dessus de 50%</VGE_StatsReport_InLight>
+	<VGE_StatsReport_InDarkness>éclairage en dessous de 50%</VGE_StatsReport_InDarkness>
+	<VGE_StatsReport_InPain>souffrant</VGE_StatsReport_InPain>
+	<VGE_StatsReport_InPollution>dans une zone pollué</VGE_StatsReport_InPollution>
 	<VGE_StatsReport_ColonyMap>sur la carte de la colonie</VGE_StatsReport_ColonyMap>
 	<VGE_StatsReport_OutsideColonyMap>en dehors de la carte de la colonie</VGE_StatsReport_OutsideColonyMap>
 	<VGE_StatsReport_AnyLightSensitivity>sensible à la lumière</VGE_StatsReport_AnyLightSensitivity>
@@ -22,8 +22,8 @@
 	<VGE_EggPregnancy>Les œufs de {0} ont été fécondés! La ponte continuera jusqu'à ce qu'un œuf fertile soit pondu.</VGE_EggPregnancy>
 	<VGE_EggPregnancyLabel>{0} fécondé!</VGE_EggPregnancyLabel>
 	
-	<VGE_EggLaid>{0} à pondu un œuf! gardez le au chaud et en sécurité.</VGE_EggLaid>
-	<VGE_EggLaidLabel>{0} à pondue un œuf!</VGE_EggLaidLabel>
+	<VGE_EggLaid>{0} a pondu un œuf! gardez le au chaud et en sécurité.</VGE_EggLaid>
+	<VGE_EggLaidLabel>{0} a pondu un œuf!</VGE_EggLaidLabel>
 	
 	<VGE_EggHatched>{0} à éclo d'un œuf!</VGE_EggHatched>
 	<VGE_EggHatchedLabel>{0} à éclo!</VGE_EggHatchedLabel>
