@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LanguageData>
     <VEF.Hire>Embauchez {0}</VEF.Hire>
-    <VEF.HireDesc>Embauchez quelque {0} afin d'aider autour de la colonie, par exemple avec la défense.</VEF.HireDesc>
+    <VEF.HireDesc>Embauchez quelques {0} afin d'aider autour de la colonie, par exemple pour défendre.</VEF.HireDesc>
     <VEF.AvailableSilver>Argent Disponible: {0}</VEF.AvailableSilver>
     <VEF.Value>Valeur</VEF.Value>
-    <VEF.ChooseNumberOfUnits>Quelle nombre de cette unité voulez vous avoir?</VEF.ChooseNumberOfUnits>
+    <VEF.ChooseNumberOfUnits>Quelle quantité de cette unité voulez vous avoir?</VEF.ChooseNumberOfUnits>
     <VEF.Breakdown>Panne</VEF.Breakdown>
     <VEF.DayAmount>Quantité de Jours</VEF.DayAmount>
     <VEF.Cost>Coût d'embauche</VEF.Cost>
     <VEF.RiskMult>Multiplicateur de risque</VEF.RiskMult>
     <VEF.TotalPrice>Prix Total</VEF.TotalPrice>
-    <VEF.HiringDesc>Vous pouvez embauchez {0} por n'importe quelle quantité de temps.Vous ne pouvez avoir qu'un seul contrat actif à la fois, et vous ne pouvez pas mélangez ou 'match' les factions desquelles vous embauchez.
-Si {0} est embauché et meurt lors de la tâche, vous encourrez une hausse de 5% du prix de tout futurs contrats pendant un an pour chaque pirate mort.</VEF.HiringDesc>
-    <VEF.LongTerm>Les contrats long termes sons significativement plus coûteux</VEF.LongTerm>
+    <VEF.HiringDesc>Vous pouvez embauchez {0} pour n'importe quelle durée.Vous ne pouvez avoir qu'un seul contrat actif à la fois, et vous ne pouvez pas mélangez ou 'match' les factions desquelles vous embauchez.
+Si {0} est embauché et meurt lors de la tâche, vous subirrez une hausse de 5% du prix de tout futurs contrats pendant un an pour chaque pirate mort.</VEF.HiringDesc>
+    <VEF.LongTerm>Les contrats long termes sont significativement plus coûteux</VEF.LongTerm>
     <VEF.ContractInfo>Voir contrat avec {0}</VEF.ContractInfo>
     <VEF.PawnsList>Sous Contrat:</VEF.PawnsList>
     <VEF.ContractTitle>Sous contrat avec {0}</VEF.ContractTitle>
@@ -23,7 +23,7 @@ Si {0} est embauché et meurt lors de la tâche, vous encourrez une hausse de 5%
 	<VEF.Customize>Personnaliser {0}</VEF.Customize>
 	<VEF.CustomizationTitle>{0} Personnalisation</VEF.CustomizationTitle>
 	<VEF.Name>Nom</VEF.Name>
-	<VEF.Cancel>Annulez</VEF.Cancel>
+	<VEF.Cancel>Annuler</VEF.Cancel>
 	<VEF.AvailableContracts>Contrats disponibles: {0}</VEF.AvailableContracts>
 	<VEF.MechsSection>Mechanoids</VEF.MechsSection>
 	<VEF.DoorLockDefault>Défault</VEF.DoorLockDefault>
