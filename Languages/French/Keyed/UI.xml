@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+    <VEF.Hire>Embauchez {0}</VEF.Hire>
+    <VEF.HireDesc>Embauchez quelque {0} afin d'aider autour de la colonie, par exemple avec la défense.</VEF.HireDesc>
+    <VEF.AvailableSilver>Argent Disponible: {0}</VEF.AvailableSilver>
+    <VEF.Value>Valeur</VEF.Value>
+    <VEF.ChooseNumberOfUnits>Quelle nombre de cette unité voulez vous avoir?</VEF.ChooseNumberOfUnits>
+    <VEF.Breakdown>Panne</VEF.Breakdown>
+    <VEF.DayAmount>Quantité de Jours</VEF.DayAmount>
+    <VEF.Cost>Coût d'embauche</VEF.Cost>
+    <VEF.RiskMult>Multiplicateur de risque</VEF.RiskMult>
+    <VEF.TotalPrice>Prix Total</VEF.TotalPrice>
+    <VEF.HiringDesc>Vous pouvez embauchez {0} por n'importe quelle quantité de temps.Vous ne pouvez avoir qu'un seul contrat actif à la fois, et vous ne pouvez pas mélangez ou 'match' les factions desquelles vous embauchez.
+Si {0} est embauché et meurt lors de la tâche, vous encourrez une hausse de 5% du prix de tout futurs contrats pendant un an pour chaque pirate mort.</VEF.HiringDesc>
+    <VEF.LongTerm>Les contrats long termes sons significativement plus coûteux</VEF.LongTerm>
+    <VEF.ContractInfo>Voir contrat avec {0}</VEF.ContractInfo>
+    <VEF.PawnsList>Sous Contrat:</VEF.PawnsList>
+    <VEF.ContractTitle>Sous contrat avec {0}</VEF.ContractTitle>
+    <VEF.Spent>Argent dépensés:</VEF.Spent>
+    <VEF.TimeLeft>Temps restant:</VEF.TimeLeft>
+    <VEF.CancelContract>Annulez Contrat</VEF.CancelContract>
+    <VEF.NoRefund>Annulez un contrat ne vous remboursera pas l'argent dépensés dans celui ci.</VEF.NoRefund>
+	<VEF.Customize>Personnaliser {0}</VEF.Customize>
+	<VEF.CustomizationTitle>{0} Personnalisation</VEF.CustomizationTitle>
+	<VEF.Name>Nom</VEF.Name>
+	<VEF.Cancel>Annulez</VEF.Cancel>
+	<VEF.AvailableContracts>Contrats disponibles: {0}</VEF.AvailableContracts>
+	<VEF.MechsSection>Mechanoids</VEF.MechsSection>
+	<VEF.DoorLockDefault>Défault</VEF.DoorLockDefault>
+    <VEF.DoorLockEveryone>Tout le monde</VEF.DoorLockEveryone>
+    <VEF.DoorLockOnlyColonistsAndAnimals>Seul les colons et animaux</VEF.DoorLockOnlyColonistsAndAnimals>
+    <VEF.DoorLockOnlyColonistsAndAnimalsAndFriendlies>Seul les colons, animaux et alliés</VEF.DoorLockOnlyColonistsAndAnimalsAndFriendlies>
+    <VEF.DoorLockOnlyDrafted>Only drafted</VEF.DoorLockOnlyDrafted>
+
+	<VEF.DoorLockState>Politique actuelle du verrouillage de la porte "{0}"</VEF.DoorLockState>
+	<VEF.DoorLockStateDesc>Cliquez pour changez la politique actuelle du verrouillage de la porte.</VEF.DoorLockStateDesc>
+	<VEF.DoorLockStatePowerOff>L'alimentation est coupée. Impossible de changer la politique du verrouillage de la porte.</VEF.DoorLockStatePowerOff>
+
+</LanguageData>
