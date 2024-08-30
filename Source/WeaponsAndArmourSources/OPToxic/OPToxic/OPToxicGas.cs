@@ -47,36 +47,59 @@ namespace OPToxic
         {
             if (targ is Pawn pawn && pawn.health.capacities.CapableOf(PawnCapacityDefOf.Breathing))
             {
-                HediffDef namedSilentFail = DefDatabase<HediffDef>.GetNamedSilentFail(OPToxicDefGetValue.OPToxicGetHediff(Gas.def));
-                if (namedSilentFail != null)
+
+                bool hasMask = false;
+
+               
+                List<Apparel> wornApparel = pawn.apparel?.WornApparel;
+                if (wornApparel?.Count > 0)
                 {
-                    Pawn_HealthTracker health = pawn.health;
-                    Hediff hediff;
-                    if (health == null)
+                    for (int i = 0; i < wornApparel.Count; i++)
                     {
-                        hediff = null;
+                        if (wornApparel[i].def == ThingDefOf.Apparel_GasMask)
+                        {
+                            hasMask = true;
+                            Log.Message("gas mask found");
+                            break;
+                        }
+
                     }
-                    else
-                    {
-                        HediffSet hediffSet = health.hediffSet;
-                        hediff = (hediffSet?.GetFirstHediffOfDef(namedSilentFail, false));
-                    }
-                    float statValue = 1-pawn.GetStatValue(StatDefOf.ToxicResistance, true);
-                    float num = OPToxicDefGetValue.OPToxicGetSev(Gas.def);
-                    if (num < 0.01f)
-                    {
-                        num = 0.01f;
-                    }
-                    float num2 = Rand.Range(0.01f * statValue, num * statValue);
-                    if (hediff != null && num2 > 0f)
-                    {
-                        hediff.Severity += num2;
-                        return;
-                    }
-                    Hediff hediff2 = HediffMaker.MakeHediff(namedSilentFail, pawn, null);
-                    hediff2.Severity = num2;
-                    pawn.health.AddHediff(hediff2, null, null, null);
                 }
+                if (!hasMask)
+                {
+                    HediffDef namedSilentFail = DefDatabase<HediffDef>.GetNamedSilentFail(OPToxicDefGetValue.OPToxicGetHediff(Gas.def));
+                    if (namedSilentFail != null)
+                    {
+                        Pawn_HealthTracker health = pawn.health;
+                        Hediff hediff;
+                        if (health == null)
+                        {
+                            hediff = null;
+                        }
+                        else
+                        {
+                            HediffSet hediffSet = health.hediffSet;
+                            hediff = (hediffSet?.GetFirstHediffOfDef(namedSilentFail, false));
+                        }
+                        float statValue = 1 - pawn.GetStatValue(StatDefOf.ToxicResistance, true);
+                        float num = OPToxicDefGetValue.OPToxicGetSev(Gas.def);
+                        if (num < 0.01f)
+                        {
+                            num = 0.01f;
+                        }
+                        float num2 = Rand.Range(0.01f * statValue, num * statValue);
+                        if (hediff != null && num2 > 0f)
+                        {
+                            hediff.Severity += num2;
+                            return;
+                        }
+                        Hediff hediff2 = HediffMaker.MakeHediff(namedSilentFail, pawn, null);
+                        hediff2.Severity = num2;
+                        pawn.health.AddHediff(hediff2, null, null, null);
+                    }
+                }
+
+                
             }
         }
     }

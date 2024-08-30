@@ -23,14 +23,38 @@ namespace OPToxic
             DamageWorker.DamageResult damageResult = new DamageWorker.DamageResult();
             if (victim.def.category == ThingCategory.Pawn && victim.def.useHitPoints && dinfo.Def.harmsHealth)
             {
-                float amount = dinfo.Amount;
-                damageResult.totalDamageDealt = Mathf.Min(victim.HitPoints, GenMath.RoundRandom(amount));
-                victim.HitPoints -= Mathf.RoundToInt(damageResult.totalDamageDealt);
-                if (victim.HitPoints <= 0)
+                bool hasMask = false;
+
+                Pawn pawnVictim = victim as Pawn;
+                List<Apparel> wornApparel = pawnVictim.apparel?.WornApparel;
+                if (wornApparel?.Count > 0)
                 {
-                    victim.HitPoints = 0;
-                    victim.Kill(new DamageInfo?(dinfo), null);
+                    for (int i = 0; i < wornApparel.Count; i++)
+                    {
+                        if (wornApparel[i].def == ThingDefOf.Apparel_GasMask)
+                        {
+                            hasMask = true;
+                            Log.Message("gas mask found");
+                            break;
+                        }
+                      
+                    }
                 }
+              
+
+                if (!hasMask) {
+                    Log.Message("no gas mask found");
+                    float amount = dinfo.Amount;
+                    damageResult.totalDamageDealt = Mathf.Min(victim.HitPoints, GenMath.RoundRandom(amount));
+                    victim.HitPoints -= Mathf.RoundToInt(damageResult.totalDamageDealt);
+                    if (victim.HitPoints <= 0)
+                    {
+                        victim.HitPoints = 0;
+                        victim.Kill(new DamageInfo?(dinfo), null);
+                    }
+
+                }
+                
             }
             return damageResult;
         }
