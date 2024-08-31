@@ -456,8 +456,10 @@
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_Animation.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_ExplodeOnDamage.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_ExplodeOnFire.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\HediffComp_MentalBreakOnDamage.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\HediffComp_StageByHealth.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Animation.cs" />
+    <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_MentalBreakOnDamage.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_ExplodeOnDamage.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_ExplodeOnFire.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Ability.cs" />
