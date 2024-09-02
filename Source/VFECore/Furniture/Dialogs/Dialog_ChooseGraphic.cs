@@ -11,7 +11,7 @@ namespace VanillaFurnitureExpanded
         private static readonly Color borderColor = new Color(0.13f, 0.13f, 0.13f);
         private static readonly Color fillColor = new Color(0, 0, 0,0.1f);
 
-        public static List<ThingDef> ThingsWithSouthOrientation = new List<ThingDef>() { ThingDefOf.DiningChair,InternalDefOf.Dresser,InternalDefOf.Armchair, InternalDefOf.Shelf};
+        public static List<ThingDef> ThingsWithSouthOrientation = new List<ThingDef>() { ThingDefOf.DiningChair,InternalDefOf.Dresser,InternalDefOf.Armchair, InternalDefOf.Shelf, InternalDefOf.VitalsMonitor};
 
         public Thing thingToChange;
         private Vector2 scrollPosition = new Vector2(0, 0);

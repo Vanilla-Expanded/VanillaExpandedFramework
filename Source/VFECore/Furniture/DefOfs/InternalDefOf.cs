@@ -10,6 +10,7 @@ namespace VanillaFurnitureExpanded
         public static ThingDef Armchair;
         public static ThingDef Dresser;
         public static ThingDef Shelf;
+        public static ThingDef VitalsMonitor;
 
     }
 }
