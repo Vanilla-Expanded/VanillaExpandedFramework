@@ -15,7 +15,7 @@ namespace VanillaGenesExpanded
 				return false;
 			}
 			Pawn pawn;
-			if (req.HasThing && (pawn = (req.Thing as Pawn)) != null && pawn.Map != null && pawn.Position.GetTemperature(pawn.Map) > 40)
+			if (req.HasThing && (pawn = (req.Thing as Pawn)) != null && pawn.Map != null && pawn.Map.regionAndRoomUpdater?.Enabled == true && pawn.Position.GetTemperature(pawn.Map) > 40)
 			{
 				return true;
 			}
