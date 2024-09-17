@@ -53,7 +53,7 @@ public static class PawnVerbUtility
         MVCF.LogFormat($"AttackVerb of {pawn} on target {target} with job {job} that has target {job?.targetA} and CurrentVerb {manager.CurrentVerb}",
             LogLevel.Info);
 
-        if (manager.CurrentVerb != null && manager.CurrentVerb.Available() &&
+        if (manager.CurrentVerb != null && manager.CurrentVerb.Available() && (manager.ManagedVerbs.FirstOrDefault(mv => mv.Verb == manager.CurrentVerb)?.Enabled ?? true) &&
             (target == null || manager.CurrentVerb.CanHitTarget(target)) &&
             (job is not { targetA: { IsValid: true, Cell: var cell } } || cell == pawn.Position || !cell.InBounds(pawn.Map) ||
              manager.CurrentVerb.CanHitTarget(job.targetA)))

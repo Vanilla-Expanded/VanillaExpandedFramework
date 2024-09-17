@@ -20,9 +20,11 @@ public class VerbManager : IExposable
     public Verb SearchVerb;
     public bool NeedsTicking { get; private set; }
 
+    private IEnumerable<ManagedVerb> VerbsEnabled => this.verbs.Where(v => v.Enabled);
+
     public IEnumerable<ManagedVerb> CurrentlyUseableRangedVerbs =>
-        verbs.Where(v =>
-            !v.Verb.IsMeleeAttack && !v.Independent && v.Enabled &&
+        VerbsEnabled.Where(v =>
+            !v.Verb.IsMeleeAttack && !v.Independent &&
             v.Verb.Available() && (Pawn.IsColonist || v.Props is not { colonistOnly: true }));
 
     public bool ShouldBrawlerUpset => verbs.Any(MeleeVerbUtility.BrawlerUpsetBy);
@@ -33,7 +35,7 @@ public class VerbManager : IExposable
 
     public IEnumerable<Verb> AdditionalMeleeVerbs =>
         verbs.Where(verb => verb.Verb.IsMeleeAttack && verb.Source is VerbSource.Apparel or VerbSource.Inventory && verb.Verb.IsStillUsableBy(Pawn))
-           .Select(verb => verb.Verb);
+            .Select(verb => verb.Verb);
 
     public Pawn Pawn { get; private set; }
 
