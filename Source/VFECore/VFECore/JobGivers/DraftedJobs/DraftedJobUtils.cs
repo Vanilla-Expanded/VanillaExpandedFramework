@@ -35,13 +35,18 @@ namespace VFECore.AI
     {
         public static readonly Texture2D AutoCastTex = ContentFinder<Texture2D>.Get("UI/CheckAuto");
 
+        public static bool IsPlayerDraftedInsectoid(Pawn pawn)
+        {
+            return pawn?.Faction == Faction.OfPlayerSilentFail && pawn.Drafted && pawn?.RaceProps?.Animal == true && pawn.RaceProps.FleshType == FleshTypeDefOf.Insectoid;
+        }
+
         [HarmonyPatch(typeof(Pawn_DraftController), "GetGizmos")]
         [HarmonyPostfix]
         public static IEnumerable<Command> GetGizmosPostfix(IEnumerable<Command> __result, Pawn_DraftController __instance)
         {
             List<Command> commands = __result.ToList();
             var pawn = __instance.pawn;
-            if (pawn?.Faction == Faction.OfPlayerSilentFail && pawn.Drafted)
+            if (IsPlayerDraftedInsectoid(pawn))
             {
                 // Add Hunt Toggle Gizmo
                 var huntCommand = new Command_ToggleWithRClick
@@ -84,16 +89,20 @@ namespace VFECore.AI
             if (__instance.GetType() == typeof(Command_Ability))
             {
                 var cmd = __instance as Command_Ability;
-                var data = DraftedActionHolder.GetData(cmd.Pawn);
-                if (data.AutoCastFor(cmd.Ability.def))
+                var pawn = cmd.Pawn;
+                if (IsPlayerDraftedInsectoid(pawn))
                 {
-                    var size = parms.shrunk ? 12f : 24f;
-                    Rect position = new(butRect.x + butRect.width - size, butRect.y, size, size);
-                    GUI.DrawTexture(position, AutoCastTex);
-                }
-                if (__result.State == GizmoState.OpenedFloatMenu)
-                {
-                    data.ToggleAutoCastFor(cmd.Ability.def);
+                    var data = DraftedActionHolder.GetData(pawn);
+                    if (data.AutoCastFor(cmd.Ability.def))
+                    {
+                        var size = parms.shrunk ? 12f : 24f;
+                        Rect position = new(butRect.x + butRect.width - size, butRect.y, size, size);
+                        GUI.DrawTexture(position, AutoCastTex);
+                    }
+                    if (__result.State == GizmoState.OpenedFloatMenu)
+                    {
+                        data.ToggleAutoCastFor(cmd.Ability.def);
+                    }
                 }
             }
         }
@@ -162,9 +171,6 @@ namespace VFECore.AI
 
         private void RefreshDraft()
         {
-            // Not sure if this is the easiest way to refresh the queue, but it does at least make sure "IsCurrentJobPlayerInterruptible"
-            // and other checks are performed properly. / Red.
-            // Check if JobGiver_Orders
             Pawn.jobs.EndCurrentJob(JobCondition.InterruptForced);
         }
 
