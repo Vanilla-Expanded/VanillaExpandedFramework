@@ -20,8 +20,6 @@ namespace VFECore.AI
         protected override bool OnlyUseAbilityVerbs => !actionData.hunt;
         protected override bool OnlyUseRangedSearch => false;
 
-        protected bool huntMode = false;
-
         public List<AbilityDef> blacklist = new();
 
         // Not totally sure what this is used for, but it seems standard for these things. / Red.
@@ -90,13 +88,13 @@ namespace VFECore.AI
             var hostility = pawn.playerSettings.hostilityResponse;
             pawn.playerSettings.hostilityResponse = HostilityResponseMode.Attack;   // Faster than messing around with all the checks against this.
 
-            var useAbillity = GiveDraftedHuntJob(pawn); //base.TryGiveJob(pawn);
+            var draftedJob = GiveDraftedHuntJob(pawn); //base.TryGiveJob(pawn);
 
             pawn.playerSettings.hostilityResponse = hostility;
-            if (useAbillity != null)
+            if (draftedJob != null)
             {
-                useAbillity.checkOverrideOnExpire = true;
-                return useAbillity;
+                draftedJob.checkOverrideOnExpire = true;
+                return draftedJob;
             }
             return GetWaitForTimeJob(pawn, 100);
         }
@@ -116,7 +114,7 @@ namespace VFECore.AI
                 return true;
             }
 
-            return !huntMode && !CanTargetWithAbillities(pawn, pawn.mindState.enemyTarget, out _);
+            return !Hunt && !CanTargetWithAbillities(pawn, pawn.mindState.enemyTarget, out _);
         }
 
 
@@ -129,30 +127,40 @@ namespace VFECore.AI
             }
             foreach (var ability in pawn.abilities.abilities)
             {
-                if (!ability.CanCast)
+                pickedAbility = CanTargetWithAbility(target, ability);
+                if (pickedAbility != null)
                 {
-                    continue;
-                }
-                if (blacklist.Contains(ability.def))
-                {
-                    continue;
-                }
-                if (!ability.def.verbProperties.targetParams.CanTarget(target))
-                {
-                    continue;
-                }
-                if (!ability.CanApplyOn((LocalTargetInfo)target))
-                {
-                    continue;
-                }
-
-                if (ability.AICanTargetNow(target))
-                {
-                    pickedAbility = ability;
                     return true;
                 }
             }
             return false;
+        }
+
+        private Ability CanTargetWithAbility(Thing target, Ability ability)
+        {
+            if (!ability.CanCast)
+            {
+                return null;
+            }
+            if (blacklist.Contains(ability.def))
+            {
+                return null;
+            }
+            if (!ability.def.verbProperties.targetParams.CanTarget(target))
+            {
+                return null;
+            }
+            if (!ability.CanApplyOn((LocalTargetInfo)target))
+            {
+                return null;
+            }
+
+            if (ability.AICanTargetNow(target))
+            {
+                return ability;
+            }
+
+            return null;
         }
 
         protected Job GiveDraftedHuntJob(Pawn pawn)
@@ -320,7 +328,7 @@ namespace VFECore.AI
             }
             // Filter all abilites not on the whitelist.
             
-            list = list.Where(ability => actionData.AutoCastFor(ability.def)).ToList();
+            list = list.Where(ability => CanTargetWithAbility(enemyTarget, ability) != null && ( actionData.AutoCastFor(ability.def))).ToList();
             if (list.Empty())
             {
                 return null;

@@ -164,8 +164,8 @@ namespace VFECore.AI
         {
             // Not sure if this is the easiest way to refresh the queue, but it does at least make sure "IsCurrentJobPlayerInterruptible"
             // and other checks are performed properly. / Red.
-            Pawn.drafter.Drafted = false;
-            Pawn.drafter.Drafted = true;
+            // Check if JobGiver_Orders
+            Pawn.jobs.EndCurrentJob(JobCondition.InterruptForced);
         }
 
         public bool ToggleHuntMode()
