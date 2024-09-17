@@ -180,7 +180,7 @@ namespace VFECore
                 renderPosOffset = GetYPositionOffset(bodyRenderSize, renderOffsetVal);
                 renderCacheOff = geneExts.Any(x => x.renderCacheOff);
 
-                healthMultiplier = CalculateHealthMultiplier(percentChange, quadraticChange);
+                healthMultiplier = CalculateHealthMultiplier(percentChange, pawn);
 
                 // Other cached data
                 foodCapacityMult = pawn.GetStatValue(VFEDefOf.VEF_FoodCapacityMultiplier);
@@ -295,16 +295,22 @@ namespace VFECore
         /// 
         /// Cached the math because HeathScale gets called a lot.
         /// </summary>
-        private static float CalculateHealthMultiplier(float percentChange, float quadraticChange)
+        private static float CalculateHealthMultiplier(float percentChange, Pawn pawn)
         {
-            float quad = quadraticChange;
-            float roughylLinear = percentChange;
-            if (roughylLinear > 1)
-            {
-                roughylLinear = (percentChange - 1) * 0.8f + 1; // Nerf scaling a bit, large pawns are tanky enough already.
-            }
-            if (roughylLinear > quad) { quad = roughylLinear; } // Make sure small creatures don't get absolutely unreasonably low health.
-            return Mathf.Lerp(roughylLinear, quad, 0.55f);
+            if (percentChange <= 1) return percentChange;
+
+            const float thrumboHealthcale = 8;
+            float raceScale = pawn.RaceProps?.baseHealthScale ?? 1;
+            float targetRaceScale = Mathf.Max(thrumboHealthcale, raceScale);
+            float baseSize = raceScale * pawn?.ageTracker?.CurLifeStage?.bodySizeFactor ?? 1;
+            float newSize = percentChange * baseSize;
+            float sizeChange = newSize - baseSize;
+
+            // At a total offset of +4.0, the health scale will be 8 if not better, as with a Thrumbo
+            float n = Mathf.Clamp(sizeChange / 4, 0f, 1f);
+            float newScale = Mathf.Lerp(raceScale, targetRaceScale, n);
+            float changeInRaceScale = newScale / raceScale;
+            return percentChange * changeInRaceScale;
         }
     }
 }
