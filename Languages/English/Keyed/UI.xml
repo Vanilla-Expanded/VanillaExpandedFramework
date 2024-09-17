@@ -35,5 +35,8 @@ If hired {0} die on duty, you will incur an additional 5% increase to contract p
 	<VEF.DoorLockState>Current door lock policy "{0}"</VEF.DoorLockState>
 	<VEF.DoorLockStateDesc>Click to change current door lock policy.</VEF.DoorLockStateDesc>
 	<VEF.DoorLockStatePowerOff>Power is off. Impossible to change door lock policy.</VEF.DoorLockStatePowerOff>
+  
+    <VEF.DraftHuntLabel>Hunt</VEF.DraftHuntLabel>
+    <VEF.HuntDescription>While this is on characters will automatically move to engage nearby targets.\n\nYou can right-click this button to toggle autofire for ALL abilities on the selected pawn.</VEF.HuntDescription>
 
 </LanguageData>

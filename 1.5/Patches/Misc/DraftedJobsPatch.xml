@@ -1,0 +1,8 @@
+<Patch>
+  <Operation Class="PatchOperationInsert">
+    <xpath>.//li[@Class="JobGiver_Orders"]</xpath>
+    <value>
+      <li Class="VFECore.AI.JobGiver_DraftedJobs"/>
+    </value>
+  </Operation>
+</Patch>

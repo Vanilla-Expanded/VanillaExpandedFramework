@@ -299,17 +299,27 @@ namespace VFECore
         {
             if (percentChange <= 1) return percentChange;
 
-            const float thrumboHealthcale = 8;
-            float raceScale = pawn.RaceProps?.baseHealthScale ?? 1;
-            float targetRaceScale = Mathf.Max(thrumboHealthcale, raceScale);
-            float baseSize = raceScale * pawn?.ageTracker?.CurLifeStage?.bodySizeFactor ?? 1;
+            const float maxHealthScale = 4;
+            float lerpScaleFactor = maxHealthScale / 2;
+
+            float raceHealthBase = pawn.RaceProps?.baseHealthScale ?? 1;
+            float raceSize = pawn.RaceProps?.baseBodySize ?? 1;
+
+            float raceHealth = raceHealthBase / raceSize;
+            float targetRaceHScale = Mathf.Max(maxHealthScale, raceHealth);
+
+            float baseSize = raceSize * pawn?.ageTracker?.CurLifeStage?.bodySizeFactor ?? 1;
             float newSize = percentChange * baseSize;
             float sizeChange = newSize - baseSize;
 
-            // At a total offset of +4.0, the health scale will be 8 if not better, as with a Thrumbo
-            float n = Mathf.Clamp(sizeChange / 4, 0f, 1f);
-            float newScale = Mathf.Lerp(raceScale, targetRaceScale, n);
-            float changeInRaceScale = newScale / raceScale;
+            float n = Mathf.Clamp01(sizeChange / lerpScaleFactor);
+
+            // This is a bit of a hack to make sure we don't get too much hp at small increases.
+            float newScale = Mathf.SmoothStep(raceHealth, targetRaceHScale, n);
+            float newScale2 = Mathf.Lerp(raceHealth, targetRaceHScale, n);
+            newScale = Mathf.Lerp(newScale, newScale2, 0.5f);
+
+            float changeInRaceScale = newScale / raceHealth;
             return percentChange * changeInRaceScale;
         }
     }
