@@ -12,6 +12,7 @@ using Verse.Sound;
 using System.Reflection;
 using System.Text;
 using HarmonyLib;
+using PipeSystem;
 
 namespace ItemProcessor
 {
@@ -26,6 +27,7 @@ namespace ItemProcessor
         public CompPowerTrader compPowerTrader;
         public CompItemProcessor compItemProcessor;
         public CompRefuelable compFuelable;
+        public CompResourceTrader compResourceTrader;
 
         //The stage at which this item processor is. This variable controls the flow of the whole process
         public ProcessorStage processorStage = ProcessorStage.Inactive;
@@ -165,7 +167,7 @@ namespace ItemProcessor
             this.compPowerTrader = base.GetComp<CompPowerTrader>();
             this.compItemProcessor = base.GetComp<CompItemProcessor>();
             this.compFuelable = base.GetComp<CompRefuelable>();
-
+            this.compResourceTrader = base.GetComp<CompResourceTrader>();
         }
 
         public override void ExposeData()
@@ -914,7 +916,19 @@ namespace ItemProcessor
                 }
             }
 
-            else if (compItemProcessor.Props.isLightDependingMachine)
+            else if (compResourceTrader != null && !compResourceTrader.ResourceOn && compItemProcessor.Props.noPowerDestroysProgress && ((!compItemProcessor.Props.isSemiAutomaticMachine) || (compItemProcessor.Props.isSemiAutomaticMachine && !isSemiAutoEnabled)))
+            {
+				Messages.Message("IP_NoResourceDestroysWarning".Translate(this.def.LabelCap), this, MessageTypeDefOf.NegativeEvent, true);
+				if (isAutoEnabled || !isSemiAutoEnabled)
+				{
+					isAutoEnabled = false;
+					isSemiAutoEnabled = true;
+					ResetEverything();
+					return;
+				}
+			}
+
+			else if (compItemProcessor.Props.isLightDependingMachine)
             {
                 float num = base.Map.glowGrid.GroundGlowAt(base.Position, false);
                 if ((num > compItemProcessor.Props.maxLight) || (num < compItemProcessor.Props.minLight))
@@ -1264,7 +1278,8 @@ namespace ItemProcessor
         {
 
             if((compItemProcessor.Props.noPowerDestroysProgress && compPowerTrader != null && !compPowerTrader.PowerOn) ||
-                    (compItemProcessor.Props.noPowerDestroysProgress && compFuelable != null && !compFuelable.HasFuel))
+                    (compItemProcessor.Props.noPowerDestroysProgress && compFuelable != null && !compFuelable.HasFuel) ||
+                    (compItemProcessor.Props.noPowerDestroysProgress && compResourceTrader != null && !compResourceTrader.ResourceOn))
             {
                 return;
             }
@@ -1430,7 +1445,8 @@ namespace ItemProcessor
                 //and powered buildings, since there are none that are both
 
                 if ((compItemProcessor.Props.noPowerDestroysProgress && compPowerTrader != null && !compPowerTrader.PowerOn) ||
-                    (compItemProcessor.Props.noPowerDestroysProgress && compFuelable != null && !compFuelable.HasFuel))
+                    (compItemProcessor.Props.noPowerDestroysProgress && compFuelable != null && !compFuelable.HasFuel) ||
+                    (compItemProcessor.Props.noPowerDestroysProgress && compResourceTrader != null && !compResourceTrader.ResourceOn))
                 {
                     if (!onlySendWarningMessageOnce)
                     {
@@ -1796,7 +1812,7 @@ namespace ItemProcessor
             }
 
             string incubationTxt = "";
-            if (compPowerTrader != null || compFuelable != null)
+            if (compPowerTrader != null || compFuelable != null || compResourceTrader != null)
             {
                 incubationTxt += "\n";
             }

@@ -336,6 +336,10 @@ namespace ItemProcessor
                 {
                     Messages.Message("IP_NoFuelDestroysWarning".Translate(building.def.LabelCap), building, MessageTypeDefOf.NegativeEvent, true);
                 }
+                else if (building.compResourceTrader != null && !building.compResourceTrader.ResourceOn && building.compItemProcessor.Props.noPowerDestroysProgress)
+                {
+					Messages.Message("IP_NoResourceDestroysWarning".Translate(building.def.LabelCap), building, MessageTypeDefOf.NegativeEvent, true);
+				}
                 else
                 {
                     building.IngredientsChosenBringThemIn();
@@ -490,6 +494,10 @@ namespace ItemProcessor
                         {
                             Messages.Message("IP_NoFuelDestroysWarning".Translate(processor.def.LabelCap), processor, MessageTypeDefOf.NegativeEvent, true);
                         }
+                        else if (processor.compResourceTrader != null && !processor.compResourceTrader.ResourceOn && processor.compItemProcessor.Props.noPowerDestroysProgress)
+                        {
+							Messages.Message("IP_NoResourceDestroysWarning".Translate(processor.def.LabelCap), processor, MessageTypeDefOf.NegativeEvent, true);
+						}
                         else
                         {
                             processor.IngredientsChosenBringThemIn();
@@ -645,6 +653,10 @@ namespace ItemProcessor
                         {
                             Messages.Message("IP_NoFuelDestroysWarning".Translate(processor.def.LabelCap), processor, MessageTypeDefOf.NegativeEvent, true);
                         }
+                        else if (processor.compResourceTrader != null && !processor.compResourceTrader.ResourceOn && processor.compItemProcessor.Props.noPowerDestroysProgress)
+                        {
+							Messages.Message("IP_NoResourceDestroysWarning".Translate(processor.def.LabelCap), processor, MessageTypeDefOf.NegativeEvent, true);
+						}
                         else
                         {
                             processor.IngredientsChosenBringThemIn();
@@ -790,6 +802,10 @@ namespace ItemProcessor
                         {
                             Messages.Message("IP_NoFuelDestroysWarning".Translate(processor.def.LabelCap), processor, MessageTypeDefOf.NegativeEvent, true);
                         }
+                        else if (processor.compResourceTrader != null && !processor.compResourceTrader.ResourceOn && processor.compItemProcessor.Props.noPowerDestroysProgress)
+                        {
+							Messages.Message("IP_NoResourceDestroysWarning".Translate(processor.def.LabelCap), processor, MessageTypeDefOf.NegativeEvent, true);
+						}
                         else
                         {
                             processor.IngredientsChosenBringThemIn();
@@ -934,6 +950,10 @@ namespace ItemProcessor
                         {
                             Messages.Message("IP_NoFuelDestroysWarning".Translate(processor.def.LabelCap), processor, MessageTypeDefOf.NegativeEvent, true);
                         }
+                        else if (processor.compResourceTrader != null && !processor.compResourceTrader.ResourceOn && processor.compItemProcessor.Props.noPowerDestroysProgress)
+                        {
+							Messages.Message("IP_NoResourceDestroysWarning".Translate(processor.def.LabelCap), processor, MessageTypeDefOf.NegativeEvent, true);
+						}
                         else
                         {
                             processor.IngredientsChosenBringThemIn();
