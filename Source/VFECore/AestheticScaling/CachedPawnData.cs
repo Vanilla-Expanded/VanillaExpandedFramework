@@ -300,7 +300,8 @@ namespace VFECore
             if (percentChange <= 1) return percentChange;
 
             const float maxHealthScale = 4;
-            float lerpScaleFactor = maxHealthScale / 2;
+            const float lerpScapeDiv = 1; // Change this to determine how soon the creature's health scales up and hits the maxHealthScale.
+            float lerpScaleFactor = maxHealthScale / lerpScapeDiv;
 
             float raceHealthBase = pawn.RaceProps?.baseHealthScale ?? 1;
             float raceSize = pawn.RaceProps?.baseBodySize ?? 1;

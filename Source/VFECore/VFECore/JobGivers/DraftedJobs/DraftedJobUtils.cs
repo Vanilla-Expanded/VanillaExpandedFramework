@@ -31,6 +31,7 @@ namespace VFECore.AI
     }
 
     [HarmonyPatch]
+    [StaticConstructorOnStartup]
     public static class DraftGizmos
     {
         public static readonly Texture2D AutoCastTex = ContentFinder<Texture2D>.Get("UI/CheckAuto");
