@@ -323,6 +323,7 @@
 		<description>Total mass carrying capacity of the pawn in caravans.</description>
 		<category>BasicsPawn</category>
 		<defaultBaseValue>0</defaultBaseValue>
+		<hideAtValue>0</hideAtValue>
 		<minValue>0</minValue>
 		<toStringStyle>FloatTwoOrThree</toStringStyle>
 		<formatString>{0} kg</formatString>

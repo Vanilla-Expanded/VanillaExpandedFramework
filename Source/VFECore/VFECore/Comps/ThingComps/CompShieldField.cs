@@ -141,11 +141,85 @@ namespace VFECore
             }
         }
         public CompProperties_ShieldField Props => base.props as CompProperties_ShieldField;
-        public float EnergyGainPerTick => this.parent.GetStatValue(Props.rechargeRateStat) / 60;
-        public float MaxEnergy => this.parent.GetStatValue(Props.shieldEnergyMaxStat);
-        public float ShieldRadius => this.parent.GetStatValue(Props.shieldRadiusStat);
+
+        private float _cachedEnergyGainPerTick, _cachedMaxEnergy, _cachedShieldRadius;
+        private bool _isCacheValid = false;
+
+        public float EnergyGainPerTick
+        {
+            get
+            {
+                if (!_isCacheValid) UpdateStatsCache();
+                return _cachedEnergyGainPerTick;
+            }
+        }
+
+        public float MaxEnergy
+        {
+            get
+            {
+                if (!_isCacheValid) UpdateStatsCache();
+                return _cachedMaxEnergy;
+            }
+        }
+
+        public float ShieldRadius
+        {
+            get
+            {
+                if (!_isCacheValid) UpdateStatsCache();
+                return _cachedShieldRadius;
+            }
+        }
+
+        private void UpdateStatsCache()
+        {
+            _cachedEnergyGainPerTick = this.parent.GetStatValue(Props.rechargeRateStat) / 60;
+            _cachedMaxEnergy = this.parent.GetStatValue(Props.shieldEnergyMaxStat);
+            _cachedShieldRadius = this.parent.GetStatValue(Props.shieldRadiusStat);
+            _isCacheValid = true;
+        }
+
         public LocalTargetInfo TargetCurrentlyAimingAt => LocalTargetInfo.Invalid;
         public float TargetPriorityFactor => 1;
+
+        public (HashSet<Thing> thingsWithinRadius, List<Thing> projectilesWithinScanArea) GetThingsInAreas()
+        {
+            var thingsWithinRadius = new HashSet<Thing>();
+            var projectilesWithinScanArea = new List<Thing>();
+            var map = HostThing?.MapHeld;
+
+            if (map == null) return (thingsWithinRadius, projectilesWithinScanArea);
+
+            if (scanCells != null && coveredCells != null)
+            {
+                var hostCenter = HostThing.TrueCenter().Yto0();
+                var shieldRadius = ShieldRadius;
+                var projectiles = map.listerThings.ThingsInGroup(ThingRequestGroup.Projectile);
+                foreach (var projectile in projectiles)
+                {
+                    if (scanCells.Contains(projectile.Position))
+                    {
+                        var distance = Vector3.Distance(hostCenter, projectile.TrueCenter().Yto0());
+                        if (distance <= shieldRadius)
+                        {
+                            projectilesWithinScanArea.Add(projectile);
+                        }
+                    }
+                }
+
+                if (projectilesWithinScanArea.Any())
+                {
+                    foreach (var cell in coveredCells)
+                    {
+                        var thingList = map.thingGrid.ThingsListAtFast(cell);
+                        thingsWithinRadius.AddRange(thingList);
+                    }
+                }
+            }
+            return (thingsWithinRadius, projectilesWithinScanArea);
+        }
+
         public IEnumerable<Thing> ThingsWithinRadius
         {
             get
@@ -155,13 +229,10 @@ namespace VFECore
                 {
                     foreach (var cell in coveredCells)
                     {
-                        if (cell.InBounds(map))
+                        var thingList = map.thingGrid.ThingsListAtFast(cell);
+                        for (int i = 0; i < thingList.Count; i++)
                         {
-                            var thingList = cell.GetThingList(map);
-                            for (int i = 0; i < thingList.Count; i++)
-                            {
-                                yield return thingList[i];
-                            }
+                            yield return thingList[i];
                         }
                     }
                 }
@@ -175,22 +246,20 @@ namespace VFECore
                 var map = HostThing?.MapHeld;
                 if (map != null && scanCells != null)
                 {
+                    var hostCenter = this.HostThing.TrueCenter().Yto0();
+                    var shieldRadius = ShieldRadius;
                     foreach (var cell in scanCells)
                     {
-                        if (cell.InBounds(map))
+                        var thingList = map.thingGrid.ThingsListAtFast(cell);
+                        for (int i = 0; i < thingList.Count; i++)
                         {
-                            var thingList = cell.GetThingList(map);
-                            for (int i = 0; i < thingList.Count; i++)
-                            {
-                                var thing = thingList[i];
-                                var distance = Vector3.Distance(this.HostThing.TrueCenter().Yto0(), thing.TrueCenter().Yto0());
-                                if (distance <= ShieldRadius)
-                                    yield return thing;
-                            }
+                            var thing = thingList[i];
+                            var distance = Vector3.Distance(hostCenter, thing.TrueCenter().Yto0());
+                            if (distance <= shieldRadius)
+                                yield return thing;
                         }
                     }
                 }
-
             }
         }
 
@@ -474,7 +543,7 @@ namespace VFECore
         private void UpdateShieldCoverage()
         {
             // Set up shield coverage
-            coveredCells = new HashSet<IntVec3>(GenRadial.RadialCellsAround(HostThing.Position, ShieldRadius, true));
+            coveredCells = new HashSet<IntVec3>(GenRadial.RadialCellsAround(HostThing.Position, ShieldRadius, true).Where(x => x.InBounds(HostThing.Map)));
             if (ShieldRadius < EdgeCellRadius + 1)
                 scanCells = coveredCells;
             else
@@ -621,14 +690,13 @@ namespace VFECore
 
         private void EnergyShieldTick()
         {
-            HashSet<Thing> thingsWithinRadius = new HashSet<Thing>(ThingsWithinRadius);
-            HashSet<Thing> thingsWithinScanArea = new HashSet<Thing>(ThingsWithinScanArea);
-            foreach (var thing in thingsWithinScanArea)
+            var things = GetThingsInAreas();
+            foreach (var thing in things.projectilesWithinScanArea)
             {
                 // Try and block projectiles from outside
                 if (thing is Projectile proj && proj.BlockableByShield(this))
                 {
-                    if (!thingsWithinRadius.Contains(proj.Launcher))
+                    if (!things.thingsWithinRadius.Contains(proj.Launcher))
                     {
                         // Explosives are handled separately
                         if (!(proj is Projectile_Explosive) || proj.def.projectile.damageDef == DamageDefOf.EMP)

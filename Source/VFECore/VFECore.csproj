@@ -55,7 +55,7 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="SimpleSidearms">
-      <HintPath>..\..\..\..\..\..\workshop\content\294100\927155256\v1.3\Assemblies\SimpleSidearms.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\workshop\content\294100\927155256\v1.5\Assemblies\SimpleSidearms.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
@@ -478,7 +478,8 @@
     <Compile Include="Genes\Harmony\Pawn_HealthTracker_DropBloodSmear_Patch.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_ParallelGetPreRenderResults.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_Pawn_NeedsTracker.cs" />
-    <Compile Include="VFECore\JobGivers\JobGiver_DraftedJobs.cs" />
+    <Compile Include="VFECore\JobGivers\DraftedJobs\DraftedJobUtils.cs" />
+    <Compile Include="VFECore\JobGivers\DraftedJobs\JobGiver_DraftedJobs.cs" />
     <Compile Include="VFECore\Projectiles\Projectile_Shrapnel.cs" />
     <Compile Include="VFECore\Utilities\ResearchProjectUtility.cs" />
     <Compile Include="VFECore\HarmonyPatches\MentaBreakWorker_Patches.cs" />
