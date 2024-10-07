@@ -854,7 +854,7 @@ namespace VFECore
             {
                 if (innerContainer[i] is Pawn pawn)
                 {
-                    if (shield.parent.Faction!=null && pawn.HostileTo(shield.parent.Faction))
+                    if (shield.HostFaction != null && pawn.HostileTo(shield.HostFaction))
                     {
                         return true;
                     }
