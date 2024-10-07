@@ -542,15 +542,19 @@ namespace VFECore
 
         private void UpdateShieldCoverage()
         {
-            // Set up shield coverage
-            coveredCells = new HashSet<IntVec3>(GenRadial.RadialCellsAround(HostThing.Position, ShieldRadius, true).Where(x => x.InBounds(HostThing.Map)));
-            if (ShieldRadius < EdgeCellRadius + 1)
-                scanCells = coveredCells;
-            else
+            if (HostThing.Map != null)
             {
-                IEnumerable<IntVec3> interiorCells = GenRadial.RadialCellsAround(HostThing.Position, ShieldRadius - EdgeCellRadius, true);
-                scanCells = new HashSet<IntVec3>(coveredCells.Where(c => !interiorCells.Contains(c)));
+                // Set up shield coverage
+                coveredCells = new HashSet<IntVec3>(GenRadial.RadialCellsAround(HostThing.Position, ShieldRadius, true).Where(x => x.InBounds(HostThing.Map)));
+                if (ShieldRadius < EdgeCellRadius + 1)
+                    scanCells = coveredCells;
+                else
+                {
+                    IEnumerable<IntVec3> interiorCells = GenRadial.RadialCellsAround(HostThing.Position, ShieldRadius - EdgeCellRadius, true);
+                    scanCells = new HashSet<IntVec3>(coveredCells.Where(c => !interiorCells.Contains(c)));
+                }
             }
+            
         }
 
         public bool ThreatDisabled(IAttackTargetSearcher disabledFor)
@@ -850,7 +854,7 @@ namespace VFECore
             {
                 if (innerContainer[i] is Pawn pawn)
                 {
-                    if (pawn.HostileTo(shield.parent.Faction))
+                    if (shield.parent.Faction!=null && pawn.HostileTo(shield.parent.Faction))
                     {
                         return true;
                     }
