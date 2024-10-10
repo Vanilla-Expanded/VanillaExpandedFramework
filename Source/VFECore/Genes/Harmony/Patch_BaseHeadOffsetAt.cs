@@ -15,33 +15,21 @@ namespace VFECore
     {
         public static void Postfix(PawnRenderer __instance, ref Vector3 __result)
         {
-            FieldInfo field = GetPawnField();
-            Pawn pawn = (Pawn)field.GetValue(__instance);
+            Pawn pawn = GetPawnFromRef(__instance);
             if (pawn != null)
             {
 
-                if (PawnDataCache.GetPawnDataCache(pawn, canRefresh:false) is CachedPawnData data)
+                if (PawnDataCache.GetCacheUltraSpeed(pawn, canRefresh:false) is CachedPawnData data)
                 {
-                    var bodySize = data.bodyRenderSize;
-                    var headSize = data.headRenderSize;
-                    var headPos = Mathf.Lerp(bodySize, headSize, 0.8f);
-
-                    // Move up the head for dwarves etc. so they don't end up a walking head.
-                    if (headPos < 1) { headPos = Mathf.Pow(headPos, 0.96f); }
-                    __result.z *= headPos;
-                    __result.x *= headPos;
+                    __result *= data.headPositionMultiplier;
                 }
             }
         }
-        public static FieldInfo pawnFieldInfo = null;
-        private static FieldInfo GetPawnField()
+        public static AccessTools.FieldRef<PawnRenderer, Pawn> pawnFieldRef = null;
+        private static Pawn GetPawnFromRef(PawnRenderer __instance)
         {
-            if (pawnFieldInfo == null)
-            {
-                pawnFieldInfo = typeof(PawnRenderer).GetField("pawn", BindingFlags.NonPublic | BindingFlags.Instance);
-            }
-
-            return pawnFieldInfo;
+            pawnFieldRef ??= AccessTools.FieldRefAccess<PawnRenderer, Pawn>("pawn");
+            return pawnFieldRef(__instance);
         }
     }
 }

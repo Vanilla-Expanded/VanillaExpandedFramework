@@ -30,12 +30,18 @@ namespace VFECore
         /// </summary>
         public static CachedPawnData GetCacheUltraSpeed(Pawn pawn, bool canRefresh = true)
         {
-            if (pawn != null && threadStaticCache.pawn == pawn)
+            if (pawn == null) return CachedPawnData.defaultCache;
+            if (threadStaticCache.pawn == pawn)
             {
                 return threadStaticCache.cache;
             }
             else if (canRefresh) return GetPawnDataCache(pawn, canRefresh: canRefresh);
-            else return CachedPawnData.defaultCache;
+            else
+            {
+                threadStaticCache.cache = GetPawnDataCache(pawn, canRefresh: false);
+                threadStaticCache.pawn = pawn;
+                return threadStaticCache.cache;
+            }
         }
 
         public static CachedPawnData GetPawnDataCache(Pawn pawn, bool forceRefresh=false, bool canRefresh = true)

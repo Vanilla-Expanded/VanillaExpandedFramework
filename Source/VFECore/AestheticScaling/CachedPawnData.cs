@@ -52,6 +52,8 @@ namespace VFECore
         public float totalSize = 1;
         public float bodySizeOffset = 0;
 
+        public float headPositionMultiplier = 1;
+
         // Change to size in...
         public float percentChange = 1;
         public float quadraticChange = 1;
@@ -201,13 +203,23 @@ namespace VFECore
                 // Other cached data
                 foodCapacityMult = pawn.GetStatValue(VFEDefOf.VEF_FoodCapacityMultiplier);
                 growthPointMultiplier = pawn.GetStatValue(VFEDefOf.VEF_GrowthPointMultiplier);
+
+                CalculateHeadOffset();
             }
             finally
             {
                 cacheCanBeRecalculated = true;
             }
             return true;
+        }
+        private void CalculateHeadOffset()
+        {
+            var headPos = Mathf.Lerp(bodyRenderSize, headRenderSize, 0.8f);
+            //var headPos = Mathf.Max(bodySize, headSize);
 
+            // Move up the head for dwarves etc. so they don't end up a walking head.
+            if (headPos < 1) { headPos = Mathf.Pow(headPos, 0.96f); }
+            headPositionMultiplier = headPos;
         }
 
         private static (float, float, float) GetPercentChange(float bodySizeOffset, Pawn pawn)
