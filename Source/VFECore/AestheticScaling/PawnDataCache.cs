@@ -12,12 +12,35 @@ namespace VFECore
 {
     public class PawnDataCache : DictCache<Pawn, CachedPawnData>
     {
+        public struct PerThreadMiniCache
+        {
+            public Pawn pawn;
+            public CachedPawnData cache;
+        }
+        [ThreadStatic]
+        static PerThreadMiniCache threadStaticCache;
+
+        /// <summary>
+        /// Fetches the cache, like very, extremely fast.
+        /// If the pawn trying to fetch the cache is the same as last time, it will reuse the previous cache,
+        /// saving the diciotnary lookup call.
+        /// 
+        /// Set canRefresh to False if running from a thread.
+        /// In case of errors, you're probably calling from a thread. Consider turning off canRefresh.
+        /// </summary>
+        public static CachedPawnData GetCacheUltraSpeed(Pawn pawn, bool canRefresh = true)
+        {
+            if (pawn != null && threadStaticCache.pawn == pawn)
+            {
+                return threadStaticCache.cache;
+            }
+            else if (canRefresh) return GetPawnDataCache(pawn, canRefresh: canRefresh);
+            else return CachedPawnData.defaultCache;
+        }
+
         public static CachedPawnData GetPawnDataCache(Pawn pawn, bool forceRefresh=false, bool canRefresh = true)
         {
-            if (//pawn?.RaceProps.Humanlike == true &&  // Maybe add a setting for this, if it is troublesome.
-                // If the needs are null (and it isn't a corpse) then we don't want to generate data for it.
-                // It typically means the pawn isn't fully initialized yet or otherwise unsuitable.
-                (pawn?.needs != null || pawn?.Dead==true)) 
+            if (pawn?.needs != null || pawn?.Dead==true)
             {
                 return GetCache(pawn, forceRefresh: forceRefresh, canRefresh: canRefresh);
             }

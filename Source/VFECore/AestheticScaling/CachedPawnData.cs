@@ -17,7 +17,7 @@ namespace VFECore
     /// </summary>
     public class CachedPawnDataSlowUpdate : GameComponent
     {
-        public Queue<Pawn> pawnsToRefresh = new Queue<Pawn>();
+        public Queue<Pawn> pawnsToRefresh = new();
 
         public CachedPawnDataSlowUpdate(Game game) { }
 
@@ -43,6 +43,7 @@ namespace VFECore
     public class CachedPawnData : ICacheable
     {
         public static bool cacheCanBeRecalculated = true;
+        public static CachedPawnData defaultCache = new();
 
         public static Dictionary<Pawn, CachedPawnData> cache = new();
 
@@ -61,6 +62,8 @@ namespace VFECore
         public float bodyRenderSize = 1;
         public float headRenderSize = 1;
         public float renderPosOffset = 0;
+        public Vector3 vCosmeticScale = Vector3.one;
+        public bool isHumanlike = false;
 
         // Health data.
         public float healthMultiplier = 1;
@@ -71,16 +74,19 @@ namespace VFECore
         // Children "Learning" point accumulation.
         public float growthPointMultiplier = 1;
 
+        public CachedPawnData() { }
+
         public CachedPawnData(Pawn pawn)
         {
             this.pawn = pawn;
+            // This might get called from a rendering thread. Should be fine, but just in case.
+            try { isHumanlike = pawn.RaceProps?.Humanlike == true; }
+            catch { Log.Error($"[VEF] Error checking Humanlike when setting up {pawn}"); }
         }
 
         public bool RegenerateCache()
         {
-
             if (!cacheCanBeRecalculated || pawn == null) return false;
-
             if (Scribe.mode == LoadSaveMode.LoadingVars) return false;
 
             // If the needs are null (and the pawn is not just suffering a case of "dead") skip the cache generation.
@@ -96,6 +102,15 @@ namespace VFECore
                 List<GeneExtension> geneExts = genes.Where(x => x.Active && x.def.modExtensions != null && x.def.modExtensions
                                                     .Any(y => y.GetType() == typeof(GeneExtension)))
                                                     .Select(x => x.def.GetModExtension<GeneExtension>()).ToList();
+
+                isHumanlike = pawn.RaceProps?.Humanlike == true;  // In case of PawnMorpher or something.
+                var lifestage = pawn.ageTracker.CurLifeStage;
+                Vector2 bodyLifeStageCosmeticScale = new(1, 1);
+                var bodyLifeStageCosScaleExts = geneExts.Where(x => x.bodyScaleFactorsPerLifestages != null && x.bodyScaleFactorsPerLifestages.ContainsKey(lifestage));
+                if (bodyLifeStageCosScaleExts.Any())
+                {
+                    bodyLifeStageCosmeticScale = bodyLifeStageCosScaleExts.Aggregate(bodyLifeStageCosmeticScale, (acc, x) => acc * x.bodyScaleFactorsPerLifestages[lifestage]);
+                }
 
                 var dStage = pawn.DevelopmentalStage;
                 float sizeFromAge = pawn.ageTracker.CurLifeStage.bodySizeFactor;
@@ -177,6 +192,7 @@ namespace VFECore
                 this.bodySizeOffset = bodySizeOffset;
                 bodyRenderSize = GetBodyRenderSize(percentChangeCosmetic);
                 headRenderSize = GetHeadRenderSize(bodyRenderSize) * headScaleStat;
+                vCosmeticScale = new Vector3(bodyRenderSize * bodyLifeStageCosmeticScale.x, 1, bodyRenderSize * bodyLifeStageCosmeticScale.y);
                 renderPosOffset = GetYPositionOffset(bodyRenderSize, renderOffsetVal);
                 renderCacheOff = geneExts.Any(x => x.renderCacheOff);
 

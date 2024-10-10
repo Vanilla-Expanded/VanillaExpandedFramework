@@ -254,40 +254,5 @@ namespace VanillaGenesExpanded
                 Log.Error($"[VEF] Error in GeneUtils.RemoveGeneEffects for gene {gene?.def?.defName.ToStringSafe()}: {ex}");
             }
         }
-
-        public static Vector3 SetBodyScale(Pawn pawn, Vector3 scale)
-        {
-            if (PawnDataCache.GetPawnDataCache(pawn, canRefresh: false) is CachedPawnData data)
-            {
-                scale *= data.bodyRenderSize;
-            }
-            return scale;
-        }
-
-        public static Vector3 SetHeadScale(Pawn pawn, Vector3 scale)
-        {
-            if (PawnDataCache.GetPawnDataCache(pawn, canRefresh: false) is CachedPawnData data)
-            {
-                scale *= data.headRenderSize;
-            }
-            return scale;
-        }
-
-        public static Vector3 SetGeneScale(Pawn pawn, Vector3 scale, Gene gene)
-        {
-            if (gene.Active)
-            {
-                var extension = gene.def.GetModExtension<GeneExtension>();
-                if (extension != null)
-                {
-                    if (extension.bodyScaleFactorsPerLifestages != null
-                            && extension.bodyScaleFactorsPerLifestages.TryGetValue(pawn.ageTracker.CurLifeStage, out var lifestageScale))
-                    {
-                        scale = new Vector3(scale.x * lifestageScale.x, scale.y, scale.z * lifestageScale.y);
-                    }
-                }
-            }
-            return scale;
-        }
     }
 }

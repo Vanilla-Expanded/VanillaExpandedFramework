@@ -26,23 +26,30 @@ namespace VFECore
     {
         public static ConcurrentDictionary<T, V> Cache { get; set; } = new();
 
-        public static V GetCache(T key, bool forceRefresh = false, bool regenerateIfTimer = false, bool canRefresh = true)
+        // JunkCache is for default data in case we could not regenerate.
+        protected static readonly ConcurrentDictionary<T, V> JunkCache = new();
+
+        public static V GetCache(T key, bool forceRefresh = false, bool canRefresh = true)
         {
             if (key == null)
                 return default;
             if (Cache.TryGetValue(key, out V data))
             {
                 // Check if the cache has timed out
-                if (forceRefresh || regenerateIfTimer && data.Timer.AnyTimeout())
+                if (forceRefresh)
                 {
                     data.RegenerateCache();
-                    data.Timer.ResetTimers();
+                    //data.Timer.ResetTimers();
                     return data;
                 }
                 else
                 {
                     return data;
                 }
+            }
+            if (!forceRefresh && JunkCache.TryGetValue(key, out V junkData))
+            {
+                return junkData;
             }
             else
             {
@@ -51,6 +58,10 @@ namespace VFECore
                 if (canRefresh && newData.RegenerateCache()) 
                 {
                     Cache.TryAdd(key, newData);
+                }
+                else
+                {
+                    JunkCache[key] = newData;
                 }
                 return newData;
             }

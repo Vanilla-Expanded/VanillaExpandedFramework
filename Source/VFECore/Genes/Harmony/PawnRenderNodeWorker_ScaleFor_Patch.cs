@@ -5,33 +5,44 @@ using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
 using Verse.Noise;
+using VFECore;
+using System;
 
 namespace VanillaGenesExpanded
 {
-    [HarmonyPatch(typeof(PawnRenderNodeWorker), "ScaleFor")]
+    [HarmonyPatch(typeof(PawnRenderNodeWorker), nameof(PawnRenderNodeWorker.ScaleFor))]
     public static class PawnRenderNodeWorker_ScaleFor_Patch
     {
+        public struct PerThreadMiniCache
+        {
+            public Pawn pawn;
+            public CachedPawnData cache;
+        }
+        [ThreadStatic]
+        static PerThreadMiniCache threadStaticCache;
         public static void Postfix(ref Vector3 __result, PawnRenderNode node, PawnDrawParms parms)
         {
             var pawn = parms.pawn;
-            if (pawn?.RaceProps?.Humanlike == true)
+            if (threadStaticCache.pawn != pawn)
+            {
+                threadStaticCache.cache = PawnDataCache.GetPawnDataCache(pawn, canRefresh: false);
+                threadStaticCache.pawn = pawn;
+            }
+            var cache = threadStaticCache.cache;
+            if (threadStaticCache.cache.isHumanlike)
             {
                 if (node is PawnRenderNode_Body)
                 {
-                    __result = GeneUtils.SetBodyScale(pawn, __result);
-                    if (node.gene != null)
-                    {
-                        __result = GeneUtils.SetGeneScale(pawn, __result, node.gene);
-                    }
+                    __result = new Vector3(cache.vCosmeticScale.x * __result.x, __result.y, cache.vCosmeticScale.z * __result.z);
                 }
                 else if (node is PawnRenderNode_Head)
                 {
-                    __result = GeneUtils.SetHeadScale(pawn, __result);
+                    __result *= cache.headRenderSize;
                 }
             }
             else
             {
-                __result = GeneUtils.SetBodyScale(pawn, __result);
+                __result = new Vector3(cache.vCosmeticScale.x * __result.x, __result.y, cache.vCosmeticScale.z * __result.z);
             }
         }
     }
