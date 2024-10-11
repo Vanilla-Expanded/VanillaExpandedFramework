@@ -21,7 +21,7 @@ namespace VFECore
 
                 if (PawnDataCache.GetCacheUltraSpeed(pawn, canRefresh:false) is CachedPawnData data)
                 {
-                    __result *= data.headPositionMultiplier;
+                    __result = new Vector3(__result.x * data.headPositionMultiplier, __result.y, __result.z * data.headPositionMultiplier);
                 }
             }
         }

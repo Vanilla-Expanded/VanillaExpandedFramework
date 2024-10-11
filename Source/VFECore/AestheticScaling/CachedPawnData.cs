@@ -215,9 +215,7 @@ namespace VFECore
         private void CalculateHeadOffset()
         {
             var headPos = Mathf.Lerp(bodyRenderSize, headRenderSize, 0.8f);
-            //var headPos = Mathf.Max(bodySize, headSize);
-
-            // Move up the head for dwarves etc. so they don't end up a walking head.
+            // Move up the head for small pawns so they don't end up a walking head.
             if (headPos < 1) { headPos = Mathf.Pow(headPos, 0.96f); }
             headPositionMultiplier = headPos;
         }
