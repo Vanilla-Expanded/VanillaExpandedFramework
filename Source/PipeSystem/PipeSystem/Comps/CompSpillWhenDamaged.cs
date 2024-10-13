@@ -61,7 +61,7 @@ namespace PipeSystem
                 var map = parent.Map;
                 var pos = parent.Position;
 
-                if (Props.amountToDraw > 0 && compResource.PipeNet is PipeNet p && p.Stored > Props.amountToDraw)
+                if (compResource.PipeNet is PipeNet p && p.Stored > Props.amountToDraw)
                 {
                     p.DrawAmongStorage(Props.amountToDraw, p.storages);
 
