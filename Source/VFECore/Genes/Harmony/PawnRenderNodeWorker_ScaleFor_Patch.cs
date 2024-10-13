@@ -23,6 +23,7 @@ namespace VanillaGenesExpanded
         public static void Postfix(ref Vector3 __result, PawnRenderNode node, PawnDrawParms parms)
         {
             var pawn = parms.pawn;
+            if (pawn == null) return;
             if (threadStaticCache.pawn != pawn)
             {
                 threadStaticCache.cache = PawnDataCache.GetPawnDataCache(pawn, canRefresh: false);

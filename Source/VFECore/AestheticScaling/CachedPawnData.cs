@@ -47,7 +47,6 @@ namespace VFECore
 
         public static Dictionary<Pawn, CachedPawnData> cache = new();
 
-        public CacheTimer Timer { get; set; } = new();
         public Pawn pawn = null;
         public float totalSize = 1;
         public float bodySizeOffset = 0;
