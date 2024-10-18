@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
-using Verse.Noise;
 
 namespace VFECore
 {
@@ -35,10 +34,9 @@ namespace VFECore
             {
                 return threadStaticCache.cache;
             }
-            else if (canRefresh) return GetPawnDataCache(pawn, canRefresh: canRefresh);
             else
             {
-                threadStaticCache.cache = GetPawnDataCache(pawn, canRefresh: false);
+                threadStaticCache.cache = GetPawnDataCache(pawn, canRefresh: canRefresh);
                 threadStaticCache.pawn = pawn;
                 return threadStaticCache.cache;
             }

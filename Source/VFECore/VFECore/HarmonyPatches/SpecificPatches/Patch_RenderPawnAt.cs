@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using RimWorld;
+using System;
 using UnityEngine;
 using Verse;
 
@@ -8,16 +9,33 @@ namespace VFECore
     [HarmonyPatch(typeof(Pawn_DrawTracker), nameof(Pawn_DrawTracker.DrawPos), MethodType.Getter)]
     public static class Pawn_DrawTracker_Patch
     {
+        public struct PGPRRCache // Special little cache to save us from running GetPosture().
+        {
+            public Pawn pawn;
+            public CachedPawnData cache;
+            public bool cachingDisabled;
+            public bool doOffset;
+            public bool spawned;
+        }
+        [ThreadStatic]
+        static PGPRRCache threadStaticCache;
+
         public static bool skipOffset = false;
         [HarmonyPostfix]
         public static void Postfix(ref Vector3 __result, Pawn ___pawn)
         {
-            if (!skipOffset
-                && PawnDataCache.GetPawnDataCache(___pawn, canRefresh: false) is CachedPawnData data
-                && ___pawn.GetPosture() == PawnPosture.Standing
-                )
+            if (___pawn == null || skipOffset) return;
+
+            if (threadStaticCache.pawn != ___pawn)
             {
-                __result.z += data.renderPosOffset;
+                threadStaticCache.cache = PawnDataCache.GetCacheUltraSpeed(___pawn, canRefresh: false);
+                threadStaticCache.pawn = ___pawn;
+                threadStaticCache.doOffset = ___pawn.GetPosture() == PawnPosture.Standing;
+            }
+
+            if (threadStaticCache.doOffset)
+            {
+                __result.z += threadStaticCache.cache.renderPosOffset;
             }
         }
     }
