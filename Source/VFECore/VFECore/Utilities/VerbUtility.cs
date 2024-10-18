@@ -115,27 +115,10 @@ namespace VFECore
 
         private static void ModifyVerbRangeBy(Verb verb, float multiplier)
         {
-            var newProperties = GetVerbPropsCopy(verb.verbProps);
+            var newProperties = verb.verbProps.MemberwiseClone();
             var field = Traverse.Create(newProperties).Field("range");
             field.SetValue(field.GetValue<float>() * multiplier);
             verb.verbProps = newProperties;
-        }
-
-        public static VerbProperties GetVerbPropsCopy(this VerbProperties verbProps)
-        {
-            var propsType = verbProps.GetType();
-            var newProperties = Activator.CreateInstance(propsType) as VerbProperties;
-            foreach (var fieldInfo in propsType.GetFields())
-                try
-                {
-                    var newField = propsType.GetField(fieldInfo.Name);
-                    newField.SetValue(newProperties, fieldInfo.GetValue(verbProps));
-                }
-                catch
-                {
-                }
-
-            return newProperties;
         }
     }
 
@@ -162,7 +145,7 @@ namespace VFECore
                         var customVerbs = new List<VerbProperties>();
                         foreach (var verbProps in weapon.def.Verbs)
                         {
-                            var newProps = verbProps.GetVerbPropsCopy();
+                            var newProps = verbProps.MemberwiseClone();
                             var fieldRange = Traverse.Create(newProps).Field("range");
                             fieldRange.SetValue(fieldRange.GetValue<float>() * verbRangeMultiplier);
                             customVerbs.Add(newProps);
