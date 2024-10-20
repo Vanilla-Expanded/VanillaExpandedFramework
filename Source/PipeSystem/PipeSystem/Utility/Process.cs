@@ -24,6 +24,7 @@ namespace PipeSystem
         private int processCount;                               // Number of time this process repeated
         private float ruinedPercent;                            // Ruining (due to temp) percent
 
+
         private string id;                                      // Process ID
 
         private List<IntVec3> adjCells;
@@ -384,8 +385,16 @@ namespace PipeSystem
                     var map = parent.Map;
                     // If defined outputCellOffset
                     if (result.outputCellOffset != IntVec3.Invalid && SpawnResultAt(result, parent.Position+(result.outputCellOffset.RotatedBy(parent.Rotation)), map, ref outThings)) { continue; }
+                    if (Def.spawnOnInteractionCell)
+                    {
+                        spawnPos = parent.InteractionCell;
+                    }
+                    
                     // Try spawning at spawnPos
                     if (spawnPos != IntVec3.Invalid && SpawnResultAt(result, spawnPos, map, ref outThings)) { continue; }
+
+                  
+
                     // If invalid or couldn't, find an adj cell
                     for (int j = 0; j < adjCells.Count; j++)
                     {
@@ -439,6 +448,19 @@ namespace PipeSystem
                     thing.stackCount += result.count;
 
                     outThing = thing;
+                    if (Def.useIngredients)
+                    {
+                        if (outThing.TryGetComp<CompIngredients>() != null)
+                        {
+                            CompIngredients compingredients = outThing.TryGetComp<CompIngredients>();
+                            foreach (ProcessDef.Ingredient ingredient in Def.ingredients)
+                            {
+                                if (!compingredients.ingredients.Contains(ingredient.thing)) { compingredients.ingredients.Add(ingredient.thing); }
+                                
+                            }
+
+                        }
+                    }
                     return true;
                 }
                 else
@@ -450,6 +472,18 @@ namespace PipeSystem
                         return false;
 
                     outThing = thing;
+                    if (Def.useIngredients)
+                    {
+                        if (outThing.TryGetComp<CompIngredients>() != null)
+                        {
+                            CompIngredients compingredients = outThing.TryGetComp<CompIngredients>();
+                            foreach (ProcessDef.Ingredient ingredient in Def.ingredients)
+                            {
+                                if (!compingredients.ingredients.Contains(ingredient.thing)) { compingredients.ingredients.Add(ingredient.thing); }
+                            }
+
+                        }
+                    }
                     return true;
                 }
             }
