@@ -94,11 +94,21 @@ namespace PipeSystem
                     if (process.researchPrerequisites != null && process.researchPrerequisites.Any(p => !p.IsFinished)) continue;
 
                     var name = process.results[0].thing != null ? process.results[0].thing.LabelCap.ToStringSafe() : process.results[0].pipeNet.resource.name;
-                    var label = "PipeSystem_MakeProcess".Translate(name);
-                    if (process.results[0].count > 1)
+                    var label ="";
+                    if (process.labelOverride != "")
                     {
-                        label += " x" + process.results[0].count;
+                        label = process.labelOverride;
                     }
+                    else
+                    {
+                        label = "PipeSystem_MakeProcess".Translate(name);
+                        if (process.results[0].count > 1)
+                        {
+                            label += " x" + process.results[0].count;
+                        }
+                    }
+                    
+                    
                     processesOptions.Add(new FloatMenuOption(label, () => processStack.AddProcess(process, parent),
                                                              process.results[0].thing, null, false, MenuOptionPriority.Default,
                                                              (Rect rect) => process.DoProcessInfoWindow(i, rect),

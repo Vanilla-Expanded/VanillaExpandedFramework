@@ -32,6 +32,7 @@ namespace PipeSystem
                                                                         //Use ingredients
         public bool useIngredients = false;
         public bool spawnOnInteractionCell = false;
+        public string labelOverride = "";
 
         /// <summary>
         /// Ingredient: can be pipeNet or thingDef and a count
