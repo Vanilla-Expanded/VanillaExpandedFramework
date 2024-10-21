@@ -96,7 +96,11 @@ namespace PipeSystem
                     var process = processes[i];
                     if (process.researchPrerequisites != null && process.researchPrerequisites.Any(p => !p.IsFinished)) continue;
 
+
                     var name = process.results[0].thing != null ? process.results[0].thing.LabelCap.ToStringSafe() : process.results[0].pipeNet.resource.name;
+
+
+
                     var label ="";
                     if (process.labelOverride != "")
                     {
@@ -193,6 +197,23 @@ namespace PipeSystem
                     if (ingredientOwner.Require && !ingredientOwner.BeingFilled && ingredientOwner.ThingDef != null)
                     {
                         return ingredientOwner.ThingDef;
+                    }
+                }
+                return null;
+            }
+        }
+
+        public ThingCategoryDef FirstCategoryMissing
+        {
+            get
+            {
+                var ingredientsOwners = Process.IngredientsOwners;
+                for (int i = 0; i < ingredientsOwners.Count; i++)
+                {
+                    var ingredientOwner = ingredientsOwners[i];
+                    if (ingredientOwner.Require && !ingredientOwner.BeingFilled && ingredientOwner.ThingCategoryDef != null)
+                    {
+                        return ingredientOwner.ThingCategoryDef;
                     }
                 }
                 return null;

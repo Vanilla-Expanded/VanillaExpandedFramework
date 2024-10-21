@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -61,6 +62,22 @@ namespace PipeSystem
                 if (requirement.thing != null)
                 {
                     var icons = new List<TextureAndColor>() { ToTextureAndColor(requirement.thing) };
+                    DisplayIngredientIconRow(icons, draw, requirement.countNeeded);
+                    // If can also take from net, add or X net
+                    if (requirement.pipeNet != null)
+                    {
+                        if (icons.Count > 9)
+                            processTooltip.Gap(4f, 0f);
+
+                        Text.Anchor = TextAnchor.MiddleLeft;
+                        processTooltip.Label("PipeSystem_OrNet".Translate(requirement.pipeNet.loweredName), draw);
+                        Text.Anchor = TextAnchor.UpperLeft;
+                    }
+                }
+                // Draw category requirement
+                else if (requirement.thingCategory != null)
+                {
+                    var icons = new List<TextureAndColor>() { ToTextureAndColorCategory(requirement.thingCategory) };
                     DisplayIngredientIconRow(icons, draw, requirement.countNeeded);
                     // If can also take from net, add or X net
                     if (requirement.pipeNet != null)
@@ -168,5 +185,12 @@ namespace PipeSystem
         /// <param name="td"></param>
         /// <returns></returns>
         private static TextureAndColor ToTextureAndColor(ThingDef td) => new TextureAndColor(Widgets.GetIconFor(td), td.uiIconColor);
+
+        /// <summary>
+        /// Create TextureAndColor from ThingCategoryDef
+        /// </summary>
+        /// <param name="td"></param>
+        /// <returns></returns>
+        private static TextureAndColor ToTextureAndColorCategory(ThingCategoryDef td) => new TextureAndColor(td.icon, Color.white);
     }
 }

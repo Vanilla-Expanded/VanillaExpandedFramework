@@ -89,6 +89,10 @@ namespace PipeSystem
         public void AddIngredient(CompAdvancedResourceProcessor comp, Thing thing)
         {
             var owner = comp.Process.GetOwnerFor(thing.def);
+            if (owner == null)
+            {
+                owner = comp.Process.GetOwnerForCategory(thing.def.thingCategories);
+            }
             owner.AddFromThing(thing);
 
             if (comp.Process.Def.transfersIngredientList)

@@ -9,11 +9,14 @@ namespace PipeSystem
         private bool beingFilled;
         private PipeNetDef pipeNetDef;
         private ThingDef thingDef;
+        private ThingCategoryDef thingCategoryDef;
         private int count = 0;
 
         public ThingDef ThingDef => thingDef;
 
         public PipeNetDef PipeNetDef => pipeNetDef;
+
+        public ThingCategoryDef ThingCategoryDef => thingCategoryDef;
 
         public bool Require => count < wantedCount;
 
@@ -30,11 +33,12 @@ namespace PipeSystem
         public ThingAndResourceOwner()
         { }
 
-        public ThingAndResourceOwner(ThingDef thingDef, PipeNetDef pipeNetDef, int wantedCount)
+        public ThingAndResourceOwner(ThingDef thingDef, PipeNetDef pipeNetDef, int wantedCount, ThingCategoryDef thingCategory)
         {
             this.pipeNetDef = pipeNetDef;
             this.thingDef = thingDef;
             this.wantedCount = wantedCount;
+            this.thingCategoryDef = thingCategory;
             beingFilled = false;
         }
 
@@ -45,11 +49,12 @@ namespace PipeSystem
             Scribe_Values.Look(ref beingFilled, "beingFilled");
             Scribe_Defs.Look(ref pipeNetDef, "pipeNetDef");
             Scribe_Defs.Look(ref thingDef, "thingDef");
+            Scribe_Defs.Look(ref thingCategoryDef, "thingCategoryDef");
         }
 
         public void AddFromThing(Thing thing)
         {
-            if (thingDef == null || thing.def != thingDef)
+            if (thing.def != thingDef && !thing.def.thingCategories.Contains(thingCategoryDef))
                 return;
 
             var needed = wantedCount - count;

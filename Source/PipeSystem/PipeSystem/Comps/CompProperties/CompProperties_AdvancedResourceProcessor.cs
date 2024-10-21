@@ -74,8 +74,8 @@ namespace PipeSystem
                 for (int o = 0; o < result.ingredients.Count; o++)
                 {
                     var requirement = result.ingredients[o];
-                    if (requirement.thing == null && requirement.pipeNet == null)
-                        yield return $"Ingredient {o + 1} of result {i + 1} ({result.defName}) cannot have <thing> and <pipeNet> both null";
+                    if (requirement.thing == null && requirement.pipeNet == null && requirement.thingCategory == null)
+                        yield return $"Ingredient {o + 1} of result {i + 1} ({result.defName}) cannot have <thing>, <thingCategory> and <pipeNet> all null";
 
                     if (requirement.pipeNet != null)
                     {

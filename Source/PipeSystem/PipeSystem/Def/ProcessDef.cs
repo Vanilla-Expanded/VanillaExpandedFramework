@@ -47,8 +47,10 @@ namespace PipeSystem
             // TODO: Allow ThingFilter
             public PipeNetDef pipeNet;
             public ThingDef thing;
+            public ThingCategoryDef thingCategory;
             // Amount needed to produce result
             public int countNeeded;
+            public bool nutritionGetter = false;
         }
 
         /// <summary>

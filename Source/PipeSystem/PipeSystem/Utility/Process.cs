@@ -207,7 +207,28 @@ namespace PipeSystem
             for (int i = 0; i < def.ingredients.Count; i++)
             {
                 var requirement = def.ingredients[i];
-                ingredientsOwners.Add(new ThingAndResourceOwner(requirement.thing, requirement.pipeNet, requirement.countNeeded));
+                if (requirement.nutritionGetter)
+                {
+                    if (!requirement.thing.IsNutritionGivingIngestible)
+                    {
+                        ingredientsOwners.Add(new ThingAndResourceOwner(requirement.thing, requirement.pipeNet, 1, requirement.thingCategory));
+
+                    }
+                    else
+                    {
+                        ingredientsOwners.Add(new ThingAndResourceOwner(requirement.thing, requirement.pipeNet,(int)( requirement.countNeeded / requirement.thing.GetStatValueAbstract(StatDefOf.Nutrition)), requirement.thingCategory));
+
+                    }
+                   
+
+                }
+                else
+                {
+                    ingredientsOwners.Add(new ThingAndResourceOwner(requirement.thing, requirement.pipeNet, requirement.countNeeded, requirement.thingCategory));
+
+                }
+
+
             }
             targetCount = 1;
         }
@@ -468,7 +489,7 @@ namespace PipeSystem
         }
 
         /// <summary>
-        /// Handle ingredients lists
+        /// Handle ingredients lists and quality
         /// </summary>
         /// <param name="outThing">process output item</param>
         public void HandleIngredientsAndQuality(Thing outThing)
@@ -581,6 +602,23 @@ namespace PipeSystem
             {
                 var owner = ingredientsOwners[i];
                 if (owner.ThingDef == thingDef)
+                    return owner;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Get ThingAndResourceOwner matching ThingCategoryDef
+        /// </summary>
+        /// <param name="thingcategoryDef"></param>
+        /// <returns></returns>
+        public ThingAndResourceOwner GetOwnerForCategory(List<ThingCategoryDef> thingcategoryDefs)
+        {
+            for (int i = 0; i < ingredientsOwners.Count; i++)
+            {
+                var owner = ingredientsOwners[i];
+                if (thingcategoryDefs.Contains(owner.ThingCategoryDef))
                     return owner;
             }
 
