@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using RimWorld;
+using System.Collections.Generic;
 using Verse;
 using Verse.Noise;
+using static PipeSystem.ProcessDef;
 
 namespace PipeSystem
 {
@@ -88,6 +90,22 @@ namespace PipeSystem
         {
             var owner = comp.Process.GetOwnerFor(thing.def);
             owner.AddFromThing(thing);
+
+            if (comp.Process.Def.transfersIngredientList)
+            {
+                CompIngredients compingredientsInput = thing?.TryGetComp<CompIngredients>();
+                if (compingredientsInput != null)
+                {
+                    foreach(ThingDef ingredient in compingredientsInput.ingredients)
+                    {
+                        if (!comp.cachedIngredients.Contains(ingredient))
+                        {
+                            comp.cachedIngredients.Add(ingredient);
+                        }
+                    }
+                    
+                }
+            }
 
             if (!owner.Require && awaitingIngredients.Contains(comp.parent))
                 awaitingIngredients.Remove(comp.parent);

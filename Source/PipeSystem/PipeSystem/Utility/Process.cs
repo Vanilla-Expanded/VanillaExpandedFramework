@@ -384,16 +384,16 @@ namespace PipeSystem
                 {
                     var map = parent.Map;
                     // If defined outputCellOffset
-                    if (result.outputCellOffset != IntVec3.Invalid && SpawnResultAt(result, parent.Position+(result.outputCellOffset.RotatedBy(parent.Rotation)), map, ref outThings)) { continue; }
+                    if (result.outputCellOffset != IntVec3.Invalid && SpawnResultAt(result, parent.Position + (result.outputCellOffset.RotatedBy(parent.Rotation)), map, ref outThings)) { continue; }
                     if (Def.spawnOnInteractionCell)
                     {
                         spawnPos = parent.InteractionCell;
                     }
-                    
+
                     // Try spawning at spawnPos
                     if (spawnPos != IntVec3.Invalid && SpawnResultAt(result, spawnPos, map, ref outThings)) { continue; }
 
-                  
+
 
                     // If invalid or couldn't, find an adj cell
                     for (int j = 0; j < adjCells.Count; j++)
@@ -448,19 +448,7 @@ namespace PipeSystem
                     thing.stackCount += result.count;
 
                     outThing = thing;
-                    if (Def.useIngredients)
-                    {
-                        if (outThing.TryGetComp<CompIngredients>() != null)
-                        {
-                            CompIngredients compingredients = outThing.TryGetComp<CompIngredients>();
-                            foreach (ProcessDef.Ingredient ingredient in Def.ingredients)
-                            {
-                                if (!compingredients.ingredients.Contains(ingredient.thing)) { compingredients.ingredients.Add(ingredient.thing); }
-                                
-                            }
-
-                        }
-                    }
+                    HandleIngredientsAndQuality(outThing);
                     return true;
                 }
                 else
@@ -472,22 +460,55 @@ namespace PipeSystem
                         return false;
 
                     outThing = thing;
-                    if (Def.useIngredients)
-                    {
-                        if (outThing.TryGetComp<CompIngredients>() != null)
-                        {
-                            CompIngredients compingredients = outThing.TryGetComp<CompIngredients>();
-                            foreach (ProcessDef.Ingredient ingredient in Def.ingredients)
-                            {
-                                if (!compingredients.ingredients.Contains(ingredient.thing)) { compingredients.ingredients.Add(ingredient.thing); }
-                            }
-
-                        }
-                    }
+                    HandleIngredientsAndQuality(outThing);
                     return true;
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// Handle ingredients lists
+        /// </summary>
+        /// <param name="outThing">process output item</param>
+        public void HandleIngredientsAndQuality(Thing outThing)
+        {
+            if (Def.useIngredients)
+            {
+                if (outThing.TryGetComp<CompIngredients>() != null)
+                {
+                    CompIngredients compingredients = outThing.TryGetComp<CompIngredients>();
+                    if (Def.transfersIngredientList)
+                    {
+                       
+                        foreach (ThingDef ingredientInput in advancedProcessor.cachedIngredients)
+                        {
+                          
+                            if (!compingredients.ingredients.Contains(ingredientInput)) { compingredients.ingredients.Add(ingredientInput); }
+                        }
+                        advancedProcessor.cachedIngredients.Clear();
+                       
+                    }
+                    else
+                    {
+                        foreach (ProcessDef.Ingredient ingredient in Def.ingredients)
+                        {
+                            if (!compingredients.ingredients.Contains(ingredient.thing)) { compingredients.ingredients.Add(ingredient.thing); }
+                        }
+                    }
+
+
+                }
+            }
+            if (Def.stopAtQuality)
+            {
+                CompQuality compQuality = outThing.TryGetComp<CompQuality>();
+                if (compQuality != null)
+                {
+                    compQuality.SetQuality(Def.quality, null);
+                }
+            }
+
         }
 
         /// <summary>

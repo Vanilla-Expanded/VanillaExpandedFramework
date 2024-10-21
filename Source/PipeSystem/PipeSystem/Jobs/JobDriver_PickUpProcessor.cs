@@ -35,19 +35,8 @@ namespace PipeSystem
                 {
                     
                     var outThing = outThings[0];
-                   
-                    if (comp.Process.Def.useIngredients)
-                    {
-                        if (outThing.TryGetComp<CompIngredients>() != null)
-                        {
-                            CompIngredients compingredients = outThing.TryGetComp<CompIngredients>();
-                            foreach(ProcessDef.Ingredient ingredient in comp.Process.Def.ingredients)
-                            {
-                                if (!compingredients.ingredients.Contains(ingredient.thing)) { compingredients.ingredients.Add(ingredient.thing); }
-                            }
-
-                        }
-                    }
+                    comp.Process.HandleIngredientsAndQuality(outThing);
+                    
                     var currentPriority = StoreUtility.CurrentStoragePriorityOf(outThing);
                     if (StoreUtility.TryFindBestBetterStoreCellFor(outThing, pawn, Map, currentPriority, pawn.Faction, out var foundCell))
                     {

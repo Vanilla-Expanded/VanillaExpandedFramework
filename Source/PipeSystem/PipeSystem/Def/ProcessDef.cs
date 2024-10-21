@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using RimWorld;
+using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 
@@ -31,8 +32,12 @@ namespace PipeSystem
         public float progressPerDegreePerTick = 1E-05f;                 // Ruining due to incorrect temp progress per tick
                                                                         //Use ingredients
         public bool useIngredients = false;
+        public bool transfersIngredientList = false;
         public bool spawnOnInteractionCell = false;
         public string labelOverride = "";
+        public int priorityInBillList = 0;
+        public bool stopAtQuality = false;
+        public QualityCategory quality = QualityCategory.Normal;
 
         /// <summary>
         /// Ingredient: can be pipeNet or thingDef and a count

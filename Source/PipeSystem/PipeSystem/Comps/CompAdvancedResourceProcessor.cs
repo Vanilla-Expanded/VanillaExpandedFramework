@@ -22,6 +22,8 @@ namespace PipeSystem
         private static readonly Material WasteBarFilledMat = SolidColorMaterials.SimpleSolidColorMaterial(new Color(0.9f, 0.85f, 0.2f));
         private static readonly Material WasteBarUnfilledMat = SolidColorMaterials.SimpleSolidColorMaterial(new Color(0.3f, 0.3f, 0.3f, 1f));
 
+        public List<ThingDef> cachedIngredients = new List<ThingDef>();
+
         // Other comps we run check on
         private CompFlickable flickable;
         private CompPowerTrader compPower;
@@ -88,9 +90,10 @@ namespace PipeSystem
             get
             {
                 processesOptions = new List<FloatMenuOption>();
-                for (int i = 0; i < Props.processes.Count; i++)
+                List<ProcessDef> processes = Props.processes.OrderBy(x => x.priorityInBillList).ToList();
+                for (int i = 0; i < processes.Count; i++)
                 {
-                    var process = Props.processes[i];
+                    var process = processes[i];
                     if (process.researchPrerequisites != null && process.researchPrerequisites.Any(p => !p.IsFinished)) continue;
 
                     var name = process.results[0].thing != null ? process.results[0].thing.LabelCap.ToStringSafe() : process.results[0].pipeNet.resource.name;
@@ -276,6 +279,7 @@ namespace PipeSystem
 
             Scribe_Values.Look(ref outputOnGround, "outputOnGround");
             Scribe_Values.Look(ref wasteProduced, "wasteProduced");
+            Scribe_Collections.Look(ref cachedIngredients, "cachedIngredients",LookMode.Def);
         }
 
         /// <summary>
