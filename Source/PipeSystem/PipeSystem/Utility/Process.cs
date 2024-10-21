@@ -553,9 +553,12 @@ namespace PipeSystem
                     // Refund as item
                     else if (owner.ThingDef is ThingDef def)
                     {
-                        var thing = ThingMaker.MakeThing(def);
-                        thing.stackCount = owner.Count;
-                        GenPlace.TryPlaceThing(thing, adjCells.RandomElement(), parent.Map, ThingPlaceMode.Near);
+                        if (owner.Count > 0) {
+                            var thing = ThingMaker.MakeThing(def);
+                            thing.stackCount = owner.Count;
+                            GenPlace.TryPlaceThing(thing, adjCells.RandomElement(), parent.Map, ThingPlaceMode.Near);
+                        }
+                        
                     }
                     // Reset owner
                     owner.Reset();
@@ -667,7 +670,7 @@ namespace PipeSystem
             }
             GUI.color = color;
             // Process label
-            Widgets.Label(new Rect(28f, 0f, rect.width - 48f - 20f, rect.height + 5f), def.LabelCap);
+            Widgets.Label(new Rect(28f, 0f, rect.width - 48f - 20f, rect.height + 5f), def.LabelCap + " ("+ def.ticks.ToStringTicksToDays() +")");
             // Config
             var baseRect = rect.AtZero();
             GUI.color = new Color(1f, 1f, 1f, 0.65f);
