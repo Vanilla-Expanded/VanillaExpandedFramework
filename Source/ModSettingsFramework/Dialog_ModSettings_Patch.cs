@@ -1,9 +1,9 @@
-﻿using HarmonyLib;
-using RimWorld;
+﻿using RimWorld;
 using System.Linq;
 using UnityEngine;
-using Verse;
 using Verse.Sound;
+using HarmonyLib;
+using Verse;
 
 namespace ModSettingsFramework
 {

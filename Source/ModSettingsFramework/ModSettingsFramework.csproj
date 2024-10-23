@@ -75,6 +75,7 @@
     <Compile Include="ModSettingsContainer.cs" />
     <Compile Include="ModSettingsFrameworkMod.cs" />
     <Compile Include="ModSettingsFrameworkSettings.cs" />
+    <Compile Include="Page_ModsConfig_DoModInfo_Transpiler.cs" />
     <Compile Include="PatchOperations\PatchOperationRadioButtons.cs" />
     <Compile Include="PatchOperations\PatchOperationWorker.cs" />
     <Compile Include="PatchOperations\PatchOperationModOption.cs" />
