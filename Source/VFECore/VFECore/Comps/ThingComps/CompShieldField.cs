@@ -174,8 +174,14 @@ namespace VFECore
 
         private void UpdateStatsCache()
         {
-            _cachedEnergyGainPerTick = this.parent.GetStatValue(Props.rechargeRateStat) / 60;
-            _cachedMaxEnergy = this.parent.GetStatValue(Props.shieldEnergyMaxStat);
+            if (Props.rechargeRateStat != null)
+            {
+                _cachedEnergyGainPerTick = this.parent.GetStatValue(Props.rechargeRateStat) / 60;
+            }
+            if (Props.shieldEnergyMaxStat != null)
+            {
+                _cachedMaxEnergy = this.parent.GetStatValue(Props.shieldEnergyMaxStat);
+            }
             _cachedShieldRadius = this.parent.GetStatValue(Props.shieldRadiusStat);
             _isCacheValid = true;
         }
