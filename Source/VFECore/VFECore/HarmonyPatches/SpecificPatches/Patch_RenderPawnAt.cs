@@ -28,7 +28,7 @@ namespace VFECore
 
             if (threadStaticCache.pawn != ___pawn)
             {
-                threadStaticCache.cache = PawnDataCache.GetCacheUltraSpeed(___pawn, canRefresh: false);
+                threadStaticCache.cache = PawnDataCache.GetPawnDataCache(___pawn, canRefresh: false);
                 threadStaticCache.pawn = ___pawn;
                 threadStaticCache.doOffset = ___pawn.GetPosture() == PawnPosture.Standing;
             }

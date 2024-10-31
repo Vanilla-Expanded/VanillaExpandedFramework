@@ -44,11 +44,11 @@ namespace VFECore
 
         public static CachedPawnData GetPawnDataCache(Pawn pawn, bool forceRefresh=false, bool canRefresh = true)
         {
-            if (pawn?.needs != null || pawn?.Dead==true)
+            if (pawn?.needs != null || pawn.Dead==true)
             {
                 return GetCache(pawn, forceRefresh: forceRefresh, canRefresh: canRefresh);
             }
-            return null;
+            return CachedPawnData.defaultCache;
         }
     }
 
