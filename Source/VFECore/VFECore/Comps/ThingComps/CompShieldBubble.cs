@@ -43,6 +43,10 @@ namespace VFECore
             Text.Anchor = TextAnchor.MiddleCenter;
             Widgets.Label(rect4, shield.Energy.ToString("F0") + " / " + shield.EnergyMax.ToString("F0"));
             Text.Anchor = TextAnchor.UpperLeft;
+			if (shield.Props.tooltipKey.NullOrEmpty() is false)
+			{
+                TooltipHandler.TipRegion(rect2, shield.Props.tooltipKey.Translate());
+            }
             return new GizmoResult(GizmoState.Clear);
         }
     }
@@ -55,10 +59,9 @@ namespace VFECore
 		}
 
 		public float EnergyShieldEnergyMax = 0f;
-
 		public float EnergyShieldRechargeRate = 0f;
 		public bool chargeFullyWhenMade;
-
+		public float initialChargePct;
 		public bool   blockRangedAttack = true;
 		public bool   blockMeleeAttack  = false;
 		public bool dontAllowRangedAttack = false;
@@ -76,6 +79,7 @@ namespace VFECore
 		public SoundDef absorbDamageSound;
 		public SoundDef brokenSound;
 		public SoundDef resetSound;
+		public string tooltipKey;
 	}
 
 	[StaticConstructorOnStartup]
@@ -280,7 +284,7 @@ namespace VFECore
 
         public void Draw()
 		{
-			if (ShieldState == ShieldState.Active)
+			if (ShieldState == ShieldState.Active && Energy > 0)
 			{
 				var pawn = this.Pawn;
 				float num = Mathf.Lerp(Props.minShieldSize, Props.maxShieldSize, energy);
@@ -419,6 +423,10 @@ namespace VFECore
             {
                 Energy = EnergyMax;
             }
+			else if (Props.initialChargePct > 0)
+			{
+				Energy = EnergyMax * Props.initialChargePct;
+            }
         }
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
@@ -438,6 +446,24 @@ namespace VFECore
                 Gizmo_EnergyCompShieldStatus gizmo_EnergyShieldStatus = new Gizmo_EnergyCompShieldStatus();
                 gizmo_EnergyShieldStatus.shield = this;
                 yield return gizmo_EnergyShieldStatus;
+                if (!DebugSettings.ShowDevGizmos)
+                {
+                    yield break;
+                }
+                Command_Action command_Action = new Command_Action();
+                command_Action.defaultLabel = "DEV: Break";
+                command_Action.action = Break;
+                yield return command_Action;
+                if (ticksToReset > 0)
+                {
+                    Command_Action command_Action2 = new Command_Action();
+                    command_Action2.defaultLabel = "DEV: Clear reset";
+                    command_Action2.action = delegate
+                    {
+                        ticksToReset = 0;
+                    };
+                    yield return command_Action2;
+                }
             }
 		}
 
