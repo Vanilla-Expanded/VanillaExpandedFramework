@@ -10,7 +10,7 @@ namespace KCSG
         /// <summary>
         /// Generate layoutDef in rect
         /// </summary>
-        public static void Generate(this StructureLayoutDef layout, CellRect rect, Map map)
+        public static void Generate(this StructureLayoutDef layout, CellRect rect, Map map, Faction factionOverride = null)
         {
             // Get random wall stuff if randomizeWall is set to true
             ThingDef wallForRoom = null;
@@ -18,6 +18,11 @@ namespace KCSG
                 wallForRoom = RandomUtils.RandomWallStuffWeighted(ThingDefOf.Wall);
             // Generate all layouts
             var faction = map.ParentFaction;
+            if (factionOverride != null)
+            {
+                faction = factionOverride;
+            }
+           
             var cells = rect.Cells.ToList();
             for (int index = 0; index < layout.layouts.Count; index++)
             {
