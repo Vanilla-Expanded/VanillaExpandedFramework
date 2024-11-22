@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using RimWorld;
@@ -20,9 +21,19 @@ namespace VFECore.Misc
         public override void TransformValue(StatRequest req, ref float val)
         {
             if (!req.HasThing || !(req.Thing.ParentHolder is Pawn_EquipmentTracker eq)) return;
-            foreach (var thing in eq.AllEquipmentListForReading.Concat(eq.pawn.apparel.WornApparel))
+            foreach (var thing in GetAllEquipment(eq))
                 if (!(thing.def.GetModExtension<EquipmentOffsetConditions>() is EquipmentOffsetConditions conds) || conds.IsValid(req.Thing, thing.def))
                     val *= thing.GetStatValue(statRangedCooldownFactor);
+        }
+
+        private static IEnumerable<ThingWithComps> GetAllEquipment(Pawn_EquipmentTracker eq)
+        {
+            var equipments = eq.AllEquipmentListForReading;
+            if (eq.pawn?.apparel?.WornApparel != null)
+            {
+                equipments.AddRange(eq.pawn.apparel.WornApparel);
+            }
+            return equipments;
         }
 
         public override string ExplanationPart(StatRequest req)
@@ -30,7 +41,7 @@ namespace VFECore.Misc
             if (!req.HasThing || !(req.Thing.ParentHolder is Pawn_EquipmentTracker eq))
                 return "";
             var builder = new StringBuilder();
-            foreach (var (thing, conds) in from apparel in eq.AllEquipmentListForReading.Concat(eq.pawn.apparel.WornApparel)
+            foreach (var (thing, conds) in from apparel in GetAllEquipment(eq)
                 let conds = apparel.def
                     .GetModExtension<EquipmentOffsetConditions>()
                 where conds != null || Math.Abs(apparel.GetStatValue(statRangedCooldownFactor) - 1f) > 0.001f
