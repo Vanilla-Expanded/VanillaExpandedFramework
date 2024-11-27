@@ -28,10 +28,10 @@ namespace VFECore.Misc
 
         private static IEnumerable<ThingWithComps> GetAllEquipment(Pawn_EquipmentTracker eq)
         {
-            var equipments = eq.AllEquipmentListForReading;
+            var equipments = eq.AllEquipmentListForReading.ToList();
             if (eq.pawn?.apparel?.WornApparel != null)
             {
-                equipments.AddRange(eq.pawn.apparel.WornApparel);
+                equipments.AddRange(eq.pawn.apparel.WornApparel.ToList());
             }
             return equipments;
         }
