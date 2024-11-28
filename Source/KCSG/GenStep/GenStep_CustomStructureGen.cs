@@ -7,7 +7,7 @@ using Verse;
 
 namespace KCSG
 {
-    internal class GenStep_CustomStructureGen : GenStep
+    public class GenStep_CustomStructureGen : GenStep
     {
         public bool fullClear = false;
         public bool clearFogInRect = false;
