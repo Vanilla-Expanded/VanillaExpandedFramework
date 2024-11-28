@@ -14,6 +14,7 @@ namespace VanillaGenesExpanded
             try
             {
                 if (gene?.pawn is null) return;
+                if (!gene.Active) return;
                 if (Scribe.mode == LoadSaveMode.LoadingVars || Scribe.mode == LoadSaveMode.ResolvingCrossRefs || Scribe.mode == LoadSaveMode.Saving) return;
                 GeneExtension extension = gene.def.GetModExtension<GeneExtension>();
                 if (extension != null)
