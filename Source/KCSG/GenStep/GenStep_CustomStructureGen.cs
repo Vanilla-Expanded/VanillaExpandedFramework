@@ -44,12 +44,10 @@ namespace KCSG
             }
             // Normal
             StructureLayoutDef layoutDef = structureLayoutDefs.RandomElement();
-
             var cellRect = CellRect.CenteredOn(map.Center, layoutDef.sizes.x, layoutDef.sizes.z);
             GenOption.GetAllMineableIn(cellRect, map);
             LayoutUtils.CleanRect(layoutDef, map, cellRect, fullClear);
             layoutDef.Generate(cellRect, map);
-
             if (GenOption.customGenExt.symbolResolvers?.Count > 0)
             {
                 Debug.Message("GenStep_CustomStructureGen - Additional symbol resolvers");
@@ -59,6 +57,8 @@ namespace KCSG
                     rect = cellRect
                 }, null);
             }
+
+            PostGenerate(cellRect, map, parms);
 
             // Flood refog
             if (map.mapPawns.FreeColonistsSpawned.Count > 0)
@@ -76,6 +76,11 @@ namespace KCSG
                         MapGenerator.rootsToUnfog.Add(c);
                 }
             }
+        }
+
+        public virtual void PostGenerate(CellRect rect, Map map, GenStepParams parms)
+        {
+
         }
     }
 }
