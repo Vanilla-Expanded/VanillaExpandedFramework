@@ -27,6 +27,7 @@
 	<IP_IngredientImproperlyDefined>One of the ingredients has been improperly defined to work with the item processor, contact the mod's author</IP_IngredientImproperlyDefined>
 	<IP_NoPowerDestroysWarning>{0} needs to be powered to start working</IP_NoPowerDestroysWarning>
 	<IP_NoFuelDestroysWarning>{0} needs to be fueled to start working</IP_NoFuelDestroysWarning>
+	<IP_NoResourceDestroysWarning>{0} needs required resource to start working</IP_NoResourceDestroysWarning>
 	<IP_LightDestroysWarning>{0} needs to have an adequate light level to start working</IP_LightDestroysWarning>
 	<IP_RainDestroysWarning>{0} needs to not be raining to start working</IP_RainDestroysWarning>
 	<IP_TemperatureDestroysWarning>{0} needs to have an adequate temperature ({1} - {2}) to start working</IP_TemperatureDestroysWarning>
