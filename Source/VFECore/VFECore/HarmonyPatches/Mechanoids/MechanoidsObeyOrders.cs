@@ -159,7 +159,7 @@ namespace VFE.Mechanoids.HarmonyPatches
 		public static bool SimpleSidearmsActive;
 		static SimpleSidearmsPatch()
 		{
-			SimpleSidearmsActive = ModsConfig.IsActive("PeteTimesSix.SimpleSidearms");
+			SimpleSidearmsActive = ModsConfig.IsActive("PeteTimesSix.SimpleSidearms") || ModsConfig.IsActive("PeteTimesSix.SimpleSidearms_steam");
 			if (SimpleSidearmsActive)
 			{
 				var type = AccessTools.TypeByName("PeteTimesSix.SimpleSidearms.Extensions");
