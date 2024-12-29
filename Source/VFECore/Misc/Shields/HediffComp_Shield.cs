@@ -188,13 +188,11 @@ namespace VFECore.Shields
 
         public virtual bool AllowVerbCast(Verb verb)
         {
-            return Props.cannotUseAttackType switch
-            {
-                AttackType.Melee  => verb is Verb_MeleeAttack,
-                AttackType.Ranged => verb is Verb_LaunchProjectile,
-                AttackType.Both   => false,
-                _                 => true
-            };
+            if (Props.cannotUseAttackType == AttackType.None) return true;
+            else if (Props.cannotUseAttackType == AttackType.Both) return false;
+            else if (Props.cannotUseAttackType == AttackType.Melee) return verb is not Verb_MeleeAttack;
+            else if (Props.cannotUseAttackType == AttackType.Ranged) return verb is not Verb_LaunchProjectile;
+            return true;
         }
     }
 
