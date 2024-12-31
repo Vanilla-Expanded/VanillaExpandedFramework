@@ -67,14 +67,17 @@ namespace PipeSystem
                 action = delegate
                 {
                     maxHeldThingStackSize++;
-                    if(HeldThing!=null && HeldThing.stackCount< maxHeldThingStackSize)
+
+                    if(maxHeldThingStackSize > Props.thing.stackLimit)
                     {
-                        maxHeldThingStackSize = HeldThing.stackCount;
+                        maxHeldThingStackSize = Props.thing.stackLimit;
                     }
+
+                    
                 },
                 defaultLabel = "PipeSystem_AugmentStack".Translate(),
                 defaultDesc = "PipeSystem_AugmentStackDesc".Translate(),
-                Disabled = Props.maxOutputStackSize != -1 && maxHeldThingStackSize + 1 > Props.maxOutputStackSize,
+             
                 icon = plus
             };
             augment10 = new Command_Action
@@ -82,14 +85,15 @@ namespace PipeSystem
                 action = delegate
                 {
                     maxHeldThingStackSize += 10;
-                    if (HeldThing != null&&HeldThing.stackCount < maxHeldThingStackSize)
+                    if (maxHeldThingStackSize > Props.thing.stackLimit)
                     {
-                        maxHeldThingStackSize = HeldThing.stackCount;
+                        maxHeldThingStackSize = Props.thing.stackLimit;
                     }
+                   
                 },
                 defaultLabel = "PipeSystem_AugmentStackB".Translate(),
                 defaultDesc = "PipeSystem_AugmentStackDescB".Translate(),
-                Disabled = Props.maxOutputStackSize != -1 && maxHeldThingStackSize + 10 > Props.maxOutputStackSize,
+              
                 icon = plus
             };
         }
