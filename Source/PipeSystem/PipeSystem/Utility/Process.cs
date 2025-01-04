@@ -14,7 +14,7 @@ namespace PipeSystem
         private ThingWithComps parent;                          // Parent thing
         private ProcessDef def;                                 // Process def
         private int tickLeft;                                   // Ticks left before produce
-        private bool pickUpReady;                               // Is it ready to pick-up
+        public bool pickUpReady;                               // Is it ready to pick-up
         private float progress;                                 // Progress percent
 
         private bool suspended;                                 // Is process suspended

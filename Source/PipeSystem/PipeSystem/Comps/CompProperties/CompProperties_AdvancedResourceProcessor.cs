@@ -37,7 +37,9 @@ namespace PipeSystem
         public int ticksToFill = 200;
         // Heat push
         public bool heatPushWhileWorking = false;
-       
+        // Image changing
+        public string inProgressTexture;
+        public string finishedTexture;
 
         /// <summary>
         /// Config errors handling. Empty processes? Null translation key? Missing comps?

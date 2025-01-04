@@ -45,6 +45,10 @@ namespace PipeSystem
         private List<FloatMenuOption> settingsOptions;          // List of settings
         internal bool outputOnGround = false;                   // Should output on ground
 
+        public Graphic_Single cachedProgressGraphic = null;
+        public Graphic_Single cachedFinishedGraphic = null;
+
+
         public CompProperties_AdvancedResourceProcessor Props => (CompProperties_AdvancedResourceProcessor)props;
 
         /// <summary>
@@ -268,6 +272,15 @@ namespace PipeSystem
                 itemDrawPos.y += 4f / 74f;
                 itemDrawPos += Props.resultItemOffset;
             }
+            if (Props.inProgressTexture != "")
+            {
+                LongEventHandler.ExecuteWhenFinished(delegate { StoreProgressGraphics(); });
+            }
+            if (Props.finishedTexture != "")
+            {
+                LongEventHandler.ExecuteWhenFinished(delegate { StoreFinishGraphics(); });
+            }
+
             // Post spawn setup processes
             foreach (var process in processStack)
             {
@@ -275,6 +288,21 @@ namespace PipeSystem
             }
 
             shouldProduceWastePack = Props.processes.Any(p => p.wastePackToProduce > 0) && ModsConfig.BiotechActive;
+        }
+
+        public void StoreProgressGraphics()
+        {
+            
+            cachedProgressGraphic = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(Props.inProgressTexture, ShaderDatabase.Cutout,
+                     this.parent.def.graphicData.drawSize, this.parent.def.graphicData.color);
+
+        }
+        public void StoreFinishGraphics()
+        {
+
+            cachedFinishedGraphic = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(Props.finishedTexture, ShaderDatabase.Cutout,
+                     this.parent.def.graphicData.drawSize, this.parent.def.graphicData.color);
+
         }
 
         /// <summary>
@@ -368,7 +396,36 @@ namespace PipeSystem
                 fillableBarRequest.filledMat = BarFilledMat;
                 GenDraw.DrawFillableBar(fillableBarRequest);
             }
+            if (Props.inProgressTexture != "")
+            {
+                if (cachedProgressGraphic != null && Process.Progress >0&& Process.Progress<1) {
+                    var vector = parent.DrawPos + Altitudes.AltIncVect;
+
+                    vector.y += Altitudes.AltInc;
+
+
+                    cachedProgressGraphic.DrawFromDef(vector, Rot4.North, null);
+
+                }
+
+            }
+            if (Props.finishedTexture != "")
+            {
+                if (cachedFinishedGraphic != null && Process.pickUpReady)
+                {
+                    var vector = parent.DrawPos + Altitudes.AltIncVect;
+
+                    vector.y += Altitudes.AltInc;
+
+
+                    cachedFinishedGraphic.DrawFromDef(vector, Rot4.North, null);
+
+                }
+
+            }
         }
+
+      
 
         /// <summary>
         /// Add debug gizmos

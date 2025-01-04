@@ -35,14 +35,18 @@ namespace PipeSystem
                 {
                     
                     var outThing = outThings[0];
-                    comp.Process.HandleIngredientsAndQuality(outThing);
+                    comp.Process?.HandleIngredientsAndQuality(outThing);
                     
                     var currentPriority = StoreUtility.CurrentStoragePriorityOf(outThing);
                     if (StoreUtility.TryFindBestBetterStoreCellFor(outThing, pawn, Map, currentPriority, pawn.Faction, out var foundCell))
                     {
-                        job.SetTarget(TargetIndex.C, foundCell);
-                        job.SetTarget(TargetIndex.B, outThing);
-                        job.count = outThing.stackCount;
+                        if (foundCell != IntVec3.Invalid)
+                        {
+                            job.SetTarget(TargetIndex.C, foundCell);
+                            job.SetTarget(TargetIndex.B, outThing);
+                            job.count = outThing.stackCount;
+                        }
+                        
                     }
                     else
                     {
