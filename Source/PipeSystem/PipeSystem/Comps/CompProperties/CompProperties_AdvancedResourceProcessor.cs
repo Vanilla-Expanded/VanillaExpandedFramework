@@ -38,8 +38,8 @@ namespace PipeSystem
         // Heat push
         public bool heatPushWhileWorking = false;
         // Image changing
-        public string inProgressTexture;
-        public string finishedTexture;
+        public string inProgressTexture="";
+        public string finishedTexture="";
 
         /// <summary>
         /// Config errors handling. Empty processes? Null translation key? Missing comps?

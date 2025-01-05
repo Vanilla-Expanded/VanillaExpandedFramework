@@ -60,9 +60,13 @@ namespace PipeSystem
             var needed = wantedCount - count;
             if (thing.stackCount > needed)
             {
-                var taken = thing.SplitOff(needed);
-                count += taken.stackCount;
-                taken.Destroy();
+                if (needed != 0)
+                {
+                    var taken = thing.SplitOff(needed);
+                    count += taken.stackCount;
+                    taken.Destroy();
+                }
+                
             }
             else
             {
@@ -99,7 +103,12 @@ namespace PipeSystem
 
         public override string ToString()
         {
-            return $"Owner ({ThingDef?.defName} {PipeNetDef?.defName}): {count}/{wantedCount}";
+            return $"Owner ({ThingDef?.defName} {PipeNetDef?.defName} {ThingCategoryDef?.defName}): {count}/{wantedCount}";
+        }
+
+        public string ToStringHumanReadable()
+        {
+            return $"({ThingDef?.LabelCap} {PipeNetDef?.LabelCap} {ThingCategoryDef?.LabelCap}): {count}/{wantedCount}";
         }
     }
 }

@@ -74,4 +74,6 @@
   <PipeSystem_NoProcess>No current process</PipeSystem_NoProcess>
   <PipeSystem_NoProcessAvailable>No process available</PipeSystem_NoProcessAvailable>
   <PipeSystem_Product>Product</PipeSystem_Product>
+  <PipeSystem_ProgressInInfobox>{0}: {1}</PipeSystem_ProgressInInfobox>
+  <PipeSystem_MissingInputIngredients>Missing inputs: {0}</PipeSystem_MissingInputIngredients>
 </LanguageData>

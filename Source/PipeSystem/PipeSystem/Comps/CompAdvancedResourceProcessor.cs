@@ -459,6 +459,25 @@ namespace PipeSystem
             if (process == null) return null;
 
             var sb = new StringBuilder();
+
+            if (!process.Def.hideProgressInInfobox)
+            {
+                sb.AppendLine("PipeSystem_ProgressInInfobox".Translate(process.Def.label, process.Progress.ToStringPercent()));
+            }
+
+            if (process.MissingIngredients)
+            {
+                string requirements = "";
+                for (int i = 0; i < process.IngredientsOwners.Count; i++)
+                {
+                    if (process.IngredientsOwners[i].Require)
+                    {
+                        requirements += process.IngredientsOwners[i].ToStringHumanReadable();
+                    }
+                }
+                sb.AppendLine("PipeSystem_MissingInputIngredients".Translate(requirements));
+            }
+
             if (process.RuinedByTemp)
                 sb.AppendLine("RuinedByTemperature".Translate());
 

@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ItemProcessor;
 using RimWorld;
+using Unity.Jobs;
 using UnityEngine;
 using Verse;
+using Verse.AI;
 using Verse.Sound;
+using static PipeSystem.ProcessDef;
 
 namespace PipeSystem
 {
@@ -283,7 +287,16 @@ namespace PipeSystem
                     owner.AddFromNet(associatedComp.PipeNet);
                 }
                 // Set awaiting
-                advancedProcessorsManager.SetAwaitingIngredients(advancedProcessor);
+                if (!Def.autoGrabFromHoppers)
+                {
+                    advancedProcessorsManager.SetAwaitingIngredients(advancedProcessor);
+                }
+                else
+                {
+                    CheckInputSlots(ingredientsOwners[i]);
+
+                }
+                
             }
             // Continue only if we have all ingredients
             if (MissingIngredients)
@@ -310,6 +323,42 @@ namespace PipeSystem
                 }
             }
         }
+
+        public void CheckInputSlots(ThingAndResourceOwner ingredientsOwner)
+        {
+            foreach(IntVec3 slot in Def.autoInputSlots)          
+            {
+                List<Thing> thingList = (parent.Position + slot.RotatedBy(parent.Rotation)).GetThingList(parent.Map);
+                for (int j = 0; j < thingList.Count; j++)
+                {
+                    Thing thingToCheck = thingList[j];
+                    
+                    foreach (ProcessDef.Ingredient ingredient in Def.ingredients)
+                    {
+                        if (ingredient.thingCategory != null)
+                        {
+                            if (thingToCheck.def.IsWithinCategory(ingredient.thingCategory))
+                            {
+                                ingredientsOwner.BeingFilled = true;
+                                advancedProcessorsManager.AddIngredient(advancedProcessor, thingToCheck);
+                            }
+                        }
+                        else
+                        {
+                            if (thingToCheck.def== ingredient.thing)
+                            {
+                                ingredientsOwner.BeingFilled = true;
+                                advancedProcessorsManager.AddIngredient(advancedProcessor, thingToCheck);
+                            }
+
+                        }
+
+                    }
+                 
+                }
+            }
+        }
+
 
         /// <summary>
         /// Get comps and general setup that happen after each reload

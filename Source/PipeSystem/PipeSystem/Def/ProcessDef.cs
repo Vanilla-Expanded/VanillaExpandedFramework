@@ -22,6 +22,8 @@ namespace PipeSystem
         public Color finishedColor = new Color(0.9f, 0.85f, 0.2f);      // Bar color when finished
         public Color lowProgressColor = new Color(0.4f, 0.27f, 0.22f);  // Bar color low progress
 
+        public bool autoGrabFromHoppers = false;
+        public List<IntVec3> autoInputSlots = null;
         public bool autoExtract = true;                                 // Auto extract
         public bool manualExtractAllowNet = true;                       // When pawn manually extract, result will try to go in net first
         public int extractTicks = 800;                                  // Manual extract ticks needed
@@ -39,8 +41,10 @@ namespace PipeSystem
         public bool stopAtQuality = false;
         public QualityCategory quality = QualityCategory.Normal;
 
+        public bool hideProgressInInfobox = false;
+
         /// <summary>
-        /// Ingredient: can be pipeNet or thingDef and a count
+        /// Ingredient: can be pipeNet or thingDef and a count, or a category
         /// </summary>
         public class Ingredient
         {
