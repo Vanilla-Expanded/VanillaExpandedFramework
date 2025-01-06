@@ -60,6 +60,8 @@ namespace VanillaGenesExpanded
         public static HashSet<GeneDef> hidden_genes = new HashSet<GeneDef>();
         // A list of pawns with pregnancy speed modifiers
         public static IDictionary<Thing, float> pregnancySpeedFactor_gene_pawns = new Dictionary<Thing, float>();
+        // A list of pawns with swapped gender genes
+        public static HashSet<Pawn> swappedgender_gene_pawns = new HashSet<Pawn>();
 
 
         public static void AddMeatGenePawnToList(Thing thing, ThingDef thingDef)
@@ -311,6 +313,17 @@ namespace VanillaGenesExpanded
             }
 
         }
+
+        public static void AddSwappedGenderGenePawnToList(Pawn pawn)
+        {
+
+            if (!swappedgender_gene_pawns.Contains(pawn))
+            {
+                swappedgender_gene_pawns.Add(pawn);
+            }
+        }
+
+      
 
         public static void AddSkillRecreationGenePawnToList(Thing thing, SkillDef skill)
         {

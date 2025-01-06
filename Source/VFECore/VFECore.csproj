@@ -466,6 +466,7 @@
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_StageByHealth.cs" />
     <Compile Include="Genes\Harmony\Hediff_Shambler_PostMake.cs" />
     <Compile Include="Genes\Harmony\MutantUtility_SetPawnAsMutantInstantly.cs" />
+    <Compile Include="Genes\Harmony\PawnGenerator_GeneratePawnRelations.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompBouncingArrow.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompExplosive_Shells.cs" />
     <Compile Include="DefModExtensions\HeadExtension.cs" />
@@ -578,7 +579,7 @@
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_Outdoors.cs" />
     <Compile Include="Genes\Gene Classes\GeneGendered.cs" />
     <Compile Include="Genes\Harmony\GeneUIUtility_DrawGene_Patch.cs" />
-    <Compile Include="Genes\Harmony\GeneUtils.cs" />
+    <Compile Include="Genes\Utils\GeneUtils.cs" />
     <Compile Include="Genes\Harmony\Patch_FoodCapacity.cs" />
     <Compile Include="Genes\Harmony\Patch_HealthScale.cs" />
     <Compile Include="Genes\Harmony\HediffComp_Immunizable_SeverityFactorFromHediffs.cs" />

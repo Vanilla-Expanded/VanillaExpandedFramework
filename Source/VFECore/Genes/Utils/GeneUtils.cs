@@ -26,6 +26,7 @@ namespace VanillaGenesExpanded
                         {
                             gene.pawn.story.bodyType = BodyTypeDefOf.Female;
                         }
+                        StaticCollectionsClass.AddSwappedGenderGenePawnToList(gene.pawn);
                     }
                     if (extension.forceMale == true)
                     {
@@ -34,6 +35,7 @@ namespace VanillaGenesExpanded
                         {
                             gene.pawn.story.bodyType = BodyTypeDefOf.Male;
                         }
+                        StaticCollectionsClass.AddSwappedGenderGenePawnToList(gene.pawn);
                     }
 
                     if (extension.forcedBodyType != null && gene.pawn.DevelopmentalStage.Adult())
@@ -147,6 +149,7 @@ namespace VanillaGenesExpanded
                 GeneExtension extension = gene.def.GetModExtension<GeneExtension>();
                 if (extension != null)
                 {
+                   
                     if (extension.customBloodThingDef != null)
                     {
                         StaticCollectionsClass.RemoveBloodtypeGenePawnFromList(gene.pawn);
