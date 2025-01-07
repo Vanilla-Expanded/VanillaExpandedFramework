@@ -11,7 +11,6 @@
 		<showIfUndefined>false</showIfUndefined>
 		<displayPriorityInCategory>70</displayPriorityInCategory>
 	</StatDef>
-
 	<StatDef>
 		<defName>VEF_VerbRangeFactor</defName>
 		<label>weapon range factor</label>
@@ -25,7 +24,6 @@
 		<toStringStyleUnfinalized>FloatOne</toStringStyleUnfinalized>
 		<displayPriorityInCategory>4050</displayPriorityInCategory>
 	</StatDef>
-
 	<StatDef>
 		<defName>VEF_VerbCooldownFactor</defName>
 		<label>ranged weapon cooldown factor</label>
@@ -39,7 +37,6 @@
 		<toStringStyleUnfinalized>FloatOne</toStringStyleUnfinalized>
 		<displayPriorityInCategory>4050</displayPriorityInCategory>
 	</StatDef>
-
 	<StatDef>
 		<defName>VEF_EnergyShieldEnergyMaxOffset</defName>
 		<label>Shield max energy offset</label>
@@ -51,7 +48,6 @@
 		<hideAtValue>0</hideAtValue>
 		<displayPriorityInCategory>4050</displayPriorityInCategory>
 	</StatDef>
-
 	<StatDef>
 		<defName>VEF_EnergyShieldEnergyMaxFactor</defName>
 		<label>Shield max energy factor</label>
@@ -63,8 +59,6 @@
 		<toStringStyle>PercentZero</toStringStyle>
 		<displayPriorityInCategory>4050</displayPriorityInCategory>
 	</StatDef>
-
-
 	<StatDef>
 		<defName>VEF_EnergyShieldEnergyMaxApparel</defName>
 		<label>shield max energy</label>
@@ -86,7 +80,6 @@
 			</li>
 		</parts>
 	</StatDef>
-
 	<StatDef>
 		<defName>VEF_EnergyShieldRechargeRateApparel</defName>
 		<label>shield recharge rate</label>
@@ -110,7 +103,6 @@
 			</li>
 		</parts>
 	</StatDef>
-
 	<StatDef>
 		<defName>VEF_EnergyShieldRadiusApparel</defName>
 		<label>shield radius</label>
@@ -134,7 +126,6 @@
 			</li>
 		</parts>
 	</StatDef>
-
 	<StatDef>
 		<defName>VEF_EnergyShieldEnergyMaxPawn</defName>
 		<label>shield max energy</label>
@@ -144,7 +135,6 @@
 		<toStringStyle>PercentZero</toStringStyle>
 		<showIfUndefined>false</showIfUndefined>
 	</StatDef>
-
 	<StatDef>
 		<defName>VEF_EnergyShieldRechargeRatePawn</defName>
 		<label>shield recharge rate</label>
@@ -156,7 +146,6 @@
 		<formatString>{0}/s</formatString>
 		<showIfUndefined>false</showIfUndefined>
 	</StatDef>
-
 	<StatDef>
 		<defName>VEF_EnergyShieldRadiusPawn</defName>
 		<label>shield radius</label>
@@ -168,7 +157,6 @@
 		<formatString>{0} c</formatString>
 		<showIfUndefined>false</showIfUndefined>
 	</StatDef>
-
 	<StatDef>
 		<defName>VEF_MeleeAttackSpeedFactor</defName>
 		<label>melee attack speed factor</label>
@@ -180,7 +168,6 @@
 		<toStringStyle>PercentZero</toStringStyle>
 		<displayPriorityInCategory>3400</displayPriorityInCategory>
 	</StatDef>
-
 	<StatDef>
 		<defName>VEF_RangeAttackSpeedFactor</defName>
 		<label>range attack speed factor</label>
@@ -192,7 +179,6 @@
 		<toStringStyle>PercentZero</toStringStyle>
 		<displayPriorityInCategory>3400</displayPriorityInCategory>
 	</StatDef>
-
 	<StatDef>
 		<defName>VEF_MeleeAttackDamageFactor</defName>
 		<label>melee attack damage factor</label>
@@ -204,7 +190,6 @@
 		<toStringStyle>PercentZero</toStringStyle>
 		<displayPriorityInCategory>3400</displayPriorityInCategory>
 	</StatDef>
-
 	<StatDef>
 		<defName>VEF_RangeAttackDamageFactor</defName>
 		<label>range attack damage factor</label>
@@ -216,13 +201,11 @@
 		<toStringStyle>PercentZero</toStringStyle>
 		<displayPriorityInCategory>3400</displayPriorityInCategory>
 	</StatDef>
-
 	<StatCategoryDef>
 		<defName>VFE_EquippedStatFactors</defName>
 		<label>Factors when equipped</label>
 		<displayOrder>71</displayOrder>
 	</StatCategoryDef>
-
 	<StatDef>
 		<!--  -->
 		<defName>VEF_FoodCapacityMultiplier</defName>
@@ -234,7 +217,6 @@
 		<defaultBaseValue>1.0</defaultBaseValue>
 		<minValue>-99</minValue>
 	</StatDef>
-
 	<StatDef>
 		<defName>VEF_GrowthPointMultiplier</defName>
 		<label>growth point multiplier</label>
@@ -245,13 +227,10 @@
 		<defaultBaseValue>1.0</defaultBaseValue>
 		<minValue>0</minValue>
 	</StatDef>
-
 	<!-- Rendering -->
-
 	<!--These are hidden StatDefs used to modify the size of any pawn. Note that size has a falloff upwards,
 		while downwards will 'chibify' the character.
 		As of writing 2024-02-08 does NOT affect animals, but we could if we want.-->
-
 	<StatDef>
 		<!-- Used to modify a pawn based on their current size.
 					E.g. +1 for a size 1.0 human would rougly double size. +1 for a size 4 Thumbo would increase it by ~25%-->
@@ -316,7 +295,6 @@
 		<defaultBaseValue>0.0</defaultBaseValue>
 		<minValue>-99</minValue>
 	</StatDef>
-	
 	<StatDef>
 		<defName>VEF_MassCarryCapacity</defName>
 		<label>Mass carry capacity</label>
@@ -339,5 +317,19 @@
 				<factorLegendary>2</factorLegendary>
 			</li>
 		</parts>
+	</StatDef>
+	<StatDef>
+		<defName>VEF_MTBLovinFactor</defName>
+		<label>MTB Lovin Factor</label>
+		<description>A factor of the mean time between (MTB) this person looking for some lovin'.</description>
+		<category>BasicsPawn</category>
+		<defaultBaseValue>1</defaultBaseValue>
+		<minValue>0</minValue>
+		<toStringStyle>PercentZero</toStringStyle>
+		<showOnHumanlikes>true</showOnHumanlikes>
+		<showOnAnimals>false</showOnAnimals>
+		<showOnMechanoids>false</showOnMechanoids>
+		<showOnEntities>false</showOnEntities>
+		<showDevelopmentalStageFilter>Adult</showDevelopmentalStageFilter>
 	</StatDef>
 </Defs>

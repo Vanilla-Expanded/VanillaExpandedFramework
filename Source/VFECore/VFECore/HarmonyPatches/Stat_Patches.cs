@@ -97,4 +97,21 @@ namespace VFECore
         }
     }
 
+    [HarmonyPatch(typeof(JobDriver_Lovin))]
+    [HarmonyPatch("GenerateRandomMinTicksToNextLovin")]
+    public static class VFECore_JobDriver_Lovin_GenerateRandomMinTicksToNextLovin_Patch
+    {
+        [HarmonyPostfix]
+        public static void ModifyMTB(ref int __result, Pawn pawn)
+        {
+
+            
+                __result = (int)(__result * pawn.GetStatValue(VFEDefOf.VEF_MTBLovinFactor));
+            
+
+
+
+        }
+    }
+
 }
