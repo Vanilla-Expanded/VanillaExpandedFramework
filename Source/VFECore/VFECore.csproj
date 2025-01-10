@@ -438,6 +438,7 @@
     <Compile Include="ActiveTerrain\Patches.cs" />
     <Compile Include="ActiveTerrain\SpecialTerrain.cs" />
     <Compile Include="ActiveTerrain\SpecialTerrainList.cs" />
+    <Compile Include="ActiveTerrain\Comps\TerrainComp_FireSpreader.cs" />
     <Compile Include="ActiveTerrain\ThingComps.cs" />
     <Compile Include="AestheticScaling\PawnDataCache.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompAttachEffecter.cs" />

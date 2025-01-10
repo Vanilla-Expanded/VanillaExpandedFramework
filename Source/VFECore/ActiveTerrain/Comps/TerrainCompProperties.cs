@@ -58,4 +58,15 @@ namespace VFECore
 
         public bool powered = true;
     }
+    public class TerrainCompProperties_FireSpreader : TerrainCompProperties
+    {
+        public TerrainCompProperties_FireSpreader()
+        {
+            compClass = typeof(TerrainComp_FireSpreader);
+        }
+
+        public int spreadTimer;
+
+      
+    }
 }
