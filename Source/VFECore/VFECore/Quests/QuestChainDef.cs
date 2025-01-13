@@ -24,6 +24,40 @@ namespace VFECore
         }
     }
 
+    public class CompletedQuestInfo : IExposable
+    {
+        public int tickCompleted;
+        public QuestScriptDef quest;
+        public bool succeeded;
+
+        public void ExposeData()
+        {
+            Scribe_Defs.Look(ref quest, "quest");
+            Scribe_Values.Look(ref tickCompleted, "tickCompleted");
+            Scribe_Values.Look(ref succeeded, "succeeded");
+        }
+    }
+    public class QuestChains : GameComponent
+    {
+        public List<CompletedQuestInfo> finishedQuests = new List<CompletedQuestInfo>();
+
+        public override void GameComponentTick()
+        {
+            base.GameComponentTick();
+
+        }
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Collections.Look(ref finishedQuests, "finishedQuests", LookMode.Deep);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                finishedQuests ??= new List<CompletedQuestInfo>();
+            }
+        }
+    }
+
     public class QuestChainExtension : DefModExtension
     {
         public QuestChainDef questChainDef;
