@@ -238,6 +238,36 @@ namespace PipeSystem
         }
 
         /// <summary>
+        /// Only used for the glower at the moment
+        /// </summary>
+        public void Notify_Started()
+        {
+            Notify_Glower();
+
+        }
+
+        /// <summary>
+        /// Only used for the glower at the moment
+        /// </summary>
+        public void Notify_Ended()
+        {
+            Notify_Glower();
+
+        }
+
+        /// <summary>
+        /// Toggle CompGlowerOnProcess on or off
+        /// </summary>
+        public void Notify_Glower()
+        {
+            CompGlowerOnProcess compGlower = advancedProcessor.parent.TryGetComp<CompGlowerOnProcess>();
+            compGlower?.UpdateLit(advancedProcessor.parent.Map);
+
+        }
+
+
+
+        /// <summary>
         /// Manage the temperature ruining mechanic
         /// </summary>
         /// <param name="ticks">Number of ticks that passed</param>
@@ -357,6 +387,10 @@ namespace PipeSystem
                  
                 }
             }
+            if (!ingredientsOwner.Require)
+            {
+                Notify_Started();
+            }
         }
 
 
@@ -472,7 +506,9 @@ namespace PipeSystem
                     }
                 }
             }
+           
             ResetProcess();
+            Notify_Ended();
         }
 
         /// <summary>
