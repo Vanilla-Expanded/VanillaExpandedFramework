@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using LudeonTK;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -359,5 +360,141 @@ namespace VFECore
         public FloatRange daysUntilGrantAgainOnFailure;
         public bool grantAgainOnExpiry;
         public FloatRange daysUntilGrantAgainOnExpiry;
+    }
+
+    public class QuestChainsDevWindow : Window
+    {
+        private Vector2 scrollPosition = Vector2.zero;
+        private float lastHeight;
+
+        public override Vector2 InitialSize => new Vector2(800f, 600f);
+
+        [DebugAction("General", null, false, false, false, false, 0, false, allowedGameStates 
+            = AllowedGameStates.PlayingOnMap, requiresIdeology = true, displayPriority = 1000)]
+        public static void ViewQuestChains()
+        {
+            Find.WindowStack.Add(new QuestChainsDevWindow());
+        }
+
+        public QuestChainsDevWindow()
+        {
+            this.doCloseX = true;
+            this.draggable = true;
+            this.resizeable = true;
+        }
+
+        public override void DoWindowContents(Rect inRect)
+        {
+            QuestChains questChains = Current.Game.GetComponent<QuestChains>();
+            if (questChains == null)
+            {
+                Widgets.Label(inRect, "Quest Chains component not found.");
+                return;
+            }
+
+            Listing_Standard listing = new Listing_Standard();
+            Rect viewRect = new Rect(inRect.x, inRect.y, inRect.width - 20f, lastHeight);
+            Widgets.BeginScrollView(inRect, ref scrollPosition, viewRect);
+            listing.Begin(viewRect);
+
+            // Active Quests
+            listing.Label("Active Quests:");
+            foreach (QuestInfo questInfo in questChains.quests)
+            {
+                if (questInfo.quest != null && questInfo.quest.State == QuestState.Ongoing)
+                {
+                    DrawQuestInfo(listing, questInfo);
+                }
+            }
+
+            // Future Quests
+            listing.GapLine();
+            listing.Label("Future Quests:");
+            foreach (FutureQuestInfo futureQuestInfo in questChains.futureQuests)
+            {
+                DrawFutureQuestInfo(listing, futureQuestInfo);
+            }
+
+            // Completed/Expired Quests
+            listing.GapLine();
+            listing.Label("Completed/Expired Quests:");
+            foreach (QuestInfo questInfo in questChains.quests)
+            {
+                if (questInfo.quest != null && questInfo.quest.State != QuestState.Ongoing)
+                {
+                    DrawQuestInfo(listing, questInfo);
+                }
+            }
+
+            listing.End();
+            lastHeight = listing.CurHeight;
+            Widgets.EndScrollView();
+        }
+
+        private void DrawQuestInfo(Listing_Standard listing, QuestInfo questInfo)
+        {
+            QuestScriptDef questDef = questInfo.questDef;
+            QuestChainExtension ext = questDef.GetModExtension<QuestChainExtension>();
+
+            listing.Label("- " + questDef.label + " (Chain: " + (ext?.questChainDef.label ?? "None") + ")");
+
+            if (questInfo.quest.State == QuestState.Ongoing)
+            {
+                if (listing.ButtonText("Force Success"))
+                {
+                    questInfo.quest.End(QuestEndOutcome.Success, false);
+                }
+                if (listing.ButtonText("Force Fail"))
+                {
+                    questInfo.quest.End(QuestEndOutcome.Fail, false);
+                }
+            }
+
+            listing.Label("  - State: " + questInfo.quest.State);
+            listing.Label("  - Outcome: " + questInfo.outcome);
+
+            if (questInfo.tickAccepted > 0)
+            {
+                listing.Label("  - Accepted: " + GenDate.DateFullStringAt(GenDate.TickGameToAbs(questInfo.tickAccepted), default));
+            }
+
+            if (questInfo.tickCompleted > 0)
+            {
+                listing.Label("  - Completed: " + GenDate.DateFullStringAt(GenDate.TickGameToAbs(questInfo.tickCompleted), default));
+            }
+
+            if (questInfo.tickExpired > 0)
+            {
+                listing.Label("  - Expired: " + GenDate.DateFullStringAt(GenDate.TickGameToAbs(questInfo.tickExpired), default));
+            }
+        }
+
+        private void DrawFutureQuestInfo(Listing_Standard listing, FutureQuestInfo futureQuestInfo)
+        {
+            QuestScriptDef questDef = futureQuestInfo.questDef;
+            QuestChainExtension ext = questDef.GetModExtension<QuestChainExtension>();
+
+            listing.Label("- " + questDef.label + " (Chain: " + (ext?.questChainDef.label ?? "None") + ")");
+
+            if (futureQuestInfo.tickToFire > 0)
+            {
+                int ticksUntilFire = futureQuestInfo.tickToFire - Find.TickManager.TicksGame;
+                listing.Label("  - Fires in: " + GenDate.ToStringTicksToPeriod(ticksUntilFire) + " (at " + GenDate.DateFullStringAt(GenDate.TickGameToAbs(futureQuestInfo.tickToFire), default) + ")");
+            }
+            else if (futureQuestInfo.mtbDays > 0)
+            {
+                listing.Label("  - MTB: " + futureQuestInfo.mtbDays.ToString() + " days");
+            }
+
+            if (listing.ButtonText("Fire Now"))
+            {
+                Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(questDef, StorytellerUtility.DefaultThreatPointsNow(Find.World));
+                if (questDef.sendAvailableLetter)
+                {
+                    QuestUtility.SendLetterQuestAvailable(quest);
+                }
+                QuestChains.Instance.futureQuests.Remove(futureQuestInfo);
+            }
+        }
     }
 }
