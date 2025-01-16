@@ -111,9 +111,10 @@ namespace PipeSystem
                 }
             }
 
-            if (!owner.Require && awaitingIngredients.Contains(comp.parent))
+            if (!owner.Require && awaitingIngredients.Contains(comp.parent)) { 
                 awaitingIngredients.Remove(comp.parent);
-
+                comp.Process.Notify_Started();
+            }
             owner.BeingFilled = false;
         }
     }

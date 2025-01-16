@@ -37,6 +37,7 @@ namespace PipeSystem
         private List<FloatMenuOption> options;
         private AdvancedProcessorsManager advancedProcessorsManager;
         private CompAdvancedResourceProcessor advancedProcessor;
+        protected Sustainer workingSoundSustainer;
 
         public bool IsRunning => ShouldDoNow() && !MissingIngredients;
 
@@ -238,6 +239,72 @@ namespace PipeSystem
         }
 
         /// <summary>
+        /// Only used for the glower at the moment
+        /// </summary>
+        public void Notify_Started()
+        {
+            Notify_Glower();
+            if (def.sustainerWhenWorking && def.sustainerDef!=null)
+            {
+                Notify_StartWorkingSound();
+            }
+        }
+
+        /// <summary>
+        /// Only used for the glower at the moment
+        /// </summary>
+        public void Notify_Ended()
+        {
+            Notify_Glower();
+            if (def.sustainerWhenWorking && def.sustainerDef != null)
+            {
+                Notify_StopWorkingSound();
+            }
+
+        }
+
+        /// <summary>
+        /// Toggle CompGlowerOnProcess on or off
+        /// </summary>
+        public void Notify_Glower()
+        {
+            CompGlowerOnProcess compGlower = advancedProcessor.parent.TryGetComp<CompGlowerOnProcess>();
+            compGlower?.UpdateLit(advancedProcessor.parent.Map);
+
+        }
+
+        /// <summary>
+        /// Toggle sustainer on
+        /// </summary>
+        public void Notify_StartWorkingSound()
+        {
+            if(workingSoundSustainer is null)
+            {
+                SoundInfo info = SoundInfo.InMap(advancedProcessor.parent, MaintenanceType.PerTickRare);
+                workingSoundSustainer = def.sustainerDef.TrySpawnSustainer(info);
+            }
+           
+           
+
+        }
+        /// <summary>
+        /// Toggle sustainer off
+        /// </summary>
+        public void Notify_StopWorkingSound()
+        {
+           
+            if (workingSoundSustainer != null)
+            {
+                workingSoundSustainer.End();
+                workingSoundSustainer = null;
+            }
+          
+
+
+        }
+
+
+        /// <summary>
         /// Manage the temperature ruining mechanic
         /// </summary>
         /// <param name="ticks">Number of ticks that passed</param>
@@ -306,6 +373,11 @@ namespace PipeSystem
             {
                 TryRuin(ticks);
                 tickLeft -= ticks;
+                if (def.sustainerWhenWorking && workingSoundSustainer!=null)
+                {
+                    workingSoundSustainer.Maintain();
+                }
+
             }
             // Set progress (for the bar)
             progress = 1f - (tickLeft / (float)def.ticks);
@@ -356,6 +428,10 @@ namespace PipeSystem
                     }
                  
                 }
+            }
+            if (!ingredientsOwner.Require)
+            {
+                Notify_Started();
             }
         }
 
@@ -472,7 +548,9 @@ namespace PipeSystem
                     }
                 }
             }
+           
             ResetProcess();
+            Notify_Ended();
         }
 
         /// <summary>
