@@ -468,6 +468,13 @@
     <Compile Include="Genes\Harmony\Hediff_Shambler_PostMake.cs" />
     <Compile Include="Genes\Harmony\MutantUtility_SetPawnAsMutantInstantly.cs" />
     <Compile Include="Genes\Harmony\PawnGenerator_GeneratePawnRelations.cs" />
+    <Compile Include="VFECore\Quests\FutureQuestInfo.cs" />
+    <Compile Include="VFECore\Quests\GameComponent_QuestChains.cs" />
+    <Compile Include="VFECore\Quests\QuestChainExtension.cs" />
+    <Compile Include="VFECore\Quests\QuestChainsDevWindow.cs" />
+    <Compile Include="VFECore\Quests\QuestInfo.cs" />
+    <Compile Include="VFECore\Quests\QuestManager_Add_Patch.cs" />
+    <Compile Include="VFECore\Quests\Quest_CleanupQuestParts_Patch.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompBouncingArrow.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompExplosive_Shells.cs" />
     <Compile Include="DefModExtensions\HeadExtension.cs" />
