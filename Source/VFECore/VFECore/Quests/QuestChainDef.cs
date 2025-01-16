@@ -93,18 +93,40 @@ namespace VFECore
             Scribe_Defs.Look(ref questDef, "questDef");
         }
     }
+
+    [HarmonyPatch(typeof(QuestManager), "Add")]
+    public static class QuestManager_Add_Patch
+    {
+        public static void Postfix(Quest quest)
+        {
+            var extension = quest.root.GetModExtension<QuestChainExtension>();
+            if (extension != null)
+            {
+                QuestChains.Instance.quests.Add(new QuestInfo
+                {
+                    quest = quest,
+                    questDef = quest.root,
+                });
+            }
+        }
+    }
+
     [HarmonyPatch(typeof(Quest), "CleanupQuestParts")]
     public static class Quest_CleanupQuestParts_Patch
     {
         public static void Prefix(Quest __instance, QuestEndOutcome ___endOutcome)
         {
-            if (___endOutcome == QuestEndOutcome.Success || ___endOutcome == QuestEndOutcome.Fail)
+            var extension = __instance.root.GetModExtension<QuestChainExtension>();
+            if (extension != null)
             {
-                QuestChains.Instance.QuestCompleted(__instance, ___endOutcome);
-            }
-            else if (__instance.State == QuestState.EndedOfferExpired)
-            {
-                QuestChains.Instance.QuestExpired(__instance);
+                if (___endOutcome == QuestEndOutcome.Success || ___endOutcome == QuestEndOutcome.Fail)
+                {
+                    QuestChains.Instance.QuestCompleted(__instance, ___endOutcome);
+                }
+                else if (__instance.State == QuestState.EndedOfferExpired)
+                {
+                    QuestChains.Instance.QuestExpired(__instance);
+                }
             }
         }
     }
@@ -128,13 +150,6 @@ namespace VFECore
             base.GameComponentTick();
             if (Find.TickManager.TicksGame % 60 == 0)
             {
-                foreach (var quest in QuestsInChains)
-                {
-                    if (CanGrantQuest(quest))
-                    {
-
-                    }
-                }
                 for (int i = futureQuests.Count - 1; i >= 0; i--)
                 {
                     FutureQuestInfo futureQuest = futureQuests[i];
@@ -143,6 +158,26 @@ namespace VFECore
                         futureQuests.RemoveAt(i);
                     }
                 }
+            }
+        }
+
+        public override void LoadedGame()
+        {
+            base.LoadedGame();
+            TryScheduleQuests();
+        }
+
+        public override void StartedNewGame()
+        {
+            base.StartedNewGame();
+            TryScheduleQuests();
+        }
+
+        public void TryScheduleQuests()
+        {
+            foreach (var questDef in QuestsInChains)
+            {
+                TryScheduleQuest(questDef);
             }
         }
 
@@ -172,10 +207,8 @@ namespace VFECore
             {
                 TryGrantAgainOnFailure(quest.root);
             }
-            else if (CanGrantQuest(quest.root))
-            {
 
-            }
+            TryScheduleQuests();
         }
 
         public void QuestExpired(Quest quest)
@@ -186,6 +219,7 @@ namespace VFECore
                 entry.tickExpired = Find.TickManager.TicksGame;
             }
             TryGrantAgainOnExpiry(quest.root);
+            TryScheduleQuests();
         }
 
         public bool QuestIsCompletedAndSucceeded(QuestScriptDef quest)
@@ -198,80 +232,78 @@ namespace VFECore
             return quests.Any(x => x.questDef == quest && x.outcome == QuestEndOutcome.Fail);
         }
 
-        public bool CanGrantQuest(QuestScriptDef quest)
+        public bool TryScheduleQuest(QuestScriptDef quest)
         {
-            var extension = quest.GetModExtension<QuestChainExtension>();
-            if (extension == null)
+            var ext = quest.GetModExtension<QuestChainExtension>();
+            if (futureQuests.Any(x => x.questDef == quest))
             {
                 return false;
             }
 
-            if (extension.conditionMinDaysSinceStart > 0 && Find.TickManager.TicksGame
-                < (extension.conditionMinDaysSinceStart * 60000))
+            if (!ext.isRepeatable && quests.Any(x => x.questDef == quest))
             {
                 return false;
             }
 
-            if (extension.conditionEither != null && quests.Any(x => x.questDef == extension.conditionEither && x.tickAccepted > 0))
+            if (ext.conditionEither != null && quests.Any(x => x.questDef == ext.conditionEither && x.tickAccepted > 0))
             {
                 return false;
             }
 
-            if (extension.conditionSucceedQuests != null && extension.conditionSucceedQuests.NullOrEmpty() is false
-                && !extension.conditionSucceedQuests.All(QuestIsCompletedAndSucceeded))
+            if (ext.conditionSucceedQuests != null && ext.conditionSucceedQuests.NullOrEmpty() is false)
             {
-                return false;
-            }
-
-            if (extension.conditionFailQuests != null && extension.conditionFailQuests.NullOrEmpty() is false 
-                && !extension.conditionFailQuests.All(QuestIsCompletedAndFailed))
-            {
-                return false;
-            }
-
-            if (extension.conditionSucceedQuests != null && extension.conditionSucceedQuests.NullOrEmpty() is false 
-                && extension.ticksSinceSucceed != null)
-            {
-                foreach (QuestScriptDef successQuest in extension.conditionSucceedQuests)
+                if (ext.conditionSucceedQuests.All(QuestIsCompletedAndSucceeded) is false)
                 {
-                    var completedQuestInfo = quests.LastOrDefault(x => x.questDef == successQuest
-                    && x.outcome == QuestEndOutcome.Success);
-                    if (completedQuestInfo != null && (Find.TickManager.TicksGame - completedQuestInfo.tickCompleted) < extension.ticksSinceSucceed.min || (Find.TickManager.TicksGame - completedQuestInfo.tickCompleted) > extension.ticksSinceSucceed.max)
+                    return false;
+                }
+                else
+                {
+                    foreach (QuestScriptDef successQuest in ext.conditionSucceedQuests)
                     {
-                        return false;
+                        var completedQuestInfo = quests.LastOrDefault(x => x.questDef == successQuest
+                        && x.outcome == QuestEndOutcome.Success);
+                        if (completedQuestInfo != null && (Find.TickManager.TicksGame - completedQuestInfo.tickCompleted) < ext.ticksSinceSucceed.min || (Find.TickManager.TicksGame - completedQuestInfo.tickCompleted) > ext.ticksSinceSucceed.max)
+                        {
+                            return false;
+                        }
                     }
+                    ScheduleQuest(quest, Find.TickManager.TicksGame + ext.ticksSinceSucceed.RandomInRange);
+                    return true;
                 }
             }
 
-            if (extension.conditionFailQuests != null && extension.conditionFailQuests.NullOrEmpty() is false && extension.ticksSinceFail != null)
+            if (ext.conditionFailQuests != null && ext.conditionFailQuests.NullOrEmpty() is false)
             {
-                foreach (QuestScriptDef failQuest in extension.conditionFailQuests)
+                if (ext.conditionFailQuests.All(QuestIsCompletedAndFailed) is false)
                 {
-                    var completedQuestInfo = quests.LastOrDefault(x => x.questDef == failQuest && x.outcome == QuestEndOutcome.Fail);
-                    if (completedQuestInfo != null && (Find.TickManager.TicksGame - completedQuestInfo.tickCompleted) < extension.ticksSinceFail.min || (Find.TickManager.TicksGame - completedQuestInfo.tickCompleted) > extension.ticksSinceFail.max)
+                    return false;
+                }
+                else
+                {
+                    foreach (QuestScriptDef failQuest in ext.conditionFailQuests)
                     {
-                        return false;
+                        var completedQuestInfo = quests.LastOrDefault(x => x.questDef == failQuest && x.outcome == QuestEndOutcome.Fail);
+                        if (completedQuestInfo != null && (Find.TickManager.TicksGame - completedQuestInfo.tickCompleted) < ext.ticksSinceFail.min || (Find.TickManager.TicksGame - completedQuestInfo.tickCompleted) > ext.ticksSinceFail.max)
+                        {
+                            return false;
+                        }
                     }
+                    ScheduleQuest(quest, Find.TickManager.TicksGame + ext.ticksSinceFail.RandomInRange);
+                    return true;
                 }
             }
-            if (!extension.isRepeatable && quests.Any(x => x.questDef == quest) && futureQuests.Any(x => x.questDef == quest))
+
+            if (ext.isRepeatable)
             {
-                return false;
+                ScheduleQuest(quest, ext.mtbDaysRepeat);
+                return true;
             }
-            return true;
+            return false;
         }
 
         public bool TryGrantAgainOnFailure(QuestScriptDef quest)
         {
-            if (CanGrantQuest(quest) is false)
-            {
-                return false;
-            }
             var extension = quest.GetModExtension<QuestChainExtension>();
-            if (extension == null)
-            {
-                return false; //If no extension, never grant again on failure
-            }
             if (!extension.grantAgainOnFailure)
             {
                 return false;
@@ -282,15 +314,7 @@ namespace VFECore
 
         public bool TryGrantAgainOnExpiry(QuestScriptDef quest)
         {
-            if (CanGrantQuest(quest) is false)
-            {
-                return false;
-            }
             var extension = quest.GetModExtension<QuestChainExtension>();
-            if (extension == null)
-            {
-                return false; //If no extension, never grant again on expiry
-            }
             if (!extension.grantAgainOnExpiry)
             {
                 return false;
