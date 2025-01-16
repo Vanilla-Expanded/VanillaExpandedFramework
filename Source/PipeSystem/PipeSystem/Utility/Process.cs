@@ -37,6 +37,7 @@ namespace PipeSystem
         private List<FloatMenuOption> options;
         private AdvancedProcessorsManager advancedProcessorsManager;
         private CompAdvancedResourceProcessor advancedProcessor;
+        protected Sustainer workingSoundSustainer;
 
         public bool IsRunning => ShouldDoNow() && !MissingIngredients;
 
@@ -243,7 +244,10 @@ namespace PipeSystem
         public void Notify_Started()
         {
             Notify_Glower();
-
+            if (def.sustainerWhenWorking && def.sustainerDef!=null)
+            {
+                Notify_StartWorkingSound();
+            }
         }
 
         /// <summary>
@@ -252,6 +256,10 @@ namespace PipeSystem
         public void Notify_Ended()
         {
             Notify_Glower();
+            if (def.sustainerWhenWorking && def.sustainerDef != null)
+            {
+                Notify_StopWorkingSound();
+            }
 
         }
 
@@ -265,6 +273,35 @@ namespace PipeSystem
 
         }
 
+        /// <summary>
+        /// Toggle sustainer on
+        /// </summary>
+        public void Notify_StartWorkingSound()
+        {
+            if(workingSoundSustainer is null)
+            {
+                SoundInfo info = SoundInfo.InMap(advancedProcessor.parent, MaintenanceType.PerTickRare);
+                workingSoundSustainer = def.sustainerDef.TrySpawnSustainer(info);
+            }
+           
+           
+
+        }
+        /// <summary>
+        /// Toggle sustainer off
+        /// </summary>
+        public void Notify_StopWorkingSound()
+        {
+           
+            if (workingSoundSustainer != null)
+            {
+                workingSoundSustainer.End();
+                workingSoundSustainer = null;
+            }
+          
+
+
+        }
 
 
         /// <summary>
@@ -336,6 +373,11 @@ namespace PipeSystem
             {
                 TryRuin(ticks);
                 tickLeft -= ticks;
+                if (def.sustainerWhenWorking && workingSoundSustainer!=null)
+                {
+                    workingSoundSustainer.Maintain();
+                }
+
             }
             // Set progress (for the bar)
             progress = 1f - (tickLeft / (float)def.ticks);

@@ -43,6 +43,9 @@ namespace PipeSystem
 
         public bool hideProgressInInfobox = false;
 
+        public bool sustainerWhenWorking = false;
+        public SoundDef sustainerDef;
+
         /// <summary>
         /// Ingredient: can be pipeNet or thingDef and a count, or a category
         /// </summary>
