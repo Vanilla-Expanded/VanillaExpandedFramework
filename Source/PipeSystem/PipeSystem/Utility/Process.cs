@@ -154,12 +154,29 @@ namespace PipeSystem
         {
             this.parent = parent;
             def = processDef;
-            tickLeft = processDef.ticks;
+            tickLeft = def.isFactoryProcess ? (int)(GetFactoryAcceleration() * processDef.ticks) : processDef.ticks;
             progress = 0f;
             ruinedPercent = 0f;
             var map = parent.Map;
             id = $"Process_{parent.Map.uniqueID}_{def.defName}_{CachedAdvancedProcessorsManager.GetFor(map).ProcessIDsManager.GetNextProcessID(map)}";
             spawning = true;
+        }
+
+        /// <summary>
+        /// Accelerates or decelerates factory processes according to precepts
+        /// </summary>
+        public float GetFactoryAcceleration()
+        {
+            if (Current.Game.World.factionManager.OfPlayer.ideos.GetPrecept(PSDefOf.VME_AutomationEfficiency_Increased) != null)
+            {
+                return 0.75f;
+            }
+            if (Current.Game.World.factionManager.OfPlayer.ideos.GetPrecept(PSDefOf.VME_AutomationEfficiency_Decreased) != null)
+            {
+                return 1.5f;
+            }
+            return 1f;
+
         }
 
         /// <summary>
@@ -221,10 +238,10 @@ namespace PipeSystem
                     }
                     else
                     {
-                        ingredientsOwners.Add(new ThingAndResourceOwner(requirement.thing, requirement.pipeNet,(int)( requirement.countNeeded / requirement.thing.GetStatValueAbstract(StatDefOf.Nutrition)), requirement.thingCategory));
+                        ingredientsOwners.Add(new ThingAndResourceOwner(requirement.thing, requirement.pipeNet, (int)(requirement.countNeeded / requirement.thing.GetStatValueAbstract(StatDefOf.Nutrition)), requirement.thingCategory));
 
                     }
-                   
+
 
                 }
                 else
@@ -244,7 +261,7 @@ namespace PipeSystem
         public void Notify_Started()
         {
             Notify_Glower();
-            if (def.sustainerWhenWorking && def.sustainerDef!=null)
+            if (def.sustainerWhenWorking && def.sustainerDef != null)
             {
                 Notify_StartWorkingSound();
             }
@@ -278,13 +295,13 @@ namespace PipeSystem
         /// </summary>
         public void Notify_StartWorkingSound()
         {
-            if(workingSoundSustainer is null)
+            if (workingSoundSustainer is null)
             {
                 SoundInfo info = SoundInfo.InMap(advancedProcessor.parent, MaintenanceType.PerTickRare);
                 workingSoundSustainer = def.sustainerDef.TrySpawnSustainer(info);
             }
-           
-           
+
+
 
         }
         /// <summary>
@@ -292,13 +309,13 @@ namespace PipeSystem
         /// </summary>
         public void Notify_StopWorkingSound()
         {
-           
+
             if (workingSoundSustainer != null)
             {
                 workingSoundSustainer.End();
                 workingSoundSustainer = null;
             }
-          
+
 
 
         }
@@ -363,7 +380,7 @@ namespace PipeSystem
                     CheckInputSlots(ingredientsOwners[i]);
 
                 }
-                
+
             }
             // Continue only if we have all ingredients
             if (MissingIngredients)
@@ -373,7 +390,7 @@ namespace PipeSystem
             {
                 TryRuin(ticks);
                 tickLeft -= ticks;
-                if (def.sustainerWhenWorking && workingSoundSustainer!=null)
+                if (def.sustainerWhenWorking && workingSoundSustainer != null)
                 {
                     workingSoundSustainer.Maintain();
                 }
@@ -398,13 +415,13 @@ namespace PipeSystem
 
         public void CheckInputSlots(ThingAndResourceOwner ingredientsOwner)
         {
-            foreach(IntVec3 slot in Def.autoInputSlots)          
+            foreach (IntVec3 slot in Def.autoInputSlots)
             {
                 List<Thing> thingList = (parent.Position + slot.RotatedBy(parent.Rotation)).GetThingList(parent.Map);
                 for (int j = 0; j < thingList.Count; j++)
                 {
                     Thing thingToCheck = thingList[j];
-                    
+
                     foreach (ProcessDef.Ingredient ingredient in Def.ingredients)
                     {
                         if (ingredient.thingCategory != null)
@@ -417,7 +434,7 @@ namespace PipeSystem
                         }
                         else
                         {
-                            if (thingToCheck.def== ingredient.thing)
+                            if (thingToCheck.def == ingredient.thing)
                             {
                                 ingredientsOwner.BeingFilled = true;
                                 advancedProcessorsManager.AddIngredient(advancedProcessor, thingToCheck);
@@ -426,7 +443,7 @@ namespace PipeSystem
                         }
 
                     }
-                 
+
                 }
             }
             if (!ingredientsOwner.Require)
@@ -548,7 +565,7 @@ namespace PipeSystem
                     }
                 }
             }
-           
+
             ResetProcess();
             Notify_Ended();
         }
@@ -628,14 +645,14 @@ namespace PipeSystem
                     CompIngredients compingredients = outThing.TryGetComp<CompIngredients>();
                     if (Def.transfersIngredientList)
                     {
-                       
+
                         foreach (ThingDef ingredientInput in advancedProcessor.cachedIngredients)
                         {
-                          
+
                             if (!compingredients.ingredients.Contains(ingredientInput)) { compingredients.ingredients.Add(ingredientInput); }
                         }
                         advancedProcessor.cachedIngredients.Clear();
-                       
+
                     }
                     else
                     {
@@ -680,12 +697,13 @@ namespace PipeSystem
                     // Refund as item
                     else if (owner.ThingDef is ThingDef def)
                     {
-                        if (owner.Count > 0) {
+                        if (owner.Count > 0)
+                        {
                             var thing = ThingMaker.MakeThing(def);
                             thing.stackCount = owner.Count;
                             GenPlace.TryPlaceThing(thing, adjCells.RandomElement(), parent.Map, ThingPlaceMode.Near);
                         }
-                        
+
                     }
                     // Reset owner
                     owner.Reset();
@@ -797,7 +815,7 @@ namespace PipeSystem
             }
             GUI.color = color;
             // Process label
-            Widgets.Label(new Rect(28f, 0f, rect.width - 48f - 20f, rect.height + 5f), def.LabelCap + " ("+ def.ticks.ToStringTicksToDays() +")");
+            Widgets.Label(new Rect(28f, 0f, rect.width - 48f - 20f, rect.height + 5f), def.LabelCap + " (" + def.ticks.ToStringTicksToDays() + ")");
             // Config
             var baseRect = rect.AtZero();
             GUI.color = new Color(1f, 1f, 1f, 0.65f);
