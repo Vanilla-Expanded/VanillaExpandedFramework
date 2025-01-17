@@ -46,6 +46,8 @@ namespace PipeSystem
         public bool sustainerWhenWorking = false;
         public SoundDef sustainerDef;
 
+        public bool isFactoryProcess = false;
+
         /// <summary>
         /// Ingredient: can be pipeNet or thingDef and a count, or a category
         /// </summary>

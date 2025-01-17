@@ -13,5 +13,9 @@ namespace PipeSystem
 
         public static JobDef PS_PickUpProcessor;
         public static JobDef PS_BringToProcessor;
+        [MayRequire("VanillaExpanded.VMemesE")]
+        public static PreceptDef VME_AutomationEfficiency_Increased;
+        [MayRequire("VanillaExpanded.VMemesE")]
+        public static PreceptDef VME_AutomationEfficiency_Decreased;
     }
 }
