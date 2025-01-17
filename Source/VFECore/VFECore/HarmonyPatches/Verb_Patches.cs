@@ -9,6 +9,8 @@ using HarmonyLib;
 using VFEMech;
 using VFECore.Abilities;
 using Verse.AI;
+using System.Reflection.Emit;
+using System.Reflection;
 
 namespace VFECore
 {
@@ -226,4 +228,198 @@ namespace VFECore
         }
     }
 
+    [HarmonyPatch(typeof(CastPositionFinder), "TryFindCastPosition")]
+    public static class CastPositionFinder_TryFindCastPosition_Patch
+    {
+        public static void Prefix(ref CastPositionRequest newReq)
+        {
+            var meleeRangeOverride = newReq.verb?.EquipmentSource?.def.GetModExtension<ThingDefExtension>()?.meleeRangeOverride;
+            if (meleeRangeOverride != null)
+            {
+                newReq.maxRangeFromTarget = Mathf.Max(newReq.maxRangeFromTarget, meleeRangeOverride.Value);
+            }
+        }
+    }
+
+    [HarmonyPatch]
+    public static class Verb_TryFindShootLineFromTo_Patch
+    {
+        public static MethodBase TargetMethod()
+        {
+            var tryFindShootLineFromToMethod = AccessTools.Method(typeof(Verb), "TryFindShootLineFromTo");
+            return tryFindShootLineFromToMethod;
+        }
+
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            var codes = instructions.ToList();
+            var label = generator.DefineLabel();
+            for (var i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].opcode == OpCodes.Brtrue_S && codes[i - 1].Calls(AccessTools.Method(typeof(VerbProperties), "get_IsMeleeAttack")))
+                {
+                    codes[i + 1].labels.Add(label);
+                    yield return new CodeInstruction(OpCodes.Brfalse_S, label);
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Verb_TryFindShootLineFromTo_Patch), nameof(IsVanillaMeleeAttack)));
+                    yield return new CodeInstruction(OpCodes.Brtrue_S, codes[i].operand);
+                }
+                else
+                {
+                    yield return codes[i];
+                }
+            }
+        }
+
+        public static bool IsVanillaMeleeAttack(Verb verb)
+        {
+            if (verb.Caster is Pawn pawn && pawn.GetMeleeReachRange(verb) > ShootTuning.MeleeRange)
+            {
+                return false;
+            }
+            return true;
+        }
+    }
+
+    [HarmonyPatch]
+    public static class Toils_Combat_GotoCastPosition_Patch
+    {
+        public static MethodBase TargetMethod()
+        {
+            var gotoCastPositionMethod = typeof(Toils_Combat).GetNestedTypes(AccessTools.all).SelectMany(innerType => AccessTools.GetDeclaredMethods(innerType))
+                .FirstOrDefault(method => method.Name.Contains("<GotoCastPosition>") && method.ReturnType == typeof(void) && method.GetParameters().Length == 0);
+            return gotoCastPositionMethod;
+        }
+
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+            for (var i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].opcode == OpCodes.Ldc_R4 && codes[i].OperandIs(ShootTuning.MeleeRange))
+                {
+                    yield return new CodeInstruction(OpCodes.Ldloc_0);
+                    yield return new CodeInstruction(OpCodes.Ldloc_1);
+                    yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(Job), "verbToUse"));
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Toils_Combat_GotoCastPosition_Patch), nameof(GetMeleeReachRange)));
+                }
+                else
+                {
+                    yield return codes[i];
+                }
+            }
+        }
+
+        public static float GetMeleeReachRange(this Pawn caster, Verb verb)
+        {
+            var meleeRangeOverride = verb?.EquipmentSource?.def.GetModExtension<ThingDefExtension>()?.meleeRangeOverride;
+            if (meleeRangeOverride != null)
+            {
+                return meleeRangeOverride.Value;
+            }
+            return ShootTuning.MeleeRange;
+        }
+    }
+
+    [HarmonyPatch]
+    public static class Toils_Combat_FollowAndMeleeAttack_Patch
+    {
+        public static FieldInfo targetInd;
+
+        public static Pawn curPawn;
+
+        public static void Prefix(Toil ___followAndAttack)
+        {
+            curPawn = ___followAndAttack.actor;
+        }
+
+        public static void Postfix()
+        {
+            curPawn = null;
+        }
+
+        public static MethodBase TargetMethod()
+        {
+            foreach (var nested in typeof(Toils_Combat).GetNestedTypes(AccessTools.all))
+            {
+                foreach (var method in nested.GetMethods(AccessTools.all))
+                {
+                    if (method.Name.Contains("<FollowAndMeleeAttack>"))
+                    {
+                        targetInd = nested.GetField("targetInd");
+                        return method;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
+        {
+            foreach (var instruction in codeInstructions)
+            {
+                yield return instruction;
+                if (instruction.opcode == OpCodes.Stloc_S && instruction.operand is LocalBuilder localBuilder
+                    && localBuilder.LocalIndex == 6)
+                {
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Ldfld, targetInd);
+                    yield return new CodeInstruction(OpCodes.Ldloc_0);
+                    yield return new CodeInstruction(OpCodes.Ldloca_S, 5);
+                    yield return new CodeInstruction(OpCodes.Ldloca_S, 6);
+                    yield return new CodeInstruction(OpCodes.Call,
+                        AccessTools.Method(typeof(Toils_Combat_FollowAndMeleeAttack_Patch), "TryOverrideDestinationAndPathMode"));
+                }
+            }
+        }
+
+        public static void TryOverrideDestinationAndPathMode(TargetIndex targetInd, Pawn actor,
+            ref LocalTargetInfo destination, ref PathEndMode mode)
+        {
+            Job curJob = actor.jobs.curJob;
+            LocalTargetInfo target = curJob.GetTarget(targetInd);
+            Thing thing = target.Thing;
+            var verbToUse = actor.GetMeleeVerb();
+            var meleeReachRange = actor.GetMeleeReachRange(verbToUse);
+            if (meleeReachRange > ShootTuning.MeleeRange)
+            {
+                CastPositionRequest newReq = default(CastPositionRequest);
+                newReq.caster = actor;
+                newReq.target = thing;
+                newReq.verb = verbToUse;
+                newReq.maxRangeFromTarget = meleeReachRange;
+                newReq.wantCoverFromTarget = false;
+                if (!CastPositionFinder.TryFindCastPosition(newReq, out var dest))
+                {
+                    actor.jobs.EndCurrentJob(JobCondition.Incompletable);
+                }
+                else
+                {
+                    destination = dest;
+                    mode = PathEndMode.OnCell;
+                }
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(ReachabilityImmediate), nameof(ReachabilityImmediate.CanReachImmediate), new Type[] { typeof(IntVec3), typeof(LocalTargetInfo), typeof(Map), typeof(PathEndMode), typeof(Pawn) })]
+    public static class ReachabilityImmediate_CanReachImmediate_Patch
+    {
+        public static void Postfix(ref bool __result, IntVec3 start, LocalTargetInfo target, Map map, PathEndMode peMode, Pawn pawn)
+        {
+            if (__result is false && Toils_Combat_FollowAndMeleeAttack_Patch.curPawn != null)
+            {
+                var actor = Toils_Combat_FollowAndMeleeAttack_Patch.curPawn;
+                var verbToUse = actor.GetMeleeVerb();
+                var meleeReachRange = actor.GetMeleeReachRange(verbToUse);
+                var distance = target.Cell.DistanceTo(start);
+                __result = distance <= meleeReachRange && GenSight.LineOfSight(start, target.Cell, map);
+            }
+        }
+
+        public static Verb GetMeleeVerb(this Pawn pawn)
+        {
+            return pawn.jobs.curJob?.verbToUse ?? pawn.equipment?.PrimaryEq?.PrimaryVerb;
+        }
+    }
 }
