@@ -147,7 +147,7 @@ namespace VFECore
                 else
                 {
                     Log.Message($"[QuestChains] Scheduling quest: {quest.defName}, in {ext.ticksSinceSucceed.RandomInRange} ticks (conditionSucceedQuests)");
-                    ScheduleQuestInTicks(quest, Find.TickManager.TicksGame + ext.ticksSinceSucceed.RandomInRange);
+                    ScheduleQuestInTicks(quest, ext.ticksSinceSucceed.RandomInRange);
                     return true;
                 }
             }
@@ -162,7 +162,7 @@ namespace VFECore
                 else
                 {
                     Log.Message($"[QuestChains] Scheduling quest: {quest.defName}, in {ext.ticksSinceFail.RandomInRange} ticks (conditionFailQuests)");
-                    ScheduleQuestInTicks(quest, Find.TickManager.TicksGame + ext.ticksSinceFail.RandomInRange);
+                    ScheduleQuestInTicks(quest, ext.ticksSinceFail.RandomInRange);
                     return true;
                 }
             }
