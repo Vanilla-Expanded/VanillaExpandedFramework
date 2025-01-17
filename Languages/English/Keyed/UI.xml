@@ -38,5 +38,5 @@ If hired {0} die on duty, you will incur an additional 5% increase to contract p
   
     <VEF.DraftHuntLabel>Hunt</VEF.DraftHuntLabel>
     <VEF.HuntDescription>While this is on characters will automatically move to engage nearby targets.\n\nYou can right-click this button to toggle autofire for ALL abilities on the selected pawn.</VEF.HuntDescription>
-
+	<VEF.QuestChainTooltip>This quest is a part of a quest chain. Completing it may trigger continuation quests.\n\n{0}\n\n{1}</VEF.QuestChainTooltip>
 </LanguageData>

@@ -29,6 +29,7 @@ namespace VFECore
             }
 
             cachedWorker = (QuestChainWorker)Activator.CreateInstance(workerClass);
+            cachedWorker.def = this;
         }
 
         public QuestChainWorker Worker => cachedWorker;
@@ -36,7 +37,8 @@ namespace VFECore
 
     public class QuestChainWorker
     {
-        public virtual string GetDescription(QuestChainDef def)
+        public QuestChainDef def;
+        public virtual string GetDescription()
         {
             return def.description;
         }
