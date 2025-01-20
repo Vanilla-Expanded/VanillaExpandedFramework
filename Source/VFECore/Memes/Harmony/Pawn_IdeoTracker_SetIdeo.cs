@@ -12,9 +12,9 @@ namespace VanillaMemesExpanded
     public static class VanillaMemesExpanded_Pawn_IdeoTracker_SetIdeo_Patch
     {
         [HarmonyPostfix]
-        static void ForceTrait(Ideo ideo, Pawn ___pawn)
+        static void ForceTraitAndAbilities(Ideo ideo, Pawn ___pawn)
         {
-
+           
             if (ideo != null) {
 
                 foreach (MemeDef meme in ideo.memes)
