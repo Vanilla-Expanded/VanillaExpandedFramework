@@ -760,7 +760,7 @@ namespace VFECore
             }
             if (HostThing.Map != null)
             {
-                if ((GenHostility.AnyHostileActiveThreatTo(HostThing.Map, HostFaction)
+                if ((HostFaction != null && GenHostility.AnyHostileActiveThreatTo(HostThing.Map, HostFaction)
                     || HostThing.Map.listerThings.ThingsOfDef(VFEDefOf.Tornado).Any()
                     || HostThing.Map.listerThings.ThingsOfDef(RimWorld.ThingDefOf.DropPodIncoming).Any()) && shieldBuffer < 15)
                     shieldBuffer = 15;
