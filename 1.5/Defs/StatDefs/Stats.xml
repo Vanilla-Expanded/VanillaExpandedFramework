@@ -21,7 +21,7 @@
 		<hideAtValue>1</hideAtValue>
 		<minValue>0</minValue>
 		<toStringStyle>PercentOne</toStringStyle>
-		<toStringStyleUnfinalized>FloatOne</toStringStyleUnfinalized>
+		<toStringStyleUnfinalized>FloatTwo</toStringStyleUnfinalized>
 		<displayPriorityInCategory>4050</displayPriorityInCategory>
 	</StatDef>
 	<StatDef>
@@ -34,7 +34,7 @@
 		<hideAtValue>1</hideAtValue>
 		<minValue>0</minValue>
 		<toStringStyle>PercentOne</toStringStyle>
-		<toStringStyleUnfinalized>FloatOne</toStringStyleUnfinalized>
+		<toStringStyleUnfinalized>FloatTwo</toStringStyleUnfinalized>
 		<displayPriorityInCategory>4050</displayPriorityInCategory>
 	</StatDef>
 	<StatDef>
