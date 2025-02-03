@@ -88,6 +88,8 @@ namespace KCSG
 
         public List<StructOption> allowedStructures = new List<StructOption>();
         public List<string> centralBuildingTags = new List<string>();
+
+        public bool forceClean = false;
     }
 
     public class DefenseOptions

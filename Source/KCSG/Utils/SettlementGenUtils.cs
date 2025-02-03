@@ -4,6 +4,7 @@ using System.Linq;
 using RimWorld;
 using RimWorld.BaseGen;
 using Verse;
+using Verse.Noise;
 
 namespace KCSG
 {
@@ -628,8 +629,15 @@ namespace KCSG
                 // Generate center building
                 if (!sld.centerBuildings.centralBuildingTags.NullOrEmpty())
                 {
+
                     var layout = RandomUtils.RandomLayoutFrom(structuresTagsCache[sld.centerBuildings.centralBuildingTags.RandomElement()]);
                     var cellRect = CellRect.CenteredOn(rect.CenterCell, layout.sizes.x, layout.sizes.z);
+
+                    if (sld.centerBuildings.forceClean)
+                    {
+                        GenOption.GetAllMineableIn(cellRect, BaseGen.globalSettings.map);
+                        LayoutUtils.CleanRect(layout, BaseGen.globalSettings.map, cellRect, false);
+                    }
 
                     foreach (var cell in cellRect)
                         grid[cell.z][cell.x] = CellType.Used;
