@@ -31,7 +31,9 @@ namespace VanillaFurnitureExpanded
         {
             if (def.IsEdifice())
             {
-                return def.IsSmoothed || def.defName.ToLower().Contains("wall") || (def.graphicData?.linkFlags.HasFlag(LinkFlags.Wall) ?? false);
+                return def.IsSmoothed || def.defName.ToLower().Contains("wall") 
+                    || (def.graphicData?.linkFlags.HasFlag(LinkFlags.Wall) ?? false) 
+                    || def.building != null && def.building.supportsWallAttachments;
             }
             return false;
         }
