@@ -465,6 +465,12 @@
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_ExplodeOnFire.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Ability.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_StageByHealth.cs" />
+    <Compile Include="AnimalBehaviours\PawnRenderNodes\PawnRenderNode_Omni.cs" />
+    <Compile Include="AnimalBehaviours\PawnRenderNodes\RenderNodeComponents\AdvancedColor.cs" />
+    <Compile Include="AnimalBehaviours\PawnRenderNodes\RenderNodeComponents\ConditionalGraphicSet.cs" />
+    <Compile Include="AnimalBehaviours\PawnRenderNodes\RenderNodeComponents\TaggedGraphics.cs" />
+    <Compile Include="DefModExtensions\ModExtensionHelpers.cs" />
+    <Compile Include="Faction\FactionHelpers\FactionColorHelpers.cs" />
     <Compile Include="Genes\Harmony\Hediff_Shambler_PostMake.cs" />
     <Compile Include="Genes\Harmony\MutantUtility_SetPawnAsMutantInstantly.cs" />
     <Compile Include="Genes\Harmony\PawnGenerator_GeneratePawnRelations.cs" />
@@ -497,6 +503,7 @@
     <Compile Include="VFECore\JobGivers\DraftedJobs\DraftedJobUtils.cs" />
     <Compile Include="VFECore\Projectiles\Projectile_Shrapnel.cs" />
     <Compile Include="VFECore\Quests\QuestChainDef.cs" />
+    <Compile Include="VFECore\Things\ThingsWithDynamicGraphics.cs" />
     <Compile Include="VFECore\Utilities\ResearchProjectUtility.cs" />
     <Compile Include="VFECore\HarmonyPatches\MentaBreakWorker_Patches.cs" />
     <Compile Include="VFECore\Utilities\DictCache.cs" />
