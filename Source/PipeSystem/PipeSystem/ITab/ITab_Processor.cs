@@ -32,11 +32,15 @@ namespace PipeSystem
             }
             UIHighlighter.HighlightOpportunity(processButton, "PipeSystem_AddProcess");
             // Add setting button
-            var settingsButton = new Rect(rect.width - 24f - 16f, 2.5f, 24f, 24f);
-            if (Widgets.ButtonImage(settingsButton, TexButton.OpenDebugActionsMenu))
+            if (!comp.Props.hideSettings)
             {
-                Find.WindowStack.Add(new FloatMenu(comp.Settings));
+                var settingsButton = new Rect(rect.width - 24f - 16f, 2.5f, 24f, 24f);
+                if (Widgets.ButtonImage(settingsButton, TexButton.OpenDebugActionsMenu))
+                {
+                    Find.WindowStack.Add(new FloatMenu(comp.Settings));
+                }
             }
+            
             // Draw current process
             if (comp.ProcessStack?.FirstCanDo is Process pr)
             {

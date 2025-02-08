@@ -48,6 +48,8 @@ namespace PipeSystem
 
         public bool isFactoryProcess = false;
 
+       
+
         /// <summary>
         /// Ingredient: can be pipeNet or thingDef and a count, or a category
         /// </summary>

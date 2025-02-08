@@ -41,6 +41,8 @@ namespace PipeSystem
         public string inProgressTexture="";
         public string finishedTexture="";
 
+        public bool hideSettings = false;
+
         /// <summary>
         /// Config errors handling. Empty processes? Null translation key? Missing comps?
         /// </summary>
