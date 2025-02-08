@@ -244,14 +244,15 @@ namespace VFECore
     [HarmonyPatch(typeof(Verb), "TryFindShootLineFromTo")]
     public static class Verb_TryFindShootLineFromTo_Patch
     {
+        public static Pawn curPawn;
         public static void Prefix(Verb __instance)
         {
-            ReachabilityImmediate_CanReachImmediate_Patch.curPawn = __instance.CasterPawn;
+            curPawn = __instance.CasterPawn;
         }
 
         public static void Postfix()
         {
-            ReachabilityImmediate_CanReachImmediate_Patch.curPawn = null;
+            curPawn = null;
         }
     }
 
@@ -298,44 +299,49 @@ namespace VFECore
     [HarmonyPatch(typeof(AttackTargetFinder), "FindBestReachableMeleeTarget")]
     public static class AttackTargetFinder_FindBestReachableMeleeTarget_Patch
     {
+        public static Pawn curPawn;
         public static void Prefix(Pawn searcherPawn)
         {
-            ReachabilityImmediate_CanReachImmediate_Patch.curPawn = searcherPawn;
+            curPawn = searcherPawn;
         }
 
         public static void Postfix()
         {
-            ReachabilityImmediate_CanReachImmediate_Patch.curPawn = null;
+            curPawn = null;
         }
     }
 
     [HarmonyPatch(typeof(JobGiver_ConfigurableHostilityResponse), "TryGetAttackNearbyEnemyJob")]
     public static class JobGiver_ConfigurableHostilityResponse_TryGetAttackNearbyEnemyJob_Patch
     {
+        public static Pawn curPawn;
+
         public static void Prefix(Pawn pawn)
         {
-            ReachabilityImmediate_CanReachImmediate_Patch.curPawn = pawn;
+            curPawn = pawn;
         }
 
         public static void Postfix()
         {
-            ReachabilityImmediate_CanReachImmediate_Patch.curPawn = null;
+            curPawn = null;
         }
     }
 
+    [HotSwappable]
     [HarmonyPatch]
     public static class Toils_Combat_FollowAndMeleeAttack_Patch
     {
         public static FieldInfo targetInd;
+        public static Pawn curPawn;
 
         public static void Prefix(Toil ___followAndAttack)
         {
-            ReachabilityImmediate_CanReachImmediate_Patch.curPawn = ___followAndAttack.actor;
+            curPawn = ___followAndAttack.actor;
         }
 
         public static void Postfix()
         {
-            ReachabilityImmediate_CanReachImmediate_Patch.curPawn = null;
+            curPawn = null;
         }
 
         public static MethodBase TargetMethod()
@@ -376,6 +382,7 @@ namespace VFECore
         public static void TryOverrideDestinationAndPathMode(TargetIndex targetInd, Pawn actor,
             ref LocalTargetInfo destination, ref PathEndMode mode)
         {
+            curPawn = actor;
             Job curJob = actor.jobs.curJob;
             LocalTargetInfo target = curJob.GetTarget(targetInd);
             Thing thing = target.Thing;
@@ -389,6 +396,8 @@ namespace VFECore
                 newReq.verb = verbToUse;
                 newReq.maxRangeFromTarget = meleeReachRange;
                 newReq.wantCoverFromTarget = false;
+                var oldRange = verbToUse.verbProps.range;
+                verbToUse.verbProps.range = meleeReachRange;
                 if (!CastPositionFinder.TryFindCastPosition(newReq, out var dest))
                 {
                     actor.jobs.EndCurrentJob(JobCondition.Incompletable);
@@ -398,17 +407,23 @@ namespace VFECore
                     destination = dest;
                     mode = PathEndMode.OnCell;
                 }
+                verbToUse.verbProps.range = oldRange;
             }
         }
     }
 
+    [HotSwappable]
     [HarmonyPatch(typeof(ReachabilityImmediate), nameof(ReachabilityImmediate.CanReachImmediate), new Type[] { typeof(IntVec3), typeof(LocalTargetInfo), typeof(Map), typeof(PathEndMode), typeof(Pawn) })]
     public static class ReachabilityImmediate_CanReachImmediate_Patch
     {
-        public static Pawn curPawn;
 
         public static void Postfix(ref bool __result, IntVec3 start, LocalTargetInfo target, Map map, PathEndMode peMode, Pawn pawn)
         {
+            var curPawn = Toils_Combat_FollowAndMeleeAttack_Patch.curPawn
+                ?? JobGiver_ConfigurableHostilityResponse_TryGetAttackNearbyEnemyJob_Patch.curPawn
+                ?? AttackTargetFinder_FindBestReachableMeleeTarget_Patch.curPawn
+                ?? Verb_TryFindShootLineFromTo_Patch.curPawn;
+
             if (__result is false && curPawn != null)
             {
                 var verbToUse = curPawn.GetMeleeVerb();
