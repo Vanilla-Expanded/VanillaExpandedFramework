@@ -105,7 +105,7 @@ namespace PipeSystem
 
 
 
-                    var label ="";
+                    var label = "";
                     if (process.labelOverride != "")
                     {
                         label = process.labelOverride;
@@ -118,8 +118,8 @@ namespace PipeSystem
                             label += " x" + process.results[0].count;
                         }
                     }
-                    
-                    
+
+
                     processesOptions.Add(new FloatMenuOption(label, () => processStack.AddProcess(process, parent),
                                                              process.results[0].thing, null, false, MenuOptionPriority.Default,
                                                              (Rect rect) => process.DoProcessInfoWindow(i, rect),
@@ -292,7 +292,7 @@ namespace PipeSystem
 
         public void StoreProgressGraphics()
         {
-            
+
             cachedProgressGraphic = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(Props.inProgressTexture, ShaderDatabase.Cutout,
                      this.parent.def.graphicData.drawSize, this.parent.def.graphicData.color);
 
@@ -328,7 +328,7 @@ namespace PipeSystem
 
             Scribe_Values.Look(ref outputOnGround, "outputOnGround");
             Scribe_Values.Look(ref wasteProduced, "wasteProduced");
-            Scribe_Collections.Look(ref cachedIngredients, "cachedIngredients",LookMode.Def);
+            Scribe_Collections.Look(ref cachedIngredients, "cachedIngredients", LookMode.Def);
         }
 
         /// <summary>
@@ -398,7 +398,8 @@ namespace PipeSystem
             }
             if (Props.inProgressTexture != "")
             {
-                if (cachedProgressGraphic != null && Process.Progress >0&& Process.Progress<1) {
+                if (cachedProgressGraphic != null && Process.Progress > 0 && Process.Progress < 1)
+                {
                     var vector = parent.DrawPos + Altitudes.AltIncVect;
 
                     vector.y += Altitudes.AltInc;
@@ -425,7 +426,7 @@ namespace PipeSystem
             }
         }
 
-      
+
 
         /// <summary>
         /// Add debug gizmos
@@ -442,11 +443,15 @@ namespace PipeSystem
                     defaultLabel = "Finish in 10 ticks",
                     action = () => Process?.Tick(Process.TickLeft - 10)
                 };
-                yield return new Command_Action
+                if (shouldProduceWastePack)
                 {
-                    defaultLabel = "Empty wastepack(s)",
-                    action = () => Container?.innerContainer.Clear()
-                };
+                    yield return new Command_Action
+                    {
+                        defaultLabel = "Empty wastepack(s)",
+                        action = () => Container?.innerContainer.Clear()
+                    };
+                }
+
             }
         }
 
