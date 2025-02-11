@@ -465,10 +465,16 @@
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_ExplodeOnFire.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Ability.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_StageByHealth.cs" />
-    <Compile Include="AnimalBehaviours\PawnRenderNodes\PawnRenderNode_Omni.cs" />
-    <Compile Include="AnimalBehaviours\PawnRenderNodes\RenderNodeComponents\AdvancedColor.cs" />
-    <Compile Include="AnimalBehaviours\PawnRenderNodes\RenderNodeComponents\ConditionalGraphicSet.cs" />
-    <Compile Include="AnimalBehaviours\PawnRenderNodes\RenderNodeComponents\TaggedGraphics.cs" />
+    <Compile Include="VFECore\Graphics\TaggedGraphics\Components.cs" />
+    <Compile Include="VFECore\Graphics\TaggedGraphics\HarmonyPatches.cs" />
+    <Compile Include="VFECore\Graphics\TaggedGraphics\PawnRenderNode_Omni.cs" />
+    <Compile Include="VFECore\Graphics\ConditionaGraphics\AdvancedColor.cs" />
+    <Compile Include="VFECore\Graphics\ConditionaGraphics\ConditionalGraphicSet.cs" />
+    <Compile Include="VFECore\Graphics\TaggedGraphics\ExposiableHashSet.cs" />
+    <Compile Include="VFECore\Graphics\TaggedGraphics\TaggedDefProperties.cs" />
+    <Compile Include="VFECore\Graphics\TaggedGraphics\TaggedItem.cs" />
+    <Compile Include="VFECore\Graphics\TaggedGraphics\TaggedItemHelper.cs" />
+    <Compile Include="VFECore\Graphics\TaggedGraphics\TaggedPropManagers.cs" />
     <Compile Include="DefModExtensions\ModExtensionHelpers.cs" />
     <Compile Include="Faction\FactionHelpers\FactionColorHelpers.cs" />
     <Compile Include="Genes\Harmony\Hediff_Shambler_PostMake.cs" />
@@ -1136,6 +1142,8 @@
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="AnimalBehaviours\PawnRenderNodes\RenderNodeComponents\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

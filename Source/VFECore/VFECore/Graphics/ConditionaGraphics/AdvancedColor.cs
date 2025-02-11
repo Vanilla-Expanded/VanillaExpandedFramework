@@ -45,6 +45,19 @@ namespace VFECore
         {
             var pawn = renderNode.tree.pawn;
             List<Color> colorsAdded = [];
+
+            if (apparelStuff && renderNode.apparel.Stuff is ThingDef stuff)
+            {
+                colorsAdded.Add(stuff.stuffProps.color);
+            }
+
+            Color finalClr = GetColor(pawn, oldClr, colorsAdded);
+            return finalClr;
+        }
+
+        public Color GetColor(Pawn pawn, Color? oldClr=null, List<Color> colorsAdded=null)
+        {
+            colorsAdded ??= [];
             var faction = pawn?.Faction;
             ColorFromBasic(colorsAdded);
             if (taggedColor is string tag)
@@ -65,10 +78,7 @@ namespace VFECore
                     colorsAdded.Add(pawn.story.SkinColor);
                 }
             }
-            if (apparelStuff && renderNode.apparel.Stuff is ThingDef stuff)
-            {
-                colorsAdded.Add(stuff.stuffProps.color);
-            }
+
             if (faction != null)
             {
                 ColorFromFaction(colorsAdded, faction);
@@ -92,7 +102,7 @@ namespace VFECore
                 GetHostilityStatus(pawn, ref colorsAdded);
             }
 
-            Color finalClr = TransformAndFinalizeColor(oldClr, colorsAdded);
+            Color finalClr = TransformAndFinalizeColor(oldClr ?? Color.white, colorsAdded);
             return finalClr;
         }
 
@@ -107,7 +117,7 @@ namespace VFECore
             ColorFromBasic(colorsAdded);
             if (taggedColor is string tag)
             {
-                if (faction.ColorByTag(tag) is TaggedColor tColor)
+                if (faction.GetColorByTag(tag) is TaggedColor tColor)
                 {
                     colorsAdded.Add(tColor.value);
                 }

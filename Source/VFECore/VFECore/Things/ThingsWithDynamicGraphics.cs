@@ -94,17 +94,17 @@ namespace VFECore
         protected readonly DynamicGraphicBaseThing baseThing = new();
         Pawn pawn = null;
         Faction faction = null;
-        bool stateChanged = false;
+        bool stateChanged = true;
 
         public List<Graphic> GetDynamicGraphics()
         {
-            var result = baseThing.DynamicGraphics(this, force: stateChanged, pawn: pawn, faction: faction);
+            var result = baseThing.DynamicGraphics(this, force: stateChanged, parentThing: pawn, faction: faction);
             stateChanged = false;
             return result;
         }
         protected override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
-            List<Graphic> idx = baseThing.DynamicGraphics(this, force: stateChanged, pawn:pawn, faction: faction);
+            List<Graphic> idx = baseThing.DynamicGraphics(this, force: stateChanged, parentThing: pawn, faction: faction);
             for (int i = 0; i < idx.Count; i++)
             {
                 Graphic graphic = idx[i];
@@ -120,6 +120,13 @@ namespace VFECore
             faction = pawn.Faction; // Mostly so it has a fallback if the pawn gets deleted.
             base.Notify_Equipped(pawn);
             stateChanged = true;
+        }
+
+        public override void Notify_Unequipped(Pawn pawn)
+        {
+            base.Notify_Unequipped(pawn);
+            this.pawn = null;
+            // Still saves faction so not-ownable stuff will retain it as a fallback.
         }
 
         public override void Notify_ColorChanged()
@@ -153,23 +160,23 @@ namespace VFECore
             };
             return dynamicGraphicsData;
         }
-        public List<Graphic> DynamicGraphics(Thing t, bool force=false, Pawn pawn = null, Faction faction=null)
+        public List<Graphic> DynamicGraphics(Thing thing, bool force=false, Thing parentThing = null, Faction faction=null)
         {
             if (dynamicGraphics == null || force)
             {
                 dynamicGraphics = [];
-                var dynamicData = DynamicGraphicsData(t.def);
+                var dynamicData = DynamicGraphicsData(thing.def);
                 if (dynamicData.Count == 0)
                 {
                     dynamicGraphics = [];
-                    throw (new Exception($"Thing {t.def.defName} is {GetType()} but declares no {typeof(DynamicGraphicProps)} entries!"));
+                    throw (new Exception($"Thing {thing.def.defName} is {GetType()} but declares no {typeof(DynamicGraphicProps)} entries!"));
                 }
                 foreach (var graphicData in dynamicData)
                 {
-                    dynamicGraphics.Add(GenerateDynamicGraphic(t, graphicData, pawn, faction));
+                    dynamicGraphics.Add(GenerateDynamicGraphic(thing, graphicData, parentThing, faction));
                 }
             }
-            return dynamicGraphics;
+            return dynamicGraphics.Where(x=>x != null).ToList();
         }
 
         public void Dirty()
@@ -177,7 +184,7 @@ namespace VFECore
             dynamicGraphics = null;
         }
 
-        public Graphic GenerateDynamicGraphic(Thing thing, ExtendedGraphicData data, Pawn pawn = null, Faction faction = null)
+        public Graphic GenerateDynamicGraphic(Thing thing, ExtendedGraphicData data, Thing pThing = null, Faction pFaction = null)
         {
             var baseData = thing.def.graphicData;
 
@@ -188,28 +195,36 @@ namespace VFECore
             Shader shader = data.shaderType?.Shader;
             shader ??= ShaderTypeDefOf.CutoutComplex.Shader;
 
-            var parentHolder = thing.ParentHolder;
-            pawn ??= parentHolder as Pawn;
-            if (pawn == null && thing.ParentHolder is Pawn_EquipmentTracker et)
-            {
-                pawn = et.pawn;
-            }
 
-            if (pawn != null)
+            Color? colorAOverride = null;
+            Color? colorBOverride = null;
+            string texPathOverride = null;
+            string maskPathOverride = null;
+
+            GetTagged(data, thing, ref colorAOverride, ref colorBOverride, ref texPathOverride, ref maskPathOverride);
+
+            if (pThing != null)
             {
-                if (data.taggedColorA != null && pawn.GetColorByTag(data.taggedColorA) is TaggedColor taggedColorA) { colorA = taggedColorA.value; }
-                if (data.taggedColorB != null && pawn.GetColorByTag(data.taggedColorB) is TaggedColor taggedColorB) { colorB = taggedColorB.value; }
-                if (data.taggedTexPath != null && pawn.GetStringByTag(data.taggedTexPath) is TaggedText taggedTexPath) { texPath = taggedTexPath.value; }
-                if (data.taggedMaskPath != null && pawn.GetStringByTag(data.taggedMaskPath) is TaggedText taggedMaskPath) { maskPath = taggedMaskPath.value; }
+                GetTagged(data, pThing, ref colorAOverride, ref colorBOverride, ref texPathOverride, ref maskPathOverride);
             }
-            else
+            else if (pFaction is Faction pFa) // In case the pawn is null, but the faction is not.
             {
-                var fa = faction ?? thing.Faction;
-                if (data.taggedColorA != null && fa.ColorByTag(data.taggedColorA) is TaggedColor taggedColorA) { colorA = taggedColorA.value; }
-                if (data.taggedColorB != null && fa.ColorByTag(data.taggedColorB) is TaggedColor taggedColorB) { colorB = taggedColorB.value; }
-                if (data.taggedTexPath != null && fa.StringByTag(data.taggedTexPath) is TaggedText taggedTexPath) { texPath = taggedTexPath.value; }
-                if (data.taggedMaskPath != null && fa.StringByTag(data.taggedMaskPath) is TaggedText taggedMaskPath) { maskPath = taggedMaskPath.value; }
+                GetTagged(data, pFa, ref colorAOverride, ref colorBOverride, ref texPathOverride, ref maskPathOverride);
             }
+            colorA = colorAOverride ?? colorA;
+            colorB = colorBOverride ?? colorB;
+            texPath = texPathOverride.NullOrEmpty() ? texPath : texPathOverride;
+            maskPath = maskPathOverride.NullOrEmpty() ? maskPath : maskPathOverride;
+
+            Log.Message($"DEBUG: Getting graphic for {thing}.\n" +
+                $"BaseData: {baseData}\n" +
+                $"Data: {data}\n" +
+                $"ColorA: {colorA}\n" +
+                $"ColorB: {colorB}\n" +
+                $"TexPath: {texPath}\n" +
+                $"MaskPath: {maskPath}\n" +
+                $"Shader: {shader}\n" +
+                $"Overrides: {colorAOverride}, {colorBOverride}, {texPathOverride}, {maskPathOverride}");
 
             if (texPath.NullOrEmpty())
             {
@@ -224,6 +239,29 @@ namespace VFECore
             {
                 return GraphicDatabase.Get<Graphic_Single>(texPath, shader, data.drawSizeAbsolute ?? data.drawSize * baseData.drawSize, colorA, colorB, data, maskPath: maskPath);
             }
+
+            static void GetTagged(ExtendedGraphicData data, ILoadReferenceable tagThing, ref Color? colorAOverride, ref Color? colorBOverride, ref string texPathOverride, ref string maskPathOverride)
+            {
+                if (data.taggedColorA != null && colorAOverride == null && tagThing.GetColorByTag(data.taggedColorA) is TaggedColor taggedColorA)
+                {
+                    colorAOverride = taggedColorA.value;
+                }
+                if (data.taggedColorB != null && colorBOverride == null && tagThing.GetColorByTag(data.taggedColorB) is TaggedColor taggedColorB)
+                {
+                    colorBOverride = taggedColorB.value;
+                }
+                if (data.taggedTexPath != null && texPathOverride.NullOrEmpty() && tagThing.GetStringByTag(data.taggedTexPath, x => x != null
+                    && ContentFinder<Texture2D>.Get(x?.value, reportFailure:false) != null) is TaggedText taggedTexPath)
+                {
+                    texPathOverride = taggedTexPath.value;
+                }
+                if (data.taggedMaskPath != null && maskPathOverride.NullOrEmpty() && tagThing.GetStringByTag(data.taggedMaskPath, x => x != null
+                    && ContentFinder<Texture2D>.Get(x?.value, reportFailure: false) != null) is TaggedText taggedMaskPath)
+                {
+                    maskPathOverride = taggedMaskPath.value;
+                }
+            }
+
         }
 
         

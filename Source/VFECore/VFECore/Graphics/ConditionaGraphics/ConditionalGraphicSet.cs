@@ -73,6 +73,7 @@ namespace VFECore
         public bool useSkinShader = false;
 
         public bool useFactionRNGSeed = false;
+        public bool useSimplePawnSeed = false;
 
         [NoTranslate]
         public string texPath;
@@ -250,6 +251,10 @@ namespace VFECore
         }
         protected virtual int TexSeedFor(Pawn pawn, PawnRenderNode node, bool useFactionSeed)
         {
+            if (useSimplePawnSeed)
+            {
+                return pawn.thingIDNumber;
+            }
             if (useFactionSeed)
             {
                 int factionTexSeed = 0;
@@ -264,25 +269,28 @@ namespace VFECore
                 }
                 return factionTexSeed;
             }
-            int texSeed = node.Props.texSeed;
-            texSeed += pawn.thingIDNumber;
-            if (node.hediff != null)
+            else
             {
-                texSeed += node.hediff.loadID;
+                int texSeed = node.Props.texSeed;
+                texSeed += pawn.thingIDNumber;
+                if (node.hediff != null)
+                {
+                    texSeed += node.hediff.loadID;
+                }
+                if (node.apparel != null)
+                {
+                    texSeed += node.apparel.thingIDNumber;
+                }
+                if (node.trait != null)
+                {
+                    texSeed += node.trait.def.index;
+                }
+                if (node.gene != null)
+                {
+                    texSeed += node.gene.loadID;
+                }
+                return texSeed;
             }
-            if (node.apparel != null)
-            {
-                texSeed += node.apparel.thingIDNumber;
-            }
-            if (node.trait != null)
-            {
-                texSeed += node.trait.def.index;
-            }
-            if (node.gene != null)
-            {
-                texSeed += node.gene.loadID;
-            }
-            return texSeed;
         }
     }
 }
