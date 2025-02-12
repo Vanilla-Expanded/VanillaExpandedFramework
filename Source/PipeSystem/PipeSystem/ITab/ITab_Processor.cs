@@ -3,6 +3,7 @@ using System;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using System.Collections.Generic;
 
 namespace PipeSystem
 {
@@ -21,6 +22,9 @@ namespace PipeSystem
 
         protected override void FillTab()
         {
+            //var comp = SelThing.TryGetComp<CompAdvancedResourceProcessor>();
+
+
             var comp = CachedCompAdvancedProcessor.GetFor(SelThing);
             var rect = new Rect(0f, 0f, WinSize.x, WinSize.y).ContractedBy(10f);
             Widgets.BeginGroup(rect);
@@ -40,7 +44,36 @@ namespace PipeSystem
                     Find.WindowStack.Add(new FloatMenu(comp.Settings));
                 }
             }
-            
+
+            if (ProcessUtility.Clipboard!=null)
+            {
+                var pasteButton = new Rect(rect.width - 24f - 32f -10f, 2.5f, 24f, 24f);
+                if (Widgets.ButtonImage(pasteButton, TexButton.Paste, tooltip: "PipeSystem_PasteProcesses".Translate()))
+                {
+                    comp.ProcessStack.Processes.Clear();
+                    foreach (var process in ProcessUtility.Clipboard)
+                    {
+                        comp.ProcessStack.AddProcess(process.Def, (ThingWithComps)SelThing,process.targetCount);
+                    }
+                   
+                    foreach ( var process in comp.ProcessStack.Processes)
+                    {
+                        process.Progress = 0;
+                    }
+                }
+            }
+            var copyButton = new Rect(rect.width - 24f - 48f - 16f, 2.5f, 24f, 24f);
+            if (Widgets.ButtonImage(copyButton, TexButton.Copy, tooltip: "PipeSystem_CopyProcesses".Translate()))
+            {
+                ProcessUtility.Clipboard.Clear();
+                foreach (var process in comp.ProcessStack.Processes)
+                {
+                    ProcessUtility.Clipboard.Add(process);
+                }
+            }
+
+
+
             // Draw current process
             if (comp.ProcessStack?.FirstCanDo is Process pr)
             {

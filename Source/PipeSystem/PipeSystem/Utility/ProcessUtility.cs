@@ -10,6 +10,9 @@ namespace PipeSystem
     {
         private static readonly RecipeTooltipLayout processTooltip = new RecipeTooltipLayout();
 
+        public static List<Process> Clipboard = new List<Process>();
+
+
         /// <summary>
         /// Draw def infos: ingredients and product(s)
         /// </summary>

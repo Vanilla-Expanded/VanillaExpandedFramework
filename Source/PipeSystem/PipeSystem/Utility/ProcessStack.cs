@@ -35,7 +35,19 @@ namespace PipeSystem
         }
 
         // Expose values:
-        public List<Process> Processes => processes;
+        public List<Process> Processes
+        {
+            get
+            {
+                
+                return processes;
+            }
+            set
+            {
+                processes = value;
+            }
+        }
+        
 
         public ProcessStack() { }
 
@@ -81,10 +93,11 @@ namespace PipeSystem
         /// </summary>
         /// <param name="processDef"></param>
         /// <param name="parent"></param>
-        public void AddProcess(ProcessDef processDef, ThingWithComps parent)
+        public void AddProcess(ProcessDef processDef, ThingWithComps parent, int targetCount = 1)
         {
             var process = new Process(processDef, parent);
             process.Setup();
+            process.targetCount= targetCount;
             process.PostSpawnSetup();
             processes.Add(process);
             Notify_ProcessChange();

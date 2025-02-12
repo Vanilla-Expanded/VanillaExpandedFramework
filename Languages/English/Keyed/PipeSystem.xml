@@ -76,4 +76,7 @@
   <PipeSystem_Product>Product</PipeSystem_Product>
   <PipeSystem_ProgressInInfobox>{0}: {1}</PipeSystem_ProgressInInfobox>
   <PipeSystem_MissingInputIngredients>Missing inputs: {0}</PipeSystem_MissingInputIngredients>
+  
+  <PipeSystem_CopyProcesses>Copy processes</PipeSystem_CopyProcesses>
+  <PipeSystem_PasteProcesses>Paste processes</PipeSystem_PasteProcesses>
 </LanguageData>

@@ -24,7 +24,7 @@ namespace PipeSystem
         private bool suspended;                                 // Is process suspended
         private bool spawning;                                  // Should spawn as item?
 
-        private int targetCount;                                // Number of time this process should repeat
+        public int targetCount;                                // Number of time this process should repeat
         private int processCount;                               // Number of time this process repeated
         private float ruinedPercent;                            // Ruining (due to temp) percent
 
@@ -142,7 +142,20 @@ namespace PipeSystem
 
         public ProcessDef Def => def;
         public bool PickUpReady => pickUpReady;
-        public float Progress => progress;
+        public float Progress
+        {
+            get
+            {
+                
+                return progress;
+            }
+            set
+            {
+                progress = value;
+            }
+        }
+
+        
         public int TickLeft => tickLeft;
         public List<ThingAndResourceOwner> IngredientsOwners => ingredientsOwners;
         public float RuinedPercent => ruinedPercent;
