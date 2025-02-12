@@ -21,34 +21,14 @@ namespace VFECore
         {
             foreach (var thingDef in VanillaShieldsExpandedSettings.allWeapons)
             {
-                var extension = thingDef.GetModExtension<ThingDefExtension>();
-                if (extension != null)
+                if (!VanillaShieldsExpandedSettings.usableWithShieldsWeapons.TryGetValue(thingDef.defName, out _))
                 {
-                    if (!VanillaShieldsExpandedSettings.usableWithShieldsWeapons.TryGetValue(thingDef.defName, out _))
-                    {
-                        VanillaShieldsExpandedSettings.usableWithShieldsWeapons[thingDef.defName] = _ = extension.usableWithShields;
-                    }
-                }
-                else
-                {
-                    if (thingDef.IsRangedWeapon)
-                    {
-                        if (!VanillaShieldsExpandedSettings.usableWithShieldsWeapons.ContainsKey(thingDef.defName))
-                        {
-                            VanillaShieldsExpandedSettings.usableWithShieldsWeapons[thingDef.defName] = false;
-                        }
-                    }
-                    else if (thingDef.IsMeleeWeapon)
-                    {
-                        if (!VanillaShieldsExpandedSettings.usableWithShieldsWeapons.ContainsKey(thingDef.defName))
-                        {
-                            VanillaShieldsExpandedSettings.usableWithShieldsWeapons[thingDef.defName] = true;
-                        }
-                    }
+                    VanillaShieldsExpandedSettings.usableWithShieldsWeapons[thingDef.defName] = _ = thingDef.UsableWithShields();
                 }
 
-                if (VanillaShieldsExpandedSettings.usableWithShieldsWeapons.TryGetValue(thingDef.defName, out bool usableWithShields))
+                if (VanillaShieldsExpandedSettings.usableWithShieldsWeapons.TryGetValue(thingDef.defName, out var usableWithShields))
                 {
+                    var extension = thingDef.GetModExtension<ThingDefExtension>();
                     if (usableWithShields)
                     {
                         if (extension is null)
@@ -151,7 +131,7 @@ namespace VFECore
                     var labelRect = new Rect(iconRect.xMax + 15, outerPos.y + 5, viewArea.width - 80, 24f);
                     Widgets.Label(labelRect, def.LabelCap);
                     var pos = new Vector2(viewArea.width - 40, labelRect.y);
-                    bool value = usableWithShieldsWeapons[def.defName];
+                    var value = usableWithShieldsWeapons[def.defName];
                     Widgets.Checkbox(pos, ref value);
                     usableWithShieldsWeapons[def.defName] = value;
                 }

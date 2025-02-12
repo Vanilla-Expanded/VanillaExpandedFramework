@@ -8,7 +8,7 @@ namespace VFECore
     public class ThingDefExtension : DefModExtension
     {
         // For weapons
-        public bool usableWithShields = false;
+        public bool? usableWithShields = false;
         public WeaponDrawOffsets weaponCarryDrawOffsets = null;     // Offsets carried weapon regardless of stance
         public WeaponDrawOffsets weaponDraftedDrawOffsets = null;   // Only when drafted but not actively attacking/aiming
 

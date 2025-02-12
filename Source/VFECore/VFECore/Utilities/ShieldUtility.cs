@@ -47,18 +47,21 @@ namespace VFECore
 
         public static bool UsableWithShields(this ThingDef def)
         {
+            var extension = def.GetModExtension<ThingDefExtension>();
+            if (extension != null && extension.usableWithShields.HasValue)
+            {
+                return extension.usableWithShields.Value;
+            }
+            if (def.BaseMass >= 1.65f)
+            {
+                return false;
+            }
             // If Dual Wield is active, return whether or not the weapon isn't two-handed and can be equipped off hand
             if (ModCompatibilityCheck.DualWield)
             {
                 return !NonPublicMethods.DualWield.Ext_ThingDef_IsTwoHand(def) && NonPublicMethods.DualWield.Ext_ThingDef_CanBeOffHand(def);
             }
-
-            var extension = def.GetModExtension<ThingDefExtension>();
-            if (extension != null)
-            {
-                return extension.usableWithShields;
-            }
-            return false;
+            return true;
         }
 
         public static ThingWithComps OffHandShield(this Pawn pawn)
