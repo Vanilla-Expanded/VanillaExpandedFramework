@@ -10,7 +10,7 @@ namespace PipeSystem
     {
         private static readonly RecipeTooltipLayout processTooltip = new RecipeTooltipLayout();
 
-        public static List<Process> Clipboard = new List<Process>();
+        public static Dictionary<ThingDef,List<Process>> Clipboard = new Dictionary<ThingDef, List<Process>>();
 
 
         /// <summary>

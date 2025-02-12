@@ -50,26 +50,28 @@ namespace PipeSystem
                 var pasteButton = new Rect(rect.width - 24f - 32f -10f, 2.5f, 24f, 24f);
                 if (Widgets.ButtonImage(pasteButton, TexButton.Paste, tooltip: "PipeSystem_PasteProcesses".Translate()))
                 {
-                    comp.ProcessStack.Processes.Clear();
-                    foreach (var process in ProcessUtility.Clipboard)
+                    if (ProcessUtility.Clipboard.ContainsKey(SelThing.def))
                     {
-                        comp.ProcessStack.AddProcess(process.Def, (ThingWithComps)SelThing,process.targetCount);
+                        comp.ProcessStack.Processes.Clear();
+                        foreach (Process process in ProcessUtility.Clipboard[SelThing.def])
+                        {
+                            comp.ProcessStack.AddProcess(process.Def, (ThingWithComps)SelThing, process.targetCount);
+                        }
+
+                        foreach (Process process in comp.ProcessStack.Processes)
+                        {
+                            process.Progress = 0;
+                        }
                     }
-                   
-                    foreach ( var process in comp.ProcessStack.Processes)
-                    {
-                        process.Progress = 0;
-                    }
+                    
                 }
             }
             var copyButton = new Rect(rect.width - 24f - 48f - 16f, 2.5f, 24f, 24f);
             if (Widgets.ButtonImage(copyButton, TexButton.Copy, tooltip: "PipeSystem_CopyProcesses".Translate()))
             {
                 ProcessUtility.Clipboard.Clear();
-                foreach (var process in comp.ProcessStack.Processes)
-                {
-                    ProcessUtility.Clipboard.Add(process);
-                }
+                ProcessUtility.Clipboard[SelThing.def]= comp.ProcessStack.Processes;
+  
             }
 
 
