@@ -9,7 +9,7 @@ namespace KCSG
 {
     internal class Designator_ExportToXmlFromArea : Designator_Cells
     {
-        public override bool Visible => Prefs.DevMode;
+        public override bool Visible => DebugSettings.ShowDevGizmos;
 
         public override int DraggableDimensions => 2;
 

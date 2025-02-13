@@ -57,7 +57,7 @@ namespace VFECore
         {
             List<Gizmo> gizmos = new List<Gizmo>();
             gizmos.AddRange(base.CompGetGizmosExtra());
-            if (Prefs.DevMode && this.Props.pawnToSpawn != null)
+            if (DebugSettings.ShowDevGizmos && this.Props.pawnToSpawn != null)
             {
                 Command_Action debugForceSpawn = new Command_Action
                 {

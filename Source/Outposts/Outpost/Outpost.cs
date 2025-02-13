@@ -398,7 +398,7 @@ namespace Outposts
                     icon = SettleUtility.SettleCommandTex
                 };
             }
-            if (Prefs.DevMode)
+            if (DebugSettings.ShowDevGizmos)
             {
                 yield return new Command_Action
                 {
