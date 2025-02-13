@@ -10,7 +10,7 @@ namespace VanillaGenesExpanded
         {
             get
             {
-                if (!pawn.IsShambler)
+                if (pawn?.IsShambler!=true)
                 {
                     return false;
                 }
