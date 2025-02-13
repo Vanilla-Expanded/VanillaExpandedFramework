@@ -313,7 +313,7 @@ namespace PipeSystem
                 yield return extractGizmo;
             }
 
-            if (Prefs.DevMode)
+            if (DebugSettings.ShowDevGizmos)
             {
                 yield return new Command_Action
                 {

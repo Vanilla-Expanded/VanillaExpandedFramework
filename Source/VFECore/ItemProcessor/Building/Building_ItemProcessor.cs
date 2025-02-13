@@ -824,7 +824,7 @@ namespace ItemProcessor
 
                 //This gizmo only appears in dev mode, for testing purposes. It resets all variables
 
-                if (Prefs.DevMode)
+                if (DebugSettings.ShowDevGizmos)
                 {
                     yield return new Command_Action
                     {

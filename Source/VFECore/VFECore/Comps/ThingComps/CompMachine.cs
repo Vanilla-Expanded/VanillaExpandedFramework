@@ -107,7 +107,7 @@ namespace VFE.Mechanoids
 
         public IEnumerable<Gizmo> GetGizmos()
         {
-            if (Prefs.DevMode)
+            if (DebugSettings.ShowDevGizmos)
             {
                 yield return new Command_Action
                 {
