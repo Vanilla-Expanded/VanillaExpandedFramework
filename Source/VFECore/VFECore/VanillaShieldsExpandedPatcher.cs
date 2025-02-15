@@ -14,11 +14,16 @@ namespace VFECore
             anyShieldItemPresent = DefDatabase<ThingDef>.AllDefs.Any(x => x.GetCompProperties<CompProperties_Shield>() != null);
             VanillaShieldsExpandedSettings.usableWithShieldsWeapons ??= new Dictionary<string, bool>();
             VanillaShieldsExpandedSettings.allWeapons = DefDatabase<ThingDef>.AllDefs.Where(x => x.IsWeapon && !x.destroyOnDrop).ToList();
-            SetValues();
         }
 
+        public static bool isSettingValues;
         public static void SetValues()
         {
+            if (isSettingValues)
+            {
+                return;
+            }
+            isSettingValues = true;
             foreach (var thingDef in VanillaShieldsExpandedSettings.allWeapons)
             {
                 if (!VanillaShieldsExpandedSettings.usableWithShieldsWeapons.TryGetValue(thingDef.defName, out _))
@@ -44,6 +49,7 @@ namespace VFECore
                     }
                 }
             }
+            isSettingValues = true;
         }
     }
     public class VanillaShieldsExpandedMod : Mod
@@ -131,7 +137,10 @@ namespace VFECore
                     var labelRect = new Rect(iconRect.xMax + 15, outerPos.y + 5, viewArea.width - 80, 24f);
                     Widgets.Label(labelRect, def.LabelCap);
                     var pos = new Vector2(viewArea.width - 40, labelRect.y);
-                    var value = usableWithShieldsWeapons[def.defName];
+                    if (usableWithShieldsWeapons.TryGetValue(def.defName, out var value) is false)
+                    {
+                        VanillaShieldsExpandedStartup.SetValues();
+                    }
                     Widgets.Checkbox(pos, ref value);
                     usableWithShieldsWeapons[def.defName] = value;
                 }

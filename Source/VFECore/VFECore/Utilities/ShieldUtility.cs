@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using System;
 using System.Linq;
 using Verse;
 
@@ -45,8 +46,15 @@ namespace VFECore
             return tDef.HasComp(typeof(CompShield));
         }
 
+        private static bool initialized;
+
         public static bool UsableWithShields(this ThingDef def)
         {
+            if (!initialized)
+            {
+                VanillaShieldsExpandedStartup.SetValues();
+                initialized = true;
+            }
             var extension = def.GetModExtension<ThingDefExtension>();
             if (extension != null && extension.usableWithShields.HasValue)
             {
@@ -56,10 +64,17 @@ namespace VFECore
             {
                 return false;
             }
-            // If Dual Wield is active, return whether or not the weapon isn't two-handed and can be equipped off hand
-            if (ModCompatibilityCheck.DualWield)
+            try
             {
-                return !NonPublicMethods.DualWield.Ext_ThingDef_IsTwoHand(def) && NonPublicMethods.DualWield.Ext_ThingDef_CanBeOffHand(def);
+                // If Dual Wield is active, return whether or not the weapon isn't two-handed and can be equipped off hand
+                if (ModCompatibilityCheck.DualWield)
+                {
+                    return !NonPublicMethods.DualWield.Ext_ThingDef_IsTwoHand(def) && NonPublicMethods.DualWield.Ext_ThingDef_CanBeOffHand(def);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Dual Wield compatability is broken: " + ex.ToString());
             }
             return true;
         }
