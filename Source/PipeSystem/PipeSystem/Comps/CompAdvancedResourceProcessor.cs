@@ -436,7 +436,7 @@ namespace PipeSystem
             foreach (var gizmo in base.CompGetGizmosExtra())
                 yield return gizmo;
 
-            if (Prefs.DevMode)
+            if (DebugSettings.ShowDevGizmos)
             {
                 yield return new Command_Action
                 {

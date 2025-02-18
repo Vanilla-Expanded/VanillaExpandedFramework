@@ -8,7 +8,7 @@ namespace KCSG
 {
     internal class Designator_ExportToXml : Designator
     {
-        public override bool Visible => Prefs.DevMode;
+        public override bool Visible => DebugSettings.ShowDevGizmos;
 
         public override int DraggableDimensions => 2;
 
