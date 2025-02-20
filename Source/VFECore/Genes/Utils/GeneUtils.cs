@@ -102,6 +102,14 @@ namespace VanillaGenesExpanded
                     {
                         StaticCollectionsClass.AddLeatherGenePawnToList(gene.pawn, extension.customLeatherThingDef);
                     }
+                    if (!extension.defsTreatedAsHumanMeat.NullOrEmpty())
+                    {
+                        StaticCollectionsClass.AddDefsTreatedAsHumanMeatGenePawnToList(gene.pawn, extension.defsTreatedAsHumanMeat);
+                    }
+                    if (!extension.defsTreatedAsHumanLeather.NullOrEmpty())
+                    {
+                        StaticCollectionsClass.AddDefsTreatedAsHumanLeatherGenePawnToList(gene.pawn, extension.defsTreatedAsHumanLeather);
+                    }
                     if (extension.customVomitThingDef != null)
                     {
                         StaticCollectionsClass.AddVomitTypeGenePawnToList(gene.pawn, extension.customVomitThingDef);
@@ -157,6 +165,14 @@ namespace VanillaGenesExpanded
                     if (extension.customBloodSmearThingDef != null)
                     {
                         StaticCollectionsClass.RemoveBloodSmearGenePawnFromList(gene.pawn);
+                    }
+                    if (!extension.defsTreatedAsHumanMeat.NullOrEmpty())
+                    {
+                        StaticCollectionsClass.RemoveDefsTreatedAsHumanMeatGenePawnFromList(gene.pawn);
+                    }
+                    if (!extension.defsTreatedAsHumanLeather.NullOrEmpty())
+                    {
+                        StaticCollectionsClass.RemoveDefsTreatedAsHumanLeatherGenePawnFromList(gene.pawn);
                     }
                     if (extension.customBloodIcon != "")
                     {
