@@ -465,6 +465,10 @@
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_ExplodeOnFire.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Ability.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_StageByHealth.cs" />
+    <Compile Include="Genes\Harmony\ThingIngestingPatches.cs" />
+    <Compile Include="Genes\Harmony\FoodUtility_GetMeatSourceCategory.cs" />
+    <Compile Include="Genes\Harmony\FoodUtility_GetMeatSourceCategoryFromCorpse.cs" />
+    <Compile Include="Genes\Harmony\ThoughtWorker_HumanLeatherApparel_CurrentThoughtState.cs" />
     <Compile Include="VFECore\Graphics\TaggedGraphics\Components.cs" />
     <Compile Include="VFECore\Graphics\TaggedGraphics\HarmonyPatches.cs" />
     <Compile Include="VFECore\Graphics\TaggedGraphics\PawnRenderNode_Omni.cs" />

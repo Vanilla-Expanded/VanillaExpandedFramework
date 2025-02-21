@@ -58,6 +58,10 @@ namespace VanillaGenesExpanded
         public ThingDef customMeatThingDef = null;
         //Custom leather thingDef when butchered
         public ThingDef customLeatherThingDef = null;
+        //List of foods considered human meat
+        public List<ThingDef> defsTreatedAsHumanMeat = null;
+        //List of stuff considered human leather
+        public List<ThingDef> defsTreatedAsHumanLeather = null;
 
         //Disease progression factor. Diseases will advance (when not immunized) by this factor
         public float diseaseProgressionFactor = 1f;
