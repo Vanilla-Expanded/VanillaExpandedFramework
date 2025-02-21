@@ -32,6 +32,10 @@ namespace VanillaGenesExpanded
         public static IDictionary<Thing, ThingDef> meat_gene_pawns = new Dictionary<Thing, ThingDef>();
         // A list of pawns containing leather changing genes
         public static IDictionary<Thing, ThingDef> leather_gene_pawns = new Dictionary<Thing, ThingDef>();
+        // A list of pawns considering more food types as cannibalism
+        public static IDictionary<Thing, List<ThingDef>> defs_treated_as_human_meat = new Dictionary<Thing, List<ThingDef>>();
+        // A list of pawns considering more leather types as human leather
+        public static IDictionary<Thing, List<ThingDef>> defs_treated_as_human_leather = new Dictionary<Thing, List<ThingDef>>();
         // A list of pawns containing blood changing genes
         public static IDictionary<Thing, ThingDef> bloodtype_gene_pawns = new Dictionary<Thing, ThingDef>();
         public static IDictionary<Thing, ThingDef> bloodsmear_gene_pawns = new Dictionary<Thing, ThingDef>();
@@ -97,6 +101,38 @@ namespace VanillaGenesExpanded
                 leather_gene_pawns.Remove(thing);
             }
 
+        }
+
+        public static void AddDefsTreatedAsHumanMeatGenePawnToList(Thing thing, List<ThingDef> thingDefs)
+        {
+            if (!defs_treated_as_human_meat.ContainsKey(thing))
+            {
+                defs_treated_as_human_meat[thing] = thingDefs;
+            }
+        }
+
+        public static void RemoveDefsTreatedAsHumanMeatGenePawnFromList(Thing thing)
+        {
+            if (defs_treated_as_human_meat.ContainsKey(thing))
+            {
+                defs_treated_as_human_meat.Remove(thing);
+            }
+        }
+
+        public static void AddDefsTreatedAsHumanLeatherGenePawnToList(Thing thing, List<ThingDef> thingDefs)
+        {
+            if (!defs_treated_as_human_leather.ContainsKey(thing))
+            {
+                defs_treated_as_human_leather[thing] = thingDefs;
+            }
+        }
+
+        public static void RemoveDefsTreatedAsHumanLeatherGenePawnFromList(Thing thing)
+        {
+            if (defs_treated_as_human_leather.ContainsKey(thing))
+            {
+                defs_treated_as_human_leather.Remove(thing);
+            }
         }
 
         public static void AddBloodtypeGenePawnToList(Thing thing, ThingDef thingDef)
