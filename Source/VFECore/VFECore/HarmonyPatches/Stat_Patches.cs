@@ -6,6 +6,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Reflection;
+using UnityEngine;
 
 namespace VFECore
 {
@@ -111,6 +112,22 @@ namespace VFECore
 
 
 
+        }
+    }
+
+    [HarmonyPatch(typeof(MemoryThoughtHandler), nameof(MemoryThoughtHandler.TryGainMemory), [typeof(Thought_Memory), typeof(Pawn)])]
+    public static class MemoryThoughtHandler_TryGainMemory_Patch
+    {
+        public static void Postfix(Thought_Memory newThought)
+        {
+            var factor = newThought.CurStage.baseMoodEffect switch
+            {
+                > 0 => newThought.pawn.GetStatValue(VFEDefOf.VEF_PositiveThoughtDurationFactor),
+                < 0 => newThought.pawn.GetStatValue(VFEDefOf.VEF_NegativeThoughtDurationFactor),
+                _   => newThought.pawn.GetStatValue(VFEDefOf.VEF_NeutralThoughtDurationFactor),
+            };
+
+            newThought.durationTicksOverride = Mathf.RoundToInt(newThought.DurationTicks * factor);
         }
     }
 
