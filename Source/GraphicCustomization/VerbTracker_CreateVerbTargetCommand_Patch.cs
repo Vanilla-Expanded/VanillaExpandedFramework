@@ -12,7 +12,6 @@ namespace GraphicCustomization
             if (comp != null)
             {
                 __result.icon = comp.Texture;
-                __result.groupKeyIgnoreContent = comp.parent.def.index;
             }
         }
     }
