@@ -12,6 +12,18 @@ namespace PipeSystem
 
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn) => CachedAdvancedProcessorsManager.GetFor(pawn.Map).AwaitingIngredients;
 
+        public override PathEndMode PathEndMode
+        {
+            get
+            {
+                return PathEndMode.Touch;
+            }
+        }
+        public override bool ShouldSkip(Pawn pawn, bool forced = false)
+        {
+            return CachedAdvancedProcessorsManager.GetFor(pawn.Map).AwaitingIngredients.Count == 0;
+        }
+
         public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
             // TODO: Multiple pawns reservation

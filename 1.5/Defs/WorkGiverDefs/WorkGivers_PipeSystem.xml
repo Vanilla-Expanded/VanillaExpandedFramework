@@ -31,8 +31,8 @@
     <label>pick up result from processor</label>
     <giverClass>PipeSystem.WorkGiver_PickUpProcessor</giverClass>
     <workType>Hauling</workType>
-    <verb>pick up result</verb>
-    <gerund>picking up result</gerund>
+    <verb>pick up result from</verb>
+    <gerund>picking up result from</gerund>
     <priorityInType>98</priorityInType>
     <requiredCapacities>
       <li>Manipulation</li>
@@ -44,8 +44,8 @@
     <label>bring ingredient to processor</label>
     <giverClass>PipeSystem.WorkGiver_BringToProcessor</giverClass>
     <workType>Hauling</workType>
-    <verb>bring ingredient</verb>
-    <gerund>bringing ingredient</gerund>
+    <verb>bring ingredients to</verb>
+    <gerund>bringing ingredients to</gerund>
     <priorityInType>97</priorityInType>
     <requiredCapacities>
       <li>Manipulation</li>

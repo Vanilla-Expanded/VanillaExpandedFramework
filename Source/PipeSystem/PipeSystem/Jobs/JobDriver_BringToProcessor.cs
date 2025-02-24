@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using RimWorld;
+using System.Collections.Generic;
 using Verse;
 using Verse.AI;
 
@@ -38,6 +39,21 @@ namespace PipeSystem
                 job.count = owner.Required;
                 owner.BeingFilled = true;
             });
+            SetFinalizerJob(delegate (JobCondition condition)
+            {
+               
+                if (condition != JobCondition.Succeeded)
+                {
+                    var owner = Comp.Process.GetOwnerFor(Ingredient.def);
+                    if (owner == null)
+                    {
+                        owner = Comp.Process.GetOwnerForCategory(Ingredient.def.thingCategories);
+                    }
+                  
+                    owner.BeingFilled = false;
+                }
+              return null;
+            });
 
             var reserveIngredient = Toils_Reserve.Reserve(TargetIndex.B);
             yield return reserveIngredient;
@@ -65,6 +81,7 @@ namespace PipeSystem
                 CachedAdvancedProcessorsManager.GetFor(Map).AddIngredient(Comp, Ingredient);
             };
             toil.defaultCompleteMode = ToilCompleteMode.Instant;
+          
             yield return toil;
         }
     }
