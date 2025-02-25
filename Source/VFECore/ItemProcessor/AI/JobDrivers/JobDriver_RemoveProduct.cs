@@ -62,14 +62,28 @@ namespace ItemProcessor
                         qualityComp.SetQuality(building_processor.qualityNow, ArtGenerationContext.Colony);
                     }
 
-                    GenSpawn.Spawn(newProduct, building_processor.InteractionCell, building_processor.Map);
+                    // Try to place the output on the map, splitting the product into
+                    // multiple stacks and merging with existing ones if needed/possible.
+                    if (!GenPlace.TryPlaceThing(newProduct, building_processor.InteractionCell, building_processor.Map, ThingPlaceMode.Near, out newProduct))
+                    {
+                        newProduct = null;
+                    }
+
                     building_processor.processorStage = ProcessorStage.ProductRemoved;
                     building_processor.ResetEverything();
                     building_processor.DestroyIngredients();
 
                     StoragePriority currentPriority = StoreUtility.CurrentStoragePriorityOf(newProduct);
                     IntVec3 c;
-                    if (StoreUtility.TryFindBestBetterStoreCellFor(newProduct, this.pawn, this.Map, currentPriority, this.pawn.Faction, out c, true))
+
+                    // An extra precaution just in case
+                    if (newProduct == null)
+                    {
+                        this.EndJobWith(JobCondition.Incompletable);
+                        Log.Error($"Building_ItemProcessor failed to spawn any products. Building={building_processor}, pos={building_processor.Position}.");
+
+                    }
+                    else if (StoreUtility.TryFindBestBetterStoreCellFor(newProduct, this.pawn, this.Map, currentPriority, this.pawn.Faction, out c, true))
                     {
                         this.job.SetTarget(TargetIndex.C, c);
                         this.job.SetTarget(TargetIndex.B, newProduct);
