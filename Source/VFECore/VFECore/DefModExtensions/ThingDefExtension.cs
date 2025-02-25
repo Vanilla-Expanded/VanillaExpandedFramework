@@ -33,7 +33,6 @@ namespace VFECore
 
         public ConstructionSkillRequirement constructionSkillRequirement;
 
-        public float? meleeRangeOverride;
     }
 
     public class WeaponDrawOffsets

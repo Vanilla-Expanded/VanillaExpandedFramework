@@ -54,5 +54,7 @@ namespace VFECore
         public static MentalStateDef Binging_Food;
      
         public static RulePackDef VEF_Description_Schematic_Defaults;
+
+        public static StatDef VEF_MeleeWeaponRange;
     }
 }
