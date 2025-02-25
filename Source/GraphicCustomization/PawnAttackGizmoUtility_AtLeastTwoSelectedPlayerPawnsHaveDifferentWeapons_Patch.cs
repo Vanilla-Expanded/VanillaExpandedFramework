@@ -35,7 +35,7 @@ namespace GraphicCustomization
                         thingDef = thingDef2;
                         flag = true;
                     }
-                    else if (thingDef.HasComp<CompGraphicCustomization>())
+                    else if (thingDef != null && thingDef.HasComp<CompGraphicCustomization>())
                     {
                         return true;
                     }
