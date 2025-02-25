@@ -336,6 +336,7 @@
 		<category>BasicsPawn</category>
 		<defaultBaseValue>1</defaultBaseValue>
 		<minValue>0</minValue>
+		<hideAtValue>1</hideAtValue>
 		<toStringStyle>PercentZero</toStringStyle>
 		<showOnHumanlikes>true</showOnHumanlikes>
 		<showOnAnimals>false</showOnAnimals>
