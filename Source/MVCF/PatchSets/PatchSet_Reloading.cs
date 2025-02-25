@@ -17,22 +17,22 @@ public class PatchSet_Reloading : PatchSet
     {
         yield return Patch.Postfix(AccessTools.Method(typeof(FloatMenuMakerMap), "AddHumanlikeOrders"),
             AccessTools.Method(typeof(FloatMenuUtility), nameof(FloatMenuUtility.AddWeaponReloadOrders)));
-        yield return Patch.Postfix(AccessTools.Method(typeof(PawnInventoryGenerator), "GenerateInventoryFor"),
+        yield return Patch.Postfix(AccessTools.Method(typeof(PawnWeaponGenerator), "TryGenerateWeaponFor"),
             AccessTools.Method(GetType(), nameof(PostGenerate)));
         yield return Patch.Prefix(AccessTools.Method(typeof(JobGiver_AIFightEnemy), "TryGiveJob"), AccessTools.Method(GetType(), nameof(PreTryGiveJob)));
         yield return Patch.Prefix(AccessTools.Method(typeof(JobDriver_Wait), "CheckForAutoAttack"), AccessTools.Method(GetType(), nameof(PreCheckAutoAttack)));
     }
 
-    public static void PostGenerate(Pawn p, PawnGenerationRequest request)
+    public static void PostGenerate(Pawn pawn, PawnGenerationRequest request)
     {
-        foreach (var reloadable in p.AllReloadComps())
+        foreach (var reloadable in pawn.AllReloadComps())
         {
             if (reloadable.Props.GenerateAmmo != null)
                 foreach (var thingDefRange in reloadable.Props.GenerateAmmo)
                 {
                     var ammo = ThingMaker.MakeThing(thingDefRange.thingDef);
                     ammo.stackCount = thingDefRange.countRange.RandomInRange;
-                    p.inventory?.innerContainer.TryAdd(ammo);
+                    pawn.inventory?.innerContainer.TryAdd(ammo);
                 }
 
             if (reloadable.Props.GenerateAmmoCategories != null)
@@ -41,7 +41,7 @@ public class PatchSet_Reloading : PatchSet
                     {
                         var ammo = ThingMaker.MakeThing(thingDef);
                         ammo.stackCount = thingCategoryRange.Range.RandomInRange;
-                        p.inventory?.innerContainer.TryAdd(ammo);
+                        pawn.inventory?.innerContainer.TryAdd(ammo);
                     }
 
             if (reloadable.Props.GenerateBackupWeapon)
@@ -50,15 +50,15 @@ public class PatchSet_Reloading : PatchSet
                    .Field("allWeaponPairs")
                    .GetValue<List<ThingStuffPair>>()
                    .Where(w =>
-                        !w.thing.IsRangedWeapon || !p.WorkTagIsDisabled(WorkTags.Shooting));
-                if (p.kindDef.weaponMoney.Span > 0f)
+                        !w.thing.IsRangedWeapon || !pawn.WorkTagIsDisabled(WorkTags.Shooting));
+                if (pawn.kindDef.weaponMoney.Span > 0f)
                 {
-                    var money = p.kindDef.weaponMoney.RandomInRange / 5f;
+                    var money = pawn.kindDef.weaponMoney.RandomInRange / 5f;
                     weaponPairs = weaponPairs.Where(w => w.Price <= money);
                 }
 
-                if (p.kindDef.weaponStuffOverride != null)
-                    weaponPairs = weaponPairs.Where(w => w.stuff == p.kindDef.weaponStuffOverride);
+                if (pawn.kindDef.weaponStuffOverride != null)
+                    weaponPairs = weaponPairs.Where(w => w.stuff == pawn.kindDef.weaponStuffOverride);
 
                 weaponPairs = weaponPairs.Where(w =>
                     w.thing.weaponClasses == null || (w.thing.weaponClasses.Contains(ReloadingDefOf.RangedLight) &&
@@ -68,16 +68,16 @@ public class PatchSet_Reloading : PatchSet
                 if (weaponPairs.TryRandomElementByWeight(w => w.Price * w.Commonality, out var weaponPair))
                 {
                     var weapon = (ThingWithComps)ThingMaker.MakeThing(weaponPair.thing, weaponPair.stuff);
-                    PawnGenerator.PostProcessGeneratedGear(weapon, p);
-                    var num = request.BiocodeWeaponChance > 0f ? request.BiocodeWeaponChance : p.kindDef.biocodeWeaponChance;
-                    if (Rand.Chance(num)) weapon.TryGetComp<CompBiocodable>()?.CodeFor(p);
+                    PawnGenerator.PostProcessGeneratedGear(weapon, pawn);
+                    var num = request.BiocodeWeaponChance > 0f ? request.BiocodeWeaponChance : pawn.kindDef.biocodeWeaponChance;
+                    if (Rand.Chance(num)) weapon.TryGetComp<CompBiocodable>()?.CodeFor(pawn);
 
-                    if (p.kindDef.weaponStyleDef != null)
-                        weapon.StyleDef = p.kindDef.weaponStyleDef;
-                    else if (p.Ideo != null) weapon.StyleDef = p.Ideo.GetStyleFor(weapon.def);
+                    if (pawn.kindDef.weaponStyleDef != null)
+                        weapon.StyleDef = pawn.kindDef.weaponStyleDef;
+                    else if (pawn.Ideo != null) weapon.StyleDef = pawn.Ideo.GetStyleFor(weapon.def);
 
 
-                    p.inventory?.innerContainer.TryAdd(weapon, false);
+                    pawn.inventory?.innerContainer.TryAdd(weapon, false);
                 }
             }
         }
