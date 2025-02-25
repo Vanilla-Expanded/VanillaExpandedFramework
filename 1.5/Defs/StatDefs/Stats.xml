@@ -332,6 +332,17 @@
 		<showOnEntities>false</showOnEntities>
 		<showDevelopmentalStageFilter>Adult</showDevelopmentalStageFilter>
 	</StatDef>
+	<StatDef>
+		<defName>VEF_MeleeWeaponRange</defName>
+		<label>melee weapon range</label>
+		<description>The range of this melee weapon.</description>
+		<category>Weapon_Melee</category>
+		<defaultBaseValue>0</defaultBaseValue>
+		<hideAtValue>0</hideAtValue>
+		<minValue>0</minValue>
+		<toStringStyle>FloatOne</toStringStyle>
+		<displayPriorityInCategory>4050</displayPriorityInCategory>
+	</StatDef>
 	<StatDef Name="VEF_ThoughtDurationBase" Abstract="True">
 		<category>BasicsPawn</category>
 		<defaultBaseValue>1</defaultBaseValue>

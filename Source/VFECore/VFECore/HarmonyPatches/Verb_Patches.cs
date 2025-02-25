@@ -233,10 +233,10 @@ namespace VFECore
     {
         public static void Prefix(ref CastPositionRequest newReq)
         {
-            var meleeRangeOverride = newReq.verb?.EquipmentSource?.def.GetModExtension<ThingDefExtension>()?.meleeRangeOverride;
-            if (meleeRangeOverride != null)
+            var weapon = newReq.verb?.EquipmentSource?.def;
+            if (weapon != null && weapon.StatBaseDefined(VFEDefOf.VEF_MeleeWeaponRange))
             {
-                newReq.maxRangeFromTarget = Mathf.Max(newReq.maxRangeFromTarget, meleeRangeOverride.Value);
+                newReq.maxRangeFromTarget = Mathf.Max(newReq.maxRangeFromTarget, weapon.GetStatValueAbstract(VFEDefOf.VEF_MeleeWeaponRange));
             }
         }
     }
@@ -287,10 +287,10 @@ namespace VFECore
 
         public static float GetMeleeReachRange(this Pawn caster, Verb verb)
         {
-            var meleeRangeOverride = verb?.EquipmentSource?.def.GetModExtension<ThingDefExtension>()?.meleeRangeOverride;
-            if (meleeRangeOverride != null)
+            var weapon = verb?.EquipmentSource?.def;
+            if (weapon != null && weapon.StatBaseDefined(VFEDefOf.VEF_MeleeWeaponRange))
             {
-                return meleeRangeOverride.Value;
+                return weapon.GetStatValueAbstract(VFEDefOf.VEF_MeleeWeaponRange);
             }
             return ShootTuning.MeleeRange;
         }
