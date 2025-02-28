@@ -45,8 +45,10 @@ namespace VFECore
 
     public class Offset
     {
-        public Vector3 drawOffset = new(0, 0, 0);
-        public float angleOffset = 0;
+        public Vector3 drawOffset;
+        public Vector3? drawOffsetWhileMoving;
+        public float angleOffset;
+        public float? angleOffsetWhileMoving;
     }
 
 }

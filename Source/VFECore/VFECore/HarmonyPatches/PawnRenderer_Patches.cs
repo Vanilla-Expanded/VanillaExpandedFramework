@@ -102,7 +102,7 @@ namespace VFECore
         }
     }
 
-
+    [HotSwappable]
     [HarmonyPatch(typeof(PawnRenderUtility), nameof(PawnRenderUtility.DrawEquipmentAiming))]
     public static class PawnRenderer_DrawEquipmentAiming_Patch
     {
@@ -116,32 +116,11 @@ namespace VFECore
             if (thingDefExtension != null && PawnRenderUtility.CarryWeaponOpenly(pawn))
             {
                 var pawnRot = pawn.Rotation;
+                var pawnIsMoving = pawn.pather.Moving;
 
                 // Weapon draw offsets that apply at all times (i.e. carrying weapons while working, drafted, attacking)
                 // Replaces the now-defunct CompOversizedWeapon
-                if (thingDefExtension.weaponCarryDrawOffsets != null)
-                {
-                    if (pawnRot == Rot4.South)
-                    {
-                        drawLoc += thingDefExtension.weaponCarryDrawOffsets.south.drawOffset;
-                        aimAngle += thingDefExtension.weaponCarryDrawOffsets.south.angleOffset;
-                    }
-                    else if (pawnRot == Rot4.North)
-                    {
-                        drawLoc += thingDefExtension.weaponCarryDrawOffsets.north.drawOffset;
-                        aimAngle += thingDefExtension.weaponCarryDrawOffsets.north.angleOffset;
-                    }
-                    else if (pawnRot == Rot4.East)
-                    {
-                        drawLoc += thingDefExtension.weaponCarryDrawOffsets.east.drawOffset;
-                        aimAngle += thingDefExtension.weaponCarryDrawOffsets.east.angleOffset;
-                    }
-                    else if (pawnRot == Rot4.West)
-                    {
-                        drawLoc += thingDefExtension.weaponCarryDrawOffsets.west.drawOffset;
-                        aimAngle += thingDefExtension.weaponCarryDrawOffsets.west.angleOffset;
-                    }
-                }
+                ApplyWeaponDrawOffset(thingDefExtension.weaponCarryDrawOffsets, pawnRot, pawnIsMoving, ref drawLoc, ref aimAngle);
 
                 // Weapon draw offsets that only apply when the pawn is drafted but *not* actively attacking
                 // Useful for things like holding a pike/halberd while standing at attention
@@ -149,27 +128,47 @@ namespace VFECore
                 // Note: These offsets add on to anything in weaponCarryDrawOffsets
                 if (thingDefExtension.weaponDraftedDrawOffsets != null && !pawn.stances.curStance.StanceBusy)
                 {
-                    if (pawnRot == Rot4.South)
-                    {
-                        drawLoc += thingDefExtension.weaponDraftedDrawOffsets.south.drawOffset;
-                        aimAngle += thingDefExtension.weaponDraftedDrawOffsets.south.angleOffset;
-                    }
-                    else if (pawnRot == Rot4.North)
-                    {
-                        drawLoc += thingDefExtension.weaponDraftedDrawOffsets.north.drawOffset;
-                        aimAngle += thingDefExtension.weaponDraftedDrawOffsets.north.angleOffset;
-                    }
-                    else if (pawnRot == Rot4.East)
-                    {
-                        drawLoc += thingDefExtension.weaponDraftedDrawOffsets.east.drawOffset;
-                        aimAngle += thingDefExtension.weaponDraftedDrawOffsets.east.angleOffset;
-                    }
-                    else if (pawnRot == Rot4.West)
-                    {
-                        drawLoc += thingDefExtension.weaponDraftedDrawOffsets.west.drawOffset;
-                        aimAngle += thingDefExtension.weaponDraftedDrawOffsets.west.angleOffset;
-                    }
+                    ApplyWeaponDrawOffset(thingDefExtension.weaponDraftedDrawOffsets, pawnRot, pawnIsMoving, ref drawLoc, ref aimAngle);
                 }
+            }
+        }
+
+        private static void ApplyWeaponDrawOffset(WeaponDrawOffsets offsets, Rot4 pawnRot, bool pawnMoving, ref Vector3 drawLoc, ref float aimAngle)
+        {
+            if (offsets == null)
+            {
+                return;
+            }
+
+            Offset offsetData = null;
+
+            if (pawnRot == Rot4.South)
+            {
+                offsetData = offsets.south;
+            }
+            else if (pawnRot == Rot4.North)
+            {
+                offsetData = offsets.north;
+            }
+            else if (pawnRot == Rot4.East)
+            {
+                offsetData = offsets.east;
+            }
+            else if (pawnRot == Rot4.West)
+            {
+                offsetData = offsets.west;
+            }
+
+            if (offsetData != null)
+            {
+                var drawOffsetToUse = pawnMoving && offsetData.drawOffsetWhileMoving.HasValue
+                    ? offsetData.drawOffsetWhileMoving.Value
+                    : offsetData.drawOffset;
+                drawLoc += drawOffsetToUse;
+                float angleOffsetToUse = pawnMoving && offsetData.angleOffsetWhileMoving.HasValue 
+                    ? offsetData.angleOffsetWhileMoving.Value 
+                    : offsetData.angleOffset;
+                aimAngle += angleOffsetToUse;
             }
         }
     }
