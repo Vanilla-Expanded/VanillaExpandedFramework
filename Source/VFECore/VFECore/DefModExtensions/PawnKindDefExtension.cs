@@ -15,7 +15,6 @@ namespace VFECore
         private static readonly PawnKindDefExtension DefaultValues = new PawnKindDefExtension();
         public static PawnKindDefExtension Get(Def def) => def.GetModExtension<PawnKindDefExtension>() ?? DefaultValues;
 
-        public bool countAsSlave;
         public List<BodyPartGroupDef> factionColourApparelPartList;
         public List<ApparelLayerDef> factionColourApparelLayerList;
         public List<string> shieldTags;
