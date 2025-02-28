@@ -36,6 +36,9 @@ namespace VFECore
         public static StatDef VEF_GrowthPointMultiplier;
         public static StatDef VEF_MassCarryCapacity;
         public static StatDef VEF_MTBLovinFactor;
+        public static StatDef VEF_PositiveThoughtDurationFactor;
+        public static StatDef VEF_NeutralThoughtDurationFactor;
+        public static StatDef VEF_NegativeThoughtDurationFactor;
 
         public static StatCategoryDef VFE_EquippedStatFactors;
   

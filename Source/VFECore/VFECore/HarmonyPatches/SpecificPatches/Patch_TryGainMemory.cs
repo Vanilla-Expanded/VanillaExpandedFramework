@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using RimWorld;
 using System;
+using UnityEngine;
 using Verse;
 
 namespace VFECore
@@ -25,6 +26,15 @@ namespace VFECore
                     }
                 }
             }
+
+            var factor = newThought.CurStage.baseMoodEffect switch
+            {
+                > 0 => newThought.pawn.GetStatValue(VFEDefOf.VEF_PositiveThoughtDurationFactor),
+                < 0 => newThought.pawn.GetStatValue(VFEDefOf.VEF_NegativeThoughtDurationFactor),
+                _   => newThought.pawn.GetStatValue(VFEDefOf.VEF_NeutralThoughtDurationFactor),
+            };
+
+            newThought.durationTicksOverride = Mathf.RoundToInt(newThought.DurationTicks * factor);
         }
     }
 }

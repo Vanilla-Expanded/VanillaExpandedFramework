@@ -2,7 +2,6 @@
 using RimWorld;
 using HarmonyLib;
 using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Reflection;
