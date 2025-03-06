@@ -41,8 +41,6 @@ namespace VanillaCookingExpanded
                     yield return new CodeInstruction(OpCodes.Ldc_R4, 0f);
                     yield return CodeInstruction.Call(AccessTools.Inner(typeof(WorkGiver_DoBill), "DefCountList"), "SetCount");
 
-                    yield return new CodeInstruction(OpCodes.Ldstr, "hey");
-                    yield return new CodeInstruction(OpCodes.Call,  AccessTools.Method(typeof(Log), "Warning"));
                     yield return new CodeInstruction(OpCodes.Nop) { labels = [skip] };
                 }
             }
