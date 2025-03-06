@@ -467,6 +467,9 @@
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_ExplodeOnFire.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_Ability.cs" />
     <Compile Include="AnimalBehaviours\Hediffs\Properties\HediffCompProperties_StageByHealth.cs" />
+    <Compile Include="Cuisine\DefModExtensions\Recipe_Extension.cs" />
+    <Compile Include="Cuisine\Harmony\WorkGiver_DoBill_TryFindBestBillIngredientsInSet_AllowMix_Patch.cs" />
+    <Compile Include="Cuisine\Harmony\WorkGiver_DoBill_TryFindBestIngredientsInSet_NoMixHelper_Patch.cs" />
     <Compile Include="Genes\Harmony\ThingIngestingPatches.cs" />
     <Compile Include="Genes\Harmony\FoodUtility_GetMeatSourceCategory.cs" />
     <Compile Include="Genes\Harmony\FoodUtility_GetMeatSourceCategoryFromCorpse.cs" />
