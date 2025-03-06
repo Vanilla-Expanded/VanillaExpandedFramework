@@ -36,9 +36,6 @@ namespace VanillaCookingExpanded
                     yield return CodeInstruction.LoadArgument(0);
                     yield return CodeInstruction.LoadLocal(5);
                     yield return CodeInstruction.Call(typeof(WorkGiver_DoBill_TryFindBestBillIngredientsInSet_AllowMix_Patch), nameof(MixHelper));
-
-                    yield return new CodeInstruction(OpCodes.Ldstr, "hey");
-                    yield return new CodeInstruction(OpCodes.Call,  AccessTools.Method(typeof(Log), "Warning"));
                 }
             }
         }
