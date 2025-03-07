@@ -15,29 +15,28 @@ namespace VFECore
     {
         private static void Postfix(MemoryThoughtHandler __instance, ref Thought_Memory newThought, Pawn otherPawn)
         {
-            var options = newThought.def.GetModExtension<ThoughtExtensions>();
-            if (options != null)
+            if (newThought.pawn != null)
             {
-                if (options.removeThoughtsWhenAdded != null)
+                var options = newThought.def.GetModExtension<ThoughtExtensions>();
+                if (options != null)
                 {
-                    foreach (var thoughtDef in options.removeThoughtsWhenAdded)
+                    if (options.removeThoughtsWhenAdded != null)
                     {
-                        __instance.pawn.needs.mood.thoughts.memories.RemoveMemoriesOfDef(thoughtDef);
+                        foreach (var thoughtDef in options.removeThoughtsWhenAdded)
+                        {
+                            __instance.pawn.needs.mood.thoughts.memories.RemoveMemoriesOfDef(thoughtDef);
+                        }
                     }
                 }
-            }
 
-            var factor = newThought.CurStage.baseMoodEffect switch
-            {
-                > 0 => newThought.pawn?.GetStatValue(VFEDefOf.VEF_PositiveThoughtDurationFactor),
-                < 0 => newThought.pawn?.GetStatValue(VFEDefOf.VEF_NegativeThoughtDurationFactor),
-                _   => newThought.pawn?.GetStatValue(VFEDefOf.VEF_NeutralThoughtDurationFactor),
-            };
-            if (factor != null)
-            {
-                float factorFloat = (float)factor;
-                newThought.durationTicksOverride = Mathf.RoundToInt(newThought.DurationTicks * factorFloat);
+                var factor = newThought.CurStage.baseMoodEffect switch
+                {
+                    > 0 => __instance.pawn.GetStatValue(VFEDefOf.VEF_PositiveThoughtDurationFactor),
+                    < 0 => __instance.pawn.GetStatValue(VFEDefOf.VEF_NegativeThoughtDurationFactor),
+                    _   => __instance.pawn.GetStatValue(VFEDefOf.VEF_NeutralThoughtDurationFactor),
+                };
 
+                newThought.durationTicksOverride = Mathf.RoundToInt(newThought.DurationTicks * factor);
             }
         }
     }
