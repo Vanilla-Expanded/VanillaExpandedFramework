@@ -9,7 +9,7 @@ namespace VanillaCookingExpanded
     using RimWorld;
     using Verse;
 
-    [HarmonyDebug]
+  
     [HarmonyPatch(typeof(WorkGiver_DoBill), "TryFindBestIngredientsInSet_NoMixHelper")]
     public static class WorkGiver_DoBill_TryFindBestIngredientsInSet_NoMixHelper_Patch
     {
