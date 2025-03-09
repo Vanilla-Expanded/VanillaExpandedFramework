@@ -62,7 +62,7 @@ namespace ItemProcessor
                         qualityComp.SetQuality(building_processor.qualityNow, ArtGenerationContext.Colony);
                     }
 
-                    GenSpawn.Spawn(newProduct, building_processor.InteractionCell, building_processor.Map);
+                    GenPlace.TryPlaceThing(newProduct, building_processor.InteractionCell, building_processor.Map, ThingPlaceMode.Near);
                     building_processor.processorStage = ProcessorStage.ProductRemoved;
                     building_processor.ResetEverything();
                     building_processor.DestroyIngredients();
