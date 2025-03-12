@@ -62,6 +62,9 @@ namespace VanillaApparelExpanded
                             // Save old item health
                             int oldItemHealth = this.parent.HitPoints;
 
+                            //Save old item coloring
+                            Color oldItemColor = this.parent.DrawColor;
+
                             ThingDef oldItemStuff = null;
 
                             // Save old item stuff type
@@ -77,6 +80,8 @@ namespace VanillaApparelExpanded
                             {
                                 // Set new item health to old one
                                 item.HitPoints = oldItemHealth;
+                                // Set new item color to old one
+                                item.DrawColor = oldItemColor;
 
                                 // If the new item has CompQuality set the quality to the same one as the old item
                                 if (this.parent.TryGetQuality(out QualityCategory qc) && item.TryGetComp<CompQuality>() != null)
