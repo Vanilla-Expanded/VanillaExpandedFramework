@@ -107,7 +107,7 @@ namespace VFECore
         }
 
         /// <summary>
-        /// Called from VFEMedieval 2
+        /// Called from VFECore 2
         /// </summary>
         /// <returns>Color based on whatever is defined on the faction or it's def, if any.</returns>
         public Color GetColor(Faction faction)
