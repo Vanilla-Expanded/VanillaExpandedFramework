@@ -16,9 +16,9 @@ namespace VFECore
             {
                 foreach (var movingBaseDef in DefDatabase<MovingBaseDef>.AllDefs)
                 {
-                    if (movingBaseDef.baseFaction == __result.def && movingBaseDef.initialSpawnCount > 0)
+                    if (movingBaseDef.baseFaction == __result.def && movingBaseDef.initialSpawnCount.min > 0)
                     {
-                        var spawnCount = movingBaseDef.initialSpawnCount;
+                        var spawnCount = movingBaseDef.initialSpawnCount.RandomInRange;
                         if (movingBaseDef.initialSpawnScalesWithPopulation)
                         {
                             spawnCount = Mathf.RoundToInt(spawnCount * Find.World.info.overallPopulation.GetScaleFactor());

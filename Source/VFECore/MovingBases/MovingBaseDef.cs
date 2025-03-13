@@ -1,4 +1,5 @@
 using RimWorld;
+using Verse;
 
 namespace VFECore
 {
@@ -8,7 +9,7 @@ namespace VFECore
 
         public int ticksPerMove = 3300;
 
-        public int initialSpawnCount;
+        public IntRange initialSpawnCount;
 
         public bool initialSpawnScalesWithPopulation;
     }
