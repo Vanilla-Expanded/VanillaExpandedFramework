@@ -60,7 +60,7 @@ namespace PipeSystem
             public ThingDef thing;
             public ThingCategoryDef thingCategory;
             // Amount needed to produce result
-            public int countNeeded;
+            public float countNeeded;
             public bool nutritionGetter = false;
         }
 

@@ -244,7 +244,7 @@ namespace PipeSystem
                 var requirement = def.ingredients[i];
                 if (requirement.nutritionGetter)
                 {
-                    if (!requirement.thing.IsNutritionGivingIngestible)
+                    if (requirement.thing?.IsNutritionGivingIngestible==false)
                     {
                         ingredientsOwners.Add(new ThingAndResourceOwner(requirement.thing, requirement.pipeNet, 1, requirement.thingCategory));
 
@@ -259,7 +259,7 @@ namespace PipeSystem
                 }
                 else
                 {
-                    ingredientsOwners.Add(new ThingAndResourceOwner(requirement.thing, requirement.pipeNet, requirement.countNeeded, requirement.thingCategory));
+                    ingredientsOwners.Add(new ThingAndResourceOwner(requirement.thing, requirement.pipeNet, (int)requirement.countNeeded, requirement.thingCategory));
 
                 }
 
