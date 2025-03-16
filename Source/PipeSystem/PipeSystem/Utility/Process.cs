@@ -217,6 +217,8 @@ namespace PipeSystem
             Scribe_Values.Look(ref pickUpReady, "pickUpReady");
             Scribe_Values.Look(ref processCount, "processCount");
             Scribe_Values.Look(ref ruinedPercent, "ruinedPercent", 0f);
+            Scribe_Values.Look(ref ticksOrQualityTicks, "ticksOrQualityTicks");
+
 
             Scribe_References.Look(ref parent, "parent");
 
