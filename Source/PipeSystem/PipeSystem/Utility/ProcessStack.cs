@@ -82,7 +82,7 @@ namespace PipeSystem
         public void Notify_ProcessChange()
         {
             // Current process isn't started, we set it to null
-            if (currentProcess != null && currentProcess.Def.ticks == currentProcess.TickLeft)
+            if (currentProcess != null && currentProcess.ticksOrQualityTicks == currentProcess.TickLeft)
             {
                 currentProcess = null;
             }

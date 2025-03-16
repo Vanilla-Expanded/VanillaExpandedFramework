@@ -27,6 +27,7 @@ namespace PipeSystem
         public int targetCount;                                // Number of time this process should repeat
         private int processCount;                               // Number of time this process repeated
         private float ruinedPercent;                            // Ruining (due to temp) percent
+        public int ticksOrQualityTicks;
 
         public bool forceQualityOut = false;
         public QualityCategory qualityToForce;
@@ -34,8 +35,8 @@ namespace PipeSystem
 
         private string id;                                      // Process ID
 
-       
-        private List<FloatMenuOption> qualitySelections;         
+
+        private List<FloatMenuOption> qualitySelections;
 
         private List<IntVec3> adjCells;
         private List<CompResource> resultsCompResources;
@@ -173,7 +174,8 @@ namespace PipeSystem
         {
             this.parent = parent;
             def = processDef;
-            tickLeft = def.isFactoryProcess ? (int)(GetFactoryAcceleration() * processDef.ticks) : processDef.ticks;
+            ticksOrQualityTicks = def.ticksQuality.NullOrEmpty() ? def.ticks : def.ticksQuality[(int)QualityCategory.Normal];
+            tickLeft = def.isFactoryProcess ? (int)(GetFactoryAcceleration() * ticksOrQualityTicks) : ticksOrQualityTicks;
             progress = 0f;
             ruinedPercent = 0f;
             var map = parent.Map;
@@ -417,7 +419,8 @@ namespace PipeSystem
 
             }
             // Set progress (for the bar)
-            progress = 1f - (tickLeft / (float)def.ticks);
+            
+            progress = 1f - (tickLeft / (float)ticksOrQualityTicks);
             // Check if processor should produce this tick
             if (tickLeft <= 0)
             {
@@ -663,15 +666,15 @@ namespace PipeSystem
                 if (outThing.TryGetComp<CompIngredients>() != null)
                 {
                     CompIngredients compingredients = outThing.TryGetComp<CompIngredients>();
-                   
-                        foreach (ThingDef ingredientInput in advancedProcessor.cachedIngredients)
-                        {
 
-                            if (!compingredients.ingredients.Contains(ingredientInput)) { compingredients.ingredients.Add(ingredientInput); }
-                        }
-                        advancedProcessor.cachedIngredients.Clear();
+                    foreach (ThingDef ingredientInput in advancedProcessor.cachedIngredients)
+                    {
 
-                   
+                        if (!compingredients.ingredients.Contains(ingredientInput)) { compingredients.ingredients.Add(ingredientInput); }
+                    }
+                    advancedProcessor.cachedIngredients.Clear();
+
+
 
 
                 }
@@ -681,7 +684,8 @@ namespace PipeSystem
                 CompQuality compQuality = outThing.TryGetComp<CompQuality>();
                 if (compQuality != null)
                 {
-                    if (forceQualityOut) {
+                    if (forceQualityOut)
+                    {
 
                         compQuality.SetQuality(qualityToForce, null);
                     }
@@ -700,7 +704,7 @@ namespace PipeSystem
         /// <param name="finished">Process finished normaly?</param>
         public void ResetOwners(bool finished)
         {
-            if (!finished && !def.destroyIngredientsDirectly && !(def.destroyIngredientsOnStart && tickLeft < def.ticks))
+            if (!finished && !def.destroyIngredientsDirectly && !(def.destroyIngredientsOnStart && tickLeft < ticksOrQualityTicks))
             {
                 // Refund ingredients
                 for (int i = 0; i < ingredientsOwners.Count; i++)
@@ -742,7 +746,7 @@ namespace PipeSystem
         public void ResetProcess(bool finished = true)
         {
             ResetOwners(finished);  // Reset ingredients owners
-            tickLeft = def.ticks;   // Reset ticks
+            tickLeft = ticksOrQualityTicks;   // Reset ticks
             pickUpReady = false;    // Reset pickup status
             ruinedPercent = 0;      // Reset ruining status
             progress = 0;           // Reset progress
@@ -833,7 +837,9 @@ namespace PipeSystem
             }
             GUI.color = color;
             // Process label
-            Widgets.Label(new Rect(28f, 0f, rect.width - 48f - 20f, rect.height + 5f), def.LabelCap + " (" + def.ticks.ToStringTicksToDays() + ")");
+           
+            string qualityString = def.stopAtQuality ? " (" + qualityToOutput.ToString() + ") " : "";
+            Widgets.Label(new Rect(28f, 0f, rect.width - 48f - 20f, rect.height + 5f), def.LabelCap + qualityString + "(" + ticksOrQualityTicks.ToStringTicksToDays() + ")");
             // Config
             var baseRect = rect.AtZero();
             GUI.color = new Color(1f, 1f, 1f, 0.65f);
@@ -899,14 +905,14 @@ namespace PipeSystem
             // QualitySelector
             if (Def.increaseQualityWithTime)
             {
-                var qualitySelectorRect = new Rect(rect.width - 24f - 24f-24f, 0f, 24f, 24f);
+                var qualitySelectorRect = new Rect(rect.width - 24f - 24f - 24f, 0f, 24f, 24f);
                 if (Widgets.ButtonImage(qualitySelectorRect, MaterialCreator.QualitySelect, color))
                 {
                     Find.WindowStack.Add(new FloatMenu(QualitySelections));
                 }
                 TooltipHandler.TipRegionByKey(qualitySelectorRect, "PipeSystem_QualitySelector");
             }
-            
+
             Widgets.EndGroup();
             // Draw suspended
             if (suspended)
@@ -936,13 +942,34 @@ namespace PipeSystem
                 {
                     qualitySelections = new List<FloatMenuOption>
                     {
-                        new FloatMenuOption(QualityCategory.Awful.ToString(), () => qualityToOutput =QualityCategory.Awful, extraPartWidth: 24f),
-                        new FloatMenuOption(QualityCategory.Poor.ToString(), () => qualityToOutput =QualityCategory.Poor, extraPartWidth: 24f),
-                        new FloatMenuOption(QualityCategory.Normal.ToString(), () => qualityToOutput =QualityCategory.Normal, extraPartWidth: 24f),
-                        new FloatMenuOption(QualityCategory.Good.ToString(), () => qualityToOutput =QualityCategory.Good, extraPartWidth: 24f),
-                        new FloatMenuOption(QualityCategory.Excellent.ToString(), () => qualityToOutput =QualityCategory.Excellent, extraPartWidth: 24f),
-                        new FloatMenuOption(QualityCategory.Masterwork.ToString(), () => qualityToOutput =QualityCategory.Masterwork, extraPartWidth: 24f),
-                        new FloatMenuOption(QualityCategory.Legendary.ToString(), () => qualityToOutput =QualityCategory.Legendary, extraPartWidth: 24f)
+                        new FloatMenuOption(QualityCategory.Awful.ToString(), () => {
+                            qualityToOutput =QualityCategory.Awful;
+                            ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Awful];
+                        }, extraPartWidth: 24f),
+                         new FloatMenuOption(QualityCategory.Poor.ToString(), () => {
+                            qualityToOutput =QualityCategory.Poor;
+                            ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Poor];
+                        }, extraPartWidth: 24f),
+                          new FloatMenuOption(QualityCategory.Normal.ToString(), () => {
+                            qualityToOutput =QualityCategory.Normal;
+                            ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Normal];
+                        }, extraPartWidth: 24f),
+                           new FloatMenuOption(QualityCategory.Good.ToString(), () => {
+                            qualityToOutput =QualityCategory.Good;
+                            ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Good];
+                        }, extraPartWidth: 24f),
+                            new FloatMenuOption(QualityCategory.Excellent.ToString(), () => {
+                            qualityToOutput =QualityCategory.Excellent;
+                            ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Excellent];
+                        }, extraPartWidth: 24f),
+                             new FloatMenuOption(QualityCategory.Masterwork.ToString(), () => {
+                            qualityToOutput =QualityCategory.Masterwork;
+                            ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Masterwork];
+                        }, extraPartWidth: 24f),
+                              new FloatMenuOption(QualityCategory.Legendary.ToString(), () => {
+                            qualityToOutput =QualityCategory.Legendary;
+                            ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Legendary];
+                        }, extraPartWidth: 24f)
                     };
                 }
                 return qualitySelections;
