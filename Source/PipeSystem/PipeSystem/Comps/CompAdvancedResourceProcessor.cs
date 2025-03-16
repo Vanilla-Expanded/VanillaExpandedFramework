@@ -429,13 +429,33 @@ namespace PipeSystem
 
 
         /// <summary>
-        /// Add debug gizmos
+        /// Add gizmos
         /// </summary>
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             foreach (var gizmo in base.CompGetGizmosExtra())
                 yield return gizmo;
 
+            if (Process?.Def.allowExtractAtCurrentQuality == true)
+            {
+                yield return new Command_Action
+                {
+                    icon = ContentFinder<Texture2D>.Get("UI/PS_ExtractNow"),
+                    defaultLabel = "PipeSystem_ExtractAtCurrentQuality".Translate(),
+                    defaultDesc= "PipeSystem_ExtractAtCurrentQuality_Desc".Translate()
+                    
+,
+                    action = () => {
+                        Process.forceQualityOut = true;
+                        Process.qualityToForce = QualityCategory.Awful;
+
+                        Process?.Tick(Process.TickLeft - 10);
+                        }
+                };
+
+            }
+            
+            
             if (DebugSettings.ShowDevGizmos)
             {
                 yield return new Command_Action

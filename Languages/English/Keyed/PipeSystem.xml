@@ -79,4 +79,9 @@
   
   <PipeSystem_CopyProcesses>Copy processes</PipeSystem_CopyProcesses>
   <PipeSystem_PasteProcesses>Paste processes</PipeSystem_PasteProcesses>
+  
+  <PipeSystem_ExtractAtCurrentQuality>Extract at current quality</PipeSystem_ExtractAtCurrentQuality>
+  <PipeSystem_ExtractAtCurrentQuality_Desc>Extract the product at the current quality.</PipeSystem_ExtractAtCurrentQuality_Desc>
+  
+   <PipeSystem_QualitySelector>Select the quality at which this process will stop</PipeSystem_QualitySelector>
 </LanguageData>

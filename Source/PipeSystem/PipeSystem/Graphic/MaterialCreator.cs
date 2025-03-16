@@ -12,6 +12,7 @@ namespace PipeSystem
     {
         public static readonly Material BarUnfilledMat = SolidColorMaterials.SimpleSolidColorMaterial(new Color(0.3f, 0.3f, 0.3f));
         public static readonly Material BarFallbackMat = SolidColorMaterials.SimpleSolidColorMaterial(new Color(0.9f, 0.85f, 0.2f));
+        public static readonly Texture2D QualitySelect = ContentFinder<Texture2D>.Get("UI/QualitySelectors/PS_QualitySelect");
 
         public static Material transferMat;
 

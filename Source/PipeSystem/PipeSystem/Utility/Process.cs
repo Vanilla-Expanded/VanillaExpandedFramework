@@ -28,8 +28,14 @@ namespace PipeSystem
         private int processCount;                               // Number of time this process repeated
         private float ruinedPercent;                            // Ruining (due to temp) percent
 
+        public bool forceQualityOut = false;
+        public QualityCategory qualityToForce;
+        public QualityCategory qualityToOutput;
 
         private string id;                                      // Process ID
+
+       
+        private List<FloatMenuOption> qualitySelections;         
 
         private List<IntVec3> adjCells;
         private List<CompResource> resultsCompResources;
@@ -146,7 +152,7 @@ namespace PipeSystem
         {
             get
             {
-                
+
                 return progress;
             }
             set
@@ -155,7 +161,7 @@ namespace PipeSystem
             }
         }
 
-        
+
         public int TickLeft => tickLeft;
         public List<ThingAndResourceOwner> IngredientsOwners => ingredientsOwners;
         public float RuinedPercent => ruinedPercent;
@@ -173,6 +179,7 @@ namespace PipeSystem
             var map = parent.Map;
             id = $"Process_{parent.Map.uniqueID}_{def.defName}_{CachedAdvancedProcessorsManager.GetFor(map).ProcessIDsManager.GetNextProcessID(map)}";
             spawning = true;
+            qualityToOutput = def.quality;
         }
 
         /// <summary>
@@ -244,7 +251,7 @@ namespace PipeSystem
                 var requirement = def.ingredients[i];
                 if (requirement.nutritionGetter)
                 {
-                    if (requirement.thing?.IsNutritionGivingIngestible==false)
+                    if (requirement.thing?.IsNutritionGivingIngestible == false)
                     {
                         ingredientsOwners.Add(new ThingAndResourceOwner(requirement.thing, requirement.pipeNet, 1, requirement.thingCategory));
 
@@ -656,9 +663,7 @@ namespace PipeSystem
                 if (outThing.TryGetComp<CompIngredients>() != null)
                 {
                     CompIngredients compingredients = outThing.TryGetComp<CompIngredients>();
-                    if (Def.transfersIngredientList)
-                    {
-
+                   
                         foreach (ThingDef ingredientInput in advancedProcessor.cachedIngredients)
                         {
 
@@ -666,14 +671,7 @@ namespace PipeSystem
                         }
                         advancedProcessor.cachedIngredients.Clear();
 
-                    }
-                    else
-                    {
-                        foreach (ProcessDef.Ingredient ingredient in Def.ingredients)
-                        {
-                            if (!compingredients.ingredients.Contains(ingredient.thing)) { compingredients.ingredients.Add(ingredient.thing); }
-                        }
-                    }
+                   
 
 
                 }
@@ -683,8 +681,15 @@ namespace PipeSystem
                 CompQuality compQuality = outThing.TryGetComp<CompQuality>();
                 if (compQuality != null)
                 {
-                    compQuality.SetQuality(Def.quality, null);
+                    if (forceQualityOut) {
+
+                        compQuality.SetQuality(qualityToForce, null);
+                    }
+                    else
+                        compQuality.SetQuality(qualityToOutput, null);
                 }
+
+                forceQualityOut = false;
             }
 
         }
@@ -891,6 +896,17 @@ namespace PipeSystem
                 advancedProcessor.ProcessStack.Notify_ProcessChange();
             }
             TooltipHandler.TipRegionByKey(suspendRect, "SuspendBillTip");
+            // QualitySelector
+            if (Def.increaseQualityWithTime)
+            {
+                var qualitySelectorRect = new Rect(rect.width - 24f - 24f-24f, 0f, 24f, 24f);
+                if (Widgets.ButtonImage(qualitySelectorRect, MaterialCreator.QualitySelect, color))
+                {
+                    Find.WindowStack.Add(new FloatMenu(QualitySelections));
+                }
+                TooltipHandler.TipRegionByKey(qualitySelectorRect, "PipeSystem_QualitySelector");
+            }
+            
             Widgets.EndGroup();
             // Draw suspended
             if (suspended)
@@ -908,6 +924,31 @@ namespace PipeSystem
 
             return rect;
         }
+
+        /// <summary>
+        /// QualitySelections
+        /// </summary>
+        public List<FloatMenuOption> QualitySelections
+        {
+            get
+            {
+                if (qualitySelections == null)
+                {
+                    qualitySelections = new List<FloatMenuOption>
+                    {
+                        new FloatMenuOption(QualityCategory.Awful.ToString(), () => qualityToOutput =QualityCategory.Awful, extraPartWidth: 24f),
+                        new FloatMenuOption(QualityCategory.Poor.ToString(), () => qualityToOutput =QualityCategory.Poor, extraPartWidth: 24f),
+                        new FloatMenuOption(QualityCategory.Normal.ToString(), () => qualityToOutput =QualityCategory.Normal, extraPartWidth: 24f),
+                        new FloatMenuOption(QualityCategory.Good.ToString(), () => qualityToOutput =QualityCategory.Good, extraPartWidth: 24f),
+                        new FloatMenuOption(QualityCategory.Excellent.ToString(), () => qualityToOutput =QualityCategory.Excellent, extraPartWidth: 24f),
+                        new FloatMenuOption(QualityCategory.Masterwork.ToString(), () => qualityToOutput =QualityCategory.Masterwork, extraPartWidth: 24f),
+                        new FloatMenuOption(QualityCategory.Legendary.ToString(), () => qualityToOutput =QualityCategory.Legendary, extraPartWidth: 24f)
+                    };
+                }
+                return qualitySelections;
+            }
+        }
+
 
         /// <summary>
         /// Do simple process progress interface in rect

@@ -110,6 +110,7 @@ namespace PipeSystem
                     
                 }
             }
+            else { comp.cachedIngredients.Add(thing.def); }
 
             if (!owner.Require && awaitingIngredients.Contains(comp.parent)) { 
                 awaitingIngredients.Remove(comp.parent);
