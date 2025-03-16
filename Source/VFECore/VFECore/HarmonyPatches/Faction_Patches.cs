@@ -319,4 +319,74 @@ namespace VFECore
             return 0;
         }
     }
+
+    [HarmonyPatch(typeof(WorldFactionsUIUtility), nameof(WorldFactionsUIUtility.DoRow))]
+    public static class WorldFactionsUIUtility_DoRow_Patch
+    {
+        private static void Postfix(FactionDef factionDef, List<FactionDef> factions, int index, bool __result)
+        {
+            // No faction was removed
+            if (!__result)
+                return;
+
+            var data = FactionDefExtension.Get(factionDef).forcedFactionData;
+            if (!data.preventRemovalAtWorldGeneration || !data.UnderRequiredWorldGenFactionCount(factionDef, factions))
+                return;
+
+            // Restore the state and give a message about it
+            Messages.Message(data.GetWorldGenMissingFactionMessage(factionDef, factions), MessageTypeDefOf.RejectInput, false);
+            factions.Insert(index, factionDef);
+        }
+    }
+
+    [HarmonyPatch(typeof(WorldFactionsUIUtility), nameof(WorldFactionsUIUtility.DoWindowContents))]
+    public static class WorldFactionsUIUtility_DoWindowContents_Patch
+    {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var matcher = new CodeMatcher(instructions);
+
+            // Find index of the StringBuilder object, hopefully future-proofing this patch.
+            // As long as there's only 1 string builder in here, the patch should work
+            // even if the index of the StringBuilder's local moves around.
+            var stringBuilderStlocInstr = matcher.MatchEndForward(
+                    new CodeMatch(OpCodes.Newobj, AccessTools.DeclaredConstructor(typeof(StringBuilder), [])),
+                    CodeMatch.StoresLocal()
+                )
+                .Instruction;
+            // Extensions.LocalIndex doesn't support LocalBuilder.
+            var stringBuilderIndex = stringBuilderStlocInstr.operand is LocalBuilder builder ? builder.LocalIndex : stringBuilderStlocInstr.LocalIndex();
+
+            // Search forward until we find where the string builder length is checked,
+            // and put the cursor right before the check.
+            matcher.MatchStartForward(
+                    CodeMatch.LoadsLocal(),
+                    CodeMatch.Calls(AccessTools.PropertyGetter(typeof(StringBuilder), nameof(StringBuilder.Length)))
+                )
+                .Insert(
+                    // Load the list of currently active faction defs
+                    CodeInstruction.LoadArgument(1),
+                    // Load the string builder
+                    CodeInstruction.LoadLocal(stringBuilderIndex),
+                    // Call our inserted method
+                    CodeInstruction.Call(typeof(WorldFactionsUIUtility_DoWindowContents_Patch), nameof(InsertFactionWarnings))
+                );
+
+            return matcher.Instructions();
+        }
+
+        private static void InsertFactionWarnings(List<FactionDef> activeFactions, StringBuilder builder)
+        {
+            // In vanilla, the normal messages get replaced by a generic "no factions active" one.
+            // There's an option to follow this behavior, or always display the warning.
+            var anyActive = activeFactions.Count(x => !x.hidden) != 0;
+
+            foreach (var faction in FactionGenerator.ConfigurableFactions)
+            {
+                var data = FactionDefExtension.Get(faction).forcedFactionData;
+                if (!data.preventRemovalAtWorldGeneration && (anyActive || data.displayMissingWarningIfNoFactionPresent) && data.UnderRequiredWorldGenFactionCount(faction, activeFactions))
+                    builder.AppendLine(data.GetWorldGenMissingFactionMessage(faction, activeFactions));
+            }
+        }
+    }
 }

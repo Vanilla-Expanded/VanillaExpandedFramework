@@ -94,11 +94,19 @@ namespace VFECore
                 if (FactionCanBeAddedCount > 0 && list.ButtonText("AskForPopUp".Translate(), "AskForPopUpExplained".Translate()))
                 {
                     Current.Game.World.GetComponent<NewFactionSpawningState>().ClearIgnored();
-                    var factionEnumerator = DefDatabase<FactionDef>.AllDefs.Where(Patch_GameComponentUtility.LoadedGame.Validator).GetEnumerator();
+
+                    var factionsToConsider = new List<FactionDef>();
+                    Patch_GameComponentUtility.LoadedGame.CollectPotentialFactionsToSpawn(DefDatabase<FactionDef>.AllDefs, factionsToConsider);
+
+                    var factionEnumerator = factionsToConsider.GetEnumerator();
                     if (factionEnumerator.MoveNext())
                     {
                         // Only one dialog can be stacked at a time, so give it the list of all factions
                         Dialog_NewFactionSpawning.OpenDialog(factionEnumerator);
+                    }
+                    else
+                    {
+                        factionEnumerator.Dispose();
                     }
                 }
             }
@@ -150,7 +158,7 @@ namespace VFECore
                 return false;
             }
 
-            if (!faction.canMakeRandomly && faction.hidden && faction.maxCountAtGameStart <= 0)
+            if (faction.hidden && faction.requiredCountAtGameStart <= 0)
             {
                 return false;
             }

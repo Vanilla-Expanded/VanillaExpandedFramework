@@ -38,6 +38,10 @@
 	<VanillaFactionsExpanded.FactionMessageFailedFull>Failed to create a faction with settlements.</VanillaFactionsExpanded.FactionMessageFailedFull>
 	<VanillaFactionsExpanded.FactionMessageSuccessFull>Added {FactionName} with {Amount} settlements.</VanillaFactionsExpanded.FactionMessageSuccessFull>
 	<VanillaFactionsExpanded.FactionMessageSuccess>Added {FactionName}.</VanillaFactionsExpanded.FactionMessageSuccess>
+	<VanillaFactionsExpanded.FactionDiscoveryRequired>It is marked as required, and you must add it to the game.</VanillaFactionsExpanded.FactionDiscoveryRequired>
+	<VanillaFactionsExpanded.FactionFailedMessage>Failed to generate this faction. It is recommended to try again, but you can now skip adding this faction. Skipping may cause issues.</VanillaFactionsExpanded.FactionFailedMessage>
+	<VanillaFactionsExpanded.FactionRequired>{FACTION} cannot be disabled{REQUIRED_multiple ? , you need at least {REQUIRED} factions of that type. : .}</VanillaFactionsExpanded.FactionRequired>
+	<VanillaFactionsExpanded.FactionRecommended>{REQUIRED_multiple ? It is recommended to have at least {REQUIRED} factions of {FACTION} type, but currently there's only {COUNT}. : It is recommended to enable {FACTION}.}</VanillaFactionsExpanded.FactionRecommended>
 
 	<VanillaFactionsExpanded.FactionSettlementsToSpawn>Settlements to spawn (recommended are {0}): {1}</VanillaFactionsExpanded.FactionSettlementsToSpawn>
 	<VanillaFactionsExpanded.FactionMinDistance>The minimum distance from player bases (recommended are {0}): {1}</VanillaFactionsExpanded.FactionMinDistance>

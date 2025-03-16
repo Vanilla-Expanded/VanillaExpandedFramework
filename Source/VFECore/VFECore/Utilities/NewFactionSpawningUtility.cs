@@ -1,14 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
+using KCSG;
 using RimWorld;
 using RimWorld.Planet;
+using UnityEngine;
 using Verse;
 
 namespace VFECore
 {
     public static class NewFactionSpawningUtility
     {
+        private const float newFactionSettlementFactor = 0.7f; // recommendation
+        private const float settlementsPer100KTiles = 80; // average
+
         public static Faction SpawnWithoutSettlements(FactionDef factionDef)
         {
             // Temporarily set to hidden, so FactionGenerator doesn't spawn a base
@@ -110,6 +115,40 @@ namespace VFECore
             {
                 case "PColony": return true; // Empire mod's player faction
                 default:        return false;
+            }
+        }
+
+        public static int GetRecommendedSettlementCount(float settlementCountFactor = 1f)
+        {
+            var existingFactions = Find.FactionManager.AllFactionsVisible.Count();
+            return Mathf.Max(1, GenMath.RoundRandom(Find.WorldGrid.TilesCount / 100000f * settlementsPer100KTiles / existingFactions * newFactionSettlementFactor * settlementCountFactor));
+        }
+
+        public static void SpawnFactions(List<(FactionDef, ForcedFactionData)> forcedFactions)
+        {
+            var allFactions = Find.FactionManager.AllFactionsListForReading;
+
+            foreach (var (factionDef, data) in forcedFactions)
+            {
+                var currentFactionCount = allFactions.Count(x => x.def == factionDef);
+                var maxFactionCount = Mathf.Min(data.requiredFactionCountDuringGameplay, factionDef.maxConfigurableAtWorldCreation);
+                var noSettlements = factionDef.hidden || factionDef.GetModExtension<CustomGenOption>()?.canSpawnSettlements == false;
+
+                for (var i = currentFactionCount; i < maxFactionCount; i++)
+                {
+                    if (noSettlements)
+                    {
+                        SpawnWithoutSettlements(factionDef);
+                    }
+                    else
+                    {
+                        var distance = data.factionDiscoveryMinimumDistanceFromPlayer;
+                        if (distance <= 0f) distance = SettlementProximityGoodwillUtility.MaxDist;
+                        // The settlement count cannot be more than 4 times the recommended count
+                        var settlementCount = Mathf.Min(4 * GetRecommendedSettlementCount(), GetRecommendedSettlementCount(data.factionDiscoveryFactionCountFactor));
+                        SpawnWithSettlements(factionDef, settlementCount, distance, out _);
+                    }
+                }
             }
         }
     }

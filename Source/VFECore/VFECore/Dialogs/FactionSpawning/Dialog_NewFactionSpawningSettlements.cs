@@ -12,28 +12,31 @@ namespace VFECore
     {
         private readonly Action<int, int> spawnCallback;
 
-        private const float newFactionSettlementFactor = 0.7f; // recommendation
-        private const float settlementsPer100KTiles = 80; // average
-
         private int settlementsToSpawn;
         private int settlementsRecommended;
         private int distanceToSpawn;
         private int distanceRecommended;
 
-        public static void OpenDialog(Action<int, int> spawnCallback)
+        public static void OpenDialog(Action<int, int> spawnCallback, float settlementSpawnFactor = 1f, int minDistanceToSpawn = -1)
         {
-            Find.WindowStack.Add(new Dialog_NewFactionSpawningSettlements(spawnCallback));
+            Find.WindowStack.Add(new Dialog_NewFactionSpawningSettlements(spawnCallback, settlementSpawnFactor, minDistanceToSpawn));
         }
 
-        private Dialog_NewFactionSpawningSettlements(Action<int, int> spawnCallback)
+        private Dialog_NewFactionSpawningSettlements(Action<int, int> spawnCallback, float settlementSpawnFactor = 1f, int minDistanceToSpawn = -1)
         {
             doCloseButton = false;
             forcePause = true;
             absorbInputAroundWindow = true;
             this.spawnCallback = spawnCallback;
 
-            settlementsToSpawn = settlementsRecommended = GetSettlementsRecommendation();
-            distanceToSpawn = distanceRecommended = SettlementProximityGoodwillUtility.MaxDist;
+            settlementsRecommended = NewFactionSpawningUtility.GetRecommendedSettlementCount();
+            // The settlement count cannot be more than 4 times the recommended count
+            settlementsToSpawn = Mathf.Min(4 * settlementsRecommended, NewFactionSpawningUtility.GetRecommendedSettlementCount(settlementSpawnFactor));
+            distanceRecommended = SettlementProximityGoodwillUtility.MaxDist;
+            if (minDistanceToSpawn <= 0)
+                distanceToSpawn = distanceRecommended;
+            else
+                distanceToSpawn = Mathf.Min(distanceRecommended * 2, minDistanceToSpawn);
 
             // You can enable this again, in case the issue arises that factions always spawn with a single settlement
             //if  (GenTypes.GetTypeInAnyAssembly("FactionControl.Controller", "FactionControl") != null) FactionControlFix();
@@ -67,12 +70,6 @@ namespace VFECore
             {
                 Log.Warning($"Something went wrong when trying to initialize FactionControl.Controller:\n{e.Message}\n{e.StackTrace}");
             }
-        }
-
-        private static int GetSettlementsRecommendation()
-        {
-            int existingFactions = Find.FactionManager.AllFactionsVisible.Count();
-            return GenMath.RoundRandom(Find.WorldGrid.TilesCount / 100000f * settlementsPer100KTiles / existingFactions * newFactionSettlementFactor);
         }
 
         public override void DoWindowContents(Rect inRect)
