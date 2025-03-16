@@ -75,7 +75,7 @@ namespace KCSG
             RequiredModLoaded = true;
             for (int o = 0; o < modRequirements.Count; o++)
             {
-                if (!ModsConfig.ActiveModsInLoadOrder.Any(m => m.PackageId == modRequirements[o].ToLower()))
+                if (!ModsConfig.ActiveModsInLoadOrder.Any(m => m.PackageIdNonUnique == modRequirements[o].ToLower()))
                 {
                     RequiredModLoaded = false;
                     break;
