@@ -14,6 +14,7 @@ namespace KCSG
         public bool preventBridgeable = false;
 
         public List<StructureLayoutDef> structureLayoutDefs = new List<StructureLayoutDef>();
+        public List<SettlementLayoutDef> settlementLayoutDefs = new List<SettlementLayoutDef>();
         public List<TiledStructureDef> tiledStructures = new List<TiledStructureDef>();
 
         public List<string> symbolResolvers = new List<string>();
@@ -42,12 +43,31 @@ namespace KCSG
                 TileUtils.Generate(tiledStructures.RandomElement(), map.Center, map, scaleWithQuest ? CustomGenOption.GetRelatedQuest(map) : null);
                 return;
             }
-            // Normal
-            StructureLayoutDef layoutDef = structureLayoutDefs.RandomElement();
-            var cellRect = CellRect.CenteredOn(map.Center, layoutDef.sizes.x, layoutDef.sizes.z);
-            GenOption.GetAllMineableIn(cellRect, map);
-            LayoutUtils.CleanRect(layoutDef, map, cellRect, fullClear);
-            layoutDef.Generate(cellRect, map);
+            CellRect cellRect = default;
+            if (structureLayoutDefs.Any())
+            {
+                // Normal
+                StructureLayoutDef layoutDef = structureLayoutDefs.RandomElement();
+                cellRect = CellRect.CenteredOn(map.Center, layoutDef.sizes.x, layoutDef.sizes.z);
+                GenOption.GetAllMineableIn(cellRect, map);
+                LayoutUtils.CleanRect(layoutDef, map, cellRect, fullClear);
+                layoutDef.Generate(cellRect, map);
+            }
+            else if (settlementLayoutDefs.Any())
+            {
+                var layoutDef = settlementLayoutDefs.RandomElement();
+                GenOption.settlementLayout = layoutDef;
+                cellRect = CellRect.CenteredOn(map.Center, layoutDef.settlementSize.x, layoutDef.settlementSize.z);
+                GenOption.GetAllMineableIn(cellRect, map);
+                BaseGen.globalSettings.map = map;
+                var rp = new ResolveParams
+                {
+                    faction = map.ParentFaction,
+                    rect = cellRect
+                };
+                SettlementGenUtils.Generate(rp, map, GenOption.settlementLayout);
+            }
+
             if (GenOption.customGenExt.symbolResolvers?.Count > 0)
             {
                 Debug.Message("GenStep_CustomStructureGen - Additional symbol resolvers");
@@ -57,6 +77,7 @@ namespace KCSG
                     rect = cellRect
                 }, null);
             }
+
 
             PostGenerate(cellRect, map, parms);
 

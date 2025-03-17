@@ -31,19 +31,14 @@ namespace VFECore
             return true;
         }
 
-        public override void ExposeData()
-        {
-            base.ExposeData();
-            Scribe_References.Look(ref movingBase, "movingBase");
-        }
-
-        public static void SetDestination(Caravan caravan, MovingBase movingBase)
+        public static CaravanArrivalAction CreateCaravanArrivalAction(CaravanArrivalAction action, Caravan caravan, MovingBase movingBase)
         {
             Caravan_PathFollower_ExposeData_Patch.caravansToFollow[caravan.pather] = new MovingBaseDestinationAction
             {
                 destination = movingBase,
-                arrivalActionType = typeof(CaravanArrivalAction_AttackMovingBase)
+                arrivalActionType = action.GetType()
             };
+            return action;
         }
     }
 }

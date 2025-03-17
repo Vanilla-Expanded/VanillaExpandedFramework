@@ -12,5 +12,7 @@ namespace VFECore
         public IntRange initialSpawnCount;
 
         public bool initialSpawnScalesWithPopulation;
+
+        public string attackConfirmationMessage;
     }
 }
