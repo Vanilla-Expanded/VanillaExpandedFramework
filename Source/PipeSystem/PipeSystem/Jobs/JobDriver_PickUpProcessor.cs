@@ -35,8 +35,7 @@ namespace PipeSystem
                 {
                     
                     var outThing = outThings[0];
-                    comp.Process?.HandleIngredientsAndQuality(outThing);
-                    
+                   
                     var currentPriority = StoreUtility.CurrentStoragePriorityOf(outThing);
                     if (StoreUtility.TryFindBestBetterStoreCellFor(outThing, pawn, Map, currentPriority, pawn.Faction, out var foundCell))
                     {

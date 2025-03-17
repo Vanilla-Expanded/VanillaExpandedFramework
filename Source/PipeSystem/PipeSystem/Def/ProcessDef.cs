@@ -42,8 +42,7 @@ namespace PipeSystem
         public bool stopAtQuality = false;
         public QualityCategory quality = QualityCategory.Normal;
         public bool allowExtractAtCurrentQuality;
-        public bool increaseQualityWithTime = false;
-
+       
         public bool hideProgressInInfobox = false;
 
         public bool sustainerWhenWorking = false;

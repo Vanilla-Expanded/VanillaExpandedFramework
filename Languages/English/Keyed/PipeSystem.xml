@@ -84,4 +84,8 @@
   <PipeSystem_ExtractAtCurrentQuality_Desc>Extract the product at the current quality.</PipeSystem_ExtractAtCurrentQuality_Desc>
   
    <PipeSystem_QualitySelector>Select the quality at which this process will stop</PipeSystem_QualitySelector>
+   <PipeSystem_ProcessNeedsAwfulAtLeast>Process needs to advance at least until the Awful quality time, which is {0}</PipeSystem_ProcessNeedsAwfulAtLeast>
+   <PipeSystem_CurrentQuality>Current quality: {0}</PipeSystem_CurrentQuality>
+   <PipeSystem_CurrentNotReachedAwful>Process hasn't reached Awful quality yet</PipeSystem_CurrentNotReachedAwful>
+   <PipeSystem_ExtractingAtCurrent>Extracting product at current quality</PipeSystem_ExtractingAtCurrent>
 </LanguageData>

@@ -17,7 +17,7 @@ namespace PipeSystem
         private List<ThingAndResourceOwner> ingredientsOwners;  // Process ingredients
         private ThingWithComps parent;                          // Parent thing
         private ProcessDef def;                                 // Process def
-        private int tickLeft;                                   // Ticks left before produce
+        public int tickLeft;                                   // Ticks left before produce
         public bool pickUpReady;                               // Is it ready to pick-up
         private float progress;                                 // Progress percent
 
@@ -32,6 +32,8 @@ namespace PipeSystem
         public bool forceQualityOut = false;
         public QualityCategory qualityToForce;
         public QualityCategory qualityToOutput;
+        public QualityCategory currentQuality;
+       
 
         private string id;                                      // Process ID
 
@@ -178,10 +180,11 @@ namespace PipeSystem
             tickLeft = def.isFactoryProcess ? (int)(GetFactoryAcceleration() * ticksOrQualityTicks) : ticksOrQualityTicks;
             progress = 0f;
             ruinedPercent = 0f;
+           
             var map = parent.Map;
             id = $"Process_{parent.Map.uniqueID}_{def.defName}_{CachedAdvancedProcessorsManager.GetFor(map).ProcessIDsManager.GetNextProcessID(map)}";
             spawning = true;
-            qualityToOutput = def.quality;
+            qualityToOutput = def.ticksQuality.NullOrEmpty() ? def.quality : QualityCategory.Normal;
         }
 
         /// <summary>
@@ -421,8 +424,46 @@ namespace PipeSystem
 
             }
             // Set progress (for the bar)
-            
-            progress = 1f - (tickLeft / (float)ticksOrQualityTicks);
+
+            progress = Math.Min(1f - (tickLeft / (float)ticksOrQualityTicks),1);
+
+            // Set current quality
+
+            if (!def.ticksQuality.NullOrEmpty() && !forceQualityOut)
+            {
+                int ticksDone = def.ticksQuality[(int)qualityToOutput] - tickLeft;
+                if(ticksDone > def.ticksQuality[(int)QualityCategory.Masterwork])
+                {
+                   
+                    currentQuality = QualityCategory.Masterwork;
+                }else if (ticksDone > def.ticksQuality[(int)QualityCategory.Excellent])
+                {
+                   
+                    currentQuality = QualityCategory.Excellent;
+                }
+                else if (ticksDone > def.ticksQuality[(int)QualityCategory.Good])
+                {
+                  
+                    currentQuality = QualityCategory.Good;
+                }
+                else if (ticksDone > def.ticksQuality[(int)QualityCategory.Normal])
+                {
+                  
+                    currentQuality = QualityCategory.Normal;
+                }
+                else if (ticksDone > def.ticksQuality[(int)QualityCategory.Poor])
+                {
+                  
+                    currentQuality = QualityCategory.Poor;
+                }
+                else if (ticksDone > def.ticksQuality[(int)QualityCategory.Awful])
+                {
+                 
+                    currentQuality = QualityCategory.Awful;
+                }
+                
+            }
+
             // Check if processor should produce this tick
             if (tickLeft <= 0)
             {
@@ -688,11 +729,14 @@ namespace PipeSystem
                 {
                     if (forceQualityOut)
                     {
-
+                    
                         compQuality.SetQuality(qualityToForce, null);
                     }
                     else
+                    {
+                       
                         compQuality.SetQuality(qualityToOutput, null);
+                    }
                 }
 
                 forceQualityOut = false;
@@ -752,6 +796,7 @@ namespace PipeSystem
             pickUpReady = false;    // Reset pickup status
             ruinedPercent = 0;      // Reset ruining status
             progress = 0;           // Reset progress
+          
             // If finished normaly, increment process count, produce wastepack
             if (finished)
             {
@@ -839,7 +884,7 @@ namespace PipeSystem
             }
             GUI.color = color;
             // Process label
-           
+
             string qualityString = def.stopAtQuality ? " (" + qualityToOutput.ToString() + ") " : "";
             Widgets.Label(new Rect(28f, 0f, rect.width - 48f - 20f, rect.height + 5f), def.LabelCap + qualityString + "(" + ticksOrQualityTicks.ToStringTicksToDays() + ")");
             // Config
@@ -905,7 +950,7 @@ namespace PipeSystem
             }
             TooltipHandler.TipRegionByKey(suspendRect, "SuspendBillTip");
             // QualitySelector
-            if (Def.increaseQualityWithTime)
+            if (!def.ticksQuality.NullOrEmpty())
             {
                 var qualitySelectorRect = new Rect(rect.width - 24f - 24f - 24f, 0f, 24f, 24f);
                 if (Widgets.ButtonImage(qualitySelectorRect, MaterialCreator.QualitySelect, color))
@@ -945,30 +990,44 @@ namespace PipeSystem
                     qualitySelections = new List<FloatMenuOption>
                     {
                         new FloatMenuOption(QualityCategory.Awful.ToString(), () => {
+                            int ticksDone = def.ticksQuality[(int)qualityToOutput] - tickLeft;
+                            tickLeft = def.ticksQuality[(int)QualityCategory.Awful]-ticksDone;                         
                             qualityToOutput =QualityCategory.Awful;
                             ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Awful];
                         }, extraPartWidth: 24f),
                          new FloatMenuOption(QualityCategory.Poor.ToString(), () => {
+                            int ticksDone = def.ticksQuality[(int)qualityToOutput] - tickLeft;
+                            tickLeft = def.ticksQuality[(int)QualityCategory.Poor]-ticksDone;
                             qualityToOutput =QualityCategory.Poor;
                             ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Poor];
                         }, extraPartWidth: 24f),
                           new FloatMenuOption(QualityCategory.Normal.ToString(), () => {
+                           int ticksDone = def.ticksQuality[(int)qualityToOutput] - tickLeft;
+                            tickLeft = def.ticksQuality[(int)QualityCategory.Normal]-ticksDone;
                             qualityToOutput =QualityCategory.Normal;
                             ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Normal];
                         }, extraPartWidth: 24f),
                            new FloatMenuOption(QualityCategory.Good.ToString(), () => {
+                            int ticksDone = def.ticksQuality[(int)qualityToOutput] - tickLeft;
+                            tickLeft = def.ticksQuality[(int)QualityCategory.Good]-ticksDone;
                             qualityToOutput =QualityCategory.Good;
                             ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Good];
                         }, extraPartWidth: 24f),
                             new FloatMenuOption(QualityCategory.Excellent.ToString(), () => {
+                            int ticksDone = def.ticksQuality[(int)qualityToOutput] - tickLeft;
+                            tickLeft = def.ticksQuality[(int)QualityCategory.Excellent]-ticksDone;
                             qualityToOutput =QualityCategory.Excellent;
                             ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Excellent];
                         }, extraPartWidth: 24f),
-                             new FloatMenuOption(QualityCategory.Masterwork.ToString(), () => {
+                            new FloatMenuOption(QualityCategory.Masterwork.ToString(), () => {
+                            int ticksDone = def.ticksQuality[(int)qualityToOutput] - tickLeft;
+                            tickLeft = def.ticksQuality[(int)QualityCategory.Masterwork]-ticksDone;
                             qualityToOutput =QualityCategory.Masterwork;
                             ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Masterwork];
                         }, extraPartWidth: 24f),
-                              new FloatMenuOption(QualityCategory.Legendary.ToString(), () => {
+                            new FloatMenuOption(QualityCategory.Legendary.ToString(), () => {
+                            int ticksDone = def.ticksQuality[(int)qualityToOutput] - tickLeft;
+                            tickLeft = def.ticksQuality[(int)QualityCategory.Legendary]-ticksDone;
                             qualityToOutput =QualityCategory.Legendary;
                             ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Legendary];
                         }, extraPartWidth: 24f)

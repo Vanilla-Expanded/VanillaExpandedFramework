@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Emit;
+using System.Security.Cryptography;
 using System.Text;
 using RimWorld;
 using UnityEngine;
@@ -438,30 +439,37 @@ namespace PipeSystem
 
             if (Process?.Def.allowExtractAtCurrentQuality == true)
             {
-                yield return new Command_Action
-                {
-                    icon = ContentFinder<Texture2D>.Get("UI/PS_ExtractNow"),
-                    defaultLabel = "PipeSystem_ExtractAtCurrentQuality".Translate(),
-                    defaultDesc= "PipeSystem_ExtractAtCurrentQuality_Desc".Translate()
-                    
-,
-                    action = () => {
-                        Process.forceQualityOut = true;
-                        Process.qualityToForce = QualityCategory.Awful;
-
-                        Process?.Tick(Process.TickLeft - 10);
-                        }
+                int ticksDone = Process.Def.ticksQuality[(int)Process.qualityToOutput] - Process.tickLeft;
+                Command_Action command_Action = new Command_Action();
+                command_Action.icon = ContentFinder<Texture2D>.Get("UI/PS_ExtractNow");
+                command_Action.defaultLabel = "PipeSystem_ExtractAtCurrentQuality".Translate();
+                command_Action.defaultDesc = "PipeSystem_ExtractAtCurrentQuality_Desc".Translate();
+                command_Action.action = () => {
+                    Process.forceQualityOut = true;
+                    Process.qualityToForce = Process.currentQuality;
+                 
+                    Process.Tick(Process.TickLeft - 10);
                 };
-
+                
+                if(ticksDone < Process.Def.ticksQuality[(int)QualityCategory.Awful])
+                {
+                    command_Action.Disable("PipeSystem_ProcessNeedsAwfulAtLeast".Translate(Process.Def.ticksQuality[(int)QualityCategory.Awful].ToStringTicksToDays()));
+                }
+                yield return command_Action;
+ 
             }
-            
-            
+         
             if (DebugSettings.ShowDevGizmos)
             {
                 yield return new Command_Action
                 {
                     defaultLabel = "Finish in 10 ticks",
                     action = () => Process?.Tick(Process.TickLeft - 10)
+                };
+                yield return new Command_Action
+                {
+                    defaultLabel = "Advance progress 1 day",
+                    action = () => Process?.Tick(60000)
                 };
                 if (shouldProduceWastePack)
                 {
@@ -474,6 +482,7 @@ namespace PipeSystem
 
             }
         }
+
 
         /// <summary>
         /// Add wastepack info in inspect string
@@ -488,6 +497,26 @@ namespace PipeSystem
             if (!process.Def.hideProgressInInfobox)
             {
                 sb.AppendLine("PipeSystem_ProgressInInfobox".Translate(process.Def.label, process.Progress.ToStringPercent()));
+            }
+
+            if (process.Def.allowExtractAtCurrentQuality)
+            {
+                int ticksDone = Process.Def.ticksQuality[(int)Process.qualityToOutput] - Process.tickLeft;
+                if (Process.forceQualityOut)
+                {
+                    sb.AppendLine("PipeSystem_ExtractingAtCurrent".Translate());
+                }
+                else
+                if (ticksDone < Process.Def.ticksQuality[(int)QualityCategory.Awful])
+                {
+                    sb.AppendLine("PipeSystem_CurrentNotReachedAwful".Translate());
+                }
+                else
+                {
+                    sb.AppendLine("PipeSystem_CurrentQuality".Translate(Process.currentQuality.ToString()));
+
+                }
+
             }
 
             if (process.MissingIngredients)
