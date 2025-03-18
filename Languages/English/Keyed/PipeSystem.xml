@@ -79,6 +79,8 @@
   
   <PipeSystem_CopyProcesses>Copy processes</PipeSystem_CopyProcesses>
   <PipeSystem_PasteProcesses>Paste processes</PipeSystem_PasteProcesses>
+  <PipeSystem_PasteAllRecipes>Paste all processes</PipeSystem_PasteAllRecipes>
+  <PipeSystem_PasteAllRecipes_Desc>Paste all copied processes into this processor. You can select multiple and the processes will be pasted to all of them.</PipeSystem_PasteAllRecipes_Desc>
   
   <PipeSystem_ExtractAtCurrentQuality>Extract at current quality</PipeSystem_ExtractAtCurrentQuality>
   <PipeSystem_ExtractAtCurrentQuality_Desc>Extract the product at the current quality.</PipeSystem_ExtractAtCurrentQuality_Desc>

@@ -525,6 +525,31 @@ namespace PipeSystem
                 yield return command_Action;
  
             }
+
+            if(ProcessUtility.Clipboard != null && ProcessUtility.Clipboard.ContainsKey(parent.def))
+            {
+                Command_Action command_PasteProcesses = new Command_Action();
+                command_PasteProcesses.icon = ContentFinder<Texture2D>.Get("UI/Commands/PasteSettings");
+                command_PasteProcesses.defaultLabel = "PipeSystem_PasteAllRecipes".Translate();
+                command_PasteProcesses.defaultDesc = "PipeSystem_PasteAllRecipes_Desc".Translate();
+                command_PasteProcesses.action = () => {
+                    ProcessStack.Processes.Clear();
+                    foreach (Process process in ProcessUtility.Clipboard[parent.def])
+                    {
+                        ProcessStack.AddProcess(process.Def, (ThingWithComps)parent, process.targetCount);
+                    }
+
+                    foreach (Process process in ProcessStack.Processes)
+                    {
+                        process.Progress = 0;
+                    }
+                };
+
+               
+                yield return command_PasteProcesses;
+
+
+            }
          
             if (DebugSettings.ShowDevGizmos)
             {
