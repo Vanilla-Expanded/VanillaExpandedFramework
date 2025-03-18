@@ -455,7 +455,7 @@ namespace PipeSystem
                 matrix.SetTRS(itemDrawPos, Quaternion.identity, Props.resultItemSize);
                 Graphics.DrawMesh(MeshPool.plane10, matrix, ProcessDef.results[0].thing.graphic.MatNorth, 0);
             }
-            if (Props.showProgressBar)
+            if (Props.showProgressBar && (Props.alwaysShowProgressBar || (!Props.alwaysShowProgressBar && parent.OccupiedRect().Cells.Contains(UI.MouseCell()))))
             {
                 fillableBarRequest.fillPercent = Process.Progress;
                 fillableBarRequest.filledMat = BarFilledMat;

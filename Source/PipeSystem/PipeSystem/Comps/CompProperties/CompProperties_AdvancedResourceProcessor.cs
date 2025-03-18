@@ -47,6 +47,8 @@ namespace PipeSystem
 
         public bool hideSettings = false;
 
+        public bool alwaysShowProgressBar = false;
+
         /// <summary>
         /// Config errors handling. Empty processes? Null translation key? Missing comps?
         /// </summary>
