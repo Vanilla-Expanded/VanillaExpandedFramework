@@ -51,23 +51,29 @@ namespace VFECore
                 {
                     if (!Props.overrides.NullOrEmpty())
                     {
-                        ThingDef thingDef = ingredients.ingredients.Where(x => Props.exclusions?.Contains(x) != true).First();
-                        if (thingDef != null && Props.overrides.ContainsKey(thingDef))
+                        List<ThingDef> possibleIngredients = ingredients.ingredients.Where(x => Props.exclusions?.Contains(x) != true).ToList();
+                        if(possibleIngredients.Count > 0)
                         {
-                            if (Props.fullReplace)
+                            ThingDef thingDef = possibleIngredients.First();
+                            if (thingDef != null && Props.overrides.ContainsKey(thingDef))
                             {
-                                cachedLabel = Props.overrides[thingDef];
+                                if (Props.fullReplace)
+                                {
+                                    cachedLabel = Props.overrides[thingDef];
+                                }
+                                else
+                                {
+                                    cachedLabel = Props.overrides[thingDef] + " " + label;
+                                }
+
                             }
                             else
                             {
-                                cachedLabel = Props.overrides[thingDef] + " " + label;
+                                cachedLabel = ingredients.ingredients.Where(x => Props.exclusions?.Contains(x) != true).First().LabelCap + " " + label;
                             }
-
                         }
-                        else
-                        {
-                            cachedLabel = ingredients.ingredients.Where(x => Props.exclusions?.Contains(x) != true).First().LabelCap + " " + label;
-                        }
+                        
+                        
 
                     }
                     else
