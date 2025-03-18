@@ -390,7 +390,7 @@ namespace PipeSystem
 
         private void CheckProcessRuiners()
         {
-            if (Process != null)
+            if (Process?.Progress>0)
             {
                 if ((Process.Def.noPowerDestroysProgress && compPower != null && !compPower.PowerOn) ||
                                 (Process.Def.noPowerDestroysProgress && compRefuelable != null && !compRefuelable.HasFuel))
