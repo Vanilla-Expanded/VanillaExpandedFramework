@@ -49,6 +49,9 @@ namespace PipeSystem
         public Graphic_Single cachedProgressGraphic = null;
         public Graphic_Single cachedFinishedGraphic = null;
 
+        public Graphic_Multi cachedProgressGraphic_multi = null;
+        public Graphic_Multi cachedFinishedGraphic_multi = null;
+
         //A flag to only send the power warning message once
         public bool onlySendWarningMessageOnce = false;
         //A flag to only send the light warning message once
@@ -309,6 +312,12 @@ namespace PipeSystem
 
         public void StoreProgressGraphics()
         {
+            if(ContentFinder<Texture2D>.Get(Props.inProgressTexture + "_north", reportFailure: false) != null)
+            {
+                cachedProgressGraphic_multi = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(Props.inProgressTexture, ShaderDatabase.Cutout,
+                     this.parent.def.graphicData.drawSize, this.parent.def.graphicData.color);
+            }
+            else
 
             cachedProgressGraphic = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(Props.inProgressTexture, ShaderDatabase.Cutout,
                      this.parent.def.graphicData.drawSize, this.parent.def.graphicData.color);
@@ -316,8 +325,13 @@ namespace PipeSystem
         }
         public void StoreFinishGraphics()
         {
-
-            cachedFinishedGraphic = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(Props.finishedTexture, ShaderDatabase.Cutout,
+            if (ContentFinder<Texture2D>.Get(Props.finishedTexture + "_north", reportFailure: false) != null)
+            {
+                cachedFinishedGraphic_multi = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(Props.finishedTexture, ShaderDatabase.Cutout,
+                     this.parent.def.graphicData.drawSize, this.parent.def.graphicData.color);
+            }
+            else
+                cachedFinishedGraphic = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(Props.finishedTexture, ShaderDatabase.Cutout,
                      this.parent.def.graphicData.drawSize, this.parent.def.graphicData.color);
 
         }
@@ -452,12 +466,14 @@ namespace PipeSystem
                 if (cachedProgressGraphic != null && Process.Progress > 0 && Process.Progress < 1)
                 {
                     var vector = parent.DrawPos + Altitudes.AltIncVect;
-
                     vector.y += Altitudes.AltInc;
-
-
                     cachedProgressGraphic.DrawFromDef(vector, Rot4.North, null);
-
+                }
+                if (cachedProgressGraphic_multi != null && Process.Progress > 0 && Process.Progress < 1)
+                {
+                    var vector = parent.DrawPos + Altitudes.AltIncVect;
+                    vector.y += Altitudes.AltInc;
+                    cachedProgressGraphic_multi.DrawFromDef(vector, this.parent.Rotation, null);
                 }
 
             }
@@ -466,14 +482,15 @@ namespace PipeSystem
                 if (cachedFinishedGraphic != null && Process.pickUpReady)
                 {
                     var vector = parent.DrawPos + Altitudes.AltIncVect;
-
                     vector.y += Altitudes.AltInc;
-
-
                     cachedFinishedGraphic.DrawFromDef(vector, Rot4.North, null);
-
                 }
-
+                if (cachedFinishedGraphic_multi != null && Process.pickUpReady)
+                {
+                    var vector = parent.DrawPos + Altitudes.AltIncVect;
+                    vector.y += Altitudes.AltInc;
+                    cachedFinishedGraphic_multi.DrawFromDef(vector, this.parent.Rotation, null);
+                }
             }
         }
 
