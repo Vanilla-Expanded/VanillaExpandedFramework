@@ -26,9 +26,9 @@ namespace PipeSystem
         public List<ThingDef> cachedIngredients = new List<ThingDef>();
 
         // Other comps we run check on
-        private CompFlickable flickable;
-        private CompPowerTrader compPower;
-        private CompRefuelable compRefuelable;
+        public CompFlickable flickable;
+        public CompPowerTrader compPower;
+        public CompRefuelable compRefuelable;
         private CompWasteProducer wasteProducer;
         private CompThingContainer container;
 
@@ -48,6 +48,22 @@ namespace PipeSystem
 
         public Graphic_Single cachedProgressGraphic = null;
         public Graphic_Single cachedFinishedGraphic = null;
+
+        //A flag to only send the power warning message once
+        public bool onlySendWarningMessageOnce = false;
+        //A flag to only send the light warning message once
+        public bool onlySendLightWarningMessageOnce = false;
+        //A flag to only send the rain warning message once
+        public bool onlySendRainWarningMessageOnce = false;
+        //A flag to only send the temperature warning message once
+        public bool onlySendTempWarningMessageOnce = false;
+
+        public int noPowerDestructionCounter = 0;
+        public int noGoodLightDestructionCounter = 0;
+        public int noGoodWeatherDestructionCounter = 0;
+        public int noGoodTempDestructionCounter = 0;
+
+
 
 
         public CompProperties_AdvancedResourceProcessor Props => (CompProperties_AdvancedResourceProcessor)props;
@@ -357,6 +373,7 @@ namespace PipeSystem
         /// <param name="ticks">Number of ticks that passed</param>
         private void Tick(int ticks)
         {
+            CheckProcessRuiners();
             if (AllCompsOn)
             {
                 // Wastepack stop check
@@ -369,6 +386,39 @@ namespace PipeSystem
 
                 barFilledCachedMat = null;
             }
+        }
+
+        private void CheckProcessRuiners()
+        {
+            if (Process != null)
+            {
+                if ((Process.Def.noPowerDestroysProgress && compPower != null && !compPower.PowerOn) ||
+                                (Process.Def.noPowerDestroysProgress && compRefuelable != null && !compRefuelable.HasFuel))
+                {
+                  
+                    if (!onlySendWarningMessageOnce)
+                    {
+                        Messages.Message(Props.noPowerDestroysInitialWarning.Translate(), parent, MessageTypeDefOf.NegativeEvent, true);
+                        onlySendWarningMessageOnce = true;
+                    }
+                    noPowerDestructionCounter++;
+
+                    if (noPowerDestructionCounter > Props.rareTicksToDestroy)
+                    {
+                        Messages.Message(Props.noPowerDestroysMessage.Translate(), parent, MessageTypeDefOf.NegativeEvent, true);
+                        Process.ResetProcess(false);
+                        
+                    }
+
+                }
+                else
+                {
+                    noPowerDestructionCounter = 0;
+                    onlySendWarningMessageOnce = false;
+                }
+            }
+            
+
         }
 
         /// <summary>

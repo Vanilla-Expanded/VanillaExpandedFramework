@@ -33,7 +33,8 @@ namespace PipeSystem
         public QualityCategory qualityToForce;
         public QualityCategory qualityToOutput;
         public QualityCategory currentQuality;
-       
+
+        
 
         private string id;                                      // Process ID
 
@@ -221,7 +222,7 @@ namespace PipeSystem
             Scribe_Values.Look(ref processCount, "processCount");
             Scribe_Values.Look(ref ruinedPercent, "ruinedPercent", 0f);
             Scribe_Values.Look(ref ticksOrQualityTicks, "ticksOrQualityTicks");
-
+           
 
             Scribe_References.Look(ref parent, "parent");
 
@@ -377,6 +378,8 @@ namespace PipeSystem
                     ruinedPercent = 0f;
                 }
             }
+            
+
         }
 
         /// <summary>
@@ -796,7 +799,8 @@ namespace PipeSystem
             pickUpReady = false;    // Reset pickup status
             ruinedPercent = 0;      // Reset ruining status
             progress = 0;           // Reset progress
-          
+            
+
             // If finished normaly, increment process count, produce wastepack
             if (finished)
             {
