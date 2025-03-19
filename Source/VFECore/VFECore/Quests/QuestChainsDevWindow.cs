@@ -26,6 +26,10 @@ namespace VFECore
             this.doCloseX = true;
             this.draggable = true;
             this.resizeable = true;
+            this.absorbInputAroundWindow = false;
+            this.forcePause = false;
+            this.preventCameraMotion = false;
+            this.focusWhenOpened = false;
         }
 
         public override void DoWindowContents(Rect inRect)
