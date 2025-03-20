@@ -889,7 +889,7 @@ namespace PipeSystem
             GUI.color = color;
             // Process label
 
-            string qualityString = def.stopAtQuality ? " (" + qualityToOutput.ToString() + ") " : "";
+            string qualityString = def.ticksQuality.NullOrEmpty() ? " " : " (" + qualityToOutput.ToString() + ") ";
             Widgets.Label(new Rect(28f, 0f, rect.width - 48f - 20f, rect.height + 5f), def.LabelCap + qualityString + "(" + ticksOrQualityTicks.ToStringTicksToDays() + ")");
             // Config
             var baseRect = rect.AtZero();
