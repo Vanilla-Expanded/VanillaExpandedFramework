@@ -222,7 +222,11 @@ namespace PipeSystem
             Scribe_Values.Look(ref processCount, "processCount");
             Scribe_Values.Look(ref ruinedPercent, "ruinedPercent", 0f);
             Scribe_Values.Look(ref ticksOrQualityTicks, "ticksOrQualityTicks");
-           
+            Scribe_Values.Look(ref qualityToOutput, "qualityToOutput");
+            Scribe_Values.Look(ref forceQualityOut, "forceQualityOut");
+            Scribe_Values.Look(ref qualityToForce, "qualityToForce");
+
+
 
             Scribe_References.Look(ref parent, "parent");
 
@@ -890,7 +894,7 @@ namespace PipeSystem
             // Process label
 
             string qualityString = def.ticksQuality.NullOrEmpty() ? " " : " (" + qualityToOutput.ToString() + ") ";
-            Widgets.Label(new Rect(28f, 0f, rect.width - 48f - 20f, rect.height + 5f), def.LabelCap + qualityString + "(" + ticksOrQualityTicks.ToStringTicksToDays() + ")");
+            Widgets.Label(new Rect(28f, 0f, rect.width - 48f - 40f, rect.height + 5f), def.LabelCap + qualityString + "(" + ticksOrQualityTicks.ToStringTicksToDays() + ")");
             // Config
             var baseRect = rect.AtZero();
             GUI.color = new Color(1f, 1f, 1f, 0.65f);
