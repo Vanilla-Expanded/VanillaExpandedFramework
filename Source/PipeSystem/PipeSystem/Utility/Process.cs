@@ -177,7 +177,7 @@ namespace PipeSystem
         {
             this.parent = parent;
             def = processDef;
-            ticksOrQualityTicks = def.ticksQuality.NullOrEmpty() ? def.ticks : def.ticksQuality[(int)QualityCategory.Normal];
+            ticksOrQualityTicks = (def.ticksQuality.NullOrEmpty() ? def.ticks : def.ticksQuality[(int)QualityCategory.Normal]);
             tickLeft = def.isFactoryProcess ? (int)(GetFactoryAcceleration() * ticksOrQualityTicks) : ticksOrQualityTicks;
             progress = 0f;
             ruinedPercent = 0f;
@@ -186,6 +186,23 @@ namespace PipeSystem
             id = $"Process_{parent.Map.uniqueID}_{def.defName}_{CachedAdvancedProcessorsManager.GetFor(map).ProcessIDsManager.GetNextProcessID(map)}";
             spawning = true;
             qualityToOutput = def.ticksQuality.NullOrEmpty() ? def.quality : QualityCategory.Normal;
+        }
+
+        /// <summary>
+        /// Not implemented at the moment
+        /// </summary>
+        public float FactorIfAcceleratingProcess()
+        {
+            if (Def.isTemperatureAcceleratingProcess && advancedProcessor.parent.Map != null)
+            {
+                float currentTempInMap = advancedProcessor.parent.Position.GetTemperature(advancedProcessor.parent.Map);
+               
+                if ((currentTempInMap > Def.minAccelerationTemp) && (currentTempInMap < Def.maxAccelerationTemp))
+                {
+                    return Def.accelerationFactor;
+                }
+            }
+            return 1f;
         }
 
         /// <summary>

@@ -41,10 +41,7 @@ namespace PipeSystem
         public string inProgressTexture="";
         public string finishedTexture="";
 
-        public string noPowerDestroysMessage;
-        public string noPowerDestroysInitialWarning;
-        public int rareTicksToDestroy;
-
+       
         public bool hideSettings = false;
 
         public bool alwaysShowProgressBar = false;

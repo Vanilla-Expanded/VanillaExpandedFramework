@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Security.Cryptography;
 using System.Text;
+using ItemProcessor;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -312,15 +313,15 @@ namespace PipeSystem
 
         public void StoreProgressGraphics()
         {
-            if(ContentFinder<Texture2D>.Get(Props.inProgressTexture + "_north", reportFailure: false) != null)
+            if (ContentFinder<Texture2D>.Get(Props.inProgressTexture + "_north", reportFailure: false) != null)
             {
                 cachedProgressGraphic_multi = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(Props.inProgressTexture, ShaderDatabase.Cutout,
                      this.parent.def.graphicData.drawSize, this.parent.def.graphicData.color);
             }
             else
 
-            cachedProgressGraphic = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(Props.inProgressTexture, ShaderDatabase.Cutout,
-                     this.parent.def.graphicData.drawSize, this.parent.def.graphicData.color);
+                cachedProgressGraphic = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(Props.inProgressTexture, ShaderDatabase.Cutout,
+                         this.parent.def.graphicData.drawSize, this.parent.def.graphicData.color);
 
         }
         public void StoreFinishGraphics()
@@ -404,34 +405,72 @@ namespace PipeSystem
 
         private void CheckProcessRuiners()
         {
-            if (Process?.Progress>0)
+            if (Process?.Progress > 0 && parent.Map!=null)
             {
                 if ((Process.Def.noPowerDestroysProgress && compPower != null && !compPower.PowerOn) ||
                                 (Process.Def.noPowerDestroysProgress && compRefuelable != null && !compRefuelable.HasFuel))
                 {
-                  
                     if (!onlySendWarningMessageOnce)
                     {
-                        Messages.Message(Props.noPowerDestroysInitialWarning.Translate(), parent, MessageTypeDefOf.NegativeEvent, true);
+                        Messages.Message(Process.Def.noPowerDestroysInitialWarning.Translate(), parent, MessageTypeDefOf.NegativeEvent, true);
                         onlySendWarningMessageOnce = true;
                     }
                     noPowerDestructionCounter++;
-
-                    if (noPowerDestructionCounter > Props.rareTicksToDestroy)
+                    if (noPowerDestructionCounter > Process.Def.rareTicksToDestroy)
                     {
-                        Messages.Message(Props.noPowerDestroysMessage.Translate(), parent, MessageTypeDefOf.NegativeEvent, true);
+                        Messages.Message(Process.Def.noPowerDestroysMessage.Translate(), parent, MessageTypeDefOf.NegativeEvent, true);
                         Process.ResetProcess(false);
-                        
+                    }
+                }
+                else if (Process.Def.isLightDependingProcess)
+                {
+                    float num = parent.Map.glowGrid.GroundGlowAt(parent.Position, false);
+                    if ((num > Process.Def.maxLight) || (num < Process.Def.minLight))
+                    {
+                        if (!onlySendWarningMessageOnce)
+                        {
+                            Messages.Message(Process.Def.messageIfOutsideLightRangesWarning.Translate(), parent, MessageTypeDefOf.NegativeEvent, true);
+                            onlySendWarningMessageOnce = true;
+                        }
+                        noGoodLightDestructionCounter++;
+                        if (noGoodLightDestructionCounter > Process.Def.rareTicksToDestroy)
+                        {
+                            Messages.Message(Process.Def.messageIfOutsideLightRanges.Translate(), parent, MessageTypeDefOf.NegativeEvent, true);
+                            Process.ResetProcess(false);
+                        }
+                    }
+                }
+                else if (Process.Def.isRainDependingProcess)
+                {
+                    if (parent.Map.weatherManager.curWeather.rainRate > 0 && !parent.Position.Roofed(parent.Map))
+                    {
+                        if (!onlySendWarningMessageOnce)
+                        {
+                            Messages.Message(Process.Def.messageIfRainingWarning.Translate(), parent, MessageTypeDefOf.NegativeEvent, true);
+                            onlySendWarningMessageOnce = true;
+                        }
+                        noGoodWeatherDestructionCounter++;
+                        if (noGoodWeatherDestructionCounter > Process.Def.rareTicksToDestroy)
+                        {
+                            Messages.Message(Process.Def.messageIfRaining.Translate(), parent, MessageTypeDefOf.NegativeEvent, true);
+                            Process.ResetProcess(false);
+                        }
                     }
 
                 }
                 else
                 {
                     noPowerDestructionCounter = 0;
+                    noGoodLightDestructionCounter = 0;
+                    noGoodWeatherDestructionCounter = 0;
                     onlySendWarningMessageOnce = false;
                 }
+
+
+
+
             }
-            
+
 
         }
 
@@ -511,28 +550,30 @@ namespace PipeSystem
                 command_Action.icon = ContentFinder<Texture2D>.Get("UI/PS_ExtractNow");
                 command_Action.defaultLabel = "PipeSystem_ExtractAtCurrentQuality".Translate();
                 command_Action.defaultDesc = "PipeSystem_ExtractAtCurrentQuality_Desc".Translate();
-                command_Action.action = () => {
+                command_Action.action = () =>
+                {
                     Process.forceQualityOut = true;
                     Process.qualityToForce = Process.currentQuality;
-                 
+
                     Process.Tick(Process.TickLeft - 10);
                 };
-                
-                if(ticksDone < Process.Def.ticksQuality[(int)QualityCategory.Awful])
+
+                if (ticksDone < Process.Def.ticksQuality[(int)QualityCategory.Awful])
                 {
                     command_Action.Disable("PipeSystem_ProcessNeedsAwfulAtLeast".Translate(Process.Def.ticksQuality[(int)QualityCategory.Awful].ToStringTicksToDays()));
                 }
                 yield return command_Action;
- 
+
             }
 
-            if(ProcessUtility.Clipboard != null && ProcessUtility.Clipboard.ContainsKey(parent.def))
+            if (ProcessUtility.Clipboard != null && ProcessUtility.Clipboard.ContainsKey(parent.def))
             {
                 Command_Action command_PasteProcesses = new Command_Action();
                 command_PasteProcesses.icon = ContentFinder<Texture2D>.Get("UI/Commands/PasteSettings");
                 command_PasteProcesses.defaultLabel = "PipeSystem_PasteAllRecipes".Translate();
                 command_PasteProcesses.defaultDesc = "PipeSystem_PasteAllRecipes_Desc".Translate();
-                command_PasteProcesses.action = () => {
+                command_PasteProcesses.action = () =>
+                {
                     ProcessStack.Processes.Clear();
                     foreach (Process process in ProcessUtility.Clipboard[parent.def])
                     {
@@ -545,12 +586,12 @@ namespace PipeSystem
                     }
                 };
 
-               
+
                 yield return command_PasteProcesses;
 
 
             }
-         
+
             if (DebugSettings.ShowDevGizmos)
             {
                 yield return new Command_Action
