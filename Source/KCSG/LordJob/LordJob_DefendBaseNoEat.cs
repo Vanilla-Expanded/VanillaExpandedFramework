@@ -4,7 +4,7 @@ using Verse.AI.Group;
 
 namespace KCSG
 {
-    internal class LordJob_DefendBaseNoEat : LordJob
+    public class LordJob_DefendBaseNoEat : LordJob
     {
         private IntVec3 baseCenter;
         private Faction faction;
