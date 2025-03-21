@@ -15,7 +15,7 @@ namespace VFECore
         public override Vector2 InitialSize => new Vector2(800f, 600f);
 
         [DebugAction("General", null, false, false, false, false, 0, false, allowedGameStates
-            = AllowedGameStates.PlayingOnMap, requiresIdeology = true, displayPriority = 1000)]
+            = AllowedGameStates.PlayingOnMap, displayPriority = 1000)]
         public static void ViewQuestChains()
         {
             Find.WindowStack.Add(new QuestChainsDevWindow());
