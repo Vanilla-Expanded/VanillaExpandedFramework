@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using RimWorld;
 using Verse;
+using Verse.Noise;
 
 namespace PipeSystem
 {
@@ -85,6 +86,7 @@ namespace PipeSystem
             if (currentProcess != null && currentProcess.ticksOrQualityTicks == currentProcess.TickLeft)
             {
                 currentProcess = null;
+               
             }
         }
 
