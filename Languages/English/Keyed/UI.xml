@@ -41,4 +41,7 @@ If hired {0} die on duty, you will incur an additional 5% increase to contract p
 	<VEF.QuestChainTooltip>This quest is a part of a quest chain. Completing it may trigger continuation quests.\n\n{0}\n\n{1}</VEF.QuestChainTooltip>
 	<VEF.CommandAttackMovingBaseDesc>Attack this {0}.</VEF.CommandAttackMovingBaseDesc>
 
+    <VFE.ChangeVisualLabel>Change visual</VFE.ChangeVisualLabel>
+    <VFE.ChangeVisualDesc>Set a specific visual for the building or item.</VFE.ChangeVisualDesc>
+
 </LanguageData>
