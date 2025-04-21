@@ -511,6 +511,7 @@
     <Compile Include="Genes\Harmony\PawnGenerator_GeneratePawnRelations.cs" />
     <Compile Include="Memes\Harmony\Dialog_ChooseMemes_DoAcceptChanges.cs" />
     <Compile Include="VFECore\HarmonyPatches\CustomizableGraphicsPatches.cs" />
+    <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_LearningUtility_SchoolDeskLearningRate.cs" />
     <Compile Include="VFECore\Quests\MainTabWindow_Quests_DoCharityIcon_Patch.cs" />
     <Compile Include="VFECore\Quests\MainTabWindow_Quests_DoRow_Patch.cs" />
     <Compile Include="VFECore\Quests\FutureQuestInfo.cs" />

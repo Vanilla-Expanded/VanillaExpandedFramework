@@ -39,6 +39,8 @@ namespace VFECore
         public static StatDef VEF_PositiveThoughtDurationFactor;
         public static StatDef VEF_NeutralThoughtDurationFactor;
         public static StatDef VEF_NegativeThoughtDurationFactor;
+        [MayRequireBiotech]
+        public static StatDef VEF_BuildingLearningRateOffset;
 
         public static StatCategoryDef VFE_EquippedStatFactors;
   

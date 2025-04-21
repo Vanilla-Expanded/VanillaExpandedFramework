@@ -369,4 +369,19 @@
 		<label>thought duration factor - negative</label>
 		<description>The duration of negative thoughts is multiplied by this value.</description>
 	</StatDef>
+	<!-- Perhaps it would be smart to use load folders and add it to Biotech one, but for now it seems pointless given it would be the only thing in there. -->
+	<StatDef MayRequire="Ludeon.RimWorld.Biotech">
+		<defName>VEF_BuildingLearningRateOffset</defName>
+		<label>learning rate</label>
+		<!-- Same description as school desk's CompProperties_StatEntry was using. -->
+		<description>A multiplier on how quickly children learn during lessons which are assisted by this.</description>
+		<category>Building</category>
+		<defaultBaseValue>1</defaultBaseValue>
+		<toStringStyle>PercentZero</toStringStyle>
+		<showIfUndefined>false</showIfUndefined>
+		<!-- Don't allow for negative learning rate. -->
+		<minValue>0</minValue>
+		<!-- Same value as school desk's CompProperties_StatEntry was using. -->
+		<displayPriorityInCategory>300</displayPriorityInCategory>
+	</StatDef>
 </Defs>
