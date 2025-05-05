@@ -208,7 +208,7 @@ public class CompCustomizableGraphic : ThingComp
 
         Scribe_Values.Look(ref tempSelectedGraphicIndex, nameof(tempSelectedGraphicIndex));
 
-        if (Scribe.mode == LoadSaveMode.PostLoadInit)
+        if (Scribe.mode == LoadSaveMode.PostLoadInit && tempSelectedGraphicIndex != null)
         {
             parent.overrideGraphicIndex = tempSelectedGraphicIndex;
             tempSelectedGraphicIndex = null;
