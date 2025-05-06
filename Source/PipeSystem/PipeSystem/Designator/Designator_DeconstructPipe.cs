@@ -17,8 +17,47 @@ namespace PipeSystem
             pipeNetDef = pipeNet;
             defaultLabel = "PipeSystem_DeconstructLabel".Translate(pipeNet.resource.name);
             defaultDesc = "PipeSystem_DeconstructDesc".Translate(pipeNet.resource.name);
-            icon = ContentFinder<Texture2D>.Get(pipeNet.designator.deconstructIconPath);
             hotKey = null;
+
+            var baseTexture = ContentFinder<Texture2D>.Get(pipeNet.designator.deconstructIconPath);
+            if (string.IsNullOrEmpty(pipeNetDef.designator.shaderPath))
+            {
+                icon = baseTexture;
+            }
+            else
+            {
+                var shader = Shader.Find(pipeNetDef.designator.shaderPath);
+                if (shader == null)
+                {
+                    Log.Warning($"Designator_DeconstructPipe - invalid shader path {pipeNetDef.designator.shaderPath} - falling back to stock icon");
+                    icon = baseTexture;
+                    return;
+                }
+
+                var mat = MaterialPool.MatFrom(pipeNetDef.designator.deconstructIconPath, shader);
+                mat.SetColor(ShaderPropertyIDs.Color, pipeNetDef.designator.color);
+
+                // TODO: This checks specific, hardcoded shaders. It probably won't support fancy custom ones. It does work for CutoutComplex
+                if (ShaderUtility.SupportsMaskTex(shader))
+                {
+                    var maskTexture = ContentFinder<Texture2D>.Get(pipeNet.designator.maskTexturePath);
+                    mat.SetTexture(ShaderPropertyIDs.MaskTex, maskTexture);
+                    mat.SetColor(ShaderPropertyIDs.ColorTwo, pipeNetDef.designator.colorTwo);
+                }
+
+                var renderTexture = RenderTexture.GetTemporary(baseTexture.width, baseTexture.height);
+
+                Graphics.Blit(baseTexture, renderTexture, mat);
+
+                var outputTexture = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.RGBA32, false);
+                outputTexture.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
+                outputTexture.Apply();
+
+                icon = outputTexture;
+
+                RenderTexture.ReleaseTemporary(renderTexture);
+
+            }
         }
 
         public override AcceptanceReport CanDesignateThing(Thing t)
