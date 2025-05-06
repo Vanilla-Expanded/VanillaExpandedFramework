@@ -16,7 +16,7 @@ namespace VFECore
     [HarmonyPatch]
     public static class VehicleFramework_Turret_Patch
     {
-        public static bool VFLoaded = ModsConfig.IsActive("SmashPhil.VehicleFramework");
+        public static bool VFLoaded = ModsConfig.IsActive("SmashPhil.VehicleFramework") || ModsConfig.IsActive("SmashPhil.VehicleFramework_steam");
         public static MethodInfo targetMethod;
         public static MethodInfo maxRangeInfo;
         public static MethodInfo turretLocation;
