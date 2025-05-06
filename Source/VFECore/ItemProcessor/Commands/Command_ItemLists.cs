@@ -1,4 +1,4 @@
-﻿using RimWorld;
+using RimWorld;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse.AI;
@@ -981,31 +981,31 @@ namespace ItemProcessor
                         {
                             case QualityCategory.Awful:
                                 icon = ContentFinder<Texture2D>.Get("UI/QualitySelectors/IP_QualityAwful", true);
-                                defaultLabel = "IP_QualityAutoIs".Translate(QualityCategory.Awful.ToString());
+                                defaultLabel = "IP_QualityAutoIs".Translate(QualityCategory.Awful.GetLabel().CapitalizeFirst());
                                 break;
                             case QualityCategory.Poor:
                                 icon = ContentFinder<Texture2D>.Get("UI/QualitySelectors/IP_QualityPoor", true);
-                                defaultLabel = "IP_QualityAutoIs".Translate(QualityCategory.Poor.ToString());
+                                defaultLabel = "IP_QualityAutoIs".Translate(QualityCategory.Poor.GetLabel().CapitalizeFirst());
                                 break;
                             case QualityCategory.Normal:
                                 icon = ContentFinder<Texture2D>.Get("UI/QualitySelectors/IP_QualityNormal", true);
-                                defaultLabel = "IP_QualityAutoIs".Translate(QualityCategory.Normal.ToString());
+                                defaultLabel = "IP_QualityAutoIs".Translate(QualityCategory.Normal.GetLabel().CapitalizeFirst());
                                 break;
                             case QualityCategory.Good:
                                 icon = ContentFinder<Texture2D>.Get("UI/QualitySelectors/IP_QualityGood", true);
-                                defaultLabel = "IP_QualityAutoIs".Translate(QualityCategory.Good.ToString());
+                                defaultLabel = "IP_QualityAutoIs".Translate(QualityCategory.Good.GetLabel().CapitalizeFirst());
                                 break;
                             case QualityCategory.Excellent:
                                 icon = ContentFinder<Texture2D>.Get("UI/QualitySelectors/IP_QualityExcellent", true);
-                                defaultLabel = "IP_QualityAutoIs".Translate(QualityCategory.Excellent.ToString());
+                                defaultLabel = "IP_QualityAutoIs".Translate(QualityCategory.Excellent.GetLabel().CapitalizeFirst());
                                 break;
                             case QualityCategory.Masterwork:
                                 icon = ContentFinder<Texture2D>.Get("UI/QualitySelectors/IP_QualityMasterwork", true);
-                                defaultLabel = "IP_QualityAutoIs".Translate(QualityCategory.Masterwork.ToString());
+                                defaultLabel = "IP_QualityAutoIs".Translate(QualityCategory.Masterwork.GetLabel().CapitalizeFirst());
                                 break;
                             case QualityCategory.Legendary:
                                 icon = ContentFinder<Texture2D>.Get("UI/QualitySelectors/IP_QualityLegendary", true);
-                                defaultLabel = "IP_QualityAutoIs".Translate(QualityCategory.Legendary.ToString());
+                                defaultLabel = "IP_QualityAutoIs".Translate(QualityCategory.Legendary.GetLabel().CapitalizeFirst());
                                 break;
                         }
 
@@ -1023,37 +1023,37 @@ namespace ItemProcessor
 
 
 
-            list.Add(new FloatMenuOption("IP_QualityAutoIs".Translate(QualityCategory.Awful.ToString()), delegate
+            list.Add(new FloatMenuOption("IP_QualityAutoIs".Translate(QualityCategory.Awful.GetLabel().CapitalizeFirst()), delegate
            {
                AddQuality(QualityCategory.Awful);
              
            }, MenuOptionPriority.Default, null, null, 29f, null, null));
-            list.Add(new FloatMenuOption("IP_QualityAutoIs".Translate(QualityCategory.Poor.ToString()), delegate
+            list.Add(new FloatMenuOption("IP_QualityAutoIs".Translate(QualityCategory.Poor.GetLabel().CapitalizeFirst()), delegate
             {
                 AddQuality(QualityCategory.Poor);
                
             }, MenuOptionPriority.Default, null, null, 29f, null, null));
-            list.Add(new FloatMenuOption("IP_QualityAutoIs".Translate(QualityCategory.Normal.ToString()), delegate
+            list.Add(new FloatMenuOption("IP_QualityAutoIs".Translate(QualityCategory.Normal.GetLabel().CapitalizeFirst()), delegate
             {
                 AddQuality(QualityCategory.Normal);
                
             }, MenuOptionPriority.Default, null, null, 29f, null, null));
-            list.Add(new FloatMenuOption("IP_QualityAutoIs".Translate(QualityCategory.Good.ToString()), delegate
+            list.Add(new FloatMenuOption("IP_QualityAutoIs".Translate(QualityCategory.Good.GetLabel().CapitalizeFirst()), delegate
             {
                 AddQuality(QualityCategory.Good);
                
             }, MenuOptionPriority.Default, null, null, 29f, null, null));
-            list.Add(new FloatMenuOption("IP_QualityAutoIs".Translate(QualityCategory.Excellent.ToString()), delegate
+            list.Add(new FloatMenuOption("IP_QualityAutoIs".Translate(QualityCategory.Excellent.GetLabel().CapitalizeFirst()), delegate
             {
                 AddQuality(QualityCategory.Excellent);
                
             }, MenuOptionPriority.Default, null, null, 29f, null, null));
-            list.Add(new FloatMenuOption("IP_QualityAutoIs".Translate(QualityCategory.Masterwork.ToString()), delegate
+            list.Add(new FloatMenuOption("IP_QualityAutoIs".Translate(QualityCategory.Masterwork.GetLabel().CapitalizeFirst()), delegate
             {
                 AddQuality(QualityCategory.Masterwork);
                 
             }, MenuOptionPriority.Default, null, null, 29f, null, null));
-            list.Add(new FloatMenuOption("IP_QualityAutoIs".Translate(QualityCategory.Legendary.ToString()), delegate
+            list.Add(new FloatMenuOption("IP_QualityAutoIs".Translate(QualityCategory.Legendary.GetLabel().CapitalizeFirst()), delegate
             {
                 AddQuality(QualityCategory.Legendary);
                 
