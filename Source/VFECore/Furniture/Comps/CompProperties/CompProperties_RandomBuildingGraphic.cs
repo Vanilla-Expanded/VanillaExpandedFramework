@@ -11,6 +11,8 @@ namespace VanillaFurnitureExpanded
        
         public List<string> randomGraphics;
 
+        public List<string> optionalNames;
+
         public bool startAsRandom = true;
 
         public bool disableRandomButton = false;
@@ -19,7 +21,7 @@ namespace VanillaFurnitureExpanded
 
         public bool disableAllButtons = false;
 
-       
+        public bool useSouthOrientation = false;
 
         public CompProperties_RandomBuildingGraphic()
         {

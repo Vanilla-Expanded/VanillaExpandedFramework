@@ -11,23 +11,23 @@ namespace VanillaFurnitureExpanded
         private static readonly Color borderColor = new Color(0.13f, 0.13f, 0.13f);
         private static readonly Color fillColor = new Color(0, 0, 0,0.1f);
 
-        public static List<ThingDef> ThingsWithSouthOrientation = new List<ThingDef>() { ThingDefOf.DiningChair,InternalDefOf.Dresser,InternalDefOf.Armchair, InternalDefOf.Shelf, InternalDefOf.VitalsMonitor};
-
+       
         public Thing thingToChange;
         private Vector2 scrollPosition = new Vector2(0, 0);
         public int columnCount = 4;
         List<string> buildingGraphics;
-       
+        CompProperties_RandomBuildingGraphic Props;
 
 
 
-        public Dialog_ChooseGraphic(Thing thing, List<string> buildingGraphics)
+        public Dialog_ChooseGraphic(Thing thing, CompProperties_RandomBuildingGraphic Props)
         {
             this.thingToChange = thing;
             doCloseX = true;
             doCloseButton = true;
             closeOnClickedOutside = true;
-            this.buildingGraphics = buildingGraphics;
+            this.buildingGraphics = Props.randomGraphics;
+            this.Props = Props;
            
 
 
@@ -67,9 +67,12 @@ namespace VanillaFurnitureExpanded
                 {
 
                     string availableTexture = buildingGraphics[i];
+
+                    string description = !Props.optionalNames.NullOrEmpty() && Props.optionalNames.Count>=i ? Props.optionalNames[i] : buildingGraphics[i];
+
                     if (thingToChange.def.graphicData.graphicClass == typeof(Graphic_Multi))
                     {
-                        if (ThingsWithSouthOrientation.Contains(thingToChange.def))
+                        if (Props.useSouthOrientation)
                         {
                             availableTexture = availableTexture + "_south";
                         }
@@ -104,7 +107,7 @@ namespace VanillaFurnitureExpanded
 
                    
 
-                    TooltipHandler.TipRegion(rectIcon, buildingGraphics[i]);
+                    TooltipHandler.TipRegion(rectIcon, description);
 
 
 

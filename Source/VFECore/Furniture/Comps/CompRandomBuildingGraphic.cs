@@ -163,7 +163,7 @@ namespace VanillaFurnitureExpanded
                         icon = ContentFinder<Texture2D>.Get("UI/VEF_ChooseGraphic", true),
                         action = delegate ()
                         {
-                            Dialog_ChooseGraphic window = new Dialog_ChooseGraphic(this.parent, Props.randomGraphics);
+                            Dialog_ChooseGraphic window = new Dialog_ChooseGraphic(this.parent, Props);
                             Find.WindowStack.Add(window);
                         }
                     };
