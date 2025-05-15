@@ -470,8 +470,10 @@
     <Compile Include="Cuisine\DefModExtensions\Recipe_Extension.cs" />
     <Compile Include="Cuisine\Harmony\WorkGiver_DoBill_TryFindBestBillIngredientsInSet_AllowMix_Patch.cs" />
     <Compile Include="Cuisine\Harmony\WorkGiver_DoBill_TryFindBestIngredientsInSet_NoMixHelper_Patch.cs" />
+    <Compile Include="Furniture\DefModExtensions\LootableBuildingDetails.cs" />
     <Compile Include="Furniture\DefOfs\HiddenDesignatorsDef.cs" />
     <Compile Include="Furniture\Harmony\DesignationCategoryDef_ResolvedAllowedDesignators.cs" />
+    <Compile Include="Furniture\Buildings\LootableBuilding.cs" />
     <Compile Include="Furniture\StaticCollections\StaticCollections.cs" />
     <Compile Include="Genes\Harmony\ThingIngestingPatches.cs" />
     <Compile Include="Genes\Harmony\FoodUtility_GetMeatSourceCategory.cs" />
