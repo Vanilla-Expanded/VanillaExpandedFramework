@@ -67,7 +67,7 @@ namespace AnimalBehaviours
                                 tmpPawns.Clear();
                                 if (fleeDest.IsValid && fleeDest != pawn.Position)
                                 {
-                                    Job job = JobMaker.MakeJob(JobDefOf.FleeAndCowerShort, fleeDest);
+                                    Job job = JobMaker.MakeJob(InternalDefOf.VEF_FleeAndCowerShort, fleeDest);
                                     job.checkOverrideOnExpire = true;
                                     job.expiryInterval = 600;
                                     pawn.jobs.TryTakeOrderedJob(job);

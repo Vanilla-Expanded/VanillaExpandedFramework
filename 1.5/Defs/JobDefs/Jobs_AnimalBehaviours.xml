@@ -29,4 +29,11 @@
 		<reportString>eating.</reportString>
 		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
 	</JobDef>
+	<JobDef>
+		<defName>VEF_FleeAndCowerShort</defName>
+		<driverClass>JobDriver_FleeAndCowerShort</driverClass>
+		<reportString>fleeing.</reportString>
+		<checkOverrideOnDamage>OnlyIfInstigatorNotJobTarget</checkOverrideOnDamage>
+		<isIdle>true</isIdle>
+	</JobDef>
 </Defs>
