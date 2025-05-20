@@ -17,7 +17,7 @@ namespace VFECore
         {
             base.PostSpawnSetup(respawningAfterLoad);
 
-            if (this.parent.Position.GetThingList(this.parent.Map)?.ContainsAny(x => x.def.passability == Traversability.Impassable) == true)
+            if (this.parent.Position.GetThingList(this.parent.Map)?.ContainsAny(x => x!= this.parent && x.def.passability == Traversability.Impassable) == true)
             {
                 List<Thing> thingsToDespawn = new List<Thing>();
 
