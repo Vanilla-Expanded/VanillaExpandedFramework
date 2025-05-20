@@ -13,6 +13,7 @@ namespace VanillaFurnitureExpanded
     {
 
         public List<BuildableDef> hiddenDesignators;
+        
 
 
     }

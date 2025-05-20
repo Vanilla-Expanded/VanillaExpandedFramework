@@ -11,7 +11,7 @@ namespace VanillaFurnitureExpanded
 
     public class LootableBuildingDetails : DefModExtension
     {
-        public bool useBaseGameOpen = true;
+       
         public bool randomFromContents = false;
         public int totalRandomLoops = 1;
         public List<ThingAndCount> contents = null;
@@ -21,6 +21,7 @@ namespace VanillaFurnitureExpanded
         public string gizmoText;
         public string gizmoDesc;
         public string requiredMod = "";
+        public string overlayTexture;
       
 
     }

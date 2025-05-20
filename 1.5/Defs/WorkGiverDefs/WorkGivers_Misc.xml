@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<WorkGiverDef>
+		<defName>VFE_Loot</defName>
+		<label>loot objects</label>
+		<giverClass>VFECore.WorkGiver_Loot</giverClass>
+		<workType>BasicWorker</workType>
+		<verb>loot</verb>
+		<gerund>looting</gerund>
+		<priorityInType>101</priorityInType>
+		<requiredCapacities>
+			<li>Manipulation</li>
+		</requiredCapacities>
+		<prioritizeSustains>true</prioritizeSustains>
+	</WorkGiverDef>
+</Defs>

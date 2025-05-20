@@ -6,6 +6,9 @@ using UnityEngine;
 using Verse;
 using RimWorld;
 using VanillaFurnitureExpanded;
+using Verse.Sound;
+
+//These lootable buildings use base game IOpenable interface, which automatically handles the gizmo, the workgivers, the jobdrivers, etc
 
 
 namespace VanillaFurnitureExpanded
@@ -43,8 +46,7 @@ namespace VanillaFurnitureExpanded
             GetDetails();
             if (contentDetails != null)
             {
-                if (contentDetails.useBaseGameOpen)
-                {
+               
                     if (contentDetails.randomFromContents)
                     {
                         for(int i=0;i< contentDetails.totalRandomLoops; i++)
@@ -78,11 +80,15 @@ namespace VanillaFurnitureExpanded
                             buildingToMake.SetFaction(this.Faction);
                         }
                     }
+                    if (contentDetails.deconstructSound != null)
+                    {
+                        contentDetails.deconstructSound.PlayOneShot(this);
+                    }
                     if (this.Spawned)
                     {
                         this.Destroy();
                     }
-                }
+                
 
 
             }
