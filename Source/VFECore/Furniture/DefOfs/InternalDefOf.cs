@@ -11,6 +11,8 @@ namespace VanillaFurnitureExpanded
         public static ThingDef Dresser;
         public static ThingDef Shelf;
         public static ThingDef VitalsMonitor;
+
         public static JobDef VFE_Loot;
+        public static JobDef VFE_StudyBuilding;
     }
 }

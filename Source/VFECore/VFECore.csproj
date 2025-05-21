@@ -471,11 +471,15 @@
     <Compile Include="Cuisine\Harmony\WorkGiver_DoBill_TryFindBestBillIngredientsInSet_AllowMix_Patch.cs" />
     <Compile Include="Cuisine\Harmony\WorkGiver_DoBill_TryFindBestIngredientsInSet_NoMixHelper_Patch.cs" />
     <Compile Include="Furniture\AI\JobDrivers\JobDriver_Loot.cs" />
+    <Compile Include="Furniture\AI\JobDrivers\JobDriver_StudyBuilding.cs" />
     <Compile Include="Furniture\AI\WorkGivers\WorkGiver_Loot.cs" />
+    <Compile Include="Furniture\AI\WorkGivers\WorkGiver_StudyBuilding.cs" />
     <Compile Include="Furniture\Buildings\LootableBuilding_Custom.cs" />
+    <Compile Include="Furniture\Buildings\StudiableBuilding.cs" />
     <Compile Include="Furniture\Comps\CompJammedAirlock.cs" />
     <Compile Include="Furniture\Comps\CompProperties\CompProperties_JammedAirlock.cs" />
     <Compile Include="Furniture\DefModExtensions\LootableBuildingDetails.cs" />
+    <Compile Include="Furniture\DefModExtensions\StudiableBuildingDetails.cs" />
     <Compile Include="Furniture\Defs\HiddenDesignatorsDef.cs" />
     <Compile Include="Furniture\Harmony\DesignationCategoryDef_ResolvedAllowedDesignators.cs" />
     <Compile Include="Furniture\Buildings\LootableBuilding.cs" />

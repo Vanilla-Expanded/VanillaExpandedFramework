@@ -38,4 +38,10 @@
 		<reportString>looting TargetA.</reportString>
 		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
 	</JobDef>
+	<JobDef>
+		<defName>VFE_StudyBuilding</defName>
+		<driverClass>VanillaFurnitureExpanded.JobDriver_StudyBuilding</driverClass>
+		<reportString>studying TargetA.</reportString>
+		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+	</JobDef>
 </Defs>

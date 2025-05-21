@@ -12,6 +12,7 @@ namespace VanillaFurnitureExpanded
     public class MapComponent_InteractableBuildingsInMap : MapComponent
     {
         public HashSet<Thing> lootables_InMap = new HashSet<Thing>();
+        public HashSet<Thing> studiables_InMap = new HashSet<Thing>();
 
         public MapComponent_InteractableBuildingsInMap(Map map) : base(map)
         {
@@ -21,6 +22,7 @@ namespace VanillaFurnitureExpanded
         {
             base.ExposeData();
             Scribe_Collections.Look(ref this.lootables_InMap, "lootables_InMap", LookMode.Reference);
+            Scribe_Collections.Look(ref this.studiables_InMap, "studiables_InMap", LookMode.Reference);
         }
 
         public void AddLootableToMap(Thing thing)
@@ -36,6 +38,21 @@ namespace VanillaFurnitureExpanded
             if (lootables_InMap.Contains(thing))
             {
                 lootables_InMap.Remove(thing);
+            }
+        }
+        public void AddStudiablesToMap(Thing thing)
+        {
+            if (!studiables_InMap.Contains(thing))
+            {
+                studiables_InMap.Add(thing);
+            }
+        }
+
+        public void RemoveStudiablesFromMap(Thing thing)
+        {
+            if (studiables_InMap.Contains(thing))
+            {
+                studiables_InMap.Remove(thing);
             }
         }
     }
