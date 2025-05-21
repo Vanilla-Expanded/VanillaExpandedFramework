@@ -13,7 +13,7 @@ namespace VanillaFurnitureExpanded
     {
        
         public bool randomFromContents = false;
-        public int totalRandomLoops = 1;
+        public IntRange totalRandomLoops = new IntRange(1,1);
         public List<ThingAndCount> contents = null;
         public ThingDef buildingLeft = null;
         public SoundDef deconstructSound = null;

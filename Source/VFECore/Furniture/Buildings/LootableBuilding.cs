@@ -49,7 +49,7 @@ namespace VanillaFurnitureExpanded
                
                     if (contentDetails.randomFromContents)
                     {
-                        for(int i=0;i< contentDetails.totalRandomLoops; i++)
+                        for(int i=0;i< contentDetails.totalRandomLoops.RandomInRange; i++)
                         {
                             ThingAndCount thingDefCount = contentDetails.contents.RandomElement();
                             Thing thingToMake = ThingMaker.MakeThing(thingDefCount.thing, null);

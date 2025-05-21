@@ -106,7 +106,7 @@ namespace VFECore
             {
                 if (LootableExtension.randomFromContents)
                 {
-                    for (int i = 0; i < LootableExtension.totalRandomLoops; i++)
+                    for (int i = 0; i < LootableExtension.totalRandomLoops.RandomInRange; i++)
                     {
                         ThingAndCount thingDefCount = LootableExtension.contents.RandomElement();
                         Thing thingToMake = ThingMaker.MakeThing(thingDefCount.thing, null);
