@@ -7,7 +7,7 @@ using Verse;
 using UnityEngine;
 using RimWorld.Planet;
 
-namespace VFECore
+namespace VanillaFurnitureExpanded
 {
     public class MapComponent_InteractableBuildingsInMap : MapComponent
     {

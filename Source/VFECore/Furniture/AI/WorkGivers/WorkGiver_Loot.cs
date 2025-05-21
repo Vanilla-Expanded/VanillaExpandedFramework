@@ -5,7 +5,7 @@ using Verse;
 using Verse.AI;
 using VanillaFurnitureExpanded;
 
-namespace VFECore
+namespace VanillaFurnitureExpanded
 {
     public class WorkGiver_Loot : WorkGiver_Scanner
     {

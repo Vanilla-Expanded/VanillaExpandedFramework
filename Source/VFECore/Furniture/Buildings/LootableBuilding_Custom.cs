@@ -7,12 +7,12 @@ using Verse;
 using RimWorld;
 using Verse.Sound;
 using Verse.AI;
-using VanillaFurnitureExpanded;
+
 using VFECore;
 
 //These lootable buildings don't use base game IOpenable interface
 
-namespace VFECore
+namespace VanillaFurnitureExpanded
 {
     public class LootableBuilding_Custom : Building
     {

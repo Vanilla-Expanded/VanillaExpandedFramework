@@ -2,7 +2,7 @@
 using RimWorld;
 using Verse;
 
-namespace VFECore
+namespace VanillaFurnitureExpanded
 {
     public class CompProperties_JammedAirlock : CompProperties_Interactable
     {

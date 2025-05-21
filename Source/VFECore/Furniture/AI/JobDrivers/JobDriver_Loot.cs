@@ -4,7 +4,7 @@ using Verse.AI;
 using RimWorld;
 
 
-namespace VFECore
+namespace VanillaFurnitureExpanded
 {
     public class JobDriver_Loot : JobDriver
     {

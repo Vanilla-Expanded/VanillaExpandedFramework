@@ -5,7 +5,7 @@ using UnityEngine;
 using Verse;
 using Verse.AI;
 
-namespace VFECore
+namespace VanillaFurnitureExpanded
 {
     public class CompJammedAirlock : CompInteractable
     {
