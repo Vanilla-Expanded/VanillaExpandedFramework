@@ -34,7 +34,7 @@
 	</JobDef>
 	<JobDef>
 		<defName>VFE_Loot</defName>
-		<driverClass>VFECore.JobDriver_Loot</driverClass>
+		<driverClass>VanillaFurnitureExpanded.JobDriver_Loot</driverClass>
 		<reportString>looting TargetA.</reportString>
 		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
 	</JobDef>

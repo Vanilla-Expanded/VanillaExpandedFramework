@@ -3,7 +3,7 @@
 	<WorkGiverDef>
 		<defName>VFE_Loot</defName>
 		<label>loot objects</label>
-		<giverClass>VFECore.WorkGiver_Loot</giverClass>
+		<giverClass>VanillaFurnitureExpanded.WorkGiver_Loot</giverClass>
 		<workType>BasicWorker</workType>
 		<verb>loot</verb>
 		<gerund>looting</gerund>
