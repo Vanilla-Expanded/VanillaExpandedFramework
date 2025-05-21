@@ -412,6 +412,20 @@ namespace VFECore
         }
     }
 
+    [HarmonyPatch(typeof(Pawn_PathFollower), "AtDestinationPosition")]
+    public static class Pawn_PathFollower_AtDestinationPosition_Patch
+    {
+        public static Pawn curPawn;
+        public static void Prefix(Pawn_PathFollower __instance, Pawn ___pawn)
+        {
+            curPawn = ___pawn;
+        }
+        public static void Postfix(Pawn_PathFollower __instance)
+        {
+            curPawn = null;
+        }
+    }
+
     [HotSwappable]
     [HarmonyPatch(typeof(ReachabilityImmediate), nameof(ReachabilityImmediate.CanReachImmediate), new Type[] { typeof(IntVec3), typeof(LocalTargetInfo), typeof(Map), typeof(PathEndMode), typeof(Pawn) })]
     public static class ReachabilityImmediate_CanReachImmediate_Patch
@@ -419,11 +433,16 @@ namespace VFECore
 
         public static void Postfix(ref bool __result, IntVec3 start, LocalTargetInfo target, Map map, PathEndMode peMode, Pawn pawn)
         {
+
             var curPawn = Toils_Combat_FollowAndMeleeAttack_Patch.curPawn
                 ?? JobGiver_ConfigurableHostilityResponse_TryGetAttackNearbyEnemyJob_Patch.curPawn
                 ?? AttackTargetFinder_FindBestReachableMeleeTarget_Patch.curPawn
                 ?? Verb_TryFindShootLineFromTo_Patch.curPawn;
 
+            if (Pawn_PathFollower_AtDestinationPosition_Patch.curPawn == curPawn)
+            {
+                return;
+            }
             if (__result is false && curPawn != null)
             {
                 var verbToUse = curPawn.GetMeleeVerb();
