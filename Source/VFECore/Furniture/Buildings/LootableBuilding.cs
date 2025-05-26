@@ -7,6 +7,7 @@ using Verse;
 using RimWorld;
 using VanillaFurnitureExpanded;
 using Verse.Sound;
+using VFECore;
 
 //These lootable buildings use base game IOpenable interface, which automatically handles the gizmo, the workgivers, the jobdrivers, etc
 
@@ -43,6 +44,11 @@ namespace VanillaFurnitureExpanded
 
         public void Open()
         {
+            var comp = this.GetComp<CompBouncingArrow>();
+            if (comp != null)
+            {
+                comp.doBouncingArrow = false;
+            }
             GetDetails();
             if (contentDetails != null)
             {
