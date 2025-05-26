@@ -3,12 +3,28 @@ using Verse;
 
 namespace VFECore
 {
+    public class CompProperties_BouncingArrow : CompProperties
+    {
+        public bool startBouncingArrowUponSpawning;
+        public CompProperties_BouncingArrow()
+        {
+            compClass = typeof(CompBouncingArrow);
+        }
+    }
     [StaticConstructorOnStartup]
     public class CompBouncingArrow : ThingComp
     {
         private static readonly Material ArrowMatWhite = MaterialPool.MatFrom("UI/Overlays/Arrow", ShaderDatabase.CutoutFlying, Color.white);
         public bool doBouncingArrow;
-
+        public override void PostSpawnSetup(bool respawningAfterLoad)
+        {
+            base.PostSpawnSetup(respawningAfterLoad);
+            if (parent.def.GetCompProperties<CompProperties_BouncingArrow>() 
+                is CompProperties_BouncingArrow props && props.startBouncingArrowUponSpawning)
+            {
+                doBouncingArrow = true;
+            }
+        }
         public override void PostExposeData()
         {
             base.PostExposeData();

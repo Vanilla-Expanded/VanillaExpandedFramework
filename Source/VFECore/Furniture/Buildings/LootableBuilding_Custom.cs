@@ -102,6 +102,11 @@ namespace VanillaFurnitureExpanded
 
         public void Open()
         {
+            var comp = this.GetComp<CompBouncingArrow>();
+            if (comp != null)
+            {
+                comp.doBouncingArrow = false;
+            }
             if (LootableExtension != null)
             {
                 if (LootableExtension.randomFromContents)
