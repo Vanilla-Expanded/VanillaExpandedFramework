@@ -84,8 +84,9 @@ namespace VanillaFurnitureExpanded
                     
                     if (contentDetails.buildingLeft != null)
                     {
+                        Rot4 rotation = this.Rotation;
                         Thing buildingToMake = GenSpawn.Spawn(ThingMaker.MakeThing(contentDetails.buildingLeft), Position, Map);
-
+                        buildingToMake.Rotation = rotation;
                         if (buildingToMake.def.CanHaveFaction)
                         {
                             buildingToMake.SetFaction(this.Faction);
