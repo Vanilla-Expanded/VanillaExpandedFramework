@@ -49,6 +49,10 @@ namespace VanillaFurnitureExpanded
             {
                 comp.doBouncingArrow = false;
             }
+            var site = Map.Parent;
+            var signal = "LootableBuildingOpened";
+            Find.SignalManager.SendSignal(new Signal(signal, site.Named("SUBJECT")));
+            QuestUtility.SendQuestTargetSignals(site.questTags, signal, site.Named("SUBJECT"));
             GetDetails();
             if (contentDetails != null)
             {
