@@ -8,6 +8,7 @@ using RimWorld;
 using VanillaFurnitureExpanded;
 using Verse.Sound;
 using VFECore;
+using RimWorld.Planet;
 
 //These lootable buildings use base game IOpenable interface, which automatically handles the gizmo, the workgivers, the jobdrivers, etc
 
@@ -49,7 +50,7 @@ namespace VanillaFurnitureExpanded
             {
                 comp.doBouncingArrow = false;
             }
-            var site = Map.Parent;
+            var site = Map.Parent is PocketMapParent pocketMapParent ? pocketMapParent.sourceMap.Parent : Map.Parent;
             var signal = "LootableBuildingOpened";
             Find.SignalManager.SendSignal(new Signal(signal, site.Named("SUBJECT")));
             QuestUtility.SendQuestTargetSignals(site.questTags, signal, site.Named("SUBJECT"));
