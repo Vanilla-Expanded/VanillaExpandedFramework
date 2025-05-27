@@ -4,7 +4,7 @@ using RimWorld;
 using System.Collections.Generic;
 namespace AnimalBehaviours
 {
-    class HediffComp_Electrified : HediffComp
+    public class HediffComp_Electrified : HediffComp
     {
         public HediffCompProperties_Electrified Props
         {
