@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace AnimalBehaviours
 {
-    class HediffComp_Resurrect : HediffComp
+    public class HediffComp_Resurrect : HediffComp
     {
         public HediffCompProperties_Resurrect Props
         {
