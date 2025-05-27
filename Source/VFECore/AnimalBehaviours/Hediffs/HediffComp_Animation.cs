@@ -4,7 +4,7 @@ using RimWorld;
 
 namespace AnimalBehaviours
 {
-    class HediffComp_Animation : HediffComp
+    public class HediffComp_Animation : HediffComp
     {
 
 
