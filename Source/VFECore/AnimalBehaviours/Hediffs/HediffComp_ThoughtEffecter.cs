@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace AnimalBehaviours
 {
-    class HediffComp_ThoughtEffecter : HediffComp
+    public class HediffComp_ThoughtEffecter : HediffComp
     {
 
         public int tickCounter = 0;
