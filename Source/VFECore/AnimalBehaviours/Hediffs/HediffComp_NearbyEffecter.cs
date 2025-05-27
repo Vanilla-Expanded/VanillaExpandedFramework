@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace AnimalBehaviours
 {
-    class HediffComp_NearbyEffecter : HediffComp
+    public class HediffComp_NearbyEffecter : HediffComp
     {
         public HediffCompProperties_NearbyEffecter Props
         {
