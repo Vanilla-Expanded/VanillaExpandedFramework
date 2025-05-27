@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace AnimalBehaviours
 {
-    class HediffComp_Spawner : HediffComp
+    public class HediffComp_Spawner : HediffComp
     {
 
 
