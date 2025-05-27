@@ -4,7 +4,7 @@ using RimWorld;
 
 namespace AnimalBehaviours
 {
-    class HediffComp_HeatPusher : HediffComp
+    public class HediffComp_HeatPusher : HediffComp
     {
 
        
