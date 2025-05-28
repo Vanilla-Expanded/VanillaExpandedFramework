@@ -9,7 +9,7 @@ using Verse.Noise;
 
 namespace AnimalBehaviours
 {
-    class HediffComp_StageByTemperature : HediffComp
+    public class HediffComp_StageByTemperature : HediffComp
     {
 
 

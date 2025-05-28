@@ -4,7 +4,7 @@ using RimWorld;
 
 namespace AnimalBehaviours
 {
-    class HediffComp_Draftable : HediffComp
+    public class HediffComp_Draftable : HediffComp
     {
 
         public int tickCounter = 0;

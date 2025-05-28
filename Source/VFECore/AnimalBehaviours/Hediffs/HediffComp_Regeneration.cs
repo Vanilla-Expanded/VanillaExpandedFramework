@@ -7,7 +7,7 @@ using Verse.AI;
 
 namespace AnimalBehaviours
 {
-    class HediffComp_Regeneration : HediffComp
+    public class HediffComp_Regeneration : HediffComp
     {
         public HediffCompProperties_Regeneration Props
         {

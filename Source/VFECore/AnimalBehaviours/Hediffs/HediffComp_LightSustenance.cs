@@ -4,7 +4,7 @@ using RimWorld;
 
 namespace AnimalBehaviours
 {
-    class HediffComp_LightSustenance : HediffComp
+    public class HediffComp_LightSustenance : HediffComp
     {
 
         public float growOptimalGlow = 0.4f;

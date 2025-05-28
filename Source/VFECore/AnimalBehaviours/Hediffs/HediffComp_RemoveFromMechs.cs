@@ -9,7 +9,7 @@ using AnimalBehaviours;
 
 namespace AnimalBehaviours
 {
-    class HediffComp_RemoveFromMechs : HediffComp
+    public class HediffComp_RemoveFromMechs : HediffComp
     {
         public HediffCompProperties_RemoveFromMechs Props
         {

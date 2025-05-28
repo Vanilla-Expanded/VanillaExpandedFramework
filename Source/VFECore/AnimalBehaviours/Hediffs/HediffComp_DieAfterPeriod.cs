@@ -9,7 +9,7 @@ using VFECore;
 
 namespace AnimalBehaviours
 {
-    class HediffComp_DieAfterPeriod : HediffComp
+    public class HediffComp_DieAfterPeriod : HediffComp
     {
 
 

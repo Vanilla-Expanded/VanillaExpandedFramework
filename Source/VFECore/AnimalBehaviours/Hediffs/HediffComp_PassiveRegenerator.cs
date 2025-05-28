@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace AnimalBehaviours
 {
-    class HediffComp_PassiveRegenerator : HediffComp
+    public class HediffComp_PassiveRegenerator : HediffComp
     {
 
 

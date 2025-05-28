@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace AnimalBehaviours
 {
-    class HediffComp_StageBySunlight : HediffComp
+    public class HediffComp_StageBySunlight : HediffComp
     {
 
 
