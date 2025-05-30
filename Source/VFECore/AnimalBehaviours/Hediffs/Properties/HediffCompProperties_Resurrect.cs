@@ -7,7 +7,7 @@ using System.Text;
 
 namespace AnimalBehaviours
 {
-    class HediffCompProperties_Resurrect : HediffCompProperties
+    public class HediffCompProperties_Resurrect : HediffCompProperties
     {
 
 

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace AnimalBehaviours
 {
-    class HediffCompProperties_ThoughtEffecter : HediffCompProperties
+    public class HediffCompProperties_ThoughtEffecter : HediffCompProperties
     {
 
 
