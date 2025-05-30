@@ -508,7 +508,8 @@
     <Compile Include="VFECore\Comps\ThingComps\CompLabelByIngredients.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompProperties_CustomizableGraphic.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompProperties_ScheduleActiveAtSunlightRange.cs" />
-    <Compile Include="VFECore\Comps\ThingComps\CompScheduleActiveAtSunlightRange.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompProperties_ScheduleExtended.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompScheduleExtended.cs" />
     <Compile Include="VFECore\DefModExtensions\FacilityExtension.cs" />
     <Compile Include="VFECore\Defs\GraphicOffsets.cs" />
     <Compile Include="VFECore\Graphics\Graphic_DarklightMulti.cs" />

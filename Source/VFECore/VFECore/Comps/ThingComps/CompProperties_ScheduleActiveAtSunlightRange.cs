@@ -1,11 +1,6 @@
-﻿using RimWorld;
+﻿using System;
 
 namespace VFECore;
 
-public class CompProperties_ScheduleActiveAtSunlightRange : CompProperties_Schedule
-{
-    public float minLight;
-    public float maxLight = 1f;
-
-    public CompProperties_ScheduleActiveAtSunlightRange() => compClass = typeof(CompScheduleActiveAtSunlightRange);
-}
+[Obsolete($"Use {nameof(CompProperties_ScheduleExtended)} instead. Will be removed in future version. Temporarily kept for compatibility reasons.")]
+public class CompProperties_ScheduleActiveAtSunlightRange : CompProperties_ScheduleExtended;
