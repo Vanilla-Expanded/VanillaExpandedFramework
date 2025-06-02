@@ -185,16 +185,17 @@ namespace VFECore
                 }
             }
 
-            if (ext.isRepeatable)
-            {
-                ScheduleQuestMTB(quest, ext.mtbDaysRepeat);
-                return true;
-            }
-            else if (ext.conditionMinDaysSinceStart > 0)
+
+            if (ext.conditionMinDaysSinceStart > 0)
             {
                 var days = ext.conditionMinDaysSinceStart - GenDate.DaysPassed;
                 var ticks = (int)(days <= 0 ? 0 : days * GenDate.TicksPerDay);
                 ScheduleQuestInTicks(quest, ticks);
+                return true;
+            }
+            else if (ext.isRepeatable)
+            {
+                ScheduleQuestMTB(quest, ext.mtbDaysRepeat);
                 return true;
             }
             return false;
