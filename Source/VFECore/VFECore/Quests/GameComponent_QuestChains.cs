@@ -125,6 +125,16 @@ namespace VFECore
                 return false;
             }
 
+            if (ext.conditionSucceedQuestsCount != null && ext.conditionSucceedQuestsCount.Count > 0)
+            {
+                foreach (var cond in ext.conditionSucceedQuestsCount)
+                {
+                    int successCount = quests.Count(x => x.questDef == cond.questDef && x.outcome == QuestEndOutcome.Success);
+                    if (successCount != cond.count)
+                        return false;
+                }
+            }
+
             if (ext.conditionSucceedQuests != null && ext.conditionSucceedQuests.NullOrEmpty() is false)
             {
                 if (ext.conditionSucceedQuests.All(QuestIsCompletedAndSucceeded) is false)

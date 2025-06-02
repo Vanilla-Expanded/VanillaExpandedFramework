@@ -21,5 +21,7 @@ namespace VFECore
         public FloatRange daysUntilGrantAgainOnFailure;
         public bool grantAgainOnExpiry;
         public FloatRange daysUntilGrantAgainOnExpiry;
+
+        public List<ConditionSucceedQuestsCount> conditionSucceedQuestsCount;
     }
 }

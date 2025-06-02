@@ -535,6 +535,7 @@
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_CompAffectedByFacilities_CanPotentiallyLinkTo_Static.cs" />
     <Compile Include="VFECore\HarmonyPatches\SpecificPatches\Patch_LearningUtility_SchoolDeskLearningRate.cs" />
     <Compile Include="VFECore\PlaceWorker\PlaceWorker_AttachedToWallMultiCell.cs" />
+    <Compile Include="VFECore\Quests\ConditionSucceedQuestsCount.cs" />
     <Compile Include="VFECore\Quests\MainTabWindow_Quests_DoCharityIcon_Patch.cs" />
     <Compile Include="VFECore\Quests\MainTabWindow_Quests_DoRow_Patch.cs" />
     <Compile Include="VFECore\Quests\FutureQuestInfo.cs" />
