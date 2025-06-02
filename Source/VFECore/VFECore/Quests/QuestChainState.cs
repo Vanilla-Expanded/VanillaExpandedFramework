@@ -12,7 +12,8 @@ namespace VFECore
         public void ExposeData()
         {
             Scribe_Collections.Look(ref deepSavedPawns, "deepSavedPawns", LookMode.Deep);
-            Scribe_Collections.Look(ref uniquePawnsByTag, "uniquePawnsByTag", LookMode.Value, LookMode.Reference);
+            Scribe_Collections.Look(ref uniquePawnsByTag, "uniquePawnsByTag", 
+                LookMode.Value, LookMode.Reference, ref tagKeys, ref pawnValues);
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 deepSavedPawns ??= new List<Pawn>();
@@ -21,6 +22,10 @@ namespace VFECore
                 uniquePawnsByTag.RemoveAll(pair => pair.Value == null);
             }
         }
+
+        private List<string> tagKeys;
+        private List<Pawn> pawnValues;
+
 
         public void StoreUniquePawn(string tag, Pawn pawn, bool deepSave)
         {
