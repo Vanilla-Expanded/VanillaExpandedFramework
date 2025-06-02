@@ -14,6 +14,8 @@ namespace VFECore
         private List<QuestScriptDef> questsInChains;
         public List<QuestScriptDef> QuestsInChains => questsInChains ??= DefDatabase<QuestScriptDef>.AllDefsListForReading.Where(x => x.GetModExtension<QuestChainExtension>() != null).ToList();
 
+        public Dictionary<QuestChainDef, QuestChainState> questChainStates = new Dictionary<QuestChainDef, QuestChainState>();
+
         public GameComponent_QuestChains(Game game)
         {
             Instance = this;
@@ -38,13 +40,23 @@ namespace VFECore
         public override void LoadedGame()
         {
             base.LoadedGame();
+            EnsureAllQuestChainUniquePawns();
             TryScheduleQuests();
         }
 
         public override void StartedNewGame()
         {
             base.StartedNewGame();
+            EnsureAllQuestChainUniquePawns();
             TryScheduleQuests();
+        }
+
+        private void EnsureAllQuestChainUniquePawns()
+        {
+            foreach (var questChainDef in DefDatabase<QuestChainDef>.AllDefs)
+            {
+                questChainDef.Worker.EnsureAllUniquePawnsCreated();
+            }
         }
 
         public void TryScheduleQuests()
@@ -60,12 +72,24 @@ namespace VFECore
             base.ExposeData();
             Scribe_Collections.Look(ref quests, "finishedQuests", LookMode.Deep);
             Scribe_Collections.Look(ref futureQuests, "futureQuests", LookMode.Deep);
+            Scribe_Collections.Look(ref questChainStates, "questChainStates", LookMode.Def, LookMode.Deep);
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 quests ??= new List<QuestInfo>();
                 futureQuests ??= new List<FutureQuestInfo>();
+                questChainStates ??= new Dictionary<QuestChainDef, QuestChainState>();
             }
             Instance = this;
+        }
+
+        public QuestChainState GetStateFor(QuestChainDef def)
+        {
+            if (!questChainStates.TryGetValue(def, out var state))
+            {
+                state = new QuestChainState();
+                questChainStates[def] = state;
+            }
+            return state;
         }
 
         public void QuestCompleted(Quest quest, QuestEndOutcome outcome)

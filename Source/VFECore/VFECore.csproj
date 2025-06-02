@@ -503,6 +503,8 @@
     <Compile Include="MovingBases\MovingBase_Tweener.cs" />
     <Compile Include="MovingBases\MovingBase.cs" />
     <Compile Include="MovingBases\MovingBaseDef.cs" />
+    <Compile Include="VFECore\Quests\QuestChainState.cs" />
+    <Compile Include="VFECore\Quests\QuestChainWorker.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompCustomizableGraphic.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompGlower_DirtyMapMesh.cs" />
     <Compile Include="VFECore\Comps\ThingComps\CompLabelByIngredients.cs" />
@@ -564,6 +566,7 @@
     <Compile Include="VFECore\JobGivers\DraftedJobs\DraftedJobUtils.cs" />
     <Compile Include="VFECore\Projectiles\Projectile_Shrapnel.cs" />
     <Compile Include="VFECore\Quests\QuestChainDef.cs" />
+    <Compile Include="VFECore\Quests\UniqueCharacterExtension.cs" />
     <Compile Include="VFECore\StaticCollections\StaticCollections.cs" />
     <Compile Include="VFECore\Things\ThingsWithDynamicGraphics.cs" />
     <Compile Include="VFECore\Utilities\GlowerUtility.cs" />

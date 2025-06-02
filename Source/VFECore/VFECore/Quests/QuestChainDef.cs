@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -11,6 +13,7 @@ namespace VFECore
         public string questChainName;
         public Type workerClass;
         private QuestChainWorker cachedWorker;
+        public List<PawnKindDef> uniqueCharacters;
 
         public override void PostLoad()
         {
@@ -33,5 +36,8 @@ namespace VFECore
         }
 
         public QuestChainWorker Worker => cachedWorker;
+
+        public QuestChainState State =>
+            GameComponent_QuestChains.Instance?.GetStateFor(this);
     }
 }
