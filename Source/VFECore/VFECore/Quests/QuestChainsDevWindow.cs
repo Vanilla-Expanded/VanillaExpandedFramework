@@ -141,11 +141,7 @@ namespace VFECore
             // Draw "Fire Now" button
             if (Widgets.ButtonText(new Rect(buttonX, rect.y + curY, buttonWidth, 25f), "Fire Now"))
             {
-                Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(questDef, StorytellerUtility.DefaultThreatPointsNow(Find.World));
-                if (questDef.sendAvailableLetter)
-                {
-                    QuestUtility.SendLetterQuestAvailable(quest);
-                }
+                questDef.CreateQuest();
                 GameComponent_QuestChains.Instance.futureQuests.Remove(futureQuestInfo);
             }
             curY += 25f; // Move curY down after quest name and button

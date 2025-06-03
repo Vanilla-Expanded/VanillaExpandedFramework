@@ -154,7 +154,7 @@ namespace VFECore
                 foreach (var cond in ext.conditionSucceedQuestsCount)
                 {
                     int successCount = quests.Count(x => x.questDef == cond.questDef && x.outcome == QuestEndOutcome.Success);
-                    if (successCount != cond.count)
+                    if (successCount < cond.count)
                         return false;
                 }
             }
@@ -198,7 +198,9 @@ namespace VFECore
                 ScheduleQuestMTB(quest, ext.mtbDaysRepeat);
                 return true;
             }
-            return false;
+
+            quest.CreateQuest();
+            return true;
         }
 
         public bool TryGrantAgainOnFailure(QuestScriptDef quest)
