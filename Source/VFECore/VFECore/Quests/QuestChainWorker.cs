@@ -70,6 +70,7 @@ namespace VFECore
                 request.IsCreepJoiner = true;
                 request.ForceNoIdeoGear = true;
                 request.MustBeCapableOfViolence = true;
+                request.Faction = faction;
                 pawn = PawnGenerator.GeneratePawn(request);
                 Pawn_CreepJoinerTracker creepjoiner = pawn.creepjoiner;
                 creepjoiner.form = form;
