@@ -503,6 +503,8 @@
     <Compile Include="MovingBases\MovingBase_Tweener.cs" />
     <Compile Include="MovingBases\MovingBase.cs" />
     <Compile Include="MovingBases\MovingBaseDef.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompProperties_StatsWhenPowered.cs" />
+    <Compile Include="VFECore\Comps\ThingComps\CompStatsWhenPowered.cs" />
     <Compile Include="VFECore\Quests\QuestUtils.cs" />
     <Compile Include="VFECore\Quests\QuestChainState.cs" />
     <Compile Include="VFECore\Quests\QuestChainWorker.cs" />
