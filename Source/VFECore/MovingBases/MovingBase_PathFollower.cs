@@ -375,6 +375,7 @@ namespace VFECore
 
         private WorldPath GenerateNewPath()
         {
+            (pathsField.GetValue(Find.WorldPathPool) as List<WorldPath>)?.Clear();
             int num = ((moving && nextTile >= 0 && IsNextTilePassable()) ? nextTile : movingBase.Tile);
             lastPathedTargetTile = destTile;
             WorldPath worldPath = Find.WorldPathFinder.FindPath(num, destTile, null);
