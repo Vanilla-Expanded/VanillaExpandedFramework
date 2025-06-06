@@ -2,6 +2,7 @@
 using Verse;
 using RimWorld;
 using System.Text.RegularExpressions;
+using Verse.Grammar;
 
 namespace VFECore
 {
@@ -92,9 +93,20 @@ namespace VFECore
             {
                 pawn = PawnGenerator.GeneratePawn(kind, faction);
             }
+            var nameMaker = pawn.gender == Gender.Female && kind.nameMakerFemale != null
+                ? kind.nameMakerFemale : kind.nameMaker;
+            if (nameMaker != null)
+            {
+                pawn.Name = NameResolvedFrom(nameMaker);
+            }
             exclude.Clear();
             requires.Clear();
             return pawn;
+        }
+
+        private static Name NameResolvedFrom(RulePackDef nameMaker, bool forceNoNick = false, List<Rule> extraRules = null)
+        {
+            return NameTriple.FromString(NameGenerator.GenerateName(nameMaker, (string x) => !NameTriple.FromString(x).UsedThisGame, appendNumberIfNameUsed: false, null, null, extraRules), forceNoNick);
         }
 
         private static void ApplySkillOverrides(Pawn pawn, List<CreepJoinerBenefitDef.SkillValue> skills)
