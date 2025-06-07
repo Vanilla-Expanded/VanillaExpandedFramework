@@ -186,7 +186,7 @@ namespace VFECore
             }
 
 
-            if (ext.conditionMinDaysSinceStart > 0)
+            if (ext.conditionMinDaysSinceStart > 0 && !quests.Any(x => x.questDef == quest))
             {
                 var days = ext.conditionMinDaysSinceStart - GenDate.DaysPassed;
                 var ticks = (int)(days <= 0 ? 0 : days * GenDate.TicksPerDay);
