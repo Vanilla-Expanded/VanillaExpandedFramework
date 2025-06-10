@@ -22,6 +22,8 @@ namespace VFECore
         public bool grantAgainOnExpiry;
         public FloatRange daysUntilGrantAgainOnExpiry;
 
+        public IntRange? delayTicksAfterTriggering;
+
         public List<ConditionSucceedQuestsCount> conditionSucceedQuestsCount;
     }
 }

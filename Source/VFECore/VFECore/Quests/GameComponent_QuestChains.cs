@@ -198,8 +198,14 @@ namespace VFECore
                 ScheduleQuestMTB(quest, ext.mtbDaysRepeat);
                 return true;
             }
-
-            quest.CreateQuest();
+            if (ext.delayTicksAfterTriggering.HasValue)
+            {
+                ScheduleQuestInTicks(quest, ext.delayTicksAfterTriggering.Value.RandomInRange);
+            }
+            else
+            {
+                quest.CreateQuest();
+            }
             return true;
         }
 
