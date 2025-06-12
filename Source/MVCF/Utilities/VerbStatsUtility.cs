@@ -59,7 +59,7 @@ public static class VerbStatsUtility
     {
         return verb switch
         {
-            Verb_LaunchProjectile launch => launch.Projectile.projectile.GetDamageAmount(1f),
+            Verb_LaunchProjectile launch => launch.Projectile.projectile.GetDamageAmount(1f,null),
             Verb_Bombardment => int.MaxValue,
             Verb_PowerBeam => int.MaxValue,
             Verb_MechCluster => int.MaxValue,

@@ -18,6 +18,9 @@
 	<VGE_StatsReport_ColonyMap>on colony map</VGE_StatsReport_ColonyMap>
 	<VGE_StatsReport_OutsideColonyMap>outside colony map</VGE_StatsReport_OutsideColonyMap>
 	<VGE_StatsReport_AnyLightSensitivity>light sensitivity</VGE_StatsReport_AnyLightSensitivity>
+	<VGE_StatsReport_InVacuum>in vacuum</VGE_StatsReport_InVacuum>
+	<VGE_StatsReport_InSpace>in Space</VGE_StatsReport_InSpace>
+	<VGE_StatsReport_InPlanet>in the planet</VGE_StatsReport_InPlanet>
 	
 	<VGE_EggPregnancy>{0}'s eggs have been fertilized! The egglaying process will continue until a fertile egg is laid.</VGE_EggPregnancy>
 	<VGE_EggPregnancyLabel>{0} fertilized!</VGE_EggPregnancyLabel>

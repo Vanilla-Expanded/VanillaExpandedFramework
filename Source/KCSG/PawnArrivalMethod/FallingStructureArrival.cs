@@ -14,13 +14,13 @@ namespace KCSG
             PawnsArrivalModeWorkerUtility.DropInDropPodsNearSpawnCenter(parms, pawns);
         }
 
-        public override void TravelingTransportPodsArrived(List<ActiveDropPodInfo> dropPods, Map map)
+        public override void TravellingTransportersArrived(List<ActiveTransporterInfo> dropPods, Map map)
         {
             if (!DropCellFinder.TryFindRaidDropCenterClose(out IntVec3 near, map, true, true, true, -1))
             {
                 near = DropCellFinder.FindRaidDropCenterDistant(map, false);
             }
-            TransportPodsArrivalActionUtility.DropTravelingTransportPods(dropPods, near, map);
+            TransportersArrivalActionUtility.DropTravellingDropPods(dropPods, near, map);
         }
 
         public override bool TryResolveRaidSpawnCenter(IncidentParms parms)

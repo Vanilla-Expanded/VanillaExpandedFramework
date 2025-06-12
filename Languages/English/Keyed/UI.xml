@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LanguageData>
-    <VEF.Hire>Hire {0}</VEF.Hire>
-    <VEF.HireDesc>Hire some {0} to help around the colony, for example with defense.</VEF.HireDesc>
-    <VEF.AvailableSilver>Available Silver: {0}</VEF.AvailableSilver>
-    <VEF.Value>Value</VEF.Value>
-    <VEF.ChooseNumberOfUnits>How many of that unit do you want to have?</VEF.ChooseNumberOfUnits>
-    <VEF.Breakdown>Breakdown</VEF.Breakdown>
-    <VEF.DayAmount>Amount of Days</VEF.DayAmount>
-    <VEF.Cost>Cost to hire</VEF.Cost>
-    <VEF.RiskMult>Risk multiplier</VEF.RiskMult>
-    <VEF.TotalPrice>Total Price</VEF.TotalPrice>
-    <VEF.HiringDesc>You can hire {0} for any period of time.You can only have one contract active at a time, and you cannot mix and match the factions from which you hire.
+	<VEF.Hire>Hire {0}</VEF.Hire>
+	<VEF.HireDesc>Hire some {0} to help around the colony, for example with defense.</VEF.HireDesc>
+	<VEF.AvailableSilver>Available Silver: {0}</VEF.AvailableSilver>
+	<VEF.Value>Value</VEF.Value>
+	<VEF.ChooseNumberOfUnits>How many of that unit do you want to have?</VEF.ChooseNumberOfUnits>
+	<VEF.Breakdown>Breakdown</VEF.Breakdown>
+	<VEF.DayAmount>Amount of Days</VEF.DayAmount>
+	<VEF.Cost>Cost to hire</VEF.Cost>
+	<VEF.RiskMult>Risk multiplier</VEF.RiskMult>
+	<VEF.TotalPrice>Total Price</VEF.TotalPrice>
+	<VEF.HiringDesc>You can hire {0} for any period of time.You can only have one contract active at a time, and you cannot mix and match the factions from which you hire.
 If hired {0} die on duty, you will incur an additional 5% increase to contract price per dead pirate on all future contracts for a full year.</VEF.HiringDesc>
-    <VEF.LongTerm>Long term contracts are significantly more expensive</VEF.LongTerm>
-    <VEF.ContractInfo>View contract with {0}</VEF.ContractInfo>
-    <VEF.PawnsList>Contracted:</VEF.PawnsList>
-    <VEF.ContractTitle>Contract with {0}</VEF.ContractTitle>
-    <VEF.Spent>Silver spent:</VEF.Spent>
-    <VEF.TimeLeft>Time remaining:</VEF.TimeLeft>
-    <VEF.CancelContract>Cancel Contract</VEF.CancelContract>
-    <VEF.NoRefund>Cancelling your contract will not refund the silver you spent on it.</VEF.NoRefund>
+	<VEF.LongTerm>Long term contracts are significantly more expensive</VEF.LongTerm>
+	<VEF.ContractInfo>View contract with {0}</VEF.ContractInfo>
+	<VEF.PawnsList>Contracted:</VEF.PawnsList>
+	<VEF.ContractTitle>Contract with {0}</VEF.ContractTitle>
+	<VEF.Spent>Silver spent:</VEF.Spent>
+	<VEF.TimeLeft>Time remaining:</VEF.TimeLeft>
+	<VEF.CancelContract>Cancel Contract</VEF.CancelContract>
+	<VEF.NoRefund>Cancelling your contract will not refund the silver you spent on it.</VEF.NoRefund>
 	<VEF.Customize>Customize {0}</VEF.Customize>
 	<VEF.CustomizationTitle>{0} Customization</VEF.CustomizationTitle>
 	<VEF.Name>Name</VEF.Name>
@@ -27,21 +27,17 @@ If hired {0} die on duty, you will incur an additional 5% increase to contract p
 	<VEF.AvailableContracts>Available contracts: {0}</VEF.AvailableContracts>
 	<VEF.MechsSection>Mechanoids</VEF.MechsSection>
 	<VEF.DoorLockDefault>Default</VEF.DoorLockDefault>
-    <VEF.DoorLockEveryone>Everyone</VEF.DoorLockEveryone>
-    <VEF.DoorLockOnlyColonistsAndAnimals>Only colonists and animals</VEF.DoorLockOnlyColonistsAndAnimals>
-    <VEF.DoorLockOnlyColonistsAndAnimalsAndFriendlies>Only colonists, animals and friendlies</VEF.DoorLockOnlyColonistsAndAnimalsAndFriendlies>
-    <VEF.DoorLockOnlyDrafted>Only drafted</VEF.DoorLockOnlyDrafted>
-
+	<VEF.DoorLockEveryone>Everyone</VEF.DoorLockEveryone>
+	<VEF.DoorLockOnlyColonistsAndAnimals>Only colonists and animals</VEF.DoorLockOnlyColonistsAndAnimals>
+	<VEF.DoorLockOnlyColonistsAndAnimalsAndFriendlies>Only colonists, animals and friendlies</VEF.DoorLockOnlyColonistsAndAnimalsAndFriendlies>
+	<VEF.DoorLockOnlyDrafted>Only drafted</VEF.DoorLockOnlyDrafted>
 	<VEF.DoorLockState>Current door lock policy "{0}"</VEF.DoorLockState>
 	<VEF.DoorLockStateDesc>Click to change current door lock policy.</VEF.DoorLockStateDesc>
 	<VEF.DoorLockStatePowerOff>Power is off. Impossible to change door lock policy.</VEF.DoorLockStatePowerOff>
-  
-    <VEF.DraftHuntLabel>Hunt</VEF.DraftHuntLabel>
-    <VEF.HuntDescription>While this is on characters will automatically move to engage nearby targets.\n\nYou can right-click this button to toggle autofire for ALL abilities on the selected pawn.</VEF.HuntDescription>
+	<VEF.DraftHuntLabel>Hunt</VEF.DraftHuntLabel>
+	<VEF.HuntDescription>While this is on characters will automatically move to engage nearby targets.\n\nYou can right-click this button to toggle autofire for ALL abilities on the selected pawn.</VEF.HuntDescription>
 	<VEF.QuestChainTooltip>This quest is a part of a quest chain. Completing it may trigger continuation quests.\n\n{0}\n\n{1}</VEF.QuestChainTooltip>
 	<VEF.CommandAttackMovingBaseDesc>Attack this {0}.</VEF.CommandAttackMovingBaseDesc>
-
-    <VFE.ChangeVisualLabel>Change visual</VFE.ChangeVisualLabel>
-    <VFE.ChangeVisualDesc>Set a specific visual for the building or item.</VFE.ChangeVisualDesc>
-
+	<VFE.ChangeVisualLabel>Change visual</VFE.ChangeVisualLabel>
+	<VFE.ChangeVisualDesc>Set a specific visual for the building or item.</VFE.ChangeVisualDesc>
 </LanguageData>

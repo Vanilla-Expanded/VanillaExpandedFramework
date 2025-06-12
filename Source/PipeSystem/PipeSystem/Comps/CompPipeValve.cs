@@ -20,7 +20,7 @@ namespace PipeSystem
             PipeNetManager.RegisterValve(this);
         }
 
-        public override void PostDeSpawn(Map map)
+        public override void PostDeSpawn(Map map, DestroyMode mode = DestroyMode.Vanish)
         {
             base.PostDeSpawn(map);
             PipeNetManager.UnregisterValve(this);

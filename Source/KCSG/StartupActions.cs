@@ -15,7 +15,7 @@ namespace KCSG
 
         static StartupActions()
         {
-            var debug = VFECore.VFEGlobal.settings.enableVerboseLogging;
+            var debug = VEF.VFEGlobal.settings.enableVerboseLogging;
             stuffs = DefDatabase<ThingDef>.AllDefsListForReading.FindAll(t => t.IsStuff);
 
             // Create vanilla + dlcs sybmols
@@ -34,15 +34,19 @@ namespace KCSG
             for (int i = 0; i < layouts.Count; i++)
                 layouts[i].ResolveLayouts();
 
-            // Output list of missing symbols
-            foreach (var missing in missingSymbols)
+            // Output list of missing symbols (only if Debug is active)
+            if (debug)
             {
-                Log.Warning($"[KCSG] {missing.Key} contains {missing.Value.Count} missing symbols.");
-                foreach (var m in missing.Value)
+                foreach (var missing in missingSymbols)
                 {
-                    Debug.Message($"Missing symbol: {m.Key} (needed {m.Value} times)");
+                    Log.Warning($"[KCSG] {missing.Key} contains {missing.Value.Count} missing symbols.");
+                    foreach (var m in missing.Value)
+                    {
+                        Debug.Message($"Missing symbol: {m.Key} (needed {m.Value} times)");
+                    }
                 }
             }
+           
             // Cache things
             SettlementGenUtils.BuildingPlacement.CacheTags();
             // Resolve tiles
@@ -133,7 +137,7 @@ namespace KCSG
             if (ModLister.GetActiveModWithIdentifier("vanillaexpanded.vfepropsanddecor") != null)
                 CreateSymbolsFor(thingDefs, pawnKindDefs, "vanillaexpanded.vfepropsanddecor");
 
-            Debug.Message($"Created {createdSymbolAmount} symbolDefs for vanilla and DLCs");
+            Log.Message($"KCSG has Created {createdSymbolAmount} symbolDefs for vanilla and DLCs");
             defsCreated = true;
         }
 
@@ -171,19 +175,22 @@ namespace KCSG
             {
                 foreach (StuffCategoryDef stuffCat in thing.stuffCategories)
                 {
-                    foreach (ThingDef stuffDef in stuffs.FindAll(t => t.stuffProps.categories.Contains(stuffCat)))
+                    foreach (ThingDef stuffDef in stuffs.FindAll(t => t.stuffProps.categories.Contains(stuffCat) && t.modContentPack.IsOfficialMod))
                     {
-                        if (thing.rotatable)
-                        {
-                            AddDef(CreateSymbolDef(thing, stuffDef, Rot4.North));
-                            AddDef(CreateSymbolDef(thing, stuffDef, Rot4.South));
-                            AddDef(CreateSymbolDef(thing, stuffDef, Rot4.East));
-                            AddDef(CreateSymbolDef(thing, stuffDef, Rot4.West));
-                        }
-                        else
-                        {
-                            AddDef(CreateSymbolDef(thing, stuffDef));
-                        }
+                        
+                        
+                        AddDef(CreateSymbolDef(thing, stuffDef));
+                        /* if (thing.rotatable)
+                         {
+                             AddDef(CreateSymbolDef(thing, stuffDef, Rot4.North));
+                             AddDef(CreateSymbolDef(thing, stuffDef, Rot4.South));
+                             AddDef(CreateSymbolDef(thing, stuffDef, Rot4.East));
+                             AddDef(CreateSymbolDef(thing, stuffDef, Rot4.West));
+                         }
+                         else
+                         {
+                        AddDef(CreateSymbolDef(thing, stuffDef));
+                        }*/
                     }
                 }
             }
@@ -191,7 +198,9 @@ namespace KCSG
             {
                 AddDef(CreatePlantSymbolDef(thing));
             }
-            else if (thing.rotatable)
+
+            AddDef(CreateSymbolDef(thing));
+           /* else if (thing.rotatable)
             {
                 AddDef(CreateSymbolDef(thing, Rot4.North));
                 AddDef(CreateSymbolDef(thing, Rot4.South));
@@ -201,7 +210,7 @@ namespace KCSG
             else
             {
                 AddDef(CreateSymbolDef(thing));
-            }
+            }*/
         }
 
         /// <summary>
@@ -271,12 +280,14 @@ namespace KCSG
         /// </summary>
         private static SymbolDef CreateSymbolDef(ThingDef thing, ThingDef stuff)
         {
+            
             SymbolDef symbolDef = new SymbolDef
             {
                 defName = $"{thing.defName}_{stuff.defName}",
                 thingDef = thing,
                 stuffDef = stuff,
             };
+           
             createdSymbolAmount++;
             return symbolDef;
         }

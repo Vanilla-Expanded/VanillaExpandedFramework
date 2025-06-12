@@ -18,7 +18,7 @@ public partial class Outpost
         if (pawn is null || pawn.Spawned || pawn.Dead) return;
         if (GenLocalDate.HourInteger(Tile) >= 23 || GenLocalDate.HourInteger(Tile) <= 5) pawn.needs?.rest?.TickResting(0.75f);
 
-        pawn.ageTracker?.AgeTick(); //Making pawns age
+        pawn.ageTracker?.AgeTickInterval(1); //Making pawns age
         //Seperated out Health
         OutpostHealthTick(pawn);
         if (pawn.Dead)

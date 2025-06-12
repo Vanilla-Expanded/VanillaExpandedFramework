@@ -178,6 +178,46 @@ namespace KCSG
         }
 
         /// <summary>
+        /// Hot generate rotation symbols
+        /// </summary>
+        private SymbolDef HotGenerateRotationSymbols(Rot4 rotation, string rotationString, string symbol)
+        {
+            SymbolDef symbolToCopy = DefDatabase<SymbolDef>.GetNamedSilentFail(symbol.Replace(rotationString, ""));
+            SymbolDef symbolToReturn = new SymbolDef
+            {
+                defName = $"{symbol}",
+                rotation = rotation,
+                thingDef = symbolToCopy?.thingDef,
+                thing = symbolToCopy?.thing,
+                maxStackSize = symbolToCopy?.maxStackSize ?? 1,
+                replacementDef = symbolToCopy?.replacementDef,
+
+                randomizeStuff = symbolToCopy?.randomizeStuff ?? false,
+                stuff = symbolToCopy?.stuff,
+                stuffDef = symbolToCopy?.stuffDef,
+                color = symbolToCopy?.color,
+                colorDef= symbolToCopy?.colorDef,
+                styleCategory = symbolToCopy?.styleCategory,
+                styleCategoryDef= symbolToCopy?.styleCategoryDef,
+                chanceToContainPawn = symbolToCopy?.chanceToContainPawn ?? 0,
+                containPawnKindAnyOf = symbolToCopy?.containPawnKindAnyOf,
+                containPawnKindForPlayerAnyOf = symbolToCopy?.containPawnKindForPlayerAnyOf,
+
+                thingSetMakerDef = symbolToCopy?.thingSetMakerDef,
+                thingSetMakerDefForPlayer = symbolToCopy?.thingSetMakerDefForPlayer,
+                crateStackMultiplier = symbolToCopy?.crateStackMultiplier ?? 1,
+
+
+            };
+            
+
+            return symbolToReturn;
+
+
+        }
+
+
+        /// <summary>
         /// Resolve symbols grids
         /// </summary>
         private void ResolveSymbols()
@@ -209,6 +249,28 @@ namespace KCSG
                                 else
                                 {
                                     SymbolDef def = DefDatabase<SymbolDef>.GetNamedSilentFail(symbol);
+                                    if (def is null)
+                                    {
+                                        if (symbol.Contains("_North"))
+                                        {
+                                            def = HotGenerateRotationSymbols(Rot4.North, "_North", symbol);
+                                        }
+                                        else if (symbol.Contains("_East"))
+                                        {
+                                            def = HotGenerateRotationSymbols(Rot4.East, "_East", symbol);
+                                        }
+                                        else if (symbol.Contains("_South"))
+                                        {
+
+                                            def = HotGenerateRotationSymbols(Rot4.South, "_South", symbol);
+                                        }
+                                        else if (symbol.Contains("_West"))
+                                        {
+                                            def = HotGenerateRotationSymbols(Rot4.West, "_West", symbol);
+                                        }
+                                    }
+
+
                                     _layouts[l][h, w] = def;
 
                                     if (def == null)

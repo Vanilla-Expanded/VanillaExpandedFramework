@@ -10,7 +10,7 @@ namespace KCSG
 {
     public static class DebugActions
     {
-        [DebugAction("KCSG", "Quickspawn structure", false, false, false, false, 0, false, allowedGameStates = AllowedGameStates.PlayingOnMap, displayPriority = 1000)]
+        [DebugAction("KCSG", "Quickspawn structure", false, false, false, false, false,0, false, allowedGameStates = AllowedGameStates.PlayingOnMap, displayPriority = 1000)]
         private static List<DebugActionNode> SpawnStructure()
         {
             List<DebugActionNode> list = new List<DebugActionNode>();
@@ -208,6 +208,11 @@ namespace KCSG
             }
 
             Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
+        }
+        [DebugAction("KCSG", "Report symbol amount now", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        public static void ReportSymbolsNow()
+        {
+            Log.Message("Amount of symbols in the database at the moment: "+DefDatabase<SymbolDef>.AllDefsListForReading.Count());
         }
     }
 }

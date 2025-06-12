@@ -11,7 +11,7 @@ namespace KCSG
     {
         public override bool Visible => DebugSettings.ShowDevGizmos;
 
-        public override int DraggableDimensions => 2;
+        public override DrawStyleCategoryDef DrawStyleCategory => DrawStyleCategoryDefOf.FilledRectangle;
 
         public Designator_ExportToXmlFromArea()
         {

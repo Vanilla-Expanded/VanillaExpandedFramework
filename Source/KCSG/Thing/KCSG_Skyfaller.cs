@@ -71,7 +71,7 @@ namespace KCSG
             Destroy(DestroyMode.Vanish);
         }
 
-        public override void Tick()
+        protected override void Tick()
         {
             if (ticksToImpact <= 60 && !once)
             {

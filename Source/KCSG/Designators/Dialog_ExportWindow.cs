@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -170,13 +171,47 @@ namespace KCSG
 
             if (Widgets.ButtonText(new Rect(200, inRect.height - bottomBH, 190, bottomBH), "Copy symbols"))
             {
-                var count = exportedSymbolsDef.Count;
+                List<SymbolDef> trimmedSymbols = new List<SymbolDef>();
+
+                foreach(SymbolDef symbolToTrim in exportedSymbolsDef)
+                {
+                    if (symbolToTrim.defName.Contains("_North") || symbolToTrim.defName.Contains("_South") || symbolToTrim.defName.Contains("_East") || symbolToTrim.defName.Contains("_West"))
+                    {
+                        string newDefName = ExportUtils.TrimSymbolName(symbolToTrim.defName);
+                        SymbolDef newSymbolDef = DefDatabase<SymbolDef>.GetNamedSilentFail(newDefName);
+                        if (newSymbolDef is null)
+                        {
+                            newSymbolDef = symbolToTrim;
+                            newSymbolDef.defName = $"{newDefName}";
+                           
+                          
+                            if (trimmedSymbols.ContainsAny(x => x.defName == newSymbolDef.defName) == false)
+                            {
+                                trimmedSymbols.Add(newSymbolDef);
+                            }
+                        }
+
+
+                    }
+                    else {
+                        if (trimmedSymbols.ContainsAny(x=>x.defName == symbolToTrim.defName)==false)
+                        {
+                           
+                            trimmedSymbols.Add(symbolToTrim);
+                        }
+
+                      
+                    }
+                }
+                    
+               
+                var count = trimmedSymbols.Count;
                 if (count > 0)
                 {
                     var output = "";
                     for (int i = 0; i < count; i++)
                     {
-                        output += exportedSymbolsDef[i].ToXMLString() + "\n\n";
+                        output += trimmedSymbols[i].ToXMLString() + "\n\n";
                     }
 
                     GUIUtility.systemCopyBuffer = output.TrimEndNewlines();

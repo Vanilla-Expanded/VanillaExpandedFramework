@@ -82,7 +82,7 @@ namespace KCSG
             }
 
             var fallers = new Dictionary<KCSG_Skyfaller, IntVec3>();
-            var pods = new Dictionary<ActiveDropPodInfo, IntVec3>();
+            var pods = new Dictionary<ActiveTransporterInfo, IntVec3>();
 
             int l = 0;
             int count = allSymbList.Count;
@@ -99,7 +99,7 @@ namespace KCSG
                         var thing = ThingMaker.MakeThing(temp.thingDef, temp.stuffDef ?? GenStuff.RandomStuffFor(temp.thingDef));
                         thing.SetFaction(parms.faction);
 
-                        var info = new ActiveDropPodInfo
+                        var info = new ActiveTransporterInfo
                         {
                             openDelay = 40,
                             leaveSlag = false

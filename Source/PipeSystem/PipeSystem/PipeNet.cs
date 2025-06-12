@@ -21,7 +21,7 @@ namespace PipeSystem
         public List<CompConvertToThing> thingConverters = new List<CompConvertToThing>();
         // Converters to resource
         public List<CompConvertToResource> resourceConverters = new List<CompConvertToResource>();
-        // All refillables compRefuelable/ItemProcessor
+        // All refillables compRefuelable
         public List<CompRefillWithPipes> refillables = new List<CompRefillWithPipes>();
         // Processor
         public List<CompResourceProcessor> processors = new List<CompResourceProcessor>();

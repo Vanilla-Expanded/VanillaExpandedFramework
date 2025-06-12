@@ -194,7 +194,7 @@ namespace KCSG
                 }
                 else
                 {
-                    ActiveDropPodInfo info = new ActiveDropPodInfo();
+                    ActiveTransporterInfo info = new ActiveTransporterInfo();
                     foreach (Thing thing in thingsGroup)
                         info.innerContainer.TryAdd(thing);
                     info.openDelay = openDelay;

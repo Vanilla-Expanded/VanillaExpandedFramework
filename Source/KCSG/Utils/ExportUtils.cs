@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using RimWorld;
 using Verse;
 
@@ -626,6 +627,9 @@ namespace KCSG
                 Dialog_ExportWindow.exportedSymbolsName.Add(defName);
                 DefDatabase<SymbolDef>.Add(symbol);
 
+
+
+
                 return symbol;
             }
 
@@ -655,5 +659,32 @@ namespace KCSG
 
             return symbolString;
         }
+
+        /// <summary>
+        /// Trim symbol names for export
+        /// </summary>
+
+        /// <returns>string</returns>
+        public static string TrimSymbolName(string symbolName)
+        {
+            if (symbolName.Contains("_North"))
+            {
+                return symbolName.Replace("_North", "");
+            }
+            else if (symbolName.Contains("_East"))
+            {
+                return symbolName.Replace("_East", "");
+            }
+            else if (symbolName.Contains("_South"))
+            {
+                return symbolName.Replace("_South", "");
+            }
+            else if (symbolName.Contains("_West"))
+            {
+                return symbolName.Replace("_West", "");
+            }return "";
+
+        }
+
     }
 }

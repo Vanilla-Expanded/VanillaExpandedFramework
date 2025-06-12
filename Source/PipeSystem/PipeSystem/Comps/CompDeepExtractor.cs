@@ -94,9 +94,9 @@ namespace PipeSystem
         /// Stop cycle, reset next production tick
         /// </summary>
         /// <param name="map"></param>
-        public override void PostDeSpawn(Map map)
+        public override void PostDeSpawn(Map map, DestroyMode mode = DestroyMode.Vanish)
         {
-            base.PostDeSpawn(map);
+            base.PostDeSpawn(map, mode);
             nextProduceTick = -1;
             cycleOver = true;
         }

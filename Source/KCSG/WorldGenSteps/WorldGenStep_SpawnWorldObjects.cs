@@ -10,7 +10,7 @@ namespace KCSG
     {
         public override int SeedPart => 1616161616;
 
-        public override void GenerateFresh(string seed)
+        public override void GenerateFresh(string seed, PlanetLayer layer)
         {
             var worldobjects = DefDatabase<WorldObjectDef>.AllDefsListForReading.FindAll(wo => wo.HasModExtension<SpawnAtWorldGen>());
             foreach (var worldObject in worldobjects)
@@ -48,7 +48,7 @@ namespace KCSG
                 if (Enumerable.Range(0, 100).Select(_ => Rand.Range(0, Find.WorldGrid.TilesCount)).TryRandomElementByWeight(x =>
                 {
                     Tile tile = Find.WorldGrid[x];
-                    if (!tile.biome.canBuildBase || !tile.biome.implemented || tile.hilliness == Hilliness.Impassable)
+                    if (!tile.PrimaryBiome.canBuildBase || !tile.PrimaryBiome.implemented || tile.hilliness == Hilliness.Impassable)
                     {
                         return 0f;
                     }
@@ -56,11 +56,11 @@ namespace KCSG
                     {
                         return 0f;
                     }
-                    else if (ext.allowedBiomes?.Count > 0 && !ext.allowedBiomes.Contains(tile.biome))
+                    else if (ext.allowedBiomes?.Count > 0 && !ext.allowedBiomes.Contains(tile.PrimaryBiome))
                     {
                         return 0f;
                     }
-                    else if (ext.disallowedBiomes?.Count > 0 && ext.disallowedBiomes.Contains(tile.biome))
+                    else if (ext.disallowedBiomes?.Count > 0 && ext.disallowedBiomes.Contains(tile.PrimaryBiome))
                     {
                         return 0f;
                     }
@@ -68,7 +68,7 @@ namespace KCSG
                     {
                         return 0f;
                     }
-                    return tile.biome.settlementSelectionWeight;
+                    return tile.PrimaryBiome.settlementSelectionWeight;
 
                 }, out int result))
                 {

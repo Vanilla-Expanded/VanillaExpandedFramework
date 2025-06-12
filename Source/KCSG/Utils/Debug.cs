@@ -8,7 +8,8 @@ namespace KCSG
 {
     public static class Debug
     {
-        public static bool Enabled => VFECore.VFEGlobal.settings.enableVerboseLogging;
+        //TODO
+        public static bool Enabled => VEF.VFEGlobal.settings.enableVerboseLogging;
 
         public static void Message(string message)
         {

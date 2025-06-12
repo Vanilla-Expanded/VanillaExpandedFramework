@@ -57,7 +57,7 @@ namespace KCSG
         {
             if (thing != null)
             {
-                thingDef = DefDatabase<ThingDef>.GetNamed(thing, Debug.Enabled);
+                thingDef = DefDatabase<ThingDef>.GetNamedSilentFail(thing);
                 if (thingDef == null && replacementDef != null)
                 {
                     thingDef = replacementDef;
@@ -66,16 +66,16 @@ namespace KCSG
             }
 
             if (stuff != null)
-                stuffDef = DefDatabase<ThingDef>.GetNamed(stuff, Debug.Enabled);
+                stuffDef = DefDatabase<ThingDef>.GetNamedSilentFail(stuff);
 
             if (color != null)
-                colorDef = DefDatabase<ColorDef>.GetNamed(color, Debug.Enabled);
+                colorDef = DefDatabase<ColorDef>.GetNamedSilentFail(color);
 
             if (styleCategory != null)
-                styleCategoryDef = DefDatabase<StyleCategoryDef>.GetNamed(styleCategory, Debug.Enabled);
+                styleCategoryDef = DefDatabase<StyleCategoryDef>.GetNamedSilentFail(styleCategory);
 
             if (pawnKindDef != null)
-                pawnKindDefNS = DefDatabase<PawnKindDef>.GetNamed(pawnKindDef, Debug.Enabled);
+                pawnKindDefNS = DefDatabase<PawnKindDef>.GetNamedSilentFail(pawnKindDef);
 
             if (thingSetMakerDef == null)
                 thingSetMakerDef = ThingSetMakerDefOf.MapGen_AncientComplexRoomLoot_Default;

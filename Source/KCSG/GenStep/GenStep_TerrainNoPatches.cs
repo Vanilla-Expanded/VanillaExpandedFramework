@@ -13,10 +13,12 @@ namespace KCSG
 
         public override void Generate(Map map, GenStepParams parms)
         {
-            BeachMaker.Init(map);
+            //TODO Beach and river changes
 
-            MethodInfo genRiver = AccessTools.Method(typeof(GenStep_Terrain), "GenerateRiver", new Type[] { typeof(Map) });
-            RiverMaker river = (RiverMaker)genRiver.Invoke(this, new object[] { map });
+            //BeachMaker.Init(map);
+
+            //MethodInfo genRiver = AccessTools.Method(typeof(GenStep_Terrain), "GenerateRiver", new Type[] { typeof(Map) });
+            // RiverMaker river = (RiverMaker)genRiver.Invoke(this, new object[] { map });
 
             List<IntVec3> nearCells = new List<IntVec3>();
             MapGenFloatGrid elevation = MapGenerator.Elevation;
@@ -26,7 +28,10 @@ namespace KCSG
             foreach (IntVec3 allCell in map.AllCells)
             {
                 Building edifice = allCell.GetEdifice(map);
-                TerrainDef newTerr = edifice != null && edifice.def.Fillage == FillCategory.Full || (double)caves[allCell] > 0.0 ? TerrainFrom(allCell, map, elevation[allCell], fertility[allCell], river, true) : TerrainFrom(allCell, map, elevation[allCell], fertility[allCell], river, false);
+                //TerrainDef newTerr = edifice != null && edifice.def.Fillage == FillCategory.Full || (double)caves[allCell] > 0.0 ? TerrainFrom(allCell, map, elevation[allCell], fertility[allCell], river, true) : TerrainFrom(allCell, map, elevation[allCell], fertility[allCell], river, false);
+
+                TerrainDef newTerr = edifice != null && edifice.def.Fillage == FillCategory.Full || (double)caves[allCell] > 0.0 ? TerrainFrom(allCell, map, elevation[allCell], fertility[allCell],  true) : TerrainFrom(allCell, map, elevation[allCell], fertility[allCell],  false);
+
                 if (newTerr.IsRiver && edifice != null)
                 {
                     nearCells.Add(edifice.Position);
@@ -34,25 +39,26 @@ namespace KCSG
                 }
                 map.terrainGrid.SetTerrain(allCell, newTerr);
             }
-            river?.ValidatePassage(map);
+            //river?.ValidatePassage(map);
 
             MethodInfo remIslands = AccessTools.Method(typeof(GenStep_Terrain), "RemoveIslands", new Type[] { typeof(Map) });
             remIslands.Invoke(this, new object[] { map });
 
             RoofCollapseCellsFinder.RemoveBulkCollapsingRoofs(nearCells, map);
-            BeachMaker.Cleanup();
+            //BeachMaker.Cleanup();
         }
+        //        private TerrainDef TerrainFrom(IntVec3 c, Map map, float elevation, float fertility,RiverMaker river bool preferSolid)
 
-        private TerrainDef TerrainFrom(IntVec3 c, Map map, float elevation, float fertility, RiverMaker river, bool preferSolid)
+        private TerrainDef TerrainFrom(IntVec3 c, Map map, float elevation, float fertility,  bool preferSolid)
         {
             TerrainDef terrainDef1 = null;
-            if (river != null)
-                terrainDef1 = river.TerrainAt(c, true);
+            /*if (river != null)
+                terrainDef1 = river.TerrainAt(c, true);*/
 
             if (terrainDef1 == null & preferSolid)
                 return GenStep_RocksFromGrid.RockDefAt(c).building.naturalTerrain;
 
-            TerrainDef terrainDef2 = BeachMaker.BeachTerrainAt(c, map.Biome);
+            TerrainDef terrainDef2 = MapGenUtility.BeachTerrainAt(c, map);
             if (terrainDef2 == TerrainDefOf.WaterOceanDeep)
                 return terrainDef2;
 

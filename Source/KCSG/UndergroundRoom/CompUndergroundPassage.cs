@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -25,7 +26,7 @@ namespace KCSG.UndergroundRoom
 
         public Map Map => parent.Map;
 
-        public override void PostDeSpawn(Map map)
+        public override void PostDeSpawn(Map map, DestroyMode mode = DestroyMode.Vanish)
         {
             Find.World.GetComponent<UndergroundManager>().Despawn(this);
         }
@@ -35,14 +36,15 @@ namespace KCSG.UndergroundRoom
             Scribe_Values.Look(ref otherSide, "otherSide");
         }
 
-        public override IEnumerable<FloatMenuOption> CompMultiSelectFloatMenuOptions(List<Pawn> selPawns)
+        public override IEnumerable<FloatMenuOption> CompMultiSelectFloatMenuOptions(IEnumerable<Pawn> selPawns)
         {
             tmpAllowedPawns.Clear();
-            for (int i = 0; i < selPawns.Count; i++)
+            List<Pawn> selPawnsList = selPawns.ToList();
+            for (int i = 0; i < selPawnsList.Count; i++)
             {
-                if (selPawns[i].CanReach(parent, PathEndMode.Touch, Danger.Deadly))
+                if (selPawnsList[i].CanReach(parent, PathEndMode.Touch, Danger.Deadly))
                 {
-                    tmpAllowedPawns.Add(selPawns[i]);
+                    tmpAllowedPawns.Add(selPawnsList[i]);
                 }
             }
             if (tmpAllowedPawns.Count <= 0)

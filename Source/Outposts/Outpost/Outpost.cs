@@ -145,9 +145,10 @@ namespace Outposts
             }
         }
 
-        public override IEnumerable<FloatMenuOption> GetTransportPodsFloatMenuOptions(IEnumerable<IThingHolder> pods, CompLaunchable representative) =>
-            base.GetTransportPodsFloatMenuOptions(pods, representative)
-                .Concat(TransportPodsArrivalAction_AddToOutpost.GetFloatMenuOptions(representative, pods, this));
+       
+        public override IEnumerable<FloatMenuOption> GetTransportersFloatMenuOptions(IEnumerable<IThingHolder> pods, Action<PlanetTile, TransportersArrivalAction> launchAction) =>
+            base.GetTransportersFloatMenuOptions(pods, launchAction)
+                .Concat(TransportPodsArrivalAction_AddToOutpost.GetFloatMenuOptions(pods, launchAction, this));
 
         public override void Tick()
         {

@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+	<TrainableDef>
+		<defName>VEF_ControlledBlinking</defName>
+		<label>controlled blinking</label>
+		<description>Override the creature's usual erratic blinking, allowing a directed way to blink to a chosen location within range.</description>
+		<listPriority>799</listPriority>
+		<difficulty>200</difficulty>
+		<steps>2</steps>
+		<prerequisites>
+			<li>Release</li>
+		</prerequisites>
+		<specialTrainable>true</specialTrainable>
+		<enablesAbility>VEF_ControlledBlinking</enablesAbility>
+	</TrainableDef>
+	<TrainableDef>
+		<defName>VEF_CycleSeverance</defName>
+		<label>cycle severance</label>
+		<description>Suppress the natural reproduction cycle, preventing the release of offspring and completely negating the creature’s asexual reproduction.</description>
+		<listPriority>0</listPriority>
+		<difficulty>200</difficulty>
+		<steps>2</steps>
+		<specialTrainable>true</specialTrainable>
+	</TrainableDef>
+	<TrainableDef>
+		<defName>VEF_ControlledDetonation</defName>
+		<label>controlled detonation</label>
+		<description>The animal can willingly trigger a powerful self-destructive explosion, sacrificing itself in a final act that unleashes all stored volatile compounds in a devastating blast.</description>
+		<listPriority>0</listPriority>
+		<difficulty>200</difficulty>
+		<steps>2</steps>
+		<enablesAbility>VEF_ControlledDetonation</enablesAbility>
+		<specialTrainable>true</specialTrainable>
+	</TrainableDef>
+	<TrainableDef>
+		<defName>VEF_ControlledInvisibility</defName>
+		<label>controlled invisibility</label>
+		<description>The animal can willingly shroud itself in a veil of controlled invisibility, vanishing from sight while retaining full awareness and precision.</description>
+		<listPriority>799</listPriority>
+		<difficulty>200</difficulty>
+		<steps>2</steps>
+		<prerequisites>
+			<li>Release</li>
+		</prerequisites>
+		<specialTrainable>true</specialTrainable>
+		<enablesAbility>VEF_ControlledInvisibility</enablesAbility>
+	</TrainableDef>
+	<TrainableDef>
+		<defName>VEF_Beastmastery</defName>
+		<label>beastmastery</label>
+		<description>Train and attune this animal to your will, granting direct control over their movements and actions through a powerful bond of dominance and trust.</description>
+		<listPriority>799</listPriority>
+		<difficulty>300</difficulty>
+		<steps>2</steps>
+		<prerequisites>
+			<li>Release</li>
+		</prerequisites>
+		<specialTrainable>true</specialTrainable>
+	</TrainableDef>
+	<TrainableDef>
+		<defName>VEF_ControlledCorpseDecay</defName>
+		<label>controlled corpse decay</label>
+		<description>Teach the animal to control its corpse decaying abilities.</description>
+		<listPriority>0</listPriority>
+		<difficulty>300</difficulty>
+		<steps>2</steps>
+		<specialTrainable>true</specialTrainable>
+	</TrainableDef>
+	<TrainableDef>
+		<defName>VEF_DiggingDiscipline</defName>
+		<label>digging discipline</label>
+		<description>Teach the animal to control its terrain digging abilities.</description>
+		<listPriority>0</listPriority>
+		<difficulty>300</difficulty>
+		<steps>2</steps>
+		<specialTrainable>true</specialTrainable>
+	</TrainableDef>
+	<TrainableDef>
+		<defName>VEF_FumeRegulation</defName>
+		<label>fume regulation</label>
+		<description>Teach the animal to control its gas production abilities.</description>
+		<listPriority>0</listPriority>
+		<difficulty>300</difficulty>
+		<steps>2</steps>
+		<specialTrainable>true</specialTrainable>
+	</TrainableDef>
+</Defs>

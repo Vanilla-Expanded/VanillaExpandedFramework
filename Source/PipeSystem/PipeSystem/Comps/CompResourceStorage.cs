@@ -4,6 +4,7 @@ using System.Text;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using static UnityEngine.Scripting.GarbageCollector;
 using static Verse.GenDraw;
 
 namespace PipeSystem
@@ -179,9 +180,9 @@ namespace PipeSystem
         /// <summary>
         /// Toggle off overlay
         /// </summary>
-        public override void PostDeSpawn(Map map)
+        public override void PostDeSpawn(Map map, DestroyMode mode = DestroyMode.Vanish)
         {
-            base.PostDeSpawn(map);
+            base.PostDeSpawn(map,mode);
             pipeNetOverlayDrawer?.ToggleStatic(parent, MaterialCreator.transferMat, false);
         }
 

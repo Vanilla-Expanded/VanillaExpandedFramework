@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
@@ -6,9 +7,11 @@ using Verse;
 
 namespace Outposts
 {
-    public class TransportPodsArrivalAction_AddToOutpost : TransportPodsArrivalAction
+    public class TransportPodsArrivalAction_AddToOutpost : TransportersArrivalAction
     {
         private Outpost outpost;
+
+        public override bool GeneratesMap => true;
 
         public TransportPodsArrivalAction_AddToOutpost()
         {
@@ -16,10 +19,10 @@ namespace Outposts
 
         public TransportPodsArrivalAction_AddToOutpost(Outpost addTo) => outpost = addTo;
 
-        public override void Arrived(List<ActiveDropPodInfo> pods, int tile)
+        public override void Arrived(List<ActiveTransporterInfo> transporters, PlanetTile tile)
         {
             var things = new List<Thing>();
-            foreach (var t in pods.SelectMany(pod => pod.innerContainer).OfType<Thing>())
+            foreach (var t in transporters.SelectMany(pod => pod.innerContainer).OfType<Thing>())
             {
                 things.Add(t);
                 if(t is Pawn){
@@ -39,13 +42,17 @@ namespace Outposts
             Scribe_References.Look(ref outpost, "outpost");
         }
 
-        public override FloatMenuAcceptanceReport StillValid(IEnumerable<IThingHolder> pods, int destinationTile) => outpost.Tile == destinationTile;
+        public override FloatMenuAcceptanceReport StillValid(IEnumerable<IThingHolder> pods, PlanetTile destinationTile) => outpost.Tile == destinationTile;
 
-        public static IEnumerable<FloatMenuOption> GetFloatMenuOptions(CompLaunchable representative, IEnumerable<IThingHolder> pods, Outpost outpost)
+        public static IEnumerable<FloatMenuOption> GetFloatMenuOptions(IEnumerable<IThingHolder> pods,Action<PlanetTile, TransportersArrivalAction> launchAction, Outpost outpost)
         {
-            return TransportPodsArrivalActionUtility.GetFloatMenuOptions(
+            return TransportersArrivalActionUtility.GetFloatMenuOptions(
                 () => true, () => new TransportPodsArrivalAction_AddToOutpost(outpost),
-                "Outposts.AddTo".Translate(outpost.LabelCap), representative, outpost.Tile, launch =>{launch();});
+                "Outposts.AddTo".Translate(outpost.LabelCap), launchAction, outpost.Tile, launch =>{launch();});
         }
+
+
+
+
     }
 }

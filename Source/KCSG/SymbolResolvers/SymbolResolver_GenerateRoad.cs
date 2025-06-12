@@ -46,7 +46,7 @@ namespace KCSG
                     var linkStart = DateTime.Now;
                     foreach (var edge in edges)
                     {
-                        var road = PathFinder.DoPath(edge.P.IntVec3, edge.Q.IntVec3, map, rp.rect, GenOption.RoadOptions.linkRoadDef ?? TerrainDefOf.Concrete);
+                        var road = KCSG.SettlementGenUtils.PathFinder.DoPath(edge.P.IntVec3, edge.Q.IntVec3, map, rp.rect, GenOption.RoadOptions.linkRoadDef ?? TerrainDefOf.Concrete);
 
                         if (road != null)
                         {

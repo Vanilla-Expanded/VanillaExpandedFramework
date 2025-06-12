@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ItemProcessor;
 using RimWorld;
 using Unity.Jobs;
 using UnityEngine;
@@ -21,7 +20,7 @@ namespace PipeSystem
         public bool pickUpReady;                               // Is it ready to pick-up
         private float progress;                                 // Progress percent
 
-        public bool suspended;                                 // Is process suspended
+        private bool suspended;                                 // Is process suspended
         private bool spawning;                                  // Should spawn as item?
 
         public int targetCount;                                // Number of time this process should repeat

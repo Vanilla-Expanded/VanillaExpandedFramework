@@ -48,7 +48,7 @@ namespace PipeSystem
         /// <summary>
         /// Unregister comp
         /// </summary>
-        public override void PostDeSpawn(Map map)
+        public override void PostDeSpawn(Map map, DestroyMode mode = DestroyMode.Vanish)
         {
             PipeNetManager.UnregisterConnector(this);
             PipeSystemDebug.Message($"Unregistering {this}");

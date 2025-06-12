@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <RuleDef>
+    <defName>KCSG_Settlement</defName>
+    <symbol>kcsg_settlement</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_Settlement" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_RoomGenFromStructure</defName>
+    <symbol>kcsg_roomsgenfromstructure</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_RoomGenFromStructure" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_SettlementPower</defName>
+    <symbol>kcsg_settlementpower</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_SettlementPower" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_GenerateRoad</defName>
+    <symbol>kcsg_generateroad</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_GenerateRoad" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_RunResolvers</defName>
+    <symbol>kcsg_runresolvers</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_RunResolvers" />
+    </resolvers>
+  </RuleDef>
+
+  <!-- storage -->
+  <RuleDef>
+    <defName>KCSG_StorageZone</defName>
+    <symbol>kcsg_storagezone</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_StorageZone" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_ThingSetOnlyRoofed</defName>
+    <symbol>kcsg_thingsetonlyroofed</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_ThingSetOnlyRoofed" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_SingleThingRoofed</defName>
+    <symbol>kcsg_thingroofed</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_SingleThingRoofed" />
+    </resolvers>
+  </RuleDef>
+
+  <!-- Ruin -->
+  <RuleDef>
+    <defName>KCSG_RandomDamage</defName>
+    <symbol>kcsg_randomdamage</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_RandomDamage" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_RandomFilth</defName>
+    <symbol>kcsg_randomfilth</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_RandomFilth" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_RandomTerrainRemoval</defName>
+    <symbol>kcsg_randomterrainremoval</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_RandomTerrainRemoval" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_RandomRoofRemoval</defName>
+    <symbol>kcsg_randomroofremoval</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_RandomRoofRemoval" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_RandomItemRemoval</defName>
+    <symbol>kcsg_randomitemremoval</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_RandomItemRemoval" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_RemovePerishable</defName>
+    <symbol>kcsg_removeperishable</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_RemovePerishable" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_DestroyRefuelableLightSource</defName>
+    <symbol>kcsg_destroyrefuelablelightsource</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_DestroyRefuelableLightSource" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_ScatterStuffAround</defName>
+    <symbol>kcsg_scatterstuffaround</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_ScatterStuffAround" />
+    </resolvers>
+  </RuleDef>
+
+  <!-- defense -->
+  <RuleDef>
+    <defName>KCSG_EdgeDefense</defName>
+    <symbol>kcsg_edgeDefense</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_EdgeDefenseCustomizable" />
+    </resolvers>
+  </RuleDef>
+
+  <RuleDef>
+    <defName>KCSG_ScatterPropsAround</defName>
+    <symbol>kcsg_scatterpropsaround</symbol>
+    <resolvers>
+      <li Class="KCSG.SymbolResolver_ScatterPropsAround" />
+    </resolvers>
+  </RuleDef>
+</Defs>

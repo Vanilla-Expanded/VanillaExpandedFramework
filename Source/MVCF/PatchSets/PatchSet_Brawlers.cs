@@ -19,6 +19,9 @@ public class PatchSet_Brawlers : PatchSet
             AccessTools.Method(GetType(), nameof(CurrentStateInternal_Prefix)));
         yield return Patch.Postfix(AccessTools.Method(typeof(HealthCardUtility), "GenerateSurgeryOption"),
             AccessTools.Method(GetType(), nameof(GenerateSurgeryOption_Postfix)));
+
+        //Assigned to Taranchuk
+
         yield return Patch.Postfix(AccessTools.Method(typeof(FloatMenuMakerMap), "AddHumanlikeOrders"),
             AccessTools.Method(GetType(), nameof(AddHumanlikeOrders_Postfix)));
     }

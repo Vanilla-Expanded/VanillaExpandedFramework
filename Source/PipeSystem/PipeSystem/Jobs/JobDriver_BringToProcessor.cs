@@ -25,15 +25,15 @@ namespace PipeSystem
         {
             this.FailOnDespawnedNullOrForbidden(TargetIndex.A);
             this.FailOnBurningImmobile(TargetIndex.A);
-            
-            AddEndCondition(() => Comp.Process == null ? JobCondition.Incompletable : JobCondition.Ongoing);          
-            AddEndCondition(() => Comp.Process?.ShouldDoNow()==true ? JobCondition.Ongoing : JobCondition.Incompletable);
-            AddEndCondition(() =>  (Comp.Process?.GetOwnerFor(Ingredient.def)?.Require==true || Comp.Process?.GetOwnerForCategory(Ingredient.def.thingCategories)?.Require == true) 
+
+            AddEndCondition(() => Comp.Process == null ? JobCondition.Incompletable : JobCondition.Ongoing);
+            AddEndCondition(() => Comp.Process?.ShouldDoNow() == true ? JobCondition.Ongoing : JobCondition.Incompletable);
+            AddEndCondition(() => (Comp.Process?.GetOwnerFor(Ingredient.def)?.Require == true || Comp.Process?.GetOwnerForCategory(Ingredient.def.thingCategories)?.Require == true)
             ? JobCondition.Ongoing : JobCondition.Succeeded);
             yield return Toils_General.DoAtomic(delegate
             {
                 var owner = Comp.Process?.GetOwnerFor(Ingredient.def);
-                if(owner == null)
+                if (owner == null)
                 {
                     owner = Comp.Process?.GetOwnerForCategory(Ingredient.def.thingCategories);
                 }
@@ -42,14 +42,14 @@ namespace PipeSystem
                     job.count = owner.Required;
                     owner.BeingFilled = true;
                 }
-                
+
             });
             SetFinalizerJob(delegate (JobCondition condition)
             {
-               
+
                 if (condition != JobCondition.Succeeded)
                 {
-                   
+
                     var owner = Comp.Process?.GetOwnerFor(Ingredient.def);
                     if (owner == null)
                     {
@@ -57,11 +57,11 @@ namespace PipeSystem
                     }
                     if (owner != null)
                     {
-                       
+
                         owner.BeingFilled = false;
                     }
                 }
-              return null;
+                return null;
             });
 
             var reserveIngredient = Toils_Reserve.Reserve(TargetIndex.B);
@@ -87,10 +87,10 @@ namespace PipeSystem
             Toil toil = ToilMaker.MakeToil("MakeNewToils");
             toil.initAction = delegate
             {
-                if (Comp.Process?.ShouldDoNow()==true) {
+                if (Comp.Process?.ShouldDoNow() == true)
+                {
                     CachedAdvancedProcessorsManager.GetFor(Map).AddIngredient(Comp, Ingredient);
                 }
-                
             };
             toil.defaultCompleteMode = ToilCompleteMode.Instant;
           

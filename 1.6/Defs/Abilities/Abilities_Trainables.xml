@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<AbilityDef>
+		<defName>VEF_ControlledBlinking</defName>
+		<label>controlled blinking</label>
+		<description>Override the creature's usual erratic blinking, allowing a directed way to blink to a chosen location within range.</description>
+		<iconPath>UI/Abilities/VEF_ControlledBlinking</iconPath>
+		<displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>
+		<disableGizmoWhileUndrafted>False</disableGizmoWhileUndrafted>
+		<hotKey>Misc12</hotKey>
+		<verbProperties>
+			<verbClass>Verb_CastAbility</verbClass>
+			<warmupTime>0.5</warmupTime>
+			<drawAimPie>False</drawAimPie>
+			<range>20</range>
+			<requireLineOfSight>False</requireLineOfSight>
+			<targetParams>
+				<canTargetLocations>true</canTargetLocations>
+				<canTargetPawns>false</canTargetPawns>
+				<canTargetBuildings>false</canTargetBuildings>
+				<canTargetAnimals>false</canTargetAnimals>
+				<canTargetHumans>false</canTargetHumans>
+				<canTargetMechs>false</canTargetMechs>
+			</targetParams>
+		</verbProperties>
+		<cooldownTicksRange>1500</cooldownTicksRange>
+		<comps>
+			<li Class="VEF.AnimalBehaviours.CompProperties_ControlledBlinking">
+				
+			</li>
+		</comps>
+	</AbilityDef>
+	<AbilityDef>
+		<defName>VEF_ControlledDetonation</defName>
+		<label>controlled detonation</label>
+		<description>Willingly trigger a powerful self-destructive explosion, sacrificing this animal in a final act that unleashes all stored volatile compounds in a devastating blast.</description>
+		<iconPath>UI/Abilities/VEF_ControlledDetonation</iconPath>
+		<targetRequired>false</targetRequired>
+		<displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>
+		<disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
+		<verbProperties>
+			<verbClass>Verb_CastAbility</verbClass>
+			<warmupTime>0</warmupTime>
+			<requireLineOfSight>false</requireLineOfSight>
+		</verbProperties>
+		<comps>
+			<li Class="CompProperties_AbilityGiveHediff">
+				<compClass>CompAbilityEffect_GiveHediff</compClass>
+				<hediffDef>VEF_Kamikaze</hediffDef>
+				<onlyApplyToSelf>true</onlyApplyToSelf>
+			</li>
+		</comps>
+	</AbilityDef>
+	<AbilityDef>
+		<defName>VEF_ControlledInvisibility</defName>
+		<label>controlled invisibility</label>
+		<description>Shroud the animal in a veil of controlled invisibility, vanishing from sight while retaining full awareness and precision.</description>
+		<iconPath>UI/Abilities/VEF_ControlledInvisibility</iconPath>
+		<cooldownTicksRange>6000</cooldownTicksRange>
+		<targetRequired>false</targetRequired>
+		<displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>
+		<disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
+		<verbProperties>
+			<verbClass>Verb_CastAbility</verbClass>
+			<warmupTime>0</warmupTime>
+			<requireLineOfSight>false</requireLineOfSight>
+		</verbProperties>
+		<comps>
+			<li Class="CompProperties_AbilityGiveHediff">
+				<compClass>CompAbilityEffect_GiveHediff</compClass>
+				<hediffDef>VEF_ControlledInvisibility</hediffDef>
+				<onlyApplyToSelf>true</onlyApplyToSelf>
+				<durationSecondsOverride>50</durationSecondsOverride>
+			</li>
+		</comps>
+	</AbilityDef>
+</Defs>

@@ -10,19 +10,31 @@ namespace KCSG
         /// <summary>
         /// Generate layoutDef in rect
         /// </summary>
-        public static void Generate(this StructureLayoutDef layout, CellRect rect, Map map, Faction factionOverride = null)
+        public static void Generate(this StructureLayoutDef layout, CellRect rect, Map map, Faction factionOverride = null, bool forceNullFaction = false)
         {
             // Get random wall stuff if randomizeWall is set to true
             ThingDef wallForRoom = null;
             if (layout.randomizeWallStuffAtGen || (GenOption.StuffableOptions != null && GenOption.StuffableOptions.randomizeWall))
                 wallForRoom = RandomUtils.RandomWallStuffWeighted(ThingDefOf.Wall);
             // Generate all layouts
-            var faction = map.ParentFaction;
-            if (factionOverride != null)
+            Faction faction;
+            if (forceNullFaction)
             {
-                faction = factionOverride;
+                faction = null;
             }
-           
+            else {
+
+                if (factionOverride != null)
+                {
+                    faction = factionOverride;
+                }
+                else
+                {
+                    faction = map.ParentFaction;
+                }
+                
+            }
+         
             var cells = rect.Cells.ToList();
             for (int index = 0; index < layout.layouts.Count; index++)
             {
@@ -146,37 +158,41 @@ namespace KCSG
         {
             var mapFaction = map.ParentFaction;
             var player = Faction.OfPlayer;
-            var cells = rect.Cells.ToList();
+            var cells = rect.Cells?.ToList();
 
-            if (layout == null || layout._roofGrid == null || layout._roofGrid.Length == 0)
+            if (cells.Count > 0)
             {
-                for (int i = 0; i < cells.Count; i++)
+                if (layout == null || layout._roofGrid == null || layout._roofGrid.Length == 0)
                 {
-                    var cell = cells[i];
-                    if (cell.InBounds(map))
-                        CleanAt(cell, map, fullClean, mapFaction, player);
-                }
-            }
-            else
-            {
-                var width = rect.Width;
-                var height = rect.Height;
-
-                for (int h = 0; h < height; h++)
-                {
-                    for (int w = 0; w < width; w++)
+                    for (int i = 0; i < cells.Count; i++)
                     {
-                        var cell = cells[(h * width) + w];
-                        var roof = layout._roofGrid[h, w];
-
-                        if (cell.InBounds(map) && roof != ".")
+                        var cell = cells[i];
+                        if (cell.InBounds(map))
                             CleanAt(cell, map, fullClean, mapFaction, player);
                     }
                 }
+                else
+                {
+                    var width = rect.Width;
+                    var height = rect.Height;
+
+                    for (int h = 0; h < height; h++)
+                    {
+                        for (int w = 0; w < width; w++)
+                        {
+                            var cell = cells[(h * width) + w];
+                            var roof = layout._roofGrid[h, w];
+
+                            if (cell.InBounds(map) && roof != ".")
+                                CleanAt(cell, map, fullClean, mapFaction, player);
+                        }
+                    }
+                }
+                // Update roof grid if it was a fullclean
+                if (fullClean)
+                    map.roofGrid?.RoofGridUpdate();
             }
-            // Update roof grid if it was a fullclean
-            if (fullClean)
-                map.roofGrid?.RoofGridUpdate();
+            
         }
 
         /// <summary>

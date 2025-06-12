@@ -87,7 +87,7 @@ namespace KCSG.UndergroundRoom
 
         public void Despawn(CompUndergroundPassage passage)
         {
-            mapsParent[passage].Abandon();
+            mapsParent[passage].Abandon(false);
             mapsParent.Remove(passage);
         }
     }

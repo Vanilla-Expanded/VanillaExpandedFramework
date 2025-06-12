@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Security.Cryptography;
 using System.Text;
-using ItemProcessor;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -340,7 +339,7 @@ namespace PipeSystem
         /// <summary>
         /// Clear def on destroy/despawn. Give back required resource if wanted
         /// </summary>
-        public override void PostDeSpawn(Map map)
+        public override void PostDeSpawn(Map map,DestroyMode mode = DestroyMode.Vanish)
         {
             foreach (var process in processStack)
             {

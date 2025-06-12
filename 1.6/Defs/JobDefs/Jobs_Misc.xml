@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+	<JobDef>
+		<defName>VFEC_EquipShield</defName>
+		<driverClass>VEF.Apparels.JobDriver_EquipShield</driverClass>
+		<reportString>equipping TargetA.</reportString>
+		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+	</JobDef>
+	<JobDef>
+		<defName>VFEC_LeaveMap</defName>
+		<driverClass>VEF.Planet.JobDriver_LeaveMap</driverClass>
+		<reportString>leaving.</reportString>
+		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+		<playerInterruptible>false</playerInterruptible>
+		<casualInterruptible>false</casualInterruptible>
+		<alwaysShowWeapon>true</alwaysShowWeapon>
+	</JobDef>
+	<JobDef>
+		<defName>VEF_CustomizeItem</defName>
+		<driverClass>VEF.Graphics.JobDriver_CustomizeItem</driverClass>
+		<reportString>customizing TargetA.</reportString>
+	</JobDef>
+	<JobDef>
+		<defName>KCSG_GoToPassage</defName>
+		<driverClass>KCSG.UndergroundRoom.JobDriver_InteractWithPassage</driverClass>
+		<reportString>entering TargetA.</reportString>
+	</JobDef>
+	<JobDef>
+		<defName>VEF_UseDoorTeleporter</defName>
+		<driverClass>VEF.Buildings.JobDriver_UseDoorTeleporter</driverClass>
+		<reportString>using TargetA to teleport to TargetB</reportString>
+		<casualInterruptible>false</casualInterruptible>
+		<allowOpportunisticPrefix>false</allowOpportunisticPrefix>
+	</JobDef>
+	<JobDef>
+		<defName>VFE_Loot</defName>
+		<driverClass>VEF.Buildings.JobDriver_Loot</driverClass>
+		<reportString>looting TargetA.</reportString>
+		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+	</JobDef>
+	<JobDef>
+		<defName>VFE_StudyBuilding</defName>
+		<driverClass>VEF.Buildings.JobDriver_StudyBuilding</driverClass>
+		<reportString>studying TargetA.</reportString>
+		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+	</JobDef>
+</Defs>

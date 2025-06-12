@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+	<VEF.OptionalFeatures.OptionalFeaturesDef>
+		<defName>VFE_IdeoFloatMenuPlus</defName>
+		<description>This optional feature extends the menus in the Ideo creation screen, allowing search and scroll bars. Used by VE Memes and Alpha Memes.</description>
+		<feature>IdeoFloatMenuPlus</feature>
+		<activationClass>VEF.Memes.OptionalFeatures_IdeoFloatMenuPlus</activationClass>
+	</VEF.OptionalFeatures.OptionalFeaturesDef>
+	
+	<VEF.OptionalFeatures.OptionalFeaturesDef>
+		<defName>VFE_WeaponTraitDefMechanics</defName>
+		<description>This optional feature adds a Def extension to WeaponTraitDefs to allow for new unique weapon behaviours.</description>
+		<feature>WeaponTraitDefMechanics</feature>
+		<activationClass>VEF.Weapons.OptionalFeatures_WeaponTraitDefFeatures</activationClass>
+	</VEF.OptionalFeatures.OptionalFeaturesDef>
+	
+	<VEF.OptionalFeatures.OptionalFeaturesDef>
+		<defName>VFE_TileMutatorMechanics</defName>
+		<description>This optional feature adds a Def extension, TileMutatorExtension, to add new tile mutator mechanics for Odyssey.</description>
+		<feature>TileMutatorMechanics</feature>
+		<activationClass>VEF.Maps.OptionalFeatures_TileMutatorMechanics</activationClass>
+	</VEF.OptionalFeatures.OptionalFeaturesDef>
+	
+
+</Defs>
+

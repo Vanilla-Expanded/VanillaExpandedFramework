@@ -321,7 +321,9 @@ namespace KCSG
         /// </summary>
         public static List<TerrainDef> SetRoadInfo(Map map)
         {
-            if (map.TileInfo?.Roads?.Count > 0)
+            //TODO
+
+            /*if (map.TileInfo?.Roads?.Count > 0)
             {
                 var preRoadTypes = new List<TerrainDef>();
                 foreach (RimWorld.Planet.Tile.RoadLink roadLink in map.TileInfo.Roads)
@@ -335,7 +337,7 @@ namespace KCSG
                     }
                 }
                 return preRoadTypes;
-            }
+            }*/
             return null;
         }
 
@@ -1651,7 +1653,7 @@ namespace KCSG
                         if ((pathGrid.WalkableFast(vec) || mineable != null))
                         {
                             loc.SetDistance(target.X, target.Y);
-                            loc.cost = current.cost + 1 + (mineable != null ? 5 : pathGrid.PerceivedPathCostAt(vec));
+                            loc.cost = current.cost + 1 + (mineable != null ? 5 : pathGrid.CalculatedCostAt(vec,false,current.vec3));
                             result.Add(loc);
                         }
                     }
