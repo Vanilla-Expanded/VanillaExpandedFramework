@@ -560,7 +560,6 @@
     <Compile Include="Graphics\Comps\CompGlower_DirtyMapMesh.cs" />
     <Compile Include="Plants\Plants\Plant_AffectedByFog.cs" />
     <Compile Include="Plants\Plants\Plant_AffectedBySnow.cs" />
-    <Compile Include="Plants\Plants\Plant_BenefitsFromApiary.cs" />
     <Compile Include="Plants\Plants\Plant_ChecksSea.cs" />
     <Compile Include="Plants\Plants\Plant_FasterInTropics.cs" />
     <Compile Include="Plants\Plants\Plant_NeedsOutside.cs" />
