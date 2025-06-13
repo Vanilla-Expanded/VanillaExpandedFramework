@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-
-
-
-<VCE_AllowConditions>Allow chronic health conditions in food (Diabetes, Cholesterol and High Blood Pressure)</VCE_AllowConditions>
-<VCE_MustBeInstalled>Vanilla Cooking Expanded must be installed for these options to have any effect</VCE_MustBeInstalled>
-
-
-
+	<VCE_AllowConditions>Allow chronic health conditions in food (Diabetes, Cholesterol and High Blood Pressure)</VCE_AllowConditions>
+	<VCE_MustBeInstalled>Vanilla Cooking Expanded must be installed for these options to have any effect</VCE_MustBeInstalled>
+	<VCE_Pollinated>Apiary found nearby</VCE_Pollinated>
+	<VCE_NotPollinated>No apiary found in a 6 tiles radius (calculated on sowing)</VCE_NotPollinated>
+	<VCE_NotInEquator>Not in equatorial region (in this planet, below {0} latitude). Growing normally.</VCE_NotInEquator>
+	<VCE_InEquator>In equatorial region, growing 30% faster.</VCE_InEquator>
+	<VCE_NeedsShade>This plant needs to grow in shade: outside, but under a roof.</VCE_NeedsShade>
+	<VCE_StuntedGrowthFertility>Growth reduced due to non-rocky terrain</VCE_StuntedGrowthFertility>
+	<VCE_StoppedGrowthFertility>Growth impossible due to too fertile terrain</VCE_StoppedGrowthFertility>
+	<VCE_WaterNearby>A body of water nearby is impeding this plant's growth</VCE_WaterNearby>
+	<VCE_NoWaterNearby>Lack of a body of water nearby is impeding this plant's growth</VCE_NoWaterNearby>
+	<VCE_NoSeaTilesNearby>Too far away from the sea, no extra growth bonus</VCE_NoSeaTilesNearby>
+	<VCE_SeaTilesNearby>{0} sea tiles nearby, providing {0}% growth bonus</VCE_SeaTilesNearby>
 </LanguageData>
