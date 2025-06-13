@@ -21,6 +21,7 @@ namespace VEF.Weapons
         public HeavyWeaponsMod(ModContentPack pack) : base(pack)
         {
             settings = GetSettings<HeavyWeaponsSettings>();
+            BackwardsCompatibilityFixer.FixSettingsNameOrNamespace(this, settings, "HeavyWeaponsMod");
         }
         public override void DoSettingsWindowContents(Rect inRect)
         {

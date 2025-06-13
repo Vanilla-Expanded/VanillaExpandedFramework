@@ -456,6 +456,7 @@
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_NotInSpace.cs" />
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_InSpace.cs" />
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_InVacuum.cs" />
+    <Compile Include="Global\BackwardsCompatibilityFixer.cs" />
     <Compile Include="Global\HotSwappableAttribute.cs" />
     <Compile Include="Graphics\AI\JobDrivers\JobDriver_CustomizeItem.cs" />
     <Compile Include="Graphics\Comps\CompGraphicCustomization.cs" />

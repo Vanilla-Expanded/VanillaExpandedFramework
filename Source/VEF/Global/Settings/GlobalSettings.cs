@@ -18,6 +18,7 @@ namespace VEF
         public VFEGlobal(ModContentPack content) : base(content)
         {
             settings = GetSettings<VFEGlobalSettings>();
+            BackwardsCompatibilityFixer.FixSettingsNameOrNamespace(this, settings);
         }
 
         public override string SettingsCategory()

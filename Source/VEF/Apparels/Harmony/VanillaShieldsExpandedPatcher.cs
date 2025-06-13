@@ -59,6 +59,7 @@ namespace VEF.Apparels
         public VanillaShieldsExpandedMod(ModContentPack pack) : base(pack)
         {
             settings = GetSettings<VanillaShieldsExpandedSettings>();
+            BackwardsCompatibilityFixer.FixSettingsNameOrNamespace(this, settings);
         }
         public override void DoSettingsWindowContents(Rect inRect)
         {

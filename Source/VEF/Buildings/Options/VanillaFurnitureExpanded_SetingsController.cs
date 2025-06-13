@@ -14,7 +14,8 @@ namespace VEF.Buildings
 
         public Furniture_Mod(ModContentPack content) : base(content)
         {
-            GetSettings<Furniture_Settings>();
+            var settings = GetSettings<Furniture_Settings>();
+            BackwardsCompatibilityFixer.FixSettingsNameOrNamespace(this, settings, "VanillaFurnitureExpanded", "VanillaFurnitureExpanded_Settings");
         }
         public override string SettingsCategory()
         {

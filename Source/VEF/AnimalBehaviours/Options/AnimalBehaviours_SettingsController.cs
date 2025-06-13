@@ -14,7 +14,8 @@ namespace VEF.AnimalBehaviours
 
         public AnimalBehaviours_Mod(ModContentPack content) : base(content)
         {
-            GetSettings<AnimalBehaviours_Settings>();
+            var settings = GetSettings<AnimalBehaviours_Settings>();
+            BackwardsCompatibilityFixer.FixSettingsNameOrNamespace(this, settings, "AnimalBehaviours");
         }
         public override string SettingsCategory()
         {

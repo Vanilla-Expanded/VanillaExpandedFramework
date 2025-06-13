@@ -20,6 +20,7 @@ namespace VEF.AnimalBehaviours
         public VanillaAnimalsExpanded_Mod(ModContentPack content) : base(content)
         {
             settings = GetSettings<VanillaAnimalsExpanded_Settings>();
+            BackwardsCompatibilityFixer.FixSettingsNameOrNamespace(this, settings, "AnimalBehaviours");
         }
      
         public override string SettingsCategory()
