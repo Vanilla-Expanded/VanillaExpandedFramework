@@ -1,4 +1,4 @@
-﻿﻿using System.Text;
+﻿using System.Text;
 using RimWorld;
 using Verse;
 
@@ -38,7 +38,7 @@ public class CompStatsWhenPowered : ThingComp
             // There isn't a way to force a single, specific room stat to be re-cached,
             // and there may be a reason for it, so I'm not making a custom system for it.
             if (Props.clearRoomCacheOnPowerChange)
-                parent.GetRoom()?.Notify_TerrainChanged();
+                parent.GetRoom()?.Notify_BedTypeChanged();
         }
     }
 

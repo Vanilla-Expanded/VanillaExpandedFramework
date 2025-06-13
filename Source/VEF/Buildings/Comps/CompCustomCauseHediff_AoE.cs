@@ -1,4 +1,4 @@
-﻿﻿using RimWorld;
+﻿using RimWorld;
 using Verse;
 
 namespace VEF.Buildings;
@@ -22,11 +22,18 @@ public class CompCustomCauseHediff_AoE : ThingComp
         powerTrader = parent.GetComp<CompPowerTrader>();
     }
 
-    public override void CompTick()
+    public override void CompTickInterval(int delta)
     {
-        if (!parent.IsHashIntervalTick(Props.checkInterval))
-            return;
+        if (parent.IsHashIntervalTick(Props.checkInterval, delta))
+            TickInterval(delta);
+    }
 
+    public override void CompTickRare() => TickInterval(GenTicks.TickRareInterval);
+
+    public override void CompTickLong() => TickInterval(GenTicks.TickLongInterval);
+
+    protected virtual void TickInterval(int delta)
+    {
         // Make sure the power is on
         if (powerTrader is not { PowerOn: true })
             return;

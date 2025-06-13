@@ -23,10 +23,12 @@ public class CompProperties_CustomCauseHediff_AoE : CompProperties
     public bool worksOutside = true;
 
     public float startingSeverity = 1f;
-    // Used in combination with HediffComp_Disappears
-    public int checkInterval = 10;
+    // Used in combination with HediffComp_Disappears.
+    // For performance reasons, it shouldn't be too small.
+    public int checkInterval = 100;
     // To be constant it should be longer by a few ticks than checkInterval.
-    public int hediffDuration = 15;
+    // Minimum of 15 ticks more than interval is recommended due to the way variable tick rate works.
+    public int hediffDuration = 120;
 
     // In case someone wants to do weird stuff.
     protected virtual bool LogWorksBothInsideAndOutsideFieldAreFalse => true;
