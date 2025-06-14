@@ -6,17 +6,15 @@
     using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
-    using UnityEngine;
     using Verse;
     using Verse.AI;
-    //TODO - Assigned to Taranchuk
-    /*
+    
     [HarmonyPatch(typeof(PawnFlyer), "MakeFlyer")]
     public static class VanillaExpandedFramework_PawnFlyer_MakeFlyer_Patch
     {
         static FieldInfo jobdef = AccessTools.Field(typeof(Job), nameof(Job.def));
         static FieldInfo castJump = AccessTools.Field(typeof(JobDefOf), nameof(JobDefOf.CastJump));
-        static MethodInfo myMethod = AccessTools.Method(typeof(PawnFlyer_MakeFlyer_Patch), nameof(PawnFlyer_MakeFlyer_Patch.ShouldEndJob));
+        static MethodInfo myMethod = AccessTools.Method(typeof(VanillaExpandedFramework_PawnFlyer_MakeFlyer_Patch), nameof(ShouldEndJob));
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
@@ -43,7 +41,7 @@
                     // Load the pawn
                     yield return CodeInstruction.LoadArgument(1);
                     // Call our method
-                    yield return CodeInstruction.Call(typeof(PawnFlyer_MakeFlyer_Patch), nameof(SetSelectOnSpawn));
+                    yield return CodeInstruction.Call(typeof(VanillaExpandedFramework_PawnFlyer_MakeFlyer_Patch), nameof(SetSelectOnSpawn));
                 }
                 else
                 {
@@ -64,5 +62,5 @@
             if (flyer is AbilityPawnFlyer abilityFlyer && Find.Selector.IsSelected(pawn) && abilityFlyer.AutoSelectPawn(pawn))
                 abilityFlyer.selectOnSpawn = true;
         }
-    }*/
+    }
 }
