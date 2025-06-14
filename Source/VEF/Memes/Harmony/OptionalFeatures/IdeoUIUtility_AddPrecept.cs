@@ -10,9 +10,7 @@ namespace VEF.Memes
 
     // This Harmony patch will only be patched if IdeoFloatMenuPlus is added via XML to a mod using OptionalFeatures
 
-    //TODO: Taranchuk, look at this one when you can
-
-    public static class VanillaExpandedFramework_IdeoUIUtility_DoPreceptsInt_Patch
+    public static class VanillaExpandedFramework_IdeoUIUtility_AddPrecept_Patch
     {
 
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)

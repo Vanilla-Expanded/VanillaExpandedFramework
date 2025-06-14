@@ -11,7 +11,7 @@ namespace VEF.Memes
     {
         public static void ApplyFeature(Harmony harm)
         {
-            harm.Patch(AccessTools.Method(typeof(IdeoUIUtility), "DoPreceptsInt"), transpiler: new HarmonyMethod(typeof(VanillaExpandedFramework_IdeoUIUtility_DoPreceptsInt_Patch), nameof(VanillaExpandedFramework_IdeoUIUtility_DoPreceptsInt_Patch.Transpiler)));
+            harm.Patch(AccessTools.Method(typeof(IdeoUIUtility), "AddPrecept"), transpiler: new HarmonyMethod(typeof(VanillaExpandedFramework_IdeoUIUtility_AddPrecept_Patch), nameof(VanillaExpandedFramework_IdeoUIUtility_AddPrecept_Patch.Transpiler)));
         }
     }
 }

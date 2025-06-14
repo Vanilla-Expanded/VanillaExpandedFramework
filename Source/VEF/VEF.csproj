@@ -534,7 +534,7 @@
     <Compile Include="Maps\TileMutatorWorkers\TileMutatorWorker_GenericSpawner.cs" />
     <Compile Include="Maps\TileMutatorWorkers\TileMutatorWorker_GenericPrefabSpawner.cs" />
     <Compile Include="Maps\TileMutatorWorkers\TileMutatorWorker_TerrainSwapper.cs" />
-    <Compile Include="Memes\Harmony\OptionalFeatures\IdeoUIUtility_DoPreceptsInt.cs" />
+    <Compile Include="Memes\Harmony\OptionalFeatures\IdeoUIUtility_AddPrecept.cs" />
     <Compile Include="Memes\OptionalFeatures\OptionalFeatures_IdeoFloatMenuPlus.cs" />
     <Compile Include="Pawns\DefModExtensions\ApparelDrawPosExtension.cs" />
     <Compile Include="Pawns\Harmony\PawnGenerator_GenerateGearFor.cs" />
