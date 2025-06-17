@@ -61,37 +61,44 @@ namespace VEF.Maps
         }
 
 
+      
         public static int AdjustMapSizeX(GameInitData initData)
         {
-
+            float multiplier = 1;
             foreach (TileMutatorDef mutator in initData.startingTile.Tile.Mutators)
             {
+             
                 TileMutatorExtension extension = mutator.GetModExtension<TileMutatorExtension>();
-                float multiplier = extension is null ? 1 : extension.mapSizeMultiplier;
+               multiplier = extension is null ? 1 : extension.mapSizeMultiplier;
+              
                 if (extension != null && extension.mapSizeOverrideX != -1)
                 {
-                   return (int)(extension.mapSizeOverrideX * multiplier);
+                   
+                    return (int)(extension.mapSizeOverrideX * multiplier);
                 }
-                return (int)(initData.mapSize * multiplier);
+                
+
+
 
             }
-            return initData.mapSize;
+            return (int)(initData.mapSize * multiplier);
 
         }
         public static int AdjustMapSizeZ(GameInitData initData)
         {
+            float multiplier = 1;
             foreach (TileMutatorDef mutator in initData.startingTile.Tile.Mutators)
             {
                 TileMutatorExtension extension = mutator.GetModExtension<TileMutatorExtension>();
-                float multiplier = extension is null ? 1 : extension.mapSizeMultiplier;
+                multiplier = extension is null ? 1 : extension.mapSizeMultiplier;
                 if (extension != null && extension.mapSizeOverrideZ != -1)
                 {
                     return (int)(extension.mapSizeOverrideZ * multiplier);
                 }
-                return (int)(initData.mapSize * multiplier);
+                
 
             }
-            return initData.mapSize;
+            return (int)(initData.mapSize * multiplier);
 
         }
     }
