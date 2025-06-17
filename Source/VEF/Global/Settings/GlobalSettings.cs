@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -19,6 +20,10 @@ namespace VEF
         {
             settings = GetSettings<VFEGlobalSettings>();
             BackwardsCompatibilityFixer.FixSettingsNameOrNamespace(this, settings);
+
+            // This needs to be applied in Mod constructor. StaticConstructorOnStartup is too late
+            // as GenRadial methods will likely be inlined or broken from other optimizations.
+            IncreaseRadialPatternRadiiSize();
         }
 
         public override string SettingsCategory()
@@ -177,6 +182,49 @@ namespace VEF
             }
 
             return true;
+        }
+
+        public static void IncreaseRadialPatternRadiiSize()
+        {
+            int range = 200;
+
+            // Return early if the radius is already the same or greater (different mod already did this?)
+            if (GenRadial.RadialPattern.Length >= range * range * 4)
+                return;
+
+            List<IntVec3> list = new List<IntVec3>();
+
+            for (int i = -range; i < range; i++)
+            {
+                for (int j = -range; j < range; j++)
+                {
+                    list.Add(new IntVec3(i, 0, j));
+                }
+            }
+
+            list.Sort(delegate (IntVec3 A, IntVec3 B)
+            {
+                float num = A.LengthHorizontalSquared;
+                float num2 = B.LengthHorizontalSquared;
+                if (num < num2)
+                {
+                    return -1;
+                }
+                return (num != num2) ? 1 : 0;
+            });
+
+
+            IntVec3[] radialPattern = new IntVec3[list.Count];
+            float[] radii = new float[list.Count];
+
+            for (int k = 0; k < list.Count; k++)
+            {
+                radialPattern[k] = list[k];
+                radii[k] = list[k].LengthHorizontal;
+            }
+
+            AccessTools.Field(typeof(GenRadial), "RadialPattern").SetValue(null, radialPattern);
+            AccessTools.Field(typeof(GenRadial), "RadialPatternRadii").SetValue(null, radii);
         }
 
         // Toggable patches settings
