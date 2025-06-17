@@ -14,8 +14,6 @@ using VEF.Graphics;
 
 namespace VEF.Pawns
 {
-    //TODO: Taranchuk, look at this one when you can
-    /*
     [HarmonyPatch(typeof(DynamicPawnRenderNodeSetup_Apparel), "ProcessApparel")]
     public static class VanillaExpandedFramework_DynamicPawnRenderNodeSetup_Apparel_ProcessApparel_Patch
     {
@@ -38,7 +36,7 @@ namespace VEF.Pawns
                 }
             }
         }
-    }*/
+    }
 
     [HarmonyPatch(typeof(ApparelGraphicRecordGetter), "TryGetGraphicApparel")]
     public static class VanillaExpandedFramework_ApparelGraphicRecordGetter_TryGetGraphicApparel_Transpiler

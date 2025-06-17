@@ -138,8 +138,6 @@ namespace VEF.Pawns
         }
     }
 
-    //TODO Taranchuk, look at this one when you can
-    /*
     [HarmonyPatch(typeof(Designator_Build), "DrawPanelReadout")]
     public static class VanillaExpandedFramework_Designator_Build_DrawPanelReadout_Patch
     {
@@ -184,9 +182,7 @@ namespace VEF.Pawns
                 }
             }
         }
-    }*/
-
-    //TODO: Taranchuk, look at this one when you can
+    }
 
     [HarmonyPatch(typeof(Frame), "CompleteConstruction")]
     public static class VanillaExpandedFramework_Frame_CompleteConstruction_Patch
