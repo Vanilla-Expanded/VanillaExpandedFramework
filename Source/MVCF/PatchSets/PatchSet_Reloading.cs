@@ -15,8 +15,6 @@ public class PatchSet_Reloading : PatchSet
 {
     public override IEnumerable<Patch> GetPatches()
     {
-        yield return Patch.Postfix(AccessTools.Method(typeof(FloatMenuMakerMap), "AddHumanlikeOrders"),
-            AccessTools.Method(typeof(FloatMenuUtility), nameof(FloatMenuUtility.AddWeaponReloadOrders)));
         yield return Patch.Postfix(AccessTools.Method(typeof(PawnWeaponGenerator), "TryGenerateWeaponFor"),
             AccessTools.Method(GetType(), nameof(PostGenerate)));
         yield return Patch.Prefix(AccessTools.Method(typeof(JobGiver_AIFightEnemy), "TryGiveJob"), AccessTools.Method(GetType(), nameof(PreTryGiveJob)));

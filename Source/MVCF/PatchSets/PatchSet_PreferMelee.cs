@@ -15,6 +15,9 @@ public class PatchSet_PreferMelee : PatchSet
     {
         yield return Patch.Prefix(AccessTools.PropertyGetter(typeof(ThingDef), nameof(ThingDef.IsRangedWeapon)),
             AccessTools.Method(GetType(), nameof(Prefix_IsRangedWeapon)));
+
+        // TODO: Needs fixing. I'm honestly unsure what the intention of this patch was. If anyone wants to take a look, go ahead -Soky
+
         yield return Patch.Transpiler(AccessTools.Method(typeof(FloatMenuMakerMap), "AddDraftedOrders"),
             AccessTools.Method(GetType(), nameof(CheckForMelee)));
     }

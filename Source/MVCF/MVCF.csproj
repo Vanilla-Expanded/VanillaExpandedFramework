@@ -88,6 +88,7 @@
     <Compile Include="Features\Feature_RangedAnimals.cs" />
     <Compile Include="Features\Feature_Reloading.cs" />
     <Compile Include="Features\Feature_VerbComps.cs" />
+    <Compile Include="FloatMenuOptionProviders\FloatMenuOptionProvider_Reload.cs" />
     <Compile Include="PatchSets\PatchSet_Animals.cs" />
     <Compile Include="PatchSets\PatchSet_InfoCard.cs" />
     <Compile Include="PatchSets\PatchSet_Melee.cs" />
@@ -164,7 +165,6 @@
       <Version>1.1.1</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
          Other similar extension points exist, see Microsoft.Common.targets.
