@@ -14,16 +14,33 @@ using VEF.Graphics;
 
 namespace VEF.Pawns
 {
-    // Actually it wasn't safe, didn't test enough, going to look into it more -Soky
-    /*
+    [HarmonyPatch(typeof(DynamicPawnRenderNodeSetup_Apparel), nameof(DynamicPawnRenderNodeSetup_Apparel.GetDynamicNodes))]
+    public static class VanillaExpandedFramework_DynamicPawnRenderNodeSetup_Apparel_GetDynamicNodes_Patch
+    {
+        public static List<(PawnRenderNode, PawnRenderNode)> renderNodesToInsert;
+
+        public static void Prefix()
+        {
+            // Replace the list, since we're passing it in a postfix to Enumarable.Concat() call,
+            // just to prevent some code being weird and keeping the returned IEnumerable for ages.
+            // Better safe than sorry, after all, right?
+            renderNodesToInsert = [];
+        }
+
+        public static IEnumerable<(PawnRenderNode, PawnRenderNode)> Postfix(IEnumerable<(PawnRenderNode, PawnRenderNode)> renderNode)
+        {
+            return renderNode.Concat(renderNodesToInsert);
+        }
+    }
+
     [HarmonyPatch(typeof(DynamicPawnRenderNodeSetup_Apparel), "ProcessApparel")]
     public static class VanillaExpandedFramework_DynamicPawnRenderNodeSetup_Apparel_ProcessApparel_Patch
     {
-        public delegate void ProcessApparel(DynamicPawnRenderNodeSetup_Apparel __instance, Apparel ap, PawnRenderNode headApparelNode, PawnRenderNode bodyApparelNode);
+        public delegate (PawnRenderNode node, PawnRenderNode parent) ProcessApparel(Pawn pawn, PawnRenderTree tree, Apparel ap, PawnRenderNode headApparelNode, PawnRenderNode bodyApparelNode, Dictionary<PawnRenderNode, int> layerOffsets);
         public static readonly ProcessApparel processApparel = AccessTools.MethodDelegate<ProcessApparel>
             (AccessTools.Method(typeof(DynamicPawnRenderNodeSetup_Apparel), "ProcessApparel"));
 
-        public static void Postfix(DynamicPawnRenderNodeSetup_Apparel __instance, Pawn pawn, Apparel ap, PawnRenderNode headApparelNode, PawnRenderNode bodyApparelNode)
+        public static void Postfix(Pawn pawn, PawnRenderTree tree, Apparel ap, PawnRenderNode headApparelNode, PawnRenderNode bodyApparelNode, Dictionary<PawnRenderNode, int> layerOffsets)
         {
             var extension = ap.def.GetModExtension<ApparelDrawPosExtension>();
             if (extension?.secondaryApparelGraphics != null)
@@ -31,14 +48,25 @@ namespace VEF.Pawns
                 foreach (var thingDef in extension.secondaryApparelGraphics)
                 {
                     var item = ThingMaker.MakeThing(thingDef) as Apparel;
-                    if (ApparelGraphicRecordGetter.TryGetGraphicApparel(item, pawn.story.bodyType,false, out var rec))
+                    if (ApparelGraphicRecordGetter.TryGetGraphicApparel(item, pawn.story.bodyType,false, out _))
                     {
-                        processApparel(__instance, item, headApparelNode, bodyApparelNode);
+                        var result = processApparel(pawn, tree, item, headApparelNode, bodyApparelNode, layerOffsets);
+                        // If the node isn't null, add it to the render tree, matching vanilla code
+                        if (result.node != null)
+                            VanillaExpandedFramework_DynamicPawnRenderNodeSetup_Apparel_GetDynamicNodes_Patch.renderNodesToInsert.Add(result);
+                        // If the paren't isn't null, increment its layer offset (or add it), matching vanilla code
+                        if (result.parent != null)
+                        {
+                            if (layerOffsets.ContainsKey(result.parent))
+                                layerOffsets[result.parent]++;
+                            else
+                                layerOffsets.Add(result.parent, 1);
+                        }
                     }
                 }
             }
         }
-    }*/
+    }
 
     [HarmonyPatch(typeof(ApparelGraphicRecordGetter), "TryGetGraphicApparel")]
     public static class VanillaExpandedFramework_ApparelGraphicRecordGetter_TryGetGraphicApparel_Transpiler
