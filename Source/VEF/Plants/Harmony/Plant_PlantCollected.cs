@@ -37,21 +37,25 @@ namespace VEF.Plants
                         }
                         if (num > 0)
                         {
-                            Thing thing;
-                            if (extension.randomOutput)
+                            Thing thing = null;
+                            if (extension.randomOutput && !extension.randomSecondaryOutput.NullOrEmpty())
                             {
                                 thing = ThingMaker.MakeThing(extension.randomSecondaryOutput.RandomElement());
                             }
-                            else
+                            else if (extension.secondaryOutput!=null)
                             {
                                 thing = ThingMaker.MakeThing(extension.secondaryOutput);
                             }
-                            thing.stackCount = num;
-                            if (by.Faction != Faction.OfPlayer)
+                            if (thing != null)
                             {
-                                thing.SetForbidden(value: true);
+                                thing.stackCount = num;
+                                if (by.Faction != Faction.OfPlayer)
+                                {
+                                    thing.SetForbidden(value: true);
+                                }
+                                GenPlace.TryPlaceThing(thing, by.Position, by.Map, ThingPlaceMode.Near);
                             }
-                            GenPlace.TryPlaceThing(thing, by.Position, by.Map, ThingPlaceMode.Near);
+                           
                         }
                     }
 
