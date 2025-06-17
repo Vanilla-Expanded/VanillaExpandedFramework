@@ -69,7 +69,7 @@ namespace VEF.Weapons
         }
     }
 
-    [HarmonyPatch(typeof(VerbProperties), "AdjustedCooldown", new Type[]
+    [HarmonyPatch(typeof(VerbProperties), nameof(VerbProperties.AdjustedCooldown), new Type[]
     {
             typeof(Verb), typeof(Pawn)
     })]
@@ -85,7 +85,7 @@ namespace VEF.Weapons
         }
     }
 
-    [HarmonyPatch(typeof(ShotReport), "HitReportFor")]
+    [HarmonyPatch(typeof(ShotReport), nameof(ShotReport.HitReportFor))]
     public static class VanillaExpandedFramework_ShotReport_HitReportFor_Patch
     {
         public static Thing curCaster;
@@ -103,14 +103,14 @@ namespace VEF.Weapons
         {
             VerbAccuracyUtility.CheckAccuracyEffects(__instance, __instance.CurrentTarget, out VerbAccuracyUtility.forceHit, out VerbAccuracyUtility.forceMiss);
         }
-        public static void Postfix()
+        public static void Finalizer()
         {
             VerbAccuracyUtility.forceHit = false;
             VerbAccuracyUtility.forceMiss = false;
         }
     }
 
-    [HarmonyPatch(typeof(ShotReport), "AimOnTargetChance_StandardTarget", MethodType.Getter)]
+    [HarmonyPatch(typeof(ShotReport), nameof(ShotReport.AimOnTargetChance_StandardTarget), MethodType.Getter)]
     public static class VanillaExpandedFramework_ShotReport_AimOnTargetChance_StandardTarget
     {
         public static void Postfix(ref float __result)
@@ -126,7 +126,7 @@ namespace VEF.Weapons
         }
     }
 
-    [HarmonyPatch(typeof(CastPositionFinder), "TryFindCastPosition")]
+    [HarmonyPatch(typeof(CastPositionFinder), nameof(CastPositionFinder.TryFindCastPosition))]
     public static class VanillaExpandedFramework_CastPositionFinder_TryFindCastPosition_Patch
     {
         public static void Prefix(ref CastPositionRequest newReq)
@@ -139,7 +139,7 @@ namespace VEF.Weapons
         }
     }
 
-    [HarmonyPatch(typeof(Verb), "TryFindShootLineFromTo")]
+    [HarmonyPatch(typeof(Verb), nameof(Verb.TryFindShootLineFromTo))]
     public static class VanillaExpandedFramework_Verb_TryFindShootLineFromTo_Patch
     {
         public static Pawn curPawn;
@@ -148,7 +148,7 @@ namespace VEF.Weapons
             curPawn = __instance.CasterPawn;
         }
 
-        public static void Postfix()
+        public static void Finalizer()
         {
             curPawn = null;
         }
@@ -173,7 +173,7 @@ namespace VEF.Weapons
                 {
                     yield return new CodeInstruction(OpCodes.Ldloc_0);
                     yield return new CodeInstruction(OpCodes.Ldloc_1);
-                    yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(Job), "verbToUse"));
+                    yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(Job), nameof(Job.verbToUse)));
                     yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(VanillaExpandedFramework_Toils_Combat_GotoCastPosition_Patch), nameof(GetMeleeReachRange)));
                 }
                 else
@@ -203,7 +203,7 @@ namespace VEF.Weapons
             curPawn = searcherPawn;
         }
 
-        public static void Postfix()
+        public static void Finalizer()
         {
             curPawn = null;
         }
@@ -219,13 +219,11 @@ namespace VEF.Weapons
             curPawn = pawn;
         }
 
-        public static void Postfix()
+        public static void Finalizer()
         {
             curPawn = null;
         }
     }
-    //TODO - Assigned to Taranchuk
-    /*
     [HotSwappable]
     [HarmonyPatch]
     public static class VanillaExpandedFramework_Toils_Combat_FollowAndMeleeAttack_Patch
@@ -238,7 +236,7 @@ namespace VEF.Weapons
             curPawn = ___followAndAttack.actor;
         }
 
-        public static void Postfix()
+        public static void Finalizer()
         {
             curPawn = null;
         }
@@ -252,7 +250,8 @@ namespace VEF.Weapons
                     if (method.Name.Contains("<FollowAndMeleeAttack>"))
                     {
                         targetInd = nested.GetField("targetInd");
-                        return method;
+                        if (targetInd != null)
+                            return method;
                     }
                 }
             }
@@ -275,7 +274,7 @@ namespace VEF.Weapons
                     yield return new CodeInstruction(OpCodes.Ldloca_S, 5);
                     yield return new CodeInstruction(OpCodes.Ldloca_S, 6);
                     yield return new CodeInstruction(OpCodes.Call,
-                        AccessTools.Method(typeof(Toils_Combat_FollowAndMeleeAttack_Patch), "TryOverrideDestinationAndPathMode"));
+                        AccessTools.Method(typeof(VanillaExpandedFramework_Toils_Combat_FollowAndMeleeAttack_Patch), nameof(TryOverrideDestinationAndPathMode)));
                 }
             }
         }
@@ -320,12 +319,12 @@ namespace VEF.Weapons
         {
             curPawn = ___pawn;
         }
-        public static void Postfix(Pawn_PathFollower __instance)
+        public static void Finalizer(Pawn_PathFollower __instance)
         {
             curPawn = null;
         }
     }
-    
+
     [HotSwappable]
     [HarmonyPatch(typeof(ReachabilityImmediate), nameof(ReachabilityImmediate.CanReachImmediate), new Type[] { typeof(IntVec3), typeof(LocalTargetInfo), typeof(Map), typeof(PathEndMode), typeof(Pawn) })]
     public static class VanillaExpandedFramework_ReachabilityImmediate_CanReachImmediate_Patch
@@ -333,11 +332,11 @@ namespace VEF.Weapons
 
         public static void Postfix(ref bool __result, IntVec3 start, LocalTargetInfo target, Map map, PathEndMode peMode, Pawn pawn)
         {
-            var curPawn = Toils_Combat_FollowAndMeleeAttack_Patch.curPawn
-                ?? JobGiver_ConfigurableHostilityResponse_TryGetAttackNearbyEnemyJob_Patch.curPawn
-                ?? AttackTargetFinder_FindBestReachableMeleeTarget_Patch.curPawn
-                ?? Verb_TryFindShootLineFromTo_Patch.curPawn;
-            if (Pawn_PathFollower_AtDestinationPosition_Patch.curPawn == curPawn)
+            var curPawn = VanillaExpandedFramework_Toils_Combat_FollowAndMeleeAttack_Patch.curPawn
+                ?? VanillaExpandedFramework_JobGiver_ConfigurableHostilityResponse_TryGetAttackNearbyEnemyJob_Patch.curPawn
+                ?? VanillaExpandedFramework_AttackTargetFinder_FindBestReachableMeleeTarget_Patch.curPawn
+                ?? VanillaExpandedFramework_Verb_TryFindShootLineFromTo_Patch.curPawn;
+            if (VanillaExpandedFramework_Pawn_PathFollower_AtDestinationPosition_Patch.curPawn == curPawn)
             {
                 return;
             }
@@ -355,7 +354,7 @@ namespace VEF.Weapons
             return pawn.jobs.curJob?.verbToUse ?? pawn.equipment?.PrimaryEq?.PrimaryVerb;
         }
     }
-    
+
     [HarmonyPatch(typeof(JobDriver_Wait), "CheckForAutoAttack")]
     public static class VanillaExpandedFramework_JobDriver_Wait_CheckForAutoAttack_Patch
     {
@@ -370,8 +369,8 @@ namespace VEF.Weapons
                     codes[i + 1].labels.Add(label);
                     yield return new CodeInstruction(OpCodes.Brfalse_S, label);
                     yield return new CodeInstruction(OpCodes.Ldloc_S, 9);
-                    yield return new CodeInstruction(OpCodes.Call, 
-                        AccessTools.Method(typeof(JobDriver_Wait_CheckForAutoAttack_Patch), nameof(IsVanillaMeleeAttack)));
+                    yield return new CodeInstruction(OpCodes.Call,
+                        AccessTools.Method(typeof(VanillaExpandedFramework_JobDriver_Wait_CheckForAutoAttack_Patch), nameof(IsVanillaMeleeAttack)));
                     yield return new CodeInstruction(OpCodes.Brtrue_S, codes[i].operand);
                 }
                 else
@@ -391,7 +390,7 @@ namespace VEF.Weapons
         }
     }
 
-    [HarmonyPatch(typeof(AttackTargetFinder), "BestAttackTarget")]
+    [HarmonyPatch(typeof(AttackTargetFinder), nameof(AttackTargetFinder.BestAttackTarget))]
     public static class VanillaExpandedFramework_AttackTargetFinder_BestAttackTarget_Patch
     {
         public static void Prefix(IAttackTargetSearcher searcher, ref float maxDist)
@@ -406,6 +405,6 @@ namespace VEF.Weapons
                 }
             }
         }
-    }*/
+    }
 }
 
