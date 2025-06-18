@@ -478,6 +478,7 @@
     <Compile Include="Maps\ActiveTerrain\Comps\TerrainCompProperties.cs" />
     <Compile Include="Maps\ActiveTerrain\Comps\TerrainComps_Power.cs" />
     <Compile Include="Maps\ActiveTerrain\Comps\TerrainComp_Glower.cs" />
+    <Compile Include="Maps\ActiveTerrain\Comps\TerrainComp_HediffGiver.cs" />
     <Compile Include="Maps\ActiveTerrain\Comps\TerrainComp_HeatPush.cs" />
     <Compile Include="Maps\ActiveTerrain\Comps\TerrainComp_MoteSpawner.cs" />
     <Compile Include="Maps\ActiveTerrain\Comps\TerrainComp_Healer.cs" />
