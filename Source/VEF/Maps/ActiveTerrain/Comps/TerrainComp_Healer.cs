@@ -11,6 +11,7 @@ namespace VEF.Maps
     public class TerrainCompProperties_Healer : TerrainCompProperties
     {
         public float amountToHeal;
+        public bool curePermanent = true;
         public TerrainCompProperties_Healer()
         {
             compClass = typeof(TerrainComp_Healer);
@@ -56,7 +57,7 @@ namespace VEF.Maps
             {
                 return minorInjuries.MinBy(x => x.BleedRate);
             }
-            if (permanentInjuries.Any())
+            if (Props.curePermanent && permanentInjuries.Any())
             {
                 return permanentInjuries.MinBy(x => x.Part.def.GetMaxHealth(pawn) - pawn.health.hediffSet.GetPartHealth(x.Part));
             }
