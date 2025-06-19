@@ -53,8 +53,6 @@ namespace KCSG
             var tiledStruct = DefDatabase<TiledStructureDef>.AllDefsListForReading;
             for (int i = 0; i < tiledStruct.Count; i++)
                 tiledStruct[i].Resolve();
-            // Make new map generators, used with preventBridgeable
-            CreateMapGeneratorDefs();
         }
 
         /// <summary>
@@ -84,39 +82,6 @@ namespace KCSG
                 missingSymbols.Add(modName, new Dictionary<string, int>());
                 missingSymbols[modName].Add(symbol, 1);
             }
-        }
-
-        /// <summary>
-        /// Create MapGeneratorDef that use KCSG_TerrainNoPatches instead of Terrain
-        /// Allow to skip terrain patches maker
-        /// </summary>
-        private static void CreateMapGeneratorDefs()
-        {
-            var baseA = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_Base_Faction");
-            MapGeneratorDef mgdA = new MapGeneratorDef
-            {
-                defName = "KCSG_Base_Faction_NoBridge",
-                genSteps = baseA.genSteps.ListFullCopy()
-            };
-            mgdA.genSteps.Replace(AllDefOf.Terrain, AllDefOf.KCSG_TerrainNoPatches);
-            DefDatabase<MapGeneratorDef>.Add(mgdA);
-
-            var baseB = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject");
-            MapGeneratorDef mgdB = new MapGeneratorDef
-            {
-                defName = "KCSG_WorldObject_NoBridge",
-                genSteps = baseB.genSteps.ListFullCopy()
-            };
-            mgdB.genSteps.Replace(AllDefOf.Terrain, AllDefOf.KCSG_TerrainNoPatches);
-            DefDatabase<MapGeneratorDef>.Add(mgdB);
-
-            MapGeneratorDef enc = new MapGeneratorDef
-            {
-                defName = "KCSG_Encounter_NoBridge",
-                genSteps = MapGeneratorDefOf.Encounter.genSteps.ListFullCopy()
-            };
-            enc.genSteps.Replace(AllDefOf.Terrain, AllDefOf.KCSG_TerrainNoPatches);
-            DefDatabase<MapGeneratorDef>.Add(enc);
         }
 
         /// <summary>

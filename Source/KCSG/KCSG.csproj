@@ -73,7 +73,6 @@
     <Compile Include="Defs\TiledStructureDef.cs" />
     <Compile Include="GenStep\GenStep_BiomeStructures.cs" />
     <Compile Include="GenStep\GenStep_Settlement.cs" />
-    <Compile Include="GenStep\GenStep_TerrainNoPatches.cs" />
     <Compile Include="GenStep\GenStep_WorldObject.cs" />
     <Compile Include="Harmony\Postfix_MapParent_MapGeneratorDef.cs" />
     <Compile Include="Harmony\Postfix_SettlementUtility_Attack.cs" />
