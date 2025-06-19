@@ -666,7 +666,9 @@
     <Compile Include="AI\DraftedJobs\DraftedJobUtils.cs" />
     <Compile Include="Weapons\Comps\CompLaserCapacitor.cs" />
     <Compile Include="Weapons\DamageWorkers\DamageWorker_OPToxic.cs" />
+    <Compile Include="Weapons\Harmony\EquipmentUtility_CanEquip_Patch.cs" />
     <Compile Include="Weapons\Harmony\PawnRenderUtility_Draw_EquipmentAiming.cs" />
+    <Compile Include="Weapons\Harmony\Pawn_ApparelTracker_Notify_ApparelRemoved_Patch.cs" />
     <Compile Include="Weapons\Harmony\Pawn_GetGizmos.cs" />
     <Compile Include="Weapons\Harmony\TurretTop_DrawTurret.cs" />
     <Compile Include="Weapons\Harmony\Verb_TryStartCastOn.cs" />
@@ -1292,7 +1294,7 @@
     <Compile Include="Weapons\Defs\ToolsUsableByNonViolentPawnsDef.cs" />
     <Compile Include="Weapons\GuidedProjectiles.cs" />
     <Compile Include="Weapons\Harmony\OptionalFeatures\CompUniqueWeapon_CanAddTrait.cs" />
-    <Compile Include="Weapons\Harmony\FloatMenuMakerMap_AddHumanlikeOrders.cs" />
+    <Compile Include="Weapons\Harmony\FloatMenuOptionProvider_Equip_GetSingleOptionFor_Patch.cs" />
     <Compile Include="Weapons\Harmony\OptionalFeatures\Verb_LaunchProjectile_Projectile.cs" />
     <Compile Include="Weapons\Harmony\OptionalFeatures\Verb_TryCastNextBurstShot.cs" />
     <Compile Include="Weapons\Harmony\OptionalFeatures\WeaponTraitWorker_Notify_EquipmentLost.cs" />
