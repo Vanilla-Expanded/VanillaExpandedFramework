@@ -30,7 +30,7 @@ namespace VEF.Maps
 
                             if (Rand.Chance(kindDefAndChance.forcedPawnKindDefChance))
                             {
-                                if (RCellFinder.TryFindRandomPawnEntryCell(out IntVec3 newLoc, ___map, CellFinder.EdgeRoadChance_Animal, allowFogged: true, (IntVec3 cell) => ___map.reachability.CanReachMapEdge(cell, TraverseParms.For(TraverseMode.NoPassClosedDoors).WithFenceblocked(forceFenceblocked: true))))
+                                if (RCellFinder.TryFindRandomPawnEntryCell(out IntVec3 newLoc, ___map, CellFinder.EdgeRoadChance_Animal, allowFogged: true, (IntVec3 cell) => !___map.areaManager.Home[cell] && ___map.reachability.CanReachMapEdge(cell, TraverseParms.For(TraverseMode.NoPassClosedDoors).WithFenceblocked(forceFenceblocked: true))))
                                 {
                                     SpawnAnimal(kindDefAndChance.forcedPawnKindDef, newLoc, ___map);
                                 }
