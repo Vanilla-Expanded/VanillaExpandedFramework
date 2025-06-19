@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MVCF.Features;
 using MVCF.Reloading;
 using MVCF.Utilities;
 using Reloading;
@@ -14,6 +15,11 @@ public class FloatMenuOptionProvider_Reload : FloatMenuOptionProvider
     protected override bool Drafted => true;
     protected override bool Undrafted => true;
     protected override bool Multiselect => false;
+
+    public override bool Applies(FloatMenuContext context)
+    {
+        return base.Applies(context) && MVCF.GetFeature<Feature_Reloading>().Enabled;
+    }
 
     public override IEnumerable<FloatMenuOption> GetOptionsFor(Thing clickedThing, FloatMenuContext context)
     {
