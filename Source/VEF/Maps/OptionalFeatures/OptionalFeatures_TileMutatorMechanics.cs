@@ -19,6 +19,9 @@ namespace VEF.Maps
             harm.Patch(AccessTools.Method(typeof(CompDeepDrill), "TryProducePortion"),
                 transpiler: new HarmonyMethod(typeof(VanillaExpandedFramework_CompDeepDrill_TryProducePortion_Patch), "ModifyDeepDrillOutput"));
 
+            harm.Patch(AccessTools.EnumeratorMoveNext(AccessTools.Method(typeof(StorytellerComp_Disease), "MakeIntervalIncidents")) ,
+                transpiler: new HarmonyMethod(typeof(VanillaExpandedFramework_StorytellerComp_Disease_MakeIntervalIncidents_Patch), "ModifyBiomeDiseaseMTB"));
+
             harm.Patch(AccessTools.Method(typeof(GetOrGenerateMapUtility), "GetOrGenerateMap", new Type[] { typeof(PlanetTile), typeof(IntVec3), typeof(WorldObjectDef), typeof(IEnumerable<GenStepWithParams>), typeof(bool) }),
                prefix: new HarmonyMethod(typeof(VanillaExpandedFramework_GetOrGenerateMapUtility_GetOrGenerateMap_Patch), "TweakMapSizes"));
 

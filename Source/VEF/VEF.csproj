@@ -531,6 +531,7 @@
     <Compile Include="Maps\Harmony\OptionalFeatures\CompDeepDrill_TryProducePortion.cs" />
     <Compile Include="Maps\Harmony\OptionalFeatures\Game_InitNewGame.cs" />
     <Compile Include="Maps\Harmony\OptionalFeatures\GetOrGenerateMapUtility_GetOrGenerateMap.cs" />
+    <Compile Include="Maps\Harmony\OptionalFeatures\StorytellerComp_Disease_MakeIntervalIncidents.cs" />
     <Compile Include="Maps\Harmony\OptionalFeatures\WildAnimalSpawner_SpawnRandomWildAnimalAt.cs" />
     <Compile Include="Maps\OptionalFeatures\OptionalFeatures_TileMutatorMechanics.cs" />
     <Compile Include="Maps\TileMutatorWorkers\TileMutatorWorker_ExtraAnimal.cs" />
