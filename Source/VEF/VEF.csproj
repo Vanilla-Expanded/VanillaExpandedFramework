@@ -434,7 +434,12 @@
     <Compile Include="AnimalBehaviours\HediffComps\HediffComp_ExplodeOnDowned.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_ExplodeOnDowned.cs" />
     <Compile Include="AnimalBehaviours\Projectiles\Electric_Projectile.cs" />
+    <Compile Include="Apparels\Harmony\FloatMenuOptionProvider_EquipShield.cs" />
     <Compile Include="Apparels\Harmony\Pawn_Kill.cs" />
+    <Compile Include="Apparels\Harmony\FloatMenuOptionProvider_Wear_GetSingleOptionFor_Patch.cs" />
+    <Compile Include="Apparels\Harmony\FloatMenuOptionProvider_Equip_GetSingleOptionFor_Patch.cs" />
+    <Compile Include="Apparels\Harmony\FloatMenuOptionProvider_DressOtherPawn_GetSingleOptionFor_Patch.cs" />
+    <Compile Include="Apparels\Harmony\Building_OutfitStand_DrawAt_Patch.cs" />
     <Compile Include="Buildings\AI\JobDrivers\JobDriver_Loot.cs" />
     <Compile Include="Buildings\AI\JobDrivers\JobDriver_StudyBuilding.cs" />
     <Compile Include="Buildings\AI\WorkGivers\WorkGiver_Loot.cs" />
@@ -1205,7 +1210,7 @@
     <Compile Include="Things\Harmony\Stuff_Patches.cs" />
     <Compile Include="Apparels\Harmony\Armor_Patches.cs" />
     <Compile Include="Pawns\Harmony\Patch_DisableAtlasCaching.cs" />
-    <Compile Include="Apparels\Harmony\FloatMenuMakerMap_AddHumanlikeOrders.cs" />
+    <Compile Include="Apparels\Harmony\Building_OutfitStand_GetFloatMenuOptionToWear_Patch.cs" />
     <Compile Include="Storyteller\Harmony\IncidentWorker_WandererJoin_GeneratePawn.cs" />
     <Compile Include="Apparels\Harmony\ITab_Pawn_Gear_TryDrawOverallArmor.cs" />
     <Compile Include="Hediffs\Harmony\Pawn_InteractionsTracker_TryInteractWith.cs" />

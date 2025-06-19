@@ -97,6 +97,16 @@ namespace VEF.Weapons
 
         public static Pawn GetPawnAsHolder(this Thing thing)
         {
+            var pawn = GetPawnAsHolderInt(thing);
+            if (pawn?.carryTracker is not null) // we are filtering dummy outfit pawn here...
+            {
+                return pawn;
+            }
+            return pawn;
+        }
+
+        private static Pawn GetPawnAsHolderInt(Thing thing)
+        {
             if (thing.ParentHolder is Pawn_EquipmentTracker pawn_EquipmentTracker) return pawn_EquipmentTracker.pawn;
             if (thing.ParentHolder is Pawn_ApparelTracker pawn_ApparelTracker) return pawn_ApparelTracker.pawn;
             return null;

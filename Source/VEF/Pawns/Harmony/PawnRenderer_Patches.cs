@@ -139,7 +139,7 @@ namespace VEF.Pawns
 
             Pawn pawn = eq.GetPawnAsHolder();
 
-            if (thingDefExtension != null && PawnRenderUtility.CarryWeaponOpenly(pawn))
+            if (pawn != null && thingDefExtension != null && PawnRenderUtility.CarryWeaponOpenly(pawn))
             {
                 var pawnRot = pawn.Rotation;
                 var pawnIsMoving = pawn.pather.Moving;
