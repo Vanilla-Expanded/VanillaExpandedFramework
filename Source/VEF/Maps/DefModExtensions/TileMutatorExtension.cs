@@ -31,6 +31,8 @@ namespace VEF.Maps
 
         public float deepOresMultiplier = 1;
 
+        public float diseaseMTBMultiplier = 1;
+
     }
 
     public class PawnKindDefAndChance

@@ -47,14 +47,18 @@ namespace VEF.Utils
             rect.xMax -= 30f;
             var rightSmallRect = rect.RightPartPixels(30f);
             rect.xMax -= 30f;
-            var mult                                                                                                                        = GenUI.CurrentAdjustmentMultiplier();
+            var mult = GenUI.CurrentAdjustmentMultiplier();
             if (!readOnly && (setToMin.HasValue ? value > setToMin.Value : value != min) && Widgets.ButtonText(leftBigRect,    "<<")) value =  setToMin ?? min;
             if (!readOnly && value - mult >= min                                         && Widgets.ButtonText(leftSmallRect,  "<")) value  -= mult;
             if (!readOnly && (setToMax.HasValue ? value < setToMax.Value : value != max) && Widgets.ButtonText(rightBigRect,   ">>")) value =  setToMax ?? max;
             if (!readOnly && value + mult <= max                                         && Widgets.ButtonText(rightSmallRect, ">")) value  += mult;
-            if (value < min) value                                                                                                          =  min;
-            if (value > max) value                                                                                                          =  max;
-            if (value != temp || readOnly) buffer                                                                                           =  value.ToString();
+            if (value < min) value = min;
+            if (value > max) value =  max;
+            if (value != temp || readOnly)
+            {
+                buffer = value.ToString();
+                temp = value;
+            }
             Widgets.TextFieldNumeric(rect.ContractedBy(3f, 0f), ref temp, ref buffer, min, max);
             if (!readOnly) value = temp;
         }
