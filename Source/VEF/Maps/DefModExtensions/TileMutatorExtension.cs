@@ -29,6 +29,8 @@ namespace VEF.Maps
         public int mapSizeOverrideZ = -1;
         public float mapSizeMultiplier = 1;
 
+        public float deepOresMultiplier = 1;
+
     }
 
     public class PawnKindDefAndChance
