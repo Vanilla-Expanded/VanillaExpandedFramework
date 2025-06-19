@@ -22,8 +22,8 @@ public class PatchSet_Brawlers : PatchSet
 
         //Assigned to Taranchuk
 
-        yield return Patch.Postfix(AccessTools.Method(typeof(FloatMenuMakerMap), "AddHumanlikeOrders"),
-            AccessTools.Method(GetType(), nameof(AddHumanlikeOrders_Postfix)));
+        yield return Patch.Postfix(AccessTools.Method(typeof(FloatMenuMakerMap), nameof(FloatMenuMakerMap.GetOptions)),
+            AccessTools.Method(GetType(), nameof(GetOptions_Postfix)));
     }
 
     public static bool GetReport_Prefix(ref AlertReport __result)
@@ -58,8 +58,9 @@ public class PatchSet_Brawlers : PatchSet
         __result.Label = __result.Label + " " + "EquipWarningBrawler".Translate();
     }
 
-    public static void AddHumanlikeOrders_Postfix(List<FloatMenuOption> opts, Vector3 clickPos, Pawn pawn)
+    public static void GetOptions_Postfix(ref List<FloatMenuOption> __result, List<Pawn> selectedPawns, Vector3 clickPos)
     {
+        Pawn pawn = selectedPawns.FirstOrDefault();
         if (pawn?.apparel == null) return;
         var apparel = pawn.Map.thingGrid.ThingAt<Apparel>(IntVec3.FromVector3(clickPos));
         if (apparel == null) return;
@@ -71,7 +72,7 @@ public class PatchSet_Brawlers : PatchSet
         var traits = pawn.story?.traits;
         if (traits == null) return;
         if (!traits.HasTrait(TraitDefOf.Brawler)) return;
-        foreach (var opt in opts.Where(opt =>
+        foreach (var opt in __result.Where(opt =>
                      opt.Label.Contains(str.Translate((NamedArgument)apparel.LabelShort, (NamedArgument)apparel))))
             opt.Label += " " + "EquipWarningBrawler".Translate();
     }
