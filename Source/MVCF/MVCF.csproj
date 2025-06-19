@@ -102,7 +102,6 @@
     <Compile Include="PatchSets\PatchSet_IndependentVerbs.cs" />
     <Compile Include="PatchSets\PatchSet_IntegratedToggle.cs" />
     <Compile Include="PatchSets\Trackers\PatchSet_Inventory.cs" />
-    <Compile Include="PatchSets\PatchSet_PreferMelee.cs" />
     <Compile Include="PatchSets\PatchSet_MultiVerb.cs" />
     <Compile Include="PatchSets\PatchSet_Brawlers.cs" />
     <Compile Include="PatchSets\PatchSet_Debug.cs" />
