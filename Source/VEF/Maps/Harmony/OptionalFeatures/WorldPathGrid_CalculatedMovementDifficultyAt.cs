@@ -56,7 +56,7 @@ namespace VEF.Maps
                 }
 
             }
-            return movementDifficulty+offset;
+            return movementDifficulty + offset > 0 ?  movementDifficulty +offset : 0.1f;
         }
 
     }
