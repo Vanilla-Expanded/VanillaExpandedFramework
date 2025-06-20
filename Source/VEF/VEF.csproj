@@ -434,7 +434,12 @@
     <Compile Include="AnimalBehaviours\HediffComps\HediffComp_ExplodeOnDowned.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_ExplodeOnDowned.cs" />
     <Compile Include="AnimalBehaviours\Projectiles\Electric_Projectile.cs" />
+    <Compile Include="Apparels\Harmony\FloatMenuOptionProvider_EquipShield.cs" />
     <Compile Include="Apparels\Harmony\Pawn_Kill.cs" />
+    <Compile Include="Apparels\Harmony\FloatMenuOptionProvider_Wear_GetSingleOptionFor_Patch.cs" />
+    <Compile Include="Apparels\Harmony\FloatMenuOptionProvider_Equip_GetSingleOptionFor_Patch.cs" />
+    <Compile Include="Apparels\Harmony\FloatMenuOptionProvider_DressOtherPawn_GetSingleOptionFor_Patch.cs" />
+    <Compile Include="Apparels\Harmony\Building_OutfitStand_DrawAt_Patch.cs" />
     <Compile Include="Buildings\AI\JobDrivers\JobDriver_Loot.cs" />
     <Compile Include="Buildings\AI\JobDrivers\JobDriver_StudyBuilding.cs" />
     <Compile Include="Buildings\AI\WorkGivers\WorkGiver_Loot.cs" />
@@ -528,12 +533,13 @@
     <Compile Include="Genes\Harmony\FoodUtility_GetMeatSourceCategoryFromCorpse.cs" />
     <Compile Include="Genes\Harmony\ThoughtWorker_HumanLeatherApparel_CurrentThoughtState.cs" />
     <Compile Include="Maps\DefModExtensions\TileMutatorExtension.cs" />
-    <Compile Include="Maps\Harmony\OptionalFeatures\CompDeepDrill_TryProducePortion.cs" />
+    <Compile Include="Maps\Harmony\OptionalFeatures\CompDeepScanner_DoFind.cs" />
     <Compile Include="Maps\Harmony\OptionalFeatures\Game_InitNewGame.cs" />
     <Compile Include="Maps\Harmony\OptionalFeatures\GetOrGenerateMapUtility_GetOrGenerateMap.cs" />
     <Compile Include="Maps\Harmony\OptionalFeatures\StorytellerComp_Disease_MakeIntervalIncidents.cs" />
     <Compile Include="Maps\Harmony\OptionalFeatures\WildAnimalSpawner_SpawnRandomWildAnimalAt.cs" />
     <Compile Include="Maps\Harmony\OptionalFeatures\WITab_Terrain_ListMiscDetails.cs" />
+    <Compile Include="Maps\Harmony\OptionalFeatures\WorldPathGrid_CalculatedMovementDifficultyAt.cs" />
     <Compile Include="Maps\OptionalFeatures\OptionalFeatures_TileMutatorMechanics.cs" />
     <Compile Include="Maps\TileMutatorWorkers\TileMutatorWorker_ExtraAnimal.cs" />
     <Compile Include="Maps\TileMutatorWorkers\TileMutatorWorker_GenericKCSGSpawner.cs" />
@@ -661,7 +667,9 @@
     <Compile Include="AI\DraftedJobs\DraftedJobUtils.cs" />
     <Compile Include="Weapons\Comps\CompLaserCapacitor.cs" />
     <Compile Include="Weapons\DamageWorkers\DamageWorker_OPToxic.cs" />
+    <Compile Include="Weapons\Harmony\EquipmentUtility_CanEquip_Patch.cs" />
     <Compile Include="Weapons\Harmony\PawnRenderUtility_Draw_EquipmentAiming.cs" />
+    <Compile Include="Weapons\Harmony\Pawn_ApparelTracker_Notify_ApparelRemoved_Patch.cs" />
     <Compile Include="Weapons\Harmony\Pawn_GetGizmos.cs" />
     <Compile Include="Weapons\Harmony\TurretTop_DrawTurret.cs" />
     <Compile Include="Weapons\Harmony\Verb_TryStartCastOn.cs" />
@@ -1207,7 +1215,7 @@
     <Compile Include="Things\Harmony\Stuff_Patches.cs" />
     <Compile Include="Apparels\Harmony\Armor_Patches.cs" />
     <Compile Include="Pawns\Harmony\Patch_DisableAtlasCaching.cs" />
-    <Compile Include="Apparels\Harmony\FloatMenuMakerMap_AddHumanlikeOrders.cs" />
+    <Compile Include="Apparels\Harmony\Building_OutfitStand_GetFloatMenuOptionToWear_Patch.cs" />
     <Compile Include="Storyteller\Harmony\IncidentWorker_WandererJoin_GeneratePawn.cs" />
     <Compile Include="Apparels\Harmony\ITab_Pawn_Gear_TryDrawOverallArmor.cs" />
     <Compile Include="Hediffs\Harmony\Pawn_InteractionsTracker_TryInteractWith.cs" />
@@ -1286,8 +1294,7 @@
     <Compile Include="Weapons\DefOfs\InternalDefOf.cs" />
     <Compile Include="Weapons\Defs\ToolsUsableByNonViolentPawnsDef.cs" />
     <Compile Include="Weapons\GuidedProjectiles.cs" />
-    <Compile Include="Weapons\Harmony\OptionalFeatures\CompUniqueWeapon_CanAddTrait.cs" />
-    <Compile Include="Weapons\Harmony\FloatMenuMakerMap_AddHumanlikeOrders.cs" />
+    <Compile Include="Weapons\Harmony\FloatMenuOptionProvider_Equip_GetSingleOptionFor_Patch.cs" />
     <Compile Include="Weapons\Harmony\OptionalFeatures\Verb_LaunchProjectile_Projectile.cs" />
     <Compile Include="Weapons\Harmony\OptionalFeatures\Verb_TryCastNextBurstShot.cs" />
     <Compile Include="Weapons\Harmony\OptionalFeatures\WeaponTraitWorker_Notify_EquipmentLost.cs" />

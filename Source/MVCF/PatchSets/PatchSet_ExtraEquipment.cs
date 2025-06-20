@@ -24,8 +24,7 @@ public class PatchSet_ExtraEquipment : PatchSet
     public static bool GetVerbsCommands_Prefix(ref IEnumerable<Command> __result, CompEquippable __instance)
     {
         var rangedVerbs = __instance.AllVerbs.Where(v => !v.IsMeleeAttack).ToList();
-        var melee = __instance.parent.PrefersMelee();
-        if (rangedVerbs.Count <= 1 && !melee && !MVCF.GetFeature<Feature_VerbComps>().Enabled) return true;
+        if (rangedVerbs.Count <= 1 && !MVCF.GetFeature<Feature_VerbComps>().Enabled) return true;
         if (DualWieldCompat.Active && __instance.parent.ParentHolder is Pawn_EquipmentTracker { pawn: { } pawn } tracker && tracker.PrimaryEq == __instance
          && pawn.HasOffHand()) return true;
         __result = rangedVerbs

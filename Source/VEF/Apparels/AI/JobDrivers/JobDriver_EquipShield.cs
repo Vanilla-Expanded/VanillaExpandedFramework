@@ -28,7 +28,7 @@ namespace VEF.Apparels
             {
                 initAction = delegate ()
                 {
-                    ThingWithComps equipmentStack = (ThingWithComps)job.targetA.Thing;
+                    ThingWithComps equipmentStack = (ThingWithComps)job.targetB.Thing;
                     ThingWithComps equippedThing;
                     if (equipmentStack.def.stackLimit > 1 && equipmentStack.stackCount > 1)
                     {
@@ -37,7 +37,15 @@ namespace VEF.Apparels
                     else
                     {
                         equippedThing = equipmentStack;
-                        equippedThing.DeSpawn(DestroyMode.Vanish);
+                        if (equippedThing.Spawned)
+                        {
+                            equippedThing.DeSpawn(DestroyMode.Vanish);
+                        }
+                        else
+                        {
+                            var parentHolder = equippedThing.ParentHolder;
+                            parentHolder.GetDirectlyHeldThings().Remove(equippedThing);
+                        }
                     }
 
                     ShieldUtility.MakeRoomForShield(pawn, equippedThing);

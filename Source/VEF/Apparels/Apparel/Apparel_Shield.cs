@@ -12,23 +12,24 @@ namespace VEF.Apparels
     {
         private bool CarryWeaponOpenly()
         {
-            if (this.Wearer.carryTracker != null && this.Wearer.carryTracker.CarriedThing != null)
+            var wearer = this.Wearer;
+            if (wearer.carryTracker != null && wearer.carryTracker.CarriedThing != null)
             {
                 return false;
             }
-            if (this.Wearer.Drafted)
+            if (wearer.Drafted)
             {
                 return true;
             }
-            if (this.Wearer.CurJob != null && this.Wearer.CurJob.def.alwaysShowWeapon)
+            if (wearer.CurJob != null && wearer.CurJob.def.alwaysShowWeapon)
             {
                 return true;
             }
-            if (this.Wearer.mindState.duty != null && this.Wearer.mindState.duty.def.alwaysShowWeapon)
+            if (wearer.mindState.duty != null && wearer.mindState.duty.def.alwaysShowWeapon)
             {
                 return true;
             }
-            Lord lord = this.Wearer.GetLord();
+            Lord lord = wearer.GetLord();
             if (lord != null && lord.LordJob != null && lord.LordJob.AlwaysShowWeapon)
             {
                 return true;
@@ -36,43 +37,47 @@ namespace VEF.Apparels
             return false;
         }
 
-        private Vector3 GetAimingVector(Vector3 rootLoc)
+        private Vector3 GetAimingVector(Vector3 rootLoc, Rot4 rot4)
         {
-            // copied from vanilla DrawEquipment method
-            Stance_Busy stance_Busy = this.Wearer.stances.curStance as Stance_Busy;
-            if (stance_Busy != null && !stance_Busy.neverAimWeapon && stance_Busy.focusTarg.IsValid)
+            var wearer = this.Wearer;
+            if (wearer != null)
             {
-                Vector3 a = (!stance_Busy.focusTarg.HasThing) ? stance_Busy.focusTarg.Cell.ToVector3Shifted() : stance_Busy.focusTarg.Thing.DrawPos;
-                float num = 0f;
-                if ((a - this.Wearer.DrawPos).MagnitudeHorizontalSquared() > 0.001f)
+                // copied from vanilla DrawEquipment method
+                Stance_Busy stance_Busy = wearer.stances.curStance as Stance_Busy;
+                if (stance_Busy != null && !stance_Busy.neverAimWeapon && stance_Busy.focusTarg.IsValid)
                 {
-                    num = (a - this.Wearer.DrawPos).AngleFlat();
+                    Vector3 a = (!stance_Busy.focusTarg.HasThing) ? stance_Busy.focusTarg.Cell.ToVector3Shifted() : stance_Busy.focusTarg.Thing.DrawPos;
+                    float num = 0f;
+                    if ((a - wearer.DrawPos).MagnitudeHorizontalSquared() > 0.001f)
+                    {
+                        num = (a - wearer.DrawPos).AngleFlat();
+                    }
+                    Vector3 drawLoc = rootLoc + new Vector3(0f, 0f, 0.4f).RotatedBy(num);
+                    drawLoc.y += 9f / 245f;
+                    return drawLoc;
                 }
-                Vector3 drawLoc = rootLoc + new Vector3(0f, 0f, 0.4f).RotatedBy(num);
-                drawLoc.y += 9f / 245f;
-                return drawLoc;
             }
-            else if (CarryWeaponOpenly())
+            if (wearer is null || CarryWeaponOpenly())
             {
-                if (this.Wearer.Rotation == Rot4.South)
+                if (rot4 == Rot4.South)
                 {
                     Vector3 drawLoc2 = rootLoc + new Vector3(0f, 0f, -0.22f);
                     drawLoc2.y += 9f / 245f;
                     return drawLoc2;
                 }
-                else if (this.Wearer.Rotation == Rot4.North)
+                else if (rot4 == Rot4.North)
                 {
                     Vector3 drawLoc3 = rootLoc + new Vector3(0f, 0f, -0.11f);
                     drawLoc3.y += 0f;
                     return drawLoc3;
                 }
-                else if (this.Wearer.Rotation == Rot4.East)
+                else if (rot4 == Rot4.East)
                 {
                     Vector3 drawLoc4 = rootLoc + new Vector3(0.2f, 0f, -0.22f);
                     drawLoc4.y += 9f / 245f;
                     return drawLoc4;
                 }
-                else if (this.Wearer.Rotation == Rot4.West)
+                else if (rot4 == Rot4.West)
                 {
                     Vector3 drawLoc5 = rootLoc + new Vector3(-0.2f, 0f, -0.22f);
                     drawLoc5.y += 9f / 245f;
@@ -110,30 +115,36 @@ namespace VEF.Apparels
 
         public override void DrawWornExtras()
         {
-            if (this.Wearer.Dead || !this.Wearer.Spawned || (this.Wearer.CurJob != null && this.Wearer.CurJob.def.neverShowWeapon))
+            var wearer = this.Wearer;
+            if (wearer.Dead || !wearer.Spawned || (wearer.CurJob != null && wearer.CurJob.def.neverShowWeapon))
             {
                 return;
             }
             var comp = CompShield;
             if (comp.UsableNow)
             {
-                var curHoldOffset = comp.Props.offHandHoldOffset.Pick(Wearer.Rotation);
-                var finalDrawLoc = this.GetAimingVector(this.Wearer.DrawPos) + curHoldOffset.offset + new Vector3(0, (curHoldOffset.behind ? -0.0390625f : 0.0390625f), 0);
-                ShieldGraphic.Draw(finalDrawLoc, (curHoldOffset.flip ? Wearer.Rotation.Opposite : Wearer.Rotation), Wearer);
+                DrawShield(comp, wearer.DrawPos, wearer.Rotation);
             }
+        }
+
+        public void DrawShield(CompShield comp, Vector3 drawPos, Rot4 rot4)
+        {
+            var curHoldOffset = comp.Props.offHandHoldOffset.Pick(rot4);
+            var finalDrawLoc = this.GetAimingVector(drawPos, rot4) + curHoldOffset.offset + new Vector3(0, (curHoldOffset.behind ? -0.0390625f : 0.0390625f), 0);
+            ShieldGraphic.Draw(finalDrawLoc, (curHoldOffset.flip ? rot4.Opposite : rot4), this);
         }
 
         public override void ExposeData()
         {
             base.ExposeData();
-            if (Scribe.mode == LoadSaveMode.PostLoadInit && this.Wearer != null)
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && Wearer != null)
             {
                 var comp = this.GetComp<CompEquippable>();
                 if (comp != null)
                 {
                     foreach (var verb in comp.AllVerbs)
                     {
-                        verb.caster = this.Wearer;
+                        verb.caster = Wearer;
                         verb.Reset();
                     }
                 }

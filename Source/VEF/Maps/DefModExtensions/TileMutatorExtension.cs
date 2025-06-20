@@ -33,6 +33,8 @@ namespace VEF.Maps
 
         public float diseaseMTBMultiplier = 1;
 
+        public float movementDifficultyOffset = 0;
+
     }
 
     public class PawnKindDefAndChance

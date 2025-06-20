@@ -321,12 +321,12 @@ namespace KCSG
         /// </summary>
         public static List<TerrainDef> SetRoadInfo(Map map)
         {
-            //TODO
+            var surfaceTile = Find.WorldGrid.Surface[map.Tile];
 
-            /*if (map.TileInfo?.Roads?.Count > 0)
+            if (surfaceTile?.Roads?.Count > 0)
             {
                 var preRoadTypes = new List<TerrainDef>();
-                foreach (RimWorld.Planet.Tile.RoadLink roadLink in map.TileInfo.Roads)
+                foreach (var roadLink in surfaceTile.Roads)
                 {
                     foreach (RoadDefGenStep rgs in roadLink.road.roadGenSteps)
                     {
@@ -337,7 +337,7 @@ namespace KCSG
                     }
                 }
                 return preRoadTypes;
-            }*/
+            }
             return null;
         }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
@@ -19,11 +20,10 @@ public class PatchSet_Brawlers : PatchSet
             AccessTools.Method(GetType(), nameof(CurrentStateInternal_Prefix)));
         yield return Patch.Postfix(AccessTools.Method(typeof(HealthCardUtility), "GenerateSurgeryOption"),
             AccessTools.Method(GetType(), nameof(GenerateSurgeryOption_Postfix)));
-
-        //Assigned to Taranchuk
-
-        yield return Patch.Postfix(AccessTools.Method(typeof(FloatMenuMakerMap), "AddHumanlikeOrders"),
-            AccessTools.Method(GetType(), nameof(AddHumanlikeOrders_Postfix)));
+        yield return Patch.Postfix(AccessTools.Method(typeof(FloatMenuOptionProvider_Wear), "GetSingleOptionFor", new Type[] { typeof(Thing), typeof(FloatMenuContext) }),
+            AccessTools.Method(GetType(), nameof(GetSingleOptionFor_Postfix)));
+        yield return Patch.Postfix(AccessTools.Method(typeof(Building_OutfitStand), "GetFloatMenuOptionToWear"),
+            AccessTools.Method(GetType(), nameof(GetFloatMenuOptionToWear_Postfix)));
     }
 
     public static bool GetReport_Prefix(ref AlertReport __result)
@@ -58,21 +58,26 @@ public class PatchSet_Brawlers : PatchSet
         __result.Label = __result.Label + " " + "EquipWarningBrawler".Translate();
     }
 
-    public static void AddHumanlikeOrders_Postfix(List<FloatMenuOption> opts, Vector3 clickPos, Pawn pawn)
+    public static void GetSingleOptionFor_Postfix(ref FloatMenuOption __result, Thing clickedThing, FloatMenuContext context)
     {
-        if (pawn?.apparel == null) return;
-        var apparel = pawn.Map.thingGrid.ThingAt<Apparel>(IntVec3.FromVector3(clickPos));
+        var pawn = context.FirstSelectedPawn;
+        var apparel = clickedThing as Apparel;
+        GetFloatMenuOptionToWear_Postfix(ref __result, pawn, apparel);
+    }
+
+    public static void GetFloatMenuOptionToWear_Postfix(ref FloatMenuOption __result, Pawn selPawn, Apparel apparel)
+    {
+        if (__result is null || selPawn?.apparel == null) return;
         if (apparel == null) return;
         var str = "ForceWear";
         if (apparel.def.apparel.LastLayer.IsUtilityLayer) str = "ForceEquipApparel";
         var comp = apparel.TryGetComp<Comp_VerbGiver>();
         if (comp == null) return;
         if (!comp.VerbTracker.AllVerbs.Any(verb => !verb.IsMeleeAttack)) return;
-        var traits = pawn.story?.traits;
+        var traits = selPawn.story?.traits;
         if (traits == null) return;
         if (!traits.HasTrait(TraitDefOf.Brawler)) return;
-        foreach (var opt in opts.Where(opt =>
-                     opt.Label.Contains(str.Translate((NamedArgument)apparel.LabelShort, (NamedArgument)apparel))))
-            opt.Label += " " + "EquipWarningBrawler".Translate();
+        if (__result.Label.Contains(str.Translate((NamedArgument)apparel.LabelShort, (NamedArgument)apparel)))
+            __result.Label += " " + "EquipWarningBrawler".Translate();
     }
 }
