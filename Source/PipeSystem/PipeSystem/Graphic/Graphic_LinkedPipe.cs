@@ -35,7 +35,7 @@ namespace PipeSystem
             for (int i = 0; i < 4; ++i)
             {
                 IntVec3 adj = pos + GenAdj.CardinalDirections[i];
-                if (adj.InBounds(map) && adj.GetNetTransmitter(map, thing) is Building transmitter && !resourceDef.pipeDefs.Contains(transmitter.def))
+                if (adj.InBounds(map) && adj.GetNetTransmitter(map, thing) is Building transmitter && !resourceDef.pipeDefs.Contains(transmitter.def) && !resourceDef.noLinkedGraphicDefs.Contains(transmitter.def))
                 {
                     Material mat = LinkedDrawMatFrom(thing, adj);
                     Printer_Plane.PrintPlane(layer, adj.ToVector3ShiftedWithAltitude(thing.def.Altitude), Vector2.one, mat, extraRotation);

@@ -110,7 +110,6 @@ namespace PipeSystem
                             && compR.TransmitResourceNow
                             && compR.Props.pipeNet == comp.Props.pipeNet
                             && compR.PipeNet is PipeNet p
-                            && p != null
                             && !foundNets.Contains(p))
                         {
                             foundNets.Add(p);

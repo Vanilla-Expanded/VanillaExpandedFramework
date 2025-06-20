@@ -13,7 +13,7 @@ namespace PipeSystem
     public class PipeNetDef : Def
     {
         public Type pipeNetClass = typeof(PipeNet);
-        
+
         public Resource resource; // The resource used for this net.
         public List<ThingDef> pipeDefs; // The pipes used for this net.
 
@@ -27,9 +27,13 @@ namespace PipeSystem
         public bool noStorageAlert = false;
         public bool foggedNetAlert = false;
         public List<ThingDef> alertProofDefs = new List<ThingDef>(); // If net is one building, and it's in this list, no alert
+        public List<ThingDef> noLinkedGraphicDefs = new List<ThingDef>(); // Non-pipe transmitters that shouldn't get the pipe graphic under them if connected to one
 
+        [Unsaved]
         internal Material offMat; // Off material
+        [Unsaved]
         internal Texture2D uiIcon; // Resource icon from resource.uiIconPath
+        [Unsaved]
         internal string loweredName; // Resource name lowered
 
         public override IEnumerable<string> ConfigErrors()
