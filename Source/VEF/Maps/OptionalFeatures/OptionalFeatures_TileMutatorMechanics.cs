@@ -16,8 +16,8 @@ namespace VEF.Maps
             harm.Patch(AccessTools.Method(typeof(Game), "InitNewGame"),
                 transpiler: new HarmonyMethod(typeof(VanillaExpandedFramework_Game_InitNewGame_Patch), "TweakMapSizes"));
 
-            harm.Patch(AccessTools.Method(typeof(CompDeepDrill), "TryProducePortion"),
-                transpiler: new HarmonyMethod(typeof(VanillaExpandedFramework_CompDeepDrill_TryProducePortion_Patch), "ModifyDeepDrillOutput"));
+            harm.Patch(AccessTools.Method(typeof(CompDeepScanner), "DoFind"),
+                transpiler: new HarmonyMethod(typeof(VanillaExpandedFramework_CompDeepScanner_DoFind_Patch), "ModifyDeepResourceNumbers"));
 
             harm.Patch(AccessTools.EnumeratorMoveNext(AccessTools.Method(typeof(StorytellerComp_Disease), "MakeIntervalIncidents")) ,
                 transpiler: new HarmonyMethod(typeof(VanillaExpandedFramework_StorytellerComp_Disease_MakeIntervalIncidents_Patch), "ModifyBiomeDiseaseMTB"));

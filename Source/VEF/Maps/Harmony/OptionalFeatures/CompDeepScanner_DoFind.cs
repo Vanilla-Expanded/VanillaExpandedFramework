@@ -14,29 +14,26 @@ namespace VEF.Maps
     // This Harmony patch will only be patched if TileMutatorMechanics is added via XML to a mod using OptionalFeatures
 
 
-    public static class VanillaExpandedFramework_CompDeepDrill_TryProducePortion_Patch
+    public static class VanillaExpandedFramework_CompDeepScanner_DoFind_Patch
     {
       
-        public static IEnumerable<CodeInstruction> ModifyDeepDrillOutput(IEnumerable<CodeInstruction> codeInstructions)
+        public static IEnumerable<CodeInstruction> ModifyDeepResourceNumbers(IEnumerable<CodeInstruction> codeInstructions)
         {
             var codes = codeInstructions.ToList();
 
-            var mathmax = AccessTools.Method(typeof(Mathf), "Max", new Type[] { typeof(int), typeof(int) });
-            var deepdrillmultiplier = AccessTools.Method(typeof(VanillaExpandedFramework_CompDeepDrill_TryProducePortion_Patch), "MultiplyDrillOutput");
-
-
+            var field = AccessTools.Field(typeof(ThingDef), "deepCountPerCell");
+            var deepresourcemultiplier = AccessTools.Method(typeof(VanillaExpandedFramework_CompDeepScanner_DoFind_Patch), "MultiplyDeepResourceNumbers");
 
             for (var i = 0; i < codes.Count; i++)
             {
 
-                if (i > 1 && codes[i - 2].Calls(mathmax) && codes[i - 1].opcode == OpCodes.Stloc_S && codes[i - 1].operand is LocalBuilder lb && lb.LocalIndex == 5)
+                if (i>0 && codes[i-1].opcode == OpCodes.Ldloc_2 && codes[i].LoadsField(field))
                 {
-
-                    yield return new CodeInstruction(OpCodes.Ldloc_S, 5);
+                    
+                    yield return codes[i];
                     yield return new CodeInstruction(OpCodes.Ldarg_0);
-                    yield return new CodeInstruction(OpCodes.Call, deepdrillmultiplier);
-                    yield return new CodeInstruction(OpCodes.Stloc_S, 5);
-                    yield return new CodeInstruction(OpCodes.Ldloc_1);
+                    yield return new CodeInstruction(OpCodes.Call, deepresourcemultiplier);
+                   
                 }
 
                 else yield return codes[i];
@@ -44,7 +41,7 @@ namespace VEF.Maps
         }
 
 
-        public static int MultiplyDrillOutput(int stackcount, CompDeepDrill comp)
+        public static int MultiplyDeepResourceNumbers(int deepCountPerCell, CompDeepScanner comp)
         {
             Map map = comp.parent.Map;
             float multiplier = 1;
@@ -58,7 +55,7 @@ namespace VEF.Maps
                 }
 
             }
-            return (int)(stackcount * multiplier);
+            return (int)(deepCountPerCell * multiplier);
         }
 
     }

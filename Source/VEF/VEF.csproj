@@ -533,7 +533,7 @@
     <Compile Include="Genes\Harmony\FoodUtility_GetMeatSourceCategoryFromCorpse.cs" />
     <Compile Include="Genes\Harmony\ThoughtWorker_HumanLeatherApparel_CurrentThoughtState.cs" />
     <Compile Include="Maps\DefModExtensions\TileMutatorExtension.cs" />
-    <Compile Include="Maps\Harmony\OptionalFeatures\CompDeepDrill_TryProducePortion.cs" />
+    <Compile Include="Maps\Harmony\OptionalFeatures\CompDeepScanner_DoFind.cs" />
     <Compile Include="Maps\Harmony\OptionalFeatures\Game_InitNewGame.cs" />
     <Compile Include="Maps\Harmony\OptionalFeatures\GetOrGenerateMapUtility_GetOrGenerateMap.cs" />
     <Compile Include="Maps\Harmony\OptionalFeatures\StorytellerComp_Disease_MakeIntervalIncidents.cs" />
