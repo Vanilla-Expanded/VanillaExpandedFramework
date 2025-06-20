@@ -25,6 +25,9 @@ namespace VEF.Maps
             harm.Patch(AccessTools.Method(typeof(WITab_Terrain), "ListMiscDetails"),
                 transpiler: new HarmonyMethod(typeof(VanillaExpandedFramework_WITab_Terrain_ListMiscDetails_Patch), "CorrectlyOutputBiomeDiseaseMTB"));
 
+            harm.Patch(AccessTools.Method(typeof(WorldPathGrid), "CalculatedMovementDifficultyAt"),
+               transpiler: new HarmonyMethod(typeof(VanillaExpandedFramework_WorldPathGrid_CalculatedMovementDifficultyAt_Patch), "TweakMovementDifficulty"));
+
             harm.Patch(AccessTools.Method(typeof(GetOrGenerateMapUtility), "GetOrGenerateMap", new Type[] { typeof(PlanetTile), typeof(IntVec3), typeof(WorldObjectDef), typeof(IEnumerable<GenStepWithParams>), typeof(bool) }),
                prefix: new HarmonyMethod(typeof(VanillaExpandedFramework_GetOrGenerateMapUtility_GetOrGenerateMap_Patch), "TweakMapSizes"));
 
