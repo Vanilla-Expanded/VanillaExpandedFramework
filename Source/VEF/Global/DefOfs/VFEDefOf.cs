@@ -12,11 +12,8 @@ namespace VEF
     public static class VEFDefOf
     {
         public static JobDef VFEC_EquipShield;
-        public static JobDef VFE_Mechanoids_Recharge;
         public static JobDef VFEC_LeaveMap;
         public static JobDef VEF_UseDoorTeleporter;
-
-        public static NeedDef VFE_Mechanoids_Power;
       
         public static StatDef VEF_VerbRangeFactor;
         public static StatDef VEF_VerbCooldownFactor;

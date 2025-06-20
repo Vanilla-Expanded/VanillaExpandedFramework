@@ -6,9 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Verse.AI.Group;
 using System.Reflection;
-using VFE.Mechanoids;
-using VFEMech;
-using VFE.Mechanoids.HarmonyPatches;
 
 namespace VEF.AnimalBehaviours
 {
@@ -63,19 +60,6 @@ namespace VEF.AnimalBehaviours
                     }
                 }
             }
-
-            if (SimpleSidearmsPatch.SimpleSidearmsActive && __instance is Machine)
-            {
-                var compMachine = pawn.GetComp<CompMachine>();
-                if (compMachine != null && compMachine.Props.canPickupWeapons)
-                {
-                    foreach (var g in SimpleSidearmsPatch.SimpleSidearmsGizmos(__instance))
-                    {
-                        yield return g;
-                    }
-                }
-            }
-
            
             if (!alreadyHasVanillaDraftButton && isDraftableAnimal && pawn.drafter != null)
             {

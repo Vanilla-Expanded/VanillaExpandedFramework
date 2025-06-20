@@ -6,7 +6,6 @@ using UnityEngine;
 using Verse;
 using RimWorld;
 using HarmonyLib;
-using VFEMech;
 using RimWorld.QuestGen;
 using RimWorld.Planet;
 using System.Reflection.Emit;

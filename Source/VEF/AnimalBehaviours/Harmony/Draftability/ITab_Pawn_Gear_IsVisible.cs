@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Verse.AI;
 using RimWorld.Planet;
-using VFEMech;
 
 namespace VEF.AnimalBehaviours
 {
@@ -20,7 +19,7 @@ namespace VEF.AnimalBehaviours
         [HarmonyPostfix]
         static void RemoveTab(Pawn p, ref bool __result)
         {
-            if (StaticCollectionsClass.draftable_animals.Contains(p) && !(p is Machine))
+            if (StaticCollectionsClass.draftable_animals.Contains(p))
             {
                 __result = false;
             }

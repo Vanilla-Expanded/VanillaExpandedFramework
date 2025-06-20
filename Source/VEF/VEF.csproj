@@ -56,11 +56,6 @@
       <HintPath>..\..\1.6\Assemblies\PipeSystem.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="SimpleSidearms">
-      <HintPath>..\..\..\..\..\..\workshop\content\294100\927155256\v1.5\Assemblies\SimpleSidearms.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -1042,22 +1037,9 @@
     <Compile Include="Planet\Harmony\WorldFactionsUIUtility_CanAddFaction.cs" />
     <Compile Include="Apparels\Harmony\VanillaShieldsExpandedPatcher.cs" />
     <Compile Include="Sounds\VEDebug.cs" />
-    <Compile Include="Mechanoids\DefModExtensions\MechanoidExtension.cs" />
     <Compile Include="Sounds\Comps\CompAmbientSound.cs" />
     <Compile Include="Global\Harmony\DisableModSourceReport_Patches.cs" />
     <Compile Include="Factions\Harmony\Faction_Patches.cs" />
-    <Compile Include="Mechanoids\Harmony\ITab_Patches.cs" />
-    <Compile Include="Mechanoids\Harmony\JobDriver_Flee_MakeNewToils_Patch.cs" />
-    <Compile Include="Mechanoids\Harmony\MachinesCaravansPatches.cs" />
-    <Compile Include="Mechanoids\Harmony\MachinesDie.cs" />
-    <Compile Include="Mechanoids\Harmony\MainTabWindow_Patches.cs" />
-    <Compile Include="Mechanoids\Harmony\MechanoidsAreCapable.cs" />
-    <Compile Include="Mechanoids\Harmony\MechanoidsObeyOrders.cs" />
-    <Compile Include="Mechanoids\Harmony\MechClusterGenerator_MechKindSuitableForCluster_Patch.cs" />
-    <Compile Include="Mechanoids\Harmony\MobileTurretsShowTurrets.cs" />
-    <Compile Include="Mechanoids\Harmony\Need_Patches.cs" />
-    <Compile Include="Mechanoids\Harmony\Pawn_MainDesc_Patch.cs" />
-    <Compile Include="Mechanoids\Harmony\RenderTurretCentered.cs" />
     <Compile Include="Maps\Harmony\DeepResourceGrid_DeepResourcesOnGUI.cs" />
     <Compile Include="Maps\LordJobs\LordJob_DefendShip.cs" />
     <Compile Include="Maps\SymbolResolvers\SymbolResolverShips.cs" />
@@ -1077,7 +1059,6 @@
     <Compile Include="Weathers\Harmony\GameCondition_ForceWeather_RandomizeSettings.cs" />
     <Compile Include="Hediffs\Harmony\PhasingPatches.cs" />
     <Compile Include="Memes\PlaceWorkers\PlaceWorker_DisabledByMeme.cs" />
-    <Compile Include="Mechanoids\Dialogs\Dialog_NameDrone.cs" />
     <Compile Include="Weapons\Harmony\Projectile_Patches.cs" />
     <Compile Include="Pawns\Harmony\Stat_Patches.cs" />
     <Compile Include="Hediffs\Comps\HediffComp_DamageAura.cs" />
@@ -1162,8 +1143,6 @@
     <Compile Include="OptionalFeatures\OptionalFeatures.cs" />
     <Compile Include="Sounds\Harmony\DebugWindowsOpener_Patches.cs" />
     <Compile Include="Sounds\Windows\Window_SoundTest.cs" />
-    <Compile Include="Mechanoids\Buildings\Building_BedMachine.cs" />
-    <Compile Include="Mechanoids\Buildings\Building_MechTurretGun.cs" />
     <Compile Include="Cooking\Comps\CompMaturingAlcohol.cs" />
     <Compile Include="Cooking\Comps\CompProperties\CompProperties_MaturingAlcohol.cs" />
     <Compile Include="Cooking\Comps\CompProperties\CompProperties_StackByQuality.cs" />
@@ -1179,14 +1158,10 @@
     <Compile Include="Hediffs\Comps\HediffComp_Spreadable.cs" />
     <Compile Include="Apparels\Comps\CompApparelHediffs.cs" />
     <Compile Include="Pawns\Comps\CompDependsOnBuilding.cs" />
-    <Compile Include="Mechanoids\Comps\CompMachine.cs" />
-    <Compile Include="Mechanoids\Comps\CompMachineChargingStation.cs" />
     <Compile Include="Pawns\Comps\CompPawnDependsOn.cs" />
     <Compile Include="Apparels\Comps\CompProperties\CompProperties_ApparelHediffs.cs" />
     <Compile Include="Pawns\Comps\Properties\CompProperties_DependsOnBuilding.cs" />
     <Compile Include="Cooking\Comps\CompIngestedThoughtFromQuality.cs" />
-    <Compile Include="Mechanoids\Comps\Properties\CompProperties_Machine.cs" />
-    <Compile Include="Mechanoids\Comps\Properties\CompProperties_MachineChargingStation.cs" />
     <Compile Include="Pawns\Comps\Properties\CompProperties_PawnDependsOn.cs" />
     <Compile Include="Apparels\Comps\CompProperties\CompProperties_Shield.cs" />
     <Compile Include="Buildings\Comps\CompThrowMote.cs" />
@@ -1231,27 +1206,17 @@
     <Compile Include="Apparels\Harmony\ModCompatibility\RunAndGun\RunAndGun_Harmony_Verb_TryCastNextBurstShot.cs" />
     <Compile Include="Pawns\Harmony\DrugPolicy_ExposeData.cs" />
     <Compile Include="Storyteller\IncidentWorkers\IncidentWorker_RaidEnemySpecial.cs" />
-    <Compile Include="Mechanoids\AI\JobDrivers\JobDriver_AttachTurret.cs" />
     <Compile Include="Apparels\AI\JobDrivers\JobDriver_EquipShield.cs" />
     <Compile Include="Planet\AI\JobDrivers\JobDriver_LeaveMap.cs" />
-    <Compile Include="Mechanoids\AI\JobDrivers\JobDriver_Recharge.cs" />
-    <Compile Include="Mechanoids\AI\JobDrivers\JobDriver_RepairMachine.cs" />
-    <Compile Include="Mechanoids\AI\JobGivers\JobGiver_Recharge.cs" />
-    <Compile Include="Mechanoids\AI\JobGivers\JobGiver_ReturnToStation.cs" />
-    <Compile Include="Mechanoids\AI\JobGivers\JobGiver_StandIdle.cs" />
-    <Compile Include="Mechanoids\AI\JobGivers\JobGiver_ReturnToStationIdle.cs" />
-    <Compile Include="Mechanoids\AI\JobGivers\ThinkNode_ConditionalHasPower.cs" />
     <Compile Include="Planet\AI\LordJobs\LordJob_SiegeCustom.cs" />
     <Compile Include="Planet\AI\LordToils\LordToilData_SiegeCustom.cs" />
     <Compile Include="Planet\AI\LordToils\LordToil_SiegeCustom.cs" />
     <Compile Include="Maps\Harmony\OptionalFeatures\MapGenerator_GenerateMap.cs" />
     <Compile Include="Maps\Defs\ObjectSpawnsDef.cs" />
     <Compile Include="Global\ModCompatibilityCheck.cs" />
-    <Compile Include="Mechanoids\Needs\Need_Power.cs" />
     <Compile Include="Global\PatchOperation\PatchOperationToggableSequence.cs" />
     <Compile Include="Pawns\Misc\PawnShieldGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Mechanoids\Pawns\Machine.cs" />
     <Compile Include="Weapons\Projectiles\ExpandableProjectiles\ExpandableGraphicData.cs" />
     <Compile Include="Weapons\Projectiles\ExpandableProjectiles\FlamethrowProjectile.cs" />
     <Compile Include="Weapons\Projectiles\ExpandableProjectiles\ExpandableProjectileDef.cs" />
@@ -1277,8 +1242,6 @@
     <Compile Include="Weathers\Harmony\WeatherWorker_Constructor.cs" />
     <Compile Include="Weathers\WeatherOverlays\WeatherOverlay_Effects.cs" />
     <Compile Include="Pawns\AI\WorkGivers\WorkGiver_ConstructWithSkill.cs" />
-    <Compile Include="Mechanoids\AI\WorkGivers\WorkGiver_AttachTurret.cs" />
-    <Compile Include="Mechanoids\AI\WorkGivers\WorkGiver_RepairMachine.cs" />
     <Compile Include="Weathers\WeatherOverlays\WeatherOverlay_Custom.cs" />
     <Compile Include="Weathers\WeatherOverlays\WeatherOverlay_CustomTwo.cs" />
     <Compile Include="Weapons\Comps\CompGuidedProjectile.cs" />

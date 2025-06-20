@@ -3,9 +3,6 @@ using UnityEngine;
 using Verse;
 using System.Collections.Generic;
 using System.Linq;
-using System;
-using System.Security.Cryptography;
-using System.Windows.Media.Media3D;
 
 
 namespace VEF.AnimalBehaviours
