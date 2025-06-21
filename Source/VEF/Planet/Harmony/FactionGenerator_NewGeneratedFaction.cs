@@ -7,12 +7,12 @@ using Verse;
 
 namespace VEF.Planet
 {
-    [HarmonyPatch(typeof(FactionGenerator), "NewGeneratedFaction", new Type[] { typeof(FactionGeneratorParms) })]
+    [HarmonyPatch(typeof(FactionGenerator), "NewGeneratedFaction", typeof(PlanetLayer), typeof(FactionGeneratorParms))]
     public static class VanillaExpandedFramework_FactionGenerator_NewGeneratedFaction_Patch
     {
-        public static void Postfix(FactionGeneratorParms parms, ref Faction __result)
+        public static void Postfix(PlanetLayer layer, FactionGeneratorParms parms, ref Faction __result)
         {
-            if (__result != null)
+            if (__result != null && layer.Def == PlanetLayerDefOf.Surface)
             {
                 foreach (var movingBaseDef in DefDatabase<MovingBaseDef>.AllDefs)
                 {

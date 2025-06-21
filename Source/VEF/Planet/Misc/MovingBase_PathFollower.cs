@@ -16,19 +16,19 @@ namespace VEF.Planet
 
         private bool paused;
 
-        public int nextTile = -1;
+        public PlanetTile nextTile = PlanetTile.Invalid;
 
-        public int previousTileForDrawingIfInDoubt = -1;
+        public PlanetTile previousTileForDrawingIfInDoubt = PlanetTile.Invalid;
 
         public float nextTileCostLeft;
 
         public float nextTileCostTotal = 1f;
 
-        private int destTile;
+        private PlanetTile destTile;
 
         public WorldPath curPath;
 
-        public int lastPathedTargetTile;
+        public PlanetTile lastPathedTargetTile;
 
         public const int MaxMoveTicks = 30000;
 
@@ -42,7 +42,7 @@ namespace VEF.Planet
 
         public const int FinalNoRestPushMaxDurationTicks = 10000;
 
-        public int Destination => destTile;
+        public PlanetTile Destination => destTile;
 
         public bool Moving
         {
@@ -120,7 +120,7 @@ namespace VEF.Planet
         }
 
         private static readonly FieldInfo pathsField = AccessTools.Field(typeof(WorldPathPool), "paths");
-        public bool StartPath(int destTile, bool repathImmediately = false, bool resetPauseStatus = true)
+        public bool StartPath(PlanetTile destTile, bool repathImmediately = false, bool resetPauseStatus = true)
         {
             var paths = pathsField.GetValue(Find.WorldPathPool) as List<WorldPath>;
             paths.Clear();
@@ -143,11 +143,11 @@ namespace VEF.Planet
                 return false;
             }
             this.destTile = destTile;
-            if (nextTile < 0 || !IsNextTilePassable())
+            if (!nextTile.Valid || !IsNextTilePassable())
             {
                 nextTile = movingBase.Tile;
                 nextTileCostLeft = 0f;
-                previousTileForDrawingIfInDoubt = -1;
+                previousTileForDrawingIfInDoubt = PlanetTile.Invalid;
             }
             if (AtDestinationPosition())
             {
@@ -177,7 +177,7 @@ namespace VEF.Planet
             moving = false;
             paused = false;
             nextTile = movingBase.Tile;
-            previousTileForDrawingIfInDoubt = -1;
+            previousTileForDrawingIfInDoubt = PlanetTile.Invalid;
             nextTileCostLeft = 0f;
         }
 
@@ -201,7 +201,7 @@ namespace VEF.Planet
             StopDead();
         }
 
-        private bool IsPassable(int tile)
+        private bool IsPassable(PlanetTile tile)
         {
             return !Find.World.Impassable(tile);
         }
@@ -269,7 +269,7 @@ namespace VEF.Planet
                 return;
             }
             nextTile = curPath.ConsumeNextNode();
-            previousTileForDrawingIfInDoubt = -1;
+            previousTileForDrawingIfInDoubt = PlanetTile.Invalid;
             if (Find.World.Impassable(nextTile))
             {
                 Log.Error(string.Concat(movingBase, " entering ", nextTile, " which is unwalkable."));
@@ -279,18 +279,18 @@ namespace VEF.Planet
             nextTileCostLeft = num;
         }
 
-        private int CostToMove(int start, int end)
+        private int CostToMove(PlanetTile start, PlanetTile end)
         {
             return CostToMove(movingBase, start, end);
         }
 
-        public static int CostToMove(MovingBase movingBase, int start, int end, int? ticksAbs = null)
+        public static int CostToMove(MovingBase movingBase, PlanetTile start, PlanetTile end, int? ticksAbs = null)
         {
             return CostToMove(movingBase.TicksPerMove, start, end, ticksAbs, perceivedStatic: false, null,
                 null, false);
         }
 
-        public static int CostToMove(int movingBaseTicksPerMove, int start, int end, int? ticksAbs = null, bool perceivedStatic = false, StringBuilder explanation = null, string movingBaseTicksPerMoveExplanation = null, bool immobile = false)
+        public static int CostToMove(int movingBaseTicksPerMove, PlanetTile start, PlanetTile end, int? ticksAbs = null, bool perceivedStatic = false, StringBuilder explanation = null, string movingBaseTicksPerMoveExplanation = null, bool immobile = false)
         {
             if (start == end)
             {
@@ -334,12 +334,12 @@ namespace VEF.Planet
             return value;
         }
 
-        public static bool IsValidFinalPushDestination(int tile)
+        public static bool IsValidFinalPushDestination(PlanetTile tile)
         {
             List<WorldObject> allWorldObjects = Find.WorldObjects.AllWorldObjects;
             for (int i = 0; i < allWorldObjects.Count; i++)
             {
-                if (allWorldObjects[i].Tile == tile && !(allWorldObjects[i] is MovingBase))
+                if (allWorldObjects[i].Tile == tile && allWorldObjects[i] is not MovingBase)
                 {
                     return true;
                 }
@@ -376,10 +376,10 @@ namespace VEF.Planet
         private WorldPath GenerateNewPath()
         {
             (pathsField.GetValue(Find.WorldPathPool) as List<WorldPath>)?.Clear();
-            int num = ((moving && nextTile >= 0 && IsNextTilePassable()) ? nextTile : movingBase.Tile);
+            var tile = ((moving && nextTile.Valid && IsNextTilePassable()) ? nextTile : movingBase.Tile);
             lastPathedTargetTile = destTile;
-            WorldPath worldPath = Find.WorldGrid.Surface.Pather.FindPath(num, destTile, null);
-            if (worldPath.Found && num != movingBase.Tile)
+            WorldPath worldPath = movingBase.Tile.Layer.Pather.FindPath(tile, destTile, null);
+            if (worldPath.Found && tile != movingBase.Tile)
             {
                 if (worldPath.NodesLeftCount >= 2 && worldPath.Peek(1) == movingBase.Tile)
                 {
@@ -416,8 +416,8 @@ namespace VEF.Planet
             }
             for (int i = 0; i < 20 && i < curPath.NodesLeftCount; i++)
             {
-                int tileID = curPath.Peek(i);
-                if (Find.World.Impassable(tileID))
+                var tile = curPath.Peek(i);
+                if (Find.World.Impassable(tile))
                 {
                     return true;
                 }
