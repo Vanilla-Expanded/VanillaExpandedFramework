@@ -910,7 +910,7 @@
             return target.IsValid && distance < this.GetRangeForPawn() && distance > this.def.minRange;
         }
 
-        protected int Tile => this.pawn.GetCaravan()?.Tile ?? this.pawn.Map?.Tile ??
+        protected PlanetTile Tile => this.pawn.GetCaravan()?.Tile ?? this.pawn.Map?.Tile ??
             Find.Maps.FirstOrDefault(m => m.IsPlayerHome)?.Tile ??
             Find.Maps.FirstOrDefault()?.Tile ?? TileFinder.RandomStartingTile();
 

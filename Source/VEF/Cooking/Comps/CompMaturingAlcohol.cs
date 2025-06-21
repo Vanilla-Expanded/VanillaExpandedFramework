@@ -3,6 +3,7 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using RimWorld;
+using RimWorld.Planet;
 
 namespace VEF.Cooking
 {
@@ -220,7 +221,7 @@ namespace VEF.Cooking
             return stringBuilder.ToString();
         }
 
-        public int ApproxTicksUntilRotWhenAtTempOfTile(int tile, int ticksAbs)
+        public int ApproxTicksUntilRotWhenAtTempOfTile(PlanetTile tile, int ticksAbs)
         {
             float temperatureFromSeasonAtTile = GenTemperature.GetTemperatureFromSeasonAtTile(ticksAbs, tile);
             return this.TicksUntilRotAtTemp(temperatureFromSeasonAtTile);

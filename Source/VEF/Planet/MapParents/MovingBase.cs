@@ -141,7 +141,7 @@ namespace VEF.Planet
         }
 
 
-        public int BestGotoDestNear(int tile)
+        public PlanetTile BestGotoDestNear(PlanetTile tile)
         {
             Predicate<PlanetTile> predicate = delegate (PlanetTile t)
             {
@@ -149,7 +149,7 @@ namespace VEF.Planet
                 {
                     return false;
                 }
-                return CanReach(tile) ? true : false;
+                return CanReach(tile);
             };
             if (predicate(tile))
             {
@@ -159,7 +159,7 @@ namespace VEF.Planet
             return foundTile;
         }
 
-        public bool CanReach(int tile)
+        public bool CanReach(PlanetTile tile)
         {
             return Find.WorldReachability.CanReach(this.Tile, tile);
         }

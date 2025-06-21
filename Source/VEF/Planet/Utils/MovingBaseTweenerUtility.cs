@@ -39,7 +39,7 @@ namespace VEF.Planet
             float num = 0.15f * Find.WorldGrid.AverageTileSize;
             if (!flag || movingBase.pather.nextTile == movingBase.pather.Destination)
             {
-                int num2 = ((!flag) ? movingBase.Tile : movingBase.pather.nextTile);
+                PlanetTile num2 = ((!flag) ? movingBase.Tile : movingBase.pather.nextTile);
                 int movingBasesCount = 0;
                 int movingBasesWithLowerIdCount = 0;
                 GetMovingBasesStandingAtOrAboutToStandAt(num2, out movingBasesCount, out movingBasesWithLowerIdCount, movingBase);
@@ -61,7 +61,7 @@ namespace VEF.Planet
             return Vector3.zero;
         }
 
-        private static void GetMovingBasesStandingAtOrAboutToStandAt(int tile, out int movingBasesCount, out int movingBasesWithLowerIdCount, MovingBase forMovingBase)
+        private static void GetMovingBasesStandingAtOrAboutToStandAt(PlanetTile tile, out int movingBasesCount, out int movingBasesWithLowerIdCount, MovingBase forMovingBase)
         {
             movingBasesCount = 0;
             movingBasesWithLowerIdCount = 0;
