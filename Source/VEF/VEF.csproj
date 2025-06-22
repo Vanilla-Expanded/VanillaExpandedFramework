@@ -1167,7 +1167,6 @@
     <Compile Include="Buildings\Comps\CompThrowMote.cs" />
     <Compile Include="Apparels\Comps\CompShield.cs" />
     <Compile Include="Apparels\Comps\CompShieldBubble.cs" />
-    <Compile Include="Storyteller\DefModExtensions\ExcludeFromQuestsExtension.cs" />
     <Compile Include="Factions\DefModExtensions\FactionDefExtension.cs" />
     <Compile Include="Storyteller\DefModExtensions\IncidentDefExtension.cs" />
     <Compile Include="Pawns\DefModExtensions\PawnKindDefExtension.cs" />
@@ -1197,7 +1196,6 @@
     <Compile Include="Apparels\Harmony\PawnApparelGenerator_GenerateStartingApparelFor.cs" />
     <Compile Include="Pawns\Harmony\PawnGenerator_GenerateInitialHediffs.cs" />
     <Compile Include="Apparels\Harmony\Pawn_HealthTracker_CheckForStateChange.cs" />
-    <Compile Include="Storyteller\Harmony\QuestGen_Generate.cs" />
     <Compile Include="Planet\Harmony\RaidStrategyWorker_Siege_MakeLordJob.cs" />
     <Compile Include="Apparels\Harmony\ThingDef_SpecialDisplayStats.cs" />
     <Compile Include="Weapons\Harmony\Verb_Patches.cs" />
