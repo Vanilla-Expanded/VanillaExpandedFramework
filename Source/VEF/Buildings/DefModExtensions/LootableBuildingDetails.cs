@@ -20,6 +20,9 @@ namespace VEF.Buildings
         public string gizmoTexture;
         public string gizmoText;
         public string gizmoDesc;
+        public string cancelLootingGizmoTexture;
+        public string cancelLootinggizmoText;
+        public string cancelLootinggizmoDesc;
         public string requiredMod = "";
         public string overlayTexture;
 

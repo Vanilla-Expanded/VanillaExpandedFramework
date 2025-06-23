@@ -47,6 +47,7 @@ namespace VEF.Buildings
                 yield return c;
             }
             Command_Action command_Action = new Command_Action();
+            Command_Action command_Cancel = new Command_Action();
 
             if (InteractablesMapComp?.lootables_InMap.Contains(this) == false)
             {
@@ -65,6 +66,17 @@ namespace VEF.Buildings
                 command_Action.defaultLabel = LootableExtension.gizmoText.Translate(this.LabelCap);
                 command_Action.icon = ContentFinder<Texture2D>.Get(LootableExtension.gizmoTexture, true);
                 command_Action.Disabled = true;
+
+                command_Cancel.defaultDesc = LootableExtension.cancelLootinggizmoDesc.Translate();
+                command_Cancel.defaultLabel = LootableExtension.cancelLootinggizmoText.Translate();
+                command_Cancel.icon = ContentFinder<Texture2D>.Get(LootableExtension.cancelLootingGizmoTexture, true);
+                command_Cancel.hotKey = KeyBindingDefOf.Misc2;
+                command_Cancel.action = delegate
+                {
+                    InteractablesMapComp?.RemoveLootableFromMap(this);
+                };
+                yield return command_Cancel;
+
             }
             yield return command_Action;
         }
