@@ -42,7 +42,7 @@ namespace PipeSystem
         public string finishedTexture="";
 
        
-        public bool hideSettings = false;
+        public bool hideSettings = true;
 
         public bool alwaysShowProgressBar = false;
 
