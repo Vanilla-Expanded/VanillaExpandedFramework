@@ -15,12 +15,17 @@ namespace VEF.AestheticScaling
     public class CachedPawnDataSlowUpdate : GameComponent
     {
         public Queue<Pawn> pawnsToRefresh = new();
+        public static uint Tick = 0;
+        public static uint Tick10 = 0;
 
         public CachedPawnDataSlowUpdate(Game game) { }
 
         public override void GameComponentTick()
         {
             base.GameComponentTick();
+            if (Tick == uint.MaxValue) Tick = 0;
+            Tick++;
+            Tick10 = Tick / 10;
             if (pawnsToRefresh.Count == 0)
             {
                 foreach (var cache in PawnDataCache.Cache.Values)

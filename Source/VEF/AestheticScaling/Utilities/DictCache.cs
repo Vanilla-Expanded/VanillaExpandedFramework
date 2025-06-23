@@ -29,7 +29,7 @@ namespace VEF.AestheticScaling
         protected static readonly ConcurrentDictionary<T, V> JunkCache = new();
 
         public static V GetCache(T key, bool forceRefresh = false, bool canRefresh = true) =>
-            GetCache(key, out _, forceRefresh, canRefresh);
+            GetCache(key, out bool newEntry, forceRefresh, canRefresh);
         public static V GetCache(T key, out bool newEntry, bool forceRefresh = false, bool canRefresh = true)
         {
             newEntry = false;
@@ -58,13 +58,13 @@ namespace VEF.AestheticScaling
                 // If the cache is valid and was successfully regenerated add Dictionary. Otherwise just return a class with the default values.
                 if (canRefresh && newData.RegenerateCache()) 
                 {
+                    newEntry = true;
                     Cache.TryAdd(key, newData);
                 }
                 else
                 {
                     JunkCache[key] = newData;
                 }
-                newEntry = true;
                 return newData;
             }
         }
