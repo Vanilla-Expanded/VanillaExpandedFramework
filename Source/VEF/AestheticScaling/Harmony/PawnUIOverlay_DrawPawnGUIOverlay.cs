@@ -6,10 +6,6 @@ using Verse;
 
 namespace VEF.AestheticScaling
 {
-   
-
-  
-
     [HarmonyPatch(typeof(PawnUIOverlay), nameof(PawnUIOverlay.DrawPawnGUIOverlay))]
     public static class VanillaExpandedFramework_PawnUIOverlay_DrawPawnGUIOverlay_Patch
     {

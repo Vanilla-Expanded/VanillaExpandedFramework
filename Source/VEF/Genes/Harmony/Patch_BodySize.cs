@@ -15,10 +15,11 @@ namespace VEF.Genes
     {
         public static void Postfix(ref float __result, Pawn __instance)
         {
-            if (PawnDataCache.GetCacheUltraSpeed(__instance) is CachedPawnData data)
-            {
-                __result += data.bodySizeOffset;
-
+            var cache = __instance.GetCachePrePatched();
+            
+            if (cache != null)
+            { 
+                __result += cache.bodySizeOffset;
                 if (__result < 0.05f)
                 {
                     __result = 0.05f;

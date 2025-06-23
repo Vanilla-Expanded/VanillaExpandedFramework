@@ -28,8 +28,11 @@ namespace VEF.AestheticScaling
         // JunkCache is for default data in case we could not regenerate.
         protected static readonly ConcurrentDictionary<T, V> JunkCache = new();
 
-        public static V GetCache(T key, bool forceRefresh = false, bool canRefresh = true)
+        public static V GetCache(T key, bool forceRefresh = false, bool canRefresh = true) =>
+            GetCache(key, out _, forceRefresh, canRefresh);
+        public static V GetCache(T key, out bool newEntry, bool forceRefresh = false, bool canRefresh = true)
         {
+            newEntry = false;
             if (key == null)
                 return default;
             if (Cache.TryGetValue(key, out V data))
@@ -61,6 +64,7 @@ namespace VEF.AestheticScaling
                 {
                     JunkCache[key] = newData;
                 }
+                newEntry = true;
                 return newData;
             }
         }

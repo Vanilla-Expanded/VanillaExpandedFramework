@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
+using Verse.Noise;
 
 namespace VEF.AestheticScaling
 {
@@ -46,11 +47,14 @@ namespace VEF.AestheticScaling
         {
             if (pawn?.needs != null || pawn.Dead==true)
             {
-                return GetCache(pawn, forceRefresh: forceRefresh, canRefresh: canRefresh);
+                var cache = GetCache(pawn, out bool newEntry, forceRefresh: forceRefresh, canRefresh: canRefresh);
+                if (newEntry && cache != null && cache != CachedPawnData.defaultCache)
+                {
+                    pawn.GetCachePrePatched() = cache;
+                }
+                return cache;
             }
             return CachedPawnData.defaultCache;
         }
     }
-
-    
 }

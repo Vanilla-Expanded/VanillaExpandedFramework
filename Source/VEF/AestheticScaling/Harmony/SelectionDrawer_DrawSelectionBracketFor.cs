@@ -6,8 +6,6 @@ using Verse;
 
 namespace VEF.AestheticScaling
 {
-    
-
     [HarmonyPatch(typeof(SelectionDrawer), nameof(SelectionDrawer.DrawSelectionBracketFor))]
     public static class VanillaExpandedFramework_SelectionDrawer_DrawSelectionBracketFor_Patch
     {
@@ -21,6 +19,4 @@ namespace VEF.AestheticScaling
             VanillaExpandedFramework_Pawn_DrawTracker_DrawPos_Patch.skipOffset = false;
         }
     }
-
-  
 }

@@ -12,7 +12,7 @@ namespace VEF.AestheticScaling
         public struct PGPRRCache // Special little cache to save us from running GetPosture().
         {
             public Pawn pawn;
-            public CachedPawnData cache;
+            //public CachedPawnData cache;
             public bool cachingDisabled;
             public bool doOffset;
             public bool spawned;
@@ -28,14 +28,18 @@ namespace VEF.AestheticScaling
 
             if (threadStaticCache.pawn != ___pawn)
             {
-                threadStaticCache.cache = PawnDataCache.GetPawnDataCache(___pawn, canRefresh: false);
+                //threadStaticCache.cache = PawnDataCache.GetPawnDataCache(___pawn, canRefresh: false);
                 threadStaticCache.pawn = ___pawn;
                 threadStaticCache.doOffset = ___pawn.GetPosture() == PawnPosture.Standing;
             }
+            var cache = ___pawn.GetCachePrePatched();
 
-            if (threadStaticCache.doOffset)
+            if (cache != null)
             {
-                __result.z += threadStaticCache.cache.renderPosOffset;
+                if (threadStaticCache.doOffset)
+                {
+                    __result.z += cache.renderPosOffset;
+                }
             }
         }
     }
