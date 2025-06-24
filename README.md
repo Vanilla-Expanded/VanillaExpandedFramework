@@ -1,3 +1,5 @@
+Attention! Version 1.6 underwent various namespace changes; many existing XML and C# mods relying on it will break. Here's a summary of all namespace changes: https://github.com/Vanilla-Expanded/VanillaExpandedFramework/wiki/16Changes
+
 Welcome to the Vanilla Expanded Framework!
 
 ![](https://raw.githubusercontent.com/Vanilla-Expanded/VanillaExpandedFramework/main/About/Preview.png)
