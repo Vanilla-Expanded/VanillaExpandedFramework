@@ -11,7 +11,7 @@ namespace VEF.Graphics
     [StaticConstructorOnStartup]
     public static class StaticCollectionsClass
     {
-        public static Dictionary<ThingDef, int> graphicOffsets = new Dictionary<ThingDef, int>();
+        public static Dictionary<ThingDef, Dictionary<ThingDef,int>> graphicOffsets = new Dictionary<ThingDef, Dictionary<ThingDef, int>>();
        
 
         static StaticCollectionsClass()
@@ -20,7 +20,7 @@ namespace VEF.Graphics
             foreach (GraphicOffsets individualList in allgraphicOffsetLists)
             {
 
-                graphicOffsets.AddRange(individualList.ingredientsAndOffsetList);
+                graphicOffsets[individualList.thingDef]=individualList.ingredientsAndOffsetList;
             }
 
            

@@ -5,6 +5,7 @@ using UnityEngine;
 using Verse;
 using RimWorld;
 using UnityEngine.Diagnostics;
+using static PipeSystem.ProcessDef;
 
 namespace VEF.Graphics
 {
@@ -80,13 +81,18 @@ namespace VEF.Graphics
             CompIngredients compIngredients = thing.TryGetComp<CompIngredients>();
             if (compIngredients != null)
             {
-                foreach (ThingDef ingredient in compIngredients.ingredients)
+                if (StaticCollectionsClass.graphicOffsets.ContainsKey(thing.def))
                 {
-                    if (StaticCollectionsClass.graphicOffsets.ContainsKey(ingredient))
+                    foreach (ThingDef ingredient in compIngredients.ingredients)
                     {
-                        return StaticCollectionsClass.graphicOffsets[ingredient];
+                        if (StaticCollectionsClass.graphicOffsets[thing.def].ContainsKey(ingredient))
+                        {
+                            return StaticCollectionsClass.graphicOffsets[thing.def][ingredient];
+                        }
                     }
+
                 }
+           
 
             }
             return 0;
