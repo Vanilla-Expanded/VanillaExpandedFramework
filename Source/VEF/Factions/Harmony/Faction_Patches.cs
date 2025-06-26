@@ -140,6 +140,22 @@ namespace VEF.Factions
         }
     }
 
+    [HarmonyPatch(typeof(QuestNode_Root_DistressCall), "FactionUsable")]
+    public static class VanillaExpandedFramework_QuestNode_Root_DistressCall
+    {
+        public static void Postfix(ref bool __result, Faction f, float points)
+        {
+            if (!__result)
+                return;
+    
+            var extension = f?.def.GetModExtension<FactionDefExtension>();
+            if (extension != null && extension.excludeFromQuests)
+            {
+                __result = false;
+            }
+        }
+    }
+
     [HarmonyPatch]
     public static class VanillaExpandedFramework_TileFinder_RandomSettlementTileFor_Patch
     {
