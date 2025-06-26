@@ -35,7 +35,7 @@ namespace VEF.AnimalBehaviours
                     IntVec3 loc = IntVec3.Invalid;
                     Pawn pawn = this.parent as Pawn;
 
-                    if (pawn.training?.HasLearned(InternalDefOf.VEF_ControlledBlinking) != true)
+                    if (!ModsConfig.OdysseyActive || !pawn.training.HasLearned(InternalDefOf.VEF_ControlledBlinking))
                     {
                         if (pawn.Map != null)
                         {

@@ -278,7 +278,7 @@ namespace VEF.AnimalBehaviours
                 {
                    
                     comp.currentFeedings++;
-                    if (comp.currentFeedings >= comp.Props.advanceAfterXFeedings && actor.training?.HasLearned(InternalDefOf.VEF_CycleSeverance) != true)
+                    if (comp.currentFeedings >= comp.Props.advanceAfterXFeedings && (!ModsConfig.OdysseyActive || !actor.training.HasLearned(InternalDefOf.VEF_CycleSeverance)))
                     {
                         if (comp.Props.fissionAfterXFeedings)
                         {

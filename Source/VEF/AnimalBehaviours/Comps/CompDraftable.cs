@@ -23,7 +23,7 @@ namespace VEF.AnimalBehaviours
             if (tickCounter < 0)
             {
                 Pawn pawn = this.parent as Pawn;
-                if (Props.conditionalOnTrainability && pawn.training?.HasLearned(InternalDefOf.VEF_Beastmastery) != true)
+                if (Props.conditionalOnTrainability && (!ModsConfig.OdysseyActive || !pawn.training.HasLearned(InternalDefOf.VEF_Beastmastery)))
                 {
                     StaticCollectionsClass.RemoveDraftableAnimalFromList(this.parent);
                     if (Props.makeNonFleeingToo)
@@ -51,7 +51,7 @@ namespace VEF.AnimalBehaviours
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             Pawn pawn = this.parent as Pawn;
-            if(!Props.conditionalOnTrainability || pawn.training?.HasLearned(InternalDefOf.VEF_Beastmastery) == true)
+            if(!Props.conditionalOnTrainability || (ModsConfig.OdysseyActive && pawn.training.HasLearned(InternalDefOf.VEF_Beastmastery)))
             {
                 StaticCollectionsClass.AddDraftableAnimalToList(this.parent);
                 if (Props.makeNonFleeingToo)
