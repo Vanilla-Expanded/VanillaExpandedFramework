@@ -3,7 +3,7 @@ using UnityEngine;
 using Verse;
 using Verse.Sound;
 
-namespace VEF;
+namespace VEF.Weapons;
 
 public class Projectile_Shrapnel : Projectile_Explosive
 {

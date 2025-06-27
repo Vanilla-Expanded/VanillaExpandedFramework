@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
+using System.Reflection.Emit;
+using HarmonyLib;
+using RimWorld.Planet;
 
-namespace VEF.Factions
+namespace VEF.Planet
 {
-    using System.Reflection;
-    using System.Reflection.Emit;
-    using HarmonyLib;
-    using RimWorld.Planet;
-
     [HarmonyPatch]
     public static class VanillaExpandedFramework_WorldFactionsUIUtility_CanAddFaction_Patch
     {

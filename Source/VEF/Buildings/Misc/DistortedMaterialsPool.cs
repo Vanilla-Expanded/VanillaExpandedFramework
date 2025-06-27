@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 
-namespace VEF
+namespace VEF.Buildings
 {
     public class DistortedMaterialsPool
     {
