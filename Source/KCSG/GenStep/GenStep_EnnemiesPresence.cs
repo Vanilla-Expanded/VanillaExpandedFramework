@@ -36,7 +36,7 @@ namespace KCSG
                 parms.sitePart.site.SetFaction(fac);
             }
 
-            Lord defend = LordMaker.MakeNewLord(fac, new LordJob_DefendBase(fac, map.Center), map);
+            Lord defend = LordMaker.MakeNewLord(fac, new LordJob_DefendBase(fac, map.Center, 25000), map);
 
             foreach (var pawn in GeneratePawns(map, fac, parms))
             {
