@@ -459,6 +459,9 @@
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_NotInSpace.cs" />
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_InSpace.cs" />
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_InVacuum.cs" />
+    <Compile Include="Genes\Harmony\Pawn_PathFollower_CostToMoveIntoCell.cs" />
+    <Compile Include="Genes\StaticCollectionsClass\GeneticMoveSpeedFactorByTerrainTag.cs" />
+    <Compile Include="Genes\StatParts\StatPart_GeneticTerrainMoveSpeed.cs" />
     <Compile Include="Global\BackwardsCompatibilityFixer.cs" />
     <Compile Include="Global\HotSwappableAttribute.cs" />
     <Compile Include="Graphics\AI\JobDrivers\JobDriver_CustomizeItem.cs" />

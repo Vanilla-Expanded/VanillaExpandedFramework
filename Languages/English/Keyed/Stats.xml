@@ -5,4 +5,6 @@
 	<VFECore.Primitive>primitive</VFECore.Primitive>
 	<VFECore.StatsReport_Powered>Powered</VFECore.StatsReport_Powered>
 	<VFECore.StatsReport_Unpowered>Unpowered</VFECore.StatsReport_Unpowered>
+	
+	<VEF.StatsReport_GeneticTerrainSpeedMultiplier>Genetic multiplier for {0} terrain</VEF.StatsReport_GeneticTerrainSpeedMultiplier>
 </LanguageData>

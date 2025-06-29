@@ -140,6 +140,11 @@ namespace VEF.Genes
                     {
                         StaticCollectionsClass.AddPregnancySpeedFactorGenePawnToList(gene.pawn, extension.pregnancySpeedFactor);
                     }
+
+                    if (!extension.moveSpeedFactorByTerrainTag.NullOrEmpty())
+                    {
+                        StaticCollectionsClass.AddMoveSpeedFactorByTerrainTag(gene.pawn, gene, extension.moveSpeedFactorByTerrainTag);
+                    }
                 }
             }
             catch (Exception ex)
@@ -266,6 +271,11 @@ namespace VEF.Genes
                     if (extension.pregnancySpeedFactor != 1f)
                     {
                         StaticCollectionsClass.RemovePregnancySpeedFactorGenePawnFromList(gene.pawn);
+                    }
+
+                    if (!extension.moveSpeedFactorByTerrainTag.NullOrEmpty())
+                    {
+                        StaticCollectionsClass.RemoveMoveSpeedFactorByTerrainTag(gene.pawn, gene);
                     }
                 }
             }

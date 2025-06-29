@@ -67,6 +67,8 @@ namespace VEF.Genes
         // A list of pawns with swapped gender genes
         public static HashSet<Pawn> swappedgender_gene_pawns = new HashSet<Pawn>();
 
+        public static Dictionary<Thing, GeneticMoveSpeedFactorByTerrainTag> moveSpeedFactorByTerrainTag_gene_pawns = new();
+
 
         public static void AddMeatGenePawnToList(Thing thing, ThingDef thingDef)
         {
@@ -377,6 +379,25 @@ namespace VEF.Genes
                 skillRecreation_gene_pawns.Remove(thing);
             }
 
+        }
+
+
+        public static void AddMoveSpeedFactorByTerrainTag(Thing thing, Gene gene, Dictionary<string, List<GeneExtension.MoveSpeedFactor>> speedFactors)
+        {
+            if (!moveSpeedFactorByTerrainTag_gene_pawns.TryGetValue(thing, out var entries))
+                moveSpeedFactorByTerrainTag_gene_pawns[thing] = entries = new GeneticMoveSpeedFactorByTerrainTag();
+
+            entries.Add(gene, speedFactors);
+        }
+
+        public static void RemoveMoveSpeedFactorByTerrainTag(Thing thing, Gene gene)
+        {
+            if (!moveSpeedFactorByTerrainTag_gene_pawns.TryGetValue(thing, out var entries))
+                return;
+
+            entries.Remove(gene);
+            if (entries.Empty)
+                moveSpeedFactorByTerrainTag_gene_pawns.Remove(thing);
         }
 
     }
