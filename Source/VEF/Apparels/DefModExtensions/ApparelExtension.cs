@@ -20,7 +20,12 @@ namespace VEF.Apparels
         public bool preventKilling;
         public float preventKillingUntilHealthHPPercentage = 1f;
         public bool preventKillingUntilBrainMissing;
-        public bool preventBleeding;     
+        public bool preventBleeding;
+
+        public List<ThingDef> secondaryApparelGraphics;
+        public bool isUnifiedApparel;
+        public bool hideHead;
+        public bool showBodyInBedAlways;
     }
 
     public class PawnCapacityMinLevel

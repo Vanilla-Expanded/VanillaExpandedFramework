@@ -544,7 +544,6 @@
     <Compile Include="Maps\TileMutatorWorkers\TileMutatorWorker_TerrainSwapper.cs" />
     <Compile Include="Memes\Harmony\OptionalFeatures\IdeoUIUtility_AddPrecept.cs" />
     <Compile Include="Memes\OptionalFeatures\OptionalFeatures_IdeoFloatMenuPlus.cs" />
-    <Compile Include="Pawns\DefModExtensions\ApparelDrawPosExtension.cs" />
     <Compile Include="Pawns\Harmony\PawnGenerator_GenerateGearFor.cs" />
     <Compile Include="Hediffs\Comps\HediffComp_Targeting.cs" />
     <Compile Include="Pawns\StatParts\StatPart_RangeAttackSpeedFactor.cs" />

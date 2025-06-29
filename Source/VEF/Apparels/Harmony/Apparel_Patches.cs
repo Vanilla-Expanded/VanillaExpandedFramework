@@ -474,4 +474,169 @@ namespace VEF.Apparels
             return true;
         }
     }
+
+    [HarmonyPatch(typeof(DynamicPawnRenderNodeSetup_Apparel), "ProcessApparel")]
+    public static class VanillaExpandedFramework_DynamicPawnRenderNodeSetup_Apparel_ProcessApparel_Patch
+    {
+        public delegate IEnumerable<ValueTuple<PawnRenderNode, PawnRenderNode>> ProcessApparel(Pawn pawn, PawnRenderTree tree, Apparel ap, PawnRenderNode headApparelNode, PawnRenderNode bodyApparelNode, Dictionary<PawnRenderNode, int> layerOffsets);
+        public static readonly ProcessApparel processApparel = AccessTools.MethodDelegate<ProcessApparel>
+            (AccessTools.Method(typeof(DynamicPawnRenderNodeSetup_Apparel), "ProcessApparel"));
+
+        public static IEnumerable<ValueTuple<PawnRenderNode, PawnRenderNode>> Postfix(IEnumerable<ValueTuple<PawnRenderNode, PawnRenderNode>> result, Pawn pawn, PawnRenderTree tree, Apparel ap, PawnRenderNode headApparelNode, PawnRenderNode bodyApparelNode, Dictionary<PawnRenderNode, int> layerOffsets)
+        {
+            var extension = ap.def.GetModExtension<ApparelExtension>();
+            if (extension?.secondaryApparelGraphics != null)
+            {
+                foreach (var thingDef in extension.secondaryApparelGraphics)
+                {
+                    var item = ThingMaker.MakeThing(thingDef) as Apparel;
+                    if (ApparelGraphicRecordGetter.TryGetGraphicApparel(item, pawn.story.bodyType, false, out _))
+                        result = result.Concat(processApparel(pawn, tree, item, headApparelNode, bodyApparelNode, layerOffsets));
+                }
+            }
+
+            return result;
+        }
+    }
+
+    [HarmonyPatch(typeof(ApparelGraphicRecordGetter), "TryGetGraphicApparel")]
+    public static class VanillaExpandedFramework_ApparelGraphicRecordGetter_TryGetGraphicApparel_Transpiler
+    {
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
+        {
+            var renderAsPackMethod = AccessTools.Method(typeof(PawnRenderUtility), nameof(PawnRenderUtility.RenderAsPack));
+            var codes = codeInstructions.ToList();
+            bool found = false;
+            for (int i = 0; i < codes.Count; i++)
+            {
+                yield return codes[i];
+
+                if (codes[i].opcode == OpCodes.Brtrue_S && codes[i - 1].Calls(renderAsPackMethod))
+                {
+                    found = true;
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(VanillaExpandedFramework_ApparelGraphicRecordGetter_TryGetGraphicApparel_Transpiler), nameof(IsUnifiedApparel)));
+                    yield return new CodeInstruction(OpCodes.Brtrue_S, codes[i].operand);
+                }
+            }
+            if (!found)
+            {
+                Log.Error("[Vanilla Framework Expanded] Transpiler on ApparelGraphicRecordGetter:TryGetGraphicApparel failed.");
+            }
+        }
+
+        public static bool IsUnifiedApparel(Apparel apparel)
+        {
+            var extension = apparel.def.GetModExtension<ApparelExtension>();
+            return extension != null && extension.isUnifiedApparel;
+        }
+    }
+    [HarmonyPatch(typeof(PawnRenderer), "GetBodyPos")]
+    public static class VanillaExpandedFramework_PawnRenderer_GetBodyPos_Patch
+    {
+        public static void Postfix(Pawn ___pawn, Vector3 drawLoc, ref bool showBody)
+        {
+            if (!showBody)
+            {
+                var pawn = ___pawn;
+                if (pawn.apparel != null && ___pawn.CurrentBed() != null)
+                {
+                    if (pawn.apparel.WornApparel.Any(x => x.def.GetModExtension<ApparelExtension>()?.showBodyInBedAlways ?? false))
+                    {
+                        showBody = true;
+                    }
+                }
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(PawnRenderNodeWorker_Body), "CanDrawNow")]
+    public static class VanillaExpandedFramework_PawnRenderNodeWorker_Body_CanDrawNow_Patch
+    {
+        public static void Postfix(PawnRenderNode node, PawnDrawParms parms, ref bool __result)
+        {
+            if (__result is false && parms.bed != null && parms.pawn.apparel != null)
+            {
+                if (parms.pawn.apparel.WornApparel.Any(x => x.def.GetModExtension<ApparelExtension>()?.showBodyInBedAlways ?? false))
+                {
+                    __result = true;
+                }
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(PawnRenderNodeWorker), "AppendDrawRequests")]
+    public static class VanillaExpandedFramework_PawnRenderNodeWorker_AppendDrawRequests_Patch
+    {
+        public static bool Prefix(PawnRenderNode node, PawnDrawParms parms, List<PawnGraphicDrawRequest> requests)
+        {
+            if ((node is PawnRenderNode_Head || node.parent is PawnRenderNode_Head) && parms.pawn.apparel.AnyApparel)
+            {
+                var headgear = parms.pawn.apparel.WornApparel
+                    .FirstOrDefault(x => x.def.GetModExtension<ApparelExtension>()?.hideHead ?? false);
+                if (headgear != null)
+                {
+                    requests.Add(new PawnGraphicDrawRequest(node)); // adds an empty draw request to not draw head
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(PawnRenderNodeWorker_Apparel_Head), "CanDrawNow")]
+    public static class VanillaExpandedFramework_PawnRenderNodeWorker_Apparel_Head_CanDrawNow_Patch
+    {
+        public static void Prefix(PawnDrawParms parms, out bool __state)
+        {
+            __state = Prefs.HatsOnlyOnMap;
+            if (parms.pawn.apparel.AnyApparel)
+            {
+                var headgear = parms.pawn.apparel.WornApparel
+                    .FirstOrDefault(x => x.def.GetModExtension<ApparelExtension>()?.hideHead ?? false);
+                if (headgear != null)
+                {
+                    Prefs.HatsOnlyOnMap = false;
+                }
+            }
+        }
+
+        public static void Postfix(bool __state)
+        {
+            Prefs.HatsOnlyOnMap = __state;
+        }
+    }
+    [HarmonyPatch(typeof(PawnRenderNodeWorker_Apparel_Head), "HeadgearVisible")]
+    public static class VanillaExpandedFramework_PawnRenderNodeWorker_Apparel_Head_HeadgearVisible_Patch
+    {
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
+        {
+            var get_HatsOnlyOnMap = AccessTools.PropertyGetter(typeof(Prefs), nameof(Prefs.HatsOnlyOnMap));
+            foreach (var codeInstruction in codeInstructions)
+            {
+                yield return codeInstruction;
+                if (codeInstruction.Calls(get_HatsOnlyOnMap))
+                {
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Call,
+                        AccessTools.Method(typeof(VanillaExpandedFramework_PawnRenderNodeWorker_Apparel_Head_HeadgearVisible_Patch),
+                        "TryOverrideHatsOnlyOnMap"));
+                }
+            }
+        }
+
+        public static bool TryOverrideHatsOnlyOnMap(bool result, PawnDrawParms parms)
+        {
+            if (result is true && parms.pawn.apparel.AnyApparel)
+            {
+                var headgear = parms.pawn.apparel.WornApparel
+                    .FirstOrDefault(x => x.def.GetModExtension<ApparelExtension>()?.hideHead ?? false);
+                if (headgear != null)
+                {
+                    return false;
+                }
+            }
+            return result;
+        }
+    }
 }
