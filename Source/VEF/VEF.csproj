@@ -544,7 +544,6 @@
     <Compile Include="Maps\TileMutatorWorkers\TileMutatorWorker_TerrainSwapper.cs" />
     <Compile Include="Memes\Harmony\OptionalFeatures\IdeoUIUtility_AddPrecept.cs" />
     <Compile Include="Memes\OptionalFeatures\OptionalFeatures_IdeoFloatMenuPlus.cs" />
-    <Compile Include="Pawns\Harmony\PawnGenerator_GenerateGearFor.cs" />
     <Compile Include="Hediffs\Comps\HediffComp_Targeting.cs" />
     <Compile Include="Pawns\StatParts\StatPart_RangeAttackSpeedFactor.cs" />
     <Compile Include="Pawns\StatWorkers\StatWorker_MassCarryCapacity.cs" />
@@ -1094,7 +1093,6 @@
     <Compile Include="Planet\WorldComponents\HiringContractTracker.cs" />
     <Compile Include="Pawns\DefModExtensions\ThoughtExtension.cs" />
     <Compile Include="Weathers\DefModExtensions\WeatherLetterExtensions.cs" />
-    <Compile Include="Pawns\Defs\BackstoryDef.cs" />
     <Compile Include="Apparels\Harmony\Apparel_Patches.cs" />
     <Compile Include="Pawns\Harmony\HediffSet_CalculatePain.cs" />
     <Compile Include="Pawns\DefModExtensions\TraitExtension.cs" />
@@ -1194,7 +1192,6 @@
     <Compile Include="Apparels\Harmony\ITab_Pawn_Gear_TryDrawOverallArmor.cs" />
     <Compile Include="Hediffs\Harmony\Pawn_InteractionsTracker_TryInteractWith.cs" />
     <Compile Include="Apparels\Harmony\PawnApparelGenerator_GenerateStartingApparelFor.cs" />
-    <Compile Include="Pawns\Harmony\PawnGenerator_GenerateInitialHediffs.cs" />
     <Compile Include="Apparels\Harmony\Pawn_HealthTracker_CheckForStateChange.cs" />
     <Compile Include="Planet\Harmony\RaidStrategyWorker_Siege_MakeLordJob.cs" />
     <Compile Include="Apparels\Harmony\ThingDef_SpecialDisplayStats.cs" />
