@@ -99,7 +99,7 @@ namespace PipeSystem
                     processTooltip.Gap(8f, 0f);
                     processTooltip.Label(requirement.countNeeded + "x ", draw);
                     // Draw net ui icon if any
-                    var icon = requirement.pipeNet?.uiIcon ?? processDef.uiIcon;
+                    var icon = processDef.uiIcon ?? requirement.pipeNet?.uiIcon;
                     if (icon != null)
                     {
                         processTooltip.Icon(icon, Color.white, Text.LineHeightOf(GameFont.Small), draw);
@@ -137,7 +137,7 @@ namespace PipeSystem
                     processTooltip.Gap(8f, 0f);
                     processTooltip.Label(result.count + "x ", draw);
                     // Draw net ui icon if any
-                    var icon = result.pipeNet?.uiIcon ?? processDef.uiIcon;
+                    var icon = processDef.uiIcon ?? result.pipeNet?.uiIcon;
                     if (icon != null)
                     {
                         processTooltip.Icon(icon, Color.white, Text.LineHeightOf(GameFont.Small), draw);
