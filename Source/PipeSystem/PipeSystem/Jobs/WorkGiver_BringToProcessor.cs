@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -40,7 +41,6 @@ namespace PipeSystem
             var firstCategoryMissing = comp.FirstCategoryMissing;
             if (firstCategoryMissing != null && FindCategoryIngredient(pawn, comp, firstCategoryMissing) != null)
                 return true;
-
             return false;
         }
 
@@ -79,7 +79,16 @@ namespace PipeSystem
                 return null;
             }
 
-            bool validator(Thing x) => !x.IsForbidden(pawn) && pawn.CanReserve(x);
+            Predicate<Thing> validator = delegate (Thing x)
+            {
+                if (comp.ProcessDef.disallowMixing && comp.Process.GetLastStoredIngredient()
+                    is ThingDef stored && x.def != stored)
+                {
+                    return false;
+                }
+                return !x.IsForbidden(pawn) && pawn.CanReserve(x);
+            };
+
             List<Thing> searchSet = new List<Thing>();
             foreach (ThingDef thingDef in firstCategoryMissing.childThingDefs)
             {                

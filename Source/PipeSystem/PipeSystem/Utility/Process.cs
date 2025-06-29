@@ -45,7 +45,7 @@ namespace PipeSystem
         private List<CompResource> ingredientsCompResources;
         private List<FloatMenuOption> options;
         private AdvancedProcessorsManager advancedProcessorsManager;
-        private CompAdvancedResourceProcessor advancedProcessor;
+        public CompAdvancedResourceProcessor advancedProcessor;
         protected Sustainer workingSoundSustainer;
 
         public bool IsRunning => ShouldDoNow() && !MissingIngredients;
@@ -632,7 +632,7 @@ namespace PipeSystem
                 }
                 // If can't go into net and should/can spawn
                 // Bypass ground setting if thing can't be put in net
-                else if (spawning && result.thing != null && (extractor != null || advancedProcessor.outputOnGround || result.pipeNet == null))
+                else if (spawning && result.GetOutput(this) is ThingDef output && (extractor != null || advancedProcessor.outputOnGround || result.pipeNet == null))
                 {
                     var map = parent.Map;
                     // If defined outputCellOffset
@@ -691,8 +691,9 @@ namespace PipeSystem
 
             if (cell.Walkable(map))
             {
+                var output = result.GetOutput(this);
                 // Try find thing of the same def
-                var thing = cell.GetFirstThing(map, result.thing);
+                var thing = cell.GetFirstThing(map, output);
                 if (thing != null)
                 {
                     // If adding would go past stack limit
@@ -708,7 +709,7 @@ namespace PipeSystem
                 else
                 {
                     // We didn't find any, creating thing
-                    thing = ThingMaker.MakeThing(result.thing);
+                    thing = ThingMaker.MakeThing(output);
                     thing.stackCount = result.count;
                     if (!GenPlace.TryPlaceThing(thing, cell, map, ThingPlaceMode.Near))
                         return false;
@@ -1084,6 +1085,23 @@ namespace PipeSystem
                 SoundDefOf.Click.PlayOneShotOnCamera();
             }
             TooltipHandler.TipRegionByKey(deleteRect, "PipeSystem_CancelCurrentProcess");
+        }
+
+        public ThingDef GetLastStoredIngredient()
+        {
+            var ingredientsOwners = IngredientsOwners;
+            if (ingredientsOwners != null)
+            {
+                for (int i = 0; i < ingredientsOwners.Count; i++)
+                {
+                    var owner = ingredientsOwners[i];
+                    if (owner.lastThingStored != null && owner.Count > 0)
+                    {
+                        return owner.lastThingStored;
+                    }
+                }
+            }
+            return null;
         }
     }
 }

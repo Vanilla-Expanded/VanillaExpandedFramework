@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
@@ -82,6 +83,11 @@ namespace PipeSystem
         public bool sustainerWhenWorking = false;
         public SoundDef sustainerDef;
 
+        public string uiIconPath; // Path to the icon, used for UI
+        [Unsaved]
+        internal Texture2D uiIcon; // Resource icon
+
+        public bool disallowMixing;
         /// <summary>
         /// Ingredient: can be pipeNet or thingDef and a count, or a category
         /// </summary>
@@ -96,6 +102,15 @@ namespace PipeSystem
             public bool nutritionGetter = false;
         }
 
+        public class ResultWorker
+        {
+            public Result result;
+            public virtual ThingDef GetResult(Process process)
+            {
+                return result.thing;
+            }
+        }
+
         /// <summary>
         /// Ingredient: can be pipeNet or thingDef and a count
         /// </summary>
@@ -103,6 +118,26 @@ namespace PipeSystem
         {
             public PipeNetDef pipeNet;                          // Result as a piped resource
             public ThingDef thing;                              // Result as a thing
+            public Type workerClass;
+            public ResultWorker _worker;
+            public ResultWorker Worker
+            {
+                get
+                {
+                    if (_worker == null)
+                    {
+                        _worker = (ResultWorker)Activator.CreateInstance(workerClass);
+                        _worker.result = this;
+                    }
+                    return _worker;
+                }
+            }
+
+            public ThingDef GetOutput(Process process)
+            {
+                return Worker.GetResult(process);
+            }
+
             public int count;                                   // Count to produce
             public IntVec3 outputCellOffset = IntVec3.Invalid;  // Result cell output (offset based on center)
         }
@@ -123,6 +158,21 @@ namespace PipeSystem
                 if (result.pipeNet != null && result.thing == null && result.outputCellOffset != IntVec3.Invalid)
                     yield return $"ProcessDef result ({i}) <outputCellOffset> does not apply to net result";
             }
+        }
+
+        /// <summary>
+        /// Get ui icon as Texture2D
+        /// </summary>
+        public override void PostLoad()
+        {
+            if (uiIconPath != null)
+            {
+                LongEventHandler.ExecuteWhenFinished(delegate
+                {
+                    uiIcon = ContentFinder<Texture2D>.Get(uiIconPath);
+                });
+            }
+            base.PostLoad();
         }
     }
 }

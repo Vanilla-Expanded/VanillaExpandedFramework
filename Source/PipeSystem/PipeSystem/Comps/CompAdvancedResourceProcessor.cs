@@ -121,7 +121,6 @@ namespace PipeSystem
                     if (process.researchPrerequisites != null && process.researchPrerequisites.Any(p => !p.IsFinished)) continue;
 
 
-                    var name = process.results[0].thing != null ? process.results[0].thing.LabelCap.ToStringSafe() : process.results[0].pipeNet.resource.name;
 
 
 
@@ -132,6 +131,10 @@ namespace PipeSystem
                     }
                     else
                     {
+                        var name = process.results[0].thing != null
+                        ? process.results[0].thing.LabelCap.ToStringSafe()
+                        : process.results[0].pipeNet.resource.name;
+
                         label = "PipeSystem_MakeProcess".Translate(name);
                         if (process.results[0].count > 1)
                         {
@@ -487,11 +490,11 @@ namespace PipeSystem
             if (Process == null)
                 return;
 
-            if (Props.showResultItem && ProcessDef.results[0].thing != null)
+            if (Props.showResultItem && ProcessDef.results[0].GetOutput(Process) is ThingDef def)
             {
                 var matrix = default(Matrix4x4);
                 matrix.SetTRS(itemDrawPos, Quaternion.identity, Props.resultItemSize);
-                Graphics.DrawMesh(MeshPool.plane10, matrix, ProcessDef.results[0].thing.graphic.MatNorth, 0);
+                Graphics.DrawMesh(MeshPool.plane10, matrix, def.graphic.MatNorth, 0);
             }
             if (Props.showProgressBar && (Props.alwaysShowProgressBar || (!Props.alwaysShowProgressBar && parent.OccupiedRect().Cells.Contains(UI.MouseCell()))))
             {
@@ -654,13 +657,22 @@ namespace PipeSystem
             if (process.MissingIngredients)
             {
                 string requirements = "";
+
                 for (int i = 0; i < process.IngredientsOwners.Count; i++)
                 {
                     if (process.IngredientsOwners[i].Require)
                     {
-                        requirements += process.IngredientsOwners[i].ToStringHumanReadable();
+                        if (process.Def.disallowMixing && process.GetLastStoredIngredient() is ThingDef def)
+                        {
+                            requirements += process.IngredientsOwners[i].ToStringHumanReadable(def);
+                        }
+                        else
+                        {
+                            requirements += process.IngredientsOwners[i].ToStringHumanReadable();
+                        }
                     }
                 }
+
                 sb.AppendLine("PipeSystem_MissingInputIngredients".Translate(requirements));
             }
 

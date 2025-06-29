@@ -99,12 +99,16 @@ namespace PipeSystem
                     processTooltip.Gap(8f, 0f);
                     processTooltip.Label(requirement.countNeeded + "x ", draw);
                     // Draw net ui icon if any
-                    if (requirement.pipeNet.uiIcon != null)
+                    var icon = requirement.pipeNet?.uiIcon ?? processDef.uiIcon;
+                    if (icon != null)
                     {
-                        processTooltip.Icon(requirement.pipeNet.uiIcon, Color.white, Text.LineHeightOf(GameFont.Small), draw);
+                        processTooltip.Icon(icon, Color.white, Text.LineHeightOf(GameFont.Small), draw);
                     }
-                    processTooltip.Gap(4f, 0f);
-                    processTooltip.Label("PipeSystem_XFromNet".Translate(requirement.pipeNet.loweredName), draw);
+                    if (requirement.pipeNet != null)
+                    {
+                        processTooltip.Gap(4f, 0f);
+                        processTooltip.Label("PipeSystem_XFromNet".Translate(requirement.pipeNet.loweredName), draw);
+                    }
                 }
                 processTooltip.Newline();
             }
@@ -133,12 +137,16 @@ namespace PipeSystem
                     processTooltip.Gap(8f, 0f);
                     processTooltip.Label(result.count + "x ", draw);
                     // Draw net ui icon if any
-                    if (result.pipeNet.uiIcon != null)
+                    var icon = result.pipeNet?.uiIcon ?? processDef.uiIcon;
+                    if (icon != null)
                     {
-                        processTooltip.Icon(result.pipeNet.uiIcon, Color.white, Text.LineHeightOf(GameFont.Small), draw);
+                        processTooltip.Icon(icon, Color.white, Text.LineHeightOf(GameFont.Small), draw);
                     }
-                    processTooltip.Gap(4f, 0f);
-                    processTooltip.Label("PipeSystem_OutputToNet".Translate(result.pipeNet.loweredName), draw);
+                    if (result.pipeNet != null)
+                    {
+                        processTooltip.Gap(4f, 0f);
+                        processTooltip.Label("PipeSystem_OutputToNet".Translate(result.pipeNet.loweredName), draw);
+                    }
                 }
                 processTooltip.Newline();
             }

@@ -30,6 +30,8 @@ namespace PipeSystem
 
         public int Count => count;
 
+        public ThingDef lastThingStored;
+
         public ThingAndResourceOwner()
         { }
 
@@ -50,6 +52,7 @@ namespace PipeSystem
             Scribe_Defs.Look(ref pipeNetDef, "pipeNetDef");
             Scribe_Defs.Look(ref thingDef, "thingDef");
             Scribe_Defs.Look(ref thingCategoryDef, "thingCategoryDef");
+            Scribe_Defs.Look(ref lastThingStored, "lastThingStored");
         }
 
         public void AddFromThing(Thing thing)
@@ -57,6 +60,7 @@ namespace PipeSystem
             if (thing.def != thingDef && !thing.def.thingCategories.Contains(thingCategoryDef))
                 return;
 
+            lastThingStored = thing.def;
             var needed = wantedCount - count;
             if (thing.stackCount > needed)
             {
@@ -109,6 +113,11 @@ namespace PipeSystem
         public string ToStringHumanReadable()
         {
             return $"({ThingDef?.LabelCap} {PipeNetDef?.LabelCap} {ThingCategoryDef?.LabelCap}): {count}/{wantedCount}";
+        }
+
+        public string ToStringHumanReadable(ThingDef def)
+        {
+            return $"({def?.LabelCap} {PipeNetDef?.LabelCap} {ThingCategoryDef?.LabelCap}): {count}/{wantedCount}";
         }
     }
 }
