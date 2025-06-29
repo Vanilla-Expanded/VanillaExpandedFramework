@@ -315,26 +315,28 @@ namespace PipeSystem
 
         public void StoreProgressGraphics()
         {
+            var shader = parent.def.graphicData?.shaderType?.Shader ?? ShaderDatabase.Cutout;
             if (ContentFinder<Texture2D>.Get(Props.inProgressTexture + "_north", reportFailure: false) != null)
             {
-                cachedProgressGraphic_multi = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(Props.inProgressTexture, ShaderDatabase.Cutout,
+                cachedProgressGraphic_multi = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(Props.inProgressTexture, shader,
                      this.parent.def.graphicData.drawSize, this.parent.def.graphicData.color);
             }
             else
 
-                cachedProgressGraphic = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(Props.inProgressTexture, ShaderDatabase.Cutout,
+                cachedProgressGraphic = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(Props.inProgressTexture, shader,
                          this.parent.def.graphicData.drawSize, this.parent.def.graphicData.color);
 
         }
         public void StoreFinishGraphics()
         {
+            var shader = parent.def.graphicData?.shaderType?.Shader ?? ShaderDatabase.Cutout;
             if (ContentFinder<Texture2D>.Get(Props.finishedTexture + "_north", reportFailure: false) != null)
             {
-                cachedFinishedGraphic_multi = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(Props.finishedTexture, ShaderDatabase.Cutout,
+                cachedFinishedGraphic_multi = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(Props.finishedTexture, shader,
                      this.parent.def.graphicData.drawSize, this.parent.def.graphicData.color);
             }
             else
-                cachedFinishedGraphic = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(Props.finishedTexture, ShaderDatabase.Cutout,
+                cachedFinishedGraphic = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(Props.finishedTexture, shader,
                      this.parent.def.graphicData.drawSize, this.parent.def.graphicData.color);
 
         }
