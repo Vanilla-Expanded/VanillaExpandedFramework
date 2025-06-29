@@ -1,4 +1,5 @@
-﻿using Verse;
+﻿using System.Text;
+using Verse;
 
 namespace PipeSystem
 {
@@ -110,14 +111,32 @@ namespace PipeSystem
             return $"Owner ({ThingDef?.defName} {PipeNetDef?.defName} {ThingCategoryDef?.defName}): {count}/{wantedCount}";
         }
 
-        public string ToStringHumanReadable()
+        public string ToStringHumanReadable(ThingDef def = null)
         {
-            return $"({ThingDef?.LabelCap} {PipeNetDef?.LabelCap} {ThingCategoryDef?.LabelCap}): {count}/{wantedCount}";
+            return GetLabel(def ?? thingDef);
         }
 
-        public string ToStringHumanReadable(ThingDef def)
+        private string GetLabel(ThingDef def)
         {
-            return $"({def?.LabelCap} {PipeNetDef?.LabelCap} {ThingCategoryDef?.LabelCap}): {count}/{wantedCount}";
+            var sb = new StringBuilder();
+            if (def != null)
+            {
+                sb.Append(def.label);
+            }
+            else
+            {
+                if (pipeNetDef != null)
+                {
+                    sb.Append(pipeNetDef.label);
+                }
+                if (thingCategoryDef != null)
+                {
+                    if (sb.Length > 0)
+                        sb.Append(" ");
+                    sb.Append(thingCategoryDef.label);
+                }
+            }
+            return $"({sb.ToString().Trim()}): {count}/{wantedCount}";
         }
     }
 }
