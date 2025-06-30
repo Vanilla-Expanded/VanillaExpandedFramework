@@ -67,7 +67,7 @@ namespace VEF.Genes
         // A list of pawns with swapped gender genes
         public static HashSet<Pawn> swappedgender_gene_pawns = new HashSet<Pawn>();
 
-        public static Dictionary<Thing, GeneticMoveSpeedFactorByTerrainTag> moveSpeedFactorByTerrainTag_gene_pawns = new();
+        public static Dictionary<Thing, ExtendedMoveSpeedFactorByTerrainTag> moveSpeedFactorByTerrainTag_gene_pawns = new();
 
 
         public static void AddMeatGenePawnToList(Thing thing, ThingDef thingDef)
@@ -382,20 +382,20 @@ namespace VEF.Genes
         }
 
 
-        public static void AddMoveSpeedFactorByTerrainTag(Thing thing, Gene gene, Dictionary<string, List<GeneExtension.MoveSpeedFactor>> speedFactors)
+        public static void AddMoveSpeedFactorByTerrainTag(Thing thing, object effectHolder, Dictionary<string, List<MoveSpeedFactor>> speedFactors)
         {
             if (!moveSpeedFactorByTerrainTag_gene_pawns.TryGetValue(thing, out var entries))
-                moveSpeedFactorByTerrainTag_gene_pawns[thing] = entries = new GeneticMoveSpeedFactorByTerrainTag();
+                moveSpeedFactorByTerrainTag_gene_pawns[thing] = entries = new ExtendedMoveSpeedFactorByTerrainTag();
 
-            entries.Add(gene, speedFactors);
+            entries.Add(effectHolder, speedFactors);
         }
 
-        public static void RemoveMoveSpeedFactorByTerrainTag(Thing thing, Gene gene)
+        public static void RemoveMoveSpeedFactorByTerrainTag(Thing thing, object effectHolder)
         {
             if (!moveSpeedFactorByTerrainTag_gene_pawns.TryGetValue(thing, out var entries))
                 return;
 
-            entries.Remove(gene);
+            entries.Remove(effectHolder);
             if (entries.Empty)
                 moveSpeedFactorByTerrainTag_gene_pawns.Remove(thing);
         }

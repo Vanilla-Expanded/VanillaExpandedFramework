@@ -3,14 +3,14 @@ using Verse;
 
 namespace VEF.Genes;
 
-public class GeneticMoveSpeedFactorByTerrainTag
+public class ExtendedMoveSpeedFactorByTerrainTag
 {
-    private readonly Dictionary<string, Dictionary<Gene, float>> moveSpeedFactorByTerrainTag = [];
-    private readonly Dictionary<string, Dictionary<string, (float speedFactor, HashSet<Gene> activeGenes)>> taggedMoveSpeedFactorByTerrainTag = [];
+    private readonly Dictionary<string, Dictionary<object, float>> moveSpeedFactorByTerrainTag = [];
+    private readonly Dictionary<string, Dictionary<string, (float speedFactor, HashSet<object> activeGenes)>> taggedMoveSpeedFactorByTerrainTag = [];
 
     public bool Empty => moveSpeedFactorByTerrainTag.Count == 0 && taggedMoveSpeedFactorByTerrainTag.Count == 0;
 
-    public void Add(Gene gene, Dictionary<string, List<GeneExtension.MoveSpeedFactor>> speedFactors)
+    public void Add(object effectHolder, Dictionary<string, List<MoveSpeedFactor>> speedFactors)
     {
         foreach (var (terrainTag, speedFactor) in speedFactors)
         {
@@ -20,7 +20,7 @@ public class GeneticMoveSpeedFactorByTerrainTag
                 {
                     if (!moveSpeedFactorByTerrainTag.TryGetValue(terrainTag, out var currentFactors))
                         moveSpeedFactorByTerrainTag[terrainTag] = currentFactors = [];
-                    currentFactors[gene] = factor.moveSpeedFactor;
+                    currentFactors[effectHolder] = factor.moveSpeedFactor;
                 }
                 else
                 {
@@ -30,17 +30,17 @@ public class GeneticMoveSpeedFactorByTerrainTag
                     if (!currentFactors.TryGetValue(factor.tag, out var tuple))
                         currentFactors[factor.tag] = tuple = (factor.moveSpeedFactor, []);
 
-                    tuple.activeGenes.Add(gene);
+                    tuple.activeGenes.Add(effectHolder);
                 }
             }
         }
     }
 
-    public void Remove(Gene gene)
+    public void Remove(object effectHolder)
     {
         moveSpeedFactorByTerrainTag.RemoveAll(x =>
         {
-            x.Value.Remove(gene);
+            x.Value.Remove(effectHolder);
             return x.Value.Count == 0;
         });
 
@@ -48,7 +48,7 @@ public class GeneticMoveSpeedFactorByTerrainTag
         {
             x.Value.RemoveAll(z =>
             {
-                z.Value.activeGenes.Remove(gene);
+                z.Value.activeGenes.Remove(effectHolder);
                 return z.Value.activeGenes.Count == 0;
             });
             return x.Value.Count == 0;

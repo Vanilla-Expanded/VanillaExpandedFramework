@@ -102,7 +102,7 @@ namespace VEF.Genes
 
         public float? bodyScaleFactor, headScaleFactor;
 
-        //Pawn move speed factors, based off of PawnKindDef.moveSpeedFactorByTerrainTag.
+        // Pawn move speed factors, based off of PawnKindDef.moveSpeedFactorByTerrainTag.
         // An additional feature is that you're able to include a speed factor that with
         // a tag that will be only applied once across all genes with that specific tag,
         // allowing you to create a multitude of genes with a bonus that will only apply once.
@@ -138,15 +138,6 @@ namespace VEF.Genes
                 if (age == null) return 0;
                 return Mathf.Lerp(minOffset, maxOffset, range.InverseLerpThroughRange(age.Value));
             }
-        }
-
-        public class MoveSpeedFactor
-        {
-            public float moveSpeedFactor;
-            // If the tag is specified (not null/empty), only a single gene with that tag can apply the bonus.
-            // Without the tag, there's no limit on amount of genes with speed factor bonus.
-            // Generally, if using the tag try to make moveSpeedFactor identical across the board.
-            public string tag = null;
         }
     }
 

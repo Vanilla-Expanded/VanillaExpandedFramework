@@ -9,35 +9,9 @@ using Verse.AI;
 namespace VEF.Genes;
 
 [HarmonyPatch(typeof(Pawn_PathFollower), "CostToMoveIntoCell", typeof(Pawn), typeof(IntVec3))]
-[HarmonyPatchCategory(VEF_Mod.LateHarmonyPatchCategory)]
+[HarmonyPatchCategory(VEF_HarmonyCategories.MoveSpeedFactorByTerrainTagCategory)]
 public class VanillaExpandedFramework_Pawn_PathFollower_CostToMoveIntoCell
 {
-    public static bool Prepare(MethodBase baseMethod)
-    {
-        // Always allow after first pass
-        if (baseMethod != null)
-            return true;
-
-        // Only apply the patch if there's any GeneDef with GeneExtension,
-        // moveSpeedFactorByTerrainTag isn't null/empty, and there's at least
-        // a single terrain that has its terrain tag.
-        foreach (var def in DefDatabase<GeneDef>.AllDefs)
-        {
-            var extension = def.GetModExtension<GeneExtension>();
-            if (extension != null && !extension.moveSpeedFactorByTerrainTag.NullOrEmpty())
-            {
-                foreach (var tag in extension.moveSpeedFactorByTerrainTag.Keys)
-                {
-                    // Check if there's a TerrainDef that has a tag matching our tags
-                    if (DefDatabase<TerrainDef>.AllDefs.Any(terrain => terrain.tags != null && terrain.tags.Contains(tag)))
-                        return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
     public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
         var matcher = new CodeMatcher(instructions);

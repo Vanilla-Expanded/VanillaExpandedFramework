@@ -9,7 +9,7 @@ namespace VEF.Buildings;
 [HarmonyPatch(typeof(CompAffectedByFacilities))]
 [HarmonyPatch(nameof(CompAffectedByFacilities.CanPotentiallyLinkTo_Static))]
 [HarmonyPatch([typeof(ThingDef), typeof(IntVec3), typeof(Rot4), typeof(ThingDef), typeof(IntVec3), typeof(Rot4), typeof(Map)])]
-[HarmonyPatchCategory(VEF_Mod.LateHarmonyPatchCategory)]
+[HarmonyPatchCategory(VEF_HarmonyCategories.LateHarmonyPatchCategory)]
 public static class VanillaExpandedFramework_CompAffectedByFacilities_CanPotentiallyLinkTo_Static_Patch
 {
     private static bool Prepare(MethodBase method)
