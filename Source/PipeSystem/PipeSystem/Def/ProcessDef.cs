@@ -118,7 +118,7 @@ namespace PipeSystem
         {
             public PipeNetDef pipeNet;                          // Result as a piped resource
             public ThingDef thing;                              // Result as a thing
-            public Type workerClass;
+            public Type workerClass = typeof(ResultWorker);
             public ResultWorker _worker;
             public ResultWorker Worker
             {
@@ -126,7 +126,7 @@ namespace PipeSystem
                 {
                     if (_worker == null)
                     {
-                        _worker = (ResultWorker)Activator.CreateInstance(workerClass);
+                        _worker = (ResultWorker)Activator.CreateInstance(workerClass ?? typeof(ResultWorker));
                         _worker.result = this;
                     }
                     return _worker;

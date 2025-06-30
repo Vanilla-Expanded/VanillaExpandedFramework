@@ -319,12 +319,12 @@ namespace PipeSystem
             if (ContentFinder<Texture2D>.Get(Props.inProgressTexture + "_north", reportFailure: false) != null)
             {
                 cachedProgressGraphic_multi = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(Props.inProgressTexture, shader,
-                     this.parent.def.graphicData.drawSize, this.parent.def.graphicData.color);
+                     this.parent.def.graphicData.drawSize, this.parent.DrawColor);
             }
             else
 
                 cachedProgressGraphic = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(Props.inProgressTexture, shader,
-                         this.parent.def.graphicData.drawSize, this.parent.def.graphicData.color);
+                         this.parent.def.graphicData.drawSize, this.parent.DrawColor);
 
         }
         public void StoreFinishGraphics()
@@ -333,11 +333,11 @@ namespace PipeSystem
             if (ContentFinder<Texture2D>.Get(Props.finishedTexture + "_north", reportFailure: false) != null)
             {
                 cachedFinishedGraphic_multi = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(Props.finishedTexture, shader,
-                     this.parent.def.graphicData.drawSize, this.parent.def.graphicData.color);
+                     this.parent.def.graphicData.drawSize, this.parent.DrawColor);
             }
             else
                 cachedFinishedGraphic = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(Props.finishedTexture, shader,
-                     this.parent.def.graphicData.drawSize, this.parent.def.graphicData.color);
+                     this.parent.def.graphicData.drawSize, this.parent.DrawColor);
 
         }
 
