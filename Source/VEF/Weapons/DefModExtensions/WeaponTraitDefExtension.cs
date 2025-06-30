@@ -13,5 +13,9 @@ namespace VEF.Weapons
         public GraphicData graphicOverride;      
         //Add this ability to the wielder when equipping the weapon (and remove it when not in his possession)
         public AbilityDef abilityToAdd;
+        //This scales the draw size of the weapon. What a silly thing.
+        public float sizeMultiplier = 1;
     }
+
+  
 }
