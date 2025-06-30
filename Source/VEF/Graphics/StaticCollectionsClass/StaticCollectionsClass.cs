@@ -19,8 +19,14 @@ namespace VEF.Graphics
             List<GraphicOffsets> allgraphicOffsetLists = DefDatabase<GraphicOffsets>.AllDefsListForReading.ToList();
             foreach (GraphicOffsets individualList in allgraphicOffsetLists)
             {
+                if (graphicOffsets.ContainsKey(individualList.thingDef))
+                {
+                    graphicOffsets[individualList.thingDef].AddRange(individualList.ingredientsAndOffsetList);
 
-                graphicOffsets[individualList.thingDef]=individualList.ingredientsAndOffsetList;
+                }
+                else {
+                    graphicOffsets[individualList.thingDef] = individualList.ingredientsAndOffsetList;
+                }
             }
 
            
