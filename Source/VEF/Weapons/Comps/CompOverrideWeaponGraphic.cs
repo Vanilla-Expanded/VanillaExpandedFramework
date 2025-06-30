@@ -43,7 +43,14 @@ namespace VEF.Weapons
             return cachedComp;
         }
 
-      
+        public override void PostSpawnSetup(bool respawningAfterLoad)
+        {
+            base.PostSpawnSetup(respawningAfterLoad);
+            if (GetDetails()?.graphicOverride != null)
+            {
+                LongEventHandler.ExecuteWhenFinished(delegate { ChangeGraphic(); });
+            }
+        }
 
         public override void PostExposeData()
         {
