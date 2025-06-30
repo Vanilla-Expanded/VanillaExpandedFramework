@@ -258,9 +258,14 @@
       <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.TerrainPhysicsModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="UnityEngine.TextCoreModule">
+    <Reference Include="UnityEngine.TextCoreFontEngineModule">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.TextCoreModule.dll</HintPath>
+      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.TextCoreFontEngineModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextCoreTextEngineModule">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.TextCoreTextEngineModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
@@ -296,11 +301,6 @@
     <Reference Include="UnityEngine.UmbraModule">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.UmbraModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.UNETModule">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.UNETModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UnityAnalyticsModule">
