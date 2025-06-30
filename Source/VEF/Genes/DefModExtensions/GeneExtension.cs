@@ -102,6 +102,16 @@ namespace VEF.Genes
 
         public float? bodyScaleFactor, headScaleFactor;
 
+        //Pawn move speed factors, based off of PawnKindDef.moveSpeedFactorByTerrainTag.
+        // An additional feature is that you're able to include a speed factor that with
+        // a tag that will be only applied once across all genes with that specific tag,
+        // allowing you to create a multitude of genes with a bonus that will only apply once.
+        // Currently, just like PawnKindDef.moveSpeedFactorByTerrainTag,
+        // this does not apply to pathfinding calculation, only movement speed.
+        // Once Ludeon makes PawnKindDef.moveSpeedFactorByTerrainTag apply to
+        // pathfinding path cost we should match it in a similar manner.
+        public Dictionary<string, List<MoveSpeedFactor>> moveSpeedFactorByTerrainTag;
+
         public override IEnumerable<string> ConfigErrors()
         {
             if (bodyScaleFactor.HasValue)
@@ -128,6 +138,15 @@ namespace VEF.Genes
                 if (age == null) return 0;
                 return Mathf.Lerp(minOffset, maxOffset, range.InverseLerpThroughRange(age.Value));
             }
+        }
+
+        public class MoveSpeedFactor
+        {
+            public float moveSpeedFactor;
+            // If the tag is specified (not null/empty), only a single gene with that tag can apply the bonus.
+            // Without the tag, there's no limit on amount of genes with speed factor bonus.
+            // Generally, if using the tag try to make moveSpeedFactor identical across the board.
+            public string tag = null;
         }
     }
 
