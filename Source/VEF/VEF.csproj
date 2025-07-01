@@ -805,6 +805,7 @@
     <Compile Include="Weapons\Projectiles\ExpandableProjectiles\ExpandableBullet.cs" />
     <Compile Include="Weapons\Harmony\Building_TurretGun_Patches.cs" />
     <Compile Include="Pawns\Harmony\BackstoryDef_BodyTypeFor_Patch.cs" />
+    <Compile Include="Weapons\StaticCollectionsClass\StaticCollectionsClass.cs" />
     <Compile Include="Weapons\ThingDefs\Building_LaserGunDef.cs" />
     <Compile Include="Weapons\ThingDefs\LaserBeamDef.cs" />
     <Compile Include="Weapons\ThingDefs\LaserGunDef.cs" />
