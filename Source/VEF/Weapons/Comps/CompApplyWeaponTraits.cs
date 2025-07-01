@@ -63,22 +63,24 @@ namespace VEF.Weapons
 
         public void ChangeGraphic()
         {
+            if (!this.parent.def.IsApparel) {
+                GraphicData data = GetDetails().Where(x => x.graphicOverride != null)?.FirstOrFallback()?.graphicOverride ?? this.parent.def.graphicData;
+                float size = GetDetails().Where(x => x.sizeMultiplier != 1)?.FirstOrFallback()?.sizeMultiplier ?? 1;
+                Shader shader = data.shaderType?.Shader ?? ShaderTypeDefOf.Cutout.Shader;
+                Color color = GetComp().ForceColor() ?? Color.white;
 
-            GraphicData data = GetDetails().Where(x => x.graphicOverride !=null)?.FirstOrFallback()?.graphicOverride ?? this.parent.def.graphicData;
-            float size = GetDetails().Where(x => x.sizeMultiplier != 1)?.FirstOrFallback()?.sizeMultiplier ?? 1;
-            Shader shader = data.shaderType?.Shader ?? ShaderTypeDefOf.Cutout.Shader;
-            Color color = GetComp().ForceColor() ?? Color.white;
-          
-            if (data.graphicClass == typeof(Graphic_Single))
-            {
-                Graphic_Single newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(data.texPath, shader, new Vector2(size, size), color);
-                ReflectionCache.weaponGraphic(parent) = newGraphicSingle;
+                if (data.graphicClass == typeof(Graphic_Single))
+                {
+                    Graphic_Single newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(data.texPath, shader, new Vector2(size, size), color);
+                    ReflectionCache.weaponGraphic(parent) = newGraphicSingle;
+                }
+                else if (data.graphicClass == typeof(Graphic_Random))
+                {
+                    Graphic_Random newGraphicRandom = (Graphic_Random)GraphicDatabase.Get<Graphic_Random>(data.texPath, shader, new Vector2(size, size), color);
+                    ReflectionCache.weaponGraphic(parent) = newGraphicRandom;
+                }
             }
-            else if (data.graphicClass == typeof(Graphic_Random))
-            {
-                Graphic_Random newGraphicRandom = (Graphic_Random)GraphicDatabase.Get<Graphic_Random>(data.texPath, shader, new Vector2(size, size), color);
-                ReflectionCache.weaponGraphic(parent) = newGraphicRandom;
-            }
+            
         }
 
         public override void Notify_Equipped(Pawn pawn)
