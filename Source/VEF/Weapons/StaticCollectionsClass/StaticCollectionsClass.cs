@@ -14,15 +14,18 @@ namespace VEF.Weapons
 
         static StaticCollectionsClass()
         {
-            List<ThingDef> uniqueWeapons = DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.GetCompProperties<CompProperties_UniqueWeapon>() != null).ToList();
-           
-            if(uniqueWeapons.Count > 0)
+            if (ModsConfig.OdysseyActive)
             {
-                foreach(ThingDef thingDef in uniqueWeapons)
-                {
-                    thingDef.comps.Add(new CompProperties_OverrideWeaponGraphic());
-                }
+                List<ThingDef> uniqueWeapons = DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.GetCompProperties<CompProperties_UniqueWeapon>() != null).ToList();
 
+                if (uniqueWeapons.Count > 0)
+                {
+                    foreach (ThingDef thingDef in uniqueWeapons)
+                    {
+                        thingDef.comps.Add(new CompProperties_OverrideWeaponGraphic());
+                    }
+
+                }
             }
         }
 

@@ -12,7 +12,7 @@ namespace VEF.Weapons
       
         static void AddAbilities(Pawn pawn, WeaponTraitWorker __instance)
         {
-
+           
             WeaponTraitDefExtension extension = __instance.def.GetModExtension<WeaponTraitDefExtension>();
             if (extension?.abilityToAdd != null)
             {
