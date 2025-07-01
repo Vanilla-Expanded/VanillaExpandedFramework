@@ -17,11 +17,7 @@ namespace VEF.Weapons
             harm.Patch(AccessTools.Method(typeof(Verb), "TryCastNextBurstShot"),
                transpiler: new HarmonyMethod(typeof(VanillaExpandedFramework_Verb_TryCastNextBurstShot_Patch), "ChangeSoundProduced"));
 
-            harm.Patch(AccessTools.Method(typeof(WeaponTraitWorker), "Notify_EquipmentLost"),
-               postfix: new HarmonyMethod(typeof(VanillaExpandedFramework_WeaponTraitWorker_Notify_EquipmentLost_Patch), "RemoveAbilities"));
-
-            harm.Patch(AccessTools.Method(typeof(WeaponTraitWorker), "Notify_Equipped"),
-               postfix: new HarmonyMethod(typeof(VanillaExpandedFramework_WeaponTraitWorker_Notify_Equipped_Patch), "AddAbilities"));
+         
         }
     }
 }

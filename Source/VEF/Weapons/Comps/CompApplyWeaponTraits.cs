@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace VEF.Weapons
 {
-    public class CompOverrideWeaponGraphic : ThingComp
+    public class CompApplyWeaponTraits : ThingComp
     {
 
         List<WeaponTraitDefExtension> contentDetails = new List<WeaponTraitDefExtension>();
@@ -14,9 +14,7 @@ namespace VEF.Weapons
         CompUniqueWeapon cachedComp;
 
         public List<WeaponTraitDefExtension> GetDetails()
-        {
-          
-
+        {          
             if (contentDetails.NullOrEmpty())
             {
                 CompUniqueWeapon comp = GetComp();
@@ -25,10 +23,10 @@ namespace VEF.Weapons
                     foreach (WeaponTraitDef item in comp.TraitsListForReading)
                     {
                         WeaponTraitDefExtension extension = item.GetModExtension<WeaponTraitDefExtension>();
-                        if (extension?.graphicOverride != null || extension?.sizeMultiplier != null)
+                        if (extension != null)
                         {
-                            contentDetails.Add(extension);
-                        }
+                            contentDetails.Add(extension);   
+                        }                                       
                     }
                 }
 
@@ -82,5 +80,57 @@ namespace VEF.Weapons
                 ReflectionCache.weaponGraphic(parent) = newGraphicRandom;
             }
         }
+
+        public override void Notify_Equipped(Pawn pawn)
+        {
+            base.Notify_Equipped(pawn);
+            foreach(WeaponTraitDefExtension extension in contentDetails)
+            {
+                if (extension?.abilityToAdd != null)
+                {
+                    pawn.abilities?.GainAbility(extension.abilityToAdd);
+                }
+
+                if (extension?.hediffToAdd != null)
+                {
+                    pawn.health.AddHediff(extension.hediffToAdd);
+                }
+            }
+        }
+
+        public override void Notify_Unequipped(Pawn pawn)
+        {
+            base.Notify_Unequipped(pawn);
+            foreach (WeaponTraitDefExtension extension in contentDetails)
+            {
+                if (extension?.abilityToAdd != null)
+                {
+                    pawn.abilities?.RemoveAbility(extension.abilityToAdd);
+                }
+                if (extension?.hediffToAdd != null)
+                {
+                    Hediff hediffToRemove = pawn.health.hediffSet.GetFirstHediffOfDef(extension.hediffToAdd);
+                    if (hediffToRemove != null) { 
+                        pawn.health.RemoveHediff(hediffToRemove);
+                    }
+                    
+                }
+            }
+        }
+
+        public override void Notify_KilledPawn(Pawn pawn)
+        {
+            base.Notify_KilledPawn(pawn);
+            foreach (WeaponTraitDefExtension extension in contentDetails)
+            {
+                if (extension?.killThought != null)
+                {
+                    pawn.needs.mood.thoughts.memories.TryGainMemory(extension.killThought);
+                }
+                
+            }
+        }
+
+
     }
 }

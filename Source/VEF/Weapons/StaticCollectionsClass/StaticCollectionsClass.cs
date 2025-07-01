@@ -22,7 +22,7 @@ namespace VEF.Weapons
                 {
                     foreach (ThingDef thingDef in uniqueWeapons)
                     {
-                        thingDef.comps.Add(new CompProperties_OverrideWeaponGraphic());
+                        thingDef.comps.Add(new CompProperties_ApplyWeaponTraits());
                     }
 
                 }
