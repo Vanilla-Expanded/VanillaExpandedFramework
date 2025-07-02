@@ -1214,7 +1214,7 @@
     <Compile Include="Planet\AI\LordJobs\LordJob_SiegeCustom.cs" />
     <Compile Include="Planet\AI\LordToils\LordToilData_SiegeCustom.cs" />
     <Compile Include="Planet\AI\LordToils\LordToil_SiegeCustom.cs" />
-    <Compile Include="Maps\Harmony\OptionalFeatures\MapGenerator_GenerateMap.cs" />
+    <Compile Include="Maps\Harmony\MapGenerator_GenerateMap.cs" />
     <Compile Include="Maps\Defs\ObjectSpawnsDef.cs" />
     <Compile Include="Global\ModCompatibilityCheck.cs" />
     <Compile Include="Global\PatchOperation\PatchOperationToggableSequence.cs" />

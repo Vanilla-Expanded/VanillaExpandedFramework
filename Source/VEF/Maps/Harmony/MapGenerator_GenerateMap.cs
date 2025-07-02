@@ -10,9 +10,7 @@ using HarmonyLib;
 
 namespace VEF.Maps
 {
-    // This Harmony patch will only be patched if TileMutatorMechanics is added via XML to a mod using OptionalFeatures
-
-  
+    [HarmonyPatch(typeof(MapGenerator), "GenerateMap")]
     public static class VanillaExpandedFramework_MapGenerator_GenerateMap_Patch
     {
         public static void DoObjectSpawnsDefMapSpawns(Map __result)
