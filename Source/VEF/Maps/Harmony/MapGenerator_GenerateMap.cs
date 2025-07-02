@@ -13,7 +13,7 @@ namespace VEF.Maps
     [HarmonyPatch(typeof(MapGenerator), "GenerateMap")]
     public static class VanillaExpandedFramework_MapGenerator_GenerateMap_Patch
     {
-        public static void DoObjectSpawnsDefMapSpawns(Map __result)
+        public static void Postfix(Map __result)
         {
             LongEventHandler.ExecuteWhenFinished(delegate
             {
@@ -159,6 +159,12 @@ namespace VEF.Maps
                             }
                             if (canSpawn)
                             {
+                                if (thing.def.stackLimit > 1)
+                                {
+                                    thing.stackCount = Mathf.Min(Rand.RangeInclusive(1, thing.def.stackLimit), spawnCounter);
+                                }
+                                spawnCounter -= thing.stackCount;
+
                                 try
                                 {
                                     if (element.randomRotation)
@@ -174,7 +180,6 @@ namespace VEF.Maps
                                 {
                                     Log.Error("Exception spawning thing " + thing + " - " + ex.ToString());
                                 }
-                                spawnCounter--;
                             }
                         }
                     }
@@ -220,8 +225,8 @@ namespace VEF.Maps
                 return false;
             }
             var tile = Find.WorldGrid[map.Tile.tileId];
-            if (element.allowedRoads != null && tile.Roads is null
-                || element.allowedRoads.Any(road => tile.Roads.Any(x => x.road == road)) is false)
+            if (element.allowedRoads != null && (tile.Roads is null
+                || element.allowedRoads.Any(road => tile.Roads.Any(x => x.road == road)) is false))
             {
                 return false;
             }
