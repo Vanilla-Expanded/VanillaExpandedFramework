@@ -19,6 +19,8 @@ namespace VEF.Weapons
         public ThoughtDef killThought;
         //This scales the draw size of the weapon. What a silly thing.
         public float sizeMultiplier = 1;
+        //This will make the gun create random projectiles every time it fires. Shenanigan potential: maximum
+        public bool randomprojectiles = false;
     }
 
   

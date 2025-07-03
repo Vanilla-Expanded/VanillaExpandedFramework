@@ -78,6 +78,8 @@ namespace VEF.Weapons
                 {
                     Graphic_Random newGraphicRandom = (Graphic_Random)GraphicDatabase.Get<Graphic_Random>(data.texPath, shader, new Vector2(size, size), color);
                     ReflectionCache.weaponGraphic(parent) = newGraphicRandom;
+                    ReflectionCache.weaponGraphic(parent) = new Graphic_RandomRotated(ReflectionCache.weaponGraphic(parent), 35);
+
                 }
             }
             

@@ -21,7 +21,10 @@ namespace VEF.Weapons
                     foreach (WeaponTraitDef item in comp.TraitsListForReading)
                     {
                         WeaponTraitDefExtension extension = item.GetModExtension<WeaponTraitDefExtension>();
-                        if (extension?.projectileOverride != null)
+                        if (extension?.randomprojectiles == true) {
+                            __result = StaticCollectionsClass.projectilesInGame.RandomElement();
+                        }              
+                        else if (extension?.projectileOverride != null)
                         {
                             __result = extension.projectileOverride;
                         }

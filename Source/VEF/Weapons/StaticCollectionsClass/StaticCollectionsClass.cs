@@ -11,6 +11,8 @@ namespace VEF.Weapons
     [StaticConstructorOnStartup]
     public static class StaticCollectionsClass
     {
+        public static List<ThingDef> projectilesInGame = new List<ThingDef>();
+
 
         static StaticCollectionsClass()
         {
@@ -26,6 +28,9 @@ namespace VEF.Weapons
                     }
 
                 }
+
+                projectilesInGame = DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.projectile!= null).ToList();
+
             }
         }
 
