@@ -158,40 +158,6 @@ namespace Outposts
                 Find.LetterStack.ReceiveLetter("Outposts.Abandoned".Translate(), "Outposts.Abandoned.Desc".Translate(Name), LetterDefOf.NegativeEvent);
                 Destroy();
             }
-
-            if (Packing)
-            {
-                ticksTillPacked--;
-                if (ticksTillPacked <= 0) ConvertToCaravan();
-            }
-            else if (TicksPerProduction > 0)
-            {
-                ticksTillProduction--;
-                if (ticksTillProduction <= 0)
-                {
-                    ticksTillProduction = Mathf.RoundToInt(TicksPerProduction * OutpostsMod.Settings.TimeMultiplier);
-                    Produce();
-                }
-            }
-
-            if (Find.WorldObjects.PlayerControlledCaravanAt(Tile) is { } caravan && !caravan.pather.MovingNow)
-                foreach (var pawn in caravan.PawnsListForReading)
-                {
-                    //Adding these as in a mass caravan spam test there was dyrad with no rest need
-                    if(pawn.needs?.rest == null) { continue; }
-                    pawn.needs.rest.CurLevel += RestPerTickResting;
-                    if (pawn.IsHashIntervalTick(300))
-                    {
-                        var food = pawn.needs?.food;
-                        if(food == null) { continue;}
-                        if (food.CurLevelPercentage <= pawn.RaceProps.FoodLevelPercentageWantEat && ProvidedFood is {IsNutritionGivingIngestible: true} &&
-                            ProvidedFood.ingestible.HumanEdible)
-                        {
-                            var thing = ThingMaker.MakeThing(ProvidedFood);
-                            if (thing.IngestibleNow && pawn.RaceProps.CanEverEat(thing)) food.CurLevel += thing.Ingested(pawn, food.NutritionWanted);
-                        }
-                    }
-                }
             //Probably shouldnt be doing this during a raid. Fixed one bug in there, but really it just shouldnt be happening
             if (Map == null)
             {
@@ -204,6 +170,40 @@ namespace Outposts
         public override void TickInterval(int delta)
         {
             base.TickInterval(delta);
+
+            if (Packing)
+            {
+                ticksTillPacked -= delta;
+                if (ticksTillPacked <= 0) ConvertToCaravan();
+            }
+            else if (TicksPerProduction > 0)
+            {
+                ticksTillProduction -= delta;
+                if (ticksTillProduction <= 0)
+                {
+                    ticksTillProduction = Mathf.RoundToInt(TicksPerProduction * OutpostsMod.Settings.TimeMultiplier);
+                    Produce();
+                }
+            }
+
+            if (Find.WorldObjects.PlayerControlledCaravanAt(Tile) is { } caravan && !caravan.pather.MovingNow)
+                foreach (var pawn in caravan.PawnsListForReading)
+                {
+                    //Adding these as in a mass caravan spam test there was dyrad with no rest need
+                    if(pawn.needs?.rest == null) { continue; }
+                    pawn.needs.rest.CurLevel += RestPerTickResting * delta;
+                    if (pawn.IsHashIntervalTick(300, delta))
+                    {
+                        var food = pawn.needs?.food;
+                        if(food == null) { continue;}
+                        if (food.CurLevelPercentage <= pawn.RaceProps.FoodLevelPercentageWantEat && ProvidedFood is {IsNutritionGivingIngestible: true} &&
+                            ProvidedFood.ingestible.HumanEdible)
+                        {
+                            var thing = ThingMaker.MakeThing(ProvidedFood);
+                            if (thing.IngestibleNow && pawn.RaceProps.CanEverEat(thing)) food.CurLevel += thing.Ingested(pawn, food.NutritionWanted);
+                        }
+                    }
+                }
 
             //Probably shouldnt be doing this during a raid. Fixed one bug in there, but really it just shouldnt be happening
             if (Map == null)
