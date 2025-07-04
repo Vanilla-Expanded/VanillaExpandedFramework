@@ -23,8 +23,23 @@ namespace VEF.Pawns
         private static MethodBase target;
         private static bool Prepare()
         {
-            target = AccessTools.Method(AccessTools.TypeByName("BBBodySupport.BBBodyTypeSupportHarmony+BBBodyGraphicApparelPatch"), "BBBody_ApparelPatch");
-            return target != null;
+            if (ModsConfig.IsActive("ssulunge.BBBodySupport"))
+            {
+                var type = AccessTools.TypeByName("BBBodySupport.BBBodyTypeSupportHarmony+BBBodyGraphicApparelPatch");
+                if (type == null)
+                {
+                    Log.Error("[VEF] Failed to find BBBodySupport.BBBodyTypeSupportHarmony+BBBodyGraphicApparelPatch type.");
+                    return false;
+                }
+                target = AccessTools.Method(type, "BBBody_GraphicApparelPatch");
+                if (target == null)
+                {
+                    Log.Error("[VEF] Failed to find BBBody_GraphicApparelPatch method in BBBodySupport.BBBodyTypeSupportHarmony+BBBodyGraphicApparelPatch type.");
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         [HarmonyTargetMethod]

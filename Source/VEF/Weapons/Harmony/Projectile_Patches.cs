@@ -23,17 +23,18 @@ namespace VEF.Weapons
         public static MethodInfo turretLocation;
         public static MethodInfo turretRotation;
         public static FieldInfo aimPieOffset;
-        public static Type VehicleType = AccessTools.TypeByName("Vehicles.VehiclePawn");
+        public static Type VehicleType;
         public static bool Prepare()
         {
             if (VFLoaded)
             {
+                VehicleType = AccessTools.TypeByName("Vehicles.VehiclePawn");
                 targetMethod = AccessTools.Method("Vehicles.VehicleTurret:FireTurret");
                 maxRangeInfo = AccessTools.PropertyGetter("Vehicles.VehicleTurret:MaxRange");
                 turretLocation = AccessTools.PropertyGetter("Vehicles.VehicleTurret:TurretLocation");
                 turretRotation = AccessTools.PropertyGetter("Vehicles.VehicleTurret:TurretRotation");
                 aimPieOffset = AccessTools.Field("Vehicles.VehicleTurret:aimPieOffset");
-                if (targetMethod is not null && maxRangeInfo is not null && turretLocation is not null 
+                if (VehicleType is not null && targetMethod is not null && maxRangeInfo is not null && turretLocation is not null 
                     && turretRotation is not null && aimPieOffset is not null)
                 {
                     return true;

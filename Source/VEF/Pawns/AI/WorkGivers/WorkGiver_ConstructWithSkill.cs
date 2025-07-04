@@ -307,11 +307,20 @@ namespace VEF.Pawns
 
         public static bool Prepare()
         {
-            var type = AccessTools.TypeByName("QualityBuilder._WorkGiver_ConstructFinishFrames");
-            if (type != null)
+            if (ModsConfig.IsActive("hatti.qualitybuilder"))
             {
-                targetMethod = AccessTools.Method(type, "Postfix");
-                return targetMethod != null;
+                var type = AccessTools.TypeByName("QualityBuilder._WorkGiver_ConstructFinishFrames");
+                if (type != null)
+                {
+                    targetMethod = AccessTools.Method(type, "Postfix");
+                    if (targetMethod != null)
+                    {
+                        return true;
+                    }
+                    Log.Error("[VEF] Failed to find target method for QualityBuilder WorkGiver_ConstructFinishFrames patch.");
+                    return false;
+                }
+                Log.Error("[VEF] Failed to find type for QualityBuilder WorkGiver_ConstructFinishFrames patch.");
             }
             return false;
         }

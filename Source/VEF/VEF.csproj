@@ -1239,7 +1239,7 @@
     <Compile Include="Factions\Utils\ScenPartUtility.cs" />
     <Compile Include="Apparels\Utils\ShieldUtility.cs" />
     <Compile Include="Apparels\Utils\ApparelCustomUtility.cs" />
-    <Compile Include="Global\VFECore.cs" />
+    <Compile Include="Global\VEF_Mod.cs" />
     <Compile Include="Weathers\DefModExtensions\WeatherOverlayExtension.cs" />
     <Compile Include="Weathers\DefModExtensions\WeatherOverlayExtensionTwo.cs" />
     <Compile Include="Weathers\Harmony\WeatherWorker_Constructor.cs" />

@@ -13,7 +13,6 @@ namespace VEF.Genes
     [HarmonyPatch("DrawGeneBasics")]
     public static class VanillaExpandedFramework_GeneUIUtility_DrawGeneBasics_Patch
     {
-        static Type cachedTextureType = AccessTools.TypeByName("Verse.CachedTexture");
 
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
@@ -59,7 +58,7 @@ namespace VEF.Genes
         {
             if (gene.GetModExtension<GeneExtension>()?.backgroundPathEndogenes != null)
             {
-                return Activator.CreateInstance(cachedTextureType, gene.GetModExtension<GeneExtension>().backgroundPathEndogenes);
+                return Activator.CreateInstance(GraphicsCache.cachedTextureType, gene.GetModExtension<GeneExtension>().backgroundPathEndogenes);
             }
             else { return GraphicsCache.GeneBackground_Endogene; }
         }
@@ -68,7 +67,7 @@ namespace VEF.Genes
         {
             if (gene.GetModExtension<GeneExtension>()?.backgroundPathXenogenes != null)
             {
-                return Activator.CreateInstance(cachedTextureType, gene.GetModExtension<GeneExtension>().backgroundPathXenogenes);
+                return Activator.CreateInstance(GraphicsCache.cachedTextureType, gene.GetModExtension<GeneExtension>().backgroundPathXenogenes);
             }
             else { return GraphicsCache.GeneBackground_Xenogene; }
         }
@@ -77,7 +76,7 @@ namespace VEF.Genes
         {
             if (gene.GetModExtension<GeneExtension>()?.backgroundPathArchite != null)
             {
-                return Activator.CreateInstance(cachedTextureType, gene.GetModExtension<GeneExtension>().backgroundPathArchite);
+                return Activator.CreateInstance(GraphicsCache.cachedTextureType, gene.GetModExtension<GeneExtension>().backgroundPathArchite);
             }
             else { return GraphicsCache.GeneBackground_Archite; }
         }

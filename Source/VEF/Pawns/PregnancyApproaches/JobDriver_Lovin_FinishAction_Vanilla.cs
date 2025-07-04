@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using Verse;
 using Verse.AI;
 
 namespace VEF.Pawns
@@ -50,17 +51,23 @@ namespace VEF.Pawns
         [HarmonyPrepare]
         public static bool Prepare()
         {
-            FindMethod();
-            return methodTarget != null;
+            if (ModsConfig.IsActive("VanillaExpanded.VanillaSocialInteractionsExpanded"))
+            {
+                methodTarget = FindMethod();
+                return methodTarget != null;
+            }
+            return false;
         }
 
-        private static void FindMethod()
+        private static MethodInfo FindMethod()
         {
             var type = AccessTools.TypeByName("VanillaSocialInteractionsExpanded.JobDriver_LovinOneNightStand");
             if (type != null)
             {
-                methodTarget = AccessTools.GetDeclaredMethods(type).LastOrDefault(x => x.Name.Contains("<MakeNewToils>") && x.ReturnType == typeof(void));
+                return AccessTools.GetDeclaredMethods(type).LastOrDefault(x => x.Name.Contains("<MakeNewToils>") && x.ReturnType == typeof(void));
             }
+            Log.Error("[VEF] Failed to patch VanillaSocialInteractionsExpanded");
+            return null;
         }
 
         [HarmonyTargetMethod]
@@ -94,18 +101,25 @@ namespace VEF.Pawns
         [HarmonyPrepare]
         public static bool Prepare()
         {
-            FindMethod();
-            return methodTarget != null;
+            if (ModsConfig.IsActive("vanillaracesexpanded.highmate"))
+            {
+                methodTarget = FindMethod();
+                return methodTarget != null;
+            }
+            return false;
         }
 
-        private static void FindMethod()
+        private static MethodInfo FindMethod()
         {
             var type = AccessTools.TypeByName("VanillaRacesExpandedHighmate.JobDriver_InitiateLovin");
             if (type != null)
             {
-                methodTarget = AccessTools.GetDeclaredMethods(type).LastOrDefault(x => x.Name.Contains("<MakeNewToils>") && x.ReturnType == typeof(void));
+                return AccessTools.GetDeclaredMethods(type).LastOrDefault(x => x.Name.Contains("<MakeNewToils>") && x.ReturnType == typeof(void));
             }
+            Log.Error("[VEF] Failed to patch VanillaRacesExpandedHighmate");
+            return null;
         }
+
 
         [HarmonyTargetMethod]
         public static MethodBase TargetMethod() => methodTarget;
