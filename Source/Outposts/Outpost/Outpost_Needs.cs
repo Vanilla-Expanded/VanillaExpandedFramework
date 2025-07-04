@@ -254,7 +254,7 @@ public partial class Outpost
                                   pawn.health.hediffSet.GetFirstHediffMatchingPart<Hediff_MissingPart>(hediff.Part.parent) == null &&
                                   pawn.health.hediffSet.GetFirstHediffMatchingPart<Hediff_AddedPart>(hediff.Part.parent) == null);
 
-                    foreach (var missing in tmpHediffMissing)
+                    if (tmpHediffMissing.TryRandomElement(out var missing))
                     {
                         var part = missing.Part;
                         pawn.health.RemoveHediff(missing);
