@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
@@ -12,11 +11,6 @@ namespace Outposts;
 
 public static class Utils
 {
-    public delegate void ImmunityTick(ImmunityHandler immunity);
-
-    public static readonly ImmunityTick immunityTick =
-        AccessTools.MethodDelegate<ImmunityTick>(AccessTools.Method(typeof(ImmunityHandler), "ImmunityHandlerTickInterval"));
-
     public static bool SatisfiedBy(this List<AmountBySkill> minSkills, IEnumerable<Pawn> pawns) =>
         minSkills.All(abs => pawns.Sum(p => p.skills.GetSkill(abs.Skill).Level) >= abs.Count);
 

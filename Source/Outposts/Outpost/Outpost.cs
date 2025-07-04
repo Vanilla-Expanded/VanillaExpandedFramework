@@ -201,6 +201,17 @@ namespace Outposts
 
         }
 
+        public override void TickInterval(int delta)
+        {
+            base.TickInterval(delta);
+
+            //Probably shouldnt be doing this during a raid. Fixed one bug in there, but really it just shouldnt be happening
+            if (Map == null)
+            {
+                SatisfyNeedsInterval(delta);
+            }
+        }
+
         public virtual IEnumerable<Thing> ProducedThings()
         {
             return ResultOptions.SelectMany(resultOption => resultOption.Make(CapablePawns.ToList()));
