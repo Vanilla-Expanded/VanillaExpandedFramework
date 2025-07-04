@@ -95,10 +95,7 @@ namespace VEF.Weapons
                     pawn.abilities?.GainAbility(extension.abilityToAdd);
                 }
 
-                if (extension?.hediffToAdd != null)
-                {
-                    pawn.health.AddHediff(extension.hediffToAdd);
-                }
+              
             }
         }
 
@@ -111,14 +108,7 @@ namespace VEF.Weapons
                 {
                     pawn.abilities?.RemoveAbility(extension.abilityToAdd);
                 }
-                if (extension?.hediffToAdd != null)
-                {
-                    Hediff hediffToRemove = pawn.health.hediffSet.GetFirstHediffOfDef(extension.hediffToAdd);
-                    if (hediffToRemove != null) { 
-                        pawn.health.RemoveHediff(hediffToRemove);
-                    }
-                    
-                }
+               
             }
         }
 
