@@ -25,13 +25,13 @@ namespace Outposts
             validity = new Dictionary<WorldObjectDef, Pair<string, string>>();
             foreach (var outpost in OutpostsMod.Outposts)
             {
-                var method = outpost.worldObjectClass.GetMethod("CanSpawnOnWith", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
-                var method2 = outpost.worldObjectClass.GetMethod("RequirementsString", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                var method = outpost.worldObjectClass.GetMethod("CanSpawnOnWith", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null, [typeof(PlanetTile), typeof(List<Pawn>)], null);
+                var method2 = outpost.worldObjectClass.GetMethod("RequirementsString", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null, [typeof(PlanetTile), typeof(List<Pawn>)], null);
                 var ext = outpost.GetModExtension<OutpostExtension>();
                 var valid = ext?.CanSpawnOnWithExt(creator.Tile, creator.HumanColonists()) ??
-                            (string) method?.Invoke(null, new object[] {creator.Tile, creator.HumanColonists()});
+                            (string) method?.Invoke(null, [creator.Tile, creator.HumanColonists()]);
                 var tip = (ext?.RequirementsStringBase(creator.Tile, creator.HumanColonists()) ?? "" +
-                    ((string) method2?.Invoke(null, new object[] {creator.Tile, creator.HumanColonists()}) ?? "")).TrimEndNewlines();
+                    ((string) method2?.Invoke(null, [creator.Tile, creator.HumanColonists()]) ?? "")).TrimEndNewlines();
 
                 validity.Add(outpost, new Pair<string, string>(valid, tip));
             }
