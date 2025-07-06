@@ -140,7 +140,8 @@ namespace KCSG
             {
                 foreach (StuffCategoryDef stuffCat in thing.stuffCategories)
                 {
-                    foreach (ThingDef stuffDef in stuffs.FindAll(t => t.stuffProps.categories.Contains(stuffCat) && t.modContentPack.IsOfficialMod))
+                    foreach (ThingDef stuffDef in stuffs.FindAll(t => t.stuffProps.categories.Contains(stuffCat) 
+                        && t.modContentPack != null && t.modContentPack.IsOfficialMod))
                     {
                         
                         
