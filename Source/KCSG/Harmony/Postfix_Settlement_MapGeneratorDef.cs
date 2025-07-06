@@ -17,13 +17,13 @@ namespace KCSG
                     if (__instance.Faction.def.HasModExtension<CustomGenOption>())
                     {
                         var ext = __instance.Faction.def.GetModExtension<CustomGenOption>();
-                        __result = ext.preventBridgeable ? DefDatabase<MapGeneratorDef>.GetNamed("KCSG_Base_Faction_NoBridge") : DefDatabase<MapGeneratorDef>.GetNamed("KCSG_Base_Faction");
+                        __result = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_Base_Faction");
                         Debug.Message($"Generating base for faction: {__instance.Faction.NameColored}. Skipping patchmaker: {ext.preventBridgeable}");
                     }
                     else if (Find.World.worldObjects.AllWorldObjects.Find(o => o.Tile == __instance.Tile && o.def.HasModExtension<CustomGenOption>()) is WorldObject wo)
                     {
                         var ext = wo.def.GetModExtension<CustomGenOption>();
-                        __result = ext.preventBridgeable ? DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_NoBridge") : DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject");
+                        __result = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject");
                         Debug.Message($"Generating world object map. Skipping patchmaker: {ext.preventBridgeable}");
                     }
                 }

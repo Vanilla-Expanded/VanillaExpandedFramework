@@ -23,21 +23,8 @@ namespace KCSG
                         // If it has the extension, always modify it's MapGeneratorDef
                         if (obj.def.GetModExtension<CustomGenOption>() is CustomGenOption ext)
                         {
-                            __result = ext.preventBridgeable ? DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject_NoBridge") : DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject");
+                            __result = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_WorldObject");
                             return;
-                        }
-                        // If it don't but is a site, check ExtraGenStepDefs
-                        else if (obj is Site site)
-                        {
-                            foreach (var step in site.ExtraGenStepDefs)
-                            {
-                                // If one genstep is GenStep_CustomStructureGen and it should prevent bridgeable, return custom MapGeneratorDef
-                                if (step.def.genStep is GenStep_CustomStructureGen csg && csg.preventBridgeable)
-                                {
-                                    __result = DefDatabase<MapGeneratorDef>.GetNamed("KCSG_Encounter_NoBridge");
-                                    return;
-                                }
-                            }
                         }
                     }
                 }
