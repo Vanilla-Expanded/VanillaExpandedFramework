@@ -48,11 +48,22 @@ namespace VEF.AnimalBehaviours
 
                                 if (Props.healAll)
                                 {
-                                    foreach (Hediff_Injury injury in injuries)
-                                    {
-                                        injury.Severity = injury.Severity - Props.healAmount;
-                                        break;
+                                    if (Props.onlyTendButNotHeal) {
+                                        foreach (Hediff_Injury injury in injuries)
+                                        {
+                                            injury.Tended(0.7f, 1f);
+                                           
+                                        }
                                     }
+                                    else
+                                    {
+                                        foreach (Hediff_Injury injury in injuries)
+                                        {
+                                            injury.Severity = injury.Severity - Props.healAmount;
+                                            break;
+                                        }
+                                    }
+                                    
                                 }
                                 else
                                 {
@@ -62,8 +73,6 @@ namespace VEF.AnimalBehaviours
 
                             }
                         }
-
-
                     }
                 }
                 tickCounter = 0;
@@ -79,13 +88,21 @@ namespace VEF.AnimalBehaviours
                 Hediff_Injury hediff_Injury = pawn.health.hediffSet.hediffs[i] as Hediff_Injury;
                 if (hediff_Injury != null)
                 {
-                    injuries.Add(hediff_Injury);
+                    if (Props.onlyBleeding)
+                    {
+                        if (hediff_Injury.Bleeding)
+                        {
+                            injuries.Add(hediff_Injury);
+                        }
+                    }
+                    else
+                    {
+                        injuries.Add(hediff_Injury);
+                    }                     
                 }
-
             }
             return injuries;
         }
-
 
     }
 }

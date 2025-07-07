@@ -13,6 +13,8 @@ namespace VEF.AnimalBehaviours
         public bool healAll = true;
         public bool needsSun = false;
         public bool needsWater = false;
+        public bool onlyBleeding = false;
+        public bool onlyTendButNotHeal = false;
 
         public HediffCompProperties_Regeneration()
         {
