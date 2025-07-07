@@ -14,6 +14,11 @@ namespace VEF.Hediffs
         private static bool          shieldPatchesApplied;
         private static HarmonyMethod MyMethod(this string name) => new HarmonyMethod(typeof(ShieldsSystem), name);
 
+        static ShieldsSystem()
+        {
+            CacheClearing.ClearCaches.clearCacheTypes.Add(typeof(ShieldsSystem));
+        }
+
         public static void ApplyDrawPatches()
         {
             if (drawPatchesApplied) return;

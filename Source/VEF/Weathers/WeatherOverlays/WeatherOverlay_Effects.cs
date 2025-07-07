@@ -1,13 +1,25 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using RimWorld;
+using VEF.CacheClearing;
 using Verse;
 
 namespace VEF.Weathers
 {
+    [StaticConstructorOnStartup]
     internal class WeatherOverlay_Effects : WeatherOverlayDualPanner
     {
+        public WeatherOverlay_Effects()
+        {
+            // We could just pass the instance and let the code clear stuff on its own,
+            // but since we're inheriting from vanilla classes it would be safer not to,
+            // in case Ludeon decides to add some collections to the parent classes.
+            ClearCaches.OnClearCache += _ => nextDamageTickForMap.Clear();
+        }
+
         public Dictionary<Map, int> nextDamageTickForMap = new();
+        
         public override void TickOverlay(Map map, float lerpFactor)
         {
             base.TickOverlay(map, lerpFactor);

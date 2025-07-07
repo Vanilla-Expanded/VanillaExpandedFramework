@@ -26,10 +26,10 @@ namespace VEF.AnimalBehaviours
 
         {
             if (attacker != null) {
-                if (StaticCollectionsClass.IsLastStandAnimal(attacker))
+                if (attacker.TryGetLastStandAnimalRate(out var rate))
                 {
                     float health = attacker.health.summaryHealth.SummaryHealthPercent;
-                    float factor = ((StaticCollectionsClass.LastStandAnimalRate(attacker) - 1) * (1 - health)) + 1;
+                    float factor = ((rate - 1) * (1 - health)) + 1;
 
                     __result = __result / factor;
 

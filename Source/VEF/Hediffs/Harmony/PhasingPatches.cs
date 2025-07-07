@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
 using UnityEngine.Assertions;
+using VEF.CacheClearing;
 using Verse;
 using Verse.AI;
 
@@ -151,8 +152,14 @@ namespace VEF.Hediffs
         }
     }
 
+    [StaticConstructorOnStartup]
     public static class PhasingUtils
     {
+        static PhasingUtils()
+        {
+            ClearCaches.ClearCache();
+        }
+
         public static HashSet<Pawn> PhasingPawns = new();
         public static bool IsPhasing(this Pawn p) => PhasingPawns.Contains(p);
         public static bool IsPhasingSlow(this Pawn p) => p.health.hediffSet.GetAllComps().OfType<HediffComp_Phasing>().Any();

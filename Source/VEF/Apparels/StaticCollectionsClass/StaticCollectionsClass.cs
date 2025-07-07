@@ -4,6 +4,7 @@ using System;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
+using VEF.CacheClearing;
 
 
 namespace VEF.Apparels
@@ -17,6 +18,10 @@ namespace VEF.Apparels
         // A list of pawns that are wearing camouflage apparel
         public static HashSet<Thing> camouflaged_pawns = new HashSet<Thing>();
 
+        static StaticCollectionsClass()
+        {
+            ClearCaches.clearCacheTypes.Add(typeof(StaticCollectionsClass));
+        }
 
         public static void AddCamouflagedPawnToList(Thing thing)
         {

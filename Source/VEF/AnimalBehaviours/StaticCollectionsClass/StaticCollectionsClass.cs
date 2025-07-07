@@ -4,6 +4,7 @@ using System;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
+using VEF.CacheClearing;
 
 
 namespace VEF.AnimalBehaviours
@@ -46,6 +47,7 @@ namespace VEF.AnimalBehaviours
         public static IDictionary<Thing, float> lastStand_animals = new Dictionary<Thing, float>();
 
         // A list of animals disabled from quests. Loaded once from XML lists in this class' constructor
+        [NoCacheClearing]
         public static HashSet<PawnKindDef> questDisabledAnimals = new HashSet<PawnKindDef>();
 
 
@@ -71,6 +73,11 @@ namespace VEF.AnimalBehaviours
         public static float LastStandAnimalRate(this Pawn pawn)
         {
             return lastStand_animals[pawn];
+        }
+
+        public static bool TryGetLastStandAnimalRate(this Pawn pawn, out float rate)
+        {
+            return lastStand_animals.TryGetValue(pawn, out rate);
         }
 
         public static bool IsDraftableControllableAnimal(this Pawn pawn)
@@ -282,6 +289,7 @@ namespace VEF.AnimalBehaviours
 
         static StaticCollectionsClass()
         {
+            ClearCaches.clearCacheTypes.Add(typeof(StaticCollectionsClass));
             
             HashSet<AnimalsDisabledFromQuestsDef> allUnaffectedLists = DefDatabase<AnimalsDisabledFromQuestsDef>.AllDefsListForReading.ToHashSet();
             foreach (AnimalsDisabledFromQuestsDef individualList in allUnaffectedLists)

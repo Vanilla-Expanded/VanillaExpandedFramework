@@ -4,6 +4,7 @@ using System;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
+using VEF.CacheClearing;
 
 
 namespace VEF.Genes
@@ -13,6 +14,8 @@ namespace VEF.Genes
     {
 
         static StaticCollectionsClass() {
+
+            ClearCaches.clearCacheTypes.Add(typeof(StaticCollectionsClass));
 
             foreach (GeneDef geneDef in DefDatabase<GeneDef>.AllDefsListForReading)
             {
@@ -61,12 +64,13 @@ namespace VEF.Genes
         // A list of pawns with skills that give recreation when gaining XP
         public static IDictionary<Thing, SkillDef> skillRecreation_gene_pawns = new Dictionary<Thing, SkillDef>();
         // A list of genes that should be hidden on the xenotype editor
+        [NoCacheClearing]
         public static HashSet<GeneDef> hidden_genes = new HashSet<GeneDef>();
         // A list of pawns with pregnancy speed modifiers
         public static IDictionary<Thing, float> pregnancySpeedFactor_gene_pawns = new Dictionary<Thing, float>();
         // A list of pawns with swapped gender genes
         public static HashSet<Pawn> swappedgender_gene_pawns = new HashSet<Pawn>();
-
+        // List of pawns with modified movement speed on a specific terrain tag
         public static Dictionary<Thing, ExtendedMoveSpeedFactorByTerrainTag> moveSpeedFactorByTerrainTag_gene_pawns = new();
 
 
