@@ -29,10 +29,10 @@ namespace VEF.AnimalBehaviours
             }
         }
 
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (!waitingForNight && this.parent.pawn.IsHashIntervalTick(Props.checkingInterval) && this.parent.pawn.Map != null
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (!waitingForNight && this.parent.pawn.IsHashIntervalTick(Props.checkingInterval, delta) && this.parent.pawn.Map != null
                 && (!Props.requiresTamed || (Props.requiresTamed && this.parent.pawn.Faction != null && this.parent.pawn.Faction.IsPlayer)))
             {
                 IncidentDef incidentDef = IncidentDef.Named(Props.incidentToCause);
@@ -48,7 +48,7 @@ namespace VEF.AnimalBehaviours
                 }
 
             }
-            if (waitingForNight && this.parent.pawn.IsHashIntervalTick(this.checkingForNightInterval) && this.parent.pawn.Map != null && GenCelestial.CurCelestialSunGlow(this.parent.pawn.Map) <= 0.4f
+            if (waitingForNight && this.parent.pawn.IsHashIntervalTick(this.checkingForNightInterval, delta) && this.parent.pawn.Map != null && GenCelestial.CurCelestialSunGlow(this.parent.pawn.Map) <= 0.4f
                 && (!Props.requiresTamed || (Props.requiresTamed && this.parent.pawn.Faction != null && this.parent.pawn.Faction.IsPlayer)))
             {
                 IncidentDef incidentDef = IncidentDef.Named(Props.incidentToCause);

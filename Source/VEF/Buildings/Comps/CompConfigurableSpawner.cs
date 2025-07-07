@@ -47,14 +47,14 @@ namespace VEF.Buildings
             }
         }
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            this.TickInterval(1);
+            this.TickInterval(delta);
         }
 
         public override void CompTickRare()
         {
-            this.TickInterval(250);
+            this.TickInterval(GenTicks.TickRareInterval);
         }
 
         private void TickInterval(int interval)

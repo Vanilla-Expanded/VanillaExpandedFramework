@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 using Verse.AI;
@@ -7,24 +6,23 @@ using RimWorld;
 
 namespace VEF.AnimalBehaviours
 {
-    public class JobDriver_IngestWeird : JobDriver
+    public class JobDriver_IngestWeird : JobDriver, IEatingDriver
     {
-        private Thing IngestibleSource
-        {
-            get
-            {
-                return this.job.GetTarget(TargetIndex.A).Thing;
-            }
-        }
+        private Toil chewing;
 
-        private float ChewDurationMultiplier
-        {
-            get
-            {
+        public const float EatCorpseBodyPartsUntilFoodLevelPct = 0.9f;
 
-                return 1f;
-            }
-        }
+        public const TargetIndex IngestibleSourceInd = TargetIndex.A;
+
+        private const TargetIndex TableCellInd = TargetIndex.B;
+
+        private const TargetIndex ExtraIngestiblesToCollectInd = TargetIndex.C;
+
+        private Thing IngestibleSource => this.job.GetTarget(IngestibleSourceInd).Thing;
+
+        private float ChewDurationMultiplier => 1f;
+
+        public bool GainingNutritionNow => !IngestibleSource.DestroyedOrNull() && CurToil == chewing;
 
         public override void ExposeData()
         {
@@ -65,16 +63,15 @@ namespace VEF.AnimalBehaviours
 
             this.FailOn(() => this.IngestibleSource.Destroyed);
 
-            Toil chew = ChewAnything(this.pawn, 1f, TargetIndex.A, TargetIndex.B).FailOn((Toil x) => !this.IngestibleSource.Spawned && (this.pawn.carryTracker == null || this.pawn.carryTracker.CarriedThing != this.IngestibleSource)).FailOnCannotTouch(TargetIndex.A, PathEndMode.Touch);
-            foreach (Toil toil in this.PrepareToIngestToils(chew))
+            chewing = ChewAnything(this.pawn, 1f, IngestibleSourceInd, TableCellInd).FailOn((Toil x) => !this.IngestibleSource.Spawned && (this.pawn.carryTracker == null || this.pawn.carryTracker.CarriedThing != this.IngestibleSource)).FailOnCannotTouch(IngestibleSourceInd, PathEndMode.Touch);
+            foreach (Toil toil in this.PrepareToIngestToils(chewing))
             {
                 yield return toil;
             }
 
-            yield return chew;
-            yield return FinalizeIngestAnything(this.pawn, TargetIndex.A, comp);
-            yield return Toils_Jump.JumpIf(chew, () => this.job.GetTarget(TargetIndex.A).Thing is Corpse && this.pawn.needs?.food?.CurLevelPercentage < 0.9f);
-            yield break;
+            yield return chewing;
+            yield return FinalizeIngestAnything(this.pawn, IngestibleSourceInd, comp);
+            yield return Toils_Jump.JumpIf(chewing, () => this.job.GetTarget(IngestibleSourceInd).Thing is Corpse && this.pawn.needs?.food?.CurLevelPercentage < EatCorpseBodyPartsUntilFoodLevelPct);
 
         }
 
@@ -89,59 +86,60 @@ namespace VEF.AnimalBehaviours
         private IEnumerable<Toil> PrepareToIngestToils_NonToolUser()
         {
             yield return this.ReserveFood();
-            yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
-            yield break;
+            yield return Toils_Goto.GotoThing(IngestibleSourceInd, PathEndMode.Touch);
         }
 
         private Toil ReserveFood()
         {
-            return new Toil
+            var toil = ToilMaker.MakeToil();
+
+            toil.initAction = delegate
             {
-                initAction = delegate ()
-                {
                     
                         
-                        Thing thing = this.job.GetTarget(TargetIndex.A).Thing;
+                Thing thing = this.job.GetTarget(IngestibleSourceInd).Thing;
                                                
-                        if (!this.pawn.Reserve(thing, this.job, 10, 1, null, true))
-                        {
-                            Log.Error(string.Concat(new object[]
-                            {
-                            "Pawn food reservation for ",
-                            this.pawn,
-                            " on job ",
-                            this,
-                            " failed, because it could not register food from ",
-                            thing,
-                            " - amount: ",
-                            1
-                            }));
-                            this.pawn.jobs.EndCurrentJob(JobCondition.Errored, true, true);
-                        }
-                        this.job.count = 1;
+                if (!this.pawn.Reserve(thing, this.job, 10, 1))
+                {
+                    Log.Error(string.Concat(new object[]
+                    {
+                        "Pawn food reservation for ",
+                        this.pawn,
+                        " on job ",
+                        this,
+                        " failed, because it could not register food from ",
+                        thing,
+                        " - amount: ",
+                        1
+                    }));
+                    this.pawn.jobs.EndCurrentJob(JobCondition.Errored);
+                }
+                this.job.count = 1;
                     
                     
-                },
-                defaultCompleteMode = ToilCompleteMode.Instant,
-                atomicWithPrevious = true
             };
+            toil.defaultCompleteMode = ToilCompleteMode.Instant;
+            toil.atomicWithPrevious = true;
+
+            return toil;
         }
 
         public static Toil ChewAnything(Pawn chewer, float durationMultiplier, TargetIndex ingestibleInd, TargetIndex eatSurfaceInd = TargetIndex.None)
         {
-            Toil toil = new Toil();
-            toil.initAction = delegate ()
+            Toil toil = ToilMaker.MakeToil();
+            toil.initAction = delegate
             {
                 Pawn actor = toil.actor;
                 Thing thing = actor.CurJob.GetTarget(ingestibleInd).Thing;
-               
-                actor.jobs.curDriver.ticksLeftThisToil = 500;
+
+                // toil.actor.pather.StopDead(); ??
+                actor.jobs.curDriver.ticksLeftThisToil = Mathf.RoundToInt(500 * durationMultiplier);
                 if (thing.Spawned)
                 {
                     thing.Map.physicalInteractionReservationManager.Reserve(chewer, actor.CurJob, thing);
                 }
             };
-            toil.tickAction = delegate ()
+            toil.tickIntervalAction = delegate(int delta)
             {
                 if (chewer != toil.actor)
                 {
@@ -159,7 +157,7 @@ namespace VEF.AnimalBehaviours
                         toil.actor.rotationTracker.FaceCell(toil.actor.CurJob.GetTarget(eatSurfaceInd).Cell);
                     }
                 }
-                toil.actor.GainComfortFromCellIfPossible(1,false);
+                toil.actor.GainComfortFromCellIfPossible(delta);
             };
             toil.WithProgressBar(ingestibleInd, delegate
             {
@@ -168,8 +166,8 @@ namespace VEF.AnimalBehaviours
                 {
                     return 1f;
                 }
-                return 1f - (float)toil.actor.jobs.curDriver.ticksLeftThisToil / Mathf.Round((float)500 * durationMultiplier);
-            }, false, -0.5f);
+                return 1f - toil.actor.jobs.curDriver.ticksLeftThisToil / Mathf.Round(500 * durationMultiplier);
+            });
             toil.defaultCompleteMode = ToilCompleteMode.Delay;
             toil.FailOnDestroyedOrNull(ingestibleInd);
             toil.AddFinishAction(delegate
@@ -202,41 +200,36 @@ namespace VEF.AnimalBehaviours
 
         public static Toil FinalizeIngestAnything(Pawn ingester, TargetIndex ingestibleInd, CompEatWeirdFood comp)
         {
-            Toil toil = new Toil();
-            toil.initAction = delegate ()
+            Toil toil = ToilMaker.MakeToil();
+            toil.initAction = delegate
             {
                 Pawn actor = toil.actor;
                 Job curJob = actor.jobs.curJob;
                 Thing thing = curJob.GetTarget(ingestibleInd).Thing;
 
-                float num = ingester.needs.food.NutritionWanted;
-                if (curJob.overeat)
-                {
-                    num = Mathf.Max(num, 0.75f);
-                }
-                float num2 = comp.Props.nutrition;
+                float nutrition = comp.Props.nutrition;
 
                 if (comp.Props.areFoodSourcesPlants)
                 {
-                    Plant plant = thing as Plant;
-                    float numGrowth = plant.Growth;
-                    num2 = num2 * numGrowth;
+                    if (thing is Plant plant)
+                    {
+                        nutrition *= plant.Growth;
+                    }
                 }
 
                 if (comp.Props.fullyDestroyThing)
                 {
                     if (comp.Props.drainBattery)
                     {
-                        Building_Battery battery = thing as Building_Battery;
-                        if (battery != null)
+                        if (thing is Building_Battery battery)
                         {
                             CompPowerBattery compPower = battery.TryGetComp<CompPowerBattery>();
                             compPower.SetStoredEnergyPct(compPower.StoredEnergyPct - comp.Props.percentageDrain);
                         }
-                        else thing.Destroy(DestroyMode.Vanish);
+                        else thing.Destroy();
 
                     }
-                    else thing.Destroy(DestroyMode.Vanish);
+                    else thing.Destroy();
 
                 }
                 else
@@ -246,7 +239,7 @@ namespace VEF.AnimalBehaviours
                         thing.HitPoints -= (int)(thing.MaxHitPoints * comp.Props.percentageOfDestruction);
                         if (thing.HitPoints <= 0)
                         {
-                            thing.Destroy(DestroyMode.Vanish);
+                            thing.Destroy();
                         }
                     }
                     else
@@ -254,11 +247,11 @@ namespace VEF.AnimalBehaviours
                         int thingsToDestroy = (int)(comp.Props.percentageOfDestruction * thing.def.stackLimit);
                         //Log.Message(thingsToDestroy.ToString());
 
-                        thing.stackCount = thing.stackCount - thingsToDestroy;
+                        thing.stackCount -= thingsToDestroy;
                         //Log.Message(thing.stackCount.ToString());
                         if (thing.stackCount < 10)
                         {
-                            thing.Destroy(DestroyMode.Vanish);
+                            thing.Destroy();
                         }
 
                     }
@@ -286,11 +279,11 @@ namespace VEF.AnimalBehaviours
                             {
                                 for (int i = 0; i < comp.Props.numberOfOffspring; i++)
                                 {
-                                    PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDef.Named(comp.Props.defToFissionTo), actor.Faction, PawnGenerationContext.NonPlayer, -1,true, true, false, false, true, 1f, false, false, true, true, false, false);
+                                    PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDef.Named(comp.Props.defToFissionTo), actor.Faction, PawnGenerationContext.NonPlayer, -1,true, true, false, false, true, 1f, false, false, true, true, false);
                                     Pawn newPawn = PawnGenerator.GeneratePawn(request);
                                     newPawn.playerSettings.AreaRestrictionInPawnCurrentMap = actor.playerSettings.AreaRestrictionInPawnCurrentMap;
                                     newPawn.relations.AddDirectRelation(PawnRelationDefOf.Parent, actor);
-                                    GenSpawn.Spawn(newPawn, actor.Position, actor.Map, WipeMode.Vanish);
+                                    GenSpawn.Spawn(newPawn, actor.Position, actor.Map);
 
                                 }
 
@@ -301,7 +294,7 @@ namespace VEF.AnimalBehaviours
                         }
                         else
                         {
-                            PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDef.Named(comp.Props.defToAdvanceTo), actor.Faction, PawnGenerationContext.NonPlayer,-1, true, true, false, false, true, 1f, false, false, true, true, false, false);
+                            PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDef.Named(comp.Props.defToAdvanceTo), actor.Faction, PawnGenerationContext.NonPlayer,-1, true, true, false, false, true, 1f, false, false, true, true, false);
                             Pawn newPawn = PawnGenerator.GeneratePawn(request);
                             if (actor.Name!=null && !actor.Name.ToString().UncapitalizeFirst().Contains(actor.def.label))
                             {
@@ -324,7 +317,7 @@ namespace VEF.AnimalBehaviours
                             }
 
                            
-                            GenSpawn.Spawn(newPawn, actor.Position, actor.Map, WipeMode.Vanish);
+                            GenSpawn.Spawn(newPawn, actor.Position, actor.Map);
                             actor.Destroy();
                         }
 
@@ -333,25 +326,13 @@ namespace VEF.AnimalBehaviours
 
                 if (!ingester.Dead)
                 {
-                    ingester.needs.food.CurLevel += num2;
+                    ingester.needs.food.CurLevel += nutrition;
                 }
-                ingester.records.AddTo(RecordDefOf.NutritionEaten, num2);
+                ingester.records.AddTo(RecordDefOf.NutritionEaten, nutrition);
             };
             toil.defaultCompleteMode = ToilCompleteMode.Instant;
             return toil;
         }
-
-
-
-
-
-        public const float EatCorpseBodyPartsUntilFoodLevelPct = 0.9f;
-
-        public const TargetIndex IngestibleSourceInd = TargetIndex.A;
-
-        private const TargetIndex TableCellInd = TargetIndex.B;
-
-        private const TargetIndex ExtraIngestiblesToCollectInd = TargetIndex.C;
     }
 }
 

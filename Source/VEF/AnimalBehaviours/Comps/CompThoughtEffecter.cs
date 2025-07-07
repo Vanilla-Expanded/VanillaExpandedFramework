@@ -11,7 +11,6 @@ namespace VEF.AnimalBehaviours
 {
     public class CompThoughtEffecter : ThingComp
     {
-        public int tickCounter = 0;
         public List<Pawn> pawnList = new List<Pawn>();
         public Pawn thisPawn;
 
@@ -23,14 +22,13 @@ namespace VEF.AnimalBehaviours
             }
         }
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            base.CompTick();
+            base.CompTickInterval(delta);
             if (AnimalBehaviours_Settings.flagEffecters)
             {
-                tickCounter++;
                 //Only do anything every tickInterval
-                if (tickCounter > Props.tickInterval)
+                if (parent.IsHashIntervalTick(Props.tickInterval, delta))
                 {
                     thisPawn = this.parent as Pawn;
                     //Null map check. Also will only work if pawn is not dead or downed, and if needsToBeTamed is true, that the animal is tamed
@@ -76,7 +74,6 @@ namespace VEF.AnimalBehaviours
                             }
                         }
                     }
-                    tickCounter = 0;
                 }
             }
             

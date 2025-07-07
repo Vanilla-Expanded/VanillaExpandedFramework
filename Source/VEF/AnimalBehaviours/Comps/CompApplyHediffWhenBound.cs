@@ -31,10 +31,10 @@ namespace VEF.AnimalBehaviours
             }
         }
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            base.CompTick();
-            if (this.parent.IsHashIntervalTick(Props.checkingInterval) && this.parent.Map != null)
+            base.CompTickInterval(delta);
+            if (this.parent.IsHashIntervalTick(Props.checkingInterval, delta) && this.parent.Map != null)
             {
                 Pawn thisPawn = this.parent as Pawn;
                 bool flag = false;

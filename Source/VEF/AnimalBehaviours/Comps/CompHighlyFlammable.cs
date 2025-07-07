@@ -7,8 +7,6 @@ namespace VEF.AnimalBehaviours
     public class CompHighlyFlammable : ThingComp
     {
 
-        public int flameCounter = 0;
-
         public CompProperties_HighlyFlammable Props
         {
             get
@@ -17,12 +15,11 @@ namespace VEF.AnimalBehaviours
             }
         }
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            base.CompTick();
-            flameCounter++;
+            base.CompTickInterval(delta);
             //Only check every tickInterval
-            if (flameCounter >= Props.tickInterval)
+            if (parent.IsHashIntervalTick(Props.tickInterval, delta))
             {
                 Pawn pawn = this.parent as Pawn;
                 //Only do things if pawn is burning
@@ -40,7 +37,6 @@ namespace VEF.AnimalBehaviours
                     Thing instigator = this.parent;
                     this.parent.TakeDamage(new DamageInfo(flame, amount, 0f, -1f, instigator, null, null, DamageInfo.SourceCategory.ThingOrUnknown, null)).AssociateWithLog(battleLogEntry_DamageTaken);
                 }
-                flameCounter = 0;
             }
         }
         public static DamageDef Named(string defName)

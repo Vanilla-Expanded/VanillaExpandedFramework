@@ -53,11 +53,11 @@ namespace PipeSystem
         /// <summary>
         /// Ticks methods are only needed for contentRequirePower
         /// </summary>
-        public override void CompTick() => Tick();
+        public override void CompTickInterval(int delta) => Tick(delta);
 
-        public override void CompTickRare() => Tick(250);
+        public override void CompTickRare() => Tick(GenTicks.TickRareInterval);
 
-        public override void CompTickLong() => Tick(2000);
+        public override void CompTickLong() => Tick(GenTicks.TickLongInterval);
 
         /// <summary>
         /// Tick storage if contentRequirePower set to true

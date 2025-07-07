@@ -12,7 +12,6 @@ namespace VEF.AnimalBehaviours
     {
 
 
-        public int tickCounter = 0;
         public List<Pawn> pawnList = new List<Pawn>();
         public Pawn thisPawn;
 
@@ -23,17 +22,14 @@ namespace VEF.AnimalBehaviours
                 return (HediffCompProperties_PassiveRegenerator)this.props;
             }
         }
-       
 
 
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-           
+            base.CompPostTickInterval(ref severityAdjustment, delta);
 
-                tickCounter++;
                 //Only do anything every tickInterval
-                if (tickCounter > Props.tickInterval)
+                if (Pawn.IsHashIntervalTick(Props.tickInterval, delta))
                 {
                     thisPawn = this.parent.pawn as Pawn;
                     //Null map check. Also will only work if pawn is not dead or downed
@@ -58,25 +54,22 @@ namespace VEF.AnimalBehaviours
                                 {
                                     IEnumerable<Hediff_Injury> injuriesEnumerable = pawn.health.hediffSet.GetHediffsTendable().OfType<Hediff_Injury>();
 
-                                    if (injuriesEnumerable != null)
-                                    {
-                                        Hediff_Injury[] injuries = injuriesEnumerable.ToArray();
+                                    Hediff_Injury[] injuries = injuriesEnumerable.ToArray();
 
-                                        if (injuries.Any())
+                                    if (injuries.Any())
+                                    {
+                                        if (Props.healAll)
                                         {
-                                            if (Props.healAll)
+                                            foreach (Hediff_Injury injury in injuries)
                                             {
-                                                foreach (Hediff_Injury injury in injuries)
-                                                {
-                                                    injury.Severity = injury.Severity - Props.healAmount;
-                                                    break;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                Hediff_Injury injury = injuries.RandomElement();
                                                 injury.Severity = injury.Severity - Props.healAmount;
+                                                break;
                                             }
+                                        }
+                                        else
+                                        {
+                                            Hediff_Injury injury = injuries.RandomElement();
+                                            injury.Severity = injury.Severity - Props.healAmount;
                                         }
                                     }
                                 }
@@ -84,7 +77,6 @@ namespace VEF.AnimalBehaviours
                             }
                         }
                     }
-                    tickCounter = 0;
                 }
             
         }

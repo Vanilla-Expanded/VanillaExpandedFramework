@@ -17,15 +17,13 @@ namespace VEF.AnimalBehaviours
             }
         }
 
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            tickCounter--;
-            if (tickCounter < 0)
+            if (Pawn.IsHashIntervalTick(Props.checkingInterval, delta))
             {
                 if (this.parent.pawn.drafter == null) { this.parent.pawn.drafter = new Pawn_DraftController(this.parent.pawn); }
                 if (this.parent.pawn.equipment == null) { this.parent.pawn.equipment = new Pawn_EquipmentTracker(this.parent.pawn); }
                 StaticCollectionsClass.AddDraftableAnimalToList(this.parent.pawn);
-                tickCounter = Props.checkingInterval;
             }
         }
 

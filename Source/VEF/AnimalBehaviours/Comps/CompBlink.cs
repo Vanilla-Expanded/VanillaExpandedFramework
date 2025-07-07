@@ -13,9 +13,6 @@ namespace VEF.AnimalBehaviours
     public class CompBlink : ThingComp
     {
 
-        int tickCounter = 0;
-
-
         public CompProperties_Blink Props
         {
             get
@@ -24,15 +21,12 @@ namespace VEF.AnimalBehaviours
             }
         }
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            base.CompTick();
+            base.CompTickInterval(delta);
             if (AnimalBehaviours_Settings.flagBlinkMechanics) {
-                tickCounter++;
-                if (tickCounter > Props.blinkInterval)
+                if (parent.IsHashIntervalTick(Props.blinkInterval, delta))
                 {
-
-                    IntVec3 loc = IntVec3.Invalid;
                     Pawn pawn = this.parent as Pawn;
 
                     if (!ModsConfig.OdysseyActive || !pawn.training.HasLearned(InternalDefOf.VEF_ControlledBlinking))
@@ -42,7 +36,7 @@ namespace VEF.AnimalBehaviours
                             if (pawn.CurJob.def == JobDefOf.GotoWander || pawn.CurJob.def == JobDefOf.Wait_Wander || pawn.CurJob.def == JobDefOf.Wait_MaintainPosture)
                             {
                                 if (CellFinderLoose.TryFindRandomNotEdgeCellWith(10, (IntVec3 x) => x.DistanceTo(this.parent.Position) < Props.distance.RandomInRange,
-                                this.parent.Map, out loc))
+                                this.parent.Map, out var loc))
                                 {
                                     if (Props.warpEffect && !Props.effectOnlyWhenManhunter)
                                     {
@@ -51,8 +45,7 @@ namespace VEF.AnimalBehaviours
                                     pawn.pather.StopDead();
                                     pawn.Position = loc;
                                     pawn.pather.ResetToCurrentPosition();
-                                    IntVec3 loc2 = IntVec3.Invalid;
-                                    CellFinder.TryFindRandomCellNear(pawn.Position, pawn.Map, 10, null, out loc2);
+                                    CellFinder.TryFindRandomCellNear(pawn.Position, pawn.Map, 10, null, out var loc2);
                                     pawn.pather.StartPath(loc2, PathEndMode.ClosestTouch);
                                 }
                             }
@@ -61,7 +54,7 @@ namespace VEF.AnimalBehaviours
                                 if (this.parent.Position.DistanceTo(pawn.CurJob.targetA.Cell) > 2)
                                 {
                                     if (CellFinderLoose.TryFindRandomNotEdgeCellWith(10, (IntVec3 x) => x.DistanceTo(pawn.CurJob.targetA.Cell) < Props.distance.RandomInRange,
-                                this.parent.Map, out loc))
+                                this.parent.Map, out var loc))
                                     {
                                         if (Props.warpEffect)
                                         {
@@ -77,14 +70,12 @@ namespace VEF.AnimalBehaviours
 
 
                             }
-
                         }
                     }
 
                     
 
 
-                    tickCounter = 0;
                 }
 
             }

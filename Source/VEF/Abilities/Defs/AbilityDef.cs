@@ -12,6 +12,7 @@ namespace VEF.Abilities
     {
         public Type abilityClass;
         public bool needsTicking;
+        public bool needsTickingInterval;
         public bool showUndrafted;
         public bool? isPositive;
         public bool? keepCarryingThing;
@@ -122,9 +123,13 @@ namespace VEF.Abilities
                 yield return $"{this.abilityClass} is not a valid ability type";
             else
             {
-                if (!this.needsTicking && AccessTools.DeclaredMethod(this.abilityClass, "Tick") != null)
+                if (!this.needsTicking && AccessTools.DeclaredMethod(this.abilityClass, nameof(Ability.Tick), Type.EmptyTypes) != null)
                 {
-                    yield return $"{this.defName} has a Tick method but doesn't have the needsTicking field. It will not work.";
+                    yield return $"{this.defName} has a {nameof(Ability.Tick)} method but doesn't have the {nameof(needsTicking)} field. It will not work.";
+                }
+                if (!this.needsTickingInterval && AccessTools.DeclaredMethod(this.abilityClass, nameof(Ability.TickInterval), [typeof(int)]) != null)
+                {
+                    yield return $"{this.defName} has a {nameof(Ability.TickInterval)} method but doesn't have the {nameof(needsTickingInterval)} field. It will not work.";
                 }
             }
 

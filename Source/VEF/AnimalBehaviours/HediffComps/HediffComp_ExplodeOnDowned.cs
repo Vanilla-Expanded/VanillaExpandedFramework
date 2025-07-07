@@ -7,7 +7,6 @@ namespace VEF.AnimalBehaviours
 {
     public class HediffComp_ExplodeOnDowned : HediffComp
     {
-        public int checkDownCounter = 0;
         public int checkEveryTicks = 60;
 
         public HediffCompProperties_ExplodeOnDowned Props
@@ -19,12 +18,10 @@ namespace VEF.AnimalBehaviours
         }
 
 
-
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            checkDownCounter++;
-            if (checkDownCounter > checkEveryTicks)
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (Pawn.IsHashIntervalTick(checkEveryTicks, delta))
             {
                 if (this.parent.pawn.Downed)
                 {
@@ -34,7 +31,6 @@ namespace VEF.AnimalBehaviours
                     }
 
                 }
-                checkDownCounter = 0;
             }
 
         }

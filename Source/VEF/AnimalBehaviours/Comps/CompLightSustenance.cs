@@ -15,7 +15,7 @@ namespace VEF.AnimalBehaviours
         public override void PostExposeData()
         {
             base.PostExposeData();
-            Scribe_Values.Look<bool>(ref this.addHediffOnce, "addHediffOnce", true, false);
+            Scribe_Values.Look<bool>(ref this.addHediffOnce, "addHediffOnce", true);
 
         }
 
@@ -29,7 +29,7 @@ namespace VEF.AnimalBehaviours
         }
 
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
             Pawn pawn = this.parent as Pawn;
 
@@ -52,7 +52,7 @@ namespace VEF.AnimalBehaviours
 
                     if ((hediff != null) && hediff.Severity > 0f)
                     {
-                        hediff.Severity -= 0.000010f;
+                        hediff.Severity -= 0.000010f * delta;
                        
                     }
                 }
@@ -63,7 +63,7 @@ namespace VEF.AnimalBehaviours
                     if ((hediff != null) && hediff.Severity < 1f)
                     {
 
-                        hediff.Severity += 0.000010f;
+                        hediff.Severity += 0.000010f * delta;
                       
 
                     }

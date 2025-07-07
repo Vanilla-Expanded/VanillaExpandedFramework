@@ -19,13 +19,13 @@ namespace VEF.AnimalBehaviours
             }
         }
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            base.CompTick();
+            base.CompTickInterval(delta);
 
             //Checks every rare tick to not be very spammy
 
-            if (this.parent.Map != null && this.parent.IsHashIntervalTick(Props.tickInterval))
+            if (this.parent.Map != null && this.parent.IsHashIntervalTick(Props.tickInterval, delta))
             {
                 if (Props.isRandomWeathers)
                 {

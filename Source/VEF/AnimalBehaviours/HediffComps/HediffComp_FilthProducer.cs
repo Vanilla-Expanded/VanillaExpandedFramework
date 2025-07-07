@@ -18,20 +18,11 @@ namespace VEF.AnimalBehaviours
         }
 
 
-
-        private int filthProgress = 0;
-
-        private System.Random rand = new System.Random();
-
-
-       
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-
+            base.CompPostTickInterval(ref severityAdjustment, delta);
            
-                filthProgress++;
-                if (this.filthProgress > Props.ticksToCreateFilth)
+                if (Pawn.IsHashIntervalTick(Props.ticksToCreateFilth, delta))
                 {
                     Pawn pawn = this.parent.pawn as Pawn;
                     if (pawn.Map != null && pawn.Awake() && !pawn.Downed && !pawn.Dead)
@@ -41,7 +32,7 @@ namespace VEF.AnimalBehaviours
 
                         foreach (IntVec3 current in rect.Cells)
                         {
-                            if (current.InBounds(pawn.Map) && rand.NextDouble() < Props.rate)
+                            if (current.InBounds(pawn.Map) && Rand.Chance(Props.rate))
                             {
                                 int filthNumber = 0;
                                 List<Thing> list = this.parent.pawn.Map.thingGrid.ThingsListAt(current);
@@ -67,7 +58,6 @@ namespace VEF.AnimalBehaviours
 
 
                     }
-                    filthProgress = 0;
                 }
 
             

@@ -31,18 +31,18 @@ namespace VEF.AnimalBehaviours
         }
 
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            base.CompTick();
+            base.CompTickInterval(delta);
 
             if (onCoolDown)
             {
-                cooldownCounter++;
+                cooldownCounter += delta;
                 if(cooldownCounter >= cooldown)
                 {
                     onCoolDown=false;
                 }
-            }else if (this.parent.IsHashIntervalTick(Props.tickInterval) &&parent.Map!=null)
+            }else if (this.parent.IsHashIntervalTick(Props.tickInterval, delta) &&parent.Map!=null)
             {
                 Pawn pawn = this.parent as Pawn;
 

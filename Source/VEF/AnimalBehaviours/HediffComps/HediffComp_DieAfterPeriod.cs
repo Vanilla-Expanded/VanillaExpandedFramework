@@ -30,10 +30,10 @@ namespace VEF.AnimalBehaviours
 
         }
 
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            tickCounter++;
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            tickCounter += delta;
 
             if (tickCounter >= Props.timeToDieInTicks)
             {

@@ -9,8 +9,6 @@ namespace VEF.AnimalBehaviours
 {
     public class CompElectrified : ThingComp
     {
-        public int tickCounter = 0;
-
         public CompProperties_Electrified Props
         {
             get
@@ -43,14 +41,13 @@ namespace VEF.AnimalBehaviours
             }
         }
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
             //null map check
             if (this.parent.Map != null && AnimalBehaviours_Settings.flagChargeBatteries)
             {
-                tickCounter++;
                 //Only do every electroRate ticks
-                if (tickCounter >= electroRate)
+                if (parent.IsHashIntervalTick(electroRate, delta))
                 {
                     Pawn pawn = this.parent as Pawn;
                     CellRect rect = GenAdj.OccupiedRect(pawn.Position, pawn.Rotation, IntVec2.One);
@@ -117,7 +114,6 @@ namespace VEF.AnimalBehaviours
 
                         
                     }
-                    tickCounter = 0;
                 }
             }
         }

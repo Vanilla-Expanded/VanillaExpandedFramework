@@ -65,16 +65,16 @@ namespace VEF.AnimalBehaviours
             }
         }
 
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
+            base.CompPostTickInterval(ref severityAdjustment, delta);
             Pawn pawn = this.parent.pawn as Pawn;
             //Important, without a null map check creatures will reproduce while on caravans, producing errors
             if (pawn.Map != null)
             {
                 if (this.Props.isGreenGoo)
                 {
-                    asexualFissionCounter++;
+                    asexualFissionCounter += delta;
                     //This checks if the map has been filled with creatures. If this check wasn't made, the animal would fill
                     //the map and grind the game to a halt
                     if ((asexualFissionCounter >= ticksInday * reproductionIntervalDays) && ((pawn.Map != null) && (pawn.Map.listerThings.ThingsOfDef(ThingDef.Named(this.Props.GreenGooTarget)).Count < this.Props.GreenGooLimit)))
@@ -100,7 +100,7 @@ namespace VEF.AnimalBehaviours
                 //Non-green goo creatures only reproduce if they are part of the player's faction, like vanilla animals
                 else if ((pawn.Faction == Faction.OfPlayer) && (pawn.ageTracker.CurLifeStage.reproductive))
                 {
-                    asexualFissionCounter++;
+                    asexualFissionCounter += delta;
                     if (asexualFissionCounter >= ticksInday * reproductionIntervalDays)
                     {
                         //If it produces eggs or spores, it will just spawn them. Note that these eggs are not part of the player's

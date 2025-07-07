@@ -228,6 +228,10 @@
             }
         }
 
+        public virtual void TickInterval(int delta)
+        {
+        }
+
         public virtual Gizmo GetGizmo()
         {
             Command_Ability action = (Command_Ability) Activator.CreateInstance(this.def.gizmoClass, this.pawn, this);

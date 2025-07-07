@@ -30,12 +30,11 @@ namespace VEF.AnimalBehaviours
 			ticksUntilSpawn = PropsSpawner.initialSpawnWait;
         }
 
-        
 
-		public override void CompPostTick(ref float severityAdjustment)
-		{
-			base.CompPostTick(ref severityAdjustment);
-			TickInterval(1);
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
+        {
+	        base.CompPostTickInterval(ref severityAdjustment, delta);
+			TickInterval(delta);
 		}
 
 		

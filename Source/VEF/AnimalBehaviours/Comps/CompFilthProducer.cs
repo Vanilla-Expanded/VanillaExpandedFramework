@@ -8,10 +8,6 @@ namespace VEF.AnimalBehaviours
     class CompFilthProducer : ThingComp
     {
 
-        private int filthProgress = 0;
-
-        private System.Random rand = new System.Random();
-
 
         public CompProperties_FilthProducer Props
         {
@@ -20,12 +16,11 @@ namespace VEF.AnimalBehaviours
                 return (CompProperties_FilthProducer)this.props;
             }
         }
-        public override void CompTick()
-        {
 
+        public override void CompTickInterval(int delta)
+        {
             if (AnimalBehaviours_Settings.flagAnimalParticles) {
-                filthProgress++;
-                if (this.filthProgress > Props.ticksToCreateFilth)
+                if (parent.IsHashIntervalTick(Props.ticksToCreateFilth, delta))
                 {
                     Pawn pawn = this.parent as Pawn;
                     if (pawn.Map != null && pawn.Awake() && !pawn.Downed && !pawn.Dead)
@@ -35,7 +30,7 @@ namespace VEF.AnimalBehaviours
 
                         foreach (IntVec3 current in rect.Cells)
                         {
-                            if (current.InBounds(pawn.Map) && rand.NextDouble() < Props.rate)
+                            if (current.InBounds(pawn.Map) && Rand.Chance(Props.rate))
                             {
                                 int filthNumber = 0;
                                 List<Thing> list = this.parent.Map.thingGrid.ThingsListAt(current);
@@ -61,7 +56,6 @@ namespace VEF.AnimalBehaviours
 
 
                     }
-                    filthProgress = 0;
                 }
 
             }

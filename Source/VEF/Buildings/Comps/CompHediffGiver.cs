@@ -30,11 +30,11 @@ namespace VEF.Buildings
             }
         }
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            base.CompTick();
+            base.CompTickInterval(delta);
 
-            if (!parent.IsHashIntervalTick(Props.tickRate) || !parent.Spawned)
+            if (!parent.IsHashIntervalTick(Props.tickRate, delta) || !parent.Spawned)
             {
                 return;
             }

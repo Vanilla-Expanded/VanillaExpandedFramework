@@ -58,10 +58,10 @@ namespace VEF.Abilities
     {
         public int durationTicksLeft;
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            base.CompTick();
-            durationTicksLeft--;
+            base.CompTickInterval(delta);
+            durationTicksLeft -= delta;
             if (durationTicksLeft <= 0) parent.Destroy();
         }
 

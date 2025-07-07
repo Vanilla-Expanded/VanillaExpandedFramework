@@ -12,24 +12,21 @@ namespace VEF.AnimalBehaviours
 		
 		public CompProperties_AnimalProductOnCaravan Props => (CompProperties_AnimalProductOnCaravan)props;
 
-		
 
-		
-
-		public override void CompTick()
+		public override void CompTickInterval(int delta)
 		{
-            if (parent.IsHashIntervalTick(Props.gatheringIntervalTicks))
+            if (parent.IsHashIntervalTick(Props.gatheringIntervalTicks, delta))
             {
 
 				
 
 				Pawn pawn = parent as Pawn;
-				if (!Props.femaleOnly || (Props.femaleOnly && pawn.gender == Gender.Female)) {
+				if (!Props.femaleOnly || pawn.gender == Gender.Female) {
 
-					if (CaravanUtility.IsCaravanMember(pawn))
+					Caravan caravan = pawn.GetCaravan();
+
+					if (caravan != null)
 					{
-
-						Caravan caravan = CaravanUtility.GetCaravan(pawn);
 						float mass = Props.resourceDef.BaseMass * Props.resourceAmount;
 
 
@@ -58,8 +55,7 @@ namespace VEF.AnimalBehaviours
 
 		public override string CompInspectStringExtra()
 		{
-			Pawn pawn = parent as Pawn;
-			if (!Props.femaleOnly || (Props.femaleOnly && pawn.gender == Gender.Female))
+			if (!Props.femaleOnly || ((Pawn)parent).gender == Gender.Female)
 			{
 				return "VEF_WhileCaravaning".Translate(Props.resourceAmount, Props.resourceDef.LabelCap) + Props.gatheringIntervalTicks.ToStringTicksToPeriod().Colorize(ColoredText.DateTimeColor);
 			}

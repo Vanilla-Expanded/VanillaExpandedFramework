@@ -9,7 +9,7 @@ namespace VEF.AnimalBehaviours
     public class CompAsexualReproduction : ThingComp
     {
 
-        public int ticksInday = 60000;
+        public int ticksInday = GenDate.TicksPerDay;
         public int asexualFissionCounter = 0;
 
 
@@ -62,16 +62,16 @@ namespace VEF.AnimalBehaviours
             }
         }
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            base.CompTick();
+            base.CompTickInterval(delta);
             Pawn pawn = this.parent as Pawn;
             //Important, without a null map check creatures will reproduce while on caravans, producing errors
             if (pawn.Map != null && AnimalBehaviours_Settings.flagAsexualReproduction && (!ModsConfig.OdysseyActive || !pawn.training.HasLearned(InternalDefOf.VEF_CycleSeverance)))
             {
                 if (this.Props.isGreenGoo)
                 {
-                    asexualFissionCounter++;
+                    asexualFissionCounter += delta;
                     //This checks if the map has been filled with creatures. If this check wasn't made, the animal would fill
                     //the map and grind the game to a halt
                     if ((asexualFissionCounter >= ticksInday * reproductionIntervalDays) && ((this.parent.Map != null) && (this.parent.Map.listerThings.ThingsOfDef(ThingDef.Named(this.Props.GreenGooTarget)).Count < this.Props.GreenGooLimit)))
@@ -97,7 +97,7 @@ namespace VEF.AnimalBehaviours
                 //Non-green goo creatures only reproduce if they are part of the player's faction, like vanilla animals
                 else if ((pawn.Faction == Faction.OfPlayer) && (pawn.ageTracker.CurLifeStage.reproductive))
                 {
-                    asexualFissionCounter++;
+                    asexualFissionCounter += delta;
                     if (asexualFissionCounter >= ticksInday * reproductionIntervalDays)
                     {
                         //If it produces eggs or spores, it will just spawn them. Note that these eggs are not part of the player's

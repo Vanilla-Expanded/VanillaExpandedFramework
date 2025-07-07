@@ -61,8 +61,7 @@ namespace VEF.AnimalBehaviours
 			if (this.Active)
 			{
 				float num = 1f / (this.Props.eggLayIntervalDays * 60000f);
-				Pawn pawn = this.parent as Pawn;
-				if (pawn != null)
+				if (this.parent is Pawn pawn)
 				{
 					num *= PawnUtility.BodyResourceGrowthSpeed(pawn);
 				}

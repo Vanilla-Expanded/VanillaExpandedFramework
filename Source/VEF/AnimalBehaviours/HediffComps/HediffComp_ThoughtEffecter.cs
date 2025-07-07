@@ -12,7 +12,6 @@ namespace VEF.AnimalBehaviours
     public class HediffComp_ThoughtEffecter : HediffComp
     {
 
-        public int tickCounter = 0;
         public List<Pawn> pawnList = new List<Pawn>();
         public Pawn thisPawn;
 
@@ -25,13 +24,12 @@ namespace VEF.AnimalBehaviours
         }
 
 
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
+            base.CompPostTickInterval(ref severityAdjustment, delta);
            
-                tickCounter++;
                 //Only do anything every tickInterval
-                if (tickCounter > Props.tickInterval)
+                if (Pawn.IsHashIntervalTick(Props.tickInterval, delta))
                 {
                     thisPawn = this.parent.pawn as Pawn;
                     //Null map check. Also will only work if pawn is not dead or downed, and if needsToBeTamed is true, that the animal is tamed
@@ -76,7 +74,6 @@ namespace VEF.AnimalBehaviours
                             }
                         }
                     }
-                    tickCounter = 0;
                 
             }
 

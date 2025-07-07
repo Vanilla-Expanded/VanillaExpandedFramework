@@ -18,6 +18,7 @@
 
         private List<Abilities.Ability> learnedAbilities = new List<Abilities.Ability>();
         private List<Ability> abilitiesToTick = new List<Ability>();
+        private List<Ability> abilitiesToTickInterval = new List<Ability>();
 
         public Abilities.Ability  currentlyCasting;
         public GlobalTargetInfo[] currentlyCastingTargets;
@@ -61,6 +62,10 @@
             {
                 this.abilitiesToTick.Add(ability);
             }
+            if (ability.def.needsTickingInterval)
+            {
+                this.abilitiesToTickInterval.Add(ability);
+            }
             this.learnedAbilities = this.LearnedAbilities.OrderBy(ab => ab.def.requiredHediff?.minimumLevel ?? 0).GroupBy(ab => ab.Hediff).SelectMany(grp => grp).ToList();
         }
 
@@ -84,6 +89,13 @@
             int abilitiesToTickCount = this.abilitiesToTick.Count;
             for (var i = 0; i < abilitiesToTickCount; i++)
                 this.abilitiesToTick[i].Tick();
+        }
+
+        public override void CompTickInterval(int delta)
+        {
+            base.CompTickInterval(delta);
+            for (var i = 0; i < abilitiesToTickInterval.Count; i++)
+                this.abilitiesToTickInterval[i].TickInterval(delta);
         }
 
         public override string CompInspectStringExtra() => string.Empty;
@@ -124,6 +136,7 @@
             if (this.learnedAbilities?.Any() ?? false)
             {
                 this.abilitiesToTick = this.learnedAbilities.Where(x => x.def.needsTicking).ToList();
+                this.abilitiesToTickInterval = this.learnedAbilities.Where(x => x.def.needsTickingInterval).ToList();
             }
         }
 

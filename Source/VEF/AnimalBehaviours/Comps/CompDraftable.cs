@@ -6,9 +6,6 @@ namespace VEF.AnimalBehaviours
 {
     class CompDraftable : ThingComp
     {
-        public int tickCounter = 0;
-
-
         public CompProperties_Draftable Props
         {
             get
@@ -17,10 +14,9 @@ namespace VEF.AnimalBehaviours
             }
         }
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            tickCounter--;
-            if (tickCounter < 0)
+            if (parent.IsHashIntervalTick(Props.checkingInterval, delta))
             {
                 Pawn pawn = this.parent as Pawn;
                 if (Props.conditionalOnTrainability && (!ModsConfig.OdysseyActive || !pawn.training.HasLearned(InternalDefOf.VEF_Beastmastery)))
@@ -42,7 +38,6 @@ namespace VEF.AnimalBehaviours
                         StaticCollectionsClass.AddNotFleeingAnimalToList(this.parent);
                     }
                 }
-                tickCounter = Props.checkingInterval;
             }
         }
 

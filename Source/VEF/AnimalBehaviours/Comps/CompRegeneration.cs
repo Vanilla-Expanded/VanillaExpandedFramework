@@ -11,8 +11,6 @@ namespace VEF.AnimalBehaviours
     public class CompRegeneration : ThingComp
     {
 
-        public int tickCounter = 0;
-
 
 
         public CompProperties_Regeneration Props
@@ -26,13 +24,12 @@ namespace VEF.AnimalBehaviours
        
 
 
-        public override void CompTick()
+
+        public override void CompTickInterval(int delta)
         {
             if (AnimalBehaviours_Settings.flagRegeneration)
             {
-                tickCounter++;
-
-                if (tickCounter >= Props.rateInTicks)
+                if (parent.IsHashIntervalTick(Props.rateInTicks, delta))
                 {
                     Pawn pawn = this.parent as Pawn;
 
@@ -82,7 +79,6 @@ namespace VEF.AnimalBehaviours
 
 
                     }
-                    tickCounter = 0;
                 }
             }
 

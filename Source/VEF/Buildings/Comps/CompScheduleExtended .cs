@@ -10,9 +10,9 @@ public class CompScheduleExtended : CompSchedule
 
     public override void PostSpawnSetup(bool respawningAfterLoad) => RecalculateAllowed();
 
-    public override void CompTick()
+    public override void CompTickInterval(int delta)
     {
-        if (parent.IsHashIntervalTick(GenTicks.TickRareInterval))
+        if (parent.IsHashIntervalTick(GenTicks.TickRareInterval, delta))
             RecalculateAllowed();
     }
 

@@ -17,10 +17,10 @@ namespace VEF.AnimalBehaviours
         }
 
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            base.CompTick();
-            if (this.parent.IsHashIntervalTick(Props.tickInterval))
+            base.CompTickInterval(delta);
+            if (this.parent.IsHashIntervalTick(Props.tickInterval, delta))
             {
                 this.TryRemoveDiseases();
             }

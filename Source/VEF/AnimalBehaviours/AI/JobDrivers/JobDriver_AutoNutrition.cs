@@ -20,7 +20,7 @@ namespace VEF.AnimalBehaviours
         protected override IEnumerable<Toil> MakeNewToils()
         {
             
-            Toil wait = new Toil();
+            Toil wait = ToilMaker.MakeToil();
             wait.defaultCompleteMode = ToilCompleteMode.Delay;
             wait.defaultDuration = EatingDuration;
             wait.socialMode = RandomSocialMode.Off;

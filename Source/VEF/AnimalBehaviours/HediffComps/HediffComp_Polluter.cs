@@ -22,12 +22,11 @@ namespace VEF.AnimalBehaviours
         }
 
 
-
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
+            base.CompPostTickInterval(ref severityAdjustment, delta);
 
-            if (this.parent.pawn.IsHashIntervalTick(Props.timer) && this.parent.pawn.Map != null)
+            if (this.parent.pawn.IsHashIntervalTick(Props.timer, delta) && this.parent.pawn.Map != null)
             {
                 PollutionUtility.GrowPollutionAt(this.parent.pawn.Position, this.parent.pawn.Map, Props.amount,null,true);
             }

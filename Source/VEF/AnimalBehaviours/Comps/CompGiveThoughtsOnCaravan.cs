@@ -14,22 +14,19 @@ namespace VEF.AnimalBehaviours
         public CompProperties_GiveThoughtsOnCaravan Props => (CompProperties_GiveThoughtsOnCaravan)props;
 
 
-
-
-
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            if (parent.IsHashIntervalTick(Props.intervalTicks))
+            if (parent.IsHashIntervalTick(Props.intervalTicks, delta))
             {
 
 
 
                 Pawn pawn = parent as Pawn;
 
-                if (CaravanUtility.IsCaravanMember(pawn))
+                var caravan = pawn.GetCaravan();
+                if (caravan != null)
                 {
 
-                    Caravan caravan = CaravanUtility.GetCaravan(pawn);
                     foreach (Pawn pawnMember in caravan.PawnsListForReading)
                     {
 

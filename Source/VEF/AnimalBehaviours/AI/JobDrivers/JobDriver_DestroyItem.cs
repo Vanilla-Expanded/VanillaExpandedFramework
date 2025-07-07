@@ -30,14 +30,13 @@ namespace VEF.AnimalBehaviours
 
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
             yield return Toils_General.Wait(1200).FailOnDestroyedNullOrForbidden(TargetIndex.A).FailOnCannotTouch(TargetIndex.A, PathEndMode.Touch).WithProgressBarToilDelay(TargetIndex.A, false, -0.5f);
-            yield return new Toil
+            var toil = ToilMaker.MakeToil();
+            toil.initAction = delegate
             {
-                initAction = delegate
-                {
-                    itemToDestroy.DeSpawn();
-                },
-                defaultCompleteMode = ToilCompleteMode.Instant
+                itemToDestroy.DeSpawn();
             };
+            toil.defaultCompleteMode = ToilCompleteMode.Instant;
+            yield return toil;
 
 
         }

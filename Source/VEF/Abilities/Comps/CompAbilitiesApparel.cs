@@ -13,6 +13,7 @@
         private Pawn pawn;
         private Pawn Pawn => (this.parent as Apparel)?.Wearer;
         private List<Ability> abilitiesToTick = new List<Ability>();
+        private List<Ability> abilitiesToTickInterval = new List<Ability>();
         private List<Abilities.Ability> givenAbilities = new List<Abilities.Ability>();
         public List<Abilities.Ability> GivenAbilities => givenAbilities;
 
@@ -30,6 +31,10 @@
                 if (ability.def.needsTicking)
                 {
                     this.abilitiesToTick.Add(ability);
+                }
+                if (ability.def.needsTickingInterval)
+                {
+                    this.abilitiesToTickInterval.Add(ability);
                 }
             }
         }
@@ -73,6 +78,7 @@
                 if (this.givenAbilities?.Any() ?? false)
                 {
                     this.abilitiesToTick = this.givenAbilities.Where(x => x.def.needsTicking).ToList();
+                    this.abilitiesToTickInterval = this.givenAbilities.Where(x => x.def.needsTickingInterval).ToList();
                 }
             }
         }
@@ -85,6 +91,13 @@
             {
                 this.abilitiesToTick[i].Tick();
             }
+        }
+
+        public override void CompTickInterval(int delta)
+        {
+            base.CompTickInterval(delta);
+            for (var i = 0; i < abilitiesToTickInterval.Count; i++)
+                this.abilitiesToTickInterval[i].TickInterval(delta);
         }
     }
 

@@ -15,8 +15,6 @@ namespace VEF.AnimalBehaviours
     public class CompGraphicByStyle : ThingComp
     {
 
-        public int changeGraphicsCounter = 0;
-
 
 
         public CompProperties_GraphicByStyle Props
@@ -27,15 +25,13 @@ namespace VEF.AnimalBehaviours
             }
         }
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            changeGraphicsCounter++;
-            if (changeGraphicsCounter > Props.changeGraphicsInterval)
+            if (parent.IsHashIntervalTick(Props.changeGraphicsInterval, delta))
             {
                 this.ChangeTheGraphics();
-                changeGraphicsCounter = 0;
             }
-            base.CompTick();
+            base.CompTickInterval(delta);
         }
 
         public void ChangeTheGraphics()

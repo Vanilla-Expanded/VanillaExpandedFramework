@@ -22,7 +22,7 @@ namespace VEF.Storyteller
         {
             this.FailOnDespawnedOrNull(TargetIndex.A);
             yield return Toils_Goto.GotoCell(TargetIndex.A, PathEndMode.InteractionCell);
-            Toil openComms = new Toil();
+            Toil openComms = ToilMaker.MakeToil();
             openComms.initAction = delegate
             {
                 Pawn actor = openComms.actor;

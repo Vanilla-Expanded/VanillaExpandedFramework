@@ -24,27 +24,13 @@ namespace PipeSystem
             atTick = Find.TickManager.TicksGame + Props.spillEachTicks;
         }
 
-        public override void CompTick()
-        {
-            int ticksGame = Find.TickManager.TicksGame;
-            if (atTick < ticksGame)
-            {
-                atTick = ticksGame + Props.spillEachTicks;
-                Spill();
-            }
-        }
+        public override void CompTickInterval(int delta) => TickInterval(delta);
 
-        public override void CompTickRare()
-        {
-            int ticksGame = Find.TickManager.TicksGame;
-            if (atTick < ticksGame)
-            {
-                atTick = ticksGame + Props.spillEachTicks;
-                Spill();
-            }
-        }
+        public override void CompTickRare() => TickInterval(GenTicks.TickRareInterval);
 
-        public override void CompTickLong()
+        public override void CompTickLong() => TickInterval(GenTicks.TickLongInterval);
+
+        private void TickInterval(int delta)
         {
             int ticksGame = Find.TickManager.TicksGame;
             if (atTick < ticksGame)

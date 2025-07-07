@@ -25,16 +25,14 @@ namespace VEF.AnimalBehaviours
 
         }
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            base.CompTick();
-            tickCounter++;
+            base.CompTickInterval(delta);
+            tickCounter += delta;
 
             if (tickCounter >= Props.timeToDieInTicks)
             {
-                Pawn pawn = this.parent as Pawn;
-
-                if (pawn != null && pawn.Map != null)
+                if (this.parent is Pawn pawn && pawn.Map != null)
                 {
 
                     if (Props.effect)

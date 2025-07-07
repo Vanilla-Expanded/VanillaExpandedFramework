@@ -370,9 +370,9 @@ namespace PipeSystem
         /// <summary>
         /// Tick 100 ticks
         /// </summary>
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            if (parent.IsHashIntervalTick(100))
+            if (parent.IsHashIntervalTick(100, delta))
                 Tick(100);
         }
 

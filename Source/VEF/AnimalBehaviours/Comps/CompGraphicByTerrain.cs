@@ -16,7 +16,6 @@ namespace VEF.AnimalBehaviours
     {
 
         public Graphic dessicatedGraphic;
-        public int changeGraphicsCounter = 0;
         public string terrainName = "";
         public CompAnimalProduct animalProductComp;
         public string currentName = "";
@@ -36,15 +35,13 @@ namespace VEF.AnimalBehaviours
             }
         }
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            changeGraphicsCounter++;
-            if (changeGraphicsCounter > Props.changeGraphicsInterval)
+            if (parent.IsHashIntervalTick(Props.changeGraphicsInterval, delta))
             {
                 this.ChangeTheGraphics();
-                changeGraphicsCounter = 0;
             }
-            base.CompTick();
+            base.CompTickInterval(delta);
         }
 
         public override void PostSpawnSetup(bool respawningAfterLoad)

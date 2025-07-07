@@ -9,9 +9,7 @@ namespace VEF.AnimalBehaviours
 {
     class CompGasProducer : ThingComp
     {
-
-        private int gasProgress = 0;
-        private int gasTickMax = 64;
+        private int gasTickMax = 65;
         public bool productionOn = true;
 
         public CompProperties_GasProducer Props
@@ -67,15 +65,13 @@ namespace VEF.AnimalBehaviours
             Scribe_Values.Look<bool>(ref this.productionOn, "productionOn", true, false);
         }
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
             //Since it's a laggy class, allow options to toggle it
             if (AnimalBehaviours_Settings.flagAnimalParticles)
             {
 
-                this.gasProgress++;
-                //Increasing gasTickMax reduces lag, but it will also look like ass
-                if (this.gasProgress > gasTickMax)
+                if (parent.IsHashIntervalTick(gasTickMax, delta))
                 {
                     Pawn pawn = this.parent as Pawn;
 
@@ -108,7 +104,6 @@ namespace VEF.AnimalBehaviours
                     {
                         productionOn = true;
                     }
-                    this.gasProgress = 0;
 
                 }
             }

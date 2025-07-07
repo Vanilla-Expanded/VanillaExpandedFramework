@@ -7,8 +7,6 @@ namespace VEF.AnimalBehaviours
     public class HediffComp_HighlyFlammable : HediffComp
     {
 
-        public int tickCounter = 0;
-
         public HediffCompProperties_HighlyFlammable Props
         {
             get
@@ -17,10 +15,9 @@ namespace VEF.AnimalBehaviours
             }
         }
 
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            tickCounter++;
-            if (tickCounter > Props.tickInterval)
+            if (Pawn.IsHashIntervalTick(Props.tickInterval, delta))
             {
                 Pawn pawn = parent.pawn;
 
@@ -40,7 +37,6 @@ namespace VEF.AnimalBehaviours
                     Thing instigator = parent.pawn;
                     parent.pawn.TakeDamage(new DamageInfo(flame, amount, 0f, -1f, instigator, null, null, DamageInfo.SourceCategory.ThingOrUnknown, null)).AssociateWithLog(battleLogEntry_DamageTaken);
                 }
-                tickCounter = 0;
             }
         }
 

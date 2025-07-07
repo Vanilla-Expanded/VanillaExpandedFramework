@@ -25,7 +25,7 @@ namespace VEF.AnimalBehaviours
             }
         }
 
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
             Pawn pawn = this.parent.pawn;
 
@@ -48,7 +48,7 @@ namespace VEF.AnimalBehaviours
 
                     if ((hediff != null) && hediff.Severity > 0f)
                     {
-                        hediff.Severity -= 0.000010f;
+                        hediff.Severity -= 0.000010f * delta;
 
                     }
                 }
@@ -59,7 +59,7 @@ namespace VEF.AnimalBehaviours
                     if ((hediff != null) && hediff.Severity < 1f)
                     {
 
-                        hediff.Severity += 0.000010f;
+                        hediff.Severity += 0.000010f * delta;
 
 
                     }

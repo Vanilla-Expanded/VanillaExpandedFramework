@@ -8,7 +8,7 @@ namespace VEF.Buildings
     public class JobDriver_StudyBuilding : JobDriver
     {
 
-        public const int totalTime = 1200; // 20 seconds
+        public const int totalTime = GenTicks.TicksPerRealSecond * 20; // 20 seconds
         public int totalTimer = 0;
 
         public override bool TryMakePreToilReservations(bool errorOnFailed)
@@ -33,25 +33,22 @@ namespace VEF.Buildings
                 yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
             }
 
-            Toil study = ToilMaker.MakeToil("MakeNewToils");
+            Toil study = ToilMaker.MakeToil();
 
-            study.tickAction = delegate
+            study.tickIntervalAction = delta =>
             {
                 Pawn actor = study.actor;
                 if (actor.skills != null)
                 {
-                    actor.skills.Learn(contentDetails.skillForStudying, 0.025f);
+                    actor.skills.Learn(contentDetails.skillForStudying, 0.025f * delta);
                 }
 
                 actor.rotationTracker.FaceTarget(actor.CurJob.GetTarget(TargetIndex.A));
 
-                totalTimer++;
+                totalTimer += delta;
                 if (totalTimer > totalTime)
                 {
-
                     actor.jobs.EndCurrentJob(JobCondition.Succeeded);
-
-
                 }
             };
 

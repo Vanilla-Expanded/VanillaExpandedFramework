@@ -36,21 +36,19 @@ namespace VEF.Weapons
             repair.WithEffect(Gun.def.repairEffect, TargetIndex.A);
             repair.WithProgressBarToilDelay(TargetIndex.A, false, -0.5f);
             yield return repair;
-            yield return new Toil
+            var toil = ToilMaker.MakeToil();
+            toil.initAction = delegate ()
             {
-                initAction = delegate ()
-                {
 
-                    BeamColorThing.BeamColor = pawn.CurJob.maxNumMeleeAttacks;
+                BeamColorThing.BeamColor = pawn.CurJob.maxNumMeleeAttacks;
 
-                    var targetInfo = new TargetInfo(Gun.Position, Map, false);
-                    Effecter effecter = EffecterDefOf.Deflect_Metal.Spawn();
-                    effecter.Trigger(targetInfo, targetInfo);
-                    effecter.Cleanup();
-                    this.Prism.Destroy(DestroyMode.Vanish);
-                }
+                var targetInfo = new TargetInfo(Gun.Position, Map, false);
+                Effecter effecter = EffecterDefOf.Deflect_Metal.Spawn();
+                effecter.Trigger(targetInfo, targetInfo);
+                effecter.Cleanup();
+                this.Prism.Destroy(DestroyMode.Vanish);
             };
-            yield break;
+            yield return toil;
         }
     }
 }

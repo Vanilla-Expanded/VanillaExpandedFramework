@@ -9,8 +9,6 @@ namespace VEF.AnimalBehaviours
 {
     public class CompRefueling : ThingComp
     {
-        public int tickCounter = 0;
-
         public CompProperties_Refueling Props
         {
             get
@@ -19,15 +17,14 @@ namespace VEF.AnimalBehaviours
             }
         }
 
-      
-        public override void CompTick()
+
+        public override void CompTickInterval(int delta)
         {
             //null map check
             if (this.parent.Map != null && AnimalBehaviours_Settings.flagChargeBatteries && (!Props.mustBeTamed || (this.parent.Faction!=null &&this.parent.Faction.IsPlayer)))
             {
-                tickCounter++;
                 //Only do every fuelingRate ticks
-                if (tickCounter >= Props.fuelingRate)
+                if (parent.IsHashIntervalTick(Props.fuelingRate, delta))
                 {
                     Pawn pawn = this.parent as Pawn;
                     CellRect rect = GenAdj.OccupiedRect(pawn.Position, pawn.Rotation, IntVec2.One);
@@ -64,7 +61,6 @@ namespace VEF.AnimalBehaviours
                         }
                        
                     }
-                    tickCounter = 0;
                 }
             }
         }

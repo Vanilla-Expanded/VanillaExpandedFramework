@@ -19,13 +19,13 @@ namespace VEF.AnimalBehaviours
             }
         }
 
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
+            base.CompPostTickInterval(ref severityAdjustment, delta);
 
             //Checks every rare tick to not be very spammy
 
-            if (this.parent.pawn.Map != null && this.parent.pawn.IsHashIntervalTick(Props.tickInterval))
+            if (this.parent.pawn.Map != null && this.parent.pawn.IsHashIntervalTick(Props.tickInterval, delta))
             {
                 if (Props.isRandomWeathers)
                 {

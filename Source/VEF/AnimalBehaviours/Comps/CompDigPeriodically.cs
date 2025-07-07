@@ -10,7 +10,6 @@ namespace VEF.AnimalBehaviours
 {
     public class CompDigPeriodically : ThingComp
     {
-        public int diggingCounter = 0;
         private Effecter effecter;
         public bool diggingOn = true;
 
@@ -67,13 +66,12 @@ namespace VEF.AnimalBehaviours
             Scribe_Values.Look<bool>(ref this.diggingOn, "diggingOn", true, false);
         }
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            base.CompTick();
+            base.CompTickInterval(delta);
             if (AnimalBehaviours_Settings.flagDigPeriodically) {
-                diggingCounter++;
                 //Only do every ticksToDig
-                if (diggingCounter > Props.ticksToDig)
+                if (parent.IsHashIntervalTick(Props.ticksToDig, delta))
                 {
                     Pawn pawn = this.parent as Pawn;
                     if (diggingOn)
@@ -158,7 +156,6 @@ namespace VEF.AnimalBehaviours
 
 
 
-                    diggingCounter = 0;
                 }
 
 

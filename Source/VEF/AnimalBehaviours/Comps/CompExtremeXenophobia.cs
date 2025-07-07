@@ -11,7 +11,6 @@ namespace VEF.AnimalBehaviours
 {
     public class CompExtremeXenophobia : ThingComp
     {
-        public int tickCounter = 0;
         public List<Pawn> pawnList = new List<Pawn>();
         public Pawn thisPawn;
       
@@ -23,14 +22,12 @@ namespace VEF.AnimalBehaviours
             }
         }
 
-     
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            base.CompTick();
-            tickCounter++;
+            base.CompTickInterval(delta);
             //Only do anything every berserkRate
-            if (tickCounter > Props.berserkRate)
+            if (parent.IsHashIntervalTick(Props.berserkRate, delta))
             {
                 if (this.parent.Map != null) {
                     Pawn thisPawn = this.parent as Pawn;
@@ -45,8 +42,6 @@ namespace VEF.AnimalBehaviours
                     }
 
                 }
-                
-                tickCounter = 0;
             }
         }
     }

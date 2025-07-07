@@ -1,4 +1,6 @@
-﻿namespace VEF.Abilities
+﻿using Verse;
+
+namespace VEF.Abilities
 {
     using System.Collections.Generic;
     using RimWorld;
@@ -25,18 +27,21 @@
         protected override IEnumerable<Toil> MakeNewToils()
         {
             this.FailOn(() => CompAbilities.currentlyCasting is null);
-            Toil toil = new Toil();
+            Toil toil = ToilMaker.MakeToil();
             toil.tickAction = delegate
             {
                 if (base.pawn.pather.Moving)
                 {
                     base.pawn.pather.StopDead();
                 }
+            };
+            toil.tickIntervalAction = delegate(int delta)
+            {
                 if (base.pawn.GetPosture() == PawnPosture.Standing)
                 {
                     base.pawn.rotationTracker.FaceTarget(TargetA);
                 }
-                base.pawn.GainComfortFromCellIfPossible(1);
+                base.pawn.GainComfortFromCellIfPossible(delta);
             };
             toil.socialMode = RandomSocialMode.Off;
             toil.defaultCompleteMode = ToilCompleteMode.Never;

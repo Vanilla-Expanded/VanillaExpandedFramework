@@ -7,8 +7,6 @@ namespace VEF.AnimalBehaviours
     public class HediffComp_Waterstriding : HediffComp
     {
 
-        public int tickCounter = 0;
-
         public HediffCompProperties_Waterstriding Props
         {
             get
@@ -17,14 +15,12 @@ namespace VEF.AnimalBehaviours
             }
         }
 
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            tickCounter++;
-            if (tickCounter > Props.checkingInterval)
+            if (Pawn.IsHashIntervalTick(Props.checkingInterval, delta))
             {
 
                 StaticCollectionsClass.AddWaterstridingPawnToList(this.parent.pawn);
-                tickCounter = 0;
             }
         }
 

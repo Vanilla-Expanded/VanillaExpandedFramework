@@ -27,10 +27,10 @@ namespace VEF.AnimalBehaviours
 
         }
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            base.CompTick();
-            if (this.parent.IsHashIntervalTick(Props.ticksToBuild) && AnimalBehaviours_Settings.flagBuildPeriodically)
+            base.CompTickInterval(delta);
+            if (this.parent.IsHashIntervalTick(Props.ticksToBuild, delta) && AnimalBehaviours_Settings.flagBuildPeriodically)
             {
                 if(!Props.onlyTamed ||(Props.onlyTamed&&this.parent.Faction == Faction.OfPlayer)) { this.CreateBuildingSetup(); }
                 

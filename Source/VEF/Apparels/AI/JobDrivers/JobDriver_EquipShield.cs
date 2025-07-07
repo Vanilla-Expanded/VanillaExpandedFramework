@@ -24,43 +24,42 @@ namespace VEF.Apparels
             this.FailOnDestroyedOrNull(TargetIndex.A);
             this.FailOnBurningImmobile(TargetIndex.A);
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.ClosestTouch).FailOnDespawnedNullOrForbidden(TargetIndex.A);
-            yield return new Toil
+            var toil = ToilMaker.MakeToil();
+            toil.initAction = delegate ()
             {
-                initAction = delegate ()
+                ThingWithComps equipmentStack = (ThingWithComps)job.targetB.Thing;
+                ThingWithComps equippedThing;
+                if (equipmentStack.def.stackLimit > 1 && equipmentStack.stackCount > 1)
                 {
-                    ThingWithComps equipmentStack = (ThingWithComps)job.targetB.Thing;
-                    ThingWithComps equippedThing;
-                    if (equipmentStack.def.stackLimit > 1 && equipmentStack.stackCount > 1)
+                    equippedThing = (ThingWithComps)equipmentStack.SplitOff(1);
+                }
+                else
+                {
+                    equippedThing = equipmentStack;
+                    if (equippedThing.Spawned)
                     {
-                        equippedThing = (ThingWithComps)equipmentStack.SplitOff(1);
+                        equippedThing.DeSpawn(DestroyMode.Vanish);
                     }
                     else
                     {
-                        equippedThing = equipmentStack;
-                        if (equippedThing.Spawned)
-                        {
-                            equippedThing.DeSpawn(DestroyMode.Vanish);
-                        }
-                        else
-                        {
-                            var parentHolder = equippedThing.ParentHolder;
-                            parentHolder.GetDirectlyHeldThings().Remove(equippedThing);
-                        }
+                        var parentHolder = equippedThing.ParentHolder;
+                        parentHolder.GetDirectlyHeldThings().Remove(equippedThing);
                     }
+                }
 
-                    ShieldUtility.MakeRoomForShield(pawn, equippedThing);
-                    pawn.apparel.Wear((Apparel)equippedThing);
-                    if (pawn.outfits != null && job.playerForced)
-                    {
-                        pawn.outfits.forcedHandler.SetForced((Apparel)equippedThing, forced: true);
-                    }
-                    if (equipmentStack.def.soundInteract != null)
-                    {
-                        equipmentStack.def.soundInteract.PlayOneShot(new TargetInfo(pawn.Position, pawn.Map, false));
-                    }
-                },
-                defaultCompleteMode = ToilCompleteMode.Instant
+                pawn.MakeRoomForShield(equippedThing);
+                pawn.apparel.Wear((Apparel)equippedThing);
+                if (pawn.outfits != null && job.playerForced)
+                {
+                    pawn.outfits.forcedHandler.SetForced((Apparel)equippedThing, forced: true);
+                }
+                if (equipmentStack.def.soundInteract != null)
+                {
+                    equipmentStack.def.soundInteract.PlayOneShot(new TargetInfo(pawn.Position, pawn.Map, false));
+                }
             };
+            toil.defaultCompleteMode = ToilCompleteMode.Instant;
+            yield return toil;
         }
 
     }

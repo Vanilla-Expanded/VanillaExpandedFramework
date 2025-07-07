@@ -24,16 +24,14 @@ namespace VEF.AnimalBehaviours
             Scribe_Values.Look<int>(ref this.tickCounter, "tickCounter", 0, false);
         }
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            base.CompTick();
-            tickCounter++;
+            base.CompTickInterval(delta);
+            tickCounter += delta;
 
             if (tickCounter >= Props.timeToApplyInTicks)
             {
-                Pawn pawn = this.parent as Pawn;
-
-                if (pawn != null && pawn.Map != null)
+                if (this.parent is Pawn pawn && pawn.Map != null)
                 {
                     HediffDef randomHediff = Props.hediffsToApply.RandomElement();
                     Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(randomHediff);

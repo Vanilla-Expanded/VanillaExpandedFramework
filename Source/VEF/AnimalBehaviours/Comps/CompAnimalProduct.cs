@@ -14,8 +14,6 @@ namespace VEF.AnimalBehaviours
 
         public int seasonalItemIndex = 0;
 
-        System.Random rand = new System.Random();
-
         protected override int GatherResourcesIntervalDays
         {
             get
@@ -152,7 +150,7 @@ namespace VEF.AnimalBehaviours
 
                 if (this.Props.hasAditional)
                 {
-                    if (rand.NextDouble() <= ((float)Props.additionalItemsProb / 100))
+                    if (Rand.Chance(Props.additionalItemsProb / 100f))
                     {
                         if (Props.goInOrder)
                         {

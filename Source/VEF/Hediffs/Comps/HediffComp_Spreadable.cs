@@ -68,6 +68,19 @@ namespace VEF.Hediffs
 		public override void CompPostTick(ref float severityAdjustment)
 		{
 			base.CompPostTick(ref severityAdjustment);
+
+			if (Props.fleckDefOnPawn != null && Find.TickManager.TicksGame >= nextFleckSpawnTick && this.Pawn.Map != null)
+			{
+				var pawn = Pawn;
+				ThrowFleck(pawn.Drawer.DrawPos + pawn.Drawer.renderer.BaseHeadOffsetAt(pawn.Rotation) + pawn.Rotation.FacingCell.ToVector3() * 0.21f + BreathOffset
+					, pawn.Map, pawn.Rotation.AsAngle, pawn.Drawer.tweener.LastTickTweenedVelocity);
+				nextFleckSpawnTick = Find.TickManager.TicksGame + Props.fleckSpawnInterval.RandomInRange;
+			}
+		}
+
+		public override void CompPostTickInterval(ref float severityAdjustment, int delta)
+		{
+			base.CompPostTickInterval(ref severityAdjustment, delta);
 			if (Find.TickManager.TicksGame >= nextSpreadingTick)
 			{
 				if (this.Pawn.Map != null)
@@ -89,14 +102,6 @@ namespace VEF.Hediffs
 					}
 				}
 				nextSpreadingTick = Find.TickManager.TicksGame + Props.spreadingTickInterval.RandomInRange;
-			}
-
-			if (Props.fleckDefOnPawn != null && Find.TickManager.TicksGame >= nextFleckSpawnTick && this.Pawn.Map != null)
-			{
-				var pawn = Pawn;
-				ThrowFleck(pawn.Drawer.DrawPos + pawn.Drawer.renderer.BaseHeadOffsetAt(pawn.Rotation) + pawn.Rotation.FacingCell.ToVector3() * 0.21f + BreathOffset
-					, pawn.Map, pawn.Rotation.AsAngle, pawn.Drawer.tweener.LastTickTweenedVelocity);
-				nextFleckSpawnTick = Find.TickManager.TicksGame + Props.fleckSpawnInterval.RandomInRange;
 			}
 		}
 		public void TrySpreadDiseaseOn(Pawn pawn)

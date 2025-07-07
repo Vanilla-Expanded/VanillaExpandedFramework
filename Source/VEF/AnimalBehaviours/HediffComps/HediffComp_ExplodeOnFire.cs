@@ -26,11 +26,11 @@ namespace VEF.AnimalBehaviours
 
         }
 
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
+            base.CompPostTickInterval(ref severityAdjustment, delta);
 
-            if (!onCoolDown && this.parent.pawn.IsHashIntervalTick(Props.checkInterval) && this.parent.pawn.Map!=null && this.parent.pawn.IsBurning()) {
+            if (!onCoolDown && this.parent.pawn.IsHashIntervalTick(Props.checkInterval, delta) && this.parent.pawn.Map!=null && this.parent.pawn.IsBurning()) {
 
                 Fire fire = (Fire)this.parent.pawn.GetAttachment(ThingDefOf.Fire);
 
@@ -45,7 +45,7 @@ namespace VEF.AnimalBehaviours
 
             if (onCoolDown)
             {
-                coolDownCounter++;
+                coolDownCounter += delta;
                 if (coolDownCounter > Props.ticksToRecheck)
                 {
                     onCoolDown = false;

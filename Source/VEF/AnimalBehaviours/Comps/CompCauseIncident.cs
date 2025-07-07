@@ -28,10 +28,10 @@ namespace VEF.AnimalBehaviours
             }
         }
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            base.CompTick();
-            if (!waitingForNight && this.parent.IsHashIntervalTick(Props.checkingInterval) && this.parent.Map != null
+            base.CompTickInterval(delta);
+            if (!waitingForNight && this.parent.IsHashIntervalTick(Props.checkingInterval, delta) && this.parent.Map != null
                 && (!Props.requiresTamed || (Props.requiresTamed && this.parent.Faction != null && this.parent.Faction.IsPlayer)))
             {
                 IncidentDef incidentDef = IncidentDef.Named(Props.incidentToCause);
@@ -44,7 +44,7 @@ namespace VEF.AnimalBehaviours
                 }
                 
             }
-            if (waitingForNight && this.parent.IsHashIntervalTick(this.checkingForNightInterval) && this.parent.Map != null && GenCelestial.CurCelestialSunGlow(this.parent.Map) <= 0.4f
+            if (waitingForNight && this.parent.IsHashIntervalTick(this.checkingForNightInterval, delta) && this.parent.Map != null && GenCelestial.CurCelestialSunGlow(this.parent.Map) <= 0.4f
                 && (!Props.requiresTamed || (Props.requiresTamed && this.parent.Faction != null && this.parent.Faction.IsPlayer)))
             {
                 IncidentDef incidentDef = IncidentDef.Named(Props.incidentToCause);

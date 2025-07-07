@@ -22,8 +22,6 @@ namespace VEF.Cooking
 
         public int checkingInterval = 600;
 
-        public int checkingCounter = 600;
-
         public override void CompExposeData()
         {
             Scribe_Values.Look<bool>(ref this.flagAmIThinking, "flagAmIThinking", false, false);
@@ -54,13 +52,11 @@ namespace VEF.Cooking
             }
         }
 
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
+            base.CompPostTickInterval(ref severityAdjustment, delta);
 
-            checkingCounter++;
-
-            if (checkingCounter > checkingInterval)
+            if (Pawn.IsHashIntervalTick(checkingInterval, delta))
             {
                 if (Props.thoughtDefs.Count > 0)
                 {
@@ -97,7 +93,6 @@ namespace VEF.Cooking
                 {
                     this.Pawn.health.RemoveHediff(this.parent);
                 }
-                checkingCounter = 0;
             }
 
 

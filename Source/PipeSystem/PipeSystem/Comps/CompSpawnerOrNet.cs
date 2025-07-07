@@ -62,9 +62,11 @@ namespace PipeSystem
             yield break;
         }
 
-        public override void CompTick() => TickInterval(1);
+        public override void CompTickInterval(int delta) => TickInterval(delta);
 
-        public override void CompTickRare() => TickInterval(250);
+        public override void CompTickRare() => TickInterval(GenTicks.TickRareInterval);
+
+        public override void CompTickLong() => TickInterval(GenTicks.TickLongInterval);
 
         private void TickInterval(int interval)
         {

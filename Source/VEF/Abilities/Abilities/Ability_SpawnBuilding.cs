@@ -51,9 +51,9 @@
         public int lastDamageTick = 0;
 
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            base.CompTick();
+            base.CompTickInterval(delta);
             this.TickCheck();
         }
 

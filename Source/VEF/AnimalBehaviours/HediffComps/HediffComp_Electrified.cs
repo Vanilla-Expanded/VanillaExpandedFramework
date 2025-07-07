@@ -13,19 +13,13 @@ namespace VEF.AnimalBehaviours
                 return (HediffCompProperties_Electrified)this.props;
             }
         }
-        public int tickCounter = 0;
-
-       
 
 
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            
             if (parent.pawn.Map != null)
             {
-                tickCounter++;
-                
-                if (tickCounter >= Props.electroRate)
+                if (Pawn.IsHashIntervalTick(Props.electroRate, delta))
                 {
                     Pawn pawn = this.parent.pawn;
                     CellRect rect = GenAdj.OccupiedRect(pawn.Position, pawn.Rotation, IntVec2.One);
@@ -71,7 +65,6 @@ namespace VEF.AnimalBehaviours
 
 
                     }
-                    tickCounter = 0;
                 }
             }
         }

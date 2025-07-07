@@ -9,7 +9,6 @@ namespace VEF.AnimalBehaviours
 {
     public class CompHediffEffecter : ThingComp
     {
-        public int tickCounter = 0;
         public List<Pawn> pawnList = new List<Pawn>();
         public Pawn thisPawn;
 
@@ -22,14 +21,13 @@ namespace VEF.AnimalBehaviours
             }
         }
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            base.CompTick();
+            base.CompTickInterval(delta);
             if (AnimalBehaviours_Settings.flagEffecters)
             {
-                tickCounter++;
                 //Only do anything every tickInterval
-                if (tickCounter > Props.tickInterval)
+                if (parent.IsHashIntervalTick(Props.tickInterval, delta))
                 {
 
                     thisPawn = this.parent as Pawn;
@@ -51,7 +49,6 @@ namespace VEF.AnimalBehaviours
                             }
                         }
                     }
-                    tickCounter = 0;
                 }
             }
            

@@ -41,14 +41,19 @@ namespace VEF.Cooking
             this.ruinedPercent = 0f;
         }
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            this.DoTicks(1);
+            this.DoTicks(delta);
         }
 
         public override void CompTickRare()
         {
-            this.DoTicks(250);
+            this.DoTicks(GenTicks.TickRareInterval);
+        }
+
+        public override void CompTickLong()
+        {
+            this.DoTicks(GenTicks.TickLongInterval);
         }
 
         private void DoTicks(int ticks)

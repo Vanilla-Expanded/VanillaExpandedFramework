@@ -16,7 +16,12 @@ namespace VEF.Hediffs
             base.CompPostTick(ref severityAdjustment);
             if (sustainer == null) sustainer = Props.sustainer.TrySpawnSustainer(Pawn);
             sustainer.Maintain();
-            if (Pawn.IsHashIntervalTick(Props.ticksBetween))
+        }
+
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
+        {
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (Pawn.IsHashIntervalTick(Props.ticksBetween, delta))
                 foreach (var thing in GenRadial.RadialDistinctThingsAround(Pawn.Position, Pawn.Map, Props.radius, true).Except(Pawn).Where(ValidateTarget))
                     thing.TakeDamage(new DamageInfo(Props.damageDef, Props.damageAmount, Props.armorPenetration, Pawn.DrawPos.AngleToFlat(thing.DrawPos),
                         Pawn));

@@ -68,14 +68,14 @@ namespace VEF.AnimalBehaviours
             Scribe_Values.Look<bool>(ref this.diggingOn, "diggingOn", true, false);
         }
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            base.CompTick();
+            base.CompTickInterval(delta);
             Pawn pawn = this.parent as Pawn;
             if (AnimalBehaviours_Settings.flagDigWhenHungry && (pawn.Map != null) && (pawn.Awake()) && (!Props.digOnlyOnGrowingSeason ||
                 (Props.digOnlyOnGrowingSeason && (pawn.Map.mapTemperature.OutdoorTemp > Props.minTemperature && pawn.Map.mapTemperature.OutdoorTemp < Props.maxTemperature))) &&
                 ((pawn.needs?.food?.CurLevelPercentage < pawn.needs?.food?.PercentageThreshHungry) ||
-                (Props.digAnywayEveryXTicks && this.parent.IsHashIntervalTick(Props.timeToDigForced))))
+                (Props.digAnywayEveryXTicks && this.parent.IsHashIntervalTick(Props.timeToDigForced, delta))))
             {
                 if (diggingOn)
                 {
@@ -193,7 +193,7 @@ namespace VEF.AnimalBehaviours
 
                             stopdiggingcounter = Props.timeToDig;
                         }
-                        stopdiggingcounter--;
+                        stopdiggingcounter -= delta;
                     }
 
                 }

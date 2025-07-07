@@ -17,15 +17,14 @@ namespace VEF.Planet
         protected override IEnumerable<Toil> MakeNewToils()
         {
             yield return Toils_Goto.GotoCell(TargetIndex.A, PathEndMode.ClosestTouch);
-            yield return new Toil
-                         {
-                             initAction = () =>
-                                          {
-                                              FleckMaker.ThrowSmoke(this.pawn.Position.ToVector3(), this.Map, 2f);
-                                              this.pawn.ExitMap(false, Rot4.Random);
-                                              Find.World.GetComponent<HiringContractTracker>().pawns.Remove(this.pawn);
-                                          }
-                         }.FailOn(() => this.pawn.Dead);
+            var toil = ToilMaker.MakeToil();
+            toil.initAction = () =>
+            {
+                FleckMaker.ThrowSmoke(this.pawn.Position.ToVector3(), this.Map, 2f);
+                this.pawn.ExitMap(false, Rot4.Random);
+                Find.World.GetComponent<HiringContractTracker>().pawns.Remove(this.pawn);
+            };
+            yield return toil.FailOn(() => this.pawn.Dead);
         }
     }
 }

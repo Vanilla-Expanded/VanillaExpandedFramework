@@ -11,8 +11,7 @@ namespace VEF.AnimalBehaviours
 {
     public class Hediff_AcidBuildup : HediffWithComps
     {
-        private int tickMax = 64;
-        private int tickCounter = 0;
+        private int tickMax = 65;
 
         public CompAcidImmunity comp;
 
@@ -28,17 +27,15 @@ namespace VEF.AnimalBehaviours
             }
         }
 
-        public override void Tick()
+        public override void TickInterval(int delta)
         {
-            base.Tick();
-            tickCounter++;
-            if (tickCounter > tickMax)
+            base.TickInterval(delta);
+            if (pawn.IsHashIntervalTick(tickMax, delta))
             {             
                 if (Immunity is null)
                 {
                     pawn.TakeDamage(new DamageInfo(InternalDefOf.VEF_SecondaryAcidBurn, 1f, 0f, -1f, null, null, null, DamageInfo.SourceCategory.ThingOrUnknown, null));
                 }
-                tickCounter = 0;
             }
         }
     }

@@ -172,13 +172,13 @@ namespace VEF.Planet
 
         public virtual bool Attackable => true;
 
-        protected override void Tick()
+        protected override void TickInterval(int delta)
         {
-            base.Tick();
+            base.TickInterval(delta);
             if (HasMap is false)
             {
                 pather.PatherTick();
-                if (this.IsHashIntervalTick(30))
+                if (this.IsHashIntervalTick(30, delta))
                 {
                     tweener.TweenerTick();
                 }

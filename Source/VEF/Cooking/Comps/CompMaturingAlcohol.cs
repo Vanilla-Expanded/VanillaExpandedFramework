@@ -101,14 +101,19 @@ namespace VEF.Cooking
             Scribe_Values.Look<float>(ref this.rotProgressInt, "rotProg", 0f, false);
         }
 
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            this.Tick(1);
+            this.Tick(delta);
         }
 
         public override void CompTickRare()
         {
-            this.Tick(250);
+            this.Tick(GenTicks.TickRareInterval);
+        }
+
+        public override void CompTickLong()
+        {
+            this.Tick(GenTicks.TickLongInterval);
         }
 
         private void Tick(int interval)

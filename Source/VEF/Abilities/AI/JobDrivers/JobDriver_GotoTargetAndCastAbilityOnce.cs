@@ -32,7 +32,7 @@
 
         private IEnumerable<Toil> GotoToils()
         {
-            Toil toil = new Toil();
+            Toil toil = ToilMaker.MakeToil();
             toil.initAction = delegate
             {
                 pawn.pather.StopDead();

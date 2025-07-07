@@ -16,18 +16,13 @@ namespace VEF.AnimalBehaviours
                 return (HediffCompProperties_Regeneration)this.props;
             }
         }
-        public int tickCounter = 0;
 
 
-
-
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
+            base.CompPostTickInterval(ref severityAdjustment, delta);
 
-            tickCounter++;
-
-            if (tickCounter >= Props.rateInTicks)
+            if (Pawn.IsHashIntervalTick(Props.rateInTicks, delta))
             {
                 Pawn pawn = parent.pawn;
 
@@ -75,7 +70,6 @@ namespace VEF.AnimalBehaviours
                         }
                     }
                 }
-                tickCounter = 0;
             }
 
         }
