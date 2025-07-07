@@ -105,7 +105,7 @@ namespace VEF.Hediffs
             return list;
         }
 
-        public static bool CreateRequest_Prefix(PathRequest __result,
+        public static bool CreateRequest_Prefix(ref PathRequest __result,
             IntVec3 start, LocalTargetInfo target, IntVec3? dest, TraverseParms traverseParms, 
             PathFinderCostTuning? mtuning, PathEndMode peMode = PathEndMode.OnCell, Pawn pawn = null, 
             PathRequest.IPathGridCustomizer customizer = null)
@@ -115,7 +115,6 @@ namespace VEF.Hediffs
                 pawn.pather.lastPathedTargetPosition = target.Cell;
 
                 int ticksGame = GenTicks.TicksGame;
-                PathFinderCostTuning tuning = mtuning ?? PathFinderCostTuning.DefaultTuning;
                 __result = new PathRequest(pawn.Map, start, target, dest, new TraverseParms
                 {
                     pawn = pawn,
