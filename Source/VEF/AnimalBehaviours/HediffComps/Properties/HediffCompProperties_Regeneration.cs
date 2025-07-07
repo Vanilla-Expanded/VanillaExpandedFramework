@@ -16,6 +16,9 @@ namespace VEF.AnimalBehaviours
         public bool onlyBleeding = false;
         public bool onlyTendButNotHeal = false;
 
+        //If not null, regeneration will only affect this BodyPartDef
+        public BodyPartDef bodypart = null;
+
         public HediffCompProperties_Regeneration()
         {
             this.compClass = typeof(HediffComp_Regeneration);

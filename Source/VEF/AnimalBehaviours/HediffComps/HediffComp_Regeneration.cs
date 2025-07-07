@@ -36,7 +36,7 @@ namespace VEF.AnimalBehaviours
 
 
 
-                    List<Hediff_Injury> injuries = GetInjuries(pawn);
+                    List<Hediff_Injury> injuries = GetInjuries(pawn, Props.bodypart);
 
                     if (injuries.Count > 0)
                     {
@@ -80,7 +80,7 @@ namespace VEF.AnimalBehaviours
 
         }
 
-        public List<Hediff_Injury> GetInjuries(Pawn pawn)
+        public List<Hediff_Injury> GetInjuries(Pawn pawn, BodyPartDef bodypart)
         {
             List<Hediff_Injury> injuries = new List<Hediff_Injury>();
             for (int i = 0; i < pawn.health.hediffSet.hediffs.Count; i++)
@@ -88,17 +88,24 @@ namespace VEF.AnimalBehaviours
                 Hediff_Injury hediff_Injury = pawn.health.hediffSet.hediffs[i] as Hediff_Injury;
                 if (hediff_Injury != null)
                 {
-                    if (Props.onlyBleeding)
+                    if(bodypart is null || (bodypart!=null && hediff_Injury.Part.def == bodypart))
                     {
-                        if (hediff_Injury.Bleeding)
+
+                        if (Props.onlyBleeding)
+                        {
+                            if (hediff_Injury.Bleeding)
+                            {
+                                injuries.Add(hediff_Injury);
+                            }
+                        }
+                        else
                         {
                             injuries.Add(hediff_Injury);
                         }
+
                     }
-                    else
-                    {
-                        injuries.Add(hediff_Injury);
-                    }                     
+
+                                 
                 }
             }
             return injuries;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 using System.Linq;
+using RimWorld;
 
 
 namespace VEF.AnimalBehaviours
@@ -22,29 +23,7 @@ namespace VEF.AnimalBehaviours
             }
         }
 
-        protected int rateInTicks
-        {
-            get
-            {
-                return this.Props.rateInTicks;
-            }
-        }
-
-        protected float healAmount
-        {
-            get
-            {
-                return this.Props.healAmount;
-            }
-        }
-
-        protected bool healAll
-        {
-            get
-            {
-                return this.Props.healAll;
-            }
-        }
+       
 
 
         public override void CompTick()
@@ -53,7 +32,7 @@ namespace VEF.AnimalBehaviours
             {
                 tickCounter++;
 
-                if (tickCounter >= rateInTicks)
+                if (tickCounter >= Props.rateInTicks)
                 {
                     Pawn pawn = this.parent as Pawn;
 
@@ -66,19 +45,35 @@ namespace VEF.AnimalBehaviours
                         if (injuries.Count > 0)
                         {
 
-
-                            if (healAll)
+                            if (!Props.needsSun || Props.needsSun && pawn.Map != null && pawn.Position.InSunlight(pawn.Map))
                             {
-                                foreach (Hediff_Injury injury in injuries)
+                                if (!Props.needsWater || Props.needsWater && pawn.Map != null && pawn.Position.GetTerrain(pawn.Map).IsWater)
                                 {
-                                    injury.Severity = injury.Severity - healAmount;
-                                    break;
+                                    if (Props.healAll)
+                                    {
+                                        if (Props.onlyTendButNotHeal)
+                                        {
+                                            foreach (Hediff_Injury injury in injuries)
+                                            {
+                                                injury.Tended(0.7f, 1f);
+
+                                            }
+                                        }
+                                        else
+                                        {
+                                            foreach (Hediff_Injury injury in injuries)
+                                            {
+                                                injury.Severity = injury.Severity - Props.healAmount;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Hediff_Injury injury = injuries.RandomElement();
+                                        injury.Severity = injury.Severity - Props.healAmount;
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                Hediff_Injury injury = injuries.RandomElement();
-                                injury.Severity = injury.Severity - healAmount;
                             }
 
                         }
