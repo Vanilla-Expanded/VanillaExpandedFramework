@@ -385,4 +385,18 @@
 		<!-- Same value as school desk's CompProperties_StatEntry was using. -->
 		<displayPriorityInCategory>300</displayPriorityInCategory>
 	</StatDef>
+	<StatDef>
+		<defName>VEF_RangedDodgeChance</defName>
+		<label>ranged dodge chance</label>
+		<description>Chance to dodge a ranged attack that would've otherwise hit.</description>
+		<category>PawnCombat</category>
+		<neverDisabled>true</neverDisabled>
+		<defaultBaseValue>0</defaultBaseValue>
+		<minValue>0</minValue>
+		<toStringStyle>PercentZero</toStringStyle>
+		<toStringStyleUnfinalized>FloatOne</toStringStyleUnfinalized>
+		<noSkillOffset>0</noSkillOffset>
+		<displayPriorityInCategory>4101</displayPriorityInCategory>
+		<showDevelopmentalStageFilter>Child, Adult</showDevelopmentalStageFilter>
+	</StatDef>
 </Defs>

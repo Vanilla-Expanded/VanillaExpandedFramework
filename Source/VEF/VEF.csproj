@@ -555,6 +555,8 @@
     <Compile Include="Memes\Harmony\OptionalFeatures\IdeoUIUtility_AddPrecept.cs" />
     <Compile Include="Memes\OptionalFeatures\OptionalFeatures_IdeoFloatMenuPlus.cs" />
     <Compile Include="Hediffs\Comps\HediffComp_Targeting.cs" />
+    <Compile Include="Pawns\DefOfs\InternalDefOf.cs" />
+    <Compile Include="Pawns\Harmony\Projectile_ImpactSomething.cs" />
     <Compile Include="Pawns\StatParts\StatPart_RangeAttackSpeedFactor.cs" />
     <Compile Include="Pawns\StatWorkers\StatWorker_MassCarryCapacity.cs" />
     <Compile Include="Planet\CaravanArrivalActions\CaravanArrivalAction_AttackMovingBase.cs" />
