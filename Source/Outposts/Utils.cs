@@ -44,7 +44,7 @@ public static class Utils
     public static string Requirement(this string req, bool passed) => $"{(passed ? "✓" : "✖")} {req}".Colorize(passed ? Color.green : Color.red);
     public static string Requirement(this TaggedString req, bool passed) => $"{(passed ? "✓" : "✖")} {req.RawText}".Colorize(passed ? Color.green : Color.red);
 
-    public static string RequirementsStringBase(this OutpostExtension ext, int tileIdx, IEnumerable<Pawn> ps)
+    public static string RequirementsStringBase(this OutpostExtension ext, PlanetTile tileIdx, IEnumerable<Pawn> ps)
     {
         var builder = new StringBuilder();
         var biome = Find.WorldGrid[tileIdx].biome;
@@ -97,7 +97,7 @@ public static class Utils
         return true;
     }
 
-    public static string CanSpawnOnWithExt(this OutpostExtension ext, int tileIdx, IEnumerable<Pawn> ps)
+    public static string CanSpawnOnWithExt(this OutpostExtension ext, PlanetTile tileIdx, IEnumerable<Pawn> ps)
     {
         string reason = "Outposts.NoValidPawns".Translate();
         var pawns = ps.Where(p => ext.CanAddPawn(p, out reason)).ToList();
