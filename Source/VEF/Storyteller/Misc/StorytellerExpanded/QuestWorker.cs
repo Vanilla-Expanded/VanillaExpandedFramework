@@ -36,7 +36,7 @@ namespace VEF.Storyteller
                         slate.Set("targetMineable", ThingDefOf.MineableGold);
                         slate.Set("worker", PawnsFinder.AllMaps_FreeColonists.FirstOrDefault());
                     }
-                    if (newQuestCandidate.CanRun(slate, null))
+                    if (newQuestCandidate.CanRun(slate, Find.World))
                     {
                         Quest quest = QuestGen.Generate(newQuestCandidate, slate);
                         if (def.currency is null)
