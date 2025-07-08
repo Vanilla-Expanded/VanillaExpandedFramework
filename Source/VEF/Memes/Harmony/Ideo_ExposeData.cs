@@ -28,8 +28,8 @@ namespace VEF.Memes
             for (int i = 0; i < codes.Count; i++)
             {
                 yield return codes[i];
-                //Local builder 5 is where it stores the Ritual Pattern Def. 1.4 added an additional place AddPrecept is used so this became necesarry
-                if (!found && codes[i].Calls(AddPrecept) && codes[i - 1].opcode == OpCodes.Ldloc_S && codes[i - 1].operand is LocalBuilder lb && lb.LocalIndex ==5)
+                //Local builder 6 is where it stores the Ritual Pattern Def. 1.4 added an additional place AddPrecept is used so this became necesarry
+                if (!found && codes[i].Calls(AddPrecept) && codes[i - 1].opcode == OpCodes.Ldloc_S && codes[i - 1].operand is LocalBuilder lb && lb.LocalIndex ==6)
                 {
                     found = true;
                     codes[i].opcode = OpCodes.Nop;
