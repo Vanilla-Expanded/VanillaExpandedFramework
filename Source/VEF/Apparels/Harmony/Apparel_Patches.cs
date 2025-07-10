@@ -338,7 +338,7 @@ namespace VEF.Apparels
                             }
                         }
                     }
-                    if (extension.workDisables?.Any() ?? false)
+                    if (extension.workDisables != WorkTags.None)
                     {
                         ___pawn.Notify_DisabledWorkTypesChanged();
                     }

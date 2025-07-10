@@ -9,7 +9,7 @@ namespace VEF.Apparels
     public class ApparelExtension : DefModExtension
     {
         public float? skillGainModifier;
-        public List<WorkTags> workDisables;
+        public WorkTags workDisables = WorkTags.None;
         public List<SkillDef> skillDisables;
 
         public List<StatModifier> equippedStatFactors;

@@ -14,7 +14,7 @@ namespace VEF.Apparels
             if (__instance.pawn != null)
             {
                 var apparelExtension = newApparel.def.GetModExtension<ApparelExtension>();
-                if (apparelExtension != null && (apparelExtension.workDisables?.Any() ?? false))
+                if (apparelExtension != null && (apparelExtension.workDisables != WorkTags.None))
                 {
                     __instance.pawn.Notify_DisabledWorkTypesChanged();
                 }

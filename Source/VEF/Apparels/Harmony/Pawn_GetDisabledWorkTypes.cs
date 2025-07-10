@@ -28,16 +28,13 @@ namespace VEF.Apparels
 					var extension = apparel.def.GetModExtension<ApparelExtension>();
 					if (extension != null)
 					{
-						if (extension.workDisables != null)
+						if (extension.workDisables != WorkTags.None)
 						{
-							foreach (var workTag in extension.workDisables)
+							foreach (var allDef in DefDatabase<WorkTypeDef>.AllDefs)
 							{
-								foreach (WorkTypeDef allDef in DefDatabase<WorkTypeDef>.AllDefs)
+								if (!list.Contains(allDef) && (allDef.workTags & extension.workDisables) != 0)
 								{
-									if (!list.Contains(allDef) && (allDef.workTags & workTag) != 0)
-									{
-										list.Add(allDef);
-									}
+									list.Add(allDef);
 								}
 							}
 						}
