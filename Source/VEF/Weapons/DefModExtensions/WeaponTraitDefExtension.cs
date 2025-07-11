@@ -10,6 +10,8 @@ namespace VEF.Weapons
         public ThingDef projectileOverride;
         //Swaps the sound produced when firing this unique weapon for another one
         public SoundDef soundOverride;
+        //Swaps the sound produced when hitting a pawn with this weapon with melee
+        public SoundDef meleeSoundOverride;
         //Swaps the graphic of the weapon. Supports Graphic_Single and Graphic_Random, as well as CutOutComplex
         public Dictionary<ThingDef,GraphicData> graphicOverrides;      
         //Add this ability to the wielder when equipping the weapon (and remove it when not in his possession)
