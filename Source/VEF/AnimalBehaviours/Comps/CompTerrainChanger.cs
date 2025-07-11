@@ -53,7 +53,7 @@ namespace VEF.AnimalBehaviours
                             extraFertCounter--;
                             if (extraFertCounter <= 0)
                             {
-                                if (pawn.training.HasLearned(TrainableDefOf.Obedience) && ((cell.GetTerrain(pawn.Map) == TerrainDef.Named(Props.SecondStageTerrain))))
+                                if (pawn.training?.HasLearned(TrainableDefOf.Obedience)==true && ((cell.GetTerrain(pawn.Map) == TerrainDef.Named(Props.SecondStageTerrain))))
                                 {
                                     pawn.Map.terrainGrid.SetTerrain(cell, TerrainDef.Named(Props.ThirdStageTerrain));
                                     //This is for achievements

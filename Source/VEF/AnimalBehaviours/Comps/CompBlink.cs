@@ -29,7 +29,7 @@ namespace VEF.AnimalBehaviours
                 {
                     Pawn pawn = this.parent as Pawn;
 
-                    if (!ModsConfig.OdysseyActive || !pawn.training.HasLearned(InternalDefOf.VEF_ControlledBlinking))
+                    if (!ModsConfig.OdysseyActive || pawn.training?.HasLearned(InternalDefOf.VEF_ControlledBlinking)!=true)
                     {
                         if (pawn.Map != null)
                         {

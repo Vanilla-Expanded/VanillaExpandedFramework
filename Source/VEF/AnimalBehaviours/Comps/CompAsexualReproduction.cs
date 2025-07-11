@@ -67,7 +67,7 @@ namespace VEF.AnimalBehaviours
             base.CompTickInterval(delta);
             Pawn pawn = this.parent as Pawn;
             //Important, without a null map check creatures will reproduce while on caravans, producing errors
-            if (pawn.Map != null && AnimalBehaviours_Settings.flagAsexualReproduction && (!ModsConfig.OdysseyActive || !pawn.training.HasLearned(InternalDefOf.VEF_CycleSeverance)))
+            if (pawn.Map != null && AnimalBehaviours_Settings.flagAsexualReproduction && (!ModsConfig.OdysseyActive || pawn.training?.HasLearned(InternalDefOf.VEF_CycleSeverance)!=true))
             {
                 if (this.Props.isGreenGoo)
                 {

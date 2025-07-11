@@ -29,7 +29,7 @@ namespace VEF.AnimalBehaviours
                 yield return gizmo;
             }
             Pawn pawn = parent as Pawn;
-            if (ModsConfig.OdysseyActive && pawn.training.HasLearned(InternalDefOf.VEF_DiggingDiscipline))
+            if (ModsConfig.OdysseyActive && pawn.training?.HasLearned(InternalDefOf.VEF_DiggingDiscipline) == true)
             {
                 if (diggingOn)
                 {
@@ -197,7 +197,7 @@ namespace VEF.AnimalBehaviours
                     }
 
                 }
-                else if (!ModsConfig.OdysseyActive || !pawn.training.HasLearned(InternalDefOf.VEF_DiggingDiscipline))
+                else if (!ModsConfig.OdysseyActive || pawn.training?.HasLearned(InternalDefOf.VEF_DiggingDiscipline) != true)
                 {
                     diggingOn = true;
                 }

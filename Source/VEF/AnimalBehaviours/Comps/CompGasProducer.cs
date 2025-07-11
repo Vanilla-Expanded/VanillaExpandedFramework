@@ -26,7 +26,7 @@ namespace VEF.AnimalBehaviours
                 yield return gizmo;
             }
             Pawn pawn = parent as Pawn;
-            if (ModsConfig.OdysseyActive && pawn.training.HasLearned(InternalDefOf.VEF_FumeRegulation))
+            if (ModsConfig.OdysseyActive && pawn.training?.HasLearned(InternalDefOf.VEF_FumeRegulation) == true)
             {
                 if (productionOn)
                 {
@@ -100,7 +100,7 @@ namespace VEF.AnimalBehaviours
                             }
                         }
                     }
-                    else if (!ModsConfig.OdysseyActive || !pawn.training.HasLearned(InternalDefOf.VEF_FumeRegulation))
+                    else if (!ModsConfig.OdysseyActive || pawn.training?.HasLearned(InternalDefOf.VEF_FumeRegulation) != true)
                     {
                         productionOn = true;
                     }

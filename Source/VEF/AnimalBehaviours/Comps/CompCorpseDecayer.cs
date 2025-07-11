@@ -35,7 +35,7 @@ namespace VEF.AnimalBehaviours
                 yield return gizmo;
             }
             Pawn pawn = parent as Pawn;
-            if(ModsConfig.OdysseyActive && pawn.training.HasLearned(InternalDefOf.VEF_ControlledCorpseDecay))
+            if(ModsConfig.OdysseyActive && pawn.training?.HasLearned(InternalDefOf.VEF_ControlledCorpseDecay)==true)
             {
                 if (decayingOn)
                 {
@@ -141,7 +141,7 @@ namespace VEF.AnimalBehaviours
                                 if (flagOnce) { flagOnce = false; break; }
                             }
                         }
-                    }else if (!ModsConfig.OdysseyActive && !pawn.training.HasLearned(InternalDefOf.VEF_ControlledCorpseDecay))
+                    }else if (!ModsConfig.OdysseyActive && pawn.training?.HasLearned(InternalDefOf.VEF_ControlledCorpseDecay)!=true)
                     {
                         decayingOn = true;
                     }

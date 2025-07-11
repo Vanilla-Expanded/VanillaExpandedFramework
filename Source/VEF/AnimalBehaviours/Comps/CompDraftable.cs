@@ -19,7 +19,7 @@ namespace VEF.AnimalBehaviours
             if (parent.IsHashIntervalTick(Props.checkingInterval, delta))
             {
                 Pawn pawn = this.parent as Pawn;
-                if (Props.conditionalOnTrainability && (!ModsConfig.OdysseyActive || !pawn.training.HasLearned(InternalDefOf.VEF_Beastmastery)))
+                if (Props.conditionalOnTrainability && (!ModsConfig.OdysseyActive || pawn.training?.HasLearned(InternalDefOf.VEF_Beastmastery) != true))
                 {
                     StaticCollectionsClass.RemoveDraftableAnimalFromList(this.parent);
                     if (Props.makeNonFleeingToo)
@@ -46,7 +46,7 @@ namespace VEF.AnimalBehaviours
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             Pawn pawn = this.parent as Pawn;
-            if(!Props.conditionalOnTrainability || (ModsConfig.OdysseyActive && pawn.training.HasLearned(InternalDefOf.VEF_Beastmastery)))
+            if(!Props.conditionalOnTrainability || (ModsConfig.OdysseyActive && pawn.training?.HasLearned(InternalDefOf.VEF_Beastmastery) == true))
             {
                 StaticCollectionsClass.AddDraftableAnimalToList(this.parent);
                 if (Props.makeNonFleeingToo)
