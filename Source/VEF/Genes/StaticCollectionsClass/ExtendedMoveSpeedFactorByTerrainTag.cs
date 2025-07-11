@@ -57,12 +57,18 @@ public class ExtendedMoveSpeedFactorByTerrainTag
 
     public void ApplySpeed(List<string> terrainTags, ref float speed)
     {
+        if (terrainTags == null)
+            return;
+
         foreach (var tag in terrainTags)
             ApplySpeed(tag, ref speed);
     }
 
     public void ApplySpeed(string terrainTag, ref float speed)
     {
+        if (terrainTag == null)
+            return;
+
         if (moveSpeedFactorByTerrainTag.TryGetValue(terrainTag, out var entries))
         {
             foreach (var value in entries.Values)

@@ -39,6 +39,8 @@ public class VanillaExpandedFramework_Pawn_PathFollower_CostToMoveIntoCell
 
     public static void ModifySpeedFactorForPawn(Pawn pawn, TerrainDef terrain, ref float speed)
     {
+        if (terrain == null || terrain.tags.NullOrEmpty())
+            return;
         if (!StaticCollectionsClass.moveSpeedFactorByTerrainTag_gene_pawns.TryGetValue(pawn, out var factors))
             return;
 
