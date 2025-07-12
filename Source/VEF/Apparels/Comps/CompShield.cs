@@ -76,7 +76,7 @@ namespace VEF.Apparels
                     newShield.HitPoints = this.parent.HitPoints;
                     if (this.parent.TryGetQuality(out QualityCategory quality))
                     {
-                        newShield.TryGetComp<CompQuality>()?.SetQuality(quality, ArtGenerationContext.Colony);
+                        newShield.compQuality?.SetQuality(quality, ArtGenerationContext.Colony);
                     }
                     GenSpawn.Spawn(newShield, this.parent.Position, this.parent.Map);
                     this.parent.Destroy(DestroyMode.Vanish);
@@ -100,7 +100,7 @@ namespace VEF.Apparels
                         newShield.HitPoints = this.parent.HitPoints;
                         if (this.parent.TryGetQuality(out QualityCategory quality))
                         {
-                            newShield.TryGetComp<CompQuality>()?.SetQuality(quality, ArtGenerationContext.Colony);
+                            newShield.compQuality?.SetQuality(quality, ArtGenerationContext.Colony);
                         }
                         eq.Remove(this.parent);
                         eq.pawn.AddShield(newShield);
@@ -112,7 +112,7 @@ namespace VEF.Apparels
                         newShield.HitPoints = this.parent.HitPoints;
                         if (this.parent.TryGetQuality(out QualityCategory quality))
                         {
-                            newShield.TryGetComp<CompQuality>()?.SetQuality(quality, ArtGenerationContext.Colony);
+                            newShield.compQuality?.SetQuality(quality, ArtGenerationContext.Colony);
                         }
                         ap.Remove(this.parent as Apparel);
                         ap.pawn.AddShield(newShield);

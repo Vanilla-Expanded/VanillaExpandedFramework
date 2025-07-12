@@ -123,7 +123,7 @@ namespace VEF.Buildings
                             Building new_Building = (Building)ThingMaker.MakeThing(DefDatabase<ThingDef>.GetNamed(Props.defOfBuildingToSpawn, true));
                             new_Building.SetFaction(Faction.OfPlayer);
                             //And preserve quality if needed! (for art)
-                            if ((new_Building.TryGetComp<CompQuality>() is CompQuality qualityComp) && (this.parent.TryGetComp<CompQuality>() is CompQuality parentQualityComp))
+                            if ((new_Building.compQuality is { } qualityComp) && (this.parent.compQuality is { } parentQualityComp))
                             {
                                 qualityComp.SetQuality(parentQualityComp.Quality, ArtGenerationContext.Colony);
                             }

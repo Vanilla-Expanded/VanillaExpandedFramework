@@ -11,7 +11,6 @@ namespace VEF.Things
 
         public Thing RandomWeapons()
         {
-            this.Props.canProvideTags.Count<string>();
             ThingStuffPair thingStuffPair = ThingStuffPair.AllWith((Predicate<ThingDef>)(td => td.equipmentType == EquipmentType.Primary && td.weaponTags != null && td.weaponTags.Contains(this.Props.canProvideTags[0]))).RandomElement<ThingStuffPair>();
             return ThingMaker.MakeThing(thingStuffPair.thing, thingStuffPair.stuff);
         }
@@ -22,9 +21,8 @@ namespace VEF.Things
             if (this.parent.Map == null)
                 return;
             Thing thing = this.RandomWeapons();
-            QualityCategory qc;
-            if (thing.TryGetComp<CompQuality>() != null && this.parent.TryGetQuality(out qc))
-                thing.TryGetComp<CompQuality>().SetQuality(qc, ArtGenerationContext.Colony);
+            if ((thing as ThingWithComps)?.compQuality is { } comp && this.parent.TryGetQuality(out var qc))
+                comp.SetQuality(qc, ArtGenerationContext.Colony);
             GenPlace.TryPlaceThing(thing, this.parent.Position, this.parent.Map, ThingPlaceMode.Direct);
             this.parent.Destroy(DestroyMode.Vanish);
         }

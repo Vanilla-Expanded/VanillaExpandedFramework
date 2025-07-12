@@ -119,7 +119,7 @@ namespace VEF.Buildings
                         ThingAndCount thingDefCount = LootableExtension.contents.RandomElement();
                         Thing thingToMake = ThingMaker.MakeThing(thingDefCount.thing, null);
                         thingToMake.stackCount = thingDefCount.count;
-                        thingToMake.TryGetComp<CompQuality>()?.SetQuality(QualityUtility.GenerateQualityRandomEqualChance(), ArtGenerationContext.Colony);
+                        (thingToMake as ThingWithComps)?.compQuality?.SetQuality(QualityUtility.GenerateQualityRandomEqualChance(), ArtGenerationContext.Colony);
                         GenPlace.TryPlaceThing(thingToMake, Position, Map, ThingPlaceMode.Near);
                     }
 
@@ -131,7 +131,7 @@ namespace VEF.Buildings
                     {
                         Thing thingToMake = ThingMaker.MakeThing(thingDefCount.thing, null);
                         thingToMake.stackCount = thingDefCount.count;
-                        thingToMake.TryGetComp<CompQuality>()?.SetQuality(QualityUtility.GenerateQualityRandomEqualChance(), ArtGenerationContext.Colony);
+                        (thingToMake as ThingWithComps)?.compQuality?.SetQuality(QualityUtility.GenerateQualityRandomEqualChance(), ArtGenerationContext.Colony);
                         GenPlace.TryPlaceThing(thingToMake, Position, Map, ThingPlaceMode.Near);
                     }
                 }

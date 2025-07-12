@@ -748,7 +748,7 @@ namespace PipeSystem
             }
             if (Def.stopAtQuality)
             {
-                CompQuality compQuality = outThing.TryGetComp<CompQuality>();
+                CompQuality compQuality = (outThing as ThingWithComps)?.compQuality;
                 if (compQuality != null)
                 {
                     if (forceQualityOut)

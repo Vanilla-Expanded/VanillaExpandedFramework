@@ -84,9 +84,9 @@ namespace VEF.Apparels
                                 item.DrawColor = oldItemColor;
 
                                 // If the new item has CompQuality set the quality to the same one as the old item
-                                if (this.parent.TryGetQuality(out QualityCategory qc) && item.TryGetComp<CompQuality>() != null)
+                                if (this.parent.TryGetQuality(out QualityCategory qc) && (item as ThingWithComps)?.compQuality is { } quality)
                                 {
-                                    item.TryGetComp<CompQuality>().SetQuality(qc, ArtGenerationContext.Colony);
+                                    quality.SetQuality(qc, ArtGenerationContext.Colony);
                                 }
 
                                 // Cast item from Thing to Apparel

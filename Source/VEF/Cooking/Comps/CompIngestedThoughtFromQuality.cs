@@ -16,7 +16,7 @@ namespace VEF.Cooking
             {
                 var memories = ingester.needs.mood.thoughts.memories;
                 var curIngestedMemory = memories.GetFirstMemoryOfDef(Props.ingestedThought);
-                int quality = (int)parent.GetComp<CompQuality>().Quality;
+                int quality = (int)parent.compQuality.Quality;
 
                 // Modify the existing memory if it exists
                 if (curIngestedMemory != null)

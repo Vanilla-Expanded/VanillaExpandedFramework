@@ -15,10 +15,10 @@ namespace VEF.Cooking
         public override bool AllowStackWith(Thing other)
         {
 
-            if (other.TryGetComp<CompQuality>() != null)
+            if ((other as ThingWithComps)?.compQuality is { } otherComp)
             {
-                QualityCategory quality1 = other.TryGetComp<CompQuality>().Quality;
-                QualityCategory quality2 = this.parent.TryGetComp<CompQuality>().Quality;
+                QualityCategory quality1 = otherComp.Quality;
+                QualityCategory quality2 = this.parent.compQuality.Quality;
 
 
                 if (quality1 != quality2)

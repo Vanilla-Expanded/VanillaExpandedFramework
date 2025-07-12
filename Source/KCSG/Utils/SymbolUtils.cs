@@ -165,7 +165,7 @@ namespace KCSG
         {
             var thing = ThingMaker.MakeThing(symbol.thingDef, symbol.stuffDef ?? (symbol.thingDef.stuffCategories?.Count > 0 ? GenStuff.RandomStuffFor(symbol.thingDef) : null));
             thing.stackCount = symbol.maxStackSize != -1 ? Rand.RangeInclusive(1, symbol.maxStackSize) : Mathf.Clamp(Rand.RangeInclusive(1, symbol.thingDef.stackLimit), 1, 75);
-            thing.TryGetComp<CompQuality>()?.SetQuality(QualityUtility.GenerateQualityBaseGen(), ArtGenerationContext.Outsider);
+            (thing as ThingWithComps)?.compQuality?.SetQuality(QualityUtility.GenerateQualityBaseGen(), ArtGenerationContext.Outsider);
             GenPlace.TryPlaceThing(thing, cell, map, ThingPlaceMode.Direct);
             thing.SetForbidden(true, false);
         }
@@ -339,7 +339,7 @@ namespace KCSG
                         if (item.MarketValue <= GenOption.settlementLayout.stockpileOptions.maxValueStackIncrease)
                             item.stackCount = Mathf.Clamp(Rand.RangeInclusive(1, thingDef.stackLimit), 1, 90);
 
-                        item.TryGetComp<CompQuality>()?.SetQuality(QualityUtility.GenerateQualityBaseGen(), ArtGenerationContext.Outsider);
+                        (item as ThingWithComps)?.compQuality?.SetQuality(QualityUtility.GenerateQualityBaseGen(), ArtGenerationContext.Outsider);
 
                         GenPlace.TryPlaceThing(item, storageCell, map, ThingPlaceMode.Direct);
                         item.SetForbidden(true, false);
