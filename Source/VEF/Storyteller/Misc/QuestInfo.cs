@@ -11,7 +11,20 @@ namespace VEF.Storyteller
 
     public class QuestInfo : IExposable
     {
-        public Quest quest;
+        public Quest questRef;
+        private Quest questDeep;
+        public Quest Quest
+        {
+            get
+            {
+                if (questRef == null)
+                {
+                    return questDeep;
+                }
+                return questRef;
+            }
+        }
+
         public int quest_Part_choiceInd = -1;
         public QuestPart_Choice quest_Part_choice;
         public QuestPart_Choice.Choice choice;
@@ -25,21 +38,28 @@ namespace VEF.Storyteller
         public QuestEndOutcome outcome;
         public QuestScriptDef questDef;
   
-
         public QuestInfo()
         {
 
         }
 
-        public QuestInfo(Quest quest, Faction askerFaction, QuestCurrencyInfo currencyInfo, bool onlyOneChoice = false)
+        public QuestInfo(Quest quest, Faction askerFaction, QuestCurrencyInfo currencyInfo,
+            bool onlyOneChoice = false, bool saveQuestDeeply = false)
         {
-            this.quest = quest;
+            if (saveQuestDeeply)
+            {
+                questDeep = quest;
+            }
+            else
+            {
+                questRef = quest;
+            }
             this.askerFaction = askerFaction;
             this.currencyInfo = currencyInfo;
             this.tickGenerated = Find.TickManager.TicksAbs;
             if (onlyOneChoice)
             {
-                var choices = this.quest.PartsListForReading.Where(x => x is QuestPart_Choice choice).Cast<QuestPart_Choice>().ToList();
+                var choices = this.Quest.PartsListForReading.Where(x => x is QuestPart_Choice choice).Cast<QuestPart_Choice>().ToList();
                 if (choices.Any())
                 {
                     quest_Part_choice = choices.RandomElement();
@@ -53,19 +73,18 @@ namespace VEF.Storyteller
         {
             Scribe_Values.Look(ref tickGenerated, "tickGenerated");
             Scribe_References.Look(ref askerFaction, "askerFaction");
-            Scribe_Deep.Look(ref quest, "quest");
+            Scribe_Deep.Look(ref questDeep, "questDeep");
+            Scribe_References.Look(ref questRef, "quest");
             Scribe_Deep.Look(ref choice, "choice");
             Scribe_Deep.Look(ref currencyInfo, "currencyInfo");
             Scribe_Values.Look(ref quest_Part_choiceInd, "quest_Part_choiceInd");
-
             Scribe_Defs.Look(ref questDef, "questDef");
-           
             Scribe_Values.Look(ref outcome, "outcome");
             Scribe_Values.Look(ref tickCompleted, "tickCompleted");
             Scribe_Values.Look(ref tickExpired, "tickExpired");
             if (quest_Part_choiceInd != -1 && Scribe.mode == LoadSaveMode.PostLoadInit)
             {
-                quest_Part_choice = this.quest.PartsListForReading.Where(x => x is QuestPart_Choice choice).Cast<QuestPart_Choice>().ToList()[quest_Part_choiceInd];
+                quest_Part_choice = this.Quest.PartsListForReading.Where(x => x is QuestPart_Choice choice).Cast<QuestPart_Choice>().ToList()[quest_Part_choiceInd];
             }
         }
     }

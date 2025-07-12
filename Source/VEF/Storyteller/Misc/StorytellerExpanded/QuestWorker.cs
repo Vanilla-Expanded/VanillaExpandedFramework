@@ -41,7 +41,10 @@ namespace VEF.Storyteller
                         Quest quest = QuestGen.Generate(newQuestCandidate, slate);
                         if (def.currency is null)
                         {
-                            var questInfo = new QuestInfo(quest, questGiverManager.FixedQuestGiverFaction, null, onlyOneChoice: questGiverManager.def.onlyOneReward ? true : false);
+                            var questInfo = new QuestInfo(quest, 
+                                questGiverManager.FixedQuestGiverFaction, null, 
+                                onlyOneChoice: questGiverManager.def.onlyOneReward ? true : false,
+                                saveQuestDeeply: true);
                             generatedQuests.Add(questInfo);
                         }
                         else if (def.currency.Allows(questGiverManager, quest, VanillaExpandedFramework_QuestGen_AddSlateQuestTags_Patch.slate, out QuestInfo questInfo))
@@ -54,7 +57,6 @@ namespace VEF.Storyteller
                 {
 
                 }
-
             }
             return generatedQuests;
         }

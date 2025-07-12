@@ -63,9 +63,9 @@ namespace VEF.Storyteller
 
         public void ActivateQuest(Pawn accepter, QuestInfo questInfo)
         {
-            Find.QuestManager.Add(questInfo.quest);
-            questInfo.quest.Accept(accepter);
-            QuestUtility.SendLetterQuestAvailable(questInfo.quest);
+            Find.QuestManager.Add(questInfo.Quest);
+            questInfo.Quest.Accept(accepter);
+            QuestUtility.SendLetterQuestAvailable(questInfo.Quest);
             questInfo.currencyInfo?.Buy(questInfo);
             availableQuests.Remove(questInfo);
         }

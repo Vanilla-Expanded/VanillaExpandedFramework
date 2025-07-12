@@ -77,28 +77,28 @@ namespace VEF.Storyteller
             float buttonWidth = 150f;
             float buttonX = rect.xMax - buttonWidth;
 
-            // Draw quest name label
+            // Draw Quest name label
             Widgets.Label(new Rect(rect.x, rect.y + curY, rect.width - buttonWidth - 10f, 25f), "- " + questDef.defName + " (Chain: " + (ext?.questChainDef.label ?? "None") + ")");
 
-            // Draw buttons if quest is ongoing
-            if (questInfo.quest?.State == QuestState.Ongoing)
+            // Draw buttons if Quest is ongoing
+            if (questInfo.Quest?.State == QuestState.Ongoing)
             {
                 if (Widgets.ButtonText(new Rect(buttonX - buttonWidth - 10, rect.y + curY, buttonWidth, 25f), "Force Success"))
                 {
-                    questInfo.quest.End(QuestEndOutcome.Success, false);
+                    questInfo.Quest.End(QuestEndOutcome.Success, false);
                 }
 
                 buttonX = rect.xMax - buttonWidth; // Reset buttonX for the second button
                 if (Widgets.ButtonText(new Rect(buttonX, rect.y, buttonWidth, 25f), "Force Fail"))
                 {
-                    questInfo.quest.End(QuestEndOutcome.Fail, false);
+                    questInfo.Quest.End(QuestEndOutcome.Fail, false);
                 }
             }
-            curY += 25f; // Move curY down after quest name and buttons (if any)
+            curY += 25f; // Move curY down after Quest name and buttons (if any)
 
 
-            // Draw remaining quest information
-            Widgets.Label(new Rect(rect.x + 20f, rect.y + curY, rect.width - 20f, 25f), "  - State: " + questInfo.quest.State);
+            // Draw remaining Quest information
+            Widgets.Label(new Rect(rect.x + 20f, rect.y + curY, rect.width - 20f, 25f), "  - State: " + questInfo.Quest.State);
             curY += 25f;
             Widgets.Label(new Rect(rect.x + 20f, rect.y + curY, rect.width - 20f, 25f), "  - Outcome: " + questInfo.outcome);
             curY += 25f;
@@ -135,7 +135,7 @@ namespace VEF.Storyteller
             float buttonWidth = 150f;
             float buttonX = rect.xMax - buttonWidth;
 
-            // Draw quest name label
+            // Draw Quest name label
             Widgets.Label(new Rect(rect.x, rect.y + curY, rect.width - buttonWidth - 10f, 25f), "- " + questDef.defName + " (Chain: " + (ext?.questChainDef.label ?? "None") + ")");
 
             // Draw "Fire Now" button
@@ -144,9 +144,9 @@ namespace VEF.Storyteller
                 questDef.CreateQuest();
                 GameComponent_QuestChains.Instance.futureQuests.Remove(futureQuestInfo);
             }
-            curY += 25f; // Move curY down after quest name and button
+            curY += 25f; // Move curY down after Quest name and button
 
-            // Draw remaining future quest information
+            // Draw remaining future Quest information
             if (futureQuestInfo.tickToFire > 0)
             {
                 int ticksUntilFire = futureQuestInfo.tickToFire - Find.TickManager.TicksGame;

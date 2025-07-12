@@ -126,7 +126,7 @@ namespace VEF.Storyteller
                 Rect rect4 = new Rect(rect.x, rect.yMax + 7, rect.xMax, 40);
                 if (selected != null)
                 {
-                    if (!QuestUtility.CanAcceptQuest(selected.quest))
+                    if (!QuestUtility.CanAcceptQuest(selected.Quest))
                     {
                         GUI.color = Color.grey;
                     }
@@ -135,7 +135,7 @@ namespace VEF.Storyteller
                         if (selected.choice != null)
                         {
                             tmpRemainingQuestParts.Clear();
-                            tmpRemainingQuestParts.AddRange(selected.quest.PartsListForReading);
+                            tmpRemainingQuestParts.AddRange(selected.Quest.PartsListForReading);
 
                             for (int l = 0; l < selected.quest_Part_choice.choices.Count; l++)
                             {
@@ -165,7 +165,7 @@ namespace VEF.Storyteller
                         }
                         else
                         {
-                            AcceptQuestByInterface(null, selected.quest.RequiresAccepter);
+                            AcceptQuestByInterface(null, selected.Quest.RequiresAccepter);
                         }
                     }
                 }
@@ -197,9 +197,9 @@ namespace VEF.Storyteller
             challengeRating.width = (4 * 15f);
             Text.Anchor = TextAnchor.MiddleLeft;
             Rect rect5 = new Rect(rect2.x + 4f, rect2.y, rect2.width - 4f, rect2.height);
-            Widgets.Label(rect5, questInfo.quest.name.Truncate(rect5.width));
+            Widgets.Label(rect5, questInfo.Quest.name.Truncate(rect5.width));
 
-            for (int i = 0; i < questInfo.quest.challengeRating; i++)
+            for (int i = 0; i < questInfo.Quest.challengeRating; i++)
             {
                 GUI.DrawTexture(new Rect(rect4.x + (float)(15 * (i + 1)), rect4.y + rect4.height / 2f - 7f, 15f, 15f), RatingIcon);
             }
@@ -277,7 +277,7 @@ namespace VEF.Storyteller
                 DoDefHyperlinks(rect3, ref curY);
                 float num2 = curY;
                 curY = num;
-                if (!selected.quest.root.hideInvolvedFactionsInfo)
+                if (!selected.Quest.root.hideInvolvedFactionsInfo)
                 {
                     DoFactionInfo(rect4, ref curY);
                 }
@@ -294,7 +294,7 @@ namespace VEF.Storyteller
         {
             Text.Font = GameFont.Medium;
             Rect rect = new Rect(innerRect.x, curY, innerRect.width, 100f);
-            Widgets.Label(rect, selected.quest.name.Truncate(rect.width));
+            Widgets.Label(rect, selected.Quest.name.Truncate(rect.width));
             Text.Font = GameFont.Small;
             curY += Text.LineHeight;
             curY += 17f;
@@ -302,7 +302,7 @@ namespace VEF.Storyteller
 
         private void DoAcceptanceRequirementInfo(Rect innerRect, bool scrollBarVisible, ref float curY)
         {
-            if (selected.quest.EverAccepted)
+            if (selected.Quest.EverAccepted)
             {
                 return;
             }
@@ -336,9 +336,9 @@ namespace VEF.Storyteller
 
         private IEnumerable<string> ListUnmetAcceptRequirements()
         {
-            for (int i = 0; i < selected.quest.PartsListForReading.Count; i++)
+            for (int i = 0; i < selected.Quest.PartsListForReading.Count; i++)
             {
-                QuestPart_RequirementsToAccept questPart_RequirementsToAccept = selected.quest.PartsListForReading[i] as QuestPart_RequirementsToAccept;
+                QuestPart_RequirementsToAccept questPart_RequirementsToAccept = selected.Quest.PartsListForReading[i] as QuestPart_RequirementsToAccept;
                 if (questPart_RequirementsToAccept != null)
                 {
                     AcceptanceReport acceptanceReport = questPart_RequirementsToAccept.CanAccept();
@@ -352,9 +352,9 @@ namespace VEF.Storyteller
 
         private IEnumerable<GlobalTargetInfo> ListUnmetAcceptRequirementCulprits()
         {
-            for (int i = 0; i < selected.quest.PartsListForReading.Count; i++)
+            for (int i = 0; i < selected.Quest.PartsListForReading.Count; i++)
             {
-                QuestPart_RequirementsToAccept questPart_RequirementsToAccept = selected.quest.PartsListForReading[i] as QuestPart_RequirementsToAccept;
+                QuestPart_RequirementsToAccept questPart_RequirementsToAccept = selected.Quest.PartsListForReading[i] as QuestPart_RequirementsToAccept;
                 if (questPart_RequirementsToAccept != null)
                 {
                     foreach (GlobalTargetInfo culprit in questPart_RequirementsToAccept.Culprits)
@@ -368,13 +368,13 @@ namespace VEF.Storyteller
         private void DoDescription(Rect innerRect, ref float curY)
         {
             StringBuilder stringBuilder = new StringBuilder();
-            if (!selected.quest.description.RawText.NullOrEmpty())
+            if (!selected.Quest.description.RawText.NullOrEmpty())
             {
-                string value = selected.quest.description.Resolve();
+                string value = selected.Quest.description.Resolve();
                 stringBuilder.Append(value);
             }
             tmpQuestParts.Clear();
-            tmpQuestParts.AddRange(selected.quest.PartsListForReading);
+            tmpQuestParts.AddRange(selected.Quest.PartsListForReading);
             tmpQuestParts.SortBy((QuestPart x) => (x is QuestPartActivable) ? ((QuestPartActivable)x).EnableTick : 0);
             for (int i = 0; i < tmpQuestParts.Count; i++)
             {
@@ -406,7 +406,7 @@ namespace VEF.Storyteller
 
         private void DoRewards(Rect innerRect, ref float curY)
         {
-            bool flag = selected.quest.State == QuestState.NotYetAccepted;
+            bool flag = selected.Quest.State == QuestState.NotYetAccepted;
             bool flag2 = true;
             if (Event.current.type == EventType.Layout)
             {
@@ -462,7 +462,7 @@ namespace VEF.Storyteller
             else
             {
                 QuestPart_Choice choice = null;
-                List<QuestPart> partsListForReading = selected.quest.PartsListForReading;
+                List<QuestPart> partsListForReading = selected.Quest.PartsListForReading;
                 for (int i = 0; i < partsListForReading.Count; i++)
                 {
                     choice = (partsListForReading[i] as QuestPart_Choice);
@@ -535,7 +535,7 @@ namespace VEF.Storyteller
                     }
                     if (flag)
                     {
-                        if (!QuestUtility.CanAcceptQuest(selected.quest))
+                        if (!QuestUtility.CanAcceptQuest(selected.Quest))
                         {
                             GUI.color = Color.grey;
                         }
@@ -543,7 +543,7 @@ namespace VEF.Storyteller
                         if (Widgets.ButtonText(rect3, "AcceptQuestFor".Translate() + ":"))
                         {
                             tmpRemainingQuestParts.Clear();
-                            tmpRemainingQuestParts.AddRange(selected.quest.PartsListForReading);
+                            tmpRemainingQuestParts.AddRange(selected.Quest.PartsListForReading);
                             for (int l = 0; l < choice.choices.Count; l++)
                             {
                                 if (j == l)
@@ -602,7 +602,7 @@ namespace VEF.Storyteller
                 }
             }
             tmpLookTargets.Clear();
-            tmpLookTargets.AddRange(selected.quest.QuestLookTargets);
+            tmpLookTargets.AddRange(selected.Quest.QuestLookTargets);
             tmpLookTargets.SortBy(delegate (GlobalTargetInfo x)
             {
                 if (x.Thing is Pawn)
@@ -657,9 +657,9 @@ namespace VEF.Storyteller
         private void DoSelectTargets(Rect innerRect, ref float curY)
         {
             bool flag = false;
-            for (int i = 0; i < selected.quest.PartsListForReading.Count; i++)
+            for (int i = 0; i < selected.Quest.PartsListForReading.Count; i++)
             {
-                QuestPart questPart = selected.quest.PartsListForReading[i];
+                QuestPart questPart = selected.Quest.PartsListForReading[i];
                 tmpSelectTargets.Clear();
                 tmpSelectTargets.AddRange(questPart.QuestSelectTargets);
                 if (tmpSelectTargets.Count == 0)
@@ -709,7 +709,7 @@ namespace VEF.Storyteller
         private void DoFactionInfo(Rect rect, ref float curY)
         {
             curY += 15f;
-            foreach (Faction involvedFaction in selected.quest.InvolvedFactions)
+            foreach (Faction involvedFaction in selected.Quest.InvolvedFactions)
             {
                 if (involvedFaction != null && !involvedFaction.Hidden && !involvedFaction.IsPlayer)
                 {
@@ -721,7 +721,7 @@ namespace VEF.Storyteller
         private void DoDefHyperlinks(Rect rect, ref float curY)
         {
             curY += 25f;
-            foreach (Dialog_InfoCard.Hyperlink hyperlink in selected.quest.Hyperlinks)
+            foreach (Dialog_InfoCard.Hyperlink hyperlink in selected.Quest.Hyperlinks)
             {
                 float num = Text.CalcHeight(hyperlink.Label, rect.width);
                 Widgets.HyperlinkWithIcon(new Rect(rect.x, curY, rect.width / 2f, num), hyperlink, "ViewHyperlink".Translate(hyperlink.Label));
@@ -731,7 +731,7 @@ namespace VEF.Storyteller
 
         private void AcceptQuestByInterface(Action preAcceptAction = null, bool requiresAccepter = false)
         {
-            if (QuestUtility.CanAcceptQuest(selected.quest))
+            if (QuestUtility.CanAcceptQuest(selected.Quest))
             {
                 if (requiresAccepter)
                 {
@@ -739,7 +739,7 @@ namespace VEF.Storyteller
                     foreach (Pawn p in PawnsFinder.AllMapsCaravansAndTravellingTransporters_Alive_FreeColonists_NoCryptosleep)
                     {
                         Pawn pLocal;
-                        if (QuestUtility.CanPawnAcceptQuest(p, selected.quest))
+                        if (QuestUtility.CanPawnAcceptQuest(p, selected.Quest))
                         {
                             pLocal = p;
                             string text = "AcceptWith".Translate(p);
@@ -749,9 +749,9 @@ namespace VEF.Storyteller
                             }
                             list.Add(new FloatMenuOption(text, delegate
                             {
-                                if (QuestUtility.CanPawnAcceptQuest(pLocal, selected.quest))
+                                if (QuestUtility.CanPawnAcceptQuest(pLocal, selected.Quest))
                                 {
-                                    QuestPart_GiveRoyalFavor questPart_GiveRoyalFavor = selected.quest.PartsListForReading.OfType<QuestPart_GiveRoyalFavor>().FirstOrDefault();
+                                    QuestPart_GiveRoyalFavor questPart_GiveRoyalFavor = selected.Quest.PartsListForReading.OfType<QuestPart_GiveRoyalFavor>().FirstOrDefault();
                                     if (questPart_GiveRoyalFavor != null && questPart_GiveRoyalFavor.giveToAccepter)
                                     {
                                         IEnumerable<Trait> conceitedTraits = RoyalTitleUtility.GetConceitedTraits(p);
@@ -813,7 +813,7 @@ namespace VEF.Storyteller
                             {
                                 preAcceptAction();
                             }
-                            Messages.Message("MessageQuestAccepted".Translate(pLocal, selected.quest.name), pLocal, MessageTypeDefOf.TaskCompletion, historical: false);
+                            Messages.Message("MessageQuestAccepted".Translate(pLocal, selected.Quest.name), pLocal, MessageTypeDefOf.TaskCompletion, historical: false);
                             questGiverManager.ActivateQuest(pLocal, selected);
                             selected = null;
                         }

@@ -13,7 +13,7 @@ namespace VEF.Storyteller
             {
                 GameComponent_QuestChains.Instance.quests.Add(new QuestInfo
                 {
-                    quest = quest,
+                    questRef = quest,
                     questDef = quest.root,
                 });
             }

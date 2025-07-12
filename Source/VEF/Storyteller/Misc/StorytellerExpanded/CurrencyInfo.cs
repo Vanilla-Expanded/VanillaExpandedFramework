@@ -28,7 +28,9 @@ namespace VEF.Storyteller
             {
                 var currencyInfo = new GoodwillCurrencyInfo();
                 currencyInfo.amount = questGiverManager.def.currency.costToAcceptQuest;
-                questInfo = new QuestInfo(quest, asker.Faction, currencyInfo, onlyOneChoice: questGiverManager.def.onlyOneReward ? true : false);
+                questInfo = new QuestInfo(quest, asker.Faction, currencyInfo, 
+                    onlyOneChoice: questGiverManager.def.onlyOneReward ? true : false,
+                    saveQuestDeeply: true);
                 return true;
             }
             questInfo = null;

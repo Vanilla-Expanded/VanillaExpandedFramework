@@ -94,7 +94,7 @@ namespace VEF.Storyteller
 
         public void QuestCompleted(Quest quest, QuestEndOutcome outcome)
         {
-            var entry = quests.LastOrDefault(x => x.quest == quest);
+            var entry = quests.LastOrDefault(x => x.Quest == quest);
             if (entry != null)
             {
                 entry.outcome = outcome;
@@ -111,7 +111,7 @@ namespace VEF.Storyteller
 
         public void QuestExpired(Quest quest)
         {
-            var entry = quests.FirstOrDefault(x => x.quest == quest);
+            var entry = quests.FirstOrDefault(x => x.Quest == quest);
             if (entry != null)
             {
                 entry.tickExpired = Find.TickManager.TicksGame;
