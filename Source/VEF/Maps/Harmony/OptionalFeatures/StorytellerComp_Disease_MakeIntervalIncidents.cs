@@ -49,16 +49,20 @@ namespace VEF.Maps
         {
            
             float multiplier = 1;
-            foreach (TileMutatorDef mutator in map.Tile.Tile.Mutators)
+            if (map?.Tile.Tile?.Mutators != null)
             {
-                TileMutatorExtension extension = mutator.GetModExtension<TileMutatorExtension>();
-
-                if (extension != null && extension.diseaseMTBMultiplier != 1)
+                foreach (TileMutatorDef mutator in map.Tile.Tile.Mutators)
                 {
-                    multiplier *= extension.diseaseMTBMultiplier;
-                }
+                    TileMutatorExtension extension = mutator.GetModExtension<TileMutatorExtension>();
 
+                    if (extension != null && extension.diseaseMTBMultiplier != 1)
+                    {
+                        multiplier *= extension.diseaseMTBMultiplier;
+                    }
+
+                }
             }
+            
             return diseaseMtbDays * multiplier;
         }
 
