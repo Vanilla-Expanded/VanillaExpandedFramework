@@ -31,7 +31,7 @@ namespace VEF.AnimalBehaviours
 
                     if (!ModsConfig.OdysseyActive || pawn.training?.HasLearned(InternalDefOf.VEF_ControlledBlinking)!=true)
                     {
-                        if (pawn.Map != null)
+                        if (pawn.Map != null && pawn.CurJob != null)
                         {
                             if (pawn.CurJob.def == JobDefOf.GotoWander || pawn.CurJob.def == JobDefOf.Wait_Wander || pawn.CurJob.def == JobDefOf.Wait_MaintainPosture)
                             {
