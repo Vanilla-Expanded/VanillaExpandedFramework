@@ -402,6 +402,10 @@ namespace PipeSystem
                 // Push heat
                 if (Props.heatPushWhileWorking && Process != null && !Process.MissingIngredients)
                     GenTemperature.PushHeat(parent, parent.def.building.heatPerTickWhileWorking * ticks);
+                if (compRefuelable != null && compRefuelable.Props.consumeFuelOnlyWhenUsed && Process!=null && !Process.MissingIngredients)
+                {
+                    compRefuelable.ConsumeFuel(ticks*(compRefuelable.Props.fuelConsumptionRate / 60000f));
+                }
 
                 barFilledCachedMat = null;
             }

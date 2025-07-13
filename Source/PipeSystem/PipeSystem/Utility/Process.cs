@@ -442,7 +442,10 @@ namespace PipeSystem
                 tickLeft -= ticks;
                 if (def.sustainerWhenWorking && workingSoundSustainer != null)
                 {
-                    workingSoundSustainer.Maintain();
+                    if (!workingSoundSustainer.Ended) {
+                        workingSoundSustainer.Maintain();
+                    }
+                   
                 }
 
             }
