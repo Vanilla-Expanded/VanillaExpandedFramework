@@ -19,12 +19,12 @@ namespace VEF.Genes
             {
                 yield return codeInstruction;
                 if (codeInstruction.opcode == OpCodes.Stloc_S 
-                    && codeInstruction.operand is LocalBuilder lb && lb.LocalIndex == 19)
+                    && codeInstruction.operand is LocalBuilder lb && lb.LocalIndex == 11)
                 {
-                    yield return new CodeInstruction(OpCodes.Ldloc_S, 19);
+                    yield return new CodeInstruction(OpCodes.Ldloc_S, 11);
                     yield return new CodeInstruction(OpCodes.Ldarg_2);
                     yield return new CodeInstruction(OpCodes.Call, getEffecterDef);
-                    yield return new CodeInstruction(OpCodes.Stloc_S, 19);
+                    yield return new CodeInstruction(OpCodes.Stloc_S, 11);
                 }
             }
         }
