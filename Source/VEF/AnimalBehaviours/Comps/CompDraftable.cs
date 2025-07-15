@@ -32,6 +32,7 @@ namespace VEF.AnimalBehaviours
                    
                     if (pawn.drafter == null) { pawn.drafter = new Pawn_DraftController(pawn); }
                     if (pawn.equipment == null) { pawn.equipment = new Pawn_EquipmentTracker(pawn); }
+                    if (pawn.workSettings == null) { pawn.workSettings = new Pawn_WorkSettings(pawn); pawn.workSettings.EnableAndInitialize(); }
                     StaticCollectionsClass.AddDraftableAnimalToList(this.parent);
                     if (Props.makeNonFleeingToo)
                     {
