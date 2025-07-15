@@ -390,7 +390,7 @@ namespace PipeSystem
                 if (ruinedPercent >= 1f)
                 {
                     ruinedPercent = 1f;
-                    // TODO: Alert
+                    Messages.Message(Def.noProperTempDestroyed.Translate(def.minSafeTemperature,def.maxSafeTemperature), parent, MessageTypeDefOf.NegativeEvent, true);
                     ResetProcess(false);
                 }
                 else if (ruinedPercent < 0f)

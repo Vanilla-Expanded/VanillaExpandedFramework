@@ -42,6 +42,7 @@ namespace PipeSystem
 
         private List<FloatMenuOption> processesOptions;         // List of processes
         private ProcessStack processStack = new ProcessStack(); // Process stack
+        private ProcessStack cachedProcessStack;
 
         private List<FloatMenuOption> settingsOptions;          // List of settings
         internal bool outputOnGround = false;                   // Should output on ground
@@ -346,13 +347,17 @@ namespace PipeSystem
         /// </summary>
         public override void PostDeSpawn(Map map,DestroyMode mode = DestroyMode.Vanish)
         {
-            foreach (var process in processStack)
+            if(mode!= DestroyMode.WillReplace)
             {
-                process.ResetProcess(false);
+                foreach (var process in processStack)
+                {
+                    process.ResetProcess(false);
+                }
+                var manager = CachedAdvancedProcessorsManager.GetFor(map);
+                manager.PickupDone(this);
+                manager.RemoveFromAwaiting(this);
             }
-            var manager = CachedAdvancedProcessorsManager.GetFor(map);
-            manager.PickupDone(this);
-            manager.RemoveFromAwaiting(this);
+           
         }
 
         /// <summary>
@@ -682,6 +687,9 @@ namespace PipeSystem
                 sb.AppendLine("PipeSystem_MissingInputIngredients".Translate(requirements));
             }
 
+            if (process.Def.temperatureRuinable)
+                sb.AppendLine("IP_TempRangeInThisMachine".Translate(process.Def.minSafeTemperature,process.Def.maxSafeTemperature));
+
             if (process.RuinedByTemp)
                 sb.AppendLine("RuinedByTemperature".Translate());
 
@@ -720,5 +728,26 @@ namespace PipeSystem
                 }
             }
         }
+
+        /// <summary>
+        /// Used for Graveship lift-off / landing
+        /// </summary>
+
+        public override void PostSwapMap()
+        {
+            processStack=cachedProcessStack;
+            base.PostSwapMap();
+        }
+
+        /// <summary>
+        /// Used for Graveship lift-off / landing
+        /// </summary>
+
+        public override void PreSwapMap()
+        {
+            cachedProcessStack = processStack;
+            base.PreSwapMap();
+        }
+
     }
 }

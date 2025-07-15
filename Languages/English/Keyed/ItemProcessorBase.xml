@@ -63,8 +63,8 @@
 	<IP_ItRains>The process in this machine is being interrupted due to inclement weather and will be spoiled soon</IP_ItRains>
 	<IP_SpoiledDueToRain>The product in this machine has spoiled due to inclement weather</IP_SpoiledDueToRain>
 	<IP_WrongTemp>The process in this machine is being interrupted due to an unsuitable temperature and will be spoiled soon</IP_WrongTemp>
-	<IP_SpoiledDueToWrongTemp>The product in this machine has spoiled due to an unsuitable temperature</IP_SpoiledDueToWrongTemp>
-	<IP_TempRangeInThisMachine>. This fermenter needs a temperature between {0} and {1} ºC</IP_TempRangeInThisMachine>
+	<IP_SpoiledDueToWrongTemp>The product has spoiled due to an unsuitable temperature. Needs between {0} and {1} ºC</IP_SpoiledDueToWrongTemp>
+	<IP_TempRangeInThisMachine>Current process needs a temperature between {0} and {1} ºC</IP_TempRangeInThisMachine>
 	<IP_TogglePause>Pause / Restart</IP_TogglePause>
 	<IP_TogglePauseDesc>Pause / Restart this machine's processing</IP_TogglePauseDesc>
 	<IP_OverThreshold> Waiting for output to clear. Output limit is {0}</IP_OverThreshold>

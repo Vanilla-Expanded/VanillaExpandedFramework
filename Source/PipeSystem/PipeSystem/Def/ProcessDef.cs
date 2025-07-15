@@ -38,6 +38,7 @@ namespace PipeSystem
         public float minSafeTemperature;                                // Minimum safe temperature
         public float maxSafeTemperature = 100f;                         // Maximum safe temperature
         public float progressPerDegreePerTick = 1E-05f;                 // Ruining due to incorrect temp progress per tick
+        public string noProperTempDestroyed = "IP_SpoiledDueToWrongTemp";
 
         public int rareTicksToDestroy;                                  // This handles the rest of them
 
