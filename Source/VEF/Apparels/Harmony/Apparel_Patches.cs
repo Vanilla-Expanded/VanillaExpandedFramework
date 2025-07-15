@@ -293,8 +293,6 @@ namespace VEF.Apparels
     {
         public static void Postfix(Pawn ___pawn, bool __result, Apparel ap, ref Apparel resultingAp, IntVec3 pos, bool forbid = true)
         {
-           
-
             if (__result && ___pawn != null)
             {
                 if (resultingAp is Apparel_Shield newShield)
@@ -310,8 +308,8 @@ namespace VEF.Apparels
                         }
                     }
                 }
-                var extension = resultingAp?.def.GetModExtension<ApparelExtension>();
-                if (extension != null)
+
+                foreach (var extension in ap?.def.modExtensions.OfType<ApparelExtension>().ToList() ?? new List<ApparelExtension>())
                 {
                     if (___pawn.story?.traits != null)
                     {
@@ -354,10 +352,9 @@ namespace VEF.Apparels
         {
             if (!VanillaExpandedFramework_Pawn_ApparelTracker_Wear_Patch.doNotRunTraitsPatch)
             {
-                if (___pawn != null)
+                if (___pawn != null && ap?.def?.modExtensions != null)
                 {
-                    var extension = ap?.def.GetModExtension<ApparelExtension>();
-                    if (extension != null)
+                    foreach (var extension in ap?.def.modExtensions.OfType<ApparelExtension>().ToList() ?? new List<ApparelExtension>())
                     {
                         if (___pawn.story?.traits != null)
                         {
@@ -415,10 +412,9 @@ namespace VEF.Apparels
                     }
                 }
             }
-            if (!doNotRunTraitsPatch)
+            if (!doNotRunTraitsPatch && newApparel?.def.modExtensions != null)
             {
-                var extension = newApparel?.def.GetModExtension<ApparelExtension>();
-                if (extension != null)
+                foreach (var extension in newApparel?.def.modExtensions.OfType<ApparelExtension>().ToList() ?? new List<ApparelExtension>())
                 {
                     if (__instance.pawn.story?.traits != null)
                     {
@@ -462,10 +458,12 @@ namespace VEF.Apparels
                 {
                     foreach (var apparel in apparels)
                     {
-                        var apparelExtension = apparel.def.GetModExtension<ApparelExtension>();
-                        if (apparelExtension?.traitsOnEquip != null && apparelExtension.traitsOnEquip.Contains(trait.def))
+                        foreach (var apparelExtension in apparel?.def.modExtensions?.OfType<ApparelExtension>().ToList() ?? new List<ApparelExtension>())
                         {
-                            return true;
+                            if (apparelExtension?.traitsOnEquip != null && apparelExtension.traitsOnEquip.Contains(trait.def))
+                            {
+                                return true;
+                            }
                         }
                     }
                 }
