@@ -309,7 +309,7 @@ namespace VEF.Apparels
                     }
                 }
 
-                foreach (var extension in ap?.def.modExtensions.OfType<ApparelExtension>().ToList() ?? new List<ApparelExtension>())
+                foreach (var extension in ap?.def?.modExtensions?.OfType<ApparelExtension>().ToList() ?? new List<ApparelExtension>())
                 {
                     if (___pawn.story?.traits != null)
                     {
@@ -354,7 +354,7 @@ namespace VEF.Apparels
             {
                 if (___pawn != null && ap?.def?.modExtensions != null)
                 {
-                    foreach (var extension in ap?.def.modExtensions.OfType<ApparelExtension>().ToList() ?? new List<ApparelExtension>())
+                    foreach (var extension in ap?.def?.modExtensions?.OfType<ApparelExtension>().ToList() ?? new List<ApparelExtension>())
                     {
                         if (___pawn.story?.traits != null)
                         {
@@ -414,7 +414,7 @@ namespace VEF.Apparels
             }
             if (!doNotRunTraitsPatch && newApparel?.def.modExtensions != null)
             {
-                foreach (var extension in newApparel?.def.modExtensions.OfType<ApparelExtension>().ToList() ?? new List<ApparelExtension>())
+                foreach (var extension in newApparel?.def?.modExtensions?.OfType<ApparelExtension>().ToList() ?? new List<ApparelExtension>())
                 {
                     if (__instance.pawn.story?.traits != null)
                     {
