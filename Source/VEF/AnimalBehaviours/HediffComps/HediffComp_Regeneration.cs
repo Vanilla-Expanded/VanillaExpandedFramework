@@ -36,9 +36,9 @@ namespace VEF.AnimalBehaviours
                     if (injuries.Count > 0)
                     {
 
-                        if (!Props.needsSun || Props.needsSun && pawn.Map != null && pawn.Position.InSunlight(pawn.Map))
+                        if (!Props.needsSun || pawn.Map != null && pawn.Position.InSunlight(pawn.Map))
                         {
-                            if (!Props.needsWater || Props.needsWater && pawn.Map != null && pawn.Position.GetTerrain(pawn.Map).IsWater)
+                            if (!Props.needsWater || pawn.Map != null && pawn.Position.GetTerrain(pawn.Map).IsWater)
                             {
 
                                 if (Props.healAll)
@@ -46,7 +46,8 @@ namespace VEF.AnimalBehaviours
                                     if (Props.onlyTendButNotHeal) {
                                         foreach (Hediff_Injury injury in injuries)
                                         {
-                                            injury.Tended(0.7f, 1f);
+                                            if (injury.TendableNow())
+                                                injury.Tended(0.7f, 1f);
                                            
                                         }
                                     }
@@ -54,16 +55,23 @@ namespace VEF.AnimalBehaviours
                                     {
                                         foreach (Hediff_Injury injury in injuries)
                                         {
-                                            injury.Severity = injury.Severity - Props.healAmount;
-                                            break;
+                                            injury.Heal(Props.healAmount);
                                         }
                                     }
                                     
                                 }
                                 else
                                 {
-                                    Hediff_Injury injury = injuries.RandomElement();
-                                    injury.Severity = injury.Severity - Props.healAmount;
+                                    if (Props.onlyTendButNotHeal)
+                                    {
+                                        Hediff_Injury injury = injuries.Where(x => x.TendableNow()).RandomElement();
+                                        injury?.Tended(0.7f, 1f);
+                                    }
+                                    else
+                                    {
+                                        Hediff_Injury injury = injuries.RandomElement();
+                                        injury.Heal(Props.healAmount);
+                                    }
                                 }
 
                             }
@@ -79,20 +87,11 @@ namespace VEF.AnimalBehaviours
             List<Hediff_Injury> injuries = new List<Hediff_Injury>();
             for (int i = 0; i < pawn.health.hediffSet.hediffs.Count; i++)
             {
-                Hediff_Injury hediff_Injury = pawn.health.hediffSet.hediffs[i] as Hediff_Injury;
-                if (hediff_Injury != null)
+                if (pawn.health.hediffSet.hediffs[i] is Hediff_Injury hediff_Injury)
                 {
-                    if(bodypart is null || (bodypart!=null && hediff_Injury.Part.def == bodypart))
+                    if(bodypart is null || hediff_Injury.Part.def == bodypart)
                     {
-
-                        if (Props.onlyBleeding)
-                        {
-                            if (hediff_Injury.Bleeding)
-                            {
-                                injuries.Add(hediff_Injury);
-                            }
-                        }
-                        else
+                        if (!Props.onlyBleeding || hediff_Injury.Bleeding)
                         {
                             injuries.Add(hediff_Injury);
                         }
