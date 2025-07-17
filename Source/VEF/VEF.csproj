@@ -461,10 +461,12 @@
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_NotInSpace.cs" />
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_InSpace.cs" />
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_InVacuum.cs" />
+    <Compile Include="Genes\Genes\Gene_Astrogene.cs" />
     <Compile Include="Genes\Harmony\Pawn_PathFollower_CostToMoveIntoCell.cs" />
     <Compile Include="Genes\Harmony\StatPart_TerrainMoveSpeed_ExplanationPart.cs" />
     <Compile Include="Genes\HediffComps\HediffComp_MoveSpeedFactorByTerrainTag.cs" />
     <Compile Include="Genes\HediffComps\Properties\HediffCompProperties_MoveSpeedFactorByTerrainTag.cs" />
+    <Compile Include="Genes\MapComponents\MapComponent_AstrogeneOverrides.cs" />
     <Compile Include="Genes\Misc\MoveSpeedFactor.cs" />
     <Compile Include="Genes\StaticCollectionsClass\ExtendedMoveSpeedFactorByTerrainTag.cs" />
     <Compile Include="Global\BackwardsCompatibilityFixer.cs" />
