@@ -39,6 +39,7 @@ namespace VEF.Genes
                             }
                         }
                         ReflectionCache.checkForOverrides(pawn.genes);
+                        pawn.Drawer.renderer.SetAllGraphicsDirty();
                     }
                 }
             
