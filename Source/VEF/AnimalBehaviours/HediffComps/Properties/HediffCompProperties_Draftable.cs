@@ -11,6 +11,9 @@ namespace VEF.AnimalBehaviours
         //If true, adds animals to the non-fleeing mechanic too
         public bool makeNonFleeingToo = false;
 
+        //If true, the animal can equip and fire weapons
+        public bool canHandleWeapons = false;
+
         public HediffCompProperties_Draftable()
         {
             this.compClass = typeof(HediffComp_Draftable);

@@ -24,6 +24,14 @@ namespace VEF.AnimalBehaviours
                 if (this.parent.pawn.drafter == null) { this.parent.pawn.drafter = new Pawn_DraftController(this.parent.pawn); }
                 if (this.parent.pawn.equipment == null) { this.parent.pawn.equipment = new Pawn_EquipmentTracker(this.parent.pawn); }
                 StaticCollectionsClass.AddDraftableAnimalToList(this.parent.pawn);
+                if (Props.makeNonFleeingToo)
+                {
+                    StaticCollectionsClass.AddNotFleeingAnimalToList(this.parent.pawn);
+                }
+                if (Props.canHandleWeapons)
+                {
+                    StaticCollectionsClass.AddCanEquipWeaponsAnimalToList(this.parent.pawn);
+                }
             }
         }
 
@@ -36,6 +44,10 @@ namespace VEF.AnimalBehaviours
             {
                 StaticCollectionsClass.AddNotFleeingAnimalToList(this.parent.pawn);
             }
+            if (Props.canHandleWeapons)
+            {
+                StaticCollectionsClass.AddCanEquipWeaponsAnimalToList(this.parent.pawn);
+            }
         }
 
         public override void CompPostPostRemoved()
@@ -44,6 +56,10 @@ namespace VEF.AnimalBehaviours
             if (Props.makeNonFleeingToo)
             {
                 StaticCollectionsClass.RemoveNotFleeingAnimalFromList(this.parent.pawn);
+            }
+            if (Props.canHandleWeapons)
+            {
+                StaticCollectionsClass.RemoveCanEquipWeaponsAnimalFromList(this.parent.pawn);
             }
         }
 
@@ -54,6 +70,10 @@ namespace VEF.AnimalBehaviours
             {
                 StaticCollectionsClass.RemoveNotFleeingAnimalFromList(this.parent.pawn);
             }
+            if (Props.canHandleWeapons)
+            {
+                StaticCollectionsClass.RemoveCanEquipWeaponsAnimalFromList(this.parent.pawn);
+            }
         }
 
         public override void Notify_PawnKilled()
@@ -62,6 +82,10 @@ namespace VEF.AnimalBehaviours
             if (Props.makeNonFleeingToo)
             {
                 StaticCollectionsClass.RemoveNotFleeingAnimalFromList(this.parent.pawn);
+            }
+            if (Props.canHandleWeapons)
+            {
+                StaticCollectionsClass.RemoveCanEquipWeaponsAnimalFromList(this.parent.pawn);
             }
         }
     }

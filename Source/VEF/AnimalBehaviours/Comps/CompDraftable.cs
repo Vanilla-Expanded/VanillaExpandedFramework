@@ -26,6 +26,10 @@ namespace VEF.AnimalBehaviours
                     {
                         StaticCollectionsClass.RemoveNotFleeingAnimalFromList(this.parent);
                     }
+                    if (Props.canHandleWeapons)
+                    {
+                        StaticCollectionsClass.RemoveCanEquipWeaponsAnimalFromList(this.parent);
+                    }
                 }
                 else
                 {
@@ -37,6 +41,10 @@ namespace VEF.AnimalBehaviours
                     if (Props.makeNonFleeingToo)
                     {
                         StaticCollectionsClass.AddNotFleeingAnimalToList(this.parent);
+                    }
+                    if (Props.canHandleWeapons)
+                    {
+                        StaticCollectionsClass.AddCanEquipWeaponsAnimalToList(this.parent);
                     }
                 }
             }
@@ -54,6 +62,10 @@ namespace VEF.AnimalBehaviours
                 {
                     StaticCollectionsClass.AddNotFleeingAnimalToList(this.parent);
                 }
+                if (Props.canHandleWeapons)
+                {
+                    StaticCollectionsClass.AddCanEquipWeaponsAnimalToList(this.parent);
+                }
             }
             
 
@@ -66,6 +78,10 @@ namespace VEF.AnimalBehaviours
             {
                 StaticCollectionsClass.RemoveNotFleeingAnimalFromList(this.parent);
             }
+            if (Props.canHandleWeapons)
+            {
+                StaticCollectionsClass.RemoveCanEquipWeaponsAnimalFromList(this.parent);
+            }
         }
 
         public override void PostDestroy(DestroyMode mode, Map previousMap)
@@ -74,6 +90,10 @@ namespace VEF.AnimalBehaviours
             if (Props.makeNonFleeingToo)
             {
                 StaticCollectionsClass.RemoveNotFleeingAnimalFromList(this.parent);
+            }
+            if (Props.canHandleWeapons)
+            {
+                StaticCollectionsClass.RemoveCanEquipWeaponsAnimalFromList(this.parent);
             }
         }
 

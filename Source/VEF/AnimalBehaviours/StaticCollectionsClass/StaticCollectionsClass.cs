@@ -16,8 +16,11 @@ namespace VEF.AnimalBehaviours
         //This static class stores lists of animals and pawns for different things.
 
     
-        // A list of draft-capable animals for Genetic Rim
+        // A list of draft-capable animals
         public static HashSet<Thing> draftable_animals = new HashSet<Thing>();
+
+        // A list of animals that can equip weapons. Tied to CompDraftable
+        public static HashSet<Thing> canEquipWeapon_animals = new HashSet<Thing>();
 
         // A list of hovering animals for CompProperties_Floating
         public static HashSet<Thing> floating_animals = new HashSet<Thing>();
@@ -98,6 +101,24 @@ namespace VEF.AnimalBehaviours
             if (draftable_animals.Contains(thing))
             {
                 draftable_animals.Remove(thing);
+            }
+
+        }
+
+        public static void AddCanEquipWeaponsAnimalToList(Thing thing)
+        {
+
+            if (!canEquipWeapon_animals.Contains(thing))
+            {
+                canEquipWeapon_animals.Add(thing);
+            }
+        }
+
+        public static void RemoveCanEquipWeaponsAnimalFromList(Thing thing)
+        {
+            if (canEquipWeapon_animals.Contains(thing))
+            {
+                canEquipWeapon_animals.Remove(thing);
             }
 
         }
