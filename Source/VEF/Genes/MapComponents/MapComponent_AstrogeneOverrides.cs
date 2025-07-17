@@ -28,6 +28,16 @@ namespace VEF.Genes
                 List<Pawn> pawnsWithAstrogenes = map.mapPawns.AllHumanlike.Where(x => x.genes?.GenesListForReading.ContainsAny(x => x.def.geneClass == typeof(Gene_Astrogene))==true)?.ToList();
                 if (!pawnsWithAstrogenes.NullOrEmpty()) {
                     foreach (Pawn pawn in pawnsWithAstrogenes) {
+
+                        foreach (var gene in pawn.genes.GenesListForReading)
+                        {
+                            if (gene is Gene_Astrogene) {
+                                if (gene.Active) {
+                                    GeneUtils.ApplyGeneEffects(gene);
+                                }
+                                else { GeneUtils.RemoveGeneEffects(gene); }
+                            }
+                        }
                         ReflectionCache.checkForOverrides(pawn.genes);
                     }
                 }

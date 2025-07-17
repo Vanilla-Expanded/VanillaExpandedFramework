@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using Verse;
 using VEF;
+using static HarmonyLib.Code;
 
 namespace VEF.Genes
 {
@@ -16,6 +17,17 @@ namespace VEF.Genes
                 if (gene?.pawn is null) return;
                 if (!gene.Active) return;
                 if (Scribe.mode == LoadSaveMode.LoadingVars || Scribe.mode == LoadSaveMode.ResolvingCrossRefs || Scribe.mode == LoadSaveMode.Saving) return;
+
+                if (!gene.def.abilities.NullOrEmpty())
+                {
+                    foreach(AbilityDef abilityDef in gene.def.abilities)
+                    {
+                        if (gene.pawn.abilities.GetAbility(abilityDef) is null)
+                        {
+                            gene.pawn.abilities.GainAbility(abilityDef);
+                        }
+                    }              
+                }
                 GeneExtension extension = gene.def.GetModExtension<GeneExtension>();
                 if (extension != null)
                 {
@@ -159,6 +171,16 @@ namespace VEF.Genes
             {
                 if (gene?.pawn is null) return;
                 if (Scribe.mode == LoadSaveMode.LoadingVars || Scribe.mode == LoadSaveMode.ResolvingCrossRefs || Scribe.mode == LoadSaveMode.Saving) return;
+                if (!gene.def.abilities.NullOrEmpty())
+                {
+                    foreach (AbilityDef abilityDef in gene.def.abilities)
+                    {
+                        if (gene.pawn.abilities.GetAbility(abilityDef)!= null)
+                        {
+                            gene.pawn.abilities.RemoveAbility(abilityDef);
+                        }
+                    }
+                }
                 GeneExtension extension = gene.def.GetModExtension<GeneExtension>();
                 if (extension != null)
                 {
