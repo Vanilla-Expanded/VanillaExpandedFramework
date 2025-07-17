@@ -565,6 +565,8 @@
     <Compile Include="Pawns\Harmony\Projectile_ImpactSomething.cs" />
     <Compile Include="Pawns\StatParts\StatPart_RangeAttackSpeedFactor.cs" />
     <Compile Include="Pawns\StatWorkers\StatWorker_MassCarryCapacity.cs" />
+    <Compile Include="Pawns\ThoughtWorkers\ThoughtWorker_InVacuum.cs" />
+    <Compile Include="Pawns\ThoughtWorkers\ThoughtWorker_NotInVacuum.cs" />
     <Compile Include="Planet\CaravanArrivalActions\CaravanArrivalAction_AttackMovingBase.cs" />
     <Compile Include="Planet\CaravanArrivalActions\CaravanArrivalAction_MovingBase.cs" />
     <Compile Include="Planet\Harmony\Caravan_PathFollower_ExposeData.cs" />
