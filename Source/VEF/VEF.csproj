@@ -427,8 +427,11 @@
     <Compile Include="AestheticScaling\PrepatchedPawnCache.cs" />
     <Compile Include="AnimalBehaviours\Abilities\CompAbilityEffect_ControlledBlinking.cs" />
     <Compile Include="AnimalBehaviours\Abilities\Properties\CompProperties_ControlledBlinking.cs" />
+    <Compile Include="AnimalBehaviours\DefExtensions\AnimalCrossbreedExtension.cs" />
+    <Compile Include="AnimalBehaviours\Defs\RiverNeedingAnimalDef.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\Building_OutfitStand_GetFloatMenuOptionToEquipWeapon.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\FloatMenuOptionProvider_Equip_AppliesInt.cs" />
+    <Compile Include="AnimalBehaviours\Harmony\Hediff_Pregnant_DoBirthSpawn.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\HediffComp_ExplodeOnDowned.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\HediffComp_StageByVacuum.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_ExplodeOnDowned.cs" />

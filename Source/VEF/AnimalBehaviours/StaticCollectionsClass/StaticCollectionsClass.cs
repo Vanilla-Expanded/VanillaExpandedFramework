@@ -15,7 +15,9 @@ namespace VEF.AnimalBehaviours
 
         //This static class stores lists of animals and pawns for different things.
 
-    
+        // A list of animals that will only spawn on maps with rivers
+        public static List<ThingDef> riverAnimals = new List<ThingDef>();
+
         // A list of draft-capable animals
         public static HashSet<Thing> draftable_animals = new HashSet<Thing>();
 
@@ -317,6 +319,18 @@ namespace VEF.AnimalBehaviours
             {
                 questDisabledAnimals.AddRange(individualList.disabledFromQuestsPawns);
             }
+
+            List<RiverNeedingAnimalDef> riverAnimalsTotal = DefDatabase<RiverNeedingAnimalDef>.AllDefsListForReading;
+            foreach (RiverNeedingAnimalDef individualList in riverAnimalsTotal)
+            {
+                foreach (ThingDef animal in individualList.riverNeedingAnimals)
+                {
+                    riverAnimals.Add(animal);
+                }
+
+
+            }
+
         }
 
 
