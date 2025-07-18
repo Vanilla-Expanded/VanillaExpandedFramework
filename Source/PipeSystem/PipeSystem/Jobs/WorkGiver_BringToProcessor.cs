@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -90,7 +91,8 @@ namespace PipeSystem
             };
 
             List<Thing> searchSet = new List<Thing>();
-            foreach (ThingDef thingDef in firstCategoryMissing.childThingDefs)
+            List<ThingDef> validThingDefs = firstCategoryMissing.childThingDefs.Where(x => comp.Process.Def.ingredients.Where(y => y.thingCategory == firstCategoryMissing).FirstOrFallback()?.disallowedThingDefs?.Contains(x) == false)?.ToList();
+            foreach (ThingDef thingDef in validThingDefs)
             {                
                     searchSet.AddRange(pawn.Map.listerThings.ThingsOfDef(thingDef));
             }
