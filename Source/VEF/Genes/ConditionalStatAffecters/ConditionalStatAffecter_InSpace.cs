@@ -20,7 +20,7 @@ namespace VEF.Genes
 			if (req.HasThing && (pawn = req.Thing as Pawn) != null)
 			{
 
-                if (pawn.Map?.BiomeAt(pawn.Position)?.inVacuum==true)
+                if (pawn.Position != IntVec3.Invalid && pawn.Map?.BiomeAt(pawn.Position)?.inVacuum==true)
                 {
 					return true;
                 }

@@ -28,7 +28,7 @@ namespace VEF.AnimalBehaviours
 
             if (this.parent.pawn.IsHashIntervalTick(500, delta))
             {
-                if (parent.pawn.Map?.BiomeAt(parent.pawn.Position)?.inVacuum == true)
+                if (parent.pawn.Position != IntVec3.Invalid && parent.pawn.Map?.BiomeAt(parent.pawn.Position)?.inVacuum == true)
                 {
                     this.parent.Severity = Props.vacuumStageIndex;
                 }

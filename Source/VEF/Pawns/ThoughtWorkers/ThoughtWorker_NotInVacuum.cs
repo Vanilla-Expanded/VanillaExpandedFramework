@@ -7,7 +7,7 @@ namespace VEF.Pawns
         protected override ThoughtState CurrentStateInternal(Pawn p)
         {
            
-            if (p.Map?.BiomeAt(p.Position)?.inVacuum == false)
+            if (p.Position != IntVec3.Invalid && p.Map?.BiomeAt(p.Position)?.inVacuum == false)
             {
                 return true;
             }
