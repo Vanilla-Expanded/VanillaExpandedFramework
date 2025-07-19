@@ -27,5 +27,7 @@ namespace VEF.Maps
         public bool spawnOnlyInPlayerMaps = false;
         public bool randomRotation;
         public bool allowSpawningOnPocketMaps = false;
+
+        public List<PlanetLayerDef> allowedPlanetLayers;
     }
 }

@@ -212,6 +212,14 @@ namespace VEF.Maps
 
         private static bool CanSpawnAt(Map map, ObjectSpawnsDef element)
         {
+            if (element.allowedPlanetLayers is null && map.Tile.LayerDef != PlanetLayerDefOf.Surface)
+            {
+                return false;
+            }
+            if (element.allowedPlanetLayers != null && !element.allowedPlanetLayers.Contains(map.Tile.LayerDef))
+            {
+                return false;
+            }
             if (element.spawnOnlyInPlayerMaps && !map.IsPlayerHome)
             {
                 return false;
