@@ -62,9 +62,10 @@ namespace VEF.AnimalBehaviours
                 case (FatherOrMother.Random):
                     return Rand.Chance(0.5f) ? mother.kindDef : (father.kindDef ?? mother.kindDef);
                 case (FatherOrMother.OtherPawnKind):
-                    if (extension.otherPawnKindsByWeight != null && extension.otherPawnKindsByWeight.TryRandomElementByWeight(x => x.Value, out var value))
-                        return value.Key;
-                    return extension.otherPawnKind ?? mother.kindDef;
+                    PawnKindDef randomPawn = null;
+                    if (extension.otherPawnKindsByWeight != null && extension.otherPawnKindsByWeight.TryRandomElementByWeight(x => x.weight, out var value))
+                        randomPawn = value.kindDef;
+                    return randomPawn ?? extension.otherPawnKind ?? mother.kindDef;
                 default:
                     return mother.kindDef;
 
