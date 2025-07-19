@@ -98,7 +98,7 @@ namespace PipeSystem
             public PipeNetDef pipeNet;
             public ThingDef thing;
             public ThingCategoryDef thingCategory;
-            public List<ThingDef> disallowedThingDefs;
+            public List<ThingDef> disallowedThingDefs= new List<ThingDef>();
             // Amount needed to produce result
             public float countNeeded;
             public bool nutritionGetter = false;
