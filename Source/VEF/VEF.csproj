@@ -429,6 +429,7 @@
     <Compile Include="AnimalBehaviours\Abilities\Properties\CompProperties_ControlledBlinking.cs" />
     <Compile Include="AnimalBehaviours\DefExtensions\AnimalCrossbreedExtension.cs" />
     <Compile Include="AnimalBehaviours\Defs\RiverNeedingAnimalDef.cs" />
+    <Compile Include="AnimalBehaviours\Harmony\CompEggLayer_ProduceEgg.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\Building_OutfitStand_GetFloatMenuOptionToEquipWeapon.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Draftability\FloatMenuOptionProvider_Equip_AppliesInt.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Hediff_Pregnant_DoBirthSpawn.cs" />
