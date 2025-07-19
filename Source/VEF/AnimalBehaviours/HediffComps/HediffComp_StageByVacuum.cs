@@ -28,11 +28,22 @@ namespace VEF.AnimalBehaviours
 
             if (this.parent.pawn.IsHashIntervalTick(500, delta))
             {
-                if (parent.pawn.Position != IntVec3.Invalid && parent.pawn.Map?.BiomeAt(parent.pawn.Position)?.inVacuum == true)
-                {
-                    this.parent.Severity = Props.vacuumStageIndex;
+                if (parent.pawn.Position != IntVec3.Invalid && parent.pawn.Map?.BiomeAt(parent.pawn.Position)?.inVacuum == true){
+                    
+                    if(Props.vacuumResistanceInArmorDisablesHediff && !Props.reverseVacuumResistanceEffects && Pawn.VacuumResistanceFromArmor() > Props.vacuumResistanceValueToDisable)
+                    {
+                        this.parent.Severity = Props.notVacuumStageIndex;
+                    }
+                    else this.parent.Severity = Props.vacuumStageIndex;
                 }
-                else this.parent.Severity = Props.notVacuumStageIndex;
+                else {
+                    if (Props.vacuumResistanceInArmorDisablesHediff && Props.reverseVacuumResistanceEffects && Pawn.VacuumResistanceFromArmor() > Props.vacuumResistanceValueToDisable)
+                    {
+                        this.parent.Severity = Props.vacuumStageIndex;
+                    }
+                    else this.parent.Severity = Props.notVacuumStageIndex;
+                }
+
             }
 
 
