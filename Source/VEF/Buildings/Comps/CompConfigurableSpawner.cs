@@ -13,6 +13,19 @@ namespace VEF.Buildings
 
         public ConfigurableSpawnerDef currentThingList = null;
 
+        public bool CanAccept(ConfigurableSpawnerDef configurableSpawnerDef)
+        {
+            if (configurableSpawnerDef.allowedTerrains is not null)
+            {
+                TerrainDef terrain = this.parent.PositionHeld.GetTerrain(this.parent.MapHeld);
+                if (configurableSpawnerDef.allowedTerrains.Any(t => t == terrain) is false)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         public CompProperties_ConfigurableSpawner PropsSpawner
         {
             get
@@ -196,7 +209,9 @@ namespace VEF.Buildings
         {
             if (currentThingList != null)
             {
-                this.ticksUntilSpawn = currentThingList.timeInTicks;
+                this.ticksUntilSpawn = currentThingList.timeInterval != null 
+                    ? currentThingList.timeInterval.Value.RandomInRange 
+                    : currentThingList.timeInTicks;
             } else
             this.ticksUntilSpawn = 6000;
         }

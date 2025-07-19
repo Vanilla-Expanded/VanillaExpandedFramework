@@ -15,6 +15,8 @@ namespace VEF.Buildings
 
         public List<string> items;
 
+        public List<TerrainDef> allowedTerrains = null;
+
         public string listName;
 
         public string building;
@@ -26,6 +28,8 @@ namespace VEF.Buildings
         public string GizmoDescription = "";
 
         public int timeInTicks = 1000;
+
+        public IntRange? timeInterval = null;
 
     }
 }

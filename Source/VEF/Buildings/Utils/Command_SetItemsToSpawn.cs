@@ -55,14 +55,16 @@ namespace VEF.Buildings
  
             foreach (ConfigurableSpawnerDef thingList in DefDatabase<ConfigurableSpawnerDef>.AllDefs.Where(element => (element.building == building.parent.def.defName)))
             {
-                list.Add(new FloatMenuOption(thingList.listName.Translate(), delegate
+                if (building.CanAccept(thingList))
                 {
-                    building.currentThingList = thingList;
-                    building.ResetCountdown();
+                    list.Add(new FloatMenuOption(thingList.listName.Translate(), delegate
+                    {
+                        building.currentThingList = thingList;
+                        building.ResetCountdown();
 
-                }, MenuOptionPriority.Default, null, null, 29f, null, null));
+                    }, MenuOptionPriority.Default, null, null, 29f, null, null));
+                }
             }
-
             Find.WindowStack.Add(new FloatMenu(list));
         }
 
