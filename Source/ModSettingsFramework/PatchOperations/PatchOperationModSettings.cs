@@ -121,12 +121,14 @@ namespace ModSettingsFramework
             listingStandard.CheckboxLabeled(optionLabel, ref field);
         }
 
-        protected void DoSlider(Listing_Standard listingStandard, string label, ref float value, string valueLabel, float min, float max, string explanation)
+        protected void DoSlider(Listing_Standard listingStandard, string label, ref float value, string valueLabel, 
+            float min, float max, string explanation, float sliderYOffset = 0)
         {
             Rect rect = listingStandard.GetRect(Text.LineHeight);
             Rect sliderRect = rect.RightPart(.60f).Rounded();
             Widgets.Label(rect, label);
             scrollHeight += rect.height;
+            sliderRect.y += sliderYOffset;
             value = Widgets.HorizontalSlider(sliderRect, (float)value, min, max, true, valueLabel);
             value = (float)Math.Round(value, roundToDecimalPlaces);
             listingStandard.Gap(5);
