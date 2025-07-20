@@ -181,13 +181,13 @@ namespace VEF.Planet
             nextTileCostLeft = 0f;
         }
 
-        public void PatherTick()
+        public void PatherTick(int delta)
         {
             if (!paused)
             {
                 if (nextTileCostLeft > 0f)
                 {
-                    nextTileCostLeft -= CostToPayThisTick();
+                    nextTileCostLeft -= CostToPayThisTick(delta);
                 }
                 else if (moving)
                 {
@@ -347,9 +347,10 @@ namespace VEF.Planet
             return false;
         }
 
-        private float CostToPayThisTick()
+        private float CostToPayThisTick(int delta)
         {
-            float num = 1f;
+            // 1 cost per tick (implied) times delta.
+            float num = delta;
             if (num < nextTileCostTotal / 30000f)
             {
                 num = nextTileCostTotal / 30000f;

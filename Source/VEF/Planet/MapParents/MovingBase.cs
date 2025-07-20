@@ -177,7 +177,7 @@ namespace VEF.Planet
             base.TickInterval(delta);
             if (HasMap is false)
             {
-                pather.PatherTick();
+                pather.PatherTick(delta);
                 if (this.IsHashIntervalTick(30, delta))
                 {
                     tweener.TweenerTick();
