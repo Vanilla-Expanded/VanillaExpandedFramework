@@ -29,7 +29,7 @@ namespace VEF.AnimalBehaviours
                     }
                 }
             }
-            Log.Message(vacuumResistance);
+           
             return vacuumResistance;
         }
     }
