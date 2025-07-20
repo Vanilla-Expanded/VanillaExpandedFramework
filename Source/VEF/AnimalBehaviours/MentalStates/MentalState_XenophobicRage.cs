@@ -32,7 +32,7 @@ namespace VEF.AnimalBehaviours
 			{
 				base.RecoverFromState();
 			}
-			if (this.pawn.IsHashIntervalTick(NoLongerValidTargetCheckInterval) && !this.IsTargetStillValidAndReachable())
+			if (this.pawn.IsHashIntervalTick(NoLongerValidTargetCheckInterval, delta) && !this.IsTargetStillValidAndReachable())
 			{
 				if (!this.TryFindNewTarget())
 				{
