@@ -90,4 +90,6 @@
    <PipeSystem_CurrentQuality>Current quality: {0}</PipeSystem_CurrentQuality>
    <PipeSystem_CurrentNotReachedAwful>Process hasn't reached Awful quality yet</PipeSystem_CurrentNotReachedAwful>
    <PipeSystem_ExtractingAtCurrent>Extracting product at current quality</PipeSystem_ExtractingAtCurrent>
+   
+  
 </LanguageData>
