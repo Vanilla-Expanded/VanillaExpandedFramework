@@ -103,6 +103,7 @@ namespace VEF.Apparels
         private int shieldBuffer = 0;
         private int ticksToRecharge;
         private bool toggleIsActive = true;
+      
 
         public Thing HostThing
         {
@@ -392,6 +393,8 @@ namespace VEF.Apparels
             Scribe_Values.Look(ref lastTimeDisarmed, "lastTimeDisarmed");
             Scribe_Values.Look(ref toggleIsActive, "toggleIsActive", true);
             Scribe_Values.Look(ref initialized, "initialized");
+           
+
         }
 
         public bool CanActivateShield()
@@ -783,6 +786,8 @@ namespace VEF.Apparels
                     };
                 }
 
+                
+
                 if (Props.toggleable)
                 {
                     yield return new Command_Toggle
@@ -815,6 +820,7 @@ namespace VEF.Apparels
                         Disabled = ManuallyActivated || !CanActivateShield()
                     };
                 }
+
             }
         }
     }

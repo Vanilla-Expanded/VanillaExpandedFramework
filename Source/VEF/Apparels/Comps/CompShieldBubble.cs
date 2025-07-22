@@ -5,6 +5,7 @@ using UnityEngine;
 using Verse;
 using VEF.Weapons;
 using Verse.Sound;
+using System;
 
 namespace VEF.Apparels
 {
@@ -81,6 +82,7 @@ namespace VEF.Apparels
 		public SoundDef brokenSound;
 		public SoundDef resetSound;
 		public string tooltipKey;
+	
 	}
 
 	[StaticConstructorOnStartup]
@@ -108,9 +110,45 @@ namespace VEF.Apparels
 
 		private float EnergyOnReset = 0.2f;
 
-		
+	/*	public CompQuality cachedQuality = null;
 
-		public Pawn Pawn
+		private float factorAwful = 0.6f;
+		private float factorPoor = 0.8f;
+		private float factorNormal = 1f;
+		private float factorGood = 1.2f;
+		private float factorExcellent = 1.4f;
+		private float factorMasterwork = 1.7f;
+		private float factorLegendary = 2.1f;
+
+		private float QualityMultiplier(QualityCategory qc)
+		{
+			return qc switch
+			{
+				QualityCategory.Awful => factorAwful,
+				QualityCategory.Poor => factorPoor,
+				QualityCategory.Normal => factorNormal,
+				QualityCategory.Good => factorGood,
+				QualityCategory.Excellent => factorExcellent,
+				QualityCategory.Masterwork => factorMasterwork,
+				QualityCategory.Legendary => factorLegendary,
+				_ => throw new ArgumentOutOfRangeException(),
+			};
+		}
+
+		public CompQuality CachedQuality{
+			get
+			{
+				if(cachedQuality is null)
+				{
+                    cachedQuality=parent.GetComp<CompQuality>();
+				}
+				return cachedQuality;
+			}
+		
+		}
+	*/
+
+        public Pawn Pawn
 		{
 			get
 			{
@@ -159,7 +197,8 @@ namespace VEF.Apparels
         {
             get
             {
-                var value = this.Props.EnergyShieldEnergyMax;
+                var value = this.Props.EnergyShieldEnergyMax !=0 ? Props.EnergyShieldEnergyMax : parent.GetStatValue(StatDefOf.EnergyShieldEnergyMax)*100;
+				
                 if (Pawn != null)
                 {
 					value *= Pawn.GetStatValue(VEFDefOf.VEF_EnergyShieldEnergyMaxFactor, true);
@@ -169,7 +208,7 @@ namespace VEF.Apparels
 			}
         }
 
-		protected virtual float EnergyGainPerTick => Props.EnergyShieldRechargeRate / 60f;
+		protected virtual float EnergyGainPerTick => (Props.EnergyShieldRechargeRate != 0 ? Props.EnergyShieldRechargeRate : parent.GetStatValue(StatDefOf.EnergyShieldRechargeRate)) / 60f;
 
 		protected virtual float EnergyLossPerDamage => Props.EnergyLossPerDamage;
 
@@ -224,7 +263,7 @@ namespace VEF.Apparels
 			}
 			else if (ShieldState == ShieldState.Active)
 			{
-				energy += EnergyGainPerTick;
+				energy += EnergyGainPerTick * EnergyMax;
 				if (energy > EnergyMax)
 				{
 					energy = EnergyMax;
