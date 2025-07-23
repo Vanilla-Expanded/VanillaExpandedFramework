@@ -21,6 +21,7 @@ namespace VEF.Pawns
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
+            var patched = false;
             for (var i = 0; i < codes.Count; i++)
             {
                 var code = codes[i];
@@ -31,7 +32,12 @@ namespace VEF.Pawns
                     yield return new CodeInstruction(OpCodes.Ldloca_S, 0);
                     yield return new CodeInstruction(OpCodes.Call,
                         AccessTools.Method(typeof(VanillaExpandedFramework_JobDriver_Lovin_FinishAction_Vanilla), nameof(DoLovinResult)));
+                    patched = true;
                 }
+            }
+            if (!patched)
+            {
+                Log.Error("Patching additional additional pregnancy approach post lovin' effect for Vanilla");
             }
         }
 
@@ -79,6 +85,7 @@ namespace VEF.Pawns
             var type = AccessTools.TypeByName("VanillaSocialInteractionsExpanded.VSIE_DefOf");
             var field = AccessTools.Field(type, "VSIE_GotSomeLovin");
             var codes = instructions.ToList();
+            var patched = false;
             for (var i = 0; i < codes.Count; i++)
             {
                 var code = codes[i];
@@ -90,7 +97,12 @@ namespace VEF.Pawns
                     yield return new CodeInstruction(OpCodes.Call,
                         AccessTools.Method(typeof(VanillaExpandedFramework_JobDriver_Lovin_FinishAction_Vanilla),
                         nameof(VanillaExpandedFramework_JobDriver_Lovin_FinishAction_Vanilla.DoLovinResult)));
+                    patched = true;
                 }
+            }
+            if (!patched)
+            {
+                Log.Error("Patching additional additional pregnancy approach post lovin' effect for VSIE.");
             }
         }
     }
@@ -128,18 +140,24 @@ namespace VEF.Pawns
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
+            var patched = false;
             for (var i = 0; i < codes.Count; i++)
             {
                 var code = codes[i];
                 yield return code;
-                if (code.opcode == OpCodes.Stloc_1 && codes[i - 3].LoadsField(AccessTools.Field(typeof(ThoughtDefOf), "GotSomeLovin")))
+                if (code.opcode == OpCodes.Stloc_2 && codes[i - 3].LoadsField(AccessTools.Field(typeof(ThoughtDefOf), "GotSomeLovin")))
                 {
                     yield return new CodeInstruction(OpCodes.Ldarg_0);
-                    yield return new CodeInstruction(OpCodes.Ldloca_S, 1);
+                    yield return new CodeInstruction(OpCodes.Ldloca_S, 2);
                     yield return new CodeInstruction(OpCodes.Call,
                         AccessTools.Method(typeof(VanillaExpandedFramework_JobDriver_Lovin_FinishAction_Vanilla), 
                         nameof(VanillaExpandedFramework_JobDriver_Lovin_FinishAction_Vanilla.DoLovinResult)));
+                    patched = true;
                 }
+            }
+            if (!patched)
+            {
+                Log.Error("Patching additional additional pregnancy approach post lovin' effect for VRE-H");
             }
         }
     }
