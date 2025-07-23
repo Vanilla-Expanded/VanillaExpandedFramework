@@ -118,33 +118,37 @@ namespace PipeSystem
         public override void CompTick()
         {
             base.CompTick();
-            if (parent.Spawned
+            if (parent.Map != null)
+            {
+                if (parent.Spawned
                 && !noCapacity
                 && lumpCells.Count > 0
                 && (compPower == null || compPower.PowerOn)
                 && (compFlickable == null || compFlickable.SwitchIsOn))
-            {
-                var ticksGame = Find.TickManager.TicksGame;
-                if (nextProduceTick == -1)
                 {
-                    nextProduceTick = ticksGame + Props.ticksPerPortion;
-                    cycleOver = false;
-                }
-                else if (ticksGame >= nextProduceTick)
-                {
-                    TryProducePortion();
-                    nextProduceTick = ticksGame + Props.ticksPerPortion;
-                    cycleOver = false;
-                }
+                    var ticksGame = Find.TickManager.TicksGame;
+                    if (nextProduceTick == -1)
+                    {
+                        nextProduceTick = ticksGame + Props.ticksPerPortion;
+                        cycleOver = false;
+                    }
+                    else if (ticksGame >= nextProduceTick)
+                    {
+                        TryProducePortion();
+                        nextProduceTick = ticksGame + Props.ticksPerPortion;
+                        cycleOver = false;
+                    }
 
-                sustainer?.Maintain();
+                    sustainer?.Maintain();
+                }
+                else
+                {
+                    EndSustainer();
+                    cycleOver = true;
+                    noCapacity = PipeNet.storages.Count > 0 && (int)PipeNet.AvailableCapacity <= 1;
+                }
             }
-            else
-            {
-                EndSustainer();
-                cycleOver = true;
-                noCapacity = PipeNet.storages.Count > 0 && (int)PipeNet.AvailableCapacity <= 1;
-            }
+            
         }
 
         /// <summary>

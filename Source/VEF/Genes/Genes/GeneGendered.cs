@@ -13,7 +13,7 @@ namespace VEF.Genes
             get
             {
                 var extension = Extension;
-                if (extension != null && pawn.gender != Extension.forGenderOnly)
+                if (pawn != null && extension != null && pawn.gender != Extension.forGenderOnly)
                 {
                     return false;
                 }
