@@ -23,83 +23,65 @@ namespace VEF.Maps
         public static IEnumerable<CodeInstruction> TweakMapSizes(IEnumerable<CodeInstruction> codeInstructions)
         {
             var codes = codeInstructions.ToList();
-            var checkX = AccessTools.Method(typeof(VanillaExpandedFramework_Game_InitNewGame_Patch), "AdjustMapSizeX");
-            var checkZ = AccessTools.Method(typeof(VanillaExpandedFramework_Game_InitNewGame_Patch), "AdjustMapSizeZ");
-
+            var check = AccessTools.Method(typeof(VanillaExpandedFramework_Game_InitNewGame_Patch), "AdjustMapSize");
+           
             var field = AccessTools.Field(typeof(Game), "initData");
 
-            int position = 0;
-            bool found = false;
+          
             for (var i = 0; i < codes.Count; i++)
             {
-                if (i == 0)
+                if (i == codes.Count)
                 {
                     yield return codes[i];
                 }
                 else
-                if (codes[i].opcode == OpCodes.Ldarg_0 && codes[i - 1].opcode == OpCodes.Ldloca_S)
+                if (codes[i].opcode == OpCodes.Ldloc_1 && codes[i + 1].opcode == OpCodes.Ldloc_2)
                 {
-                    position = i;
-                    found = true;
+                   
                     yield return new CodeInstruction(OpCodes.Ldarg_0);
                     yield return new CodeInstruction(OpCodes.Ldfld, field);
-                    yield return new CodeInstruction(OpCodes.Call, checkX);
-                    yield return new CodeInstruction(OpCodes.Ldc_I4_1);
-                    yield return new CodeInstruction(OpCodes.Ldarg_0);
-                    yield return new CodeInstruction(OpCodes.Ldfld, field);
-                    yield return new CodeInstruction(OpCodes.Call, checkZ);
+                    yield return new CodeInstruction(OpCodes.Call, check);
+                   
 
 
 
                 }
-                else if (found && i > position && i < position + 7)
-                {
-                    yield return new CodeInstruction(OpCodes.Nop);
-                }
+               
                 else yield return codes[i];
             }
         }
 
 
       
-        public static int AdjustMapSizeX(GameInitData initData)
+        public static IntVec3 AdjustMapSize(GameInitData initData)
         {
             float multiplier = 1;
+            float finalX = initData.mapSize;
+            float finalZ = initData.mapSize;
             foreach (TileMutatorDef mutator in initData.startingTile.Tile.Mutators)
             {
              
                 TileMutatorExtension extension = mutator.GetModExtension<TileMutatorExtension>();
-               multiplier = extension is null ? 1 : extension.mapSizeMultiplier;
               
-                if (extension != null && extension.mapSizeOverrideX != -1)
+                if (extension != null)
                 {
-                   
-                    return (int)(extension.mapSizeOverrideX * multiplier);
+                    multiplier *= extension.mapSizeMultiplier;
+
+                    if (extension.mapSizeOverrideX != -1)
+                    {
+                        finalX = extension.mapSizeOverrideX;
+                    }
+                    if (extension.mapSizeOverrideZ != -1)
+                    {
+                        finalZ = extension.mapSizeOverrideZ;
+                    }
                 }
-                
-
-
+ 
 
             }
-            return (int)(initData.mapSize * multiplier);
+            return new IntVec3((int)(finalX*multiplier), 1, (int)(finalZ * multiplier));
 
         }
-        public static int AdjustMapSizeZ(GameInitData initData)
-        {
-            float multiplier = 1;
-            foreach (TileMutatorDef mutator in initData.startingTile.Tile.Mutators)
-            {
-                TileMutatorExtension extension = mutator.GetModExtension<TileMutatorExtension>();
-                multiplier = extension is null ? 1 : extension.mapSizeMultiplier;
-                if (extension != null && extension.mapSizeOverrideZ != -1)
-                {
-                    return (int)(extension.mapSizeOverrideZ * multiplier);
-                }
-                
-
-            }
-            return (int)(initData.mapSize * multiplier);
-
-        }
+       
     }
 }

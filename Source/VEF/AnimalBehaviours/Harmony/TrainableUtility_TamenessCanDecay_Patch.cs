@@ -16,25 +16,8 @@ namespace VEF.AnimalBehaviours
 {
 
 
-    [HarmonyPatch(typeof(TrainableUtility))]
-    [HarmonyPatch("TamenessCanDecay")]
-
-    public static class VanillaExpandedFramework_TrainableUtility_TamenessCanDecay_Patch
-    {
-        [HarmonyPrefix]
-        public static bool RemoveTamenessDecayCheck(ThingDef def)
-
-        {
-            if (StaticCollectionsClass.IsNoTamingDecayAnimal(def))
-            {
-                return false;
-
-            }
-            else return true;
-        }
-    }
-
-    /*
+    
+    /* Uncomment as soon as unstable is pushed or Madman cries
      * 
     [HarmonyPatch(typeof(TrainableUtility))]
     [HarmonyPatch("TamenessCanDecay")]
