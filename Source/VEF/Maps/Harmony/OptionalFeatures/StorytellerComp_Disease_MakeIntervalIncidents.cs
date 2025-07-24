@@ -34,7 +34,7 @@ namespace VEF.Maps
                 {
 
                     yield return new CodeInstruction(OpCodes.Ldloc_S, 4);
-                    yield return new CodeInstruction(OpCodes.Ldloc_2);
+                    yield return new CodeInstruction(OpCodes.Ldloc_3);
                     yield return new CodeInstruction(OpCodes.Call, diseasemultiplier);
                     yield return new CodeInstruction(OpCodes.Stloc_S, 4);
                     yield return new CodeInstruction(OpCodes.Ldloc_S, 4);
@@ -49,10 +49,15 @@ namespace VEF.Maps
         {
            
             float multiplier = 1;
-            if (map?.Tile.Tile?.Mutators != null)
+
+          
+
+            if (map?.TileInfo?.Mutators != null)
             {
+              
                 foreach (TileMutatorDef mutator in map.Tile.Tile.Mutators)
                 {
+
                     TileMutatorExtension extension = mutator.GetModExtension<TileMutatorExtension>();
 
                     if (extension != null && extension.diseaseMTBMultiplier != 1)

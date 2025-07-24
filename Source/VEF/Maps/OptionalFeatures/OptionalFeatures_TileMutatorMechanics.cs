@@ -21,8 +21,8 @@ namespace VEF.Maps
 
             //This motherfucker currently causing errors due to a null dict key
 
-            //harm.Patch(AccessTools.EnumeratorMoveNext(AccessTools.Method(typeof(StorytellerComp_Disease), "MakeIntervalIncidents")) ,
-            //    transpiler: new HarmonyMethod(typeof(VanillaExpandedFramework_StorytellerComp_Disease_MakeIntervalIncidents_Patch), "ModifyBiomeDiseaseMTB"));
+            harm.Patch(AccessTools.EnumeratorMoveNext(AccessTools.Method(typeof(StorytellerComp_Disease), "MakeIntervalIncidents")) ,
+                transpiler: new HarmonyMethod(typeof(VanillaExpandedFramework_StorytellerComp_Disease_MakeIntervalIncidents_Patch), "ModifyBiomeDiseaseMTB"));
 
             harm.Patch(AccessTools.Method(typeof(WITab_Terrain), "ListMiscDetails"),
                 transpiler: new HarmonyMethod(typeof(VanillaExpandedFramework_WITab_Terrain_ListMiscDetails_Patch), "CorrectlyOutputBiomeDiseaseMTB"));

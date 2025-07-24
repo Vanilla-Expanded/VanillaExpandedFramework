@@ -829,7 +829,7 @@ namespace VEF.Apparels
     {
         public static bool AffectsShields(this DamageDef damageDef)
         {
-            return damageDef.isExplosive || damageDef == DamageDefOf.EMP;
+            return !damageDef.ignoreShields && (damageDef.isExplosive || damageDef == DamageDefOf.EMP);
         }
         public static void CheckIntercept(Thing thing, Map map, int damageAmount, DamageDef damageDef, Func<IEnumerable<IntVec3>> cellGetter, Func<bool> canIntercept = null, Func<CompShieldField, bool> preIntercept = null, Action<CompShieldField> postIntercept = null)
         {
