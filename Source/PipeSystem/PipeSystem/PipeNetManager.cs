@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Verse;
 
@@ -174,7 +174,7 @@ namespace PipeSystem
             }
 
             // Destroy the PipeNet
-            comp.PipeNet.Destroy();
+            comp.PipeNet?.Destroy();
             pipeNetsCount--;
             // Recreate PipeNet(s) based on neigbours connectors
             CreatePipeSystemNets(foundConnectors, comp.Props.pipeNet);

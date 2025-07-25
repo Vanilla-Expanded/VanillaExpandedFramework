@@ -55,7 +55,7 @@ namespace VEF.Maps
             if (map?.TileInfo?.Mutators != null)
             {
               
-                foreach (TileMutatorDef mutator in map.Tile.Tile.Mutators)
+                foreach (TileMutatorDef mutator in map.TileInfo.Mutators)
                 {
 
                     TileMutatorExtension extension = mutator.GetModExtension<TileMutatorExtension>();

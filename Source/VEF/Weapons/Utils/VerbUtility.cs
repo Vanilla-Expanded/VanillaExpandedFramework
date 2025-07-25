@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
@@ -63,9 +63,37 @@ namespace VEF.Weapons
         private static List<Verb> GetAllVerbs(Pawn pawn)
         {
             var allVerbs = new List<Verb>();
-            allVerbs.AddRange(pawn.VerbTracker.AllVerbs);
-            if (pawn.equipment != null) allVerbs.AddRange(pawn.equipment.AllEquipmentVerbs);
-            if (pawn.apparel != null) allVerbs.AddRange(pawn.apparel.AllApparelVerbs);
+            try
+            {
+                if (pawn.VerbTracker != null)
+                {
+                    allVerbs.AddRange(pawn.VerbTracker.AllVerbs);
+                }
+            } catch (Exception e)
+            {
+                Log.Error($"[VEF] Error while getting all verbs for pawn {pawn.Name}: {e.Message}");
+            }
+            try
+            {
+                if (pawn.equipment != null)
+                {
+                    allVerbs.AddRange(pawn.equipment.AllEquipmentVerbs);
+                }
+            } catch (Exception e)
+            {
+                Log.Error($"[VEF] Error while getting all equipment verbs for pawn {pawn.Name}: {e.Message}");
+            }
+            try
+            {
+                if (pawn.apparel != null)
+                {
+                    allVerbs.AddRange(pawn.apparel.AllApparelVerbs);
+                }
+            } catch (Exception e)
+            {
+                Log.Error($"[VEF] Error while getting all apparel verbs for pawn {pawn.Name}: {e.Message}");
+            }
+
             return allVerbs;
         }
 

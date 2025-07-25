@@ -39,6 +39,10 @@ namespace VEF.Hediffs
 
         public static void OnPawnSpawn(Pawn __instance)
         {
+            if (HediffDrawsByPawn.ContainsKey(__instance))
+            {
+                HediffDrawsByPawn.Remove(__instance);
+            }
             HediffDrawsByPawn.Add(__instance,
                 __instance.health.hediffSet.hediffs.OfType<HediffWithComps>().SelectMany(hediff => hediff.comps).OfType<HediffComp_Draw>().ToList());
         }

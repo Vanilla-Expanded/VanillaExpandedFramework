@@ -1,5 +1,6 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using RimWorld;
+using System.Collections.Generic;
 
 namespace VEF.Storyteller
 {
@@ -8,14 +9,18 @@ namespace VEF.Storyteller
     {
         public static void Postfix(Quest quest)
         {
-            var extension = quest.root.GetModExtension<QuestChainExtension>();
-            if (extension != null)
+            if (quest?.root != null)
             {
-                GameComponent_QuestChains.Instance.quests.Add(new QuestInfo
+                var extension = quest.root.GetModExtension<QuestChainExtension>();
+                if (extension != null)
                 {
-                    questRef = quest,
-                    questDef = quest.root,
-                });
+                    GameComponent_QuestChains.Instance.quests ??= new List<QuestInfo>();
+                    GameComponent_QuestChains.Instance.quests.Add(new QuestInfo
+                    {
+                        questRef = quest,
+                        questDef = quest.root,
+                    });
+                }
             }
         }
     }
