@@ -14,6 +14,12 @@ namespace VEF.AnimalBehaviours
 
         public int seasonalItemIndex = 0;
 
+        public override void PostExposeData()
+        {
+            base.PostExposeData();
+            Scribe_Values.Look(ref this.seasonalItemIndex, "seasonalItemIndex", 0, false);
+        }
+
         protected override int GatherResourcesIntervalDays
         {
             get
