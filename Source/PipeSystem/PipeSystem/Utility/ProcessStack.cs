@@ -93,12 +93,13 @@ namespace PipeSystem
         /// </summary>
         /// <param name="processDef"></param>
         /// <param name="parent"></param>
-        public void AddProcess(ProcessDef processDef, ThingWithComps parent, int targetCount = 1)
+        public void AddProcess(ProcessDef processDef, ThingWithComps parent, int targetCount = 1, QualityCategory forcedQuality = QualityCategory.Normal)
         {
-            var process = new Process(processDef, parent);
+            var process = new Process(processDef, parent, forcedQuality);
             process.Setup();
             process.targetCount= targetCount;
             process.PostSpawnSetup();
+            process.qualityToOutput= forcedQuality;
             processes.Add(process);
             Notify_ProcessChange();
         }

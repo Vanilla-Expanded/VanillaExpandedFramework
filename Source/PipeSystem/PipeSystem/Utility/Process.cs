@@ -172,11 +172,11 @@ namespace PipeSystem
         public Process()
         { }
 
-        public Process(ProcessDef processDef, ThingWithComps parent)
+        public Process(ProcessDef processDef, ThingWithComps parent, QualityCategory forcedQuality = QualityCategory.Normal)
         {
             this.parent = parent;
             def = processDef;
-            ticksOrQualityTicks = (def.ticksQuality.NullOrEmpty() ? def.ticks : def.ticksQuality[(int)QualityCategory.Normal]);
+            ticksOrQualityTicks = (def.ticksQuality.NullOrEmpty() ? def.ticks : def.ticksQuality[(int)forcedQuality]);
             tickLeft = def.isFactoryProcess ? (int)(GetFactoryAcceleration() * ticksOrQualityTicks) : ticksOrQualityTicks;
             progress = 0f;
             ruinedPercent = 0f;

@@ -93,14 +93,12 @@ namespace VEF.Buildings
                             if (thing != null && thing.def == thingToChange.def)
                             {
                                 LongEventHandler.ExecuteWhenFinished(delegate { thing.TryGetComp<CompRandomBuildingGraphic>().ChangeGraphic(false, i); });
+                                thing.DirtyMapMesh(thing.Map);
                             }
 
 
                         }
-
-
-                        
-                        thingToChange.DirtyMapMesh(thingToChange.Map);
+               
                         Close();
                     }
 

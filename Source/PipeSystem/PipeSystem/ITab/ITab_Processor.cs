@@ -55,7 +55,7 @@ namespace PipeSystem
                         comp.ProcessStack.Processes.Clear();
                         foreach (Process process in ProcessUtility.Clipboard[SelThing.def])
                         {
-                            comp.ProcessStack.AddProcess(process.Def, (ThingWithComps)SelThing, process.targetCount);
+                            comp.ProcessStack.AddProcess(process.Def, (ThingWithComps)SelThing, process.targetCount,process.qualityToOutput);
                         }
 
                         foreach (Process process in comp.ProcessStack.Processes)
