@@ -37,7 +37,7 @@ namespace VEF.Pawns
             }
             if (!patched)
             {
-                Log.Error("Patching additional additional pregnancy approach post lovin' effect for Vanilla");
+                Log.Error("[VEF] Failed to patch Vanilla");
             }
         }
 
@@ -102,7 +102,7 @@ namespace VEF.Pawns
             }
             if (!patched)
             {
-                Log.Error("Patching additional additional pregnancy approach post lovin' effect for VSIE.");
+                Log.Error("[VEF] Failed to patch VanillaSocialInteractionsExpanded");
             }
         }
     }
@@ -157,7 +157,7 @@ namespace VEF.Pawns
             }
             if (!patched)
             {
-                Log.Error("Patching additional additional pregnancy approach post lovin' effect for VRE-H");
+                Log.Error("[VEF] Failed to patch VanillaRacesExpandedHighmate");
             }
         }
     }
