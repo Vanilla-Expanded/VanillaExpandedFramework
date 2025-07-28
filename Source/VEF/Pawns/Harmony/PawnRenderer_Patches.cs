@@ -73,7 +73,7 @@ namespace VEF.Pawns
             if (pawn != null && thingDefExtension != null && PawnRenderUtility.CarryWeaponOpenly(pawn))
             {
                 var pawnRot = pawn.Rotation;
-                var pawnIsMoving = pawn.pather.Moving;
+                var pawnIsMoving = pawn.pather?.Moving ?? false;
 
                 // Weapon draw offsets that apply at all times (i.e. carrying weapons while working, drafted, attacking)
                 // Replaces the now-defunct CompOversizedWeapon
