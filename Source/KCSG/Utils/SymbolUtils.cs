@@ -48,7 +48,15 @@ namespace KCSG
                     {
                         return;
                     }
-                    GenerateBuildingAt(map, cell, symbol, layout, faction, wallForRoom);
+                    try
+                    {
+                        GenerateBuildingAt(map, cell, symbol, layout, faction, wallForRoom);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error($"[VEF] Error while generating {symbol.thingDef.defName} at {cell}: {e}. Most likely caused by other third-party mods, check the stacktrace to detect the faulty mod.");
+                        return;
+                    }
 
                     // Generating settlement, we want to keep tracks of doors
                     if (GenOption.customGenExt != null && !GenOption.customGenExt.UsingSingleLayout && symbol.thingDef.altitudeLayer == AltitudeLayer.DoorMoveable)
