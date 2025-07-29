@@ -41,9 +41,11 @@ namespace VEF.Factions
                     return;
                 }
             }
-
-            // Otherwise use cached
-            faction.permanentEnemy = orginalPermanentEnemyCache[faction];
+            if (orginalPermanentEnemyCache.TryGetValue(faction, out var originalPermanentEnemy))
+            {
+                // Otherwise use cached
+                faction.permanentEnemy = orginalPermanentEnemyCache[faction];
+            }
         }
     }
 }
