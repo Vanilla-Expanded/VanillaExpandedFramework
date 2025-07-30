@@ -87,7 +87,7 @@ namespace VEF.AestheticScaling
             catch { Log.Error($"[VEF] Error checking Humanlike when setting up {pawn}"); }
         }
 
-        public CachedPawnData GetDefaultCache() => defaultCache;
+        public static CachedPawnData GetDefaultCache() => defaultCache;
 
         public bool RegenerateCache()
         {

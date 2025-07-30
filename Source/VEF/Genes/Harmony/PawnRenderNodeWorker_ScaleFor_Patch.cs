@@ -25,26 +25,44 @@ namespace VEF.Genes
         {
             var pawn = parms.pawn;
             if (pawn == null) return;
-            if (threadStaticCache.pawn != pawn)
+            CachedPawnData cache;
+            if (CachedPawnDataExtensions.prepatched)
             {
-                threadStaticCache.cache = PawnDataCache.GetPawnDataCache(pawn, canRefresh: false);
-                threadStaticCache.pawn = pawn;
+                cache = pawn.GetCachePrePatched();
             }
-            var cache = threadStaticCache.cache;
-            if (threadStaticCache.cache.isHumanlike)
+            else
+            {
+                if (threadStaticCache.pawn != pawn)
+                {
+                    threadStaticCache.cache = pawn.GetCachePrePatched();
+                    threadStaticCache.pawn = pawn;
+                }
+                cache = threadStaticCache.cache;
+            }
+
+            // Tiny performance win because Unity Casts all float multiplications to double.
+            double bodyRenderSizeX = cache.vCosmeticScale.x;
+            double bodyRenderSizeZ = cache.vCosmeticScale.z;
+            double resultX = __result.x;
+            double resultZ = __result.z;
+            if (cache.isHumanlike)
             {
                 if (node is PawnRenderNode_Body)
                 {
-                    __result = new Vector3(cache.vCosmeticScale.x * __result.x, __result.y, cache.vCosmeticScale.z * __result.z);
+                    __result.x = (float)(resultX * bodyRenderSizeX);
+                    __result.z = (float)(resultZ * bodyRenderSizeZ);
                 }
                 else if (node is PawnRenderNode_Head)
                 {
-                    __result *= cache.headRenderSize;
+                    double headRenderSizeD = cache.headRenderSize;
+                    __result.x = (float)(resultX * headRenderSizeD);
+                    __result.z = (float)(resultZ * headRenderSizeD);
                 }
             }
             else
             {
-                __result = new Vector3(cache.vCosmeticScale.x * __result.x, __result.y, cache.vCosmeticScale.z * __result.z);
+                __result.x = (float)(resultX * bodyRenderSizeX);
+                __result.z = (float)(resultZ * bodyRenderSizeZ);
             }
         }
     }

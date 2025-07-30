@@ -5,6 +5,7 @@ using Verse;
 using VEF.Pawns;
 using VEF.Factions;
 using VEF.Research;
+using VEF.AestheticScaling;
 
 namespace VEF
 {
@@ -15,6 +16,7 @@ namespace VEF
 
         static Startup()
         {
+            CachedPawnDataExtensions.prepatched = ModsConfig.IsActive("zetrith.prepatcher");
             PawnShieldGenerator.Reset();
             ScenPartUtility.SetCache();
             ResearchProjectUtility.AutoAssignRules();
