@@ -18,7 +18,7 @@ namespace KCSG
         {
             if (!DropCellFinder.TryFindRaidDropCenterClose(out IntVec3 near, map, true, true, true, -1))
             {
-                near = DropCellFinder.FindRaidDropCenterDistant(map, false);
+                near = DropCellFinder.FindRaidDropCenterDistant(map, false, true);
             }
             TransportersArrivalActionUtility.DropTravellingDropPods(dropPods, near, map);
         }
