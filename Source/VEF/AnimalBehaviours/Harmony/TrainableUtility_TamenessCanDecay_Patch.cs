@@ -17,8 +17,6 @@ namespace VEF.AnimalBehaviours
 
 
     
-    /* Uncomment as soon as unstable is pushed or Madman cries
-     * 
     [HarmonyPatch(typeof(TrainableUtility))]
     [HarmonyPatch("TamenessCanDecay")]
     [HarmonyPatch(new Type[] { typeof(Pawn) })]
@@ -54,7 +52,6 @@ namespace VEF.AnimalBehaviours
             else return true;
         }
     }
-*/
 
 
 }
