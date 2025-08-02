@@ -21,6 +21,7 @@ namespace PipeSystem
         public float margin = 0.15f;
         public Vector2 barSize = new Vector2(1.3f, 0.4f);
         public Vector3 centerOffset = new Vector3(0, 0);
+        public bool barHorizontal = false;
 
         public ExtractOptions extractOptions;
         public RefillOptions refillOptions;

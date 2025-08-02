@@ -107,7 +107,7 @@ namespace PipeSystem
                 filledMat = MaterialCreator.materials.TryGetValue(Props.pipeNet, MaterialCreator.BarFallbackMat),
                 unfilledMat = MaterialCreator.BarUnfilledMat,
                 margin = Props.margin,
-                rotation = parent.Rotation.Rotated(RotationDirection.Clockwise)
+                rotation = Props.barHorizontal ? parent.Rotation : parent.Rotation.Rotated(RotationDirection.Clockwise)
             };
             // Extract gizmo
             if (Props.extractOptions != null)
