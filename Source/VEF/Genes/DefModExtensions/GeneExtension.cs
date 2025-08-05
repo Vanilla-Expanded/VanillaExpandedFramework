@@ -68,6 +68,8 @@ namespace VEF.Genes
 
         //Hide gene from appearing on the xenotype creation screen. Useful for special genes that only appear as rewards during gameplay.
         public bool hideGene = false;
+        //Prevent the gene from being extracted in gene extractors. Useful for special/situational/temporary genes that would get removed if implanted into normal pawn.
+        public bool disableGeneExtraction = false;
 
         //Makes this gene cause no skill loss for a given skill.
         public SkillDef noSkillLoss = null;
