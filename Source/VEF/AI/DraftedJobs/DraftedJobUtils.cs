@@ -35,6 +35,7 @@ namespace VEF.AI
     public static class DraftGizmos
     {
         public static readonly Texture2D AutoCastTex = ContentFinder<Texture2D>.Get("UI/CheckAuto");
+        public static readonly Texture2D VEFHuntIcon = ContentFinder<Texture2D>.Get("UI/Commands/VEF_Hunt");
 
         public static bool IsPlayerDraftedInsectoid(Pawn pawn)
         {
@@ -43,9 +44,9 @@ namespace VEF.AI
 
         [HarmonyPatch(typeof(Pawn_DraftController), "GetGizmos")]
         [HarmonyPostfix]
-        public static IEnumerable<Command> GetGizmosPostfix(IEnumerable<Command> __result, Pawn_DraftController __instance)
+        public static IEnumerable<Gizmo> GetGizmosPostfix(IEnumerable<Gizmo> __result, Pawn_DraftController __instance)
         {
-            List<Command> commands = __result.ToList();
+            List<Gizmo> commands = __result.ToList();
             var pawn = __instance.pawn;
             if (IsPlayerDraftedInsectoid(pawn))
             {
@@ -54,7 +55,7 @@ namespace VEF.AI
                 {
                     defaultLabel = "VEF.DraftHuntLabel".Translate(),
                     defaultDesc = "VEF.HuntDescription".Translate(),
-                    icon = ContentFinder<Texture2D>.Get("UI/Commands/VEF_Hunt"),
+                    icon = VEFHuntIcon,
                     isActive = () => DraftedActionHolder.GetData(pawn).hunt,
                     toggleAction = () =>
                     {
