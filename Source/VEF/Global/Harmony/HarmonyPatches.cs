@@ -88,6 +88,8 @@ namespace VEF
                         transpiler: new HarmonyMethod(typeof(Patch_RPG_GearTab), "TryDrawOverallArmor_Revamped_Transpiler"));
                     VEF_Mod.harmonyInstance.Patch(AccessTools.Method(detailedRPGGearTab, "TryDrawOverallArmor1"),
                         transpiler: new HarmonyMethod(typeof(Patch_RPG_GearTab), "TryDrawOverallArmor1_Revamped_Transpiler"));
+                    VEF_Mod.harmonyInstance.Patch(AccessTools.Method(detailedRPGGearTab, "TryDrawOverallArmor2"),
+                        transpiler: new HarmonyMethod(typeof(Patch_RPG_GearTab), "TryDrawOverallArmor1_Revamped_Transpiler"));
                 }
                 else
                 {
