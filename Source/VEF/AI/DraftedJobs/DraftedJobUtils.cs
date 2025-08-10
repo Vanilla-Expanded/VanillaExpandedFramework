@@ -46,7 +46,22 @@ namespace VEF.AI
         [HarmonyPostfix]
         public static IEnumerable<Gizmo> GetGizmosPostfix(IEnumerable<Gizmo> __result, Pawn_DraftController __instance)
         {
-            List<Gizmo> commands = __result.ToList();
+            static IEnumerable<Gizmo> UpdateEnumerable(IEnumerable<Gizmo> gizmos, Command_ToggleWithRClick draftHunt)
+            {
+                foreach (var gizmo in gizmos)
+                {
+                    if (gizmo is Command_Toggle draftCommand && draftCommand.icon == TexCommand.Draft)
+                    {
+                        yield return draftCommand;
+                        yield return draftHunt;
+                    }
+                    else
+                    {
+                        yield return gizmo;
+                    }
+                }
+            }
+
             var pawn = __instance.pawn;
             if (IsPlayerDraftedInsectoid(pawn))
             {
@@ -57,10 +72,7 @@ namespace VEF.AI
                     defaultDesc = "VEF.HuntDescription".Translate(),
                     icon = VEFHuntIcon,
                     isActive = () => DraftedActionHolder.GetData(pawn).hunt,
-                    toggleAction = () =>
-                    {
-                        DraftedActionHolder.GetData(pawn).ToggleHuntMode();
-                    },
+                    toggleAction = () => DraftedActionHolder.GetData(pawn).ToggleHuntMode(),
                     rightClickAction = () =>
                     {
                         DraftedActionData data = DraftedActionHolder.GetData(pawn);
@@ -70,17 +82,9 @@ namespace VEF.AI
                     groupKey = 6173612,
                     hotKey = KeyBindingDefOf.Misc1
                 };
-                // Find the Draft command and insert it after that.
-                for (int i = 0; i < commands.Count; i++)
-                {
-                    if (commands[i] is Command_Toggle draftCommand && draftCommand.icon == TexCommand.Draft)
-                    {
-                        commands.Insert(i + 1, huntCommand);
-                        break;
-                    }
-                }
+                return UpdateEnumerable(__result, huntCommand);
             }
-            return commands;
+            return __result;
         }
 
         [HarmonyPatch(typeof(Command), "GizmoOnGUIInt")]
