@@ -24,21 +24,7 @@ namespace PipeSystem
         public CompProperties_ExplosiveContent Props => (CompProperties_ExplosiveContent)props;
         protected int StartWickThreshold => Mathf.RoundToInt(Props.startWickHitPointsPercent * parent.MaxHitPoints);
 
-        private bool CanEverExplodeFromDamage
-        {
-            get
-            {
-                if (Props.chanceNeverExplodeFromDamage < 1E-05f)
-                {
-                    return true;
-                }
-                Rand.PushState();
-                Rand.Seed = parent.thingIDNumber.GetHashCode();
-                bool result = Rand.Value > Props.chanceNeverExplodeFromDamage;
-                Rand.PopState();
-                return result;
-            }
-        }
+        private bool CanEverExplodeFromDamage => Props.chanceNeverExplodeFromDamage < 1E-05f || Rand.ValueSeeded(parent.thingIDNumber) > Props.chanceNeverExplodeFromDamage;
 
         public void AddThingsIgnoredByExplosion(List<Thing> things)
         {
@@ -141,7 +127,7 @@ namespace PipeSystem
 
         public override void PostDestroy(DestroyMode mode, Map previousMap)
         {
-            if (mode == DestroyMode.KillFinalize && Props.explodeOnKilled && comp.AmountStored > 0)
+            if (mode == DestroyMode.KillFinalize && Props.explodeOnKilled && CanExplode())
             {
                 Detonate(previousMap, ignoreUnspawned: true);
             }
@@ -156,7 +142,7 @@ namespace PipeSystem
             {
                 return;
             }
-            if (dinfo.Def.ExternalViolenceFor(parent) && dinfo.Amount >= parent.HitPoints && comp.AmountStored > 0 && CanExplodeFromDamageType(dinfo.Def))
+            if (dinfo.Def.ExternalViolenceFor(parent) && dinfo.Amount >= parent.HitPoints && CanExplode() && CanExplodeFromDamageType(dinfo.Def))
             {
                 if (parent.MapHeld != null)
                 {
@@ -168,7 +154,7 @@ namespace PipeSystem
                     }
                 }
             }
-            else if (!wickStarted && Props.startWickOnDamageTaken != null && Props.startWickOnDamageTaken.Contains(dinfo.Def) && comp.AmountStored > 0)
+            else if (!wickStarted && Props.startWickOnDamageTaken != null && Props.startWickOnDamageTaken.Contains(dinfo.Def))
             {
                 StartWick(dinfo.Instigator);
             }
@@ -191,7 +177,7 @@ namespace PipeSystem
 
         public void StartWick(Thing instigator = null)
         {
-            if (!wickStarted && ExplosiveRadius() > Props.radiusRequiredForExplosion)
+            if (!wickStarted && CanExplode())
             {
                 this.instigator = instigator;
                 wickStarted = true;
@@ -284,6 +270,12 @@ namespace PipeSystem
                 };
                 yield return command_Action;
             }
+        }
+
+        protected virtual bool CanExplode()
+        {
+            var radius = ExplosiveRadius();
+            return radius > 0 && radius >= Props.radiusRequiredForExplosion;
         }
     }
 }
