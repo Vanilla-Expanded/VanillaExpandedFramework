@@ -191,7 +191,7 @@ namespace PipeSystem
 
         public void StartWick(Thing instigator = null)
         {
-            if (!wickStarted && !(ExplosiveRadius() <= 0f))
+            if (!wickStarted && ExplosiveRadius() > Props.radiusRequiredForExplosion)
             {
                 this.instigator = instigator;
                 wickStarted = true;
@@ -211,7 +211,7 @@ namespace PipeSystem
 
         public float ExplosiveRadius()
         {
-            return comp.AmountStoredPct * Props.explosiveMaxRadius;
+            return Mathf.Lerp(Props.explosiveMinRadius, Props.explosiveMaxRadius, comp.AmountStoredPct);
         }
 
         protected void Detonate(Map map, bool ignoreUnspawned = false)

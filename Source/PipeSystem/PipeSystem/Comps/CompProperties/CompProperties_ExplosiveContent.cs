@@ -11,7 +11,12 @@ namespace PipeSystem
             compClass = typeof(CompExplosiveContent);
         }
 
-        public int explosiveMaxRadius;
+        // Min/max radius, scales linearly
+        public float explosiveMaxRadius;
+        public float explosiveMinRadius;
+
+        // Min radius at which the explosion can occur
+        public float radiusRequiredForExplosion;
 
         public override IEnumerable<string> ConfigErrors(ThingDef parentDef)
         {
@@ -19,7 +24,7 @@ namespace PipeSystem
                 yield return error;
 
             if (parentDef.GetCompProperties<CompProperties_ResourceStorage>() == null)
-                yield return "CompProperties_ExplosiveContent cannot be used on a thing without CompProperties_ResourceStorage";
+                yield return $"{nameof(CompProperties_ExplosiveContent)} cannot be used on a thing without {nameof(CompProperties_ResourceStorage)}";
         }
     }
 }
