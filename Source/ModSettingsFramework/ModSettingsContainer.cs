@@ -6,6 +6,11 @@ using Verse;
 
 namespace ModSettingsFramework
 {
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+    public class HotSwappableAttribute : Attribute
+    {
+    }
+    [HotSwappable]
     public class ModSettingsContainer : IExposable
     {
         public string packageID;
@@ -102,6 +107,7 @@ namespace ModSettingsFramework
                     {
                         curPatches.Remove(patch);
                     }
+                    scrollHeight += 1;
                 }
             }
             foreach (var patch in curPatches.OrderBy(x => x.patch.order))
