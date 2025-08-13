@@ -51,7 +51,7 @@ namespace PipeSystem
 
         public override void MapComponentUpdate()
         {
-            if (WorldRendererUtility.WorldRendered || Find.CurrentMap != map)
+            if (WorldRendererUtility.WorldSelected || Find.CurrentMap != map)
                 return;
 
             foreach (var pulsing in pulsingRender)
