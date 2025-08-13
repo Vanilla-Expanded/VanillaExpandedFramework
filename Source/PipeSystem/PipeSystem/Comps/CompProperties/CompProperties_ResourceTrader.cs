@@ -8,6 +8,7 @@ namespace PipeSystem
     {
         public float consumptionPerTick;
         public float idleConsumptionPerTick = -1f;
+        public bool resourceOffOverlay = true;
 
         public SoundDef soundAmbientReceivingResource;
 

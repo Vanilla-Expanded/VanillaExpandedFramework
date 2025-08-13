@@ -16,13 +16,13 @@ namespace PipeSystem
         private bool resourceOnInt;
         private Sustainer sustainerResourceOn;
 
-        private CompFlickable compFlickable;
-        private CompSchedule compSchedule;
-        private CompBreakdownable compBreakdownable;
-        private CompRefuelable compRefuelable;
-        private CompPowerTrader compPowerTrader;
+        protected CompFlickable compFlickable;
+        protected CompSchedule compSchedule;
+        protected CompBreakdownable compBreakdownable;
+        protected CompRefuelable compRefuelable;
+        protected CompPowerTrader compPowerTrader;
 
-        private PipeNetOverlayDrawer pipeNetOverlayDrawer;
+        protected PipeNetOverlayDrawer pipeNetOverlayDrawer;
 
         public string OnSignal => $"Resource{Resource.name}TurnedOn";
         public string OffSignal => $"Resource{Resource.name}TurnedOff";
@@ -70,25 +70,19 @@ namespace PipeSystem
                     parent.BroadcastCompSignal(OffSignal);
                     EndSustainerIfActive();
                 }
-                pipeNetOverlayDrawer?.TogglePulsing(parent, Props.pipeNet.offMat, !resourceOnInt);
+                if (Props.resourceOffOverlay)
+                    pipeNetOverlayDrawer?.TogglePulsing(parent, Props.pipeNet.offMat, !resourceOnInt);
             }
         }
 
         /// <summary>
-        /// Get comps, mapComp, setup overlay and sustainer
+        /// Get mapComp, setup overlay and sustainer
         /// </summary>
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
-            compFlickable = parent.TryGetComp<CompFlickable>();
-            compSchedule = parent.TryGetComp<CompSchedule>();
-            compBreakdownable = parent.TryGetComp<CompBreakdownable>();
-            compRefuelable = parent.TryGetComp<CompRefuelable>();
-            compPowerTrader = parent.TryGetComp<CompPowerTrader>();
-
-            BaseConsumption = Props.consumptionPerTick;
-
             pipeNetOverlayDrawer = parent.Map.GetComponent<PipeNetOverlayDrawer>();
-            pipeNetOverlayDrawer?.TogglePulsing(parent, Props.pipeNet.offMat, !resourceOnInt);
+            if (Props.resourceOffOverlay)
+                pipeNetOverlayDrawer?.TogglePulsing(parent, Props.pipeNet.offMat, !resourceOnInt);
 
             if (ResourceOn)
                 LongEventHandler.ExecuteWhenFinished(() => StartSustainerIfInactive());
@@ -97,22 +91,36 @@ namespace PipeSystem
         }
 
         /// <summary>
+        /// Get comps
+        /// </summary>
+        public override void PostPostMake()
+        {
+            InitializeComps();
+
+            base.PostPostMake();
+        }
+
+        /// <summary>
         /// Stop sustainer, toggle off overlay
         /// </summary>
         public override void PostDeSpawn(Map map, DestroyMode mode = DestroyMode.Vanish)
         {
             base.PostDeSpawn(map, mode);
-            pipeNetOverlayDrawer?.TogglePulsing(parent, Props.pipeNet.offMat, false);
+            if (Props.resourceOffOverlay)
+                pipeNetOverlayDrawer?.TogglePulsing(parent, Props.pipeNet.offMat, false);
             EndSustainerIfActive();
         }
 
         /// <summary>
-        /// Save state
+        /// Save/load state, get comps on load
         /// </summary>
         public override void PostExposeData()
         {
             base.PostExposeData();
             Scribe_Values.Look(ref resourceOnInt, "resourceOn", true);
+
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+                InitializeComps();
         }
 
         /// <summary>
@@ -249,6 +257,20 @@ namespace PipeSystem
                 sb.AppendLine("   consumption: " + Consumption);
                 return sb.ToString().Trim();
             }
+        }
+
+        /// <summary>
+        /// Get comps on PostPostMake and ExposeData (loading vars) only, matching vanilla behavior.
+        /// </summary>
+        private void InitializeComps()
+        {
+            compFlickable = parent.TryGetComp<CompFlickable>();
+            compSchedule = parent.TryGetComp<CompSchedule>();
+            compBreakdownable = parent.TryGetComp<CompBreakdownable>();
+            compRefuelable = parent.TryGetComp<CompRefuelable>();
+            compPowerTrader = parent.TryGetComp<CompPowerTrader>();
+
+            BaseConsumption = Props.consumptionPerTick;
         }
     }
 }
