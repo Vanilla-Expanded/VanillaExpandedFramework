@@ -15,6 +15,8 @@ namespace PipeSystem
 
             pipeNet.NextTick = Find.TickManager.TicksGame;
 
+            pipeNet.PostMake();
+
             // Register all
             foreach (var connector in connectors)
             {

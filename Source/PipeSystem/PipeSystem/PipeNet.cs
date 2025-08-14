@@ -680,6 +680,13 @@ namespace PipeSystem
             }
         }
 
+        /// <summary>
+        /// Initialization after pipe net is created, but before ever calling RegisterComp
+        /// </summary>
+        public virtual void PostMake()
+        {
+        }
+
         public override string ToString()
         {
             return $"PipeNet: {def.resource.name} Stored: {Stored} AvailableCapacity: {AvailableCapacity} Consumption: {Consumption} Production: {Production}";
