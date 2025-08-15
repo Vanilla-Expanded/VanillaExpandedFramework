@@ -5,6 +5,7 @@ using UnityEngine;
 using Verse;
 using VEF;
 using static HarmonyLib.Code;
+using VEF.Abilities;
 
 namespace VEF.Genes
 {
@@ -20,12 +21,18 @@ namespace VEF.Genes
 
                 if (!gene.def.abilities.NullOrEmpty())
                 {
-                    foreach(AbilityDef abilityDef in gene.def.abilities)
+                    
+                    foreach (RimWorld.AbilityDef abilityDef in gene.def.abilities)
                     {
-                        if (gene.pawn.abilities.GetAbility(abilityDef) is null)
+                        AbilityGeneExtension abilityGeneExtension = abilityDef.GetModExtension<AbilityGeneExtension>();
+                        if (abilityGeneExtension?.dontModifyAbilityOnGeneRemoval != true)
                         {
-                            gene.pawn.abilities.GainAbility(abilityDef);
+                            if (gene.pawn.abilities.GetAbility(abilityDef) is null)
+                            {
+                                gene.pawn.abilities.GainAbility(abilityDef);
+                            }
                         }
+                       
                     }              
                 }
                 GeneExtension extension = gene.def.GetModExtension<GeneExtension>();
@@ -173,11 +180,16 @@ namespace VEF.Genes
                 if (Scribe.mode == LoadSaveMode.LoadingVars || Scribe.mode == LoadSaveMode.ResolvingCrossRefs || Scribe.mode == LoadSaveMode.Saving) return;
                 if (!gene.def.abilities.NullOrEmpty())
                 {
-                    foreach (AbilityDef abilityDef in gene.def.abilities)
+                    foreach (RimWorld.AbilityDef abilityDef in gene.def.abilities)
                     {
-                        if (gene.pawn.abilities.GetAbility(abilityDef)!= null)
+                        AbilityGeneExtension abilityGeneExtension = abilityDef.GetModExtension<AbilityGeneExtension>();
+                        if (abilityGeneExtension?.dontModifyAbilityOnGeneRemoval != true)
                         {
-                            gene.pawn.abilities.RemoveAbility(abilityDef);
+                          
+                            if (gene.pawn.abilities.GetAbility(abilityDef) != null)
+                            {
+                                gene.pawn.abilities.RemoveAbility(abilityDef);
+                            }
                         }
                     }
                 }

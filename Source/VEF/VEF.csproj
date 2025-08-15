@@ -468,6 +468,7 @@
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_NotInSpace.cs" />
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_InSpace.cs" />
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_InVacuum.cs" />
+    <Compile Include="Genes\DefModExtensions\AbilityGeneExtension.cs" />
     <Compile Include="Genes\Genes\Gene_Astrogene.cs" />
     <Compile Include="Genes\Harmony\Building_GeneExtractor_Patch.cs" />
     <Compile Include="Genes\Harmony\Pawn_PathFollower_CostToMoveIntoCell.cs" />
@@ -1306,6 +1307,7 @@
   <ItemGroup>
     <PackageReference Include="Lib.Harmony">
       <Version>2.3.6</Version>
+	   <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
     <PackageReference Include="System.Collections">
       <Version>4.3.0</Version>
