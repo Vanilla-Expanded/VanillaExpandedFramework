@@ -8,7 +8,12 @@ namespace PipeSystem
     {
         public float consumptionPerTick;
         public float idleConsumptionPerTick = -1f;
+        // Should the overlay for resource being off be drawn (if flicked off, etc.)
         public bool resourceOffOverlay = true;
+
+        // Producer configs
+        // If true, the producer's PowerTrader power usage will be changed to its idle power consumption when all storages are full.
+        public bool producerLowPowerWhenStorageFull = false;
 
         public SoundDef soundAmbientReceivingResource;
 

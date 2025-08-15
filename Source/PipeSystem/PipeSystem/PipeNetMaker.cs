@@ -23,6 +23,8 @@ namespace PipeSystem
                 pipeNet.RegisterComp(connector);
             }
 
+            pipeNet.PostPostMake();
+
             return pipeNet;
         }
     }
