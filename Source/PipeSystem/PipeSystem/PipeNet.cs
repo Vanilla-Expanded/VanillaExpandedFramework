@@ -716,6 +716,7 @@ namespace PipeSystem
         /// </summary>
         public virtual void PostMake()
         {
+            producersWithLowPowerModeDirty = true;
         }
 
         /// <summary>
@@ -723,7 +724,6 @@ namespace PipeSystem
         /// </summary>
         public virtual void PostPostMake()
         {
-            AvailableCapacityLastTick = AvailableCapacity;
         }
 
         public override string ToString()
