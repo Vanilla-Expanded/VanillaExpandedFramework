@@ -48,7 +48,19 @@ namespace PipeSystem
 
         public float Consumption { get; private set; }
 
+        public float VisualConsumption { get; private set; }
+
+        public float ExtraConsumptionThisTick { get; set; }
+
+        public float TotalConsumptionThisTick => Consumption + ExtraConsumptionThisTick;
+
         public float Production { get; private set; }
+
+        public float VisualProduction { get; private set; }
+
+        public float ExtraProductionThisTick { get; set; }
+
+        public float TotalProductionThisTick => Production + ExtraProductionThisTick;
 
         public float ExtractorRawProduction
         {
@@ -121,13 +133,17 @@ namespace PipeSystem
             receiversOff.Clear();
 
             float consumption = 0f;
+            float visualConsumption = 0f;
             for (int i = 0; i < receivers.Count; i++)
             {
                 var trader = receivers[i];
                 if (trader.ResourceOn)
                 {
                     receiversOn.Add(trader);
-                    consumption += trader.Consumption;
+                    if (trader.Props.visualOnlyConsumption)
+                        visualConsumption += trader.Consumption;
+                    else
+                        consumption += trader.Consumption;
 
                     if (trader.UsedLastTick)
                     {
@@ -147,6 +163,7 @@ namespace PipeSystem
             }
 
             Consumption = consumption;
+            VisualConsumption = consumption + visualConsumption;
             receiversDirty = false;
 
             return nextTickDirty;
@@ -163,13 +180,17 @@ namespace PipeSystem
             producersOff.Clear();
 
             float production = 0f;
+            float visualProduction = 0f;
             for (int i = 0; i < producers.Count; i++)
             {
                 var trader = producers[i];
                 if (trader.ResourceOn)
                 {
                     producersOn.Add(trader);
-                    production += -trader.Consumption;
+                    if (trader.Props.visualOnlyConsumption)
+                        visualProduction += -trader.Consumption;
+                    else
+                        production += -trader.Consumption;
                 }
                 else
                 {
@@ -178,6 +199,7 @@ namespace PipeSystem
             }
 
             Production = production;
+            VisualProduction = production + visualProduction;
             producersDirty = false;
         }
 
@@ -373,14 +395,19 @@ namespace PipeSystem
             Stored = CurrentStored();
 
             // Available resource this tick
-            float available = Production + Stored;
+            var consumptionThisTick = TotalConsumptionThisTick;
+            var productionThisTick = TotalProductionThisTick;
+            ExtraConsumptionThisTick = ExtraProductionThisTick = 0;
+            float available = productionThisTick + Stored;
             // If not enough
-            if (available < Consumption && receiversOn.Any())
+            if (available < consumptionThisTick && receiversOn.Any())
             {
                 PipeSystemDebug.Message("Turning off random building");
                 // Turn off random building
                 CompResourceTrader comp = receiversOn.RandomElement();
-                Consumption = Math.Max(0f, Consumption - comp.Consumption);
+                if (!comp.Props.visualOnlyConsumption)
+                    Consumption = Math.Max(0f, Consumption - comp.Consumption);
+                VisualConsumption = Math.Max(0f, VisualConsumption - comp.Consumption);
                 comp.ResourceOn = false;
                 receiversDirty = true;
             }
@@ -389,7 +416,7 @@ namespace PipeSystem
             for (int w = 0; w < receiversOff.Count; w++)
             {
                 var r = receiversOff[w];
-                if (r.CanBeOn() && (available - (Consumption + r.Consumption)) > 0f)
+                if (r.CanBeOn() && (available - (consumptionThisTick + r.Consumption)) > 0f)
                     wantToBeOn.Add(r);
             }
 
@@ -398,13 +425,15 @@ namespace PipeSystem
                 PipeSystemDebug.Message("Turning on random building");
                 // Turn random building on
                 CompResourceTrader comp = wantToBeOn.RandomElement();
-                Consumption += comp.Consumption;
+                if (!comp.Props.visualOnlyConsumption)
+                    Consumption += comp.Consumption;
+                VisualConsumption += comp.Consumption;
                 comp.ResourceOn = true;
                 receiversDirty = true;
             }
 
             // Get the usable resource
-            float usable = Production - Consumption;
+            float usable = productionThisTick - consumptionThisTick;
             // Draw from storage if we use more than we produce
             if (usable < 0)
             {
@@ -728,7 +757,7 @@ namespace PipeSystem
 
         public override string ToString()
         {
-            return $"PipeNet: {def.resource.name} Stored: {Stored} AvailableCapacity: {AvailableCapacity} Consumption: {Consumption} Production: {Production}";
+            return $"PipeNet: {def.resource.name} Stored: {Stored} AvailableCapacity: {AvailableCapacity} Consumption: {VisualConsumption} Production: {VisualProduction}";
         }
     }
 }

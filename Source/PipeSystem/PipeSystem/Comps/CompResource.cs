@@ -100,7 +100,7 @@ namespace PipeSystem
             }
             else
             {
-                sb.Append("PipeSystem_ExcessStored".Translate(net.def.resource.name, $"{((net.Production - net.Consumption) / 100 * GenDate.TicksPerDay) + net.ExtractorRawProduction:##0}", $"{net.Stored:##0}", res.unit));
+                sb.Append("PipeSystem_ExcessStored".Translate(net.def.resource.name, $"{((net.VisualProduction - net.VisualConsumption) / 100 * GenDate.TicksPerDay) + net.ExtractorRawProduction:##0}", $"{net.Stored:##0}", res.unit));
             }
             sb.AppendInNewLine(base.CompInspectStringExtra());
 

@@ -10,6 +10,8 @@ namespace PipeSystem
         public float idleConsumptionPerTick = -1f;
         // Should the overlay for resource being off be drawn (if flicked off, etc.)
         public bool resourceOffOverlay = true;
+        // If true, the consumption/production will be disabled (to be handled manually), but its value will still be included in the network stats.
+        public bool visualOnlyConsumption = false;
 
         // Producer configs
         // If true, the producer's PowerTrader power usage will be changed to its idle power consumption when all storages are full.
