@@ -87,8 +87,8 @@ public static class VanillaExpandedFramework_JobDriver_Lovin_MoveNext_Patch
 
     private static void ModifyToil(JobDriver jobDriver, Toil toil)
     {
-        var partner = jobDriver.job.GetTarget(TargetIndex.A).Pawn;
-        if (jobDriver.pawn.relations.GetAdditionalPregnancyApproachData().partners.TryGetValue(partner, out var def))
+        var partner = jobDriver.job?.GetTarget(TargetIndex.A).Pawn;
+        if (partner != null && jobDriver.pawn.relations.GetAdditionalPregnancyApproachData().partners.TryGetValue(partner, out var def))
         {
             def.Worker.ModifyLovinToil(toil, jobDriver.pawn, partner);
         }
