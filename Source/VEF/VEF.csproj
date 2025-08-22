@@ -487,11 +487,14 @@
     <Compile Include="Global\HotSwappableAttribute.cs" />
     <Compile Include="Global\VEF_HarmonyCategories.cs" />
     <Compile Include="Graphics\AI\JobDrivers\JobDriver_CustomizeItem.cs" />
+    <Compile Include="Graphics\Comps\CompDirtyMapMeshOnRefuelableChange.cs" />
     <Compile Include="Graphics\Comps\CompGraphicCustomization.cs" />
     <Compile Include="Graphics\DefModExtensions\FloorGraphicExtension.cs" />
     <Compile Include="Graphics\DefOfs\GraphicCustomization_DefOf.cs" />
     <Compile Include="Graphics\Dialogs\Dialog_GraphicCustomization.cs" />
     <Compile Include="Graphics\GraphicPart.cs" />
+    <Compile Include="Graphics\Graphic\Graphic_RefuelableMulti.cs" />
+    <Compile Include="Graphics\Graphic\Graphic_RefuelableSingle.cs" />
     <Compile Include="Graphics\Harmony\PawnAttackGizmoUtility_AtLeastTwoSelectedPlayerPawnsHaveDifferentWeapons.cs" />
     <Compile Include="Graphics\Harmony\Thing_DefaultGraphic_Patch.cs" />
     <Compile Include="Graphics\Harmony\VerbTracker_CreateVerbTargetCommand_Patch.cs" />
