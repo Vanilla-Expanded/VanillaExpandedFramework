@@ -617,10 +617,14 @@ namespace PipeSystem
                         var resourceToAdd = heldThing.stackCount * converter.Props.ratio;
 
                         float resourceCanAdd;
+
+                        //This ensures that the capacity is only counted if it's actually enough to take in however much resource one item gives.
+                        float flooredCapacity = (float)(Math.Floor(AvailableCapacity / converter.Props.ratio) * converter.Props.ratio);
+
                         if (def.convertAmount > 0)
-                            resourceCanAdd = Mathf.Min(resourceToAdd, AvailableCapacity, def.convertAmount);
+                            resourceCanAdd = Mathf.Min(resourceToAdd, flooredCapacity, def.convertAmount);
                         else
-                            resourceCanAdd = Mathf.Min(resourceToAdd, AvailableCapacity);
+                            resourceCanAdd = Mathf.Min(resourceToAdd, flooredCapacity);
 
                         if (resourceCanAdd > 0)
                         {
