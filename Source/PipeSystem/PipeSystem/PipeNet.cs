@@ -619,7 +619,7 @@ namespace PipeSystem
                         float resourceCanAdd;
 
                         //This ensures that the capacity is only counted if it's actually enough to take in however much resource one item gives.
-                        float flooredCapacity = (float)(Math.Floor(AvailableCapacity / converter.Props.ratio) * converter.Props.ratio);
+                        float flooredCapacity = Mathf.Floor(AvailableCapacity / converter.Props.ratio) * converter.Props.ratio;
 
                         if (def.convertAmount > 0)
                             resourceCanAdd = Mathf.Min(resourceToAdd, flooredCapacity, def.convertAmount);
