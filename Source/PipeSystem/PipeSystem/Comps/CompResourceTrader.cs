@@ -212,11 +212,11 @@ namespace PipeSystem
             PipeSystemDebug.Message($"Received comp signal: {signal}");
             switch (signal)
             {
-                case "FlickedOff":
-                case "ScheduledOff":
-                case "Breakdown":
-                case "RanOutOfFuel":
-                case "PowerTurnedOff":
+                case CompFlickable.FlickedOffSignal:
+                case CompSchedule.ScheduledOffSignal:
+                case CompBreakdownable.BreakdownSignal:
+                case CompRefuelable.RanOutOfFuelSignal:
+                case CompPowerTrader.PowerTurnedOffSignal:
                     ResourceOn = false;
                     return;
             }

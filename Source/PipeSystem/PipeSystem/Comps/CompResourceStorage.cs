@@ -276,7 +276,7 @@ namespace PipeSystem
         /// </summary>
         public override void ReceiveCompSignal(string signal)
         {
-            if (signal == "Breakdown") // If the parent break down, we set the amount stored to 0
+            if (signal == CompBreakdownable.BreakdownSignal) // If the parent break down, we set the amount stored to 0
                 amountStored = 0f;
         }
 
