@@ -12,6 +12,8 @@ namespace PipeSystem
         public bool resourceOffOverlay = true;
         // If true, the consumption/production will be disabled (to be handled manually), but its value will still be included in the network stats.
         public bool visualOnlyConsumption = false;
+        // If true, the trader's PowerTrader power usage will be changed to its idle power consumption when refuelable comp is empty.
+        public bool lowPowerWhenRefuelableEmpty = false;
 
         // Producer configs
         // If true, the producer's PowerTrader power usage will be changed to its idle power consumption when all storages are full.
@@ -21,6 +23,12 @@ namespace PipeSystem
 
         private string nameCapitalized;
         private string nameLowered;
+
+        /// <summary>
+        /// Determines if a producer/consumer ever has a low power mode.
+        /// This uses value provided by <see cref="InitializeEverHasLowPowerMode"/>, cached during <see cref="ResolveReferences"/> call.
+        /// </summary>
+        public bool EverHasLowPowerMode { get; private set; }
 
         public CompProperties_ResourceTrader()
         {
@@ -32,6 +40,8 @@ namespace PipeSystem
             base.ResolveReferences(parentDef);
             nameCapitalized = Resource.name.CapitalizeFirst();
             nameLowered = Resource.name.ToLower();
+
+            EverHasLowPowerMode = InitializeEverHasLowPowerMode(parentDef);
         }
 
         public override IEnumerable<StatDrawEntry> SpecialDisplayStats(StatRequest req)
@@ -65,6 +75,34 @@ namespace PipeSystem
                                                "PipeSystem_ProductionExplained".Translate(nameLowered, nameLowered),
                                                5500);
             }
+        }
+
+        /// <summary>
+        /// Provides the value for <see cref="EverHasLowPowerMode"/> property.
+        /// </summary>
+        /// <param name="parentDef">The parent def of this comp props.</param>
+        /// <returns>The value that <see cref="EverHasLowPowerMode"/> will be set to.</returns>
+        protected virtual bool InitializeEverHasLowPowerMode(ThingDef parentDef)
+        {
+            // Can't have low power mode when there's no power trader
+            if (!parentDef.HasComp<CompPowerTrader>())
+                return false;
+
+            // Producer conditions
+            if (consumptionPerTick < 0f)
+            {
+                if (producerLowPowerWhenStorageFull)
+                    return true;
+            }
+
+            // Currently, no consumer-only conditions
+
+            // Universal checks
+            if (lowPowerWhenRefuelableEmpty && parentDef.HasComp<CompRefuelable>())
+                return true;
+
+            // None of the checks passed
+            return false;
         }
     }
 }

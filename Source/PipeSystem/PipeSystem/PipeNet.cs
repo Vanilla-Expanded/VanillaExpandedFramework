@@ -34,7 +34,7 @@ namespace PipeSystem
         public bool receiversDirty;
         public bool nextTickRDirty;
         public bool producersDirty;
-        public bool producersWithLowPowerModeDirty;
+        public bool resourceTradersWithLowPowerModeDirty;
 
         internal List<CompResourceStorage> markedForTransfer = new List<CompResourceStorage>();
 
@@ -42,7 +42,7 @@ namespace PipeSystem
         protected readonly List<CompResourceTrader> receiversOff = new List<CompResourceTrader>();
         protected readonly List<CompResourceTrader> producersOn = new List<CompResourceTrader>();
         protected readonly List<CompResourceTrader> producersOff = new List<CompResourceTrader>();
-        protected readonly List<CompResourceTrader> producersWithLowPowerMode = new List<CompResourceTrader>();
+        protected readonly List<CompResourceTrader> resourceTradersWithLowPowerMode = new List<CompResourceTrader>();
 
         public int NextTick { get; set; }
 
@@ -247,20 +247,19 @@ namespace PipeSystem
                 {
                     producers.Add(trader);
                     producersDirty = true;
-
-                    // Power trader may have not been initialized yet if the building was just constructed.
-                    if (trader.Props.producerLowPowerWhenStorageFull && trader.parent.GetComp<CompPowerTrader>()?.Props.idlePowerDraw >= 0f)
-                    {
-                        producersWithLowPowerMode.Add(trader);
-                        // When setting up the pipe net, we can't look up the capacity since there's possibly still some storage tanks left to register.
-                        // Instead of updating power draw instantly, we'll need to do it during ticking.
-                        producersWithLowPowerModeDirty = true;
-                    }
                 }
                 else if (trader.Consumption >= 0f)
                 {
                     receivers.Add(trader);
                     receiversDirty = true;
+                }
+
+                if (trader.Props.EverHasLowPowerMode)
+                {
+                    resourceTradersWithLowPowerMode.Add(trader);
+                    // When setting up the pipe net, we can't look up the capacity since there's possibly still some storage tanks left to register.
+                    // Instead of updating power draw instantly, we'll need to do it during ticking.
+                    resourceTradersWithLowPowerModeDirty = true;
                 }
             }
             else if (comp is CompResourceStorage storage)
@@ -315,15 +314,15 @@ namespace PipeSystem
                 {
                     producers.Remove(trader);
                     producersDirty = true;
-
-                    if (trader.Props.producerLowPowerWhenStorageFull)
-                        producersWithLowPowerMode.Remove(trader);
                 }
                 else if (trader.Consumption > 0f)
                 {
                     receivers.Remove(trader);
                     receiversDirty = true;
                 }
+
+                if (trader.Props.EverHasLowPowerMode)
+                    resourceTradersWithLowPowerMode.Remove(trader);
             }
             else if (comp is CompResourceStorage storage)
             {
@@ -482,19 +481,20 @@ namespace PipeSystem
             }
 
             var currentCapacity = AvailableCapacity;
+            AvailableCapacityLastTick = currentCapacity;
             // If the current capacity is 0 or was 0 (but not both at the same time), go through the producers and update them.
             // We only care if we filled the storages to full, or used them up and they're no longer full
-            if (producersWithLowPowerModeDirty || (currentCapacity <= 0 ^ AvailableCapacityLastTick <= 0))
+            if (resourceTradersWithLowPowerModeDirty || (currentCapacity <= 0 ^ AvailableCapacityLastTick <= 0))
             {
-                for (var i = 0; i < producersWithLowPowerMode.Count; i++)
+                for (var i = 0; i < resourceTradersWithLowPowerMode.Count; i++)
                 {
-                    var powerComp = producersWithLowPowerMode[i].powerComp;
-                    powerComp.PowerOutput = currentCapacity <= 0f ? powerComp.Props.idlePowerDraw : powerComp.Props.PowerConsumption;
+                    var lowPowerModeTrader = resourceTradersWithLowPowerMode[i];
+                    var powerComp = lowPowerModeTrader.powerComp;
+                    powerComp.PowerOutput = lowPowerModeTrader.IsLowPowerMode ? powerComp.Props.idlePowerDraw : powerComp.Props.PowerConsumption;
                 }
 
-                producersWithLowPowerModeDirty = false;
+                resourceTradersWithLowPowerModeDirty = false;
             }
-            AvailableCapacityLastTick = currentCapacity;
         }
 
         /// <summary>
@@ -745,7 +745,7 @@ namespace PipeSystem
         /// </summary>
         public virtual void PostMake()
         {
-            producersWithLowPowerModeDirty = true;
+            resourceTradersWithLowPowerModeDirty = true;
         }
 
         /// <summary>

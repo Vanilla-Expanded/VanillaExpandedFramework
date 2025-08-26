@@ -76,6 +76,31 @@ namespace PipeSystem
         }
 
         /// <summary>
+        /// If the trader should currently be in a low power mode. Assumes that <see cref="CompProperties_ResourceTrader.EverHasLowPowerMode"/> is true.
+        /// </summary>
+        public virtual bool IsLowPowerMode
+        {
+            get
+            {
+                // Producer conditions
+                if (Consumption < 0f)
+                {
+                    if (Props.producerLowPowerWhenStorageFull && PipeNet.AvailableCapacityLastTick <= 0f)
+                        return true;
+                }
+
+                // Currently, no consumer-only conditions
+
+                // Universal checks
+                if (Props.lowPowerWhenRefuelableEmpty && compRefuelable is { Fuel: <= 0f })
+                    return true;
+
+                // None of the checks passed
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Get mapComp, setup overlay and sustainer
         /// </summary>
         public override void PostSpawnSetup(bool respawningAfterLoad)
@@ -228,6 +253,9 @@ namespace PipeSystem
                 PipeNet.receiversDirty = true;
                 PipeNet.producersDirty = true;
             }
+
+            if (Props.EverHasLowPowerMode)
+                powerComp.PowerOutput = IsLowPowerMode ? powerComp.Props.idlePowerDraw : powerComp.Props.PowerConsumption;
         }
 
         /// <summary>
