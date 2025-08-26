@@ -153,6 +153,8 @@ namespace PipeSystem
                 yield return $"ProcessDef cannot have empty or null <ingredients>";
             if (results.NullOrEmpty())
                 yield return $"ProcessDef cannot have empty or null <results>";
+            if (autoGrabFromHoppers && autoInputSlots.NullOrEmpty())
+                yield return $"ProcessDef with <autoGrabFromHoppers> set to true cannot have empty or null <autoInputSlots>";
 
             for (int i = 0; i < results.Count; i++)
             {

@@ -421,7 +421,7 @@ namespace PipeSystem
                     owner.AddFromNet(associatedComp.PipeNet);
                 }
                 // Set awaiting
-                if (!Def.autoGrabFromHoppers)
+                if (!Def.autoGrabFromHoppers || Def.autoInputSlots.NullOrEmpty())
                 {
                     advancedProcessorsManager.SetAwaitingIngredients(advancedProcessor);
                 }
@@ -509,7 +509,11 @@ namespace PipeSystem
         {
             foreach (IntVec3 slot in Def.autoInputSlots)
             {
-                List<Thing> thingList = (parent.Position + slot.RotatedBy(parent.Rotation)).GetThingList(parent.Map);
+                IntVec3 pos = parent.Position + slot.RotatedBy(parent.Rotation);
+                if (!slot.InBounds(parent.Map))
+                    continue;
+
+                List<Thing> thingList = pos.GetThingList(parent.Map);
                 for (int j = 0; j < thingList.Count; j++)
                 {
                     Thing thingToCheck = thingList[j];
