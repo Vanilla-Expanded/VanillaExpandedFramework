@@ -481,16 +481,16 @@ namespace PipeSystem
             }
 
             var currentCapacity = AvailableCapacity;
+            var previousCapacity = AvailableCapacityLastTick;
             AvailableCapacityLastTick = currentCapacity;
             // If the current capacity is 0 or was 0 (but not both at the same time), go through the producers and update them.
             // We only care if we filled the storages to full, or used them up and they're no longer full
-            if (resourceTradersWithLowPowerModeDirty || (currentCapacity <= 0 ^ AvailableCapacityLastTick <= 0))
+            if (resourceTradersWithLowPowerModeDirty || (currentCapacity <= 0 ^ previousCapacity <= 0))
             {
                 for (var i = 0; i < resourceTradersWithLowPowerMode.Count; i++)
                 {
                     var lowPowerModeTrader = resourceTradersWithLowPowerMode[i];
-                    var powerComp = lowPowerModeTrader.powerComp;
-                    powerComp.PowerOutput = lowPowerModeTrader.IsLowPowerMode ? powerComp.Props.idlePowerDraw : powerComp.Props.PowerConsumption;
+                    lowPowerModeTrader.LowPowerModeOn = resourceTradersWithLowPowerMode[i].ShouldBeLowPowerMode;
                 }
 
                 resourceTradersWithLowPowerModeDirty = false;

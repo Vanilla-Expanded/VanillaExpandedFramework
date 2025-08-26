@@ -12,6 +12,8 @@ namespace PipeSystem
         public bool resourceOffOverlay = true;
         // If true, the consumption/production will be disabled (to be handled manually), but its value will still be included in the network stats.
         public bool visualOnlyConsumption = false;
+        // If true, the resource trader will handle ticking refuelable itself, which will only happen if the resource trader is actually used. You need to set "externalTicking" for associated refuelable to true.
+        public bool handleCompRefuelableTicking = false;
         // If true, the trader's PowerTrader power usage will be changed to its idle power consumption when refuelable comp is empty.
         public bool lowPowerWhenRefuelableEmpty = false;
 
@@ -103,6 +105,21 @@ namespace PipeSystem
 
             // None of the checks passed
             return false;
+        }
+
+        public override IEnumerable<string> ConfigErrors(ThingDef parentDef)
+        {
+            foreach (var error in base.ConfigErrors(parentDef))
+                yield return error;
+
+            if (handleCompRefuelableTicking)
+            {
+                var props = parentDef.GetCompProperties<CompProperties_Refuelable>();
+                if (props == null)
+                    yield return $"{nameof(CompProperties_ResourceTrader)} has {nameof(handleCompRefuelableTicking)} set to true, but has no associated refuelable comp.";
+                else if (!props.externalTicking)
+                    yield return $"{nameof(CompProperties_ResourceTrader)} has {nameof(handleCompRefuelableTicking)} set to true, but its associated refuelable comp has {nameof(CompProperties_Refuelable.externalTicking)} set to false.";
+            }
         }
     }
 }

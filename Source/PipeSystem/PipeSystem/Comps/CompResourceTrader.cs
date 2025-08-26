@@ -14,6 +14,7 @@ namespace PipeSystem
         public new CompProperties_ResourceTrader Props => (CompProperties_ResourceTrader)props;
 
         private bool resourceOnInt;
+        private bool lowPowerModeOnInt;
         private Sustainer sustainerResourceOn;
 
         protected CompFlickable compFlickable;
@@ -76,9 +77,25 @@ namespace PipeSystem
         }
 
         /// <summary>
-        /// If the trader should currently be in a low power mode. Assumes that <see cref="CompProperties_ResourceTrader.EverHasLowPowerMode"/> is true.
+        /// If the trader should currently be in a low power mode. Cached from 
         /// </summary>
-        public virtual bool IsLowPowerMode
+        public bool LowPowerModeOn
+        {
+            get
+            {
+                return lowPowerModeOnInt;
+            }
+            set
+            {
+                if (!Props.EverHasLowPowerMode)
+                    return;
+
+                powerComp.PowerOutput = value ? powerComp.Props.idlePowerDraw : powerComp.Props.PowerConsumption;
+                lowPowerModeOnInt = value;
+            }
+        }
+
+        public virtual bool ShouldBeLowPowerMode
         {
             get
             {
@@ -198,6 +215,14 @@ namespace PipeSystem
         public override void CompTick()
         {
             base.CompTick();
+
+            // If we're handling the refueable comp we need to drain the fuel ourselves
+            if (Props.handleCompRefuelableTicking && ResourceOn && !LowPowerModeOn && !compRefuelable.Props.consumeFuelOnlyWhenUsed && (compFlickable == null || compFlickable.SwitchIsOn) && (!compRefuelable.Props.consumeFuelOnlyWhenPowered || powerComp is { PowerOn: true }))
+                compRefuelable.ConsumeFuel(compRefuelable.Props.fuelConsumptionRate / 60000f); // CompRefuelable.ConsumptionRatePerTick is private
+            // If we're handling the refuelable comp's ticking, we need to make sure to drain its fuel during rain
+            if (Props.handleCompRefuelableTicking && compRefuelable.Props.fuelConsumptionPerTickInRain > 0f && parent.Spawned && parent.Map.weatherManager.RainRate > 0.4f && !parent.Map.roofGrid.Roofed(parent.Position))
+                compRefuelable.ConsumeFuel(compRefuelable.Props.fuelConsumptionPerTickInRain);
+
             if (Props.soundAmbientReceivingResource == null)
                 return;
 
@@ -254,8 +279,7 @@ namespace PipeSystem
                 PipeNet.producersDirty = true;
             }
 
-            if (Props.EverHasLowPowerMode)
-                powerComp.PowerOutput = IsLowPowerMode ? powerComp.Props.idlePowerDraw : powerComp.Props.PowerConsumption;
+            LowPowerModeOn = ShouldBeLowPowerMode;
         }
 
         /// <summary>
