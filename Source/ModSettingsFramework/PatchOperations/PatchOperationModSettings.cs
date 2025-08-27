@@ -6,6 +6,7 @@ using Verse;
 
 namespace ModSettingsFramework
 {
+    [HotSwappable]
     public abstract class PatchOperationModSettings : PatchOperation
     {
         public int order;
@@ -113,10 +114,15 @@ namespace ModSettingsFramework
 
         protected void CheckboxLabeled(Listing_Standard listingStandard, string optionLabel, ref bool field)
         {
-            Rect rect = new Rect(listingStandard.curX, listingStandard.curY, listingStandard.ColumnWidth, Text.LineHeight);
+            Rect rect = new Rect(listingStandard.curX, listingStandard.curY, 
+                listingStandard.ColumnWidth, Text.LineHeight);
             lineNumber++;
+            rect.y -= 3;
+            rect.height += 6;
             if (lineNumber % 2 != 0)
+            {
                 Widgets.DrawLightHighlight(rect);
+            }
             Widgets.DrawHighlightIfMouseover(rect);
             listingStandard.CheckboxLabeled(optionLabel, ref field);
         }
