@@ -464,6 +464,11 @@
     <Compile Include="Buildings\MapComponents\MapComponent_InteractableBuildingsInMap.cs" />
     <Compile Include="Buildings\Misc\RecipeInheritance.cs" />
     <Compile Include="Cooking\IngredientValueGetters\IngredientValueGetter_NutritionWithExtraIngredient.cs" />
+    <Compile Include="Factions\Defs\ContrabandDef.cs" />
+    <Compile Include="Factions\GameComponents\GameComponent_FactionGoodwillImpactManager.cs" />
+    <Compile Include="Factions\Harmony\TradeDeal_TryExecute_Patch.cs" />
+    <Compile Include="Factions\Harmony\Transferable_CanAdjustBy_Patch.cs" />
+    <Compile Include="Factions\Misc\GoodwillImpactDelayed.cs" />
     <Compile Include="Factions\ScenParts\ScenPart_ForcedFactionGoodwill.cs" />
     <Compile Include="Factions\WorldComponents\FactionGoodwillModifier.cs" />
     <Compile Include="Factions\WorldComponents\NewFactionSpawningState.cs" />
