@@ -64,8 +64,10 @@ public class ContrabandDef: Def
         // Multiplier to the impact. Defaults to -1 so that impact is negative
         public float impactMultiplier = -1f;
         
+        // Days until the sale/gifting is "discovered" by the faction
         public FloatRange daysToImpact = new(7f, 14f);
         
+        // The tick at which to trigger discovery
         public int ImpactInTicks => Find.TickManager.TicksGame + 60 + (int)(GenDate.TicksPerDay * daysToImpact.RandomInRange);
         
         public override string ToString()
@@ -178,9 +180,14 @@ public class ContrabandDef: Def
             return count > 0;
         }
         
+        /// <summary>
+        // check that this thing isn't contraband either through a direct def match, or category match
+        /// </summary>
+        /// <param name="thingDef">The thingdef to check</param>
+        /// <returns>true if contraband</returns>
         public bool IsThingDefDirectlyContraband(ThingDef thingDef)
         {
-            return !things.NullOrEmpty() && things.Contains(thingDef);
+            return (!things.NullOrEmpty() && things.Contains(thingDef)) || (!thingCategories.NullOrEmpty() && !thingDef.thingCategories.NullOrEmpty() && thingCategories.Any(tc=>thingDef.thingCategories.Contains(tc)));
         }
 
         /// <summary>

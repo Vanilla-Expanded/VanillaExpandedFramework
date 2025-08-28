@@ -20,6 +20,7 @@ public static class TradeDeal_TryExecute_Patch
         public ThingDef thing; 
         public override string ToString()
         {
+            // For debugging
             return $"Found contraband {count} of {contrabandDef} : thing = {thing} | chemical = {chemical}";
         }
     }
@@ -29,6 +30,7 @@ public static class TradeDeal_TryExecute_Patch
         __state = [];
         foreach (Tradeable tradeable in ___tradeables)
         {
+            // check all the tradables for contraband
             tradeable.ThingDef.GetContrabandMaterialCount(ref __state, tradeable.CountToTransferToDestination);
         }
     }
@@ -67,6 +69,12 @@ public static class TradeDeal_TryExecute_Patch
         }
     }
 
+    /// <summary>
+    /// Builds the warning message based on the thing or chemical, and if it's gifted or sold
+    /// </summary>
+    /// <param name="def">The relevant contraband</param>
+    /// <param name="isGifting">Wether the operation is a gift or sale</param>
+    /// <returns>The list of messages to show</returns>
     public static List<TaggedString> GetContrabandWarningMessages(this ThingDef def, bool isGifting)
     {
         List<TaggedString> messages = new List<TaggedString>();
@@ -92,11 +100,14 @@ public static class TradeDeal_TryExecute_Patch
                 warningKey = isGifting ? contrabandDef.giftIllegalFactionWarningKey : contrabandDef.sellIllegalWarningKey;
             }
             
-            foreach (FactionDef faction in contrabandDef.factions)
+            foreach (FactionDef factionDef in contrabandDef.factions)
             {
+                Faction faction = Find.FactionManager.FirstFactionOfDef(factionDef);
+                if (faction == null) continue;
+                var str = faction.Named("FACTION");
                 messages.Add(warningKey.Translate(
                     contrabandThingDef.Named("ILLEGALTHING"),
-                    faction.Named("FACTION"),
+                    str,
                     TradeSession.trader.Faction.Named("ILLEGALFACTION")));
             }
         }
@@ -108,6 +119,7 @@ public static class TradeDeal_TryExecute_Patch
     {
         if (__state.NullOrEmpty() || !__result) return;
 
+        // Check through the contraband and process
         foreach (FoundContraband contraband in __state)
         {
             bool isContrabandForTraderFaction = contraband.contrabandDef.factions.Contains(TradeSession.trader.Faction.def);
@@ -118,6 +130,10 @@ public static class TradeDeal_TryExecute_Patch
         }
     }
 
+    /// <summary>
+    /// Processes contraband that has been discovered during a trade, generating appropriate faction impacts and notifications.
+    /// </summary>
+    /// <param name="contraband">The contraband details</param>
     private static void ProcessCaughtContraband(FoundContraband contraband)
     {
         // get the faction that will discover the contraband exchange
@@ -126,7 +142,7 @@ public static class TradeDeal_TryExecute_Patch
         
         Def contrabandThingDef = contraband.thing != null ? contraband.thing : contraband.chemical;
         
-        bool tradedToIllegalFaction = contraband.contrabandDef.illegalFactions.Contains(TradeSession.trader.Faction.def);
+        bool tradedToIllegalFaction = contraband.contrabandDef.illegalFactions?.Contains(TradeSession.trader.Faction.def) ?? false;
         HistoryEventDef historyEvent = TradeSession.giftMode
             ? contraband.contrabandDef.giftedHistoryEvent
             : contraband.contrabandDef.soldHistoryEvent;
@@ -149,6 +165,14 @@ public static class TradeDeal_TryExecute_Patch
             });
     }
 
+    /// <summary>
+    /// Generates the letter description for the contraband
+    /// </summary>
+    /// <param name="contraband"></param>
+    /// <param name="affectedFaction">The faction that finds it illegal</param>
+    /// <param name="contrabandThingDef">The contraband thing</param>
+    /// <param name="tradedToIllegalFaction">If the trade is to an illegal faction</param>
+    /// <returns></returns>
     private static string GenerateLetterDescription(FoundContraband contraband, Faction affectedFaction, 
                                                     Def contrabandThingDef, bool tradedToIllegalFaction)
     {
