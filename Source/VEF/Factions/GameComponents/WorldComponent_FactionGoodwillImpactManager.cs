@@ -1,19 +1,16 @@
 ﻿using System.Collections.Generic;
+using RimWorld.Planet;
 using Verse;
 
 namespace VEF.Factions.GameComponents;
 
-public class GameComponent_FactionGoodwillImpactManager : GameComponent
+public class WorldComponent_FactionGoodwillImpactManager(World world) : WorldComponent(world)
 {
-    public List<GoodwillImpactDelayed> goodwillImpacts = new();
+    protected List<GoodwillImpactDelayed> goodwillImpacts = new();
 
-    public GameComponent_FactionGoodwillImpactManager(Game game)
+    public override void WorldComponentTick()
     {
-    }
-
-    public override void GameComponentTick()
-    {
-        base.GameComponentTick();
+        base.WorldComponentTick();
         for (int i = goodwillImpacts.Count - 1; i >= 0; i--)
         {
             GoodwillImpactDelayed goodwillImpact = goodwillImpacts[i];
@@ -23,6 +20,11 @@ public class GameComponent_FactionGoodwillImpactManager : GameComponent
                 goodwillImpacts.RemoveAt(i);
             }
         }
+    }
+
+    public void ImpactFactionGoodwill(GoodwillImpactDelayed goodwillImpact)
+    {
+        goodwillImpacts.Add(goodwillImpact);
     }
 
     public override void ExposeData()

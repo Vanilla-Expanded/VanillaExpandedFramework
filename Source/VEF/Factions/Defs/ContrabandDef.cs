@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -8,23 +9,106 @@ namespace VEF.Factions;
 
 public class ContrabandDef: Def
 {
+        // ThingDefs that are illegal to sell
         public List<ThingDef> things;
+        
+        // Chemicals that are illegal to sell
         public List<ChemicalDef> chemicals;
+        
+        // Categories of things that are illegal to sell
+        public List<ThingCategoryDef> thingCategories;
+        
+        // Historical event created when contraband is gifted
         public HistoryEventDef giftedHistoryEvent;
+        
+        // Historical event created with contraband is sold
         public HistoryEventDef soldHistoryEvent;
+        
+        // Factions considering the trade/exchange of these goods illegal
         public List<FactionDef> factions;
+        
+        // Factions considered illegal to trade with
+        public List<FactionDef> illegalFactions;
 
-        public string giftWarning = "Gifting {ILLEGALTHING_label} is against {FACTION_name} law. This may or may not affect your relations with them in the future";
-        public string sellWarning = "Selling {ILLEGALTHING_label} is against {FACTION_name} law. This may or may not affect your relations with them in the future";
+        // Warning message when selecting something to be gifted that matches. Gets passed a def as `ILLEGALTHING`, and a faction as `FACTION` 
+        public string giftWarningKey = "VEF.Factions.Contraband_Booze_GiftWarning";
+    
+        // Warning message when selecting something to be sold that matches. Gets passed a def as `ILLEGALTHING`, and a faction as `FACTION`
+        public string sellWarningKey = "VEF.Factions.Contraband_Booze_SellWarning";
 
-        public string letterLabel = "{FACTION_name} angered";
-        public string letterDescGift = "{FACTION_name} caught wind that you have been gifting {ILLEGALTHING_label} behind their back. They consider it to be against the law, and your relations have degraded";
-        public string letterDescSold = "{FACTION_name} caught wind that you have been selling {ILLEGALTHING_label} behind their back. They consider it to be against the law, and your relations have degraded";
+        
+        // Warning message when selecting something to be gifted that matches when gifted to an illegal faction. Gets passed a def as `ILLEGALTHING`, a faction as `FACTION`, and an illegal faction as `ILLEGALFACTION`  
+        public string giftIllegalFactionWarningKey = "VEF.Factions.Contraband_Booze_GiftIllegalWarning";
+    
+        // Warning message when selecting something to be sold that matches when sold to an illegal faction. Gets passed a def as `ILLEGALTHING`, a faction as `FACTION`, and an illegal faction as `ILLEGALFACTION`
+        public string sellIllegalWarningKey = "VEF.Factions.Contraband_Booze_SellIllegalWarning";
 
-        public string relationInfo = "Goodwill with {FACTION_name} is now {1}. (Reduced by {2})";
+        // Letter Label for the letter sent when goodwill is impacted. Gets passed the faction as `FACTION`
+        public string letterLabelKey = "VEF.Factions.Contraband_Booze_LetterLabel";
+        // Letter Description for the letter sent when goodwill is impacted through gifting. Gets passed a def as `ILLEGALTHING`, and a faction as `FACTION`
+        public string letterDescGiftKey = "VEF.Factions.Contraband_Booze_LetterDescGift";
+        // Letter Description for the letter sent when goodwill is impacted through trading. Gets passed a def as `ILLEGALTHING`, and a faction as `FACTION`
+        public string letterDescSoldKey = "VEF.Factions.Contraband_Booze_LetterDescSold";
+        
+        // Letter Description for the letter sent when goodwill is impacted through gifting to an illegal faction. Gets passed a def as `ILLEGALTHING`, a faction as `FACTION`, and an illegal faction as `ILLEGALFACTION`
+        public string letterDescGifIllegalFactionKey = "VEF.Factions.Contraband_Booze_LetterDescIllegalGift";
+        // Letter Description for the letter sent when goodwill is impacted through trading to an illegal faction. Gets passed a def as `ILLEGALTHING`, a faction as `FACTION`, and an illegal faction as `ILLEGALFACTION`
+        public string letterDescSoldIllegalFactionKey = "VEF.Factions.Contraband_Booze_LetterDescIllegalSold";
+        
+        // Extra info for the letter describing how relations are impacted. Gets passed the faction as `FACTION`, new goodwill as `{1}` and the change as `{2}` 
+        public string relationInfoKey = "VEF.Factions.Contraband_Booze_RelationInfo";
 
+        // The chance for the trade/gift to be discovered
         public float chanceToGetCaught = 0.5f;
 
+        // Multiplier to the impact. Defaults to -1 so that impact is negative
+        public float impactMultiplier = -1f;
+        
+        public FloatRange daysToImpact = new(7f, 14f);
+        
+        public int ImpactInTicks => Find.TickManager.TicksGame + 60 + (int)(GenDate.TicksPerDay * daysToImpact.RandomInRange);
+        
+        public override string ToString()
+        {
+            // For debugging
+            StringBuilder sb = new StringBuilder(base.ToString());
+            sb.AppendLine();
+            if (!things.NullOrEmpty())
+            {
+                sb.AppendLine($"Things: {things.Count}");
+                foreach (var thing in things)
+                {
+                    sb.AppendLine($" - {thing.label}");
+                }
+            }
+            if (!chemicals.NullOrEmpty())
+            {
+                sb.AppendLine($"Chemicals: {chemicals.Count}");
+                foreach (var chemical in chemicals)
+                {
+                    sb.AppendLine($" - {chemical.label}");
+                }
+            }
+            sb.AppendLine($"Gifted History Event: {giftedHistoryEvent}");
+            sb.AppendLine($"Sold History Event: {soldHistoryEvent}");
+            if (!factions.NullOrEmpty())
+            {
+                sb.AppendLine($"Factions: {factions.Count}");
+                foreach (var faction in factions)
+                {
+                    sb.AppendLine($" - {faction.label}");
+                }
+            }
+            sb.AppendLine($"Gift Warning: {giftWarningKey}");
+            sb.AppendLine($"Sell Warning: {sellWarningKey}");
+            sb.AppendLine($"Letter Label: {letterLabelKey}");
+            sb.AppendLine($"Letter Description Gift: {letterDescGiftKey}");
+            sb.AppendLine($"Letter Description Sold: {letterDescSoldKey}");
+            sb.AppendLine($"Relation Info: {relationInfoKey}");
+            sb.AppendLine($"Chance To Get Caught: {chanceToGetCaught}");
+            
+            return sb.ToString();
+        }
 
         /// <summary>
         /// Checks if a ThingDef is considered contraband. Checks the thing itself, and drug comps, and ingredients/costs.
