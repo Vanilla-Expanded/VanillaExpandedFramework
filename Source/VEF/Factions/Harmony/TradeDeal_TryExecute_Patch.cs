@@ -161,7 +161,8 @@ public static class TradeDeal_TryExecute_Patch
                 impactInTicks = contraband.contrabandDef.ImpactInTicks,
                 letterLabel = letterLabel,
                 letterDesc = letterDesc,
-                relationInfoKey = contraband.contrabandDef.relationInfoKey
+                relationInfoKey = contraband.contrabandDef.relationInfoKey,
+                letterType = contraband.contrabandDef.letterType
             });
     }
 

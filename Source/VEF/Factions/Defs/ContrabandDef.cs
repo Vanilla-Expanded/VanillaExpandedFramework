@@ -43,6 +43,9 @@ public class ContrabandDef: Def
         // Warning message when selecting something to be sold that matches when sold to an illegal faction. Gets passed a def as `ILLEGALTHING`, a faction as `FACTION`, and an illegal faction as `ILLEGALFACTION`
         public string sellIllegalWarningKey = "VEF.Factions.Contraband_Booze_SellIllegalWarning";
 
+        // the type of letter to send
+        public LetterDef letterType = LetterDefOf.ThreatSmall;
+        
         // Letter Label for the letter sent when goodwill is impacted. Gets passed the faction as `FACTION`
         public string letterLabelKey = "VEF.Factions.Contraband_Booze_LetterLabel";
         // Letter Description for the letter sent when goodwill is impacted through gifting. Gets passed a def as `ILLEGALTHING`, and a faction as `FACTION`
@@ -213,5 +216,21 @@ public class ContrabandDef: Def
             }
 
             return false;
+        }
+
+        public override IEnumerable<string> ConfigErrors()
+        {
+            foreach (var error in base.ConfigErrors())
+                yield return error;
+
+            if (factions.NullOrEmpty())
+            {
+                yield return $"No factions targetted in ContrabandDef {defName}";
+            }
+
+            if (illegalFactions.NullOrEmpty() && chemicals.NullOrEmpty() && thingCategories.NullOrEmpty())
+            {
+                yield return $"ContrabandDef {defName} has no illegal items defined";
+            }
         }
 }

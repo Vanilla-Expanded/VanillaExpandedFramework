@@ -12,6 +12,8 @@
         public string letterLabel;
         public string letterDesc;
         public string relationInfoKey;
+        public LetterDef letterType;
+        
         public void DoImpact()
         {
             Faction.OfPlayer.TryAffectGoodwillWith(factionToImpact, goodwillImpact, true, true, historyEvent);
@@ -20,7 +22,7 @@
                 letterDesc += "\n\n" + relationInfoKey.Translate(factionToImpact.Named("FACTION"),
                     Faction.OfPlayer.GoodwillWith(factionToImpact), goodwillImpact);
             }
-            Find.LetterStack.ReceiveLetter(letterLabel, letterDesc, LetterDefOf.ThreatSmall, null, relatedFaction: factionToImpact);
+            Find.LetterStack.ReceiveLetter(letterLabel, letterDesc, letterType, null, relatedFaction: factionToImpact);
         }
         public void ExposeData()
         {
@@ -31,6 +33,7 @@
             Scribe_Values.Look(ref relationInfoKey, "relationInfoKey");
             Scribe_References.Look(ref factionToImpact, "factionToImpact");
             Scribe_Defs.Look(ref historyEvent, "historyEvent");
+            Scribe_Defs.Look(ref letterType, "letterType");
         }
     }
 }
