@@ -17,8 +17,7 @@ public static class TradeDeal_TryExecute_Patch
         public int count = 0;
         public ContrabandDef contrabandDef;
         public ChemicalDef chemical;
-        public ThingDef thing;
-
+        public ThingDef thing; 
         public override string ToString()
         {
             return $"Found contraband {count} of {contrabandDef} : thing = {thing} | chemical = {chemical}";
@@ -35,117 +34,70 @@ public static class TradeDeal_TryExecute_Patch
     }
 
     /// <summary>
-    /// Calculates the count of contraband materials for a given ThingDef and updates the trade state accordingly.
+    /// Calculates the count of contraband materials for a given ThingDef and updates the contraband list.
     /// </summary>
     /// <param name="def">The ThingDef to check for contraband materials</param>
-    /// <param name="state">List of trade states to update with contraband material counts</param>
-    /// <param name="countToTransferToDestination">Number of items being transferred</param>
-    public static void GetContrabandMaterialCount(this ThingDef def, ref List<FoundContraband> state,
-        int countToTransferToDestination)
+    /// <param name="contrabandList">List of contraband to update with material counts</param>
+    /// <param name="countToTransfer">Number of items being transferred</param>
+    public static void GetContrabandMaterialCount(this ThingDef def, ref List<FoundContraband> contrabandList, int countToTransfer)
     {
-        if (def != null)
-        {
-            foreach (ContrabandDef contrabandDef in DefDatabase<ContrabandDef>.AllDefs)
-            {
-                if (contrabandDef.IsThingDefContraband(def, out int count, out ThingDef thingDef, out var chemicalDef))
-                {
-                    var ts = state.FirstOrFallback(
-                        t => t.contrabandDef == contrabandDef && t.thing == thingDef && t.chemical == chemicalDef,
-                        null);
-                    if (ts == null)
-                    {
-                        ts = new FoundContraband();
-                        ts.contrabandDef = contrabandDef;
-                        ts.thing = thingDef;
-                        ts.chemical = chemicalDef;
-                        state.Add(ts);
-                    }
+        if (def == null) return;
 
-                    ts.count += count * countToTransferToDestination;
-                }
+        foreach (ContrabandDef contrabandDef in DefDatabase<ContrabandDef>.AllDefs)
+        {
+            if (!contrabandDef.IsThingDefContraband(def, out int count, out ThingDef thingDef, out ChemicalDef chemicalDef))
+                continue;
+
+            var foundContraband = contrabandList.FirstOrFallback(
+                c => c.contrabandDef == contrabandDef && c.thing == thingDef && c.chemical == chemicalDef,
+                null);
+
+            if (foundContraband == null)
+            {
+                foundContraband = new FoundContraband
+                {
+                    contrabandDef = contrabandDef,
+                    thing = thingDef,
+                    chemical = chemicalDef
+                };
+                contrabandList.Add(foundContraband);
             }
+
+            foundContraband.count += count * countToTransfer;
         }
     }
 
-    public static List<TaggedString> GetGiftingMaterialMessages(this ThingDef def)
+    public static List<TaggedString> GetContrabandWarningMessages(this ThingDef def, bool isGifting)
     {
         List<TaggedString> messages = new List<TaggedString>();
+        if (def == null) return messages;
 
-        if (def != null)
+        foreach (ContrabandDef contrabandDef in DefDatabase<ContrabandDef>.AllDefs)
         {
-            foreach (ContrabandDef contrabandDef in DefDatabase<ContrabandDef>.AllDefs)
+            if (!contrabandDef.IsThingDefContraband(def, out int count, out ThingDef thingDef, out ChemicalDef chemicalDef))
+                continue;
+
+            Def contrabandThingDef = thingDef != null ? thingDef : chemicalDef;
+            bool isTradingWithIllegalFaction = !contrabandDef.illegalFactions.NullOrEmpty() && 
+                                               contrabandDef.illegalFactions.Contains(TradeSession.trader.Faction.def);
+
+            string warningKey = "";
+
+            if (contrabandDef.illegalFactions.NullOrEmpty())
             {
-                if (contrabandDef.illegalFactions.NullOrEmpty())
-                {
-                    if (contrabandDef.IsThingDefContraband(def, out int count, out ThingDef thingDef,
-                            out var chemicalDef))
-                    {
-                        Def contrabandThingDef = thingDef != null ? thingDef : chemicalDef;
-                        foreach (FactionDef faction in contrabandDef.factions)
-                        {
-                            messages.Add(contrabandDef.giftWarningKey.Translate(
-                                contrabandThingDef.Named("ILLEGALTHING"),
-                                faction.Named("FACTION")));
-                        }
-                    }
-                }else if (contrabandDef.illegalFactions.Contains(TradeSession.trader.Faction.def))
-                {
-                    if (contrabandDef.IsThingDefContraband(def, out int count, out ThingDef thingDef,
-                            out var chemicalDef))
-                    {
-                        Def contrabandThingDef = thingDef != null ? thingDef : chemicalDef;
-                        foreach (FactionDef faction in contrabandDef.factions)
-                        {
-                            messages.Add(contrabandDef.giftIllegalFactionWarningKey.Translate(
-                                contrabandThingDef.Named("ILLEGALTHING"),
-                                faction.Named("FACTION"),
-                                TradeSession.trader.Faction.Named("ILLEGALFACTION")));
-                        }
-                    }
-                }
+                warningKey = isGifting ? contrabandDef.giftWarningKey : contrabandDef.sellWarningKey;
             }
-        }
-
-        return messages;
-    }
-
-    public static List<TaggedString> GetSellingMaterialMessages(this ThingDef def)
-    {
-        List<TaggedString> messages = new List<TaggedString>();
-
-        if (def != null)
-        {
-            foreach (ContrabandDef contrabandDef in DefDatabase<ContrabandDef>.AllDefs)
+            else if (isTradingWithIllegalFaction)
             {
-                if (contrabandDef.illegalFactions.NullOrEmpty())
-                {
-                    if (contrabandDef.IsThingDefContraband(def, out int count, out ThingDef thingDef,
-                            out ChemicalDef chemicalDef))
-                    {
-                        Def contrabandThingDef = thingDef != null ? thingDef : chemicalDef;
-                        foreach (Faction faction in Find.FactionManager.AllFactions.Where(f =>
-                                     contrabandDef.factions.Contains(f.def)))
-                        {
-                            messages.Add(contrabandDef.sellWarningKey.Translate(
-                                contrabandThingDef.Named("ILLEGALTHING"),
-                                faction.Named("FACTION")));
-                        }
-                    }
-                }else if (contrabandDef.illegalFactions.Contains(TradeSession.trader.Faction.def))
-                {
-                    if (contrabandDef.IsThingDefContraband(def, out int count, out ThingDef thingDef,
-                            out var chemicalDef))
-                    {
-                        Def contrabandThingDef = thingDef != null ? thingDef : chemicalDef;
-                        foreach (FactionDef faction in contrabandDef.factions)
-                        {
-                            messages.Add(contrabandDef.sellIllegalWarningKey.Translate(
-                                contrabandThingDef.Named("ILLEGALTHING"),
-                                faction.Named("FACTION"), 
-                                TradeSession.trader.Faction.Named("ILLEGALFACTION")));
-                        }
-                    }
-                }
+                warningKey = isGifting ? contrabandDef.giftIllegalFactionWarningKey : contrabandDef.sellIllegalWarningKey;
+            }
+            
+            foreach (FactionDef faction in contrabandDef.factions)
+            {
+                messages.Add(warningKey.Translate(
+                    contrabandThingDef.Named("ILLEGALTHING"),
+                    faction.Named("FACTION"),
+                    TradeSession.trader.Faction.Named("ILLEGALFACTION")));
             }
         }
 
@@ -154,65 +106,73 @@ public static class TradeDeal_TryExecute_Patch
 
     public static void Postfix(List<FoundContraband> __state, bool __result)
     {
-        if (!__state.NullOrEmpty() && __result)
+        if (__state.NullOrEmpty() || !__result) return;
+
+        foreach (FoundContraband contraband in __state)
         {
-            foreach (FoundContraband tradeState in __state)
+            bool isContrabandForTraderFaction = contraband.contrabandDef.factions.Contains(TradeSession.trader.Faction.def);
+            if (!isContrabandForTraderFaction && Rand.Chance(contraband.contrabandDef.chanceToGetCaught))
             {
-                Log.Message(tradeState.ToString());
-                if (!tradeState.contrabandDef.factions.Contains(TradeSession.trader.Faction.def) &&
-                    Rand.Chance(tradeState.contrabandDef.chanceToGetCaught))
-                {
-                    FactionDef rand = tradeState.contrabandDef.factions.RandomElement();
-                    Faction faction = Find.FactionManager.FirstFactionOfDef(rand);
-                    Def contrabandThingDef = tradeState.thing != null ? tradeState.thing : tradeState.chemical;
-                    
-                    bool tradedToIllegalFaction = tradeState.contrabandDef.illegalFactions.Contains(TradeSession.trader.Faction.def);
-
-                    var historyEvent = TradeSession.giftMode
-                        ? tradeState.contrabandDef.giftedHistoryEvent
-                        : tradeState.contrabandDef.soldHistoryEvent;
-
-                    string letterLabel =
-                        tradeState.contrabandDef.letterLabelKey.Translate(faction.Named("FACTION"));
-                    string letterDesc = "";
-
-                    if (!tradedToIllegalFaction)
-                    {
-                        letterDesc = TradeSession.giftMode
-                            ? tradeState.contrabandDef.letterDescGiftKey.Translate(
-                                faction.Named("FACTION"),
-                                contrabandThingDef.Named("ILLEGALTHING"))
-                            : tradeState.contrabandDef.letterDescSoldKey.Translate(
-                                faction.Named("FACTION"),
-                                contrabandThingDef.Named("ILLEGALTHING"));
-                    }
-                    else
-                    {
-                        letterDesc = TradeSession.giftMode
-                            ? tradeState.contrabandDef.letterDescGifIllegalFactionKey.Translate(
-                                faction.Named("FACTION"),
-                                contrabandThingDef.Named("ILLEGALTHING"), 
-                                TradeSession.trader.Faction.Named("ILLEGALFACTION"))
-                            : tradeState.contrabandDef.letterDescSoldIllegalFactionKey.Translate(
-                                faction.Named("FACTION"),
-                                contrabandThingDef.Named("ILLEGALTHING"), 
-                                TradeSession.trader.Faction.Named("ILLEGALFACTION"));
-                    }
-                    
-
-                    Find.World.GetComponent<WorldComponent_FactionGoodwillImpactManager>().ImpactFactionGoodwill(
-                        new GoodwillImpactDelayed
-                        {
-                            factionToImpact = faction,
-                            goodwillImpact = Mathf.RoundToInt(tradeState.contrabandDef.impactMultiplier * tradeState.count),
-                            historyEvent = historyEvent,
-                            impactInTicks = tradeState.contrabandDef.ImpactInTicks,
-                            letterLabel = letterLabel,
-                            letterDesc = letterDesc,
-                            relationInfoKey = tradeState.contrabandDef.relationInfoKey
-                        });
-                }
+                ProcessCaughtContraband(contraband);
             }
+        }
+    }
+
+    private static void ProcessCaughtContraband(FoundContraband contraband)
+    {
+        // get the faction that will discover the contraband exchange
+        FactionDef randomFactionDef = contraband.contrabandDef.factions.RandomElement();
+        Faction affectedFaction = Find.FactionManager.FirstFactionOfDef(randomFactionDef);
+        
+        Def contrabandThingDef = contraband.thing != null ? contraband.thing : contraband.chemical;
+        
+        bool tradedToIllegalFaction = contraband.contrabandDef.illegalFactions.Contains(TradeSession.trader.Faction.def);
+        HistoryEventDef historyEvent = TradeSession.giftMode
+            ? contraband.contrabandDef.giftedHistoryEvent
+            : contraband.contrabandDef.soldHistoryEvent;
+            
+        string letterLabel = contraband.contrabandDef.letterLabelKey.Translate(affectedFaction.Named("FACTION"));
+        string letterDesc = GenerateLetterDescription(contraband, affectedFaction, contrabandThingDef, tradedToIllegalFaction);
+        
+        int goodwillImpact = Mathf.RoundToInt(contraband.contrabandDef.impactMultiplier * contraband.count);
+        
+        Find.World.GetComponent<WorldComponent_FactionGoodwillImpactManager>().ImpactFactionGoodwill(
+            new GoodwillImpactDelayed
+            {
+                factionToImpact = affectedFaction,
+                goodwillImpact = goodwillImpact,
+                historyEvent = historyEvent,
+                impactInTicks = contraband.contrabandDef.ImpactInTicks,
+                letterLabel = letterLabel,
+                letterDesc = letterDesc,
+                relationInfoKey = contraband.contrabandDef.relationInfoKey
+            });
+    }
+
+    private static string GenerateLetterDescription(FoundContraband contraband, Faction affectedFaction, 
+                                                    Def contrabandThingDef, bool tradedToIllegalFaction)
+    {
+        if (!tradedToIllegalFaction)
+        {
+            return TradeSession.giftMode
+                ? contraband.contrabandDef.letterDescGiftKey.Translate(
+                    affectedFaction.Named("FACTION"),
+                    contrabandThingDef.Named("ILLEGALTHING"))
+                : contraband.contrabandDef.letterDescSoldKey.Translate(
+                    affectedFaction.Named("FACTION"),
+                    contrabandThingDef.Named("ILLEGALTHING"));
+        }
+        else
+        {
+            return TradeSession.giftMode
+                ? contraband.contrabandDef.letterDescGifIllegalFactionKey.Translate(
+                    affectedFaction.Named("FACTION"),
+                    contrabandThingDef.Named("ILLEGALTHING"), 
+                    TradeSession.trader.Faction.Named("ILLEGALFACTION"))
+                : contraband.contrabandDef.letterDescSoldIllegalFactionKey.Translate(
+                    affectedFaction.Named("FACTION"),
+                    contrabandThingDef.Named("ILLEGALTHING"), 
+                    TradeSession.trader.Faction.Named("ILLEGALFACTION"));
         }
     }
 }

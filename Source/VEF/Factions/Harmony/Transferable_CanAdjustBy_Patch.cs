@@ -23,15 +23,14 @@ public static class Transferable_CanAdjustBy_Patch
                     curTransferable = __instance;
                     if (TradeSession.giftMode)
                     {
-                        foreach (TaggedString materialMessage in __instance.ThingDef.GetGiftingMaterialMessages())
+                        foreach (TaggedString materialMessage in __instance.ThingDef.GetContrabandWarningMessages(true))
                         {
-                            // TODO: Why are these being scrambled as if they're untranslated?
                             Messages.Message(materialMessage, MessageTypeDefOf.CautionInput);
                         }
                     }
                     else
                     {
-                        foreach (TaggedString materialMessage in __instance.ThingDef.GetSellingMaterialMessages())
+                        foreach (TaggedString materialMessage in __instance.ThingDef.GetContrabandWarningMessages(false))
                         {
                             Messages.Message(materialMessage, MessageTypeDefOf.CautionInput);
                         }
