@@ -15,11 +15,11 @@
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>false</DebugSymbols>
+    <DebugSymbols>true</DebugSymbols>
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\1.6\Assemblies\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>5</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -464,6 +464,11 @@
     <Compile Include="Buildings\MapComponents\MapComponent_InteractableBuildingsInMap.cs" />
     <Compile Include="Buildings\Misc\RecipeInheritance.cs" />
     <Compile Include="Cooking\IngredientValueGetters\IngredientValueGetter_NutritionWithExtraIngredient.cs" />
+    <Compile Include="Factions\Defs\ContrabandDef.cs" />
+    <Compile Include="Factions\GameComponents\WorldComponent_FactionGoodwillImpactManager.cs" />
+    <Compile Include="Factions\Harmony\TradeDeal_TryExecute_Patch.cs" />
+    <Compile Include="Factions\Harmony\Transferable_CanAdjustBy_Patch.cs" />
+    <Compile Include="Factions\Misc\GoodwillImpactDelayed.cs" />
     <Compile Include="Factions\ScenParts\ScenPart_ForcedFactionGoodwill.cs" />
     <Compile Include="Factions\WorldComponents\FactionGoodwillModifier.cs" />
     <Compile Include="Factions\WorldComponents\NewFactionSpawningState.cs" />

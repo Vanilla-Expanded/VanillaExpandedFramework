@@ -9,10 +9,8 @@ using VEF.Planet;
 
 namespace VEF.Factions
 {
-
     public class FactionDefExtension : DefModExtension
     {
-
         private static readonly FactionDefExtension DefaultValues = new FactionDefExtension();
         public static FactionDefExtension Get(Def def) => def.GetModExtension<FactionDefExtension>() ?? DefaultValues;
 
@@ -30,7 +28,7 @@ namespace VEF.Factions
         public string settlementGenerationSymbol;
         public string packAnimalTexNameSuffix;
         public PawnKindDef strangerInBlackReplacement;
-        private string siegeParameterSet ="";
+        private string siegeParameterSet = "";
         public SiegeParameterSetDef siegeParameterSetDef;
         public List<StartingGoodwillByFaction> startingGoodwillByFactionDefs = new List<StartingGoodwillByFaction>();
 
@@ -81,13 +79,15 @@ namespace VEF.Factions
                 Log.Error("Misconfigured StartingGoodwillByFaction: " + xmlRoot.OuterXml);
                 return;
             }
+
             DirectXmlCrossRefLoader.RegisterObjectWantsCrossRef(this, "factionDef", xmlRoot.Name);
             startingGoodwill = ParseHelper.FromString<IntRange>(xmlRoot.FirstChild.Value);
         }
 
         public override string ToString()
         {
-            return "(" + ((factionDef != null) ? factionDef.defName : "null") + " with starting goodwill of " + startingGoodwill + ")";
+            return "(" + ((factionDef != null) ? factionDef.defName : "null") + " with starting goodwill of " +
+                   startingGoodwill + ")";
         }
     }
 
@@ -105,25 +105,31 @@ namespace VEF.Factions
         public bool forcePlayerToAddFactionIfMissing = false;
         public string factionDiscoverySpecialMessage = null;
         public string factionDiscoveryFailedMessage = null;
+
         public float factionDiscoveryFactionCountFactor = 1f;
+
         // 0 or negative values will force faction discovery to use the default value.
         public int factionDiscoveryMinimumDistanceFromPlayer = -1;
 
         public bool UnderRequiredWorldGenFactionCount(FactionDef faction, List<FactionDef> factions)
-            => requiredFactionCountAtWorldGeneration > 0 && factions.Count(x => x == faction) < Mathf.Min(faction.maxConfigurableAtWorldCreation, requiredFactionCountAtWorldGeneration);
+            => requiredFactionCountAtWorldGeneration > 0 && factions.Count(x => x == faction) <
+                Mathf.Min(faction.maxConfigurableAtWorldCreation, requiredFactionCountAtWorldGeneration);
 
         public bool UnderRequiredGameplayFactionCount(FactionDef faction)
             => UnderRequiredGameplayFactionCount(faction, Find.FactionManager.AllFactions.Count(f => f.def == faction));
+
         public bool UnderRequiredGameplayFactionCount(FactionDef faction, int factionCount)
-            => requiredFactionCountDuringGameplay > 0 && factionCount < Mathf.Min(faction.maxConfigurableAtWorldCreation, requiredFactionCountDuringGameplay);
+            => requiredFactionCountDuringGameplay > 0 && factionCount <
+                Mathf.Min(faction.maxConfigurableAtWorldCreation, requiredFactionCountDuringGameplay);
 
         public TaggedString GetWorldGenMissingFactionMessage(FactionDef faction, List<FactionDef> factions)
-            => ((string.IsNullOrWhiteSpace(factionDisabledAtWorldGenerationMessage), preventRemovalAtWorldGeneration) switch
-                {
-                    (false, _) => factionDisabledAtWorldGenerationMessage,
-                    (_, true) => "VanillaFactionsExpanded.FactionRequired",
-                    (_, false) => "VanillaFactionsExpanded.FactionRecommended",
-                })
+            => ((string.IsNullOrWhiteSpace(factionDisabledAtWorldGenerationMessage),
+                        preventRemovalAtWorldGeneration) switch
+                    {
+                        (false, _) => factionDisabledAtWorldGenerationMessage,
+                        (_, true) => "VanillaFactionsExpanded.FactionRequired",
+                        (_, false) => "VanillaFactionsExpanded.FactionRecommended",
+                    })
                 .Translate(
                     faction.label.Named(SignalArgsNames.Faction),
                     factions.Count(x => x == faction).Named(SignalArgsNames.Count),
@@ -159,25 +165,29 @@ namespace VEF.Factions
         {
             if (requiredFactionCountAtWorldGeneration < 0)
             {
-                yield return $"{nameof(requiredFactionCountAtWorldGeneration)} cannot be less than 0, but currently it is {requiredFactionCountAtWorldGeneration}. Fixing.";
+                yield return
+                    $"{nameof(requiredFactionCountAtWorldGeneration)} cannot be less than 0, but currently it is {requiredFactionCountAtWorldGeneration}. Fixing.";
                 requiredFactionCountAtWorldGeneration = 0;
             }
 
             if (requiredFactionCountDuringGameplay < 0)
             {
-                yield return $"{nameof(requiredFactionCountDuringGameplay)} cannot be less than 0, but currently it is {requiredFactionCountDuringGameplay}. Fixing.";
+                yield return
+                    $"{nameof(requiredFactionCountDuringGameplay)} cannot be less than 0, but currently it is {requiredFactionCountDuringGameplay}. Fixing.";
                 requiredFactionCountDuringGameplay = 0;
             }
 
             if (factionDiscoveryFactionCountFactor < 0f)
             {
-                yield return $"{nameof(factionDiscoveryFactionCountFactor)} cannot be less than 0, but currently it is {factionDiscoveryFactionCountFactor}. Fixing.";
+                yield return
+                    $"{nameof(factionDiscoveryFactionCountFactor)} cannot be less than 0, but currently it is {factionDiscoveryFactionCountFactor}. Fixing.";
                 factionDiscoveryFactionCountFactor = 0f;
             }
 
             if (factionDiscoveryMinimumDistanceFromPlayer > 10)
             {
-                yield return $"{nameof(factionDiscoveryMinimumDistanceFromPlayer)} cannot be more than 10, but currently it is {factionDiscoveryMinimumDistanceFromPlayer}. Fixing.";
+                yield return
+                    $"{nameof(factionDiscoveryMinimumDistanceFromPlayer)} cannot be more than 10, but currently it is {factionDiscoveryMinimumDistanceFromPlayer}. Fixing.";
                 factionDiscoveryMinimumDistanceFromPlayer = 10;
             }
         }
