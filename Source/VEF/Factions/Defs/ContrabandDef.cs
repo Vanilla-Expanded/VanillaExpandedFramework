@@ -18,6 +18,12 @@ public class ContrabandDef: Def
         // Categories of things that are illegal to sell
         public List<ThingCategoryDef> thingCategories;
         
+        // Ignore a thing's stuff when checking for contraband
+        public bool ignoreStuff = false;
+        
+        // Ignore a things recipes or costlist when checking for contraband
+        public bool ignoreRecipes = false;
+        
         // Historical event created when contraband is gifted
         public HistoryEventDef giftedHistoryEvent;
         
@@ -156,7 +162,9 @@ public class ContrabandDef: Def
                 count += 1;
                 return true;
             }
-
+            
+            if (!ignoreRecipes) return false;
+            
             // Check each item in the cost list for thingDef to see if it's contraband
             if (thing.def.costList != null)
             {
@@ -180,7 +188,6 @@ public class ContrabandDef: Def
                 // better matches existing behaviour in psycasts to return here 
                 return count > 0;
             }
-            
 
             // Check if any ingredients for the thing def are contraband
             foreach (RecipeDef recipe in DefDatabase<RecipeDef>.AllDefs.Where(r=>r.ProducedThingDef == thing.def))
@@ -209,13 +216,13 @@ public class ContrabandDef: Def
             {
                 if (things.Contains(thing.def)) return true;
                 
-                if(thing.Stuff != null && things.Contains(thing.Stuff)) return true;
+                if(!ignoreStuff && thing.Stuff != null && things.Contains(thing.Stuff)) return true;
             }
 
             if (thingCategories.NullOrEmpty()) return false;
             if(!thing.def.thingCategories.NullOrEmpty() && thingCategories.Any(tc=>thing.def.thingCategories.Contains(tc)))  return true;
                 
-            return thing.Stuff != null && thingCategories.Any(tc=>thing.Stuff.thingCategories.Contains(tc));
+            return !ignoreStuff && thing.Stuff != null && thingCategories.Any(tc=>thing.Stuff.thingCategories.Contains(tc));
         }
         
         /// <summary>
