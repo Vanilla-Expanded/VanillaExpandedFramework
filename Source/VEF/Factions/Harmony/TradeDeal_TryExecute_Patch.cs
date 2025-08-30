@@ -89,13 +89,13 @@ public static class TradeDeal_TryExecute_Patch
 
             string warningKey = "";
 
-            if (contrabandDef.illegalFactions.NullOrEmpty())
+            if (isTradingWithIllegalFaction)
+            {
+                warningKey = isGifting ? contrabandDef.giftIllegalFactionWarningKey : contrabandDef.sellIllegalFactionWarningKey;
+            }
+            else
             {
                 warningKey = isGifting ? contrabandDef.giftWarningKey : contrabandDef.sellWarningKey;
-            }
-            else if (isTradingWithIllegalFaction)
-            {
-                warningKey = isGifting ? contrabandDef.giftIllegalFactionWarningKey : contrabandDef.sellIllegalWarningKey;
             }
             
             foreach (FactionDef factionDef in contrabandDef.factions)

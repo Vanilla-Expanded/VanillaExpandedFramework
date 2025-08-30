@@ -47,7 +47,7 @@ public class ContrabandDef: Def
         public string giftIllegalFactionWarningKey = "VEF.Factions.Contraband_Booze_GiftIllegalWarning";
     
         // Warning message when selecting something to be sold that matches when sold to an illegal faction. Gets passed a def as `ILLEGALTHING`, a faction as `FACTION`, and an illegal faction as `ILLEGALFACTION`
-        public string sellIllegalWarningKey = "VEF.Factions.Contraband_Booze_SellIllegalWarning";
+        public string sellIllegalFactionWarningKey = "VEF.Factions.Contraband_Booze_SellIllegalWarning";
 
         // the type of letter to send
         public LetterDef letterType = LetterDefOf.ThreatSmall;
