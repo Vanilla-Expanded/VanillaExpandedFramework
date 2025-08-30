@@ -13,7 +13,7 @@ namespace VEF.Weapons
         public static void ChangeProjectile(ref ThingDef __result, Verb_LaunchProjectile __instance)
         {
 
-            if (__result == __instance.verbProps.defaultProjectile)
+            if (__result == __instance.verbProps.defaultProjectile && __instance.EquipmentSource!=null && StaticCollectionsClass.uniqueWeaponsInGame.Contains(__instance.EquipmentSource.def))
             {
                 CompUniqueWeapon comp = __instance.EquipmentSource?.GetComp<CompUniqueWeapon>();
                 if (comp != null)
@@ -23,8 +23,12 @@ namespace VEF.Weapons
                         WeaponTraitDefExtension extension = item.GetModExtension<WeaponTraitDefExtension>();
                         if (extension?.randomprojectiles == true) {
                             __result = StaticCollectionsClass.projectilesInGame.RandomElement();
-                        }              
-                        else if (extension?.projectileOverride != null)
+                        }
+                        else if (!extension.projectileOverrides.NullOrEmpty() && extension.projectileOverrides.ContainsKey(__instance.EquipmentSource.def))
+                        {
+                            __result = extension.projectileOverrides[__instance.EquipmentSource.def];
+                        }
+                        else if (extension.projectileOverride != null)
                         {
                             __result = extension.projectileOverride;
                         }

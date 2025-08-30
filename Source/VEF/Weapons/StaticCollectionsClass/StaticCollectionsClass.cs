@@ -12,13 +12,14 @@ namespace VEF.Weapons
     public static class StaticCollectionsClass
     {
         public static List<ThingDef> projectilesInGame = new List<ThingDef>();
-
+        public static List<ThingDef> uniqueWeaponsInGame = new List<ThingDef>();
 
         static StaticCollectionsClass()
         {
             if (ModsConfig.OdysseyActive)
             {
                 List<ThingDef> uniqueWeapons = DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.GetCompProperties<CompProperties_UniqueWeapon>() != null).ToList();
+                uniqueWeaponsInGame = uniqueWeapons;
 
                 if (uniqueWeapons.Count > 0)
                 {

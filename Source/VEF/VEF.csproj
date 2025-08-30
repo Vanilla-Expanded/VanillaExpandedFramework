@@ -701,6 +701,7 @@
     <Compile Include="Weapons\Comps\CompLaserCapacitor.cs" />
     <Compile Include="Weapons\DamageWorkers\DamageWorker_OPToxic.cs" />
     <Compile Include="Weapons\Harmony\EquipmentUtility_CanEquip_Patch.cs" />
+    <Compile Include="Weapons\Harmony\OptionalFeatures\Verb_MeleeAttackDamage_DamageInfosToApply.cs" />
     <Compile Include="Weapons\Harmony\OptionalFeatures\Verb_MeleeAttack_SoundHitPawn.cs" />
     <Compile Include="Weapons\Harmony\PawnRenderUtility_Draw_EquipmentAiming.cs" />
     <Compile Include="Weapons\Harmony\Pawn_ApparelTracker_Notify_ApparelRemoved_Patch.cs" />
