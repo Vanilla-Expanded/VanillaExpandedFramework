@@ -73,6 +73,21 @@ public class ContrabandDef: Def
         // The tick at which to trigger discovery
         public int ImpactInTicks => Find.TickManager.TicksGame + 60 + (int)(GenDate.TicksPerDay * daysToImpact.RandomInRange);
         
+        public virtual IEnumerable<Def> AllContraband()
+        {
+            if(!things.NullOrEmpty())
+                foreach(ThingDef thingDef in things)
+                    yield return thingDef;
+            
+            if(!chemicals.NullOrEmpty())
+                foreach(ChemicalDef chemicalDef in chemicals)
+                    yield return chemicalDef;
+    
+            if(!thingCategories.NullOrEmpty())        
+                foreach(ThingCategoryDef thingCategoryDef in thingCategories)
+                    yield return thingCategoryDef;
+        }
+        
         public override string ToString()
         {
             // For debugging
@@ -118,34 +133,34 @@ public class ContrabandDef: Def
         /// <summary>
         /// Checks if a ThingDef is considered contraband. Checks the thing itself, and drug comps, and ingredients/costs.
         /// </summary>
-        /// <param name="thingDef">The ThingDef to check</param>
+        /// <param name="thing">The Thing to check</param>
         /// <param name="count">number of contraband items found (1 if the thing is contraband, otherwise it's the number of items required to make the thing)</param>
         /// <param name="contrabandThingDef">The specific contraband ThingDef that matched if found</param>
         /// <param name="contrabandChemicalDef">The specific contraband ChemicalDef that matched if found</param>
         /// <returns>True if the ThingDef is contraband false otherwise</returns>
-        public bool IsThingDefContraband(ThingDef thingDef, out int count, out ThingDef contrabandThingDef, out ChemicalDef contrabandChemicalDef)
+        public bool IsThingContraband(Thing thing, out int count, out ThingDef contrabandThingDef, out ChemicalDef contrabandChemicalDef)
         {
             count = 0;
             contrabandThingDef = null;
             contrabandChemicalDef = null;
 
             // check the thing def directly
-            if (IsThingDefDirectlyContraband(thingDef))
+            if (IsThingDirectlyContraband(thing))
             {
-                contrabandThingDef = thingDef;
+                contrabandThingDef = thing.def;
                 count += 1;
                 return true;
             }
-            if (IsThingDefChemicalDirectlyContraband(thingDef, out contrabandChemicalDef))
+            if (IsThingDefChemicalDirectlyContraband(thing.def, out contrabandChemicalDef))
             {
                 count += 1;
                 return true;
             }
 
             // Check each item in the cost list for thingDef to see if it's contraband
-            if (thingDef.costList != null)
+            if (thing.def.costList != null)
             {
-                foreach (var thingDefCountClass in thingDef.costList)
+                foreach (var thingDefCountClass in thing.def.costList)
                 {
                     if (contrabandThingDef != null && thingDefCountClass.thingDef == contrabandThingDef)
                     {
@@ -155,7 +170,7 @@ public class ContrabandDef: Def
                                   out ChemicalDef chemicalDef) && chemicalDef == contrabandChemicalDef)
                     {
                         count += thingDefCountClass.count;
-                    }else if (IsThingDefContraband(thingDefCountClass.thingDef, out int _, out contrabandThingDef, out contrabandChemicalDef))
+                    }else if (things.Contains(thingDefCountClass.thingDef))
                     {
                         count += thingDefCountClass.count;
                         
@@ -168,11 +183,11 @@ public class ContrabandDef: Def
             
 
             // Check if any ingredients for the thing def are contraband
-            foreach (RecipeDef recipe in DefDatabase<RecipeDef>.AllDefs.Where(r=>r.ProducedThingDef == thingDef))
+            foreach (RecipeDef recipe in DefDatabase<RecipeDef>.AllDefs.Where(r=>r.ProducedThingDef == thing.def))
             {
                 foreach (IngredientCount ingredientCount in recipe.ingredients.Where(x=>x.IsFixedIngredient))
                 {
-                    if (IsThingDefDirectlyContraband(ingredientCount.FixedIngredient))
+                    if (things.Contains(ingredientCount.FixedIngredient))
                     {
                         contrabandThingDef = ingredientCount.FixedIngredient;
                         count += Mathf.CeilToInt(ingredientCount.GetBaseCount());
@@ -184,15 +199,25 @@ public class ContrabandDef: Def
         }
         
         /// <summary>
-        // check that this thing isn't contraband either through a direct def match, or category match
+        /// check that this thing isn't contraband either through a direct def match, stuff match, or category match
         /// </summary>
-        /// <param name="thingDef">The thingdef to check</param>
+        /// <param name="thing">The Thing to check</param>
         /// <returns>true if contraband</returns>
-        public bool IsThingDefDirectlyContraband(ThingDef thingDef)
+        public bool IsThingDirectlyContraband(Thing thing)
         {
-            return (!things.NullOrEmpty() && things.Contains(thingDef)) || (!thingCategories.NullOrEmpty() && !thingDef.thingCategories.NullOrEmpty() && thingCategories.Any(tc=>thingDef.thingCategories.Contains(tc)));
-        }
+            if (!things.NullOrEmpty())
+            {
+                if (things.Contains(thing.def)) return true;
+                
+                if(thing.Stuff != null && things.Contains(thing.Stuff)) return true;
+            }
 
+            if (thingCategories.NullOrEmpty()) return false;
+            if(!thing.def.thingCategories.NullOrEmpty() && thingCategories.Any(tc=>thing.def.thingCategories.Contains(tc)))  return true;
+                
+            return thing.Stuff != null && thingCategories.Any(tc=>thing.Stuff.thingCategories.Contains(tc));
+        }
+        
         /// <summary>
         /// Checks if a ThingDef contains an contraband chemical component
         /// </summary>
@@ -203,16 +228,12 @@ public class ContrabandDef: Def
             out ChemicalDef contrabandChemicalDef)
         {
             contrabandChemicalDef = null;
-            if (!chemicals.NullOrEmpty() && thingDef.HasComp<CompDrug>())
+            if (chemicals.NullOrEmpty() || !thingDef.HasComp<CompDrug>()) return false;
+            foreach (CompProperties_Drug compProperties in thingDef.comps.OfType<CompProperties_Drug>())
             {
-                foreach (CompProperties_Drug compProperties in thingDef.comps.OfType<CompProperties_Drug>())
-                {
-                    if (chemicals.Contains(compProperties.chemical))
-                    {
-                        contrabandChemicalDef = compProperties.chemical;
-                        return true;
-                    }
-                }
+                if (!chemicals.Contains(compProperties.chemical)) continue;
+                contrabandChemicalDef = compProperties.chemical;
+                return true;
             }
 
             return false;

@@ -18,19 +18,19 @@ public static class Transferable_CanAdjustBy_Patch
             foreach (ContrabandDef contrabandDef in DefDatabase<ContrabandDef>.AllDefs.Where(iid =>
                          !iid.factions.Contains(TradeSession.trader.Faction.def)))
             {
-                if (contrabandDef.IsThingDefContraband(__instance.ThingDef, out var _, out var _, out var _))
+                if (contrabandDef.IsThingContraband(__instance.AnyThing, out var _, out var _, out var _))
                 {
                     curTransferable = __instance;
                     if (TradeSession.giftMode)
                     {
-                        foreach (TaggedString materialMessage in __instance.ThingDef.GetContrabandWarningMessages(true))
+                        foreach (TaggedString materialMessage in __instance.AnyThing.GetContrabandWarningMessages(true))
                         {
                             Messages.Message(materialMessage, MessageTypeDefOf.CautionInput);
                         }
                     }
                     else
                     {
-                        foreach (TaggedString materialMessage in __instance.ThingDef.GetContrabandWarningMessages(false))
+                        foreach (TaggedString materialMessage in __instance.AnyThing.GetContrabandWarningMessages(false))
                         {
                             Messages.Message(materialMessage, MessageTypeDefOf.CautionInput);
                         }
