@@ -52,15 +52,13 @@ public static class FactionDef_Description_Patch
         if (positives.Count > 0)
         {
             sb.AppendLine("VEF.Factions.FactionDef_Description_Positives"
-                .Translate(positives.Select(p => p.LabelCap)
-                    .Aggregate((a, b) => a + " ," + b)));
+                .Translate(positives.Select(p => p.LabelCap).ToStringSafeEnumerable()));
         }
 
         if (negatives.Count > 0)
         {
             sb.AppendLine("VEF.Factions.FactionDef_Description_Negatives"
-                .Translate(negatives.Select(p=>p.LabelCap)
-                    .Aggregate((a,b)=> a + " ," + b)));
+                .Translate(negatives.Select(p=>p.LabelCap).ToStringSafeEnumerable()));
         }
         
         __result = sb.ToString();
