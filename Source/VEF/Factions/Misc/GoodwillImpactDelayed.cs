@@ -13,8 +13,9 @@
         public string letterDesc;
         public string relationInfoKey;
         public LetterDef letterType;
+        public bool RemoveAfterImpact = true;
         
-        public void DoImpact()
+        public virtual void DoImpact()
         {
             Faction.OfPlayer.TryAffectGoodwillWith(factionToImpact, goodwillImpact, true, true, historyEvent);
             if (!relationInfoKey.NullOrEmpty())
@@ -34,6 +35,7 @@
             Scribe_References.Look(ref factionToImpact, "factionToImpact");
             Scribe_Defs.Look(ref historyEvent, "historyEvent");
             Scribe_Defs.Look(ref letterType, "letterType");
+            Scribe_Values.Look(ref RemoveAfterImpact, "RemoveAfterImpact");
         }
     }
 }
