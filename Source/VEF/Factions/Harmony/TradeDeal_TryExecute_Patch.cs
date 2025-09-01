@@ -1,7 +1,5 @@
-﻿using System.Text;
-using VEF.Factions.GameComponents;
+﻿using VEF.Factions.GameComponents;
 using System.Collections.Generic;
-using System.Linq;
 using HarmonyLib;
 using RimWorld;
 using UnityEngine;
@@ -31,7 +29,7 @@ public static class TradeDeal_TryExecute_Patch
         foreach (Tradeable tradeable in ___tradeables)
         {
             // check all the tradables for contraband
-            tradeable.ThingDef.GetContrabandMaterialCount(ref __state, tradeable.CountToTransferToDestination);
+            tradeable.AnyThing.GetContrabandMaterialCount(ref __state, tradeable.CountToTransferToDestination);
         }
     }
 
@@ -41,13 +39,13 @@ public static class TradeDeal_TryExecute_Patch
     /// <param name="def">The ThingDef to check for contraband materials</param>
     /// <param name="contrabandList">List of contraband to update with material counts</param>
     /// <param name="countToTransfer">Number of items being transferred</param>
-    public static void GetContrabandMaterialCount(this ThingDef def, ref List<FoundContraband> contrabandList, int countToTransfer)
+    public static void GetContrabandMaterialCount(this Thing thing, ref List<FoundContraband> contrabandList, int countToTransfer)
     {
-        if (def == null) return;
+        if (thing?.def == null) return;
 
         foreach (ContrabandDef contrabandDef in DefDatabase<ContrabandDef>.AllDefs)
         {
-            if (!contrabandDef.IsThingDefContraband(def, out int count, out ThingDef thingDef, out ChemicalDef chemicalDef))
+            if (!contrabandDef.IsThingContraband(thing, out int count, out ThingDef thingDef, out ChemicalDef chemicalDef))
                 continue;
 
             var foundContraband = contrabandList.FirstOrFallback(
@@ -72,17 +70,17 @@ public static class TradeDeal_TryExecute_Patch
     /// <summary>
     /// Builds the warning message based on the thing or chemical, and if it's gifted or sold
     /// </summary>
-    /// <param name="def">The relevant contraband</param>
+    /// <param name="thing">The relevant contraband</param>
     /// <param name="isGifting">Wether the operation is a gift or sale</param>
     /// <returns>The list of messages to show</returns>
-    public static List<TaggedString> GetContrabandWarningMessages(this ThingDef def, bool isGifting)
+    public static List<TaggedString> GetContrabandWarningMessages(this Thing thing, bool isGifting)
     {
         List<TaggedString> messages = new List<TaggedString>();
-        if (def == null) return messages;
+        if (thing?.def == null) return messages;
 
         foreach (ContrabandDef contrabandDef in DefDatabase<ContrabandDef>.AllDefs)
         {
-            if (!contrabandDef.IsThingDefContraband(def, out int count, out ThingDef thingDef, out ChemicalDef chemicalDef))
+            if (!contrabandDef.IsThingContraband(thing, out int count, out ThingDef thingDef, out ChemicalDef chemicalDef))
                 continue;
 
             Def contrabandThingDef = thingDef != null ? thingDef : chemicalDef;
@@ -91,13 +89,13 @@ public static class TradeDeal_TryExecute_Patch
 
             string warningKey = "";
 
-            if (contrabandDef.illegalFactions.NullOrEmpty())
+            if (isTradingWithIllegalFaction)
+            {
+                warningKey = isGifting ? contrabandDef.giftIllegalFactionWarningKey : contrabandDef.sellIllegalFactionWarningKey;
+            }
+            else
             {
                 warningKey = isGifting ? contrabandDef.giftWarningKey : contrabandDef.sellWarningKey;
-            }
-            else if (isTradingWithIllegalFaction)
-            {
-                warningKey = isGifting ? contrabandDef.giftIllegalFactionWarningKey : contrabandDef.sellIllegalWarningKey;
             }
             
             foreach (FactionDef factionDef in contrabandDef.factions)

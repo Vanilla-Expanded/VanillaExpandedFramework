@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+	<VEF.Factions.Contraband_Booze_GiftWarning>Gifting {ILLEGALTHING_label} is against {FACTION_name} law. This may or may not affect your relations with them in the future</VEF.Factions.Contraband_Booze_GiftWarning>
+	<VEF.Factions.Contraband_Booze_GiftIllegalWarning>Gifting {ILLEGALTHING_label} to {ILLEGALFACTION_name} is against {FACTION_name} law. This may or may not affect your relations with them in the future</VEF.Factions.Contraband_Booze_GiftIllegalWarning>
+
+	<VEF.Factions.Contraband_Booze_SellWarning>Selling {ILLEGALTHING_label} is against {FACTION_name} law. This may or may not affect your relations with them in the future</VEF.Factions.Contraband_Booze_SellWarning>
+	<VEF.Factions.Contraband_Booze_SellIllegalWarning>Selling {ILLEGALTHING_label} to {ILLEGALFACTION_name} is against {FACTION_name} law. This may or may not affect your relations with them in the future</VEF.Factions.Contraband_Booze_SellIllegalWarning>
+
+	<VEF.Factions.Contraband_Booze_LetterLabel>{FACTION_name} angered</VEF.Factions.Contraband_Booze_LetterLabel>
+	<VEF.Factions.Contraband_Booze_LetterDescGift>{FACTION_name} caught wind that you have been gifting {ILLEGALTHING_label} behind their back. They consider it to be against the law, and your relations have degraded</VEF.Factions.Contraband_Booze_LetterDescGift>
+	<VEF.Factions.Contraband_Booze_LetterDescSold>{FACTION_name} caught wind that you have been selling {ILLEGALTHING_label} behind their back. They consider it to be against the law, and your relations have degraded</VEF.Factions.Contraband_Booze_LetterDescSold>
+	
+	<VEF.Factions.Contraband_Booze_LetterDescIllegalGift>{FACTION_name} caught wind that you have been gifting {ILLEGALTHING_label} to {ILLEGALFACTION_name} behind their back. They consider it to be against the law, and your relations have degraded</VEF.Factions.Contraband_Booze_LetterDescIllegalGift>
+	<VEF.Factions.Contraband_Booze_LetterDescIllegalSold>{FACTION_name} caught wind that you have been selling {ILLEGALTHING_label} to {ILLEGALFACTION_name} behind their back. They consider it to be against the law, and your relations have degraded</VEF.Factions.Contraband_Booze_LetterDescIllegalSold>
+	
+	<VEF.Factions.Contraband_Booze_RelationInfo>Goodwill with {FACTION_name} is now {1}. (Changed by {2})</VEF.Factions.Contraband_Booze_RelationInfo>
+	
+	<VEF.Factions.FactionDef_Description_Contraband>Trading details</VEF.Factions.FactionDef_Description_Contraband>
+	<VEF.Factions.FactionDef_Description_Positives>Positive goodwill from trading {0}</VEF.Factions.FactionDef_Description_Positives>
+	<VEF.Factions.FactionDef_Description_Negatives>Negative goodwill from trading {0}</VEF.Factions.FactionDef_Description_Negatives>
+</LanguageData>

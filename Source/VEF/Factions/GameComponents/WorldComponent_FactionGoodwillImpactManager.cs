@@ -17,7 +17,7 @@ public class WorldComponent_FactionGoodwillImpactManager(World world) : WorldCom
             if (Find.TickManager.TicksGame >= goodwillImpact.impactInTicks)
             {
                 goodwillImpact.DoImpact();
-                goodwillImpacts.RemoveAt(i);
+                if (goodwillImpact.RemoveAfterImpact) goodwillImpacts.RemoveAt(i);
             }
         }
     }

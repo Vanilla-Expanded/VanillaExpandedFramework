@@ -16,10 +16,10 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>none</DebugType>
+    <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\1.6\Assemblies\</OutputPath>
-    <DefineConstants>TRACE;</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET48;NETFRAMEWORK</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>5</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -466,6 +466,7 @@
     <Compile Include="Cooking\IngredientValueGetters\IngredientValueGetter_NutritionWithExtraIngredient.cs" />
     <Compile Include="Factions\Defs\ContrabandDef.cs" />
     <Compile Include="Factions\GameComponents\WorldComponent_FactionGoodwillImpactManager.cs" />
+    <Compile Include="Factions\Harmony\FactionDef_Description_Patch.cs" />
     <Compile Include="Factions\Harmony\TradeDeal_TryExecute_Patch.cs" />
     <Compile Include="Factions\Harmony\Transferable_CanAdjustBy_Patch.cs" />
     <Compile Include="Factions\Misc\GoodwillImpactDelayed.cs" />
