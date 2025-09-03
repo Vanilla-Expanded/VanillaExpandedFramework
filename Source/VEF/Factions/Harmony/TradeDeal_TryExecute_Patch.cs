@@ -28,6 +28,7 @@ public static class TradeDeal_TryExecute_Patch
         __state = [];
         foreach (Tradeable tradeable in ___tradeables)
         {
+            if(tradeable.CountToTransferToDestination <= 0) continue;
             // check all the tradables for contraband
             tradeable.AnyThing.GetContrabandMaterialCount(ref __state, tradeable.CountToTransferToDestination);
         }
@@ -120,6 +121,7 @@ public static class TradeDeal_TryExecute_Patch
         // Check through the contraband and process
         foreach (FoundContraband contraband in __state)
         {
+            if(contraband.count <= 0) continue;
             bool isContrabandForTraderFaction = contraband.contrabandDef.factions.Contains(TradeSession.trader.Faction.def);
             if (!isContrabandForTraderFaction && Rand.Chance(contraband.contrabandDef.chanceToGetCaught))
             {
