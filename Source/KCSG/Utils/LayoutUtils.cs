@@ -122,6 +122,60 @@ namespace KCSG
         /// </summary>
         private static void GenerateTerrainGrid(StructureLayoutDef layout, List<IntVec3> cells, Map map)
         {
+            // Handle foundation grid first
+            if (layout._foundationGrid != null && layout._foundationGrid.Length > 0)
+            {
+                for (int h = 0; h < layout.sizes.z; h++)
+                {
+                    for (int w = 0; w < layout.sizes.x; w++)
+                    {
+                        var cell = cells[(h * layout.sizes.x) + w];
+                        var foundation = layout._foundationGrid[h, w];
+                        if (foundation == null || !cell.InBounds(map))
+                            continue;
+                        
+                        GenOption.DespawnMineableAt(cell);
+                        map.terrainGrid.SetFoundation(cell, foundation);
+                    }
+                }
+            }
+
+            // Handle under grid
+            if (layout._underGrid != null && layout._underGrid.Length > 0)
+            {
+                for (int h = 0; h < layout.sizes.z; h++)
+                {
+                    for (int w = 0; w < layout.sizes.x; w++)
+                    {
+                        var cell = cells[(h * layout.sizes.x) + w];
+                        var under = layout._underGrid[h, w];
+                        if (under == null || !cell.InBounds(map))
+                            continue;
+                        
+                        map.terrainGrid.SetUnderTerrain(cell, under);
+                    }
+                }
+            }
+
+            // Handle temp grid
+            if (layout._tempGrid != null && layout._tempGrid.Length > 0)
+            {
+                for (int h = 0; h < layout.sizes.z; h++)
+                {
+                    for (int w = 0; w < layout.sizes.x; w++)
+                    {
+                        var cell = cells[(h * layout.sizes.x) + w];
+                        var temp = layout._tempGrid[h, w];
+                        if (temp == null || !cell.InBounds(map))
+                            continue;
+                        
+                        GenOption.DespawnMineableAt(cell);
+                        map.terrainGrid.SetTempTerrain(cell, temp);
+                    }
+                }
+            }
+
+            // Handle terrain grid
             if (layout._terrainGrid == null || layout._terrainGrid.Length == 0)
                 return;
 

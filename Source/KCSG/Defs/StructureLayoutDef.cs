@@ -12,6 +12,9 @@ namespace KCSG
     {
         public List<List<string>> layouts = new List<List<string>>();
         public List<string> terrainGrid = new List<string>();
+        public List<string> foundationGrid = new List<string>();
+        public List<string> underGrid = new List<string>();
+        public List<string> tempGrid = new List<string>();
         public List<string> terrainColorGrid = new List<string>();
         public List<string> roofGrid = new List<string>();
 
@@ -37,6 +40,9 @@ namespace KCSG
         // internal int gridCount;
         internal List<SymbolDef[,]> _layouts = new List<SymbolDef[,]>();
         internal TerrainDef[,] _terrainGrid;
+        internal TerrainDef[,] _foundationGrid;
+        internal TerrainDef[,] _underGrid;
+        internal TerrainDef[,] _tempGrid;
         internal ColorDef[,] _terrainColorGrid;
         internal string[,] _roofGrid;
 
@@ -47,6 +53,16 @@ namespace KCSG
         public int MaxSize { get => maxSize; }
 
         public IntVec2 Sizes { get => sizes; }
+
+        /// <summary>
+        /// Get foundation terrain at position
+        /// </summary>
+        public TerrainDef FoundationAt(int h, int w)
+        {
+            if (_foundationGrid == null || h < 0 || w < 0 || h >= sizes.z || w >= sizes.x)
+                return null;
+            return _foundationGrid[h, w];
+        }
 
         /// <summary>
         /// Resolve layout infos
@@ -89,29 +105,110 @@ namespace KCSG
         private void ResolveTerrain()
         {
             var tCount = terrainGrid.Count;
-            if (tCount == 0)
-                return;
-
-            _terrainGrid = new TerrainDef[sizes.z, sizes.x];
-            for (int h = 0; h < sizes.z; h++)
+            if (tCount > 0)
             {
-                if (h < tCount)
+                _terrainGrid = new TerrainDef[sizes.z, sizes.x];
+                for (int h = 0; h < sizes.z; h++)
                 {
-                    var tLine = terrainGrid[h].Split(',');
-                    var tLineCount = tLine.Length;
-
-                    for (int w = 0; w < sizes.x; w++)
+                    if (h < tCount)
                     {
-                        if (w < tLineCount)
-                            _terrainGrid[h, w] = DefDatabase<TerrainDef>.GetNamedSilentFail(tLine[w]);
-                        else
+                        var tLine = terrainGrid[h].Split(',');
+                        var tLineCount = tLine.Length;
+
+                        for (int w = 0; w < sizes.x; w++)
+                        {
+                            if (w < tLineCount)
+                                _terrainGrid[h, w] = DefDatabase<TerrainDef>.GetNamedSilentFail(tLine[w]);
+                            else
+                                _terrainGrid[h, w] = null;
+                        }
+                    }
+                    else
+                    {
+                        for (int w = 0; w < sizes.x; w++)
                             _terrainGrid[h, w] = null;
                     }
                 }
-                else
+            }
+
+            var fCount = foundationGrid.Count;
+            if (fCount > 0)
+            {
+                _foundationGrid = new TerrainDef[sizes.z, sizes.x];
+                for (int h = 0; h < sizes.z; h++)
                 {
-                    for (int w = 0; w < sizes.x; w++)
-                        _terrainGrid[h, w] = null;
+                    if (h < fCount)
+                    {
+                        var fLine = foundationGrid[h].Split(',');
+                        var fLineCount = fLine.Length;
+
+                        for (int w = 0; w < sizes.x; w++)
+                        {
+                            if (w < fLineCount)
+                                _foundationGrid[h, w] = DefDatabase<TerrainDef>.GetNamedSilentFail(fLine[w]);
+                            else
+                                _foundationGrid[h, w] = null;
+                        }
+                    }
+                    else
+                    {
+                        for (int w = 0; w < sizes.x; w++)
+                            _foundationGrid[h, w] = null;
+                    }
+                }
+            }
+
+            var uCount = underGrid.Count;
+            if (uCount > 0)
+            {
+                _underGrid = new TerrainDef[sizes.z, sizes.x];
+                for (int h = 0; h < sizes.z; h++)
+                {
+                    if (h < uCount)
+                    {
+                        var uLine = underGrid[h].Split(',');
+                        var uLineCount = uLine.Length;
+
+                        for (int w = 0; w < sizes.x; w++)
+                        {
+                            if (w < uLineCount)
+                                _underGrid[h, w] = DefDatabase<TerrainDef>.GetNamedSilentFail(uLine[w]);
+                            else
+                                _underGrid[h, w] = null;
+                        }
+                    }
+                    else
+                    {
+                        for (int w = 0; w < sizes.x; w++)
+                            _underGrid[h, w] = null;
+                    }
+                }
+            }
+
+            var tempCount = tempGrid.Count;
+            if (tempCount > 0)
+            {
+                _tempGrid = new TerrainDef[sizes.z, sizes.x];
+                for (int h = 0; h < sizes.z; h++)
+                {
+                    if (h < tempCount)
+                    {
+                        var tempLine = tempGrid[h].Split(',');
+                        var tempLineCount = tempLine.Length;
+
+                        for (int w = 0; w < sizes.x; w++)
+                        {
+                            if (w < tempLineCount)
+                                _tempGrid[h, w] = DefDatabase<TerrainDef>.GetNamedSilentFail(tempLine[w]);
+                            else
+                                _tempGrid[h, w] = null;
+                        }
+                    }
+                    else
+                    {
+                        for (int w = 0; w < sizes.x; w++)
+                            _tempGrid[h, w] = null;
+                    }
                 }
             }
 
@@ -337,6 +434,36 @@ namespace KCSG
             {
                 var l = new XElement("terrainGrid", null);
                 foreach (var str in terrainGrid)
+                {
+                    l.Add(new XElement("li", str));
+                }
+                layoutDef.Add(l);
+            }
+
+            if (!foundationGrid.NullOrEmpty())
+            {
+                var l = new XElement("foundationGrid", null);
+                foreach (var str in foundationGrid)
+                {
+                    l.Add(new XElement("li", str));
+                }
+                layoutDef.Add(l);
+            }
+
+            if (!underGrid.NullOrEmpty())
+            {
+                var l = new XElement("underGrid", null);
+                foreach (var str in underGrid)
+                {
+                    l.Add(new XElement("li", str));
+                }
+                layoutDef.Add(l);
+            }
+
+            if (!tempGrid.NullOrEmpty())
+            {
+                var l = new XElement("tempGrid", null);
+                foreach (var str in tempGrid)
                 {
                     l.Add(new XElement("li", str));
                 }
