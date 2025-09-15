@@ -436,8 +436,10 @@
     <Compile Include="AnimalBehaviours\Harmony\Draftability\FloatMenuOptionProvider_WorkGivers_GetWorkGiverOption.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Hediff_Pregnant_DoBirthSpawn.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\HediffComp_ExplodeOnDowned.cs" />
+    <Compile Include="AnimalBehaviours\HediffComps\HediffComp_PsyfocusRegeneration.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\HediffComp_StageByVacuum.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_ExplodeOnDowned.cs" />
+    <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_PsyfocusRegeneration.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_StageByVacuum.cs" />
     <Compile Include="AnimalBehaviours\Projectiles\Electric_Projectile.cs" />
     <Compile Include="AnimalBehaviours\Utils\Utils.cs" />
