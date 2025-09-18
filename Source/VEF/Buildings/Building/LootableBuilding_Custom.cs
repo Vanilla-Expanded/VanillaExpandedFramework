@@ -130,7 +130,12 @@ namespace VEF.Buildings
                     foreach (ThingAndCount thingDefCount in LootableExtension.contents)
                     {
                         Thing thingToMake = ThingMaker.MakeThing(thingDefCount.thing, null);
-                        thingToMake.stackCount = thingDefCount.count;
+                        if(thingDefCount.randomCount!= new IntRange(1, 1))
+                        {
+                            thingToMake.stackCount = thingDefCount.randomCount.RandomInRange;
+                        }
+                        else { thingToMake.stackCount = thingDefCount.count; }
+                        
                         (thingToMake as ThingWithComps)?.compQuality?.SetQuality(QualityUtility.GenerateQualityRandomEqualChance(), ArtGenerationContext.Colony);
                         GenPlace.TryPlaceThing(thingToMake, Position, Map, ThingPlaceMode.Near);
                     }
