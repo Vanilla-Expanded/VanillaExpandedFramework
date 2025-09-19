@@ -25,7 +25,7 @@ namespace VEF.Buildings
                 {
                     foreach (Thing thing in tile.GetThingList(this.parent.Map))
                     {
-                        if (thing.def.passability == Traversability.Impassable)
+                        if (thing.def.passability == Traversability.Impassable && thing != this.parent)
                         {
                             thingsToDespawn.Add(thing);
                         }
