@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using RimWorld;
 using Verse;
+using PipeSystem;
 
 namespace KCSG
 {
@@ -129,6 +130,7 @@ namespace KCSG
                             StyleCategoryDef styleCategoryDef = null;
                             if (thing.StyleDef is ThingStyleDef styleDef)
                                 styleCategoryDef = styleDef.Category;
+                            var fuel = GetFuel(thing);
 
                             for (int i = 0; i < allSymbols.Count; i++)
                             {
@@ -143,7 +145,8 @@ namespace KCSG
                                     continue;
                                 if (styleCategoryDef != null && symb.styleCategoryDef != styleCategoryDef)
                                     continue;
-
+                                if (fuel > 0 && symb.fuel != fuel)
+                                    continue;
                                 symbolDef = symb;
                             }
 
@@ -520,12 +523,7 @@ namespace KCSG
             if (!Dialog_ExportWindow.exportedSymbolsName.Contains(defName)
                 && !DefDatabase<SymbolDef>.AllDefsListForReading.FindAll(s => s.defName == defName).Any())
             {
-                var symbol = new SymbolDef
-                {
-                    defName = defName,
-                    thing = defName
-                };
-
+                var symbol = CreateSymbol(thing, defName);
                 symbol.ResolveReferences();
                 Dialog_ExportWindow.exportedSymbolsName.Add(defName);
                 DefDatabase<SymbolDef>.Add(symbol);
@@ -605,11 +603,7 @@ namespace KCSG
             if (!Dialog_ExportWindow.exportedSymbolsName.Contains(defName)
                 && !DefDatabase<SymbolDef>.AllDefsListForReading.FindAll(s => s.defName == defName).Any())
             {
-                var symbol = new SymbolDef
-                {
-                    defName = defName,
-                    thing = thing.def.defName
-                };
+                var symbol = CreateSymbol(thing, defName);
 
                 if (thing.Stuff != null)
                     symbol.stuff = thing.Stuff.defName;
@@ -623,17 +617,56 @@ namespace KCSG
                 if (thing.StyleDef is ThingStyleDef styleDef)
                     symbol.styleCategory = styleDef.Category.defName;
 
-                symbol.ResolveReferences();
+                if (Dialog_ExportWindow.saveFuel)
+                {
+                    var fuel = GetFuel(thing);
+                    symbol.fuel = fuel;
+                }
+                symbol.ResolveDefNameHash();
                 Dialog_ExportWindow.exportedSymbolsName.Add(defName);
-                DefDatabase<SymbolDef>.Add(symbol);
-
-
-
-
+                if (DefDatabase<SymbolDef>.AllDefs.Contains(symbol) is false)
+                {
+                    symbol.ResolveReferences();
+                    DefDatabase<SymbolDef>.Add(symbol);
+                }
                 return symbol;
             }
 
             return null;
+        }
+
+        private static SymbolDef CreateSymbol(Thing thing, string defName)
+        {
+            var symbol = new SymbolDef
+            {
+                defName = defName,
+                thing = thing.def.defName
+            };
+            return symbol;
+        }
+
+        private static float GetFuel(Thing thing)
+        {
+            var compRefillable = thing.TryGetComp<CompRefillWithPipes>();
+            var compResourceStorage = thing.TryGetComp<CompResourceStorage>();
+
+            if (compRefillable != null && compRefillable.compRefuelable != null)
+            {
+                return compRefillable.compRefuelable.Fuel;
+            }
+            else if (compResourceStorage != null)
+            {
+                return compResourceStorage.AmountStored;
+            }
+            else
+            {
+                var compRefuelable = thing.TryGetComp<CompRefuelable>();
+                if (compRefuelable != null)
+                {
+                    return compRefuelable.Fuel;
+                }
+            }
+            return 0f;
         }
 
         /// <summary>
@@ -657,6 +690,14 @@ namespace KCSG
             if (thing.def.rotatable && thing.def.category != ThingCategory.Plant)
                 symbolString += "_" + StartupActions.Rot4ToStringEnglish(thing.Rotation);
 
+            if (Dialog_ExportWindow.saveFuel)
+            {
+                var fuel = GetFuel(thing);
+                if (fuel > 0)
+                {
+                    symbolString += "_Fuel" + (int)fuel;
+                }
+            }
             return symbolString;
         }
 

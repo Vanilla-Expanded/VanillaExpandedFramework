@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using RimWorld;
 using RimWorld.BaseGen;
 using UnityEngine;
 using Verse;
 using Verse.AI.Group;
+using PipeSystem;
 
 namespace KCSG
 {
@@ -230,8 +231,43 @@ namespace KCSG
             }
             // Try to refuel if applicable
             CompRefuelable refuelable = thing.TryGetComp<CompRefuelable>();
-            refuelable?.Refuel(refuelable.Props.fuelCapacity);
             // Try to recharge if applicable
+            if (refuelable != null)
+            {
+                if (symbol.fuel > 0f)
+                {
+                    refuelable.Refuel(symbol.fuel.Value);
+                }
+                else
+                {
+                    refuelable.Refuel(refuelable.Props.fuelCapacity);
+                }
+            }
+            
+            var compRefillWithPipes = thing.TryGetComp<CompRefillWithPipes>();
+            if (compRefillWithPipes != null && compRefillWithPipes.compRefuelable != null 
+                && symbol.fuel > 0f)
+            {
+                compRefillWithPipes.compRefuelable.Refuel(symbol.fuel.Value);
+            }
+            
+            var compResourceStorage = thing.TryGetComp<CompResourceStorage>();
+            if (compResourceStorage != null && symbol.fuel > 0f)
+            {
+                // For resource storage, we need to clear existing and add the desired amount
+                var currentStored = compResourceStorage.AmountStored;
+                if (currentStored > symbol.fuel)
+                {
+                    // Need to draw some out
+                    compResourceStorage.DrawResource(currentStored - symbol.fuel.Value);
+                }
+                else if (currentStored < symbol.fuel)
+                {
+                    // Need to add more
+                    compResourceStorage.AddResource(symbol.fuel.Value - currentStored);
+                }   
+            }
+            
             CompPowerBattery battery = thing.TryGetComp<CompPowerBattery>();
             battery?.AddEnergy(battery.Props.storedEnergyMax);
             // Try to fill item container

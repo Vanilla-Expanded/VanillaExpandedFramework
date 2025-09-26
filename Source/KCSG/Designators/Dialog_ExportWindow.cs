@@ -30,6 +30,7 @@ namespace KCSG
         public static bool forceGenerateRoof = false;
         public static bool isStorage = false;
         public static bool randomizeWallStuffAtGen = false;
+        public static bool saveFuel = false;
 
         private readonly Area area;
         private readonly Map map;
@@ -105,6 +106,17 @@ namespace KCSG
             lst.Gap(5);
 
             lst.CheckboxLabeled("Randomize wall stuff:", ref randomizeWallStuffAtGen, "Randomize wall stuff at generation");
+            lst.Gap(5);
+            var oldSaveFuel = saveFuel;
+            lst.CheckboxLabeled("Save fuel:", ref saveFuel, "Save fuel values from pipenet and vanilla comprefuelable");
+            if (oldSaveFuel != saveFuel)
+            {
+                var newDefs = ExportUtils.CreateSymbolIfNeeded(area);
+                foreach (var def in newDefs)
+                {
+                    exportedSymbolsDef.Add(def);
+                }
+            }
             lst.GapLine();
 
             lst.Label("Structure tags:", tooltip: "Tags are used with SettlementLayoutDef");

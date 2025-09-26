@@ -296,6 +296,7 @@ namespace KCSG
                 colorDef= symbolToCopy?.colorDef,
                 styleCategory = symbolToCopy?.styleCategory,
                 styleCategoryDef= symbolToCopy?.styleCategoryDef,
+                fuel = symbolToCopy?.fuel,
                 chanceToContainPawn = symbolToCopy?.chanceToContainPawn ?? 0,
                 containPawnKindAnyOf = symbolToCopy?.containPawnKindAnyOf,
                 containPawnKindForPlayerAnyOf = symbolToCopy?.containPawnKindForPlayerAnyOf,

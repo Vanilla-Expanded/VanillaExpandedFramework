@@ -189,7 +189,6 @@ namespace KCSG
                 defName = $"{thing.defName}",
                 thingDef = thing,
             };
-
             createdSymbolAmount++;
             return symbolDef;
         }
@@ -226,48 +225,15 @@ namespace KCSG
         }
 
         /// <summary>
-        /// Create a SymbolDef from a thing/stuff/rot
-        /// </summary>
-        private static SymbolDef CreateSymbolDef(ThingDef thing, ThingDef stuff, Rot4 rot)
-        {
-            SymbolDef symbolDef = new SymbolDef
-            {
-                defName = $"{thing.defName}_{stuff.defName}_{Rot4ToStringEnglish(rot)}",
-                thingDef = thing,
-                stuffDef = stuff,
-                rotation = rot,
-            };
-            createdSymbolAmount++;
-            return symbolDef;
-        }
-
-        /// <summary>
         /// Create a SymbolDef from a thing/stuff
         /// </summary>
         private static SymbolDef CreateSymbolDef(ThingDef thing, ThingDef stuff)
         {
-            
             SymbolDef symbolDef = new SymbolDef
             {
                 defName = $"{thing.defName}_{stuff.defName}",
                 thingDef = thing,
                 stuffDef = stuff,
-            };
-           
-            createdSymbolAmount++;
-            return symbolDef;
-        }
-
-        /// <summary>
-        /// Create a SymbolDef from a thing/rot
-        /// </summary>
-        private static SymbolDef CreateSymbolDef(ThingDef thing, Rot4 rot)
-        {
-            SymbolDef symbolDef = new SymbolDef
-            {
-                defName = $"{thing.defName}_{Rot4ToStringEnglish(rot)}",
-                thingDef = thing,
-                rotation = rot,
             };
             createdSymbolAmount++;
             return symbolDef;
