@@ -154,10 +154,12 @@ namespace VEF.Weapons
 
         private static void ModifyVerbRangeBy(Verb verb, float multiplier)
         {
+            //Log.Message("1 Verb: " + verb + " - " + verb.verbProps.range);
             var newProperties = verb.verbProps.MemberwiseClone();
             var field = Traverse.Create(newProperties).Field("range");
             field.SetValue(field.GetValue<float>() * multiplier);
             verb.verbProps = newProperties;
+            //Log.Message("2 Verb: " + verb + " - " + verb.verbProps.range);
         }
     }
 

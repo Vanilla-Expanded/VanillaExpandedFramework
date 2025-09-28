@@ -53,9 +53,6 @@ namespace VEF.Weapons
                 forceHit = true;
             }
         }
-
-      
-
     }
 
     [HarmonyPatch(typeof(Verb), nameof(Verb.Available))]
@@ -66,22 +63,6 @@ namespace VEF.Weapons
             // Unusable shield verbs don't get counted
             if (__result && __instance.EquipmentSource != null && __instance.EquipmentSource.IsShield(out Apparels.CompShield shieldComp))
                 __result = shieldComp.UsableNow;
-        }
-    }
-
-    [HarmonyPatch(typeof(VerbProperties), nameof(VerbProperties.AdjustedCooldown), new Type[]
-    {
-            typeof(Verb), typeof(Pawn)
-    })]
-    public static class VanillaExpandedFramework_VerbProperties_AdjustedCooldown_Patch
-    {
-        public static void Postfix(ref float __result, Verb ownerVerb, Pawn attacker)
-        {
-            var pawn = ownerVerb.CasterPawn;
-            if (pawn != null)
-            {
-                __result *= pawn.GetStatValue(VEFDefOf.VEF_VerbCooldownFactor);
-            }
         }
     }
 
