@@ -43,15 +43,18 @@ public class CustomOverlayDef : Def
     /// </summary>
     public CustomOverlayWorker Worker { get; protected set; }
 
-    public override void ResolveReferences()
+    public override void PostLoad()
     {
-        base.ResolveReferences();
+        base.PostLoad();
 
-        Worker = (CustomOverlayWorker)Activator.CreateInstance(workerClass, this);
-        // Default to MetaOverlay if not specified
-        shaderType ??= ShaderTypeDefOf.MetaOverlay;
-        // Init
-        if (!overlayPath.NullOrEmpty())
-            CachedMaterial = MaterialPool.MatFrom(overlayPath, shaderType.Shader);
+        LongEventHandler.ExecuteWhenFinished(() =>
+        {
+            Worker = (CustomOverlayWorker)Activator.CreateInstance(workerClass, this);
+            // Default to MetaOverlay if not specified
+            shaderType ??= ShaderTypeDefOf.MetaOverlay;
+            // Init
+            if (!overlayPath.NullOrEmpty())
+                CachedMaterial = MaterialPool.MatFrom(overlayPath, shaderType.Shader);
+        });
     }
 }

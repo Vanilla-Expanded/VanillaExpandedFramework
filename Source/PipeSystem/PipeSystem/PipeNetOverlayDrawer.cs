@@ -50,6 +50,10 @@ namespace PipeSystem
             }
         }
 
-        public override void FinalizeInit() => overlayDrawer = map.GetComponent<CustomOverlayDrawer>();
+        public override void FinalizeInit() => overlayDrawer ??= map.GetComponent<CustomOverlayDrawer>();
+
+        public override void ExposeData() => overlayDrawer ??= map.GetComponent<CustomOverlayDrawer>();
+
+        public override void MapGenerated() => overlayDrawer ??= map.GetComponent<CustomOverlayDrawer>();
     }
 }
