@@ -574,7 +574,12 @@
     <Compile Include="Maps\Harmony\OptionalFeatures\WildAnimalSpawner_SpawnRandomWildAnimalAt.cs" />
     <Compile Include="Maps\Harmony\OptionalFeatures\WITab_Terrain_ListMiscDetails.cs" />
     <Compile Include="Maps\Harmony\OptionalFeatures\WorldPathGrid_CalculatedMovementDifficultyAt.cs" />
+    <Compile Include="Maps\Harmony\OverlayDrawer_DisposeHandle_Patch.cs" />
+    <Compile Include="Maps\Harmony\OverlayDrawer_DrawAllOverlays_Patch.cs" />
     <Compile Include="Maps\OptionalFeatures\OptionalFeatures_TileMutatorMechanics.cs" />
+    <Compile Include="Maps\Overlays\CustomOverlayDef.cs" />
+    <Compile Include="Maps\Overlays\CustomOverlayDrawer.cs" />
+    <Compile Include="Maps\Overlays\CustomOverlayWorker.cs" />
     <Compile Include="Maps\TileMutatorWorkers\TileMutatorWorker_ExtraAnimal.cs" />
     <Compile Include="Maps\TileMutatorWorkers\TileMutatorWorker_GenericKCSGSpawner.cs" />
     <Compile Include="Maps\TileMutatorWorkers\TileMutatorWorker_GenericSpawner.cs" />

@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using VEF.Maps;
 using Verse;
 
 namespace PipeSystem
@@ -17,5 +18,8 @@ namespace PipeSystem
         public static PreceptDef VME_AutomationEfficiency_Increased;
         [MayRequire("VanillaExpanded.VMemesE")]
         public static PreceptDef VME_AutomationEfficiency_Decreased;
+
+        public static CustomOverlayDef PS_GenericPipeSystemOverlayPulsing;
+        public static CustomOverlayDef PS_GenericPipeSystemOverlayStatic;
     }
 }

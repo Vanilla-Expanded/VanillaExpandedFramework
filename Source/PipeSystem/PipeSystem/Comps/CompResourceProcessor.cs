@@ -117,15 +117,6 @@ namespace PipeSystem
         }
 
         /// <summary>
-        /// Toggle off overlay
-        /// </summary>
-        public override void PostDeSpawn(Map map, DestroyMode mode = DestroyMode.Vanish)
-        {
-            base.PostDeSpawn(map,mode);
-            pipeNetOverlayDrawer?.TogglePulsing(parent, Props.pipeNet.offMat, false);
-        }
-
-        /// <summary>
         /// Get the comp that match result, change some variables and change gizmo icon
         /// </summary>
         private void SetupForChoice()
