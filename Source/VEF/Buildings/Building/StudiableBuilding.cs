@@ -100,7 +100,7 @@ namespace VEF.Buildings
         {
             base.DrawAt(drawLoc, flip);
 
-            if (InteractablesMapComp?.studiables_InMap.Contains(this) == true)
+            if (InteractablesMapComp?.studiables_InMap.Contains(this) == true && StudiableExtension.overlayTexture!=null)
             {
                 Vector3 drawPos = DrawPos;
                 drawPos.y = AltitudeLayer.MetaOverlays.AltitudeFor() + 0.181818187f;
