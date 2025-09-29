@@ -3,12 +3,12 @@
 
   <VEF.Maps.CustomOverlayDef>
     <defName>PS_GenericPipeSystemOverlayPulsing</defName>
-    <workerClass>PipeSystem.GenericPipeNetOverlayDrawer</workerClass>
+    <workerClass>PipeSystem.GenericPipeNetOverlayWorker</workerClass>
   </VEF.Maps.CustomOverlayDef>
 
   <VEF.Maps.CustomOverlayDef>
     <defName>PS_GenericPipeSystemOverlayStatic</defName>
-    <workerClass>PipeSystem.GenericPipeNetOverlayDrawer</workerClass>
+    <workerClass>PipeSystem.GenericPipeNetOverlayWorker</workerClass>
     <pulsing>false</pulsing>
   </VEF.Maps.CustomOverlayDef>
 
