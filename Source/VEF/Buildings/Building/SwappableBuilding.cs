@@ -17,6 +17,7 @@ namespace VEF.Buildings
 {
     public class SwappableBuilding : Building
     {
+        public int tickCounter;
 
         SwappableBuildingDetails cachedExtension;
 
@@ -30,6 +31,13 @@ namespace VEF.Buildings
                 }
                 return cachedExtension;
             }
+        }
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Values.Look(ref this.tickCounter, "tickCounter");
+
         }
 
         public override IEnumerable<Gizmo> GetGizmos()
@@ -56,6 +64,21 @@ namespace VEF.Buildings
             }
 
 
+        }
+
+        protected override void Tick()
+        {
+            base.Tick();
+
+            if(SwappableExtension?.swappingTimer != -1)
+            {
+                if(tickCounter> SwappableExtension.swappingTimer)
+                {
+                    Notify_Swap();
+                }
+                tickCounter++;
+
+            }
         }
 
         public virtual void Notify_Swap()
