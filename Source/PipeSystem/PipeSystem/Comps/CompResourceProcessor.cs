@@ -124,10 +124,8 @@ namespace PipeSystem
             // Get the needed compResource
             if (ChoosedResult.net != null)
             {
-                var comps = parent.GetComps<CompResource>();
-                for (int i = 0; i < comps.Count(); i++)
+                foreach (var comp in parent.GetComps<CompResource>())
                 {
-                    var comp = comps.ElementAt(i);
                     if (comp.Props.pipeNet == ChoosedResult.net)
                     {
                         otherComp = comp;
