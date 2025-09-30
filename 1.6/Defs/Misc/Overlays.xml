@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
-  <VEF.Maps.CustomOverlayDef>
+  <VEF.Graphics.CustomOverlayDef>
     <defName>PS_GenericPipeSystemOverlayPulsing</defName>
     <workerClass>PipeSystem.GenericPipeNetOverlayWorker</workerClass>
-  </VEF.Maps.CustomOverlayDef>
+  </VEF.Graphics.CustomOverlayDef>
 
-  <VEF.Maps.CustomOverlayDef>
+  <VEF.Graphics.CustomOverlayDef>
     <defName>PS_GenericPipeSystemOverlayStatic</defName>
     <workerClass>PipeSystem.GenericPipeNetOverlayWorker</workerClass>
     <pulsing>false</pulsing>
-  </VEF.Maps.CustomOverlayDef>
+  </VEF.Graphics.CustomOverlayDef>
 
 </Defs>
 
