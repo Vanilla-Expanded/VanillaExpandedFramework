@@ -5,7 +5,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace VEF.Maps;
+namespace VEF.Graphics;
 
 public class CustomOverlayDrawer(Map map) : MapComponent(map)
 {

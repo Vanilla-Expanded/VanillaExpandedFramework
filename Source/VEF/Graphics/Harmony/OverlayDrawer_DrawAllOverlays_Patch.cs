@@ -3,7 +3,7 @@ using System.Reflection.Emit;
 using HarmonyLib;
 using RimWorld;
 
-namespace VEF.Maps;
+namespace VEF.Graphics;
 
 [HarmonyPatch(typeof(OverlayDrawer), nameof(OverlayDrawer.DrawAllOverlays))]
 public static class OverlayDrawer_DrawAllOverlays_Patch

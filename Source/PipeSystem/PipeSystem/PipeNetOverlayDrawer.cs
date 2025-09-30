@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using RimWorld;
-using RimWorld.Planet;
-using UnityEngine;
-using VEF.Maps;
+﻿using UnityEngine;
+using VEF.Graphics;
 using Verse;
 
 namespace PipeSystem

@@ -2,7 +2,7 @@
 using UnityEngine;
 using Verse;
 
-namespace VEF.Maps;
+namespace VEF.Graphics;
 
 public class CustomOverlayWorker(CustomOverlayDef def)
 {

@@ -1,9 +1,10 @@
 ﻿using System;
 using RimWorld;
 using UnityEngine;
+using VEF.Maps;
 using Verse;
 
-namespace VEF.Maps;
+namespace VEF.Graphics;
 
 public class CustomOverlayDef : Def
 {

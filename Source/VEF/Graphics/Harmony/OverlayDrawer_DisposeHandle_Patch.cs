@@ -2,7 +2,7 @@
 using RimWorld;
 using Verse;
 
-namespace VEF.Maps;
+namespace VEF.Graphics;
 
 [HarmonyPatch(typeof(OverlayDrawer), nameof(OverlayDrawer.DisposeHandle))]
 public static class OverlayDrawer_DisposeHandle_Patch
