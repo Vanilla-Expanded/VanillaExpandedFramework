@@ -367,8 +367,7 @@ namespace VEF.Apparels
 				Break();
 				absorbed = false;
 			}
-			else if (!dinfo.Def.ignoreShields && Props.blockRangedAttack && dinfo.Def.isRanged || dinfo.Def.isExplosive || Props.blockMeleeAttack
-				&& (dinfo.Weapon == null && dinfo.Instigator is Pawn || (dinfo.Weapon?.IsMeleeWeapon ?? false)))
+			else if (!dinfo.Def.ignoreShields && ((Props.blockRangedAttack && (dinfo.Def.isRanged || dinfo.Def.isExplosive)) || (Props.blockMeleeAttack && (dinfo.Weapon == null && dinfo.Instigator is Pawn || (dinfo.Weapon?.IsMeleeWeapon ?? false)))))
 			{
 				energy -= dinfo.Amount * EnergyLossPerDamage;
 				if (energy < 0f)

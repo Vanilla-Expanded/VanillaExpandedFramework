@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -255,13 +255,16 @@ namespace VEF.Apparels
                 var minLevels = new List<float>();
                 foreach (var apparel in diffSet.pawn.apparel.WornApparel)
                 {
-                    var extension = apparel.def.GetModExtension<ApparelExtension>();
-                    if (extension?.pawnCapacityMinLevels != null)
+                    var extensions = apparel.def.modExtensions?.OfType<ApparelExtension>()?.ToList() ?? new List<ApparelExtension>();
+                    foreach (var extension in extensions)
                     {
-                        var minCapacity = extension.pawnCapacityMinLevels.FirstOrDefault(x => x.capacity == capacity);
-                        if (minCapacity != null)
+                        if (extension?.pawnCapacityMinLevels != null)
                         {
-                            minLevels.Add(minCapacity.minLevel);
+                            var minCapacity = extension.pawnCapacityMinLevels.FirstOrDefault(x => x.capacity == capacity);
+                            if (minCapacity != null)
+                            {
+                                minLevels.Add(minCapacity.minLevel);
+                            }
                         }
                     }
                 }
