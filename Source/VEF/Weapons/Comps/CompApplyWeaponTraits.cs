@@ -18,7 +18,7 @@ namespace VEF.Weapons
             if (contentDetails.NullOrEmpty())
             {
                 CompUniqueWeapon comp = GetComp();
-                if (comp != null)
+                if (comp != null && comp.TraitsListForReading?.Count>0)
                 {
                     foreach (WeaponTraitDef item in comp.TraitsListForReading)
                     {
