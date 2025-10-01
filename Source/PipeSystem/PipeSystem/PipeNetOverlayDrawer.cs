@@ -16,6 +16,7 @@ namespace PipeSystem
         {
             if (mat == null)
                 return;
+            overlayDrawer ??= map.GetComponent<CustomOverlayDrawer>();
 
             if (val)
             {
@@ -33,6 +34,7 @@ namespace PipeSystem
         {
             if (mat == null)
                 return;
+            overlayDrawer ??= map.GetComponent<CustomOverlayDrawer>();
 
             if (val)
             {
@@ -45,11 +47,5 @@ namespace PipeSystem
                 ((GenericPipeNetOverlayWorker)PSDefOf.PS_GenericPipeSystemOverlayStatic.Worker).OverlayForThing.Remove(thing);
             }
         }
-
-        public override void FinalizeInit() => overlayDrawer ??= map.GetComponent<CustomOverlayDrawer>();
-
-        public override void ExposeData() => overlayDrawer ??= map.GetComponent<CustomOverlayDrawer>();
-
-        public override void MapGenerated() => overlayDrawer ??= map.GetComponent<CustomOverlayDrawer>();
     }
 }
