@@ -130,7 +130,8 @@ namespace KCSG
                             StyleCategoryDef styleCategoryDef = null;
                             if (thing.StyleDef is ThingStyleDef styleDef)
                                 styleCategoryDef = styleDef.Category;
-                            var fuel = GetFuel(thing);
+                            var fuelPercent = GetFuelPercent(thing);
+                            var powerPercent = GetPowerPercent(thing);
 
                             for (int i = 0; i < allSymbols.Count; i++)
                             {
@@ -145,7 +146,9 @@ namespace KCSG
                                     continue;
                                 if (styleCategoryDef != null && symb.styleCategoryDef != styleCategoryDef)
                                     continue;
-                                if (fuel > 0 && symb.fuel != fuel)
+                                if (fuelPercent != null && symb.fuelPercent != fuelPercent)
+                                    continue;
+                                if (powerPercent != null && symb.powerPercent != powerPercent)
                                     continue;
                                 symbolDef = symb;
                             }
@@ -619,8 +622,11 @@ namespace KCSG
 
                 if (Dialog_ExportWindow.saveFuel)
                 {
-                    var fuel = GetFuel(thing);
-                    symbol.fuel = fuel;
+                    symbol.fuelPercent = GetFuelPercent(thing);
+                }
+                if (Dialog_ExportWindow.savePower)
+                {
+                    symbol.powerPercent = GetPowerPercent(thing);
                 }
                 symbol.ResolveDefNameHash();
                 Dialog_ExportWindow.exportedSymbolsName.Add(defName);
@@ -645,28 +651,30 @@ namespace KCSG
             return symbol;
         }
 
-        private static float GetFuel(Thing thing)
+        private static float? GetFuelPercent(Thing thing)
         {
-            var compRefillable = thing.TryGetComp<CompRefillWithPipes>();
             var compResourceStorage = thing.TryGetComp<CompResourceStorage>();
+            if (compResourceStorage != null)
+            {
+                return compResourceStorage.AmountStored / compResourceStorage.Props.storageCapacity;
+            }
 
-            if (compRefillable != null && compRefillable.compRefuelable != null)
+            var compRefuelable = thing.TryGetComp<CompRefuelable>();
+            if (compRefuelable != null)
             {
-                return compRefillable.compRefuelable.Fuel;
+                return compRefuelable.Fuel / compRefuelable.Props.fuelCapacity;
             }
-            else if (compResourceStorage != null)
+            return null;
+        }
+
+        private static float? GetPowerPercent(Thing thing)
+        {
+            var compPowerBattery = thing.TryGetComp<CompPowerBattery>();
+            if (compPowerBattery != null)
             {
-                return compResourceStorage.AmountStored;
+                return compPowerBattery.StoredEnergy / compPowerBattery.Props.storedEnergyMax;
             }
-            else
-            {
-                var compRefuelable = thing.TryGetComp<CompRefuelable>();
-                if (compRefuelable != null)
-                {
-                    return compRefuelable.Fuel;
-                }
-            }
-            return 0f;
+            return null;
         }
 
         /// <summary>
@@ -692,10 +700,18 @@ namespace KCSG
 
             if (Dialog_ExportWindow.saveFuel)
             {
-                var fuel = GetFuel(thing);
-                if (fuel > 0)
+                var fuelPercent = GetFuelPercent(thing);
+                if (fuelPercent != null)
                 {
-                    symbolString += "_Fuel" + (int)fuel;
+                    symbolString += "_Fuel" + (int)(fuelPercent * 100);
+                }
+            }
+            if (Dialog_ExportWindow.savePower)
+            {
+                var powerPercent = GetPowerPercent(thing);
+                if (powerPercent != null)
+                {
+                    symbolString += "_Power" + (int)(powerPercent * 100);
                 }
             }
             return symbolString;
@@ -723,7 +739,8 @@ namespace KCSG
             else if (symbolName.Contains("_West"))
             {
                 return symbolName.Replace("_West", "");
-            }return "";
+            }
+            return "";
 
         }
 

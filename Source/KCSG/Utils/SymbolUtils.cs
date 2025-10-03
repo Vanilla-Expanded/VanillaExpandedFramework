@@ -231,45 +231,62 @@ namespace KCSG
             }
             // Try to refuel if applicable
             CompRefuelable refuelable = thing.TryGetComp<CompRefuelable>();
-            // Try to recharge if applicable
             if (refuelable != null)
             {
-                if (symbol.fuel > 0f)
+                if (refuelable.Fuel > 0)
                 {
-                    refuelable.Refuel(symbol.fuel.Value);
+                    refuelable.ConsumeFuel(refuelable.Fuel);
                 }
-                else
+                if (symbol.fuelPercent == null)
                 {
                     refuelable.Refuel(refuelable.Props.fuelCapacity);
                 }
+                else
+                {
+                    refuelable.Refuel(refuelable.Props.fuelCapacity * symbol.fuelPercent.Value);
+                }
             }
-            
-            var compRefillWithPipes = thing.TryGetComp<CompRefillWithPipes>();
-            if (compRefillWithPipes != null && compRefillWithPipes.compRefuelable != null 
-                && symbol.fuel > 0f)
-            {
-                compRefillWithPipes.compRefuelable.Refuel(symbol.fuel.Value);
-            }
-            
+
             var compResourceStorage = thing.TryGetComp<CompResourceStorage>();
-            if (compResourceStorage != null && symbol.fuel > 0f)
+            if (compResourceStorage != null)
             {
                 // For resource storage, we need to clear existing and add the desired amount
+                float amount = 0;
+                if (symbol.fuelPercent == null)
+                {
+                    amount = compResourceStorage.Props.storageCapacity;
+                }
+                else if (symbol.fuelPercent > 0)
+                {
+                    amount = compResourceStorage.Props.storageCapacity * symbol.fuelPercent.Value;
+                }
+
                 var currentStored = compResourceStorage.AmountStored;
-                if (currentStored > symbol.fuel)
+                if (currentStored > amount)
                 {
                     // Need to draw some out
-                    compResourceStorage.DrawResource(currentStored - symbol.fuel.Value);
+                    compResourceStorage.DrawResource(currentStored - amount);
                 }
-                else if (currentStored < symbol.fuel)
+                else if (currentStored < amount)
                 {
                     // Need to add more
-                    compResourceStorage.AddResource(symbol.fuel.Value - currentStored);
-                }   
+                    compResourceStorage.AddResource(amount - currentStored);
+                }
             }
-            
+
+            // Try to recharge if applicable
             CompPowerBattery battery = thing.TryGetComp<CompPowerBattery>();
-            battery?.AddEnergy(battery.Props.storedEnergyMax);
+            if (battery != null)
+            {
+                if (symbol.powerPercent == null)
+                {
+                    battery.SetStoredEnergyPct(1);
+                }
+                else
+                {
+                    battery.SetStoredEnergyPct(symbol.powerPercent.Value);
+                }
+            }
             // Try to fill item container
             if (thing is Building_Crate crate)
             {
