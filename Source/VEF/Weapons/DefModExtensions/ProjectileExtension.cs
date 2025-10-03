@@ -10,5 +10,6 @@ namespace VEF.Weapons
         public int      beakSkyFadeOutTicks = 5;
         public float    flashIntensity      = -1f;
         public FleckDef hitFleck;
+        public bool excludeFromStaticCollection = false;
     }
 }

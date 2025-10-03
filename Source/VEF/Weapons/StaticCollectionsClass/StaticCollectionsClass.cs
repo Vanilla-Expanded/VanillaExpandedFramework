@@ -30,7 +30,7 @@ namespace VEF.Weapons
 
                 }
 
-                projectilesInGame = DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.projectile!= null).ToList();
+                projectilesInGame = DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.projectile!= null && x.GetModExtension<ProjectileExtension>()?.excludeFromStaticCollection!=true).ToList();
 
             }
         }
