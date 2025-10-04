@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using RimWorld;
 using RimWorld.BaseGen;
 using UnityEngine;
 using Verse;
 using Verse.AI.Group;
+using PipeSystem;
 
 namespace KCSG
 {
@@ -230,10 +231,62 @@ namespace KCSG
             }
             // Try to refuel if applicable
             CompRefuelable refuelable = thing.TryGetComp<CompRefuelable>();
-            refuelable?.Refuel(refuelable.Props.fuelCapacity);
+            if (refuelable != null)
+            {
+                if (refuelable.Fuel > 0)
+                {
+                    refuelable.ConsumeFuel(refuelable.Fuel);
+                }
+                if (symbol.fuelPercent == null)
+                {
+                    refuelable.Refuel(refuelable.Props.fuelCapacity);
+                }
+                else
+                {
+                    refuelable.Refuel(refuelable.Props.fuelCapacity * symbol.fuelPercent.Value);
+                }
+            }
+
+            var compResourceStorage = thing.TryGetComp<CompResourceStorage>();
+            if (compResourceStorage != null)
+            {
+                // For resource storage, we need to clear existing and add the desired amount
+                float amount = 0;
+                if (symbol.fuelPercent == null)
+                {
+                    amount = compResourceStorage.Props.storageCapacity;
+                }
+                else if (symbol.fuelPercent > 0)
+                {
+                    amount = compResourceStorage.Props.storageCapacity * symbol.fuelPercent.Value;
+                }
+
+                var currentStored = compResourceStorage.AmountStored;
+                if (currentStored > amount)
+                {
+                    // Need to draw some out
+                    compResourceStorage.DrawResource(currentStored - amount);
+                }
+                else if (currentStored < amount)
+                {
+                    // Need to add more
+                    compResourceStorage.AddResource(amount - currentStored);
+                }
+            }
+
             // Try to recharge if applicable
             CompPowerBattery battery = thing.TryGetComp<CompPowerBattery>();
-            battery?.AddEnergy(battery.Props.storedEnergyMax);
+            if (battery != null)
+            {
+                if (symbol.powerPercent == null)
+                {
+                    battery.SetStoredEnergyPct(1);
+                }
+                else
+                {
+                    battery.SetStoredEnergyPct(symbol.powerPercent.Value);
+                }
+            }
             // Try to fill item container
             if (thing is Building_Crate crate)
             {

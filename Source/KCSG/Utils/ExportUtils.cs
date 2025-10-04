@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using RimWorld;
 using Verse;
+using PipeSystem;
 
 namespace KCSG
 {
@@ -129,6 +130,8 @@ namespace KCSG
                             StyleCategoryDef styleCategoryDef = null;
                             if (thing.StyleDef is ThingStyleDef styleDef)
                                 styleCategoryDef = styleDef.Category;
+                            var fuelPercent = GetFuelPercent(thing);
+                            var powerPercent = GetPowerPercent(thing);
 
                             for (int i = 0; i < allSymbols.Count; i++)
                             {
@@ -143,7 +146,10 @@ namespace KCSG
                                     continue;
                                 if (styleCategoryDef != null && symb.styleCategoryDef != styleCategoryDef)
                                     continue;
-
+                                if (fuelPercent != null && symb.fuelPercent != fuelPercent)
+                                    continue;
+                                if (powerPercent != null && symb.powerPercent != powerPercent)
+                                    continue;
                                 symbolDef = symb;
                             }
 
@@ -520,12 +526,7 @@ namespace KCSG
             if (!Dialog_ExportWindow.exportedSymbolsName.Contains(defName)
                 && !DefDatabase<SymbolDef>.AllDefsListForReading.FindAll(s => s.defName == defName).Any())
             {
-                var symbol = new SymbolDef
-                {
-                    defName = defName,
-                    thing = defName
-                };
-
+                var symbol = CreateSymbol(thing, defName);
                 symbol.ResolveReferences();
                 Dialog_ExportWindow.exportedSymbolsName.Add(defName);
                 DefDatabase<SymbolDef>.Add(symbol);
@@ -605,11 +606,7 @@ namespace KCSG
             if (!Dialog_ExportWindow.exportedSymbolsName.Contains(defName)
                 && !DefDatabase<SymbolDef>.AllDefsListForReading.FindAll(s => s.defName == defName).Any())
             {
-                var symbol = new SymbolDef
-                {
-                    defName = defName,
-                    thing = thing.def.defName
-                };
+                var symbol = CreateSymbol(thing, defName);
 
                 if (thing.Stuff != null)
                     symbol.stuff = thing.Stuff.defName;
@@ -623,16 +620,60 @@ namespace KCSG
                 if (thing.StyleDef is ThingStyleDef styleDef)
                     symbol.styleCategory = styleDef.Category.defName;
 
-                symbol.ResolveReferences();
+                if (Dialog_ExportWindow.saveFuel)
+                {
+                    symbol.fuelPercent = GetFuelPercent(thing);
+                }
+                if (Dialog_ExportWindow.savePower)
+                {
+                    symbol.powerPercent = GetPowerPercent(thing);
+                }
+                symbol.ResolveDefNameHash();
                 Dialog_ExportWindow.exportedSymbolsName.Add(defName);
-                DefDatabase<SymbolDef>.Add(symbol);
-
-
-
-
+                if (DefDatabase<SymbolDef>.AllDefs.Contains(symbol) is false)
+                {
+                    symbol.ResolveReferences();
+                    DefDatabase<SymbolDef>.Add(symbol);
+                }
                 return symbol;
             }
 
+            return null;
+        }
+
+        private static SymbolDef CreateSymbol(Thing thing, string defName)
+        {
+            var symbol = new SymbolDef
+            {
+                defName = defName,
+                thing = thing.def.defName
+            };
+            return symbol;
+        }
+
+        private static float? GetFuelPercent(Thing thing)
+        {
+            var compResourceStorage = thing.TryGetComp<CompResourceStorage>();
+            if (compResourceStorage != null)
+            {
+                return compResourceStorage.AmountStored / compResourceStorage.Props.storageCapacity;
+            }
+
+            var compRefuelable = thing.TryGetComp<CompRefuelable>();
+            if (compRefuelable != null)
+            {
+                return compRefuelable.Fuel / compRefuelable.Props.fuelCapacity;
+            }
+            return null;
+        }
+
+        private static float? GetPowerPercent(Thing thing)
+        {
+            var compPowerBattery = thing.TryGetComp<CompPowerBattery>();
+            if (compPowerBattery != null)
+            {
+                return compPowerBattery.StoredEnergy / compPowerBattery.Props.storedEnergyMax;
+            }
             return null;
         }
 
@@ -657,6 +698,22 @@ namespace KCSG
             if (thing.def.rotatable && thing.def.category != ThingCategory.Plant)
                 symbolString += "_" + StartupActions.Rot4ToStringEnglish(thing.Rotation);
 
+            if (Dialog_ExportWindow.saveFuel)
+            {
+                var fuelPercent = GetFuelPercent(thing);
+                if (fuelPercent != null)
+                {
+                    symbolString += "_Fuel" + (int)(fuelPercent * 100);
+                }
+            }
+            if (Dialog_ExportWindow.savePower)
+            {
+                var powerPercent = GetPowerPercent(thing);
+                if (powerPercent != null)
+                {
+                    symbolString += "_Power" + (int)(powerPercent * 100);
+                }
+            }
             return symbolString;
         }
 
@@ -682,7 +739,8 @@ namespace KCSG
             else if (symbolName.Contains("_West"))
             {
                 return symbolName.Replace("_West", "");
-            }return "";
+            }
+            return "";
 
         }
 

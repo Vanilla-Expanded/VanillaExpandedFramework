@@ -28,6 +28,8 @@ namespace KCSG
 
         // Building info
         public Rot4 rotation = Rot4.North;
+        public float? fuelPercent;
+        public float? powerPercent;
 
         // Plant
         public float plantGrowth = 0.5f;
@@ -121,6 +123,15 @@ namespace KCSG
 
             if (rotation != Rot4.North)
                 layoutDef.Add(new XElement("rotation", StartupActions.Rot4ToStringEnglish(rotation)));
+
+            if (fuelPercent != null)
+            {
+                layoutDef.Add(new XElement("fuelPercent", fuelPercent));
+            }
+            if (powerPercent != null)
+            {
+                layoutDef.Add(new XElement("powerPercent", powerPercent));
+            }
 
             return layoutDef.ToString();
         }
