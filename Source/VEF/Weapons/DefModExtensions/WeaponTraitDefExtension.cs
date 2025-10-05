@@ -10,6 +10,8 @@ namespace VEF.Weapons
         public ThingDef projectileOverride;
         //This allows users to specify different projectiles for different guns. If not found, projectileOverride will be used
         public Dictionary<ThingDef, ThingDef> projectileOverrides;
+        //If set to true, this projectile override will be ignored if another WeaponTraitDef adds a different override
+        public bool lowPreferenceProjectileOverride = false;
         //Swaps the sound produced when firing this unique weapon for another one
         public SoundDef soundOverride;
         //Swaps the sound produced when hitting a pawn with this weapon with melee
