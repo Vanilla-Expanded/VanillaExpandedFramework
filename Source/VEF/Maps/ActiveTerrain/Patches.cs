@@ -8,8 +8,8 @@ namespace VEF.Maps
     [HarmonyPatch(typeof(TickManager), nameof(TickManager.DoSingleTick))]
     public static class VanillaExpandedFramework_DoSingleTick_Patch
     {
-        static SpecialTerrainList[] terrainListers = new SpecialTerrainList[20];
-        static Map[] maps = new Map[20];
+        static SpecialTerrainList[] terrainListers = new SpecialTerrainList[128];
+        static Map[] maps = new Map[128];
 
         static void Prefix(out Stopwatch __state)
         {
