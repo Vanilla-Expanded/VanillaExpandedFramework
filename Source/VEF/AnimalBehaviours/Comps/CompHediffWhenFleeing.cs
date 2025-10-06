@@ -46,7 +46,7 @@ namespace VEF.AnimalBehaviours
             {
                 Pawn pawn = this.parent as Pawn;
 
-                if(pawn.CurJob.def == JobDefOf.Flee || pawn.CurJob.def == JobDefOf.FleeAndCower)
+                if(pawn.CurJob?.def == JobDefOf.Flee || pawn.CurJob?.def == JobDefOf.FleeAndCower)
                 {
                     if (Props.graphicAndSoundEffect)
                     {
