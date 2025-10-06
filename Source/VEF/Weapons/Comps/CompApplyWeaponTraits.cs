@@ -52,6 +52,15 @@ namespace VEF.Weapons
             }
         }
 
+        public override void Notify_DefsHotReloaded()
+        {
+            base.Notify_DefsHotReloaded();
+            if (!GetDetails().NullOrEmpty())
+            {
+                LongEventHandler.ExecuteWhenFinished(delegate { ChangeGraphic(); });
+            }
+        }
+
         public override void PostExposeData()
         {
             base.PostExposeData();
@@ -66,7 +75,7 @@ namespace VEF.Weapons
             if (!this.parent.def.IsApparel) {
                 WeaponTraitDefExtension extension = GetDetails().Where(x => x.graphicOverrides != null && x.graphicOverrides.ContainsKey(this.parent.def))?.RandomElementByWeightWithFallback(x => x.graphicOverrideCommonality);
                 GraphicData data = extension?.graphicOverrides[this.parent.def] ?? this.parent.def.graphicData;
-                float size = GetDetails().Where(x => x.sizeMultiplier != 1)?.FirstOrFallback()?.sizeMultiplier ?? 1;
+                float size = GetDetails().Where(x => x.sizeMultiplier != 1)?.Select(x => x.sizeMultiplier)?.Aggregate(1, (float acc, float current) => acc * current) ?? 1;
                 Shader shader = data.shaderType?.Shader ?? ShaderTypeDefOf.Cutout.Shader;
                 Color color = GetComp().ForceColor() ?? Color.white;
 
