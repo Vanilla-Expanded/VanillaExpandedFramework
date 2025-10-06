@@ -19,7 +19,9 @@ namespace VEF.Weapons
         //Override the damage type of the melee attacks with this weapon
         public DamageDef meleeDamageOverride;
         //Swaps the graphic of the weapon. Supports Graphic_Single and Graphic_Random, as well as CutOutComplex
-        public Dictionary<ThingDef,GraphicData> graphicOverrides;      
+        public Dictionary<ThingDef,GraphicData> graphicOverrides;
+        //The higher the number, the higher the chance to choose this graphic
+        public float graphicOverrideCommonality = 1;
         //Add this ability to the wielder when equipping the weapon (and remove it when not in his possession)
         public AbilityDef abilityToAdd;
         //Add this thought to the wielder when killing something with the weapon

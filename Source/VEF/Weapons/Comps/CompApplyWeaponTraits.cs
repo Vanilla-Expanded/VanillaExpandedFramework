@@ -64,7 +64,8 @@ namespace VEF.Weapons
         public void ChangeGraphic()
         {
             if (!this.parent.def.IsApparel) {
-                GraphicData data = GetDetails().Where(x => x.graphicOverrides != null && x.graphicOverrides.ContainsKey(this.parent.def))?.Select(x => x.graphicOverrides[this.parent.def]).FirstOrFallback() ?? this.parent.def.graphicData;
+                WeaponTraitDefExtension extension = GetDetails().Where(x => x.graphicOverrides != null && x.graphicOverrides.ContainsKey(this.parent.def))?.RandomElementByWeightWithFallback(x => x.graphicOverrideCommonality);
+                GraphicData data = extension?.graphicOverrides[this.parent.def] ?? this.parent.def.graphicData;
                 float size = GetDetails().Where(x => x.sizeMultiplier != 1)?.FirstOrFallback()?.sizeMultiplier ?? 1;
                 Shader shader = data.shaderType?.Shader ?? ShaderTypeDefOf.Cutout.Shader;
                 Color color = GetComp().ForceColor() ?? Color.white;
