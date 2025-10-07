@@ -61,6 +61,22 @@ namespace VEF.Weapons
             }
         }
 
+        public void Notify_ForceRefresh()
+        {
+           
+            if (!GetDetails().NullOrEmpty())
+            {
+             
+                LongEventHandler.ExecuteWhenFinished(delegate { ChangeGraphic(); });
+            }
+        }
+
+        public void DeleteCaches()
+        {
+            contentDetails.Clear();
+            cachedComp = null;
+        }
+
         public override void PostExposeData()
         {
             base.PostExposeData();
@@ -78,7 +94,7 @@ namespace VEF.Weapons
                 float size = GetDetails().Where(x => x.sizeMultiplier != 1)?.Select(x => x.sizeMultiplier)?.Aggregate(1, (float acc, float current) => acc * current) ?? 1;
                 Shader shader = data.shaderType?.Shader ?? ShaderTypeDefOf.Cutout.Shader;
                 Color color = GetComp().ForceColor() ?? Color.white;
-
+             
                 if (data.graphicClass == typeof(Graphic_Single))
                 {
                     Graphic_Single newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(data.texPath, shader, new Vector2(size, size), color);
@@ -91,6 +107,7 @@ namespace VEF.Weapons
                     ReflectionCache.weaponGraphic(parent) = new Graphic_RandomRotated(ReflectionCache.weaponGraphic(parent), 35);
 
                 }
+              
             }
             
         }
