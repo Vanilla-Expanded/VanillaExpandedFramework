@@ -269,6 +269,10 @@ namespace PipeSystem
                 case CompPowerTrader.PowerTurnedOffSignal:
                     ResourceOn = false;
                     return;
+                case CompRefuelable.RefueledSignal:
+                    if (compRefuelable is { Fuel: <= 0 })
+                        ResourceOn = false;
+                    return;
             }
             if (signal == OffSignal)
                 ResourceOn = false;
