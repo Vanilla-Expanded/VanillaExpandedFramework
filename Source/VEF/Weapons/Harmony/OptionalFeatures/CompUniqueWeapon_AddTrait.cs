@@ -19,7 +19,7 @@ namespace VEF.Weapons
             {
                 WeaponTraitWorker_Extended workerExtended =
                     (WeaponTraitWorker_Extended)Activator.CreateInstance(type);
-
+                workerExtended.def = traitDef;
                 workerExtended.Notify_Added(__instance.parent);
             }
         }

@@ -21,6 +21,11 @@ namespace VEF.Weapons
             
         }
 
+        public void Notify_TraitRemoved()
+        {
+
+        }
+
 
     }
 }

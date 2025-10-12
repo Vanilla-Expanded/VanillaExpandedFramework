@@ -33,8 +33,31 @@ namespace VEF.Weapons
         //If true, the MaxHitPoints stat of the weapon will be refreshed when the trait is added. This only works if the WeaponTraitDef
         //is assigned VEF.Weapons.WeaponTraitWorker_Extended as its workerClass
         public bool refreshMaxHitPointsStat = false;
+        //This is a system to add abilities with charges via traits, hopefully working better than the vanilla system
+        public AbilityWithChargesDetails abilityWithCharges;
 
     }
 
+    public class AbilityWithChargesDetails
+    {
+        public AbilityDef abilityDef;
+
+        public int maxCharges;
+
+        public ThingDef ammoDef;
+
+        public int ammoCountToRefill;
+
+        public int ammoCountPerCharge;
+
+        public int baseReloadTicks = 60;
+
+        public SoundDef soundReload;
+
+        public string chargeNoun = "charge";
+
+        public string cooldownGerund = "on cooldown";
+
+    }
 
 }
