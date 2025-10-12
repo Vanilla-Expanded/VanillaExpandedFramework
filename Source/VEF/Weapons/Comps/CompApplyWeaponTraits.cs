@@ -3,8 +3,7 @@ using UnityEngine;
 using Verse;
 using System.Collections.Generic;
 using System.Linq;
-using static HarmonyLib.Code;
-using RimWorld.Utility;
+
 
 namespace VEF.Weapons
 {
@@ -124,6 +123,9 @@ namespace VEF.Weapons
         public override void PostExposeData()
         {
             base.PostExposeData();
+            Scribe_Values.Look(ref this.maxCharges, "maxCharges", 0);
+            Scribe_Values.Look(ref this.currentCharges, "currentCharges", 0);
+            Scribe_Defs.Look(ref abilityWithCharges, "abilityWithCharges");
             if (!GetDetails().NullOrEmpty())
             {
                 LongEventHandler.ExecuteWhenFinished(delegate { ChangeGraphic(); });
