@@ -30,8 +30,11 @@ namespace VEF.Weapons
         public float sizeMultiplier = 1;
         //This will make the gun create random projectiles every time it fires. Shenanigan potential: maximum
         public bool randomprojectiles = false;
-       
+        //If true, the MaxHitPoints stat of the weapon will be refreshed when the trait is added. This only works if the WeaponTraitDef
+        //is assigned VEF.Weapons.WeaponTraitWorker_Extended as its workerClass
+        public bool refreshMaxHitPointsStat = false;
+
     }
 
-  
+
 }

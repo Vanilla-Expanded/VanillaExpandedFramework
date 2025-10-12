@@ -24,6 +24,8 @@ namespace VEF.Weapons
             harm.Patch(AccessTools.EnumeratorMoveNext(AccessTools.Method(typeof(Verb_MeleeAttackDamage), "DamageInfosToApply")),
                transpiler: new HarmonyMethod(typeof(VanillaExpandedFramework_Verb_MeleeAttackDamage_DamageInfosToApply_Patch), "ModifyMeleeDamage"));
 
+            harm.Patch(AccessTools.Method(typeof(CompUniqueWeapon), "AddTrait"),
+               postfix: new HarmonyMethod(typeof(VanillaExpandedFramework_CompUniqueWeapon_AddTrait_Patch), "HandleExtendedWorker"));
         }
     }
 }
