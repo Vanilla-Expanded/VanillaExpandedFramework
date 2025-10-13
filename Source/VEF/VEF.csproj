@@ -691,6 +691,8 @@
     <Compile Include="Storyteller\Harmony\Quest_CleanupQuestParts_Patch.cs" />
     <Compile Include="Buildings\Comps\CompBouncingArrow.cs" />
     <Compile Include="Weapons\AI\JobDrivers\JobDriver_ChangeLaserColor.cs" />
+    <Compile Include="Weapons\AI\JobDrivers\JobDriver_ReloadWeaponTrait.cs" />
+    <Compile Include="Weapons\AI\JobGivers\JobGiver_ReloadWeaponTrait.cs" />
     <Compile Include="Weapons\Buildings\Building_LaserGun.cs" />
     <Compile Include="Weapons\Comps\CompExplosive_Shells.cs" />
     <Compile Include="Graphics\DefModExtensions\HeadExtension.cs" />
@@ -710,7 +712,9 @@
     <Compile Include="AI\DraftedJobs\DraftedJobUtils.cs" />
     <Compile Include="Weapons\Comps\CompLaserCapacitor.cs" />
     <Compile Include="Weapons\DamageWorkers\DamageWorker_OPToxic.cs" />
+    <Compile Include="Weapons\FloatMenuOptionProviders\FloatMenuOptionProvider_ReloadWeaponTrait.cs" />
     <Compile Include="Weapons\Harmony\EquipmentUtility_CanEquip_Patch.cs" />
+    <Compile Include="Weapons\Harmony\OptionalFeatures\Pawn_EquipmentTracker_Notify_AbilityUsed.cs" />
     <Compile Include="Weapons\Harmony\OptionalFeatures\CompUniqueWeapon_AddTrait.cs" />
     <Compile Include="Weapons\Harmony\OptionalFeatures\Verb_MeleeAttackDamage_DamageInfosToApply.cs" />
     <Compile Include="Weapons\Harmony\OptionalFeatures\Verb_MeleeAttack_SoundHitPawn.cs" />

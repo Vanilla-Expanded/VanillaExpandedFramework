@@ -3,13 +3,15 @@ using UnityEngine;
 using Verse;
 using System.Collections.Generic;
 using System.Linq;
+using static HarmonyLib.Code;
+using Verse.Sound;
 
 
 namespace VEF.Weapons
 {
     public class CompApplyWeaponTraits : ThingComp
     {
-        public AbilityWithChargesDetails abilityWithChargesDetails;
+        public AbilityWithChargesDetails cachedAbilityWithChargesDetails;
         public AbilityDef abilityWithCharges;
         public int maxCharges;
         public int currentCharges;
@@ -49,9 +51,14 @@ namespace VEF.Weapons
             return cachedComp;
         }
 
-        public AbilityWithChargesDetails AbilityForWeapon(List<WeaponTraitDefExtension> traits)
+        public AbilityWithChargesDetails AbilityDetailsForWeapon(List<WeaponTraitDefExtension> traits)
         {
-            return traits.Where(x => x.abilityWithCharges != null)?.Select(x => x.abilityWithCharges).FirstOrFallback();
+            if(cachedAbilityWithChargesDetails is null)
+            {
+                cachedAbilityWithChargesDetails = traits.Where(x => x.abilityWithCharges != null)?.Select(x => x.abilityWithCharges).FirstOrFallback();
+            }return cachedAbilityWithChargesDetails;
+
+
         }
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
@@ -68,30 +75,29 @@ namespace VEF.Weapons
         {
             if (!GetDetails().NullOrEmpty())
             {
-               if(abilityWithCharges is null)
+                if (abilityWithCharges is null)
                 {
-                    abilityWithChargesDetails = AbilityForWeapon(GetDetails());
-                    abilityWithCharges = abilityWithChargesDetails?.abilityDef;
+                   
+                    abilityWithCharges = AbilityDetailsForWeapon(GetDetails())?.abilityDef;
                     if (abilityWithCharges != null)
                     {
 
-                        maxCharges = abilityWithChargesDetails.maxCharges;
+                        maxCharges = AbilityDetailsForWeapon(GetDetails()).maxCharges;
                         currentCharges = maxCharges;
                     }
                 }
-                
+
             }
 
         }
 
         public override string CompInspectStringExtra()
         {
-            if (abilityWithCharges is null)
+            if (AbilityDetailsForWeapon(GetDetails()) is null)
             {
                 return null;
             }
-           
-            return "ChargesRemaining".Translate(abilityWithChargesDetails.chargeNoun) + ": " + LabelRemaining;
+            return "ChargesRemaining".Translate(AbilityDetailsForWeapon(GetDetails()).chargeNoun) + ": " + LabelRemaining;
         }
 
 
@@ -126,9 +132,11 @@ namespace VEF.Weapons
             Scribe_Values.Look(ref this.maxCharges, "maxCharges", 0);
             Scribe_Values.Look(ref this.currentCharges, "currentCharges", 0);
             Scribe_Defs.Look(ref abilityWithCharges, "abilityWithCharges");
+        
             if (!GetDetails().NullOrEmpty())
             {
                 LongEventHandler.ExecuteWhenFinished(delegate { ChangeGraphic(); });
+                CalculateAbilities();
             }
         }
 
@@ -175,7 +183,7 @@ namespace VEF.Weapons
                 ability.RemainingCharges = currentCharges;
             }
             base.Notify_Equipped(pawn);
-           
+
         }
 
         public override void Notify_Unequipped(Pawn pawn)
@@ -197,7 +205,7 @@ namespace VEF.Weapons
                 pawn.abilities?.Notify_TemporaryAbilitiesChanged();
             }
             base.Notify_Unequipped(pawn);
-            
+
         }
 
         public override void Notify_KilledPawn(Pawn pawn)
@@ -211,5 +219,62 @@ namespace VEF.Weapons
                 }
             }
         }
+
+        public bool NeedsReload()
+        {
+            if (AbilityDetailsForWeapon(GetDetails()) == null)
+            {
+                return false;
+            }
+            return currentCharges != maxCharges;
+        }
+
+        public int MinAmmoNeeded()
+        {
+            if (!NeedsReload())
+            {
+                return 0;
+            }
+            return AbilityDetailsForWeapon(GetDetails()).ammoCountPerCharge;
+        }
+
+        public int MaxAmmoNeeded()
+        {
+            if (!NeedsReload())
+            {
+                return 0;
+            }
+            return AbilityDetailsForWeapon(GetDetails()).ammoCountPerCharge * (maxCharges - currentCharges);
+        }
+
+        public void ReloadFrom(Pawn pawn,Thing ammo)
+        {
+            if (!NeedsReload())
+            {
+                return;
+            }
+
+            if (ammo.stackCount < AbilityDetailsForWeapon(GetDetails()).ammoCountPerCharge)
+            {
+                return;
+            }
+            int num = Mathf.Clamp(ammo.stackCount / AbilityDetailsForWeapon(GetDetails()).ammoCountPerCharge, 0, maxCharges - currentCharges);
+            ammo.SplitOff(num * AbilityDetailsForWeapon(GetDetails()).ammoCountPerCharge).Destroy();
+            currentCharges += num;
+            Ability ability = pawn.abilities.GetAbility(abilityWithCharges);
+            ability.RemainingCharges += num;
+            if (AbilityDetailsForWeapon(GetDetails()).soundReload != null)
+            {
+                AbilityDetailsForWeapon(GetDetails()).soundReload.PlayOneShot(new TargetInfo(parent.PositionHeld, parent.MapHeld));
+            }
+        }
+
+        public void Notify_UsedAbility()
+        {
+            currentCharges--;
+        }
+
+      
+
     }
 }

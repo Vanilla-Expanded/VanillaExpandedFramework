@@ -46,8 +46,6 @@ namespace VEF.Weapons
 
         public ThingDef ammoDef;
 
-        public int ammoCountToRefill;
-
         public int ammoCountPerCharge;
 
         public int baseReloadTicks = 60;

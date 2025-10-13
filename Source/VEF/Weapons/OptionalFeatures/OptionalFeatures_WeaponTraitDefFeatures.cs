@@ -26,6 +26,9 @@ namespace VEF.Weapons
 
             harm.Patch(AccessTools.Method(typeof(CompUniqueWeapon), "AddTrait"),
                postfix: new HarmonyMethod(typeof(VanillaExpandedFramework_CompUniqueWeapon_AddTrait_Patch), "HandleExtendedWorker"));
+
+            harm.Patch(AccessTools.Method(typeof(Pawn_EquipmentTracker), "Notify_AbilityUsed"),
+               postfix: new HarmonyMethod(typeof(VanillaExpandedFramework_Pawn_EquipmentTracker_Notify_AbilityUsed_Patch), "NotifyAbilityUses"));
         }
     }
 }
