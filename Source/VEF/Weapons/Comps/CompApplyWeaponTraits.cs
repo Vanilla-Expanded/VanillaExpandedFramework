@@ -124,6 +124,8 @@ namespace VEF.Weapons
         {
             contentDetails.Clear();
             cachedComp = null;
+            cachedAbilityWithChargesDetails = null;
+            abilityWithCharges = null;
         }
 
         public override void PostExposeData()
