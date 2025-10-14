@@ -146,7 +146,7 @@ namespace VEF.Weapons
         {
             if (!this.parent.def.IsApparel)
             {
-                WeaponTraitDefExtension extension = GetDetails().Where(x => x.graphicOverrides != null && x.graphicOverrides.ContainsKey(this.parent.def))?.RandomElementByWeightWithFallback(x => x.graphicOverrideCommonality);
+                WeaponTraitDefExtension extension = GetDetails().Where(x => x.graphicOverrides != null && x.graphicOverrides.ContainsKey(this.parent.def))?.OrderByDescending(x => x.graphicOverridePriority).FirstOrFallback();
                 GraphicData data = extension?.graphicOverrides[this.parent.def] ?? this.parent.def.graphicData;
                 float size = GetDetails().Where(x => x.sizeMultiplier != 1)?.Select(x => x.sizeMultiplier)?.Aggregate(1, (float acc, float current) => acc * current) ?? 1;
                 Shader shader = data.shaderType?.Shader ?? ShaderTypeDefOf.Cutout.Shader;
