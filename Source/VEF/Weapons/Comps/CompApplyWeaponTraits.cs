@@ -215,9 +215,9 @@ namespace VEF.Weapons
             base.Notify_KilledPawn(pawn);
             foreach (WeaponTraitDefExtension extension in contentDetails)
             {
-                if (extension?.killThought != null)
+                if (extension?.killHediff != null)
                 {
-                    pawn.needs.mood.thoughts.memories.TryGainMemory(extension.killThought);
+                    pawn.health?.AddHediff(extension.killHediff);
                 }
             }
         }

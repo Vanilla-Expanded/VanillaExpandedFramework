@@ -24,8 +24,8 @@ namespace VEF.Weapons
         public float graphicOverridePriority = 100;
         //Add this ability to the wielder when equipping the weapon (and remove it when not in his possession)
         public AbilityDef abilityToAdd;
-        //Add this thought to the wielder when killing something with the weapon
-        public ThoughtDef killThought;
+        //Add this hediff to the wielder after killing a target
+        public HediffDef killHediff;
         //This scales the draw size of the weapon. What a silly thing.
         public float sizeMultiplier = 1;
         //This will make the gun create random projectiles every time it fires. Shenanigan potential: maximum
