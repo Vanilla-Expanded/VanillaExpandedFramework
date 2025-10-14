@@ -90,7 +90,7 @@ namespace PipeSystem
                 if (!Props.EverHasLowPowerMode)
                     return;
 
-                powerComp.PowerOutput = value ? powerComp.Props.idlePowerDraw : powerComp.Props.PowerConsumption;
+                powerComp.PowerOutput = value ? -powerComp.Props.idlePowerDraw : -powerComp.Props.PowerConsumption;
                 lowPowerModeOnInt = value;
             }
         }
