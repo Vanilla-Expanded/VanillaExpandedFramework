@@ -467,6 +467,7 @@
     <Compile Include="Buildings\DefModExtensions\SwappableBuildingDetails.cs" />
     <Compile Include="Buildings\MapComponents\MapComponent_InteractableBuildingsInMap.cs" />
     <Compile Include="Buildings\Misc\RecipeInheritance.cs" />
+    <Compile Include="Buildings\Placeworkers\PlaceWorker_OnSand.cs" />
     <Compile Include="Cooking\IngredientValueGetters\IngredientValueGetter_NutritionWithExtraIngredient.cs" />
     <Compile Include="Factions\Defs\ContrabandDef.cs" />
     <Compile Include="Factions\GameComponents\WorldComponent_FactionGoodwillImpactManager.cs" />
