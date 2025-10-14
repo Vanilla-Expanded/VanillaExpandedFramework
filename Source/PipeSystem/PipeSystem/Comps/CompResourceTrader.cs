@@ -210,18 +210,21 @@ namespace PipeSystem
         }
 
         /// <summary>
-        /// Managing ambient sound.
+        /// Managing refuelable and ambient sound.
         /// </summary>
         public override void CompTick()
         {
             base.CompTick();
 
-            // If we're handling the refueable comp we need to drain the fuel ourselves
-            if (Props.handleCompRefuelableTicking && ResourceOn && !LowPowerModeOn && !compRefuelable.Props.consumeFuelOnlyWhenUsed && (compFlickable == null || compFlickable.SwitchIsOn) && (!compRefuelable.Props.consumeFuelOnlyWhenPowered || powerComp is { PowerOn: true }))
-                compRefuelable.ConsumeFuel(compRefuelable.Props.fuelConsumptionRate / 60000f); // CompRefuelable.ConsumptionRatePerTick is private
-            // If we're handling the refuelable comp's ticking, we need to make sure to drain its fuel during rain
-            if (Props.handleCompRefuelableTicking && compRefuelable.Props.fuelConsumptionPerTickInRain > 0f && parent.Spawned && parent.Map.weatherManager.RainRate > 0.4f && !parent.Map.roofGrid.Roofed(parent.Position))
-                compRefuelable.ConsumeFuel(compRefuelable.Props.fuelConsumptionPerTickInRain);
+            if (Props.handleCompRefuelableTicking)
+            {
+                // If we're handling the refueable comp we need to drain the fuel ourselves
+                if (ResourceOn && !LowPowerModeOn && !compRefuelable.Props.consumeFuelOnlyWhenUsed && (compFlickable == null || compFlickable.SwitchIsOn) && (!compRefuelable.Props.consumeFuelOnlyWhenPowered || powerComp is { PowerOn: true }))
+                    compRefuelable.ConsumeFuel(compRefuelable.Props.fuelConsumptionRate / 60000f); // CompRefuelable.ConsumptionRatePerTick is private
+                // If we're handling the refuelable comp's ticking, we need to make sure to drain its fuel during rain
+                if (compRefuelable.Props.fuelConsumptionPerTickInRain > 0f && parent.Spawned && parent.Map.weatherManager.RainRate > 0.4f && !parent.Map.roofGrid.Roofed(parent.Position))
+                    compRefuelable.ConsumeFuel(compRefuelable.Props.fuelConsumptionPerTickInRain);
+            }
 
             if (Props.soundAmbientReceivingResource == null)
                 return;
