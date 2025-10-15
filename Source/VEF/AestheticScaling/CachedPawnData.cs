@@ -30,14 +30,25 @@ namespace VEF.AestheticScaling
             {
                 foreach (var cache in PawnDataCache.Cache.Values)
                 {
-                    if (cache.pawn != null)
+                    if (cache?.pawn != null && !cache.pawn.Discarded)
                         pawnsToRefresh.Enqueue(cache.pawn);
                 }
             }
             else if (Find.TickManager.TicksGame % 25 == 0)
             {
                 var cachedPawn = pawnsToRefresh.Dequeue();
-                PawnDataCache.GetPawnDataCache(cachedPawn, forceRefresh: true);
+                try
+                {
+                    if (cachedPawn != null && !cachedPawn.Discarded && (cachedPawn.Spawned || cachedPawn.Corpse?.Spawned == true))
+                    {
+                        PawnDataCache.GetPawnDataCache(cachedPawn, forceRefresh: true);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    PawnDataCache.Cache.TryRemove(cachedPawn, out _);
+                    throw ex;
+                }
             }
         }
     }
