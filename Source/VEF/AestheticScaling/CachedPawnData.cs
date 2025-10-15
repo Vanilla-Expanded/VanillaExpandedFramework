@@ -18,7 +18,10 @@ namespace VEF.AestheticScaling
         public static uint Tick = 0;
         public static uint Tick10 = 0;
 
-        public CachedPawnDataSlowUpdate(Game game) { }
+        public CachedPawnDataSlowUpdate(Game game)
+        {
+            PawnDataCache.Cache.Clear();
+        }
 
         public override void GameComponentTick()
         {
