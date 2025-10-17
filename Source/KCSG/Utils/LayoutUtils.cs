@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
@@ -23,7 +23,8 @@ namespace KCSG
             {
                 faction = null;
             }
-            else {
+            else
+            {
 
                 if (factionOverride != null)
                 {
@@ -33,21 +34,42 @@ namespace KCSG
                 {
                     faction = map.ParentFaction;
                 }
-                
+
             }
-         
-            var cells = rect.Cells.ToList();
+
+            Rot4 rot = Rot4.North;
+            if (layout.randomRotation)
+            {
+                rot = new Rot4(Rand.Range(0, 4));
+            }
+
+            IntVec2 rotatedSizes = rot.IsHorizontal ? new IntVec2(layout.sizes.z, layout.sizes.x) : layout.sizes;
+
+            int offsetX = (rect.Width - rotatedSizes.x) / 2;
+            int offsetZ = (rect.Height - rotatedSizes.z) / 2;
+            IntVec3 offset = new IntVec3(rect.minX + offsetX, 0, rect.minZ + offsetZ);
+
             for (int index = 0; index < layout.layouts.Count; index++)
             {
-                for (int h = 0; h < layout.sizes.z; h++)
+                for (int z = 0; z < rotatedSizes.z; z++)
                 {
-                    for (int w = 0; w < layout.sizes.x; w++)
+                    for (int x = 0; x < rotatedSizes.x; x++)
                     {
-                        var cell = cells[(h * layout.sizes.x) + w];
-                        var symbol = layout._layouts[index][h, w];
+                        IntVec3 cell = new IntVec3(x, 0, z) + offset;
+                        var srcCoords = GetSourceCoords(x, z, rot, layout.sizes);
+                        var symbol = layout._layouts[index][srcCoords.z, srcCoords.x];
 
                         if (cell.InBounds(map) && symbol != null)
-                            symbol.Generate(layout, map, cell, faction, wallForRoom);
+                        {
+                            if (symbol.thingDef != null && !symbol.thingDef.rotatable)
+                            {
+                                IntVec2 size = symbol.thingDef.size;
+                                GenAdj.AdjustForRotation(ref cell, ref size, symbol.rotation, rot);
+                            }
+
+                            var rotatedSymbol = CreateRotatedSymbol(symbol, rot);
+                            rotatedSymbol.Generate(layout, map, cell, faction, wallForRoom);
+                        }
                     }
                 }
             }
@@ -61,25 +83,53 @@ namespace KCSG
             {
                 Log.Message("[VEF] Failed to reconnect exported power buildings: " + ex);
             }
-            // Generate terrain
-            GenerateTerrainGrid(layout, cells, map);
-            // Generate roof
-            GenerateRoofGrid(layout, cells, map);
+            GenerateTerrainGrid(layout, map, rot, rotatedSizes, offset);
+            GenerateRoofGrid(layout, map, rot, rotatedSizes, offset);
         }
 
-        /// <summary>
-        /// Generate roof from layout resolved roof grid
-        /// </summary>
-        private static void GenerateRoofGrid(StructureLayoutDef layout, List<IntVec3> cells, Map map)
+        private static IntVec3 GetSourceCoords(int x, int z, Rot4 rot, IntVec2 srcSize)
+        {
+            switch (rot.AsInt)
+            {
+                case 0:
+                    return new IntVec3(x, 0, z);
+                case 1:
+                    return new IntVec3(srcSize.x - 1 - z, 0, x);
+                case 2:
+                    return new IntVec3(srcSize.x - 1 - x, 0, srcSize.z - 1 - z);
+                case 3:
+                    return new IntVec3(z, 0, srcSize.z - 1 - x);
+                default:
+                    return IntVec3.Invalid;
+            }
+        }
+
+        private static SymbolDef CreateRotatedSymbol(SymbolDef symbolToCopy, Rot4 rot)
+        {
+            if (rot == Rot4.North || symbolToCopy.thingDef == null)
+            {
+                return symbolToCopy;
+            }
+            SymbolDef newSymbol = symbolToCopy.ShallowClone();
+            newSymbol.defName = $"{symbolToCopy.defName}_runtime_rotated_{rot.AsInt}";
+            if (newSymbol.thingDef.rotatable)
+            {
+                newSymbol.rotation = symbolToCopy.rotation.Rotated(Rot4.GetRelativeRotation(Rot4.North, rot));
+            }
+
+            return newSymbol;
+        }
+        private static void GenerateRoofGrid(StructureLayoutDef layout, Map map, Rot4 rot, IntVec2 rotatedSizes, IntVec3 offset)
         {
             if (layout._roofGrid != null && layout._roofGrid.Length > 0)
             {
-                for (int h = 0; h < layout.sizes.z; h++)
+                for (int z = 0; z < rotatedSizes.z; z++)
                 {
-                    for (int w = 0; w < layout.sizes.x; w++)
+                    for (int x = 0; x < rotatedSizes.x; x++)
                     {
-                        var cell = cells[(h * layout.sizes.x) + w];
-                        var roof = layout._roofGrid[h, w];
+                        var cell = new IntVec3(x, 0, z) + offset;
+                        var srcCoords = GetSourceCoords(x, z, rot, layout.sizes);
+                        var roof = layout._roofGrid[srcCoords.z, srcCoords.x];
 
                         if (cell.InBounds(map) && roof != null)
                         {
@@ -127,21 +177,20 @@ namespace KCSG
 
             GenOption.DespawnMineableAt(cell);
         }
-
         /// <summary>
         /// Generate terrain grid from layout
         /// </summary>
-        private static void GenerateTerrainGrid(StructureLayoutDef layout, List<IntVec3> cells, Map map)
+        private static void GenerateTerrainGrid(StructureLayoutDef layout, Map map, Rot4 rot, IntVec2 rotatedSizes, IntVec3 offset)
         {
-            // Handle foundation grid first
             if (layout._foundationGrid != null && layout._foundationGrid.Length > 0)
             {
-                for (int h = 0; h < layout.sizes.z; h++)
+                for (int z = 0; z < rotatedSizes.z; z++)
                 {
-                    for (int w = 0; w < layout.sizes.x; w++)
+                    for (int x = 0; x < rotatedSizes.x; x++)
                     {
-                        var cell = cells[(h * layout.sizes.x) + w];
-                        var foundation = layout._foundationGrid[h, w];
+                        var cell = new IntVec3(x, 0, z) + offset;
+                        var srcCoords = GetSourceCoords(x, z, rot, layout.sizes);
+                        var foundation = layout._foundationGrid[srcCoords.z, srcCoords.x];
                         if (foundation == null || !cell.InBounds(map))
                             continue;
 
@@ -150,16 +199,16 @@ namespace KCSG
                     }
                 }
             }
-
             // Handle under grid
             if (layout._underGrid != null && layout._underGrid.Length > 0)
             {
-                for (int h = 0; h < layout.sizes.z; h++)
+                for (int z = 0; z < rotatedSizes.z; z++)
                 {
-                    for (int w = 0; w < layout.sizes.x; w++)
+                    for (int x = 0; x < rotatedSizes.x; x++)
                     {
-                        var cell = cells[(h * layout.sizes.x) + w];
-                        var under = layout._underGrid[h, w];
+                        var cell = new IntVec3(x, 0, z) + offset;
+                        var srcCoords = GetSourceCoords(x, z, rot, layout.sizes);
+                        var under = layout._underGrid[srcCoords.z, srcCoords.x];
                         if (under == null || !cell.InBounds(map))
                             continue;
 
@@ -167,16 +216,16 @@ namespace KCSG
                     }
                 }
             }
-
             // Handle temp grid
             if (layout._tempGrid != null && layout._tempGrid.Length > 0)
             {
-                for (int h = 0; h < layout.sizes.z; h++)
+                for (int z = 0; z < rotatedSizes.z; z++)
                 {
-                    for (int w = 0; w < layout.sizes.x; w++)
+                    for (int x = 0; x < rotatedSizes.x; x++)
                     {
-                        var cell = cells[(h * layout.sizes.x) + w];
-                        var temp = layout._tempGrid[h, w];
+                        var cell = new IntVec3(x, 0, z) + offset;
+                        var srcCoords = GetSourceCoords(x, z, rot, layout.sizes);
+                        var temp = layout._tempGrid[srcCoords.z, srcCoords.x];
                         if (temp == null || !cell.InBounds(map))
                             continue;
 
@@ -185,32 +234,29 @@ namespace KCSG
                     }
                 }
             }
-
             // Handle terrain grid
             if (layout._terrainGrid == null || layout._terrainGrid.Length == 0)
                 return;
 
             var useColorGrid = layout._terrainColorGrid != null && layout._terrainColorGrid.Length > 0;
-            for (int h = 0; h < layout.sizes.z; h++)
+            for (int z = 0; z < rotatedSizes.z; z++)
             {
-                for (int w = 0; w < layout.sizes.x; w++)
+                for (int x = 0; x < rotatedSizes.x; x++)
                 {
-                    var cell = cells[(h * layout.sizes.x) + w];
-                    var terrain = layout._terrainGrid[h, w];
+                    var cell = new IntVec3(x, 0, z) + offset;
+                    var srcCoords = GetSourceCoords(x, z, rot, layout.sizes);
+                    var terrain = layout._terrainGrid[srcCoords.z, srcCoords.x];
                     if (terrain == null || !cell.InBounds(map))
                         continue;
-                    //if (!cell.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy))
-                    //{
-                    //    map.terrainGrid.SetTerrain(cell, TerrainDefOf.Bridge);
-                    //}
-                    //else
-                    //{
+
                     GenOption.DespawnMineableAt(cell);
                     map.terrainGrid.SetTerrain(cell, terrain);
-                    //}
 
                     if (useColorGrid)
-                        map.terrainGrid.SetTerrainColor(cell, layout._terrainColorGrid[h, w]);
+                    {
+                        var color = layout._terrainColorGrid[srcCoords.z, srcCoords.x];
+                        map.terrainGrid.SetTerrainColor(cell, color);
+                    }
                 }
             }
         }

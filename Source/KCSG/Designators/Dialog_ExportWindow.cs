@@ -32,6 +32,7 @@ namespace KCSG
         public static bool randomizeWallStuffAtGen = false;
         public static bool saveFuel = false;
         public static bool savePower = false;
+        public static bool randomRotation = false;
 
         private readonly Area area;
         private readonly Map map;
@@ -59,7 +60,7 @@ namespace KCSG
             exportedSymbolsDef = ExportUtils.CreateSymbolIfNeeded(area);
         }
 
-        public override Vector2 InitialSize => new Vector2(650f, 550f);
+        public override Vector2 InitialSize => new Vector2(650f, 580f);
 
         public override void DoWindowContents(Rect inRect)
         {
@@ -107,6 +108,8 @@ namespace KCSG
             lst.Gap(5);
 
             lst.CheckboxLabeled("Randomize wall stuff:", ref randomizeWallStuffAtGen, "Randomize wall stuff at generation");
+            lst.Gap(5);
+            lst.CheckboxLabeled("Random rotation:", ref randomRotation, "Randomize rotation at generation");
             lst.Gap(5);
             var oldSaveFuel = saveFuel;
             lst.CheckboxLabeled("Save fuel:", ref saveFuel, "Save fuel values from pipenet and vanilla comprefuelable");

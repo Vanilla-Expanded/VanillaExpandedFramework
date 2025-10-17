@@ -55,16 +55,6 @@ namespace KCSG
         public IntVec2 Sizes { get => sizes; }
 
         /// <summary>
-        /// Get foundation terrain at position
-        /// </summary>
-        public TerrainDef FoundationAt(int h, int w)
-        {
-            if (_foundationGrid == null || h < 0 || w < 0 || h >= sizes.z || w >= sizes.x)
-                return null;
-            return _foundationGrid[h, w];
-        }
-
-        /// <summary>
         /// Resolve layout infos
         /// </summary>
         public void ResolveLayouts()
@@ -490,6 +480,9 @@ namespace KCSG
 
             if (randomizeWallStuffAtGen)
                 layoutDef.Add(new XElement("randomizeWallStuffAtGen", randomizeWallStuffAtGen));
+
+            if (randomRotation)
+                layoutDef.Add(new XElement("randomRotation", randomRotation));
 
             if (!tags.NullOrEmpty())
             {

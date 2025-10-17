@@ -135,5 +135,13 @@ namespace KCSG
 
             return layoutDef.ToString();
         }
+
+       /// <summary>
+       /// Creates a shallow copy of this SymbolDef. This is used for rotation to avoid modifying the original Def in the database.
+       /// </summary>
+       public SymbolDef ShallowClone()
+       {
+           return (SymbolDef)this.MemberwiseClone();
+       }
     }
 }
