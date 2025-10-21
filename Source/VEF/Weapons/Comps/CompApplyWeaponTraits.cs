@@ -7,6 +7,7 @@ using static HarmonyLib.Code;
 using Verse.Sound;
 
 
+
 namespace VEF.Weapons
 {
     public class CompApplyWeaponTraits : ThingComp
@@ -14,8 +15,8 @@ namespace VEF.Weapons
         public AbilityWithChargesDetails cachedAbilityWithChargesDetails;
         public AbilityDef abilityWithCharges;
         public int maxCharges;
-        public int currentCharges;
-
+        public int currentCharges; 
+     
         public string LabelRemaining => $"{currentCharges} / {maxCharges}";
 
         List<WeaponTraitDefExtension> contentDetails = new List<WeaponTraitDefExtension>();
@@ -134,7 +135,7 @@ namespace VEF.Weapons
             Scribe_Values.Look(ref this.maxCharges, "maxCharges", 0);
             Scribe_Values.Look(ref this.currentCharges, "currentCharges", 0);
             Scribe_Defs.Look(ref abilityWithCharges, "abilityWithCharges");
-        
+          
             if (!GetDetails().NullOrEmpty())
             {
                 LongEventHandler.ExecuteWhenFinished(delegate { ChangeGraphic(); });
@@ -173,6 +174,11 @@ namespace VEF.Weapons
                 if (extension?.abilityToAdd != null)
                 {
                     pawn.abilities?.GainAbility(extension.abilityToAdd);
+                    if (extension.abilityToAdd.cooldownTicksRange != null)
+                    {
+                        Ability ability = pawn.abilities.GetAbility(extension.abilityToAdd);
+                        ability.StartCooldown(ability.def.cooldownTicksRange.RandomInRange);
+                    }                  
                     pawn.abilities?.Notify_TemporaryAbilitiesChanged();
                 }
             }
@@ -193,8 +199,8 @@ namespace VEF.Weapons
             foreach (WeaponTraitDefExtension extension in contentDetails)
             {
                 if (extension?.abilityToAdd != null)
-                {
-                    pawn.abilities?.RemoveAbility(extension.abilityToAdd);
+                {                 
+                    pawn.abilities?.RemoveAbility(extension.abilityToAdd);                   
                     pawn.abilities?.Notify_TemporaryAbilitiesChanged();
                 }
             }
