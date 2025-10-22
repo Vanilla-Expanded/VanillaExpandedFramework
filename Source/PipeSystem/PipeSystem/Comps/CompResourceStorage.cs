@@ -4,7 +4,6 @@ using System.Text;
 using RimWorld;
 using UnityEngine;
 using Verse;
-using static UnityEngine.Scripting.GarbageCollector;
 using static Verse.GenDraw;
 
 namespace PipeSystem
@@ -34,7 +33,18 @@ namespace PipeSystem
 
         public new CompProperties_ResourceStorage Props => (CompProperties_ResourceStorage)props;
 
-        public float AmountStored => amountStored;
+        public float AmountStored
+        {
+            get => amountStored;
+            private set
+            {
+                amountStored = value;
+                // Delete the drain designation if it's present and we can no longer drain from the storage
+                if (parent.Map != null && !CanExtract)
+                    parent.Map.designationManager.DesignationOn(parent, PSDefOf.PS_Drain)?.Delete();
+            }
+        }
+
         public float AmountStoredPct => amountStored / Props.storageCapacity;
         public float AmountCanAccept
         {
@@ -49,6 +59,18 @@ namespace PipeSystem
         }
 
         public bool ContentCanRot { get; private set; }
+
+        private bool CanExtract
+        {
+            get
+            {
+                var opt = Props.extractOptions;
+                if (opt == null)
+                    return false;
+
+                return CurrentManualExtractAmount().itemAmount >= 1;
+            }
+        }
 
         /// <summary>
         /// Ticks methods are only needed for contentRequirePower
@@ -70,13 +92,17 @@ namespace PipeSystem
 
             if (!powerComp.PowerOn && amountStored > 0)
             {
-                if (Props.preventRotInNegativeTemp && parent.Position.GetTemperature(parent.Map) < 0)
-                    return;
+                if (Props.preventRotInNegativeTemp)
+                {
+                    var map = parent.MapHeld;
+                    if (map == null || parent.Position.GetTemperature(map) < 0)
+                        return;
+                }
 
                 ticksWithoutPower += ticks;
                 if (ticksWithoutPower > GenDate.TicksPerDay * Props.daysToRotStart)
                 {
-                    amountStored = 0;
+                    AmountStored = 0;
                     Messages.Message("PipeSystem_StorageContentRotted".Translate(parent.def.LabelCap), parent, MessageTypeDefOf.NegativeEvent);
                     ticksWithoutPower = 0;
                 }
@@ -126,8 +152,8 @@ namespace PipeSystem
                         markedForExtract = !markedForExtract;
                         UpdateDesignation(parent);
                     },
-                    defaultLabel = Props.extractOptions.labelKey.Translate(),
-                    defaultDesc = Props.extractOptions.descKey.Translate(),
+                    defaultLabel = Props.extractOptions.labelKey.Translate(ExtractResourceArguments()),
+                    defaultDesc = Props.extractOptions.descKey.Translate(ExtractResourceArguments()),
                     icon = Props.extractOptions.tex
                 };
             }
@@ -209,7 +235,7 @@ namespace PipeSystem
         /// </summary>
         public override void PostExposeData()
         {
-            if (amountStored > Props.storageCapacity) amountStored = Props.storageCapacity;
+            if (amountStored > Props.storageCapacity) AmountStored = Props.storageCapacity;
 
             Scribe_Values.Look(ref amountStored, "storedResource", 0f);
             Scribe_Values.Look(ref ticksWithoutPower, "tickWithoutPower");
@@ -224,14 +250,68 @@ namespace PipeSystem
         /// </summary>
         public override void PostDestroy(DestroyMode mode, Map previousMap)
         {
-            if (Props.destroyOption != null)
+            // Only drop stuff in those specific 4 destroy modes.
+            // Vanish and QuestLogic generally don't leave anything behind. WillReplace, as name suggests, will replace the thing that is destroyed.
+            // Deconstruct, FailConstruction, and Cancel only apply to blueprints and frames, so they won't be called.
+            if (previousMap != null && Props.destroyOptions.HasData() && mode is DestroyMode.KillFinalize or DestroyMode.KillFinalizeLeavingsOnly or DestroyMode.Deconstruct or DestroyMode.Refund)
             {
                 var pos = parent.Position;
-                int num = (int)(amountStored / Props.destroyOption.ratio);
-                for (int i = 0; i < num; i++)
+
+                foreach (var destroyOption in Props.destroyOptions)
                 {
-                    FilthMaker.TryMakeFilth(CellFinder.StandableCellNear(pos, previousMap, Props.destroyOption.maxRadius), previousMap, Props.destroyOption.filth);
+                    // Check if we're allowed to spawn stuff and move on to the next destroy option
+                    switch (mode)
+                    {
+                        case DestroyMode.KillFinalize when !destroyOption.spawnWhenDestroyed:
+                        case DestroyMode.KillFinalizeLeavingsOnly when !destroyOption.spawnWhenDestroyed: // Probably will never trigger
+                        case DestroyMode.Deconstruct when !destroyOption.spawnWhenDeconstructed:
+                        case DestroyMode.Refund when !destroyOption.spawnWhenRefunded:
+                            continue;
+                    }
+
+                    var count = destroyOption.amount;
+                    // Avoid division by 0
+                    if (!Mathf.Approximately(destroyOption.ratio, 0f))
+                        count += Mathf.FloorToInt(amountStored / destroyOption.ratio);
+                    var def = destroyOption.thing;
+
+                    if (def.IsFilth)
+                    {
+                        for (var i = 0; i < count; i++)
+                        {
+                            FilthMaker.TryMakeFilth(CellFinder.StandableCellNear(pos, previousMap, destroyOption.maxRadius), previousMap, def);
+                        }
+                    }
+                    else
+                    {
+                        ThingPlaceMode placeMode;
+                        int squareRadius;
+
+                        if (destroyOption.maxRadius > 0)
+                        {
+                            placeMode = ThingPlaceMode.Radius;
+                            squareRadius = destroyOption.maxRadius * destroyOption.maxRadius;
+                        }
+                        else
+                        {
+                            placeMode = ThingPlaceMode.Near;
+                            squareRadius = 1;
+                        }
+
+                        while (count > 0)
+                        {
+                            var thing = ThingMaker.MakeThing(def);
+                            if (thing.def.CanHaveFaction && parent.Faction is {} faction)
+                                thing.SetFaction(faction);
+                            if (destroyOption.spawnMinified)
+                                thing = thing.TryMakeMinified();
+                            thing.stackCount = Mathf.Min(count, thing.def.stackLimit);
+                            count -= thing.stackCount;
+                            GenPlace.TryPlaceThing(thing, pos, previousMap, placeMode, squareRadius: squareRadius);
+                        }
+                    }
                 }
+
             }
             base.PostDestroy(mode, previousMap);
         }
@@ -247,9 +327,9 @@ namespace PipeSystem
                 Log.Error("[PipeSystem] Cannot add negative resource " + amount);
                 return;
             }
-            amountStored += amount;
+            AmountStored += amount;
             if (amountStored > Props.storageCapacity) // Capping the amount to the maximum acceptable
-                amountStored = Props.storageCapacity;
+                AmountStored = Props.storageCapacity;
         }
 
         /// <summary>
@@ -258,18 +338,18 @@ namespace PipeSystem
         /// <param name="amount">Amount to withdraw</param>
         public void DrawResource(float amount)
         {
-            amountStored -= amount;
+            AmountStored -= amount;
             if (amountStored < 0f) // If we withdrawn to much, error and set stored amount to 0
             {
                 Log.Error("[PipeSystem] Drawing resource we don't have from " + parent);
-                amountStored = 0f;
+                AmountStored = 0f;
             }
         }
 
         /// <summary>
         /// Empty storage
         /// </summary>
-        public void Empty() => amountStored = 0;
+        public void Empty() => AmountStored = 0;
 
         /// <summary>
         /// Handle breakdown signal
@@ -277,7 +357,7 @@ namespace PipeSystem
         public override void ReceiveCompSignal(string signal)
         {
             if (signal == CompBreakdownable.BreakdownSignal) // If the parent break down, we set the amount stored to 0
-                amountStored = 0f;
+                AmountStored = 0f;
         }
 
         /// <summary>
@@ -292,7 +372,7 @@ namespace PipeSystem
             if (markedForTransfer)
                 sb.AppendInNewLine("PipeSystem_MarkedToTransferContent".Translate());
 
-            if (ContentCanRot && !powerComp.PowerOn && amountStored > 0 && (!Props.preventRotInNegativeTemp || parent.Position.GetTemperature(parent.Map) >= 0))
+            if (ContentCanRot && !powerComp.PowerOn && amountStored > 0 && (!Props.preventRotInNegativeTemp || parent.MapHeld == null || parent.Position.GetTemperature(parent.MapHeld) >= 0))
                 sb.AppendInNewLine("PipeSystem_ContentWillRot".Translate(((int)((GenDate.TicksPerDay * Props.daysToRotStart) - ticksWithoutPower)).ToStringTicksToPeriod()));
 
             sb.AppendInNewLine(base.CompInspectStringExtra());
@@ -315,7 +395,10 @@ namespace PipeSystem
 
             if (extractGizmo != null)
             {
-                extractGizmo.Disabled = AmountStored < extractResourceAmount;
+                if (CanExtract)
+                    extractGizmo.Disabled = false;
+                else
+                    extractGizmo.Disable(Props.extractOptions.disabledReasonKey.NullOrEmpty() ? null : Props.extractOptions.disabledReasonKey.Translate(ExtractResourceArguments()));
                 yield return extractGizmo;
             }
 
@@ -326,7 +409,7 @@ namespace PipeSystem
                     defaultLabel = "DEBUG: Fill",
                     action = new Action(() =>
                     {
-                        amountStored = Props.storageCapacity;
+                        AmountStored = Props.storageCapacity;
                     })
                 };
                 yield return new Command_Action
@@ -335,9 +418,9 @@ namespace PipeSystem
                     action = new Action(() =>
                     {
                         if (amountStored + 5 > Props.storageCapacity)
-                            amountStored = Props.storageCapacity;
+                            AmountStored = Props.storageCapacity;
                         else
-                            amountStored += 5;
+                            AmountStored += 5;
                     })
                 };
                 yield return new Command_Action
@@ -345,7 +428,7 @@ namespace PipeSystem
                     defaultLabel = "DEBUG: Empty",
                     action = new Action(() =>
                     {
-                        amountStored = 0f;
+                        AmountStored = 0f;
                     })
                 };
             }
@@ -365,6 +448,44 @@ namespace PipeSystem
             {
                 designation.Delete();
             }
+        }
+
+        private NamedArgument[] ExtractResourceArguments()
+        {
+            var opt = Props.extractOptions;
+            if (opt == null)
+                return [];
+
+            var itemExtractAmount = Mathf.FloorToInt(amountStored / opt.ratio);
+
+            // Check comments in CompProperties_ResourceStorage.ExtractOptions class for explanation/more info
+            return
+            [
+                (opt.extractExactAmount ? extractResourceAmount : opt.ratio).Named("RESOURCEMIN"),
+                amountStored.Named("RESOURCECOUNT"),
+                (itemExtractAmount * opt.ratio).Named("RESOURCEEXTRACTCOUNT"),
+                extractResourceAmount.Named("RESOURCEMAX"),
+                (opt.extractExactAmount ? opt.extractAmount : 1).Named("THINGMIN"),
+                itemExtractAmount.Named("THINGCOUNT"),
+                itemExtractAmount.Named("THINGEXTRACTCOUNT"),
+                opt.extractAmount.Named("THINGMAX")
+            ];
+        }
+
+        public (float resourceAmount, int itemAmount) CurrentManualExtractAmount()
+        {
+            var opt = Props.extractOptions;
+            if (opt == null)
+                return (0, 0);
+            if (opt.extractExactAmount)
+            {
+                if (AmountStored < extractResourceAmount)
+                    return (0, 0);
+                return (extractResourceAmount, opt.extractAmount);
+            }
+
+            var itemAmount = Mathf.FloorToInt(Mathf.Min(AmountStored, extractResourceAmount) / opt.ratio);
+            return (itemAmount * opt.ratio, itemAmount);
         }
     }
 }

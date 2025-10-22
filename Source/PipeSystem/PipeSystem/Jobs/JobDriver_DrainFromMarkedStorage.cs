@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 
@@ -13,31 +14,39 @@ namespace PipeSystem
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
-            this.FailOnDespawnedOrNull(TargetIndex.A);
+            this.FailOnDespawnedNullOrForbidden(TargetIndex.A);
             this.FailOn(() => Map.designationManager.DesignationOn(TargetThingA, PSDefOf.PS_Drain) == null);
 
             var thing = job.targetA.Thing;
             var compRS = thing.TryGetComp<CompResourceStorage>();
-            this.FailOn(() => compRS == null);
+            this.FailOn(() => compRS?.Props.extractOptions == null);
+            this.FailOn(() => compRS.CurrentManualExtractAmount().itemAmount <= 0);
 
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
-            yield return Toils_General.Wait(compRS.Props.extractOptions.extractTime).FailOnCannotTouch(TargetIndex.A, PathEndMode.Touch).FailOnDestroyedOrNull(TargetIndex.A).WithProgressBarToilDelay(TargetIndex.A);
+            var extractTime = compRS.Props.extractOptions.extractTime;
+            if (compRS.Props.extractOptions.extractTimeScalesWithAmount)
+                extractTime *= compRS.CurrentManualExtractAmount().itemAmount;
+            yield return Toils_General.Wait(Mathf.Max(Mathf.RoundToInt(extractTime), 1)).FailOnCannotTouch(TargetIndex.A, PathEndMode.Touch).FailOnDestroyedOrNull(TargetIndex.A).WithProgressBarToilDelay(TargetIndex.A);
 
-            Toil finalize = new Toil
+            Toil finalize = ToilMaker.MakeToil();
+            finalize.initAction = delegate
             {
-                initAction = delegate
+                var (extractResourceAmount, extractItemAmount) = compRS.CurrentManualExtractAmount();
+                var opt = compRS.Props.extractOptions;
+
+                compRS.DrawResource(extractResourceAmount);
+
+                while (extractItemAmount > 0)
                 {
-                    compRS.DrawResource(compRS.extractResourceAmount);
+                    var createdThing = ThingMaker.MakeThing(opt.thing);
+                    createdThing.stackCount = Mathf.Min(extractItemAmount, createdThing.def.stackLimit);
+                    extractItemAmount -= createdThing.stackCount;
+                    GenPlace.TryPlaceThing(createdThing, pawn.Position, Map, ThingPlaceMode.Near);
+                }
 
-                    var opt = compRS.Props.extractOptions;
-                    Thing createdThing = ThingMaker.MakeThing(opt.thing);
-                    createdThing.stackCount = opt.extractAmount;
-                    GenSpawn.Spawn(createdThing, pawn.Position, Map, WipeMode.VanishOrMoveAside);
-
-                    Map.designationManager.DesignationOn(thing, PSDefOf.PS_Drain)?.Delete();
-                },
-                defaultCompleteMode = ToilCompleteMode.Instant
+                Map.designationManager.DesignationOn(thing, PSDefOf.PS_Drain)?.Delete();
             };
+            finalize.defaultCompleteMode = ToilCompleteMode.Instant;
             yield return finalize;
         }
     }
