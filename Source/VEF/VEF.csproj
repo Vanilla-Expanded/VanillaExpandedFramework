@@ -614,6 +614,7 @@
     <Compile Include="Buildings\Comps\CompCustomCauseHediff_AoE.cs" />
     <Compile Include="Buildings\Comps\CompCustomizableGraphic.cs" />
     <Compile Include="Graphics\Comps\CompGlower_DirtyMapMesh.cs" />
+    <Compile Include="Plants\DefExtensions\WinterBloomingExtension.cs" />
     <Compile Include="Plants\Plants\Plant_AffectedByFog.cs" />
     <Compile Include="Plants\Plants\Plant_AffectedBySnow.cs" />
     <Compile Include="Plants\Plants\Plant_ChecksSea.cs" />
@@ -624,6 +625,7 @@
     <Compile Include="Plants\Plants\Plant_PrefersRockyAndNoFrost.cs" />
     <Compile Include="Plants\Plants\Plant_Resistant.cs" />
     <Compile Include="Plants\Plants\Plant_WaterNearby.cs" />
+    <Compile Include="Plants\Plants\Plant_WinterBlooming.cs" />
     <Compile Include="Storyteller\AI\JobDrivers\JobDriver_UseQuestGiver.cs" />
     <Compile Include="Storyteller\Comps\CompQuestGiver.cs" />
     <Compile Include="Storyteller\DefModExtensions\StorytellerDefExtension.cs" />
