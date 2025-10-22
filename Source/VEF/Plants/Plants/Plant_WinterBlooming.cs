@@ -15,7 +15,7 @@ namespace VEF.Plants
     {
         private static Graphic GraphicSowing = GraphicDatabase.Get<Graphic_Single>("Things/Plant/Plant_Sowing", ShaderDatabase.Cutout, Vector2.one, Color.white);
 
-        private static Graphic GraphicWinter = GraphicDatabase.Get<Graphic_Random>("Things/Plant/Trees/VCE_TreeCherry_Blossomed", ShaderDatabase.CutoutPlant, Vector2.one, Color.white);
+        private static Graphic GraphicWinter = GraphicDatabase.Get<Graphic_Random>("Things/Plant/TreeOak", ShaderDatabase.CutoutPlant, Vector2.one, Color.white);
 
 
         private bool? extensionPresent;
