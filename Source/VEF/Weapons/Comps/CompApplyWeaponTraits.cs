@@ -169,6 +169,12 @@ namespace VEF.Weapons
 
         public override void Notify_Equipped(Pawn pawn)
         {
+            if (!GetDetails().NullOrEmpty())
+            {
+                LongEventHandler.ExecuteWhenFinished(delegate { ChangeGraphic(); });
+            
+            }
+
             foreach (WeaponTraitDefExtension extension in contentDetails)
             {
                 if (extension?.abilityToAdd != null)
