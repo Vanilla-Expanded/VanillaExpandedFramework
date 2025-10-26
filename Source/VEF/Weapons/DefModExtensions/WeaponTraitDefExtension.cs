@@ -26,6 +26,7 @@ namespace VEF.Weapons
         public AbilityDef abilityToAdd;
         //Add this hediff to the wielder after killing a target
         public HediffDef killHediff;
+        public float killHediffSeverity = 1;
         //This scales the draw size of the weapon. What a silly thing.
         public float sizeMultiplier = 1;
         //This will make the gun create random projectiles every time it fires. Shenanigan potential: maximum

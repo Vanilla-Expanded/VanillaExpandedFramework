@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using static HarmonyLib.Code;
 using Verse.Sound;
+using System;
 
 
 
@@ -229,7 +230,16 @@ namespace VEF.Weapons
             {
                 if (extension?.killHediff != null)
                 {
-                    pawn.health?.AddHediff(extension.killHediff);
+                    float num = extension.killHediffSeverity;
+                    if (extension.killHediff== HediffDefOf.ToxicBuildup)
+                    {                       
+                        num *= Mathf.Max(1f - pawn.GetStatValue(StatDefOf.ToxicResistance), 0f);
+                        num *= Mathf.Max(1f - pawn.GetStatValue(StatDefOf.ToxicEnvironmentResistance), 0f);                                        
+                    }
+                    if (num != 0f)
+                    {
+                        HealthUtility.AdjustSeverity(pawn, extension.killHediff, num);
+                    }
                 }
             }
         }
