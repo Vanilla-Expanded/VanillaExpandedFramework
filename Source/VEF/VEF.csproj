@@ -732,6 +732,7 @@
     <Compile Include="Weapons\Misc\MeshMakerLaser.cs" />
     <Compile Include="Weapons\Motes\MoteLaserDecoration.cs" />
     <Compile Include="Weapons\Projectiles\LaserBeam.cs" />
+    <Compile Include="Weapons\Projectiles\Projectile_Attachments.cs" />
     <Compile Include="Weapons\Projectiles\Projectile_Shrapnel.cs" />
     <Compile Include="Storyteller\Defs\QuestChainDef.cs" />
     <Compile Include="Storyteller\DefModExtensions\UniqueCharacterExtension .cs" />
