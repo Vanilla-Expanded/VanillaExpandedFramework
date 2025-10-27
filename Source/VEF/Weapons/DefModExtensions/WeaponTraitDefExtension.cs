@@ -34,6 +34,8 @@ namespace VEF.Weapons
         //If true, the MaxHitPoints stat of the weapon will be refreshed when the trait is added. This only works if the WeaponTraitDef
         //is assigned VEF.Weapons.WeaponTraitWorker_Extended as its workerClass
         public bool refreshMaxHitPointsStat = false;
+        //Conditional stat affecters, like those in genes and precepts, are possible now
+        public List<ConditionalStatAffecter> conditionalStatAffecters;
         //This is a system to add abilities with charges via traits, hopefully working better than the vanilla system
         public AbilityWithChargesDetails abilityWithCharges;
 

@@ -6,6 +6,8 @@ using System.Linq;
 using static HarmonyLib.Code;
 using Verse.Sound;
 using System;
+using System.Text;
+using static Unity.IO.LowLevel.Unsafe.AsyncReadManagerMetrics;
 
 
 
@@ -242,6 +244,102 @@ namespace VEF.Weapons
                     }
                 }
             }
+        }
+
+        public override float GetStatFactor(StatDef stat)
+        {
+            float num = 1f;
+            if (GetDetails()?.Count > 0)
+            {
+                foreach (WeaponTraitDefExtension extension in GetDetails())
+                {
+                    if (!extension.conditionalStatAffecters.NullOrEmpty())
+                    {
+                        for (int i = 0; i < extension.conditionalStatAffecters.Count; i++)
+                        {
+                            ConditionalStatAffecter conditionalStatAffecter = extension.conditionalStatAffecters[i];
+                            if (conditionalStatAffecter.statFactors != null && conditionalStatAffecter.Applies(StatRequest.For(this.parent)))
+                            {
+                                num *= conditionalStatAffecter.statFactors.GetStatFactorFromList(stat);
+                            }
+                        }
+                    }
+
+                }
+
+            }
+               
+            return num;
+        }
+
+        public override float GetStatOffset(StatDef stat)
+        {
+            float num = 0f;
+            if (GetDetails()?.Count > 0)
+            {
+                foreach (WeaponTraitDefExtension extension in GetDetails())
+                {
+                    if (!extension.conditionalStatAffecters.NullOrEmpty())
+                    {
+                        for (int i = 0; i < extension.conditionalStatAffecters.Count; i++)
+                        {
+                            ConditionalStatAffecter conditionalStatAffecter = extension.conditionalStatAffecters[i];
+                            if (conditionalStatAffecter.statOffsets != null && conditionalStatAffecter.Applies(StatRequest.For(this.parent)))
+                            {
+                                num += conditionalStatAffecter.statOffsets.GetStatFactorFromList(stat);
+                            }
+                        }
+                    }
+
+                }
+
+            }
+
+            return num;
+        }
+
+        public override void GetStatsExplanation(StatDef stat, StringBuilder sb, string whitespace = "")
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            if (GetComp()?.TraitsListForReading!=null)
+            {
+                foreach (WeaponTraitDef trait in GetComp().TraitsListForReading)
+                {
+                    WeaponTraitDefExtension extension = trait.GetModExtension<WeaponTraitDefExtension>();
+                    if (extension!=null&&!extension.conditionalStatAffecters.NullOrEmpty())
+                    {
+                        for (int i = 0; i < extension.conditionalStatAffecters.Count; i++)
+                        {
+                            ConditionalStatAffecter conditionalStatAffecter = extension.conditionalStatAffecters[i];
+                            if(conditionalStatAffecter.statOffsets != null)
+                            {
+                                float statOffsetFromList = conditionalStatAffecter.statOffsets.GetStatOffsetFromList(stat);
+                                if (statOffsetFromList!=0&&conditionalStatAffecter.Applies(StatRequest.For(this.parent)))
+                                {
+                                    sb.AppendLine(whitespace + "    " + trait.LabelCap + " (" + conditionalStatAffecter.Label + "): " + stat.ValueToString(statOffsetFromList, ToStringNumberSense.Offset, finalized: false));
+
+                                }
+                            }
+                            if (conditionalStatAffecter.statFactors != null)
+                            {
+                                float statFactorFromList = conditionalStatAffecter.statFactors.GetStatFactorFromList(stat);
+                                if (statFactorFromList!=1&& conditionalStatAffecter.Applies(StatRequest.For(this.parent)))
+                                {
+                                    sb.AppendLine(whitespace + "    " + trait.LabelCap + " (" + conditionalStatAffecter.Label + "): " + stat.ValueToString(statFactorFromList, ToStringNumberSense.Factor, finalized: false));
+                                }
+                            }                              
+                        }
+                    }
+                }
+
+            }
+                
+            if (stringBuilder.Length != 0)
+            {
+                sb.AppendLine(whitespace + "StatsReport_WeaponTraits".Translate() + ":");
+                sb.Append(stringBuilder.ToString());
+            }
+
         }
 
         public bool NeedsReload()
