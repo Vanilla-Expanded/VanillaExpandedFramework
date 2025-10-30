@@ -286,7 +286,7 @@ namespace VEF.Weapons
                             ConditionalStatAffecter conditionalStatAffecter = extension.conditionalStatAffecters[i];
                             if (conditionalStatAffecter.statOffsets != null && conditionalStatAffecter.Applies(StatRequest.For(this.parent)))
                             {
-                                num += conditionalStatAffecter.statOffsets.GetStatFactorFromList(stat);
+                                num += conditionalStatAffecter.statOffsets.GetStatOffsetFromList(stat);
                             }
                         }
                     }
