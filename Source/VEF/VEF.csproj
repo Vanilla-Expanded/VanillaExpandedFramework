@@ -494,6 +494,7 @@
     <Compile Include="Global\BackwardsCompatibilityFixer.cs" />
     <Compile Include="Global\CacheClearing\ClearCaches.cs" />
     <Compile Include="Global\CacheClearing\NoCacheClearingAttribute.cs" />
+    <Compile Include="Global\DebugActions.cs" />
     <Compile Include="Global\Harmony\MemoryUtility_UnloadUnusedUnityAssets.cs" />
     <Compile Include="Global\HotSwappableAttribute.cs" />
     <Compile Include="Global\VEF_HarmonyCategories.cs" />
