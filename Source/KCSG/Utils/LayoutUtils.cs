@@ -12,6 +12,12 @@ namespace KCSG
         /// Generate layoutDef in rect
         /// </summary>
         public static void Generate(this StructureLayoutDef layout, CellRect rect, Map map, Faction factionOverride = null, bool forceNullFaction = false)
+            => layout.Generate(rect, map, null, factionOverride, forceNullFaction);
+
+        /// <summary>
+        /// Generate layoutDef in rect
+        /// </summary>
+        public static void Generate(this StructureLayoutDef layout, CellRect rect, Map map, ICollection<Thing> spawnedThings, Faction factionOverride = null, bool forceNullFaction = false)
         {
             // Get random wall stuff if randomizeWall is set to true
             ThingDef wallForRoom = null;
@@ -68,7 +74,7 @@ namespace KCSG
                             }
 
                             var rotatedSymbol = CreateRotatedSymbol(symbol, rot);
-                            rotatedSymbol.Generate(layout, map, cell, faction, wallForRoom);
+                            rotatedSymbol.Generate(layout, map, cell, faction, wallForRoom, spawnedThings);
                         }
                     }
                 }
