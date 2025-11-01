@@ -1,5 +1,4 @@
-﻿
-using RimWorld;
+﻿using RimWorld;
 using System.Linq;
 using Verse;
 
@@ -8,7 +7,7 @@ namespace PipeSystem
     public class CompRefillWithPipes : CompResource
     {
         public CompRefuelable compRefuelable;
-      
+
 
         public new CompProperties_RefillWithPipes Props => (CompProperties_RefillWithPipes)props;
 
@@ -19,7 +18,6 @@ namespace PipeSystem
         {
             base.PostSpawnSetup(respawningAfterLoad);
 
-           
 
             var comps = parent.GetComps<CompRefuelable>().ToList();
             for (int i = 0; i < comps.Count; i++)
@@ -40,20 +38,21 @@ namespace PipeSystem
         /// <returns>Amount used</returns>
         public float Refill(float available)
         {
-             if (compRefuelable != null)
-            {
-                var toAdd = compRefuelable.TargetFuelLevel - compRefuelable.Fuel; // The amount of fuel needed by compRefuelable
-                var resourceNeeded = toAdd * Props.ratio; // Converted to the amount of resource
-                // Check if needed resource is more that available resource
-                var resourceCanBeUsed = resourceNeeded < available ? resourceNeeded : available; // Can we spare all of it?
-                // Refuel
-                compRefuelable.Refuel(resourceCanBeUsed / Props.ratio);
-                // Return amount used
-                return resourceCanBeUsed;
-            }
-            return 0f;
-        }
+            if (compRefuelable == null)
+                return 0f;
 
-       
+            var toAdd = compRefuelable.TargetFuelLevel - compRefuelable.Fuel; // The amount of fuel needed by compRefuelable
+            // Don't drain the refuelable if it's over the target level
+            if (toAdd <= 0f)
+                return 0f;
+
+            var resourceNeeded = toAdd * Props.ratio; // Converted to the amount of resource
+            // Check if needed resource is more that available resource
+            var resourceCanBeUsed = resourceNeeded < available ? resourceNeeded : available; // Can we spare all of it?
+            // Refuel
+            compRefuelable.Refuel(resourceCanBeUsed / Props.ratio);
+            // Return amount used
+            return resourceCanBeUsed;
+        }
     }
 }
