@@ -21,6 +21,9 @@
 	<!-- Stat Draw Entries -->
 	<VanillaFactionsExpanded.UsableWithShield>Usable with shields</VanillaFactionsExpanded.UsableWithShield>
 	<VanillaFactionsExpanded.UsableWithShield_Desc>Whether or not this weapon can be used if the character also has a shield equipped.</VanillaFactionsExpanded.UsableWithShield_Desc>
+	<VEF.Weapons.Stat_Thing_MaterialPerCharge>Ammo per charge</VEF.Weapons.Stat_Thing_MaterialPerCharge>
+	<VEF.Weapons.Stat_Thing_MaterialPerCharge_Value>{0} {1} per charge (total {2} charges)</VEF.Weapons.Stat_Thing_MaterialPerCharge_Value>
+    <VEF.Weapons.Stat_Thing_MaterialPerCharge_Desc>The amount of {0} per charge this ability needs to be recharged.</VEF.Weapons.Stat_Thing_MaterialPerCharge_Desc>
 
 	<!-- New Faction Spawning -->
 	<VanillaFactionsExpanded.FactionTitle>New faction: {FactionName}</VanillaFactionsExpanded.FactionTitle>

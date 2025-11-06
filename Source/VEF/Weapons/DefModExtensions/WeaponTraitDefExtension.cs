@@ -59,6 +59,8 @@ namespace VEF.Weapons
 
         public string cooldownGerund = "on cooldown";
 
+        public NamedArgument ChargeNounArgument => chargeNoun.Named("CHARGENOUN");
+
     }
 
 }
