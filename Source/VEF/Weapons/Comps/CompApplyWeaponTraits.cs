@@ -396,7 +396,25 @@ namespace VEF.Weapons
             currentCharges--;
         }
 
-      
+        public override IEnumerable<StatDrawEntry> SpecialDisplayStats()
+        {
+            IEnumerable<StatDrawEntry> enumerable = base.SpecialDisplayStats();
+            if (enumerable != null)
+            {
+                foreach (StatDrawEntry item in enumerable)
+                {
+                    yield return item;
+                }
+            }
+            if (AbilityDetailsForWeapon(GetDetails())?.abilityDef != null)
+            {
+                yield return new StatDrawEntry(StatCategoryDefOf.Weapon, "Stat_Thing_ReloadChargesRemaining_Name".Translate(AbilityDetailsForWeapon(GetDetails()).ChargeNounArgument), LabelRemaining, "Stat_Thing_ReloadChargesRemaining_Desc".Translate(AbilityDetailsForWeapon(GetDetails()).ChargeNounArgument), 5440);
+                yield return new StatDrawEntry(StatCategoryDefOf.Weapon, "VEF.Weapons.Stat_Thing_MaterialPerCharge".Translate(), "VEF.Weapons.Stat_Thing_MaterialPerCharge_Value".Translate(AbilityDetailsForWeapon(GetDetails()).ammoCountPerCharge, AbilityDetailsForWeapon(GetDetails()).ammoDef.LabelCap, AbilityDetailsForWeapon(GetDetails()).maxCharges), "VEF.Weapons.Stat_Thing_MaterialPerCharge_Desc".Translate(AbilityDetailsForWeapon(GetDetails()).ammoDef.label), 5440);
+
+            }
+        }
+
+
 
     }
 }
