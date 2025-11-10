@@ -186,9 +186,9 @@ namespace VEF.Storyteller
             }
 
 
-            if (ext.conditionMinDaysSinceStart > 0 && !quests.Any(x => x.questDef == quest))
+            if (ext.conditionMinDaysSinceStart.min > 0 && !quests.Any(x => x.questDef == quest))
             {
-                var days = ext.conditionMinDaysSinceStart - GenDate.DaysPassed;
+                var days = ext.conditionMinDaysSinceStart.RandomInRange - GenDate.DaysPassed;
                 var ticks = (int)(days <= 0 ? 0 : days * GenDate.TicksPerDay);
                 ScheduleQuestInTicks(quest, ticks);
                 return true;

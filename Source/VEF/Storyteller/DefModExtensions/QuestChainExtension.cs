@@ -13,7 +13,7 @@ namespace VEF.Storyteller
         public IntRange ticksSinceFail;
 
         public QuestScriptDef conditionEither;
-        public float conditionMinDaysSinceStart;
+        public FloatRange conditionMinDaysSinceStart;
         public bool isRepeatable;
         public float mtbDaysRepeat;
 
