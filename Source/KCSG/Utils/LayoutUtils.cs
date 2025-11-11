@@ -536,10 +536,6 @@ namespace KCSG
                         compSchedule.RecalculateAllowed();
                     }
                 }
-                else
-                {
-                    Log.Message("Can't enable " + powerComp);
-                }
             }
         }
     }
