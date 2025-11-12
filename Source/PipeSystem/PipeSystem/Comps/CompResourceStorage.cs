@@ -143,6 +143,7 @@ namespace PipeSystem
             };
             if (Props.extractOptions != null)
             {
+                var extractGizmoArgs = ExtractResourceArguments();
                 extractResourceAmount = Props.extractOptions.ratio * Props.extractOptions.extractAmount;
 
                 extractGizmo = new Command_Action()
@@ -152,8 +153,8 @@ namespace PipeSystem
                         markedForExtract = !markedForExtract;
                         UpdateDesignation(parent);
                     },
-                    defaultLabel = Props.extractOptions.labelKey.Translate(ExtractResourceArguments()),
-                    defaultDesc = Props.extractOptions.descKey.Translate(ExtractResourceArguments()),
+                    defaultLabel = Props.extractOptions.labelKey.Translate(extractGizmoArgs),
+                    defaultDesc = Props.extractOptions.descKey.Translate(extractGizmoArgs),
                     icon = Props.extractOptions.tex
                 };
             }
@@ -395,10 +396,13 @@ namespace PipeSystem
 
             if (extractGizmo != null)
             {
+                var extractGizmoArgs = ExtractResourceArguments();
+                extractGizmo.defaultLabel = Props.extractOptions.labelKey.Translate(extractGizmoArgs);
+                extractGizmo.defaultDesc = Props.extractOptions.descKey.Translate(extractGizmoArgs);
                 if (CanExtract)
                     extractGizmo.Disabled = false;
                 else
-                    extractGizmo.Disable(Props.extractOptions.disabledReasonKey.NullOrEmpty() ? null : Props.extractOptions.disabledReasonKey.Translate(ExtractResourceArguments()));
+                    extractGizmo.Disable(Props.extractOptions.disabledReasonKey.NullOrEmpty() ? null : Props.extractOptions.disabledReasonKey.Translate(extractGizmoArgs));
                 yield return extractGizmo;
             }
 
@@ -456,14 +460,14 @@ namespace PipeSystem
             if (opt == null)
                 return [];
 
-            var itemExtractAmount = Mathf.FloorToInt(amountStored / opt.ratio);
+            var (resourceExtractAmount, itemExtractAmount) = CurrentManualExtractAmount();
 
             // Check comments in CompProperties_ResourceStorage.ExtractOptions class for explanation/more info
             return
             [
                 (opt.extractExactAmount ? extractResourceAmount : opt.ratio).Named("RESOURCEMIN"),
                 amountStored.Named("RESOURCECOUNT"),
-                (itemExtractAmount * opt.ratio).Named("RESOURCEEXTRACTCOUNT"),
+                resourceExtractAmount.Named("RESOURCEEXTRACTCOUNT"),
                 extractResourceAmount.Named("RESOURCEMAX"),
                 (opt.extractExactAmount ? opt.extractAmount : 1).Named("THINGMIN"),
                 itemExtractAmount.Named("THINGCOUNT"),
