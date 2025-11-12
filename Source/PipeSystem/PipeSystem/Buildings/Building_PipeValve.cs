@@ -9,10 +9,22 @@ namespace PipeSystem
         private CompFlickable flickableComp;
         public override Graphic Graphic => flickableComp.CurrentGraphic;
 
-        public override void SpawnSetup(Map map, bool respawningAfterLoad)
+        public override void PostMake()
+        {
+            base.PostMake();
+            InitializeValveComps();
+        }
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+                InitializeValveComps();
+        }
+
+        private void InitializeValveComps()
         {
             flickableComp = GetComp<CompFlickable>();
-            base.SpawnSetup(map, respawningAfterLoad);
         }
     }
 }

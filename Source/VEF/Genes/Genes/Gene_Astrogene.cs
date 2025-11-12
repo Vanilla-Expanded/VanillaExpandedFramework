@@ -12,6 +12,7 @@ namespace VEF.Genes
         {
             get
             {
+                if(pawn is null) return false;
                 if (pawn?.Position != IntVec3.Invalid && pawn.Map?.BiomeAt(pawn.Position)?.inVacuum == false)
                 {
                    

@@ -5,4 +5,5 @@
 	<VFECore.Primitive>primitive</VFECore.Primitive>
 	<VFECore.StatsReport_Powered>Powered</VFECore.StatsReport_Powered>
 	<VFECore.StatsReport_Unpowered>Unpowered</VFECore.StatsReport_Unpowered>
+	<VEF_RangeAttackSpeedFactor>Range Attack Speed Factor</VEF_RangeAttackSpeedFactor>
 </LanguageData>

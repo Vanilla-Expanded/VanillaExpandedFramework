@@ -10,6 +10,7 @@
 <VFE_RandomRock>Random chunk</VFE_RandomRock>
 <VFE_PleaseSelectOutput>Select machine output</VFE_PleaseSelectOutput>
 <VFE_NeedsWater>This building must be placed on water</VFE_NeedsWater>
+<VFE_NeedsSand>This building must be placed on sand</VFE_NeedsSand>
 
 <!-- Random Building Graphics -->
 

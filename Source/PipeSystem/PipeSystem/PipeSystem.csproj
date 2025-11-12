@@ -104,10 +104,13 @@
     <Compile Include="Comps\CompSpawnerOrNet.cs" />
     <Compile Include="Comps\CompSpillWhenDamaged.cs" />
     <Compile Include="Comps\CompConvertToResource.cs" />
+    <Compile Include="DefModExtension\AutoRefuelableLinkingExtension.cs" />
     <Compile Include="Def\ProcessDef.cs" />
+    <Compile Include="GenericPipeNetOverlayWorker.cs" />
     <Compile Include="Harmony\ResearchProjectDef_UnlockedDefs_Patch.cs" />
     <Compile Include="Harmony\Widgets_DefIcon_Patch.cs" />
     <Compile Include="PipeNetMaker.cs" />
+    <Compile Include="PipeNetOverlayDrawer.cs" />
     <Compile Include="Utility\Process.cs" />
     <Compile Include="Utility\ProcessStack.cs" />
     <Compile Include="ITab\ITab_Processor.cs" />
@@ -128,7 +131,6 @@
     <Compile Include="Jobs\WorkGiver_RefillStorage.cs" />
     <Compile Include="Jobs\WorkGiver_PickUpProcessor.cs" />
     <Compile Include="NetGridUtility.cs" />
-    <Compile Include="PipeNetOverlayDrawer.cs" />
     <Compile Include="PipeSystemDebug\PipeSystemDebug.cs" />
     <Compile Include="Designator\Designator_DeconstructPipe.cs" />
     <Compile Include="Harmony\ResolvedAllowedDesignators_Patch.cs" />
@@ -152,6 +154,5 @@
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

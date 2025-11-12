@@ -17,7 +17,7 @@ namespace VEF.Weapons
                 var options = thing.def.GetModExtension<HeavyWeapon>();
                 if (options != null && options.isHeavy)
                 {
-                    if (!CanEquip(pawn, options))
+                    if (!CanEquip(thing, pawn, options))
                     {
                         cantReason = options.disableOptionLabelKey.Translate(pawn.LabelShort);
                         __result = false;
@@ -26,7 +26,7 @@ namespace VEF.Weapons
             }
         }
 
-        public static bool CanEquip(Pawn pawn, HeavyWeapon options)
+        public static bool CanEquip(Thing thing, Pawn pawn, HeavyWeapon options)
         {
             if (pawn.story?.traits != null && options.supportedTraits != null)
             {
@@ -59,7 +59,12 @@ namespace VEF.Weapons
                     {
                         if (ap.def.tradeTags != null)
                         {
-                            if (ap.def.tradeTags.Contains("HiTechArmor") || ap.def.tradeTags.Contains("Warcasket"))
+                            if (ap.def.tradeTags.Contains("HiTechArmor") 
+                                && (thing.def.tradeTags is null || thing.def.tradeTags.Contains("VFEP_WarcasketWeapon")) is false)
+                            {
+                                return true;
+                            }
+                            else if (ap.def.tradeTags.Contains("Warcasket"))
                             {
                                 return true;
                             }

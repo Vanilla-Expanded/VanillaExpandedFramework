@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 
@@ -17,7 +18,8 @@ namespace PipeSystem
 
             var thing = job.targetA.Thing;
             var compRS = thing.TryGetComp<CompResourceStorage>();
-            this.FailOn(() => compRS == null);
+            this.FailOn(() => compRS?.Props.refillOptions == null);
+            this.FailOn(() => !compRS.markedForRefill);
             var props = compRS.Props;
 
             yield return Toils_Reserve.Reserve(TargetIndex.B, stackCount: (int)compRS.AmountCanAccept);
@@ -31,34 +33,35 @@ namespace PipeSystem
 
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
 
-            yield return Toils_General.Wait(props.refillOptions.refillTime)
+            var refillTime = compRS.Props.refillOptions.refillTime;
+            if (compRS.Props.refillOptions.refillTimeScalesWithAmount)
+                refillTime *= job.targetB.Thing.stackCount;
+            yield return Toils_General.Wait(Mathf.Max(Mathf.RoundToInt(refillTime), 1))
                 .FailOnDestroyedNullOrForbidden(TargetIndex.B)
                 .FailOnDestroyedNullOrForbidden(TargetIndex.A)
                 .FailOnCannotTouch(TargetIndex.A, PathEndMode.Touch)
                 .WithProgressBarToilDelay(TargetIndex.A);
 
-            Toil finalize = new Toil
+            Toil finalize = ToilMaker.MakeToil();
+            finalize.initAction = delegate
             {
-                initAction = delegate
+                var fuel = job.targetB.Thing;
+                var amountAdjusted = fuel.stackCount * props.refillOptions.ratio;
+
+                var max = compRS.AmountCanAccept;
+
+                if (amountAdjusted > max)
                 {
-                    var fuel = job.targetB.Thing;
-                    int amountAdjusted = fuel.stackCount * props.refillOptions.ratio;
-
-                    int max = (int)compRS.AmountCanAccept;
-
-                    if (amountAdjusted > max)
-                    {
-                        compRS.AddResource(max);
-                        fuel.SplitOff(max / props.refillOptions.ratio).Destroy();
-                    }
-                    else
-                    {
-                        compRS.AddResource(amountAdjusted);
-                        fuel.Destroy();
-                    }
-                },
-                defaultCompleteMode = ToilCompleteMode.Instant
+                    compRS.AddResource(max);
+                    fuel.SplitOff(Mathf.Max(Mathf.FloorToInt(max / props.refillOptions.ratio), 1)).Destroy();
+                }
+                else
+                {
+                    compRS.AddResource(amountAdjusted);
+                    fuel.Destroy();
+                }
             };
+            finalize.defaultCompleteMode = ToilCompleteMode.Instant;
             yield return finalize;
         }
     }

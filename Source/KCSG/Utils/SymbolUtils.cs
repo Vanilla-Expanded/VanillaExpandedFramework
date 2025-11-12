@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using RimWorld;
 using RimWorld.BaseGen;
 using UnityEngine;
 using Verse;
 using Verse.AI.Group;
+using PipeSystem;
 
 namespace KCSG
 {
@@ -14,16 +15,24 @@ namespace KCSG
         /// Generate symbol at cell
         /// </summary>
         public static void Generate(this SymbolDef symbol, StructureLayoutDef layout, Map map, IntVec3 cell, Faction faction, ThingDef wallForRoom)
+            => symbol.Generate(layout, map, cell, faction, wallForRoom, null);
+
+        /// <summary>
+        /// Generate symbol at cell
+        /// </summary>
+        public static void Generate(this SymbolDef symbol, StructureLayoutDef layout, Map map, IntVec3 cell, Faction faction, ThingDef wallForRoom, ICollection<Thing> spawnedThings)
         {
             if (symbol.pawnKindDefNS != null)
             {
-                GeneratePawnAt(map, cell, symbol);
+                GeneratePawnAt(map, cell, symbol, spawnedThings);
             }
             else if (symbol.thingDef != null)
             {
                 if (symbol.thingDef.category == ThingCategory.Item)
                 {
-                    GenerateItemAt(map, cell, symbol);
+                    var thing = GenerateItemAt(map, cell, symbol);
+                    if (thing != null)
+                        spawnedThings?.Add(thing);
                 }
                 else if (symbol.thingDef.category == ThingCategory.Plant)
                 {
@@ -34,13 +43,17 @@ namespace KCSG
                         {
                             Plant plant = ThingMaker.MakeThing(symbol.thingDef) as Plant;
                             plant.Growth = symbol.plantGrowth;
-                            GenSpawn.Spawn(plant, cell, map, WipeMode.VanishOrMoveAside);
+                            var thing = GenSpawn.Spawn(plant, cell, map, WipeMode.VanishOrMoveAside);
+                            if (thing != null)
+                                spawnedThings?.Add(thing);
                         }
                     }
                 }
                 else if (symbol.thingDef.category == ThingCategory.Pawn && GenOption.customGenExt?.symbolResolvers == null)
                 {
-                    GenSpawn.Spawn(symbol.thingDef, cell, map, WipeMode.VanishOrMoveAside);
+                    var pawn = GenSpawn.Spawn(symbol.thingDef, cell, map, WipeMode.VanishOrMoveAside);
+                    if (pawn != null)
+                        spawnedThings?.Add(pawn);
                 }
                 else
                 {
@@ -50,7 +63,7 @@ namespace KCSG
                     }
                     try
                     {
-                        GenerateBuildingAt(map, cell, symbol, layout, faction, wallForRoom);
+                        GenerateBuildingAt(map, cell, symbol, layout, faction, spawnedThings, wallForRoom);
                     }
                     catch (Exception e)
                     {
@@ -70,7 +83,7 @@ namespace KCSG
         /// <summary>
         /// Generate pawn(s) at pos
         /// </summary>
-        private static void GeneratePawnAt(Map map, IntVec3 cell, SymbolDef symbol)
+        private static void GeneratePawnAt(Map map, IntVec3 cell, SymbolDef symbol, ICollection<Thing> spawnedThings)
         {
             var manager = Find.FactionManager;
             var mapFac = map.ParentFaction;
@@ -107,12 +120,16 @@ namespace KCSG
                             GenSpawn.Spawn(ThingDefOf.Filth_CorpseBile, rNext, map);
                         }
                     }
-                    GenSpawn.Spawn(corpse, cell, map);
+                    var spawned = GenSpawn.Spawn(corpse, cell, map);
+                    if (spawned != null)
+                        spawnedThings?.Add(spawned);
                 }
                 else
                 {
-                    GenSpawn.Spawn(pawn, cell, map, WipeMode.VanishOrMoveAside);
+                    var spawned = GenSpawn.Spawn(pawn, cell, map, WipeMode.VanishOrMoveAside);
                     pawns.Add(pawn);
+                    if (spawned != null)
+                        spawnedThings?.Add(spawned);
                 }
             }
 
@@ -169,19 +186,20 @@ namespace KCSG
         /// <summary>
         /// Generate item at pos
         /// </summary>
-        private static void GenerateItemAt(Map map, IntVec3 cell, SymbolDef symbol)
+        private static Thing GenerateItemAt(Map map, IntVec3 cell, SymbolDef symbol)
         {
             var thing = ThingMaker.MakeThing(symbol.thingDef, symbol.stuffDef ?? (symbol.thingDef.stuffCategories?.Count > 0 ? GenStuff.RandomStuffFor(symbol.thingDef) : null));
             thing.stackCount = symbol.maxStackSize != -1 ? Rand.RangeInclusive(1, symbol.maxStackSize) : Mathf.Clamp(Rand.RangeInclusive(1, symbol.thingDef.stackLimit), 1, 75);
             (thing as ThingWithComps)?.compQuality?.SetQuality(QualityUtility.GenerateQualityBaseGen(), ArtGenerationContext.Outsider);
             GenPlace.TryPlaceThing(thing, cell, map, ThingPlaceMode.Direct);
             thing.SetForbidden(true, false);
+            return thing;
         }
 
         /// <summary>
         /// Generate building at pos
         /// </summary>
-        private static void GenerateBuildingAt(Map map, IntVec3 cell, SymbolDef symbol, StructureLayoutDef layout, Faction faction, ThingDef wallStuff = null)
+        private static void GenerateBuildingAt(Map map, IntVec3 cell, SymbolDef symbol, StructureLayoutDef layout, Faction faction, ICollection<Thing> spawnedThings, ThingDef wallStuff = null)
         {
             // If it's a shuttle, generate it properly
             if (symbol.thingDef == ThingDefOf.Shuttle)
@@ -189,7 +207,7 @@ namespace KCSG
                 ResolveParams rp = new ResolveParams
                 {
                     singleThingDef = ThingDefOf.Shuttle,
-                    rect = CellRect.SingleCell(cell),
+                    rect = CellRect.SingleCell(cell + new IntVec3(50, 0, 0)),
                     faction = faction,
                     postThingSpawn = x =>
                     {
@@ -230,10 +248,62 @@ namespace KCSG
             }
             // Try to refuel if applicable
             CompRefuelable refuelable = thing.TryGetComp<CompRefuelable>();
-            refuelable?.Refuel(refuelable.Props.fuelCapacity);
+            if (refuelable != null)
+            {
+                if (refuelable.Fuel > 0)
+                {
+                    refuelable.ConsumeFuel(refuelable.Fuel);
+                }
+                if (symbol.fuelPercent == null)
+                {
+                    refuelable.Refuel(refuelable.Props.fuelCapacity);
+                }
+                else
+                {
+                    refuelable.Refuel(refuelable.Props.fuelCapacity * symbol.fuelPercent.Value);
+                }
+            }
+
+            var compResourceStorage = thing.TryGetComp<CompResourceStorage>();
+            if (compResourceStorage != null)
+            {
+                // For resource storage, we need to clear existing and add the desired amount
+                float amount = 0;
+                if (symbol.fuelPercent == null)
+                {
+                    amount = compResourceStorage.Props.storageCapacity;
+                }
+                else if (symbol.fuelPercent > 0)
+                {
+                    amount = compResourceStorage.Props.storageCapacity * symbol.fuelPercent.Value;
+                }
+
+                var currentStored = compResourceStorage.AmountStored;
+                if (currentStored > amount)
+                {
+                    // Need to draw some out
+                    compResourceStorage.DrawResource(currentStored - amount);
+                }
+                else if (currentStored < amount)
+                {
+                    // Need to add more
+                    compResourceStorage.AddResource(amount - currentStored);
+                }
+            }
+
             // Try to recharge if applicable
             CompPowerBattery battery = thing.TryGetComp<CompPowerBattery>();
-            battery?.AddEnergy(battery.Props.storedEnergyMax);
+            if (battery != null)
+            {
+                if (symbol.powerPercent == null)
+                {
+                    battery.SetStoredEnergyPct(1);
+                }
+                else
+                {
+                    battery.SetStoredEnergyPct(symbol.powerPercent.Value);
+                }
+            }
             // Try to fill item container
             if (thing is Building_Crate crate)
             {
@@ -305,7 +375,9 @@ namespace KCSG
                 //}
             }
             // Spawn the thing
-            GenSpawn.Spawn(thing, cell, map, symbol.rotation, WipeMode.VanishOrMoveAside);
+            var spawnedThing = GenSpawn.Spawn(thing, cell, map, symbol.rotation, WipeMode.VanishOrMoveAside);
+            if (spawnedThing != null)
+                spawnedThings?.Add(spawnedThing);
             // Set the faction if applicable
             if (symbol.spawnPartOfFaction && faction != null && thing.def.CanHaveFaction)
             {
@@ -324,7 +396,9 @@ namespace KCSG
                 {
                     c.SetFaction(faction);
                 }
-                GenSpawn.Spawn(c, cell, map, WipeMode.FullRefund);
+                var conduit = GenSpawn.Spawn(c, cell, map, WipeMode.FullRefund);
+                if (conduit != null)
+                    spawnedThings?.Add(conduit);
             }
             // Try to fill shelves
             if (thing is Building_Storage storage
@@ -339,7 +413,10 @@ namespace KCSG
                     if (Rand.Value < GenOption.settlementLayout.stockpileOptions.fillChance && GenOption.settlementLayout.stockpileOptions.replaceOtherThings || otherThing == null)
                     {
                         if (GenOption.settlementLayout.stockpileOptions.replaceOtherThings && otherThing.Spawned)
+                        {
                             otherThing.DeSpawn();
+                            spawnedThings?.Remove(otherThing);
+                        }
 
                         var thingDef = GenOption.settlementLayout.stockpileOptions.fillWithDefs.RandomElementByWeight(t => marketValue - t.BaseMarketValue);
                         var item = ThingMaker.MakeThing(thingDef, thingDef.stuffCategories?.Count > 0 ? GenStuff.RandomStuffFor(thingDef) : null);
@@ -349,7 +426,8 @@ namespace KCSG
 
                         (item as ThingWithComps)?.compQuality?.SetQuality(QualityUtility.GenerateQualityBaseGen(), ArtGenerationContext.Outsider);
 
-                        GenPlace.TryPlaceThing(item, storageCell, map, ThingPlaceMode.Direct);
+                        if (GenPlace.TryPlaceThing(item, storageCell, map, ThingPlaceMode.Direct))
+                            spawnedThings?.Add(item);
                         item.SetForbidden(true, false);
                     }
                 }
@@ -360,7 +438,7 @@ namespace KCSG
                 thing.SetStyleDef(styleDef);
             }
             // Handle mortar and mortar pawns
-            SpawnMortar(thing, faction, map);
+            SpawnMortar(thing, faction, map, spawnedThings);
         }
 
         /// <summary>
@@ -384,7 +462,7 @@ namespace KCSG
         /// <summary>
         /// Spawn mortar manning pawn with the right job
         /// </summary>
-        private static void SpawnMortar(Thing thing, Faction faction, Map map)
+        private static void SpawnMortar(Thing thing, Faction faction, Map map, ICollection<Thing> spawnedThings)
         {
             // Prevent spawning new colonists
             if (faction == Faction.OfPlayer)

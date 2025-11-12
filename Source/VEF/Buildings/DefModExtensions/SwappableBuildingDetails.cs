@@ -10,6 +10,7 @@ namespace VEF.Buildings
 
         public ThingDef buildingLeft = null;
         public SoundDef deconstructSound = null;
+        public int swappingTimer = -1;
 
     }
 }

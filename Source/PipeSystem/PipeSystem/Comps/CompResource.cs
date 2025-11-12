@@ -53,7 +53,7 @@ namespace PipeSystem
             PipeNetManager.UnregisterConnector(this);
             PipeSystemDebug.Message($"Unregistering {this}");
             EndSustainer();
-            base.PostDeSpawn(map);
+            base.PostDeSpawn(map, mode);
         }
 
         /// <summary>

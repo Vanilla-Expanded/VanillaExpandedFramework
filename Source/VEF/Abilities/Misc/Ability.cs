@@ -308,6 +308,8 @@
 
         public virtual void DoAction()
         {
+            SoundDefOf.Tick_Tiny.PlayOneShotOnCamera();
+
             if (Event.current.button == 1)
             {
                if (this.CanAutoCast) this.autoCast = !this.autoCast;

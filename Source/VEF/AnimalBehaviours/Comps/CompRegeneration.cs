@@ -53,7 +53,7 @@ namespace VEF.AnimalBehaviours
                                             foreach (Hediff_Injury injury in injuries)
                                             {
                                                 if (injury.TendableNow())
-                                                    injury.Tended(0.7f, 1f);
+                                                    injury.Tended(Props.tendMin, Props.tendMax);
 
                                             }
                                         }
@@ -70,7 +70,7 @@ namespace VEF.AnimalBehaviours
                                         if (Props.onlyTendButNotHeal)
                                         {
                                             Hediff_Injury injury = injuries.Where(x => x.TendableNow()).RandomElement();
-                                            injury?.Tended(0.7f, 1f);
+                                            injury?.Tended(Props.tendMin, Props.tendMax);
                                         }
                                         else
                                         {

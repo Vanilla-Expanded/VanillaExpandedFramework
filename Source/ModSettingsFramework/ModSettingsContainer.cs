@@ -74,24 +74,29 @@ namespace ModSettingsFramework
             Rect rect = new Rect(inRect.x, inRect.y, inRect.width, inRect.height);
             Rect rect2 = new Rect(0f, 0f, inRect.width - 30f, scrollHeight);
             Widgets.BeginScrollView(rect, ref scrollPosition, rect2, true);
-            scrollHeight = 0;
+            scrollHeight = 30;
             listingStandard.Begin(rect2);
             Text.Font = GameFont.Small;
             var curPatches = PatchOperationModSettings.ListFullCopy();
             foreach (var category in DefDatabase<ModOptionCategoryDef>.AllDefs.OrderBy(x => x.order))
             {
-                var patchesInCategory = curPatches.Where(x => x.patch.category == category.defName).OrderBy(x => x.patch.order).ToList();
+                var patchesInCategory = curPatches.Where(x => x.patch.category 
+                == category.defName).OrderBy(x => x.patch.order).ToList();
                 if (patchesInCategory.Any())
                 {
-                    var height = patchesInCategory.Sum(x => x.patch.SettingsHeight());
+                    var patchesHeight = patchesInCategory.Sum(x => x.patch.SettingsHeight());
                     var gapLine = 8;
-                    var gapAfterLine = 6f;
-                    var sectionSize = height + 24 + gapLine + gapAfterLine;
-                    scrollHeight += sectionSize + 12 + 6;
-                    var section = listingStandard.BeginSection(sectionSize);
+                    var gapAfterSection = 12f;
+                    var sectionBorder = 4;
+                    var bottomBorder = 4;
+                    var categoryLabelHeight = Text.CalcHeight(category.label, rect2.width);
+                    var sectionHeight = categoryLabelHeight
+                        + gapLine
+                        + patchesHeight;
+                    var section = listingStandard.BeginSection(sectionHeight, sectionBorder, bottomBorder);
+                    scrollHeight += sectionHeight + sectionBorder + bottomBorder;
                     section.Label(category.label);
                     section.GapLine(gapLine);
-                    section.Gap(gapAfterLine);
                     foreach (var patch in patchesInCategory)
                     {
                         patch.patch.scrollHeight = 0;
@@ -102,12 +107,12 @@ namespace ModSettingsFramework
                         }
                     }
                     listingStandard.EndSection(section);
-                    listingStandard.Gap();
+                    listingStandard.Gap(gapAfterSection);
+                    scrollHeight += gapAfterSection;
                     foreach (var patch in patchesInCategory)
                     {
                         curPatches.Remove(patch);
                     }
-                    scrollHeight += 1;
                 }
             }
             foreach (var patch in curPatches.OrderBy(x => x.patch.order))

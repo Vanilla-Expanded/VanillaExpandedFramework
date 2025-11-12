@@ -47,18 +47,22 @@ namespace VEF.Weapons
 
         public static SoundDef ChangeSound(Verb verb)
         {
-            CompUniqueWeapon comp = verb.EquipmentSource?.GetComp<CompUniqueWeapon>();
-            if (comp != null)
+            if(verb.EquipmentSource != null && StaticCollectionsClass.uniqueWeaponsInGame.Contains(verb.EquipmentSource.def))
             {
-                foreach (WeaponTraitDef item in comp.TraitsListForReading)
+                CompUniqueWeapon comp = verb.EquipmentSource?.GetComp<CompUniqueWeapon>();
+                if (comp != null)
                 {
-                    WeaponTraitDefExtension extension = item.GetModExtension<WeaponTraitDefExtension>();
-                    if (extension?.soundOverride != null)
+                    foreach (WeaponTraitDef item in comp.TraitsListForReading)
                     {
-                        return extension.soundOverride;
+                        WeaponTraitDefExtension extension = item.GetModExtension<WeaponTraitDefExtension>();
+                        if (extension?.soundOverride != null)
+                        {
+                            return extension.soundOverride;
+                        }
                     }
                 }
             }
+            
 
             return verb.verbProps.soundCast;
 

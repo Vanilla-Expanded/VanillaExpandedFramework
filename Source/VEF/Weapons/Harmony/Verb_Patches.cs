@@ -53,9 +53,6 @@ namespace VEF.Weapons
                 forceHit = true;
             }
         }
-
-      
-
     }
 
     [HarmonyPatch(typeof(Verb), nameof(Verb.Available))]
@@ -66,22 +63,6 @@ namespace VEF.Weapons
             // Unusable shield verbs don't get counted
             if (__result && __instance.EquipmentSource != null && __instance.EquipmentSource.IsShield(out Apparels.CompShield shieldComp))
                 __result = shieldComp.UsableNow;
-        }
-    }
-
-    [HarmonyPatch(typeof(VerbProperties), nameof(VerbProperties.AdjustedCooldown), new Type[]
-    {
-            typeof(Verb), typeof(Pawn)
-    })]
-    public static class VanillaExpandedFramework_VerbProperties_AdjustedCooldown_Patch
-    {
-        public static void Postfix(ref float __result, Verb ownerVerb, Pawn attacker)
-        {
-            var pawn = ownerVerb.CasterPawn;
-            if (pawn != null)
-            {
-                __result *= pawn.GetStatValue(VEFDefOf.VEF_VerbCooldownFactor);
-            }
         }
     }
 
@@ -174,23 +155,13 @@ namespace VEF.Weapons
                     yield return new CodeInstruction(OpCodes.Ldloc_0);
                     yield return new CodeInstruction(OpCodes.Ldloc_1);
                     yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(Job), nameof(Job.verbToUse)));
-                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(VanillaExpandedFramework_Toils_Combat_GotoCastPosition_Patch), nameof(GetMeleeReachRange)));
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(MeleeReachCombatUtility), nameof(MeleeReachCombatUtility.GetMeleeReachRange)));
                 }
                 else
                 {
                     yield return codes[i];
                 }
             }
-        }
-
-        public static float GetMeleeReachRange(this Pawn caster, Verb verb)
-        {
-            var weapon = verb?.EquipmentSource?.def;
-            if (weapon != null && weapon.StatBaseDefined(VEFDefOf.VEF_MeleeWeaponRange))
-            {
-                return weapon.GetStatValueAbstract(VEFDefOf.VEF_MeleeWeaponRange);
-            }
-            return ShootTuning.MeleeRange;
         }
     }
 
@@ -224,23 +195,24 @@ namespace VEF.Weapons
             curPawn = null;
         }
     }
+
     [HotSwappable]
     [HarmonyPatch]
     public static class VanillaExpandedFramework_Toils_Combat_FollowAndMeleeAttack_Patch
     {
         public static FieldInfo targetInd;
         public static Pawn curPawn;
-
+    
         public static void Prefix(Toil ___followAndAttack)
         {
             curPawn = ___followAndAttack.actor;
         }
-
+    
         public static void Finalizer()
         {
             curPawn = null;
         }
-
+    
         public static MethodBase TargetMethod()
         {
             foreach (var nested in typeof(Toils_Combat).GetNestedTypes(AccessTools.all))
@@ -256,29 +228,27 @@ namespace VEF.Weapons
                 }
             }
             return null;
-
-           
         }
-
+    
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
         {
             foreach (var instruction in codeInstructions)
             {
                 yield return instruction;
                 if (instruction.opcode == OpCodes.Stloc_S && instruction.operand is LocalBuilder localBuilder
-                    && localBuilder.LocalIndex == 6)
+                    && localBuilder.LocalIndex == 8)
                 {
                     yield return new CodeInstruction(OpCodes.Ldarg_0);
                     yield return new CodeInstruction(OpCodes.Ldfld, targetInd);
                     yield return new CodeInstruction(OpCodes.Ldloc_0);
-                    yield return new CodeInstruction(OpCodes.Ldloca_S, 5);
-                    yield return new CodeInstruction(OpCodes.Ldloca_S, 6);
+                    yield return new CodeInstruction(OpCodes.Ldloca_S, 7);
+                    yield return new CodeInstruction(OpCodes.Ldloca_S, 8);
                     yield return new CodeInstruction(OpCodes.Call,
                         AccessTools.Method(typeof(VanillaExpandedFramework_Toils_Combat_FollowAndMeleeAttack_Patch), nameof(TryOverrideDestinationAndPathMode)));
                 }
             }
         }
-
+    
         public static void TryOverrideDestinationAndPathMode(TargetIndex targetInd, Pawn actor,
             ref LocalTargetInfo destination, ref PathEndMode mode)
         {
@@ -311,6 +281,7 @@ namespace VEF.Weapons
             }
         }
     }
+
     [HarmonyPatch(typeof(Pawn_PathFollower), "AtDestinationPosition")]
     public static class VanillaExpandedFramework_Pawn_PathFollower_AtDestinationPosition_Patch
     {
@@ -324,12 +295,12 @@ namespace VEF.Weapons
             curPawn = null;
         }
     }
-
+    
     [HotSwappable]
     [HarmonyPatch(typeof(ReachabilityImmediate), nameof(ReachabilityImmediate.CanReachImmediate), new Type[] { typeof(IntVec3), typeof(LocalTargetInfo), typeof(Map), typeof(PathEndMode), typeof(Pawn) })]
     public static class VanillaExpandedFramework_ReachabilityImmediate_CanReachImmediate_Patch
     {
-
+    
         public static void Postfix(ref bool __result, IntVec3 start, LocalTargetInfo target, Map map, PathEndMode peMode, Pawn pawn)
         {
             var curPawn = VanillaExpandedFramework_Toils_Combat_FollowAndMeleeAttack_Patch.curPawn
@@ -348,13 +319,8 @@ namespace VEF.Weapons
                 __result = distance <= meleeReachRange && GenSight.LineOfSight(start, target.Cell, map);
             }
         }
-
-        public static Verb GetMeleeVerb(this Pawn pawn)
-        {
-            return pawn.jobs.curJob?.verbToUse ?? pawn.equipment?.PrimaryEq?.PrimaryVerb;
-        }
     }
-
+    
     [HarmonyPatch(typeof(JobDriver_Wait), "CheckForAutoAttack")]
     public static class VanillaExpandedFramework_JobDriver_Wait_CheckForAutoAttack_Patch
     {
@@ -370,7 +336,7 @@ namespace VEF.Weapons
                     yield return new CodeInstruction(OpCodes.Brfalse_S, label);
                     yield return new CodeInstruction(OpCodes.Ldloc_S, 9);
                     yield return new CodeInstruction(OpCodes.Call,
-                        AccessTools.Method(typeof(VanillaExpandedFramework_JobDriver_Wait_CheckForAutoAttack_Patch), nameof(IsVanillaMeleeAttack)));
+                        AccessTools.Method(typeof(MeleeReachCombatUtility), nameof(MeleeReachCombatUtility.IsVanillaMeleeAttack)));
                     yield return new CodeInstruction(OpCodes.Brtrue_S, codes[i].operand);
                 }
                 else
@@ -379,17 +345,8 @@ namespace VEF.Weapons
                 }
             }
         }
-
-        public static bool IsVanillaMeleeAttack(Verb verb)
-        {
-            if (verb.Caster is Pawn pawn && pawn.GetMeleeReachRange(verb) > ShootTuning.MeleeRange)
-            {
-                return false;
-            }
-            return true;
-        }
     }
-
+    
     [HarmonyPatch(typeof(AttackTargetFinder), nameof(AttackTargetFinder.BestAttackTarget))]
     public static class VanillaExpandedFramework_AttackTargetFinder_BestAttackTarget_Patch
     {
@@ -404,6 +361,35 @@ namespace VEF.Weapons
                     maxDist = Mathf.Max(maxDist, meleeReachRange);
                 }
             }
+        }
+    }
+
+    public static class MeleeReachCombatUtility
+    {
+        public static float GetMeleeReachRange(this Pawn caster, Verb verb)
+        {
+            var weapon = verb?.EquipmentSource?.def;
+            if (weapon != null && weapon.StatBaseDefined(VEFDefOf.VEF_MeleeWeaponRange))
+            {
+                return weapon.GetStatValueAbstract(VEFDefOf.VEF_MeleeWeaponRange);
+            }
+            return ShootTuning.MeleeRange;
+        }
+
+
+        public static Verb GetMeleeVerb(this Pawn pawn)
+        {
+            return pawn.jobs.curJob?.verbToUse ?? pawn.equipment?.PrimaryEq?.PrimaryVerb;
+        }
+
+
+        public static bool IsVanillaMeleeAttack(Verb verb)
+        {
+            if (verb.Caster is Pawn pawn && pawn.GetMeleeReachRange(verb) > ShootTuning.MeleeRange)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

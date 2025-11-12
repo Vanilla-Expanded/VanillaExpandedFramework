@@ -105,7 +105,10 @@ namespace VEF.Genes
                                 {
                                     if (enumerator <= gene.pawn.RaceProps.body.GetPartsWithDef(bodypart).Count)
                                     {
-                                        gene.pawn.health.AddHediff(hediffToBodypart.hediff, gene.pawn.RaceProps.body.GetPartsWithDef(bodypart).ToArray()[enumerator]);
+                                        if (!gene.pawn.health.hediffSet.PartIsMissing(gene.pawn.RaceProps.body.GetPartsWithDef(bodypart).ToArray()[enumerator]))
+                                        {
+                                            gene.pawn.health.AddHediff(hediffToBodypart.hediff, gene.pawn.RaceProps.body.GetPartsWithDef(bodypart).ToArray()[enumerator]);
+                                        }
                                         enumerator++;
                                     }
 

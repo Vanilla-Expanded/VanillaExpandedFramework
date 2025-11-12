@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using RimWorld;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 
@@ -32,7 +33,7 @@ namespace PipeSystem
             Thing bestFuel = FindBestFuel(pawn, comp.Props.refillOptions.thing);
 
             Job job = JobMaker.MakeJob(PSDefOf.PS_FillStorage, t, bestFuel);
-            job.count = (int)(comp.AmountCanAccept * comp.Props.refillOptions.ratio);
+            job.count = Mathf.Max(Mathf.FloorToInt(comp.AmountCanAccept * comp.Props.refillOptions.ratio), 1);
 
             return job;
         }

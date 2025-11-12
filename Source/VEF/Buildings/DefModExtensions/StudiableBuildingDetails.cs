@@ -16,6 +16,8 @@ namespace VEF.Buildings
         public bool craftingInspiration;
         public SkillDef skillForStudying;
         public string overlayTexture;
+        public bool showProgressBar = false;
+        public bool showResearchEffecter = true;
 
     }
 }

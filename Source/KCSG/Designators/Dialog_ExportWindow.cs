@@ -30,6 +30,9 @@ namespace KCSG
         public static bool forceGenerateRoof = false;
         public static bool isStorage = false;
         public static bool randomizeWallStuffAtGen = false;
+        public static bool saveFuel = false;
+        public static bool savePower = false;
+        public static bool randomRotation = false;
 
         private readonly Area area;
         private readonly Map map;
@@ -57,7 +60,7 @@ namespace KCSG
             exportedSymbolsDef = ExportUtils.CreateSymbolIfNeeded(area);
         }
 
-        public override Vector2 InitialSize => new Vector2(650f, 520f);
+        public override Vector2 InitialSize => new Vector2(650f, 580f);
 
         public override void DoWindowContents(Rect inRect)
         {
@@ -105,6 +108,30 @@ namespace KCSG
             lst.Gap(5);
 
             lst.CheckboxLabeled("Randomize wall stuff:", ref randomizeWallStuffAtGen, "Randomize wall stuff at generation");
+            lst.Gap(5);
+            lst.CheckboxLabeled("Random rotation:", ref randomRotation, "Randomize rotation at generation");
+            lst.Gap(5);
+            var oldSaveFuel = saveFuel;
+            lst.CheckboxLabeled("Save fuel:", ref saveFuel, "Save fuel values from pipenet and vanilla comprefuelable");
+            if (oldSaveFuel != saveFuel)
+            {
+                var newDefs = ExportUtils.CreateSymbolIfNeeded(area);
+                foreach (var def in newDefs)
+                {
+                    exportedSymbolsDef.Add(def);
+                }
+            }
+            lst.Gap(5);
+            var oldSavePower = savePower;
+            lst.CheckboxLabeled("Save power:", ref savePower, "Save power values from batteries");
+            if (oldSavePower != savePower)
+            {
+                var newDefs = ExportUtils.CreateSymbolIfNeeded(area);
+                foreach (var def in newDefs)
+                {
+                    exportedSymbolsDef.Add(def);
+                }
+            }
             lst.GapLine();
 
             lst.Label("Structure tags:", tooltip: "Tags are used with SettlementLayoutDef");

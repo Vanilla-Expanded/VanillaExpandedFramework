@@ -1,11 +1,14 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Verse;
+using Verse.Sound;
 
 namespace ModSettingsFramework
 {
+    [HotSwappable]
     public abstract class PatchOperationModSettings : PatchOperation
     {
         public int order;
@@ -113,12 +116,68 @@ namespace ModSettingsFramework
 
         protected void CheckboxLabeled(Listing_Standard listingStandard, string optionLabel, ref bool field)
         {
-            Rect rect = new Rect(listingStandard.curX, listingStandard.curY, listingStandard.ColumnWidth, Text.LineHeight);
+            Rect rect = new Rect(listingStandard.curX, listingStandard.curY, 
+                listingStandard.ColumnWidth, Text.LineHeight);
             lineNumber++;
+            rect.y -= 3;
+            rect.height += 6;
             if (lineNumber % 2 != 0)
+            {
                 Widgets.DrawLightHighlight(rect);
+            }
             Widgets.DrawHighlightIfMouseover(rect);
-            listingStandard.CheckboxLabeled(optionLabel, ref field);
+
+            CheckboxLabeledInner(listingStandard, optionLabel, ref field);
+        }
+
+        public void CheckboxLabeledInner(Listing_Standard listingStandard, string label, ref bool checkOn, string tooltip = null, float height = 0f, float labelPct = 1f)
+        {
+            float height2 = ((height != 0f) ? height : Text.CalcHeight(label, listingStandard.ColumnWidth * labelPct));
+            Rect rect = listingStandard.GetRect(height2, labelPct);
+            rect.width = Math.Min(rect.width + 24f, listingStandard.ColumnWidth);
+            if (!listingStandard.BoundingRectCached.HasValue || rect.Overlaps(listingStandard.BoundingRectCached.Value))
+            {
+                if (!tooltip.NullOrEmpty())
+                {
+                    if (Mouse.IsOver(rect))
+                    {
+                        Widgets.DrawHighlight(rect);
+                    }
+                    TooltipHandler.TipRegion(rect, tooltip);
+                }
+                CheckboxLabeled(rect, label, ref checkOn);
+            }
+            listingStandard.Gap(listingStandard.verticalSpacing);
+        }
+
+        public static void CheckboxLabeled(Rect rect, string label, ref bool checkOn, bool disabled = false, Texture2D texChecked = null, Texture2D texUnchecked = null, bool placeCheckboxNearText = false, bool paintable = false)
+        {
+            TextAnchor anchor = Text.Anchor;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            if (placeCheckboxNearText)
+            {
+                rect.width = Mathf.Min(rect.width, Text.CalcSize(label).x + 24f + 10f);
+            }
+            Rect rect2 = rect;
+            rect2.xMax -= 24f;
+            Widgets.Label(rect2, label);
+            if (!disabled)
+            {
+                if (Widgets.ButtonInvisible(rect, true))
+                {
+                    checkOn = !checkOn;
+                    if (checkOn)
+                    {
+                        SoundDefOf.Checkbox_TurnedOn.PlayOneShotOnCamera();
+                    }
+                    else
+                    {
+                        SoundDefOf.Checkbox_TurnedOff.PlayOneShotOnCamera();
+                    }
+                }
+            }
+            Widgets.CheckboxDraw(rect.x + rect.width - 24f, rect.y + (rect.height - 24f) / 2f, checkOn, disabled, 24f, texChecked, texUnchecked);
+            Text.Anchor = anchor;
         }
 
         protected void DoSlider(Listing_Standard listingStandard, string label, ref float value, string valueLabel, 

@@ -2,6 +2,7 @@
 using RimWorld;
 using Verse;
 using VEF.OptionalFeatures;
+using VEF.Maps;
 
 namespace VEF.Weapons
 {
@@ -20,7 +21,14 @@ namespace VEF.Weapons
             harm.Patch(AccessTools.Method(typeof(Verb), "TryCastNextBurstShot"),
                transpiler: new HarmonyMethod(typeof(VanillaExpandedFramework_Verb_TryCastNextBurstShot_Patch), "ChangeSoundProduced"));
 
-         
+            harm.Patch(AccessTools.EnumeratorMoveNext(AccessTools.Method(typeof(Verb_MeleeAttackDamage), "DamageInfosToApply")),
+               transpiler: new HarmonyMethod(typeof(VanillaExpandedFramework_Verb_MeleeAttackDamage_DamageInfosToApply_Patch), "ModifyMeleeDamage"));
+
+            harm.Patch(AccessTools.Method(typeof(CompUniqueWeapon), "AddTrait"),
+               postfix: new HarmonyMethod(typeof(VanillaExpandedFramework_CompUniqueWeapon_AddTrait_Patch), "HandleExtendedWorker"));
+
+            harm.Patch(AccessTools.Method(typeof(Pawn_EquipmentTracker), "Notify_AbilityUsed"),
+               postfix: new HarmonyMethod(typeof(VanillaExpandedFramework_Pawn_EquipmentTracker_Notify_AbilityUsed_Patch), "NotifyAbilityUses"));
         }
     }
 }

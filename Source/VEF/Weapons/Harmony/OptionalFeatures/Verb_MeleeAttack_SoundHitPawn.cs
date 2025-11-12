@@ -13,20 +13,23 @@ namespace VEF.Weapons
         public static void ChangeMeleeSound(ref SoundDef __result, Verb_MeleeAttack __instance)
         {
 
-            
+            if(__instance.EquipmentSource != null && StaticCollectionsClass.uniqueWeaponsInGame.Contains(__instance.EquipmentSource.def)) {
                 CompUniqueWeapon comp = __instance.EquipmentSource?.GetComp<CompUniqueWeapon>();
                 if (comp != null)
                 {
                     foreach (WeaponTraitDef item in comp.TraitsListForReading)
                     {
                         WeaponTraitDefExtension extension = item.GetModExtension<WeaponTraitDefExtension>();
-                        if (extension?.meleeSoundOverride !=null)
+                        if (extension?.meleeSoundOverride != null)
                         {
                             __result = extension.meleeSoundOverride;
                         }
-                        
+
                     }
                 }
+
+            }
+                
             
         }
     }

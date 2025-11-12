@@ -38,7 +38,7 @@ namespace VEF.Buildings
             study.tickIntervalAction = delta =>
             {
                 Pawn actor = study.actor;
-                if (actor.skills != null)
+                if (actor.skills != null && contentDetails.skillForStudying!=null)
                 {
                     actor.skills.Learn(contentDetails.skillForStudying, 0.025f * delta);
                 }
@@ -51,11 +51,21 @@ namespace VEF.Buildings
                     actor.jobs.EndCurrentJob(JobCondition.Succeeded);
                 }
             };
-
+            if (contentDetails.showProgressBar)
+            {
+                study.WithProgressBar(TargetIndex.A, () => (float)totalTimer / totalTime);
+            }
             study.FailOnCannotTouch(TargetIndex.A, PathEndMode.Touch);
-            study.WithEffect(EffecterDefOf.Research, TargetIndex.A);
+            if (contentDetails.showResearchEffecter)
+            {
+                study.WithEffect(EffecterDefOf.Research, TargetIndex.A);
+            }
+            
             study.defaultCompleteMode = ToilCompleteMode.Never;
-            study.activeSkill = () => contentDetails.skillForStudying;
+            if(contentDetails.skillForStudying != null)
+            {
+                study.activeSkill = () => contentDetails.skillForStudying;
+            }       
             study.handlingFacing = true;
             study.AddFinishAction(delegate
             {

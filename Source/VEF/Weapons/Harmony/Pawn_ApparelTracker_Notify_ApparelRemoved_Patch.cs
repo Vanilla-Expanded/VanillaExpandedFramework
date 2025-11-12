@@ -14,7 +14,7 @@ namespace VEF.Weapons
                 var options = equipment.def.GetModExtension<HeavyWeapon>();
                 if (options != null && options.isHeavy)
                 {
-                    if (!VanillaExpandedFramework_EquipmentUtility_CanEquip_Patch.CanEquip(__instance.pawn, options))
+                    if (!VanillaExpandedFramework_EquipmentUtility_CanEquip_Patch.CanEquip(equipment, __instance.pawn, options))
                     {
                         __instance.pawn.equipment.TryDropEquipment(equipment, out var pos, __instance.pawn.Position);
                     }

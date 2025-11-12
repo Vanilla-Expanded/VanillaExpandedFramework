@@ -16,7 +16,6 @@ namespace VEF
         public static JobDef VEF_UseDoorTeleporter;
       
         public static StatDef VEF_VerbRangeFactor;
-        public static StatDef VEF_VerbCooldownFactor;
         public static StatDef VEF_EnergyShieldEnergyMaxOffset;
         public static StatDef VEF_EnergyShieldEnergyMaxFactor;
         public static StatDef VEF_MeleeAttackSpeedFactor;
