@@ -1,10 +1,12 @@
-﻿namespace VEF.Abilities
+﻿using System.Collections.Generic;
+using RimWorld;
+using UnityEngine;
+using Verse;
+using Verse.AI;
+
+namespace VEF.Abilities
 {
-    using System.Collections.Generic;
-    using RimWorld;
-    using UnityEngine;
-    using Verse;
-    using Verse.AI;
+
 
     public class JobDriver_GotoTargetAndCastAbilityOnce : JobDriver_CastAbilityOnce
     {
@@ -48,7 +50,7 @@
                 {
                     pawn.pather.StopDead();
                     pawn.rotationTracker.FaceTarget(target);
-                    if (job.TargetA.Thing is Pawn victim)
+                    if (job.targetA.Thing is Pawn victim)
                     {
                         victim.jobs.TryTakeOrderedJob(JobMaker.MakeJob(VFE_DefOf_Abilities.VFEA_StandAndFaceTarget, pawn));
                     }
