@@ -47,7 +47,7 @@ namespace VEF.Buildings
             {
                 yield return c;
             }
-            if (Prefs.DevMode)
+            if (DebugSettings.ShowDevGizmos)
             {
 
                 Command_Action command_Action = new Command_Action();
