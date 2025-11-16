@@ -309,7 +309,6 @@
     <Compile Include="Pawns\DefOfs\InternalDefOf.cs" />
     <Compile Include="Pawns\Harmony\Projectile_ImpactSomething.cs" />
     <Compile Include="Pawns\PregnancyApproaches\JobDriver_Lovin_MoveNext_Patch.cs" />
-    <Compile Include="Pawns\StatParts\StatPart_RangeAttackSpeedFactor.cs" />
     <Compile Include="Pawns\StatWorkers\StatWorker_MassCarryCapacity.cs" />
     <Compile Include="Pawns\ThoughtWorkers\ThoughtWorker_InVacuum.cs" />
     <Compile Include="Pawns\ThoughtWorkers\ThoughtWorker_NotInVacuum.cs" />

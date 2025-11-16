@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using Verse;
+using RimWorld;
+using RimWorld.Planet;
 
 namespace VEF.Buildings
 {
@@ -19,6 +21,9 @@ namespace VEF.Buildings
         private static readonly Material ArrowMatWhite = MaterialPool.MatFrom("UI/Overlays/Arrow", ShaderDatabase.CutoutFlying, Color.white);
         public bool doBouncingArrow;
 
+        public MapParent originalMapParent;
+        private bool stopDrawing = false;
+
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
@@ -29,16 +34,42 @@ namespace VEF.Buildings
             }
         }
 
+        private void CheckStopDrawing()
+        {
+            if (!stopDrawing && originalMapParent != null)
+            {
+                var currentParent = this.parent?.MapHeld?.Parent;
+                if (currentParent != originalMapParent)
+                {
+                    stopDrawing = true;
+                    doBouncingArrow = false;
+                }
+            }
+            if (!stopDrawing)
+            {
+                var currentParent = this.parent?.MapHeld?.Parent;
+                if (currentParent != null && currentParent.Map.IsPlayerHome)
+                {
+                    stopDrawing = true;
+                    doBouncingArrow = false;
+                }
+            }
+        }
+
         public override void PostExposeData()
         {
             base.PostExposeData();
             Scribe_Values.Look(ref doBouncingArrow, "doBouncingArrow");
+            Scribe_References.Look(ref originalMapParent, "originalMapParent");
+            Scribe_Values.Look(ref stopDrawing, "stopDrawing", false);
         }
 
         public override void PostDraw()
         {
             base.PostDraw();
-            if (doBouncingArrow)
+            if (parent.Spawned is false) return;
+            CheckStopDrawing();
+            if (doBouncingArrow && !stopDrawing)
             {
                 var progress = Find.TickManager.TicksGame % 1000;
                 if (progress < 500) progress = 1000 - progress;

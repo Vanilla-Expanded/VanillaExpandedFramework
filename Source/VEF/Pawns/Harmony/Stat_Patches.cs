@@ -36,18 +36,6 @@ namespace VEF.Pawns
         }
     }
 
-    [HarmonyPatch(typeof(Tool), "AdjustedCooldown", new Type[] { typeof(Thing) })]
-    public static class VanillaExpandedFramework_Tool_AdjustedCooldown_Patch
-    {
-        public static void Postfix(Thing ownerEquipment, ref float __result)
-        {
-            if (ownerEquipment?.ParentHolder is Pawn_EquipmentTracker eq)
-            {
-                __result /= eq.pawn.GetStatValue(VEFDefOf.VEF_MeleeAttackSpeedFactor);
-            }
-        }
-    }
-
     [HarmonyPatch(typeof(VerbProperties), "AdjustedMeleeDamageAmount", new Type[] { typeof(Verb), typeof(Pawn) })]
     public static class VanillaExpandedFramework_AdjustedMeleeDamageAmount_Patch
     {

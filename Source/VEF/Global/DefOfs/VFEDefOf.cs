@@ -18,8 +18,6 @@ namespace VEF
         public static StatDef VEF_VerbRangeFactor;
         public static StatDef VEF_EnergyShieldEnergyMaxOffset;
         public static StatDef VEF_EnergyShieldEnergyMaxFactor;
-        public static StatDef VEF_MeleeAttackSpeedFactor;
-        public static StatDef VEF_RangeAttackSpeedFactor;
         public static StatDef VEF_MeleeAttackDamageFactor;
         public static StatDef VEF_RangeAttackDamageFactor;
         public static StatDef VEF_BodySize_Offset;
