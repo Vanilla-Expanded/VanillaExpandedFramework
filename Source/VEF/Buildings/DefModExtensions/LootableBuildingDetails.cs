@@ -25,7 +25,9 @@ namespace VEF.Buildings
         public string cancelLootinggizmoDesc;
         public string requiredMod = "";
         public string overlayTexture;
-
+        // This only affects LootableBuilding_Custom. IOpenable has its own systems
+        public int secondsToOpen = 20;
+        public bool useHackingSpeed = false;
 
     }
 

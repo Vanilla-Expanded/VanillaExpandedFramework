@@ -9,7 +9,25 @@ namespace VEF.Buildings
     public class JobDriver_Loot : JobDriver
     {
 
-        public const int totalTime = GenTicks.TicksPerRealSecond * 20; // 20 seconds
+        public int totalTimeCached = -1;
+        public int TotalTime
+        {
+            get {
+                if (totalTimeCached == -1)
+                {
+                    float hackingModifier = 1;
+                    if (Building.LootableExtension.useHackingSpeed) {
+                        hackingModifier *= pawn.GetStatValue(StatDefOf.HackingSpeed);
+                    }
+                    totalTimeCached = (int)(GenTicks.TicksPerRealSecond * Building.LootableExtension.secondsToOpen / hackingModifier);
+                }
+                return totalTimeCached; 
+            
+            }
+        
+        
+        }
+      
         public int totalTimer = 0;
 
         public override bool TryMakePreToilReservations(bool errorOnFailed)
@@ -42,14 +60,14 @@ namespace VEF.Buildings
                 actor.rotationTracker.FaceTarget(actor.CurJob.GetTarget(TargetIndex.A));
 
                 totalTimer += delta;
-                if (totalTimer > totalTime)
+                if (totalTimer > TotalTime)
                 {
                     actor.jobs.EndCurrentJob(JobCondition.Succeeded);
                 }
             };
 
             study.FailOnCannotTouch(TargetIndex.A, PathEndMode.Touch);
-            study.WithProgressBar(TargetIndex.A, () => (float)totalTimer / totalTime);
+            study.WithProgressBar(TargetIndex.A, () => (float)totalTimer / TotalTime);
             study.defaultCompleteMode = ToilCompleteMode.Never;
 
             study.handlingFacing = true;
