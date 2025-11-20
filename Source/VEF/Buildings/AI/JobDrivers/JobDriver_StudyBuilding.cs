@@ -48,6 +48,7 @@ namespace VEF.Buildings
                 totalTimer += delta;
                 if (totalTimer > totalTime)
                 {
+                    Building.Study(pawn);
                     actor.jobs.EndCurrentJob(JobCondition.Succeeded);
                 }
             };
@@ -67,11 +68,7 @@ namespace VEF.Buildings
                 study.activeSkill = () => contentDetails.skillForStudying;
             }       
             study.handlingFacing = true;
-            study.AddFinishAction(delegate
-            {
-
-                Building.Study(pawn);
-            });
+            
             yield return study;
 
 
