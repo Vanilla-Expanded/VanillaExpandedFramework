@@ -5,6 +5,7 @@ using Verse;
 using RimWorld;
 using Verse.Sound;
 using Verse.AI;
+using VEF.Genes;
 
 //These lootable buildings don't use base game IOpenable interface
 
@@ -112,34 +113,61 @@ namespace VEF.Buildings
         {
             if (LootableExtension != null)
             {
-                if (LootableExtension.randomFromContents)
+                if (LootableExtension.useThingSetMakerDef)
                 {
-                    for (int i = 0; i < LootableExtension.totalRandomLoops.RandomInRange; i++)
-                    {
-                        ThingAndCount thingDefCount = LootableExtension.contents.RandomElement();
-                        Thing thingToMake = ThingMaker.MakeThing(thingDefCount.thing, null);
-                        thingToMake.stackCount = thingDefCount.count;
-                        (thingToMake as ThingWithComps)?.compQuality?.SetQuality(QualityUtility.GenerateQualityRandomEqualChance(), ArtGenerationContext.Colony);
-                        GenPlace.TryPlaceThing(thingToMake, Position, Map, ThingPlaceMode.Near);
-                    }
+                    ThingSetMakerParams parms = default(ThingSetMakerParams);
 
+                    parms.totalMarketValueRange = LootableExtension.setMakerDetails.totalMarketValueRange;
+                    parms.minSingleItemMarketValuePct = LootableExtension.setMakerDetails.minSingleItemMarketValuePct;
+                    parms.allowNonStackableDuplicates = LootableExtension.setMakerDetails.allowNonStackableDuplicates;
+                    int fixStupidIntRangeStuff = LootableExtension.setMakerDetails.countRange.RandomInRange;
+                    parms.countRange = new IntRange(fixStupidIntRangeStuff, fixStupidIntRangeStuff);
+
+                    List<Thing> list2 = LootableExtension.setMakerDetails.thingSetMakerDef.root.Generate(parms);
+
+                    if (list2 != null)
+                    {
+                        foreach (Thing thing in list2)
+                        {
+                            GenPlace.TryPlaceThing(thing, Position, Map, ThingPlaceMode.Near);
+                        }
+
+                    }
                 }
                 else
                 {
-
-                    foreach (ThingAndCount thingDefCount in LootableExtension.contents)
+                    if (LootableExtension.randomFromContents)
                     {
-                        Thing thingToMake = ThingMaker.MakeThing(thingDefCount.thing, null);
-                        if(thingDefCount.randomCount!= new IntRange(1, 1))
+                        for (int i = 0; i < LootableExtension.totalRandomLoops.RandomInRange; i++)
                         {
-                            thingToMake.stackCount = thingDefCount.randomCount.RandomInRange;
+                            ThingAndCount thingDefCount = LootableExtension.contents.RandomElement();
+                            Thing thingToMake = ThingMaker.MakeThing(thingDefCount.thing, null);
+                            thingToMake.stackCount = thingDefCount.count;
+                            (thingToMake as ThingWithComps)?.compQuality?.SetQuality(QualityUtility.GenerateQualityRandomEqualChance(), ArtGenerationContext.Colony);
+                            GenPlace.TryPlaceThing(thingToMake, Position, Map, ThingPlaceMode.Near);
                         }
-                        else { thingToMake.stackCount = thingDefCount.count; }
-                        
-                        (thingToMake as ThingWithComps)?.compQuality?.SetQuality(QualityUtility.GenerateQualityRandomEqualChance(), ArtGenerationContext.Colony);
-                        GenPlace.TryPlaceThing(thingToMake, Position, Map, ThingPlaceMode.Near);
+
                     }
+                    else
+                    {
+
+                        foreach (ThingAndCount thingDefCount in LootableExtension.contents)
+                        {
+                            Thing thingToMake = ThingMaker.MakeThing(thingDefCount.thing, null);
+                            if (thingDefCount.randomCount != new IntRange(1, 1))
+                            {
+                                thingToMake.stackCount = thingDefCount.randomCount.RandomInRange;
+                            }
+                            else { thingToMake.stackCount = thingDefCount.count; }
+
+                            (thingToMake as ThingWithComps)?.compQuality?.SetQuality(QualityUtility.GenerateQualityRandomEqualChance(), ArtGenerationContext.Colony);
+                            GenPlace.TryPlaceThing(thingToMake, Position, Map, ThingPlaceMode.Near);
+                        }
+                    }
+
                 }
+
+                
 
 
                 if (LootableExtension.buildingLeft != null)

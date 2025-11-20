@@ -29,6 +29,11 @@ namespace VEF.Buildings
         public int secondsToOpen = 20;
         public bool useHackingSpeed = false;
 
+        // Optionally, LootableBuilding_Custom can also use ThingDetMakerDefs
+        public bool useThingSetMakerDef = false;
+        public ThingSetMakerDetails setMakerDetails = null;
+
+
     }
 
     public class ThingAndCount
@@ -36,6 +41,16 @@ namespace VEF.Buildings
         public ThingDef thing;
         public int count = 1;
         public IntRange randomCount = new IntRange(1, 1);
+
+    }
+
+    public class ThingSetMakerDetails
+    {
+        public ThingSetMakerDef thingSetMakerDef;
+        public FloatRange totalMarketValueRange = new FloatRange(850, 1000);
+        public float? minSingleItemMarketValuePct;
+        public bool allowNonStackableDuplicates = true;
+        public IntRange countRange = new IntRange(1, 1);
 
     }
 
