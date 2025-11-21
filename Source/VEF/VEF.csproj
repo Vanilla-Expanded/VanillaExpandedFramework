@@ -96,6 +96,8 @@
     <Compile Include="Abilities\Abilities\Ability_Skyfallers.cs" />
     <Compile Include="Abilities\Abilities\Ability_Spawn.cs" />
     <Compile Include="Abilities\Abilities\Ability_SpawnBuilding.cs" />
+    <Compile Include="Abilities\Comps\CompGiveHediff.cs" />
+    <Compile Include="Abilities\Comps\Properties\CompProperties_GiveHediff.cs" />
     <Compile Include="Abilities\Misc\Ability.cs" />
     <Compile Include="Abilities\Defs\AbilityDef.cs" />
     <Compile Include="Abilities\Utils\AbilityMigrationUtility.cs" />
