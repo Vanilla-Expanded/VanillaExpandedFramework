@@ -154,10 +154,14 @@
     <Compile Include="AnimalBehaviours\HediffComps\HediffComp_ExplodeOnDowned.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\HediffComp_PassiveResearch.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\HediffComp_PsyfocusRegeneration.cs" />
+    <Compile Include="AnimalBehaviours\HediffComps\HediffComp_RegrowLimbs.cs" />
+    <Compile Include="AnimalBehaviours\HediffComps\HediffComp_SpawnMote.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\HediffComp_StageByVacuum.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_ExplodeOnDowned.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_PassiveResearch.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_PsyfocusRegeneration.cs" />
+    <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_RegrowLimbs.cs" />
+    <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_SpawnMote.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_StageByVacuum.cs" />
     <Compile Include="AnimalBehaviours\Projectiles\Electric_Projectile.cs" />
     <Compile Include="AnimalBehaviours\Utils\Utils.cs" />
@@ -215,6 +219,7 @@
     <Compile Include="Global\DebugActions.cs" />
     <Compile Include="Global\Harmony\MemoryUtility_UnloadUnusedUnityAssets.cs" />
     <Compile Include="Global\HotSwappableAttribute.cs" />
+    <Compile Include="Global\MoteAttachedScaled.cs" />
     <Compile Include="Global\VEF_HarmonyCategories.cs" />
     <Compile Include="Graphics\AI\JobDrivers\JobDriver_CustomizeItem.cs" />
     <Compile Include="Graphics\Comps\CompDirtyMapMeshOnRefuelableChange.cs" />
