@@ -51,11 +51,22 @@ namespace PipeSystem
 
             if (comp.FirstIngredientMissing != null)
             {
-                return JobMaker.MakeJob(PSDefOf.PS_BringToProcessor, t, FindIngredient(pawn, comp, comp.FirstIngredientMissing));
+                Thing ingredient = FindIngredient(pawn, comp, comp.FirstIngredientMissing);
+                if(ingredient != null)
+                {
+                    return JobMaker.MakeJob(PSDefOf.PS_BringToProcessor, t, ingredient);
+                }
+                
             }
             if (comp.FirstCategoryMissing != null)
             {
-                return JobMaker.MakeJob(PSDefOf.PS_BringToProcessor, t, FindCategoryIngredient(pawn, comp, comp.FirstCategoryMissing));
+                Thing ingredient = FindCategoryIngredient(pawn, comp, comp.FirstCategoryMissing);
+                if (ingredient != null)
+                {
+                    return JobMaker.MakeJob(PSDefOf.PS_BringToProcessor, t, ingredient);
+                }
+
+               
             }
             return null;
         }
