@@ -280,13 +280,16 @@ namespace PipeSystem
             if (signal == OffSignal)
                 ResourceOn = false;
 
-            if (Consumption != 0f)
+            if (PipeNet != null)
             {
-                PipeNet.receiversDirty = true;
-                PipeNet.producersDirty = true;
-            }
+                if (Consumption != 0f)
+                {
+                    PipeNet.receiversDirty = true;
+                    PipeNet.producersDirty = true;
+                }
 
-            LowPowerModeOn = ShouldBeLowPowerMode;
+                LowPowerModeOn = ShouldBeLowPowerMode;
+            }
         }
 
         /// <summary>
