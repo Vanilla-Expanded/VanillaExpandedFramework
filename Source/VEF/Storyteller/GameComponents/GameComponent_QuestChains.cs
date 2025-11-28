@@ -105,6 +105,10 @@ namespace VEF.Storyteller
             {
                 TryGrantAgainOnFailure(quest.root);
             }
+            else if (outcome == QuestEndOutcome.Success)
+            {
+                TryGrantAgainOnSuccess(quest.root);
+            }
 
             TryScheduleQuests();
         }
@@ -218,6 +222,17 @@ namespace VEF.Storyteller
                 return false;
             }
             ScheduleQuestInTicks(quest, (int)(GenDate.TicksPerDay * extension.daysUntilGrantAgainOnFailure.RandomInRange));
+            return true;
+        }
+
+        public bool TryGrantAgainOnSuccess(QuestScriptDef quest)
+        {
+            var extension = quest.GetModExtension<QuestChainExtension>();
+            if (!extension.grantAgainOnSuccess)
+            {
+                return false;
+            }
+            ScheduleQuestInTicks(quest, (int)(GenDate.TicksPerDay * extension.daysUntilGrantAgainOnSuccess.RandomInRange));
             return true;
         }
 

@@ -19,6 +19,8 @@ namespace VEF.Storyteller
 
         public bool grantAgainOnFailure;
         public FloatRange daysUntilGrantAgainOnFailure;
+        public bool grantAgainOnSuccess;
+        public FloatRange daysUntilGrantAgainOnSuccess;
         public bool grantAgainOnExpiry;
         public FloatRange daysUntilGrantAgainOnExpiry;
         public IntRange? delayTicksAfterTriggering;
