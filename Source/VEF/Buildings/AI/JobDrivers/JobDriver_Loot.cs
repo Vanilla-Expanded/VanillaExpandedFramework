@@ -62,6 +62,7 @@ namespace VEF.Buildings
                 totalTimer += delta;
                 if (totalTimer > TotalTime)
                 {
+                    Building.Open();
                     actor.jobs.EndCurrentJob(JobCondition.Succeeded);
                 }
             };
@@ -71,10 +72,7 @@ namespace VEF.Buildings
             study.defaultCompleteMode = ToilCompleteMode.Never;
 
             study.handlingFacing = true;
-            study.AddFinishAction(delegate
-            {
-                Building.Open();
-            });
+           
             yield return study;
 
 
