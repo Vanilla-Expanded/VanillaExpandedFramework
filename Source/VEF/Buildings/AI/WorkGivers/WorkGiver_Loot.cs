@@ -44,11 +44,6 @@ namespace VEF.Buildings
             }
 
 
-            if (t.Faction != pawn.Faction)
-            {
-                return false;
-            }
-
             if (t.IsForbidden(pawn))
             {
                 return false;
@@ -63,6 +58,11 @@ namespace VEF.Buildings
                 return false;
             }
             if (building.IsBurning())
+            {
+                return false;
+            }
+
+            if (building.LootableExtension.useHackingSpeed && (pawn.skills.GetSkill(SkillDefOf.Intellectual).TotallyDisabled  || StatDefOf.HackingSpeed.Worker.IsDisabledFor(pawn)))
             {
                 return false;
             }

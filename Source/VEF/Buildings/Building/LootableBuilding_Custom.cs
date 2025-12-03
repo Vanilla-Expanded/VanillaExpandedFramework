@@ -199,7 +199,8 @@ namespace VEF.Buildings
             {
                 yield return floatMenuOption;
             }
-            if (selPawn.CanReserve(this) && selPawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation)
+            if (selPawn.CanReserve(this) && selPawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation) && 
+                (!LootableExtension.useHackingSpeed || (LootableExtension.useHackingSpeed && !selPawn.skills.GetSkill(SkillDefOf.Intellectual).TotallyDisabled && !StatDefOf.HackingSpeed.Worker.IsDisabledFor(selPawn)))
                 )
             {
                 if (!selPawn.CanReach(this, PathEndMode.OnCell, Danger.Deadly))
