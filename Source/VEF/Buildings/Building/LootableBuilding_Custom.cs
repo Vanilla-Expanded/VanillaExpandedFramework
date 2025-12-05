@@ -172,8 +172,9 @@ namespace VEF.Buildings
 
                 if (LootableExtension.buildingLeft != null)
                 {
+                    Rot4 rotation = this.Rotation;
                     Thing buildingToMake = GenSpawn.Spawn(ThingMaker.MakeThing(LootableExtension.buildingLeft), Position, Map);
-
+                    buildingToMake.Rotation = rotation;
                     if (buildingToMake.def.CanHaveFaction)
                     {
                         buildingToMake.SetFaction(this.Faction);
