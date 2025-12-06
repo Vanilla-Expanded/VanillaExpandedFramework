@@ -34,6 +34,12 @@ namespace VEF.Buildings
             }
         }
 
+        public override void PostDeSpawn(Map map, DestroyMode mode = DestroyMode.Vanish)
+        {
+            base.PostDeSpawn(map, mode);
+            doBouncingArrow = false;
+        }
+
         private void CheckStopDrawing()
         {
             if (!stopDrawing && originalMapParent != null)
@@ -48,7 +54,8 @@ namespace VEF.Buildings
             if (!stopDrawing)
             {
                 var currentParent = this.parent?.MapHeld?.Parent;
-                if (currentParent != null && currentParent.Map.IsPlayerHome)
+                if (currentParent != null && currentParent.Map.IsPlayerHome 
+                    || currentParent is PocketMapParent pocketMapParent && pocketMapParent.sourceMap.IsPlayerHome)
                 {
                     stopDrawing = true;
                     doBouncingArrow = false;
