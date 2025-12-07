@@ -28,7 +28,7 @@ namespace VEF.AnimalBehaviours
             base.CompPostTickInterval(ref severityAdjustment, delta);
 
           
-            if (Pawn.IsHashIntervalTick(Props.tickInterval, delta))
+            if (Pawn.IsHashIntervalTick(Props.tickInterval, delta)&& Pawn.Faction == Faction.OfPlayerSilentFail)
             {
                 ResearchProjectDef proj = Find.ResearchManager.GetProject();
                 if (proj != null)
