@@ -38,13 +38,14 @@ namespace PipeSystem
             // Produce each ticks: Default to 600 ticks (10 sec)
             public int eachTicks = 600;
             // Amount needed to produce result
-            public int countNeeded;
+            public float countNeeded;
             // Result as a thing
             public ThingDef thing;
-            public int thingCount;
+            // Count will be rounded down to a while number, and any fractional reminders kept for further processes
+            public float thingCount;
             // Result as a piped resource
             public PipeNetDef net;
-            public int netCount;
+            public float netCount;
         }
     }
 }

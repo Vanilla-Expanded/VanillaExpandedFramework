@@ -148,7 +148,7 @@ namespace PipeSystem
             {
                 return;
             }
-            if (check)
+            if (check && parent.Spawned)
             {
                 if (sustainer == null || sustainer.Ended)
                 {

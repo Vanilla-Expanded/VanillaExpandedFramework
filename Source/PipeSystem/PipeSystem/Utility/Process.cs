@@ -629,12 +629,12 @@ namespace PipeSystem
                     // No storage but converters
                     else if (net.ThingConvertersMaxOutput >= count)
                     {
-                        net.DistributeAmongConverters(count);
+                        net.DistributeAmongConverters(count, false);
                     }
                     // No storage/converter, try refuel connected things
                     else if (net.RefillableAmount >= count)
                     {
-                        net.DistributeAmongRefillables(count);
+                        net.DistributeAmongRefillables(count, false);
                     }
                 }
                 // If can't go into net and should/can spawn

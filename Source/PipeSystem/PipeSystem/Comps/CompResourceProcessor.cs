@@ -34,9 +34,12 @@ namespace PipeSystem
         private bool cantProcess;
         // - Choosed result
         private int resultIndex;
+        // - Amount left to distribute, as percentage (so it supports distributing to both pipe net and as an item)
+        private float toDistributePercent;
+        // - Decides if we're distributing the output (which pauses the production)
+        private bool isDistributing = false;
 
         // Initialized post spawn:
-        private List<IntVec3> adjCells;
         private bool canPushToNet;
         private bool canCreateItems;
         private Command_Action chooseOuputGizmo;
@@ -69,6 +72,10 @@ namespace PipeSystem
             resultIndex = 0;
             cantProcess = false;
             enoughResource = false;
+            toDistributePercent = 0;
+            isDistributing = false;
+
+            InitializeComps();
         }
 
         /// <summary>
@@ -77,15 +84,13 @@ namespace PipeSystem
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-            // Get comps
-            flickable = parent.GetComp<CompFlickable>();
-            compPower = parent.GetComp<CompPowerTrader>();
-            // Get adjacent cells for spawning
-            adjCells = GenAdj.CellsAdjacent8Way(parent).ToList();
 
             pipeNetOverlayDrawer = parent.Map.GetComponent<PipeNetOverlayDrawer>();
 
-            if (Props.results.Count > 1)
+            SetupForChoice();
+
+            // Only initialize when loading a game, no need to re-initialize the gizmo each time the building is installed
+            if (respawningAfterLoad && Props.results.Count > 1)
             {
                 chooseOuputGizmo = new Command_Action()
                 {
@@ -112,8 +117,17 @@ namespace PipeSystem
                     icon = ChoosedResult.thing != null ? ChoosedResult.thing.uiIcon : emptyIcon,
                 };
             }
+        }
 
-            SetupForChoice();
+        /// <summary>
+        /// Set up comps when building is made or game is loaded.
+        /// Don't do it from PostSpawnSetup, as it wouldn't be called on minified buildings and comps may end up null.
+        /// </summary>
+        private void InitializeComps()
+        {
+            // Get comps
+            flickable = parent.GetComp<CompFlickable>();
+            compPower = parent.GetComp<CompPowerTrader>();
         }
 
         /// <summary>
@@ -145,10 +159,28 @@ namespace PipeSystem
 
         /// <summary>
         /// Each tick, update/maintain sound if needed.
-        /// Each process tick, try to finish process if possible. 
+        /// Each 100 ticks, try to distribute temporarily stored output
+        /// Each process tick and if not distributing, try to finish process if possible. 
         /// </summary>
         public override void CompTick()
         {
+            if (!parent.Spawned)
+                return;
+
+            // Handle distributing resources if we weren't able to empty them the first time around
+            if (isDistributing)
+            {
+                pipeNetOverlayDrawer?.TogglePulsing(parent, Props.pipeNet.offMat, false);
+
+                // Only distribute once per pipe net tick at most
+                if (parent.IsHashIntervalTick(100))
+                    SpawnOrPushToNet();
+
+                // Sound
+                UpdateSustainer(Working);
+                return;
+            }
+
             // Check if we have enough resources
             if (storage >= ChoosedResult.countNeeded)
                 enoughResource = true;
@@ -160,10 +192,15 @@ namespace PipeSystem
             if (tick >= nextProcessTick)
             {
                 if (enoughResource && (flickable == null || flickable.SwitchIsOn) && (compPower == null || compPower.PowerOn))
+                {
+                    toDistributePercent += 1f;
+                    isDistributing = true;
                     SpawnOrPushToNet();
+                }
 
                 nextProcessTick = tick + ChoosedResult.eachTicks;
             }
+
             // Sound
             UpdateSustainer(Working);
         }
@@ -175,10 +212,15 @@ namespace PipeSystem
         {
             base.PostExposeData();
             Scribe_Values.Look(ref storage, "storage");
+            Scribe_Values.Look(ref toDistributePercent, "toDistributePercent");
+            Scribe_Values.Look(ref isDistributing, "isDistributing", false);
             Scribe_Values.Look(ref nextProcessTick, "nextProcessTick");
             Scribe_Values.Look(ref resultIndex, "resultIndex");
             Scribe_Values.Look(ref cantProcess, "cantProcess", false);
             Scribe_Values.Look(ref enoughResource, "enoughResource", false);
+
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+                InitializeComps();
         }
 
         /// <summary>
@@ -215,9 +257,8 @@ namespace PipeSystem
         /// </summary>
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
-            var gizmos = base.CompGetGizmosExtra();
-            for (int i = 0; i < gizmos.Count(); i++)
-                yield return gizmos.ElementAt(i);
+            foreach (var gizmo in base.CompGetGizmosExtra())
+                yield return gizmo;
 
             if (chooseOuputGizmo != null)
                 yield return chooseOuputGizmo;
@@ -228,6 +269,9 @@ namespace PipeSystem
         /// </summary>
         public float PushTo(float amount)
         {
+            if (isDistributing)
+                return 0;
+
             var used = 0f;
             var sub = ChoosedResult.countNeeded - storage;
             if (sub > 0f)
@@ -235,8 +279,8 @@ namespace PipeSystem
                 var toStore = sub > amount ? amount : sub;
                 storage += toStore;
                 used += toStore;
-                // We reached count needed, start process
-                if (storage == ChoosedResult.countNeeded)
+                // We reached count needed, start process (while handling possible rounding errors)
+                if (storage >= ChoosedResult.countNeeded - Mathf.Epsilon)
                     nextProcessTick = Find.TickManager.TicksGame + ChoosedResult.eachTicks;
             }
 
@@ -251,76 +295,74 @@ namespace PipeSystem
             // If it can directly go into the net
             if (canPushToNet && otherComp.PipeNet is PipeNet net && net.connectors.Count > 1)
             {
-                var count = ChoosedResult.netCount;
-                // Available storage?
-                if (net.AvailableCapacity > count)
+                var count = ChoosedResult.netCount * toDistributePercent;
+                var startingCount = count;
+                // Fill storages first
+                net.DistributeAmongStorage(count, out var stored);
+                count -= stored;
+                // Try filling converters after storages
+                count -= net.DistributeAmongConverters(count, false);
+                // Try filling refuelables next
+                count -= net.DistributeAmongRefillables(count, false);
+                // Try filling other resource processors
+                count -= net.DistributeAmongProcessors(count, false);
+
+                // Reduce the percentage to distribute by the amount we used up (as a percentage of total)
+                toDistributePercent -= (startingCount - count) / ChoosedResult.netCount;
+
+                // If we have anymore to distribute means that nothing can accept anymore resources
+                if (toDistributePercent > 0)
                 {
-                    // Store it
-                    net.DistributeAmongStorage(count, out _);
+                    cantProcess = true;
+                }
+                // If we've used up all our inner storage
+                else
+                {
+                    cantProcess = false;
+                    isDistributing = false;
                     storage = 0;
+                    // Just a precaution
+                    toDistributePercent = 0;
                 }
-                // No storage but converters?
-                else if (net.thingConverters.Count > 0)
-                {
-                    var outCap = 0;
-                    // Convert it, if some left keep it inside here
-                    for (int i = 0; i < net.thingConverters.Count; i++)
-                    {
-                        var converter = net.thingConverters[i];
-                        if (converter.CanOutputNow)
-                        {
-                            outCap += converter.MaxCanOutput;
-                        }
-                    }
-                    // If no converters are ready
-                    if (outCap >= count)
-                    {
-                        net.DistributeAmongConverters(count);
-                        storage = 0;
-                    }
-                }
-                // No storage/converter, try refuel connected things
-                else if (net.refillables.Count > 0)
-                {
-                    net.DistributeAmongRefillables(count);
-                    storage = 0;
-                }
-                // We shouldn't have anymore resource, if we do -> storage full or converter full
-                cantProcess = storage > 0;
             }
             // If can't go into net
             else if (canCreateItems)
             {
-                var map = parent.Map;
-                for (int i = 0; i < adjCells.Count; i++)
+                var count = Mathf.FloorToInt(ChoosedResult.thingCount * toDistributePercent);
+
+                if (count > 0)
                 {
-                    // Find an output cell
-                    var cell = adjCells[i];
-                    if (cell.Walkable(map))
-                    {
-                        // Try find thing of the same def
-                        var thing = cell.GetFirstThing(map, ChoosedResult.thing);
-                        if (thing != null)
-                        {
-                            if ((thing.stackCount + ChoosedResult.thingCount) > thing.def.stackLimit)
-                                continue;
-                            // We found some, modifying stack size
-                            thing.stackCount += ChoosedResult.thingCount;
-                        }
-                        else
-                        {
-                            // We didn't find any, creating thing
-                            thing = ThingMaker.MakeThing(ChoosedResult.thing);
-                            thing.stackCount = ChoosedResult.thingCount;
-                            if (!GenPlace.TryPlaceThing(thing, cell, map, ThingPlaceMode.Near))
-                                continue;
-                        }
-                        break;
-                    }
+                    var startingCount = count;
+
+                    var map = parent.Map;
+                    var thing = ThingMaker.MakeThing(ChoosedResult.thing);
+                    thing.stackCount = count;
+                    GenPlace.TryPlaceThing(thing, parent.Position, map, ThingPlaceMode.Near, (_, spawned) => count -= spawned);
+
+                    toDistributePercent -= (startingCount - count) / ChoosedResult.thingCount;
+                    // Just a precaution
+                    if (toDistributePercent < 0)
+                       toDistributePercent = 0;
                 }
-                // Reset buffer
-                storage = 0;
-                cantProcess = false;
+
+                // Unable to place stuff nearby
+                if (count > 0)
+                {
+                    cantProcess = true;
+                }
+                // Reset buffer if we've used up all our inner storage
+                else
+                {
+                    storage = 0;
+                    cantProcess = false;
+                    isDistributing = false;
+                }
+            }
+            // If we can't refill the net yet and create items, mark that we can't process.
+            // This will display proper info (tanks full) and process won't be running on loop (despite not using resources).
+            else
+            {
+                cantProcess = true;
             }
         }
     }

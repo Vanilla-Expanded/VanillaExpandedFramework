@@ -115,7 +115,7 @@ namespace PipeSystem
                 for (int i = 0; i < refillables.Count; i++)
                 {
                     var refillable = refillables[i];
-                    refillableAmount += (refillable.compRefuelable.TargetFuelLevel - refillable.compRefuelable.Fuel) * refillable.Props.ratio;
+                    refillableAmount += (refillable.compRefuelable.TargetFuelLevel - refillable.compRefuelable.Fuel) / refillable.compRefuelable.Props.FuelMultiplierCurrentDifficulty * refillable.Props.ratio;
                 }
                 return refillableAmount;
             }
@@ -500,7 +500,7 @@ namespace PipeSystem
         /// <summary>
         /// Distribute resources stored into the processors
         /// </summary>
-        private float DistributeAmongProcessors(float available)
+        internal float DistributeAmongProcessors(float available, bool drawFromStorage = true)
         {
             float used = 0;
             if (processors.Count == 0 || available <= 0)
@@ -516,14 +516,15 @@ namespace PipeSystem
                     break;
             }
 
-            DrawAmongStorage(used, storages);
+            if (drawFromStorage)
+                DrawAmongStorage(used, storages);
             return used;
         }
 
         /// <summary>
         /// Distribute resources stored into the converters
         /// </summary>
-        internal float DistributeAmongRefillables(float available)
+        internal float DistributeAmongRefillables(float available, bool drawFromStorage = true)
         {
             float used = 0;
             if (refillables.Count == 0 || available <= 0)
@@ -541,14 +542,15 @@ namespace PipeSystem
                     break;
             }
 
-            DrawAmongStorage(used, storages);
+            if (drawFromStorage)
+                DrawAmongStorage(used, storages);
             return used;
         }
 
         /// <summary>
         /// Distribute resources stored into the converters
         /// </summary>
-        internal float DistributeAmongConverters(float available)
+        internal float DistributeAmongConverters(float available, bool drawFromStorage = true)
         {
             float used = 0;
             if (!thingConverters.Any() || available <= 0)
@@ -594,7 +596,8 @@ namespace PipeSystem
                 }
             }
 
-            DrawAmongStorage(used, storages);
+            if (drawFromStorage)
+                DrawAmongStorage(used, storages);
             return used;
         }
 

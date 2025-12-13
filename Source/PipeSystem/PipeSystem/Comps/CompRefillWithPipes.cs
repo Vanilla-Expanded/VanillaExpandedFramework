@@ -41,7 +41,7 @@ namespace PipeSystem
             if (compRefuelable == null)
                 return 0f;
 
-            var toAdd = compRefuelable.TargetFuelLevel - compRefuelable.Fuel; // The amount of fuel needed by compRefuelable
+            var toAdd = (compRefuelable.TargetFuelLevel - compRefuelable.Fuel) / compRefuelable.Props.FuelMultiplierCurrentDifficulty; // The amount of fuel needed by compRefuelable
             // Don't drain the refuelable if it's over the target level
             if (toAdd <= 0f)
                 return 0f;
