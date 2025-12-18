@@ -311,6 +311,7 @@
     <Compile Include="Maps\TileMutatorWorkers\TileMutatorWorker_GenericKCSGSpawner.cs" />
     <Compile Include="Maps\TileMutatorWorkers\TileMutatorWorker_GenericSpawner.cs" />
     <Compile Include="Maps\TileMutatorWorkers\TileMutatorWorker_GenericPrefabSpawner.cs" />
+    <Compile Include="Maps\TileMutatorWorkers\TileMutatorWorker_PlantsWithCommonality.cs" />
     <Compile Include="Maps\TileMutatorWorkers\TileMutatorWorker_TerrainSwapper.cs" />
     <Compile Include="Memes\Harmony\OptionalFeatures\IdeoUIUtility_AddPrecept.cs" />
     <Compile Include="Memes\OptionalFeatures\OptionalFeatures_IdeoFloatMenuPlus.cs" />

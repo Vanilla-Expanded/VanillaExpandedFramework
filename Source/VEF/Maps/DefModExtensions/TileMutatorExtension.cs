@@ -35,6 +35,9 @@ namespace VEF.Maps
 
         public float movementDifficultyOffset = 0;
 
+        //This value is used by TileMutatorWorker_PlantsWithCommonality
+        public float plantCommonality = 0.1f;
+
     }
 
     public class PawnKindDefAndChance
