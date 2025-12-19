@@ -27,13 +27,25 @@ namespace VEF.Maps
                 int spawned = 0;
                 foreach (IntVec3 cell in map.AllCells.InRandomOrder())
                 {
+                    
 
-                    Thing thing = ThingMaker.MakeThing(extension.thingToSpawn, null);
-                    GenSpawn.Spawn(thing, cell, map);
-                    if (++spawned >= count)
+                    if (
+                        
+                        ( extension.terrainValidation is null || (extension.terrainValidation!=null && extension.terrainValidation.Contains(cell.GetTerrain(map))  ))
+                        &&
+                        (extension.allowWater || (!extension.allowWater && !cell.GetTerrain(map).IsWater))                        
+                        
+                        )
                     {
-                        break;
+                        Thing thing = ThingMaker.MakeThing(extension.thingToSpawn, null);
+                        GenSpawn.Spawn(thing, cell, map);
+                        if (++spawned >= count)
+                        {
+                            break;
+                        }
+
                     }
+                   
 
                 }
             }

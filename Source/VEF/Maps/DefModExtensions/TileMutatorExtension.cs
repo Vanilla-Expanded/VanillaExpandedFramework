@@ -13,6 +13,8 @@ namespace VEF.Maps
 
         public ThingDef thingToSpawn;
         public IntRange thingToSpawnAmount;
+        public List<TerrainDef> terrainValidation;
+        public bool allowWater = true;
 
         public List<PrefabDef> prefabsToSpawn;
         public IntRange prefabsToSpawnAmount = new IntRange(1, 1);
