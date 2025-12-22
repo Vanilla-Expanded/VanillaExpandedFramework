@@ -11,6 +11,7 @@
 		<showIfUndefined>false</showIfUndefined>
 		<displayPriorityInCategory>70</displayPriorityInCategory>
 	</StatDef>
+
 	<StatDef>
 		<defName>VEF_VerbRangeFactor</defName>
 		<label>weapon range factor</label>
@@ -46,7 +47,7 @@
 		<toStringStyle>PercentZero</toStringStyle>
 		<displayPriorityInCategory>4050</displayPriorityInCategory>
 	</StatDef>
-		
+
 	<StatDef>
 		<defName>VEF_EnergyShieldRadiusApparel</defName>
 		<label>shield radius</label>
@@ -70,7 +71,50 @@
 			</li>
 		</parts>
 	</StatDef>
-	
+
+	<StatDef>
+		<defName>VEF_EnergyShieldEnergyMaxBuilding</defName>
+		<label>shield max energy</label>
+		<description>The maximum energy the shield can have. More energy allows the shield to absorb more damage.</description>
+		<category>Building</category>
+		<defaultBaseValue>0</defaultBaseValue>
+		<minValue>0</minValue>
+		<toStringStyle>Integer</toStringStyle>
+		<formatString>{0}00</formatString>
+		<hideAtValue>0</hideAtValue>
+		<showIfUndefined>false</showIfUndefined>
+		<displayPriorityInCategory>5000</displayPriorityInCategory>
+	</StatDef>
+
+	<StatDef>
+		<defName>VEF_EnergyShieldRechargeRateBuilding</defName>
+		<label>shield recharge rate</label>
+		<description>The rate at which the shield recharges energy per second, as long as it is not broken.</description>
+		<category>Building</category>
+		<workerClass>VEF.Apparels.StatWorker_MultiplyBy100</workerClass>
+		<defaultBaseValue>0</defaultBaseValue>
+		<minValue>0</minValue>
+		<toStringStyle>FloatTwo</toStringStyle>
+		<formatString>{0}/s</formatString>
+		<hideAtValue>0</hideAtValue>
+		<showIfUndefined>false</showIfUndefined>
+		<displayPriorityInCategory>5000</displayPriorityInCategory>
+	</StatDef>
+
+	<StatDef>
+		<defName>VEF_EnergyShieldRadiusBuilding</defName>
+		<label>shield radius</label>
+		<description>The radius of the energy shield protection.</description>
+		<category>Building</category>
+		<defaultBaseValue>0</defaultBaseValue>
+		<minValue>0</minValue>
+		<toStringStyle>FloatOne</toStringStyle>
+		<formatString>{0} c</formatString>
+		<hideAtValue>0</hideAtValue>
+		<showIfUndefined>false</showIfUndefined>
+		<displayPriorityInCategory>5000</displayPriorityInCategory>
+	</StatDef>
+
 	<StatDef>
 		<defName>VEF_MeleeAttackDamageFactor</defName>
 		<label>melee attack damage factor</label>

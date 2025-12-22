@@ -15,6 +15,14 @@ using VEF.Things;
 
 namespace VEF.Apparels
 {
+    public class StatWorker_MultiplyBy100 : StatWorker
+    {
+        public override string ValueToString(float val, bool finalized, ToStringNumberSense numberSense = ToStringNumberSense.Absolute)
+        {
+            return base.ValueToString(val * 100f, finalized, numberSense);
+        }
+    }
+
     [StaticConstructorOnStartup]
     public class Command_ActionWithCooldown : Command_Action
     {
@@ -103,7 +111,7 @@ namespace VEF.Apparels
         private int shieldBuffer = 0;
         private int ticksToRecharge;
         private bool toggleIsActive = true;
-      
+
 
         public Thing HostThing
         {
@@ -117,7 +125,7 @@ namespace VEF.Apparels
             }
         }
 
-        public Faction HostFaction => HostThing.Faction;
+        public Faction HostFaction => HostThing?.Faction;
 
         public bool Indestructible => Props.shieldEnergyMaxStat is null;
 
@@ -126,9 +134,14 @@ namespace VEF.Apparels
         {
             if (listerShieldGensByMaps.TryGetValue(map, out var list))
             {
-                foreach (var shield in list.Where(g => g.active && (g.Energy > 0 || g.Indestructible)))
+                int count = list.Count;
+                for (int i = 0; i < count; i++)
                 {
-                    yield return shield;
+                    var shield = list[i];
+                    if (shield.active && (shield.Energy > 0 || shield.Indestructible))
+                    {
+                        yield return shield;
+                    }
                 }
             }
         }
@@ -273,7 +286,7 @@ namespace VEF.Apparels
 
         private bool CanFunction => (!Props.toggleable || toggleIsActive) && (PowerTraderComp == null
             || PowerTraderComp.PowerOn) && !parent.IsBrokenDown() && HostThing is not Apparel;
-        
+
         private CompPowerTrader PowerTraderComp
         {
             get
@@ -325,8 +338,12 @@ namespace VEF.Apparels
             if (listerShieldGensByMaps.TryGetValue(map, out var list))
             {
                 list.Remove(this);
+                if (list.Count == 0)
+                {
+                    listerShieldGensByMaps.Remove(map);
+                }
             }
-            base.PostDeSpawn(map,mode);
+            base.PostDeSpawn(map, mode);
         }
 
         public bool IsApparel => parent is Apparel;
@@ -393,7 +410,7 @@ namespace VEF.Apparels
             Scribe_Values.Look(ref lastTimeDisarmed, "lastTimeDisarmed");
             Scribe_Values.Look(ref toggleIsActive, "toggleIsActive", true);
             Scribe_Values.Look(ref initialized, "initialized");
-           
+
 
         }
 
@@ -564,7 +581,7 @@ namespace VEF.Apparels
                     scanCells = new HashSet<IntVec3>(coveredCells.Where(c => !interiorCells.Contains(c)));
                 }
             }
-            
+
         }
 
         public bool ThreatDisabled(IAttackTargetSearcher disabledFor)
@@ -736,40 +753,99 @@ namespace VEF.Apparels
 
         private void UpdateCache()
         {
+            if (HostThing?.Map == null) return;
             UpdateShieldCoverage();
             if (affectedThings is null)
             {
                 affectedThings = new Dictionary<Thing, int>();
             }
-            for (int i = 0; i < affectedThings.Count; i++)
+            List<Thing> keysToRemove = null;
+            foreach (var kvp in affectedThings)
             {
-                var curKey = affectedThings.Keys.ToList()[i];
-                if (affectedThings[curKey] <= 0)
-                    affectedThings.Remove(curKey);
+                if (kvp.Value <= 0)
+                {
+                    if (keysToRemove == null)
+                        keysToRemove = new List<Thing>();
+                    keysToRemove.Add(kvp.Key);
+                }
                 else
-                    affectedThings[curKey] -= CacheUpdateInterval;
+                {
+                    affectedThings[kvp.Key] = kvp.Value - CacheUpdateInterval;
+                }
             }
+            if (keysToRemove != null)
+            {
+                for (int i = 0; i < keysToRemove.Count; i++)
+                {
+                    affectedThings.Remove(keysToRemove[i]);
+                }
+            }
+
+            var allThings = HostThing.Map.listerThings.ThingsInGroup(ThingRequestGroup.Projectile).Where(IsValidProjectile)
+                .Concat(HostThing.Map.listerThings.ThingsInGroup(ThingRequestGroup.ActiveTransporter).Where(IsValidTransporter));
 
             if (!Props.manualActivation)
             {
-                active = this.HostThing.Map != null && CanFunction &&
+                active = CanFunction &&
                 (Props.activeAlways ||
                 HostFaction != null && GenHostility.AnyHostileActiveThreatTo(HostThing.Map, HostFaction) ||
                 HostThing.Map.listerThings.ThingsOfDef(VEFDefOf.Tornado).Any() ||
-                HostThing.Map.listerThings.ThingsOfDef(RimWorld.ThingDefOf.DropPodIncoming).Any() || shieldBuffer > 0);
+                allThings.Any() || shieldBuffer > 0);
             }
             if (active)
             {
                 active = CanActivateShield();
             }
-            if (HostThing.Map != null)
+
+            if ((HostFaction != null && GenHostility.AnyHostileActiveThreatTo(HostThing.Map, HostFaction)
+                || HostThing.Map.listerThings.ThingsOfDef(VEFDefOf.Tornado).Any()
+                || allThings.Any()) && shieldBuffer < 15)
+                shieldBuffer = 15;
+            else
+                shieldBuffer -= 1;
+        }
+
+        private bool IsValidProjectile(Thing t)
+        {
+            if (t is not Projectile projectile)
+                return false;
+            if (projectile.Launcher == null)
+                return false;
+            if (HostThing.Faction == null)
+                return false;
+            return projectile.BlockableByShield(this) && projectile.Launcher.HostileTo(HostThing.Faction);
+        }
+
+        private bool IsValidTransporter(Thing t)
+        {
+            if (t is DropPodIncoming dropPod)
             {
-                if ((HostFaction != null && GenHostility.AnyHostileActiveThreatTo(HostThing.Map, HostFaction)
-                    || HostThing.Map.listerThings.ThingsOfDef(VEFDefOf.Tornado).Any()
-                    || HostThing.Map.listerThings.ThingsOfDef(RimWorld.ThingDefOf.DropPodIncoming).Any()) && shieldBuffer < 15)
-                    shieldBuffer = 15;
-                else
-                    shieldBuffer -= 1;
+                var allPawns = dropPod.innerContainer.Where(thing => thing is Pawn).Cast<Pawn>().ToList();
+                var transporters = dropPod.innerContainer.Where(thing => thing is ActiveTransporter).Cast<ActiveTransporter>().ToList();
+                foreach (var transporter in transporters)
+                {
+                    var transporterPawns = transporter.Contents.innerContainer.Where(thing => thing is Pawn).Cast<Pawn>().ToList();
+                    allPawns.AddRange(transporterPawns);
+                }
+                var hostilePawns = allPawns.Where(pawn => pawn.HostileTo(HostThing.Faction)).ToList();
+                if (hostilePawns.Any())
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public override IEnumerable<Gizmo> CompGetGizmosExtra()
+        {
+            if (parent is Apparel or Pawn)
+            {
+                yield break;
+            }
+            foreach (var g in GetGizmos())
+            {
+                yield return g;
             }
         }
 
@@ -786,8 +862,6 @@ namespace VEF.Apparels
                     };
                 }
 
-                
-
                 if (Props.toggleable)
                 {
                     yield return new Command_Toggle
@@ -795,9 +869,9 @@ namespace VEF.Apparels
                         defaultLabel = Props.toggleLabelKey.Translate(toggleIsActive ? "On".Translate() : "Off".Translate()),
                         defaultDesc = Props.toggleDescKey.Translate(),
                         icon = ContentFinder<Texture2D>.Get(Props.toggleIconPath),
-                        toggleAction = delegate 
-                        { 
-                            toggleIsActive = !toggleIsActive; 
+                        toggleAction = delegate
+                        {
+                            toggleIsActive = !toggleIsActive;
                             UpdateCache();
                         },
                         isActive = () => toggleIsActive,
@@ -840,12 +914,23 @@ namespace VEF.Apparels
                 for (int i = 0; i < listerShields.Count; i++)
                 {
                     var shield = listerShields[i];
-                    var coveredCells = new HashSet<IntVec3>(shield.coveredCells);
-                    if ((preIntercept == null || preIntercept.Invoke(shield)) && occupiedCells.Any(c => coveredCells.Contains(c)))
+                    if ((preIntercept == null || preIntercept.Invoke(shield)) && shield.coveredCells != null)
                     {
-                        shield.AbsorbDamage(damageAmount, damageDef, thing);
-                        postIntercept?.Invoke(shield);
-                        return;
+                        bool cellsOverlap = false;
+                        foreach (var cell in occupiedCells)
+                        {
+                            if (shield.coveredCells.Contains(cell))
+                            {
+                                cellsOverlap = true;
+                                break;
+                            }
+                        }
+                        if (cellsOverlap)
+                        {
+                            shield.AbsorbDamage(damageAmount, damageDef, thing);
+                            postIntercept?.Invoke(shield);
+                            return;
+                        }
                     }
                 }
             }
