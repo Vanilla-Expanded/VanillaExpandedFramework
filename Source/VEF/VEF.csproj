@@ -303,6 +303,7 @@
     <Compile Include="Maps\Harmony\OptionalFeatures\Game_InitNewGame.cs" />
     <Compile Include="Maps\Harmony\OptionalFeatures\GetOrGenerateMapUtility_GetOrGenerateMap.cs" />
     <Compile Include="Maps\Harmony\OptionalFeatures\StorytellerComp_Disease_MakeIntervalIncidents.cs" />
+    <Compile Include="Maps\Harmony\OptionalFeatures\TileMutatorWorker_River_RiverBankTerrainAt.cs" />
     <Compile Include="Maps\Harmony\OptionalFeatures\WildAnimalSpawner_SpawnRandomWildAnimalAt.cs" />
     <Compile Include="Maps\Harmony\OptionalFeatures\WITab_Terrain_ListMiscDetails.cs" />
     <Compile Include="Maps\Harmony\OptionalFeatures\WorldPathGrid_CalculatedMovementDifficultyAt.cs" />

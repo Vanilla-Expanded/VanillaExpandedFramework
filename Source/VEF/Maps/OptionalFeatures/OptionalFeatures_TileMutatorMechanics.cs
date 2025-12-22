@@ -35,6 +35,9 @@ namespace VEF.Maps
 
             harm.Patch(AccessTools.Method(typeof(WildAnimalSpawner), "SpawnRandomWildAnimalAt"),
                postfix: new HarmonyMethod(typeof(VanillaExpandedFramework_WildAnimalSpawner_SpawnRandomWildAnimalAt_Patch), "AddExtraAnimalsByMutator"));
+
+            harm.Patch(AccessTools.Method(typeof(TileMutatorWorker_River), "RiverBankTerrainAt"),
+                transpiler: new HarmonyMethod(typeof(VanillaExpandedFramework_TileMutatorWorker_River_RiverBankTerrainAt_Patch), "MultiplyRiverBankSize"));
         }
     }
 }
