@@ -174,8 +174,10 @@
     <Compile Include="Apparels\Harmony\FloatMenuOptionProvider_DressOtherPawn_GetSingleOptionFor_Patch.cs" />
     <Compile Include="Apparels\Harmony\Building_OutfitStand_DrawAt_Patch.cs" />
     <Compile Include="Buildings\AI\JobDrivers\JobDriver_Loot.cs" />
+    <Compile Include="Buildings\AI\JobDrivers\JobDriver_RefuelSecondary.cs" />
     <Compile Include="Buildings\AI\JobDrivers\JobDriver_StudyBuilding.cs" />
     <Compile Include="Buildings\AI\WorkGivers\WorkGiver_Loot.cs" />
+    <Compile Include="Buildings\AI\WorkGivers\WorkGiver_RefuelSecondary.cs" />
     <Compile Include="Buildings\AI\WorkGivers\WorkGiver_StudyBuilding.cs" />
     <Compile Include="Buildings\Building\LootableBuilding.cs" />
     <Compile Include="Buildings\Building\LootableBuilding_Custom.cs" />
@@ -183,12 +185,16 @@
     <Compile Include="Buildings\Building\SwappableBuilding.cs" />
     <Compile Include="Buildings\Comps\CompJammedAirlock.cs" />
     <Compile Include="Buildings\Comps\CompProperties\CompProperties_JammedAirlock.cs" />
+    <Compile Include="Buildings\Comps\CompRefuelable_DualFuel.cs" />
     <Compile Include="Buildings\DefModExtensions\GravshipLaunchExtension.cs" />
     <Compile Include="Buildings\DefModExtensions\LootableBuildingDetails.cs" />
     <Compile Include="Buildings\DefModExtensions\RecipeInheritanceExtension.cs" />
     <Compile Include="Buildings\DefModExtensions\StudiableBuildingDetails.cs" />
     <Compile Include="Buildings\DefModExtensions\SwappableBuildingDetails.cs" />
+    <Compile Include="Buildings\Dialogs\Gizmo_SetSecondaryFuelLevel.cs" />
     <Compile Include="Buildings\Harmony\GravshipUtility_PreLaunchConfirmation_Patch.cs" />
+    <Compile Include="Buildings\Harmony\Verb_Available_Patch.cs" />
+    <Compile Include="Buildings\Harmony\Verb_LaunchProjectile_TryCastShot_Patch.cs" />
     <Compile Include="Buildings\MapComponents\MapComponent_InteractableBuildingsInMap.cs" />
     <Compile Include="Buildings\Misc\RecipeInheritance.cs" />
     <Compile Include="Buildings\Placeworkers\PlaceWorker_OnSand.cs" />

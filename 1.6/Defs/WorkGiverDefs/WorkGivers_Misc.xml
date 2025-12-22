@@ -26,4 +26,19 @@
 		</requiredCapacities>
 		<prioritizeSustains>true</prioritizeSustains>
 	</WorkGiverDef>
+	
+    <WorkGiverDef>
+        <defName>VEF_RefuelSecondary</defName>
+        <label>refuel ammunition</label>
+        <giverClass>VEF.Buildings.WorkGiver_RefuelSecondary</giverClass>
+        <workType>Hauling</workType>
+        <priorityInType>70</priorityInType>
+        <verb>refuel</verb>
+        <gerund>refueling</gerund>
+        <requiredCapacities>
+            <li>Manipulation</li>
+        </requiredCapacities>
+        <prioritizeSustains>true</prioritizeSustains>
+    </WorkGiverDef>
+
 </Defs>

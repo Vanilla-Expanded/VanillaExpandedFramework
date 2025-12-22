@@ -44,4 +44,13 @@
 		<reportString>studying TargetA.</reportString>
 		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
 	</JobDef>
+	
+
+    <JobDef>
+        <defName>VEF_RefuelSecondary</defName>
+        <driverClass>VEF.Buildings.JobDriver_RefuelSecondary</driverClass>
+        <reportString>refueling TargetA with ammunition.</reportString>
+        <suspendable>false</suspendable>
+        <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+    </JobDef>
 </Defs>

@@ -14,5 +14,6 @@ namespace VEF.Buildings
 
         public static JobDef VFE_Loot;
         public static JobDef VFE_StudyBuilding;
+        public static JobDef VEF_RefuelSecondary;
     }
 }
