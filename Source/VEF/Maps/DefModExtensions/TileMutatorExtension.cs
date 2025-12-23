@@ -37,10 +37,14 @@ namespace VEF.Maps
 
         public float movementDifficultyOffset = 0;
 
+        //This value is used by TileMutatorWorker_River
         public int riverbankSizeMultiplier = 1;
 
         //This value is used by TileMutatorWorker_PlantsWithCommonality
         public float plantCommonality = 0.1f;
+
+        //This value only affects VE Helixien Gas
+        public int extraDeepHelixienGasDeposits = 0;
 
     }
 
