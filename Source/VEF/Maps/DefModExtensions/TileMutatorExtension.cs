@@ -46,6 +46,9 @@ namespace VEF.Maps
         //This value only affects VE Helixien Gas
         public int extraDeepHelixienGasDeposits = 0;
 
+        //This value only affects VE Furniture - Power
+        public int tideStrengthMultiplier = 1;
+
     }
 
     public class PawnKindDefAndChance
