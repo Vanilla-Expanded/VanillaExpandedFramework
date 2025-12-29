@@ -30,20 +30,18 @@ namespace VEF.Maps
 
         public override IEnumerable<BiomePlantRecord> AdditionalWildPlants(PlanetTile tile)
         {
-            yield return new BiomePlantRecord
+            foreach(PlantsWithCommonality plantsWithCommonality in GetExtension.plantDefsWithCommonality)
             {
-                plant = GetPlantKind(tile),
-                commonality = GetExtension?.plantCommonality ?? 0
-            };
+                yield return new BiomePlantRecord
+                {
+                    plant = plantsWithCommonality.plantDef,
+                    commonality = plantsWithCommonality.commonality
+                };
+
+            }
+           
         }
 
-        private ThingDef GetPlantKind(PlanetTile tile)
-        {
-            Rand.PushState();
-            Rand.Seed = tile.GetHashCode();
-            ThingDef result = def.plantKinds.RandomElement();
-            Rand.PopState();
-            return result;
-        }
+       
     }
 }

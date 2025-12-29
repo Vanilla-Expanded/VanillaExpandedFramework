@@ -41,7 +41,7 @@ namespace VEF.Maps
         public int riverbankSizeMultiplier = 1;
 
         //This value is used by TileMutatorWorker_PlantsWithCommonality
-        public float plantCommonality = 0.1f;
+        public List<PlantsWithCommonality> plantDefsWithCommonality;
 
         //This value only affects VE Helixien Gas
         public int extraDeepHelixienGasDeposits = 0;
@@ -55,6 +55,12 @@ namespace VEF.Maps
     {
         public PawnKindDef forcedPawnKindDef;
         public float forcedPawnKindDefChance;
+
+    }
+    public class PlantsWithCommonality
+    {
+        public ThingDef plantDef;
+        public float commonality;
 
     }
 
