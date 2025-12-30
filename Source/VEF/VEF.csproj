@@ -193,6 +193,7 @@
     <Compile Include="Buildings\DefModExtensions\SwappableBuildingDetails.cs" />
     <Compile Include="Buildings\Dialogs\Gizmo_SetSecondaryFuelLevel.cs" />
     <Compile Include="Buildings\Harmony\GravshipUtility_PreLaunchConfirmation_Patch.cs" />
+    <Compile Include="Buildings\Harmony\Gravship_CopyCellContents_Patch.cs" />
     <Compile Include="Buildings\Harmony\Verb_Available_Patch.cs" />
     <Compile Include="Buildings\Harmony\Verb_LaunchProjectile_TryCastShot_Patch.cs" />
     <Compile Include="Buildings\MapComponents\MapComponent_InteractableBuildingsInMap.cs" />
