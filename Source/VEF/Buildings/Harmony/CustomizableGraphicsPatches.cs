@@ -3,15 +3,77 @@ using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
 using RimWorld;
+using RimWorld.Planet;
 using Verse;
 
 namespace VEF.Buildings;
 
 public static class CustomizableGraphicsPatches
 {
+    private static bool? allowedToMakePatches = null;
+    private static bool allowedToMakeGravshipPatches = false;
+
+    private static bool AllowedToMakePatches
+    {
+        get
+        {
+            if (allowedToMakePatches == null)
+            {
+                allowedToMakePatches = false;
+                
+                foreach (var thing in DefDatabase<ThingDef>.AllDefs)
+                {
+                    var props = thing.GetCompProperties<CompProperties_CustomizableGraphic>();
+                    if (props == null)
+                        continue;
+
+                    allowedToMakePatches = true;
+                    // If odyssey inactive, we're done - we set the only value that matters.
+                    if (!ModsConfig.OdysseyActive)
+                        break;
+
+                    // Check if the main graphic data allows for rotation
+                    if (HasRotationData(props.defaultGraphicData))
+                        break;
+
+                    // Check if the styled graphic data allows for rotation
+                    if (props.styledGraphicData != null)
+                    {
+                        foreach (var data in props.styledGraphicData.Values)
+                        {
+                            if (HasRotationData(data))
+                                break;
+                        }
+                    }
+
+                    static bool HasRotationData(List<CompProperties_CustomizableGraphic.CustomizableGraphicOptionData> dataList)
+                    {
+                        foreach (var data in dataList)
+                        {
+                            if (data.clockwiseRotationIndex >= 0 && data.clockwiseRotationIndex < dataList.Count)
+                            {
+                                allowedToMakeGravshipPatches = true;
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    }
+                }
+            }
+
+            return allowedToMakePatches.Value;
+        }
+    }
+
+    private static bool AllowedToMakeGravshipRotationPatches => AllowedToMakePatches && allowedToMakeGravshipPatches;
+
     [HarmonyPatch]
+    [HarmonyPatchCategory(VEF_HarmonyCategories.LateHarmonyPatchCategory)]
     private static class InjectImpliedDefComps
     {
+        private static bool Prepare() => AllowedToMakePatches;
+
         private static IEnumerable<MethodBase> TargetMethods()
         {
             yield return AccessTools.DeclaredMethod(typeof(ThingDefGenerator_Buildings), "NewBlueprintDef_Thing");
@@ -29,8 +91,11 @@ public static class CustomizableGraphicsPatches
     }
 
     [HarmonyPatch(typeof(Blueprint_Build), "MakeSolidThing")]
+    [HarmonyPatchCategory(VEF_HarmonyCategories.LateHarmonyPatchCategory)]
     private static class PreserveBlueprintOverride
     {
+        private static bool Prepare() => AllowedToMakePatches;
+
         private static void Postfix(Blueprint_Build __instance, Thing __result)
         {
             // If working with customizable graphic, preserve the
@@ -41,8 +106,11 @@ public static class CustomizableGraphicsPatches
     }
 
     [HarmonyPatch(typeof(GhostUtility), nameof(GhostUtility.GhostGraphicFor))]
+    [HarmonyPatchCategory(VEF_HarmonyCategories.LateHarmonyPatchCategory)]
     private static class UseUiIconForCustomizableGraphicGhosts
     {
+        private static bool Prepare() => AllowedToMakePatches;
+
         // The ghost after selecting a building is forced to use the same graphic class as the building itself.
         // We can't easily force it to draw the one we want without this patch. This patch causes the building
         // to use a single graphic using the UI icon path for the graphic, same as linked buildings and single-tile doors.
@@ -79,8 +147,11 @@ public static class CustomizableGraphicsPatches
     }
 
     [HarmonyPatch(typeof(GraphicUtility), nameof(GraphicUtility.ExtractInnerGraphicFor))]
+    [HarmonyPatchCategory(VEF_HarmonyCategories.LateHarmonyPatchCategory)]
     private static class UseCorrectGraphicForMinifiedThing
     {
+        private static bool Prepare() => AllowedToMakePatches;
+
         private static bool Prefix(Graphic outerGraphic, Thing thing, ref int? indexOverride, ref Graphic __result)
         {
             // GraphicUtility.ExtractInnerGraphicFor does not support Graphic_Indexed
@@ -102,6 +173,23 @@ public static class CustomizableGraphicsPatches
 
             // If we replaced the result, prevent vanilla code from running
             return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(Gravship), nameof(Gravship.ThingPlacements), MethodType.Getter)]
+    [HarmonyPatchCategory(VEF_HarmonyCategories.LateHarmonyPatchCategory)]
+    public static class Gravship_ThingPlacements_Patch
+    {
+        private static bool Prepare() => AllowedToMakeGravshipRotationPatches;
+
+        private static void Prefix(Gravship __instance, Dictionary<Thing, PositionData> ___things, Rot4 ___tmpThingsRot)
+        {
+            var dir = Rot4.GetRelativeRotation(___tmpThingsRot, __instance.Rotation);
+            if (dir == RotationDirection.None)
+                return;
+
+            foreach (var thing in ___things.Keys)
+                thing.TryGetComp<CompCustomizableGraphic>()?.Rotate(dir);
         }
     }
 }

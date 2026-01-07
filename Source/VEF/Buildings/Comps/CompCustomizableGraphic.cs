@@ -152,18 +152,18 @@ public class CompCustomizableGraphic : ThingComp
         }
     }
 
-    private static void SelectGraphic(List<CompCustomizableGraphic> comps, int graphicIndex)
+    public static void SelectGraphic(List<CompCustomizableGraphic> comps, int graphicIndex)
     {
         foreach (var comp in comps)
-        {
-            if (comp.parent.Spawned)
-            {
-                comp.SelectGraphic(graphicIndex, false, IsSupportedGraphicType(comp.parent.Graphic));
-                // If the building has a blueprint, change its graphic as well
-                var blueprint = InstallBlueprintUtility.ExistingBlueprintFor(comp.parent);
-                blueprint?.GetComp<CompCustomizableGraphic>()?.SelectGraphic(graphicIndex, false, IsSupportedGraphicType(blueprint.Graphic));
-            }
-        }
+            comp.SelectGraphic(graphicIndex);
+    }
+
+    public void SelectGraphic(int graphicIndex)
+    {
+        SelectGraphic(graphicIndex, false, IsSupportedGraphicType(parent.Graphic));
+        // If the building has a blueprint, change its graphic as well
+        var blueprint = InstallBlueprintUtility.ExistingBlueprintFor(parent);
+        blueprint?.GetComp<CompCustomizableGraphic>()?.SelectGraphic(graphicIndex, false, IsSupportedGraphicType(blueprint.Graphic));
     }
 
     private static void SelectTemporaryGraphics(List<CompCustomizableGraphic> comps, int? graphicIndex)
@@ -198,7 +198,7 @@ public class CompCustomizableGraphic : ThingComp
         }
 
         // Lag prevention, also don't change graphics if it's not possible (frame)
-        if (!sameIndex && canChangeGraphic)
+        if (!sameIndex && canChangeGraphic && parent.Spawned)
             parent.Map.mapDrawer.SectionAt(parent.Position).RegenerateAllLayers();
     }
 
@@ -216,6 +216,50 @@ public class CompCustomizableGraphic : ThingComp
     }
 
     private static bool IsSupportedGraphicType(Graphic graphic) => graphic is Graphic_Indexed or Graphic_Random;
+
+    public void Rotate(RotationDirection direction)
+    {
+        if (direction == RotationDirection.None || !IsSupportedGraphicType(parent.Graphic))
+            return;
+
+        var index = parent.OverrideGraphicIndex ?? -1;
+        if (index < 0)
+            return;
+
+        List<CompProperties_CustomizableGraphic.CustomizableGraphicOptionData> data;
+        // Unstyled graphic, make sure default graphic data is not null
+        if (parent.StyleDef == null)
+        {
+            if (Props.defaultGraphicData == null)
+                return;
+
+            data = Props.defaultGraphicData;
+        }
+        // Styled graphic, make sure we have styled graphic data for it (if any) and grab it
+        else
+        {
+            if (Props.styledGraphicData == null || !Props.styledGraphicData.TryGetValue(parent.StyleDef, out data))
+                return;
+        }
+
+        // Out of bounds check
+        if (index >= data.Count)
+            return;
+
+        for (var i = 0; i < (int)direction; i++)
+        {
+            var entry = data[index];
+
+            index = entry.clockwiseRotationIndex;
+            // Out of bounds check
+            if (index < 0 || index >= data.Count)
+                break;
+        }
+
+        // Out of bounds check
+        if (index >= 0 && index < data.Count)
+            SelectGraphic(index);
+    }
 
     private class Command_ActionSameThingAndStyleDef : Command_Action
     {

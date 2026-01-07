@@ -31,5 +31,10 @@ public class CompProperties_CustomizableGraphic : CompProperties
     {
         public string name;
         public int sortingPriority;
+
+        // Which graphic variant this will be rotated to in clockwise/counterclockwise direction.
+        // Currently, only used for Gravships, but may be used for other features in the future. Use any negative value if it can't be rotated.
+        // Counterclockwise will be handled by rotating clockwise - a single counterclockwise rotation will result in 3 clockwise rotations.
+        public int clockwiseRotationIndex = -1;
     }
 }
