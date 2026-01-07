@@ -15,6 +15,12 @@ using VEF.Things;
 
 namespace VEF.Apparels
 {
+    public class HealthColorPoint
+    {
+        public float healthPercent;
+        public Color color;
+    }
+
     public class StatWorker_MultiplyBy100 : StatWorker
     {
         public override string ValueToString(float val, bool finalized, ToStringNumberSense numberSense = ToStringNumberSense.Absolute)
@@ -79,6 +85,8 @@ namespace VEF.Apparels
         public string toggleLabelKey;
         public string toggleDescKey;
         public EffecterDef reactivateEffect;
+        public List<HealthColorPoint> healthColorPoints;
+
         public CompProperties_ShieldField()
         {
             this.compClass = typeof(CompShieldField);
@@ -372,10 +380,35 @@ namespace VEF.Apparels
             if (active && (Energy > 0 || Indestructible))
             {
                 float size = ShieldRadius * 2;
+                Color finalColor = Props.shieldColour;
+
                 if (!Indestructible)
                 {
-                    size *= Mathf.Lerp(0.9f, 1.1f, Energy / MaxEnergy);
+                    float healthPercent = Energy / MaxEnergy;
+                    size *= Mathf.Lerp(0.9f, 1.1f, healthPercent);
+
+                    if (Props.healthColorPoints != null && Props.healthColorPoints.Any())
+                    {
+                        var upperPoint = Props.healthColorPoints.FirstOrDefault(p => p.healthPercent >= healthPercent);
+                        var lowerPoint = Props.healthColorPoints.LastOrDefault(p => p.healthPercent < healthPercent);
+
+                        if (upperPoint == null)
+                        {
+                            float t = Mathf.InverseLerp(lowerPoint.healthPercent, 1f, healthPercent);
+                            finalColor = Color.Lerp(lowerPoint.color, Props.shieldColour, t);
+                        }
+                        else if (lowerPoint == null)
+                        {
+                            finalColor = upperPoint.color;
+                        }
+                        else
+                        {
+                            float t = Mathf.InverseLerp(lowerPoint.healthPercent, upperPoint.healthPercent, healthPercent);
+                            finalColor = Color.Lerp(lowerPoint.color, upperPoint.color, t);
+                        }
+                    }
                 }
+
                 Vector3 pos = HostThing.TrueCenter();
                 pos.y = AltitudeLayer.MoteOverhead.AltitudeFor();
 
@@ -392,7 +425,7 @@ namespace VEF.Apparels
                 Matrix4x4 matrix = default;
                 matrix.SetTRS(pos, Quaternion.AngleAxis(angle, Vector3.up), s);
 
-                MatPropertyBlock.SetColor(ShaderPropertyIDs.Color, Props.shieldColour);
+                MatPropertyBlock.SetColor(ShaderPropertyIDs.Color, finalColor);
                 UnityEngine.Graphics.DrawMesh(MeshPool.plane10, matrix, BaseBubbleMat, 0, null, 0, MatPropertyBlock);
             }
         }
