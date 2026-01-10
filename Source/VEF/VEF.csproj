@@ -186,6 +186,7 @@
     <Compile Include="Buildings\Comps\CompJammedAirlock.cs" />
     <Compile Include="Buildings\Comps\CompProperties\CompProperties_JammedAirlock.cs" />
     <Compile Include="Buildings\Comps\CompRefuelable_DualFuel.cs" />
+    <Compile Include="Buildings\DefModExtensions\GhostGraphicExtension.cs" />
     <Compile Include="Buildings\DefModExtensions\GravshipLaunchExtension.cs" />
     <Compile Include="Buildings\DefModExtensions\LootableBuildingDetails.cs" />
     <Compile Include="Buildings\DefModExtensions\RecipeInheritanceExtension.cs" />
