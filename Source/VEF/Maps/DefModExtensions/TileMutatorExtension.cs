@@ -47,7 +47,7 @@ namespace VEF.Maps
         public int extraDeepHelixienGasDeposits = 0;
 
         //This value only affects VE Furniture - Power
-        public int tideStrengthMultiplier = 1;
+        public float tideStrengthMultiplier = 1;
 
     }
 
