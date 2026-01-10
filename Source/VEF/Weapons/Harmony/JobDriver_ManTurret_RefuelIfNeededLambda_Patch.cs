@@ -39,7 +39,7 @@ public static class JobDriver_ManTurret_RefuelIfNeededLambda_Patch
     {
         var job = ___refuelIfNeeded.actor.CurJob;
 
-        var extension = job.targetA.Thing.def.GetModExtension<AutoRefuelMannedTurrets>();
+        var extension = job.targetA.Thing?.def?.GetModExtension<AutoRefuelMannedTurrets>();
         // Check if extension is null, or we only want to reload a single item
         if (extension is not { reloadsMoreThanSingleItem: true })
             return;
