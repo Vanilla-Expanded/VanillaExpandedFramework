@@ -95,7 +95,7 @@ public class GhostGraphicExtension : DefModExtension
         /// <summary>
         /// Uses the GetCustomGraphic method (requires overriding in code). It may change, so it'll never be cached.
         /// </summary>
-        CustomGraphicMethodNonCached,
+        CustomGraphicMethodNotCached,
     }
 
     /// <summary>

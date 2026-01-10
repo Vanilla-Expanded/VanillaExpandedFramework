@@ -131,7 +131,7 @@ public static class VanillaExpandedFramework_GhostUtility_GhostGraphicFor_Patch
                 break;
             }
             // Call method in the extension. Will throw an exception unless using a subclass. Won't be cached.
-            case GhostGraphicExtension.CustomGhostMode.CustomGraphicMethodNonCached:
+            case GhostGraphicExtension.CustomGhostMode.CustomGraphicMethodNotCached:
             {
                 __result = extension.GetCustomGraphic(baseGraphic, thingDef, ghostCol, stuff, mainGraphic, hash);
                 ghostGraphics.Add(hash, null);
