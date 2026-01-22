@@ -141,21 +141,28 @@ namespace VEF.Weapons
         public static MethodInfo InterceptChanceFactorFromDistanceInfo
             = AccessTools.Method(typeof(Verse.VerbUtility), "InterceptChanceFactorFromDistance");
 
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions, MethodBase baseMethod)
         {
+            var patched = false;
+
             var codes = codeInstructions.ToList();
             for (var i = 0; i < codes.Count; i++)
             {
                 var codeInstruction = codes[i];
-                if (codes.Count - 3 > i && codeInstruction.LoadsField(NonPublicFields.Projectile_origin) && codes[i + 2].Calls(InterceptChanceFactorFromDistanceInfo))
+                // + 2 if the code loads a local variable, + 3 if it calls "base.Position"
+                if (codes.Count - 3 > i && codeInstruction.LoadsField(NonPublicFields.Projectile_origin) && (codes[i + 2].Calls(InterceptChanceFactorFromDistanceInfo) || codes[i + 3].Calls(InterceptChanceFactorFromDistanceInfo)))
                 {
                     yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(VanillaExpandedFramework_Projectile_SetTrueOrigin_Patch), nameof(GetTrueOrigin)));
+                    patched = true;
                 }
                 else
                 {
                     yield return codeInstruction;
                 }
             }
+
+            if (!patched)
+                Log.Error($"[VEF] Error patching homing projectiles - couldn't patch Projectile.origin in {baseMethod.DeclaringType?.Namespace}.{baseMethod.DeclaringType?.Name}:{baseMethod.Name}");
         }
 
         public static Vector3 GetTrueOrigin(Projectile projectile)
