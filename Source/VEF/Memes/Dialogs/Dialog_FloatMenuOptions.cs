@@ -10,6 +10,8 @@ namespace VEF.Memes
 {
     public class Dialog_FloatMenuOptions : Window
     {
+        private static readonly AccessTools.FieldRef<FloatMenuOption, ThingDef> shownItemField
+            = AccessTools.FieldRefAccess<FloatMenuOption, ThingDef>("shownItem");
         private readonly List<FloatMenuOption> options;
         private readonly Dictionary<FloatMenuOption, ThingDef> shownItems;
         private Vector2 scrollPosition = new Vector2(0, 0);
@@ -18,8 +20,7 @@ namespace VEF.Memes
         public Dialog_FloatMenuOptions(List<FloatMenuOption> opts)
         {
             options = opts;
-            var info1 = AccessTools.Field(typeof(FloatMenuOption), "shownItem");
-            shownItems = opts.ToDictionary(opt => opt, opt => (ThingDef) info1.GetValue(opt));
+            shownItems = opts.ToDictionary(opt => opt, opt => shownItemField(opt));
             doCloseX = true;
             doCloseButton = true;
             closeOnClickedOutside = true;

@@ -16,16 +16,16 @@ namespace VEF
     [StaticConstructorOnStartup]
     public static class NonPublicFields
     {
-        public static FieldInfo SiegeBlueprintPlacer_center = AccessTools.Field(typeof(SiegeBlueprintPlacer), "center");
-        public static FieldInfo SiegeBlueprintPlacer_faction = AccessTools.Field(typeof(SiegeBlueprintPlacer), "faction");
-        public static FieldInfo SiegeBlueprintPlacer_NumCoverRange = AccessTools.Field(typeof(SiegeBlueprintPlacer), "NumCoverRange");
-        public static FieldInfo SiegeBlueprintPlacer_placedCoverLocs = AccessTools.Field(typeof(SiegeBlueprintPlacer), "placedCoverLocs");
-        public static FieldInfo SiegeBlueprintPlacer_CoverLengthRange = AccessTools.Field(typeof(SiegeBlueprintPlacer), "CoverLengthRange");
+        public static readonly AccessTools.FieldRef<IntVec3> SiegeBlueprintPlacer_center = AccessTools.StaticFieldRefAccess<IntVec3>(typeof(SiegeBlueprintPlacer).Field("center"));
+        public static readonly AccessTools.FieldRef<Faction> SiegeBlueprintPlacer_faction = AccessTools.StaticFieldRefAccess<Faction>(typeof(SiegeBlueprintPlacer).Field("faction"));
+        public static readonly AccessTools.FieldRef<IntRange> SiegeBlueprintPlacer_NumCoverRange = AccessTools.StaticFieldRefAccess<IntRange>(typeof(SiegeBlueprintPlacer).Field("NumCoverRange"));
+        public static readonly AccessTools.FieldRef<List<IntVec3>> SiegeBlueprintPlacer_placedCoverLocs = AccessTools.StaticFieldRefAccess<List<IntVec3>>(typeof(SiegeBlueprintPlacer).Field("placedCoverLocs"));
+        public static readonly AccessTools.FieldRef<IntRange> SiegeBlueprintPlacer_CoverLengthRange = AccessTools.StaticFieldRefAccess<IntRange>(typeof(SiegeBlueprintPlacer).Field("CoverLengthRange"));
 
-        public static FieldInfo Projectile_ticksToImpact = AccessTools.Field(typeof(Projectile), "ticksToImpact");
-        public static FieldInfo Projectile_origin = AccessTools.Field(typeof(Projectile), "origin");
-        public static FieldInfo Projectile_destination = AccessTools.Field(typeof(Projectile), "destination");
-        public static FieldInfo Projectile_usedTarget = AccessTools.Field(typeof(Projectile), "usedTarget");
+        public static readonly AccessTools.FieldRef<Projectile, int> Projectile_ticksToImpact = AccessTools.FieldRefAccess<Projectile, int>("ticksToImpact");
+        public static readonly AccessTools.FieldRef<Projectile, Vector3> Projectile_origin = AccessTools.FieldRefAccess<Projectile, Vector3>("origin");
+        public static readonly AccessTools.FieldRef<Projectile, Vector3> Projectile_destination = AccessTools.FieldRefAccess<Projectile, Vector3>("destination");
+        public static readonly AccessTools.FieldRef<Projectile, LocalTargetInfo> Projectile_usedTarget = AccessTools.FieldRefAccess<Projectile, LocalTargetInfo>("usedTarget");
     }
 
 }

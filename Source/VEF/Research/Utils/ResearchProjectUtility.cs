@@ -10,13 +10,13 @@ namespace VEF.Research
     {
         public static void AutoAssignRules()
         {
+            var rulepack = Traverse.Create(VEFDefOf.VEF_Description_Schematic_Defaults).Field<RulePack>("rulePack").Value;
             foreach (var def in DefDatabase<ResearchProjectDef>.AllDefs)
             {
                 if (def.tab != ResearchTabDefOf.Anomaly)
                 {
                     if (def.generalRules == null)
                     {
-                        var rulepack = Traverse.Create(VEFDefOf.VEF_Description_Schematic_Defaults).Field<RulePack>("rulePack").Value;
                         def.generalRules = rulepack;
                     }
                 }

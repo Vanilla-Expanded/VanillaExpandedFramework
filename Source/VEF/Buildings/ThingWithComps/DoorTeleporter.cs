@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using System;
+using HarmonyLib;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using UnityEngine;
 using Verse;
 using Verse.AI;
 using Verse.Sound;
+using Object = UnityEngine.Object;
 
 namespace VEF.Buildings
 {
@@ -210,7 +212,8 @@ namespace VEF.Buildings
         [HarmonyPatch(typeof(JobGiver_AIFollowPawn), "TryGiveJob")]
         public static class JobGiver_AIFollowPawn_TryGiveJob_Patch
         {
-            private static MethodInfo GetFolloweeInfo = AccessTools.Method(typeof(JobGiver_AIFollowPawn), "GetFollowee");
+            private static Func<JobGiver_AIFollowPawn, Pawn, Pawn> GetFolloweeInfo = (Func<JobGiver_AIFollowPawn, Pawn, Pawn>)
+                Delegate.CreateDelegate(typeof(Func<JobGiver_AIFollowPawn, Pawn, Pawn>), typeof(JobGiver_AIFollowPawn).Method("GetFollowee"));
             public static void Postfix(JobGiver_AIFollowPawn __instance, Pawn pawn, ref Job __result)
             {
                 if (__result != null && pawn.CurJobDef == VEFDefOf.VEF_UseDoorTeleporter)
@@ -220,7 +223,7 @@ namespace VEF.Buildings
                 }
                 if (__result is null)
                 {
-                    var followee = GetFolloweeInfo.Invoke(__instance, new object[] { pawn }) as Pawn;
+                    var followee = GetFolloweeInfo(__instance, pawn);
                     if (followee != null)
                     {
                         if (followee.Map != pawn.Map)

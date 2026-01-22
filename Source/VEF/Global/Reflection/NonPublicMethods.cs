@@ -28,7 +28,8 @@ namespace VEF
         public static Action<Pawn, PawnGenerationRequest> GenerateSkills = (Action<Pawn, PawnGenerationRequest>)
             Delegate.CreateDelegate(typeof(Action<Pawn, PawnGenerationRequest>), null, AccessTools.Method(typeof(PawnGenerator), "GenerateSkills"));
 
-        public static MethodInfo RenderMouseAttachments = AccessTools.Method(typeof(DeepResourceGrid), "RenderMouseAttachments");
+        public static Action<DeepResourceGrid> RenderMouseAttachments = (Action<DeepResourceGrid>)
+            Delegate.CreateDelegate(typeof(Action<DeepResourceGrid>), typeof(DeepResourceGrid).Method("RenderMouseAttachments"));
 
         [StaticConstructorOnStartup]
         public static class DualWield

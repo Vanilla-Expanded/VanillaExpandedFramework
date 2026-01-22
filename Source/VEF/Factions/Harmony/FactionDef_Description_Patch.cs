@@ -13,11 +13,11 @@ namespace VEF.Factions;
 [HarmonyPatch(nameof(FactionDef.Description), MethodType.Getter)]
 public static class FactionDef_Description_Patch
 {
-    public static Lazy<FieldInfo> cachedDescription = new Lazy<FieldInfo>(() => AccessTools.Field(typeof(FactionDef), "cachedDescription"));
+    public static readonly Lazy<AccessTools.FieldRef<FactionDef, string>> cachedDescription = new(() => AccessTools.FieldRefAccess<FactionDef, string>("cachedDescription"));
     
     public static void Prefix(FactionDef __instance, out bool __state)
     {
-        var desc = cachedDescription.Value.GetValue(__instance);
+        var desc = cachedDescription.Value(__instance);
         __state = desc == null; 
     }
 
@@ -62,6 +62,6 @@ public static class FactionDef_Description_Patch
         }
         
         __result = sb.ToString();
-        cachedDescription.Value.SetValue(__instance, __result);
+        cachedDescription.Value(__instance) = __result;
     }
 }

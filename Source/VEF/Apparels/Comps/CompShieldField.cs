@@ -763,10 +763,10 @@ namespace VEF.Apparels
                     if (!things.thingsWithinRadius.Contains(proj.Launcher))
                     {
                         // Explosives are handled separately
-                        if (!(proj is Projectile_Explosive) || proj.def.projectile.damageDef == DamageDefOf.EMP)
+                        if (proj is not Projectile_Explosive || proj.def.projectile.damageDef == DamageDefOf.EMP)
                             AbsorbDamage(proj.DamageAmount, proj.def.projectile.damageDef, proj.ExactRotation.eulerAngles.y);
                         proj.Position += Rot4.FromAngleFlat((HostThing.Position - proj.Position).AngleFlat).Opposite.FacingCell;
-                        NonPublicFields.Projectile_usedTarget.SetValue(proj, new LocalTargetInfo(proj.Position));
+                        NonPublicFields.Projectile_usedTarget(proj) = new LocalTargetInfo(proj.Position);
                         NonPublicMethods.Projectile_ImpactSomething(proj);
                     }
                 }
@@ -973,8 +973,8 @@ namespace VEF.Apparels
         {
             if (!proj.def.projectile.flyOverhead)
                 return true;
-            return !shieldGen.coveredCells.Contains(((Vector3)NonPublicFields.Projectile_origin.GetValue(proj)).ToIntVec3()) &&
-                (int)NonPublicFields.Projectile_ticksToImpact.GetValue(proj) / (float)NonPublicProperties.Projectile_get_StartingTicksToImpact(proj) <= 0.5f;
+            return !shieldGen.coveredCells.Contains(NonPublicFields.Projectile_origin(proj).ToIntVec3()) &&
+                NonPublicFields.Projectile_ticksToImpact(proj) / NonPublicProperties.Projectile_get_StartingTicksToImpact(proj) <= 0.5f;
         }
 
         //---added--- inspired by Frontier Security's method (distributed under an open-source non-profit license)

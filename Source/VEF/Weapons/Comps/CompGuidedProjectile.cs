@@ -92,10 +92,10 @@ namespace VEF.Weapons
             }
             if (projectile.intendedTarget.IsValid)
             {
-                var destinationCell = (IntVec3)AccessTools.PropertyGetter(typeof(Projectile), "DestinationCell").Invoke(projectile, new object[0]);
-                if (destinationCell != projectile.intendedTarget.Cell)
+                ref var destination = ref NonPublicFields.Projectile_destination(projectile);
+                if (new IntVec3(destination) != projectile.intendedTarget.Cell)
                 {
-                    Traverse.Create(projectile).Field("destination").SetValue(projectile.intendedTarget.CenterVector3);
+                    destination = projectile.intendedTarget.CenterVector3;
                 }
             }
         }

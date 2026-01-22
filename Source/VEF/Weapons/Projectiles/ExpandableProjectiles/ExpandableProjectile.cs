@@ -50,8 +50,8 @@ namespace VEF.Weapons
         {
             if (VanillaExpandedFramework_VehicleFramework_Turret_Patch.currentFiringVehicleTurret is not null)
             {
-				return (float)(VanillaExpandedFramework_VehicleFramework_Turret_Patch.maxRangeInfo
-					.Invoke(VanillaExpandedFramework_VehicleFramework_Turret_Patch.currentFiringVehicleTurret, null));
+				return (float)(VanillaExpandedFramework_VehicleFramework_Turret_Patch
+					.maxRangeInfo(VanillaExpandedFramework_VehicleFramework_Turret_Patch.currentFiringVehicleTurret, null));
             }
 			var comp = equipment.TryGetComp<CompEquippable>();
 			if (comp != null)

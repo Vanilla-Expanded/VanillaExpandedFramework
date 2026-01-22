@@ -13,7 +13,6 @@ namespace VEF.Hediffs
 {
     public static class PhasingPatches
     {
-        private static readonly MethodInfo FloodUnfogAdjMI = AccessTools.Method(typeof(FogGrid), "FloodUnfogAdjacent", new Type[] { typeof(IntVec3), typeof(bool) });
         private static Pawn patherPawn;
         public static void Do(Harmony harm)
         {
@@ -39,7 +38,7 @@ namespace VEF.Hediffs
         public static void UnfogEnteredCells(Pawn_PathFollower __instance, Pawn ___pawn)
         {
             if (___pawn.Spawned && __instance.nextCell.Fogged(___pawn.Map) && ___pawn.IsPhasing())
-                FloodUnfogAdjMI.Invoke(___pawn.Map.fogGrid, new object[] {__instance.nextCell, true});
+                ___pawn.Map.fogGrid.FloodUnfogAdjacent(__instance.nextCell);
         }
 
         public static bool AllReachable(TraverseParms traverseParams, ref bool __result)

@@ -66,11 +66,12 @@ namespace VEF.Pawns
         [HarmonyPriority(Priority.First)]
         public static void Prefix(Thing eq, ref Vector3 drawLoc, ref float aimAngle)
         {
+            Pawn pawn = eq.GetPawnAsHolder();
+            if (pawn == null) return;
+
             var thingDefExtension = eq.def.GetModExtension<ThingDefExtension>();
 
-            Pawn pawn = eq.GetPawnAsHolder();
-
-            if (pawn != null && thingDefExtension != null && PawnRenderUtility.CarryWeaponOpenly(pawn))
+            if (thingDefExtension != null && PawnRenderUtility.CarryWeaponOpenly(pawn))
             {
                 var pawnRot = pawn.Rotation;
                 var pawnIsMoving = pawn.pather?.Moving ?? false;

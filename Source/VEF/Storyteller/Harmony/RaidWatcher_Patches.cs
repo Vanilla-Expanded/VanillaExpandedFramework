@@ -230,17 +230,15 @@ namespace VEF.Storyteller
     [HarmonyPatch("TryExecuteWorker")]
     public static class VanillaExpandedFramework_IncidentWorker_Raid_TryExecuteWorker_Patch
     {
+        public static readonly Func<IncidentWorker_RaidEnemy, IncidentParms, bool> tryResolveRaidFactionMethod = (Func<IncidentWorker_RaidEnemy, IncidentParms, bool>)
+            Delegate.CreateDelegate(typeof(Func<IncidentWorker_RaidEnemy, IncidentParms, bool>), typeof(IncidentWorker_RaidEnemy).DeclaredMethod("TryResolveRaidFaction"));
+
         public static bool Prefix(IncidentWorker_Raid __instance, IncidentParms parms)
         {
             var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
-            if (options != null && options.storytellerThreat != null && options.storytellerThreat.raidWarningRange.HasValue &&
-                __instance is IncidentWorker_RaidEnemy && parms.target is Map mapTarget)
+            if (options is { storytellerThreat.raidWarningRange: not null } && __instance is IncidentWorker_RaidEnemy raidEnemy && parms.target is Map)
             {
-                var result = (bool)AccessTools.Method(typeof(IncidentWorker_RaidEnemy), "TryResolveRaidFaction", null, null).Invoke(__instance, new object[]
-                {
-                    parms
-                });
-                if (result)
+                if (tryResolveRaidFactionMethod(raidEnemy, parms))
                 {
                     if (parms.faction != null && parms.faction.HostileTo(Faction.OfPlayer))
                     {

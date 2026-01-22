@@ -48,6 +48,9 @@ namespace VEF.Buildings
     }
     public class CompGlowerExtended : ThingComp
     {
+        private static readonly AccessTools.FieldRef<CompGlower, bool> glowOnIntField = AccessTools.FieldRefAccess<CompGlower, bool>("glowOnInt");
+        private static readonly AccessTools.FieldRef<Thing, Graphic> graphicIntField = AccessTools.FieldRefAccess<Thing, Graphic>("graphicInt");
+
         private ColorOption currentColor;
         public int currentColorInd;
         public CompGlower compGlower;
@@ -318,7 +321,7 @@ namespace VEF.Buildings
             });
             if (enableLight)
             {
-                Traverse.Create(this.compGlower).Field("glowOnInt").SetValue(true);
+                glowOnIntField(this.compGlower) = true;
                 base.parent.Map.mapDrawer.MapMeshDirty(base.parent.Position, MapMeshFlagDefOf.Things);
                 base.parent.Map.glowGrid.RegisterGlower(this.compGlower);
             }
@@ -342,7 +345,7 @@ namespace VEF.Buildings
                 graphicData.colorTwo = this.parent.def.graphicData.colorTwo;
 
                 var newGraphic = graphicData.GraphicColoredFor(this.parent);
-                Traverse.Create(this.parent).Field("graphicInt").SetValue(newGraphic);
+                graphicIntField(this.parent) = newGraphic;
                 base.parent.Map.mapDrawer.MapMeshDirty(this.parent.Position, MapMeshFlagDefOf.Things);
             }
         }

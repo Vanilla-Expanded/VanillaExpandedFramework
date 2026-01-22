@@ -23,13 +23,12 @@ namespace VEF.Sounds
     public static class VEDebug
     {
         // Non public field
-        public static FieldInfo UIRoot_DebugWindowsOpener = AccessTools.Field(typeof(UIRoot), "debugWindowOpener");
-        public static FieldInfo DebugWindowsOpener_widgetRow = AccessTools.Field(typeof(DebugWindowsOpener), "widgetRow");
+        public static readonly AccessTools.FieldRef<DebugWindowsOpener, WidgetRow> DebugWindowsOpener_widgetRow = AccessTools.FieldRefAccess<DebugWindowsOpener, WidgetRow>("widgetRow");
 
         private static void AddVEOptions()
         {
-            var opener = (DebugWindowsOpener)UIRoot_DebugWindowsOpener.GetValue(Find.UIRoot);
-            var widgetRow = (WidgetRow)DebugWindowsOpener_widgetRow.GetValue(opener);
+            var opener = Find.UIRoot.debugWindowOpener;
+            var widgetRow = DebugWindowsOpener_widgetRow(opener);
 
             if (widgetRow.ButtonIcon(TextureButton.VFELogo, "More options.."))
             {

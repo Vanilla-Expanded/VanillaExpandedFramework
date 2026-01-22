@@ -123,7 +123,7 @@ namespace VEF.Weapons
 
             for (var i = 0; i < count; i++)
             {
-                var contentListTrie = contentListTrieRef.Invoke(mods[i].GetContentHolder<Texture2D>());
+                var contentListTrie = contentListTrieRef(mods[i].GetContentHolder<Texture2D>());
 
                 var prefix = !folderPath.NullOrEmpty() && folderPath![folderPath.Length - 1] == '/'
                     ? folderPath

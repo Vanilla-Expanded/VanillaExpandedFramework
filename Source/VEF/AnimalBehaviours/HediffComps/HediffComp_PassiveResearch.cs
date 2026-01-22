@@ -27,22 +27,13 @@ namespace VEF.AnimalBehaviours
         {
             base.CompPostTickInterval(ref severityAdjustment, delta);
 
-          
-            if (Pawn.IsHashIntervalTick(Props.tickInterval, delta)&& Pawn.Faction == Faction.OfPlayerSilentFail && Pawn.Map!=null)
+
+            if (Pawn.IsHashIntervalTick(Props.tickInterval, delta) && Pawn.Faction == Faction.OfPlayerSilentFail && Pawn.Map!=null)
             {
                 ResearchProjectDef proj = Find.ResearchManager.GetProject();
                 if (proj != null)
                 {
-                    FieldInfo fieldInfo = AccessTools.Field(typeof(ResearchManager), "progress");
-                    Dictionary<ResearchProjectDef, float> dictionary = fieldInfo.GetValue(Find.ResearchManager) as Dictionary<ResearchProjectDef, float>;
-                    if (dictionary.ContainsKey(proj))
-                    {
-                        dictionary[proj] += Props.researchPoints;
-                    }
-                    if (proj.IsFinished)
-                    {
-                        Find.ResearchManager.FinishProject(proj, doCompletionDialog: true);
-                    }
+                    Find.ResearchManager.AddProgress(proj, Props.researchPoints);
                 }
             }
 

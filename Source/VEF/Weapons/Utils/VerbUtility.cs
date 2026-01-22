@@ -156,8 +156,7 @@ namespace VEF.Weapons
         {
             //Log.Message("1 Verb: " + verb + " - " + verb.verbProps.range);
             var newProperties = verb.verbProps.MemberwiseClone();
-            var field = Traverse.Create(newProperties).Field("range");
-            field.SetValue(field.GetValue<float>() * multiplier);
+            newProperties.range *= multiplier;
             verb.verbProps = newProperties;
             //Log.Message("2 Verb: " + verb + " - " + verb.verbProps.range);
         }
@@ -169,6 +168,8 @@ namespace VEF.Weapons
         public static ThingWithComps weaponToLookUp;
 
         public static bool interruptWork;
+
+        private static readonly AccessTools.FieldRef<ThingDef, List<VerbProperties>> verbsField = AccessTools.FieldRefAccess<ThingDef, List<VerbProperties>>("verbs");
 
         public static void Prefix(Rect rect, Thing thing, out List<VerbProperties> __state)
         {
@@ -187,22 +188,21 @@ namespace VEF.Weapons
                         foreach (var verbProps in weapon.def.Verbs)
                         {
                             var newProps = verbProps.MemberwiseClone();
-                            var fieldRange = Traverse.Create(newProps).Field("range");
-                            fieldRange.SetValue(fieldRange.GetValue<float>() * verbRangeMultiplier);
+                            newProps.range *= verbRangeMultiplier;
                             customVerbs.Add(newProps);
                         }
 
-                        Traverse.Create(weapon.def).Field("verbs").SetValue(customVerbs);
+                        verbsField(weapon.def) = customVerbs;
                     }
                 }
             }
         }
 
-        public static void Postfix(List<VerbProperties> __state)
+        public static void Finalizer(List<VerbProperties> __state)
         {
             if (__state != null)
             {
-                Traverse.Create(weaponToLookUp.def).Field("verbs").SetValue(__state);
+                verbsField(weaponToLookUp.def) = __state;
                 weaponToLookUp = null;
             }
         }

@@ -119,10 +119,10 @@ namespace VEF.Planet
             }
         }
 
-        private static readonly FieldInfo pathsField = AccessTools.Field(typeof(WorldPathPool), "paths");
+        private static readonly AccessTools.FieldRef<WorldPathPool, List<WorldPath>> pathsField = AccessTools.FieldRefAccess<WorldPathPool, List<WorldPath>>("paths");
         public bool StartPath(PlanetTile destTile, bool repathImmediately = false, bool resetPauseStatus = true)
         {
-            var paths = pathsField.GetValue(Find.WorldPathPool) as List<WorldPath>;
+            var paths = pathsField(Find.WorldPathPool);
             paths.Clear();
             if (resetPauseStatus)
             {
@@ -376,7 +376,7 @@ namespace VEF.Planet
 
         private WorldPath GenerateNewPath()
         {
-            (pathsField.GetValue(Find.WorldPathPool) as List<WorldPath>)?.Clear();
+            pathsField(Find.WorldPathPool)?.Clear();
             var tile = ((moving && nextTile.Valid && IsNextTilePassable()) ? nextTile : movingBase.Tile);
             lastPathedTargetTile = destTile;
             WorldPath worldPath = movingBase.Tile.Layer.Pather.FindPath(tile, destTile, null);

@@ -17,7 +17,7 @@ namespace VEF.Maps
                 if (ext.deepResourcesOnGUI
                     && ((ext.deepResourcesOnGUIRequireScanner && map.deepResourceGrid.AnyActiveDeepScannersOnMap()) || !ext.deepResourcesOnGUIRequireScanner))
                 {
-                    NonPublicMethods.RenderMouseAttachments.Invoke(__instance, null);
+                    NonPublicMethods.RenderMouseAttachments(__instance);
                 }
             }
         }

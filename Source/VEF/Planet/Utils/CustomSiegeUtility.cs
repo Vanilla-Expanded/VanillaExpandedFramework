@@ -29,8 +29,8 @@ namespace VEF.Planet
         public static IEnumerable<Blueprint_Build> PlaceBlueprints(LordToilData_SiegeCustom data, Map map, Faction placeFaction)
         {
             customParams = FactionDefExtension.Get(placeFaction.def).siegeParameterSetDef;
-            NonPublicFields.SiegeBlueprintPlacer_center.SetValue(null, data.siegeCenter);
-            NonPublicFields.SiegeBlueprintPlacer_faction.SetValue(null, placeFaction);
+            NonPublicFields.SiegeBlueprintPlacer_center() = data.siegeCenter;
+            NonPublicFields.SiegeBlueprintPlacer_faction() = placeFaction;
 
             // Cover
             if (customParams.coverDef != null)
@@ -55,14 +55,14 @@ namespace VEF.Planet
 
         private static IEnumerable<Blueprint_Build> PlaceCoverBlueprints(Map map)
         {
-            var centre = (IntVec3)NonPublicFields.SiegeBlueprintPlacer_center.GetValue(null);
-            var lengthRange = (IntRange)NonPublicFields.SiegeBlueprintPlacer_CoverLengthRange.GetValue(null);
-            var countRange = (IntRange)NonPublicFields.SiegeBlueprintPlacer_NumCoverRange.GetValue(null);
-            var placedSandbagLocs = (List<IntVec3>)NonPublicFields.SiegeBlueprintPlacer_placedCoverLocs.GetValue(null);
+            var centre = NonPublicFields.SiegeBlueprintPlacer_center();
+            var lengthRange = NonPublicFields.SiegeBlueprintPlacer_CoverLengthRange();
+            var countRange = NonPublicFields.SiegeBlueprintPlacer_NumCoverRange();
+            var placedSandbagLocs = NonPublicFields.SiegeBlueprintPlacer_placedCoverLocs();
             placedSandbagLocs.Clear();
             int numSandbags = countRange.RandomInRange;
             var coverStuff = customParams.coverDef.MadeFromStuff ?
-                GenStuff.RandomStuffInexpensiveFor(customParams.coverDef, (Faction)NonPublicFields.SiegeBlueprintPlacer_faction.GetValue(null)) : null;
+                GenStuff.RandomStuffInexpensiveFor(customParams.coverDef, NonPublicFields.SiegeBlueprintPlacer_faction()) : null;
             for (int i = 0; i < numSandbags; i++)
             {
                 var bagRoot = FindCoverRoot(map, customParams.coverDef, coverStuff);
@@ -106,8 +106,8 @@ namespace VEF.Planet
 
         private static IntVec3 FindCoverRoot(Map map, ThingDef coverDef, ThingDef coverStuff)
         {
-            var centre = (IntVec3)NonPublicFields.SiegeBlueprintPlacer_center.GetValue(null);
-            var placedCoverLocs = (List<IntVec3>)NonPublicFields.SiegeBlueprintPlacer_placedCoverLocs.GetValue(null);
+            var centre = NonPublicFields.SiegeBlueprintPlacer_center();
+            var placedCoverLocs = NonPublicFields.SiegeBlueprintPlacer_placedCoverLocs();
             var cellRect = CellRect.CenteredOn(centre, 13);
             cellRect.ClipInsideMap(map);
             var cellRect2 = CellRect.CenteredOn(centre, 8);
@@ -149,7 +149,7 @@ namespace VEF.Planet
 
         private static IEnumerable<Blueprint_Build> MakeCoverLine(IntVec3 root, Map map, Rot4 growDir, int maxLength, ThingDef coverThing, ThingDef coverStuff)
         {
-            var placedSandbagLocs = (List<IntVec3>)NonPublicFields.SiegeBlueprintPlacer_placedCoverLocs.GetValue(null);
+            var placedSandbagLocs = NonPublicFields.SiegeBlueprintPlacer_placedCoverLocs();
             var cur = root;
             for (int i = 0; i < maxLength; i++)
             {
@@ -157,7 +157,7 @@ namespace VEF.Planet
                 {
                     break;
                 }
-                yield return GenConstruct.PlaceBlueprintForBuild(coverThing, cur, map, Rot4.North, (Faction)NonPublicFields.SiegeBlueprintPlacer_faction.GetValue(null), coverStuff);
+                yield return GenConstruct.PlaceBlueprintForBuild(coverThing, cur, map, Rot4.North, NonPublicFields.SiegeBlueprintPlacer_faction(), coverStuff);
                 placedSandbagLocs.Add(cur);
                 cur += growDir.FacingCell;
             }
@@ -198,7 +198,7 @@ namespace VEF.Planet
                     yield break;
                 }
 
-                yield return GenConstruct.PlaceBlueprintForBuild(artyDef, artySpot, map, rot, (Faction)NonPublicFields.SiegeBlueprintPlacer_faction.GetValue(null), GenStuff.DefaultStuffFor(artyDef));
+                yield return GenConstruct.PlaceBlueprintForBuild(artyDef, artySpot, map, rot, NonPublicFields.SiegeBlueprintPlacer_faction(), GenStuff.DefaultStuffFor(artyDef));
                 if (data.artilleryCounts.ContainsKey(artyDef))
                 {
                     data.artilleryCounts[artyDef]++;
