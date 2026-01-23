@@ -22,15 +22,16 @@ namespace VEF.Weapons
      
         public string LabelRemaining => $"{currentCharges} / {maxCharges}";
 
-        List<WeaponTraitDefExtension> contentDetails = new List<WeaponTraitDefExtension>();
+        List<WeaponTraitDefExtension> contentDetails = null;
 
         CompUniqueWeapon cachedComp;
         CompEquippable cachedEquippableComp;
 
         public List<WeaponTraitDefExtension> GetDetails()
         {
-            if (contentDetails.NullOrEmpty())
+            if (contentDetails == null)
             {
+                contentDetails = new List<WeaponTraitDefExtension>();
                 CompUniqueWeapon comp = GetComp();
                 if (comp != null && comp.TraitsListForReading?.Count > 0)
                 {
@@ -132,7 +133,7 @@ namespace VEF.Weapons
 
         public void DeleteCaches()
         {
-            contentDetails.Clear();
+            contentDetails = null;
             cachedComp = null;
             cachedEquippableComp = null;
             cachedAbilityWithChargesDetails = null;
@@ -217,7 +218,7 @@ namespace VEF.Weapons
             
             }
 
-            foreach (WeaponTraitDefExtension extension in contentDetails)
+            foreach (WeaponTraitDefExtension extension in GetDetails())
             {
                 if (extension?.abilityToAdd != null)
                 {
@@ -244,7 +245,7 @@ namespace VEF.Weapons
 
         public override void Notify_Unequipped(Pawn pawn)
         {
-            foreach (WeaponTraitDefExtension extension in contentDetails)
+            foreach (WeaponTraitDefExtension extension in GetDetails())
             {
                 if (extension?.abilityToAdd != null)
                 {                 
@@ -267,7 +268,7 @@ namespace VEF.Weapons
         public override void Notify_KilledPawn(Pawn pawn)
         {
             base.Notify_KilledPawn(pawn);
-            foreach (WeaponTraitDefExtension extension in contentDetails)
+            foreach (WeaponTraitDefExtension extension in GetDetails())
             {
                 if (extension?.killHediff != null)
                 {
