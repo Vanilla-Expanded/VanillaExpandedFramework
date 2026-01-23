@@ -461,6 +461,7 @@
     <Compile Include="Weapons\Harmony\EquipmentUtility_CanEquip_Patch.cs" />
     <Compile Include="Weapons\Harmony\JobDriver_ManTurret_GunNeedsRefueling_Patch.cs" />
     <Compile Include="Weapons\Harmony\JobDriver_ManTurret_RefuelIfNeededLambda_Patch.cs" />
+    <Compile Include="Weapons\Harmony\OptionalFeatures\CompEquippable_VerbProperties.cs" />
     <Compile Include="Weapons\Harmony\OptionalFeatures\Pawn_EquipmentTracker_Notify_AbilityUsed.cs" />
     <Compile Include="Weapons\Harmony\OptionalFeatures\CompUniqueWeapon_AddTrait.cs" />
     <Compile Include="Weapons\Harmony\OptionalFeatures\Verb_MeleeAttackDamage_DamageInfosToApply.cs" />

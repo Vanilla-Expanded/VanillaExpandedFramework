@@ -22,6 +22,8 @@ namespace VEF.Weapons
                 workerExtended.def = traitDef;
                 workerExtended.Notify_Added(__instance.parent);
             }
+
+            __instance.parent?.GetComp<CompApplyWeaponTraits>()?.DeleteCaches();
         }
     }
 

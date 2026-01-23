@@ -25,6 +25,7 @@ namespace VEF.Weapons
         List<WeaponTraitDefExtension> contentDetails = new List<WeaponTraitDefExtension>();
 
         CompUniqueWeapon cachedComp;
+        CompEquippable cachedEquippableComp;
 
         public List<WeaponTraitDefExtension> GetDetails()
         {
@@ -53,6 +54,11 @@ namespace VEF.Weapons
                 cachedComp = this.parent.GetComp<CompUniqueWeapon>();
             }
             return cachedComp;
+        }
+
+        public CompEquippable GetEquippableComp()
+        {
+            return cachedEquippableComp ??= this.parent.GetComp<CompEquippable>();
         }
 
         public AbilityWithChargesDetails AbilityDetailsForWeapon(List<WeaponTraitDefExtension> traits)
@@ -128,8 +134,36 @@ namespace VEF.Weapons
         {
             contentDetails.Clear();
             cachedComp = null;
+            cachedEquippableComp = null;
             cachedAbilityWithChargesDetails = null;
             abilityWithCharges = null;
+            ReinitializeVerbsIfNeeded();
+        }
+
+        public void ReinitializeVerbsIfNeeded()
+        {
+            if (AreVerbsDirty())
+            {
+                // Technically not load... But it sets the verbs to null, which
+                // will cause them to be reinitialized the next time they are accessed.
+                GetEquippableComp().VerbTracker.VerbsNeedReinitOnLoad();
+            }
+        }
+
+        public bool AreVerbsDirty()
+        {
+            var comp = GetEquippableComp();
+            // Null equippable/verb tracker, can't do anything
+            if (comp?.VerbTracker == null)
+                return false;
+
+            foreach (var verbProps in comp.VerbProperties)
+            {
+                if (!comp.VerbTracker.AllVerbs.Any(v => v.verbProps == verbProps))
+                    return true;
+            }
+
+            return false;
         }
 
         public override void PostExposeData()
@@ -138,11 +172,16 @@ namespace VEF.Weapons
             Scribe_Values.Look(ref this.maxCharges, "maxCharges", 0);
             Scribe_Values.Look(ref this.currentCharges, "currentCharges", 0);
             Scribe_Defs.Look(ref abilityWithCharges, "abilityWithCharges");
-          
+
             if (!GetDetails().NullOrEmpty())
             {
                 LongEventHandler.ExecuteWhenFinished(delegate { ChangeGraphic(); });
                 CalculateAbilities();
+            }
+
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                ReinitializeVerbsIfNeeded();
             }
         }
 

@@ -29,6 +29,9 @@ namespace VEF.Weapons
 
             harm.Patch(AccessTools.Method(typeof(Pawn_EquipmentTracker), "Notify_AbilityUsed"),
                postfix: new HarmonyMethod(typeof(VanillaExpandedFramework_Pawn_EquipmentTracker_Notify_AbilityUsed_Patch), "NotifyAbilityUses"));
+
+            harm.Patch(typeof(CompEquippable).PropertyGetter(nameof(CompEquippable.VerbProperties)),
+                prefix: new HarmonyMethod(VanillaExpandedFramework_CompEquippable_VerbProperties_Patch.UseVerbTraitsIfPresent));
         }
     }
 }
