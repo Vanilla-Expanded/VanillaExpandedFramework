@@ -13,15 +13,8 @@ namespace VEF.Weapons
 
         public static void HandleExtendedWorker(WeaponTraitDef traitDef, CompUniqueWeapon __instance)
         {
-
-            Type type = traitDef.workerClass;
-            if (typeof(WeaponTraitWorker_Extended).IsAssignableFrom(type))
-            {
-                WeaponTraitWorker_Extended workerExtended =
-                    (WeaponTraitWorker_Extended)Activator.CreateInstance(type);
-                workerExtended.def = traitDef;
-                workerExtended.Notify_Added(__instance.parent);
-            }
+            if (traitDef.Worker is WeaponTraitWorker_Extended extendedWorker)
+                extendedWorker.Notify_Added(__instance.parent);
 
             __instance.parent?.GetComp<CompApplyWeaponTraits>()?.DeleteCaches();
         }
