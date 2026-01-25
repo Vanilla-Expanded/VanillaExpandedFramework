@@ -38,8 +38,11 @@ namespace VEF.Weapons
         public List<ConditionalStatAffecter> conditionalStatAffecters;
         //This is a system to add abilities with charges via traits, hopefully working better than the vanilla system
         public AbilityWithChargesDetails abilityWithCharges;
-        //List of verbs that waill replace the original weapon verbs
-        public List<VerbProperties> verbs;
+        ////Swaps the verbs used by this unique weapon for another ones
+        public List<VerbProperties> verbsOverride;
+        //This allows users to specify different verbs for different guns. If not found, verbsOverride will be used
+        public Dictionary<ThingDef, List<VerbProperties>> verbsOverrides;
+        
 
     }
 

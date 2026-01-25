@@ -17,11 +17,19 @@ public static class VanillaExpandedFramework_CompEquippable_VerbProperties_Patch
         // Check all traits for any verb-giving traits
         foreach (var extension in uniqueWeapon.GetDetails())
         {
-            // Check if we have any verbs
-            if (!extension.verbs.NullOrEmpty())
+            if (!extension.verbsOverrides.NullOrEmpty() && extension.verbsOverrides.ContainsKey(__instance.parent.def))
             {
                 // Replace original verbs
-                __result = extension.verbs;
+                __result = extension.verbsOverrides[__instance.parent.def];
+                return false;
+            }
+            else
+
+            // Check if we have any verbs
+            if (!extension.verbsOverride.NullOrEmpty())
+            {
+                // Replace original verbs
+                __result = extension.verbsOverride;
                 return false;
             }
         }
