@@ -37,9 +37,11 @@ public static class JobDriver_ManTurret_RefuelIfNeededLambda_Patch
 
     private static void Postfix(Toil ___refuelIfNeeded)
     {
-        var job = ___refuelIfNeeded.actor.CurJob;
+        var actor = ___refuelIfNeeded.actor;
+        var job = actor.CurJob;
+        var turret = job.targetA.Thing;
 
-        var extension = job.targetA.Thing?.def?.GetModExtension<AutoRefuelMannedTurrets>();
+        var extension = turret?.def?.GetModExtension<AutoRefuelMannedTurrets>();
         // Check if extension is null, or we only want to reload a single item
         if (extension is not { reloadsMoreThanSingleItem: true })
             return;
@@ -48,6 +50,18 @@ public static class JobDriver_ManTurret_RefuelIfNeededLambda_Patch
         if (fuel.Thing == null || fuel.Thing.stackCount == 1)
             return;
 
-        job.count = Mathf.Clamp(extension.ModifyRefuelCount((Building)job.targetA.Thing, fuel.Thing), 1, fuel.Thing.stackCount);
+        var count = Mathf.Clamp(extension.ModifyRefuelCount((Building)turret, fuel.Thing), 1, fuel.Thing.stackCount);
+
+        // We only need to handle changing count and reserving stuff if count is bigger than 1.
+        // Vanilla will handle counts of 1.
+        if (count <= 1)
+            return;
+
+        job.count = count;
+        if (!actor.Reserve(fuel, actor.CurJob, 10, count))
+        {
+            actor.jobs.EndCurrentJob(JobCondition.Incompletable);
+            Messages.Message("MessageOutOfNearbyFuelFor".Translate(actor.LabelShort, turret.Label, actor.Named("PAWN"), turret.Named("GUN"), turret.TryGetComp<CompRefuelable>().Props.fuelFilter.Summary.Named("FUEL")).CapitalizeFirst(), turret, MessageTypeDefOf.NegativeEvent);
+        }
     }
 }
