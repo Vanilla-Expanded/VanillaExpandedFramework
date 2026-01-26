@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 using Verse;
 
 namespace PipeSystem
@@ -38,8 +39,7 @@ namespace PipeSystem
                 for (int o = 0; o < netDef.pipeDefs.Count; o++)
                 {
                     var pipeDef = netDef.pipeDefs[o];
-
-                    Graphic graphicP = GraphicDatabase.Get<Graphic_Single>(pipeDef.graphic.data.texPath, ShaderDatabase.Cutout);
+                    Graphic graphicP = GraphicDatabase.Get<Graphic_Single>(pipeDef.graphic.data.texPath, ShaderDatabase.Cutout, Vector2.one, pipeDef.graphicData.color);
                     pipesLinked.Add(pipeDef, new Graphic_LinkedPipe(graphicP, netDef));
                 }
             }
