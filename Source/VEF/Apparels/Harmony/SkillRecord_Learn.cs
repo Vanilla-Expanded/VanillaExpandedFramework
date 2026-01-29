@@ -15,9 +15,9 @@ namespace VEF.Apparels
 				foreach (var apparel in ___pawn.apparel.WornApparel)
                 {
 					var extension = apparel.def.GetModExtension<ApparelExtension>();
-					if (extension != null && extension.skillGainModifier.HasValue)
+					if (extension != null && extension.skillGainModifier != 1f)
                     {
-						xp *= extension.skillGainModifier.Value;
+						xp *= extension.skillGainModifier;
 					}
                 }
 			}

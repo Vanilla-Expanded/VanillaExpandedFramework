@@ -229,7 +229,9 @@
     <Compile Include="Global\CacheClearing\NoCacheClearingAttribute.cs" />
     <Compile Include="Global\DebugActions.cs" />
     <Compile Include="Global\Harmony\MemoryUtility_UnloadUnusedUnityAssets.cs" />
+    <Compile Include="Global\Harmony\MergeablePatches.cs" />
     <Compile Include="Global\HotSwappableAttribute.cs" />
+    <Compile Include="Global\IMergeable.cs" />
     <Compile Include="Global\MoteAttachedScaled.cs" />
     <Compile Include="Global\VEF_HarmonyCategories.cs" />
     <Compile Include="Graphics\AI\JobDrivers\JobDriver_CustomizeItem.cs" />
