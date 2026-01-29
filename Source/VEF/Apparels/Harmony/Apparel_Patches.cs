@@ -401,7 +401,6 @@ namespace VEF.Apparels
         public static bool doNotRunTraitsPatch;
         public static void Postfix(Pawn_ApparelTracker __instance, Apparel newApparel, bool dropReplacedApparel = true, bool locked = false)
         {
-            Weapons.VerbUtility.TryModifyThingsVerbs(newApparel);
             if (newApparel is Apparel_Shield newShield)
             {
                 newShield.CompShield.equippedOffHand = true;
