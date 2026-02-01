@@ -228,6 +228,7 @@
     <Compile Include="Global\CacheClearing\ClearCaches.cs" />
     <Compile Include="Global\CacheClearing\NoCacheClearingAttribute.cs" />
     <Compile Include="Global\DebugActions.cs" />
+    <Compile Include="Global\Harmony\GenRadialPatches.cs" />
     <Compile Include="Global\Harmony\MemoryUtility_UnloadUnusedUnityAssets.cs" />
     <Compile Include="Global\Harmony\MergeablePatches.cs" />
     <Compile Include="Global\HotSwappableAttribute.cs" />
