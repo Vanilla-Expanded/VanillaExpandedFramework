@@ -7,13 +7,17 @@ namespace VEF.Apparels
 {
     public class ApparelExtension : DefModExtension, IMergeable
     {
+        public float priority = 0f;
+
         public float skillGainModifier = 1f;
         public WorkTags workDisables = WorkTags.None;
         public List<SkillDef> skillDisables;
 
         public List<StatModifier> equippedStatFactors;
-        public List<TraitDef> traitsOnEquip;
-        public List<TraitDef> traitsOnUnequip;
+        // Using TraitRequirement. Specifying traits without a degree is still possible and done
+        // exactly the same as before, but it's now possible to include degree data as well.
+        public List<TraitRequirement> traitsOnEquip;
+        public List<TraitRequirement> traitsOnUnequip;
         public List<PawnCapacityMinLevel> pawnCapacityMinLevels;
         public bool preventDowning;
         public bool preventKilling;
@@ -21,13 +25,15 @@ namespace VEF.Apparels
         public bool preventKillingUntilBrainMissing;
         public bool preventBleeding;
 
+        // Apparel-only properties.
         public List<ThingDef> secondaryApparelGraphics;
         public bool isUnifiedApparel;
         public bool hideHead;
         public bool showBodyInBedAlways;
 
-        // Order doesn't matter.
-        public float Priority => 0f;
+        // Order matters for traitsOnEquip and traitsOnUnequip - they
+        // may have different degrees, so we need to pick 1.
+        public float Priority => priority;
 
         // Always possible to merge.
         public bool CanMerge(object other) => other != null && other.GetType() == typeof(ApparelExtension);
@@ -41,8 +47,8 @@ namespace VEF.Apparels
             CombineLists(ref skillDisables, other.skillDisables);
 
             CombineStatModifiers(ref equippedStatFactors, other.equippedStatFactors);
-            CombineLists(ref traitsOnEquip, other.traitsOnEquip);
-            CombineLists(ref traitsOnUnequip, other.traitsOnUnequip);
+            CombineTraits(ref traitsOnEquip, other.traitsOnEquip);
+            CombineTraits(ref traitsOnUnequip, other.traitsOnUnequip);
             CombineStatCapacityMinLevels(ref pawnCapacityMinLevels, other.pawnCapacityMinLevels);
             preventDowning |= other.preventDowning;
             preventKilling |= other.preventKilling;
@@ -62,6 +68,25 @@ namespace VEF.Apparels
                 original = other;
             else if (other != null)
                 original.AddRangeUnique(other);
+        }
+
+        public static void CombineTraits(ref List<TraitRequirement> original, List<TraitRequirement> other)
+        {
+            if (original == null)
+            {
+                original = other;
+                return;
+            }
+
+            if (other == null)
+                return;
+
+            // May be different degrees, so we need to handle this like that.
+            foreach (var otherTrait in other)
+            {
+                if (!original.Any(trait => trait.def == otherTrait.def))
+                    original.Add(otherTrait);
+            }
         }
 
         private static void CombineStatModifiers(ref List<StatModifier> original, List<StatModifier> other)
@@ -115,5 +140,23 @@ namespace VEF.Apparels
     {
         public PawnCapacityDef capacity;
         public float minLevel;
+    }
+
+    public class CapacityImpactorGearMinLevel : PawnCapacityUtility.CapacityImpactor
+    {
+        public Thing gear;
+        public ApparelExtension extension;
+        public PawnCapacityDef capacity;
+
+        public override bool IsDirect => false;
+
+        public override string Readable(Pawn pawn)
+        {
+            var minLevel = extension.pawnCapacityMinLevels?.FirstOrDefault(x => x.capacity == capacity);
+            if (minLevel == null)
+                return gear.LabelCap;
+
+            return $"{gear.LabelCap}: {"VEF.MinCapacityLevel".Translate((GenMath.RoundedHundredth(minLevel.minLevel) * 100f).Named("MIN"))}";
+        }
     }
 }

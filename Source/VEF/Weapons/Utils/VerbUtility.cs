@@ -16,43 +16,49 @@ namespace VEF.Weapons
 
         public static void TryModifyThingsVerbs(ThingWithComps thing)
         {
-            VanillaExpandedFramework_StatsReportUtility_DrawStatsReport_Patch.interruptWork = true;
-            if (thing != null)
+            try
             {
-                if (thing is Pawn pawn2)
+                VanillaExpandedFramework_StatsReportUtility_DrawStatsReport_Patch.interruptWork = true;
+
+                if (thing != null)
                 {
-                    var verbRangeMultiplier = pawn2.GetVerbRangeMultiplier();
-                    if (verbRangeMultiplier != 1f)
-                        foreach (var verb in GetAllVerbs(pawn2))
-                        {
-                            TryResetVerbProps(verb);
-                            ModifyVerb(verb, verbRangeMultiplier);
-                        }
-                    else
-                        ResetVerbs(GetAllVerbs(pawn2));
-                }
-                else if (thing.def?.Verbs?.Any() ?? false)
-                {
-                    var verbs = AllVerbsFrom(thing);
-                    var curPawn = GetPawnAsHolder(thing);
-                    if (curPawn != null)
+                    if (thing is Pawn pawn2)
                     {
-                        var verbRangeMultiplier = curPawn.GetVerbRangeMultiplier();
+                        var verbRangeMultiplier = pawn2.GetVerbRangeMultiplier();
                         if (verbRangeMultiplier != 1f)
-                            foreach (var verb in verbs)
+                            foreach (var verb in GetAllVerbs(pawn2))
                             {
                                 TryResetVerbProps(verb);
                                 ModifyVerb(verb, verbRangeMultiplier);
                             }
                         else
+                            ResetVerbs(GetAllVerbs(pawn2));
+                    }
+                    else if (thing.def?.Verbs?.Any() ?? false)
+                    {
+                        var verbs = AllVerbsFrom(thing);
+                        var curPawn = GetPawnAsHolder(thing);
+                        if (curPawn != null)
+                        {
+                            var verbRangeMultiplier = curPawn.GetVerbRangeMultiplier();
+                            if (verbRangeMultiplier != 1f)
+                                foreach (var verb in verbs)
+                                {
+                                    TryResetVerbProps(verb);
+                                    ModifyVerb(verb, verbRangeMultiplier);
+                                }
+                            else
+                                ResetVerbs(verbs);
+                        }
+                        else
                             ResetVerbs(verbs);
                     }
-                    else
-                        ResetVerbs(verbs);
                 }
             }
-
-            VanillaExpandedFramework_StatsReportUtility_DrawStatsReport_Patch.interruptWork = false;
+            finally
+            {
+                VanillaExpandedFramework_StatsReportUtility_DrawStatsReport_Patch.interruptWork = false;
+            }
         }
 
         private static void ResetVerbs(List<Verb> verbs)

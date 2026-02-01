@@ -822,7 +822,6 @@
     <Compile Include="Apparels\Comps\CompProperties\CompProperties_SwitchApparel.cs" />
     <Compile Include="Apparels\Comps\CompSwitchApparel.cs" />
     <Compile Include="Apparels\Harmony\PawnUIOverlay_DrawPawnGUIOverlay.cs" />
-    <Compile Include="Apparels\Harmony\Pawn_ApparelTracker_Wear.cs" />
     <Compile Include="Apparels\Harmony\Pawn_GetDisabledWorkTypes.cs" />
     <Compile Include="Apparels\Harmony\SkillRecord_Learn.cs" />
     <Compile Include="Apparels\Harmony\ThingSelectionUtility_SelectableByMapClick.cs" />
