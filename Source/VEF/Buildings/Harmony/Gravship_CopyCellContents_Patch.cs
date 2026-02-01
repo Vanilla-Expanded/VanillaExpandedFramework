@@ -10,13 +10,13 @@ namespace VEF.Buildings;
 
 [HarmonyPatch(typeof(Gravship), "CopyCellContents")]
 [HarmonyPatchCategory(VEF_HarmonyCategories.LateHarmonyPatchCategory)]
-public static class Gravship_CopyCellContents_Patch
+public static class VanillaExpandedFramework_Gravship_CopyCellContents_Patch
 {
     private static bool Prepare(MethodBase method)
     {
         // Only apply the patch if there's any building with multi-cell place worker.
         // Requires late patching.
-        return method != null || DefDatabase<ThingDef>.AllDefs.Any(x => x.placeWorkers?.Any(t => t.SameOrSubclassOf<PlaceWorker_AttachedToWallMultiCell>()) == true);
+        return method != null || DefDatabase<ThingDef>.AllDefs.Any(x => x.placeWorkers?.Any(t => t != null && t.SameOrSubclassOf<PlaceWorker_AttachedToWallMultiCell>()) == true);
     }
 
     private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr)
