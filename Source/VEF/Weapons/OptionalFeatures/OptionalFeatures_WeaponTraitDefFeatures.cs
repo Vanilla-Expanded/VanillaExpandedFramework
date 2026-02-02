@@ -3,6 +3,10 @@ using RimWorld;
 using Verse;
 using VEF.OptionalFeatures;
 using VEF.Maps;
+using RimWorld.Planet;
+using System.Collections.Generic;
+using System;
+using VEF.AnimalBehaviours;
 
 namespace VEF.Weapons
 {
@@ -13,7 +17,7 @@ namespace VEF.Weapons
         {
 
             harm.Patch(AccessTools.Property(typeof(Verb_LaunchProjectile), "Projectile").GetMethod, 
-                postfix: new HarmonyMethod(typeof(VanillaExpandedFramework_Verb_LaunchProjectile_Projectile_Patch), "ChangeProjectile"));
+               postfix: new HarmonyMethod(typeof(VanillaExpandedFramework_Verb_LaunchProjectile_Projectile_Patch), "ChangeProjectile"));
 
             harm.Patch(AccessTools.Method(typeof(Verb_MeleeAttack), "SoundHitPawn"),
                postfix: new HarmonyMethod(typeof(VanillaExpandedFramework_Verb_MeleeAttack_SoundHitPawn_Patch), "ChangeMeleeSound"));
@@ -31,7 +35,10 @@ namespace VEF.Weapons
                postfix: new HarmonyMethod(typeof(VanillaExpandedFramework_Pawn_EquipmentTracker_Notify_AbilityUsed_Patch), "NotifyAbilityUses"));
 
             harm.Patch(typeof(CompEquippable).PropertyGetter(nameof(CompEquippable.VerbProperties)),
-                prefix: new HarmonyMethod(VanillaExpandedFramework_CompEquippable_VerbProperties_Patch.UseVerbTraitsIfPresent));
+               prefix: new HarmonyMethod(VanillaExpandedFramework_CompEquippable_VerbProperties_Patch.UseVerbTraitsIfPresent));
+
+            harm.Patch(AccessTools.Method(typeof(VerbProperties), "AdjustedCooldown", new Type[] { typeof(Tool), typeof(Pawn), typeof(Thing) }),
+               postfix: new HarmonyMethod(typeof(VanillaExpandedFramework_VerbProperties_AdjustedCooldown_Patch), "RandomizeCooldown"));
         }
     }
 }

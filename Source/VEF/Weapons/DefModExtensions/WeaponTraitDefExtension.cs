@@ -42,6 +42,8 @@ namespace VEF.Weapons
         public List<VerbProperties> verbsOverride;
         //This allows users to specify different verbs for different guns. If not found, verbsOverride will be used
         public Dictionary<ThingDef, List<VerbProperties>> verbsOverrides;
+        //This randomizes the cooldown of the weapon
+        public FloatRange coolDownRange = FloatRange.Zero;
         
 
     }
