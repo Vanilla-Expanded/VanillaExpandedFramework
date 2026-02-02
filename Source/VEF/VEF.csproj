@@ -437,6 +437,7 @@
     <Compile Include="Storyteller\Utils\QuestUtils.cs" />
     <Compile Include="Storyteller\Harmony\Quest_CleanupQuestParts_Patch.cs" />
     <Compile Include="Buildings\Comps\CompBouncingArrow.cs" />
+    <Compile Include="Things\StatParts\StatPart_Quality_Offset_AsPercentage.cs" />
     <Compile Include="Weapons\AI\JobDrivers\JobDriver_ChangeLaserColor.cs" />
     <Compile Include="Weapons\AI\JobDrivers\JobDriver_ReloadWeaponTrait.cs" />
     <Compile Include="Weapons\AI\JobGivers\JobGiver_ReloadWeaponTrait.cs" />

@@ -31,6 +31,8 @@ namespace VEF
         public static Action<DeepResourceGrid> RenderMouseAttachments = (Action<DeepResourceGrid>)
             Delegate.CreateDelegate(typeof(Action<DeepResourceGrid>), typeof(DeepResourceGrid).Method("RenderMouseAttachments"));
 
+        public static TDel MakeDelegate<TDel>(MethodInfo method) where TDel : Delegate => (TDel)Delegate.CreateDelegate(typeof(TDel), method);
+
         [StaticConstructorOnStartup]
         public static class DualWield
         {
