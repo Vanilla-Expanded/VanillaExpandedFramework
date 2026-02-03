@@ -52,7 +52,7 @@ public static class GenRadialPatches
         for (var k = 0; k < list.Count; k++)
         {
             radialPattern[k] = list[k].pos;
-            radii[k] = list[k].length;
+            radii[k] = list[k].pos.LengthHorizontal;
         }
 
         // Initialize LengthSquaredToIndexArray with initial value
