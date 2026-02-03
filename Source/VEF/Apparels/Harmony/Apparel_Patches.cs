@@ -115,7 +115,7 @@ namespace VEF.Apparels
 
                 if (!hasTrait)
                 {
-                    pawn.story.traits.GainTrait(new Trait(traitDef.def, traitDef.degree.GetValueOrDefault()));
+                    pawn.story.traits.GainTrait(new Trait(traitDef.def, traitDef.degree.GetValueOrDefault()), true);
                 }
             }
         }
