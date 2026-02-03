@@ -45,7 +45,7 @@ namespace VEF.Weapons
         //This randomizes the cooldown of the weapon
         public FloatRange coolDownRange = FloatRange.Zero;
         //This randomizes the burst count of the weapon
-        public FloatRange burstShotCountRange = FloatRange.Zero;
+        public List<float> burstShotCountRange;
 
     }
 

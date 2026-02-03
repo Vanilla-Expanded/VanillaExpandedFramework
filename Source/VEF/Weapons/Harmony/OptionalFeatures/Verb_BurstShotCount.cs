@@ -45,9 +45,9 @@ namespace VEF.Weapons
         {
 
             WeaponTraitDefExtension extension = trait.GetModExtension<WeaponTraitDefExtension>();
-            if (extension != null && extension.burstShotCountRange!= FloatRange.Zero)
+            if (extension != null && extension.burstShotCountRange!= null)
             {
-                return extension.burstShotCountRange.RandomInRange;
+                return extension.burstShotCountRange.RandomElement();
             }
 
             return 1;
