@@ -316,6 +316,7 @@
     <Compile Include="Maps\Harmony\OptionalFeatures\GetOrGenerateMapUtility_GetOrGenerateMap.cs" />
     <Compile Include="Maps\Harmony\OptionalFeatures\StorytellerComp_Disease_MakeIntervalIncidents.cs" />
     <Compile Include="Maps\Harmony\OptionalFeatures\TileMutatorWorker_River_RiverBankTerrainAt.cs" />
+    <Compile Include="Weapons\Harmony\OptionalFeatures\Pawn_GetInspectString.cs" />
     <Compile Include="Weapons\Harmony\OptionalFeatures\VerbProperties_AdjustedCooldown.cs" />
     <Compile Include="Maps\Harmony\OptionalFeatures\WildAnimalSpawner_SpawnRandomWildAnimalAt.cs" />
     <Compile Include="Maps\Harmony\OptionalFeatures\WITab_Terrain_ListMiscDetails.cs" />

@@ -46,6 +46,8 @@ namespace VEF.Weapons
         public FloatRange coolDownRange = FloatRange.Zero;
         //This randomizes the burst count of the weapon
         public List<float> burstShotCountRange;
+        //This destroys the weapon after a certain amount of shots are fired
+        public int limitedUses = 0;
 
     }
 

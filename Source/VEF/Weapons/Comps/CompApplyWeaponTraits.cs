@@ -18,14 +18,18 @@ namespace VEF.Weapons
         public AbilityWithChargesDetails cachedAbilityWithChargesDetails;
         public AbilityDef abilityWithCharges;
         public int maxCharges;
-        public int currentCharges; 
-     
+        public int currentCharges;
+        public int shotsFired;
+        public int cachedLimitedUses = -1;
+
         public string LabelRemaining => $"{currentCharges} / {maxCharges}";
 
         List<WeaponTraitDefExtension> contentDetails = null;
 
         CompUniqueWeapon cachedComp;
         CompEquippable cachedEquippableComp;
+
+
 
         public List<WeaponTraitDefExtension> GetDetails()
         {
@@ -72,6 +76,24 @@ namespace VEF.Weapons
 
         }
 
+        public int LimitedUses(List<WeaponTraitDefExtension> traits)
+        {
+            if (cachedLimitedUses == -1)
+            {
+                foreach(WeaponTraitDefExtension extension in traits)
+                {
+                    if (extension.limitedUses != 0)
+                    {
+                        cachedLimitedUses= extension.limitedUses;
+                        break;
+                    }
+                    else { cachedLimitedUses = 0; }
+
+                }
+            }
+            return cachedLimitedUses;
+        }
+
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
@@ -79,6 +101,7 @@ namespace VEF.Weapons
             {
                 LongEventHandler.ExecuteWhenFinished(delegate { ChangeGraphic(); });
                 CalculateAbilities();
+                LimitedUses(GetDetails());
             }
         }
 
@@ -104,11 +127,18 @@ namespace VEF.Weapons
 
         public override string CompInspectStringExtra()
         {
-            if (AbilityDetailsForWeapon(GetDetails()) is null)
+            string text = "";
+            if (LimitedUses(GetDetails()) > 0)
             {
-                return null;
+                text += "VWE_WeaponDeteriorationInfo".Translate() + "\n" + ShotRemainingInfo();
             }
-            return "ChargesRemaining".Translate(AbilityDetailsForWeapon(GetDetails()).chargeNoun) + ": " + LabelRemaining;
+            if (AbilityDetailsForWeapon(GetDetails()) != null)
+            {
+                text += "ChargesRemaining".Translate(AbilityDetailsForWeapon(GetDetails()).chargeNoun) + ": " + LabelRemaining; 
+            }
+            return text+base.CompInspectStringExtra();
+
+           
         }
 
 
@@ -119,6 +149,7 @@ namespace VEF.Weapons
             {
                 LongEventHandler.ExecuteWhenFinished(delegate { ChangeGraphic(); });
                 CalculateAbilities();
+                LimitedUses(GetDetails());
             }
         }
 
@@ -128,6 +159,7 @@ namespace VEF.Weapons
             {
                 LongEventHandler.ExecuteWhenFinished(delegate { ChangeGraphic(); });
                 CalculateAbilities();
+                LimitedUses(GetDetails());
             }
         }
 
@@ -138,6 +170,7 @@ namespace VEF.Weapons
             cachedEquippableComp = null;
             cachedAbilityWithChargesDetails = null;
             abilityWithCharges = null;
+            cachedLimitedUses = -1;
             ReinitializeVerbsIfNeeded();
         }
 
@@ -173,6 +206,8 @@ namespace VEF.Weapons
             Scribe_Values.Look(ref this.maxCharges, "maxCharges", 0);
             Scribe_Values.Look(ref this.currentCharges, "currentCharges", 0);
             Scribe_Defs.Look(ref abilityWithCharges, "abilityWithCharges");
+            Scribe_Values.Look(ref shotsFired, "shotsFired", 0);
+
 
             if (!GetDetails().NullOrEmpty())
             {
@@ -434,6 +469,27 @@ namespace VEF.Weapons
         public void Notify_UsedAbility()
         {
             currentCharges--;
+        }
+
+        public string ShotRemainingInfo() => "VWE_ShotRemaining".Translate(LimitedUses(GetDetails()) - shotsFired);
+
+
+        public override void Notify_UsedWeapon(Pawn pawn)
+        {
+           
+            if (LimitedUses(GetDetails()) > 0)
+            {
+                shotsFired++;
+                if (shotsFired >= LimitedUses(GetDetails()))
+                {
+                    var weaponName = parent.LabelNoParenthesisCap;
+                    var pawnName = pawn?.LabelShort;
+                    var message = "VWE_WeaponDeterioratedMessage".Translate(weaponName, pawnName);
+                    Messages.Message(message, MessageTypeDefOf.NegativeEvent, false);
+                    parent.Destroy();
+                }
+            }
+            
         }
 
         public override IEnumerable<StatDrawEntry> SpecialDisplayStats()

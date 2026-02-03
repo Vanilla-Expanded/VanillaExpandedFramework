@@ -15,6 +15,8 @@ namespace VEF.Weapons
     {
         public static void ApplyFeature(Harmony harm)
         {
+            harm.Patch(AccessTools.Method(typeof(Pawn), "GetInspectString"),
+              postfix: new HarmonyMethod(typeof(VanillaExpandedFramework_Pawn_GetInspectString_Patch), "AddInspectString"));
 
             harm.Patch(AccessTools.Property(typeof(Verb_LaunchProjectile), "Projectile").GetMethod, 
                postfix: new HarmonyMethod(typeof(VanillaExpandedFramework_Verb_LaunchProjectile_Projectile_Patch), "ChangeProjectile"));
@@ -42,6 +44,8 @@ namespace VEF.Weapons
             
             harm.Patch(typeof(Verb).PropertyGetter(nameof(Verb.BurstShotCount)),
                transpiler: new HarmonyMethod(typeof(VanillaExpandedFramework_Verb_BurstShotCount_Patch), "RandomizeBurstCount"));
+
+           
         }
     }
 }
