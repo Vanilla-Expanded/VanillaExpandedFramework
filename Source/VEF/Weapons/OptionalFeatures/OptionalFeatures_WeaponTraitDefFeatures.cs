@@ -39,6 +39,9 @@ namespace VEF.Weapons
 
             harm.Patch(AccessTools.Method(typeof(VerbProperties), "AdjustedCooldown", new Type[] { typeof(Tool), typeof(Pawn), typeof(Thing) }),
                postfix: new HarmonyMethod(typeof(VanillaExpandedFramework_VerbProperties_AdjustedCooldown_Patch), "RandomizeCooldown"));
+            
+            harm.Patch(typeof(Verb).PropertyGetter(nameof(Verb.BurstShotCount)),
+               transpiler: new HarmonyMethod(typeof(VanillaExpandedFramework_Verb_BurstShotCount_Patch), "RandomizeBurstCount"));
         }
     }
 }
