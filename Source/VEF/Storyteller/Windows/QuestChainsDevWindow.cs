@@ -14,7 +14,7 @@ namespace VEF.Storyteller
 
         public override Vector2 InitialSize => new Vector2(800f, 600f);
 
-        [DebugAction("General", null, false, false, false, false, false, 0, false, allowedGameStates
+        [DebugAction(DebugActionCategories.General, null, false, false, false, false, false, 0, false, allowedGameStates
             = AllowedGameStates.PlayingOnMap, displayPriority = 1000)]
         public static void ViewQuestChains()
         {

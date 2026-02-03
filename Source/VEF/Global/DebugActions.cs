@@ -12,7 +12,7 @@ namespace VEF
 
     public static class DebugActions
     {
-        [DebugAction("Spawning", actionType = DebugActionType.ToolWorld, allowedGameStates = AllowedGameStates.PlayingOnWorld)]
+        [DebugAction(DebugActionCategories.Spawning, actionType = DebugActionType.ToolWorld, allowedGameStates = AllowedGameStates.PlayingOnWorld)]
         public static void SpawnWorldObjectLayered()
         {
 

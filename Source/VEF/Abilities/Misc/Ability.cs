@@ -966,7 +966,7 @@
         public ITargetingSource DestinationSelector { get; }
 
 
-        [DebugAction("Pawns", "Give ability...", actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        [DebugAction(DebugActionCategories.Pawns, "Give ability...", actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         [UsedImplicitly]
         private static void GiveAbility()
         {
