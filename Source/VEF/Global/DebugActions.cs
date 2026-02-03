@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using VEF.Things;
 
 namespace VEF
 {
@@ -68,6 +70,35 @@ namespace VEF
                                                                                                                                }));
             }
             Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
+        }
+
+        [DebugAction(DebugActionCategories.General, actionType = DebugActionType.ToolMap, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        private static void ChangeThingStylePlayerCrafted()
+        {
+            var (thing, extension) = Find.CurrentMap.thingGrid.ThingsAt(UI.MouseCell())
+                .Select(x => (thing: x, extension: x?.def?.GetModExtension<ThingDefExtension>()))
+                .FirstOrDefault(x => x.extension != null && !x.extension.playerCraftedStyles.NullOrEmpty());
+            if (thing == null || extension == null)
+                return;
+
+            var options = new List<DebugMenuOption>
+            {
+                new("Standard", DebugMenuOptionMode.Action, () => SetStyle(null)),
+                new("Random", DebugMenuOptionMode.Action, () => SetStyle(extension.playerCraftedStyles.RandomElementByWeight(x => x.Chance).StyleDef))
+            };
+
+            foreach (var style in extension.playerCraftedStyles)
+            {
+                options.Add(new DebugMenuOption(style.StyleDef.defName, DebugMenuOptionMode.Action, () => SetStyle(style.StyleDef)));
+            }
+
+            Find.WindowStack.Add(new Dialog_DebugOptionListLister(options));
+
+            void SetStyle(ThingStyleDef style)
+            {
+                thing.StyleDef = style;
+                thing.DirtyMapMesh(thing.Map);
+            }
         }
     }
 }

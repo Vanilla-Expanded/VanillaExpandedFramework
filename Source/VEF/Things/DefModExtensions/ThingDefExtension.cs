@@ -34,6 +34,13 @@ namespace VEF.Things
 
         public ConstructionSkillRequirement constructionSkillRequirement;
 
+        // Different graphics/styles if crafted by the player. As opposed to random styles, this only ever applies to player-crafted items.
+        // List of all possible styles.
+        public List<ThingStyleChance> playerCraftedStyles;
+        // Determines if the style for player crafted items can override other styles (like random style or ideo styles)
+        public bool playerCraftedStylesOverrideOtherStyles = false;
+        // Chance for the player crafted style to be applied.
+        public float playerCraftedStyleChance = 1f;
     }
 
     public class WeaponDrawOffsets
