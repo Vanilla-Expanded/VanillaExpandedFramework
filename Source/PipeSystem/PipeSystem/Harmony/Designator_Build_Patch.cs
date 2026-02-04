@@ -13,9 +13,9 @@ namespace PipeSystem
     {
         public static void Postfix(BuildableDef ___entDef)
         {
-            if (___entDef is ThingDef thingDef && CachedResourceThings.resourceCompsOf.ContainsKey(thingDef))
+            if (___entDef is ThingDef thingDef && CachedResourceThings.resourceCompsOf.TryGetValue(thingDef, out var compPropsList))
             {
-                SectionLayer_Resource.UpdateAndDrawFor(CachedResourceThings.resourceCompsOf[thingDef][0].pipeNet);
+                SectionLayer_Resource.UpdateAndDrawFor(compPropsList[0].pipeNet);
             }
         }
     }

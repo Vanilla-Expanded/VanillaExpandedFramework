@@ -76,8 +76,7 @@ namespace PipeSystem
         /// <param name="comp"></param>
         public void RemoveFromAwaiting(CompAdvancedResourceProcessor comp)
         {
-            if (awaitingIngredients.Contains(comp.parent))
-                awaitingIngredients.Remove(comp.parent);
+            awaitingIngredients.Remove(comp.parent);
         }
 
         /// <summary>
@@ -112,8 +111,7 @@ namespace PipeSystem
             }
             else { comp.cachedIngredients.Add(thing.def); }
 
-            if (!owner.Require && awaitingIngredients.Contains(comp.parent)) { 
-                awaitingIngredients.Remove(comp.parent);
+            if (!owner.Require && awaitingIngredients.Remove(comp.parent)) {
                 comp.Process.Notify_Started();
             }
             owner.BeingFilled = false;

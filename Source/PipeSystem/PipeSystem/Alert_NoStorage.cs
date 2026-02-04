@@ -20,13 +20,8 @@ namespace PipeSystem
 
         private PipeNetManager GetManager(Map map)
         {
-            PipeNetManager manager;
             // Get and cache
-            if (managers.ContainsKey(map))
-            {
-                manager = managers[map];
-            }
-            else
+            if (!managers.TryGetValue(map, out var manager))
             {
                 manager = map.GetComponent<PipeNetManager>();
                 managers.Add(map, manager);

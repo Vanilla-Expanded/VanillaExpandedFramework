@@ -21,13 +21,13 @@ namespace PipeSystem
                     var comp = comps[o];
                     if (comp is CompProperties_Resource cpR)
                     {
-                        if (!resourceCompsOf.ContainsKey(thing))
+                        if (!resourceCompsOf.TryGetValue(thing, out var compPropsList))
                         {
                             resourceCompsOf.Add(thing, new List<CompProperties_Resource>() { cpR });
                         }
                         else
                         {
-                            resourceCompsOf[thing].Add(cpR);
+                            compPropsList.Add(cpR);
                         }
                     }
                 }
@@ -36,8 +36,8 @@ namespace PipeSystem
 
         public static List<CompProperties_Resource> GetFor(ThingDef thingDef)
         {
-            if (resourceCompsOf.ContainsKey(thingDef))
-                return resourceCompsOf[thingDef];
+            if (resourceCompsOf.TryGetValue(thingDef, out var compPropsList))
+                return compPropsList;
 
             return null;
         }

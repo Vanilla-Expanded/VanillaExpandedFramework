@@ -14,8 +14,7 @@ namespace PipeSystem
         public static void Cache(CompAdvancedResourceProcessor comp)
         {
             var thing = comp.parent;
-            if (!cachedCompAdvancedProcessor.ContainsKey(thing))
-                cachedCompAdvancedProcessor.Add(thing, comp);
+            cachedCompAdvancedProcessor.AddDistinct(thing, comp);
         }
 
         /// <summary>
@@ -26,14 +25,13 @@ namespace PipeSystem
         /// <returns>CompAdvancedResourceProcessor</returns>
         public static CompAdvancedResourceProcessor GetFor(Thing thing)
         {
-            if (!cachedCompAdvancedProcessor.ContainsKey(thing))
+            if (!cachedCompAdvancedProcessor.TryGetValue(thing, out var comp))
             {
-                var comp = thing.TryGetComp<CompAdvancedResourceProcessor>();
+                comp = thing.TryGetComp<CompAdvancedResourceProcessor>();
                 cachedCompAdvancedProcessor.Add(thing, comp);
-                return comp;
             }
 
-            return cachedCompAdvancedProcessor[thing];
+            return comp;
         }
 
         /// <summary>

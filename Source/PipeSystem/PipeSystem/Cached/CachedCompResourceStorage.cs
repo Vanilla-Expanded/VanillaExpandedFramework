@@ -14,8 +14,7 @@ namespace PipeSystem
         public static void Cache(CompResourceStorage comp)
         {
             var thing = comp.parent;
-            if (!cachedCompResourceStorage.ContainsKey(thing))
-                cachedCompResourceStorage.Add(thing, comp);
+            cachedCompResourceStorage.AddDistinct(thing, comp);
         }
 
         /// <summary>
@@ -26,14 +25,13 @@ namespace PipeSystem
         /// <returns>CompResourceStorage</returns>
         public static CompResourceStorage GetFor(Thing thing)
         {
-            if (!cachedCompResourceStorage.ContainsKey(thing))
+            if (!cachedCompResourceStorage.TryGetValue(thing, out var comp))
             {
-                var comp = thing.TryGetComp<CompResourceStorage>();
+                comp = thing.TryGetComp<CompResourceStorage>();
                 cachedCompResourceStorage.Add(thing, comp);
-                return comp;
             }
 
-            return cachedCompResourceStorage[thing];
+            return comp;
         }
 
         /// <summary>

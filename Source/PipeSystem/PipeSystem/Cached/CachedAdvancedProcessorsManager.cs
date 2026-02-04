@@ -16,13 +16,13 @@ namespace PipeSystem
         /// <returns>AdvancedProcessorsManager</returns>
         public static AdvancedProcessorsManager GetFor(Map map)
         {
-            if (!managerCache.ContainsKey(map.uniqueID))
+            if (!managerCache.TryGetValue(map.uniqueID, out var manager))
             {
-                var manager = map.GetComponent<AdvancedProcessorsManager>();
+                manager = map.GetComponent<AdvancedProcessorsManager>();
                 managerCache.Add(map.uniqueID, manager);
-                return manager;
             }
-            return managerCache[map.uniqueID];
+
+            return manager;
         }
 
         /// <summary>

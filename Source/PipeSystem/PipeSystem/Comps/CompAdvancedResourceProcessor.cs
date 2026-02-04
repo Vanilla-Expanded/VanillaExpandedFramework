@@ -579,7 +579,7 @@ namespace PipeSystem
 
             }
 
-            if (ProcessUtility.Clipboard != null && ProcessUtility.Clipboard.ContainsKey(parent.def))
+            if (ProcessUtility.Clipboard != null && ProcessUtility.Clipboard.TryGetValue(parent.def, out var processList))
             {
                 Command_Action command_PasteProcesses = new Command_Action();
                 command_PasteProcesses.icon = ContentFinder<Texture2D>.Get("UI/Commands/PasteSettings");
@@ -588,7 +588,7 @@ namespace PipeSystem
                 command_PasteProcesses.action = () =>
                 {
                     ProcessStack.Processes.Clear();
-                    foreach (Process process in ProcessUtility.Clipboard[parent.def])
+                    foreach (Process process in processList)
                     {
                         ProcessStack.AddProcess(process.Def, (ThingWithComps)parent, process.targetCount);
                     }

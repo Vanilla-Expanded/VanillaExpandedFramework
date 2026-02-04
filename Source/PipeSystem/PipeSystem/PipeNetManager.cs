@@ -231,9 +231,8 @@ namespace PipeSystem
                             var comps = tWC.GetComps<CompResource>();
                             foreach (var comp in comps)
                             {
-                                if (!treated.Contains(comp) && comp.Props.pipeNet == pipeNet)
+                                if (comp.Props.pipeNet == pipeNet && treated.Add(comp))
                                 {
-                                    treated.Add(comp);
                                     if (comp.TransmitResourceNow)
                                     {
                                         queue.Enqueue(comp);
@@ -305,10 +304,8 @@ namespace PipeSystem
         /// </summary>
         public void UpdateRefillableWith(Thing thing)
         {
-            if (wantRefill.Contains(thing))
+            if (!wantRefill.Add(thing))
                 wantRefill.Remove(thing);
-            else
-                wantRefill.Add(thing);
         }
     }
 }

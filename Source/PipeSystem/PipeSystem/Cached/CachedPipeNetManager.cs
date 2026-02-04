@@ -14,14 +14,13 @@ namespace PipeSystem
         /// <returns>PipeNetManager</returns>
         public static PipeNetManager GetFor(Map map)
         {
-            if (!managerCache.ContainsKey(map.uniqueID))
+            if (!managerCache.TryGetValue(map.uniqueID, out var manager))
             {
-                var manager = map.GetComponent<PipeNetManager>();
+                manager = map.GetComponent<PipeNetManager>();
                 managerCache.Add(map.uniqueID, manager);
-                return manager;
             }
 
-            return managerCache[map.uniqueID];
+            return manager;
         }
 
         /// <summary>
