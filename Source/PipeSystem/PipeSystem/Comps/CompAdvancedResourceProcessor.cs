@@ -659,7 +659,7 @@ namespace PipeSystem
                 }
                 else
                 {
-                    sb.AppendLine("PipeSystem_CurrentQuality".Translate(Process.currentQuality.ToString()));
+                    sb.AppendLine("PipeSystem_CurrentQuality".Translate(Process.currentQuality.GetLabel().CapitalizeFirst()));
 
                 }
 

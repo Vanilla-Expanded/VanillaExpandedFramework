@@ -917,7 +917,7 @@ namespace PipeSystem
             GUI.color = color;
             // Process label
 
-            string qualityString = def.ticksQuality.NullOrEmpty() ? " " : " (" + qualityToOutput.ToString() + ") ";
+            string qualityString = def.ticksQuality.NullOrEmpty() ? " " : " (" + qualityToOutput.GetLabel().CapitalizeFirst() + ") ";
             Widgets.Label(new Rect(28f, 0f, rect.width - 48f - 40f, rect.height + 5f), def.LabelCap + qualityString + "(" + ticksOrQualityTicks.ToStringTicksToDays() + ")");
             // Config
             var baseRect = rect.AtZero();
@@ -1021,43 +1021,43 @@ namespace PipeSystem
                 {
                     qualitySelections = new List<FloatMenuOption>
                     {
-                        new FloatMenuOption(QualityCategory.Awful.ToString(), () => {
+                        new FloatMenuOption(QualityCategory.Awful.GetLabel().CapitalizeFirst(), () => {
                             int ticksDone = def.ticksQuality[(int)qualityToOutput] - tickLeft;
                             tickLeft = def.ticksQuality[(int)QualityCategory.Awful]-ticksDone;                         
                             qualityToOutput =QualityCategory.Awful;
                             ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Awful];
                         }, extraPartWidth: 24f),
-                         new FloatMenuOption(QualityCategory.Poor.ToString(), () => {
+                        new FloatMenuOption(QualityCategory.Poor.GetLabel().CapitalizeFirst(), () => {
                             int ticksDone = def.ticksQuality[(int)qualityToOutput] - tickLeft;
                             tickLeft = def.ticksQuality[(int)QualityCategory.Poor]-ticksDone;
                             qualityToOutput =QualityCategory.Poor;
                             ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Poor];
                         }, extraPartWidth: 24f),
-                          new FloatMenuOption(QualityCategory.Normal.ToString(), () => {
+                        new FloatMenuOption(QualityCategory.Normal.GetLabel().CapitalizeFirst(), () => {
                            int ticksDone = def.ticksQuality[(int)qualityToOutput] - tickLeft;
                             tickLeft = def.ticksQuality[(int)QualityCategory.Normal]-ticksDone;
                             qualityToOutput =QualityCategory.Normal;
                             ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Normal];
                         }, extraPartWidth: 24f),
-                           new FloatMenuOption(QualityCategory.Good.ToString(), () => {
+                        new FloatMenuOption(QualityCategory.Good.GetLabel().CapitalizeFirst(), () => {
                             int ticksDone = def.ticksQuality[(int)qualityToOutput] - tickLeft;
                             tickLeft = def.ticksQuality[(int)QualityCategory.Good]-ticksDone;
                             qualityToOutput =QualityCategory.Good;
                             ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Good];
                         }, extraPartWidth: 24f),
-                            new FloatMenuOption(QualityCategory.Excellent.ToString(), () => {
+                        new FloatMenuOption(QualityCategory.Excellent.GetLabel().CapitalizeFirst(), () => {
                             int ticksDone = def.ticksQuality[(int)qualityToOutput] - tickLeft;
                             tickLeft = def.ticksQuality[(int)QualityCategory.Excellent]-ticksDone;
                             qualityToOutput =QualityCategory.Excellent;
                             ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Excellent];
                         }, extraPartWidth: 24f),
-                            new FloatMenuOption(QualityCategory.Masterwork.ToString(), () => {
+                        new FloatMenuOption(QualityCategory.Masterwork.GetLabel().CapitalizeFirst(), () => {
                             int ticksDone = def.ticksQuality[(int)qualityToOutput] - tickLeft;
                             tickLeft = def.ticksQuality[(int)QualityCategory.Masterwork]-ticksDone;
                             qualityToOutput =QualityCategory.Masterwork;
                             ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Masterwork];
                         }, extraPartWidth: 24f),
-                            new FloatMenuOption(QualityCategory.Legendary.ToString(), () => {
+                        new FloatMenuOption(QualityCategory.Legendary.GetLabel().CapitalizeFirst(), () => {
                             int ticksDone = def.ticksQuality[(int)qualityToOutput] - tickLeft;
                             tickLeft = def.ticksQuality[(int)QualityCategory.Legendary]-ticksDone;
                             qualityToOutput =QualityCategory.Legendary;
