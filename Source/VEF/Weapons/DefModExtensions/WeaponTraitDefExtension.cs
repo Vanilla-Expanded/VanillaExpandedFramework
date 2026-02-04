@@ -48,6 +48,8 @@ namespace VEF.Weapons
         public List<float> burstShotCountRange;
         //This destroys the weapon after a certain amount of shots are fired
         public int limitedUses = 0;
+        //Contraband impact. Having this weapon equipped in your colony will cause an impact if visited by an Empire caravan
+        public int relationsImpactWithEmpire = 0;
 
     }
 

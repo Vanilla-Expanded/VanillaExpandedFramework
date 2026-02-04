@@ -45,7 +45,8 @@ namespace VEF.Weapons
             harm.Patch(typeof(Verb).PropertyGetter(nameof(Verb.BurstShotCount)),
                transpiler: new HarmonyMethod(typeof(VanillaExpandedFramework_Verb_BurstShotCount_Patch), "RandomizeBurstCount"));
 
-           
+            harm.Patch(AccessTools.Method(typeof(IncidentWorker_TraderCaravanArrival), "TryExecuteWorker"),
+               postfix: new HarmonyMethod(typeof(VanillaExpandedFramework_IncidentWorker_TraderCaravanArrival_TryExecuteWorker_Patch), "DetectEmpireContraband"));
         }
     }
 }
