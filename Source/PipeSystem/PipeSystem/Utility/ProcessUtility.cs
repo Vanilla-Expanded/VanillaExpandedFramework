@@ -203,5 +203,32 @@ namespace PipeSystem
         /// <param name="td"></param>
         /// <returns></returns>
         private static TextureAndColor ToTextureAndColorCategory(ThingCategoryDef td) => new TextureAndColor(td.icon, Color.white);
+
+
+        public static int CountResults(Process process)
+        {
+            ProcessDef.Result firstresult = process.Def.results[0];
+            ThingDef thingDef = firstresult.thing;
+            
+           return process.advancedProcessor.parent.Map.resourceCounter.GetCount(thingDef) + GetCarriedCount(process, thingDef);
+            
+           
+        }
+        private static int GetCarriedCount(Process process, ThingDef prodDef)
+        {
+            int num = 0;
+            foreach (Pawn item in process.advancedProcessor.parent.Map.mapPawns.SpawnedPawnsInFaction(Faction.OfPlayer))
+            {
+                Thing thing = item.carryTracker?.CarriedThing;
+                if (thing != null)
+                {
+                    int stackCount = thing.stackCount;
+                    thing = thing.GetInnerIfMinified();
+                    num += stackCount;
+                  
+                }
+            }
+            return num;
+        }
     }
 }

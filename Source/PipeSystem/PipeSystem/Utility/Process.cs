@@ -32,8 +32,8 @@ namespace PipeSystem
         public QualityCategory qualityToForce;
         public QualityCategory qualityToOutput;
         public QualityCategory currentQuality;
+        public BillRepeatModeDef repeatMode = BillRepeatModeDefOf.RepeatCount;
 
-        
 
         private string id;                                      // Process ID
 
@@ -92,31 +92,39 @@ namespace PipeSystem
         {
             get
             {
-                if (targetCount == -1)
+                if (repeatMode == BillRepeatModeDefOf.Forever)
                 {
                     return "Forever".Translate();
+                }
+                if (repeatMode == BillRepeatModeDefOf.TargetCount)
+                {
+                    return ProcessUtility.CountResults(this) + "/" + targetCount;
                 }
                 return $"{targetCount - processCount}x";
             }
         }
 
         /// <summary>
-        /// Repeat label Forever or Do X times
+        /// Repeat label Forever, Do X times or Do Until X
         /// </summary>
         public string RepeatLabel
         {
             get
             {
-                if (targetCount == -1)
+                if (repeatMode == BillRepeatModeDefOf.Forever)
                 {
                     return BillRepeatModeDefOf.Forever.LabelCap;
+                }
+                if (repeatMode == BillRepeatModeDefOf.TargetCount)
+                {
+                    return BillRepeatModeDefOf.TargetCount.LabelCap;
                 }
                 return BillRepeatModeDefOf.RepeatCount.LabelCap;
             }
         }
 
         /// <summary>
-        /// Repeat options, Forever or Do X times
+        /// Repeat options, Forever, Do X times or Do Until X
         /// </summary>
         public List<FloatMenuOption> Options
         {
@@ -130,12 +138,21 @@ namespace PipeSystem
                         {
                             processCount = 0;
                             targetCount = 1;
+                            repeatMode = BillRepeatModeDefOf.RepeatCount;
+                            advancedProcessor.ProcessStack.Notify_ProcessChange();
+                        }),
+                        new FloatMenuOption(BillRepeatModeDefOf.TargetCount.LabelCap, delegate
+                        {
+                            processCount = ProcessUtility.CountResults(this);
+                            targetCount = 1;
+                            repeatMode = BillRepeatModeDefOf.TargetCount;
                             advancedProcessor.ProcessStack.Notify_ProcessChange();
                         }),
                         new FloatMenuOption(BillRepeatModeDefOf.Forever.LabelCap, delegate
                         {
                             processCount = 0;
                             targetCount = -1;
+                            repeatMode = BillRepeatModeDefOf.Forever;
                             advancedProcessor.ProcessStack.Notify_ProcessChange();
                         })
                     };
@@ -262,8 +279,15 @@ namespace PipeSystem
             if (suspended)
                 return false;
 
-            if (targetCount == -1)
+            if (repeatMode == BillRepeatModeDefOf.Forever)
+            {
                 return true;
+            }
+            if (repeatMode == BillRepeatModeDefOf.TargetCount)
+            {
+                
+                return ProcessUtility.CountResults(this) < targetCount;
+            }
 
             return processCount < targetCount;
         }
