@@ -47,6 +47,13 @@ namespace VEF.Weapons
 
             harm.Patch(AccessTools.Method(typeof(IncidentWorker_TraderCaravanArrival), "TryExecuteWorker"),
                postfix: new HarmonyMethod(typeof(VanillaExpandedFramework_IncidentWorker_TraderCaravanArrival_TryExecuteWorker_Patch), "DetectEmpireContraband"));
+
+            harm.Patch(AccessTools.Method(typeof(PawnRenderUtility), "DrawEquipmentAndApparelExtras"),
+              prefix: new HarmonyMethod(typeof(VanillaExpandedFramework_PawnRenderUtility_DrawEquipmentAiming_Patch), "GrabPawn"));
+            harm.Patch(AccessTools.Method(typeof(PawnRenderUtility), "DrawEquipmentAiming"),
+               prefix: new HarmonyMethod(typeof(VanillaExpandedFramework_PawnRenderUtility_DrawEquipmentAiming_Patch), "DrawDuplicate"));
+            harm.Patch(AccessTools.Method(typeof(PawnRenderUtility), "DrawEquipmentAiming"),
+               finalizer: new HarmonyMethod(typeof(VanillaExpandedFramework_PawnRenderUtility_DrawEquipmentAiming_Patch), "DrawDuplicateCleanup"));
         }
     }
 }

@@ -50,7 +50,8 @@ namespace VEF.Weapons
         public int limitedUses = 0;
         //Contraband impact. Having this weapon equipped in your colony will cause an impact if visited by an Empire caravan
         public int relationsImpactWithEmpire = 0;
-
+        //Draws a duplicate of the gun
+        public bool drawDuplicate = false;
     }
 
     public class AbilityWithChargesDetails
