@@ -513,6 +513,11 @@ namespace PipeSystem
                 if (!slot.InBounds(parent.Map))
                     continue;
 
+                if (Def.ingredients.NullOrEmpty())
+                {
+                    Notify_Started();
+                }
+
                 List<Thing> thingList = pos.GetThingList(parent.Map);
                 for (int j = 0; j < thingList.Count; j++)
                 {
