@@ -105,6 +105,7 @@
     <Compile Include="Comps\CompSpillWhenDamaged.cs" />
     <Compile Include="Comps\CompConvertToResource.cs" />
     <Compile Include="DefModExtension\AutoRefuelableLinkingExtension.cs" />
+    <Compile Include="DefModExtension\FactoryHopperExtension.cs" />
     <Compile Include="Def\ProcessDef.cs" />
     <Compile Include="GenericPipeNetOverlayWorker.cs" />
     <Compile Include="Harmony\ResearchProjectDef_UnlockedDefs_Patch.cs" />

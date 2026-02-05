@@ -517,9 +517,34 @@ namespace PipeSystem
             // Check if processor should produce this tick
             if (tickLeft <= 0)
             {
+                           
+
                 if (def.autoExtract)
                 {
-                    SpawnOrPushToNet(IntVec3.Invalid, out _);
+                    if (def.onlyOutputToFactoryHoppers)
+                    {
+                        List<Thing> hoppers = this.parent.InteractionCell.GetThingList(this.parent.Map);
+                        bool foundHopper = false;
+
+                        foreach(Thing hopper in hoppers)
+                        {
+                            FactoryHopperExtension extension = hopper.def.GetModExtension<FactoryHopperExtension>();
+                            if (extension != null && extension.isfactoryHopper)
+                            {
+                                SpawnOrPushToNet(IntVec3.Invalid, out _);
+                                foundHopper = true;
+                            }
+                        }
+                        if (!foundHopper) {
+                            tickLeft = 1;
+                        }
+                        
+
+                    }
+                    else { SpawnOrPushToNet(IntVec3.Invalid, out _); }
+
+
+                    
                 }
                 else
                 {

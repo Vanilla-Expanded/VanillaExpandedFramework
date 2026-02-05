@@ -27,6 +27,7 @@ namespace PipeSystem
         public bool isFactoryProcess = false;                           // This just affects precepts from VE Memes
         public bool autoGrabFromHoppers = false;                        // Auto insert from hoppers
         public List<IntVec3> autoInputSlots = null;                     // Position of the input slots for autoGrabFromHoppers
+        public bool onlyOutputToFactoryHoppers = false;
         public bool autoExtract = true;                                 // Auto extract
         public bool manualExtractAllowNet = true;                       // When pawn manually extract, result will try to go in net first
         public int extractTicks = 800;                                  // Manual extract ticks needed
