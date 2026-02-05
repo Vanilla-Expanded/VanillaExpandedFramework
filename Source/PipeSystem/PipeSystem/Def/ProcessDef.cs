@@ -149,8 +149,8 @@ namespace PipeSystem
             foreach (var error in base.ConfigErrors())
                 yield return error;
 
-            /*if (ingredients.NullOrEmpty())
-                yield return $"ProcessDef cannot have empty or null <ingredients>";*/
+            if (ingredients.NullOrEmpty() && !autoGrabFromHoppers)
+                yield return $"ProcessDef cannot have empty or null <ingredients>";
             if (results.NullOrEmpty())
                 yield return $"ProcessDef cannot have empty or null <results>";
             if (autoGrabFromHoppers && autoInputSlots.NullOrEmpty())
