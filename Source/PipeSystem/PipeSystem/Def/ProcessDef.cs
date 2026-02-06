@@ -27,7 +27,7 @@ namespace PipeSystem
         public bool isFactoryProcess = false;                           // This just affects precepts from VE Memes
         public bool autoGrabFromHoppers = false;                        // Auto insert from hoppers
         public List<IntVec3> autoInputSlots = null;                     // Position of the input slots for autoGrabFromHoppers
-        public bool onlyOutputToFactoryHoppers = false;
+        public bool onlyGrabAndOutputToFactoryHoppers = false;          // If this is true, normal hoppers won't be enough
         public bool autoExtract = true;                                 // Auto extract
         public bool manualExtractAllowNet = true;                       // When pawn manually extract, result will try to go in net first
         public int extractTicks = 800;                                  // Manual extract ticks needed
@@ -150,8 +150,8 @@ namespace PipeSystem
             foreach (var error in base.ConfigErrors())
                 yield return error;
 
-            if (ingredients.NullOrEmpty() && !autoGrabFromHoppers)
-                yield return $"ProcessDef cannot have empty or null <ingredients>";
+            if (ingredients.NullOrEmpty() && autoGrabFromHoppers)
+                yield return $"ProcessDef cannot have empty or null <ingredients> and autoGrabFromHoppers";
             if (results.NullOrEmpty())
                 yield return $"ProcessDef cannot have empty or null <results>";
             if (autoGrabFromHoppers && autoInputSlots.NullOrEmpty())

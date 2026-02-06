@@ -35,7 +35,6 @@ namespace PipeSystem
         public BillRepeatModeDef repeatMode = BillRepeatModeDefOf.RepeatCount;
         public bool outputFactoryHopperIncorrect = false;
 
-
         private string id;                                      // Process ID
 
 
@@ -198,7 +197,7 @@ namespace PipeSystem
             tickLeft = def.isFactoryProcess ? (int)(GetFactoryAcceleration() * ticksOrQualityTicks) : ticksOrQualityTicks;
             progress = 0f;
             ruinedPercent = 0f;
-           
+
             var map = parent.Map;
             id = $"Process_{parent.Map.uniqueID}_{def.defName}_{CachedAdvancedProcessorsManager.GetFor(map).ProcessIDsManager.GetNextProcessID(map)}";
             spawning = true;
@@ -213,7 +212,7 @@ namespace PipeSystem
             if (Def.isTemperatureAcceleratingProcess && advancedProcessor.parent.Map != null)
             {
                 float currentTempInMap = advancedProcessor.parent.Position.GetTemperature(advancedProcessor.parent.Map);
-               
+
                 if ((currentTempInMap > Def.minAccelerationTemp) && (currentTempInMap < Def.maxAccelerationTemp))
                 {
                     return Def.accelerationFactor;
@@ -261,6 +260,7 @@ namespace PipeSystem
             Scribe_Values.Look(ref qualityToForce, "qualityToForce");
             Scribe_Defs.Look(ref repeatMode, "repeatMode");
             Scribe_Values.Look(ref outputFactoryHopperIncorrect, "outputFactoryHopperIncorrect");
+            
 
             Scribe_References.Look(ref parent, "parent");
 
@@ -286,7 +286,7 @@ namespace PipeSystem
             }
             if (repeatMode == BillRepeatModeDefOf.TargetCount)
             {
-              
+
                 return ProcessUtility.CountResults(this) < targetCount;
             }
 
@@ -415,7 +415,7 @@ namespace PipeSystem
                 if (ruinedPercent >= 1f)
                 {
                     ruinedPercent = 1f;
-                    Messages.Message(Def.noProperTempDestroyed.Translate(def.minSafeTemperature,def.maxSafeTemperature), parent, MessageTypeDefOf.NegativeEvent, true);
+                    Messages.Message(Def.noProperTempDestroyed.Translate(def.minSafeTemperature, def.maxSafeTemperature), parent, MessageTypeDefOf.NegativeEvent, true);
                     ResetProcess(false);
                 }
                 else if (ruinedPercent < 0f)
@@ -423,7 +423,7 @@ namespace PipeSystem
                     ruinedPercent = 0f;
                 }
             }
-            
+
 
         }
 
@@ -467,62 +467,65 @@ namespace PipeSystem
                 tickLeft -= ticks;
                 if (def.sustainerWhenWorking && workingSoundSustainer != null)
                 {
-                    if (!workingSoundSustainer.Ended) {
+                    if (!workingSoundSustainer.Ended)
+                    {
                         workingSoundSustainer.Maintain();
                     }
-                   
+
                 }
 
             }
             // Set progress (for the bar)
 
-            progress = Math.Min(1f - (tickLeft / (float)ticksOrQualityTicks),1);
+            progress = Math.Min(1f - (tickLeft / (float)ticksOrQualityTicks), 1);
 
             // Set current quality
 
             if (!def.ticksQuality.NullOrEmpty() && !forceQualityOut)
             {
                 int ticksDone = def.ticksQuality[(int)qualityToOutput] - tickLeft;
-                if(ticksDone > def.ticksQuality[(int)QualityCategory.Masterwork])
+                if (ticksDone > def.ticksQuality[(int)QualityCategory.Masterwork])
                 {
-                   
+
                     currentQuality = QualityCategory.Masterwork;
-                }else if (ticksDone > def.ticksQuality[(int)QualityCategory.Excellent])
+                }
+                else if (ticksDone > def.ticksQuality[(int)QualityCategory.Excellent])
                 {
-                   
+
                     currentQuality = QualityCategory.Excellent;
                 }
                 else if (ticksDone > def.ticksQuality[(int)QualityCategory.Good])
                 {
-                  
+
                     currentQuality = QualityCategory.Good;
                 }
                 else if (ticksDone > def.ticksQuality[(int)QualityCategory.Normal])
                 {
-                  
+
                     currentQuality = QualityCategory.Normal;
                 }
                 else if (ticksDone > def.ticksQuality[(int)QualityCategory.Poor])
                 {
-                  
+
                     currentQuality = QualityCategory.Poor;
                 }
                 else if (ticksDone > def.ticksQuality[(int)QualityCategory.Awful])
                 {
-                 
+
                     currentQuality = QualityCategory.Awful;
                 }
-                
+
             }
 
             // Check if processor should produce this tick
             if (tickLeft <= 0)
-            {                           
+            {
                 if (def.autoExtract)
                 {
-                    if (def.onlyOutputToFactoryHoppers)
-                    {                      
-                        if (FactoryHopperDetected()) {
+                    if (def.onlyGrabAndOutputToFactoryHoppers)
+                    {
+                        if (FactoryHopperDetected())
+                        {
                             outputFactoryHopperIncorrect = false;
                             SpawnOrPushToNet(this.parent.InteractionCell, out _);
                         }
@@ -532,7 +535,7 @@ namespace PipeSystem
                             tickLeft = 1;
                         }
                     }
-                    else { SpawnOrPushToNet(IntVec3.Invalid, out _); }                  
+                    else { SpawnOrPushToNet(IntVec3.Invalid, out _); }
                 }
                 else
                 {
@@ -557,7 +560,24 @@ namespace PipeSystem
                     if (storage?.GetStoreSettings().AllowedToAccept(def.results[0].thing) == true)
                     {
                         return true;
-                    }               
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true if a factory hoppers is detected on the input cell
+        /// </summary>
+        public bool InputFactoryHopperDetected(IntVec3 inputTile)
+        {
+            List<Thing> hoppers = inputTile.GetThingList(this.parent.Map);
+            foreach (Thing hopper in hoppers)
+            {
+                FactoryHopperExtension extension = hopper.def.GetModExtension<FactoryHopperExtension>();
+                if (extension != null && extension.isfactoryHopper)
+                {
+                    return true;
                 }
             }
             return false;
@@ -574,6 +594,11 @@ namespace PipeSystem
                 IntVec3 pos = parent.Position + slot.RotatedBy(parent.Rotation);
                 if (!slot.InBounds(parent.Map))
                     continue;
+
+                if(def.onlyGrabAndOutputToFactoryHoppers && !InputFactoryHopperDetected(slot))
+                {
+                    continue;
+                }
 
                 if (Def.ingredients.NullOrEmpty())
                 {
@@ -772,12 +797,12 @@ namespace PipeSystem
                 {
                     // If adding would go past stack limit
 
-                    if (!def.onlyOutputToFactoryHoppers)
+                    if (!def.onlyGrabAndOutputToFactoryHoppers)
                     {
                         if ((thing.stackCount + result.count) > thing.def.stackLimit)
                             return false;
                     }
-                 
+
                     // We found some, modifying stack size
                     thing.stackCount += result.count;
 
@@ -832,12 +857,12 @@ namespace PipeSystem
                 {
                     if (forceQualityOut)
                     {
-                    
+
                         compQuality.SetQuality(qualityToForce, null);
                     }
                     else
                     {
-                       
+
                         compQuality.SetQuality(qualityToOutput, null);
                     }
                 }
@@ -899,7 +924,7 @@ namespace PipeSystem
             pickUpReady = false;    // Reset pickup status
             ruinedPercent = 0;      // Reset ruining status
             progress = 0;           // Reset progress
-            
+
 
             // If finished normaly, increment process count, produce wastepack
             if (finished)
@@ -1095,7 +1120,7 @@ namespace PipeSystem
                     {
                         new FloatMenuOption(QualityCategory.Awful.GetLabel().CapitalizeFirst(), () => {
                             int ticksDone = def.ticksQuality[(int)qualityToOutput] - tickLeft;
-                            tickLeft = def.ticksQuality[(int)QualityCategory.Awful]-ticksDone;                         
+                            tickLeft = def.ticksQuality[(int)QualityCategory.Awful]-ticksDone;
                             qualityToOutput =QualityCategory.Awful;
                             ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Awful];
                         }, extraPartWidth: 24f),
