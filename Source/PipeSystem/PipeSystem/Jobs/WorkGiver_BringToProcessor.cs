@@ -27,13 +27,18 @@ namespace PipeSystem
 
         public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
-            // TODO: Multiple pawns reservation
+            
             if (t.IsBurning() || t.IsForbidden(pawn) || !pawn.CanReserve(t, 1, -1, null, forced) || t.Faction != pawn.Faction || pawn.Map.designationManager.DesignationOn(t, DesignationDefOf.Deconstruct) != null)
                 return false;
 
             var comp = CachedCompAdvancedProcessor.GetFor(t);
             if (comp == null || comp.Process == null)
                 return false;
+
+            if (!comp.Process.ShouldDoNow())
+            {
+                return false;
+            }
 
             var firstMissing = comp.FirstIngredientMissing;
             if (firstMissing != null && FindIngredient(pawn, comp, firstMissing) != null)

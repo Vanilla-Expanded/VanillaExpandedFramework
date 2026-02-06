@@ -207,20 +207,20 @@ namespace PipeSystem
 
         public static int CountResults(Process process)
         {
-            ProcessDef.Result firstresult = process.Def.results[0];
-            ThingDef thingDef = firstresult.thing;
-            
+           ProcessDef.Result firstresult = process.Def.results[0];
+           ThingDef thingDef = firstresult.thing;
+          
            return process.advancedProcessor.parent.Map.resourceCounter.GetCount(thingDef) + GetCarriedCount(process, thingDef);
             
            
         }
-        private static int GetCarriedCount(Process process, ThingDef prodDef)
+        private static int GetCarriedCount(Process process, ThingDef thingDef)
         {
             int num = 0;
             foreach (Pawn item in process.advancedProcessor.parent.Map.mapPawns.SpawnedPawnsInFaction(Faction.OfPlayer))
             {
                 Thing thing = item.carryTracker?.CarriedThing;
-                if (thing != null)
+                if (thing?.def == thingDef)
                 {
                     int stackCount = thing.stackCount;
                     thing = thing.GetInnerIfMinified();

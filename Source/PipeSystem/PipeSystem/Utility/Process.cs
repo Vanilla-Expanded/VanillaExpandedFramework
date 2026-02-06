@@ -258,7 +258,7 @@ namespace PipeSystem
             Scribe_Values.Look(ref qualityToOutput, "qualityToOutput");
             Scribe_Values.Look(ref forceQualityOut, "forceQualityOut");
             Scribe_Values.Look(ref qualityToForce, "qualityToForce");
-
+            Scribe_Defs.Look(ref repeatMode, "repeatMode");
 
 
             Scribe_References.Look(ref parent, "parent");
@@ -285,7 +285,7 @@ namespace PipeSystem
             }
             if (repeatMode == BillRepeatModeDefOf.TargetCount)
             {
-                
+              
                 return ProcessUtility.CountResults(this) < targetCount;
             }
 
@@ -531,7 +531,7 @@ namespace PipeSystem
                             FactoryHopperExtension extension = hopper.def.GetModExtension<FactoryHopperExtension>();
                             if (extension != null && extension.isfactoryHopper)
                             {
-                                SpawnOrPushToNet(IntVec3.Invalid, out _);
+                                SpawnOrPushToNet(this.parent.InteractionCell, out _);
                                 foundHopper = true;
                             }
                         }
