@@ -189,6 +189,7 @@
     <Compile Include="Buildings\DefModExtensions\GhostGraphicExtension.cs" />
     <Compile Include="Buildings\DefModExtensions\GravshipLaunchExtension.cs" />
     <Compile Include="Buildings\DefModExtensions\LootableBuildingDetails.cs" />
+    <Compile Include="Buildings\DefModExtensions\LootBoxExtension.cs" />
     <Compile Include="Buildings\DefModExtensions\RecipeInheritanceExtension.cs" />
     <Compile Include="Buildings\DefModExtensions\StudiableBuildingDetails.cs" />
     <Compile Include="Buildings\DefModExtensions\SwappableBuildingDetails.cs" />
@@ -201,6 +202,7 @@
     <Compile Include="Buildings\MapComponents\MapComponent_InteractableBuildingsInMap.cs" />
     <Compile Include="Buildings\Misc\RecipeInheritance.cs" />
     <Compile Include="Buildings\Placeworkers\PlaceWorker_OnSand.cs" />
+    <Compile Include="Buildings\ThingWithComps\LootBox.cs" />
     <Compile Include="Cooking\IngredientValueGetters\IngredientValueGetter_NutritionWithExtraIngredient.cs" />
     <Compile Include="Factions\Defs\ContrabandDef.cs" />
     <Compile Include="Factions\GameComponents\WorldComponent_FactionGoodwillImpactManager.cs" />

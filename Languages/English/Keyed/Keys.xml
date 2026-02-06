@@ -61,4 +61,11 @@
 	<VFE_DeepDrillNo>Deep drill cannot be used with {0}.</VFE_DeepDrillNo>
 	
     <VEF.TeleportTo>Teleport to {0}</VEF.TeleportTo>
+	
+	<!-- Lootboxes -->
+	
+	<VEF.TotalMarketValueRange>Market value range (base)</VEF.TotalMarketValueRange>
+	<VEF.TotalMarketValueRange_Desc>Total market value range (minimum and maximum) of the objects that can be found by opening this loot box.</VEF.TotalMarketValueRange_Desc>
+	<VEF.TotalMarketValueRange_Quality>Market value range (by quality)</VEF.TotalMarketValueRange_Quality>
+	<VEF.TotalMarketValueRange_Quality_Desc>Total market value range (minimum and maximum) of the objects that can be found by opening this loot box. Box quality has modified the base value by a factor of {0}</VEF.TotalMarketValueRange_Quality_Desc>
 </LanguageData>
