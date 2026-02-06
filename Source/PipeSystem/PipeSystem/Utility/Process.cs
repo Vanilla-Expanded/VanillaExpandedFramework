@@ -33,6 +33,7 @@ namespace PipeSystem
         public QualityCategory qualityToOutput;
         public QualityCategory currentQuality;
         public BillRepeatModeDef repeatMode = BillRepeatModeDefOf.RepeatCount;
+        public bool outputFactoryHopperIncorrect = false;
 
 
         private string id;                                      // Process ID
@@ -259,7 +260,7 @@ namespace PipeSystem
             Scribe_Values.Look(ref forceQualityOut, "forceQualityOut");
             Scribe_Values.Look(ref qualityToForce, "qualityToForce");
             Scribe_Defs.Look(ref repeatMode, "repeatMode");
-
+            Scribe_Values.Look(ref outputFactoryHopperIncorrect, "outputFactoryHopperIncorrect");
 
             Scribe_References.Look(ref parent, "parent");
 
@@ -516,35 +517,22 @@ namespace PipeSystem
 
             // Check if processor should produce this tick
             if (tickLeft <= 0)
-            {
-                           
-
+            {                           
                 if (def.autoExtract)
                 {
                     if (def.onlyOutputToFactoryHoppers)
-                    {
-                        List<Thing> hoppers = this.parent.InteractionCell.GetThingList(this.parent.Map);
-                        bool foundHopper = false;
-
-                        foreach(Thing hopper in hoppers)
-                        {
-                            FactoryHopperExtension extension = hopper.def.GetModExtension<FactoryHopperExtension>();
-                            if (extension != null && extension.isfactoryHopper)
-                            {
-                                SpawnOrPushToNet(this.parent.InteractionCell, out _);
-                                foundHopper = true;
-                            }
+                    {                      
+                        if (FactoryHopperDetected()) {
+                            outputFactoryHopperIncorrect = false;
+                            SpawnOrPushToNet(this.parent.InteractionCell, out _);
                         }
-                        if (!foundHopper) {
+                        else
+                        {
+                            outputFactoryHopperIncorrect = true;
                             tickLeft = 1;
                         }
-                        
-
                     }
-                    else { SpawnOrPushToNet(IntVec3.Invalid, out _); }
-
-
-                    
+                    else { SpawnOrPushToNet(IntVec3.Invalid, out _); }                  
                 }
                 else
                 {
@@ -554,6 +542,31 @@ namespace PipeSystem
             }
         }
 
+        /// <summary>
+        /// Returns true if a factory hopper is detected on the interaction cell
+        /// </summary>
+        public bool FactoryHopperDetected()
+        {
+            List<Thing> hoppers = this.parent.InteractionCell.GetThingList(this.parent.Map);
+            foreach (Thing hopper in hoppers)
+            {
+                FactoryHopperExtension extension = hopper.def.GetModExtension<FactoryHopperExtension>();
+                if (extension != null && extension.isfactoryHopper)
+                {
+                    Building_Storage storage = hopper as Building_Storage;
+                    if (storage?.GetStoreSettings().AllowedToAccept(def.results[0].thing) == true)
+                    {
+                        return true;
+                    }               
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Checks the defined input slots for ingredients to acquire
+        /// </summary>
+        /// <param name="ingredientsOwner">ingredientsOwner</param>
         public void CheckInputSlots(ThingAndResourceOwner ingredientsOwner)
         {
             foreach (IntVec3 slot in Def.autoInputSlots)
@@ -758,8 +771,13 @@ namespace PipeSystem
                 if (thing != null)
                 {
                     // If adding would go past stack limit
-                    if ((thing.stackCount + result.count) > thing.def.stackLimit)
-                        return false;
+
+                    if (!def.onlyOutputToFactoryHoppers)
+                    {
+                        if ((thing.stackCount + result.count) > thing.def.stackLimit)
+                            return false;
+                    }
+                 
                     // We found some, modifying stack size
                     thing.stackCount += result.count;
 

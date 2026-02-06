@@ -708,6 +708,8 @@ namespace PipeSystem
 
             if (shouldProduceWastePack)
                 sb.Append("WasteLevel".Translate() + ": " + WasteProducedPercentFull.ToStringPercent());
+            if (process.outputFactoryHopperIncorrect)
+                sb.Append("PipeSystem_OutputFactoryHopperIncorrect".Translate());
 
             return sb.ToString().TrimEndNewlines();
         }

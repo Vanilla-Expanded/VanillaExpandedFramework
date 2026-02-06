@@ -91,5 +91,7 @@
    <PipeSystem_CurrentNotReachedAwful>Process hasn't reached Awful quality yet</PipeSystem_CurrentNotReachedAwful>
    <PipeSystem_ExtractingAtCurrent>Extracting product at current quality</PipeSystem_ExtractingAtCurrent>
    
+   <PipeSystem_OutputFactoryHopperIncorrect>Output factory hopper absent or not accepting item due to storage configuration.</PipeSystem_OutputFactoryHopperIncorrect>
+   
   
 </LanguageData>

@@ -109,6 +109,7 @@
     <Compile Include="Def\ProcessDef.cs" />
     <Compile Include="GenericPipeNetOverlayWorker.cs" />
     <Compile Include="Harmony\ResearchProjectDef_UnlockedDefs_Patch.cs" />
+    <Compile Include="Harmony\ThingSpawnSetup_Patch.cs" />
     <Compile Include="Harmony\Widgets_DefIcon_Patch.cs" />
     <Compile Include="PipeNetMaker.cs" />
     <Compile Include="PipeNetOverlayDrawer.cs" />
