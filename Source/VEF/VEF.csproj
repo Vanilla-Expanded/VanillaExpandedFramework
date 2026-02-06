@@ -100,7 +100,7 @@
     <Compile Include="Abilities\Comps\Properties\CompProperties_GiveHediff.cs" />
     <Compile Include="Abilities\Misc\Ability.cs" />
     <Compile Include="Abilities\Defs\AbilityDef.cs" />
-    <Compile Include="Abilities\Utils\AbilityMigrationUtility.cs" />
+    <Compile Include="Abilities\ModExtensions\AbilityExtension_ClassMigration.cs" />
     <Compile Include="Abilities\Harmony\Caravan_GetGizmos.cs" />
     <Compile Include="Abilities\Hediffs\Hediff_Ability.cs" />
     <Compile Include="Abilities\ModExtensions\AbilityExtension_AbilityMod.cs" />
@@ -227,9 +227,12 @@
     <Compile Include="Genes\Misc\MoveSpeedFactor.cs" />
     <Compile Include="Genes\StaticCollectionsClass\ExtendedMoveSpeedFactorByTerrainTag.cs" />
     <Compile Include="Global\BackwardsCompatibilityFixer.cs" />
+    <Compile Include="Global\BackwardsCompatibilityMigrationUtility.cs" />
     <Compile Include="Global\CacheClearing\ClearCaches.cs" />
     <Compile Include="Global\CacheClearing\NoCacheClearingAttribute.cs" />
     <Compile Include="Global\DebugActions.cs" />
+    <Compile Include="Global\DefMigrationDef.cs" />
+    <Compile Include="Global\Harmony\BackCompatibilityFixes.cs" />
     <Compile Include="Global\Harmony\GenRadialPatches.cs" />
     <Compile Include="Global\Harmony\MemoryUtility_UnloadUnusedUnityAssets.cs" />
     <Compile Include="Global\Harmony\MergeablePatches.cs" />
