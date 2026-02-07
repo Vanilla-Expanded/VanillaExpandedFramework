@@ -703,6 +703,7 @@ namespace PipeSystem
         /// <param name="extractor">Pawn extracint result</param>
         public void SpawnOrPushToNet(IntVec3 spawnPos, out List<Thing> outThings, Pawn extractor = null)
         {
+           
             // Thing created, in case it's not pushed to net
             outThings = new List<Thing>();
             for (int i = 0; i < def.results.Count; i++)
@@ -753,7 +754,7 @@ namespace PipeSystem
                     }
                 }
             }
-
+            this.parent.Map.resourceCounter.UpdateResourceCounts();
             ResetProcess();
             Notify_Ended();
         }
