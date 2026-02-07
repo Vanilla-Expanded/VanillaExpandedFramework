@@ -149,6 +149,7 @@
     <Compile Include="Utility\ThingAndResourceOwner.cs" />
     <Compile Include="Utility\ProcessUtility.cs" />
     <Compile Include="Utility\ProcessIDsManager.cs" />
+    <Compile Include="Windows\Window_Overclock.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Lib.Harmony" ExcludeAssets="Runtime">

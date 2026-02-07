@@ -194,6 +194,8 @@ namespace PipeSystem
             this.parent = parent;
             def = processDef;
             ticksOrQualityTicks = (def.ticksQuality.NullOrEmpty() ? def.ticks : def.ticksQuality[(int)forcedQuality]);
+           
+            ticksOrQualityTicks = (int)(ticksOrQualityTicks / GetNotInRoomRoleFactor());
             tickLeft = def.isFactoryProcess ? (int)(GetFactoryAcceleration() * ticksOrQualityTicks) : ticksOrQualityTicks;
             progress = 0f;
             ruinedPercent = 0f;
@@ -202,6 +204,24 @@ namespace PipeSystem
             id = $"Process_{parent.Map.uniqueID}_{def.defName}_{CachedAdvancedProcessorsManager.GetFor(map).ProcessIDsManager.GetNextProcessID(map)}";
             spawning = true;
             qualityToOutput = def.ticksQuality.NullOrEmpty() ? def.quality : QualityCategory.Normal;
+           
+        }
+
+        /// <summary>
+        /// Divides times by workTableNotInRoomRoleFactor if the building has an assigned workTableRoomRole
+        /// </summary>
+        public float GetNotInRoomRoleFactor()
+        {
+            if (parent?.def?.building?.workTableRoomRole != null)
+            {
+                Room room = parent.GetRoom();
+                if (room?.Role != parent.def.building.workTableRoomRole)
+                {
+                    return parent.def.building.workTableNotInRoomRoleFactor;
+                }
+            }
+
+            return 1f;
         }
 
         /// <summary>
@@ -235,8 +255,9 @@ namespace PipeSystem
                 return 1.5f;
             }
             return 1f;
-
         }
+
+        
 
         /// <summary>
         /// Save things

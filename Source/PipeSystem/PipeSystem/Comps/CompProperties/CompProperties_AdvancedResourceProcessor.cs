@@ -20,8 +20,6 @@ namespace PipeSystem
         public List<ProcessDef> processes;
         // Sound when working
         public SoundDef soundAmbient; // TODO
-        // TODO output cell
-        // TODO input cell
         // Progress bar
         public bool showProgressBar = true;
         public Vector3 progressBarOffset = Vector3.zero;
@@ -41,6 +39,11 @@ namespace PipeSystem
         public string inProgressTexture="";
         public string finishedTexture="";
 
+        //Advanced processors that can be overclocked
+        public bool canOverclock = false;
+        public string overclockGizmo;
+        public string overclockLabel;
+        public string overclockDesc;
        
         public bool hideSettings = true;
 

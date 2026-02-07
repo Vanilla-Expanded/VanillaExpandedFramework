@@ -67,7 +67,7 @@ namespace PipeSystem
         public int noGoodWeatherDestructionCounter = 0;
         public int noGoodTempDestructionCounter = 0;
 
-
+        public float overclockMultiplier = 1;
 
 
         public CompProperties_AdvancedResourceProcessor Props => (CompProperties_AdvancedResourceProcessor)props;
@@ -345,9 +345,9 @@ namespace PipeSystem
         /// <summary>
         /// Clear def on destroy/despawn. Give back required resource if wanted
         /// </summary>
-        public override void PostDeSpawn(Map map,DestroyMode mode = DestroyMode.Vanish)
+        public override void PostDeSpawn(Map map, DestroyMode mode = DestroyMode.Vanish)
         {
-            if(mode!= DestroyMode.WillReplace)
+            if (mode != DestroyMode.WillReplace)
             {
                 foreach (var process in processStack)
                 {
@@ -357,7 +357,7 @@ namespace PipeSystem
                 manager.PickupDone(this);
                 manager.RemoveFromAwaiting(this);
             }
-           
+
         }
 
         /// <summary>
@@ -369,6 +369,7 @@ namespace PipeSystem
 
             Scribe_Values.Look(ref outputOnGround, "outputOnGround");
             Scribe_Values.Look(ref wasteProduced, "wasteProduced");
+            Scribe_Values.Look(ref overclockMultiplier, "overclockMultiplier");
             Scribe_Collections.Look(ref cachedIngredients, "cachedIngredients", LookMode.Def);
         }
 
@@ -407,9 +408,9 @@ namespace PipeSystem
                 // Push heat
                 if (Props.heatPushWhileWorking && Process != null && !Process.MissingIngredients)
                     GenTemperature.PushHeat(parent, parent.def.building.heatPerTickWhileWorking * ticks);
-                if (compRefuelable != null && compRefuelable.Props.consumeFuelOnlyWhenUsed && Process!=null && !Process.MissingIngredients)
+                if (compRefuelable != null && compRefuelable.Props.consumeFuelOnlyWhenUsed && Process != null && !Process.MissingIngredients)
                 {
-                    compRefuelable.ConsumeFuel(ticks*(compRefuelable.Props.fuelConsumptionRate / 60000f));
+                    compRefuelable.ConsumeFuel(ticks * (compRefuelable.Props.fuelConsumptionRate / 60000f));
                 }
 
                 barFilledCachedMat = null;
@@ -418,7 +419,7 @@ namespace PipeSystem
 
         private void CheckProcessRuiners()
         {
-            if (Process?.Progress > 0 && parent.Map!=null)
+            if (Process?.Progress > 0 && parent.Map != null)
             {
                 if ((Process.Def.noPowerDestroysProgress && compPower != null && !compPower.PowerOn) ||
                                 (Process.Def.noPowerDestroysProgress && compRefuelable != null && !compRefuelable.HasFuel))
@@ -605,6 +606,23 @@ namespace PipeSystem
 
             }
 
+            if (Props.canOverclock)
+            {
+                Command_Action command_overclock = new Command_Action();
+
+                command_overclock.defaultDesc = Props.overclockDesc.Translate(overclockMultiplier.ToStringPercent());
+                command_overclock.defaultLabel = Props.overclockLabel.Translate(overclockMultiplier.ToStringPercent());
+                command_overclock.icon = ContentFinder<Texture2D>.Get(Props.overclockGizmo, true);
+                command_overclock.hotKey = KeyBindingDefOf.Misc1;
+                command_overclock.action = delegate
+                    {
+                        Window_Overclock overclockWindow = new Window_Overclock(this);
+                        Find.WindowStack.Add(overclockWindow);
+                    };
+                yield return command_overclock;
+
+            }
+
             if (DebugSettings.ShowDevGizmos)
             {
                 yield return new Command_Action
@@ -688,7 +706,7 @@ namespace PipeSystem
             }
 
             if (process.Def.temperatureRuinable)
-                sb.AppendLine("IP_TempRangeInThisMachine".Translate(process.Def.minSafeTemperature,process.Def.maxSafeTemperature));
+                sb.AppendLine("IP_TempRangeInThisMachine".Translate(process.Def.minSafeTemperature, process.Def.maxSafeTemperature));
 
             if (process.RuinedByTemp)
                 sb.AppendLine("RuinedByTemperature".Translate());
@@ -710,8 +728,38 @@ namespace PipeSystem
                 sb.Append("WasteLevel".Translate() + ": " + WasteProducedPercentFull.ToStringPercent());
             if (process.outputFactoryHopperIncorrect)
                 sb.Append("PipeSystem_OutputFactoryHopperIncorrect".Translate());
+            if (GetNotInRoomRoleFactor(parent) != 1)
+                sb.Append("NotInRoomRole".Translate(parent.def.building.workTableRoomRole.label)+": "+ parent.def.building.workTableNotInRoomRoleFactor.ToStringPercent());
 
             return sb.ToString().TrimEndNewlines();
+        }
+
+
+        public override IEnumerable<StatDrawEntry> SpecialDisplayStats()
+        {
+          
+
+            if (GetNotInRoomRoleFactor(this.parent) != 1)
+            {
+                yield return new StatDrawEntry(StatCategoryDefOf.Basics, "NotInRoomRole".Translate(parent.def?.building?.workTableRoomRole?.label).CapitalizeFirst(), parent.def?.building?.workTableNotInRoomRoleFactor.ToStringPercent(), "", 2001);
+            }
+        }
+
+        /// <summary>
+        /// Divides times by workTableNotInRoomRoleFactor if the building has an assigned workTableRoomRole
+        /// </summary>
+        public float GetNotInRoomRoleFactor(ThingWithComps parent)
+        {
+            if (parent?.def?.building?.workTableRoomRole != null)
+            {
+                Room room = parent.GetRoom();
+                if (room?.Role != parent.def.building.workTableRoomRole)
+                {
+                    return parent.def.building.workTableNotInRoomRoleFactor;
+                }
+            }
+
+            return 1f;
         }
 
         /// <summary>
@@ -737,7 +785,7 @@ namespace PipeSystem
 
         public override void PostSwapMap()
         {
-            processStack=cachedProcessStack;
+            processStack = cachedProcessStack;
             base.PostSwapMap();
         }
 
