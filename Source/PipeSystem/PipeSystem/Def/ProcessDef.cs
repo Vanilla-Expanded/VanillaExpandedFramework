@@ -18,11 +18,15 @@ namespace PipeSystem
         public List<int> ticksQuality;                                  // A list of seven tick counts for each of the quality levels
         public int wastePackToProduce = 0;                              // Number of wastepack to produce when process end
         public List<ResearchProjectDef> researchPrerequisites;          // Research required to unlock the process
+        public bool hideProcessIfNotNaturalRock = false;                // Process will not be shown if the result is not a natural rock in this map
+        public ThingDef rockToDetect;                                   // Only used by hideProcessIfNotNaturalRock=true
 
         public List<Result> results = new List<Result>();
 
         public Color finishedColor = new Color(0.9f, 0.85f, 0.2f);      // Bar color when finished
         public Color lowProgressColor = new Color(0.4f, 0.27f, 0.22f);  // Bar color low progress
+
+        // Variables handling input / output
 
         public bool isFactoryProcess = false;                           // This just affects precepts from VE Memes
         public bool autoGrabFromHoppers = false;                        // Auto insert from hoppers
@@ -156,6 +160,8 @@ namespace PipeSystem
                 yield return $"ProcessDef cannot have empty or null <results>";
             if (autoGrabFromHoppers && autoInputSlots.NullOrEmpty())
                 yield return $"ProcessDef with <autoGrabFromHoppers> set to true cannot have empty or null <autoInputSlots>";
+            if (hideProcessIfNotNaturalRock && rockToDetect is null)
+                yield return $"ProcessDef with <hideProcessIfNotNaturalRock> needs a valid natural rock type on <rockToDetect>";
 
             for (int i = 0; i < results.Count; i++)
             {

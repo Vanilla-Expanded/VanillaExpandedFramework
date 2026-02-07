@@ -115,7 +115,7 @@ namespace PipeSystem
             get
             {
                 processesOptions = new List<FloatMenuOption>();
-                List<ProcessDef> processes = Props.processes.OrderBy(x => x.priorityInBillList).ToList();
+                List<ProcessDef> processes = Props.processes.Where(x => !x.hideProcessIfNotNaturalRock || Find.World.NaturalRockTypesIn(this.parent.Map.Tile).Contains(x.rockToDetect)).OrderBy(x => x.priorityInBillList).ToList();
                 for (int i = 0; i < processes.Count; i++)
                 {
                     var process = processes[i];
