@@ -939,7 +939,7 @@ namespace PipeSystem
         public void ResetProcess(bool finished = true)
         {
             ResetOwners(finished);  // Reset ingredients owners
-            tickLeft = ticksOrQualityTicks;   // Reset ticks
+            tickLeft = cachedInitialTicks;   // Reset ticks
             pickUpReady = false;    // Reset pickup status
             ruinedPercent = 0;      // Reset ruining status
             progress = 0;           // Reset progress
@@ -1034,7 +1034,7 @@ namespace PipeSystem
             // Process label
 
             string qualityString = def.ticksQuality.NullOrEmpty() ? " " : " (" + qualityToOutput.GetLabel().CapitalizeFirst() + ") ";
-            Widgets.Label(new Rect(28f, 0f, rect.width - 48f - 40f, rect.height + 5f), def.LabelCap + qualityString + "(" + ((int)(ticksOrQualityTicks)).ToStringTicksToDays() + ")");
+            Widgets.Label(new Rect(28f, 0f, rect.width - 48f - 40f, rect.height + 5f), def.LabelCap + qualityString + "(" + ((int)(cachedInitialTicks / advancedProcessor.overclockMultiplier)).ToStringTicksToDays() + ")");
             // Config
             var baseRect = rect.AtZero();
             GUI.color = new Color(1f, 1f, 1f, 0.65f);
@@ -1227,21 +1227,6 @@ namespace PipeSystem
             return null;
         }
 
-        /// <summary>
-        /// Called by the advanced processor, and in turn called by Window_Overclock when the window is closed
-        /// </summary>
-
-        public void Notify_OverclockChanged(CompAdvancedResourceProcessor comp)
-        {
-            //Recalculate ticks
-
-            if (comp != null)
-            {
-                ticksOrQualityTicks = (int)(cachedInitialTicks / comp.GetNotInRoomRoleFactor(parent));
-                ticksOrQualityTicks = (int)(ticksOrQualityTicks / comp.overclockMultiplier);
-            }
-           
-
-        }
+      
     }
 }

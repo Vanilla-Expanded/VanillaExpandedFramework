@@ -44,7 +44,7 @@ namespace PipeSystem
           
             if (Widgets.ButtonImage(new Rect(outRect.xMax - 18f - 4f, 2f, 18f, 18f), TexButton.CloseXSmall))
             {
-                building.Notify_OverclockChanged();
+               
                 Close();
             }
             var SliderContainer1 = new Rect(0, 100, 450, 32f);

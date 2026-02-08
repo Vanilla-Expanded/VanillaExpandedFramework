@@ -404,7 +404,7 @@ namespace PipeSystem
                 // Wastepack stop check
                 if (Props.stopWhenWastepackFull && Container.Full) return;
                 // Tick process
-                Process?.Tick(ticks);
+                Process?.Tick((int)(ticks * overclockMultiplier));
                 // Push heat
                 if (Props.heatPushWhileWorking && Process != null && !Process.MissingIngredients)
                     GenTemperature.PushHeat(parent, parent.def.building.heatPerTickWhileWorking * ticks);
@@ -799,18 +799,6 @@ namespace PipeSystem
             base.PreSwapMap();
         }
 
-        /// <summary>
-        /// Called by Window_Overclock when the window is closed
-        /// </summary>
-
-        public void Notify_OverclockChanged()
-        {
-            if (Process != null)
-            {
-                Process.Notify_OverclockChanged(this);
-            }
-        
-        }
 
     }
 }
