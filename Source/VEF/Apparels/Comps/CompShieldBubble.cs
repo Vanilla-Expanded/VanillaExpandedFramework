@@ -196,8 +196,8 @@ namespace VEF.Apparels
 				
                 if (Pawn != null)
                 {
-					value *= Pawn.GetStatValue(VEFDefOf.VEF_EnergyShieldEnergyMaxFactor, true);
-					value += Pawn.GetStatValue(VEFDefOf.VEF_EnergyShieldEnergyMaxOffset, true);
+					value *= Pawn.GetStatValue(VEFDefOf.VEF_EnergyShieldEnergyMaxFactor, true, 120);
+					value += Pawn.GetStatValue(VEFDefOf.VEF_EnergyShieldEnergyMaxOffset, true, 120);
 				}
 				return value;
 			}

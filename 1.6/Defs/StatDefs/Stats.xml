@@ -35,6 +35,7 @@
 		<toStringStyle>FloatOne</toStringStyle>
 		<hideAtValue>0</hideAtValue>
 		<displayPriorityInCategory>4050</displayPriorityInCategory>
+    <cacheable>true</cacheable>
 	</StatDef>
 	<StatDef>
 		<defName>VEF_EnergyShieldEnergyMaxFactor</defName>
@@ -46,6 +47,7 @@
 		<hideAtValue>1</hideAtValue>
 		<toStringStyle>PercentZero</toStringStyle>
 		<displayPriorityInCategory>4050</displayPriorityInCategory>
+    <cacheable>true</cacheable>
 	</StatDef>
 
 	<StatDef>
