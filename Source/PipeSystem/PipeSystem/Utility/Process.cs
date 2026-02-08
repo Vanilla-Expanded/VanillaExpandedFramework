@@ -943,7 +943,7 @@ namespace PipeSystem
             pickUpReady = false;    // Reset pickup status
             ruinedPercent = 0;      // Reset ruining status
             progress = 0;           // Reset progress
-            Log.Message("Deleting, tickLeft= "+ tickLeft);
+           
 
             // If finished normaly, increment process count, produce wastepack
             if (finished)
