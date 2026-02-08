@@ -43,6 +43,7 @@ namespace PipeSystem
         public bool canOverclock = false;
         public string overclockGizmo;
         public string overclockLabel;
+        public string overclockWindowLabel;
         public string overclockDesc;
        
         public bool hideSettings = true;

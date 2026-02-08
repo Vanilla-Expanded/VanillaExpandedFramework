@@ -93,5 +93,7 @@
    
    <PipeSystem_OutputFactoryHopperIncorrect>Output factory hopper absent or not accepting item due to storage configuration.</PipeSystem_OutputFactoryHopperIncorrect>
    
+   <PipeSystem_NotInRoomExplanation>This processor is not situated in a room that counts as a {0}, and will receive a {1} penalty to its work speed. This will be recalculated once a process has started.</PipeSystem_NotInRoomExplanation>
+   <PipeSystem_WorkSpeed>work speed</PipeSystem_WorkSpeed>
   
 </LanguageData>

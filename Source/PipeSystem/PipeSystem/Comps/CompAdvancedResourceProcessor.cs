@@ -729,7 +729,7 @@ namespace PipeSystem
             if (process.outputFactoryHopperIncorrect)
                 sb.Append("PipeSystem_OutputFactoryHopperIncorrect".Translate());
             if (GetNotInRoomRoleFactor(parent) != 1)
-                sb.Append("NotInRoomRole".Translate(parent.def.building.workTableRoomRole.label)+": "+ parent.def.building.workTableNotInRoomRoleFactor.ToStringPercent());
+                sb.Append("NotInRoomRole".Translate(parent.def.building.workTableRoomRole.label).CapitalizeFirst()+": "+ parent.def.building.workTableNotInRoomRoleFactor.ToStringPercent()+ " "+"PipeSystem_WorkSpeed".Translate());
 
             return sb.ToString().TrimEndNewlines();
         }
@@ -741,7 +741,7 @@ namespace PipeSystem
 
             if (GetNotInRoomRoleFactor(this.parent) != 1)
             {
-                yield return new StatDrawEntry(StatCategoryDefOf.Basics, "NotInRoomRole".Translate(parent.def?.building?.workTableRoomRole?.label).CapitalizeFirst(), parent.def?.building?.workTableNotInRoomRoleFactor.ToStringPercent(), "", 2001);
+                yield return new StatDrawEntry(StatCategoryDefOf.Basics, "NotInRoomRole".Translate(parent.def?.building?.workTableRoomRole?.label).CapitalizeFirst(), parent.def?.building?.workTableNotInRoomRoleFactor.ToStringPercent(), "PipeSystem_NotInRoomExplanation".Translate(parent.def?.building?.workTableRoomRole?.label, parent.def?.building?.workTableNotInRoomRoleFactor.ToStringPercent()), 2001);
             }
         }
 

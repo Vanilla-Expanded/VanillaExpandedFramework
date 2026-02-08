@@ -37,9 +37,9 @@ namespace PipeSystem
 
             Text.Font = GameFont.Medium;
             var IntroLabel = new Rect(0, 0, 300, 32f);
-            Widgets.Label(IntroLabel, building.Props.overclockLabel.Translate().CapitalizeFirst());
+            Widgets.Label(IntroLabel, building.Props.overclockWindowLabel.Translate().CapitalizeFirst());
             Text.Font = GameFont.Small;
-            var IntroLabel2 = new Rect(0, 40, 450, 32f);
+            var IntroLabel2 = new Rect(0, 40, 450, 64f);
             Widgets.Label(IntroLabel2, building.Props.overclockDesc.Translate(building.overclockMultiplier.ToStringPercent()).CapitalizeFirst());      
           
             if (Widgets.ButtonImage(new Rect(outRect.xMax - 18f - 4f, 2f, 18f, 18f), TexButton.CloseXSmall))
