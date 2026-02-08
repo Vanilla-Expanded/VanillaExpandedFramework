@@ -799,5 +799,18 @@ namespace PipeSystem
             base.PreSwapMap();
         }
 
+        /// <summary>
+        /// Called by Window_Overclock when the window is closed
+        /// </summary>
+
+        public void Notify_OverclockChanged()
+        {
+            if (Process != null)
+            {
+                Process.Notify_OverclockChanged(this);
+            }
+        
+        }
+
     }
 }

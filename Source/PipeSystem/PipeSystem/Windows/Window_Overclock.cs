@@ -44,10 +44,11 @@ namespace PipeSystem
           
             if (Widgets.ButtonImage(new Rect(outRect.xMax - 18f - 4f, 2f, 18f, 18f), TexButton.CloseXSmall))
             {
+                building.Notify_OverclockChanged();
                 Close();
             }
             var SliderContainer1 = new Rect(0, 100, 450, 32f);
-            HorizontalSliderLabeled(SliderContainer1, ref building.overclockMultiplier, new FloatRange(0, 2), "0%", "200%");
+            HorizontalSliderLabeled(SliderContainer1, ref building.overclockMultiplier, new FloatRange(0.1f, 2), "10%", "200%",roundTo:0.1f);
 
         }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
+using RimWorld.Planet;
 using Unity.Jobs;
 using UnityEngine;
 using Verse;
@@ -27,6 +28,7 @@ namespace PipeSystem
         private int processCount;                               // Number of time this process repeated
         private float ruinedPercent;                            // Ruining (due to temp) percent
         public int ticksOrQualityTicks;
+        public int cachedInitialTicks;
 
         public bool forceQualityOut = false;
         public QualityCategory qualityToForce;
@@ -193,9 +195,18 @@ namespace PipeSystem
         {
             this.parent = parent;
             def = processDef;
-            ticksOrQualityTicks = (def.ticksQuality.NullOrEmpty() ? def.ticks : def.ticksQuality[(int)forcedQuality]);
            
-            ticksOrQualityTicks = (int)(ticksOrQualityTicks / GetNotInRoomRoleFactor());
+            ticksOrQualityTicks = (def.ticksQuality.NullOrEmpty() ? def.ticks : def.ticksQuality[(int)forcedQuality]);
+            cachedInitialTicks = ticksOrQualityTicks;
+
+            CompAdvancedResourceProcessor comp = CachedCompAdvancedProcessor.GetFor(parent);
+            if (comp != null)
+            {
+                ticksOrQualityTicks = (int)(ticksOrQualityTicks / comp.GetNotInRoomRoleFactor(parent));
+                ticksOrQualityTicks = (int)(ticksOrQualityTicks / comp.overclockMultiplier);
+            }
+            
+            
             tickLeft = def.isFactoryProcess ? (int)(GetFactoryAcceleration() * ticksOrQualityTicks) : ticksOrQualityTicks;
             progress = 0f;
             ruinedPercent = 0f;
@@ -204,25 +215,9 @@ namespace PipeSystem
             id = $"Process_{parent.Map.uniqueID}_{def.defName}_{CachedAdvancedProcessorsManager.GetFor(map).ProcessIDsManager.GetNextProcessID(map)}";
             spawning = true;
             qualityToOutput = def.ticksQuality.NullOrEmpty() ? def.quality : QualityCategory.Normal;
-           
+
         }
 
-        /// <summary>
-        /// Divides times by workTableNotInRoomRoleFactor if the building has an assigned workTableRoomRole
-        /// </summary>
-        public float GetNotInRoomRoleFactor()
-        {
-            if (parent?.def?.building?.workTableRoomRole != null)
-            {
-                Room room = parent.GetRoom();
-                if (room?.Role != parent.def.building.workTableRoomRole)
-                {
-                    return parent.def.building.workTableNotInRoomRoleFactor;
-                }
-            }
-
-            return 1f;
-        }
 
         /// <summary>
         /// Not implemented at the moment
@@ -257,7 +252,7 @@ namespace PipeSystem
             return 1f;
         }
 
-        
+
 
         /// <summary>
         /// Save things
@@ -276,12 +271,14 @@ namespace PipeSystem
             Scribe_Values.Look(ref processCount, "processCount");
             Scribe_Values.Look(ref ruinedPercent, "ruinedPercent", 0f);
             Scribe_Values.Look(ref ticksOrQualityTicks, "ticksOrQualityTicks");
+            Scribe_Values.Look(ref cachedInitialTicks, "cachedInitialTicks");
+
             Scribe_Values.Look(ref qualityToOutput, "qualityToOutput");
             Scribe_Values.Look(ref forceQualityOut, "forceQualityOut");
             Scribe_Values.Look(ref qualityToForce, "qualityToForce");
             Scribe_Defs.Look(ref repeatMode, "repeatMode");
             Scribe_Values.Look(ref outputFactoryHopperIncorrect, "outputFactoryHopperIncorrect");
-            
+
 
             Scribe_References.Look(ref parent, "parent");
 
@@ -616,7 +613,7 @@ namespace PipeSystem
                 if (!slot.InBounds(parent.Map))
                     continue;
 
-                if(def.onlyGrabAndOutputToFactoryHoppers && !InputFactoryHopperDetected(slot))
+                if (def.onlyGrabAndOutputToFactoryHoppers && !InputFactoryHopperDetected(slot))
                 {
                     continue;
                 }
@@ -724,7 +721,7 @@ namespace PipeSystem
         /// <param name="extractor">Pawn extracint result</param>
         public void SpawnOrPushToNet(IntVec3 spawnPos, out List<Thing> outThings, Pawn extractor = null)
         {
-           
+
             // Thing created, in case it's not pushed to net
             outThings = new List<Thing>();
             for (int i = 0; i < def.results.Count; i++)
@@ -946,7 +943,7 @@ namespace PipeSystem
             pickUpReady = false;    // Reset pickup status
             ruinedPercent = 0;      // Reset ruining status
             progress = 0;           // Reset progress
-
+            Log.Message("Deleting, tickLeft= "+ tickLeft);
 
             // If finished normaly, increment process count, produce wastepack
             if (finished)
@@ -1037,7 +1034,7 @@ namespace PipeSystem
             // Process label
 
             string qualityString = def.ticksQuality.NullOrEmpty() ? " " : " (" + qualityToOutput.GetLabel().CapitalizeFirst() + ") ";
-            Widgets.Label(new Rect(28f, 0f, rect.width - 48f - 40f, rect.height + 5f), def.LabelCap + qualityString + "(" + ticksOrQualityTicks.ToStringTicksToDays() + ")");
+            Widgets.Label(new Rect(28f, 0f, rect.width - 48f - 40f, rect.height + 5f), def.LabelCap + qualityString + "(" + ((int)(ticksOrQualityTicks)).ToStringTicksToDays() + ")");
             // Config
             var baseRect = rect.AtZero();
             GUI.color = new Color(1f, 1f, 1f, 0.65f);
@@ -1087,6 +1084,7 @@ namespace PipeSystem
             var deleteRect = new Rect(rect.width - 24f, 0f, 24f, 24f);
             if (Widgets.ButtonImage(deleteRect, TexButton.Delete, color, color * GenUI.SubtleMouseoverColor))
             {
+                ResetProcess(false);
                 stack.Delete(this);
                 SoundDefOf.Click.PlayOneShotOnCamera();
             }
@@ -1201,7 +1199,6 @@ namespace PipeSystem
             var labelRect = new Rect(rect.x + 6f, rect.y, rect.width - 30f, 24f);
             Widgets.Label(labelRect, $"{def.LabelCap} ({Progress.ToStringPercent()})");
             Text.Anchor = TextAnchor.UpperLeft;
-            // TODO: Hover show missing/meet requirements
             var deleteRect = new Rect(rect.x + rect.width - 24f, rect.y, 24f, 24f);
             if (Widgets.ButtonImage(deleteRect, TexButton.Delete, Color.white, Color.white * GenUI.SubtleMouseoverColor))
             {
@@ -1228,6 +1225,23 @@ namespace PipeSystem
                 }
             }
             return null;
+        }
+
+        /// <summary>
+        /// Called by the advanced processor, and in turn called by Window_Overclock when the window is closed
+        /// </summary>
+
+        public void Notify_OverclockChanged(CompAdvancedResourceProcessor comp)
+        {
+            //Recalculate ticks
+
+            if (comp != null)
+            {
+                ticksOrQualityTicks = (int)(cachedInitialTicks / comp.GetNotInRoomRoleFactor(parent));
+                ticksOrQualityTicks = (int)(ticksOrQualityTicks / comp.overclockMultiplier);
+            }
+           
+
         }
     }
 }
