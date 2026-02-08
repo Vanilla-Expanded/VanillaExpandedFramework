@@ -12,13 +12,13 @@ namespace VEF.Apparels
         {
             if (__instance != null)
             {
-                if (PreventsDowning(__instance.apparel?.WornApparel) || PreventsDowning(__instance.equipment?.AllEquipmentListForReading))
+                if (PreventsDying(__instance.apparel?.WornApparel) || PreventsDying(__instance.equipment?.AllEquipmentListForReading))
                     return false;
             }
 
             return true;
 
-            bool PreventsDowning<T>(List<T> list) where T : Thing
+            bool PreventsDying<T>(List<T> list) where T : Thing
             {
                 if (list == null)
                     return false;
@@ -34,12 +34,12 @@ namespace VEF.Apparels
                         if (extension.preventKillingUntilHealthHPPercentage < pawnBodyPercentage
                             && (!extension.preventKillingUntilBrainMissing || __instance.health.hediffSet.GetBrain() != null))
                         {
-                            return false;
+                            return true;
                         }
                     }
                 }
 
-                return true;
+                return false;
             }
         }
     }
