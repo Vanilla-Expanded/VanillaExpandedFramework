@@ -26,10 +26,10 @@ namespace VEF.Apparels
             foreach (var thing in list)
             {
                 if (thing.def.GetModExtension<ApparelExtension>() is { preventDowning: true })
-                    return false;
+                    return true;
             }
 
-            return true;
+            return false;
         }
     }
 }
