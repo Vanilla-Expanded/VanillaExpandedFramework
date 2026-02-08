@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using System.Collections.Generic;
+using HarmonyLib;
 using Verse;
 
 namespace VEF.Apparels
@@ -8,17 +9,26 @@ namespace VEF.Apparels
     {
         public static void Postfix(ref float __result, HediffSet __instance)
         {
-            if (__result > 0 && __instance.pawn?.apparel?.WornApparel != null)
+            if (__result > 0 && __instance.pawn != null)
             {
-                foreach (var apparel in __instance.pawn.apparel.WornApparel)
-                {
-                    var extension = apparel.def.GetModExtension<ApparelExtension>();
-                    if (extension != null && extension.preventBleeding)
-                    {
-                        __result = 0;
-                    }
-                }
+                if (PreventsBleeding(__instance.pawn.apparel?.WornApparel) || PreventsBleeding(__instance.pawn.equipment?.AllEquipmentListForReading))
+                    __result = 0;
             }
+        }
+
+        private static bool PreventsBleeding<T>(List<T> list) where T : Thing
+        {
+            if (list == null)
+                return false;
+
+            foreach (var apparel in list)
+            {
+                var extension = apparel.def.GetModExtension<ApparelExtension>();
+                if (extension is { preventBleeding: true })
+                    return true;
+            }
+
+            return false;
         }
     }
 }

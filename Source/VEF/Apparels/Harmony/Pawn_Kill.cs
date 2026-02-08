@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
-using RimWorld;
 using Verse;
 
 namespace VEF.Apparels
@@ -12,12 +10,23 @@ namespace VEF.Apparels
     {
         private static bool Prefix(Pawn __instance)
         {
-            if (__instance?.apparel?.WornApparel != null)
+            if (__instance != null)
             {
-                foreach (var apparel in __instance.apparel.WornApparel)
+                if (PreventsDowning(__instance.apparel?.WornApparel) || PreventsDowning(__instance.equipment?.AllEquipmentListForReading))
+                    return false;
+            }
+
+            return true;
+
+            bool PreventsDowning<T>(List<T> list) where T : Thing
+            {
+                if (list == null)
+                    return false;
+
+                foreach (var equipment in list)
                 {
-                    var extension = apparel.def.GetModExtension<ApparelExtension>();
-                    if (extension != null && extension.preventKilling)
+                    var extension = equipment.def.GetModExtension<ApparelExtension>();
+                    if (extension is { preventKilling: true })
                     {
                         var pawnBodyPercentage = (float)__instance.health.hediffSet.GetNotMissingParts()
                             .Sum(x => x.def.GetMaxHealth(__instance))
@@ -29,8 +38,9 @@ namespace VEF.Apparels
                         }
                     }
                 }
+
+                return true;
             }
-            return true;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using System.Collections.Generic;
+using HarmonyLib;
 using Verse;
 
 namespace VEF.Apparels
@@ -8,17 +9,26 @@ namespace VEF.Apparels
     {
         private static bool Prefix(Pawn ___pawn)
         {
-            if (___pawn?.apparel?.WornApparel != null)
+            if (___pawn != null)
             {
-                foreach (var apparel in ___pawn.apparel.WornApparel)
-                {
-                    var extension = apparel.def.GetModExtension<ApparelExtension>();
-                    if (extension != null && extension.preventDowning)
-                    {
-                        return false;
-                    }
-                }
+                if (PreventsDowning(___pawn.apparel?.WornApparel) || PreventsDowning(___pawn.equipment?.AllEquipmentListForReading))
+                    return false;
             }
+
+            return true;
+        }
+
+        private static bool PreventsDowning<T>(List<T> list) where T : Thing
+        {
+            if (list == null)
+                return false;
+
+            foreach (var thing in list)
+            {
+                if (thing.def.GetModExtension<ApparelExtension>() is { preventDowning: true })
+                    return false;
+            }
+
             return true;
         }
     }
