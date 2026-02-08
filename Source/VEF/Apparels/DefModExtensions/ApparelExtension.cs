@@ -24,6 +24,7 @@ namespace VEF.Apparels
         public float preventKillingUntilHealthHPPercentage = 1f;
         public bool preventKillingUntilBrainMissing;
         public bool preventBleeding;
+        public bool destroyedOnDeath = false;
 
         // Apparel-only properties.
         public List<ThingDef> secondaryApparelGraphics;
@@ -55,6 +56,7 @@ namespace VEF.Apparels
             preventKillingUntilHealthHPPercentage *= other.preventKillingUntilHealthHPPercentage;
             preventKillingUntilBrainMissing |= other.preventKillingUntilBrainMissing;
             preventBleeding |= other.preventBleeding;
+            destroyedOnDeath |= other.destroyedOnDeath;
 
             CombineLists(ref secondaryApparelGraphics, other.secondaryApparelGraphics);
             isUnifiedApparel |= other.isUnifiedApparel;

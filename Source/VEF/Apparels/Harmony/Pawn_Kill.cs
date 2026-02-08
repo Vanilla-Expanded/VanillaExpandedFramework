@@ -8,25 +8,36 @@ namespace VEF.Apparels
     [HarmonyPatch(typeof(Pawn), "Kill")]
     public static class VanillaExpandedFramework_Pawn_Kill_Patch
     {
-        private static bool Prefix(Pawn __instance)
+        private static bool Prefix(Pawn __instance, out List<Thing> __state)
         {
-            if (__instance != null)
+            List<Thing> gearToRemove = null;
+            var allowedToDie = true;
+
+            HandleEquipment(__instance.apparel?.WornApparel);
+            if (allowedToDie)
+                HandleEquipment(__instance.equipment?.AllEquipmentListForReading);
+
+            if (!allowedToDie)
             {
-                if (PreventsDying(__instance.apparel?.WornApparel) || PreventsDying(__instance.equipment?.AllEquipmentListForReading))
-                    return false;
+                __state = null;
+                return false;
             }
 
+            __state = gearToRemove;
             return true;
 
-            bool PreventsDying<T>(List<T> list) where T : Thing
+            void HandleEquipment<T>(List<T> list) where T : Thing
             {
                 if (list == null)
-                    return false;
+                    return;
 
                 foreach (var equipment in list)
                 {
                     var extension = equipment.def.GetModExtension<ApparelExtension>();
-                    if (extension is { preventKilling: true })
+                    if (extension == null)
+                        continue;
+
+                    if (extension.preventKilling)
                     {
                         var pawnBodyPercentage = (float)__instance.health.hediffSet.GetNotMissingParts()
                             .Sum(x => x.def.GetMaxHealth(__instance))
@@ -34,12 +45,30 @@ namespace VEF.Apparels
                         if (extension.preventKillingUntilHealthHPPercentage < pawnBodyPercentage
                             && (!extension.preventKillingUntilBrainMissing || __instance.health.hediffSet.GetBrain() != null))
                         {
-                            return true;
+                            allowedToDie = false;
+                            return;
                         }
                     }
-                }
 
-                return false;
+                    if (extension.destroyedOnDeath)
+                    {
+                        gearToRemove ??= [];
+                        gearToRemove.Add(equipment);
+                    }
+                }
+            }
+        }
+
+		private static void Postfix(Pawn __instance, List<Thing> __state)
+        {
+            // Make sure the pawn actually died and we have any equipment to remove
+            if (!__instance.Dead || __state.NullOrEmpty())
+                return;
+
+            foreach (var thing in __state)
+            {
+                if (!thing.Destroyed)
+                    thing.Destroy();
             }
         }
     }
