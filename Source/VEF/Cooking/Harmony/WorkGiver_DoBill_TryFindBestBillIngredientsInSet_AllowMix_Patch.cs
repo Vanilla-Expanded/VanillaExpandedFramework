@@ -2,6 +2,7 @@
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
+using VEF.Things;
 
 namespace VEF.Cooking
 {
@@ -17,7 +18,7 @@ namespace VEF.Cooking
 
         public static void Prefix(Bill bill, List<Thing> availableThings)
         {
-            Recipe_Extension extension = bill?.recipe?.GetModExtension<Recipe_Extension>();
+            RecipeExtension extension = bill?.recipe?.GetModExtension<RecipeExtension>();
             adjust = extension?.individualIngredients ?? false;
             alreadyUsed.Clear();
         }

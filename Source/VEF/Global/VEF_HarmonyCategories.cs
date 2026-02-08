@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using VEF.Genes;
+using VEF.Things;
 using Verse;
 
 namespace VEF;
@@ -11,6 +12,7 @@ public class VEF_HarmonyCategories
 {
     public const string LateHarmonyPatchCategory = "LateHarmonyPatch";
     public const string MoveSpeedFactorByTerrainTagCategory = "MoveSpeedFactorByTerrainTag";
+    public const string UseStoneChunksAsStuffInRecipes = nameof(UseStoneChunksAsStuffInRecipes);
 
     internal static void TryPatchAll(Harmony harmony)
     {
@@ -29,6 +31,7 @@ public class VEF_HarmonyCategories
         {
             RunPatches(harmony, LateHarmonyPatchCategory);
             RunPatches(harmony, MoveSpeedFactorByTerrainTagCategory, IsMoveSpeedFactorByTerrainTagActive);
+            RunPatches(harmony, UseStoneChunksAsStuffInRecipes, IsStoneChunksAsStuffInRecipesActive);
         });
     }
 
@@ -81,5 +84,17 @@ public class VEF_HarmonyCategories
 
             return false;
         }
+    }
+
+    private static bool IsStoneChunksAsStuffInRecipesActive()
+    {
+        foreach (var def in DefDatabase<RecipeDef>.AllDefs)
+        {
+            var extension = def.GetModExtension<RecipeExtension>();
+            if (extension is { chunksAsStuff: true })
+                return true;
+        }
+
+        return false;
     }
 }

@@ -321,6 +321,9 @@
     <Compile Include="Maps\Harmony\OptionalFeatures\GetOrGenerateMapUtility_GetOrGenerateMap.cs" />
     <Compile Include="Maps\Harmony\OptionalFeatures\StorytellerComp_Disease_MakeIntervalIncidents.cs" />
     <Compile Include="Maps\Harmony\OptionalFeatures\TileMutatorWorker_River_RiverBankTerrainAt.cs" />
+    <Compile Include="Things\DefModExtensions\RecipeExtension.cs" />
+    <Compile Include="Things\Harmony\GenRecipe_MakeRecipeProducts.cs" />
+    <Compile Include="Things\Harmony\RecipeDef_WorkAmountForStuff.cs" />
     <Compile Include="Weapons\Harmony\OptionalFeatures\IncidentWorker_TraderCaravanArrival_TryExecuteWorker.cs" />
     <Compile Include="Weapons\Harmony\OptionalFeatures\PawnRenderUtility_DrawEquipmentAiming.cs" />
     <Compile Include="Weapons\Harmony\OptionalFeatures\Pawn_GetInspectString.cs" />
