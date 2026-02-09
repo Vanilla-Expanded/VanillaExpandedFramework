@@ -6,7 +6,6 @@ namespace VEF.Buildings
     [DefOf]
     public static class InternalDefOf
     {
-
         public static ThingDef Armchair;
         public static ThingDef Dresser;
         public static ThingDef Shelf;
@@ -15,5 +14,7 @@ namespace VEF.Buildings
         public static JobDef VFE_Loot;
         public static JobDef VFE_StudyBuilding;
         public static JobDef VEF_RefuelSecondary;
+
+        public static StatDef VEF_BuildingBreakdownFactor;
     }
 }

@@ -342,4 +342,14 @@
 		<displayPriorityInCategory>4101</displayPriorityInCategory>
 		<showDevelopmentalStageFilter>Child, Adult</showDevelopmentalStageFilter>
 	</StatDef>
+	<StatDef>
+		<defName>VEF_BuildingBreakdownFactor</defName>
+		<label>breakdown factor</label>
+		<description>A multiplier on how often this building breaks down.</description>
+		<category>Building</category>
+		<defaultBaseValue>1</defaultBaseValue>
+		<toStringStyle>PercentZero</toStringStyle>
+		<showIfUndefined>false</showIfUndefined>
+		<displayPriorityInCategory>300</displayPriorityInCategory>
+	</StatDef>
 </Defs>
