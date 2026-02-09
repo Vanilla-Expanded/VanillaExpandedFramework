@@ -61,6 +61,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Comps\CompGlowerOnProcess.cs" />
+    <Compile Include="Comps\CompHeatPusherPowered_Overclocked.cs" />
+    <Compile Include="Comps\CompPowerTrader_Overclocked.cs" />
     <Compile Include="Comps\CompProperties\CompProperties_GlowerOnProcess.cs" />
     <Compile Include="Comps\Map\AdvancedProcessorsManager.cs" />
     <Compile Include="Alert_NoStorage.cs" />

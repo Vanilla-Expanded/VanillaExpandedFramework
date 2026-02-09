@@ -1034,7 +1034,7 @@ namespace PipeSystem
             // Process label
 
             string qualityString = def.ticksQuality.NullOrEmpty() ? " " : " (" + qualityToOutput.GetLabel().CapitalizeFirst() + ") ";
-            Widgets.Label(new Rect(28f, 0f, rect.width - 48f - 40f, rect.height + 5f), def.LabelCap + qualityString + "(" + ((int)(cachedInitialTicks / advancedProcessor.overclockMultiplier)).ToStringTicksToDays() + ")");
+            Widgets.Label(new Rect(28f, 0f, rect.width - 48f - 40f, rect.height + 5f), def.LabelCap + qualityString + "(" + ((int)((cachedInitialTicks / advancedProcessor.overclockMultiplier)/ advancedProcessor.GetNotInRoomRoleFactor(parent))).ToStringTicksToDays() + ")");
             // Config
             var baseRect = rect.AtZero();
             GUI.color = new Color(1f, 1f, 1f, 0.65f);

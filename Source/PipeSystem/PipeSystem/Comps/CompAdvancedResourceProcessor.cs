@@ -649,14 +649,16 @@ namespace PipeSystem
 
 
         /// <summary>
-        /// Add wastepack info in inspect string
+        /// Add miscellaneous info in inspect string
         /// </summary>
         public override string CompInspectStringExtra()
         {
-            var process = Process;
-            if (process == null) return null;
-
             var sb = new StringBuilder();
+            if (GetNotInRoomRoleFactor(parent) != 1)
+                sb.AppendLine("NotInRoomRole".Translate(parent.def.building.workTableRoomRole.label).CapitalizeFirst() + ": " + parent.def.building.workTableNotInRoomRoleFactor.ToStringPercent() + " " + "PipeSystem_WorkSpeed".Translate());
+
+            var process = Process;
+            if (process == null) return sb.ToString().TrimEndNewlines();
 
             if (!process.Def.hideProgressInInfobox)
             {
@@ -725,12 +727,10 @@ namespace PipeSystem
             }
 
             if (shouldProduceWastePack)
-                sb.Append("WasteLevel".Translate() + ": " + WasteProducedPercentFull.ToStringPercent());
+                sb.AppendLine("WasteLevel".Translate() + ": " + WasteProducedPercentFull.ToStringPercent());
             if (process.outputFactoryHopperIncorrect)
-                sb.Append("PipeSystem_OutputFactoryHopperIncorrect".Translate());
-            if (GetNotInRoomRoleFactor(parent) != 1)
-                sb.Append("NotInRoomRole".Translate(parent.def.building.workTableRoomRole.label).CapitalizeFirst()+": "+ parent.def.building.workTableNotInRoomRoleFactor.ToStringPercent()+ " "+"PipeSystem_WorkSpeed".Translate());
-
+                sb.AppendLine("PipeSystem_OutputFactoryHopperIncorrect".Translate());
+           
             return sb.ToString().TrimEndNewlines();
         }
 

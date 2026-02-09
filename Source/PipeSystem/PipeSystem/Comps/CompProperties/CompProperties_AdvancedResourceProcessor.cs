@@ -45,7 +45,10 @@ namespace PipeSystem
         public string overclockLabel;
         public string overclockWindowLabel;
         public string overclockDesc;
-       
+        public float minOverclock = 0.1f;
+        public float maxOverclock = 2;
+
+
         public bool hideSettings = true;
 
         public bool alwaysShowProgressBar = false;
