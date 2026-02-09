@@ -8,10 +8,13 @@ namespace VEF.Apparels
     [HarmonyPatch(typeof(SkillRecord), nameof(SkillRecord.Learn))]
     public static class VanillaExpandedFramework_SkillRecord_Learn_Patch
     {
-        public static void Prefix(SkillRecord __instance, Pawn ___pawn, ref float xp, bool direct = false)
+        public static void Prefix(Pawn ___pawn, ref float xp, bool ignoreLearnRate)
         {
-            AddSkillGainModifier(___pawn.apparel?.WornApparel, ref xp);
-            AddSkillGainModifier(___pawn.equipment?.AllEquipmentListForReading, ref xp);
+            if (!ignoreLearnRate)
+            {
+                AddSkillGainModifier(___pawn.apparel?.WornApparel, ref xp);
+                AddSkillGainModifier(___pawn.equipment?.AllEquipmentListForReading, ref xp);
+            }
         }
 
         private static void AddSkillGainModifier<T>(List<T> list, ref float xp) where T : Thing
