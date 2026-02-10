@@ -9,6 +9,7 @@ namespace PipeSystem
     public static class ProcessUtility
     {
         private static readonly RecipeTooltipLayout processTooltip = new RecipeTooltipLayout();
+        private static readonly Color InputCellIntensity = new Color(1f, 1f, 1f, 0.3f);
 
         public static Dictionary<ThingDef,List<Process>> Clipboard = new Dictionary<ThingDef, List<Process>>();
 
@@ -229,6 +230,38 @@ namespace PipeSystem
                 }
             }
             return num;
+        }
+
+        public static void DrawSlot(ThingDef tDef, IntVec3 interactionOffset, IntVec3 center, Rot4 placingRot, Material material)
+        {
+            IntVec3 c = ThingUtility.InteractionCell(interactionOffset, center, placingRot);
+            Vector3 vector = c.ToVector3ShiftedWithAltitude(AltitudeLayer.MetaOverlays);
+            if (c.InBounds(Find.CurrentMap))
+            {
+                Building edifice = c.GetEdifice(Find.CurrentMap);
+                if (edifice != null && edifice.def.building != null && edifice.def.building.isSittable)
+                {
+                    return;
+                }
+            }
+            if (tDef.interactionCellGraphic == null && tDef.interactionCellIcon != null)
+            {
+                ThingDef thingDef = tDef.interactionCellIcon;
+                if (thingDef.blueprintDef != null)
+                {
+                    thingDef = thingDef.blueprintDef;
+                }
+                tDef.interactionCellGraphic = thingDef.graphic.GetColoredVersion(ShaderTypeDefOf.EdgeDetect.Shader, InputCellIntensity, Color.white);
+            }
+            if (tDef.interactionCellGraphic != null)
+            {
+                Rot4 rot = (tDef.interactionCellIconReverse ? placingRot.Opposite : placingRot);
+                tDef.interactionCellGraphic.DrawFromDef(vector, rot, tDef.interactionCellIcon);
+            }
+            else
+            {
+                Graphics.DrawMesh(MeshPool.plane10, vector, Quaternion.identity, material, 0);
+            }
         }
     }
 }
