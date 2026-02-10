@@ -199,6 +199,8 @@ namespace PipeSystem
             ticksOrQualityTicks = (def.ticksQuality.NullOrEmpty() ? def.ticks : def.ticksQuality[(int)forcedQuality]);
             cachedInitialTicks = ticksOrQualityTicks;
 
+          
+
             CompAdvancedResourceProcessor comp = CachedCompAdvancedProcessor.GetFor(parent);
             if (comp != null)
             {
@@ -208,6 +210,7 @@ namespace PipeSystem
             
             
             tickLeft = def.isFactoryProcess ? (int)(GetFactoryAcceleration() * ticksOrQualityTicks) : ticksOrQualityTicks;
+           
             progress = 0f;
             ruinedPercent = 0f;
 
@@ -945,8 +948,15 @@ namespace PipeSystem
         public void ResetProcess(bool finished = true)
         {
             ResetOwners(finished);  // Reset ingredients owners
-            tickLeft = cachedInitialTicks;   // Reset ticks
-            pickUpReady = false;    // Reset pickup status
+            if (finished)
+            {
+                tickLeft = ticksOrQualityTicks;
+            }
+            else {
+                tickLeft = cachedInitialTicks;   // Reset ticks
+            }
+
+                pickUpReady = false;    // Reset pickup status
             ruinedPercent = 0;      // Reset ruining status
             progress = 0;           // Reset progress
            
