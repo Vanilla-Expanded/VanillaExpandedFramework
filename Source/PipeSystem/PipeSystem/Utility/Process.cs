@@ -607,25 +607,27 @@ namespace PipeSystem
         /// <param name="ingredientsOwner">ingredientsOwner</param>
         public void CheckInputSlots(ThingAndResourceOwner ingredientsOwner)
         {
-            //Log.Message("Checking input slots");
+            if (Def.ingredients.NullOrEmpty())
+            {
+                Notify_Started();
+                return;
+            }
+           
             foreach (IntVec3 slot in Def.autoInputSlots)
             {
                 IntVec3 pos = parent.Position + slot.RotatedBy(parent.Rotation);
-                //Log.Message("Checking " + pos);
-                if (!slot.InBounds(parent.Map))
-                    continue;
+              
+                if (!pos.InBounds(parent.Map)) { 
+                    continue; 
+                }
 
-                if (def.onlyGrabAndOutputToFactoryHoppers && !InputFactoryHopperDetected(slot))
-                {
-                    //Log.Message("Hopper NOT found");
+                if (def.onlyGrabAndOutputToFactoryHoppers && !InputFactoryHopperDetected(pos))
+                {                 
                     continue;
                 }
-                //Log.Message("Hopper found");
+              
 
-                if (Def.ingredients.NullOrEmpty())
-                {
-                    Notify_Started();
-                }
+                
 
                 List<Thing> thingList = pos.GetThingList(parent.Map);
                 for (int j = 0; j < thingList.Count; j++)

@@ -802,17 +802,17 @@ namespace PipeSystem
 
         public override void PostDrawExtraSelectionOverlays()
         {
-            base.PostDrawExtraSelectionOverlays();
+            
             if (Process != null && !Process.Def.autoInputSlots.NullOrEmpty())
             {
                 foreach (IntVec3 inputSlot in Process.Def.autoInputSlots)
                 {
-                    ProcessUtility.DrawSlot(parent.def, inputSlot, parent.Position, parent.Rotation, GraphicsCache.InputCellMaterial);
+                    ProcessUtility.DrawSlot(parent, inputSlot, GraphicsCache.InputCellMaterial);
                 }
             }
-            if (parent.def.hasInteractionCell)
+            if (Process != null && parent.def.hasInteractionCell && Process.Def.autoExtract)
             {
-                ProcessUtility.DrawSlot(parent.def, parent.Position + parent.def.interactionCellOffset.RotatedBy(parent.Rotation), parent.Position, parent.Rotation, GraphicsCache.OutputCellMaterial);
+                ProcessUtility.DrawSlot(parent, parent.def.interactionCellOffset, GraphicsCache.OutputCellMaterial);
 
             }
         }
