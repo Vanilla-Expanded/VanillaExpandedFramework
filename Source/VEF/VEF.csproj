@@ -183,7 +183,9 @@
     <Compile Include="Buildings\Building\LootableBuilding_Custom.cs" />
     <Compile Include="Buildings\Building\StudiableBuilding.cs" />
     <Compile Include="Buildings\Building\SwappableBuilding.cs" />
+    <Compile Include="Buildings\Comps\CompExtendedBiosculpterPod.cs" />
     <Compile Include="Buildings\Comps\CompJammedAirlock.cs" />
+    <Compile Include="Buildings\Comps\CompProperties\CompProperties_ExtendedBiosculpterPod.cs" />
     <Compile Include="Buildings\Comps\CompProperties\CompProperties_JammedAirlock.cs" />
     <Compile Include="Buildings\Comps\CompRefuelable_DualFuel.cs" />
     <Compile Include="Buildings\DefModExtensions\GhostGraphicExtension.cs" />
