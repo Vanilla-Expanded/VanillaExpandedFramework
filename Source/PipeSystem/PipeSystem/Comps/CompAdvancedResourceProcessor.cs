@@ -404,7 +404,8 @@ namespace PipeSystem
                 // Wastepack stop check
                 if (Props.stopWhenWastepackFull && Container.Full) return;
                 // Tick process
-                Process?.Tick((int)(ticks * overclockMultiplier * GetNotInRoomRoleFactor(parent)));
+                //Process?.Tick((int)(ticks * overclockMultiplier * GetNotInRoomRoleFactor(parent)));
+                Process?.Tick(ticks);
                 // Push heat
                 if (Props.heatPushWhileWorking && Process != null && !Process.MissingIngredients)
                     GenTemperature.PushHeat(parent, parent.def.building.heatPerTickWhileWorking * ticks);

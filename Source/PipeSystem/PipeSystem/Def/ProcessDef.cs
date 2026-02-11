@@ -83,7 +83,7 @@ namespace PipeSystem
         public string labelOverride = "";
         public int priorityInBillList = 0;     
         public bool hideProgressInInfobox = false;
-
+       
         // Sound handling
 
         public bool sustainerWhenWorking = false;
@@ -119,7 +119,7 @@ namespace PipeSystem
         }
 
         /// <summary>
-        /// Ingredient: can be pipeNet or thingDef and a count
+        /// Result: can be pipeNet or thingDef and a count
         /// </summary>
         public class Result
         {
