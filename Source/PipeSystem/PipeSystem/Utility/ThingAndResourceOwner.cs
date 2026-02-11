@@ -1,5 +1,9 @@
-﻿using System.Text;
+﻿using RimWorld;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Verse;
+using Verse.Noise;
 
 namespace PipeSystem
 {
@@ -32,6 +36,7 @@ namespace PipeSystem
         public int Count => count;
 
         public ThingDef lastThingStored;
+        public ThingDef stuffOfLastThingStored;
 
         public ThingAndResourceOwner()
         { }
@@ -54,14 +59,25 @@ namespace PipeSystem
             Scribe_Defs.Look(ref thingDef, "thingDef");
             Scribe_Defs.Look(ref thingCategoryDef, "thingCategoryDef");
             Scribe_Defs.Look(ref lastThingStored, "lastThingStored");
+            Scribe_Defs.Look(ref stuffOfLastThingStored, "stuffOfLastThingStored");
+
         }
 
         public void AddFromThing(Thing thing)
         {
-            if (thing.def != thingDef && !thing.def.thingCategories.Contains(thingCategoryDef))
+            if (thingDef != null && thing.def != thingDef){         
                 return;
+            }
+            if (thingCategoryDef != null) {
+                List<ThingCategoryDef> allRootAndChildCategories = thingCategoryDef.childCategories;
+                allRootAndChildCategories.Add(thingCategoryDef);
+                if (!thing.def.thingCategories.ToList().Intersect(allRootAndChildCategories).Any())
+                    return; 
+            }
+
 
             lastThingStored = thing.def;
+            stuffOfLastThingStored = thing.Stuff;
             var needed = wantedCount - count;
             if (thing.stackCount > needed)
             {
@@ -102,8 +118,11 @@ namespace PipeSystem
 
         public void Reset()
         {
+           
             count = 0;
             beingFilled = false;
+            lastThingStored = null;
+            stuffOfLastThingStored = null;
         }
 
         public override string ToString()

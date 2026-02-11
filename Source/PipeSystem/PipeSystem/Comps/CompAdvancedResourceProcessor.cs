@@ -121,10 +121,6 @@ namespace PipeSystem
                     var process = processes[i];
                     if (process.researchPrerequisites != null && process.researchPrerequisites.Any(p => !p.IsFinished)) continue;
 
-
-
-
-
                     var label = "";
                     if (process.labelOverride != "")
                     {
@@ -139,7 +135,7 @@ namespace PipeSystem
                         label = "PipeSystem_MakeProcess".Translate(name);
                         if (process.results[0].count > 1)
                         {
-                            label += " x" + process.results[0].count;
+                            label += " x" + process.results[0].GetCount(Process);
                         }
                     }
 
@@ -148,7 +144,7 @@ namespace PipeSystem
                                                              process.results[0].thing, null, false, MenuOptionPriority.Default,
                                                              (Rect rect) => process.DoProcessInfoWindow(i, rect),
                                                              null, 29f,
-                                                             (Rect rect) => process.results[0].thing != null && Widgets.InfoCardButton(rect.x + 5f, rect.y + (rect.height - 24f) / 2f, process.results[0].thing),
+                                                             (Rect rect) => process.results[0].thing != null && Widgets.InfoCardButton(rect.x + 5f, rect.y + (rect.height - 24f) / 2f, process),
                                                              null, true));
                 }
 

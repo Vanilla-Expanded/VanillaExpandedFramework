@@ -81,7 +81,7 @@ namespace PipeSystem
                 // Draw category requirement
                 else if (requirement.thingCategory != null)
                 {
-                    var icons = new List<TextureAndColor>() { ToTextureAndColorCategory(requirement.thingCategory) };
+                    var icons = new List<TextureAndColor>() { ToTextureAndColorCategory(requirement.thingCategory, requirement) };
                     DisplayIngredientIconRow(icons, draw, requirement.countNeeded);
                     // If can also take from net, add or X net
                     if (requirement.pipeNet != null)
@@ -118,37 +118,53 @@ namespace PipeSystem
             processTooltip.Label((resultCount > 1 ? "Products" : "PipeSystem_Product").Translate() + ": ", draw);
             processTooltip.Newline();
             // Draw products
+           
+
             for (int i = 0; i < resultCount; i++)
             {
                 var result = processDef.results[i];
-                if (result.thing != null)
+
+                if (result.outputStringOverride != "")
                 {
-                    DisplayIngredientIconRow(new List<TextureAndColor>() { ToTextureAndColor(result.thing) }, draw, result.count);
-                    // Add or X net if can output to net
-                    if (result.pipeNet != null)
-                    {
-                        processTooltip.Gap(4f, 0f);
-                        Text.Anchor = TextAnchor.MiddleLeft;
-                        processTooltip.Label("PipeSystem_OrNet".Translate(result.pipeNet.loweredName), draw);
-                        Text.Anchor = TextAnchor.UpperLeft;
-                    }
+                    processTooltip.Gap(4f, 0f);
+                    Text.Anchor = TextAnchor.MiddleLeft;
+                    processTooltip.Label(result.outputStringOverride.Translate(), draw);
+                    Text.Anchor = TextAnchor.UpperLeft;
                 }
                 else
                 {
-                    processTooltip.Gap(8f, 0f);
-                    processTooltip.Label(result.count + "x ", draw);
-                    // Draw net ui icon if any
-                    var icon = processDef.uiIcon ?? result.pipeNet?.uiIcon;
-                    if (icon != null)
+                    if (result.thing != null)
                     {
-                        processTooltip.Icon(icon, Color.white, Text.LineHeightOf(GameFont.Small), draw);
+                        DisplayIngredientIconRow(new List<TextureAndColor>() { ToTextureAndColor(result.thing) }, draw, result.count);
+                        // Add or X net if can output to net
+                        if (result.pipeNet != null)
+                        {
+                            processTooltip.Gap(4f, 0f);
+                            Text.Anchor = TextAnchor.MiddleLeft;
+                            processTooltip.Label("PipeSystem_OrNet".Translate(result.pipeNet.loweredName), draw);
+                            Text.Anchor = TextAnchor.UpperLeft;
+                        }
                     }
-                    if (result.pipeNet != null)
+                    else
                     {
-                        processTooltip.Gap(4f, 0f);
-                        processTooltip.Label("PipeSystem_OutputToNet".Translate(result.pipeNet.loweredName), draw);
+                        processTooltip.Gap(8f, 0f);
+                        processTooltip.Label(result.count + "x ", draw);
+                        // Draw net ui icon if any
+                        var icon = processDef.uiIcon ?? result.pipeNet?.uiIcon;
+                        if (icon != null)
+                        {
+                            processTooltip.Icon(icon, Color.white, Text.LineHeightOf(GameFont.Small), draw);
+                        }
+                        if (result.pipeNet != null)
+                        {
+                            processTooltip.Gap(4f, 0f);
+                            processTooltip.Label("PipeSystem_OutputToNet".Translate(result.pipeNet.loweredName), draw);
+                        }
                     }
+
                 }
+
+               
                 processTooltip.Newline();
             }
 
@@ -203,8 +219,14 @@ namespace PipeSystem
         /// </summary>
         /// <param name="td"></param>
         /// <returns></returns>
-        private static TextureAndColor ToTextureAndColorCategory(ThingCategoryDef td) => new TextureAndColor(td.icon, Color.white);
-
+        private static TextureAndColor ToTextureAndColorCategory(ThingCategoryDef td, ProcessDef.Ingredient requirement)
+        {
+            if (td.icon != null)
+            {
+                return new TextureAndColor(ContentFinder<Texture2D>.Get(requirement.ingredientIconOverride), Color.white);
+            }
+            return new TextureAndColor(td.icon, Color.white);
+        }
 
         public static int CountResults(Process process)
         {
@@ -240,5 +262,12 @@ namespace PipeSystem
             Graphics.DrawMesh(MeshPool.plane10, vector, Quaternion.identity, material, 0);
            
         }
+        public static bool StorageTabOpen()
+        {
+            var inspect = MainButtonDefOf.Inspect.TabWindow as MainTabWindow_Inspect;
+            return inspect?.OpenTabType != null &&
+                   typeof(ITab_Storage).IsAssignableFrom(inspect.OpenTabType);
+        }
+
     }
 }

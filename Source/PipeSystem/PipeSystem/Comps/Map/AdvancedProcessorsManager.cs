@@ -87,13 +87,16 @@ namespace PipeSystem
         /// <param name="thing"></param>
         public void AddIngredient(CompAdvancedResourceProcessor comp, Thing thing)
         {
+           
             var owner = comp.Process.GetOwnerFor(thing.def);
+           
             if (owner == null)
             {
                 owner = comp.Process.GetOwnerForCategory(thing.def.thingCategories);
             }
+           
             owner.AddFromThing(thing);
-
+            
             if (comp.Process.Def.transfersIngredientList)
             {
                 CompIngredients compingredientsInput = thing?.TryGetComp<CompIngredients>();
@@ -105,12 +108,11 @@ namespace PipeSystem
                         {
                             comp.cachedIngredients.Add(ingredient);
                         }
-                    }
-                    
+                    }               
                 }
             }
             else { comp.cachedIngredients.Add(thing.def); }
-
+            
             if (!owner.Require && awaitingIngredients.Remove(comp.parent)) {
                 comp.Process.Notify_Started();
             }

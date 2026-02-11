@@ -571,6 +571,8 @@ namespace PipeSystem
         /// </summary>
         public bool FactoryHopperDetected()
         {
+            if (ProcessUtility.StorageTabOpen())
+                return false;
             List<Thing> hoppers = this.parent.InteractionCell.GetThingList(this.parent.Map);
             foreach (Thing hopper in hoppers)
             {
@@ -578,14 +580,17 @@ namespace PipeSystem
                 if (extension != null && extension.isfactoryHopper)
                 {
                     Building_Storage storage = hopper as Building_Storage;
-                    if (storage?.GetStoreSettings().AllowedToAccept(def.results[0].thing) == true)
-                    {
+
+                    StorageSettings settings = storage?.GetStoreSettings();
+                    if (settings != null && settings.filter.Allows(def.results[0].thing))
                         return true;
-                    }
+
                 }
             }
-            return false;
+            return true;
         }
+
+
 
         /// <summary>
         /// Returns true if a factory hoppers is detected on the input cell
@@ -628,9 +633,6 @@ namespace PipeSystem
                 {                 
                     continue;
                 }
-              
-
-                
 
                 List<Thing> thingList = pos.GetThingList(parent.Map);
                 for (int j = 0; j < thingList.Count; j++)
@@ -639,17 +641,24 @@ namespace PipeSystem
 
                     foreach (ProcessDef.Ingredient ingredient in Def.ingredients)
                     {
+                       
                         if (ingredient.thingCategory != null)
                         {
-                            if (thingToCheck.def.IsWithinCategory(ingredient.thingCategory))
+                            if (thingToCheck.def.IsWithinCategory(ingredient.thingCategory) &&
+                                !ingredient.disallowedThingDefs.Contains(thingToCheck.def) &&
+                                (!ingredient.onlySmeltable || thingToCheck.Smeltable)
+                               
+                                )
                             {
+                              
                                 ingredientsOwner.BeingFilled = true;
                                 advancedProcessorsManager.AddIngredient(advancedProcessor, thingToCheck);
                             }
                         }
                         else
                         {
-                            if (thingToCheck.def == ingredient.thing)
+                            if (thingToCheck.def == ingredient.thing &&
+                                (!ingredient.onlySmeltable || thingToCheck.Smeltable))
                             {
                                 ingredientsOwner.BeingFilled = true;
                                 advancedProcessorsManager.AddIngredient(advancedProcessor, thingToCheck);
@@ -740,7 +749,7 @@ namespace PipeSystem
                 // If it can directly go into the net
                 if (result.pipeNet != null && resComp != null && resComp.PipeNet is PipeNet net && net.connectors.Count > 1)
                 {
-                    var count = result.count;
+                    var count = result.GetCount(this);
                     // Available storage, store it
                     if (net.AvailableCapacity > count)
                     {
@@ -757,10 +766,12 @@ namespace PipeSystem
                         net.DistributeAmongRefillables(count, false);
                     }
                 }
+                
                 // If can't go into net and should/can spawn
                 // Bypass ground setting if thing can't be put in net
                 else if (spawning && result.GetOutput(this) is ThingDef output && (extractor != null || advancedProcessor.outputOnGround || result.pipeNet == null))
                 {
+                   
                     var map = parent.Map;
                     // If defined outputCellOffset
                     if (result.outputCellOffset != IntVec3.Invalid && SpawnResultAt(result, parent.Position + (result.outputCellOffset.RotatedBy(parent.Rotation)), map, ref outThings)) { continue; }
@@ -827,12 +838,12 @@ namespace PipeSystem
 
                     if (!def.onlyGrabAndOutputToFactoryHoppers)
                     {
-                        if ((thing.stackCount + result.count) > thing.def.stackLimit)
+                        if ((thing.stackCount + result.GetCount(this)) > thing.def.stackLimit)
                             return false;
                     }
 
                     // We found some, modifying stack size
-                    thing.stackCount += result.count;
+                    thing.stackCount += result.GetCount(this);
 
                     outThing = thing;
                     HandleIngredientsAndQuality(outThing);
@@ -842,7 +853,7 @@ namespace PipeSystem
                 {
                     // We didn't find any, creating thing
                     thing = ThingMaker.MakeThing(output);
-                    thing.stackCount = result.count;
+                    thing.stackCount = result.GetCount(this);
                     if (!GenPlace.TryPlaceThing(thing, cell, map, ThingPlaceMode.Direct))
                         return false;
 
@@ -947,6 +958,7 @@ namespace PipeSystem
         /// <param name="finished">Process finished normaly?</param>
         public void ResetProcess(bool finished = true)
         {
+          
             ResetOwners(finished);  // Reset ingredients owners
             if (finished)
             {
@@ -956,7 +968,7 @@ namespace PipeSystem
                 tickLeft = cachedInitialTicks;   // Reset ticks
             }
 
-                pickUpReady = false;    // Reset pickup status
+            pickUpReady = false;    // Reset pickup status
             ruinedPercent = 0;      // Reset ruining status
             progress = 0;           // Reset progress
            
@@ -996,10 +1008,13 @@ namespace PipeSystem
         /// <returns></returns>
         public ThingAndResourceOwner GetOwnerForCategory(List<ThingCategoryDef> thingcategoryDefs)
         {
+           
             for (int i = 0; i < ingredientsOwners.Count; i++)
             {
                 var owner = ingredientsOwners[i];
-                if (thingcategoryDefs.Contains(owner.ThingCategoryDef))
+                List<ThingCategoryDef> allRootAndChildCategories = owner.ThingCategoryDef.childCategories;
+                allRootAndChildCategories.Add(owner.ThingCategoryDef);
+                if (thingcategoryDefs.Intersect(allRootAndChildCategories).Any())
                     return owner;
             }
 
@@ -1243,6 +1258,23 @@ namespace PipeSystem
             return null;
         }
 
-      
+        public ThingDef GetStuffOfLastStoredIngredient()
+        {
+            var ingredientsOwners = IngredientsOwners;
+            if (ingredientsOwners != null)
+            {
+                for (int i = 0; i < ingredientsOwners.Count; i++)
+                {
+                    var owner = ingredientsOwners[i];
+                    if (owner.stuffOfLastThingStored != null && owner.Count > 0)
+                    {
+                        return owner.stuffOfLastThingStored;
+                    }
+                }
+            }
+            return null;
+        }
+
+
     }
 }
