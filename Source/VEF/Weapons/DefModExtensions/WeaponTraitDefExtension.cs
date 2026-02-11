@@ -48,8 +48,8 @@ namespace VEF.Weapons
         public List<float> burstShotCountRange;
         //This destroys the weapon after a certain amount of shots are fired
         public int limitedUses = 0;
-        //Contraband impact. Having this weapon equipped in your colony will cause an impact if visited by an Empire caravan
-        public int relationsImpactWithEmpire = 0;
+        //Contraband impact. Having this weapon equipped in your colony will cause an impact if visited by a specific faction caravan
+        public List<FactionRelationImpacts> factionRelationImpacts;
         //Draws a duplicate of the gun
         public bool drawDuplicate = false;
     }
@@ -74,6 +74,13 @@ namespace VEF.Weapons
 
         public NamedArgument ChargeNounArgument => chargeNoun.Named("CHARGENOUN");
 
+    }
+
+    public class FactionRelationImpacts
+    {
+        public FactionDef factionDef;
+        public HistoryEventDef eventDef;
+        public int impact;
     }
 
 }

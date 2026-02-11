@@ -1,6 +1,4 @@
-﻿using HarmonyLib;
-using RimWorld;
-using System;
+﻿using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
@@ -12,6 +10,7 @@ namespace VEF.Weapons
 
     public static class VanillaExpandedFramework_IncidentWorker_TraderCaravanArrival_TryExecuteWorker_Patch
     {
+        private static readonly HashSet<HistoryEventDef> factionImpacts = [];
 
         public static void DetectEmpireContraband(bool __result, IncidentParms parms)
         {
@@ -19,27 +18,25 @@ namespace VEF.Weapons
             {
                 Map map = (Map)parms.target;
                 Faction faction = parms.faction;
-                if (map != null && faction == Faction.OfEmpire)
+                if (map != null && faction != null)
                 {
-                    bool foundAColonist = false;
                     List<Pawn> colonists = map.PlayerPawnsForStoryteller.ToList();
+                    factionImpacts.Clear();
                     foreach (Pawn pawn in colonists)
                     {
-                        if (!foundAColonist)
+                        CompUniqueWeapon comp = pawn.equipment?.Primary?.GetComp<CompUniqueWeapon>();
+                        if (comp != null)
                         {
-                            CompUniqueWeapon comp = pawn.equipment?.Primary?.GetComp<CompUniqueWeapon>();
-                            if (comp != null)
+                            foreach (WeaponTraitDef item in comp.TraitsListForReading)
                             {
-                                foreach (WeaponTraitDef item in comp.TraitsListForReading)
+                                WeaponTraitDefExtension extension = item.GetModExtension<WeaponTraitDefExtension>();
+                                if (extension != null && !extension.factionRelationImpacts.NullOrEmpty())
                                 {
-                                    WeaponTraitDefExtension extension = item.GetModExtension<WeaponTraitDefExtension>();
-                                    if (extension != null)
+                                    foreach (var impact in extension.factionRelationImpacts)
                                     {
-                                        if (extension.relationsImpactWithEmpire != 0)
+                                        if (impact.factionDef == faction.def && impact.eventDef != null && impact.impact != 0 && factionImpacts.Add(impact.eventDef))
                                         {
-                                            Faction.OfPlayer.TryAffectGoodwillWith(Faction.OfEmpire, extension.relationsImpactWithEmpire, canSendMessage: true, canSendHostilityLetter: true, InternalDefOf.VWE_DeserterMarkings);
-                                            foundAColonist = true;
-                                            break;
+                                            Faction.OfPlayer.TryAffectGoodwillWith(faction, impact.impact, canSendMessage: true, canSendHostilityLetter: true, impact.eventDef);
                                         }
                                     }
                                 }
@@ -49,6 +46,7 @@ namespace VEF.Weapons
 
 
                     }
+                    factionImpacts.Clear();
                 }
 
 
