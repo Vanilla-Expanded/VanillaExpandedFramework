@@ -99,7 +99,6 @@ namespace PipeSystem
         /// </summary>
         public class Ingredient
         {
-            // TODO: Allow ThingFilter. Thousand year stare
             public PipeNetDef pipeNet;
             public ThingDef thing;
             public ThingCategoryDef thingCategory;
@@ -107,16 +106,11 @@ namespace PipeSystem
             // Amount needed to produce result
             public float countNeeded;
             public bool nutritionGetter = false;
+            public string ingredientIconOverride = "";
+            public bool onlySmeltable = false;
         }
 
-        public class ResultWorker
-        {
-            public Result result;
-            public virtual ThingDef GetResult(Process process)
-            {
-                return result.thing;
-            }
-        }
+        
 
         /// <summary>
         /// Result: can be pipeNet or thingDef and a count
@@ -144,9 +138,27 @@ namespace PipeSystem
             {
                 return Worker.GetResult(process);
             }
+            public int GetCount(Process process)
+            {
+                return Worker.GetCount(process);
+            }
 
             public int count;                                   // Count to produce
             public IntVec3 outputCellOffset = IntVec3.Invalid;  // Result cell output (offset based on center)
+            public string outputStringOverride = "";
+        }
+
+        public class ResultWorker
+        {
+            public Result result;
+            public virtual ThingDef GetResult(Process process)
+            {
+                return result.thing;
+            }
+            public virtual int GetCount(Process process)
+            {
+                return result.count;
+            }
         }
 
         public override IEnumerable<string> ConfigErrors()

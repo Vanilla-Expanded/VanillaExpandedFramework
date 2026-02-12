@@ -81,7 +81,7 @@ namespace PipeSystem
                 // Draw category requirement
                 else if (requirement.thingCategory != null)
                 {
-                    var icons = new List<TextureAndColor>() { ToTextureAndColorCategory(requirement.thingCategory) };
+                    var icons = new List<TextureAndColor>() { ToTextureAndColorCategory(requirement.thingCategory,requirement) };
                     DisplayIngredientIconRow(icons, draw, requirement.countNeeded);
                     // If can also take from net, add or X net
                     if (requirement.pipeNet != null)
@@ -121,34 +121,48 @@ namespace PipeSystem
             for (int i = 0; i < resultCount; i++)
             {
                 var result = processDef.results[i];
-                if (result.thing != null)
+
+                if (result.outputStringOverride != "")
                 {
-                    DisplayIngredientIconRow(new List<TextureAndColor>() { ToTextureAndColor(result.thing) }, draw, result.count);
-                    // Add or X net if can output to net
-                    if (result.pipeNet != null)
-                    {
-                        processTooltip.Gap(4f, 0f);
-                        Text.Anchor = TextAnchor.MiddleLeft;
-                        processTooltip.Label("PipeSystem_OrNet".Translate(result.pipeNet.loweredName), draw);
-                        Text.Anchor = TextAnchor.UpperLeft;
-                    }
+                    processTooltip.Gap(4f, 0f);
+                    Text.Anchor = TextAnchor.MiddleLeft;
+                    processTooltip.Label(result.outputStringOverride.Translate(), draw);
+                    Text.Anchor = TextAnchor.UpperLeft;
                 }
-                else
-                {
-                    processTooltip.Gap(8f, 0f);
-                    processTooltip.Label(result.count + "x ", draw);
-                    // Draw net ui icon if any
-                    var icon = processDef.uiIcon ?? result.pipeNet?.uiIcon;
-                    if (icon != null)
+                else {
+                    if (result.thing != null)
                     {
-                        processTooltip.Icon(icon, Color.white, Text.LineHeightOf(GameFont.Small), draw);
+                        DisplayIngredientIconRow(new List<TextureAndColor>() { ToTextureAndColor(result.thing) }, draw, result.count);
+                        // Add or X net if can output to net
+                        if (result.pipeNet != null)
+                        {
+                            processTooltip.Gap(4f, 0f);
+                            Text.Anchor = TextAnchor.MiddleLeft;
+                            processTooltip.Label("PipeSystem_OrNet".Translate(result.pipeNet.loweredName), draw);
+                            Text.Anchor = TextAnchor.UpperLeft;
+                        }
                     }
-                    if (result.pipeNet != null)
+                    else
                     {
-                        processTooltip.Gap(4f, 0f);
-                        processTooltip.Label("PipeSystem_OutputToNet".Translate(result.pipeNet.loweredName), draw);
+                        processTooltip.Gap(8f, 0f);
+                        processTooltip.Label(result.count + "x ", draw);
+                        // Draw net ui icon if any
+                        var icon = processDef.uiIcon ?? result.pipeNet?.uiIcon;
+                        if (icon != null)
+                        {
+                            processTooltip.Icon(icon, Color.white, Text.LineHeightOf(GameFont.Small), draw);
+                        }
+                        if (result.pipeNet != null)
+                        {
+                            processTooltip.Gap(4f, 0f);
+                            processTooltip.Label("PipeSystem_OutputToNet".Translate(result.pipeNet.loweredName), draw);
+                        }
                     }
+
                 }
+
+
+                
                 processTooltip.Newline();
             }
 
@@ -203,7 +217,17 @@ namespace PipeSystem
         /// </summary>
         /// <param name="td"></param>
         /// <returns></returns>
-        private static TextureAndColor ToTextureAndColorCategory(ThingCategoryDef td) => new TextureAndColor(td.icon, Color.white);
+        private static TextureAndColor ToTextureAndColorCategory(ThingCategoryDef td,ProcessDef.Ingredient requirement)
+        {
+            Texture2D tex = null;
+
+            if (requirement?.ingredientIconOverride != "")
+                tex = ContentFinder<Texture2D>.Get(requirement.ingredientIconOverride, false);
+
+            tex ??= td?.icon;
+
+            return new TextureAndColor(tex, Color.white);
+        }
 
 
         public static int CountResults(Process process)

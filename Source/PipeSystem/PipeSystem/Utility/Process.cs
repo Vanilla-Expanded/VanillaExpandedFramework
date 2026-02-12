@@ -7,6 +7,7 @@ using Unity.Jobs;
 using UnityEngine;
 using Verse;
 using Verse.AI;
+using Verse.Noise;
 using Verse.Sound;
 using static PipeSystem.ProcessDef;
 
@@ -195,11 +196,11 @@ namespace PipeSystem
         {
             this.parent = parent;
             def = processDef;
-           
+
             ticksOrQualityTicks = (def.ticksQuality.NullOrEmpty() ? def.ticks : def.ticksQuality[(int)forcedQuality]);
             cachedInitialTicks = ticksOrQualityTicks;
 
-          
+
 
             CompAdvancedResourceProcessor comp = CachedCompAdvancedProcessor.GetFor(parent);
             if (comp != null)
@@ -207,10 +208,10 @@ namespace PipeSystem
                 ticksOrQualityTicks = (int)(ticksOrQualityTicks / comp.GetNotInRoomRoleFactor(parent));
                 ticksOrQualityTicks = (int)(ticksOrQualityTicks / comp.overclockMultiplier);
             }
-            
-            
+
+
             tickLeft = def.isFactoryProcess ? (int)(GetFactoryAcceleration() * ticksOrQualityTicks) : ticksOrQualityTicks;
-           
+
             progress = 0f;
             ruinedPercent = 0f;
 
@@ -615,22 +616,23 @@ namespace PipeSystem
                 Notify_Started();
                 return;
             }
-           
+
             foreach (IntVec3 slot in Def.autoInputSlots)
             {
                 IntVec3 pos = parent.Position + slot.RotatedBy(parent.Rotation);
-              
-                if (!pos.InBounds(parent.Map)) { 
-                    continue; 
+
+                if (!pos.InBounds(parent.Map))
+                {
+                    continue;
                 }
 
                 if (def.onlyGrabAndOutputToFactoryHoppers && !InputFactoryHopperDetected(pos))
-                {                 
+                {
                     continue;
                 }
-              
 
-                
+
+
 
                 List<Thing> thingList = pos.GetThingList(parent.Map);
                 for (int j = 0; j < thingList.Count; j++)
@@ -641,7 +643,10 @@ namespace PipeSystem
                     {
                         if (ingredient.thingCategory != null)
                         {
-                            if (thingToCheck.def.IsWithinCategory(ingredient.thingCategory))
+
+                            if (thingToCheck.def.IsWithinCategory(ingredient.thingCategory) &&
+                            !ingredient.disallowedThingDefs.Contains(thingToCheck.def) &&
+                            (!ingredient.onlySmeltable || thingToCheck.Smeltable))
                             {
                                 ingredientsOwner.BeingFilled = true;
                                 advancedProcessorsManager.AddIngredient(advancedProcessor, thingToCheck);
@@ -649,7 +654,8 @@ namespace PipeSystem
                         }
                         else
                         {
-                            if (thingToCheck.def == ingredient.thing)
+                            if (thingToCheck.def == ingredient.thing &&
+                              (!ingredient.onlySmeltable || thingToCheck.Smeltable))
                             {
                                 ingredientsOwner.BeingFilled = true;
                                 advancedProcessorsManager.AddIngredient(advancedProcessor, thingToCheck);
@@ -740,7 +746,7 @@ namespace PipeSystem
                 // If it can directly go into the net
                 if (result.pipeNet != null && resComp != null && resComp.PipeNet is PipeNet net && net.connectors.Count > 1)
                 {
-                    var count = result.count;
+                    var count = result.GetCount(this);
                     // Available storage, store it
                     if (net.AvailableCapacity > count)
                     {
@@ -821,18 +827,19 @@ namespace PipeSystem
                 var output = result.GetOutput(this);
                 // Try find thing of the same def
                 var thing = cell.GetFirstThing(map, output);
+                int count = result.GetCount(this);
                 if (thing != null)
                 {
                     // If adding would go past stack limit
 
                     if (!def.onlyGrabAndOutputToFactoryHoppers)
                     {
-                        if ((thing.stackCount + result.count) > thing.def.stackLimit)
+                        if ((thing.stackCount + count) > thing.def.stackLimit)
                             return false;
                     }
 
                     // We found some, modifying stack size
-                    thing.stackCount += result.count;
+                    thing.stackCount += count;
 
                     outThing = thing;
                     HandleIngredientsAndQuality(outThing);
@@ -842,7 +849,7 @@ namespace PipeSystem
                 {
                     // We didn't find any, creating thing
                     thing = ThingMaker.MakeThing(output);
-                    thing.stackCount = result.count;
+                    thing.stackCount = count;
                     if (!GenPlace.TryPlaceThing(thing, cell, map, ThingPlaceMode.Direct))
                         return false;
 
@@ -952,14 +959,15 @@ namespace PipeSystem
             {
                 tickLeft = ticksOrQualityTicks;
             }
-            else {
+            else
+            {
                 tickLeft = cachedInitialTicks;   // Reset ticks
             }
 
-                pickUpReady = false;    // Reset pickup status
+            pickUpReady = false;    // Reset pickup status
             ruinedPercent = 0;      // Reset ruining status
             progress = 0;           // Reset progress
-           
+
 
             // If finished normaly, increment process count, produce wastepack
             if (finished)
@@ -999,7 +1007,9 @@ namespace PipeSystem
             for (int i = 0; i < ingredientsOwners.Count; i++)
             {
                 var owner = ingredientsOwners[i];
-                if (thingcategoryDefs.Contains(owner.ThingCategoryDef))
+                List<ThingCategoryDef> allRootAndChildCategories = owner.ThingCategoryDef.childCategories.ToList();
+                allRootAndChildCategories.Add(owner.ThingCategoryDef);
+                if (thingcategoryDefs.Intersect(allRootAndChildCategories).Any())
                     return owner;
             }
 
@@ -1050,7 +1060,7 @@ namespace PipeSystem
             // Process label
 
             string qualityString = def.ticksQuality.NullOrEmpty() ? " " : " (" + qualityToOutput.GetLabel().CapitalizeFirst() + ") ";
-            Widgets.Label(new Rect(28f, 0f, rect.width - 48f - 40f, rect.height + 5f), def.LabelCap + qualityString + "(" + ((int)((cachedInitialTicks / advancedProcessor.overclockMultiplier)/ advancedProcessor.GetNotInRoomRoleFactor(parent))).ToStringTicksToPeriod() + ")");
+            Widgets.Label(new Rect(28f, 0f, rect.width - 48f - 40f, rect.height + 5f), def.LabelCap + qualityString + "(" + ((int)((cachedInitialTicks / advancedProcessor.overclockMultiplier) / advancedProcessor.GetNotInRoomRoleFactor(parent))).ToStringTicksToPeriod() + ")");
             // Config
             var baseRect = rect.AtZero();
             GUI.color = new Color(1f, 1f, 1f, 0.65f);
@@ -1243,6 +1253,23 @@ namespace PipeSystem
             return null;
         }
 
-      
+        public ThingDef GetStuffOfLastStoredIngredient()
+        {
+            var ingredientsOwners = IngredientsOwners;
+            if (ingredientsOwners != null)
+            {
+                for (int i = 0; i < ingredientsOwners.Count; i++)
+                {
+                    var owner = ingredientsOwners[i];
+                    if (owner.stuffOfLastThingStored != null && owner.Count > 0)
+                    {
+                        return owner.stuffOfLastThingStored;
+                    }
+                }
+            }
+            return null;
+        }
+
+
     }
 }
