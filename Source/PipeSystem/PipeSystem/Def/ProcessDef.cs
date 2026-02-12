@@ -168,6 +168,7 @@ namespace PipeSystem
 
             if (ingredients.NullOrEmpty() && autoGrabFromHoppers)
                 yield return $"ProcessDef cannot have empty or null <ingredients> and autoGrabFromHoppers";
+           
             if (results.NullOrEmpty())
                 yield return $"ProcessDef cannot have empty or null <results>";
             if (autoGrabFromHoppers && autoInputSlots.NullOrEmpty())
@@ -180,6 +181,14 @@ namespace PipeSystem
                 var result = results[i];
                 if (result.pipeNet != null && result.thing == null && result.outputCellOffset != IntVec3.Invalid)
                     yield return $"ProcessDef result ({i}) <outputCellOffset> does not apply to net result";
+               
+            }
+            for (int i = 0; i < ingredients.Count; i++)
+            {
+                var ingredient = ingredients[i];
+                if (ingredient.thing is null && ingredient.thingCategory != null && ingredient.nutritionGetter)
+                    yield return $"ProcessDef has ingredients that look for a category and try to grab amount by nutrition. This is not possible right now.";
+
             }
         }
 
