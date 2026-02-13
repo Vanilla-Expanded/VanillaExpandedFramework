@@ -4,6 +4,7 @@ using System.Linq;
 using RimWorld;
 using Verse;
 using Verse.AI;
+using static PipeSystem.ProcessDef;
 
 namespace PipeSystem
 {
@@ -83,8 +84,24 @@ namespace PipeSystem
                 Log.Warning($"Tried to find ingredient for {comp.parent} but none is required.");
                 return null;
             }
+            Ingredient ingredient = comp.Process.Def.ingredients.Where(y => y.thing == firstMissing).FirstOrFallback();
 
-            bool validator(Thing x) => !x.IsForbidden(pawn) && pawn.CanReserve(x);
+            Predicate<Thing> validator = delegate (Thing x)
+            {
+                
+                if (ingredient.onlyFreshCorpses && x.TryGetComp<CompRottable>()?.Stage != RotStage.Fresh)
+                {
+                    return false;
+                }
+                if(ingredient.onlySmeltable && !x.Smeltable)
+                {
+                    return false;
+                }
+
+                return !x.IsForbidden(pawn) && pawn.CanReserve(x);
+            };
+
+        
             return GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, ThingRequest.ForDef(firstMissing), PathEndMode.ClosestTouch, TraverseParms.For(pawn), 9999f, validator);
         }
 
@@ -95,22 +112,30 @@ namespace PipeSystem
                 Log.Warning($"Tried to find category ingredient for {comp.parent} but none is required.");
                 return null;
             }
+            Ingredient ingredient = comp.Process.Def.ingredients.Where(y => y.thingCategory == firstCategoryMissing).FirstOrFallback();
 
             Predicate<Thing> validator = delegate (Thing x)
             {
                 if (comp.ProcessDef.disallowMixing && comp.Process.GetLastStoredIngredient()
                     is ThingDef stored && x.def != stored)
+                { return false;}
+
+                if (ingredient.onlyFreshCorpses && x.TryGetComp<CompRottable>()?.Stage != RotStage.Fresh)
                 {
                     return false;
                 }
+
                 return !x.IsForbidden(pawn) && pawn.CanReserve(x);
             };
 
             List<Thing> searchSet = new List<Thing>();
-            List<ThingDef> validThingDefs = firstCategoryMissing.childThingDefs.Where(x => comp.Process.Def.ingredients.Where(y => y.thingCategory == firstCategoryMissing).FirstOrFallback()?.disallowedThingDefs?.Contains(x) == false)?.ToList();
+           
+            List<ThingDef> validThingDefs = firstCategoryMissing.childThingDefs.Where(x => ingredient?.disallowedThingDefs?.Contains(x) == false &&
+            (!ingredient.onlySmeltable || x.smeltable) 
+            )?.ToList();
             foreach (ThingDef thingDef in validThingDefs)
             {                
-                    searchSet.AddRange(pawn.Map.listerThings.ThingsOfDef(thingDef));
+                searchSet.AddRange(pawn.Map.listerThings.ThingsOfDef(thingDef));
             }
             return GenClosest.ClosestThing_Global_Reachable(pawn.Position, pawn.Map, searchSet, PathEndMode.ClosestTouch, TraverseParms.For(pawn), 9999f, validator);
         }

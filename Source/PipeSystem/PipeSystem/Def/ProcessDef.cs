@@ -83,6 +83,7 @@ namespace PipeSystem
         public string labelOverride = "";
         public int priorityInBillList = 0;     
         public bool hideProgressInInfobox = false;
+        public HistoryEventDef historyEventWhenFinished;
        
         // Sound handling
 
@@ -108,6 +109,7 @@ namespace PipeSystem
             public bool nutritionGetter = false;
             public string ingredientIconOverride = "";
             public bool onlySmeltable = false;
+            public bool onlyFreshCorpses = false;
         }
 
         

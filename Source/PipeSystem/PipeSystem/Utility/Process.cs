@@ -373,6 +373,10 @@ namespace PipeSystem
             {
                 Notify_StopWorkingSound();
             }
+            if (def.historyEventWhenFinished != null)
+            {
+                Find.HistoryEventsManager.RecordEvent(new HistoryEvent(def.historyEventWhenFinished));
+            }
 
         }
 
@@ -486,6 +490,7 @@ namespace PipeSystem
             // We are active for ticks
             if (tickLeft > 0 && !RuinedByTemp)
             {
+                Log.Message(tickLeft);
                 TryRuin(ticks);
                 tickLeft -= ticks;
                 if (def.sustainerWhenWorking && workingSoundSustainer != null)
@@ -647,7 +652,10 @@ namespace PipeSystem
 
                             if (thingToCheck.def.IsWithinCategory(ingredient.thingCategory) &&
                             !ingredient.disallowedThingDefs.Contains(thingToCheck.def) &&
-                            (!ingredient.onlySmeltable || thingToCheck.Smeltable))
+                            (!ingredient.onlySmeltable || thingToCheck.Smeltable) &&
+                            (!ingredient.onlyFreshCorpses || (thingToCheck.TryGetComp<CompRottable>()?.Stage == RotStage.Fresh))
+
+                            )
                             {
                                 ingredientsOwner.BeingFilled = true;
                                 advancedProcessorsManager.AddIngredient(advancedProcessor, thingToCheck);
@@ -656,7 +664,10 @@ namespace PipeSystem
                         else
                         {
                             if (thingToCheck.def == ingredient.thing &&
-                              (!ingredient.onlySmeltable || thingToCheck.Smeltable))
+                              (!ingredient.onlySmeltable || thingToCheck.Smeltable) &&
+                            (!ingredient.onlyFreshCorpses || (thingToCheck.TryGetComp<CompRottable>()?.Stage == RotStage.Fresh))
+
+                            )
                             {
                                 ingredientsOwner.BeingFilled = true;
                                 advancedProcessorsManager.AddIngredient(advancedProcessor, thingToCheck);
