@@ -884,6 +884,7 @@
     <Compile Include="Weapons\Comps\CompHomingProjectile.cs" />
     <Compile Include="Hediffs\Comps\HediffComp_Phasing.cs" />
     <Compile Include="Weapons\Verbs\Verb_ShootOneUse_FlyOverhead.cs" />
+    <Compile Include="Weapons\Verbs\Verb_Shoot_FlyOverhead.cs" />
     <Compile Include="Weapons\WeaponTraitWorkers\WeaponTraitWorker_Extended.cs" />
     <Compile Include="Weathers\DefModExtensions\WeatherExtension.cs" />
     <Compile Include="Weathers\Harmony\GameCondition_ForceWeather_RandomizeSettings.cs" />
