@@ -13,6 +13,8 @@ using Verse.Noise;
 
 namespace PipeSystem
 {
+   
+
     [StaticConstructorOnStartup]
     public class CompAdvancedResourceProcessor : ThingComp
     {
@@ -23,7 +25,7 @@ namespace PipeSystem
         private static readonly Material WasteBarFilledMat = SolidColorMaterials.SimpleSolidColorMaterial(new Color(0.9f, 0.85f, 0.2f));
         private static readonly Material WasteBarUnfilledMat = SolidColorMaterials.SimpleSolidColorMaterial(new Color(0.3f, 0.3f, 0.3f, 1f));
 
-        public List<ThingDef> cachedIngredients = new List<ThingDef>();
+        public List<CachedIngredient> cachedIngredients = new List<CachedIngredient>();
 
         // Other comps we run check on
         public CompFlickable flickable;
@@ -370,7 +372,12 @@ namespace PipeSystem
             Scribe_Values.Look(ref outputOnGround, "outputOnGround");
             Scribe_Values.Look(ref wasteProduced, "wasteProduced");
             Scribe_Values.Look(ref overclockMultiplier, "overclockMultiplier");
-            Scribe_Collections.Look(ref cachedIngredients, "cachedIngredients", LookMode.Def);
+            Scribe_Collections.Look(ref cachedIngredients, "cachedIngredients", LookMode.Deep);
+
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                cachedIngredients ??= new List<CachedIngredient>();
+            }
         }
 
         /// <summary>
@@ -819,4 +826,17 @@ namespace PipeSystem
         }
 
     }
+
+    public class CachedIngredient : IExposable
+    {
+        public ThingDef thingDef;
+        public int count;
+
+        public void ExposeData()
+        {
+            Scribe_Defs.Look(ref thingDef, "thingDef");
+            Scribe_Values.Look(ref count, "count");
+        }
+    }
+
 }

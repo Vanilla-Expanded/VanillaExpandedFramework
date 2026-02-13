@@ -490,7 +490,7 @@ namespace PipeSystem
             // We are active for ticks
             if (tickLeft > 0 && !RuinedByTemp)
             {
-                Log.Message(tickLeft);
+               
                 TryRuin(ticks);
                 tickLeft -= ticks;
                 if (def.sustainerWhenWorking && workingSoundSustainer != null)
@@ -885,10 +885,11 @@ namespace PipeSystem
                 {
                     CompIngredients compingredients = outThing.TryGetComp<CompIngredients>();
 
-                    foreach (ThingDef ingredientInput in advancedProcessor.cachedIngredients)
+                    foreach (CachedIngredient ingredientInput in advancedProcessor.cachedIngredients)
                     {
-
-                        if (!compingredients.ingredients.Contains(ingredientInput)) { compingredients.ingredients.Add(ingredientInput); }
+                        if(!compingredients.ingredients.Contains(ingredientInput.thingDef)) {
+                            compingredients.ingredients.Add(ingredientInput.thingDef);
+                        }
                     }
                     advancedProcessor.cachedIngredients.Clear();
 

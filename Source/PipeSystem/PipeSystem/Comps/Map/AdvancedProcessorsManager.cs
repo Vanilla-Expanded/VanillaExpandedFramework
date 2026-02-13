@@ -102,15 +102,25 @@ namespace PipeSystem
                 {
                     foreach(ThingDef ingredient in compingredientsInput.ingredients)
                     {
-                        if (!comp.cachedIngredients.Contains(ingredient))
+                        if (!comp.cachedIngredients.Any(x => x.thingDef == ingredient))
                         {
-                            comp.cachedIngredients.Add(ingredient);
+                            comp.cachedIngredients.Add(new CachedIngredient
+                            {
+                                thingDef = ingredient,
+                                count = thing.stackCount
+                            });
                         }
                     }
                     
                 }
             }
-            else { comp.cachedIngredients.Add(thing.def); }
+            else {
+                comp.cachedIngredients.Add(new CachedIngredient
+                {
+                    thingDef = thing.def,
+                    count = thing.stackCount
+                });
+            }
 
             if (!owner.Require && awaitingIngredients.Remove(comp.parent)) {
                 comp.Process.Notify_Started();
