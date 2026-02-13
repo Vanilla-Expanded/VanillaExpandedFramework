@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using RimWorld;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Verse;
@@ -60,9 +61,9 @@ namespace PipeSystem
             Scribe_Defs.Look(ref lastThingStored, "lastThingStored");
         }
 
-        public void AddFromThing(Thing thing)
+        public void AddFromThing(Thing thing, out int used)
         {
-          
+            used = 0;
 
             if (thingDef != null && thing.def != thingDef)
             {
@@ -85,6 +86,7 @@ namespace PipeSystem
                 {
                     var taken = thing.SplitOff(needed);
                     count += taken.stackCount;
+                    used = taken.stackCount;
                     taken.Destroy();
                 }
                 
@@ -92,6 +94,7 @@ namespace PipeSystem
             else
             {
                 count += thing.stackCount;
+                used = thing.stackCount;
                 thing.Destroy();
             }
         }

@@ -93,7 +93,7 @@ namespace PipeSystem
                 owner = comp.Process.GetOwnerForCategory(thing.def.thingCategories);
             }
 
-            owner.AddFromThing(thing);
+            owner.AddFromThing(thing, out int used);
 
             if (comp.Process.Def.transfersIngredientList)
             {
@@ -107,7 +107,7 @@ namespace PipeSystem
                             comp.cachedIngredients.Add(new CachedIngredient
                             {
                                 thingDef = ingredient,
-                                count = thing.stackCount
+                                count = used
                             });
                         }
                     }
@@ -118,7 +118,7 @@ namespace PipeSystem
                 comp.cachedIngredients.Add(new CachedIngredient
                 {
                     thingDef = thing.def,
-                    count = thing.stackCount
+                    count = used
                 });
             }
 
