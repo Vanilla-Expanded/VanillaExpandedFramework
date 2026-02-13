@@ -128,28 +128,37 @@ namespace VEF.Apparels
             var outerPos = new Vector2(rect.x + 5, outerRect.y);
             float num = 0;
             int entryHeight = 200;
-            foreach (var def in thingDefs)
+            for (var i = 0; i < thingDefs.Count; i++)
             {
+                var def = thingDefs[i];
                 bool canDrawGroup = num >= scrollPosition.y - entryHeight && num <= (scrollPosition.y + outerRect.height);
                 float curNum = outerPos.y;
                 if (canDrawGroup)
                 {
+                    var highlightArea = new Rect(0, outerPos.y + 5, viewArea.width, 24f);
+                    if (Mouse.IsOver(highlightArea))
+                        Widgets.DrawHighlight(highlightArea);
+                    else if (i % 2 != 0)
+                        Widgets.DrawLightHighlight(highlightArea);
                     var iconRect = new Rect(outerPos.x + 5, outerPos.y + 5, 24, 24);
                     Widgets.ThingIcon(iconRect, def);
                     var labelRect = new Rect(iconRect.xMax + 15, outerPos.y + 5, viewArea.width - 80, 24f);
                     Widgets.Label(labelRect, def.LabelCap);
-                    var pos = new Vector2(viewArea.width - 40, labelRect.y);
                     if (usableWithShieldsWeapons.TryGetValue(def.defName, out var value) is false)
                     {
                         VanillaShieldsExpandedStartup.SetValues();
                     }
-                    Widgets.Checkbox(pos, ref value);
+
+                    Widgets.ToggleInvisibleDraggable(highlightArea, ref value, true, true);
+                    Widgets.CheckboxDraw(viewArea.width - 40, labelRect.y, value, false);
                     usableWithShieldsWeapons[def.defName] = value;
                 }
+
                 var innerPos = new Vector2(outerPos.x + 10, outerPos.y);
                 outerPos.y += 24;
                 num += outerPos.y - curNum;
             }
+
             Widgets.EndScrollView();
         }
 
