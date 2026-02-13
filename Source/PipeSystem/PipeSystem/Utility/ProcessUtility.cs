@@ -229,7 +229,10 @@ namespace PipeSystem
             return new TextureAndColor(tex, Color.white);
         }
 
-
+        /// <summary>
+        /// Counts amount of result items in stockpiles the map, including ones being carried
+        /// </summary>
+     
         public static int CountResults(Process process)
         {
            ProcessDef.Result firstresult = process.Def.results[0];
@@ -256,13 +259,39 @@ namespace PipeSystem
             return num;
         }
 
+        /// <summary>
+        /// Draw a material in the given cell
+        /// </summary>
+
         public static void DrawSlot(Thing building, IntVec3 cell, Material material)
         {
+            Vector3 vector = (building.Position + cell.RotatedBy(building.Rotation)).ToVector3ShiftedWithAltitude(AltitudeLayer.MetaOverlays);                     
+            Graphics.DrawMesh(MeshPool.plane10, vector, Quaternion.identity, material, 0);          
+        }
 
-            Vector3 vector = (building.Position + cell.RotatedBy(building.Rotation)).ToVector3ShiftedWithAltitude(AltitudeLayer.MetaOverlays);
-                      
-            Graphics.DrawMesh(MeshPool.plane10, vector, Quaternion.identity, material, 0);
-           
+        /// <summary>
+        /// Get all child categories under a category as a list
+        /// </summary>
+
+        public static List<ThingCategoryDef> AllChildrenCategories(ThingCategoryDef parentCategory)
+        {
+            List<ThingCategoryDef> allCategories = new List<ThingCategoryDef>();
+            AddCategoryRecursive(parentCategory, allCategories);
+            return allCategories;
+        }
+
+        private static void AddCategoryRecursive(ThingCategoryDef category, List<ThingCategoryDef> list)
+        {
+            if (category == null) return;
+
+            list.Add(category);
+
+            if (category.childCategories == null) return;
+
+            foreach (ThingCategoryDef child in category.childCategories)
+            {
+                AddCategoryRecursive(child, list);
+            }
         }
     }
 }

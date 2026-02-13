@@ -92,6 +92,7 @@ namespace PipeSystem
             {
                 owner = comp.Process.GetOwnerForCategory(thing.def.thingCategories);
             }
+
             owner.AddFromThing(thing);
 
             if (comp.Process.Def.transfersIngredientList)

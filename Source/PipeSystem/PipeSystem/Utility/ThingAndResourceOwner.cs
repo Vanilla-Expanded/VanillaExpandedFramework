@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using Verse;
+using Verse.Noise;
 
 namespace PipeSystem
 {
@@ -69,8 +70,8 @@ namespace PipeSystem
             }
             if (thingCategoryDef != null)
             {
-                List<ThingCategoryDef> allRootAndChildCategories = thingCategoryDef.childCategories.ToList();
-                allRootAndChildCategories.Add(thingCategoryDef);
+                List<ThingCategoryDef> allRootAndChildCategories = ProcessUtility.AllChildrenCategories(thingCategoryDef);
+                
                 if (!thing.def.thingCategories.ToList().Intersect(allRootAndChildCategories).Any())
                     return;
             }

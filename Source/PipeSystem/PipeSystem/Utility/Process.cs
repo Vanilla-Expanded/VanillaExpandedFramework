@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using RimWorld;
 using RimWorld.Planet;
 using Unity.Jobs;
@@ -1007,8 +1008,7 @@ namespace PipeSystem
             for (int i = 0; i < ingredientsOwners.Count; i++)
             {
                 var owner = ingredientsOwners[i];
-                List<ThingCategoryDef> allRootAndChildCategories = owner.ThingCategoryDef.childCategories.ToList();
-                allRootAndChildCategories.Add(owner.ThingCategoryDef);
+                List<ThingCategoryDef> allRootAndChildCategories = ProcessUtility.AllChildrenCategories(owner.ThingCategoryDef);
                 if (thingcategoryDefs.Intersect(allRootAndChildCategories).Any())
                     return owner;
             }
