@@ -266,7 +266,7 @@ namespace PipeSystem
         public static void DrawSlot(Thing building, IntVec3 cell, Material material)
         {
             Vector3 vector = (building.Position + cell.RotatedBy(building.Rotation)).ToVector3ShiftedWithAltitude(AltitudeLayer.MetaOverlays);
-            vector.y += 1;
+            vector.y += 0.1f;
             Graphics.DrawMesh(MeshPool.plane10, vector, Quaternion.identity, material, 0);          
         }
 
