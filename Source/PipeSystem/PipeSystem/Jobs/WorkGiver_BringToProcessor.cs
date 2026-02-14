@@ -84,16 +84,16 @@ namespace PipeSystem
                 Log.Warning($"Tried to find ingredient for {comp.parent} but none is required.");
                 return null;
             }
-            Ingredient ingredient = comp.Process.Def.ingredients.Where(y => y.thing == firstMissing).FirstOrFallback();
+            Ingredient ingredient = comp?.Process?.Def?.ingredients?.Where(y => y.thing == firstMissing).FirstOrFallback();
 
             Predicate<Thing> validator = delegate (Thing x)
             {
                 
-                if (ingredient.onlyFreshCorpses && x.TryGetComp<CompRottable>()?.Stage != RotStage.Fresh)
+                if (ingredient?.onlyFreshCorpses ==true && x.TryGetComp<CompRottable>()?.Stage != RotStage.Fresh)
                 {
                     return false;
                 }
-                if(ingredient.onlySmeltable && !x.Smeltable)
+                if(ingredient?.onlySmeltable == true && !x.Smeltable)
                 {
                     return false;
                 }
@@ -112,7 +112,7 @@ namespace PipeSystem
                 Log.Warning($"Tried to find category ingredient for {comp.parent} but none is required.");
                 return null;
             }
-            Ingredient ingredient = comp.Process.Def.ingredients.Where(y => y.thingCategory == firstCategoryMissing).FirstOrFallback();
+            Ingredient ingredient = comp?.Process?.Def?.ingredients?.Where(y => y.thingCategory == firstCategoryMissing).FirstOrFallback();
 
             Predicate<Thing> validator = delegate (Thing x)
             {
@@ -120,7 +120,7 @@ namespace PipeSystem
                     is ThingDef stored && x.def != stored)
                 { return false;}
 
-                if (ingredient.onlyFreshCorpses && x.TryGetComp<CompRottable>()?.Stage != RotStage.Fresh)
+                if (ingredient?.onlyFreshCorpses == true && x.TryGetComp<CompRottable>()?.Stage != RotStage.Fresh)
                 {
                     return false;
                 }
