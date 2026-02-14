@@ -146,7 +146,6 @@ namespace VEF.Apparels
     {
         public static void Postfix(Pawn_ApparelTracker __instance, Apparel apparel)
         {
-            Weapons.VerbUtility.TryModifyThingsVerbs(apparel);
             if (apparel is Apparel_Shield newShield)
             {
                 newShield.CompShield.equippedOffHand = true;
