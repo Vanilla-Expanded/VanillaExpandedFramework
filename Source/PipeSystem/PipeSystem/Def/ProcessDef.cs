@@ -71,6 +71,7 @@ namespace PipeSystem
 
         public bool useIngredients = false;                             // Use ingredients
         public bool transfersIngredientList = false;                    // Ingredient list of the product will be ingredient list of the input 
+        public bool useFirstIngredientAsOutputStuff = false;
 
         // Variables handling quality
 

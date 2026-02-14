@@ -896,9 +896,6 @@ namespace PipeSystem
                     }
                     advancedProcessor.cachedIngredients.Clear();
 
-
-
-
                 }
             }
             if (Def.stopAtQuality)
@@ -919,6 +916,11 @@ namespace PipeSystem
                 }
 
                 forceQualityOut = false;
+            }
+            if (Def.useFirstIngredientAsOutputStuff)
+            {
+                outThing.SetStuffDirect(advancedProcessor.cachedIngredients.First().thingDef);
+
             }
 
         }
