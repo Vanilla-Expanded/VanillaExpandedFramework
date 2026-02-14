@@ -617,6 +617,9 @@ namespace PipeSystem
         /// <param name="ingredientsOwner">ingredientsOwner</param>
         public void CheckInputSlots(ThingAndResourceOwner ingredientsOwner)
         {
+            if (parent.Map is null)
+                return;
+
             if (Def.ingredients.NullOrEmpty())
             {
                 Notify_Started();
