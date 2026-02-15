@@ -17,7 +17,7 @@ namespace VEF.Weapons
             if (__instance.equipment?.Primary != null)
             {
                 var comp = __instance.equipment.Primary.TryGetComp<CompApplyWeaponTraits>();
-                if (comp != null)
+                if (comp?.cachedLimitedUses>0)
                 {
                     var compInspectString = comp.ShotRemainingInfo();
                     var lines = __result.Split('\n').ToList();
