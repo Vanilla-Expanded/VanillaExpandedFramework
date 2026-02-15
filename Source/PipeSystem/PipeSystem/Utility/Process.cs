@@ -640,9 +640,6 @@ namespace PipeSystem
                     continue;
                 }
 
-
-
-
                 List<Thing> thingList = pos.GetThingList(parent.Map);
                 for (int j = 0; j < thingList.Count; j++)
                 {
@@ -656,8 +653,8 @@ namespace PipeSystem
                             if (thingToCheck.def.IsWithinCategory(ingredient.thingCategory) &&
                             !ingredient.disallowedThingDefs.Contains(thingToCheck.def) &&
                             (!ingredient.onlySmeltable || thingToCheck.Smeltable) &&
-                            (!ingredient.onlyFreshCorpses || (thingToCheck.TryGetComp<CompRottable>()?.Stage == RotStage.Fresh))
-
+                            (!ingredient.onlyFreshCorpses || (thingToCheck.TryGetComp<CompRottable>()?.Stage == RotStage.Fresh)) &&
+                            (!Def.disallowMixing || (GetLastStoredIngredient() is null || (GetLastStoredIngredient() is ThingDef stored && thingToCheck.def == stored)))
                             )
                             {
                                 ingredientsOwner.BeingFilled = true;
@@ -843,7 +840,7 @@ namespace PipeSystem
                 // Try find thing of the same def
                 var thing = cell.GetFirstThing(map, output);
                 int count = result.GetCount(this);
-                if (thing != null)
+                if (thing != null && !Def.useFirstIngredientAsOutputStuff)
                 {
                     // If adding would go past stack limit
 
@@ -863,7 +860,14 @@ namespace PipeSystem
                 else
                 {
                     // We didn't find any, creating thing
-                    thing = ThingMaker.MakeThing(output);
+                    if (Def.useFirstIngredientAsOutputStuff)
+                    {
+                        thing = ThingMaker.MakeThing(output, advancedProcessor.cachedIngredients.Last().thingDef);
+                       
+                    }
+                    else { thing = ThingMaker.MakeThing(output); }
+
+                    
                     thing.stackCount = count;
                     if (Def.onlyGrabAndOutputToFactoryHoppers)
                     {
@@ -926,11 +930,7 @@ namespace PipeSystem
 
                 forceQualityOut = false;
             }
-            if (Def.useFirstIngredientAsOutputStuff)
-            {
-                outThing.SetStuffDirect(advancedProcessor.cachedIngredients.First().thingDef);
-
-            }
+            
 
         }
 
