@@ -865,8 +865,17 @@ namespace PipeSystem
                     // We didn't find any, creating thing
                     thing = ThingMaker.MakeThing(output);
                     thing.stackCount = count;
-                    if (!GenPlace.TryPlaceThing(thing, cell, map, ThingPlaceMode.Direct))
-                        return false;
+                    if (Def.onlyGrabAndOutputToFactoryHoppers)
+                    {
+                        if (!GenPlace.TryPlaceThing(thing, cell, map, ThingPlaceMode.Direct))
+                            return false;
+                    }
+                    else
+                    {
+                        if (!GenPlace.TryPlaceThing(thing, cell, map, ThingPlaceMode.Near))
+                            return false;
+                    }
+                    
 
                     outThing = thing;
                     HandleIngredientsAndQuality(outThing);
