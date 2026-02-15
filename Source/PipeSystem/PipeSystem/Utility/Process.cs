@@ -1186,42 +1186,49 @@ namespace PipeSystem
                             tickLeft = def.ticksQuality[(int)QualityCategory.Awful]-ticksDone;
                             qualityToOutput =QualityCategory.Awful;
                             ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Awful];
+                            cachedInitialTicks = ticksOrQualityTicks;
                         }, extraPartWidth: 24f),
                         new FloatMenuOption(QualityCategory.Poor.GetLabel().CapitalizeFirst(), () => {
                             int ticksDone = def.ticksQuality[(int)qualityToOutput] - tickLeft;
                             tickLeft = def.ticksQuality[(int)QualityCategory.Poor]-ticksDone;
                             qualityToOutput =QualityCategory.Poor;
                             ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Poor];
+                            cachedInitialTicks = ticksOrQualityTicks;
                         }, extraPartWidth: 24f),
                         new FloatMenuOption(QualityCategory.Normal.GetLabel().CapitalizeFirst(), () => {
                            int ticksDone = def.ticksQuality[(int)qualityToOutput] - tickLeft;
                             tickLeft = def.ticksQuality[(int)QualityCategory.Normal]-ticksDone;
                             qualityToOutput =QualityCategory.Normal;
                             ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Normal];
+                            cachedInitialTicks = ticksOrQualityTicks;
                         }, extraPartWidth: 24f),
                         new FloatMenuOption(QualityCategory.Good.GetLabel().CapitalizeFirst(), () => {
                             int ticksDone = def.ticksQuality[(int)qualityToOutput] - tickLeft;
                             tickLeft = def.ticksQuality[(int)QualityCategory.Good]-ticksDone;
                             qualityToOutput =QualityCategory.Good;
                             ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Good];
+                            cachedInitialTicks = ticksOrQualityTicks;
                         }, extraPartWidth: 24f),
                         new FloatMenuOption(QualityCategory.Excellent.GetLabel().CapitalizeFirst(), () => {
                             int ticksDone = def.ticksQuality[(int)qualityToOutput] - tickLeft;
                             tickLeft = def.ticksQuality[(int)QualityCategory.Excellent]-ticksDone;
                             qualityToOutput =QualityCategory.Excellent;
                             ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Excellent];
+                            cachedInitialTicks = ticksOrQualityTicks;
                         }, extraPartWidth: 24f),
                         new FloatMenuOption(QualityCategory.Masterwork.GetLabel().CapitalizeFirst(), () => {
                             int ticksDone = def.ticksQuality[(int)qualityToOutput] - tickLeft;
                             tickLeft = def.ticksQuality[(int)QualityCategory.Masterwork]-ticksDone;
                             qualityToOutput =QualityCategory.Masterwork;
                             ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Masterwork];
+                            cachedInitialTicks = ticksOrQualityTicks;
                         }, extraPartWidth: 24f),
                         new FloatMenuOption(QualityCategory.Legendary.GetLabel().CapitalizeFirst(), () => {
                             int ticksDone = def.ticksQuality[(int)qualityToOutput] - tickLeft;
                             tickLeft = def.ticksQuality[(int)QualityCategory.Legendary]-ticksDone;
                             qualityToOutput =QualityCategory.Legendary;
                             ticksOrQualityTicks=def.ticksQuality[(int)QualityCategory.Legendary];
+                            cachedInitialTicks = ticksOrQualityTicks;
                         }, extraPartWidth: 24f)
                     };
                 }
