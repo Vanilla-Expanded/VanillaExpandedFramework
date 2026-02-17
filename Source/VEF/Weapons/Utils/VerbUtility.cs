@@ -73,7 +73,7 @@ namespace VEF.Weapons
             {
                 if (pawn.VerbTracker != null)
                 {
-                    allVerbs.AddRange(pawn.VerbTracker.AllVerbs);
+                    allVerbs.AddRange(pawn.VerbTracker.AllVerbs.Where(x => x != null));
                 }
             } catch (Exception e)
             {
@@ -83,7 +83,7 @@ namespace VEF.Weapons
             {
                 if (pawn.equipment != null)
                 {
-                    allVerbs.AddRange(pawn.equipment.AllEquipmentVerbs);
+                    allVerbs.AddRange(pawn.equipment.AllEquipmentVerbs.Where(x => x != null));
                 }
             } catch (Exception e)
             {
@@ -93,7 +93,7 @@ namespace VEF.Weapons
             {
                 if (pawn.apparel != null)
                 {
-                    allVerbs.AddRange(pawn.apparel.AllApparelVerbs);
+                    allVerbs.AddRange(pawn.apparel.AllApparelVerbs.Where(x => x != null));
                 }
             } catch (Exception e)
             {

@@ -2,7 +2,6 @@
 using System.Reflection;
 using System.Xml;
 using HarmonyLib;
-using RimWorld;
 using Verse;
 
 namespace VEF;

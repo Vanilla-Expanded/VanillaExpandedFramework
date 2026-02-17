@@ -13,13 +13,13 @@ internal class BackwardsCompatibilityMigrationUtility
 {
     internal static BackCompatabilityConverter_VEF converter;
 
-    internal static Dictionary<string, Type> abilityClasses = new();
+    internal static Dictionary<string, Type> abilityClasses = [];
     // We can either match defName first, or a type first.
     // Since types are less unique (there's a ton of ThingDefs), it should result in less dictionary lookups
     // if we check the defName first. If we, for example, match for ThingDef called "ModName_MyGun", there's
     // unlikely to be many defs named "ModName_MyGun" in the game. This means that we fail on the first check.
     // If we do it the other way around, we'll get a hit for every ThingDef, requiring a  defName check, meaning a second check.
-    internal static Dictionary<string, Dictionary<Type, string>> defNameConverters = new();
+    internal static Dictionary<string, Dictionary<Type, string>> defNameConverters = [];
 
     static BackwardsCompatibilityMigrationUtility()
     {
@@ -37,24 +37,42 @@ internal class BackwardsCompatibilityMigrationUtility
             }
         }
 
+        var vanillaRemovedDefs = removedDefs.Count;
         foreach (var def in DefDatabase<DefMigrationDef>.AllDefs.OrderByDescending(x => x.priority))
         {
-            if (!def.removedDefs.NullOrEmpty())
+            if (!def.migratedDefs.NullOrEmpty())
             {
-                removedDefs.AddRangeUnique(def.removedDefs.SelectMany(
-                    removals => removals.removals,
-                    (removals, removedDefName) => new Tuple<string, Type>(removedDefName, removals.type)));
-            }
-
-            if (!def.replacedDefs.NullOrEmpty())
-            {
-                foreach (var replacements in def.replacedDefs)
+                foreach (var migrationsByType in def.migratedDefs)
                 {
-                    foreach (var defNameReplacements in replacements.replacements)
+                    foreach (var migration in migrationsByType.migrations)
                     {
-                        if(!defNameConverters.TryGetValue(defNameReplacements.original, out var typeToDef))
-                            defNameConverters[defNameReplacements.original] = typeToDef = [];
-                        typeToDef.AddDistinct(replacements.type, defNameReplacements.replacement);
+                        // Check if we already have a migration ready. Don't do anything if we do, as the existing ones will have higher priority.
+                        if (defNameConverters.TryGetValue(migration.original, out var typeToDef))
+                        {
+                            if (typeToDef.ContainsKey(migrationsByType.type))
+                                continue;
+                        }
+
+                        if (migration.replacement == null)
+                        {
+                            // Don't add duplicates
+                            if (!removedDefs.Any(x => x.Item1 == migration.original && x.Item2 == migrationsByType.type))
+                                removedDefs.Add(new Tuple<string, Type>(migration.original, migrationsByType.type));
+                        }
+                        else
+                        {
+                            // We're guaranteed to have a replacement, so make sure we're not trying to also remove the def.
+                            // Also, don't remove vanilla defs from the list.
+                            var index = removedDefs.FindIndex(x => x.Item1 == migration.original && x.Item2 == migrationsByType.type);
+                            if (index >= vanillaRemovedDefs)
+                                removedDefs.RemoveAt(index);
+
+                            // Initialize the dictionary if it's null
+                            if(typeToDef == null)
+                                defNameConverters[migration.original] = typeToDef = [];
+                            // Guaranteed to not exists, no need to worry about distinct
+                            typeToDef[migrationsByType.type] = migration.replacement;
+                        }
                     }
                 }
             }
