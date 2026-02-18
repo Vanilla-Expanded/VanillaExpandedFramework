@@ -20,7 +20,10 @@ public class CompProperties_ExtendedBiosculpterPod : CompProperties_BiosculpterP
     public Vector3 pawnOffsetWest = Vector3.zero;
 
     public bool drawBackground = true;
-    public Vector3 backgroundOffset = Vector3.zero;
+    public Vector3 backgroundOffsetNorth = Vector3.zero;
+    public Vector3 backgroundOffsetSouth = Vector3.zero;
+    public Vector3 backgroundOffsetEast = Vector3.zero;
+    public Vector3 backgroundOffsetWest = Vector3.zero;
     public Vector3 backgroundSize = Vector3.zero;
     public string backgroundMaterialPath = null;
     [Unsaved]
@@ -63,7 +66,7 @@ public class CompProperties_ExtendedBiosculpterPod : CompProperties_BiosculpterP
 
     public Vector3 PawnOffsetFor(Rot4 rotation)
     {
-        var output = rotation.AsInt switch
+        return rotation.AsInt switch
         {
             Rot4.NorthInt => pawnOffsetNorth,
             Rot4.SouthInt => pawnOffsetSouth,
@@ -71,7 +74,17 @@ public class CompProperties_ExtendedBiosculpterPod : CompProperties_BiosculpterP
             Rot4.WestInt => pawnOffsetWest,
             _ => Vector3.zero,
         };
+    }
 
-        return output;
+    public Vector3 BackgroundOffsetFor(Rot4 rotation)
+    {
+        return rotation.AsInt switch
+        {
+            Rot4.NorthInt => backgroundOffsetNorth,
+            Rot4.SouthInt => backgroundOffsetSouth,
+            Rot4.EastInt => backgroundOffsetEast,
+            Rot4.WestInt => backgroundOffsetWest,
+            _ => Vector3.zero,
+        };
     }
 }
