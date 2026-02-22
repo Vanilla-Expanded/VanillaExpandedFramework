@@ -146,7 +146,7 @@ namespace PipeSystem
                     }
 
 
-                    processesOptions.Add(new FloatMenuOption(label, () => processStack.AddProcess(process, parent),
+                    processesOptions.Add(new FloatMenuOption(label, () => processStack.AddProcess(process, parent,BillRepeatModeDefOf.RepeatCount),
                                                              process.results[0].thing, null, false, MenuOptionPriority.Default,
                                                              (Rect rect) => process.DoProcessInfoWindow(i, rect),
                                                              null, 29f,
@@ -599,7 +599,7 @@ namespace PipeSystem
                     ProcessStack.Processes.Clear();
                     foreach (Process process in processList)
                     {
-                        ProcessStack.AddProcess(process.Def, (ThingWithComps)parent, process.targetCount);
+                        ProcessStack.AddProcess(process.Def, (ThingWithComps)parent, process.repeatMode,process.targetCount);
                     }
 
                     foreach (Process process in ProcessStack.Processes)
