@@ -118,7 +118,6 @@
     <Compile Include="Designators\Designator_ExportToXml.cs" />
     <Compile Include="Designators\Designator_ExportToXmlFromArea.cs" />
     <Compile Include="Designators\Dialog_ExportWindow.cs" />
-    <Compile Include="Harmony\Prefix_GenStep_Power.cs" />
     <Compile Include="GenStep\GenStep_CustomStructureGen.cs" />
     <Compile Include="GenStep\GenStep_EnnemiesPresence.cs" />
     <Compile Include="Harmony\Postfix_Page_ConfigureStartingPawns_PreOpen.cs" />
