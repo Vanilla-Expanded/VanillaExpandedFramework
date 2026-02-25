@@ -29,6 +29,13 @@ namespace PipeSystem
         public List<ThingDef> alertProofDefs = new List<ThingDef>(); // If net is one building, and it's in this list, no alert
         public List<ThingDef> noLinkedGraphicDefs = new List<ThingDef>(); // Non-pipe transmitters that shouldn't get the pipe graphic under them if connected to one
 
+        // Overflow is a "hidden" extra storage in pipe nets. Its main purpose is to avoid wasting produced resources.
+        // Some buildings, like resource traders, can produce more resource than the pipe net can currently store, thus
+        // wasting the extra production. Overflow allows to store that tiny bit of extra without wasting it.
+        public bool enableOverflow = true; // If the overflow should be enabled or not.
+        public float productionToOverflowCapacityRatio = 2f; // The ratio of produced resources to overflow capacity, if any. If production goes down the excess is NOT removed.
+        public float overflowAmount = 1f; // The amount of overflow the pipe net will have. If using production to capacity ratio, this will be treated as a minimum capacity.
+
         [Unsaved]
         internal Material offMat; // Off material
         [Unsaved]

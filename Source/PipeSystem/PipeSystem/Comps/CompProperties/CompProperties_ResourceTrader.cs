@@ -14,6 +14,8 @@ namespace PipeSystem
         public bool visualOnlyConsumption = false;
         // If true, the resource trader will handle ticking refuelable itself, which will only happen if the resource trader is actually used. You need to set "externalTicking" for associated refuelable to true.
         public bool handleCompRefuelableTicking = false;
+        // If true and resource trader handles refuelable ticking, the refuelable won't be consuming
+        public bool disableRefuelableConsumptionInLowPowerMode = false;
         // If true, the trader's PowerTrader power usage will be changed to its idle power consumption when refuelable comp is empty.
         public bool lowPowerWhenRefuelableEmpty = false;
 

@@ -87,11 +87,12 @@ namespace PipeSystem
             }
             set
             {
-                if (!Props.EverHasLowPowerMode)
+                if (!Props.EverHasLowPowerMode || lowPowerModeOnInt == value)
                     return;
 
                 powerComp.PowerOutput = value ? -powerComp.Props.idlePowerDraw : -powerComp.Props.PowerConsumption;
                 lowPowerModeOnInt = value;
+                PipeNet.UpdateLowPowerModeTrader(this);
             }
         }
 
@@ -102,7 +103,7 @@ namespace PipeSystem
                 // Producer conditions
                 if (Consumption < 0f)
                 {
-                    if (Props.producerLowPowerWhenStorageFull && PipeNet.AvailableCapacityLastTick <= 0f)
+                    if (Props.producerLowPowerWhenStorageFull && PipeNet.AvailableCapacityLastTick <= 0f && PipeNet.OverflowAmount > 0f)
                         return true;
                 }
 
@@ -218,12 +219,10 @@ namespace PipeSystem
 
             if (Props.handleCompRefuelableTicking)
             {
-                // If we're handling the refueable comp we need to drain the fuel ourselves
-                if (ResourceOn && !LowPowerModeOn && !compRefuelable.Props.consumeFuelOnlyWhenUsed && (compFlickable == null || compFlickable.SwitchIsOn) && (!compRefuelable.Props.consumeFuelOnlyWhenPowered || powerComp is { PowerOn: true }))
-                    compRefuelable.ConsumeFuel(compRefuelable.Props.fuelConsumptionRate / 60000f); // CompRefuelable.ConsumptionRatePerTick is private
+                HandleRefuelableTicking(compRefuelable.Props.fuelConsumptionRate / 60000f);
                 // If we're handling the refuelable comp's ticking, we need to make sure to drain its fuel during rain
                 if (compRefuelable.Props.fuelConsumptionPerTickInRain > 0f && parent.Spawned && parent.Map.weatherManager.RainRate > 0.4f && !parent.Map.roofGrid.Roofed(parent.Position))
-                    compRefuelable.ConsumeFuel(compRefuelable.Props.fuelConsumptionPerTickInRain);
+                    compRefuelable.ConsumeFuel(compRefuelable.Props.fuelConsumptionPerTickInRain); // CompRefuelable.ConsumptionRatePerTick is private
             }
 
             if (Props.soundAmbientReceivingResource == null)
@@ -242,6 +241,33 @@ namespace PipeSystem
                 sustainerResourceOn.End();
                 sustainerResourceOn = null;
             }
+        }
+
+        /// <summary>
+        /// Handle refuelable fuel consumption (assuming it's enabled in props).
+        /// </summary>
+        /// <param name="baseFuelConsumptionRate">Refuelable's consumption rate. Can be further modified when calling the base class.</param>
+        protected virtual void HandleRefuelableTicking(float baseFuelConsumptionRate)
+        {
+            // If we're handling the refueable comp we need to drain the fuel ourselves
+
+            // Make sure the resource is on
+            if (!ResourceOn)
+                return;
+            // Don't consume fuel if in low power mode and consumption is disabled in low power mode
+            if (LowPowerModeOn && Props.disableRefuelableConsumptionInLowPowerMode)
+                return;
+            // Don't consume fuel when using fuel only when used, handled separately
+            if (compRefuelable.Props.consumeFuelOnlyWhenUsed)
+                return;
+            // Don't consume fuel if flickable is not null and is flicked off
+            if (compFlickable is { SwitchIsOn: false })
+                return;
+            // Don't consume fuel if refuelable only consumes fuel when and is currently unpowered (not null and power off)
+            if (compRefuelable.Props.consumeFuelOnlyWhenPowered && powerComp is not { PowerOn: true })
+                return;
+
+            compRefuelable.ConsumeFuel(baseFuelConsumptionRate);
         }
 
         /// <summary>
@@ -288,6 +314,7 @@ namespace PipeSystem
                     PipeNet.producersDirty = true;
                 }
 
+                PipeNet.UpdateLowPowerModeTrader(this);
                 LowPowerModeOn = ShouldBeLowPowerMode;
             }
         }

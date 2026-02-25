@@ -35,6 +35,7 @@ namespace PipeSystem
         public bool nextTickRDirty;
         public bool producersDirty;
         public bool resourceTradersWithLowPowerModeDirty;
+        private float overflowAmount;
 
         internal List<CompResourceStorage> markedForTransfer = new List<CompResourceStorage>();
 
@@ -121,6 +122,17 @@ namespace PipeSystem
             }
         }
 
+        public float OverflowAmount
+        {
+            get => overflowAmount;
+            protected internal set
+            {
+                if (overflowAmount <= 0f ^ value <= 0f)
+                    resourceTradersWithLowPowerModeDirty = true;
+                overflowAmount = value;
+            }
+        }
+
         /// <summary>
         /// Loop on all receivers, sort them in receiversOn and receiversOff.
         /// Update Consumption. This is called when receiversDirty is true.
@@ -140,10 +152,13 @@ namespace PipeSystem
                 if (trader.ResourceOn)
                 {
                     receiversOn.Add(trader);
-                    if (trader.Props.visualOnlyConsumption)
-                        visualConsumption += trader.Consumption;
-                    else
-                        consumption += trader.Consumption;
+                    if (!trader.LowPowerModeOn)
+                    {
+                        if (trader.Props.visualOnlyConsumption)
+                            visualConsumption += trader.Consumption;
+                        else
+                            consumption += trader.Consumption;
+                    }
 
                     if (trader.UsedLastTick)
                     {
@@ -187,10 +202,13 @@ namespace PipeSystem
                 if (trader.ResourceOn)
                 {
                     producersOn.Add(trader);
-                    if (trader.Props.visualOnlyConsumption)
-                        visualProduction += -trader.Consumption;
-                    else
-                        production += -trader.Consumption;
+                    if (!trader.LowPowerModeOn)
+                    {
+                        if (trader.Props.visualOnlyConsumption)
+                            visualProduction += -trader.Consumption;
+                        else
+                            production += -trader.Consumption;
+                    }
                 }
                 else
                 {
@@ -227,6 +245,10 @@ namespace PipeSystem
                 RegisterComp(otherNet.connectors[i]);
             }
             map.GetComponent<PipeNetManager>().pipeNets.Remove(otherNet);
+            // Push the overflow from other net to this one, as the other one is getting destroyed after.
+            DistributeToOverflow(otherNet.OverflowAmount, true);
+            // Clear the other net's overflow, in case something would attempt to do something with it
+            otherNet.OverflowAmount = 0;
         }
 
         /// <summary>
@@ -270,6 +292,8 @@ namespace PipeSystem
                 }
                 else
                 {
+                    if (storages.Count == 0)
+                        resourceTradersWithLowPowerModeDirty = true;
                     storages.Add(storage);
                 }
             }
@@ -327,6 +351,8 @@ namespace PipeSystem
             else if (comp is CompResourceStorage storage)
             {
                 storages.Remove(storage);
+                if (storages.Count == 0)
+                    resourceTradersWithLowPowerModeDirty = true;
             }
             else if (comp is CompConvertToThing convertToThing)
             {
@@ -355,7 +381,14 @@ namespace PipeSystem
             }
 
             if (connectors.NullOrEmpty())
+            {
+                var overflow = OverflowAmount;
+                OverflowAmount = 0;
                 Destroy();
+
+                if (overflow > 0f)
+                    map.GetComponent<PipeNetManager>().pipeNets.FirstOrDefault(x => x.def == def)?.DistributeToOverflow(overflow, true);
+            }
         }
 
         /// <summary>
@@ -436,6 +469,9 @@ namespace PipeSystem
             // Draw from storage if we use more than we produce
             if (usable < 0)
             {
+                // Draw from overflow first
+                usable += DrawFromOverflow(-usable);
+                // If we have anymore left to draw, draw from storages
                 DrawAmongStorage(-usable, storages);
                 // Distribute using the whole storage
                 DistributeAmongRefillables(Stored);
@@ -446,7 +482,10 @@ namespace PipeSystem
             else if (storages.Count > 0)
             {
                 // Store it
-                DistributeAmongStorage(usable, out _);
+                DistributeAmongStorage(usable, out var stored);
+                // If anything left to store, put it into overflow
+                DistributeToOverflow(usable - stored);
+                // DistributeAmongOverflows(usable - stored);
                 // Get other inputs
                 GetFromConverters();
                 // Distribute using the whole storage
@@ -456,10 +495,21 @@ namespace PipeSystem
             }
             else
             {
-                float rUsage = DistributeAmongRefillables(usable);
-                float leftAfter = usable - rUsage;
-                float pUsage = DistributeAmongProcessors(leftAfter);
-                DistributeAmongConverters(leftAfter - pUsage);
+                var dirty = resourceTradersWithLowPowerModeDirty;
+                // Draw as much as possible from overflow to use it for distributing.
+                var overflow = DrawFromOverflow();
+                usable += overflow;
+                // Distribute using production and overflow
+                usable -= DistributeAmongRefillables(usable);
+                usable -= DistributeAmongProcessors(usable);
+                usable -= DistributeAmongConverters(usable);
+                // If anything is leftover, put it into overflow
+                DistributeToOverflow(usable, overflow);
+                // If we had non-zero overflow, temporarily made it zero, and then back to non-zero,
+                // the low power traders will be dirty. If it wasn't dirty already, clear the dirty flag
+                // if the overflow is either both zero or non-zero both before and after.
+                if (!dirty && !(overflowAmount <= 0f ^ overflow <= 0f))
+                    resourceTradersWithLowPowerModeDirty = false;
             }
 
             // Manage the tank marked for transfer
@@ -476,8 +526,8 @@ namespace PipeSystem
                 float toTransfer = availableCapacity > canTransfer ? canTransfer : availableCapacity;
                 float willTransfer = toTransfer > def.transferAmount ? def.transferAmount : toTransfer;
                 // Draw from marked and distribute to others
-                DrawAmongStorage(willTransfer, markedForTransfer);
-                DistributeAmongStorage(willTransfer, out _);
+                DrawAmongStorage(willTransfer, markedForTransfer, false);
+                DistributeAmongStorage(willTransfer, out _, allowOverflow: false);
             }
 
             var currentCapacity = AvailableCapacity;
@@ -486,15 +536,7 @@ namespace PipeSystem
             // If the current capacity is 0 or was 0 (but not both at the same time), go through the producers and update them.
             // We only care if we filled the storages to full, or used them up and they're no longer full
             if (resourceTradersWithLowPowerModeDirty || (currentCapacity <= 0 ^ previousCapacity <= 0))
-            {
-                for (var i = 0; i < resourceTradersWithLowPowerMode.Count; i++)
-                {
-                    var lowPowerModeTrader = resourceTradersWithLowPowerMode[i];
-                    lowPowerModeTrader.LowPowerModeOn = resourceTradersWithLowPowerMode[i].ShouldBeLowPowerMode;
-                }
-
-                resourceTradersWithLowPowerModeDirty = false;
-            }
+                UpdateLowPowerModeConsumers();
         }
 
         /// <summary>
@@ -646,18 +688,43 @@ namespace PipeSystem
             }
         }
 
-        [Obsolete]
+        [Obsolete] // Remove in 1.7
         public void DistributeAmongStorage(float amount) => DistributeAmongStorage(amount, out _);
+
+        // Remove in 1.7, overloads will already handle this (with default arguments)
+        /// <summary>
+        /// Add resource to storage.
+        /// </summary>
+        /// <param name="amount">Amount to add</param>
+        /// <param name="stored">Amount successfully stored</param>
+        public void DistributeAmongStorage(float amount, out float stored) => DistributeAmongStorage(amount, out stored, null);
 
         /// <summary>
         /// Add resource to storage.
         /// </summary>
         /// <param name="amount">Amount to add</param>
-        public void DistributeAmongStorage(float amount, out float stored)
+        /// <param name="storages">Storages that resource will be distributed to</param>
+        /// <param name="allowOverflow">If the excess amount should be stored in overflow</param>
+        public void DistributeAmongStorage(float amount, List<CompResourceStorage> storages = null, bool allowOverflow = true) => DistributeAmongStorage(amount, out _, storages, allowOverflow);
+
+        /// <summary>
+        /// Add resource to storage.
+        /// </summary>
+        /// <param name="amount">Amount to add</param>
+        /// <param name="stored">Amount successfully stored</param>
+        /// <param name="storages">Storages that resource will be distributed to</param>
+        /// <param name="allowOverflow">If the excess amount should be stored in overflow</param>
+        public void DistributeAmongStorage(float amount, out float stored, List<CompResourceStorage> storages = null, bool allowOverflow = true)
         {
             stored = 0;
-            if (amount <= 0 || !storages.Any())
+            if (amount <= 0)
                 return;
+            storages ??= this.storages;
+            if (!storages.Any())
+            {
+                stored = DistributeToOverflow(amount);
+                return;
+            }
             // Get all storage that can accept resources
             var resourceStorages = new List<CompResourceStorage>();
             for (int i = 0; i < storages.Count; i++)
@@ -695,16 +762,56 @@ namespace PipeSystem
                     // update toBeStored
                     toBeStored -= toStore;
                 }
+
+                if (resourceStorages.Count == 0)
+                    break;
             }
+
+            if (allowOverflow)
+                stored += DistributeToOverflow(toBeStored);
         }
+
+        // Remove in 1.7, overloads will already handle this (with default arguments)
+        /// <summary>
+        /// Withdraw resource from storage.
+        /// </summary>
+        /// <param name="amount">Amount to draw</param>
+        /// <param name="storages">Storages that resource will be drawn from</param>
+        public void DrawAmongStorage(float amount, List<CompResourceStorage> storages = null) => DrawAmongStorage(amount, out _, storages);
 
         /// <summary>
         /// Withdraw resource from storage.
         /// </summary>
         /// <param name="amount">Amount to draw</param>
-        public void DrawAmongStorage(float amount, List<CompResourceStorage> storages)
+        /// <param name="storages">Storages that resource will be drawn from</param>
+        /// <param name="drawFromOverflow">Allow or disallow drawing resources from overflow</param>
+        public void DrawAmongStorage(float amount, List<CompResourceStorage> storages, bool drawFromOverflow) => DrawAmongStorage(amount, out _, storages, drawFromOverflow);
+
+        /// <summary>
+        /// Withdraw resource from storage.
+        /// </summary>
+        /// <param name="amount">Amount to draw</param>
+        /// <param name="drawn">Amount of resources drawn from the storage</param>
+        /// <param name="storages">Storages that resource will be drawn from</param>
+        /// <param name="drawFromOverflow">Allow or disallow drawing resources from overflow</param>
+        public void DrawAmongStorage(float amount, out float drawn, List<CompResourceStorage> storages, bool drawFromOverflow = true)
         {
-            if (amount <= 0 || storages.Count == 0)
+            drawn = 0;
+            if (amount <= 0)
+                return;
+
+            if (drawFromOverflow)
+            {
+                drawn = DrawFromOverflow(amount);
+                amount -= drawn;
+
+                if (amount <= 0)
+                    return;
+            }
+
+            storages ??= this.storages;
+
+            if (storages.Count == 0)
                 return;
             // Get all storage that can provide resources
             var resourceStorages = new List<CompResourceStorage>();
@@ -724,7 +831,7 @@ namespace PipeSystem
                 ++iteration;
                 if (iteration > 1000)
                 {
-                    PipeSystemDebug.Message($"To many iteration in DrawAmongStorage. Amount left: {amount}");
+                    PipeSystemDebug.Message($"Too many iteration in DrawAmongStorage. Amount left: {amount}");
                     break;
                 }
                 // Amount to draw in each
@@ -735,11 +842,139 @@ namespace PipeSystem
                     // cap amountInEach to amount that can be draw
                     float toDraw = Mathf.Min(storage.AmountStored, amountInEach);
                     storage.DrawResource(toDraw);
+                    drawn += toDraw;
                     // If empty delete for the next iteration
                     if (storage.AmountStored == 0) resourceStorages.Remove(storage);
                     // update toBeStored
                     amount -= toDraw;
                 }
+
+                if (resourceStorages.Count == 0)
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Distributes a specific amount of resource to overflow.
+        /// </summary>
+        /// <param name="amount">Amount of resource to store as overflow.</param>
+        /// <returns>Amount of resources successfully stored in the overflow.</returns>
+        protected internal float DistributeToOverflow(float amount) => DistributeToOverflow(amount, -1);
+
+        /// <inheritdoc cref="DistributeToOverflow(float)"/>
+        /// <param name="ignoreCapacity">If the usual maximum capacity amount should be respected or not.</param>
+        protected internal float DistributeToOverflow(float amount, bool ignoreCapacity) => DistributeToOverflow(amount, ignoreCapacity ? float.PositiveInfinity : -1f);
+
+        /// <inheritdoc cref="DistributeToOverflow(float)"/>
+        /// <param name="maxCapacityOverride">The amount of resource to put into the overflow.</param>
+        /// <param name="overrideMinimum">If the max capacity override should also override the minimum overflow amount.</param>
+        protected internal float DistributeToOverflow(float amount, float maxCapacityOverride, bool overrideMinimum = false)
+        {
+            if (amount <= 0 || !def.enableOverflow)
+                return 0;
+
+            if (!overrideMinimum || maxCapacityOverride <= 0f)
+            {
+                // Cap the overflow amount to how much is produced, so we don't have infinite overflow
+                var space = TotalProductionThisTick * def.productionToOverflowCapacityRatio;
+                // Always allow for at least 1 unit of overflow
+                if (space < def.overflowAmount)
+                    maxCapacityOverride = def.overflowAmount;
+                if (maxCapacityOverride < space)
+                    maxCapacityOverride = space;
+            }
+
+            // Reduce the allowed space by the current amount
+            maxCapacityOverride -= OverflowAmount;
+            // Do nothing if no space
+            if (maxCapacityOverride <= 0)
+                return 0;
+
+            // Fit as much as we can
+            if (maxCapacityOverride >= amount)
+            {
+                OverflowAmount += amount;
+                return amount;
+            }
+
+            // Fit up to how much can fit
+            OverflowAmount += maxCapacityOverride;
+            return maxCapacityOverride;
+        }
+
+        /// <summary>
+        /// Draw resources from overflow.
+        /// </summary>
+        /// <param name="amount">Amount of resources to draw</param>
+        /// <returns>Amount of resources successfully drawn</returns>
+        protected internal float DrawFromOverflow(float amount = float.PositiveInfinity)
+        {
+            if (OverflowAmount <= 0)
+                return 0;
+
+            // Draw as much as possible
+            if (OverflowAmount >= amount)
+            {
+                OverflowAmount -= amount;
+                return amount;
+            }
+
+            // Draw all
+            amount = OverflowAmount;
+            OverflowAmount = 0;
+            return amount;
+        }
+
+        private void UpdateLowPowerModeConsumers()
+        {
+            for (var i = 0; i < resourceTradersWithLowPowerMode.Count; i++)
+                resourceTradersWithLowPowerMode[i].LowPowerModeOn = resourceTradersWithLowPowerMode[i].ShouldBeLowPowerMode;
+
+            resourceTradersWithLowPowerModeDirty = false;
+        }
+
+        internal void UpdateLowPowerModeTrader(CompResourceTrader lowPowerModeTrader)
+        {
+            switch (lowPowerModeTrader.LowPowerModeOn, lowPowerModeTrader.Props.visualOnlyConsumption, lowPowerModeTrader.Consumption < 0f)
+            {
+                // ### Consumer
+                // ## On
+                // # Visual only
+                case (true, true, false):
+                    VisualConsumption -= lowPowerModeTrader.Consumption;
+                    break;
+                // # Actual consumption
+                case (true, false, false):
+                    Consumption -= lowPowerModeTrader.Consumption;
+                    break;
+                // ## Off
+                // # Visual only
+                case (false, true, false):
+                    VisualConsumption += lowPowerModeTrader.Consumption;
+                    break;
+                // # Actual consumption
+                case (false, false, false):
+                    Consumption += lowPowerModeTrader.Consumption;
+                    break;
+                // ### Producer
+                // ## On
+                // # Visual only
+                case (true, true, true):
+                    VisualProduction -= -lowPowerModeTrader.Consumption;
+                    break;
+                // # Actual production
+                case (true, false, true):
+                    Production -= -lowPowerModeTrader.Consumption;
+                    break;
+                // ## Off
+                // # Visual only
+                case (false, true, true):
+                    VisualProduction += -lowPowerModeTrader.Consumption;
+                    break;
+                // # Actual production
+                case (false, false, true):
+                    Production += -lowPowerModeTrader.Consumption;
+                    break;
             }
         }
 
@@ -760,7 +995,7 @@ namespace PipeSystem
 
         public override string ToString()
         {
-            return $"PipeNet: {def.resource.name} Stored: {Stored} AvailableCapacity: {AvailableCapacity} Consumption: {VisualConsumption} Production: {VisualProduction}";
+            return $"PipeNet: {def.resource.name} Stored: {Stored} AvailableCapacity: {AvailableCapacity} Consumption: {VisualConsumption} Production: {VisualProduction} Overflow: {OverflowAmount}";
         }
     }
 }

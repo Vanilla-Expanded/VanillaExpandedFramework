@@ -173,11 +173,23 @@ namespace PipeSystem
                 }
             }
 
-            // Destroy the PipeNet
-            comp.PipeNet?.Destroy();
+            var overflow = 0f;
+            if (comp.PipeNet != null)
+            {
+                // Grab (and set to 0) the overflow from the network
+                overflow = comp.PipeNet.OverflowAmount;
+                comp.PipeNet.OverflowAmount = 0;
+                // Destroy the PipeNet
+                comp.PipeNet.Destroy();
+            }
             pipeNetsCount--;
+            // Grab a remaining connector to push the overflow to, if any
+            var remainingConnector = foundConnectors.FirstOrDefault();
             // Recreate PipeNet(s) based on neigbours connectors
             CreatePipeSystemNets(foundConnectors, comp.Props.pipeNet);
+            // If we've had any overflow, try distributing it to the newly created new (or a random net, if none)
+            if (overflow > 0)
+                (remainingConnector?.PipeNet ?? pipeNets.FirstOrDefault(x => x.def == comp.Props.pipeNet)).DistributeToOverflow(overflow, true);
 
             PipeSystemDebug.Message($"Network(s) number: {pipeNets.Count}");
         }
