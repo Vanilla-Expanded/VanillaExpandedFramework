@@ -189,7 +189,7 @@ namespace PipeSystem
             CreatePipeSystemNets(foundConnectors, comp.Props.pipeNet);
             // If we've had any overflow, try distributing it to the newly created new (or a random net, if none)
             if (overflow > 0)
-                (remainingConnector?.PipeNet ?? pipeNets.FirstOrDefault(x => x.def == comp.Props.pipeNet)).DistributeToOverflow(overflow, true);
+                (remainingConnector?.PipeNet ?? pipeNets.FirstOrDefault(x => x.def == comp.Props.pipeNet))?.DistributeToOverflow(overflow, true);
 
             PipeSystemDebug.Message($"Network(s) number: {pipeNets.Count}");
         }
