@@ -52,6 +52,7 @@ namespace PipeSystem
         public CompAdvancedResourceProcessor advancedProcessor;
         protected Sustainer workingSoundSustainer;
 
+      
         public bool IsRunning => ShouldDoNow() && !MissingIngredients;
 
         /// <summary>
@@ -385,6 +386,7 @@ namespace PipeSystem
         /// </summary>
         public void Notify_Glower()
         {
+          
             CompGlowerOnProcess compGlower = advancedProcessor.parent.TryGetComp<CompGlowerOnProcess>();
             compGlower?.UpdateLit(advancedProcessor.parent.Map);
 
@@ -395,8 +397,9 @@ namespace PipeSystem
         /// </summary>
         public void Notify_StartWorkingSound()
         {
+            
             if (workingSoundSustainer is null)
-            {
+            {          
                 SoundInfo info = SoundInfo.InMap(advancedProcessor.parent, MaintenanceType.PerTickRare);
                 workingSoundSustainer = def.sustainerDef.TrySpawnSustainer(info);
             }
@@ -460,6 +463,16 @@ namespace PipeSystem
         /// <param name="ticks">ticks passed</param>
         public void Tick(int ticks)
         {
+            //Workaround to trigger sound once in factories that need to input ingredients
+
+            if(ingredientsOwners.Count == 0)
+            {
+                if (def.sustainerWhenWorking && def.sustainerDef != null)
+                {                  
+                    Notify_StartWorkingSound();
+                }
+            }
+
             // Try filling owners from their comps
             for (int i = 0; i < ingredientsOwners.Count; i++)
             {
@@ -474,13 +487,12 @@ namespace PipeSystem
                 }
                 // Set awaiting
                 if (!Def.autoGrabFromHoppers || Def.autoInputSlots.NullOrEmpty())
-                {
+                {                 
                     advancedProcessorsManager.SetAwaitingIngredients(advancedProcessor);
                 }
                 else
                 {
                     CheckInputSlots(ingredientsOwners[i]);
-
                 }
 
             }
