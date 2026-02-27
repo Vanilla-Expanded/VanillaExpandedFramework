@@ -463,6 +463,10 @@ namespace PipeSystem
         /// <param name="ticks">ticks passed</param>
         public void Tick(int ticks)
         {
+            if (suspended)
+            {
+                return;
+            }
             //Workaround to trigger sound once in factories that need to input ingredients
 
             if(ingredientsOwners.Count == 0)
