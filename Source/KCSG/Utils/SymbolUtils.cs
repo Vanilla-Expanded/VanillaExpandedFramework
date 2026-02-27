@@ -391,7 +391,7 @@ namespace KCSG
             // Try generate conduit under impassable things and doors
             if (layout.spawnConduits && !thing.def.mineable && (thing.def.passability == Traversability.Impassable || thing.def.IsDoor) && faction?.def.techLevel >= TechLevel.Industrial)
             {
-                Thing c = ThingMaker.MakeThing(AllDefOf.KCSG_PowerConduit);
+                Thing c = ThingMaker.MakeThing(ThingDefOf.HiddenConduit);
                 if (faction != null)
                 {
                     c.SetFaction(faction);
