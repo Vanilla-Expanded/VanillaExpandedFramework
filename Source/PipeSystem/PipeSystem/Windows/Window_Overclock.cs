@@ -23,7 +23,7 @@ namespace PipeSystem
             draggable = false;
             resizeable = false;
             preventCameraMotion = false;
-
+            closeOnClickedOutside = true;
         }
 
 
