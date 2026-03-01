@@ -832,6 +832,17 @@ namespace VEF.Apparels
                 shieldBuffer = 15;
             else
                 shieldBuffer -= 1;
+
+            bool ShouldBeActive()
+            {
+                if (HostFaction != null && GenHostility.AnyHostileActiveThreatTo(HostThing.Map, HostFaction) ||
+                    HostThing.Map.listerThings.ThingsOfDef(VEFDefOf.Tornado).Any())
+                    return true;
+
+                var allThings = HostThing.Map.listerThings.ThingsInGroup(ThingRequestGroup.Projectile).Where(IsValidProjectile)
+                    .Concat(HostThing.Map.listerThings.ThingsInGroup(ThingRequestGroup.ActiveTransporter).Where(IsValidTransporter));
+                return allThings.Any();
+            }
         }
 
         private bool IsValidProjectile(Thing t)
