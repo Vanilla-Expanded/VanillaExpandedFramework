@@ -4,10 +4,8 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
-using UnityEngine.UIElements;
 using Verse;
 using Verse.AI;
 using Verse.Sound;
@@ -99,6 +97,8 @@ namespace VEF.Apparels
         public bool initialized;
         public bool active;
         public Dictionary<Thing, int> affectedThings = new Dictionary<Thing, int>();
+        protected IntVec3 lastCachedCells = IntVec3.Invalid;
+        protected float lastCachedShieldRadius = -1;
         public HashSet<IntVec3> coveredCells;
         public HashSet<IntVec3> scanCells;
         private const int CacheUpdateInterval = 15;
@@ -586,7 +586,7 @@ namespace VEF.Apparels
                         list.Add(this);
                     }
 
-                    UpdateShieldCoverage();
+                    UpdateShieldCoverage(true);
                 }
 
                 if (initialized is false)
@@ -600,19 +600,22 @@ namespace VEF.Apparels
             }
         }
 
-        private void UpdateShieldCoverage()
+        private void UpdateShieldCoverage(bool forcedRecache)
         {
-            if (HostThing.Map != null)
+            // To recache, the map must not be null.
+            // On top of that, we only recache in those specific situations: cells aren't set up, we're forced to recache,
+            // the last cached position is invalid, last cached position/shield radius changed, it's a periodic twice-a-day recache.
+            if (HostThing.Map != null && (coveredCells == null || forcedRecache || !lastCachedCells.IsValid || lastCachedCells != HostThing.Position || !Mathf.Approximately(lastCachedShieldRadius, ShieldRadius) || HostThing.IsHashIntervalTick(GenDate.TicksPerHour * 12, CacheUpdateInterval)))
             {
                 // Set up shield coverage
                 coveredCells = new HashSet<IntVec3>(GenRadial.RadialCellsAround(HostThing.Position, ShieldRadius, true).Where(x => x.InBounds(HostThing.Map)));
                 if (ShieldRadius < EdgeCellRadius + 1)
                     scanCells = coveredCells;
                 else
-                {
-                    IEnumerable<IntVec3> interiorCells = GenRadial.RadialCellsAround(HostThing.Position, ShieldRadius - EdgeCellRadius, true);
-                    scanCells = new HashSet<IntVec3>(coveredCells.Where(c => !interiorCells.Contains(c)));
-                }
+                    scanCells = new HashSet<IntVec3>(GenRadial.RadialCellsAround(HostThing.Position, ShieldRadius - EdgeCellRadius, ShieldRadius));
+
+                lastCachedCells = HostThing.Position;
+                lastCachedShieldRadius = ShieldRadius;
             }
 
         }
@@ -787,7 +790,7 @@ namespace VEF.Apparels
         private void UpdateCache()
         {
             if (HostThing?.Map == null) return;
-            UpdateShieldCoverage();
+            UpdateShieldCoverage(false);
             if (affectedThings is null)
             {
                 affectedThings = new Dictionary<Thing, int>();
@@ -814,25 +817,18 @@ namespace VEF.Apparels
                 }
             }
 
-            var allThings = HostThing.Map.listerThings.ThingsInGroup(ThingRequestGroup.Projectile).Where(IsValidProjectile)
-                .Concat(HostThing.Map.listerThings.ThingsInGroup(ThingRequestGroup.ActiveTransporter).Where(IsValidTransporter));
+            var shouldBeActive = ShouldBeActive();
 
-            if (!Props.manualActivation)
+            if (!Props.manualActivation && CanFunction)
             {
-                active = CanFunction &&
-                (Props.activeAlways ||
-                HostFaction != null && GenHostility.AnyHostileActiveThreatTo(HostThing.Map, HostFaction) ||
-                HostThing.Map.listerThings.ThingsOfDef(VEFDefOf.Tornado).Any() ||
-                allThings.Any() || shieldBuffer > 0);
+                active = CanFunction && (Props.activeAlways || shouldBeActive || shieldBuffer > 0);
             }
             if (active)
             {
                 active = CanActivateShield();
             }
 
-            if ((HostFaction != null && GenHostility.AnyHostileActiveThreatTo(HostThing.Map, HostFaction)
-                || HostThing.Map.listerThings.ThingsOfDef(VEFDefOf.Tornado).Any()
-                || allThings.Any()) && shieldBuffer < 15)
+            if (shouldBeActive && shieldBuffer < 15)
                 shieldBuffer = 15;
             else
                 shieldBuffer -= 1;
@@ -884,7 +880,7 @@ namespace VEF.Apparels
 
         public IEnumerable<Gizmo> GetGizmos()
         {
-            if (this.HostThing.Faction == Faction.OfPlayer)
+            if (this.HostThing.Faction == Faction.OfPlayer || DebugSettings.ShowDevGizmos)
             {
                 // Shield health
                 if (!Indestructible && Find.Selector.SingleSelectedThing == this.parent)
@@ -928,6 +924,34 @@ namespace VEF.Apparels
                     };
                 }
 
+            }
+
+            if (DebugSettings.ShowDevGizmos && HostThing.Map != null)
+            {
+                yield return new Command_Action
+                {
+                    defaultLabel = "DEV: 0 energy",
+                    action = () => Energy = 0,
+                };
+                yield return new Command_Action
+                {
+                    defaultLabel = "DEV: 1 energy",
+                    action = () => Energy = 0.01f,
+                };
+                yield return new Command_Action
+                {
+                    defaultLabel = "DEV: Max energy",
+                    action = () => Energy = MaxEnergy,
+                };
+                yield return new Command_Action
+                {
+                    defaultLabel = "DEV: Flash interception cells",
+                    action = () =>
+                    {
+                        foreach (var cell in scanCells)
+                            HostThing.Map.debugDrawer.FlashCell(cell, duration: 150);
+                    }
+                };
             }
         }
     }
@@ -1086,7 +1110,8 @@ namespace VEF.Apparels
             if (__instance.Map != null && __instance.ticksToImpact <= 20)
             {
                 var thingDefExtension = __instance.def.GetModExtension<ThingDefExtension>();
-                if (thingDefExtension != null)
+                // Only check if thingDefExtension is present, and it can actually be intercepted.
+                if (thingDefExtension != null && thingDefExtension.shieldDamageIntercepted > -1)
                 {
                     ShieldGeneratorUtility.CheckIntercept(__instance, __instance.Map, thingDefExtension.shieldDamageIntercepted, DamageDefOf.Blunt,
                             () => __instance.OccupiedRect().Cells,
