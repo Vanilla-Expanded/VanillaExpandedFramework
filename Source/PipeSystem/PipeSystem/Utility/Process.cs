@@ -1123,6 +1123,7 @@ namespace PipeSystem
                 // Forever, click plus put it in count
                 if (targetCount == -1)
                 {
+                    repeatMode = BillRepeatModeDefOf.RepeatCount;
                     processCount = 0;
                     targetCount = 1;
                 }
@@ -1138,6 +1139,7 @@ namespace PipeSystem
                 // Forever, click minus put it in count
                 if (targetCount == -1)
                 {
+                    repeatMode = BillRepeatModeDefOf.RepeatCount;
                     processCount = 0;
                     targetCount = 1;
                 }
