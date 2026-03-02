@@ -48,7 +48,7 @@ namespace PipeSystem
                 Close();
             }
             var SliderContainer1 = new Rect(0, 100, 450, 32f);
-            HorizontalSliderLabeled(SliderContainer1, ref building.overclockMultiplier, new FloatRange(building.Props.minOverclock, building.Props.maxOverclock), building.Props.minOverclock.ToStringPercent(), building.Props.maxOverclock.ToStringPercent(), roundTo:0.1f);
+            HorizontalSliderLabeled(SliderContainer1, ref building.overclockMultiplier, new FloatRange(building.Props.minOverclock, building.Props.maxOverclock*building.parent.GetStatValue(PSDefOf.VEF_BuildingMaxOverclockFactor)), building.Props.minOverclock.ToStringPercent(), (building.Props.maxOverclock * building.parent.GetStatValue(PSDefOf.VEF_BuildingMaxOverclockFactor)).ToStringPercent(), roundTo:0.1f);
 
         }
 

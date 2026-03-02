@@ -1,18 +1,5 @@
 <Defs>
 	<StatDef>
-		<defName>VEF_RangedCooldownFactor</defName>
-		<label>ranged cooldown factor</label>
-		<description>The cooldown on ranged weapons of the wearer is multiplied by this value.</description>
-		<category>Apparel</category>
-		<defaultBaseValue>1</defaultBaseValue>
-		<hideAtValue>1</hideAtValue>
-		<minValue>0</minValue>
-		<toStringStyle>PercentZero</toStringStyle>
-		<showIfUndefined>false</showIfUndefined>
-		<displayPriorityInCategory>70</displayPriorityInCategory>
-	</StatDef>
-
-	<StatDef>
 		<defName>VEF_VerbRangeFactor</defName>
 		<label>weapon range factor</label>
 		<labelForFullStatList>weapon range factor (people)</labelForFullStatList>
@@ -35,7 +22,7 @@
 		<toStringStyle>FloatOne</toStringStyle>
 		<hideAtValue>0</hideAtValue>
 		<displayPriorityInCategory>4050</displayPriorityInCategory>
-    <cacheable>true</cacheable>
+		<cacheable>true</cacheable>
 	</StatDef>
 	<StatDef>
 		<defName>VEF_EnergyShieldEnergyMaxFactor</defName>
@@ -47,76 +34,8 @@
 		<hideAtValue>1</hideAtValue>
 		<toStringStyle>PercentZero</toStringStyle>
 		<displayPriorityInCategory>4050</displayPriorityInCategory>
-    <cacheable>true</cacheable>
+		<cacheable>true</cacheable>
 	</StatDef>
-
-	<StatDef>
-		<defName>VEF_EnergyShieldRadiusApparel</defName>
-		<label>shield radius</label>
-		<description>The area covered when the energy shield is active.</description>
-		<category>Apparel</category>
-		<hideAtValue>0</hideAtValue>
-		<defaultBaseValue>3</defaultBaseValue>
-		<minValue>0</minValue>
-		<toStringStyle>FloatOne</toStringStyle>
-		<formatString>{0} c</formatString>
-		<showIfUndefined>false</showIfUndefined>
-		<parts>
-			<li Class="StatPart_Quality">
-				<factorAwful>0.76</factorAwful>
-				<factorPoor>0.88</factorPoor>
-				<factorNormal>1</factorNormal>
-				<factorGood>1.12</factorGood>
-				<factorExcellent>1.24</factorExcellent>
-				<factorMasterwork>1.45</factorMasterwork>
-				<factorLegendary>1.66</factorLegendary>
-			</li>
-		</parts>
-	</StatDef>
-
-	<StatDef>
-		<defName>VEF_EnergyShieldEnergyMaxBuilding</defName>
-		<label>shield max energy</label>
-		<description>The maximum energy the shield can have. More energy allows the shield to absorb more damage.</description>
-		<category>Building</category>
-		<defaultBaseValue>0</defaultBaseValue>
-		<minValue>0</minValue>
-		<toStringStyle>Integer</toStringStyle>
-		<formatString>{0}00</formatString>
-		<hideAtValue>0</hideAtValue>
-		<showIfUndefined>false</showIfUndefined>
-		<displayPriorityInCategory>5000</displayPriorityInCategory>
-	</StatDef>
-
-	<StatDef>
-		<defName>VEF_EnergyShieldRechargeRateBuilding</defName>
-		<label>shield recharge rate</label>
-		<description>The rate at which the shield recharges energy per second, as long as it is not broken.</description>
-		<category>Building</category>
-		<workerClass>VEF.Apparels.StatWorker_MultiplyBy100</workerClass>
-		<defaultBaseValue>0</defaultBaseValue>
-		<minValue>0</minValue>
-		<toStringStyle>FloatTwo</toStringStyle>
-		<formatString>{0}/s</formatString>
-		<hideAtValue>0</hideAtValue>
-		<showIfUndefined>false</showIfUndefined>
-		<displayPriorityInCategory>5000</displayPriorityInCategory>
-	</StatDef>
-
-	<StatDef>
-		<defName>VEF_EnergyShieldRadiusBuilding</defName>
-		<label>shield radius</label>
-		<description>The radius of the energy shield protection.</description>
-		<category>Building</category>
-		<defaultBaseValue>0</defaultBaseValue>
-		<minValue>0</minValue>
-		<toStringStyle>FloatOne</toStringStyle>
-		<formatString>{0} c</formatString>
-		<hideAtValue>0</hideAtValue>
-		<showIfUndefined>false</showIfUndefined>
-		<displayPriorityInCategory>5000</displayPriorityInCategory>
-	</StatDef>
-
 	<StatDef>
 		<defName>VEF_MeleeAttackDamageFactor</defName>
 		<label>melee attack damage factor</label>
@@ -139,11 +58,6 @@
 		<toStringStyle>PercentZero</toStringStyle>
 		<displayPriorityInCategory>3400</displayPriorityInCategory>
 	</StatDef>
-	<StatCategoryDef>
-		<defName>VFE_EquippedStatFactors</defName>
-		<label>Factors when equipped</label>
-		<displayOrder>71</displayOrder>
-	</StatCategoryDef>
 	<StatDef>
 		<!--  -->
 		<defName>VEF_FoodCapacityMultiplier</defName>
@@ -271,17 +185,6 @@
 		<showOnEntities>false</showOnEntities>
 		<showDevelopmentalStageFilter>Adult</showDevelopmentalStageFilter>
 	</StatDef>
-	<StatDef>
-		<defName>VEF_MeleeWeaponRange</defName>
-		<label>melee weapon range</label>
-		<description>The range of this melee weapon.</description>
-		<category>Weapon_Melee</category>
-		<defaultBaseValue>0</defaultBaseValue>
-		<hideAtValue>0</hideAtValue>
-		<minValue>0</minValue>
-		<toStringStyle>FloatOne</toStringStyle>
-		<displayPriorityInCategory>4050</displayPriorityInCategory>
-	</StatDef>
 	<StatDef Name="VEF_ThoughtDurationBase" Abstract="True">
 		<category>BasicsPawn</category>
 		<defaultBaseValue>1</defaultBaseValue>
@@ -308,21 +211,6 @@
 		<label>thought duration factor - negative</label>
 		<description>The duration of negative thoughts is multiplied by this value.</description>
 	</StatDef>
-	<!-- Perhaps it would be smart to use load folders and add it to Biotech one, but for now it seems pointless given it would be the only thing in there. -->
-	<StatDef MayRequire="Ludeon.RimWorld.Biotech">
-		<defName>VEF_BuildingLearningRateOffset</defName>
-		<label>learning rate</label>
-		<!-- Same description as school desk's CompProperties_StatEntry was using. -->
-		<description>A multiplier on how quickly children learn during lessons which are assisted by this.</description>
-		<category>Building</category>
-		<defaultBaseValue>1</defaultBaseValue>
-		<toStringStyle>PercentZero</toStringStyle>
-		<showIfUndefined>false</showIfUndefined>
-		<!-- Don't allow for negative learning rate. -->
-		<minValue>0</minValue>
-		<!-- Same value as school desk's CompProperties_StatEntry was using. -->
-		<displayPriorityInCategory>300</displayPriorityInCategory>
-	</StatDef>
 	<StatDef>
 		<defName>VEF_RangedDodgeChance</defName>
 		<label>ranged dodge chance</label>
@@ -330,26 +218,16 @@
 		<category>PawnCombat</category>
 		<neverDisabled>true</neverDisabled>
 		<defaultBaseValue>0</defaultBaseValue>
-    <!-- Going below 100% would make free interceptions/getting hit by unintended target more likely. -->
-    <!-- Some factors (like distance, friendly fire chance, body size) could make values lower than -->
-    <!-- 100% have effect, but let's keep some limit here to prevent stuff from being too crazy. -->
+		<!-- Going below 100% would make free interceptions/getting hit by unintended target more likely. -->
+		<!-- Some factors (like distance, friendly fire chance, body size) could make values lower than -->
+		<!-- 100% have effect, but let's keep some limit here to prevent stuff from being too crazy. -->
 		<minValue>-1</minValue>
-    <!-- No effect above 100%, so let's cap it there. -->
-    <maxValue>1</maxValue>
+		<!-- No effect above 100%, so let's cap it there. -->
+		<maxValue>1</maxValue>
 		<toStringStyle>PercentZero</toStringStyle>
 		<toStringStyleUnfinalized>FloatTwo</toStringStyleUnfinalized>
 		<noSkillOffset>0</noSkillOffset>
 		<displayPriorityInCategory>4101</displayPriorityInCategory>
 		<showDevelopmentalStageFilter>Child, Adult</showDevelopmentalStageFilter>
-	</StatDef>
-	<StatDef>
-		<defName>VEF_BuildingBreakdownFactor</defName>
-		<label>breakdown factor</label>
-		<description>A multiplier on how often this building breaks down.</description>
-		<category>Building</category>
-		<defaultBaseValue>1</defaultBaseValue>
-		<toStringStyle>PercentZero</toStringStyle>
-		<showIfUndefined>false</showIfUndefined>
-		<displayPriorityInCategory>300</displayPriorityInCategory>
 	</StatDef>
 </Defs>

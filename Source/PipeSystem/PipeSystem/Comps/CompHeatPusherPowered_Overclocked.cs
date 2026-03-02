@@ -29,7 +29,7 @@ namespace PipeSystem
             {
                 float overclock = AdvancedProcessor.overclockMultiplier;
                  
-                GenTemperature.PushHeat(parent.PositionHeld, parent.MapHeld, Props.heatPerSecond * 4.16666651f * (IdleFrac + (1 - IdleFrac) * overclock * overclock));
+                GenTemperature.PushHeat(parent.PositionHeld, parent.MapHeld, Props.heatPerSecond * parent.GetStatValue(PSDefOf.VEF_FactoryHeatPerSecondFactor) * 4.16666651f * (IdleFrac + (1 - IdleFrac) * overclock * overclock));
             }
         }
 

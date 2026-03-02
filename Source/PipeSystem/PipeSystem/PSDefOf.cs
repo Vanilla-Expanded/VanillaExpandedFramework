@@ -21,5 +21,8 @@ namespace PipeSystem
 
         public static CustomOverlayDef PS_GenericPipeSystemOverlayPulsing;
         public static CustomOverlayDef PS_GenericPipeSystemOverlayStatic;
+
+        public static StatDef VEF_BuildingMaxOverclockFactor;
+        public static StatDef VEF_FactoryHeatPerSecondFactor;
     }
 }
