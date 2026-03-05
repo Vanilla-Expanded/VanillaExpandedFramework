@@ -47,7 +47,7 @@ namespace PipeSystem
             base.CompTickRare();
 
             float overclock = AdvancedProcessor.overclockMultiplier;
-            PowerTrader.PowerOutput = PowerTrader.Props.PowerConsumption * (IdleFrac + (1 - IdleFrac) * overclock * overclock);
+            PowerTrader.PowerOutput = -PowerTrader.Props.PowerConsumption * (IdleFrac + (1 - IdleFrac) * overclock * overclock);
         }
 
 
