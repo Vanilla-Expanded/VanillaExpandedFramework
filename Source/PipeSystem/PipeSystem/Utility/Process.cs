@@ -42,7 +42,6 @@ namespace PipeSystem
 
         private string id;                                      // Process ID
 
-
         private List<FloatMenuOption> qualitySelections;
 
         private List<IntVec3> adjCells;
@@ -187,7 +186,6 @@ namespace PipeSystem
             }
         }
 
-
         public int TickLeft => tickLeft;
         public List<ThingAndResourceOwner> IngredientsOwners => ingredientsOwners;
         public float RuinedPercent => ruinedPercent;
@@ -203,15 +201,12 @@ namespace PipeSystem
             ticksOrQualityTicks = (def.ticksQuality.NullOrEmpty() ? def.ticks : def.ticksQuality[(int)forcedQuality]);
             cachedInitialTicks = ticksOrQualityTicks;
 
-
-
             CompAdvancedResourceProcessor comp = CachedCompAdvancedProcessor.GetFor(parent);
             if (comp != null)
             {
                 ticksOrQualityTicks = (int)(ticksOrQualityTicks / comp.GetNotInRoomRoleFactor(parent));
                 ticksOrQualityTicks = (int)(ticksOrQualityTicks / comp.overclockMultiplier);
             }
-
 
             tickLeft = def.isFactoryProcess ? (int)(GetFactoryAcceleration() * ticksOrQualityTicks) : ticksOrQualityTicks;
 
@@ -259,8 +254,6 @@ namespace PipeSystem
             return 1f;
         }
 
-
-
         /// <summary>
         /// Save things
         /// </summary>
@@ -304,17 +297,14 @@ namespace PipeSystem
         {
             if (suspended)
                 return false;
-
             if (repeatMode == BillRepeatModeDefOf.Forever)
             {
                 return true;
             }
             if (repeatMode == BillRepeatModeDefOf.TargetCount)
             {
-
                 return ProcessUtility.CountResults(this) < targetCount;
             }
-
             return processCount < targetCount;
         }
 
@@ -332,23 +322,16 @@ namespace PipeSystem
                     if (requirement.thing?.IsNutritionGivingIngestible == false)
                     {
                         ingredientsOwners.Add(new ThingAndResourceOwner(requirement.thing, requirement.pipeNet, 1, requirement.thingCategory));
-
                     }
                     else
                     {
                         ingredientsOwners.Add(new ThingAndResourceOwner(requirement.thing, requirement.pipeNet, (int)(requirement.countNeeded / requirement.thing.GetStatValueAbstract(StatDefOf.Nutrition)), requirement.thingCategory));
-
                     }
-
-
                 }
                 else
                 {
                     ingredientsOwners.Add(new ThingAndResourceOwner(requirement.thing, requirement.pipeNet, (int)requirement.countNeeded, requirement.thingCategory));
-
                 }
-
-
             }
             targetCount = 1;
         }
@@ -358,8 +341,7 @@ namespace PipeSystem
         /// </summary>
         public void Notify_Started()
         {
-            Notify_Glower();
-            
+            Notify_Glower();           
         }
 
         /// <summary>
@@ -380,18 +362,15 @@ namespace PipeSystem
             {
                 Find.HistoryEventsManager.RecordEvent(new HistoryEvent(def.historyEventWhenFinished));
             }
-
         }
 
         /// <summary>
         /// Toggle CompGlowerOnProcess on or off
         /// </summary>
         public void Notify_Glower()
-        {
-          
+        {        
             CompGlowerOnProcess compGlower = advancedProcessor.parent.TryGetComp<CompGlowerOnProcess>();
             compGlower?.UpdateLit(advancedProcessor.parent.Map);
-
         }
 
         /// <summary>
@@ -468,8 +447,6 @@ namespace PipeSystem
                     ruinedPercent = 0f;
                 }
             }
-
-
         }
 
         /// <summary>
@@ -483,7 +460,6 @@ namespace PipeSystem
                 return;
             }
             
-
             // Try filling owners from their comps
             for (int i = 0; i < ingredientsOwners.Count; i++)
             {
@@ -505,7 +481,6 @@ namespace PipeSystem
                 {
                     CheckInputSlots(ingredientsOwners[i]);
                 }
-
             }
             // Continue only if we have all ingredients
             if (MissingIngredients)
@@ -525,21 +500,17 @@ namespace PipeSystem
                 {
                     Notify_StartEffecter();
                 }
-
                 if (def.sustainerWhenWorking && workingSoundSustainer != null)
                 {
                     if (!workingSoundSustainer.Ended)
                     {
                         workingSoundSustainer.Maintain();
                     }
-
                 }
                 if (effecter != null)
                 {
                     effecter.EffectTick(this.parent, this.parent);
-                }
-                
-
+                }                
             }
             // Set progress (for the bar)
 
@@ -552,32 +523,26 @@ namespace PipeSystem
                 int ticksDone = def.ticksQuality[(int)qualityToOutput] - tickLeft;
                 if (ticksDone > def.ticksQuality[(int)QualityCategory.Masterwork])
                 {
-
                     currentQuality = QualityCategory.Masterwork;
                 }
                 else if (ticksDone > def.ticksQuality[(int)QualityCategory.Excellent])
                 {
-
                     currentQuality = QualityCategory.Excellent;
                 }
                 else if (ticksDone > def.ticksQuality[(int)QualityCategory.Good])
                 {
-
                     currentQuality = QualityCategory.Good;
                 }
                 else if (ticksDone > def.ticksQuality[(int)QualityCategory.Normal])
                 {
-
                     currentQuality = QualityCategory.Normal;
                 }
                 else if (ticksDone > def.ticksQuality[(int)QualityCategory.Poor])
                 {
-
                     currentQuality = QualityCategory.Poor;
                 }
                 else if (ticksDone > def.ticksQuality[(int)QualityCategory.Awful])
                 {
-
                     currentQuality = QualityCategory.Awful;
                 }
 
