@@ -10,6 +10,7 @@ using Verse;
 using Verse.AI;
 using Verse.Noise;
 using Verse.Sound;
+using static HarmonyLib.Code;
 using static PipeSystem.ProcessDef;
 
 namespace PipeSystem
@@ -51,8 +52,8 @@ namespace PipeSystem
         private AdvancedProcessorsManager advancedProcessorsManager;
         public CompAdvancedResourceProcessor advancedProcessor;
         protected Sustainer workingSoundSustainer;
+        private Effecter effecter;
 
-      
         public bool IsRunning => ShouldDoNow() && !MissingIngredients;
 
         /// <summary>
@@ -285,10 +286,10 @@ namespace PipeSystem
             Scribe_Defs.Look(ref repeatMode, "repeatMode");
             Scribe_Values.Look(ref outputFactoryHopperIncorrect, "outputFactoryHopperIncorrect");
 
-
             Scribe_References.Look(ref parent, "parent");
 
             Scribe_Collections.Look(ref ingredientsOwners, "thingOwnerList", LookMode.Deep);
+           
         }
 
         public string GetUniqueLoadID() => id;
@@ -358,10 +359,7 @@ namespace PipeSystem
         public void Notify_Started()
         {
             Notify_Glower();
-            if (def.sustainerWhenWorking && def.sustainerDef != null)
-            {
-                Notify_StartWorkingSound();
-            }
+            
         }
 
         /// <summary>
@@ -373,6 +371,10 @@ namespace PipeSystem
             if (def.sustainerWhenWorking && def.sustainerDef != null)
             {
                 Notify_StopWorkingSound();
+            }
+            if (def.effecterWhenWorking && def.effecterDef != null)
+            {
+                Notify_StopEffecter();
             }
             if (def.historyEventWhenFinished != null)
             {
@@ -396,33 +398,46 @@ namespace PipeSystem
         /// Toggle sustainer on
         /// </summary>
         public void Notify_StartWorkingSound()
-        {
-            
+        {          
             if (workingSoundSustainer is null)
             {          
                 SoundInfo info = SoundInfo.InMap(advancedProcessor.parent, MaintenanceType.PerTickRare);
                 workingSoundSustainer = def.sustainerDef.TrySpawnSustainer(info);
             }
-
-
-
         }
         /// <summary>
         /// Toggle sustainer off
         /// </summary>
         public void Notify_StopWorkingSound()
         {
-
             if (workingSoundSustainer != null)
             {
                 workingSoundSustainer.End();
                 workingSoundSustainer = null;
             }
-
-
-
         }
 
+        /// <summary>
+        /// Toggle effecter on
+        /// </summary>
+        public void Notify_StartEffecter()
+        {
+            if (effecter is null)
+            {
+                effecter = Def.effecterDef.SpawnAttached(this.parent, this.parent.Map);
+            }
+        }
+        /// <summary>
+        /// Toggle effecter off
+        /// </summary>
+        public void Notify_StopEffecter()
+        {
+            if (effecter != null)
+            {
+                effecter.ForceEnd();
+                effecter.Cleanup();
+            }
+        }
 
         /// <summary>
         /// Manage the temperature ruining mechanic
@@ -467,15 +482,7 @@ namespace PipeSystem
             {
                 return;
             }
-            //Workaround to trigger sound once in factories that need to input ingredients
-
-            if(ingredientsOwners.Count == 0)
-            {
-                if (def.sustainerWhenWorking && def.sustainerDef != null)
-                {                  
-                    Notify_StartWorkingSound();
-                }
-            }
+            
 
             // Try filling owners from their comps
             for (int i = 0; i < ingredientsOwners.Count; i++)
@@ -509,6 +516,16 @@ namespace PipeSystem
                
                 TryRuin(ticks);
                 tickLeft -= ticks;
+
+                if (def.sustainerWhenWorking && def.sustainerDef != null)
+                {
+                    Notify_StartWorkingSound();
+                }
+                if (def.effecterWhenWorking && def.effecterDef != null)
+                {
+                    Notify_StartEffecter();
+                }
+
                 if (def.sustainerWhenWorking && workingSoundSustainer != null)
                 {
                     if (!workingSoundSustainer.Ended)
@@ -517,6 +534,11 @@ namespace PipeSystem
                     }
 
                 }
+                if (effecter != null)
+                {
+                    effecter.EffectTick(this.parent, this.parent);
+                }
+                
 
             }
             // Set progress (for the bar)

@@ -86,10 +86,12 @@ namespace PipeSystem
         public bool hideProgressInInfobox = false;
         public HistoryEventDef historyEventWhenFinished;
        
-        // Sound handling
+        // Sound and Effecter handling
 
         public bool sustainerWhenWorking = false;
         public SoundDef sustainerDef;
+        public bool effecterWhenWorking = false;
+        public EffecterDef effecterDef;
 
         public string uiIconPath; // Path to the icon, used for UI
         [Unsaved]
