@@ -36,6 +36,7 @@ namespace PipeSystem
         public bool manualExtractAllowNet = true;                       // When pawn manually extract, result will try to go in net first
         public int extractTicks = 800;                                  // Manual extract ticks needed
         public bool spawnOnInteractionCell = false;                     // For manual extracts
+        public bool considerBuildingCompResource = false;               // Process will try to auto-grab inputs from the building's assigned pipenet
 
         // Variables handling processes being ruined by lack of power, temperature, etc
 

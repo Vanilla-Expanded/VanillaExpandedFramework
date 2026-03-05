@@ -489,11 +489,13 @@ namespace PipeSystem
                     owner.AddFromNet(associatedComp.PipeNet);
                 }
 
-                ThingDef resourceThingDef = BuildingCompResource?.PipeNet?.def?.linkToRefuelables?.FirstOrFallback()?.thing;
-                if(owner.ThingDef != null && resourceThingDef == owner.ThingDef)
-                {
-                    owner.AddFromNetDirect(BuildingCompResource.PipeNet);
-                }
+                if (Def.considerBuildingCompResource) {
+                    ThingDef resourceThingDef = BuildingCompResource?.PipeNet?.def?.linkToRefuelables?.FirstOrFallback()?.thing;
+                    if (owner.ThingDef != null && resourceThingDef == owner.ThingDef)
+                    {
+                        owner.AddFromNetDirect(BuildingCompResource.PipeNet);
+                    }
+                }             
 
                 // Set awaiting
                 if (!Def.autoGrabFromHoppers || Def.autoInputSlots.NullOrEmpty())
