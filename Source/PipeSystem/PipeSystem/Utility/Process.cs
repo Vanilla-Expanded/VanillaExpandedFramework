@@ -52,6 +52,7 @@ namespace PipeSystem
         public CompAdvancedResourceProcessor advancedProcessor;
         protected Sustainer workingSoundSustainer;
         private Effecter effecter;
+        public CompResource cachedBuildingCompResource;
 
         public bool IsRunning => ShouldDoNow() && !MissingIngredients;
 
@@ -72,6 +73,21 @@ namespace PipeSystem
                     }
                 }
                 return missingStuff;
+            }
+        }
+
+        /// <summary>
+        /// Cache the building's CompResource
+        /// </summary>
+        public CompResource BuildingCompResource
+        {
+            get
+            {
+                if (cachedBuildingCompResource is null)
+                {
+                    cachedBuildingCompResource = advancedProcessor.parent.TryGetComp<CompResource>();
+                }
+                return cachedBuildingCompResource;
             }
         }
 
@@ -472,6 +488,13 @@ namespace PipeSystem
                 {
                     owner.AddFromNet(associatedComp.PipeNet);
                 }
+
+                ThingDef resourceThingDef = BuildingCompResource?.PipeNet?.def?.linkToRefuelables?.FirstOrFallback()?.thing;
+                if(owner.ThingDef != null && resourceThingDef == owner.ThingDef)
+                {
+                    owner.AddFromNetDirect(BuildingCompResource.PipeNet);
+                }
+
                 // Set awaiting
                 if (!Def.autoGrabFromHoppers || Def.autoInputSlots.NullOrEmpty())
                 {                 
@@ -652,7 +675,6 @@ namespace PipeSystem
                     {
                         if (ingredient.thingCategory != null)
                         {
-
                             if (thingToCheck.def.IsWithinCategory(ingredient.thingCategory) &&
                             !ingredient.disallowedThingDefs.Contains(thingToCheck.def) &&
                             (!ingredient.onlySmeltable || thingToCheck.Smeltable) &&
@@ -675,13 +697,11 @@ namespace PipeSystem
                                 ingredientsOwner.BeingFilled = true;
                                 advancedProcessorsManager.AddIngredient(advancedProcessor, thingToCheck);
                             }
-
                         }
-
                     }
-
                 }
             }
+           
             if (!ingredientsOwner.Require)
             {
                 Notify_Started();

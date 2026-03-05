@@ -72,7 +72,7 @@ namespace PipeSystem
             if (thingCategoryDef != null)
             {
                 List<ThingCategoryDef> allRootAndChildCategories = ProcessUtility.AllChildrenCategories(thingCategoryDef);
-                
+
                 if (!thing.def.thingCategories.ToList().Intersect(allRootAndChildCategories).Any())
                     return;
             }
@@ -89,7 +89,7 @@ namespace PipeSystem
                     used = taken.stackCount;
                     taken.Destroy();
                 }
-                
+
             }
             else
             {
@@ -118,6 +118,26 @@ namespace PipeSystem
                 count += needed;
             }
         }
+
+        public void AddFromNetDirect(PipeNet net)
+        {
+
+            var needed = wantedCount - count;
+            var available = (int)net.Stored;
+
+            if (needed > available)
+            {
+                net.DrawAmongStorage(available, net.storages);
+                count += available;
+            }
+            else
+            {
+                net.DrawAmongStorage(needed, net.storages);
+                count += needed;
+            }
+        }
+
+
 
         public void Reset()
         {
