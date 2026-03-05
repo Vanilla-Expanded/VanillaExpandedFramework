@@ -111,6 +111,7 @@
     <Compile Include="Def\ProcessDef.cs" />
     <Compile Include="GenericPipeNetOverlayWorker.cs" />
     <Compile Include="GraphicsCache\GraphicsCache.cs" />
+    <Compile Include="Harmony\CompAffectedByFacilities_Notify_FacilityDespawned.cs" />
     <Compile Include="Harmony\ResearchProjectDef_UnlockedDefs_Patch.cs" />
     <Compile Include="Harmony\ThingSpawnSetup_Patch.cs" />
     <Compile Include="Harmony\Widgets_DefIcon_Patch.cs" />

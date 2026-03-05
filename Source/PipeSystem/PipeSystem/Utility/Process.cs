@@ -1173,6 +1173,13 @@ namespace PipeSystem
             if (Widgets.ButtonImage(suspendRect, TexButton.Suspend, color))
             {
                 suspended = !suspended;
+                if (suspended) {
+                    Notify_StopWorkingSound();
+                }
+                if (!suspended && def.sustainerWhenWorking && def.sustainerDef != null)
+                {
+                    Notify_StartWorkingSound();
+                }
                 SoundDefOf.Click.PlayOneShotOnCamera();
                 advancedProcessor.ProcessStack.Notify_ProcessChange();
             }
