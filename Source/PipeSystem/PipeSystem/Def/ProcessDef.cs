@@ -20,6 +20,7 @@ namespace PipeSystem
         public List<ResearchProjectDef> researchPrerequisites;          // Research required to unlock the process
         public bool hideProcessIfNotNaturalRock = false;                // Process will not be shown if the result is not a natural rock in this map
         public ThingDef rockToDetect;                                   // Only used by hideProcessIfNotNaturalRock=true
+        public bool worksInSpace = true;                                // For example, a drill wouldn't work in space
 
         public List<Result> results = new List<Result>();
 

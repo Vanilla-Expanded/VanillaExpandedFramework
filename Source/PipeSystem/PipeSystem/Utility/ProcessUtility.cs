@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
+using RimWorld.Planet;
 using UnityEngine;
 using Verse;
 
@@ -293,6 +294,18 @@ namespace PipeSystem
             {
                 AddCategoryRecursive(child, list);
             }
+        }
+
+        public static bool InSpace(CompAdvancedResourceProcessor processor)
+        {
+
+            PlanetTile tile = processor.parent.MapHeld.Tile;
+            if (tile.Valid)
+            {
+                return tile.LayerDef.isSpace;
+            }
+            return false;
+
         }
     }
 }

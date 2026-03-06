@@ -476,6 +476,11 @@ namespace PipeSystem
             {
                 return;
             }
+
+            if(!def.worksInSpace && ProcessUtility.InSpace(advancedProcessor))
+            {
+                return;
+            }
             
             // Try filling owners from their comps
             for (int i = 0; i < ingredientsOwners.Count; i++)
