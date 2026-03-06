@@ -773,7 +773,7 @@ namespace PipeSystem
         /// <param name="extractor">Pawn extracint result</param>
         public void SpawnOrPushToNet(IntVec3 spawnPos, out List<Thing> outThings, Pawn extractor = null)
         {
-
+           
             // Thing created, in case it's not pushed to net
             outThings = new List<Thing>();
             for (int i = 0; i < def.results.Count; i++)
@@ -863,7 +863,17 @@ namespace PipeSystem
             {
                 var output = result.GetOutput(this);
                 // Try find thing of the same def
-                var thing = cell.GetFirstThing(map, output);
+                Thing thing=null;
+                List<Thing> thingList = cell.GetThingList(map);
+                for (int i = 0; i < thingList.Count; i++)
+                {
+                    if (thingList[i].def == output)
+                    {
+                        thing = thingList[i];
+                        break;
+                    }
+                }
+
                 int count = result.GetCount(this);
                 if (thing != null && !Def.useFirstIngredientAsOutputStuff)
                 {
@@ -893,7 +903,7 @@ namespace PipeSystem
                     else { thing = ThingMaker.MakeThing(output); }
 
                     
-                    thing.stackCount = count;
+                    
                     if (Def.onlyGrabAndOutputToFactoryHoppers)
                     {
                         if (!GenPlace.TryPlaceThing(thing, cell, map, ThingPlaceMode.Direct))
@@ -904,7 +914,7 @@ namespace PipeSystem
                         if (!GenPlace.TryPlaceThing(thing, cell, map, ThingPlaceMode.Near))
                             return false;
                     }
-                    
+                    thing.stackCount = count;
 
                     outThing = thing;
                     HandleIngredientsAndQuality(outThing);
@@ -931,9 +941,7 @@ namespace PipeSystem
                         if(!compingredients.ingredients.Contains(ingredientInput.thingDef)) {
                             compingredients.ingredients.Add(ingredientInput.thingDef);
                         }
-                    }
-                    advancedProcessor.cachedIngredients.Clear();
-
+                    }               
                 }
             }
             if (Def.stopAtQuality)
@@ -955,7 +963,8 @@ namespace PipeSystem
 
                 forceQualityOut = false;
             }
-            
+            advancedProcessor.cachedIngredients.Clear();
+
 
         }
 
