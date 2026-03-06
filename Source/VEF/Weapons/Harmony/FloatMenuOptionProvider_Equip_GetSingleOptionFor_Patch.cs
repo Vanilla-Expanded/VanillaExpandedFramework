@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace VEF.Weapons
 {
+    /*
     [HarmonyPatch(typeof(FloatMenuOptionProvider_Equip), "GetSingleOptionFor")]
     static class VanillaExpandedFramework_FloatMenuOptionProvider_Equip_GetSingleOptionFor_Patch
     {
@@ -66,4 +67,5 @@ namespace VEF.Weapons
              return allToolsList?.Contains(thingDef)==true;
          }
     }
+    */
 }
