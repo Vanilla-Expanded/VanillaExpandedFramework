@@ -37,6 +37,7 @@ namespace PipeSystem
         public int extractTicks = 800;                                  // Manual extract ticks needed
         public bool spawnOnInteractionCell = false;                     // For manual extracts
         public bool considerBuildingCompResource = false;               // Process will try to auto-grab inputs from the building's assigned pipenet
+        public float maxOutputCount = 0;                                // If >0, autoExtract processors won't extract if output slot has more than this
 
         // Variables handling processes being ruined by lack of power, temperature, etc
 
@@ -173,14 +174,15 @@ namespace PipeSystem
                 yield return error;
 
             if (ingredients.NullOrEmpty() && autoGrabFromHoppers)
-                yield return $"ProcessDef cannot have empty or null <ingredients> and autoGrabFromHoppers";
-           
+                yield return $"ProcessDef cannot have empty or null <ingredients> and autoGrabFromHoppers";   
             if (results.NullOrEmpty())
                 yield return $"ProcessDef cannot have empty or null <results>";
             if (autoGrabFromHoppers && autoInputSlots.NullOrEmpty())
                 yield return $"ProcessDef with <autoGrabFromHoppers> set to true cannot have empty or null <autoInputSlots>";
             if (hideProcessIfNotNaturalRock && rockToDetect is null)
                 yield return $"ProcessDef with <hideProcessIfNotNaturalRock> needs a valid natural rock type on <rockToDetect>";
+            if (!onlyGrabAndOutputToFactoryHoppers && maxOutputCount>0)
+                yield return $"ProcessDef with <maxOutputCount> higher than 0 only works with <onlyGrabAndOutputToFactoryHoppers>";
 
             for (int i = 0; i < results.Count; i++)
             {

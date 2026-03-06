@@ -39,6 +39,7 @@ namespace PipeSystem
         public QualityCategory currentQuality;
         public BillRepeatModeDef repeatMode = BillRepeatModeDefOf.RepeatCount;
         public bool outputFactoryHopperIncorrect = false;
+        public bool outputFactoryHopperTooFull = false;
 
         private string id;                                      // Process ID
 
@@ -815,13 +816,16 @@ namespace PipeSystem
                     // Try spawning at spawnPos
                     if (spawnPos != IntVec3.Invalid && SpawnResultAt(result, spawnPos, map, ref outThings)) { continue; }
 
-
-
-                    // If invalid or couldn't, find an adj cell
-                    for (int j = 0; j < adjCells.Count; j++)
+                    // If invalid or couldn't, find an adj cell, but only if maxOutputCount is not defined
+                    if (def.maxOutputCount==0)
                     {
-                        if (SpawnResultAt(result, adjCells[j], map, ref outThings)) { break; }
+                        for (int j = 0; j < adjCells.Count; j++)
+                        {
+                            if (SpawnResultAt(result, adjCells[j], map, ref outThings)) { break; }
+                        }
                     }
+                    else { return; }
+                    
                 }
             }
             this.parent.Map.resourceCounter.UpdateResourceCounts();
@@ -882,8 +886,17 @@ namespace PipeSystem
                     if (!def.onlyGrabAndOutputToFactoryHoppers)
                     {
                         if ((thing.stackCount + count) > thing.def.stackLimit)
+                        {
                             return false;
+                        }
+                            
+                    }else if (def.maxOutputCount > 0 && thing.stackCount > def.maxOutputCount)
+                    {
+                        outputFactoryHopperTooFull = true;
+                        tickLeft = 1;
+                        return false;
                     }
+                    outputFactoryHopperTooFull = false;
 
                     // We found some, modifying stack size
                     thing.stackCount += count;

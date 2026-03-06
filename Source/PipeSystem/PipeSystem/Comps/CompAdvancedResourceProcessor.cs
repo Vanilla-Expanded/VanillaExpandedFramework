@@ -738,6 +738,8 @@ namespace PipeSystem
                 sb.AppendLine("WasteLevel".Translate() + ": " + WasteProducedPercentFull.ToStringPercent());
             if (process.outputFactoryHopperIncorrect)
                 sb.AppendLine("PipeSystem_OutputFactoryHopperIncorrect".Translate());
+            if (process.outputFactoryHopperTooFull)
+                sb.AppendLine("PipeSystem_OutputFactoryHopperFull".Translate(process.Def.maxOutputCount));
 
             return sb.ToString().TrimEndNewlines();
         }
