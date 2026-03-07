@@ -67,8 +67,8 @@ namespace PipeSystem
             if (!(parentDef.tickerType == TickerType.Rare || parentDef.tickerType == TickerType.Normal))
                 yield return $"CompProperties_AdvancedResourceProcessor parent need tickerType long, rare or normal";
 
-            if (processes.NullOrEmpty())
-                yield return $"CompProperties_AdvancedResourceProcessor cannot have empty or null <processes>";
+            /*if (processes.NullOrEmpty())
+                yield return $"CompProperties_AdvancedResourceProcessor cannot have empty or null <processes>";*/
 
             if (notWorkingKey == null)
                 yield return $"CompProperties_AdvancedResourceProcessor cannot have null <notWorkingKey>";

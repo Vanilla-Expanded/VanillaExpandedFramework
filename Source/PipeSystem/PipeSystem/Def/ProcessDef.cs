@@ -21,6 +21,8 @@ namespace PipeSystem
         public bool hideProcessIfNotNaturalRock = false;                // Process will not be shown if the result is not a natural rock in this map
         public ThingDef rockToDetect;                                   // Only used by hideProcessIfNotNaturalRock=true
         public bool worksInSpace = true;                                // For example, a drill wouldn't work in space
+        public bool hideProcessIfNotNaturalFish = false;                // Process will be hidden if the result of the process is not a natural fish in this biome
+        public bool stopProcessUnderGillRot = false;                    // Process won't advance if gill rot is present
 
         public List<Result> results = new List<Result>();
 

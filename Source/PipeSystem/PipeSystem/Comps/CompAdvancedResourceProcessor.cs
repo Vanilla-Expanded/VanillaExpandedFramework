@@ -117,7 +117,9 @@ namespace PipeSystem
             get
             {
                 processesOptions = new List<FloatMenuOption>();
-                List<ProcessDef> processes = Props.processes.Where(x => !x.hideProcessIfNotNaturalRock || Find.World.NaturalRockTypesIn(this.parent.Map.Tile).Contains(x.rockToDetect)).OrderBy(x => x.priorityInBillList).ToList();
+                List<ProcessDef> processes = Props.processes.Where(x => (!x.hideProcessIfNotNaturalRock || Find.World.NaturalRockTypesIn(this.parent.Map.Tile).Contains(x.rockToDetect))&&
+                !x.hideProcessIfNotNaturalFish || this.parent.Map.Biome.fishTypes.freshwater_Common.Select(x => x.fishDef).Contains(x.results[0].thing)
+                || this.parent.Map.Biome.fishTypes.saltwater_Common.Select(x => x.fishDef).Contains(x.results[0].thing)).OrderBy(x => x.priorityInBillList).ToList();
                 for (int i = 0; i < processes.Count; i++)
                 {
                     var process = processes[i];
@@ -740,6 +742,8 @@ namespace PipeSystem
                 sb.AppendLine("PipeSystem_OutputFactoryHopperIncorrect".Translate());
             if (process.outputFactoryHopperTooFull)
                 sb.AppendLine("PipeSystem_OutputFactoryHopperFull".Translate(process.Def.maxOutputCount));
+            if (process.interruptedByGillRot)
+                sb.AppendLine("PipeSystem_InterruptedByGillRot".Translate(process.Def.maxOutputCount));
 
             return sb.ToString().TrimEndNewlines();
         }

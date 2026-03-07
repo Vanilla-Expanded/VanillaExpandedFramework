@@ -40,6 +40,7 @@ namespace PipeSystem
         public BillRepeatModeDef repeatMode = BillRepeatModeDefOf.RepeatCount;
         public bool outputFactoryHopperIncorrect = false;
         public bool outputFactoryHopperTooFull = false;
+        public bool interruptedByGillRot = false;
 
         private string id;                                      // Process ID
 
@@ -295,11 +296,13 @@ namespace PipeSystem
             Scribe_Values.Look(ref qualityToForce, "qualityToForce");
             Scribe_Defs.Look(ref repeatMode, "repeatMode");
             Scribe_Values.Look(ref outputFactoryHopperIncorrect, "outputFactoryHopperIncorrect");
+            Scribe_Values.Look(ref outputFactoryHopperTooFull, "outputFactoryHopperTooFull");
+            Scribe_Values.Look(ref interruptedByGillRot, "interruptedByGillRot");
 
             Scribe_References.Look(ref parent, "parent");
 
             Scribe_Collections.Look(ref ingredientsOwners, "thingOwnerList", LookMode.Deep);
-           
+
         }
 
         public string GetUniqueLoadID() => id;
@@ -358,7 +361,7 @@ namespace PipeSystem
         /// </summary>
         public void Notify_Started()
         {
-            Notify_Glower();           
+            Notify_Glower();
         }
 
         /// <summary>
@@ -385,7 +388,7 @@ namespace PipeSystem
         /// Toggle CompGlowerOnProcess on or off
         /// </summary>
         public void Notify_Glower()
-        {        
+        {
             CompGlowerOnProcess compGlower = advancedProcessor.parent.TryGetComp<CompGlowerOnProcess>();
             compGlower?.UpdateLit(advancedProcessor.parent.Map);
         }
@@ -394,9 +397,9 @@ namespace PipeSystem
         /// Toggle sustainer on
         /// </summary>
         public void Notify_StartWorkingSound()
-        {          
+        {
             if (workingSoundSustainer is null)
-            {          
+            {
                 SoundInfo info = SoundInfo.InMap(advancedProcessor.parent, MaintenanceType.PerTickRare);
                 workingSoundSustainer = def.sustainerDef.TrySpawnSustainer(info);
             }
@@ -477,11 +480,18 @@ namespace PipeSystem
                 return;
             }
 
-            if(!def.worksInSpace && ProcessUtility.InSpace(advancedProcessor))
+            if (def.stopProcessUnderGillRot && advancedProcessor.parent.Map?.gameConditionManager?.GetActiveCondition(GameConditionDefOf.GillRot) != null)
+            {
+                interruptedByGillRot = true;
+                return;
+            }
+            interruptedByGillRot = false;
+
+            if (!def.worksInSpace && ProcessUtility.InSpace(advancedProcessor))
             {
                 return;
             }
-            
+
             // Try filling owners from their comps
             for (int i = 0; i < ingredientsOwners.Count; i++)
             {
@@ -495,17 +505,18 @@ namespace PipeSystem
                     owner.AddFromNet(associatedComp.PipeNet);
                 }
 
-                if (Def.considerBuildingCompResource) {
+                if (Def.considerBuildingCompResource)
+                {
                     ThingDef resourceThingDef = BuildingCompResource?.PipeNet?.def?.linkToRefuelables?.FirstOrFallback()?.thing;
                     if (owner.ThingDef != null && resourceThingDef == owner.ThingDef)
                     {
                         owner.AddFromNetDirect(BuildingCompResource.PipeNet);
                     }
-                }             
+                }
 
                 // Set awaiting
                 if (!Def.autoGrabFromHoppers || Def.autoInputSlots.NullOrEmpty())
-                {                 
+                {
                     advancedProcessorsManager.SetAwaitingIngredients(advancedProcessor);
                 }
                 else
@@ -519,7 +530,7 @@ namespace PipeSystem
             // We are active for ticks
             if (tickLeft > 0 && !RuinedByTemp)
             {
-               
+
                 TryRuin(ticks);
                 tickLeft -= ticks;
 
@@ -541,7 +552,7 @@ namespace PipeSystem
                 if (effecter != null)
                 {
                     effecter.EffectTick(this.parent, this.parent);
-                }                
+                }
             }
             // Set progress (for the bar)
 
@@ -709,7 +720,7 @@ namespace PipeSystem
                     }
                 }
             }
-           
+
             if (!ingredientsOwner.Require)
             {
                 Notify_Started();
@@ -779,7 +790,7 @@ namespace PipeSystem
         /// <param name="extractor">Pawn extracint result</param>
         public void SpawnOrPushToNet(IntVec3 spawnPos, out List<Thing> outThings, Pawn extractor = null)
         {
-           
+
             // Thing created, in case it's not pushed to net
             outThings = new List<Thing>();
             for (int i = 0; i < def.results.Count; i++)
@@ -822,7 +833,7 @@ namespace PipeSystem
                     if (spawnPos != IntVec3.Invalid && SpawnResultAt(result, spawnPos, map, ref outThings)) { continue; }
 
                     // If invalid or couldn't, find an adj cell, but only if maxOutputCount is not defined
-                    if (def.maxOutputCount==0)
+                    if (def.maxOutputCount == 0)
                     {
                         for (int j = 0; j < adjCells.Count; j++)
                         {
@@ -830,7 +841,7 @@ namespace PipeSystem
                         }
                     }
                     else { return; }
-                    
+
                 }
             }
             this.parent.Map.resourceCounter.UpdateResourceCounts();
@@ -872,7 +883,7 @@ namespace PipeSystem
             {
                 var output = result.GetOutput(this);
                 // Try find thing of the same def
-                Thing thing=null;
+                Thing thing = null;
                 List<Thing> thingList = cell.GetThingList(map);
                 for (int i = 0; i < thingList.Count; i++)
                 {
@@ -894,8 +905,9 @@ namespace PipeSystem
                         {
                             return false;
                         }
-                            
-                    }else if (def.maxOutputCount > 0 && thing.stackCount > def.maxOutputCount)
+
+                    }
+                    else if (def.maxOutputCount > 0 && thing.stackCount > def.maxOutputCount)
                     {
                         outputFactoryHopperTooFull = true;
                         tickLeft = 1;
@@ -916,12 +928,12 @@ namespace PipeSystem
                     if (Def.useFirstIngredientAsOutputStuff)
                     {
                         thing = ThingMaker.MakeThing(output, advancedProcessor.cachedIngredients.Last().thingDef);
-                       
+
                     }
                     else { thing = ThingMaker.MakeThing(output); }
 
-                    
-                    
+
+
                     if (Def.onlyGrabAndOutputToFactoryHoppers)
                     {
                         if (!GenPlace.TryPlaceThing(thing, cell, map, ThingPlaceMode.Direct))
@@ -956,10 +968,11 @@ namespace PipeSystem
 
                     foreach (CachedIngredient ingredientInput in advancedProcessor.cachedIngredients)
                     {
-                        if(!compingredients.ingredients.Contains(ingredientInput.thingDef)) {
+                        if (!compingredients.ingredients.Contains(ingredientInput.thingDef))
+                        {
                             compingredients.ingredients.Add(ingredientInput.thingDef);
                         }
-                    }               
+                    }
                 }
             }
             if (Def.stopAtQuality)
@@ -1200,7 +1213,8 @@ namespace PipeSystem
             if (Widgets.ButtonImage(suspendRect, TexButton.Suspend, color))
             {
                 suspended = !suspended;
-                if (suspended) {
+                if (suspended)
+                {
                     Notify_StopWorkingSound();
                 }
                 if (!suspended && def.sustainerWhenWorking && def.sustainerDef != null)
