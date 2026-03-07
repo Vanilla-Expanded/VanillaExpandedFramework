@@ -319,6 +319,10 @@ namespace PipeSystem
                 return false;
             if (repeatMode == BillRepeatModeDefOf.Forever)
             {
+                if (Def.onlyGrabAndOutputToFactoryHoppers && !Def.autoInputSlots.NullOrEmpty() && !Def.ingredients.NullOrEmpty())
+                {
+                    return AreIngredientsInInputHoppers();
+                }
                 return true;
             }
             if (repeatMode == BillRepeatModeDefOf.TargetCount)
@@ -1380,11 +1384,72 @@ namespace PipeSystem
 
         public void Notify_OverclockChange(float originalOverclockValue)
         {
-            
-            tickLeft = (int)(tickLeft * originalOverclockValue/ advancedProcessor.overclockMultiplier);
-            
+            tickLeft = (int)(tickLeft * originalOverclockValue / advancedProcessor.overclockMultiplier);
         }
 
+        public bool AreIngredientsInInputHoppers()
+        {
+            bool ingredientsFound = false;
+            for (int i = 0; i < ingredientsOwners.Count; i++)
+            {
+                if (parent.Map is null)
+                    return false;
+
+
+                foreach (IntVec3 slot in Def.autoInputSlots)
+                {
+                    IntVec3 pos = parent.Position + slot.RotatedBy(parent.Rotation);
+
+                    if (!pos.InBounds(parent.Map))
+                    {
+                        continue;
+                    }
+
+                    if (!InputFactoryHopperDetected(pos))
+                    {
+                        continue;
+                    }
+
+                    List<Thing> thingList = pos.GetThingList(parent.Map);
+                    for (int j = 0; j < thingList.Count; j++)
+                    {
+                        Thing thingToCheck = thingList[j];
+
+                        foreach (ProcessDef.Ingredient ingredient in Def.ingredients)
+                        {
+                            if (ingredient.thingCategory != null)
+                            {
+                                if (thingToCheck.def.IsWithinCategory(ingredient.thingCategory) &&
+                                !ingredient.disallowedThingDefs.Contains(thingToCheck.def) &&
+                                (!ingredient.onlySmeltable || thingToCheck.Smeltable) &&
+                                (!ingredient.onlyFreshCorpses || (thingToCheck.TryGetComp<CompRottable>()?.Stage == RotStage.Fresh)) &&
+                                (!Def.disallowMixing || (GetLastStoredIngredient() is null || (GetLastStoredIngredient() is ThingDef stored && thingToCheck.def == stored)))
+                                )
+                                {
+                                    ingredientsFound = true;
+
+                                }
+                                else { ingredientsFound = false; }
+                            }
+                            else
+                            {
+                                if (thingToCheck.def == ingredient.thing &&
+                                  (!ingredient.onlySmeltable || thingToCheck.Smeltable) &&
+                                (!ingredient.onlyFreshCorpses || (thingToCheck.TryGetComp<CompRottable>()?.Stage == RotStage.Fresh))
+
+                                )
+                                {
+                                    ingredientsFound = true;
+                                }
+                                else { ingredientsFound = false; }
+                            }
+                        }
+                    }
+                }
+
+            }
+            return ingredientsFound;
+        }
 
     }
 }

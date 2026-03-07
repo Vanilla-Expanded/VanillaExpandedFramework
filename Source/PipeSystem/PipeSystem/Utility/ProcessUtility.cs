@@ -236,10 +236,18 @@ namespace PipeSystem
      
         public static int CountResults(Process process)
         {
-           ProcessDef.Result firstresult = process.Def.results[0];
-           ThingDef thingDef = firstresult.thing;
-          
-           return process.advancedProcessor.parent.Map.resourceCounter.GetCount(thingDef) + GetCarriedCount(process, thingDef);
+            if (!process.Def.results.NullOrEmpty())
+            {
+                ProcessDef.Result firstresult = process.Def.results[0];
+                ThingDef thingDef = firstresult.thing;
+
+                return process.advancedProcessor.parent.Map.resourceCounter.GetCount(thingDef) + GetCarriedCount(process, thingDef);
+            }
+            else
+            {
+                return 0;
+            }
+           
             
            
         }
