@@ -10,6 +10,7 @@ namespace PipeSystem
 
         public override Vector2 InitialSize => new Vector2(500f, 180f);
         private Vector2 scrollPosition = new Vector2(0, 0);
+        private float cachedOverclocking;
 
         CompAdvancedResourceProcessor building;
 
@@ -20,12 +21,19 @@ namespace PipeSystem
         {
 
             this.building = building;
+            cachedOverclocking = building.overclockMultiplier;
             draggable = false;
             resizeable = false;
             preventCameraMotion = false;
             closeOnClickedOutside = true;
+            forcePause = true;
         }
 
+        public override void Close(bool doCloseSound = true)
+        {
+            building.Process?.Notify_OverclockChange(cachedOverclocking);
+            base.Close(doCloseSound);
+        }
 
         public override void DoWindowContents(Rect inRect)
         {

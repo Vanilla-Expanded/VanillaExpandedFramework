@@ -1378,6 +1378,13 @@ namespace PipeSystem
             return null;
         }
 
+        public void Notify_OverclockChange(float originalOverclockValue)
+        {
+            
+            tickLeft = (int)(tickLeft * originalOverclockValue/ advancedProcessor.overclockMultiplier);
+            
+        }
+
 
     }
 }
