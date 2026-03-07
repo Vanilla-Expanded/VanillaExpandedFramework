@@ -1389,66 +1389,67 @@ namespace PipeSystem
 
         public bool AreIngredientsInInputHoppers()
         {
-            bool ingredientsFound = false;
-            for (int i = 0; i < ingredientsOwners.Count; i++)
-            {
-                if (parent.Map is null)
-                    return false;
+            if (parent.Map is null)
+                return false;
 
+            foreach (ProcessDef.Ingredient ingredient in Def.ingredients)
+            {
+                bool foundThisIngredient = false;
 
                 foreach (IntVec3 slot in Def.autoInputSlots)
                 {
                     IntVec3 pos = parent.Position + slot.RotatedBy(parent.Rotation);
 
                     if (!pos.InBounds(parent.Map))
-                    {
                         continue;
-                    }
 
                     if (!InputFactoryHopperDetected(pos))
-                    {
                         continue;
-                    }
 
                     List<Thing> thingList = pos.GetThingList(parent.Map);
+
                     for (int j = 0; j < thingList.Count; j++)
                     {
                         Thing thingToCheck = thingList[j];
 
-                        foreach (ProcessDef.Ingredient ingredient in Def.ingredients)
+                        bool matches;
+
+                        if (ingredient.thingCategory != null)
                         {
-                            if (ingredient.thingCategory != null)
-                            {
-                                if (thingToCheck.def.IsWithinCategory(ingredient.thingCategory) &&
+                            matches =
+                                thingToCheck.def.IsWithinCategory(ingredient.thingCategory) &&
                                 !ingredient.disallowedThingDefs.Contains(thingToCheck.def) &&
                                 (!ingredient.onlySmeltable || thingToCheck.Smeltable) &&
-                                (!ingredient.onlyFreshCorpses || (thingToCheck.TryGetComp<CompRottable>()?.Stage == RotStage.Fresh)) &&
-                                (!Def.disallowMixing || (GetLastStoredIngredient() is null || (GetLastStoredIngredient() is ThingDef stored && thingToCheck.def == stored)))
-                                )
-                                {
-                                    ingredientsFound = true;
+                                (!ingredient.onlyFreshCorpses || thingToCheck.TryGetComp<CompRottable>()?.Stage == RotStage.Fresh) &&
+                                (!Def.disallowMixing || GetLastStoredIngredient() is null ||
+                                 (GetLastStoredIngredient() is ThingDef stored && thingToCheck.def == stored));
+                        }
+                        else
+                        {
+                            matches =
+                                thingToCheck.def == ingredient.thing &&
+                                (!ingredient.onlySmeltable || thingToCheck.Smeltable) &&
+                                (!ingredient.onlyFreshCorpses || thingToCheck.TryGetComp<CompRottable>()?.Stage == RotStage.Fresh);
+                        }
 
-                                }
-                                else { ingredientsFound = false; }
-                            }
-                            else
-                            {
-                                if (thingToCheck.def == ingredient.thing &&
-                                  (!ingredient.onlySmeltable || thingToCheck.Smeltable) &&
-                                (!ingredient.onlyFreshCorpses || (thingToCheck.TryGetComp<CompRottable>()?.Stage == RotStage.Fresh))
-
-                                )
-                                {
-                                    ingredientsFound = true;
-                                }
-                                else { ingredientsFound = false; }
-                            }
+                        if (matches)
+                        {
+                            foundThisIngredient = true;
+                            break;
                         }
                     }
+
+                    if (foundThisIngredient)
+                        break;
                 }
 
+                // If we finished searching all hoppers and didn't find this ingredient
+                if (!foundThisIngredient)
+                    return false;
             }
-            return ingredientsFound;
+
+            // All ingredients were found
+            return true;
         }
 
     }
