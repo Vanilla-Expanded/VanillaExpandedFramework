@@ -6,8 +6,6 @@ namespace PipeSystem
 {
     public class Window_Overclock : Window
     {
-
-
         public override Vector2 InitialSize => new Vector2(500f, 180f);
         private Vector2 scrollPosition = new Vector2(0, 0);
         private float cachedOverclocking;
@@ -19,7 +17,6 @@ namespace PipeSystem
 
         public Window_Overclock(CompAdvancedResourceProcessor building)
         {
-
             this.building = building;
             cachedOverclocking = building.overclockMultiplier;
             draggable = false;
@@ -29,10 +26,10 @@ namespace PipeSystem
             forcePause = true;
         }
 
-        public override void Close(bool doCloseSound = true)
+        public override void PostClose()
         {
             building.Process?.Notify_OverclockChange(cachedOverclocking);
-            base.Close(doCloseSound);
+            base.PostClose();
         }
 
         public override void DoWindowContents(Rect inRect)

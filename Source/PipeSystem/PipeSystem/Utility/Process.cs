@@ -1385,6 +1385,8 @@ namespace PipeSystem
         public void Notify_OverclockChange(float originalOverclockValue)
         {
             tickLeft = (int)(tickLeft * originalOverclockValue / advancedProcessor.overclockMultiplier);
+            ticksOrQualityTicks = (int)(ticksOrQualityTicks * originalOverclockValue / advancedProcessor.overclockMultiplier);
+
         }
 
         public bool AreIngredientsInInputHoppers()
