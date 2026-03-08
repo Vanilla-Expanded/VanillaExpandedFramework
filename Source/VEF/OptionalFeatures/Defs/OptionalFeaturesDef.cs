@@ -11,7 +11,7 @@ namespace VEF.OptionalFeatures
         public Type activationClass;
         [Unsaved] public MethodInfo activationMethod;
         public string harmonyCategory;
-        [Unsaved] private bool isActive = false;
+        public bool IsActive { get; private set; } = false;
 
         public override void ResolveReferences()
         {
@@ -24,9 +24,9 @@ namespace VEF.OptionalFeatures
 
         public void Activate()
         {
-            if (isActive)
+            if (IsActive)
                 return;
-            isActive = true;
+            IsActive = true;
 
             if (activationClass != null && harmonyCategory != null)
                 Log.WarningOnce($"Feature {feature} has both {nameof(activationClass)} and {nameof(harmonyCategory)} specified, only {nameof(harmonyCategory)} will be used. Category: {harmonyCategory}, type: {activationClass}.", feature.GetHashCode());
