@@ -118,16 +118,12 @@ namespace PipeSystem
             {
                 processesOptions = new List<FloatMenuOption>();
                 List<ProcessDef> processes = Props.processes.Where(x => (!x.hideProcessIfNotNaturalRock || Find.World.NaturalRockTypesIn(this.parent.Map.Tile).Contains(x.rockToDetect))&&
-                !x.hideProcessIfNotNaturalFish || this.parent.Map.Biome.fishTypes.freshwater_Common.Select(x => x.fishDef).Contains(x.results[0].thing)
-                || this.parent.Map.Biome.fishTypes.saltwater_Common.Select(x => x.fishDef).Contains(x.results[0].thing)).OrderBy(x => x.priorityInBillList).ToList();
+                (!x.hideProcessIfNotNaturalFish || x.results.NullOrEmpty() || this.parent.Map.Biome.fishTypes.freshwater_Common.Select(x => x.fishDef).Contains(x.results[0].thing)
+                || this.parent.Map.Biome.fishTypes.saltwater_Common.Select(x => x.fishDef).Contains(x.results[0].thing))).OrderBy(x => x.priorityInBillList).ToList();
                 for (int i = 0; i < processes.Count; i++)
                 {
                     var process = processes[i];
                     if (process.researchPrerequisites != null && process.researchPrerequisites.Any(p => !p.IsFinished)) continue;
-
-
-
-
 
                     var label = "";
                     if (process.labelOverride != "")
@@ -136,23 +132,27 @@ namespace PipeSystem
                     }
                     else
                     {
-                        var name = process.results[0].thing != null
+                        if (!process.results.NullOrEmpty())
+                        {
+                            var name = process.results[0].thing != null
                         ? process.results[0].thing.LabelCap.ToStringSafe()
                         : process.results[0].pipeNet.resource.name;
 
-                        label = "PipeSystem_MakeProcess".Translate(name);
-                        if (process.results[0].count > 1)
-                        {
-                            label += " x" + process.results[0].count;
+                            label = "PipeSystem_MakeProcess".Translate(name);
+                            if (process.results[0].count > 1)
+                            {
+                                label += " x" + process.results[0].count;
+                            }
                         }
+                        
                     }
-
+                    ThingDef thingToShowIcon = process.results.NullOrEmpty() ? null : process.results[0].thing;
 
                     processesOptions.Add(new FloatMenuOption(label, () => processStack.AddProcess(process, parent,BillRepeatModeDefOf.RepeatCount),
-                                                             process.results[0].thing, null, false, MenuOptionPriority.Default,
+                                                             thingToShowIcon, null, false, MenuOptionPriority.Default,
                                                              (Rect rect) => process.DoProcessInfoWindow(i, rect),
                                                              null, 29f,
-                                                             (Rect rect) => process.results[0].thing != null && Widgets.InfoCardButton(rect.x + 5f, rect.y + (rect.height - 24f) / 2f, process),
+                                                             (Rect rect) => thingToShowIcon != null && Widgets.InfoCardButton(rect.x + 5f, rect.y + (rect.height - 24f) / 2f, process),
                                                              null, true));
                 }
 
@@ -512,7 +512,7 @@ namespace PipeSystem
             if (Process == null)
                 return;
 
-            if (Props.showResultItem && ProcessDef.results[0].GetOutput(Process) is ThingDef def)
+            if (Props.showResultItem && ProcessDef.results[0]?.GetOutput(Process) is ThingDef def)
             {
                 var matrix = default(Matrix4x4);
                 matrix.SetTRS(itemDrawPos, Quaternion.identity, Props.resultItemSize);
@@ -738,9 +738,9 @@ namespace PipeSystem
 
             if (shouldProduceWastePack)
                 sb.AppendLine("WasteLevel".Translate() + ": " + WasteProducedPercentFull.ToStringPercent());
-            if (process.outputFactoryHopperIncorrect)
+            if (process.outputFactoryHopperIncorrect && !process.Def.results.NullOrEmpty())
                 sb.AppendLine("PipeSystem_OutputFactoryHopperIncorrect".Translate());
-            if (process.outputFactoryHopperTooFull)
+            if (process.outputFactoryHopperTooFull && !process.Def.results.NullOrEmpty())
                 sb.AppendLine("PipeSystem_OutputFactoryHopperFull".Translate(process.Def.maxOutputCount));
             if (process.interruptedByGillRot)
                 sb.AppendLine("PipeSystem_InterruptedByGillRot".Translate(process.Def.maxOutputCount));

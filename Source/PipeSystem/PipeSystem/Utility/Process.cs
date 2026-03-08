@@ -597,28 +597,38 @@ namespace PipeSystem
             // Check if processor should produce this tick
             if (tickLeft <= 0)
             {
-                if (def.autoExtract)
+                if (def.results.NullOrEmpty())
                 {
-                    if (def.onlyGrabAndOutputToFactoryHoppers)
-                    {
-                        if (FactoryHopperDetected())
-                        {
-                            outputFactoryHopperIncorrect = false;
-                            SpawnOrPushToNet(this.parent.InteractionCell, out _);
-                        }
-                        else
-                        {
-                            outputFactoryHopperIncorrect = true;
-                            tickLeft = 1;
-                        }
-                    }
-                    else { SpawnOrPushToNet(IntVec3.Invalid, out _); }
+                    ResetProcess();
+                    Notify_Ended();
                 }
                 else
                 {
-                    pickUpReady = true;
-                    advancedProcessorsManager.PickupReady(advancedProcessor);
+                    if (def.autoExtract)
+                    {
+                        if (def.onlyGrabAndOutputToFactoryHoppers)
+                        {
+                            if (FactoryHopperDetected())
+                            {
+                                outputFactoryHopperIncorrect = false;
+                                SpawnOrPushToNet(this.parent.InteractionCell, out _);
+                            }
+                            else
+                            {
+                                outputFactoryHopperIncorrect = true;
+                                tickLeft = 1;
+                            }
+                        }
+                        else { SpawnOrPushToNet(IntVec3.Invalid, out _); }
+                    }
+                    else
+                    {
+                        pickUpReady = true;
+                        advancedProcessorsManager.PickupReady(advancedProcessor);
+                    }
                 }
+
+                
             }
         }
 
