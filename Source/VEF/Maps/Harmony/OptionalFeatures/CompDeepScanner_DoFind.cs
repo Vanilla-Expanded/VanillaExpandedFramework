@@ -22,7 +22,7 @@ namespace VEF.Maps
             var codes = codeInstructions.ToList();
 
             var field = AccessTools.Field(typeof(ThingDef), "deepCountPerCell");
-            var deepresourcemultiplier = AccessTools.Method(typeof(VanillaExpandedFramework_CompDeepScanner_DoFind_Patch), "MultiplyDeepResourceNumbers");
+            var deepresourcemultiplier = AccessTools.Method(typeof(VanillaExpandedFramework_CompDeepScanner_DoFind_Patch), "MultiplyDeepResourceNumbersForScanner");
 
             for (var i = 0; i < codes.Count; i++)
             {
@@ -41,9 +41,13 @@ namespace VEF.Maps
         }
 
 
-        public static int MultiplyDeepResourceNumbers(int deepCountPerCell, CompDeepScanner comp)
+        public static int MultiplyDeepResourceNumbersForScanner(int deepCountPerCell, CompDeepScanner comp)
         {
-            Map map = comp.parent.Map;
+            return MultiplyDeepResourceNumbers(deepCountPerCell, comp.parent.Map);
+        }
+
+        public static int MultiplyDeepResourceNumbers(int deepCountPerCell, Map map)
+        {
             float multiplier = 1;
             foreach (TileMutatorDef mutator in map.Tile.Tile.Mutators)
             {
