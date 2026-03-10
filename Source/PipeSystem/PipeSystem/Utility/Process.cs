@@ -15,6 +15,11 @@ using static PipeSystem.ProcessDef;
 
 namespace PipeSystem
 {
+    public interface IFactoryExposedThingHolder
+    {
+        ThingOwner GetInnerContainer();
+    }
+
     public class Process : IExposable, ILoadReferenceable
     {
         private List<ThingAndResourceOwner> ingredientsOwners;  // Process ingredients
@@ -57,6 +62,27 @@ namespace PipeSystem
         public CompResource cachedBuildingCompResource;
 
         public bool IsRunning => ShouldDoNow() && !MissingIngredients;
+
+        private List<Thing> GetThingsAndContainedItems(IntVec3 pos, Map map)
+        {
+            List<Thing> thingsOnCell = pos.GetThingList(map);
+            if (thingsOnCell == null) return new List<Thing>();
+
+            List<Thing> allThings = new List<Thing>(thingsOnCell);
+            for (int i = 0; i < thingsOnCell.Count; i++)
+            {
+                var thing = thingsOnCell[i];
+                if (thing is IFactoryExposedThingHolder container)
+                {
+                    var inner = container.GetInnerContainer();
+                    if (inner != null)
+                    {
+                        allThings.AddRange(inner.ToList());
+                    }
+                }
+            }
+            return allThings;
+        }
 
         /// <summary>
         /// Any missing ingredients? Loop over ingredientsOwners.
@@ -699,7 +725,7 @@ namespace PipeSystem
                     continue;
                 }
 
-                List<Thing> thingList = pos.GetThingList(parent.Map);
+                List<Thing> thingList = GetThingsAndContainedItems(pos, parent.Map);
                 for (int j = 0; j < thingList.Count; j++)
                 {
                     Thing thingToCheck = thingList[j];
@@ -1418,7 +1444,7 @@ namespace PipeSystem
                     if (!InputFactoryHopperDetected(pos))
                         continue;
 
-                    List<Thing> thingList = pos.GetThingList(parent.Map);
+                    List<Thing> thingList = GetThingsAndContainedItems(pos, parent.Map);
 
                     for (int j = 0; j < thingList.Count; j++)
                     {
