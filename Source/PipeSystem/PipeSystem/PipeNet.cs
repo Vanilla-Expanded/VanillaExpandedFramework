@@ -935,6 +935,9 @@ namespace PipeSystem
 
         internal void UpdateLowPowerModeTrader(CompResourceTrader lowPowerModeTrader)
         {
+            if (!lowPowerModeTrader.ResourceOn)
+                return;
+
             switch (lowPowerModeTrader.LowPowerModeOn, lowPowerModeTrader.Props.visualOnlyConsumption, lowPowerModeTrader.Consumption < 0f)
             {
                 // ### Consumer
