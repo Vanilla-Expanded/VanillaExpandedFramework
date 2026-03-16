@@ -1433,7 +1433,26 @@ namespace PipeSystem
             foreach (ProcessDef.Ingredient ingredient in Def.ingredients)
             {
                 bool foundThisIngredient = false;
+                for (int i = 0; i < ingredientsOwners.Count; i++)
+                {
+                    var associatedComp = ingredientsCompResources[i];
+                    if (ingredientsOwners[i].PipeNetDef != null && associatedComp != null)
+                    {
+                        foundThisIngredient = true;
+                        break;
+                    }
 
+                    if (Def.considerBuildingCompResource)
+                    {
+                        ThingDef resourceThingDef = BuildingCompResource?.PipeNet?.def?.linkToRefuelables?.FirstOrFallback()?.thing;
+                        if (ingredientsOwners[i].ThingDef != null && resourceThingDef == ingredientsOwners[i].ThingDef)
+                        {
+                            foundThisIngredient = true;
+                            break;
+                        }
+                    }
+                }
+                   
                 foreach (IntVec3 slot in Def.autoInputSlots)
                 {
                     IntVec3 pos = parent.Position + slot.RotatedBy(parent.Rotation);

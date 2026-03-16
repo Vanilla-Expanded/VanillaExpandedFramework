@@ -67,9 +67,6 @@ namespace PipeSystem
             if (!(parentDef.tickerType == TickerType.Rare || parentDef.tickerType == TickerType.Normal))
                 yield return $"CompProperties_AdvancedResourceProcessor parent need tickerType long, rare or normal";
 
-            /*if (processes.NullOrEmpty())
-                yield return $"CompProperties_AdvancedResourceProcessor cannot have empty or null <processes>";*/
-
             if (notWorkingKey == null)
                 yield return $"CompProperties_AdvancedResourceProcessor cannot have null <notWorkingKey>";
 
@@ -81,6 +78,10 @@ namespace PipeSystem
 
             if (processes.Any(p => p.wastePackToProduce > 0) && !parentDef.HasSingleOrMultipleInteractionCells && parentDef.GetCompProperties<CompProperties_WasteProducer>() == null && parentDef.GetCompProperties<CompProperties_ThingContainer>() == null)
                 yield return $"CompProperties_AdvancedResourceProcessor need interaction cell & CompProperties_WasteProducer & CompProperties_ThingContainer to be able to use <wastePackToProduce>";
+
+            if (canOverclock && processes.Any(p => !p.ticksQuality.NullOrEmpty()))
+                yield return $"Processors that have <canOverclock> can't have quality advancing processes";
+
 
             for (int i = 0; i < processes.Count; i++)
             {
