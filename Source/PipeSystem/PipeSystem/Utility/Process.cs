@@ -1104,7 +1104,10 @@ namespace PipeSystem
             // If finished normaly, increment process count, produce wastepack
             if (finished)
             {
-                if (targetCount - processCount == 0) targetCount++;         // Prevent going into negative
+                if (repeatMode != BillRepeatModeDefOf.TargetCount) {
+                    if (targetCount - processCount == 0) targetCount++;
+                }
+                // Prevent going into negative
                 advancedProcessor.ProduceWastepack(Def.wastePackToProduce); // Create wastepack
                 processCount++;                                             // Increment process count
             }
