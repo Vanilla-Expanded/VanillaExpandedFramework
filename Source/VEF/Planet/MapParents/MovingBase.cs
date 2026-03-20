@@ -17,7 +17,7 @@ namespace VEF.Planet
         public MovingBase_Tweener tweener;
         private Material cachedMat;
         public override Vector3 DrawPos => tweener.TweenedPos;
-        public MovingBaseDef def => base.def as MovingBaseDef;
+        public new MovingBaseDef def => base.def as MovingBaseDef;
         public static readonly Texture2D AttackCommand = ContentFinder<Texture2D>.Get("UI/Commands/AttackSettlement");
         public override Material Material
         {

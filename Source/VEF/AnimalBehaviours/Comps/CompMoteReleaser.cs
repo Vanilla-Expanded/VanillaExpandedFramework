@@ -31,7 +31,7 @@ namespace VEF.AnimalBehaviours
             }
         }
 
-        public void Notify_ColorChanged()
+        public override void Notify_ColorChanged()
         {
             mote = null;
         }

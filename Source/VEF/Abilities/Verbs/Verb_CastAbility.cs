@@ -13,7 +13,7 @@ namespace VEF.Abilities
         {
             if (this.ability.IsEnabledForPawn(out _))
             {
-                this.ability.Cast(this.currentTarget.IsValid ? this.currentTarget : this.CurrentDestination);
+                this.ability.Cast(this.CurrentTarget.IsValid ? this.CurrentTarget.ToGlobalTargetInfo(Caster.Map) : this.CurrentDestination.ToGlobalTargetInfo(Caster.Map));
                 return true;
             }
 
