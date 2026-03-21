@@ -31,5 +31,8 @@ namespace VEF.AnimalBehaviours
         public static TrainableDef VEF_DiggingDiscipline;
         [MayRequireOdyssey]
         public static TrainableDef VEF_FumeRegulation;
+
+        [MayRequire("Ludeon.RimWorld.Odyssey,Ludeon.RimWorld.Royalty")]
+        public static HediffDef VacskinGland;
     }
 }

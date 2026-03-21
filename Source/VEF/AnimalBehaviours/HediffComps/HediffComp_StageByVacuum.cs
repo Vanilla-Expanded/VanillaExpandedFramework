@@ -30,14 +30,14 @@ namespace VEF.AnimalBehaviours
             {
                 if (parent.pawn.Position != IntVec3.Invalid && parent.pawn.Map?.BiomeAt(parent.pawn.Position)?.inVacuum == true){
                     
-                    if(Props.vacuumResistanceInArmorDisablesHediff && !Props.reverseVacuumResistanceEffects && Pawn.VacuumResistanceFromArmor() > Props.vacuumResistanceValueToDisable)
+                    if(Props.vacuumResistanceInArmorDisablesHediff && !Props.reverseVacuumResistanceEffects && (Pawn.VacuumResistanceFromArmor() > Props.vacuumResistanceValueToDisable || Pawn.health?.hediffSet?.GetFirstHediffOfDef(InternalDefOf.VacskinGland)!= null))
                     {
                         this.parent.Severity = Props.notVacuumStageIndex;
                     }
                     else this.parent.Severity = Props.vacuumStageIndex;
                 }
                 else {
-                    if (Props.vacuumResistanceInArmorDisablesHediff && Props.reverseVacuumResistanceEffects && Pawn.VacuumResistanceFromArmor() > Props.vacuumResistanceValueToDisable)
+                    if (Props.vacuumResistanceInArmorDisablesHediff && Props.reverseVacuumResistanceEffects && (Pawn.VacuumResistanceFromArmor() > Props.vacuumResistanceValueToDisable || Pawn.health?.hediffSet?.GetFirstHediffOfDef(InternalDefOf.VacskinGland) != null))
                     {
                         this.parent.Severity = Props.vacuumStageIndex;
                     }
