@@ -5,9 +5,15 @@ namespace VEF.Maps;
 
 public class RoofExtension : DefModExtension
 {
+    public bool drawRoofShadow = true;
     public bool dealDamageOnCollapsed = true;
     public Color roofOverlayTint = Color.white;
     public CustomRoofGraphic customRoofGraphic = null;
+
+    /// <summary>
+    /// Used to determine early if the Harmony patch responsible for disabling shadow drawing over the roof should run. If false, the patch will run.
+    /// </summary>
+    protected internal virtual bool AlwaysDrawsShadow => drawRoofShadow;
 
     /// <summary>
     /// Used to determine early if the Harmony patch responsible for disabling damage should run or not. If false, the patch will run.
@@ -23,6 +29,15 @@ public class RoofExtension : DefModExtension
     /// Used to determine early if the SectionLayer responsible for drawing roofs should be activated or not. If true, it'll be active.
     /// </summary>
     protected internal virtual bool EverUsesCustomRoofGraphic => customRoofGraphic != null;
+
+    /// <summary>
+    /// Determines if a roof shadow should be drawn over a specific roof. Doesn't affect light level in the cell, only the shadow graphic.
+    /// </summary>
+    /// <param name="map">The map at which we're drawing the roof shadow</param>
+    /// <param name="cellIndex">The cell index at which we're drawing a roof shadow over (passed as int for performance, use Map.cellIndices to convert to IntVec3 if needed)</param>
+    /// <param name="roof">The roof for which we're drawing shadow over</param>
+    /// <returns>True if the shadow should be drawn over a specific cell, false otherwise.</returns>
+    public virtual bool ShouldDrawShadow(Map map, int cellIndex, RoofDef roof) => drawRoofShadow;
 
     /// <summary>
     /// Determines if the roof at a specific tile in a specific map should deal damage.

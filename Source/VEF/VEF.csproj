@@ -330,6 +330,7 @@
     <Compile Include="Maps\Harmony\OptionalFeatures\TileMutatorWorker_River_RiverBankTerrainAt.cs" />
     <Compile Include="Maps\Harmony\RoofCollapserImmediate_DropRoofInCellPhaseOne.cs" />
     <Compile Include="Maps\Harmony\RoofGrid_GetCellExtraColor.cs" />
+    <Compile Include="Maps\Harmony\SectionLayer_LightingOverlay_GenerateLightingOverlay.cs" />
     <Compile Include="Maps\SectionLayers\SectionLayer_CustomRoofGraphic.cs" />
     <Compile Include="Things\DefModExtensions\RecipeExtension.cs" />
     <Compile Include="Things\Harmony\GenRecipe_MakeRecipeProducts.cs" />
