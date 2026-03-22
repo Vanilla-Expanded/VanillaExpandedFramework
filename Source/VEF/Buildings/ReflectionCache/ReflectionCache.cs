@@ -12,6 +12,9 @@ namespace VEF.Buildings
         public static readonly AccessTools.FieldRef<Thing, Graphic> buildingGraphic =
            AccessTools.FieldRefAccess<Thing, Graphic>(AccessTools.Field(typeof(Thing), "graphicInt"));
 
+        public static readonly AccessTools.FieldRef<Thing, Graphic> styleGraphic =
+           AccessTools.FieldRefAccess<Thing, Graphic>(AccessTools.Field(typeof(Thing), "styleGraphicInt"));
+
         public static readonly AccessTools.FieldRef<ThingDef, List<RecipeDef>> ThingDef_allRecipesCached =
            AccessTools.FieldRefAccess<ThingDef, List<RecipeDef>>(AccessTools.Field(typeof(ThingDef), "allRecipesCached"));
     }

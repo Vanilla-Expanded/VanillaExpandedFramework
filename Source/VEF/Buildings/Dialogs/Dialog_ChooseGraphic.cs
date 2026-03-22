@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using KCSG;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -11,14 +12,11 @@ namespace VEF.Buildings
         private static readonly Color borderColor = new Color(0.13f, 0.13f, 0.13f);
         private static readonly Color fillColor = new Color(0, 0, 0,0.1f);
 
-
         public Thing thingToChange;
         private Vector2 scrollPosition = new Vector2(0, 0);
         public int columnCount = 4;
         List<string> buildingGraphics;
         CompProperties_RandomBuildingGraphic Props;
-
-
 
         public Dialog_ChooseGraphic(Thing thing, CompProperties_RandomBuildingGraphic Props)
         {
@@ -28,15 +26,9 @@ namespace VEF.Buildings
             closeOnClickedOutside = true;
             this.buildingGraphics = Props.randomGraphics;
             this.Props = Props;
-
-
-
-
         }
 
         public override Vector2 InitialSize => new Vector2(620f, 500f);
-
-
 
         public override void DoWindowContents(Rect inRect)
         {
@@ -60,13 +52,27 @@ namespace VEF.Buildings
                 }
 
                 Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
-
-
-
+               
                 for (var i = 0; i < buildingGraphics.Count; i++)
                 {
 
-                    string availableTexture = buildingGraphics[i];
+                    string availableTexture ="";
+                    if (thingToChange.StyleDef != null && i == 0)
+                    {
+                        if (thingToChange.StyleDef.graphicData != null)
+                        {
+                            availableTexture = thingToChange.StyleDef.graphicData.GraphicColoredFor(thingToChange).path;
+                        }
+                        else
+                        {
+                            availableTexture = thingToChange.StyleDef.Graphic.path;
+                        }                     
+                    }
+                    else
+                    {
+                        availableTexture = buildingGraphics[i];
+                    }
+                       
                     string description = !Props.optionalNames.NullOrEmpty() && Props.optionalNames.Count >= i ? Props.optionalNames[i] : buildingGraphics[i];
 
                     if (thingToChange.def.graphicData.graphicClass == typeof(Graphic_Multi))
@@ -83,8 +89,8 @@ namespace VEF.Buildings
                     Widgets.DrawBoxSolidWithOutline(rectIcon,fillColor, borderColor, 2);
                     Rect rectIconInside = rectIcon.ContractedBy(2);
 
-
                     GUI.DrawTexture(rectIconInside, ContentFinder<Texture2D>.Get(availableTexture, true), ScaleMode.ScaleToFit, alphaBlend: true, 0f, color, 0f, 0f);
+                    
                     if (Widgets.ButtonInvisible(rectIcon))
                     {
                         foreach (object obj in Find.Selector.SelectedObjects)

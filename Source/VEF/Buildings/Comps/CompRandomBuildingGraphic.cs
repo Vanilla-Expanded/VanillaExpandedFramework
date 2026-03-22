@@ -54,8 +54,6 @@ namespace VEF.Buildings
                             newGraphicPath = Props.randomGraphics[index];
                             newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
 
-
-
                         }
                         else if (newGraphicPath == "")
                         {
@@ -74,6 +72,10 @@ namespace VEF.Buildings
                         {
                             newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
                         }
+                        if (parent.StyleDef != null)
+                        {
+                            ReflectionCache.styleGraphic(thingToGrab) = newGraphic;
+                        }
                         ReflectionCache.buildingGraphic(thingToGrab) = newGraphic;
 
 
@@ -85,8 +87,6 @@ namespace VEF.Buildings
                         {
                             newGraphicSinglePath = Props.randomGraphics[index];
                             newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
-
-
 
                         }
                        
@@ -113,6 +113,10 @@ namespace VEF.Buildings
                             newGraphicSingle.data = new GraphicData();
                             newGraphicSingle.data.drawRotated = false;
                         }
+                        if (parent.StyleDef != null)
+                        {
+                            ReflectionCache.styleGraphic(thingToGrab) = newGraphicSingle;
+                        }
                         ReflectionCache.buildingGraphic(thingToGrab) = newGraphicSingle;
                         
                     }
@@ -131,7 +135,7 @@ namespace VEF.Buildings
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
-            if (parent.Faction != null && parent.Faction.IsPlayer && parent.StyleDef == null && !VFEGlobal.settings.hideRandomizeButtons && !Props.disableAllButtons)
+            if (parent.Faction != null && parent.Faction.IsPlayer && !VFEGlobal.settings.hideRandomizeButtons && !Props.disableAllButtons)
             {
                 if (!Props.disableRandomButton) {
 
