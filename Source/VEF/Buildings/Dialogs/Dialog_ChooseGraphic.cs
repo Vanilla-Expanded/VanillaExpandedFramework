@@ -98,7 +98,14 @@ namespace VEF.Buildings
                             Thing thing = obj as Thing;
                             if (thing != null && thing.def == thingToChange.def)
                             {
-                                LongEventHandler.ExecuteWhenFinished(delegate { thing.TryGetComp<CompRandomBuildingGraphic>().ChangeGraphic(false, i); });
+                                if(thing.StyleDef!=null && i == 0)
+                                {
+                                    thing.TryGetComp<CompRandomBuildingGraphic>().ResetGraphics();
+                                }
+                                else
+                                {
+                                    LongEventHandler.ExecuteWhenFinished(delegate { thing.TryGetComp<CompRandomBuildingGraphic>().ChangeGraphic(false, i); });
+                                }
                                 thing.DirtyMapMesh(thing.Map);
                             }
 

@@ -5,7 +5,6 @@ using UnityEngine;
 using Verse;
 using RimWorld;
 
-
 namespace VEF.Buildings
 {
 
@@ -30,11 +29,11 @@ namespace VEF.Buildings
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             thingToGrab = parent;
-           
             //Using LongEventHandler to avoid having to create a GraphicCache
-            LongEventHandler.ExecuteWhenFinished(delegate { ChangeGraphic(true,0); });
-
-
+            if(parent.StyleDef is null)
+            {
+                LongEventHandler.ExecuteWhenFinished(delegate { ChangeGraphic(true, 0); });
+            }
         }
 
         public void ChangeGraphic(bool random, int index, bool forceRandom = false)
@@ -53,7 +52,6 @@ namespace VEF.Buildings
                         {
                             newGraphicPath = Props.randomGraphics[index];
                             newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
-
                         }
                         else if (newGraphicPath == "")
                         {
@@ -64,8 +62,7 @@ namespace VEF.Buildings
                             else
                             {
                                 newGraphicPath = Props.randomGraphics[0];
-                            }
-                          
+                            }                          
                             newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
                         }
                         else
@@ -77,8 +74,6 @@ namespace VEF.Buildings
                             ReflectionCache.styleGraphic(thingToGrab) = newGraphic;
                         }
                         ReflectionCache.buildingGraphic(thingToGrab) = newGraphic;
-
-
                     }
                     else if (parent.def.graphicData.graphicClass == typeof(Graphic_Single))
                     {
@@ -87,9 +82,7 @@ namespace VEF.Buildings
                         {
                             newGraphicSinglePath = Props.randomGraphics[index];
                             newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
-
-                        }
-                       
+                        }                     
                         else
                         if (newGraphicSinglePath == "")
                         {
@@ -117,8 +110,7 @@ namespace VEF.Buildings
                         {
                             ReflectionCache.styleGraphic(thingToGrab) = newGraphicSingle;
                         }
-                        ReflectionCache.buildingGraphic(thingToGrab) = newGraphicSingle;
-                        
+                        ReflectionCache.buildingGraphic(thingToGrab) = newGraphicSingle;                       
                     }
 
                 }
@@ -129,8 +121,7 @@ namespace VEF.Buildings
         public override void PostExposeData()
         {
             Scribe_Values.Look<string>(ref newGraphicPath, "newGraphicPath");
-            Scribe_Values.Look<string>(ref newGraphicSinglePath, "newGraphicSinglePath");
-           
+            Scribe_Values.Look<string>(ref newGraphicSinglePath, "newGraphicSinglePath");          
         }
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
@@ -147,17 +138,13 @@ namespace VEF.Buildings
                         icon = ContentFinder<Texture2D>.Get("UI/VEF_ChangeGraphic", true),
                         action = delegate ()
                         {
-
                             newGraphicPath = "";
                             newGraphicSinglePath = "";
-
                             LongEventHandler.ExecuteWhenFinished(delegate { ChangeGraphic(true, 0,true); });
                             parent.Map.mapDrawer.MapMeshDirty(parent.Position, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.Buildings);
                         }
                     };
-
                 }
-
                 if (!Props.disableGraphicChoosingButton) {
                     yield return new Command_Action
                     {
@@ -171,14 +158,16 @@ namespace VEF.Buildings
                             Find.WindowStack.Add(window);
                         }
                     };
-                }
-                
-
+                }                
             }
 
-
-
             yield break;
+        }
+
+        public void ResetGraphics()
+        {
+            ReflectionCache.buildingGraphic(thingToGrab) = null;
+            ReflectionCache.styleGraphic(thingToGrab) = null;
         }
     }
 }
