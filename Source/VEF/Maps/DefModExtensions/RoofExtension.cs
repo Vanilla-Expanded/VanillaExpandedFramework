@@ -7,7 +7,7 @@ public class RoofExtension : DefModExtension
 {
     public bool drawRoofShadow = true;
     public bool dealDamageOnCollapsed = true;
-    public Color roofOverlayTint = Color.white;
+    public Color? roofOverlayColor = null;
     public CustomRoofGraphic customRoofGraphic = null;
 
     /// <summary>
@@ -23,7 +23,7 @@ public class RoofExtension : DefModExtension
     /// <summary>
     /// Used to determine early if the Harmony patch responsible for tinting the roof overlay should run or not. If true, the patch will run.
     /// </summary>
-    protected internal virtual bool EverUsesCustomOverlayTint => !roofOverlayTint.IndistinguishableFrom(Color.white);
+    protected internal virtual bool EverUsesCustomOverlayColor => roofOverlayColor != null;
 
     /// <summary>
     /// Used to determine early if the SectionLayer responsible for drawing roofs should be activated or not. If true, it'll be active.
@@ -55,7 +55,7 @@ public class RoofExtension : DefModExtension
     /// <param name="cellIndex">The cell index at which the overlay is being drawn (passed as int for performance, use Map.cellIndices to convert to IntVec3 if needed)</param>
     /// <param name="roof">The roof for which the overlay is drawn</param>
     /// <returns>Color tint applied to the original roof overlay color. White is no tint, and lets the original method run.</returns>
-    public virtual Color RoofOverlayTint(Map map, int cellIndex, RoofDef roof) => roofOverlayTint;
+    public virtual Color? RoofOverlayColor(Map map, int cellIndex, RoofDef roof) => roofOverlayColor;
 
     public class CustomRoofGraphic
     {
