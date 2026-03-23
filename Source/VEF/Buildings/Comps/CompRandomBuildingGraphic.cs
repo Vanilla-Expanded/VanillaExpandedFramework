@@ -42,6 +42,8 @@ namespace VEF.Buildings
             {
                 Vector2 sizeVector = parent.Graphic.drawSize;
                 Color objectColour = parent.Graphic.color;
+                Color secondObjectColour = parent.Graphic.colorTwo;
+                GraphicData data = parent.def.graphicData;
                 ShaderTypeDef shaderUsed = parent.def.graphicData.shaderType;
 
                 if (parent.Faction != null && parent.Faction.IsPlayer)
@@ -51,7 +53,7 @@ namespace VEF.Buildings
                         if (!random)
                         {
                             newGraphicPath = Props.randomGraphics[index];
-                            newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
+                            newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour,secondObjectColour, data);
                         }
                         else if (newGraphicPath == "")
                         {
@@ -63,11 +65,11 @@ namespace VEF.Buildings
                             {
                                 newGraphicPath = Props.randomGraphics[0];
                             }                          
-                            newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
+                            newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour, secondObjectColour, data);
                         }
                         else
                         {
-                            newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour);
+                            newGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(newGraphicPath, shaderUsed.Shader, sizeVector, objectColour, secondObjectColour, data);
                         }
                         if (parent.StyleDef != null)
                         {
@@ -81,7 +83,7 @@ namespace VEF.Buildings
                         if (!random)
                         {
                             newGraphicSinglePath = Props.randomGraphics[index];
-                            newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
+                            newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour, secondObjectColour, data);
                         }                     
                         else
                         if (newGraphicSinglePath == "")
@@ -95,11 +97,11 @@ namespace VEF.Buildings
                                 newGraphicSinglePath = Props.randomGraphics[0];
                             }
                            
-                            newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
+                            newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour, secondObjectColour, data);
                         }
                         else
                         {
-                            newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour);
+                            newGraphicSingle = (Graphic_Single)GraphicDatabase.Get<Graphic_Single>(newGraphicSinglePath, shaderUsed.Shader, sizeVector, objectColour, secondObjectColour, data);
                         }
                         if (!parent.def.graphicData.drawRotated)
                         {
