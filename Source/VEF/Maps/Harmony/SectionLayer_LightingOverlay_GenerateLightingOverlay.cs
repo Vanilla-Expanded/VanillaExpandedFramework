@@ -51,7 +51,7 @@ public static class VanillaExpandedFramework_SectionLayer_LightingOverlay_Genera
     private static RoofDef RoofAtWrapper(RoofDef def, Map map, int cellIndex)
     {
         var extension = def?.GetModExtension<RoofExtension>();
-        if (extension == null || !extension.ShouldDrawShadow(map, cellIndex, def))
+        if (extension != null && !extension.ShouldDrawShadow(map, cellIndex, def))
             return null;
         return def;
     }
