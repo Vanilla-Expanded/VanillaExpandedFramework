@@ -32,8 +32,12 @@ namespace VEF.AnimalBehaviours
             list = parent.pawn.Map.mapPawns.PawnsInFaction(parent.pawn.Faction);
             foreach (Pawn item in list)
             {
-                if (item.Dead || item.health == null || item == parent.pawn || !item.RaceProps.Insect || !(item.Position.DistanceTo(parent.pawn.Position) <= Props.range) || !Props.targetingParameters.CanTarget(item) || ((Props.affectSameDef) && (item.def != parent.pawn.def)))
+                
+                if (item.Dead || item.health == null || item == parent.pawn || !(item.Position.DistanceTo(parent.pawn.Position) <= Props.range) 
+                    || !Props.targetingParameters.CanTarget(item) || ((Props.affectSameDef) && (item.def != parent.pawn.def)) ||
+                    (!Props.needLOS || (Props.needLOS &&  !GenSight.LineOfSight(item.Position,parent.pawn.Position,parent.pawn.Map)) ))
                 {
+                    
                     continue;
                 }
                 Hediff hediff = item.health.hediffSet.GetFirstHediffOfDef(Props.hediff);
