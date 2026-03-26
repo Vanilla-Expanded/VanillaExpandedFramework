@@ -152,6 +152,7 @@
     <Compile Include="AnimalBehaviours\Harmony\Draftability\FloatMenuOptionProvider_WorkGivers_GetWorkGiverOption.cs" />
     <Compile Include="AnimalBehaviours\Harmony\Hediff_Pregnant_DoBirthSpawn.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\HediffComp_ExplodeOnDowned.cs" />
+    <Compile Include="AnimalBehaviours\HediffComps\HediffComp_GiveHediffsInRangeExpanded.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\HediffComp_PassiveResearch.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\HediffComp_PlaySound.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\HediffComp_PsyfocusRegeneration.cs" />
@@ -159,6 +160,7 @@
     <Compile Include="AnimalBehaviours\HediffComps\HediffComp_SpawnMote.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\HediffComp_StageByVacuum.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_ExplodeOnDowned.cs" />
+    <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_GiveHediffsInRangeExpanded.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_PassiveResearch.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_PlaySound.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_PsyfocusRegeneration.cs" />
