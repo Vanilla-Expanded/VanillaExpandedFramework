@@ -184,6 +184,7 @@
 		<showOnAnimals>false</showOnAnimals>
 		<showOnMechanoids>false</showOnMechanoids>
 		<showOnEntities>false</showOnEntities>
+		<showOnDrones>false</showOnDrones>
 		<showDevelopmentalStageFilter>Adult</showDevelopmentalStageFilter>
 	</StatDef>
 	<StatDef Name="VEF_ThoughtDurationBase" Abstract="True">
@@ -196,6 +197,7 @@
 		<showOnAnimals>false</showOnAnimals>
 		<showOnMechanoids>false</showOnMechanoids>
 		<showOnEntities>false</showOnEntities>
+		<showOnDrones>false</showOnDrones>
 	</StatDef>
 	<StatDef ParentName="VEF_ThoughtDurationBase">
 		<defName>VEF_PositiveThoughtDurationFactor</defName>
