@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -29,7 +30,16 @@ namespace VEF.AnimalBehaviours
                 }
             }
             List<Pawn> list = null;
-            list = parent.pawn.Map.mapPawns.PawnsInFaction(parent.pawn.Faction);
+            if (Props.onlyItsFaction)
+            {
+                list = parent.pawn.Map.mapPawns.PawnsInFaction(parent.pawn.Faction);
+              
+            }
+            else
+            {
+                list = parent.pawn.Map.mapPawns.AllPawns;
+            }
+            
             foreach (Pawn item in list)
             {
                 

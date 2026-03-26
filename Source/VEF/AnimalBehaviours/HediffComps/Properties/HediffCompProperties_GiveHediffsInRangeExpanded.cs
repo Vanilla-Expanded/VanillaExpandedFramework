@@ -21,6 +21,8 @@ namespace VEF.AnimalBehaviours
 
         public bool needLOS = true;
 
+        public bool onlyItsFaction = true;
+
         public HediffCompProperties_GiveHediffsInRangeExpanded()
         {
             compClass = typeof(HediffComp_GiveHediffsInRangeExpanded);
