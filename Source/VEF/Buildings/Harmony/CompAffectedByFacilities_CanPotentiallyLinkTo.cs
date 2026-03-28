@@ -1,0 +1,44 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Emit;
+using HarmonyLib;
+using RimWorld;
+using Verse;
+
+namespace VEF.Buildings;
+
+[HarmonyPatch(typeof(CompAffectedByFacilities), nameof(CompAffectedByFacilities.CanPotentiallyLinkTo))]
+[HarmonyPatch([typeof(ThingDef), typeof(IntVec3), typeof(Rot4)])]
+[HarmonyPatchCategory(VEF_HarmonyCategories.LateHarmonyPatchCategory)]
+public static class VanillaExpandedFramework_CompAffectedByFacilities_CanPotentiallyLinkTo_Patch
+{
+    private static bool? isActive = null;
+
+    public static bool IsActive => isActive ??= DefDatabase<ThingDef>.AllDefs.Any(def => def.GetModExtension<FacilityExtension>() is { equivalentToFacility: not null });
+
+    private static bool Prepare() => IsActive;
+
+    private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr)
+    {
+        var matcher = new CodeMatcher(instr);
+
+        matcher.MatchEndForward(
+            CodeMatch.IsLdarg(0),
+            CodeMatch.LoadsField(typeof(CompAffectedByFacilities).DeclaredField("linkedFacilities")),
+            CodeMatch.IsLdloc(),
+            CodeMatch.Calls(typeof(List<Thing>).DeclaredIndexerGetter([typeof(int)])),
+            CodeMatch.LoadsField(typeof(Thing).DeclaredField(nameof(Thing.def))),
+            CodeMatch.IsLdarg(1),
+            CodeMatch.Branches()
+        );
+
+        // Rather than comparing the 2 defs (which we move to our wrapper method),
+        // we instead check if our method returned true or false.
+        // This jumps over code actually connecting the facility.
+        matcher.Opcode = OpCodes.Brfalse_S;
+        // Insert our wrapper method
+        matcher.Insert(CodeInstruction.Call(() => FacilityExtension.AreFacilitiesEquivalent));
+
+        return matcher.Instructions();
+    }
+}
