@@ -1,4 +1,6 @@
-﻿using Verse;
+﻿using System.Collections.Generic;
+using RimWorld;
+using Verse;
 
 namespace VEF.Buildings;
 
@@ -7,6 +9,41 @@ public class FacilityExtension : DefModExtension
     public bool linkOnInteractionSpots = false;
 
     public ThingDef equivalentToFacility = null;
+    public List<ThingDef> copyLinksFrom = null;
+
+    public override void ResolveReferences(Def parentDef)
+    {
+        base.ResolveReferences(parentDef);
+
+        if (copyLinksFrom != null && parentDef is ThingDef def)
+        {
+            var parentFacility = def.GetCompProperties<CompProperties_Facility>();
+            if (parentFacility != null)
+            {
+                LongEventHandler.ExecuteWhenFinished(() =>
+                {
+                    foreach (var otherFacility in copyLinksFrom)
+                    {
+                        var links = otherFacility.GetCompProperties<CompProperties_Facility>()?.linkableBuildings;
+                        if (links == null)
+                            continue;
+
+                        foreach (var link in links)
+                        {
+                            if (parentFacility.linkableBuildings.Contains(link))
+                                continue;
+                            var comp = link.GetCompProperties<CompProperties_AffectedByFacilities>();
+                            if (comp == null)
+                                continue;
+
+                            comp.linkableFacilities.Add(def);
+                            parentFacility.linkableBuildings.Add(link);
+                        }
+                    }
+                });
+            }
+        }
+    }
 
     public static bool AreFacilitiesEquivalent(ThingDef currentlyLinkedFacility, ThingDef newFacility)
     {
