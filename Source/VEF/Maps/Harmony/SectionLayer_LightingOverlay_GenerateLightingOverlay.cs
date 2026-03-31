@@ -29,21 +29,28 @@ public static class VanillaExpandedFramework_SectionLayer_LightingOverlay_Genera
     {
         var matcher = new CodeMatcher(instr);
 
+        // Look for RoofAt call
         matcher.MatchEndForward(
+            // Loads the RoofGrid
             CodeMatch.IsLdloc(),
+            // Loads the RoofGrid cell index
             CodeMatch.IsLdloc(),
-            CodeMatch.Calls(typeof(RoofGrid).DeclaredMethod(nameof(RoofGrid.RoofAt), [typeof(int)])),
-            CodeMatch.IsStloc()
+            // Grabs the RoofDef in a cell
+            CodeMatch.Calls(typeof(RoofGrid).DeclaredMethod(nameof(RoofGrid.RoofAt), [typeof(int)]))
         );
 
-        matcher.Insert(
-            // Load the map argument
-            CodeInstruction.LoadArgument(0),
-            // Load the cell index local (use the same this method uses earlier)
-            matcher.InstructionAt(-2).Clone(),
-            // Call our map
-            CodeInstruction.Call(() => RoofAtWrapper)
-        );
+        if (matcher.IsValid)
+        {
+            matcher.InsertAfter(
+                // Load the map argument
+                CodeInstruction.LoadArgument(0),
+                // Load the cell index local (use the same this method uses earlier)
+                matcher.InstructionAt(-1).Clone(),
+                // Call our map
+                CodeInstruction.Call(() => RoofAtWrapper)
+            );
+        }
+        else Log.Error($"Failed patching SectionLayer_LightingOverlay:GenerateLightingOverlay - unable to find target instructions.");
 
         return matcher.Instructions();
     }
