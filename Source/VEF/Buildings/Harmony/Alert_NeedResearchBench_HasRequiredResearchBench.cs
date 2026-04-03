@@ -35,33 +35,4 @@ public static class VanillaExpandedFramework_Alert_NeedResearchBench_HasRequired
             }
         }
     }
-
-    // private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr)
-    // {
-    //     var matcher = new CodeMatcher(instr);
-    //
-    //     matcher.MatchEndForward(
-    //         CodeMatch.IsLdloc(),
-    //         CodeMatch.LoadsField(typeof(ResearchProjectDef).DeclaredField(nameof(ResearchProjectDef.requiredResearchBuilding))),
-    //         CodeMatch.Branches(),
-    //         CodeMatch.IsLdloc(),
-    //         CodeMatch.IsLdloc()
-    //     );
-    //
-    //     if (matcher.IsValid)
-    //     {
-    //         matcher.InsertAfter(
-    //             // Clone the last 2 instructions
-    //             matcher.InstructionAt(-1).Clone(),
-    //             matcher.Instruction.Clone()
-    //         );
-    //     }
-    //     else Log.Error("Patching Alert_NeedResearchBench:HasRequiredResearchBench failed - failed to find code match. Alerts about missing research benches may be incorrectly displayed.");
-    //
-    //     return matcher.Instructions();
-    // }
-    //
-    // private static bool ColonistsHaveEquivalentBuilding(ResearchProjectDef researchProject)
-    // {
-    // }
 }
