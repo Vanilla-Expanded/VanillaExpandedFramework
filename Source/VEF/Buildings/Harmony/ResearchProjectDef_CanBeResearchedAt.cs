@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
@@ -10,21 +11,10 @@ namespace VEF.Buildings;
 [HarmonyPatchCategory(VEF_HarmonyCategories.LateHarmonyPatchCategory)]
 public static class VanillaExpandedFramework_ResearchProjectDef_CanBeResearchedAt_Patch
 {
-    private static bool Prepare(MethodBase baseMethod)
-    {
-        // Always run after first pass
-        if (baseMethod != null)
-            return true;
+    private static bool? isPatchActive = null;
+    public static bool IsPatchActive => isPatchActive ??= DefDatabase<ThingDef>.AllDefs.Any(def => def.GetModExtension<ResearchBuildingExtension>() is { } extension && !extension.equivalentBenches.NullOrEmpty());
 
-        foreach (var def in DefDatabase<ThingDef>.AllDefs)
-        {
-            var extension = def.GetModExtension<ResearchBuildingExtension>();
-            if (extension != null && !extension.equivalentBenches.NullOrEmpty())
-                return true;
-        }
-
-        return false;
-    }
+    private static bool Prepare() => IsPatchActive;
 
     private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr)
     {
