@@ -1,5 +1,5 @@
 ﻿
-﻿using Verse;
+using Verse;
 
 namespace VEF.Buildings;
 

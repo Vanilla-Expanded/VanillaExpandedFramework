@@ -1,5 +1,5 @@
 ﻿
-﻿using UnityEngine;
+using UnityEngine;
 using Verse;
 using VEF.Buildings;
 

@@ -1,5 +1,5 @@
 ﻿
-﻿using RimWorld;
+using RimWorld;
 
 namespace VEF.Buildings;
 

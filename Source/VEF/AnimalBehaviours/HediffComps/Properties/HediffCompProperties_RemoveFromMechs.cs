@@ -1,5 +1,5 @@
 ﻿
-﻿using System;
+using System;
 using Verse;
 using System.Collections.Generic;
 
