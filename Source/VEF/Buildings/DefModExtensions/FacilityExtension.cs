@@ -6,10 +6,16 @@ namespace VEF.Buildings;
 
 public class FacilityExtension : DefModExtension
 {
+    // If the facility should link to the building on the interaction spots of the building
     public bool linkOnInteractionSpots = false;
 
+    // A Def that this facility is equivalent to, meaning that they're treated as the same facility for the purpose of link amounts.
     public ThingDef equivalentToFacility = null;
+    // A list of Facilities that we copy links from
     public List<ThingDef> copyLinksFrom = null;
+
+    // If true, prevents any AffectedByFacilitiesExtension with copyFacilitiesFrom from linking this facility.
+	public bool disableAffectedByFacilitiesExtensionLinking = false;
 
     public override void ResolveReferences(Def parentDef)
     {
@@ -30,12 +36,18 @@ public class FacilityExtension : DefModExtension
 
                         foreach (var link in links)
                         {
+                            // Don't double link
                             if (parentFacility.linkableBuildings.Contains(link))
                                 continue;
+                            // Make sure that we're trying to link with a building affected by facilities
                             var comp = link.GetCompProperties<CompProperties_AffectedByFacilities>();
                             if (comp == null)
                                 continue;
+                            // If the building is marked as "don't link into", skip it
+                            if (link.GetModExtension<AffectedByFacilitiesExtension>() is { disableFacilityExtensionLinking: true })
+                                continue;
 
+                            // Add linking to both
                             comp.linkableFacilities.Add(def);
                             parentFacility.linkableBuildings.Add(link);
                         }
