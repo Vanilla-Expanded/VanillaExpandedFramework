@@ -11,6 +11,7 @@
 		<toStringStyle>PercentOne</toStringStyle>
 		<toStringStyleUnfinalized>FloatTwo</toStringStyleUnfinalized>
 		<displayPriorityInCategory>4050</displayPriorityInCategory>
+    <cacheable>true</cacheable>
 	</StatDef>
 	<StatDef>
 		<defName>VEF_EnergyShieldEnergyMaxOffset</defName>
