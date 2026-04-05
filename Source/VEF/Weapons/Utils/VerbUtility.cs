@@ -29,7 +29,7 @@ namespace VEF.Weapons
         {
             try
             {
-                return pawn.GetStatValueForPawn(VEFDefOf.VEF_VerbRangeFactor, pawn);
+                return pawn.GetStatValue(VEFDefOf.VEF_VerbRangeFactor, cacheStaleAfterTicks: 60);
             }
             catch
             {
