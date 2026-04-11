@@ -104,6 +104,9 @@ namespace VEF.Maps
                 Log.Error("[VEF] Map was null, MapGenerator_GenerateMap_Patch won't properly.");
                 return;
             }
+            var extension = map.Parent?.def?.GetModExtension<WorldObjectExtension>();
+            if (extension is { disableObjectSpawnDefs: true })
+                return;
             int spawnCounter = 0;
             foreach (ObjectSpawnsDef element in DefDatabase<ObjectSpawnsDef>.AllDefs.Where(element => CanSpawnAt(map, element)))
             {
