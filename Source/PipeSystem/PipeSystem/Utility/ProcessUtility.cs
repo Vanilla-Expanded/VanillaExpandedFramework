@@ -239,7 +239,7 @@ namespace PipeSystem
             if (!process.Def.results.NullOrEmpty())
             {
                 ProcessDef.Result firstresult = process.Def.results[0];
-                ThingDef thingDef = firstresult.thing;
+                ThingDef thingDef = process.Def.resultToDetect != null ? process.Def.resultToDetect : firstresult.thing;
 
                 if (thingDef != null)
                 {
@@ -248,7 +248,7 @@ namespace PipeSystem
                         return process.advancedProcessor.parent.Map.resourceCounter.GetCount(thingDef) + GetCarriedCount(process, thingDef);
                     }
                     else {
-                        Log.Message(process.advancedProcessor.parent.Map.listerThings.ThingsOfDef(thingDef).Count);
+                        //Log.Message(process.advancedProcessor.parent.Map.listerThings.ThingsOfDef(thingDef).Count);
                         return process.advancedProcessor.parent.Map.listerThings.ThingsOfDef(thingDef).Count + GetCarriedCount(process, thingDef);
                     }
                 }

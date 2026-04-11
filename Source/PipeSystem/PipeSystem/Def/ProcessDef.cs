@@ -25,6 +25,7 @@ namespace PipeSystem
         public bool stopProcessUnderGillRot = false;                    // Process won't advance if gill rot is present
 
         public List<Result> results = new List<Result>();
+        public ThingDef resultToDetect = null;                          // Used by "Do Until you have X" processes if you want to detect something different than result[0].thing
 
         public Color finishedColor = new Color(0.9f, 0.85f, 0.2f);      // Bar color when finished
         public Color lowProgressColor = new Color(0.4f, 0.27f, 0.22f);  // Bar color low progress
