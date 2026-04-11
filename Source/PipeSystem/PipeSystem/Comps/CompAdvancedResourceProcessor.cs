@@ -117,7 +117,7 @@ namespace PipeSystem
             get
             {
                 processesOptions = new List<FloatMenuOption>();
-                List<ProcessDef> processes = Props.processes.Where(x => (!x.hideProcessIfNotNaturalRock || Find.World.NaturalRockTypesIn(this.parent.Map.Tile).Contains(x.rockToDetect))&&
+                List<ProcessDef> processes = Props.processes.Where(x => x.ShowProcess() && (!x.hideProcessIfNotNaturalRock || Find.World.NaturalRockTypesIn(this.parent.Map.Tile).Contains(x.rockToDetect))&&
                 (!x.hideProcessIfNotNaturalFish || x.results.NullOrEmpty() || this.parent.Map.Biome.fishTypes.freshwater_Common.Select(x => x.fishDef).Contains(x.results[0].thing)
                 || this.parent.Map.Biome.fishTypes.saltwater_Common.Select(x => x.fishDef).Contains(x.results[0].thing))).OrderBy(x => x.priorityInBillList).ToList();
                 for (int i = 0; i < processes.Count; i++)

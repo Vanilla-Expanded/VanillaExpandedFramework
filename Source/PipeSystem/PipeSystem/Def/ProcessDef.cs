@@ -216,5 +216,13 @@ namespace PipeSystem
             }
             base.PostLoad();
         }
+
+        /// <summary>
+        /// This is a helper method that can be patched externally. Using it for VQE - Drones
+        /// </summary>
+        public bool ShowProcess()
+        {
+            return true;
+        }
     }
 }
