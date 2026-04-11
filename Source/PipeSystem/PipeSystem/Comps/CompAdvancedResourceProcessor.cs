@@ -252,6 +252,13 @@ namespace PipeSystem
             }
         }
 
+        public override void PostPostMake()
+        {
+            base.PostPostMake();
+            // Not really necessary, but may as well do it just in case something starts depending on this value
+            processStack.parent = parent;
+        }
+
         /// <summary>
         /// Setup comps, gizmo, pre result setup
         /// </summary>
@@ -369,7 +376,20 @@ namespace PipeSystem
         /// </summary>
         public override void PostExposeData()
         {
-            Scribe_Deep.Look(ref processStack, "processStack");
+            Scribe_Deep.Look(ref cachedProcessStack, "cachedProcessStack", parent);
+            // Loading the same process twice causes errors, so only save either cached or normal process stack
+            if (cachedProcessStack == null)
+            {
+                Scribe_Deep.Look(ref processStack, "processStack", parent);
+                // A precaution in case the process stack is null after loading the game
+                if (Scribe.mode == LoadSaveMode.PostLoadInit)
+                    processStack ??= new ProcessStack(parent);
+            }
+            // After loading, if we loaded the cached process stack, also set its value to normal process stack
+            else if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                processStack = cachedProcessStack;
+            }
 
             Scribe_Values.Look(ref outputOnGround, "outputOnGround");
             Scribe_Values.Look(ref wasteProduced, "wasteProduced");
@@ -794,12 +814,14 @@ namespace PipeSystem
         }
 
         /// <summary>
-        /// Used for Graveship lift-off / landing
+        /// Used for Graveship landing / landing
         /// </summary>
 
         public override void PostSwapMap()
         {
-            processStack = cachedProcessStack;
+            // Make sure we don't remove the process stack completely
+            if (cachedProcessStack != null)
+                processStack = cachedProcessStack;
             base.PostSwapMap();
         }
 

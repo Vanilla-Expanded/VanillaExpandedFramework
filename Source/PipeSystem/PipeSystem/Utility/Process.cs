@@ -237,6 +237,12 @@ namespace PipeSystem
         public Process()
         { }
 
+        private Process(ThingWithComps parent)
+        {
+            // Constructor used through ExposeData
+            this.parent = parent;
+        }
+
         public Process(ProcessDef processDef, ThingWithComps parent, QualityCategory forcedQuality = QualityCategory.Normal)
         {
             this.parent = parent;
@@ -324,8 +330,6 @@ namespace PipeSystem
             Scribe_Values.Look(ref outputFactoryHopperIncorrect, "outputFactoryHopperIncorrect");
             Scribe_Values.Look(ref outputFactoryHopperTooFull, "outputFactoryHopperTooFull");
             Scribe_Values.Look(ref interruptedByGillRot, "interruptedByGillRot");
-
-            Scribe_References.Look(ref parent, "parent");
 
             Scribe_Collections.Look(ref ingredientsOwners, "thingOwnerList", LookMode.Deep);
 

@@ -10,6 +10,7 @@ namespace PipeSystem
 
         private List<Process> processes = new List<Process>();
         private Process currentProcess;
+        internal ThingWithComps parent;
 
         /// <summary>
         /// Return first def that can be done
@@ -51,13 +52,19 @@ namespace PipeSystem
 
         public ProcessStack() { }
 
+        public ProcessStack(ThingWithComps parent)
+        {
+            // Constructor used through ExposeData
+            this.parent = parent;
+        }
+
         /// <summary>
         /// Save processes
         /// </summary>
         public void ExposeData()
         {
             Scribe_References.Look(ref currentProcess, "currentProcess");
-            Scribe_Collections.Look(ref processes, "processes", LookMode.Deep);
+            Scribe_Collections.Look(ref processes, "processes", LookMode.Deep, parent);
         }
 
         /// <summary>
