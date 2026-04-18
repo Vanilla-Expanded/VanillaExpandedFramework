@@ -165,7 +165,7 @@ namespace VEF.Weapons
 		{
 			get
 			{
-				if (LauncherIsVehicle)
+				if (LauncherIsVehicle || this.launcher == null)
 				{
                     return this.startingPosition;
                 }
@@ -407,7 +407,7 @@ namespace VEF.Weapons
 			get
 			{
 				var value = base.ExactPosition;
-				if (value.InBounds(Map) is false)
+				if (Map is {} map && value.InBounds(map) is false)
 				{
                     var origin2 = new Vector3(this.origin.x, 0, this.origin.z);
                     var destination2 = new Vector3(value.x, 0, value.z);
@@ -416,7 +416,7 @@ namespace VEF.Weapons
                     while (true)
                     {
                         var newValue = (value - (normalized * distanceDiff));
-                        if (newValue.InBounds(Map))
+                        if (newValue.InBounds(map))
                         {
 							value = newValue;
                             break;
