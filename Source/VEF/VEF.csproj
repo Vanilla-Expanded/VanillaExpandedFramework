@@ -1072,6 +1072,12 @@
     <Compile Include="Weapons\Projectiles\ExpandableProjectiles\GaussProjectile.cs" />
     <Compile Include="Weapons\Projectiles\TeslaProjectile.cs" />
     <Compile Include="Storyteller\Misc\Quests\QuestNode_GetFaction.cs" />
+    <Compile Include="Storyteller\Harmony\ResearchManager_FinishProject_Patch.cs" />
+    <Compile Include="Storyteller\Misc\Quests\QuestNode_Site.cs" />
+    <Compile Include="Storyteller\Misc\Quests\QuestPart_Site.cs" />
+    <Compile Include="Storyteller\Misc\Quests\StructureSetDef.cs" />
+    <Compile Include="Storyteller\Misc\Quests\StructureSetGenerator.cs" />
+    <Compile Include="Storyteller\Misc\Quests\GenStep_Site.cs" />
     <Compile Include="Global\Reflection\NonPublicFields.cs" />
     <Compile Include="Global\Reflection\NonPublicMethods.cs" />
     <Compile Include="Global\Startup.cs" />

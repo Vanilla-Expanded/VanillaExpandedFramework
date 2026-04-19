@@ -1,4 +1,4 @@
-﻿using RimWorld;
+using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
@@ -138,6 +138,10 @@ namespace VEF.Storyteller
         public bool TryScheduleQuest(QuestScriptDef quest)
         {
             var ext = quest.GetModExtension<QuestChainExtension>();
+            if (ext.requiredResearch != null && !ext.requiredResearch.IsFinished)
+            {
+                return false;
+            }
             if (futureQuests.Any(x => x.questDef == quest))
             {
                 return false;
@@ -189,15 +193,19 @@ namespace VEF.Storyteller
                 }
             }
 
-
+            int ticksFromMinDays = 0;
             if (ext.conditionMinDaysSinceStart.min > 0 && !quests.Any(x => x.questDef == quest))
             {
                 var days = ext.conditionMinDaysSinceStart.RandomInRange - GenDate.DaysPassed;
-                var ticks = (int)(days <= 0 ? 0 : days * GenDate.TicksPerDay);
-                ScheduleQuestInTicks(quest, ticks);
-                return true;
+                if (days > 0)
+                {
+                    ticksFromMinDays = (int)(days * GenDate.TicksPerDay);
+                    ScheduleQuestInTicks(quest, ticksFromMinDays);
+                    return true;
+                }
             }
-            else if (ext.isRepeatable)
+
+            if (ext.isRepeatable && ext.mtbDaysRepeat > 0)
             {
                 ScheduleQuestMTB(quest, ext.mtbDaysRepeat);
                 return true;

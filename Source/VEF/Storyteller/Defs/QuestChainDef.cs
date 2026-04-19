@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,7 +10,6 @@ namespace VEF.Storyteller
     {
         public string iconPath;
         public Texture2D icon;
-        public string questChainName;
         public Type workerClass;
         private QuestChainWorker cachedWorker;
         public List<PawnKindDef> uniqueCharacters;

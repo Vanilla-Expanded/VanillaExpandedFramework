@@ -26,5 +26,6 @@ namespace VEF.Storyteller
         public IntRange? delayTicksAfterTriggering;
 
         public List<ConditionSucceedQuestsCount> conditionSucceedQuestsCount;
+        public ResearchProjectDef requiredResearch;
     }
 }
