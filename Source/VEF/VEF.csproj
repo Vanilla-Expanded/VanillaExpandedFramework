@@ -348,6 +348,9 @@
     <Compile Include="Things\DefModExtensions\RecipeExtension.cs" />
     <Compile Include="Things\Harmony\GenRecipe_MakeRecipeProducts.cs" />
     <Compile Include="Things\Harmony\RecipeDef_WorkAmountForStuff.cs" />
+    <Compile Include="Weapons\Comps\CompMultiVerbWeapon.cs" />
+    <Compile Include="Weapons\Comps\Properties\CompProperties_MultiVerbWeapon.cs" />
+    <Compile Include="Weapons\Harmony\CompEquippable_PrimaryVerb.cs" />
     <Compile Include="Weapons\Harmony\OptionalFeatures\IncidentWorker_TraderCaravanArrival_TryExecuteWorker.cs" />
     <Compile Include="Weapons\Harmony\OptionalFeatures\PawnRenderUtility_DrawEquipmentAiming.cs" />
     <Compile Include="Weapons\Harmony\OptionalFeatures\Pawn_GetInspectString.cs" />
@@ -513,6 +516,7 @@
     <Compile Include="Weapons\Harmony\Pawn_ApparelTracker_Notify_ApparelRemoved_Patch.cs" />
     <Compile Include="Weapons\Harmony\Pawn_GetGizmos.cs" />
     <Compile Include="Weapons\Harmony\TurretTop_DrawTurret.cs" />
+    <Compile Include="Weapons\Harmony\VerbTracker_GetVerbsCommands.cs" />
     <Compile Include="Weapons\Harmony\Verb_TryStartCastOn.cs" />
     <Compile Include="Weapons\Interfaces\IBeamColorThing.cs" />
     <Compile Include="Weapons\Interfaces\IDrawnWeaponWithRotation.cs" />
