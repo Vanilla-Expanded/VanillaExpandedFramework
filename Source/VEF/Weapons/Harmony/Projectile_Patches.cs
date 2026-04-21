@@ -17,7 +17,7 @@ namespace VEF.Weapons
     [HarmonyPatch]
     public static class VanillaExpandedFramework_VehicleFramework_Turret_Patch
     {
-        public static bool VFLoaded = ModsConfig.IsActive("SmashPhil.VehicleFramework");
+        public static bool VFLoaded = ModLister.AnyModActiveNoSuffix(["SmashPhil.VehicleFramework"]);
         public static MethodInfo targetMethod;
         public static FastInvokeHandler maxRangeInfo;
         public static FastInvokeHandler turretLocation;

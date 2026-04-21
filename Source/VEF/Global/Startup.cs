@@ -16,7 +16,7 @@ namespace VEF
 
         static Startup()
         {
-            CachedPawnDataExtensions.prepatched = ModsConfig.IsActive("zetrith.prepatcher");
+            CachedPawnDataExtensions.prepatched = ModLister.AnyModActiveNoSuffix(["zetrith.prepatcher"]);
             PawnShieldGenerator.Reset();
             ScenPartUtility.SetCache();
             ResearchProjectUtility.AutoAssignRules();

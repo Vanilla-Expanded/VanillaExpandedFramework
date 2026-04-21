@@ -23,7 +23,7 @@ namespace VEF.Pawns
         private static MethodBase target;
         private static bool Prepare()
         {
-            if (ModsConfig.IsActive("ssulunge.BBBodySupport"))
+            if (ModLister.AnyModActiveNoSuffix(["ssulunge.BBBodySupport"]))
             {
                 var type = AccessTools.TypeByName("BBBodySupport.BBBodyTypeSupportHarmony+BBBodyGraphicApparelPatch");
                 if (type == null)

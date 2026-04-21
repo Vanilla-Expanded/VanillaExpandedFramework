@@ -307,7 +307,7 @@ namespace VEF.Pawns
 
         public static bool Prepare()
         {
-            if (ModsConfig.IsActive("hatti.qualitybuilder"))
+            if (ModLister.AnyModActiveNoSuffix(["hatti.qualitybuilder"]))
             {
                 var type = AccessTools.TypeByName("QualityBuilder._WorkGiver_ConstructFinishFrames");
                 if (type != null)

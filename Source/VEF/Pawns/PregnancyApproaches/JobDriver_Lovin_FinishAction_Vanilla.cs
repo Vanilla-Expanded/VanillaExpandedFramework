@@ -55,9 +55,12 @@ namespace VEF.Pawns
     static class VanillaExpandedFramework_JobDriver_Lovin_FinishAction_VSIE
     {
         [HarmonyPrepare]
-        public static bool Prepare()
+        public static bool Prepare(MethodBase method)
         {
-            if (ModsConfig.IsActive("VanillaExpanded.VanillaSocialInteractionsExpanded"))
+            // Don't check again after first pass
+            if (method != null)
+                return true;
+            if (ModLister.AnyModActiveNoSuffix(["VanillaExpanded.VanillaSocialInteractionsExpanded"]))
             {
                 methodTarget = FindMethod();
                 return methodTarget != null;
@@ -111,9 +114,12 @@ namespace VEF.Pawns
     static class VanillaExpandedFramework_JobDriver_Lovin_FinishAction_Highmates
     {
         [HarmonyPrepare]
-        public static bool Prepare()
+        public static bool Prepare(MethodBase method)
         {
-            if (ModsConfig.IsActive("vanillaracesexpanded.highmate"))
+            // Don't check again after first pass
+            if (method != null)
+                return true;
+            if (ModLister.AnyModActiveNoSuffix(["vanillaracesexpanded.highmate"]))
             {
                 methodTarget = FindMethod();
                 return methodTarget != null;

@@ -15,7 +15,7 @@ public static class VanillaExpandedFramework_JobDriver_Lovin_MoveNext_Patch
     {
         yield return AccessTools.EnumeratorMoveNext(typeof(JobDriver_Lovin).DeclaredMethod("MakeNewToils"));
 
-        if (ModsConfig.IsActive("VanillaExpanded.VanillaSocialInteractionsExpanded"))
+        if (ModLister.AnyModActiveNoSuffix(["VanillaExpanded.VanillaSocialInteractionsExpanded"]))
         {
             var type = AccessTools.TypeByName("VanillaSocialInteractionsExpanded.JobDriver_LovinOneNightStand");
             var method = AccessTools.EnumeratorMoveNext(type.DeclaredMethod("MakeNewToils"));
@@ -25,7 +25,7 @@ public static class VanillaExpandedFramework_JobDriver_Lovin_MoveNext_Patch
                 yield return method;
         }
 
-        if (ModsConfig.IsActive("vanillaracesexpanded.highmate"))
+        if (ModLister.AnyModActiveNoSuffix(["vanillaracesexpanded.highmate"]))
         {
             var type = AccessTools.TypeByName("VanillaRacesExpandedHighmate.JobDriver_InitiateLovin");
             var method = AccessTools.EnumeratorMoveNext(type.DeclaredMethod("MakeNewToils"));
