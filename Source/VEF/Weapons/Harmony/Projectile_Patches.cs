@@ -84,34 +84,19 @@ namespace VEF.Weapons
         public static void Postfix(Projectile __instance, Thing launcher, Vector3 origin, ref LocalTargetInfo usedTarget, 
             LocalTargetInfo intendedTarget, bool preventFriendlyFire, Thing equipment, ThingDef targetCoverDef)
         {
-            if (__instance is ExpandableProjectile expandableProjectile)
+            if (__instance is not ExpandableProjectile)
             {
-                if (VanillaExpandedFramework_VehicleFramework_Turret_Patch.VFLoaded && VanillaExpandedFramework_VehicleFramework_Turret_Patch.currentFiringVehicleTurret is not null)
+                if (__instance.IsHomingProjectile(out var comp))
                 {
-                    var turretLocation = (Vector3)VanillaExpandedFramework_VehicleFramework_Turret_Patch
-                        .turretLocation(VanillaExpandedFramework_VehicleFramework_Turret_Patch.currentFiringVehicleTurret, null);
-                    var turretRotation = (float)VanillaExpandedFramework_VehicleFramework_Turret_Patch
-                        .turretRotation(VanillaExpandedFramework_VehicleFramework_Turret_Patch.currentFiringVehicleTurret, null);
-                    var aimPieOffset = VanillaExpandedFramework_VehicleFramework_Turret_Patch
-                        .aimPieOffset(VanillaExpandedFramework_VehicleFramework_Turret_Patch.currentFiringVehicleTurret);
-                    expandableProjectile.startingPosition = turretLocation 
-                        + (new Vector3(aimPieOffset.x, Altitudes.AltInc, aimPieOffset.y).RotatedBy(turretRotation));
+                    __instance.usedTarget = __instance.intendedTarget;
+                    __instance.SetDestination(__instance.intendedTarget.CenterVector3 + comp.DispersionOffset);
+                    comp.originLaunchCell = NonPublicFields.Projectile_origin(__instance);
                 }
-                if (expandableProjectile.def.reachMaxRangeAlways && equipment != null)
+                else if (launcher is Pawn pawn && pawn.health.hediffSet.hediffs.Any(x => x.TryGetComp<HediffComp_Targeting>()?.Props.neverMiss ?? false))
                 {
-                    expandableProjectile.SetDestinationToMax(equipment);
+                    __instance.usedTarget = __instance.intendedTarget;
+                    __instance.SetDestination(__instance.intendedTarget.CenterVector3);
                 }
-            }
-            else if (__instance.IsHomingProjectile(out var comp))
-            {
-                __instance.usedTarget = __instance.intendedTarget;
-                __instance.SetDestination(__instance.intendedTarget.CenterVector3 + comp.DispersionOffset);
-                comp.originLaunchCell = NonPublicFields.Projectile_origin(__instance);
-            }
-            else if (launcher is Pawn pawn && pawn.health.hediffSet.hediffs.Any(x => x.TryGetComp<HediffComp_Targeting>()?.Props.neverMiss ?? false))
-            {
-                __instance.usedTarget = __instance.intendedTarget;
-                __instance.SetDestination(__instance.intendedTarget.CenterVector3);
             }
         }
 

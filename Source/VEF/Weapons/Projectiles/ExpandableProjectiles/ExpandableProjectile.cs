@@ -19,7 +19,28 @@ namespace VEF.Weapons
 		protected bool stopped;
 		private float maxRange;
 
-        public void SetDestinationToMax(Thing equipment)
+		public override void Launch(Thing launcher, Vector3 origin, LocalTargetInfo usedTarget, LocalTargetInfo intendedTarget, ProjectileHitFlags hitFlags, bool preventFriendlyFire = false, Thing equipment = null, ThingDef targetCoverDef = null)
+		{
+			base.Launch(launcher, origin, usedTarget, intendedTarget, hitFlags, preventFriendlyFire, equipment, targetCoverDef);
+
+			if (VanillaExpandedFramework_VehicleFramework_Turret_Patch.VFLoaded && VanillaExpandedFramework_VehicleFramework_Turret_Patch.currentFiringVehicleTurret is not null)
+			{
+				var turretLocation = (Vector3)VanillaExpandedFramework_VehicleFramework_Turret_Patch
+					.turretLocation(VanillaExpandedFramework_VehicleFramework_Turret_Patch.currentFiringVehicleTurret, null);
+				var turretRotation = (float)VanillaExpandedFramework_VehicleFramework_Turret_Patch
+					.turretRotation(VanillaExpandedFramework_VehicleFramework_Turret_Patch.currentFiringVehicleTurret, null);
+				var aimPieOffset = VanillaExpandedFramework_VehicleFramework_Turret_Patch
+					.aimPieOffset(VanillaExpandedFramework_VehicleFramework_Turret_Patch.currentFiringVehicleTurret);
+				startingPosition = turretLocation 
+				                   + (new Vector3(aimPieOffset.x, Altitudes.AltInc, aimPieOffset.y).RotatedBy(turretRotation));
+			}
+			if (def.reachMaxRangeAlways && equipment != null)
+			{
+				SetDestinationToMax(equipment);
+			}
+		}
+
+		public void SetDestinationToMax(Thing equipment)
 		{
 			this.maxRange = Mathf.Min(Mathf.Max(Map.Size.x, Map.Size.z), GetMaxRange(equipment));
             var origin2 = new Vector3(this.origin.x, 0, this.origin.z);
@@ -169,7 +190,7 @@ namespace VEF.Weapons
 				{
                     return this.startingPosition;
                 }
-                if (!(this.launcher is Pawn))
+                if (this.launcher is not Pawn)
 				{
 					this.startingPosition = this.launcher.OccupiedRect().CenterVector3;
 				}
