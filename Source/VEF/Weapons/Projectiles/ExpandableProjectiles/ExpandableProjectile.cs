@@ -462,8 +462,7 @@ namespace VEF.Weapons
 			{
                 return;
             }
-            if (hitThings == null) 
-				hitThings = new List<Thing>();
+            hitThings ??= [];
 			if (this.def.dealsDamageOnce && hitThings.Contains(hitThing))
 			{
 				return;
@@ -471,7 +470,7 @@ namespace VEF.Weapons
 			Map map = base.Map;
 			IntVec3 position = base.Position;
 			this.NotifyImpact(hitThing, map, position);
-			if (hitThing != null && (!def.disableVanillaDamageMethod || customImpact && def.disableVanillaDamageMethod))
+			if (hitThing != null && (!def.disableVanillaDamageMethod || customImpact))
 			{
 				hitThings.Add(hitThing);
                 BattleLogEntry_RangedImpact battleLogEntry_RangedImpact;
@@ -486,10 +485,9 @@ namespace VEF.Weapons
                 Find.BattleLog.Add(battleLogEntry_RangedImpact);
                 DamageInfo dinfo = new DamageInfo(def.projectile.damageDef, this.DamageAmount, base.ArmorPenetration, ExactRotation.eulerAngles.y, launcher, null, equipmentDef, DamageInfo.SourceCategory.ThingOrUnknown, intendedTarget.Thing);
 				hitThing.TakeDamage(dinfo).AssociateWithLog(battleLogEntry_RangedImpact);
-				Pawn pawn = hitThing as Pawn;
-				if (pawn != null && pawn.stances != null && pawn.BodySize <= def.projectile.stoppingPower + 0.001f)
+				if (hitThing is Pawn pawn && pawn.stances != null && pawn.BodySize <= def.projectile.stoppingPower + 0.001f)
 				{
-					pawn.stances.stagger.StaggerFor(95);
+					pawn.stances.stagger.StaggerFor(Pawn_StanceTracker.StaggerBulletImpactTicks);
 				}
 				if (def.projectile.extraDamages != null)
 				{
@@ -502,23 +500,12 @@ namespace VEF.Weapons
 						}
 					}
 				}
-
-				if (this.def.stopWhenHitAt.Contains(hitThing.def.defName))
-				{
-					if (!stopped)
-                    {
-                        StopMotion();
-					}
-				}
 			}
 
-            if (hitThing != null && def.stopWhenHit && !stopped)
-            {
-				if (def.stopAtBuildingWithCover <= 0 || hitThing.def.fillPercent >= def.stopAtBuildingWithCover)
-				{
-                    StopMotion();
-                }
-            }
+			if (hitThing != null && !stopped && ShouldStopMotionWhenHitting(hitThing))
+			{
+				StopMotion();
+			}
         }
 
 		private void NotifyImpact(Thing hitThing, Map map, IntVec3 position)
@@ -556,6 +543,20 @@ namespace VEF.Weapons
 			}
 		}
 
+		protected virtual bool ShouldStopMotionWhenHitting(Thing hitThing)
+		{
+			if (def.stopWhenHit && (def.stopAtBuildingWithCover <= 0 || hitThing.def.fillPercent >= def.stopAtBuildingWithCover))
+				return true;
+			if (def.stopWhenNaturalRockHit && hitThing.def.category == ThingCategory.Building && (hitThing.def.building.isNaturalRock || hitThing.def.building.unsmoothedThing is { building.isNaturalRock: true }))
+				return true;
+			if (def.stopWhenZeroDamageAfterHit && DamageAmount <= 0)
+				return true;
+			if (def.stopWhenHitAt.Contains(hitThing.def.defName))
+				return true;
+
+			return false;
+		}
+
 		public override void ExposeData()
 		{
 			base.ExposeData();
@@ -570,6 +571,7 @@ namespace VEF.Weapons
 			Scribe_Values.Look(ref stopped, "stopped");
 			Scribe_Values.Look(ref curPosition, "curPosition");
 			Scribe_Values.Look(ref maxRange, "maxRange");
+			Scribe_Collections.Look(ref hitThings, "hitThings", LookMode.Reference);
 		}
 	}
 }
