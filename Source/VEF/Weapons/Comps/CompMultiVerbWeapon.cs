@@ -103,7 +103,15 @@ public class CompMultiVerbWeapon : ThingComp
         base.PostExposeData();
         Scribe_References.Look(ref activeVerb, nameof(activeVerb));
         if (Scribe.mode == LoadSaveMode.LoadingVars)
+        {
             InitComps();
+        }
+        else if (Scribe.mode == LoadSaveMode.PostLoadInit && activeVerb != null)
+        {
+            activeVerbData = Props.verbs.FirstOrDefault(x => x.verbLabel == activeVerb.verbProps.untranslatedLabel);
+            if (activeVerbData == null)
+                activeVerb = null;
+        }
     }
 
     public virtual IEnumerable<Command> CompGetSwitchModeGizmo()
