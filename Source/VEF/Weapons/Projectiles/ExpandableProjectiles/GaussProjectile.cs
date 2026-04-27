@@ -1,52 +1,36 @@
 ﻿using RimWorld;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using UnityEngine;
 using Verse;
-using Verse.Sound;
 
 namespace VEF.Weapons
 {
 	public class GaussProjectile : ExpandableProjectile
 	{
+		public float damageFalloff;
 
-		public HashSet<AltitudeLayer> altitudeLayersBlackList = new HashSet<AltitudeLayer> 
-		{
-			AltitudeLayer.Item,
-			AltitudeLayer.ItemImportant,
-			AltitudeLayer.Conduits,
-			AltitudeLayer.Floor,
-			AltitudeLayer.FloorEmplacement
-		};
-		public override int DamageAmount
-        {
-			get
-            {
-				var baseDamage = def.projectile.GetDamageAmount(equipment);
-				var damageMultiplier = 1f;
-				damageMultiplier += ((float)hitThings.Count / 10f);
-				var damageAmount = (int)(baseDamage / damageMultiplier);
-				return damageAmount;
-			}
-        }
+		public override int DamageAmount => def.gauss.Worker.DamageAmount(this, equipment, hitThings);
 
 		public override void DoDamage(IntVec3 pos)
 		{
 			if (!stopped)
 			{
                 base.DoDamage(pos);
-                if (pos != this.launcher.Position && this.launcher.Map != null && GenGrid.InBounds(pos, this.launcher.Map))
+                if (pos != this.launcher.Position && this.launcher.Map != null && pos.InBounds(this.launcher.Map))
                 {
                     var list = this.launcher.Map.thingGrid.ThingsListAt(pos);
                     for (int num = list.Count - 1; num >= 0; num--)
                     {
-                        if (IsDamagable(list[num]) && !altitudeLayersBlackList.Contains(list[num].def.altitudeLayer))
+                        if (IsDamagable(list[num]) && !def.gauss.altitudeLayersBlackList.Contains(list[num].def.altitudeLayer))
                         {
-                            this.customImpact = true;
-                            base.Impact(list[num]);
-                            this.customImpact = false;
+	                        try
+	                        {
+	                            this.customImpact = true;
+		                        base.Impact(list[num]);
+	                        }
+	                        finally
+	                        {
+			                    this.customImpact = false;
+	                        }
                         }
                     }
                 }
@@ -55,22 +39,40 @@ namespace VEF.Weapons
 
         public override bool IsDamagable(Thing t)
         {
-            if (t is Pawn pawn)
+	        // Damage checks against a pawn to avoid damage, but only if not an intended target
+            if (t is Pawn pawn && intendedTarget.Thing != pawn)
             {
-                if (launcher != null && pawn.Faction != null && launcher.Faction != null 
-                    && !pawn.Faction.HostileTo(launcher.Faction))
+	            // Friendly fire check
+                if (launcher != null && pawn.Faction != null && launcher.Faction != null && !pawn.Faction.HostileTo(launcher.Faction))
                 {
-                    if (Rand.Chance(Find.Storyteller.difficulty.friendlyFireChanceFactor) is false)
-                    {
+	                if (preventFriendlyFire)
+		                return false;
+                    if (!Rand.Chance(Find.Storyteller.difficulty.friendlyFireChanceFactor))
                         return false;
-                    }
+                    if (def.gauss.includeInterceptChanceFromDistanceForFriendlyFire && !Rand.Chance(Verse.VerbUtility.InterceptChanceFactorFromDistance(startingPosition, t.Position)))
+	                    return false;
                 }
-                if (pawn.GetPosture() != PawnPosture.Standing && this.intendedTarget.Thing != pawn)
-                {
+                if (!Rand.Chance(def.gauss.chanceToHitUnintendedLayingTarget) && pawn.GetPosture() != PawnPosture.Standing)
                     return false;
-                }
             }
             return base.IsDamagable(t);
         }
-    }
+
+        public override void Launch(Thing launcher, Vector3 origin, LocalTargetInfo usedTarget, LocalTargetInfo intendedTarget, ProjectileHitFlags hitFlags, bool preventFriendlyFire = false, Thing equipment = null, ThingDef targetCoverDef = null)
+        {
+	        base.Launch(launcher, origin, usedTarget, intendedTarget, hitFlags, preventFriendlyFire, equipment, targetCoverDef);
+
+	        if (equipment == null || def.gauss.damageModifierStat == null)
+		        damageFalloff = VEFDefOf.VEF_GaussProjectileDamageModifier.defaultBaseValue;
+	        else
+		        damageFalloff = equipment.GetStatValue(def.gauss.damageModifierStat);
+        }
+
+        public override void ExposeData()
+        {
+	        base.ExposeData();
+
+	        Scribe_Values.Look(ref damageFalloff, nameof(damageFalloff));
+        }
+	}
 }

@@ -33,7 +33,7 @@ namespace VEF.Weapons
 		/// </summary>
 		public bool stopWhenHit = true;
 		/// <summary>
-		/// If <see cref="stopWhenHitAt"/> is true, this determines the minimum fillPercent the building needs to have.
+		/// If <see cref="stopWhenHit"/> is true, this determines the minimum fillPercent the building needs to have.
 		/// </summary>
 		public float stopAtBuildingWithCover = 1f;
 		/// <summary>
@@ -49,13 +49,20 @@ namespace VEF.Weapons
 		/// </summary>
         public List<string> stopWhenHitAt = new List<string>();
 
+		/// <summary>
+		/// Properties specifically used by the <see cref="GaussProjectile"/>.
+		/// </summary>
+		public GaussProperties gauss;
+
+		public bool IsGaussProjectile => thingClass.SameOrSubclassOf<GaussProjectile>();
+
 		protected override void ResolveIcon()
 		{
 			base.ResolveIcon();
 			this.uiIcon = this.graphicData.Materials[0].mainTexture as Texture2D;
 		}
 
-        public override void PostLoad()
+		public override void PostLoad()
         {
             base.PostLoad();
 			LongEventHandler.ExecuteWhenFinished(delegate
@@ -64,9 +71,13 @@ namespace VEF.Weapons
 				this.graphicData.InitFadeOutTextures();
 			});
 		}
-        public override IEnumerable<string> ConfigErrors()
-        {
-			return base.ConfigErrors();
-        }
+
+		public override void ResolveReferences()
+		{
+			base.ResolveReferences();
+
+			gauss ??= GaussProperties.DefaultProperties;
+			gauss.ResolveReferences(this);
+		}
     }
 }

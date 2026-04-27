@@ -34,6 +34,7 @@ namespace VEF
         public static StatDef VEF_NeutralThoughtDurationFactor;
         public static StatDef VEF_NegativeThoughtDurationFactor;
         public static StatDef VEF_MeleeWeaponRange;
+        public static StatDef VEF_GaussProjectileDamageModifier;
         [MayRequireBiotech]
         public static StatDef VEF_BuildingLearningRateOffset;
 

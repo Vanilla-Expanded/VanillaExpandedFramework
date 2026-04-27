@@ -472,6 +472,7 @@ namespace VEF.Weapons
 			this.NotifyImpact(hitThing, map, position);
 			if (hitThing != null && (!def.disableVanillaDamageMethod || customImpact))
 			{
+				var damageAmount = DamageAmount;
 				hitThings.Add(hitThing);
                 BattleLogEntry_RangedImpact battleLogEntry_RangedImpact;
                 if (equipmentDef == null)
@@ -483,7 +484,7 @@ namespace VEF.Weapons
                     battleLogEntry_RangedImpact = new BattleLogEntry_RangedImpact(launcher, hitThing, intendedTarget.Thing, equipmentDef, def, targetCoverDef);
                 }
                 Find.BattleLog.Add(battleLogEntry_RangedImpact);
-                DamageInfo dinfo = new DamageInfo(def.projectile.damageDef, this.DamageAmount, base.ArmorPenetration, ExactRotation.eulerAngles.y, launcher, null, equipmentDef, DamageInfo.SourceCategory.ThingOrUnknown, intendedTarget.Thing);
+                DamageInfo dinfo = new DamageInfo(def.projectile.damageDef, damageAmount, base.ArmorPenetration, ExactRotation.eulerAngles.y, launcher, null, equipmentDef, DamageInfo.SourceCategory.ThingOrUnknown, intendedTarget.Thing);
 				hitThing.TakeDamage(dinfo).AssociateWithLog(battleLogEntry_RangedImpact);
 				if (hitThing is Pawn pawn && pawn.stances != null && pawn.BodySize <= def.projectile.stoppingPower + 0.001f)
 				{

@@ -524,6 +524,8 @@
     <Compile Include="Weapons\Misc\MeshMakerLaser.cs" />
     <Compile Include="Weapons\Motes\MoteLaserDecoration.cs" />
     <Compile Include="Weapons\PlaceWorkers\PlaceWorker_ExpandedShowTurretRadius.cs" />
+    <Compile Include="Weapons\Projectiles\ExpandableProjectiles\GaussProjectileDamageWorkers.cs" />
+    <Compile Include="Weapons\Projectiles\ExpandableProjectiles\GaussProperties.cs" />
     <Compile Include="Weapons\Projectiles\LaserBeam.cs" />
     <Compile Include="Weapons\Projectiles\Projectile_Attachments.cs" />
     <Compile Include="Weapons\Projectiles\Projectile_Shrapnel.cs" />

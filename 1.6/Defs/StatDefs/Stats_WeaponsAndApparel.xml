@@ -50,4 +50,17 @@
 		<toStringStyle>FloatOne</toStringStyle>
 		<displayPriorityInCategory>4050</displayPriorityInCategory>
 	</StatDef>
+
+  <StatDef>
+    <defName>VEF_GaussProjectileDamageModifier</defName>
+    <label>piercing damage modifier</label>
+    <description>How much the damage dealt is modified (as a percentage of the base damage) for each previously hit target.</description>
+    <category>Weapon_Ranged</category>
+    <defaultBaseValue>0</defaultBaseValue>
+    <minValue>-1</minValue>
+    <showIfUndefined>false</showIfUndefined>
+    <toStringStyle>PercentZero</toStringStyle>
+    <!-- TODO: Remember to update to be in a sensible location -->
+    <displayPriorityInCategory>6295</displayPriorityInCategory>
+  </StatDef>
 </Defs>
