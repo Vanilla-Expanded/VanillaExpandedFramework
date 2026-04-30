@@ -28,6 +28,8 @@ namespace VEF.Buildings
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
+            if (!CorrectDefCheck()) return;
+
             thingToGrab = parent;
             //Using LongEventHandler to avoid having to create a GraphicCache
             if(parent.StyleDef is null)
@@ -128,7 +130,7 @@ namespace VEF.Buildings
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
-            if (parent.Faction != null && parent.Faction.IsPlayer && !VFEGlobal.settings.hideRandomizeButtons && !Props.disableAllButtons)
+            if (parent.Faction != null && parent.Faction.IsPlayer && !VFEGlobal.settings.hideRandomizeButtons && !Props.disableAllButtons && CorrectDefCheck())
             {
                 if (!Props.disableRandomButton) {
 
@@ -170,6 +172,12 @@ namespace VEF.Buildings
         {
             ReflectionCache.buildingGraphic(thingToGrab) = null;
             ReflectionCache.styleGraphic(thingToGrab) = null;
+        }
+
+        public bool CorrectDefCheck()
+        {
+            if (Props.onlyApplyToThisDef is null) return true;
+            return (this.parent.def == Props.onlyApplyToThisDef);
         }
     }
 }

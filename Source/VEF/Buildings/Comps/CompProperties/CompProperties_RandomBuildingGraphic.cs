@@ -23,13 +23,13 @@ namespace VEF.Buildings
 
         public bool useSouthOrientation = false;
 
-
+        //This field is used to get around xml inheritance grabbing the comp for children of a def (eg Slab beds inheriting from Bed)
+        public ThingDef onlyApplyToThisDef = null;
 
         public CompProperties_RandomBuildingGraphic()
         {
             this.compClass = typeof(CompRandomBuildingGraphic);
         }
-
 
     }
 }
