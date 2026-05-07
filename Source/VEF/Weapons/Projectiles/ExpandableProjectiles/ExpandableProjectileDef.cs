@@ -29,6 +29,19 @@ namespace VEF.Weapons
 		public bool wideAtStart;
 
 		/// <summary>
+		/// A filth that will be spawned if the projectile hits the maximum distance without being interrupted/stopped
+		/// </summary>
+		public ThingDef filthOnUninterrupted = null;
+		/// <summary>
+		/// A chance that <see cref="filthOnUninterrupted"/> will be spawned.
+		/// </summary>
+		public float filthOnUninterruptedChance = 1f;
+		/// <summary>
+		/// The amount of <see cref="filthOnUninterrupted"/> to spawn.
+		/// </summary>
+		public IntRange filthOnUninterruptedCount;
+
+		/// <summary>
 		/// The projectile will always stop when hitting anything, as long as it matches <see cref="stopAtBuildingWithCover"/>.
 		/// </summary>
 		public bool stopWhenHit = true;

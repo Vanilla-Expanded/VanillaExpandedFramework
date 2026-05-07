@@ -372,15 +372,18 @@ namespace VEF.Weapons
             return positions;
         }
 
-        private void StopMotion()
-		{
-			if (!stopped)
-			{
-				stopped = true;
-				curPosition = this.DrawPos;
-				this.destination = this.curPosition.Value;
-			}
-		}
+        protected virtual void StopMotion(Thing hitThing = null, bool reachedMaxDistance = false)
+        {
+	        if (stopped) return;
+
+	        stopped = true;
+	        curPosition = this.DrawPos;
+	        this.destination = this.curPosition.Value;
+
+	        if (Map != null && hitThing == null && reachedMaxDistance && def.filthOnUninterrupted != null && Rand.Chance(def.filthOnUninterruptedChance) && !Position.Filled(Map))
+		        FilthMaker.TryMakeFilth(Position, Map, def.filthOnUninterrupted, def.filthOnUninterruptedCount.RandomInRange);
+        }
+
         protected override void Tick()
 		{
 			base.Tick();
@@ -395,6 +398,7 @@ namespace VEF.Weapons
                     }
                 }
 			}
+
 			if (!doFinalAnimations && (!IsMoving || pawnMoved))
 			{
 				doFinalAnimations = true;
@@ -408,11 +412,14 @@ namespace VEF.Weapons
 					StopMotion();
 				}
 			}
+
 			if (Find.TickManager.TicksGame % this.TickFrameRate == 0 && def.lifeTimeDuration > 0)
 			{
 				curDuration++;
 				if (curDuration > def.lifeTimeDuration)
 				{
+					if (!this.stopped)
+						StopMotion(reachedMaxDistance: true);
 					this.Destroy();
 				}
 			}
@@ -505,7 +512,7 @@ namespace VEF.Weapons
 
 			if (hitThing != null && !stopped && ShouldStopMotionWhenHitting(hitThing))
 			{
-				StopMotion();
+				StopMotion(hitThing);
 			}
         }
 
