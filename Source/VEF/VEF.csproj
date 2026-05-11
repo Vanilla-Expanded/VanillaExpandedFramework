@@ -352,6 +352,8 @@
     <Compile Include="Things\Harmony\RecipeDef_WorkAmountForStuff.cs" />
     <Compile Include="Weapons\Comps\CompMultiVerbWeapon.cs" />
     <Compile Include="Weapons\Comps\Properties\CompProperties_MultiVerbWeapon.cs" />
+    <Compile Include="Weapons\ConditionalStatAffecters\ConditionalStatAffecter_NotPrimaryVerbLabel.cs" />
+    <Compile Include="Weapons\ConditionalStatAffecters\ConditionalStatAffecter_PrimaryVerbLabel.cs" />
     <Compile Include="Weapons\Harmony\CompEquippable_PrimaryVerb.cs" />
     <Compile Include="Weapons\Harmony\OptionalFeatures\IncidentWorker_TraderCaravanArrival_TryExecuteWorker.cs" />
     <Compile Include="Weapons\Harmony\OptionalFeatures\PawnRenderUtility_DrawEquipmentAiming.cs" />
