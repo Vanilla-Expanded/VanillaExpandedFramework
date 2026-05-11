@@ -520,6 +520,7 @@
     <Compile Include="Weapons\Harmony\Pawn_ApparelTracker_Notify_ApparelRemoved_Patch.cs" />
     <Compile Include="Weapons\Harmony\Pawn_GetGizmos.cs" />
     <Compile Include="Weapons\Harmony\TurretTop_DrawTurret.cs" />
+    <Compile Include="Weapons\Harmony\StatDef_PopulateMutableStats.cs" />
     <Compile Include="Weapons\Harmony\VerbTracker_GetVerbsCommands.cs" />
     <Compile Include="Weapons\Harmony\Verb_TryStartCastOn.cs" />
     <Compile Include="Weapons\Interfaces\IBeamColorThing.cs" />
