@@ -422,6 +422,8 @@ namespace VEF.Weapons
 						StopMotion(reachedMaxDistance: true);
 					this.Destroy();
 				}
+				else if (def.stopMotionOnFadeout && !stopped && curDuration > def.lifeTimeDuration - def.graphicData.MaterialsFadeOut.Length - 1)
+					StopMotion(reachedMaxDistance: true);
 			}
 		}
 

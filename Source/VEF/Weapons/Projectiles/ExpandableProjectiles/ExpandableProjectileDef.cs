@@ -1,11 +1,6 @@
-﻿using RimWorld;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Verse;
-using Verse.Sound;
 
 namespace VEF.Weapons
 {
@@ -27,6 +22,11 @@ namespace VEF.Weapons
 		public float arcSize = 2.5f;
 		public bool debugMode;
 		public bool wideAtStart;
+
+		/// <summary>
+		/// If true, the projectile motion will stop (and any related triggers, like filth spawning will trigger) the moment fadeout starts. If false, it'll happen after fadeout stops.
+		/// </summary>
+		public bool stopMotionOnFadeout = false;
 
 		/// <summary>
 		/// A filth that will be spawned if the projectile hits the maximum distance without being interrupted/stopped
