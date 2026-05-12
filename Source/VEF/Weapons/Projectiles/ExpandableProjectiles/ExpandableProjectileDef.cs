@@ -27,6 +27,18 @@ namespace VEF.Weapons
 		/// If true, the projectile motion will stop (and any related triggers, like filth spawning will trigger) the moment fadeout starts. If false, it'll happen after fadeout stops.
 		/// </summary>
 		public bool stopMotionOnFadeoutStarted = false;
+		/// <summary>
+		/// If set, this fleck will trigger if projectile hits terrain/is uninterrupted, just like a normal projectile. The default vanilla (non-configurable) fleck is "ShotHit_Dirt".
+		/// </summary>
+		public FleckDef impactFleck = null;
+		/// <summary>
+		/// If true and the hit terrain has takeSplashes as true, a water splash fleck will trigger projectile hits terrain/is uninterrupted (which takes precedence over <see cref="impactFleck"/>). (Water splashes are bugged out as of 1.6.4817, and have been since 1.4.)
+		/// </summary>
+		public bool triggerWaterSplashes = false;
+		/// <summary>
+		/// If set, the projectile will trigger this sound, if projectile hits terrain/is uninterrupted. The default vanilla (non-configurable) sound is "BulletImpact_Ground".
+		/// </summary>
+		public SoundDef impactSound = null;
 
 		/// <summary>
 		/// A filth that will be spawned if the projectile hits the maximum distance without being interrupted/stopped

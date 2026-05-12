@@ -6,6 +6,7 @@ using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using Verse.Sound;
 
 namespace VEF.Weapons
 {
@@ -372,7 +373,7 @@ namespace VEF.Weapons
             return positions;
         }
 
-        protected virtual void StopMotion(Thing hitThing = null, bool reachedMaxDistance = false)
+        protected virtual void StopMotion(Thing hitThing = null, bool reachedMaxDistance = false, bool blockedByShield = false)
         {
 	        if (stopped) return;
 
@@ -380,8 +381,22 @@ namespace VEF.Weapons
 	        curPosition = this.DrawPos;
 	        this.destination = this.curPosition.Value;
 
-	        if (Map != null && hitThing == null && reachedMaxDistance && def.filthOnUninterrupted != null && Rand.Chance(def.filthOnUninterruptedChance) && !Position.Filled(Map))
-		        FilthMaker.TryMakeFilth(Position, Map, def.filthOnUninterrupted, def.filthOnUninterruptedCount.RandomInRange);
+	        var map = Map;
+	        if (map != null && hitThing == null && reachedMaxDistance && !blockedByShield)
+	        {
+		        // Play impact sound if specified
+		        def.impactSound?.PlayOneShot(new TargetInfo(Position, map));
+
+		        // Trigger water splashes/impact flecks, if enabled/specified
+		        if (def.triggerWaterSplashes && Position.GetTerrain(map).takeSplashes)
+			        FleckMaker.WaterSplash(ExactPosition, map, Mathf.Min(Mathf.Sqrt(DamageAmount), 1f), 4f);
+		        else if (def.impactFleck != null)
+				    FleckMaker.Static(ExactPosition, map, def.impactFleck);
+
+		        // Spawn filth if specified, RNG allows, and position isn't filled
+		        if (def.filthOnUninterrupted != null && Rand.Chance(def.filthOnUninterruptedChance) && !Position.Filled(Map))
+			        FilthMaker.TryMakeFilth(Position, Map, def.filthOnUninterrupted, def.filthOnUninterruptedCount.RandomInRange);
+	        }
         }
 
         protected override void Tick()
@@ -514,7 +529,7 @@ namespace VEF.Weapons
 
 			if (hitThing != null && !stopped && ShouldStopMotionWhenHitting(hitThing))
 			{
-				StopMotion(hitThing);
+				StopMotion(hitThing, blockedByShield: blockedByShield);
 			}
         }
 
