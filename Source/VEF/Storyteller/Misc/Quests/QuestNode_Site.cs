@@ -30,32 +30,48 @@ namespace VEF.Storyteller
         protected bool TryFindSiteTile(out PlanetTile tile)
         {
             tile = PlanetTile.Invalid;
-            List<BiomeDef> allowedBiomes = AllowedBiomes;
-            if (allowedBiomes != null && !Find.WorldGrid.Tiles.Any((SurfaceTile x) => allowedBiomes.Contains(x.PrimaryBiome)))
-            {
-                allowedBiomes = null;
-            }
-
-            Predicate<Map, PlanetTile> predicator = TileValidator;
             Map map = QuestGen_Get.GetMap(mustBeInfestable: false, null, canBeSpace: true);
             if (map == null)
             {
                 return false;
             }
 
-            if ((from x in Find.WorldGrid.Surface.Tiles
-                 select x.tile into x
-                 where (predicator == null || predicator(map, x)) && IsValidTile(x, allowedBiomes)
-                 select x).TryRandomElement(out tile))
-            {
-                return true;
-            }
+            var allowedBiomes = AllowedBiomes;
+            if (allowedBiomes != null && !Find.WorldGrid.Tiles.Any(t => allowedBiomes.Contains(t.PrimaryBiome)))
+                allowedBiomes = null;
 
-            if ((from x in Find.WorldGrid.Surface.Tiles
-                 select x.tile into x
-                 where IsValidTile(x, allowedBiomes)
-                 select x).TryRandomElement(out tile))
+            var slate = QuestGen.slate;
+            var range = distanceRange.GetValue(slate);
+
+            FastTileFinder.TileQueryParams normal = new FastTileFinder.TileQueryParams(
+                map.Tile,
+                range.min,
+                range.max,
+                FastTileFinder.LandmarkMode.Any,
+                reachable: true,
+                Hilliness.Undefined,
+                Hilliness.Undefined,
+                checkBiome: true,
+                validSettlement: false
+            );
+
+            FastTileFinder.TileQueryParams desperate = new FastTileFinder.TileQueryParams(
+                map.Tile,
+                0f,
+                float.MaxValue,
+                FastTileFinder.LandmarkMode.Any,
+                reachable: true,
+                Hilliness.Undefined,
+                Hilliness.Undefined,
+                checkBiome: false,
+                validSettlement: false
+            );
+
+            List<PlanetTile> results = Find.WorldGrid.Surface.FastTileFinder.Query(normal, allowedBiomes, null, desperate);
+
+            if (!results.Empty())
             {
+                tile = results.RandomElement();
                 return true;
             }
 
