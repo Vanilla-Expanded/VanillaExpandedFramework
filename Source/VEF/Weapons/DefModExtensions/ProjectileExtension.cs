@@ -16,5 +16,18 @@ namespace VEF.Weapons
         public FleckDef attachedFleck;
         public float fleckScale = 1;
         public int fleckRefreshInterval = 10;
+
+        /// <summary>
+        /// A filth that will be spawned if the projectile misses without hitting anything (and isn't intercepted by, for example, shields)
+        /// </summary>
+        public ThingDef filthOnMiss;
+        /// <summary>
+        /// A chance that <see cref="filthOnMiss"/> will be spawned.
+        /// </summary>
+        public float filthOnMissChance;
+        /// <summary>
+        /// The amount of <see cref="filthOnMiss"/> to spawn.
+        /// </summary>
+        public IntRange filthOnMissCount;
     }
 }

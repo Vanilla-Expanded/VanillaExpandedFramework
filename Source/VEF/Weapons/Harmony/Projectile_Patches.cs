@@ -184,33 +184,41 @@ namespace VEF.Weapons
             }
         }
     }
-    
+
     [HarmonyPatch(typeof(Projectile), "Impact")]
     public static class VanillaExpandedFramework_Projectile_Impact_Patch
     {
-        public static bool Prefix(Projectile __instance, ref Thing hitThing)
+        public static void Prefix(Projectile __instance, ref Thing hitThing, bool blockedByShield)
         {
-            if (__instance.IsHomingProjectile(out var comp))
+            if (!blockedByShield)
             {
-                if (hitThing != __instance.intendedTarget.Thing)
+                if (__instance.IsHomingProjectile(out var comp))
                 {
-                    foreach (var thing in GenRadial.RadialDistinctThingsAround(__instance.Position, __instance.Map, 3f, true))
+                    if (hitThing != __instance.intendedTarget.Thing)
                     {
-                        if (thing == __instance.intendedTarget.Thing)
+                        foreach (var thing in GenRadial.RadialDistinctThingsAround(__instance.Position, __instance.Map, 3f, true))
                         {
-                            if (Vector3.Distance(thing.DrawPos.Yto0(), __instance.ExactPosition.Yto0()) <= 0.5f)
+                            if (thing == __instance.intendedTarget.Thing)
                             {
-                                hitThing = thing;
+                                if (Vector3.Distance(thing.DrawPos.Yto0(), __instance.ExactPosition.Yto0()) <= 0.5f)
+                                {
+                                    hitThing = thing;
+                                }
                             }
                         }
                     }
+                    if (hitThing != null && comp.Props.hitSound != null)
+                    {
+                        comp.Props.hitSound.PlayOneShot(hitThing);
+                    }
                 }
-                if (hitThing != null && comp.Props.hitSound != null)
+
+                if (hitThing == null && __instance.def.GetModExtension<ProjectileExtension>() is {} extension)
                 {
-                    comp.Props.hitSound.PlayOneShot(hitThing);
+                    if (extension.filthOnMiss != null && Rand.Chance(extension.filthOnMissChance) && !__instance.Position.Filled(__instance.Map))
+                        FilthMaker.TryMakeFilth(__instance.Position, __instance.Map, extension.filthOnMiss, extension.filthOnMissCount.RandomInRange);
                 }
             }
-            return true;
         }
     }
 }
