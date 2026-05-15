@@ -393,8 +393,7 @@ namespace VEF.Weapons
             if (stopped) return;
 
             stopped = true;
-            curPosition = this.DrawPos;
-            this.destination = this.curPosition.Value;
+            curPosition = destination = DrawPos;
 
             var map = Map;
             if (map != null && hitThing == null && reachedMaxDistance && !blockedByShield)
@@ -405,8 +404,21 @@ namespace VEF.Weapons
                 // Trigger water splashes/impact flecks, if enabled/specified
                 if (def.triggerWaterSplashes && Position.GetTerrain(map).takeSplashes)
                     FleckMaker.WaterSplash(ExactPosition, map, Mathf.Min(Mathf.Sqrt(DamageAmount), 1f), 4f);
-                else if (def.impactFleck != null)
-                    FleckMaker.Static(ExactPosition, map, def.impactFleck);
+                else if (def.impactFleck != null && ExactPosition.ShouldSpawnMotesAt(Map))
+                {
+                    var angle = def.impactFleckAngle.RandomInRange;
+                    if (def.impactFleckUsesProjectileAngle)
+                        angle += Vector3.Angle((startingPosition - destination).Yto0(), Vector3.forward) + 180;
+
+                    var data = FleckMaker.GetDataStatic(ExactPosition, map, def.impactFleck) with
+                    {
+                        rotation = def.impactFleckRotation.RandomInRange,
+                        rotationRate = def.impactFleckRotationRate.RandomInRange,
+                        velocityAngle = angle,
+                        velocitySpeed = def.impactFleckSpeed.RandomInRange,
+                    };
+                    map.flecks.CreateFleck(data);
+                }
 
                 // Spawn filth if specified, RNG allows, and position isn't filled
                 if (def.filthOnUninterrupted != null && Rand.Chance(def.filthOnUninterruptedChance) && !Position.Filled(Map))

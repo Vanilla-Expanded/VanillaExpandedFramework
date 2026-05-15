@@ -39,6 +39,11 @@ namespace VEF.Weapons
 		/// If set, the projectile will trigger this sound, if projectile hits terrain/is uninterrupted. The default vanilla (non-configurable) sound is "BulletImpact_Ground".
 		/// </summary>
 		public SoundDef impactSound = null;
+		public FloatRange impactFleckRotation = FloatRange.Zero;
+		public FloatRange impactFleckRotationRate = FloatRange.Zero;
+		public FloatRange impactFleckAngle = FloatRange.Zero;
+		public FloatRange impactFleckSpeed = FloatRange.Zero;
+		public bool impactFleckUsesProjectileAngle = false;
 
 		/// <summary>
 		/// A filth that will be spawned if the projectile hits the maximum distance without being interrupted/stopped
