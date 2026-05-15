@@ -11,244 +11,259 @@ using Verse.Sound;
 namespace VEF.Weapons
 {
     public class ExpandableProjectile : Bullet
-	{
-		private int curDuration;
-		public Vector3 startingPosition;
-		private Vector3 prevPosition;
-		private int curProjectileIndex=0;
-		private int curProjectileFadeOutIndex=0;
-		protected bool stopped;
-		private float maxRange;
+    {
+        private int curDuration;
+        public Vector3 startingPosition;
+        private Vector3 prevPosition;
+        private int curProjectileIndex = 0;
+        private int curProjectileFadeOutIndex = 0;
+        protected bool stopped;
+        private float maxRange;
 
-		public override void Launch(Thing launcher, Vector3 origin, LocalTargetInfo usedTarget, LocalTargetInfo intendedTarget, ProjectileHitFlags hitFlags, bool preventFriendlyFire = false, Thing equipment = null, ThingDef targetCoverDef = null)
-		{
-			base.Launch(launcher, origin, usedTarget, intendedTarget, hitFlags, preventFriendlyFire, equipment, targetCoverDef);
+        public override int UpdateRateTicks
+        {
+            get
+            {
+                // Skip camera checks, always tick rate of 1 on same map
+                if (Spawned && Find.CurrentMap == Map)
+                    return 1;
 
-			if (VanillaExpandedFramework_VehicleFramework_Turret_Patch.VFLoaded && VanillaExpandedFramework_VehicleFramework_Turret_Patch.currentFiringVehicleTurret is not null)
-			{
-				var turretLocation = (Vector3)VanillaExpandedFramework_VehicleFramework_Turret_Patch
-					.turretLocation(VanillaExpandedFramework_VehicleFramework_Turret_Patch.currentFiringVehicleTurret, null);
-				var turretRotation = (float)VanillaExpandedFramework_VehicleFramework_Turret_Patch
-					.turretRotation(VanillaExpandedFramework_VehicleFramework_Turret_Patch.currentFiringVehicleTurret, null);
-				var aimPieOffset = VanillaExpandedFramework_VehicleFramework_Turret_Patch
-					.aimPieOffset(VanillaExpandedFramework_VehicleFramework_Turret_Patch.currentFiringVehicleTurret);
-				startingPosition = turretLocation 
-				                   + (new Vector3(aimPieOffset.x, Altitudes.AltInc, aimPieOffset.y).RotatedBy(turretRotation));
-			}
-			if (def.reachMaxRangeAlways && equipment != null)
-			{
-				SetDestinationToMax(equipment);
-			}
-		}
+                // Update matches damage rate (but maxes out at 15 ticks).
+                return Mathf.Max(def.tickDamageRate, 1);
+            }
+        }
 
-		public void SetDestinationToMax(Thing equipment)
-		{
-			this.maxRange = Mathf.Min(Mathf.Max(Map.Size.x, Map.Size.z), GetMaxRange(equipment));
+        public override void Launch(Thing launcher, Vector3 origin, LocalTargetInfo usedTarget, LocalTargetInfo intendedTarget, ProjectileHitFlags hitFlags, bool preventFriendlyFire = false, Thing equipment = null, ThingDef targetCoverDef = null)
+        {
+            base.Launch(launcher, origin, usedTarget, intendedTarget, hitFlags, preventFriendlyFire, equipment, targetCoverDef);
+
+            if (VanillaExpandedFramework_VehicleFramework_Turret_Patch.VFLoaded && VanillaExpandedFramework_VehicleFramework_Turret_Patch.currentFiringVehicleTurret is not null)
+            {
+                var turretLocation = (Vector3)VanillaExpandedFramework_VehicleFramework_Turret_Patch
+                    .turretLocation(VanillaExpandedFramework_VehicleFramework_Turret_Patch.currentFiringVehicleTurret, null);
+                var turretRotation = (float)VanillaExpandedFramework_VehicleFramework_Turret_Patch
+                    .turretRotation(VanillaExpandedFramework_VehicleFramework_Turret_Patch.currentFiringVehicleTurret, null);
+                var aimPieOffset = VanillaExpandedFramework_VehicleFramework_Turret_Patch
+                    .aimPieOffset(VanillaExpandedFramework_VehicleFramework_Turret_Patch.currentFiringVehicleTurret);
+                startingPosition = turretLocation
+                                   + (new Vector3(aimPieOffset.x, Altitudes.AltInc, aimPieOffset.y).RotatedBy(turretRotation));
+            }
+
+            if (def.reachMaxRangeAlways && equipment != null)
+            {
+                SetDestinationToMax(equipment);
+            }
+        }
+
+        public void SetDestinationToMax(Thing equipment)
+        {
+            this.maxRange = Mathf.Min(Mathf.Max(Map.Size.x, Map.Size.z), GetMaxRange(equipment));
             var origin2 = new Vector3(this.origin.x, 0, this.origin.z);
-			var destination2 = new Vector3(destination.x, 0, destination.z);
-			var distance = Vector3.Distance(origin2, destination2);
-			var distanceDiffMax = maxRange - distance;
-			var normalized = (destination2 - origin2).normalized;
-			var distanceDiff = 1;
+            var destination2 = new Vector3(destination.x, 0, destination.z);
+            var distance = Vector3.Distance(origin2, destination2);
+            var distanceDiffMax = maxRange - distance;
+            var normalized = (destination2 - origin2).normalized;
+            var distanceDiff = 1;
             while (true)
-			{
-				if (distanceDiff >= distanceDiffMax)
+            {
+                if (distanceDiff >= distanceDiffMax)
                 {
                     this.destination += normalized * distanceDiff;
                     break;
-				}
-				var newCell = (this.destination + (normalized * distanceDiff)).ToIntVec3();
-				if (newCell.InBounds(Map) is false)
-				{
-                    this.destination += normalized * (distanceDiff + 10); // goes over map edge by like 10 cells just to not cut off projectile too early
-					break;
                 }
-				distanceDiff += 1;
+
+                var newCell = (this.destination + (normalized * distanceDiff)).ToIntVec3();
+                if (newCell.InBounds(Map) is false)
+                {
+                    this.destination += normalized * (distanceDiff + 10); // goes over map edge by like 10 cells just to not cut off projectile too early
+                    break;
+                }
+
+                distanceDiff += 1;
             }
-			this.ticksToImpact = Mathf.CeilToInt(StartingTicksToImpact);
-		}
+
+            this.ticksToImpact = Mathf.CeilToInt(StartingTicksToImpact);
+        }
 
         private float GetMaxRange(Thing equipment)
         {
             if (VanillaExpandedFramework_VehicleFramework_Turret_Patch.currentFiringVehicleTurret is not null)
             {
-				return (float)(VanillaExpandedFramework_VehicleFramework_Turret_Patch
-					.maxRangeInfo(VanillaExpandedFramework_VehicleFramework_Turret_Patch.currentFiringVehicleTurret, null));
+                return (float)(VanillaExpandedFramework_VehicleFramework_Turret_Patch
+                    .maxRangeInfo(VanillaExpandedFramework_VehicleFramework_Turret_Patch.currentFiringVehicleTurret, null));
             }
-			var comp = equipment.TryGetComp<CompEquippable>();
-			if (comp != null)
-			{
+            var comp = equipment.TryGetComp<CompEquippable>();
+            if (comp != null)
+            {
                 return comp.PrimaryVerb.verbProps.range;
             }
-			throw new Exception("[VEF] Couldn't determine max range for " + this.Label);
+            throw new Exception("[VEF] Couldn't determine max range for " + this.Label);
         }
 
-        public new virtual int DamageAmount
-		{
-			get
-            {
-                return def.projectile.GetDamageAmount(equipment);
-			}
-		}
-		public bool IsMoving
-		{
-			get
-			{
-				if (!stopped && this.DrawPos != prevPosition)
-				{
-					prevPosition = this.DrawPos;
-					return true;
-				}
-				return false;
-			}
-		}
-		public override void SpawnSetup(Map map, bool respawningAfterLoad)
-		{
-			base.SpawnSetup(map, respawningAfterLoad);
-			if (!respawningAfterLoad)
-			{
-                startingPosition = this.Position.ToVector3Shifted(); 
-				startingPosition.y = 0;
-			}
-		}
+        public new virtual int DamageAmount => def.projectile.GetDamageAmount(equipment);
 
-		private int prevTick;
-		public bool doFinalAnimations;
-		public new ExpandableProjectileDef def => base.def as ExpandableProjectileDef;
-		private Material ProjectileMat
-		{
-			get
-			{
-				if (!doFinalAnimations || this.def.lifeTimeDuration - curDuration > this.def.graphicData.MaterialsFadeOut.Length - 1)
-				{
-					var material = this.def.graphicData.Materials[curProjectileIndex];
-					if (prevTick != Find.TickManager.TicksAbs && Find.TickManager.TicksAbs - this.TickFrameRate >= prevTick)
-					{
-						if (this.def.graphicData.Materials.Length - 1 != curProjectileIndex)
-						{
-							curProjectileIndex++;
-						}						
-						prevTick = Find.TickManager.TicksAbs;
-					}
-					return material;
-				}
-				else
-				{
-					var material = this.def.graphicData.MaterialsFadeOut[curProjectileFadeOutIndex];
-					if (prevTick != Find.TickManager.TicksAbs && Find.TickManager.TicksAbs - this.TickFrameRate >= prevTick)
-					{
-						if (this.def.graphicData.MaterialsFadeOut.Length - 1 != curProjectileFadeOutIndex)
-						{
-							curProjectileFadeOutIndex++;
-						}
-						prevTick = Find.TickManager.TicksAbs;
-					}
-					return material;
-				}
-			}
-		}
+        public bool IsMoving
+        {
+            get
+            {
+                if (!stopped && this.DrawPos != prevPosition)
+                {
+                    prevPosition = this.DrawPos;
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        public override void SpawnSetup(Map map, bool respawningAfterLoad)
+        {
+            base.SpawnSetup(map, respawningAfterLoad);
+            if (!respawningAfterLoad)
+            {
+                startingPosition = this.Position.ToVector3Shifted();
+                startingPosition.y = 0;
+            }
+        }
+
+        private int prevTick;
+        public bool doFinalAnimations;
+        public new ExpandableProjectileDef def => base.def as ExpandableProjectileDef;
+
+        private Material ProjectileMat
+        {
+            get
+            {
+                if (!doFinalAnimations || this.def.lifeTimeDuration - curDuration > this.def.graphicData.MaterialsFadeOut.Length - 1)
+                {
+                    var material = this.def.graphicData.Materials[curProjectileIndex];
+                    if (prevTick != Find.TickManager.TicksAbs && Find.TickManager.TicksAbs - this.TickFrameRate >= prevTick)
+                    {
+                        if (this.def.graphicData.Materials.Length - 1 != curProjectileIndex)
+                        {
+                            curProjectileIndex++;
+                        }
+                        prevTick = Find.TickManager.TicksAbs;
+                    }
+                    return material;
+                }
+                else
+                {
+                    var material = this.def.graphicData.MaterialsFadeOut[curProjectileFadeOutIndex];
+                    if (prevTick != Find.TickManager.TicksAbs && Find.TickManager.TicksAbs - this.TickFrameRate >= prevTick)
+                    {
+                        if (this.def.graphicData.MaterialsFadeOut.Length - 1 != curProjectileFadeOutIndex)
+                        {
+                            curProjectileFadeOutIndex++;
+                        }
+                        prevTick = Find.TickManager.TicksAbs;
+                    }
+                    return material;
+                }
+            }
+        }
 
         protected override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
             DrawProjectile();
         }
 
-		public int TickFrameRate
-		{
-			get
-			{
-				if (!doFinalAnimations)
-				{
-					return this.def.tickFrameRate;
-				}
-				else if (this.def.finalTickFrameRate > 0)
-				{
-					return this.def.finalTickFrameRate;
-				}
-				return this.def.tickFrameRate;
-			}
-		}
+        public int TickFrameRate
+        {
+            get
+            {
+                if (!doFinalAnimations)
+                {
+                    return this.def.tickFrameRate;
+                }
+                else if (this.def.finalTickFrameRate > 0)
+                {
+                    return this.def.finalTickFrameRate;
+                }
+                return this.def.tickFrameRate;
+            }
+        }
 
 
-		public bool LauncherIsVehicle
-		{
-			get
-			{
+        public bool LauncherIsVehicle
+        {
+            get
+            {
                 if (VanillaExpandedFramework_VehicleFramework_Turret_Patch.VFLoaded && VanillaExpandedFramework_VehicleFramework_Turret_Patch.VehicleType.IsAssignableFrom(this.launcher.GetType()))
                 {
-					return true;
+                    return true;
                 }
-				return false;
+                return false;
             }
-		}
+        }
 
-		public bool pawnMoved;
-		public Vector3 StartingPosition
-		{
-			get
-			{
-				if (LauncherIsVehicle || this.launcher == null)
-				{
+        public bool pawnMoved;
+        public Vector3 StartingPosition
+        {
+            get
+            {
+                if (LauncherIsVehicle || this.launcher == null)
+                {
                     return this.startingPosition;
                 }
                 if (this.launcher is not Pawn)
-				{
-					this.startingPosition = this.launcher.OccupiedRect().CenterVector3;
-				}
-				else if (!pawnMoved && this.launcher is Pawn pawn && !pawn.Dead)
-				{
-					if (pawn.pather.MovingNow)
-					{
-						pawnMoved = true;
-					}
-					else
-					{
-						this.startingPosition = pawn.OccupiedRect().CenterVector3;
-					}
+                {
+                    this.startingPosition = this.launcher.OccupiedRect().CenterVector3;
+                }
+                else if (!pawnMoved && this.launcher is Pawn pawn && !pawn.Dead)
+                {
+                    if (pawn.pather.MovingNow)
+                    {
+                        pawnMoved = true;
+                    }
+                    else
+                    {
+                        this.startingPosition = pawn.OccupiedRect().CenterVector3;
+                    }
                 }
                 return this.startingPosition;
-			}
-		}
+            }
+        }
 
-		public Vector3? curPosition;
-		public Vector3 CurPosition
-		{
-			get
-			{
-				if (stopped)
-				{
-					if (curPosition.HasValue)
-					{
+        public Vector3? curPosition;
+        public Vector3 CurPosition
+        {
+            get
+            {
+                if (stopped)
+                {
+                    if (curPosition.HasValue)
+                    {
                         return curPosition.Value;
                     }
-					return DrawPos;
+                    return DrawPos;
                 }
-				else if (this.def.reachMaxRangeAlways)
-				{
-					var origin2 = new Vector3(this.launcher.TrueCenter().x, 0, this.launcher.TrueCenter().z);
-					var curPos = this.DrawPos;
-					var distance = Vector3.Distance(origin2, curPos);
-					var distanceDiff = maxRange - distance;
-					if (distanceDiff < 0)
-					{
+                else if (this.def.reachMaxRangeAlways)
+                {
+                    var origin2 = new Vector3(this.launcher.TrueCenter().x, 0, this.launcher.TrueCenter().z);
+                    var curPos = this.DrawPos;
+                    var distance = Vector3.Distance(origin2, curPos);
+                    var distanceDiff = maxRange - distance;
+                    if (distanceDiff < 0)
+                    {
                         if (curPosition.HasValue)
                         {
                             return curPosition.Value;
                         }
                         return DrawPos;
                     }
-					else
-					{
-						return this.DrawPos;
-					}
-				}
-				else
-				{
-					return this.DrawPos;
-				}
-			}
-		}
-		public void DrawProjectile()
+                    else
+                    {
+                        return this.DrawPos;
+                    }
+                }
+                else
+                {
+                    return this.DrawPos;
+                }
+            }
+        }
+
+        public void DrawProjectile()
         {
             var currentPos = CurPosition;
             currentPos.y = 0;
@@ -315,7 +330,7 @@ namespace VEF.Weapons
             startingPosition.y = 0;
             Vector3 pos = (startingPosition + currentPos) / 2f;
             pos.y = 10;
-			pos = AdjustPos(currentPos, startingPosition, pos);
+            pos = AdjustPos(currentPos, startingPosition, pos);
 
             var distance = Vector3.Distance(startingPosition, currentPos) * this.def.totalSizeScale;
             var distanceToTarget = Vector3.Distance(startingPosition, currentPos);
@@ -375,85 +390,87 @@ namespace VEF.Weapons
 
         protected virtual void StopMotion(Thing hitThing = null, bool reachedMaxDistance = false, bool blockedByShield = false)
         {
-	        if (stopped) return;
+            if (stopped) return;
 
-	        stopped = true;
-	        curPosition = this.DrawPos;
-	        this.destination = this.curPosition.Value;
+            stopped = true;
+            curPosition = this.DrawPos;
+            this.destination = this.curPosition.Value;
 
-	        var map = Map;
-	        if (map != null && hitThing == null && reachedMaxDistance && !blockedByShield)
-	        {
-		        // Play impact sound if specified
-		        def.impactSound?.PlayOneShot(new TargetInfo(Position, map));
+            var map = Map;
+            if (map != null && hitThing == null && reachedMaxDistance && !blockedByShield)
+            {
+                // Play impact sound if specified
+                def.impactSound?.PlayOneShot(new TargetInfo(Position, map));
 
-		        // Trigger water splashes/impact flecks, if enabled/specified
-		        if (def.triggerWaterSplashes && Position.GetTerrain(map).takeSplashes)
-			        FleckMaker.WaterSplash(ExactPosition, map, Mathf.Min(Mathf.Sqrt(DamageAmount), 1f), 4f);
-		        else if (def.impactFleck != null)
-				    FleckMaker.Static(ExactPosition, map, def.impactFleck);
+                // Trigger water splashes/impact flecks, if enabled/specified
+                if (def.triggerWaterSplashes && Position.GetTerrain(map).takeSplashes)
+                    FleckMaker.WaterSplash(ExactPosition, map, Mathf.Min(Mathf.Sqrt(DamageAmount), 1f), 4f);
+                else if (def.impactFleck != null)
+                    FleckMaker.Static(ExactPosition, map, def.impactFleck);
 
-		        // Spawn filth if specified, RNG allows, and position isn't filled
-		        if (def.filthOnUninterrupted != null && Rand.Chance(def.filthOnUninterruptedChance) && !Position.Filled(Map))
-			        FilthMaker.TryMakeFilth(Position, Map, def.filthOnUninterrupted, def.filthOnUninterruptedCount.RandomInRange);
-	        }
+                // Spawn filth if specified, RNG allows, and position isn't filled
+                if (def.filthOnUninterrupted != null && Rand.Chance(def.filthOnUninterruptedChance) && !Position.Filled(Map))
+                    FilthMaker.TryMakeFilth(Position, Map, def.filthOnUninterrupted, def.filthOnUninterruptedCount.RandomInRange);
+            }
         }
 
-        protected override void Tick()
-		{
-			base.Tick();
-			if (Find.TickManager.TicksGame % this.def.tickDamageRate == 0)
-			{
-				var projectileLine = MakeProjectileLine(StartingPosition, DrawPos, this.Map);
-				foreach (var pos in projectileLine)
-				{
-					if (this.Destroyed is false)
-					{
+        protected override void TickInterval(int delta)
+        {
+            base.TickInterval(delta);
+
+            if (this.IsHashIntervalTick(def.tickDamageRate, delta))
+            {
+                var projectileLine = MakeProjectileLine(StartingPosition, DrawPos, this.Map);
+                foreach (var pos in projectileLine)
+                {
+                    if (!this.Destroyed)
+                    {
                         DoDamage(pos);
                     }
                 }
-			}
+            }
 
-			if (!doFinalAnimations && (!IsMoving || pawnMoved))
-			{
-				doFinalAnimations = true;
-				var finalAnimationDuration = this.def.lifeTimeDuration - this.def.graphicData.MaterialsFadeOut.Length;
-				if (finalAnimationDuration > curDuration)
-				{
-					curDuration = finalAnimationDuration;
-				}
-				if (!this.def.reachMaxRangeAlways && pawnMoved)
-				{
-					StopMotion();
-				}
-			}
+            if (!doFinalAnimations && (!IsMoving || pawnMoved))
+            {
+                doFinalAnimations = true;
+                var finalAnimationDuration = this.def.lifeTimeDuration - this.def.graphicData.MaterialsFadeOut.Length;
+                if (finalAnimationDuration > curDuration)
+                {
+                    curDuration = finalAnimationDuration;
+                }
 
-			if (Find.TickManager.TicksGame % this.TickFrameRate == 0 && def.lifeTimeDuration > 0)
-			{
-				curDuration++;
-				if (curDuration > def.lifeTimeDuration)
-				{
-					if (!this.stopped)
-						StopMotion(reachedMaxDistance: true);
-					this.Destroy();
-				}
-				else if (def.stopMotionOnFadeoutStarted && !stopped && curDuration > def.lifeTimeDuration - def.graphicData.MaterialsFadeOut.Length - 1)
-					StopMotion(reachedMaxDistance: true);
-			}
-		}
+                if (!this.def.reachMaxRangeAlways && pawnMoved)
+                {
+                    StopMotion();
+                }
+            }
 
-		public virtual bool IsDamagable(Thing t)
-		{
-			return t.def != this.def && t != this.launcher && (t.def.useHitPoints || t is Pawn);
-		}
+            if (this.IsHashIntervalTick(TickFrameRate) && def.lifeTimeDuration > 0)
+            {
+                curDuration++;
+                if (curDuration > def.lifeTimeDuration)
+                {
+                    if (!this.stopped)
+                        StopMotion(reachedMaxDistance: true);
+                    this.Destroy();
+                }
+                else if (def.stopMotionOnFadeoutStarted && !stopped && curDuration > def.lifeTimeDuration - def.graphicData.MaterialsFadeOut.Length - 1)
+                    StopMotion(reachedMaxDistance: true);
+            }
+        }
+
+        public virtual bool IsDamagable(Thing t)
+        {
+            return t.def != this.def && t != this.launcher && (t.def.useHitPoints || t is Pawn);
+        }
 
         public override Vector3 ExactPosition
-		{
-			get
-			{
-				var value = base.ExactPosition;
-				if (Map is {} map && value.InBounds(map) is false)
-				{
+        {
+            get
+            {
+                var value = base.ExactPosition;
+                if (Map is {} map && value.InBounds(map) is false)
+                {
                     var origin2 = new Vector3(this.origin.x, 0, this.origin.z);
                     var destination2 = new Vector3(value.x, 0, value.z);
                     var normalized = (destination2 - origin2).normalized;
@@ -463,7 +480,7 @@ namespace VEF.Weapons
                         var newValue = (value - (normalized * distanceDiff));
                         if (newValue.InBounds(map))
                         {
-							value = newValue;
+                            value = newValue;
                             break;
                         }
                         distanceDiff += 0.1f;
@@ -471,33 +488,35 @@ namespace VEF.Weapons
                 }
                 return value;
             }
-		}
+        }
 
         public virtual void DoDamage(IntVec3 pos)
-		{
-		}
+        {
+        }
 
-		protected bool customImpact;
+        protected bool customImpact;
 
-		public List<Thing> hitThings;
-		protected override void Impact(Thing hitThing, bool blockedByShield = false)
-		{
-			if (stopped)
-			{
+        public List<Thing> hitThings;
+
+        protected override void Impact(Thing hitThing, bool blockedByShield = false)
+        {
+            if (stopped)
+            {
                 return;
             }
             hitThings ??= [];
-			if (this.def.dealsDamageOnce && hitThings.Contains(hitThing))
-			{
-				return;
-			}
-			Map map = base.Map;
-			IntVec3 position = base.Position;
-			this.NotifyImpact(hitThing, map, position);
-			if (hitThing != null && (!def.disableVanillaDamageMethod || customImpact))
-			{
-				var damageAmount = DamageAmount;
-				hitThings.Add(hitThing);
+            if (this.def.dealsDamageOnce && hitThings.Contains(hitThing))
+            {
+                return;
+            }
+
+            Map map = base.Map;
+            IntVec3 position = base.Position;
+            this.NotifyImpact(hitThing, map, position);
+            if (hitThing != null && (!def.disableVanillaDamageMethod || customImpact))
+            {
+                var damageAmount = DamageAmount;
+                hitThings.Add(hitThing);
                 BattleLogEntry_RangedImpact battleLogEntry_RangedImpact;
                 if (equipmentDef == null)
                 {
@@ -509,94 +528,96 @@ namespace VEF.Weapons
                 }
                 Find.BattleLog.Add(battleLogEntry_RangedImpact);
                 DamageInfo dinfo = new DamageInfo(def.projectile.damageDef, damageAmount, base.ArmorPenetration, ExactRotation.eulerAngles.y, launcher, null, equipmentDef, DamageInfo.SourceCategory.ThingOrUnknown, intendedTarget.Thing);
-				hitThing.TakeDamage(dinfo).AssociateWithLog(battleLogEntry_RangedImpact);
-				if (hitThing is Pawn pawn && pawn.stances != null && pawn.BodySize <= def.projectile.stoppingPower + 0.001f)
-				{
-					pawn.stances.stagger.StaggerFor(Pawn_StanceTracker.StaggerBulletImpactTicks);
-				}
-				if (def.projectile.extraDamages != null)
-				{
-					foreach (ExtraDamage extraDamage in def.projectile.extraDamages)
-					{
-						if (Rand.Chance(extraDamage.chance))
-						{
-							DamageInfo dinfo2 = new DamageInfo(extraDamage.def, extraDamage.amount, extraDamage.AdjustedArmorPenetration(), ExactRotation.eulerAngles.y, launcher, null, equipmentDef, DamageInfo.SourceCategory.ThingOrUnknown, intendedTarget.Thing);
-							hitThing.TakeDamage(dinfo2).AssociateWithLog(battleLogEntry_RangedImpact);
-						}
-					}
-				}
-			}
+                hitThing.TakeDamage(dinfo).AssociateWithLog(battleLogEntry_RangedImpact);
+                if (hitThing is Pawn pawn && pawn.stances != null && pawn.BodySize <= def.projectile.stoppingPower + 0.001f)
+                {
+                    pawn.stances.stagger.StaggerFor(Pawn_StanceTracker.StaggerBulletImpactTicks);
+                }
 
-			if (hitThing != null && !stopped && ShouldStopMotionWhenHitting(hitThing))
-			{
-				StopMotion(hitThing, blockedByShield: blockedByShield);
-			}
+                if (def.projectile.extraDamages != null)
+                {
+                    foreach (ExtraDamage extraDamage in def.projectile.extraDamages)
+                    {
+                        if (Rand.Chance(extraDamage.chance))
+                        {
+                            DamageInfo dinfo2 = new DamageInfo(extraDamage.def, extraDamage.amount, extraDamage.AdjustedArmorPenetration(), ExactRotation.eulerAngles.y, launcher, null, equipmentDef, DamageInfo.SourceCategory.ThingOrUnknown, intendedTarget.Thing);
+                            hitThing.TakeDamage(dinfo2).AssociateWithLog(battleLogEntry_RangedImpact);
+                        }
+                    }
+                }
+            }
+
+            if (hitThing != null && !stopped && ShouldStopMotionWhenHitting(hitThing))
+            {
+                StopMotion(hitThing, blockedByShield: blockedByShield);
+            }
         }
 
-		private void NotifyImpact(Thing hitThing, Map map, IntVec3 position)
-		{
-			BulletImpactData bulletImpactData = default(BulletImpactData);
-			bulletImpactData.bullet = this;
-			bulletImpactData.hitThing = hitThing;
-			bulletImpactData.impactPosition = position;
-			BulletImpactData impactData = bulletImpactData;
-			try
-			{
-				hitThing?.Notify_BulletImpactNearby(impactData);
-			}
-			catch { };
-			int num = 9;
-			for (int i = 0; i < num; i++)
-			{
-				IntVec3 c = position + GenRadial.RadialPattern[i];
-				if (!c.InBounds(map))
-				{
-					continue;
-				}
-				List<Thing> thingList = c.GetThingList(map);
-				for (int j = 0; j < thingList.Count; j++)
-				{
-					if (thingList[j] != hitThing)
-					{
-						try
-						{
-							thingList[j].Notify_BulletImpactNearby(impactData);
-						}
-						catch { };
-					}
-				}
-			}
-		}
+        private void NotifyImpact(Thing hitThing, Map map, IntVec3 position)
+        {
+            BulletImpactData bulletImpactData = default(BulletImpactData);
+            bulletImpactData.bullet = this;
+            bulletImpactData.hitThing = hitThing;
+            bulletImpactData.impactPosition = position;
+            BulletImpactData impactData = bulletImpactData;
+            try
+            {
+                hitThing?.Notify_BulletImpactNearby(impactData);
+            }
+            catch { }
 
-		protected virtual bool ShouldStopMotionWhenHitting(Thing hitThing)
-		{
-			if (def.stopWhenHit && (def.stopAtBuildingWithCover <= 0 || hitThing.def.fillPercent >= def.stopAtBuildingWithCover))
-				return true;
-			if (def.stopWhenNaturalRockHit && hitThing.def.category == ThingCategory.Building && (hitThing.def.building.isNaturalRock || hitThing.def.building.unsmoothedThing is { building.isNaturalRock: true }))
-				return true;
-			if (def.stopWhenZeroDamageAfterHit && DamageAmount <= 0)
-				return true;
-			if (def.stopWhenHitAt.Contains(hitThing.def.defName))
-				return true;
+            for (int i = 0; i < 9; i++)
+            {
+                IntVec3 c = position + GenRadial.RadialPattern[i];
+                if (!c.InBounds(map))
+                {
+                    continue;
+                }
 
-			return false;
-		}
+                List<Thing> thingList = c.GetThingList(map);
+                for (int j = 0; j < thingList.Count; j++)
+                {
+                    if (thingList[j] != hitThing)
+                    {
+                        try
+                        {
+                            thingList[j].Notify_BulletImpactNearby(impactData);
+                        }
+                        catch { }
+                    }
+                }
+            }
+        }
 
-		public override void ExposeData()
-		{
-			base.ExposeData();
-			Scribe_Values.Look(ref startingPosition, "startingPosition");
-			Scribe_Values.Look(ref doFinalAnimations, "doFinalAnimations");
-			Scribe_Values.Look(ref pawnMoved, "pawnMoved");
-			Scribe_Values.Look(ref curDuration, "curDuration");
-			Scribe_Values.Look(ref curProjectileIndex, "curProjectileIndex");
-			Scribe_Values.Look(ref curProjectileFadeOutIndex, "curProjectileFadeOutIndex");
-			Scribe_Values.Look(ref prevTick, "prevTick");
-			Scribe_Values.Look(ref prevPosition, "prevPosition");
-			Scribe_Values.Look(ref stopped, "stopped");
-			Scribe_Values.Look(ref curPosition, "curPosition");
-			Scribe_Values.Look(ref maxRange, "maxRange");
-			Scribe_Collections.Look(ref hitThings, "hitThings", LookMode.Reference);
-		}
-	}
+        protected virtual bool ShouldStopMotionWhenHitting(Thing hitThing)
+        {
+            if (def.stopWhenHit && (def.stopAtBuildingWithCover <= 0 || hitThing.def.fillPercent >= def.stopAtBuildingWithCover))
+                return true;
+            if (def.stopWhenNaturalRockHit && hitThing.def.category == ThingCategory.Building && (hitThing.def.building.isNaturalRock || hitThing.def.building.unsmoothedThing is { building.isNaturalRock: true }))
+                return true;
+            if (def.stopWhenZeroDamageAfterHit && DamageAmount <= 0)
+                return true;
+            if (def.stopWhenHitAt.Contains(hitThing.def.defName))
+                return true;
+
+            return false;
+        }
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Values.Look(ref startingPosition, "startingPosition");
+            Scribe_Values.Look(ref doFinalAnimations, "doFinalAnimations");
+            Scribe_Values.Look(ref pawnMoved, "pawnMoved");
+            Scribe_Values.Look(ref curDuration, "curDuration");
+            Scribe_Values.Look(ref curProjectileIndex, "curProjectileIndex");
+            Scribe_Values.Look(ref curProjectileFadeOutIndex, "curProjectileFadeOutIndex");
+            Scribe_Values.Look(ref prevTick, "prevTick");
+            Scribe_Values.Look(ref prevPosition, "prevPosition");
+            Scribe_Values.Look(ref stopped, "stopped");
+            Scribe_Values.Look(ref curPosition, "curPosition");
+            Scribe_Values.Look(ref maxRange, "maxRange");
+            Scribe_Collections.Look(ref hitThings, "hitThings", LookMode.Reference);
+        }
+    }
 }
