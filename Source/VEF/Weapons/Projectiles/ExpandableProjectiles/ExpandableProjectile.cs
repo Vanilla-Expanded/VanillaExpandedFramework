@@ -102,28 +102,30 @@ namespace VEF.Weapons
 
         public new virtual int DamageAmount => def.projectile.GetDamageAmount(equipment);
 
-        public bool IsMoving
-        {
-            get
-            {
-                if (!stopped && this.DrawPos != prevPosition)
-                {
-                    prevPosition = this.DrawPos;
-                    return true;
-                }
-                return false;
-            }
-        }
+        public float ProgressPct => (float)this.curDuration / this.def.lifeTimeDuration;
 
-        public override void SpawnSetup(Map map, bool respawningAfterLoad)
-        {
-            base.SpawnSetup(map, respawningAfterLoad);
-            if (!respawningAfterLoad)
-            {
-                startingPosition = this.Position.ToVector3Shifted();
-                startingPosition.y = 0;
-            }
-        }
+        public bool IsMoving
+		{
+			get
+			{
+				if (!stopped && this.DrawPos != prevPosition)
+				{
+					prevPosition = this.DrawPos;
+					return true;
+				}
+				return false;
+			}
+		}
+
+		public override void SpawnSetup(Map map, bool respawningAfterLoad)
+		{
+			base.SpawnSetup(map, respawningAfterLoad);
+			if (!respawningAfterLoad)
+			{
+                startingPosition = this.Position.ToVector3Shifted(); 
+				startingPosition.y = 0;
+			}
+		}
 
         private int prevTick;
         public bool doFinalAnimations;
@@ -251,19 +253,19 @@ namespace VEF.Weapons
                         }
                         return DrawPos;
                     }
-                    else
-                    {
-                        return this.DrawPos;
-                    }
-                }
-                else
-                {
-                    return this.DrawPos;
-                }
-            }
-        }
+					else
+					{
+						return this.DrawPos;
+					}
+				}
+				else
+				{
+					return this.DrawPos;
+				}
+			}
+		}
 
-        public void DrawProjectile()
+		public void DrawProjectile()
         {
             var currentPos = CurPosition;
             currentPos.y = 0;
@@ -285,7 +287,14 @@ namespace VEF.Weapons
             Matrix4x4 matrix = default(Matrix4x4);
             matrix.SetTRS(pos, quat, vec);
             UnityEngine.Graphics.DrawMesh(MeshPool.plane10, matrix, ProjectileMat, 0);
+
+			DrawProjectileInternal(pos);
         }
+
+        protected virtual void DrawProjectileInternal(Vector3 pos)
+        {
+        }
+
 
         private Vector3 AdjustPos(Vector3 currentPos, Vector3 startingPosition, Vector3 pos)
         {

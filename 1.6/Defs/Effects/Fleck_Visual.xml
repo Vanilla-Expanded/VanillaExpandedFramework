@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+	<FleckDef ParentName="FleckGlowDistortBackground">
+		<defName>VEF_GaussDistortion</defName>
+		<altitudeLayer>MoteLow</altitudeLayer>
+		<fadeInTime>0.02</fadeInTime>
+		<fadeOutTime>0.4</fadeOutTime>
+		<solidTime>0</solidTime>
+		<growthRate>0.8</growthRate>
+		<graphicData>
+			<texPath>Things/Mote/Black</texPath>
+			<shaderParameters>
+				<_distortionIntensity>0.01</_distortionIntensity>
+				<_brightnessMultiplier>0.01</_brightnessMultiplier>
+			</shaderParameters>
+			<drawSize>2.3</drawSize>
+		</graphicData>
+	</FleckDef>
+
+	<FleckDef ParentName="FleckGlowDistortBackground">
+		<defName>VEF_HeatWaveDistortion</defName>
+		<fleckSystemClass>FleckSystemThrown</fleckSystemClass>
+		<altitudeLayer>MoteOverheadLow</altitudeLayer>
+		<fadeInTime>0.02</fadeInTime>
+		<solidTime>0</solidTime>
+		<fadeOutTime>0.04</fadeOutTime>
+		<growthRate>1</growthRate>
+		<graphicData>
+			<texPath>Things/Mote/Black</texPath>
+			<shaderParameters>
+				<_distortionIntensity>0.03</_distortionIntensity>
+				<_brightnessMultiplier>1.0</_brightnessMultiplier>
+				<_DistortionTex>/Things/Mote/MoteHellfireCannon_HeatWaveDistortion</_DistortionTex>
+			</shaderParameters>
+			<drawSize>2</drawSize>
+		</graphicData>
+	</FleckDef>
+</Defs>

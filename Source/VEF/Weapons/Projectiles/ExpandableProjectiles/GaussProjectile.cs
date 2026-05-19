@@ -68,6 +68,36 @@ namespace VEF.Weapons
 		        damageFalloff = equipment.GetStatValue(def.gauss.damageModifierStat);
         }
 
+        protected override void DrawProjectileInternal(Vector3 pos)
+        {
+            base.DrawProjectileInternal(pos);
+
+            if (!Find.TickManager.Paused)
+            {
+                Vector3 velocityDirection = this.ExactRotation * Vector3.forward;
+                Vector3 effectPos = pos + velocityDirection;
+                
+                if(this.ProgressPct > 0.2f)
+                    this.Map.flecks.CreateFleck(new FleckCreationData
+                                                {
+                                                    def              = FleckDefOf.LightningGlow,
+                                                    spawnPosition    = effectPos,
+                                                    scale            = Rand.Range(0.1f, 0.2f) * 3,
+                                                    ageTicksOverride = -1,
+                                                    rotationRate     = 0,
+                                                    velocityAngle    = this.ExactPosition.AngleToFlat(effectPos) - 90,
+                                                    velocitySpeed    = 0.01f * this.def.projectile.speed,
+                                                    solidTimeOverride = 0f
+                                                });
+
+                FleckCreationData data = FleckMaker.GetDataStatic(effectPos, this.Map, VEFDefOf.VEF_GaussDistortion, Rand.Range(0.1f, 0.25f) * 2);
+                data.rotationRate = 90f;
+                data.velocityAngle = this.ExactPosition.AngleToFlat(effectPos) - 90 + Rand.Range(-15, 15);
+                data.velocitySpeed = this.def.projectile.speed;
+                this.Map.flecks.CreateFleck(data);
+            }
+        }
+
         public override void ExposeData()
         {
 	        base.ExposeData();

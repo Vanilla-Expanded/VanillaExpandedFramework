@@ -16,7 +16,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugType>embedded</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\1.6\Assemblies\</OutputPath>
     <DefineConstants>TRACE;DEBUG;NET48;NETFRAMEWORK</DefineConstants>
@@ -533,6 +533,7 @@
     <Compile Include="Weapons\Projectiles\ExpandableProjectiles\GaussProperties.cs" />
     <Compile Include="Weapons\Projectiles\LaserBeam.cs" />
     <Compile Include="Weapons\Projectiles\Projectile_Attachments.cs" />
+    <Compile Include="Weapons\Projectiles\Projectile_VisualEffectComp.cs" />
     <Compile Include="Weapons\Projectiles\Projectile_Shrapnel.cs" />
     <Compile Include="Storyteller\Defs\QuestChainDef.cs" />
     <Compile Include="Storyteller\DefModExtensions\UniqueCharacterExtension .cs" />

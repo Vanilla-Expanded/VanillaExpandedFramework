@@ -11,9 +11,9 @@ namespace VEF
     [DefOf]
     public static class VEFDefOf
     {
-        public static JobDef VFEC_EquipShield;
-        public static JobDef VFEC_LeaveMap;
-        public static JobDef VEF_UseDoorTeleporter;
+        public static JobDef   VFEC_EquipShield;
+        public static JobDef   VFEC_LeaveMap;
+        public static JobDef   VEF_UseDoorTeleporter;
       
         public static StatDef VEF_VerbRangeFactor;
         public static StatDef VEF_EnergyShieldEnergyMaxOffset;
@@ -39,7 +39,10 @@ namespace VEF
         public static StatDef VEF_BuildingLearningRateOffset;
 
         public static StatCategoryDef VFE_EquippedStatFactors;
-  
+
+        public static FleckDef VEF_HeatWaveDistortion;
+        public static FleckDef VEF_GaussDistortion;
+
         public static JoyKindDef Gaming_Cerebral;
       
         public static SoundDef Hive_Spawn;
@@ -55,7 +58,5 @@ namespace VEF
         public static MentalStateDef Binging_Food;
      
         public static RulePackDef VEF_Description_Schematic_Defaults;
-
-        
     }
 }
