@@ -417,7 +417,7 @@ namespace VEF.Weapons
                 {
                     var angle = def.impactFleckAngle.RandomInRange;
                     if (def.impactFleckUsesProjectileAngle)
-                        angle += Vector3.Angle((startingPosition - destination).Yto0(), Vector3.forward) + 180;
+                        angle += destination.AngleToFlat(startingPosition) - 90;
 
                     var data = FleckMaker.GetDataStatic(ExactPosition, map, def.impactFleck) with
                     {
