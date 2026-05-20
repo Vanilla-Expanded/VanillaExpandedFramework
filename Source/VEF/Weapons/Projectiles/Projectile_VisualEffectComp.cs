@@ -16,8 +16,6 @@
 
             if (!Find.TickManager.Paused)
             {
-                Log.Message("Projectile visual effect triggered.");
-
                 Projectile projectile = this.Projectile;
 
                 Vector3 velocityDirection = projectile.ExactRotation * Vector3.forward;
@@ -53,8 +51,6 @@
 
             if (!Find.TickManager.Paused)
             {
-                Log.Message("Projectile visual effect triggered.");
-
                 Projectile projectile = this.Projectile;
 
                 Vector3 velocityDirection = projectile.ExactRotation * Vector3.forward;
