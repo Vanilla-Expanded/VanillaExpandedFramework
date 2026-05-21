@@ -347,6 +347,8 @@
     <Compile Include="Maps\Harmony\RoofGrid_GetCellExtraColor.cs" />
     <Compile Include="Maps\Harmony\SectionLayer_LightingOverlay_GenerateLightingOverlay.cs" />
     <Compile Include="Maps\SectionLayers\SectionLayer_CustomRoofGraphic.cs" />
+    <Compile Include="Storyteller\Misc\Quests\QuestPart_KeepSite.cs" />
+    <Compile Include="Storyteller\Misc\Quests\Site_ShouldRemoveMapNow_Patch.cs" />
     <Compile Include="Things\DefModExtensions\RecipeExtension.cs" />
     <Compile Include="Things\Harmony\GenRecipe_MakeRecipeProducts.cs" />
     <Compile Include="Things\Harmony\RecipeDef_WorkAmountForStuff.cs" />

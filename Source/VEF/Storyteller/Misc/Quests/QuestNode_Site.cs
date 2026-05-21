@@ -11,6 +11,7 @@ namespace VEF.Storyteller
     {
         public SlateRef<SitePartDef> sitePartDef;
         public SlateRef<IntRange> distanceRange;
+        public SlateRef<bool> keepSiteWhenQuestActive;
 
         public virtual Predicate<Map, PlanetTile> TileValidator =>
             distanceRange == null ? null : (Map map, PlanetTile tile) =>
@@ -27,10 +28,9 @@ namespace VEF.Storyteller
 
         public virtual List<BiomeDef> AllowedBiomes { get; }
 
-        protected bool TryFindSiteTile(out PlanetTile tile)
+        protected bool TryFindSiteTile(Map map, out PlanetTile tile)
         {
             tile = PlanetTile.Invalid;
-            Map map = QuestGen_Get.GetMap(mustBeInfestable: false, null, canBeSpace: true);
             if (map == null)
             {
                 return false;
@@ -141,7 +141,13 @@ namespace VEF.Storyteller
                     QuestGen.quest.End(QuestEndOutcome.Fail, 0, null, null, QuestPart.SignalListenMode.OngoingOnly, sendStandardLetter: true);
                 }, siteMapGeneratedSignal, siteMapRemovedSignal);
             }
-
+            if (keepSiteWhenQuestActive.GetValue(slate))
+            {
+                QuestGen.quest.AddPart(new QuestPart_KeepSite
+                {
+                    mapParent = site,
+                });
+            }
             return site;
         }
 
@@ -149,8 +155,13 @@ namespace VEF.Storyteller
         {
             slate = QuestGen.slate;
             points = slate.Get("points", 0f);
-            map = QuestGen_Get.GetMap();
-            if (!TryFindSiteTile(out tile))
+            map = QuestGen_Get.GetMap(mustBeInfestable: false, 0, canBeSpace: true);
+            if (map is null)
+            {
+                tile = PlanetTile.Invalid;
+                return false;
+            }
+            if (!TryFindSiteTile(map, out tile))
             {
                 return false;
             }
