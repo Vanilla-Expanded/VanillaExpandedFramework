@@ -136,7 +136,7 @@ namespace VEF.Hediffs
         {
             energy = 0;
 
-            sustainer.End();
+            sustainer?.End();
             Props.soundBroken?.PlayOneShot(Pawn);
             if (Props.brokenFleck != null) FleckMaker.Static(Pawn.TrueCenter(), Pawn.Map, Props.brokenFleck, 12f);
             if (Props.doDust)
