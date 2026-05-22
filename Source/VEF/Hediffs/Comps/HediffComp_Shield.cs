@@ -181,7 +181,7 @@ namespace VEF.Hediffs
 
         public override void CompPostPostRemoved()
         {
-            sustainer.End();
+            sustainer?.End();
             Props.soundEnded?.PlayOneShot(Pawn);
             base.CompPostPostRemoved();
         }
