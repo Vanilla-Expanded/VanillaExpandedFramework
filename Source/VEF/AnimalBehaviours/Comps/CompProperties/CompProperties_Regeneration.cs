@@ -14,6 +14,7 @@ namespace VEF.AnimalBehaviours
         public bool needsWater = false;
         public bool onlyBleeding = false;
         public bool onlyTendButNotHeal = false;
+        public bool healOneTendOne = false;
         public float tendMin = 0.7f;
         public float tendMax = 1f;
 

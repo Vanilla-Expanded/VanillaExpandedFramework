@@ -71,7 +71,14 @@ namespace VEF.AnimalBehaviours
                                         {
                                             Hediff_Injury injury = injuries.Where(x => x.TendableNow()).RandomElement();
                                             injury?.Tended(Props.tendMin, Props.tendMax);
+                                        }else if (Props.healOneTendOne)
+                                        {
+                                            Hediff_Injury injury = injuries.Where(x => x.TendableNow()).RandomElement();
+                                            injury?.Tended(Props.tendMin, Props.tendMax);
+                                            Hediff_Injury injury2 = injuries.RandomElement();
+                                            injury2?.Heal(Props.healAmount);
                                         }
+                                        
                                         else
                                         {
                                             Hediff_Injury injury = injuries.RandomElement();
