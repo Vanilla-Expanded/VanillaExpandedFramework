@@ -15,7 +15,7 @@ namespace VEF.Hediffs
         {
             base.CompPostTick(ref severityAdjustment);
             if (sustainer == null) sustainer = Props.sustainer.TrySpawnSustainer(Pawn);
-            sustainer.Maintain();
+            sustainer?.Maintain();
         }
 
         public override void CompPostTickInterval(ref float severityAdjustment, int delta)

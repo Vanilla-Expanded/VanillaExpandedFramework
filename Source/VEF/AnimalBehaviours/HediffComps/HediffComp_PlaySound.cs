@@ -21,7 +21,7 @@ namespace VEF.AnimalBehaviours
                 {
                     sustainer = Props.sustainer.TrySpawnSustainer(SoundInfo.InMap(Pawn, MaintenanceType.PerTick));
                 }
-                sustainer.Maintain();
+                sustainer?.Maintain();
             }
         }
 

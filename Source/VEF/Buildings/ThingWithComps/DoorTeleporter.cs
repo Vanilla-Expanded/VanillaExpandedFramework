@@ -89,7 +89,7 @@ namespace VEF.Buildings
             {
                 this.sustainer = soundDef.TrySpawnSustainer(this);
             }
-            this.sustainer.Maintain();
+            this.sustainer?.Maintain();
         }
 
         public void RecacheBackground()

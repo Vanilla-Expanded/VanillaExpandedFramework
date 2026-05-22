@@ -129,7 +129,7 @@ namespace VEF.Hediffs
             if (ShieldActive && sustainer is null)
                 sustainer = Props.sustainer?.TrySpawnSustainer(Pawn);
             else
-                sustainer.Maintain();
+                sustainer?.Maintain();
         }
 
         protected virtual void Break()
