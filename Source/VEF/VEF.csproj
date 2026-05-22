@@ -143,6 +143,8 @@
     <Compile Include="AestheticScaling\PrepatchedPawnCache.cs" />
     <Compile Include="AnimalBehaviours\Abilities\CompAbilityEffect_ControlledBlinking.cs" />
     <Compile Include="AnimalBehaviours\Abilities\Properties\CompProperties_ControlledBlinking.cs" />
+    <Compile Include="AnimalBehaviours\DeathActionWorkers\DeathActionWorker_VanishInsect.cs" />
+    <Compile Include="AnimalBehaviours\DeathActionWorkers\Properties\DeathActionProperties_VanishInsect.cs" />
     <Compile Include="AnimalBehaviours\DefExtensions\AnimalCrossbreedExtension.cs" />
     <Compile Include="AnimalBehaviours\Defs\RiverNeedingAnimalDef.cs" />
     <Compile Include="AnimalBehaviours\Harmony\CompEggLayer_ProduceEgg.cs" />
