@@ -10,6 +10,27 @@ namespace VEF.Weapons
 
 		public override int DamageAmount => def.gauss.Worker.DamageAmount(this, equipment, hitThings);
 
+		protected override void TickInterval(int delta)
+		{
+			base.TickInterval(delta);
+
+			// Only draw effects if projectile isn't stopped, not out of bounds, and players is on current map
+			if (!stopped && ExactPosition.ShouldSpawnMotesAt(Map))
+			{
+				Vector3 velocityDirection = this.ExactRotation * Vector3.forward;
+				// Rather than drawing the effect ahead of center point of the projectile (like with the comp),
+				// we instead draw it behind the tip of the projectile (so it's slightly trailing behind it).
+				Vector3 effectPos = ExactPosition - velocityDirection;
+				float angle = this.ExactPosition.AngleToFlat(effectPos) - 90;
+
+				if (def.gauss.lightningGlow)
+					VefFleckMaker.MakeLightningGlow(Map, effectPos, angle, 0.01f * def.projectile.speed, Rand.Range(0.3f, 0.6f));
+
+				if (def.gauss.gaussDistortion)
+					VefFleckMaker.MakeGaussDistortion(Map, effectPos, angle + Rand.Range(-15f, 15f), def.projectile.speed, Rand.Range(0.2f, 0.5f));
+			}
+		}
+
 		public override void DoDamage(IntVec3 pos)
 		{
 			if (!stopped)
@@ -66,36 +87,6 @@ namespace VEF.Weapons
 		        damageFalloff = VEFDefOf.VEF_GaussProjectileDamageModifier.defaultBaseValue;
 	        else
 		        damageFalloff = equipment.GetStatValue(def.gauss.damageModifierStat);
-        }
-
-        protected override void DrawProjectileInternal(Vector3 pos)
-        {
-            base.DrawProjectileInternal(pos);
-
-            if (!Find.TickManager.Paused)
-            {
-                Vector3 velocityDirection = this.ExactRotation * Vector3.forward;
-                Vector3 effectPos = pos + velocityDirection;
-                
-                if(this.ProgressPct > 0.2f)
-                    this.Map.flecks.CreateFleck(new FleckCreationData
-                                                {
-                                                    def              = FleckDefOf.LightningGlow,
-                                                    spawnPosition    = effectPos,
-                                                    scale            = Rand.Range(0.1f, 0.2f) * 3,
-                                                    ageTicksOverride = -1,
-                                                    rotationRate     = 0,
-                                                    velocityAngle    = this.ExactPosition.AngleToFlat(effectPos) - 90,
-                                                    velocitySpeed    = 0.01f * this.def.projectile.speed,
-                                                    solidTimeOverride = 0f
-                                                });
-
-                FleckCreationData data = FleckMaker.GetDataStatic(effectPos, this.Map, VEFDefOf.VEF_GaussDistortion, Rand.Range(0.1f, 0.25f) * 2);
-                data.rotationRate = 90f;
-                data.velocityAngle = this.ExactPosition.AngleToFlat(effectPos) - 90 + Rand.Range(-15, 15);
-                data.velocitySpeed = this.def.projectile.speed;
-                this.Map.flecks.CreateFleck(data);
-            }
         }
 
         public override void ExposeData()

@@ -258,6 +258,7 @@
     <Compile Include="Global\IMergeable.cs" />
     <Compile Include="Global\MoteAttachedScaled.cs" />
     <Compile Include="Global\Settings\SettingsHelper.cs" />
+    <Compile Include="Global\Utils\VefFleckMaker.cs" />
     <Compile Include="Global\VEF_HarmonyCategories.cs" />
     <Compile Include="Graphics\AI\JobDrivers\JobDriver_CustomizeItem.cs" />
     <Compile Include="Graphics\Comps\CompDirtyMapMeshOnRefuelableChange.cs" />

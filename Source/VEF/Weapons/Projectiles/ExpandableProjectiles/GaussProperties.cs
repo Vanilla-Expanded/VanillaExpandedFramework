@@ -44,6 +44,9 @@ public class GaussProperties
     /// </summary>
     public StatDef damageModifierStat;
 
+    public bool gaussDistortion;
+    public bool lightningGlow;
+
     /// <summary>
     /// The class for the gauss projectile damage worker. If not specified, will default to the original equation (baseDamage / (1 + (hitThings / 10))).
     /// </summary>

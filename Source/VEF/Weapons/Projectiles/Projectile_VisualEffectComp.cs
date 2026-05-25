@@ -10,73 +10,26 @@
 
         public Projectile Projectile => (Projectile)this.parent;
 
-        public override void PostDraw()
+        public override void CompTickInterval(int delta)
         {
-            base.PostDraw();
+            base.CompTickInterval(delta);
 
-            if (!Find.TickManager.Paused)
+            // The position is only recalculated on tick interval, so spawning motes on normal tick could end up spawning motes on the same spot over and over.
+            Projectile projectile = this.Projectile;
+
+            Vector3 velocityDirection = projectile.ExactRotation * Vector3.forward;
+            Vector3 effectPos         = projectile.ExactPosition + velocityDirection;
+
+            // Only draw if on the same map, don't draw out-of-bounds
+            if (effectPos.ShouldSpawnMotesAt(parent.Map))
             {
-                Projectile projectile = this.Projectile;
-
-                Vector3 velocityDirection = projectile.ExactRotation * Vector3.forward;
-                Vector3 effectPos         = projectile.ExactPosition + velocityDirection;
+                float angle               = this.Projectile.ExactPosition.AngleToFlat(effectPos) - 90;
+                float speed               = 0.01f * this.Projectile.def.projectile.speed;
 
                 if (this.Props.lightningGlow)
-                    this.parent.Map.flecks.CreateFleck(new FleckCreationData
-                                                       {
-                                                           def               = FleckDefOf.LightningGlow,
-                                                           spawnPosition     = effectPos,
-                                                           scale             = Rand.Range(0.1f, 0.2f) * 3,
-                                                           ageTicksOverride  = -1,
-                                                           rotationRate      = 0,
-                                                           velocityAngle     = this.Projectile.ExactPosition.AngleToFlat(effectPos) - 90,
-                                                           velocitySpeed     = 0.01f * this.Projectile.def.projectile.speed,
-                                                           solidTimeOverride = 0f
-                                                       });
-
+                    VefFleckMaker.MakeLightningGlow(parent.Map, effectPos, angle, speed, Rand.Range(0.3f, 0.6f));
                 if (this.Props.gaussDistortion)
-                {
-                    FleckCreationData data = FleckMaker.GetDataStatic(effectPos, projectile.Map, VEFDefOf.VEF_GaussDistortion, Rand.Range(0.1f, 0.25f) * 2);
-                    data.rotationRate  = 90f;
-                    data.velocityAngle = this.Projectile.ExactPosition.AngleToFlat(effectPos) - 90 + Rand.Range(-15, 15);
-                    data.velocitySpeed = this.Projectile.def.projectile.speed;
-                    projectile.Map.flecks.CreateFleck(data);
-                }
-            }
-        }
-
-        public override void DrawAt(Vector3 drawLoc, bool flip = false)
-        {
-            base.DrawAt(drawLoc, flip);
-
-            if (!Find.TickManager.Paused)
-            {
-                Projectile projectile = this.Projectile;
-
-                Vector3 velocityDirection = projectile.ExactRotation * Vector3.forward;
-                Vector3 effectPos         = drawLoc + velocityDirection;
-
-                if (this.Props.lightningGlow)
-                    this.parent.Map.flecks.CreateFleck(new FleckCreationData
-                                                       {
-                                                           def               = FleckDefOf.LightningGlow,
-                                                           spawnPosition     = effectPos,
-                                                           scale             = Rand.Range(0.1f, 0.2f) * 3,
-                                                           ageTicksOverride  = -1,
-                                                           rotationRate      = 0,
-                                                           velocityAngle     = this.Projectile.ExactPosition.AngleToFlat(effectPos) - 90,
-                                                           velocitySpeed     = 0.01f * this.Projectile.def.projectile.speed,
-                                                           solidTimeOverride = 0f
-                                                       });
-
-                if (this.Props.gaussDistortion)
-                {
-                    FleckCreationData data = FleckMaker.GetDataStatic(effectPos, projectile.Map, VEFDefOf.VEF_GaussDistortion, Rand.Range(0.1f, 0.25f) * 2);
-                    data.rotationRate  = 90f;
-                    data.velocityAngle = this.Projectile.ExactPosition.AngleToFlat(effectPos) - 90 + Rand.Range(-15, 15);
-                    data.velocitySpeed = this.Projectile.def.projectile.speed;
-                    projectile.Map.flecks.CreateFleck(data);
-                }
+                    VefFleckMaker.MakeGaussDistortion(parent.Map, effectPos, angle, speed + Rand.Range(-15f, 15f), Rand.Range(0.2f, 0.5f));
             }
         }
     }
