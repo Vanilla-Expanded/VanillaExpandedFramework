@@ -166,6 +166,7 @@
     <Compile Include="AnimalBehaviours\HediffComps\HediffComp_ReducePrisonerResistance.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\HediffComp_RegrowLimbs.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\HediffComp_SpawnMote.cs" />
+    <Compile Include="AnimalBehaviours\HediffComps\HediffComp_SpawnPawnOnMaxSeverity.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\HediffComp_StageByVacuum.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_ReducePrisonerCertainty.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_ReducePrisonerResistance.cs" />
@@ -176,6 +177,7 @@
     <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_PsyfocusRegeneration.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_RegrowLimbs.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_SpawnMote.cs" />
+    <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_SpawnPawnOnMaxSeverity.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_StageByVacuum.cs" />
     <Compile Include="AnimalBehaviours\Projectiles\Electric_Projectile.cs" />
     <Compile Include="AnimalBehaviours\Utils\Utils.cs" />
