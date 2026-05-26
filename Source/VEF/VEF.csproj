@@ -143,6 +143,8 @@
     <Compile Include="AestheticScaling\PrepatchedPawnCache.cs" />
     <Compile Include="AnimalBehaviours\Abilities\CompAbilityEffect_ControlledBlinking.cs" />
     <Compile Include="AnimalBehaviours\Abilities\Properties\CompProperties_ControlledBlinking.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_SpawnPawnsOnMissingBodyPart.cs" />
+    <Compile Include="AnimalBehaviours\Comps\CompSpawnPawnsOnMissingBodyPart.cs" />
     <Compile Include="AnimalBehaviours\DeathActionWorkers\DeathActionWorker_DivideAndCreateFilth.cs" />
     <Compile Include="AnimalBehaviours\DeathActionWorkers\DeathActionWorker_VanishInsect.cs" />
     <Compile Include="AnimalBehaviours\DeathActionWorkers\Properties\DeathActionProperties_DivideAndCreateFilth.cs" />
