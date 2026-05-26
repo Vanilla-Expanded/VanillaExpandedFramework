@@ -9,6 +9,7 @@ namespace VEF.AnimalBehaviours
         public List<PawnKindDef> dividePawnKindOptions = new List<PawnKindDef>();
         public ThingDef filthCreated;
         public IntRange filthCountRange;
+        public SoundDef sound;
 
         public DeathActionProperties_DivideAndCreateFilth()
         {

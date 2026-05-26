@@ -3,6 +3,7 @@ using RimWorld;
 using Verse;
 using Verse.AI.Group;
 using Verse.Noise;
+using Verse.Sound;
 
 namespace VEF.AnimalBehaviours
 
@@ -34,6 +35,9 @@ namespace VEF.AnimalBehaviours
                 IntVec3 c;
                 CellFinder.TryFindRandomReachableNearbyCell(corpse.PositionHeld, corpse.MapHeld, 2, TraverseParms.For(TraverseMode.NoPassClosedDoors, Danger.Deadly, false), null, null, out c);
                 FilthMaker.TryMakeFilth(c, corpse.MapHeld, Props.filthCreated);
+            }
+            if (Props.sound != null) {
+                Props.sound.PlayOneShot(new TargetInfo(corpse.PositionHeld, corpse.MapHeld, false));
             }
 
             corpse.Destroy();
