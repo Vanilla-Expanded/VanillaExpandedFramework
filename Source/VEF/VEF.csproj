@@ -287,6 +287,7 @@
     <Compile Include="Graphics\Overlays\CustomOverlayDrawer.cs" />
     <Compile Include="Graphics\Overlays\CustomOverlayWorker.cs" />
     <Compile Include="Graphics\ReflectionCache\ReflectionCache.cs" />
+    <Compile Include="Graphics\SubEffecters\SubEffecter_SlideTowardsTarget.cs" />
     <Compile Include="Graphics\TextureVariant.cs" />
     <Compile Include="Graphics\Utils\TextureUtils.cs" />
     <Compile Include="Maps\ActiveTerrain\ActiveTerrainUtility.cs" />
