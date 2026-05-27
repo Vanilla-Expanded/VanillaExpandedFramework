@@ -146,8 +146,10 @@
     <Compile Include="AnimalBehaviours\Comps\CompProperties\CompProperties_SpawnPawnsOnMissingBodyPart.cs" />
     <Compile Include="AnimalBehaviours\Comps\CompSpawnPawnsOnMissingBodyPart.cs" />
     <Compile Include="AnimalBehaviours\DeathActionWorkers\DeathActionWorker_DivideAndCreateFilth.cs" />
+    <Compile Include="AnimalBehaviours\DeathActionWorkers\DeathActionWorker_SpawnItemsAndFilth.cs" />
     <Compile Include="AnimalBehaviours\DeathActionWorkers\DeathActionWorker_VanishInsect.cs" />
     <Compile Include="AnimalBehaviours\DeathActionWorkers\Properties\DeathActionProperties_DivideAndCreateFilth.cs" />
+    <Compile Include="AnimalBehaviours\DeathActionWorkers\Properties\DeathActionProperties_SpawnItemsAndFilth.cs" />
     <Compile Include="AnimalBehaviours\DeathActionWorkers\Properties\DeathActionProperties_VanishInsect.cs" />
     <Compile Include="AnimalBehaviours\DefExtensions\AnimalCrossbreedExtension.cs" />
     <Compile Include="AnimalBehaviours\Defs\RiverNeedingAnimalDef.cs" />
@@ -197,8 +199,10 @@
     <Compile Include="Buildings\Building\LootableBuilding_Custom.cs" />
     <Compile Include="Buildings\Building\StudiableBuilding.cs" />
     <Compile Include="Buildings\Building\SwappableBuilding.cs" />
+    <Compile Include="Buildings\Comps\CompBuildingCalls.cs" />
     <Compile Include="Buildings\Comps\CompExtendedBiosculpterPod.cs" />
     <Compile Include="Buildings\Comps\CompJammedAirlock.cs" />
+    <Compile Include="Buildings\Comps\CompProperties\CompProperties_BuildingCalls.cs" />
     <Compile Include="Buildings\Comps\CompProperties\CompProperties_ExtendedBiosculpterPod.cs" />
     <Compile Include="Buildings\Comps\CompProperties\CompProperties_JammedAirlock.cs" />
     <Compile Include="Buildings\Comps\CompRefuelable_DualFuel.cs" />

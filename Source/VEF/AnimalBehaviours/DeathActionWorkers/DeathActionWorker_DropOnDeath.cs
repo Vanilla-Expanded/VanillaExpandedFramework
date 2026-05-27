@@ -4,7 +4,8 @@ using Verse.AI.Group;
 
 namespace VEF.AnimalBehaviours
 {
-	public class DeathActionWorker_DropOnDeath : DeathActionWorker
+    //Kinda obsolete, as we now have DeathActionWorker properties
+    public class DeathActionWorker_DropOnDeath : DeathActionWorker
 	{
 
 		System.Random rand = new System.Random();
