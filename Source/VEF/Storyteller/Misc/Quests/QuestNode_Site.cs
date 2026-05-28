@@ -52,7 +52,7 @@ namespace VEF.Storyteller
                 Hilliness.Undefined,
                 Hilliness.Undefined,
                 checkBiome: true,
-                validSettlement: false
+                validSettlement: true
             );
 
             FastTileFinder.TileQueryParams desperate = new FastTileFinder.TileQueryParams(
@@ -64,7 +64,7 @@ namespace VEF.Storyteller
                 Hilliness.Undefined,
                 Hilliness.Undefined,
                 checkBiome: false,
-                validSettlement: false
+                validSettlement: true
             );
 
             List<PlanetTile> results = Find.WorldGrid.Surface.FastTileFinder.Query(normal, allowedBiomes, null, desperate);
