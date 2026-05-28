@@ -53,10 +53,13 @@
                 float   progress = this.Def.ticksToEndOverrideByWeaponWarmup ? 
                                        equipmentTracker?.PrimaryEq?.PrimaryVerb?.WarmupProgress ?? this.SlideProgress : this.SlideProgress;
 
-                if (progress >= 1)
+                if (progress is >= 1 or <= 0)
                     return;
 
                 progress = Mathf.Max(this.Def.minimumProgress.RandomInRange, progress);
+
+                Log.Message(progress);
+
 
                 Vector3 endPointRelativeRotated = endpointRelative.RotatedBy(num);
 
