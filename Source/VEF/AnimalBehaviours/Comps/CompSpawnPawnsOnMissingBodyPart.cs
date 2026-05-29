@@ -44,7 +44,7 @@ namespace VEF.AnimalBehaviours
                     {
                         PawnKindDef kind = Props.pawnKindOptions[i];
                         Faction faction = pawn.Faction;
-                        float? fixedBiologicalAge = 0f;
+                        float? fixedBiologicalAge = 2f;
                         Pawn child = PawnGenerator.GeneratePawn(new PawnGenerationRequest(kind, faction, PawnGenerationContext.NonPlayer, fixedBiologicalAge: fixedBiologicalAge));
                         SpawnPawn(child, pawn, pawn.PositionHeld, pawn.MapHeld, pawn.lord);
                     }
