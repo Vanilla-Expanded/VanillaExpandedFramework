@@ -6,14 +6,15 @@ namespace PipeSystem
 {
     /// <summary>
     /// Used to show all pipe and transmitter of Resource type.
-    /// Introduce a new MapMeshFlag, 455. We use it to switch between resource pipe to higlight.
+    /// Re-use the vanilla PowerGrid flag, as it being regenerated (either by us or anyone else) should
+    /// have minimal impact, at least compared to the original approach of it being tied to 8 different flags.
     /// </summary>
     public class SectionLayer_Resource : SectionLayer_Things
     {
         public SectionLayer_Resource(Section section) : base(section)
         {
             requireAddToMapMesh = false;
-            relevantChangeTypes = MapMeshFlagDefOf.Buildings | 455;
+            relevantChangeTypes = MapMeshFlagDefOf.PowerGrid;
         }
 
         private static int lastFrameDraw;
@@ -26,8 +27,8 @@ namespace PipeSystem
             if (pipeNetDef != pipeNet)
             {
                 pipeNet = pipeNetDef;
-                Find.CurrentMap.mapDrawer.WholeMapChanged(455);
-                PipeSystemDebug.Message("Regenerated MapMeshFlag 455 for SectionLayer_Resource.");
+                Find.CurrentMap.mapDrawer.WholeMapChanged(MapMeshFlagDefOf.PowerGrid);
+                PipeSystemDebug.Message($"Regenerated MapMeshFlag {(ulong)MapMeshFlagDefOf.PowerGrid} for SectionLayer_Resource.");
             }
             lastFrameDraw = Time.frameCount;
         }

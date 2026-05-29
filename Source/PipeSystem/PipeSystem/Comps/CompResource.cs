@@ -26,6 +26,10 @@ namespace PipeSystem
         /// </summary>
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
+            // Dirty map mesh to update the overlay
+            if (TransmitResourceNow)
+                parent.Map.mapDrawer.MapMeshDirty(parent.Position, MapMeshFlagDefOf.PowerGrid, true, false);
+
             if (!respawningAfterLoad)
                 RemovePipes();
 
@@ -50,6 +54,10 @@ namespace PipeSystem
         /// </summary>
         public override void PostDeSpawn(Map map, DestroyMode mode = DestroyMode.Vanish)
         {
+            // Dirty map mesh to update the overlay
+            if (TransmitResourceNow)
+                parent.Map.mapDrawer.MapMeshDirty(parent.Position, MapMeshFlagDefOf.PowerGrid, true, false);
+
             PipeNetManager.UnregisterConnector(this);
             PipeSystemDebug.Message($"Unregistering {this}");
             EndSustainer();
