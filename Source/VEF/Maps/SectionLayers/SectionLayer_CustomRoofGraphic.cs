@@ -8,7 +8,6 @@ namespace VEF.Maps;
 public class SectionLayer_CustomRoofGraphic : SectionLayer
 {
     private static readonly bool anyRoofUsesCustomGraphic = DefDatabase<RoofDef>.AllDefs.Any(def => def.GetModExtension<RoofExtension>()?.EverUsesCustomRoofGraphic == true);
-    private CellRect bounds;
 
     public SectionLayer_CustomRoofGraphic(Section section) : base(section)
     {
@@ -17,12 +16,11 @@ public class SectionLayer_CustomRoofGraphic : SectionLayer
 
     public override bool Visible => anyRoofUsesCustomGraphic;
 
-    public override CellRect GetBoundaryRect() => bounds;
+    public override CellRect GetBoundaryRect() => section.CellRect;
 
     public override void Regenerate()
     {
         ClearSubMeshes(MeshParts.All);
-        bounds = section.CellRect;
 
         foreach (var pos in section.CellRect)
         {
