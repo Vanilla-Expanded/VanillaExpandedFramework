@@ -16,8 +16,6 @@ public class SectionLayer_CustomRoofGraphic : SectionLayer
 
     public override bool Visible => anyRoofUsesCustomGraphic;
 
-    public override CellRect GetBoundaryRect() => section.CellRect;
-
     public override void Regenerate()
     {
         ClearSubMeshes(MeshParts.All);
