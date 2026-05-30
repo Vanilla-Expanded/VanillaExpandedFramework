@@ -55,8 +55,8 @@ namespace PipeSystem
         public override void PostDeSpawn(Map map, DestroyMode mode = DestroyMode.Vanish)
         {
             // Dirty map mesh to update the overlay
-            if (TransmitResourceNow)
-                parent?.Map?.mapDrawer?.MapMeshDirty(parent.Position, MapMeshFlagDefOf.PowerGrid, true, false);
+            if ((mode != DestroyMode.WillReplace || parent.BeingTransportedOnGravship) && TransmitResourceNow)
+                map.mapDrawer.MapMeshDirty(parent.Position, MapMeshFlagDefOf.PowerGrid, true, false);
 
             PipeNetManager.UnregisterConnector(this);
             PipeSystemDebug.Message($"Unregistering {this}");
