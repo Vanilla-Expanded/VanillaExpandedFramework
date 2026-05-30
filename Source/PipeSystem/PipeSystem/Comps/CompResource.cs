@@ -28,7 +28,7 @@ namespace PipeSystem
         {
             // Dirty map mesh to update the overlay
             if (TransmitResourceNow)
-                parent.Map.mapDrawer.MapMeshDirty(parent.Position, MapMeshFlagDefOf.PowerGrid, true, false);
+                parent?.Map?.mapDrawer?.MapMeshDirty(parent.Position, MapMeshFlagDefOf.PowerGrid, true, false);
 
             if (!respawningAfterLoad)
                 RemovePipes();
@@ -56,7 +56,7 @@ namespace PipeSystem
         {
             // Dirty map mesh to update the overlay
             if (TransmitResourceNow)
-                parent.Map.mapDrawer.MapMeshDirty(parent.Position, MapMeshFlagDefOf.PowerGrid, true, false);
+                parent?.Map?.mapDrawer?.MapMeshDirty(parent.Position, MapMeshFlagDefOf.PowerGrid, true, false);
 
             PipeNetManager.UnregisterConnector(this);
             PipeSystemDebug.Message($"Unregistering {this}");
