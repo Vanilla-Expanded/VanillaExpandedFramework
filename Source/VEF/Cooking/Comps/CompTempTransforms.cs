@@ -89,11 +89,50 @@ namespace VEF.Cooking
                     //(if any) and destroy the original item
 
                     Thing newItem = ThingMaker.MakeThing(ThingDef.Named(Props.thingToTransformInto));
-                    newItem.stackCount = this.parent.stackCount;
-                    newItem.TryGetComp<CompIngredients>().ingredients = this.parent.TryGetComp<CompIngredients>().ingredients;
 
+                    newItem.stackCount = this.parent.stackCount;
+                    // Keep the HP percentage
+                    if (Props.preserveHp)
+                        newItem.HitPoints = Mathf.Max(Mathf.CeilToInt((float)parent.HitPoints / parent.MaxHitPoints * newItem.MaxHitPoints), 1);
+
+                    // Only do those if the new item can have comps
+                    if (newItem is ThingWithComps newItemWithComps)
+                    {
+                        // Move over the ingredients to new item
+                        if (parent.GetComp<CompIngredients>()?.ingredients is { Count: > 0 } ingredients)
+                            newItemWithComps.TryGetComp<CompIngredients>()?.ingredients?.AddRange(ingredients);
+
+                        // Set as forbidden if it was beforehand
+                        if (Props.keepForbidden && newItemWithComps.compForbiddable != null && parent.compForbiddable != null)
+                            newItemWithComps.compForbiddable.Forbidden = parent.compForbiddable.Forbidden;
+
+                        // Keep rot progress percentage
+                        if (Props.keepRottableProgress && newItemWithComps.GetComp<CompRottable>() is {} newRottable && parent.GetComp<CompRottable>() is {} oldRottable)
+                            newRottable.RotProgress = oldRottable.RotProgressPct * newRottable.PropsRot.TicksToRotStart;
+
+                        if (Props.keepQuality)
+                        {
+                            // Copy quality, don't init art
+                            if (newItemWithComps.compQuality != null && parent.compQuality != null)
+                                newItemWithComps.compQuality.SetQuality(parent.compQuality.Quality, null);
+
+                            // Copy art/author/etc. if present
+                            if (newItemWithComps.GetComp<CompArt>() is {} newArt && parent.GetComp<CompArt>() is {} oldArt)
+                            {
+                                NonPublicFields.CompArt_authorNameInt(newArt) = NonPublicFields.CompArt_authorNameInt(oldArt);
+                                NonPublicFields.CompArt_titleInt(newArt) = NonPublicFields.CompArt_titleInt(oldArt);
+                                NonPublicFields.CompArt_taleRef(newArt) = NonPublicFields.CompArt_taleRef(oldArt);
+                            }
+                        }
+                    }
+
+
+                    var wasSelected = Find.Selector.IsSelected(parent);
                     GenSpawn.Spawn(newItem, this.parent.Position, this.parent.Map);
                     this.parent.Destroy();
+                    // Reselect if it was previously selected
+                    if (wasSelected)
+                        Find.Selector.Select(newItem);
                 }
 
 

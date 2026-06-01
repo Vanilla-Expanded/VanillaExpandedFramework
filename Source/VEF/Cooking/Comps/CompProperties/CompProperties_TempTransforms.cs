@@ -24,5 +24,13 @@ namespace VEF.Cooking
         public float progressPerDegreePerTick = 1E-05f;
 
         public string thingToTransformInto = "";
+
+        public bool preserveHp = true;
+
+        public bool keepForbidden = true;
+
+        public bool keepQuality = true;
+
+        public bool keepRottableProgress = true;
     }
 }

@@ -26,6 +26,10 @@ namespace VEF
         public static readonly AccessTools.FieldRef<Projectile, Vector3> Projectile_origin = AccessTools.FieldRefAccess<Projectile, Vector3>("origin");
         public static readonly AccessTools.FieldRef<Projectile, Vector3> Projectile_destination = AccessTools.FieldRefAccess<Projectile, Vector3>("destination");
         public static readonly AccessTools.FieldRef<Projectile, LocalTargetInfo> Projectile_usedTarget = AccessTools.FieldRefAccess<Projectile, LocalTargetInfo>("usedTarget");
+
+        public static readonly AccessTools.FieldRef<CompArt, TaggedString> CompArt_authorNameInt = AccessTools.FieldRefAccess<CompArt, TaggedString>("authorNameInt");
+        public static readonly AccessTools.FieldRef<CompArt, TaggedString> CompArt_titleInt = AccessTools.FieldRefAccess<CompArt, TaggedString>("titleInt");
+        public static readonly AccessTools.FieldRef<CompArt, TaleReference> CompArt_taleRef = AccessTools.FieldRefAccess<CompArt, TaleReference>("taleRef");
     }
 
 }
