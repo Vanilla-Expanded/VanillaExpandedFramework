@@ -145,7 +145,7 @@ namespace VEF.Pawns
             }
             if (def.requiredGene != null)
             {
-                if (selPawnForSocialInfo.genes.HasActiveGene(def.requiredGene) is false && otherPawn.genes.HasActiveGene(def.requiredGene) is false)
+                if (selPawnForSocialInfo.genes?.HasActiveGene(def.requiredGene) is not true && otherPawn.genes?.HasActiveGene(def.requiredGene) is not true)
                 {
                     return false;
                 }
