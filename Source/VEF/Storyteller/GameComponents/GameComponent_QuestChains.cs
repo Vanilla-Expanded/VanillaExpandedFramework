@@ -146,7 +146,10 @@ namespace VEF.Storyteller
             {
                 return false;
             }
-
+            if (Find.QuestManager.QuestsListForReading.Any(x => x.root == quest && (x.State == QuestState.Ongoing || x.State == QuestState.NotYetAccepted)))
+            {
+                return false;
+            }
             if (!ext.isRepeatable && quests.Any(x => x.questDef == quest))
             {
                 return false;
