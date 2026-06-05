@@ -161,7 +161,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Zetrith.Prepatcher">
-      <Version>1.1.1</Version>
+      <Version>1.2.0</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
