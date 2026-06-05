@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
-using MonoMod.Utils;
 using MVCF.Features;
 using MVCF.ModCompat;
 using MVCF.Utilities;
@@ -14,6 +13,9 @@ public class PatchSet_ExtraEquipment : PatchSet
 {
     private static readonly Func<VerbTracker, Thing, Verb, Command_VerbTarget> createVerbTargetCommand =
         AccessTools.Method(typeof(VerbTracker), "CreateVerbTargetCommand").CreateDelegate<Func<VerbTracker, Thing, Verb, Command_VerbTarget>>();
+
+    private static Func<ThingWithComps, bool> isVeMultiVerb =
+        AccessTools.Method("VEF.Weapons.CompMultiVerbWeapon:HasMultiVerbComp").CreateDelegate<Func<ThingWithComps, bool>>();
 
     public override IEnumerable<Patch> GetPatches()
     {
@@ -27,6 +29,7 @@ public class PatchSet_ExtraEquipment : PatchSet
         if (rangedVerbs.Count <= 1 && !MVCF.GetFeature<Feature_VerbComps>().Enabled) return true;
         if (DualWieldCompat.Active && __instance.parent.ParentHolder is Pawn_EquipmentTracker { pawn: { } pawn } tracker && tracker.PrimaryEq == __instance
          && pawn.HasOffHand()) return true;
+        if (isVeMultiVerb(__instance.parent)) return true;
         __result = rangedVerbs
            .Select(v => v.GetGizmosForVerb(v.Managed()))
            .OrderByDescending(cs => cs.Any(c => c is Command_VerbTarget))

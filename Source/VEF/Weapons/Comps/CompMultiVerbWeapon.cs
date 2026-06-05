@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+using JetBrains.Annotations;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -271,6 +272,9 @@ public class CompMultiVerbWeapon : ThingComp
     }
 
     private void InitComps() => equippable = parent.GetComp<CompEquippable>();
+
+    // Used from MVCF, don't delete. (MVCF.PatchSets.PatchSet_ExtraEquipment)
+    [UsedImplicitly] private static bool HasMultiVerbComp(ThingWithComps thing) => thing.GetComp<CompMultiVerbWeapon>() != null;
 }
 
 // public class Command_MultiVerbTarget : Command_VerbTarget
