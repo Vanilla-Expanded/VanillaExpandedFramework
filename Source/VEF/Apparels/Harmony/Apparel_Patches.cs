@@ -925,4 +925,30 @@ namespace VEF.Apparels
             tmpGearImpactors.Clear();
         }
     }
+
+    [HarmonyPatch(typeof(Pawn_ApparelTracker), nameof(Pawn_ApparelTracker.ExposeData))]
+    public static class VanillaExpandedFramework_Pawn_ApparelTracker_ExposeData_Patch
+    {
+        private static void Postfix(Pawn_ApparelTracker __instance)
+        {
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && __instance.WornApparel != null)
+            {
+                foreach (var apparel in __instance.WornApparel)
+                    ApparelExtensionUtilities.EquipGear(__instance.pawn, apparel);
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(Pawn_EquipmentTracker), nameof(Pawn_EquipmentTracker.ExposeData))]
+    public static class VanillaExpandedFramework_Pawn_EquipmentTracker_ExposeData_Patch
+    {
+        private static void Postfix(Pawn_EquipmentTracker __instance)
+        {
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && __instance.AllEquipmentListForReading != null)
+            {
+                foreach (var equipment in __instance.AllEquipmentListForReading)
+                    ApparelExtensionUtilities.EquipGear(__instance.pawn, equipment);
+            }
+        }
+    }
 }
