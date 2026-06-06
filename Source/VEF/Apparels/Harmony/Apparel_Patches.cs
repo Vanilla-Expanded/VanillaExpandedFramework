@@ -65,6 +65,11 @@ namespace VEF.Apparels
             {
                 pawn.health.capacities.Notify_CapacityLevelsDirty();
             }
+
+            if (!extension.moveSpeedFactorByTerrainTag.NullOrEmpty())
+            {
+                Genes.StaticCollectionsClass.AddMoveSpeedFactorByTerrainTag(pawn, gear, extension.moveSpeedFactorByTerrainTag);
+            }
         }
 
         public static void UnequipGear(Pawn pawn, Thing gear)
@@ -95,6 +100,11 @@ namespace VEF.Apparels
             if (!extension.equippedStatFactors.NullOrEmpty())
             {
                 pawn.health.capacities.Notify_CapacityLevelsDirty();
+            }
+
+            if (!extension.moveSpeedFactorByTerrainTag.NullOrEmpty())
+            {
+                Genes.StaticCollectionsClass.RemoveMoveSpeedFactorByTerrainTag(pawn, gear);
             }
         }
 

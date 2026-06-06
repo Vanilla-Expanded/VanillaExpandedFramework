@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using HarmonyLib;
 using RimWorld;
+using VEF.Apparels;
 using Verse;
 
 namespace VEF.Genes;
@@ -78,6 +79,18 @@ public static class VanillaExpandedFramework_StatPart_TerrainMoveSpeed_Explanati
         {
             foreach (var hediff in pawn.health.hediffSet.hediffs)
                 AddSpeed(hediff.TryGetComp<HediffComp_MoveSpeedFactorByTerrainTag>()?.Props.moveSpeedFactorByTerrainTag);
+        }
+
+        if (pawn.equipment?.AllEquipmentListForReading != null)
+        {
+            foreach (var equipment in pawn.equipment.AllEquipmentListForReading)
+                AddSpeed(equipment.def?.GetModExtension<ApparelExtension>()?.moveSpeedFactorByTerrainTag);
+        }
+
+        if (pawn.apparel?.WornApparel != null)
+        {
+            foreach (var apparel in pawn.apparel.WornApparel)
+                AddSpeed(apparel.def?.GetModExtension<ApparelExtension>()?.moveSpeedFactorByTerrainTag);
         }
     }
 

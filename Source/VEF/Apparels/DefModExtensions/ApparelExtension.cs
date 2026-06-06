@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using RimWorld;
+using VEF.Genes;
 using Verse;
 
 namespace VEF.Apparels
@@ -31,6 +32,9 @@ namespace VEF.Apparels
         public bool isUnifiedApparel;
         public bool hideHead;
         public bool showBodyInBedAlways;
+
+        // For more detailed explanation, look up GeneExtension:moveSpeedFactorByTerrainTag
+        public Dictionary<string, List<MoveSpeedFactor>> moveSpeedFactorByTerrainTag;
 
         // Order matters for traitsOnEquip and traitsOnUnequip - they
         // may have different degrees, so we need to pick 1.
