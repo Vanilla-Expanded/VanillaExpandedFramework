@@ -109,15 +109,18 @@ public static class VanillaExpandedFramework_StatPart_TerrainMoveSpeed_Explanati
 
     private static void AddSpeed(float speedFactor, string terrainTag, string speedFactorTag = null)
     {
+        // Just in case
+        if (terrainTag == null)
+            return;
         // Check for speed factors with duplicate tags applied to the same terrain tag
-        if (speedFactorTag != null && !usedTags.Add((terrainTag, speedFactorTag)))
-        {
-            if (totalSpeed.TryGetValue(terrainTag, out var speed))
-                speed *= speedFactor;
-            else
-                speed = speedFactor;
+        if (speedFactorTag != null && usedTags.Add((terrainTag, speedFactorTag)))
+            return;
 
-            totalSpeed[terrainTag] = speed;
-        }
+        if (totalSpeed.TryGetValue(terrainTag, out var speed))
+            speed *= speedFactor;
+        else
+            speed = speedFactor;
+
+        totalSpeed[terrainTag] = speed;
     }
 }
