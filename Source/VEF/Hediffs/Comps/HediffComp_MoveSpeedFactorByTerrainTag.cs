@@ -1,6 +1,7 @@
-﻿using Verse;
+﻿using VEF.Genes;
+using Verse;
 
-namespace VEF.Genes;
+namespace VEF.Hediffs;
 
 public class HediffComp_MoveSpeedFactorByTerrainTag : HediffComp
 {

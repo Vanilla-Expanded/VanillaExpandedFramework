@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
+using VEF.Apparels;
 using VEF.Genes;
+using VEF.Hediffs;
 using VEF.Things;
 using Verse;
 
@@ -32,6 +34,25 @@ public class VEF_HarmonyCategories
             RunPatches(harmony, LateHarmonyPatchCategory);
             RunPatches(harmony, MoveSpeedFactorByTerrainTagCategory, IsMoveSpeedFactorByTerrainTagActive);
             RunPatches(harmony, UseStoneChunksAsStuffInRecipes, IsStoneChunksAsStuffInRecipesActive);
+
+            // LongEventHandler.ExecuteWhenFinished(() =>
+            // {
+            //     foreach (var method in Harmony.GetAllPatchedMethods())
+            //     {
+            //         if (method == null)
+            //             continue;
+            //         var type = method.DeclaringType;
+            //         if (type == null)
+            //             return;
+            //
+            //         var other = type.DeclaredMethod(method.Name + "_NewTemp");
+            //         if (other != null)
+            //             Log.Error($"{method.FullDescription()} patches a non-NewTemp method");
+            //         other = type.DeclaredMethod(method.Name + "NewTemp");
+            //         if (other != null)
+            //             Log.Error($"{method.FullDescription()} patches a non-NewTemp method");
+            //     }
+            // });
         });
     }
 
@@ -65,6 +86,13 @@ public class VEF_HarmonyCategories
         {
             var comp = hediff.CompProps<HediffCompProperties_MoveSpeedFactorByTerrainTag>();
             if (comp != null && IsThereAnyTerrainWithTag(comp.moveSpeedFactorByTerrainTag))
+                return true;
+        }
+
+        foreach (var thing in DefDatabase<ThingDef>.AllDefs)
+        {
+            var extension = thing.GetModExtension<ApparelExtension>();
+            if (extension != null && IsThereAnyTerrainWithTag(extension.moveSpeedFactorByTerrainTag))
                 return true;
         }
 

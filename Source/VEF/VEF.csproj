@@ -251,8 +251,6 @@
     <Compile Include="Genes\Harmony\Building_GeneExtractor_Patch.cs" />
     <Compile Include="Genes\Harmony\Pawn_PathFollower_CostToMoveIntoCell.cs" />
     <Compile Include="Genes\Harmony\StatPart_TerrainMoveSpeed_ExplanationPart.cs" />
-    <Compile Include="Genes\HediffComps\HediffComp_MoveSpeedFactorByTerrainTag.cs" />
-    <Compile Include="Genes\HediffComps\Properties\HediffCompProperties_MoveSpeedFactorByTerrainTag.cs" />
     <Compile Include="Genes\MapComponents\MapComponent_AstrogeneOverrides.cs" />
     <Compile Include="Genes\Misc\MoveSpeedFactor.cs" />
     <Compile Include="Genes\StaticCollectionsClass\ExtendedMoveSpeedFactorByTerrainTag.cs" />
@@ -294,6 +292,8 @@
     <Compile Include="Graphics\SubEffecters\SubEffecter_SlideTowardsTarget.cs" />
     <Compile Include="Graphics\TextureVariant.cs" />
     <Compile Include="Graphics\Utils\TextureUtils.cs" />
+    <Compile Include="Hediffs\Comps\HediffComp_MoveSpeedFactorByTerrainTag.cs" />
+    <Compile Include="Hediffs\Comps\Properties\HediffCompProperties_MoveSpeedFactorByTerrainTag.cs" />
     <Compile Include="Maps\ActiveTerrain\ActiveTerrainUtility.cs" />
     <Compile Include="Maps\ActiveTerrain\Comps\TerrainCompBase.cs" />
     <Compile Include="Maps\ActiveTerrain\Comps\TerrainCompProperties.cs" />

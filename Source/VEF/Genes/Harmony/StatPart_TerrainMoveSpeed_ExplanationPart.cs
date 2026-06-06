@@ -4,6 +4,7 @@ using System.Text;
 using HarmonyLib;
 using RimWorld;
 using VEF.Apparels;
+using VEF.Hediffs;
 using Verse;
 
 namespace VEF.Genes;
