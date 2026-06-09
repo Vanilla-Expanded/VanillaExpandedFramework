@@ -18,6 +18,10 @@ namespace VEF.Plants
 
         public bool alreadyBloomed = false;
 
+        public int lowTempBloomStopCounter = lowTempBloomStopCounterBase; //15 long ticks = 12 hours
+
+        public const int lowTempBloomStopCounterBase = 15;
+
         public BloomingPlantExtension cachedExtension;
 
         public Graphic cachedGraphic = null;
@@ -57,6 +61,22 @@ namespace VEF.Plants
             }
         }
 
+        public int SeasonAsInt(Season season)
+        {
+            switch (season)
+            {
+                case Season.Spring:
+                    return 0;
+                case Season.Summer:
+                    return 1;
+                case Season.Fall:
+                    return 2;
+                case Season.Winter:
+                    return 3;
+            }
+            return 1;
+       }
+
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
@@ -90,54 +110,89 @@ namespace VEF.Plants
         {
             if (Map != null) {
 
-                if(GridsUtility.GetTemperature(Position, Map)< cachedDeadlyTemperature)
+                int dayOfYear = GenLocalDate.DayOfYear(Map);
+                if(dayOfYear == 1)
                 {
-                    this.Destroy();
+                    alreadyBloomed = false;
                 }
 
+                float currentTemperature = GridsUtility.GetTemperature(Position, Map);
+                //Deadly temperature check
+                if (currentTemperature < cachedDeadlyTemperature)
+                {
+                    TakeDamage(new DamageInfo(DamageDefOf.Rotting, 10));
+                }
+                //Blooming due to low temp stop
+                if (currentTemperature < GetExtension.BloomTemperatureMin)
+                {
+                    lowTempBloomStopCounter--;
+                    if(lowTempBloomStopCounter < 0)
+                    {
+                        TryEndBloom();
+                        lowTempBloomStopCounter = lowTempBloomStopCounterBase;
+                    }
+                }
+                else
+                {
+                    lowTempBloomStopCounter = lowTempBloomStopCounterBase;
+                }
+
+                //Season check. If permanent summer or winter it will transform season in the def extension to just day of the year
                 Season season = GenDate.Season(Find.TickManager.TicksGame, Find.WorldGrid.LongLatOf(Map.Tile));
               
                 if (season is Season.PermanentSummer || season is Season.PermanentWinter)
                 {
-                    
+                    int dayOfYearBeginBloom = SeasonAsInt(GetExtension.BloomSeasonStart) * 15 + GetExtension.BloomDayStart;
+                    int dayOfYearEndBloom = SeasonAsInt(GetExtension.BloomSeasonStop) * 15 + GetExtension.BloomDayEnd;                
+
+                    if (dayOfYear >= dayOfYearBeginBloom - 1 && dayOfYear < dayOfYearEndBloom-1)
+                    {
+                        TryDoBloom();                        
+                    }
+
+                    if (dayOfYear >= dayOfYearEndBloom - 1 || dayOfYear < dayOfYearBeginBloom - 1)
+                    {
+                        TryEndBloom();
+                    }
                 }
                 if (season == GetExtension.BloomSeasonStart)
-                {
-                    
+                {                    
                     if (GenLocalDate.DayOfQuadrum(Map) >= GetExtension.BloomDayStart-1)
                     {
-                      
-                        if (!isBlooming && !alreadyBloomed && GridsUtility.GetTemperature(Position,Map)>= GetExtension.BloomTemperatureMin)
-                        {
-                           
-                            if (!GetExtension.CanBloomAgain)
-                            {
-                                alreadyBloomed = true;
-                            }
-                            isBlooming = true;
-                            Map.mapDrawer.MapMeshDirty(Position, MapMeshFlagDefOf.Things);
-                        }
-                        
-                    }
-                  
+                        TryDoBloom();
+                    }                  
                 }
                 if (season == GetExtension.BloomSeasonStop)
-                {
-
-                    
+                {                   
                     if (GenLocalDate.DayOfQuadrum(Map) >= GetExtension.BloomDayEnd - 1)
                     {
-                        if (isBlooming)
-                        {
-                            isBlooming = false;
-                            Map.mapDrawer.MapMeshDirty(Position, MapMeshFlagDefOf.Things);
-                        }
-
+                        TryEndBloom();
                     }
                 }
-
             }
+        }
 
+        public void TryDoBloom() {
+
+            if (!isBlooming && !alreadyBloomed && GridsUtility.GetTemperature(Position, Map) >= GetExtension.BloomTemperatureMin)
+            {
+
+                if (!GetExtension.CanBloomAgain)
+                {
+                    alreadyBloomed = true;
+                }
+                isBlooming = true;
+                Map.mapDrawer.MapMeshDirty(Position, MapMeshFlagDefOf.Things);
+            }
+        }
+
+        public void TryEndBloom()
+        {
+            if (isBlooming)
+            {
+                isBlooming = false;
+                Map.mapDrawer.MapMeshDirty(Position, MapMeshFlagDefOf.Things);
+            }
         }
 
         public override Graphic Graphic {
@@ -157,6 +212,7 @@ namespace VEF.Plants
             Scribe_Values.Look(ref realAge, "realAge", 0);
             Scribe_Values.Look(ref isBlooming, "isBlooming", false);
             Scribe_Values.Look(ref alreadyBloomed, "alreadyBloomed", false);
+            Scribe_Values.Look(ref lowTempBloomStopCounter, "lowTempBloomStopCounter", lowTempBloomStopCounterBase);
 
         }
 

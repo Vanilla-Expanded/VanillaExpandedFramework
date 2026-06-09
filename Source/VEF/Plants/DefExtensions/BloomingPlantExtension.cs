@@ -7,24 +7,24 @@ namespace VEF.Plants
   
     public class BloomingPlantExtension : DefModExtension
     {
-        public int AgeBeautyModifier;
-        public int MaxAgeBeautyModifier;
-        public float BloomBeautyModifier;
-        public int LeaflessBeauty;
+        public int AgeBeautyModifier = 0;
+        public int MaxAgeBeautyModifier = 0;
+        public float BloomBeautyModifier = 0;
+        public int LeaflessBeauty = 0;
 
         public Season BloomSeasonStart;
-        public int BloomDayStart;
+        public int BloomDayStart = 1;
 
         public Season BloomSeasonStop;
-        public int BloomDayEnd;
+        public int BloomDayEnd = 1;
 
-        public bool CanBloomAgain;
+        public bool CanBloomAgain=true;
 
-        public int BloomTemperatureMin;
+        public int BloomTemperatureMin = 0;
 
         public string bloomGraphicPath;
 
-        public int DeadlyColdTemperature;
+        public int DeadlyColdTemperature = 0;
 
     }
 
