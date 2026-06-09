@@ -363,6 +363,11 @@
     <Compile Include="Maps\Harmony\RoofGrid_GetCellExtraColor.cs" />
     <Compile Include="Maps\Harmony\SectionLayer_LightingOverlay_GenerateLightingOverlay.cs" />
     <Compile Include="Maps\SectionLayers\SectionLayer_CustomRoofGraphic.cs" />
+    <Compile Include="Plants\DefExtensions\BloomingPlantExtension.cs" />
+    <Compile Include="Plants\Plants\Plant_Blooming.cs" />
+    <Compile Include="Plants\StatParts\StatPart_BeautyByLeafless.cs" />
+    <Compile Include="Plants\StatParts\StatPart_BeautyByBlooming.cs" />
+    <Compile Include="Plants\StatParts\StatPart_BeautyByAge.cs" />
     <Compile Include="Storyteller\Misc\Quests\QuestPart_KeepSite.cs" />
     <Compile Include="Storyteller\Misc\Quests\Site_ShouldRemoveMapNow_Patch.cs" />
     <Compile Include="Things\DefModExtensions\RecipeExtension.cs" />
@@ -1167,6 +1172,9 @@
       <Version>2.4.1</Version>
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Buffers">
+      <Version>4.6.1</Version>
     </PackageReference>
     <PackageReference Include="System.Collections">
       <Version>4.3.0</Version>
