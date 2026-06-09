@@ -30,6 +30,8 @@ namespace VEF.Pawns
             yield return AccessTools.Method(typeof(WorkGiver_ConstructDeliverResourcesToBlueprints), "JobOnThing");
             yield return AccessTools.Method(typeof(WorkGiver_ConstructDeliverResourcesToFrames), "JobOnThing");
             yield return AccessTools.Method(typeof(WorkGiver_ConstructFinishFrames), "JobOnThing");
+            yield return AccessTools.DeclaredMethod(typeof(WorkGiver_ConstructDeliverResourcesToBlueprints), "HasJobOnThing");
+            yield return AccessTools.DeclaredMethod(typeof(WorkGiver_ConstructDeliverResourcesToFrames), "HasJobOnThing");
         }
 
         public static bool Prefix(WorkGiver __instance, Pawn pawn, Thing t)
@@ -48,6 +50,16 @@ namespace VEF.Pawns
 
     public class WorkGiver_ConstructionSkill_DeliverResourcesToBlueprints : WorkGiver_ConstructDeliverResourcesToBlueprints
     {
+        public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
+        {
+            var extension = t.def?.entityDefToBuild?.GetModExtension<ThingDefExtension>();
+            if (extension?.constructionSkillRequirement is null)
+            {
+                return false;
+            }
+            return base.HasJobOnThing(pawn, t, forced);
+        }
+
         public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
             var extension = t.def?.entityDefToBuild?.GetModExtension<ThingDefExtension>();
@@ -69,6 +81,16 @@ namespace VEF.Pawns
 
     public class WorkGiver_ConstructionSkill_DeliverResourcesToFrames : WorkGiver_ConstructDeliverResourcesToFrames
     {
+        public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
+        {
+            var extension = t.def?.entityDefToBuild?.GetModExtension<ThingDefExtension>();
+            if (extension?.constructionSkillRequirement is null)
+            {
+                return false;
+            }
+            return base.HasJobOnThing(pawn, t, forced);
+        }
+
         public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
             var extension = t.def?.entityDefToBuild?.GetModExtension<ThingDefExtension>();
@@ -82,6 +104,16 @@ namespace VEF.Pawns
 
     public class WorkGiver_ConstructionSkill_FinishFrames : WorkGiver_ConstructFinishFrames
     {
+        public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
+        {
+            var extension = t.def?.entityDefToBuild?.GetModExtension<ThingDefExtension>();
+            if (extension?.constructionSkillRequirement is null)
+            {
+                return false;
+            }
+            return base.HasJobOnThing(pawn, t, forced);
+        }
+
         public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
             var extension = t.def?.entityDefToBuild?.GetModExtension<ThingDefExtension>();
