@@ -28,6 +28,7 @@ namespace VEF.Plants
 
         //Bloom graphics
         public string bloomGraphicPath;
+        public string alternateBloomGraphicPath="";
 
         //Behaviours when blooming
         public ThingDef itemProducedWhenBlooming = null;

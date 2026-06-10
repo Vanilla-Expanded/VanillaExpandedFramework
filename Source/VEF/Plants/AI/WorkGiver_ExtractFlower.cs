@@ -11,7 +11,7 @@ namespace VEF.Plants
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
 
-            return pawn.Map.GetComponent<MapComponent_ExtractablePlants>().objects_InMap;
+            return pawn.Map.GetComponent<MapComponent_BloomingPlants>().objects_InMap;
 
 
         }

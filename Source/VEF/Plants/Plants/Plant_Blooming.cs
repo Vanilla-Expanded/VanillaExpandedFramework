@@ -10,6 +10,7 @@ using VEF.Buildings;
 using Verse;
 using Verse.Noise;
 using static HarmonyLib.Code;
+using static UnityEngine.GraphicsBuffer;
 
 namespace VEF.Plants
 {
@@ -36,7 +37,7 @@ namespace VEF.Plants
 
         public Graphic cachedGraphic = null;
 
-        MapComponent_ExtractablePlants cachedMapComp;
+        MapComponent_BloomingPlants cachedMapComp;
 
         public int cachedDeadlyTemperature = -200;
 
@@ -47,10 +48,15 @@ namespace VEF.Plants
             {
                 if (cachedGraphic == null)
                 {
+                    string graphicToUse = GetExtension.bloomGraphicPath;
+                    if (GetExtension.alternateBloomGraphicPath != "" && PlantsMapComp.alternateBloomingTextures)
+                    {
+                        graphicToUse = GetExtension.alternateBloomGraphicPath;
+                    } 
 
                     cachedGraphic = GraphicDatabase.Get(
                         def.graphicData.graphicClass,
-                        GetExtension.bloomGraphicPath,
+                        graphicToUse,
                         def.graphic.Shader,
                         def.graphicData.drawSize,
                         def.graphicData.color,
@@ -73,13 +79,13 @@ namespace VEF.Plants
             }
         }
 
-        public MapComponent_ExtractablePlants PlantsMapComp
+        public MapComponent_BloomingPlants PlantsMapComp
         {
             get
             {
                 if (cachedMapComp is null)
                 {
-                    cachedMapComp = Map.GetComponent<MapComponent_ExtractablePlants>(); 
+                    cachedMapComp = Map.GetComponent<MapComponent_BloomingPlants>(); 
                 }
                 return cachedMapComp;
             }
@@ -234,22 +240,37 @@ namespace VEF.Plants
                     //Hediff causing when blooming
                     if (GetExtension.hediffWhenBlooming != null)
                     {
-                        foreach (Thing thing in GenRadial.RadialDistinctThingsAround(Position, Map, GetExtension.hediffRadius, true))
+                        foreach (Pawn pawn in Map.mapPawns.AllPawnsSpawned)
                         {
-                            Pawn pawn = thing as Pawn;
-                            
-                            if (pawn != null && (pawn.IsColonist || !GetExtension.hediffOnlyAffectsColonists))
-                            {                             
-                                if (!pawn.Dead && !pawn.Downed && pawn.GetStatValue(StatDefOf.PsychicSensitivity, true) > 0f)
-                                {
-                                    pawn.health.AddHediff(GetExtension.hediffWhenBlooming);
-                                    pawn.health.hediffSet.GetFirstHediffOfDef(GetExtension.hediffWhenBlooming).Severity = GetExtension.hediffSeverity;
-                                }
+                            if (pawn != null && !pawn.IsAnimal && !pawn.Dead && !pawn.Downed &&
+                                (pawn.IsColonist || !GetExtension.hediffOnlyAffectsColonists) 
+                                && pawn.PositionHeld.DistanceTo(PositionHeld) <= GetExtension.hediffRadius)
+                            {
+                                GiveOrUpdateHediff(pawn);
                             }
                         }
                     }
-                }
+                }             
+            }
+        }
+
+        private void GiveOrUpdateHediff(Pawn target)
+        {
+            Hediff hediff = target.health.hediffSet.GetFirstHediffOfDef(GetExtension.hediffWhenBlooming);
+            if (hediff == null)
+            {
+                hediff = target.health.AddHediff(GetExtension.hediffWhenBlooming, target.health.hediffSet.GetBrain());
+                hediff.Severity = GetExtension.hediffSeverity;
                 
+            }
+            HediffComp_Disappears hediffComp_Disappears = hediff.TryGetComp<HediffComp_Disappears>();
+            if (hediffComp_Disappears == null)
+            {
+                Log.ErrorOnce("CompCauseHediff_AoE has a hediff in props which does not have a HediffComp_Disappears", 78945945);
+            }
+            else
+            {
+                hediffComp_Disappears.ticksToDisappear = 4000;
             }
         }
 

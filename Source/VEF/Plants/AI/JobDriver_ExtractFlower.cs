@@ -75,7 +75,7 @@ namespace VEF.Plants
                 base.Map.designationManager.RemoveAllDesignationsOn(Target);
 
                 Flower.plantAwaitingExtraction = false;
-                MapComponent_ExtractablePlants mapComp = Map.GetComponent<MapComponent_ExtractablePlants>();
+                MapComponent_BloomingPlants mapComp = Map.GetComponent<MapComponent_BloomingPlants>();
                 if (mapComp != null)
                 {
                     mapComp.RemoveObjectFromMap(Flower);
