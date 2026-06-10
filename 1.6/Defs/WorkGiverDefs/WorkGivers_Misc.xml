@@ -26,19 +26,30 @@
 		</requiredCapacities>
 		<prioritizeSustains>true</prioritizeSustains>
 	</WorkGiverDef>
-	
-    <WorkGiverDef>
-        <defName>VEF_RefuelSecondary</defName>
-        <label>refuel ammunition</label>
-        <giverClass>VEF.Buildings.WorkGiver_RefuelSecondary</giverClass>
-        <workType>Hauling</workType>
-        <priorityInType>70</priorityInType>
-        <verb>refuel</verb>
-        <gerund>refueling</gerund>
-        <requiredCapacities>
-            <li>Manipulation</li>
-        </requiredCapacities>
-        <prioritizeSustains>true</prioritizeSustains>
-    </WorkGiverDef>
-
+	<WorkGiverDef>
+		<defName>VEF_RefuelSecondary</defName>
+		<label>refuel ammunition</label>
+		<giverClass>VEF.Buildings.WorkGiver_RefuelSecondary</giverClass>
+		<workType>Hauling</workType>
+		<priorityInType>70</priorityInType>
+		<verb>refuel</verb>
+		<gerund>refueling</gerund>
+		<requiredCapacities>
+			<li>Manipulation</li>
+		</requiredCapacities>
+		<prioritizeSustains>true</prioritizeSustains>
+	</WorkGiverDef>
+	<WorkGiverDef>
+		<defName>VEF_ExtractFlower</defName>
+		<label>extract flower</label>
+		<giverClass>VEF.Plants.WorkGiver_ExtractFlower</giverClass>
+		<workType>PlantCutting</workType>
+		<priorityInType>110</priorityInType>
+		<verb>extract</verb>
+		<gerund>extracting</gerund>
+		<requiredCapacities>
+			<li>Manipulation</li>
+		</requiredCapacities>
+		<canBeDoneByMechs>false</canBeDoneByMechs>
+	</WorkGiverDef>
 </Defs>

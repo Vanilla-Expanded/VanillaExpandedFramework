@@ -79,7 +79,7 @@ namespace VEF.Plants
             {
                 if (cachedMapComp is null)
                 {
-                    cachedMapComp = Map.GetComponent<MapComponent_ExtractablePlants>(); ;
+                    cachedMapComp = Map.GetComponent<MapComponent_ExtractablePlants>(); 
                 }
                 return cachedMapComp;
             }
@@ -170,8 +170,8 @@ namespace VEF.Plants
                 }
 
                 //Season check. If permanent summer or winter it will transform season in the def extension to just day of the year
-                Season season = GenDate.Season(Find.TickManager.TicksGame, Find.WorldGrid.LongLatOf(Map.Tile));
-              
+                Season season = GenDate.Season(Find.TickManager.TicksAbs, Find.WorldGrid.LongLatOf(Map.Tile));
+               
                 if (season is Season.PermanentSummer || season is Season.PermanentWinter)
                 {
                     int dayOfYearBeginBloom = SeasonAsInt(GetExtension.BloomSeasonStart) * 15 + GetExtension.BloomDayStart;
@@ -188,7 +188,8 @@ namespace VEF.Plants
                     }
                 }
                 if (season == GetExtension.BloomSeasonStart)
-                {                    
+                {
+                   
                     if (GenLocalDate.DayOfQuadrum(Map) >= GetExtension.BloomDayStart-1)
                     {
                         TryDoBloom();
@@ -354,6 +355,10 @@ namespace VEF.Plants
 
                     if (isBlooming) {
                         stringBuilder.AppendLine("VPE_FlowerIsBlooming".Translate());
+                    }
+                    else if(GridsUtility.GetTemperature(Position, Map)<GetExtension.BloomTemperatureMin)
+                    {
+                        stringBuilder.AppendLine("VPE_TempTooLowForBlooming".Translate());
                     }
                 }
                 if (DyingBecauseExposedToLight)

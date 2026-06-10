@@ -68,4 +68,14 @@
 	<VEF.TotalMarketValueRange_Desc>Total market value range (minimum and maximum) of the objects that can be found by opening this loot box.</VEF.TotalMarketValueRange_Desc>
 	<VEF.TotalMarketValueRange_Quality>Market value range (by quality)</VEF.TotalMarketValueRange_Quality>
 	<VEF.TotalMarketValueRange_Quality_Desc>Total market value range (minimum and maximum) of the objects that can be found by opening this loot box. Box quality has modified the base value by a factor of {0}</VEF.TotalMarketValueRange_Quality_Desc>
+	
+	<!-- Extractable plants -->
+	<VPE_MinifiedFlowerWillDieIn>Extracted flower will die in {time} unless replanted.</VPE_MinifiedFlowerWillDieIn>
+	<VPE_ExtractFlower>Extract flower</VPE_ExtractFlower>
+	<VPE_ExtractFlower_Desc>Extract this flower while keeping it alive, so that it can be replanted elsewhere.</VPE_ExtractFlower_Desc>
+	<VPE_CancelExtractFlower>Cancel extraction</VPE_CancelExtractFlower>
+	<VPE_CancelExtractFlower_Desc>Cancel extracting this flower.</VPE_CancelExtractFlower_Desc>
+	<VPE_ReplantFlower>Replant</VPE_ReplantFlower>
+	<VPE_ReplantFlower_Desc>The flower is currently packaged up for storage and transport. Use this command to replant it in the new location.</VPE_ReplantFlower_Desc>
+	
 </LanguageData>
