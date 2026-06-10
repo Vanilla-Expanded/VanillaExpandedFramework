@@ -158,7 +158,7 @@ namespace VEF.Plants
                 //Deadly temperature check
                 if (currentTemperature < cachedDeadlyTemperature)
                 {
-                    TakeDamage(new DamageInfo(DamageDefOf.Rotting, 10));
+                    TakeDamage(new DamageInfo(DamageDefOf.Rotting, GetExtension.DamageWhenBelowDeadlyTemp));
                 }
                 //Blooming due to low temp stop
                 if (currentTemperature < GetExtension.BloomTemperatureMin)

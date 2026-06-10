@@ -25,6 +25,7 @@ namespace VEF.Plants
         //Temperature variables
         public int BloomTemperatureMin = 0;
         public int DeadlyColdTemperature = 0;
+        public int DamageWhenBelowDeadlyTemp = 30;
 
         //Bloom graphics
         public string bloomGraphicPath;
