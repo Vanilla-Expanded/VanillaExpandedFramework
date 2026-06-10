@@ -5,7 +5,11 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using VEF.AnimalBehaviours;
+using VEF.Buildings;
 using Verse;
+using Verse.Noise;
+using static HarmonyLib.Code;
 
 namespace VEF.Plants
 {
@@ -18,13 +22,21 @@ namespace VEF.Plants
 
         public bool alreadyBloomed = false;
 
+        public bool plantAwaitingExtraction = false;
+
         public int lowTempBloomStopCounter = lowTempBloomStopCounterBase; //15 long ticks = 12 hours
 
         public const int lowTempBloomStopCounterBase = 15;
 
+        public int itemProducedCounter;
+
+        public int filthProducedCounter;
+
         public BloomingPlantExtension cachedExtension;
 
         public Graphic cachedGraphic = null;
+
+        MapComponent_ExtractablePlants cachedMapComp;
 
         public int cachedDeadlyTemperature = -200;
 
@@ -61,6 +73,18 @@ namespace VEF.Plants
             }
         }
 
+        public MapComponent_ExtractablePlants PlantsMapComp
+        {
+            get
+            {
+                if (cachedMapComp is null)
+                {
+                    cachedMapComp = Map.GetComponent<MapComponent_ExtractablePlants>(); ;
+                }
+                return cachedMapComp;
+            }
+        }
+
         public int SeasonAsInt(Season season)
         {
             switch (season)
@@ -83,6 +107,14 @@ namespace VEF.Plants
             if (!respawningAfterLoad)
             {
                 cachedDeadlyTemperature = Rand.Range(GetExtension.DeadlyColdTemperature, GetExtension.DeadlyColdTemperature - 8);
+                if (GetExtension.itemProducedWhenBlooming != null)
+                {
+                    itemProducedCounter = GetExtension.longTicksPerItemProduced;
+                }
+                if (GetExtension.filthProducedWhenBlooming != null)
+                {
+                    filthProducedCounter = GetExtension.longTicksPerFilthProduced;
+                }
             }
         }
 
@@ -169,6 +201,54 @@ namespace VEF.Plants
                         TryEndBloom();
                     }
                 }
+                if (isBlooming)
+                {
+                    //Item production when blooming
+                    if (GetExtension.itemProducedWhenBlooming != null)
+                    {
+                        itemProducedCounter--;
+                        if (itemProducedCounter <= 0)
+                        {
+                            Thing thing = ThingMaker.MakeThing(GetExtension.itemProducedWhenBlooming, null);
+                            thing.stackCount = GetExtension.itemProducedAmount;
+                            GenPlace.TryPlaceThing(thing, Position, Map, ThingPlaceMode.Near);
+                            itemProducedCounter = GetExtension.longTicksPerItemProduced;
+                        }
+                    }
+                    //Filth production when blooming
+                    if (GetExtension.filthProducedWhenBlooming != null)
+                    {
+                        filthProducedCounter--;
+                        if (filthProducedCounter <= 0)
+                        {
+                            for (int i = 0; i < GetExtension.filthProducedAmount.RandomInRange; i++)
+                            {
+                                IntVec3 c;
+                                CellFinder.TryFindRandomReachableNearbyCell(Position, Map, GetExtension.filthProducedRadius, TraverseParms.For(TraverseMode.NoPassClosedDoors, Danger.Deadly, false), null, null, out c);
+                                FilthMaker.TryMakeFilth(c, Map, GetExtension.filthProducedWhenBlooming);
+                            }
+                            filthProducedCounter = GetExtension.longTicksPerFilthProduced;
+                        }
+                    }
+                    //Hediff causing when blooming
+                    if (GetExtension.hediffWhenBlooming != null)
+                    {
+                        foreach (Thing thing in GenRadial.RadialDistinctThingsAround(Position, Map, GetExtension.hediffRadius, true))
+                        {
+                            Pawn pawn = thing as Pawn;
+                            
+                            if (pawn != null && (pawn.IsColonist || !GetExtension.hediffOnlyAffectsColonists))
+                            {                             
+                                if (!pawn.Dead && !pawn.Downed && pawn.GetStatValue(StatDefOf.PsychicSensitivity, true) > 0f)
+                                {
+                                    pawn.health.AddHediff(GetExtension.hediffWhenBlooming);
+                                    pawn.health.hediffSet.GetFirstHediffOfDef(GetExtension.hediffWhenBlooming).Severity = GetExtension.hediffSeverity;
+                                }
+                            }
+                        }
+                    }
+                }
+                
             }
         }
 
@@ -213,6 +293,8 @@ namespace VEF.Plants
             Scribe_Values.Look(ref isBlooming, "isBlooming", false);
             Scribe_Values.Look(ref alreadyBloomed, "alreadyBloomed", false);
             Scribe_Values.Look(ref lowTempBloomStopCounter, "lowTempBloomStopCounter", lowTempBloomStopCounterBase);
+            Scribe_Values.Look(ref itemProducedCounter, "itemProducedCounter", 0);
+            Scribe_Values.Look(ref filthProducedCounter, "filthProducedCounter", 0);
 
         }
 
@@ -269,6 +351,10 @@ namespace VEF.Plants
                     stringBuilder.AppendLine("VPE_RealAge".Translate(realAge.ToStringTicksToPeriod()));
 
                     stringBuilder.AppendLine(HarvestableNow ? "ReadyToHarvest".Translate() : "Mature".Translate());
+
+                    if (isBlooming) {
+                        stringBuilder.AppendLine("VPE_FlowerIsBlooming".Translate());
+                    }
                 }
                 if (DyingBecauseExposedToLight)
                 {
@@ -312,10 +398,8 @@ namespace VEF.Plants
             {
                 yield return gizmo;
             }
-
             if (DebugSettings.ShowDevGizmos)
             {
-
                 yield return new Command_Action
                 {
                     defaultLabel = "Increase age 1 year",
@@ -328,11 +412,69 @@ namespace VEF.Plants
                         else
                         {
                             Messages.Message("VPE_MustBeGrown".Translate(), this, MessageTypeDefOf.RejectInput, null, historical: false);
-                        }
-                        
+                        }                      
                     }
                 };
+            }
+            if (LifeStage == PlantLifeStage.Mature)
+            {
+                
+                yield return new Command_Action
+                {
+                    defaultLabel = "VPE_ExtractFlower".Translate(),
+                    defaultDesc = "VPE_ExtractFlower_Desc".Translate(),
+                    icon = ContentFinder<Texture2D>.Get("UI/ExtractFlower"),
+                    hotKey = KeyBindingDefOf.Misc6,
+                    Disabled = plantAwaitingExtraction,
+                    action = delegate
+                    {
+                        if (Map != null)
+                        {                         
+                            if (PlantsMapComp != null)
+                            {
+                                PlantsMapComp.AddObjectToMap(this);
+                                plantAwaitingExtraction = true;
+                            }
+                        }
+                    }
+                };
+                if (plantAwaitingExtraction) {
+                    yield return new Command_Action
+                    {
+                        defaultLabel = "VPE_CancelExtractFlower".Translate(),
+                        defaultDesc = "VPE_CancelExtractFlower_Desc".Translate(),
+                        icon = ContentFinder<Texture2D>.Get("UI/Designators/Cancel"),
+                        hotKey = KeyBindingDefOf.Misc7,                   
+                        action = delegate
+                        {
+                            if (Map != null)
+                            {
+                                if (PlantsMapComp != null)
+                                {
+                                    PlantsMapComp.RemoveObjectFromMap(this);
+                                    plantAwaitingExtraction = false;
+                                }
+                            }
+                        }
+                    };
 
+                }
+
+            }
+        }
+
+        protected override void DrawAt(Vector3 drawLoc, bool flip = false)
+        {
+            base.DrawAt(drawLoc, flip);
+
+            if (Map!=null && PlantsMapComp?.objects_InMap.Contains(this) == true)
+            {
+                Vector3 drawPos = DrawPos;
+                drawPos.y = AltitudeLayer.MetaOverlays.AltitudeFor() + 0.181818187f;
+                float num = ((float)Math.Sin((double)((Time.realtimeSinceStartup + 397f * (float)(thingIDNumber % 571)) * 4f)) + 1f) * 0.5f;
+                num = 0.3f + num * 0.7f;
+                Material material = FadedMaterialPool.FadedVersionOf(MaterialPool.MatFrom("UI/ExtractFlowerOverlay", ShaderDatabase.MetaOverlay), num);
+                UnityEngine.Graphics.DrawMesh(MeshPool.plane08, drawPos, Quaternion.identity, material, 0);
             }
         }
 
@@ -342,18 +484,37 @@ namespace VEF.Plants
             {
                 yield return item;
             }
-
             yield return new StatDrawEntry(StatCategoryDefOf.Basics, "VPE_AgeBeautyModifier".Translate(), "+"+GetExtension.AgeBeautyModifier, "VPE_AgeBeautyModifier_Desc".Translate(GetExtension.MaxAgeBeautyModifier), 4170);
             yield return new StatDrawEntry(StatCategoryDefOf.Basics, "VPE_BloomBeautyModifier".Translate(), "x" + GetExtension.BloomBeautyModifier, "VPE_BloomBeautyModifier_Desc".Translate(), 4171);
             yield return new StatDrawEntry(StatCategoryDefOf.Basics, "VPE_BloomingPeriod".Translate(), GetExtension.BloomSeasonStart +" "+ GetExtension.BloomDayStart
                 +" to "+ GetExtension.BloomSeasonStop + " " + GetExtension.BloomDayEnd, "VPE_BloomingPeriod_Desc".Translate(GetExtension.MaxAgeBeautyModifier), 4172);
             yield return new StatDrawEntry(StatCategoryDefOf.Basics, "VPE_BloomTemperatureMin".Translate(), GetExtension.BloomTemperatureMin+"ºC", "VPE_BloomTemperatureMin_Desc".Translate(GetExtension.CanBloomAgain ? "VPE_CanBloom".Translate() : "VPE_CantBloom".Translate()), 4173);
             yield return new StatDrawEntry(StatCategoryDefOf.Basics, "VPE_DeadlyColdTemperature".Translate(), GetExtension.DeadlyColdTemperature + "ºC", "VPE_DeadlyColdTemperature_Desc".Translate(), 4174);
-            yield return new StatDrawEntry(StatCategoryDefOf.Basics, "VPE_LeaflessBeauty".Translate(),  GetExtension.LeaflessBeauty.ToString(), "VPE_LeaflessBeauty_Desc".Translate(), 3001);
-
-            
+            yield return new StatDrawEntry(StatCategoryDefOf.Basics, "VPE_LeaflessBeauty".Translate(),  GetExtension.LeaflessBeauty.ToString(), "VPE_LeaflessBeauty_Desc".Translate(), 3001);            
         }
 
+        public override void DeSpawn(DestroyMode mode = DestroyMode.Vanish)
+        {
+            if (Map != null)
+            {                
+                if (PlantsMapComp != null)
+                {
+                    PlantsMapComp.RemoveObjectFromMap(this);
+                }
+            }
+            base.DeSpawn(mode);
+        }
 
+        public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
+        {
+            if (Map != null)
+            {             
+                if (PlantsMapComp != null)
+                {
+                    PlantsMapComp.RemoveObjectFromMap(this);
+                }
+            }
+            base.Destroy(mode);
+        } 
     }
 }

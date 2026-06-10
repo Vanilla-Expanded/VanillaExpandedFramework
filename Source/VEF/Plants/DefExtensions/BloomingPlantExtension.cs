@@ -7,11 +7,13 @@ namespace VEF.Plants
   
     public class BloomingPlantExtension : DefModExtension
     {
+        //Age, bloom and leafless beauty modifiers
         public int AgeBeautyModifier = 0;
         public int MaxAgeBeautyModifier = 0;
         public float BloomBeautyModifier = 0;
         public int LeaflessBeauty = 0;
 
+        //Bloom time variables
         public Season BloomSeasonStart;
         public int BloomDayStart = 1;
 
@@ -20,11 +22,27 @@ namespace VEF.Plants
 
         public bool CanBloomAgain=true;
 
+        //Temperature variables
         public int BloomTemperatureMin = 0;
+        public int DeadlyColdTemperature = 0;
 
+        //Bloom graphics
         public string bloomGraphicPath;
 
-        public int DeadlyColdTemperature = 0;
+        //Behaviours when blooming
+        public ThingDef itemProducedWhenBlooming = null;
+        public int longTicksPerItemProduced = 1;
+        public int itemProducedAmount = 1;
+
+        public ThingDef filthProducedWhenBlooming = null;
+        public int longTicksPerFilthProduced = 1;
+        public IntRange filthProducedAmount = IntRange.One;
+        public float filthProducedRadius = 1;
+
+        public HediffDef hediffWhenBlooming = null;
+        public float hediffRadius = 1;
+        public float hediffSeverity = 1;
+        public bool hediffOnlyAffectsColonists = true;
 
     }
 

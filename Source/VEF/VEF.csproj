@@ -364,6 +364,7 @@
     <Compile Include="Maps\Harmony\SectionLayer_LightingOverlay_GenerateLightingOverlay.cs" />
     <Compile Include="Maps\SectionLayers\SectionLayer_CustomRoofGraphic.cs" />
     <Compile Include="Plants\DefExtensions\BloomingPlantExtension.cs" />
+    <Compile Include="Plants\MapComponents\MapComponent_ExtractablePlants.cs" />
     <Compile Include="Plants\Plants\Plant_Blooming.cs" />
     <Compile Include="Plants\StatParts\StatPart_BeautyByLeafless.cs" />
     <Compile Include="Plants\StatParts\StatPart_BeautyByBlooming.cs" />
