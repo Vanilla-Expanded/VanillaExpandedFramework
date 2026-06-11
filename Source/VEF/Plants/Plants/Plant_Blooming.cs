@@ -27,6 +27,9 @@ namespace VEF.Plants
 
         public bool plantAwaitingExtraction = false;
 
+        public bool plantAwaitingWeedRemoval = false;
+
+
         public int lowTempBloomStopCounter = lowTempBloomStopCounterBase; //15 long ticks = 12 hours
 
         public const int lowTempBloomStopCounterBase = 15;
@@ -43,6 +46,8 @@ namespace VEF.Plants
 
         public int cachedDeadlyTemperature = -200;
 
+        public List<string> randomWeedMaterials = new List<string>() { "UI/Overlays/Weeds/WeedsA", "UI/Overlays/Weeds/WeedsB", "UI/Overlays/Weeds/WeedsC" };
+        public string randomWeedMaterial;
 
         private Graphic BloomGraphic
         {
@@ -123,6 +128,7 @@ namespace VEF.Plants
                 {
                     filthProducedCounter = GetExtension.longTicksPerFilthProduced;
                 }
+                randomWeedMaterial = randomWeedMaterials.RandomElement();
             }
         }
 
@@ -323,6 +329,7 @@ namespace VEF.Plants
             Scribe_Values.Look(ref lowTempBloomStopCounter, "lowTempBloomStopCounter", lowTempBloomStopCounterBase);
             Scribe_Values.Look(ref itemProducedCounter, "itemProducedCounter", 0);
             Scribe_Values.Look(ref filthProducedCounter, "filthProducedCounter", 0);
+            Scribe_Values.Look(ref randomWeedMaterial, "randomWeedMaterial", "");
 
         }
 
@@ -447,15 +454,24 @@ namespace VEF.Plants
                         }                      
                     }
                 };
+                if (!hasWeeds) {
+                    yield return new Command_Action
+                    {
+                        defaultLabel = "Cause weeds",
+                        action = delegate
+                        {
+                            hasWeeds = true;
+                        }
+                    };
+                }
             }
-            if (LifeStage == PlantLifeStage.Mature)
-            {
-                
+            if (LifeStage == PlantLifeStage.Mature && !hasWeeds)
+            {               
                 yield return new Command_Action
                 {
                     defaultLabel = "VPE_ExtractFlower".Translate(),
                     defaultDesc = "VPE_ExtractFlower_Desc".Translate(),
-                    icon = ContentFinder<Texture2D>.Get("UI/ExtractFlower"),
+                    icon = ContentFinder<Texture2D>.Get("UI/Gizmo/ExtractFlower"),
                     hotKey = KeyBindingDefOf.Misc6,
                     Disabled = plantAwaitingExtraction,
                     action = delegate
@@ -489,9 +505,51 @@ namespace VEF.Plants
                             }
                         }
                     };
-
                 }
+            }
+            if (hasWeeds)
+            {
 
+                yield return new Command_Action
+                {
+                    defaultLabel = "VPE_RemoveWeeds".Translate(),
+                    defaultDesc = "VPE_RemoveWeeds_Desc".Translate(),
+                    icon = ContentFinder<Texture2D>.Get("UI/Gizmo/RemoveWeeds_Gizmo"),
+                    hotKey = KeyBindingDefOf.Misc8,
+                    Disabled = plantAwaitingWeedRemoval,
+                    action = delegate
+                    {
+                        if (Map != null)
+                        {
+                            if (PlantsMapComp != null)
+                            {
+                                PlantsMapComp.AddWeedToMap(this);
+                                plantAwaitingWeedRemoval = true;
+                            }
+                        }
+                    }
+                };
+                if (plantAwaitingWeedRemoval)
+                {
+                    yield return new Command_Action
+                    {
+                        defaultLabel = "VPE_CancelWeedRemoval".Translate(),
+                        defaultDesc = "VPE_CancelWeedRemoval_Desc".Translate(),
+                        icon = ContentFinder<Texture2D>.Get("UI/Designators/Cancel"),
+                        hotKey = KeyBindingDefOf.Misc7,
+                        action = delegate
+                        {
+                            if (Map != null)
+                            {
+                                if (PlantsMapComp != null)
+                                {
+                                    PlantsMapComp.RemoveWeedFromMap(this);
+                                    plantAwaitingWeedRemoval = false;
+                                }
+                            }
+                        }
+                    };
+                }
             }
         }
 
@@ -499,14 +557,24 @@ namespace VEF.Plants
         {
             base.DrawAt(drawLoc, flip);
 
-            if (Map!=null && PlantsMapComp?.objects_InMap.Contains(this) == true)
+            if (Map!=null)
             {
                 Vector3 drawPos = DrawPos;
                 drawPos.y = AltitudeLayer.MetaOverlays.AltitudeFor() + 0.181818187f;
-                float num = ((float)Math.Sin((double)((Time.realtimeSinceStartup + 397f * (float)(thingIDNumber % 571)) * 4f)) + 1f) * 0.5f;
-                num = 0.3f + num * 0.7f;
-                Material material = FadedMaterialPool.FadedVersionOf(MaterialPool.MatFrom("UI/ExtractFlowerOverlay", ShaderDatabase.MetaOverlay), num);
-                UnityEngine.Graphics.DrawMesh(MeshPool.plane08, drawPos, Quaternion.identity, material, 0);
+
+                if (PlantsMapComp?.flowersOrderedForExtraction_InMap.Contains(this) == true)
+                {                   
+                    float num = ((float)Math.Sin((double)((Time.realtimeSinceStartup + 397f * (float)(thingIDNumber % 571)) * 4f)) + 1f) * 0.5f;
+                    num = 0.3f + num * 0.7f;
+                    Material material = FadedMaterialPool.FadedVersionOf(MaterialPool.MatFrom("UI/Gizmo/ExtractFlowerOverlay", ShaderDatabase.MetaOverlay), num);
+                    UnityEngine.Graphics.DrawMesh(MeshPool.plane08, drawPos, Quaternion.identity, material, 0);
+                }
+                if (hasWeeds)
+                {
+                    Material material = FadedMaterialPool.FadedVersionOf(MaterialPool.MatFrom(randomWeedMaterial, ShaderDatabase.MetaOverlay), 0.8f);
+                    UnityEngine.Graphics.DrawMesh(MeshPool.plane08, drawPos, Quaternion.identity, material, 0);
+                }
+                
             }
         }
 

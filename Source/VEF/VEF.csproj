@@ -363,12 +363,15 @@
     <Compile Include="Maps\Harmony\RoofGrid_GetCellExtraColor.cs" />
     <Compile Include="Maps\Harmony\SectionLayer_LightingOverlay_GenerateLightingOverlay.cs" />
     <Compile Include="Maps\SectionLayers\SectionLayer_CustomRoofGraphic.cs" />
-    <Compile Include="Plants\AI\JobDriver_ExtractFlower.cs" />
-    <Compile Include="Plants\AI\WorkGiver_ExtractFlower.cs" />
+    <Compile Include="Plants\AI\JobDrivers\JobDriver_ExtractFlower.cs" />
+    <Compile Include="Plants\AI\JobDrivers\JobDriver_RemoveWeeds.cs" />
+    <Compile Include="Plants\AI\WorkGivers\WorkGiver_ExtractFlower.cs" />
+    <Compile Include="Plants\AI\WorkGivers\WorkGiver_RemoveWeeds.cs" />
     <Compile Include="Plants\DefExtensions\BloomingPlantExtension.cs" />
     <Compile Include="Plants\DefOfs\InternalDefOf.cs" />
     <Compile Include="Plants\Designators\Designator_ReplantFlower.cs" />
     <Compile Include="Plants\Harmony\JobDriver_Replant_Duration.cs" />
+    <Compile Include="Plants\IncidentWorkers\IncidentWorker_Weeds.cs" />
     <Compile Include="Plants\MapComponents\MapComponent_BloomingPlants.cs" />
     <Compile Include="Plants\Plants\Plant_Blooming.cs" />
     <Compile Include="Plants\StatParts\StatPart_BeautyByWeeds.cs" />

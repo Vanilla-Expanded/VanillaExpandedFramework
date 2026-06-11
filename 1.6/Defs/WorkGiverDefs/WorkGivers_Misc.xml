@@ -52,4 +52,17 @@
 		</requiredCapacities>
 		<canBeDoneByMechs>false</canBeDoneByMechs>
 	</WorkGiverDef>
+	<WorkGiverDef>
+		<defName>VEF_RemoveWeeds</defName>
+		<label>remove weeds</label>
+		<giverClass>VEF.Plants.WorkGiver_RemoveWeeds</giverClass>
+		<workType>PlantCutting</workType>
+		<priorityInType>111</priorityInType>
+		<verb>remove weeds</verb>
+		<gerund>removing weeds</gerund>
+		<requiredCapacities>
+			<li>Manipulation</li>
+		</requiredCapacities>
+		<canBeDoneByMechs>false</canBeDoneByMechs>
+	</WorkGiverDef>
 </Defs>

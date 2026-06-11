@@ -17,7 +17,9 @@ namespace VEF.Plants
 
         public bool alternateBloomingTextures = false;
 
-        public HashSet<Thing> objects_InMap = new HashSet<Thing>();
+        public HashSet<Thing> flowersOrderedForExtraction_InMap = new HashSet<Thing>();
+        public HashSet<Thing> weedsOrderedForRemoval_InMap = new HashSet<Thing>();
+
 
         public MapComponent_BloomingPlants(Map map) : base(map)
         {
@@ -38,17 +40,33 @@ namespace VEF.Plants
 
         public void AddObjectToMap(Thing thing)
         {
-            if (!objects_InMap.Contains(thing))
+            if (!flowersOrderedForExtraction_InMap.Contains(thing))
             {
-                objects_InMap.Add(thing);
+                flowersOrderedForExtraction_InMap.Add(thing);
             }
         }
 
         public void RemoveObjectFromMap(Thing thing)
         {
-            if (objects_InMap.Contains(thing))
+            if (flowersOrderedForExtraction_InMap.Contains(thing))
             {
-                objects_InMap.Remove(thing);
+                flowersOrderedForExtraction_InMap.Remove(thing);
+            }
+        }
+
+        public void AddWeedToMap(Thing thing)
+        {
+            if (!weedsOrderedForRemoval_InMap.Contains(thing))
+            {
+                weedsOrderedForRemoval_InMap.Add(thing);
+            }
+        }
+
+        public void RemoveWeedFromMap(Thing thing)
+        {
+            if (weedsOrderedForRemoval_InMap.Contains(thing))
+            {
+                weedsOrderedForRemoval_InMap.Remove(thing);
             }
         }
 

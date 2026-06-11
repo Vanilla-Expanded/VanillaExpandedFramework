@@ -13,7 +13,7 @@ namespace VEF.Plants
 
         public Designator_ReplantFlower()
         {
-            icon = ContentFinder<Texture2D>.Get("UI/ReplantFlower");
+            icon = ContentFinder<Texture2D>.Get("UI/Gizmo/ReplantFlower");
             soundSucceeded = SoundDefOf.Designate_ExtractTree;
         }
 

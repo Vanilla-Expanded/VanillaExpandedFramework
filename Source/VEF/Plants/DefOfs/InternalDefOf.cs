@@ -7,5 +7,6 @@ namespace VEF.Plants
     public static class InternalDefOf
     {
         public static JobDef VEF_ExtractFlower;
+        public static JobDef VEF_RemoveWeeds;
     }
 }

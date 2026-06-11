@@ -50,6 +50,11 @@
 		<reportString>extracting a flower.</reportString>
 	</JobDef>
 	<JobDef>
+		<defName>VEF_RemoveWeeds</defName>
+		<driverClass>VEF.Plants.JobDriver_RemoveWeeds</driverClass>
+		<reportString>removing weeds.</reportString>
+	</JobDef>
+	<JobDef>
 		<defName>VEF_RefuelSecondary</defName>
 		<driverClass>VEF.Buildings.JobDriver_RefuelSecondary</driverClass>
 		<reportString>refueling TargetA with ammunition.</reportString>

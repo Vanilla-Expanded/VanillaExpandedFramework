@@ -101,5 +101,10 @@
 	<VPE_DeadlyColdTemperature>Deadly cold temperature</VPE_DeadlyColdTemperature>
 	<VPE_DeadlyColdTemperature_Desc>Below this temperature, the plant will start dying.</VPE_DeadlyColdTemperature_Desc>
 	<VPE_TempTooLowForBlooming>Temperature too low for blooming</VPE_TempTooLowForBlooming>
-	
+	<VPE_RemoveWeeds>Remove weeds</VPE_RemoveWeeds>
+	<VPE_RemoveWeeds_Desc>Remove the weeds that are negatively impacting this flower's beauty.</VPE_RemoveWeeds_Desc>
+	<VPE_CancelWeedRemoval>Cancel weed removal</VPE_CancelWeedRemoval>
+	<VPE_CancelWeedRemoval_Desc>Cancel removing the weeds from this flower.</VPE_CancelWeedRemoval_Desc>
+	<VEF_LetterLabelWeeds>Weeds: {PLANTDEF_labelPlural}</VEF_LetterLabelWeeds>
+    <VEF_LetterWeeds>Weeds have spread across your {PLANTDEF_labelPlural}, as well as other nearby blooming flowers, greatly affecting their beauty.\n\nYou can order your colonists to remove the weeds, though it is a time consuming process.</VEF_LetterWeeds>
 </LanguageData>
