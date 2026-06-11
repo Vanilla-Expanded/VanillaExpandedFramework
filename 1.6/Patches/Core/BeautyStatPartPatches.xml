@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/StatDef[defName="Beauty"]/parts</xpath>
+		<value>
+			<li Class="VEF.Plants.StatPart_BeautyByAge"/>
+			<li Class="VEF.Plants.StatPart_BeautyByLeafless"/>
+			<li Class="VEF.Plants.StatPart_BeautyByBlooming"/>
+			<li Class="VEF.Plants.StatPart_BeautyByWeeds"/>
+		</value>
+	</Operation>
+</Patch>
