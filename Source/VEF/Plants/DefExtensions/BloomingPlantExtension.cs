@@ -12,6 +12,7 @@ namespace VEF.Plants
         public int MaxAgeBeautyModifier = 0;
         public float BloomBeautyModifier = 0;
         public int LeaflessBeauty = 0;
+        public int WeededBeauty = -4;
 
         //Bloom time variables
         public Season BloomSeasonStart;

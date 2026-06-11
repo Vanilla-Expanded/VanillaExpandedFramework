@@ -78,4 +78,28 @@
 	<VPE_ReplantFlower>Replant</VPE_ReplantFlower>
 	<VPE_ReplantFlower_Desc>The flower is currently packaged up for storage and transport. Use this command to replant it in the new location.</VPE_ReplantFlower_Desc>
 	
+	<!-- Blooming plants -->
+	<VPE_RealAge>Age: {0}</VPE_RealAge>
+	<VPE_FlowerIsBlooming>Flower is blooming</VPE_FlowerIsBlooming>
+	<VPE_BeautyByAge>Beauty by age: +{0}</VPE_BeautyByAge>
+	<VPE_BeautyByBloming>Beauty by blooming: x{0}</VPE_BeautyByBloming>
+	<VPE_BeautyByWeeds>Beauty because of weeds: {0}</VPE_BeautyByWeeds>
+	<VPE_BeautyByLeafless>Leafless beauty: {0}</VPE_BeautyByLeafless>
+	<VPE_LeaflessBeauty>Leafless beauty</VPE_LeaflessBeauty>
+	<VPE_LeaflessBeauty_Desc>Blooming flowers are pretty ugly when leafless due to cold. They won't die just for being leafless, but their beauty will be greatly affected.</VPE_LeaflessBeauty_Desc>
+	<VPE_MustBeGrown>Plant must be fully grown before you can add age to it</VPE_MustBeGrown>
+	<VPE_AgeBeautyModifier>Age beauty modifier</VPE_AgeBeautyModifier>
+	<VPE_AgeBeautyModifier_Desc>The beauty of this plant will increase by this amount for every year it is kept alive, up to a maximum of +{0}.</VPE_AgeBeautyModifier_Desc>
+	<VPE_BloomBeautyModifier>Bloom beauty modifier</VPE_BloomBeautyModifier>
+	<VPE_BloomBeautyModifier_Desc>The beauty of this plant will be multiplied by this amount when in its blooming stage.</VPE_BloomBeautyModifier_Desc>
+	<VPE_BloomingPeriod>Blooming period</VPE_BloomingPeriod>
+	<VPE_BloomingPeriod_Desc>This flower will enter a blooming stage in this period, or the equivalent in days of the year in permanent summer / winter.</VPE_BloomingPeriod_Desc>
+	<VPE_BloomTemperatureMin>Minimum bloom temperature</VPE_BloomTemperatureMin>
+	<VPE_BloomTemperatureMin_Desc>The minimum temperature the plant will need to enter a blooming stage.\n\n{0}</VPE_BloomTemperatureMin_Desc>
+	<VPE_CanBloom>If the blooming stops due to low temperature, this flower can enter a blooming stage again if the conditions improve.</VPE_CanBloom>
+	<VPE_CantBloom>If the blooming stops due to low temperature, this flower won't be able to bloom again until next year!</VPE_CantBloom>
+	<VPE_DeadlyColdTemperature>Deadly cold temperature</VPE_DeadlyColdTemperature>
+	<VPE_DeadlyColdTemperature_Desc>Below this temperature, the plant will start dying.</VPE_DeadlyColdTemperature_Desc>
+	<VPE_TempTooLowForBlooming>Temperature too low for blooming</VPE_TempTooLowForBlooming>
+	
 </LanguageData>

@@ -21,6 +21,8 @@ namespace VEF.Plants
 
         public bool isBlooming = false;
 
+        public bool hasWeeds = false;
+
         public bool alreadyBloomed = false;
 
         public bool plantAwaitingExtraction = false;
@@ -316,6 +318,7 @@ namespace VEF.Plants
             base.ExposeData();
             Scribe_Values.Look(ref realAge, "realAge", 0);
             Scribe_Values.Look(ref isBlooming, "isBlooming", false);
+            Scribe_Values.Look(ref hasWeeds, "hasWeeds", false);
             Scribe_Values.Look(ref alreadyBloomed, "alreadyBloomed", false);
             Scribe_Values.Look(ref lowTempBloomStopCounter, "lowTempBloomStopCounter", lowTempBloomStopCounterBase);
             Scribe_Values.Look(ref itemProducedCounter, "itemProducedCounter", 0);

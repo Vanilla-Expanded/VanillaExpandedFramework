@@ -371,6 +371,7 @@
     <Compile Include="Plants\Harmony\JobDriver_Replant_Duration.cs" />
     <Compile Include="Plants\MapComponents\MapComponent_BloomingPlants.cs" />
     <Compile Include="Plants\Plants\Plant_Blooming.cs" />
+    <Compile Include="Plants\StatParts\StatPart_BeautyByWeeds.cs" />
     <Compile Include="Plants\StatParts\StatPart_BeautyByLeafless.cs" />
     <Compile Include="Plants\StatParts\StatPart_BeautyByBlooming.cs" />
     <Compile Include="Plants\StatParts\StatPart_BeautyByAge.cs" />
