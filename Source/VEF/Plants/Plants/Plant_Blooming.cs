@@ -175,38 +175,15 @@ namespace VEF.Plants
                     lowTempBloomStopCounter = lowTempBloomStopCounterBase;
                 }
 
-                //Season check. If permanent summer or winter it will transform season in the def extension to just day of the year
-                Season season = GenDate.Season(Find.TickManager.TicksAbs, Find.WorldGrid.LongLatOf(Map.Tile));
-               
-                if (season is Season.PermanentSummer || season is Season.PermanentWinter)
+                if (DetectBloomingByDate())
                 {
-                    int dayOfYearBeginBloom = SeasonAsInt(GetExtension.BloomSeasonStart) * 15 + GetExtension.BloomDayStart;
-                    int dayOfYearEndBloom = SeasonAsInt(GetExtension.BloomSeasonStop) * 15 + GetExtension.BloomDayEnd;                
-
-                    if (dayOfYear >= dayOfYearBeginBloom - 1 && dayOfYear < dayOfYearEndBloom-1)
-                    {
-                        TryDoBloom();                        
-                    }
-
-                    if (dayOfYear >= dayOfYearEndBloom - 1 || dayOfYear < dayOfYearBeginBloom - 1)
-                    {
-                        TryEndBloom();
-                    }
-                }
-                if (season == GetExtension.BloomSeasonStart)
-                {
-                   
-                    if (GenLocalDate.DayOfQuadrum(Map) >= GetExtension.BloomDayStart-1)
-                    {
+                    if (!isBlooming)
                         TryDoBloom();
-                    }                  
                 }
-                if (season == GetExtension.BloomSeasonStop)
-                {                   
-                    if (GenLocalDate.DayOfQuadrum(Map) >= GetExtension.BloomDayEnd - 1)
-                    {
+                else
+                {
+                    if (isBlooming)
                         TryEndBloom();
-                    }
                 }
                 if (isBlooming)
                 {
@@ -252,6 +229,32 @@ namespace VEF.Plants
                     }
                 }             
             }
+        }
+
+        public bool DetectBloomingByDate()
+        {
+            if (Map != null)
+            {
+                Season currentSeason = GenDate.Season(Find.TickManager.TicksAbs, Find.WorldGrid.LongLatOf(Map.Tile));
+
+                int currentDay = GenLocalDate.DayOfQuadrum(Map) + 1;
+
+                int current = OrdinalPosition(currentSeason, currentDay);
+                int start = OrdinalPosition(GetExtension.BloomSeasonStart, GetExtension.BloomDayStart);
+                int end = OrdinalPosition(GetExtension.BloomSeasonStop, GetExtension.BloomDayEnd);
+
+                if (start < end)
+                {
+                    return current >= start && current < end;
+                }
+                return current >= start || current < end;
+            }
+            return false;
+        }
+
+        private int OrdinalPosition(Season season, int day)
+        {
+            return SeasonAsInt(season) * 15 + (day - 1);
         }
 
         private void GiveOrUpdateHediff(Pawn target)
