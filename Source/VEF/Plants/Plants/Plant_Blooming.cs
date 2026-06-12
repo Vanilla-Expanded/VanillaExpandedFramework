@@ -241,23 +241,36 @@ namespace VEF.Plants
 
         public bool DetectBloomingByDate()
         {
-            if (Map != null)
+            if (Map == null) return false;
+
+            Season currentSeason =GenDate.Season(Find.TickManager.TicksAbs,Find.WorldGrid.LongLatOf(Map.Tile));
+
+            if (currentSeason == Season.PermanentSummer || currentSeason == Season.PermanentWinter)
             {
-                Season currentSeason = GenDate.Season(Find.TickManager.TicksAbs, Find.WorldGrid.LongLatOf(Map.Tile));
-
-                int currentDay = GenLocalDate.DayOfQuadrum(Map) + 1;
-
-                int current = OrdinalPosition(currentSeason, currentDay);
-                int start = OrdinalPosition(GetExtension.BloomSeasonStart, GetExtension.BloomDayStart);
-                int end = OrdinalPosition(GetExtension.BloomSeasonStop, GetExtension.BloomDayEnd);
+                int dayOfYear = GenLocalDate.DayOfYear(Map);
+                int start =SeasonAsInt(GetExtension.BloomSeasonStart) * 15 +(GetExtension.BloomDayStart - 1);
+                int end = SeasonAsInt(GetExtension.BloomSeasonStop) * 15 +(GetExtension.BloomDayEnd - 1);
 
                 if (start < end)
                 {
-                    return current >= start && current < end;
+                    return dayOfYear >= start && dayOfYear < end;
                 }
-                return current >= start || current < end;
+
+                return dayOfYear >= start || dayOfYear < end;
             }
-            return false;
+
+            int currentDay = GenLocalDate.DayOfQuadrum(Map) + 1;
+
+            int current = OrdinalPosition(currentSeason, currentDay);
+            int startOrdinal = OrdinalPosition(GetExtension.BloomSeasonStart, GetExtension.BloomDayStart);
+            int endOrdinal = OrdinalPosition(GetExtension.BloomSeasonStop, GetExtension.BloomDayEnd);
+
+            if (startOrdinal < endOrdinal)
+            {
+                return current >= startOrdinal && current < endOrdinal;
+            }
+
+            return current >= startOrdinal || current < endOrdinal;
         }
 
         private int OrdinalPosition(Season season, int day)
