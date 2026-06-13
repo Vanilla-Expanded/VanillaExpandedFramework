@@ -27,7 +27,6 @@
 
         public override void SubTrigger(TargetInfo A, TargetInfo B, int overrideSpawnTick = -1, bool force = false)
         {
-            Log.Message("SubTrigger called for SubEffecter_SlideTowardsTarget");
             base.SubTrigger(A, B, overrideSpawnTick, force);
 
             this.MakeMote(A, B, overrideSpawnTick);
@@ -57,9 +56,6 @@
                     return;
 
                 progress = Mathf.Max(this.Def.minimumProgress.RandomInRange, progress);
-
-                Log.Message(progress);
-
 
                 Vector3 endPointRelativeRotated = endpointRelative.RotatedBy(num);
 
