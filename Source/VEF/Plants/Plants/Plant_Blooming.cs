@@ -601,8 +601,8 @@ namespace VEF.Plants
             yield return new StatDrawEntry(StatCategoryDefOf.Basics, "VPE_BloomBeautyModifier".Translate(), "x" + GetExtension.BloomBeautyModifier, "VPE_BloomBeautyModifier_Desc".Translate(), 4171);
             yield return new StatDrawEntry(StatCategoryDefOf.Basics, "VPE_BloomingPeriod".Translate(), GetExtension.BloomSeasonStart +" "+ GetExtension.BloomDayStart
                 +" to "+ GetExtension.BloomSeasonStop + " " + GetExtension.BloomDayEnd, "VPE_BloomingPeriod_Desc".Translate(GetExtension.MaxAgeBeautyModifier), 4172);
-            yield return new StatDrawEntry(StatCategoryDefOf.Basics, "VPE_BloomTemperatureMin".Translate(), GetExtension.BloomTemperatureMin+"ºC", "VPE_BloomTemperatureMin_Desc".Translate(GetExtension.CanBloomAgain ? "VPE_CanBloom".Translate() : "VPE_CantBloom".Translate()), 4173);
-            yield return new StatDrawEntry(StatCategoryDefOf.Basics, "VPE_DeadlyColdTemperature".Translate(), GetExtension.DeadlyColdTemperature + "ºC", "VPE_DeadlyColdTemperature_Desc".Translate(), 4174);
+            yield return new StatDrawEntry(StatCategoryDefOf.Basics, "VPE_BloomTemperatureMin".Translate(), ((float)GetExtension.BloomTemperatureMin).ToStringTemperature("F0"), "VPE_BloomTemperatureMin_Desc".Translate(GetExtension.CanBloomAgain ? "VPE_CanBloom".Translate() : "VPE_CantBloom".Translate()), 4173);
+            yield return new StatDrawEntry(StatCategoryDefOf.Basics, "VPE_DeadlyColdTemperature".Translate(), ((float)GetExtension.DeadlyColdTemperature).ToStringTemperature("F0"), "VPE_DeadlyColdTemperature_Desc".Translate(), 4174);
             yield return new StatDrawEntry(StatCategoryDefOf.Basics, "VPE_LeaflessBeauty".Translate(),  GetExtension.LeaflessBeauty.ToString(), "VPE_LeaflessBeauty_Desc".Translate(), 3001);            
         }
 
