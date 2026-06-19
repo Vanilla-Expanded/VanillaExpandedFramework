@@ -25,7 +25,7 @@ namespace PipeSystem
         public override void CompTickRare()
         {
             base.CompTickRare();
-            if (ShouldPushHeatNow)
+            if (ShouldPushHeatNow && !(parent is MinifiedThing))
             {
                 float overclock = AdvancedProcessor.overclockMultiplier;
                  
