@@ -226,6 +226,7 @@
     <Compile Include="Buildings\Harmony\CompBreakdownable_CheckForBreakdown.cs" />
     <Compile Include="Buildings\Harmony\CompProjectileInterceptor_PostDraw.cs" />
     <Compile Include="Buildings\Harmony\CompRefuelable_EjectFuelPatches.cs" />
+    <Compile Include="Buildings\Harmony\CompRefuelable_PostDraw.cs" />
     <Compile Include="Buildings\Harmony\GravshipUtility_PreLaunchConfirmation_Patch.cs" />
     <Compile Include="Buildings\Harmony\Gravship_CopyCellContents_Patch.cs" />
     <Compile Include="Buildings\Harmony\ResearchProjectDef_CanBeResearchedAt.cs" />
