@@ -28,8 +28,8 @@ namespace VEF.Weapons
                 if (Spawned && Find.CurrentMap == Map)
                     return 1;
 
-                // Update matches damage rate (but maxes out at 15 ticks).
-                return Mathf.Max(def.tickDamageRate, 1);
+                // Update matches damage or animation rate, whichever is lower (but maxes out at 15 ticks).
+                return Mathf.Max(Mathf.Min(def.tickDamageRate, TickFrameRate), 1);
             }
         }
 
@@ -466,7 +466,7 @@ namespace VEF.Weapons
                 }
             }
 
-            if (this.IsHashIntervalTick(TickFrameRate) && def.lifeTimeDuration > 0)
+            if (this.IsHashIntervalTick(TickFrameRate, delta) && def.lifeTimeDuration > 0)
             {
                 curDuration++;
                 if (curDuration > def.lifeTimeDuration)
