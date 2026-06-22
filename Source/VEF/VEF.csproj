@@ -372,6 +372,8 @@
     <Compile Include="Plants\AI\JobDrivers\JobDriver_RemoveWeeds.cs" />
     <Compile Include="Plants\AI\WorkGivers\WorkGiver_ExtractFlower.cs" />
     <Compile Include="Plants\AI\WorkGivers\WorkGiver_RemoveWeeds.cs" />
+    <Compile Include="Plants\Comps\CompGlowerBlooming.cs" />
+    <Compile Include="Plants\Comps\Properties\CompProperties_GlowerBlooming.cs" />
     <Compile Include="Plants\DefExtensions\BloomingPlantExtension.cs" />
     <Compile Include="Plants\DefOfs\InternalDefOf.cs" />
     <Compile Include="Plants\Designators\Designator_ReplantFlower.cs" />

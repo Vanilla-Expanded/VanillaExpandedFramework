@@ -28,9 +28,15 @@ namespace VEF.Plants
         public int DeadlyColdTemperature = 0;
         public int DamageWhenBelowDeadlyTemp = 30;
 
+        //Light variables
+        public float BloomLightMax = 1;
+       
         //Bloom graphics
         public string bloomGraphicPath;
         public string alternateBloomGraphicPath="";
+
+        //Used by Weeds incident
+        public bool ImmuneToWeeds = false;
 
         //Behaviours when blooming
         public ThingDef itemProducedWhenBlooming = null;

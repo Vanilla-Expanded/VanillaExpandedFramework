@@ -44,6 +44,8 @@ namespace VEF.Plants
 
         MapComponent_BloomingPlants cachedMapComp;
 
+        CompGlowerBlooming cachedGlowingComp;
+
         public int cachedDeadlyTemperature = -200;
 
         public List<string> randomWeedMaterials = new List<string>() { "UI/Overlays/Weeds/WeedsA", "UI/Overlays/Weeds/WeedsB", "UI/Overlays/Weeds/WeedsC" };
@@ -130,6 +132,7 @@ namespace VEF.Plants
                 }
                 randomWeedMaterial = randomWeedMaterials.RandomElement();
             }
+            cachedGlowingComp = this.GetComp<CompGlowerBlooming>();
         }
 
         protected override void TickInterval(int delta)
@@ -163,6 +166,8 @@ namespace VEF.Plants
                 }
 
                 float currentTemperature = GridsUtility.GetTemperature(Position, Map);
+                float currentLight = Map.glowGrid.GroundGlowAt(Position);
+
                 //Deadly temperature check
                 if (currentTemperature < cachedDeadlyTemperature)
                 {
@@ -181,6 +186,12 @@ namespace VEF.Plants
                 else
                 {
                     lowTempBloomStopCounter = lowTempBloomStopCounterBase;
+                }
+
+                //Blooming due to too much light stop
+                if (GetExtension.BloomLightMax<1 && currentLight > GetExtension.BloomLightMax)
+                {                 
+                    TryEndBloom();                     
                 }
 
                 if (DetectBloomingByDate())
@@ -300,7 +311,10 @@ namespace VEF.Plants
 
         public void TryDoBloom() {
 
-            if (!isBlooming && !alreadyBloomed && GridsUtility.GetTemperature(Position, Map) >= GetExtension.BloomTemperatureMin)
+            if (!isBlooming && !alreadyBloomed && GridsUtility.GetTemperature(Position, Map) >= GetExtension.BloomTemperatureMin
+                &&(GetExtension.BloomLightMax==1 || Map.glowGrid.GroundGlowAt(Position)<= GetExtension.BloomLightMax)
+                
+                )
             {
 
                 if (!GetExtension.CanBloomAgain)
@@ -309,6 +323,10 @@ namespace VEF.Plants
                 }
                 isBlooming = true;
                 Map.mapDrawer.MapMeshDirty(Position, MapMeshFlagDefOf.Things);
+                if (cachedGlowingComp != null)
+                {
+                    cachedGlowingComp.UpdateLit(Map);
+                }
             }
         }
 
@@ -318,6 +336,10 @@ namespace VEF.Plants
             {
                 isBlooming = false;
                 Map.mapDrawer.MapMeshDirty(Position, MapMeshFlagDefOf.Things);
+                if (cachedGlowingComp != null)
+                {
+                    cachedGlowingComp.UpdateLit(Map);
+                }
             }
         }
 

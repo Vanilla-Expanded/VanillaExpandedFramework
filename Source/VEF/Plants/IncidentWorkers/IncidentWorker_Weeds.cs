@@ -62,7 +62,7 @@ namespace VEF.Plants
         {
             Thing result;
             bool result2 = (from x in map.listerThings.ThingsInGroup(ThingRequestGroup.Plant)
-                            where (x is Plant_Blooming)
+                            where (x is Plant_Blooming plant_Blooming && plant_Blooming?.GetExtension.ImmuneToWeeds==false)
                             select x).TryRandomElement(out result);
             plant = (Plant_Blooming)result;
             return result2;
@@ -77,7 +77,7 @@ namespace VEF.Plants
         public Plant_Blooming GetFirstWeedableNowPlant(IntVec3 c, Map map)
         {
             Plant_Blooming plant = c.GetPlant(map) as Plant_Blooming;
-            if (plant != null && !plant.hasWeeds)
+            if (plant != null && !plant.hasWeeds && plant?.GetExtension.ImmuneToWeeds == false)
             {
                 return plant;
             }
