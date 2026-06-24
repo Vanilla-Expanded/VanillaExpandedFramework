@@ -8,6 +8,6 @@ namespace VEF.Pawns
     {
 
         public static StatDef VEF_RangedDodgeChance;
-       
+        public static StatDef VEF_HeatstrokeBuildupMultiplier;
     }
 }

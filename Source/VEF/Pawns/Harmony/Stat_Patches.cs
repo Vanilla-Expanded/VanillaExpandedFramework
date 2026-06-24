@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Reflection;
+using System.Linq;
 
 namespace VEF.Pawns
 {
@@ -71,6 +72,43 @@ namespace VEF.Pawns
 
 
 
+        }
+    }
+
+    [HarmonyPatch(typeof(HediffGiver_Heat), nameof(HediffGiver_Heat.OnIntervalPassed))]
+    public static class VanillaExpandedFramework_HediffGiver_Heat_OnIntervalPassed_Patch
+    {
+       
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
+        {
+            var codes = codeInstructions.ToList();
+            MethodInfo ModifyHeatstrokeSeverityAdvance = AccessTools.Method(typeof(VanillaExpandedFramework_HediffGiver_Heat_OnIntervalPassed_Patch), "ModifyHeatstrokeSeverityAdvance");
+            FieldInfo hediffField = AccessTools.DeclaredField(typeof(HediffGiver), nameof(HediffGiver.hediff));
+
+            for (var i = 0; i < codes.Count; i++)
+            {
+
+                if (i > 0 && codes[i - 1].LoadsField(hediffField) && codes[i].opcode == OpCodes.Ldloc_S && codes[i].operand is LocalBuilder lb && lb.LocalIndex == 5)
+                {
+
+                    yield return new CodeInstruction(OpCodes.Ldarg_1);
+                    yield return codes[i];
+                    yield return new CodeInstruction(OpCodes.Call, ModifyHeatstrokeSeverityAdvance);
+
+                }
+
+                else yield return codes[i];
+            }
+        }
+
+        public static float ModifyHeatstrokeSeverityAdvance(Pawn p, float rate)
+        {
+            if (p != null)
+            {
+                float heatStrokeStat = p.GetStatValue(InternalDefOf.VEF_HeatstrokeBuildupMultiplier);                
+                return rate*heatStrokeStat;               
+            }
+            return rate;
         }
     }
 
