@@ -24,7 +24,8 @@ namespace VEF.Plants
         public bool CanBloomAgain=true;
 
         //Temperature variables
-        public int BloomTemperatureMin = 0;
+        public int BloomTemperatureMin = -250;
+        public int BloomTemperatureMax = 999;
         public int DeadlyColdTemperature = 0;
         public int DamageWhenBelowDeadlyTemp = 30;
 

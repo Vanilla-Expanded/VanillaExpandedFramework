@@ -96,11 +96,14 @@
 	<VPE_BloomingPeriod_Desc>This flower will enter a blooming stage in this period, or the equivalent in days of the year in permanent summer / winter.</VPE_BloomingPeriod_Desc>
 	<VPE_BloomTemperatureMin>Minimum bloom temperature</VPE_BloomTemperatureMin>
 	<VPE_BloomTemperatureMin_Desc>The minimum temperature the plant will need to enter a blooming stage.\n\n{0}</VPE_BloomTemperatureMin_Desc>
+	<VPE_BloomTemperatureMax>Maximum bloom temperature</VPE_BloomTemperatureMax>
+	<VPE_BloomTemperatureMax_Desc>The maximum temperature the plant will need to be below to enter a blooming stage.\n\n{0}</VPE_BloomTemperatureMax_Desc>
 	<VPE_CanBloom>If the blooming stops due to low temperature, this flower can enter a blooming stage again if the conditions improve.</VPE_CanBloom>
 	<VPE_CantBloom>If the blooming stops due to low temperature, this flower won't be able to bloom again until next year!</VPE_CantBloom>
 	<VPE_DeadlyColdTemperature>Deadly cold temperature</VPE_DeadlyColdTemperature>
 	<VPE_DeadlyColdTemperature_Desc>Below this temperature, the plant will start dying.</VPE_DeadlyColdTemperature_Desc>
 	<VPE_TempTooLowForBlooming>Temperature too low for blooming</VPE_TempTooLowForBlooming>
+	<VPE_TempTooHighForBlooming>Temperature too high for blooming</VPE_TempTooHighForBlooming>
 	<VPE_RemoveWeeds>Remove weeds</VPE_RemoveWeeds>
 	<VPE_RemoveWeeds_Desc>Remove the weeds that are negatively impacting this flower's beauty.</VPE_RemoveWeeds_Desc>
 	<VPE_CancelWeedRemoval>Cancel weed removal</VPE_CancelWeedRemoval>

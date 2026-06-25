@@ -29,7 +29,6 @@ namespace VEF.Plants
 
         public bool plantAwaitingWeedRemoval = false;
 
-
         public int lowTempBloomStopCounter = lowTempBloomStopCounterBase; //15 long ticks = 12 hours
 
         public const int lowTempBloomStopCounterBase = 15;
@@ -173,8 +172,8 @@ namespace VEF.Plants
                 {
                     TakeDamage(new DamageInfo(DamageDefOf.Rotting, GetExtension.DamageWhenBelowDeadlyTemp));
                 }
-                //Blooming due to low temp stop
-                if (currentTemperature < GetExtension.BloomTemperatureMin)
+                //Blooming due to low or high temp stop
+                if (currentTemperature < GetExtension.BloomTemperatureMin || currentTemperature > GetExtension.BloomTemperatureMax)
                 {
                     lowTempBloomStopCounter--;
                     if(lowTempBloomStopCounter < 0)
@@ -311,8 +310,10 @@ namespace VEF.Plants
 
         public void TryDoBloom() {
 
-            if (!isBlooming && !alreadyBloomed && GridsUtility.GetTemperature(Position, Map) >= GetExtension.BloomTemperatureMin
-                &&(GetExtension.BloomLightMax==1 || Map.glowGrid.GroundGlowAt(Position)<= GetExtension.BloomLightMax)
+            float currentTemp = GridsUtility.GetTemperature(Position, Map);
+            if (!isBlooming && !alreadyBloomed && currentTemp >= GetExtension.BloomTemperatureMin 
+                && currentTemp <= GetExtension.BloomTemperatureMax
+                && (GetExtension.BloomLightMax==1 || Map.glowGrid.GroundGlowAt(Position)<= GetExtension.BloomLightMax)
                 
                 )
             {
@@ -422,12 +423,18 @@ namespace VEF.Plants
 
                     stringBuilder.AppendLine(HarvestableNow ? "ReadyToHarvest".Translate() : "Mature".Translate());
 
+                    float currentTemp = GridsUtility.GetTemperature(Position, Map);
+
                     if (isBlooming) {
                         stringBuilder.AppendLine("VPE_FlowerIsBlooming".Translate());
                     }
-                    else if(GridsUtility.GetTemperature(Position, Map)<GetExtension.BloomTemperatureMin)
+                    else if(currentTemp < GetExtension.BloomTemperatureMin)
                     {
                         stringBuilder.AppendLine("VPE_TempTooLowForBlooming".Translate());
+                    }
+                    else if (currentTemp > GetExtension.BloomTemperatureMax)
+                    {
+                        stringBuilder.AppendLine("VPE_TempTooHighForBlooming".Translate());
                     }
                 }
                 if (DyingBecauseExposedToLight)
@@ -623,7 +630,14 @@ namespace VEF.Plants
             yield return new StatDrawEntry(StatCategoryDefOf.Basics, "VPE_BloomBeautyModifier".Translate(), "x" + GetExtension.BloomBeautyModifier, "VPE_BloomBeautyModifier_Desc".Translate(), 4171);
             yield return new StatDrawEntry(StatCategoryDefOf.Basics, "VPE_BloomingPeriod".Translate(), GetExtension.BloomSeasonStart +" "+ GetExtension.BloomDayStart
                 +" to "+ GetExtension.BloomSeasonStop + " " + GetExtension.BloomDayEnd, "VPE_BloomingPeriod_Desc".Translate(GetExtension.MaxAgeBeautyModifier), 4172);
-            yield return new StatDrawEntry(StatCategoryDefOf.Basics, "VPE_BloomTemperatureMin".Translate(), ((float)GetExtension.BloomTemperatureMin).ToStringTemperature("F0"), "VPE_BloomTemperatureMin_Desc".Translate(GetExtension.CanBloomAgain ? "VPE_CanBloom".Translate() : "VPE_CantBloom".Translate()), 4173);
+            if (GetExtension.BloomTemperatureMin != -250) {
+                yield return new StatDrawEntry(StatCategoryDefOf.Basics, "VPE_BloomTemperatureMin".Translate(), ((float)GetExtension.BloomTemperatureMin).ToStringTemperature("F0"), "VPE_BloomTemperatureMin_Desc".Translate(GetExtension.CanBloomAgain ? "VPE_CanBloom".Translate() : "VPE_CantBloom".Translate()), 4173);
+            }
+            if (GetExtension.BloomTemperatureMax != 999)
+            {
+                yield return new StatDrawEntry(StatCategoryDefOf.Basics, "VPE_BloomTemperatureMax".Translate(), ((float)GetExtension.BloomTemperatureMax).ToStringTemperature("F0"), "VPE_BloomTemperatureMax_Desc".Translate(GetExtension.CanBloomAgain ? "VPE_CanBloom".Translate() : "VPE_CantBloom".Translate()), 4173);
+
+            }
             yield return new StatDrawEntry(StatCategoryDefOf.Basics, "VPE_DeadlyColdTemperature".Translate(), ((float)GetExtension.DeadlyColdTemperature).ToStringTemperature("F0"), "VPE_DeadlyColdTemperature_Desc".Translate(), 4174);
             yield return new StatDrawEntry(StatCategoryDefOf.Basics, "VPE_LeaflessBeauty".Translate(),  GetExtension.LeaflessBeauty.ToString(), "VPE_LeaflessBeauty_Desc".Translate(), 3001);            
         }
