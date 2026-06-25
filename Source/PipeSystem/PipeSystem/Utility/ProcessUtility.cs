@@ -236,7 +236,7 @@ namespace PipeSystem
      
         public static int CountResults(Process process)
         {
-            if (!process.Def.results.NullOrEmpty())
+            if (!process.Def.results.NullOrEmpty() && process.advancedProcessor.parent.Map!=null)
             {
                 ProcessDef.Result firstresult = process.Def.results[0];
                 ThingDef thingDef = process.Def.resultToDetect != null ? process.Def.resultToDetect : firstresult.thing;
@@ -247,8 +247,7 @@ namespace PipeSystem
                     {
                         return process.advancedProcessor.parent.Map.resourceCounter.GetCount(thingDef) + GetCarriedCount(process, thingDef);
                     }
-                    else {
-                        //Log.Message(process.advancedProcessor.parent.Map.listerThings.ThingsOfDef(thingDef).Count);
+                    else {               
                         return process.advancedProcessor.parent.Map.listerThings.ThingsOfDef(thingDef).Count + GetCarriedCount(process, thingDef);
                     }
                 }
@@ -258,9 +257,7 @@ namespace PipeSystem
             {
                 return 0;
             }
-           
-            
-           
+     
         }
         private static int GetCarriedCount(Process process, ThingDef thingDef)
         {
