@@ -25,7 +25,7 @@ public class CompCustomCauseHediff_AoE : ThingComp
     public override void CompTickInterval(int delta)
     {
         if (parent.IsHashIntervalTick(Props.checkInterval, delta))
-            TickInterval(delta);
+            TickInterval(Props.checkInterval);
     }
 
     public override void CompTickRare() => TickInterval(GenTicks.TickRareInterval);
