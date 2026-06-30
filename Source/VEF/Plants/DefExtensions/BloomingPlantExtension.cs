@@ -26,7 +26,7 @@ namespace VEF.Plants
         //Temperature variables
         public int BloomTemperatureMin = -250;
         public int BloomTemperatureMax = 999;
-        public int DeadlyColdTemperature = 0;
+        public int DeadlyColdTemperature = -250;
         public int DamageWhenBelowDeadlyTemp = 30;
 
         //Light variables
@@ -38,6 +38,9 @@ namespace VEF.Plants
 
         //Used by Weeds incident
         public bool ImmuneToWeeds = false;
+
+        //To make plants that can't be extracted
+        public bool CantBeExtracted = false;
 
         //Behaviours when blooming
         public ThingDef itemProducedWhenBlooming = null;

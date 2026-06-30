@@ -479,7 +479,7 @@ namespace VEF.Plants
             {
                 yield return gizmo;
             }
-            if (DebugSettings.ShowDevGizmos)
+            if (DebugSettings.ShowDevGizmos && !GetExtension.ImmuneToWeeds)
             {
                 yield return new Command_Action
                 {
@@ -507,7 +507,7 @@ namespace VEF.Plants
                     };
                 }
             }
-            if (LifeStage == PlantLifeStage.Mature && !hasWeeds)
+            if (LifeStage == PlantLifeStage.Mature && !hasWeeds && !GetExtension.CantBeExtracted)
             {               
                 yield return new Command_Action
                 {
@@ -636,9 +636,11 @@ namespace VEF.Plants
             if (GetExtension.BloomTemperatureMax != 999)
             {
                 yield return new StatDrawEntry(StatCategoryDefOf.Basics, "VPE_BloomTemperatureMax".Translate(), ((float)GetExtension.BloomTemperatureMax).ToStringTemperature("F0"), "VPE_BloomTemperatureMax_Desc".Translate(GetExtension.CanBloomAgain ? "VPE_CanBloom".Translate() : "VPE_CantBloom".Translate()), 4173);
-
             }
-            yield return new StatDrawEntry(StatCategoryDefOf.Basics, "VPE_DeadlyColdTemperature".Translate(), ((float)GetExtension.DeadlyColdTemperature).ToStringTemperature("F0"), "VPE_DeadlyColdTemperature_Desc".Translate(), 4174);
+            if (GetExtension.DeadlyColdTemperature != -250)
+            {
+                yield return new StatDrawEntry(StatCategoryDefOf.Basics, "VPE_DeadlyColdTemperature".Translate(), ((float)GetExtension.DeadlyColdTemperature).ToStringTemperature("F0"), "VPE_DeadlyColdTemperature_Desc".Translate(), 4174);
+            }
             yield return new StatDrawEntry(StatCategoryDefOf.Basics, "VPE_LeaflessBeauty".Translate(),  GetExtension.LeaflessBeauty.ToString(), "VPE_LeaflessBeauty_Desc".Translate(), 3001);            
         }
 
