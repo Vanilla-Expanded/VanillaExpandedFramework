@@ -39,6 +39,9 @@ namespace VEF.Plants
         //Used by Weeds incident
         public bool ImmuneToWeeds = false;
 
+        //Used by Smelling flowers JoyGiver (this only applies to VPE - Flowers)
+        public bool DisableJoyGiver = false;
+
         //To make plants that can't be extracted
         public bool CantBeExtracted = false;
 
