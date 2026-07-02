@@ -21,6 +21,9 @@ public class FacilityExtension : DefModExtension
     {
         base.ResolveReferences(parentDef);
 
+        if (equivalentToFacility != null)
+            VanillaExpandedFramework_CompAffectedByFacilities_CanPotentiallyLinkTo_Patch.isActive = true;
+
         if (copyLinksFrom != null && parentDef is ThingDef def)
         {
             var parentFacility = def.GetCompProperties<CompProperties_Facility>();

@@ -10,7 +10,7 @@ namespace VEF.Buildings;
 [HarmonyPatchCategory(VEF_HarmonyCategories.LateHarmonyPatchCategory)]
 public static class VanillaExpandedFramework_CompAffectedByFacilities_IsBetter_Patch
 {
-    private static bool Prepare() => VanillaExpandedFramework_CompAffectedByFacilities_CanPotentiallyLinkTo_Patch.IsActive;
+    private static bool Prepare() => VanillaExpandedFramework_CompAffectedByFacilities_CanPotentiallyLinkTo_Patch.isActive;
 
     private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr)
     {

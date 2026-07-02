@@ -232,6 +232,7 @@
     <Compile Include="Buildings\Harmony\ResearchProjectDef_CanBeResearchedAt.cs" />
     <Compile Include="Buildings\Harmony\ResearchProjectDef_CanBeResearchedAt_Lambda.cs" />
     <Compile Include="Buildings\Harmony\ResearchProjectDef_UnlockedDefs_Patch.cs" />
+    <Compile Include="Buildings\Harmony\RitualOutcomeComp_GravshipFacilities_GetQualityFactor.cs" />
     <Compile Include="Buildings\Harmony\Verb_Available_Patch.cs" />
     <Compile Include="Buildings\Harmony\Verb_LaunchProjectile_TryCastShot_Patch.cs" />
     <Compile Include="Buildings\MapComponents\MapComponent_InteractableBuildingsInMap.cs" />

@@ -12,11 +12,9 @@ namespace VEF.Buildings;
 [HarmonyPatchCategory(VEF_HarmonyCategories.LateHarmonyPatchCategory)]
 public static class VanillaExpandedFramework_CompAffectedByFacilities_CanPotentiallyLinkTo_Patch
 {
-    private static bool? isActive = null;
+    public static bool isActive = false;
 
-    public static bool IsActive => isActive ??= DefDatabase<ThingDef>.AllDefs.Any(def => def.GetModExtension<FacilityExtension>() is { equivalentToFacility: not null });
-
-    private static bool Prepare() => IsActive;
+    private static bool Prepare() => isActive;
 
     private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr)
     {
