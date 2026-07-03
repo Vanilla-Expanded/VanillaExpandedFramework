@@ -12,12 +12,15 @@ namespace KCSG
         /// Generate layoutDef in rect
         /// </summary>
         public static void Generate(this StructureLayoutDef layout, CellRect rect, Map map, Faction factionOverride = null, bool forceNullFaction = false)
-            => layout.Generate(rect, map, null, factionOverride, forceNullFaction);
+            => layout.Generate(rect, map, null, factionOverride, forceNullFaction, null);
 
         /// <summary>
         /// Generate layoutDef in rect
         /// </summary>
         public static void Generate(this StructureLayoutDef layout, CellRect rect, Map map, ICollection<Thing> spawnedThings, Faction factionOverride = null, bool forceNullFaction = false)
+            => layout.Generate(rect, map, spawnedThings, factionOverride, forceNullFaction, null);
+
+        public static void Generate(this StructureLayoutDef layout, CellRect rect, Map map, ICollection<Thing> spawnedThings, Faction factionOverride, bool forceNullFaction, Rot4? fixedRotation)
         {
             // Get random wall stuff if randomizeWall is set to true
             ThingDef wallForRoom = null;
@@ -44,7 +47,11 @@ namespace KCSG
             }
 
             Rot4 rot = Rot4.North;
-            if (layout.randomRotation)
+            if (fixedRotation.HasValue)
+            {
+                rot = fixedRotation.Value;
+            }
+            else if (layout.randomRotation)
             {
                 rot = new Rot4(Rand.Range(0, 4));
             }
@@ -272,6 +279,9 @@ namespace KCSG
         /// Normal clean remove filth, non-natural buildings and stone/slag chunks
         /// </summary>
         public static void CleanRect(StructureLayoutDef layout, Map map, CellRect rect, bool fullClean)
+            => CleanRect(layout, map, rect, fullClean, Rot4.North);
+
+        public static void CleanRect(StructureLayoutDef layout, Map map, CellRect rect, bool fullClean, Rot4 rot)
         {
             var mapFaction = map.ParentFaction;
             var player = Faction.OfPlayer;
@@ -292,13 +302,15 @@ namespace KCSG
                 {
                     var width = rect.Width;
                     var height = rect.Height;
+                    var rotation = rot;
 
-                    for (int h = 0; h < height; h++)
+                    for (int z = 0; z < height; z++)
                     {
-                        for (int w = 0; w < width; w++)
+                        for (int x = 0; x < width; x++)
                         {
-                            var cell = cells[(h * width) + w];
-                            var roof = layout._roofGrid[h, w];
+                            var cell = cells[(z * width) + x];
+                            var srcCoords = GetSourceCoords(x, z, rotation, layout.sizes);
+                            var roof = layout._roofGrid[srcCoords.z, srcCoords.x];
 
                             if (cell.InBounds(map) && roof != ".")
                                 CleanAt(cell, map, fullClean, mapFaction, player);

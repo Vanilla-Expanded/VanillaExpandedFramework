@@ -13,6 +13,12 @@ namespace VEF.Storyteller
     {
         public string pattern;
         public IntVec3 offset;
+        public IntRange count = new IntRange(1, 1);
+        public bool scatter;
+        public int radialCount;
+        public float radialDistance;
+        public bool faceCenter;
+        public int rotationOffset;
         public List<PawnSpawnOption> spawnPawns;
         public List<ThingSpawnOption> spawnThings;
         public bool forceSpawnEnemiesIndoor;
