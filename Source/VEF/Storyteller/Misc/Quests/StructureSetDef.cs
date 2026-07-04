@@ -18,6 +18,7 @@ namespace VEF.Storyteller
         public int radialCount;
         public float radialDistance;
         public bool faceCenter;
+        public bool randomRotated;
         public int rotationOffset;
         public List<PawnSpawnOption> spawnPawns;
         public List<ThingSpawnOption> spawnThings;

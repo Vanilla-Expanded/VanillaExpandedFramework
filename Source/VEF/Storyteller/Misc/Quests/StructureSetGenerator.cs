@@ -59,12 +59,14 @@ namespace VEF.Storyteller
                 foreach (var item in standardLayouts)
                 {
                     var spawnPos = mapCenter + totalOffset + new IntVec3(item.layout.offset.x * item.def.Sizes.x, 0, item.layout.offset.z * item.def.Sizes.z);
-                    var structureRect = CellRect.CenteredOn(spawnPos, item.def.Sizes);
+                    Rot4 rot = item.layout.randomRotated ? Rot4.Random : Rot4.North;
+                    IntVec2 sizes = item.layout.randomRotated && rot.IsHorizontal ? new IntVec2(item.def.Sizes.z, item.def.Sizes.x) : item.def.Sizes;
+                    var structureRect = CellRect.CenteredOn(spawnPos, sizes.x, sizes.z);
 
                     GenOption.GetAllMineableIn(structureRect, map);
-                    LayoutUtils.CleanRect(item.def, map, structureRect, true, Rot4.North);
+                    LayoutUtils.CleanRect(item.def, map, structureRect, true, rot);
                     var spawnedThings = new List<Thing>();
-                    item.def.Generate(structureRect, map, spawnedThings, faction);
+                    item.def.Generate(structureRect, map, spawnedThings, faction, false, rot);
                     
                     generatedRects.Add(structureRect);
                     SpawnPawnsAndThings(map, structureRect, item.layout, faction);
@@ -101,6 +103,7 @@ namespace VEF.Storyteller
                                 rot = Rot4.FromAngleFlat(angle);
                                 rot = new Rot4(rot.Value.AsInt + layout.rotationOffset);
                             }
+                            if (layout.randomRotated) rot = Rot4.Random;
                         }
                         else
                         {
@@ -117,6 +120,8 @@ namespace VEF.Storyteller
                                 }
                             }
                             if (!found) continue;
+
+                            if (layout.randomRotated) rot = Rot4.Random;
                         }
 
                         var rotatedSizes = rot.HasValue && rot.Value.IsHorizontal ? new IntVec2(selectedDef.Sizes.z, selectedDef.Sizes.x) : selectedDef.Sizes;
@@ -126,7 +131,7 @@ namespace VEF.Storyteller
                         LayoutUtils.CleanRect(selectedDef, map, structureRect, true, rot ?? Rot4.North);
                         var spawnedThings = new List<Thing>();
                         selectedDef.Generate(structureRect, map, spawnedThings, faction, false, rot);
-                        
+
                         generatedRects.Add(structureRect);
                         SpawnPawnsAndThings(map, structureRect, layout, faction);
                     }
