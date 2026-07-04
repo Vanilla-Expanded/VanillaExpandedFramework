@@ -14,6 +14,6 @@ public static class VanillaExpandedFramework_CompRefuelable_PostDraw_Patch
 
     private static void Postfix(CompRefuelable __instance)
     {
-        __instance.parent.def?.GetModExtension<RefuelableExtension>()?.customFuelGauge?.DrawGauge(__instance);
+        __instance.parent.def?.GetModExtension<RefuelableExtension>()?.customFuelGauge?.DrawGauge(__instance.parent, __instance.FuelPercentOfMax);
     }
 }
