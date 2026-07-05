@@ -236,7 +236,7 @@
     <Compile Include="Buildings\Harmony\Verb_Available_Patch.cs" />
     <Compile Include="Buildings\Harmony\Verb_LaunchProjectile_TryCastShot_Patch.cs" />
     <Compile Include="Buildings\MapComponents\MapComponent_InteractableBuildingsInMap.cs" />
-    <Compile Include="Buildings\Misc\CustomFuelGaugeData.cs" />
+    <Compile Include="Buildings\Misc\CustomFillableBarGaugeData.cs" />
     <Compile Include="Buildings\Misc\RecipeInheritance.cs" />
     <Compile Include="Buildings\Placeworkers\PlaceWorker_OnSand.cs" />
     <Compile Include="Buildings\ThingWithComps\LootBox.cs" />

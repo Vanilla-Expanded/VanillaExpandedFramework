@@ -3,7 +3,7 @@ using Verse;
 
 namespace VEF.Buildings;
 
-public class CustomFuelGaugeData
+public class CustomFillableBarGaugeData
 {
     public float margin = 0.15f;
     public bool horizontalBar = false;
@@ -19,13 +19,13 @@ public class CustomFuelGaugeData
     public Vector2 sizeEast = new(1f, 0.2f);
     public Vector2 sizeWest = new(1f, 0.2f);
 
-    public Color fuelBarFilledColor = new(0.6f, 0.56f, 0.13f);
-    public Color fuelBarUnfilledColor = new(0.3f, 0.3f, 0.3f);
-    public Color? fuelBarFullColor = null;
+    public Color barFilledColor = new(0.6f, 0.56f, 0.13f);
+    public Color barUnfilledColor = new(0.3f, 0.3f, 0.3f);
+    public Color? barFullColor = null;
 
-    private Material fuelBarFilledMat;
-    private Material fuelBarUnfilledMat;
-    private Material fuelBarFullColorMat;
+    private Material barFilledMat;
+    private Material barUnfilledMat;
+    private Material barFullColorMat;
 
     public virtual void DrawGauge(Thing parent, float fuelPercentage)
     {
@@ -39,8 +39,8 @@ public class CustomFuelGaugeData
             center = parent.DrawPos + Vector3.up * 0.1f + OffsetFor(parent.Rotation),
             size = SizeFor(parent.Rotation),
             fillPercent = fuelPercentage,
-            filledMat = fuelPercentage >= 1f ? fuelBarFullColorMat : fuelBarFilledMat,
-            unfilledMat = fuelBarUnfilledMat,
+            filledMat = fuelPercentage >= 1f ? barFullColorMat : barFilledMat,
+            unfilledMat = barUnfilledMat,
             margin = margin,
             rotation = RotationFor(parent.Rotation),
         };
@@ -85,13 +85,13 @@ public class CustomFuelGaugeData
     {
         LongEventHandler.ExecuteWhenFinished(() =>
         {
-            fuelBarFilledMat = SolidColorMaterials.SimpleSolidColorMaterial(fuelBarFilledColor);
-            fuelBarUnfilledMat = SolidColorMaterials.SimpleSolidColorMaterial(fuelBarUnfilledColor);
+            barFilledMat = SolidColorMaterials.SimpleSolidColorMaterial(barFilledColor);
+            barUnfilledMat = SolidColorMaterials.SimpleSolidColorMaterial(barUnfilledColor);
 
-            if (fuelBarFullColor != null)
-                fuelBarFullColorMat = SolidColorMaterials.SimpleSolidColorMaterial(fuelBarFullColor.Value);
+            if (barFullColor != null)
+                barFullColorMat = SolidColorMaterials.SimpleSolidColorMaterial(barFullColor.Value);
             else
-                fuelBarFullColorMat = fuelBarFilledMat;
+                barFullColorMat = barFilledMat;
         });
     }
 }
