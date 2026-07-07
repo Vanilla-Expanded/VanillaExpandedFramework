@@ -13,7 +13,7 @@ public class RefuelableExtension : DefModExtension
 	// Could be done as a subtype of CompRefuelable, but using a patch means that it'll
 	// work in any type of refuelable as long as it doesn't replace PostDraw method
     // Remember to disable vanilla fuel gauge drawing, as this one doesn't check for it!
-    public CustomFuelGaugeData customFuelGauge = null;
+    public CustomFillableBarGaugeData customFuelGauge = null;
 
     public override void ResolveReferences(Def parentDef)
     {

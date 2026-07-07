@@ -79,15 +79,22 @@ namespace VEF.Storyteller
                 int count = layout.count.RandomInRange;
                 for (int i = 0; i < count; i++)
                 {
-                    var availableDefs = DefDatabase<KCSG.StructureLayoutDef>.AllDefsListForReading
-                        .Where(def => !usedDefs.Contains(def) && Regex.IsMatch(def.defName, "^" + layout.pattern + "$"))
-                        .ToList();
-                    var selectedDef = availableDefs.RandomElement();
-                    usedDefs.Add(selectedDef);
-
                     int subSpawnCount = layout.radialCount > 0 ? layout.radialCount : 1;
                     for (int j = 0; j < subSpawnCount; j++)
                     {
+                        var availableDefs = DefDatabase<KCSG.StructureLayoutDef>.AllDefsListForReading
+                            .Where(def => !usedDefs.Contains(def) && Regex.IsMatch(def.defName, "^" + layout.pattern + "$"))
+                            .ToList();
+                        if (!availableDefs.Any())
+                        {
+                            availableDefs = DefDatabase<KCSG.StructureLayoutDef>.AllDefsListForReading
+                                .Where(def => Regex.IsMatch(def.defName, "^" + layout.pattern + "$")).ToList();
+                        }
+                        if (!availableDefs.Any())
+                            continue;
+                        var selectedDef = availableDefs.RandomElement();
+                        usedDefs.Add(selectedDef);
+
                         IntVec3 spawnPos;
                         Rot4? rot = null;
                         if (layout.radialCount > 0)
