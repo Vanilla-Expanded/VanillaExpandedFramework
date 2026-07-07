@@ -56,22 +56,9 @@ namespace VEF.Storyteller
                 }
 
                 var totalOffset = new IntVec3(-(minX + (maxX - minX) / 2), 0, -(minZ + (maxZ - minZ) / 2));
-                foreach (var item in standardLayouts)
-                {
-                    var spawnPos = mapCenter + totalOffset + new IntVec3(item.layout.offset.x * item.def.Sizes.x, 0, item.layout.offset.z * item.def.Sizes.z);
-                    Rot4 rot = item.layout.randomRotated ? Rot4.Random : Rot4.North;
-                    IntVec2 sizes = item.layout.randomRotated && rot.IsHorizontal ? new IntVec2(item.def.Sizes.z, item.def.Sizes.x) : item.def.Sizes;
-                    var structureRect = CellRect.CenteredOn(spawnPos, sizes.x, sizes.z);
-
-                    GenOption.GetAllMineableIn(structureRect, map);
-                    LayoutUtils.CleanRect(item.def, map, structureRect, true, rot);
-                    var spawnedThings = new List<Thing>();
-                    item.def.Generate(structureRect, map, spawnedThings, faction, false, rot);
-                    
-                    generatedRects.Add(structureRect);
-                    SpawnPawnsAndThings(map, structureRect, item.layout, faction);
-                }
-                primaryRect = generatedRects[0];
+                var first = standardLayouts[0];
+                var spawnPos = mapCenter + totalOffset + new IntVec3(first.layout.offset.x * first.def.Sizes.x, 0, first.layout.offset.z * first.def.Sizes.z);
+                primaryRect = CellRect.CenteredOn(spawnPos, first.def.Sizes.x, first.def.Sizes.z);
             }
 
             foreach (var layout in specialLayouts)
@@ -141,6 +128,45 @@ namespace VEF.Storyteller
 
                         generatedRects.Add(structureRect);
                         SpawnPawnsAndThings(map, structureRect, layout, faction);
+                    }
+                }
+            }
+            if (standardLayouts.Any())
+            {
+                var minX = int.MaxValue;
+                var minZ = int.MaxValue;
+                var maxX = int.MinValue;
+                var maxZ = int.MinValue;
+                foreach (var item in standardLayouts)
+                {
+                    var rect = CellRect.CenteredOn(new IntVec3(item.layout.offset.x * item.def.Sizes.x, 0, item.layout.offset.z * item.def.Sizes.z), item.def.Sizes);
+                    if (rect.minX < minX) minX = rect.minX;
+                    if (rect.minZ < minZ) minZ = rect.minZ;
+                    if (rect.maxX > maxX) maxX = rect.maxX;
+                    if (rect.maxZ > maxZ) maxZ = rect.maxZ;
+                }
+
+                var totalOffset = new IntVec3(-(minX + (maxX - minX) / 2), 0, -(minZ + (maxZ - minZ) / 2));
+                var centerAssigned = false;
+                foreach (var item in standardLayouts)
+                {
+                    var spawnPos = mapCenter + totalOffset + new IntVec3(item.layout.offset.x * item.def.Sizes.x, 0, item.layout.offset.z * item.def.Sizes.z);
+                    Rot4 rot = item.layout.randomRotated ? Rot4.Random : Rot4.North;
+                    IntVec2 sizes = item.layout.randomRotated && rot.IsHorizontal ? new IntVec2(item.def.Sizes.z, item.def.Sizes.x) : item.def.Sizes;
+                    var structureRect = CellRect.CenteredOn(spawnPos, sizes.x, sizes.z);
+
+                    GenOption.GetAllMineableIn(structureRect, map);
+                    LayoutUtils.CleanRect(item.def, map, structureRect, true, rot);
+                    var spawnedThings = new List<Thing>();
+                    item.def.Generate(structureRect, map, spawnedThings, faction, false, rot);
+
+                    generatedRects.Add(structureRect);
+                    SpawnPawnsAndThings(map, structureRect, item.layout, faction);
+
+                    if (!centerAssigned)
+                    {
+                        primaryRect = structureRect;
+                        centerAssigned = true;
                     }
                 }
             }
