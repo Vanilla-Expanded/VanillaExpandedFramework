@@ -105,9 +105,20 @@ namespace VEF.Storyteller
                             spawnPos = IntVec3.Invalid;
                             for (int k = 0; k < 100; k++)
                             {
-                                spawnPos = mapCenter + new IntVec3(Rand.Range(-40, 40), 0, Rand.Range(-40, 40));
+                                if (k < 20)
+                                {
+                                    spawnPos = mapCenter + new IntVec3(Rand.Range(-40, 40), 0, Rand.Range(-40, 40));
+                                }
+                                else if (k < 50)
+                                {
+                                    spawnPos = mapCenter + new IntVec3(Rand.Range(-80, 80), 0, Rand.Range(-80, 80));
+                                }
+                                else
+                                {
+                                    spawnPos = new IntVec3(Rand.Range(0, map.Size.x), 0, Rand.Range(0, map.Size.z));
+                                }
                                 var checkRect = CellRect.CenteredOn(spawnPos, selectedDef.Sizes.x + 2, selectedDef.Sizes.z + 2);
-                                if (!generatedRects.Any(r => r.Overlaps(checkRect)) && checkRect.FullyContainedWithin(new CellRect(0, 0, map.Size.x, map.Size.z)))
+                                if (checkRect.FullyContainedWithin(new CellRect(0, 0, map.Size.x, map.Size.z)) && !generatedRects.Any(r => r.Overlaps(checkRect)))
                                 {
                                     found = true;
                                     break;
