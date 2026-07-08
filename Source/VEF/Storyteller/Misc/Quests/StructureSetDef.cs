@@ -20,6 +20,7 @@ namespace VEF.Storyteller
         public bool faceCenter;
         public bool randomRotated;
         public int rotationOffset;
+        public bool putAnywhere;
         public List<PawnSpawnOption> spawnPawns;
         public List<ThingSpawnOption> spawnThings;
         public bool forceSpawnEnemiesIndoor;

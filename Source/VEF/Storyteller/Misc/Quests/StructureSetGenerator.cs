@@ -105,7 +105,11 @@ namespace VEF.Storyteller
                             spawnPos = IntVec3.Invalid;
                             for (int k = 0; k < 100; k++)
                             {
-                                if (k < 20)
+                                if (layout.putAnywhere)
+                                {
+                                    spawnPos = new IntVec3(Rand.Range(0, map.Size.x), 0, Rand.Range(0, map.Size.z));
+                                }
+                                else if (k < 20)
                                 {
                                     spawnPos = mapCenter + new IntVec3(Rand.Range(-40, 40), 0, Rand.Range(-40, 40));
                                 }
