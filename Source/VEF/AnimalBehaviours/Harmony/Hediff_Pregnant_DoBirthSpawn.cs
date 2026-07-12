@@ -58,9 +58,9 @@ namespace VEF.AnimalBehaviours
             switch (extension.crossBreedKindDef)
             {
                 case (FatherOrMother.AlwaysFather):
-                    return father.kindDef ?? mother.kindDef;
+                    return father?.kindDef ?? mother.kindDef;
                 case (FatherOrMother.Random):
-                    return Rand.Chance(0.5f) ? mother.kindDef : (father.kindDef ?? mother.kindDef);
+                    return Rand.Chance(0.5f) ? mother.kindDef : (father?.kindDef ?? mother.kindDef);
                 case (FatherOrMother.OtherPawnKind):
                     PawnKindDef randomPawn = null;
                     if (extension.otherPawnKindsByWeight != null && extension.otherPawnKindsByWeight.TryRandomElementByWeight(x => x.weight, out var value))
