@@ -14,6 +14,8 @@ namespace VEF.AnimalBehaviours
         public List<PawnKindDefWeight> otherPawnKindsByWeight;
         // otherPawnKind will be used if otherPawnKindsByWeight is unspecified (or fails for whatever reason)
         public PawnKindDef otherPawnKind;
+        // This is the chance for the mother PawnKindDef to be chosen for Random. By default 0.5 is true random
+        public float weightForMother = 0.5f;
 
     }
 

@@ -10,16 +10,19 @@ namespace VEF.Genes
     {
         public static void Postfix(Pawn pawn)
         {
-            if (pawn.genes != null)
+            if (pawn?.genes != null && !pawn.IsAnimal)
             {
                 List<Gene> genes = pawn.genes.GenesListForReading;
-                foreach (Gene gene in genes)
-                {
-                    if (gene.Active)
+                if (genes?.Count > 0) {
+                    foreach (Gene gene in genes)
                     {
-                        GeneUtils.ApplyGeneEffects(gene);
+                        if (gene.Active)
+                        {
+                            GeneUtils.ApplyGeneEffects(gene);
+                        }
                     }
                 }
+                
             }
         }
     }
