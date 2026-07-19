@@ -250,4 +250,26 @@
 		<showOnDrones>false</showOnDrones>
 		<showDevelopmentalStageFilter>Child, Adult</showDevelopmentalStageFilter>
 	</StatDef>
+	<StatDef>
+		<defName>VEF_AnimalProductYieldFactor</defName>
+		<label>animal product yield factor</label>
+		<workerClass>VEF.AnimalBehaviours.StatWorker_AnimalProductYieldFactor</workerClass>
+		<description>A multiplier on the amount of special animal products produced by this animal.</description>
+		<category>Animals</category>
+		<defaultBaseValue>1</defaultBaseValue>
+		<hideAtValue>1</hideAtValue>
+		<toStringStyle>PercentZero</toStringStyle>
+		<displayPriorityInCategory>9825</displayPriorityInCategory>
+	</StatDef>
+	<StatDef>
+		<defName>VEF_AnimalProductIntervalFactor</defName>
+		<label>animal product interval factor</label>
+		<workerClass>VEF.AnimalBehaviours.StatWorker_AnimalProductIntervalFactor</workerClass>
+		<description>A multiplier on the interval of time needed for this animal to produce special animal products.</description>
+		<category>Animals</category>
+		<defaultBaseValue>1</defaultBaseValue>
+		<hideAtValue>1</hideAtValue>
+		<toStringStyle>PercentZero</toStringStyle>	
+		<displayPriorityInCategory>9824</displayPriorityInCategory>
+	</StatDef>
 </Defs>

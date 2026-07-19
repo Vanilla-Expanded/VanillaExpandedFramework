@@ -19,6 +19,9 @@ namespace VEF.AnimalBehaviours
 
         public static ThingDef Gun_Autopistol;
 
+        public static StatDef VEF_AnimalProductYieldFactor;
+        public static StatDef VEF_AnimalProductIntervalFactor;
+
         [MayRequireOdyssey]
         public static TrainableDef VEF_ControlledBlinking;
         [MayRequireOdyssey]

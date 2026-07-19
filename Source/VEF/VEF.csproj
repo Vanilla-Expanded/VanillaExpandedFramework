@@ -182,6 +182,8 @@
     <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_SpawnPawnOnMaxSeverity.cs" />
     <Compile Include="AnimalBehaviours\HediffComps\Properties\HediffCompProperties_StageByVacuum.cs" />
     <Compile Include="AnimalBehaviours\Projectiles\Electric_Projectile.cs" />
+    <Compile Include="AnimalBehaviours\StatWorkers\StatWorker_AnimalProductIntervalFactor.cs" />
+    <Compile Include="AnimalBehaviours\StatWorkers\StatWorker_AnimalProductYieldFactor.cs" />
     <Compile Include="AnimalBehaviours\Utils\Utils.cs" />
     <Compile Include="Apparels\Harmony\FloatMenuOptionProvider_EquipShield.cs" />
     <Compile Include="Apparels\Harmony\Pawn_Kill.cs" />

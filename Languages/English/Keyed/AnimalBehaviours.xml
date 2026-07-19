@@ -9,7 +9,6 @@
 	<NocturnalAnimals.BodyClock_Nocturnal>Nocturnal</NocturnalAnimals.BodyClock_Nocturnal>
 	<NocturnalAnimals.BodyClock_Crepuscular>Crepuscular</NocturnalAnimals.BodyClock_Crepuscular>
 
-
 	<VEF_AsexualHatched>{0} has reproduced asexually.</VEF_AsexualHatched>
 	<VEF_AsexualCloning>{0} has cloned itself.</VEF_AsexualCloning>
 	<VEF_AsexualHatchedEgg>{0} has sporulated.</VEF_AsexualHatchedEgg>
@@ -28,6 +27,10 @@
 	<VEF_TerrainsNeedsDiggable>The terrain needs to be diggable to do this</VEF_TerrainsNeedsDiggable>
 	
 	<VEF_WhileCaravaning>While caravaning, produces {0} {1} every: </VEF_WhileCaravaning>
+	
+	<VEF_AnimalProductYieldFactorDetails>Base special animal products production for this animal is {0} {1}. Adjusted by its animal product yield factor this will result in {2} {1} instead.</VEF_AnimalProductYieldFactorDetails>
+	<VEF_AnimalProductYieldFactorDetails_Random>Base special animal products production for this animal is {0} of a selection of randomized or terrain dependent items. Adjusted by its animal product yield factor this will result in {1} units instead.</VEF_AnimalProductYieldFactorDetails_Random>
+	<VEF_AnimalProductIntervalFactorDetails>Base special animal products interval for this animal is {0} days. Adjusted by its animal products interval factor this will result in {1} days instead. This value is capped at a minimum of 1 day.</VEF_AnimalProductIntervalFactorDetails>
 	
 	<!-- Mod options -->
 	

@@ -1,5 +1,6 @@
 ﻿using RimWorld;
 using RimWorld.Planet;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
@@ -24,17 +25,15 @@ namespace VEF.AnimalBehaviours
         {
             get
             {
-                return this.Props.gatheringIntervalDays;
+                return Math.Max((int)(Props.gatheringIntervalDays * parent.GetStatValue(InternalDefOf.VEF_AnimalProductIntervalFactor)),1);
             }
         }
-
-
 
         protected override int ResourceAmount
         {
             get
             {
-                return this.Props.resourceAmount;
+                return Math.Max((int)(Props.resourceAmount*parent.GetStatValue(InternalDefOf.VEF_AnimalProductYieldFactor)),1);
             }
         }
 
