@@ -110,12 +110,14 @@ namespace VEF.Apparels
 
         private static void AddTraits(List<TraitRequirement> traits, Pawn pawn)
         {
-            foreach (var traitDef in traits)
+            for (var i = 0; i < traits.Count; i++)
             {
+                var traitDef = traits[i];
                 var hasTrait = false;
 
-                foreach (var trait in pawn.story.traits.allTraits)
+                for (var j = 0; j < pawn.story.traits.allTraits.Count; j++)
                 {
+                    var trait = pawn.story.traits.allTraits[j];
                     if (trait.sourceGene == null && trait.def == traitDef.def)
                     {
                         hasTrait = true;
@@ -132,11 +134,12 @@ namespace VEF.Apparels
 
         private static void RemoveTraits(List<TraitRequirement> traits, Pawn pawn)
         {
-            foreach (var traitDef in traits)
+            for (var i = 0; i < traits.Count; i++)
             {
-                for (var i = pawn.story.traits.allTraits.Count - 1; i >= 0; i--)
+                var traitDef = traits[i];
+                for (var j = pawn.story.traits.allTraits.Count - 1; j >= 0; j--)
                 {
-                    var trait = pawn.story.traits.allTraits[i];
+                    var trait = pawn.story.traits.allTraits[j];
                     if (trait.sourceGene == null && trait.def == traitDef.def && (traitDef.degree == null || traitDef.degree == trait.Degree))
                     {
                         pawn.story.traits.RemoveTrait(trait, true);
@@ -811,56 +814,71 @@ namespace VEF.Apparels
         }
     }
 
-    [HarmonyPatch(typeof(PawnRenderNodeWorker_Apparel_Head), "CanDrawNow")]
-    public static class VanillaExpandedFramework_PawnRenderNodeWorker_Apparel_Head_CanDrawNow_Patch
-    {
-        public static void Prefix(PawnDrawParms parms, out bool __state)
-        {
-            __state = Prefs.HatsOnlyOnMap;
-            if (parms.pawn.apparel.AnyApparel)
-            {
-                var headgear = parms.pawn.apparel.WornApparel
-                    .FirstOrDefault(x => x.def.GetModExtension<ApparelExtension>()?.hideHead ?? false);
-                if (headgear != null)
-                {
-                    Prefs.HatsOnlyOnMap = false;
-                }
-            }
-        }
-
-        public static void Finalizer(bool __state)
-        {
-            Prefs.HatsOnlyOnMap = __state;
-        }
-    }
-    [HarmonyPatch(typeof(PawnRenderNodeWorker_Apparel_Head), "HeadgearVisible")]
+    [HarmonyPatch]
     public static class VanillaExpandedFramework_PawnRenderNodeWorker_Apparel_Head_HeadgearVisible_Patch
     {
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
+        public static IEnumerable<MethodBase> TargetMethods()
         {
+            yield return typeof(PawnRenderNodeWorker_Apparel_Head).DeclaredMethod(nameof(PawnRenderNodeWorker_Apparel_Head.HeadgearVisible));
+            yield return typeof(PawnRenderNodeWorker_Apparel_Head).DeclaredMethod(nameof(PawnRenderNodeWorker_Apparel_Head.CanDrawNow));
+        }
+
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions, MethodBase baseMethod)
+        {
+            var pawnDrawParmsArgIndex = -1;
+            var args = baseMethod.GetParameters();
+            // Different argument index for different methods. Grab the index of the PawnDrawParms argument.
+            // The index varies between the methods, so this ensures it works with any method without hardcoding the values per method.
+            for (var i = 0; i < args.Length; i++)
+            {
+                if (args[i].ParameterType == typeof(PawnDrawParms))
+                {
+                    if (pawnDrawParmsArgIndex < 0)
+                    {
+                        pawnDrawParmsArgIndex = i;
+                        // In a non-static method, first argument is "this", so the other arguments are shifted by one
+                        if (!baseMethod.IsStatic)
+                            pawnDrawParmsArgIndex++;
+                    }
+                    else
+                    {
+                        Log.ErrorOnce($"[VEF] Trying to patch {baseMethod.DeclaringType?.Name}:{baseMethod.Name} error - multiple {nameof(PawnDrawParms)} arguments. Using the first one found.", Gen.HashCombineInt(-1401978933, baseMethod.FullDescription().GetHashCode()));
+                        break;
+                    }
+                }
+            }
+            if (pawnDrawParmsArgIndex < 0)
+                Log.ErrorOnce($"[VEF] Trying to patch {baseMethod.DeclaringType?.Name}:{baseMethod.Name} error - no {nameof(PawnDrawParms)} argument found.", Gen.HashCombineInt(-378062719, baseMethod.FullDescription().GetHashCode()));
+
+            var totalPatched = 0;
             var get_HatsOnlyOnMap = AccessTools.PropertyGetter(typeof(Prefs), nameof(Prefs.HatsOnlyOnMap));
             foreach (var codeInstruction in codeInstructions)
             {
                 yield return codeInstruction;
-                if (codeInstruction.Calls(get_HatsOnlyOnMap))
+                if (codeInstruction.Calls(get_HatsOnlyOnMap) && pawnDrawParmsArgIndex >= 0)
                 {
-                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return CodeInstruction.LoadArgument(pawnDrawParmsArgIndex);
                     yield return new CodeInstruction(OpCodes.Call,
                         AccessTools.Method(typeof(VanillaExpandedFramework_PawnRenderNodeWorker_Apparel_Head_HeadgearVisible_Patch),
-                        "TryOverrideHatsOnlyOnMap"));
+                        nameof(TryOverrideHatsOnlyOnMap)));
+                    totalPatched++;
                 }
             }
+
+            // Hardcoded requirement of a single patched thing only, no need to make it per-method based (or removing altogether)
+            const int expectedPatched = 1;
+            if (totalPatched != expectedPatched && pawnDrawParmsArgIndex >= 0)
+                Log.Error($"[VEF] Patched incorrect {nameof(Prefs)}.{nameof(Prefs.HatsOnlyOnMap)} amount of instructions for {baseMethod.DeclaringType?.Name}:{baseMethod.Name}. Expected: {expectedPatched}, patched: {totalPatched}.");
         }
 
         public static bool TryOverrideHatsOnlyOnMap(bool result, PawnDrawParms parms)
         {
-            if (result is true && parms.pawn.apparel.AnyApparel)
+            if (result && parms.pawn.apparel.AnyApparel)
             {
-                var headgear = parms.pawn.apparel.WornApparel
-                    .FirstOrDefault(x => x.def.GetModExtension<ApparelExtension>()?.hideHead ?? false);
-                if (headgear != null)
+                for (var i = 0; i < parms.pawn.apparel.WornApparel.Count; i++)
                 {
-                    return false;
+                    if (parms.pawn.apparel.WornApparel[i].def.GetModExtension<ApparelExtension>() is { hideHead: true })
+                        return false;
                 }
             }
             return result;
