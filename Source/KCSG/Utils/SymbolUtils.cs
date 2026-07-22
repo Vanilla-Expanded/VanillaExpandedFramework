@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
 using RimWorld.BaseGen;
 using UnityEngine;
@@ -163,7 +164,7 @@ namespace KCSG
             if (pawn.inventory != null)
             {
                 var inv = pawn.inventory.GetDirectlyHeldThings();
-                foreach (var item in inv)
+                foreach (var item in inv.ToList())
                 {
                     if (item.TryGetComp<CompRottable>() != null)
                     {
