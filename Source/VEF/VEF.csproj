@@ -391,6 +391,8 @@
     <Compile Include="Plants\StatParts\StatPart_BeautyByAge.cs" />
     <Compile Include="Plants\Things\MinifiedFlower.cs" />
     <Compile Include="Storyteller\Misc\Quests\PrefabExporter.cs" />
+    <Compile Include="Storyteller\Misc\Quests\PrefabExtension.cs" />
+    <Compile Include="Storyteller\Misc\Quests\PrefabUtility_SpawnPrefab_Patch.cs" />
     <Compile Include="Storyteller\Misc\Quests\QuestPart_KeepSite.cs" />
     <Compile Include="Storyteller\Misc\Quests\Site_ShouldRemoveMapNow_Patch.cs" />
     <Compile Include="Things\DefModExtensions\RecipeExtension.cs" />

@@ -24,13 +24,13 @@ namespace VEF.Storyteller
             }, closeOnComplete: true);
         }
 
-        public static string GeneratePrefabXml(PrefabDef prefabDef, string defName, IntVec2 size)
+        public static string GeneratePrefabXml(PrefabDef prefabDef, string defName, CellRect cellRect, bool includeRoof = false)
         {
             var sb = new StringBuilder();
             var indent = "  ";
             sb.AppendLine("<PrefabDef>");
             sb.AppendLine(indent + "<defName>" + defName + "</defName>");
-            sb.AppendLine($"{indent}<size>({size.x},{size.z})</size>");
+            sb.AppendLine($"{indent}<size>({cellRect.Width},{cellRect.Height})</size>");
 
             var things = (List<PrefabThingData>)thingsField?.GetValue(prefabDef);
             if (things != null && things.Count > 0)
@@ -116,6 +116,44 @@ namespace VEF.Storyteller
                 }
                 sb.AppendLine(indent + "</terrain>");
             }
+
+            if (includeRoof)
+            {
+                var map = Find.CurrentMap;
+                var roofDict = new Dictionary<RoofDef, List<IntVec3>>();
+                foreach (var cell in cellRect.Cells)
+                {
+                    var roof = map.roofGrid.RoofAt(cell);
+                    if (roof != null)
+                    {
+                        if (!roofDict.ContainsKey(roof)) roofDict[roof] = new List<IntVec3>();
+                        roofDict[roof].Add(cell);
+                    }
+                }
+
+                if (roofDict.Count > 0)
+                {
+                    sb.AppendLine(indent + "<modExtensions>");
+                    sb.AppendLine(indent + indent + "<li Class=\"VEF.Storyteller.PrefabExtension\">");
+                    sb.AppendLine(indent + indent + indent + "<roofs>");
+                    foreach (var kvp in roofDict)
+                    {
+                        sb.AppendLine(indent + indent + indent + indent + "<li>");
+                        sb.AppendLine(indent + indent + indent + indent + indent + "<def>" + kvp.Key.defName + "</def>");
+                        sb.AppendLine(indent + indent + indent + indent + indent + "<rects>");
+                        foreach (var r in cellRect.EnumerateRectanglesCovering(c => kvp.Value.Contains(c)))
+                        {
+                            sb.AppendLine($"{indent}{indent}{indent}{indent}{indent}{indent}<li>{r.MovedBy(-cellRect.Min)}</li>");
+                        }
+                        sb.AppendLine(indent + indent + indent + indent + indent + "</rects>");
+                        sb.AppendLine(indent + indent + indent + indent + "</li>");
+                    }
+                    sb.AppendLine(indent + indent + indent + "</roofs>");
+                    sb.AppendLine(indent + indent + "</li>");
+                    sb.AppendLine(indent + "</modExtensions>");
+                }
+            }
+
             sb.AppendLine("</PrefabDef>");
             return sb.ToString();
         }
@@ -123,6 +161,7 @@ namespace VEF.Storyteller
         private class Dialog_NameMassExport : Window
         {
             private string prefix = "NewPrefab";
+            private bool includeRoof = true;
             private CellRect rect;
             public override Vector2 InitialSize => new Vector2(300f, 150f);
 
@@ -140,15 +179,16 @@ namespace VEF.Storyteller
                 listing.Begin(inRect);
                 listing.Label("Prefix:");
                 prefix = listing.TextEntry(prefix);
+                listing.CheckboxLabeled("Include roof", ref includeRoof);
                 if (listing.ButtonText("Accept"))
                 {
-                    MassExport(rect, prefix);
+                    MassExport(rect, prefix, includeRoof);
                     Close();
                 }
                 listing.End();
             }
 
-            private void MassExport(CellRect rect, string prefix)
+            private void MassExport(CellRect rect, string prefix, bool includeRoof)
             {
                 var currentMap = Find.CurrentMap;
                 var list = new List<CellRect>();
@@ -248,7 +288,7 @@ namespace VEF.Storyteller
                 for (var j = 0; j < list.Count; j++)
                 {
                     var prefabDef = PrefabUtility.CreatePrefab(list[j], true, true);
-                    var value = GeneratePrefabXml(prefabDef, $"{prefix}_{j + 1}", list[j].Size);
+                    var value = GeneratePrefabXml(prefabDef, $"{prefix}_{j + 1}", list[j], includeRoof);
                     sb.AppendLine(value);
                 }
                 GUIUtility.systemCopyBuffer = sb.ToString();
