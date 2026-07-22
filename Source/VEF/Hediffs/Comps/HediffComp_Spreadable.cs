@@ -10,14 +10,15 @@ namespace VEF.Hediffs
 {
 	public enum RaceCategory
 	{
-		Humanlike,
-		Animal,
-		Mechanoid,
-		Insect,
-		Drone,
-		AnomalyEntity,
-		HumanlikeNotMutant,
-		HumanlikeMutant,
+		Humanlike, // Any humanlike (including mutants like shamblers or ghouls)
+		Animal, // Any animal (including insects)
+		Mechanoid, // Any mechanoid
+		Insect, // Any insect
+		Drone, // Odyssey drones
+		AnomalyEntity, // Any anomaly entity that isn't a humanlike mutant (shamblers, ghoul)
+		HumanlikeNotMutant, // Humanlike, but not mutants (so no shamblers or ghoul)
+		HumanlikeMutant, // Humanlike mutants (like shamblers or ghoul)
+		AnimalNotInsect, // Any animal besides insects
 	}
 	public class HediffCompProperties_Spreadable : HediffCompProperties
 	{
@@ -141,6 +142,7 @@ namespace VEF.Hediffs
 					case RaceCategory.Drone: if (pawn.RaceProps.IsDrone) return true; break;
 					case RaceCategory.HumanlikeNotMutant: if (pawn.RaceProps.Humanlike && !pawn.IsMutant) return true; break;
 					case RaceCategory.HumanlikeMutant: if (pawn.RaceProps.Humanlike && pawn.IsMutant) return true; break;
+					case RaceCategory.AnimalNotInsect: if (pawn.RaceProps.Animal && !pawn.RaceProps.Insect) return true; break;
 				}
             }
 			return false;
