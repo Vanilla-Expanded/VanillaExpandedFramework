@@ -13,7 +13,11 @@ namespace VEF.Hediffs
 		Humanlike,
 		Animal,
 		Mechanoid,
-		Insect
+		Insect,
+		Drone,
+		AnomalyEntity,
+		HumanlikeNotMutant,
+		HumanlikeMutant,
 	}
 	public class HediffCompProperties_Spreadable : HediffCompProperties
 	{
@@ -133,6 +137,10 @@ namespace VEF.Hediffs
 					case RaceCategory.Animal: if (pawn.RaceProps.Animal) return true; break;
 					case RaceCategory.Mechanoid: if (pawn.RaceProps.IsMechanoid) return true; break;
 					case RaceCategory.Insect: if (pawn.RaceProps.Insect) return true; break;
+					case RaceCategory.AnomalyEntity: if (pawn.RaceProps.IsAnomalyEntity) return true; break;
+					case RaceCategory.Drone: if (pawn.RaceProps.IsDrone) return true; break;
+					case RaceCategory.HumanlikeNotMutant: if (pawn.RaceProps.Humanlike && !pawn.IsMutant) return true; break;
+					case RaceCategory.HumanlikeMutant: if (pawn.RaceProps.Humanlike && pawn.IsMutant) return true; break;
 				}
             }
 			return false;
