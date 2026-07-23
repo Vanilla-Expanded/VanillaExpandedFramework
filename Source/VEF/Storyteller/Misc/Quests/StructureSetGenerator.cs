@@ -137,8 +137,8 @@ namespace VEF.Storyteller
                 {
                     var size = GetLayoutSize(item.def);
                     var spawnPos = mapCenter + totalOffset + new IntVec3(item.layout.offset.x * size.x, 0, item.layout.offset.z * size.z);
-                    Rot4 rot = item.layout.randomRotated ? Rot4.Random : Rot4.North;
-                    IntVec2 sizes = item.layout.randomRotated && rot.IsHorizontal ? new IntVec2(size.z, size.x) : size;
+                    Rot4 rot = item.layout.randomRotated ? Rot4.Random : new Rot4(item.layout.rotationOffset);
+                    IntVec2 sizes = rot.IsHorizontal ? new IntVec2(size.z, size.x) : size;
                     var structureRect = CellRect.CenteredOn(spawnPos, sizes.x, sizes.z);
                     var spawnedThings = new List<Thing>();
                     GenerateLayout(item.def, map, structureRect, faction, rot, spawnedThings);
