@@ -291,8 +291,11 @@ namespace VEF.Weapons
             if (pawn.abilities != null && abilityWithCharges != null)
             {
                 Ability ability = pawn.abilities.GetAbility(abilityWithCharges);
-                maxCharges = ability.maxCharges;
-                currentCharges = ability.RemainingCharges;
+                if (ability != null)
+                {
+                    maxCharges = ability.maxCharges;
+                    currentCharges = ability.RemainingCharges;
+                }
                 pawn.abilities?.RemoveAbility(abilityWithCharges);
                 pawn.abilities?.Notify_TemporaryAbilitiesChanged();
             }
