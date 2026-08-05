@@ -158,6 +158,39 @@ namespace VEF.Storyteller
             return sb.ToString();
         }
 
+        private static void EnsureFoundations(PrefabDef prefabDef, CellRect rect, Map map)
+        {
+            var foundations = new Dictionary<TerrainDef, HashSet<IntVec3>>();
+            foreach (var cell in rect.Cells)
+            {
+                var foundation = map.terrainGrid.FoundationAt(cell);
+                if (foundation != null)
+                {
+                    if (!foundations.TryGetValue(foundation, out var cells))
+                    {
+                        cells = new HashSet<IntVec3>();
+                        foundations[foundation] = cells;
+                    }
+                    cells.Add(cell);
+                }
+            }
+            var terrain = (List<PrefabTerrainData>)terrainField.GetValue(prefabDef);
+            foreach (var (terrainDef, cells) in foundations)
+            {
+                if (terrain.Any(t => t.def == terrainDef)) continue;
+                var prefabTerrainData = new PrefabTerrainData
+                {
+                    def = terrainDef,
+                    rects = new List<CellRect>()
+                };
+                foreach (var coveringRect in rect.EnumerateRectanglesCovering(c => cells.Contains(c)))
+                {
+                    prefabTerrainData.rects.Add(coveringRect.MovedBy(-rect.Min));
+                }
+                terrain.Insert(0, prefabTerrainData);
+            }
+        }
+
         private class Dialog_NameMassExport : Window
         {
             private string prefix = "NewPrefab";
@@ -288,6 +321,7 @@ namespace VEF.Storyteller
                 for (var j = 0; j < list.Count; j++)
                 {
                     var prefabDef = PrefabUtility.CreatePrefab(list[j], true, true);
+                    EnsureFoundations(prefabDef, list[j], currentMap);
                     var value = GeneratePrefabXml(prefabDef, $"{prefix}_{j + 1}", list[j], includeRoof);
                     sb.AppendLine(value);
                 }
