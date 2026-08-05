@@ -14,10 +14,19 @@ namespace VEF.Storyteller
     {
         public static List<CellRect> Generate(Map map, StructureSetDef structureSetDef, Faction faction, float points = 0f)
         {
+            return Generate(map, structureSetDef, faction, map.Center, points);
+        }
+
+        public static List<CellRect> Generate(Map map, StructureSetDef structureSetDef, Faction faction, IntVec3 center, float points = 0f)
+        {
+            var standardLayouts = SelectStandardLayouts(structureSetDef, points);
+            return Generate(map, structureSetDef, faction, center, standardLayouts, points, Rot4.North);
+        }
+
+        public static List<CellRect> Generate(Map map, StructureSetDef structureSetDef, Faction faction, IntVec3 center, List<(StructurePatternOffset layout, Def def)> standardLayouts, float points = 0f, Rot4 rotation = default)
+        {
             var generatedRects = new List<CellRect>();
-            var mapCenter = map.Center;
             var usedDefs = new HashSet<Def>();
-            var standardLayouts = new List<(StructurePatternOffset layout, Def def)>();
             var specialLayouts = new List<StructurePatternOffset>();
 
             foreach (var layout in structureSetDef.structureLayouts)
@@ -29,24 +38,16 @@ namespace VEF.Storyteller
                     specialLayouts.Add(layout);
                     continue;
                 }
-
-                var availableDefs = GetAvailableDefs(layout.pattern, usedDefs);
-
-                if (!availableDefs.Any()) continue;
-                
-                var selectedDef = availableDefs.RandomElement();
-                usedDefs.Add(selectedDef);
-                standardLayouts.Add((layout, selectedDef));
             }
 
-            var primaryRect = CellRect.CenteredOn(mapCenter, 1, 1);
+            var primaryRect = CellRect.CenteredOn(center, 1, 1);
 
             if (standardLayouts.Any())
             {
                 var totalOffset = GetTotalOffset(standardLayouts);
                 var first = standardLayouts[0];
                 var firstSize = GetLayoutSize(first.def);
-                var spawnPos = mapCenter + totalOffset + new IntVec3(first.layout.offset.x * firstSize.x, 0, first.layout.offset.z * firstSize.z);
+                var spawnPos = center + totalOffset + new IntVec3(first.layout.offset.x * firstSize.x, 0, first.layout.offset.z * firstSize.z);
                 primaryRect = CellRect.CenteredOn(spawnPos, firstSize.x, firstSize.z);
             }
 
@@ -98,11 +99,11 @@ namespace VEF.Storyteller
                                 }
                                 else if (k < 20)
                                 {
-                                    spawnPos = mapCenter + new IntVec3(Rand.Range(-40, 40), 0, Rand.Range(-40, 40));
+                                    spawnPos = center + new IntVec3(Rand.Range(-40, 40), 0, Rand.Range(-40, 40));
                                 }
                                 else if (k < 50)
                                 {
-                                    spawnPos = mapCenter + new IntVec3(Rand.Range(-80, 80), 0, Rand.Range(-80, 80));
+                                    spawnPos = center + new IntVec3(Rand.Range(-80, 80), 0, Rand.Range(-80, 80));
                                 }
                                 else
                                 {
@@ -136,8 +137,17 @@ namespace VEF.Storyteller
                 foreach (var item in standardLayouts)
                 {
                     var size = GetLayoutSize(item.def);
-                    var spawnPos = mapCenter + totalOffset + new IntVec3(item.layout.offset.x * size.x, 0, item.layout.offset.z * size.z);
+                    var localPos = totalOffset + new IntVec3(item.layout.offset.x * size.x, 0, item.layout.offset.z * size.z);
+                    if (rotation.IsValid)
+                    {
+                        localPos = localPos.RotatedBy(rotation);
+                    }
+                    var spawnPos = center + localPos;
                     Rot4 rot = item.layout.randomRotated ? Rot4.Random : new Rot4(item.layout.rotationOffset);
+                    if (rotation.IsValid)
+                    {
+                        rot = new Rot4(rot.AsInt + rotation.AsInt);
+                    }
                     IntVec2 sizes = rot.IsHorizontal ? new IntVec2(size.z, size.x) : size;
                     var structureRect = CellRect.CenteredOn(spawnPos, sizes.x, sizes.z);
                     var spawnedThings = new List<Thing>();
@@ -157,6 +167,78 @@ namespace VEF.Storyteller
             var usedRects = MapGenerator.GetOrGenerateVar<List<CellRect>>("UsedRects");
             usedRects.AddRange(generatedRects);
             return generatedRects;
+        }
+
+        public static List<(StructurePatternOffset layout, Def def)> SelectStandardLayouts(StructureSetDef structureSetDef, float points = 0f, List<Def> existingDefs = null)
+        {
+            var usedDefs = new HashSet<Def>();
+            var standardLayouts = new List<(StructurePatternOffset layout, Def def)>();
+            var defIdx = 0;
+
+            foreach (var layout in structureSetDef.structureLayouts)
+            {
+                if (layout.pointsRange.HasValue && !layout.pointsRange.Value.Includes(points)) continue;
+                if (layout.scatter || layout.radialCount > 0) continue;
+
+                Def selectedDef = null;
+                if (existingDefs != null && defIdx < existingDefs.Count)
+                {
+                    selectedDef = existingDefs[defIdx];
+                    defIdx++;
+                }
+
+                if (selectedDef == null)
+                {
+                    var availableDefs = GetAvailableDefs(layout.pattern, usedDefs);
+                    if (!availableDefs.Any()) continue;
+                    selectedDef = availableDefs.RandomElement();
+                }
+
+                usedDefs.Add(selectedDef);
+                standardLayouts.Add((layout, selectedDef));
+            }
+
+            return standardLayouts;
+        }
+
+        public static IntVec2 GetStructureSetFootprint(StructureSetDef structureSetDef)
+        {
+            var standardLayouts = SelectStandardLayouts(structureSetDef);
+            return GetFootprint(standardLayouts);
+        }
+
+        public static IntVec2 GetFootprint(List<(StructurePatternOffset layout, Def def)> standardLayouts, Rot4 rotation = default)
+        {
+            if (!standardLayouts.Any()) return new IntVec2(1, 1);
+
+            var totalOffset = GetTotalOffset(standardLayouts);
+            var minX = int.MaxValue;
+            var minZ = int.MaxValue;
+            var maxX = int.MinValue;
+            var maxZ = int.MinValue;
+
+            foreach (var item in standardLayouts)
+            {
+                var size = GetLayoutSize(item.def);
+                var localPos = totalOffset + new IntVec3(item.layout.offset.x * size.x, 0, item.layout.offset.z * size.z);
+                if (rotation.IsValid)
+                {
+                    localPos = localPos.RotatedBy(rotation);
+                }
+                var rot = item.layout.randomRotated ? Rot4.North : new Rot4(item.layout.rotationOffset);
+                if (rotation.IsValid)
+                {
+                    rot = new Rot4(rot.AsInt + rotation.AsInt);
+                }
+                var rotatedSize = rot.IsHorizontal ? new IntVec2(size.z, size.x) : size;
+                var rect = CellRect.CenteredOn(localPos, rotatedSize.x, rotatedSize.z);
+                if (rect.minX < minX) minX = rect.minX;
+                if (rect.minZ < minZ) minZ = rect.minZ;
+                if (rect.maxX > maxX) maxX = rect.maxX;
+                if (rect.maxZ > maxZ) maxZ = rect.maxZ;
+            }
+
+            return new IntVec2(maxX - minX + 1, maxZ - minZ + 1);
         }
 
         private static List<Def> GetAvailableDefs(string pattern, HashSet<Def> usedDefs)
