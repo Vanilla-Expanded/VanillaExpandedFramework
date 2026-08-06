@@ -158,26 +158,29 @@ namespace VEF.Storyteller
             return sb.ToString();
         }
 
-        private static void EnsureFoundations(PrefabDef prefabDef, CellRect rect, Map map)
+        private static void EnsureBaseTerrains(PrefabDef prefabDef, CellRect rect, Map map)
         {
-            var foundations = new Dictionary<TerrainDef, HashSet<IntVec3>>();
+            var baseTerrains = new Dictionary<TerrainDef, HashSet<IntVec3>>();
             foreach (var cell in rect.Cells)
             {
                 var foundation = map.terrainGrid.FoundationAt(cell);
-                if (foundation != null)
+                var under = map.terrainGrid.UnderTerrainAt(cell);
+                var baseTerrain = foundation ?? (under != null && !under.natural ? under : null);
+                if (baseTerrain == null) continue;
+
+                if (!baseTerrains.TryGetValue(baseTerrain, out var cells))
                 {
-                    if (!foundations.TryGetValue(foundation, out var cells))
-                    {
-                        cells = new HashSet<IntVec3>();
-                        foundations[foundation] = cells;
-                    }
-                    cells.Add(cell);
+                    cells = new HashSet<IntVec3>();
+                    baseTerrains[baseTerrain] = cells;
                 }
+                cells.Add(cell);
             }
+
             var terrain = (List<PrefabTerrainData>)terrainField.GetValue(prefabDef);
-            foreach (var (terrainDef, cells) in foundations)
+            foreach (var (terrainDef, cells) in baseTerrains)
             {
                 if (terrain.Any(t => t.def == terrainDef)) continue;
+
                 var prefabTerrainData = new PrefabTerrainData
                 {
                     def = terrainDef,
@@ -321,7 +324,7 @@ namespace VEF.Storyteller
                 for (var j = 0; j < list.Count; j++)
                 {
                     var prefabDef = PrefabUtility.CreatePrefab(list[j], true, true);
-                    EnsureFoundations(prefabDef, list[j], currentMap);
+                    EnsureBaseTerrains(prefabDef, list[j], currentMap);
                     var value = GeneratePrefabXml(prefabDef, $"{prefix}_{j + 1}", list[j], includeRoof);
                     sb.AppendLine(value);
                 }
