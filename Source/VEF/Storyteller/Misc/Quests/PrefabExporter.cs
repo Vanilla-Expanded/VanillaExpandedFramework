@@ -14,11 +14,12 @@ namespace VEF.Storyteller
     {
         private static readonly FieldInfo thingsField = typeof(PrefabDef).GetField("things", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
         private static readonly FieldInfo terrainField = typeof(PrefabDef).GetField("terrain", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+        private static readonly FieldInfo bufferField = typeof(DebugActionsPrefabs).GetField("buffer", BindingFlags.Static | BindingFlags.NonPublic);
 
-        [DebugAction("KCSG", "Mass export prefabs", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        [DebugAction("KCSG", "Export prefab(s)", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         public static void MassExportPrefabs()
         {
-            DebugToolsGeneral.GenericRectTool("Mass export", delegate (CellRect rect)
+            DebugToolsGeneral.GenericRectTool("Export prefab(s)", delegate (CellRect rect)
             {
                 Find.WindowStack.Add(new Dialog_NameMassExport(rect));
             }, closeOnComplete: true);
@@ -163,10 +164,8 @@ namespace VEF.Storyteller
             var baseTerrains = new Dictionary<TerrainDef, HashSet<IntVec3>>();
             foreach (var cell in rect.Cells)
             {
-                var foundation = map.terrainGrid.FoundationAt(cell);
-                var under = map.terrainGrid.UnderTerrainAt(cell);
-                var baseTerrain = foundation ?? (under != null && !under.natural ? under : null);
-                if (baseTerrain == null) continue;
+                var baseTerrain = GetBaseTerrain(map, cell);
+                if (baseTerrain == null || baseTerrain.layerable || baseTerrain == TerrainDefOf.Space) continue;
 
                 if (!baseTerrains.TryGetValue(baseTerrain, out var cells))
                 {
@@ -179,7 +178,7 @@ namespace VEF.Storyteller
             var terrain = (List<PrefabTerrainData>)terrainField.GetValue(prefabDef);
             foreach (var (terrainDef, cells) in baseTerrains)
             {
-                if (terrain.Any(t => t.def == terrainDef)) continue;
+                terrain.RemoveAll(t => t.def == terrainDef);
 
                 var prefabTerrainData = new PrefabTerrainData
                 {
@@ -192,6 +191,23 @@ namespace VEF.Storyteller
                 }
                 terrain.Insert(0, prefabTerrainData);
             }
+        }
+
+        private static TerrainDef GetBaseTerrain(Map map, IntVec3 cell)
+        {
+            var foundation = map.terrainGrid.FoundationAt(cell);
+            if (foundation != null)
+                return foundation;
+
+            var under = map.terrainGrid.UnderTerrainAt(cell);
+            if (under != null)
+                return under;
+
+            var terr = map.terrainGrid.TerrainAt(cell);
+            if (terr != null)
+                return terr;
+
+            return null;
         }
 
         private class Dialog_NameMassExport : Window
@@ -327,6 +343,7 @@ namespace VEF.Storyteller
                     EnsureBaseTerrains(prefabDef, list[j], currentMap);
                     var value = GeneratePrefabXml(prefabDef, $"{prefix}_{j + 1}", list[j], includeRoof);
                     sb.AppendLine(value);
+                    bufferField.SetValue(null, prefabDef);
                 }
                 GUIUtility.systemCopyBuffer = sb.ToString();
                 Messages.Message($"Copied {list.Count} prefabs to clipboard.", MessageTypeDefOf.NeutralEvent, historical: false);
