@@ -241,6 +241,7 @@
     <Compile Include="Buildings\Misc\CustomFillableBarGaugeData.cs" />
     <Compile Include="Buildings\Misc\RecipeInheritance.cs" />
     <Compile Include="Buildings\Placeworkers\PlaceWorker_OnSand.cs" />
+    <Compile Include="Buildings\Placeworkers\PlaceWorker_GodModeVisible.cs" />
     <Compile Include="Buildings\ThingWithComps\LootBox.cs" />
     <Compile Include="Cooking\IngredientValueGetters\IngredientValueGetter_NutritionWithExtraIngredient.cs" />
     <Compile Include="Factions\Defs\ContrabandDef.cs" />

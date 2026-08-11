@@ -102,6 +102,7 @@ namespace VEF.Storyteller
                 sb.AppendLine(indent + "<terrain>");
                 foreach (var item in terrain)
                 {
+                    if (item.def.HasTag("VEF_NullTerrain") || item.def.HasTag("VEF_PrefabBorder")) continue;
                     sb.AppendLine(indent + indent + "<" + item.def.defName + ">");
                     if (item.color != null)
                     {
@@ -165,7 +166,7 @@ namespace VEF.Storyteller
             foreach (var cell in rect.Cells)
             {
                 var baseTerrain = GetBaseTerrain(map, cell);
-                if (baseTerrain == null || baseTerrain.layerable || baseTerrain == TerrainDefOf.Space) continue;
+                if (baseTerrain == null || baseTerrain.layerable || baseTerrain == TerrainDefOf.Space || baseTerrain.HasTag("VEF_NullTerrain")) continue;
 
                 if (!baseTerrains.TryGetValue(baseTerrain, out var cells))
                 {
@@ -176,6 +177,7 @@ namespace VEF.Storyteller
             }
 
             var terrain = (List<PrefabTerrainData>)terrainField.GetValue(prefabDef);
+            terrain.RemoveAll(t => t.def.HasTag("VEF_NullTerrain") || t.def.HasTag("VEF_PrefabBorder"));
             foreach (var (terrainDef, cells) in baseTerrains)
             {
                 terrain.RemoveAll(t => t.def == terrainDef);
@@ -249,16 +251,16 @@ namespace VEF.Storyteller
                 var separatorX = new HashSet<int>();
                 for (var x = rect.minX; x <= rect.maxX; x++)
                 {
-                    var goldCount = 0;
+                    var borderCount = 0;
                     for (var z = rect.minZ; z <= rect.maxZ; z++)
                     {
                         var terrain = new IntVec3(x, 0, z).GetTerrain(currentMap);
-                        if (terrain != null && terrain.defName == "GoldTile")
+                        if (terrain != null && terrain.HasTag("VEF_PrefabBorder"))
                         {
-                            goldCount++;
+                            borderCount++;
                         }
                     }
-                    if (goldCount >= Math.Max(5, height * 0.3f))
+                    if (borderCount >= Math.Max(3, (int)(height * 0.5f)))
                     {
                         separatorX.Add(x);
                     }
@@ -266,16 +268,16 @@ namespace VEF.Storyteller
                 var separatorZ = new HashSet<int>();
                 for (var z = rect.minZ; z <= rect.maxZ; z++)
                 {
-                    var goldCount = 0;
+                    var borderCount = 0;
                     for (var x = rect.minX; x <= rect.maxX; x++)
                     {
                         var terrain = new IntVec3(x, 0, z).GetTerrain(currentMap);
-                        if (terrain != null && terrain.defName == "GoldTile")
+                        if (terrain != null && terrain.HasTag("VEF_PrefabBorder"))
                         {
-                            goldCount++;
+                            borderCount++;
                         }
                     }
-                    if (goldCount >= Math.Max(5, width * 0.3f))
+                    if (borderCount >= Math.Max(3, (int)(width * 0.5f)))
                     {
                         separatorZ.Add(z);
                     }

@@ -1,0 +1,69 @@
+<Defs>
+
+	<TerrainDef Name="VEF_DevTerrainBase" Abstract="True">
+		<layerable>true</layerable>
+		<affordances>
+			<li>Light</li>
+			<li>Medium</li>
+			<li>Heavy</li>
+			<li>Walkable</li>
+		</affordances>
+		<fertility>0</fertility>
+		<renderPrecedence>399</renderPrecedence>
+		<edgeType>Hard</edgeType>
+		<designationCategory>Floors</designationCategory>
+		<placeWorkers>
+			<li>VEF.Buildings.PlaceWorker_GodModeVisible</li>
+		</placeWorkers>
+		<canEverTerraform>false</canEverTerraform>
+	</TerrainDef>
+
+	<TerrainDef ParentName="VEF_DevTerrainBase">
+		<defName>VEF_NullTerrain</defName>
+		<label>null terrain</label>
+		<texturePath>Terrain/Surfaces/DevTerrains/NullTerrain</texturePath>
+		<tags>
+			<li>VEF_NullTerrain</li>
+		</tags>
+		<drawStyleCategory>Floors</drawStyleCategory>
+	</TerrainDef>
+
+	<TerrainDef Name="VEF_PrefabBorderBase" ParentName="VEF_DevTerrainBase" Abstract="True">
+		<tags>
+			<li>VEF_PrefabBorder</li>
+		</tags>
+		<texturePath>Terrain/Surfaces/DevTerrains/PrefabBorder</texturePath>
+		<drawStyleCategory>Default1D</drawStyleCategory>
+	</TerrainDef>
+
+	<TerrainDef ParentName="VEF_PrefabBorderBase">
+		<defName>VEF_PrefabBorderWhite</defName>
+		<label>prefab border (white)</label>
+		<color>(1, 1, 1)</color>
+	</TerrainDef>
+
+	<TerrainDef ParentName="VEF_PrefabBorderBase">
+		<defName>VEF_PrefabBorderRed</defName>
+		<label>prefab border (red)</label>
+		<color>(1, 0, 0)</color>
+	</TerrainDef>
+
+	<TerrainDef ParentName="VEF_PrefabBorderBase">
+		<defName>VEF_PrefabBorderGreen</defName>
+		<label>prefab border (green)</label>
+		<color>(0, 1, 0)</color>
+	</TerrainDef>
+
+	<TerrainDef ParentName="VEF_PrefabBorderBase">
+		<defName>VEF_PrefabBorderBlue</defName>
+		<label>prefab border (blue)</label>
+		<color>(0, 0, 1)</color>
+	</TerrainDef>
+
+	<TerrainDef ParentName="VEF_PrefabBorderBase">
+		<defName>VEF_PrefabBorderYellow</defName>
+		<label>prefab border (yellow)</label>
+		<color>(1, 1, 0)</color>
+	</TerrainDef>
+
+</Defs>
