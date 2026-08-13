@@ -43,28 +43,43 @@ public class VanillaExpandedFramework_CompEggLayer_ProduceEgg
     public static ThingDef ModifyCrossbreedEgg(CompEggLayer comp, Pawn father)
     {
         var extension = comp.parent.def.GetModExtension<AnimalCrossbreedExtension>();
+        PawnKindDef mother = DefDatabase<PawnKindDef>.AllDefsListForReading.Where(x => x.race == comp.parent.def).FirstOrDefault();
         extension ??= father?.def.GetModExtension<AnimalCrossbreedExtension>();
         if (extension is null)
         {
             return comp.Props.eggFertilizedDef;
         }
-
-        switch (extension.crossBreedKindDef)
+        if (extension.specificCombinationsOverride != null && father != null && mother != null)
         {
-            case FatherOrMother.AlwaysFather:
-                return father.GetComp<CompEggLayer>()?.Props.eggFertilizedDef ?? comp.Props.eggFertilizedDef;
-            case FatherOrMother.Random:
-                return Rand.Bool ? comp.Props.eggFertilizedDef : father.GetComp<CompEggLayer>()?.Props.eggFertilizedDef ?? comp.Props.eggFertilizedDef;
-            case FatherOrMother.OtherPawnKind:
+            foreach (SpecificCombination combination in extension.specificCombinationsOverride.combinations)
             {
-                PawnKindDef randomPawn = null;
-                if (extension.otherPawnKindsByWeight != null && extension.otherPawnKindsByWeight.TryRandomElementByWeight(x => x.weight, out var value))
-                    randomPawn = value.kindDef;
-                return GetEggForPawnKind(randomPawn) ?? GetEggForPawnKind(extension.otherPawnKind) ?? comp.Props.eggFertilizedDef;
+                if ((mother == combination.firstparent && father.kindDef == combination.secondparent) ||
+                    (father.kindDef == combination.firstparent && mother == combination.secondparent))
+                {
+                    return combination.offspringEgg;
+                }
             }
-            default:
-                return comp.Props.eggFertilizedDef;
         }
+        else
+        {
+            switch (extension.crossBreedKindDef)
+            {
+                case FatherOrMother.AlwaysFather:
+                    return father.GetComp<CompEggLayer>()?.Props.eggFertilizedDef ?? comp.Props.eggFertilizedDef;
+                case FatherOrMother.Random:
+                    return Rand.Bool ? comp.Props.eggFertilizedDef : father.GetComp<CompEggLayer>()?.Props.eggFertilizedDef ?? comp.Props.eggFertilizedDef;
+                case FatherOrMother.OtherPawnKind:
+                    {
+                        PawnKindDef randomPawn = null;
+                        if (extension.otherPawnKindsByWeight != null && extension.otherPawnKindsByWeight.TryRandomElementByWeight(x => x.weight, out var value))
+                            randomPawn = value.kindDef;
+                        return GetEggForPawnKind(randomPawn) ?? GetEggForPawnKind(extension.otherPawnKind) ?? comp.Props.eggFertilizedDef;
+                    }
+                default:
+                    return comp.Props.eggFertilizedDef;
+            }
+        }
+        return comp.Props.eggFertilizedDef;
 
         ThingDef GetEggForPawnKind(PawnKindDef kindDef) => kindDef.race?.GetCompProperties<CompProperties_EggLayer>()?.eggFertilizedDef;
     }

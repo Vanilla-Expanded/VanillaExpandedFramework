@@ -55,21 +55,34 @@ namespace VEF.AnimalBehaviours
             {
                 return mother.kindDef;
             }
-            switch (extension.crossBreedKindDef)
+            if (extension.specificCombinationsOverride != null && father!=null)
             {
-                case (FatherOrMother.AlwaysFather):
-                    return father?.kindDef ?? mother.kindDef;
-                case (FatherOrMother.Random):
-                    return Rand.Chance(extension.weightForMother) ? mother.kindDef : (father?.kindDef ?? mother.kindDef);
-                case (FatherOrMother.OtherPawnKind):
-                    PawnKindDef randomPawn = null;
-                    if (extension.otherPawnKindsByWeight != null && extension.otherPawnKindsByWeight.TryRandomElementByWeight(x => x.weight, out var value))
-                        randomPawn = value.kindDef;
-                    return randomPawn ?? extension.otherPawnKind ?? mother.kindDef;
-                default:
-                    return mother.kindDef;
-
+                foreach(SpecificCombination combination in extension.specificCombinationsOverride.combinations)
+                {
+                    if((mother.kindDef==combination.firstparent && father.kindDef == combination.secondparent)||
+                        (father.kindDef == combination.firstparent && mother.kindDef == combination.secondparent))
+                    {
+                        return combination.offspring;
+                    }
+                }
             }
+            else {
+                switch (extension.crossBreedKindDef)
+                {
+                    case (FatherOrMother.AlwaysFather):
+                        return father?.kindDef ?? mother.kindDef;
+                    case (FatherOrMother.Random):
+                        return Rand.Chance(extension.weightForMother) ? mother.kindDef : (father?.kindDef ?? mother.kindDef);
+                    case (FatherOrMother.OtherPawnKind):
+                        PawnKindDef randomPawn = null;
+                        if (extension.otherPawnKindsByWeight != null && extension.otherPawnKindsByWeight.TryRandomElementByWeight(x => x.weight, out var value))
+                            randomPawn = value.kindDef;
+                        return randomPawn ?? extension.otherPawnKind ?? mother.kindDef;
+                    default:
+                        return mother.kindDef;
+                }
+            }
+            return mother.kindDef;
 
         }
 
