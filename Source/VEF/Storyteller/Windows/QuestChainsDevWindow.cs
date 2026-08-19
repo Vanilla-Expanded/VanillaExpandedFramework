@@ -34,7 +34,7 @@ namespace VEF.Storyteller
 
         public override void DoWindowContents(Rect inRect)
         {
-            GameComponent_QuestChains questChains = Current.Game.GetComponent<GameComponent_QuestChains>();
+            GameComponent_QuestChains questChains = GameComponent_QuestChains.Instance;
             if (questChains == null)
             {
                 Widgets.Label(inRect, "Quest Chains component not found.");

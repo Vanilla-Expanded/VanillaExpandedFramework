@@ -152,7 +152,7 @@ public static class TradeDeal_TryExecute_Patch
         
         int goodwillImpact = Mathf.RoundToInt(contraband.contrabandDef.impactMultiplier * contraband.count);
         
-        Find.World.GetComponent<WorldComponent_FactionGoodwillImpactManager>().ImpactFactionGoodwill(
+        WorldComponent_FactionGoodwillImpactManager.Instance.ImpactFactionGoodwill(
             new GoodwillImpactDelayed
             {
                 factionToImpact = affectedFaction,

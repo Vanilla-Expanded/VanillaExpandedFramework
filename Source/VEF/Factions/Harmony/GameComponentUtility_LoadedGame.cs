@@ -77,7 +77,7 @@ namespace VEF.Factions
                     }
 
                     if (factionCount > 0) continue;
-                    if (Find.World?.GetComponent<NewFactionSpawningState>()?.IsIgnored(faction) == true) continue;
+                    if (Find.World != null && NewFactionSpawningState.Instance.IsIgnored(faction)) continue;
                     factionsToConsider?.Add(faction);
                 }
             }
@@ -94,7 +94,8 @@ namespace VEF.Factions
 
             private static void OnNewGame()
             {
-                Find.World?.GetComponent<NewFactionSpawningState>()?.Ignore(DefDatabase<FactionDef>.AllDefs);
+                if (Find.World != null)
+                    NewFactionSpawningState.Instance.Ignore(DefDatabase<FactionDef>.AllDefs);
             }
         }
     }

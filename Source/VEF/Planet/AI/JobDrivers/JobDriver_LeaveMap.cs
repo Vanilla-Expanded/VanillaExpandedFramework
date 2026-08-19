@@ -22,7 +22,7 @@ namespace VEF.Planet
             {
                 FleckMaker.ThrowSmoke(this.pawn.Position.ToVector3(), this.Map, 2f);
                 this.pawn.ExitMap(false, Rot4.Random);
-                Find.World.GetComponent<HiringContractTracker>().pawns.Remove(this.pawn);
+                HiringContractTracker.Instance.pawns.Remove(this.pawn);
             };
             yield return toil.FailOn(() => this.pawn.Dead);
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using HarmonyLib;
 using RimWorld;
 using UnityEngine;
+using VEF.Utils;
 using Verse;
 
 namespace VEF.Graphics;
@@ -80,7 +81,7 @@ public class CustomOverlayDrawer(Map map) : MapComponent(map)
     {
         var map = thing.Map;
         if (cachedOverlayDrawer == null || cachedOverlayDrawer.map != map)
-            cachedOverlayDrawer = map.GetComponent<CustomOverlayDrawer>();
+            cachedOverlayDrawer = FastMapComp<CustomOverlayDrawer>.Get(map);
 
         cachedOverlayDrawer.activeOverlays.Remove(thing);
     }
@@ -93,7 +94,7 @@ public class CustomOverlayDrawer(Map map) : MapComponent(map)
 
         var map = thing.Map;
         if (cachedOverlayDrawer == null || cachedOverlayDrawer.map != map)
-            cachedOverlayDrawer = map.GetComponent<CustomOverlayDrawer>();
+            cachedOverlayDrawer = FastMapComp<CustomOverlayDrawer>.Get(map);
 
         if (cachedOverlayDrawer.activeOverlays.TryGetValue(thing, out var overlays) && overlays.overlays.Count > 0)
         {

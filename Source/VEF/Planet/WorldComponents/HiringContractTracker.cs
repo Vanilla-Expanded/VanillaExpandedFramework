@@ -12,6 +12,8 @@ namespace VEF.Planet
 
     public class HiringContractTracker : WorldComponent, ICommunicable
     {
+        public static HiringContractTracker Instance;
+
         public Dictionary<Hireable, List<ExposablePair>>
             deadCount = new Dictionary<Hireable, List<ExposablePair>>(); //the pair being amount of dead people and at what tick it expires
 
@@ -23,6 +25,7 @@ namespace VEF.Planet
 
         public HiringContractTracker(World world) : base(world)
         {
+            Instance = this;
         }
 
         public string GetCallLabel() => "VEF.ContractInfo".Translate((factionDef?.label ?? hireable.Key).CapitalizeFirst());

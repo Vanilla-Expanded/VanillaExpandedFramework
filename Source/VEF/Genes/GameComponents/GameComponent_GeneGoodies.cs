@@ -11,12 +11,13 @@ namespace VEF.Genes
 {
     public class GameComponent_GeneGoodies : GameComponent
     {
+        public static GameComponent_GeneGoodies Instance;
 
         public bool sentOncePerGame = false;
 
         public GameComponent_GeneGoodies(Game game)
         {
-
+            Instance = this;
         }
 
         public override void ExposeData()

@@ -31,7 +31,7 @@ namespace VEF.Storyteller
             }
             else
             {
-                var result = this.startAfterTicks + Current.Game.GetComponent<StorytellerWatcher>().lastRaidExpansionTicks;
+                var result = this.startAfterTicks + StorytellerWatcher.Instance.lastRaidExpansionTicks;
                 var stageIndex = (int)((int)((Find.TickManager.TicksGame - result) / 900000f) / 4f);
                 return stageIndex;
             }

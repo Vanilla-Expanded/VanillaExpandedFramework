@@ -4,9 +4,16 @@ using Verse;
 
 namespace VEF.Factions.GameComponents;
 
-public class WorldComponent_FactionGoodwillImpactManager(World world) : WorldComponent(world)
+public class WorldComponent_FactionGoodwillImpactManager : WorldComponent
 {
+    public static WorldComponent_FactionGoodwillImpactManager Instance;
+
     protected List<GoodwillImpactDelayed> goodwillImpacts = new();
+
+    public WorldComponent_FactionGoodwillImpactManager(World world) : base(world)
+    {
+        Instance = this;
+    }
 
     public override void WorldComponentTick()
     {

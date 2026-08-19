@@ -6,6 +6,7 @@ using RimWorld;
 using Verse.Sound;
 using Verse.AI;
 using VEF.Genes;
+using VEF.Utils;
 
 //These lootable buildings don't use base game IOpenable interface
 
@@ -34,7 +35,7 @@ namespace VEF.Buildings
             {
                 if (cachedMapComp is null)
                 {
-                    cachedMapComp = Map.GetComponent<MapComponent_InteractableBuildingsInMap>(); ;
+                    cachedMapComp = FastMapComp<MapComponent_InteractableBuildingsInMap>.Get(Map);
                 }
                 return cachedMapComp;
             }

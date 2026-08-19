@@ -24,7 +24,7 @@ namespace VEF.Genes
         public override void FinalizeInit()
         {
             base.FinalizeInit();
-            if (!Current.Game.GetComponent<GameComponent_GeneGoodies>().sentOncePerGame)
+            if (!GameComponent_GeneGoodies.Instance.sentOncePerGame)
             {
 
                 List<Thing> things = new List<Thing>();
@@ -48,7 +48,7 @@ namespace VEF.Genes
 
 
 
-                Current.Game.GetComponent<GameComponent_GeneGoodies>().sentOncePerGame = true;
+                GameComponent_GeneGoodies.Instance.sentOncePerGame = true;
             }
 
 

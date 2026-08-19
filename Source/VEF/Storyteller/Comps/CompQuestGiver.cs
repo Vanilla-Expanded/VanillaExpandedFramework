@@ -26,7 +26,7 @@ namespace VEF.Storyteller
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-            storytellerWatcher = Current.Game.GetComponent<StorytellerWatcher>();
+            storytellerWatcher = StorytellerWatcher.Instance;
         }
         public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn selPawn)
         {

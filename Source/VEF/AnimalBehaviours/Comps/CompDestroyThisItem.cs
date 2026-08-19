@@ -5,6 +5,7 @@ using RimWorld;
 using System.Diagnostics;
 using System.Collections.Generic;
 using UnityEngine;
+using VEF.Utils;
 
 namespace VEF.AnimalBehaviours
 {
@@ -25,7 +26,7 @@ namespace VEF.AnimalBehaviours
         {
             if (this.parent.Map != null)
             {
-                DestroyableObjects_MapComponent mapComp = this.parent.Map.GetComponent<DestroyableObjects_MapComponent>();
+                DestroyableObjects_MapComponent mapComp = FastMapComp<DestroyableObjects_MapComponent>.Get(parent.Map);
                 if (mapComp != null)
                 {
                     mapComp.AddObjectToMap(this.parent);
@@ -38,7 +39,7 @@ namespace VEF.AnimalBehaviours
         {
             if (map != null)
             {
-                DestroyableObjects_MapComponent mapComp = map.GetComponent<DestroyableObjects_MapComponent>();
+                DestroyableObjects_MapComponent mapComp = FastMapComp<DestroyableObjects_MapComponent>.Get(map);
                 if (mapComp != null)
                 {
                     mapComp.RemoveObjectFromMap(this.parent);
@@ -50,7 +51,7 @@ namespace VEF.AnimalBehaviours
         {
             if (previousMap != null)
             {
-                DestroyableObjects_MapComponent mapComp = previousMap.GetComponent<DestroyableObjects_MapComponent>();
+                DestroyableObjects_MapComponent mapComp = FastMapComp<DestroyableObjects_MapComponent>.Get(previousMap);
                 if (mapComp != null)
                 {
                     mapComp.RemoveObjectFromMap(this.parent);

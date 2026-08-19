@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using VEF.Utils;
 using Verse;
 using Verse.AI;
 
@@ -27,7 +28,7 @@ namespace VEF.Weapons
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-            guidedProjectilesComp = this.parent.Map.GetComponent<GuidedProjectiles>();
+            guidedProjectilesComp = FastMapComp<GuidedProjectiles>.Get(parent.Map);
         }
         public override void CompTick()
         {

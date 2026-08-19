@@ -1,6 +1,7 @@
 ﻿
 using System.Collections.Generic;
 using RimWorld;
+using VEF.Utils;
 using Verse;
 using Verse.AI;
 using Verse.Sound;
@@ -75,7 +76,7 @@ namespace VEF.Plants
                 base.Map.designationManager.RemoveAllDesignationsOn(Target);
 
                 Flower.plantAwaitingExtraction = false;
-                MapComponent_BloomingPlants mapComp = Map.GetComponent<MapComponent_BloomingPlants>();
+                MapComponent_BloomingPlants mapComp = FastMapComp<MapComponent_BloomingPlants>.Get(Map);
                 if (mapComp != null)
                 {
                     mapComp.RemoveObjectFromMap(Flower);

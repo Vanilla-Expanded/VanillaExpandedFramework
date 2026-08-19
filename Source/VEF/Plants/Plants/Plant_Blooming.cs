@@ -7,6 +7,7 @@ using System.Text;
 using UnityEngine;
 using VEF.AnimalBehaviours;
 using VEF.Buildings;
+using VEF.Utils;
 using Verse;
 using Verse.Noise;
 using static HarmonyLib.Code;
@@ -93,7 +94,7 @@ namespace VEF.Plants
             {
                 if (cachedMapComp is null)
                 {
-                    cachedMapComp = Map.GetComponent<MapComponent_BloomingPlants>(); 
+                    cachedMapComp = FastMapComp<MapComponent_BloomingPlants>.Get(Map); 
                 }
                 return cachedMapComp;
             }

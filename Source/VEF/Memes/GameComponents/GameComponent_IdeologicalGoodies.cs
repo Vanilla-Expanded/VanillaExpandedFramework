@@ -11,12 +11,13 @@ namespace VEF.Memes
 {
     public class GameComponent_IdeologicalGoodies : GameComponent
     {
+        public static GameComponent_IdeologicalGoodies Instance;
 
         public bool sentOncePerGame = false;
 
         public GameComponent_IdeologicalGoodies(Game game)
         {
-
+            Instance = this;
         }
 
         public override void ExposeData()

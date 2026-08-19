@@ -194,7 +194,7 @@ namespace VEF.Factions
 
         private void Ignore()
         {
-            Find.World.GetComponent<NewFactionSpawningState>().Ignore(factionDef);
+            NewFactionSpawningState.Instance.Ignore(factionDef);
             Close();
         }
 

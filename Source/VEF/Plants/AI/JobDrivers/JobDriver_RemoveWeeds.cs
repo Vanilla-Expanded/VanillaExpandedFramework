@@ -1,6 +1,7 @@
 ﻿
 using System.Collections.Generic;
 using RimWorld;
+using VEF.Utils;
 using Verse;
 using Verse.AI;
 using Verse.Sound;
@@ -69,7 +70,7 @@ namespace VEF.Plants
 
                 Flower.plantAwaitingWeedRemoval = false;
                 Flower.hasWeeds = false;
-                MapComponent_BloomingPlants mapComp = Map.GetComponent<MapComponent_BloomingPlants>();
+                MapComponent_BloomingPlants mapComp = FastMapComp<MapComponent_BloomingPlants>.Get(Map);
                 if (mapComp != null)
                 {
                     mapComp.RemoveWeedFromMap(Flower);

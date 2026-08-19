@@ -7,9 +7,14 @@ namespace VEF.Factions
 {
     public class NewFactionSpawningState : WorldComponent
     {
+        public static NewFactionSpawningState Instance;
+
         private HashSet<FactionDef> ignoredFactions = new HashSet<FactionDef>();
 
-        public NewFactionSpawningState(World world) : base(world) { }
+        public NewFactionSpawningState(World world) : base(world)
+        {
+            Instance = this;
+        }
 
         public override void ExposeData()
         {

@@ -19,7 +19,7 @@ namespace VEF.Storyteller
                 if (options != null && options.raidRestlessness != null && faction.HostileTo(Faction.OfPlayer)
                     && map.mapPawns.SpawnedPawnsInFaction(Faction.OfPlayer).Count > 0)
                 {
-                    var comp = Current.Game.GetComponent<StorytellerWatcher>();
+                    var comp = StorytellerWatcher.Instance;
                     if (comp != null)
                     {
                         comp.lastRaidExpansionTicks = Find.TickManager.TicksGame;
@@ -38,7 +38,7 @@ namespace VEF.Storyteller
             var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
             if (options != null && options.raidRestlessness != null && HasMapNode(__instance.root.root))
             {
-                var comp = Current.Game.GetComponent<StorytellerWatcher>();
+                var comp = StorytellerWatcher.Instance;
                 if (comp != null)
                 {
                     if (outcome == QuestEndOutcome.Success || __instance.State == QuestState.EndedSuccess)

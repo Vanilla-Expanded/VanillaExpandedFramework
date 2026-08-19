@@ -5,6 +5,7 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using RimWorld;
+using VEF.Utils;
 using Verse.Sound;
 using static HarmonyLib.Code;
 using Verse.Noise;
@@ -37,7 +38,7 @@ namespace VEF.Buildings
             {
                 if (cachedMapComp is null)
                 {
-                    cachedMapComp = Map.GetComponent<MapComponent_InteractableBuildingsInMap>(); ;
+                    cachedMapComp = FastMapComp<MapComponent_InteractableBuildingsInMap>.Get(Map); ;
                 }
                 return cachedMapComp;
             }

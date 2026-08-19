@@ -38,37 +38,33 @@ namespace VEF.Storyteller
 
         public static void RaidGroupChecker(List<Pawn> pawns, IncidentParms parms)
         {
-            if (pawns != null && parms != null)
+            if (pawns != null && parms != null && Current.Game != null && StorytellerWatcher.Instance != null)
             {
-                var gameComp = Current.Game?.GetComponent<StorytellerWatcher>();
-                if (gameComp != null)
+                var raidGroup = new RaidGroup();
+                if (parms.faction != null)
                 {
-                    var raidGroup = new RaidGroup();
-                    if (parms.faction != null)
+                    raidGroup.faction = parms.faction;
+                }
+                else
+                {
+                    raidGroup.faction = pawns.First().Faction;
+                }
+                raidGroup.pawns = pawns.ToHashSet();
+                if (includeRaidToTheList)
+                {
+                    if (StorytellerWatcher.Instance.raidGroups is null)
                     {
-                        raidGroup.faction = parms.faction;
+                        StorytellerWatcher.Instance.raidGroups = new List<RaidGroup>();
                     }
-                    else
+                    StorytellerWatcher.Instance.raidGroups.Add(raidGroup);
+                }
+                else
+                {
+                    if (StorytellerWatcher.Instance.reinforcementGroups is null)
                     {
-                        raidGroup.faction = pawns.First().Faction;
+                        StorytellerWatcher.Instance.reinforcementGroups = new List<RaidGroup>();
                     }
-                    raidGroup.pawns = pawns.ToHashSet();
-                    if (includeRaidToTheList)
-                    {
-                        if (gameComp.raidGroups is null)
-                        {
-                            gameComp.raidGroups = new List<RaidGroup>();
-                        }
-                        gameComp.raidGroups.Add(raidGroup);
-                    }
-                    else
-                    {
-                        if (gameComp.reinforcementGroups is null)
-                        {
-                            gameComp.reinforcementGroups = new List<RaidGroup>();
-                        }
-                        gameComp.reinforcementGroups.Add(raidGroup);
-                    }
+                    StorytellerWatcher.Instance.reinforcementGroups.Add(raidGroup);
                 }
             }
 
@@ -80,7 +76,7 @@ namespace VEF.Storyteller
     {
         public static void Postfix(Lord __instance, Pawn p)
         {
-            var gameComp = Current.Game.GetComponent<StorytellerWatcher>();
+            var gameComp = StorytellerWatcher.Instance;
             if (gameComp.raidGroups != null)
             {
                 foreach (var rg in gameComp.raidGroups)
@@ -117,7 +113,7 @@ namespace VEF.Storyteller
     {
         public static bool ShouldTriggerReinforcements(Pawn victim, DamageInfo? dinfo, out Faction enemyFaction)
         {
-            var gameComp = Current.Game.GetComponent<StorytellerWatcher>();
+            var gameComp = StorytellerWatcher.Instance;
             if (dinfo.HasValue && dinfo.Value.Instigator?.Faction != null
                 && gameComp.FactionPresentInCurrentRaidGroups(dinfo.Value.Instigator.Faction))
             {
@@ -242,7 +238,7 @@ namespace VEF.Storyteller
                 {
                     if (parms.faction != null && parms.faction.HostileTo(Faction.OfPlayer))
                     {
-                        var comp = Current.Game.GetComponent<StorytellerWatcher>();
+                        var comp = StorytellerWatcher.Instance;
                         if (comp != null && !comp.raidQueues.Any(x => x.parms == parms))
                         {
                             var tickToFire = Find.TickManager.TicksAbs + options.storytellerThreat.raidWarningRange.Value.RandomInRange;
@@ -272,7 +268,7 @@ namespace VEF.Storyteller
             var options = Find.Storyteller.def.GetModExtension<StorytellerDefExtension>();
             if (options != null && options.storytellerThreat != null)
             {
-                var gameComp = Current.Game.GetComponent<StorytellerWatcher>();
+                var gameComp = StorytellerWatcher.Instance;
                 for (int i = gameComp.raidGroups.Count - 1; i >= 0; i--)
                 {
                     if (gameComp.raidGroups[i].lords.Contains(__instance) && gameComp.raidGroups[i].lords.Count > 1)
@@ -328,7 +324,7 @@ namespace VEF.Storyteller
                             if (transitionAction.message == "MessageRaidersGivenUpLeaving".Translate(lord.faction.def.pawnsPlural.CapitalizeFirst(), lord.faction.Name)
                                 || transitionAction.message == "MessageFightersFleeing".Translate(lord.faction.def.pawnsPlural.CapitalizeFirst(), lord.faction.Name))
                             {
-                                var gameComp = Current.Game.GetComponent<StorytellerWatcher>();
+                                var gameComp = StorytellerWatcher.Instance;
                                 for (int j = gameComp.raidGroups.Count - 1; j >= 0; j--)
                                 {
                                     if (gameComp.raidGroups[j].lords.Contains(lord) && gameComp.raidGroups[j].lords.Count > 1)

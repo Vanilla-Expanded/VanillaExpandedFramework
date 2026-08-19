@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using HarmonyLib;
 using UnityEngine;
+using VEF.Utils;
 using Verse;
 
 namespace VEF.Maps
@@ -27,6 +28,7 @@ namespace VEF.Maps
                 if (maps[index] != map)
                 {
                     maps[index] = map;
+                    // Don't use FastMapComp here, as it may iterate over multiple maps and invalidate the cache for each
                     comp = terrainListers[index] = map.GetComponent<SpecialTerrainList>();
                 }
                 else
@@ -47,14 +49,14 @@ namespace VEF.Maps
             var oldTerr = ___map.terrainGrid.TerrainAt(c);
             if (oldTerr is ActiveTerrainDef special)
             {
-                ___map.GetComponent<SpecialTerrainList>().Notify_RemovedTerrainAt(c);
+                FastMapComp<SpecialTerrainList>.Get(___map).Notify_RemovedTerrainAt(c);
             }
         }
         static void Postfix(IntVec3 c, TerrainDef newTerr, TerrainGrid __instance, Map ___map)
         {
             if (newTerr is ActiveTerrainDef special)
             {
-                var specialTerrainList = ___map.GetComponent<SpecialTerrainList>();
+                var specialTerrainList = FastMapComp<SpecialTerrainList>.Get(___map);
                 specialTerrainList.RegisterAt(special, c);
             }
         }
@@ -67,7 +69,7 @@ namespace VEF.Maps
         {
             if (__instance.TerrainAt(c) is ActiveTerrainDef special)
             {
-                var specialTerrainList = ___map.GetComponent<SpecialTerrainList>();
+                var specialTerrainList = FastMapComp<SpecialTerrainList>.Get(___map);
                 specialTerrainList.Notify_RemovedTerrainAt(c);
             }
         }

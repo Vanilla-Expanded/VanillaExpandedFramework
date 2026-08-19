@@ -101,7 +101,7 @@ namespace VEF
                 list.Label("CanAddXFaction".Translate(FactionCanBeAddedCount));
                 if (FactionCanBeAddedCount > 0 && list.ButtonText("AskForPopUp".Translate(), "AskForPopUpExplained".Translate()))
                 {
-                    Current.Game.World.GetComponent<NewFactionSpawningState>().ClearIgnored();
+                    NewFactionSpawningState.Instance.ClearIgnored();
 
                     var factionsToConsider = new List<FactionDef>();
                     VanillaExpandedFramework_GameComponentUtility_LoadedGame_Patch.LoadedGame.CollectPotentialFactionsToSpawn(DefDatabase<FactionDef>.AllDefs, factionsToConsider);

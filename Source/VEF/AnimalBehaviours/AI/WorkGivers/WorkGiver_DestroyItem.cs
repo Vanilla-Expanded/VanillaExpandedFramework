@@ -3,6 +3,7 @@ using Verse;
 using Verse.AI;
 using RimWorld;
 using System.Collections.Generic;
+using VEF.Utils;
 
 namespace VEF.AnimalBehaviours
 {
@@ -11,7 +12,7 @@ namespace VEF.AnimalBehaviours
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
 
-            return pawn.Map.GetComponent<DestroyableObjects_MapComponent>().objects_InMap;
+            return FastMapComp<DestroyableObjects_MapComponent>.Get(pawn.Map).objects_InMap;
 
 
         }

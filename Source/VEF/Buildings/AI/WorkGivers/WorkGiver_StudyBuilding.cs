@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using RimWorld;
-
+using VEF.Utils;
 using Verse;
 using Verse.AI;
 
@@ -12,7 +12,7 @@ namespace VEF.Buildings
 
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
-            return pawn.Map.GetComponent<MapComponent_InteractableBuildingsInMap>().studiables_InMap;
+            return FastMapComp<MapComponent_InteractableBuildingsInMap>.Get(pawn.Map).studiables_InMap;
         }
 
         public override PathEndMode PathEndMode
@@ -25,7 +25,7 @@ namespace VEF.Buildings
 
         public override bool ShouldSkip(Pawn pawn, bool forced = false)
         {
-            return pawn.Map.GetComponent<MapComponent_InteractableBuildingsInMap>().studiables_InMap.Count == 0;
+            return FastMapComp<MapComponent_InteractableBuildingsInMap>.Get(pawn.Map).studiables_InMap.Count == 0;
         }
 
         public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)

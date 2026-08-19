@@ -3,6 +3,7 @@ using Verse;
 using Verse.AI;
 using RimWorld;
 using System.Collections.Generic;
+using VEF.Utils;
 
 namespace VEF.Plants
 {
@@ -11,7 +12,7 @@ namespace VEF.Plants
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
 
-            return pawn.Map.GetComponent<MapComponent_BloomingPlants>().flowersOrderedForExtraction_InMap;
+            return FastMapComp<MapComponent_BloomingPlants>.Get(pawn.Map).flowersOrderedForExtraction_InMap;
 
 
         }

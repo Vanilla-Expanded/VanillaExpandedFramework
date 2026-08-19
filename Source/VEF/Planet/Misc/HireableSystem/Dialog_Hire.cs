@@ -30,7 +30,7 @@ namespace VEF.Planet
             closeOnAccept = true;
             availableSilver = targetMap.listerThings.ThingsOfDef(ThingDefOf.Silver)
                                     .Where(x => !x.Position.Fogged(x.Map) && (targetMap.areaManager.Home[x.Position] || x.IsInAnyStorage())).Sum(t => t.stackCount);
-            riskMultiplier = Find.World.GetComponent<HiringContractTracker>().GetFactorForHireable(hireable);
+            riskMultiplier = HiringContractTracker.Instance.GetFactorForHireable(hireable);
         }
 
         public override    Vector2 InitialSize => new Vector2(750f, 650f);
@@ -98,7 +98,7 @@ namespace VEF.Planet
                         DropPodUtility.MakeDropPodAt(loc, this.targetMap, activeDropPodInfo);
                     }
 
-                Find.World.GetComponent<HiringContractTracker>().SetNewContract(daysAmount, pawns, hireable, curFaction, CostFinal);
+                HiringContractTracker.Instance.SetNewContract(daysAmount, pawns, hireable, curFaction, CostFinal);
             }
         }
 

@@ -14,9 +14,6 @@ namespace VEF.Planet
     {
         public static List<Hireable> Hireables;
 
-        private static HiringContractTracker cachedTracker      = null;
-        private static World                 cachedTrackerWorld = null;
-
         static HireableSystemStaticInitialization()
         {
             Hireables = DefDatabase<HireableFactionDef>.AllDefs.GroupBy(def => def.commTag).Select(group => new Hireable(group.Key, group.ToList())).ToList();
@@ -49,19 +46,8 @@ namespace VEF.Planet
         //         Log.Message($"Generating apparel for {pawn} with money ${money} and candidates:\n{apparelCandidates.Select(pair => pair.ToString()).ToLineList("  - ")}");
         // }
 
-        private static HiringContractTracker GetContractTracker(World world)
-        {
-            if (cachedTrackerWorld != world)
-            {
-                cachedTracker      = world.GetComponent<HiringContractTracker>();
-                cachedTrackerWorld = world;
-            }
-
-            return cachedTracker;
-        }
-
         public static IEnumerable<ICommunicable> GetCommTargets_Postfix(IEnumerable<ICommunicable> communicables) =>
-            Find.World.GetComponent<HiringContractTracker>().pawns.Any() ? communicables.Concat(Find.World.GetComponent<HiringContractTracker>()) : communicables.Concat(Hireables);
+            HiringContractTracker.Instance.pawns.Any() ? communicables.Concat(HiringContractTracker.Instance) : communicables.Concat(Hireables);
 
         public static void AddHireablesToLoadedObjectDirectory(LoadedObjectDirectory __instance)
         {
@@ -71,12 +57,12 @@ namespace VEF.Planet
 
         public static void IsQuestLodger_Postfix(Pawn p, ref bool __result)
         {
-            __result = __result || GetContractTracker(Find.World).IsHired(p);
+            __result = __result || HiringContractTracker.Instance.IsHired(p);
         }
 
         public static void QuestLodgerCanUnequip_Postfix(Pawn pawn, ref bool __result)
         {
-            __result = __result && pawn.RaceProps.Humanlike && !GetContractTracker(Find.World).IsHired(pawn);
+            __result = __result && pawn.RaceProps.Humanlike && !HiringContractTracker.Instance.IsHired(pawn);
         }
 
         public static IEnumerable<CodeInstruction> CaravanAllSendablePawns_Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -95,11 +81,11 @@ namespace VEF.Planet
         }
 
         public static bool CaravanAllSendablePawns_Helper(Pawn pawn, bool questLodger) =>
-            questLodger && !GetContractTracker(Find.World).IsHired(pawn);
+            questLodger && !HiringContractTracker.Instance.IsHired(pawn);
 
         public static void CheckAcceptArrestPostfix(Pawn __instance, ref bool __result)
         {
-            var tracker = GetContractTracker(Find.World);
+            var tracker = HiringContractTracker.Instance;
             if (tracker.IsHired(__instance))
             {
                 tracker.BreakContract();
@@ -109,12 +95,12 @@ namespace VEF.Planet
 
         public static void IsSurgeryViolation_Postfix(Bill_Medical bill, ref bool __result)
         {
-            __result = __result || (GetContractTracker(Find.World).IsHired(bill.GiverPawn) && bill.recipe.Worker.IsViolationOnPawn(bill.GiverPawn, bill.Part, Faction.OfPlayer));
+            __result = __result || (HiringContractTracker.Instance.IsHired(bill.GiverPawn) && bill.recipe.Worker.IsViolationOnPawn(bill.GiverPawn, bill.Part, Faction.OfPlayer));
         }
 
         public static void CaresAboutForbidden_Postfix(Pawn pawn, ref bool __result)
         {
-            __result = __result && (!GetContractTracker(Find.World).IsHired(pawn) || pawn.CurJobDef != VEFDefOf.VFEC_LeaveMap);
+            __result = __result && (!HiringContractTracker.Instance.IsHired(pawn) || pawn.CurJobDef != VEFDefOf.VFEC_LeaveMap);
         }
     }
 

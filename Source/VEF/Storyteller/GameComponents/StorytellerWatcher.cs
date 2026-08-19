@@ -9,6 +9,8 @@ namespace VEF.Storyteller
 {
     public class StorytellerWatcher : GameComponent
     {
+        public static StorytellerWatcher Instance;
+
         public int lastRaidExpansionTicks;
         public StorytellerDef currentStoryteller;
         public List<RaidGroup> raidGroups;
@@ -17,11 +19,12 @@ namespace VEF.Storyteller
         public Dictionary<int, QuestGiverManager> questGiverManagers;
         public StorytellerWatcher()
         {
+            Instance = this;
         }
 
         public StorytellerWatcher(Game game)
         {
-
+            Instance = this;
         }
 
         public QuestGiverManager AddQuestGiverManager(int questManagerID, QuestGiverDef def)
@@ -105,10 +108,7 @@ namespace VEF.Storyteller
 
         public void CheckStorytellerChanges()
         {
-            if (currentStoryteller != Find.Storyteller.def)
-            {
-                currentStoryteller = Find.Storyteller.def;
-            }
+            currentStoryteller = Find.Storyteller.def;
         }
 
         public bool GroupHasLivingPawns(HashSet<Pawn> group)

@@ -24,7 +24,7 @@ namespace VEF.Memes
         public override void FinalizeInit()
         {
             base.FinalizeInit();
-            if (!Current.Game.GetComponent<GameComponent_IdeologicalGoodies>().sentOncePerGame)
+            if (!GameComponent_IdeologicalGoodies.Instance.sentOncePerGame)
             {
 
                 List<Thing> things = new List<Thing>();
@@ -67,7 +67,7 @@ namespace VEF.Memes
                 
 
 
-                Current.Game.GetComponent<GameComponent_IdeologicalGoodies>().sentOncePerGame = true;
+                GameComponent_IdeologicalGoodies.Instance.sentOncePerGame = true;
             }
 
 
