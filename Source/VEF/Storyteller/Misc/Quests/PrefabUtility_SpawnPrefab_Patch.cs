@@ -9,6 +9,7 @@ namespace VEF.Storyteller
     {
         public static void Prefix(PrefabDef prefab, Map map, IntVec3 pos, Rot4 rot)
         {
+            prefab.GetThingsList().SortBy(t => (t.def.building != null && t.def.building.isEdifice) ? 1 : 0);
             rot = PrefabUtility.ValidateRotation(prefab, rot);
             var root = PrefabUtility.GetRoot(prefab, pos, rot);
             foreach (var (data, local) in prefab.GetTerrain())

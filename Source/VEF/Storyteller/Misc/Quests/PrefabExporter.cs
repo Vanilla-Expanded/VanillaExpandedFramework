@@ -5,17 +5,12 @@ using System.Linq;
 using System;
 using UnityEngine;
 using System.Text;
-using System.Reflection;
 using LudeonTK;
 
 namespace VEF.Storyteller
 {
     public static class PrefabExporter
     {
-        private static readonly FieldInfo thingsField = typeof(PrefabDef).GetField("things", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-        private static readonly FieldInfo terrainField = typeof(PrefabDef).GetField("terrain", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-        private static readonly FieldInfo bufferField = typeof(DebugActionsPrefabs).GetField("buffer", BindingFlags.Static | BindingFlags.NonPublic);
-
         [DebugAction("KCSG", "Export prefab(s)", false, false, actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         public static void MassExportPrefabs()
         {
@@ -25,7 +20,7 @@ namespace VEF.Storyteller
             }, closeOnComplete: true);
         }
 
-        public static string GeneratePrefabXml(PrefabDef prefabDef, string defName, CellRect cellRect, bool includeRoof = false)
+        public static string GeneratePrefabXml(PrefabDef prefabDef, string defName, CellRect cellRect, bool includeRoof = false, bool includeSpace = true)
         {
             var sb = new StringBuilder();
             var indent = "  ";
@@ -33,9 +28,10 @@ namespace VEF.Storyteller
             sb.AppendLine(indent + "<defName>" + defName + "</defName>");
             sb.AppendLine($"{indent}<size>({cellRect.Width},{cellRect.Height})</size>");
 
-            var things = (List<PrefabThingData>)thingsField?.GetValue(prefabDef);
-            if (things != null && things.Count > 0)
+            var things = prefabDef.GetThingsList();
+            if (things.Count > 0)
             {
+                things = things.OrderBy(t => (t.def.building != null && t.def.building.isEdifice) ? 1 : 0).ToList();
                 sb.AppendLine(indent + "<things>");
                 for (var i = 0; i < things.Count; i++)
                 {
@@ -96,13 +92,14 @@ namespace VEF.Storyteller
                 sb.AppendLine(indent + "</things>");
             }
 
-            var terrain = (List<PrefabTerrainData>)terrainField?.GetValue(prefabDef);
+            var terrain = prefabDef.GetTerrainList();
             if (terrain != null && terrain.Count > 0)
             {
                 sb.AppendLine(indent + "<terrain>");
                 foreach (var item in terrain)
                 {
                     if (item.def.HasTag("VEF_NullTerrain") || item.def.HasTag("VEF_PrefabBorder")) continue;
+                    if (ModsConfig.OdysseyActive && !includeSpace && item.def == TerrainDefOf.Space) continue;
                     sb.AppendLine(indent + indent + "<" + item.def.defName + ">");
                     if (item.color != null)
                     {
@@ -166,7 +163,7 @@ namespace VEF.Storyteller
             foreach (var cell in rect.Cells)
             {
                 var baseTerrain = GetBaseTerrain(map, cell);
-                if (baseTerrain == null || (!baseTerrain.isFoundation && baseTerrain.layerable) || baseTerrain == TerrainDefOf.Space || baseTerrain.HasTag("VEF_NullTerrain")) continue;
+                if (baseTerrain == null || (!baseTerrain.isFoundation && baseTerrain.layerable) || ModsConfig.OdysseyActive && baseTerrain == TerrainDefOf.Space || baseTerrain.HasTag("VEF_NullTerrain")) continue;
 
                 if (!baseTerrains.TryGetValue(baseTerrain, out var cells))
                 {
@@ -176,7 +173,7 @@ namespace VEF.Storyteller
                 cells.Add(cell);
             }
 
-            var terrain = (List<PrefabTerrainData>)terrainField.GetValue(prefabDef);
+            var terrain = prefabDef.GetTerrainList();
             terrain.RemoveAll(t => t.def.HasTag("VEF_NullTerrain") || t.def.HasTag("VEF_PrefabBorder"));
             foreach (var (terrainDef, cells) in baseTerrains)
             {
@@ -216,8 +213,10 @@ namespace VEF.Storyteller
         {
             private string prefix = "NewPrefab";
             private bool includeRoof = true;
+            private bool includeSpace = true;
+            private bool hasSpaceTerrain;
             private CellRect rect;
-            public override Vector2 InitialSize => new Vector2(300f, 150f);
+            public override Vector2 InitialSize => new Vector2(300f, hasSpaceTerrain ? 180f : 150f);
 
             public Dialog_NameMassExport(CellRect rect)
             {
@@ -225,6 +224,9 @@ namespace VEF.Storyteller
                 doCloseX = true;
                 forcePause = true;
                 absorbInputAroundWindow = true;
+
+                var map = Find.CurrentMap;
+                hasSpaceTerrain = ModsConfig.OdysseyActive && rect.Cells.Any(c => c.GetTerrain(map) == TerrainDefOf.Space || map.terrainGrid.FoundationAt(c) == TerrainDefOf.Space);
             }
 
             public override void DoWindowContents(Rect inRect)
@@ -234,15 +236,19 @@ namespace VEF.Storyteller
                 listing.Label("Prefix:");
                 prefix = listing.TextEntry(prefix);
                 listing.CheckboxLabeled("Include roof", ref includeRoof);
+                if (hasSpaceTerrain)
+                {
+                    listing.CheckboxLabeled("Include space terrain", ref includeSpace);
+                }
                 if (listing.ButtonText("Accept"))
                 {
-                    MassExport(rect, prefix, includeRoof);
+                    MassExport(rect, prefix, includeRoof, includeSpace);
                     Close();
                 }
                 listing.End();
             }
 
-            private void MassExport(CellRect rect, string prefix, bool includeRoof)
+            private void MassExport(CellRect rect, string prefix, bool includeRoof, bool includeSpace)
             {
                 var currentMap = Find.CurrentMap;
                 var list = new List<CellRect>();
@@ -343,9 +349,10 @@ namespace VEF.Storyteller
                 {
                     var prefabDef = PrefabUtility.CreatePrefab(list[j], true, true);
                     EnsureBaseTerrains(prefabDef, list[j], currentMap);
-                    var value = GeneratePrefabXml(prefabDef, $"{prefix}_{j + 1}", list[j], includeRoof);
+                    var defName = list.Count == 1 ? prefix : $"{prefix}_{j + 1}";
+                    var value = GeneratePrefabXml(prefabDef, defName, list[j], includeRoof, includeSpace);
                     sb.AppendLine(value);
-                    bufferField.SetValue(null, prefabDef);
+                    PrefabReflection.SetDebugBuffer(prefabDef);
                 }
                 GUIUtility.systemCopyBuffer = sb.ToString();
                 Messages.Message($"Copied {list.Count} prefabs to clipboard.", MessageTypeDefOf.NeutralEvent, historical: false);
