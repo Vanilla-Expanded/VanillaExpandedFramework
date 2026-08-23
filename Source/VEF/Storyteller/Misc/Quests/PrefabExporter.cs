@@ -166,7 +166,7 @@ namespace VEF.Storyteller
             foreach (var cell in rect.Cells)
             {
                 var baseTerrain = GetBaseTerrain(map, cell);
-                if (baseTerrain == null || baseTerrain.layerable || baseTerrain == TerrainDefOf.Space || baseTerrain.HasTag("VEF_NullTerrain")) continue;
+                if (baseTerrain == null || (!baseTerrain.isFoundation && baseTerrain.layerable) || baseTerrain == TerrainDefOf.Space || baseTerrain.HasTag("VEF_NullTerrain")) continue;
 
                 if (!baseTerrains.TryGetValue(baseTerrain, out var cells))
                 {
