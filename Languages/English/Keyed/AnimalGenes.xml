@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+	<VRE_TabAnimalGenes>Genes</VRE_TabAnimalGenes>
+	<VRE_AnimalGenes>Animal genes</VRE_AnimalGenes>
+	<VRE_FamilyTag>Gene family</VRE_FamilyTag>
+	<VRE_AnimalGenesFeratypeDesc>The genes associated with this feratype.</VRE_AnimalGenesFeratypeDesc>
+	<VRE_Feratype>Feratype</VRE_Feratype>
+	<VRE_AnimalGenesDesc>Genes present in this animal</VRE_AnimalGenesDesc>
+	<VRE_StatsReport_Genes>Relevant animal genes</VRE_StatsReport_Genes>
+	<VRE_MoreInfoInInfoScreen>More information is available on this feratype's information screen.</VRE_MoreInfoInInfoScreen>
+	<VRE_AnimalIllness>Animal illness MTB</VRE_AnimalIllness>
+	<VRE_AnimalTantrum>Animal tantrum MTB</VRE_AnimalTantrum>
+	<VRE_Trainability>Trainability set to</VRE_Trainability>
+	<VRE_Stability>Stability</VRE_Stability>
+	<VRE_StabilityDesc>Stability represents the complexity of an animal's genetic code and affecting predictability of gene inheritance.\n\nHigh stability ensures offspring typically inherit the average of their parents' genes, whereas low stability increases the likelihood that offspring will deviate from parental traits towards the natural median.</VRE_StabilityDesc>
+	<VRE_Days>days</VRE_Days>
+	<VRE_LifespanFactor>Lifespan</VRE_LifespanFactor>
+	<VRE_LifespanFactorDesc>Lifespan factor of this animal according to its genetic stability</VRE_LifespanFactorDesc>	
+	<VRE_FeratypeFamily>feratype family</VRE_FeratypeFamily>
+	<VRE_FeratypeFamilyDesc>This feratype belongs to the {0} feratype family:\n\n{1}</VRE_FeratypeFamilyDesc>
+	<VRE_AllowedPartners>Allowed partners</VRE_AllowedPartners>
+	<VRE_AllowedPartnersDesc>A list of all feratypes belonging to the {0} feratype family that this animal can make offspring with.</VRE_AllowedPartnersDesc>
+	<VRE_NotPregnant>This animal is not pregnant</VRE_NotPregnant>
+	<VRE_StillbornLabel>Stillborn {0}</VRE_StillbornLabel>
+	<VRE_StillbornDesc>Your {0}, {1} gave birth to a stillborn offspring.</VRE_StillbornDesc>
+	<VRE_SpecializedGene>Specialized gene</VRE_SpecializedGene>
+	<VRE_SpecializedGeneDesc>This gene is only inherited by offspring whose feratype contains a gene from this family.</VRE_SpecializedGeneDesc>
+
+	
+	
+</LanguageData>
