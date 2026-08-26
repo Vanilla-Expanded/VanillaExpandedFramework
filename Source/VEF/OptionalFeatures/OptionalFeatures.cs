@@ -20,7 +20,7 @@ namespace VEF.OptionalFeatures
                     }
                 }
 
-                foreach (var feature in DefDatabase<ModDef>.AllDefs.SelectMany(def => def.Activate))
+                foreach (var feature in DefDatabase<ModDef>.AllDefs.SelectMany(def => def.Activate ?? []))
                     if (feature != null && features.TryGetValue(feature, out var f))
                         f.Activate();
                     else Log.ErrorOnce($"Feature not found: {feature}", (feature ?? "null").GetHashCode());
@@ -30,6 +30,8 @@ namespace VEF.OptionalFeatures
 
     public class ModDef : Def
     {
-        public List<string> Activate;
+        // Consumer mods author these; a missing <Activate> node must not null-deref
+        // and take down activation for every feature.
+        public List<string> Activate = [];
     }
 }
