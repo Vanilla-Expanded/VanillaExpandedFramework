@@ -6,6 +6,9 @@ namespace VEF.AnimalBehaviours
 
     public class CompProperties_Floating : CompProperties
     {
+
+        public bool inSpace = false;
+
         //These two values are unused, keeping them just for back compat
 
         public bool isFloater = false;
