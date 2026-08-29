@@ -7,6 +7,7 @@ namespace VEF.AnimalBehaviours
 
         //This is equivalent to the CompFloating class, but just adds things through a hediff
 
+        public bool inSpace = false;
         public int checkingInterval = 500;
        
         public HediffCompProperties_Floating()

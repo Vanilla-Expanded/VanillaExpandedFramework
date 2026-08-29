@@ -11,7 +11,7 @@ namespace VEF.AnimalBehaviours
         {
             get
             {
-                return (HediffCompProperties_Floating)this.props;
+                return (HediffCompProperties_Floating)props;
             }
         }
 
@@ -19,34 +19,39 @@ namespace VEF.AnimalBehaviours
         {
             if (Pawn.IsHashIntervalTick(Props.checkingInterval, delta))
             {
-               
-                StaticCollectionsClass.AddFloatingAnimalToList(this.parent.pawn);
+                if (!Props.inSpace)
+                {
+                    StaticCollectionsClass.AddFloatingAnimalToList(parent.pawn);
+                }
+                else
+                {
+                    if (parent.pawn.Position != IntVec3.Invalid && parent.pawn.Map?.BiomeAt(parent.pawn.Position)?.inVacuum == true)
+                    {
+                        StaticCollectionsClass.AddFloatingAnimalToList(parent.pawn);
+                    }
+                    else StaticCollectionsClass.RemoveFloatingAnimalFromList(parent.pawn);
+                }           
             }
         }
 
         public override void CompPostPostAdd(DamageInfo? dinfo)
-        {
-           
-            StaticCollectionsClass.AddFloatingAnimalToList(this.parent.pawn);
-           
+        {           
+            StaticCollectionsClass.AddFloatingAnimalToList(parent.pawn);           
         }
 
         public override void CompPostPostRemoved()
         {
-            StaticCollectionsClass.RemoveFloatingAnimalFromList(this.parent.pawn);
-           
+            StaticCollectionsClass.RemoveFloatingAnimalFromList(parent.pawn);           
         }
 
         public override void Notify_PawnDied(DamageInfo? dinfo, Hediff culprit = null)
         {
-            StaticCollectionsClass.RemoveFloatingAnimalFromList(this.parent.pawn);
-            
+            StaticCollectionsClass.RemoveFloatingAnimalFromList(parent.pawn);           
         }
 
         public override void Notify_PawnKilled()
         {
-            StaticCollectionsClass.RemoveFloatingAnimalFromList(this.parent.pawn);
-            
+            StaticCollectionsClass.RemoveFloatingAnimalFromList(parent.pawn);            
         }
     }
 }
