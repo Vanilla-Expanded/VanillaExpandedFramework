@@ -26,7 +26,7 @@ namespace VEF.Maps
                 List<CellRect> usedRects = MapGenerator.GetOrGenerateVar<List<CellRect>>("UsedRects");
                 
                 int count = extension.KCSGStructuresToSpawnAmount.RandomInRange;
-                Log.Message(count +" structures wanted");
+                //Log.Message(count +" structures wanted");
                 for (int i = 0; i < count; i++)
                 {
                    
