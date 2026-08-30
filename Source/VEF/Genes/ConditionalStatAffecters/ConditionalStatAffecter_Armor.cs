@@ -11,10 +11,7 @@ namespace VEF.Genes
 
 		public override bool Applies(StatRequest req)
 		{
-			if (!ModsConfig.BiotechActive)
-			{
-				return false;
-			}
+			
 			Pawn pawn;
 			bool flag = false;
 			if (req.HasThing && (pawn = req.Thing as Pawn) != null && pawn.apparel != null)

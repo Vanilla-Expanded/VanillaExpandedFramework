@@ -9,10 +9,7 @@ namespace VEF.Genes
 
         public override bool Applies(StatRequest req)
         {
-            if (!ModsConfig.BiotechActive)
-            {
-                return false;
-            }
+            
             if (req.HasThing && req.Thing.Spawned)
             {
                 return req.Thing.Map.glowGrid.GroundGlowAt(req.Thing.Position)>=0.11f;

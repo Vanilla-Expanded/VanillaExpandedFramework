@@ -10,10 +10,7 @@ namespace VEF.Genes
 
 		public override bool Applies(StatRequest req)
 		{
-			if (!ModsConfig.BiotechActive)
-			{
-				return false;
-			}
+			
 			Pawn pawn;
 			if (req.HasThing && (pawn = (req.Thing as Pawn)) != null && pawn.Map != null && pawn.Map.regionAndRoomUpdater?.Enabled ==true && pawn.Position.GetTemperature(pawn.Map) <0)
 			{

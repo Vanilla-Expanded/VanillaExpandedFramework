@@ -11,10 +11,7 @@ namespace VEF.Genes
 
 		public override bool Applies(StatRequest req)
 		{
-			if (!ModsConfig.OdysseyActive)
-			{
-				return false;
-			}
+			
 			Pawn pawn;
 			
 			if (req.HasThing && (pawn = req.Thing as Pawn) != null)
