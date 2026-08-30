@@ -912,7 +912,7 @@ namespace KCSG
                 for (int index = 0; index < cells.Count; ++index)
                 {
                     if (cells[index].GetTransmitter(map) == null)
-                        GenSpawn.Spawn(AllDefOf.KCSG_PowerConduit, cells[index], map).SetFaction(faction);
+                        GenSpawn.Spawn(ThingDefOf.HiddenConduit, cells[index], map).SetFaction(faction);
                 }
             }
 
