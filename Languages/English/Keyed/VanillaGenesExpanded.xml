@@ -14,6 +14,7 @@
 	<VGE_StatsReport_InLight>above 50% lit</VGE_StatsReport_InLight>
 	<VGE_StatsReport_InDarkness>below 50% lit</VGE_StatsReport_InDarkness>
 	<VGE_StatsReport_InPain>in pain</VGE_StatsReport_InPain>
+	<VGE_StatsReport_InGreatPain>in great pain (>20%)</VGE_StatsReport_InGreatPain>
 	<VGE_StatsReport_InPollution>in polluted terrain</VGE_StatsReport_InPollution>
 	<VGE_StatsReport_ColonyMap>on colony map</VGE_StatsReport_ColonyMap>
 	<VGE_StatsReport_OutsideColonyMap>outside colony map</VGE_StatsReport_OutsideColonyMap>

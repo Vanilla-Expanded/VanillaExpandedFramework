@@ -274,6 +274,7 @@
     <Compile Include="Factions\ScenParts\ScenPart_ForcedFactionGoodwill.cs" />
     <Compile Include="Factions\WorldComponents\FactionGoodwillModifier.cs" />
     <Compile Include="Factions\WorldComponents\NewFactionSpawningState.cs" />
+    <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_InGreatPain.cs" />
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_NotInSpace.cs" />
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_InSpace.cs" />
     <Compile Include="Genes\ConditionalStatAffecters\ConditionalStatAffecter_InVacuum.cs" />
