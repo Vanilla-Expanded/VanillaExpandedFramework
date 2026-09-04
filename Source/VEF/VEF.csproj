@@ -396,6 +396,7 @@
     <Compile Include="Maps\Harmony\RoofGrid_GetCellExtraColor.cs" />
     <Compile Include="Maps\Harmony\SectionLayer_LightingOverlay_GenerateLightingOverlay.cs" />
     <Compile Include="Maps\SectionLayers\SectionLayer_CustomRoofGraphic.cs" />
+    <Compile Include="Memes\Harmony\IdeoDevelopmentUtility_ConfirmChangesToIdeo.cs" />
     <Compile Include="Plants\AI\JobDrivers\JobDriver_ExtractFlower.cs" />
     <Compile Include="Plants\AI\JobDrivers\JobDriver_RemoveWeeds.cs" />
     <Compile Include="Plants\AI\WorkGivers\WorkGiver_ExtractFlower.cs" />

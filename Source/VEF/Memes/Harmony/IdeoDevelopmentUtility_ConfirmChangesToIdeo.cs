@@ -6,15 +6,15 @@ using Verse;
 namespace VEF.Memes
 {
 
-    [HarmonyPatch(typeof(Dialog_ChooseMemes))]
-    [HarmonyPatch("DoAcceptChanges")]
-    public static class VanillaExpandedFramework_Dialog_ChooseMemes_DoAcceptChanges_Patch
+    [HarmonyPatch(typeof(IdeoDevelopmentUtility))]
+    [HarmonyPatch("ConfirmChangesToIdeo")]
+    public static class VanillaExpandedFramework_IdeoDevelopmentUtility_ConfirmChangesToIdeo_Patch
     {
         [HarmonyPostfix]
-        public static void ForceTraitAndAbilitiesOnChooseMemeDialog(List<MemeDef> ___newMemes, Ideo ___ideo)
+        public static void ForceTraitAndAbilitiesOnReformIdeoDialog(Ideo newIdeo)
         {
-           
-            foreach (MemeDef meme in ___newMemes)
+
+            foreach (MemeDef meme in newIdeo.memes)
             {
                 ExtendedMemeProperties extendedMemeProps = meme.GetModExtension<ExtendedMemeProperties>();
                 if (extendedMemeProps != null)
@@ -23,26 +23,35 @@ namespace VEF.Memes
                     {
                         foreach (Pawn pawn in PawnsFinder.AllMaps_FreeColonistsAndPrisonersSpawned)
                         {
-                            if (pawn.Ideo == ___ideo)
+                            
+                            if (pawn.Ideo?.memes.Contains(meme) == true)
                             {
                                 Trait trait = new Trait(extendedMemeProps.forcedTrait, 0, true);
-                                pawn.story?.traits?.GainTrait(trait);
+                                if (pawn.story?.traits?.HasTrait(trait.def) == false)
+                                {
+                                    pawn.story?.traits?.GainTrait(trait);
+                                }
+                                
                             }
-                        }                     
+                        }
                     }
                     if (extendedMemeProps.abilitiesGiven != null)
                     {
                         foreach (Pawn pawn in PawnsFinder.AllMaps_FreeColonistsAndPrisonersSpawned)
                         {
                            
-                            if (pawn.Ideo == ___ideo)
+                            if (pawn.Ideo?.memes.Contains(meme)==true)
                             {
                                 foreach (AbilityDef ability in extendedMemeProps.abilitiesGiven)
                                 {
-                                    pawn.abilities?.GainAbility(ability);
+                                    if (pawn.abilities!=null && pawn.abilities.GetAbility(ability) is null)
+                                    {
+                                        pawn.abilities?.GainAbility(ability);
+                                    }
+                                    
                                 }
                             }
-                        }                     
+                        }
                     }
                 }
             }
