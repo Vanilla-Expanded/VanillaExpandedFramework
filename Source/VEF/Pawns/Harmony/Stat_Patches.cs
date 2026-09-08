@@ -42,7 +42,10 @@ namespace VEF.Pawns
     {
         public static void Postfix(Verb ownerVerb, Pawn attacker, ref float __result)
         {
-            __result *= attacker.GetStatValue(VEFDefOf.VEF_MeleeAttackDamageFactor);
+            if (attacker != null)
+            {
+                __result *= attacker.GetStatValue(VEFDefOf.VEF_MeleeAttackDamageFactor);
+            }
         }
     }
 
