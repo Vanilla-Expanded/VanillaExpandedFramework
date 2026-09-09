@@ -52,7 +52,7 @@ public class VerbComp_Turret : VerbComp_Draw
             return;
         }
 
-        if (Find.TickManager.TicksGame % 15 == 0 && !currentTarget.IsValid) currentTarget = TryFindNewTarget();
+        if (parent.Manager?.Pawn?.IsHashIntervalTick(Props.verbCompTurrelIntervalTicks) ==true && !currentTarget.IsValid) currentTarget = TryFindNewTarget();
 
         if (warmUpTicksLeft == 0) TryCast();
         else if (warmUpTicksLeft > 0) warmUpTicksLeft--;
@@ -141,4 +141,5 @@ public class VerbCompProperties_Turret : VerbCompProperties_Draw
 {
     public bool invisible;
     public bool uniqueTargets;
+    public int verbCompTurrelIntervalTicks = 15;
 }
