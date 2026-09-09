@@ -52,7 +52,7 @@ public class VerbComp_Turret : VerbComp_Draw
             return;
         }
 
-        if (!currentTarget.IsValid) currentTarget = TryFindNewTarget();
+        if (Find.TickManager.TicksGame % 15 == 0 && !currentTarget.IsValid) currentTarget = TryFindNewTarget();
 
         if (warmUpTicksLeft == 0) TryCast();
         else if (warmUpTicksLeft > 0) warmUpTicksLeft--;
