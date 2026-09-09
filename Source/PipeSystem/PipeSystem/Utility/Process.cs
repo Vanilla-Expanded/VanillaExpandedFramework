@@ -509,6 +509,8 @@ namespace PipeSystem
         /// <param name="ticks">ticks passed</param>
         public void Tick(int ticks)
         {
+            
+
             if (suspended)
             {
                 return;
@@ -525,20 +527,20 @@ namespace PipeSystem
             {
                 return;
             }
-
+           
             // Try filling owners from their comps
             for (int i = 0; i < ingredientsOwners.Count; i++)
             {
                 var owner = ingredientsOwners[i];
                 if (!owner.Require)
                     continue;
-
+               
                 var associatedComp = ingredientsCompResources[i];
                 if (owner.PipeNetDef != null && associatedComp != null)
                 {
                     owner.AddFromNet(associatedComp.PipeNet);
                 }
-
+               
                 if (Def.considerBuildingCompResource)
                 {
                     ThingDef resourceThingDef = BuildingCompResource?.PipeNet?.def?.linkToRefuelables?.FirstOrFallback()?.thing;
@@ -547,7 +549,7 @@ namespace PipeSystem
                         owner.AddFromNetDirect(BuildingCompResource.PipeNet);
                     }
                 }
-
+               
                 // Set awaiting
                 if (!Def.autoGrabFromHoppers || Def.autoInputSlots.NullOrEmpty())
                 {

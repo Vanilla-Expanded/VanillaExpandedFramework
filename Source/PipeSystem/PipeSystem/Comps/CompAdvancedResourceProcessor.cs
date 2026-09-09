@@ -427,6 +427,9 @@ namespace PipeSystem
         /// <param name="ticks">Number of ticks that passed</param>
         private void Tick(int ticks)
         {
+            if (!parent.Spawned || parent is MinifiedThing)
+                return;
+
             CheckProcessRuiners();
             if (AllCompsOn)
             {
