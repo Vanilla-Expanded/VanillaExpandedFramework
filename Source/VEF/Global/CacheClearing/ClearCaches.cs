@@ -37,7 +37,7 @@ public static class ClearCaches
             foreach (var field in type.GetFields(flags))
             {
                 if (field.HasAttribute<NoCacheClearingAttribute>())
-                    return;
+                    continue;
 
                 var fieldType = field.FieldType;
                 if (typeof(IDictionary).IsAssignableFrom(fieldType))
