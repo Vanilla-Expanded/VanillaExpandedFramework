@@ -7,15 +7,15 @@ using Verse;
 namespace VEF.Buildings;
 
 [HarmonyPatch(typeof(Building_GravEngine), nameof(Building_GravEngine.GetOrbitalWarnings), MethodType.Enumerator)]
-public static class GravshipUtility_PreLaunchConfirmation_Patch
+public static class VanillaExpandedFramework_GravshipUtility_GetOrbitalWarnings_Patch
 {
     private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr, ILGenerator ilGenerator)
     {
         // Grab the HasComp<CompOxygenPusher>, which we'll search for
         var hasCompMethod = typeof(ThingCompUtility).DeclaredMethod(nameof(ThingCompUtility.HasComp)).MakeGenericMethod(typeof(CompOxygenPusher));
         // Grab our methods which we'll insert into this code
-        var oxygenPusherCheck = typeof(GravshipUtility_PreLaunchConfirmation_Patch).DeclaredMethod(nameof(IsOxygenPusher));
-        var heaterCheck = typeof(GravshipUtility_PreLaunchConfirmation_Patch).DeclaredMethod(nameof(IsHeater));
+        var oxygenPusherCheck = typeof(VanillaExpandedFramework_GravshipUtility_GetOrbitalWarnings_Patch).DeclaredMethod(nameof(IsOxygenPusher));
+        var heaterCheck = typeof(VanillaExpandedFramework_GravshipUtility_GetOrbitalWarnings_Patch).DeclaredMethod(nameof(IsHeater));
 
         // Create the code matcher
         var matcher = new CodeMatcher(instr, ilGenerator);
@@ -57,7 +57,7 @@ public static class GravshipUtility_PreLaunchConfirmation_Patch
                 CodeMatch.Branches()
             )
             // Insert instructions
-            .Insert(
+            .InsertAfter(
                 // Load the thing from the index we stored
                 CodeInstruction.LoadLocal(index),
                 // Call our method that checks for allowed heaters
