@@ -10,3 +10,9 @@ public static class VanillaExpandedFramework_MemoryUtility_UnloadUnusedUnityAsse
 {
     private static void Postfix() => ClearCaches.ClearCache();
 }
+
+[HarmonyPatch(typeof(MemoryUtility), nameof(MemoryUtility.ClearAllMapsAndWorld))]
+public static class VanillaExpandedFramework_MemoryUtility_ClearAllMapsAndWorld
+{
+    private static void Postfix() => ClearCaches.ClearCache();
+}
