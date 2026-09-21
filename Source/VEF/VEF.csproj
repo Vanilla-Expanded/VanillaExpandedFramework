@@ -197,6 +197,7 @@
     <Compile Include="AnimalGenes\Harmony\CompEggLayer_ProduceEgg.cs" />
     <Compile Include="AnimalGenes\Harmony\CompHatcher_CompTick.cs" />
     <Compile Include="AnimalGenes\Harmony\Corpse_SpawnSetup.cs" />
+    <Compile Include="AnimalGenes\Harmony\GeneUtility_SterileGenes.cs" />
     <Compile Include="AnimalGenes\Harmony\Hediff_Pregnant_DoBirthSpawn.cs" />
     <Compile Include="AnimalGenes\Harmony\StatWorker_GetOffsetsAndFactorsExplanation.cs" />
     <Compile Include="AnimalGenes\Harmony\StatWorker_GetValueUnfinalized.cs" />

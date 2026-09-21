@@ -28,6 +28,8 @@ namespace VEF.AnimalGenes
 
         public float marketValueFactor = 1f;
 
+        public bool isIllnessGene = false;
+
         public float animalIllnessMTB = 45;
 
         public float animalTantrumMTB = 0;
@@ -52,6 +54,8 @@ namespace VEF.AnimalGenes
 
         public bool singleRankGene = false;
 
+        public bool makeAnimalSterile = false;
+
         public bool dontGenerateInGeneTweakTools = false;
 
         public string extraDescriptions = "";
@@ -66,9 +70,9 @@ namespace VEF.AnimalGenes
             {
                 yield return item;
             }
-            if (stability < -2 || stability > 2)
+            if (stability < -3 || stability > 3)
             {
-                yield return "stability of an AnimalGeneDef needs to be between -2 and 2.";
+                yield return "stability of an AnimalGeneDef needs to be between -3 and 3.";
             }
 
         }

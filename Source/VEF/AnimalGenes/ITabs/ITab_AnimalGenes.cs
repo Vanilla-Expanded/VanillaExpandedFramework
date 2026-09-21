@@ -302,16 +302,17 @@ namespace VEF.AnimalGenes
         {
             switch (stability)
             {
+                case 3:
+                    return GeneBackground_Awful;
                 case 2:
                     return GeneBackground_Awful;
-
                 case 1:
                     return GeneBackground_Poor;
-
                 case -1:
                     return GeneBackground_Good;
-
                 case -2:
+                    return GeneBackground_Excellent;
+                case -3:
                     return GeneBackground_Excellent;
 
             }
