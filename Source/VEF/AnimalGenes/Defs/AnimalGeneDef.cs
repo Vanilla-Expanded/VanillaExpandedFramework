@@ -146,7 +146,7 @@ namespace VEF.AnimalGenes
                 }
             }
 
-            if (animalIllnessMTB != 45)
+            if (isIllnessGene)
             {
                 sb.AppendLine();
                 sb.AppendLineTagged("VRE_AnimalIllness".Translate() + ": " + animalIllnessMTB + " " + "VRE_Days".Translate());
