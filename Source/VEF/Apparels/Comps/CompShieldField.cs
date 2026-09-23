@@ -768,6 +768,8 @@ namespace VEF.Apparels
                         // Explosives are handled separately
                         if (proj is not Projectile_Explosive || proj.def.projectile.damageDef == DamageDefOf.EMP)
                             AbsorbDamage(proj.DamageAmount, proj.def.projectile.damageDef, proj.ExactRotation.eulerAngles.y);
+                        else
+                            AbsorbDamage(proj.DamageAmount * proj.def.projectile.explosionRadius * 0.2f, proj.def.projectile.damageDef, proj.ExactRotation.eulerAngles.y);
                         proj.Position += Rot4.FromAngleFlat((HostThing.Position - proj.Position).AngleFlat).Opposite.FacingCell;
                         NonPublicFields.Projectile_usedTarget(proj) = new LocalTargetInfo(proj.Position);
                         NonPublicMethods.Projectile_ImpactSomething(proj);
