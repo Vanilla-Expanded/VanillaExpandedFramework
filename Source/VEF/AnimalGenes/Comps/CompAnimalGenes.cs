@@ -82,10 +82,18 @@ namespace VEF.AnimalGenes
             base.PostExposeData();
             Scribe_Defs.Look(ref feratype, "feratype");
             Scribe_Values.Look(ref feratypeApplied, "feratypeApplied");
-            Scribe_Collections.Look(ref genes, "genes", LookMode.Def);
+            Scribe_Collections.Look(ref genes, "animalGenes", LookMode.Def);
             Scribe_Values.Look(ref isAlpha, "isAlpha", false);
             Scribe_Values.Look(ref soloTicks, "soloTicks", 0);
-
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                if (genes.NullOrEmpty())
+                {
+                    genes = new List<AnimalGeneDef>();
+                    ApplyFeratype();
+                    feratypeApplied = true;
+                }
+            }
         }
 
         public override void Notify_Killed(Map prevMap, DamageInfo? dinfo = null)
