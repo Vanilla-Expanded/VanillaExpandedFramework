@@ -196,13 +196,10 @@
     <Compile Include="AnimalGenes\Defs\FeratypeFamilyDef.cs" />
     <Compile Include="AnimalGenes\Harmony\CompEggLayer_ProduceEgg.cs" />
     <Compile Include="AnimalGenes\Harmony\CompHatcher_CompTick.cs" />
-    <Compile Include="AnimalGenes\Harmony\Corpse_SpawnSetup.cs" />
-    <Compile Include="AnimalGenes\Harmony\GeneUtility_SterileGenes.cs" />
     <Compile Include="AnimalGenes\Harmony\Hediff_Pregnant_DoBirthSpawn.cs" />
     <Compile Include="AnimalGenes\Harmony\StatWorker_GetOffsetsAndFactorsExplanation.cs" />
     <Compile Include="AnimalGenes\Harmony\StatWorker_GetValueUnfinalized.cs" />
     <Compile Include="AnimalGenes\Harmony\ThingDefGenerator_Corpses_GenerateCorpseDef.cs" />
-    <Compile Include="AnimalGenes\Harmony\ThingWithComps_PostIngested.cs" />
     <Compile Include="AnimalGenes\Harmony\Widgets_DefIcon.cs" />
     <Compile Include="AnimalGenes\ITabs\ITab_AnimalGenes.cs" />
     <Compile Include="AnimalGenes\Utility\AnimalGeneUtility.cs" />

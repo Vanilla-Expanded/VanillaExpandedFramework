@@ -17,19 +17,19 @@ namespace VEF.AnimalGenes
             Pawn pawn = req.Thing as Pawn;
             if (pawn != null)
             {
-                if (WorldComponent_AnimalGenes.Instance.pawnToCompAnimalGenes.ContainsKey(pawn))
+                if (pawn?.TryGetComp<CompAnimalGenes>() is CompAnimalGenes comp)
                 {
-                    CompAnimalGenes comp = WorldComponent_AnimalGenes.Instance.pawnToCompAnimalGenes[pawn];
-                    if (comp != null)
-                    {
-                        List<AnimalGeneDef> genesListForReading = comp.genes;
+
+                    List<AnimalGeneDef> genesListForReading = comp.genes;
+                    if (!comp.genes.NullOrEmpty()) {
+
                         for (int num = 0; num < genesListForReading.Count; num++)
                         {
-
                             __result += genesListForReading[num].statOffsets.GetStatOffsetFromList(___stat);
                             __result *= genesListForReading[num].statFactors.GetStatFactorFromList(___stat);
                         }
                     }
+                    
 
                 }
 

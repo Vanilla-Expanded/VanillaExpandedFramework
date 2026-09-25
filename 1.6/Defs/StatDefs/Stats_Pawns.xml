@@ -272,4 +272,15 @@
 		<toStringStyle>PercentZero</toStringStyle>	
 		<displayPriorityInCategory>9824</displayPriorityInCategory>
 	</StatDef>
+	<StatDef>
+		<defName>VRE_HealthFromGenesScale</defName>
+		<label>base health multiplier</label>
+		<description>Base health multiplier of this animal due to its genes.</description>
+		<category>PawnHealth</category>
+		<defaultBaseValue>1</defaultBaseValue>
+		<minValue>0.1</minValue>
+		<hideAtValue>1</hideAtValue>
+		<toStringStyle>PercentZero</toStringStyle>
+		<displayPriorityInCategory>2202</displayPriorityInCategory>
+	</StatDef>
 </Defs>

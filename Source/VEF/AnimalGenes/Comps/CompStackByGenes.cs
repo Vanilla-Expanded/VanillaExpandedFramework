@@ -9,14 +9,10 @@ namespace VEF.AnimalGenes
 
         public override bool AllowStackWith(Thing other)
         {
-            if (!WorldComponent_AnimalGenes.Instance.pawnToCompAnimalGenes.ContainsKey(this.parent)) { return base.AllowStackWith(other); }
-            CompAnimalGenes compThisEgg = WorldComponent_AnimalGenes.Instance.pawnToCompAnimalGenes[this.parent];
-            if (compThisEgg is null) { return base.AllowStackWith(other); }
-
-            if (!WorldComponent_AnimalGenes.Instance.pawnToCompAnimalGenes.ContainsKey(other)) { return base.AllowStackWith(other); }
-            CompAnimalGenes compOtherEgg = WorldComponent_AnimalGenes.Instance.pawnToCompAnimalGenes[other];
-            if (compOtherEgg is null) { return base.AllowStackWith(other); }
-
+            if (this.parent?.TryGetComp<CompAnimalGenes>() is not CompAnimalGenes compThisEgg) { return base.AllowStackWith(other); }
+          
+            if (other?.TryGetComp<CompAnimalGenes>() is not CompAnimalGenes compOtherEgg) { return base.AllowStackWith(other); }
+           
             bool same = true;
 
             if (compThisEgg.genes.Count != compOtherEgg.genes.Count)

@@ -48,20 +48,20 @@ namespace VEF.AnimalGenes
 
         public static void AdjustGenes(Pawn pawn, Pawn mother, Pawn father)
         {
-            if (!WorldComponent_AnimalGenes.Instance.pawnToCompAnimalGenes.ContainsKey(pawn)) { return; }
-            CompAnimalGenes comp = WorldComponent_AnimalGenes.Instance.pawnToCompAnimalGenes[pawn];
+            if (pawn.TryGetComp<CompAnimalGenes>() is null) { return; }
+            CompAnimalGenes comp = pawn.TryGetComp<CompAnimalGenes>();
             if (comp is null) { return; }
-            if (mother is null || !WorldComponent_AnimalGenes.Instance.pawnToCompAnimalGenes.ContainsKey(mother)) { return; }
-            CompAnimalGenes compMother = WorldComponent_AnimalGenes.Instance.pawnToCompAnimalGenes[mother];
+            if (mother?.TryGetComp<CompAnimalGenes>() is null) { return; }
+            CompAnimalGenes compMother = mother.TryGetComp<CompAnimalGenes>();
             if (compMother is null) { return; }
 
             HashSet<AnimalGeneFamilyTagDef> childFamilies = comp.genes.Select(x => x.familyTag).ToHashSet();
-            if (father is null || !WorldComponent_AnimalGenes.Instance.pawnToCompAnimalGenes.ContainsKey(father))
+            if (father?.TryGetComp<CompAnimalGenes>() is null)
             {
                 comp.genes = compMother.genes.ToList();
                 return;
             }
-            CompAnimalGenes compFather = WorldComponent_AnimalGenes.Instance.pawnToCompAnimalGenes[father];
+            CompAnimalGenes compFather = father.TryGetComp<CompAnimalGenes>();
             if (compFather is null) { return; }
 
             List<AnimalGeneDef> motherGenes = compMother.genes;
@@ -147,18 +147,16 @@ namespace VEF.AnimalGenes
         public static SimpleCurve AdjustLitterSize(SimpleCurve existingCurve, Pawn mother)
         {
 
-            if (mother is null || !WorldComponent_AnimalGenes.Instance.pawnToCompAnimalGenes.ContainsKey(mother)) { return existingCurve; }
-            CompAnimalGenes comp = WorldComponent_AnimalGenes.Instance.pawnToCompAnimalGenes[mother];
-            if (comp != null)
+            if (mother?.TryGetComp<CompAnimalGenes>() is not CompAnimalGenes comp) { return existingCurve; }
+
+            foreach (AnimalGeneDef motherAnimalGene in comp.genes)
             {
-                foreach (AnimalGeneDef motherAnimalGene in comp.genes)
+                if (motherAnimalGene.litterSizeCurveOverride != null)
                 {
-                    if (motherAnimalGene.litterSizeCurveOverride != null)
-                    {
-                        return motherAnimalGene.litterSizeCurveOverride;
-                    }
+                    return motherAnimalGene.litterSizeCurveOverride;
                 }
             }
+
             return existingCurve;
         }
 

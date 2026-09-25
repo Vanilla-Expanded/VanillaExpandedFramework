@@ -6,6 +6,7 @@ using RimWorld;
 using UnityEngine;
 using VEF.Genes;
 using Verse;
+using VEF.AnimalGenes;
 
 namespace VEF.AestheticScaling
 {
@@ -364,7 +365,7 @@ namespace VEF.AestheticScaling
             newScale = Mathf.Lerp(newScale, newScale2, 0.5f);
 
             float changeInRaceScale = newScale / raceHealth;
-            return percentChange * changeInRaceScale;
+            return percentChange * changeInRaceScale * pawn.GetStatValue(InternalDefOf.VRE_HealthFromGenesScale);
         }
     }
 }

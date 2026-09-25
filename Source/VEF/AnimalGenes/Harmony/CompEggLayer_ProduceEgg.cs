@@ -27,21 +27,15 @@ namespace VEF.AnimalGenes
             Pawn father = ___fertilizedBy;
             PawnKindDef pawn = compHatcher.Props.hatcherPawn;
 
-            if (!WorldComponent_AnimalGenes.Instance.pawnToCompAnimalGenes.ContainsKey(__result)) { return; }
-            CompAnimalGenes comp = WorldComponent_AnimalGenes.Instance.pawnToCompAnimalGenes[__result];
-            if (comp is null) { return; }
-            if (mother is null || !WorldComponent_AnimalGenes.Instance.pawnToCompAnimalGenes.ContainsKey(mother)) { return; }
-            CompAnimalGenes compMother = WorldComponent_AnimalGenes.Instance.pawnToCompAnimalGenes[mother];
-            if (compMother is null) { return; }
-
+            if (__result?.TryGetComp<CompAnimalGenes>() is not CompAnimalGenes comp) return;
+            if (mother?.TryGetComp<CompAnimalGenes>() is  not CompAnimalGenes compMother) return;
+          
             HashSet<AnimalGeneFamilyTagDef> childFamilies = comp.genes.Select(x => x.familyTag).ToHashSet();
-            if (father is null || !WorldComponent_AnimalGenes.Instance.pawnToCompAnimalGenes.ContainsKey(father))
+            if (father?.TryGetComp<CompAnimalGenes>() is not CompAnimalGenes compFather)
             {
                 comp.genes = compMother.genes.ToList();
                 return;
             }
-            CompAnimalGenes compFather = WorldComponent_AnimalGenes.Instance.pawnToCompAnimalGenes[father];
-            if (compFather is null) { return; }
 
             List<AnimalGeneDef> motherGenes = compMother.genes;
             List<AnimalGeneDef> fatherGenes = compFather.genes;

@@ -4,6 +4,7 @@ using System.Reflection.Emit;
 using HarmonyLib;
 using RimWorld;
 using VEF.AnimalGenes;
+using Verse;
 
 
 namespace VEF.AnimalGenes
@@ -19,7 +20,11 @@ namespace VEF.AnimalGenes
         {
             if (__instance.TemperatureDamaged)
             {
-                WorldComponent_AnimalGenes.Instance.pawnToCompAnimalGenes.Remove(__instance.parent);
+                CompAnimalGenes comp = __instance.parent.TryGetComp<CompAnimalGenes>();
+                if (comp != null) { 
+                    comp.active = false;
+                }
+              
             }
 
         }

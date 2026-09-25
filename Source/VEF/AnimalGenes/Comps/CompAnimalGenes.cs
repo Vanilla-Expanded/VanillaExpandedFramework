@@ -15,8 +15,9 @@ namespace VEF.AnimalGenes
         private bool feratypeApplied;
         public bool isAlpha;
         public int soloTicks;
+        public bool active = true;
 
-        public new CompProperties_AnimalGenes Props => (CompProperties_AnimalGenes)props;
+        public CompProperties_AnimalGenes Props => (CompProperties_AnimalGenes)props;
 
         public float LifeSpanFactor
         {
@@ -39,9 +40,7 @@ namespace VEF.AnimalGenes
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-
-            WorldComponent_AnimalGenes.Instance.AddAnimalComp(parent, this);
-
+   
             if (!respawningAfterLoad && !feratypeApplied)
             {
                 ApplyFeratype();

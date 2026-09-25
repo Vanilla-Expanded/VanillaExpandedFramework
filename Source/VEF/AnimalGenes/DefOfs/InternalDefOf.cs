@@ -17,6 +17,6 @@ namespace VEF.AnimalGenes
         }
 
         public static HediffDef VEF_StillbornAnimal;
-
+        public static StatDef VRE_HealthFromGenesScale;
     }
 }

@@ -73,7 +73,7 @@ namespace VEF.AnimalGenes
 
             Thing thing = ThingForGenes(Find.Selector.SingleSelectedThing);
 
-            if (thing != null && WorldComponent_AnimalGenes.Instance.pawnToCompAnimalGenes.ContainsKey(thing))
+            if (thing?.TryGetComp<CompAnimalGenes>() is CompAnimalGenes comp && comp.active)
             {
                 return true;
             }
@@ -84,15 +84,11 @@ namespace VEF.AnimalGenes
         public static void DrawGenesInfo(Rect rect, Thing target, float initialHeight, ref Vector2 size, ref Vector2 scrollPosition, GeneSet pregnancyGenes = null)
         {
             Thing sourcePawn = ThingForGenes(target);
-            if (sourcePawn == null || !WorldComponent_AnimalGenes.Instance.pawnToCompAnimalGenes.ContainsKey(sourcePawn))
+            if (sourcePawn?.TryGetComp<CompAnimalGenes>() is not CompAnimalGenes comp)
             {
                 return;
             }
-            CompAnimalGenes comp = WorldComponent_AnimalGenes.Instance.pawnToCompAnimalGenes[sourcePawn];
-            if (comp is null)
-            {
-                return;
-            }
+           
             int totalStability = AnimalGeneUtility.GetTotalStability(comp);
 
             Rect rect2 = rect;
