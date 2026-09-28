@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -925,26 +925,41 @@ namespace PipeSystem
         {
             outThing = null;
 
-            if (cell.Walkable(map))
+            if (!cell.Walkable(map))
             {
-                var output = result.GetOutput(this);
-                // Try find thing of the same def
+                return false;
+            }
+
+            var output = result.GetOutput(this);
+            int count = result.GetCount(this);
+
+            // Build the finished output first so stacking checks see its real quality
+            Thing newThing;
+            if (Def.useFirstIngredientAsOutputStuff)
+            {
+                newThing = ThingMaker.MakeThing(output, advancedProcessor.cachedIngredients.Last().thingDef);
+            }
+            else { newThing = ThingMaker.MakeThing(output); }
+            newThing.stackCount = count;
+            ApplyIngredientsAndQuality(newThing);
+
+            if (!Def.useFirstIngredientAsOutputStuff)
+            {
+                // Try find thing of the same def that the output can actually stack with
                 Thing thing = null;
                 List<Thing> thingList = cell.GetThingList(map);
                 for (int i = 0; i < thingList.Count; i++)
                 {
-                    if (thingList[i].def == output)
+                    if (thingList[i].def == output && thingList[i].CanStackWith(newThing))
                     {
                         thing = thingList[i];
                         break;
                     }
                 }
 
-                int count = result.GetCount(this);
-                if (thing != null && !Def.useFirstIngredientAsOutputStuff)
+                if (thing != null)
                 {
                     // If adding would go past stack limit
-
                     if (!def.onlyGrabAndOutputToFactoryHoppers)
                     {
                         if ((thing.stackCount + count) > thing.def.stackLimit)
@@ -961,43 +976,32 @@ namespace PipeSystem
                     }
                     outputFactoryHopperTooFull = false;
 
-                    // We found some, modifying stack size
-                    thing.stackCount += count;
+                    // We found some, merging with vanilla stacking
+                    thing.TryAbsorbStack(newThing, true);
 
                     outThing = thing;
-                    HandleIngredientsAndQuality(outThing);
-                    return true;
-                }
-                else
-                {
-                    // We didn't find any, creating thing
-                    if (Def.useFirstIngredientAsOutputStuff)
-                    {
-                        thing = ThingMaker.MakeThing(output, advancedProcessor.cachedIngredients.Last().thingDef);
-
-                    }
-                    else { thing = ThingMaker.MakeThing(output); }
-
-
-
-                    if (Def.onlyGrabAndOutputToFactoryHoppers)
-                    {
-                        if (!GenPlace.TryPlaceThing(thing, cell, map, ThingPlaceMode.Direct))
-                            return false;
-                    }
-                    else
-                    {
-                        if (!GenPlace.TryPlaceThing(thing, cell, map, ThingPlaceMode.Near))
-                            return false;
-                    }
-                    thing.stackCount = count;
-
-                    outThing = thing;
-                    HandleIngredientsAndQuality(outThing);
+                    ClearIngredientsAndForcedQuality();
                     return true;
                 }
             }
-            return false;
+
+            // We didn't find any we can stack with, placing the new thing
+            Thing placedThing;
+            if (Def.onlyGrabAndOutputToFactoryHoppers)
+            {
+                if (!GenPlace.TryPlaceThing(newThing, cell, map, ThingPlaceMode.Direct, out placedThing))
+                    return false;
+            }
+            else
+            {
+                if (!GenPlace.TryPlaceThing(newThing, cell, map, ThingPlaceMode.Near, out placedThing))
+                    return false;
+            }
+
+            // Near may have merged it into a nearby stack
+            outThing = placedThing ?? newThing;
+            ClearIngredientsAndForcedQuality();
+            return true;
         }
 
         /// <summary>
@@ -1005,6 +1009,16 @@ namespace PipeSystem
         /// </summary>
         /// <param name="outThing">process output item</param>
         public void HandleIngredientsAndQuality(Thing outThing)
+        {
+            ApplyIngredientsAndQuality(outThing);
+            ClearIngredientsAndForcedQuality();
+        }
+
+        /// <summary>
+        /// Set ingredients and quality on an output without clearing process state
+        /// </summary>
+        /// <param name="outThing">process output item</param>
+        private void ApplyIngredientsAndQuality(Thing outThing)
         {
             if (Def.useIngredients)
             {
@@ -1037,12 +1051,19 @@ namespace PipeSystem
                         compQuality.SetQuality(qualityToOutput, null);
                     }
                 }
+            }
+        }
 
+        /// <summary>
+        /// Clear forced quality and cached ingredients after an output is placed
+        /// </summary>
+        private void ClearIngredientsAndForcedQuality()
+        {
+            if (Def.stopAtQuality)
+            {
                 forceQualityOut = false;
             }
             advancedProcessor.cachedIngredients.Clear();
-
-
         }
 
         /// <summary>
