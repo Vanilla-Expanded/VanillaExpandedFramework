@@ -22,7 +22,7 @@ public static class DualWieldCompat
 
     static DualWieldCompat()
     {
-        if (ModLister.HasActiveModWithName("Dual Wield"))
+        if (ModLister.HasActiveModWithName("Dual Wield") || ModLister.HasActiveModWithName("Dual Wield - Continued"))
         {
             Log.Message("[MVCF] Activating Dual Wield compatibility...");
             Active = true;
