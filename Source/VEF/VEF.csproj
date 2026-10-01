@@ -201,6 +201,8 @@
     <Compile Include="AnimalGenes\Harmony\StatWorker_GetValueUnfinalized.cs" />
     <Compile Include="AnimalGenes\Harmony\ThingDefGenerator_Corpses_GenerateCorpseDef.cs" />
     <Compile Include="AnimalGenes\Harmony\Widgets_DefIcon.cs" />
+    <Compile Include="AnimalGenes\HediffComps\HediffComp_GameteGenes.cs" />
+    <Compile Include="AnimalGenes\HediffComps\Properties\HediffCompProperties_GameteGenes.cs" />
     <Compile Include="AnimalGenes\ITabs\ITab_AnimalGenes.cs" />
     <Compile Include="AnimalGenes\Utility\AnimalGeneUtility.cs" />
     <Compile Include="AnimalGenes\WorldComponents\WorldComponent_AnimalGenes.cs" />

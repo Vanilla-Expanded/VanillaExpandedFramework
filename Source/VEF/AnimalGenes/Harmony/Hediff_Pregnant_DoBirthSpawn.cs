@@ -55,17 +55,25 @@ namespace VEF.AnimalGenes
             CompAnimalGenes compMother = mother.TryGetComp<CompAnimalGenes>();
             if (compMother is null) { return; }
 
+            bool useFather = true;
+            Hediff_Pregnant hediff_Pregnant = (Hediff_Pregnant)mother.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.Pregnant);
+            HediffComp_GameteGenes gameteGenesComp = hediff_Pregnant.TryGetComp<HediffComp_GameteGenes>();
+            if(gameteGenesComp != null)
+            {
+                useFather = false;
+            }
+
             HashSet<AnimalGeneFamilyTagDef> childFamilies = comp.genes.Select(x => x.familyTag).ToHashSet();
-            if (father?.TryGetComp<CompAnimalGenes>() is null)
+            if (useFather && father?.TryGetComp<CompAnimalGenes>() is null)
             {
                 comp.genes = compMother.genes.ToList();
                 return;
             }
             CompAnimalGenes compFather = father.TryGetComp<CompAnimalGenes>();
-            if (compFather is null) { return; }
+            if (useFather && compFather is null) { return; }
 
             List<AnimalGeneDef> motherGenes = compMother.genes;
-            List<AnimalGeneDef> fatherGenes = compFather.genes;
+            List<AnimalGeneDef> fatherGenes = useFather ? compFather.genes : gameteGenesComp.genes;
 
             HashSet<AnimalGeneFamilyTagDef> geneFamilies = motherGenes.Select(x => x.familyTag).ToHashSet();
 
