@@ -70,6 +70,7 @@ namespace VEF.AnimalGenes
                 }
 
             }
+            
         }
 
         public void ResetCaches()
@@ -154,5 +155,7 @@ namespace VEF.AnimalGenes
                 pawn.Name = new NameSingle(name, numerical);
             }
         }
+
+        
     }
 }
