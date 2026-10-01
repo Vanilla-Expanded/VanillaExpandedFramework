@@ -73,7 +73,7 @@ namespace VEF.AnimalGenes
 
             Thing thing = ThingForGenes(Find.Selector.SingleSelectedThing);
 
-            if (thing?.TryGetComp<CompAnimalGenes>() is CompAnimalGenes comp && comp.active)
+            if (thing?.TryGetComp<CompAnimalGenes>() is CompAnimalGenes comp && comp.active && !comp.genes.NullOrEmpty())
             {
                 return true;
             }
