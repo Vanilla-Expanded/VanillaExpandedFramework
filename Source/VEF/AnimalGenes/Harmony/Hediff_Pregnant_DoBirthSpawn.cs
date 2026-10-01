@@ -58,7 +58,7 @@ namespace VEF.AnimalGenes
             bool useFather = true;
             Hediff_Pregnant hediff_Pregnant = (Hediff_Pregnant)mother.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.Pregnant);
             HediffComp_GameteGenes gameteGenesComp = hediff_Pregnant.TryGetComp<HediffComp_GameteGenes>();
-            if(gameteGenesComp != null)
+            if(gameteGenesComp?.genes.Count>0)
             {
                 useFather = false;
             }
