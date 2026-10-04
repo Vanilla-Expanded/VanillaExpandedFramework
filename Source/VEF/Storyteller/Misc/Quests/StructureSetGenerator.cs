@@ -312,23 +312,7 @@ namespace VEF.Storyteller
             {
                 foreach (var spawnOption in layout.spawnPawns)
                 {
-                    for (var i = 0; i < spawnOption.count.RandomInRange; i++)
-                    {
-                        var rootCell = walkableCells.RandomElement();
-                        if (!rootCell.IsValid) rootCell = structureRect.CenterCell;
-                        var spawnCell = CellFinder.RandomSpawnCellForPawnNear(rootCell, map, 5);
-                        if (!spawnCell.IsValid) continue;
-                        
-                        var pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(spawnOption.kind, faction, PawnGenerationContext.NonPlayer, forceGenerateNewPawn: true));
-                        if (pawn.RaceProps.Humanlike && layout.weapons.NullOrEmpty() is false)
-                        {
-                            pawn.equipment.DestroyAllEquipment();
-                            pawn.equipment.AddEquipment((ThingWithComps)ThingMaker.MakeThing(layout.weapons.RandomElement()));
-                        }
-                        if (layout.unwaveringlyLoyal && pawn.guest != null) pawn.guest.Recruitable = false;
-                        GenSpawn.Spawn(pawn, spawnCell, map);
-                        pawns.Add(pawn);
-                    }
+                    spawnOption.SpawnPawns(map, walkableCells, structureRect, layout, faction, pawns);
                 }
             }
             if (layout.spawnThings != null)

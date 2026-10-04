@@ -1,6 +1,8 @@
+using System;
 using Verse;
 using System.Collections.Generic;
 using System.Xml;
+using RimWorld;
 
 namespace VEF.Storyteller
 {
@@ -32,7 +34,30 @@ namespace VEF.Storyteller
     public class PawnSpawnOption
     {
         public PawnKindDef kind;
-        public IntRange count;
+        public IntRange count = IntRange.Invalid;
+
+        public virtual void SpawnPawns(Map map, List<IntVec3> walkableCells, CellRect structureRect, StructurePatternOffset layout, Faction faction, List<Pawn> spawnedPawns)
+        {
+            var range = count.RandomInRange;
+            for (var i = 0; i < range; i++)
+            {
+                var rootCell = walkableCells.RandomElement();
+                if (!rootCell.IsValid) rootCell = structureRect.CenterCell;
+                var spawnCell = CellFinder.RandomSpawnCellForPawnNear(rootCell, map, 5);
+                if (!spawnCell.IsValid) continue;
+
+                var pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(kind, faction, forceGenerateNewPawn: true));
+                if (pawn.RaceProps.Humanlike && layout.weapons.NullOrEmpty() is false)
+                {
+                    pawn.equipment.DestroyAllEquipment();
+                    pawn.equipment.AddEquipment((ThingWithComps)ThingMaker.MakeThing(layout.weapons.RandomElement()));
+                }
+                if (layout.unwaveringlyLoyal && pawn.guest != null) pawn.guest.Recruitable = false;
+                GenSpawn.Spawn(pawn, spawnCell, map);
+                spawnedPawns.Add(pawn);
+            }
+        }
+
         public void LoadDataFromXmlCustom(XmlNode xmlRoot)
         {
             DirectXmlCrossRefLoader.RegisterObjectWantsCrossRef(this, "kind", xmlRoot.Name);
