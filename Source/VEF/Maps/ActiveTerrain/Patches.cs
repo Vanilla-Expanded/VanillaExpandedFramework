@@ -46,6 +46,8 @@ namespace VEF.Maps
     {
         static void Prefix(IntVec3 c, TerrainDef newTerr, TerrainGrid __instance, Map ___map)
         {
+            if (!c.InBounds(___map))
+                return;
             var oldTerr = ___map.terrainGrid.TerrainAt(c);
             if (oldTerr is ActiveTerrainDef special)
             {
