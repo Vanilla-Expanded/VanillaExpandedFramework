@@ -30,7 +30,6 @@ namespace VEF.Storyteller
         public static void Postfix(PrefabDef prefab, Map map, IntVec3 pos, Rot4 rot, Faction faction, List<Thing> spawned, Action<Thing> onSpawned)
         {
             var ext = prefab.GetModExtension<PrefabExtension>();
-            Log.Error($"Spawning prefab {prefab}, pawn data count: {ext?.pawns?.Count}");
             if (ext == null) return;
 
             rot = PrefabUtility.ValidateRotation(prefab, rot);
