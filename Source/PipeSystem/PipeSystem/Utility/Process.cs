@@ -843,6 +843,7 @@ namespace PipeSystem
             {
                 var result = def.results[i];
                 var resComp = resultsCompResources.Find(c => c.Props.pipeNet == result.pipeNet);
+                bool pushedToNet = false;
                 // If it can directly go into the net
                 if (result.pipeNet != null && resComp != null && resComp.PipeNet is PipeNet net && net.connectors.Count > 1)
                 {
@@ -851,21 +852,30 @@ namespace PipeSystem
                     if (net.AvailableCapacity > count)
                     {
                         net.DistributeAmongStorage(count, out _);
+                        pushedToNet = true;
                     }
                     // No storage but converters
                     else if (net.ThingConvertersMaxOutput >= count)
                     {
                         net.DistributeAmongConverters(count, false);
+                        pushedToNet = true;
                     }
                     // No storage/converter, try refuel connected things
                     else if (net.RefillableAmount >= count)
                     {
                         net.DistributeAmongRefillables(count, false);
+                        pushedToNet = true;
+                    }
+                    // Nowhere to put the result, wait until there is room unless output on ground is on
+                    else if (!(spawning && (extractor != null || advancedProcessor.outputOnGround)))
+                    {
+                        tickLeft = 1;
+                        return;
                     }
                 }
                 // If can't go into net and should/can spawn
                 // Bypass ground setting if thing can't be put in net
-                else if (spawning && result.GetOutput(this) is ThingDef output && (extractor != null || advancedProcessor.outputOnGround || result.pipeNet == null))
+                if (!pushedToNet && spawning && result.GetOutput(this) is ThingDef output && (extractor != null || advancedProcessor.outputOnGround || result.pipeNet == null))
                 {
                     var map = parent.Map;
                     // If defined outputCellOffset
