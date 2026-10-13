@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Patch>
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/ThingDef[@Name="BasePawn"]/inspectorTabs</xpath>
+		<value>
+			<li>VEF.AnimalGenes.ITab_AnimalGenes</li>
+		</value>
+	</Operation>
+</Patch>
+

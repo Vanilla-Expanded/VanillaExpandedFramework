@@ -4,8 +4,7 @@ using System.Linq;
 using UnityEngine;
 using Verse;
 using RimWorld;
-using UnityEngine.Diagnostics;
-using static PipeSystem.ProcessDef;
+
 
 namespace VEF.Graphics
 {

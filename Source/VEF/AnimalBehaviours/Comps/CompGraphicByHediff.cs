@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
+using VEF.AnimalBehaviours;
 using System.Runtime.CompilerServices;
 using System.Xml;
 using UnityEngine;
@@ -58,72 +58,76 @@ namespace AnimalBehaviours
             if (this.parent.Map != null && AnimalBehaviours_Settings.flagGraphicChanging)
             {
                 Pawn pawn = this.parent as Pawn;
-                if (this.pawn_renderer == null)
+                if (pawn != null)
                 {
-                    this.pawn_renderer = pawn.Drawer.renderer;
-                }
-
-                bool hediffFound = false;
-                Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(Props.hediffDef, false);
-                if (hediff != null)
-                {
-                    hediffFound = true;
-                }
-
-                //Uses drawsize, color, colorTwo and ShadowData of the original bodyGraphicData
-                Vector2 vector = pawn.ageTracker.CurKindLifeStage.bodyGraphicData.drawSize;
-                Color color = pawn.ageTracker.CurKindLifeStage.bodyGraphicData.color;
-                Color color2 = pawn.ageTracker.CurKindLifeStage.bodyGraphicData.color;
-                var shader = ShaderDatabase.Cutout;
-                if (Props.useCutoutComplex)
-                {
-                    shader = ShaderDatabase.CutoutComplex;
-                }
-                var data = new GraphicData();
-                data.shadowData = pawn.ageTracker.CurKindLifeStage.bodyGraphicData.shadowData;
-
-
-
-                if (hediffFound)
-                {
-                    LongEventHandler.ExecuteWhenFinished(delegate
+                    if (this.pawn_renderer == null)
                     {
-                        if (this.pawn_renderer != null)
-                        {
-                            try
-                            {
-                                Graphic_Multi nakedGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(Props.newImagePath, shader, vector, color, color2, data, maskPath: Props.maskPath);
-                                if (Props.changeDesiccatedGraphic)
-                                {
-                                    this.pawn_renderer.graphics.dessicatedGraphic = dessicatedGraphic;
-                                }
-                                this.pawn_renderer.graphics.ResolveAllGraphics();
-                                this.pawn_renderer.graphics.nakedGraphic = nakedGraphic;
-                            }
-                            catch (NullReferenceException) { }
-                        }
-                    });
-                }
-                else
-                {
-                    LongEventHandler.ExecuteWhenFinished(delegate
+                        this.pawn_renderer = pawn.Drawer.renderer;
+                    }
+
+                    bool hediffFound = false;
+                    Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(Props.hediffDef, false);
+                    if (hediff != null)
                     {
-                        if (this.pawn_renderer != null)
+                        hediffFound = true;
+                    }
+
+                    //Uses drawsize, color, colorTwo and ShadowData of the original bodyGraphicData
+                    Vector2 vector = pawn.ageTracker.CurKindLifeStage.bodyGraphicData.drawSize;
+                    Color color = pawn.ageTracker.CurKindLifeStage.bodyGraphicData.color;
+                    Color color2 = pawn.ageTracker.CurKindLifeStage.bodyGraphicData.color;
+                    var shader = ShaderDatabase.Cutout;
+                    if (Props.useCutoutComplex)
+                    {
+                        shader = ShaderDatabase.CutoutComplex;
+                    }
+                    var data = new GraphicData();
+                    data.shadowData = pawn.ageTracker.CurKindLifeStage.bodyGraphicData.shadowData;
+
+
+
+                   /* if (hediffFound)
+                    {
+                        LongEventHandler.ExecuteWhenFinished(delegate
                         {
-                            try
+                            if (this.pawn_renderer != null)
                             {
-                                Graphic_Multi nakedGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(pawn.ageTracker.CurKindLifeStage.bodyGraphicData.texPath, shader, vector, color, color2, data, maskPath: pawn.ageTracker.CurKindLifeStage.bodyGraphicData.maskPath);
-                                if (Props.changeDesiccatedGraphic)
+                                try
                                 {
-                                    this.pawn_renderer.graphics.dessicatedGraphic = pawn.ageTracker.CurKindLifeStage.dessicatedBodyGraphicData.Graphic;
+                                    Graphic_Multi nakedGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(Props.newImagePath, shader, vector, color, color2, data, maskPath: Props.maskPath);
+                                    if (Props.changeDesiccatedGraphic)
+                                    {
+                                        this.pawn_renderer.graphics.dessicatedGraphic = dessicatedGraphic;
+                                    }
+                                    this.pawn_renderer.graphics.ResolveAllGraphics();
+                                    this.pawn_renderer.graphics.nakedGraphic = nakedGraphic;
                                 }
-                                this.pawn_renderer.graphics.ResolveAllGraphics();
-                                this.pawn_renderer.graphics.nakedGraphic = nakedGraphic;
+                                catch (NullReferenceException) { }
                             }
-                            catch (NullReferenceException) { }
-                        }
-                    });
+                        });
+                    }
+                    else
+                    {
+                        LongEventHandler.ExecuteWhenFinished(delegate
+                        {
+                            if (this.pawn_renderer != null)
+                            {
+                                try
+                                {
+                                    Graphic_Multi nakedGraphic = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(pawn.ageTracker.CurKindLifeStage.bodyGraphicData.texPath, shader, vector, color, color2, data, maskPath: pawn.ageTracker.CurKindLifeStage.bodyGraphicData.maskPath);
+                                    if (Props.changeDesiccatedGraphic)
+                                    {
+                                        this.pawn_renderer.graphics.dessicatedGraphic = pawn.ageTracker.CurKindLifeStage.dessicatedBodyGraphicData.Graphic;
+                                    }
+                                    this.pawn_renderer.graphics.ResolveAllGraphics();
+                                    this.pawn_renderer.graphics.nakedGraphic = nakedGraphic;
+                                }
+                                catch (NullReferenceException) { }
+                            }
+                        });
+                    }*/
                 }
+                
             }
         }
     }

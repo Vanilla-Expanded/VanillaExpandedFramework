@@ -1,4 +1,4 @@
-﻿using Prepatcher;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,8 +16,7 @@ namespace VEF.AestheticScaling
 
         [ThreadStatic]
         private static CachedPawnData _placeholderCache;
-        [PrepatcherField]
-        [ValueInitializer(nameof(GetDefaultCache))]
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ref CachedPawnData GetCachePrePatched(this Pawn pawn)
         {

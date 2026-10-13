@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+
+
+	<DamageDef>
+		<defName>VEF_SecondaryAcidBurn</defName>
+		<label>acid burn</label>
+		<workerClass>DamageWorker_AddInjury</workerClass>
+		<externalViolence>true</externalViolence>
+		<deathMessage>{0} has been corroded to death.</deathMessage>
+		<hediff>VEF_AcidBurn</hediff>
+		<harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
+		<armorCategory>Heat</armorCategory>
+	</DamageDef>
+	
+	<DamageDef>
+		<defName>VEF_PermanentBurn</defName>
+		<label>permanent burn</label>
+		<workerClass>DamageWorker_AddInjury</workerClass>
+		<externalViolence>true</externalViolence>
+		<deathMessage>{0} has been killed by burning.</deathMessage>
+		<hediff>VEF_PermanentBurn</hediff>
+		<hediffSolid>VEF_PermanentBurn</hediffSolid>
+		<harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
+		<minDamageToFragment>15</minDamageToFragment>
+		<defaultDamage>10</defaultDamage>
+		<defaultArmorPenetration>0</defaultArmorPenetration>
+		<armorCategory>Heat</armorCategory>
+		<combatLogRules>Damage_Flame</combatLogRules>
+	</DamageDef>
+
+	
+
+
+	
+
+
+
+
+
+
+</Defs>

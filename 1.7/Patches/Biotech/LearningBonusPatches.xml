@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Patch>
+   <Operation Class="PatchOperationFindMod">
+      <mods>
+         <li>Biotech</li>
+      </mods>
+      <match Class="PatchOperationSequence">
+         <operations>
+            <!-- Give the blackboards our statOffset, so it works as a facility. -->
+            <!-- Vanilla hardcodes the 20% bonus in code, and hardcodes the connection to 3 buildings. You can't change either to more/less. -->
+            <!-- By using a StatDef rather than hardcoding the bonus it will allow other modders to modify the bonus/max connections. -->
+            <!-- For us, using a StatDef rather than the hardcoded stuff it'll allow us to remove duplicated bonus displays. -->
+            <li Class="PatchOperationConditional">
+               <xpath>Defs/ThingDef[defName="Blackboard"]/comps/li[@Class="CompProperties_Facility"]/statOffsets</xpath>
+               <match Class="PatchOperationAdd">
+                  <value>
+                     <VEF_BuildingLearningRateOffset>0.2</VEF_BuildingLearningRateOffset>
+                  </value>
+               </match>
+               <nomatch Class="PatchOperationAdd">
+                  <xpath>Defs/ThingDef[defName="Blackboard"]/comps/li[@Class="CompProperties_Facility"]</xpath>
+                  <value>
+                     <statOffsets>
+                        <VEF_BuildingLearningRateOffset>0.2</VEF_BuildingLearningRateOffset>
+                     </statOffsets>
+                  </value>
+               </nomatch>
+            </li>
+            <!-- Give the school desk learning rate offset, so it's displayed in the info tab, even if unmodified. -->
+            <li Class="PatchOperationAdd">
+               <xpath>Defs/ThingDef[defName="SchoolDesk"]/statBases</xpath>
+               <value>
+                  <VEF_BuildingLearningRateOffset>1</VEF_BuildingLearningRateOffset>
+               </value>
+            </li>
+            <!-- Remove the StatEntry comp from school desk and learning rate inspect string for blackboard, as the StatDef will handle it. -->
+            <!-- If we don't do this, we'll have duplicate stat display on our buildings. -->
+            <li Class="PatchOperationRemove">
+               <xpath>Defs/ThingDef/comps/li[compClass="CompStatEntrySchoolDesk"]</xpath>
+            </li>
+            <li Class="PatchOperationRemove">
+               <xpath>Defs/ThingDef/comps/li[compClass="CompInspectStringBlackboard"]</xpath>
+            </li>
+         </operations>
+      </match>
+   </Operation>
+</Patch>

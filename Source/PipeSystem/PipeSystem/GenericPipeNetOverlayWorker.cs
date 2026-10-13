@@ -16,5 +16,5 @@ public class GenericPipeNetOverlayWorker : CustomOverlayWorker
         ClearCaches.OnClearCache += instances => instances.Add(this);
     }
 
-    public override Material MaterialForThing(Thing thing) => OverlayForThing[thing];
+   public override Material MaterialForThing(Thing thing) => OverlayForThing[thing];
 }

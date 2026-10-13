@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <ApparelLayerDef>
+        <defName>VFEC_OuterShell</defName>
+        <label>on top</label>
+        <drawOrder>500</drawOrder>
+    </ApparelLayerDef>
+
+</Defs>

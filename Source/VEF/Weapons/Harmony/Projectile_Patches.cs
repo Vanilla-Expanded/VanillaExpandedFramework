@@ -41,9 +41,9 @@ namespace VEF.Weapons
                 if (VehicleType is not null && targetMethod is not null && maxRangeInfoGetter is not null && turretLocationGetter is not null 
                     && turretRotationGetter is not null && aimPieOffsetField is not null)
                 {
-                    maxRangeInfo = MethodInvoker.GetHandler(maxRangeInfoGetter);
-                    turretLocation = MethodInvoker.GetHandler(turretLocationGetter);
-                    turretRotation = MethodInvoker.GetHandler(turretRotationGetter);
+                    maxRangeInfo = HarmonyLib.MethodInvoker.GetHandler(maxRangeInfoGetter);
+                    turretLocation = HarmonyLib.MethodInvoker.GetHandler(turretLocationGetter);
+                    turretRotation = HarmonyLib.MethodInvoker.GetHandler(turretRotationGetter);
                     aimPieOffset = AccessTools.FieldRefAccess<object, Vector2>(aimPieOffsetField);
 
                     return true;

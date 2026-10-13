@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <DutyDef>
+    <defName>VEF_DropAllInInventory</defName>
+    <thinkNode Class="Outposts.JobGiver_DropAll" />
+  </DutyDef>
+</Defs>

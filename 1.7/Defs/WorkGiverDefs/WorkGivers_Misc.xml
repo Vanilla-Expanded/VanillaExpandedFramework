@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<WorkGiverDef>
+		<defName>VFE_Loot</defName>
+		<label>loot objects</label>
+		<giverClass>VEF.Buildings.WorkGiver_Loot</giverClass>
+		<workType>BasicWorker</workType>
+		<verb>loot</verb>
+		<gerund>looting</gerund>
+		<priorityInType>101</priorityInType>
+		<requiredCapacities>
+			<li>Manipulation</li>
+		</requiredCapacities>
+		<prioritizeSustains>true</prioritizeSustains>
+	</WorkGiverDef>
+	<WorkGiverDef>
+		<defName>VFE_StudyBuilding</defName>
+		<label>study a building</label>
+		<giverClass>VEF.Buildings.WorkGiver_StudyBuilding</giverClass>
+		<workType>Research</workType>
+		<verb>study</verb>
+		<gerund>studying</gerund>
+		<priorityInType>101</priorityInType>
+		<requiredCapacities>
+			<li>Manipulation</li>
+		</requiredCapacities>
+		<prioritizeSustains>true</prioritizeSustains>
+	</WorkGiverDef>
+	<WorkGiverDef>
+		<defName>VEF_RefuelSecondary</defName>
+		<label>refuel ammunition</label>
+		<giverClass>VEF.Buildings.WorkGiver_RefuelSecondary</giverClass>
+		<workType>Hauling</workType>
+		<priorityInType>70</priorityInType>
+		<verb>refuel</verb>
+		<gerund>refueling</gerund>
+		<requiredCapacities>
+			<li>Manipulation</li>
+		</requiredCapacities>
+		<prioritizeSustains>true</prioritizeSustains>
+	</WorkGiverDef>
+	<WorkGiverDef>
+		<defName>VEF_ExtractFlower</defName>
+		<label>extract flower</label>
+		<giverClass>VEF.Plants.WorkGiver_ExtractFlower</giverClass>
+		<workType>PlantCutting</workType>
+		<priorityInType>110</priorityInType>
+		<verb>extract</verb>
+		<gerund>extracting</gerund>
+		<requiredCapacities>
+			<li>Manipulation</li>
+		</requiredCapacities>
+		<canBeDoneByMechs>false</canBeDoneByMechs>
+	</WorkGiverDef>
+	<WorkGiverDef>
+		<defName>VEF_RemoveWeeds</defName>
+		<label>remove weeds</label>
+		<giverClass>VEF.Plants.WorkGiver_RemoveWeeds</giverClass>
+		<workType>PlantCutting</workType>
+		<priorityInType>111</priorityInType>
+		<verb>remove weeds</verb>
+		<gerund>removing weeds</gerund>
+		<requiredCapacities>
+			<li>Manipulation</li>
+		</requiredCapacities>
+		<canBeDoneByMechs>false</canBeDoneByMechs>
+	</WorkGiverDef>
+</Defs>

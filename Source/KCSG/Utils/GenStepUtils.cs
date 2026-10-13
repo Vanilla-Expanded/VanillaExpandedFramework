@@ -5,7 +5,7 @@ using Verse;
 
 namespace KCSG
 {
-    public class GenStepUtils
+   /* public class GenStepUtils
     {
         public static void Generate(Map map, IntVec3 c, CustomGenOption sf, string symbolResolver)
         {
@@ -64,5 +64,5 @@ namespace KCSG
             BaseGen.symbolStack.Push(symbolResolver, rp, null);
             BaseGen.Generate();
         }
-    }
+    }*/
 }

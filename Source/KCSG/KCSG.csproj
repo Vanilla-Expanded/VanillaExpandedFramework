@@ -1,155 +1,53 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{629074DD-2BF8-42FC-8730-743FA97F303C}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>KCSG</RootNamespace>
-    <AssemblyName>KCSG</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>True</Deterministic>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>false</DebugSymbols>
-    <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\1.6\Assemblies\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <TransformOnBuild>true</TransformOnBuild>
-    <OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
-    <TransformOutOfDateOnly>false</TransformOutOfDateOnly>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\1.6\Assemblies\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <TransformOnBuild>true</TransformOnBuild>
-    <OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
-    <TransformOutOfDateOnly>false</TransformOutOfDateOnly>
+    <OutputPath>../../1.7/Assemblies</OutputPath>
+    <TargetFramework>net10.0</TargetFramework>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <DebugType>None</DebugType>
+    <LangVersion>latest</LangVersion>
+    <FileVersion>1.7.0</FileVersion>
+    <Copyright>© Me</Copyright>
+    <AssemblyVersion>1.7</AssemblyVersion>
+    <Product>Modname</Product>
+    <Nullable>warnings</Nullable>
+	<GenerateDependencyFile>false</GenerateDependencyFile>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Lib.Harmony">
+      <Version>*</Version>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\common\RimWorld\Assembly-CSharp.dll</HintPath>
+      <CopyLocal>false</CopyLocal>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="PipeSystem">
+      <HintPath>..\..\1.7\Assemblies\PipeSystem.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+    <Reference Include="RimWorld">
+      <HintPath>..\..\..\..\RimWorld.dll</HintPath>
+	   <CopyLocal>false</CopyLocal>
       <Private>False</Private>
     </Reference>
-    <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+    <Reference Include="UnityStubs">
+      <HintPath>..\..\..\..\UnityStubs.dll</HintPath>
+	   <CopyLocal>false</CopyLocal>
       <Private>False</Private>
     </Reference>
     <Reference Include="VEF">
-      <HintPath>..\..\1.6\Assemblies\VEF.dll</HintPath>
+      <HintPath>..\..\1.7\Assemblies\VEF.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="PipeSystem">
-      <HintPath>..\..\1.6\Assemblies\PipeSystem.dll</HintPath>
+    <Reference Include="Waylith">
+      <HintPath>..\..\..\..\Waylith.dll</HintPath>
+	   <CopyLocal>false</CopyLocal>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AutoIncrement.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AutoIncrement.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DefModExtensions\BiomeStructGenExtension.cs" />
-    <Compile Include="DefModExtensions\FallingStructure.cs" />
-    <Compile Include="DefModExtensions\SpawnAtWorldGen.cs" />
-    <Compile Include="Defs\TiledStructureDef.cs" />
-    <Compile Include="GenStep\GenStep_BiomeStructures.cs" />
-    <Compile Include="GenStep\GenStep_Settlement.cs" />
-    <Compile Include="GenStep\GenStep_WorldObject.cs" />
-    <Compile Include="Harmony\Postfix_MapParent_MapGeneratorDef.cs" />
-    <Compile Include="Harmony\Postfix_SettlementUtility_Attack.cs" />
-    <Compile Include="Harmony\Prefix_WorldObjectsHolder_Add.cs" />
-    <Compile Include="Harmony\HarmonyInit.cs" />
-    <Compile Include="Harmony\Postfix_Settlement_MapGeneratorDef.cs" />
-    <Compile Include="Harmony\Prefix_Map_ExposeData.cs" />
-    <Compile Include="LordJob\LordJob_DefendBaseNoEat.cs" />
-    <Compile Include="PawnArrivalMethod\FallingStructureArrival.cs" />
-    <Compile Include="RaidStrategyWorker\FallingStructureStrategy.cs" />
-    <Compile Include="ScenPart\ScenPart_AddStartingStructure.cs" />
-    <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_DestroyRefuelableLightSource.cs" />
-    <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_RandomDamage.cs" />
-    <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_RandomFilth.cs" />
-    <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_RandomItemRemoval.cs" />
-    <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_RandomRoofRemoval.cs" />
-    <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_RandomTerrainRemoval.cs" />
-    <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_RemovePerishable.cs" />
-    <Compile Include="SymbolResolvers\StructureRuining\SymbolResolver_ScatterStuffAround.cs" />
-    <Compile Include="SymbolResolvers\SymbolResolver_EdgeDefenseCustomizable.cs" />
-    <Compile Include="SymbolResolvers\SymbolResolver_GenerateRoad.cs" />
-    <Compile Include="SymbolResolvers\SymbolResolver_RunResolvers.cs" />
-    <Compile Include="SymbolResolvers\SymbolResolver_ScatterPropsAround.cs" />
-    <Compile Include="SymbolResolvers\SymbolResolver_SettlementPower.cs" />
-    <Compile Include="SymbolResolvers\SymbolResolver_SingleThingRoofed.cs" />
-    <Compile Include="SymbolResolvers\SymbolResolver_StorageZone.cs" />
-    <Compile Include="SymbolResolvers\SymbolResolver_ThingSetOnlyRoofed.cs" />
-    <Compile Include="StartupActions.cs" />
-    <Compile Include="Thing\KCSG_Skyfaller.cs" />
-    <Compile Include="AllDefOf.cs" />
-    <Compile Include="UndergroundRoom\CompUndergroundPassage.cs" />
-    <Compile Include="UndergroundRoom\JobDriver_InteractWithPassage.cs" />
-    <Compile Include="UndergroundRoom\UndergroundManager.cs" />
-    <Compile Include="Utils\Debug.cs" />
-    <Compile Include="DefModExtensions\CustomGenOption.cs" />
-    <Compile Include="Defs\SettlementLayoutDef.cs" />
-    <Compile Include="Defs\StructureLayoutDef.cs" />
-    <Compile Include="Defs\SymbolDef.cs" />
-    <Compile Include="Designators\Designator_ExportToXml.cs" />
-    <Compile Include="Designators\Designator_ExportToXmlFromArea.cs" />
-    <Compile Include="Designators\Dialog_ExportWindow.cs" />
-    <Compile Include="GenStep\GenStep_CustomStructureGen.cs" />
-    <Compile Include="GenStep\GenStep_EnnemiesPresence.cs" />
-    <Compile Include="Harmony\Postfix_Page_ConfigureStartingPawns_PreOpen.cs" />
-    <Compile Include="Utils\DebugActions.cs" />
-    <Compile Include="Utils\GenOption.cs" />
-    <Compile Include="Utils\LayoutUtils.cs" />
-    <Compile Include="Utils\ExportUtils.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SymbolResolvers\SymbolResolver_RoomGenFromStructure.cs" />
-    <Compile Include="SymbolResolvers\SymbolResolver_Settlement.cs" />
-    <Compile Include="Utils\RandomUtils.cs" />
-    <Compile Include="Utils\SymbolUtils.cs" />
-    <Compile Include="Utils\TileUtils.cs" />
-    <Compile Include="Utils\XMLStruct\LayoutCommonality.cs" />
-    <Compile Include="Utils\SettlementGenUtils.cs" />
-    <Compile Include="WorldGenSteps\WorldGenStep_SpawnWorldObjects.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Lib.Harmony" ExcludeAssets="runtime">
-      <Version>2.3.2</Version>
-      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="AutoIncrement.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>AutoIncrement.cs</LastGenOutput>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TextTemplating\Microsoft.TextTemplating.targets" />
+  <Target Name="KillRimWorld" BeforeTargets="Clean;Build">
+    <Exec Command="tasklist /FI &quot;IMAGENAME eq RimWorld.exe&quot; | find /I &quot;RimWorld.exe&quot; &amp;gt;nul &amp;amp;&amp;amp; taskkill /F /IM RimWorld.exe" IgnoreExitCode="true" />
+  </Target>
 </Project>

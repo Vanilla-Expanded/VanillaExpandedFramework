@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+
+  <!-- Only apply if VFE-I2 is not present - it always applies this patch. -->
+  <!-- Doing this way avoid having to update VFE-I2. -->
+  <!-- Patches are only applied if a relevant tterrain tag is present, in case -->
+  <!-- us (or anyone else) re-uses it for other terrains. -->
+  <Operation Class="PatchOperationFindMod">
+    <mods>
+      <li>Vanilla Factions Expanded - Insectoids 2</li>
+    </mods>
+    <nomatch Class="PatchOperationSequence">
+      <operations>
+
+        <li Class="PatchOperationConditional">
+          <xpath>Defs/TerrainDef/tags[li="VFEI2_Creep"]</xpath>
+          <match Class="PatchOperationAdd">
+            <xpath>Defs/PawnKindDef[@Name="InsectKindBase"]/moveSpeedFactorByTerrainTag</xpath>
+            <value>
+              <li>
+                <key>VFEI2_Creep</key>
+                <value>4.75</value>
+              </li>
+            </value>
+          </match>
+        </li>
+
+        <li Class="PatchOperationConditional">
+          <xpath>Defs/TerrainDef/tags[li="VFEI2_JellyFloor"]</xpath>
+          <match Class="PatchOperationAdd">
+            <xpath>Defs/PawnKindDef[@Name="InsectKindBase"]/moveSpeedFactorByTerrainTag</xpath>
+            <value>
+              <li>
+                <key>VFEI2_JellyFloor</key>
+                <value>5</value>
+              </li>
+            </value>
+          </match>
+        </li>
+
+        <li Class="PatchOperationConditional">
+          <xpath>Defs/TerrainDef/tags[li="VFEI2_RoyalJellyFloor"]</xpath>
+          <match Class="PatchOperationAdd">
+            <xpath>Defs/PawnKindDef[@Name="InsectKindBase"]/moveSpeedFactorByTerrainTag</xpath>
+            <value>
+              <li>
+                <key>VFEI2_RoyalJellyFloor</key>
+                <value>10</value>
+              </li>
+            </value>
+          </match>
+        </li>
+
+      </operations>
+    </nomatch>
+  </Operation>
+
+</Patch>

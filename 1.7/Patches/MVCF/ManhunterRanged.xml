@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Patch>
+	<Operation Class="PatchOperationSequence">
+		<success>Normal</success>
+		<operations>
+			<li Class="PatchOperationReplace">
+				<xpath>/Defs/ThinkTreeDef[defName = "MentalStateNonCritical"]/thinkRoot/subNodes/li[@Class="ThinkNode_ConditionalMentalStateClass"]/subNodes/li[@Class="ThinkNode_Priority"]/subNodes/li[@Class="JobGiver_Manhunter"]</xpath>
+				<value>
+					<li Class="MVCF.JobGiver_ManhunterRanged" />
+					<li Class="JobGiver_Manhunter" />
+				</value>
+			</li>
+		</operations>
+	</Operation>
+</Patch>

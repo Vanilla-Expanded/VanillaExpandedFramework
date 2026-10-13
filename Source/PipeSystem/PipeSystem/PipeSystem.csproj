@@ -1,165 +1,49 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E55FB3B5-644B-49D4-AF11-BF9404AC896B}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PipeSystem</RootNamespace>
-    <AssemblyName>PipeSystem</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <LangVersion>default</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>false</DebugSymbols>
-    <DebugType>none</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\..\..\1.6\Assemblies\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\..\1.6\Assemblies\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <OutputPath>../../../1.7/Assemblies</OutputPath>
+    <TargetFramework>net10.0</TargetFramework>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <DebugType>None</DebugType>
+    <LangVersion>latest</LangVersion>
+    <FileVersion>1.7.0</FileVersion>
+    <Copyright>© Me</Copyright>
+    <AssemblyVersion>1.7</AssemblyVersion>
+    <Product>Modname</Product>
+    <Nullable>warnings</Nullable>
+	<GenerateDependencyFile>false</GenerateDependencyFile>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Lib.Harmony">
+      <Version>*</Version>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\common\RimWorld\Assembly-CSharp.dll</HintPath>
+      <CopyLocal>false</CopyLocal>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="RimWorld">
+      <HintPath>..\..\..\..\..\RimWorld.dll</HintPath>
+	   <CopyLocal>false</CopyLocal>
       <Private>False</Private>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>..\..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>..\..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+    <Reference Include="UnityStubs">
+      <HintPath>..\..\..\..\..\UnityStubs.dll</HintPath>
+	   <CopyLocal>false</CopyLocal>
       <Private>False</Private>
     </Reference>
     <Reference Include="VEF">
-      <HintPath>..\..\..\1.6\Assemblies\VEF.dll</HintPath>
+      <HintPath>..\..\..\1.7\Assemblies\VEF.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Waylith">
+      <HintPath>..\..\..\..\..\Waylith.dll</HintPath>
+	   <CopyLocal>false</CopyLocal>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Comps\CompGlowerOnProcess.cs" />
-    <Compile Include="Comps\CompHeatPusherPowered_Overclocked.cs" />
-    <Compile Include="Comps\CompPowerTrader_Overclocked.cs" />
-    <Compile Include="Comps\CompProperties\CompProperties_GlowerOnProcess.cs" />
-    <Compile Include="Comps\Map\AdvancedProcessorsManager.cs" />
-    <Compile Include="Alert_NoStorage.cs" />
-    <Compile Include="AutoLinkRefuelables.cs" />
-    <Compile Include="Buildings\Building_Pipe.cs" />
-    <Compile Include="Buildings\Building_PipeValve.cs" />
-    <Compile Include="Buildings\Building_ResourceHeater.cs" />
-    <Compile Include="Buildings\Building_ResourceWorkTable_HeatPush.cs" />
-    <Compile Include="Buildings\Building_ResourceWorkTable.cs" />
-    <Compile Include="Cached\CachedAdvancedProcessorsManager.cs" />
-    <Compile Include="Cached\CachedCompAdvancedProcessor.cs" />
-    <Compile Include="Cached\CachedCompResourceStorage.cs" />
-    <Compile Include="Cached\CachedSignals.cs" />
-    <Compile Include="Cached\CachedPipeNetManager.cs" />
-    <Compile Include="Cached\CachedResourceThings.cs" />
-    <Compile Include="Comps\CompAdvancedResourceProcessor.cs" />
-    <Compile Include="Comps\CompConvertToThing.cs" />
-    <Compile Include="Comps\CompDeepExtractor.cs" />
-    <Compile Include="Comps\CompExplosiveContent.cs" />
-    <Compile Include="Comps\CompHeatPusherNeedResource.cs" />
-    <Compile Include="Comps\CompPipeValve.cs" />
-    <Compile Include="Comps\CompPowerPlantNeedResource.cs" />
-    <Compile Include="Comps\CompProperties\CompProperties_AdvancedResourceProcessor.cs" />
-    <Compile Include="Comps\CompProperties\CompProperties_ConvertResourceToThing.cs" />
-    <Compile Include="Comps\CompProperties\CompProperties_ConvertThingToResource.cs" />
-    <Compile Include="Comps\CompProperties\CompProperties_DeepExtractor.cs" />
-    <Compile Include="Comps\CompProperties\CompProperties_ExplosiveContent.cs" />
-    <Compile Include="Comps\CompProperties\CompProperties_PipeValve.cs" />
-    <Compile Include="Comps\CompProperties\CompProperties_RefillWithPipes.cs" />
-    <Compile Include="Comps\CompProperties\CompProperties_ResourceProcessor.cs" />
-    <Compile Include="Comps\CompProperties\CompProperties_ResourceTrader.cs" />
-    <Compile Include="Comps\CompProperties\CompProperties_ResourceStorage.cs" />
-    <Compile Include="Comps\CompProperties\CompProperties_SpawnerOrNet.cs" />
-    <Compile Include="Comps\CompProperties\CompProperties_SpillWhenDamaged.cs" />
-    <Compile Include="Comps\CompRefillWithPipes.cs" />
-    <Compile Include="Comps\CompResource.cs" />
-    <Compile Include="Comps\CompResourceProcessor.cs" />
-    <Compile Include="Comps\CompResourceStorage.cs" />
-    <Compile Include="Comps\CompResourceTrader.cs" />
-    <Compile Include="Comps\CompProperties\CompProperties_Resource.cs" />
-    <Compile Include="Comps\CompSpawnerOrNet.cs" />
-    <Compile Include="Comps\CompSpillWhenDamaged.cs" />
-    <Compile Include="Comps\CompConvertToResource.cs" />
-    <Compile Include="DefModExtension\AutoRefuelableLinkingExtension.cs" />
-    <Compile Include="DefModExtension\FactoryHopperExtension.cs" />
-    <Compile Include="Def\ProcessDef.cs" />
-    <Compile Include="GenericPipeNetOverlayWorker.cs" />
-    <Compile Include="GraphicsCache\GraphicsCache.cs" />
-    <Compile Include="Harmony\CompAffectedByFacilities_Notify_FacilityDespawned.cs" />
-    <Compile Include="Harmony\ResearchProjectDef_UnlockedDefs_Patch.cs" />
-    <Compile Include="Harmony\ThingSpawnSetup_Patch.cs" />
-    <Compile Include="Harmony\Widgets_DefIcon_Patch.cs" />
-    <Compile Include="PipeNetMaker.cs" />
-    <Compile Include="PipeNetOverlayDrawer.cs" />
-    <Compile Include="Utility\Process.cs" />
-    <Compile Include="Utility\ProcessStack.cs" />
-    <Compile Include="ITab\ITab_Processor.cs" />
-    <Compile Include="Harmony\CompGlower\ReceiveCompSignal_Postfix.cs" />
-    <Compile Include="Harmony\CompGlower\ShouldBeLitNow_Postfix.cs" />
-    <Compile Include="Harmony\Designator_Install_Patch.cs" />
-    <Compile Include="Graphic\Graphic_LinkedPipe.cs" />
-    <Compile Include="Graphic\Graphic_LinkedOverlayPipe.cs" />
-    <Compile Include="Harmony\Designator_Build_Patch.cs" />
-    <Compile Include="Graphic\LinkedPipes.cs" />
-    <Compile Include="Harmony\Game_ClearCaches.cs" />
-    <Compile Include="Jobs\JobDriver_BringToProcessor.cs" />
-    <Compile Include="Jobs\JobDriver_DrainFromMarkedStorage.cs" />
-    <Compile Include="Jobs\JobDriver_PickUpProcessor.cs" />
-    <Compile Include="Jobs\JobDriver_FillStorage.cs" />
-    <Compile Include="Jobs\WorkGiver_BringToProcessor.cs" />
-    <Compile Include="Jobs\WorkGiver_DrainFromMarkedStorage.cs" />
-    <Compile Include="Jobs\WorkGiver_RefillStorage.cs" />
-    <Compile Include="Jobs\WorkGiver_PickUpProcessor.cs" />
-    <Compile Include="NetGridUtility.cs" />
-    <Compile Include="PipeSystemDebug\PipeSystemDebug.cs" />
-    <Compile Include="Designator\Designator_DeconstructPipe.cs" />
-    <Compile Include="Harmony\ResolvedAllowedDesignators_Patch.cs" />
-    <Compile Include="Def\PipeNetDef.cs" />
-    <Compile Include="Harmony\HarmonyInit.cs" />
-    <Compile Include="Graphic\MaterialCreator.cs" />
-    <Compile Include="PipeNet.cs" />
-    <Compile Include="PipeNetManager.cs" />
-    <Compile Include="PlaceWorker\PlaceWorker_DeepExtractor.cs" />
-    <Compile Include="PlaceWorker\PlaceWorker_Pipe.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Graphic\SectionLayer_Resource.cs" />
-    <Compile Include="PSDefOf.cs" />
-    <Compile Include="Utility\ThingAndResourceOwner.cs" />
-    <Compile Include="Utility\ProcessUtility.cs" />
-    <Compile Include="Utility\ProcessIDsManager.cs" />
-    <Compile Include="Windows\Window_Overclock.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Lib.Harmony" ExcludeAssets="Runtime">
-      <Version>2.3.2</Version>
-      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="KillRimWorld" BeforeTargets="Clean;Build">
+    <Exec Command="tasklist /FI &quot;IMAGENAME eq RimWorld.exe&quot; | find /I &quot;RimWorld.exe&quot; &amp;gt;nul &amp;amp;&amp;amp; taskkill /F /IM RimWorld.exe" IgnoreExitCode="true" />
+  </Target>
 </Project>
