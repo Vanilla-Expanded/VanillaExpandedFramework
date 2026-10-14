@@ -13,7 +13,7 @@ namespace KCSG
         /// <summary>
         /// All blacklisted things
         /// </summary>
-        private static readonly List<string> symbolBlacklist = new List<string> { "KCSG_PowerConduit", "MVCF_Dummy" };
+        private static readonly List<string> symbolBlacklist = new List<string> { "MVCF_Dummy" };
 
         /// <summary>
         /// Return a struct def coresponding to area exported
