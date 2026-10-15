@@ -16,7 +16,7 @@
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\..\..\common\RimWorld\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\..\Assembly-CSharp.dll</HintPath>
       <CopyLocal>false</CopyLocal>
       <Private>false</Private>
     </Reference>
