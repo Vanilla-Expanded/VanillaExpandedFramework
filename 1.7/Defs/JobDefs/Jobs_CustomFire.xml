@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+	<JobDef>
+		<defName>VEF_BeatCustomFire</defName>
+		<driverClass>VEF.Things.JobDriver_BeatCustomFire</driverClass>
+		<!-- Report can be replaced in CustomFireDef. Or you can replace the whole JobDef. -->
+		<reportString>beating fire out.</reportString>
+		<neverShowWeapon>true</neverShowWeapon>
+		<casualInterruptible>false</casualInterruptible>
+	</JobDef>
+
+	<JobDef>
+		<defName>VEF_ExtinguishCustomFiresNearby</defName>
+		<driverClass>VEF.Things.JobDriver_ExtinguishCustomFiresNearby</driverClass>
+		<!-- Report can be replaced in CustomFireDef. Or you can replace the whole JobDef. -->
+		<reportString>extinguishing fires nearby.</reportString>
+		<neverShowWeapon>true</neverShowWeapon>
+		<casualInterruptible>false</casualInterruptible>
+	</JobDef>
+
+	<JobDef>
+		<defName>VEF_ExtinguishCustomFireSelf</defName>
+		<driverClass>VEF.Things.JobDriver_ExtinguishCustomFireSelf</driverClass>
+		<!-- Report can be replaced in CustomFireDef. Or you can replace the whole JobDef. -->
+		<reportString>extinguishing self.</reportString>
+		<neverShowWeapon>true</neverShowWeapon>
+		<casualInterruptible>false</casualInterruptible>
+	</JobDef>
+
+</Defs>

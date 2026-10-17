@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+
+	<!-- Check if there's any CustomFireDef present before applying the patch -->
+	<Operation Class="PatchOperationConditional">
+		<xpath>Defs/VEF.Things.CustomFireDef</xpath>
+		<match Class="PatchOperationInsert">
+			<xpath>Defs/ThinkTreeDef/thinkRoot/subNodes/li[treeDef="BurningResponse"]</xpath>
+			<order>Append</order>
+			<value>
+				<li Class="ThinkNode_Subtree">
+					<treeDef>VEF_CustomFireBurningResponse</treeDef>
+				</li>
+			</value>
+		</match>
+	</Operation>
+
+</Patch>

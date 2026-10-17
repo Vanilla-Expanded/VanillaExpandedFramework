@@ -15,8 +15,7 @@ namespace VEF
         [DebugAction(DebugActionCategories.Spawning, actionType = DebugActionType.ToolWorld, allowedGameStates = AllowedGameStates.PlayingOnWorld)]
         public static void SpawnWorldObjectLayered()
         {
-
-            Ray ray            = Find.WorldCamera.ScreenPointToRay(UI.MousePositionOnUI * Prefs.UIScale);
+            Ray ray = Find.WorldCamera.ScreenPointToRay(UI.MousePositionOnUI * Prefs.UIScale);
             int worldLayerMask = WorldCameraManager.WorldLayerMask;
 
             PlanetLayer layerOld = PlanetLayer.Selected;
@@ -38,37 +37,38 @@ namespace VEF
             {
                 PlanetLayer layer = planetLayer;
                 list.Add(new DebugMenuOption($"({planetLayer.LayerID}) {planetLayer.Def.defName}", DebugMenuOptionMode.Action, () =>
-                                                                                                                               {
-                                                                                                                                   planetTile = layer.GetClosestTile_NewTemp(planetTile);
-                                                                                                                                   if (!planetTile.Valid)
-                                                                                                                                   {
-                                                                                                                                       Messages.Message("Invalid", MessageTypeDefOf.RejectInput, historical: false);
-                                                                                                                                       return;
-                                                                                                                                   }
-                                                                                                                                   
-                                                                                                                                   List<DebugMenuOption> list2 = [];
-                                                                                                                                   foreach (WorldObjectDef allDef in DefDatabase<WorldObjectDef>.AllDefs)
-                                                                                                                                   {
-                                                                                                                                       WorldObjectDef localDef = allDef;
-                                                                                                                                       list2.Add(new DebugMenuOption(localDef.defName, DebugMenuOptionMode.Action, delegate
-                                                                                                                                       {
-                                                                                                                                           planetTile = layer.GetClosestTile_NewTemp(planetTile);
-                                                                                                                                           if (!planetTile.Valid)
-                                                                                                                                           {
-                                                                                                                                               Messages.Message("Invalid", MessageTypeDefOf.RejectInput, historical: false);
-                                                                                                                                           }
-                                                                                                                                           else
-                                                                                                                                           {
-                                                                                                                                               WorldObject worldObject = WorldObjectMaker.MakeWorldObject(localDef);
-                                                                                                                                               worldObject.Tile = planetTile;
-                                                                                                                                               Find.WorldObjects.Add(worldObject);
-                                                                                                                                           }
-                                                                                                                                       }));
-                                                                                                                                   }
+                {
+                    planetTile = layer.GetClosestTile_NewTemp(planetTile);
+                    if (!planetTile.Valid)
+                    {
+                        Messages.Message("Invalid", MessageTypeDefOf.RejectInput, historical: false);
+                        return;
+                    }
 
-                                                                                                                                   Find.WindowStack.Add(new Dialog_DebugOptionListLister(list2));
-                                                                                                                               }));
+                    List<DebugMenuOption> list2 = [];
+                    foreach (WorldObjectDef allDef in DefDatabase<WorldObjectDef>.AllDefs)
+                    {
+                        WorldObjectDef localDef = allDef;
+                        list2.Add(new DebugMenuOption(localDef.defName, DebugMenuOptionMode.Action, delegate
+                        {
+                            planetTile = layer.GetClosestTile_NewTemp(planetTile);
+                            if (!planetTile.Valid)
+                            {
+                                Messages.Message("Invalid", MessageTypeDefOf.RejectInput, historical: false);
+                            }
+                            else
+                            {
+                                WorldObject worldObject = WorldObjectMaker.MakeWorldObject(localDef);
+                                worldObject.Tile = planetTile;
+                                Find.WorldObjects.Add(worldObject);
+                            }
+                        }));
+                    }
+
+                    Find.WindowStack.Add(new Dialog_DebugOptionListLister(list2));
+                }));
             }
+
             Find.WindowStack.Add(new Dialog_DebugOptionListLister(list));
         }
 
@@ -99,6 +99,32 @@ namespace VEF
                 thing.StyleDef = style;
                 thing.DirtyMapMesh(thing.Map);
             }
+        }
+
+        [DebugAction(DebugActionCategories.General, actionType = DebugActionType.ToolMap, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        private static List<DebugActionNode> AttachCustomFire()
+        {
+            var list = new List<DebugActionNode>();
+
+            for (var i = 0; i < DefDatabase<CustomFireDef>.AllDefsListForReading.Count; i++)
+            {
+                var fire = DefDatabase<CustomFireDef>.AllDefsListForReading[i];
+                list.Add(new DebugActionNode(fire.label, DebugActionType.ToolMap, () =>
+                {
+                    var thing = Find.CurrentMap.thingGrid.ThingsAt(UI.MouseCell()).FirstOrDefault();
+                    if (thing == null)
+                        return;
+
+                    if (thing.CanEverAttachFire())
+                        thing.TryAttachCustomFire(1f, null, fire);
+                    else
+                        CustomFireUtility.TryStartCustomFireIn(UI.MouseCell(), Find.CurrentMap, 1.75f, null, fire);
+                }));
+            }
+
+            if (list.Count <= 0)
+                list.Add(new DebugActionNode("(No custom fires)"));
+            return list;
         }
     }
 }

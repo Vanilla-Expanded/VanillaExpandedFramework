@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-using Verse;
+﻿using Verse;
 using RimWorld;
 
 namespace VEF
@@ -11,9 +6,15 @@ namespace VEF
     [DefOf]
     public static class VEFDefOf
     {
-        public static JobDef   VFEC_EquipShield;
-        public static JobDef   VFEC_LeaveMap;
-        public static JobDef   VEF_UseDoorTeleporter;
+        static VEFDefOf() => DefOfHelper.EnsureInitializedInCtor(typeof(VEFDefOf));
+
+        public static JobDef VFEC_EquipShield;
+        public static JobDef VFEC_LeaveMap;
+        public static JobDef VEF_UseDoorTeleporter;
+        public static JobDef VEF_BeatCustomFire;
+        public static JobDef VEF_ExtinguishCustomFiresNearby;
+        public static JobDef VEF_ExtinguishCustomFireSelf;
+        
       
         public static StatDef VEF_VerbRangeFactor;
         public static StatDef VEF_EnergyShieldEnergyMaxOffset;
@@ -50,6 +51,7 @@ namespace VEF
 
         public static ThingDef Tornado;
         public static ThingDef Leather_Human;
+        public static ThingDef VEF_BaseCustomSparkSpark;
 
         public static TerrainAffordanceDef Diggable;
 

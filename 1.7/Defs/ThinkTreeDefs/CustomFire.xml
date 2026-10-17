@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <!-- Makes pawns set on custom fire panic (if enabled) and self extinguish. -->
+  <ThinkTreeDef>
+    <defName>VEF_CustomFireBurningResponse</defName>
+    <thinkRoot Class="VEF.Things.ThinkNode_ConditionalCustomFireBurning">
+      <subNodes>
+        <li Class="ThinkNode_Priority">
+          <subNodes>
+            <!-- If a pawn is intelligent enough and the fire can be extinguished by getting into water, jump in water. -->
+            <li Class="ThinkNode_ConditionalIntelligence">
+              <minIntelligence>ToolUser</minIntelligence>
+              <subNodes>
+                <li Class="VEF.Things.ThinkNode_ConditionalCustomFireBurning">
+                  <mustSatisfyAllConditions>false</mustSatisfyAllConditions>
+                  <requireCanExtinguishInWater>true</requireCanExtinguishInWater>
+                  <subNodes>
+                    <li Class="JobGiver_JumpInWater" />
+                  </subNodes>
+                </li>
+              </subNodes>
+            </li>
+            <!-- Extinguish self -->
+            <li Class="VEF.Things.JobGiver_ExtinguishCustomFireSelf" />
+            <!-- If fire causes panic, cause pawn to run randomly -->
+            <li Class="VEF.Things.ThinkNode_ConditionalCustomFireBurning">
+              <requirePanicCausingFire>true</requirePanicCausingFire>
+              <subNodes>
+                <li Class="JobGiver_RunRandom">
+                  <maxDanger>Deadly</maxDanger>
+                </li>
+              </subNodes>
+            </li>
+          </subNodes>
+        </li>
+      </subNodes>
+    </thinkRoot>
+  </ThinkTreeDef>
+
+</Defs>

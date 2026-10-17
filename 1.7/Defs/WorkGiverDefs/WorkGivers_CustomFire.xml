@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+	<WorkGiverDef>
+		<defName>VEF_FightCustomFire</defName>
+		<label>fight fires</label>
+		<giverClass>VEF.Things.WorkGiver_FightCustomFires</giverClass>
+		<workType>Firefighter</workType>
+		<emergency>true</emergency>
+		<verb>extinguish</verb>
+		<gerund>extinguishing</gerund>
+		<canBeDoneWhileDrafted>true</canBeDoneWhileDrafted>
+		<autoTakeablePriorityDrafted>20</autoTakeablePriorityDrafted>
+		<forceFleck>FeedbackExtinguish</forceFleck>
+		<directOrderable>false</directOrderable>
+	</WorkGiverDef>
+
+</Defs>
