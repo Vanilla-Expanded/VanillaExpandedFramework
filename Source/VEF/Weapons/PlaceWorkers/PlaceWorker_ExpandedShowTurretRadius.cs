@@ -46,6 +46,6 @@ public class PlaceWorker_ExpandedShowTurretRadius : PlaceWorker
         }
 
         // Vanilla check, expanded to allow any Verb_Shoot (rather than only Verb_Shoot) as well as any Verb_ShootBeam
-        return typeof(Verb_Shoot).IsAssignableFrom(v.verbClass) || typeof(Verb_Spray).IsAssignableFrom(v.verbClass) || typeof(Verb_ShootBeam).IsAssignableFrom(v.verbClass);
+        return typeof(Verse.Verb_Shoot).IsAssignableFrom(v.verbClass) || typeof(Verb_Spray).IsAssignableFrom(v.verbClass) || typeof(Verb_ShootBeam).IsAssignableFrom(v.verbClass);
     }
 }

@@ -61,12 +61,9 @@ namespace VEF.Weapons
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
 
-            ThingWithComps owner = IsWorn ? GetWearer : parent;
-            bool flag = Find.Selector.SingleSelectedThing == GetWearer;
-            if (flag && GetWearer.Drafted && (GetWearer.IsColonist || GetWearer.IsColonyMech))
+            if (Find.Selector.SingleSelectedThing == GetWearer && GetWearer.Drafted && (GetWearer.IsColonist || GetWearer.IsColonyMech))
             {
 
-                int num = 700000101;
                 yield return new Command_Toggle
                 {
                     icon = this.CommandTex,
@@ -77,8 +74,8 @@ namespace VEF.Weapons
                     {
                         hotshot = !hotshot;
                     },
-                    activateSound = SoundDef.Named("Click"),
-                    groupKey = num,
+                    activateSound = SoundDefOf.Click,
+                    groupKey = 700000101,
                     hotKey = KeyBindingDefOf.Misc2
                 };
             }
@@ -109,7 +106,7 @@ namespace VEF.Weapons
             }
         }
 
-        public void CriticalOverheatExplosion(Verb_Shoot __instance)
+        public void CriticalOverheatExplosion(Verse.Verb_Shoot __instance)
         {
             Map map = __instance.caster.Map;
             if (__instance.Projectile.projectile.explosionEffect != null)
