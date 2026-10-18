@@ -9,7 +9,7 @@ using Verse;
 namespace VEF;
 
 [StaticConstructorOnStartup]
-internal class BackwardsCompatibilityMigrationUtility
+internal static class BackwardsCompatibilityMigrationUtility
 {
     internal static BackCompatabilityConverter_VEF converter;
 
@@ -20,6 +20,8 @@ internal class BackwardsCompatibilityMigrationUtility
     // unlikely to be many defs named "ModName_MyGun" in the game. This means that we fail on the first check.
     // If we do it the other way around, we'll get a hit for every ThingDef, requiring a  defName check, meaning a second check.
     internal static Dictionary<string, Dictionary<Type, string>> defNameConverters = [];
+
+    internal static Dictionary<Type, Dictionary<string, Type>> typeConverters = [];
 
     static BackwardsCompatibilityMigrationUtility()
     {
@@ -76,6 +78,24 @@ internal class BackwardsCompatibilityMigrationUtility
                     }
                 }
             }
+
+            if (!def.migratedTypes.NullOrEmpty())
+            {
+                foreach (var typeMigrations in def.migratedTypes)
+                {
+                    foreach (var typeMigrationByType in typeMigrations.migrations)
+                    {
+                        // If no base type specified, use typeof(void) as generic one.
+                        var type = typeMigrationByType.baseType ?? typeof(void);
+                        // If we don't have a dictionary for a given type, create it
+                        if (!typeConverters.TryGetValue(type, out var stringToType))
+                            typeConverters[type] = stringToType = new Dictionary<string, Type>();
+
+                        // Try to add a new conversion, but don't replace existing ones (TryAdd doesn't do anything if key match is found)
+                        stringToType.TryAdd(typeMigrations.providedClassName, typeMigrationByType.newType);
+                    }
+                }
+            }
         }
     }
 
@@ -100,7 +120,16 @@ internal class BackwardsCompatibilityMigrationUtility
 
         public override Type GetBackCompatibleType(Type baseType, string providedClassName, XmlNode node)
         {
-            if (baseType == typeof(Ability) && abilityClasses.TryGetValue(providedClassName, out var newType)) return newType;
+            // Check the original ability converters
+            if (baseType == typeof(Ability) && abilityClasses.TryGetValue(providedClassName, out var newType))
+                return newType;
+            // Check for type specific converter based on baseType
+            if (baseType != null && typeConverters.TryGetValue(baseType, out var stringToType) && stringToType.TryGetValue(providedClassName, out newType))
+                return newType;
+            // Check for generic converter matching any type (under typeof(void))
+            if (typeConverters.TryGetValue(typeof(void), out stringToType) && stringToType.TryGetValue(providedClassName, out newType))
+                return newType;
+
             return null;
         }
 

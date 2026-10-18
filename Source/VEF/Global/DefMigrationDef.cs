@@ -16,6 +16,8 @@ public class DefMigrationDef : Def
     // Doesn't apply to some defs and some situations - for example, removing ResearchProjectDef will throw a different error.
     // Before adding something here - make sure it actually has a positive effect.
     public List<DefMigrationsByType> migratedDefs;
+    // Add a list of types that were changed or removed, so the game doesn't attempt to load the old ones.
+    public List<TypeMigrationsByClassName> migratedTypes;
 
     private static readonly Regex AllowedDefNamesRegex;
 
@@ -72,6 +74,16 @@ public class DefMigrationDef : Def
             }
 
             migratedDefs.RemoveAll(x => x.migrations.NullOrEmpty());
+        }
+
+        if (!migratedTypes.NullOrEmpty())
+        {
+            migratedTypes.RemoveAll(x => x.providedClassName.NullOrEmpty());
+
+            foreach (var migrations in migratedTypes)
+                migrations.migrations.RemoveAll(x => x.newType == null);
+
+            migratedTypes.RemoveAll(x => x.migrations.NullOrEmpty());
         }
     }
 
@@ -137,5 +149,46 @@ public class DefMigrationDef : Def
         public string original;
         public string replacement;
         public bool removeIfMissingReplacement = false;
+    }
+
+    public class TypeMigrationsByClassName
+    {
+        public string providedClassName;
+        public List<TypeMigration> migrations = [];
+
+        public void LoadDataFromXmlCustom(XmlNode xmlRoot)
+        {
+            // Load the name of the node as the type
+            providedClassName = ParseHelper.ParseString(xmlRoot.Name);
+
+            foreach (XmlNode node in xmlRoot.ChildNodes)
+            {
+                if (node is XmlComment)
+                    continue;
+
+                // Load each field directly
+                var migration = new TypeMigration();
+
+                var newType = node[nameof(TypeMigration.newType)]?.InnerText;
+                // If original is null or empty, try using node name instead
+                if (newType.NullOrEmpty() && node.Name != "li")
+                    newType = node.Name;
+                if (!newType.NullOrEmpty())
+                    migration.newType = ParseHelper.ParseType(newType);
+
+                var baseType = node[nameof(TypeMigration.baseType)]?.InnerText;
+                if (!baseType.NullOrEmpty())
+                    migration.baseType = ParseHelper.ParseType(baseType);
+
+                migrations.Add(migration);
+            }
+        }
+    }
+
+    public class TypeMigration
+    {
+        public Type newType;
+        // Optional. If specified, only match this specific base object type. If null, match all object types.
+        public Type baseType;
     }
 }
