@@ -89,6 +89,23 @@ namespace VEF.Weapons
             VerbAccuracyUtility.forceHit = false;
             VerbAccuracyUtility.forceMiss = false;
         }
+        public static void Postfix(Verb_LaunchProjectile __instance, bool __result)
+        {
+            if (!__result || __instance.caster is not Pawn caster)
+            {
+                return;
+            }
+            var projectile = __instance.GetProjectile();
+            if (projectile?.GetCompProperties<CompProperties_HomingProjectile>() == null)
+            {
+                return;
+            }
+            var hediffs = caster.health.hediffSet.hediffs;
+            for (var i = 0; i < hediffs.Count; i++)
+            {
+                hediffs[i].TryGetComp<HediffComp_Targeting>()?.NotifyShotFired(__instance.CurrentTarget);
+            }
+        }
     }
 
     [HarmonyPatch(typeof(ShotReport), nameof(ShotReport.AimOnTargetChance_StandardTarget), MethodType.Getter)]

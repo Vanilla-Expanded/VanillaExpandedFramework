@@ -8,6 +8,11 @@ namespace VEF.Weapons
         public float homingDistanceFractionPassed;
         public float homingCorrectionTickRate;
         public float initialDispersionFromTarget;
+        public float launchAngleDeviationMax;
+        public float maxTurnDegreesPerTick;
+        public float maxTravelDistance;
+        public int maxTravelTicks;
+        public int targetLockTicks;
         public SoundDef hitSound;
         public CompProperties_HomingProjectile()
         {
@@ -19,6 +24,11 @@ namespace VEF.Weapons
         public Vector3 originLaunchCell;
 
         public bool isOffset;
+        public Vector3 smartHeading;
+        public int smartTicksAlive;
+        public float smartLaunchDist;
+        public bool SmartMode => Props.maxTurnDegreesPerTick > 0f;
+        public bool HomingEngaged(Vector3 pos) => Vector3.Distance(originLaunchCell.Yto0(), pos) >= smartLaunchDist * Props.homingDistanceFractionPassed;
         public Projectile Projectile => this.parent as Projectile;
         public CompProperties_HomingProjectile Props => base.props as CompProperties_HomingProjectile;
         public Vector3 DispersionOffset => new Vector3(Rand.Range(0f - this.Props.initialDispersionFromTarget,
@@ -50,11 +60,59 @@ namespace VEF.Weapons
             return result;
         }
 
+        public void InitSmartLaunch()
+        {
+            var projectile = Projectile;
+            var originRef = NonPublicFields.Projectile_origin(projectile);
+            originLaunchCell = originRef;
+            var dir = (NonPublicFields.Projectile_destination(projectile) - originRef).Yto0();
+            smartHeading = dir.sqrMagnitude > 0.0001f ? dir.normalized : Vector3.forward;
+            smartHeading = Quaternion.AngleAxis(Rand.Range(0f - Props.launchAngleDeviationMax, Props.launchAngleDeviationMax), Vector3.up) * smartHeading;
+            smartTicksAlive = 0;
+            smartLaunchDist = Vector3.Distance(originRef.Yto0(), projectile.intendedTarget.CenterVector3.Yto0());
+        }
+
+        public void SmartTick()
+        {
+            var projectile = Projectile;
+            var target = projectile.intendedTarget;
+            if (target.Thing is Thing thing && (thing.Destroyed || !thing.Spawned))
+            {
+                projectile.Destroy();
+                return;
+            }
+            smartTicksAlive++;
+            var pos = projectile.ExactPosition.Yto0();
+            if (smartTicksAlive >= Props.maxTravelTicks || Vector3.Distance(originLaunchCell.Yto0(), pos) >= Props.maxTravelDistance)
+            {
+                projectile.Destroy();
+                return;
+            }
+            var toTarget = target.CenterVector3.Yto0() - pos;
+            var angleToTarget = 0f;
+            var turn = 0f;
+            if (HomingEngaged(pos) && toTarget.sqrMagnitude > 0.0001f)
+            {
+                angleToTarget = Vector3.SignedAngle(smartHeading, toTarget.normalized, Vector3.up);
+                turn = Mathf.Clamp(angleToTarget, 0f - Props.maxTurnDegreesPerTick, Props.maxTurnDegreesPerTick);
+                smartHeading = Quaternion.AngleAxis(turn, Vector3.up) * smartHeading;
+            }
+            var remaining = NonPublicFields.Projectile_ticksToImpact(projectile);
+            if (remaining <= 0)
+            {
+                return;
+            }
+            var segment = smartHeading * (projectile.def.projectile.SpeedTilesPerTick * remaining);
+            NonPublicFields.Projectile_origin(projectile) = pos + Vector3.up * projectile.def.Altitude;
+            NonPublicFields.Projectile_destination(projectile) = pos + Vector3.up * projectile.def.Altitude + segment;
+        }
+
         public override void PostExposeData()
         {
             base.PostExposeData();
             Scribe_Values.Look(ref originLaunchCell, "originLaunchCell");
+            Scribe_Values.Look(ref smartLaunchDist, "smartLaunchDist");
         }
-    }
+     }
 }
 

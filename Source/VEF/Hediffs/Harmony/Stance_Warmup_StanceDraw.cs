@@ -21,10 +21,7 @@ namespace VEF.Hediffs
                     var comp = hediff.TryGetComp<HediffComp_Targeting>();
                     if (comp != null)
                     {
-                        float statValue = __instance.stanceTracker.pawn.GetStatValue(StatDefOf.AimingDelayFactor);
-                        int ticks = (__instance.verb.verbProps.warmupTime * statValue).SecondsToTicks();
-                        var progress = (float)__instance.ticksLeft / (float)ticks;
-                        comp.DrawTargetingEffects(__instance.focusTarg, progress);
+                        comp.DrawTargetingEffects(__instance.focusTarg);
                     }
                 }
             }

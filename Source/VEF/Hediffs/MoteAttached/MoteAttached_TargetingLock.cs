@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using Verse;
 
@@ -7,9 +7,11 @@ namespace VEF.Hediffs
     [HotSwappableAttribute]
     public class MoteAttached_TargetingLock : MoteAttached
     {
-		// gets called by a harmony patch
-		public void DrawTargetingLock(float progress)
-		{
+        public float lockProgress = -1f;
+
+        // gets called by a harmony patch
+        public void DrawTargetingLock(float progress)
+        {
             var oldPos = this.exactPosition;
             var oldRot = this.exactRotation;
             for (var i = 0; i < 4; i++)
@@ -19,7 +21,7 @@ namespace VEF.Hediffs
                 var drawPos = oldPos + offset;
                 this.exactPosition = drawPos;
 				this.exactPosition.y = AltitudeLayer.MoteOverhead.AltitudeFor();
-                Graphic.Draw(drawPos, Rotation, this);
+				Graphic.Draw(drawPos, Rotation, this, exactRotation);
             }
             this.exactRotation = oldRot;
             this.exactPosition = oldPos;
@@ -45,9 +47,22 @@ namespace VEF.Hediffs
 
     public class MoteAttached_TargetingLockDynamic : MoteAttached_TargetingLock
     {
+        public HediffComp_Targeting lockComp;
+
         protected override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
-            // we skip it, DrawTargetingLock gets called by a harmony patch
+            if (lockProgress >= 0f)
+            {
+                DrawTargetingLock(lockProgress);
+                if (lockComp?.LockMaintained == true && lockComp.Pawn.Spawned)
+                {
+                    Vector3 a = lockComp.Pawn.DrawPos;
+                    Vector3 b = link1.LastDrawPos;
+                    a.y = AltitudeLayer.MetaOverlays.AltitudeFor();
+                    b.y = a.y;
+                    GenDraw.DrawLineBetween(a, b, lockComp.TargetingLine, lockComp.Props.targetingLineWidth);
+                }
+            }
         }
     }
 }

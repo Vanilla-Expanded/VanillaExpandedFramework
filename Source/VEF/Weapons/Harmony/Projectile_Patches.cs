@@ -88,9 +88,16 @@ namespace VEF.Weapons
             {
                 if (__instance.IsHomingProjectile(out var comp))
                 {
-                    __instance.usedTarget = __instance.intendedTarget;
-                    __instance.SetDestination(__instance.intendedTarget.CenterVector3 + comp.DispersionOffset);
-                    comp.originLaunchCell = NonPublicFields.Projectile_origin(__instance);
+                    if (comp.SmartMode)
+                    {
+                        comp.InitSmartLaunch();
+                    }
+                    else
+                    {
+                        __instance.usedTarget = __instance.intendedTarget;
+                        __instance.SetDestination(__instance.intendedTarget.CenterVector3 + comp.DispersionOffset);
+                        comp.originLaunchCell = NonPublicFields.Projectile_origin(__instance);
+                    }
                 }
                 else if (launcher is Pawn pawn && pawn.health.hediffSet.hediffs.Any(x => x.TryGetComp<HediffComp_Targeting>()?.Props.neverMiss ?? false))
                 {
@@ -177,6 +184,11 @@ namespace VEF.Weapons
         {
             if (__instance.IsHomingProjectile(out var comp))
             {
+                if (comp.SmartMode)
+                {
+                    comp.SmartTick();
+                    return;
+                }
                 if (comp.CanChangeTrajectory())
                 {
                     __instance.SetDestination(__instance.intendedTarget.CenterVector3);
@@ -194,22 +206,32 @@ namespace VEF.Weapons
             {
                 if (__instance.IsHomingProjectile(out var comp))
                 {
-                    if (hitThing != __instance.intendedTarget.Thing)
+                    if (comp.SmartMode)
                     {
-                        foreach (var thing in GenRadial.RadialDistinctThingsAround(__instance.Position, __instance.Map, 3f, true))
+                        if (hitThing != null && comp.Props.hitSound != null)
                         {
-                            if (thing == __instance.intendedTarget.Thing)
+                            comp.Props.hitSound.PlayOneShot(hitThing);
+                        }
+                    }
+                    else
+                    {
+                        if (hitThing != __instance.intendedTarget.Thing)
+                        {
+                            foreach (var thing in GenRadial.RadialDistinctThingsAround(__instance.Position, __instance.Map, 3f, true))
                             {
-                                if (Vector3.Distance(thing.DrawPos.Yto0(), __instance.ExactPosition.Yto0()) <= 0.5f)
+                                if (thing == __instance.intendedTarget.Thing)
                                 {
-                                    hitThing = thing;
+                                    if (Vector3.Distance(thing.DrawPos.Yto0(), __instance.ExactPosition.Yto0()) <= 0.5f)
+                                    {
+                                        hitThing = thing;
+                                    }
                                 }
                             }
                         }
-                    }
-                    if (hitThing != null && comp.Props.hitSound != null)
-                    {
-                        comp.Props.hitSound.PlayOneShot(hitThing);
+                        if (hitThing != null && comp.Props.hitSound != null)
+                        {
+                            comp.Props.hitSound.PlayOneShot(hitThing);
+                        }
                     }
                 }
 
@@ -219,6 +241,56 @@ namespace VEF.Weapons
                         FilthMaker.TryMakeFilth(__instance.Position, __instance.Map, extension.filthOnMiss, extension.filthOnMissCount.RandomInRange);
                 }
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(Projectile), "CanHit")]
+    public static class VanillaExpandedFramework_Projectile_CanHit_Patch
+    {
+        public static bool Prefix(Projectile __instance, Thing thing, ref bool __result)
+        {
+            if (!__instance.IsHomingProjectile(out var comp) || !comp.SmartMode || thing != __instance.intendedTarget.Thing)
+            {
+                return true;
+            }
+            __result = thing.Spawned && thing.Map == __instance.Map;
+            return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(Projectile), "ImpactSomething")]
+    public static class VanillaExpandedFramework_Projectile_ImpactSomething_Patch
+    {
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var chance = AccessTools.Method(typeof(Rand), "Chance", new[] { typeof(float) });
+            var layingChance = AccessTools.Method(typeof(VanillaExpandedFramework_Projectile_ImpactSomething_Patch), nameof(LayingMissChance));
+            var codes = instructions.ToList();
+            var patched = false;
+            for (var i = 0; i < codes.Count; i++)
+            {
+                yield return codes[i];
+                if (!patched && codes[i].opcode == OpCodes.Ldc_R4 && codes[i].OperandIs(0.5f)
+                    && i + 1 < codes.Count && codes[i + 1].Calls(chance))
+                {
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Call, layingChance);
+                    patched = true;
+                }
+            }
+            if (!patched)
+            {
+                Log.Error("[VEF] Error patching smart projectiles - couldn't patch miss-laying chance in Projectile.ImpactSomething");
+            }
+        }
+
+        public static float LayingMissChance(float vanillaChance, Projectile projectile)
+        {
+            if (projectile.IsHomingProjectile(out var comp) && comp.SmartMode)
+            {
+                return 0f;
+            }
+            return vanillaChance;
         }
     }
 }
