@@ -74,7 +74,8 @@ namespace VEF.Hediffs
 
         private bool LockInvalid()
         {
-            return lockedTarget.Destroyed || lockedTarget.Spawned is false || lockedTarget.MapHeld != Pawn.MapHeld
+            return Pawn.Drafted is false || lockedTarget.Destroyed || lockedTarget.Spawned is false
+                || lockedTarget.MapHeld != Pawn.MapHeld
                 || !Pawn.PositionHeld.InHorDistOf(lockedTarget.PositionHeld, LockRange());
         }
 
