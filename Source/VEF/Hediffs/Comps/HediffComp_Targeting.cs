@@ -121,7 +121,11 @@ namespace VEF.Hediffs
         {
             if (mote?.Destroyed is false)
             {
-                return;
+                if (mote.link1.Target.Thing == target.Thing && (target.HasThing || mote.Position == target.Cell))
+                {
+                    return;
+                }
+                mote.Destroy();
             }
             mote = target.HasThing
                 ? MoteMaker.MakeAttachedOverlay(target.Thing, Props.targetingMote, Vector3.zero, Props.initialTargetingMoteScale)
