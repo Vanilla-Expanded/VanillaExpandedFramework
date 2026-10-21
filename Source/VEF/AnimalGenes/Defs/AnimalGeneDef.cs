@@ -30,7 +30,7 @@ namespace VEF.AnimalGenes
 
         public bool isIllnessGene = false;
 
-        public float animalIllnessMTB = 45;
+        public float animalIllnessMTB = 60;
 
         public float animalTantrumMTB = 0;
 

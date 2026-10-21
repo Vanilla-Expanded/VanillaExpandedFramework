@@ -104,15 +104,15 @@ namespace VEF.AnimalGenes
         {
             int amountOfMutations = 0;
             float roll = Rand.Value;
-            if (roll < 0.0005f)
+            if (roll < 0.001f)
                 amountOfMutations = 5;
-            else if (roll < 0.0021f) // 0.0005 + 0.0016
+            else if (roll < 0.0042f) // 0.001 + 0.0032
                 amountOfMutations = 4;
-            else if (roll < 0.0066f) // + 0.0045
+            else if (roll < 0.0132f) // + 0.009
                 amountOfMutations = 3;
-            else if (roll < 0.0196f) // + 0.013
+            else if (roll < 0.0392f) // + 0.026
                 amountOfMutations = 2;
-            else if (roll < 0.0616f) // + 0.042 
+            else if (roll < 0.1232f) // + 0.084
                 amountOfMutations = 1;
             else
                 amountOfMutations = 0;
