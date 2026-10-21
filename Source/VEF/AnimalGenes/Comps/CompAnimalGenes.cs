@@ -15,6 +15,7 @@ namespace VEF.AnimalGenes
         private bool feratypeApplied;
         public bool isAlpha;
         public int soloTicks;
+        public int ticksSinceLastDisease = 0;
         public bool active = true;
 
         public CompProperties_AnimalGenes Props => (CompProperties_AnimalGenes)props;
@@ -83,6 +84,7 @@ namespace VEF.AnimalGenes
             base.PostExposeData();
             Scribe_Defs.Look(ref feratype, "feratype");
             Scribe_Values.Look(ref feratypeApplied, "feratypeApplied");
+            Scribe_Values.Look(ref ticksSinceLastDisease, "ticksSinceLastDisease",0);
             Scribe_Collections.Look(ref genes, "animalGenes", LookMode.Def);
             Scribe_Values.Look(ref isAlpha, "isAlpha", false);
             Scribe_Values.Look(ref soloTicks, "soloTicks", 0);
@@ -154,6 +156,12 @@ namespace VEF.AnimalGenes
                 bool numerical = name.Length > 0 && char.IsDigit(name[name.Length - 1]);
                 pawn.Name = new NameSingle(name, numerical);
             }
+        }
+
+        public override void CompTick()
+        {
+            ticksSinceLastDisease++;
+            base.CompTick();
         }
 
         
