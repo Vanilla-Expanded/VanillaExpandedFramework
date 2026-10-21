@@ -56,8 +56,8 @@ namespace VEF.Hediffs
                 DrawTargetingLock(lockProgress);
                 if (lockComp?.LockMaintained == true && lockComp.Pawn.Spawned)
                 {
-                    Vector3 a = lockComp.Pawn.DrawPos;
                     Vector3 b = link1.LastDrawPos;
+                    Vector3 a = HediffComp_Targeting.WeaponDrawPos(lockComp.Pawn, b);
                     a.y = AltitudeLayer.MetaOverlays.AltitudeFor();
                     b.y = a.y;
                     GenDraw.DrawLineBetween(a, b, lockComp.TargetingLine, lockComp.Props.targetingLineWidth);

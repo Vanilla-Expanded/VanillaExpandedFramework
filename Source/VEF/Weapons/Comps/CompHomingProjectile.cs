@@ -88,6 +88,16 @@ namespace VEF.Weapons
                 projectile.Destroy();
                 return;
             }
+            if (target.Thing is Thing targetThing)
+            {
+                var radius = targetThing is Pawn targetPawn ? Mathf.Clamp(targetPawn.BodySize * 0.5f, 0.55f, 1.4f) : 0.55f;
+                if (Vector3.Distance(pos, targetThing.DrawPos.Yto0()) <= radius)
+                {
+                    NonPublicFields.Projectile_destination(projectile) = target.CenterVector3;
+                    NonPublicFields.Projectile_ticksToImpact(projectile) = 1;
+                    return;
+                }
+            }
             var toTarget = target.CenterVector3.Yto0() - pos;
             var angleToTarget = 0f;
             var turn = 0f;
@@ -102,8 +112,13 @@ namespace VEF.Weapons
             {
                 return;
             }
-            var segment = smartHeading * (projectile.def.projectile.SpeedTilesPerTick * remaining);
             NonPublicFields.Projectile_origin(projectile) = pos + Vector3.up * projectile.def.Altitude;
+            if (remaining == 1)
+            {
+                NonPublicFields.Projectile_destination(projectile) = target.CenterVector3;
+                return;
+            }
+            var segment = smartHeading * (projectile.def.projectile.SpeedTilesPerTick * remaining);
             NonPublicFields.Projectile_destination(projectile) = pos + Vector3.up * projectile.def.Altitude + segment;
         }
 

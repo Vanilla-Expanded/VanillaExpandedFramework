@@ -249,11 +249,16 @@ namespace VEF.Weapons
     {
         public static bool Prefix(Projectile __instance, Thing thing, ref bool __result)
         {
-            if (!__instance.IsHomingProjectile(out var comp) || !comp.SmartMode || thing != __instance.intendedTarget.Thing)
+            if (!__instance.IsHomingProjectile(out var comp) || !comp.SmartMode)
             {
                 return true;
             }
-            __result = thing.Spawned && thing.Map == __instance.Map;
+            if (thing == __instance.intendedTarget.Thing)
+            {
+                __result = thing.Spawned && thing.Map == __instance.Map;
+                return false;
+            }
+            __result = thing.def.fillPercent >= 1f;
             return false;
         }
     }

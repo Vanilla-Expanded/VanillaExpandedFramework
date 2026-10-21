@@ -39,12 +39,25 @@ namespace VEF.Hediffs
 
         public bool LockMaintained => Props.maintainLockAfterShot && lockedTarget is not null;
 
+        public static Vector3 WeaponDrawPos(Pawn pawn, Vector3 targetPos)
+        {
+            var weapon = pawn.equipment?.Primary;
+            if (weapon == null)
+            {
+                return pawn.DrawPos;
+            }
+            var diff = targetPos - pawn.DrawPos;
+            var angle = diff.MagnitudeHorizontalSquared() > 0.001f ? diff.AngleFlat() : 0f;
+            return pawn.DrawPos + new Vector3(0f, 0f, 0.4f + weapon.def.equippedDistanceOffset).RotatedBy(angle)
+                * pawn.ageTracker.CurLifeStage.equipmentDrawDistanceFactor;
+        }
+
         public void DrawTargetingEffects(LocalTargetInfo target)
         {
             if (!Props.targetingLineTexPath.NullOrEmpty())
             {
                 Vector3 b = target.HasThing is false ? target.Cell.ToVector3Shifted() : target.Thing.TrueCenter();
-                var a = Pawn.TrueCenter();
+                var a = WeaponDrawPos(Pawn, b);
                 b.y = AltitudeLayer.MetaOverlays.AltitudeFor();
                 a.y = b.y;
                 GenDraw.DrawLineBetween(a, b, TargetingLine, Props.targetingLineWidth);
@@ -162,7 +175,6 @@ namespace VEF.Hediffs
         public override void CompExposeData()
         {
             base.CompExposeData();
-            Scribe_References.Look(ref mote, "mote");
             Scribe_References.Look(ref lockedTarget, "lockedTarget");
         }
     }
