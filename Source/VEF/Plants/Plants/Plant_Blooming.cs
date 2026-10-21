@@ -138,7 +138,7 @@ namespace VEF.Plants
         protected override void TickInterval(int delta)
         {
             base.TickInterval(delta);
-            if (Growth >= 1)
+            if (LifeStage == PlantLifeStage.Mature)
             {
                 realAge += delta * 2000;
             }
@@ -148,9 +148,12 @@ namespace VEF.Plants
         public override void TickLong()
         {
             base.TickLong();
-            if (Growth >= 1)
+
+           
+            if (LifeStage == PlantLifeStage.Mature)
             {
                 realAge += 2000;
+               
             }
             CheckIfBlooming();
         }
@@ -348,7 +351,7 @@ namespace VEF.Plants
         public override Graphic Graphic {
             get
             {
-                if (Growth >= 1 && isBlooming && !LeaflessNow) {
+                if (LifeStage == PlantLifeStage.Mature && isBlooming && !LeaflessNow) {
                     return BloomGraphic;
                 }
                 return base.Graphic;

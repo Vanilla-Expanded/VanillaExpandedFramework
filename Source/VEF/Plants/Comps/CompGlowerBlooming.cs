@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using RimWorld;
+using System.Collections.Generic;
 using System.Linq;
 using Verse;
 
@@ -17,7 +18,7 @@ namespace VEF.Plants
             get
             {
                 
-                return plant!=null && plant.Growth>=1 && plant.isBlooming && base.ShouldBeLitNow;
+                return plant!=null && plant.LifeStage == PlantLifeStage.Mature && plant.isBlooming && base.ShouldBeLitNow;
             }
         }
 
