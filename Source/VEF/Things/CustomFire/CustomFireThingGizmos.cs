@@ -5,12 +5,12 @@ namespace VEF.Things;
 
 public static class CustomFireThingGizmos
 {
-    public static IEnumerable<Gizmo> GetGizmos(Pawn pawn, IEnumerable<Gizmo> gizmos)
+    public static IEnumerable<Gizmo> GetGizmos(Thing thing, IEnumerable<Gizmo> gizmos)
     {
         if (!DebugSettings.ShowDevGizmos)
             return gizmos;
 
-        var attachComp = pawn.GetComp<CompAttachBase>();
+        var attachComp = thing.TryGetComp<CompAttachBase>();
         if (attachComp?.attachments == null)
             return gizmos;
 
