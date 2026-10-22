@@ -6,12 +6,9 @@
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <DebugType>None</DebugType>
     <LangVersion>latest</LangVersion>
-    <FileVersion>1.7.0</FileVersion>
-    <Copyright>© Me</Copyright>
-    <AssemblyVersion>1.7</AssemblyVersion>
-    <Product>Modname</Product>
     <Nullable>warnings</Nullable>
-	<GenerateDependencyFile>false</GenerateDependencyFile>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Lib.Harmony">
