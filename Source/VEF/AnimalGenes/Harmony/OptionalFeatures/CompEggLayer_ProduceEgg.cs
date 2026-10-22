@@ -11,13 +11,11 @@ using Verse;
 namespace VEF.AnimalGenes
 {
 
-    [HarmonyPatch(typeof(CompEggLayer))]
-    [HarmonyPatch("ProduceEgg")]
+    // This Harmony patch will only be patched if AnimalGenesMechanics is added via XML to a mod using OptionalFeatures
 
     public class VEF_AnimalGenes_CompEggLayer_ProduceEgg_Patch
     {
-       
-        [HarmonyPostfix]
+     
         public static void ModifyEggs(CompEggLayer __instance, Pawn ___fertilizedBy, ref Thing __result)
         {
             CompHatcher compHatcher = __result.TryGetComp<CompHatcher>();

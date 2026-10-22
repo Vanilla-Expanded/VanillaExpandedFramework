@@ -6,12 +6,10 @@ using Verse;
 
 namespace VEF.AnimalGenes
 {
+    // This Harmony patch will only be patched if AnimalGenesMechanics is added via XML to a mod using OptionalFeatures
 
-    [HarmonyPatch(typeof(StatWorker))]
-    [HarmonyPatch("GetValueUnfinalized")]
     public class VEF_AnimalGenes_StatWorker_GetValueUnfinalized_Patch
     {
-        [HarmonyPostfix]
         public static void ApplyStatModifiers(StatDef ___stat, StatRequest req, ref float __result)
         {
             Pawn pawn = req.Thing as Pawn;

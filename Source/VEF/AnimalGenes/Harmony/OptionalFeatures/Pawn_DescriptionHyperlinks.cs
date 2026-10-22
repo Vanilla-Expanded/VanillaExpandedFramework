@@ -14,14 +14,12 @@ using System;
 namespace VEF.AnimalGenes
 {
 
-    [HarmonyPatch(typeof(Pawn))]
-    [HarmonyPatch("DescriptionHyperlinks")]
-    [HarmonyPatch(MethodType.Getter)]
+    // This Harmony patch will only be patched if AnimalGenesMechanics is added via XML to a mod using OptionalFeatures
 
     public static class VEF_AnimalGenes_Pawn_DescriptionHyperlinks_Patch
     {
-        [HarmonyPostfix]
-        public static IEnumerable<DefHyperlink> Postfix(IEnumerable<DefHyperlink> values, Pawn __instance)
+       
+        public static IEnumerable<DefHyperlink> ModifyHyperlinks(IEnumerable<DefHyperlink> values, Pawn __instance)
         {
   
             foreach (var value in values)

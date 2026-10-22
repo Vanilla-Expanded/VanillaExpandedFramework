@@ -21,6 +21,12 @@
 		<activationClass>VEF.Maps.OptionalFeatures_TileMutatorMechanics</activationClass>
 	</VEF.OptionalFeatures.OptionalFeaturesDef>
 	
+	<VEF.OptionalFeatures.OptionalFeaturesDef>
+		<defName>VFE_AnimalGenesMechanics</defName>
+		<description>This optional feature adds all the patches required for the Animal Genes system to work.</description>
+		<feature>AnimalGenesMechanics</feature>
+		<activationClass>VEF.AnimalGenes.OptionalFeatures_AnimalGenesMechanics</activationClass>
+	</VEF.OptionalFeatures.OptionalFeaturesDef>
 
 </Defs>
 

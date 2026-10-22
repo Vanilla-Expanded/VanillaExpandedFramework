@@ -6,14 +6,12 @@ using Verse;
 
 namespace VEF.AnimalGenes
 {
+    // This Harmony patch will only be patched if AnimalGenesMechanics is added via XML to a mod using OptionalFeatures
 
-    [HarmonyPatch(typeof(StatWorker))]
-    [HarmonyPatch("GetOffsetsAndFactorsExplanation")]
     public class VEF_AnimalGenes_StatWorker_GetOffsetsAndFactorsExplanation_Patch
     {
         public static string whitespace = "";
-
-        [HarmonyPostfix]
+       
         public static void ApplyStatModifiersExplanations(StatDef ___stat, StatRequest req, StringBuilder sb, StatWorker __instance)
         {
             Pawn pawn = req.Thing as Pawn;

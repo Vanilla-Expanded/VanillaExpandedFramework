@@ -5,13 +5,12 @@ using Verse;
 
 namespace VEF.AnimalGenes
 {
+    // This Harmony patch will only be patched if AnimalGenesMechanics is added via XML to a mod using OptionalFeatures
 
-    [HarmonyPatch(typeof(Widgets))]
-    [HarmonyPatch("DefIcon")]
 
     public class VEF_AnimalGenes_Widgets_DefIcon_Patch
     {
-        [HarmonyPostfix]
+       
         public static void DoGeneDefIcon(Rect rect, Def def, Color? color, float scale, Material material, float alpha)
         {
             AnimalGeneDef geneDef = def as AnimalGeneDef;

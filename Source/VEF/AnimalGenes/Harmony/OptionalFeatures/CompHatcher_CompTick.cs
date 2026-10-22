@@ -10,12 +10,11 @@ using Verse;
 namespace VEF.AnimalGenes
 {
 
-    [HarmonyPatch(typeof(CompHatcher))]
-    [HarmonyPatch("CompTick")]
+    // This Harmony patch will only be patched if AnimalGenesMechanics is added via XML to a mod using OptionalFeatures
 
     public class VEF_AnimalGenes_CompHatcher_CompTick_Patch
     {
-        [HarmonyPostfix]
+      
         public static void RemoveIfRuined(CompHatcher __instance)
         {
             if (__instance.TemperatureDamaged)

@@ -8,11 +8,11 @@ using System;
 
 namespace VEF.AnimalGenes
 {
-    [HarmonyPatch(typeof(Hediff_Pregnant))]
-    [HarmonyPatch("DoBirthSpawn")]
+    // This Harmony patch will only be patched if AnimalGenesMechanics is added via XML to a mod using OptionalFeatures
+
     public static class VEF_AnimalGenes_Hediff_Pregnant_DoBirthSpawn_Patch
     {
-        [HarmonyTranspiler]
+      
         public static IEnumerable<CodeInstruction> AddCrossbreedGenes(IEnumerable<CodeInstruction> codeInstructions)
         {
             var codes = codeInstructions.ToList();
