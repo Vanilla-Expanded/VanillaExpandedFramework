@@ -45,7 +45,9 @@ namespace PipeSystem
             }
         }
 
-        public float AmountStoredPct => amountStored / Props.storageCapacity;
+        public virtual float StorageCapacity => Props.storageCapacityStat != null ? parent.GetStatValue(Props.storageCapacityStat, cacheStaleAfterTicks: 120) : Props.storageCapacity;
+
+        public float AmountStoredPct => amountStored / StorageCapacity;
         public float AmountCanAccept
         {
             get
@@ -54,7 +56,7 @@ namespace PipeSystem
                     return 0f;
                 if (Props.contentRequirePower && !powerComp.PowerOn)
                     return 0f;
-                return Props.storageCapacity - amountStored;
+                return StorageCapacity - amountStored;
             }
         }
 
@@ -144,7 +146,6 @@ namespace PipeSystem
             if (Props.extractOptions != null)
             {
                 var extractGizmoArgs = ExtractResourceArguments();
-                extractResourceAmount = Props.extractOptions.ratio * Props.extractOptions.extractAmount;
 
                 extractGizmo = new Command_Action()
                 {
@@ -236,7 +237,7 @@ namespace PipeSystem
         /// </summary>
         public override void PostExposeData()
         {
-            if (amountStored > Props.storageCapacity) AmountStored = Props.storageCapacity;
+            if (amountStored > StorageCapacity) AmountStored = StorageCapacity;
 
             Scribe_Values.Look(ref amountStored, "storedResource", 0f);
             Scribe_Values.Look(ref ticksWithoutPower, "tickWithoutPower");
@@ -329,8 +330,8 @@ namespace PipeSystem
                 return;
             }
             AmountStored += amount;
-            if (amountStored > Props.storageCapacity) // Capping the amount to the maximum acceptable
-                AmountStored = Props.storageCapacity;
+            if (amountStored > StorageCapacity) // Capping the amount to the maximum acceptable
+                AmountStored = StorageCapacity;
         }
 
         /// <summary>
@@ -413,7 +414,7 @@ namespace PipeSystem
                     defaultLabel = "DEBUG: Fill",
                     action = new Action(() =>
                     {
-                        AmountStored = Props.storageCapacity;
+                        AmountStored = StorageCapacity;
                     })
                 };
                 yield return new Command_Action
@@ -421,8 +422,8 @@ namespace PipeSystem
                     defaultLabel = "DEBUG: Add 5",
                     action = new Action(() =>
                     {
-                        if (amountStored + 5 > Props.storageCapacity)
-                            AmountStored = Props.storageCapacity;
+                        if (amountStored + 5 > StorageCapacity)
+                            AmountStored = StorageCapacity;
                         else
                             AmountStored += 5;
                     })
@@ -454,12 +455,23 @@ namespace PipeSystem
             }
         }
 
+        public void UpdateExtractResourceAmount()
+        {
+            extractResourceAmount = Props.extractOptions.extractAmount;
+            // Negative value means that we allow to extract as much as possible.
+            // However, with addition of stat def based capacity, this may vary.
+            // We need to ensure we update it before we use it.
+            if (extractResourceAmount < 0)
+                extractResourceAmount = Mathf.CeilToInt(StorageCapacity / Props.extractOptions.ratio);
+        }
+
         private NamedArgument[] ExtractResourceArguments()
         {
             var opt = Props.extractOptions;
             if (opt == null)
                 return [];
 
+            UpdateExtractResourceAmount();
             var (resourceExtractAmount, itemExtractAmount) = CurrentManualExtractAmount();
 
             // Check comments in CompProperties_ResourceStorage.ExtractOptions class for explanation/more info
@@ -481,6 +493,7 @@ namespace PipeSystem
             var opt = Props.extractOptions;
             if (opt == null)
                 return (0, 0);
+            UpdateExtractResourceAmount();
             if (opt.extractExactAmount)
             {
                 if (AmountStored < extractResourceAmount)

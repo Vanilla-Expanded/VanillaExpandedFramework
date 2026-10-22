@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -12,6 +13,7 @@ namespace PipeSystem
             compClass = typeof(CompResourceStorage);
         }
 
+        public StatDef storageCapacityStat; // Stat for maximum amount of resources to be stored. If not null it'll take precedence over storageCapacity.
         public float storageCapacity; // Maximum amount of resource to be stored
 
         public bool drawStorageBar = true; // Should draw the storage bar on screen?
@@ -48,10 +50,6 @@ namespace PipeSystem
         public override void ResolveReferences(ThingDef parentDef)
         {
             base.ResolveReferences(parentDef);
-
-            // Treat negative extract amount as "extract as much as possible"
-            if (extractOptions is { extractAmount: < 0 })
-                extractOptions.extractAmount = Mathf.CeilToInt(storageCapacity / extractOptions.ratio);
 
             // If a mod is using the (now outdated) destoy option, create the destroy options list (if not present) and add it there
 #pragma warning disable CS0618 // Type or member is obsolete
