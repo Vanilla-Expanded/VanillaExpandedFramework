@@ -104,11 +104,11 @@ namespace PipeSystem
             var net = PipeNet;
             if (res.onlyShowStored)
             {
-                sb.Append($"{"PipeSystem_Stored".Translate(res.name)} {net.Stored:##0} {res.unit}");
+                sb.Append($"{"PipeSystem_Stored".Translate(res.name)} {PipeNet.def.FormatResourceAmount(net.Stored, this)} {res.unit}");
             }
             else
             {
-                sb.Append("PipeSystem_ExcessStored".Translate(net.def.resource.name, $"{((net.VisualProduction - net.VisualConsumption) / 100 * GenDate.TicksPerDay) + net.ExtractorRawProduction:##0}", $"{net.Stored:##0}", res.unit));
+                sb.Append("PipeSystem_ExcessStored".Translate(net.def.resource.name, $"{PipeNet.def.FormatResourceAmount(((net.VisualProduction - net.VisualConsumption) / 100 * GenDate.TicksPerDay) + net.ExtractorRawProduction, this)}", $"{PipeNet.def.FormatResourceAmount(net.Stored, this)}", res.unit));
             }
             sb.AppendInNewLine(base.CompInspectStringExtra());
 

@@ -35,6 +35,8 @@ namespace PipeSystem
         public bool enableOverflow = true; // If the overflow should be enabled or not.
         public float productionToOverflowCapacityRatio = 2f; // The ratio of produced resources to overflow capacity, if any. If production goes down the excess is NOT removed.
         public float overflowAmount = 1f; // The amount of overflow the pipe net will have. If using production to capacity ratio, this will be treated as a minimum capacity.
+        public string resourceAmountFormat = "F0";
+        public Type resourceAmountFormatWorkerType = typeof(ResourceAmountFormatWorker);
 
         [Unsaved]
         internal Material offMat; // Off material
@@ -42,6 +44,27 @@ namespace PipeSystem
         internal Texture2D uiIcon; // Resource icon from resource.uiIconPath
         [Unsaved]
         internal string loweredName; // Resource name lowered
+
+        public ResourceAmountFormatWorker ResourceAmountFormatWorker
+        {
+            get
+            {
+                if (field == null)
+                {
+                    try
+                    {
+                        field = GenWorker<ResourceAmountFormatWorker>.Get(resourceAmountFormatWorkerType);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error($"Failed to initialize {nameof(ResourceAmountFormatWorker)} with {resourceAmountFormatWorkerType}, using default type. Exception:\n{e}");
+                        field = GenWorker<ResourceAmountFormatWorker>.Get(typeof(ResourceAmountFormatWorker));
+                    }
+                }
+
+                return field;
+            }
+        }
 
         public override IEnumerable<string> ConfigErrors()
         {
@@ -82,6 +105,8 @@ namespace PipeSystem
             }
             base.PostLoad();
         }
+
+        public string FormatResourceAmount(float amount, CompResource comp = null) => ResourceAmountFormatWorker.FormatResourceAmount(amount, this, comp);
     }
 
     /// <summary>

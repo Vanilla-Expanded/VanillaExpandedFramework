@@ -174,11 +174,11 @@ namespace PipeSystem
             StringBuilder sb = new StringBuilder();
             if (Consumption >= 0)
             {
-                sb.Append($"{"PipeSystem_ResourceNeeded".Translate(Resource.name)} {Consumption / 100 * GenDate.TicksPerDay:##0} {Resource.unit}/d");
+                sb.Append($"{"PipeSystem_ResourceNeeded".Translate(Resource.name)} {PipeNet.def.FormatResourceAmount(Consumption / 100 * GenDate.TicksPerDay, this)} {Resource.unit}/d");
             }
             else
             {
-                sb.Append($"{"PipeSystem_ResourceOutput".Translate(Resource.name)} {(ResourceOn ? (-Consumption / 100) * GenDate.TicksPerDay : 0f):##0} {Resource.unit}/d");
+                sb.Append($"{"PipeSystem_ResourceOutput".Translate(Resource.name)} {PipeNet.def.FormatResourceAmount(ResourceOn ? (-Consumption / 100) * GenDate.TicksPerDay : 0f, this)} {Resource.unit}/d");
             }
 
             sb.AppendInNewLine(base.CompInspectStringExtra());
