@@ -34,9 +34,10 @@ namespace PipeSystem
         // wasting the extra production. Overflow allows to store that tiny bit of extra without wasting it.
         public bool enableOverflow = true; // If the overflow should be enabled or not.
         public float productionToOverflowCapacityRatio = 2f; // The ratio of produced resources to overflow capacity, if any. If production goes down the excess is NOT removed.
-        public float overflowAmount = 1f; // The amount of overflow the pipe net will have. If using production to capacity ratio, this will be treated as a minimum capacity.
-        public string resourceAmountFormat = "F0";
-        public Type resourceAmountFormatWorkerType = typeof(ResourceAmountFormatWorker);
+        public float overflowAmount = 1f; // Minimum amount of overflow the pipe net will have at all times, regardless of production.
+
+        public string resourceAmountFormat = "F0"; // The format (argument passed to float.ToString(String format)) that will be used by the format worker (if relevant).
+        public Type resourceAmountFormatWorkerType = typeof(ResourceAmountFormatWorker); // The worker type 
 
         [Unsaved]
         internal Material offMat; // Off material
