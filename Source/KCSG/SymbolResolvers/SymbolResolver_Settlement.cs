@@ -42,7 +42,7 @@ namespace KCSG
                     edgeParms.rect = new CellRect(rp.rect.minX - dWidth, rp.rect.minZ - dWidth, rp.rect.Width + (dWidth * 2), rp.rect.Height + (dWidth * 2));
                     edgeParms.faction = rp.faction;
                     edgeParms.edgeDefenseWidth = dWidth;
-                    edgeParms.edgeThingMustReachMapEdge = new bool?(rp.edgeThingMustReachMapEdge ?? true);
+                    edgeParms.edgeThingMustReachMapEdge = rp.edgeThingMustReachMapEdge ?? true;
                     BaseGen.symbolStack.Push("kcsg_edgeDefense", edgeParms, null);
                 }
 
@@ -74,7 +74,7 @@ namespace KCSG
             rp.faction = faction;
             rp.singlePawnLord = singlePawnLord;
             rp.pawnGroupKindDef = pawnGroup;
-            rp.singlePawnSpawnCellExtraPredicate = parms.singlePawnSpawnCellExtraPredicate ?? ((IntVec3 x) => map.reachability.CanReachMapEdge(x, tp));
+            rp.singlePawnSpawnCellExtraPredicate = parms.singlePawnSpawnCellExtraPredicate ?? (x => map.reachability.CanReachMapEdge(x, tp));
             if (rp.pawnGroupMakerParams == null && faction.def.pawnGroupMakers.Any(pgm => pgm.kindDef == PawnGroupKindDefOf.Settlement))
             {
                 rp.pawnGroupMakerParams = new PawnGroupMakerParms

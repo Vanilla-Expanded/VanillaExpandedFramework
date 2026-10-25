@@ -75,7 +75,7 @@ namespace KCSG
             {
                 var str = GenOption.fallingLayout.layouts[0][i];
                 var split = str.Split(',');
-                for (int s = 0; s < split.Count(); s++)
+                for (int s = 0; s < split.Length; s++)
                 {
                     allSymbList.Add(split[s]);
                 }
@@ -112,7 +112,7 @@ namespace KCSG
                         var thing = ThingMaker.MakeThing(temp.thingDef, temp.stuffDef ?? GenStuff.RandomStuffFor(temp.thingDef));
                         thing.SetFaction(parms.faction);
 
-                        if (!GenOption.fallingExt.spawnDormantWhenPossible && thing.TryGetComp<CompCanBeDormant>() is CompCanBeDormant ccbd && ccbd != null)
+                        if (!GenOption.fallingExt.spawnDormantWhenPossible && thing.TryGetComp<CompCanBeDormant>() is CompCanBeDormant ccbd)
                         {
                             ccbd.wakeUpOnTick = Find.TickManager.TicksGame + 150;
                            
@@ -142,15 +142,12 @@ namespace KCSG
                         };
 
                         var faller = (KCSG_Skyfaller)SkyfallerMaker.MakeSkyfaller(def);
-                        if (thing != null)
+                        if (!faller.innerContainer.TryAdd(thing, true))
                         {
-                            if (!faller.innerContainer.TryAdd(thing, true))
-                            {
-                                Log.Error($"Could not add {thing.ToStringSafe()} to a KCSG_Skyfaller.");
-                                thing.Destroy(DestroyMode.Vanish);
-                            }
+                            Log.Error($"Could not add {thing.ToStringSafe()} to a KCSG_Skyfaller.");
+                            thing.Destroy();
                         }
-                        faller.rot = temp.rotation != null ? temp.rotation : Rot4.North;
+                        faller.rot = temp.rotation;
                         fallers.Add(faller, cell);
                     }
                 }

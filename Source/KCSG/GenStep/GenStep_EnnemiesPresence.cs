@@ -43,7 +43,7 @@ namespace KCSG
                 IntVec3 loc;
                 if (spawnOnEdge)
                 {
-                    if (!CellFinder.TryFindRandomEdgeCellWith((IntVec3 x) => x.Standable(map) && !x.Fogged(map) && map.reachability.CanReachColony(x), map, CellFinder.EdgeRoadChance_Ignore, out loc))
+                    if (!CellFinder.TryFindRandomEdgeCellWith(x => x.Standable(map) && !x.Fogged(map) && map.reachability.CanReachColony(x), map, CellFinder.EdgeRoadChance_Ignore, out loc))
                     {
                         pawn.Discard();
                         break;

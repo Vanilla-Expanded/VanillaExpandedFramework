@@ -11,7 +11,7 @@ namespace KCSG
 
             foreach (IntVec3 pos in rp.rect)
             {
-                if (Rand.Bool && map.terrainGrid.UnderTerrainAt(pos) is TerrainDef terrain && terrain != null)
+                if (Rand.Bool && map.terrainGrid.UnderTerrainAt(pos) is TerrainDef terrain)
                 {
                     map.terrainGrid.SetTerrain(pos, terrain);
                 }

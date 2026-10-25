@@ -53,7 +53,7 @@ namespace KCSG
                 {
                     List<CellRect> usedRects = MapGenerator.GetOrGenerateVar<List<CellRect>>("UsedRects");
 
-                    if ((!MapGenUtility.TryGetRandomClearRect(layoutDef.sizes.x, layoutDef.sizes.z, out CellRect rect, -1, -1, (CellRect r) => !r.Cells.Any((IntVec3 c) => c.GetTerrain(map).IsWater) && !usedRects.Any((CellRect ur) => ur.Overlaps(r))) || !rect.CenterCell.InHorDistOf(map.Center, 75f)) && !MapGenUtility.TryGetClosestClearRectTo(out rect, new IntVec2(layoutDef.sizes.x, layoutDef.sizes.z), map.Center, (CellRect r) => !r.Cells.Any((IntVec3 c) => c.GetTerrain(map).IsWater) && !usedRects.Any((CellRect ur) => ur.Overlaps(r))))
+                    if ((!MapGenUtility.TryGetRandomClearRect(layoutDef.sizes.x, layoutDef.sizes.z, out CellRect rect, -1, -1, r => !r.Cells.Any(c => c.GetTerrain(map).IsWater) && !usedRects.Any(ur => ur.Overlaps(r))) || !rect.CenterCell.InHorDistOf(map.Center, 75f)) && !MapGenUtility.TryGetClosestClearRectTo(out rect, new IntVec2(layoutDef.sizes.x, layoutDef.sizes.z), map.Center, r => !r.Cells.Any(c => c.GetTerrain(map).IsWater) && !usedRects.Any(ur => ur.Overlaps(r))))
                     {
                         Log.Error("Failed to find location for KCSG structure");
                         return;
@@ -80,7 +80,7 @@ namespace KCSG
                 {
                     List<CellRect> usedRects = MapGenerator.GetOrGenerateVar<List<CellRect>>("UsedRects");
 
-                    if ((!MapGenUtility.TryGetRandomClearRect(layoutDef.settlementSize.x, layoutDef.settlementSize.z, out CellRect rect, -1, -1, (CellRect r) => !r.Cells.Any((IntVec3 c) => c.GetTerrain(map).IsWater) && !usedRects.Any((CellRect ur) => ur.Overlaps(r))) || !rect.CenterCell.InHorDistOf(map.Center, 75f)) && !MapGenUtility.TryGetClosestClearRectTo(out rect, new IntVec2(layoutDef.settlementSize.x, layoutDef.settlementSize.z), map.Center, (CellRect r) => !r.Cells.Any((IntVec3 c) => c.GetTerrain(map).IsWater) && !usedRects.Any((CellRect ur) => ur.Overlaps(r))))
+                    if ((!MapGenUtility.TryGetRandomClearRect(layoutDef.settlementSize.x, layoutDef.settlementSize.z, out CellRect rect, -1, -1, r => !r.Cells.Any(c => c.GetTerrain(map).IsWater) && !usedRects.Any(ur => ur.Overlaps(r))) || !rect.CenterCell.InHorDistOf(map.Center, 75f)) && !MapGenUtility.TryGetClosestClearRectTo(out rect, new IntVec2(layoutDef.settlementSize.x, layoutDef.settlementSize.z), map.Center, r => !r.Cells.Any(c => c.GetTerrain(map).IsWater) && !usedRects.Any(ur => ur.Overlaps(r))))
                     {
                         Log.Error("Failed to find location for KCSG settlement");
                         return;

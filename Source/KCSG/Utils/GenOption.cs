@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -48,9 +49,9 @@ namespace KCSG
         /// <returns>Mineable</returns>
         public static Mineable GetMineableAt(IntVec3 cell)
         {
-            if (mineables.ContainsKey(cell))
+            if (mineables.TryGetValue(cell, out var mineable))
             {
-                return mineables[cell];
+                return mineable;
             }
 
             return null;
@@ -62,9 +63,9 @@ namespace KCSG
         /// <param name="cell">Cell</param>
         public static void DespawnMineableAt(IntVec3 cell)
         {
-            if (mineables.ContainsKey(cell) && mineables[cell] != null && mineables[cell].Spawned)
+            if (mineables.TryGetValue(cell, out var mineable) && mineable != null && mineable.Spawned)
             {
-                mineables[cell].DeSpawn();
+                mineable.DeSpawn();
                 mineables[cell] = null;
             }
         }

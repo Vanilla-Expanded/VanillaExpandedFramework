@@ -56,7 +56,7 @@ namespace KCSG
             var pairsCellThingList = Dialog_ExportWindow.pairsCellThingList;
             var ll = new List<string>();
             var hw = EdgeFromList(cellExport);
-            var active = area?.ActiveCells;
+            var active = area?.ActiveCells.ToList();
 
             List<Thing> addedThings = new List<Thing>();
 
@@ -69,7 +69,7 @@ namespace KCSG
                 for (int x = 0; x < hw.x; x++)
                 {
                     // Get the thing on the cell
-                    List<Thing> things = pairsCellThingList.TryGetValue(cell);
+                    List<Thing> things = pairsCellThingList[cell];
                     // Remove motes & blacklisted
                     things.RemoveAll(t => t.def.category == ThingCategory.Mote || symbolBlacklist.Contains(t.def.defName));
                     // Remove filth if needed
@@ -88,7 +88,7 @@ namespace KCSG
                     {
                         Thing thing = things[index];
                         // It's a pawn
-                        if (thing is Pawn pawn && pawn != null)
+                        if (thing is Pawn pawn)
                         {
                             SymbolDef symbolDef = DefDatabase<SymbolDef>.AllDefsListForReading.Find(s => s.pawnKindDefNS == pawn.kindDef);
                             if (symbolDef == null)
@@ -207,7 +207,7 @@ namespace KCSG
             var cellExport = Dialog_ExportWindow.cells;
             var ll = new List<string>();
             var hw = EdgeFromList(cellExport);
-            var active = area?.ActiveCells;
+            var active = area?.ActiveCells.ToList();
             var add = false;
 
             IntVec3 cell = cellExport.First();
@@ -255,7 +255,7 @@ namespace KCSG
             var cellExport = Dialog_ExportWindow.cells;
             var ll = new List<string>();
             var hw = EdgeFromList(cellExport);
-            var active = area?.ActiveCells;
+            var active = area?.ActiveCells.ToList();
             var add = false;
 
             var cell = cellExport.First();
@@ -298,7 +298,7 @@ namespace KCSG
             var cellExport = Dialog_ExportWindow.cells;
             var ll = new List<string>();
             var hw = EdgeFromList(cellExport);
-            var active = area?.ActiveCells;
+            var active = area?.ActiveCells.ToList();
             var add = false;
 
             IntVec3 cell = cellExport.First();
@@ -311,7 +311,7 @@ namespace KCSG
                     {
                         AddToString(ref temp, ".", x, hw.x);
                     }
-                    else if (cell.GetRoof(map) is RoofDef roofDef && roofDef != null)
+                    else if (cell.GetRoof(map) is RoofDef roofDef)
                     {
                         var roofType = roofDef == RoofDefOf.RoofRockThick ? "3" : (roofDef == RoofDefOf.RoofRockThin ? "2" : "1");
                         AddToString(ref temp, roofType, x, hw.x);
@@ -473,7 +473,7 @@ namespace KCSG
             var cellExport = Dialog_ExportWindow.cells;
             var pairsCellThingList = Dialog_ExportWindow.pairsCellThingList;
             var symbols = new List<SymbolDef>();
-            var activeCells = area?.ActiveCells;
+            var activeCells = area?.ActiveCells.ToList();
 
             foreach (IntVec3 c in cellExport)
             {
@@ -585,7 +585,7 @@ namespace KCSG
 
                 var comp = corpse.GetComp<CompRottable>();
                 if (comp != null)
-                    symbol.spawnRotten = comp.RotProgress == 1f;
+                    symbol.spawnRotten = comp.RotProgress >= 1f;
 
                 symbol.ResolveReferences();
                 Dialog_ExportWindow.exportedSymbolsName.Add(symbol.defName);

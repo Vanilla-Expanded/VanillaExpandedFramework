@@ -55,7 +55,7 @@ namespace KCSG
             stateGraph.AddTransition(transition1);
 
             // If faction becomes hostile, either transition to hostile defence so they can assault or assault immediately (depends on attackWhenPlayerBecameEnemy)
-            Transition transition2 = new Transition(lordToilDefendBase2, this.attackWhenPlayerBecameEnemy ? (LordToil)toilAssaultColony : lordToilDefendBase1, false, true);
+            Transition transition2 = new Transition(lordToilDefendBase2, this.attackWhenPlayerBecameEnemy ? toilAssaultColony : lordToilDefendBase1, false, true);
             if (this.attackWhenPlayerBecameEnemy)
             {
                 transition2.AddSource(lordToilDefendBase1);

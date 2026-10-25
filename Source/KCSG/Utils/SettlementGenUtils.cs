@@ -293,13 +293,18 @@ namespace KCSG
                             continue;
 
                         var rect = new CellRect(c.x, c.z, thingDef.size.x, thingDef.size.z);
+                        var validCell = true;
                         foreach (var ce in rect)
                         {
                             if (grid[ce.z][ce.x] == CellType.Used || !ce.Walkable(map))
-                                continue;
+                            {
+                                validCell = false;
+                                break;
+                            }
                         }
 
-                        matchingCells.Add(c);
+                        if (validCell)
+                            matchingCells.Add(c);
                     }
 
                     if (matchingCells.Count > 0)
@@ -330,7 +335,7 @@ namespace KCSG
                 {
                     foreach (RoadDefGenStep rgs in roadLink.road.roadGenSteps)
                     {
-                        if (rgs is RoadDefGenStep_Place rgsp && rgsp != null && rgsp.place is TerrainDef t && t != null && t != TerrainDefOf.Bridge)
+                        if (rgs is RoadDefGenStep_Place rgsp && rgsp.place is TerrainDef t && t != TerrainDefOf.Bridge)
                         {
                             preRoadTypes.Add(t);
                         }
@@ -787,13 +792,13 @@ namespace KCSG
                         else
                         {
                             map.powerNetManager.UpdatePowerNetsAndConnections_First();
-                            if (TryFindClosestReachableNet(powerComp.parent.Position, x => (double)x.CurrentEnergyGainRate() - powerComp.Props.PowerConsumption * (double)CompPower.WattsToWattDaysPerTick > 1.0000000116861E-07, map, out PowerNet foundNet, out IntVec3 closestTransmitter))
+                            if (TryFindClosestReachableNet(powerComp.parent.Position, x => x.CurrentEnergyGainRate() - powerComp.Props.PowerConsumption * CompPower.WattsToWattDaysPerTick > 0.0000001f, map, out _, out var closestTransmitter))
                             {
                                 map.floodFiller.ReconstructLastFloodFillPath(closestTransmitter, tmpCells);
                                 SpawnTransmitters(tmpCells, map, tmpThings[index].Faction);
                                 TryTurnOnImmediately(powerComp, map);
                             }
-                            else if (TryFindClosestReachableNet(powerComp.parent.Position, x => (double)x.CurrentStoredEnergy() > 1.0000000116861E-07, map, out foundNet, out closestTransmitter))
+                            else if (TryFindClosestReachableNet(powerComp.parent.Position, x => x.CurrentStoredEnergy() > 0.0000001f, map, out _, out closestTransmitter))
                             {
                                 map.floodFiller.ReconstructLastFloodFillPath(closestTransmitter, tmpCells);
                                 SpawnTransmitters(tmpCells, map, tmpThings[index].Faction);
@@ -828,9 +833,9 @@ namespace KCSG
                 CompPowerTrader comp = thing.TryGetComp<CompPowerTrader>();
                 if (comp == null)
                     return false;
-                if ((double)comp.PowerOutput < 0.0)
+                if (comp.PowerOutput < 0.0f)
                     return true;
-                return !comp.PowerOn && comp.Props.PowerConsumption > 0.0;
+                return !comp.PowerOn && comp.Props.PowerConsumption > 0.0f;
             }
 
             private static bool IsPowerGenerator(Thing thing)
@@ -1132,7 +1137,7 @@ namespace KCSG
                 var i2x = coords[2 * i2];
                 var i2y = coords[2 * i2 + 1];
 
-                if (minRadius == double.PositiveInfinity)
+                if (double.IsPositiveInfinity(minRadius))
                 {
                     throw new Exception("No Delaunay triangulation exists for this input.");
                 }

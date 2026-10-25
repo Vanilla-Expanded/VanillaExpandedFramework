@@ -40,7 +40,7 @@ namespace KCSG
             // Get amount of tiles
             var tilesNumber = def.tilesNumber;
             if (quest != null)
-                tilesNumber = def.tilesNumberRange.Lerped(quest.challengeRating / 4);
+                tilesNumber = def.tilesNumberRange.Lerped(quest.challengeRating / 4f);
             // Tile in center
             if (!def.centerTileDefs.NullOrEmpty())
             {
@@ -88,7 +88,7 @@ namespace KCSG
             {
                 var max = pair.Value.z;
                 var tileDef = pair.Key;
-                if (max > 0 && usedTileDefs.TryGetValue(tileDef) is int spawnedCount && spawnedCount >= max)
+                if (max > 0 && usedTileDefs.TryGetValue(tileDef) is var spawnedCount && spawnedCount >= max)
                     continue;
 
                 pool.Add(tileDef);
@@ -159,6 +159,7 @@ namespace KCSG
         /// <param name="cellRect"></param>
         /// <param name="map"></param>
         /// <param name="tileDef"></param>
+        /// <param name="usedLayouts"></param>
         private static void GenerateTileIn(CellRect cellRect, Map map, TileDef tileDef, ref List<StructureLayoutDef> usedLayouts)
         {
             // Get not yet used layouts

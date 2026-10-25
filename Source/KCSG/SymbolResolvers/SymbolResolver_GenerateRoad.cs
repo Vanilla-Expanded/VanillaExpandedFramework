@@ -40,8 +40,8 @@ namespace KCSG
                 if (doorsLeadingOutside.Count > 0)
                 {
                     var delaunayStart = DateTime.Now;
-                    var edges = new Delaunay(doorsLeadingOutside).GetEdges();
-                    Debug.Message($"Delaunay time: {(DateTime.Now - delaunayStart).TotalMilliseconds}ms. Edges count: {edges.Count()}");
+                    var edges = new Delaunay(doorsLeadingOutside).GetEdges().ToList();
+                    Debug.Message($"Delaunay time: {(DateTime.Now - delaunayStart).TotalMilliseconds}ms. Edges count: {edges.Count}");
 
                     var linkStart = DateTime.Now;
                     foreach (var edge in edges)

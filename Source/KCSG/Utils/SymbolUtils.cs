@@ -116,8 +116,7 @@ namespace KCSG
                     {
                         for (int x = 0; x < 5; x++)
                         {
-                            IntVec3 rNext = new IntVec3();
-                            RCellFinder.TryFindRandomCellNearWith(cell, ni => ni.Walkable(map), map, out rNext, 1, 3);
+                            RCellFinder.TryFindRandomCellNearWith(cell, ni => ni.Walkable(map), map, out var rNext, 1, 3);
                             GenSpawn.Spawn(ThingDefOf.Filth_CorpseBile, rNext, map);
                         }
                     }
@@ -393,10 +392,7 @@ namespace KCSG
             if (layout.spawnConduits && !thing.def.mineable && (thing.def.passability == Traversability.Impassable || thing.def.IsDoor) && faction?.def.techLevel >= TechLevel.Industrial)
             {
                 Thing c = ThingMaker.MakeThing(AllDefOf.KCSG_PowerConduit);
-                if (faction != null)
-                {
-                    c.SetFaction(faction);
-                }
+                c.SetFaction(faction); // Since we check faction tech level, faction is not null
                 var conduit = GenSpawn.Spawn(c, cell, map, WipeMode.FullRefund);
                 if (conduit != null)
                     spawnedThings?.Add(conduit);
@@ -471,7 +467,7 @@ namespace KCSG
 
             if (thing?.def?.building?.buildingTags?.Count > 0)
             {
-                if (thing.def.building.IsMortar && thing.def.building.buildingTags.Contains("Artillery_MannedMortar") && thing.def.HasComp(typeof(CompMannable)) && faction != null && faction.RandomPawnKind() is PawnKindDef pawnKind)
+                if (thing.def.building.IsMortar && thing.def.building.buildingTags.Contains("Artillery_MannedMortar") && thing.def.HasComp<CompMannable>() && faction != null && faction.RandomPawnKind() is PawnKindDef pawnKind)
                 {
                     // Spawn pawn
                     var request = new PawnGenerationRequest(pawnKind, faction, PawnGenerationContext.NonPlayer, map.Tile, forceGenerateNewPawn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: true, 1f, forceAddFreeWarmLayerIfNeeded: false, allowGay: true, allowPregnant: false, allowFood: true, allowAddictions: true, inhabitant: true);

@@ -27,7 +27,7 @@ namespace KCSG
                     for (int i = 0; i < kcsgSkyfallers.Count; i++)
                     {
                         Thing faller = kcsgSkyfallers[i];
-                        if (faller is KCSG_Skyfaller skyfaller && skyfaller != null)
+                        if (faller is KCSG_Skyfaller skyfaller)
                         {
                             skyfaller.SaveImpact();
                         }

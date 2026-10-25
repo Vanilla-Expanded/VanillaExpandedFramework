@@ -353,7 +353,7 @@ namespace KCSG
                 }
             }
             // Clean terrain
-            if (map.terrainGrid.UnderTerrainAt(c) is TerrainDef terrain && terrain != null)
+            if (map.terrainGrid.UnderTerrainAt(c) is TerrainDef terrain)
             {
                 map.terrainGrid.SetTerrain(c, terrain);
             }
@@ -394,7 +394,7 @@ namespace KCSG
                 var transmitter = tmpThings[i].TryGetComp<CompPowerTransmitter>();
                 if (transmitter != null && transmitter.PowerNet is null)
                 {
-                    if (TryFindClosestReachableNet(transmitter.parent.Position, (PowerNet x) => HasAnyPowerGenerator(x), map, out var foundNet, out var closestTransmitter))
+                    if (TryFindClosestReachableNet(transmitter.parent.Position, HasAnyPowerGenerator, map, out var foundNet, out _))
                     {
                         transmitter.transNet = foundNet;
                         transmitter.TryManualReconnect();
@@ -482,7 +482,7 @@ namespace KCSG
             tmpPowerNetPredicateResults.Clear();
             PowerNet foundNetLocal = null;
             IntVec3 closestTransmitterLocal = IntVec3.Invalid;
-            map.floodFiller.FloodFill(root, (IntVec3 x) => EverPossibleToTransmitPowerAt(x, map), delegate (IntVec3 x)
+            map.floodFiller.FloodFill(root, x => EverPossibleToTransmitPowerAt(x, map), delegate (IntVec3 x)
             {
                 PowerNet powerNet = x.GetTransmitter(map)?.GetComp<CompPower>().PowerNet;
                 if (powerNet == null)
@@ -501,7 +501,7 @@ namespace KCSG
                     return true;
                 }
                 return false;
-            }, int.MaxValue, rememberParents: true);
+            }, rememberParents: true);
             tmpPowerNetPredicateResults.Clear();
             if (foundNetLocal != null)
             {

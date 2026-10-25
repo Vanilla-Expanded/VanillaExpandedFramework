@@ -29,7 +29,7 @@ namespace KCSG
 
         public override AcceptanceReport CanDesignateCell(IntVec3 c)
         {
-            if (!c.InBounds(base.Map))
+            if (!c.InBounds(Map))
             {
                 return false;
             }
@@ -38,7 +38,7 @@ namespace KCSG
 
         public override void DesignateMultiCell(IEnumerable<IntVec3> cells)
         {
-            Dialog_ExportWindow exportWindow = new Dialog_ExportWindow(base.Map, cells.ToList(), null);
+            Dialog_ExportWindow exportWindow = new Dialog_ExportWindow(Map, cells.ToList(), null);
             Find.WindowStack.Add(exportWindow);
         }
     }

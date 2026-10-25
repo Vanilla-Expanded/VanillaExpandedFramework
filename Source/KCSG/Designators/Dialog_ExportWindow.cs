@@ -182,10 +182,7 @@ namespace KCSG
                 {
                     var sld = ExportUtils.CreateStructureDef(map, area);
 
-                    if (exportedLayouts.ContainsKey(defName))
-                        exportedLayouts[defName] = sld;
-                    else
-                        exportedLayouts.Add(defName, sld);
+                    exportedLayouts[defName] = sld;
 
                     GUIUtility.systemCopyBuffer = sld.ToXMLString();
                     Messages.Message("Copied to clipboard.", MessageTypeDefOf.TaskCompletion);

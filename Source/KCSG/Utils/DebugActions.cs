@@ -127,7 +127,7 @@ namespace KCSG
                     {
                         list.Add(new DebugMenuOption(def.defName, DebugMenuOptionMode.Tool, () =>
                         {
-                            DebugToolsGeneral.GenericRectTool(def.defName, (CellRect rect) =>
+                            DebugToolsGeneral.GenericRectTool(def.defName, rect =>
                             {
                                 var map = Find.CurrentMap;
                                 BaseGen.globalSettings.map = map;
