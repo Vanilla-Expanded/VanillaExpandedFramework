@@ -656,7 +656,7 @@ namespace KCSG
             var compResourceStorage = thing.TryGetComp<CompResourceStorage>();
             if (compResourceStorage != null)
             {
-                return compResourceStorage.AmountStored / compResourceStorage.Props.storageCapacity;
+                return compResourceStorage.AmountStored / compResourceStorage.StorageCapacity;
             }
 
             var compRefuelable = thing.TryGetComp<CompRefuelable>();

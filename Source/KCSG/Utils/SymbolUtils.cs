@@ -271,11 +271,11 @@ namespace KCSG
                 float amount = 0;
                 if (symbol.fuelPercent == null)
                 {
-                    amount = compResourceStorage.Props.storageCapacity;
+                    amount = compResourceStorage.StorageCapacity;
                 }
                 else if (symbol.fuelPercent > 0)
                 {
-                    amount = compResourceStorage.Props.storageCapacity * symbol.fuelPercent.Value;
+                    amount = compResourceStorage.StorageCapacity * symbol.fuelPercent.Value;
                 }
 
                 var currentStored = compResourceStorage.AmountStored;
