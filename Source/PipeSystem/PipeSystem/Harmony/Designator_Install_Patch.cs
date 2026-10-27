@@ -13,9 +13,9 @@ namespace PipeSystem
     {
         public static void Postfix(Designator_Install __instance)
         {
-            if (__instance.PlacingDef is ThingDef thingDef && CachedResourceThings.resourceCompsOf.ContainsKey(thingDef))
+            if (__instance.PlacingDef is ThingDef thingDef && CachedResourceThings.resourceCompsOf.TryGetValue(thingDef, out var compPropsList))
             {
-                SectionLayer_Resource.UpdateAndDrawFor(CachedResourceThings.resourceCompsOf[thingDef][0].pipeNet);
+                SectionLayer_Resource.UpdateAndDrawFor(compPropsList[0].pipeNet);
             }
         }
     }
