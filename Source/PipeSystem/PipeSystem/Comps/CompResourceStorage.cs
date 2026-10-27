@@ -127,22 +127,7 @@ namespace PipeSystem
 
             pipeNetOverlayDrawer = parent.Map.GetComponent<PipeNetOverlayDrawer>();
             // Fillable bar request
-            request = new FillableBarRequest
-            {
-                center = parent.DrawPos + Props.centerOffset + Vector3.up * 0.1f,
-                size = Props.barSize,
-                fillPercent = AmountStoredPct,
-                filledMat = MaterialCreator.materials.TryGetValue(Props.pipeNet, MaterialCreator.BarFallbackMat),
-                unfilledMat = MaterialCreator.BarUnfilledMat,
-                margin = Props.margin,
-                rotation = (Props.barHorizontal, Props.rotateBarWithBuilding) switch
-                {
-                    (false, false) => Rot4.East,
-                    (true, false) => Rot4.North,
-                    (false, true) => parent.Rotation.Rotated(RotationDirection.Clockwise),
-                    (true, true) => parent.Rotation,
-                },
-            };
+            request = Props.barData.GetFillableBarRequest(parent, AmountStoredPct);
             if (Props.extractOptions != null)
             {
                 var extractGizmoArgs = ExtractResourceArguments();
@@ -435,6 +420,16 @@ namespace PipeSystem
                     {
                         AmountStored = 0f;
                     })
+                };
+                yield return new Command_Action
+                {
+                    defaultLabel = "DEBUG: Configure gauge",
+                    action = () =>
+                    {
+                        var window = Props.barData.GetConfigurationDialog(parent);
+                        window.onChanged += () => request = Props.barData.GetFillableBarRequest(parent, AmountStoredPct);
+                        Find.WindowStack.Add(window);
+                    },
                 };
             }
         }

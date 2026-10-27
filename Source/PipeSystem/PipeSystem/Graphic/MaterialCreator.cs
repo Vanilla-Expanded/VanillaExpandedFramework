@@ -8,8 +8,9 @@ namespace PipeSystem
     /// Create material with given color for each ResourceDef
     /// </summary>
     [StaticConstructorOnStartup]
-    public class MaterialCreator
+    public static class MaterialCreator
     {
+        // Those 2 materials are now unused by VE, kept in case some mod was using those directly.
         public static readonly Material BarUnfilledMat = SolidColorMaterials.SimpleSolidColorMaterial(new Color(0.3f, 0.3f, 0.3f));
         public static readonly Material BarFallbackMat = SolidColorMaterials.SimpleSolidColorMaterial(new Color(0.9f, 0.85f, 0.2f));
         public static readonly Texture2D QualitySelect = ContentFinder<Texture2D>.Get("UI/QualitySelectors/PS_QualitySelect");

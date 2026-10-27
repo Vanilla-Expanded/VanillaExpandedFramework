@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using RimWorld;
 using UnityEngine;
+using VEF.Buildings;
 using Verse;
 
 namespace PipeSystem
@@ -22,10 +23,16 @@ namespace PipeSystem
         [LoadAlias("showOffMatWhenTransferring")]
         public bool showOffMatWhenTransfering = true;
 
+        public CustomFillableBarGaugeData barData;
+        [Obsolete($"Will be removed in the future, use {nameof(barData)} instead.")]
         public float margin = 0.15f;
+        [Obsolete($"Will be removed in the future, use {nameof(barData)} instead.")]
         public Vector2 barSize = new Vector2(1.3f, 0.4f);
+        [Obsolete($"Will be removed in the future, use {nameof(barData)} instead.")]
         public Vector3 centerOffset = new Vector3(0, 0);
+        [Obsolete($"Will be removed in the future, use {nameof(barData)} instead.")]
         public bool barHorizontal = false;
+        [Obsolete($"Will be removed in the future, use {nameof(barData)} instead.")]
         public bool rotateBarWithBuilding = true;
 
         public ExtractOptions extractOptions;
@@ -58,6 +65,28 @@ namespace PipeSystem
                 destroyOptions ??= [];
                 destroyOptions.Add(destroyOption);
             }
+
+            if (barData == null)
+            {
+                barData = new CustomFillableBarGaugeData
+                {
+                    margin = margin,
+                    sizeNorth = barSize,
+                    sizeSouth = barSize,
+                    sizeEast = barSize,
+                    sizeWest = barSize,
+                    centerPositionOffsetNorth = centerOffset,
+                    centerPositionOffsetSouth = centerOffset,
+                    centerPositionOffsetEast = centerOffset,
+                    centerPositionOffsetWest = centerOffset,
+                    horizontalBar = barHorizontal,
+                    rotateBarWithBuilding = rotateBarWithBuilding,
+                    barUnfilledColor = new Color(0.3f, 0.3f, 0.3f),
+                    barFilledColor = pipeNet?.resource?.color ?? new Color(0.9f, 0.85f, 0.2f),
+                };
+            }
+
+            barData.ResolveReferences();
 #pragma warning restore CS0618 // Type or member is obsolete
         }
     }
