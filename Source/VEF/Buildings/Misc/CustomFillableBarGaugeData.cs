@@ -161,12 +161,13 @@ public class CustomFillableBarGaugeData
         return true;
     }
 
-    public class Dialog_GaugeAdjustment(Thing parent, CustomFillableBarGaugeData data) : Window
+    public class Dialog_GaugeAdjustment : Window
     {
         public Action onChanged;
         public Action postClosed;
 
-        public override Vector2 InitialSize => new(400f, 500f);
+        protected Thing parent;
+        protected CustomFillableBarGaugeData data;
 
         protected string marginBuffer;
         protected string offsetBufferX;
@@ -176,9 +177,24 @@ public class CustomFillableBarGaugeData
 
         protected bool anythingChanged = false;
 
+        public override Vector2 InitialSize => new(320f, 260f);
+
+        public Dialog_GaugeAdjustment(Thing parent, CustomFillableBarGaugeData data)
+        {
+            this.parent = parent;
+            this.data = data;
+            resizeable = true;
+            doCloseX = true;
+        }
+
         public override void DoWindowContents(Rect inRect)
         {
+            using var _ = new TextBlock(GameFont.Small, TextAnchor.UpperLeft, false, Color.white);
             anythingChanged = false;
+
+            DrawCheckbox(ref inRect, "Rotate", ref data.rotateBarWithBuilding);
+            DrawCheckbox(ref inRect, "Horizontal", ref data.horizontalBar);
+
             DrawCountAdjuster(ref inRect, "Margin", ref data.margin, ref marginBuffer, 0f, 1f);
 
             // DrawRotationChanger(ref inRect, currentRotation.ToStringWord(), ref currentRotation);
@@ -277,7 +293,17 @@ public class CustomFillableBarGaugeData
             Widgets.Label(left, label);
 
             var oldValue = value;
-            UIUtility.DrawCountAdjuster(ref value, right, ref buffer, min, max, adjustment, inversedAdjustmentMultiplier, marginX: 0f);
+            UIUtility.DrawCountAdjuster(ref value, right, ref buffer, min, max, adjustment: adjustment, inversedAdjustmentMultiplier: inversedAdjustmentMultiplier, marginX: 0f, drawSetToMinMax: false);
+            if (oldValue != value)
+                anythingChanged = true;
+        }
+
+        protected void DrawCheckbox(ref Rect inRect, string label, ref bool value)
+        {
+            inRect.SplitHorizontally(30f, out var top, out inRect);
+
+            var oldValue = value;
+            Widgets.CheckboxLabeled(top.ContractedBy(0f, 5f), label, ref value);
             if (oldValue != value)
                 anythingChanged = true;
         }
