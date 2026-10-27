@@ -11,7 +11,7 @@ namespace ModSettingsFramework
 
         public override void DoSettings(ModSettingsContainer container, Listing_Standard list)
         {
-            var value = container.PatchOperationValue(id, defaultValue);
+            var value = (int)container.PatchOperationValue(id, defaultValue);
             DoSlider(list, label + ": " + value, ref value, value.ToString(), range.TrueMin, range.TrueMax, tooltip);
             container.patchOperationValues[id] = value;
         }
@@ -24,7 +24,7 @@ namespace ModSettingsFramework
                 var container = SettingsContainer;
                 if (container != null)
                 {
-                    var value = container.PatchOperationValue(id, defaultValue);
+                    var value = (int)container.PatchOperationValue(id, defaultValue);
                     node.InnerText = value.ToString();
                 }
             }
