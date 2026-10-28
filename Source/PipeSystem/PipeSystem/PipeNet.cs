@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Runtime.CompilerServices;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -688,16 +688,20 @@ namespace PipeSystem
             }
         }
 
-        [Obsolete] // Remove in 1.7
+        // Remove in next mod-breaking update, overloads will already handle this (with default arguments)
+        [Obsolete($"Use overloads with default arguments. Should be automatically handled by {nameof(OverloadResolutionPriorityAttribute)} on next recompile.")]
+        [OverloadResolutionPriority(-100)]
         public void DistributeAmongStorage(float amount) => DistributeAmongStorage(amount, out _);
 
-        // Remove in 1.7, overloads will already handle this (with default arguments)
+        // Remove in next mod-breaking update, overloads will already handle this (with default arguments)
         /// <summary>
         /// Add resource to storage.
         /// </summary>
         /// <param name="amount">Amount to add</param>
         /// <param name="stored">Amount successfully stored</param>
-        public void DistributeAmongStorage(float amount, out float stored) => DistributeAmongStorage(amount, out stored, null);
+        [Obsolete($"Use overloads with default arguments. Should be automatically handled by {nameof(OverloadResolutionPriorityAttribute)} on next recompile.")]
+        [OverloadResolutionPriority(-100)]
+        public void DistributeAmongStorage(float amount, out float stored) => DistributeAmongStorage(amount, out stored);
 
         /// <summary>
         /// Add resource to storage.
