@@ -26,6 +26,7 @@ namespace PipeSystem
         private ThingWithComps parent;                          // Parent thing
         private ProcessDef def;                                 // Process def
         public int tickLeft;                                   // Ticks left before produce
+        private int currentResult = 0;                          // Currently handled result, in case one of them fails to spawn
         public bool pickUpReady;                               // Is it ready to pick-up
         private float progress;                                 // Progress percent
 
@@ -313,6 +314,7 @@ namespace PipeSystem
 
             Scribe_Values.Look(ref id, "id");
             Scribe_Values.Look(ref tickLeft, "tickLeft");
+            Scribe_Values.Look(ref currentResult, "currentResult");
             Scribe_Values.Look(ref progress, "progress");
             Scribe_Values.Look(ref spawning, "spawning");
             Scribe_Values.Look(ref suspended, "suspended");
@@ -836,14 +838,13 @@ namespace PipeSystem
         /// <param name="extractor">Pawn extracint result</param>
         public void SpawnOrPushToNet(IntVec3 spawnPos, out List<Thing> outThings, Pawn extractor = null)
         {
-
             // Thing created, in case it's not pushed to net
             outThings = new List<Thing>();
-            for (int i = 0; i < def.results.Count; i++)
+            for (; currentResult < def.results.Count; currentResult++)
             {
-                var result = def.results[i];
+                var result = def.results[currentResult];
                 var resComp = resultsCompResources.Find(c => c.Props.pipeNet == result.pipeNet);
-                bool pushedToNet = false;
+                var success = false;
                 // If it can directly go into the net
                 if (result.pipeNet != null && resComp != null && resComp.PipeNet is PipeNet net && net.connectors.Count > 1)
                 {
@@ -852,30 +853,25 @@ namespace PipeSystem
                     if (net.AvailableCapacity > count)
                     {
                         net.DistributeAmongStorage(count, out _);
-                        pushedToNet = true;
+                        success = true;
                     }
                     // No storage but converters
                     else if (net.ThingConvertersMaxOutput >= count)
                     {
                         net.DistributeAmongConverters(count, false);
-                        pushedToNet = true;
+                        success = true;
                     }
                     // No storage/converter, try refuel connected things
                     else if (net.RefillableAmount >= count)
                     {
                         net.DistributeAmongRefillables(count, false);
-                        pushedToNet = true;
-                    }
-                    // Nowhere to put the result, wait until there is room unless output on ground is on
-                    else if (!(spawning && (extractor != null || advancedProcessor.outputOnGround)))
-                    {
-                        tickLeft = 1;
-                        return;
+                        success = true;
                     }
                 }
+
                 // If can't go into net and should/can spawn
                 // Bypass ground setting if thing can't be put in net
-                if (!pushedToNet && spawning && result.GetOutput(this) is ThingDef output && (extractor != null || advancedProcessor.outputOnGround || result.pipeNet == null))
+                if (!success && spawning && result.GetOutput(this) is ThingDef output && (extractor != null || advancedProcessor.outputOnGround || result.pipeNet == null))
                 {
                     var map = parent.Map;
                     // If defined outputCellOffset
@@ -898,8 +894,17 @@ namespace PipeSystem
                     }
                     else { return; }
 
+                    success = true;
+                }
+
+                // Nothing was spawned, try again later
+                if (!success)
+                {
+                    tickLeft = 1;
+                    return;
                 }
             }
+
             this.parent.Map.resourceCounter.UpdateResourceCounts();
             ResetProcess();
             Notify_Ended();
@@ -1136,6 +1141,7 @@ namespace PipeSystem
             pickUpReady = false;    // Reset pickup status
             ruinedPercent = 0;      // Reset ruining status
             progress = 0;           // Reset progress
+            currentResult = 0;      // Reset currently processed result
 
 
             // If finished normaly, increment process count, produce wastepack
