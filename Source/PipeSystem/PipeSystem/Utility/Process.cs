@@ -889,12 +889,14 @@ namespace PipeSystem
                     {
                         for (int j = 0; j < adjCells.Count; j++)
                         {
-                            if (SpawnResultAt(result, adjCells[j], map, ref outThings)) { break; }
+                            if (SpawnResultAt(result, adjCells[j], map, ref outThings))
+                            {
+                                success = true;
+                                break;
+                            }
                         }
                     }
                     else { return; }
-
-                    success = true;
                 }
 
                 // Nothing was spawned, try again later
