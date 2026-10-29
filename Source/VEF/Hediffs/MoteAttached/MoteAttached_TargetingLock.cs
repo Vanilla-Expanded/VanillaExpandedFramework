@@ -59,6 +59,28 @@ namespace VEF.Hediffs
 
         public float aimProgress = -1f;
 
+        public static void Maintain(ref MoteAttached_TargetingLockDynamic mote, Thing shooter, Thing target,
+            HediffCompProperties_Targeting props, float aimProgress)
+        {
+            if (mote is null || mote.Destroyed || mote.link1.Target.Thing != target)
+            {
+                if (mote?.Destroyed is false)
+                {
+                    mote.Destroy();
+                }
+                mote = (MoteAttached_TargetingLockDynamic)MoteMaker.MakeAttachedOverlay(target, props.targetingMote, Vector3.zero, props.initialTargetingMoteScale);
+                mote.shooter = shooter;
+                mote.targetingProps = props;
+                if (shooter.HostileTo(Faction.OfPlayer))
+                {
+                    mote.colorOverride = props.HostileColor(props.targetingMote.graphicData.color);
+                }
+            }
+            mote.lockProgress = 1f - aimProgress;
+            mote.aimProgress = aimProgress;
+            mote.Maintain();
+        }
+
         protected override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
             if (lockProgress >= 0f)
