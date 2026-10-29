@@ -1,3 +1,4 @@
+using System.Linq;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -18,7 +19,59 @@ namespace VEF.Hediffs
         public float targetingLineWidth = 0.2f;
         public bool maintainLockAfterShot;
         public bool skipTargetLock;
+
+        public GraphicData aimingGraphicData;
+
+        public float hostileColorFactor = 1f;
+
+        private Material targetingLine;
+        private Material hostileTargetingLine;
+        private MaterialPropertyBlock aimingPropertyBlock;
+
         public HediffCompProperties_Targeting() => compClass = typeof(HediffComp_Targeting);
+
+        public Color HostileColor(Color color) => new Color(color.r * hostileColorFactor, color.g * hostileColorFactor, color.b * hostileColorFactor, color.a);
+
+        public Material TargetingLine(bool hostile)
+        {
+            if (hostile)
+            {
+                hostileTargetingLine ??= MaterialPool.MatFrom(targetingLineTexPath, ShaderDatabase.Transparent, HostileColor(targetingLineColor));
+                return hostileTargetingLine;
+            }
+            targetingLine ??= MaterialPool.MatFrom(targetingLineTexPath, ShaderDatabase.Transparent, targetingLineColor);
+            return targetingLine;
+        }
+
+        public void DrawLockEffects(Vector3 from, Vector3 to, float aimProgress, bool hostile)
+        {
+            from.y = to.y = AltitudeLayer.MetaOverlays.AltitudeFor();
+            if (!targetingLineTexPath.NullOrEmpty())
+            {
+                GenDraw.DrawLineBetween(from, to, TargetingLine(hostile), targetingLineWidth);
+            }
+            if (aimingGraphicData is not null)
+            {
+                DrawAiming(from, to, aimProgress, hostile);
+            }
+        }
+
+        private void DrawAiming(Vector3 from, Vector3 to, float aimProgress, bool hostile)
+        {
+            var length = (to - from).MagnitudeHorizontal();
+            if (length < 0.01f)
+            {
+                return;
+            }
+            var pos = (from + to) * 0.5f;
+            pos.y = AltitudeLayer.MoteOverhead.AltitudeFor();
+            var rotation = Quaternion.AngleAxis(from.AngleToFlat(to) + 90f, Vector3.up);
+            var matrix = Matrix4x4.TRS(pos, rotation, new Vector3(aimingGraphicData.drawSize.x, 1f, length));
+            aimingPropertyBlock ??= new MaterialPropertyBlock();
+            aimingPropertyBlock.SetColor(ShaderPropertyIDs.Color, hostile ? HostileColor(aimingGraphicData.color) : aimingGraphicData.color);
+            aimingPropertyBlock.SetFloat(ShaderPropertyIDs.AgeSecs, aimProgress);
+            UnityEngine.Graphics.DrawMesh(MeshPool.plane10, matrix, aimingGraphicData.Graphic.MatSingle, 0, null, 0, aimingPropertyBlock);
+        }
     }
 
     public class HediffComp_Targeting : HediffComp
@@ -27,17 +80,13 @@ namespace VEF.Hediffs
         public Thing lockedTarget;
         public HediffCompProperties_Targeting Props => base.props as HediffCompProperties_Targeting;
 
-        private Material targetingLine;
-        public Material TargetingLine
-        {
-            get
-            {
-                targetingLine ??= MaterialPool.MatFrom(Props.targetingLineTexPath, ShaderDatabase.Transparent, Props.targetingLineColor);
-                return targetingLine;
-            }
-        }
+        public Material TargetingLine => Props.TargetingLine(Hostile);
 
         public bool LockMaintained => Props.maintainLockAfterShot && lockedTarget is not null;
+
+        public bool Hostile => Pawn.HostileTo(Faction.OfPlayer);
+
+        public static bool SkipsTargetLock(Pawn target) => target.health.hediffSet.hediffs.Any(hediff => hediff.TryGetComp<HediffComp_Targeting>()?.Props.skipTargetLock is true);
 
         public static Vector3 WeaponDrawPos(Pawn pawn, Vector3 targetPos)
         {
@@ -54,14 +103,18 @@ namespace VEF.Hediffs
 
         public void DrawTargetingEffects(LocalTargetInfo target)
         {
-            if (!Props.targetingLineTexPath.NullOrEmpty())
+            if (target.HasThing && mote is MoteAttached_TargetingLockDynamic lockMote && lockMote.Destroyed is false && lockMote.link1.Target.Thing == target.Thing)
             {
-                Vector3 b = target.HasThing is false ? target.Cell.ToVector3Shifted() : target.Thing.TrueCenter();
-                var a = WeaponDrawPos(Pawn, b);
-                b.y = AltitudeLayer.MetaOverlays.AltitudeFor();
-                a.y = b.y;
-                GenDraw.DrawLineBetween(a, b, TargetingLine, Props.targetingLineWidth);
+                return;
             }
+            var targetPos = target.HasThing is false ? target.Cell.ToVector3Shifted() : target.Thing.TrueCenter();
+            var aimProgress = Pawn.stances.curStance is Stance_Warmup stance ? AimProgress(stance) : 1f;
+            DrawLockEffects(targetPos, aimProgress);
+        }
+
+        public void DrawLockEffects(Vector3 targetPos, float aimProgress)
+        {
+            Props.DrawLockEffects(WeaponDrawPos(Pawn, targetPos), targetPos, aimProgress, Hostile);
         }
 
         public void NotifyShotFired(LocalTargetInfo target)
@@ -108,6 +161,7 @@ namespace VEF.Hediffs
                 if (mote is MoteAttached_TargetingLockDynamic lockMote)
                 {
                     lockMote.lockProgress = lockHeld ? 0f : progress;
+                    lockMote.aimProgress = AimProgress(stance);
                 }
                 else if (lockHeld)
                 {
@@ -126,6 +180,7 @@ namespace VEF.Hediffs
                 if (mote is MoteAttached_TargetingLockDynamic lockMote)
                 {
                     lockMote.lockProgress = 0f;
+                    lockMote.aimProgress = 1f;
                 }
                 mote.Maintain();
             }
@@ -144,9 +199,14 @@ namespace VEF.Hediffs
             mote = target.HasThing
                 ? MoteMaker.MakeAttachedOverlay(target.Thing, Props.targetingMote, Vector3.zero, Props.initialTargetingMoteScale)
                 : MakeStaticMote(target.CenterVector3, Pawn.Map, Props.targetingMote, Props.initialTargetingMoteScale);
+            if (mote is MoteAttached_TargetingLock targetingLock && Hostile)
+            {
+                targetingLock.colorOverride = Props.HostileColor(Props.targetingMote.graphicData.color);
+            }
             if (mote is MoteAttached_TargetingLockDynamic dynamicLock)
             {
-                dynamicLock.lockComp = this;
+                dynamicLock.shooter = Pawn;
+                dynamicLock.targetingProps = Props;
             }
         }
 
@@ -155,6 +215,17 @@ namespace VEF.Hediffs
             var statValue = Pawn.GetStatValue(StatDefOf.AimingDelayFactor);
             var ticks = (stance.verb.verbProps.warmupTime * statValue).SecondsToTicks();
             return (float)stance.ticksLeft / (float)ticks;
+        }
+
+        private float AimProgress(Stance_Warmup stance)
+        {
+            if (LockMaintained && stance.focusTarg.Thing == lockedTarget)
+            {
+                return 1f;
+            }
+            var elapsed = Find.TickManager.TicksGame - stance.startedTick;
+            var total = elapsed + stance.ticksLeft;
+            return total > 0 ? (float)elapsed / total : 1f;
         }
 
         private float LockRange()

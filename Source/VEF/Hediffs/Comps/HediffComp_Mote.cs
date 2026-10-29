@@ -25,16 +25,14 @@ namespace VEF.Hediffs
             {
                 mote = MoteMaker.MakeAttachedOverlay(this.Pawn, Props.mote, Vector3.zero, Props.scale);
             }
-            else
-            {
-                mote.Maintain();
-            }
+
+            mote.Maintain();
         }
 
         public override void CompPostPostRemoved()
         {
             base.CompPostPostRemoved();
-            if (mote != null)
+            if (mote?.Destroyed is false)
             {
                 mote.Destroy();
             }

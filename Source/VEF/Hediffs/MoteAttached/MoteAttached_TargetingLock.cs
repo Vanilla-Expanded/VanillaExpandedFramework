@@ -1,4 +1,5 @@
 using System;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -8,6 +9,12 @@ namespace VEF.Hediffs
     public class MoteAttached_TargetingLock : MoteAttached
     {
         public float lockProgress = -1f;
+        public Color? colorOverride;
+        private Graphic coloredGraphic;
+
+        private Graphic LockGraphic => colorOverride is { } color
+            ? coloredGraphic ??= Graphic.GetColoredVersion(Graphic.Shader, color, Graphic.ColorTwo)
+            : Graphic;
 
         // gets called by a harmony patch
         public void DrawTargetingLock(float progress)
@@ -21,7 +28,7 @@ namespace VEF.Hediffs
                 var drawPos = oldPos + offset;
                 this.exactPosition = drawPos;
 				this.exactPosition.y = AltitudeLayer.MoteOverhead.AltitudeFor();
-				Graphic.Draw(drawPos, Rotation, this, exactRotation);
+                LockGraphic.Draw(drawPos, Rotation, this, exactRotation);
             }
             this.exactRotation = oldRot;
             this.exactPosition = oldPos;
@@ -47,20 +54,22 @@ namespace VEF.Hediffs
 
     public class MoteAttached_TargetingLockDynamic : MoteAttached_TargetingLock
     {
-        public HediffComp_Targeting lockComp;
+        public Thing shooter;
+        public HediffCompProperties_Targeting targetingProps;
+
+        public float aimProgress = -1f;
 
         protected override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
             if (lockProgress >= 0f)
             {
                 DrawTargetingLock(lockProgress);
-                if (lockComp?.LockMaintained == true && lockComp.Pawn.Spawned)
+
+                if (aimProgress >= 0f && shooter?.Spawned is true)
                 {
-                    Vector3 b = link1.LastDrawPos;
-                    Vector3 a = HediffComp_Targeting.WeaponDrawPos(lockComp.Pawn, b);
-                    a.y = AltitudeLayer.MetaOverlays.AltitudeFor();
-                    b.y = a.y;
-                    GenDraw.DrawLineBetween(a, b, lockComp.TargetingLine, lockComp.Props.targetingLineWidth);
+                    var targetPos = link1.LastDrawPos;
+                    var from = shooter is Pawn pawn ? HediffComp_Targeting.WeaponDrawPos(pawn, targetPos) : shooter.DrawPos;
+                    targetingProps.DrawLockEffects(from, targetPos, aimProgress, shooter.HostileTo(Faction.OfPlayer));
                 }
             }
         }

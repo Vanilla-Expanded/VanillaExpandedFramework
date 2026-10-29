@@ -34,7 +34,7 @@ namespace VEF.Hediffs
                 }
                 lockComp.DropLock();
             }
-            if (target.health.hediffSet.hediffs.Any(hediff => hediff.TryGetComp<HediffComp_Targeting>()?.Props.skipTargetLock == true))
+            if (HediffComp_Targeting.SkipsTargetLock(target))
             {
                 return;
             }
