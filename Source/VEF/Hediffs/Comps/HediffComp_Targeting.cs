@@ -36,10 +36,10 @@ namespace VEF.Hediffs
         {
             if (hostile)
             {
-                hostileTargetingLine ??= MaterialPool.MatFrom(targetingLineTexPath, ShaderDatabase.Transparent, HostileColor(targetingLineColor));
+                hostileTargetingLine ??= MaterialPool.MatFrom(targetingLineTexPath, ShaderDatabase.TransparentPostLight, HostileColor(targetingLineColor));
                 return hostileTargetingLine;
             }
-            targetingLine ??= MaterialPool.MatFrom(targetingLineTexPath, ShaderDatabase.Transparent, targetingLineColor);
+            targetingLine ??= MaterialPool.MatFrom(targetingLineTexPath, ShaderDatabase.TransparentPostLight, targetingLineColor);
             return targetingLine;
         }
 
