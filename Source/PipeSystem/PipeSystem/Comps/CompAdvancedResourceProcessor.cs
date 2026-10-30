@@ -408,8 +408,8 @@ namespace PipeSystem
         /// </summary>
         public override void CompTickInterval(int delta)
         {
-            if (parent.IsHashIntervalTick(100, delta))
-                Tick(100);
+            if (parent.IsHashIntervalTick(PipeNetManager.PipeNetTickInterval, delta))
+                Tick(PipeNetManager.PipeNetTickInterval);
         }
 
         /// <summary>

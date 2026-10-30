@@ -173,7 +173,7 @@ namespace PipeSystem
                 pipeNetOverlayDrawer?.TogglePulsing(parent, Props.pipeNet.offMat, false);
 
                 // Only distribute once per pipe net tick at most
-                if (parent.IsHashIntervalTick(100))
+                if (parent.IsHashIntervalTick(PipeNetManager.PipeNetTickInterval))
                     SpawnOrPushToNet();
 
                 // Sound

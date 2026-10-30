@@ -108,7 +108,7 @@ namespace PipeSystem
             }
             else
             {
-                sb.Append("PipeSystem_ExcessStored".Translate(net.def.resource.name, $"{PipeNet.def.FormatResourceAmount(((net.VisualProduction - net.VisualConsumption) / 100 * GenDate.TicksPerDay) + net.ExtractorRawProduction, this)}", $"{PipeNet.def.FormatResourceAmount(net.Stored, this)}", res.unit));
+                sb.Append("PipeSystem_ExcessStored".Translate(net.def.resource.name, $"{PipeNet.def.FormatResourceAmount(((net.VisualProduction - net.VisualConsumption) / PipeNetManager.PipeNetTickInterval * GenDate.TicksPerDay) + net.ExtractorRawProduction, this)}", $"{PipeNet.def.FormatResourceAmount(net.Stored, this)}", res.unit));
             }
             sb.AppendInNewLine(base.CompInspectStringExtra());
 

@@ -6,6 +6,8 @@ namespace PipeSystem
 {
     public class PipeNetManager : MapComponent
     {
+        public const int PipeNetTickInterval = 100;
+
         // Cache wanting refill for performance
         public HashSet<Thing> wantRefill = new HashSet<Thing>();
         // All map nets
@@ -56,7 +58,7 @@ namespace PipeSystem
                 if (net.NextTick <= tick)
                 {
                     net.PipeSystemTick();
-                    net.NextTick = tick + 100;
+                    net.NextTick = tick + PipeNetTickInterval;
                 }
             }
         }
