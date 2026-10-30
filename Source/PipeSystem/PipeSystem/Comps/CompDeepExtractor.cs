@@ -49,7 +49,7 @@ namespace PipeSystem
 
             adjCells = GenAdj.CellsAdjacent8Way(parent).ToList();
 
-            rawProductionPerDay = (GenDate.TicksPerDay / Props.ticksPerPortion) * (Props.useDeepCountPerPortion ? Props.deepThing.deepCountPerPortion : 1);
+            rawProductionPerDay = ((float)GenDate.TicksPerDay / Props.ticksPerPortion) * (Props.useDeepCountPerPortion ? Props.deepThing.deepCountPerPortion : 1);
             rawProductionPerTick = rawProductionPerDay / GenDate.TicksPerDay;
 
             // Get the cells
