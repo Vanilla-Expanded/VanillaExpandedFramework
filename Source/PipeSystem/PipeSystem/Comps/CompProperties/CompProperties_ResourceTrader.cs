@@ -8,6 +8,10 @@ namespace PipeSystem
     {
         public float consumptionPerTick;
         public float idleConsumptionPerTick = -1f;
+        // Consumption per day. If set, it'll be used to set consumptionPerTick value from it. Unused otherwise.
+        protected float consumptionPerDay = 0f;
+        // Idle consumption per day. If set, it'll be used to set idleConsumptionPerTick value from it. Unused otherwise.
+        protected float idleConsumptionPerDay = -1f;
         // Should the overlay for resource being off be drawn (if flicked off, etc.)
         public bool resourceOffOverlay = true;
         // If true, the consumption/production will be disabled (to be handled manually), but its value will still be included in the network stats.
@@ -42,8 +46,14 @@ namespace PipeSystem
         public override void ResolveReferences(ThingDef parentDef)
         {
             base.ResolveReferences(parentDef);
+
             nameCapitalized = Resource.name.CapitalizeFirst();
             nameLowered = Resource.name.ToLower();
+
+            if (consumptionPerDay != 0f)
+                consumptionPerTick = consumptionPerDay / GenDate.TicksPerDay * PipeNetManager.PipeNetTickInterval;
+            if (idleConsumptionPerDay < 0f)
+                idleConsumptionPerTick = idleConsumptionPerDay / GenDate.TicksPerDay * PipeNetManager.PipeNetTickInterval;
 
             EverHasLowPowerMode = InitializeEverHasLowPowerMode(parentDef);
         }
