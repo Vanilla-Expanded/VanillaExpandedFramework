@@ -45,6 +45,8 @@ namespace PipeSystem
         internal Texture2D uiIcon; // Resource icon from resource.uiIconPath
         [Unsaved]
         internal string loweredName; // Resource name lowered
+        [Unsaved]
+        internal string capitalizedName; // Resource name capitalized
 
         public ResourceAmountFormatWorker ResourceAmountFormatWorker
         {
@@ -90,6 +92,7 @@ namespace PipeSystem
         {
             base.ResolveReferences();
             loweredName = resource.name.ToLower();
+            capitalizedName = resource.name.CapitalizeFirst();
         }
 
         /// <summary>

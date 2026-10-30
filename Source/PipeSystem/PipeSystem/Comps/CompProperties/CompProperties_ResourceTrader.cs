@@ -29,9 +29,6 @@ namespace PipeSystem
 
         public SoundDef soundAmbientReceivingResource;
 
-        private string nameCapitalized;
-        private string nameLowered;
-
         /// <summary>
         /// Determines if a producer/consumer ever has a low power mode.
         /// This uses value provided by <see cref="InitializeEverHasLowPowerMode"/>, cached during <see cref="ResolveReferences"/> call.
@@ -46,9 +43,6 @@ namespace PipeSystem
         public override void ResolveReferences(ThingDef parentDef)
         {
             base.ResolveReferences(parentDef);
-
-            nameCapitalized = Resource.name.CapitalizeFirst();
-            nameLowered = Resource.name.ToLower();
 
             if (consumptionPerDay != 0f)
                 consumptionPerTick = consumptionPerDay / GenDate.TicksPerDay * PipeNetManager.PipeNetTickInterval;
@@ -68,26 +62,26 @@ namespace PipeSystem
             if (consumptionPerTick > 0f)
             {
                 yield return new StatDrawEntry(StatCategoryDefOf.Building,
-                                               "PipeSystem_Consumption".Translate(nameCapitalized),
-                                               $"{pipeNet.ResourceAmountFormatWorker.FormatResourceAmount(consumptionPerTick / 100 * GenDate.TicksPerDay, pipeNet, comp)} {unit}/d",
-                                               "PipeSystem_ConsumptionExplained".Translate(nameLowered, nameLowered),
+                                               "PipeSystem_Consumption".Translate(pipeNet.capitalizedName),
+                                               $"{pipeNet.ResourceAmountFormatWorker.FormatResourceAmount(consumptionPerTick / PipeNetManager.PipeNetTickInterval * GenDate.TicksPerDay, pipeNet, comp)} {unit}/d",
+                                               "PipeSystem_ConsumptionExplained".Translate(pipeNet.loweredName, pipeNet.loweredName),
                                                5500);
 
                 if (idleConsumptionPerTick >= 0f)
                 {
                     yield return new StatDrawEntry(StatCategoryDefOf.Building,
-                                                   "PipeSystem_IdleConsumption".Translate(nameCapitalized),
-                                                   $"{pipeNet.ResourceAmountFormatWorker.FormatResourceAmount(idleConsumptionPerTick / 100 * GenDate.TicksPerDay, pipeNet, comp)} {unit}/d",
-                                                   "PipeSystem_IdleConsumptionExplained".Translate(nameLowered, nameLowered),
+                                                   "PipeSystem_IdleConsumption".Translate(pipeNet.capitalizedName),
+                                                   $"{pipeNet.ResourceAmountFormatWorker.FormatResourceAmount(idleConsumptionPerTick / PipeNetManager.PipeNetTickInterval * GenDate.TicksPerDay, pipeNet, comp)} {unit}/d",
+                                                   "PipeSystem_IdleConsumptionExplained".Translate(pipeNet.loweredName, pipeNet.loweredName),
                                                    5500);
                 }
             }
             else
             {
                 yield return new StatDrawEntry(StatCategoryDefOf.Building,
-                                               "PipeSystem_Production".Translate(nameCapitalized),
-                                               $"{pipeNet.ResourceAmountFormatWorker.FormatResourceAmount((-consumptionPerTick / 100) * GenDate.TicksPerDay, pipeNet, comp)} {unit}/d",
-                                               "PipeSystem_ProductionExplained".Translate(nameLowered, nameLowered),
+                                               "PipeSystem_Production".Translate(pipeNet.capitalizedName),
+                                               $"{pipeNet.ResourceAmountFormatWorker.FormatResourceAmount((-consumptionPerTick / PipeNetManager.PipeNetTickInterval) * GenDate.TicksPerDay, pipeNet, comp)} {unit}/d",
+                                               "PipeSystem_ProductionExplained".Translate(pipeNet.loweredName, pipeNet.loweredName),
                                                5500);
             }
         }
