@@ -14,6 +14,7 @@ namespace PipeSystem
 
         public PipeNetDef pipeNet;
         public SoundDef soundAmbient;
+        public bool displayBasicInspectStringData = true;
 
         public override IEnumerable<string> ConfigErrors(ThingDef parentDef)
         {

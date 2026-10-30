@@ -93,6 +93,9 @@ namespace PipeSystem
         /// </summary>
         public override string CompInspectStringExtra()
         {
+            if (!Props.displayBasicInspectStringData)
+                return string.Empty;
+
             StringBuilder sb = new StringBuilder();
             if (PipeNet == null)
             {
