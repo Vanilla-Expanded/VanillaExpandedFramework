@@ -46,7 +46,7 @@ namespace PipeSystem
 
             if (consumptionPerDay != 0f)
                 consumptionPerTick = consumptionPerDay / GenDate.TicksPerDay * PipeNetManager.PipeNetTickInterval;
-            if (idleConsumptionPerDay < 0f)
+            if (idleConsumptionPerDay >= 0f)
                 idleConsumptionPerTick = idleConsumptionPerDay / GenDate.TicksPerDay * PipeNetManager.PipeNetTickInterval;
 
             EverHasLowPowerMode = InitializeEverHasLowPowerMode(parentDef);
