@@ -39,7 +39,8 @@ namespace VEF.AnimalGenes
             harm.Patch(AccessTools.Method(typeof(Hediff_Pregnant), "DoBirthSpawn"),
                 transpiler: new HarmonyMethod(typeof(VEF_AnimalGenes_Hediff_Pregnant_DoBirthSpawn_Patch), "AddCrossbreedGenes"));
 
-
+            harm.Patch(AccessTools.Method(typeof(AutoSlaughterManager), "CanEverAutoSlaughter"),
+             postfix: new HarmonyMethod(typeof(VEF_AnimalGenes_AutoSlaughterManager_CanEverAutoSlaughter_Patch), "ToggleAutoSlaughter"));
         }
     }
 }

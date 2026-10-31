@@ -25,6 +25,8 @@
 	<VRE_StillbornDesc>Your {0}, {1} gave birth to a stillborn offspring.</VRE_StillbornDesc>
 	<VRE_SpecializedGene>Specialized gene</VRE_SpecializedGene>
 	<VRE_SpecializedGeneDesc>This gene is only inherited by offspring whose feratype contains a gene from this family.</VRE_SpecializedGeneDesc>
+	<VRE_PreventSlaughter>Prevent slaughter</VRE_PreventSlaughter>
+	<VRE_PreventSlaughterDesc>Prevent this animal from being slaughtered by the slaughter designation and the auto-slaughter system.</VRE_PreventSlaughterDesc>
 
 	
 	

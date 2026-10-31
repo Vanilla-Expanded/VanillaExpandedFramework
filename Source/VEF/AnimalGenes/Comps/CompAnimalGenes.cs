@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using RimWorld;
+using UnityEngine;
 using VEF.AnimalGenes;
 using Verse;
 using Verse.AI;
@@ -17,6 +18,7 @@ namespace VEF.AnimalGenes
         public int soloTicks;
         public int ticksSinceLastDisease = 0;
         public bool active = true;
+        public bool autoslaughterActive = false;
 
         public CompProperties_AnimalGenes Props => (CompProperties_AnimalGenes)props;
 
@@ -88,6 +90,7 @@ namespace VEF.AnimalGenes
             Scribe_Collections.Look(ref genes, "animalGenes", LookMode.Def);
             Scribe_Values.Look(ref isAlpha, "isAlpha", false);
             Scribe_Values.Look(ref soloTicks, "soloTicks", 0);
+            Scribe_Values.Look(ref autoslaughterActive, "autoslaughterActive", false);
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 if (genes.NullOrEmpty())
@@ -115,6 +118,22 @@ namespace VEF.AnimalGenes
                 yield return item;
             }
 
+            if(parent is Pawn pawn && pawn.IsColonyAnimal)
+            {
+                Command_Toggle command_Toggle = new Command_Toggle();
+                command_Toggle.defaultLabel = "VRE_PreventSlaughter".Translate();
+                command_Toggle.defaultDesc = "VRE_PreventSlaughterDesc".Translate();
+                command_Toggle.icon = ContentFinder<Texture2D>.Get("UI/Gizmo/PreventSlaughter", true);
+              
+                command_Toggle.isActive = () => autoslaughterActive;
+                command_Toggle.toggleAction = delegate
+                {
+                    autoslaughterActive = !autoslaughterActive;
+
+                };
+                yield return command_Toggle;
+            }
+            
             if (DebugSettings.ShowDevGizmos)
             {
 
