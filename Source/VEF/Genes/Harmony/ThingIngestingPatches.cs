@@ -11,6 +11,7 @@ public static class ThingIngestingPatches
 {
     public static Pawn pawn;
     public static List<ThingDef> extraHumanMeatDefs;
+    public static List<FoodTypeFlags> extraHumanMeatTypes;
 
     private static IEnumerable<MethodBase> TargetMethods()
     {
@@ -33,6 +34,7 @@ public static class ThingIngestingPatches
             __state = true;
             pawn = ingester;
             StaticCollectionsClass.defs_treated_as_human_meat.TryGetValue(ingester, out extraHumanMeatDefs);
+            StaticCollectionsClass.food_types_treated_as_human_meat.TryGetValue(ingester, out extraHumanMeatTypes);
         }
         else
         {
@@ -47,6 +49,7 @@ public static class ThingIngestingPatches
         {
             pawn = null;
             extraHumanMeatDefs = null;
+            extraHumanMeatTypes = null;
         }
     }
 }

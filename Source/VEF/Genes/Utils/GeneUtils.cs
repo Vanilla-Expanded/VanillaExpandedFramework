@@ -128,6 +128,10 @@ namespace VEF.Genes
                     {
                         StaticCollectionsClass.AddDefsTreatedAsHumanMeatGenePawnToList(gene.pawn, extension.defsTreatedAsHumanMeat);
                     }
+                    if (!extension.foodTypesTreatedAsHumanMeat.NullOrEmpty())
+                    {
+                        StaticCollectionsClass.AddFoodTypesTreatedAsHumanMeatGenePawnToList(gene.pawn, extension.foodTypesTreatedAsHumanMeat);
+                    }
                     if (!extension.defsTreatedAsHumanLeather.NullOrEmpty())
                     {
                         StaticCollectionsClass.AddDefsTreatedAsHumanLeatherGenePawnToList(gene.pawn, extension.defsTreatedAsHumanLeather);
@@ -211,6 +215,10 @@ namespace VEF.Genes
                     if (!extension.defsTreatedAsHumanMeat.NullOrEmpty())
                     {
                         StaticCollectionsClass.RemoveDefsTreatedAsHumanMeatGenePawnFromList(gene.pawn);
+                    }
+                    if (!extension.foodTypesTreatedAsHumanMeat.NullOrEmpty())
+                    {
+                        StaticCollectionsClass.RemoveFoodTypesTreatedAsHumanMeatGenePawnFromList(gene.pawn);
                     }
                     if (!extension.defsTreatedAsHumanLeather.NullOrEmpty())
                     {

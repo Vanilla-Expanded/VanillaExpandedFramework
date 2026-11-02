@@ -9,12 +9,30 @@ public static class VanillaExpandedFramework_FoodUtility_GetMeatSourceCategoryFr
 {
     private static bool Prefix(Thing thing, ref MeatSourceCategory __result)
     {
-        if (ThingIngestingPatches.extraHumanMeatDefs != null &&
-            thing is Corpse corpse &&
-            ThingIngestingPatches.extraHumanMeatDefs.Contains(corpse.InnerPawn.RaceProps.meatDef))
+        if (thing is Corpse corpse)
         {
-            __result = MeatSourceCategory.Humanlike;
-            return false;
+            if (ThingIngestingPatches.extraHumanMeatDefs != null &&
+                ThingIngestingPatches.extraHumanMeatDefs.Contains(corpse.InnerPawn.RaceProps.meatDef))
+            {
+                __result = MeatSourceCategory.Humanlike;
+                return false;
+            }
+
+            if (ThingIngestingPatches.extraHumanMeatTypes != null)
+            {
+                var meat = corpse.InnerPawn.RaceProps.meatDef;
+                if (meat.ingestible != null)
+                {
+                    for (var i = 0; i < ThingIngestingPatches.extraHumanMeatTypes.Count; i++)
+                    {
+                        if (meat.ingestible.foodType.HasFlag(ThingIngestingPatches.extraHumanMeatTypes[i]))
+                        {
+                            __result = MeatSourceCategory.Humanlike;
+                            return false;
+                        }
+                    }
+                }
+            }
         }
 
         return true;

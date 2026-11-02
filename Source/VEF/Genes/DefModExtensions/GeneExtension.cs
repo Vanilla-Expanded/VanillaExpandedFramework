@@ -60,6 +60,8 @@ namespace VEF.Genes
         public ThingDef customLeatherThingDef = null;
         //List of foods considered human meat
         public List<ThingDef> defsTreatedAsHumanMeat = null;
+        // List of food types treated as human meat
+        public List<FoodTypeFlags> foodTypesTreatedAsHumanMeat = null;
         //List of stuff considered human leather
         public List<ThingDef> defsTreatedAsHumanLeather = null;
 

@@ -37,6 +37,8 @@ namespace VEF.Genes
         public static IDictionary<Thing, ThingDef> leather_gene_pawns = new Dictionary<Thing, ThingDef>();
         // A list of pawns considering more food types as cannibalism
         public static IDictionary<Thing, List<ThingDef>> defs_treated_as_human_meat = new Dictionary<Thing, List<ThingDef>>();
+        // A list of pawns considering more food types as cannibalism
+        public static IDictionary<Thing, List<FoodTypeFlags>> food_types_treated_as_human_meat = new Dictionary<Thing, List<FoodTypeFlags>>();
         // A list of pawns considering more leather types as human leather
         public static IDictionary<Thing, List<ThingDef>> defs_treated_as_human_leather = new Dictionary<Thing, List<ThingDef>>();
         // A list of pawns containing blood changing genes
@@ -122,6 +124,22 @@ namespace VEF.Genes
             if (defs_treated_as_human_meat.ContainsKey(thing))
             {
                 defs_treated_as_human_meat.Remove(thing);
+            }
+        }
+
+        public static void AddFoodTypesTreatedAsHumanMeatGenePawnToList(Thing thing, List<FoodTypeFlags> foodTypes)
+        {
+            if (!food_types_treated_as_human_meat.ContainsKey(thing))
+            {
+                food_types_treated_as_human_meat[thing] = foodTypes;
+            }
+        }
+
+        public static void RemoveFoodTypesTreatedAsHumanMeatGenePawnFromList(Thing thing)
+        {
+            if (food_types_treated_as_human_meat.ContainsKey(thing))
+            {
+                food_types_treated_as_human_meat.Remove(thing);
             }
         }
 
@@ -403,6 +421,5 @@ namespace VEF.Genes
             if (entries.Empty)
                 moveSpeedFactorByTerrainTag_gene_pawns.Remove(thing);
         }
-
     }
 }

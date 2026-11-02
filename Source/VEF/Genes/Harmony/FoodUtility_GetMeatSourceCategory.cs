@@ -17,6 +17,18 @@ public static class VanillaExpandedFramework_FoodUtility_GetMeatSourceCategory
             return false;
         }
 
+        if (ThingIngestingPatches.extraHumanMeatTypes != null && source.ingestible != null)
+        {
+            for (var i = 0; i < ThingIngestingPatches.extraHumanMeatTypes.Count; i++)
+            {
+                if (source.ingestible.foodType.HasFlag(ThingIngestingPatches.extraHumanMeatTypes[i]))
+                {
+                    __result = MeatSourceCategory.Humanlike;
+                    return false;
+                }
+            }
+        }
+
         return true;
     }
 }
