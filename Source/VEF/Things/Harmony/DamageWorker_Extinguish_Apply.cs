@@ -16,7 +16,7 @@ public class VanillaExpandedFramework_DamageWorker_Extinguish_Apply_Patch
             Extinguish(victimFire, dinfo);
 
         var attachComp = victim.TryGetComp<CompAttachBase>();
-        if (attachComp != null)
+        if (attachComp?.attachments != null)
         {
             // Reverse for loop, if fire is destroyed we keep looping undisturbed
             for (var i = attachComp.attachments.Count - 1; i >= 0; i--)
