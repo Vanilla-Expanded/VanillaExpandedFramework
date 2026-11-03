@@ -11,7 +11,7 @@ namespace VEF.Weapons;
 [HarmonyPatch]
 public static class JobDriver_ManTurret_FindFuelForTurretLambda_Patch
 {
-    private static bool Prefix() => JobDriver_ManTurret_GunNeedsRefueling_Patch.Prepare();
+    private static bool Prepare() => JobDriver_ManTurret_GunNeedsRefueling_Patch.Prepare();
 
     private static MethodBase TargetMethod()
     {
