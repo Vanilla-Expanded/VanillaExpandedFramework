@@ -274,7 +274,11 @@ namespace PipeSystem
             // Setup FillableBarRequest
             if (Props.showProgressBar)
             {
-                var drawPos = parent.TrueCenter() + Props.progressBarOffset;
+                var drawPos = parent.TrueCenter() + (Props.progressBarOffsetByRotation != null
+                    ? Props.progressBarOffsetByRotation[parent.Rotation.AsInt]
+                    : Props.rotateWithBuilding
+                        ? Props.progressBarOffset.RotatedBy(parent.Rotation)
+                        : Props.progressBarOffset);
                 drawPos.y += 3f / 74f;
                 drawPos.z += 0.25f;
 

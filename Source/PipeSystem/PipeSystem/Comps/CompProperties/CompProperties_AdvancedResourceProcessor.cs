@@ -23,6 +23,7 @@ namespace PipeSystem
         // Progress bar
         public bool showProgressBar = true;
         public Vector3 progressBarOffset = Vector3.zero;
+        public List<Vector3> progressBarOffsetByRotation;
         public float progressBarSizeX = 0.55f;
         public float progressBarSizeY = 0.1f;
         public float progressBarMargin = 0.1f;
