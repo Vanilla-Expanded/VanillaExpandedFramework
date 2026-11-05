@@ -23,9 +23,15 @@ namespace PipeSystem
         // Progress bar
         public bool showProgressBar = true;
         public Vector3 progressBarOffset = Vector3.zero;
+        public float progressBarSizeX = 0.55f;
+        public float progressBarSizeY = 0.1f;
+        public float progressBarMargin = 0.1f;
+        public bool rotateWithBuilding = false;
         // Wastepack bar
         public bool showWastepackBar = true;
         public Vector3 wastepackBarOffset = Vector3.zero;
+        public float wastepackBarSizeX = 0.55f;
+        public float wastepackBarSizeY = 0.1f;
         public bool stopWhenWastepackFull = false;
         // Result icon
         public bool showResultItem = false;

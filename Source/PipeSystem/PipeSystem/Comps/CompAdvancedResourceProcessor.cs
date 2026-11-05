@@ -18,8 +18,7 @@ namespace PipeSystem
     [StaticConstructorOnStartup]
     public class CompAdvancedResourceProcessor : ThingComp
     {
-        private static readonly Vector2 BarSize = new Vector2(0.55f, 0.1f);
-
+        
         private static readonly Material BarUnfilledMat = SolidColorMaterials.SimpleSolidColorMaterial(new Color(0.3f, 0.3f, 0.3f));
 
         private static readonly Material WasteBarFilledMat = SolidColorMaterials.SimpleSolidColorMaterial(new Color(0.9f, 0.85f, 0.2f));
@@ -282,10 +281,10 @@ namespace PipeSystem
                 fillableBarRequest = new GenDraw.FillableBarRequest
                 {
                     center = drawPos,
-                    size = BarSize,
+                    size = new Vector2(Props.progressBarSizeX,Props.progressBarSizeY),
                     unfilledMat = BarUnfilledMat,
-                    margin = 0.1f,
-                    rotation = Rot4.North
+                    margin = Props.progressBarMargin,
+                    rotation = Props.rotateWithBuilding ? parent.Rotation: Rot4.North
                 };
             }
             if (Props.showWastepackBar)
@@ -297,7 +296,7 @@ namespace PipeSystem
                 fillableWasteBar = new GenDraw.FillableBarRequest
                 {
                     center = drawPos,
-                    size = BarSize,
+                    size = new Vector2(Props.wastepackBarSizeX, Props.wastepackBarSizeY),
                     unfilledMat = WasteBarUnfilledMat,
                     filledMat = WasteBarFilledMat,
                     margin = 0.1f,
