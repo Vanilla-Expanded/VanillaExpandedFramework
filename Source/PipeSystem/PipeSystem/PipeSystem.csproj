@@ -1,46 +1,46 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputPath>../../../1.7/Assemblies</OutputPath>
-    <TargetFramework>net10.0</TargetFramework>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <DebugType>None</DebugType>
-    <LangVersion>latest</LangVersion>
-    <Nullable>warnings</Nullable>
-    <GenerateDependencyFile>false</GenerateDependencyFile>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Lib.Harmony">
-      <Version>*</Version>
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </PackageReference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\..\..\..\common\RimWorld\Assembly-CSharp.dll</HintPath>
-      <CopyLocal>false</CopyLocal>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="RimWorld">
-      <HintPath>..\..\..\..\..\RimWorld.dll</HintPath>
-	   <CopyLocal>false</CopyLocal>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityStubs">
-      <HintPath>..\..\..\..\..\UnityStubs.dll</HintPath>
-	   <CopyLocal>false</CopyLocal>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="VEF">
-      <HintPath>..\..\..\1.7\Assemblies\VEF.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Waylith">
-      <HintPath>..\..\..\..\..\Waylith.dll</HintPath>
-	   <CopyLocal>false</CopyLocal>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
-  <Target Name="KillRimWorld" BeforeTargets="Clean;Build">
-    <Exec Command="tasklist /FI &quot;IMAGENAME eq RimWorld.exe&quot; | find /I &quot;RimWorld.exe&quot; &amp;gt;nul &amp;amp;&amp;amp; taskkill /F /IM RimWorld.exe" IgnoreExitCode="true" />
-  </Target>
+	<PropertyGroup>
+		<OutputPath>../../../1.7/Assemblies</OutputPath>
+		<TargetFramework>net10.0</TargetFramework>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		<DebugType>None</DebugType>
+		<LangVersion>latest</LangVersion>
+		<Nullable>warnings</Nullable>
+		<GenerateDependencyFile>false</GenerateDependencyFile>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Lib.Harmony">
+			<Version>*</Version>
+			<ExcludeAssets>runtime</ExcludeAssets>
+		</PackageReference>
+		<Reference Include="Assembly-CSharp">
+			<HintPath>..\..\..\..\..\Assembly-CSharp.dll</HintPath>
+			<CopyLocal>false</CopyLocal>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="RimWorld">
+			<HintPath>..\..\..\..\..\RimWorld.dll</HintPath>
+			<CopyLocal>false</CopyLocal>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="UnityStubs">
+			<HintPath>..\..\..\..\..\UnityStubs.dll</HintPath>
+			<CopyLocal>false</CopyLocal>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="VEF">
+			<HintPath>..\..\..\1.7\Assemblies\VEF.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="Waylith">
+			<HintPath>..\..\..\..\..\Waylith.dll</HintPath>
+			<CopyLocal>false</CopyLocal>
+			<Private>False</Private>
+		</Reference>
+	</ItemGroup>
+	<Target Name="KillRimWorld" BeforeTargets="Clean;Build">
+		<Exec Command="tasklist /FI &quot;IMAGENAME eq RimWorld.exe&quot; | find /I &quot;RimWorld.exe&quot; &amp;gt;nul &amp;amp;&amp;amp; taskkill /F /IM RimWorld.exe" IgnoreExitCode="true"/>
+	</Target>
 </Project>

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using RimWorld;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -6,9 +7,7 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Security.Cryptography;
 using System.Text;
-using RimWorld;
 using UnityEngine;
-
 using Verse;
 using Verse.Noise;
 
@@ -49,6 +48,9 @@ namespace PipeSystem
 
         private List<FloatMenuOption> settingsOptions;          // List of settings
         internal bool outputOnGround = false;                   // Should output on ground
+
+        private Graphic glowerGraphic;
+        private MaterialPropertyBlock propertyBlock;
 
         public Graphic_Single cachedProgressGraphic = null;
         public Graphic_Single cachedFinishedGraphic = null;
@@ -579,6 +581,26 @@ namespace PipeSystem
                     cachedFinishedGraphic_multi.DrawFromDef(vector, this.parent.Rotation, null);
                 }
             }
+
+            if (Props.useProgressGlowShader)
+            {
+                if (!TryGetGlowColor(Process, out var color))
+                    return;
+
+                var data = parent.def.graphicData;
+                glowerGraphic ??= GraphicDatabase.Get<Graphic_Multi>(Props.glowerTexturePath, ShaderDatabase.MoteGlow,
+                    data.drawSize, Color.white, Color.white, data);
+                propertyBlock ??= new MaterialPropertyBlock();
+                propertyBlock.Clear();
+                propertyBlock.SetColor(ShaderPropertyIDs.Color, color);
+
+                var rotation = parent.Rotation;
+                var position = parent.DrawPos + glowerGraphic.DrawOffset(rotation) + Altitudes.AltIncVect;
+                Graphics.DrawMesh(glowerGraphic.MeshAt(rotation), position, glowerGraphic.QuatFromRot(rotation),
+                    glowerGraphic.MatAt(rotation, parent), 0, null, 0, propertyBlock);
+            }
+            
+
         }
 
 
@@ -857,7 +879,17 @@ namespace PipeSystem
             }
         }
 
-       
+        internal bool TryGetGlowColor(Process process, out Color color)
+        {
+            color = default;
+            if (process is null || (process.MissingIngredients && !process.PickUpReady))
+                return false;
+
+            color = Color.Lerp(Props.startColor.ToColor, Props.finishedColor.ToColor, process.Progress);
+            return true;
+        }
+
+
 
     }
 

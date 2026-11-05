@@ -38,7 +38,11 @@ namespace PipeSystem
         // Image changing
         public string inProgressTexture="";
         public string finishedTexture="";
-
+        // Machine progress glow shader
+        public bool useProgressGlowShader = false;
+        public string glowerTexturePath;
+        public ColorInt startColor = new(255, 255, 255);
+        public ColorInt finishedColor = new(255, 255, 255);
         //Advanced processors that can be overclocked
         public bool canOverclock = false;
         public string overclockGizmo;
