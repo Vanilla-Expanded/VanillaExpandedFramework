@@ -8,7 +8,7 @@ public class CustomOverlayWorker(CustomOverlayDef def)
 {
     private static readonly List<Material> EmptyList = [];
 
-    public readonly CustomOverlayDef def = def;
+    public CustomOverlayDef def = def;
 
     /// <summary>
     /// The main material which will be drawn as the overlay.
@@ -32,4 +32,17 @@ public class CustomOverlayWorker(CustomOverlayDef def)
     /// <param name="thing">The thing for which the overlay is being drawn.</param>
     /// <returns>The offset which will be used instead of the default behaviour. Unless overriden, it'll return offset specified by <see cref="CustomOverlayDef.customOffset"/>.</returns>
     public virtual Vector3 CustomOffsetForThing(Thing thing) => def.customOffset;
+
+    /// <summary>
+    /// A method that's called when this worker is attached to a new def. This could happen on a def hot swap if the worker class was unchanged.
+    /// Remember to call the base class or set the def field yourself.
+    /// </summary>
+    /// <param name="newDef">The new def that this worker is attached to.</param>
+    public virtual void OnDefChanged(CustomOverlayDef newDef) => def = newDef;
+
+    /// <summary>
+    /// A method that's called when this worker is no longer attached to a def. This could happen on a def hot swap if the worker class was changed.
+    /// As a precaution, remember to call the base class or set the def to null.
+    /// </summary>
+    public virtual void OnDefLost() => def = null;
 }

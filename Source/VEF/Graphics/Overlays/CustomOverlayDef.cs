@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using RimWorld;
 using UnityEngine;
-using VEF.Maps;
 using Verse;
 
 namespace VEF.Graphics;
 
 public class CustomOverlayDef : Def
 {
+    protected static readonly Dictionary<string, CustomOverlayWorker> cachedWorkers = [];
+
     /// <summary>
     /// The type of the custom worker. Optional.
     /// </summary>
@@ -50,7 +52,19 @@ public class CustomOverlayDef : Def
 
         LongEventHandler.ExecuteWhenFinished(() =>
         {
-            Worker = (CustomOverlayWorker)Activator.CreateInstance(workerClass, this);
+            if (cachedWorkers.TryGetValue(defName, out var worker) && worker != null)
+            {
+                if (worker.GetType() != workerClass)
+                {
+                    worker.OnDefLost();
+                    worker = null;
+                }
+                else worker.OnDefChanged(this);
+            }
+
+            Worker = worker ?? (CustomOverlayWorker)Activator.CreateInstance(workerClass, this);
+            cachedWorkers[defName] = Worker;
+
             // Default to MetaOverlay if not specified
             shaderType ??= ShaderTypeDefOf.MetaOverlay;
             // Init
