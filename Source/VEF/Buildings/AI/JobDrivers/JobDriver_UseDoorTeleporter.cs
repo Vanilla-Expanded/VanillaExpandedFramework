@@ -8,7 +8,7 @@ namespace VEF.Buildings
 {
     public class JobDriver_UseDoorTeleporter : JobDriver
     {
-        public IntVec3 targetCell;
+        public IntVec3 targetCell = IntVec3.Invalid;
         public DoorTeleporter Origin => this.job.targetA.Thing as DoorTeleporter;
         public DoorTeleporter Dest => this.job.globalTarget.Thing as DoorTeleporter;
         public override bool TryMakePreToilReservations(bool errorOnFailed) => true;
@@ -29,14 +29,20 @@ namespace VEF.Buildings
             yield return wait;
             yield return Toils_General.DoAtomic(() =>
             {
-                Origin.Teleport(pawn, this.job.globalTarget.Map, this.targetCell);
+                var map = this.job.globalTarget.Map;
+                if (!this.targetCell.IsValid || !this.targetCell.InBounds(map) || !this.targetCell.Standable(map))
+                {
+                    this.targetCell = CellFinder.StandableCellNear(this.Dest.Position, map, 3f, c => !c.Fogged(map));
+                    if (!this.targetCell.IsValid) this.targetCell = this.Dest.Position;
+                }
+                Origin.Teleport(pawn, map, this.targetCell);
             });
         }
 
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look(ref this.targetCell, nameof(this.targetCell));
+            Scribe_Values.Look(ref this.targetCell, nameof(this.targetCell), IntVec3.Invalid);
         }
     }
 }

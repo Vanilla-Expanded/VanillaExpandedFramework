@@ -1,6 +1,7 @@
 ﻿using System;
 using HarmonyLib;
 using RimWorld;
+using RimWorld.Planet;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -8,6 +9,7 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.AI;
+using Verse.AI.Group;
 using Verse.Sound;
 using Object = UnityEngine.Object;
 
@@ -75,7 +77,7 @@ namespace VEF.Buildings
             this.distortAmount += 0.01f;
             if (this.distortAmount >= 3f) this.distortAmount = 1.5f;
             this.backgroundOffset += Vector2.one * 0.001f;
-            this.RecacheBackground();
+            if (this.ShouldRecacheBackground()) this.RecacheBackground();
             var extension = this.def.GetModExtension<DoorTeleporterExtension>();
             if (extension.sustainer != null)
             {
@@ -92,12 +94,25 @@ namespace VEF.Buildings
             this.sustainer?.Maintain();
         }
 
+        private int lastBackgroundFrame = -1;
+
+        // Only re-blit once per frame, and only while the door is on screen.
+        private bool ShouldRecacheBackground() =>
+            this.lastBackgroundFrame != Time.frameCount
+            && this.Map == Find.CurrentMap
+            && !WorldRendererUtility.WorldSelected
+            && Find.CameraDriver.CurrentViewRect.ExpandedBy(3).Contains(this.Position);
+
         public void RecacheBackground()
         {
             if (this.backgroundMat == null) return;
+            this.lastBackgroundFrame = Time.frameCount;
             var doorMaterials = doorTeleporterMaterials[def];
+            // Blit leaves the destination as the active render target, which would redirect GUI drawing into it.
+            var previous = RenderTexture.active;
             UnityEngine.Graphics.Blit(doorMaterials.backgroundTex, this.background1, Vector2.one, this.backgroundOffset, 0, 0);
             UnityEngine.Graphics.Blit(this.background1, this.background2, doorMaterials.maskMat);
+            RenderTexture.active = previous;
             this.backgroundMat.mainTexture = this.background2;
         }
 
@@ -123,25 +138,38 @@ namespace VEF.Buildings
         {
             if (thing is Pawn pawn)
             {
-                var carriedThing = pawn.carryTracker.CarriedThing;
-                if (carriedThing != null)
+                if (pawn.Map == mapTarget)
                 {
-                    pawn.carryTracker.TryDropCarriedThing(pawn.Position, ThingPlaceMode.Near, out carriedThing);
+                    // Same map: just move the pawn so it keeps its job, lord, duty and carried thing.
+                    pawn.Position = cellTarget;
+                    pawn.Notify_Teleported(endCurrentJob: false);
+                    teleportEffecters.Remove(thing);
+                    return;
+                }
+                var carriedThing = pawn.carryTracker.CarriedThing;
+                if (carriedThing != null && pawn.carryTracker.TryDropCarriedThing(pawn.Position, ThingPlaceMode.Near, out carriedThing))
+                {
                     carriedThing.DeSpawn();
                     GenSpawn.Spawn(carriedThing, cellTarget, mapTarget);
                 }
                 bool drafted = pawn.drafter != null && pawn.Drafted;
                 bool selected = Find.Selector.IsSelected(pawn);
-                pawn.teleporting = true;
+                // ExitMap() treats this as leaving the map (clears mind state, fires "left map" signals),
+                // so despawn and respawn like vanilla skip does.
+                var lord = pawn.GetLord();
                 pawn.ClearAllReservations(false);
-                pawn.ExitMap(false, Rot4.Invalid);
-                pawn.teleporting = false;
+                pawn.DeSpawnOrDeselect();
                 GenSpawn.Spawn(pawn, cellTarget, mapTarget);
+                pawn.Notify_Teleported(endCurrentJob: false);
+                if (lord != null && lord.ownedPawns.Contains(pawn))
+                {
+                    lord.Notify_PawnLost(pawn, PawnLostCondition.ExitedMap);
+                }
                 if (pawn.drafter != null)
                 {
                     pawn.drafter.Drafted = drafted;
                 }
-                if (selected) Find.Selector.Select(pawn);
+                if (selected && pawn.Map == Find.CurrentMap) Find.Selector.Select(pawn);
             }
             else
             {
