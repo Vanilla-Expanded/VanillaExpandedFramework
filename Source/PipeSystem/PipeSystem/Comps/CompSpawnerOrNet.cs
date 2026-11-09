@@ -33,7 +33,22 @@ namespace PipeSystem
             if (!Props.writeTimeLeftToSpawn || (Props.requiresPower && (compPower == null || !compPower.PowerOn)))
                 return base.CompInspectStringExtra();
 
-            return base.CompInspectStringExtra() + "\n" + "NextSpawnedItemIn".Translate(GenLabel.ThingLabel(Props.thingToSpawn, null, Props.spawnCount)).Resolve() + ": " + ticksUntilSpawn.ToStringTicksToPeriod().Colorize(ColoredText.DateTimeColor);
+            var nextSpawnedItemInKey = Props.nextSpawnedItemInKey ?? Props.pipeNet.keyOverrides?.nextSpawnedItemInKey;
+            if (nextSpawnedItemInKey.NullOrEmpty())
+                return $"{base.CompInspectStringExtra()}\n{"NextSpawnedItemIn".Translate(GenLabel.ThingLabel(Props.thingToSpawn, null, Props.spawnCount)).Resolve()}: {ticksUntilSpawn.ToStringTicksToPeriod().Colorize(ColoredText.DateTimeColor)}";
+
+            return $"{base.CompInspectStringExtra()}\n{nextSpawnedItemInKey.Translate([..InspectStringArguments()]).Resolve()}";
+        }
+
+        protected override IEnumerable<NamedArgument> InspectStringArguments()
+        {
+            foreach (var inspectStringArgument in base.InspectStringArguments())
+                yield return inspectStringArgument;
+
+            yield return GenLabel.ThingLabel(Props.thingToSpawn, null, Props.spawnCount).Named("THINGTOSPAWNPROCESSED");
+            yield return Props.thingToSpawn.Named("THINGTOSPAWN");
+            yield return Props.spawnCount.Named("SPAWNCOUNT");
+            yield return ticksUntilSpawn.Named("TICKSUNTILSPAWN");
         }
 
         public override void PostExposeData()

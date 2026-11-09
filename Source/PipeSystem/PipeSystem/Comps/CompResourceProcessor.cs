@@ -228,28 +228,73 @@ namespace PipeSystem
         /// </summary>
         public override string CompInspectStringExtra()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
+            var arguments = InspectStringArguments().ToArray();
+
             sb.AppendInNewLine(base.CompInspectStringExtra());
             // Show storage percentage
             if (Props.showBufferInfo)
             {
-                float percent = storage / ChoosedResult.countNeeded;
+                var percent = storage / ChoosedResult.countNeeded;
                 percent = percent > 1f ? 1f : percent;
-                sb.AppendInNewLine("PipeSystem_ProcessorBuffer".Translate(percent.ToStringPercent()));
+
+                var processorBufferKey = Props.processorBufferKey ?? Props.pipeNet.keyOverrides?.processorBufferKey;
+                if (processorBufferKey.NullOrEmpty())
+                    sb.AppendInNewLine("PipeSystem_ProcessorBuffer".Translate(percent.ToStringPercent()));
+                else
+                    sb.AppendInNewLine(Props.processorBufferKey.Translate(arguments));
             }
             // If can't process anymore, show given key
-            if (cantProcess && Props.notWorkingKey != null)
-                sb.AppendInNewLine(Props.notWorkingKey.Translate());
+            if (cantProcess)
+            {
+                var notWorkingKey = Props.notWorkingKey ?? Props.pipeNet.keyOverrides?.notWorkingKey;
+                if (!notWorkingKey.NullOrEmpty())
+                    sb.AppendInNewLine(notWorkingKey.Translate(arguments));
+            }
             // If working show the thing that will be produced, the amount, and the progress
             if (ChoosedResult.thing != null && Working && storage >= ChoosedResult.countNeeded)
             {
-                sb.AppendInNewLine("PipeSystem_Producing".Translate(
-                    ChoosedResult.thingCount,
-                    ChoosedResult.thing.LabelCap,
-                    (1f - ((nextProcessTick - Find.TickManager.TicksGame) / (float)ChoosedResult.eachTicks)).ToStringPercent()));
+                var producingKey = Props.producingKey ?? Props.pipeNet.keyOverrides?.producingKey;
+                if (producingKey.NullOrEmpty())
+                {
+                    sb.AppendInNewLine("PipeSystem_Producing".Translate(
+                        ChoosedResult.thingCount,
+                        ChoosedResult.thing.LabelCap,
+                        (1f - ((nextProcessTick - Find.TickManager.TicksGame) / (float)ChoosedResult.eachTicks)).ToStringPercent()));
+                }
+                else
+                {
+                    sb.AppendInNewLine(producingKey.Translate(arguments));
+                }
             }
 
             return sb.ToString().Trim();
+        }
+
+        protected override IEnumerable<NamedArgument> InspectStringArguments()
+        {
+            foreach (var inspectStringArgument in base.InspectStringArguments())
+                yield return inspectStringArgument;
+
+            if (ChoosedResult.thing != null)
+            {
+                yield return ChoosedResult.thing.Named("RESULTTHING");
+                yield return ChoosedResult.thingCount.Named("RESULTTHINGCOUNT");
+            }
+            if (ChoosedResult.net != null)
+            {
+                yield return ChoosedResult.net.resource.name.Named("OUTPUTRESOURCENAME");
+                yield return ChoosedResult.net.resource.unit.Named("OUTPUTRESOURCEUNIT");
+                yield return ChoosedResult.net.FormatResourceAmount(ChoosedResult.netCount, this).Named("RESULTNETCOUNT");
+                yield return ChoosedResult.netCount.Named("RESULTNETCOUNTUNFORMATTED");
+            }
+
+            yield return ChoosedResult.eachTicks.Named("RESULTTICKS");
+            yield return (1f - ((nextProcessTick - Find.TickManager.TicksGame) / (float)ChoosedResult.eachTicks)).Named("CYCLEPROGRESS");
+
+            var percent = storage / ChoosedResult.countNeeded;
+            percent = percent > 1f ? 1f : percent;
+            yield return percent.Named("BUFFERFULLNESS");
         }
 
         /// <summary>

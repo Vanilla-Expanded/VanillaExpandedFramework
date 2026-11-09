@@ -12,7 +12,9 @@ namespace PipeSystem
 
         public ThingDef deepThing;
         public int ticksPerPortion = 60;
+        public string resourceLeftKey;
         public string noStorageLeftKey = "PipeSystem_CantExtract";
+        public string noResourcesKey;
         public bool onlyExtractToNet = false;
         public bool onlyExtractToGround = false;
         public bool useDeepCountPerPortion = true;

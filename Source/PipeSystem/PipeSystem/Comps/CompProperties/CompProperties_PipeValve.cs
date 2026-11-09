@@ -8,5 +8,8 @@
         }
 
         public bool alwaysLinkToPipes = false;
+
+        public string valveOpenedKey;
+        public string valveClosedKey;
     }
 }

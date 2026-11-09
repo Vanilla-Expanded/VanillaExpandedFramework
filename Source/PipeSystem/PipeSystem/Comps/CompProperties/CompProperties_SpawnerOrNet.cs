@@ -14,6 +14,7 @@ namespace PipeSystem
         public int spawnMaxAdjacent = -1;
         public ThingDef thingToSpawn;
         public bool writeTimeLeftToSpawn;
+        public string nextSpawnedItemInKey;
 
         public CompProperties_SpawnerOrNet() => compClass = typeof(CompSpawnerOrNet);
     }

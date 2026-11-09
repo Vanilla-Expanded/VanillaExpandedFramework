@@ -1,6 +1,7 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using RimWorld;
-using UnityEngine;
 using Verse;
 using Verse.Sound;
 
@@ -171,14 +172,24 @@ namespace PipeSystem
         /// </summary>
         public override string CompInspectStringExtra()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
+            var arguments = InspectStringArguments().ToArray();
+
             if (Consumption >= 0)
             {
-                sb.Append($"{"PipeSystem_ResourceNeeded".Translate(Resource.name)} {PipeNet.def.FormatResourceAmount(Consumption / PipeNetManager.PipeNetTickInterval * GenDate.TicksPerDay, this)} {Resource.unit}/d");
+                var resourceNeededKey = Props.resourceNeededKey ?? Props.pipeNet.keyOverrides?.resourceNeededKey;
+                if (resourceNeededKey.NullOrEmpty())
+                    sb.Append($"{"PipeSystem_ResourceNeeded".Translate(Resource.name)} {PipeNet.def.FormatResourceAmount(Consumption / PipeNetManager.PipeNetTickInterval * GenDate.TicksPerDay, this)} {Resource.unit}/d");
+                else
+                    sb.Append(resourceNeededKey.Translate(arguments));
             }
             else
             {
-                sb.Append($"{"PipeSystem_ResourceOutput".Translate(Resource.name)} {PipeNet.def.FormatResourceAmount(ResourceOn ? (-Consumption / PipeNetManager.PipeNetTickInterval) * GenDate.TicksPerDay : 0f, this)} {Resource.unit}/d");
+                var resourceOutputKey = Props.resourceOutputKey ?? Props.pipeNet.keyOverrides?.resourceOutputKey;
+                if (resourceOutputKey.NullOrEmpty())
+                    sb.Append($"{"PipeSystem_ResourceOutput".Translate(Resource.name)} {PipeNet.def.FormatResourceAmount(ResourceOn ? (-Consumption / PipeNetManager.PipeNetTickInterval) * GenDate.TicksPerDay : 0f, this)} {Resource.unit}/d");
+                else
+                    sb.Append(resourceOutputKey.Translate(arguments));
             }
 
             sb.AppendInNewLine(base.CompInspectStringExtra());
@@ -187,6 +198,48 @@ namespace PipeSystem
                 sb.AppendInNewLine(DebugString);
 
             return sb.ToString().Trim();
+        }
+
+        protected override IEnumerable<NamedArgument> InspectStringArguments()
+        {
+            foreach (var inspectStringArgument in base.InspectStringArguments())
+                yield return inspectStringArgument;
+
+            var consumptionPerPipeNetTick = 0f;
+            var productionPerPipeNetTick = 0f;
+
+            if (Consumption > 0)
+                consumptionPerPipeNetTick = Consumption;
+            if (ResourceOn && Consumption < 0)
+                productionPerPipeNetTick = -Consumption;
+
+            var consumptionPerTick = consumptionPerPipeNetTick / PipeNetManager.PipeNetTickInterval;
+            var consumptionPerHour = consumptionPerTick * GenDate.TicksPerHour;
+            var consumptionPerDay = consumptionPerTick * GenDate.TicksPerDay;
+
+            var productionPerTick = productionPerPipeNetTick / PipeNetManager.PipeNetTickInterval;
+            var productionPerHour = productionPerTick * GenDate.TicksPerHour;
+            var productionPerDay = productionPerTick * GenDate.TicksPerDay;
+
+            yield return Props.pipeNet.FormatResourceAmount(consumptionPerPipeNetTick, this).Named("CONSUMPTIONPERPIPENETTICK");
+            yield return Props.pipeNet.FormatResourceAmount(consumptionPerTick, this).Named("CONSUMPTIONPERTICK");
+            yield return Props.pipeNet.FormatResourceAmount(consumptionPerHour, this).Named("CONSUMPTIONPERHOUR");
+            yield return Props.pipeNet.FormatResourceAmount(consumptionPerDay, this).Named("CONSUMPTIONPERDAY");
+
+            yield return consumptionPerPipeNetTick.Named("CONSUMPTIONPERPIPENETTICKUNFORMATTED");
+            yield return consumptionPerTick.Named("CONSUMPTIONPERTICKUNFORMATTED");
+            yield return consumptionPerHour.Named("CONSUMPTIONPERHOURUNFORMATTED");
+            yield return consumptionPerDay.Named("CONSUMPTIONPERDAYUNFORMATTED");
+
+            yield return Props.pipeNet.FormatResourceAmount(productionPerPipeNetTick, this).Named("PRODUCTIONPERPIPENETTICK");
+            yield return Props.pipeNet.FormatResourceAmount(productionPerTick, this).Named("PRODUCTIONPERTICK");
+            yield return Props.pipeNet.FormatResourceAmount(productionPerHour, this).Named("PRODUCTIONPERHOUR");
+            yield return Props.pipeNet.FormatResourceAmount(productionPerDay, this).Named("PRODUCTIONPERDAY");
+
+            yield return productionPerPipeNetTick.Named("PRODUCTIONPERPIPENETTICKUNFORMATTED");
+            yield return productionPerTick.Named("PRODUCTIONPERTICKUNFORMATTED");
+            yield return productionPerHour.Named("PRODUCTIONPERHOURUNFORMATTED");
+            yield return productionPerDay.Named("PRODUCTIONPERDAYUNFORMATTED");
         }
 
         /// <summary>

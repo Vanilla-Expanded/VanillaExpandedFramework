@@ -39,6 +39,8 @@ namespace PipeSystem
         public string resourceAmountFormat = "F0"; // The format (argument passed to float.ToString(String format)) that will be used by the format worker (if relevant).
         public Type resourceAmountFormatWorkerType = typeof(ResourceAmountFormatWorker); // The worker type 
 
+        public KeyOverrides keyOverrides = null;
+
         [Unsaved]
         internal Material offMat; // Off material
         [Unsaved]
@@ -111,6 +113,8 @@ namespace PipeSystem
         }
 
         public string FormatResourceAmount(float amount, CompResource comp = null) => ResourceAmountFormatWorker.FormatResourceAmount(amount, this, comp);
+
+        public string FormatResourceAmount(int amount, CompResource comp = null) => ResourceAmountFormatWorker.FormatResourceAmount(amount, this, comp);
     }
 
     /// <summary>
@@ -153,5 +157,41 @@ namespace PipeSystem
     {
         public ThingDef thing;
         public int ratio = 1;
+    }
+
+    public class KeyOverrides
+    {
+        // CompResource
+        public string notConnectedKey;
+        public string pipeNetStoredKey;
+
+        // CompConvertToThing
+        public string amountOutKey;
+
+        // CompDeepExtractor
+        public string resourceLeftKey;
+        public string noStorageLeftKey;
+        public string noResourcesKey;
+
+        // CompPipeValve
+        public string valveOpenedKey;
+        public string valveClosedKey;
+
+        // CompResourceProcessor
+        public string processorBufferKey;
+        public string notWorkingKey;
+        public string producingKey;
+
+        // CompResourceStorage
+        public string resourceStoredKey;
+        public string markedToTransferContentKey;
+        public string contentWillRotKey;
+
+        // CompResourceTrader
+        public string resourceNeededKey;
+        public string resourceOutputKey;
+
+        // CompSpawnerOrNet
+        public string nextSpawnedItemInKey;
     }
 }

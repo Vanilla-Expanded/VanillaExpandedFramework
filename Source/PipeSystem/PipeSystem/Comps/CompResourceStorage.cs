@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using RimWorld;
 using UnityEngine;
@@ -92,7 +93,7 @@ namespace PipeSystem
             if (!ContentCanRot)
                 return;
 
-            if (!powerComp.PowerOn && amountStored > 0)
+            if (powerComp is not { PowerOn: true } && amountStored > 0)
             {
                 if (Props.preventRotInNegativeTemp)
                 {
@@ -123,7 +124,7 @@ namespace PipeSystem
             base.PostSpawnSetup(respawningAfterLoad);
             CachedCompResourceStorage.Cache(this);
             isBreakdownable = parent.TryGetComp<CompBreakdownable>() != null;
-            ContentCanRot = Props.contentRequirePower && powerComp != null;
+            ContentCanRot = (Props.contentRequirePower && powerComp != null) || Props.contentCanRot;
 
             pipeNetOverlayDrawer = parent.Map.GetComponent<PipeNetOverlayDrawer>();
             // Fillable bar request
@@ -200,7 +201,7 @@ namespace PipeSystem
         /// </summary>
         public override void PostDeSpawn(Map map, DestroyMode mode = DestroyMode.Vanish)
         {
-            base.PostDeSpawn(map,mode);
+            base.PostDeSpawn(map, mode);
             pipeNetOverlayDrawer?.ToggleStatic(parent, MaterialCreator.transferMat, false);
         }
 
@@ -288,7 +289,7 @@ namespace PipeSystem
                         while (count > 0)
                         {
                             var thing = ThingMaker.MakeThing(def);
-                            if (thing.def.CanHaveFaction && parent.Faction is {} faction)
+                            if (thing.def.CanHaveFaction && parent.Faction is { } faction)
                                 thing.SetFaction(faction);
                             if (destroyOption.spawnMinified)
                                 thing = thing.TryMakeMinified();
@@ -352,18 +353,53 @@ namespace PipeSystem
         /// </summary>
         public override string CompInspectStringExtra()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
+            var inspectStringArguments = InspectStringArguments().ToArray();
+
             if (Props.addStorageInfo)
-                sb.AppendInNewLine($"{"PipeSystem_ResourceStored".Translate(Resource.name)} {PipeNet.def.FormatResourceAmount(amountStored, this)} / {PipeNet.def.FormatResourceAmount(StorageCapacity)} {Resource.unit}"); // Show the amount stored
+            {
+                var resourceStoredKey = Props.resourceStoredKey ?? Props.pipeNet.keyOverrides?.resourceStoredKey;
+                if (resourceStoredKey.NullOrEmpty())
+                    sb.AppendInNewLine($"{"PipeSystem_ResourceStored".Translate(Resource.name)} {PipeNet.def.FormatResourceAmount(amountStored, this)} / {PipeNet.def.FormatResourceAmount(StorageCapacity)} {Resource.unit}"); // Show the amount stored
+                else
+                    sb.AppendInNewLine(resourceStoredKey.Translate(inspectStringArguments));
+            }
 
             if (markedForTransfer)
-                sb.AppendInNewLine("PipeSystem_MarkedToTransferContent".Translate());
+            {
+                var markedToTransferContentKey = Props.markedToTransferContentKey ?? Props.pipeNet.keyOverrides?.markedToTransferContentKey;
+                if (markedToTransferContentKey.NullOrEmpty())
+                    sb.AppendInNewLine("PipeSystem_MarkedToTransferContent".Translate());
+                else
+                    sb.AppendInNewLine(markedToTransferContentKey.Translate(inspectStringArguments));
+            }
 
-            if (ContentCanRot && !powerComp.PowerOn && amountStored > 0 && (!Props.preventRotInNegativeTemp || parent.MapHeld == null || parent.Position.GetTemperature(parent.MapHeld) >= 0))
-                sb.AppendInNewLine("PipeSystem_ContentWillRot".Translate(((int)((GenDate.TicksPerDay * Props.daysToRotStart) - ticksWithoutPower)).ToStringTicksToPeriod()));
+            if (ContentCanRot && powerComp is not { PowerOn: true } && amountStored > 0 && (!Props.preventRotInNegativeTemp || parent.MapHeld == null || parent.Position.GetTemperature(parent.MapHeld) >= 0))
+            {
+                var contentWillRotKey = Props.contentWillRotKey ?? Props.pipeNet.keyOverrides?.contentWillRotKey;
+                if (contentWillRotKey.NullOrEmpty())
+                    sb.AppendInNewLine("PipeSystem_ContentWillRot".Translate(((int)((GenDate.TicksPerDay * Props.daysToRotStart) - ticksWithoutPower)).ToStringTicksToPeriod()));
+                else
+                    sb.AppendInNewLine(contentWillRotKey.Translate(inspectStringArguments));
+            }
 
             sb.AppendInNewLine(base.CompInspectStringExtra());
             return sb.ToString().TrimEndNewlines();
+        }
+
+        protected override IEnumerable<NamedArgument> InspectStringArguments()
+        {
+            foreach (var inspectStringArgument in base.InspectStringArguments())
+                yield return inspectStringArgument;
+
+            yield return Props.pipeNet.FormatResourceAmount(amountStored, this).Named("RESOURCEAMOUNT");
+            yield return amountStored.Named("RESOURCEAMOUNTUNFORMATTED");
+
+            yield return Props.pipeNet.FormatResourceAmount(StorageCapacity).Named("STORAGECAPACITY");
+            yield return StorageCapacity.Named("STORAGECAPACITYUNFORMATTED");
+
+            yield return Props.pipeNet.resource.unit.Named("RESOURCEUNIT");
+            yield return ((int)((GenDate.TicksPerDay * Props.daysToRotStart) - ticksWithoutPower)).Named("TICKSTOROT");
         }
 
         /// <summary>
@@ -397,10 +433,7 @@ namespace PipeSystem
                 yield return new Command_Action
                 {
                     defaultLabel = "DEBUG: Fill",
-                    action = new Action(() =>
-                    {
-                        AmountStored = StorageCapacity;
-                    })
+                    action = () => { AmountStored = StorageCapacity; }
                 };
                 yield return new Command_Action
                 {
@@ -416,10 +449,7 @@ namespace PipeSystem
                 yield return new Command_Action
                 {
                     defaultLabel = "DEBUG: Empty",
-                    action = new Action(() =>
-                    {
-                        AmountStored = 0f;
-                    })
+                    action = () => { AmountStored = 0f; }
                 };
                 yield return new Command_Action
                 {

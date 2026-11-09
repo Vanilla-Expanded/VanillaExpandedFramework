@@ -185,10 +185,22 @@ namespace PipeSystem
 
         public override string CompInspectStringExtra()
         {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("PipeSystem_AmountOut".Translate(maxHeldThingStackSize));
+            var sb = new StringBuilder();
+            var amountOutKey = Props.amountOutKey ?? Props.pipeNet.keyOverrides?.amountOutKey;
+            if (amountOutKey.NullOrEmpty())
+                sb.AppendLine("PipeSystem_AmountOut".Translate(maxHeldThingStackSize));
+            else
+                amountOutKey.Translate([..InspectStringArguments()]);
             sb.AppendLine(base.CompInspectStringExtra());
             return sb.ToString().Trim();
+        }
+
+        protected override IEnumerable<NamedArgument> InspectStringArguments()
+        {
+            foreach (var inspectStringArgument in base.InspectStringArguments())
+                yield return inspectStringArgument;
+
+            yield return maxHeldThingStackSize.Named("MAXOUTPUTSTACKSIZE");
         }
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()

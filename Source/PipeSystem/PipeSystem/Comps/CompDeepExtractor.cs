@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using RimWorld;
 using Verse;
 
@@ -250,23 +251,51 @@ namespace PipeSystem
         /// <returns>Info string</returns>
         public override string CompInspectStringExtra()
         {
-            var str = base.CompInspectStringExtra();
-            if (parent.Spawned)
+            if (!parent.Spawned) return base.CompInspectStringExtra();
+
+            var str = new StringBuilder(base.CompInspectStringExtra());
+            var arguments = InspectStringArguments().ToArray();
+
+            if (Props.showDeepCountLeft)
             {
-                if (Props.showDeepCountLeft)
-                {
-                    str += "\n" + "PipeSystem_ResourceLeft".Translate(globalCount);
-                }
-                if (noCapacity)
-                {
-                    str += "\n" + Props.noStorageLeftKey.Translate();
-                }
-                if (lumpCells.Count == 0)
-                {
-                    str += "\n" + "DeepDrillNoResources".Translate();
-                }
+                var resourceLeftKey = Props.resourceLeftKey ?? Props.pipeNet.keyOverrides?.resourceLeftKey;
+                if (resourceLeftKey.NullOrEmpty())
+                    str.AppendInNewLine("PipeSystem_ResourceLeft".Translate(globalCount));
+                else
+                    str.AppendInNewLine(resourceLeftKey.Translate(arguments));
             }
-            return str;
+            if (noCapacity)
+            {
+                var noStorageLeftKey = Props.noStorageLeftKey;
+                // Override if default (or null) and global override is setup
+                if (Props.noStorageLeftKey == "PipeSystem_CantExtract" || Props.noStorageLeftKey.NullOrEmpty())
+                    noStorageLeftKey = Props.pipeNet.keyOverrides?.noStorageLeftKey ?? Props.noStorageLeftKey;
+
+                str.AppendInNewLine(noStorageLeftKey.Translate(arguments));
+            }
+            if (lumpCells.Count == 0)
+            {
+                var noResourcesKey = Props.noResourcesKey ?? Props.pipeNet.keyOverrides?.noResourcesKey;
+                if (noResourcesKey.NullOrEmpty())
+                    str.AppendInNewLine("DeepDrillNoResources".Translate());
+                else
+                    str.AppendInNewLine(noResourcesKey.Translate(arguments));
+            }
+            return str.ToString();
+        }
+
+        protected override IEnumerable<NamedArgument> InspectStringArguments()
+        {
+            foreach (var inspectStringArgument in base.InspectStringArguments())
+                yield return inspectStringArgument;
+
+            yield return Props.pipeNet.FormatResourceAmount(globalCount, this).Named("AMOUNTLEFT");
+            yield return Props.pipeNet.FormatResourceAmount(rawProductionPerDay, this).Named("RAWPRODUCTIONPERTICK");
+            yield return Props.pipeNet.FormatResourceAmount(rawProductionPerTick, this).Named("RAWPRODUCTIONPERDAY");
+
+            yield return globalCount.Named("AMOUNTLEFTUNFORMATTED");
+            yield return rawProductionPerDay.Named("RAWPRODUCTIONPERTICKUNFORMATTED");
+            yield return rawProductionPerTick.Named("RAWPRODUCTIONPERDAYUNFORMATTED");
         }
     }
 }

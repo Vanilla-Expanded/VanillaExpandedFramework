@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using RimWorld;
 using Verse;
 using Verse.Sound;
@@ -96,16 +98,28 @@ namespace PipeSystem
             if (!Props.displayBasicInspectStringData)
                 return string.Empty;
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
+            var arguments = InspectStringArguments().ToArray();
+
             if (PipeNet == null)
             {
-                sb.Append("PipeSystem_NotConnected".Translate(Resource.name));
+                var notConnectedKey = Props.notConnectedKey ?? Props.pipeNet.keyOverrides?.notConnectedKey;
+                if (notConnectedKey.NullOrEmpty())
+                    sb.Append("PipeSystem_NotConnected".Translate(Resource.name));
+                else
+                    sb.Append(notConnectedKey.Translate(arguments));
+
                 return sb.ToString().Trim();
             }
 
             var res = Resource;
             var net = PipeNet;
-            if (res.onlyShowStored)
+            var pipeNetStoredKey = Props.pipeNetStoredKey ?? Props.pipeNet.keyOverrides?.pipeNetStoredKey;
+            if (!pipeNetStoredKey.NullOrEmpty())
+            {
+                sb.Append(pipeNetStoredKey.Translate(arguments));
+            }
+            else if (res.onlyShowStored)
             {
                 sb.Append($"{"PipeSystem_Stored".Translate(res.name)} {PipeNet.def.FormatResourceAmount(net.Stored, this)} {res.unit}");
             }
@@ -121,6 +135,27 @@ namespace PipeSystem
             }
 
             return sb.ToString().Trim();
+        }
+
+        protected virtual IEnumerable<NamedArgument> InspectStringArguments() => DefaultInspectStringArguments(Props.pipeNet, PipeNet, this);
+
+        // Could possibly be used by other comps possibly wanting to use this data. CompAdvancedResourceProcessor, since it's not a CompResource?
+        public static IEnumerable<NamedArgument> DefaultInspectStringArguments(PipeNetDef def, PipeNet net = null, CompResource comp = null)
+        {
+            var res = def.resource;
+
+            yield return res.name.Named("RESOURCENAME");
+            yield return res.unit.Named("RESOURCEUNIT");
+
+            if (net != null)
+            {
+                yield return def.FormatResourceAmount(net.Stored, comp).Named("NETAMOUNTSTORED");
+                yield return net.Stored.Named("NETAMOUNTSTOREDUNFORMATTED");
+
+                var production = ((net.VisualProduction - net.VisualConsumption) / PipeNetManager.PipeNetTickInterval * GenDate.TicksPerDay) + net.ExtractorRawProduction;
+                yield return def.FormatResourceAmount(production, comp).Named("NETPRODUCTION");
+                yield return production.Named("NETPRODUCTIONUNFORMATTED");
+            }
         }
 
         /// <summary>

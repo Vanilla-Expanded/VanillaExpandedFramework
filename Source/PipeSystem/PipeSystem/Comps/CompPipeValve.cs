@@ -52,9 +52,16 @@ namespace PipeSystem
         {
             if (TransmitResourceNow)
             {
-                return $"{"PipeSystem_ValveOpened".Translate()}\n{base.CompInspectStringExtra()}".Trim();
+                var valveOpenedKey = Props.valveOpenedKey ?? Props.pipeNet.keyOverrides?.valveOpenedKey;
+                if (valveOpenedKey.NullOrEmpty())
+                    return $"{"PipeSystem_ValveOpened".Translate()}\n{base.CompInspectStringExtra()}".Trim();
+                return valveOpenedKey.Translate([.. InspectStringArguments()]);
             }
-            return "PipeSystem_ValveClosed".Translate();
+
+            var valveClosedKey = Props.valveClosedKey ?? Props.pipeNet.keyOverrides?.valveClosedKey;
+            if (valveClosedKey.NullOrEmpty())
+                return "PipeSystem_ValveClosed".Translate();
+            return valveClosedKey.Translate([.. InspectStringArguments()]);
         }
 
         public override void ReceiveCompSignal(string signal)

@@ -12,7 +12,9 @@ namespace PipeSystem
         // Show inspect string?
         public bool showBufferInfo = true;
         // Translation key:
+        public string processorBufferKey;
         public string notWorkingKey;
+        public string producingKey;
         // All possible results of the process
         public List<Result> results;
 

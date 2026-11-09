@@ -27,6 +27,9 @@ namespace PipeSystem
         // If true, the producer's PowerTrader power usage will be changed to its idle power consumption when all storages are full.
         public bool producerLowPowerWhenStorageFull = false;
 
+        public string resourceNeededKey;
+        public string resourceOutputKey;
+
         public SoundDef soundAmbientReceivingResource;
 
         /// <summary>

@@ -41,16 +41,23 @@ namespace PipeSystem
         public DestroyOption destroyOption;
         public List<DestroyOption> destroyOptions;
 
+        // Content can rot, always active.
+        public bool contentCanRot = false;
+        // Content can rot, requires power comp to be active.
         public bool contentRequirePower = false;
         public bool preventRotInNegativeTemp = true;
         public float daysToRotStart = 0.75f;
+
+        public string resourceStoredKey = null;
+        public string markedToTransferContentKey = null;
+        public string contentWillRotKey = null;
 
         public override IEnumerable<string> ConfigErrors(ThingDef parentDef)
         {
             foreach (var err in base.ConfigErrors(parentDef))
                 yield return err;
 
-            if (contentRequirePower && parentDef.tickerType == TickerType.Never)
+            if ((contentCanRot || contentRequirePower) && parentDef.tickerType == TickerType.Never)
                 yield return $"{parentDef.defName} CompProperties_ResourceStorage is using contentRequirePower and need a ticker type (any)";
         }
 

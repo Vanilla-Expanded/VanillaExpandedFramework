@@ -14,6 +14,7 @@ namespace PipeSystem
         public int ratio = 1;
         public int maxOutputStackSize = -1;
         public ThingDef thing;
+        public string amountOutKey;
 
         public override IEnumerable<string> ConfigErrors(ThingDef parentDef)
         {
