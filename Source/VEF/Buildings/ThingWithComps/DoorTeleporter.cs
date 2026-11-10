@@ -9,7 +9,6 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.AI;
-using Verse.AI.Group;
 using Verse.Sound;
 using Object = UnityEngine.Object;
 
@@ -154,17 +153,13 @@ namespace VEF.Buildings
                 }
                 bool drafted = pawn.drafter != null && pawn.Drafted;
                 bool selected = Find.Selector.IsSelected(pawn);
-                // ExitMap() treats this as leaving the map (clears mind state, fires "left map" signals),
-                // so despawn and respawn like vanilla skip does.
-                var lord = pawn.GetLord();
+                // Another map: the pawn really leaves, so exit the map like vanilla farskip does.
+                pawn.teleporting = true;
                 pawn.ClearAllReservations(false);
-                pawn.DeSpawnOrDeselect();
+                pawn.ExitMap(false, Rot4.Invalid);
+                pawn.teleporting = false;
                 GenSpawn.Spawn(pawn, cellTarget, mapTarget);
                 pawn.Notify_Teleported(endCurrentJob: false);
-                if (lord != null && lord.ownedPawns.Contains(pawn))
-                {
-                    lord.Notify_PawnLost(pawn, PawnLostCondition.ExitedMap);
-                }
                 if (pawn.drafter != null)
                 {
                     pawn.drafter.Drafted = drafted;
