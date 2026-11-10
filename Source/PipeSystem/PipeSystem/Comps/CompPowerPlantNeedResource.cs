@@ -1,6 +1,7 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
+using Verse;
 
 namespace PipeSystem
 {
@@ -11,10 +12,17 @@ namespace PipeSystem
     {
         private List<CompResourceTrader> compResourceTraders;
 
-        public override void PostSpawnSetup(bool respawningAfterLoad)
+        public override void PostPostMake()
         {
-            compResourceTraders = parent.GetComps<CompResourceTrader>().ToList();
-            base.PostSpawnSetup(respawningAfterLoad);
+            base.PostPostMake();
+            InitComps();
+        }
+
+        public override void PostExposeData()
+        {
+            base.PostExposeData();
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+                InitComps();
         }
 
         protected override float DesiredPowerOutput
@@ -29,5 +37,7 @@ namespace PipeSystem
                 return base.DesiredPowerOutput;
             }
         }
+
+        private void InitComps() => compResourceTraders = [.. parent.GetComps<CompResourceTrader>()];
     }
 }
