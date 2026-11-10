@@ -91,6 +91,37 @@ namespace PipeSystem
         }
 
         /// <summary>
+        /// Get all the things adjacent cardinal to the given thing, as well as on the same tile (including self).
+        /// </summary>
+        /// <param name="thing"></param>
+        /// <returns>List of things adjacent and on the same tile</returns>
+        private List<Thing> NeighbourThingsCardinalAndSameInside(Thing thing)
+        {
+            var things = NeighbourThingsCardinal(thing);
+        
+            var rect = thing.OccupiedRect();
+            for (var z = rect.minZ; z <= rect.maxZ; z++)
+            {
+                for (var x = rect.minX; x <= rect.maxX; x++)
+                {
+                    var cell = new IntVec3(x, 0, z);
+                    if (cell.InBounds(thing.Map))
+                    {
+                        var thingsAt = map.thingGrid.ThingsListAt(cell);
+                        for (int i = 0; i < thingsAt.Count; i++)
+                        {
+                            var t = thingsAt[i];
+                            if (!things.Contains(t))
+                                things.Add(t);
+                        }
+                    }
+                }
+            }
+        
+            return things;
+        }
+
+        /// <summary>
         /// Register a comp. If no adjacent PipeNet are found, a new one is created.
         /// Else it's added to an existing one, and merging PipeNet if necessary.
         /// </summary>
@@ -98,7 +129,7 @@ namespace PipeSystem
         public void RegisterConnector(CompResource comp)
         {
             // Get all thing around
-            List<Thing> things = NeighbourThingsCardinal(comp.parent);
+            List<Thing> things = NeighbourThingsCardinalAndSameInside(comp.parent);
             // Loop through all of them, trying to find PipeNet(s) of the right resource
             List<PipeNet> foundNets = new List<PipeNet>();
             for (int i = 0; i < things.Count; i++)
@@ -109,6 +140,7 @@ namespace PipeSystem
                     foreach (var compR in comps)
                     {
                         if (compR != null
+                            && compR != comp
                             && compR.TransmitResourceNow
                             && compR.Props.pipeNet == comp.Props.pipeNet
                             && compR.PipeNet is PipeNet p
@@ -154,7 +186,7 @@ namespace PipeSystem
         public void UnregisterConnector(CompResource comp)
         {
             // Get all thing around
-            List<Thing> things = NeighbourThingsCardinal(comp.parent);
+            List<Thing> things = NeighbourThingsCardinalAndSameInside(comp.parent);
             // Loop through all of them, trying to find PipeNet(s) of the right resource
             List<CompResource> foundConnectors = new List<CompResource>();
             for (int i = 0; i < things.Count; i++)
@@ -165,6 +197,7 @@ namespace PipeSystem
                     foreach (var compR in comps)
                     {
                         if (compR != null
+                            && compR != comp
                             && compR.TransmitResourceNow
                             && compR.Props.pipeNet == comp.Props.pipeNet
                             && !foundConnectors.Contains(compR))
