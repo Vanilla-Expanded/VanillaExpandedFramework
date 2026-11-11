@@ -105,7 +105,7 @@ namespace PipeSystem
                 for (var x = rect.minX; x <= rect.maxX; x++)
                 {
                     var cell = new IntVec3(x, 0, z);
-                    if (cell.InBounds(thing.Map))
+                    if (cell.InBounds(map))
                     {
                         var thingsAt = map.thingGrid.ThingsListAt(cell);
                         for (int i = 0; i < thingsAt.Count; i++)
