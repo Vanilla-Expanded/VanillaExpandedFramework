@@ -8,11 +8,12 @@ using Verse;
 
 namespace VEF.AnimalGenes
 {
-    // This Harmony patch will only be patched if AnimalGenesMechanics is added via XML to a mod using OptionalFeatures
+    // This one is not in OptionalFeatures or it won't work
 
-
+    [HarmonyPatch(typeof(ThingDefGenerator_Corpses), "GenerateCorpseDef")]
     public static class VEF_AnimalGenes_ThingDefGenerator_Corpses_GenerateCorpseDef_Patch
     {
+        [HarmonyPostfix]
         public static void HandleCorpses(ThingDef pawnDef, ThingDef __result)
         {
             if (pawnDef.race?.Animal != true)
