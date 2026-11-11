@@ -73,9 +73,13 @@ namespace PipeSystem
                     return 0f;
                 if (Props.contentRequirePower && !powerComp.PowerOn)
                     return 0f;
+                if (!CanAcceptResource)
+                    return 0f;
                 return StorageCapacity - amountStored;
             }
         }
+
+        protected virtual bool CanAcceptResource => true;
 
         public bool ContentCanRot { get; private set; }
 
