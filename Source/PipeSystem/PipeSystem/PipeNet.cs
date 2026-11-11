@@ -822,7 +822,7 @@ namespace PipeSystem
             for (int i = 0; i < storages.Count; i++)
             {
                 var storage = storages[i];
-                if (storage.AmountStored > 0)
+                if (storage.AmountStored > 0 && !storage.StunnedByEMP)
                     resourceStorages.Add(storage);
             }
             // If all empty

@@ -23,6 +23,7 @@ namespace PipeSystem
         private float amountStored;
         private int ticksWithoutPower = 0;
         private bool isBreakdownable;
+        private CompStunnable stunnable;
         private FillableBarRequest request;
         private Command_Action extractGizmo;
         private Command_Action transferGizmo;
@@ -49,11 +50,26 @@ namespace PipeSystem
         public virtual float StorageCapacity => Props.storageCapacityStat != null ? parent.GetStatValue(Props.storageCapacityStat, cacheStaleAfterTicks: 120) : Props.storageCapacity;
 
         public float AmountStoredPct => amountStored / StorageCapacity;
+
+        public bool StunnedByEMP
+        {
+            get
+            {
+                if (stunnable == null)
+                    return false;
+                if (!stunnable.StunHandler.Stunned)
+                    return false;
+                return stunnable.StunHandler.StunFromEMP;
+            }
+        }
+
         public float AmountCanAccept
         {
             get
             {
                 if (isBreakdownable && parent.IsBrokenDown())
+                    return 0f;
+                if (StunnedByEMP)
                     return 0f;
                 if (Props.contentRequirePower && !powerComp.PowerOn)
                     return 0f;
@@ -124,6 +140,7 @@ namespace PipeSystem
             base.PostSpawnSetup(respawningAfterLoad);
             CachedCompResourceStorage.Cache(this);
             isBreakdownable = parent.TryGetComp<CompBreakdownable>() != null;
+            stunnable = parent.TryGetComp<CompStunnable>();
             ContentCanRot = (Props.contentRequirePower && powerComp != null) || Props.contentCanRot;
 
             pipeNetOverlayDrawer = parent.Map.GetComponent<PipeNetOverlayDrawer>();

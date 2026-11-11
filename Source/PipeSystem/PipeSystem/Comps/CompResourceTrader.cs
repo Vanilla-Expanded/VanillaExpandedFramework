@@ -23,6 +23,7 @@ namespace PipeSystem
         protected CompBreakdownable compBreakdownable;
         protected CompRefuelable compRefuelable;
         protected CompPowerTrader compPowerTrader;
+        protected CompStunnable compStunnable;
 
         protected PipeNetOverlayDrawer pipeNetOverlayDrawer;
 
@@ -270,6 +271,9 @@ namespace PipeSystem
         {
             base.CompTick();
 
+            if (StunnedByEMP && ResourceOn)
+                ResourceOn = false;
+
             if (Props.handleCompRefuelableTicking)
             {
                 HandleRefuelableTicking(compRefuelable.Props.fuelConsumptionRate / 60000f);
@@ -372,6 +376,18 @@ namespace PipeSystem
             }
         }
 
+        public bool StunnedByEMP
+        {
+            get
+            {
+                if (compStunnable == null)
+                    return false;
+                if (!compStunnable.StunHandler.Stunned)
+                    return false;
+                return compStunnable.StunHandler.StunFromEMP;
+            }
+        }
+
         /// <summary>
         /// Check for multiple comps (flickable, schedule, breakdownable, refuelable, powertrader) to determine if
         /// resource production can be enabled.
@@ -383,7 +399,8 @@ namespace PipeSystem
                 && (compSchedule == null || compSchedule.Allowed)
                 && (compBreakdownable == null || !compBreakdownable.BrokenDown)
                 && (compRefuelable == null || compRefuelable.HasFuel)
-                && (compPowerTrader == null || compPowerTrader.PowerOn);
+                && (compPowerTrader == null || compPowerTrader.PowerOn)
+                && !StunnedByEMP;
         }
 
         /// <summary>
@@ -411,6 +428,7 @@ namespace PipeSystem
             compBreakdownable = parent.TryGetComp<CompBreakdownable>();
             compRefuelable = parent.TryGetComp<CompRefuelable>();
             compPowerTrader = parent.TryGetComp<CompPowerTrader>();
+            compStunnable = parent.TryGetComp<CompStunnable>();
 
             BaseConsumption = Props.consumptionPerTick;
         }
