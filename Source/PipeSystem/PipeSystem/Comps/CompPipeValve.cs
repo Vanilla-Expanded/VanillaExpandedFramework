@@ -72,14 +72,22 @@ namespace PipeSystem
             if (signal == CompFlickable.FlickedOffSignal)
             {
                 // Unregister it, and make our MapMeshFlag dirty at this pos
-                PipeNetManager.UnregisterConnector(this);
+                for (var i = 0; i < parent.AllComps.Count; i++)
+                {
+                    if (parent.AllComps[i] is CompResource comp && comp.Props.pipeNet == Props.pipeNet)
+                        PipeNetManager.UnregisterConnector(comp);
+                }
                 map.mapDrawer.MapMeshDirty(root, MapMeshFlagDefOf.Things, true, false);
                 map.mapDrawer.MapMeshDirty(root, MapMeshFlagDefOf.PowerGrid, true, false);
             }
             if (signal == CompFlickable.FlickedOnSignal)
             {
                 // Register it, and make our MapMeshFlag dirty at this pos
-                PipeNetManager.RegisterConnector(this);
+                for (var i = 0; i < parent.AllComps.Count; i++)
+                {
+                    if (parent.AllComps[i] is CompResource comp && comp.Props.pipeNet == Props.pipeNet)
+                        PipeNetManager.RegisterConnector(comp);
+                }
                 map.mapDrawer.MapMeshDirty(root, MapMeshFlagDefOf.Things, true, false);
                 map.mapDrawer.MapMeshDirty(root, MapMeshFlagDefOf.PowerGrid, true, false);
             }
