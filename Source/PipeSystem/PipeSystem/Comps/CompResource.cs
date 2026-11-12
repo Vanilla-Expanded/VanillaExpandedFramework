@@ -99,6 +99,7 @@ namespace PipeSystem
                 return string.Empty;
 
             var sb = new StringBuilder();
+            var arguments = InspectStringArguments().ToArray();
 
             if (PipeNet == null)
             {
@@ -106,7 +107,7 @@ namespace PipeSystem
                 if (notConnectedKey.NullOrEmpty())
                     sb.Append("PipeSystem_NotConnected".Translate(Resource.name));
                 else
-                    sb.Append(notConnectedKey.Translate([.. Props.pipeNet.DefaultTranslationArguments(this)]));
+                    sb.Append(notConnectedKey.Translate(arguments));
 
                 return sb.ToString().Trim();
             }
@@ -116,7 +117,7 @@ namespace PipeSystem
             var pipeNetStoredKey = Props.pipeNetStoredKey ?? Props.pipeNet.keyOverrides?.pipeNetStoredKey;
             if (!pipeNetStoredKey.NullOrEmpty())
             {
-                sb.Append(pipeNetStoredKey.Translate([.. InspectStringArguments()]));
+                sb.Append(pipeNetStoredKey.Translate(arguments));
             }
             else if (res.onlyShowStored)
             {
@@ -136,7 +137,12 @@ namespace PipeSystem
             return sb.ToString().Trim();
         }
 
-        protected virtual IEnumerable<NamedArgument> InspectStringArguments() => PipeNet.DefaultTranslationArguments(this);
+        protected virtual IEnumerable<NamedArgument> InspectStringArguments()
+        {
+            if (PipeNet == null)
+                return Props.pipeNet.DefaultTranslationArguments(this);
+            return PipeNet.DefaultTranslationArguments(this);
+        }
 
         /// <summary>
         /// Try spawn sustainer
