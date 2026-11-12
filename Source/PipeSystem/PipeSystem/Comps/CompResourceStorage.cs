@@ -419,7 +419,6 @@ namespace PipeSystem
             yield return Props.pipeNet.FormatResourceAmount(StorageCapacity).Named("STORAGECAPACITY");
             yield return StorageCapacity.Named("STORAGECAPACITYUNFORMATTED");
 
-            yield return Props.pipeNet.resource.unit.Named("RESOURCEUNIT");
             yield return ((int)((GenDate.TicksPerDay * Props.daysToRotStart) - ticksWithoutPower)).Named("TICKSTOROT");
         }
 
