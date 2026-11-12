@@ -521,7 +521,6 @@ namespace PipeSystem
 
             UpdateExtractResourceAmount();
             var (resourceExtractAmount, itemExtractAmount) = CurrentManualExtractAmount();
-
             // Check comments in CompProperties_ResourceStorage.ExtractOptions class for explanation/more info
             return
             [
@@ -532,7 +531,8 @@ namespace PipeSystem
                 (opt.extractExactAmount ? opt.extractAmount : 1).Named("THINGMIN"),
                 itemExtractAmount.Named("THINGCOUNT"),
                 itemExtractAmount.Named("THINGEXTRACTCOUNT"),
-                opt.extractAmount.Named("THINGMAX")
+                opt.extractAmount.Named("THINGMAX"),
+                .. InspectStringArguments()
             ];
         }
 
