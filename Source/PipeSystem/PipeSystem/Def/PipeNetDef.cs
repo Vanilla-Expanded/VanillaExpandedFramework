@@ -115,6 +115,12 @@ namespace PipeSystem
         public string FormatResourceAmount(float amount, CompResource comp = null) => ResourceAmountFormatWorker.FormatResourceAmount(amount, this, comp);
 
         public string FormatResourceAmount(int amount, CompResource comp = null) => ResourceAmountFormatWorker.FormatResourceAmount(amount, this, comp);
+
+        public IEnumerable<NamedArgument> DefaultTranslationArguments(CompResource comp = null)
+        {
+            yield return resource.name.Named("RESOURCENAME");
+            yield return resource.unit.Named("RESOURCEUNIT");
+        }
     }
 
     /// <summary>
@@ -139,6 +145,8 @@ namespace PipeSystem
     {
         public string deconstructIconPath;
         public DesignationCategoryDef designationCategoryDef;
+        public string deconstructLabel;
+        public string deconstructDesc;
     }
 
     /// <summary>

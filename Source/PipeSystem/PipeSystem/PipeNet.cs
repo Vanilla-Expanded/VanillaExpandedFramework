@@ -1003,6 +1003,19 @@ namespace PipeSystem
         {
         }
 
+        public IEnumerable<NamedArgument> DefaultTranslationArguments(CompResource comp = null)
+        {
+            foreach (var defaultTranslationNamedArgument in def.DefaultTranslationArguments())
+                yield return defaultTranslationNamedArgument;
+
+            yield return def.FormatResourceAmount(Stored, comp).Named("NETAMOUNTSTORED");
+            yield return Stored.Named("NETAMOUNTSTOREDUNFORMATTED");
+
+            var production = ((VisualProduction - VisualConsumption) / PipeNetManager.PipeNetTickInterval * GenDate.TicksPerDay) + ExtractorRawProduction;
+            yield return def.FormatResourceAmount(production, comp).Named("NETPRODUCTION");
+            yield return production.Named("NETPRODUCTIONUNFORMATTED");
+        }
+
         public override string ToString()
         {
             return $"PipeNet: {def.resource.name} Stored: {Stored} AvailableCapacity: {AvailableCapacity} Consumption: {VisualConsumption} Production: {VisualProduction} Overflow: {OverflowAmount}";

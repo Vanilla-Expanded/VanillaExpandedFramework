@@ -137,26 +137,7 @@ namespace PipeSystem
             return sb.ToString().Trim();
         }
 
-        protected virtual IEnumerable<NamedArgument> InspectStringArguments() => DefaultInspectStringArguments(Props.pipeNet, PipeNet, this);
-
-        // Could possibly be used by other comps possibly wanting to use this data. CompAdvancedResourceProcessor, since it's not a CompResource?
-        public static IEnumerable<NamedArgument> DefaultInspectStringArguments(PipeNetDef def, PipeNet net = null, CompResource comp = null)
-        {
-            var res = def.resource;
-
-            yield return res.name.Named("RESOURCENAME");
-            yield return res.unit.Named("RESOURCEUNIT");
-
-            if (net != null)
-            {
-                yield return def.FormatResourceAmount(net.Stored, comp).Named("NETAMOUNTSTORED");
-                yield return net.Stored.Named("NETAMOUNTSTOREDUNFORMATTED");
-
-                var production = ((net.VisualProduction - net.VisualConsumption) / PipeNetManager.PipeNetTickInterval * GenDate.TicksPerDay) + net.ExtractorRawProduction;
-                yield return def.FormatResourceAmount(production, comp).Named("NETPRODUCTION");
-                yield return production.Named("NETPRODUCTIONUNFORMATTED");
-            }
-        }
+        protected virtual IEnumerable<NamedArgument> InspectStringArguments() => PipeNet.DefaultTranslationArguments(this);
 
         /// <summary>
         /// Try spawn sustainer

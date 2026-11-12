@@ -15,8 +15,16 @@ namespace PipeSystem
         public Designator_DeconstructPipe(PipeNetDef pipeNet)
         {
             pipeNetDef = pipeNet;
-            defaultLabel = "PipeSystem_DeconstructLabel".Translate(pipeNet.resource.name);
-            defaultDesc = "PipeSystem_DeconstructDesc".Translate(pipeNet.resource.name);
+
+            var arguments = pipeNet.DefaultTranslationArguments().ToArray();
+            if (pipeNet.designator.deconstructLabel.NullOrEmpty())
+                defaultLabel = "PipeSystem_DeconstructLabel".Translate(pipeNet.resource.name);
+            else
+                defaultLabel = pipeNet.designator.deconstructLabel.Translate(arguments);
+            if (pipeNet.designator.deconstructDesc.NullOrEmpty())
+                defaultDesc = "PipeSystem_DeconstructDesc".Translate(pipeNet.resource.name);
+            else
+                defaultDesc = pipeNet.designator.deconstructDesc.Translate(arguments);
             icon = ContentFinder<Texture2D>.Get(pipeNet.designator.deconstructIconPath);
             hotKey = null;
         }
