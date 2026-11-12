@@ -128,6 +128,19 @@ namespace PipeSystem
         /// <param name="comp"></param>
         public void RegisterConnector(CompResource comp)
         {
+            // Check if any other comp from the same parent is already registered
+            for (var i = 0; i < comp.parent.AllComps.Count; i++)
+            {
+                if (comp.parent.AllComps[i] is CompResource other
+                    && other != comp
+                    && other.PipeNet != null
+                    && other.Props.pipeNet == comp.Props.pipeNet)
+                {
+                    other.PipeNet.RegisterComp(comp);
+                    return;
+                }
+            }
+
             // Get all thing around
             List<Thing> things = NeighbourThingsCardinalAndSameInside(comp.parent);
             // Loop through all of them, trying to find PipeNet(s) of the right resource
@@ -185,6 +198,9 @@ namespace PipeSystem
         /// <param name="comp"></param>
         public void UnregisterConnector(CompResource comp)
         {
+            if (comp.PipeNet is { Destroyed: true })
+                return;
+
             // Get all thing around
             List<Thing> things = NeighbourThingsCardinalAndSameInside(comp.parent);
             // Loop through all of them, trying to find PipeNet(s) of the right resource

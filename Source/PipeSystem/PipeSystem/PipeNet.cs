@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using RimWorld;
 using UnityEngine;
+using VEF.Utils;
 using Verse;
 
 namespace PipeSystem
@@ -132,6 +133,8 @@ namespace PipeSystem
                 overflowAmount = value;
             }
         }
+
+        public bool Destroyed => map == null || !Find.Maps.Contains(map) || !FastMapComp<PipeNetManager>.Get(map).pipeNets.Contains(this);
 
         /// <summary>
         /// Loop on all receivers, sort them in receiversOn and receiversOff.
