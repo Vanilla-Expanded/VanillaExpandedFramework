@@ -472,16 +472,19 @@ namespace PipeSystem
                     defaultLabel = "DEBUG: Empty",
                     action = () => { AmountStored = 0f; }
                 };
-                yield return new Command_Action
+                if (Props.drawStorageBar)
                 {
-                    defaultLabel = "DEBUG: Configure gauge",
-                    action = () =>
+                    yield return new Command_Action
                     {
-                        var window = Props.barData.GetConfigurationDialog(parent);
-                        window.onChanged += () => request = Props.barData.GetFillableBarRequest(parent, AmountStoredPct);
-                        Find.WindowStack.Add(window);
-                    },
-                };
+                        defaultLabel = "DEBUG: Configure gauge",
+                        action = () =>
+                        {
+                            var window = Props.barData.GetConfigurationDialog(parent);
+                            window.onChanged += () => request = Props.barData.GetFillableBarRequest(parent, AmountStoredPct);
+                            Find.WindowStack.Add(window);
+                        },
+                    };
+                }
             }
         }
 
