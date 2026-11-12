@@ -99,7 +99,6 @@ namespace PipeSystem
                 return string.Empty;
 
             var sb = new StringBuilder();
-            var arguments = InspectStringArguments().ToArray();
 
             if (PipeNet == null)
             {
@@ -107,7 +106,7 @@ namespace PipeSystem
                 if (notConnectedKey.NullOrEmpty())
                     sb.Append("PipeSystem_NotConnected".Translate(Resource.name));
                 else
-                    sb.Append(notConnectedKey.Translate(arguments));
+                    sb.Append(notConnectedKey.Translate([.. Props.pipeNet.DefaultTranslationArguments(this)]));
 
                 return sb.ToString().Trim();
             }
@@ -117,7 +116,7 @@ namespace PipeSystem
             var pipeNetStoredKey = Props.pipeNetStoredKey ?? Props.pipeNet.keyOverrides?.pipeNetStoredKey;
             if (!pipeNetStoredKey.NullOrEmpty())
             {
-                sb.Append(pipeNetStoredKey.Translate(arguments));
+                sb.Append(pipeNetStoredKey.Translate([.. InspectStringArguments()]));
             }
             else if (res.onlyShowStored)
             {
