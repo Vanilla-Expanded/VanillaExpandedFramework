@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using RimWorld;
 using UnityEngine;
+using VEF.Buildings;
 using Verse;
 using VEF.Pawns;
 
@@ -41,6 +42,22 @@ namespace VEF.Things
         public bool playerCraftedStylesOverrideOtherStyles = false;
         // Chance for the player crafted style to be applied.
         public float playerCraftedStyleChance = 1f;
+
+        // For CompAssignableToPawn
+        // Always hide the overlay showing the assigned pawn
+        public bool hideAssignedPawnOverlay = false;
+        // Hide the overlay if there's no assigned pawn
+        public bool hideUnownedAssignedPawnOverlay = false;
+
+        public override void ResolveReferences(Def parentDef)
+        {
+            base.ResolveReferences(parentDef);
+
+            if (hideAssignedPawnOverlay)
+                VanillaExpandedFramework_CompAssignableToPawn_PlayerCanSeeAssignments__Patch.DefsWithNoAssignmentOverlay.Add(parentDef);
+            else if (hideUnownedAssignedPawnOverlay)
+                VanillaExpandedFramework_CompAssignableToPawn_PlayerCanSeeAssignments__Patch.DefsWithNoUnownedAssignmentOverlay.Add(parentDef);
+        }
     }
 
     public class WeaponDrawOffsets
