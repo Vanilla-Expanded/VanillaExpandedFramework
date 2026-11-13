@@ -28,9 +28,6 @@ namespace VEF.AnimalBehaviours
 
                 if (pawn.health != null)
                 {
-
-
-
                     List<Hediff_Injury> injuries = GetInjuries(pawn, Props.bodypart);
 
                     if (injuries.Count > 0)
@@ -43,7 +40,8 @@ namespace VEF.AnimalBehaviours
 
                                 if (Props.healAll)
                                 {
-                                    if (Props.onlyTendButNotHeal) {
+                                    if (Props.onlyTendButNotHeal)
+                                    {
                                         foreach (Hediff_Injury injury in injuries)
                                         {
                                             if (injury.TendableNow())
@@ -58,7 +56,7 @@ namespace VEF.AnimalBehaviours
                                             injury.Heal(Props.healAmount);
                                         }
                                     }
-                                    
+
                                 }
                                 else
                                 {
@@ -72,8 +70,24 @@ namespace VEF.AnimalBehaviours
                                         Hediff_Injury injury = injuries.RandomElement();
                                         injury.Heal(Props.healAmount);
                                     }
+                                    
+                                    
                                 }
-
+                                if (Props.healOneTendOne)
+                                {
+                                    Hediff_Injury injury = injuries.Where(x => x.TendableNow()).RandomElement();
+                                    injury?.Tended(Props.tendMin, Props.tendMax);
+                                    Hediff_Injury injury2 = injuries.RandomElement();
+                                    injury2?.Heal(Props.healAmount);
+                                }
+                                if (Props.healRandomXTended > 0)
+                                {
+                                    List<Hediff_Injury> selectedInjuries = injuries.Where(x => x.IsTended()).InRandomOrder().Take(Props.healRandomXTended).ToList();
+                                    foreach (Hediff_Injury injury in selectedInjuries)
+                                    {
+                                        injury.Heal(10000);
+                                    }
+                                }
                             }
                         }
                     }
@@ -89,7 +103,7 @@ namespace VEF.AnimalBehaviours
             {
                 if (pawn.health.hediffSet.hediffs[i] is Hediff_Injury hediff_Injury)
                 {
-                    if(bodypart is null || hediff_Injury.Part.def == bodypart)
+                    if (bodypart is null || hediff_Injury.Part.def == bodypart)
                     {
                         if (!Props.onlyBleeding || hediff_Injury.Bleeding)
                         {
@@ -98,7 +112,7 @@ namespace VEF.AnimalBehaviours
 
                     }
 
-                                 
+
                 }
             }
             return injuries;
