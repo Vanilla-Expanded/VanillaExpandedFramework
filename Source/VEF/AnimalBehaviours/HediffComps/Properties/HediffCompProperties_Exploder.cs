@@ -12,6 +12,8 @@ namespace VEF.AnimalBehaviours
 
 
         public float explosionForce = 5.9f;
+        public int damageAmount = -1;
+        public float damagePenetration = -1;
         public DamageDef damageDef = null;
 
         public HediffCompProperties_Exploder()
