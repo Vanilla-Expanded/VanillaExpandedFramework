@@ -5,6 +5,8 @@ namespace VEF.AnimalBehaviours
 {
     public class HediffCompProperties_GiveHediffsInRangeExpanded : HediffCompProperties
     {
+        public int ticksRefresh = 1;
+        
         public float range;
 
         public TargetingParameters targetingParameters;
@@ -22,6 +24,7 @@ namespace VEF.AnimalBehaviours
         public bool needLOS = true;
 
         public bool onlyItsFaction = true;
+
 
         public HediffCompProperties_GiveHediffsInRangeExpanded()
         {
