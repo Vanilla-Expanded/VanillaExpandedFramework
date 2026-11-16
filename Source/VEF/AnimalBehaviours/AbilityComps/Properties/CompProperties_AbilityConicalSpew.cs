@@ -23,6 +23,10 @@ namespace VEF.AnimalBehaviours
 
         public bool canHitFilledCells;
 
+        public bool scaleByVerbDamage = false;
+        public float verbDamageScale = 1f;
+        public string verbLabelForScaling;
+
         public CompProperties_AbilityConicalSpew()
         {
             compClass = typeof(CompAbilityConicalSpew);

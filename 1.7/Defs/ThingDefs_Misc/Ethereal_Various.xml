@@ -13,6 +13,7 @@
 					<li>(1, 1)</li>
 				</points>
 			</progressCurve>
+			<stunDurationTicksRange>240</stunDurationTicksRange>
 		</pawnFlyer>
 	</ThingDef>
 	

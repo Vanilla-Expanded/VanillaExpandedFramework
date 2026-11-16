@@ -1,6 +1,7 @@
 ﻿
 using RimWorld;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -14,9 +15,21 @@ namespace VEF.AnimalBehaviours
 
         private Pawn Pawn => parent.pawn;
 
+        public Verb cachedVerbForScaling = null;
+
+        public Verb GetVerb()
+        {
+            if(cachedVerbForScaling == null)
+            {
+                cachedVerbForScaling= parent.pawn.meleeVerbs.GetUpdatedAvailableVerbsList(false).Where(x => x.verb.tool.label == Props.verbLabelForScaling).FirstOrDefault().verb;
+            }
+            return cachedVerbForScaling;
+
+        }
+
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
-            GenExplosion.DoExplosion(target.Cell, parent.pawn.MapHeld, 0f, Props.damageDef, Pawn, postExplosionSpawnThingDef: Props.filthDef, damAmount: Props.damAmount, armorPenetration: Props.penetration, explosionSound: null, weapon: null, projectile: null, intendedTarget: null, postExplosionSpawnChance: Props.filthChance, postExplosionSpawnThingCount: 1, postExplosionGasType: null, applyDamageToExplosionCellsNeighbors: false, preExplosionSpawnThingDef: null, preExplosionSpawnChance: 0f, preExplosionSpawnThingCount: 1, damageFalloff: false, direction: null, ignoredThings: null, affectedAngle: null, doVisualEffects: false, propagationSpeed: 0.6f, excludeRadius: 0f, doSoundEffects: false, postExplosionSpawnThingDefWater: null, screenShakeFactor: 1f, overrideCells: AffectedCells(target));
+            GenExplosion.DoExplosion(target.Cell, parent.pawn.MapHeld, 0f, Props.damageDef, Pawn, postExplosionSpawnThingDef: Props.filthDef, damAmount: Props.scaleByVerbDamage && GetVerb()?.tool != null ? (int)(GetVerb().tool.power * Props.verbDamageScale) : Props.damAmount, armorPenetration: Props.penetration, explosionSound: null, weapon: null, projectile: null, intendedTarget: null, postExplosionSpawnChance: Props.filthChance, postExplosionSpawnThingCount: 1, postExplosionGasType: null, applyDamageToExplosionCellsNeighbors: false, preExplosionSpawnThingDef: null, preExplosionSpawnChance: 0f, preExplosionSpawnThingCount: 1, damageFalloff: false, direction: null, ignoredThings: null, affectedAngle: null, doVisualEffects: false, propagationSpeed: 0.6f, excludeRadius: 0f, doSoundEffects: false, postExplosionSpawnThingDefWater: null, screenShakeFactor: 1f, overrideCells: AffectedCells(target));
             base.Apply(target, dest);
         }
 
