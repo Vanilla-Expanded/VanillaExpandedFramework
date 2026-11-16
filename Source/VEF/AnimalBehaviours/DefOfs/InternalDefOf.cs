@@ -13,11 +13,16 @@ namespace VEF.AnimalBehaviours
         public static JobDef VEF_IngestWeird;
         public static JobDef VEF_FleeAndCowerShort;
 
+        public static EffecterDef Berserk;
+
         public static HediffDef VEF_LightSustenance;
 
         public static DamageDef VEF_SecondaryAcidBurn;
 
         public static ThingDef Gun_Autopistol;
+        public static ThingDef VEF_Charger;
+
+        public static RulePackDef VEF_DamageEvent_Charge;
 
         public static StatDef VEF_AnimalProductYieldFactor;
         public static StatDef VEF_AnimalProductIntervalFactor;

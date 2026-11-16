@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  
+
+  <RulePackDef>
+    <defName>VEF_DamageEvent_Charge</defName>
+    <include>
+      <li>DamageEvent_Include</li>
+      <li>Maneuver_Scratch_Damage</li>
+      <li>Maneuver_Smash_Damage</li>
+    </include>
+    <rulePack>
+      <rulesStrings>
+        <li>damage_source->A [charging] animal [crushed]</li>
+
+        <li>destroyed_present(p=3)->tearing off</li>
+
+        <li>charging->charging</li>
+        <li>charging->passing</li>
+
+        <li>crushed(p=8)->crushed</li>
+        <li>crushed->pulverized</li>
+        <li>crushed->squashed</li>
+      </rulesStrings>
+    </rulePack>
+  </RulePackDef>
+</Defs>

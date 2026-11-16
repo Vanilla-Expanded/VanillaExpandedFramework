@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<ThingDef ParentName="PawnFlyerBase">
+		<defName>VEF_Charger</defName>
+		<thingClass>VEF.AnimalBehaviours.Pawn_Charger</thingClass>
+		<pawnFlyer>
+			<flightDurationMin>2</flightDurationMin>
+			<flightSpeed>30</flightSpeed>
+			<heightFactor>0</heightFactor>
+			<progressCurve>
+				<points>
+					<li>(0, 0)</li>
+					<li>(1, 1)</li>
+				</points>
+			</progressCurve>
+		</pawnFlyer>
+	</ThingDef>
+	
+</Defs>
