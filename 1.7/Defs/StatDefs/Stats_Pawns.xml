@@ -275,7 +275,7 @@
 	<StatDef>
 		<defName>VRE_HealthFromGenesScale</defName>
 		<label>base health multiplier</label>
-		<description>Base health multiplier of this animal due to its genes.</description>
+		<description>Base health multiplier of this animal due to its genes and attributes.</description>
 		<category>PawnHealth</category>
 		<defaultBaseValue>1</defaultBaseValue>
 		<minValue>0.1</minValue>
