@@ -34,10 +34,7 @@ namespace VEF.AnimalGenes
               postfix: new HarmonyMethod(typeof(VEF_AnimalGenes_ThingDefGenerator_Corpses_GenerateCorpseDef_Patch), "HandleCorpses"));
 
             harm.Patch(AccessTools.Method(typeof(Widgets), "DefIcon"),
-             postfix: new HarmonyMethod(typeof(VEF_AnimalGenes_Widgets_DefIcon_Patch), "DoGeneDefIcon"));
-
-            harm.Patch(AccessTools.Method(typeof(Hediff_Pregnant), "DoBirthSpawn"),
-                transpiler: new HarmonyMethod(typeof(VEF_AnimalGenes_Hediff_Pregnant_DoBirthSpawn_Patch), "AddCrossbreedGenes"));
+             postfix: new HarmonyMethod(typeof(VEF_AnimalGenes_Widgets_DefIcon_Patch), "DoGeneDefIcon"));     
 
             harm.Patch(AccessTools.Method(typeof(AutoSlaughterManager), "CanEverAutoSlaughter"),
              postfix: new HarmonyMethod(typeof(VEF_AnimalGenes_AutoSlaughterManager_CanEverAutoSlaughter_Patch), "ToggleAutoSlaughter"));
