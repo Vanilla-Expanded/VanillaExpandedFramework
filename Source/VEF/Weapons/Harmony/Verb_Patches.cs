@@ -328,7 +328,7 @@ namespace VEF.Weapons
             {
                 return;
             }
-            if (__result is false && curPawn != null)
+            if (__result is false && curPawn != null && (pawn == null || pawn == curPawn))
             {
                 var verbToUse = curPawn.GetMeleeVerb();
                 var meleeReachRange = curPawn.GetMeleeReachRange(verbToUse);
