@@ -12,13 +12,39 @@ namespace PipeSystem
         private Process currentProcess;
         internal ThingWithComps parent;
 
+        private const int AvailabilityCheckInterval = 250;
+        private int nextAvailabilityCheck;
+
         /// <summary>
-        /// Return first def that can be done
+        /// Return first def that can be done. The chosen bill is kept until it ends, but while
+        /// it is idle and its ingredients are not on the map, the first bill in list order
+        /// whose ingredients are takes its place, so a missing ingredient on the first bill
+        /// does not stop the ones below it.
         /// </summary>
         public Process FirstCanDo
         {
             get
             {
+                if (currentProcess != null && parent != null && parent.Spawned)
+                {
+                    int ticks = Find.TickManager.TicksGame;
+                    if (ticks >= nextAvailabilityCheck)
+                    {
+                        nextAvailabilityCheck = ticks + AvailabilityCheckInterval;
+                        if (currentProcess.IsIdle && !currentProcess.IngredientsOnMap(parent.Map))
+                        {
+                            for (int i = 0; i < processes.Count; i++)
+                            {
+                                var process = processes[i];
+                                if (process != currentProcess && process.ShouldDoNow() && process.IngredientsOnMap(parent.Map))
+                                {
+                                    currentProcess = process;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
                 if (currentProcess == null)
                 {
                     for (int i = 0; i < processes.Count; i++)
