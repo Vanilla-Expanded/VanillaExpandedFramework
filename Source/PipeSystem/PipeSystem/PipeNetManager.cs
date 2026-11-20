@@ -133,7 +133,7 @@ namespace PipeSystem
             {
                 if (comp.parent.AllComps[i] is CompResource other
                     && other != comp
-                    && other.PipeNet != null
+                    && other.PipeNet is { Destroyed: false }
                     && other.Props.pipeNet == comp.Props.pipeNet)
                 {
                     other.PipeNet.RegisterComp(comp);
