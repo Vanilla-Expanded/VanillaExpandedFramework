@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using System.Reflection;
 using Verse;
 
 namespace KCSG
@@ -9,7 +10,7 @@ namespace KCSG
         static HarmonyInit()
         {
             Harmony harmonyInstance = new Harmony("Kikohi.KCSG");
-            harmonyInstance.PatchAll();
+            harmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
         }
     }
 }

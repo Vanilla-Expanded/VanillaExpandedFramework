@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using System.Reflection;
 using Verse;
 
 namespace PipeSystem
@@ -9,7 +10,7 @@ namespace PipeSystem
         static HarmonyInit()
         {
             Harmony harmonyInstance = new Harmony("Kikohi.PipeSystem");
-            harmonyInstance.PatchAll();
+            harmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
         }
     }
 }
