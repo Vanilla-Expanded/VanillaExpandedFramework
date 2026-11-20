@@ -365,6 +365,62 @@ namespace PipeSystem
         }
 
         /// <summary>
+        /// Never started, nothing loaded and no pawn bringing anything: the stack can move to
+        /// another bill without losing anything.
+        /// </summary>
+        public bool IsIdle
+        {
+            get
+            {
+                if (tickLeft != ticksOrQualityTicks || progress > 0f)
+                    return false;
+                for (int i = 0; i < ingredientsOwners.Count; i++)
+                {
+                    var owner = ingredientsOwners[i];
+                    if (owner.Count > 0 || owner.BeingFilled)
+                        return false;
+                }
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Every ingredient still needed has some unforbidden thing of its kind on the map.
+        /// Pipe net ingredients are not judged here and count as available.
+        /// </summary>
+        public bool IngredientsOnMap(Map map)
+        {
+            for (int i = 0; i < ingredientsOwners.Count; i++)
+            {
+                var owner = ingredientsOwners[i];
+                if (!owner.Require)
+                    continue;
+                if (owner.ThingDef != null)
+                {
+                    if (!AnyOnMap(owner.ThingDef, map))
+                        return false;
+                }
+                else if (owner.ThingCategoryDef != null)
+                {
+                    if (!owner.ThingCategoryDef.DescendantThingDefs.Any(d => AnyOnMap(d, map)))
+                        return false;
+                }
+            }
+            return true;
+        }
+
+        private static bool AnyOnMap(ThingDef thingDef, Map map)
+        {
+            var things = map.listerThings.ThingsOfDef(thingDef);
+            for (int i = 0; i < things.Count; i++)
+            {
+                if (things[i].Spawned && !things[i].IsForbidden(Faction.OfPlayer))
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Setup ingredientsOwners
         /// </summary>
         public void Setup()
