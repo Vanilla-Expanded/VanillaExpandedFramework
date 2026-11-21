@@ -231,9 +231,12 @@ namespace PipeSystem
         {
             PipeSystemDebug.Message("Removing pipe net");
             map.GetComponent<PipeNetManager>().pipeNets.Remove(this);
-            for (int i = 0; i < connectors.Count; i++)
+            for (int i = connectors.Count - 1; i >= 0; i--)
             {
-                UnregisterComp(connectors[i]);
+                var connector = connectors[i];
+                UnregisterComp(connector);
+                if (connector.PipeNet == this)
+                    connector.PipeNet = null;
             }
         }
 

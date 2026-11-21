@@ -156,7 +156,7 @@ namespace PipeSystem
                             && compR != comp
                             && compR.TransmitResourceNow
                             && compR.Props.pipeNet == comp.Props.pipeNet
-                            && compR.PipeNet is PipeNet p
+                            && compR.PipeNet is { Destroyed: false } p
                             && !foundNets.Contains(p))
                         {
                             foundNets.Add(p);
@@ -198,7 +198,7 @@ namespace PipeSystem
         /// <param name="comp"></param>
         public void UnregisterConnector(CompResource comp)
         {
-            if (comp.PipeNet is { Destroyed: true })
+            if (comp.PipeNet is null or { Destroyed: true })
                 return;
 
             // Get all thing around
@@ -224,15 +224,11 @@ namespace PipeSystem
                 }
             }
 
-            var overflow = 0f;
-            if (comp.PipeNet != null)
-            {
-                // Grab (and set to 0) the overflow from the network
-                overflow = comp.PipeNet.OverflowAmount;
-                comp.PipeNet.OverflowAmount = 0;
-                // Destroy the PipeNet
-                comp.PipeNet.Destroy();
-            }
+            // Grab (and set to 0) the overflow from the network
+            var overflow = comp.PipeNet.OverflowAmount;
+            comp.PipeNet.OverflowAmount = 0;
+            // Destroy the PipeNet
+            comp.PipeNet.Destroy();
             pipeNetsCount--;
             // Grab a remaining connector to push the overflow to, if any
             var remainingConnector = foundConnectors.FirstOrDefault();
@@ -280,12 +276,12 @@ namespace PipeSystem
                 queue.Enqueue(rootComp);
                 treated.Add(rootComp);
                 // While queue isn't empty
-                while (queue.Any())
+                while (queue.Count != 0)
                 {
                     CompResource current = queue.Dequeue();
                     newNet.Add(current);
                     // Get neigbours things
-                    var things = NeighbourThingsCardinal(current.parent);
+                    var things = NeighbourThingsCardinalAndSameInside(current.parent);
                     for (int i = 0; i < things.Count; i++)
                     {
                         var thing = things[i];

@@ -180,7 +180,7 @@ namespace PipeSystem
             {
                 var resourceNeededKey = Props.resourceNeededKey ?? Props.pipeNet.keyOverrides?.resourceNeededKey;
                 if (resourceNeededKey.NullOrEmpty())
-                    sb.Append($"{"PipeSystem_ResourceNeeded".Translate(Resource.name)} {PipeNet.def.FormatResourceAmount(Consumption / PipeNetManager.PipeNetTickInterval * GenDate.TicksPerDay, this)} {Resource.unit}/d");
+                    sb.Append($"{"PipeSystem_ResourceNeeded".Translate(Resource.name)} {Props.pipeNet.FormatResourceAmount(Consumption / PipeNetManager.PipeNetTickInterval * GenDate.TicksPerDay, this)} {Resource.unit}/d");
                 else
                     sb.Append(resourceNeededKey.Translate(arguments));
             }
@@ -188,7 +188,7 @@ namespace PipeSystem
             {
                 var resourceOutputKey = Props.resourceOutputKey ?? Props.pipeNet.keyOverrides?.resourceOutputKey;
                 if (resourceOutputKey.NullOrEmpty())
-                    sb.Append($"{"PipeSystem_ResourceOutput".Translate(Resource.name)} {PipeNet.def.FormatResourceAmount(ResourceOn ? (-Consumption / PipeNetManager.PipeNetTickInterval) * GenDate.TicksPerDay : 0f, this)} {Resource.unit}/d");
+                    sb.Append($"{"PipeSystem_ResourceOutput".Translate(Resource.name)} {Props.pipeNet.FormatResourceAmount(ResourceOn ? (-Consumption / PipeNetManager.PipeNetTickInterval) * GenDate.TicksPerDay : 0f, this)} {Resource.unit}/d");
                 else
                     sb.Append(resourceOutputKey.Translate(arguments));
             }

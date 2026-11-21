@@ -381,7 +381,7 @@ namespace PipeSystem
             {
                 var resourceStoredKey = Props.resourceStoredKey ?? Props.pipeNet.keyOverrides?.resourceStoredKey;
                 if (resourceStoredKey.NullOrEmpty())
-                    sb.AppendInNewLine($"{"PipeSystem_ResourceStored".Translate(Resource.name)} {PipeNet.def.FormatResourceAmount(amountStored, this)} / {PipeNet.def.FormatResourceAmount(StorageCapacity)} {Resource.unit}"); // Show the amount stored
+                    sb.AppendInNewLine($"{"PipeSystem_ResourceStored".Translate(Resource.name)} {Props.pipeNet.FormatResourceAmount(amountStored, this)} / {Props.pipeNet.FormatResourceAmount(StorageCapacity)} {Resource.unit}"); // Show the amount stored
                 else
                     sb.AppendInNewLine(resourceStoredKey.Translate(inspectStringArguments));
             }
