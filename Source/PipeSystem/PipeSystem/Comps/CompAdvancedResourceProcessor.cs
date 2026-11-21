@@ -30,6 +30,7 @@ namespace PipeSystem
         public CompFlickable flickable;
         public CompPowerTrader compPower;
         public CompRefuelable compRefuelable;
+        public List<CompResourceTrader> compResourceTraders;
         private CompWasteProducer wasteProducer;
         private CompThingContainer container;
 
@@ -85,7 +86,8 @@ namespace PipeSystem
             {
                 return (flickable == null || flickable.SwitchIsOn)
                        && (compPower == null || compPower.PowerOn)
-                       && (compRefuelable == null || compRefuelable.HasFuel);
+                       && (compRefuelable == null || compRefuelable.HasFuel)
+                       && (compResourceTraders.NullOrEmpty() || !Enumerable.Any(compResourceTraders, t => !t.ResourceOn));
             }
         }
 
@@ -271,6 +273,8 @@ namespace PipeSystem
             flickable = parent.GetComp<CompFlickable>();
             compPower = parent.GetComp<CompPowerTrader>();
             compRefuelable = parent.GetComp<CompRefuelable>();
+            // Get all ResourceTrader consumers
+            compResourceTraders = [.. parent.GetComps<CompResourceTrader>().Where(x => x.Consumption >= 0)];
             // Setup FillableBarRequest
             if (Props.showProgressBar)
             {
