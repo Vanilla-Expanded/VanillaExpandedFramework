@@ -25,13 +25,15 @@ namespace VEF.AnimalGenes
             Pawn father = ___fertilizedBy;
             PawnKindDef pawn = compHatcher.Props.hatcherPawn;
 
-            if (__result?.TryGetComp<CompAnimalGenes>() is not CompAnimalGenes comp) return;
+            if (__result.TryGetComp<CompAnimalGenes>() is not CompAnimalGenes comp) return;
             if (mother?.TryGetComp<CompAnimalGenes>() is  not CompAnimalGenes compMother) return;
           
-            HashSet<AnimalGeneFamilyTagDef> childFamilies = comp.genes.Select(x => x.familyTag).ToHashSet();
+            var defaultGenes = CompAnimalGenes.FindFeratype(pawn)?.animalGenes;
+            HashSet<AnimalGeneFamilyTagDef> childFamilies = (defaultGenes ?? comp.genes).Select(x => x.familyTag).ToHashSet();
             if (father?.TryGetComp<CompAnimalGenes>() is not CompAnimalGenes compFather)
             {
-                comp.genes = compMother.genes.ToList();
+                if (compMother.HasAssignedGenes)
+                    comp.SetInheritedGenes(compMother.genes);
                 return;
             }
 
@@ -61,7 +63,7 @@ namespace VEF.AnimalGenes
                 pullFactor = Math.Min(Math.Abs(avgStability) / WorldComponent_AnimalGenes.maxStabilityPenalty, 1);
             }
 
-            comp.genes.Clear();
+            var inheritedGenes = new List<AnimalGeneDef>();
 
             foreach (AnimalGeneFamilyTagDef familyTag in geneFamilies)
             {
@@ -100,14 +102,16 @@ namespace VEF.AnimalGenes
 
                 if (inheritedGene != null)
                 {
-                    AnimalGeneUtility.AddGene(comp, inheritedGene);
+                    inheritedGenes.Add(inheritedGene);
                 }
 
             }
 
-            // Random mutations handling
-
-            AnimalGeneUtility.HandleMutations(comp, __result);
+            if (compMother.HasAssignedGenes || compFather.HasAssignedGenes)
+            {
+                comp.SetInheritedGenes(inheritedGenes);
+                AnimalGeneUtility.HandleMutations(comp, __result);
+            }
 
         }
     }

@@ -10,6 +10,34 @@ namespace VEF.AnimalBehaviours;
 [HarmonyPatch(typeof(CompEggLayer), nameof(CompEggLayer.ProduceEgg))]
 public class VanillaExpandedFramework_CompEggLayer_ProduceEgg
 {
+    [HarmonyPostfix]
+    public static void AssignHatchlingKinds(CompEggLayer __instance, Thing __result)
+    {
+        if (__result == null || __result.stackCount <= 1 ||
+            __result.TryGetComp<CompCrossbredEggs>() is not { } clutch ||
+            __result.TryGetComp<CompHatcher>() is not { } hatcher ||
+            hatcher.otherParent is not { } father)
+            return;
+
+        var extension = GetCrossbreedExtension(__instance, father);
+        if (extension == null || extension.specificCombinationsOverride != null ||
+            (extension.crossBreedKindDef != FatherOrMother.Random &&
+             extension.crossBreedKindDef != FatherOrMother.OtherPawnKind))
+            return;
+
+        // ProduceEgg already chose the physical egg def. Use that roll for the first egg
+        // and roll the rest once the final clutch size is known.
+        var defaultKind = hatcher.Props.hatcherPawn;
+        var kinds = new List<PawnKindDef>(__result.stackCount) { defaultKind };
+        for (int i = 1; i < __result.stackCount; i++)
+        {
+            var eggDef = ModifyCrossbreedEgg(__instance, father);
+            kinds.Add(eggDef?.GetCompProperties<CompProperties_Hatcher>()?.hatcherPawn ?? defaultKind);
+        }
+        if (kinds.Exists(kind => kind != defaultKind))
+            clutch.SetKinds(kinds);
+    }
+
     [HarmonyTranspiler]
     public static IEnumerable<CodeInstruction> ModifyCrossbreedEggThingDef(IEnumerable<CodeInstruction> codeInstructions)
     {
@@ -42,15 +70,16 @@ public class VanillaExpandedFramework_CompEggLayer_ProduceEgg
 
     public static ThingDef ModifyCrossbreedEgg(CompEggLayer comp, Pawn father)
     {
-        var extension = comp.parent.def.GetModExtension<AnimalCrossbreedExtension>();
-        PawnKindDef mother = DefDatabase<PawnKindDef>.AllDefsListForReading.Where(x => x.race == comp.parent.def).FirstOrDefault();
-        extension ??= father?.def.GetModExtension<AnimalCrossbreedExtension>();
-        if (extension is null)
-        {
+        var extension = GetCrossbreedExtension(comp, father);
+        if (extension == null || father == null)
             return comp.Props.eggFertilizedDef;
-        }
-        if (extension.specificCombinationsOverride != null && father != null && mother != null)
+
+        if (extension.specificCombinationsOverride != null)
         {
+            var mother = DefDatabase<PawnKindDef>.AllDefsListForReading.FirstOrDefault(kind => kind.race == comp.parent.def);
+            if (mother == null)
+                return comp.Props.eggFertilizedDef;
+
             foreach (SpecificCombination combination in extension.specificCombinationsOverride.combinations)
             {
                 if ((mother == combination.firstparent && father.kindDef == combination.secondparent) ||
@@ -67,7 +96,7 @@ public class VanillaExpandedFramework_CompEggLayer_ProduceEgg
                 case FatherOrMother.AlwaysFather:
                     return father.GetComp<CompEggLayer>()?.Props.eggFertilizedDef ?? comp.Props.eggFertilizedDef;
                 case FatherOrMother.Random:
-                    return Rand.Bool ? comp.Props.eggFertilizedDef : father.GetComp<CompEggLayer>()?.Props.eggFertilizedDef ?? comp.Props.eggFertilizedDef;
+                    return Rand.Chance(extension.weightForMother) ? comp.Props.eggFertilizedDef : father.GetComp<CompEggLayer>()?.Props.eggFertilizedDef ?? comp.Props.eggFertilizedDef;
                 case FatherOrMother.OtherPawnKind:
                     {
                         PawnKindDef randomPawn = null;
@@ -81,6 +110,10 @@ public class VanillaExpandedFramework_CompEggLayer_ProduceEgg
         }
         return comp.Props.eggFertilizedDef;
 
-        ThingDef GetEggForPawnKind(PawnKindDef kindDef) => kindDef.race?.GetCompProperties<CompProperties_EggLayer>()?.eggFertilizedDef;
+        ThingDef GetEggForPawnKind(PawnKindDef kindDef) => kindDef?.race?.GetCompProperties<CompProperties_EggLayer>()?.eggFertilizedDef;
     }
+
+    private static AnimalCrossbreedExtension GetCrossbreedExtension(CompEggLayer comp, Pawn father) =>
+        comp.parent.def.GetModExtension<AnimalCrossbreedExtension>() ??
+        father?.def.GetModExtension<AnimalCrossbreedExtension>();
 }
