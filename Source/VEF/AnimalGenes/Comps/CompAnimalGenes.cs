@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
 using UnityEngine;
 using VEF.AnimalGenes;
@@ -14,6 +15,7 @@ namespace VEF.AnimalGenes
         public List<AnimalGeneDef> genes = new List<AnimalGeneDef>();
         public float cachedLifespanFactor = -1;
         private bool feratypeApplied;
+        private bool inheritedGenesAssigned;
         public bool isAlpha;
         public int soloTicks;
         public int ticksSinceLastDisease = 0;
@@ -21,6 +23,7 @@ namespace VEF.AnimalGenes
         public bool autoslaughterActive = false;
 
         public CompProperties_AnimalGenes Props => (CompProperties_AnimalGenes)props;
+        public bool HasAssignedGenes => inheritedGenesAssigned || genes.Count != 0;
 
         public float LifeSpanFactor
         {
@@ -45,10 +48,7 @@ namespace VEF.AnimalGenes
             base.PostSpawnSetup(respawningAfterLoad);
    
             if (!respawningAfterLoad && !feratypeApplied)
-            {
                 ApplyFeratype();
-                feratypeApplied = true;
-            }
 
         }
 
@@ -56,24 +56,27 @@ namespace VEF.AnimalGenes
         {
             Pawn pawn = parent as Pawn;
             PawnKindDef kindDef = pawn?.kindDef ?? parent.TryGetComp<CompHatcher>()?.Props.hatcherPawn;
+            feratype ??= FindFeratype(kindDef);
+            feratypeApplied = true;
 
-            foreach (FeratypeDef feratypeIterator in DefDatabase<FeratypeDef>.AllDefsListForReading)
-            {
-                if (kindDef != null)
-                {
-                    if (feratypeIterator.race == kindDef)
-                    {
-                        feratype = feratypeIterator;
-                        foreach (AnimalGeneDef gene in feratype.animalGenes)
-                        {
-                            AnimalGeneUtility.AddGene(this, gene);
-                        }
-                        AnimalGeneUtility.HandleMutations(this, pawn);
-                    }
-                }
+            // Eggs and hatchlings can receive their genes before they spawn.
+            if (feratype == null || HasAssignedGenes)
+                return;
 
-            }
-            
+            foreach (AnimalGeneDef gene in feratype.animalGenes)
+                AnimalGeneUtility.AddGene(this, gene);
+            AnimalGeneUtility.HandleMutations(this, pawn);
+        }
+
+        internal static FeratypeDef FindFeratype(PawnKindDef kindDef) =>
+            kindDef == null ? null : DefDatabase<FeratypeDef>.AllDefsListForReading.FirstOrDefault(def => def.race == kindDef);
+
+        public void SetInheritedGenes(IEnumerable<AnimalGeneDef> inheritedGenes)
+        {
+            // Copy the list so the egg and its hatchlings can change independently.
+            genes = inheritedGenes.Distinct().ToList();
+            inheritedGenesAssigned = true;
+            ResetCaches();
         }
 
         public void ResetCaches()
@@ -86,6 +89,7 @@ namespace VEF.AnimalGenes
             base.PostExposeData();
             Scribe_Defs.Look(ref feratype, "feratype");
             Scribe_Values.Look(ref feratypeApplied, "feratypeApplied");
+            Scribe_Values.Look(ref inheritedGenesAssigned, "inheritedGenesAssigned");
             Scribe_Values.Look(ref ticksSinceLastDisease, "ticksSinceLastDisease",0);
             Scribe_Collections.Look(ref genes, "animalGenes", LookMode.Def);
             Scribe_Values.Look(ref isAlpha, "isAlpha", false);
@@ -93,12 +97,9 @@ namespace VEF.AnimalGenes
             Scribe_Values.Look(ref autoslaughterActive, "autoslaughterActive", false);
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
-                if (genes.NullOrEmpty())
-                {
-                    genes = new List<AnimalGeneDef>();
+                genes ??= new List<AnimalGeneDef>();
+                if (!feratypeApplied || (!inheritedGenesAssigned && genes.Count == 0))
                     ApplyFeratype();
-                    feratypeApplied = true;
-                }
             }
         }
 
