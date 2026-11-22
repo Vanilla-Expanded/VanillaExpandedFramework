@@ -25,7 +25,7 @@ namespace VEF.AnimalGenes
             Pawn father = ___fertilizedBy;
             PawnKindDef pawn = compHatcher.Props.hatcherPawn;
 
-            if (__result?.TryGetComp<CompAnimalGenes>() is not CompAnimalGenes comp) return;
+            if (__result.TryGetComp<CompAnimalGenes>() is not CompAnimalGenes comp) return;
             if (mother?.TryGetComp<CompAnimalGenes>() is  not CompAnimalGenes compMother) return;
           
             var defaultGenes = CompAnimalGenes.FindFeratype(pawn)?.animalGenes;
@@ -106,8 +106,6 @@ namespace VEF.AnimalGenes
                 }
 
             }
-
-            // Random mutations handling
 
             if (compMother.HasAssignedGenes || compFather.HasAssignedGenes)
             {
