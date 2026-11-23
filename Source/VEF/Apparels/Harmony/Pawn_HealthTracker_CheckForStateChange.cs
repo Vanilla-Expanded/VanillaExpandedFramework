@@ -22,7 +22,7 @@ namespace VEF.Apparels
                 if (!__instance.Downed && ___pawn.OffHandShield() is Apparel shield)
                 {
                     // Not enough hands to use shields
-                    if (!___pawn.CanUseShields())
+                    if (!___pawn.CanUseShields() && ___pawn.SpawnedOrAnyParentSpawned)
                         ___pawn.apparel.TryDrop(shield, out Apparel s, ___pawn.PositionHeld);
 
                     // Cannot manipulate
