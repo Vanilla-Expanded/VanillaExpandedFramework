@@ -19,7 +19,7 @@ namespace VEF.AnimalGenes
         {
             if (__instance.TemperatureDamaged)
             {
-                CompAnimalGenes comp = __instance.parent.TryGetComp<CompAnimalGenes>();
+                CompAnimalGenes comp = __instance.parent.AnimalGenes;
                 if (comp != null) { 
                     comp.active = false;
                 }

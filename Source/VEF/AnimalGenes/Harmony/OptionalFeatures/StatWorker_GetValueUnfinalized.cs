@@ -15,7 +15,7 @@ namespace VEF.AnimalGenes
             Pawn pawn = req.Thing as Pawn;
             if (pawn != null)
             {
-                if (pawn?.TryGetComp<CompAnimalGenes>() is CompAnimalGenes comp)
+                if (pawn?.AnimalGenes is CompAnimalGenes comp)
                 {
 
                     List<AnimalGeneDef> genesListForReading = comp.genes;

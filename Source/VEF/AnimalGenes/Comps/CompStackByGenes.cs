@@ -9,9 +9,9 @@ namespace VEF.AnimalGenes
 
         public override bool AllowStackWith(Thing other)
         {
-            if (this.parent?.TryGetComp<CompAnimalGenes>() is not CompAnimalGenes compThisEgg) { return base.AllowStackWith(other); }
+            if (this.parent?.AnimalGenes is not CompAnimalGenes compThisEgg) { return base.AllowStackWith(other); }
           
-            if (other?.TryGetComp<CompAnimalGenes>() is not CompAnimalGenes compOtherEgg) { return base.AllowStackWith(other); }
+            if (other?.AnimalGenes is not CompAnimalGenes compOtherEgg) { return base.AllowStackWith(other); }
            
             bool same = true;
 

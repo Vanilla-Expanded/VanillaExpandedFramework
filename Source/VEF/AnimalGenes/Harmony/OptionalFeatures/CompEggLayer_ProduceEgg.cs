@@ -25,12 +25,12 @@ namespace VEF.AnimalGenes
             Pawn father = ___fertilizedBy;
             PawnKindDef pawn = compHatcher.Props.hatcherPawn;
 
-            if (__result.TryGetComp<CompAnimalGenes>() is not CompAnimalGenes comp) return;
-            if (mother?.TryGetComp<CompAnimalGenes>() is  not CompAnimalGenes compMother) return;
+            if (__result.AnimalGenes is not CompAnimalGenes comp) return;
+            if (mother?.AnimalGenes is  not CompAnimalGenes compMother) return;
           
             var defaultGenes = CompAnimalGenes.FindFeratype(pawn)?.animalGenes;
             HashSet<AnimalGeneFamilyTagDef> childFamilies = (defaultGenes ?? comp.genes).Select(x => x.familyTag).ToHashSet();
-            if (father?.TryGetComp<CompAnimalGenes>() is not CompAnimalGenes compFather)
+            if (father?.AnimalGenes is not CompAnimalGenes compFather)
             {
                 if (compMother.HasAssignedGenes)
                     comp.SetInheritedGenes(compMother.genes);

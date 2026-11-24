@@ -49,11 +49,11 @@ namespace VEF.AnimalGenes
         public static void AdjustGenes(Pawn pawn, Pawn mother, Pawn father)
         {
            
-            if (pawn.TryGetComp<CompAnimalGenes>() is null) { return; }
-            CompAnimalGenes comp = pawn.TryGetComp<CompAnimalGenes>();
+            if (pawn.AnimalGenes is null) { return; }
+            CompAnimalGenes comp = pawn.AnimalGenes;
             if (comp is null) { return; }
-            if (mother?.TryGetComp<CompAnimalGenes>() is null) { return; }
-            CompAnimalGenes compMother = mother.TryGetComp<CompAnimalGenes>();
+            if (mother?.AnimalGenes is null) { return; }
+            CompAnimalGenes compMother = mother.AnimalGenes;
             if (compMother is null) { return; }
 
             bool useFather = true;
@@ -70,7 +70,7 @@ namespace VEF.AnimalGenes
                 comp.genes = compMother.genes.ToList();
                 return;
             }
-            CompAnimalGenes compFather = father.TryGetComp<CompAnimalGenes>();
+            CompAnimalGenes compFather = father.AnimalGenes;
             if (useFather && compFather is null) { return; }
 
             List<AnimalGeneDef> motherGenes = compMother.genes;
@@ -156,7 +156,7 @@ namespace VEF.AnimalGenes
         public static SimpleCurve AdjustLitterSize(SimpleCurve existingCurve, Pawn mother)
         {
 
-            if (mother?.TryGetComp<CompAnimalGenes>() is not CompAnimalGenes comp) { return existingCurve; }
+            if (mother?.AnimalGenes is not CompAnimalGenes comp) { return existingCurve; }
 
             foreach (AnimalGeneDef motherAnimalGene in comp.genes)
             {

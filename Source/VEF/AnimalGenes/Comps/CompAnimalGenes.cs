@@ -52,6 +52,14 @@ namespace VEF.AnimalGenes
 
         }
 
+        public override void PostPostMake()
+        {
+            base.PostPostMake();
+            
+            parent.AnimalGenes = this;
+            
+        }
+
         public void ApplyFeratype()
         {
             Pawn pawn = parent as Pawn;

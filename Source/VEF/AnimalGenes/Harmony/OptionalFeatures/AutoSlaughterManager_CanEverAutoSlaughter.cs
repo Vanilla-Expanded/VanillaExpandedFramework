@@ -19,7 +19,7 @@ namespace VEF.AnimalGenes
         {
             if (__result)
             {
-                CompAnimalGenes comp = animal.TryGetComp<CompAnimalGenes>();
+                CompAnimalGenes comp = animal.AnimalGenes;
                 if (comp != null)
                 {
                     __result=!comp.autoslaughterActive;

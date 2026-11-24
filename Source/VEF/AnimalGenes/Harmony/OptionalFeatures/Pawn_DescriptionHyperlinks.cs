@@ -26,7 +26,7 @@ namespace VEF.AnimalGenes
             {
                 yield return value;
             }
-            if(__instance.TryGetComp<CompAnimalGenes>() is CompAnimalGenes comp)
+            if(__instance.AnimalGenes is CompAnimalGenes comp)
             {
                 foreach (AnimalGeneDef gene in comp.genes)
                 {
