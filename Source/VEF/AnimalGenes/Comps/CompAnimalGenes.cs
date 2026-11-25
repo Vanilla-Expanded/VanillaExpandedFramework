@@ -52,10 +52,10 @@ namespace VEF.AnimalGenes
 
         }
 
-        public override void PostPostMake()
+        public override void Initialize(CompProperties props)
         {
-            base.PostPostMake();
-            
+            base.Initialize(props);
+
             parent.AnimalGenes = this;
             
         }
@@ -67,7 +67,6 @@ namespace VEF.AnimalGenes
             feratype ??= FindFeratype(kindDef);
             feratypeApplied = true;
 
-            // Eggs and hatchlings can receive their genes before they spawn.
             if (feratype == null || HasAssignedGenes)
                 return;
 
@@ -81,7 +80,6 @@ namespace VEF.AnimalGenes
 
         public void SetInheritedGenes(IEnumerable<AnimalGeneDef> inheritedGenes)
         {
-            // Copy the list so the egg and its hatchlings can change independently.
             genes = inheritedGenes.Distinct().ToList();
             inheritedGenesAssigned = true;
             ResetCaches();
@@ -192,6 +190,18 @@ namespace VEF.AnimalGenes
             base.CompTick();
         }
 
-        
+        public override void PostSplitOff(Thing piece)
+        {
+            base.PostSplitOff(piece);
+            if (piece == parent || !HasAssignedGenes || parent.TryGetComp<CompHatcher>() == null ||
+                piece.TryGetComp<CompAnimalGenes>() is not { } splitGenes)
+                return;
+
+            splitGenes.SetInheritedGenes(genes);
+        }
+
+
+
+
     }
 }
