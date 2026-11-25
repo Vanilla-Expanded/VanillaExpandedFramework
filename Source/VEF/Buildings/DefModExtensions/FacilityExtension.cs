@@ -16,6 +16,8 @@ public class FacilityExtension : DefModExtension
 
     // If true, prevents any AffectedByFacilitiesExtension with copyFacilitiesFrom from linking this facility.
 	public bool disableAffectedByFacilitiesExtensionLinking = false;
+    // A list of buildings that this facility won't automatically link to
+    public List<ThingDef> preventAutoLinkingWith = null;
 
     public override void ResolveReferences(Def parentDef)
     {
@@ -31,6 +33,8 @@ public class FacilityExtension : DefModExtension
             {
                 LongEventHandler.ExecuteWhenFinished(() =>
                 {
+                    parentFacility.linkableBuildings ??= [];
+
                     foreach (var otherFacility in copyLinksFrom)
                     {
                         var links = otherFacility.GetCompProperties<CompProperties_Facility>()?.linkableBuildings;
@@ -39,6 +43,9 @@ public class FacilityExtension : DefModExtension
 
                         foreach (var link in links)
                         {
+                            // Don't link with specified buildings
+                            if (preventAutoLinkingWith.NotNullAndContains(link))
+                                continue;
                             // Don't double link
                             if (parentFacility.linkableBuildings.Contains(link))
                                 continue;
@@ -46,12 +53,13 @@ public class FacilityExtension : DefModExtension
                             var comp = link.GetCompProperties<CompProperties_AffectedByFacilities>();
                             if (comp == null)
                                 continue;
-                            // If the building is marked as "don't link into", skip it
-                            if (link.GetModExtension<AffectedByFacilitiesExtension>() is { disableFacilityExtensionLinking: true })
+                            // If the building is marked as "don't link into" (globally or with this facility), skip it
+                            if (link.GetModExtension<AffectedByFacilitiesExtension>()?.RefusesAutoLinkFrom(def) == true)
                                 continue;
 
                             // Add linking to both
-                            comp.linkableFacilities.Add(def);
+                            comp.linkableFacilities ??= [];
+                            comp.linkableFacilities.AddDistinct(def);
                             parentFacility.linkableBuildings.Add(link);
                         }
                     }
@@ -59,6 +67,9 @@ public class FacilityExtension : DefModExtension
             }
         }
     }
+
+    // True if a building copying links via AffectedByFacilitiesExtension.copyLinksFrom should not link with this facility
+    public bool RefusesAutoLinkFrom(ThingDef building) => disableAffectedByFacilitiesExtensionLinking || preventAutoLinkingWith.NotNullAndContains(building);
 
     public static bool AreFacilitiesEquivalent(ThingDef currentlyLinkedFacility, ThingDef newFacility)
     {
