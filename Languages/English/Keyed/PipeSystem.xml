@@ -98,5 +98,7 @@
    <PipeSystem_WorkSpeed>work speed</PipeSystem_WorkSpeed>
 
    <PipeSystem_InterruptedByGillRot>Can’t breed fish due to gill rot</PipeSystem_InterruptedByGillRot>
+
+  <PipeSystem_TurretResourceOff>no {RESOURCENAME}</PipeSystem_TurretResourceOff>
   
 </LanguageData>

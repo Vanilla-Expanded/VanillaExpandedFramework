@@ -39,6 +39,10 @@
 			<CopyLocal>false</CopyLocal>
 			<Private>False</Private>
 		</Reference>
+		<Reference Include="Waylith.Injection">
+			<HintPath>..\..\..\..\..\Waylith.Injection.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
 	</ItemGroup>
 	<Target Name="KillRimWorld" BeforeTargets="Clean;Build">
 		<Exec Command="tasklist /FI &quot;IMAGENAME eq RimWorld.exe&quot; | find /I &quot;RimWorld.exe&quot; &amp;gt;nul &amp;amp;&amp;amp; taskkill /F /IM RimWorld.exe" IgnoreExitCode="true"/>
