@@ -195,7 +195,7 @@ namespace PipeSystem
             return sb.ToString().Trim();
         }
 
-        protected override IEnumerable<NamedArgument> InspectStringArguments()
+        public override IEnumerable<NamedArgument> InspectStringArguments()
         {
             foreach (var inspectStringArgument in base.InspectStringArguments())
                 yield return inspectStringArgument;

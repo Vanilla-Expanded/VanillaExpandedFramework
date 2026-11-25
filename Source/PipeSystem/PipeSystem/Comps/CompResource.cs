@@ -137,7 +137,7 @@ namespace PipeSystem
             return sb.ToString().Trim();
         }
 
-        protected virtual IEnumerable<NamedArgument> InspectStringArguments()
+        public virtual IEnumerable<NamedArgument> InspectStringArguments()
         {
             if (PipeNet == null)
                 return Props.pipeNet.DefaultTranslationArguments(this);

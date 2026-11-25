@@ -40,7 +40,7 @@ namespace PipeSystem
             return $"{base.CompInspectStringExtra()}\n{nextSpawnedItemInKey.Translate([..InspectStringArguments()]).Resolve()}";
         }
 
-        protected override IEnumerable<NamedArgument> InspectStringArguments()
+        public override IEnumerable<NamedArgument> InspectStringArguments()
         {
             foreach (var inspectStringArgument in base.InspectStringArguments())
                 yield return inspectStringArgument;
