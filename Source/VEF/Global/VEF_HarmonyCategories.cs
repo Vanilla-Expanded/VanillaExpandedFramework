@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using HarmonyLib;
 using VEF.Apparels;
 using VEF.Genes;
@@ -20,7 +21,7 @@ public class VEF_HarmonyCategories
     {
         try
         {
-            harmony.PatchAllUncategorized();
+            harmony.PatchAllUncategorized(Assembly.GetExecutingAssembly());
         }
         catch (Exception e)
         {
@@ -61,7 +62,7 @@ public class VEF_HarmonyCategories
         try
         {
             if (validator == null || validator())
-                harmony.PatchCategory(patchCategory);
+                harmony.PatchCategory(Assembly.GetExecutingAssembly(), patchCategory);
         }
         catch (Exception e)
         {
