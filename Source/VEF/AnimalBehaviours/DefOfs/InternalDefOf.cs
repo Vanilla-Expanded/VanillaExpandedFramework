@@ -26,6 +26,7 @@ namespace VEF.AnimalBehaviours
 
         public static StatDef VEF_AnimalProductYieldFactor;
         public static StatDef VEF_AnimalProductIntervalFactor;
+        public static StatDef VEF_NuzzleIntervalFactor;
 
         [MayRequireOdyssey]
         public static TrainableDef VEF_ControlledBlinking;

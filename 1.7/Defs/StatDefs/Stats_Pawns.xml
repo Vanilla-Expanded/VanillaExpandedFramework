@@ -283,4 +283,14 @@
 		<toStringStyle>PercentZero</toStringStyle>
 		<displayPriorityInCategory>2202</displayPriorityInCategory>
 	</StatDef>
+	<StatDef>
+		<defName>VEF_NuzzleIntervalFactor</defName>
+		<label>nuzzle interval factor</label>	
+		<description>A multiplier on the interval of time between this animal's nuzzling attempts.</description>
+		<category>Animals</category>
+		<defaultBaseValue>1</defaultBaseValue>
+		<hideAtValue>1</hideAtValue>
+		<toStringStyle>PercentZero</toStringStyle>	
+		<displayPriorityInCategory>9823</displayPriorityInCategory>
+	</StatDef>
 </Defs>
