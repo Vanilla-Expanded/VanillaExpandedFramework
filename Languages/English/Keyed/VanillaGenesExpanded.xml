@@ -22,6 +22,8 @@
 	<VGE_StatsReport_InVacuum>in vacuum</VGE_StatsReport_InVacuum>
 	<VGE_StatsReport_InSpace>in Space</VGE_StatsReport_InSpace>
 	<VGE_StatsReport_InPlanet>in the planet</VGE_StatsReport_InPlanet>
+	<VGE_StatsReport_Day>during day (hour between 11 and 17)</VGE_StatsReport_Day>
+	<VGE_StatsReport_Night>during night (hour between 23 and 5)</VGE_StatsReport_Night>
 	
 	<VGE_EggPregnancy>{0}'s eggs have been fertilized! The egglaying process will continue until a fertile egg is laid.</VGE_EggPregnancy>
 	<VGE_EggPregnancyLabel>{0} fertilized!</VGE_EggPregnancyLabel>
